@@ -1,6 +1,9 @@
 ;(function($)
 {
     /* Call this to generate an html tag.
+       Takes a second optional argument; set it to true to get
+       a string response rather than a jQuery obj.
+
        Special keys are:
          tagName: name of the tag
          style: takes a key/value hash
@@ -27,7 +30,7 @@
                           display: { this: 'none', if: form.hasClass('something') } }
          });
     */
-    $.tag = function(attrs)
+    $.tag = function(attrs, keepAsString)
     {
         var result = '<' + attrs.tagName.toLowerCase();
 
@@ -76,28 +79,39 @@
             }
         });
 
-        // element it
-        var $result = $(result + '/>');
-
         if (attrs.tagName == 'input' || attrs.tagName == 'img')
         {
-            return;
+            result += '/>';
         }
         else if (!_.isUndefined(attrs.contents))
         {
+            result += '>';
+
             var children = attrs.contents;
             if (!_.isArray(children))
             { children = [ children ]; }
 
-            _.each(children, function(child)
+            // for each child, $.tag recurse if necessary, then "compact"
+            // and join the resultant array. Don't use _.compact since that
+            // strips 0.
+            result += _.reject(_.map(children, function(child)
             {
                 if (!_.isUndefined(child.tagName))
-                { child = $.tag(child); }
+                { child = $.tag(child, true); }
 
-                $result.append(child);
-            });
+                return child;
+            }), function(child) { return $.isBlank(child); }).join(' ');
+            result += '</' + attrs.tagName + '>';
         }
-        return $result;
+        else
+        {
+            result += '></' + attrs.tagName + '>';
+        }
+
+        if (keepAsString === true)
+        { return result; }
+        else
+        { return $(result); }
     };
     var tag_append = function(key, value)
     {

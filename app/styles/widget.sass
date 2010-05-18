@@ -226,6 +226,7 @@ html, body
     background-color: #fcfcfc
     display: none
     overflow-y: auto
+    overflow-x: hidden
 
   .widgetContentClose
     +close-button
@@ -256,6 +257,81 @@ html, body
     tbody
       .type
         +sprite-menu-icons
+
+  .widgetContent_comments
+    // fix IE7 scrolling bug
+    .ie7 &
+      position: relative
+
+    .commentsWrapper
+      margin-right: 4em
+      padding: 1em
+
+      .commentList
+        padding: 0.5em
+        position: relative
+
+        .commentAuthor
+          position: absolute
+          &, img
+            height: 35px
+            width: 35px
+        .commentContainer
+          background-color: #fff
+          border: 1px solid #999
+          margin-left: 55px
+          padding: 1em
+          position: relative
+
+          .commentBody, .replyBody
+            font-size: 1.1em
+            padding-bottom: 1em
+
+            .commentAuthorName, .commentTitle,
+            .replyAuthorName, .replyTitle
+              font-weight: bold
+
+          .commentActions, .replyActions
+            .timestamp, .positiveRatings, .negativeRatings
+              color: #888
+
+            .rateUp, .rateDown
+              +sprite-menu-icons
+
+              .ie7 & .icon
+                display: block
+
+            .timestamp, .actionReply, .actionInappropriate
+              float: left
+              margin-right: 1em
+
+            .positiveRatings, .negativeRatings, .rateUp, .rateDown
+              float: right
+              margin-left: 1em
+
+          .replyWrapper
+            .replyList
+              border-top: 1px solid #ddd
+
+              .replyAuthor
+                margin-top: 0.5em
+                position: absolute
+                &, img
+                  height: 25px
+                  width: 25px
+
+              .replyContainer
+                margin:
+                  left: 35px
+                padding:
+                  bottom: 0.5em
+                  top: 0.5em
+
+            .replyViewAllLink
+              font-size: 1.1em
+              padding:
+                bottom: 0.5em
+                top: 0.5em
 
   .widgetContent_embed
     .embedForm
@@ -323,6 +399,44 @@ html, body
       .submitActions li
         display: block
         float: left
+
+// modals
+
+.widgetModal
+  background-color: #fff
+  border: 1px solid #999
+  -moz-border-radius: 0.4em
+  -webkit-border-radius: 0.4em
+  -moz-box-shadow: 0 0 4px rgba(0, 0, 0, 0.5)
+  -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.5)
+  display: none
+  left: 50%
+  margin-left: -21em
+  padding: 2em
+  position: absolute
+  top: 6em
+  width: 40em
+
+  .interstitialClose
+    +close-button
+    position: absolute
+    right: 1em
+    top: 1em
+
+  h2
+    color= !color_text_error
+    font-size: 1.9em
+    font-weight: normal
+    margin-bottom: 0.8em
+
+  p
+    font-size: 1.2em
+
+  .actions
+    margin-top: 2em
+    li
+      float: right
+
 
 // START: fullcalendar
 .fc td, .fc th

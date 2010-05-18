@@ -245,6 +245,7 @@ javascripts:
   - screens/dataset-menu
 - widgets-show-new:
   - pure
+  - plugins/jqModal
   - plugins/jquery.example.min
   - plugins/jquery.json
   - plugins/ui.core
@@ -258,6 +259,7 @@ javascripts:
   - widgets/combination-list
   - widgets/socrata-messaging
   - widgets/embed-form
+  - util/humane-date
   - util/compat
   - util/navigation
   - util/urls

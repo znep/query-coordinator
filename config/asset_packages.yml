@@ -6,29 +6,29 @@ config:
     cache_dir: cache
 javascripts: 
 - base:
-  - plugins/jquery.sizes.min
-  - util/namespace
+  - plugins/jqModal
+  - plugins/jquery.bt
   - plugins/jquery.cookies.2.1.0.min
-  - util/underscore-min
-  - util/google-analytics
+  - plugins/jquery.example.min
+  - plugins/jquery.json
+  - plugins/jquery.sizes.min
   - plugins/jquery.socrata
+  - plugins/jquery.tache
+  - plugins/jquery.validate.min
+  - util/namespace
+  - util/alert-override
+  - util/google-analytics
+  - util/markup
+  - util/underscore-min
+  - util/util
+  - widgets/socrata-messaging
+  - widgets/text-prompt
 - shared-common-all:
   - util/compat
   - util/events
   - util/sizing
-  - util/util
-  - util/markup
-  - plugins/jquery.tache
-  - plugins/jquery.json
-  - plugins/jquery.example.min
-  - plugins/jqModal
-  - plugins/jquery.validate.min
-  - widgets/text-prompt
-  - util/alert-override
   - widgets/clipped-text
   - screens/common-layout
-  - plugins/jquery.bt
-  - widgets/socrata-messaging
   - util/socrata-server
 - shared-calendar:
   - plugins/fullcalendar
@@ -203,7 +203,6 @@ javascripts:
   - util/urls
   - widgets/dropdown-menu
   - screens/nominations-screen
-  - widgets/text-prompt
   - plugins/date
   - plugins/ajaxupload.3.0
 - homes-show:
@@ -228,24 +227,15 @@ javascripts:
 - tweetsets:
   - screens/tweetsets-screen
 - widgets-show:
-  - plugins/jqModal
-  - plugins/jquery.example.min
-  - plugins/jquery.json
   - plugins/ui.core
   - plugins/ui.draggable
-  - plugins/jquery.tache
-  - plugins/jquery.validate.min
-  - plugins/jquery.bt
-  - widgets/socrata-messaging
   - util/navigation
-  - util/util
   - util/humane-number
   - plugins/date
   - data/types
   - data/model
   - data/table
   - data/table_nav
-  - widgets/text-prompt
   - widgets/dropdown-menu
   - widgets/scrollable
   - widgets/scrollTabs
@@ -258,27 +248,18 @@ javascripts:
   - screens/dataset-menu
 - widgets-show-new:
   - plugins/pure
-  - plugins/jqModal
-  - plugins/jquery.example.min
-  - plugins/jquery.json
   - plugins/ui.core
   - plugins/ui.draggable
   - plugins/ui.effects.custom.min
-  - plugins/jquery.tache
-  - plugins/jquery.validate.min
-  - plugins/jquery.bt
   - plugins/jquery.uniform
   - plugins/jquery.tablesorter
   - widgets/combination-list
-  - widgets/socrata-messaging
   - widgets/embed-form
   - util/humane-date
   - util/humane-number
   - util/compat
   - util/navigation
   - util/urls
-  - util/util
-  - util/markup
   - util/dataset
   - plugins/date
   - data/types
@@ -286,7 +267,6 @@ javascripts:
   - data/table
   - data/table_nav
   - controls/stars
-  - widgets/text-prompt
   - widgets/dropdown-menu
   - widgets/menu
   - widgets/scrollable

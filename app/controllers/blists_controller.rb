@@ -81,10 +81,10 @@ class BlistsController < ApplicationController
     end
 
     # If we're displaying a single dataset, set the title to the description.
-    @meta_description = help.meta_description(@view)
+    @meta_description = @view.meta_description
 
     # Shuffle the default tags into the keywords list
-    @meta_keywords = help.meta_keywords(@view)
+    @meta_keywords = @view.meta_keywords
 
     @data_component = params[:dataComponent]
     @popup = params[:popup]
@@ -927,13 +927,4 @@ private
     return title
   end
 
-  def help
-    Helper.instance
-  end
-
-end
-
-class Helper
-  include Singleton
-  include ApplicationHelper
 end

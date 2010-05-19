@@ -4,13 +4,8 @@ class WidgetsPreviewController < ApplicationController
   
   def show
     @view = View.find(params[:id])
-    @meta_description = Helper.instance.meta_description(@view)
-    @meta_keywords = Helper.instance.meta_keywords(@view)
+    @meta_description = @view.meta_description
+    @meta_keywords = @view.meta_keywords
   end
   
-end
-
-class Helper
-  include Singleton
-  include ApplicationHelper
 end

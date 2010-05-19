@@ -20,3 +20,5 @@ base-sdp:
 grid:
 - table-core
 - dataset-grid
+dataset-page:
+- screen-dataset

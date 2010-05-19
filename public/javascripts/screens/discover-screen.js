@@ -162,7 +162,7 @@ blist.discover.searchSubmitHandler = function(event)
     event.preventDefault();
 
     var query = $(this).find('#search').val();
-    if (query == "")
+    if (!$('form.search.large').valid() || query == '' )
     {
         return;
     }
@@ -245,7 +245,30 @@ $(function ()
         $("#tagCloud").jqmHide();
     });
 
-    $("#discover form").submit(discoverNS.searchSubmitHandler);
+    $("#discover form").submit(discoverNS.searchSubmitHandler)
+        .validate(
+        {
+            rules:
+            {
+                search:
+                {
+                    minlength: 3
+                }
+            },
+            messages: {search: "Your search was too short. Please search for a term at least three letters long."},
+            errorElement: "div",
+            wrapper: "div",
+            errorPlacement: function(error, element)
+            {
+                offset = element.offset();
+                error.insertBefore(element)
+                error.addClass('errorMessage');
+                error.css('position', 'absolute');
+                error.css('left', offset.left);
+                error.css('top', offset.top + element.outerHeight());
+            }
+        });
+
     $(".clearSearch")
         .click(function(event)
         {

@@ -25,6 +25,16 @@ blist.common.forceWindowResize = function ()
     $(window).resize();
 };
 
+blist.common.searchSubmitHandler = function(event)
+{
+
+    if (!$("#header form.search").valid() || $("#header form.search input.textPrompt").val() == '')
+    {
+        event.preventDefault();
+        return;
+    }
+};
+
 blist.common.showModalHandler = function(hash)
 {
     var $modal = hash.w;
@@ -53,6 +63,7 @@ blist.common.showModalHandler = function(hash)
         }
     });
 };
+
 
 $(function ()
 {
@@ -90,6 +101,32 @@ $(function ()
         $searchField.parent().find(".clearSearch")
             .toggleClass('hide', $searchField.hasClass("prompt") || !($searchField.val() != ""));
     });
+
+    $("#header form.search").submit(commonNS.searchSubmitHandler)
+        .validate(
+        {
+            rules:
+            {
+                search:
+                {
+                    minlength: 3
+                }
+            },
+            messages: { search: "Your search was too short. Please search for a term at least three letters long."},
+            errorElement: "div",
+            wrapper: "div",
+            errorPlacement: function(error, element)
+            {
+                var $closestP = $(element).closest('p');
+                offset = element.offset();
+                error.insertBefore(element);
+                error.addClass('errorMessage');
+                error.css('position', 'absolute');
+                error.css('left', $closestP.css('paddingLeft'));
+                error.css('top', $closestP.outerHeight());
+            }
+        });
+
     $(".clearSearch")
         .click(function(event)
         {

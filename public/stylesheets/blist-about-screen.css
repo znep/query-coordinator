@@ -2,6 +2,9 @@
 
 #aboutContent { color: #666; }
 
+/* make room for search box error message */
+.twoColumnContainer { margin-top: 2em; }
+
 .aboutHeader h1
 {
     font-weight: normal;

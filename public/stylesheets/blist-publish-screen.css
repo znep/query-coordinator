@@ -1,5 +1,6 @@
 #publishContent .fullPageContent
 {
+    margin-top: 2em; /* make room for search box error message */
     padding: 0em;
     padding-bottom: 3em;
 }

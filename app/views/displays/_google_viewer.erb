@@ -1,3 +1,23 @@
-<%- blob_location = URI.escape(request.protocol + request.host_with_port + @view.blob_href) -%>
-<iframe id='blobIFrame' src="http://docs.google.com/gview?url=<%= blob_location %>&embedded=true"
-    width="100%" height="99%" frameborder="0" scrolling="no"></iframe>
+<%-
+    blob_location = URI.escape(request.protocol + request.host_with_port + @view.blob_href)
+    iframe_source = '<iframe id="blobIFrame" src="http://docs.google.com/gview?url=' +
+        blob_location + '&embedded=true" width="100%" height="99%" frameborder="0" scrolling="no"></iframe>'
+    embed_source  = '<object data="' + blob_location +
+        '" type="application/pdf" classid="clsid:CA8A9780-280D-11CF-A24D-444553540000" ' +
+        'width="100%" height="99%"></object>'
+    -%>
+<noscript>
+    <p>Javascript is required to run the document view inside your browser.</p>
+    <p>To download this file instead, <%= link_to 'click here', blob_location, :target => '_blank' %>.</p>
+</noscript>
+<script type="text/javascript">
+    $(function()
+    {
+        var embedHTML;
+        if ('<%= @view.blobMimeType %>'.indexOf('application/pdf') !== -1 && $.browser.msie)
+        { embedHTML = '<%= raw(embed_source) %>'; }
+        else
+        { embedHTML = '<%= raw(iframe_source) %>'; }
+        $("#dataGrid").html(embedHTML);
+    });
+</script>

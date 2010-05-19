@@ -37,7 +37,7 @@
       <%- end -%>
       <div class="gridContainer">
         <%- if !@view.is_invalid? -%>
-          <div id="data-grid">
+          <div id="data-grid" class='fullHeight'>
             <%- if !@view.is_blobby? -%>
               <noscript>
                 <h3><a href="<%= @view.href %>"><%= @view.name %></a></h3>

@@ -1,10 +1,10 @@
---- 
+---
 config:
   javascripts:
     cache_dir: cache
   stylesheets:
     cache_dir: cache
-javascripts: 
+javascripts:
 - base:
   - plugins/jqModal
   - plugins/jquery.bt
@@ -12,19 +12,18 @@ javascripts:
   - plugins/jquery.example.min
   - plugins/jquery.json
   - plugins/jquery.sizes.min
-  - plugins/jquery.socrata
   - plugins/jquery.tache
   - plugins/jquery.validate.min
+  - util/underscore-min
   - util/namespace
+  - util/util
+  - util/compat
+  - util/markup
   - util/alert-override
   - util/google-analytics
-  - util/markup
-  - util/underscore-min
-  - util/util
   - widgets/socrata-messaging
   - widgets/text-prompt
 - shared-common-all:
-  - util/compat
   - util/events
   - util/sizing
   - widgets/clipped-text
@@ -253,11 +252,11 @@ javascripts:
   - plugins/ui.effects.custom.min
   - plugins/jquery.uniform
   - plugins/jquery.tablesorter
+  - controls/full-screen
   - widgets/combination-list
   - widgets/embed-form
   - util/humane-date
   - util/humane-number
-  - util/compat
   - util/navigation
   - util/urls
   - util/dataset
@@ -276,10 +275,10 @@ javascripts:
   - widgets/visualization
   - screens/external-widget-new
 - widgets-show-new-form:
-  - util/util
-  - util/compat
-  - util/markup
   - plugins/jquery.uniform
+- screen-dataset:
+  - controls/full-screen
+  - screens/screen-dataset
 
 
 

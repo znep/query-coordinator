@@ -24,4 +24,12 @@
   </div>
 </div>
 
-<div id='mainGrid'></div>
+<div class='outerContainer'>
+  <div class='gridContainer'>
+    <div id='mainGrid' class='fullHeight'></div>
+  </div>
+</div>
+
+<% content_for :js_footer do %>
+  <%= javascript_include_merged 'screen-dataset' %>
+<% end %>

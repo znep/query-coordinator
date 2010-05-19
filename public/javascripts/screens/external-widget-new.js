@@ -2,28 +2,6 @@ var widgetNS = blist.namespace.fetch('blist.widget');
 var commonNS = blist.namespace.fetch('blist.common');
 var configNS = blist.namespace.fetch('blist.configuration');
 
-blist.widget.resizeViewport = function()
-{
-    var $contentContainer = $('.widgetContent');
-    var targetHeight = $(window).height() -
-        widgetNS.theme.frame.border.width.value * 2 -
-        widgetNS.theme.frame.padding.value;
-    $contentContainer.siblings(':visible').each(function()
-    {
-        targetHeight -= $(this).outerHeight(true);
-    });
-    $contentContainer.children().height(targetHeight);
-
-    widgetNS.resizeGrid();
-};
-
-blist.widget.resizeGrid = function()
-{
-    $('#data-grid:visible')
-        .height($('.widgetContentGrid').innerHeight())
-        .trigger('resize');
-};
-
 blist.widget.hideToolbar = function()
 {
     $('.toolbar')
@@ -31,7 +9,7 @@ blist.widget.hideToolbar = function()
         .hide(
             'slide',
             { direction: ((widgetNS.orientation == 'downwards') ? 'up' : 'down') },
-            widgetNS.resizeViewport);
+            function() { widgetNS.$resizeContainer.fullScreen().adjustSize(); });
 };
 
 blist.widget.showToolbar = function(sectionName, sectionClass)
@@ -47,7 +25,7 @@ blist.widget.showToolbar = function(sectionName, sectionClass)
         $toolbar
             .children(':not(.close)').hide()
             .filter('.' + sectionClass).show();
-        widgetNS.resizeViewport();
+        widgetNS.$resizeContainer.fullScreen().adjustSize();
     }
     else if (toolbarChanged)
     {
@@ -85,7 +63,7 @@ blist.widget.showDataView = function()
         function()
         {
             $('.widgetContentGrid').fadeIn(200);
-            widgetNS.resizeGrid();
+            widgetNS.$resizeContainer.fullScreen().adjustSize();
         });
 };
 
@@ -96,8 +74,8 @@ $(function()
     widgetNS.isBlobby = (widgetNS.view.viewType === 'blobby');
 
     // sizing
-    widgetNS.resizeViewport();
-    $(window).resize(function() { widgetNS.resizeViewport(); });
+    widgetNS.$resizeContainer = $('.widgetContent');
+    widgetNS.$resizeContainer.fullScreen();
 
     // generic events
     $.live('a[rel$=external]', 'focus', function(event)

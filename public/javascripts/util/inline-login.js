@@ -90,9 +90,17 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                     var $form = $(this);
                     if ($form.valid() && $form.find(".flash").text().length == 0)
                     {
+                        var data = {};
+                        $form.find(':input').each(function()
+                        {
+                            var $f = $(this);
+                            if ($f.is(':checkbox'))
+                            { data[$f.attr('name')] = $f.value(); }
+                            else { data[$f.attr('name')] = $f.val(); }
+                        });
                         $.ajax({
                             url: blist.blistGrid.secureUrl + '/signup.json',
-                            data: $form.find(':input'),
+                            data: data,
                             dataType: "jsonp",
                             success: signupSuccess
                         });
@@ -105,11 +113,14 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
             {
                 if (responseData.promptLogin)
                 {
-                    $('#signup').hide();
-                    $('#login').show()
-                        .find('.flash').text(responseData.error)
-                        .end()
-                        .find(':text:first').focus();
+                    $('#signup').jqmHide();
+                    _.defer(function()
+                    {
+                        $('#login').jqmShow()
+                            .find('.flash').text(responseData.error)
+                            .end()
+                            .find(':text:first').focus();
+                    });
                 }
                 else
                 {
@@ -124,7 +135,7 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                     blist.currentUserId = responseData.user_id;
                 }
 
-                $('#signup').hide();
+                $('#signup').jqmHide();
                 $('#login').jqmHide();
                 $('#header .userNav').addClass('loggedInNav');
                 callback(true, true);

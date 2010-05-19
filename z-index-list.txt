@@ -23,4 +23,5 @@ Please list z-indexes of elements in the site so we can keep track of how elemen
 70 sidebar close link
 2999 #modal overlay
 5000 Modal login dialog
+5000 Modal sign up dialog
 10000 navigation skiplinks

@@ -1,4 +1,4 @@
-<form class='formView socrataForm' method='POST'
+<form class='formView socrataForm commonForm' method='POST'
   <%- form_columns = @view.columns.select {|c| c.form_enabled?} -%>
   <%- if form_columns.any? {|c| c.client_type == 'document_obsolete' ||
     c.client_type == 'photo_obsolete' || c.client_type == 'document' || c.client_type == 'photo'} -%>

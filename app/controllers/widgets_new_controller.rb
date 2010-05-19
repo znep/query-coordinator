@@ -43,5 +43,11 @@ class WidgetsNewController < ApplicationController
     end
 
     @display = @view.display
+
+    if @view.is_form?
+      render :action => 'show_form'
+    else
+      render
+    end
   end
 end

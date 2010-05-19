@@ -236,14 +236,28 @@ html, body
   .widgetContentGrid
     display: block
 
+    // make IE7 display and scroll properly
+    .ie7 &
+      position: relative
+
     #viewHeader
       display: none
 
     .gridContainer
+      // make layers box position properly
       position: relative
 
       #data-grid
+        // make bing maps position properly
         position: relative
+
+        // make IE7 display and scroll the calendar properly
+        .ie7 &.fc
+          height: auto !important
+          margin-right: 20px
+          position: relative
+          .fc-header, .fc-content
+            position: relative
 
   .widgetContent_views,
   .widgetContent_downloads
@@ -456,7 +470,8 @@ html, body
 
 
 // START: fullcalendar
-.fc td, .fc th
+.fc .fc-header td,
+.fc .fc-header th
   padding: 0.2em
 
 // START: GRID

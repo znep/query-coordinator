@@ -291,7 +291,11 @@ javascripts:
   - widgets/dataset-grid
   - widgets/visualization
   - screens/external-widget-new
-
+- widgets-show-new-form:
+  - util/util
+  - util/compat
+  - util/markup
+  - plugins/jquery.uniform
 
 
 

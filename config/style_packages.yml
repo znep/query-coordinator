@@ -16,7 +16,6 @@ base-sdp:
 - old-controls
 - controls
 - tables
-- fullcalendar
 - screen-map
 grid:
 - table-core

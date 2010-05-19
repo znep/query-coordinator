@@ -28,14 +28,11 @@ form textarea.text_wide
 .errorMessage
   color: #f00
 
-// common layout for forms
-.commonForm
+
+// common styling for forms
+=common-form-styling
   label
-    display: block
     font-size: 1.2em
-    height: 2em
-    line-height: 2em
-    margin-bottom: -2em
 
   .formSection
     padding-left: 1em
@@ -45,8 +42,56 @@ form textarea.text_wide
 
   .formHeader
     font-weight: bold
-    height: auto
     margin-bottom: 0.5em
+
+  textarea
+    font-size: 1.2em
+
+  input[type=text],
+  textarea
+    -moz-border-radius: 0.3em
+    -webkit-border-radius: 0.3em
+    -moz-box-shadow: 0 0 2px rgba(0, 0, 0, 0.05)
+    -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.05)
+    &:hover
+      -moz-box-shadow: 0 0 2px rgba(0, 0, 0, 0.15)
+      -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.15)
+    &:focus, &:active
+      -moz-box-shadow: 0 0 2px rgba(0, 0, 0, 0.4)
+      -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.4)
+
+// common layout for forms
+.commonForm
+  +common-form-styling
+
+  div.line
+    min-height: 1.8em
+    line-height: 1.8em
+
+    > *, .fieldContainer > *
+      display: inline-block
+      float: left
+      margin-right: 0.2em
+      &.span
+        height: 1.8em
+        line-height: 1.8em
+
+    label
+      margin-right: 1em
+
+    .uniform.selector
+      margin-top: -2px
+
+.commonFormLegacy
+  +common-form-styling
+  label
+    display: block
+    height: 2em
+    line-height: 2em
+    margin-bottom: -2em
+
+  .formHeader
+    height: auto
 
   div.uniform,
   input[type=text],
@@ -67,21 +112,6 @@ form textarea.text_wide
         bottom: 0.5em
         left: 2.5em
 
-  textarea
-    font-size: 1.1em
-
-  input[type=text],
-  textarea
-    -moz-border-radius: 0.3em
-    -webkit-border-radius: 0.3em
-    -moz-box-shadow: 0 0 2px rgba(0, 0, 0, 0.05)
-    -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.05)
-    &:hover
-      -moz-box-shadow: 0 0 2px rgba(0, 0, 0, 0.15)
-      -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.15)
-    &:focus, &:active
-      -moz-box-shadow: 0 0 2px rgba(0, 0, 0, 0.4)
-      -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.4)
 
 // uniform jQuery plugin styling
   clint.tseng@socrata.com 13/05/10:
@@ -283,7 +313,6 @@ div.uniform.selector
   font-size: 12px
 
   select
-    width: 190px
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif
     font-size: 12px
 

@@ -39,6 +39,10 @@ Enjoy!
 //    adding .uniform class to uniform elems
 //    attaching hover events to associated labels
 
+// clint.tseng@socrata.com 19/05/10:
+// set width of select to match that of its target
+
+
 (function($) {
   $.uniform = {
     options: {
@@ -134,6 +138,12 @@ Enjoy!
 				//box is checked by default, check our box
 				divTag.addClass(options.disabledClass);
 			}
+
+            // clint.tseng@socrata.com 19/05/10:
+            // set width of select to match that of its target
+            // - 10 for padding; use css('width') to minimize cross-browser issues
+            divTag.css('width', parseInt(elem.css('width')) - 10);
+            spanTag.width(divTag.innerWidth() - 35);
 
 			storeElement(elem);
 

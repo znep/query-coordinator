@@ -22,6 +22,7 @@ blist.stats.initializeGrid = function ()
         .blistModel();
 
     statsNS.model.meta({view: {}, columns: statsNS.columns});
+    statsNS.model.sort(2, true); /* number of visits column */
     statsNS.model.rows(statsNS.urlData);
 };
 

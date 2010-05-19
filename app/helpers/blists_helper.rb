@@ -260,11 +260,12 @@ module BlistsHelper
       'title' => (view.can_add_form? ? '' :
         'This dataset does not have any visible columns')},
       {'text' => 'Map', 'href' => "#{view.href}/map",
-      'if' => !view.is_grouped? && CurrentDomain.member?(current_user) &&
-               module_available?(:map_publish),
+      'if' => !view.is_grouped? && module_available?(:map_publish) &&
+        (CurrentDomain.member?(current_user) || module_available?(:location_launch)),
       'class' => 'map' + (view.can_add_map? ? '' : ' disabled'),
       'title' => (view.can_add_map? ? '' :
-        'This dataset does not have the appropriate columns')}
+        'This dataset does not have ' + (module_available?(:location_launch) ?
+          'a location column' : 'the appropriate columns'))}
     ]
   end
 
@@ -309,14 +310,12 @@ module BlistsHelper
             })},
       menu_options['separator'],
       {'text' => 'Create a Calendar View...', 'href' => "#{view.href}/calendar",
-      'if' => !view.is_alt_view?, 'user_required' => true,
-      'class' => 'calendar mainViewOption' +
+      'if' => !view.is_alt_view?, 'class' => 'calendar mainViewOption' +
         (view.can_add_calendar? ? '' : ' disabled'),
       'title' => (view.can_add_calendar? ? '' :
         'This dataset does not have both a date column and text column')},
       {'text' => 'Create a Chart View...', 'href' => "#{view.href}/visualization",
-      'if' => !view.is_alt_view?, 'user_required' => true,
-      'class' => 'visualization mainViewOption' +
+      'if' => !view.is_alt_view?, 'class' => 'visualization mainViewOption' +
         (view.can_add_visualization? ? '' : ' disabled'),
       'title' => (view.can_add_visualization? ? '' :
         'This dataset does not have the appropriate columns for visualizations')},
@@ -331,11 +330,12 @@ module BlistsHelper
         'This dataset does not have any visible columns')},
       {'text' => 'Create a Map...', 'href' => "#{view.href}/map",
       'if' => !view.is_alt_view? && !view.is_grouped? &&
-        CurrentDomain.member?(current_user) && module_available?(:map_publish),
-      'user_required' => true, 'class' => 'map mainViewOption' +
+        (CurrentDomain.member?(current_user) || module_available?(:location_launch)) &&
+        module_available?(:map_publish), 'class' => 'map mainViewOption' +
         (view.can_add_map? ? '' : ' disabled'),
       'title' => (view.can_add_map? ? '' :
-        'This dataset does not have the appropriate columns')}
+        'This dataset does not have ' + (module_available?(:location_launch) ?
+          'a location column' : 'the appropriate columns'))}
       ]) + [menu_options['separator'],
       menu_options['more_views']]
   end
@@ -486,10 +486,6 @@ module BlistsHelper
     else
       nil
     end
-  end
-
-  def type_select_options(selected_type = nil)
-    options_for_select(Column.types.invert.sort { |a, b| a.first <=> b.first }, selected_type)
   end
 
   def category_select_options(selected_category = nil)

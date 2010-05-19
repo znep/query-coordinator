@@ -56,3 +56,12 @@
     width: 5em;
 }
 .formView .urlInput input { width: 13.9em; }
+
+.formView .line.location { height: 12.7em; }
+.formView .locationInput label
+{
+    padding-right: 0.5em;
+    text-align: left;
+    width: 5em;
+}
+.formView .locationInput input { width: 13.9em; }

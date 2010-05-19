@@ -12,11 +12,12 @@ base:
 base-sdp:
 - base
 - common
-- table-core
-- dataset-grid
 - forms
 - old-controls
 - controls
 - tables
 - fullcalendar
 - screen-map
+grid:
+- table-core
+- dataset-grid

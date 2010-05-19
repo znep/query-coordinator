@@ -45,6 +45,7 @@ javascripts:
   - data/editors/tag-editor
   - data/editors/url-editor
   - data/editors/phone-editor
+  - data/editors/location-editor
   - widgets/combo
   - widgets/values
   - data/editors/flag-editor
@@ -59,6 +60,7 @@ javascripts:
   - data/editors/photo-editor
 - shared-map:
   - widgets/base-visualization
+  - data/types
   - widgets/maps/base-map
   - widgets/maps/esri-map
   - widgets/maps/google-map
@@ -126,6 +128,7 @@ javascripts:
   - widgets/reorderable-list
   - screens/blist-publish-screen
 - blists-show:
+  - plugins/pure
   - plugins/jquery.tablesorter
   - plugins/ui.core
   - plugins/ui.draggable
@@ -165,6 +168,8 @@ javascripts:
   - widgets/combo
   - widgets/values
   - screens/dataset-menu
+  - widgets/grid-sidebar
+  - widgets/wizard-prompt
 - communities-show:
   - plugins/jquery.jcarousel
   - plugins/jquery.tagcloud
@@ -244,7 +249,7 @@ javascripts:
   - screens/info-pane
   - screens/dataset-menu
 - widgets-show-new:
-  - pure
+  - plugins/pure
   - plugins/jqModal
   - plugins/jquery.example.min
   - plugins/jquery.json
@@ -327,13 +332,12 @@ stylesheets:
   - colorpicker
   - form-common
 - blists-show:
-  - table-core
   - table-blist-grid
-  - dataset-grid
   - dataset-menus
   - ui.slider
   - ui.spinner
   - blist-grid-screen
+  - grid-sidebar
   - form-common
   - combo
 - communities-show:
@@ -363,8 +367,6 @@ stylesheets:
   - carousel/discover-carousel-skin
   - tweetsets-screen
 - widgets-show:
-  - table-core
-  - dataset-grid
   - dataset-menus
   - external-widget
   - info-pane

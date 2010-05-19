@@ -1,7 +1,7 @@
 class BlistsController < ApplicationController
   include BlistsHelper
   helper_method :get_title
-  skip_before_filter :require_user, :only => [:help_me, :show, :alt, :alt_filter, :about, :print, :email, :flag, :republish, :about_sdp, :form_success, :form_error]
+  skip_before_filter :require_user, :only => [:help_me, :show, :alt, :alt_filter, :about, :print, :email, :flag, :republish, :about_sdp, :form_success, :form_error, :map, :visualization, :calendar]
 
   def index
     @body_class = 'home'
@@ -531,12 +531,12 @@ class BlistsController < ApplicationController
 
   def append
     @view = View.find(params[:id])
-    @error_type = @view.columns.any?{ |column| column.client_type.match(/(document|photo|nested_table)/) }
+    @error_type = @view.columns.any?{ |column| column.client_type.match(/(document|photo|document_obsolete|photo_obsolete|location|nested_table)/) }
   end
 
   def replace
     @view = View.find(params[:id])
-    @error_type = @view.columns.any?{ |column| column.client_type.match(/(document|photo|nested_table)/) }
+    @error_type = @view.columns.any?{ |column| column.client_type.match(/(document|photo|document_obsolete|photo_obsolete|location|nested_table)/) }
   end
 
   def share

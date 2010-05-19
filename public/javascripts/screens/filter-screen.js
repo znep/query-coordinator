@@ -1,7 +1,7 @@
 var filterNS = blist.namespace.fetch('blist.filter');
 
 filterNS.conditions = {
-    text:     [ { operator: "EQUALS", label: "equals" },
+    textual:     [ { operator: "EQUALS", label: "equals" },
                 { operator: "NOT_EQUALS", label: "does not equal" },
                 { operator: "STARTS_WITH", label: "starts with" },
                 { operator: "CONTAINS", label: "contains" } ],
@@ -10,10 +10,10 @@ filterNS.conditions = {
                 { operator: "LESS_THAN", label: "before" },
                 { operator: "GREATER_THAN", label: "after" },
                 { operator: "BETWEEN", label: "between" } ],
-    checkbox: [ { operator: "EQUALS", label: "equals" } ],
-    photo:    [ { operator: "IS_BLANK", label: "is empty" },
+    comparable: [ { operator: "EQUALS", label: "equals" } ],
+    blob:    [ { operator: "IS_BLANK", label: "is empty" },
                 { operator: "IS_NOT_BLANK", label: "exists" } ],
-    number:   [ { operator: "EQUALS", label: "equals" },
+    numeric:   [ { operator: "EQUALS", label: "equals" },
                 { operator: "NOT_EQUALS", label: "not equals" },
                 { operator: "LESS_THAN", label: "less than" },
                 { operator: "LESS_THAN_OR_EQUALS", label: "less than or equal to" },
@@ -25,19 +25,19 @@ filterNS.conditions = {
 filterNS.filterableClass = function(type) {
     if ($.inArray(type, ["text", "richtext", 'html', "url", "email", "phone", "tag"]) > -1)
     {
-        return "text";
+        return "textual";
     }
     else if ($.inArray(type, ["number", "money", "percent", "stars", "picklist", "drop_down_list"]) > -1)
     {
-        return "number";
+        return "numeric";
     }
     else if ($.inArray(type, ["photo_obsolete", "photo", "document_obsolete", "document"]) > -1)
     {
-        return "photo";
+        return "blob";
     }
-    else if ($.inArray(type, ["checkbox", "flag"]) > -1)
+    else if ($.inArray(type, ["checkbox", "flag", 'location']) > -1)
     {
-        return "checkbox";
+        return "comparable";
     }
     else
     {
@@ -209,70 +209,28 @@ filterNS.row = function($row) {
         value.push($(r).blistEditor().currentValue());
     });
 
-    // Translate values. Filters have a different format which is awesome.
-    if (column.type == "phone")
-    {
-        var filter = []
-        var children = [];
-        var phoneNumber = {type: "operator"};
-        var phoneType = {type: "operator"};
-
-        // Number
-        if (value[0] !== null && value[0].phone_number !== null)
-        {
-            children = [{columnId: column.id, type: "column",
-                    value: "phone_number"},
-                {type: "literal", value: value[0].phone_number}];
-            phoneNumber.value = operator;
-            phoneNumber.children = children;
-            filter.push(phoneNumber);
-        }
-
-        // Type
-        if (value[0] !== null && value[0].phone_type !== null)
-        {
-            children = [{columnId: column.id, type: "column", value: "phone_type"},
-                {type: "literal", value: value[0].phone_type}];
-            phoneType.value = operator;
-            phoneType.children = children;
-            filter.push(phoneType);
-        }
-
-        return filter;
-    }
-    else if (column.type == "url")
+    // Translate values. Complex types have a different format which is awesome.
+    if (column.type == "phone" || column.type == 'url' || column.type == 'location')
     {
         var filter = [];
 
-        if (value[0] !== null && value[0].url !== null)
+        if (value[0] !== null)
+        _.each(value[0], function(v, k)
         {
-            filter.push({
-                type: "operator",
-                value: operator,
-                children: [
-                    {   columnId: column.id,
-                        type: "column",
-                        value: "url" },
-                    {   type: "literal",
-                        value: value[0].url }
-                ]
-            });
-        }
+            if (_.isNull(v)) { return; }
 
-        if (value[0] !== null && value[0].description !== null)
-        {
             filter.push({
                 type: "operator",
                 value: operator,
                 children: [
                     {   columnId: column.id,
                         type: "column",
-                        value: "description" },
+                        value: k },
                     {   type: "literal",
-                        value: value[0].description }
+                        value: v }
                 ]
             });
-        }
+        });
 
         return filter;
     }

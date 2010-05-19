@@ -2,6 +2,9 @@
 
 #aboutContent { color: #666; }
 
+/* make room for search box error message */
+.twoColumnContainer { margin-top: 2em; }
+
 .aboutHeader h1
 {
     font-weight: normal;
@@ -339,7 +342,7 @@ span.helpie
 /* Column types list */
 .columnList li
 {
-    background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png);
+    background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png?1);
     background-repeat: no-repeat;
     font-size: 1.2em;
     height: 20px;
@@ -388,5 +391,6 @@ span.helpie
 { background-position: 0 -400px; }
 .columnList li.nested_table { background-position: 0 -440px; }
 .columnList li.tag { background-position: 0 -180px; }
+.columnList li.location { background-position: 0 -460px; }
 
 /*** END: sidebar ***/

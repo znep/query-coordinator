@@ -302,11 +302,13 @@
               end -%>
     	    <%= menu_tag({'id' => 'downloadMenu', 'class' => 'noicon', 'items' => menu_items}) %>
         </li>
-    	  <li>
-    	    <a href="<%= "/views/#{@view.id}/rows.rss" %>" class="socialActionLink" title="Stay up to date with this dataset with RSS" id="rssLink">
-    	      <span class="linkIcon">Subscribe to RSS</span>
-    	    </a>
-    	  </li>
+          <%- if !@view.is_blobby? -%>
+            <li>
+              <a href="<%= "/views/#{@view.id}/rows.rss" %>" class="socialActionLink" title="Stay up to date with this dataset with RSS" id="rssLink">
+                <span class="linkIcon">Subscribe to RSS</span>
+              </a>
+            </li>
+          <%- end -%>
     	  <li>
     	    <a href="<%= "/popup/api" %>" class="socialActionLink" title="Get direct access to this dataset through our API" id="apiLink" rel="modal">
     	      <span class="linkIcon">Access via API</span>

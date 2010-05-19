@@ -565,15 +565,50 @@ blist.namespace.fetch('blist.data.types');
         return "renderDocument(" + value + ", " + (column.base ? "'" + column.base + "'" : "null") + ", " + plain + ")";
     };
 
+
+    var renderLocation = function(value, plain, addressOnly)
+    {
+        if ($.isBlank(value)) { return ''; }
+
+        var pieces = [];
+        if (!$.isBlank(value.human_address))
+        {
+            var a = $.json.deserialize(value.human_address);
+            if (!$.isBlank(a.address) && a.address !== '')
+            { pieces.push(a.address); }
+            pieces.push(_.compact([_.compact([a.city, a.state]).join(', '),
+                a.zip]).join(' '));
+        }
+
+        if (!addressOnly &&
+            (!$.isBlank(value.latitude) || !$.isBlank(value.longitude)))
+        {
+            pieces.push('(' + (value.latitude || '') + (plain ? '' : '&deg;') +
+                ', ' + (value.longitude || '') + (plain ? '' : '&deg;') + ')');
+        }
+
+        return pieces.join(plain ? ' \n' : '<br />');
+    };
+
+    var renderLocationAddress = function(value, plain)
+    {
+        return renderLocation(value, plain, true);
+    };
+
+    var renderGenLocation = function(value, plain)
+    {
+        return 'renderLocation(' + value + ', ' + plain + ')';
+    };
+
     /** FILTER RENDERERS ***/
     var renderFilterText = function(value)
     {
-        return htmlStrip(value || '');
+        return htmlStrip((value || '') + '');
     };
 
     var renderFilterEscapedText = function(value)
     {
-        return htmlEscape(htmlStrip(value || ''));
+        return htmlEscape(htmlStrip((value || '') + ''));
     };
 
     var renderFilterNumber = function(value, column)
@@ -676,6 +711,16 @@ blist.namespace.fetch('blist.data.types');
         return renderPhone(args, false, true, true);
     };
 
+    var renderFilterLocation = function(value, column, subType)
+    {
+        if (subType == 'machine_address' || subType == 'needs_recoding')
+        { return ''; }
+
+        if (subType == 'human_address')
+        { return renderLocationAddress({human_address: value}, true); }
+
+        return renderFilterText(value);
+    };
 
     /*** DATA TYPE DEFINITIONS ***/
 
@@ -882,6 +927,15 @@ blist.namespace.fetch('blist.data.types');
             isObject: true
         },
 
+        location: {
+            renderGen: renderGenLocation,
+            deleteable: true,
+            isObject: true,
+            renderAddress: renderLocationAddress,
+            filterable: true,
+            filterRender: renderFilterLocation
+        },
+
         tag: {
             renderGen: renderGenTags,
             filterRender: renderFilterText,
@@ -945,6 +999,7 @@ blist.namespace.fetch('blist.data.types');
         blist.data.types.photo.editor = $.blistEditor.photo;
         blist.data.types.photo_obsolete.editor = $.blistEditor.photo;
         blist.data.types.tag.editor = $.blistEditor.tag;
+        blist.data.types.location.editor = $.blistEditor.location;
     }
 
     for (var name in blist.data.types) {

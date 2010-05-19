@@ -161,7 +161,7 @@ columnFormatNS.renderers['date'] =
 function(column, $container)
 {
     var render = '<h3 class="separator">Display Options</h3>' +
-        '<div class="percent displayOptions"><table colspacing="0"><tbody>' +
+        '<div class="date displayOptions"><table colspacing="0"><tbody>' +
         '<tr><td class="labelColumn"><label for="columnProperties_displayView">' +
         'Date View Style:</label></td><td>' +
         '<div class="blist-combo-wrapper lr_justified format_date_view">' +

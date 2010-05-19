@@ -94,6 +94,7 @@ columnTotalsNS.renderers['richtext'] =
 columnTotalsNS.renderers['html'] =
 columnTotalsNS.renderers['checkbox'] =
 columnTotalsNS.renderers['date'] =
+columnTotalsNS.renderers['location'] =
 columnTotalsNS.renderers['tag'] =
 columnTotalsNS.renderers['picklist'] =
 columnTotalsNS.renderers['drop_down_list'] =

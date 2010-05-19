@@ -793,7 +793,7 @@ ul.convertables li a.light
 ul.convertables li a
 {
     vertical-align: bottom;
-    background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png);
+    background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png?1);
     background-repeat: no-repeat;
     padding: 0.2em;
     padding-left: 1.75em; 
@@ -842,10 +842,11 @@ ul.convertables li a:hover
 .datatype-nested_table { background-position: 0 -440px; }
 .datatype-tag { background-position: 0 -180px; }
 .datatype-picklist, .datatype-drop_down_list { background-position: 0 -400px; }
+.datatype-location { background-position: 0 -460px; }
 
 .typeSelect
 {
-    background-image:url(/stylesheets/images/common/datatypes/data_type_sprites.png);
+    background-image:url(/stylesheets/images/common/datatypes/data_type_sprites.png?1);
     background-repeat: no-repeat;
     padding:0.2em;
     padding-left: 1.75em; 
@@ -853,7 +854,7 @@ ul.convertables li a:hover
 
 #typeReadOnly
 {
-    background-image:url(/stylesheets/images/common/datatypes/data_type_sprites.png);
+    background-image:url(/stylesheets/images/common/datatypes/data_type_sprites.png?1);
     background-repeat: no-repeat;
     padding:0.2em;
     padding-left: 1.75em; 
@@ -1342,6 +1343,9 @@ dl.versionInfo dd
     width: 10.5em;
 }
 
+.filterDatasetWrapper #filterTable .type-location .lat_long
+{ display: none; }
+
 .filterDatasetWrapper #filterTable .ampersand
 {
     float: left;
@@ -1453,7 +1457,7 @@ dl.versionInfo dd
 
 .columnPickerModal ul .type
 {
-    background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png);
+    background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png?1);
     display: inline-block;
     height: 20px;
     position: relative;

@@ -1252,7 +1252,8 @@
 
         var handleHeaderHover = function(event)
         {
-            if (hotHeaderMode == 4 && hotHeaderDrag) { return false; }
+            if (hotHeaderMode == 4 && hotHeaderDrag || isDisabled)
+            { return false; }
 
             var container = findContainer(event, '.blist-tr, .blist-table-header');
             if (!container) {
@@ -1436,7 +1437,7 @@
             var $nhr = $(over).closest('.blist-tr');
             var newHotID = $nhr.length > 0 ?
                 $nhr.attr('id').substring(id.length + 2) : null;
-            if (newHotID != hotRowID)
+            if (!isDisabled && newHotID != hotRowID)
             {
                 if (hotRowID)
                 {
@@ -1514,8 +1515,9 @@
                     skipSelect = true;
                 }
 
-                if (!skipSelect && (!cellNav || !cellNav.isActive()) &&
-                    options.selectionEnabled && !(row.level < 0))
+                if (!isDisabled && !skipSelect &&
+                    (!cellNav || !cellNav.isActive()) &&
+                        options.selectionEnabled && !(row.level < 0))
                 {
                     if (origEvent.metaKey) // ctrl/cmd key
                     {
@@ -1538,6 +1540,9 @@
         var onMouseDown = function(event)
         {
             clickTarget = event.target;
+
+            if (isDisabled) { return; }
+
             clickCell = findCell(event);
             var $clickTarget = $(clickTarget);
             // IE & WebKit only detect mousedown on scrollbars, not mouseup;
@@ -1628,7 +1633,7 @@
 
             if (isEdit[DEFAULT_EDIT_MODE]) { return; }
 
-            if (hotHeaderDrag) {
+            if (!isDisabled && hotHeaderDrag) {
                 $curHeaderSelect = null;
                 origColSelects = null;
                 curColSelects = {};
@@ -1651,7 +1656,7 @@
 
             var cell = findCell(event);
             var editMode = false;
-            if (cellNav && cell !== null && cell == clickCell)
+            if (!isDisabled && cellNav && cell !== null && cell == clickCell)
             {
                 var curActiveCell = (cellNav.isActive() && $activeCells) ?
                     $activeCells[0] : null;
@@ -1674,11 +1679,13 @@
                 $(clickTarget).trigger('table_click', event);
             }
 
-            if (cellNav && !editMode) { expandActiveCell(); }
+            if (!isDisabled && cellNav && !editMode) { expandActiveCell(); }
         };
 
         var onDoubleClick = function(event)
         {
+            if (isDisabled) { return; }
+
             if (isEdit[DEFAULT_EDIT_MODE] &&
                 $(event.target).parents().andSelf()
                     .index($editContainers[DEFAULT_EDIT_MODE]) >= 0)
@@ -3178,6 +3185,8 @@
 
         var columnHeaderClick = function(event, $target)
         {
+            if (isDisabled) { return; }
+
             var col = $target.closest('.blist-th').data('column');
             if (col === undefined || col === null) { return; }
 
@@ -3318,6 +3327,8 @@
                         })
                         .bind('click', function(event)
                         {
+                            if (isDisabled) { return; }
+
                             if (skipHeaderClick)
                             {
                                 skipHeaderClick = false;
@@ -3418,6 +3429,9 @@
                                 // is very expensive (~1s. w/ 28 headers on IE8)
                                 initializeInteractions();
                             }
+
+                            if (isDisabled) { return; }
+
                             if (!hotHeaderDrag || hotHeaderMode != 4)
                             {
                                 $(this).addClass('hover');
@@ -3959,6 +3973,58 @@
             updateLayout();
         };
 
+        var setUpColumnChoose = function(types, callback)
+        {
+            $outside.css('cursor', 'crosshair');
+
+            $lockedScrolls.append('<div class="disabled-overlay"></div>');
+            var rightPos = 0;
+            _.each(columns, function(c)
+            {
+                var $c = $(c.dom);
+                var left = $c.position().left;
+                var divClass = 'disabled-overlay';
+                if (_.include(types, c.type))
+                { divClass = 'select-overlay'; }
+
+                var $h = $('<div class="' + divClass + ' col-' + c.id + '"></div>')
+                    .width($c.outerWidth())
+                    .css('left', left)
+                    .hover(
+                        function()
+                        { $h.add($f).add($m).addClass('overlay-hover'); },
+                        function()
+                        { $h.add($f).add($m).removeClass('overlay-hover'); }
+                    );
+
+                if (_.include(types, c.type))
+                {
+                    $h.click(function()
+                    { if (_.isFunction(callback)) { callback(c); } });
+                }
+
+                var $f = $h.clone(true);
+                var $m = $h.clone(true).css('left', left + lockedWidth);
+                $header.append($h);
+                $footer.append($f);
+                inside.append($m);
+
+                rightPos = $c.outerWidth() + $c.position().left;
+            });
+            var $or = $('<div class="disabled-overlay"></div>')
+                .width($header.width() - rightPos).css('left', rightPos);
+            $header.append($or);
+            $footer.append($or.clone());
+            inside.append($or.clone().css('left', rightPos + lockedWidth)
+                .width($or.width() - lockedWidth));
+        };
+
+        var finishColumnChoose = function()
+        {
+            $outside.css('cursor', 'auto');
+            $outside.find('.disabled-overlay, .select-overlay').remove();
+        };
+
 
         /*** MODEL ***/
 
@@ -4009,11 +4075,37 @@
         updateLayout();
 
         var table = this;
+        var isDisabled = false;
         var blistTableObj = function()
         {
             this.getSelectedColumns = function()
             {
                 return cellNav ? cellNav.getSelectedColumns() : {};
+            };
+
+            this.disable = function()
+            {
+                isDisabled = true;
+                $this.addClass('disabled');
+                clearCellNav();
+            };
+
+            this.enable = function()
+            {
+                isDisabled = false;
+                $this.removeClass('disabled');
+                finishColumnChoose();
+            };
+
+            this.enterColumnChoose = function(types, callback)
+            {
+                if (!_.isArray(types)) { types = [types]; }
+                setUpColumnChoose(types, callback);
+            };
+
+            this.exitColumnChoose = function()
+            {
+                finishColumnChoose();
             };
         };
 

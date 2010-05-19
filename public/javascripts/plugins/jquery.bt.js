@@ -77,13 +77,19 @@ jQuery.bt = {version: '0.9.5-rc1'};
   
   jQuery.fn.bt = function(content, options) {
   
-    if (typeof content != 'string') {
-      var contentSelect = true;
-      options = content;
-      content = false;
-    }
-    else {
-      var contentSelect = false;
+    var contentSelect = false;
+    if (typeof content != 'string')
+    {
+        options = content;
+        if (options.content)
+        {
+            content = options.content;
+        }
+        else
+        {
+            contentSelect = true;
+            content = false;
+        }
     }
     
     // if hoverIntent is installed, use that as default instead of hover
@@ -1167,6 +1173,7 @@ jQuery.bt = {version: '0.9.5-rc1'};
                                                  
     activeClass:      'bt-active',           // class added to TARGET element when its BeautyTip is active
   
+    content: null,                           // option to pass in an object for the content
     contentSelector:  "$(this).attr('title')", // if there is no content argument, use this selector to retrieve the title
                                              // a function which returns the content may also be passed here
   

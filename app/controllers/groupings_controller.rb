@@ -49,7 +49,8 @@ class GroupingsController < ApplicationController
       next if c.is_nested_table || c.client_type == 'tag' ||
         c.client_type == 'document_obsolete' || c.client_type == 'photo_obsolete' ||
         c.client_type == 'document' || c.client_type == 'photo' ||
-        c.client_type == 'phone' || c.client_type == 'picklist'
+        c.client_type == 'phone' || c.client_type == 'picklist' ||
+        c.client_type == 'location'
 
       if aggedIds[c.id.to_s].nil?
         @unagged << c

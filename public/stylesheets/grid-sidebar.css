@@ -1,0 +1,195 @@
+
+#gridSidebar
+{
+    background-color: #ffffff;
+    border-left: 2px solid #999999;
+    display: none;
+    float: right;
+    overflow: hidden;
+    position: relative;
+    width: 30em;
+}
+
+#gridSidebarOverlay
+{
+    background-color: #000000;
+    filter: alpha(opacity=50);
+    opacity: 0.5;
+    height: 100%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 50;
+}
+
+#gridSidebar .hidden { display: none; }
+
+#gridSidebar .close
+{
+    background-image: url(/stylesheets/images/content/section_close_button.png);
+    background-repeat: no-repeat;
+    display: block;
+    height: 16px;
+    position: absolute;
+    line-height: 100px;
+    overflow: hidden;
+    right: 20px;
+    top: 2px;
+    width: 16px;
+    z-index: 70;
+}
+
+#gridSidebar .sidebarPane
+{
+    overflow: auto;
+    padding: 0.75em;
+}
+
+#gridSidebar .paneOverlay
+{
+    background-color: #cccccc;
+    height: 100%;
+    left: 0;
+    filter: alpha(opacity=30);
+    opacity: 0.3;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 60;
+}
+
+#gridSidebar .sidebarPane.initialLoad .section
+{
+    filter: alpha(opacity=30);
+    opacity: 0.3;
+}
+
+#gridSidebar .titleBlock
+{
+    border-bottom: 1px solid #cccccc;
+    margin-bottom: 1em;
+    padding-bottom: 0.5em;
+}
+
+#gridSidebar .titleBlock .title
+{
+    font-size: 1.3em;
+    font-weight: normal;
+    margin-bottom: 0.3em;
+}
+
+#gridSidebar .titleBlock .subtitle
+{
+    color: #999999;
+    font-size: 1.1em;
+}
+
+#gridSidebar .section
+{
+    border-bottom: 1px solid #cccccc;
+    margin-bottom: 1em;
+    padding-bottom: 0.5em;
+}
+
+#gridSidebar .section .title
+{
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 0.3em;
+}
+
+#gridSidebar .section .line { margin: 0.5em 0; }
+#gridSidebar .section .line label
+{
+    display: inline-block;
+    font-size: 1.2em;
+    font-weight: bold;
+    line-height: 1.75em;
+    text-align: right;
+    vertical-align: top;
+    width: 5.5em;
+}
+
+#gridSidebar .section .line textarea,
+#gridSidebar .section .line select,
+#gridSidebar .section .line input,
+#gridSidebar .section .line .radioBlock
+{
+    display: inline-block;
+    font-size: 1.2em;
+    margin-bottom: 0;
+    vertical-align: top;
+    width: 13em;
+}
+#gridSidebar .section .line.radioGroup { background-color: #ececec; }
+#gridSidebar .section .line .radioBlock { width: 13.5833em; }
+#gridSidebar .section .line input[type="radio"]
+{
+    display: inline-block;
+    margin-left: 0;
+    margin-right: 0.5em;
+    width: auto;
+}
+
+#gridSidebar .section .line span.error
+{
+    color: #ff0000;
+    display: block;
+    line-height: 1.7em;
+    margin-left: 6.3em;
+    padding-left: 15px;
+}
+
+#gridSidebar .section .line .columnSelector
+{
+    background: transparent url(/stylesheets/images/controls/column_select_sprite.png) no-repeat 0 0;
+    display: inline-block;
+    height: 20px;
+    margin-right: 0.5em;
+    overflow: hidden;
+    position: relative;
+    text-indent: -9999px;
+    width: 20px;
+}
+#gridSidebar .section .line .columnSelector.inProcess
+{
+    background-position: 0 -20px;
+    z-index: 70;
+}
+
+#gridSidebar .section .line.columnSelect select { width: 11.3em; }
+
+#gridSidebar .section .line .radioBlock label
+{
+    display: inline-block;
+    font-size: 1em;
+    font-weight: normal;
+    padding-right: 0;
+    text-align: left;
+    width: auto;
+}
+
+#gridSidebar .section .line .radioBlock label select,
+#gridSidebar .section .line .radioBlock label input
+{
+    font-size: 1em;
+    width: 10.75em;
+}
+#gridSidebar .section .line .radioBlock .columnSelect label select { width: 9em; }
+
+#gridSidebar .section .line .radioBlock label span.error
+{
+    font-size: 0.8333em;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+#gridSidebar .section.collapsed .title { color: #999999; }
+#gridSidebar .section.collapsed .sectionContent { display: none; }
+
+#gridSidebar .finishButtons
+{
+    margin-left: -1em;
+    margin-top: 0.75em;
+}

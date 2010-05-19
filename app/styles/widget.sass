@@ -263,6 +263,13 @@ html, body
     .ie7 &
       position: relative
 
+    .commentsViewMoreLink
+      display: block
+      font-size: 1.2em
+      font-weight: bold
+      padding: 2em
+      text-align: center
+
     .commentsWrapper
       margin-right: 4em
       padding: 1em
@@ -282,6 +289,14 @@ html, body
           margin-left: 55px
           padding: 1em
           position: relative
+
+          .commentTip
+            background: transparent url(/stylesheets/images/interface/comment_tip.png) no-repeat
+            height: 10px
+            left: -10px
+            position: absolute
+            top: 1em
+            width: 10px
 
           .commentBody, .replyBody
             font-size: 1.1em
@@ -310,6 +325,8 @@ html, body
               margin-left: 1em
 
           .replyWrapper
+            margin-top: 1em
+
             .replyList
               border-top: 1px solid #ddd
 
@@ -493,6 +510,10 @@ div.blist-th
 .blist-table .blist-combo-dd li
   font-size= !grid_font_data_size
   line-height: 16px
+
+.blist-table .blist-tr .blist-table-row-numbers
+  height: 16px
+  padding: 4px
 
 img.blist-table-option-icon
   padding-right: 4px

@@ -740,6 +740,28 @@
                 { $(e.currentTarget).hide(); }
             },
 
+            /* Disables all normal interactions other than scrolling and hover
+             * (view-only for data) */
+            disable: function()
+            {
+                var datasetObj = this;
+                if (datasetObj._disabled) { return; }
+                datasetObj._disabled = true;
+
+                datasetObj.$dom().blistTableAccessor().disable();
+            },
+
+            /* This re-enables the grid interactions */
+            enable: function()
+            {
+                var datasetObj = this;
+                if (!datasetObj._disabled) { return; }
+
+                datasetObj.$dom().blistTableAccessor().enable();
+
+                delete datasetObj._disabled;
+            },
+
             // This keeps track of when the column summary data is stale and
             // needs to be refreshed
             summaryStale: true,

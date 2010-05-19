@@ -96,6 +96,9 @@ blist.common.modalReady = function()
       // {id: "photo_obsolete", label: "Photo (Image, old)"},
       {id: 'drop_down_list', label: 'Multiple Choice'}
   ];
+  <%- if module_available?(:location_launch) -%>
+  typeValues.splice(6, 0, {id: "location", label: "Location (Address)"});
+  <%- end -%>
   <%- if @parent.nil? -%>
   typeValues.push({id: "nested_table", label: "Nested Table"});
   <%- end -%>
@@ -145,6 +148,17 @@ blist.common.modalReady = function()
 
       updateColumn();
 
+      if (column.type == 'location' && <%= @parent.nil? %>)
+      {
+          $('#gridSidebar').gridSidebar()
+            .addPane($.gridSidebarConfig.locationCreate,
+                {columnName: column.name, columnDescription: column.description,
+                  columnType: column.type});
+          $('#gridSidebar').gridSidebar().show('locationCreate', true);
+          $("#modal").jqmHide();
+          return;
+      }
+
       $.ajax({
         type: "POST",
         url: '<%= blist_columns_url(@view_id) %><%= @parent.nil? ?
@@ -169,7 +183,7 @@ blist.common.modalReady = function()
             }
             $(document).trigger(blist.events.COLUMNS_CHANGED, [responseData.id]);
             $.Tache.DeleteAll();
-            $("#modal .jqmClose").click();
+            $("#modal").jqmHide();
         }
       });
   };

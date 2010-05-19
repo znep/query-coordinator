@@ -12,7 +12,7 @@
        Examples:
          $.tag({ tagName: 'div',
                  class: [ 'item',
-                          { this: 'selected', if: $this.isSelected() } ],
+                          { value: 'selected', onlyIf: $this.isSelected() } ],
                  id: 'item' + _.getUid(),
                  contents: [
                      { tagName: 'span',
@@ -25,9 +25,9 @@
                  type: 'text',
                  class: 'required',
                  disabled: form.isDisabled(),
-                 value: { this: 'Hello there', if: someCondition() },
+                 value: { value: 'Hello there', onlyIf: someCondition() },
                  style: { border: '1px solid red',
-                          display: { this: 'none', if: form.hasClass('something') } }
+                          display: { value: 'none', onlyIf: form.hasClass('something') } }
          });
     */
     $.tag = function(attrs, keepAsString)
@@ -83,7 +83,7 @@
         {
             result += '/>';
         }
-        else if (!_.isUndefined(attrs.contents))
+        else if (!$.isBlank(attrs.contents))
         {
             result += '>';
 
@@ -96,7 +96,7 @@
             // strips 0.
             result += _.reject(_.map(children, function(child)
             {
-                if (!_.isUndefined(child.tagName))
+                if (!$.isBlank(child.tagName))
                 { child = $.tag(child, true); }
 
                 return child;
@@ -121,10 +121,10 @@
     {
         if (elem === null || _.isUndefined(elem) || elem === '')
         { return false; }
-        else if (!_.isUndefined(elem['if']))
+        else if (!_.isUndefined(elem.onlyIf))
         {
-            if (elem['if'] === true)
-            { return elem['this']; }
+            if (elem.onlyIf === true)
+            { return elem.value; }
             else
             { return false; }
         }

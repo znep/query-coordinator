@@ -20,3 +20,5 @@ ul.menu.checkboxMenu li.separator
 
 #filterViewMenu, #filterViewMenu ul.menu, #lensBody .columnTotals > ul.menu
 { width: 20em; }
+
+.bt-wrapper .bt-content .actionButtons li { display: inline; }

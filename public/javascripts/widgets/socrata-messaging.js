@@ -29,9 +29,11 @@
     {
         defaults:
         {
+            closeOnClick: true,
+            killTitle: false,
             isSolo: false,
             message: null,
-            parent: null,
+            parent: 'body',
             positions: null,
             shrinkToFit: true,
             trigger: 'now'
@@ -51,8 +53,9 @@
                 if (_.isNull(pos)) { pos = ['bottom', 'top']; }
                 else if (pos == 'auto') { pos = ['most']; }
 
-                $domObj.bt(sTipObj.settings.message,
-                    {
+                $domObj.bt({
+                        content: sTipObj.settings.message,
+
                         fill: '#fefbef',
                         strokeStyle: '#999999',
                         cornerRadius: 3,
@@ -65,11 +68,13 @@
                         shadowColor: 'rgba(0, 0, 0, 0.3)',
                         noShadowOpts: {strokeWidth: 2},
 
+                        clickAnywhereToClose: sTipObj.settings.closeOnClick,
                         closeWhenOthersOpen: sTipObj.settings.isSolo,
                         shrinkToFit: sTipObj.settings.shrinkToFit,
                         trigger: sTipObj.settings.trigger,
                         positions: pos,
                         offsetParent: sTipObj.settings.parent,
+                        killTitle: sTipObj.settings.killTitle,
 
                         showTip: function(box)
                             {
@@ -106,6 +111,19 @@
                 { this.$dom().btOff(); }
             },
 
+            /* These are used to temporarily hide/show the tooltip without fully
+             * destroying it.  Visibility is used so we can continue tracking
+             * the position */
+            quickHide: function()
+            {
+                $getTipBox(this).css('visibility', 'hidden');
+            },
+
+            quickShow: function()
+            {
+                $getTipBox(this).css('visibility', 'visible');
+            },
+
             disable: function()
             {
                 this._disabled = true;
@@ -114,10 +132,59 @@
             enable: function()
             {
                 this._disabled = false;
+            },
+
+            destroy: function()
+            {
+                this.hide();
+                this.disable();
+                this.$dom().removeData('socrataTip');
+            },
+
+            /* This is used to manually move a tooltip (for example, when
+             * attached to something that scrolls) */
+            adjustPosition: function(adjAmt)
+            {
+                var sTipObj = this;
+                if (sTipObj._disabled || !sTipObj._visible) { return; }
+
+                var $tip = $getTipBox(sTipObj);
+
+                if (!$.isBlank(adjAmt.top))
+                { $tip.css('top', $tip.position().top + adjAmt.top); }
+                if (!$.isBlank(adjAmt.left))
+                { $tip.css('left', $tip.position().left + adjAmt.left); }
+            },
+
+            /* This is used to figure out which side of the item the tip is
+             * attached to */
+            getTipPosition: function()
+            {
+                var sTipObj = this;
+                if (!sTipObj._visible) { return null; }
+
+                var $tip = $getTipBox(sTipObj).find('.bt-content');
+
+                // HACK: This is a terrible hack; but the direction of the tip
+                // isn't really stored anywhere...
+                var pos = null;
+                if (parseInt($tip.css('margin-bottom')) > 0) { pos = 'top'; }
+                else if (parseInt($tip.css('margin-top')) > 0) { pos = 'bottom'; }
+                else if (parseInt($tip.css('margin-right')) > 0) { pos = 'left'; }
+                else if (parseInt($tip.css('margin-left')) > 0) { pos = 'right'; }
+
+                return pos;
             }
         }
     });
 
+    var $getTipBox = function(sTipObj)
+    {
+        // This is kind of a hack, since it relies on the internals
+        //  of BT.  However, this is the most robust way to get the
+        //  tip associated with this item
+        return $(sTipObj.$dom().data('bt-box'));
+    };
 
     $.fn.socrataAlert = function(options)
     {

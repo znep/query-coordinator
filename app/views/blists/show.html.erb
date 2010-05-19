@@ -1,5 +1,6 @@
 <% content_for :head do %>
   <%= auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss") %>
+  <%= rendered_stylesheet_tag 'grid' %>
   <%= stylesheet_link_merged 'blists-show' %>
   <%= raw @display.render_stylesheet_includes %>
 
@@ -303,6 +304,9 @@
                     <li><%= get_add_column("Phone", @view.id, "phone") %></li>
                     <li><%= get_add_column("Email", @view.id, "email") %></li>
                     <li><%= get_add_column("Website URL", @view.id, "url") %></li>
+                    <%- if module_available?(:location_launch) -%>
+                    <li><%= get_add_column('Location', @view.id, 'location') %></li>
+                    <%- end -%>
                 </ul>
               </li>
               <li class='column'>
@@ -370,6 +374,10 @@
           <%= render(:partial => @display.render_partial) %>
         </div>
 
+        <div id='gridSidebar'>
+          <a class='close' href='#cancel'>Cancel</a>
+        </div>
+
       </div>
     </div>
   </div>
@@ -421,6 +429,10 @@
     </div>
   </div>
 </div>
+
+<% content_for :templates do %>
+<%= render(:partial => 'grid_sidebar_templates') %>
+<% end %>
 
 <% content_for :js_footer do %>
   <div class="jqmWindow" id="columnPropertiesModal"></div>

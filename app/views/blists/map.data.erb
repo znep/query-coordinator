@@ -51,18 +51,49 @@
         <div class='section'>
           <h3>Coordinates</h3>
           <p class='subtitle separator'>
+          <%- if module_available?(:location_launch) -%>
+          Choose the data to map.  You must choose a location column.
+          <%- else -%>
           Choose the data to map.  You must choose two
           columns that correspond to global latitude and longitude.
+          <%- end -%>
           </p>
 
-          <%- cols['number'] =
-                  @view.columns_for_datatypes('number',
-                    @is_edit && !@view.is_grouped?) -%>
           <%- uses_col_format = !@view.displayFormat.nil? &&
             (!@view.displayFormat.data['plot'].nil? ||
               !@view.displayFormat.latitudeId.nil?) -%>
           <%- col_format = uses_col_format ?
             @view.displayFormat.data['plot'] || @view.displayFormat.data : nil -%>
+
+          <%- cols['location'] =
+                  @view.columns_for_datatypes('location',
+                    @is_edit && !@view.is_grouped?) -%>
+
+          <%- if module_available?(:location_launch) -%>
+
+          <%- loc_id = @is_edit && uses_col_format ?
+                col_format['locationId'] : nil -%>
+
+          <div class='line'>
+            <label class='required' for='mapColumn_location'>
+              Location
+            </label>
+            <select id='mapColumn_location' name='mapColumn_location'
+              class='required <%= loc_id.nil? ? 'prompt' : '' %>'>
+              <option class='prompt' value=''>Select a Column</option>
+              <%- cols['location'].each do |c| -%>
+              <option value='<%= c.tableColumnId %>'
+                <%= c.tableColumnId.to_s == loc_id ?
+                  "selected='selected'" : '' %>><%= c.name %></option>
+              <%- end -%>
+            </select>
+          </div>
+
+          <%- else -%>
+
+          <%- cols['number'] =
+                  @view.columns_for_datatypes('number',
+                    @is_edit && !@view.is_grouped?) -%>
 
           <%- lat_id = @is_edit && uses_col_format ?
             col_format['latitudeId'] : nil -%>
@@ -88,7 +119,6 @@
             </select>
           </div>
 
-
           <%- long_id = @is_edit && uses_col_format ?
             col_format['longitudeId'] : nil -%>
           <%- cur_id = @is_edit && uses_col_format ?
@@ -112,6 +142,9 @@
               <%- end -%>
             </select>
           </div>
+
+          <%- end -%>
+
         </div>
 
 
@@ -135,10 +168,12 @@
               class='<%= title_id.nil? && cur_id.nil? ? 'prompt' : '' %>'>
               <option class='prompt' value=''>Select a Column</option>
               <%- @view.columns_for_datatypes('text',
-                    @is_edit && !@view.is_grouped?).each do |c| -%>
+                    @is_edit && !@view.is_grouped?).concat(cols['location']).
+                      each do |c| -%>
                 <option value='<%= c.tableColumnId %>'
                   <%= c.tableColumnId.to_s == title_id || c.id == cur_id ?
-                  "selected='selected'" : '' %>><%= c.name %></option>
+                  "selected='selected'" : '' %>><%= c.name %>
+                  <%= '(address)' if c.renderTypeName == 'location' %></option>
               <%- end -%>
             </select>
             <span class="helpie"
@@ -163,10 +198,12 @@
               class='<%= desc_id.nil? && cur_id.nil? ? 'prompt' : '' %>'>
               <option class='prompt' value=''>Select a Column</option>
               <%- @view.columns_for_datatypes(data_types,
-                    @is_edit && !@view.is_grouped?).each do |c| -%>
+                    @is_edit && !@view.is_grouped?).concat(cols['location']).
+                      each do |c| -%>
                 <option value='<%= c.tableColumnId %>'
                   <%= c.tableColumnId.to_s == desc_id || c.id == cur_id ?
-                  "selected='selected'" : '' %>><%= c.name %></option>
+                  "selected='selected'" : '' %>><%= c.name %>
+                  <%= '(address)' if c.renderTypeName == 'location' %></option>
               <%- end -%>
             </select>
             <span class="helpie"
@@ -271,6 +308,7 @@
 <script type="text/javascript" charset="utf-8">
   blist.common.modalReady = function()
   {
+    <%- if !module_available?(:location_launch) -%>
     $.validator.addMethod('notEqualTo', function(value, element, param)
         {
             if (this.optional(element)) { return true; }
@@ -288,6 +326,7 @@
             return !isEqual;
         },
         'A different value is required.');
+    <%- end -%>
     $('.mapWrapper form').validate({ignore: ':hidden', errorElement: 'span'});
 
     var adjustSelectPrompt = function(event)
@@ -387,8 +426,12 @@
 
       var newType = $('.mapWrapper #mapType').val();
       var options = {plot: {}, type: newType};
+      <%- if module_available?(:location_launch) -%>
+      options.plot.locationId = $('.mapWrapper #mapColumn_location').val();
+      <%- else -%>
       options.plot.latitudeId = $('.mapWrapper #mapColumn_latitude').val();
       options.plot.longitudeId = $('.mapWrapper #mapColumn_longitude').val();
+      <%- end -%>
       var titleId = $('.mapWrapper #mapColumn_title').val();
       if (titleId !== '') { options.plot.titleId = titleId; }
       var descId = $('.mapWrapper #mapColumn_description').val();
@@ -410,10 +453,26 @@
         vizType: 'map', options: $.json.serialize(options),
         view_query: $('.mapWrapper #view_query').val()};
 
+      var loginMsg = 'You must be signed in to create a map';
+      if (!$.isBlank(blist.util.inlineLogin))
+      {
+          blist.util.inlineLogin.verifyUser(
+              function(isSuccess)
+              {
+                if (isSuccess) { doSave($form, data, options); }
+                else { $('.mapWrapper .mainError').text(loginMsg); }
+              }, loginMsg);
+      }
+      else { doSave($form, data, options); }
+    };
+
+    var doSave = function($form, postData, newDisplayFormat)
+    {
+
       $.ajax({
           url: $form.attr("action"),
           type: "POST",
-          data: data,
+          data: postData,
           dataType: "json",
           success: function(data)
           {
@@ -425,9 +484,11 @@
             {
               $("#modal").jqmHide();
               <%- if @is_edit -%>
-              if ('<%= cur_type %>' != newType || layersChanged)
+              if ('<%= cur_type %>' != $('.mapWrapper #mapType').val()
+                || layersChanged)
               {
-                  blist.$display.socrataMap().reset({displayFormat: options});
+                  blist.$display.socrataMap()
+                    .reset({displayFormat: newDisplayFormat});
               }
               else
               {

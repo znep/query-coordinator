@@ -137,6 +137,21 @@
       var $form = $('.calendarWrapper form');
       if (!$form.valid()) { return; }
 
+      var loginMsg = 'You must be signed in to create a calendar view';
+      if (!$.isBlank(blist.util.inlineLogin))
+      {
+          blist.util.inlineLogin.verifyUser(
+              function(isSuccess)
+              {
+                if (isSuccess) { doSave($form); }
+                else { $('.calendarWrapper .mainError').text(loginMsg); }
+              }, loginMsg);
+      }
+      else { doSave($form); }
+    };
+
+    var doSave = function($form)
+    {
       $.ajax({
           url: $form.attr("action"),
           type: "POST",

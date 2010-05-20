@@ -700,6 +700,8 @@ $(function ()
 
     // Wire up attribution edit box
     $('.attributionEdit').attributionEdit();
+    
+    $('.attachmentsEdit').attachmentsEdit();
 
     blistGridNS.hookUpCreateViewMenu();
 

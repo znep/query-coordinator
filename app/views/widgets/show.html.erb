@@ -265,7 +265,7 @@
 
             <%- if @view.can_read -%>
             <% cache ['widget-bare-html', @view.id], :expires_in => 1.hour do %>
-              <%= @view.html %>
+              <%= raw @view.html.dup %>
             <% end %>
             <%- end -%>
           </noscript>

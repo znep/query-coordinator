@@ -159,7 +159,7 @@ span.fieldValue
     text-transform: uppercase;
 }
 
-.editGeneralForm, .attributionEdit
+.editGeneralForm, .attributionEdit, .attachmentsEdit
 {
     position: relative;
 }
@@ -256,6 +256,33 @@ span.helpie
     text-indent: -9999px;
     width: 16px;
 }
+
+.aboutBody .attachmentsSummary .attachmentItem a
+{
+    padding-left: 1.7em;
+}
+.aboutBody .attachmentsSummary li
+{
+    font-size: 1.2em;
+    line-height: 1.6em;
+}
+.aboutBody .attachmentsSummary 
+{
+    margin-bottom: 2em;
+}
+
+.aboutBody .uploadNewAttachment
+{
+    margin-top: 0.5em;
+}
+
+.aboutBody .attachmentsEdit .deleteAttachmentLink
+{
+    background-position: 0 0;
+    height: 1.2em;
+}
+
+.attachmentsEdit .closeAttachmentsLink { display: none; }
 
 /*** END: content ***/
 

@@ -25,6 +25,8 @@
                 mapObj.map.SetCredentials('AnhhVZN-sNvmtzrcM7JpQ_vfUeVN9AJNb-5v6dtt-LzCg7WEVOEdgm25BY_QaSiO');
                 mapObj.map.LoadMap();
 
+                mapObj.resizeHandle();
+
                 mapObj._shapeLayer = new VEShapeLayer();
                 mapObj.map.AddShapeLayer(mapObj._shapeLayer);
             },
@@ -77,6 +79,16 @@
                 mapObj.map.DeleteAllShapeLayers();
                 mapObj._shapeLayer = new VEShapeLayer();
                 mapObj.map.AddShapeLayer(mapObj._shapeLayer);
+            },
+
+            resizeHandle: function()
+            {
+                var mapObj = this;
+                var $par = mapObj.$dom().parent();
+                var sibH = 0;
+                mapObj.$dom().siblings(':visible').each(function()
+                { sibH += $(this).height(); });
+                mapObj.map.Resize($par.width(), $par.height() - sibH);
             }
         }
     }));

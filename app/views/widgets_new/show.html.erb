@@ -46,7 +46,7 @@
 
                 <%- if @view.can_read -%>
                   <% cache ['widget-bare-html', @view.id], :expires_in => 1.hour do %>
-                    <%= @view.html %>
+                    <%= raw @view.html.dup %>
                   <% end %>
                 <%- end -%>
               </noscript>
@@ -81,6 +81,10 @@
     </div>
     <div class="widgetContent_comments">
       <a href="#close" class="close widgetContentClose">Close</a>
+      <div class="commentTopLevelActions clearfix">
+        <a href="#comment" class="button addCommentButton">Comment</a>
+        <div class="starsControl datasetAverageRating"></div>
+      </div>
       <div class="commentsWrapper"></div>
       <a href="#more" class="commentsViewMoreLink"></a>
     </div>

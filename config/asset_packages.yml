@@ -85,14 +85,17 @@ javascripts:
   - screens/admin-users-screen
 - blists-about:
   - util/urls
+  - plugins/ajaxupload.3.0
   - screens/blist-about-screen
   - screens/attribution-edit
+  - screens/metadata-edit
   - widgets/dropdown-menu
 - blists-index:
   - plugins/jquery.tablesorter
   - plugins/jquery.jqote.min
   - plugins/ui.core
   - plugins/ui.draggable
+  - plugins/ajaxupload.3.0
   - util/humane-date
   - util/urls
   - plugins/date
@@ -113,6 +116,7 @@ javascripts:
   - screens/info-pane
   - screens/meta-tabs
   - screens/attribution-edit
+  - screens/metadata-edit
   - widgets/combo
   - widgets/values
 - blists-new:
@@ -135,6 +139,7 @@ javascripts:
   - plugins/ui.resizable
   - plugins/ui.slider
   - plugins/ui.spinner
+  - plugins/ajaxupload.3.0
   - util/extMouseWheel
   - util/navigation
   - util/inline-login
@@ -163,6 +168,7 @@ javascripts:
   - screens/info-pane
   - screens/meta-tabs
   - screens/attribution-edit
+  - screens/metadata-edit
   - screens/blist-grid-screen
   - screens/signup-screen
   - widgets/combo
@@ -276,6 +282,7 @@ javascripts:
   - data/model
   - data/table
   - data/table_nav
+  - controls/stars
   - widgets/text-prompt
   - widgets/dropdown-menu
   - widgets/menu
@@ -285,7 +292,11 @@ javascripts:
   - widgets/dataset-grid
   - widgets/visualization
   - screens/external-widget-new
-
+- widgets-show-new-form:
+  - util/util
+  - util/compat
+  - util/markup
+  - plugins/jquery.uniform
 
 
 

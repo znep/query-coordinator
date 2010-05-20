@@ -600,7 +600,8 @@
 {
     color: red;
 }
-.infoContentOuter.listContainer .infoContent .attributionEdit .closeAttributionLink
+.infoContentOuter.listContainer .infoContent .attributionEdit .closeAttributionLink,
+.infoContentOuter.listContainer .infoContent .attachmentsEdit .closeAttachmentsLink
 {
     background-image: url(/images/cancel_button_mini.png);
     display: block;
@@ -609,6 +610,35 @@
     margin-top: 2px;
     text-indent: -9999px;
     width: 18px;
+}
+.attachmentsEdit .deleteAttachmentLink
+{
+    background-image: url(/stylesheets/images/common/delete.png);
+    background-position: 0 center;
+    background-repeat: no-repeat;
+    display: inline-block;
+    height: 20px;
+    text-indent: -9999px;
+    width: 15px;
+}
+.attachmentsEdit .uploadingIndicator
+{
+    background-image: url(/images/throbber.gif);
+    background-position: center center;
+    display: inline-block;
+    height: 16px;
+    position: relative;
+    top: 3px;
+    width: 16px;
+}
+.attachmentsEdit .attachmentErrorMessage
+{
+    color: red;
+}
+
+.attachmentsEdit .hide
+{
+    display: none;
 }
 
 /*** START: grid list table ***/
@@ -658,7 +688,7 @@
     line-height: 27px;
     margin: 0 auto;
 }
-infoContentOuter table.gridList td.picture .cellInner
+.infoContentOuter table.gridList td.picture .cellInner
 {
     height: 24px;
     line-height: 24px;
@@ -682,6 +712,19 @@ infoContentOuter table.gridList td.picture .cellInner
     font-weight: bold;
     position: relative;
     width: 60%;
+}
+
+.singleInfoSummary .attachmentsSummary .attachmentItem,
+.aboutBody .attachmentsSummary .attachmentItem
+{
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?7);
+    background-position: -5px -117px;
+    background-repeat: no-repeat;
+}
+
+.singleInfoSummary .attachmentsSummary .attachmentItem a
+{
+    padding-left: 1.7em;
 }
 
 /*** END: single info summary tab ***/

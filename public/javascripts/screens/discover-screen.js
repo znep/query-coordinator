@@ -245,7 +245,7 @@ $(function ()
         $("#tagCloud").jqmHide();
     });
 
-    $("#discover form").submit(discoverNS.searchSubmitHandler)
+    $("#discover form.large").submit(discoverNS.searchSubmitHandler)
         .validate(
         {
             rules:
@@ -260,12 +260,13 @@ $(function ()
             wrapper: "div",
             errorPlacement: function(error, element)
             {
-                offset = element.offset();
-                error.insertBefore(element)
-                error.addClass('errorMessage');
-                error.css('position', 'absolute');
-                error.css('left', offset.left);
-                error.css('top', offset.top + element.outerHeight());
+                var $searchContainer = $('.searchContainer');
+                var paddingLeft = parseInt($searchContainer.css('paddingLeft').replace('px', ''));
+                error.addClass('errorMessage')
+                    .css('position', 'absolute')
+                    .css('paddingLeft', paddingLeft)
+                    .css('width', $searchContainer.outerWidth() - paddingLeft);
+                $("#discover form.large").append(error);
             }
         });
 

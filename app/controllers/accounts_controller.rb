@@ -69,7 +69,7 @@ class AccountsController < ApplicationController
       else
         flash.now[:error] = @signup.errors.join(", ")
         format.html { render :action => :new }
-        format.json { render :json => {:error => flash[:error], :promptLogin => true}, :callback => params[:callback] }
+        format.json { render :json => {:error => flash[:error], :promptLogin => false}, :callback => params[:callback] }
       end
     end
   end

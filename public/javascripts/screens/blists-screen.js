@@ -479,6 +479,9 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
     // Wire up attribution edit box
     $('.attributionEdit').attributionEdit();
 
+    // Wire up attachment editing/uploading
+    $('.attachmentsEdit').attachmentsEdit();
+
     // Creative Commons cascading dropdown
     if ($("#view_licenseId").val() == "CC")
     {

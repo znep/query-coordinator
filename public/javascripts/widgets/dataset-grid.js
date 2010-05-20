@@ -396,9 +396,27 @@
                     datasetObj.settings.currentUserId == view.owner.id;
                 var isGrouping = grouped instanceof Array && grouped.length > 0;
                 var wasGrouped = model.isGrouped();
+                var metadata = view.metadata || {};
 
                 var newCols = [];
                 var usedCols = {};
+
+                // Keep track of the parent columns for drill down usage
+                if (drillDown)
+                {
+                    $.extend(metadata, {
+                        // Map out the dataIndex field as it chokes the C.S.
+                        parentTableColumns: _.map(
+                            _.select(view.columns, function(col)
+                                {
+                                    return col.dataTypeName !== 'meta_data' && 
+                                        (_.isUndefined(col.flags) || !_.include(col.flags, 'hidden'))
+                                }),
+                            function(col)
+                            { return $.extend({}, col, {dataIndex: null}); })
+                    });
+                }
+
                 if (isGrouping)
                 {
                     model.group(grouped);
@@ -446,6 +464,7 @@
                 { model.meta().view.columns = newCols; }
 
                 view = model.getViewCopy(isGrouping || wasGrouped);
+                view.metadata = metadata;
 
                 if (isNew) { view = $.extend(view, {name: newName}); }
 
@@ -610,6 +629,10 @@
                 else
                 {
                     var currentColumns, parentColumns;
+                    if (view.metadata && view.metadata.parentTableColumns)
+                    {
+                        parentColumns = view.metadata.parentTableColumns;
+                    }
                     var revealDrillDownCallBack = function()
                     {
                         var translatedColumns = [];
@@ -641,15 +664,18 @@
                         if(!_.isUndefined(parentColumns))
                         { revealDrillDownCallBack(); }
                     }, 'json');
-                    
-                    $.get('/views/' + blist.parentViewId +
-                            '/columns.json',
-                    function(pcols)
+
+                    if(_.isUndefined(parentColumns))
                     {
-                        parentColumns = pcols;
-                        if(!_.isUndefined(currentColumns))
-                        { revealDrillDownCallBack(); }
-                    },'json');
+                        $.get('/views/' + blist.parentViewId +
+                                '/columns.json',
+                            function(pcols)
+                            {
+                                parentColumns = pcols;
+                                if(!_.isUndefined(currentColumns))
+                                { revealDrillDownCallBack(); }
+                        },'json');
+                    }
                 }
             },
 

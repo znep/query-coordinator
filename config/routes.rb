@@ -303,6 +303,9 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/clear_site_config',
     :controller => 'user_sessions', :action => 'clear_site_config'
 
+  map.connect '/robots.txt',
+    :controller => 'robots_txt', :action => 'show'
+
   # Static content
   ['about', 'solution', 'company-info', 'press'].each do |static_section|
     controller_name = static_section.underscore.camelize

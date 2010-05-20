@@ -38,6 +38,7 @@ blist.widget.showToolbar = function(sectionName, sectionClass)
 {
     var $toolbar = $('.toolbar');
 
+    var toolbarChanged = !$toolbar.hasClass(sectionName);
     $toolbar.removeClass().addClass('toolbar ' + sectionName);
 
     if (!$toolbar.is(':visible'))
@@ -48,7 +49,7 @@ blist.widget.showToolbar = function(sectionName, sectionClass)
             .filter('.' + sectionClass).show();
         widgetNS.resizeViewport();
     }
-    else
+    else if (toolbarChanged)
     {
         $toolbar
             .children(':not(.close):visible').fadeOut('fast', function()
@@ -127,8 +128,8 @@ $(function()
         menuButtonTitle: 'Access additional information about this dataset.',
         menuButtonClass: 'mainMenuButton ' + ((widgetNS.orientation == 'downwards') ? 'upArrow' : 'downArrow'),
         contents: [
-            { text: 'Views', className: 'views', subtext: 'Filters, Charts, and Maps', href: '#views' },
-            { text: 'Downloads', className: 'downloads', subtext: 'Download various file formats', href: '#downloads', onlyIf: !widgetNS.isBlobby },
+            { text: 'More Views', className: 'views', subtext: 'Filters, Charts, and Maps', href: '#views' },
+            { text: 'Download', className: 'downloads', subtext: 'Download in various formats', href: '#downloads', onlyIf: !widgetNS.isBlobby },
             { text: 'Comments', className: 'comments', subtext: 'Read comments on this dataset', href: '#comments' },
             { text: 'Embed', className: 'embed', subtext: 'Embed this player on your site', href: '#embed' },
             { text: 'Print', className: 'print', subtext: 'Print out this dataset', href: '#print', onlyIf: !widgetNS.isBlobby },
@@ -191,11 +192,9 @@ $(function()
         }
         widgetNS.hideToolbar();
     });
-    $('.subHeaderBar .search a').click(function(event)
+    var handleSearchToggle = function(allowHide)
     {
-        event.preventDefault();
-
-        if ($toolbar.hasClass('search') && $toolbar.is(':visible'))
+        if (allowHide && $toolbar.hasClass('search') && $toolbar.is(':visible'))
         {
             widgetNS.hideToolbar();
         }
@@ -204,7 +203,17 @@ $(function()
             widgetNS.showDataView();
             widgetNS.showToolbar('search', 'toolbarSearchForm');
         }
-    });
+    };
+    $('.subHeaderBar .search a')
+        .click(function(event)
+        {
+            event.preventDefault();
+            handleSearchToggle(true);
+        })
+        .mouseover(function(event)
+        {
+            handleSearchToggle(false);
+        });
     $('.shareMenu .email a').click(function(event)
     {
         if ($toolbar.hasClass('email') && $toolbar.is(':visible'))

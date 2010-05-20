@@ -49,9 +49,9 @@ Enjoy!
 // setting filename not happening if form input was preserved
 
 (function($) {
-  $.uniform = {
-    options: {
-      selectClass:   'selector',
+    $.uniform = {
+        options: {
+            selectClass:   'selector',
             radioClass: 'radio',
             checkboxClass: 'checker',
             fileClass: 'uploader',
@@ -61,16 +61,16 @@ Enjoy!
             fileDefaultText: 'No file selected',
             fileBtnText: 'Choose File',
             checkedClass: 'checked',
-      focusClass: 'focus',
+            focusClass: 'focus',
             disabledClass: 'disabled',
             activeClass: 'active',
             hoverClass: 'hover',
             useID: true,
             idPrefix: 'uniform',
             resetSelector: false
-    },
-    elements: []
-  };
+        },
+        elements: []
+    };
 
     if($.browser.msie && $.browser.version < 7){
         $.selectOpacity = false;
@@ -78,20 +78,20 @@ Enjoy!
         $.selectOpacity = true;
     }
 
-  $.fn.uniform = function(options) {
+    $.fn.uniform = function(options) {
 
         options = $.extend($.uniform.options, options);
 
-    var el = this;
-    //code for specifying a reset button
-    if(options.resetSelector != false){
-      $(options.resetSelector).mouseup(function(){
-        function resetThis(){
-          $.uniform.update(el);
+        var el = this;
+        //code for specifying a reset button
+        if(options.resetSelector != false){
+            $(options.resetSelector).mouseup(function(){
+                function resetThis(){
+                    $.uniform.update(el);
+                }
+                setTimeout(resetThis, 10);
+            });
         }
-        setTimeout(resetThis, 10);
-      });
-    }
 
         function doSelect(elem){
 
@@ -118,14 +118,14 @@ Enjoy!
             spanTag = elem.siblings("span");
 
             elem.change(function() {
-        spanTag.text(elem.children(":selected").text());
-        })
-        .focus(function() {
-        divTag.addClass(options.focusClass);
-        })
-        .blur(function() {
-        divTag.removeClass(options.focusClass);
-        })
+                spanTag.text(elem.children(":selected").text());
+            })
+            .focus(function() {
+                divTag.addClass(options.focusClass);
+            })
+            .blur(function() {
+                divTag.removeClass(options.focusClass);
+            })
             .mousedown(function() {
                 divTag.addClass(options.activeClass);
             })
@@ -150,8 +150,12 @@ Enjoy!
             // clint.tseng@socrata.com 19/05/10:
             // set width of select to match that of its target
             // - 10 for padding; use css('width') to minimize cross-browser issues
-            divTag.css('width', parseInt(elem.css('width')) - 10);
-            spanTag.width(divTag.innerWidth() - 35);
+            var targetWidth = parseInt(elem.css('width'), 10);
+            if (!isNaN(targetWidth))
+            {
+                divTag.css('width', targetWidth - 10);
+                spanTag.width(divTag.innerWidth() - 35);
+            }
 
             storeElement(elem);
 
@@ -319,7 +323,7 @@ Enjoy!
             //wrap with the proper elements
             $el.wrap(divTag);
             $el.after(btnTag);
-      $el.after(filenameTag);
+            $el.after(filenameTag);
 
             //redefine variables
             divTag = $el.closest("div");
@@ -327,11 +331,11 @@ Enjoy!
             btnTag = $el.siblings("."+options.fileBtnClass);
 
             //set the size
-          if(!$el.attr("size")){
-            var divWidth = divTag.width();
-            //$el.css("width", divWidth);
-            $el.attr("size", divWidth/10);
-          }
+            if(!$el.attr("size")){
+                var divWidth = divTag.width();
+                //$el.css("width", divWidth);
+                $el.attr("size", divWidth/10);
+            }
 
           // clint.tseng@socrata.com 19/05/10:
           // setting filename not happening if form input was
@@ -362,7 +366,6 @@ Enjoy!
             .blur(function(){
                 divTag.removeClass(options.focusClass);
             })
-            .change(setFilename) //cxlt
             .mousedown(function() {
               if(!$(elem).is(":disabled")){
                 divTag.addClass(options.activeClass);
@@ -376,6 +379,21 @@ Enjoy!
             }, function() {
                 divTag.removeClass(options.hoverClass);
             });
+
+          // clint.tseng@socrata.com 20/05/10:
+          // IE7 not updating file input as expected
+          if ($.browser.msie)
+          {
+              // IE suspends timeout fires until after the file select
+              // chrome is dismissed
+              $el.click(function() {
+                  setTimeout(setFilename, 0);
+              });
+          }
+          else
+          {
+              $el.change(setFilename);
+          }
 
           //handle defaults
           if($el.attr("disabled")){
@@ -409,7 +427,7 @@ Enjoy!
           elem.each(function(){
             //do to each item in the selector
             //function to reset all classes
-        var $e = $(this);
+            var $e = $(this);
 
             if($e.is("select")){
                 //element is a select
@@ -487,7 +505,7 @@ Enjoy!
                 .mouseout (function() { divTag.removeClass('focus'); });
         };
 
-    return this.each(function() {
+        return this.each(function() {
             if($.selectOpacity){
                 var elem = $(this);
 
@@ -507,8 +525,7 @@ Enjoy!
                   //element is a file upload
                   doFile(elem);
                 }
-
             }
-    });
-  };
+        });
+    };
 })(jQuery);

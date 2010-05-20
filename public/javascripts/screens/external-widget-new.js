@@ -343,7 +343,8 @@ $(function()
             {
                 return (_.include(view.flags, 'default') && (view.viewType == 'tabular')) ||
                        (view.viewType == 'blobby');
-            }).sort(function(a, b) { return a.viewCount < b.viewCount });
+            });
+            moreViews.sort(function(a, b) { return a.viewCount < b.viewCount });
 
             $('.widgetContent_views').append(
                 $.renderTemplate(
@@ -422,6 +423,16 @@ $(function()
     });
 
     // comments
+
+    $('.widgetContent_comments .datasetAverageRating').stars({
+        onChange: function()
+        {
+            $('.commentInterstitial').jqmShow();
+            return false;
+        },
+        value: widgetNS.view.averageRating || 0
+    });
+
     // TODO: maybe refactor these into one?
     var repliesDirective = {
         '.@data-commentid': 'reply.id',
@@ -539,20 +550,33 @@ $(function()
         dataType: 'json',
         success: function (responseData)
         {
-            allComments = responseData;
-            allCommentsCount = responseData.length;
-            trimmedComments = _.map(allComments, function(comment)
+            allComments = _.reject(responseData, function(comment)
             {
-                var trimmedComment = $.extend({}, comment);
-                if (!_.isUndefined(comment.children) && (comment.children.length > 3))
-                {
-                    trimmedComment.children = comment.children.slice(0, 3);
-                }
-                trimmedComment.childCount = (_.isUndefined(comment.children) ? 0 : comment.children.length);
-                return trimmedComment;
+                return $.isBlank(comment.title) && $.isBlank(comment.body);
             });
+            allCommentsCount = allComments.length;
 
-            showMoreComments();
+            if (allCommentsCount === 0)
+            {
+                $('.widgetContent_comments .commentsWrapper').append(
+                    $.tag({ tagName: 'p', 'class': 'emptyDataText',
+                        contents: 'No one has posted any comments yet.' }));
+            }
+            else
+            {
+                trimmedComments = _.map(allComments, function(comment)
+                {
+                    var trimmedComment = $.extend({}, comment);
+                    if (!_.isUndefined(comment.children) && (comment.children.length > 3))
+                    {
+                        trimmedComment.children = comment.children.slice(0, 3);
+                    }
+                    trimmedComment.childCount = (_.isUndefined(comment.children) ? 0 : comment.children.length);
+                    return trimmedComment;
+                });
+
+                showMoreComments();                
+            }
         }
     });
     $('.commentsViewMoreLink').click(function(event)
@@ -585,7 +609,9 @@ $(function()
 
         $this.remove();
     });
-    $.live('.widgetContent_comments .commentActions a, .widgetContent_comments .replyActions a', 'click',
+    $.live('.widgetContent_comments .commentActions a,' +
+           '.widgetContent_comments .replyActions a,' +
+           '.widgetContent_comments .addCommentButton', 'click',
         function (event)
         {
             event.preventDefault();

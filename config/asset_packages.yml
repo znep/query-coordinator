@@ -282,6 +282,7 @@ javascripts:
   - data/model
   - data/table
   - data/table_nav
+  - controls/stars
   - widgets/text-prompt
   - widgets/dropdown-menu
   - widgets/menu

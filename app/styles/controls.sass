@@ -178,3 +178,16 @@ div.menu
     .menuDropdown
       clear: both
       display: block
+
+div.starsControl
+  &, & .starsControlInner
+    background: transparent url('/stylesheets/images/icons/stars.png') repeat-x
+    height: 16px
+    margin: 0
+    padding: 0
+    width: 93px
+  &.enabled
+    cursor: pointer
+
+  .starsControlInner
+    background-position: 0 -16px

@@ -26,12 +26,12 @@
           <%- cell = row[column.data_position] -%>
           <%- unless cell.nil? -%>
             <%- case column.renderTypeName -%>
+
             <%- when 'text' -%>
-              <%- if column.text_format == 'Plain' -%>
-                <%= cell.to_s %>
-              <%- elsif column.text_format == 'Rich' -%>
-                <%= raw(cell.to_s) %>
-              <%- end -%>
+            <%= cell.to_s %>
+
+            <%- when 'html' -%>
+            <%= raw cell.to_s %>
 
             <%- when 'url' -%>
             <%- url = cell[column.sub_type_index('url')] -%>

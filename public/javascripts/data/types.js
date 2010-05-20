@@ -326,20 +326,6 @@ blist.namespace.fetch('blist.data.types');
             value + " + \"' title='\" + " + value + " + \"'></div>\")";
     };
 
-    var renderRichtext = function(value)
-    {
-        if (value == null) { return ''; }
-        // Add an extra wrapper so we can tweak the display to something
-        // reasoanble
-        return '<div class="blist-richtext">' + value + '</div>';
-    };
-
-    var renderGenRichtext = function(value, plain)
-    {
-        // TODO -- in plain text mode, strip out HTML?
-        return "renderRichtext(" + value + " || '')";
-    };
-
     var renderHtml = function(value)
     {
         if (value == null) { return ''; }
@@ -742,16 +728,6 @@ blist.namespace.fetch('blist.data.types');
             deleteable: true
         },
 
-        richtext: {
-            renderGen: renderGenRichtext,
-            filterRender: renderFilterText,
-            sortGen: sortGenText,
-            filterText: true,
-            sortable: true,
-            filterable: true,
-            deleteable: true
-        },
-
         html: {
             renderGen: renderGenHtml,
             filterRender: renderFilterText,
@@ -992,7 +968,6 @@ blist.namespace.fetch('blist.data.types');
         blist.data.types.drop_down_list.editor = $.blistEditor.picklist;
         blist.data.types.checkbox.editor = $.blistEditor.checkbox;
         blist.data.types.stars.editor = $.blistEditor.stars;
-        blist.data.types.richtext.editor = $.blistEditor.html;
         blist.data.types.html.editor = $.blistEditor.html;
         blist.data.types.document.editor = $.blistEditor.document;
         blist.data.types.document_obsolete.editor = $.blistEditor.document;

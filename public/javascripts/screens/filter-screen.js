@@ -23,7 +23,7 @@ filterNS.conditions = {
 };
 
 filterNS.filterableClass = function(type) {
-    if ($.inArray(type, ["text", "richtext", 'html', "url", "email", "phone", "tag"]) > -1)
+    if ($.inArray(type, ["text", 'html', "url", "email", "phone", "tag"]) > -1)
     {
         return "textual";
     }
@@ -64,7 +64,7 @@ filterNS.filterRemove = function(event) {
 
 filterNS.createEditor = function($renderer, column, value) {
     var tempCol = $.extend({}, column);
-    if ((tempCol.type == "tag") || (tempCol.type == "email") || (tempCol.type == 'richtext') || (tempCol.type == 'html'))
+    if ((tempCol.type == "tag") || (tempCol.type == "email") || (tempCol.type == 'html'))
     {
         tempCol.type = "text";
     }

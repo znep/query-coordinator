@@ -4,7 +4,6 @@ class Column < Model
 
   @@types = {
       "text" => "Plain Text",
-      "richtext" => "Formatted Text",
       "html" => "Formatted Text",
       "number" => "Number",
       "money" => "Money",
@@ -118,8 +117,6 @@ class Column < Model
         'text', "number", "money", "percent", "date", "phone",
         "email", "url", "checkbox", "stars", "flag"
       ]
-    elsif client_type(dataTypeName) == "richtext"
-      return []
     end
 
     if ["percent", "money", "number", "stars"].include?(dataTypeName)
@@ -152,7 +149,7 @@ class Column < Model
   end
 
   def has_totals?
-    types_with_totals = ["text", "richtext", 'html', "number", "money", "percent",
+    types_with_totals = ["text", 'html', "number", "money", "percent",
                          "date", "phone", "email", "url", "checkbox", "stars",
                          "flag", "document_obsolete", "document", "photo_obsolete",
                          "photo", "picklist", "drop_down_list", "tag", 'location']
@@ -236,11 +233,6 @@ class Column < Model
       update_data[:format]["currency"] = js["currency"]
     end
 
-    if js.key?("type") && js["type"] == "richtext" && client_type == "text"
-      update_data[:format]["formatting_option"] = "Rich"
-    elsif js.key?("type") && js["type"] == "text" && client_type == "richtext"
-      update_data[:format].delete "formatting_option"
-    end
   end
 
   def self.to_core(js)
@@ -251,12 +243,6 @@ class Column < Model
       :dataTypeName => js["type"],
       :dropDownList => js['dropDownList']
     }
-
-    if js["type"] == "richtext"
-      col[:dataTypeName] = "text"
-      col[:format] ||= {}
-      col[:format]["formatting_option"] = "Rich"
-    end
 
     return col
   end
@@ -318,9 +304,7 @@ class Column < Model
     end
 
     if !self.format.nil?
-      if type == "text" && self.format.formatting_option == "Rich"
-        return "richtext"
-      elsif type == "stars" && self.format.view == "stars_number"
+      if type == "stars" && self.format.view == "stars_number"
         return "number"
       end
     end

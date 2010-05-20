@@ -45,7 +45,7 @@
                 if (hasInfo)
                 {
                     marker.infoContent = "<div class='mapInfoContainer" +
-                        (mapObj._infoIsRich ? ' richText' : '') + "'>" +
+                        (mapObj._infoIsHtml ? ' html' : '') + "'>" +
                         info + "</div>";
                     google.maps.event.addListener(marker, 'click',
                         function() { markerClick(mapObj, marker); });

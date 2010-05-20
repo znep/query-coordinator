@@ -865,16 +865,6 @@ blist.namespace.fetch('blist.data');
                 var format = vcol.format;
                 if (format)
                 {
-                    if (col.type == "text" && format.formatting_option == "Rich")
-                    {
-                        col.type = "richtext";
-                    }
-                    if (col.originalType == "text" &&
-                        format.formatting_option == "Rich")
-                    {
-                        col.originalType = "richtext";
-                    }
-
                     if (col.type == "stars" &&
                         format.view == "stars_number")
                     {
@@ -3054,7 +3044,7 @@ blist.namespace.fetch('blist.data');
                         // Textual column -- apply the regular expression to
                         // each instance
                         filterParts.push(' || ',
-                            type == 'richtext' ? '$.htmlStrip' : '', '(r',
+                            type == 'html' ? '$.htmlStrip' : '', '(r',
                             rootColumns[i].dataLookupExpr, ' + "").match(regexp)');
                     }
                     else if (type == "picklist" || type == 'drop_down_list')

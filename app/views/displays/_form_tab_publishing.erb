@@ -24,7 +24,7 @@
     <div class="publishCode">
       <%- iframe_width = 500 -%>
       <%- form_columns = @view.columns.select {|c| c.form_enabled?} -%>
-      <%- num_rt = form_columns.select {|c| c.client_type == 'richtext'}.length -%>
+      <%- num_rt = form_columns.select {|c| c.client_type == 'html'}.length -%>
       <%- num_url = form_columns.select {|c| c.client_type == 'url'}.length -%>
       <%- iframe_height = [425, (form_columns.length - num_rt - num_url) * 31 +
         num_rt * 77 + num_url * 49 + 30].max -%>

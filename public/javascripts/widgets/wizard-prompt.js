@@ -26,7 +26,7 @@
             buttonCallback: null,
             closeCallback: null,
             closeEvents: null,
-            closeSelector: 'a, :input',
+            closeSelector: 'a:not(.wizExclude), :input:not(.wizExclude)',
             positions: null,
             prompt: null
         },

@@ -31,6 +31,11 @@ String.prototype.displayable = function()
     return $.map(this.replace(/_/g, ' ').split(' '), $.capitalize).join(' ');
 };
 
+String.prototype.trim = function()
+{
+    return this.replace(/^\s+/, '').replace(/\s+$/, '');
+};
+
 // jQuery defs
 
 (function($) {

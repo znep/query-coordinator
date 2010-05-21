@@ -26,7 +26,9 @@
           <%- cell = row[column.data_position] -%>
           <%- unless cell.nil? -%>
             <%- case column.renderTypeName -%>
-
+            <%# I'd really like a blank line here for readability; but apparently
+               Rails requires that the first when immediately follow the case
+               statement (except apparently comments work fine) %>
             <%- when 'text' -%>
             <%= cell.to_s %>
 

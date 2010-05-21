@@ -145,7 +145,12 @@
                     sidebarObj.$dom().css('z-index', zIndex);
                     sidebarObj.$grid().css('z-index', zIndex);
                     sidebarObj.$dom().offsetParent().css('z-index', zIndex - 1);
-                    $overlay.fadeIn(500);
+
+                    // IE7 apparently isn't terribly happy the second time you
+                    // open this pane if there is a fadeIn, but no fadeOut
+                    // (because IE7 really has problems with that one)
+                    if ($('body').is('.ie7')) { $overlay.show(); }
+                    else { $overlay.fadeIn(500); }
 
                     sidebarObj.$grid().datasetGrid().disable();
                 }
@@ -467,6 +472,9 @@
                     updateWizardVisibility(sidebarObj);
                 }
 
+                // We're opening a section out-of-order, so store off the
+                // current flow, then start a temp set in the newly opened
+                // section
                 if (!$.isBlank(sidebarObj._$mainWizardItem) && $c.value() &&
                     $sect.has(sidebarObj._$mainWizardItem).length < 1)
                 {
@@ -477,13 +485,18 @@
                     wizardAction(sidebarObj, $sect, 'nextField');
                 }
 
+                // We're closing a section that the flow was in, so skip
+                // to the next section
                 if (!$.isBlank(sidebarObj._$mainWizardItem) && !$c.value() &&
                     $sect.has(sidebarObj._$mainWizardItem).length > 0)
                 {
                     sidebarObj._$currentWizard.wizardPrompt().close();
                     sidebarObj._$currentWizard = null;
                     sidebarObj._$mainWizardItem = null;
-                    wizardAction(sidebarObj, $sect, 'nextSection');
+                    // If there is a main flow, it will resume; otherwise
+                    // advance to the next section
+                    if ($.isBlank(sidebarObj._$mainFlowWizard))
+                    { wizardAction(sidebarObj, $sect, 'nextSection'); }
                 }
             });
         });

@@ -199,7 +199,7 @@
 
             // TODO - Distill down to only those sheets we really need.  And tweak accordingly when we have proper
             // bundling of CSS assets in place.
-            content_css: '/stylesheets/base.css,/stylesheets/common.css,/stylesheets/table-core.css,/stylesheets/dataset-grid.css',
+            content_css: '/stylesheets/base.css,/stylesheets/common.css,/styles/merged/grid.css',
 
             // This is a relatively minimal list of default plugins we use.
             // Revisit as necessary.  All built-in plugins are here:

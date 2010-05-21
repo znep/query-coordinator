@@ -5,11 +5,12 @@
   <%- end -%>
 
   <title><%= @view.name %> | <%= CurrentDomain.strings.site_title %></title>
-  <link type="text/css" rel="stylesheet" href="/styles/widget/<%= params[:customization_id] %>.css" />
 
   <%- if @display.can_publish? -%>
   <%= raw @display.render_stylesheet_includes %>
   <%- end -%>
+
+  <link type="text/css" rel="stylesheet" href="/styles/widget/<%= params[:customization_id] %>.css" />
 <% end %>
 
 <div class="widgetWrapper">
@@ -155,8 +156,8 @@
   </script>
 
   <%= render(:partial => 'shared/table_editor_js') %>
-  <%= javascript_include_merged 'widgets-show-new' %>
   <%= raw @display.render_javascript_includes(self) %>
+  <%= javascript_include_merged 'widgets-show-new' %>
 
   <%- unless @theme[:behavior][:ga_code].empty? -%>
     <script type="text/javascript">

@@ -1,3 +1,8 @@
+.blist-table
+  height: 100%
+  a
+    @include underline-on-hover
+
 .blist-table-locked-scrolls
   background-color: #ffffff
 
@@ -214,8 +219,11 @@ div.blist-th-first
 .blist-tdh .menuLink.clicked
   display: block
 
+.blist-table-header-scrolls
+  background: #e8e8e2
+
 .blist-table-locked-header .blist-th
-  background-color: #e8e8e8
+  background: #e8e8e2
   border: none
   padding: 0 4px
 
@@ -268,7 +276,6 @@ div.blist-th-first
   width: 100%
 
 div.blist-table-ghost div.blist-column-adder
-  background-color: #e8e8e8
   background-image: url('/stylesheets/images/content/table/add_column_icons.gif')
   background-position: center 0
   background-repeat: no-repeat
@@ -285,7 +292,7 @@ div.blist-table-ghost div.blist-column-adder
 
 div.blist-tr-open div.blist-column-adder,
 div.blist-tr.blist-hot-row div.blist-column-adder
-  background-color: #e8e8e8
+  background-color: #e8e8e2
   cursor: pointer
 
 div.blist-column-adder
@@ -310,7 +317,7 @@ div.blist-tr-open .blist-column-adder-icon
   background-image: url('/stylesheets/images/content/table/add_column_icons.gif')
   background-repeat: no-repeat
   background-position: center 0px
-  background-color: #e8e8e8
+  background-color: #e8e8e2
   width: 15px
   height: 15px
 
@@ -319,7 +326,7 @@ div.blist-tr.blist-hot-row
     background-image: url('/stylesheets/images/content/table/add_column_icons.gif')
     background-repeat: no-repeat
     background-position: center 0px
-    background-color: #e8e8e8
+    background-color: #e8e8e2
     width: 15px
     height: 15px
 
@@ -344,6 +351,7 @@ div.blist-tr.blist-hot-row
   top: 0
   z-index: -1
 
+
 .blist-table-footer-scrolls,
 .blist-table-locked-footer
   background-color: #ffffff
@@ -351,7 +359,7 @@ div.blist-tr.blist-hot-row
   height: 2.6em
 
 .blist-table-footer
-  background-color: #ececec
+  background-color: #fef8dc
   bottom: 0.2em
   height: 2em
 
@@ -378,7 +386,7 @@ div.blist-tr.blist-hot-row
 
 .blist-table-locked-footer
   .blist-tf
-    background-color: #ececec
+    background-color: #fcedc1
     border: none
     float: left
     font-size: 1em
@@ -467,7 +475,7 @@ div.blist-tdh.blist-table-row-handle .blist-th-icon
 
 .blist-tr-open
   .blist-tdh
-    background-color: #e8e8e8
+    background-color: #e8e8e2
     color: #333333
     cursor: inherit
 

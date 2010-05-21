@@ -20,6 +20,20 @@ class Displays::Table < Displays::Base
         true
     end
 
+    def render_inline_setup_js(target_dom_id, context)
+      js = super
+      js << 'blist.display.isGrid = true;'
+      js
+    end
+
+    def required_javascripts
+      ['shared-table-render']
+    end
+
+    def required_style_packages
+      ['grid']
+    end
+
     def invalid_message
       @view.message
     end

@@ -84,6 +84,7 @@ blist.namespace.fetch('blist.display');
 blist.display.name = '#{name}';
 blist.display.type = '#{type}';
 blist.display.viewId = '#{@view.id}';
+blist.display.viewOwner = '#{@view.owner.id}';
 blist.display.options = #{@options.to_json};
 blist.display.editable = #{@view.can_edit};
 blist.display.scrollsInline = #{scrolls_inline?};
@@ -99,7 +100,8 @@ END
 
     # Retrieve rendered CSS links to include in the page.  Called by view logic
     def render_stylesheet_includes
-        required_stylesheets.map { |css| @@asset_helper.stylesheet_link_merged css }.join
+      return required_stylesheets.map { |css| @@asset_helper.stylesheet_link_merged css }.join +
+        required_style_packages.map { |sass| @@app_helper.rendered_stylesheet_tag sass }.join
     end
 
     # Retrieve rendered JavaScript to include in the page.  Called by view logic
@@ -137,6 +139,11 @@ END
         []
     end
 
+    # List of style packages (sass bundles)
+    def required_style_packages
+      []
+    end
+
     # Retrieve a list of javascript asset bundles that must be included for this display
     def required_javascripts
         []
@@ -162,5 +169,10 @@ END
     @@asset_helper = Class.new do
         include Synthesis::AssetPackageHelper
         include ActionView::Helpers
+    end.new
+
+    @@app_helper = Class.new do
+      include ApplicationHelper
+      include ActionView::Helpers
     end.new
 end

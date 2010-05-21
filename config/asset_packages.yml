@@ -14,6 +14,7 @@ javascripts:
   - plugins/jquery.sizes.min
   - plugins/jquery.tache
   - plugins/jquery.validate.min
+  - plugins/ui.core
   - util/underscore-min
   - util/namespace
   - util/util
@@ -32,6 +33,17 @@ javascripts:
 - shared-calendar:
   - plugins/fullcalendar
   - widgets/blist-calendar
+- shared-table-render:
+  - plugins/ui.draggable
+  - plugins/date
+  - util/humane-number
+  - data/types
+  - data/model
+  - data/table
+  - data/table_nav
+  - widgets/scrollable
+  - widgets/dropdown-menu
+  - widgets/dataset-grid
 - shared-table-editor:
   - data/editors/editor-base
   - data/editors/text-editor
@@ -71,7 +83,6 @@ javascripts:
   - data/types
   - widgets/charts/highcharts
 - accounts-show:
-  - plugins/ui.core
   - plugins/ui.showedit
   - screens/account-screen
 - approval-show:
@@ -92,7 +103,6 @@ javascripts:
 - blists-index:
   - plugins/jquery.tablesorter
   - plugins/jquery.jqote.min
-  - plugins/ui.core
   - plugins/ui.draggable
   - plugins/ajaxupload.3.0
   - util/humane-date
@@ -124,7 +134,6 @@ javascripts:
 - blists-publish:
   - screens/info-pane
   - plugins/colorpicker
-  - plugins/ui.core
   - plugins/ui.draggable
   - plugins/ajaxupload.3.0
   - util/color
@@ -133,25 +142,15 @@ javascripts:
 - blists-show:
   - plugins/pure
   - plugins/jquery.tablesorter
-  - plugins/ui.core
-  - plugins/ui.draggable
-  - plugins/ui.resizable
   - plugins/ui.slider
   - plugins/ui.spinner
   - plugins/ajaxupload.3.0
   - util/extMouseWheel
   - util/navigation
   - util/inline-login
-  - util/humane-number
-  - plugins/date
   - plugins/jquery.colorPicker
-  - data/types
-  - data/model
-  - data/table
-  - data/table_nav
   - widgets/combination-list
   - widgets/inline-edit
-  - widgets/dropdown-menu
   - widgets/selectable-list
   - widgets/pagination
   - widgets/reorderable-list
@@ -161,8 +160,6 @@ javascripts:
   - widgets/info-pane-filtered
   - widgets/info-pane-sharing
   - widgets/info-pane-publish
-  - widgets/scrollable
-  - widgets/dataset-grid
   - screens/filter-screen
   - widgets/visualization
   - screens/info-pane
@@ -211,11 +208,9 @@ javascripts:
   - plugins/ajaxupload.3.0
   - widgets/selectable-list
   - widgets/combination-list
-  - plugins/ui.core
   - plugins/ui.showedit
   - screens/profile-screen
 - rpx-return:
-  - plugins/ui.core
   - screens/signup-screen
 - stats-index:
   - plugins/date
@@ -226,20 +221,9 @@ javascripts:
 - tweetsets:
   - screens/tweetsets-screen
 - widgets-show:
-  - plugins/ui.core
-  - plugins/ui.draggable
   - util/navigation
-  - util/humane-number
-  - plugins/date
-  - data/types
-  - data/model
-  - data/table
-  - data/table_nav
-  - widgets/dropdown-menu
-  - widgets/scrollable
   - widgets/scrollTabs
   - widgets/inline-edit
-  - widgets/dataset-grid
   - widgets/info-pane-publish
   - widgets/visualization
   - screens/external-widget
@@ -247,8 +231,6 @@ javascripts:
   - screens/dataset-menu
 - widgets-show-new:
   - plugins/pure
-  - plugins/ui.core
-  - plugins/ui.draggable
   - plugins/ui.effects.custom.min
   - plugins/jquery.uniform
   - plugins/jquery.tablesorter
@@ -256,22 +238,13 @@ javascripts:
   - widgets/combination-list
   - widgets/embed-form
   - util/humane-date
-  - util/humane-number
   - util/navigation
   - util/urls
   - util/dataset
-  - plugins/date
-  - data/types
-  - data/model
-  - data/table
-  - data/table_nav
   - controls/stars
-  - widgets/dropdown-menu
   - widgets/menu
-  - widgets/scrollable
   - widgets/scrollTabs
   - widgets/inline-edit
-  - widgets/dataset-grid
   - widgets/visualization
   - screens/external-widget-new
 - widgets-show-new-form:

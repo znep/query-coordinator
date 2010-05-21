@@ -519,17 +519,8 @@ html, body
 
 // START: GRID
 
-.blist-table
-  height: 100%
-
-  a
-    @include underline-on-hover
-
 .blist-table-scrolls
   background-color: #fff
-
-.blist-table-header-scrolls
-  background-color: #e8e8e2
 
 div.blist-th
   .info-container
@@ -580,14 +571,8 @@ img.blist-table-option-icon
 .blist-tstars
   margin: -4px 0
 
-.blist-table-row-numbers.blist-tf
-  background-color: #fcedc1
-  .blist-tf-value:after
-    content: ':'
-.blist-table-row-handle.blist-tf
-  background-color: #fcedc1
-.blist-table-footer .blist-tf
-  background-color: #fef8dc
+.blist-table-row-numbers.blist-tf .blist-tf-value:after
+  content: ':'
 
 @if $grid_wrap_header_text == true
   .blist-th .info-container

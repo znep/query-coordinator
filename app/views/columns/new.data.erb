@@ -84,6 +84,7 @@ blist.common.modalReady = function()
       {id: "money", label: "Money"},
       {id: "percent", label: "Percent"},
       {id: "date", label: "Date & Time"},
+      {id: "location", label: "Location (Address)"},
       {id: "phone", label: "Phone"},
       {id: "email", label: "Email"},
       {id: "url", label: "Website URL"},
@@ -96,9 +97,6 @@ blist.common.modalReady = function()
       // {id: "photo_obsolete", label: "Photo (Image, old)"},
       {id: 'drop_down_list', label: 'Multiple Choice'}
   ];
-  <%- if module_available?(:location_launch) -%>
-  typeValues.splice(6, 0, {id: "location", label: "Location (Address)"});
-  <%- end -%>
   <%- if @parent.nil? -%>
   typeValues.push({id: "nested_table", label: "Nested Table"});
   <%- end -%>

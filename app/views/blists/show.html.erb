@@ -304,9 +304,7 @@
                     <li><%= get_add_column("Phone", @view.id, "phone") %></li>
                     <li><%= get_add_column("Email", @view.id, "email") %></li>
                     <li><%= get_add_column("Website URL", @view.id, "url") %></li>
-                    <%- if module_available?(:location_launch) -%>
                     <li><%= get_add_column('Location', @view.id, 'location') %></li>
-                    <%- end -%>
                 </ul>
               </li>
               <li class='column'>

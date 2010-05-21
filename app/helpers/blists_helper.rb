@@ -469,10 +469,6 @@ module BlistsHelper
       dtt = 'dateTime'
     elsif dtt == 'text'
       dtt = 'plainText'
-      # Now check the format to see if it is formatted text
-      if 'Rich' == column.text_format
-        dtt = 'formattedText'
-      end
     end
     dtt
   end

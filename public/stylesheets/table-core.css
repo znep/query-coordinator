@@ -503,7 +503,6 @@ div.blist-table-editor .align-right { text-align: right; }
 
 /* Datatype icons */
 .text .blist-th-icon { background-position: 0 -80px; }
-.richtext .blist-th-icon { background-position: 0 -60px; }
 .html .blist-th-icon { background-position: 0 -60px; }
 .number .blist-th-icon { background-position: 0 -20px; }
 .money .blist-th-icon { background-position: 0 -40px; }

@@ -119,9 +119,9 @@
     };
     var tag_parseConditionalElement = function(elem)
     {
-        if (elem === null || _.isUndefined(elem) || elem === '')
+        if ($.isBlank(elem))
         { return false; }
-        else if (!_.isUndefined(elem.onlyIf))
+        else if (!_.isUndefined(elem.value))
         {
             if (elem.onlyIf === true)
             { return elem.value; }

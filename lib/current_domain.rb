@@ -113,8 +113,8 @@ class CurrentDomain
     return self.properties.theme || Hashie::Mash.new
   end
 
-  def self.theme_new
-    return self.properties.theme_new || Hashie::Mash.new
+  def self.theme_v2
+    return self.properties.theme_v2 || Hashie::Mash.new
   end
 
   def self.strings

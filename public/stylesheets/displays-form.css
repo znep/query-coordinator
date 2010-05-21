@@ -45,7 +45,6 @@
 .formView .phoneInput input { width: 12.7em; }
 .formView .phoneInput select { width: 7em; }
 
-.formView .line.richtext,
 .formView .line.html { height: 7em; }
 
 .formView .line.url { height: 4.2em; }

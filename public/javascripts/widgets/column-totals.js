@@ -90,7 +90,6 @@ columnTotalsNS.renderers['photo'] =
 columnTotalsNS.renderers['photo_obsolete'] =
 columnTotalsNS.renderers['flag'] =
 columnTotalsNS.renderers['text'] =
-columnTotalsNS.renderers['richtext'] =
 columnTotalsNS.renderers['html'] =
 columnTotalsNS.renderers['checkbox'] =
 columnTotalsNS.renderers['date'] =

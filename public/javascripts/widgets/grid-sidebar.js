@@ -138,9 +138,13 @@
                     var $overlay = modalOverlay(sidebarObj);
                     sidebarObj._origZIndex = sidebarObj.$dom().css('z-index');
                     sidebarObj._origGridZIndex = sidebarObj.$grid().css('z-index');
+                    sidebarObj._origParent = sidebarObj.$dom().offsetParent();
+                    sidebarObj._origParentZIndex = sidebarObj.$dom()
+                        .offsetParent().css('z-index');
                     var zIndex = parseInt($overlay.css('z-index')) + 1;
                     sidebarObj.$dom().css('z-index', zIndex);
                     sidebarObj.$grid().css('z-index', zIndex);
+                    sidebarObj.$dom().offsetParent().css('z-index', zIndex - 1);
                     $overlay.fadeIn(500);
 
                     sidebarObj.$grid().datasetGrid().disable();
@@ -176,17 +180,27 @@
                     if (!_.isNull(sidebarObj.settings.modalHiddenSelector))
                     { $(sidebarObj.settings.modalHiddenSelector).show(); }
                     $('body').css('overflow', sidebarObj._bodyOverflow);
-                    modalOverlay(sidebarObj).fadeOut(500);
+
+                    // IE7 doesn't like this fade out
+                    if ($('body').is('.ie7'))
+                    { modalOverlay(sidebarObj).hide(); }
+                    else { modalOverlay(sidebarObj).fadeOut(500); }
+
                     sidebarObj.$dom().css('z-index', sidebarObj._origZIndex);
                     sidebarObj.$grid().css('z-index', sidebarObj._origGridZIndex);
+                    sidebarObj._origParent.css('z-index',
+                        sidebarObj._origParentZIndex);
 
                     sidebarObj.$grid().datasetGrid().enable();
                 }
 
-                $(window).resize();
+                // In non-IE we need to trigger a resize so the grid restores
+                // properly.  In IE7, this will crash; IE8 works either way
+                if (!$.browser.msie) { $(window).resize(); }
             }
         }
     });
+
 
     /* Helper to get/create the modal overlay */
     var modalOverlay = function(sidebarObj)
@@ -361,6 +375,8 @@
                         contents: [
                             $.extend(commonAttrs(args.item),
                                 {id: id, tagName: 'input', type: 'radio',
+                                'class': {value: 'wizExclude',
+                                    onlyIf: opt.type != 'static'},
                                 checked: opt.checked}),
                             {tagName: 'label', 'for': id,
                             contents:
@@ -665,6 +681,9 @@
 
     var wizardAction = function(sidebarObj, $item, action)
     {
+        // If the pane is gone, no action to do
+        if ($.isBlank(sidebarObj.$currentPane())) { return; }
+
         if (!$.isBlank(sidebarObj._$mainFlowWizard) &&
             sidebarObj._$mainFlowWizard.index($item) > -1)
         { return; }
@@ -744,6 +763,8 @@
             return;
         }
 
+        // Clear out required fields that are prompts so the validate
+        $pane.find(':input.prompt.required').val('');
         if (!$pane.find('form').valid()) { return; }
 
         $pane.find('.mainError').text('');
@@ -807,7 +828,7 @@
         $.ajax({url: '/views/' + blist.display.viewId + '/columns.json?' +
             'method=addressify' +
             '&deleteOriginalColumns=false' +
-            '&location=' + $pane.find('#columnName').val() +
+            '&location=' + ($pane.find('#columnName:not(.prompt)').val() || '') +
             (latVal ? '&latitudeColumn=' + latVal : '') +
             (longVal ? '&longitudeColumn=' + longVal : '') +
             (streetVal ? '&address' + (streetIsCol ? 'Column' : 'Value') +

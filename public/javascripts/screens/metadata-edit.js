@@ -85,6 +85,11 @@
                     {
                         attachment[$(input).attr('name')] = $(input).val();
                     });
+                    $nameField = $(this).find("input[name='name']");
+                    if ($.isBlank($nameField.val()))
+                    {
+                        $nameField.val($(this).find("input[name='filename']").val());
+                    }
                     attachments.push(attachment);
                 }); 
 

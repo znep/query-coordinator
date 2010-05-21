@@ -100,7 +100,7 @@
                 mapObj._longIndex = undefined;
                 mapObj._titleCol = undefined;
                 mapObj._infoCol = undefined;
-                mapObj._infoIsRich = false;
+                mapObj._infoIsHtml = false;
             },
 
             populateLayers: function()
@@ -278,7 +278,7 @@
              view.displayFormat.latitudeId === undefined))
         { return false; }
 
-        mapObj._infoIsRich = false;
+        mapObj._infoIsHtml = false;
         var colFormat = view.displayFormat.plot || view.displayFormat;
         _.each(view.columns, function(c, i)
         {
@@ -320,9 +320,7 @@
                         _.indexOf(c.subColumnTypes, 'human_address');
                 }
                 mapObj._infoCol = c;
-                mapObj._infoIsRich = c.renderTypeName == "text" &&
-                    c.format !== undefined &&
-                    c.format.formatting_option == "Rich";
+                mapObj._infoIsHtml = c.renderTypeName == 'html';
             }
         });
 
@@ -343,14 +341,12 @@
             { return c.dataTypeName == 'meta_data' && c.name == 'sid'; }).dataIndex;
         mapObj._latIndex = cols[0].dataIndex;
         mapObj._longIndex = cols[1].dataIndex;
-        mapObj._infoIsRich = false;
+        mapObj._infoIsHtml = false;
         if (cols.length > 2)
         {
             var infoCol = cols[2];
             mapObj._infoCol = infoCol;
-            mapObj._infoIsRich = infoCol.renderTypeName == "text" &&
-                infoCol.format !== undefined &&
-                infoCol.format.formatting_option == "Rich";
+            mapObj._infoIsHtml = infoCol.renderTypeName == 'html';
         }
         return true;
     };

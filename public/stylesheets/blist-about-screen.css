@@ -398,7 +398,6 @@ span.helpie
 
 /* Datatypes */
 .columnList li.plainText, .columnList li.text { background-position: 0 -80px; }
-.columnList li.formattedText, .columnList li.richtext { background-position: 0 -60px; }
 .columnList li.html { background-position: 0 -60px; }
 .columnList li.number { background-position: 0 -20px; }
 .columnList li.money { background-position: 0 -40px; }

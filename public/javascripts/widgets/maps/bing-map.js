@@ -46,7 +46,7 @@
                 if (!_.isNull(info))
                 {
                     shape.SetDescription("<div class='mapInfoContainer" +
-                        (mapObj._infoIsRich ? ' richText' : '') + "'>" +
+                        (mapObj._infoIsHtml ? ' html' : '') + "'>" +
                         info + "</div>");
                 }
 

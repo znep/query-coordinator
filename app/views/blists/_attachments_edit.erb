@@ -10,6 +10,7 @@
             <%- if view.metadata && view.metadata.attachments -%>
               <%- view.metadata.attachments.each do |attachment| -%>
                 <li class="attachmentItem">
+                    &nbsp;
                   <a href="#delete_attachment" class="deleteAttachmentLink" title="Delete Attachment">Delete</a>  
                   <%= text_field_tag('name', attachment['name'] || attachment['filename'], :id => nil) %>
                   <%= hidden_field_tag('filename', attachment['filename'], :id => nil) %>
@@ -20,7 +21,7 @@
             <%- end -%>
           </ul>
           <ul class="attachmentsSpecialList">
-            <li class="attachmentErrorItem"><span class="attachmentErrorMessage"></span></li>
+            <li class="attachmentErrorItem hide"><span class="attachmentErrorMessage"></span></li>
             <li class="uploadNewAttachment">
               <a href="#new_attachment" class="uploadNewAttachmentLink">Upload New Attachment</a>
               <span class="uploadingIndicator hide"></span>

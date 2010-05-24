@@ -2943,7 +2943,7 @@
 
             var rowDivContents =
                 'class=\'blist-tr", ' +
-                '(index % 2 ? " blist-tr-even" : ""), ' +
+                '(renderIndex % 2 ? " blist-tr-even" : ""), ' +
                 '(row.level !== undefined ? " blist-tr-level" + row.level : ""), ' +
                 '(row.level > 0 ? " blist-tr-sub" : ""), ' +
                 '(row.type ? " blist-tr-" + row.type : ""), ' +
@@ -2955,7 +2955,7 @@
             // Create the rendering function.  We precompile this for speed so
             // we can avoid tight loops, function calls, etc.
             var renderFnSource =
-                '(function(html, index, row) {' +
+                '(function(html, index, renderIndex, row) {' +
                 '   html.push(' +
                 '       "<div id=\'' + id + '-r", ' +
                 '       (row.id || row[0]), ' +
@@ -3843,7 +3843,7 @@
                         // Add a new row
                         // Rows are rendered in position relative to the top
                         // of the render div, which is why we subtract start from i
-                        rowRenderFn(html, i - start, row);
+                        rowRenderFn(html, i - start, i, row);
                         if (rowLockedRenderFn != null)
                         { rowLockedRenderFn(lockedHtml, i - start, i, row); }
                         rowIndices[rowID] = i;

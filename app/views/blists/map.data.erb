@@ -51,12 +51,7 @@
         <div class='section'>
           <h3>Coordinates</h3>
           <p class='subtitle separator'>
-          <%- if module_available?(:location_launch) -%>
           Choose the data to map.  You must choose a location column.
-          <%- else -%>
-          Choose the data to map.  You must choose two
-          columns that correspond to global latitude and longitude.
-          <%- end -%>
           </p>
 
           <%- uses_col_format = !@view.displayFormat.nil? &&
@@ -68,8 +63,6 @@
           <%- cols['location'] =
                   @view.columns_for_datatypes('location',
                     @is_edit && !@view.is_grouped?) -%>
-
-          <%- if module_available?(:location_launch) -%>
 
           <%- loc_id = @is_edit && uses_col_format ?
                 col_format['locationId'] : nil -%>
@@ -88,62 +81,6 @@
               <%- end -%>
             </select>
           </div>
-
-          <%- else -%>
-
-          <%- cols['number'] =
-                  @view.columns_for_datatypes('number',
-                    @is_edit && !@view.is_grouped?) -%>
-
-          <%- lat_id = @is_edit && uses_col_format ?
-            col_format['latitudeId'] : nil -%>
-          <%- cur_id = @is_edit && uses_col_format ?
-            col_format['ycol'] : nil -%>
-          <%- cur_id = @is_edit && !uses_col_format && cur_cols.length > 0 &&
-            @view.datatypes_match(cur_cols[0], 'number') ?
-              cur_cols.shift.id : cur_id -%>
-
-          <div class='line'>
-            <label class='required' for='mapColumn_latitude'>
-              Latitude
-            </label>
-            <select id='mapColumn_latitude' name='mapColumn_latitude'
-              class='required <%= lat_id.nil? && cur_id.nil? ? 'prompt' : '' %>
-              coordinate-column' notequalto='.coordinate-column'>
-              <option class='prompt' value=''>Select a Column</option>
-              <%- cols['number'].each do |c| -%>
-              <option value='<%= c.tableColumnId %>'
-                <%= c.tableColumnId.to_s == lat_id || c.id == cur_id ?
-                  "selected='selected'" : '' %>><%= c.name %></option>
-              <%- end -%>
-            </select>
-          </div>
-
-          <%- long_id = @is_edit && uses_col_format ?
-            col_format['longitudeId'] : nil -%>
-          <%- cur_id = @is_edit && uses_col_format ?
-            col_format['xcol'] : nil -%>
-          <%- cur_id = @is_edit && !uses_col_format && cur_cols.length > 0 &&
-            @view.datatypes_match(cur_cols[0], 'number') ?
-              cur_cols.shift.id : cur_id -%>
-
-          <div class='line'>
-            <label class='required' for='mapColumn_longitude'>
-              Longitude
-            </label>
-            <select id='mapColumn_longitude' name='mapColumn_longitude'
-              class='required <%= long_id.nil? && cur_id.nil? ? 'prompt' : '' %>
-              coordinate-column' notequalto='.coordinate-column'>
-              <option class='prompt' value=''>Select a Column</option>
-              <%- cols['number'].each do |c| -%>
-              <option value='<%= c.tableColumnId %>'
-                <%= c.tableColumnId.to_s == long_id || c.id == cur_id ?
-                  "selected='selected'" : '' %>><%= c.name %></option>
-              <%- end -%>
-            </select>
-          </div>
-
-          <%- end -%>
 
         </div>
 
@@ -308,25 +245,6 @@
 <script type="text/javascript" charset="utf-8">
   blist.common.modalReady = function()
   {
-    <%- if !module_available?(:location_launch) -%>
-    $.validator.addMethod('notEqualTo', function(value, element, param)
-        {
-            if (this.optional(element)) { return true; }
-            var isEqual = false;
-            var $e = $(element);
-            $(param).each(function(i, p)
-            {
-                var $p = $(p);
-                if ($e.index($p) < 0 && $p.val() == value)
-                {
-                    isEqual = true;
-                    return false;
-                }
-            });
-            return !isEqual;
-        },
-        'A different value is required.');
-    <%- end -%>
     $('.mapWrapper form').validate({ignore: ':hidden', errorElement: 'span'});
 
     var adjustSelectPrompt = function(event)
@@ -426,12 +344,7 @@
 
       var newType = $('.mapWrapper #mapType').val();
       var options = {plot: {}, type: newType};
-      <%- if module_available?(:location_launch) -%>
       options.plot.locationId = $('.mapWrapper #mapColumn_location').val();
-      <%- else -%>
-      options.plot.latitudeId = $('.mapWrapper #mapColumn_latitude').val();
-      options.plot.longitudeId = $('.mapWrapper #mapColumn_longitude').val();
-      <%- end -%>
       var titleId = $('.mapWrapper #mapColumn_title').val();
       if (titleId !== '') { options.plot.titleId = titleId; }
       var descId = $('.mapWrapper #mapColumn_description').val();

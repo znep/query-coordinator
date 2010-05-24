@@ -233,6 +233,9 @@ class Column < Model
       update_data[:format]["currency"] = js["currency"]
     end
 
+    if js.key?("humane")
+      update_data[:format]["humane"] = js["humane"]
+    end
   end
 
   def self.to_core(js)
@@ -281,6 +284,10 @@ class Column < Model
 
       if !self.format.currency.nil?
         col[:currency] = self.format.currency
+      end
+
+      if !self.format.humane.nil?
+        col[:humane] = self.format.humane
       end
 
       col[:alignment] = alignment unless aligment.nil?

@@ -83,8 +83,8 @@ function(column, $container)
         '<tr><td class="labelColumn"><label for="columnProperties_humane">' +
         'Human Readable:</label></td><td>' +
         '<input type="checkbox" id="columnProperties_humane" ' +
-        (column.humane === 'true' ? 'checked' : '') +
-        '" /></td></tr>' +
+        (column.humane === 'true' ? 'checked="checked"' : '') +
+        ' /></td></tr>' +
 
         '</tbody></table></div>';
 

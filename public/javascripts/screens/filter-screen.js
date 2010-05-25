@@ -1,25 +1,37 @@
 var filterNS = blist.namespace.fetch('blist.filter');
 
 filterNS.conditions = {
-    textual:     [ { operator: "EQUALS", label: "equals" },
+    textual:  [ { operator: "EQUALS", label: "equals" },
                 { operator: "NOT_EQUALS", label: "does not equal" },
                 { operator: "STARTS_WITH", label: "starts with" },
-                { operator: "CONTAINS", label: "contains" } ],
+                { operator: "CONTAINS", label: "contains" },
+                { operator: "IS_NOT_BLANK", label: "is not blank" },
+                { operator: "IS_BLANK", label: "is blank" }
+                ],
     date:     [ { operator: "EQUALS", label: "on" },
                 { operator: "NOT_EQUALS", label: "not on" },
                 { operator: "LESS_THAN", label: "before" },
                 { operator: "GREATER_THAN", label: "after" },
-                { operator: "BETWEEN", label: "between" } ],
-    comparable: [ { operator: "EQUALS", label: "equals" } ],
+                { operator: "BETWEEN", label: "between" },
+                { operator: "IS_NOT_BLANK", label: "is not blank" },
+                { operator: "IS_BLANK", label: "is blank" }
+              ],
+    comparable: [ { operator: "EQUALS", label: "equals" },
+                  { operator: "IS_NOT_BLANK", label: "is not blank" },
+                  { operator: "IS_BLANK", label: "is blank" }
+                ],
     blob:    [ { operator: "IS_BLANK", label: "is empty" },
-                { operator: "IS_NOT_BLANK", label: "exists" } ],
-    numeric:   [ { operator: "EQUALS", label: "equals" },
+               { operator: "IS_NOT_BLANK", label: "exists" } ],
+    numeric:  [ { operator: "EQUALS", label: "equals" },
                 { operator: "NOT_EQUALS", label: "not equals" },
                 { operator: "LESS_THAN", label: "less than" },
                 { operator: "LESS_THAN_OR_EQUALS", label: "less than or equal to" },
                 { operator: "GREATER_THAN", label: "greater than" },
                 { operator: "GREATER_THAN_OR_EQUALS", label: "greater than or equal to" },
-                { operator: "BETWEEN", label: "between" } ]
+                { operator: "BETWEEN", label: "between" },
+                { operator: "IS_NOT_BLANK", label: "is not blank" },
+                { operator: "IS_BLANK", label: "is blank" }
+            ]
 };
 
 filterNS.filterableClass = function(type) {
@@ -85,20 +97,24 @@ filterNS.filterEditor = function($row, column) {
 
     var $editorContainer = $row.find(".filterTable-editor");
     $editorContainer.empty();
-    if (condition.operator == "BETWEEN")
+    switch (condition.operator)
     {
-        $editorContainer.append('<div class="renderer renderer1 between"></div>' +
-            '<div class="ampersand">&amp;</div><div class="renderer renderer2 between"></div>');
+        case "BETWEEN":
+            $editorContainer.append('<div class="renderer renderer1 between"></div>' +
+                '<div class="ampersand">&amp;</div><div class="renderer renderer2 between"></div>');
 
-        var renderer1 = $editorContainer.find(".renderer1");
-        var renderer2 = $editorContainer.find(".renderer2");
-        filterNS.createEditor(renderer1, column);
-        filterNS.createEditor(renderer2, column);
-    }
-    else
-    {
-        $editorContainer.append('<div class="renderer"></div>');
-        filterNS.createEditor($editorContainer.find(".renderer"), column);
+            var renderer1 = $editorContainer.find(".renderer1");
+            var renderer2 = $editorContainer.find(".renderer2");
+            filterNS.createEditor(renderer1, column);
+            filterNS.createEditor(renderer2, column);
+            break;
+        case "IS_BLANK":
+        case "IS_NOT_BLANK":
+            $editorContainer.append('<div class="renderer"></div>');
+            break;
+        default:
+            $editorContainer.append('<div class="renderer"></div>');
+            filterNS.createEditor($editorContainer.find(".renderer"), column);
     }
 };
 
@@ -205,9 +221,29 @@ filterNS.row = function($row) {
     }
 
     var value = [];
-    $.each($row.find(".renderer"), function(i, r) {
-        value.push($(r).blistEditor().currentValue());
-    });
+
+    switch (operator)
+    {
+        case 'IS_BLANK':
+        case 'IS_NOT_BLANK':
+            return {
+                type: 'operator',
+                value: operator,
+                children: [{
+                    columnId: column.id,
+                    type: 'column',
+                    /* Although is blank checks both address and lat/long,
+                     * we have to pas in value to trick core server into believing
+                     * that the filter has a subcolumn for validation.
+                     */
+                    value: column.type === 'location' ? 'HUMAN_ADDRESS' : null
+                }]
+            };
+        default:
+            $.each($row.find(".renderer"), function(i, r) {
+                value.push($(r).blistEditor().currentValue());
+            });
+    }
 
     // Translate values. Complex types have a different format which is awesome.
     if (column.type == "phone" || column.type == 'url' || column.type == 'location')

@@ -896,6 +896,10 @@ blist.namespace.fetch('blist.data');
                     }
                     if (format.currency)
                     { col.currency = format.currency; }
+                    if (format.humane)
+                    {
+                        col.humane = format.humane;
+                    }
                     if (format.align)
                     {
                         col.alignment = format.align;

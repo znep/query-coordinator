@@ -67,8 +67,8 @@
             <% end %>
 
             <div class="dataGridWrapper">
+              <%- if is_tabular -%>
               <table id="dataGrid">
-                <%- if is_tabular -%>
                   <%= render(:partial => 'alt_tbody',
                     :locals => {:columns => @viewable_columns,
                     :rows => @data, :start_page => @page, :parent_id => '0'}) %>
@@ -81,10 +81,10 @@
                     </tr>
                   </tfoot>
                   <%- end -%>
-                <%- else -%>
-                  <%= render(:partial => 'displays/download_file')%>
-                <%- end -%>
               </table>
+              <%- else -%>
+                <%= render(:partial => 'displays/download_file') %>
+              <%- end -%>
             </div>
             <%- if is_tabular -%>
             <div id="pagination links" style="margin: 20px;">

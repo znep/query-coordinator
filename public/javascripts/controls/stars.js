@@ -10,6 +10,7 @@
             var $inner = $.tag({ tagName: 'div', 'class': 'starsControlInner' });
             var value = opts.value;
 
+            $this.attr('title', opts.value + ' stars');
             $this.append($inner);
             updateInner($inner, value);
 

@@ -80,6 +80,12 @@ function(column, $container)
         '<div id="columnProperties_currency"></div></div>' +
         '</td></tr>' +
 
+        '<tr><td class="labelColumn"><label for="columnProperties_humane">' +
+        'Human Readable:</label></td><td>' +
+        '<input type="checkbox" id="columnProperties_humane" ' +
+        (column.humane === 'true' ? 'checked' : '') +
+        '" /></td></tr>' +
+
         '</tbody></table></div>';
 
     var curSymbols = blist.data.types.money.currencies;
@@ -218,6 +224,9 @@ columnFormatNS.updateColumn = function(column)
 
     var $currency = $("#columnProperties_currency");
     column.currency = $currency.length > 0 ? $currency.value() : null;
+
+    column.humane = $("#columnProperties_humane").value();
+
 };
 
 $(function()

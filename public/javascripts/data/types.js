@@ -151,7 +151,7 @@ blist.namespace.fetch('blist.data.types');
     };
 
     var renderNumber = function(value, decimalPlaces, precisionStyle,
-        prefix, suffix)
+        prefix, suffix, humane)
     {
         if (value == null) { return ''; }
 
@@ -171,10 +171,14 @@ blist.namespace.fetch('blist.data.types');
         else if (decimalPlaces !== undefined)
         { value = value.toFixed(decimalPlaces); }
 
+        if (humane === true || humane === 'true')
+        {
+            value = blist.util.toHumaneNumber(value, 2);
+        }
         // HACK HACK HACK
         // Temporary HACK: Don't put commas if a number is less than 10,000.
         // This should help with the display of dates
-        if (value > 9999)
+        else if (value > 9999)
         {
             value = value + '';
             var pos = value.indexOf('.');
@@ -256,9 +260,13 @@ blist.namespace.fetch('blist.data.types');
     };
 
     var renderGenMoney = function(value, plain, column) {
-        return "renderNumber(" + value + ", " + (column.decimalPlaces || 2) +
-            ", '" + column.precisionStyle + "', '" +
-            blist.data.types.money.currencies[column.currency || 'dollar'] + "')";
+        var rv = "renderNumber({0}, {1}, {2}, '{3}', null, {4})".format(
+            value,
+            column.decimalPlaces || 2,
+            column.precisionStyle ? "'" + column.precisionStyle + "'" : 'undefined',
+            blist.data.types.money.currencies[column.currency || 'dollar'],
+            column.humane || 'false');
+        return rv;
     };
 
     var renderPhone = function(value, plain, skipURL, skipBlankType)
@@ -613,7 +621,9 @@ blist.namespace.fetch('blist.data.types');
     {
         return renderNumber(value, (column.decimalPlaces || 2),
             column.precisionStyle,
-            blist.data.types.money.currencies[column.currency || 'dollar']);
+            blist.data.types.money.currencies[column.currency || 'dollar'],
+            null,
+            column.humane);
     };
 
     var renderFilterCheckbox = function(value, column)

@@ -47,13 +47,15 @@
                 onChange: opts.onChangeAttachment,
                 onSubmit: function(file, extension)
                 {
-                    $(opts.errorMessageSelector).hide();
+                    $(opts.errorMessageContainerSelector).addClass('hide')
+                        .find(opts.errorMessageSelector).hide();
                     $(opts.uploadIndicator).removeClass('hide');
                 },
                 onComplete: function(file, response)
                 {
                     $(opts.uploadIndicator).addClass('hide');
                     var $li = $('<li class="attachmentItem"/>')
+                        .append('&nbsp;')
                         .append($('<a/>')
                             .attr('href', '#delete_attachment')
                             .attr('class', 'deleteAttachmentLink')
@@ -131,7 +133,8 @@
         {
             if(responseData['error'])
             {
-                $(opts.errorMessageSelector).text(responseData['error'])
+                $(opts.errorMessageContainerSelector).removeClass('hide')
+                    .find(opts.errorMessageSelector).text(responseData['error'])
                     .show();
             }
 

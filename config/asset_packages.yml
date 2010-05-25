@@ -143,6 +143,7 @@ javascripts:
   - util/extMouseWheel
   - util/navigation
   - util/inline-login
+  - util/humane-number
   - plugins/date
   - plugins/jquery.colorPicker
   - data/types
@@ -238,6 +239,7 @@ javascripts:
   - widgets/socrata-messaging
   - util/navigation
   - util/util
+  - util/humane-number
   - plugins/date
   - data/types
   - data/model
@@ -271,6 +273,7 @@ javascripts:
   - widgets/socrata-messaging
   - widgets/embed-form
   - util/humane-date
+  - util/humane-number
   - util/compat
   - util/navigation
   - util/urls

@@ -6,6 +6,17 @@ String.prototype.startsWith = function(str)
 String.prototype.endsWith = function(str)
 { return this.lastIndexOf(str) == (this.length - str.length); };
 
+String.prototype.format = function()
+{
+    var txt = this,
+
+    i = arguments.length;
+    while (i--) {
+        txt = txt.replace(new RegExp('\\{' + i + '\\}', 'gm'), arguments[i]);
+    }
+    return txt;
+};
+
 /* Adapted from http://blog.mastykarz.nl/measuring-the-length-of-a-string-in-pixels-using-javascript/ */
 String.prototype.visualLength = function(fontSize)
 {

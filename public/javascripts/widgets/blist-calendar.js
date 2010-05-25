@@ -155,8 +155,7 @@
     {
         if (calEvent.description)
         {
-            $(element).socrataTip({message: calEvent.description,
-                    trigger: 'hover'});
+            $(element).socrataTip(calEvent.description);
         }
     };
 

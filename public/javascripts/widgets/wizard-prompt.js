@@ -66,8 +66,9 @@
                     _.defer(function() { wizObj.close(); });
                 });
 
-                $domObj.socrataTip({message: $msg, closeOnClick: false,
-                    killTitle: false, positions: wizObj.settings.positions});
+                $domObj.socrataTip({content: $msg, closeOnClick: false,
+                    trigger: 'now', killTitle: false,
+                    positions: wizObj.settings.positions});
 
                 var events = wizObj.settings.closeEvents;
                 if (_.isNull(events))

@@ -30,13 +30,14 @@
         defaults:
         {
             closeOnClick: true,
+            content: null,
             killTitle: false,
             isSolo: false,
             message: null,
             parent: 'body',
             positions: null,
             shrinkToFit: true,
-            trigger: 'now'
+            trigger: 'hover'
         },
 
         prototype:
@@ -47,14 +48,22 @@
                 var $domObj = sTipObj.$dom();
                 $domObj.data("socrataTip", sTipObj);
 
-                if (_.isNull(sTipObj.settings.message)) { return; }
+                if ($.isBlank(sTipObj.settings.message) &&
+                    $.isBlank(sTipObj.settings.content)) { return; }
 
                 var pos = sTipObj.settings.positions;
                 if (_.isNull(pos)) { pos = ['bottom', 'top']; }
                 else if (pos == 'auto') { pos = ['most']; }
 
+                var content = sTipObj.settings.content;
+                if ($.isBlank(content))
+                {
+                    content = $.tag({tagName: 'p',
+                        contents: sTipObj.settings.message}, true);
+                }
+
                 $domObj.bt({
-                        content: sTipObj.settings.message,
+                        content: content,
 
                         fill: '#fefbef',
                         strokeStyle: '#999999',

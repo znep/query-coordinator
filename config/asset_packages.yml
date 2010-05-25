@@ -14,6 +14,7 @@ javascripts:
   - plugins/jquery.sizes.min
   - plugins/jquery.tache
   - plugins/jquery.validate.min
+  - plugins/pure
   - plugins/ui.core
   - util/underscore-min
   - util/namespace
@@ -22,6 +23,7 @@ javascripts:
   - util/markup
   - util/alert-override
   - util/google-analytics
+  - util/dataset
   - widgets/socrata-messaging
   - widgets/text-prompt
 - shared-common-all:
@@ -30,9 +32,11 @@ javascripts:
   - widgets/clipped-text
   - screens/common-layout
   - util/socrata-server
+  - widgets/scrollable
 - shared-calendar:
   - plugins/fullcalendar
   - widgets/blist-calendar
+  - widgets/dropdown-menu
 - shared-table-render:
   - plugins/ui.draggable
   - plugins/date
@@ -140,7 +144,6 @@ javascripts:
   - widgets/reorderable-list
   - screens/blist-publish-screen
 - blists-show:
-  - plugins/pure
   - plugins/jquery.tablesorter
   - plugins/ui.slider
   - plugins/ui.spinner
@@ -230,7 +233,6 @@ javascripts:
   - screens/info-pane
   - screens/dataset-menu
 - widgets-show-new:
-  - plugins/pure
   - plugins/ui.effects.custom.min
   - plugins/jquery.uniform
   - plugins/jquery.tablesorter
@@ -240,7 +242,7 @@ javascripts:
   - util/humane-date
   - util/navigation
   - util/urls
-  - util/dataset
+  - controls/dataset-controls
   - controls/stars
   - widgets/menu
   - widgets/scrollTabs
@@ -250,8 +252,11 @@ javascripts:
 - widgets-show-new-form:
   - plugins/jquery.uniform
 - screen-dataset:
+  - util/urls
+  - widgets/menu
+  - controls/dataset-controls
   - controls/full-screen
-  - screens/screen-dataset
+  - screens/dataset
 
 
 

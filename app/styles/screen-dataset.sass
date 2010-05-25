@@ -6,12 +6,61 @@ html, body
   border: 1px solid #666666
   padding: 0.25em
 
-  #datasetName
-    font-size: 1.5em
-    font-weight: bold
+  #viewsMenu
+    float: left
+    height: 3em
+    margin-right: 0.5em
+    margin-top: 6px
+    width: 2em
+    a.menuButton
+      +text-hiding
+      background-color: #cccccc
+      cursor: pointer
+      padding: 0
+      height: 100%
+      width: 100%
+    ul li
+      +sprite-menu-icons
+      a
+        +clip-text
 
-  .right
-    float: right
+  #datasetIcon
+    +sprite-type-icons-30
+    display: inline-block
+    float: left
+    margin-right: 0.5em
+    margin-top: 0.2em
+
+  #datasetName
+    font-size: 1.7em
+
+  #actionLine
+    > *
+      float: left
+
+    #description
+      color: #999999
+      font-size: 1.1em
+      max-width: 50%
+
+    > ul > li
+      display: inline-block
+
+    .right
+      float: right
+      margin-left: 0.5em
+
+    a
+      +sprite-menu-icons
+      font-size: 1.1em
+
+    #shareMenu
+      .menuDropdown ul li ul li
+        +sprite-menu-icons
+        a
+          font-size: 1.2em
+          line-height: 1em
+          min-width: 6em
 
 #mainGrid
   width: 100%

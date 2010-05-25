@@ -8,18 +8,29 @@
   <link rel="canonical" href="<%= @view.href %>" />
 <% end %>
 
-<div id='datasetBar'>
-  <a id='navMenu' class='menu' href='#Navigation'>Nav menu</a>
-  <span id='datasetIcon' class='icon'></span>
-  <span id='datasetName'><%= @view.name %></span>
-
-  <div id='sidebarOptions' class='right'>
-    <a href='#Feed'>Feed</a>
-    <a href='#Filter'>Filter</a>
+<div id='datasetBar' class='clearfix'>
+  <div id='viewsMenu' class='menu'></div>
+  <div id='datasetIcon' class='type<%= @view.display.type %>'>
+    <span class='icon'><%= @view.display.name %></span>
   </div>
-  <div class='right'>
-    <a id='searchLink' href='#Search'>Search</a>
-    <a id='shareMenu' href='#Share' class='menu'>Share</a>
+
+  <div id='titleLine'>
+    <span id='datasetName'><%= @view.name %></span>
+  </div>
+
+  <div id='actionLine'>
+    <span id='description' class='clipText'><%= @view.description %></span>
+
+    <ul id='sidebarOptions' class='right'>
+      <li><a href='#Feed'>Feed</a></li>
+      <li><a href='#Filter'>Filter</a></li>
+    </ul>
+    <ul class='right'>
+      <li><a id='searchLink' class='search' href='#Search'>
+        <span class='icon'></span>Search
+      </a></li>
+      <li><div id='shareMenu' class='share menu'></div></li>
+    </ul>
   </div>
 </div>
 

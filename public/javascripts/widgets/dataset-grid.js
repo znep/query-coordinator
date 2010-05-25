@@ -1113,12 +1113,12 @@
                 });
 
 
-            $col.socrataTip({message: tooltipContent, trigger: 'none',
+            $col.socrataTip({content: tooltipContent, trigger: 'none',
                     parent: 'body'});
             showTip();
 
             $col.find('.menuLink').socrataTip({message: 'Click for Menu',
-                trigger: 'hover', parent: 'body'});
+                    parent: 'body'});
         }
     };
 

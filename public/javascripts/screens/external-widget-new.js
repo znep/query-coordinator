@@ -134,26 +134,8 @@ $(function()
         }
     });
 
-    var tweet = escape('Check out the ' + $.htmlEscape(widgetNS.view.name) + ' dataset on ' + configNS.strings.company + ': ');
-    var seoPath = window.location.hostname + $.generateViewUrl(widgetNS.view);
-    var shortPath = window.location.hostname.replace(/www\./, '') + '/d/' + widgetNS.viewId;
-    $('.subHeaderBar .share .shareMenu').menu({
-        attached: false,
-        menuButtonClass: 'icon',
-        menuButtonContents: 'Socialize',
-        menuButtonTitle: 'Share this dataset',
-        contents: [
-            { text: 'Delicious', className: 'delicious', rel: 'external',
-              href: 'http://del.icio.us/post?url=' + seoPath + '&title=' + $.htmlEscape(widgetNS.view.name) },
-            { text: 'Digg', className: 'digg', rel: 'external',
-              href: 'http://digg.com/submit?phase=2&url=' + seoPath + '&title=' + $.htmlEscape(widgetNS.view.name) },
-            { text: 'Facebook', className: 'facebook', rel: 'external',
-              href: 'http://www.facebook.com/share.php?u=' + seoPath },
-            { text: 'Twitter', className: 'twitter', rel: 'external',
-              href: 'http://www.twitter.com/home?status=' + tweet + shortPath },
-            { text: 'Email', className: 'email', href: '#email', onlyIf: !widgetNS.isBlobby }
-        ]
-    });
+    blist.dataset.controls.hookUpShareMenu(widgetNS.view,
+        $('.subHeaderBar .share .shareMenu'), 'icon', true);
 
     // toolbar
     var $toolbar = $('.toolbar');
@@ -364,7 +346,7 @@ $(function()
                 if ($this.attr('title') === '')
                 { return; }
 
-                $this.socrataTip({ message: $this.attr('title'), trigger: 'hover', shrinkToFit: false });
+                $this.socrataTip({ message: $this.attr('title'), shrinkToFit: false });
             });
 
             $('.widgetContent_views table.gridList').combinationList({

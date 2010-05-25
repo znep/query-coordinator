@@ -23,6 +23,7 @@ class Displays::Table < Displays::Base
     def render_inline_setup_js(target_dom_id, context)
       js = super
       js << 'blist.display.isGrid = true;'
+      js << 'blist.display.view = ' + @view.to_json + ';'
       js
     end
 

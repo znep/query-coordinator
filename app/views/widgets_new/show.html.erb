@@ -20,7 +20,7 @@
   <%- end -%>
 
   <div class="widgetContent">
-    <div class="widgetContentGrid">
+    <div class="widgetContentSection widgetContentGrid">
       <%- if @theme[:behavior][:save_public_views] -%>
         <div id='viewHeader' class='clearfix'>
           <a class='datasetLink breadcrumbItem' href='#view_<%= @view.id %>'><%= @view.name %></a>
@@ -73,13 +73,13 @@
       </div>
     </div>
 
-    <div class="widgetContent_views">
+    <div class="widgetContentSection widgetContent_views">
       <a href="#close" class="close widgetContentClose">Close</a>
     </div>
-    <div class="widgetContent_downloads">
+    <div class="widgetContentSection widgetContent_downloads">
       <a href="#close" class="close widgetContentClose">Close</a>
     </div>
-    <div class="widgetContent_comments">
+    <div class="widgetContentSection widgetContent_comments">
       <a href="#close" class="close widgetContentClose">Close</a>
       <div class="commentTopLevelActions clearfix">
         <a href="#comment" class="button addCommentButton" title="Leave a comment">Comment</a>
@@ -88,14 +88,14 @@
       <div class="commentsWrapper"></div>
       <a href="#more" class="commentsViewMoreLink"></a>
     </div>
-    <div class="widgetContent_embed">
+    <div class="widgetContentSection widgetContent_embed">
       <a href="#close" class="close widgetContentClose">Close</a>
       <%= render :partial => 'blists/embed_form',
                  :locals => { :view => @view, :cur => params[:cur] } %>
     </div>
-    <div class="widgetContent_print">
+    <div class="widgetContentSection widgetContent_print">
       <a href="#close" class="close widgetContentClose">Close</a>
-      <%= render :partial => 'blists/print_form', :locals => { :view => @view } %>
+      <%= render :partial => 'blists/print_form_new', :locals => { :view => @view } %>
     </div>
   </div>
 

@@ -35,12 +35,15 @@ form textarea.text_wide
     font-size: 1.2em
 
   .formSection
+    clear: both
+    margin-bottom: 1em
     padding-left: 1em
 
     .formHeader
       margin-left: -1em
 
   .formHeader
+    clear: both
     font-weight: bold
     margin-bottom: 0.5em
 
@@ -64,11 +67,26 @@ form textarea.text_wide
 .commonForm
   +common-form-styling
 
+  .formHeader
+    display: block
+
   div.line
-    min-height: 1.8em
+    clear: both
     line-height: 1.8em
+    min-height: 1.8em
+    padding-top: 0.4em
 
     > *, .fieldContainer > *
+      display: inline-block
+      float: left
+      margin-right: 0.2em
+      &.span
+        height: 1.8em
+        line-height: 1.8em
+
+    // IE6 refuses to parse the above rule with >'s, even as a comma statement
+    // Additionally, IE6 doesn't have uniform to worry about, so just select everything
+    .ie6 & *
       display: inline-block
       float: left
       margin-right: 0.2em
@@ -81,36 +99,6 @@ form textarea.text_wide
 
     .uniform.selector
       margin-top: -2px
-
-.commonFormLegacy
-  +common-form-styling
-  label
-    display: block
-    height: 2em
-    line-height: 2em
-    margin-bottom: -2em
-
-  .formHeader
-    height: auto
-
-  div.uniform,
-  input[type=text],
-  textarea
-    margin:
-      bottom: 0.5em
-      left: 10em
-
-  div.uniform.radio,
-  div.uniform.checker
-    display: block
-    margin: 0.5em
-      bottom: -2.1em
-
-    + label
-      display: block
-      margin:
-        bottom: 0.5em
-        left: 2.5em
 
 
 // uniform jQuery plugin styling

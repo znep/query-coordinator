@@ -34,6 +34,8 @@ a.button
       left: 0
       right: 0.4em
       top: 0.5em
+    .ie6 &
+      display: none
 
   // They have rounded corners but no linear gradient
   .noLinearGradient &
@@ -47,13 +49,29 @@ a.button
   .noCss3 &, .noCss3 & .left
     background= "transparent" "url(/ui/box.png?fc=#{!gradient_buttons_active_background}&ec=#{!buttons_active_border}&ew=1&h=20&w=500&r=10)" "no-repeat"
     border: none
+  .ie6 &, .ie6 & .left
+    background= "transparent" "url(/ui/box.png?fc=#{!gradient_buttons_active_background}&ec=#{!buttons_active_border}&ew=1&h=20&w=500&r=10&bc=fff)" "no-repeat"
+
   .noCss3 &:hover, .noCss3 &:hover .left
     background-image= "url(/ui/box.png?fc=#{!gradient_buttons_hover_background}&ec=#{!buttons_hover_border}&ew=1&h=20&w=500&r=10)"
+  .ie6 &:hover, .ie6 &:hover .left
+    background-image= "url(/ui/box.png?fc=#{!gradient_buttons_hover_background}&ec=#{!buttons_hover_border}&ew=1&h=20&w=500&r=10&bc=fff)"
+    border: none /* IE6 takes border-color to mean border */
+
   .noCss3 &:active, .noCss3 &:active .left,
   .noCss3 &:focus, .noCss3 &:focus .left
     background-image= "url(/ui/box.png?fc=#{!gradient_buttons_focus_background}&ec=#{!buttons_focus_border}&ew=1&h=20&w=500&r=10)"
+  .ie6 &:active, .ie6 &:active .left,
+  .ie6 &:focus, .ie6 &:focus .left
+    background-image= "url(/ui/box.png?fc=#{!gradient_buttons_focus_background}&ec=#{!buttons_focus_border}&ew=1&h=20&w=500&r=10&bc=fff)"
+    border: none /* IE6 takes border-color to mean border */
+
   .noCss3 &.disabled
     background-image= "url(/ui/box.png?fc=#{!gradient_buttons_disabled_background}&ec=#{!buttons_disabled_border}&ew=1&h=20&w=500&r=10)"
+  .ie6 &.disabled
+    background-image= "url(/ui/box.png?fc=#{!gradient_buttons_disabled_background}&ec=#{!buttons_disabled_border}&ew=1&h=20&w=500&r=10&fc=fff)"
+    border: none /* IE6 takes border-color to mean border */
+
   .noCss3 &
     background-position: top right
     height: 20px
@@ -126,10 +144,10 @@ div.menu
     &.menuPosition-bottom.menuPosition-right
       -moz-border-radius-bottomright: 0
       -webkit-border-bottom-right-radius: 0
-    > ul
+    ul.menuColumns
       margin: 1.2em 0
       overflow: hidden
-      > li
+      li.menuColumn
         border-left: 1px solid #dedede
         display: block
         float: left
@@ -137,10 +155,10 @@ div.menu
         padding-bottom: 9999px
         &:first-child
           border-left: none
-        ul
+        ul.menuEntries
           min-width: 10em
           padding: 0.2em 0
-          li
+          li.menuEntry
             clear: both
             display: block
             a

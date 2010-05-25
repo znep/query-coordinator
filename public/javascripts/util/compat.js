@@ -1,4 +1,4 @@
-(function($)
+;(function($)
 {
     // Add extra feature detection
 
@@ -30,10 +30,15 @@
 
 $(function()
 {
+    $.browser.majorVersion = parseInt($.browser.version);
+
     // Infinite Exasperation?
     if ($.browser.msie)
     {
+        // add version classes
         $('body').addClass('ie ie' + $.browser.version.slice(0, 1)); // I guess this will break when we hit IE10.
+
+        // add button elems
         $('a.button').each(function()
         {
             $.tag({tagName: 'span', 'class': 'left' }).prependTo($(this));

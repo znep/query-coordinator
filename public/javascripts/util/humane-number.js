@@ -1,7 +1,7 @@
 var blistUtilNS = blist.namespace.fetch('blist.util');
 
 blistUtilNS.toHumaneNumber = function(val, precision)
-{  
+{
   var symbol = ['K', 'M', 'B', 'T'];
   var step = 1000;
   var divider = Math.pow(step, symbol.length);

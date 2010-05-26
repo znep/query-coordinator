@@ -753,7 +753,8 @@
                 { $item = $item.closest('.formSection'); }
 
                 if ($item.nextAll('.scrollContent').length > 0)
-                { $item = $item.nextAll('.scrollContent').find('.formSection'); }
+                { $item = $item.nextAll('.scrollContent')
+                    .find('.formSection, .finishButtons'); }
                 else
                 { $item = $item.nextAll('.formSection, .finishButtons'); }
 

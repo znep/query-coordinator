@@ -13,26 +13,29 @@ html, body
     margin-top: 6px
     width: 2em
     a.menuButton
-      +text-hiding
+      @include text-hiding
       background-color: #cccccc
       cursor: pointer
       padding: 0
       height: 100%
       width: 100%
     ul li
-      +sprite-menu-icons
+      @include sprite-menu-icons
       a
-        +clip-text
+        @include clip-text
 
   #datasetIcon
-    +sprite-type-icons-30
+    @include sprite-type-icons-30
     display: inline-block
     float: left
     margin-right: 0.5em
     margin-top: 0.2em
 
-  #datasetName
-    font-size: 1.7em
+  #titleLine
+    margin-top: 0.3em
+
+    #datasetName
+      font-size: 1.7em
 
   #actionLine
     > *
@@ -51,12 +54,12 @@ html, body
       margin-left: 0.5em
 
     a
-      +sprite-menu-icons
+      @include sprite-menu-icons
       font-size: 1.1em
 
     #shareMenu
       .menuDropdown ul li ul li
-        +sprite-menu-icons
+        @include sprite-menu-icons
         a
           font-size: 1.2em
           line-height: 1em

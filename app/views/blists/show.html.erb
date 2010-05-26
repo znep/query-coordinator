@@ -458,9 +458,10 @@
     <%- end -%>
     blist.blistGrid.isAltView = <%= @view.is_alt_view? ? 'true' : 'false' %>;
   </script>
+
   <%- if !@view.is_blobby? -%>
-  <%= render(:partial => 'shared/table_editor_js') %>
+  <%= raw @display.render_edit_javascript_includes(self) %>
   <%- end -%>
-  <%= javascript_include_merged 'blists-show' %>
   <%= raw @display.render_javascript_includes(self) %>
+  <%= javascript_include_merged 'blists-show' %>
 <% end %>

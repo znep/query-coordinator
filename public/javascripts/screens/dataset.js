@@ -8,7 +8,7 @@ $(function()
     {
         if (blist.display.isGrid)
         {
-            var isOwner = blist.currentUserId == blist.display.viewOwner;
+            var isOwner = blist.currentUserId == blist.display.view.owner.id;
             $dataGrid
 //                .bind('full_load',
 //                    function(){ $('#lensContainer .headerBar').removeClass('hide'); })

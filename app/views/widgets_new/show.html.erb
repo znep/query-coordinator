@@ -155,8 +155,10 @@
     <%- end -%>
   </script>
 
-  <%= render(:partial => 'shared/table_editor_js') %>
   <%= raw @display.render_javascript_includes(self) %>
+  <%- if @view.can_edit() && !@view.is_blobby? -%>
+  <%= raw @display.render_edit_javascript_includes(self) %>
+  <%- end -%>
   <%= javascript_include_merged 'widgets-show-new' %>
 
   <%- unless @theme[:behavior][:ga_code].empty? -%>

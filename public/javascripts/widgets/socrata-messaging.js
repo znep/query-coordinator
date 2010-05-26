@@ -7,13 +7,31 @@
 
     $.fn.socrataTip = function(options)
     {
-        // Check if object was already created
-        var sTip = $(this[0]).data("socrataTip");
-        if (!sTip)
+        var $elems = $(this);
+        // If only one item, use object-return version
+        if ($elems.length < 2)
         {
-            sTip = new sTipObj(options, this[0]);
+            // Check if object was already created
+            var sTip = $elems.data("socrataTip");
+            if (!sTip)
+            {
+                sTip = new sTipObj(options, $elems[0]);
+            }
+            return sTip;
         }
-        return sTip;
+        // Else create it on every item that is not initialized,
+        // and return the elems
+        else
+        {
+            $elems.each(function()
+            {
+                var $t = $(this);
+                var curItem = $t.data("socrataTip");
+                if (!curItem)
+                { new sTipObj(options, $t[0]); }
+            });
+            return $elems;
+        }
     };
 
     var sTipObj = function(options, dom)

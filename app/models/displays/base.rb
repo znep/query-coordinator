@@ -84,7 +84,7 @@ blist.namespace.fetch('blist.display');
 blist.display.name = '#{name}';
 blist.display.type = '#{type}';
 blist.display.viewId = '#{@view.id}';
-blist.display.viewOwner = '#{@view.owner.id}';
+blist.display.view = #{@view.to_json};
 blist.display.options = #{@options.to_json};
 blist.display.editable = #{@view.can_edit};
 blist.display.scrollsInline = #{scrolls_inline?};
@@ -114,6 +114,12 @@ $(function() {
 });
 </script>
 END
+    end
+
+    # Retrieve JavaScript for edit functionality to include in the page.
+    # Called by view logic
+    def render_edit_javascript_includes(context)
+      render_edit_javascript_links
     end
 
     # Name of partial to render if you don't want to write all your HTML in strings
@@ -149,9 +155,20 @@ END
         []
     end
 
+    # Retrieve a list of javascript asset bundles that must be included for
+    # editing this display
+    def required_edit_javascripts
+        []
+    end
+
     # Render links to javascript files
     def render_javascript_links
         required_javascripts.map { |js| @@asset_helper.javascript_include_merged js }.join
+    end
+
+    # Render links to javascript files for editing
+    def render_edit_javascript_links
+        required_edit_javascripts.map { |js| @@asset_helper.javascript_include_merged js }.join
     end
 
     # Render inline javascript to be included *after* the bulk of javascript initializes.

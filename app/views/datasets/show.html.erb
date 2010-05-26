@@ -18,7 +18,7 @@
     <span id='datasetName'><%= @view.name %></span>
   </div>
 
-  <div id='actionLine'>
+  <div id='actionLine' class='clearfix'>
     <span id='description' class='clipText'><%= @view.description %></span>
 
     <ul id='sidebarOptions' class='right'>
@@ -56,6 +56,9 @@
     <%= raw @view.display.render_inline_setup_js('data-grid', self) %>
   </script>
 
+  <%- if @view.can_edit() && !@view.is_blobby? -%>
+  <%= raw @view.display.render_edit_javascript_includes(self) %>
+  <%- end -%>
   <%= raw @view.display.render_javascript_includes(self) %>
 
   <%= javascript_include_merged 'screen-dataset' %>

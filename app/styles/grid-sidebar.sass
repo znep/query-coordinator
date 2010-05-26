@@ -21,7 +21,6 @@
 
   .close
     @include sprite-button-icons
-    @include icon-only
     position: absolute
     right: 0.5em
     top: 0.7em
@@ -127,15 +126,12 @@
           padding-left: 15px
 
         .columnSelector
-          background: transparent url(/stylesheets/images/controls/column_select_sprite.png) no-repeat 0 0
-          display: inline-block
+          @include text-hiding
+          background-image: url(/stylesheets/images/controls/column_select_sprite.png)
           height: 20px
           margin-bottom: 3px
           margin-right: 0.5em
-          overflow: hidden
           position: relative
-          text-align: left
-          text-indent: -9999px
           vertical-align: bottom
           width: 20px
 

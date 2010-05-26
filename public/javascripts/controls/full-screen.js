@@ -76,6 +76,7 @@
                     $t.find(fsObj.settings.fullHeightSelector + ':visible')
                         .height($t.innerHeight())
                         .resize();
+                    $t.resize();
                 });
             }
         }

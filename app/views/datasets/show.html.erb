@@ -41,7 +41,15 @@
       <%= render(:partial => @view.display.render_partial) %>
     </div>
   </div>
+
+  <div id='gridSidebar'>
+    <a class='close' href='#close'><span class='icon'>Close</span></a>
+  </div>
 </div>
+
+<% content_for :templates do %>
+<%= render(:partial => 'grid_sidebar_templates') %>
+<% end %>
 
 <% content_for :js_footer do %>
   <script type="text/javascript">

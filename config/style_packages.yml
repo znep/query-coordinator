@@ -21,4 +21,5 @@ grid:
 - table-core
 - dataset-grid
 dataset-page:
+- grid-sidebar
 - screen-dataset

@@ -154,7 +154,7 @@ Enjoy!
             if (!isNaN(targetWidth))
             {
                 divTag.css('width', targetWidth - 10);
-                spanTag.width(divTag.innerWidth() - 35);
+                spanTag.width(targetWidth - 37);
             }
 
             storeElement(elem);

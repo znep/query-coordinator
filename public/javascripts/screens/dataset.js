@@ -32,6 +32,8 @@ $(function()
         { $dataGrid.visualization(); }
     }
 
+    $('#gridSidebar').gridSidebar({dataGrid: $dataGrid[0]});
+
     var $dsIcon = $('#datasetIcon');
     $dsIcon.socrataTip($dsIcon.text());
 

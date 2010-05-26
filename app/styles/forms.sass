@@ -33,10 +33,14 @@ form textarea.text_wide
 .commonForm
   label
     font-size: 1.2em
+    padding-left: 12px
+
+    &.required
+      background: url(/stylesheets/images/common/required.png) no-repeat left 3px
 
   .formSection
     clear: both
-    margin-bottom: 1em
+    margin-bottom: 2em
     padding-left: 1em
 
     .formHeader
@@ -59,6 +63,11 @@ form textarea.text_wide
       @include box-shadow(0,0,2px,rgba(0, 0, 0, 0.15))
     &:focus, &:active
       @include box-shadow(0,0,2px,rgba(0, 0, 0, 0.4))
+
+  div.required, span.required
+    background: url(/stylesheets/images/common/required.png) no-repeat left top
+    padding: 0.1em
+    padding-left: 1em
 
   div.line
     clear: both
@@ -113,17 +122,23 @@ div.uniform.uploader *
 
 div.uniform.selector
   background-position: -483px -130px
+  font-size: 1.2em
   line-height: 26px
   height: 26px
   position: relative
   padding-left: 10px
 
   span
+    @include clip-text
     background-position: right 0px
+    color: #666
+    cursor: pointer
     display: block
     float: left
     height: 26px
     line-height: 26px
+    padding: 0px 25px 0px 2px
+    text-shadow: 0 1px 0 #fff
 
   select
     border: solid 1px #fff
@@ -163,6 +178,7 @@ div.uniform.selector
 
     span
       background-position: right -104px
+      color: #bbb
 
 div.uniform.checker
   width: 19px
@@ -284,25 +300,6 @@ div.uniform.uploader
 
     span.action
       background-position: right -381px
-
-div.uniform.selector
-  margin-bottom: 20px
-  width: 190px
-  font-size: 12px
-
-  select
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif
-    font-size: 12px
-
-  span
-    padding: 0px 25px 0px 2px
-    cursor: pointer
-    color: #666
-    width: 158px
-    text-shadow: 0 1px 0 #fff
-
-  &.disabled span
-    color: #bbb
 
 div.uniform.checker,
 div.uniform.radio

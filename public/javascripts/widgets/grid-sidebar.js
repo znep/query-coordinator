@@ -75,6 +75,20 @@
                 return this._$grid;
             },
 
+            $neighbor: function()
+            {
+                if (!this._$neighbor)
+                {
+                    var $sibs = this.$dom().siblings();
+                    var $par = this.$grid().parent();
+                    while ($par.length > 0 && $sibs.index($par) < 0)
+                    { $par = $par.parent(); }
+
+                    this._$neighbor = $par.length > 0 ? $par : this.$grid();
+                }
+                return this._$neighbor;
+            },
+
             $currentPane: function()
             {
                 if ($.isBlank(this._currentPane)) { return null; }
@@ -115,7 +129,7 @@
                 { throw paneName + ' does not exist'; }
                 sidebarObj._currentPane = paneName;
                 sidebarObj.$currentPane().addClass('initialLoad').show();
-                sidebarObj.$currentPane()
+                sidebarObj.$currentPane().find('.scrollContent')
                     .scroll(function(e) { handleScroll(sidebarObj, e); });
 
 
@@ -124,7 +138,7 @@
 
                 // The big reveal
                 sidebarObj.$dom().show();
-                sidebarObj.$grid().css('margin-right',
+                sidebarObj.$neighbor().css('margin-right',
                     sidebarObj.$dom().outerWidth(true) + 'px');
 
                 if (isModal)
@@ -137,13 +151,13 @@
 
                     var $overlay = modalOverlay(sidebarObj);
                     sidebarObj._origZIndex = sidebarObj.$dom().css('z-index');
-                    sidebarObj._origGridZIndex = sidebarObj.$grid().css('z-index');
+                    sidebarObj._origGridZIndex = sidebarObj.$neighbor().css('z-index');
                     sidebarObj._origParent = sidebarObj.$dom().offsetParent();
                     sidebarObj._origParentZIndex = sidebarObj.$dom()
                         .offsetParent().css('z-index');
                     var zIndex = parseInt($overlay.css('z-index')) + 1;
                     sidebarObj.$dom().css('z-index', zIndex);
-                    sidebarObj.$grid().css('z-index', zIndex);
+                    sidebarObj.$neighbor().css('z-index', zIndex);
                     sidebarObj.$dom().offsetParent().css('z-index', zIndex - 1);
 
                     // IE7 apparently isn't terribly happy the second time you
@@ -168,8 +182,9 @@
             {
                 var sidebarObj = this;
                 sidebarObj.$dom().hide();
-                sidebarObj.$dom().find('.sidebarPane').unbind('scroll').hide();
-                sidebarObj.$grid().css('margin-right', 0);
+                sidebarObj.$dom().find('.sidebarPane').hide()
+                    .find('.scrollContent').unbind('scroll');
+                sidebarObj.$neighbor().css('margin-right', 0);
 
                 sidebarObj._currentPane = null;
                 if (!$.isBlank(sidebarObj._$currentWizard))
@@ -192,7 +207,7 @@
                     else { modalOverlay(sidebarObj).fadeOut(500); }
 
                     sidebarObj.$dom().css('z-index', sidebarObj._origZIndex);
-                    sidebarObj.$grid().css('z-index', sidebarObj._origGridZIndex);
+                    sidebarObj.$neighbor().css('z-index', sidebarObj._origGridZIndex);
                     sidebarObj._origParent.css('z-index',
                         sidebarObj._origParentZIndex);
 
@@ -222,14 +237,15 @@
     /* Adjust the position/size of the sidebar to fit next to the grid */
     var setPosition = function(sidebarObj)
     {
-        var gridHeight = sidebarObj.$grid().height();
+        var gridHeight = sidebarObj.$neighbor().height();
         var adjH = sidebarObj.$dom().outerHeight() - sidebarObj.$dom().height();
         sidebarObj.$dom().css('top', -gridHeight + 'px').height(gridHeight - adjH);
 
         // Adjust current pane to correct height, since it is what scrolls
         var $pane = sidebarObj.$dom().find('.sidebarPane:visible');
-        adjH += $pane.outerHeight() - $pane.height();
-        $pane.height(gridHeight - adjH);
+        var $scrollContent = $pane.find('.scrollContent');
+        adjH += $pane.outerHeight() - $scrollContent.height();
+        $scrollContent.height(gridHeight - adjH);
     };
 
     /* Handle window resizing */
@@ -246,7 +262,8 @@
         if (!$.isBlank(sidebarObj._$currentWizard))
         {
             var $item = sidebarObj._$currentWizard;
-            var newScroll = sidebarObj.$currentPane().scrollTop();
+            var newScroll = sidebarObj.$currentPane()
+                .find('.scrollContent').scrollTop();
             var scrollDiff = newScroll - sidebarObj._curScroll;
             sidebarObj._curScroll = newScroll;
             $item.socrataTip().adjustPosition({top: -scrollDiff});
@@ -258,7 +275,7 @@
     var updateWizardVisibility = function(sidebarObj)
     {
         var $item = sidebarObj._$currentWizard;
-        var $pane = sidebarObj.$currentPane();
+        var $pane = sidebarObj.$currentPane().find('.scrollContent');
         var paneTop = $pane.offset().top;
         var itemTop = $item.offset().top;
         var paneBottom = paneTop + $pane.height();
@@ -404,23 +421,22 @@
             sidebarObj.$dom().attr('id') + '_' + config.name +
             '" class="sidebarPane"></div>');
         var rData = {title: config.title, subtitle: config.subtitle,
-            sections: config.sections, finishButtons: config.finishBlock.buttons,
+            sections: config.sections,
+            finishButtons: (config.finishBlock || {}).buttons,
             data: data || {}};
         var directive = {
             '.title': 'title',
             '.subtitle': 'subtitle',
-            '.section': {
+            '.formSection': {
                 'section<-sections': {
                     '@class+': function(arg)
                     { return ' ' + (arg.item.type || '') +
                         ' ' + (arg.item.name || '') +
                         (arg.item.type == 'selectable' ? ' collapsed' : ''); },
-                    '.title': 'section.title',
-                    '.title@for': 'section.name',
+                    '.formHeader': 'section.title',
+                    '.formHeader@for': 'section.name',
                     '.sectionSelect@id': 'section.name',
                     '.sectionSelect@name': 'section.name',
-                    '.sectionSelect@class+': function(arg)
-                    { return arg.item.type == 'selectable' ? '' : ' hidden'; },
                     '.line': {
                         'field<-section.fields': {
                             '@class+': ' #{field.type}',
@@ -436,12 +452,19 @@
             },
             '.finishButtons > li': {
                 'button<-finishButtons': {
-                    'a': 'button.text',
-                    'a@data-value': 'button.value',
-                    'a@class+': function(arg)
-                    { return arg.item.isDefault ? ' arrowButton' : ''; },
-                    'a@href+': function(arg)
-                    { return $.urlSafe(arg.item.text || ''); }
+                    '.+': function(a)
+                    {
+                        var opts = {text: a.item.text,
+                            customAttrs: {'data-value': a.item.value}};
+                        if (a.item.isDefault)
+                        {
+                            opts.className = 'arrowButton';
+                            opts.iconClass = 'submit';
+                        }
+                        else if (a.item.isCancel)
+                        { opts.iconClass = 'cancel'; }
+                        return $.button(opts, true);
+                    }
                 }
             }
         };
@@ -453,12 +476,12 @@
 
         $pane.find('form').validate({ignore: ':hidden', errorElement: 'span'});
 
-        $pane.find('.section.selectable .sectionSelect').click(function(e)
+        $pane.find('.formSection.selectable .sectionSelect').click(function(e)
         {
             var $c = $(this);
             _.defer(function()
             {
-                var $sect = $c.parent();
+                var $sect = $c.closest('.formSection');
                 var oldH = $sect.outerHeight(true);
                 $sect.toggleClass('collapsed', !$c.value());
                 var newH = $sect.outerHeight(true);
@@ -506,17 +529,19 @@
         // and isn't stolen by the radio button; then we need to manually trigger
         // the selection of the radio button.  We use mouseup because textPrompt
         // interferes with click events
-        $pane.find('.section label :input, .section label a').click(function(e)
-        {
-            e.preventDefault();
-        }).mouseup(function(e)
-        {
-            var forAttr = $(this).parents('label').attr('for');
-            if (!$.isBlank(forAttr))
-            { $pane.find('#' + forAttr).click(); }
-        });
+        $pane.find('.formSection label :input, .formSection label a')
+            .click(function(e)
+            {
+                e.preventDefault();
+            })
+            .mouseup(function(e)
+            {
+                var forAttr = $(this).parents('label').attr('for');
+                if (!$.isBlank(forAttr))
+                { $pane.find('#' + forAttr).click(); }
+            });
 
-        $pane.find('.section .columnSelector').click(function(e)
+        $pane.find('.formSection .columnSelector').click(function(e)
         {
             e.preventDefault();
 
@@ -525,7 +550,7 @@
 
             var cancelSelect = function()
             {
-                $overlay.css('cursor', 'auto').addClass('hidden');
+                $overlay.css('cursor', 'auto').addClass('hide');
                 sidebarObj._$currentWizard.socrataTip().quickShow();
                 $(document).unbind('.pane_' + sidebarObj._currentPane);
                 $link.removeClass('inProcess');
@@ -536,7 +561,7 @@
             { cancelSelect(); }
             else
             {
-                $overlay.css('cursor', 'crosshair').removeClass('hidden');
+                $overlay.css('cursor', 'crosshair').removeClass('hide');
                 sidebarObj._$currentWizard.socrataTip().quickHide();
                 // Cancel on ESC
                 $(document).bind('keypress.pane_' + sidebarObj._currentPane,
@@ -550,7 +575,14 @@
                     function(c)
                     {
                         cancelSelect();
-                        $link.siblings('select').val(c.id).change();
+                        var $sel = $link.siblings('select');
+                        if ($sel.length < 1)
+                        {
+                            $sel = $link.siblings('.uniform.selector')
+                                .find('select');
+                        }
+                        $sel.val(c.id).change();
+                        if (!$.isBlank($.uniform)) { $.uniform.update(); }
                     });
             }
         });
@@ -563,6 +595,14 @@
         });
 
         addWizards(sidebarObj, $pane, config);
+
+        if (!$.isBlank($.uniform))
+        {
+            // Defer uniform hookup so the pane can be added first and all
+            // the styles applied before swapping them for uniform controls
+            _.defer(function()
+                    { $pane.find('select, :checkbox, :radio, :file').uniform(); });
+        }
 
         return $pane;
     };
@@ -584,7 +624,7 @@
                 .data('sidebarWizard', config.wizard);
         }
 
-        $pane.find('.section').each(function(i)
+        $pane.find('.formSection').each(function(i)
         {
             var $s = $(this);
             var s = config.sections[i];
@@ -604,7 +644,7 @@
             });
         });
 
-        if (!$.isBlank(config.finishBlock.wizard))
+        if (!$.isBlank((config.finishBlock || {}).wizard))
         {
             $pane.find('.finishButtons').addClass('hasWizard')
                 .data('sidebarWizard', $.extend({}, config.finishBlock.wizard,
@@ -659,7 +699,7 @@
         }
 
         /* Adjust scroll position to make sure wizard component is in view */
-        var $pane = sidebarObj.$currentPane();
+        var $pane = sidebarObj.$currentPane().find('.scrollContent');
         var paneTop = $pane.offset().top;
         var top = $item.offset().top;
         var paneBottom = paneTop + $pane.height();
@@ -709,15 +749,20 @@
         switch(action)
         {
             case 'nextSection':
-                if ($item.closest('.section').length > 0)
-                { $item = $item.closest('.section'); }
-                showWizard(sidebarObj, $item.nextAll('.section, .finishButtons')
-                    .filter('.hasWizard:visible:first'));
+                if ($item.closest('.formSection').length > 0)
+                { $item = $item.closest('.formSection'); }
+
+                if ($item.nextAll('.scrollContent').length > 0)
+                { $item = $item.nextAll('.scrollContent').find('.formSection'); }
+                else
+                { $item = $item.nextAll('.formSection, .finishButtons'); }
+
+                showWizard(sidebarObj, $item.filter('.hasWizard:visible:first'));
                 break;
 
             case 'nextField':
                 var $triggerItem = $item;
-                if ($triggerItem.is('.section'))
+                if ($triggerItem.is('.formSection'))
                 { $triggerItem = $triggerItem
                     .find('.sectionContent > .line.hasWizard:visible:first'); }
                 else
@@ -736,7 +781,7 @@
                     }
                     else
                     {
-                        wizardAction(sidebarObj, $item.closest('.section'),
+                        wizardAction(sidebarObj, $item.closest('.formSection'),
                             'nextSection');
                     }
                 }
@@ -746,7 +791,10 @@
 
             case 'expand':
                 if ($item.is('.selectable.collapsed'))
-                { $item.find('.sectionSelect').click(); }
+                {
+                    $item.find('.sectionSelect').click();
+                    if (!$.isBlank($.uniform)) { $.uniform.update(); }
+                }
 
                 _.defer(function()
                 { wizardAction(sidebarObj, $item,
@@ -782,8 +830,8 @@
 
         $pane.find('.mainError').text('');
 
-        if ($pane.find('.section.latLongSection .sectionSelect').value() ||
-                $pane.find('.section.addressSection .sectionSelect').value())
+        if ($pane.find('.formSection.latLongSection .sectionSelect').value() ||
+                $pane.find('.formSection.addressSection .sectionSelect').value())
         { convertLocation(sidebarObj, data, $pane); }
         else
         { createLocation(sidebarObj, data, $pane); }
@@ -800,9 +848,9 @@
     var convertLocation = function(sidebarObj, data, $pane)
     {
         var useLatLong =
-            $pane.find('.section.latLongSection .sectionSelect').value();
+            $pane.find('.formSection.latLongSection .sectionSelect').value();
         var useAddress =
-            $pane.find('.section.addressSection .sectionSelect').value();
+            $pane.find('.formSection.addressSection .sectionSelect').value();
 
         var latVal = useLatLong ? $pane.find('#convertLat').val() : null;
         var longVal = useLatLong ? $pane.find('#convertLong').val() : null;
@@ -1021,7 +1069,7 @@
             finishBlock: {
                 buttons: [
                     {text: 'Create', value: true, isDefault: true},
-                    {text: 'Cancel', value: false}
+                    {text: 'Cancel', value: false, isCancel: true}
                 ],
                 wizard: {prompt: "Now you're ready to create a new column",
                     selector: '.arrowButton'}

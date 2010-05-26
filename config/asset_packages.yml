@@ -26,6 +26,7 @@ javascripts:
   - util/dataset
   - widgets/socrata-messaging
   - widgets/text-prompt
+  - widgets/values
 - shared-common-all:
   - util/events
   - util/sizing
@@ -62,7 +63,6 @@ javascripts:
   - data/editors/phone-editor
   - data/editors/location-editor
   - widgets/combo
-  - widgets/values
   - data/editors/flag-editor
   - data/editors/picklist-editor
   - data/editors/checkbox-editor
@@ -131,7 +131,6 @@ javascripts:
   - screens/attribution-edit
   - screens/metadata-edit
   - widgets/combo
-  - widgets/values
 - blists-new:
   - plugins/ajaxupload.3.0
   - screens/blist-new-screen
@@ -172,7 +171,6 @@ javascripts:
   - screens/blist-grid-screen
   - screens/signup-screen
   - widgets/combo
-  - widgets/values
   - screens/dataset-menu
   - widgets/grid-sidebar
   - widgets/wizard-prompt
@@ -252,8 +250,11 @@ javascripts:
 - widgets-show-new-form:
   - plugins/jquery.uniform
 - screen-dataset:
+  - plugins/jquery.uniform
   - util/urls
   - widgets/menu
+  - widgets/wizard-prompt
+  - widgets/grid-sidebar
   - controls/dataset-controls
   - controls/full-screen
   - screens/dataset

@@ -49,8 +49,7 @@
                     var $list = $msg.find('ul.actionButtons');
                     _.each(wizObj.settings.buttons, function(b)
                     {
-                        var $link = $('<a href="#' + $.urlSafe(b.text) + '">' +
-                            $.htmlEscape(b.text) + '</a>');
+                        var $link = $.button($.htmlEscape(b.text));
                         $link.data('wizardValue', b.value);
                         $list.append($('<li></li>').append($link));
                     });

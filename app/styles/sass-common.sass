@@ -53,6 +53,11 @@ $box_gradient_alias_fix: 'rx=1&ry=1&rw=1'
     -moz-transition-property: $p
     -webkit-transition-property: $p
 
+@mixin vertical-gradient($s, $e)
+  background-color: $s
+  background: -moz-linear-gradient(0 0 270deg, $s, $e)
+  background: -webkit-gradient(linear, left top, left bottom, from($s), to($e))
+
 // Common styles
 
 @mixin text-hiding
@@ -63,6 +68,10 @@ $box_gradient_alias_fix: 'rx=1&ry=1&rw=1'
   display: inline-block
   text-align: left
   text-indent: -9999px
+
+@mixin icon-only
+  &:hover, &:active, &:focus
+    text-decoration: none
 
 @mixin clip-text
   overflow: hidden
@@ -75,7 +84,7 @@ $box_gradient_alias_fix: 'rx=1&ry=1&rw=1'
 @mixin rounded-ends
   @include border-radius(9999px)
 
-@mixin underline-on-hover  
+@mixin underline-on-hover
   text-decoration: none
   &:hover
     text-decoration: underline

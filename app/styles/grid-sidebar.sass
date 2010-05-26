@@ -1,0 +1,193 @@
+#gridSidebarOverlay
+  background-color: #000000
+  filter: alpha(opacity = 50)
+  opacity: 0.5
+  height: 100%
+  left: 0
+  position: fixed
+  top: 0
+  width: 100%
+  z-index: 50
+
+
+#gridSidebar
+  background-color: #ffffff
+  border-left: 1px solid #cecece
+  display: none
+  float: right
+  overflow: hidden
+  position: relative
+  width: 30em
+
+  .close
+    @include sprite-button-icons
+    @include icon-only
+    position: absolute
+    right: 0.5em
+    top: 0.7em
+
+  .paneOverlay
+    background-color: #cccccc
+    height: 100%
+    left: 0
+    filter: alpha(opacity = 30)
+    opacity: 0.3
+    position: absolute
+    top: 0
+    width: 100%
+    z-index: 60
+
+  .sidebarPane
+
+    &.initialLoad .formSection
+      filter: alpha(opacity = 30)
+      opacity: 0.3
+
+    &#gridSidebar_filter .titleBlock
+      @include vertical-gradient(#57b6dd, #4ca9d0)
+    // Custom colors go here...
+
+    .titleBlock
+      @include vertical-gradient(#989898, #848484)
+      padding: 0.5em 1em
+
+      .title
+        color: #ffffff
+        font-size: 1.3em
+        text-transform: none
+
+    .subtitleBlock
+      padding: 1em
+
+      .subtitle
+        color: #999999
+        font-size: 1.1em
+
+    .scrollContent
+      overflow: auto
+      padding: 0.75em
+      position: relative
+
+    .formSection
+      border-bottom: 1px solid #cccccc
+      margin-bottom: 1em
+      padding-bottom: 0.5em
+
+      > .uniform.checker
+        display: inline-block
+        line-height: 1.2em
+        vertical-align: bottom
+
+      > .uniform.checker, .sectionSelect
+        display: none
+
+      &.selectable > .uniform.checker, &.selectable .sectionSelect
+        display: inline-block
+
+      .formHeader
+        display: inline-block
+        font-size: 1.2em
+        font-weight: bold
+        margin-bottom: 0.3em
+        margin-left: -0.5em
+        padding-left: 0
+
+      .line
+        margin: 0.5em 0
+
+        label
+          margin-right: 0.25em
+          width: 5.5em
+
+        textarea, select, input, .radioBlock
+          width: 13em
+
+        &.radioGroup
+          background-color: #ececec
+          padding-left: 0.75em
+
+          label
+            width: 4.75em
+
+        .radioBlock
+          width: 16.5em
+
+        input[type="radio"], .uniform.radio
+          display: inline-block
+          margin-left: 0
+          margin-right: 0.5em
+          vertical-align: bottom
+          width: auto
+
+        span.error
+          color: #ff0000
+          display: block
+          line-height: 1.7em
+          margin-left: 6.3em
+          padding-left: 15px
+
+        .columnSelector
+          background: transparent url(/stylesheets/images/controls/column_select_sprite.png) no-repeat 0 0
+          display: inline-block
+          height: 20px
+          margin-bottom: 3px
+          margin-right: 0.5em
+          overflow: hidden
+          position: relative
+          text-align: left
+          text-indent: -9999px
+          vertical-align: bottom
+          width: 20px
+
+          &.inProcess
+            background-position: 0 -20px
+            z-index: 70
+
+        &.columnSelect select
+          font-size: 1em
+          width: 11.6em
+
+        .radioBlock
+          label
+            display: inline-block
+            font-size: 1.2em
+            font-weight: normal
+            margin-right: 0
+            padding-left: 0
+            vertical-align: bottom
+            width: 11.5em
+
+            .uniform.selector
+              display: inline-block
+              font-size: 1em
+              vertical-align: bottom
+
+          label
+            select, input
+              font-size: 1em
+              width: 10.75em
+
+          .columnSelect .uniform.radio
+            margin-bottom: 3px
+
+          .columnSelect label select
+            width: 9.3333em
+
+          label span.error
+            font-size: 0.8333em
+            margin-left: 0
+            padding-left: 0
+
+      &.collapsed
+        .formHeader
+          color: #999999
+
+        .sectionContent
+          display: none
+
+    .finishButtons
+      margin-top: 0.75em
+
+      // Once the old app is gone, all these legacy actionButtons styles can go away
+      li
+        float: left

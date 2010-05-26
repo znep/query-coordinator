@@ -190,7 +190,7 @@
     {
         if (data.meta !== undefined)
         {
-            vizObj._displayConfig = data.meta.view.displayFormat;
+            vizObj._displayConfig = data.meta.view.displayFormat || {};
             vizObj.getColumns(data.meta.view);
             vizObj._rowsLeft = data.meta.totalRows - vizObj._rowsLoaded;
         }

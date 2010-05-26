@@ -17,6 +17,7 @@
                 var newVal = this.textValue();
                 var adjVal = newVal && newVal.charAt(0) == '$' ?
                     newVal.slice(1) : newVal;
+                adjVal = blist.util.parseHumaneNumber(adjVal);
                 return adjVal == parseFloat(adjVal) ? adjVal : newVal;
             }
         }

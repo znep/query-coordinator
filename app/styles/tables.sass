@@ -4,8 +4,8 @@
 
   thead tr
     th
-      +sprite-menu-icons
-      background-color= !color_table_header_inactive
+      @include sprite-menu-icons
+      background-color: $color_table_header_inactive
       font-size: 1.2em
       font-weight: normal
       padding: 0.5em 1em
@@ -22,11 +22,11 @@
         -webkit-border-bottom-right-radius: 0.4em
 
       &.header:hover
-        background-color= !color_table_header_active
+        background-color: $color_table_header_active
         cursor: pointer
 
       &.headerSortUp, &.headerSortDown
-        background-color= !color_table_header_active
+        background-color: $color_table_header_active
         .icon
           visibility: visible
 
@@ -37,7 +37,7 @@
         float: right
 
   tbody tr
-    border-top= 1px solid !color_table_header_inactive
+    border-top: 1px solid $color_table_header_inactive
     &:first-child
       border-top: none
 

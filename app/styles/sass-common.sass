@@ -1,4 +1,4 @@
-=text-hiding
+@mixin text-hiding
   background:
     color: transparent
     position: 0 0
@@ -7,18 +7,20 @@
   text-align: left
   text-indent: -9999px
 
-=clip-text
+@mixin clip-text
   text-overflow: ellipsis
   white-space: nowrap
 
-=default-fonts
+@mixin default-fonts
   font-family: Arial, sans-serif
 
-=rounded-ends
+@mixin rounded-ends
   -moz-border-radius: 9999px
   -webkit-border-radius: 9999px
 
-=underline-on-hover  
+@mixin underline-on-hover  
   text-decoration: none
   &:hover
     text-decoration: underline
+
+$box_gradient_alias_fix: 'rx=1&ry=1&rw=1'

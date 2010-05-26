@@ -29,8 +29,8 @@ form textarea.text_wide
   color: #f00
 
 
-// common styling for forms
-=common-form-styling
+// common layout for forms
+.commonForm
   label
     font-size: 1.2em
 
@@ -44,6 +44,7 @@ form textarea.text_wide
 
   .formHeader
     clear: both
+    display: block
     font-weight: bold
     margin-bottom: 0.5em
 
@@ -62,13 +63,6 @@ form textarea.text_wide
     &:focus, &:active
       -moz-box-shadow: 0 0 2px rgba(0, 0, 0, 0.4)
       -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.4)
-
-// common layout for forms
-.commonForm
-  +common-form-styling
-
-  .formHeader
-    display: block
 
   div.line
     clear: both

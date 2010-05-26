@@ -71,7 +71,7 @@
 
         // HACK/TODO: IE7 breaks because it can't see the width of the floated children.
         // So, forcibly set the width manually on the first ul, then the container.
-        if ($('body').hasClass('ie7'))
+        if (($.browser.msie) && ($.browser.majorVersion < 8))
         {
             var $topLevelList = $menuDropdown.children('ul');
             var topLevelWidth = 0;

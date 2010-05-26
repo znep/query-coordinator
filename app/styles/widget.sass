@@ -13,8 +13,9 @@ html, body
 .headerBar
   height: 4em
 
-  .ie7 &
-    // ie7 keeps nested relatives in independent z-indexes;
+  .ie7 &,
+  .ie6 &
+    // ie6, 7 keep nested relatives in independent z-indexes;
        this was making the menu appear below the grid.
     position: relative
     z-index: 51
@@ -78,13 +79,13 @@ html, body
       margin: 0.4em 0
       min-width: 23em
 
-      > ul
+      ul.menuColumns
         margin-bottom: 0
 
-        ul
+        li.menuColumn ul.menuEntries
           padding-bottom: 0
 
-          > li
+          li.menuEntry
             +sprite-type-icons-30
 
             a
@@ -96,6 +97,8 @@ html, body
                 left: 4em
                 right: 1em
               position: relative
+              .ie6 &
+                width: 13em
 
               .icon
                 left: 1em
@@ -124,6 +127,8 @@ html, body
                 font-size: 1.1em
                 font-weight: normal
                 padding: 1em
+                .ie6 &
+                  width: 17em
 
                 .icon
                   display: none
@@ -133,13 +138,14 @@ html, body
   margin= 0 !frame_padding
   padding: 0.2em
 
-  .ie7 &
-    // ie7 keeps nested relatives in independent z-indexes;
+  .ie7 &,
+  .ie6 &
+    // ie6, 7 keep nested relatives in independent z-indexes;
        this was making the menu appear below the grid.
     position: relative
     z-index: 50
 
-  > li
+  li.subHeaderAction
     +sprite-menu-icons
     display: block
     float: left
@@ -147,20 +153,27 @@ html, body
     &.right
       float: right
 
-    > a
+    a
       color: #eee
       &:hover
         text-decoration: none
+      .ie6 &
+        display: block
 
     .ie &.datasetName
       margin: 0.2em
     .ie7 & .icon
       display: block
+    .ie6 &
+      height: 13px
+      width: 13px
+      &.datasetName
+        width: auto
 
     &.share .menu
       height: 13px
 
-      > a
+      a.mainMenuButton
         // menu button
         cursor: pointer
 
@@ -170,6 +183,7 @@ html, body
       .menuDropdown ul li ul li
         +sprite-menu-icons
         a
+          color= !color_links_normal
           min-width: 6em
 
 .toolbar
@@ -202,6 +216,9 @@ html, body
       border: none
       padding: 0.2em 0.4em
       width: 100%
+      .ie6 &
+        font-size: 1.1em
+        width: 98% /* when IE tries 100%, it calculates it wrong */
 
   .close
     +sprite-button-icons
@@ -211,6 +228,7 @@ html, body
     top: 0.3em
 
     // I don't even know anymore.
+    .ie6 & .icon,
     .ie7 & .icon
       display: block
 
@@ -222,7 +240,7 @@ html, body
   @else if !frame_orientation == "upwards"
     margin-bottom: 0
 
-  > *
+  .widgetContentSection
     background-color: #fcfcfc
     display: none
     overflow-y: auto
@@ -236,8 +254,8 @@ html, body
   .widgetContentGrid
     display: block
 
-    // make IE7 display and scroll properly
-    .ie7 &
+    // make IE6/7 display and scroll properly
+    .ie6 &, .ie7 &
       position: relative
 
     #viewHeader
@@ -273,8 +291,8 @@ html, body
         +sprite-menu-icons
 
   .widgetContent_comments
-    // fix IE7 scrolling bug
-    .ie7 &
+    // fix IE6/7 scrolling bug
+    .ie6 &, .ie7 &
       position: relative
 
     .commentTopLevelActions
@@ -319,12 +337,14 @@ html, body
           position: relative
 
           .commentTip
-            background: transparent url(/stylesheets/images/interface/comment_tip.png) no-repeat
+            background: transparent url(/stylesheets/images/interface/comment_tip.gif) no-repeat
             height: 10px
             left: -10px
             position: absolute
             top: 1em
             width: 10px
+            .ie6 &
+              left: -20px
 
           .commentBody, .replyBody
             font-size: 1.1em
@@ -429,16 +449,31 @@ html, body
         font-style: italic
         padding-bottom: 0.4em
 
-  .widgetContent_print form
-    padding: 1em
+      .dimensions
+        label
+          width: 4em
+        input
+          width: 8em
 
-    .margin
-      margin-left: 1em
+  .widgetContent_print form
+    padding: 2em
 
     .pageSizeHeader
-      margin-bottom: -2em
+      margin-bottom: -1.6em
+    #uniform-page_size
+      margin-left: 6em
+    #page_size
+      width: 18em
+      .ie6 &
+        margin-bottom: 1em
+        left: 6em
+        position: relative
+
+    .margins .line label
+      width: 4em
 
     .submitLine
+      clear: both
       padding-top: 1em
 
       .submitActions li

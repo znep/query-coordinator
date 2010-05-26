@@ -50,7 +50,7 @@
     var literalSuffix = "</span>";
 
     var printObject = function(output, $target) {
-        var pretty = [ "<pre style='", FONT_CSS, ' ', TOKEN_CSS, "'>" ];
+        var pretty = [ "<pre style='", FONT_CSS, ' ', TOKEN_CSS, "; margin: 0'>" ];
 
         var addObject = function(node, prefix) {
             if (node == null || node.constructor == Date) {
@@ -118,7 +118,7 @@
 
     var printError = function(error, $target) {
         error = (error + "").trim();
-        if (error = "")
+        if (error == "")
             error = "Error (no details available)";
         if (typeof error == "string")
             print('<span style="' + ERROR_CSS + '">' + escapeHtml(error) + '</span>', $target);
@@ -240,9 +240,9 @@
         $console = $('<div style="background: transparent url(' + defaultRoot + '/images/75pct-black.png); position: fixed; top: 0; left: 0; right: 0; bottom: 0; ' + FONT_CSS + ' overflow: visible; padding: ' + OUTER_PADDING + 'px; z-index: 1000001; color: #00ff00;">' +
             '<div class="__socrata-console-inner__" style="overflow: auto">' +
             '<div class="__socrata-console-output__">' + HELLO_HTML + '</div>' +
-            '<table class="__socrata-console-input__" width="100%" style="padding: 0; margin: 0; border: none"><tr>' +
-            '<td style="' + FONT_CSS + '">socrata&gt;&nbsp;</td>' +
-            '<td width="100%"><input autocomplete="off" style="margin-left: -1px; border: none; background: transparent; overflow: visible; color: #00ff00; width: 100%; ' + FONT_CSS + ' padding: 0; height: 15px;"/></td>' +
+            '<table class="__socrata-console-input__" width="100%" style="padding: 0; margin: 0; border: none; border-collapse: collapse"><tr>' +
+            '<td style="' + FONT_CSS + '; padding: 0">socrata&gt;&nbsp;</td>' +
+            '<td width="100%" style="padding: 0"><input autocomplete="off" style="margin-left: -1px; border: none; background: transparent; overflow: visible; color: #00ff00; width: 100%; ' + FONT_CSS + ' padding: 0; height: 15px;"/></td>' +
             '</table>' +
             '</div></div>');
         $inner = $console.children();
@@ -315,6 +315,16 @@
             syncSize();
             $input.focus();
         }
+    }
+    
+    $.socrata.exec = function(code) {
+        if (!$console || !$console.is(':visible'))
+            $.socrata();
+        if (code == null)
+            code = "";
+        else
+            code = code + "";
+        execute(code + "");
     }
 
     if (window.SOCRATA_SHELL_KEY !== false) {

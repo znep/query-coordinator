@@ -138,7 +138,7 @@ $(function()
     });
     $('.mainMenu .menuDropdown a').click(function(event)
     {
-        var target = $(this).closest('li').attr('class');
+        var target = $(this).closest('li').attr('class').split(' ')[1];
         if (target == 'about')
         {
             // bail; this is a real link

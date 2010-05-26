@@ -53,16 +53,12 @@ form textarea.text_wide
 
   input[type=text],
   textarea
-    -moz-border-radius: 0.3em
-    -webkit-border-radius: 0.3em
-    -moz-box-shadow: 0 0 2px rgba(0, 0, 0, 0.05)
-    -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.05)
+    @include border-radius(0.3em)
+    @include box-shadow(0,0,2px,rgba(0, 0, 0, 0.05))
     &:hover
-      -moz-box-shadow: 0 0 2px rgba(0, 0, 0, 0.15)
-      -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.15)
+      @include box-shadow(0,0,2px,rgba(0, 0, 0, 0.15))
     &:focus, &:active
-      -moz-box-shadow: 0 0 2px rgba(0, 0, 0, 0.4)
-      -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.4)
+      @include box-shadow(0,0,2px,rgba(0, 0, 0, 0.4))
 
   div.line
     clear: both

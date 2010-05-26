@@ -90,7 +90,7 @@ protected
   def get_includes
     result = STYLE_PACKAGES['includes'].map{ |incl| "@import \"#{incl}.sass\"\n" }.join +
              get_includes_recurse(CurrentDomain.theme_v2.colors, @@site_theme_parse[:colors])
-puts result
+
     return result
   end
 

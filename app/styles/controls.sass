@@ -3,8 +3,7 @@ a.button
   @include gradient_buttons_active_background
   @include sprite-button-icons
   border: 1px solid $color_buttons_active_border
-  -moz-box-shadow: 0 0 2px $color_buttons_shadow
-  -webkit-box-shadow: 0 0 2px $color_buttons_shadow
+  @include box-shadow(0,0,2px,$color_buttons_shadow)
   color: $color_buttons_active_text
   display: inline-block
   font-size: 1.1em
@@ -96,21 +95,16 @@ a.button
       width: 10px
 
 div.menu
-  -moz-border-radius: 0.4em 0.4em 0 0
-  -webkit-border-radius: 0.4em 0.4em 0 0
-  -moz-transition-duration: 0.2s
-  -webkit-transition-duration: 0.2s
-  -moz-transition-property: -moz-box-shadow
-  -webkit-transition-property: -webkit-box-shadow
+  @include border-radius(0.4em, 0)
   display: inline-block
   position: relative
+  @include transition-duration(0.2s)
+  @include transition-property(box-shadow)
+
   .menuButton
     @include sprite-menu-icons
     background-color: #fff
-    -moz-border-radius: 0.4em 0.4em 0 0
-    -webkit-border-radius: 0.4em
-    -webkit-border-bottom-left-radius: 0
-    -webkit-border-bottom-right-radius: 0
+    @include border-radius(0.4em, 0)
     color: #000
     display: inline-block
     font-size: 1.2em
@@ -119,37 +113,32 @@ div.menu
     margin-top: -4px
     padding: 0.6em 1em
     position: relative
-    -moz-transition-property: border
-    -webkit-transition-property: border
+    @include transition-property(border)
     z-index: 50
     &:hover
       text-decoration: none
+
     .icon
       margin-left: 0.2em
+
   .menuDropdown
     background-color: #fff
     border: 1px solid #999999
-    -moz-border-radius: 0.4em
-    -webkit-border-radius: 0.4em
-    -moz-box-shadow: 0 0 4px rgba(0,0,0,0.5)
-    -webkit-box-shadow: 0 0 4px rgba(0,0,0,0.5)
+    @include border-radius(0.4em)
+    @include box-shadow(0,0,4px,rgba(0,0,0,0.5))
     display: none
     margin-top: -1px
     overflow: hidden
     position: absolute
     z-index: 49
     &.menuPosition-top.menuPosition-left
-      -moz-border-radius-topleft: 0
-      -webkit-border-top-left-radius: 0
+      @include border-radius-corner(top, left, 0)
     &.menuPosition-top.menuPosition-right
-      -moz-border-radius-topright: 0
-      -webkit-border-top-right-radius: 0
+      @include border-radius-corner(top, right, 0)
     &.menuPosition-bottom.menuPosition-left
-      -moz-border-radius-bottomleft: 0
-      -webkit-border-bottom-left-radius: 0
+      @include border-radius-corner(bottom, left, 0)
     &.menuPosition-bottom.menuPosition-right
-      -moz-border-radius-bottomright: 0
-      -webkit-border-bottom-right-radius: 0
+      @include border-radius-corner(bottom, right, 0)
     ul.menuColumns
       margin: 1.2em 0
       overflow: hidden
@@ -192,8 +181,7 @@ div.menu
                 font-size: 0.85em
                 margin: 0.2em 0.1em
   &.open
-    -moz-box-shadow: 0 -3px 4px rgba(0,0,0,0.5)
-    -webkit-box-shadow: 0 -3px 4px rgba(0,0,0,0.5)
+    @include box-shadow(0,-3px,4px,rgba(0,0,0,0.5))
     .menuButton
       border: 1px solid #999999
         bottom: none

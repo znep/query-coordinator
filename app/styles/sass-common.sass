@@ -1,3 +1,60 @@
+// Constants
+
+$box_gradient_alias_fix: 'rx=1&ry=1&rw=1'
+
+// Compat functions
+
+@mixin border-radius($a, $b: true, $c: true, $d: true)
+  // variables are strictly scoped in conditionals, so this can't be refactored out
+  @if ($c == true) and ($d == true)
+    @if $b == true
+      border-radius: $a
+      -moz-border-radius: $a
+      -webkit-border-radius: $a
+    @else
+      border-radius: $a $a $b $b
+      -moz-border-radius: $a $a $b $b
+      -webkit-border-radius: $a
+      -webkit-border-top-right-radius: $a
+      -webkit-border-bottom-right-radius: $b
+      -webkit-border-bottom-left-radius: $b
+  @else
+    border-radius: $a $b $c $d
+    -moz-border-radius: $a $b $c $d
+    -webkit-border-radius: $a
+    -webkit-border-top-right-radius: $b
+    -webkit-border-bottom-right-radius: $c
+    -webkit-border-bottom-left-radius: $d
+
+@mixin border-radius-corner($v, $h, $r)
+  -moz-border-radius-#{$v}#{$h}: $r
+  -webkit-border-#{$v}-#{$h}-radius: $r
+
+@mixin box-shadow($x,$y,$r,$c)
+  box-shadow: $x $y $r $c
+  -moz-box-shadow: $x $y $r $c
+  -webkit-box-shadow: $x $y $r $c
+@mixin box-shadow-none
+  box-shadow: none
+  -moz-box-shadow: none
+  -webkit-box-shadow: none
+
+@mixin transition-duration($t)
+  transition-duration: $t
+  -moz-transition-duration: $t
+  -webkit-transition-duration: $t
+
+@mixin transition-property($p)
+  transition-property: $p
+  @if ($p == box-shadow) or ($p == border-radius)
+    -moz-transition-property: -moz- + $p
+    -webkit-transition-property: -webkit- + $p
+  @else
+    -moz-transition-property: $p
+    -webkit-transition-property: $p
+
+// Common styles
+
 @mixin text-hiding
   background:
     color: transparent
@@ -15,12 +72,9 @@
   font-family: Arial, sans-serif
 
 @mixin rounded-ends
-  -moz-border-radius: 9999px
-  -webkit-border-radius: 9999px
+  @include border-radius(9999px)
 
 @mixin underline-on-hover  
   text-decoration: none
   &:hover
     text-decoration: underline
-
-$box_gradient_alias_fix: 'rx=1&ry=1&rw=1'

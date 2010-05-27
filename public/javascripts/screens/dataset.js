@@ -33,6 +33,11 @@ $(function()
     }
 
     $('#gridSidebar').gridSidebar({dataGrid: $dataGrid[0]});
+    $('#sidebarOptions a[data-paneName]').click(function(e)
+    {
+        e.preventDefault();
+        $('#gridSidebar').gridSidebar().show($(this).attr('data-paneName'));
+    });
 
     var $dsIcon = $('#datasetIcon');
     $dsIcon.socrataTip($dsIcon.text());

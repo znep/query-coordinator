@@ -188,6 +188,9 @@
                     sidebarObj.hide();
                 });
 
+                sidebarObj._$outerPanes = {};
+                sidebarObj._$panes = {};
+
                 $(window).resize(function() { handleResize(sidebarObj); });
             },
 
@@ -245,8 +248,6 @@
                 if ($.isBlank(config) || $.isBlank(outerConfig))
                 { throw "Configuration required for gridSidebar"; }
 
-                sidebarObj._$outerPanes = sidebarObj._$outerPanes || {};
-                sidebarObj._$panes = sidebarObj._$panes || {};
                 if (!$.isBlank(sidebarObj._$panes[config.name]))
                 {
                     sidebarObj._$panes[config.name].remove();
@@ -280,11 +281,10 @@
                     paneConfigs[nameParts.secondary];
 
                 // Make sure our pane exists
-                if ($.isBlank(sidebarObj._$outerPanes[nameParts.primary]))
-                { throw nameParts.primary + ' does not exist'; }
-                if (!config.isParent &&
-                    $.isBlank(sidebarObj._$panes[nameParts.secondary]))
-                { throw nameParts.secondary + ' does not exist'; }
+                if ($.isBlank(sidebarObj._$outerPanes[nameParts.primary]) ||
+                    (!config.isParent &&
+                        $.isBlank(sidebarObj._$panes[nameParts.secondary])))
+                { sidebarObj.addPane(paneName); }
 
                 sidebarObj._currentOuterPane = nameParts.primary;
                 sidebarObj.$currentOuterPane().show();

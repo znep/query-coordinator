@@ -341,7 +341,7 @@
         var $color = $this.find('a.colorOption');
         if ($color.length > 0 && $color.attr('colorDefaults') !== undefined)
         {
-          var colors = $.json.deserialize($color.attr('colorDefaults'));
+          var colors = JSON.parse($color.attr('colorDefaults'));
           var newColor = colors[newIndex % colors.length];
           $color.css('background-color', newColor);
           $this.find('input[type=hidden]').val(newColor);
@@ -420,7 +420,7 @@
               if (id !== '')
               {
                   var $c = $t.find(':selected');
-                  var format = $.json.deserialize(
+                  var format = JSON.parse(
                     $.htmlUnescape($c.attr('format')));
                   if (_.include(<%= raw Displays::Config::NUMERIC_TYPES.to_json %>,
                       $c.attr('dataType')))
@@ -442,7 +442,7 @@
                   if (id !== '')
                   {
                       var $c = $t.find(':selected');
-                      var format = $.json.deserialize(
+                      var format = JSON.parse(
                           $.htmlUnescape($c.attr('format')));
                       if (_.include(
                             <%= raw Displays::Config::NUMERIC_TYPES.to_json %>,
@@ -493,8 +493,8 @@
       });
 
       var origOptions = data.options;
-      data.options = $.json.serialize(data.options);
-      data.columns = $.json.serialize(data.columns);
+      data.options = JSON.stringify(data.options);
+      data.columns = JSON.stringify(data.columns);
 
       var loginMsg = 'You must be signed in to create a chart';
       if (!$.isBlank(blist.util.inlineLogin))

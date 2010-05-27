@@ -204,7 +204,7 @@ blist.widget.setUpViewHeader = function()
             // Get the view with columns
             var view = $('#data-grid').blistModel().getViewCopy(true);
             view.name = name;
-            return $.json.serialize(view);
+            return JSON.stringify(view);
         },
         requestContentType: 'application/json',
         onceOnly: true,

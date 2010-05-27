@@ -10,7 +10,7 @@ javascripts:
   - plugins/jquery.bt
   - plugins/jquery.cookies.2.1.0.min
   - plugins/jquery.example.min
-  - plugins/jquery.json
+  - plugins/json2
   - plugins/jquery.sizes.min
   - plugins/jquery.tache
   - plugins/jquery.validate.min

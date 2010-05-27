@@ -363,7 +363,7 @@
       });
 
       var data = {viewName: $('.mapWrapper #mapName').val(),
-        vizType: 'map', options: $.json.serialize(options),
+        vizType: 'map', options: JSON.stringify(options),
         view_query: $('.mapWrapper #view_query').val()};
 
       var loginMsg = 'You must be signed in to create a map';

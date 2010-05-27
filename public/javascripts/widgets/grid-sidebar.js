@@ -610,7 +610,7 @@
     var genericErrorHandler = function($pane, xhr)
     {
         $pane.find('.mainError')
-            .text($.json.deserialize(xhr.responseText).message);
+            .text(JSON.parse(xhr.responseText).message);
     };
 
 
@@ -911,7 +911,7 @@
                     $.ajax({url: '/views/' + blist.display.viewId +
                         '/columns/' + resp.id + '.json', type: 'PUT',
                         contentType: 'application/json', dataType: 'json',
-                        data: $.json.serialize({description: desc}),
+                        data: JSON.stringify({description: desc}),
                         error: function(xhr) { genericErrorHandler($pane, xhr); },
                         success: function(r) { columnCreated(sidebarObj, r); }
                     });
@@ -930,7 +930,7 @@
 
         $.ajax({url: '/views/' + blist.display.viewId + '/columns.json',
             type: 'POST', contentType: 'application/json', dataType: 'json',
-            data: $.json.serialize(column),
+            data: JSON.stringify(column),
             error: function(xhr) { genericErrorHandler($pane, xhr); },
             success: function(resp) { columnCreated(sidebarObj, resp); }
         });

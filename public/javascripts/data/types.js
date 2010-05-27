@@ -567,7 +567,7 @@ blist.namespace.fetch('blist.data.types');
         var pieces = [];
         if (!$.isBlank(value.human_address))
         {
-            var a = $.json.deserialize(value.human_address);
+            var a = JSON.parse(value.human_address);
             if (!$.isBlank(a.address) && a.address !== '')
             { pieces.push(a.address); }
             pieces.push(_.compact([_.compact([a.city, a.state]).join(', '),

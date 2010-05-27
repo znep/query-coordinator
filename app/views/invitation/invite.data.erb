@@ -42,7 +42,7 @@
           first: $("#add_recipient_first_name").val(),
           last: $("#add_recipient_last_name").val()
         };
-        addedRecipients.push($.json.serialize(newRecipient));
+        addedRecipients.push(JSON.stringify(newRecipient));
 
         var addRow = "\
           <tr>\
@@ -82,7 +82,7 @@
       var recipientId = $link.attr("id");
       for (var i = 0; i < addedRecipients.length; i++)
       {
-        if (recipientId == $.json.deserialize(addedRecipients[i]).id)
+        if (recipientId == JSON.parse(addedRecipients[i]).id)
         {
           recipientIndex = i;
         }

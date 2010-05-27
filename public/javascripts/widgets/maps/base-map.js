@@ -160,7 +160,7 @@
                 $.ajax({ url: '/views/' + blist.display.viewId + '.json',
                         type: 'PUT',
                         contentType: 'application/json',
-                        data: $.json.serialize(
+                        data: JSON.stringify(
                             { displayFormat: mapObj._displayConfig })
                     });
             },

@@ -9,7 +9,7 @@
 
     var addressValue = function(editObj)
     {
-        return $.json.deserialize((editObj.originalValue ||
+        return JSON.parse((editObj.originalValue ||
             {}).human_address || '{}');
     };
 
@@ -247,7 +247,7 @@
                 if (newCSZ !== '')
                 { address.city = newCSZ; }
 
-                obj.human_address = $.json.serialize(address);
+                obj.human_address = JSON.stringify(address);
                 return obj;
             },
 

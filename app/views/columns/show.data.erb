@@ -250,13 +250,13 @@ blist.common.modalReady = function()
         url: '<%= @column.href(@view.id)%>',
         cache: false,
         data: {
-          json: $.json.serialize(column),
+          json: JSON.stringify(column),
           authenticity_token: "<%= form_authenticity_token %>"
           },
         dataType: 'json',
         error: function(request) {
           $("#columnPropertiesDialog .error")
-            .html($.json.deserialize(request.responseText).error).show();
+            .html(JSON.parse(request.responseText).error).show();
         },
         success: function(responseData) {
             var $grid = $("#dataGrid");
@@ -289,7 +289,7 @@ blist.common.modalReady = function()
       contentType: "application/json",
       error: function(request) {
         $("#columnPropertiesDialog .error")
-          .html($.json.deserialize(request.responseText).message).show();
+          .html(JSON.parse(request.responseText).message).show();
       },
       success: function (responseData) {
         $("#modal .jqmClose").click();

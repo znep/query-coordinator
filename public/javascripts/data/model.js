@@ -221,7 +221,7 @@ blist.namespace.fetch('blist.data');
                         {
                             var md = r[c.index];
                             if (md !== null && md !== undefined)
-                            { r[c.name] = $.json.deserialize(md); }
+                            { r[c.name] = JSON.parse(md); }
                         }
                         else if (r[c.index] !== undefined)
                         { r[c.name] = r[c.index]; }
@@ -531,7 +531,7 @@ blist.namespace.fetch('blist.data');
             $.ajax({url: '/batches',
                     dataType: 'json', contentType: 'application/json',
                     type: 'POST',
-                    data: $.json.serialize({requests: serverReqs}),
+                    data: JSON.stringify({requests: serverReqs}),
                     success: function(resp)
                     {
                         $.each(resp, function(i, r)
@@ -543,7 +543,7 @@ blist.namespace.fetch('blist.data');
                             }
                             else if (typeof br[i].success == 'function')
                             {
-                                br[i].success($.json.deserialize(r.response));
+                                br[i].success(JSON.parse(r.response));
                             }
                         });
                     },
@@ -556,7 +556,7 @@ blist.namespace.fetch('blist.data');
                     },
                     error: function(xhr)
                     {
-                        var errBody = $.json.deserialize(xhr.responseText);
+                        var errBody = JSON.parse(xhr.responseText);
                         $.each(br, function(i, r)
                         {
                             if (typeof r.error == 'function')
@@ -598,7 +598,7 @@ blist.namespace.fetch('blist.data');
                         { method: 'getByIds', start: min, length: len })),
                     type: 'POST',
                     contentType: 'application/json',
-                    data: $.json.serialize(tempView) });
+                    data: JSON.stringify(tempView) });
             doLoad(this, function(d) { onSupplementalLoad(d, min); },
                 ajaxOptions);
         };
@@ -696,7 +696,7 @@ blist.namespace.fetch('blist.data');
                     $.param({method: 'getAggregates'}),
                     type: 'POST',
                     contentType: 'application/json',
-                    data: $.json.serialize(tempView),
+                    data: JSON.stringify(tempView),
                     success: function(resp)
                     {
                         updateAggregateHash(resp);
@@ -1300,7 +1300,7 @@ blist.namespace.fetch('blist.data');
                 {
                     if (c.name == 'meta')
                     {
-                        realRow[c.index] = $.json.serialize(realRow.meta);
+                        realRow[c.index] = JSON.stringify(realRow.meta);
                         return false;
                     }
                 });
@@ -1396,7 +1396,7 @@ blist.namespace.fetch('blist.data');
                 { data['_tags'] = validValue; }
                 else { data[column.id] = validValue; }
             }
-            if (row.meta) { data.meta = $.json.serialize(row.meta); }
+            if (row.meta) { data.meta = JSON.stringify(row.meta); }
 
             if (column && column.nestedIn)
             {
@@ -1543,7 +1543,7 @@ blist.namespace.fetch('blist.data');
             addBatchRequest(
                     { url: url,
                     type: isCreate ? 'POST' : 'PUT',
-                    data: $.json.serialize(data),
+                    data: JSON.stringify(data),
                     complete: function()
                     {
                         if (row === null || row === undefined)
@@ -1727,7 +1727,7 @@ blist.namespace.fetch('blist.data');
                     savingArray[c.dataIndex] = true;
                 }
             });
-            if (row.meta) { data.meta = $.json.serialize(row.meta); }
+            if (row.meta) { data.meta = JSON.stringify(row.meta); }
 
             // Set it up like a new row
             row.isNew = true;
@@ -2911,7 +2911,7 @@ blist.namespace.fetch('blist.data');
                         })),
                     type: 'POST',
                     contentType: 'application/json',
-                    data: $.json.serialize(tempView)
+                    data: JSON.stringify(tempView)
             });
             doLoad(self, loadTempView, ajaxOptions);
         };

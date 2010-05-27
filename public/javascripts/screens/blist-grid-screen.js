@@ -15,7 +15,7 @@ blist.blistGrid.setUpTabs = function ()
         return;
     }
 
-    var cookieObj = $.json.deserialize(cookieStr);
+    var cookieObj = JSON.parse(cookieStr);
     if (cookieObj.blistId != blistGridNS.blistId)
     {
         blistGridNS.createTabCookie();
@@ -28,7 +28,7 @@ blist.blistGrid.setUpTabs = function ()
             { return v.id == blistGridNS.viewId ; }).length < 1)
         {
             cookieObj.views.push(blistGridNS.getCookieHash());
-            $.cookies.set('viewTabs', $.json.serialize(cookieObj));
+            $.cookies.set('viewTabs', JSON.stringify(cookieObj));
         }
     }
 
@@ -67,7 +67,7 @@ blist.blistGrid.createTabCookie = function()
     $.cookies.del('viewTabs');
     if (blistGridNS.isFilter)
     {
-        $.cookies.set('viewTabs', $.json.serialize({
+        $.cookies.set('viewTabs', JSON.stringify({
             blistId: blistGridNS.blistId,
             views: [blistGridNS.getCookieHash()]
         }));
@@ -81,7 +81,7 @@ blist.blistGrid.removeTabCookie = function(viewId)
         cookieStr == "undefined")
     { return; }
 
-    var cookieObj = $.json.deserialize(cookieStr);
+    var cookieObj = JSON.parse(cookieStr);
     if (cookieObj.blistId != blistGridNS.blistId) { return; }
 
     $.each(cookieObj.views, function(i, v)
@@ -92,7 +92,7 @@ blist.blistGrid.removeTabCookie = function(viewId)
           return false;
       }
     });
-    $.cookies.set('viewTabs', $.json.serialize(cookieObj));
+    $.cookies.set('viewTabs', JSON.stringify(cookieObj));
 };
 
 blist.blistGrid.toggleAddColumns = function ()
@@ -284,7 +284,7 @@ blist.blistGrid.infoEditCallback = function(fieldType, fieldValue, itemId, respo
         if (blistGridNS.isFilter &&
             cookieStr && cookieStr != "" && cookieStr != "undefined")
         {
-            var cookieObj = $.json.deserialize(cookieStr);
+            var cookieObj = JSON.parse(cookieStr);
             $.each(cookieObj.views, function (k, v)
                 {
                     if (v.id == blistGridNS.viewId)
@@ -293,7 +293,7 @@ blist.blistGrid.infoEditCallback = function(fieldType, fieldValue, itemId, respo
                         return false;
                     }
                 });
-            $.cookies.set('viewTabs', $.json.serialize(cookieObj));
+            $.cookies.set('viewTabs', JSON.stringify(cookieObj));
         }
 
         // Update in filtered view list
@@ -685,7 +685,7 @@ $(function ()
             // Get the view with columns
             var view = $('#dataGrid').blistModel().getViewCopy(true);
             view.name = name;
-            return $.json.serialize(view);
+            return JSON.stringify(view);
         },
         requestContentType: 'application/json',
         loginMessage: 'Creating a public filter requires you to have an account. ' +

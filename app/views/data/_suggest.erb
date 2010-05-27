@@ -114,10 +114,10 @@ $(function()
         cache: false,
         dataType: "json",
         contentType: "application/json",
-        data: $.json.serialize(nomination),
+        data: JSON.stringify(nomination),
         error: function(request) {
           $("#nominationCreateDialog .error")
-            .html($.json.deserialize(request.responseText).message).show();
+            .html(JSON.parse(request.responseText).message).show();
         },
         success: function(responseData) {
             nominationsNS.loadData(nominationsNS.servicePath);

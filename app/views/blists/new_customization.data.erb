@@ -58,7 +58,7 @@
             }
             else
             {
-              publishNS.populateForm($.json.deserialize(responseData['customization']));
+              publishNS.populateForm(JSON.parse(responseData['customization']));
               $('.templateName').text(responseData['name']);
               $('#template_name, #new_customization_from')
                 .append($('<option value="' + responseData['uid'] + '">' + responseData['name'] + '</option>'))

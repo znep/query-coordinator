@@ -602,7 +602,7 @@ blist.publish.saveCustomization = function(hash)
         type: "PUT",
         cache: false,
         contentType: "application/json",
-        data: $.json.serialize({ 'customization': $.json.serialize(hash) }),
+        data: JSON.stringify({ 'customization': JSON.stringify(hash) }),
         dataType: "json",
         error: function(request, status, error)
         {
@@ -724,7 +724,7 @@ blist.publish.loadCustomization = function()
         success: function(responseData)
         {
             publishNS.hideUnsavedChangesBar();
-            publishNS.populateForm($.json.deserialize(responseData['customization']));
+            publishNS.populateForm(JSON.parse(responseData['customization']));
             $('.templateName').text(responseData['name']);
         },
         error: function(request, status, error)

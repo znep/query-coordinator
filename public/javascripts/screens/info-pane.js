@@ -156,7 +156,7 @@
                 error: function(request, textStatus, errorThrown)
                 {
                     opts.submitErrorCallback(fieldType,
-                            $.json.deserialize(request.responseText).message);
+                            JSON.parse(request.responseText).message);
                 }
             });
         };

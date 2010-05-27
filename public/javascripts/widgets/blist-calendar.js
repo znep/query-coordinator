@@ -197,7 +197,7 @@
         $.ajax({ url: url,
                 type: 'PUT',
                 contentType: 'application/json', dataType: 'json',
-                data: $.json.serialize(data),
+                data: JSON.stringify(data),
                 error: function() { revertFunc(); }
         });
     };

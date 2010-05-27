@@ -482,7 +482,7 @@ AjaxUpload.prototype = {
 						if (settings.responseType == 'json'){
 						    try
 						    {
-						        response = $.json.deserialize(response);
+						        response = JSON.parse(response);
 						    }
 							catch (ex)
 							{

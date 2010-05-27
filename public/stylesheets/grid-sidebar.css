@@ -58,9 +58,9 @@
     opacity: 0.3;
 }
 
-#gridSidebar .titleBlock { padding: 0.5em 1em; }
+#gridSidebar .mainTitleBlock { padding: 0.5em 1em; }
 
-#gridSidebar .titleBlock .title
+#gridSidebar .mainTitleBlock .title
 {
     font-size: 1.3em;
     font-weight: normal;

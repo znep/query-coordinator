@@ -346,7 +346,10 @@ $(function()
                 if ($this.attr('title') === '')
                 { return; }
 
-                $this.socrataTip({ message: $this.attr('title'), shrinkToFit: false });
+                // This is returning with &nbsp;, so replace them all with
+                // normal spaces
+                $this.socrataTip({ message: $this.attr('title').replace(/\s/g, ' '),
+                    shrinkToFit: false });
             });
 
             $('.widgetContent_views table.gridList').combinationList({

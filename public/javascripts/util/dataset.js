@@ -27,3 +27,33 @@ blist.dataset.getDisplayType = function(view)
 
     return type.capitalize();
 };
+
+blist.dataset.getTypeName = function(view)
+{
+    var dType = blist.dataset.getDisplayType(view);
+    var retType;
+
+    switch (dType.toLowerCase())
+    {
+        case 'blist':
+            retType = 'dataset';
+            break;
+        case 'filter':
+            retType = 'filtered view';
+            break;
+        case 'grouped':
+            retType = 'grouped view';
+            break;
+        case 'visualization':
+            retType = 'chart';
+            break;
+        case 'blob':
+            retType = 'embedded file';
+            break;
+        default:
+            retType = dType;
+            break;
+    }
+
+    return retType;
+};

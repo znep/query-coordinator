@@ -36,17 +36,8 @@
     width: 100%
     z-index: 60
 
-  .sidebarPane
-
-    &.initialLoad .formSection
-      filter: alpha(opacity = 30)
-      opacity: 0.3
-
-    &#gridSidebar_filter .titleBlock
-      @include vertical-gradient(#57b6dd, #4ca9d0)
-    // Custom colors go here...
-
-    .titleBlock
+  .outerPane
+    .mainTitleBlock
       @include vertical-gradient(#989898, #848484)
       padding: 0.5em 1em
 
@@ -54,6 +45,41 @@
         color: #ffffff
         font-size: 1.3em
         text-transform: none
+
+    .paneSelect
+      background-color: #eeeeee
+      border: 1px solid #cccccc
+      margin: 0.5em
+      padding: 0.25em 0.75em
+
+      li
+        float: left
+
+        a
+          display: inline-block
+          font-size: 1.1em
+          font-weight: bold
+          padding: 4px 5px
+
+          &.selected
+            background-color: #ffffff
+            border: 1px solid #cccccc
+            color: #333333
+            padding: 3px 4px
+
+    &#gridSidebar_outer_filter
+      .mainTitleBlock
+        @include vertical-gradient(#57b6dd, #4ca9d0)
+      .paneSelect
+        background-color: #e1f4fd
+        border-color: #afe5ff
+    // Custom colors go here...
+
+  .sidebarPane
+
+    &.initialLoad .formSection
+      filter: alpha(opacity = 30)
+      opacity: 0.3
 
     .subtitleBlock
       padding: 1em
@@ -177,3 +203,16 @@
       // Once the old app is gone, all these legacy actionButtons styles can go away
       li
         float: left
+
+.paneSelectWizard
+  .title
+    margin-bottom: 1em
+    text-transform: none
+
+  ul li
+    font-size: 1.1em
+    line-height: 1.1em
+    margin-top: 1em
+    a
+      display: block
+      font-weight: bold

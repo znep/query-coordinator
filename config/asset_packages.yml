@@ -172,7 +172,8 @@ javascripts:
   - screens/signup-screen
   - widgets/combo
   - screens/dataset-menu
-  - widgets/grid-sidebar
+  - controls/grid-sidebar/base-sidebar
+  - controls/grid-sidebar/location-create
   - widgets/wizard-prompt
 - communities-show:
   - plugins/jquery.jcarousel
@@ -254,7 +255,9 @@ javascripts:
   - util/urls
   - widgets/menu
   - widgets/wizard-prompt
-  - widgets/grid-sidebar
+  - controls/grid-sidebar/base-sidebar
+  - controls/grid-sidebar/form-create
+  - controls/grid-sidebar/location-create
   - controls/dataset-controls
   - controls/full-screen
   - screens/dataset

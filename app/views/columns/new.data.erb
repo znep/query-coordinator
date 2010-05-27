@@ -149,7 +149,7 @@ blist.common.modalReady = function()
       if (column.type == 'location' && <%= @parent.nil? %>)
       {
           $('#gridSidebar').gridSidebar()
-            .addPane($.gridSidebarConfig.locationCreate,
+            .addPane('locationCreate',
                 {columnName: column.name, columnDescription: column.description,
                   columnType: column.type});
           $('#gridSidebar').gridSidebar().show('locationCreate', true);

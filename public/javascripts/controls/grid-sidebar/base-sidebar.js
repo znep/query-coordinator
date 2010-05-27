@@ -18,6 +18,136 @@
     },
     'A different value is required.');
 
+    /* Config hash:
+    {
+        name: required, identification of this config.  If this has a period in
+            it, the first part is taken as the parent name.  Multiple panes
+            can be grouped under a parent, in which case each pane title is
+            shown in a sub-select bar.  If just the parent pane is opened,
+            there is a wizard prompt to choose the actual pane to show.
+            If the parent pane does not already exist, then the name is simply
+            capitalized and used as the title. More information may be added
+            later (such as a subtitle or custom title), and all
+            previously-initialized sub-panes will be kept.  All sub-panes need
+            to be added before any child or the parent pane is actually added
+            to make sure the sub-select bar is initialized properly
+        title: main title
+        subtitle: appears under main title
+        sections: array of sections for entering data
+        [
+          {
+            title: section title
+            type: optional, 'selectable' makes the field collapseable.
+                By default it will be collapsed; when collapsed, nothing is
+                validated or wizard-ed
+            name: internal name for field; required if it is of type selectable
+            fields: array of input fields
+            [
+               {
+                  text: label for input
+                  type: required, one of: 'static', 'text', 'textarea',
+                    'columnSelect', 'radioGroup'
+                  name: required, HTML name of input
+                  prompt: optional, prompt text for text/textareas
+                  required: optional, boolean, whether or not the input should be
+                    validated as required (if visible)
+                  notequalto: optional, string to use for validating notequalto;
+                    all fields that are validated like this should have the
+                    same string
+                  columns: for type columnSelect, tells what type of columns
+                    should be available
+                  {
+                    type: array or single datatype names
+                    hidden: boolean, whether or not to include hidden columns
+                  }
+                  options: for radioGroup, array of sub-fields.  Same options
+                    as top-level fields plus below:
+                  [
+                    {
+                      checked: boolean, if true, this field is selected by default
+                    }
+                  ]
+               }
+            ]
+          }
+        ]
+        finishCallback: function that is called when a finish button is clicked;
+          args: (sidebarObj, data, $pane, value)
+        finishBlock: specifies final actions
+        {
+          buttons: array of finish buttons
+          [
+            {
+              text: text to display
+              value: value that is passed to the finishCallback on click
+              isDefault: boolean, marked as default button if true
+              isCancel: boolean, marked as cancel button if true
+            }
+          ]
+        }
+    }
+
+    Additionally, certain elements may have a wizard key to add a wizard prompt.
+    These elements are: top-level config (will display against the title),
+      section (prompt on initial entrance to a section; can be used to expand a
+       section), field, finishBlock (by default will prompt against default
+       button)
+    wizard:
+    {
+      prompt: text to display in wizard tip
+      defaultAction: default wizard action if the wizard is closed (because
+        value is selected or button clicked)
+      actions: array of action buttons to display in the wizard
+      [
+        {
+          text: text for button
+          action: action to perform on click
+        }
+      ]
+      selector: optional, sub-element to prompt against
+    }
+
+    Possible wizard actions:
+    * nextSection: will go to the next section (first section if on the title
+      block), or the finish buttons if there are no more sections
+    * nextField: will go to the next field in the section; if at the end of a
+      section, will perform the nextSection action
+    * expand: only valid on a section wizard; will expand the section and go to
+      the first field (perform the nextField action)
+    * finish: Will skip directly to finish buttons
+
+    */
+
+    var paneConfigs = {};
+    $.gridSidebar =
+    {
+        registerConfig: function(config)
+        {
+            if ($.isBlank(config.name)) { throw 'Sidebar config requires a name'; }
+            var p = config.name.split('.');
+            if (p.length == 1)
+            {
+                paneConfigs[config.name] =
+                    $.extend(paneConfigs[config.name], config);
+            }
+            else if (p.length == 2)
+            {
+                var primary = p[0];
+                if ($.isBlank(paneConfigs[primary]))
+                {
+                    paneConfigs[primary] = {name: primary, isParent: true,
+                        title: primary.capitalize(), subPanes: {}};
+                }
+                config.name = p[1];
+                paneConfigs[primary].subPanes[p[1]] = config;
+            }
+            else
+            {
+                throw "Pane config: can't name with more than one or two parts";
+            }
+        }
+    };
+
     $.fn.gridSidebar = function(options)
     {
         // Check if object was already created
@@ -89,6 +219,13 @@
                 return this._$neighbor;
             },
 
+            $currentOuterPane: function()
+            {
+                if ($.isBlank(this._currentOuterPane)) { return null; }
+
+                return this._$outerPanes[this._currentOuterPane];
+            },
+
             $currentPane: function()
             {
                 if ($.isBlank(this._currentPane)) { return null; }
@@ -97,12 +234,18 @@
             },
 
             /* Create a new pane in the sidebar */
-            addPane: function(config, data)
+            addPane: function(configName, data)
             {
                 var sidebarObj = this;
-                if ($.isBlank(config))
+                var nameParts = getConfigNames(configName);
+                var outerConfig = paneConfigs[nameParts.primary];
+                var config = (outerConfig.subPanes || {})[nameParts.secondary] ||
+                    paneConfigs[nameParts.secondary];
+
+                if ($.isBlank(config) || $.isBlank(outerConfig))
                 { throw "Configuration required for gridSidebar"; }
 
+                sidebarObj._$outerPanes = sidebarObj._$outerPanes || {};
                 sidebarObj._$panes = sidebarObj._$panes || {};
                 if (!$.isBlank(sidebarObj._$panes[config.name]))
                 {
@@ -110,9 +253,15 @@
                     delete sidebarObj._$panes[config.name];
                 }
 
+                if ($.isBlank(sidebarObj._$outerPanes[outerConfig.name]))
+                { createOuterPane(sidebarObj, outerConfig); }
+
+                if (config.isParent) { return; }
+
                 var $pane = renderPane(sidebarObj, config, data);
                 sidebarObj._$panes[config.name] = $pane;
-                sidebarObj.$dom().append($pane);
+                sidebarObj._$outerPanes[outerConfig.name]
+                    .find('.panes').append($pane);
                 $pane.hide();
             },
 
@@ -122,15 +271,33 @@
             {
                 var sidebarObj = this;
 
-                // Set up the chosen pane
-                sidebarObj.$dom().find('.sidebarPane').hide();
+                // Hide any other open panes
+                hideCurrentPane(sidebarObj);
+
+                var nameParts = getConfigNames(paneName);
+                var outerConfig = paneConfigs[nameParts.primary];
+                var config = (outerConfig.subPanes || {})[nameParts.secondary] ||
+                    paneConfigs[nameParts.secondary];
+
                 // Make sure our pane exists
-                if ($.isBlank(sidebarObj._$panes[paneName]))
-                { throw paneName + ' does not exist'; }
-                sidebarObj._currentPane = paneName;
-                sidebarObj.$currentPane().addClass('initialLoad').show();
-                sidebarObj.$currentPane().find('.scrollContent')
-                    .scroll(function(e) { handleScroll(sidebarObj, e); });
+                if ($.isBlank(sidebarObj._$outerPanes[nameParts.primary]))
+                { throw nameParts.primary + ' does not exist'; }
+                if (!config.isParent &&
+                    $.isBlank(sidebarObj._$panes[nameParts.secondary]))
+                { throw nameParts.secondary + ' does not exist'; }
+
+                sidebarObj._currentOuterPane = nameParts.primary;
+                sidebarObj.$currentOuterPane().show();
+                if (!config.isParent)
+                {
+                    sidebarObj._currentPane = nameParts.secondary;
+                    sidebarObj.$currentOuterPane()
+                        .find('.paneSelect a[data-paneName=' +
+                            nameParts.secondary + ']').addClass('selected');
+                    sidebarObj.$currentPane().addClass('initialLoad').fadeIn();
+                    sidebarObj.$currentPane().find('.scrollContent')
+                        .scroll(function(e) { handleScroll(sidebarObj, e); });
+                }
 
 
                 // Adjust positions for the sidebar
@@ -151,7 +318,8 @@
 
                     var $overlay = modalOverlay(sidebarObj);
                     sidebarObj._origZIndex = sidebarObj.$dom().css('z-index');
-                    sidebarObj._origGridZIndex = sidebarObj.$neighbor().css('z-index');
+                    sidebarObj._origGridZIndex = sidebarObj.$neighbor()
+                        .css('z-index');
                     sidebarObj._origParent = sidebarObj.$dom().offsetParent();
                     sidebarObj._origParentZIndex = sidebarObj.$dom()
                         .offsetParent().css('z-index');
@@ -172,8 +340,15 @@
 
                 $(window).resize();
 
-                showWizard(sidebarObj,
-                    sidebarObj.$currentPane().find('.hasWizard:visible:first'));
+                if (!config.isParent)
+                {
+                    showWizard(sidebarObj, sidebarObj.$currentPane()
+                        .find('.hasWizard:visible:first'));
+                }
+                else
+                {
+                    showPaneSelectWizard(sidebarObj, outerConfig);
+                }
             },
 
             /* Hide the sidebar and all panes.  If it was modal, then undo the
@@ -182,17 +357,9 @@
             {
                 var sidebarObj = this;
                 sidebarObj.$dom().hide();
-                sidebarObj.$dom().find('.sidebarPane').hide()
-                    .find('.scrollContent').unbind('scroll');
                 sidebarObj.$neighbor().css('margin-right', 0);
 
-                sidebarObj._currentPane = null;
-                if (!$.isBlank(sidebarObj._$currentWizard))
-                {
-                    sidebarObj._$currentWizard.wizardPrompt().close();
-                    sidebarObj._$currentWizard = null;
-                    sidebarObj._$mainWizardItem = null;
-                }
+                hideCurrentPane(sidebarObj);
 
                 if (sidebarObj._isModal)
                 {
@@ -207,7 +374,8 @@
                     else { modalOverlay(sidebarObj).fadeOut(500); }
 
                     sidebarObj.$dom().css('z-index', sidebarObj._origZIndex);
-                    sidebarObj.$neighbor().css('z-index', sidebarObj._origGridZIndex);
+                    sidebarObj.$neighbor().css('z-index',
+                        sidebarObj._origGridZIndex);
                     sidebarObj._origParent.css('z-index',
                         sidebarObj._origParentZIndex);
 
@@ -217,10 +385,57 @@
                 // In non-IE we need to trigger a resize so the grid restores
                 // properly.  In IE7, this will crash; IE8 works either way
                 if (!$.browser.msie) { $(window).resize(); }
+            },
+
+            genericErrorHandler: function($pane, xhr)
+            {
+                $pane.find('.mainError')
+                    .text(JSON.parse(xhr.responseText).message);
             }
         }
     });
 
+
+    var getConfigNames = function(configName)
+    {
+        var p = configName.split('.');
+        var ret = {};
+
+        if (p.length == 1)
+        { ret.primary = ret.secondary = configName; }
+        else if (p.length == 2)
+        {
+            ret.primary = p[0];
+            ret.secondary = p[1];
+        }
+        else
+        { throw 'Only config names of 1 or 2 parts are supported'; }
+
+        return ret;
+    };
+
+
+    var hideCurrentPane = function(sidebarObj)
+    {
+        if (!$.isBlank(sidebarObj.$currentOuterPane()))
+        {
+            var $paneSel = sidebarObj.$currentOuterPane().find('.paneSelect');
+            if ($paneSel.isSocrataTip()) { $paneSel.socrataTip().destroy(); }
+        }
+
+        sidebarObj.$dom().find('.outerPane').hide()
+            .find('.paneSelect a.selected').removeClass('selected');
+        sidebarObj.$dom().find('.sidebarPane').hide()
+            .find('.scrollContent').unbind('scroll');
+        sidebarObj._currentOuterPane = null;
+        sidebarObj._currentPane = null;
+        if (!$.isBlank(sidebarObj._$currentWizard))
+        {
+            sidebarObj._$currentWizard.wizardPrompt().close();
+            sidebarObj._$currentWizard = null;
+            sidebarObj._$mainWizardItem = null;
+        }
+    };
 
     /* Helper to get/create the modal overlay */
     var modalOverlay = function(sidebarObj)
@@ -242,8 +457,8 @@
         sidebarObj.$dom().css('top', -gridHeight + 'px').height(gridHeight - adjH);
 
         // Adjust current pane to correct height, since it is what scrolls
-        var $pane = sidebarObj.$dom().find('.sidebarPane:visible');
-        var $scrollContent = $pane.find('.scrollContent');
+        var $pane = sidebarObj.$dom().find('.outerPane:visible');
+        var $scrollContent = $pane.find('.sidebarPane:visible .scrollContent');
         adjH += $pane.outerHeight() - $scrollContent.height();
         $scrollContent.height(gridHeight - adjH);
     };
@@ -414,18 +629,55 @@
         return result;
     };
 
+    var createOuterPane = function(sidebarObj, config)
+    {
+        var $outerPane = $.tag({tagName: 'div',
+            id: sidebarObj.$dom().attr('id') + '_outer_' + config.name,
+            'class': 'outerPane'});
+        var rData = {title: config.title,
+            subPanes: _.sortBy(config.subPanes, function(sp)
+                { return sp.priority || sp.title; })};
+        var directive = {
+            '.title': 'title',
+            '.paneSelect li':
+            {
+                'pane<-subPanes':
+                {
+                    'a': 'pane.title',
+                    'a@href+': 'pane.title',
+                    'a@title': 'pane.subtitle',
+                    'a@data-paneName': 'pane.name',
+                    '@class+': ' #{pane.name}'
+                }
+            },
+            '.paneSelect@class+': function(a)
+            { return $.isBlank(a.context.subPanes) ? ' hide' : ''; }
+        };
+
+        $outerPane.append($.renderTemplate('outerPane', rData, directive));
+
+        $outerPane.find('.paneSelect a').click(function(e)
+        {
+            e.preventDefault();
+            selectPane(sidebarObj, $(this), config.name);
+        });
+
+        sidebarObj.$dom().append($outerPane);
+        $outerPane.hide();
+        sidebarObj._$outerPanes[config.name] = $outerPane;
+    };
+
     /* Render the full pane from config */
     var renderPane = function(sidebarObj, config, data)
     {
-        var $pane = $('<div id="' +
-            sidebarObj.$dom().attr('id') + '_' + config.name +
-            '" class="sidebarPane"></div>');
+        var $pane = $.tag({tagName: 'div',
+            id: sidebarObj.$dom().attr('id') + '_' + config.name,
+            'class': 'sidebarPane'});
         var rData = {title: config.title, subtitle: config.subtitle,
             sections: config.sections,
             finishButtons: (config.finishBlock || {}).buttons,
             data: data || {}};
         var directive = {
-            '.title': 'title',
             '.subtitle': 'subtitle',
             '.formSection': {
                 'section<-sections': {
@@ -546,7 +798,7 @@
             e.preventDefault();
 
             var $link = $(this);
-            var $overlay = $pane.find('.paneOverlay');
+            var $overlay = $pane.closest('.outerPane').find('.paneOverlay');
 
             var cancelSelect = function()
             {
@@ -607,12 +859,6 @@
         return $pane;
     };
 
-    var genericErrorHandler = function($pane, xhr)
-    {
-        $pane.find('.mainError')
-            .text(JSON.parse(xhr.responseText).message);
-    };
-
 
     /*** Functions for handling wizard step-through ***/
 
@@ -620,7 +866,7 @@
     {
         if (!$.isBlank(config.wizard))
         {
-            $pane.find('.titleBlock').addClass('hasWizard')
+            $pane.find('.subtitleBlock').addClass('hasWizard')
                 .data('sidebarWizard', config.wizard);
         }
 
@@ -647,8 +893,8 @@
         if (!$.isBlank((config.finishBlock || {}).wizard))
         {
             $pane.find('.finishButtons').addClass('hasWizard')
-                .data('sidebarWizard', $.extend({}, config.finishBlock.wizard,
-                    {positions: ['top']}));
+                .data('sidebarWizard', $.extend({selector: '.button.submit'},
+                    config.finishBlock.wizard, {positions: ['top']}));
         }
     };
 
@@ -715,6 +961,7 @@
             var $mainItem = $item;
             /* Adjust actual item wizard is attached to */
             if (!$.isBlank(wiz.selector)) { $item = $item.find(wiz.selector); }
+            if ($item.length < 1) { $item = $mainItem; }
 
             /* Set scroll first, because fetching the scrollTop can trigger a
              * scroll event in IE, which screws things up if _$currentWizard is
@@ -814,275 +1061,56 @@
         }
     };
 
-
-    /*** Pane-specific callbacks ***/
-
-    var locationCreateCallback = function(sidebarObj, data, $pane, value)
+    var showPaneSelectWizard = function(sidebarObj, config)
     {
-        if (!value)
+        var $paneSel = sidebarObj.$currentOuterPane()
+            .find('.paneSelect');
+        var paneOptions = [];
+        $paneSel.find('a').each(function()
         {
-            sidebarObj.hide();
-            return;
-        }
+            var $a = $(this);
+            var name = $a.attr('data-paneName');
+            paneOptions.push({tagName: 'li',
+                contents: [
+                    {tagName: 'a', href: '#' + name, 'data-paneName': name,
+                    contents: $a.text()},
+                    {tagName: 'span',
+                        // This is returning with &nbsp;, so replace them all
+                        // with normal spaces
+                        contents: $a.attr('title').replace(/\s/g, ' ')}
+                ]});
+        });
 
-        // Clear out required fields that are prompts so the validate
-        $pane.find(':input.prompt.required').val('');
-        if (!$pane.find('form').valid()) { return; }
+        var $content = $.tag({tagName: 'div', 'class': 'paneSelectWizard',
+            contents: [
+                {tagName: 'h3', 'class': 'title',
+                contents: [config.subtitle || config.title + ' this ' +
+                    blist.dataset.getTypeName(blist.display.view)]},
+                {tagName: 'p',
+                contents:
+                    'Start by making one of the following selections above:'},
+                {tagName: 'ul', 'class': 'paneOptions', contents: paneOptions}
+            ]});
 
-        $pane.find('.mainError').text('');
-
-        if ($pane.find('.formSection.latLongSection .sectionSelect').value() ||
-                $pane.find('.formSection.addressSection .sectionSelect').value())
-        { convertLocation(sidebarObj, data, $pane); }
-        else
-        { createLocation(sidebarObj, data, $pane); }
-    };
-
-    var columnCreated = function(sidebarObj, newCol)
-    {
-        sidebarObj.$grid().blistModel().updateColumn(newCol);
-        $(document).trigger(blist.events.COLUMNS_CHANGED, [newCol.id]);
-        $.Tache.DeleteAll();
-        sidebarObj.hide();
-    };
-
-    var convertLocation = function(sidebarObj, data, $pane)
-    {
-        var useLatLong =
-            $pane.find('.formSection.latLongSection .sectionSelect').value();
-        var useAddress =
-            $pane.find('.formSection.addressSection .sectionSelect').value();
-
-        var latVal = useLatLong ? $pane.find('#convertLat').val() : null;
-        var longVal = useLatLong ? $pane.find('#convertLong').val() : null;
-
-        var streetIsCol = false;
-        var streetVal;
-        var cityIsCol = false;
-        var cityVal;
-        var stateIsCol = false;
-        var stateVal;
-        var zipIsCol = false;
-        var zipVal;
-        if (useAddress)
+        $content.find('ul a').click(function(e)
         {
-            var $street = $pane.find(':input[name="convertStreetGroup"]:checked')
-                .siblings('label').find(':input:not(.prompt)');
-            streetIsCol = $street.is('select');
-            streetVal = $street.val() || null;
-
-            var $city = $pane.find(':input[name="convertCityGroup"]:checked')
-                .siblings('label').find(':input:not(.prompt)');
-            cityIsCol = $city.is('select');
-            cityVal = $city.val() || null;
-
-            var $state = $pane.find(':input[name="convertStateGroup"]:checked')
-                .siblings('label').find(':input:not(.prompt)');
-            stateIsCol = $state.is('select');
-            stateVal = $state.val() || null;
-
-            var $zip = $pane.find(':input[name="convertZipGroup"]:checked')
-                .siblings('label').find(':input:not(.prompt)');
-            zipIsCol = $zip.is('select');
-            zipVal = $zip.val() || null;
-        }
-
-        $.ajax({url: '/views/' + blist.display.viewId + '/columns.json?' +
-            'method=addressify' +
-            '&deleteOriginalColumns=false' +
-            '&location=' + ($pane.find('#columnName:not(.prompt)').val() || '') +
-            (latVal ? '&latitudeColumn=' + latVal : '') +
-            (longVal ? '&longitudeColumn=' + longVal : '') +
-            (streetVal ? '&address' + (streetIsCol ? 'Column' : 'Value') +
-                '=' + streetVal : '') +
-            (cityVal ? '&city' + (cityIsCol ? 'Column' : 'Value') +
-                '=' + cityVal : '') +
-            (stateVal ? '&state' + (stateIsCol ? 'Column' : 'Value') +
-                '=' + stateVal : '') +
-            (zipVal ? '&zip' + (zipIsCol ? 'Column' : 'Value') +
-                '=' + zipVal : ''),
-            type: 'POST', contentType: 'application/json', dataType: 'json',
-            error: function(xhr) { genericErrorHandler($pane, xhr); },
-            success: function(resp)
-            {
-                var desc = $pane.find('#columnDescription:not(.prompt)').val();
-                if (desc)
-                {
-                    $.ajax({url: '/views/' + blist.display.viewId +
-                        '/columns/' + resp.id + '.json', type: 'PUT',
-                        contentType: 'application/json', dataType: 'json',
-                        data: JSON.stringify({description: desc}),
-                        error: function(xhr) { genericErrorHandler($pane, xhr); },
-                        success: function(r) { columnCreated(sidebarObj, r); }
-                    });
-                }
-                else { columnCreated(sidebarObj, resp); }
-            }
+            e.preventDefault();
+            selectPane(sidebarObj, $(this), config.name);
         });
+
+        $paneSel.socrataTip({content: $content, trigger: 'now',
+            closeOnClick: false, shrinkToFit: false});
     };
 
-    var createLocation = function(sidebarObj, data, $pane)
+    var selectPane = function(sidebarObj, $a, baseName)
     {
-        var column = {name: $pane.find('#columnName:not(.prompt)').val() || null,
-            description:
-                $pane.find('#columnDescription:not(.prompt)').val() || null,
-            dataTypeName: data.columnType};
+        if ($a.is('.selected')) { return; }
 
-        $.ajax({url: '/views/' + blist.display.viewId + '/columns.json',
-            type: 'POST', contentType: 'application/json', dataType: 'json',
-            data: JSON.stringify(column),
-            error: function(xhr) { genericErrorHandler($pane, xhr); },
-            success: function(resp) { columnCreated(sidebarObj, resp); }
-        });
-    };
-
-
-    /*** Public configurations for panes ***/
-
-    $.gridSidebarConfig = {
-        locationCreate: {
-            name: 'locationCreate',
-            title: 'Create a Location Column',
-            subtitle: 'Create a blank column to fill in location data, or fill it with values from existing columns',
-            sections: [
-                {
-                    title: 'Column Information',
-                    fields: [
-                        {text: 'Name', type: 'text', name: 'columnName',
-                            prompt: 'Enter a name', required: true},
-                        {text: 'Description', type: 'textarea',
-                            name: 'columnDescription',
-                            prompt: 'Enter a description'}
-                    ]
-                },
-                {
-                    title: 'Import Latitude/Longitude',
-                    type: 'selectable',
-                    name: 'latLongSection',
-                    fields: [
-                        {text: 'Latitude', type: 'columnSelect', name: 'convertLat',
-                            required: true, notequalto: 'convertNumber',
-                            columns: {type: 'number', hidden: false},
-                            wizard: {prompt: 'Choose the column that contains latitude data',
-                                defaultAction: 'nextField'}
-                        },
-                        {text: 'Longitude', type: 'columnSelect',
-                            name: 'convertLong',
-                            required: true, notequalto: 'convertNumber',
-                            columns: {type: 'number', hidden: false},
-                            wizard: {prompt: 'Choose the column that contains longitude data',
-                                defaultAction: 'nextField'}
-                        }
-                    ],
-                    wizard: {prompt: 'Do you have latitude and longitude data to import?',
-                        defaultAction: 'nextField',
-                        actions: [
-                            {text: 'Yes', action: 'expand'},
-                            {text: 'No', action: 'nextSection'}
-                        ]
-                    }
-                },
-                {
-                    title: 'Import US Addresses',
-                    type: 'selectable',
-                    name: 'addressSection',
-                    fields: [
-                        {text: 'Street', type: 'radioGroup',
-                            name: 'convertStreetGroup',
-                            options: [
-                                {text: 'None', type: 'static', checked: true},
-                                {type: 'columnSelect', name: 'convertStreetCol',
-                                    notequalto: 'convertText',
-                                    columns: {type: 'text', hidden: false} }
-                            ],
-                            wizard: {prompt: 'Choose the column that contains street address data',
-                                defaultAction: 'nextField',
-                                actions: [
-                                    {text: 'Skip', action: 'nextField'},
-                                    {text: 'Done', action: 'nextField'}
-                                ]
-                            }
-                        },
-                        {text: 'City', type: 'radioGroup', name: 'convertCityGroup',
-                            options: [
-                                {text: 'None', type: 'static', checked: true},
-                                {type: 'columnSelect', name: 'convertCityCol',
-                                    notequalto: 'convertText',
-                                    columns: {type: 'text', hidden: false} },
-                                {type: 'text', name: 'convertCityStatic',
-                                    prompt: 'Enter a city'}
-                            ],
-                            wizard: {prompt: 'Choose the column that contains city data, or fill in a value to be used for all rows',
-                                defaultAction: 'nextField',
-                                actions: [
-                                    {text: 'Skip', action: 'nextField'},
-                                    {text: 'Done', action: 'nextField'}
-                                ]
-                            }
-                        },
-                        {text: 'State', type: 'radioGroup',
-                            name: 'convertStateGroup',
-                            options: [
-                                {text: 'None', type: 'static', checked: true},
-                                {type: 'columnSelect', name: 'convertStateCol',
-                                    notequalto: 'convertText',
-                                    columns: {type: 'text', hidden: false} },
-                                {type: 'text', name: 'convertStateStatic',
-                                    prompt: 'Enter a state'}
-                            ],
-                            wizard: {prompt: 'Choose the column that contains state data, or fill in a value to be used for all rows',
-                                defaultAction: 'nextField',
-                                actions: [
-                                    {text: 'Skip', action: 'nextField'},
-                                    {text: 'Done', action: 'nextField'}
-                                ]
-                            }
-                        },
-                        {text: 'Zip Code', type: 'radioGroup',
-                            name: 'convertZipGroup',
-                            options: [
-                                {text: 'None', type: 'static', checked: true},
-                                {type: 'columnSelect', name: 'convertZipCol',
-                                    notequalto: 'convertText convertNumber',
-                                    columns: {type: ['text', 'number'],
-                                        hidden: false} },
-                                {type: 'text', name: 'convertZipStatic',
-                                    prompt: 'Enter a zip code'}
-                            ],
-                            wizard: {prompt: 'Choose the column that contains zip code data, or fill in a value to be used for all rows',
-                                defaultAction: 'nextField',
-                                actions: [
-                                    {text: 'Skip', action: 'nextField'},
-                                    {text: 'Done', action: 'nextField'}
-                                ]
-                            }
-                        }
-                    ],
-                    wizard: {prompt: 'Do you have address data to import?',
-                        defaultAction: 'nextField',
-                        actions: [
-                            {text: 'Yes', action: 'expand'},
-                            {text: 'No', action: 'nextSection'}
-                        ]
-                    }
-                }
-            ],
-            finishBlock: {
-                buttons: [
-                    {text: 'Create', value: true, isDefault: true},
-                    {text: 'Cancel', value: false, isCancel: true}
-                ],
-                wizard: {prompt: "Now you're ready to create a new column",
-                    selector: '.arrowButton'}
-            },
-            finishCallback: locationCreateCallback,
-            wizard: {prompt: 'Do you have existing location data?',
-                actions: [
-                    {text: 'Yes', action: 'nextSection'},
-                    {text: 'No', action: 'finish'}
-                ]
-            }
-        }
+        var name = $a.attr('data-paneName');
+        var fullName = baseName + '.' + name;
+        if ($.isBlank(sidebarObj._$panes[name]))
+        { sidebarObj.addPane(fullName); }
+        sidebarObj.show(fullName);
     };
 
 })(jQuery);

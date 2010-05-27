@@ -135,22 +135,22 @@
             <div class="attachmentsSummary">
               <h2>Attachments</h2>
               <a class="editLink editAttachments<%= can_edit ? "" : " hide" %>" href="<%= @view.href %>/about_edit" title="Edit Attachments">Edit</a>
+              <%- if @view.metadata && !@view.metadata.attachments.blank? -%>
               <dd class="editItem">
                 <div class="itemContent">
                   <ul class="textContent">
-                    <%- if @view.metadata && !@view.metadata.attachments.blank? -%>
-                      <%- @view.metadata.attachments.each do |attachment| -%>
-                        <%- attachmentObj = Attachment.set_up_model(attachment) -%>
-                        <li class="attachmentItem">
-                            <%= link_to( h(attachmentObj.displayName), attachmentObj.href, :target => "_blank" ) %>
-                        </li>
-                      <%- end -%>
-                    <%- else -%>
-                      <h3>No Attachments</h3>
+                    <%- @view.metadata.attachments.each do |attachment| -%>
+                      <%- attachmentObj = Attachment.set_up_model(attachment) -%>
+                      <li class="attachmentItem">
+                        <%= link_to( h(attachmentObj.displayName), attachmentObj.href, :target => "_blank" ) %>
+                      </li>
                     <%- end -%>
                   </ul>
                 </div>
               </dd>
+              <%- else -%>
+                <p>No Attachments</p>
+              <%- end -%>
             </div>
 
             <div class="attachmentsEdit hide">

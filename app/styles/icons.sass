@@ -1,13 +1,13 @@
 // util
-=ie6-fix
+@mixin ie6-fix
   .ie6 &
     overflow: hidden
 
 // icons/button_icons.png
-=sprite-button-icons
+@mixin sprite-button-icons
   .icon
-    +text-hiding
-    +ie6-fix
+    @include text-hiding
+    @include ie6-fix
     background-image: url(/stylesheets/images/icons/button_icons.png)
     height: 10px
     width: 10px
@@ -31,10 +31,10 @@
     background-position: 0 -50px
 
 // icons/menu_icons.png
-=sprite-menu-icons
+@mixin sprite-menu-icons
   .icon
-    +text-hiding
-    +ie6-fix
+    @include text-hiding
+    @include ie6-fix
     background-image: url(/stylesheets/images/icons/menu_icons.png)
     height: 13px
     width: 13px
@@ -128,10 +128,10 @@
     background-position: 0 -494px
 
 // icons/type_icons_30.png
-=sprite-type-icons-30
+@mixin sprite-type-icons-30
   .icon
-    +text-hiding
-    +ie6-fix
+    @include text-hiding
+    @include ie6-fix
     background-image: url(/stylesheets/images/icons/type_icons_30.png)
     height: 30px
     width: 30px
@@ -164,10 +164,10 @@
     background-position: 0 -360px
 
 // icons/type_icons_30.png
-=sprite-type-icons-20
+@mixin sprite-type-icons-20
   .icon
-    +text-hiding
-    +ie6-fix
+    @include text-hiding
+    @include ie6-fix
     background-image: url(/stylesheets/images/icons/type_icons_20.png)
     height: 20px
     width: 20px
@@ -200,17 +200,17 @@
     background-position: 0 -240px
 
 // common/close.png
-=close-button
-  +text-hiding
-  +ie6-fix
+@mixin close-button
+  @include text-hiding
+  @include ie6-fix
   background-image: url(/stylesheets/images/common/close.png)
   height: 13px
   width: 13px
 
 // content/table/drilldown.png
-=drilldown-icon
-  +text-hiding
-  +ie6-fix
+@mixin drilldown-icon
+  @include text-hiding
+  @include ie6-fix
   background-image: url(/stylesheets/images/content/table/drilldown.png)
   height: 16px
   width: 24px

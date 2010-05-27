@@ -1,11 +1,10 @@
 a.button
-  +rounded-ends
-  +gradient_buttons_active_background
-  +sprite-button-icons
-  border= 1px solid !color_buttons_active_border
-  -moz-box-shadow= 0 0 2px !color_buttons_shadow
-  -webkit-box-shadow= 0 0 2px !color_buttons_shadow
-  color= !color_buttons_active_text
+  @include rounded-ends
+  @include gradient_buttons_active_background
+  @include sprite-button-icons
+  border: 1px solid $color_buttons_active_border
+  @include box-shadow(0,0,2px,$color_buttons_shadow)
+  color: $color_buttons_active_text
   display: inline-block
   font-size: 1.1em
   height: 1.9em
@@ -14,18 +13,18 @@ a.button
   padding: 0 1.35em
   text-transform: uppercase
   &:hover
-    +gradient_buttons_hover_background
-    border= 1px solid !color_buttons_hover_border
+    @include gradient_buttons_hover_background
+    border: 1px solid $color_buttons_hover_border
     text-decoration: none
   &:active, &:focus
-    +gradient_buttons_focus_background
-    border= 1px solid !color_buttons_focus_border
+    @include gradient_buttons_focus_background
+    border: 1px solid $color_buttons_focus_border
     text-decoration: none
   &:visited
-    color= !color_buttons_active_text
+    color: $color_buttons_active_text
   &.disabled
-    +gradient_buttons_disabled_background
-    border= 1px solid !color_buttons_disabled_border
+    @include gradient_buttons_disabled_background
+    border: 1px solid $color_buttons_disabled_border
     cursor: default
 
   .icon
@@ -39,37 +38,43 @@ a.button
 
   // They have rounded corners but no linear gradient
   .noLinearGradient &
-    background= "transparent" "url(/ui/box.png?fc=#{!gradient_buttons_active_background}&h=23&w=3&rx=1&ry=1&rw=1)" "repeat-x"
+    @include box_gradient_buttons_active_background(23,3,$box_gradient_alias_fix)
+    background: transparent repeat-x
   .noLinearGradient &:hover, .noLinearGradient &:active, .noLinearGradient &:focus
-    background-image= "url(/ui/box.png?fc=#{!gradient_buttons_hover_background}&h=23&w=3&rx=1&ry=1&rw=1)"
+    @include box_gradient_buttons_hover_background(23,3,$box_gradient_alias_fix)
   .noLinearGradient &.disabled
-    background-image= "url(/ui/box.png?fc=#{!gradient_buttons_disabled_background}&h=23&w=3&rx=1&ry=1&rw=1)"
+    @include box_gradient_buttons_disabled_background(23,3,$box_gradient_alias_fix)
 
   // IE, or really old browsers
+  $noCss3_active_border_style: 'ec=#{$buttons_active_border}&ew=1&r=10'
   .noCss3 &, .noCss3 & .left
-    background= "transparent" "url(/ui/box.png?fc=#{!gradient_buttons_active_background}&ec=#{!buttons_active_border}&ew=1&h=20&w=500&r=10)" "no-repeat"
+    @include box_gradient_buttons_active_background(500,20,$noCss3_active_border_style)
+    background: transparent no-repeat
     border: none
   .ie6 &, .ie6 & .left
-    background= "transparent" "url(/ui/box.png?fc=#{!gradient_buttons_active_background}&ec=#{!buttons_active_border}&ew=1&h=20&w=500&r=10&bc=fff)" "no-repeat"
+    @include box_gradient_buttons_active_background(500,20,'#{$noCss3_active_border_style}&bc=fff')
 
+  $noCss3_hover_border_style: 'ec=#{$buttons_hover_border}&ew=1&r=10'
   .noCss3 &:hover, .noCss3 &:hover .left
-    background-image= "url(/ui/box.png?fc=#{!gradient_buttons_hover_background}&ec=#{!buttons_hover_border}&ew=1&h=20&w=500&r=10)"
+    @include box_gradient_buttons_hover_background(500,20,$noCss3_hover_border_style)
   .ie6 &:hover, .ie6 &:hover .left
-    background-image= "url(/ui/box.png?fc=#{!gradient_buttons_hover_background}&ec=#{!buttons_hover_border}&ew=1&h=20&w=500&r=10&bc=fff)"
+    @include box_gradient_buttons_hover_background(500,20,'#{$noCss3_hover_border_style}&bc=fff')
     border: none /* IE6 takes border-color to mean border */
 
+  $noCss3_focus_border_style: 'ec=#{$buttons_focus_border}&ew=1&r=10'
   .noCss3 &:active, .noCss3 &:active .left,
   .noCss3 &:focus, .noCss3 &:focus .left
-    background-image= "url(/ui/box.png?fc=#{!gradient_buttons_focus_background}&ec=#{!buttons_focus_border}&ew=1&h=20&w=500&r=10)"
+    @include box_gradient_buttons_focus_background(500,20,$noCss3_focus_border_style)
   .ie6 &:active, .ie6 &:active .left,
   .ie6 &:focus, .ie6 &:focus .left
-    background-image= "url(/ui/box.png?fc=#{!gradient_buttons_focus_background}&ec=#{!buttons_focus_border}&ew=1&h=20&w=500&r=10&bc=fff)"
+    @include box_gradient_buttons_focus_background(500,20,'#{$noCss3_focus_border_style}&bc=fff')
     border: none /* IE6 takes border-color to mean border */
 
+  $noCss3_disabled_border_style: 'ec=#{$buttons_disabled_border}&ew=1&r=10'
   .noCss3 &.disabled
-    background-image= "url(/ui/box.png?fc=#{!gradient_buttons_disabled_background}&ec=#{!buttons_disabled_border}&ew=1&h=20&w=500&r=10)"
+    @include box_gradient_buttons_disabled_background(500,20,$noCss3_disabled_border_style)
   .ie6 &.disabled
-    background-image= "url(/ui/box.png?fc=#{!gradient_buttons_disabled_background}&ec=#{!buttons_disabled_border}&ew=1&h=20&w=500&r=10&fc=fff)"
+    @include box_gradient_buttons_disabled_background(500,20,'#{$noCss3_disabled_border_style}&bc=fff')
     border: none /* IE6 takes border-color to mean border */
 
   .noCss3 &
@@ -90,21 +95,16 @@ a.button
       width: 10px
 
 div.menu
-  -moz-border-radius: 0.4em 0.4em 0 0
-  -webkit-border-radius: 0.4em 0.4em 0 0
-  -moz-transition-duration: 0.2s
-  -webkit-transition-duration: 0.2s
-  -moz-transition-property: -moz-box-shadow
-  -webkit-transition-property: -webkit-box-shadow
+  @include border-radius(0.4em, 0)
   display: inline-block
   position: relative
+  @include transition-duration(0.2s)
+  @include transition-property(box-shadow)
+
   .menuButton
-    +sprite-menu-icons
+    @include sprite-menu-icons
     background-color: #fff
-    -moz-border-radius: 0.4em 0.4em 0 0
-    -webkit-border-radius: 0.4em
-    -webkit-border-bottom-left-radius: 0
-    -webkit-border-bottom-right-radius: 0
+    @include border-radius(0.4em, 0)
     color: #000
     display: inline-block
     font-size: 1.2em
@@ -113,37 +113,32 @@ div.menu
     margin-top: -4px
     padding: 0.6em 1em
     position: relative
-    -moz-transition-property: border
-    -webkit-transition-property: border
+    @include transition-property(border)
     z-index: 50
     &:hover
       text-decoration: none
+
     .icon
       margin-left: 0.2em
+
   .menuDropdown
     background-color: #fff
     border: 1px solid #999999
-    -moz-border-radius: 0.4em
-    -webkit-border-radius: 0.4em
-    -moz-box-shadow: 0 0 4px rgba(0,0,0,0.5)
-    -webkit-box-shadow: 0 0 4px rgba(0,0,0,0.5)
+    @include border-radius(0.4em)
+    @include box-shadow(0,0,4px,rgba(0,0,0,0.5))
     display: none
     margin-top: -1px
     overflow: hidden
     position: absolute
     z-index: 49
     &.menuPosition-top.menuPosition-left
-      -moz-border-radius-topleft: 0
-      -webkit-border-top-left-radius: 0
+      @include border-radius-corner(top, left, 0)
     &.menuPosition-top.menuPosition-right
-      -moz-border-radius-topright: 0
-      -webkit-border-top-right-radius: 0
+      @include border-radius-corner(top, right, 0)
     &.menuPosition-bottom.menuPosition-left
-      -moz-border-radius-bottomleft: 0
-      -webkit-border-bottom-left-radius: 0
+      @include border-radius-corner(bottom, left, 0)
     &.menuPosition-bottom.menuPosition-right
-      -moz-border-radius-bottomright: 0
-      -webkit-border-bottom-right-radius: 0
+      @include border-radius-corner(bottom, right, 0)
     ul.menuColumns
       margin: 1.2em 0
       overflow: hidden
@@ -186,8 +181,7 @@ div.menu
                 font-size: 0.85em
                 margin: 0.2em 0.1em
   &.open
-    -moz-box-shadow: 0 -3px 4px rgba(0,0,0,0.5)
-    -webkit-box-shadow: 0 -3px 4px rgba(0,0,0,0.5)
+    @include box-shadow(0,-3px,4px,rgba(0,0,0,0.5))
     .menuButton
       border: 1px solid #999999
         bottom: none

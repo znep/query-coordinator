@@ -245,7 +245,7 @@ $(function ()
         $("#tagCloud").jqmHide();
     });
 
-    $("#discover form.large").submit(discoverNS.searchSubmitHandler)
+    var searchValidator = $("#discover form.large").submit(discoverNS.searchSubmitHandler)
         .validate(
         {
             rules:
@@ -274,6 +274,7 @@ $(function ()
         .click(function(event)
         {
             event.preventDefault();
+            searchValidator.resetForm();
             $("#tabSearch").remove();
             window.location.hash = 'type=popular'; // only webkit/ie understand this, but only they need to
             $.historyLoad('type=popular');

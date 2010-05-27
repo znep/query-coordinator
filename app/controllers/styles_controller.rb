@@ -11,7 +11,7 @@ class StylesController < ApplicationController
       render :text => Sass::Engine.new(includes + stylesheet,
                                        :style => :nested,
                                        :cache => false,
-                                       :load_paths => "#{Rails.root}/app/styles").render
+                                       :load_paths => ["#{Rails.root}/app/styles"]).render
     else
       # someone's up to no good.
       render_404
@@ -39,7 +39,7 @@ class StylesController < ApplicationController
         rendered_styles = Sass::Engine.new(includes + sheets,
                                            :style => :compressed,
                                            :cache => false,
-                                           :load_paths => "#{Rails.root}/app/styles").render
+                                           :load_paths => ["#{Rails.root}/app/styles"]).render
         Rails.cache.write(cache_key, rendered_styles)
         render :text => rendered_styles
       else
@@ -78,7 +78,7 @@ class StylesController < ApplicationController
       rendered_styles = Sass::Engine.new(includes + sheet,
                                          :style => :compressed,
                                          :cache => false,
-                                         :load_paths => "#{Rails.root}/app/styles").render
+                                         :load_paths => ["#{Rails.root}/app/styles"]).render
       Rails.cache.write(cache_key, rendered_styles)
       render :text => rendered_styles
     else
@@ -88,7 +88,7 @@ class StylesController < ApplicationController
 
 protected
   def get_includes
-    result = STYLE_PACKAGES['includes'].map{ |incl| "@import #{incl}.sass\n" }.join +
+    result = STYLE_PACKAGES['includes'].map{ |incl| "@import \"#{incl}.sass\"\n" }.join +
              get_includes_recurse(CurrentDomain.theme_v2.colors, @@site_theme_parse[:colors])
 
     return result
@@ -99,31 +99,31 @@ protected
     unless hash.nil?
       hash.each do |key, value|
         if definition[key.to_sym] == 'string'
-          result += "!#{path}#{key} = \"#{value}\"\n"
+          result += "$#{path}#{key}: \"#{value}\"\n"
         elsif definition[key.to_sym] == 'boolean'
-          result += "!#{path}#{key} = \"#{value.to_s}\"\n"
+          result += "$#{path}#{key}: #{value.to_s}\n"
         elsif definition[key.to_sym] == 'dimensions'
-          result += "!#{path}#{key} = \"#{value[:value]}#{value[:unit]}\"\n"
+          result += "$#{path}#{key}: #{value[:value]}#{value[:unit]}\n"
         elsif definition[key.to_sym] == 'image'
           if value[:type].to_s == "static"
             href = "#{value[:href]}"
           elsif value[:type].to_s == "hosted"
             href = "/assets/#{value[:href]}"
           end
-          result += "!#{path}#{key} = \"url(#{href})\"\n"
-          result += "!#{path}#{key}_width = \"#{value[:width]}px\"\n"
-          result += "!#{path}#{key}_height = \"#{value[:height]}px\"\n"
+          result += "$#{path}#{key}: url(#{href})\n"
+          result += "$#{path}#{key}_width: #{value[:width]}px\n"
+          result += "$#{path}#{key}_height: #{value[:height]}px\n"
         elsif definition[key.to_sym] == 'color'
           if value.is_a? String
             # flat color
             if value.match(/([0-9a-f]{3}){1,2}/i)
               # hex color (prepend #)
-              result += "!color_#{path}#{key} = \"##{value}\"\n"
+              result += "$color_#{path}#{key}: ##{value}\n"
             else
               # rgba color (pass through)
-              result += "!color_#{path}#{key} = \"#{value}\"\n"
+              result += "$color_#{path}#{key}: #{value}\n"
             end
-            result += "!#{path}#{key} = \"#{value}\"\n"
+            result += "$#{path}#{key}: #{value}\n"
           elsif value.is_a? Array
             # gradient
             next unless value.first.is_a? Hash # hack to accomodate current header color format
@@ -132,14 +132,18 @@ protected
 
             gradient_string = stops.map{ |stop| stop.has_key?('position') ? "#{stop['color']}:#{stop['position']}" :
                                           stop['color'] }.join(',')
-            result += "!gradient_#{path}#{key} = \"#{gradient_string}\"\n"
+
+            # ie (based on raw string)
+            result += "@mixin box_gradient_#{path}#{key}($width, $height, $additional)\n"
+            result += '  background-image: url(/ui/box.png?w=#{$width}&height=#{$height}&fc=' +
+                         gradient_string + '&#{$additional})' + "\n"
 
             first_stop = stops.first
             last_stop = stops.last
             stops.delete(stops.first) if stops.first['position'].nil?
             stops.delete(stops.last) if stops.last['position'].nil?
 
-            result += "=gradient_#{path}#{key}\n"
+            result += "@mixin gradient_#{path}#{key}\n"
 
             # firefox
             result += "  background: -moz-linear-gradient(0 0 270deg, ##{first_stop['color']}, ##{last_stop['color']}"

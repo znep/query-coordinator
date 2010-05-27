@@ -242,7 +242,7 @@
             '<div class="__socrata-console-output__">' + HELLO_HTML + '</div>' +
             '<table class="__socrata-console-input__" width="100%" style="padding: 0; margin: 0; border: none; border-collapse: collapse"><tr>' +
             '<td style="' + FONT_CSS + '; padding: 0">socrata&gt;&nbsp;</td>' +
-            '<td width="100%" style="padding: 0"><input autocomplete="off" style="margin-left: -1px; border: none; background: transparent; overflow: visible; color: #00ff00; width: 100%; ' + FONT_CSS + ' padding: 0; height: 15px;"/></td>' +
+            '<td width="100%" style="padding: 0"><input autocomplete="off" style="margin-left: -1px; border: none; background: transparent; overflow: visible; color: #00ff00; width: 100%; ' + FONT_CSS + ' padding: 0; height: 15px; outline: none;"/></td>' +
             '</table>' +
             '</div></div>');
         $inner = $console.children();
@@ -254,6 +254,9 @@
         $input = $inner.find('.__socrata-console-input__ input')
             .keypress(function(event) {
                 scroll();
+
+                if (event.ctrlKey || event.altKey || event.shiftKey)
+                    return;
 
                 switch(event.keyCode) {
                 case 13:

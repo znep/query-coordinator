@@ -2,6 +2,8 @@ var widgetNS = blist.namespace.fetch('blist.widget');
 var commonNS = blist.namespace.fetch('blist.common');
 var configNS = blist.namespace.fetch('blist.configuration');
 
+widgetNS.ready = false;
+
 blist.widget.resizeViewport = function()
 {
     var $contentContainer = $('.widgetContent');
@@ -94,6 +96,7 @@ $(function()
     // keep track of some stuff for easy access
     widgetNS.orientation = widgetNS.theme['frame']['orientation'];
     widgetNS.isBlobby = (widgetNS.view.viewType === 'blobby');
+    widgetNS.interstitial = widgetNS.theme['behavior']['interstitial'];
 
     // sizing
     widgetNS.resizeViewport();
@@ -123,18 +126,31 @@ $(function()
     $('select, input:checkbox, input:radio, input:file').uniform();
 
     // menus
+    var menuContents = [];
+    if (widgetNS.theme['menu']['options']['more_views'] === true)
+        menuContents.push({ text: 'More Views', className: 'views',
+            subtext: 'Filters, Charts, and Maps', href: '#views' });
+    if (widgetNS.theme['menu']['options']['downloads'] === true)
+        menuContents.push({ text: 'Download', className: 'downloads',
+            subtext: 'Download in various formats', href: '#downloads', onlyIf: !widgetNS.isBlobby });
+    if (widgetNS.theme['menu']['options']['comments'] === true)
+        menuContents.push({ text: 'Comments', className: 'comments',
+            subtext: 'Read comments on this dataset', href: '#comments' });
+    if (widgetNS.theme['menu']['options']['embed'] === true)
+        menuContents.push({ text: 'Embed', className: 'embed',
+            subtext: 'Embed this player on your site', href: '#embed' });
+    if (widgetNS.theme['menu']['options']['print'] === true)
+        menuContents.push({ text: 'Print', className: 'print',
+        subtext: 'Print out this dataset', href: '#print', onlyIf: !widgetNS.isBlobby });
+
+    menuContents.push({ text: 'About the Socrata Social Data Player', className: 'about',
+        href: 'http://www.socrata.com/try-it-free', rel: 'external' });
+
     $('.mainMenu').menu({
         attached: false,
         menuButtonTitle: 'Access additional information about this dataset.',
         menuButtonClass: 'mainMenuButton ' + ((widgetNS.orientation == 'downwards') ? 'upArrow' : 'downArrow'),
-        contents: [
-            { text: 'More Views', className: 'views', subtext: 'Filters, Charts, and Maps', href: '#views' },
-            { text: 'Download', className: 'downloads', subtext: 'Download in various formats', href: '#downloads', onlyIf: !widgetNS.isBlobby },
-            { text: 'Comments', className: 'comments', subtext: 'Read comments on this dataset', href: '#comments' },
-            { text: 'Embed', className: 'embed', subtext: 'Embed this player on your site', href: '#embed' },
-            { text: 'Print', className: 'print', subtext: 'Print out this dataset', href: '#print', onlyIf: !widgetNS.isBlobby },
-            { text: 'About the Socrata Social Data Player', className: 'about', href: 'http://www.socrata.com/try-it-free', rel: 'external' }
-        ]
+        contents: menuContents
     });
     $('.mainMenu .menuDropdown a').click(function(event)
     {
@@ -666,4 +682,7 @@ $(function()
         event.preventDefault();
         $('.widgetModal').jqmHide();
     });
+
+    // Notify publisher that we are ready
+    widgetNS.ready = true;
 });

@@ -122,7 +122,7 @@
     top: 0;
 }
 
-#publishContent .privateDatasetMessage
+#publishContent .errorMessage
 {
     background: transparent url(/stylesheets/images/content/flag_modal_icon.png) no-repeat 0 1em;
     margin: 5em auto;
@@ -130,10 +130,15 @@
     width: 30em;
 }
 
-#publishContent .privateDatasetMessage p
+#publishContent .errorMessage p
 {
     font-size: 1.2em;
     margin-bottom: 1em;
+}
+
+#publishContent .versionMessage
+{
+    display: none;
 }
 
 h3 .infoText

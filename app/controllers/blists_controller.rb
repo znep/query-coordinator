@@ -194,29 +194,20 @@ class BlistsController < ApplicationController
       return upsell_or_404
     end
 
-    # TODO[ORGS]:
-    # We don't yet have a orgs service and we're not sure how we want to do it
-    # just yet, so for now by default we are going to just go and create a new
-    # template on behalf of the user the first time we load this page and then
-    # automatically load the first template for them after that.
-    # Eventually, we should be by default fetching the org's default template.
-
     # TODO[ORG SETUP]:
     # When we have an orgs setup process, move this into there instead of here
     # so that orgs don't default to the basic level theme.
-    @widget_customizations = WidgetCustomization.find.select {|w| !w.hidden}
-    if @widget_customizations.empty?
+
+    @widget_customizations = WidgetCustomization.find.select{ |w| !w.hidden }
+
+    @widget_customization = @widget_customizations.find{ |w|
+        w.uid == CurrentDomain.default_widget_customization_id}
+
+    if @widget_customization.nil?
       @widget_customization = WidgetCustomization.create({
-        'customization' => WidgetCustomization.default_theme, 'name' => "Default Blue Socrata" })
-      @widget_customizations << @widget_customization
-      @widget_customizations <<
-        WidgetCustomization.create({
-          'customization' => WidgetCustomization.default_theme.deep_merge({:frame => {:color => '#000000'}}),
-          'name' => "Default Black Socrata" })
-    else
-      @widget_customization = @widget_customizations.first
+        'customization' => WidgetCustomization.default_theme(1), 'name' => "Default Socrata" })
     end
-    @customization = WidgetCustomization.merge_theme_with_default(@widget_customization.customization)
+    @customization = @widget_customization.customization
   end
 
   def new_customization

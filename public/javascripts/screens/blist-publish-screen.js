@@ -18,6 +18,7 @@ var widgetNS;
  *      assigned value is concatenated as appropriate.
  *      If outsideWidget is set to true, the jQuery selector will select
  *      based on the publish page rather than based on the widget.
+ *      The css property name can be comma separated to set multiple values.
  *
  *  { selector: 'jQuery-selector', css: 'css-style-name', map: { key-value-pairs }[, outsideWidget: true] }
  *      Same as the previous syntax, but rather than directly assigning
@@ -69,214 +70,106 @@ var widgetNS;
  */
 
 // helpers for builder hash
-blist.publish.applyFrameColor = function($elem, values)
+blist.publish.applyOrientation = function($elem, value)
 {
-    if (values['gradient'] === true)
-    { 
-        var baseGradient = {
-            h: 38,
-            rh: 30,
-            fc: $.gradientString([
-                $.addColors(values['color'], '4c4c4c'),
-                [$.addColors(values['color'], '191919'), 0.4],
-                [values['color'], 0.4]])
-        };
-        if (values['border'] !== false)
-        {
-            baseGradient['ec'] = values['border'].slice(1);
-            baseGradient['ew'] = 1;
-        }
+    widgetNS.orientation = value;
 
-        // top gradients
-        publishNS.writeStyle('#header .wrapperT', 'background-image',
-            $.urlToImageBuilder($.extend({ w: 3, rw: 1, rx: 1 }, baseGradient), 'png', true));
-        publishNS.writeStyle('#header .wrapperTR', 'background-image',
-            $.urlToImageBuilder($.extend({ r: 8, rx: 8 }, baseGradient), 'png', true));
-        publishNS.writeStyle('#header', 'background-image',
-            $.urlToImageBuilder($.extend({ r: 8, rw: 8 }, baseGradient), 'png', true));
-
-        // lower gradient
-        publishNS.writeStyle('.widgetFooterWrapper', 'background-image',
-            $.urlToImageBuilder($.extend({}, baseGradient,
-            { h: 80, rh: 80, w: 3, rw: 1, rx: 1, fc: $.gradientString([ [ values['color'], 0.8 ], $.addColors(values['color'], '3f3f3f') ] ) }), 'png', true));
+    // prefetch this or jQuery gets confused about context
+    $widgetContent = $elem.children('.widgetContent');
+    if (value == 'downwards')
+    {
+        $elem.children('.headerBar').insertBefore($widgetContent);
+        $elem.children('.subHeaderBar').insertBefore($widgetContent);
+        $elem.children('.toolbar').insertBefore($widgetContent);
+        $elem.find('.mainMenuButton').removeClass('downArrow').addClass('upArrow');
     }
     else
     {
-        // frame
-        publishNS.writeStyle('#header, #header .wrapperT, #header .wrapperTR, .widgetFooterWrapper',
-            'background-color', values['color']);
-        publishNS.writeStyle('#header, #header .wrapperT, #header .wrapperTR, .widgetFooterWrapper',
-            'background-image', 'none');
-
-        if (values['border'] !== false)
-        {
-            publishNS.writeStyle('#header', 'border', '1px solid ' + values['border']);
-            publishNS.writeStyle('#header', 'border-bottom', 'none');
-        }
-    }
-    
-    // dialog headers
-    publishNS.writeStyle('.dialogBox .header', 'background-color', values['color']);
-    
-    // sides
-    publishNS.writeStyle('.gridInner', 'border-color', values['color']);
-
-    // meta border
-      // general borders
-        publishNS.writeStyle('.infoContentOuter, .metadataPane .summaryTabs li, .singleInfoComments li.comment.ownerComment .commentBlock .cornerOuter, .metadataPane .summaryTabs',
-            'border-color', values['color']);
-      // inactive tab corners sprite
-        publishNS.writeStyle('.metadataPane .summaryTabs li .tabOuter, .metadataPane .summaryTabs li .tabInner',
-            'background-image', 'url(/ui/box.png?ew=1&rh=20&ec=' + values['color'].slice(1) + '&fc=ececec&h=23&r=3&s=h&bc=ececec)');
-      // active tab corners sprite
-        publishNS.writeStyle('.metadataPane .summaryTabs li.active .tabOuter, .metadataPane .summaryTabs li.active .tabInner',
-            'background-image', 'url(/ui/box.png?ew=1&rh=20&ec=' + values['color'].slice(1) + '&fc=cacaca&h=23&r=3&s=h&bc=ececec)');
-      // tab scroll buttons background color
-        publishNS.writeStyle('.metadataPane .summaryTabs li.scrollArrow a, .metadataPane .summaryTabs li.scrollArrow.disabled a, .metadataPane .summaryTabs li.scrollArrow.disabled a:hover',
-            'background-color', values['color']);
-      // tab scroll buttons border color
-        publishNS.writeStyle('.metadataPane .summaryTabs li.scrollArrow a, .metadataPane .summaryTabs li.scrollArrow.disabled a, .metadataPane .summaryTabs li.scrollArrow.disabled a:hover',
-            'border-color', values['color']);
-
-    // meta left bar bg
-        publishNS.writeStyle('.infoContentOuter .infoContentInner', 'background-image',
-            'url(/ui/box.png?w=150&h=1&fc=' + values['color'].slice(1) + ')');
-
-    if (values['border'] !== false)
-    {
-        publishNS.writeStyle('.gridOuter, .widgetFooterInner', 'border-color', values['border']);
+        $elem.children('.headerBar').insertAfter($widgetContent);
+        $elem.children('.subHeaderBar').insertAfter($widgetContent);
+        $elem.children('.toolbar').insertAfter($widgetContent);
+        $elem.find('.mainMenuButton').removeClass('upArrow').addClass('downArrow');
     }
 };
 
-blist.publish.applyDownloadMenu = function($elem, values)
+blist.publish.applyContentMargin = function($elem, value)
 {
-    if (values['csv'] || values['json'] || values['pdf'] || values['xls'] ||
-        values['xlsx'] || values['xml']) { $elem.show(); }
-    else { $elem.hide(); }
-};
-
-blist.publish.applySubscribeMenu = function($elem, values)
-{
-    if (values['rss'] || values['atom'])
-    {
-        $elem.show();
-    }
+    var valueAndUnit = value.value + value.unit;
+    $elem.css('margin', '0 ' + valueAndUnit);
+    if (widgetNS.orientation == 'upwards')
+        $elem.css('margin-top', valueAndUnit);
     else
-    {
-        $elem.hide();
-    }
-};
-
-blist.publish.applySocializeMenu = function($elem, values)
-{
-    if (values['delicious'] || values['digg'] || values['facebook'] ||
-        values['twitter']) { $elem.show(); }
-    else { $elem.hide(); }
+        $elem.css('margin-bottom', valueAndUnit);
 };
 
 blist.publish.applyLogo = function($elem, value)
 {
     var $logoPreview = $('#publishOptionsPane .logoPreview');
     var $urlSubForm = $('#publishOptionsPane .logoUrlForm').show();
-    if (value == 'none')
+    /*if (value == 'none')
     {
-        $elem.addClass('hide');
-        $logoPreview.addClass('hide');
         $urlSubForm.hide();
     }
     else if (value == 'default')
     {
-        $elem.removeClass('hide')
-             .css('background-image', 'url(/stylesheets/images/widgets/socrata_logo_player.png)');
         $logoPreview.addClass('hide');
     }
     else if (value.match(/[\dA-F]{8}-([\dA-F]{4}-){3}[\dA-F]{12}/))
     {
-        $elem.removeClass('hide')
-             .css('background-image', 'url(/assets/' + value + ')');
         $logoPreview.removeClass('hide')
              .attr('src', '/assets/' + value + '?s=tiny');
     }
     else
     {
-        $elem.removeClass('hide')
-             .css('background-image', 'url(' + value + ')');
         $logoPreview.removeClass('hide')
              .attr('src', value);
-    }
+    }*/
 };
 
-blist.publish.applyTabs = function($elem, subhash)
+blist.publish.hideShowMenuItem = function($elem, value)
 {
-    if ($elem.length < 1) { return; }
-
-    // $elem is the container of the tabs
-    var tabs = [];
-    for (var key in subhash)
+    if (value === true)
     {
-        var value = subhash[key];
-        value['name'] = key;
-        tabs.push(value);
-    }
-
-    tabs.sort(function(a, b) { return a['order'] - b['order']; });
-    for (var i = 0; i < tabs.length; i++)
-    {
-        if (tabs[i]['show'] === true)
-        {
-            $elem.find('#tab' + $.capitalize(tabs[i]['name']))
-                 .show()
-                 .insertBefore($elem.find('.scrollArrow.prev'));
-        }
-        else
-        {
-            $elem.find('#tab' + $.capitalize(tabs[i]['name']))
-                 .hide()
-                 .insertAfter($elem.find('.scrollArrow.next'));
-        }
-    }
-    if ($elem.children('li.active:not(:hidden)').length === 0)
-    {
-        $elem.infoPaneNavigate().activateTab($elem.children('li:first-child'), true);
-    }
-
-    var $meta = $elem.closest('#widgetMeta');
-    if ($elem.children('li:not(:hidden):not(.scrollArrow)').length === 0)
-    {
-        $meta.css('height', 0);
-        $meta.siblings('.gridContainer').css('height', $meta.closest('.gridInner').css('height'));
+        $elem.show();
     }
     else
     {
-        $meta.css('height', null);
-        $meta.siblings('.gridContainer').css('height', $meta.closest('.gridInner').innerHeight() - $meta.outerHeight(false));
-    }
-};
+        $elem.hide();
 
-blist.publish.applyInterstitial = function(value)
-{
-    if (value)
-    {
-        widgetNS.enableInterstitial();
-    }
-    else
-    {
-        widgetNS.disableInterstitial();
+        if ($elem.closest('.widgetWrapper')
+                 .find('.widgetContent_' + $elem.attr('class').split(' ')[1])
+                    .is(':visible'))
+        {
+            widgetNS.showDataView();
+        }
     }
 };
 
 // builder hash!
 blist.publish.customizationApplication = {
-    style:          { font:          { face:                [ { selector: 'html', css: 'font-family' } ],
-                                       grid_header_size:    [ { selector: 'div.blist-th .info-container', css: 'font-size', hasUnit: true }],
-                                       grid_data_size:      [ { selector: '.blist-td', css: 'font-size', hasUnit: true }] } },
-    frame:          { _group:                               [ { selector: 'body', properties: ['color', 'gradient', 'border'], callback: publishNS.applyFrameColor } ],
-                      logo:                                 [ { selector: '.widgetLogoWrapper > a', callback: publishNS.applyLogo } ],
-                      logo_url:                             [ { selector: '.widgetLogoWrapper > a', attr: 'href' } ],
-                      footer_link:   { show:                [ { selector: '.getPlayerAction', hideShow: true } ],
-                                       url:                 [ { selector: '.getPlayerAction a', attr: 'href' } ],
-                                       text:                [ { selector: '.getPlayerAction a', callback: function($elem, value) { $elem.text(value); } } ] } },
-    grid:           { row_numbers:                          [ { selector: '.blist-table-locked-scrolls:has(.blist-table-row-numbers)', hideShow: true },
+    frame:          { border:        { color:               [ { selector: '.widgetWrapper', css: 'border-color' } ],
+                                       width:               [ { selector: '.widgetWrapper', css: 'border-width', hasUnit: true } ] },
+                      color:                                [ { selector: '.widgetWrapper', css: 'background-color' } ],
+                      orientation:                          [ { selector: '.widgetWrapper', callback: publishNS.applyOrientation } ],
+                      padding:                              [ { selector: '.subHeaderBar, .toolbar', css: 'margin-left, margin-right', hasUnit: true },
+                                                              { selector: '.widgetContent', callback: publishNS.applyContentMargin } ] },
+    toolbar:        { color:                                [ { selector: '.subHeaderBar, .toolbar', css: 'background-color' } ] },
+    logo:           { image:                                [ { selector: '.headerBar .logo', callback: publishNS.applyLogo } ],
+                      href:                                 [ { selector: '.headerBar .logoLink', attr: 'href' } ] },
+    menu:           { button:        { background:          [ { selector: '.mainMenu', callback: function($elem, value) {} } ],
+                                       background_hover:    [ { selector: '.mainMenu', callback: function($elem, value) {} } ],
+                                       border:              [ { selector: '.mainMenuButton', css: 'border-color' } ],
+                                       text:                [ { selector: '.mainMenuButton', css: 'color' } ] },
+                      options:       { more_views:          [ { selector: '.mainMenu .menuEntry.views', callback: publishNS.hideShowMenuItem } ],
+                                       comments:            [ { selector: '.mainMenu .menuEntry.comments', callback: publishNS.hideShowMenuItem } ],
+                                       downloads:           [ { selector: '.mainMenu .menuEntry.downloads', callback: publishNS.hideShowMenuItem } ],
+                                       embed:               [ { selector: '.mainMenu .menuEntry.embed', callback: publishNS.hideShowMenuItem } ],
+                                       print:               [ { selector: '.mainMenu .menuEntry.print', callback: publishNS.hideShowMenuItem } ] },
+                      share:                                [ { selector: '.subHeaderBar .share', hideShow: true } ],
+                      fullscreen:                           [ { selector: '.subHeaderBar .fullscreen', hideShow: true } ] },
+    grid:           { font:          { header_size:         [ { selector: 'div.blist-th .info-container', css: 'font-size', hasUnit: true } ],
+                                       data_size:           [ { selector: '.blist-td', css: 'font-size', hasUnit: true } ] },
+                      row_numbers:                          [ { selector: '.blist-table-locked-scrolls:has(.blist-table-row-numbers)', hideShow: true },
                                                               { selector: '.blist-table-header-scrolls, .blist-table-footer-scrolls', css: 'margin-left', map: { 'true': '49px', 'false': '0' } },
                                                               { selector: '#data-grid .blist-table-inside .blist-tr', css: 'left', map: { 'true': '49px', 'false': '0' } } ],
                       wrap_header_text:                     [ { selector: '.blist-th .info-container, .blist-th .name-wrapper', css: 'height', map: { 'true': '2.45em', 'false': '1.6667em' } },
@@ -284,45 +177,7 @@ blist.publish.customizationApplication = {
                                                               { selector: '.blist-table-header, .blist-th, .blist-th .dragHandle', css: 'height', map: { 'true': '4.5em', 'false': '3.5em' } } ],
                       title_bold:                           [ { selector: '.blist-th .blist-th-name', css: 'font-weight', map: { 'true': 'bold', 'false' : 'normal' } } ],
                       header_icons:                         [ { selector: '.blist-th-icon', hideShow: true } ],
-                      /* disabled row height
-                      row_height:                           [ { selector: '.blist-td', css: 'height', hasUnit: true },
-                                                              { selector: '.blist-td', css: 'line-height', hasUnit: true } ],*/
                       zebra:                                [ { selector: '.blist-tr-even .blist-td', css: 'background-color' } ] },
-    menu:           {
-                      top_fullscreen:                       [ { selector: '.fullScreenButton', hideShow: true } ],
-                      // Main menu
-                      print:                                [ { selector: '.headerMenu .print', hideShow: true } ],
-                      fullscreen:                           [ { selector: '#mainMenu .fullscreen', hideShow: true } ],
-                      download_menu: { csv:                 [ { selector: '.headerMenu .export .csv', hideShow: true } ],
-                                       json:                [ { selector: '.headerMenu .export .json', hideShow: true } ],
-                                       pdf:                 [ { selector: '.headerMenu .export .pdf', hideShow: true } ],
-                                       xls:                 [ { selector: '.headerMenu .export .xls', hideShow: true } ],
-                                       xlsx:                [ { selector: '.headerMenu .export .xlsx', hideShow: true } ],
-                                       xml:                 [ { selector: '.headerMenu .export .xml', hideShow: true } ],
-                                       _group:              [ { selector: '.headerMenu .export', properties: ['csv', 'json', 'pdf', 'xls', 'xlsx', 'xml'], callback: publishNS.applyDownloadMenu } ] },
-                      api:                                  [ { selector: '.headerMenu .api', hideShow: true } ],
-                      subscribe:     { atom:                [ { selector: '.headerMenu .subscribe .atom', hideShow: true } ],
-                                       rss:                 [ { selector: '.headerMenu .subscribe .rss', hideShow: true } ],
-                                       _group:              [ { selector: '.headerMenu .subscribe', properties: [ 'atom', 'rss' ], callback: publishNS.applySubscribeMenu } ] },
-                      basic_analytics:                      [ { selector: '.headerMenu .basic_analytics', hideShow: true } ],
-                      about:                                [ { selector: '.headerMenu .about', hideShow: true } ],
-                      about_sdp:                            [ { selector: '.headerMenu .aboutSDP', hideShow: true } ],
-
-                      // More Views menu
-                      show_tags:                            [ { selector: '.headerMenu .rowTags', hideShow: true } ],
-                      more_views:                           [ { selector: '.headerMenu .moreViews', hideShow: true } ],
-                      views_fullscreen:                     [ { selector: '#viewsMenu .fullscreen, #viewsMenu > .sectionTitle', hideShow: true } ],
-
-                      // Share menu
-                      republish:                            [ { selector: '.headerMenu .publish', hideShow: true } ],
-                      email:                                [ { selector: '.headerMenu .email', hideShow: true } ],
-                      socialize:     { delicious:           [ { selector: '.headerMenu .socialize .delicious', hideShow: true } ],
-                                       digg:                [ { selector: '.headerMenu .socialize .digg', hideShow: true } ],
-                                       facebook:            [ { selector: '.headerMenu .socialize .facebook', hideShow: true } ],
-                                       twitter:             [ { selector: '.headerMenu .socialize .twitter', hideShow: true } ],
-                                       _group:              [ { selector: '.headerMenu .socialize', properties: [ 'delicious', 'digg', 'facebook', 'twitter' ], callback: publishNS.applySocializeMenu } ] }
-                      },
-    meta:                                                   [ { selector: '#widgetMeta .summaryTabs', callback: publishNS.applyTabs }],
     behavior:       { save_public_views:                    [ { selector: '#viewHeader', css: 'display', map: { 'true': '', 'false': 'none' } } ],
                       interstitial:                         [ { callback: publishNS.applyInterstitial } ] },
     publish:        { dimensions:   { width:                [ { selector: '.previewPane, .previewPane iframe', outsideWidget: true, callback: function($elem, value) { $elem.css('width', value + 'px'); } } ],
@@ -376,21 +231,31 @@ blist.publish.applyCustomizationToPreview = function(hash)
                         var value = subapply[key][curapply];
                         if ((value['css'] !== undefined) && (value['outsideWidget'] !== true))
                         {
-                            if (value['hasUnit'] !== undefined)
+                            _.each(value['css'].split(/, */), function(cssProperty)
                             {
-                                publishNS.writeStyle(value['selector'], value['css'],
-                                    subhash[key]['value'] + subhash[key]['unit']);
-                            }
-                            else if (value['map'] !== undefined)
-                            {
-                                publishNS.writeStyle(value['selector'], value['css'],
-                                    value['map'][subhash[key].toString()]);
-                            }
-                            else
-                            {
-                                publishNS.writeStyle(value['selector'], value['css'],
-                                    subhash[key]);
-                            }
+                                if (value['hasUnit'] !== undefined)
+                                {
+                                    publishNS.writeStyle(value['selector'], cssProperty,
+                                        subhash[key]['value'] + subhash[key]['unit']);
+                                }
+                                else if (value['map'] !== undefined)
+                                {
+                                    publishNS.writeStyle(value['selector'], cssProperty,
+                                        value['map'][subhash[key].toString()]);
+                                }
+                                else if ((cssProperty == 'background-color') ||
+                                        (cssProperty == 'color') ||
+                                        (cssProperty == 'border-color'))
+                                {
+                                    publishNS.writeStyle(value['selector'], cssProperty,
+                                        '#' + subhash[key]);
+                                }
+                                else
+                                {
+                                    publishNS.writeStyle(value['selector'], cssProperty,
+                                        subhash[key]);
+                                }
+                            });
                         }
                         else if (value['selector'] !== undefined)
                         {
@@ -443,15 +308,16 @@ blist.publish.applyCustomizationToPreview = function(hash)
         }
     };
 
-    clearTimeout(publishNS.loadFrameTimeout);
-    if ($('.previewPane iframe').length === 0)
-    {
-        return;
-    }
+    var $iframe = $('.previewPane iframe');
+    if ($iframe.length === 0)
+    { return; }
 
-    if ((typeof $('.previewPane iframe').get()[0].contentWindow.blist === 'undefined') ||
-        (typeof $('.previewPane iframe').get()[0].contentWindow.blist.widget === 'undefined') ||
-        ($('.previewPane iframe').get()[0].contentWindow.blist.widget.ready !== true))
+    var iframeNS = $iframe.get()[0].contentWindow;
+
+    clearTimeout(publishNS.loadFrameTimeout);
+    if ((typeof iframeNS.blist === 'undefined') ||
+        (typeof iframeNS.blist.widget === 'undefined') ||
+        (iframeNS.blist.widget.ready !== true))
     {
         // iframe may not have loaded yet.
         publishNS.loadFrameTimeout = setTimeout(
@@ -459,11 +325,11 @@ blist.publish.applyCustomizationToPreview = function(hash)
     }
     else
     {
-        widgetNS = $('.previewPane iframe').get()[0].contentWindow.blist.widget;
+        widgetNS = iframeNS.blist.widget;
 
         publishNS.clearStyles();
         recurse(publishNS.customizationApplication, hash);
-        widgetNS.sizeGrid();
+        widgetNS.resizeViewport(); // TODO: This is going to merge poorly?
 
         if(publishNS.showEmbed !== false)
         {
@@ -641,7 +507,7 @@ blist.publish.serializeForm = function()
                     subhash[matches[matches.length - 1]] = $input.attr('checked');
                     break;
                 default:
-                    subhash[matches[matches.length - 1]] = 
+                    subhash[matches[matches.length - 1]] =
                         $input.hasClass('prompt') ? '' : publishNS.parseVal($input.val());
             }
         }
@@ -693,7 +559,7 @@ blist.publish.populateForm = function(hash)
                         if ($inputs.siblings('.colorPickerContainer').length > 0)
                         {
                             // deal with color pickers
-                            $inputs.siblings('.colorPickerContainer').ColorPickerSetColor(subhash[key].toString());
+                            $inputs.siblings('.colorPickerContainer').ColorPickerSetColor('#' + subhash[key].toString());
                         }
                         break;
                     default:
@@ -703,7 +569,6 @@ blist.publish.populateForm = function(hash)
         }
     };
     recurse(hash, 'customization');
-    $('#tabsReorderList').reorderableList_updateFromData();
 
     $('#customizationDescription').text(hash['description'] || '(none)');
 
@@ -712,6 +577,65 @@ blist.publish.populateForm = function(hash)
 
     // Update preview
     publishNS.valueChanged(true);
+};
+
+blist.publish.checkVersion = function(customization)
+{
+    if (customization['version'] !== 1)
+    {
+        $('.livePreviewText, .previewPane').hide();
+        $('#publishOptionsPane .summaryTabs').infoPaneNavigate().activateTab('#tabTemplates');
+        $('#publishOptionsPane .summaryTabs').children(':not(:first)').hide();
+        $('.versionMessage').show();
+        return false;
+    }
+    else
+    {
+        $('.livePreviewText, .previewPane').show();
+        $('#publishOptionsPane .summaryTabs').children().show();
+        $('.versionMessage').hide();
+        return true;
+    }
+};
+
+blist.publish.cleanupColors = function(color)
+{
+    color = color.replace(/[^\da-f]/ig, '');
+    if (color.length == 3)
+    { color = color.replace(/(.)/, '$1$1'); }
+
+    return color;
+};
+
+blist.publish.convertCustomization = function(customization)
+{
+    // transfer relevant values over
+    var newCustomization = $.extend(true, {}, publishNS.v2Theme);
+    newCustomization['frame']['color'] = publishNS.cleanupColors(customization['frame']['color']);
+    newCustomization['frame']['border']['color'] = publishNS.cleanupColors(customization['frame']['border']);
+
+    // none is no longer supported; default is already in the customization
+    if ((customization['frame']['logo'] != 'none') &&
+        (customization['frame']['logo'] != 'default'))
+    {
+        if (customization['frame']['logo'].match(/^[\dA-F]{8}-([\dA-F]{4}-){3}[\dA-F]{12}$/i))
+        { newCustomization['logo']['image']['type'] = 'hosted'; }
+
+        newCustomization['logo']['image']['href'] = customization['frame']['logo'];
+    }
+
+    newCustomization['grid']['font']['header_size'] = customization['style']['font']['grid_header_size'];
+    newCustomization['grid']['font']['data_size'] = customization['style']['font']['grid_data_size'];
+    newCustomization['grid']['row_numbers'] = customization['grid']['row_numbers'];
+    newCustomization['grid']['wrap_header_text'] = customization['grid']['wrap_header_text'];
+    newCustomization['grid']['header_icons'] = customization['grid']['header_icons'];
+    newCustomization['grid']['title_bold'] = customization['grid']['title_bold'];
+    newCustomization['grid']['zebra'] = publishNS.cleanupColors(customization['grid']['zebra']);
+
+    newCustomization['behavior'] = customization['behavior'];
+    newCustomization['publish'] = customization['publish'];
+
+    return newCustomization;
 };
 
 blist.publish.loadCustomization = function()
@@ -724,13 +648,20 @@ blist.publish.loadCustomization = function()
         success: function(responseData)
         {
             publishNS.hideUnsavedChangesBar();
-            publishNS.populateForm($.json.deserialize(responseData['customization']));
+
+            // set customization anyway in case populate isn't called
+            var customization = $.json.deserialize(responseData['customization']);
+            publishNS.currentTheme = customization;
+
+            if (publishNS.checkVersion(customization))
+            { publishNS.populateForm(customization); }
+
             $('.templateName').text(responseData['name']);
         },
         error: function(request, status, error)
         {
             // TODO: wait and retry and/or notify user
-        } 
+        }
     });
 };
 
@@ -752,7 +683,6 @@ blist.publish.hideUnsavedChangesBar = function()
         "tabTemplates" :   ".singleInfoTemplates",
         "tabVisual" :      ".singleInfoVisual",
         "tabMenuControl" : ".singleInfoMenuControl",
-        "tabTab" :         ".singleInfoTab",
         "tabAdvanced" :    ".singleInfoAdvanced"
     };
     if (publishNS.showTemplateChooser === false)
@@ -777,9 +707,9 @@ blist.publish.hideUnsavedChangesBar = function()
             flat: true,
             color: $this.siblings('.colorPickerTrigger').css('background-color'),
             onChange: function(hsb, hex, rgb) {
-                $this.siblings('.colorPickerLabel').text('#' + hex);
+                $this.siblings('.colorPickerLabel').text(hex);
                 $this.siblings('.colorPickerTrigger').css('background-color', '#' + hex);
-                $this.siblings('input').val('#' + hex);
+                $this.siblings('input').val(hex);
             }
         });
         $this.siblings('.colorPickerTrigger').click(function()
@@ -802,11 +732,6 @@ blist.publish.hideUnsavedChangesBar = function()
         });
     });
 
-    // Reorderable List
-    $('#tabsReorderList').reorderableList({
-        onChange: publishNS.valueChanged
-    });
-
     // Save whenever the user changes something; highlight textboxes on click
     $('select[name^=customization]').change(publishNS.valueChanged);
     $('input[name^=customization]:not([type=text])').click(publishNS.valueChanged);
@@ -825,7 +750,7 @@ blist.publish.hideUnsavedChangesBar = function()
         event.preventDefault();
         $("#publishOptionsPane .summaryTabs").infoPaneNavigate().activateTab('#tabTemplates');
     });
-    
+
     // New template link needs to revert changes
     $('.newTemplateLink').click(function(event)
     {
@@ -861,7 +786,8 @@ blist.publish.hideUnsavedChangesBar = function()
     });
 
     // Load in customization
-    publishNS.applyCustomizationToPreview(publishNS.currentTheme);
+    if (publishNS.checkVersion(publishNS.currentTheme))
+    { publishNS.applyCustomizationToPreview(publishNS.currentTheme); }
 
     // Hide/show form elements custom UI
     $('[name="customization[frame][footer_link][show]"]').change(function()
@@ -884,12 +810,12 @@ blist.publish.hideUnsavedChangesBar = function()
             $this.closest('dl').next()
                 .show()
                 .find('.colorPickerContainer').ColorPickerSetColor('#e7ebf2');
-            $('#customization_grid_zebra').val('#e7ebf2');
+            $('#customization_grid_zebra').val('e7ebf2');
         }
         else
         {
             $this.closest('dl').next().hide();
-            $('#customization_grid_zebra').val('#ffffff');
+            $('#customization_grid_zebra').val('ffffff');
             publishNS.valueChanged();
         }
     });
@@ -949,5 +875,15 @@ blist.publish.hideUnsavedChangesBar = function()
                 window.location.reload();
             }
         });
+    });
+
+    // Convert customization button
+    $('.versionMessage .convertButton').click(function(event)
+    {
+        event.preventDefault();
+
+        var convertedTheme = publishNS.convertCustomization(publishNS.currentTheme);
+        publishNS.populateForm(convertedTheme);
+        publishNS.checkVersion(convertedTheme);
     });
 })(jQuery);

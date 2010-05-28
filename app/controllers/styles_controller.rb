@@ -52,7 +52,11 @@ class StylesController < ApplicationController
 
   def widget
     begin
-      theme = WidgetCustomization.find(params[:customization_id]).customization
+      if params[:customization_id] == 'default'
+        theme = WidgetCustomization.default_theme(1)
+      else
+        theme = WidgetCustomization.find(params[:customization_id]).customization
+      end
     rescue CoreServer::CoreServerError => e
       render_404
     end

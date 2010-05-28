@@ -20,10 +20,10 @@
             </div>
           </div>
           <a href="<%= @view.href %>" class="backToDatasetLink">Back to the Dataset</a>
-          <h1>Customize Your Social Data Player</h1> 
+          <h1>Customize Your Social Data Player</h1>
           <p>
-            Use the controls at the bottom of this page to edit the look and 
-            function of this Social Data Player. You can edit an existing 
+            Use the controls at the bottom of this page to edit the look and
+            function of this Social Data Player. You can edit an existing
             template or create a new one.
           </p>
           <p>
@@ -48,13 +48,13 @@
       <%- if @view.is_public? -%>
         <p class="livePreviewText">Live Preview</p>
         <div class="previewPane" style="width:<%= @customization[:publish][:dimensions][:width] %>px">
-          <%= get_publish_embed_code_for_view(@view, {}, 'normal') %>
+          <%= get_publish_embed_code_for_view(@view, {}, 'default') %>
           <div class="loadingIndicator">
             Loading your Data Player Customization...
           </div>
         </div>
       <%- else -%>
-        <div class="privateDatasetMessage">
+        <div class="errorMessage privateDatasetMessage">
           <h2>Warning</h2>
           <p>The dataset you are trying to publish is currently marked as private.
              You will need to make it public before you can publish it. This will
@@ -64,6 +64,15 @@
           </ul>
         </div>
       <%- end -%>
+      <div class="errorMessage versionMessage">
+        <h2>Warning</h2>
+        <p>The customization you are trying to edit is our old design, which is no
+           longer supported. It will continue to work as expected, but if you want
+           to make changes, you'll have to convert it over to our new design first.
+           You can preview how it will look before committing to using it.</p>
+        <ul class="actionButtons">
+          <li><a href="#convert" class="convertButton arrowButton">Convert it now</a></li>
+        </ul>
       </div>
     </div>
   </div>
@@ -80,9 +89,6 @@
       <li id="tabMenuControl">
         <%= summary_tab 'Menu &amp; Control Options', 'menuControl' %>
       </li>
-      <li id="tabTab">
-        <%= summary_tab 'Tab Options', 'tab' %>
-      </li>
       <li id="tabAdvanced">
         <%= summary_tab 'Advanced Options', 'advanced' %>
       </li>
@@ -94,7 +100,7 @@
         <h2 class="panelHeader clipText">
             Apply the
             <%= select_tag("template_name", options_from_collection_for_select(
-                @widget_customizations, 'uid', 'name', @widget_customization)) %>
+                @widget_customizations, 'uid', 'name', @widget_customization.uid)) %>
             template to this Social Data Player
         </h2>
         <ul class="headerActions actionButtons">
@@ -189,6 +195,21 @@
                 </dd>
               </dl>
               <dl class="summaryList">
+                <dt>Powered By</dt>
+                <dd>
+                  <div class="itemContent">
+                    <span class="textContent">
+                      <%= radio_button_tag("customization[publish][show_powered_by]", "true",
+                          @customization[:publish][:show_powered_by]) %>
+                      <%= label_tag("customization_publish_show_powered_by_true", "Show") %>
+                      <%= radio_button_tag("customization[publish][show_powered_by]", "false",
+                          !@customization[:publish][:show_powered_by]) %>
+                      <%= label_tag("customization_publish_show_powered_by_false", "Don't Show") %>
+                    </span>
+                  </div>
+                </dd>
+              </dl>
+              <dl class="summaryList">
                 <dt></dt>
                 <dd>
                   <div class="itemContent">
@@ -199,25 +220,14 @@
                 </dd>
               </dl>
               <dl class="summaryList">
-                <dt>Frame Style</dt>
-                <dd>
-                  <div class="itemContent">
-                    <span class="textContent">
-                      <%= select_tag("customization[frame][gradient]", options_for_select(
-                          {'Solid Background' => false, 'Gradient Background' => true}, @customization[:frame][:gradient])) %>
-                    </span>
-                  </div>
-                </dd>
-              </dl>
-              <dl class="summaryList">
                 <dt>Frame Color</dt>
                 <dd>
                   <div class="itemContent">
                     <span class="textContent">
-                      <%= hidden_field_tag("customization[frame][color]", 
+                      <%= hidden_field_tag("customization[frame][color]",
                           @customization[:frame][:color]) %>
                       <div class="colorPickerContainer"></div>
-                      <div id="frameColorPickerTrigger" class="colorPickerTrigger" style="background-color:<%= @customization[:frame][:color] %>"></div>
+                      <div id="frameColorPickerTrigger" class="colorPickerTrigger" style="background-color:#<%= @customization[:frame][:color] %>"></div>
                       <div class="colorPickerLabel"><%= @customization[:frame][:color] %></div>
                     </span>
                   </div>
@@ -228,68 +238,48 @@
                 <dd>
                   <div class="itemContent">
                     <span class="textContent">
-                      <%= hidden_field_tag("customization[frame][border]", 
-                          @customization[:frame][:border]) %>
+                      <%= hidden_field_tag("customization[frame][border][color]",
+                          @customization[:frame][:border][:color]) %>
                       <div class="colorPickerContainer"></div>
-                      <div id="frameColorPickerTrigger" class="colorPickerTrigger" style="background-color:<%= @customization[:frame][:border] %>"></div>
-                      <div class="colorPickerLabel"><%= @customization[:frame][:border] %></div>
+                      <div id="frameColorPickerTrigger" class="colorPickerTrigger" style="background-color:#<%= @customization[:frame][:border][:color] %>"></div>
+                      <div class="colorPickerLabel"><%= @customization[:frame][:border][:color] %></div>
                     </span>
                   </div>
                 </dd>
               </dl>
               <dl class="summaryList">
-                <dt>Font Style</dt>
+                <dt>Toolbar Color</dt>
                 <dd>
                   <div class="itemContent">
                     <span class="textContent">
-                      <%= radio_button_tag("customization[style][font][face]", "arial",
-                          @customization[:style][:font][:face] == "arial") %>
-                      <%= label_tag("customization_style_font_face_arial", "Sans Serif") %>
-                      <%= radio_button_tag("customization[style][font][face]", "times",
-                          @customization[:style][:font][:face] == "times") %>
-                      <%= label_tag("customization_style_font_face_times", "Serif") %>
+                      <%= hidden_field_tag("customization[toolbar][color]",
+                          @customization[:toolbar][:color]) %>
+                      <div class="colorPickerContainer"></div>
+                      <div id="frameColorPickerTrigger" class="colorPickerTrigger" style="background-color:#<%= @customization[:toolbar][:color] %>"></div>
+                      <div class="colorPickerLabel"><%= @customization[:toolbar][:color] %></div>
                     </span>
                   </div>
                 </dd>
               </dl>
-            <%- if false # not implemented -%>
               <dl class="summaryList">
-                <dt>Menu Icon Style</dt>
+                <dt>Border Thickness</dt>
                 <dd>
                   <div class="itemContent">
                     <span class="textContent">
-                      <%= radio_button_tag("customization[frame][icon_color]", "blue",
-                          @customization[:frame][:icon_color] == "blue") %>
-                      <%= label_tag("customization_frame_icon_color_blue", "Dark") %>
-                      <%= radio_button_tag("customization[frame][icon_color]", "grey",
-                          @customization[:frame][:icon_color] == "grey") %>
-                      <%= label_tag("customization_frame_icon_color_grey", "Light") %>
+                      <%= text_field_tag("customization[frame][border][width][value]",
+                          @customization[:frame][:border][:width][:value]) %>
+                      <%= select_tag("customization[frame][border][width][unit]", font_unit_select_options(
+                          @customization[:frame][:border][:width][:unit])) %>
                     </span>
                   </div>
                 </dd>
               </dl>
-            <%- end -%>
               <dl class="summaryList">
                 <dt></dt>
                 <dd>
                   <div class="itemContent">
                     <span class="textContent">
                       <h3>Column Titles</h3>
-                    </span>
-                  </div>
-                </dd>
-              </dl>
-              <dl class="summaryList">
-                <dt>Column Type Icons</dt>
-                <dd>
-                  <div class="itemContent">
-                    <span class="textContent">
-                      <%= radio_button_tag("customization[grid][header_icons]", "true",
-                          @customization[:grid][:header_icons]) %>
-                      <%= label_tag("customization_grid_header_icons_true", "Show") %>
-                      <%= radio_button_tag("customization[grid][header_icons]", "false",
-                          !@customization[:grid][:header_icons]) %>
-                      <%= label_tag("customization_grid_header_icons_false", "Don't Show") %>
                     </span>
                   </div>
                 </dd>
@@ -329,10 +319,10 @@
                 <dd>
                   <div class="itemContent">
                     <span class="textContent">
-                      <%= text_field_tag("customization[style][font][grid_header_size][value]",
-                          @customization[:style][:font][:grid_header_size][:value]) %>
-                      <%= select_tag("customization[style][font][grid_header_size][unit]", font_unit_select_options(
-                          @customization[:style][:font][:grid_header_size][:unit])) %>
+                      <%= text_field_tag("customization[grid][font][header_size][value]",
+                          @customization[:grid][:font][:header_size][:value]) %>
+                      <%= select_tag("customization[grid][font][header_size][unit]", font_unit_select_options(
+                          @customization[:grid][:font][:header_size][:unit])) %>
                     </span>
                   </div>
                 </dd>
@@ -370,30 +360,14 @@
                 <dd>
                   <div class="itemContent">
                     <span class="textContent">
-                      <%= text_field_tag("customization[style][font][grid_data_size][value]",
-                          @customization[:style][:font][:grid_data_size][:value]) %>
-                      <%= select_tag("customization[style][font][grid_data_size][unit]", font_unit_select_options(
-                          @customization[:style][:font][:grid_data_size][:unit])) %>
+                      <%= text_field_tag("customization[grid][font][data_size][value]",
+                          @customization[:grid][:font][:data_size][:value]) %>
+                      <%= select_tag("customization[grid][font][data_size][unit]", font_unit_select_options(
+                          @customization[:grid][:font][:data_size][:unit])) %>
                     </span>
                   </div>
                 </dd>
               </dl>
-            <%# disabled row height %>
-            <%- unless true -%>
-              <dl class="summaryList">
-                <dt>Row Height</dt>
-                <dd>
-                  <div class="itemContent">
-                    <span class="textContent">
-                      <%= text_field_tag("customization[grid][row_height][value]",
-                          @customization[:grid][:row_height][:value]) %>
-                      <%= select_tag("customization[grid][row_height][unit]", font_unit_select_options(
-                          @customization[:grid][:row_height][:unit])) %>
-                    </span>
-                  </div>
-                </dd>
-              </dl>
-            <%- end -%>
               <dl class="summaryList">
                 <dt>Row Striping</dt>
                 <dd>
@@ -414,10 +388,10 @@
                 <dd>
                   <div class="itemContent">
                     <span class="textContent">
-                      <%= hidden_field_tag("customization[grid][zebra]", 
+                      <%= hidden_field_tag("customization[grid][zebra]",
                           @customization[:grid][:zebra]) %>
                       <div class="colorPickerContainer"></div>
-                      <div id="frameColorPickerTrigger" class="colorPickerTrigger" style="background-color:<%= @customization[:grid][:zebra] %>"></div>
+                      <div id="frameColorPickerTrigger" class="colorPickerTrigger" style="background-color:#<%= @customization[:grid][:zebra] %>"></div>
                       <div class="colorPickerLabel"><%= @customization[:grid][:zebra] %></div>
                     </span>
                   </div>
@@ -428,7 +402,19 @@
                 <dd>
                   <div class="itemContent">
                     <span class="textContent">
-                      <h3>Footer</h3>
+                      <h3>Toolbars</h3>
+                    </span>
+                  </div>
+                </dd>
+              </dl>
+              <dl class="summaryList">
+                <dt>Orientation</dt>
+                <dd>
+                  <div class="itemContent">
+                    <span class="textContent">
+                      <%= select_tag("customization[frame][orientation]",
+                          options_for_select([['Downwards', 'downwards'],['Upwards','upwards']],
+                                             @customization[:frame][:logo])) %>
                     </span>
                   </div>
                 </dd>
@@ -440,53 +426,15 @@
                     <span class="textContent">
                       <p>Logo images should be 92x35 pixels in size.</p>
                       <div class="subform">
-                        <%= label_tag("customization_frame_logo", "Image") %>
-                        <%= select_tag("customization[frame][logo]", images_select_options(@customization[:frame][:logo]))%>
-                        <img class="logoPreview" src="/assets/<%= @customization[:frame][:logo] %>?s=tiny" alt="logo preview" />
+                        <%= label_tag("customization_logo_image", "Image") %>
+                        <%= select_tag("customization[logo][image]", images_select_options(@customization[:logo][:image]))%>
+                        <img class="logoPreview" src="/assets/<%= @customization[:logo][:image] %>?s=tiny" alt="logo preview" />
                       </div>
-                      <div class="subform logoUrlForm" style="display: <%= @customization[:frame][:logo] == 'none' ? 'none' : 'block' %>">
-                        <%= label_tag("customization_frame_logo_url", "Link") %>
-                        <%= text_field_tag("customization[frame][logo_url]",
-                            @customization[:frame][:logo_url]) %>
+                      <div class="subform logoUrlForm" style="display: <%= @customization[:logo][:image] == 'none' ? 'none' : 'block' %>">
+                        <%= label_tag("customization_logo_href", "Link") %>
+                        <%= text_field_tag("customization[logo][href]",
+                            @customization[:logo][:href]) %>
                       </div>
-                    </span>
-                  </div>
-                </dd>
-              </dl>
-              <dl class="summaryList">
-                <dt>Footer Link</dt>
-                <dd>
-                  <div class="itemContent">
-                    <span class="textContent">
-                      <%= radio_button_tag("customization[frame][footer_link][show]", "true",
-                          @customization[:frame][:footer_link][:show]) %>
-                      <%= label_tag("customization_frame_footer_link_show_true", "Show") %>
-                      <%= radio_button_tag("customization[frame][footer_link][show]", "false",
-                          !@customization[:frame][:footer_link][:show]) %>
-                      <%= label_tag("customization_frame_footer_link_show_false", "Don't Show") %>
-                      <div class="subform" style="display: <%= @customization[:frame][:footer_link][:show] ? 'block' : 'none' %>">
-                        <%= label_tag("customization_frame_footer_link_text", "Text")%>
-                        <%= text_field_tag("customization[frame][footer_link][text]", 
-                            @customization[:frame][:footer_link][:text]) %>
-                        <%= label_tag("customization_frame_footer_link_url", "Link")%>
-                        <%= text_field_tag("customization[frame][footer_link][url]", 
-                            @customization[:frame][:footer_link][:url]) %>
-                      </div>
-                    </span>
-                  </div>
-                </dd>
-              </dl>
-              <dl class="summaryList">
-                <dt>Socrata Credit</dt>
-                <dd>
-                  <div class="itemContent">
-                    <span class="textContent">
-                      <%= radio_button_tag("customization[publish][show_powered_by]", "true",
-                          @customization[:publish][:show_powered_by]) %>
-                      <%= label_tag("customization_publish_show_powered_by_true", "Show") %>
-                      <%= radio_button_tag("customization[publish][show_powered_by]", "false",
-                          !@customization[:publish][:show_powered_by]) %>
-                      <%= label_tag("customization_publish_show_powered_by_false", "Don't Show") %>
                     </span>
                   </div>
                 </dd>
@@ -523,7 +471,7 @@
                   <div class="itemContent">
                     <span class="textContent">
                       <h3>
-                        Main Menu:
+                        Menu:
                         <span class="infoText">
                           Select the menu options to allow
                         </span>
@@ -539,214 +487,43 @@
                     <span class="textContent">
                       <ul>
                         <li>
-                          <%= check_box_tag("customization[menu][print]", true,
-                            @customization[:menu][:print]) %>
-                          <%= label_tag("customization_menu_print",
-                            "Print this #{t(:blist_name).titleize}") %>
-                        </li>
-                        <li>
-                          <%= check_box_tag("customization[menu][fullscreen]",
-                            true, @customization[:menu][:fullscreen]) %>
-                          <%= label_tag("customization_menu_fullscreen",
-                            "View Full Screen") %>
-                        </li>
-
-                        <li>
-                          <%= check_box_tag("customization[menu][download_menu][csv]",
-                            true, @customization[:menu][:download_menu][:csv]) %>
-                          <%= label_tag("customization_menu_download_menu_csv",
-                            "Download this #{t(:blist_name).titleize} as CSV") %>
-                        </li>
-                        <li>
-                          <%= check_box_tag("customization[menu][download_menu][json]",
-                            true, @customization[:menu][:download_menu][:json]) %>
-                          <%= label_tag("customization_menu_download_menu_json",
-                            "Download this #{t(:blist_name).titleize} as JSON") %>
-                        </li>
-                        <li>
-                          <%= check_box_tag("customization[menu][download_menu][pdf]",
-                            true, @customization[:menu][:download_menu][:pdf]) %>
-                          <%= label_tag("customization_menu_download_menu_pdf",
-                            "Download this #{t(:blist_name).titleize} as PDF") %>
-                        </li>
-                        <li>
-                          <%= check_box_tag("customization[menu][download_menu][xls]",
-                            true, @customization[:menu][:download_menu][:xls]) %>
-                          <%= label_tag("customization_menu_download_menu_xls",
-                            "Download this #{t(:blist_name).titleize} as XLS") %>
-                        </li>
-                        <li>
-                          <%= check_box_tag("customization[menu][download_menu][xlsx]",
-                            true, @customization[:menu][:download_menu][:xlsx]) %>
-                          <%= label_tag("customization_menu_download_menu_xlsx",
-                            "Download this #{t(:blist_name).titleize} as XLSX") %>
-                        </li>
-                        <li>
-                          <%= check_box_tag("customization[menu][download_menu][xml]",
-                            true, @customization[:menu][:download_menu][:xml]) %>
-                          <%= label_tag("customization_menu_download_menu_xml",
-                            "Download this #{t(:blist_name).titleize} as XML") %>
-                        </li>
-
-                        <li>
-                          <%= check_box_tag("customization[menu][api]", true,
-                            @customization[:menu][:api]) %>
-                          <%= label_tag("customization_menu_api",
-                            "Access this #{t(:blist_name).titleize} via the API") %>
-                        </li>
-
-                        <li>
-                          <%= check_box_tag("customization[menu][subscribe][atom]",
-                            true, @customization[:menu][:subscribe][:atom]) %>
-                          <%= label_tag("customization_menu_subscribe_atom",
-                            "Subscribe to Updates via Atom") %>
-                        </li>
-                        <li>
-                          <%= check_box_tag("customization[menu][subscribe][rss]",
-                            true, @customization[:menu][:subscribe][:rss]) %>
-                          <%= label_tag("customization_menu_subscribe_rss",
-                            "Subscribe to Updates via RSS") %>
-                        </li>
-
-                        <li>
-                          <%= check_box_tag("customization[menu][basic_analytics]",
-                            true, @customization[:menu][:basic_analytics]) %>
-                          <%= label_tag("customization_menu_basic_analytics",
-                            "Basic Analytics") %>
-                        </li>
-
-                        <li>
-                          <%= check_box_tag("customization[menu][about]",
-                            true, @customization[:menu][:about]) %>
-                          <%= label_tag("customization_menu_about",
-                            "About this #{t(:blist_name).titleize}") %>
-                        </li>
-                        <li>
-                          <%= check_box_tag("customization[menu][about_sdp]",
-                            true, @customization[:menu][:about_sdp]) %>
-                          <%= label_tag("customization_menu_about_sdp",
-                            "About the Social Data Player") %>
-                        </li>
-                      </ul>
-                    </span>
-                  </div>
-                </dd>
-              </dl>
-
-              <dl class="summaryList">
-                <dt></dt>
-                <dd>
-                  <div class="itemContent">
-                    <span class="textContent">
-                      <h3>
-                        More Views Menu:
-                        <span class="infoText">
-                          Select the menu options to allow
-                        </span>
-                      </h3>
-                    </span>
-                  </div>
-                </dd>
-              </dl>
-              <dl class="summaryList">
-                <dt></dt>
-                <dd>
-                  <div class="itemContent">
-                    <span class="textContent">
-                      <ul>
-                        <li>
-                          <%= check_box_tag("customization[menu][show_tags]",
-                            true, @customization[:menu][:show_tags]) %>
-                          <%= label_tag("customization_menu_show_tags",
-                            "Show/Hide Row Tags") %>
-                        </li>
-
-                        <li>
-                          <%= check_box_tag("customization[menu][more_views]",
-                            true, @customization[:menu][:more_views]) %>
-                          <%= label_tag("customization_menu_more_views",
+                          <%= check_box_tag("customization[menu][options][more_views]",
+                            true, @customization[:menu][:options][:more_views]) %>
+                          <%= label_tag("customization_menu_options_print",
                             "More Views") %>
                         </li>
-
                         <li>
-                          <%= check_box_tag("customization[menu][views_fullscreen]",
-                            true, @customization[:menu][:views_fullscreen]) %>
-                          <%= label_tag("customization_menu_views_fullscreen",
-                            "View Full Screen") %>
+                          <%= check_box_tag("customization[menu][options][comments]",
+                            true, @customization[:menu][:options][:comments]) %>
+                          <%= label_tag("customization_menu_options_comments",
+                            "Comments") %>
+                        </li>
+                        <li>
+                          <%= check_box_tag("customization[menu][options][downloads]",
+                            true, @customization[:menu][:options][:downloads]) %>
+                          <%= label_tag("customization_menu_options_downloads",
+                            "Downloads") %>
+                        </li>
+                        <li>
+                          <%= check_box_tag("customization[menu][options][embed]",
+                            true, @customization[:menu][:options][:embed]) %>
+                          <%= label_tag("customization_menu_options_embed",
+                            "Embed") %>
+                        </li>
+                        <li>
+                          <%= check_box_tag("customization[menu][options][print]",
+                            true, @customization[:menu][:options][:print]) %>
+                          <%= label_tag("customization_menu_options_print",
+                            "Print") %>
                         </li>
                       </ul>
                     </span>
                   </div>
                 </dd>
               </dl>
-
             </div>
             <div class="infoContentRightBg"></div>
             <div class="infoContentRight">
-              <dl class="summaryList">
-                <dt></dt>
-                <dd>
-                  <div class="itemContent">
-                    <span class="textContent">
-                      <h3>
-                        Share Menu:
-                        <span class="infoText">
-                          Select the menu options to allow
-                        </span>
-                      </h3>
-                    </span>
-                  </div>
-                </dd>
-              </dl>
-              <dl class="summaryList">
-                <dt></dt>
-                <dd>
-                  <div class="itemContent">
-                    <span class="textContent">
-                      <ul>
-                        <li>
-                          <%= check_box_tag("customization[menu][republish]", true,
-                            @customization[:menu][:republish]) %>
-                          <%= label_tag("customization_menu_republish",
-                            "Publish this Dataset") %>
-                        </li>
-                        <li>
-                          <%= check_box_tag("customization[menu][email]", true,
-                            @customization[:menu][:email]) %>
-                          <%= label_tag("customization_menu_email",
-                            "Email this Dataset") %>
-                        </li>
-
-                        <li>
-                          <%= check_box_tag("customization[menu][socialize][delicious]",
-                            true, @customization[:menu][:socialize][:delicious]) %>
-                          <%= label_tag("customization_menu_socialize_delicious",
-                          "Socialize this #{t(:blist_name).titleize} via Delicious") %>
-                        </li>
-                        <li>
-                          <%= check_box_tag("customization[menu][socialize][digg]",
-                            true, @customization[:menu][:socialize][:digg]) %>
-                          <%= label_tag("customization_menu_socialize_digg",
-                          "Socialize this #{t(:blist_name).titleize} via Digg") %>
-                        </li>
-                        <li>
-                          <%= check_box_tag("customization[menu][socialize][facebook]",
-                            true, @customization[:menu][:socialize][:facebook]) %>
-                          <%= label_tag("customization_menu_socialize_facebook",
-                          "Socialize this #{t(:blist_name).titleize} via Facebook") %>
-                        </li>
-                        <li>
-                          <%= check_box_tag("customization[menu][socialize][twitter]",
-                            true, @customization[:menu][:socialize][:twitter]) %>
-                          <%= label_tag("customization_menu_socialize_twitter",
-                          "Socialize this #{t(:blist_name).titleize} via Twitter") %>
-                        </li>
-                      </ul>
-                    </span>
-                  </div>
-                </dd>
-              </dl>
-
               <dl class="summaryList">
                 <dt></dt>
                 <dd>
@@ -757,53 +534,40 @@
                   </div>
                 </dd>
               </dl>
-            <%- if false # not implemented -%>
               <dl class="summaryList">
-                <dt>Dataset Ratings</dt>
+                <dt>Share Menu</dt>
                 <dd>
                   <div class="itemContent">
                     <span class="textContent">
-                      <%= radio_button_tag("customization[behavior][rating]", "true",
-                          @customization[:behavior][:rating]) %>
-                      <%= label_tag("customization_behavior_rating_true", "Allow") %>
-                      <%= radio_button_tag("customization[behavior][rating]", "false",
-                          !@customization[:behavior][:rating]) %>
-                      <%= label_tag("customization_behavior_rating_false", "Don't Allow") %>
-                    </span>
-                  </div>
-                </dd>
-              </dl>
-            <%- end -%>
-              <dl class="summaryList">
-                <dt>View Full Screen</dt>
-                <dd>
-                  <div class="itemContent">
-                    <span class="textContent">
-                      <p>Displays a button next to the search box to view the
-                        <%= t(:blist_name) %> full screen</p>
-                      <%= radio_button_tag("customization[menu][top_fullscreen]",
-                        "true", @customization[:menu][:top_fullscreen]) %>
-                      <%= label_tag("customization_menu_top_fullscreen_true",
+                      <p>Allow users to easily share your dataset on
+                        social networks</p>
+                      <%= radio_button_tag("customization[menu][share]",
+                        "true", @customization[:menu][:share]) %>
+                      <%= label_tag("customization_menu_share_true",
                         "Show") %>
-                      <%= radio_button_tag("customization[menu][top_fullscreen]",
-                        "false", !@customization[:menu][:top_fullscreen]) %>
-                      <%= label_tag("customization_menu_top_fullscreen_false",
+                      <%= radio_button_tag("customization[menu][share]",
+                        "false", !@customization[:menu][:share]) %>
+                      <%= label_tag("customization_menu_share_false",
                         "Don't Show") %>
                     </span>
                   </div>
                 </dd>
               </dl>
               <dl class="summaryList">
-                <dt>Public Views (Filters)</dt>
+                <dt>View Full Screen</dt>
                 <dd>
                   <div class="itemContent">
                     <span class="textContent">
-                      <%= radio_button_tag("customization[behavior][save_public_views]", "true",
-                          @customization[:behavior][:save_public_views]) %>
-                      <%= label_tag("customization_behavior_save_public_views_true", "Allow") %>
-                      <%= radio_button_tag("customization[behavior][save_public_views]", "false",
-                          !@customization[:behavior][:save_public_views]) %>
-                      <%= label_tag("customization_behavior_save_public_views_false", "Don't Allow") %>
+                      <p>Displays a button on the toolbar to view the
+                        dataset full screen</p>
+                      <%= radio_button_tag("customization[menu][fullscreen]",
+                        "true", @customization[:menu][:fullscreen]) %>
+                      <%= label_tag("customization_menu_fullscreen_true",
+                        "Show") %>
+                      <%= radio_button_tag("customization[menu][fullscreen]",
+                        "false", !@customization[:menu][:fullscreen]) %>
+                      <%= label_tag("customization_menu_fullscreen_false",
+                        "Don't Show") %>
                     </span>
                   </div>
                 </dd>
@@ -825,69 +589,6 @@
                   </div>
                 </dd>
               </dl>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="infoContentBR"><div class="infoContentBL"></div></div>
-    </div>
-    <div class="infoContentOuter singleInfoTab">
-      <div class="infoContentHeader clearfix">
-        <h2 class="panelHeader clipText">
-            Editing the <span class="templateName"><%= @widget_customization.name %></span> template
-        </h2>
-        <a href="#changeTemplate" class="changeTemplateLink">Change &rsaquo;</a>
-        <ul class="headerActions actionButtons">
-          <li>
-            <a class="arrowButton submitLink" href="<%= @view.href %>">Done</a>
-          </li>
-        </ul>
-        <p class="changesWarning">
-          All changes to this template will affect each Data Player that uses it.
-          <a href="/customization/new" rel="modal" class="newTemplateLink">New Template &rsaquo;</a>
-        </p>
-      </div>
-      <div class="infoContentInner">
-        <div class="infoContentWrapper">
-          <div class="infoContent">
-            <p>Choose which tabs to display.  Choose the order by dragging tab names up or down.</p>
-            <div id="tabsReorderList" class="reorderList clearfix">
-              <div class="activeList">
-                <p>Display These Tabs</p>
-                <ul>
-                  <%-
-                  i = 1
-                  @customization[:meta].reject{ |name, properties| !properties[:show] }.
-                                        sort{ |a, b| a.last[:order] <=> b.last[:order] }.each do |name, properties| -%>
-                    <li><div class="itemWrapper">
-                      <span class="orderIndex"><%= i %></span>
-                      <%= properties[:display_name] %>
-                      <%= hidden_field_tag("customization[meta][#{name}][order]", i, :class => 'orderField') %>
-                      <%= hidden_field_tag("customization[meta][#{name}][show]", true, :class => 'activeField') %>
-                    </div></li>
-                  <%- 
-                  i += 1
-                  end -%>
-                </ul>
-                <a href="#removeAll" class="removeAllLink">Remove All</a>
-              </div>
-              <div class="swapArrows">
-                <a href="#addItem" class="addItemButton">Add</a>
-                <a href="#removeItem" class="removeItemButton">Remove</a>
-              </div>
-              <div class="inactiveList">
-                <p>Don't Display These Tabs</p>
-                <ul>
-                  <%- @customization[:meta].reject{ |name, properties| properties[:show] }.each do |name, properties| -%>
-                    <li><div class="itemWrapper">
-                      <span class="orderIndex hide"></span>
-                      <%= properties[:display_name] %>
-                      <%= hidden_field_tag("customization[meta][#{name}][order]", 0, :class => 'orderField') %>
-                      <%= hidden_field_tag("customization[meta][#{name}][show]", false, :class => 'activeField') %>
-                    </div></li>
-                  <%- end -%>
-                </ul>
-              </div>
             </div>
           </div>
         </div>
@@ -939,6 +640,7 @@
   <script type="text/javascript">
     blist.namespace.fetch('blist.publish');
     blist.publish.currentTheme = <%= raw @customization.to_json %>;
+    blist.publish.v2Theme = <%= raw WidgetCustomization.default_theme(1).to_json %>;
     blist.publish.viewId = '<%= @view.id %>';
   </script>
   <%= javascript_include_merged 'blists-publish' %>

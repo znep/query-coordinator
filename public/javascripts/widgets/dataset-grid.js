@@ -645,11 +645,16 @@
                                 });
                             if(matchingTableCols.length > 0)
                             {
-                                translatedColumns.push($.extend(oCol,
-                                    { id: matchingTableCols[0].id }));
+                                var newCol = $.extend(oCol,
+                                    { id: matchingTableCols[0].id });
+                                if (newCol.format)
+                                {
+                                    delete newCol.grouping_aggregate;
+                                    delete newCol.drill_down;
+                                }
+                                translatedColumns.push(newCol);
                             }
                         });
-
                         view.columns = translatedColumns;
                         drillDownCallBack(view);
                     }

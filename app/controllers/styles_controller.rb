@@ -135,7 +135,7 @@ protected
 
             # ie (based on raw string)
             result += "@mixin box_gradient_#{path}#{key}($width, $height, $additional)\n"
-            result += '  background-image: url(/ui/box.png?w=#{$width}&height=#{$height}&fc=' +
+            result += '  background-image: url(/ui/box.png?w=#{$width}&h=#{$height}&fc=' +
                          gradient_string + '&#{$additional})' + "\n"
 
             first_stop = stops.first

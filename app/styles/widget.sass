@@ -53,8 +53,8 @@ html, body
       position: relative
       text-transform: uppercase
       .noLinearGradient &
-        @include box_gradient_menu_button_background(30,3,$box_gradient_alias_fix)
         background: transparent repeat-x
+        @include box_gradient_menu_button_background(3,30,$box_gradient_alias_fix)
 
       .icon
         left: 0.6em
@@ -66,8 +66,8 @@ html, body
         @include gradient_menu_button_background_hover
         text-decoration: none
         .noLinearGradient &
-          @include box_gradient_menu_button_background_hover(30,2,$box_gradient_alias_fix)
           background: transparent repeat-x
+          @include box_gradient_menu_button_background_hover(3,30,$box_gradient_alias_fix)
 
     &.open .menuButton
       @include box-shadow-none

@@ -38,18 +38,18 @@ a.button
 
   // They have rounded corners but no linear gradient
   .noLinearGradient &
-    @include box_gradient_buttons_active_background(23,3,$box_gradient_alias_fix)
     background: transparent repeat-x
+    @include box_gradient_buttons_active_background(3,23,$box_gradient_alias_fix)
   .noLinearGradient &:hover, .noLinearGradient &:active, .noLinearGradient &:focus
-    @include box_gradient_buttons_hover_background(23,3,$box_gradient_alias_fix)
+    @include box_gradient_buttons_hover_background(3,23,$box_gradient_alias_fix)
   .noLinearGradient &.disabled
-    @include box_gradient_buttons_disabled_background(23,3,$box_gradient_alias_fix)
+    @include box_gradient_buttons_disabled_background(3,23,$box_gradient_alias_fix)
 
   // IE, or really old browsers
   $noCss3_active_border_style: 'ec=#{$buttons_active_border}&ew=1&r=10'
   .noCss3 &, .noCss3 & .left
-    @include box_gradient_buttons_active_background(500,20,$noCss3_active_border_style)
     background: transparent no-repeat
+    @include box_gradient_buttons_active_background(500,20,$noCss3_active_border_style)
     border: none
   .ie6 &, .ie6 & .left
     @include box_gradient_buttons_active_background(500,20,'#{$noCss3_active_border_style}&bc=fff')

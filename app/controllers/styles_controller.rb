@@ -52,7 +52,11 @@ class StylesController < ApplicationController
 
   def widget
     begin
-      theme = WidgetCustomization.find(params[:customization_id]).customization
+      if params[:customization_id] == 'default'
+        theme = WidgetCustomization.default_theme(1)
+      else
+        theme = WidgetCustomization.find(params[:customization_id]).customization
+      end
     rescue CoreServer::CoreServerError => e
       render_404
     end
@@ -135,7 +139,7 @@ protected
 
             # ie (based on raw string)
             result += "@mixin box_gradient_#{path}#{key}($width, $height, $additional)\n"
-            result += '  background-image: url(/ui/box.png?w=#{$width}&height=#{$height}&fc=' +
+            result += '  background-image: url(/ui/box.png?w=#{$width}&h=#{$height}&fc=' +
                          gradient_string + '&#{$additional})' + "\n"
 
             first_stop = stops.first

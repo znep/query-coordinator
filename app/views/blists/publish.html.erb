@@ -274,6 +274,9 @@
                   </div>
                 </dd>
               </dl>
+            </div>
+            <div class="infoContentRightBg"></div>
+            <div class="infoContentRight">
               <dl class="summaryList">
                 <dt></dt>
                 <dd>
@@ -327,9 +330,6 @@
                   </div>
                 </dd>
               </dl>
-            </div>
-            <div class="infoContentRightBg"></div>
-            <div class="infoContentRight">
               <dl class="summaryList">
                 <dt></dt>
                 <dd>
@@ -412,9 +412,12 @@
                 <dd>
                   <div class="itemContent">
                     <span class="textContent">
-                      <%= select_tag("customization[frame][orientation]",
-                          options_for_select([['Downwards', 'downwards'],['Upwards','upwards']],
-                                             @customization[:frame][:logo])) %>
+                      <%= radio_button_tag("customization[frame][orientation]", "downwards",
+                          @customization[:frame][:orientation]) %>
+                      <%= label_tag("customization_frame_orientation_downwards", "Downwards") %>
+                      <%= radio_button_tag("customization[frame][orientation]", "upwards",
+                          !@customization[:frame][:orientation]) %>
+                      <%= label_tag("customization_frame_orientation_upwards", "Upwards") %>
                     </span>
                   </div>
                 </dd>
@@ -424,13 +427,14 @@
                 <dd>
                   <div class="itemContent">
                     <span class="textContent">
-                      <p>Logo images should be 92x35 pixels in size.</p>
+                      <p>Logo images should be no more than 120x35 pixels in size.</p>
                       <div class="subform">
-                        <%= label_tag("customization_logo_image", "Image") %>
-                        <%= select_tag("customization[logo][image]", images_select_options(@customization[:logo][:image]))%>
-                        <img class="logoPreview" src="/assets/<%= @customization[:logo][:image] %>?s=tiny" alt="logo preview" />
+                        <%= hidden_field_tag("customization[logo][image][type]", @customization[:logo][:image][:type]) %>
+                        <%= label_tag("customization_logo_image_href", "Image") %>
+                        <%= select_tag("customization[logo][image][href]", images_select_options(@customization[:logo][:image][:href]))%>
+                        <img class="logoPreview" src="/assets/<%= @customization[:logo][:image][:href] %>?s=tiny" alt="logo preview" />
                       </div>
-                      <div class="subform logoUrlForm" style="display: <%= @customization[:logo][:image] == 'none' ? 'none' : 'block' %>">
+                      <div class="subform logoUrlForm">
                         <%= label_tag("customization_logo_href", "Link") %>
                         <%= text_field_tag("customization[logo][href]",
                             @customization[:logo][:href]) %>

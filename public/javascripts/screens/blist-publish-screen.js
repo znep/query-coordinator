@@ -104,26 +104,17 @@ blist.publish.applyContentMargin = function($elem, value)
 
 blist.publish.applyLogo = function($elem, value)
 {
-    var $logoPreview = $('#publishOptionsPane .logoPreview');
-    var $urlSubForm = $('#publishOptionsPane .logoUrlForm').show();
-    /*if (value == 'none')
+    if (value['type'] == 'static')
     {
-        $urlSubForm.hide();
-    }
-    else if (value == 'default')
-    {
-        $logoPreview.addClass('hide');
-    }
-    else if (value.match(/[\dA-F]{8}-([\dA-F]{4}-){3}[\dA-F]{12}/))
-    {
-        $logoPreview.removeClass('hide')
-             .attr('src', '/assets/' + value + '?s=tiny');
+        $elem.css('background-image', 'url(' + value['href'] + ')');
+        $('#publishOptionsPane .logoPreview').addClass('hide');
     }
     else
     {
-        $logoPreview.removeClass('hide')
-             .attr('src', value);
-    }*/
+        $elem.css('background-image', 'url(/assets/'  + value['href'] + ')')
+        $('#publishOptionsPane .logoPreview').removeClass('hide')
+             .attr('src', '/assets/' + value['href'] + '?s=tiny');
+    }
 };
 
 blist.publish.hideShowMenuItem = function($elem, value)
@@ -178,8 +169,7 @@ blist.publish.customizationApplication = {
                       title_bold:                           [ { selector: '.blist-th .blist-th-name', css: 'font-weight', map: { 'true': 'bold', 'false' : 'normal' } } ],
                       header_icons:                         [ { selector: '.blist-th-icon', hideShow: true } ],
                       zebra:                                [ { selector: '.blist-tr-even .blist-td', css: 'background-color' } ] },
-    behavior:       { save_public_views:                    [ { selector: '#viewHeader', css: 'display', map: { 'true': '', 'false': 'none' } } ],
-                      interstitial:                         [ { callback: publishNS.applyInterstitial } ] },
+    behavior:       { interstitial:                         [ { callback: function(value) { widgetNS.interstitial = value; } } ] },
     publish:        { dimensions:   { width:                [ { selector: '.previewPane, .previewPane iframe', outsideWidget: true, callback: function($elem, value) { $elem.css('width', value + 'px'); } } ],
                                       height:               [ { selector: '.previewPane iframe', outsideWidget: true, callback: function($elem, value) { $elem.css('height', value + 'px'); } } ] },
                       show_title:                           [ { selector: '.previewPane p:first-child', outsideWidget: true, hideShow: true } ],
@@ -732,15 +722,6 @@ blist.publish.hideUnsavedChangesBar = function()
         });
     });
 
-    // Save whenever the user changes something; highlight textboxes on click
-    $('select[name^=customization]').change(publishNS.valueChanged);
-    $('input[name^=customization]:not([type=text])').click(publishNS.valueChanged);
-    $(':input[name^=customization][type=text]')
-        .change(publishNS.valueChanged)
-        .focus(function() {
-            $(this).select();
-        });
-
     // Load customizations when user chooses one
     $('#template_name').change(publishNS.loadCustomization);
 
@@ -821,8 +802,11 @@ blist.publish.hideUnsavedChangesBar = function()
     });
 
     // Upload custom UI
-    $('#customization_frame_logo').change(function () {
+    $('#customization_logo_image_href option[value=disabled]').attr('disabled', true);
+    $('#customization_logo_image_href').change(function () {
         var $this = $(this);
+        var $typeField = $('#customization_logo_image_type');
+
         if ($this.val() == 'upload')
         {
             $("#modal").jqmShow($('<a href="/new_image"></a>'));
@@ -831,13 +815,31 @@ blist.publish.hideUnsavedChangesBar = function()
 
             blist.common.imageUploadedHandler = function(response)
             {
+                if ($this.children('[disabled=disabled]').length === 0)
+                {
+                    // Add separator line
+                    $this.append($.tag({ tagName: 'option', disabled: true }));
+                }
+
                 $this.append('<option value="' + response['id'] + '">'+ response['nameForOutput'] + '</option>');
                 $this.val(response['id']);
+                $typeField.val('hosted');
+
                 publishNS.valueChanged();
 
                 // Courtesy unbind
                 blist.common.imageUploadedHandler = null;
             };
+        }
+        else if ($this.val() == publishNS.v2Theme['logo']['image']['href'])
+        {
+            // This is the default value; set the type to static
+            $typeField.val('static');
+        }
+        else
+        {
+            // This is an uploaded logo; est the type to hosted
+            $typeField.val('hosted');
         }
     });
 
@@ -852,6 +854,15 @@ blist.publish.hideUnsavedChangesBar = function()
             $textbox.addClass('prompt');
         }
     });
+
+    // Save whenever the user changes something; highlight textboxes on click
+    $('select[name^=customization]').change(publishNS.valueChanged);
+    $('input[name^=customization]:not([type=text])').click(publishNS.valueChanged);
+    $(':input[name^=customization][type=text]')
+        .change(publishNS.valueChanged)
+        .focus(function() {
+            $(this).select();
+        });
 
     window.onbeforeunload = function()
     {

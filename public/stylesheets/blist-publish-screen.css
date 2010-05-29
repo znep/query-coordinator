@@ -136,6 +136,15 @@
     margin-bottom: 1em;
 }
 
+#publishContent .errorMessage .actionButtons li
+{
+    background-position: 0 -63px;
+}
+#publishContent .errorMessage .actionButtons li a
+{
+    background-position: right -105px;
+}
+
 #publishContent .versionMessage
 {
     display: none;

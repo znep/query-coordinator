@@ -504,10 +504,10 @@ module BlistsHelper
   end
 
   def images_select_options(selected_image = nil)
-    image_options = [['None', 'none'], ['Socrata', 'default'], ['Upload a New Logo...', 'upload']]
+    image_options = [['Socrata', '/stylesheets/images/logos/socrata_sdp_logo_black.png'], ['Upload a New Logo...', 'upload']]
     images = Asset.find(:type => "WIDGET_CUSTOMIZATION_LOGO")
     if images.size > 0
-      image_options << ['', 'none']
+      image_options << ['', 'disabled']
       images.each { |image| image_options << [image.nameForOutput, image.id] }
     end
     options_for_select(image_options, selected_image)

@@ -111,16 +111,6 @@ $(function()
     {
         this.target = '_blank';
     });
-    $.live('a[rel$=external]', 'click', function(event)
-    {
-        // interstitial
-        if (widgetNS.theme['behavior']['interstitial'] === true)
-        {
-            event.preventDefault();
-            // todo: pop interstitial
-            return;
-        }
-    });
 
     // controls
     $('select, input:checkbox, input:radio, input:file').uniform();
@@ -681,6 +671,38 @@ $(function()
     {
         event.preventDefault();
         $('.widgetModal').jqmHide();
+    });
+
+    // Trigger interstitial if necessary
+    $.live('a:not([href^=#]):not(.noInterstitial):not([rel$="modal"])', 'click', function(event)
+    {
+        if (widgetNS.interstitial === true)
+        {
+            event.preventDefault();
+
+            var href = $(this).attr('href');
+            // IE sticks the full URL in the href, so we didn't filter out local URLs
+            if ($.isBlank(href) || (href.indexOf(location) == 0))
+            {
+                return;
+            }
+            if (href.slice(0, 1) == '/')
+            {
+                href = location.host + href;
+            }
+            if (!href.match(/^(f|ht)tps?:\/\//))
+            {
+                href = "http://" + href;
+            }
+
+            var $modal = $('.leavingInterstitial');
+            $modal.find('.leavingLink')
+                      .attr('href', href)
+                      .text(href);
+            $modal.find('.accept.button')
+                      .attr('href', href);
+            $modal.jqmShow();
+        }
     });
 
     // Notify publisher that we are ready

@@ -20,7 +20,7 @@
 
     /* Config hash:
     {
-        name: required, identification of this config.  If this has a period in
+        + name: required, identification of this config.  If this has a period in
             it, the first part is taken as the parent name.  Multiple panes
             can be grouped under a parent, in which case each pane title is
             shown in a sub-select bar.  If just the parent pane is opened,
@@ -31,57 +31,57 @@
             previously-initialized sub-panes will be kept.  All sub-panes need
             to be added before any child or the parent pane is actually added
             to make sure the sub-select bar is initialized properly
-        title: main title
-        subtitle: appears under main title
-        sections: array of sections for entering data
+        + title: main title
+        + subtitle: appears under main title
+        + sections: array of sections for entering data
         [
           {
-            title: section title
-            type: optional, 'selectable' makes the field collapseable.
+            + title: section title
+            + type: optional, 'selectable' makes the field collapseable.
                 By default it will be collapsed; when collapsed, nothing is
                 validated or wizard-ed
-            name: internal name for field; required if it is of type selectable
-            fields: array of input fields
+            + name: internal name for field; required if it is of type selectable
+            + fields: array of input fields
             [
                {
-                  text: label for input
-                  type: required, one of: 'static', 'text', 'textarea',
-                    'columnSelect', 'radioGroup'
-                  name: required, HTML name of input
-                  prompt: optional, prompt text for text/textareas
-                  required: optional, boolean, whether or not the input should be
-                    validated as required (if visible)
-                  notequalto: optional, string to use for validating notequalto;
-                    all fields that are validated like this should have the
-                    same string
-                  columns: for type columnSelect, tells what type of columns
-                    should be available
+                  + text: label for input
+                  + type: required, one of: 'static', 'text', 'textarea',
+                      'checkbox', 'columnSelect', 'radioGroup'
+                  + name: required, HTML name of input
+                  + prompt: optional, prompt text for text/textareas
+                  + required: optional, boolean, whether or not the input should be
+                      validated as required (if visible)
+                  + checked: boolean, if true, this field is selected/checked
+                      by default
+                  + extraClass: extra class(es) to be applied to the input;
+                      should be a single string, could have multiple
+                      space-separated classes
+                  + notequalto: optional, string to use for validating notequalto;
+                      all fields that are validated like this should have the
+                      same string
+                  + columns: for type columnSelect, tells what type of columns
+                      should be available
                   {
-                    type: array or single datatype names
-                    hidden: boolean, whether or not to include hidden columns
+                    + type: array or single datatype names
+                    + hidden: boolean, whether or not to include hidden columns
                   }
-                  options: for radioGroup, array of sub-fields.  Same options
-                    as top-level fields plus below:
-                  [
-                    {
-                      checked: boolean, if true, this field is selected by default
-                    }
-                  ]
+                  + options: for radioGroup, array of sub-fields.  Same options
+                      as top-level fields
                }
             ]
           }
         ]
-        finishCallback: function that is called when a finish button is clicked;
-          args: (sidebarObj, data, $pane, value)
-        finishBlock: specifies final actions
+        + finishCallback: function that is called when a finish button is clicked;
+            args: (sidebarObj, data, $pane, value)
+        + finishBlock: specifies final actions
         {
-          buttons: array of finish buttons
+          + buttons: array of finish buttons
           [
             {
-              text: text to display
-              value: value that is passed to the finishCallback on click
-              isDefault: boolean, marked as default button if true
-              isCancel: boolean, marked as cancel button if true
+              + text: text to display
+              + value: value that is passed to the finishCallback on click
+              + isDefault: boolean, marked as default button if true
+              + isCancel: boolean, marked as cancel button if true
             }
           ]
         }
@@ -144,6 +144,24 @@
             else
             {
                 throw "Pane config: can't name with more than one or two parts";
+            }
+        },
+
+        // Pre-defined buttons for easy access
+        buttons: {
+            create: {text: 'Create', value: true, isDefault: true},
+            cancel: {text: 'Cancel', value: false, isCancel: true}
+        },
+
+        wizard: {
+            buttons: {
+                skip: {text: 'Skip', action: 'nextField'},
+                done: {text: 'Done', action: 'nextField'}
+            },
+            buttonGroups:
+            {
+                sectionExpand: [{text: 'Yes', action: 'expand'},
+                    {text: 'No', action: 'nextSection'}]
             }
         }
     };
@@ -236,6 +254,18 @@
                 return this._$panes[this._currentPane];
             },
 
+            hasPane: function(configName)
+            {
+                var sidebarObj = this;
+                var nameParts = getConfigNames(configName);
+                var outerConfig = paneConfigs[nameParts.primary];
+                if ($.isBlank(outerConfig)) { return false; }
+
+                var config = (outerConfig.subPanes || {})[nameParts.secondary] ||
+                    paneConfigs[nameParts.secondary];
+                return !$.isBlank(config);
+            },
+
             /* Create a new pane in the sidebar */
             addPane: function(configName, data)
             {
@@ -294,7 +324,9 @@
                     sidebarObj.$currentOuterPane()
                         .find('.paneSelect a[data-paneName=' +
                             nameParts.secondary + ']').addClass('selected');
-                    sidebarObj.$currentPane().addClass('initialLoad').fadeIn();
+                    if (!$.isBlank(config.wizard))
+                    { sidebarObj.$currentPane().addClass('initialLoad'); }
+                    sidebarObj.$currentPane().fadeIn();
                     sidebarObj.$currentPane().find('.scrollContent')
                         .scroll(function(e) { handleScroll(sidebarObj, e); });
                 }
@@ -302,6 +334,8 @@
 
                 // Adjust positions for the sidebar
                 setPosition(sidebarObj);
+
+                sidebarObj.updateEnabledSubPanes();
 
                 // The big reveal
                 sidebarObj.$dom().show();
@@ -385,6 +419,68 @@
                 // In non-IE we need to trigger a resize so the grid restores
                 // properly.  In IE7, this will crash; IE8 works either way
                 if (!$.browser.msie) { $(window).resize(); }
+            },
+
+            updateEnabledSubPanes: function()
+            {
+                var sidebarObj = this;
+
+                if ($.isBlank(sidebarObj.$currentOuterPane())) { return; }
+
+                var updatedLinks = false;
+                var $paneSelect = sidebarObj.$currentOuterPane()
+                    .find('.paneSelect');
+                var updateEnabled = function(sp, isEnabled)
+                {
+                    var $a = $paneSelect.find('[data-panename="' + sp.name + '"]');
+                    if ($a.hasClass('disabled') != !isEnabled)
+                    {
+                        updatedLinks = true;
+                        $a.toggleClass('disabled', !isEnabled)
+                            .attr('title', isEnabled ?
+                                sp.subtitle : sp.disabledSubtitle);
+                    }
+
+                    if (sp.name == sidebarObj._currentPane)
+                    {
+                        var $pane = sidebarObj.$currentPane();
+                        if (!$.isBlank(sidebarObj._$currentWizard) &&
+                            $pane.hasClass('disabled') != !isEnabled)
+                        {
+                            if (isEnabled)
+                            {
+                                sidebarObj._$currentWizard
+                                    .socrataTip().quickShow();
+                            }
+                            else
+                            {
+                                sidebarObj._$currentWizard
+                                    .socrataTip().quickHide();
+                            }
+                        }
+                        $pane.toggleClass('disabled', !isEnabled)
+                            .find('.disabledMessage').text(sp.disabledSubtitle);
+                    }
+                };
+
+                var outerConfig = paneConfigs[sidebarObj._currentOuterPane];
+                _.each(outerConfig.subPanes || {}, function(sp)
+                {
+                    if ($.isBlank(sp.onlyIf))
+                    { updateEnabled(sp, true); }
+                    else if (_.isFunction(sp.onlyIf))
+                    {
+                        updateEnabled(sp, sp.onlyIf(
+                            sidebarObj.$grid().blistModel().meta().view
+                        ));
+                    }
+                    else
+                    { updateEnabled(sp, sp.onlyIf === true); }
+                });
+
+                if (updatedLinks && $.isBlank(sidebarObj._currentPane) &&
+                    sidebarObj.$dom().is(':visible'))
+                { showPaneSelectWizard(sidebarObj, outerConfig); }
             },
 
             genericErrorHandler: function($pane, xhr)
@@ -586,6 +682,12 @@
                         $.htmlEscape(args.context.data[args.item.name])}), true);
                 break;
 
+            case 'checkbox':
+                result = $.tag($.extend(commonAttrs(args.item),
+                    {tagName: 'input', type: 'checkbox',
+                        checked: args.item.checked}), true);
+                    break;
+
             case 'columnSelect':
                 result = $.tag({tagName: 'a',
                     href: '#Select:' + colTypes.join('-'),
@@ -635,7 +737,7 @@
             id: sidebarObj.$dom().attr('id') + '_outer_' + config.name,
             'class': 'outerPane'});
         var rData = {title: config.title,
-            subPanes: _.sortBy(config.subPanes, function(sp)
+            subPanes: _.sortBy(config.subPanes || {}, function(sp)
                 { return sp.priority || sp.title; })};
         var directive = {
             '.title': 'title',
@@ -651,7 +753,7 @@
                 }
             },
             '.paneSelect@class+': function(a)
-            { return $.isBlank(a.context.subPanes) ? ' hide' : ''; }
+            { return _.isEmpty(a.context.subPanes) ? ' hide' : ''; }
         };
 
         $outerPane.append($.renderTemplate('outerPane', rData, directive));
@@ -722,6 +824,9 @@
         };
 
         $pane.append($.renderTemplate('sidebarPane', rData, directive));
+
+        if ($pane.find('label.required').length > 0)
+        { $pane.find('div.required').removeClass('hide'); }
 
         $pane.find('.textPrompt')
             .example(function () { return $(this).attr('title'); });
@@ -875,7 +980,8 @@
             var $s = $(this);
             var s = config.sections[i];
             if (!$.isBlank(s.wizard))
-            { $s.addClass('hasWizard').data('sidebarWizard', s.wizard); }
+            { $s.addClass('hasWizard').data('sidebarWizard',
+                $.extend({defaultAction: 'nextField'}, s.wizard)); }
 
             $s.find('.sectionContent > .line').each(function(j)
             {
@@ -884,7 +990,8 @@
                 if (!$.isBlank(l.wizard))
                 {
                     $l.addClass('hasWizard').data('sidebarWizard',
-                        $.extend({}, l.wizard, {positions: ['left'],
+                        $.extend({defaultAction: 'nextField'},
+                            l.wizard, {positions: ['left'],
                             closeEvents: 'change'}));
                 }
             });
@@ -1065,6 +1172,8 @@
     {
         var $paneSel = sidebarObj.$currentOuterPane()
             .find('.paneSelect');
+        if ($paneSel.isSocrataTip()) { $paneSel.socrataTip().destroy(); }
+
         var paneOptions = [];
         $paneSel.find('a').each(function()
         {
@@ -1073,7 +1182,7 @@
             paneOptions.push({tagName: 'li',
                 contents: [
                     {tagName: 'a', href: '#' + name, 'data-paneName': name,
-                    contents: $a.text()},
+                    'class': $a.attr('class'), contents: $a.text()},
                     {tagName: 'span',
                         // This is returning with &nbsp;, so replace them all
                         // with normal spaces
@@ -1098,13 +1207,16 @@
             selectPane(sidebarObj, $(this), config.name);
         });
 
-        $paneSel.socrataTip({content: $content, trigger: 'now',
-            closeOnClick: false, shrinkToFit: false});
+        // Defer this call because if we just destroyed the tip, we need
+        // to wait for it to fully go away
+        _.defer(function()
+        { $paneSel.socrataTip({content: $content, trigger: 'now',
+                closeOnClick: false, shrinkToFit: false}); });
     };
 
     var selectPane = function(sidebarObj, $a, baseName)
     {
-        if ($a.is('.selected')) { return; }
+        if ($a.is('.selected, .disabled')) { return; }
 
         var name = $a.attr('data-paneName');
         var fullName = baseName + '.' + name;

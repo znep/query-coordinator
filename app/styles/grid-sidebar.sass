@@ -65,7 +65,11 @@
             background-color: #ffffff
             border: 1px solid #cccccc
             color: #333333
+            cursor: default
             padding: 3px 4px
+          &.disabled
+            color: #999999
+            cursor: default
 
     &#gridSidebar_outer_filter
       .mainTitleBlock
@@ -83,6 +87,33 @@
     // Custom colors go here...
 
   .sidebarPane
+    position: relative
+
+    .disabledOverlay
+      background-color: #eeeeee
+      display: none
+      height: 100%
+      left: 0
+      filter: alpha(opacity = 70)
+      opacity: 0.7
+      position: absolute
+      top: 0
+      width: 100%
+      z-index: 80
+
+    .disabledMessage
+      color: #333333
+      display: none
+      font-size: 1.2em
+      font-weight: bold
+      position: absolute
+      text-align: center
+      top: 8em
+      width: 100%
+      z-index: 81
+
+    &.disabled .disabledOverlay, &.disabled .disabledMessage
+      display: block
 
     &.initialLoad .formSection
       filter: alpha(opacity = 30)
@@ -124,9 +155,9 @@
 
         label
           margin-right: 0.25em
-          width: 5.5em
+          width: 6.5em
 
-        textarea, select, input, .radioBlock
+        textarea, select, input[type="text"], .radioBlock
           width: 13em
 
         &.radioGroup
@@ -134,21 +165,20 @@
           padding-left: 0.75em
 
           label
-            width: 4.75em
+            width: 5.75em
 
         .radioBlock
           width: 16.5em
 
         input[type="radio"], .uniform.radio
           margin-right: 0.5em
-          width: auto
 
         span.error
           color: #ff0000
           display: block
           line-height: 1.7em
-          margin-left: 6.3em
-          padding-left: 15px
+          margin-left: 8em
+          padding-left: 12px
 
         .columnSelector
           @include text-hiding
@@ -223,3 +253,7 @@
     a
       display: block
       font-weight: bold
+
+      &.disabled
+        color: #999999
+        cursor: default

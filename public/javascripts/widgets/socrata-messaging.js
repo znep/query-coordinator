@@ -114,7 +114,13 @@
                         hideTip: function(box, callback)
                             {
                                 sTipObj._visible = false;
-                                $(box).fadeOut(300, callback);
+                                if (sTipObj._isDestroy)
+                                {
+                                    $(box).hide();
+                                    _.defer(callback);
+                                }
+                                else
+                                { $(box).fadeOut(300, callback); }
                             }
                 });
             },
@@ -163,6 +169,7 @@
 
             destroy: function()
             {
+                this._isDestroy = true;
                 this.hide();
                 this.disable();
                 this.$dom().removeData('socrataTip');
@@ -238,7 +245,8 @@
     // plugin defaults
     //
     $.fn.socrataAlert.defaults = {
-        message: null
+        message: null,
+        trigger: 'now'
     };
 
 })(jQuery);

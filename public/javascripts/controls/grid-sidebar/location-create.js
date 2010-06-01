@@ -24,24 +24,17 @@
                     {text: 'Latitude', type: 'columnSelect', name: 'convertLat',
                         required: true, notequalto: 'convertNumber',
                         columns: {type: 'number', hidden: false},
-                        wizard: {prompt: 'Choose the column that contains latitude data',
-                            defaultAction: 'nextField'}
+                        wizard: {prompt: 'Choose the column that contains latitude data'}
                     },
                     {text: 'Longitude', type: 'columnSelect',
                         name: 'convertLong',
                         required: true, notequalto: 'convertNumber',
                         columns: {type: 'number', hidden: false},
-                        wizard: {prompt: 'Choose the column that contains longitude data',
-                            defaultAction: 'nextField'}
+                        wizard: {prompt: 'Choose the column that contains longitude data'}
                     }
                 ],
                 wizard: {prompt: 'Do you have latitude and longitude data to import?',
-                    defaultAction: 'nextField',
-                    actions: [
-                        {text: 'Yes', action: 'expand'},
-                        {text: 'No', action: 'nextSection'}
-                    ]
-                }
+                    actions: $.gridSidebar.wizard.buttonGroups.sectionExpand}
             },
             {
                 title: 'Import US Addresses',
@@ -57,10 +50,9 @@
                                 columns: {type: 'text', hidden: false} }
                         ],
                         wizard: {prompt: 'Choose the column that contains street address data',
-                            defaultAction: 'nextField',
                             actions: [
-                                {text: 'Skip', action: 'nextField'},
-                                {text: 'Done', action: 'nextField'}
+                                $.gridSidebar.wizard.buttons.skip,
+                                $.gridSidebar.wizard.buttons.done
                             ]
                         }
                     },
@@ -74,10 +66,9 @@
                                 prompt: 'Enter a city'}
                         ],
                         wizard: {prompt: 'Choose the column that contains city data, or fill in a value to be used for all rows',
-                            defaultAction: 'nextField',
                             actions: [
-                                {text: 'Skip', action: 'nextField'},
-                                {text: 'Done', action: 'nextField'}
+                                $.gridSidebar.wizard.buttons.skip,
+                                $.gridSidebar.wizard.buttons.done
                             ]
                         }
                     },
@@ -92,10 +83,9 @@
                                 prompt: 'Enter a state'}
                         ],
                         wizard: {prompt: 'Choose the column that contains state data, or fill in a value to be used for all rows',
-                            defaultAction: 'nextField',
                             actions: [
-                                {text: 'Skip', action: 'nextField'},
-                                {text: 'Done', action: 'nextField'}
+                                $.gridSidebar.wizard.buttons.skip,
+                                $.gridSidebar.wizard.buttons.done
                             ]
                         }
                     },
@@ -111,28 +101,19 @@
                                 prompt: 'Enter a zip code'}
                         ],
                         wizard: {prompt: 'Choose the column that contains zip code data, or fill in a value to be used for all rows',
-                            defaultAction: 'nextField',
                             actions: [
-                                {text: 'Skip', action: 'nextField'},
-                                {text: 'Done', action: 'nextField'}
+                                $.gridSidebar.wizard.buttons.skip,
+                                $.gridSidebar.wizard.buttons.done
                             ]
                         }
                     }
                 ],
                 wizard: {prompt: 'Do you have address data to import?',
-                    defaultAction: 'nextField',
-                    actions: [
-                        {text: 'Yes', action: 'expand'},
-                        {text: 'No', action: 'nextSection'}
-                    ]
-                }
+                    actions: $.gridSidebar.wizard.buttonGroups.sectionExpand}
             }
         ],
         finishBlock: {
-            buttons: [
-                {text: 'Create', value: true, isDefault: true},
-                {text: 'Cancel', value: false, isCancel: true}
-            ],
+            buttons: [$.gridSidebar.buttons.create, $.gridSidebar.buttons.cancel],
             wizard: {prompt: "Now you're ready to create a new column"}
         },
         wizard: {prompt: 'Do you have existing location data?',

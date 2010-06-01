@@ -8,15 +8,14 @@ $(function()
     {
         if (blist.display.isGrid)
         {
-            var isOwner = blist.currentUserId == blist.display.view.owner.id;
             $dataGrid
 //                .bind('full_load',
 //                    function(){ $('#lensContainer .headerBar').removeClass('hide'); })
                 .datasetGrid({viewId: blist.display.viewId,
-                    columnDeleteEnabled: isOwner,
-                    columnPropertiesEnabled: isOwner,
-                    columnNameEdit: isOwner,
-                    showAddColumns: isOwner && blist.display.type == 'blist',
+                    columnDeleteEnabled: blist.isOwner,
+                    columnPropertiesEnabled: blist.isOwner,
+                    columnNameEdit: blist.isOwner,
+                    showAddColumns: blist.isOwner && blist.display.type == 'blist',
                     currentUserId: blist.currentUserId,
                     accessType: 'WEBSITE', manualResize: true, showRowHandle: true
 //                    clearTempViewCallback: blistGridNS.clearTempViewTab,
@@ -32,12 +31,24 @@ $(function()
         { $dataGrid.visualization(); }
     }
 
-    $('#gridSidebar').gridSidebar({dataGrid: $dataGrid[0]});
-    $('#sidebarOptions a[data-paneName]').click(function(e)
+    var sidebar = $('#gridSidebar').gridSidebar({dataGrid: $dataGrid[0]});
+    $('#sidebarOptions a[data-paneName]').each(function()
     {
-        e.preventDefault();
-        $('#gridSidebar').gridSidebar().show($(this).attr('data-paneName'));
+        var $a = $(this);
+        if (sidebar.hasPane($a.attr('data-paneName')))
+        {
+            $a.click(function(e)
+            {
+                e.preventDefault();
+                sidebar.show($(this).attr('data-paneName'));
+            });
+        }
+        else
+        { $a.hide(); }
     });
+
+    $(document).bind(blist.events.COLUMNS_CHANGED,
+        function() { sidebar.updateEnabledSubPanes(); });
 
     var $dsIcon = $('#datasetIcon');
     $dsIcon.socrataTip($dsIcon.text());

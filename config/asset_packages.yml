@@ -27,6 +27,7 @@ javascripts:
   - widgets/socrata-messaging
   - widgets/text-prompt
   - widgets/values
+  - widgets/dropdown-menu
 - shared-common-all:
   - util/events
   - util/sizing
@@ -37,7 +38,6 @@ javascripts:
 - shared-calendar:
   - plugins/fullcalendar
   - widgets/blist-calendar
-  - widgets/dropdown-menu
 - shared-table-render:
   - plugins/ui.draggable
   - plugins/date
@@ -47,7 +47,6 @@ javascripts:
   - data/table
   - data/table_nav
   - widgets/scrollable
-  - widgets/dropdown-menu
   - widgets/dataset-grid
 - shared-table-editor:
   - data/editors/editor-base
@@ -91,7 +90,6 @@ javascripts:
   - screens/account-screen
 - approval-show:
   - util/urls
-  - widgets/dropdown-menu
   - screens/approval-screen
 - admin-sdp-index:
   - screens/admin-sdp-index-screen
@@ -103,7 +101,6 @@ javascripts:
   - screens/blist-about-screen
   - screens/attribution-edit
   - screens/metadata-edit
-  - widgets/dropdown-menu
 - blists-index:
   - plugins/jquery.tablesorter
   - plugins/jquery.jqote.min
@@ -117,7 +114,6 @@ javascripts:
   - data/table
   - widgets/combination-list
   - widgets/panel-expander
-  - widgets/dropdown-menu
   - widgets/selectable-list
   - widgets/sidebar-filter
   - widgets/pagination
@@ -199,7 +195,6 @@ javascripts:
   - widgets/inline-edit
   - screens/discover-screen
   - util/urls
-  - widgets/dropdown-menu
   - screens/nominations-screen
   - plugins/date
   - plugins/ajaxupload.3.0
@@ -252,7 +247,9 @@ javascripts:
   - plugins/jquery.uniform
 - screen-dataset:
   - plugins/jquery.uniform
+  - util/events
   - util/urls
+  - util/navigation
   - widgets/menu
   - widgets/wizard-prompt
   - controls/grid-sidebar/base-sidebar

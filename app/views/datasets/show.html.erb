@@ -53,6 +53,21 @@
 <% content_for :js_footer do %>
   <script type="text/javascript">
     <%= raw @view.display.render_inline_setup_js('data-grid', self) %>
+
+    <%- if !current_user.nil? -%>
+      blist.currentUserId = '<%= current_user.id %>';
+      blist.isOwner = <%= current_user.id == @view.owner.id ? 'true' : 'false' %>;
+    <%- end -%>
+
+    <%# Namespace to keep track of disabled sidebar sections %>
+    blist.namespace.fetch('blist.sidebarHidden');
+    blist.sidebarHidden.embed = blist.sidebarHidden.embed || {};
+    blist.sidebarHidden.embed.formCreate = <%= @view.is_alt_view? ||
+      @view.is_grouped? ||
+      !CurrentDomain.user_can?(current_user, :create_datasets) ||
+      !module_available?(:form_publish) ||
+      !@view.owned_by?(@current_user) ||
+      !@view.parent_dataset.owned_by?(@current_user) %>;
   </script>
 
   <%- if @view.can_edit() && !@view.is_blobby? -%>

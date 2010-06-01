@@ -58,13 +58,21 @@
             }
             else
             {
-              publishNS.populateForm($.json.deserialize(responseData['customization']));
+              // set customization anyway in case populate isn't called
+              var customization = $.json.deserialize(responseData['customization']);
+              publishNS.currentTheme = customization;
+
+              if (publishNS.checkVersion(customization))
+              {
+                publishNS.populateForm(customization);
+                $("#publishOptionsPane .summaryTabs").infoPaneNavigate().activateTab('#tabVisual');
+              }
+
               $('.templateName').text(responseData['name']);
               $('#template_name, #new_customization_from')
                 .append($('<option value="' + responseData['uid'] + '">' + responseData['name'] + '</option>'))
                 .val(responseData['uid']);
               $('#modal').jqmHide();
-              $("#publishOptionsPane .summaryTabs").infoPaneNavigate().activateTab('#tabVisual');
             }
           },
           error: function(request, status, error)

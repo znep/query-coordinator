@@ -6,10 +6,11 @@ widgetNS.ready = false;
 
 blist.widget.resizeViewport = function()
 {
+    var $contentWrapper = $('.widgetWrapper');
     var $contentContainer = $('.widgetContent');
     var targetHeight = $(window).height() -
-        widgetNS.theme.frame.border.width.value * 2 -
-        widgetNS.theme.frame.padding.value;
+        ($contentWrapper.outerHeight(true) - $contentWrapper.height()) -
+        widgetNS.theme['frame']['padding']['value'];
     $contentContainer.siblings(':visible').each(function()
     {
         targetHeight -= $(this).outerHeight(true);

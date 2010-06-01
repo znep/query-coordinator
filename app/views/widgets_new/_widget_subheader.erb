@@ -7,9 +7,11 @@
   <li class="subHeaderAction about">
     <a href="<%= @view.href + '/about' %>" class="icon" title="About this Dataset" rel="external">About this Dataset</a>
   </li>
-  <li class="subHeaderAction datasetName">
-    <a href="<%= @view.href %>" title="Go to this Dataset" rel="external"><%= @view.name %></a>
-  </li>
+  <%- if @theme[:frame][:show_title] -%>
+    <li class="subHeaderAction datasetName">
+      <a href="<%= @view.href %>" title="Go to this Dataset" rel="external"><%= @view.name %></a>
+    </li>
+  <%- end -%>
   <li class="subHeaderAction fullscreen right">
     <a href="<%= @view.href %>" class="icon" title="View this Dataset fullscreen" rel="external">Fullscreen</a>
   </li>

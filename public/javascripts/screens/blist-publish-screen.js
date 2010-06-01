@@ -142,6 +142,7 @@ blist.publish.customizationApplication = {
                                        width:               [ { selector: '.widgetWrapper', css: 'border-width', hasUnit: true } ] },
                       color:                                [ { selector: '.widgetWrapper', css: 'background-color' } ],
                       orientation:                          [ { selector: '.widgetWrapper', callback: publishNS.applyOrientation } ],
+                      show_title:                           [ { selector: '.subHeaderBar .datasetName', hideShow: true } ],
                       padding:                              [ { selector: '.subHeaderBar, .toolbar', css: 'margin-left, margin-right', hasUnit: true },
                                                               { selector: '.widgetContent', callback: publishNS.applyContentMargin } ] },
     toolbar:        { color:                                [ { selector: '.subHeaderBar, .toolbar', css: 'background-color' } ] },
@@ -430,8 +431,15 @@ blist.publish.clearStyles = function()
     publishNS.styleRules = {};
 };
 
+blist.publish.valueChangedFired = false;
 blist.publish.valueChanged = function(suppressMessage)
 {
+    if (blist.publish.valueChangedFired === true)
+    {
+        // prevent double fire on the same execution loop
+        return;
+    }
+
     var hash = publishNS.serializeForm();
 
     // Make a true deep clone of the merge
@@ -443,12 +451,11 @@ blist.publish.valueChanged = function(suppressMessage)
     publishNS.unsavedTheme = clone;
     if (suppressMessage !== true)
     {
-        $('.unsavedChangesBar').slideDown('normal');
-        $('body').animate({
-            paddingTop: '35px',
-            backgroundPosition: '0 41px'
-        });
+        publishNS.showUnsavedChangesBar();
     }
+
+    blist.publish.valueChangedFired = true;
+    _.defer(function() { blist.publish.valueChangedFired = false; });
 };
 
 blist.publish.saveCustomization = function(hash)
@@ -664,6 +671,20 @@ blist.publish.hideUnsavedChangesBar = function()
     });
 };
 
+blist.publish.showUnsavedChangesBar = function(showDiscard)
+{
+    $('.unsavedChangesBar').slideDown('normal');
+    $('body').animate({
+        paddingTop: '35px',
+        backgroundPosition: '0 41px'
+    });
+
+    if (showDiscard === false)
+    { $('.discardChangesButton').closest('li').hide(); }
+    else
+    { $('.discardChangesButton').closest('li').show(); }
+};
+
 (function($) {
     // Highlight copy code on click
     $.live('.publishCode textarea', 'click', function() { $(this).select(); });
@@ -860,6 +881,7 @@ blist.publish.hideUnsavedChangesBar = function()
     $('input[name^=customization]:not([type=text])').click(publishNS.valueChanged);
     $(':input[name^=customization][type=text]')
         .change(publishNS.valueChanged)
+        .blur(publishNS.valueChanged)
         .focus(function() {
             $(this).select();
         });
@@ -896,5 +918,6 @@ blist.publish.hideUnsavedChangesBar = function()
         var convertedTheme = publishNS.convertCustomization(publishNS.currentTheme);
         publishNS.populateForm(convertedTheme);
         publishNS.checkVersion(convertedTheme);
+        publishNS.showUnsavedChangesBar(false);
     });
 })(jQuery);

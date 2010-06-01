@@ -208,6 +208,15 @@ class BlistsController < ApplicationController
         'customization' => WidgetCustomization.default_theme(1), 'name' => "Default Socrata" })
     end
     @customization = @widget_customization.customization
+
+    # TEMPORARY HACK!
+    # If a domain has a v0 template default, we can't really render this thing.
+    # Remove this once all domains have been upgraded.
+    unless @customization.has_key?(:version)
+      @widget_customization = WidgetCustomization.create({
+        'customization' => WidgetCustomization.default_theme(1), 'name' => "New Default" })
+      @customization = @widget_customization.customization
+    end
   end
 
   def new_customization

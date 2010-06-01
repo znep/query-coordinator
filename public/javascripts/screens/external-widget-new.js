@@ -381,7 +381,8 @@ $(function()
                                 '.picture a@href': function(filter) { return $.generateProfileUrl(filter.item.owner); },
                                 '.picture img@src': function(filter) { return filter.item.owner.profileImageUrlMedium ||
                                                                               '/images/small-profile.png'; },
-                                '.picture img@alt': function(filter) { return $.htmlEscape(filter.item.owner.displayName); }
+                                '.picture img@alt': function(filter) { return $.htmlEscape(filter.item.owner.displayName); },
+                                '.picture img@title': function(filter) { return $.htmlEscape(filter.item.owner.displayName); }
                             }
                         }
                     }));

@@ -240,6 +240,10 @@ html, body
     overflow-y: auto
     overflow-x: hidden
 
+    // fix IE6/7 scrolling bug
+    .ie6 &, .ie7 &
+      position: relative
+
   .widgetContentClose
     @include close-button
     float: right
@@ -247,10 +251,6 @@ html, body
 
   .widgetContentGrid
     display: block
-
-    // make IE6/7 display and scroll properly
-    .ie6 &, .ie7 &
-      position: relative
 
     #viewHeader
       display: none
@@ -285,9 +285,6 @@ html, body
         @include sprite-menu-icons
 
   .widgetContent_comments
-    // fix IE6/7 scrolling bug
-    .ie6 &, .ie7 &
-      position: relative
 
     .commentTopLevelActions
       margin: 1em 2em 0
@@ -512,7 +509,8 @@ html, body
 .leavingInterstitial
   .leavingLinkWrapper
     overflow-x: auto
-    padding: 1em 2em
+    overflow-y: hidden
+    padding: 2em
 
     .leavingLink
       font-size: 1.1em

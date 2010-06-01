@@ -132,7 +132,7 @@ $(function()
             subtext: 'Embed this player on your site', href: '#embed' });
     if (widgetNS.theme['menu']['options']['print'] === true)
         menuContents.push({ text: 'Print', className: 'print',
-        subtext: 'Print out this dataset', href: '#print', onlyIf: !widgetNS.isBlobby });
+            subtext: 'Print out this dataset', href: '#print', onlyIf: !widgetNS.isBlobby });
 
     menuContents.push({ text: 'About the Socrata Social Data Player', className: 'about',
         href: 'http://www.socrata.com/try-it-free', rel: 'external' });

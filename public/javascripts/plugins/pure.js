@@ -308,18 +308,18 @@ $p.core = function(sel, ctxt, plugins){
 			if(prepend){
 				setfn = function(node, s)
 				{
-				    /*if (isClass)
+				    if (isClass)
 				    { setstr( node, s + ' ' + getstr( node )); }
 				    else
-				    { */setstr( node, s + getstr( node ));// }
+				    { setstr( node, s + getstr( node )); }
 				};
 			}else if(append){
 				setfn = function(node, s)
 				{
-				    /*if (isClass)
+				    if (isClass)
 				    { setstr( node, getstr( node ) + ' ' + s); }
 				    else
-				    { */setstr( node, getstr( node ) + s);// }
+				    { setstr( node, getstr( node ) + s); }
 				};
 			}else{
 				setfn = function(node, s){ setstr( node, s ); };

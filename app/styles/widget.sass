@@ -53,8 +53,8 @@ html, body
       position: relative
       text-transform: uppercase
       .noLinearGradient &
-        @include box_gradient_menu_button_background(30,3,$box_gradient_alias_fix)
         background: transparent repeat-x
+        @include box_gradient_menu_button_background(3,30,$box_gradient_alias_fix)
 
       .icon
         left: 0.6em
@@ -66,13 +66,11 @@ html, body
         @include gradient_menu_button_background_hover
         text-decoration: none
         .noLinearGradient &
-          @include box_gradient_menu_button_background_hover(30,2,$box_gradient_alias_fix)
           background: transparent repeat-x
+          @include box_gradient_menu_button_background_hover(3,30,$box_gradient_alias_fix)
 
-    &.open .menuButton
+    &.open .mainMenuButton
       @include box-shadow-none
-      .icon
-        background-position: 0 0
 
     .menuDropdown
       margin: 0.4em 0
@@ -242,6 +240,10 @@ html, body
     overflow-y: auto
     overflow-x: hidden
 
+    // fix IE6/7 scrolling bug
+    .ie6 &, .ie7 &
+      position: relative
+
   .widgetContentClose
     @include close-button
     float: right
@@ -249,10 +251,6 @@ html, body
 
   .widgetContentGrid
     display: block
-
-    // make IE6/7 display and scroll properly
-    .ie6 &, .ie7 &
-      position: relative
 
     #viewHeader
       display: none
@@ -287,13 +285,9 @@ html, body
         @include sprite-menu-icons
 
   .widgetContent_comments
-    // fix IE6/7 scrolling bug
-    .ie6 &, .ie7 &
-      position: relative
 
     .commentTopLevelActions
-      margin: 2em
-        top: 1em
+      margin: 1em 2em 0
 
       .addCommentButton
         float: right
@@ -301,6 +295,7 @@ html, body
       .datasetAverageRating
         float: left
         margin: 0.5em
+          top: 1em
 
     .emptyDataText
       font-size: 1.2em
@@ -491,7 +486,7 @@ html, body
   top: 6em
   width: 40em
 
-  .interstitialClose
+  .widgetModalClose
     @include close-button
     position: absolute
     right: 1em
@@ -511,6 +506,15 @@ html, body
     li
       float: right
 
+.leavingInterstitial
+  .leavingLinkWrapper
+    overflow-x: auto
+    overflow-y: hidden
+    padding: 2em
+
+    .leavingLink
+      font-size: 1.1em
+      white-space: nowrap
 
 // START: fullcalendar
 .fc .fc-header td,

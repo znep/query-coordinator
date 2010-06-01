@@ -182,7 +182,7 @@ ActionController::Routing::Routes.draw do |map|
    :action => 'show', :requirements => {:id => UID_REGEXP, :customization_id => UID_REGEXP}
 
   map.connect 'w/:id/:customization_id', :controller => 'widgets_new',
-    :action => 'show', :requirements => {:id => UID_REGEXP, :customization_id => UID_REGEXP}
+    :action => 'show', :requirements => {:id => UID_REGEXP}
   map.connect 'w/:id', :controller => 'widgets_new',
     :action => 'show', :requirements => {:id => UID_REGEXP}
 

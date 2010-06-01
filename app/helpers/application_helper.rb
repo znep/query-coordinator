@@ -509,14 +509,9 @@ HREF
     # merge publish options with theme options if extant
     theme = WidgetCustomization.find(variation) if variation =~ /\w{4}-\w{4}/
     if theme.nil?
-      options = WidgetCustomization.merge_theme_with_default({:publish => options})[:publish]
+      options = WidgetCustomization.merge_theme_with_default({:publish => options}, 1)[:publish]
     else
       options = theme.customization[:publish].deep_merge(options)
-    end
-
-    # new widgets have powered by inside the frame
-    if !theme.nil? && theme.customization[:version] == 1
-      options[:show_powered_by] = false
     end
 
     # generate a new tracking ID param set
@@ -534,7 +529,7 @@ HREF
     embed_template += "<iframe width=\"#{options[:dimensions][:width]}px\" " +
                       "title=\"#{view.name}\" " +
                       "height=\"#{options[:dimensions][:height]}px\" src=\"#{root_path}" +
-                      "/widgets/#{view.id}/#{variation.blank? ? 'normal' : variation}?" +
+                      "/w/#{view.id}/#{variation.blank? ? 'default' : variation}?" +
                       "#{tracking_params.to_param}\" frameborder=\"0\" scrolling=\"" +
                       "#{!view.display.can_publish? || view.display.scrolls_inline? ? 'no' : 'auto'}\">" +
                       "<a href=\"#{root_path + view.href}\" title=\"#{h(view.name)}\" " +

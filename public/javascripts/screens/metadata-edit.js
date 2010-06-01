@@ -53,6 +53,11 @@
                 },
                 onComplete: function(file, response)
                 {
+                    if (response.error)
+                    {
+                        opts.errorCallback(response.message, opts);
+                        return;
+                    }
                     $(opts.uploadIndicator).addClass('hide');
                     var $li = $('<li class="attachmentItem"/>')
                         .append('&nbsp;')
@@ -125,6 +130,13 @@
         uploadAction: '/api/assets',
         uploadIndicator: '.uploadingIndicator',
         uploadLinkSelector: '.uploadNewAttachmentLink',
+        errorCallback: function(message, opts)
+        {
+            $(opts.uploadIndicator).addClass('hide');
+            $(opts.errorMessageContainerSelector).removeClass('hide')
+                .find(opts.errorMessageSelector).text($.htmlStrip(message))
+                .show();
+        },
         openCallback: function() {},
         onChangeAttachment: function(file, extension)
         {
@@ -133,9 +145,7 @@
         {
             if(responseData['error'])
             {
-                $(opts.errorMessageContainerSelector).removeClass('hide')
-                    .find(opts.errorMessageSelector).text(responseData['error'])
-                    .show();
+                opts.errorCallback(responseData['message'], opts);
             }
 
             var $list = $(opts.attachmentsContainerSelector).find('ul');

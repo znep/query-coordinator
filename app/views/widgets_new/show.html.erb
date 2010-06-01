@@ -108,7 +108,7 @@
 </div>
 
 <div class="commentInterstitial widgetModal">
-  <a href="#close" class="jqmClose interstitialClose">Close</a>
+  <a href="#close" class="jqmClose widgetModalClose">Close</a>
   <h2>Want to leave a comment?</h2>
   <p>To leave a comment on this dataset, you will be redirected to the
      <%= CurrentDomain.strings.company %> website where you will be prompted
@@ -121,6 +121,27 @@
       <a class="noInterstitial button accept" href="<%= @view.href %>" rel="external">
         <span class="icon"></span>
         Yes
+      </a>
+    </li>
+  </ul>
+</div>
+
+<div class="leavingInterstitial widgetModal">
+  <a href="#close" class="jqmClose widgetModalClose">Close</a>
+  <h2>You are leaving <%= CurrentDomain.cname %>.</h2> <!-- CR -->
+  <p>Thank you for visiting our site. You will now access</p>
+  <div class="leavingLinkWrapper">
+    <a class="leavingLink noInterstitial" href="#" rel="external"></a>
+  </div>
+  <p>We hope your visit was informative and enjoyable.</p>
+  <ul class="actions clearfix">
+    <li>
+      <a class="jqmClose button cancel" href="#cancel"><span class="icon"></span>Cancel</a>
+    </li>
+    <li>
+      <a class="noInterstitial button accept" href="#" rel="external">
+        <span class="icon"></span>
+        Go now
       </a>
     </li>
   </ul>

@@ -2,6 +2,8 @@ var widgetNS = blist.namespace.fetch('blist.widget');
 var commonNS = blist.namespace.fetch('blist.common');
 var configNS = blist.namespace.fetch('blist.configuration');
 
+widgetNS.ready = false;
+
 blist.widget.hideToolbar = function()
 {
     $('.toolbar')
@@ -72,6 +74,7 @@ $(function()
     // keep track of some stuff for easy access
     widgetNS.orientation = widgetNS.theme['frame']['orientation'];
     widgetNS.isBlobby = (widgetNS.view.viewType === 'blobby');
+    widgetNS.interstitial = widgetNS.theme['behavior']['interstitial'];
 
     // sizing
     widgetNS.$resizeContainer = $('.widgetContent');
@@ -86,33 +89,36 @@ $(function()
     {
         this.target = '_blank';
     });
-    $.live('a[rel$=external]', 'click', function(event)
-    {
-        // interstitial
-        if (widgetNS.theme['behavior']['interstitial'] === true)
-        {
-            event.preventDefault();
-            // todo: pop interstitial
-            return;
-        }
-    });
 
     // controls
     $('select, input:checkbox, input:radio, input:file').uniform();
 
     // menus
+    var menuContents = [];
+    if (widgetNS.theme['menu']['options']['more_views'] === true)
+        menuContents.push({ text: 'More Views', className: 'views',
+            subtext: 'Filters, Charts, and Maps', href: '#views' });
+    if (widgetNS.theme['menu']['options']['downloads'] === true)
+        menuContents.push({ text: 'Download', className: 'downloads',
+            subtext: 'Download in various formats', href: '#downloads', onlyIf: !widgetNS.isBlobby });
+    if (widgetNS.theme['menu']['options']['comments'] === true)
+        menuContents.push({ text: 'Comments', className: 'comments',
+            subtext: 'Read comments on this dataset', href: '#comments' });
+    if (widgetNS.theme['menu']['options']['embed'] === true)
+        menuContents.push({ text: 'Embed', className: 'embed',
+            subtext: 'Embed this player on your site', href: '#embed' });
+    if (widgetNS.theme['menu']['options']['print'] === true)
+        menuContents.push({ text: 'Print', className: 'print',
+        subtext: 'Print out this dataset', href: '#print', onlyIf: !widgetNS.isBlobby });
+
+    menuContents.push({ text: 'About the Socrata Social Data Player', className: 'about',
+        href: 'http://www.socrata.com/try-it-free', rel: 'external' });
+
     $('.mainMenu').menu({
         attached: false,
         menuButtonTitle: 'Access additional information about this dataset.',
         menuButtonClass: 'mainMenuButton ' + ((widgetNS.orientation == 'downwards') ? 'upArrow' : 'downArrow'),
-        contents: [
-            { text: 'More Views', className: 'views', subtext: 'Filters, Charts, and Maps', href: '#views' },
-            { text: 'Download', className: 'downloads', subtext: 'Download in various formats', href: '#downloads', onlyIf: !widgetNS.isBlobby },
-            { text: 'Comments', className: 'comments', subtext: 'Read comments on this dataset', href: '#comments' },
-            { text: 'Embed', className: 'embed', subtext: 'Embed this player on your site', href: '#embed' },
-            { text: 'Print', className: 'print', subtext: 'Print out this dataset', href: '#print', onlyIf: !widgetNS.isBlobby },
-            { text: 'About the Socrata Social Data Player', className: 'about', href: 'http://www.socrata.com/try-it-free', rel: 'external' }
-        ]
+        contents: menuContents
     });
     $('.mainMenu .menuDropdown a').click(function(event)
     {
@@ -335,7 +341,8 @@ $(function()
                                 '.picture a@href': function(filter) { return $.generateProfileUrl(filter.item.owner); },
                                 '.picture img@src': function(filter) { return filter.item.owner.profileImageUrlMedium ||
                                                                               '/images/small-profile.png'; },
-                                '.picture img@alt': function(filter) { return $.htmlEscape(filter.item.owner.displayName); }
+                                '.picture img@alt': function(filter) { return $.htmlEscape(filter.item.owner.displayName); },
+                                '.picture img@title': function(filter) { return $.htmlEscape(filter.item.owner.displayName); }
                             }
                         }
                     }));
@@ -629,4 +636,39 @@ $(function()
         event.preventDefault();
         $('.widgetModal').jqmHide();
     });
+
+    // Trigger interstitial if necessary
+    $.live('a:not([href^=#]):not(.noInterstitial):not([rel$="modal"])', 'click', function(event)
+    {
+        if (widgetNS.interstitial === true)
+        {
+            event.preventDefault();
+
+            var href = $(this).attr('href');
+            // IE sticks the full URL in the href, so we didn't filter out local URLs
+            if ($.isBlank(href) || (href.indexOf(location) == 0))
+            {
+                return;
+            }
+            if (href.slice(0, 1) == '/')
+            {
+                href = location.host + href;
+            }
+            if (!href.match(/^(f|ht)tps?:\/\//))
+            {
+                href = "http://" + href;
+            }
+
+            var $modal = $('.leavingInterstitial');
+            $modal.find('.leavingLink')
+                      .attr('href', href)
+                      .text(href);
+            $modal.find('.accept.button')
+                      .attr('href', href);
+            $modal.jqmShow();
+        }
+    });
+
+    // Notify publisher that we are ready
+    widgetNS.ready = true;
 });

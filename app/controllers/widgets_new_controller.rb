@@ -6,16 +6,21 @@ class WidgetsNewController < ApplicationController
     if params[:customization_id].blank?
       return redirect_to(params.merge!(
         :customization_id => CurrentDomain.default_widget_customization_id))
+    elsif !params[:customization_id].match(/\w{4}-\w{4}/) &&
+           params[:customization_id] != 'default'
+      render_404
     end
 
     begin
-      @widget_customization = WidgetCustomization.find(params[:customization_id])
+      if params[:customization_id] == 'default'
+        @theme = WidgetCustomization.default_theme(1)
+      else
+        @theme = WidgetCustomization.find(params[:customization_id]).customization
+      end
     rescue CoreServer::CoreServerError => e
       flash.now[:error] = e.error_message
       return (render 'shared/error', :status => :not_found)
     end
-
-    @theme = @widget_customization.customization
 
     if !@theme[:version].present?
       return redirect_to(params.merge!(:controller => 'widgets', :action => 'show'))

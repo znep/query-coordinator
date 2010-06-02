@@ -483,6 +483,22 @@
                 { showPaneSelectWizard(sidebarObj, outerConfig); }
             },
 
+            baseFormHandler: function($pane, value)
+            {
+                if (!value)
+                {
+                    this.hide();
+                    return false;
+                }
+
+                // Clear out required fields that are prompts so the validate
+                $pane.find(':input.prompt.required').val('');
+                if (!$pane.find('form').valid()) { return false; }
+
+                $pane.find('.mainError').text('');
+                return true;
+            },
+
             genericErrorHandler: function($pane, xhr)
             {
                 $pane.find('.mainError')
@@ -1108,11 +1124,16 @@
 
                 if ($item.nextAll('.scrollContent').length > 0)
                 { $item = $item.nextAll('.scrollContent')
-                    .find('.formSection, .finishButtons'); }
+                    .find('.formSection:visible, .finishButtons:visible'); }
                 else
-                { $item = $item.nextAll('.formSection, .finishButtons'); }
+                { $item = $item
+                    .nextAll('.formSection:visible, .finishButtons:visible'); }
 
-                showWizard(sidebarObj, $item.filter('.hasWizard:visible:first'));
+                if (!$item.eq(0).is('.hasWizard') &&
+                    $item.eq(0).find('.line.hasWizard:visible').length > 0)
+                { wizardAction(sidebarObj, $item.eq(0), 'nextField'); }
+                else
+                { showWizard(sidebarObj, $item.filter('.hasWizard:first')); }
                 break;
 
             case 'nextField':

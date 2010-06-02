@@ -253,6 +253,7 @@ javascripts:
   - widgets/menu
   - widgets/wizard-prompt
   - controls/grid-sidebar/base-sidebar
+  - controls/grid-sidebar/calendar-create
   - controls/grid-sidebar/form-create
   - controls/grid-sidebar/location-create
   - controls/dataset-controls

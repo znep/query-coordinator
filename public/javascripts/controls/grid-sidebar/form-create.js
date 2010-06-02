@@ -1,6 +1,7 @@
 (function($)
 {
-    if (blist.sidebarHidden.embed.formCreate) { return; }
+    if (blist.sidebarHidden.embed &&
+        blist.sidebarHidden.embed.formCreate) { return; }
 
     var config =
     {
@@ -9,17 +10,11 @@
         subtitle: 'Forms allow you to gather data directly from your website into a dataset',
         onlyIf: function(view)
         {
-            var hasVis = false;
-            _.each(view.columns, function(c)
-            {
-                if (c.dataTypeName != 'meta_data' &&
-                    ($.isBlank(c.flags) || !_.include(c.flags, 'hidden')))
+            return _.select(view.columns, function(c)
                 {
-                    hasVis = true;
-                    _.breakLoop();
-                }
-            });
-            return hasVis;
+                    return c.dataTypeName != 'meta_data' &&
+                        ($.isBlank(c.flags) || !_.include(c.flags, 'hidden'));
+                }).length > 0;
         },
         disabledSubtitle: 'This view must have visible columns to create a form',
         sections: [
@@ -54,25 +49,14 @@
 
     config.finishCallback = function(sidebarObj, data, $pane, value)
     {
-        if (!value)
-        {
-            sidebarObj.hide();
-            return;
-        }
-
-        // Clear out required fields that are prompts so the validate
-        $pane.find(':input.prompt.required').val('');
-        if (!$pane.find('form').valid()) { return; }
-
-        $pane.find('.mainError').text('');
+        if (!sidebarObj.baseFormHandler($pane, value)) { return; }
 
         var data = {originalViewId: blist.display.viewId, displayType: 'form'};
-        var $form = $pane.find('form');
 
-        data.name = $form.find('#formName').val();
+        data.name = $pane.find('#formName').val();
         data.displayFormat =
-            {successRedirect: $form.find('#successRedirect').val()};
-        if ($form.find('#publicAdd').value())
+            {successRedirect: $pane.find('#successRedirect').val()};
+        if ($pane.find('#publicAdd').value())
         { data.flags = ['dataPublicAdd']; }
 
         $.ajax({url: '/views.json', type: 'POST', dataType: 'json',

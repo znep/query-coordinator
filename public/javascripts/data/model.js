@@ -2310,6 +2310,9 @@ blist.namespace.fetch('blist.data');
 
         this.getColumnByID = function(id) { return columnIDLookup[id]; };
 
+        this.columnIdToTableId = function(id)
+        { return this.getColumnByID(parseInt(id)).tableColumnId; };
+
         /**
          * Retrieve the total number of rows.
          */

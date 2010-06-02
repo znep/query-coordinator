@@ -127,17 +127,7 @@
 
     config.finishCallback = function(sidebarObj, data, $pane, value)
     {
-        if (!value)
-        {
-            sidebarObj.hide();
-            return;
-        }
-
-        // Clear out required fields that are prompts so the validate
-        $pane.find(':input.prompt.required').val('');
-        if (!$pane.find('form').valid()) { return; }
-
-        $pane.find('.mainError').text('');
+        if (!sidebarObj.baseFormHandler($pane, value)) { return; }
 
         if ($pane.find('.formSection.latLongSection .sectionSelect').value() ||
                 $pane.find('.formSection.addressSection .sectionSelect').value())

@@ -102,10 +102,17 @@
             {
                 if (c.dataTypeName == 'meta_data' && c.name == 'sid')
                 { currentObj._idIndex = i; }
-                else if (c.id == fmt.startDateId) { currentObj._startIndex = i; }
-                else if (c.id == fmt.endDateId) { currentObj._endIndex = i; }
-                else if (c.id == fmt.titleId) { currentObj._titleIndex = i; }
-                if (c.id == fmt.descriptionId)
+                else if (c.id == fmt.startDateId ||
+                    c.tableColumnId == fmt.startDateTableId)
+                { currentObj._startIndex = i; }
+                else if (c.id == fmt.endDateId ||
+                    c.tableColumnId == fmt.endDateTableId)
+                { currentObj._endIndex = i; }
+                else if (c.id == fmt.titleId ||
+                    c.tableColumnId == fmt.titleTableId)
+                { currentObj._titleIndex = i; }
+                if (c.id == fmt.descriptionId ||
+                    c.tableColumnId == fmt.descriptionTableId)
                 { currentObj._descriptionIndex = i; }
             });
             currentObj._rowsLeft = resp.meta.totalRows - currentObj._rowsLoaded;

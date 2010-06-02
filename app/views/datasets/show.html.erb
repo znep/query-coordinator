@@ -24,6 +24,7 @@
     <ul id='sidebarOptions' class='right'>
       <li><a href='#Feed'>Feed</a></li>
       <li><a href='#Filter'>Filter</a></li>
+      <li><a href='#Visualize' data-paneName='visualize'>Visualize</a></li>
       <li><a href='#Embed' data-paneName='embed'>Embed</a></li>
     </ul>
     <ul class='right'>
@@ -61,6 +62,10 @@
 
     <%# Namespace to keep track of disabled sidebar sections %>
     blist.namespace.fetch('blist.sidebarHidden');
+    <%# Calendar %>
+    blist.sidebarHidden.visualize = blist.sidebarHidden.visualize || {};
+    blist.sidebarHidden.visualize.calendarCreate = <%= @view.is_alt_view? %>;
+    <%# Form %>
     blist.sidebarHidden.embed = blist.sidebarHidden.embed || {};
     blist.sidebarHidden.embed.formCreate = <%= @view.is_alt_view? ||
       @view.is_grouped? ||

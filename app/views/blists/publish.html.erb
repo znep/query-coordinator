@@ -277,126 +277,144 @@
             </div>
             <div class="infoContentRightBg"></div>
             <div class="infoContentRight">
-              <dl class="summaryList">
-                <dt></dt>
-                <dd>
-                  <div class="itemContent">
-                    <span class="textContent">
-                      <h3>Column Titles</h3>
-                    </span>
-                  </div>
-                </dd>
-              </dl>
-              <dl class="summaryList">
-                <dt>Wrap Title Text</dt>
-                <dd>
-                  <div class="itemContent">
-                    <span class="textContent">
-                      <%= radio_button_tag("customization[grid][wrap_header_text]", "true",
-                          @customization[:grid][:wrap_header_text]) %>
-                      <%= label_tag("customization_grid_wrap_header_text_true", "Wrap Text") %>
-                      <%= radio_button_tag("customization[grid][wrap_header_text]", "false",
-                          !@customization[:grid][:wrap_header_text]) %>
-                      <%= label_tag("customization_grid_wrap_header_text_false", "Don't Wrap Text", :class => 'wideLabel') %>
-                    </span>
-                  </div>
-                </dd>
-              </dl>
-              <dl class="summaryList">
-                <dt>Title Font Weight</dt>
-                <dd>
-                  <div class="itemContent">
-                    <span class="textContent">
-                      <%= radio_button_tag("customization[grid][title_bold]", "true",
-                          @customization[:grid][:title_bold]) %>
-                      <%= label_tag("customization_grid_title_bold_true", "Bold") %>
-                      <%= radio_button_tag("customization[grid][title_bold]", "false",
-                          !@customization[:grid][:title_bold]) %>
-                      <%= label_tag("customization_grid_title_bold_false", "Normal") %>
-                    </span>
-                  </div>
-                </dd>
-              </dl>
-              <dl class="summaryList">
-                <dt>Title Text Size</dt>
-                <dd>
-                  <div class="itemContent">
-                    <span class="textContent">
-                      <%= text_field_tag("customization[grid][font][header_size][value]",
-                          @customization[:grid][:font][:header_size][:value]) %>
-                      <%= select_tag("customization[grid][font][header_size][unit]", font_unit_select_options(
-                          @customization[:grid][:font][:header_size][:unit])) %>
-                    </span>
-                  </div>
-                </dd>
-              </dl>
-              <dl class="summaryList">
-                <dt></dt>
-                <dd>
-                  <div class="itemContent">
-                    <span class="textContent">
-                      <h3>Rows</h3>
-                    </span>
-                  </div>
-                </dd>
-              </dl>
-              <dl class="summaryList">
-                <dt>Row Numbers</dt>
-                <dd>
-                  <div class="itemContent">
-                    <span class="textContent">
-                      <%= radio_button_tag("customization[grid][row_numbers]", "true",
-                          @customization[:grid][:row_numbers]) %>
-                      <%= label_tag("customization_grid_row_numbers_true", "Show") %>
-                      <%= radio_button_tag("customization[grid][row_numbers]", "false",
-                          !@customization[:grid][:row_numbers]) %>
-                      <%= label_tag("customization_grid_row_numbers_false", "Don't Show") %>
-                    </span>
-                  </div>
-                </dd>
-              </dl>
-              <dl class="summaryList">
-                <dt>Row Text Size</dt>
-                <dd>
-                  <div class="itemContent">
-                    <span class="textContent">
-                      <%= text_field_tag("customization[grid][font][data_size][value]",
-                          @customization[:grid][:font][:data_size][:value]) %>
-                      <%= select_tag("customization[grid][font][data_size][unit]", font_unit_select_options(
-                          @customization[:grid][:font][:data_size][:unit])) %>
-                    </span>
-                  </div>
-                </dd>
-              </dl>
-              <dl class="summaryList">
-                <dt>Row Striping</dt>
-                <dd>
-                  <div class="itemContent">
-                    <span class="textContent">
-                      <%= radio_button_tag("grid_zebra", "true",
-                          @customization[:grid][:zebra]) %>
-                      <%= label_tag("grid_zebra_true", "Stripe") %>
-                      <%= radio_button_tag("grid_zebra", "false",
-                          !@customization[:grid][:zebra]) %>
-                      <%= label_tag("grid_zebra_false", "Don't Stripe") %>
-                    </span>
-                  </div>
-                </dd>
-              </dl>
-              <dl class="summaryList" style="display: <%= @customization[:grid][:zebra] ? 'block' : 'none' %>">
-                <dt>Row Stripe Color</dt>
-                <dd>
-                  <div class="itemContent">
-                    <span class="textContent">
-                      <%= hidden_field_tag("customization[grid][zebra]",
-                          @customization[:grid][:zebra]) %>
-                      <div class="colorPickerContainer"></div>
-                      <div id="frameColorPickerTrigger" class="colorPickerTrigger" style="background-color:#<%= @customization[:grid][:zebra] %>"></div>
-                      <div class="colorPickerLabel"><%= @customization[:grid][:zebra] %></div>
-                    </span>
-                  </div>
-                </dd>
-              </dl>
+              <div style="display:<%= @view.is_alt_view? ? 'none' : 'block' %>">
+                <dl class="summaryList">
+                  <dt></dt>
+                  <dd>
+                    <div class="itemContent">
+                      <span class="textContent">
+                        <h3>Column Titles</h3>
+                      </span>
+                    </div>
+                  </dd>
+                </dl>
+                <dl class="summaryList">
+                  <dt>Wrap Title Text</dt>
+                  <dd>
+                    <div class="itemContent">
+                      <span class="textContent">
+                        <%= radio_button_tag("customization[grid][wrap_header_text]", "true",
+                            @customization[:grid][:wrap_header_text]) %>
+                        <%= label_tag("customization_grid_wrap_header_text_true", "Wrap Text") %>
+                        <%= radio_button_tag("customization[grid][wrap_header_text]", "false",
+                            !@customization[:grid][:wrap_header_text]) %>
+                        <%= label_tag("customization_grid_wrap_header_text_false", "Don't Wrap Text", :class => 'wideLabel') %>
+                      </span>
+                    </div>
+                  </dd>
+                </dl>
+                <dl class="summaryList">
+                  <dt>Title Font Weight</dt>
+                  <dd>
+                    <div class="itemContent">
+                      <span class="textContent">
+                        <%= radio_button_tag("customization[grid][title_bold]", "true",
+                            @customization[:grid][:title_bold]) %>
+                        <%= label_tag("customization_grid_title_bold_true", "Bold") %>
+                        <%= radio_button_tag("customization[grid][title_bold]", "false",
+                            !@customization[:grid][:title_bold]) %>
+                        <%= label_tag("customization_grid_title_bold_false", "Normal") %>
+                      </span>
+                    </div>
+                  </dd>
+                </dl>
+                <dl class="summaryList">
+                  <dt>Title Text Size</dt>
+                  <dd>
+                    <div class="itemContent">
+                      <span class="textContent">
+                        <%= text_field_tag("customization[grid][font][header_size][value]",
+                            @customization[:grid][:font][:header_size][:value]) %>
+                        <%= select_tag("customization[grid][font][header_size][unit]", font_unit_select_options(
+                            @customization[:grid][:font][:header_size][:unit])) %>
+                      </span>
+                    </div>
+                  </dd>
+                </dl>
+                <dl class="summaryList">
+                  <dt></dt>
+                  <dd>
+                    <div class="itemContent">
+                      <span class="textContent">
+                        <h3>Rows</h3>
+                      </span>
+                    </div>
+                  </dd>
+                </dl>
+                <dl class="summaryList">
+                  <dt>Row Numbers</dt>
+                  <dd>
+                    <div class="itemContent">
+                      <span class="textContent">
+                        <%= radio_button_tag("customization[grid][row_numbers]", "true",
+                            @customization[:grid][:row_numbers]) %>
+                        <%= label_tag("customization_grid_row_numbers_true", "Show") %>
+                        <%= radio_button_tag("customization[grid][row_numbers]", "false",
+                            !@customization[:grid][:row_numbers]) %>
+                        <%= label_tag("customization_grid_row_numbers_false", "Don't Show") %>
+                      </span>
+                    </div>
+                  </dd>
+                </dl>
+                <dl class="summaryList">
+                  <dt>Row Text Size</dt>
+                  <dd>
+                    <div class="itemContent">
+                      <span class="textContent">
+                        <%= text_field_tag("customization[grid][font][data_size][value]",
+                            @customization[:grid][:font][:data_size][:value]) %>
+                        <%= select_tag("customization[grid][font][data_size][unit]", font_unit_select_options(
+                            @customization[:grid][:font][:data_size][:unit])) %>
+                      </span>
+                    </div>
+                  </dd>
+                </dl>
+                <dl class="summaryList">
+                  <dt>Row Striping</dt>
+                  <dd>
+                    <div class="itemContent">
+                      <span class="textContent">
+                        <%= radio_button_tag("grid_zebra", "true",
+                            @customization[:grid][:zebra]) %>
+                        <%= label_tag("grid_zebra_true", "Stripe") %>
+                        <%= radio_button_tag("grid_zebra", "false",
+                            !@customization[:grid][:zebra]) %>
+                        <%= label_tag("grid_zebra_false", "Don't Stripe") %>
+                      </span>
+                    </div>
+                  </dd>
+                </dl>
+                <dl class="summaryList" style="display: <%= @customization[:grid][:zebra] ? 'block' : 'none' %>">
+                  <dt>Row Stripe Color</dt>
+                  <dd>
+                    <div class="itemContent">
+                      <span class="textContent">
+                        <%= hidden_field_tag("customization[grid][zebra]",
+                            @customization[:grid][:zebra]) %>
+                        <div class="colorPickerContainer"></div>
+                        <div id="frameColorPickerTrigger" class="colorPickerTrigger" style="background-color:#<%= @customization[:grid][:zebra] %>"></div>
+                        <div class="colorPickerLabel"><%= @customization[:grid][:zebra] %></div>
+                      </span>
+                    </div>
+                  </dd>
+                </dl>
+              </div>
+              <div style="display:<%= @view.is_alt_view? ? 'block' : 'none' %>">
+                <dl class="summaryList">
+                  <dt></dt>
+                  <dd>
+                    <div class="itemContent">
+                      <span class="textContent">
+                        <h3>Column Titles &amp; Rows</h3>
+                        <p>
+                          There are configuration options tied to this template for these
+                          categories, but since you are currently working with a non-grid
+                          based view, those are not relevant right now.
+                      </span>
+                    </div>
+                  </dd>
+                </dl>
+              </div>
               <dl class="summaryList">
                 <dt></dt>
                 <dd>

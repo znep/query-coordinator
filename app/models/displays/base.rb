@@ -32,7 +32,7 @@ class Displays::Base
     # Whether or not the display type has an advanced option that loads a
     # separate UI for configuration
     def can_advanced_publish?
-        false
+        true
     end
 
     # Does the display scroll inline?  Return false to disable default management of the display container's size

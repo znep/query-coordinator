@@ -6,10 +6,11 @@ widgetNS.ready = false;
 
 blist.widget.resizeViewport = function()
 {
+    var $contentWrapper = $('.widgetWrapper');
     var $contentContainer = $('.widgetContent');
     var targetHeight = $(window).height() -
-        widgetNS.theme.frame.border.width.value * 2 -
-        widgetNS.theme.frame.padding.value;
+        ($contentWrapper.outerHeight(true) - $contentWrapper.height()) -
+        widgetNS.theme['frame']['padding']['value'];
     $contentContainer.siblings(':visible').each(function()
     {
         targetHeight -= $(this).outerHeight(true);
@@ -131,7 +132,7 @@ $(function()
             subtext: 'Embed this player on your site', href: '#embed' });
     if (widgetNS.theme['menu']['options']['print'] === true)
         menuContents.push({ text: 'Print', className: 'print',
-        subtext: 'Print out this dataset', href: '#print', onlyIf: !widgetNS.isBlobby });
+            subtext: 'Print out this dataset', href: '#print', onlyIf: !widgetNS.isBlobby });
 
     menuContents.push({ text: 'About the Socrata Social Data Player', className: 'about',
         href: 'http://www.socrata.com/try-it-free', rel: 'external' });
@@ -381,7 +382,8 @@ $(function()
                                 '.picture a@href': function(filter) { return $.generateProfileUrl(filter.item.owner); },
                                 '.picture img@src': function(filter) { return filter.item.owner.profileImageUrlMedium ||
                                                                               '/images/small-profile.png'; },
-                                '.picture img@alt': function(filter) { return $.htmlEscape(filter.item.owner.displayName); }
+                                '.picture img@alt': function(filter) { return $.htmlEscape(filter.item.owner.displayName); },
+                                '.picture img@title': function(filter) { return $.htmlEscape(filter.item.owner.displayName); }
                             }
                         }
                     }));

@@ -2511,7 +2511,7 @@
                             "' uid='" +
                             child.uid +
                             "'>" +
-                            (canEdit() ?
+                            (canEdit() || child.type == 'tag' ?
                                 "<div class='blist-th-icon'></div>" : "") +
                             "<span class='blist-th-name'>" +
                             htmlEscape(child.name) +
@@ -3262,7 +3262,7 @@
                 html.push('<div class="info-container',
                     canEdit() ? ' icon-display' : '',
                     '">');
-                if (canEdit())
+                if (canEdit() || col.type == 'tag')
                 { html.push('<span class="blist-th-icon"></span>'); }
                 html.push(
                     '<div class="name-wrapper"><span class="blist-th-name">',

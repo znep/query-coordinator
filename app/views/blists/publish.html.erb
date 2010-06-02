@@ -184,12 +184,12 @@
                 <dd>
                   <div class="itemContent">
                     <span class="textContent">
-                      <%= radio_button_tag("customization[publish][show_title]", "true",
-                          @customization[:publish][:show_title]) %>
-                      <%= label_tag("customization_publish_show_title_true", "Show") %>
-                      <%= radio_button_tag("customization[publish][show_title]", "false",
-                          !(@customization[:publish][:show_title])) %>
-                      <%= label_tag("customization_publish_show_title_false", "Don't Show") %>
+                      <%= radio_button_tag("customization[frame][show_title]", "true",
+                          @customization[:frame][:show_title]) %>
+                      <%= label_tag("customization_frame_show_title_true", "Show") %>
+                      <%= radio_button_tag("customization[frame][show_title]", "false",
+                          !(@customization[:frame][:show_title])) %>
+                      <%= label_tag("customization_frame_show_title_false", "Don't Show") %>
                     </span>
                   </div>
                 </dd>

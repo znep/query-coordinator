@@ -144,7 +144,7 @@ $(function()
             { text: 'Access this Dataset via the API',
                 // HACK: replace back with api + about when we drop IE6
                 className: menuOptions['about_sdp'] ? 'api apiAfterAbout' : 'api',
-                href: '/api', rel: 'external',
+                href: '/api/docs', rel: 'external',
                 onlyIf: menuOptions['api'] }
         ]
     });
@@ -159,14 +159,14 @@ $(function()
 
     $('.mainMenu .menuDropdown a').click(function(event)
     {
-        var target = $(this).closest('li').attr('class').split(' ')[1];
-        if (target == 'about')
+        if ($(this).attr('rel') == 'external')
         {
             // bail; this is a real link
             return;
         }
 
         event.preventDefault();
+        var target = $(this).closest('li').attr('class').split(' ')[1];
         if (!$('.widgetContent_' + target).is(':visible'))
         {
             $('.widgetContent > :visible:first').fadeOut(200,

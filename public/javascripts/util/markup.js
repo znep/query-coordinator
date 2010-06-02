@@ -141,7 +141,7 @@
 
         return $.tag($.extend(opts.customAttrs,
             {tagName: 'a', href: opts.href || '#',
-            'class': ['button', opts.className, opts.iconClass],
+            'class': _.flatten(['button', opts.className, opts.iconClass]),
             contents: [
                 {value: {tagName: 'span', 'class': 'left'}, onlyIf: $.browser.msie},
                 {value: {tagName: 'span', 'class': 'icon'},

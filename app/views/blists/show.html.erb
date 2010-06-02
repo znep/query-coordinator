@@ -447,7 +447,6 @@
     blist.currentUserId = "<%= current_user.id %>";
     <%- end -%>
     blist.parentViewId = "<%= @view.parent_dataset.id %>";
-    blist.blistGrid.secureUrl = "https://<%= request.host %>:<%= SslRequirement.port_for_protocol('https') %>";
     blist.blistGrid.blistId = "<%= @view.tableId %>";
     blist.blistGrid.viewId = "<%= @view.id %>";
     blist.blistGrid.viewName = "<%= @view.name %>";

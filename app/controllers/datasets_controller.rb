@@ -27,6 +27,10 @@ class DatasetsController < ApplicationController
       return require_user(true)
     end
 
+    if !current_user
+      @user_session = UserSession.new
+    end
+
     # Add this back once we flip this over to the main page
     # See if it matches the authoritative URL; if not, redirect
 #    if request.path != @view.href

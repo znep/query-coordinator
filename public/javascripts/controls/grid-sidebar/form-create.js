@@ -22,11 +22,12 @@
                 title: 'Form Information',
                 fields: [
                     {type: 'text', text: 'Name', name: 'formName', required: true,
+                        prompt: 'Enter a name',
                         wizard: {prompt: 'Enter a name for your form',
                             actions: [$.gridSidebar.wizard.buttons.done]}
                     },
                     {type: 'text', text: 'Success URL', name: 'successRedirect',
-                        extraClass: 'url',
+                        extraClass: 'url', prompt: 'Enter a webpage URL',
                         wizard: {prompt: 'Enter a URL for a page that should be displayed after the data is submitted',
                             actions: [
                                 $.gridSidebar.wizard.buttons.skip,
@@ -51,20 +52,23 @@
     {
         if (!sidebarObj.baseFormHandler($pane, value)) { return; }
 
-        var data = {originalViewId: blist.display.viewId, displayType: 'form'};
+        var view = blist.dataset.baseViewCopy(blist.display.view);
+        view.displayType = 'form';
 
-        data.name = $pane.find('#formName').val();
-        data.displayFormat =
-            {successRedirect: $pane.find('#successRedirect').val()};
+        view.name = $pane.find('#formName:not(.prompt)').val();
+        view.displayFormat =
+            {successRedirect: $pane.find('#successRedirect:not(.prompt)').val()};
         if ($pane.find('#publicAdd').value())
-        { data.flags = ['dataPublicAdd']; }
+        { view.flags = ['dataPublicAdd']; }
 
         $.ajax({url: '/views.json', type: 'POST', dataType: 'json',
-            contentType: 'application/json', data: JSON.stringify(data),
+            contentType: 'application/json', data: JSON.stringify(view),
             error: function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); },
             success: function(resp)
-            { blist.util.navigation.redirectToView(resp.id); }
-            });
+            {
+                sidebarObj.resetFinish();
+                blist.util.navigation.redirectToView(resp.id);
+            }});
     };
 
     $.gridSidebar.registerConfig(config);

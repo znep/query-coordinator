@@ -250,6 +250,7 @@ javascripts:
   - util/events
   - util/urls
   - util/navigation
+  - util/inline-login
   - widgets/menu
   - widgets/wizard-prompt
   - controls/grid-sidebar/base-sidebar

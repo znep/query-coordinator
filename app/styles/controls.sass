@@ -230,3 +230,40 @@ div.starsControl
     .prompt
       font-size: 1.2em
 //*** END: Tooltip styles ***//
+
+// Standard loading spinner
+.loadingSpinner
+  background: transparent url(/stylesheets/images/common/BrandedSpinner.gif) no-repeat center center
+  height: 48px
+  left: 50%
+  margin:
+    left: -24px
+    top: -24px
+  position: absolute
+  top: 50%
+  width: 48px
+  z-index: 100
+
+  .hidden
+    display: none
+
+// Optionally wrap it in a container against complex backgrounds
+.loadingSpinnerContainer
+  background: transparent url(/stylesheets/images/common/spinner_background.png) no-repeat
+  height: 48px
+  left: 50%
+  margin-left: -24px
+  margin-top: -24px
+  padding: 26px
+  position: absolute
+  top: 50%
+  width: 48px
+  z-index: 100
+
+  .loadingSpinner
+    margin: 0
+    position: static
+
+  &.hidden
+    display: none
+

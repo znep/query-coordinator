@@ -52,6 +52,11 @@
 <% end %>
 
 <% content_for :js_footer do %>
+  <%- if !current_user -%>
+  <%= render :partial => 'blists/login' %>
+  <%= render :partial => 'blists/signup' %>
+  <%- end -%>
+
   <script type="text/javascript">
     <%= raw @view.display.render_inline_setup_js('data-grid', self) %>
 

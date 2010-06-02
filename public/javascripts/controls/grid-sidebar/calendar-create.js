@@ -28,6 +28,7 @@
                 title: 'Calendar Name',
                 fields: [
                     {text: 'Name', name: 'calName', type: 'text', required: true,
+                        prompt: 'Enter a name',
                         wizard: {prompt: 'Enter a name for your form',
                             actions: [$.gridSidebar.wizard.buttons.done]}
                     }
@@ -75,10 +76,11 @@
         if (!sidebarObj.baseFormHandler($pane, value)) { return; }
 
         var model = sidebarObj.$grid().blistModel();
-        var view = {originalViewId: blist.display.viewId, displayType: 'calendar',
-            displayFormat: {}};
+        var view = blist.dataset.baseViewCopy(blist.display.view);
+        view.displayType = 'calendar';
+        view.displayFormat = {};
 
-        view.name = $pane.find('#calName').val();
+        view.name = $pane.find('#calName:not(.prompt)').val();
 
         view.displayFormat.startDateTableId =
             model.columnIdToTableId($pane.find('#startCol').val());
@@ -99,8 +101,10 @@
             dataType: 'json', contentType: 'application/json',
             error: function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); },
             success: function(resp)
-            { blist.util.navigation.redirectToView(resp.id); }
-            });
+            {
+                sidebarObj.resetFinish();
+                blist.util.navigation.redirectToView(resp.id);
+            }});
     };
 
     $.gridSidebar.registerConfig(config);

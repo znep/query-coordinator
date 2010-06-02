@@ -57,3 +57,8 @@ blist.dataset.getTypeName = function(view)
 
     return retType;
 };
+
+blist.dataset.baseViewCopy = function(view)
+{
+    return {originalViewId: view.id, query: $.extend(true, {}, view.query)};
+};

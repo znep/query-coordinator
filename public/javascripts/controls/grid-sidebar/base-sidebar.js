@@ -82,6 +82,11 @@
               + value: value that is passed to the finishCallback on click
               + isDefault: boolean, marked as default button if true
               + isCancel: boolean, marked as cancel button if true
+              + requiresLogin: boolean, whether or not this action requires
+                the user to be logged in
+              + loginMessage: custom message to display when prompting the user
+                to log in.  Will use the defaultLoginMessage from gridSidebar
+                if not provided
             }
           ]
         }
@@ -149,7 +154,8 @@
 
         // Pre-defined buttons for easy access
         buttons: {
-            create: {text: 'Create', value: true, isDefault: true},
+            create: {text: 'Create', value: true, isDefault: true,
+                requiresLogin: true},
             cancel: {text: 'Cancel', value: false, isCancel: true}
         },
 
@@ -189,6 +195,7 @@
         defaults:
         {
             dataGrid: null,
+            defaultLoginMessage: 'You must be signed in',
             modalHiddenSelector: null
         },
 
@@ -487,20 +494,31 @@
             {
                 if (!value)
                 {
+                    this.resetFinish();
                     this.hide();
                     return false;
                 }
 
-                // Clear out required fields that are prompts so the validate
-                $pane.find(':input.prompt.required').val('');
-                if (!$pane.find('form').valid()) { return false; }
+                // Clear out fields that are prompts so they validate
+                $pane.find(':input.prompt').val('');
+                if (!$pane.find('form').valid())
+                {
+                    this.resetFinish();
+                    return false;
+                }
 
                 $pane.find('.mainError').text('');
                 return true;
             },
 
+            resetFinish: function()
+            {
+                this.$dom().removeClass('processing');
+            },
+
             genericErrorHandler: function($pane, xhr)
             {
+                this.resetFinish();
                 $pane.find('.mainError')
                     .text(JSON.parse(xhr.responseText).message);
             }
@@ -824,15 +842,21 @@
                 'button<-finishButtons': {
                     '.+': function(a)
                     {
-                        var opts = {text: a.item.text,
-                            customAttrs: {'data-value': a.item.value}};
+                        var opts = {text: a.item.text, className: [],
+                            customAttrs: {'data-value': a.item.value,
+                                'data-loginMsg': a.item.loginMessage}};
+
                         if (a.item.isDefault)
                         {
-                            opts.className = 'arrowButton';
+                            opts.className.push('arrowButton');
                             opts.iconClass = 'submit';
                         }
                         else if (a.item.isCancel)
                         { opts.iconClass = 'cancel'; }
+
+                        if (a.item.requiresLogin)
+                        { opts.className.push('requiresLogin'); }
+
                         return $.button(opts, true);
                     }
                 }
@@ -847,7 +871,9 @@
         $pane.find('.textPrompt')
             .example(function () { return $(this).attr('title'); });
 
-        $pane.find('form').validate({ignore: ':hidden', errorElement: 'span'});
+        $pane.find('form').validate({ignore: ':hidden', errorElement: 'span',
+            errorPlacement: function($error, $element)
+            { $error.appendTo($element.closest('.line')); }});
 
         $pane.find('.formSection.selectable .sectionSelect').click(function(e)
         {
@@ -960,11 +986,33 @@
             }
         });
 
-        $pane.find('.actionButtons a').click(function(e)
+        $pane.find('.finishButtons a').click(function(e)
         {
             e.preventDefault();
-            config.finishCallback(sidebarObj, data,
-                $pane, $(this).attr('data-value'));
+            var $button = $(this);
+            if ($button.is('.disabled')) { return; }
+
+            sidebarObj.$dom().addClass('processing');
+
+            var doCallback = function()
+            {
+                config.finishCallback(sidebarObj, data,
+                    $pane, $button.attr('data-value'));
+            };
+
+            if (!$.isBlank(blist.util.inlineLogin) && $button.is('.requiresLogin'))
+            {
+                var msg = $button.attr('data-loginMsg') ||
+                    sidebarObj.settings.defaultLoginMessage;
+                blist.util.inlineLogin.verifyUser(
+                    function(isSuccess)
+                    {
+                        if (isSuccess) { doCallback(); }
+                        else { $pane.find('.mainError').text(msg); }
+                    }, msg);
+            }
+            else
+            { doCallback(); }
         });
 
         addWizards(sidebarObj, $pane, config);
@@ -1116,6 +1164,13 @@
 
         sidebarObj._$currentWizard = null;
         sidebarObj._$mainWizardItem = null;
+
+        if ($item.is('.uniform, :input'))
+        {
+            $item.closest('form').validate().element($item.is(':input') ?
+                $item : $item.find(':input'));
+        }
+
         switch(action)
         {
             case 'nextSection':

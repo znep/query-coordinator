@@ -4,24 +4,29 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
 {
     if (!blist.currentUserId)
     {
-        $('#login').jqmShow().find('.flash').text(msg).end()
+        var $login = $('#login');
+        var $signup = $('#signup');
+        if ($login.length < 1 || $signup.length < 1)
+        { throw 'Trying to use inline login, but #login or #signup is missing!'; }
+
+        $login.jqmShow().find('.flash').text(msg).end()
             .find('a.close').unbind('click.inlineLogin')
                 .bind('click.inlineLogin', function (event)
                 {
                     event.preventDefault();
-                    $('#login').jqmHide();
+                    $login.jqmHide();
                     callback(false, true);
                 }).end()
             .find('a.signupLink').unbind('click.inlineLogin')
                 .bind('click.inlineLogin', function (event)
                 {
                     event.preventDefault();
-                    $('#login').jqmHide();
+                    $login.jqmHide();
                     // Defer this until after the current event loop.
                     setTimeout(function()
                     {
                         // Show and reset form
-                        $('#signup').jqmShow()
+                        $signup.jqmShow()
                             .find(':text:first').focus().end()
                             .find(':input')
                                 .val('').end()
@@ -34,7 +39,7 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                 {
                     if (event.keyCode == 27)
                     {
-                        $('#login').jqmHide();
+                        $login.jqmHide();
                         callback(false, true);
                     }
                 })
@@ -44,20 +49,20 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                     event.preventDefault();
                     var $form = $(this);
                     $.ajax({
-                        url: blist.blistGrid.secureUrl + '/login.json',
+                        url: blist.secureUrl + '/login.json',
                         data: $form.find('input[name=authenticity_token], input#user_session_login, input#user_session_password, input#user_session_remember_me:checked'),
                         dataType: "jsonp",
                         success: function(responseData)
                         {
                             if (responseData.error)
                             {
-                                $('#login .flash').text(responseData.error);
-                                $('#login :text:first').focus().select();
+                                $login.find('.flash').text(responseData.error);
+                                $login.find(':text:first').focus().select();
                             }
                             else
                             {
                                 blist.currentUserId = responseData.user_id;
-                                $('#login').jqmHide();
+                                $login.jqmHide();
                                 $('#header .userNav').addClass('loggedInNav');
                                 callback(true, true);
                             }
@@ -66,12 +71,12 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                 })
                 .find(':text:first').focus();
 
-        $('#signup')
+        $signup
             .find('a.close').unbind('click.inlineLogin')
                 .bind('click.inlineLogin', function (event)
                 {
                     event.preventDefault();
-                    $('#signup').jqmHide();
+                    $signup.jqmHide();
                     callback(false, true);
                 }).end()
             .find('form').unbind('keyup.inlineLogin')
@@ -79,7 +84,7 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                 {
                     if (event.keyCode == 27)
                     {
-                        $('#signup').jqmHide();
+                        $signup.jqmHide();
                         callback(false, true);
                     }
                 })
@@ -99,7 +104,7 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                             else { data[$f.attr('name')] = $f.val(); }
                         });
                         $.ajax({
-                            url: blist.blistGrid.secureUrl + '/signup.json',
+                            url: blist.secureUrl + '/signup.json',
                             data: data,
                             dataType: "jsonp",
                             success: signupSuccess
@@ -113,10 +118,10 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
             {
                 if (responseData.promptLogin)
                 {
-                    $('#signup').jqmHide();
+                    $signup.jqmHide();
                     _.defer(function()
                     {
-                        $('#login').jqmShow()
+                        $login.jqmShow()
                             .find('.flash').text(responseData.error)
                             .end()
                             .find(':text:first').focus();
@@ -124,8 +129,8 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                 }
                 else
                 {
-                    $('#signup .flash').text(responseData.error);
-                    $('#signup :text:first').focus().select();
+                    $signup.find('.flash').text(responseData.error);
+                    $signup.find(':text:first').focus().select();
                 }
             }
             else
@@ -135,8 +140,8 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                     blist.currentUserId = responseData.user_id;
                 }
 
-                $('#signup').jqmHide();
-                $('#login').jqmHide();
+                $signup.jqmHide();
+                $login.jqmHide();
                 $('#header .userNav').addClass('loggedInNav');
                 callback(true, true);
             }

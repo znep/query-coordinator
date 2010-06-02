@@ -202,3 +202,15 @@
     margin-left: -1em;
     margin-top: 0.75em;
 }
+
+#gridSidebar .finishButtons .spinner
+{
+    background: transparent url(/images/throbber.gif) no-repeat center center;
+    display: none;
+    float: left;
+    height: 16px
+    margin-right: 0.5em;
+    width: 16px;
+}
+
+#gridSidebar .finishButtons.processing .spinner { display: block; }

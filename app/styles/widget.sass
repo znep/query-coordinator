@@ -108,7 +108,7 @@ html, body
               .subtext
                 font-weight: normal
 
-            &.about
+            &.about, &.api
               background-color: #f7f7f7
               border-top: 1px solid #dedede
               @include border-radius(0, 0.4em)
@@ -128,6 +128,17 @@ html, body
                 .icon
                   display: none
 
+                &:hover
+                  text-decoration: underline
+
+            &.apiAfterAbout
+              border-top: none
+              margin-top: -1em
+              padding-top: 0.2em
+
+              a
+                padding-top: 0
+
 .subHeaderBar
   background-color: $color_toolbar_color
   margin: 0 $frame_padding
@@ -145,8 +156,11 @@ html, body
     display: block
     float: left
     padding: 0.2em
+      right: 0.3em
     &.right
       float: right
+      padding: 0.2em
+        left: 0.4em
 
     a
       color: #eee
@@ -394,13 +408,18 @@ html, body
     .embedForm
       padding: 1em
 
-      #embed_code
-        height: 5em
-        margin: 1em
-          top: 0
-        overflow: hidden
-        padding: 0.5em
-        width: 45em
+      .embedCodeWrapper
+        margin: 0
+          right: 4em
+
+        #embed_code
+          height: 5em
+          font-size: 1em
+          margin: 1em
+            top: 0
+          overflow: hidden
+          padding: 0.5em
+          width: 100%
 
       .left, .right
         float: left

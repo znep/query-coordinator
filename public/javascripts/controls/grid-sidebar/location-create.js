@@ -17,7 +17,7 @@
                 ]
             },
             {
-                title: 'Import Latitude/Longitude',
+                title: 'Use Existing Latitude & Longitude',
                 type: 'selectable',
                 name: 'latLongSection',
                 fields: [
@@ -33,11 +33,11 @@
                         wizard: {prompt: 'Choose the column that contains longitude data'}
                     }
                 ],
-                wizard: {prompt: 'Do you have latitude and longitude data to import?',
+                wizard: {prompt: 'Does this dataset contain a latitude and longitude column?',
                     actions: $.gridSidebar.wizard.buttonGroups.sectionExpand}
             },
             {
-                title: 'Import US Addresses',
+                title: 'Use Existing US Address Columns',
                 type: 'selectable',
                 name: 'addressSection',
                 fields: [
@@ -108,7 +108,7 @@
                         }
                     }
                 ],
-                wizard: {prompt: 'Do you have address data to import?',
+                wizard: {prompt: 'Does this dataset contain address column(s)?',
                     actions: $.gridSidebar.wizard.buttonGroups.sectionExpand}
             }
         ],
@@ -116,7 +116,7 @@
             buttons: [$.gridSidebar.buttons.create, $.gridSidebar.buttons.cancel],
             wizard: {prompt: "Now you're ready to create a new column"}
         },
-        wizard: {prompt: 'Do you have existing location data?',
+        wizard: {prompt: 'Does this dataset already contain one or more columns that represent a location?',
             actions: [
                 {text: 'Yes', action: 'nextSection'},
                 {text: 'No', action: 'finish'}

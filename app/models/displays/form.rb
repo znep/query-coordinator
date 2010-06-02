@@ -31,4 +31,8 @@ class Displays::Form < Displays::Base
   def public_perm_type
     'add'
   end
+
+  def can_advanced_publish?
+      false
+  end
 end

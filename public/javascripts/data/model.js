@@ -2936,6 +2936,8 @@ blist.namespace.fetch('blist.data');
                 config.meta.columnFilters = meta.columnFilters;
                 config.meta.view.id = meta.view.id;
                 config.meta.view.owner = meta.view.owner;
+                // Copy flags over so we know if this is the default view
+                config.meta.view.flags = meta.view.flags;
                 this.meta(config.meta);
                 if (config.meta.totalRows !== undefined)
                 { activeCount = config.meta.totalRows; }

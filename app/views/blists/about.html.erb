@@ -138,6 +138,7 @@
               <%- if @view.metadata && !@view.metadata.attachments.blank? -%>
               <dd class="editItem">
                 <div class="itemContent">
+                  <span class="ie7canary">&nbsp;</span>
                   <ul class="textContent">
                     <%- @view.metadata.attachments.each do |attachment| -%>
                       <%- attachmentObj = Attachment.set_up_model(attachment) -%>

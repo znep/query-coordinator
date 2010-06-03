@@ -35,6 +35,7 @@ module Displays::Config
                         ],
                         'default' => 'bottom'}
 
+    TEXTUAL_TYPES = ['text', 'drop_down_list']
     NUMERIC_TYPES = ['number', 'percent', 'money']
 
     VISUALIZATION_CONFIG = {
@@ -47,7 +48,7 @@ module Displays::Config
         'piechart' => {'display' => 'chart', 'hidden' => true},
 
         'bar' => {'label' => 'Bar Chart',
-            'fixedColumns' => [{'dataType' => 'text', 'label' => 'Groups'}],
+            'fixedColumns' => [{'dataType' => TEXTUAL_TYPES, 'label' => 'Groups'}],
             'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Values'}],
             'dataColumnOptions' => [DEF_COLOR_OPTION],
             'mainOptions' => [
@@ -72,7 +73,7 @@ module Displays::Config
 
 
         'area' => {'label' => 'Area Chart',
-            'fixedColumns' => [{'dataType' => 'text', 'label' => 'Categories'}],
+            'fixedColumns' => [{'dataType' => TEXTUAL_TYPES, 'label' => 'Categories'}],
             'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Value'}],
             'dataColumnOptions' => [DEF_COLOR_OPTION],
             'mainOptions' => [
@@ -90,7 +91,7 @@ module Displays::Config
         },
 
         'column' => {'label' => 'Column Chart',
-            'fixedColumns' => [{'dataType' => 'text', 'label' => 'Groups'}],
+            'fixedColumns' => [{'dataType' => TEXTUAL_TYPES, 'label' => 'Groups'}],
             'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Values'}],
             'dataColumnOptions' => [DEF_COLOR_OPTION],
             'mainOptions' => [
@@ -101,7 +102,7 @@ module Displays::Config
         },
 
         'line' => {'label' => 'Line Chart',
-            'fixedColumns' => [{'dataType' => 'text', 'label' => 'Categories',
+            'fixedColumns' => [{'dataType' => TEXTUAL_TYPES, 'label' => 'Categories',
                   'optional' => true}],
             'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Value'}],
             'dataColumnOptions' => [DEF_COLOR_OPTION],
@@ -122,7 +123,7 @@ module Displays::Config
         },
 
         'pie' => {'label' => 'Pie Chart',
-            'fixedColumns' => [{'dataType' => 'text', 'label' => 'Label'},
+            'fixedColumns' => [{'dataType' => TEXTUAL_TYPES, 'label' => 'Label'},
                 {'dataType' => NUMERIC_TYPES, 'label' => 'Values'}],
             'mainOptions' => [{'label' => 'Colors', 'name' => 'colors',
                   'type' => 'colorArray', 'default' => COLOR_DEFAULTS}],

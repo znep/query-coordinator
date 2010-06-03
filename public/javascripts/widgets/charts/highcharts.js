@@ -108,7 +108,7 @@
                 {
                     var xCat = row[chartObj._xColumn.dataIndex];
                     if (_.isNull(xCat) || _.isUndefined(xCat)) { xCat = ''; }
-                    xCat = $.htmlEscape(xCat);
+                    xCat = renderXValue(xCat, chartObj._xColumn);
                     chartObj._xCategories.push(xCat);
                 }
 
@@ -465,6 +465,17 @@
                 chartObj._displayConfig.colors.length];
         }
         return point;
+    };
+
+    // Handle rendering values for different column types here
+    var renderXValue = function(val, col)
+    {
+        if (!$.isBlank(col.dropDown))
+        {
+            val = (_.detect(col.dropDown.values, function(v)
+                { return v.id == val; }) || {description: val}).description;
+        }
+        return $.htmlEscape(val);
     };
 
     var isDateTime = function(chartObj)

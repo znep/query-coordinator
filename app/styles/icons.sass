@@ -4,35 +4,35 @@
     overflow: hidden
 
 // icons/button_icons.png
-@mixin sprite-button-icons
-  .icon
+@mixin sprite-button-icons($subselector: '.icon')
+  #{$subselector}
     @include text-hiding
     @include ie6-fix
     background-image: url(/stylesheets/images/icons/button_icons.png)
     height: 10px
     width: 10px
 
-  .icon,
-  &.upArrow .icon
+  #{$subselector},
+  &.upArrow #{$subselector}
     background-position: 0 0
-  &.go .icon,
-  &.submit .icon
+  &.go #{$subselector},
+  &.submit #{$subselector}
     background-position: 0 -10px
-  &.accept .icon
+  &.accept #{$subselector}
     background-position: 0 -20px
-  &.add .icon
+  &.add #{$subselector}
     background-position: 0 -30px
-  &.downArrow .icon
+  &.downArrow #{$subselector}
     background-position: 0 -40px
-  &.close .icon,
-  &.jqmClose .icon,
-  &.cancel .icon,
-  &.delete .icon
+  &.close #{$subselector},
+  &.jqmClose #{$subselector},
+  &.cancel #{$subselector},
+  &.delete #{$subselector}
     background-position: 0 -50px
 
 // icons/menu_icons.png
-@mixin sprite-menu-icons
-  .icon
+@mixin sprite-menu-icons($subselector: '.icon')
+  #{$subselector}
     @include text-hiding
     @include ie6-fix
     background-image: url(/stylesheets/images/icons/menu_icons.png)
@@ -41,163 +41,203 @@
     .ie6 &
       background-image: url(/stylesheets/images/icons/menu_icons.gif)
 
-  .icon,
-  &.downArrow .icon,
-  &.headerSortUp .icon
+  #{$subselector},
+  &.downArrow #{$subselector},
+  &.headerSortUp #{$subselector}
     background-position: 0 0
-  &.downArrow:hover .icon,
-  &.downArrowHighlight .icon
+  &.downArrow:hover #{$subselector},
+  &.downArrowHighlight #{$subselector}
     background-position: 0 -13px
-  &.upArrow .icon,
-  &.headerSortDown .icon
+  &.upArrow #{$subselector},
+  &.headerSortDown #{$subselector}
     background-position: 0 -26px
-  &.upArrow:hover .icon,
-  &.upArrowHighlight .icon
+  &.upArrow:hover #{$subselector},
+  &.upArrowHighlight #{$subselector}
     background-position: 0 -39px
-  &.rightArrow .icon
+  &.rightArrow #{$subselector}
     background-position: 0 -52px
-  &.rightArrow:hover .icon,
-  &.rightArrowHighlight .icon
+  &.rightArrow:hover #{$subselector},
+  &.rightArrowHighlight #{$subselector}
     background-position: 0 -65px
-  &.leftArrow .icon
+  &.leftArrow #{$subselector}
     background-position: 0 -78px
-  &.leftArrow:hover .icon,
-  &.leftArrowHighlight .icon
+  &.leftArrow:hover #{$subselector},
+  &.leftArrowHighlight #{$subselector}
     background-position: 0 -91px
-  &.add .icon
+  &.add #{$subselector}
     background-position: 0 -104px
-  &.search .icon
+  &.search #{$subselector}
     background-position: 0 -117px
-  &.about .icon
+  &.about #{$subselector}
     background-position: 0 -130px
-  &.fullscreen .icon
+  &.fullscreen #{$subselector}
     background-position: 0 -143px
-  &.share .icon
+  &.share #{$subselector}
     background-position: 0 -156px
-  &.checked .icon
+  &.checked #{$subselector}
     background-position: 0 -169px
-  &.iconView .icon
+  &.iconView #{$subselector}
     background-position: 0 -182px
-  &.listView .icon
+  &.listView #{$subselector}
     background-position: 0 -195px
-  &.fatrowView .icon
+  &.fatrowView #{$subselector}
     background-position: 0 -208px
-  &.gridView .icon
+  &.gridView #{$subselector}
     background-position: 0 -221px
-  &.typeFilter .icon
+  &.typeFilter #{$subselector}
     background-position: 0 -234px
-  &.typeVisualization .icon
+  &.typeVisualization #{$subselector}
     background-position: 0 -247px
-  &.typeMap .icon
+  &.typeMap #{$subselector}
     background-position: 0 -260px
-  &.typeBlist .icon
+  &.typeBlist #{$subselector}
     background-position: 0 -273px
-  &.feed .icon
+  &.feed #{$subselector}
     background-position: 0 -286px
-  &.embed .icon
+  &.embed #{$subselector}
     background-position: 0 -299px
-  &.views .icon
+  &.views #{$subselector}
     background-position: 0 -312px
-  &.downloads .icon
+  &.downloads #{$subselector}
     background-position: 0 -325px
-  &.delicious .icon
+  &.delicious #{$subselector}
     background-position: 0 -338px
-  &.digg .icon
+  &.digg #{$subselector}
     background-position: 0 -351px
-  &.facebook .icon
+  &.facebook #{$subselector}
     background-position: 0 -364px
-  &.twitter .icon
+  &.twitter #{$subselector}
     background-position: 0 -377px
-  &.email .icon
+  &.email #{$subselector}
     background-position: 0 -390px
-  &.rateUp .icon
+  &.rateUp #{$subselector}
     background-position: 0 -403px
-  &.ratedUp .icon
+  &.ratedUp #{$subselector}
     background-position: 0 -416px
-  &.rateDown .icon
+  &.rateDown #{$subselector}
     background-position: 0 -429px
-  &.ratedDown .icon
+  &.ratedDown #{$subselector}
     background-position: 0 -442px
-  &.typeForm .icon
+  &.typeForm #{$subselector}
     background-position: 0 -455px
-  &.typeCalendar .icon
+  &.typeCalendar #{$subselector}
     background-position: 0 -468px
-  &.typeBlobby .icon
+  &.typeBlobby #{$subselector}
     background-position: 0 -481px
-  &.typeGrouped .icon
+  &.typeGrouped #{$subselector}
     background-position: 0 -494px
 
 // icons/type_icons_30.png
-@mixin sprite-type-icons-30
-  .icon
+@mixin sprite-type-icons-30($subselector: '.icon')
+  #{$subselector}
     @include text-hiding
     @include ie6-fix
     background-image: url(/stylesheets/images/icons/type_icons_30.png)
     height: 30px
     width: 30px
 
-  &.typeFilter .icon
+  &.typeFilter #{$subselector}
     background-position: 0 0
-  &.typeVisualization .icon
+  &.typeVisualization #{$subselector}
     background-position: 0 -30px
-  &.typeMap .icon
+  &.typeMap #{$subselector}
     background-position: 0 -60px
-  &.typeBlist .icon
+  &.typeBlist #{$subselector}
     background-position: 0 -90px
-  &.comments .icon
+  &.comments #{$subselector}
     background-position: 0 -120px
-  &.embed .icon
+  &.embed #{$subselector}
     background-position: 0 -150px
-  &.views .icon
+  &.views #{$subselector}
     background-position: 0 -180px
-  &.downloads .icon
+  &.downloads #{$subselector}
     background-position: 0 -210px
-  &.print .icon
+  &.print #{$subselector}
     background-position: 0 -240px
-  &.typeForm .icon
+  &.typeForm #{$subselector}
     background-position: 0 -270px
-  &.typeCalendar .icon
+  &.typeCalendar #{$subselector}
     background-position: 0 -300px
-  &.typeBlobby .icon
+  &.typeBlobby #{$subselector}
     background-position: 0 -330px
-  &.typeGrouped .icon
+  &.typeGrouped #{$subselector}
     background-position: 0 -360px
 
 // icons/type_icons_30.png
-@mixin sprite-type-icons-20
-  .icon
+@mixin sprite-type-icons-20($subselector: '.icon')
+  #{$subselector}
     @include text-hiding
     @include ie6-fix
     background-image: url(/stylesheets/images/icons/type_icons_20.png)
     height: 20px
     width: 20px
 
-  &.typeFilter .icon
+  &.typeFilter #{$subselector}
     background-position: 0 0
-  &.typeVisualization .icon
+  &.typeVisualization #{$subselector}
     background-position: 0 -20px
-  &.typeMap .icon
+  &.typeMap #{$subselector}
     background-position: 0 -40px
-  &.typeBlist .icon
+  &.typeBlist #{$subselector}
     background-position: 0 -60px
-  &.comments .icon
+  &.comments #{$subselector}
     background-position: 0 -80px
-  &.embed .icon
+  &.embed #{$subselector}
     background-position: 0 -100px
-  &.views .icon
+  &.views #{$subselector}
     background-position: 0 -120px
-  &.downloads .icon
+  &.downloads #{$subselector}
     background-position: 0 -140px
-  &.print .icon
+  &.print #{$subselector}
     background-position: 0 -160px
-  &.typeForm .icon
+  &.typeForm #{$subselector}
     background-position: 0 -180px
-  &.typeCalendar .icon
+  &.typeCalendar #{$subselector}
     background-position: 0 -200px
-  &.typeBlobby .icon
+  &.typeBlobby #{$subselector}
     background-position: 0 -220px
-  &.typeGrouped .icon
+  &.typeGrouped #{$subselector}
     background-position: 0 -240px
+
+// interface/dataset_tabs.png
+@mixin sprite-dataset-tabs($subselector: '.icon')
+  #{$subselector}
+    @include text-hiding
+    background-image: url(/stylesheets/images/interface/dataset_tabs.png)
+    height: 29px
+    width: 40px
+
+  &.tabFilter #{$subselector}
+    background-position: 0 0
+  &.tabVisualize #{$subselector}
+    background-position: 0 -29px
+  &.tabExport #{$subselector}
+    background-position: 0 -58px
+  &.tabFeed #{$subselector}
+    background-position: 0 -87px
+  &.tabEmbed #{$subselector}
+    background-position: 0 -116px
+  &.tabAbout #{$subselector}
+    background-position: 0 -145px
+
+// interface/dataset_toolbar_icons.png
+@mixin dataset-toolbar-icon-base
+  @include text-hiding
+  @include ie6-fix
+  background-image: url(/stylesheets/images/interface/dataset_toolbar_icons.png)
+  height: 13px
+  width: 16px
+@mixin dataset-toolbar-icon-search
+  @include dataset-toolbar-icon-base
+@mixin dataset-toolbar-icon-share
+  @include dataset-toolbar-icon-base
+  background-position: 0 -13px
+@mixin dataset-toolbar-icon-maximize
+  @include dataset-toolbar-icon-base
+  background-position: 0 -26px
+@mixin dataset-toolbar-icon-minimize
+  @include dataset-toolbar-icon-base
+  background-position: 0 -39px
 
 // common/close.png
 @mixin close-button

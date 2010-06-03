@@ -196,7 +196,8 @@
         {
             dataGrid: null,
             defaultLoginMessage: 'You must be signed in',
-            modalHiddenSelector: null
+            modalHiddenSelector: null,
+            onSidebarClosed: function() {}
         },
 
         prototype:
@@ -426,6 +427,8 @@
                 // In non-IE we need to trigger a resize so the grid restores
                 // properly.  In IE7, this will crash; IE8 works either way
                 if (!$.browser.msie) { $(window).resize(); }
+
+                sidebarObj.settings.onSidebarClosed();
             },
 
             updateEnabledSubPanes: function()

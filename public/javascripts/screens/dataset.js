@@ -31,7 +31,14 @@ $(function()
         { $dataGrid.visualization(); }
     }
 
-    var sidebar = $('#gridSidebar').gridSidebar({dataGrid: $dataGrid[0]});
+    // sidebar and sidebar tabs
+    var sidebar = $('#gridSidebar').gridSidebar({
+        dataGrid: $dataGrid[0],
+        onSidebarClosed: function()
+        {
+            $('#sidebarOptions li').removeClass('active');
+        }
+    });
     $('#sidebarOptions a[data-paneName]').each(function()
     {
         var $a = $(this);
@@ -40,24 +47,64 @@ $(function()
             $a.click(function(e)
             {
                 e.preventDefault();
-                sidebar.show($(this).attr('data-paneName'));
+                sidebar.show($a.attr('data-paneName'));
+                $a.closest('li')
+                    .addClass('active')
+                    .siblings()
+                        .removeClass('active');
             });
         }
         else
-        { $a.hide(); }
+        { $a.closest('li').hide(); }
     });
 
     $(document).bind(blist.events.COLUMNS_CHANGED,
         function() { sidebar.updateEnabledSubPanes(); });
 
+    // toolbar area
+    $('.descriptionExpander').click(function(event)
+    {
+        event.preventDefault();
+        var $this = $(this);
+        var $description = $('#description');
+
+        if ($this.hasClass('downArrow'))
+        {
+            // need to expand; measure how tall
+            $description
+                .removeClass('collapsed')
+                .css('height', null);
+            var targetHeight = $description.height();
+            $description
+                .addClass('collapsed')
+                .animate({
+                    height: targetHeight
+                },
+                function() { $('.outerContainer').fullScreen().adjustSize(); });
+            $this.removeClass('downArrow').addClass('upArrow');
+        }
+        else
+        {
+            // need to collapse
+            $description
+                .animate({
+                    height: $description.css('line-height')
+                },
+                function() { $('.outerContainer').fullScreen().adjustSize(); });
+            $this.removeClass('upArrow').addClass('downArrow');
+        }
+    });
+
     var $dsIcon = $('#datasetIcon');
     $dsIcon.socrataTip($dsIcon.text());
 
+    /* TODO: do we want this?
     var $desc = $('#description');
-    $desc.socrataTip($desc.text());
+    $desc.socrataTip($desc.text());*/
 
     blist.dataset.controls.hookUpShareMenu(blist.display.view,
-        $('#shareMenu'));
+        $('#shareMenu'),
+        { menuButtonContents: $.tag({ tagName: 'span', 'class': 'shareIcon' }, true)});
 
     $.ajax({url: '/views.json',
         data: {method: 'getByTableId', tableId: blist.display.view.tableId},
@@ -75,6 +122,8 @@ $(function()
                     href: $.generateViewUrl(v)};
             });
             $('#viewsMenu').menu({
+                attached: false,
+                menuButtonContents: '',
                 menuButtonTitle: 'More Views',
                 contents: items
             });

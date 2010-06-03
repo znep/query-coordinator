@@ -10,28 +10,37 @@
 
 <div id='datasetBar' class='clearfix'>
   <div id='viewsMenu' class='menu'></div>
-  <div id='datasetIcon' class='type<%= @view.display.type %>'>
-    <span class='icon'><%= @view.display.name %></span>
+
+  <div id='titleBox'>
+    <a href="#expand" class="descriptionExpander downArrow" title="Click to expand ">
+      <span class="icon"></span>
+    </a>
+    <div id='datasetIcon' class='type<%= @view.display.type.capitalize %>'>
+      <span class='icon'><%= @view.display.name %></span>
+    </div>
+    <h2 id='datasetName' class="clipText"><%= @view.name %></h2>
+    <div id='description' class="collapsed"><%= @view.description %></div>
   </div>
 
-  <div id='titleLine'>
-    <span id='datasetName'><%= @view.name %></span>
-  </div>
-
-  <div id='actionLine' class='clearfix'>
-    <span id='description' class='clipText'><%= @view.description %></span>
-
-    <ul id='sidebarOptions' class='right'>
-      <li><a href='#Feed'>Feed</a></li>
-      <li><a href='#Filter'>Filter</a></li>
-      <li><a href='#Visualize' data-paneName='visualize'>Visualize</a></li>
-      <li><a href='#Embed' data-paneName='embed'>Embed</a></li>
+  <div id='actionBox' class='clearfix'>
+    <ul id="toolbarOptions">
+      <li>
+        <div id='searchButton'>
+          <span class='searchIcon'></span>
+          <form class="searchForm" action="#">
+            <input type="text" class="searchField textPrompt" title="Find" />
+          </form>
+        </div>
+      </li>
+      <li>
+        <div id='shareMenu' class='share menu'></div>
+      </li>
     </ul>
-    <ul class='right'>
-      <li><a id='searchLink' class='search' href='#Search'>
-        <span class='icon'></span>Search
-      </a></li>
-      <li><div id='shareMenu' class='share menu'></div></li>
+    <ul id='sidebarOptions' class="clearfix">
+      <li class="tabFeed"><a href='#Feed'>Feed</a></li>
+      <li class="tabFilter"><a href='#Filter'>Filter</a></li>
+      <li class="tabVisualize"><a href='#Visualize' data-paneName='visualize'>Visualize</a></li>
+      <li class="tabEmbed"><a href='#Embed' data-paneName='embed'>Embed</a></li>
     </ul>
   </div>
 </div>

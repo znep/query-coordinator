@@ -32,7 +32,7 @@
                         wizard: {prompt: 'Enter a name for your form',
                             actions: [$.gridSidebar.wizard.buttons.done]}
                     }
-                ],
+                ]
             },
             {
                 title: 'Dates',
@@ -46,7 +46,7 @@
                         notequalto: 'dateCol',
                         columns: {type: 'date', hidden: false},
                         wizard: {prompt: 'Select the column with the ending date of events',
-                            actions: [$.gridSidebar.wizard.buttons.skip]},
+                            actions: [$.gridSidebar.wizard.buttons.skip]}
                     }
                 ]
             },

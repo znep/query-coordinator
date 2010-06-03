@@ -158,7 +158,8 @@ $(function()
     });
 
     blist.dataset.controls.hookUpShareMenu(widgetNS.view,
-        $('.subHeaderBar .share .shareMenu'), 'icon', true);
+        $('.subHeaderBar .share .shareMenu'),
+        { menuButtonClass: 'icon' });
 
     // toolbar
     var $toolbar = $('.toolbar');

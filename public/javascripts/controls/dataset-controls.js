@@ -1,14 +1,13 @@
 datasetControlsNS = blist.namespace.fetch('blist.dataset.controls');
 
-blist.dataset.controls.hookUpShareMenu = function(view, $menu, buttonClass,
-    isUnattached)
+blist.dataset.controls.hookUpShareMenu = function(view, $menu, overrides)
 {
     var tweet = escape('Check out the ' + $.htmlEscape(view.name) +
         ' dataset on ' + blist.configuration.strings.company + ': ');
     var seoPath = window.location.hostname + $.generateViewUrl(view);
     var shortPath = window.location.hostname.replace(/www\./, '') + '/d/' + view.id;
     var opts = {
-        attached: !isUnattached,
+        attached: false,
         menuButtonContents: 'Socialize',
         menuButtonTitle: 'Share this dataset',
         contents: [
@@ -26,6 +25,7 @@ blist.dataset.controls.hookUpShareMenu = function(view, $menu, buttonClass,
                 onlyIf: view.viewType != 'blobby'}
         ]
     };
-    if (!$.isBlank(buttonClass)) { opts.menuButtonClass = buttonClass; }
+
+    $.extend(opts, overrides);
     $menu.menu(opts);
 };

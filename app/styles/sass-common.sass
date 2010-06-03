@@ -2,6 +2,17 @@
 
 $box_gradient_alias_fix: 'rx=1&ry=1&rw=1'
 
+$sidebar_filter_tab_color_top: #57b6dd
+$sidebar_visualize_tab_color_top: #03723f
+$sidebar_export_tab_color_top: #0b5e9b
+$sidebar_feed_tab_color_top: #ff7400
+$sidebar_embed_tab_color_top: #e44044
+$sidebar_about_tab_color_top: #a03341
+
+$dataset_toolbar_button_color_top: #fefefe
+$dataset_toolbar_button_color_btm: #f2f2f2
+$dataset_toolbar_button_shadow: rgba(0, 0, 0, 0.2)
+
 // Compat functions
 
 @mixin border-radius($a, $b: true, $c: true, $d: true)
@@ -57,6 +68,17 @@ $box_gradient_alias_fix: 'rx=1&ry=1&rw=1'
   background-color: $s
   background: -moz-linear-gradient(0 0 270deg, $s, $e)
   background: -webkit-gradient(linear, left top, left bottom, from($s), to($e))
+
+// Convenience methods
+
+@mixin center($width, $height: $width)
+  height: $height
+  left: 50%
+  margin-left: $width / 2 * -1
+  margin-top: $height / 2 * -1
+  position: absolute
+  top: 50%
+  width: $width
 
 // Common styles
 

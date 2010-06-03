@@ -1,3 +1,16 @@
+@mixin dataset-toolbar-button
+  @include vertical-gradient($dataset_toolbar_button_color_top, $dataset_toolbar_button_color_btm)
+  border: 1px solid #cecece
+  @include border-radius(0.2em)
+  height: 14px
+  line-height: 14px
+  padding: 0.3em 0.7em
+  &:hover
+    @include box-shadow(0, 0, 0.3em, $dataset_toolbar_button_shadow)
+  .noCss3 &:hover
+    background-color: $dataset_toolbar_button_color_btm
+
+
 html, body
   height: 100%
   overflow: hidden
@@ -5,53 +18,165 @@ html, body
 #datasetBar
   border-top: 1px solid #cecece
   padding: 0.25em
+    bottom: 0.3em
+  position: relative
 
   #viewsMenu
-    float: left
     height: 3em
-    margin-right: 0.5em
-    margin-top: 6px
+    left: 0.7em
+    position: absolute
+    top: 1.2em
     width: 2em
     a.menuButton
-      @include text-hiding
-      background-color: #cccccc
-      cursor: pointer
+      @include dataset-toolbar-button
       padding: 0
       height: 100%
       width: 100%
-    ul li
+
+      .icon
+        @include center(13px)
+
+    .menuDropdown
+      margin-top: 0.2em
+
+      ul li
+        @include sprite-menu-icons
+        a
+          @include clip-text
+
+    &.open .menuButton .icon
+      background-position: 0 0
+
+  #titleBox
+    border: 1px solid #f4f4f4
+    margin-right: 60em
+    margin-left: 3em
+    padding-bottom: 0.4em
+    position: relative
+
+    .descriptionExpander
       @include sprite-menu-icons
-      a
-        @include clip-text
+      position: absolute
+      right: 0.2em
+      top: 0.2em
 
-  #datasetIcon
-    @include sprite-type-icons-30
-    display: inline-block
-    float: left
-    margin-right: 0.5em
-    margin-top: 0.2em
-
-  #titleLine
-    margin-top: 0.3em
+    #datasetIcon
+      @include sprite-type-icons-30
+      display: block
+      left: 0.4em
+      top: 0.4em
+      position: absolute
 
     #datasetName
-      font-size: 1.7em
-
-  #actionLine
-    > *
-      float: left
+      font-size: 1.6em
+      font-weight: normal
+      margin: 0
+        left: 40px
+        right: 1em
+      padding: 0
 
     #description
       color: #999999
       font-size: 1.1em
-      max-width: 50%
+      line-height: 1.1em
+      margin:
+        left: 40px
+        right: 1em
+        top: -0.2em
+      overflow: hidden
+      &.collapsed
+        height: 1.1em
 
-    > ul > li
-      display: inline-block
+  #actionBox
+    bottom: -1px
+    position: absolute
+    right: 2em
 
-    .right
-      float: right
-      margin-left: 0.5em
+    #toolbarOptions
+      float: left
+
+      > li
+        display: inline-block
+        margin-right: 1em
+
+        #searchButton
+          @include dataset-toolbar-button
+
+          .searchIcon
+            @include dataset-toolbar-icon-search
+
+          .searchForm
+            display: inline
+
+            .searchField
+              background: transparent
+              border: none
+              bottom: 1px
+              height: 13px
+              margin: 0em 0.3em
+              padding: 1px
+              position: relative
+              width: 2em
+              &.prompt
+                font-style: normal
+              &.expanded
+                background-color: #fff
+
+        .share.menu
+          &.open
+            @include box-shadow-none
+
+          .menuButton
+            @include dataset-toolbar-button
+            margin-top: 0
+
+            .shareIcon
+              @include dataset-toolbar-icon-share
+
+          .menuDropdown
+            margin-top: 0.6em
+
+    #sidebarOptions
+      float: left
+      margin-left: 2em
+
+      li
+        @include sprite-dataset-tabs('> a')
+        border-bottom: 1px solid #cecece
+        float: left
+        margin-left: -7px
+        position: relative
+
+      li
+        z-index: 8
+        + li
+          z-index: 7
+          + li
+            z-index: 6
+            + li
+              z-index: 5
+              + li
+                z-index: 4
+                + li
+                  z-index: 3
+                  + li
+                    z-index: 2
+                    + li
+                      z-index: 1
+      li.active
+        z-index: 9
+        &.tabFilter
+          border-bottom-color: $sidebar_filter_tab_color_top
+        &.tabVisualize
+          border-bottom-color: $sidebar_visualize_tab_color_top
+        &.tabExport
+          border-bottom-color: $sidebar_export_tab_color_top
+        &.tabFeed
+          border-bottom-color: $sidebar_feed_tab_color_top
+        &.tabEmbed
+          border-bottom-color: $sidebar_embed_tab_color_top
+        &.tabAbout
+          border-bottom-color: $sidebar_about_tab_color_top
 
     a
       @include sprite-menu-icons

@@ -204,8 +204,13 @@ class BlistsController < ApplicationController
         w.uid == CurrentDomain.default_widget_customization_id}
 
     if @widget_customization.nil?
-      @widget_customization = WidgetCustomization.create({
-        'customization' => WidgetCustomization.default_theme(1), 'name' => "Default Socrata" })
+      begin
+        @widget_customization = WidgetCustomization.create({
+          'customization' => WidgetCustomization.default_theme(1), 'name' => "Default Socrata" })
+      rescue CoreServer::CoreServerError => e
+        @widget_customization = WidgetCustomization.create({
+          'customization' => WidgetCustomization.default_theme(1), 'name' => "Default Socrata New" })
+      end
     end
     @customization = @widget_customization.customization
 

@@ -16,10 +16,6 @@ class Displays::Table < Displays::Base
         end
     end
 
-    def can_advanced_publish?
-        true
-    end
-
     def invalid_message
       @view.message
     end

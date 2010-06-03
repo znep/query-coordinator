@@ -117,48 +117,65 @@ $(function()
     $('select, input:checkbox, input:radio, input:file').uniform();
 
     // menus
-    var menuContents = [];
-    if (widgetNS.theme['menu']['options']['more_views'] === true)
-        menuContents.push({ text: 'More Views', className: 'views',
-            subtext: 'Filters, Charts, and Maps', href: '#views' });
-    if (widgetNS.theme['menu']['options']['downloads'] === true)
-        menuContents.push({ text: 'Download', className: 'downloads',
-            subtext: 'Download in various formats', href: '#downloads', onlyIf: !widgetNS.isBlobby });
-    if (widgetNS.theme['menu']['options']['comments'] === true)
-        menuContents.push({ text: 'Comments', className: 'comments',
-            subtext: 'Read comments on this dataset', href: '#comments' });
-    if (widgetNS.theme['menu']['options']['embed'] === true)
-        menuContents.push({ text: 'Embed', className: 'embed',
-            subtext: 'Embed this player on your site', href: '#embed' });
-    if (widgetNS.theme['menu']['options']['print'] === true)
-        menuContents.push({ text: 'Print', className: 'print',
-            subtext: 'Print out this dataset', href: '#print', onlyIf: !widgetNS.isBlobby });
-
-    menuContents.push({ text: 'About the Socrata Social Data Player', className: 'about',
-        href: 'http://www.socrata.com/try-it-free', rel: 'external' });
-
+    var menuOptions = widgetNS.theme['menu']['options'];
     $('.mainMenu').menu({
         attached: false,
         menuButtonTitle: 'Access additional information about this dataset.',
         menuButtonClass: 'mainMenuButton ' + ((widgetNS.orientation == 'downwards') ? 'upArrow' : 'downArrow'),
-        contents: menuContents
+        contents: [
+            { text: 'More Views', className: 'views',
+                subtext: 'Filters, Charts, and Maps', href: '#views',
+                onlyIf: menuOptions['more_views'] },
+            { text: 'Download', className: 'downloads',
+                subtext: 'Download in various formats', href: '#downloads',
+                onlyIf: !widgetNS.isBlobby && menuOptions['downloads'] },
+            { text: 'Comments', className: 'comments',
+                subtext: 'Read comments on this dataset', href: '#comments',
+                onlyIf: menuOptions['comments'] },
+            { text: 'Embed', className: 'embed',
+                subtext: 'Embed this player on your site', href: '#embed',
+                onlyIf: menuOptions['embed'] },
+            { text: 'Print', className: 'print',
+                subtext: 'Print this dataset', href: '#print',
+                onlyIf: !widgetNS.isBlobby && menuOptions['print'] },
+            { text: 'About the Socrata Social Data Player', className: 'about',
+                href: 'http://www.socrata.com/try-it-free', rel: 'external',
+                onlyIf: menuOptions['about_sdp'] },
+            { text: 'Access this Dataset via the API',
+                // HACK: replace back with api + about when we drop IE6
+                className: menuOptions['about_sdp'] ? 'api apiAfterAbout' : 'api',
+                href: '/api/docs', rel: 'external',
+                onlyIf: menuOptions['api'] }
+        ]
     });
+
+    // Additional actions for specific panes
+    var paneHandlers = {
+        embed: function()
+        {
+            $('#embed_code').focus().select();
+        }
+    };
+
     $('.mainMenu .menuDropdown a').click(function(event)
     {
-        var target = $(this).closest('li').attr('class').split(' ')[1];
-        if (target == 'about')
+        if ($(this).attr('rel') == 'external')
         {
             // bail; this is a real link
             return;
         }
 
         event.preventDefault();
+        var target = $(this).closest('li').attr('class').split(' ')[1];
         if (!$('.widgetContent_' + target).is(':visible'))
         {
             $('.widgetContent > :visible:first').fadeOut(200,
                 function()
                 {
                     $('.widgetContent_' + target).fadeIn(200);
+
+                    if (_.isFunction(paneHandlers[target]))
+                    { paneHandlers[target](); }
                 });
         }
     });
@@ -422,7 +439,7 @@ $(function()
             {
                 'tbody .item': {
                     'downloadType<-': {
-                        '.type a': 'Download #{downloadType}',
+                        '.type a': '#{downloadType}',
                         '.type a@href': function(downloadType) { 
                             return '/views/' + widgetNS.view.id + '/rows.' +
                             downloadType.item.toLowerCase() + '?accessType=DOWNLOAD'; }

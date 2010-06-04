@@ -281,7 +281,6 @@
         $block.find('a.removeButton').click(function(event)
         {
             event.preventDefault();
-            var $section = $(event.target).closest('.section');
             $(event.target).closest('.configLineBlock').remove();
             layersChanged = true;
         });

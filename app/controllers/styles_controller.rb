@@ -169,6 +169,10 @@ protected
                       " from(##{first_stop['color']}), to(##{last_stop['color']})" +
                       stops.map{ |stop| ", color-stop(#{stop['position']},##{stop['color']})" }.join +
                       ")\n"
+
+            # default background-color for fallback
+            result += "  background-color: ##{first_stop['color']}\n"
+
           end
         elsif definition[key.to_sym].is_a? Hash
           result += get_includes_recurse(value, definition[key.to_sym], path + "#{key}_")

@@ -233,4 +233,7 @@ $.renderTemplate = function(template, data, directive)
 $.isBlank = function(obj)
 { return _.isUndefined(obj) || _.isNull(obj) || obj === ''; };
 
+$.arrayify = function(obj)
+{ return !_.isArray(obj) ? [obj] : obj; };
+
 })(jQuery);

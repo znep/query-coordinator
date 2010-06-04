@@ -56,13 +56,38 @@ form textarea.text_wide
     font-size: 1.2em
 
   input[type=text],
-  textarea
+  textarea,
+  .ui-slider
     @include border-radius(0.3em)
     @include box-shadow(0,0,2px,rgba(0, 0, 0, 0.05))
     &:hover
       @include box-shadow(0,0,2px,rgba(0, 0, 0, 0.15))
     &:focus, &:active
       @include box-shadow(0,0,2px,rgba(0, 0, 0, 0.4))
+
+  .ui-slider
+    @include vertical-gradient(#ffffff, #f0f0f0)
+    border: 1px solid #cccccc
+    font-size: 1.2em
+    margin-top: 3px
+
+    .ui-slider-handle
+      @include gradient_buttons_active_background
+      @include border-radius(0.3em)
+      border: 1px solid $color_buttons_active_border
+      @include box-shadow(0,0,2px,$color_buttons_shadow)
+      cursor: pointer
+
+      &:hover
+        @include gradient_buttons_hover_background
+        border: 1px solid $color_buttons_hover_border
+      &:active, &:focus
+        @include gradient_buttons_focus_background
+        border: 1px solid $color_buttons_focus_border
+      &.disabled
+        @include gradient_buttons_disabled_background
+        border: 1px solid $color_buttons_disabled_border
+        cursor: default
 
   div.required, span.required
     background: url(/stylesheets/images/common/required.png) no-repeat left top
@@ -97,7 +122,9 @@ form textarea.text_wide
       margin-right: 1em
 
     .uniform.selector
-      margin-top: -2px
+      margin:
+        left: -2px
+        top: -2px
 
 
 // uniform jQuery plugin styling
@@ -157,12 +184,13 @@ div.uniform.selector
 
   select
     border: solid 1px #fff
-    top: 3px
-    left: 3px
-    right: 0px
     bottom: 3px
+    font-size: 1em
+    left: 3px
     opacity: 0
     position: absolute
+    right: 0px
+    top: 3px
 
   &:active, &.active
     background-position: -483px -156px

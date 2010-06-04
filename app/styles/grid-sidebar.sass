@@ -185,6 +185,7 @@
 
       > .uniform.checker, .sectionSelect
         display: none
+        margin-left: -0.5em
 
       &.selectable > .uniform.checker, &.selectable .sectionSelect
         display: inline-block
@@ -202,23 +203,20 @@
 
         label
           margin-right: 0.25em
-          width: 6.5em
+          width: 6.4em
 
-        textarea, select, input[type="text"], .radioBlock
-          width: 13em
+        textarea, input[type="text"]
+          width: 12.9em
 
-        &.radioGroup
-          background-color: #ececec
-          padding-left: 0.75em
-
-          label
-            width: 5.75em
-
-        .radioBlock
-          width: 16.5em
+        select
+          width: 13.5em
 
         input[type="radio"], .uniform.radio
           margin-right: 0.5em
+
+        .ui-slider
+          margin-left: 0.5em
+          width: 11.9em
 
         span.error
           color: #ff0000
@@ -245,7 +243,18 @@
           font-size: 1em
           width: 11.6em
 
+        $group_border_color: #cccccc
+
+        &.radioGroup, &.group
+          border: 1px $group_border_color solid
+          margin-left: -0.75em
+          padding-left: 0.65em
+
+        &.group
+          padding-top: 0
+
         .radioBlock
+          width: 16.27em
           label
             display: inline-block
             font-size: 1.2em
@@ -258,7 +267,6 @@
             .uniform.selector
               font-size: 1em
 
-          label
             select, input
               font-size: 1em
               width: 10.75em
@@ -273,6 +281,22 @@
             font-size: 0.8333em
             margin-left: 0
             padding-left: 0
+
+        &.repeater .line
+          position: relative
+
+          .removeLink
+            @include sprite-button-icons
+            background-color: $group_border_color
+            left: 0
+            line-height: 1em
+            margin-left: -0.75em
+            padding: 0.3em
+            position: absolute
+            top: 0
+
+        &.group .removeLink
+          left: 0.75em
 
       &.collapsed
         .formHeader

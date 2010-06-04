@@ -103,7 +103,10 @@
                 { child = $.tag(child, true); }
 
                 return child;
-            }), function(child) { return $.isBlank(child); }).join(' ');
+            }), function(child) { return $.isBlank(child); })
+                // Don't join with a space, because FF will add extra
+                // un-controllable padding
+                .join('');
             result += '</' + attrs.tagName + '>';
         }
         else

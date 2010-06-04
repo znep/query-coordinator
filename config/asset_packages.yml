@@ -247,6 +247,7 @@ javascripts:
   - plugins/jquery.uniform
 - screen-dataset:
   - plugins/jquery.uniform
+  - plugins/ui.slider
   - util/events
   - util/urls
   - util/navigation
@@ -257,6 +258,7 @@ javascripts:
   - controls/grid-sidebar/calendar-create
   - controls/grid-sidebar/form-create
   - controls/grid-sidebar/location-create
+  - controls/grid-sidebar/map-create
   - controls/dataset-controls
   - controls/full-screen
   - screens/dataset
@@ -358,3 +360,5 @@ stylesheets:
 - admin-sdp-index:
   - list-screen
   - admin-sdp-index-screen
+- dataset-page:
+  - ui.slider

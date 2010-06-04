@@ -41,18 +41,41 @@
                 By default it will be collapsed; when collapsed, nothing is
                 validated or wizard-ed
             + name: internal name for field; required if it is of type selectable
+            + onlyIf: only display the section if these criteria are true.
+                Currently accepts an object:
+            {
+              + field: Input field to check the value of
+              + value: Value that the field should be set to for the section
+                  to be shown
+            }
             + fields: array of input fields
             [
                {
                   + text: label for input
                   + type: required, one of: 'static', 'text', 'textarea',
-                      'checkbox', 'columnSelect', 'radioGroup'
+                      'checkbox', 'select', 'columnSelect', 'radioGroup', 'slider'
+                      - 'group' is a special option that only needs an options
+                          array of subfields.  Also accepts extraClass
+                      - 'repeater' is a special option that allows the user
+                          to have multiple copies.  It takes several sepcial
+                          options:
+                          + field: A field element to be repeated
+                          + minimum: The minimum that are required of this element;
+                              this many will be rendered initially, and will
+                              not have remove buttons; further added fields will
+                              have remove buttons
+                          + addText: Text of the button to add new fields; defaults
+                              to 'Add Value'
                   + name: required, HTML name of input
-                  + prompt: optional, prompt text for text/textareas
+                  + prompt: optional, prompt text for text/textarea/select
+                  + defaultValue: default value to use for the field; for
+                      checkboxes use true.  For radioGroup, the name of the option
+                      that should be selected by default
+                  + repeaterValue: like defaultValue, but used for the replicated
+                      lines in a repeater; falls back to defaultValue (if set)
                   + required: optional, boolean, whether or not the input should be
                       validated as required (if visible)
-                  + checked: boolean, if true, this field is selected/checked
-                      by default
+                  + minimum, maximum: For slider, limits of the range
                   + extraClass: extra class(es) to be applied to the input;
                       should be a single string, could have multiple
                       space-separated classes
@@ -65,8 +88,16 @@
                     + type: array or single datatype names
                     + hidden: boolean, whether or not to include hidden columns
                   }
-                  + options: for radioGroup, array of sub-fields.  Same options
-                      as top-level fields
+                  + options: for group or radioGroup, array of sub-fields.
+                      Same options as top-level fields.  For select, array of
+                      hashes:
+                  {
+                    + text: text to display in the select item
+                    + value: value of the select item
+                    + data: optional, hash of key-value string pairs that
+                        will be add as 'data-<key>' attributes to the select.
+                        These can be used to store & retrieve extra data on
+                        an option item
                }
             ]
           }
@@ -662,14 +693,23 @@
     /*** Functions related to rendering a pane ***/
 
     /* Render a single input field */
-    var renderInputType = function(sidebarObj, args)
+    var renderLine = function(sidebarObj, args)
     {
-        var result = '';
+        // Add optional modifier to name
+        args.item = $.extend({}, args.item, {name: args.item.name +
+            (args.context.nameAppend || '')});
+
+        var contents = [];
+        if (!args.context.inputOnly)
+        {
+            contents.push({tagName: 'label', 'for': args.item.name,
+                    'class': [args.item.required ? 'required' : null],
+                    contents: args.item.text});
+        }
 
         var commonAttrs = function(item)
         {
-            return {id: item.id || item.name, name: item.name,
-                title: item.prompt,
+            return {id: item.name, name: item.name, title: item.prompt,
                 'class': [ {value: 'required', onlyIf: item.required},
                         {value: 'textPrompt', onlyIf: !$.isBlank(item.prompt)},
                         item.notequalto, item.extraClass ],
@@ -692,55 +732,99 @@
             }
             if (!$.isBlank(args.item.columns.type))
             {
-                colTypes = args.item.columns.type;
-                if (!_.isArray(args.item.columns.type))
-                { colTypes = [colTypes]; }
+                colTypes = $.arrayify(args.item.columns.type);
                 cols = _.select(cols, function(c)
                     { return _.include(colTypes, c.dataTypeName); });
             }
         }
 
+        var defValue = args.item.defaultValue;
+        if (args.context.inRepeater && !_.isUndefined(args.item.repeaterValue))
+        { defValue = args.item.repeaterValue; }
         switch (args.item.type)
         {
             case 'static':
-                result = $.tag($.extend(commonAttrs(args.item),
-                    {tagName: 'span', contents: args.item.text}), true);
+                contents = [];
+                contents.push($.extend(commonAttrs(args.item),
+                    {tagName: 'span', contents: args.item.text}));
                 break;
 
             case 'text':
-                result = $.tag($.extend(commonAttrs(args.item),
+                contents.push($.extend(commonAttrs(args.item),
                     {tagName: 'input', type: 'text', value:
-                        $.htmlEscape(args.context.data[args.item.name])}), true);
+                        $.htmlEscape(args.context.data[args.item.name] ||
+                            defValue)}));
                 break;
 
             case 'textarea':
-                result = $.tag($.extend(commonAttrs(args.item),
+                contents.push($.extend(commonAttrs(args.item),
                     {tagName: 'textarea', contents:
-                        $.htmlEscape(args.context.data[args.item.name])}), true);
+                        $.htmlEscape(args.context.data[args.item.name] ||
+                            defValue)}));
                 break;
 
             case 'checkbox':
-                result = $.tag($.extend(commonAttrs(args.item),
+                contents.push($.extend(commonAttrs(args.item),
                     {tagName: 'input', type: 'checkbox',
-                        checked: args.item.checked}), true);
+                        checked: _.include(
+                            [true, 'true', 1, '1', 'yes', 'checked'], defValue)}));
                     break;
 
+            case 'select':
+                var options =
+                    [{tagName: 'option', value: '',
+                        contents: args.item.prompt || 'Select a value'}];
+                _.each(args.item.options, function(o)
+                {
+                    var item = {tagName: 'option', value: o.value,
+                        selected: o.value === defValue, contents: o.text};
+                    _.each(o.data || {}, function(v, k)
+                        { item['data-' + k] = v; });
+                    options.push(item);
+                });
+                contents.push($.extend(commonAttrs(args.item),
+                    {tagName: 'select', contents: options}));
+                break;
+
             case 'columnSelect':
-                result = $.tag({tagName: 'a',
+                contents.push({tagName: 'a',
                     href: '#Select:' + colTypes.join('-'),
                     title: 'Select a column from the grid',
                     'class': 'columnSelector',
-                    contents: 'Select a column from the grid'}, true);
+                    contents: 'Select a column from the grid'});
 
                 var options =
-                    [{tagName: 'option', value: '', contents: 'Select a Column'}];
+                    [{tagName: 'option', value: '', contents: 'Select a column'}];
                 _.each(cols, function(c)
                 {
                     options.push({tagName: 'option', value: c.id,
+                        selected: defValue == c.id,
                         contents: $.htmlEscape(c.name)});
                 });
-                result += $.tag($.extend(commonAttrs(args.item),
-                    {tagName: 'select', contents: options}), true);
+                contents.push($.extend(commonAttrs(args.item),
+                    {tagName: 'select', contents: options}));
+                break;
+
+            case 'slider':
+                contents.push($.extend(commonAttrs(args.item),
+                    {tagName: 'div', 'class': 'sliderControl',
+                        'data-value': defValue,
+                        'data-min': args.item.minimum || 0,
+                        'data-max': args.item.maximum || 100}));
+                break;
+
+            case 'group':
+                contents = [];
+                var items = _.map(args.item.options, function(opt, i)
+                {
+                    return renderLine(sidebarObj,
+                                {context: $.extend({}, args.context,
+                                    {noTag: true}),
+                                item: opt, items: args.item.options, pos: i});
+                });
+                contents.push({tagName: 'div',
+                    'class': ['inputBlock', args.item.extraClass],
+                    contents: items});
                 break;
 
             case 'radioGroup':
@@ -753,19 +837,58 @@
                                 {id: id, tagName: 'input', type: 'radio',
                                 'class': {value: 'wizExclude',
                                     onlyIf: opt.type != 'static'},
-                                checked: opt.checked}),
+                                checked: defValue == opt.name}),
                             {tagName: 'label', 'for': id,
                             contents:
-                                renderInputType(sidebarObj, {context: args.context,
-                                    item: opt, items: args.item.options, pos: i})}
+                                renderLine(sidebarObj,
+                                    {context: $.extend({}, args.context,
+                                        {noTag: true, inputOnly: true}),
+                                    item: opt, items: args.item.options, pos: i})
+                            }
                         ]};
                 });
-                result = $.tag({tagName: 'div', 'class': 'radioBlock',
-                    contents: items}, true);
+                contents.push({tagName: 'div', 'class': 'radioBlock',
+                    contents: items});
+                break;
+
+            case 'repeater':
+                contents = [];
+                var templateLine = renderLine(sidebarObj,
+                            {item: args.item.field,
+                                context: $.extend({}, args.context,
+                                     {nameAppend: '-template_id', noTag: true,
+                                        inRepeater: true})
+                    });
+                templateLine.contents.unshift({tagName: 'a', href: '#remove',
+                    title: 'Remove', 'class': 'removeLink delete',
+                    contents: {tagName: 'span', 'class': 'icon'}});
+                templateLine = $.htmlEscape($.tag(templateLine, true));
+                for (var i = 0; i < (args.item.minimum || 1); i++)
+                {
+                    contents.push(renderLine(sidebarObj,
+                                {item: args.item.field,
+                                    context: $.extend({}, args.context,
+                                         {nameAppend: '-' + i, noTag: true})
+                    }));
+                }
+                contents.push($.button({text: args.item.addText || 'Add Value',
+                    customAttrs: {'data-template': templateLine},
+                    className: 'addValue'}, true));
                 break;
         }
 
-        return result;
+        if (args.context.inputOnly)
+        {
+            return args.context.noTag ? contents :
+                _.map(contents, function(c) { return $.tag(c, true); }).join('');
+        }
+        else
+        {
+            var line = {tagName: 'div',
+                'class': ['line', 'clearfix', args.item.type, args.item.lineClass],
+                contents: contents};
+            return args.context.noTag ? line : $.tag(line, true);
+        }
     };
 
     var createOuterPane = function(sidebarObj, config)
@@ -816,29 +939,36 @@
             sections: config.sections,
             finishButtons: (config.finishBlock || {}).buttons,
             data: data || {}};
+        var sectionOnlyIfs = {};
         var directive = {
             '.subtitle': 'subtitle',
             '.formSection': {
                 'section<-sections': {
                     '@class+': function(arg)
-                    { return ' ' + (arg.item.type || '') +
-                        ' ' + (arg.item.name || '') +
-                        (arg.item.type == 'selectable' ? ' collapsed' : ''); },
+                    { return _.compact([arg.item.type, arg.item.name,
+                        (arg.item.type == 'selectable' ? 'collapsed' : null),
+                        (!$.isBlank(arg.item.onlyIf) ? 'hide' : null)
+                        ]).join(' '); },
+                    '@data-onlyIf': function(arg)
+                    {
+                        if (!$.isBlank(arg.item.onlyIf))
+                        {
+                            var u = _.uniqueId();
+                            sectionOnlyIfs[u] = arg.item.onlyIf;
+                            return u;
+                        }
+                        return '';
+                    },
                     '.formHeader': 'section.title',
                     '.formHeader@for': 'section.name',
                     '.sectionSelect@id': 'section.name',
                     '.sectionSelect@name': 'section.name',
-                    '.line': {
-                        'field<-section.fields': {
-                            '@class+': ' #{field.type}',
-                            'label': 'field.text',
-                            'label@for': 'field.name',
-                            'label@class+': function(arg)
-                            { return arg.item.required ? ' required' : ''; },
-                            '.+': function(a)
-                            { return renderInputType(sidebarObj, a); }
-                        }
-                    }
+                    '.sectionContent+': function(a)
+                    { return _.map(a.item.fields, function(f, i)
+                        { return renderLine(sidebarObj,
+                            {context: a.context, item: f,
+                                items: a.item.fields, pos: i}); }
+                        ).join(''); }
                 }
             },
             '.finishButtons > li': {
@@ -871,12 +1001,27 @@
         if ($pane.find('label.required').length > 0)
         { $pane.find('div.required').removeClass('hide'); }
 
-        $pane.find('.textPrompt')
-            .example(function () { return $(this).attr('title'); });
-
         $pane.find('form').validate({ignore: ':hidden', errorElement: 'span',
             errorPlacement: function($error, $element)
             { $error.appendTo($element.closest('.line')); }});
+
+        // Dynamically show/hide panes
+        _.each(sectionOnlyIfs, function(oif, uid)
+        {
+            if ($.isBlank(oif.field))
+            { throw 'Only field-value objects supported for section onlyIfs'; }
+
+            var $field = $pane.find(':input[name=' + oif.field + ']');
+            var $section = $pane.find('[data-onlyIf=' + uid + ']');
+            var showHideSection = function()
+            {
+                _.defer(function()
+                { $section.toggleClass('hide', $field.val() != oif.value); });
+            };
+            $field.change(showHideSection).keypress(showHideSection)
+                .click(showHideSection);
+            showHideSection();
+        });
 
         $pane.find('.formSection.selectable .sectionSelect').click(function(e)
         {
@@ -926,68 +1071,124 @@
             });
         });
 
-        // Inputs inside labels are likely attached to radio buttons.
-        // We need to preventDefault on the click so focus stays in the input,
-        // and isn't stolen by the radio button; then we need to manually trigger
-        // the selection of the radio button.  We use mouseup because textPrompt
-        // interferes with click events
-        $pane.find('.formSection label :input, .formSection label a')
-            .click(function(e)
+        var hookUpFields = function($container)
+        {
+            $container.find('.textPrompt')
+                .example(function () { return $(this).attr('title'); });
+
+            // Inputs inside labels are likely attached to radio buttons.
+            // We need to preventDefault on the click so focus stays in the input,
+            // and isn't stolen by the radio button; then we need to manually
+            // trigger the selection of the radio button.  We use mouseup
+            // because textPrompt interferes with click events
+            $container.find('label :input, label a')
+                .click(function(e)
+                {
+                    e.preventDefault();
+                })
+                .mouseup(function(e)
+                {
+                    var forAttr = $(this).parents('label').attr('for');
+                    if (!$.isBlank(forAttr))
+                    { $pane.find('#' + forAttr).click(); }
+                });
+
+            $container.find('.columnSelector').click(function(e)
             {
                 e.preventDefault();
-            })
-            .mouseup(function(e)
-            {
-                var forAttr = $(this).parents('label').attr('for');
-                if (!$.isBlank(forAttr))
-                { $pane.find('#' + forAttr).click(); }
+
+                var $link = $(this);
+                var $overlay = $pane.closest('.outerPane').find('.paneOverlay');
+
+                var cancelSelect = function()
+                {
+                    $overlay.css('cursor', 'auto').addClass('hide');
+                    sidebarObj._$currentWizard.socrataTip().quickShow();
+                    $(document).unbind('.pane_' + sidebarObj._currentPane);
+                    $link.removeClass('inProcess');
+                    sidebarObj.$grid().blistTableAccessor().exitColumnChoose();
+                };
+
+                if ($link.is('.inProcess'))
+                { cancelSelect(); }
+                else
+                {
+                    $overlay.css('cursor', 'crosshair').removeClass('hide');
+                    sidebarObj._$currentWizard.socrataTip().quickHide();
+                    // Cancel on ESC
+                    $(document).bind('keypress.pane_' + sidebarObj._currentPane,
+                        function(e) { if (e.keyCode == 27) { cancelSelect(); } });
+                    $link.addClass('inProcess');
+
+                    var href = $link.attr('href');
+                    href = href.slice(href.indexOf('#') + 1);
+                    sidebarObj.$grid().blistTableAccessor().enterColumnChoose
+                        (href.split(':')[1].split('-'),
+                        function(c)
+                        {
+                            cancelSelect();
+                            var $sel = $link.siblings('select');
+                            if ($sel.length < 1)
+                            {
+                                $sel = $link.siblings('.uniform.selector')
+                                    .find('select');
+                            }
+                            $sel.val(c.id).change();
+                            if (!$.isBlank($.uniform)) { $.uniform.update(); }
+                        });
+                }
             });
 
-        $pane.find('.formSection .columnSelector').click(function(e)
+            $container.find('.sliderControl').each(function()
+            {
+                var $slider = $(this);
+                $slider.slider({min: parseInt($slider.attr('data-min')),
+                    max: parseInt($slider.attr('data-max')),
+                    value: parseInt($slider.attr('data-value'))});
+            });
+
+            $container.find('.removeLink').click(function(e)
+            {
+                e.preventDefault();
+                $(this).closest('.line').remove();
+            });
+
+            if (!$.isBlank($.uniform))
+            {
+                // Defer uniform hookup so the pane can be added first and all
+                // the styles applied before swapping them for uniform controls
+                _.defer(function()
+                        { $container.find('select, :checkbox, :radio, :file')
+                            .uniform(); });
+            }
+        };
+
+        hookUpFields($pane);
+
+        $pane.find('.button.addValue').click(function(e)
         {
             e.preventDefault();
-
-            var $link = $(this);
-            var $overlay = $pane.closest('.outerPane').find('.paneOverlay');
-
-            var cancelSelect = function()
+            var $button = $(this);
+            var $container = $button.closest('.line.repeater');
+            var $newLine = $($.htmlUnescape($button.attr('data-template')));
+            $newLine.find('.required').removeClass('required');
+            var i = $container.children('.line').length;
+            var attrMatch = '-template_id';
+            $newLine.find('[name$=' + attrMatch + '], [id$=' + attrMatch +
+                '], [for$=' + attrMatch + ']').each(function()
             {
-                $overlay.css('cursor', 'auto').addClass('hide');
-                sidebarObj._$currentWizard.socrataTip().quickShow();
-                $(document).unbind('.pane_' + sidebarObj._currentPane);
-                $link.removeClass('inProcess');
-                sidebarObj.$grid().blistTableAccessor().exitColumnChoose();
-            };
-
-            if ($link.is('.inProcess'))
-            { cancelSelect(); }
-            else
-            {
-                $overlay.css('cursor', 'crosshair').removeClass('hide');
-                sidebarObj._$currentWizard.socrataTip().quickHide();
-                // Cancel on ESC
-                $(document).bind('keypress.pane_' + sidebarObj._currentPane,
-                    function(e) { if (e.keyCode == 27) { cancelSelect(); } });
-                $link.addClass('inProcess');
-
-                var href = $link.attr('href');
-                href = href.slice(href.indexOf('#') + 1);
-                sidebarObj.$grid().blistTableAccessor().enterColumnChoose
-                    (href.split(':')[1].split('-'),
-                    function(c)
-                    {
-                        cancelSelect();
-                        var $sel = $link.siblings('select');
-                        if ($sel.length < 1)
-                        {
-                            $sel = $link.siblings('.uniform.selector')
-                                .find('select');
-                        }
-                        $sel.val(c.id).change();
-                        if (!$.isBlank($.uniform)) { $.uniform.update(); }
-                    });
-            }
+                var $elem = $(this);
+                _.each(['name', 'id', 'for'], function(aName)
+                {
+                    var a = $elem.attr(aName);
+                    if (!$.isBlank(a) && a.endsWith(attrMatch))
+                    { $elem.attr(aName, a.slice(0, -attrMatch.length) + '-' + i); }
+                });
+            });
+            hookUpFields($newLine);
+            $button.before($newLine);
         });
+
 
         $pane.find('.finishButtons a').click(function(e)
         {
@@ -1019,14 +1220,6 @@
         });
 
         addWizards(sidebarObj, $pane, config);
-
-        if (!$.isBlank($.uniform))
-        {
-            // Defer uniform hookup so the pane can be added first and all
-            // the styles applied before swapping them for uniform controls
-            _.defer(function()
-                    { $pane.find('select, :checkbox, :radio, :file').uniform(); });
-        }
 
         return $pane;
     };
@@ -1265,7 +1458,7 @@
                     {tagName: 'span',
                         // This is returning with &nbsp;, so replace them all
                         // with normal spaces
-                        contents: $a.attr('title').replace(/\s/g, ' ')}
+                        contents: $a.attr('title').replace(/\xa0/g, ' ')}
                 ]});
         });
 

@@ -1,6 +1,7 @@
 <% content_for :head do %>
   <%= auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss") %>
   <%= raw @view.display.render_stylesheet_includes %>
+  <%= stylesheet_link_merged 'dataset-page' %>
   <%= rendered_stylesheet_tag 'dataset-page' %>
 
   <title><%= h(@view.name) %> | <%= CurrentDomain.strings.site_title %></title>
@@ -78,10 +79,15 @@
 
     <%# Namespace to keep track of disabled sidebar sections %>
     blist.namespace.fetch('blist.sidebarHidden');
-    <%# Calendar %>
+
+    <%# Visualize pane %>
     blist.sidebarHidden.visualize = blist.sidebarHidden.visualize || {};
     blist.sidebarHidden.visualize.calendarCreate = <%= @view.is_alt_view? %>;
-    <%# Form %>
+    blist.sidebarHidden.visualize.mapCreate = <%= @view.is_alt_view? ||
+      @view.is_grouped? ||
+      !module_available?(:map_publish) %>;
+
+    <%# Embed pane %>
     blist.sidebarHidden.embed = blist.sidebarHidden.embed || {};
     blist.sidebarHidden.embed.formCreate = <%= @view.is_alt_view? ||
       @view.is_grouped? ||

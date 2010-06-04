@@ -43,8 +43,9 @@
                 fields: [
                     {text: 'Street', type: 'radioGroup',
                         name: 'convertStreetGroup',
+                        defaultValue: 'streetNone',
                         options: [
-                            {text: 'None', type: 'static', checked: true},
+                            {text: 'None', name: 'streetNone', type: 'static'},
                             {type: 'columnSelect', name: 'convertStreetCol',
                                 notequalto: 'convertText',
                                 columns: {type: 'text', hidden: false} }
@@ -57,8 +58,9 @@
                         }
                     },
                     {text: 'City', type: 'radioGroup', name: 'convertCityGroup',
+                        defaultValue: 'cityNone',
                         options: [
-                            {text: 'None', type: 'static', checked: true},
+                            {text: 'None', type: 'static', name: 'cityNone'},
                             {type: 'columnSelect', name: 'convertCityCol',
                                 notequalto: 'convertText',
                                 columns: {type: 'text', hidden: false} },
@@ -72,10 +74,10 @@
                             ]
                         }
                     },
-                    {text: 'State', type: 'radioGroup',
-                        name: 'convertStateGroup',
+                    {text: 'State', type: 'radioGroup', name: 'convertStateGroup',
+                        defaultValue: 'stateNone',
                         options: [
-                            {text: 'None', type: 'static', checked: true},
+                            {text: 'None', type: 'static', name: 'stateNone'},
                             {type: 'columnSelect', name: 'convertStateCol',
                                 notequalto: 'convertText',
                                 columns: {type: 'text', hidden: false} },
@@ -89,10 +91,10 @@
                             ]
                         }
                     },
-                    {text: 'Zip Code', type: 'radioGroup',
-                        name: 'convertZipGroup',
+                    {text: 'Zip Code', type: 'radioGroup', name: 'convertZipGroup',
+                        defaultValue: 'zipNone',
                         options: [
-                            {text: 'None', type: 'static', checked: true},
+                            {text: 'None', type: 'static', name: 'zipNone'},
                             {type: 'columnSelect', name: 'convertZipCol',
                                 notequalto: 'convertText convertNumber',
                                 columns: {type: ['text', 'number'],

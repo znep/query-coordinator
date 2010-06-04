@@ -35,7 +35,7 @@
                             ]}
                     },
                     {type: 'checkbox', text: 'Public?', name: 'publicAdd',
-                        checked: true,
+                        defaultValue: true,
                         wizard: {prompt: 'Choose whether anyone can submit data via your form.  If not, only those given permission individually will be able to use it.',
                             actions: [$.gridSidebar.wizard.buttons.skip]}
                     }

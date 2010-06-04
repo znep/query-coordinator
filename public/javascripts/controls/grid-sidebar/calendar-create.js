@@ -29,7 +29,7 @@
                 fields: [
                     {text: 'Name', name: 'calName', type: 'text', required: true,
                         prompt: 'Enter a name',
-                        wizard: {prompt: 'Enter a name for your form',
+                        wizard: {prompt: 'Enter a name for your calendar',
                             actions: [$.gridSidebar.wizard.buttons.done]}
                     }
                 ]

@@ -732,3 +732,39 @@ $(function()
     // Notify publisher that we are ready
     widgetNS.ready = true;
 });
+
+
+// HACKETY HACK!
+//  IE refuses to acknowledge dynamically written background-images.
+//  I'm cutting my losses here and just adding a bad hack.
+
+blist.widget.ghettoMenuButtonImages = {
+    normal: '',
+    hover: ''
+};
+blist.widget.ghettoHoverHookAdded = false;
+blist.widget.addGhettoHoverHook = function()
+{
+    if (widgetNS.ghettoHoverHookAdded)
+    { return; }
+
+    $('.mainMenuButton').hover(function()
+    {
+        $(this).css('background-image', widgetNS.ghettoMenuButtonImages.hover);
+    }, function()
+    {
+        $(this).css('background-image', widgetNS.ghettoMenuButtonImages.normal);
+    });
+
+    widgetNS.ghettoHoverHookAdded = true;
+};
+
+blist.widget.setGhettoButtonImage = function(image, src)
+{
+    widgetNS.ghettoMenuButtonImages[image] = src;
+
+    if (image == 'normal')
+    { $('.mainMenuButton').css('background-image', widgetNS.ghettoMenuButtonImages.normal); }
+};
+
+// END HACK

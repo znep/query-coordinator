@@ -22,7 +22,12 @@ blist.widget.resizeViewport = function()
 
 blist.widget.resizeGrid = function()
 {
-    $('#data-grid:visible')
+    // IE6 chokes if .widgetContentGrid is not visible
+    var $dataGrid = $('#data-grid:visible');
+    if ($dataGrid.length === 0)
+    { return; }
+
+    $dataGrid
         .height($('.widgetContentGrid').innerHeight())
         .trigger('resize');
 };

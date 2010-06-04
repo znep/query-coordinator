@@ -16,6 +16,8 @@ class ProfileController < ApplicationController
       @is_user_current = true
       @user = current_user
     end
+
+    ### @createdOnDomain = Domain.findById(@user.data['createdOnDomainId'])
     
     # See if it matches the authoritative URL; if not, redirect
     if request.path != @user.href

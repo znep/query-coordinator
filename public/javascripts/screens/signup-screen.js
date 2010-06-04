@@ -35,6 +35,7 @@ $(function ()
                 required: true,
                 equalTo: "#signup_email"
             },
+            /**
             "signup[login]": {
                 required: true,
                 loginRegex: true,
@@ -48,6 +49,7 @@ $(function ()
                     }
                 }
             },
+            **/
             "signup[password]": {
                 required: true,
                 minlength: 4

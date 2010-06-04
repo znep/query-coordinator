@@ -5,14 +5,20 @@
     <%= f.hidden_field :openIdIdentifierId %>
     <%= f.hidden_field :firstName %>
     <%= f.hidden_field :lastName %>
+    <!-- %= f.hidden_field :login % -->
 
     <p class="clearfix">
-      <%= f.label :login, 'Username', :class => 'required' %>
-      <%= f.text_field :login, :maxlength => 40 %>
-      <% if !CurrentDomain.strings.login_disclaimer.nil? %>
-        <span class="helpie"
-          title="<%= CurrentDomain.strings.login_disclaimer %>">?</span>
-      <% end %>
+      <%= f.label :email, 'Email Address', :class => 'required' %>
+      <%= f.text_field :email %>
+    </p>
+    <p class="clearfix">
+      <%= label_tag :emailConfirm, 'Confirm Email', :class => 'required' %>
+      <%= f.text_field :emailConfirm %>
+    </p>
+
+    <p class="clearfix">
+      <%= f.label :screenName, 'Display Name' %>
+      <%= f.text_field :screenName, :maxlength => 40 %>
     </p>
     <% unless local_assigns[:hide_password] %>
       <p class="clearfix">
@@ -24,14 +30,6 @@
         <%= f.password_field :passwordConfirm %>
       </p>
     <% end %>
-    <p class="clearfix">
-      <%= f.label :email, 'Email Address', :class => 'required' %>
-      <%= f.text_field :email %>
-    </p>
-    <p class="clearfix">
-      <%= label_tag :emailConfirm, 'Confirm Email', :class => 'required' %>
-      <%= f.text_field :emailConfirm %>
-    </p>
     <p class="clearfix">
       <span><%= check_box_tag 'signup[accept_terms]', "1", false, :class => 'required' %>
       I agree to the <%= raw CurrentDomain.theme.urls.signup.map{|link| link_from_theme(link)}.to_sentence(

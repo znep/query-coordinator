@@ -56,8 +56,9 @@
             
             <%- unless users_list.nil? -%>
               <%- users_list.each do |user| -%>
-              <span class='userRow <%= cycle('even', 'odd') %>'>
+                <span class='userRow <%= cycle('even', 'odd') %>'>
                 <span class='userIdCell'><%= user.displayName %></span>
+                <span class='userEmailCell'>(<%= user.email %>)</span>
                 <span class='userRolesCell'>
                 <form class='userSelectForm' method='post' action='/admin/save_user/<%= user.id %>'>
                 <%= raw(select_for_role("userSelect-#{user.id}", 'role', user.roleName, 'roleSelect')) %>

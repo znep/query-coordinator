@@ -219,6 +219,7 @@ private
     post['X-Socrata-Host'] = CurrentDomain.cname
     post.set_form_data credentials_for_post
     Net::HTTP.start(auth_uri.host, auth_uri.port) do |http|
+      ## uncomment for debug -- http.read_timeout = 60 * 10;
       http.request post
     end
   end

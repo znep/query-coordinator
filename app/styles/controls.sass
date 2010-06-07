@@ -123,7 +123,7 @@ div.menu
   .menuDropdown
     background-color: #fff
     border: 1px solid #999999
-    @include border-radius(0.4em)
+    @include border-radius(0.3em)
     @include box-shadow(0,0,4px,rgba(0,0,0,0.5))
     display: none
     margin-top: 0.6em
@@ -131,7 +131,7 @@ div.menu
     position: absolute
     z-index: 49
     ul.menuColumns
-      margin: 1.2em 0
+      margin: 0.3em 0
       overflow: hidden
       li.menuColumn
         border-left: 1px solid #dedede
@@ -147,6 +147,16 @@ div.menu
           li.menuEntry
             clear: both
             display: block
+
+            &.divider
+              border-top: 1px solid #eee
+              margin-top: 0.2em
+              padding-top: 0.2em
+              &:first-child
+                border-top: none
+                margin-top: 0
+                padding-top: 0
+
             a
               border:
                 bottom: 1px solid #ffffff
@@ -154,8 +164,8 @@ div.menu
               display: block
               font-size: 1.2em
               padding: 0.3em
-                right: 1em
-                left: 2.8em
+                right: 0.8em
+                left: 2.6em
               position: relative
               &:hover
                 background-color: #f7f7f7
@@ -163,7 +173,7 @@ div.menu
                 text-decoration: none
 
               .icon
-                left: 1em
+                left: 0.8em
                 position: absolute
                 top: 0.3em
 

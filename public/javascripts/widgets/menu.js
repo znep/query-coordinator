@@ -10,10 +10,27 @@
 
         var contents = _.map(opts.contents, function(column)
         {
-            return _.reject(column, function(item)
-            {
-                return item.onlyIf === false;
-            });
+            var dividerNext = false;
+            return _.compact(
+                _.map(column, function(item)
+                {
+                    if (item.divider === true)
+                    {
+                        dividerNext = true;
+                        return null;
+                    }
+
+                    if (item.onlyIf === false)
+                    {
+                        return null;
+                    }
+                    else if (dividerNext)
+                    {
+                        item.className = (item.className || '') + ' divider';
+                        dividerNext = false;
+                    }
+                    return item;
+                }));
         });
 
         return this.each(function()

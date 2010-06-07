@@ -72,6 +72,20 @@ $(function()
         function() { sidebar.updateEnabledSubPanes(); });
 
     // toolbar area
+    $('#viewsMenu').menu({
+        menuButtonContents: '',
+        menuButtonTitle: 'More Views',
+        contents: [
+            { text: 'Parent Dataset', className: 'typeBlist', href: '#parent',
+              onlyIf: blist.dataset.getDisplayType(blist.display.view) != 'Blist' },
+            { divider: true },
+            { text: 'Saved Filters', className: 'typeFilter', href: '#savedFilters' },
+            { text: 'Saved Visualizations', className: 'typeVisualization', href: '#savedVisualizations' },
+            { divider: true },
+            { text: 'About This Dataset', className: 'about', href: '#about' }
+        ]
+    });
+
     $('.descriptionExpander').click(function(event)
     {
         event.preventDefault();
@@ -108,34 +122,18 @@ $(function()
     var $dsIcon = $('#datasetIcon');
     $dsIcon.socrataTip($dsIcon.text());
 
-    /* TODO: do we want this?
-    var $desc = $('#description');
-    $desc.socrataTip($desc.text());*/
-
     blist.dataset.controls.hookUpShareMenu(blist.display.view,
         $('#shareMenu'),
         { menuButtonContents: $.tag({ tagName: 'span', 'class': 'shareIcon' }, true)});
 
-    $.ajax({url: '/views.json',
-        data: {method: 'getByTableId', tableId: blist.display.view.tableId},
+    // fetch some data that we'll need
+    $.ajax({ url: '/views.json',
+        data: { method: 'getByTableId', tableId: blist.display.view.tableId },
         dataType: 'json', contentType: 'application/json',
         success: function(views)
         {
-            views = _.reject(views, function(v)
-                { return v.flags && _.include(v.flags, 'default') ||
-                    v.id == blist.display.view.id; });
-            views = _.sortBy(views, function(v) { return v.name.toLowerCase(); });
-            var items = _.map(views, function(v)
-            {
-                return {text: v.name,
-                    className: 'type' + blist.dataset.getDisplayType(v),
-                    href: $.generateViewUrl(v)};
-            });
-            $('#viewsMenu').menu({
-                attached: false,
-                menuButtonContents: '',
-                menuButtonTitle: 'More Views',
-                contents: items
-            });
+            // TODO: make views reusable for the views sidebar
+            $('#viewsMenu .typeBlist a').attr('href', $.generateViewUrl(
+                _.detect(views, function(view) { return blist.dataset.getDisplayType(view) == 'Blist'; })));
         }});
 });

@@ -121,8 +121,6 @@ blist.publish.applyGradient = function(selector, hover, value)
 {
     if (hover)
     { selector += ':hover'; }
-    else
-    { publishNS.writeStyle(selector, 'border-color', '#' + value[1]['color']); }
 
     if (!$.support.linearGradient)
     {
@@ -174,7 +172,7 @@ blist.publish.customizationApplication = {
                       href:                                 [ { selector: '.headerBar .logoLink', attr: 'href' } ] },
     menu:           { button:        { background:          [ { callback: function(value) { publishNS.applyGradient('.headerBar .mainMenu .mainMenuButton', false, value); } } ],
                                        background_hover:    [ { callback: function(value) { publishNS.applyGradient('.headerBar .mainMenu .mainMenuButton', true, value); } } ],
-                                       border:              [ { selector: '.mainMenuButton', css: 'border-color' } ],
+                                       border:              [ { selector: '.headerBar .mainMenu .mainMenuButton', css: 'border-color' } ],
                                        text:                [ { selector: '.mainMenuButton', css: 'color' } ] },
                       options:       { more_views:          [ { selector: '.mainMenu .menuEntry.views', callback: publishNS.hideShowMenuItem } ],
                                        comments:            [ { selector: '.mainMenu .menuEntry.comments', callback: publishNS.hideShowMenuItem } ],
@@ -753,9 +751,12 @@ blist.publish.showUnsavedChangesBar = function(showDiscard)
     var additionalColorHandlers = {
         customization_menu_button_background_0_color: function(color)
         {
-            $('#customization_menu_button_background_1_color').val($.subtractColors(color, '222'));
-            $('#customization_menu_button_background_hover_0_color').val($.addColors(color, '222'));
+            var darkerColor = $.subtractColors(color, '222');
+            var lighterColor = $.addColors(color, '222');
+            $('#customization_menu_button_background_1_color').val(darkerColor);
+            $('#customization_menu_button_background_hover_0_color').val(lighterColor);
             $('#customization_menu_button_background_hover_1_color').val(color);
+            $('#customization_menu_button_border').val(darkerColor);
         }
     };
     $('.colorPickerContainer').each(function() {

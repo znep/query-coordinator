@@ -3,12 +3,14 @@ class WidgetsNewController < ApplicationController
   layout 'widgets_new'
 
   def show
-    if params[:customization_id].blank?
+    if params[:customization_id].blank? ||
+       params[:customization_id] == 'normal' ||  # support older
+       params[:customization_id] == 'black'      # widget format
       return redirect_to(params.merge!(
         :customization_id => CurrentDomain.default_widget_customization_id))
     elsif !params[:customization_id].match(/\w{4}-\w{4}/) &&
            params[:customization_id] != 'default'
-      render_404
+      return render_404
     end
 
     begin

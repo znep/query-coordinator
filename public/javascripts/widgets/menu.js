@@ -59,9 +59,6 @@
 
         // reset then realign the menu if necessary; set styles as appropriate
         // show it so we can measure it
-        $menuDropdown.removeClass('menuPosition-bottom menuPosition-right');
-        if (opts.attached)
-        { $menuDropdown.addClass('menuPosition-top menuPosition-left'); }
         $menuDropdown
             .css('width', null)
             .css('right', null)
@@ -93,11 +90,6 @@
             }
             else
             {
-                if (opts.attached)
-                {
-                    $menuDropdown.removeClass('menuPosition-left');
-                    $menuDropdown.addClass('menuPosition-right');
-                }
                 $menuDropdown.css('right', 0);
             }
         }
@@ -107,11 +99,6 @@
             // if the menu can be flipped up, do so; otherwise, leave it alone
             if ($menuContainer.offset().top - $menuDropdown.outerHeight(true) > 0)
             {
-                if (opts.attached)
-                {
-                    $menuDropdown.removeClass('menuPosition-top');
-                    $menuDropdown.addClass('menuPosition-bottom');
-                }
                 $menuDropdown.css('bottom', $menuContainer.innerHeight());
             }
         }
@@ -153,7 +140,6 @@
     };
 
     $.fn.menu.defaults = {
-        attached: true,
         contents: [],
         menuButtonClass: 'menuButton',
         menuButtonContents: 'Menu',

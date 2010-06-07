@@ -110,7 +110,6 @@ div.menu
     font-size: 1.2em
     height: 1em
     line-height: 1em
-    margin-top: -4px
     padding: 0.6em 1em
     position: relative
     @include transition-property(border)
@@ -127,18 +126,10 @@ div.menu
     @include border-radius(0.4em)
     @include box-shadow(0,0,4px,rgba(0,0,0,0.5))
     display: none
-    margin-top: -1px
+    margin-top: 0.6em
     overflow: hidden
     position: absolute
     z-index: 49
-    &.menuPosition-top.menuPosition-left
-      @include border-radius-corner(top, left, 0)
-    &.menuPosition-top.menuPosition-right
-      @include border-radius-corner(top, right, 0)
-    &.menuPosition-bottom.menuPosition-left
-      @include border-radius-corner(bottom, left, 0)
-    &.menuPosition-bottom.menuPosition-right
-      @include border-radius-corner(bottom, right, 0)
     ul.menuColumns
       margin: 1.2em 0
       overflow: hidden
@@ -181,7 +172,6 @@ div.menu
                 font-size: 0.85em
                 margin: 0.2em 0.1em
   &.open
-    @include box-shadow(0,-3px,4px,rgba(0,0,0,0.5))
     .menuButton
       border: 1px solid #999999
         bottom: none

@@ -409,7 +409,8 @@ span.helpie
 .columnList li.number { background-position: 0 -20px; }
 .columnList li.money { background-position: 0 -40px; }
 .columnList li.percent { background-position: 0 0; }
-.columnList li.dateTime, .columnList li.date { background-position: 0 -340px; }
+.columnList li.dateTime, .columnList li.date, .columnList li.calendar_date
+{ background-position: 0 -340px; }
 .columnList li.phone { background-position: 0 -240px; }
 .columnList li.email { background-position: 0 -260px; }
 .columnList li.url { background-position: 0 -360px; }

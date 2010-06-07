@@ -59,7 +59,8 @@ module Displays::Config
         },
 
         'timeline' => {'label' => 'Time Line',
-            'fixedColumns' => [{'dataType' => 'date', 'label' => 'Date'}],
+            'fixedColumns' => [{'dataType' => ['date', 'calendar_date'],
+                'label' => 'Date'}],
             'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Value'},
                 {'dataType' => 'text', 'label' => 'Title', 'optional' => true},
                 {'dataType' => 'text', 'label' => 'Annotation', 'optional' => true}

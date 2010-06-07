@@ -92,6 +92,7 @@ columnTotalsNS.renderers['flag'] =
 columnTotalsNS.renderers['text'] =
 columnTotalsNS.renderers['html'] =
 columnTotalsNS.renderers['checkbox'] =
+columnTotalsNS.renderers['calendar_date'] =
 columnTotalsNS.renderers['date'] =
 columnTotalsNS.renderers['location'] =
 columnTotalsNS.renderers['tag'] =

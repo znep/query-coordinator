@@ -73,14 +73,9 @@
       </div>
     </div>
 
-    <div class="widgetContentSection widgetContent_views">
-      <a href="#close" class="close widgetContentClose">Close</a>
-    </div>
-    <div class="widgetContentSection widgetContent_downloads">
-      <a href="#close" class="close widgetContentClose">Close</a>
-    </div>
+    <div class="widgetContentSection widgetContent_views"></div>
+    <div class="widgetContentSection widgetContent_downloads"></div>
     <div class="widgetContentSection widgetContent_comments">
-      <a href="#close" class="close widgetContentClose">Close</a>
       <div class="commentTopLevelActions clearfix">
         <a href="#comment" class="button addCommentButton" title="Leave a comment">Comment</a>
         <div class="starsControl datasetAverageRating"></div>
@@ -89,12 +84,10 @@
       <a href="#more" class="commentsViewMoreLink"></a>
     </div>
     <div class="widgetContentSection widgetContent_embed">
-      <a href="#close" class="close widgetContentClose">Close</a>
       <%= render :partial => 'blists/embed_form',
                  :locals => { :view => @view, :cur => params[:cur] } %>
     </div>
     <div class="widgetContentSection widgetContent_print">
-      <a href="#close" class="close widgetContentClose">Close</a>
       <%= render :partial => 'blists/print_form_new', :locals => { :view => @view } %>
     </div>
   </div>

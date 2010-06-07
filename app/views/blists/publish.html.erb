@@ -248,6 +248,26 @@
                 </dd>
               </dl>
               <dl class="summaryList">
+                <dt>Button Color</dt>
+                <dd>
+                  <div class="itemContent">
+                    <span class="textContent">
+                      <%= hidden_field_tag("customization[menu][button][background][0][color]",
+                          @customization[:menu][:button][:background][0]['color']) %>
+                      <div class="colorPickerContainer"></div>
+                      <div id="frameColorPickerTrigger" class="colorPickerTrigger" style="background-color:#<%= @customization[:menu][:button][:background][0]['color'] %>"></div>
+                      <div class="colorPickerLabel"><%= @customization[:menu][:button][:background][0]['color'] %></div>
+                    </span>
+                    <%= hidden_field_tag("customization[menu][button][background][1][color]",
+                        @customization[:menu][:button][:background][1]['color']) %>
+                    <%= hidden_field_tag("customization[menu][button][background_hover][0][color]",
+                        @customization[:menu][:button][:background_hover][0]['color']) %>
+                    <%= hidden_field_tag("customization[menu][button][background_hover][1][color]",
+                        @customization[:menu][:button][:background_hover][1]['color']) %>
+                  </div>
+                </dd>
+              </dl>
+              <dl class="summaryList">
                 <dt>Toolbar Color</dt>
                 <dd>
                   <div class="itemContent">

@@ -204,7 +204,7 @@ html, body
   padding: 0.3em
   position: relative
 
-  form
+  form, .toolbarClosePaneBox
     display: none
 
   .toolbarMessage
@@ -213,6 +213,12 @@ html, body
     font-size: 1.2em
     font-weight: bold
     height: 1.4em
+    padding: 0.4em
+
+  .toolbarClosePaneName
+    color: #eee
+    font-size: 1.2em
+    font-weight: bold
     padding: 0.4em
 
   .toolbarTextboxWrapper
@@ -234,6 +240,8 @@ html, body
     position: absolute
     right: 0.3em
     top: 0.3em
+    &:hover
+      text-decoration: none
 
     // I don't even know anymore.
     .ie6 & .icon,
@@ -257,11 +265,6 @@ html, body
     // fix IE6/7 scrolling bug
     .ie6 &, .ie7 &
       position: relative
-
-  .widgetContentClose
-    @include close-button
-    float: right
-    margin: 1em
 
   .widgetContentGrid
     display: block

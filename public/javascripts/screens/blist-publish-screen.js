@@ -117,6 +117,30 @@ blist.publish.applyLogo = function($elem, value)
     }
 };
 
+blist.publish.applyGradient = function(selector, hover, value)
+{
+    if (hover)
+    { selector += ':hover'; }
+    else
+    { publishNS.writeStyle(selector, 'border-color', '#' + value[1]['color']); }
+
+    if (!$.support.linearGradient)
+    {
+        // ie/older
+        widgetNS.setGhettoButtonImage((hover ? 'hover' : 'normal'), 'url(/ui/box.png?w=3&h=30&rx=1&ry=1&rw=1&fc=' +
+            value[0]['color'] + ',' + value[1]['color'] + ')')
+    }
+    else
+    {
+        // firefox
+        publishNS.writeStyle(selector, 'background', '-moz-linear-gradient(0 0 270deg, #' +
+            value[0]['color'] + ', #' + value[1]['color'] + ')');
+        // webkit
+        publishNS.writeStyle(selector, 'background', '-webkit-gradient(linear, left top, left bottom, from(#' +
+            value[0]['color'] + '), to(#' + value[1]['color'] + '))');
+    }
+};
+
 blist.publish.hideShowMenuItem = function($elem, value)
 {
     if (value === true)
@@ -148,8 +172,8 @@ blist.publish.customizationApplication = {
     toolbar:        { color:                                [ { selector: '.subHeaderBar, .toolbar', css: 'background-color' } ] },
     logo:           { image:                                [ { selector: '.headerBar .logo', callback: publishNS.applyLogo } ],
                       href:                                 [ { selector: '.headerBar .logoLink', attr: 'href' } ] },
-    menu:           { button:        { background:          [ { selector: '.mainMenu', callback: function($elem, value) {} } ],
-                                       background_hover:    [ { selector: '.mainMenu', callback: function($elem, value) {} } ],
+    menu:           { button:        { background:          [ { callback: function(value) { publishNS.applyGradient('.headerBar .mainMenu .mainMenuButton', false, value); } } ],
+                                       background_hover:    [ { callback: function(value) { publishNS.applyGradient('.headerBar .mainMenu .mainMenuButton', true, value); } } ],
                                        border:              [ { selector: '.mainMenuButton', css: 'border-color' } ],
                                        text:                [ { selector: '.mainMenuButton', css: 'color' } ] },
                       options:       { more_views:          [ { selector: '.mainMenu .menuEntry.views', callback: publishNS.hideShowMenuItem } ],
@@ -322,6 +346,10 @@ blist.publish.applyCustomizationToPreview = function(hash)
         recurse(publishNS.customizationApplication, hash);
         widgetNS.resizeViewport(); // TODO: This is going to merge poorly?
 
+        // ENABLE HACK: background-image won't take
+        if (!$.support.linearGradient)
+        { widgetNS.addGhettoHoverHook(); }
+
         if(publishNS.showEmbed !== false)
         {
             // Update copy code
@@ -397,9 +425,9 @@ blist.publish.writeStyle = function(selector, key, value)
         }
 
         // Grab the appropriate rule and set the appropriate style
-        eval('publishNS.styleRules[selectors[i]].style.' +
-              key.replace(/-[a-z]/g, function(match) { return match.charAt(1).toUpperCase(); }) +
-              ' = "' + value + '";');
+        publishNS.styleRules[selectors[i]].style[
+            key.replace(/-[a-z]/g, function(match) { return match.charAt(1).toUpperCase(); })]
+              = value;
     }
 };
 
@@ -476,21 +504,30 @@ blist.publish.saveCustomization = function(hash)
 
 blist.publish.serializeForm = function()
 {
+    // The serializer will treat these as arrays if it runs into them.
+    var arrays = [ 'menu_button_background', 'menu_button_background_hover' ];
+
     var hash = {};
     $('#publishOptionsPane form :input').each(function()
     {
         var $input = $(this);
-        if ($input.attr('name').match(/^customization(\[[a-z_]+\])+$/i))
+        if ($input.attr('name').match(/^customization(\[[a-z0-9_]+\])+$/i))
         {
-            var matches = $input.attr('name').match(/[a-z_]+/ig);
+            var matches = $input.attr('name').match(/[a-z0-9_]+/ig);
             var subhash = hash;
             for (var i = 1; i < matches.length - 1; i++)
             {
-                if (subhash[matches[i]] === undefined)
+                var key = matches[i];
+                if (_.isArray(subhash))
                 {
-                    subhash[matches[i]] = {};
+                    key = parseInt(key);
                 }
-                subhash = subhash[matches[i]];
+
+                if (_.isUndefined(subhash[key]))
+                {
+                    subhash[key] = _.include(arrays, matches.slice(1, i + 1).join('_')) ? [] : {};
+                }
+                subhash = subhash[key];
             }
             switch ($input.attr('type'))
             {
@@ -509,6 +546,7 @@ blist.publish.serializeForm = function()
             }
         }
     });
+
     return hash;
 };
 
@@ -528,7 +566,7 @@ blist.publish.populateForm = function(hash)
     {
         for (var key in subhash)
         {
-            if (typeof subhash[key] == 'object')
+            if ((typeof subhash[key] == 'object') || _.isArray(subhash[key]))
             {
                 recurse(subhash[key], prefix + '[' + key + ']');
             }
@@ -712,6 +750,14 @@ blist.publish.showUnsavedChangesBar = function(showDiscard)
 
 
     // Color pickers
+    var additionalColorHandlers = {
+        customization_menu_button_background_0_color: function(color)
+        {
+            $('#customization_menu_button_background_1_color').val($.subtractColors(color, '222'));
+            $('#customization_menu_button_background_hover_0_color').val($.addColors(color, '222'));
+            $('#customization_menu_button_background_hover_1_color').val(color);
+        }
+    };
     $('.colorPickerContainer').each(function() {
         var $this = $(this);
         $this.ColorPicker({
@@ -720,7 +766,11 @@ blist.publish.showUnsavedChangesBar = function(showDiscard)
             onChange: function(hsb, hex, rgb) {
                 $this.siblings('.colorPickerLabel').text(hex);
                 $this.siblings('.colorPickerTrigger').css('background-color', '#' + hex);
-                $this.siblings('input').val(hex);
+
+                var $input = $this.siblings('input');
+                $input.val(hex);
+                if (_.isFunction(additionalColorHandlers[$input.attr('id')]))
+                { additionalColorHandlers[$input.attr('id')](hex); }
             }
         });
         $this.siblings('.colorPickerTrigger').click(function()

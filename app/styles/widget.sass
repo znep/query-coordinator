@@ -34,6 +34,9 @@ html, body
     margin: 10px
       bottom: 0
 
+    &.hide
+      display: none
+
     .mainMenuButton
       @include sprite-button-icons
       @include gradient_menu_button_background
@@ -77,13 +80,17 @@ html, body
       min-width: 23em
 
       ul.menuColumns
-        margin-bottom: 0
+        &.hasAbout
+          margin-bottom: 0
 
         li.menuColumn ul.menuEntries
           padding-bottom: 0
 
           li.menuEntry
             @include sprite-type-icons-30
+
+            &.hide
+              display: none
 
             a
               color: #222
@@ -108,7 +115,7 @@ html, body
               .subtext
                 font-weight: normal
 
-            &.about, &.api
+            &.about
               background-color: #f7f7f7
               border-top: 1px solid #dedede
               @include border-radius(0, 0.4em)
@@ -130,14 +137,6 @@ html, body
 
                 &:hover
                   text-decoration: underline
-
-            &.apiAfterAbout
-              border-top: none
-              margin-top: -1em
-              padding-top: 0.2em
-
-              a
-                padding-top: 0
 
 .subHeaderBar
   background-color: $color_toolbar_color
@@ -468,6 +467,24 @@ html, body
           width: 4em
         input
           width: 8em
+
+  .widgetContent_api
+    .apiContentWrapper
+      padding: 2em
+
+      p
+        font-size: 1.2em
+        margin-bottom: 1em
+
+      .apiEndpointWrapper
+        background-color: #eee
+        margin: 1em
+        overflow-x: auto
+        overflow-y: hidden
+        padding: 2em
+
+        pre
+          font-size: 1.3em
 
   .widgetContent_print form
     padding: 2em

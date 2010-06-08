@@ -289,13 +289,16 @@
                     <li><%= get_add_column("Formatted Text", @view.id, "html") %></li>
                 </ul>
               </li>
-              <li class='column'>
+              <li class='column wide'>
               <%# Numeric datatypes %>
                 <ul>
                     <li><%= get_add_column("Number", @view.id, "number") %></li>
                     <li><%= get_add_column("Money", @view.id, "money") %></li>
                     <li><%= get_add_column("Percent", @view.id, "percent") %></li>
-                    <li><%= get_add_column("Date &amp; Time", @view.id, "date") %></li>
+                    <li><%= get_add_column("Date &amp; Time", @view.id,
+                      "calendar_date") %></li>
+                    <li><%= get_add_column("Date &amp; Time (with timezone)",
+                      @view.id, "date") %></li>
                 </ul>
               </li>
               <li class='column'>

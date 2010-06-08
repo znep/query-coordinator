@@ -5,7 +5,7 @@
   <input type='checkbox' id='<%= id %>' name='<%= column.id %>' />
 </div>
 
-<%- when 'date' -%>
+<%- when 'calendar_date', 'date' -%>
 <div class='fieldContainer dateInput'>
   <select class='monthInput' name='<%= column.id %>:month'>
     <option value=''></option>

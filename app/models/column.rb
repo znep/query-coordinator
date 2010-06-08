@@ -8,7 +8,8 @@ class Column < Model
       "number" => "Number",
       "money" => "Money",
       "percent" => "Percent",
-      "date" => "Date & Time",
+      'calendar_date' => 'Date & Time',
+      "date" => "Date & Time (with timezone)",
       "phone" => "Phone",
       "email" => "Email",
       "url" => "Website URL",
@@ -70,6 +71,8 @@ class Column < Model
         'blob'
       when 'checkbox', 'flag', 'location'
         'comparable'
+      when 'calendar_date', 'date'
+        'date'
       else
         dataTypeName
       end
@@ -95,7 +98,7 @@ class Column < Model
       "drop_down_list", 'location'
       aggs.reject! {|a|
         ['average', 'sum', 'maximum', 'minimum'].any? {|n| n == a['name']}}
-    when "date"
+    when 'calendar_date', "date"
       aggs.reject! {|a| ['average', 'sum'].any? {|n| n == a['name']}}
     when "stars"
       aggs.reject! {|a| 'sum' == a['name']}
@@ -109,12 +112,12 @@ class Column < Model
 
     if client_type(dataTypeName) == "text"
       return [
-        'html', "number", "money", "percent", "date", "phone",
+        'html', "number", "money", "percent", 'calendar_date', "date", "phone",
         "email", "url", "checkbox", "stars", "flag"
       ]
     elsif client_type(dataTypeName) == "html"
       return [
-        'text', "number", "money", "percent", "date", "phone",
+        'text', "number", "money", "percent", 'calendar_date', "date", "phone",
         "email", "url", "checkbox", "stars", "flag"
       ]
     end
@@ -125,7 +128,8 @@ class Column < Model
       ].reject { |i| i == dataTypeName }
     end
 
-    if ["date", "phone", "email", "url", "checkbox", "flag"].include?(dataTypeName)
+    if ['calendar_date', "date", "phone", "email", "url", "checkbox",
+      "flag"].include?(dataTypeName)
       return ["text"]
     end
 
@@ -135,13 +139,14 @@ class Column < Model
   def has_display_options?
     return false if is_group_aggregate? && dataTypeName != 'number'
 
-    types_with_display_options = ["date", "number", "money", "percent"]
+    types_with_display_options = ['calendar_date', "date", "number", "money",
+      "percent"]
 
     return types_with_display_options.include?(client_type)
   end
 
   def has_formatting?
-    types_with_formatting = ["text", "date", "number",
+    types_with_formatting = ["text", 'calendar_date', "date", "number",
         "money", "percent", "phone", "email", 'location',
         "url", "checkbox", "stars", "flag", "picklist", "drop_down_list"]
 
@@ -150,9 +155,10 @@ class Column < Model
 
   def has_totals?
     types_with_totals = ["text", 'html', "number", "money", "percent",
-                         "date", "phone", "email", "url", "checkbox", "stars",
-                         "flag", "document_obsolete", "document", "photo_obsolete",
-                         "photo", "picklist", "drop_down_list", "tag", 'location']
+                         'calendar_date', "date", "phone", "email", "url",
+                         "checkbox", "stars", "flag", "document_obsolete",
+                         "document", "photo_obsolete", "photo", "picklist",
+                         "drop_down_list", "tag", 'location']
 
     return types_with_totals.include?(client_type)
   end

@@ -51,6 +51,8 @@ filterNS.filterableClass = function(type) {
     {
         return "comparable";
     }
+    else if ($.inArray(type, ['calendar_date', 'date']) > -1)
+    { return 'date'; }
     else
     {
         return type;
@@ -80,7 +82,7 @@ filterNS.createEditor = function($renderer, column, value) {
     {
         tempCol.type = "text";
     }
-    else if (tempCol.type == "date")
+    else if (tempCol.type == "date" || tempCol.type == 'calendar_date')
     {
         tempCol.format = "date";
     }

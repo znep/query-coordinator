@@ -104,7 +104,8 @@
 .type_combo_list .number { background-position: 0 -20px; }
 .type_combo_list .html { background-position: 0 -60px; }
 .type_combo_list .text { background-position: 0 -80px; }
-.type_combo_list .date { background-position: 0 -340px; }
+.type_combo_list .calendar_date, .type_combo_list .date
+{ background-position: 0 -340px; }
 .type_combo_list .tag { background-position: 0 -180px; }
 .type_combo_list .url { background-position: 0 -360px; }
 .type_combo_list .document { background-position: 0 -280px; }

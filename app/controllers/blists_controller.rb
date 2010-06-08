@@ -536,12 +536,14 @@ class BlistsController < ApplicationController
 
   def append
     @view = View.find(params[:id])
-    @error_type = @view.columns.any?{ |column| !column.flag?('hidden') && column.client_type.match(/(document|photo|document_obsolete|photo_obsolete|location|nested_table)/) }
+    @error_type = @view.columns.any?{ |column| !column.flag?('hidden') && column.client_type.match(
+      /(document|photo|document_obsolete|photo_obsolete|location|nested_table)/) }
   end
 
   def replace
     @view = View.find(params[:id])
-    @error_type = @view.columns.any?{ |column| !column.flag?('hidden') && column.client_type.match(/(document|photo|document_obsolete|photo_obsolete|location|nested_table)/) }
+    @error_type = @view.columns.any?{ |column| !column.flag?('hidden') && column.client_type.match(
+      /(document|photo|document_obsolete|photo_obsolete|location|nested_table)/) }
   end
 
   def share

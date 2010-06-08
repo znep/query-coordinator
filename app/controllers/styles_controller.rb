@@ -57,7 +57,7 @@ class StylesController < ApplicationController
       else
         customization = WidgetCustomization.find(params[:customization_id])
         theme = customization.customization
-        updated_at = customization.updated_at
+        updated_at = customization.updatedAt
       end
     rescue CoreServer::CoreServerError => e
       render_404

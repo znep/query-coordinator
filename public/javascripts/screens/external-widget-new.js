@@ -4,6 +4,15 @@ var configNS = blist.namespace.fetch('blist.configuration');
 
 widgetNS.ready = false;
 
+// Report we've opened for metrics
+$.ajax({url: '/views/' + widgetNS.view.id + '.json',
+    data: {
+      method: 'opening',
+      accessType: 'WIDGET',
+      referrer: document.referrer
+    }
+});
+
 blist.widget.resizeViewport = function()
 {
     var $contentWrapper = $('.widgetWrapper');

@@ -1,3 +1,20 @@
+var datasetPageNS = blist.namespace.fetch('blist.datasetPage');
+
+blist.datasetPage.expandSearch = function()
+{
+    $('#searchButton .searchField:not(.expanded)')
+        .animate({ width: '12em', paddingLeft: '0.3em', paddingRight: '1.6em' })
+        .css('background-color', '#fff')
+        .addClass('expanded');
+};
+blist.datasetPage.collapseSearch = function()
+{
+    $('#searchButton .searchField')
+        .animate({ width: '2em', paddingLeft: '1px', paddingRight: '1px' })
+        .css('background-color', '')
+        .removeClass('expanded');
+};
+
 $(function()
 {
     $('.outerContainer').fullScreen();
@@ -17,12 +34,12 @@ $(function()
                     columnNameEdit: blist.isOwner,
                     showAddColumns: blist.isOwner && blist.display.type == 'blist',
                     currentUserId: blist.currentUserId,
-                    accessType: 'WEBSITE', manualResize: true, showRowHandle: true
+                    accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
 //                    clearTempViewCallback: blistGridNS.clearTempViewTab,
 //                    setTempViewCallback: blistGridNS.setTempViewTab,
 //                    updateTempViewCallback: blistGridNS.updateTempViewTab,
-//                    filterForm: '#lensContainer .headerBar form',
-//                    autoHideClearFilterItem: false,
+                    filterForm: '#searchButton .searchForm',
+                    clearFilterItem: '#searchButton .clearSearch'
 //                    isInvalid: blist.display.isInvalid,
 //                    validViewCallback: blistGridNS.updateValidView
                 });
@@ -86,6 +103,8 @@ $(function()
         ]
     });
 
+    if ($.isBlank(blist.display.view.description))
+    { $('.descriptionExpander').hide(); }
     $('.descriptionExpander').click(function(event)
     {
         event.preventDefault();
@@ -121,6 +140,24 @@ $(function()
 
     var $dsIcon = $('#datasetIcon');
     $dsIcon.socrataTip($dsIcon.text());
+
+    var hideTimeout;
+    var hideCheck = function()
+    {
+        clearTimeout(hideTimeout);
+        _.defer(function()
+        {
+            if ($('#searchButton .searchField').hasClass('prompt'))
+            { hideTimeout = setTimeout(datasetPageNS.collapseSearch, 1500); }
+        });
+    };
+    $('#searchButton')
+        .hover(function()
+        {
+            clearTimeout(hideTimeout);
+            datasetPageNS.expandSearch();
+        }, hideCheck)
+        .find('.searchField').blur(hideCheck);
 
     blist.dataset.controls.hookUpShareMenu(blist.display.view,
         $('#shareMenu'),

@@ -99,7 +99,8 @@ class Column < Model
       aggs.reject! {|a|
         ['average', 'sum', 'maximum', 'minimum'].any? {|n| n == a['name']}}
     when 'calendar_date', "date"
-      aggs.reject! {|a| ['average', 'sum'].any? {|n| n == a['name']}}
+      aggs.reject! {|a|
+        ['average', 'sum', 'maximum', 'minimum'].any? {|n| n == a['name']}}
     when "stars"
       aggs.reject! {|a| 'sum' == a['name']}
     end
@@ -128,8 +129,14 @@ class Column < Model
       ].reject { |i| i == dataTypeName }
     end
 
-    if ['calendar_date', "date", "phone", "email", "url", "checkbox",
-      "flag"].include?(dataTypeName)
+    if dataTypeName == 'calendar_date'
+      return ['text', 'date']
+    end
+    if dataTypeName == 'date'
+      return ['text', 'calendar_date']
+    end
+
+    if ["phone", "email", "url", "checkbox", "flag"].include?(dataTypeName)
       return ["text"]
     end
 

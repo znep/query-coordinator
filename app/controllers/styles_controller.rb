@@ -55,14 +55,16 @@ class StylesController < ApplicationController
       if params[:customization_id] == 'default'
         theme = WidgetCustomization.default_theme(1)
       else
-        theme = WidgetCustomization.find(params[:customization_id]).customization
+        customization = WidgetCustomization.find(params[:customization_id])
+        theme = customization.customization
+        updated_at = customization.updated_at
       end
     rescue CoreServer::CoreServerError => e
       render_404
     end
     headers['Content-Type'] = 'text/css'
 
-    cache_key = generate_cache_key("widget.#{params[:customization_id]}")
+    cache_key = generate_cache_key("widget.#{params[:customization_id]}.#{updated_at || 0}")
     cached = Rails.cache.read(cache_key) unless RAILS_ENV == 'development'
 
     if cached.nil?

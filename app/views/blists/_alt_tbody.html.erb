@@ -87,19 +87,24 @@
               <%= column.currency_symbol %><%=
                 "%.#{column.precision || 2}f" % cell %>
 
-            <%- when 'date' -%>
+            <%- when 'calendar_date', 'date' -%>
+              <%- if column.renderTypeName == 'calendar_date' -%>
+              <%- value = Time.parse(cell) -%>
+              <%- else -%>
               <%- value = Time.at(cell.to_i) -%>
+              <%- end -%>
+              <%- tz_str = column.renderTypeName == 'date' ? ' %Z' : '' -%>
               <%- output_value = case column.format_view -%>
                 <%- when 'date'          then value.strftime('%m/%d/%Y') %>
-                <%- when 'date_time'     then value.strftime('%m/%d/%Y %I:%M:%S %Z') %>
+                <%- when 'date_time'     then value.strftime('%m/%d/%Y %I:%M:%S' + tz_str) %>
                 <%- when 'date_dmy'      then value.strftime('%d/%m/%Y') %>
-                <%- when 'date_dmy_time' then value.strftime('%d/%m/%Y %I:%M:%S %Z') %>
+                <%- when 'date_dmy_time' then value.strftime('%d/%m/%Y %I:%M:%S' + tz_str) %>
                 <%- when 'date_ymd'      then value.strftime('%Y/%m/%d') %>
-                <%- when 'date_ymd_time' then value.strftime('%Y/%m/%d %I:%M:%S %Z') %>
+                <%- when 'date_ymd_time' then value.strftime('%Y/%m/%d %I:%M:%S' + tz_str) %>
                 <%- when 'date_monthdy'  then value.strftime('%B %d, %Y') %>
                 <%- when 'date_dmonthy'  then value.strftime('%d %B %Y') %>
                 <%- when 'date_ymonthd'  then value.strftime('%Y %B %d') %>
-                <%- else                      value.strftime('%m/%d/%Y %I:%M:%S %Z') %>
+                <%- else                      value.strftime('%m/%d/%Y %I:%M:%S' + tz_str) %>
               <%- end -%>
               <%= output_value || value.strftime('%c') %>
 

@@ -6,8 +6,9 @@ class WidgetsController < ApplicationController
     @variation = params[:variation]
     @theme = WidgetCustomization.default_theme
 
-    if @variation.blank? && params[:customization_id].blank?
-      return redirect_to(params.merge!(:controller => "widgets", :action => "show", :variation => 'normal'))
+    if @variation != 'whitehouse'
+      return redirect_to(params.merge!(:controller => "widgets_new", :action => "show",
+        :customization_id => CurrentDomain.default_widget_customization_id))
     end
 
     # HACK: Support old template options

@@ -18,6 +18,13 @@ blist.widget.resizeViewport = function()
     $contentContainer.children().height(targetHeight);
 
     widgetNS.resizeGrid();
+
+    if ($.browser.msie && ($.browser.majorVersion == 7))
+    {
+        // IE7 gets really confused when the toolbar is opening or closing.
+        // Jiggering this class seems to help it.
+        $('.mainMenu').toggleClass('open').toggleClass('open');
+    }
 };
 
 blist.widget.resizeGrid = function()
@@ -502,7 +509,8 @@ $(function()
     $('.widgetContent_comments .datasetAverageRating').stars({
         onChange: function()
         {
-            $('.commentInterstitial').jqmShow();
+            $('.actionInterstitial').jqmShow()
+                .find('.actionPhrase').text('rate this dataset');
             return false;
         },
         value: widgetNS.view.averageRating || 0
@@ -685,13 +693,33 @@ $(function()
         $this.remove();
     });
     $.live('.widgetContent_comments .commentActions a,' +
-           '.widgetContent_comments .replyActions a,' +
-           '.widgetContent_comments .addCommentButton', 'click',
+           '.widgetContent_comments .replyActions a', 'click',
         function (event)
         {
             event.preventDefault();
-
-            $('.commentInterstitial').jqmShow();
+            var message = 'do that';
+            switch($(this).closest('li').attr('class'))
+            {
+                case 'actionReply':
+                    message = 'reply to this comment';
+                    break;
+                case 'actionInappropriate':
+                    message = 'flag this comment';
+                    break;
+                case 'rateUp':
+                case 'rateDown':
+                    message = 'rate this comment';
+                    break;
+            }
+            $('.actionInterstitial').jqmShow()
+                .find('.actionPhrase').text(message);
+        });
+    $.live('.widgetContent_comments .addCommentButton', 'click',
+        function(event)
+        {
+            event.preventDefault();
+            $('.actionInterstitial').jqmShow()
+                .find('.actionPhrase').text('leave a comment');
         });
 
     // embed

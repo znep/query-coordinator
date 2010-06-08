@@ -163,6 +163,7 @@ function(column, $container)
     });
 };
 
+columnFormatNS.renderers['calendar_date'] =
 columnFormatNS.renderers['date'] =
 function(column, $container)
 {
@@ -188,9 +189,9 @@ function(column, $container)
         {id: 'date_dmonthy', info: '(Date [day month year])'},
         {id: 'date_ymonthd', info: '(Date [year month day])'}
     ];
+    var type = blist.data.types[column.type] || blist.data.types.date;
     var dateFormatValues = $.map(dateViews, function(v)
-        { return $.extend(v,
-            {label: today.format(blist.data.types.date.formats[v.id])}); });
+        { return $.extend(v, {label: today.format(type.formats[v.id])}); });
 
     $("#columnProperties_displayView").combo({
       ddClass: 'lr_justified format_date_view',

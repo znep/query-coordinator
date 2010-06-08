@@ -373,7 +373,7 @@
                         '<p>' + this.point.subtitle + '</p>' : '') +
                     '<p>' + this.y + ' at ' +
                     blist.data.types.date.filterRender(this.x / 1000,
-                        this.series.options.column) + '</p>';
+                        chartObj._xColumn) + '</p>';
             } };
         }
         else
@@ -423,8 +423,10 @@
         if (isDateTime(chartObj))
         {
             if (!_.isNull(row) && !_.isUndefined(row))
-            { pt.x = row[chartObj._xColumn.dataIndex] * 1000; }
+            { pt.x = row[chartObj._xColumn.dataIndex]; }
             else { pt.x = ''; }
+            if (_.isNumber(pt.x)) { pt.x *= 1000; }
+            else if (!$.isBlank(pt.x)) { pt.x = Date.parse(pt.x).valueOf(); }
         }
         else if (!_.isUndefined(chartObj._xCategories))
         { pt.x = chartObj._xCategories.length; }
@@ -481,7 +483,8 @@
     var isDateTime = function(chartObj)
     {
         return !_.isUndefined(chartObj._xColumn) &&
-            chartObj._xColumn.renderTypeName == 'date';
+            (chartObj._xColumn.renderTypeName == 'date' ||
+                chartObj._xColumn.renderTypeName == 'calendar_date');
     };
 
 

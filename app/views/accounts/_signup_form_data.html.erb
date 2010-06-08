@@ -17,7 +17,7 @@
     </p>
 
     <p class="clearfix">
-      <%= f.label :screenName, 'Display Name' %>
+      <%= f.label :screenName, 'Display Name', :class => 'required' %>
       <%= f.text_field :screenName, :maxlength => 40 %>
     </p>
     <% unless local_assigns[:hide_password] %>

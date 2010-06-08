@@ -11,8 +11,7 @@ $(function ()
     // Profile form.
     $(".profileContent form").validate({
         rules: {
-            // user login is obsolete
-            // 'user[login]': "required"
+            'user[screenName]': "required"
         },
         submitHandler: function(form)
         {

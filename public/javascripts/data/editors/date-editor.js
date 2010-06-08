@@ -11,20 +11,31 @@
     {
         prototype:
         {
+            type: function()
+            {
+                return blist.data.types[this.column.type] || blist.data.types.date;
+            },
+
             originalTextValue: function()
             {
                 var formatName = this.column.format || 'date_time';
-                this._format = blist.data.types.date.formats[this.column.format] ||
-                    blist.data.types.date.formats['date_time'];
+                this._format = this.type().formats[this.column.format] ||
+                    this.type().formats['date_time'];
                 if (typeof this.originalValue == 'number')
                 {
                     this._origDate = new Date(this.originalValue * 1000);
-                    return this._origDate.format(this._format);
                 }
-                else
+                else if (!$.isBlank(this.originalValue))
                 {
-                    return this.originalValue || '';
+                    if (!$.isBlank(this.type().stringParse))
+                    { this._origDate = Date.parseExact(this.originalValue,
+                        this.type().stringParse); }
+                    else { this._origDate = Date.parse(this.originalValue); }
                 }
+
+                if (_.isDate(this._origDate))
+                { return this._origDate.format(this._format); }
+                return this.originalValue || '';
             },
 
             editorInserted: function()
@@ -60,7 +71,25 @@
                 if (t === null) { return null; }
 
                 var d = Date.parse(t);
-                return d ? d.valueOf() / 1000 : t;
+                if (!$.isBlank(d))
+                {
+                    // HACK: We can't parse this directly very easily; so if we
+                    // have a day-month swapped format, manually flip them
+                    try
+                    {
+                        if (this.column.format.startsWith('date_dmy') &&
+                            !$.isBlank(t.match(/\d{1,2}\/\d{1,2}\//)))
+                        { d.set({day: d.getMonth() + 1, month: d.getDate() - 1}); }
+                    }
+                    catch (e)
+                    {}
+
+                    if (!$.isBlank(this.type().stringFormat))
+                    { d = d.toString(this.type().stringFormat); }
+                    else
+                    { d = d.valueOf() / 1000; }
+                }
+                return d || t;
             },
 
             isValid: function()

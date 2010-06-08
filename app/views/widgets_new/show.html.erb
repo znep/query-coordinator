@@ -74,14 +74,9 @@
       </div>
     </div>
 
-    <div class="widgetContentSection widgetContent_views">
-      <a href="#close" class="close widgetContentClose">Close</a>
-    </div>
-    <div class="widgetContentSection widgetContent_downloads">
-      <a href="#close" class="close widgetContentClose">Close</a>
-    </div>
+    <div class="widgetContentSection widgetContent_views"></div>
+    <div class="widgetContentSection widgetContent_downloads"></div>
     <div class="widgetContentSection widgetContent_comments">
-      <a href="#close" class="close widgetContentClose">Close</a>
       <div class="commentTopLevelActions clearfix">
         <a href="#comment" class="button addCommentButton" title="Leave a comment">Comment</a>
         <div class="starsControl datasetAverageRating"></div>
@@ -90,12 +85,10 @@
       <a href="#more" class="commentsViewMoreLink"></a>
     </div>
     <div class="widgetContentSection widgetContent_embed">
-      <a href="#close" class="close widgetContentClose">Close</a>
       <%= render :partial => 'blists/embed_form',
                  :locals => { :view => @view, :cur => params[:cur] } %>
     </div>
     <div class="widgetContentSection widgetContent_print">
-      <a href="#close" class="close widgetContentClose">Close</a>
       <%= render :partial => 'blists/print_form_new', :locals => { :view => @view } %>
     </div>
   </div>
@@ -107,12 +100,12 @@
   <%- end -%>
 </div>
 
-<div class="commentInterstitial widgetModal">
+<div class="actionInterstitial widgetModal">
   <a href="#close" class="jqmClose widgetModalClose">Close</a>
-  <h2>Want to leave a comment?</h2>
-  <p>To leave a comment on this dataset, you will be redirected to the
-     <%= CurrentDomain.strings.company %> website where you will be prompted
-     to sign in. Would you like to go to <%= CurrentDomain.cname %>?</p>
+  <h2>Want to <span class="actionPhrase">leave a comment</span>?</h2>
+  <p>To <span class="actionPhrase">leave a comment</span>, you will be
+     redirected to the <%= CurrentDomain.strings.company %> website where
+     you will be prompted to sign in. Would you like to go to <%= CurrentDomain.cname %>?</p>
   <ul class="actions clearfix">
     <li>
       <a class="jqmClose button cancel" href="#cancel"><span class="icon"></span>Cancel</a>

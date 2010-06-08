@@ -348,22 +348,29 @@ blist.namespace.fetch('blist.data.types');
             : "renderHtml(" + value + " || '')";
     };
 
-    var renderDate = function(value, format)
+    var renderDate = function(value, format, stringParse)
     {
         if (value == null) { return ''; }
         var d;
         if (typeof value == 'number') { d = new Date(value * 1000); }
+        else if (!$.isBlank(stringParse))
+        { d = Date.parseExact(value, stringParse); }
         else { d = Date.parse(value); }
         return d ? d.format(format) : '';
     };
 
-    // Optimized format for date/time rendering (datejs is a very inefficient way to go)
+    // Optimized format for date/time rendering (datejs is a very inefficient
+    // way to go)
     var OPTIMIZE_FORMAT_DATETIME1 = 'm/d/Y h:i:s A O';
-    var renderDate_dateTime1 = function(value) {
+    var renderDate_dateTime1 = function(value, stringParse)
+    {
         if (value == null) { return ''; }
         var d;
         if (typeof value == 'number') { d = new Date(value * 1000); }
+        else if (!$.isBlank(stringParse))
+        { d = Date.parseExact(value, stringParse); }
         else { d = Date.parse(value); }
+
         if (!d)
             return '';
         var hour = d.getHours();
@@ -393,11 +400,15 @@ blist.namespace.fetch('blist.data.types');
 
     var renderGenDate = function(value, plain, column)
     {
-        var format = blist.data.types.date.formats[column.format] ||
-            blist.data.types.date.formats['date_time'];
+        var type = blist.data.types[column.type] || blist.data.types.date;
+        var format = type.formats[column.format] || type.formats['date_time'];
         if (format == OPTIMIZE_FORMAT_DATETIME1)
-            return "renderDate_dateTime1(" + value + ")";
-        return "renderDate(" + value + ", '" + format + "')";
+        {
+            return "renderDate_dateTime1(" + value + ", '" +
+                (type.stringParse || '') + "')";
+        }
+        return "renderDate(" + value + ", '" + format + "', '" +
+            (type.stringParse || '') + "')";
     };
 
     var renderGenPicklist = function(value, plain, column, context) {
@@ -612,9 +623,12 @@ blist.namespace.fetch('blist.data.types');
 
     var renderFilterDate = function(value, column)
     {
-        var format = blist.data.types.date.formats[column.format] ||
-            blist.data.types.date.formats['date_time'];
-        return renderDate(value, format);
+        var type = blist.data.types[column.type || column.renderTypeName] ||
+            blist.data.types.date;
+        var format = type.formats[column.format ||
+                (column.displayFormat && column.displayFormat.format)] ||
+            type.formats['date_time'];
+        return renderDate(value, format, type.stringParse);
     };
 
     var renderFilterMoney = function(value, column)
@@ -720,7 +734,32 @@ blist.namespace.fetch('blist.data.types');
 
     /*** DATA TYPE DEFINITIONS ***/
 
-    var timeFormat = 'h:i:s A O';
+    var timeFormat = 'h:i:s A';
+    var zTimeFormat = timeFormat + ' O';
+    var baseDTFormats = {
+        'date': 'm/d/Y',
+        'date_time': 'm/d/Y',
+        'date_dmy': 'd/m/Y',
+        'date_dmy_time': 'd/m/Y',
+        'date_ymd': 'Y/m/d',
+        'date_ymd_time': 'Y/m/d',
+        'date_monthdy': 'F d, Y',
+        'date_dmonthy': 'd F Y',
+        'date_ymonthd': 'Y F d'
+    };
+    var dateTimeFormats = {};
+    var zDateTimeFormats = {};
+    _.each(baseDTFormats, function(v, k)
+    {
+        dateTimeFormats[k] = v;
+        zDateTimeFormats[k] = v;
+        if (k.endsWith('_time'))
+        {
+            dateTimeFormats[k] += ' ' + timeFormat;
+            zDateTimeFormats[k] += ' ' + zTimeFormat;
+        }
+    });
+
     /**
      * This is our main map of data types.
      */
@@ -769,17 +808,21 @@ blist.namespace.fetch('blist.data.types');
             filterable: true,
             deleteable: true,
             group: groupDate,
-            formats: {
-                'date': 'm/d/Y',
-                'date_time': 'm/d/Y ' + timeFormat,
-                'date_dmy': 'd/m/Y',
-                'date_dmy_time': 'd/m/Y ' + timeFormat,
-                'date_ymd': 'Y/m/d',
-                'date_ymd_time': 'Y/m/d ' + timeFormat,
-                'date_monthdy': 'F d, Y',
-                'date_dmonthy': 'd F Y',
-                'date_ymonthd': 'Y F d'
-            }
+            formats: zDateTimeFormats
+        },
+
+        calendar_date: {
+            cls: 'date',
+            renderGen: renderGenDate,
+            sortGen: sortGenNumeric,
+            filterRender: renderFilterDate,
+            filterValue: function(v) { return v; },
+            sortable: true,
+            filterable: true,
+            deleteable: true,
+            group: groupDate,
+            formats: dateTimeFormats,
+            stringFormat: 'yyyy-MM-ddTHH:mm:ss'
         },
 
         photo_obsolete: {
@@ -967,6 +1010,7 @@ blist.namespace.fetch('blist.data.types');
     {
         blist.data.types.text.editor = $.blistEditor.text;
         blist.data.types.date.editor = $.blistEditor.date;
+        blist.data.types.calendar_date.editor = $.blistEditor.date;
         blist.data.types.number.editor = $.blistEditor.number;
         blist.data.types.percent.editor = $.blistEditor.percent;
         blist.data.types.money.editor = $.blistEditor.money;

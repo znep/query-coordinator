@@ -584,14 +584,11 @@ body#lensBody
 {
     border-right: solid 1px #cccccc;
     float: left;
-    height: 11em;
-    width: 14.5%;
+    height: 12.5em;
+    width: 15.5%;
 }
 
-#addColumnsMenu .column
-{
-    width: 16%;
-}
+#addColumnsMenu .column.wide { width: 21%; }
 
 #addColumnsMenu .column.last
 {
@@ -651,6 +648,8 @@ body#lensBody
 .menu.columnsMenu .percent a
 { background-position: 5px 0; }
 
+#addColumn_calendar_date,
+.menu.columnsMenu .calendar_date a,
 #addColumn_date,
 .menu.columnsMenu .dateTime a
 { background-position: 5px -340px; }

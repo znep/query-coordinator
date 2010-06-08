@@ -722,6 +722,11 @@
     background-repeat: no-repeat;
 }
 
+.attachmentsSummary .itemContent .ie7canary
+{
+    display: none;
+}
+
 .singleInfoSummary .attachmentsSummary .attachmentItem a
 {
     padding-left: 1.7em;

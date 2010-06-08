@@ -170,7 +170,7 @@
                     'ul>li': {
                         'row<-column': {  // inner array for rows
                             '.@class+': 'row.className',
-                            '+a': 'row.text',
+                            'a .contents': 'row.text',
                             'a@href': 'row.href',
                             'a@rel': 'row.rel',
                             'a@title': 'row.title',

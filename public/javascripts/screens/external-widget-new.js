@@ -4,22 +4,44 @@ var configNS = blist.namespace.fetch('blist.configuration');
 
 widgetNS.ready = false;
 
-blist.widget.hideToolbar = function()
+// Report we've opened for metrics
+$.ajax({url: '/views/' + widgetNS.view.id + '.json',
+    data: {
+      method: 'opening',
+      accessType: 'WIDGET',
+      referrer: document.referrer
+    }
+});
+
+blist.widget.resizeViewport = function()
 {
-    $('.toolbar')
-        .removeClass().addClass('toolbar')
-        .hide(
-            'slide',
-            { direction: ((widgetNS.orientation == 'downwards') ? 'up' : 'down') },
-            function() { widgetNS.$resizeContainer.fullScreen().adjustSize(); });
+    widgetNS.$resizeContainer.fullScreen().adjustSize();
+
+    if ($.browser.msie && ($.browser.majorVersion == 7))
+    {
+        // IE7 gets really confused when the toolbar is opening or closing.
+        // Jiggering this class seems to help it.
+        $('.mainMenu').toggleClass('open').toggleClass('open');
+    }
 };
 
-blist.widget.showToolbar = function(sectionName, sectionClass)
+blist.widget.searchToolbarShown = false;
+blist.widget.showToolbar = function(sectionName)
 {
+    var sectionClassLookup = {
+        search: 'toolbarSearchForm',
+        email: 'toolbarEmailForm',
+        closePane: 'toolbarClosePaneBox'
+    };
+    var sectionClass = sectionClassLookup[sectionName];
+
     var $toolbar = $('.toolbar');
 
     var toolbarChanged = !$toolbar.hasClass(sectionName);
     $toolbar.removeClass().addClass('toolbar ' + sectionName);
+
+    if (sectionName == 'search')
+    { widgetNS.searchToolbarShown = true; }
 
     if (!$toolbar.is(':visible'))
     {
@@ -27,7 +49,7 @@ blist.widget.showToolbar = function(sectionName, sectionClass)
         $toolbar
             .children(':not(.close)').hide()
             .filter('.' + sectionClass).show();
-        widgetNS.$resizeContainer.fullScreen().adjustSize();
+        widgetNS.resizeViewport();
     }
     else if (toolbarChanged)
     {
@@ -37,6 +59,27 @@ blist.widget.showToolbar = function(sectionName, sectionClass)
                 $toolbar.find('.' + sectionClass).fadeIn('fast');
             });
     }
+};
+blist.widget.hideToolbar = function()
+{
+    var $toolbar = $('.toolbar');
+
+    if ($toolbar.hasClass('search'))
+    {
+        widgetNS.searchToolbarShown = false;
+    }
+    else if (widgetNS.searchToolbarShown)
+    {
+        widgetNS.showToolbar('search');
+        return;
+    }
+
+    $toolbar
+        .removeClass().addClass('toolbar')
+        .hide(
+            'slide',
+            { direction: ((widgetNS.orientation == 'downwards') ? 'up' : 'down') },
+            widgetNS.resizeViewport);
 };
 
 blist.widget.flashToolbarMessage = function($messageElem, message, onDisplay)
@@ -65,7 +108,7 @@ blist.widget.showDataView = function()
         function()
         {
             $('.widgetContentGrid').fadeIn(200);
-            widgetNS.$resizeContainer.fullScreen().adjustSize();
+            widgetNS.resizeViewport();
         });
 };
 
@@ -136,14 +179,16 @@ $(function()
 
     $('.mainMenu .menuDropdown a').click(function(event)
     {
-        if ($(this).attr('rel') == 'external')
+        var $this = $(this);
+
+        if ($this.attr('rel') == 'external')
         {
             // bail; this is a real link
             return;
         }
 
         event.preventDefault();
-        var target = $(this).closest('li').attr('class').split(' ')[1];
+        var target = $this.closest('li').attr('class').split(' ')[1];
         if (!$('.widgetContent_' + target).is(':visible'))
         {
             $('.widgetContent > :visible:first').fadeOut(200,
@@ -151,6 +196,19 @@ $(function()
                 {
                     $('.widgetContent_' + target).fadeIn(200);
 
+                    // set up close pane
+                    var closePaneColors = {
+                        views: '#57b6dd',
+                        downloads: '#959595',
+                        comments: '#bed62b',
+                        embed: '#e44044',
+                        print: '#a460c4'
+                    };
+                    $('.toolbarClosePaneName').text($this.find('.contents').text());
+                    widgetNS.showToolbar('closePane');
+                    $('.toolbar').animate({ 'background-color': closePaneColors[target] });
+
+                    // call any custom handlers
                     if (_.isFunction(paneHandlers[target]))
                     { paneHandlers[target](); }
                 });
@@ -174,29 +232,35 @@ $(function()
             // default has already been prevented for search
             event.preventDefault();
         }
+
+        if ($toolbar.hasClass('closePane'))
+        {
+            // get the color from the subHeaderBar in case we're in the publisher
+            // and it has changed.
+            $toolbar
+                .animate({ 'background-color': $('.subHeaderBar').css('background-color') },
+                    function()
+                    {
+                        $(this).css('background-color', '');
+                    });
+            widgetNS.showDataView();
+        }
+
         widgetNS.hideToolbar();
     });
-    var handleSearchToggle = function(allowHide)
-    {
-        if (allowHide && $toolbar.hasClass('search') && $toolbar.is(':visible'))
-        {
-            widgetNS.hideToolbar();
-        }
-        else
-        {
-            widgetNS.showDataView();
-            widgetNS.showToolbar('search', 'toolbarSearchForm');
-        }
-    };
     $('.subHeaderBar .search a')
         .click(function(event)
         {
             event.preventDefault();
-            handleSearchToggle(true);
-        })
-        .mouseover(function(event)
-        {
-            handleSearchToggle(false);
+            if ($toolbar.hasClass('search') && $toolbar.is(':visible'))
+            {
+                widgetNS.hideToolbar();
+            }
+            else
+            {
+                widgetNS.showDataView();
+                widgetNS.showToolbar('search');
+            }
         });
     $('.shareMenu .email a').click(function(event)
     {
@@ -206,7 +270,7 @@ $(function()
         }
         else
         {
-            widgetNS.showToolbar('email', 'toolbarEmailForm');
+            widgetNS.showToolbar('email');
         }
     });
     var emailRequestComplete = function(emails)
@@ -318,13 +382,6 @@ $(function()
     else if (blist.display.invokeVisualization)
     { $('#data-grid').visualization(); }
 
-    // not-grid
-    $('.widgetContent .close').click(function(event)
-    {
-        event.preventDefault();
-        widgetNS.showDataView();
-    });
-
     // more views
     var moreViews = [];
     $.ajax({
@@ -424,7 +481,8 @@ $(function()
     $('.widgetContent_comments .datasetAverageRating').stars({
         onChange: function()
         {
-            $('.commentInterstitial').jqmShow();
+            $('.actionInterstitial').jqmShow()
+                .find('.actionPhrase').text('rate this dataset');
             return false;
         },
         value: widgetNS.view.averageRating || 0
@@ -607,13 +665,33 @@ $(function()
         $this.remove();
     });
     $.live('.widgetContent_comments .commentActions a,' +
-           '.widgetContent_comments .replyActions a,' +
-           '.widgetContent_comments .addCommentButton', 'click',
+           '.widgetContent_comments .replyActions a', 'click',
         function (event)
         {
             event.preventDefault();
-
-            $('.commentInterstitial').jqmShow();
+            var message = 'do that';
+            switch($(this).closest('li').attr('class'))
+            {
+                case 'actionReply':
+                    message = 'reply to this comment';
+                    break;
+                case 'actionInappropriate':
+                    message = 'flag this comment';
+                    break;
+                case 'rateUp':
+                case 'rateDown':
+                    message = 'rate this comment';
+                    break;
+            }
+            $('.actionInterstitial').jqmShow()
+                .find('.actionPhrase').text(message);
+        });
+    $.live('.widgetContent_comments .addCommentButton', 'click',
+        function(event)
+        {
+            event.preventDefault();
+            $('.actionInterstitial').jqmShow()
+                .find('.actionPhrase').text('leave a comment');
         });
 
     // embed
@@ -690,3 +768,39 @@ $(function()
     // Notify publisher that we are ready
     widgetNS.ready = true;
 });
+
+
+// HACKETY HACK!
+//  IE refuses to acknowledge dynamically written background-images.
+//  I'm cutting my losses here and just adding a bad hack.
+
+blist.widget.ghettoMenuButtonImages = {
+    normal: '',
+    hover: ''
+};
+blist.widget.ghettoHoverHookAdded = false;
+blist.widget.addGhettoHoverHook = function()
+{
+    if (widgetNS.ghettoHoverHookAdded)
+    { return; }
+
+    $('.mainMenuButton').hover(function()
+    {
+        $(this).css('background-image', widgetNS.ghettoMenuButtonImages.hover);
+    }, function()
+    {
+        $(this).css('background-image', widgetNS.ghettoMenuButtonImages.normal);
+    });
+
+    widgetNS.ghettoHoverHookAdded = true;
+};
+
+blist.widget.setGhettoButtonImage = function(image, src)
+{
+    widgetNS.ghettoMenuButtonImages[image] = src;
+
+    if (image == 'normal')
+    { $('.mainMenuButton').css('background-image', widgetNS.ghettoMenuButtonImages.normal); }
+};
+
+// END HACK

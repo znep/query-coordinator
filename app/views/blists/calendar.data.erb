@@ -22,8 +22,8 @@
     </div>
 
     <div class='section'>
-      <%- date_cols = @view.columns.select {|c| c.renderTypeName == 'date' &&
-        !c.flag?('hidden')} -%>
+      <%- date_cols = @view.columns.select {|c| (c.renderTypeName == 'date' ||
+        c.renderTypeName == 'calendar_date') && !c.flag?('hidden')} -%>
       <%- is_multi_date = date_cols.length > 1 -%>
       <h3 class='<%= is_multi_date ? '' : 'separator' %>'>
         Date<%= is_multi_date ? '(s)' : ' Column' %>

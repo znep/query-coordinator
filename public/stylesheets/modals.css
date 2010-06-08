@@ -827,7 +827,7 @@ ul.convertables li a:hover
 .datatype-number { background-position: 0 -20px; }
 .datatype-money { background-position: 0 -40px; }
 .datatype-percent { background-position: 0 0; }
-.datatype-date { background-position: 0 -340px; }
+.datatype-calendar_date, .datatype-date { background-position: 0 -340px; }
 .datatype-phone { background-position: 0 -240px; }
 .datatype-email { background-position: 0 -260px; }
 .datatype-url { background-position: 0 -360px; }

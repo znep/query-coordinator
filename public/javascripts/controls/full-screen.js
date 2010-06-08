@@ -73,6 +73,8 @@
                 fsObj.$dom().children().height(targetHeight).each(function()
                 {
                     var $t = $(this);
+                    if (!$t.is(':visible')) { return; }
+
                     $t.find(fsObj.settings.fullHeightSelector + ':visible')
                         .height($t.innerHeight())
                         .resize();

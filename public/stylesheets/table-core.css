@@ -337,6 +337,8 @@ div.blist-star-0
 .blist-table-editor.type-money input,
 .blist-td-percent,
 .blist-table-editor.type-percent input,
+.blist-td-calendar_date,
+.blist-table-editor.type-calendar_date input,
 .blist-td-date,
 .blist-table-editor.type-date input
 { text-align: right; }
@@ -507,7 +509,8 @@ div.blist-table-editor .align-right { text-align: right; }
 .number .blist-th-icon { background-position: 0 -20px; }
 .money .blist-th-icon { background-position: 0 -40px; }
 .percent .blist-th-icon { background-position: 0 0; }
-.date .blist-th-icon { background-position: 0 -340px; }
+.calendar_date .blist-th-icon, .date .blist-th-icon
+{ background-position: 0 -340px; }
 .phone .blist-th-icon { background-position: 0 -240px; }
 .email .blist-th-icon { background-position: 0 -260px; }
 .url .blist-th-icon { background-position: 0 -361px; }

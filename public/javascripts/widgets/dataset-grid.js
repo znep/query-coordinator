@@ -649,8 +649,8 @@
                                     { id: matchingTableCols[0].id });
                                 if (newCol.format)
                                 {
-                                    delete newCol.grouping_aggregate;
-                                    delete newCol.drill_down;
+                                    delete newCol.format.grouping_aggregate;
+                                    delete newCol.format.drill_down;
                                 }
                                 translatedColumns.push(newCol);
                             }

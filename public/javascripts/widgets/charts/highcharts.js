@@ -108,7 +108,7 @@
                 {
                     var xCat = row[chartObj._xColumn.dataIndex];
                     if (_.isNull(xCat) || _.isUndefined(xCat)) { xCat = ''; }
-                    xCat = $.htmlEscape(xCat);
+                    xCat = renderXValue(xCat, chartObj._xColumn);
                     chartObj._xCategories.push(xCat);
                 }
 
@@ -373,7 +373,7 @@
                         '<p>' + this.point.subtitle + '</p>' : '') +
                     '<p>' + this.y + ' at ' +
                     blist.data.types.date.filterRender(this.x / 1000,
-                        this.series.options.column) + '</p>';
+                        chartObj._xColumn) + '</p>';
             } };
         }
         else
@@ -423,8 +423,10 @@
         if (isDateTime(chartObj))
         {
             if (!_.isNull(row) && !_.isUndefined(row))
-            { pt.x = row[chartObj._xColumn.dataIndex] * 1000; }
+            { pt.x = row[chartObj._xColumn.dataIndex]; }
             else { pt.x = ''; }
+            if (_.isNumber(pt.x)) { pt.x *= 1000; }
+            else if (!$.isBlank(pt.x)) { pt.x = Date.parse(pt.x).valueOf(); }
         }
         else if (!_.isUndefined(chartObj._xCategories))
         { pt.x = chartObj._xCategories.length; }
@@ -467,10 +469,22 @@
         return point;
     };
 
+    // Handle rendering values for different column types here
+    var renderXValue = function(val, col)
+    {
+        if (!$.isBlank(col.dropDown))
+        {
+            val = (_.detect(col.dropDown.values, function(v)
+                { return v.id == val; }) || {description: val}).description;
+        }
+        return $.htmlEscape(val);
+    };
+
     var isDateTime = function(chartObj)
     {
         return !_.isUndefined(chartObj._xColumn) &&
-            chartObj._xColumn.renderTypeName == 'date';
+            (chartObj._xColumn.renderTypeName == 'date' ||
+                chartObj._xColumn.renderTypeName == 'calendar_date');
     };
 
 

@@ -415,7 +415,9 @@ class View < Model
   end
 
   def can_add_calendar?
-    columns.any? {|c| c.renderTypeName == 'date' && !c.flag?('hidden')} &&
+    columns.any? {|c| (c.renderTypeName == 'date' ||
+                       c.renderTypeName == 'calendar_date') &&
+                       !c.flag?('hidden')} &&
       columns.any? {|c| c.renderTypeName == 'text' && !c.flag?('hidden')}
   end
 

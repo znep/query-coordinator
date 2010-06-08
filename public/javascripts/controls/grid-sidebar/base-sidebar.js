@@ -66,7 +66,16 @@
                               have remove buttons
                           + addText: Text of the button to add new fields; defaults
                               to 'Add Value'
-                  + name: required, HTML name of input
+                  + name: required, HTML name of input.  This is the name the
+                      value will be associated with in the output hash.  If it
+                      has one or more periods (.), it will be taken as a nested
+                      hash key, and the appropriate hashes will be created.
+                      This name does not need to be globally unique; it will
+                      be namespaced into the pane.  However, it should be unique
+                      within the pane.  For repeaters, this name is the name of
+                      the array.  Fields inside the repeater are rooted at the
+                      particular object of the repeater array; so essentially
+                      they are namespaced into the repeater
                   + prompt: optional, prompt text for text/textarea/select
                   + defaultValue: default value to use for the field; for
                       checkboxes use true.  For radioGroup, the name of the option
@@ -82,6 +91,13 @@
                   + notequalto: optional, string to use for validating notequalto;
                       all fields that are validated like this should have the
                       same string
+                  + requires: for a group, a list of fields that are required
+                      to be present before values are pulled out.  Normally this
+                      would the first field(s) in a group, and latter fields
+                      would not get added to the result hash unless the initial
+                      field(s) are actually filled in
+                  + isTableColumn: boolean, for columnSelect, use the
+                      tableColumnId instead of the column ID
                   + columns: for type columnSelect, tells what type of columns
                       should be available
                   {
@@ -545,6 +561,182 @@
                 return true;
             },
 
+            /* This turns a pane into an object with values based on the names
+             * of the fields */
+            getFormValues: function($pane)
+            {
+                var sidebarObj = this;
+                var results = {};
+
+                /* Helper function; this takes a full field name and value,
+                 * the parent object it goes into; and optionally an array of
+                 * keys that are required in the object for this value to be
+                 * added */
+                var addValue = function(name, value, parObj, requires)
+                {
+                    // The name is something like
+                    // gridSidebar_mapPane:displayFormat.plot.titleId
+
+                    // First take off everything up to the colon; that is used
+                    // simply to make it unique in the page
+                    var p = name.split(':');
+                    name = p[p.length - 1];
+
+                    // Next, check requires.  If this is one of the required
+                    // fields, then go ahead and add it (since obviously it
+                    // isn't already present).  Otherwise, if there are requires,
+                    // make sure they are all present
+                    if (!$.isBlank(requires) &&
+                        !_.include(requires, name) &&
+                        _.any(requires, function(r)
+                            { return $.isBlank(parObj[r]); }))
+                    { return; }
+
+                    // Next pull apart the name into pieces.  For each level,
+                    // recurse down, creating empty objects if needed.
+                    // 'flags' is special, and assumed to be an array
+                    p = name.split('.');
+                    while (p.length > 1)
+                    {
+                        parObj[p[0]] = parObj[p[0]] ||
+                            (p[0] == 'flags' ? [] : {});
+                        parObj = parObj[p[0]];
+                        p.shift();
+                    }
+
+                    var ret;
+                    if (_.isArray(parObj))
+                    {
+                        // If an array and the value is true, then just push on
+                        // the last part of the name as a value
+                        if ($i.value())
+                        {
+                            parObj.push(p[0]);
+                            ret = p[0];
+                        }
+                    }
+                    else
+                    {
+                        // If an object, then stick the value in at the last
+                        // element of the key
+                        if (!$.isBlank(value) && $.isBlank(parObj[p[0]]))
+                        { parObj[p[0]] = value; }
+                        ret = parObj[p[0]];
+                    }
+                    // Return the element, since we may not have pushed it
+                    // or overwritten it
+                    return ret;
+                };
+
+                // Loop through all the inputs & sliders in dom order.
+                // Filter down to only the visible ones that are not
+                // .prompt (meaning not filled in), .sectionSelect (top-level
+                // inputs used for flow control), or in .radioLine label
+                // (these are in a radioGroup, and will be handled by getting
+                // the selected radio button in the group and manually getting
+                // the associated input)
+                $pane.find('form :input, form .sliderControl')
+                    .filter(':visible:not(' +
+                        '.prompt, .sectionSelect, .radioLine label *)')
+                    .each(function()
+                {
+                    var $input = $(this);
+
+                    // If this is a radio input, then either skip it if not
+                    // selected; or find the input associated with it
+                    if ($input.is('.radioLine :radio'))
+                    {
+                        if (!$input.is(':checked')) { return; }
+                        $input = $input.closest('.radioLine')
+                            .find('label :input:not(.prompt)');
+                        if ($input.length < 1) { return; }
+                    }
+
+                    var value;
+                    if ($input.is('.sliderControl'))
+                    {
+                        // Sliders are not normal inputs, so they are handled
+                        // specially
+                        value = $input.slider('value') /
+                            parseFloat($input.attr('data-scale'));
+                    }
+                    else
+                    { value = $input.value(); }
+
+                    var inputName = $input.attr('name');
+
+                    // If this is in a group, then grab any required fields
+                    // from the group
+                    var requires;
+                    if ($input.is('.group *'))
+                    {
+                        requires = $input.closest('.inputBlock')
+                            .attr('data-requires');
+                        if (!$.isBlank(requires))
+                        { requires = requires.split(','); }
+                    }
+
+                    // Start the parent out as top-level results
+                    var parObj = results;
+                    var parArray;
+                    var parIndex;
+                    if ($input.is('.line.repeater *'))
+                    {
+                        // If this is in a repeater, then it is name-spaced
+                        // under the repeater.  Grab that name, and set up
+                        // an array for it
+                        parArray = addValue($input.closest('.line.repeater')
+                            .find('.button.addValue').attr('name'), [], parObj);
+                        // The name has a -num on the end that specifies order
+                        // in the array; grab that off to use as the index
+                        var p = inputName.split('-');
+                        parIndex = p[p.length - 1];
+                        inputName = p.slice(0, -1).join('-');
+                        // Set up the object for this array index, and use
+                        // that as the parent
+                        parObj = parArray[parIndex] || {};
+                    }
+
+                    // If this is a column select, then parse the value as a num,
+                    // since it is a column ID
+                    value = !$.isBlank(value) &&
+                        $input.is('.columnSelect select') ?
+                            parseInt(value) : value;
+
+                    // Now add the value
+                    addValue(inputName, value, parObj, requires);
+
+                    // If this is a select, check for extra data on the actual
+                    // option element
+                    if ($input.is('select'))
+                    {
+                        var $sel = $input.find('option:selected');
+                        var ckeys = $sel.attr('data-customKeys');
+                        if (!$.isBlank(ckeys))
+                        {
+                            // If there are custom keys, loop through each one,
+                            // and add the value in
+                            _.each(ckeys.split(','), function(k)
+                            {
+                                addValue(k, $sel.attr('data-custom-' + k),
+                                    parObj, requires);
+                            });
+                        }
+                    }
+
+                    // Wait to add this to the parent array until the end,
+                    // in case it failed the required checks and doesn't have
+                    // anything real to be added
+                    if (!$.isBlank(parArray) && !_.isEmpty(parObj))
+                    { parArray[parIndex] = parObj; }
+                });
+
+                // Do a deep compact to get rid of any null fields, and
+                // compact any arrays (especially repeaters, that may have
+                // been filled in sparsely)
+                return $.deepCompact(results);
+            },
+
             resetFinish: function()
             {
                 this.$dom().removeClass('processing');
@@ -695,9 +887,10 @@
     /* Render a single input field */
     var renderLine = function(sidebarObj, args)
     {
-        // Add optional modifier to name
-        args.item = $.extend({}, args.item, {name: args.item.name +
-            (args.context.nameAppend || '')});
+        // Add optional modifier to name; also adjust to make it unique
+        args.item = $.extend({}, args.item, {origName : args.item.name,
+            name: args.context.paneId + ':' +
+                args.item.name + (args.context.nameAppend || '')});
 
         var contents = [];
         if (!args.context.inputOnly)
@@ -752,14 +945,14 @@
             case 'text':
                 contents.push($.extend(commonAttrs(args.item),
                     {tagName: 'input', type: 'text', value:
-                        $.htmlEscape(args.context.data[args.item.name] ||
+                        $.htmlEscape(args.context.data[args.item.origName] ||
                             defValue)}));
                 break;
 
             case 'textarea':
                 contents.push($.extend(commonAttrs(args.item),
                     {tagName: 'textarea', contents:
-                        $.htmlEscape(args.context.data[args.item.name] ||
+                        $.htmlEscape(args.context.data[args.item.origName] ||
                             defValue)}));
                 break;
 
@@ -778,8 +971,14 @@
                 {
                     var item = {tagName: 'option', value: o.value,
                         selected: o.value === defValue, contents: o.text};
+                    var dataKeys = [];
                     _.each(o.data || {}, function(v, k)
-                        { item['data-' + k] = v; });
+                        {
+                            item['data-custom-' + k] = v;
+                            dataKeys.push(k);
+                        });
+                    if (dataKeys.length > 0)
+                    { item['data-customKeys'] = dataKeys.join(','); }
                     options.push(item);
                 });
                 contents.push($.extend(commonAttrs(args.item),
@@ -790,15 +989,17 @@
                 contents.push({tagName: 'a',
                     href: '#Select:' + colTypes.join('-'),
                     title: 'Select a column from the grid',
-                    'class': 'columnSelector',
+                    'class': ['columnSelector',
+                        {value: 'tableColumn', onlyIf: args.item.isTableColumn}],
                     contents: 'Select a column from the grid'});
 
                 var options =
                     [{tagName: 'option', value: '', contents: 'Select a column'}];
                 _.each(cols, function(c)
                 {
-                    options.push({tagName: 'option', value: c.id,
-                        selected: defValue == c.id,
+                    var cId = args.item.isTableColumn ? c.tableColumnId : c.id;
+                    options.push({tagName: 'option', value: cId,
+                        selected: defValue == cId,
                         contents: $.htmlEscape(c.name)});
                 });
                 contents.push($.extend(commonAttrs(args.item),
@@ -806,11 +1007,20 @@
                 break;
 
             case 'slider':
+                var min = args.item.minimum || 0;
+                var max = args.item.maximum || 100;
+                var scale = 1;
+                if (max <= 1)
+                {
+                    scale = 100;
+                    min *= scale;
+                    max *= scale;
+                    defValue *= scale;
+                }
                 contents.push($.extend(commonAttrs(args.item),
                     {tagName: 'div', 'class': 'sliderControl',
-                        'data-value': defValue,
-                        'data-min': args.item.minimum || 0,
-                        'data-max': args.item.maximum || 100}));
+                        'data-scale': scale, 'data-value': defValue,
+                        'data-min': min, 'data-max': max}));
                 break;
 
             case 'group':
@@ -824,16 +1034,19 @@
                 });
                 contents.push({tagName: 'div',
                     'class': ['inputBlock', args.item.extraClass],
+                    'data-requires':
+                        $.arrayify(args.item.requires || []).join(','),
                     contents: items});
                 break;
 
             case 'radioGroup':
+                var itemAttrs = commonAttrs(args.item);
                 var items = _.map(args.item.options, function(opt, i)
                 {
-                    var id = args.item.name + '_' + i;
+                    var id = itemAttrs.id + '-' + i;
                     return {tagName: 'div', 'class': ['radioLine', opt.type],
                         contents: [
-                            $.extend(commonAttrs(args.item),
+                            $.extend({}, itemAttrs,
                                 {id: id, tagName: 'input', type: 'radio',
                                 'class': {value: 'wizExclude',
                                     onlyIf: opt.type != 'static'},
@@ -856,7 +1069,7 @@
                 var templateLine = renderLine(sidebarObj,
                             {item: args.item.field,
                                 context: $.extend({}, args.context,
-                                     {nameAppend: '-template_id', noTag: true,
+                                     {nameAppend: '-templateId', noTag: true,
                                         inRepeater: true})
                     });
                 templateLine.contents.unshift({tagName: 'a', href: '#remove',
@@ -872,7 +1085,8 @@
                     }));
                 }
                 contents.push($.button({text: args.item.addText || 'Add Value',
-                    customAttrs: {'data-template': templateLine},
+                    customAttrs: $.extend(commonAttrs(args.item),
+                        {'data-template': templateLine}),
                     className: 'addValue'}, true));
                 break;
         }
@@ -932,11 +1146,10 @@
     /* Render the full pane from config */
     var renderPane = function(sidebarObj, config, data)
     {
-        var $pane = $.tag({tagName: 'div',
-            id: sidebarObj.$dom().attr('id') + '_' + config.name,
-            'class': 'sidebarPane'});
+        var paneId = sidebarObj.$dom().attr('id') + '_' + config.name;
+        var $pane = $.tag({tagName: 'div', id: paneId, 'class': 'sidebarPane'});
         var rData = {title: config.title, subtitle: config.subtitle,
-            sections: config.sections,
+            sections: config.sections, paneId: paneId,
             finishButtons: (config.finishBlock || {}).buttons,
             data: data || {}};
         var sectionOnlyIfs = {};
@@ -1011,7 +1224,8 @@
             if ($.isBlank(oif.field))
             { throw 'Only field-value objects supported for section onlyIfs'; }
 
-            var $field = $pane.find(':input[name=' + oif.field + ']');
+            var $field = $pane.find(':input[name=' +
+                paneId + ':' + oif.field + ']');
             var $section = $pane.find('[data-onlyIf=' + uid + ']');
             var showHideSection = function()
             {
@@ -1076,6 +1290,13 @@
             $container.find('.textPrompt')
                 .example(function () { return $(this).attr('title'); });
 
+            var checkRadio = function(e)
+            {
+                var forAttr = $(this).parents('label').attr('for');
+                if (!$.isBlank(forAttr))
+                { $pane.find('#' + $.safeId(forAttr)).click(); }
+            };
+
             // Inputs inside labels are likely attached to radio buttons.
             // We need to preventDefault on the click so focus stays in the input,
             // and isn't stolen by the radio button; then we need to manually
@@ -1086,12 +1307,7 @@
                 {
                     e.preventDefault();
                 })
-                .mouseup(function(e)
-                {
-                    var forAttr = $(this).parents('label').attr('for');
-                    if (!$.isBlank(forAttr))
-                    { $pane.find('#' + forAttr).click(); }
-                });
+                .mouseup(checkRadio).change(checkRadio).focus(checkRadio);
 
             $container.find('.columnSelector').click(function(e)
             {
@@ -1133,7 +1349,8 @@
                                 $sel = $link.siblings('.uniform.selector')
                                     .find('select');
                             }
-                            $sel.val(c.id).change();
+                            $sel.val($link.is('.tableColumn') ?
+                                c.tableColumnId : c.id).change();
                             if (!$.isBlank($.uniform)) { $.uniform.update(); }
                         });
                 }
@@ -1173,7 +1390,7 @@
             var $newLine = $($.htmlUnescape($button.attr('data-template')));
             $newLine.find('.required').removeClass('required');
             var i = $container.children('.line').length;
-            var attrMatch = '-template_id';
+            var attrMatch = '-templateId';
             $newLine.find('[name$=' + attrMatch + '], [id$=' + attrMatch +
                 '], [for$=' + attrMatch + ']').each(function()
             {

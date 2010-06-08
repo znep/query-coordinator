@@ -46,23 +46,23 @@
             {
                 title: 'Map Setup',
                 fields: [
-                    {text: 'Name', name: 'mapName', type: 'text', required: true,
+                    {text: 'Name', name: 'name', type: 'text', required: true,
                         prompt: 'Enter a name',
                         wizard: {prompt: 'Enter a name for your map',
                             actions: [$.gridSidebar.wizard.buttons.done]}
                     },
-                    {text: 'Map Type', name: 'mapType', type: 'select',
+                    {text: 'Map Type', name: 'displayFormat.type', type: 'select',
                         required: true, prompt: 'Select a map type',
                         options: mapTypes,
                         wizard: {prompt: 'Select a map type'}
                     }
-                ],
+                ]
             },
             {
                 title: 'Location',
                 fields: [
-                    {text: 'Location', name: 'locationCol', required: true,
-                        type: 'columnSelect',
+                    {text: 'Location', name: 'displayFormat.plot.locationId',
+                        required: true, type: 'columnSelect', isTableColumn: true,
                         columns: {type: 'location', hidden: false},
                         wizard: {prompt: 'Choose a column with location coordinates to map'}
                     }
@@ -71,13 +71,15 @@
             {
                 title: 'Details', type: 'selectable', name: 'detailsSection',
                 fields: [
-                    {text: 'Title', name: 'titleCol', type: 'columnSelect',
-                        columns: {type: 'text', hidden: false},
+                    {text: 'Title', name: 'displayFormat.plot.titleId',
+                        type: 'columnSelect', isTableColumn: true,
+                        columns: {type: ['text', 'location'], hidden: false},
                         wizard: {prompt: 'Choose a column that contains titles for each point',
                             actions: [$.gridSidebar.wizard.buttons.skip]}
                     },
-                    {text: 'Description', name: 'descCol', type: 'columnSelect',
-                        columns: {type: ['text', 'html'], hidden: false},
+                    {text: 'Description', name: 'displayFormat.plot.descriptionId',
+                        type: 'columnSelect', isTableColumn: true,
+                        columns: {type: ['text', 'html', 'location'], hidden: false},
                         wizard: {prompt: 'Choose a column that contains descriptions for each point',
                             actions: [$.gridSidebar.wizard.buttons.skip]}
                     }
@@ -86,18 +88,22 @@
                     actions: $.gridSidebar.wizard.buttonGroups.sectionExpand}
             },
             {
-                title: 'Layers', onlyIf: {field: 'mapType', value: 'esri'},
+                title: 'Layers',
+                onlyIf: {field: 'displayFormat.type', value: 'esri'},
                 fields: [
                     {type: 'repeater', minimum: 1, addText: 'Add Layer',
-                        field: {type: 'group', options: [
-                            {text: 'Layer', type: 'select', name: 'mapLayer',
+                        name: 'displayFormat.layers',
+                        field: {type: 'group', requires: 'url', options: [
+                            {text: 'Layer', type: 'select',
+                                name: 'url',
                                 defaultValue: mapLayers[0].value,
                                 repeaterValue: '',
                                 required: true, prompt: 'Select a layer',
                                 options: mapLayers},
-                            {text: 'Opacity', type: 'slider', name: 'layerOpacity',
-                                defaultValue: 100, repeaterValue: 60,
-                                minimum: 0, maximum: 100}
+                            {text: 'Opacity', type: 'slider',
+                                name: 'options.opacity',
+                                defaultValue: 1, repeaterValue: 0.6,
+                                minimum: 0, maximum: 1}
                         ]},
                         wizard: {prompt: 'Choose one or more layers to display for your map; and set their visibility',
                             actions: [$.gridSidebar.wizard.buttons.done]}
@@ -118,9 +124,8 @@
         var model = sidebarObj.$grid().blistModel();
         var view = blist.dataset.baseViewCopy(blist.display.view);
         view.displayType = 'map';
-        view.displayFormat = {};
 
-        view.name = $pane.find('#mapName:not(.prompt)').val();
+        $.extend(view, sidebarObj.getFormValues($pane));
 
         $.ajax({url: '/views.json', type: 'POST', data: JSON.stringify(view),
             dataType: 'json', contentType: 'application/json',

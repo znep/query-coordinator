@@ -22,6 +22,8 @@
     z-index: 50;
 }
 
+#gridSidebar .loadingOverlay, #gridSidebar .loadingSpinner { display: none; }
+
 #gridSidebar .hidden { display: none; }
 
 #gridSidebar .close

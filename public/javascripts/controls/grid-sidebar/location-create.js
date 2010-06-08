@@ -9,11 +9,10 @@
             {
                 title: 'Column Information',
                 fields: [
-                    {text: 'Name', type: 'text', name: 'columnName',
+                    {text: 'Name', type: 'text', name: 'name',
                         prompt: 'Enter a name', required: true},
                     {text: 'Description', type: 'textarea',
-                        name: 'columnDescription',
-                        prompt: 'Enter a description'}
+                        name: 'description', prompt: 'Enter a description'}
                 ]
             },
             {
@@ -21,13 +20,14 @@
                 type: 'selectable',
                 name: 'latLongSection',
                 fields: [
-                    {text: 'Latitude', type: 'columnSelect', name: 'convertLat',
+                    {text: 'Latitude', type: 'columnSelect',
+                        name: 'convert.latitudeColumn',
                         required: true, notequalto: 'convertNumber',
                         columns: {type: 'number', hidden: false},
                         wizard: {prompt: 'Choose the column that contains latitude data'}
                     },
                     {text: 'Longitude', type: 'columnSelect',
-                        name: 'convertLong',
+                        name: 'convert.longitudeColumn',
                         required: true, notequalto: 'convertNumber',
                         columns: {type: 'number', hidden: false},
                         wizard: {prompt: 'Choose the column that contains longitude data'}
@@ -46,7 +46,7 @@
                         defaultValue: 'streetNone',
                         options: [
                             {text: 'None', name: 'streetNone', type: 'static'},
-                            {type: 'columnSelect', name: 'convertStreetCol',
+                            {type: 'columnSelect', name: 'convert.addressColumn',
                                 notequalto: 'convertText',
                                 columns: {type: 'text', hidden: false} }
                         ],
@@ -61,10 +61,10 @@
                         defaultValue: 'cityNone',
                         options: [
                             {text: 'None', type: 'static', name: 'cityNone'},
-                            {type: 'columnSelect', name: 'convertCityCol',
+                            {type: 'columnSelect', name: 'convert.cityColumn',
                                 notequalto: 'convertText',
                                 columns: {type: 'text', hidden: false} },
-                            {type: 'text', name: 'convertCityStatic',
+                            {type: 'text', name: 'convert.cityValue',
                                 prompt: 'Enter a city'}
                         ],
                         wizard: {prompt: 'Choose the column that contains city data, or fill in a value to be used for all rows',
@@ -78,10 +78,10 @@
                         defaultValue: 'stateNone',
                         options: [
                             {text: 'None', type: 'static', name: 'stateNone'},
-                            {type: 'columnSelect', name: 'convertStateCol',
+                            {type: 'columnSelect', name: 'convert.stateColumn',
                                 notequalto: 'convertText',
                                 columns: {type: 'text', hidden: false} },
-                            {type: 'text', name: 'convertStateStatic',
+                            {type: 'text', name: 'convert.stateValue',
                                 prompt: 'Enter a state'}
                         ],
                         wizard: {prompt: 'Choose the column that contains state data, or fill in a value to be used for all rows',
@@ -95,11 +95,11 @@
                         defaultValue: 'zipNone',
                         options: [
                             {text: 'None', type: 'static', name: 'zipNone'},
-                            {type: 'columnSelect', name: 'convertZipCol',
+                            {type: 'columnSelect', name: 'convert.zipColumn',
                                 notequalto: 'convertText convertNumber',
                                 columns: {type: ['text', 'number'],
                                     hidden: false} },
-                            {type: 'text', name: 'convertZipStatic',
+                            {type: 'text', name: 'convert.zipValue',
                                 prompt: 'Enter a zip code'}
                         ],
                         wizard: {prompt: 'Choose the column that contains zip code data, or fill in a value to be used for all rows',
@@ -131,11 +131,13 @@
     {
         if (!sidebarObj.baseFormHandler($pane, value)) { return; }
 
-        if ($pane.find('.formSection.latLongSection .sectionSelect').value() ||
-                $pane.find('.formSection.addressSection .sectionSelect').value())
-        { convertLocation(sidebarObj, data, $pane); }
+        var col = $.extend(sidebarObj.getFormValues($pane),
+            {dataTypeName: data.columnType});
+
+        if (!$.isBlank(col.convert))
+        { convertLocation(sidebarObj, col, $pane); }
         else
-        { createLocation(sidebarObj, data, $pane); }
+        { createLocation(sidebarObj, col, $pane); }
     };
 
     var columnCreated = function(sidebarObj, newCol)
@@ -147,72 +149,23 @@
         sidebarObj.hide();
     };
 
-    var convertLocation = function(sidebarObj, data, $pane)
+    var convertLocation = function(sidebarObj, column, $pane)
     {
-        var useLatLong =
-            $pane.find('.formSection.latLongSection .sectionSelect').value();
-        var useAddress =
-            $pane.find('.formSection.addressSection .sectionSelect').value();
-
-        var latVal = useLatLong ? $pane.find('#convertLat').val() : null;
-        var longVal = useLatLong ? $pane.find('#convertLong').val() : null;
-
-        var streetIsCol = false;
-        var streetVal;
-        var cityIsCol = false;
-        var cityVal;
-        var stateIsCol = false;
-        var stateVal;
-        var zipIsCol = false;
-        var zipVal;
-        if (useAddress)
-        {
-            var $street = $pane.find(':input[name="convertStreetGroup"]:checked')
-                .siblings('label').find(':input:not(.prompt)');
-            streetIsCol = $street.is('select');
-            streetVal = $street.val() || null;
-
-            var $city = $pane.find(':input[name="convertCityGroup"]:checked')
-                .siblings('label').find(':input:not(.prompt)');
-            cityIsCol = $city.is('select');
-            cityVal = $city.val() || null;
-
-            var $state = $pane.find(':input[name="convertStateGroup"]:checked')
-                .siblings('label').find(':input:not(.prompt)');
-            stateIsCol = $state.is('select');
-            stateVal = $state.val() || null;
-
-            var $zip = $pane.find(':input[name="convertZipGroup"]:checked')
-                .siblings('label').find(':input:not(.prompt)');
-            zipIsCol = $zip.is('select');
-            zipVal = $zip.val() || null;
-        }
-
         $.ajax({url: '/views/' + blist.display.viewId + '/columns.json?' +
             'method=addressify' +
             '&deleteOriginalColumns=false' +
-            '&location=' + ($pane.find('#columnName:not(.prompt)').val() || '') +
-            (latVal ? '&latitudeColumn=' + latVal : '') +
-            (longVal ? '&longitudeColumn=' + longVal : '') +
-            (streetVal ? '&address' + (streetIsCol ? 'Column' : 'Value') +
-                '=' + streetVal : '') +
-            (cityVal ? '&city' + (cityIsCol ? 'Column' : 'Value') +
-                '=' + cityVal : '') +
-            (stateVal ? '&state' + (stateIsCol ? 'Column' : 'Value') +
-                '=' + stateVal : '') +
-            (zipVal ? '&zip' + (zipIsCol ? 'Column' : 'Value') +
-                '=' + zipVal : ''),
+            '&location=' + column.name + '&' +
+            _.map(column.convert, function(v, k) { return k + '=' + v; }).join('&'),
             type: 'POST', contentType: 'application/json', dataType: 'json',
             error: function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); },
             success: function(resp)
             {
-                var desc = $pane.find('#columnDescription:not(.prompt)').val();
-                if (desc)
+                if (!$.isBlank(column.description))
                 {
                     $.ajax({url: '/views/' + blist.display.viewId +
                         '/columns/' + resp.id + '.json', type: 'PUT',
                         contentType: 'application/json', dataType: 'json',
-                        data: JSON.stringify({description: desc}),
+                        data: JSON.stringify({description: column.description}),
                         error: function(xhr)
                         { sidebarObj.genericErrorHandler($pane, xhr); },
                         success: function(r) { columnCreated(sidebarObj, r); }
@@ -223,13 +176,8 @@
         });
     };
 
-    var createLocation = function(sidebarObj, data, $pane)
+    var createLocation = function(sidebarObj, column, $pane)
     {
-        var column = {name: $pane.find('#columnName:not(.prompt)').val() || null,
-            description:
-                $pane.find('#columnDescription:not(.prompt)').val() || null,
-            dataTypeName: data.columnType};
-
         $.ajax({url: '/views/' + blist.display.viewId + '/columns.json',
             type: 'POST', contentType: 'application/json', dataType: 'json',
             data: JSON.stringify(column),

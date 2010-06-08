@@ -6,9 +6,9 @@
          */
         valueManager: function(valueManager) {
             if (valueManager === undefined)
-			{
+            {
                 return this.data('value-manager');
-			}
+            }
             this.data('value-manager', valueManager);
             return this;
         },
@@ -21,16 +21,16 @@
             var name;
             var valueManager = this.data('value-manager');
             if (valueManager && valueManager.name)
-			{
+            {
                 name = (typeof valueManager.name == "function" ? valueManager.name() : valueManager.name);
             }
-			if (name == null)
-			{
+            if (name == null)
+            {
                 name = this.attr('name') || this.attr('id');
-			}
+            }
             return name || undefined;
         },
-        
+
         /**
          * Get or set the element's value.  If a value manager is present, the call is fielded by the manager.
          * Otherwise returns a value from the underlying HTML element if available.
@@ -58,7 +58,8 @@
                         }
                         else if (this.tagName == 'INPUT' || this.tagName == 'SELECT')
                         {
-                            if ($this.attr('type') == 'checkbox')
+                            if ($this.attr('type') == 'checkbox' ||
+                                $this.attr('type') == 'radio')
                             {
                                 returnValue = $this.attr('checked') ? true : false;
                             }
@@ -88,21 +89,24 @@
                 var $this = $(this);
                 var valueManager = $this.data('value-manager');
                 if (valueManager && valueManager.set)
-				{
+                {
                     valueManager.set(value);
-				}
+                }
                 else if (this.tagName == 'TEXTAREA')
-				{
+                {
                     $this.text(value == null ? '' : value);
-				}
-	            else if (this.tagName == 'INPUT') {
-                    if ($this.attr('type') == 'checkbox')
-					{
+                }
+                else if (this.tagName == 'INPUT')
+                {
+                    if ($this.attr('type') == 'checkbox' ||
+                        $this.attr('type') == 'radio')
+                    {
                         $this.attr('checked', value ? true : false);
-                    } else 
-					{
+                    }
+                    else
+                    {
                         this.value = value == null ? '' : value;
-					}
+                    }
                 }
             });
 
@@ -117,9 +121,9 @@
             if (values === undefined) {
                 values = {};
                 if (get == undefined)
-				{
+                {
                     get = true;
-				}
+                }
             }
 
             // Apply to each child
@@ -128,10 +132,10 @@
                 var hasValue = false;
                 var $this = $(this);
                 if ($this.data('value-manager'))
-				{
+                {
                     // Element manages values explicitly
                     hasValue = true;
-				}
+                }
                 else switch (this.tagName) {
                     case 'INPUT':
                     case 'SELECT':
@@ -146,12 +150,13 @@
                     var name = $this.name();
                     if (name) {
                         if (get)
-						{
+                        {
                             values[name] = $this.value();
-                        } else
-						{
+                        }
+                        else
+                        {
                             $this.value(values[name]);
-						}
+                        }
                     }
                 }
             });
@@ -159,12 +164,12 @@
             // Recurse
             var $children = $(this).children();
             if ($children.length)
-			{
+            {
                 $children.values(values, get);
-			}
+            }
             return values;
         },
-        
+
         // TODO
         valuesRead: function(options) {
         },

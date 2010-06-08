@@ -21,12 +21,13 @@
             {
                 title: 'Form Information',
                 fields: [
-                    {type: 'text', text: 'Name', name: 'formName', required: true,
+                    {type: 'text', text: 'Name', name: 'name', required: true,
                         prompt: 'Enter a name',
                         wizard: {prompt: 'Enter a name for your form',
                             actions: [$.gridSidebar.wizard.buttons.done]}
                     },
-                    {type: 'text', text: 'Success URL', name: 'successRedirect',
+                    {type: 'text', text: 'Success URL',
+                        name: 'displayFormat.successRedirect',
                         extraClass: 'url', prompt: 'Enter a webpage URL',
                         wizard: {prompt: 'Enter a URL for a page that should be displayed after the data is submitted',
                             actions: [
@@ -34,7 +35,7 @@
                                 $.gridSidebar.wizard.buttons.done
                             ]}
                     },
-                    {type: 'checkbox', text: 'Public?', name: 'publicAdd',
+                    {type: 'checkbox', text: 'Public?', name: 'flags.dataPublicAdd',
                         defaultValue: true,
                         wizard: {prompt: 'Choose whether anyone can submit data via your form.  If not, only those given permission individually will be able to use it.',
                             actions: [$.gridSidebar.wizard.buttons.skip]}
@@ -55,11 +56,7 @@
         var view = blist.dataset.baseViewCopy(blist.display.view);
         view.displayType = 'form';
 
-        view.name = $pane.find('#formName:not(.prompt)').val();
-        view.displayFormat =
-            {successRedirect: $pane.find('#successRedirect:not(.prompt)').val()};
-        if ($pane.find('#publicAdd').value())
-        { view.flags = ['dataPublicAdd']; }
+        $.extend(view, sidebarObj.getFormValues($pane));
 
         $.ajax({url: '/views.json', type: 'POST', dataType: 'json',
             contentType: 'application/json', data: JSON.stringify(view),

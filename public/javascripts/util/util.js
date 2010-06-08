@@ -166,6 +166,23 @@ $.compact = function(a)
     }
 };
 
+/* Do a deep compact on any object.  For any array, run a normal compact on
+ * the array; then deep compact all sub-values.  For an object, leave out blank
+ * values; and deep compact all the non-blank ones */
+$.deepCompact = function(obj)
+{
+    if (_.isArray(obj))
+    { return _.map(_.compact(obj), function(o) { return $.deepCompact(o); }); }
+
+    if (!$.isPlainObject(obj)) { return obj; }
+
+    var newObj = {};
+    _.each(obj, function(v, k)
+    {
+        if (!$.isBlank(v)) { newObj[k] = $.deepCompact(v); }
+    });
+    return newObj;
+};
 
 /* Do a deep compare on two objects (if they are objects), or just compare
    directly if they are normal values.  For this case, null == undefined, but
@@ -236,4 +253,6 @@ $.isBlank = function(obj)
 $.arrayify = function(obj)
 { return !_.isArray(obj) ? [obj] : obj; };
 
+$.safeId = function(id)
+{ return id.replace(/(\.|\:)/g, '\\$1'); }
 })(jQuery);

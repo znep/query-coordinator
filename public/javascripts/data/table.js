@@ -3260,7 +3260,7 @@
                             '></div>');
                 }
                 html.push('<div class="info-container',
-                    canEdit() ? ' icon-display' : '',
+                    (canEdit() || col.type == 'tag') ? ' icon-display' : '',
                     '">');
                 if (canEdit() || col.type == 'tag')
                 { html.push('<span class="blist-th-icon"></span>'); }

@@ -265,6 +265,7 @@
                 sidebarObj._$panes = {};
 
                 $(window).resize(function() { handleResize(sidebarObj); });
+                $domObj.resize(function() { handleResize(sidebarObj); });
             },
 
             $dom: function()
@@ -554,6 +555,9 @@
                 if (!$pane.find('form').valid())
                 {
                     this.resetFinish();
+                    $pane.find('.mainError')
+                        .text('There were problems with the specified values. ' +
+                            'Please check the errors above.');
                     return false;
                 }
 
@@ -1458,7 +1462,10 @@
             var s = config.sections[i];
             if (!$.isBlank(s.wizard))
             { $s.addClass('hasWizard').data('sidebarWizard',
-                $.extend({defaultAction: 'nextField'}, s.wizard)); }
+                $.extend({defaultAction: 'nextField',
+                        actions: $s.is('.selectable') ?
+                        $.gridSidebar.wizard.buttonGroups.sectionExpand : null},
+                    s.wizard)); }
 
             $s.find('.sectionContent > .line').each(function(j)
             {
@@ -1466,10 +1473,17 @@
                 var l = s.fields[j];
                 if (!$.isBlank(l.wizard))
                 {
+                    var defActions = [];
+                    if ($l.find('label.required').length < 1)
+                    { defActions.push($.gridSidebar.wizard.buttons.skip); }
+                    if ($l.is(':not(.select, .columnSelect, .checkbox)'))
+                    { defActions.push($.gridSidebar.wizard.buttons.done); }
+
                     $l.addClass('hasWizard').data('sidebarWizard',
-                        $.extend({defaultAction: 'nextField'},
+                        $.extend({defaultAction: 'nextField', actions: defActions},
                             l.wizard, {positions: ['left'],
-                            closeEvents: 'change'}));
+                            closeEvents: $l.is('.repeater, .group') ?
+                                'none' : 'change'}));
                 }
             });
         });

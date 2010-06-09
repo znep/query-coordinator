@@ -151,7 +151,7 @@ blist.common.modalReady = function()
       {
           $('#gridSidebar').gridSidebar()
             .addPane('locationCreate',
-                {name: column.name || 'Location',
+                {name: column.name,
                   description: column.description,
                   columnType: column.type});
           $('#gridSidebar').gridSidebar().show('locationCreate', true);

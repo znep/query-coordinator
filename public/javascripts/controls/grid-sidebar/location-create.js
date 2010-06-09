@@ -9,8 +9,8 @@
             {
                 title: 'Column Information',
                 fields: [
-                    {text: 'Name', type: 'text', name: 'name',
-                        prompt: 'Enter a name', required: true},
+                    {text: 'Name', type: 'text', name: 'name', required: true,
+                        defaultValue: 'Location', prompt: 'Enter a name'},
                     {text: 'Description', type: 'textarea',
                         name: 'description', prompt: 'Enter a description'}
                 ]
@@ -33,8 +33,7 @@
                         wizard: {prompt: 'Choose the column that contains longitude data'}
                     }
                 ],
-                wizard: {prompt: 'Does this dataset contain a latitude and longitude column?',
-                    actions: $.gridSidebar.wizard.buttonGroups.sectionExpand}
+                wizard: {prompt: 'Does this dataset contain a latitude and longitude column?'}
             },
             {
                 title: 'Use Existing US Address Columns',
@@ -50,12 +49,7 @@
                                 notequalto: 'convertText',
                                 columns: {type: 'text', hidden: false} }
                         ],
-                        wizard: {prompt: 'Choose the column that contains street address data',
-                            actions: [
-                                $.gridSidebar.wizard.buttons.skip,
-                                $.gridSidebar.wizard.buttons.done
-                            ]
-                        }
+                        wizard: {prompt: 'Choose the column that contains street address data'}
                     },
                     {text: 'City', type: 'radioGroup', name: 'convertCityGroup',
                         defaultValue: 'cityNone',
@@ -67,12 +61,7 @@
                             {type: 'text', name: 'convert.cityValue',
                                 prompt: 'Enter a city'}
                         ],
-                        wizard: {prompt: 'Choose the column that contains city data, or fill in a value to be used for all rows',
-                            actions: [
-                                $.gridSidebar.wizard.buttons.skip,
-                                $.gridSidebar.wizard.buttons.done
-                            ]
-                        }
+                        wizard: {prompt: 'Choose the column that contains city data, or fill in a value to be used for all rows'}
                     },
                     {text: 'State', type: 'radioGroup', name: 'convertStateGroup',
                         defaultValue: 'stateNone',
@@ -84,12 +73,7 @@
                             {type: 'text', name: 'convert.stateValue',
                                 prompt: 'Enter a state'}
                         ],
-                        wizard: {prompt: 'Choose the column that contains state data, or fill in a value to be used for all rows',
-                            actions: [
-                                $.gridSidebar.wizard.buttons.skip,
-                                $.gridSidebar.wizard.buttons.done
-                            ]
-                        }
+                        wizard: {prompt: 'Choose the column that contains state data, or fill in a value to be used for all rows'}
                     },
                     {text: 'Zip Code', type: 'radioGroup', name: 'convertZipGroup',
                         defaultValue: 'zipNone',
@@ -102,16 +86,10 @@
                             {type: 'text', name: 'convert.zipValue',
                                 prompt: 'Enter a zip code'}
                         ],
-                        wizard: {prompt: 'Choose the column that contains zip code data, or fill in a value to be used for all rows',
-                            actions: [
-                                $.gridSidebar.wizard.buttons.skip,
-                                $.gridSidebar.wizard.buttons.done
-                            ]
-                        }
+                        wizard: {prompt: 'Choose the column that contains zip code data, or fill in a value to be used for all rows'}
                     }
                 ],
-                wizard: {prompt: 'Does this dataset contain address column(s)?',
-                    actions: $.gridSidebar.wizard.buttonGroups.sectionExpand}
+                wizard: {prompt: 'Does this dataset contain address column(s)?'}
             }
         ],
         finishBlock: {

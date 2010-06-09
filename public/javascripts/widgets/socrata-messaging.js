@@ -52,6 +52,7 @@
             killTitle: false,
             isSolo: false,
             message: null,
+            overlap: 0,
             parent: 'body',
             positions: null,
             shrinkToFit: true,
@@ -100,6 +101,7 @@
                         shrinkToFit: sTipObj.settings.shrinkToFit,
                         trigger: sTipObj.settings.trigger,
                         positions: pos,
+                        overlap: sTipObj.settings.overlap,
                         offsetParent: sTipObj.settings.parent,
                         killTitle: sTipObj.settings.killTitle,
 

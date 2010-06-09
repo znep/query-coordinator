@@ -23,22 +23,16 @@
                 fields: [
                     {type: 'text', text: 'Name', name: 'name', required: true,
                         prompt: 'Enter a name',
-                        wizard: {prompt: 'Enter a name for your form',
-                            actions: [$.gridSidebar.wizard.buttons.done]}
+                        wizard: {prompt: 'Enter a name for your form'}
                     },
                     {type: 'text', text: 'Success URL',
                         name: 'displayFormat.successRedirect',
                         extraClass: 'url', prompt: 'Enter a webpage URL',
-                        wizard: {prompt: 'Enter a URL for a page that should be displayed after the data is submitted',
-                            actions: [
-                                $.gridSidebar.wizard.buttons.skip,
-                                $.gridSidebar.wizard.buttons.done
-                            ]}
+                        wizard: {prompt: 'Enter a URL for a page that should be displayed after the data is submitted'}
                     },
                     {type: 'checkbox', text: 'Public?', name: 'flags.dataPublicAdd',
                         defaultValue: true,
-                        wizard: {prompt: 'Choose whether anyone can submit data via your form.  If not, only those given permission individually will be able to use it.',
-                            actions: [$.gridSidebar.wizard.buttons.skip]}
+                        wizard: {prompt: 'Choose whether anyone can submit data via your form.  If not, only those given permission individually will be able to use it.'}
                     }
                 ]
             }

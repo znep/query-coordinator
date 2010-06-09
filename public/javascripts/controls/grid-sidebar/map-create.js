@@ -48,8 +48,7 @@
                 fields: [
                     {text: 'Name', name: 'name', type: 'text', required: true,
                         prompt: 'Enter a name',
-                        wizard: {prompt: 'Enter a name for your map',
-                            actions: [$.gridSidebar.wizard.buttons.done]}
+                        wizard: {prompt: 'Enter a name for your map'}
                     },
                     {text: 'Map Type', name: 'displayFormat.type', type: 'select',
                         required: true, prompt: 'Select a map type',
@@ -74,18 +73,15 @@
                     {text: 'Title', name: 'displayFormat.plot.titleId',
                         type: 'columnSelect', isTableColumn: true,
                         columns: {type: ['text', 'location'], hidden: false},
-                        wizard: {prompt: 'Choose a column that contains titles for each point',
-                            actions: [$.gridSidebar.wizard.buttons.skip]}
+                        wizard: {prompt: 'Choose a column that contains titles for each point'}
                     },
                     {text: 'Description', name: 'displayFormat.plot.descriptionId',
                         type: 'columnSelect', isTableColumn: true,
                         columns: {type: ['text', 'html', 'location'], hidden: false},
-                        wizard: {prompt: 'Choose a column that contains descriptions for each point',
-                            actions: [$.gridSidebar.wizard.buttons.skip]}
+                        wizard: {prompt: 'Choose a column that contains descriptions for each point'}
                     }
                 ],
-                wizard: {prompt: 'Do you have titles or descriptions for your points?',
-                    actions: $.gridSidebar.wizard.buttonGroups.sectionExpand}
+                wizard: {prompt: 'Do you have titles or descriptions for your points?'}
             },
             {
                 title: 'Layers',
@@ -105,8 +101,7 @@
                                 defaultValue: 1, repeaterValue: 0.6,
                                 minimum: 0, maximum: 1}
                         ]},
-                        wizard: {prompt: 'Choose one or more layers to display for your map; and set their visibility',
-                            actions: [$.gridSidebar.wizard.buttons.done]}
+                        wizard: {prompt: 'Choose one or more layers to display for your map; and set their visibility'}
                     }
                 ]
             }

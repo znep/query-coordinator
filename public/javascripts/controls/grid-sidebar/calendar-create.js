@@ -12,7 +12,7 @@
         {
             var dateCols = _.select(view.columns, function(c)
                 {
-                    return c.dataTypeName == 'date' &&
+                    return _.include(['date', 'calendar_date'], c.dataTypeName) &&
                         ($.isBlank(c.flags) || !_.include(c.flags, 'hidden'));
                 });
             var textCols = _.select(view.columns, function(c)
@@ -29,8 +29,7 @@
                 fields: [
                     {text: 'Name', name: 'name', type: 'text', required: true,
                         prompt: 'Enter a name',
-                        wizard: {prompt: 'Enter a name for your calendar',
-                            actions: [$.gridSidebar.wizard.buttons.done]}
+                        wizard: {prompt: 'Enter a name for your calendar'}
                     }
                 ]
             },
@@ -39,14 +38,15 @@
                 fields: [
                     {text: 'Starting Date', name: 'displayFormat.startDateTableId',
                         type: 'columnSelect', required: true, notequalto: 'dateCol',
-                        isTableColumn: true, columns: {type: 'date', hidden: false},
+                        isTableColumn: true,
+                        columns: {type: ['calendar_date', 'date'], hidden: false},
                         wizard: {prompt: 'Select the column with the initial date of events'}
                     },
                     {text: 'Ending Date', name: 'displayFormat.endDateTableId',
                         type: 'columnSelect', notequalto: 'dateCol',
-                        isTableColumn: true, columns: {type: 'date', hidden: false},
-                        wizard: {prompt: 'Select the column with the ending date of events',
-                            actions: [$.gridSidebar.wizard.buttons.skip]}
+                        isTableColumn: true,
+                        columns: {type: ['calendar_date', 'date'], hidden: false},
+                        wizard: {prompt: 'Select the column with the ending date of events'}
                     }
                 ]
             },
@@ -61,8 +61,7 @@
                     {text: 'Description', name: 'displayFormat.descriptionTableId',
                         type: 'columnSelect', isTableColumn: true,
                         columns: {type: 'text', hidden: false},
-                        wizard: {prompt: 'Select the column with the descriptive text that will appear on mousing over the event',
-                            actions: [$.gridSidebar.wizard.buttons.skip]}
+                        wizard: {prompt: 'Select the column with the descriptive text that will appear on mousing over the event'}
                     }
                 ]
             }

@@ -43,7 +43,7 @@
                 var $msg = $('<div class="wizardPrompt">' +
                     '<span class="prompt">' + wizObj.settings.prompt + '</span>' +
                     '</div>');
-                if (!_.isNull(wizObj.settings.buttons))
+                if (!_.isEmpty(wizObj.settings.buttons))
                 {
                     $msg.append('<ul class="actionButtons clearfix"></ul>');
                     var $list = $msg.find('ul.actionButtons');
@@ -66,7 +66,7 @@
                 });
 
                 $domObj.socrataTip({content: $msg, closeOnClick: false,
-                    trigger: 'now', killTitle: false,
+                    overlap: -10, trigger: 'now', killTitle: false,
                     positions: wizObj.settings.positions});
 
                 var events = wizObj.settings.closeEvents;

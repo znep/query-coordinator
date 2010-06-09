@@ -94,9 +94,9 @@
                 }
                 else if (this.tagName == 'TEXTAREA')
                 {
-                    $this.text(value == null ? '' : value);
+                    $this.val(value == null ? '' : value);
                 }
-                else if (this.tagName == 'INPUT')
+                else if (this.tagName == 'INPUT' || this.tagName == 'SELECT')
                 {
                     if ($this.attr('type') == 'checkbox' ||
                         $this.attr('type') == 'radio')

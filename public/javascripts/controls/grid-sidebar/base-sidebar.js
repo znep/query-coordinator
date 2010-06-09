@@ -545,7 +545,7 @@
             {
                 if (!value)
                 {
-                    this.resetFinish();
+                    this.finishProcessing();
                     this.hide();
                     return false;
                 }
@@ -554,7 +554,7 @@
                 $pane.find(':input.prompt').val('');
                 if (!$pane.find('form').valid())
                 {
-                    this.resetFinish();
+                    this.finishProcessing();
                     $pane.find('.mainError')
                         .text('There were problems with the specified values. ' +
                             'Please check the errors above.');
@@ -741,14 +741,53 @@
                 return $.deepCompact(results);
             },
 
-            resetFinish: function()
+            finishProcessing: function()
             {
                 this.$dom().removeClass('processing');
             },
 
+            resetForm: function($pane)
+            {
+                $pane.find('.formSection.selectable:not(.collapsed)')
+                    .each(function()
+                { $(this).find('.sectionSelect').click(); });
+
+                $pane.find('.line.repeater .line.repeaterAdded').remove();
+
+                var resetInput = function($input)
+                {
+                    var defValue = $input.attr('data-defaultValue') || null;
+                    $input.value(defValue);
+                    // Fire events to make sure uniform controls are updated,
+                    // and text prompts are reset
+                    $input.change().focus().blur();
+                };
+
+                // First reset everything but radio buttons, because in a
+                // radio group firing a change, focus or blur on an input in
+                // a radio group selects the radio button for it, which ends up
+                // always selecting the last radio button.  So first reset
+                // everything besides radio buttons; then go back and reset those
+                $pane.find('.line :input:not(:radio)').each(function()
+                { resetInput($(this)); });
+
+                $pane.find('.line .sliderControl').each(function()
+                {
+                    var $slider = $(this);
+                    $slider.slider('value',
+                        parseInt($slider.attr('data-defaultValue') || 0) *
+                        parseFloat($slider.attr('data-scale')));
+                });
+
+                $pane.find('.line :radio').each(function()
+                { resetInput($(this)); });
+
+                if (!$.isBlank($.uniform)) { $.uniform.update(); }
+            },
+
             genericErrorHandler: function($pane, xhr)
             {
-                this.resetFinish();
+                this.finishProcessing();
                 $pane.find('.mainError')
                     .text(JSON.parse(xhr.responseText).message);
             }
@@ -782,6 +821,9 @@
             var $paneSel = sidebarObj.$currentOuterPane().find('.paneSelect');
             if ($paneSel.isSocrataTip()) { $paneSel.socrataTip().destroy(); }
         }
+
+        if (!$.isBlank(sidebarObj.$currentPane()))
+        { sidebarObj.resetForm(sidebarObj.$currentPane()); }
 
         sidebarObj.$dom().find('.outerPane').hide()
             .find('.paneSelect a.selected').removeClass('selected');
@@ -912,7 +954,8 @@
                         item.notequalto, item.extraClass ],
                 'data-notequalto': {value: '.' + (item.notequalto || '')
                         .split(' ').join(', .'),
-                    onlyIf: !$.isBlank(item.notequalto)}
+                    onlyIf: !$.isBlank(item.notequalto)},
+                'data-defaultValue': args.item.defaultValue
             };
         };
 
@@ -1054,7 +1097,8 @@
                                 {id: id, tagName: 'input', type: 'radio',
                                 'class': {value: 'wizExclude',
                                     onlyIf: opt.type != 'static'},
-                                checked: defValue == opt.name}),
+                                checked: defValue == opt.name,
+                                'data-defaultValue': defValue == opt.name}),
                             {tagName: 'label', 'for': id,
                             contents:
                                 renderLine(sidebarObj,
@@ -1071,7 +1115,8 @@
             case 'repeater':
                 contents = [];
                 var templateLine = renderLine(sidebarObj,
-                            {item: args.item.field,
+                            {item: $.extend({}, args.item.field,
+                                    {lineClass: 'repeaterAdded'}),
                                 context: $.extend({}, args.context,
                                      {nameAppend: '-templateId', noTag: true,
                                         inRepeater: true})
@@ -1581,6 +1626,8 @@
     {
         // If the pane is gone, no action to do
         if ($.isBlank(sidebarObj.$currentPane())) { return; }
+        // Bail out if we're trying to advance an old wizard
+        if (!$.contains(sidebarObj.$currentPane()[0], $item[0])) { return; }
 
         if (!$.isBlank(sidebarObj._$mainFlowWizard) &&
             sidebarObj._$mainFlowWizard.index($item) > -1)

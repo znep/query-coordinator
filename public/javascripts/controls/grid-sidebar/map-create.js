@@ -127,7 +127,7 @@
             error: function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); },
             success: function(resp)
             {
-                sidebarObj.resetFinish();
+                sidebarObj.finishProcessing();
                 blist.util.navigation.redirectToView(resp.id);
             }});
     };

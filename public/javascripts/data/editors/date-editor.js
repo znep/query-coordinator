@@ -73,6 +73,17 @@
                 var d = Date.parse(t);
                 if (!$.isBlank(d))
                 {
+                    // HACK: We can't parse this directly very easily; so if we
+                    // have a day-month swapped format, manually flip them
+                    try
+                    {
+                        if (this.column.format.startsWith('date_dmy') &&
+                            !$.isBlank(t.match(/\d{1,2}\/\d{1,2}\//)))
+                        { d.set({day: d.getMonth() + 1, month: d.getDate() - 1}); }
+                    }
+                    catch (e)
+                    {}
+
                     if (!$.isBlank(this.type().stringFormat))
                     { d = d.toString(this.type().stringFormat); }
                     else

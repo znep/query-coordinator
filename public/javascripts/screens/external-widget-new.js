@@ -4,6 +4,15 @@ var configNS = blist.namespace.fetch('blist.configuration');
 
 widgetNS.ready = false;
 
+// Report we've opened for metrics
+$.ajax({url: '/views/' + widgetNS.view.id + '.json',
+    data: {
+      method: 'opening',
+      accessType: 'WIDGET',
+      referrer: document.referrer
+    }
+});
+
 blist.widget.resizeViewport = function()
 {
     var $contentWrapper = $('.widgetWrapper');
@@ -152,36 +161,39 @@ $(function()
 
     // menus
     var menuOptions = widgetNS.theme['menu']['options'];
-    $('.mainMenu').menu({
-        attached: false,
-        menuButtonTitle: 'Access additional information about this dataset.',
-        menuButtonClass: 'mainMenuButton ' + ((widgetNS.orientation == 'downwards') ? 'upArrow' : 'downArrow'),
-        contents: [
-            { text: 'More Views', className: 'views',
-                subtext: 'Filters, Charts, and Maps', href: '#views',
-                onlyIf: menuOptions['more_views'] },
-            { text: 'Download', className: 'downloads',
-                subtext: 'Download in various formats', href: '#downloads',
-                onlyIf: !widgetNS.isBlobby && menuOptions['downloads'] },
-            { text: 'Comments', className: 'comments',
-                subtext: 'Read comments on this dataset', href: '#comments',
-                onlyIf: menuOptions['comments'] },
-            { text: 'Embed', className: 'embed',
-                subtext: 'Embed this player on your site', href: '#embed',
-                onlyIf: menuOptions['embed'] },
-            { text: 'Print', className: 'print',
-                subtext: 'Print this dataset', href: '#print',
-                onlyIf: !widgetNS.isBlobby && menuOptions['print'] },
-            { text: 'About the Socrata Social Data Player', className: 'about',
-                href: 'http://www.socrata.com/try-it-free', rel: 'external',
-                onlyIf: menuOptions['about_sdp'] },
-            { text: 'Access this Dataset via the API',
-                // HACK: replace back with api + about when we drop IE6
-                className: menuOptions['about_sdp'] ? 'api apiAfterAbout' : 'api',
-                href: '/api/docs', rel: 'external',
-                onlyIf: menuOptions['api'] }
-        ]
-    });
+    if (_.any(menuOptions))
+    {
+        $('.mainMenu').menu({
+            attached: false,
+            menuButtonTitle: 'Access additional information about this dataset.',
+            menuButtonClass: 'mainMenuButton ' + ((widgetNS.orientation == 'downwards') ? 'upArrow' : 'downArrow'),
+            contents: [
+                { text: 'More Views', className: 'views',
+                    subtext: 'Filters, Charts, and Maps', href: '#views',
+                    onlyIf: menuOptions['more_views'] },
+                { text: 'Download', className: 'downloads',
+                    subtext: 'Download in various formats', href: '#downloads',
+                    onlyIf: !widgetNS.isBlobby && menuOptions['downloads'] },
+                { text: 'Comments', className: 'comments',
+                    subtext: 'Read comments on this dataset', href: '#comments',
+                    onlyIf: menuOptions['comments'] },
+                { text: 'Embed', className: 'embed',
+                    subtext: 'Embed this player on your site', href: '#embed',
+                    onlyIf: menuOptions['embed'] },
+                { text: 'API', className: 'api',
+                    subtext: 'Access this Dataset via SODA', href: '#api',
+                    onlyIf: menuOptions['api'] },
+                { text: 'Print', className: 'print',
+                    subtext: 'Print this dataset', href: '#print',
+                    onlyIf: !widgetNS.isBlobby && menuOptions['print'] },
+                { text: 'About the Socrata Social Data Player', className: 'about',
+                    href: 'http://www.socrata.com/try-it-free', rel: 'external',
+                    onlyIf: menuOptions['about_sdp'] }
+            ]
+        });
+        if (menuOptions['about_sdp'])
+        { $('.mainMenu .menuColumns').addClass('hasAbout'); }
+    }
 
     // Additional actions for specific panes
     var paneHandlers = {
@@ -216,6 +228,7 @@ $(function()
                         downloads: '#959595',
                         comments: '#bed62b',
                         embed: '#e44044',
+                        api: '#f93f06',
                         print: '#a460c4'
                     };
                     $('.toolbarClosePaneName').text($this.find('.contents').text());
@@ -762,6 +775,10 @@ $(function()
     });
 
     // Trigger interstitial if necessary
+    if (!$.isBlank(document.referrer))
+    { $('.leavingInterstitial').find('.serverName').text(
+            document.referrer.replace(/(ht|f)tps?:\/\/(www\.)?/, '').replace(/\/.*$/, '')); }
+
     $.live('a:not([href^=#]):not(.noInterstitial):not([rel$="modal"])', 'click', function(event)
     {
         if (widgetNS.interstitial === true)

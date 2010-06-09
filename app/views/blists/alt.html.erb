@@ -115,7 +115,7 @@
 
               <h2>Sort</h2>
               <ul>
-                <%- 1.upto(5) do |n| -%>
+                <%- 1.upto(@viewable_columns.size) do |n| -%>
                   <li>
                     <%= label_tag "sort_#{n}_field", "Sort field #{n.to_s}" %>
                     <%= select_tag "sort[#{n}][field]",

@@ -95,15 +95,16 @@
 
     var addLoadedData = function(currentObj, resp)
     {
-        if (resp.meta && !currentObj._startIndex)
+        if (resp.meta && !currentObj._startCol)
         {
             var fmt = currentObj.settings.displayFormat;
             $.each(resp.meta.view.columns, function(i, c)
             {
+                c.dataIndex = i;
                 if (c.dataTypeName == 'meta_data' && c.name == 'sid')
                 { currentObj._idIndex = i; }
-                else if (c.id == fmt.startDateId) { currentObj._startIndex = i; }
-                else if (c.id == fmt.endDateId) { currentObj._endIndex = i; }
+                else if (c.id == fmt.startDateId) { currentObj._startCol = c; }
+                else if (c.id == fmt.endDateId) { currentObj._endCol = c; }
                 else if (c.id == fmt.titleId) { currentObj._titleIndex = i; }
                 if (c.id == fmt.descriptionId)
                 { currentObj._descriptionIndex = i; }
@@ -112,7 +113,7 @@
         }
 
         if (currentObj._idIndex === undefined ||
-            currentObj._startIndex === undefined ||
+            currentObj._startCol === undefined ||
             currentObj._titleIndex === undefined) { return; }
 
         var events = [];
@@ -121,12 +122,12 @@
             if (typeof r == 'object')
             {
                 var ce = {id: r[currentObj._idIndex],
-                    start: r[currentObj._startIndex],
+                    start: r[currentObj._startCol.dataIndex],
                     title: $.htmlStrip(r[currentObj._titleIndex]),
                     row: r};
-                if (currentObj._endIndex !== undefined)
+                if (currentObj._endCol !== undefined)
                 {
-                    ce.end = r[currentObj._endIndex];
+                    ce.end = r[currentObj._endCol.dataIndex];
                     if (ce.start === null) { ce.start = ce.end; }
                 }
                 if (currentObj._descriptionIndex !== undefined)
@@ -149,6 +150,11 @@
 
         ajaxLoad(currentObj, { method: 'getByIds', start: currentObj._rowsLoaded,
             length: toLoad });
+    };
+
+    var colType = function(col)
+    {
+        return blist.data.types[col.renderTypeName];
     };
 
     var eventRender = function(currentObj, calEvent, element, view)
@@ -185,13 +191,25 @@
         //  was a resize) -- otherwise the date was originally null, so don't
         //  update it.
         if (calEvent.start !== null &&
-            (calEvent.row[currentObj._startIndex] !== null ||
+            (calEvent.row[currentObj._startCol.dataIndex] !== null ||
              (calEvent.end !== null &&
                 calEvent.start.valueOf() != calEvent.end.valueOf())))
-        { data[fmt.startDateId] = calEvent.start.valueOf() / 1000; }
+        {
+            var d = calEvent.start.valueOf() / 1000;
+            if (!$.isBlank(colType(currentObj._startCol).stringFormat))
+            { d = calEvent.start.toString(
+                colType(currentObj._startCol).stringFormat); }
+            data[fmt.startDateId] = d;
+        }
 
         if (fmt.endDateId !== undefined && calEvent.end !== null)
-        { data[fmt.endDateId] = calEvent.end.valueOf() / 1000; }
+        {
+            var d = calEvent.end.valueOf() / 1000;
+            if (!$.isBlank(colType(currentObj._endCol).stringFormat))
+            { d = calEvent.end.toString(
+                colType(currentObj._endCol).stringFormat); }
+            data[fmt.endDateId] = d;
+        }
 
         var url = '/views/' + currentObj.settings.viewId + '/rows/' +
             calEvent.id + '.json';

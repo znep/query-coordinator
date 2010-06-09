@@ -355,13 +355,19 @@
 
       $sel = $('.mapWrapper #mapColumn_title');
       var titleId = $sel.val();
-      if (titleId !== '') { options.plot.titleId = titleId; }
-      colIds.push($sel.find('option:selected').attr('data-columnId'));
+      if (titleId !== '')
+      {
+          options.plot.titleId = titleId;
+          colIds.push($sel.find('option:selected').attr('data-columnId'));
+      }
 
       $sel = $('.mapWrapper #mapColumn_description');
       var descId = $sel.val();
-      if (descId !== '') { options.plot.descriptionId = descId; }
-      colIds.push($sel.find('option:selected').attr('data-columnId'));
+      if (descId !== '')
+      {
+          options.plot.descriptionId = descId;
+          colIds.push($sel.find('option:selected').attr('data-columnId'));
+      }
 
       $('.mapWrapper .type-' + newType + ' .layerBlock').each(function()
       {

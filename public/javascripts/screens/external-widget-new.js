@@ -105,6 +105,19 @@ blist.widget.hideToolbar = function()
             widgetNS.resizeViewport);
 };
 
+blist.widget.closePane = function()
+{
+    // get the color from the subHeaderBar in case we're in the publisher
+    // and it has changed.
+    $('.toolbar')
+        .animate({ 'background-color': $('.subHeaderBar').css('background-color') },
+            function()
+            {
+                $(this).css('background-color', '');
+            });
+    widgetNS.showDataView();
+};
+
 blist.widget.flashToolbarMessage = function($messageElem, message, onDisplay)
 {
     $messageElem
@@ -279,15 +292,7 @@ $(function()
 
         if ($toolbar.hasClass('closePane'))
         {
-            // get the color from the subHeaderBar in case we're in the publisher
-            // and it has changed.
-            $toolbar
-                .animate({ 'background-color': $('.subHeaderBar').css('background-color') },
-                    function()
-                    {
-                        $(this).css('background-color', '');
-                    });
-            widgetNS.showDataView();
+            widgetNS.closePane();
         }
 
         widgetNS.hideToolbar();
@@ -752,6 +757,13 @@ $(function()
                 {
                     $(this).closest('form').submit();
                 }));
+
+    $('.widgetContent_print .close').click(function(event)
+    {
+        event.preventDefault();
+        widgetNS.closePane();
+        widgetNS.hideToolbar();
+    });
 
     // Set up modals
     $('.widgetModal').jqm({

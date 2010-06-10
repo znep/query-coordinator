@@ -52,6 +52,9 @@
 
     var openMenu = function(opts, $menuContainer, $menuButton, $menuDropdown)
     {
+        // close any menu that might already be open
+        $(document).trigger('click.menu');
+
         // cache the original height before we bump things out to measure
         var origDocumentHeight = $(document).height();
 
@@ -135,12 +138,7 @@
                 ($menuDropdown.find('a').has(event.target).length > 0) ||
                 $(event.target).is('.menuDropdown a'))
             {
-                // jQuery animation can trample all over itself if anything else is
-                // attached to the menu button
-                _.defer(function()
-                {
-                    closeMenu(opts, $menuContainer, $menuButton, $menuDropdown);
-                });
+                closeMenu(opts, $menuContainer, $menuButton, $menuDropdown);
             }
         });
     };

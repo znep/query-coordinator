@@ -168,13 +168,9 @@ html, body
       color: #eee
       &:hover
         text-decoration: none
-      .ie6 &
-        display: block
 
     .ie &.datasetName
       margin: 0.2em
-    .ie7 & .icon
-      display: block
     .ie6 &
       height: 13px
       width: 13px
@@ -244,11 +240,6 @@ html, body
     top: 0.3em
     &:hover
       text-decoration: none
-
-    // I don't even know anymore.
-    .ie6 & .icon,
-    .ie7 & .icon
-      display: block
 
 .widgetContent
   clear: both
@@ -370,10 +361,6 @@ html, body
 
             .rateUp, .rateDown
               @include sprite-menu-icons
-
-              .ie6 & .icon,
-              .ie7 & .icon
-                display: block
 
             .timestamp, .actionReply, .actionInappropriate
               float: left

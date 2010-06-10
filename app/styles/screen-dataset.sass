@@ -64,12 +64,9 @@ html, body
 
     #datasetIcon
       @include sprite-type-icons-30
-      display: block
       left: 0.4em
       top: 0.4em
       position: absolute
-      .icon
-        display: block
 
     #datasetName
       font-size: 1.6em
@@ -110,12 +107,9 @@ html, body
 
           .searchIcon
             @include dataset-toolbar-icon-search
-            display: block
-            height: 13px
             margin-bottom: -13px
             left: 1em
             top: 0.4em
-            width: 16px
 
           .searchForm
             display: inline
@@ -142,15 +136,29 @@ html, body
               right: 1em
               top: 0.3em
 
-        .share.menu .menuButton
-          @include dataset-toolbar-button
-          margin-top: 0
+        #shareMenu
+          .ie7 &
+            z-index: 10 /* needs to be higher than tabs */
 
-          .shareIcon
-            @include dataset-toolbar-icon-share
-            .ie7 &
-              display: block
-              float: left
+          .menuButton
+            @include dataset-toolbar-button
+            margin-top: 0
+
+            .shareIcon
+              @include dataset-toolbar-icon-share
+            .shareIcon, .icon
+              display: inline-block
+
+              .ie7 &
+                display: block
+                float: left
+
+          .menuDropdown ul li ul li
+            @include sprite-menu-icons
+            a
+              font-size: 1.2em
+              line-height: 1em
+              min-width: 6em
 
     #sidebarOptions
       float: left
@@ -162,9 +170,6 @@ html, body
         float: left
         margin-left: -7px
         position: relative
-
-        .ie7 & > a
-          display: block
 
       li
         z-index: 8
@@ -201,14 +206,6 @@ html, body
       @include sprite-menu-icons
       font-size: 1.1em
 
-    #shareMenu
-      .menuDropdown ul li ul li
-        @include sprite-menu-icons
-        a
-          font-size: 1.2em
-          line-height: 1em
-          min-width: 6em
-
   .fullscreenButton
     @include dataset-toolbar-button
     padding: 0
@@ -218,10 +215,8 @@ html, body
 
     &.maximize .icon
       @include dataset-toolbar-icon-maximize
-      display: block
     &.minimize .icon
       @include dataset-toolbar-icon-minimize
-      display: block
 
 .outerContainer
   border: 1px solid #cecece

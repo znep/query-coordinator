@@ -672,6 +672,12 @@ class BlistsController < ApplicationController
     options = JSON.parse(options) if !options.blank?
     columns = params[:columns] || nil
     columns = JSON.parse(columns) if !columns.blank?
+    columnIds = params[:columnIds] || nil
+    if !columnIds.blank?
+      columnIds = JSON.parse(columnIds)
+    elsif !columns.blank?
+      columnIds = columns.map {|c| c['id']}
+    end
 
     begin
       if params[:edit] == 'true'
@@ -684,9 +690,9 @@ class BlistsController < ApplicationController
 
         # TODO: It would be nice to make some convenience methods for generating
         # these requests
-        if !columns.blank?
-          columns.each do |c|
-            batch_reqs << {'url' => '/views/' + params[:id] + '/columns/' + c['id'],
+        if !columnIds.blank?
+          columnIds.each do |cId|
+            batch_reqs << {'url' => '/views/' + params[:id] + '/columns/' + cId,
               'requestType' => 'PUT', 'body' => {'hidden' => false},
               'class' => Column}
           end
@@ -694,7 +700,7 @@ class BlistsController < ApplicationController
           view_req['body']['columns'] = columns
         end
 
-        batch_reqs << view_req 
+        batch_reqs << view_req
         Model.batch(batch_reqs)
       else
         view = View.create({'name' => params[:viewName],

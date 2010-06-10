@@ -76,6 +76,7 @@
               <option class='prompt' value=''>Select a Column</option>
               <%- cols['location'].each do |c| -%>
               <option value='<%= c.tableColumnId %>'
+                data-columnId='<%= c.id %>'
                 <%= c.tableColumnId.to_s == loc_id ?
                   "selected='selected'" : '' %>><%= c.name %></option>
               <%- end -%>
@@ -108,6 +109,7 @@
                     @is_edit && !@view.is_grouped?).concat(cols['location']).
                       each do |c| -%>
                 <option value='<%= c.tableColumnId %>'
+                  data-columnId='<%= c.id %>'
                   <%= c.tableColumnId.to_s == title_id || c.id == cur_id ?
                   "selected='selected'" : '' %>><%= c.name %>
                   <%= '(address)' if c.renderTypeName == 'location' %></option>
@@ -138,6 +140,7 @@
                     @is_edit && !@view.is_grouped?).concat(cols['location']).
                       each do |c| -%>
                 <option value='<%= c.tableColumnId %>'
+                  data-columnId='<%= c.id %>'
                   <%= c.tableColumnId.to_s == desc_id || c.id == cur_id ?
                   "selected='selected'" : '' %>><%= c.name %>
                   <%= '(address)' if c.renderTypeName == 'location' %></option>
@@ -342,13 +345,29 @@
       var $form = $('.mapWrapper form');
       if (!$form.valid()) { return; }
 
+      var colIds = [];
       var newType = $('.mapWrapper #mapType').val();
       var options = {plot: {}, type: newType};
-      options.plot.locationId = $('.mapWrapper #mapColumn_location').val();
-      var titleId = $('.mapWrapper #mapColumn_title').val();
-      if (titleId !== '') { options.plot.titleId = titleId; }
-      var descId = $('.mapWrapper #mapColumn_description').val();
-      if (descId !== '') { options.plot.descriptionId = descId; }
+
+      var $sel = $('.mapWrapper #mapColumn_location');
+      options.plot.locationId = $sel.val();
+      colIds.push($sel.find('option:selected').attr('data-columnId'));
+
+      $sel = $('.mapWrapper #mapColumn_title');
+      var titleId = $sel.val();
+      if (titleId !== '')
+      {
+          options.plot.titleId = titleId;
+          colIds.push($sel.find('option:selected').attr('data-columnId'));
+      }
+
+      $sel = $('.mapWrapper #mapColumn_description');
+      var descId = $sel.val();
+      if (descId !== '')
+      {
+          options.plot.descriptionId = descId;
+          colIds.push($sel.find('option:selected').attr('data-columnId'));
+      }
 
       $('.mapWrapper .type-' + newType + ' .layerBlock').each(function()
       {
@@ -364,6 +383,7 @@
 
       var data = {viewName: $('.mapWrapper #mapName').val(),
         vizType: 'map', options: $.json.serialize(options),
+        columnIds: $.json.serialize(colIds),
         view_query: $('.mapWrapper #view_query').val()};
 
       var loginMsg = 'You must be signed in to create a map';

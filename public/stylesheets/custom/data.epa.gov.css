@@ -1,0 +1,68 @@
+/* LAYOUT */
+body
+{
+    background: #356697;
+}
+
+/* HEADER */
+#outerContainer #header
+{
+    background: none;
+    height: 55px;
+}
+
+.bodyInterior
+{
+    border-top: none;
+}
+
+#header #mainSubtitle
+{
+    color: #fff;
+    font-size: 1.6em;
+    font-weight: normal;
+    left: 19em;
+    position: absolute;
+    top: 1.3em;
+}
+
+#header .userNav li
+{
+    border-color: #ddd;
+}
+
+#header .userNav a
+{
+    color: #fff;
+}
+
+#mainNav
+{
+    position:relative;
+    height:40px;
+    background:url(/stylesheets/images/domains/data.epa.gov/nav_shadow.png) no-repeat center top;
+    padding:0 20px;
+}
+
+/* FOOTER */
+.footerContainer
+{
+    background: url(/stylesheets/images/domains/data.epa.gov/footer.png) repeat-x;
+    height: 60px;
+}
+
+#footer .copyright
+{
+    color: #fff;
+    padding: 2em 2em 0;
+}
+
+#footer ul
+{
+    padding: 2em 1em 0;
+}
+
+#footer a
+{
+    color: #fff;
+}

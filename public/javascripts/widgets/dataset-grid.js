@@ -1068,12 +1068,13 @@
                 col.type + '">'
                 + '<p class="name">' +
                 $.htmlEscape(col.name).replace(/ /, '&nbsp;') + '</p>' +
-                '<div class="blist-th-icon">' +
+                '<span class="blist-th-icon"></span>' +
+                '<p class="columnType">' +
                 col.type.displayable() +
                 (col.grouping_aggregate !== undefined ?
                     ' (' + $.capitalize(col.grouping_aggregate) + ' on ' +
                     col.originalType.displayable() + ')' : '') +
-                '</div>' +
+                '</p>' +
                 (col.description !== undefined ?
                     '<p class="description">' + $.htmlEscape(col.description) +
                     '</p>' : '') +

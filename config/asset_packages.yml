@@ -246,6 +246,7 @@ javascripts:
 - widgets-show-new-form:
   - plugins/jquery.uniform
 - screen-dataset:
+  - plugins/jquery.colorPicker
   - plugins/jquery.uniform
   - plugins/ui.slider
   - util/events
@@ -256,6 +257,7 @@ javascripts:
   - widgets/wizard-prompt
   - controls/grid-sidebar/base-sidebar
   - controls/grid-sidebar/calendar-create
+  - controls/grid-sidebar/chart-create
   - controls/grid-sidebar/form-create
   - controls/grid-sidebar/location-create
   - controls/grid-sidebar/map-create

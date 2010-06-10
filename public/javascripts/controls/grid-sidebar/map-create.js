@@ -89,7 +89,7 @@
                 fields: [
                     {type: 'repeater', minimum: 1, addText: 'Add Layer',
                         name: 'displayFormat.layers',
-                        field: {type: 'group', requires: 'url', options: [
+                        field: {type: 'group', options: [
                             {text: 'Layer', type: 'select',
                                 name: 'url',
                                 defaultValue: mapLayers[0].value,

@@ -267,3 +267,56 @@ div.starsControl
   &.hidden
     display: none
 
+
+//*** START: colorpicker styles ***//
+div#color_selector
+  background-color: #ffffff
+  border: 1px solid #cccccc
+  margin-left: -125px
+  padding: 10px 5px
+  position: absolute
+  width: 137px
+  z-index: 3001
+
+
+  div#color_custom
+    float: left
+    margin-top: -10px
+    width: 100%
+
+    label
+      color: #2F2F2F
+      font-size: 0.95em
+      margin: 5px 2px
+      width: 25%
+
+    input
+      border: 1px solid #000
+      font-size: 0.95em
+      margin: 5px 2px 0
+      width: 65%
+
+  div.color_block
+    border: 1px solid #666666
+    border-right: none
+    margin-bottom: 10px
+
+    div.color_swatch
+      border-right: 1px solid #666666
+      cursor: pointer
+      float: left
+      height: 16px
+      line-height: 16px
+      width: 16px
+
+      .inner
+        height: 14px
+        width: 14px
+
+      &.selected .inner
+        border: 1px solid #20608f
+
+      &.hover .inner
+        border: 1px solid #ffffff
+
+//*** END: colorpicker styles ***//

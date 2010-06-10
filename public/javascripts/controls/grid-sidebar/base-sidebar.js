@@ -42,18 +42,27 @@
                 validated or wizard-ed
             + name: internal name for field; required if it is of type selectable
             + onlyIf: only display the section if these criteria are true.
-                Currently accepts an object:
+                Currently accepts an object or array of objects:
             {
               + field: Input field to check the value of
               + value: Value that the field should be set to for the section
                   to be shown
+              + func: Instead of field & value, a function that takes a view
+                  object in, and returns true if available.  Will be recalled
+                  whenever columns change
+              + disable: boolean, if set the section will be disabled on a failed
+                  test instead of hidden
             }
+            + disabledMessage: Message to display when the section is disabled
+                via onlyIf
             + fields: array of input fields
             [
                {
                   + text: label for input
                   + type: required, one of: 'static', 'text', 'textarea',
                       'checkbox', 'select', 'columnSelect', 'radioGroup', 'slider'
+                      - 'color' is a color picker.  By default, this will
+                          display on the right end of the following line
                       - 'group' is a special option that only needs an options
                           array of subfields.  Also accepts extraClass
                       - 'repeater' is a special option that allows the user
@@ -70,32 +79,37 @@
                       value will be associated with in the output hash.  If it
                       has one or more periods (.), it will be taken as a nested
                       hash key, and the appropriate hashes will be created.
+                      If the last piece of the key is just digits, then the
+                      previous level will be an array, and this value be pushed
+                      on to the end.
                       This name does not need to be globally unique; it will
                       be namespaced into the pane.  However, it should be unique
-                      within the pane.  For repeaters, this name is the name of
+                      within the pane.  If the section has a name, it will be
+                      namespaced into their, so it only has to be unique within
+                      the section.  For repeaters, this name is the name of
                       the array.  Fields inside the repeater are rooted at the
                       particular object of the repeater array; so essentially
                       they are namespaced into the repeater
                   + prompt: optional, prompt text for text/textarea/select
                   + defaultValue: default value to use for the field; for
                       checkboxes use true.  For radioGroup, the name of the option
-                      that should be selected by default
+                      that should be selected by default.  For color, also
+                      accepts an array of colors that will be cycled through
+                      in a repeater
                   + repeaterValue: like defaultValue, but used for the replicated
                       lines in a repeater; falls back to defaultValue (if set)
                   + required: optional, boolean, whether or not the input should be
                       validated as required (if visible)
                   + minimum, maximum: For slider, limits of the range
+                  + trueValue, falseValue: For checkbox, optional values to map
+                      true & false to.  defaultValue can be either of these
+                      values, or true or false
                   + extraClass: extra class(es) to be applied to the input;
                       should be a single string, could have multiple
                       space-separated classes
                   + notequalto: optional, string to use for validating notequalto;
                       all fields that are validated like this should have the
                       same string
-                  + requires: for a group, a list of fields that are required
-                      to be present before values are pulled out.  Normally this
-                      would the first field(s) in a group, and latter fields
-                      would not get added to the result hash unless the initial
-                      field(s) are actually filled in
                   + isTableColumn: boolean, for columnSelect, use the
                       tableColumnId instead of the column ID
                   + columns: for type columnSelect, tells what type of columns
@@ -144,19 +158,19 @@
       section (prompt on initial entrance to a section; can be used to expand a
        section), field, finishBlock (by default will prompt against default
        button)
-    wizard:
+    + wizard: If this is just a string, it will be used as the prompt
     {
-      prompt: text to display in wizard tip
-      defaultAction: default wizard action if the wizard is closed (because
-        value is selected or button clicked)
-      actions: array of action buttons to display in the wizard
+      + prompt: text to display in wizard tip
+      + defaultAction: default wizard action if the wizard is closed (because
+          value is selected or button clicked)
+      + actions: array of action buttons to display in the wizard
       [
         {
-          text: text for button
-          action: action to perform on click
+          + text: text for button
+          + action: action to perform on click
         }
       ]
-      selector: optional, sub-element to prompt against
+      + selector: optional, sub-element to prompt against
     }
 
     Possible wizard actions:
@@ -550,9 +564,13 @@
                     return false;
                 }
 
+                // Validate disabled sections
+                $pane.find('.formSection.disabled:visible').addClass('error');
+
                 // Clear out fields that are prompts so they validate
                 $pane.find(':input.prompt').val('');
-                if (!$pane.find('form').valid())
+                if (!$pane.find('form').valid() ||
+                        $pane.find('.formSection.error:visible').length > 0)
                 {
                     this.finishProcessing();
                     $pane.find('.mainError')
@@ -573,10 +591,8 @@
                 var results = {};
 
                 /* Helper function; this takes a full field name and value,
-                 * the parent object it goes into; and optionally an array of
-                 * keys that are required in the object for this value to be
-                 * added */
-                var addValue = function(name, value, parObj, requires)
+                 * the parent object it goes into */
+                var addValue = function(name, value, parObj)
                 {
                     // The name is something like
                     // gridSidebar_mapPane:displayFormat.plot.titleId
@@ -586,15 +602,7 @@
                     var p = name.split(':');
                     name = p[p.length - 1];
 
-                    // Next, check requires.  If this is one of the required
-                    // fields, then go ahead and add it (since obviously it
-                    // isn't already present).  Otherwise, if there are requires,
-                    // make sure they are all present
-                    if (!$.isBlank(requires) &&
-                        !_.include(requires, name) &&
-                        _.any(requires, function(r)
-                            { return $.isBlank(parObj[r]); }))
-                    { return; }
+                    if ($.isBlank(name)) { return null; }
 
                     // Next pull apart the name into pieces.  For each level,
                     // recurse down, creating empty objects if needed.
@@ -603,7 +611,8 @@
                     while (p.length > 1)
                     {
                         parObj[p[0]] = parObj[p[0]] ||
-                            (p[0] == 'flags' ? [] : {});
+                            (p[0] == 'flags' || !$.isBlank(p[1].match(/^\d+$/)) ?
+                                [] : {});
                         parObj = parObj[p[0]];
                         p.shift();
                     }
@@ -611,9 +620,13 @@
                     var ret;
                     if (_.isArray(parObj))
                     {
+                        if (!$.isBlank(p[0].match(/^\d+$/)))
+                        {
+                            parObj.push(value);
+                        }
                         // If an array and the value is true, then just push on
                         // the last part of the name as a value
-                        if ($i.value())
+                        else if (value)
                         {
                             parObj.push(p[0]);
                             ret = p[0];
@@ -639,7 +652,7 @@
                 // (these are in a radioGroup, and will be handled by getting
                 // the selected radio button in the group and manually getting
                 // the associated input)
-                $pane.find('form :input, form .sliderControl')
+                $pane.find('form :input, form .sliderControl, form .colorControl')
                     .filter(':visible:not(' +
                         '.prompt, .sectionSelect, .radioLine label *)')
                     .each(function()
@@ -657,6 +670,9 @@
                     }
 
                     var value;
+                    if ($input.is('.colorControl'))
+                    { $input = $input.next(':input'); }
+
                     if ($input.is('.sliderControl'))
                     {
                         // Sliders are not normal inputs, so they are handled
@@ -665,19 +681,38 @@
                             parseFloat($input.attr('data-scale'));
                     }
                     else
-                    { value = $input.value(); }
+                    {
+                        value = $input.value();
+                        if ($input.is(':checkbox'))
+                        {
+                            var t = $input.attr('data-trueValue');
+                            var f = $input.attr('data-falseValue');
+                            if (!$.isBlank(t) && value === true)
+                            { value = t; }
+                            else if (!$.isBlank(f) && value === false)
+                            { value = f; }
+                        }
+                    }
 
                     var inputName = $input.attr('name');
 
-                    // If this is in a group, then grab any required fields
-                    // from the group
-                    var requires;
+                    // If this is in a group, then figure out if any required
+                    // fields failed
                     if ($input.is('.group *'))
                     {
-                        requires = $input.closest('.inputBlock')
-                            .attr('data-requires');
-                        if (!$.isBlank(requires))
-                        { requires = requires.split(','); }
+                        if ($.isBlank($input.attr('data-isrequired')))
+                        {
+                            var failed = false;
+                            $input.closest('.inputBlock')
+                                .find(':input[data-isrequired]').each(function()
+                            {
+                                var $this = $(this);
+                                failed = failed || $this.is('.prompt') ||
+                                    $.isBlank($this.value()) ||
+                                    $this.value() === false;
+                            });
+                            if (failed) { return; }
+                        }
                     }
 
                     // Start the parent out as top-level results
@@ -698,7 +733,8 @@
                         inputName = p.slice(0, -1).join('-');
                         // Set up the object for this array index, and use
                         // that as the parent
-                        parObj = parArray[parIndex] || {};
+                        if (!$.isBlank(parArray))
+                        { parObj = parArray[parIndex] || {}; }
                     }
 
                     // If this is a column select, then parse the value as a num,
@@ -708,7 +744,7 @@
                             parseInt(value) : value;
 
                     // Now add the value
-                    addValue(inputName, value, parObj, requires);
+                    addValue(inputName, value, parObj);
 
                     // If this is a select, check for extra data on the actual
                     // option element
@@ -723,7 +759,7 @@
                             _.each(ckeys.split(','), function(k)
                             {
                                 addValue(k, $sel.attr('data-custom-' + k),
-                                    parObj, requires);
+                                    parObj);
                             });
                         }
                     }
@@ -935,8 +971,9 @@
     {
         // Add optional modifier to name; also adjust to make it unique
         args.item = $.extend({}, args.item, {origName : args.item.name,
-            name: args.context.paneId + ':' +
-                args.item.name + (args.context.nameAppend || '')});
+            name: args.context.paneId + ($.isBlank(args.context.sectionName) ?
+                '' : '_' + args.context.sectionName) + ':' +
+                (args.item.name || '') + (args.context.nameAppend || '')});
 
         var contents = [];
         if (!args.context.inputOnly)
@@ -952,6 +989,7 @@
                 'class': [ {value: 'required', onlyIf: item.required},
                         {value: 'textPrompt', onlyIf: !$.isBlank(item.prompt)},
                         item.notequalto, item.extraClass ],
+                'data-isRequired': {value: true, onlyIf: item.required},
                 'data-notequalto': {value: '.' + (item.notequalto || '')
                         .split(' ').join(', .'),
                     onlyIf: !$.isBlank(item.notequalto)},
@@ -1006,8 +1044,12 @@
             case 'checkbox':
                 contents.push($.extend(commonAttrs(args.item),
                     {tagName: 'input', type: 'checkbox',
-                        checked: _.include(
-                            [true, 'true', 1, '1', 'yes', 'checked'], defValue)}));
+                        'data-trueValue': args.item.trueValue,
+                        'data-falseValue': args.item.falseValue,
+                        checked: (!$.isBlank(args.item.trueValue) &&
+                            defValue === args.item.trueValue) ||
+                            _.include([true, 'true', 1, '1', 'yes', 'checked'],
+                                defValue)}));
                     break;
 
             case 'select':
@@ -1070,6 +1112,17 @@
                         'data-min': min, 'data-max': max}));
                 break;
 
+            case 'color':
+                var item = $.extend({}, args.item,
+                    {defaultValue: $.arrayify(args.item.defaultValue || [])});
+                contents.push({tagName: 'a', href: '#Color', title: 'Choose color',
+                    'class': 'colorControl', contents: 'Choose color',
+                    style: {'background-color': item.defaultValue[0]}});
+                contents.push($.extend(commonAttrs(item),
+                    {tagName: 'input', type: 'hidden',
+                        value: item.defaultValue[0]}));
+                break;
+
             case 'group':
                 contents = [];
                 var items = _.map(args.item.options, function(opt, i)
@@ -1081,8 +1134,6 @@
                 });
                 contents.push({tagName: 'div',
                     'class': ['inputBlock', args.item.extraClass],
-                    'data-requires':
-                        $.arrayify(args.item.requires || []).join(','),
                     contents: items});
                 break;
 
@@ -1208,28 +1259,29 @@
                 'section<-sections': {
                     '@class+': function(arg)
                     { return _.compact([arg.item.type, arg.item.name,
-                        (arg.item.type == 'selectable' ? 'collapsed' : null),
-                        (!$.isBlank(arg.item.onlyIf) ? 'hide' : null)
-                        ]).join(' '); },
+                        (arg.item.type == 'selectable' ? 'collapsed' : null)]
+                        ).join(' '); },
                     '@data-onlyIf': function(arg)
                     {
                         if (!$.isBlank(arg.item.onlyIf))
                         {
                             var u = _.uniqueId();
-                            sectionOnlyIfs[u] = arg.item.onlyIf;
+                            sectionOnlyIfs[u] = $.arrayify(arg.item.onlyIf);
                             return u;
                         }
                         return '';
                     },
                     '.formHeader': 'section.title',
                     '.formHeader@for': 'section.name',
+                    '.sectionDisabledMessage': 'section.disabledMessage',
                     '.sectionSelect@id': 'section.name',
                     '.sectionSelect@name': 'section.name',
                     '.sectionContent+': function(a)
-                    { return _.map(a.item.fields, function(f, i)
+                    { return _.map(a.item.fields || [], function(f, i)
                         { return renderLine(sidebarObj,
-                            {context: a.context, item: f,
-                                items: a.item.fields, pos: i}); }
+                            {context: $.extend({}, a.context,
+                                {sectionName: a.item.name}),
+                            item: f, items: a.item.fields, pos: i}); }
                         ).join(''); }
                 }
             },
@@ -1270,19 +1322,63 @@
         // Dynamically show/hide panes
         _.each(sectionOnlyIfs, function(oif, uid)
         {
-            if ($.isBlank(oif.field))
-            { throw 'Only field-value objects supported for section onlyIfs'; }
-
-            var $field = $pane.find(':input[name=' +
-                paneId + ':' + oif.field + ']');
             var $section = $pane.find('[data-onlyIf=' + uid + ']');
+
+            // Set up helper function
             var showHideSection = function()
             {
                 _.defer(function()
-                { $section.toggleClass('hide', $field.val() != oif.value); });
+                {
+                    var isHidden = false;
+                    var isDisabled = false;
+
+                    $section.removeClass('error');
+
+                    _.each(oif, function(o)
+                    {
+                        var failed = false;
+                        if (!$.isBlank(o.$field))
+                        { failed = o.$field.val() != o.value; }
+                        else if (_.isFunction(o.func))
+                        { failed = !o.func(sidebarObj.$grid()
+                            .blistModel().meta().view); }
+
+                        if (o.disable)
+                        { isDisabled = isDisabled || failed; }
+                        else
+                        { isHidden = isHidden || failed; }
+                    });
+
+                    $section.toggleClass('hide', isHidden);
+                    $section.toggleClass('disabled', isDisabled);
+                });
             };
-            $field.change(showHideSection).keypress(showHideSection)
-                .click(showHideSection);
+
+
+            // Validate all fields
+            _.each(oif, function(o)
+            {
+                var isField = !$.isBlank(o.field);
+                var isFunc = _.isFunction(o.func);
+                if (!isField && !isFunc)
+                { throw 'Only field-value or func objects supported ' +
+                    'for section onlyIfs'; }
+
+                if (isField)
+                {
+                    // This isn't going to work if there is a section name...
+                    o.$field = $pane.find(':input[name=' +
+                        paneId + ':' + o.field + ']');
+                    o.$field.change(showHideSection).keypress(showHideSection)
+                        .click(showHideSection);
+                }
+                else if (isFunc)
+                {
+                    $(document).bind(blist.events.COLUMNS_CHANGED,
+                        showHideSection);
+                }
+            });
+
             showHideSection();
         });
 
@@ -1413,6 +1509,18 @@
                     value: parseInt($slider.attr('data-value'))});
             });
 
+            $container.find('.colorControl').colorPicker().bind('color_change',
+                function(e, newColor)
+                {
+                    $(this).css('background-color', newColor)
+                        .next(':input').val(newColor);
+                })
+                .mousedown(function(e)
+                {
+                    var $t = $(this);
+                    $t.data('colorpicker-color', $t.next(':input').val());
+                });
+
             $container.find('.removeLink').click(function(e)
             {
                 e.preventDefault();
@@ -1434,10 +1542,12 @@
         $pane.find('.button.addValue').click(function(e)
         {
             e.preventDefault();
+
             var $button = $(this);
             var $container = $button.closest('.line.repeater');
             var $newLine = $($.htmlUnescape($button.attr('data-template')));
             $newLine.find('.required').removeClass('required');
+
             var i = $container.children('.line').length;
             var attrMatch = '-templateId';
             $newLine.find('[name$=' + attrMatch + '], [id$=' + attrMatch +
@@ -1451,6 +1561,19 @@
                     { $elem.attr(aName, a.slice(0, -attrMatch.length) + '-' + i); }
                 });
             });
+
+            $newLine.find('.colorControl').each(function()
+            {
+                var $a = $(this);
+                var $i = $a.next(':input');
+                var colors = ($i.attr('data-defaultValue') || '').split(' ');
+                if (colors.length < 2) { return; }
+
+                var newColor = colors[i % colors.length];
+                $a.css('background-color', newColor);
+                $i.val(newColor);
+            });
+
             hookUpFields($newLine);
             $button.before($newLine);
         });
@@ -1498,7 +1621,7 @@
         if (!$.isBlank(config.wizard))
         {
             $pane.find('.subtitleBlock').addClass('hasWizard')
-                .data('sidebarWizard', config.wizard);
+                .data('sidebarWizard', $.objectify(config.wizard, 'prompt'));
         }
 
         $pane.find('.formSection').each(function(i)
@@ -1510,7 +1633,7 @@
                 $.extend({defaultAction: 'nextField',
                         actions: $s.is('.selectable') ?
                         $.gridSidebar.wizard.buttonGroups.sectionExpand : null},
-                    s.wizard)); }
+                    $.objectify(s.wizard, 'prompt'))); }
 
             $s.find('.sectionContent > .line').each(function(j)
             {
@@ -1526,7 +1649,7 @@
 
                     $l.addClass('hasWizard').data('sidebarWizard',
                         $.extend({defaultAction: 'nextField', actions: defActions},
-                            l.wizard, {positions: ['left'],
+                            $.objectify(l.wizard, 'prompt'), {positions: ['left'],
                             closeEvents: $l.is('.repeater, .group') ?
                                 'none' : 'change'}));
                 }
@@ -1537,7 +1660,8 @@
         {
             $pane.find('.finishButtons').addClass('hasWizard')
                 .data('sidebarWizard', $.extend({selector: '.button.submit'},
-                    config.finishBlock.wizard, {positions: ['top']}));
+                    $.objectify(config.finishBlock.wizard, 'prompt'),
+                    {positions: ['top']}));
         }
     };
 
@@ -1736,7 +1860,7 @@
                     {tagName: 'span',
                         // This is returning with &nbsp;, so replace them all
                         // with normal spaces
-                        contents: $a.attr('title').replace(/\xa0/g, ' ')}
+                        contents: $a.attr('title').clean()}
                 ]});
         });
 

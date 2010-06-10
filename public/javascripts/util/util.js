@@ -50,6 +50,12 @@ String.prototype.trim = function()
     return this.replace(/^\s+/, '').replace(/\s+$/, '');
 };
 
+String.prototype.clean = function()
+{
+    // Sometimes strings have &nbsp;, so replace them all with normal spaces
+    return this.replace(/\xa0/g, ' ');
+};
+
 // jQuery defs
 
 (function($) {
@@ -256,6 +262,34 @@ $.isBlank = function(obj)
 $.arrayify = function(obj)
 { return !_.isArray(obj) ? [obj] : obj; };
 
+$.objectify = function(obj, key)
+{
+    if (!$.isPlainObject(obj))
+    {
+        var newObj = {};
+        newObj[key] = obj;
+        return newObj;
+    }
+    return obj;
+};
+
 $.safeId = function(id)
-{ return id.replace(/(\.|\:)/g, '\\$1'); }
+{ return id.replace(/(\.|\:)/g, '\\$1'); };
+
+$.arrayToSentence = function(arr, joinWord, separator, alwaysUseSep)
+{
+    return arr.length < 3 ? arr.join((alwaysUseSep ? separator : '') +
+            ' ' + joinWord + ' ') :
+        arr.slice(0, -1).join(separator + ' ') + separator + ' ' + joinWord +
+            ' ' + arr[arr.length - 1];
+};
+
+$.wordify = function(num)
+{
+    var numWords = {'0' : 'zero', '1': 'one', '2': 'two', '3': 'three',
+        '4': 'four', '5': 'five', '6': 'six', '7': 'seven', '8': 'eight',
+        '9': 'nine'};
+    return numWords[num.toString()] || num;
+};
+
 })(jQuery);

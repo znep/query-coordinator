@@ -86,6 +86,7 @@
     <%# Visualize pane %>
     blist.sidebarHidden.visualize = blist.sidebarHidden.visualize || {};
     blist.sidebarHidden.visualize.calendarCreate = <%= @view.is_alt_view? %>;
+    blist.sidebarHidden.visualize.chartCreate = <%= @view.is_alt_view? %>;
     blist.sidebarHidden.visualize.mapCreate = <%= @view.is_alt_view? ||
       @view.is_grouped? ||
       !module_available?(:map_publish) %>;

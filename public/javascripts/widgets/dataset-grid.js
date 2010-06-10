@@ -1064,12 +1064,14 @@
             }
             tipsRef[col.id] = $col;
 
+            var typeName = blist.data.types[col.type].title ||
+                col.type.displayable();
             var tooltipContent = '<div class="blist-th-tooltip ' +
                 col.type + '">'
                 + '<p class="name">' +
                 $.htmlEscape(col.name).replace(/ /, '&nbsp;') + '</p>' +
                 '<div class="blist-th-icon">' +
-                col.type.displayable() +
+                typeName +
                 (col.grouping_aggregate !== undefined ?
                     ' (' + $.capitalize(col.grouping_aggregate) + ' on ' +
                     col.originalType.displayable() + ')' : '') +

@@ -200,6 +200,22 @@
         margin-left: -0.5em
         padding-left: 0
 
+      .sectionDisabledMessage
+        color: #999999
+        display: none
+        font-size: 1.3em
+        font-style: italic
+        margin: 1em 0
+        text-align: center
+
+      &.disabled
+        .sectionDisabledMessage
+          display: block
+        .sectionContent
+          display: none
+        &.error .sectionDisabledMessage
+          color: red
+
       .line
         margin: 0.5em 0
 
@@ -245,6 +261,29 @@
           font-size: 1em
           width: 11.6em
 
+        &.color
+          position: absolute
+          right: 0
+          top: 0
+
+          label
+            display: none
+
+        &.color + .line
+          margin-right: 24px
+
+          textarea, input[type="text"]
+            width: 10.9em
+
+          select
+            width: 11.5em
+
+          .ui-slider
+            width: 9.9em
+
+          &.columnSelect select
+            width: 9.6em
+
         $group_border_color: #cccccc
 
         &.radioGroup, &.group
@@ -286,6 +325,9 @@
 
         &.repeater .line
           position: relative
+
+          &.color
+            position: absolute
 
           .removeLink
             @include sprite-button-icons

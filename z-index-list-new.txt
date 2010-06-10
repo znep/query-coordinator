@@ -10,7 +10,24 @@ DATASETv2:
 
 99 toolbar
 
+
+SIDEBAR:
+
+1 remove link for repeaters
+50 modal (surrounding) overlay
+60 pane overlay
+60 loading overlay
+70 column selector when picking
+80 disabled overlay
+81 disabled message
+
+
 WIDGET:
 
 50 subheader
 51 header
+
+
+CONTROLS:
+
+3001 color_selector

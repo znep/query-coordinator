@@ -26,6 +26,44 @@
     };
 
 
+    /*** Common configuration options ***/
+
+    var defaultColors = ['#164363', '#3d5363', '#505b63', '#203442', '#101a21',
+        '#2d3e4a', '#454f56'];
+
+    var axisTitles = [
+        {text: 'X-Axis Title', name: 'displayFormat.titleX',
+            type: 'text', prompt: 'Enter a title for the x-axis',
+            wizard: 'Enter a title for the x-axis'},
+        {text: 'Y-Axis Title', name: 'displayFormat.titleY',
+            type: 'text', prompt: 'Enter a title for the y-axis',
+            wizard: 'Enter a title for the y-axis'}
+    ];
+
+    var legendPos = {text: 'Legend', type: 'select', prompt: 'Choose a position',
+        defaultValue: 'bottom', name: 'displayFormat.legend',
+        options: [
+            {text: 'Bottom', value: 'bottom'},
+            {text: 'Top', value: 'top'},
+            {text: 'Right', value: 'right'},
+            {text: 'Left', value: 'left'},
+            {text: 'None', value: 'none'}
+        ],
+        wizard: "Choose the position of the legend; or none if you don't want a legend"
+    };
+
+    var colorOption = {type: 'color', name: 'displayFormat.colors.0',
+        defaultValue: defaultColors};
+
+    var showLines = {text: 'Show Lines', name: 'displayFormat.lineSize',
+        type: 'checkbox', trueValue: 2, falseValue: 0, defaultValue: 2,
+        wizard: 'Choose whether or not you want lines drawn for each data set'};
+
+    var showPoints = {text: 'Show Points', name: 'displayFormat.pointSize',
+        type: 'checkbox', trueValue: 3, falseValue: 0, defaultValue: 3,
+        wizard: 'Choose whether or not you want points drawn for each data point'};
+
+
 
     /*** Helpers ***/
 
@@ -73,34 +111,75 @@
                    { return chartTypeAvailable(chart, view); }}];
     };
 
-
-
-    /*** Common configuration options ***/
-
-    var axisTitles = [
-        {text: 'X-Axis Title', name: 'displayFormat.titleX',
-            type: 'text', prompt: 'Enter a title for the x-axis',
-            wizard: 'Enter a title for the x-axis'},
-        {text: 'Y-Axis Title', name: 'displayFormat.titleY',
-            type: 'text', prompt: 'Enter a title for the y-axis',
-            wizard: 'Enter a title for the y-axis'}
-    ];
-
-    var legendPos = {
-        text: 'Legend', type: 'select', prompt: 'Choose a position',
-        defaultValue: 'bottom', name: 'displayFormat.legend',
-        options: [
-            {text: 'Bottom', value: 'bottom'},
-            {text: 'Top', value: 'top'},
-            {text: 'Right', value: 'right'},
-            {text: 'Left', value: 'left'},
-            {text: 'None', value: 'none'}
-        ],
-        wizard: "Choose the position of the legend; or none if you don't want a legend"
+    var basicConfig = function(chart, colTypes, axisName)
+    {
+        return {
+            title: 'Configuration', name: chart.value + 'Basic',
+            onlyIf: onlyIfForChart(chart, true),
+            disabledMessage: getDisabledMessage(chart),
+            fields: [
+                {text: axisName, name: 'displayFormat.dataColumns.0',
+                    type: 'columnSelect', required: true, isTableColumn: true,
+                    columns: {type: colTypes, hidden: false},
+                    wizard: 'Select a column that contains the data for the x-axis'
+                }
+            ].concat(axisTitles)
+        };
     };
 
-    var defaultColors = ['#164363', '#3d5363', '#505b63', '#203442', '#101a21',
-        '#2d3e4a', '#454f56'];
+    var basicData = function(chart, colTypes, axisName)
+    {
+        return {
+            title: 'Data Columns', name: chart.value + 'Data',
+            onlyIf: onlyIfForChart(chart, false),
+            fields: [
+                {type: 'repeater', minimum: 1, addText: 'Add Data Column',
+                    field: {type: 'group', options: [
+                        colorOption,
+                        {text: axisName, required: true, type: 'columnSelect',
+                            isTableColumn: true,
+                            name: 'displayFormat.dataColumns.0',
+                            columns: {type: colTypes, hidden: false}}
+                    ]},
+                    wizard: 'Select one or more columns that contain values for the chart'
+                }
+            ]
+        };
+    };
+
+    var basicAdv = function(chart, fields)
+    {
+        return {
+            title: 'Advanced Configuration', type: 'selectable',
+            name: chart.value + 'Adv', onlyIf: onlyIfForChart(chart, false),
+            fields: fields,
+            wizard: 'Do you want to configure more details for this chart?'
+        };
+    };
+
+
+    /*** Specific configs that need small overrides ***/
+    var configLine = basicConfig(chartTypes.line, textualTypes, 'Categories');
+    configLine.fields[0].required = false;
+
+    var configPie = basicConfig(chartTypes.pie, textualTypes, 'Label');
+    configPie.fields.splice(1, 2);
+    configPie.fields.push({type: 'repeater', text: 'Colors',
+        minimum: 6, maximum: 6, field: colorOption, lineClass: 'colorArray',
+        wizard: 'Choose colors for the slices of your pie chart'});
+
+    var configTimeline = basicConfig(chartTypes.timeline, dateTypes, 'Date');
+    configTimeline.fields = _.reject(configTimeline.fields,
+        function(f) { return f.name == 'displayFormat.titleX'; });
+    var dataTimeline = basicData(chartTypes.timeline, numericTypes, 'Value');
+    dataTimeline.fields[0].field.options.push(
+        {text: 'Title', type: 'columnSelect', isTableColumn: true,
+        name: 'displayFormat.dataColumns.1',
+        columns: {type: 'text', hidden: false}},
+        {text: 'Annotation', type: 'columnSelect', isTableColumn: true,
+        name: 'displayFormat.dataColumns.2',
+        columns: {type: 'text', hidden: false}}
+    );
 
     /*** Main config ***/
 
@@ -127,52 +206,49 @@
                 ]
             },
 
+
             // Area chart
-            {
-                title: 'Configuration', name: 'areaBasic',
-                onlyIf: onlyIfForChart(chartTypes.area, true),
-                disabledMessage: getDisabledMessage(chartTypes.area),
-                fields: [
-                    {text: 'Categories', name: 'displayFormat.dataColumns.0',
-                        type: 'columnSelect', required: true, isTableColumn: true,
-                        columns: {type: textualTypes, hidden: false},
-                        wizard: 'Select a column that contains the data for the x-axis'
-                    }
-                ].concat(axisTitles)
-            },
-            {
-                title: 'Data Columns', name: 'areaData',
-                onlyIf: onlyIfForChart(chartTypes.area, false),
-                fields: [
-                    {type: 'repeater', minimum: 1, addText: 'Add Data Column',
-                        field: {type: 'group', options: [
-                            {type: 'color', name: 'displayFormat.colors.0',
-                                defaultValue: defaultColors},
-                            {text: 'Value', required: true, type: 'columnSelect',
-                                isTableColumn: true,
-                                name: 'displayFormat.dataColumns.1',
-                                columns: {type: numericTypes, hidden: false}}
-                        ]},
-                        wizard: 'Select one or more columns that contain values for the chart'
-                    }
-                ]
-            },
-            {
-                title: 'Advanced Configuration', type: 'selectable',
-                name: 'areaAdv', onlyIf: onlyIfForChart(chartTypes.area, false),
-                fields: [
-                    legendPos,
-                    {text: 'Show Lines', name: 'displayFormat.lineSize',
-                        type: 'checkbox', trueValue: 2, falseValue: 0,
-                        defaultValue: 2,
-                        wizard: 'Choose whether or not you want lines drawn for each data set'},
-                    {text: 'Show Points', name: 'displayFormat.pointSize',
-                        type: 'checkbox', trueValue: 3, falseValue: 0,
-                        defaultValue: 3,
-                        wizard: 'Choose whether or not you want points drawn for each data point'}
-                ],
-                wizard: 'Do you want to configure more details for this chart?'
-            }
+            basicConfig(chartTypes.area, textualTypes, 'Categories'),
+            basicData(chartTypes.area, numericTypes, 'Value'),
+            basicAdv(chartTypes.area, [legendPos, showLines, showPoints]),
+
+
+            // Bar chart
+            basicConfig(chartTypes.bar, textualTypes, 'Groups'),
+            basicData(chartTypes.bar, numericTypes, 'Values'),
+            basicAdv(chartTypes.bar, [legendPos]),
+
+
+            // Column chart
+            basicConfig(chartTypes.column, textualTypes, 'Groups'),
+            basicData(chartTypes.column, numericTypes, 'Values'),
+            basicAdv(chartTypes.column, [legendPos]),
+
+
+            // Line chart
+            configLine,
+            basicData(chartTypes.line, numericTypes, 'Value'),
+            basicAdv(chartTypes.line, [legendPos, showLines, showPoints,
+                {text: 'Smooth Line', name: 'displayFormat.smoothLine',
+                type: 'checkbox', defaultValue: false,
+                wizard: 'Choose whether or not you want spline smoothing applied to the line'}
+            ]),
+
+
+            // Pie chart
+            configPie,
+            basicAdv(chartTypes.pie, [legendPos,
+                {text: 'Min. Angle', name: 'displayFormat.pieJoinAngle',
+                type: 'slider', minimum: 0, maximum: 10, defaultValue: 1,
+                wizard: 'Slices below this angle in degrees will be combined into an "Other" slice'}
+            ]),
+
+
+            // Time line
+            configTimeline,
+            dataTimeline,
+            basicAdv(chartTypes.timeline, [legendPos])
+
         ],
         finishBlock: {
             buttons: [$.gridSidebar.buttons.create, $.gridSidebar.buttons.cancel],

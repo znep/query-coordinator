@@ -261,6 +261,18 @@
           font-size: 1em
           width: 11.6em
 
+        &.slider
+          .ui-slider
+            margin-right: 0.7em
+            width: 9.4em
+
+          input
+            background-color: transparent
+            border: none
+            @include box-shadow-none
+            text-align: right
+            width: 1.8em
+
         &.color
           position: absolute
           right: 0
@@ -323,24 +335,36 @@
             margin-left: 0
             padding-left: 0
 
-        &.repeater .line
-          position: relative
+        &.repeater
+          .addValue.hide
+            display: none
 
-          &.color
-            position: absolute
+          .line
+            position: relative
 
-          .removeLink
-            @include sprite-button-icons
-            background-color: $group_border_color
-            left: 0
-            line-height: 1em
-            padding: 0.3em
-            position: absolute
-            top: 0
-            z-index: 1
+            &.color
+              position: absolute
+
+            .removeLink
+              @include sprite-button-icons
+              background-color: $group_border_color
+              left: 0
+              line-height: 1em
+              padding: 0.3em
+              position: absolute
+              top: 0
+              z-index: 1
 
         &.group .removeLink
           left: 0.75em
+
+        &.colorArray
+          .line.color
+            clear: none
+            float: left
+            margin: 0 1px
+            padding: 0
+            position: static
 
       &.collapsed
         .formHeader

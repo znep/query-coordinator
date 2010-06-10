@@ -73,6 +73,8 @@
                               this many will be rendered initially, and will
                               not have remove buttons; further added fields will
                               have remove buttons
+                          + maximum: The upper limit on number of fields; once
+                              this has been reached, the Add button will disappear
                           + addText: Text of the button to add new fields; defaults
                               to 'Add Value'
                   + name: required, HTML name of input.  This is the name the
@@ -652,7 +654,7 @@
                 // (these are in a radioGroup, and will be handled by getting
                 // the selected radio button in the group and manually getting
                 // the associated input)
-                $pane.find('form :input, form .sliderControl, form .colorControl')
+                $pane.find('form :input, form .colorControl')
                     .filter(':visible:not(' +
                         '.prompt, .sectionSelect, .radioLine label *)')
                     .each(function()
@@ -669,29 +671,22 @@
                         if ($input.length < 1) { return; }
                     }
 
-                    var value;
                     if ($input.is('.colorControl'))
                     { $input = $input.next(':input'); }
 
-                    if ($input.is('.sliderControl'))
+                    var value = $input.value();
+                    if ($input.is(':checkbox'))
                     {
-                        // Sliders are not normal inputs, so they are handled
-                        // specially
-                        value = $input.slider('value') /
-                            parseFloat($input.attr('data-scale'));
+                        var t = $input.attr('data-trueValue');
+                        var f = $input.attr('data-falseValue');
+                        if (!$.isBlank(t) && value === true)
+                        { value = t; }
+                        else if (!$.isBlank(f) && value === false)
+                        { value = f; }
                     }
-                    else
+                    else if ($input.is('.sliderInput'))
                     {
-                        value = $input.value();
-                        if ($input.is(':checkbox'))
-                        {
-                            var t = $input.attr('data-trueValue');
-                            var f = $input.attr('data-falseValue');
-                            if (!$.isBlank(t) && value === true)
-                            { value = t; }
-                            else if (!$.isBlank(f) && value === false)
-                            { value = f; }
-                        }
+                        value /= parseFloat($input.attr('data-scale'));
                     }
 
                     var inputName = $input.attr('name');
@@ -810,9 +805,9 @@
                 $pane.find('.line .sliderControl').each(function()
                 {
                     var $slider = $(this);
+                    var $input = $slider.next(':input');
                     $slider.slider('value',
-                        parseInt($slider.attr('data-defaultValue') || 0) *
-                        parseFloat($slider.attr('data-scale')));
+                        parseInt($input.attr('data-defaultValue') || 0));
                 });
 
                 $pane.find('.line :radio').each(function()
@@ -973,7 +968,9 @@
         args.item = $.extend({}, args.item, {origName : args.item.name,
             name: args.context.paneId + ($.isBlank(args.context.sectionName) ?
                 '' : '_' + args.context.sectionName) + ':' +
-                (args.item.name || '') + (args.context.nameAppend || '')});
+                (args.item.name || '') +
+                ($.isBlank(args.context.repeaterIndex) ? '' :
+                    '-' + args.context.repeaterIndex)});
 
         var contents = [];
         if (!args.context.inputOnly)
@@ -993,7 +990,7 @@
                 'data-notequalto': {value: '.' + (item.notequalto || '')
                         .split(' ').join(', .'),
                     onlyIf: !$.isBlank(item.notequalto)},
-                'data-defaultValue': args.item.defaultValue
+                'data-defaultValue': item.defaultValue
             };
         };
 
@@ -1106,21 +1103,25 @@
                     max *= scale;
                     defValue *= scale;
                 }
-                contents.push($.extend(commonAttrs(args.item),
-                    {tagName: 'div', 'class': 'sliderControl',
-                        'data-scale': scale, 'data-value': defValue,
-                        'data-min': min, 'data-max': max}));
+                contents.push({tagName: 'div', 'class': 'sliderControl',
+                        'data-min': min, 'data-max': max});
+
+                contents.push($.extend(commonAttrs($.extend({}, args.item,
+                        {defaultValue: defValue, extraClass: 'sliderInput'})),
+                    {tagName: 'input', type: 'text', value: defValue,
+                    'data-scale': scale, disabled: true}));
                 break;
 
             case 'color':
                 var item = $.extend({}, args.item,
                     {defaultValue: $.arrayify(args.item.defaultValue || [])});
+                var defColor = item.defaultValue[args.context.repeaterIndex] ||
+                    item.defaultValue[0];
                 contents.push({tagName: 'a', href: '#Color', title: 'Choose color',
                     'class': 'colorControl', contents: 'Choose color',
-                    style: {'background-color': item.defaultValue[0]}});
+                    style: {'background-color': defColor}});
                 contents.push($.extend(commonAttrs(item),
-                    {tagName: 'input', type: 'hidden',
-                        value: item.defaultValue[0]}));
+                    {tagName: 'input', type: 'hidden', value: defColor}));
                 break;
 
             case 'group':
@@ -1164,29 +1165,34 @@
                 break;
 
             case 'repeater':
-                contents = [];
+                if ($.isBlank(args.item.text))
+                { contents = []; }
+
                 var templateLine = renderLine(sidebarObj,
                             {item: $.extend({}, args.item.field,
                                     {lineClass: 'repeaterAdded'}),
                                 context: $.extend({}, args.context,
-                                     {nameAppend: '-templateId', noTag: true,
+                                     {repeaterIndex: 'templateId', noTag: true,
                                         inRepeater: true})
                     });
                 templateLine.contents.unshift({tagName: 'a', href: '#remove',
                     title: 'Remove', 'class': 'removeLink delete',
                     contents: {tagName: 'span', 'class': 'icon'}});
                 templateLine = $.htmlEscape($.tag(templateLine, true));
+
                 for (var i = 0; i < (args.item.minimum || 1); i++)
                 {
                     contents.push(renderLine(sidebarObj,
                                 {item: args.item.field,
                                     context: $.extend({}, args.context,
-                                         {nameAppend: '-' + i, noTag: true})
+                                         {repeaterIndex: i, noTag: true})
                     }));
                 }
+
                 contents.push($.button({text: args.item.addText || 'Add Value',
                     customAttrs: $.extend(commonAttrs(args.item),
-                        {'data-template': templateLine}),
+                        {'data-template': templateLine,
+                        'data-maximum': args.item.maximum}),
                     className: 'addValue'}, true));
                 break;
         }
@@ -1430,6 +1436,16 @@
             });
         });
 
+        var checkRepeaterMax = function($repeater)
+        {
+            var $button = $repeater.children('.button.addValue');
+            var max = $button.attr('data-maximum');
+            if ($.isBlank(max)) { return; }
+
+            $button.toggleClass('hide',
+                    $repeater.children('.line').length >= parseInt(max));
+        };
+
         var hookUpFields = function($container)
         {
             $container.find('.textPrompt')
@@ -1506,8 +1522,10 @@
                 var $slider = $(this);
                 $slider.slider({min: parseInt($slider.attr('data-min')),
                     max: parseInt($slider.attr('data-max')),
-                    value: parseInt($slider.attr('data-value'))});
-            });
+                    value: parseInt($slider.next(':input').val())});
+            })
+            .bind('slide', function(event, ui)
+            { $(this).next(':input').val(ui.value); });
 
             $container.find('.colorControl').colorPicker().bind('color_change',
                 function(e, newColor)
@@ -1521,10 +1539,16 @@
                     $t.data('colorpicker-color', $t.next(':input').val());
                 });
 
+            $container.find('.line.repeater').each(function()
+            { checkRepeaterMax($(this)); });
+
             $container.find('.removeLink').click(function(e)
             {
                 e.preventDefault();
-                $(this).closest('.line').remove();
+                var $t = $(this);
+                var $repeater = $t.closest('.line.repeater');
+                $t.closest('.line').remove();
+                checkRepeaterMax($repeater);
             });
 
             if (!$.isBlank($.uniform))
@@ -1576,6 +1600,8 @@
 
             hookUpFields($newLine);
             $button.before($newLine);
+
+            checkRepeaterMax($container);
         });
 
 

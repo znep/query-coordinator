@@ -14,6 +14,10 @@ blist.datasetPage.collapseSearch = function()
         .css('background-color', '')
         .removeClass('expanded');
 };
+blist.datasetPage.adjustSize = function()
+{
+    $('.outerContainer').fullScreen().adjustSize();
+};
 
 $(function()
 {
@@ -123,7 +127,7 @@ $(function()
                 .animate({
                     height: targetHeight
                 },
-                function() { $('.outerContainer').fullScreen().adjustSize(); });
+                datasetPageNS.adjustSize);
             $this.removeClass('downArrow').addClass('upArrow');
         }
         else
@@ -133,7 +137,7 @@ $(function()
                 .animate({
                     height: $description.css('line-height')
                 },
-                function() { $('.outerContainer').fullScreen().adjustSize(); });
+                datasetPageNS.adjustSize);
             $this.removeClass('upArrow').addClass('downArrow');
         }
     });
@@ -162,6 +166,19 @@ $(function()
     blist.dataset.controls.hookUpShareMenu(blist.display.view,
         $('#shareMenu'),
         { menuButtonContents: $.tag({ tagName: 'span', 'class': 'shareIcon' }, true)});
+
+    $('.fullscreenButton').click(function(event)
+    {
+        event.preventDefault();
+
+        $('#siteHeader, #siteFooter').animate(
+            { opacity: 'toggle' },
+            datasetPageNS.adjustSize);
+        datasetPageNS.adjustSize(); // So that when animating in footer is visible.
+        $(this)
+            .toggleClass('maximize')
+            .toggleClass('minimize');
+    });
 
     // fetch some data that we'll need
     $.ajax({ url: '/views.json',

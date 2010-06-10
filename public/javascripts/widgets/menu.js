@@ -122,8 +122,7 @@
         else
         {
             // if the menu should be on the bottom, make it so for the sake of IE7
-            // subtract 4 to account for the negative margin-top on the menu button
-            $menuDropdown.css('top', $menuButton.outerHeight() - 4);
+            $menuDropdown.css('top', $menuButton.outerHeight());
         }
 
         // Rehide and animate
@@ -132,6 +131,7 @@
             .fadeIn(200);
 
         // Hook to hide menu
+        $(document).unbind('click.menu'); // just to be sure
         $(document).bind('click.menu', function(event)
         {
             // close if user clicked out || if user clicked in link || if user clicked on linke

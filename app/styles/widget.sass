@@ -73,10 +73,12 @@ html, body
       @include box-shadow-none
 
     .menuDropdown
-      margin: 0.4em 0
+      @include border-radius(0.4em)
+      margin: 0
       min-width: 23em
 
       ul.menuColumns
+        margin-top: 1em
         margin-bottom: 0
 
         li.menuColumn ul.menuEntries

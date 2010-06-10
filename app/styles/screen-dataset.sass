@@ -22,6 +22,10 @@ html, body
     bottom: 0.3em
   position: relative
 
+  // IE keeps z-indexes in separate position domains
+  .ie7 &
+    z-index: 99
+
   #viewsMenu
     height: 2.8em
     left: 0.7em
@@ -64,6 +68,8 @@ html, body
       left: 0.4em
       top: 0.4em
       position: absolute
+      .icon
+        display: block
 
     #datasetName
       font-size: 1.6em
@@ -88,7 +94,7 @@ html, body
   #actionBox
     bottom: -1px
     position: absolute
-    right: 2em
+    right: 2.5em
 
     #toolbarOptions
       float: left
@@ -142,6 +148,9 @@ html, body
 
           .shareIcon
             @include dataset-toolbar-icon-share
+            .ie7 &
+              display: block
+              float: left
 
     #sidebarOptions
       float: left
@@ -153,6 +162,9 @@ html, body
         float: left
         margin-left: -7px
         position: relative
+
+        .ie7 & > a
+          display: block
 
       li
         z-index: 8
@@ -196,6 +208,20 @@ html, body
           font-size: 1.2em
           line-height: 1em
           min-width: 6em
+
+  .fullscreenButton
+    @include dataset-toolbar-button
+    padding: 0
+    position: absolute
+    right: 0.4em
+    top: 0.4em
+
+    &.maximize .icon
+      @include dataset-toolbar-icon-maximize
+      display: block
+    &.minimize .icon
+      @include dataset-toolbar-icon-minimize
+      display: block
 
 .outerContainer
   border: 1px solid #cecece

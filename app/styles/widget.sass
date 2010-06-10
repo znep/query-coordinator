@@ -78,6 +78,7 @@ html, body
     .menuDropdown
       margin: 0.4em 0
       min-width: 23em
+      z-index: 2998 /* 1 lower than jqm */
 
       ul.menuColumns
         &.hasAbout
@@ -181,7 +182,7 @@ html, body
     &.share .menu
       height: 13px
 
-      a.mainMenuButton
+      a.menuButton
         // menu button
         cursor: pointer
 

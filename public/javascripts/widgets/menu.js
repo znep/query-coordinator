@@ -16,6 +16,33 @@
             });
         });
 
+        var itemDirective = {  // inner array for rows
+            '.@class+': 'row.className',
+            'a .contents': 'row.text',
+            'a@href': 'row.href',
+            'a@rel': 'row.rel',
+            'a@title': 'row.title',
+            'a .subtext': 'row.subtext'
+        };
+
+        _.each(opts.additionalDataKeys, function(key)
+        {
+            itemDirective['a@data-' + key] = 'row.' + key;
+        });
+
+        var renderDirective = {
+            '+a.menuButton': 'menuButtonContents',
+            'a.menuButton@title': 'menuButtonTitle',
+            'a.menuButton@class': 'menuButtonClass',
+            '.menuDropdown>ul>li': {
+                'column<-columns': { // outer array for columns
+                    'ul>li': {
+                        'row<-column': itemDirective
+                    }
+                }
+            }
+        };
+
         return this.each(function()
         {
             var $menuContainer = $(this);
@@ -29,7 +56,7 @@
                           menuButtonTitle: opts.menuButtonTitle,
                           columns: contents
                         },
-                        opts.renderDirective));
+                        renderDirective));
 
             var $menuButton = $menuContainer.children('a');
             var $menuDropdown = $menuContainer.children('div');
@@ -151,29 +178,11 @@
     };
 
     $.fn.menu.defaults = {
+        additionalDataKeys: [],
         attached: true,
         contents: [],
         menuButtonClass: 'menuButton',
         menuButtonContents: 'Menu',
-        menuButtonTitle: 'Menu',
-        renderDirective: {
-            '+a.menuButton': 'menuButtonContents',
-            'a.menuButton@title': 'menuButtonTitle',
-            'a.menuButton@class': 'menuButtonClass',
-            '.menuDropdown>ul>li': {
-                'column<-columns': { // outer array for columns
-                    'ul>li': {
-                        'row<-column': {  // inner array for rows
-                            '.@class+': 'row.className',
-                            'a .contents': 'row.text',
-                            'a@href': 'row.href',
-                            'a@rel': 'row.rel',
-                            'a@title': 'row.title',
-                            'a .subtext': 'row.subtext'
-                        }
-                    }
-                }
-            }
-        }
+        menuButtonTitle: 'Menu'
     };
 })(jQuery);

@@ -141,7 +141,7 @@ blist.publish.applyGradient = function(selector, hover, value)
 
 blist.publish.hideShowMenuItem = function($elem, value)
 {
-    var target = $elem.attr('class').split(' ')[1];
+    var target = $elem.find('a').attr('data-targetPane');
     if (value === true)
     {
         $elem.removeClass('hide');
@@ -160,6 +160,7 @@ blist.publish.hideShowMenuItem = function($elem, value)
                  .find('.widgetContent_' + target).is(':visible'))
         {
             widgetNS.showDataView();
+            widgetNS.hideToolbar();
         }
     }
 

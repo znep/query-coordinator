@@ -1,22 +1,9 @@
-@mixin dataset-toolbar-button
-  @include vertical-gradient($dataset_toolbar_button_color_top, $dataset_toolbar_button_color_btm)
-  border: 1px solid #cecece
-  @include border-radius(0.2em)
-  font-size: 1em
-  height: 14px
-  line-height: 14px
-  padding: 0.3em 0.7em
-  &:hover
-    @include box-shadow(0, 0, 0.3em, $dataset_toolbar_button_shadow)
-  .noCss3 &:hover
-    background-color: $dataset_toolbar_button_color_btm
-
-
 html, body
   height: 100%
   overflow: hidden
 
 #datasetBar
+  background-color: #fff
   border-top: 1px solid #cecece
   padding: 0.25em
     bottom: 0.3em
@@ -33,7 +20,7 @@ html, body
     top: 0.8em
     width: 2em
     a.menuButton
-      @include dataset-toolbar-button
+      @include toolbar-button
       padding: 0
       height: 100%
       width: 100%
@@ -51,7 +38,7 @@ html, body
 
   #titleBox
     border: 1px solid #f4f4f4
-    margin-right: 60em
+    margin-right: 55em
     margin-left: 3em
     padding-bottom: 0.4em
     position: relative
@@ -102,7 +89,7 @@ html, body
         margin-right: 1em
 
         #searchButton
-          @include dataset-toolbar-button
+          @include toolbar-button
           position: relative
 
           .searchIcon
@@ -141,7 +128,7 @@ html, body
             z-index: 10 /* needs to be higher than tabs */
 
           .menuButton
-            @include dataset-toolbar-button
+            @include toolbar-button
             margin-top: 0
 
             .shareIcon
@@ -207,7 +194,7 @@ html, body
       font-size: 1.1em
 
   .fullscreenButton
-    @include dataset-toolbar-button
+    @include toolbar-button
     padding: 0
     position: absolute
     right: 0.4em
@@ -219,6 +206,7 @@ html, body
       @include dataset-toolbar-icon-minimize
 
 .outerContainer
+  background-color: #fff
   border: 1px solid #cecece
     left: 0
     right: 0

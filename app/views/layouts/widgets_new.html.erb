@@ -38,6 +38,11 @@
   http://developer.yahoo.com/performance/rules.html#js_bottom
   %>
 
+  <div id="templates">
+    <%= render :partial => 'shared/control_templates' %>
+    <%= yield :templates %>
+  </div>
+
   <%# Libraries for use with BeautyTip %>
   <!--[if IE]>
   <script type="text/javascript" src="/javascripts/plugins/excanvas.compiled.js"></script>
@@ -51,11 +56,6 @@
   <% if ENV["RAILS_ENV"] != 'production' %>
       <%= javascript_include_tag "util/debug" %>
   <% end %>
-
-  <div id="templates">
-    <%= render :partial => 'shared/control_templates' %>
-    <%= yield :templates %>
-  </div>
 
   <script type="text/javascript">
     blist.namespace.fetch('blist.configuration');

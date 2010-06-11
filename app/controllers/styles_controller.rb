@@ -95,7 +95,7 @@ class StylesController < ApplicationController
 protected
   def get_includes
     result = STYLE_PACKAGES['includes'].map{ |incl| "@import \"#{incl}.sass\"\n" }.join +
-             get_includes_recurse(CurrentDomain.theme_v2.colors, @@site_theme_parse[:colors])
+             get_includes_recurse(CurrentDomain.theme('2b'), @@site_theme_parse)
 
     return result
   end
@@ -189,24 +189,33 @@ protected
   end
 
   @@site_theme_parse = {
-    :colors     => { :links     => { :normal => 'color',
-                                     :visited => 'color' },
-                     :buttons   => { :active    => { :background => 'color',
-                                                     :border => 'color',
-                                                     :text => 'color' },
-                                     :hover     => { :background => 'color',
-                                                     :border => 'color',
-                                                     :text => 'color' },
-                                     :focus     => { :background => 'color',
-                                                     :border => 'color',
-                                                     :text => 'color' },
-                                     :disabled  => { :background => 'color',
-                                                     :border => 'color',
-                                                     :text => 'color' },
-                                     :shadow    => 'color' },
-                     :table     => { :header    => { :inactive => 'color',
-                                                     :active => 'color' } },
-                     :text      => { :error     => 'color' } } }
+    :links     => { :normal      => 'color',
+                    :visited     => 'color' },
+    :buttons   => { :active      => { :background => 'color',
+                                      :border => 'color',
+                                      :text => 'color' },
+                    :hover       => { :background => 'color',
+                                      :border => 'color',
+                                      :text => 'color' },
+                    :focus       => { :background => 'color',
+                                      :border => 'color',
+                                      :text => 'color' },
+                    :disabled    => { :background => 'color',
+                                      :border => 'color',
+                                      :text => 'color' },
+                    :shadow      => 'color' },
+    :toolbar_buttons =>
+                  { :background  => 'color',
+                    :border      => 'color',
+                    :shadow      => 'color' },
+    :table     => { :header      => { :inactive => 'color',
+                                      :active => 'color' } },
+    :text      => { :error       => 'color' },
+    :images    => { :logo_header => 'image',
+                    :logo_footer => 'image' },
+    :chrome    => { :background  => 'color',
+                    :nav_buttons => { :background => 'color',
+                                      :border => 'color' } } }
 
   @@widget_theme_parse = {
     :frame     => { :border     => { :color => 'color',

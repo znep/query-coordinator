@@ -29,19 +29,38 @@
 
 <body>
   <div id="skipLinks">
+    <a href="#content" accesskey="c">Skip to main content</a>
+    <a href="#footerLinks" accesskey="f">Skip to footer links</a>
     <%= yield :skip_links %>
   </div>
 
-  <div id='siteHeader'>Site Header</div>
+  <div class="siteOuterWrapper">
+    <div class="siteInnerWrapper">
 
-  <%= yield :layout %>
+      <div id="siteHeader" class="clearfix">
+        <%= render_domain_template('header', '2b') %>
+      </div>
 
-  <div id='siteFooter'>Site Footer</div>
+      <a name="content"></a>
+      <%= yield :layout %>
+
+      <a name="footerLinks"></a>
+      <div id="siteFooter" class="clearfix">
+        <%= render_domain_template('footer', '2b') %>
+      </div>
+
+    </div>
+  </div>
 
   <%#
   Better to load JS at the bottom:
   http://developer.yahoo.com/performance/rules.html#js_bottom
   %>
+
+  <div id="templates">
+    <%= render :partial => 'shared/control_templates' %>
+    <%= yield :templates %>
+  </div>
 
   <%# Libraries for use with BeautyTip %>
   <!--[if IE]>
@@ -57,14 +76,18 @@
       <%= javascript_include_tag "util/debug" %>
   <% end %>
 
-  <div id="templates">
-    <%= render :partial => 'shared/control_templates' %>
-    <%= yield :templates %>
-  </div>
-
   <script type="text/javascript">
     blist.namespace.fetch('blist.configuration');
     blist.configuration.strings = <%= raw CurrentDomain.strings.to_json %>;
+    
+    (function ($)
+    {
+        var loggedInCookie = $.cookies.get('logged_in');
+        if (loggedInCookie && loggedInCookie == "true")
+        {
+            $('#siteHeader .siteUserNav').addClass('loggedInNav');
+        }
+    })(jQuery);
   </script>
 
   <%= yield :js_footer %>

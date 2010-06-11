@@ -471,8 +471,8 @@ HREF
     self.output_buffer = render(:file => "layouts/#{layout}")
   end
 
-  def render_domain_template(template_name)
-    tmpl = CurrentDomain.templates[template_name] || ''
+  def render_domain_template(template_name, version = 0)
+    tmpl = CurrentDomain.templates(version)[template_name] || ''
     tmpl = tmpl.clone # make a copy so we don't override and we don't leave a mess for the GC
 
     DOMAIN_TEMPLATES.each do |subst|
@@ -484,7 +484,7 @@ HREF
     tmpl.gsub!(/\{\{string\.(\w+)\}\}/) {|match| CurrentDomain.strings[$1]}
 
     tmpl.gsub!(/\{\{urls\.(\w+)\}\}/) do |match|
-      (CurrentDomain.theme.urls[$1] || []).map do |url|
+      (CurrentDomain.theme(version).urls[$1] || []).map do |url|
         '<li>' + link_from_theme(url) + '</li>'
       end.join('')
     end

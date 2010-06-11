@@ -18,6 +18,16 @@
     },
     'A different value is required.');
 
+    // Special validator for figuring out which inputs have resulted in
+    // a disabled section appearing
+    $.validator.addMethod('data-onlyIfInput', function(value, element, param)
+    {
+        if (this.optional(element)) { return true; }
+        return _.isNull(element.className.match(/\bsectionDisabled-/));
+    },
+    'This value is invalid');
+
+
     /* Config hash:
     {
         + name: required, identification of this config.  If this has a period in
@@ -398,9 +408,11 @@
                             nameParts.secondary + ']').addClass('selected');
                     if (!$.isBlank(config.wizard))
                     { sidebarObj.$currentPane().addClass('initialLoad'); }
-                    sidebarObj.$currentPane().fadeIn();
+                    sidebarObj.$currentPane()
+                        .fadeIn(function() { checkForm(sidebarObj); });
                     sidebarObj.$currentPane().find('.scrollContent')
-                        .scroll(function(e) { handleScroll(sidebarObj, e); });
+                        .scroll(function(e)
+                        { updateWizardVisibility(sidebarObj); });
                 }
 
 
@@ -569,10 +581,8 @@
                 // Validate disabled sections
                 $pane.find('.formSection.disabled:visible').addClass('error');
 
-                // Clear out fields that are prompts so they validate
-                $pane.find(':input.prompt').val('');
-                if (!$pane.find('form').valid() ||
-                        $pane.find('.formSection.error:visible').length > 0)
+                // Validate form
+                if (!$pane.find('form').valid())
                 {
                     this.finishProcessing();
                     $pane.find('.mainError')
@@ -785,6 +795,8 @@
 
                 $pane.find('.line.repeater .line.repeaterAdded').remove();
 
+                $pane.find('.ranWizard').removeClass('ranWizard');
+
                 var resetInput = function($input)
                 {
                     var defValue = $input.attr('data-defaultValue') || null;
@@ -862,12 +874,7 @@
             .find('.scrollContent').unbind('scroll');
         sidebarObj._currentOuterPane = null;
         sidebarObj._currentPane = null;
-        if (!$.isBlank(sidebarObj._$currentWizard))
-        {
-            sidebarObj._$currentWizard.wizardPrompt().close();
-            sidebarObj._$currentWizard = null;
-            sidebarObj._$mainWizardItem = null;
-        }
+        clearWizard(sidebarObj);
     };
 
     /* Helper to get/create the modal overlay */
@@ -901,31 +908,27 @@
     {
         if (sidebarObj.$dom().is(':hidden')) { return; }
 
-        _.defer(function() { setPosition(sidebarObj); });
-    };
-
-    /* Handle pane scrolling */
-    var handleScroll = function(sidebarObj, e)
-    {
-        if (!$.isBlank(sidebarObj._$currentWizard))
+        _.defer(function()
         {
-            var $item = sidebarObj._$currentWizard;
-            var newScroll = sidebarObj.$currentPane()
-                .find('.scrollContent').scrollTop();
-            var scrollDiff = newScroll - sidebarObj._curScroll;
-            sidebarObj._curScroll = newScroll;
-            $item.socrataTip().adjustPosition({top: -scrollDiff});
-
+            setPosition(sidebarObj);
             updateWizardVisibility(sidebarObj);
-        }
+        });
     };
 
     var updateWizardVisibility = function(sidebarObj)
     {
+        if ($.isBlank(sidebarObj._$currentWizard)) { return; }
+
         var $item = sidebarObj._$currentWizard;
+        var itemTop = $item.offset().top;
+        if (itemTop == sidebarObj._currentWizardTop) { return; }
+
+        $item.socrataTip().adjustPosition(
+            {top: itemTop - sidebarObj._currentWizardTop});
+        sidebarObj._currentWizardTop = itemTop;
+
         var $pane = sidebarObj.$currentPane().find('.scrollContent');
         var paneTop = $pane.offset().top;
-        var itemTop = $item.offset().top;
         var paneBottom = paneTop + $pane.height();
         var itemBottom = itemTop + $item.outerHeight();
 
@@ -1277,6 +1280,7 @@
                         }
                         return '';
                     },
+                    '@name': 'section.name',
                     '.formHeader': 'section.title',
                     '.formHeader@for': 'section.name',
                     '.sectionDisabledMessage': 'section.disabledMessage',
@@ -1321,10 +1325,6 @@
         if ($pane.find('label.required').length > 0)
         { $pane.find('div.required').removeClass('hide'); }
 
-        $pane.find('form').validate({ignore: ':hidden', errorElement: 'span',
-            errorPlacement: function($error, $element)
-            { $error.appendTo($element.closest('.line')); }});
-
         // Dynamically show/hide panes
         _.each(sectionOnlyIfs, function(oif, uid)
         {
@@ -1340,11 +1340,17 @@
 
                     $section.removeClass('error');
 
+                    var $firstField;
                     _.each(oif, function(o)
                     {
                         var failed = false;
                         if (!$.isBlank(o.$field))
-                        { failed = o.$field.val() != o.value; }
+                        {
+                            failed = o.$field.val() != o.value;
+
+                            if ($.isBlank($firstField))
+                            { $firstField = o.$field; }
+                        }
                         else if (_.isFunction(o.func))
                         { failed = !o.func(sidebarObj.$grid()
                             .blistModel().meta().view); }
@@ -1355,8 +1361,35 @@
                         { isHidden = isHidden || failed; }
                     });
 
+                    // If this section is being hidden or disabled and has an
+                    // active wizard in it, then we need to move it elsewhere
+                    if ((isHidden || isDisabled) &&
+                        !$.isBlank(sidebarObj._$mainWizardItem) &&
+                        $.contains($section[0], sidebarObj._$mainWizardItem[0]))
+                    {
+                        clearWizard(sidebarObj);
+                        if (!$.isBlank($firstField))
+                        {
+                            // If we found a field to attach the wizard to,
+                            // then move it there
+                            var $wizItem = $firstField.closest('.hasWizard');
+                            _.defer(function()
+                            { showWizard(sidebarObj, $wizItem); });
+                        }
+                    }
+
+                    // Update class on associated field so it can get validated
+                    // This is kind of fragile, since it assumes the $firstField
+                    // is related to it being disabled
+                    if (!$.isBlank($firstField))
+                    {
+                        $firstField.toggleClass('sectionDisabled-' +
+                            $section.attr('name'), !isHidden && isDisabled);
+                    }
+
                     $section.toggleClass('hide', isHidden);
                     $section.toggleClass('disabled', isDisabled);
+                    updateWizardVisibility(sidebarObj);
                 });
             };
 
@@ -1376,7 +1409,7 @@
                     o.$field = $pane.find(':input[name=' +
                         paneId + ':' + o.field + ']');
                     o.$field.change(showHideSection).keypress(showHideSection)
-                        .click(showHideSection);
+                        .click(showHideSection).attr('data-onlyIfInput', true);
                 }
                 else if (isFunc)
                 {
@@ -1402,8 +1435,6 @@
                     ($sect.nextAll().has(sidebarObj._$mainWizardItem).length > 0 ||
                     $sect.nextAll().index(sidebarObj._$mainWizardItem) > -1))
                 {
-                    sidebarObj._$currentWizard.socrataTip()
-                        .adjustPosition({top: newH - oldH});
                     updateWizardVisibility(sidebarObj);
                 }
 
@@ -1414,9 +1445,8 @@
                     $sect.has(sidebarObj._$mainWizardItem).length < 1)
                 {
                     sidebarObj._$mainFlowWizard = sidebarObj._$mainWizardItem;
-                    sidebarObj._$currentWizard.wizardPrompt().close();
-                    sidebarObj._$currentWizard = null;
-                    sidebarObj._$mainWizardItem = null;
+                    clearWizard(sidebarObj);
+                    resetWizard(sidebarObj._$mainFlowWizard);
                     wizardAction(sidebarObj, $sect, 'nextField');
                 }
 
@@ -1425,13 +1455,19 @@
                 if (!$.isBlank(sidebarObj._$mainWizardItem) && !$c.value() &&
                     $sect.has(sidebarObj._$mainWizardItem).length > 0)
                 {
-                    sidebarObj._$currentWizard.wizardPrompt().close();
-                    sidebarObj._$currentWizard = null;
-                    sidebarObj._$mainWizardItem = null;
-                    // If there is a main flow, it will resume; otherwise
+                    var $mwi = sidebarObj._$mainWizardItem;
+                    clearWizard(sidebarObj);
+                    resetWizard($mwi);
+                    // If there is a main flow, resume it; otherwise
                     // advance to the next section
                     if ($.isBlank(sidebarObj._$mainFlowWizard))
                     { wizardAction(sidebarObj, $sect, 'nextSection'); }
+                    else
+                    {
+                        var $resumeItem = sidebarObj._$mainFlowWizard;
+                        sidebarObj._$mainFlowWizard = null;
+                        showWizard(sidebarObj, $resumeItem);
+                    }
                 }
             });
         });
@@ -1444,12 +1480,16 @@
 
             $button.toggleClass('hide',
                     $repeater.children('.line').length >= parseInt(max));
+            updateWizardVisibility(sidebarObj);
         };
 
         var hookUpFields = function($container)
         {
             $container.find('.textPrompt')
                 .example(function () { return $(this).attr('title'); });
+
+            $container.find(':input').change(function()
+            { _.defer(function() { checkForm(sidebarObj); }); });
 
             var checkRadio = function(e)
             {
@@ -1549,6 +1589,7 @@
                 var $repeater = $t.closest('.line.repeater');
                 $t.closest('.line').remove();
                 checkRepeaterMax($repeater);
+                updateWizardVisibility(sidebarObj);
             });
 
             if (!$.isBlank($.uniform))
@@ -1602,6 +1643,7 @@
             $button.before($newLine);
 
             checkRepeaterMax($container);
+            updateWizardVisibility(sidebarObj);
         });
 
 
@@ -1636,9 +1678,23 @@
 
         addWizards(sidebarObj, $pane, config);
 
+        $pane.find('form').validate({ignore: ':hidden', errorElement: 'span',
+            errorPlacement: function($error, $element)
+            { $error.appendTo($element.closest('.line')); }});
+
         return $pane;
     };
 
+    var checkForm = function(sidebarObj)
+    {
+        var $pane = sidebarObj.$currentPane();
+        if ($.isBlank($pane)) { return; }
+
+        $pane.find('.finishButtons .submit').toggleClass('disabled',
+            $pane.find(':input.required:visible')
+             .filter(':blank, .prompt, :checkbox:unchecked').length > 0 ||
+            $pane.find('.formSection:visible.disabled').length > 0);
+    };
 
     /*** Functions for handling wizard step-through ***/
 
@@ -1691,6 +1747,22 @@
         }
     };
 
+    var clearWizard = function(sidebarObj)
+    {
+        if (!$.isBlank(sidebarObj._$currentWizard))
+        {
+            sidebarObj._$currentWizard.wizardPrompt().close();
+            sidebarObj._$currentWizard = null;
+            sidebarObj._currentWizardTop = null;
+            sidebarObj._$mainWizardItem = null;
+        }
+    };
+
+    var resetWizard = function($item)
+    {
+        $item.removeClass('ranWizard');
+    };
+
     var showWizard = function(sidebarObj, $item)
     {
         if ($item.length < 1) { return false; }
@@ -1701,6 +1773,25 @@
         var wizConfig = {prompt: wiz.prompt || null,
             positions: wiz.positions || null,
             closeEvents: wiz.closeEvents || null};
+
+        if ($item.is('.ranWizard'))
+        {
+            wizardAction(sidebarObj, $item, wiz.defaultAction || 'nextField');
+            return true;
+        }
+
+        // If we hit a disabled submit button, then prompting them would be bad.
+        // So find the first failed required field
+        if ($item.has('.finishButtons .submit.disabled').length > 0)
+        {
+            var $form = sidebarObj.$currentPane().find('form');
+            $form.valid();
+            var $errorLine = $form.find(':input.error:first')
+                .closest('.line.hasWizard');
+            resetWizard($errorLine);
+            _.defer(function() { showWizard(sidebarObj, $errorLine); });
+            return true;
+        }
 
         var alreadyCalled = false;
         if (!$.isBlank(wiz.actions))
@@ -1762,7 +1853,9 @@
             sidebarObj._curScroll = $pane.scrollTop();
             $item.wizardPrompt(wizConfig);
             sidebarObj._$currentWizard = $item;
+            sidebarObj._currentWizardTop = $item.offset().top;
             sidebarObj._$mainWizardItem = $mainItem;
+            $item.find(':text, textarea').focus();
         };
 
         if (newScroll != origScroll)
@@ -1778,6 +1871,9 @@
         if ($.isBlank(sidebarObj.$currentPane())) { return; }
         // Bail out if we're trying to advance an old wizard
         if (!$.contains(sidebarObj.$currentPane()[0], $item[0])) { return; }
+        // If we just finished a field that is invisible, don't advance;
+        // because we just left something that is now gone
+        if (!$item.is(':visible')) { return; }
 
         if (!$.isBlank(sidebarObj._$mainFlowWizard) &&
             sidebarObj._$mainFlowWizard.index($item) > -1)
@@ -1786,8 +1882,8 @@
         // After the first wizard action, clear initialLoad
         sidebarObj.$currentPane().removeClass('initialLoad');
 
-        sidebarObj._$currentWizard = null;
-        sidebarObj._$mainWizardItem = null;
+        clearWizard(sidebarObj);
+        $item.addClass('ranWizard');
 
         if ($item.is('.uniform, :input'))
         {

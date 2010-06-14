@@ -28,8 +28,8 @@
 
     /*** Common configuration options ***/
 
-    var defaultColors = ['#164363', '#3d5363', '#505b63', '#203442', '#101a21',
-        '#2d3e4a', '#454f56'];
+    var defaultColors = ['#042656', '#19538b', '#6a9feb', '#bed6f7',
+        '#495969', '#bbc3c9'];
 
     var axisTitles = [
         {text: 'X-Axis Title', name: 'displayFormat.titleX',
@@ -190,6 +190,11 @@
 
     var configPie = basicConfig(chartTypes.pie, textualTypes, 'Label');
     configPie.fields.splice(1, 2);
+    configPie.fields[0].wizard = 'Select a column that contains the categories for the pie slices';
+    configPie.fields.push({text: 'Values', name: 'displayFormat.dataColumns.1',
+            type: 'columnSelect', required: true, isTableColumn: true,
+            columns: {type: numericTypes, hidden: false},
+            wizard: 'Select a column that contains the data for the pie slices'});
     configPie.fields.push({type: 'repeater', text: 'Colors',
         minimum: 6, maximum: 6, field: colorOption, lineClass: 'colorArray',
         wizard: 'Choose colors for the slices of your pie chart'});
@@ -291,6 +296,18 @@
         view.displayType = 'chart';
 
         $.extend(view, sidebarObj.getFormValues($pane));
+        view.columns = [];
+        _.each(view.displayFormat.dataColumns, function(tcid)
+        {
+            var col = _.detect(model.meta().view.columns, function(c)
+            { return c.tableColumnId == tcid; });
+
+            var fmt = $.extend({}, col.format);
+            if (_.include(numericTypes, col.dataTypeName))
+            { $.extend(fmt, {aggregate: 'sum'}); }
+
+            view.columns.push({id: col.id, name: col.name, format: fmt});
+        });
 
         $.ajax({url: '/views.json', type: 'POST', data: JSON.stringify(view),
             dataType: 'json', contentType: 'application/json',

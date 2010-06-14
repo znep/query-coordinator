@@ -68,8 +68,7 @@ class CurrentDomain
     end
 
     if @@current_domain[:widget_customization].nil?
-      # Pull the default customization. Look for ones with isDefault,
-      # or default to first one returned.
+      # Pull the default customization. Look in the site theme config.
       customizations = WidgetCustomization.find
 
       if !customizations.nil? && customizations.size > 0
@@ -80,8 +79,10 @@ class CurrentDomain
         @@current_domain[:widget_customization] = defaults.blank? ?
           customizations.first.uid : defaults.first.uid
       else
-        # If they don't have any customizations, default to empty
-        @@current_domain[:widget_customization] = ""
+        # If they don't have any customizations, create one for them
+        @@current_domain[:widget_customization] = WidgetCustomization.create(
+          {'customization' => WidgetCustomization.default_theme(1),
+           'name' => "Default #{domain_name}" }).uid
       end
     end
     @@current_domain[:widget_customization]

@@ -63,33 +63,59 @@
         type: 'checkbox', trueValue: 3, falseValue: 0, defaultValue: 3,
         wizard: 'Choose whether or not you want points drawn for each data point'};
 
+    var rowLimit = 100;
+    var hitRowLimit = false;
 
 
     /*** Helpers ***/
 
     var getDisabledMessage = function(chartConfig)
     {
-        var newTypes = [];
-        var copy = chartConfig.requiredColumns.slice();
-        while (copy.length > 0)
+        return function()
         {
-            var t = copy.shift();
-            var oldL = copy.length;
-            copy = _.without(copy, t);
-            newTypes.push({count: (oldL - copy.length) + 1, types: t});
-        }
+            var chartName = chartConfig.text.toLowerCase();
+            if (hitRowLimit)
+            {
+                return chartName.capitalize() + ' requires ' +
+                    'less than ' + rowLimit + ' distinct values (rows). ' +
+                    'Try creating a Roll Up or a filter which limits the ' +
+                    'number of values and then create a' +
+                    (!_.isNull(chartName.match(/^[aeiou]/)) ? 'n' : '') +
+                    ' ' + chartName + ' of that.';
+            }
 
-        return chartConfig.text.toLowerCase().capitalize() + ' requires ' +
-            $.arrayToSentence(_.map(newTypes, function(rc)
-            { return $.wordify(rc.count) + ' ' +
-                $.arrayToSentence(_.map(rc.types, function(t)
-                { return blist.data.types[t].title.toLowerCase(); }), 'or', ',') +
-                ' column' + (rc.count == 1 ? '' : 's'); }), 'and', ';', true) + '.';
+            var newTypes = [];
+            var copy = chartConfig.requiredColumns.slice();
+            while (copy.length > 0)
+            {
+                var t = copy.shift();
+                var oldL = copy.length;
+                copy = _.without(copy, t);
+                newTypes.push({count: (oldL - copy.length) + 1, types: t});
+            }
+
+            return chartName.capitalize() + ' requires ' +
+                $.arrayToSentence(_.map(newTypes, function(rc)
+                { return $.wordify(rc.count) + ' ' +
+                    $.arrayToSentence(_.map(rc.types, function(t)
+                    { return blist.data.types[t].title.toLowerCase(); }),
+                        'or', ',') + ' column' + (rc.count == 1 ? '' : 's'); }),
+                'and', ';', true) + '.';
+        };
     };
 
-    var chartTypeAvailable = function(chartConfig, view)
+    var chartTypeAvailable = function(chartConfig, model)
     {
-        var cols = view.columns.slice();
+        var cols = model.meta().view.columns.slice();
+
+        // Limit number of rows
+        if (model.length() > rowLimit)
+        {
+            hitRowLimit = true;
+            return false;
+        }
+        hitRowLimit = false;
+
         return _.all(chartConfig.requiredColumns, function(rc)
         {
             var col = _.detect(cols, function(c)
@@ -107,8 +133,9 @@
     var onlyIfForChart = function(chart, disable)
     {
         return [{field: 'displayFormat.chartType', value: chart.value},
-               {disable: disable, func: function(view)
-                   { return chartTypeAvailable(chart, view); }}];
+               {disable: disable, func: function(m)
+                   { return chartTypeAvailable(chart, m); },
+                disabledMessage: getDisabledMessage(chart)}];
     };
 
     var basicConfig = function(chart, colTypes, axisName)
@@ -116,7 +143,6 @@
         return {
             title: 'Configuration', name: chart.value + 'Basic',
             onlyIf: onlyIfForChart(chart, true),
-            disabledMessage: getDisabledMessage(chart),
             fields: [
                 {text: axisName, name: 'displayFormat.dataColumns.0',
                     type: 'columnSelect', required: true, isTableColumn: true,

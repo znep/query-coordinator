@@ -57,14 +57,13 @@
               + field: Input field to check the value of
               + value: Value that the field should be set to for the section
                   to be shown
-              + func: Instead of field & value, a function that takes a view
+              + func: Instead of field & value, a function that takes a model
                   object in, and returns true if available.  Will be recalled
                   whenever columns change
               + disable: boolean, if set the section will be disabled on a failed
                   test instead of hidden
+              + disabledMessage: Message to display when the section is disabled
             }
-            + disabledMessage: Message to display when the section is disabled
-                via onlyIf
             + fields: array of input fields
             [
                {
@@ -1283,7 +1282,6 @@
                     '@name': 'section.name',
                     '.formHeader': 'section.title',
                     '.formHeader@for': 'section.name',
-                    '.sectionDisabledMessage': 'section.disabledMessage',
                     '.sectionSelect@id': 'section.name',
                     '.sectionSelect@name': 'section.name',
                     '.sectionContent+': function(a)
@@ -1337,6 +1335,7 @@
                 {
                     var isHidden = false;
                     var isDisabled = false;
+                    var msg = '';
 
                     $section.removeClass('error');
 
@@ -1352,11 +1351,17 @@
                             { $firstField = o.$field; }
                         }
                         else if (_.isFunction(o.func))
-                        { failed = !o.func(sidebarObj.$grid()
-                            .blistModel().meta().view); }
+                        { failed = !o.func(sidebarObj.$grid().blistModel()); }
 
                         if (o.disable)
-                        { isDisabled = isDisabled || failed; }
+                        {
+                            isDisabled = isDisabled || failed;
+                            if (failed && !$.isBlank(o.disabledMessage))
+                            {
+                                msg += _.isFunction(o.disabledMessage) ?
+                                    o.disabledMessage() : o.disabledMessage;
+                            }
+                        }
                         else
                         { isHidden = isHidden || failed; }
                     });
@@ -1389,6 +1394,10 @@
 
                     $section.toggleClass('hide', isHidden);
                     $section.toggleClass('disabled', isDisabled);
+
+                    if (isDisabled)
+                    { $section.find('.sectionDisabledMessage').text(msg); }
+
                     updateWizardVisibility(sidebarObj);
                 });
             };

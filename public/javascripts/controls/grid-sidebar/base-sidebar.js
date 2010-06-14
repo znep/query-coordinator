@@ -873,7 +873,13 @@
         if (!$.isBlank(sidebarObj.$currentOuterPane()))
         {
             var $paneSel = sidebarObj.$currentOuterPane().find('.paneSelect');
-            if ($paneSel.isSocrataTip()) { $paneSel.socrataTip().destroy(); }
+            if ($paneSel.isSocrataTip())
+            {
+                $paneSel.socrataTip().destroy();
+                sidebarObj._$currentWizard = null;
+                sidebarObj._currentWizardTop = null;
+                sidebarObj._$mainWizardItem = null;
+            }
         }
 
         if (!$.isBlank(sidebarObj.$currentPane()))
@@ -939,6 +945,8 @@
         $item.socrataTip().adjustPosition(
             {top: itemTop - sidebarObj._currentWizardTop});
         sidebarObj._currentWizardTop = itemTop;
+
+        if ($.isBlank(sidebarObj.$currentPane())) { return; }
 
         var $pane = sidebarObj.$currentPane().find('.scrollContent');
         var paneTop = $pane.offset().top;
@@ -2055,6 +2063,9 @@
             e.preventDefault();
             selectPane(sidebarObj, $(this), config.name);
         });
+
+        sidebarObj._$currentWizard = sidebarObj._$mainWizardItem = $paneSel;
+        sidebarObj._currentWizardTop = $paneSel.offset().top;
 
         // Defer this call because if we just destroyed the tip, we need
         // to wait for it to fully go away

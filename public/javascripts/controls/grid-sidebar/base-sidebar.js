@@ -64,6 +64,14 @@
                   test instead of hidden
               + disabledMessage: Message to display when the section is disabled
             }
+            + customContent: Hash for rendering custom content using pure
+            {
+              + template: String of template name for pure
+              + directive: pure directive
+              + data: Data for pure rendering
+              + callback: optional, function to be called with newly-rendered
+                  section
+            }
             + fields: array of input fields
             [
                {
@@ -796,6 +804,9 @@
 
                 $pane.find('.ranWizard').removeClass('ranWizard');
 
+                // Remove errors
+                $pane.find('form').validate().resetForm();
+
                 var resetInput = function($input)
                 {
                     var defValue = $input.attr('data-defaultValue') || null;
@@ -1261,8 +1272,11 @@
             finishButtons: (config.finishBlock || {}).buttons,
             data: data || {}};
         var sectionOnlyIfs = {};
+        var customSections = {};
         var directive = {
             '.subtitle': 'subtitle',
+            '.subtitleBlock@class+': function(a)
+            { return $.isBlank(a.context.subtitle) ? 'hide' : ''; },
             '.formSection': {
                 'section<-sections': {
                     '@class+': function(arg)
@@ -1275,6 +1289,16 @@
                         {
                             var u = _.uniqueId();
                             sectionOnlyIfs[u] = $.arrayify(arg.item.onlyIf);
+                            return u;
+                        }
+                        return '';
+                    },
+                    '@data-customContent': function(arg)
+                    {
+                        if (!$.isBlank(arg.item.customContent))
+                        {
+                            var u = _.uniqueId();
+                            customSections[u] = arg.item.customContent;
                             return u;
                         }
                         return '';
@@ -1690,6 +1714,23 @@
         $pane.find('form').validate({ignore: ':hidden', errorElement: 'span',
             errorPlacement: function($error, $element)
             { $error.appendTo($element.closest('.line')); }});
+
+        if ($pane.find('.finishButtons li').length < 1)
+        {
+            $pane.find('.formSection:last').addClass('noFinish');
+        }
+
+        // Once we've hooked up everything standard, render any custom content.
+        _.each(customSections, function(cs, uid)
+        {
+            var $section = $pane.find('[data-customContent=' + uid + ']');
+            var $sc = $section.find('.sectionContent');
+            $sc.addClass(cs.template).append($.renderTemplate(cs.template,
+                    cs.data || {}, cs.directive));
+
+            if (_.isFunction(cs.callback))
+            { cs.callback($sc); }
+        });
 
         return $pane;
     };

@@ -277,7 +277,8 @@
             dataGrid: null,
             defaultLoginMessage: 'You must be signed in',
             modalHiddenSelector: null,
-            onSidebarClosed: function() {}
+            onSidebarClosed: function() {},
+            setSidebarTop: true
         },
 
         prototype:
@@ -904,7 +905,9 @@
     {
         var gridHeight = sidebarObj.$neighbor().height();
         var adjH = sidebarObj.$dom().outerHeight() - sidebarObj.$dom().height();
-        sidebarObj.$dom().css('top', -gridHeight + 'px').height(gridHeight - adjH);
+        sidebarObj.$dom().height(gridHeight - adjH);
+        if (sidebarObj.settings.setSidebarTop)
+        { sidebarObj.$dom().css('top', -gridHeight + 'px') }
 
         // Adjust current pane to correct height, since it is what scrolls
         var $pane = sidebarObj.$dom().find('.outerPane:visible');

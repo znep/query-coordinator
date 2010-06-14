@@ -68,7 +68,8 @@ $(function()
         onSidebarClosed: function()
         {
             $('#sidebarOptions li').removeClass('active');
-        }
+        },
+        setSidebarTop: false
     });
     $('#sidebarOptions a[data-paneName]').each(function()
     {

@@ -1,0 +1,54 @@
+#gridSidebar_embedSdp
+  #embed_code
+    height: 12em
+    font-size: 1em
+    margin: 1em
+      top: 0
+    overflow: hidden
+    padding: 0.5em
+    width: 23em
+
+  .left, .right
+    clear: both
+    padding-top: 1.5em
+
+  .sizes li
+    cursor: pointer
+    float: left
+    margin-right: 1em
+    width: 6em
+
+    p
+      text-align: center
+
+    .sizePreview
+      background-color: #f7f7f7
+      border: 1px solid #777
+      &.small
+        height: 2.55em
+        margin-left: 1.5em
+        width: 3em
+      &.medium
+        height: 3.8em
+        margin-left: 0.6em
+        width: 4.5em
+      &.large
+        height: 5.1em
+        width: 6em
+
+    &:hover .sizePreview
+      background-color: #f4f4f4
+      border-color: #000
+    &.selected .sizePreview
+      background-color: #eef
+      border-color: #334
+
+  p.information
+    font-style: italic
+    padding-bottom: 0.4em
+
+  .dimensions
+    label
+      width: 4em
+    input
+      width: 8em

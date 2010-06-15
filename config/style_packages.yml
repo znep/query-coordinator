@@ -22,4 +22,5 @@ grid:
 - dataset-grid
 dataset-page:
 - grid-sidebar
+- grid-sidebar-custom
 - screen-dataset

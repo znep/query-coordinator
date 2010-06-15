@@ -4,7 +4,7 @@
 class ApplicationController < ActionController::Base
   include SslRequirement
 
-  before_filter :hook_auth_controller,  :create_core_server_connection, :set_web_property,
+  before_filter :hook_auth_controller,  :create_core_server_connection,
     :adjust_format, :patch_microsoft_office, :require_user, :set_user
   helper :all # include all helpers, all the time
   helper_method :current_user
@@ -165,14 +165,15 @@ private
     end
   end
 
-  def set_web_property
-    unless CurrentDomain.set(request.host, session[:custom_site_config])
-      redirect_to 'http://www.socrata.com/'
-    end
-  end
-
   # Custom logic for rendering a 404 page with our pretty templates.
   def render_optional_error_file(status_code)
+    # Chicken and egg problem: When rendering some errors, such as a 404 page,
+    # we never really made it to a controller at all - we failed at when
+    # attempting to route the request. But our templates heavily depend on the
+    # current user, so let's just hook the auth controller anyways so we can
+    # render the template.
+    UserSession.controller = self
+
     if status_code == :not_found
       render_404
     elsif status_code == :internal_server_error

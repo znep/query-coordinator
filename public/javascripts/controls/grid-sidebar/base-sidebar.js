@@ -236,6 +236,7 @@
         buttons: {
             create: {text: 'Create', value: true, isDefault: true,
                 requiresLogin: true},
+            done: {text: 'Done', value: true, isDefault: true},
             cancel: {text: 'Cancel', value: false, isCancel: true}
         },
 
@@ -1317,6 +1318,10 @@
                     '@name': 'section.name',
                     '.formHeader': 'section.title',
                     '.formHeader@for': 'section.name',
+                    '.formHeader@class+': function(arg)
+                    {
+                        return $.isBlank(arg.item.title) ? 'hide' : '';
+                    },
                     '.sectionSelect@id': 'section.name',
                     '.sectionSelect@name': 'section.name',
                     '.sectionContent+': function(a)
@@ -1701,8 +1706,16 @@
 
             var doCallback = function()
             {
-                config.finishCallback(sidebarObj, data,
-                    $pane, $button.attr('data-value'));
+                if (_.isFunction(config.finishCallback))
+                {
+                    config.finishCallback(sidebarObj, data,
+                        $pane, $button.attr('data-value'));
+                }
+                else
+                {
+                    sidebarObj.finishProcessing();
+                    sidebarObj.hide();
+                }
             };
 
             if (!$.isBlank(blist.util.inlineLogin) && $button.is('.requiresLogin'))

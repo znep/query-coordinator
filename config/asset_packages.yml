@@ -259,9 +259,11 @@ javascripts:
   - controls/grid-sidebar/calendar-create
   - controls/grid-sidebar/chart-create
   - controls/grid-sidebar/form-create
+  - controls/grid-sidebar/embed-sdp
   - controls/grid-sidebar/location-create
   - controls/grid-sidebar/map-create
   - controls/dataset-controls
+  - widgets/embed-form
   - controls/full-screen
   - screens/dataset
 

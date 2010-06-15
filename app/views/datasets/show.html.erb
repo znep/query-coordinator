@@ -70,6 +70,9 @@
 
 <% content_for :templates do %>
 <%= render(:partial => 'grid_sidebar_templates') %>
+<div class="embedForm">
+  <%= render :partial => 'blists/embed_form', :locals => { :view => @view, :cur => 'root' } %>
+</div>
 <% end %>
 
 <% content_for :js_footer do %>
@@ -105,6 +108,7 @@
       !module_available?(:form_publish) ||
       !@view.owned_by?(@current_user) ||
       !@view.parent_dataset.owned_by?(@current_user) %>;
+    blist.sidebarHidden.embed.embedSdp = <%= !@view.is_public? %>;
   </script>
 
   <%- if @view.can_edit() && !@view.is_blobby? -%>

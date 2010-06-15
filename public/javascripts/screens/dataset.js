@@ -55,8 +55,6 @@ $(function()
     // Placeholder config for tabs that haven't been implemented yet
     $.gridSidebar.registerConfig({name: 'filter.foo', title: 'Placeholder',
         subtitle: 'Placeholder'});
-    $.gridSidebar.registerConfig({name: 'export.foo', title: 'Placeholder',
-        subtitle: 'Placeholder'});
     $.gridSidebar.registerConfig({name: 'feed.foo', title: 'Placeholder',
         subtitle: 'Placeholder'});
     $.gridSidebar.registerConfig({name: 'about.foo', title: 'Placeholder',

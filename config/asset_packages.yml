@@ -24,6 +24,7 @@ javascripts:
   - util/alert-override
   - util/google-analytics
   - util/dataset
+  - util/templates
   - widgets/socrata-messaging
   - widgets/text-prompt
   - widgets/values
@@ -249,6 +250,8 @@ javascripts:
   - plugins/jquery.colorPicker
   - plugins/jquery.uniform
   - plugins/ui.slider
+  - plugins/jquery.tablesorter
+  - widgets/combination-list
   - util/events
   - util/urls
   - util/navigation
@@ -262,6 +265,8 @@ javascripts:
   - controls/grid-sidebar/embed-sdp
   - controls/grid-sidebar/location-create
   - controls/grid-sidebar/map-create
+  - controls/grid-sidebar/download-dataset
+  - controls/grid-sidebar/print-dataset
   - controls/dataset-controls
   - widgets/embed-form
   - controls/full-screen

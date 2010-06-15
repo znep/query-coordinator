@@ -25,7 +25,7 @@
                     return _.any(grant.flags, function(flag) { return flag == 'public'; });
                 }),
         finishBlock: {
-            buttons: [$.gridSidebar.buttons.done]
+            buttons: [$.gridSidebar.buttons.done, $.gridSidebar.buttons.cancel]
         }
     };
 

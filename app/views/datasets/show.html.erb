@@ -71,8 +71,12 @@
 <% content_for :templates do %>
 <%= render(:partial => 'grid_sidebar_templates') %>
 <div class="embedForm">
-  <%= render :partial => 'blists/embed_form', :locals => { :view => @view, :cur => 'root' } %>
+  <%= render :partial => 'datasets/embed_form', :locals => { :view => @view, :cur => 'root' } %>
 </div>
+<div class="printForm">
+  <%= render :partial => 'datasets/print_form', :locals => { :view => @view } %>
+</div>
+<%= render :partial => 'datasets/downloads_table_template' %>
 <% end %>
 
 <% content_for :js_footer do %>

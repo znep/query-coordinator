@@ -451,30 +451,13 @@ $(function()
     });
 
     // downloads
-    var supportedDownloadTypes = [ 'CSV', 'JSON', 'PDF', 'XLS', 'XLSX', 'XML'  ];
     $('.widgetContent_downloads').append(
         $.renderTemplate(
             'downloadsTable',
-            supportedDownloadTypes,
-            {
-                'tbody .item': {
-                    'downloadType<-': {
-                        '.type a': '#{downloadType}',
-                        '.type a@href': function(downloadType) { 
-                            return '/views/' + widgetNS.view.id + '/rows.' +
-                            downloadType.item.toLowerCase() + '?accessType=DOWNLOAD'; }
-                        // TODO: add download count when supported
-                    }
-                }
-            }));
-    $('.widgetContent_downloads table.gridList').combinationList({
-        headerContainerSelector: '.widgetContent_downloads .gridListWrapper',
-        initialSort: [[0, 0]],
-        scrollableBody: false,
-        selectable: false,
-        sortGrouping: false,
-        sortHeaders: {0: {sorter: 'text'}}
-    });
+            { downloadTypes: $.templates.downloadsTable.downloadTypes,
+              viewId: widgetNS.view.id },
+            $.templates.downloadsTable.directive));
+    $.templates.downloadsTable.postRender($('.widgetContent_downloads'));
 
     // comments
 

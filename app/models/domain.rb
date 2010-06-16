@@ -30,9 +30,7 @@ class Domain < Model
   end
 
   def default_configuration(type)
-    if @default_configs.nil?
-      @default_configs = Hash.new
-    end
+    @default_configs ||= Hash.new
 
     if @default_configs[type].nil?
       @default_configs[type] =

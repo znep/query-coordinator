@@ -61,6 +61,12 @@ $(function()
     // sidebar and sidebar tabs
     var sidebar = $('#gridSidebar').gridSidebar({
         dataGrid: $dataGrid[0],
+        onSidebarShown: function(primaryPane)
+        {
+            $('#sidebarOptions li').removeClass('active');
+            $('#sidebarOptions a[data-paneName=' + primaryPane + ']')
+                .closest('li').addClass('active');
+        },
         onSidebarClosed: function()
         {
             $('#sidebarOptions li').removeClass('active');
@@ -76,10 +82,6 @@ $(function()
             {
                 e.preventDefault();
                 sidebar.show($a.attr('data-paneName'));
-                $a.closest('li')
-                    .addClass('active')
-                    .siblings()
-                        .removeClass('active');
             });
         }
         else

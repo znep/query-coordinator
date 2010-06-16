@@ -279,6 +279,7 @@
             defaultLoginMessage: 'You must be signed in',
             modalHiddenSelector: null,
             onSidebarClosed: function() {},
+            onSidebarShown: function(primaryPane, secondaryPane) {},
             setSidebarTop: true
         },
 
@@ -476,6 +477,9 @@
                 {
                     showPaneSelectWizard(sidebarObj, outerConfig);
                 }
+
+                sidebarObj.settings.onSidebarShown(nameParts.primary,
+                    nameParts.secondary);
             },
 
             /* Hide the sidebar and all panes.  If it was modal, then undo the

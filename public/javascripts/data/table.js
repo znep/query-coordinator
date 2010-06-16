@@ -2688,7 +2688,7 @@
 
                     var drillDown = mcol.drillDown ? ("<a class='drillDown'" +
                         " cellvalue='\" + $.escapeQuotes($.htmlStrip('' + row" + mcol.dataLookupExpr +
-                        ")) + \"' column='\" + " + mcol.id + " + \"' href='#drillDown'></a>") : '';
+                        ")) + \"' datatype='" + mcol.type + "' column='\" + " + mcol.id + " + \"' href='#drillDown'></a>") : '';
                     var cellDrillStyle = mcol.drillDown ?  ' drill-td' : '';
 
                     renderer = "(row" + mcol.dataLookupExpr + " !== null ? " +

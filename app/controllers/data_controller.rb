@@ -95,6 +95,9 @@ class DataController < ApplicationController
 
     # Hide logo if theme specifies so
     @hide_logo = " style='display:none'" if CurrentDomain.theme.no_logo_on_discover
+
+    # This is the site root; let opengraph know so.
+    @meta['og:type'] = 'website'
   end
 
   def filter

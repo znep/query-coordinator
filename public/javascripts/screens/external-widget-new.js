@@ -82,6 +82,19 @@ blist.widget.hideToolbar = function()
             widgetNS.resizeViewport);
 };
 
+blist.widget.closePane = function()
+{
+    // get the color from the subHeaderBar in case we're in the publisher
+    // and it has changed.
+    $('.toolbar')
+        .animate({ 'background-color': $('.subHeaderBar').css('background-color') },
+            function()
+            {
+                $(this).css('background-color', '');
+            });
+    widgetNS.showDataView();
+};
+
 blist.widget.flashToolbarMessage = function($messageElem, message, onDisplay)
 {
     $messageElem
@@ -140,36 +153,39 @@ $(function()
 
     // menus
     var menuOptions = widgetNS.theme['menu']['options'];
-    $('.mainMenu').menu({
-        attached: false,
-        menuButtonTitle: 'Access additional information about this dataset.',
-        menuButtonClass: 'mainMenuButton ' + ((widgetNS.orientation == 'downwards') ? 'upArrow' : 'downArrow'),
-        contents: [
-            { text: 'More Views', className: 'views',
-                subtext: 'Filters, Charts, and Maps', href: '#views',
-                onlyIf: menuOptions['more_views'] },
-            { text: 'Download', className: 'downloads',
-                subtext: 'Download in various formats', href: '#downloads',
-                onlyIf: !widgetNS.isBlobby && menuOptions['downloads'] },
-            { text: 'Comments', className: 'comments',
-                subtext: 'Read comments on this dataset', href: '#comments',
-                onlyIf: menuOptions['comments'] },
-            { text: 'Embed', className: 'embed',
-                subtext: 'Embed this player on your site', href: '#embed',
-                onlyIf: menuOptions['embed'] },
-            { text: 'Print', className: 'print',
-                subtext: 'Print this dataset', href: '#print',
-                onlyIf: !widgetNS.isAltView && menuOptions['print'] },
-            { text: 'About the Socrata Social Data Player', className: 'about',
-                href: 'http://www.socrata.com/try-it-free', rel: 'external',
-                onlyIf: menuOptions['about_sdp'] },
-            { text: 'Access this Dataset via the API',
-                // HACK: replace back with api + about when we drop IE6
-                className: menuOptions['about_sdp'] ? 'api apiAfterAbout' : 'api',
-                href: '/api/docs', rel: 'external',
-                onlyIf: menuOptions['api'] }
-        ]
-    });
+    if (_.any(menuOptions))
+    {
+        $('.mainMenu').menu({
+            additionalDataKeys: [ 'targetPane', 'iconColor' ],
+            menuButtonTitle: 'Access additional information about this dataset.',
+            menuButtonClass: 'mainMenuButton ' + ((widgetNS.orientation == 'downwards') ? 'upArrow' : 'downArrow'),
+            contents: [
+                { text: 'More Views', className: 'views', targetPane: 'views',
+                    subtext: 'Filters, Charts, and Maps', href: '#views',
+                    iconColor: '#57b6dd', onlyIf: menuOptions['more_views'] },
+                { text: 'Download', className: 'downloads', targetPane: 'downloads',
+                    subtext: 'Download in various formats', href: '#downloads',
+                    iconColor: '#959595', onlyIf: !widgetNS.isBlobby && menuOptions['downloads'] },
+                { text: 'Comments', className: 'comments', targetPane: 'comments',
+                    subtext: 'Read comments on this dataset', href: '#comments',
+                    iconColor: '#bed62b', onlyIf: menuOptions['comments'] },
+                { text: 'Embed', className: 'embed', targetPane: 'embed',
+                    subtext: 'Embed this player on your site', href: '#embed',
+                    iconColor: '#e44044', onlyIf: menuOptions['embed'] },
+                { text: 'API', className: 'api', targetPane: 'api',
+                    subtext: 'Access this Dataset via SODA', href: '#api',
+                    iconColor: '#f93f06', onlyIf: menuOptions['api'] },
+                { text: 'Print', className: 'print', targetPane: 'print',
+                    subtext: 'Print this dataset', href: '#print',
+                    iconColor: '#a460c4', onlyIf: !widgetNS.isAltView && menuOptions['print'] },
+                { text: 'About the Socrata Social Data Player', className: 'about',
+                    href: 'http://www.socrata.com/try-it-free', rel: 'external',
+                    onlyIf: menuOptions['about_sdp'] }
+            ]
+        });
+        if (menuOptions['about_sdp'])
+        { $('.mainMenu .menuColumns').addClass('hasAbout'); }
+    }
 
     // Additional actions for specific panes
     var paneHandlers = {
@@ -183,14 +199,15 @@ $(function()
     {
         var $this = $(this);
 
-        if ($this.attr('rel') == 'external')
+        var target = $this.attr('data-targetPane');
+
+        if ($.isBlank(target))
         {
             // bail; this is a real link
             return;
         }
 
         event.preventDefault();
-        var target = $this.closest('li').attr('class').split(' ')[1];
         if (!$('.widgetContent_' + target).is(':visible'))
         {
             $('.widgetContent > :visible:first').fadeOut(200,
@@ -199,16 +216,9 @@ $(function()
                     $('.widgetContent_' + target).fadeIn(200);
 
                     // set up close pane
-                    var closePaneColors = {
-                        views: '#57b6dd',
-                        downloads: '#959595',
-                        comments: '#bed62b',
-                        embed: '#e44044',
-                        print: '#a460c4'
-                    };
                     $('.toolbarClosePaneName').text($this.find('.contents').text());
                     widgetNS.showToolbar('closePane');
-                    $('.toolbar').animate({ 'background-color': closePaneColors[target] });
+                    $('.toolbar').animate({ 'background-color': $this.attr('data-iconColor') });
 
                     // call any custom handlers
                     if (_.isFunction(paneHandlers[target]))
@@ -237,15 +247,7 @@ $(function()
 
         if ($toolbar.hasClass('closePane'))
         {
-            // get the color from the subHeaderBar in case we're in the publisher
-            // and it has changed.
-            $toolbar
-                .animate({ 'background-color': $('.subHeaderBar').css('background-color') },
-                    function()
-                    {
-                        $(this).css('background-color', '');
-                    });
-            widgetNS.showDataView();
+            widgetNS.closePane();
         }
 
         widgetNS.hideToolbar();
@@ -655,19 +657,13 @@ $(function()
         {
             event.preventDefault();
             var message = 'do that';
-            switch($(this).closest('li').attr('class'))
-            {
-                case 'actionReply':
-                    message = 'reply to this comment';
-                    break;
-                case 'actionInappropriate':
-                    message = 'flag this comment';
-                    break;
-                case 'rateUp':
-                case 'rateDown':
-                    message = 'rate this comment';
-                    break;
-            }
+            var $listItem = $(this).closest('li');
+            if ($listItem.hasClass('actionReply'))
+                message = 'reply to this comment';
+            else if ($listItem.hasClass('actionInappropriate'))
+                message = 'flag this comment';
+            else if ($listItem.hasClass('rateUp') || $listItem.hasClass('rateDown'))
+                message = 'rate this comment';
             $('.actionInterstitial').jqmShow()
                 .find('.actionPhrase').text(message);
         });
@@ -698,6 +694,13 @@ $(function()
                     $(this).closest('form').submit();
                 }));
 
+    $('.widgetContent_print .close').click(function(event)
+    {
+        event.preventDefault();
+        widgetNS.closePane();
+        widgetNS.hideToolbar();
+    });
+
     // Set up modals
     $('.widgetModal').jqm({
         trigger: false,
@@ -720,6 +723,10 @@ $(function()
     });
 
     // Trigger interstitial if necessary
+    if (!$.isBlank(document.referrer))
+    { $('.leavingInterstitial').find('.serverName').text(
+            document.referrer.replace(/(ht|f)tps?:\/\/(www\.)?/, '').replace(/\/.*$/, '')); }
+
     $.live('a:not([href^=#]):not(.noInterstitial):not([rel$="modal"])', 'click', function(event)
     {
         if (widgetNS.interstitial === true)

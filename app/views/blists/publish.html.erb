@@ -555,10 +555,22 @@
                             "Embed") %>
                         </li>
                         <li>
+                          <%= check_box_tag("customization[menu][options][api]",
+                            true, @customization[:menu][:options][:api]) %>
+                          <%= label_tag("customization_menu_options_api",
+                            "API") %>
+                        </li>
+                        <li>
                           <%= check_box_tag("customization[menu][options][print]",
                             true, @customization[:menu][:options][:print]) %>
                           <%= label_tag("customization_menu_options_print",
                             "Print") %>
+                        </li>
+                        <li>
+                          <%= check_box_tag("customization[menu][options][about_sdp]",
+                            true, @customization[:menu][:options][:about_sdp]) %>
+                          <%= label_tag("customization_menu_options_about_sdp",
+                            "About the SDP") %>
                         </li>
                       </ul>
                     </span>

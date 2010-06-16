@@ -246,7 +246,9 @@ HREF
       if value.is_a? Array
         value = value.join(',')
       end
-      %Q[<meta name="#{key.to_s}" value="#{escape_once(value)}" />]
+      # If the key is namespaced, assume XHTML+RDFa
+      qualifier = key.to_s.match(/^.+\:.+/) ? 'property' : 'name'
+      %Q[<meta #{qualifier}="#{key.to_s}" content="#{escape_once(value)}" />]
     end.join("\n")
   end
 

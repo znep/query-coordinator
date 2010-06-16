@@ -1,0 +1,95 @@
+body {
+  background: #ececec url(/stylesheets/images/domains/data.fec.gov/background.png) repeat-x;
+}
+
+#mainLogo {
+  top: 0;
+  left: 0;
+}
+
+#mainLogo a {
+  display: block;
+  width: 320px;
+  height: 80px;
+}
+
+#header {
+  background-image: none;
+  height: 110px;
+}
+
+.bodyInterior {
+  border: none;
+}
+
+body.home #mainNav li.home, body.home #mainNav li.home a span, body.discover #mainNav li.discover a span, body.community #mainNav li.community a span, body.discover #mainNav li.discover, #mainNav ul.subNav li: hover, #mainNav ul.subNav li:hover a span, body.home #mainNav li.home .subNav li:hover, body.home #mainNav li.home .subNav li:hover a span {
+  background: none;
+}
+
+#mainNav li, #mainNav li a span {
+  background: none;
+}
+
+#mainNav li.home .subNav li, #mainNav li.home .subNav li a span, body.home #mainNav li.home .subNav li, body.home #mainNav li.home .subNav li a span {
+  background-image: none;
+  background-color: #6b78a2;
+}
+
+#mainNav {
+  width: auto;
+  margin: 0;
+}
+
+#mainNav ul {
+  position: relative;
+  top: 80px;
+  z-index: 1000;
+  padding-left: 3px;
+}
+
+#mainNav a {
+  color: #fff;
+  cursor: pointer;
+}
+
+#mainNav ul.subNav {
+  top: auto;
+  background: #6b78a2;
+  margin-left: 6px;
+  padding-top: 2px;
+  padding-bottom: 4px;
+}
+
+body.home #mainNav li.home,
+body.home #mainNav li.home a span,
+body.discover #mainNav li.discover a span,
+body.community #mainNav li.community a span,
+body.discover #mainNav li.discover,
+#mainNav ul.subNav li:hover,
+#mainNav ul.subNav li:hover a span,
+body.home #mainNav li.home .subNav li:hover,
+body.home #mainNav li.home .subNav li:hover a span {
+  background: none;
+}
+
+#header form.search {
+  top: 46px;
+}
+
+.footerContainer {
+  background: #fff;
+  border-top: #666 solid 1px;
+}
+
+.dialogBox .header {
+  background: #6b78a2;
+}
+
+.pageBlockHeaderCarousel.carouselWrapper, .pageBlockHeaderCarousel .carouselOuter, .pageBlockHeaderCarousel .carouselInner {
+  background-image: url(/stylesheets/images/domains/minnesota.socrata.com/box.png);
+}
+
+.pageBlockHeaderCarousel h2 {
+    color: #047;
+}
+

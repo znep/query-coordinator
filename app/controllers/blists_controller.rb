@@ -80,11 +80,14 @@ class BlistsController < ApplicationController
       @user_session = UserSession.new
     end
 
-    # If we're displaying a single dataset, set the title to the description.
-    @meta_description = @view.meta_description
+    # If we're displaying a single dataset, set the meta tags as appropriate.
+    @meta[:title] = @meta['og:title'] = "#{@view.name} | #{CurrentDomain.strings.site_title}"
+    @meta[:description] = @meta['og:description'] = @view.meta_description
+    @meta['og:url'] = @view.href
+    # TODO: when we support a dataset image, allow that here if of appropriate size
 
     # Shuffle the default tags into the keywords list
-    @meta_keywords = @view.meta_keywords
+    @meta[:keywords] = @view.meta_keywords
 
     @data_component = params[:dataComponent]
     @popup = params[:popup]
@@ -204,12 +207,16 @@ class BlistsController < ApplicationController
         w.uid == CurrentDomain.default_widget_customization_id}
 
     if @widget_customization.nil?
-      begin
-        @widget_customization = WidgetCustomization.create({
-          'customization' => WidgetCustomization.default_theme(1), 'name' => "Default Socrata" })
-      rescue CoreServer::CoreServerError => e
-        @widget_customization = WidgetCustomization.create({
-          'customization' => WidgetCustomization.default_theme(1), 'name' => "Default Socrata New" })
+      # Try this thing until it goes.
+      epic_fail, counter = true, 1
+      while epic_fail
+        begin
+          @widget_customization = WidgetCustomization.create({
+            'customization' => WidgetCustomization.default_theme(1), 'name' => "Default Socrata #{counter}" })
+          epic_fail = false # whew.
+        rescue CoreServer::CoreServerError => e
+          counter += 1
+        end
       end
     end
     @customization = @widget_customization.customization
@@ -672,6 +679,12 @@ class BlistsController < ApplicationController
     options = JSON.parse(options) if !options.blank?
     columns = params[:columns] || nil
     columns = JSON.parse(columns) if !columns.blank?
+    columnIds = params[:columnIds] || nil
+    if !columnIds.blank?
+      columnIds = JSON.parse(columnIds)
+    elsif !columns.blank?
+      columnIds = columns.map {|c| c['id']}
+    end
 
     begin
       if params[:edit] == 'true'
@@ -684,9 +697,9 @@ class BlistsController < ApplicationController
 
         # TODO: It would be nice to make some convenience methods for generating
         # these requests
-        if !columns.blank?
-          columns.each do |c|
-            batch_reqs << {'url' => '/views/' + params[:id] + '/columns/' + c['id'],
+        if !columnIds.blank?
+          columnIds.each do |cId|
+            batch_reqs << {'url' => '/views/' + params[:id] + '/columns/' + cId,
               'requestType' => 'PUT', 'body' => {'hidden' => false},
               'class' => Column}
           end
@@ -694,7 +707,7 @@ class BlistsController < ApplicationController
           view_req['body']['columns'] = columns
         end
 
-        batch_reqs << view_req 
+        batch_reqs << view_req
         Model.batch(batch_reqs)
       else
         view = View.create({'name' => params[:viewName],

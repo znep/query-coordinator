@@ -166,42 +166,8 @@
     background-position: 0 -330px
   &.typeGrouped #{$subselector}
     background-position: 0 -360px
-
-// icons/type_icons_30.png
-@mixin sprite-type-icons-20($subselector: '.icon')
-  #{$subselector}
-    @include text-hiding
-    @include ie6-fix
-    background-image: url(/stylesheets/images/icons/type_icons_20.png)
-    height: 20px
-    width: 20px
-
-  &.typeFilter #{$subselector}
-    background-position: 0 0
-  &.typeVisualization #{$subselector}
-    background-position: 0 -20px
-  &.typeMap #{$subselector}
-    background-position: 0 -40px
-  &.typeBlist #{$subselector}
-    background-position: 0 -60px
-  &.comments #{$subselector}
-    background-position: 0 -80px
-  &.embed #{$subselector}
-    background-position: 0 -100px
-  &.views #{$subselector}
-    background-position: 0 -120px
-  &.downloads #{$subselector}
-    background-position: 0 -140px
-  &.print #{$subselector}
-    background-position: 0 -160px
-  &.typeForm #{$subselector}
-    background-position: 0 -180px
-  &.typeCalendar #{$subselector}
-    background-position: 0 -200px
-  &.typeBlobby #{$subselector}
-    background-position: 0 -220px
-  &.typeGrouped #{$subselector}
-    background-position: 0 -240px
+  &.api .icon
+    background-position: 0 -390px
 
 // interface/dataset_tabs.png
 @mixin sprite-dataset-tabs($subselector: '.icon')

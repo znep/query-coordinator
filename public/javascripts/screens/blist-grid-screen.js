@@ -314,9 +314,34 @@ $(function ()
 {
     if (!blist.blistGrid.isAltView)
     {
+        var paramSearched = false;
         $('#dataGrid')
             .bind('full_load',
-                function(){ $('#lensContainer .headerBar').removeClass('hide'); })
+                function()
+                {
+                    $('#lensContainer .headerBar').removeClass('hide');
+
+                    // SEMI-HACK: If we're given a search queryparam, search.
+                    if (!paramSearched)
+                    {
+                        var searchTerm = $.urlParam(window.location.href, 'search');
+                        if (searchTerm !== 0)
+                        {
+                            $('#lensContainer .headerBar form :input')
+                                .removeClass('prompt')
+                                .val(unescape(searchTerm))
+                                .closest('form')
+                                    .submit();
+                        }
+
+                        $('#lensContainer .headerBar form .clearSearch').click(function()
+                        {
+                            window.location.href = window.location.href.replace(/\?.*$/, '');
+                        });
+
+                        paramSearched = true;
+                    }
+                })
             .datasetGrid({viewId: blistGridNS.viewId,
                 columnDeleteEnabled: blistGridNS.isOwner,
                 columnPropertiesEnabled: blistGridNS.isOwner,

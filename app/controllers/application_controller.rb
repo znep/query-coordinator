@@ -4,8 +4,8 @@
 class ApplicationController < ActionController::Base
   include SslRequirement
 
-  before_filter :hook_auth_controller,  :create_core_server_connection, :set_web_property,
-    :adjust_format, :patch_microsoft_office, :require_user, :set_user
+  before_filter :hook_auth_controller,  :create_core_server_connection,
+    :adjust_format, :patch_microsoft_office, :require_user, :set_user, :set_meta
   helper :all # include all helpers, all the time
   helper_method :current_user
   helper_method :current_user_session
@@ -145,6 +145,29 @@ private
     end
   end
 
+  def set_meta
+    # Set site meta tags as appropriate
+    @meta = {
+      :title => CurrentDomain.strings.site_title,
+      'og:title' => CurrentDomain.strings.site_title,
+      'og:site_name' => CurrentDomain.name,
+      :description => CurrentDomain.strings.meta_description,
+      'og:description' => CurrentDomain.strings.meta_description,
+      'og:type' => 'article',
+      'og:url' => request.request_uri
+    }
+
+    # HACK/TODO: resolve this when v4-chrome gets merged into master.
+    logo_square = CurrentDomain.theme[:images][:logo_square]
+    if logo_square.nil?
+      return
+    elsif logo_square[:type].to_s == "static"
+      @meta['og:image'] = @link_image_src = logo_square[:source]
+    elsif logo_square[:type].to_s == "hosted"
+      @meta['og:image'] = @link_image_src = "/assets/#{logo_square[:source]}"
+    end
+  end
+
   def store_location
     session[:return_to] = request.request_uri
   end
@@ -165,14 +188,15 @@ private
     end
   end
 
-  def set_web_property
-    unless CurrentDomain.set(request.host, session[:custom_site_config])
-      redirect_to 'http://www.socrata.com/'
-    end
-  end
-
   # Custom logic for rendering a 404 page with our pretty templates.
   def render_optional_error_file(status_code)
+    # Chicken and egg problem: When rendering some errors, such as a 404 page,
+    # we never really made it to a controller at all - we failed at when
+    # attempting to route the request. But our templates heavily depend on the
+    # current user, so let's just hook the auth controller anyways so we can
+    # render the template.
+    UserSession.controller = self
+
     if status_code == :not_found
       render_404
     elsif status_code == :internal_server_error

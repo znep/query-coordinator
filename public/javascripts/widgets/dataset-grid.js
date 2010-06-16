@@ -552,6 +552,7 @@
                 var filterValue = $(drillLink).attr('cellvalue');
                 var filterColumn = $(drillLink).attr('column');
                 var filterColumnId = parseInt(filterColumn, 10);
+                var dataTypeName  = $(drillLink).attr('datatype');
                 var isBlank = false;
 
                 if (filterColumn == '' || filterValue == '') { return false; }
@@ -561,7 +562,7 @@
                 // Now construct our beautiful filter
                 var filter;
                 var columnJson = { columnId: filterColumn,
-                    type: 'column' };
+                    type: 'column', value: dataTypeName };
 
                 if (filterValue == 'null')
                 {
@@ -652,6 +653,7 @@
                                     delete newCol.format.grouping_aggregate;
                                     delete newCol.format.drill_down;
                                 }
+                                delete newCol.options;
                                 translatedColumns.push(newCol);
                             }
                         });
@@ -1070,12 +1072,13 @@
                 col.type + '">'
                 + '<p class="name">' +
                 $.htmlEscape(col.name).replace(/ /, '&nbsp;') + '</p>' +
-                '<div class="blist-th-icon">' +
+                '<span class="blist-th-icon"></span>' +
+                '<p class="columnType">' +
                 typeName +
                 (col.grouping_aggregate !== undefined ?
                     ' (' + $.capitalize(col.grouping_aggregate) + ' on ' +
                     col.originalType.displayable() + ')' : '') +
-                '</div>' +
+                '</p>' +
                 (col.description !== undefined ?
                     '<p class="description">' + $.htmlEscape(col.description) +
                     '</p>' : '') +

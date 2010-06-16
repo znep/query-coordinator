@@ -6,7 +6,7 @@ class WidgetsController < ApplicationController
     @variation = params[:variation]
     @theme = WidgetCustomization.default_theme
 
-    if @variation != 'whitehouse'
+    if (@variation != 'whitehouse') && params[:customization_id].blank?
       return redirect_to(params.merge!(:controller => "widgets_new", :action => "show",
         :customization_id => CurrentDomain.default_widget_customization_id))
     end

@@ -88,6 +88,26 @@
       <%= render :partial => 'datasets/embed_form',
                  :locals => { :view => @view, :cur => params[:cur] } %>
     </div>
+    <div class="widgetContentSection widgetContent_api">
+      <div class="apiContentWrapper">
+        <p>The <strong>Socrata Open Data API</strong> (SODA) allows software developers
+           to access data hosted in Socrata data sites programmatically. Developers can
+           create applications that use the SODA APIs to visualize and
+           &ldquo;mash-up&rdquo; Socrata datasets in new and exciting ways. Create an
+           iPhone application that visualizes government spending in your area, a web
+           application that allows citizens to look up potential government benefits
+           they'd overlooked, or a service that automatically emails you when new
+           earmarks are added to bills that you wish to track.</p>
+        <p>To start accessing this dataset programmatically, use the API endpoint
+           provided below. For more information and examples on how to use the
+           Socrata Open Data API, reference our
+           <a href="/api/docs" rel="external">Developer Documentation</a>.</p>
+        <h3>API Access Endpoint:</h3>
+        <div class="apiEndpointWrapper">
+          <pre>http://<%= CurrentDomain.cname %>/api/views/<%= @view.id %>/rows.json</pre>
+        </div>
+      </div>
+    </div>
     <%- if !@view.is_alt_view? -%>
     <div class="widgetContentSection widgetContent_print">
       <% form_tag("/views/#{@view.id}/rows.pdf", :method => :get,
@@ -126,7 +146,7 @@
 
 <div class="leavingInterstitial widgetModal">
   <a href="#close" class="jqmClose widgetModalClose">Close</a>
-  <h2>You are leaving <%= CurrentDomain.cname %>.</h2> <!-- CR -->
+  <h2>You are leaving <span class="serverName"><%= CurrentDomain.cname %></span>.</h2>
   <p>Thank you for visiting our site. You will now access</p>
   <div class="leavingLinkWrapper">
     <a class="leavingLink noInterstitial" href="#" rel="external"></a>

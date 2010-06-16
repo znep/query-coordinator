@@ -33,6 +33,33 @@
                 }));
         });
 
+        var itemDirective = {  // inner array for rows
+            '.@class+': 'row.className',
+            'a .contents': 'row.text',
+            'a@href': 'row.href',
+            'a@rel': 'row.rel',
+            'a@title': 'row.title',
+            'a .subtext': 'row.subtext'
+        };
+
+        _.each(opts.additionalDataKeys, function(key)
+        {
+            itemDirective['a@data-' + key] = 'row.' + key;
+        });
+
+        var renderDirective = {
+            '+a.menuButton': 'menuButtonContents',
+            'a.menuButton@title': 'menuButtonTitle',
+            'a.menuButton@class': 'menuButtonClass',
+            '.menuDropdown>ul>li': {
+                'column<-columns': { // outer array for columns
+                    'ul>li': {
+                        'row<-column': itemDirective
+                    }
+                }
+            }
+        };
+
         return this.each(function()
         {
             var $menuContainer = $(this);
@@ -46,7 +73,7 @@
                           menuButtonTitle: opts.menuButtonTitle,
                           columns: contents
                         },
-                        opts.renderDirective));
+                        renderDirective));
 
             var $menuButton = $menuContainer.children('a');
             var $menuDropdown = $menuContainer.children('div');
@@ -69,6 +96,9 @@
 
     var openMenu = function(opts, $menuContainer, $menuButton, $menuDropdown)
     {
+        // close any menu that might already be open
+        $(document).trigger('click.menu');
+
         // cache the original height before we bump things out to measure
         var origDocumentHeight = $(document).height();
 
@@ -139,12 +169,7 @@
                 ($menuDropdown.find('a').has(event.target).length > 0) ||
                 $(event.target).is('.menuDropdown a'))
             {
-                // jQuery animation can trample all over itself if anything else is
-                // attached to the menu button
-                _.defer(function()
-                {
-                    closeMenu(opts, $menuContainer, $menuButton, $menuDropdown);
-                });
+                closeMenu(opts, $menuContainer, $menuButton, $menuDropdown);
             }
         });
     };
@@ -157,28 +182,10 @@
     };
 
     $.fn.menu.defaults = {
+        additionalDataKeys: [],
         contents: [],
         menuButtonClass: 'menuButton',
         menuButtonContents: 'Menu',
-        menuButtonTitle: 'Menu',
-        renderDirective: {
-            '+a.menuButton': 'menuButtonContents',
-            'a.menuButton@title': 'menuButtonTitle',
-            'a.menuButton@class': 'menuButtonClass',
-            '.menuDropdown>ul>li': {
-                'column<-columns': { // outer array for columns
-                    'ul>li': {
-                        'row<-column': {  // inner array for rows
-                            '.@class+': 'row.className',
-                            'a .contents': 'row.text',
-                            'a@href': 'row.href',
-                            'a@rel': 'row.rel',
-                            'a@title': 'row.title',
-                            'a .subtext': 'row.subtext'
-                        }
-                    }
-                }
-            }
-        }
+        menuButtonTitle: 'Menu'
     };
 })(jQuery);

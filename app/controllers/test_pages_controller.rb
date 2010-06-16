@@ -6,4 +6,8 @@ class TestPagesController < ApplicationController
   def js_kaboom
     
   end
+
+  def kaboom
+    throw new Exception
+  end
 end

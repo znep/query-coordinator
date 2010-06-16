@@ -243,6 +243,18 @@
 <script type="text/javascript" charset="utf-8">
   blist.common.modalReady = function()
   {
+    // For now, throw an error when a user tries to create a chart
+    // with too many rows
+    var rowLimit = 100;
+    if (blist.$display.blistModel().length() > rowLimit)
+    {
+      $("#modal").jqmHide();
+      _.defer(function() { alert('Charting is a poor choice for a view with ' +
+            'more than ' + rowLimit + ' distinct values (rows). ' +
+            'Try creating a Roll Up or a filter which limits the number ' +
+            'of values and then create a chart of that.'); });
+    }
+
     $.validator.addMethod('notEqualTo', function(value, element, param)
         {
             if (this.optional(element)) { return true; }

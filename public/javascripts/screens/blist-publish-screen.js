@@ -141,21 +141,31 @@ blist.publish.applyGradient = function(selector, hover, value)
 
 blist.publish.hideShowMenuItem = function($elem, value)
 {
+    var target = $elem.find('a').attr('data-targetPane');
     if (value === true)
     {
-        $elem.show();
+        $elem.removeClass('hide');
+
+        if (target == 'about')
+        { $elem.closest('.menuColumns').addClass('hasAbout'); }
     }
     else
     {
-        $elem.hide();
+        $elem.addClass('hide');
+
+        if (target == 'about')
+        { $elem.closest('.menuColumns').removeClass('hasAbout'); }
 
         if ($elem.closest('.widgetWrapper')
-                 .find('.widgetContent_' + $elem.attr('class').split(' ')[1])
-                    .is(':visible'))
+                 .find('.widgetContent_' + target).is(':visible'))
         {
             widgetNS.showDataView();
+            widgetNS.hideToolbar();
         }
     }
+
+    var $mainMenu = $elem.closest('.mainMenu');
+    $mainMenu.toggleClass('hide', $mainMenu.find('.menuEntry:not(.hide):not(.about)').length == 0);
 };
 
 // builder hash!
@@ -178,7 +188,9 @@ blist.publish.customizationApplication = {
                                        comments:            [ { selector: '.mainMenu .menuEntry.comments', callback: publishNS.hideShowMenuItem } ],
                                        downloads:           [ { selector: '.mainMenu .menuEntry.downloads', callback: publishNS.hideShowMenuItem } ],
                                        embed:               [ { selector: '.mainMenu .menuEntry.embed', callback: publishNS.hideShowMenuItem } ],
-                                       print:               [ { selector: '.mainMenu .menuEntry.print', callback: publishNS.hideShowMenuItem } ] },
+                                       api:                 [ { selector: '.mainMenu .menuEntry.api', callback: publishNS.hideShowMenuItem } ],
+                                       print:               [ { selector: '.mainMenu .menuEntry.print', callback: publishNS.hideShowMenuItem } ],
+                                       about_sdp:           [ { selector: '.mainMenu .menuEntry.about', callback: publishNS.hideShowMenuItem } ] },
                       share:                                [ { selector: '.subHeaderBar .share', hideShow: true } ],
                       fullscreen:                           [ { selector: '.subHeaderBar .fullscreen', hideShow: true } ] },
     grid:           { font:          { header_size:         [ { selector: 'div.blist-th .info-container', css: 'font-size', hasUnit: true } ],

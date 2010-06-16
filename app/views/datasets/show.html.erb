@@ -5,8 +5,6 @@
   <%= rendered_stylesheet_tag 'dataset-page' %>
 
   <title><%= h(@view.name) %> | <%= CurrentDomain.strings.site_title %></title>
-  <%= meta_tags :description => @view.meta_description,
-    :keywords => @view.meta_keywords %>
   <link rel="canonical" href="<%= @view.href %>" />
 <% end %>
 

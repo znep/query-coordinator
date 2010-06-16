@@ -1,7 +1,7 @@
 (function($)
 {
-    if (blist.sidebarHidden.export &&
-        blist.sidebarHidden.export.print) { return; }
+    if (blist.sidebarHidden.exportSection &&
+        blist.sidebarHidden.exportSection.print) { return; }
 
     var config =
     {

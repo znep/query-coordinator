@@ -4,6 +4,9 @@ class DatasetsController < ApplicationController
   layout 'dataset_v2'
 
   def show
+    if !CurrentDomain.module_available?('new_datasets_page')
+      return render_404
+    end
 
     begin
       @view = View.find(params[:id])

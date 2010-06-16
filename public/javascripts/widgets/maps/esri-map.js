@@ -178,6 +178,11 @@
                 if (g.attributes.title !== null || g.attributes.body !== null)
                 { g.setInfoTemplate(new esri.InfoTemplate("${title}", "${body}")); }
 
+                if (mapObj._markers[rowId])
+                {
+                  mapObj.map.graphics.remove(mapObj._markers[rowId]);
+                }
+                mapObj._markers[rowId] = g;
                 mapObj.map.graphics.add(g);
                 if (!mapObj._extentSet)
                 { mapObj._multipoint.addPoint(g.geometry); }
@@ -227,6 +232,7 @@
                     (mapObj.map.spatialReference);
                 mapObj.map.graphics.clear();
                 mapObj.map.infoWindow.hide();
+                mapObj._markers = {};
             }
         }
     }));

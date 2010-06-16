@@ -37,6 +37,11 @@
 
                 var ll = new VELatLong(latVal, longVal);
                 var shape = new VEShape(VEShapeType.Pushpin, ll);
+                if (mapObj._markers[rowId])
+                {
+                    mapObj._shapeLayer.DeleteShape(mapObj._markers[rowId]);
+                }
+                mapObj._markers[rowId] = shape;
 
                 if (!_.isNull(title))
                 {
@@ -79,6 +84,7 @@
                 mapObj.map.DeleteAllShapeLayers();
                 mapObj._shapeLayer = new VEShapeLayer();
                 mapObj.map.AddShapeLayer(mapObj._shapeLayer);
+                mapObj._markers = {};
             },
 
             resizeHandle: function()

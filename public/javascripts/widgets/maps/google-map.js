@@ -40,6 +40,7 @@
                 var marker = new google.maps.Marker({position: ll,
                     title: title, clickable: hasInfo || title !== null,
                     map: mapObj.map});
+                if (mapObj._markers[rowId]) mapObj._markers[rowId].setMap(null);
                 mapObj._markers[rowId] = marker;
 
                 if (hasInfo)

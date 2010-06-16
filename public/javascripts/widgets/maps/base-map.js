@@ -1,5 +1,7 @@
 (function($)
 {
+    var rowsPerPage = 3;
+
     // Set up namespace for particular plugins to class themselves under
     $.socrataMap =
     {
@@ -74,6 +76,43 @@
                 mapObj.initializeMap();
 
                 mapObj.populateLayers();
+
+                $(".infoPaging").live('click', function(event)
+                {
+                    var params = event.currentTarget.id.split('_');
+                    var cmd = params[0];
+                    var id = params[1];
+
+                    var rows = $('#info_'+id+' tr:gt(0)');
+                    var index = parseInt(rows.filter(':visible:first')
+                                             .attr('id').split('_')[2]);
+
+                    var new_index = cmd == 'next' ? index+rowsPerPage 
+                                                  : index-rowsPerPage;
+                    new_index--; // :gt needs one less.
+                    if (new_index < -1) return;
+                    if (new_index >= rows.length-1) return;
+
+                    rows.filter(':visible').css('display', 'none');
+                    var filter = '';
+                    if (new_index > -1) { filter += ':gt('+new_index+')'; }
+                    filter += ':lt('+rowsPerPage+')';
+                    rows.filter(filter).css('display', 'table-row');
+
+                    new_index++; // no longer need to worry about :gt
+                    if (new_index-rowsPerPage < -1)
+                    {
+                        $("#prev_"+id).hide();
+                    }
+                    else if (new_index+rowsPerPage >= rows.length-1)
+                    {
+                        $("#next_"+id).hide();
+                    }
+                    else
+                    {
+                        $("#prev_"+id+", #next_"+id).show();
+                    }
+                });
             },
 
             reset: function(newOptions)
@@ -215,11 +254,65 @@
                         'and longitude must be between -180 and 180';
                     return false;
                 }
-                var title = getText(row, mapObj._titleCol, true);
-                var info = getText(row, mapObj._infoCol, false);
+
+                if (!mapObj._llKeys) mapObj._llKeys = {};
+                var rowKey = lat.toString();
+                rowKey    += ',';
+                rowKey    += longVal.toString();
+                if (!mapObj._llKeys[rowKey])
+                {
+                    mapObj._llKeys[rowKey] = { title: [], info: [] };
+                    mapObj._llKeys[rowKey].id = row[mapObj._idIndex];
+                }
+                mapObj._llKeys[rowKey].title.push(getText(row, mapObj._titleCol, true));
+                mapObj._llKeys[rowKey].info.push(getText(row, mapObj._infoCol, false));
+
+                var title = mapObj._llKeys[rowKey].title.join(', ');
+                if (title.length > 50) { title = title.slice(0, 50) + "..."; }
+
+                var info;
+                if (mapObj._llKeys[rowKey].info.length > 1)
+                {
+                    info  = '<table id="info_'
+                    info += mapObj._llKeys[rowKey].id;
+                    info += '"><tr><th>';
+                    info += mapObj._titleCol.name;
+                    info += '</th><th>';
+                    info += mapObj._infoCol.name;
+                    info += '</th></tr>';
+                    var totalRows = mapObj._llKeys[rowKey].title.length;
+                    for (var i = 0; i < totalRows; i++)
+                    {
+                        info += '<tr id="infoRow_';
+                        info += mapObj._llKeys[rowKey].id;
+                        info += '_'+i+'" ';
+                        if (i > rowsPerPage-1) { info += 'style="display: none;"'; }
+                        info += '><td>';
+                        info += mapObj._llKeys[rowKey].title[i];
+                        info += '</td><td>';
+                        info += mapObj._llKeys[rowKey].info[i];
+                        info += '</td></tr>';
+                    }
+                    info += '</table>';
+                    if (totalRows > rowsPerPage)
+                    {
+                        info += '<div style="width: 100%;">';
+                        info += '<a class="infoPaging" id="prev_';
+                        info += mapObj._llKeys[rowKey].id;
+                        info += '" href="#" style="display: none;">&lt; Prev</a> ';
+                        info += '<a class="infoPaging" id="next_';
+                        info += mapObj._llKeys[rowKey].id;
+                        info += '" href="#" style="float: right;">Next &gt;</a>';
+                        info += '</div>';
+                    }
+                }
+                else
+                {
+                    info = mapObj._llKeys[rowKey].info.join();
+                }
 
                 return mapObj.renderPoint(lat, longVal, title,
-                    info, row[mapObj._idIndex]);
+                    info, mapObj._llKeys[rowKey].id);
             },
 
             renderPoint: function(latVal, longVal, title, info, rowId)

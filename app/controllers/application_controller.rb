@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   include SslRequirement
 
   before_filter :hook_auth_controller,  :create_core_server_connection,
-    :adjust_format, :patch_microsoft_office, :require_user, :set_user
+    :adjust_format, :patch_microsoft_office, :require_user, :set_user, :set_meta
   helper :all # include all helpers, all the time
   helper_method :current_user
   helper_method :current_user_session
@@ -142,6 +142,29 @@ private
   def set_user
     if current_user_session
       @current_user = current_user_session.user
+    end
+  end
+
+  def set_meta
+    # Set site meta tags as appropriate
+    @meta = {
+      :title => CurrentDomain.strings.site_title,
+      'og:title' => CurrentDomain.strings.site_title,
+      'og:site_name' => CurrentDomain.name,
+      :description => CurrentDomain.strings.meta_description,
+      'og:description' => CurrentDomain.strings.meta_description,
+      'og:type' => 'article',
+      'og:url' => request.request_uri
+    }
+
+    # HACK/TODO: resolve this when v4-chrome gets merged into master.
+    logo_square = CurrentDomain.theme[:images][:logo_square]
+    if logo_square.nil?
+      return
+    elsif logo_square[:type].to_s == "static"
+      @meta['og:image'] = @link_image_src = logo_square[:source]
+    elsif logo_square[:type].to_s == "hosted"
+      @meta['og:image'] = @link_image_src = "/assets/#{logo_square[:source]}"
     end
   end
 

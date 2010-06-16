@@ -5,7 +5,6 @@
   <%= raw @display.render_stylesheet_includes %>
 
   <title><%= h(@view.name) %> | <%= CurrentDomain.strings.site_title %></title>
-  <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
   <link rel="canonical" href="<%= @view.href %>" />
 <% end %>
 

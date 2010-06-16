@@ -80,11 +80,14 @@ class BlistsController < ApplicationController
       @user_session = UserSession.new
     end
 
-    # If we're displaying a single dataset, set the title to the description.
-    @meta_description = help.meta_description(@view)
+    # If we're displaying a single dataset, set the meta tags as appropriate.
+    @meta[:title] = @meta['og:title'] = "#{@view.name} | #{CurrentDomain.strings.site_title}"
+    @meta[:description] = @meta['og:description'] = help.meta_description(@view)
+    @meta['og:url'] = @view.href
+    # TODO: when we support a dataset image, allow that here if of appropriate size
 
     # Shuffle the default tags into the keywords list
-    @meta_keywords = help.meta_keywords(@view)
+    @meta[:keywords] = help.meta_keywords(@view)
 
     @data_component = params[:dataComponent]
     @popup = params[:popup]

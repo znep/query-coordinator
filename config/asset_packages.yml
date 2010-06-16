@@ -233,13 +233,13 @@ javascripts:
   - plugins/jquery.tablesorter
   - controls/full-screen
   - widgets/combination-list
-  - widgets/embed-form
+  - controls/embed-form
   - util/humane-date
   - util/navigation
   - util/urls
   - controls/dataset-controls
   - controls/stars
-  - widgets/menu
+  - controls/menu
   - widgets/scrollTabs
   - widgets/inline-edit
   - widgets/visualization
@@ -257,7 +257,7 @@ javascripts:
   - util/urls
   - util/navigation
   - util/inline-login
-  - widgets/menu
+  - controls/menu
   - widgets/wizard-prompt
   - controls/expander
   - controls/grid-sidebar/base-sidebar
@@ -271,7 +271,7 @@ javascripts:
   - controls/grid-sidebar/print-dataset
   - controls/grid-sidebar/view-list
   - controls/dataset-controls
-  - widgets/embed-form
+  - controls/embed-form
   - controls/full-screen
   - screens/dataset
 

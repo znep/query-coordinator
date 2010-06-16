@@ -120,7 +120,7 @@
         {
             var col = _.detect(cols, function(c)
             {
-                return _.include(rc, c.dataTypeName) &&
+                return _.include(rc, c.renderTypeName) &&
                     ($.isBlank(c.flags) || !_.include(c.flags, 'hidden'));
             });
 
@@ -303,7 +303,7 @@
             { return c.tableColumnId == tcid; });
 
             var fmt = $.extend({}, col.format);
-            if (_.include(numericTypes, col.dataTypeName))
+            if (_.include(numericTypes, col.renderTypeName))
             { $.extend(fmt, {aggregate: 'sum'}); }
 
             view.columns.push({id: col.id, name: col.name, format: fmt});

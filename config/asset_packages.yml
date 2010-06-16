@@ -13,7 +13,7 @@ javascripts:
   - plugins/json2
   - plugins/jquery.sizes.min
   - plugins/jquery.tache
-  - plugins/jquery.validate.min
+  - plugins/jquery.validate
   - plugins/pure
   - plugins/ui.core
   - util/underscore-min

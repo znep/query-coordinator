@@ -1,18 +1,27 @@
 (function($)
 {
+    if (blist.sidebarHidden.export &&
+        blist.sidebarHidden.export.print) { return; }
+
     var config =
     {
         name: 'export.printDataset',
         title: 'Print',
         subtitle: 'Export this dataset to a printable PDF format',
-        disabledSubtitle: 'Only tabular data may be printed',
-        onlyIf: blist.display.isGrid,
+        noReset: true,
         sections: [
             {
                 customContent: {
                     template: 'printForm',
                     directive: {},
-                    data: {}
+                    data: {},
+                    callback: function($sect)
+                    {
+                        $sect.closest('form').attr('target', '_blank')
+                            .attr('method', 'GET')
+                            .attr('action', '/views/' + blist.display.view.id +
+                                '/rows.pdf');
+                    }
                 }
             }
         ],
@@ -21,7 +30,7 @@
         },
         finishCallback: function(sidebarObj, data, $pane)
         {
-            $pane.find('.printForm form').submit();
+            $pane.find('.printForm').closest('form').submit();
             sidebarObj.finishProcessing();
             sidebarObj.hide();
         }

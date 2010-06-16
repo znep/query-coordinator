@@ -43,6 +43,7 @@
             to make sure the sub-select bar is initialized properly
         + title: main title
         + subtitle: appears under main title
+        + noReset: boolean, if true form elements will not be reset on close
         + sections: array of sections for entering data
         [
           {
@@ -802,6 +803,8 @@
 
             resetForm: function($pane)
             {
+                if ($pane.is('.noReset')) { return; }
+
                 $pane.find('.formSection.selectable:not(.collapsed)')
                     .each(function()
                 { $(this).find('.sectionSelect').click(); });
@@ -1283,6 +1286,7 @@
     {
         var paneId = sidebarObj.$dom().attr('id') + '_' + config.name;
         var $pane = $.tag({tagName: 'div', id: paneId, 'class': 'sidebarPane'});
+        if (config.noReset) { $pane.addClass('noReset'); }
         var rData = {title: config.title, subtitle: config.subtitle,
             sections: config.sections, paneId: paneId,
             finishButtons: (config.finishBlock || {}).buttons,
@@ -1739,10 +1743,6 @@
 
         addWizards(sidebarObj, $pane, config);
 
-        $pane.find('form').validate({ignore: ':hidden', errorElement: 'span',
-            errorPlacement: function($error, $element)
-            { $error.appendTo($element.closest('.line')); }});
-
         if ($pane.find('.finishButtons li').length < 1)
         {
             $pane.find('.formSection:last').addClass('noFinish');
@@ -1759,6 +1759,10 @@
             if (_.isFunction(cs.callback))
             { cs.callback($sc); }
         });
+
+        $pane.find('form').validate({ignore: ':hidden', errorElement: 'span',
+            errorPlacement: function($error, $element)
+            { $error.appendTo($element.closest('.line')); }});
 
         return $pane;
     };

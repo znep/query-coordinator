@@ -88,9 +88,14 @@
       <%= render :partial => 'datasets/embed_form',
                  :locals => { :view => @view, :cur => params[:cur] } %>
     </div>
+    <%- if !@view.is_alt_view? -%>
     <div class="widgetContentSection widgetContent_print">
-      <%= render :partial => 'datasets/print_form', :locals => { :view => @view } %>
+      <% form_tag("/views/#{@view.id}/rows.pdf", :method => :get,
+        :target => "_blank", :class => 'commonForm') do %>
+        <%= render :partial => 'datasets/print_form', :locals => { :view => @view } %>
+      <% end %>
     </div>
+    <%- end -%>
   </div>
 
   <%- if @theme[:frame][:orientation] == 'upwards' -%>

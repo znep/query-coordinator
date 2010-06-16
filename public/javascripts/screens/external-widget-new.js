@@ -117,6 +117,8 @@ $(function()
     // keep track of some stuff for easy access
     widgetNS.orientation = widgetNS.theme['frame']['orientation'];
     widgetNS.isBlobby = (widgetNS.view.viewType === 'blobby');
+    widgetNS.isAltView = !_.include(['Blist', 'Filter', 'Grouped'],
+        blist.dataset.getDisplayType(widgetNS.view));
     widgetNS.interstitial = widgetNS.theme['behavior']['interstitial'];
 
     // sizing
@@ -157,7 +159,7 @@ $(function()
                 onlyIf: menuOptions['embed'] },
             { text: 'Print', className: 'print',
                 subtext: 'Print this dataset', href: '#print',
-                onlyIf: !widgetNS.isBlobby && menuOptions['print'] },
+                onlyIf: !widgetNS.isAltView && menuOptions['print'] },
             { text: 'About the Socrata Social Data Player', className: 'about',
                 href: 'http://www.socrata.com/try-it-free', rel: 'external',
                 onlyIf: menuOptions['about_sdp'] },
@@ -692,6 +694,7 @@ $(function()
                     ]})
                 .click(function(event)
                 {
+                    event.preventDefault();
                     $(this).closest('form').submit();
                 }));
 

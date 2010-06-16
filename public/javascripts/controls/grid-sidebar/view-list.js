@@ -30,7 +30,7 @@
         $ul.empty();
         _.each(sorted, function(v)
         {
-            var $li = $.tag({tagName: 'li', class: ['viewItem',
+            var $li = $.tag({tagName: 'li', 'class': ['viewItem',
                 {value: 'current', onlyIf: v.id == blist.display.view.id}],
                 'data-search': (v.name + ' ' + v.owner.displayName).toLowerCase()});
             $li.append($.renderTemplate('viewItem', v, {

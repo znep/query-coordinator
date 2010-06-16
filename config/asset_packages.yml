@@ -253,20 +253,23 @@ javascripts:
   - plugins/jquery.tablesorter
   - widgets/combination-list
   - util/events
+  - util/humane-date
   - util/urls
   - util/navigation
   - util/inline-login
   - widgets/menu
   - widgets/wizard-prompt
+  - controls/expander
   - controls/grid-sidebar/base-sidebar
   - controls/grid-sidebar/calendar-create
   - controls/grid-sidebar/chart-create
-  - controls/grid-sidebar/form-create
+  - controls/grid-sidebar/download-dataset
   - controls/grid-sidebar/embed-sdp
+  - controls/grid-sidebar/form-create
   - controls/grid-sidebar/location-create
   - controls/grid-sidebar/map-create
-  - controls/grid-sidebar/download-dataset
   - controls/grid-sidebar/print-dataset
+  - controls/grid-sidebar/view-list
   - controls/dataset-controls
   - widgets/embed-form
   - controls/full-screen

@@ -28,6 +28,7 @@
 
 /*
   v1.1 (jeff.scherpelz@blist.com): Added support for data parameters besides strings
+  v1.2 (jeff.scherpelz@blist.com): Support for de-duping in-process requests
 */
 
 (function($) {
@@ -35,6 +36,7 @@
   // define public plugin contents
   $.Tache = {
     Data:         [],
+    InProcessData: [],
     Delete:       function(a) { Delete(a) },
     DeleteAll:    function()  { DeleteAll() },
     Get:          function(a) { Get(a) },
@@ -68,11 +70,17 @@
           $.Tache.Data.splice(i-1, 1);
       }
     }
+    for (var i = $.Tache.InProcessData.length; i > 0; i--) {
+      if ((((dtNow.valueOf() - $.Tache.InProcessData[i-1].dtAge.valueOf()) / 1000) > $.Tache.Timeout ) || ($.Tache.InProcessData[i-1].sIdentifier == sIdentifier)) {
+          $.Tache.InProcessData.splice(i-1, 1);
+      }
+    }
   }
 
   // PUBLIC: delete all cached data
   function DeleteAll() {
     $.Tache.Data = [];
+    $.Tache.InProcessData = [];
   }
 
   // PUBLIC: return the data of ajax call either directly from the server or from memory if pre-loaded
@@ -96,11 +104,33 @@
       }
     }
 
+    // Check the in-process queue, also
+    for (var i = $.Tache.InProcessData.length; i > 0; i--) {
+      if ( ((dtNow.valueOf() - $.Tache.InProcessData[i-1].dtAge.valueOf()) / 1000) > $.Tache.Timeout ) {
+          // delete expired request
+          $.Tache.InProcessData.splice(i-1, 1);
+      } else if ($.Tache.InProcessData[i-1].sIdentifier == sIdentifier) {
+          $.Tache.InProcessData[i-1].oReqs.push(oAJAX);
+          return;
+      }
+    }
+
     // the data wasn't found; alter the callback to insert the soon-to-be requested data into the cache
     var oCallback = oAJAX.success;
+    $.Tache.InProcessData.push({ sIdentifier: sIdentifier, dtAge: new Date(), oReqs: [oAJAX]});
     oAJAX.success = function(oNewData) {
-    $.Tache.Data.push({ sIdentifier: sIdentifier, oData: oNewData, dtAge: new Date() });
-      oCallback(oNewData);
+      $.Tache.Data.push({ sIdentifier: sIdentifier, oData: oNewData, dtAge: new Date() });
+      oAJAX.success = oCallback;
+      for (var i = 0; i < $.Tache.InProcessData.length; i++)
+      {
+        if ($.Tache.InProcessData[i].sIdentifier == sIdentifier)
+        {
+            var ipItem = $.Tache.InProcessData.splice(i, 1)[0];
+            for (var j = 0; j < ipItem.oReqs.length; j++) {
+              ipItem.oReqs[j].success(oNewData);
+            }
+        }
+      }
     }
     $.ajax(oAJAX);
   }

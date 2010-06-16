@@ -5,7 +5,8 @@
   <%= rendered_stylesheet_tag 'dataset-page' %>
 
   <title><%= h(@view.name) %> | <%= CurrentDomain.strings.site_title %></title>
-  <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
+  <%= meta_tags :description => @view.meta_description,
+    :keywords => @view.meta_keywords %>
   <link rel="canonical" href="<%= @view.href %>" />
 <% end %>
 
@@ -86,7 +87,7 @@
   <%- end -%>
 
   <script type="text/javascript">
-    <%= raw @view.display.render_inline_setup_js('data-grid', self) %>
+    <%= raw @view.display.render_inline_setup_js('mainGrid', self) %>
 
     <%- if !current_user.nil? -%>
       blist.currentUserId = '<%= current_user.id %>';

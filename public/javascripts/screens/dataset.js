@@ -53,8 +53,6 @@ $(function()
     }
 
     // Placeholder config for tabs that haven't been implemented yet
-    $.gridSidebar.registerConfig({name: 'filter.foo', title: 'Placeholder',
-        subtitle: 'Placeholder'});
     $.gridSidebar.registerConfig({name: 'feed.foo', title: 'Placeholder',
         subtitle: 'Placeholder'});
     $.gridSidebar.registerConfig({name: 'about.foo', title: 'Placeholder',
@@ -106,39 +104,21 @@ $(function()
         ]
     });
 
-    if ($.isBlank(blist.display.view.description))
-    { $('.descriptionExpander').hide(); }
-    $('.descriptionExpander').click(function(event)
+    $('#viewsMenu .typeFilter').click(function(e)
     {
-        event.preventDefault();
-        var $this = $(this);
-        var $description = $('#description');
+        e.preventDefault();
+        $('#gridSidebar').gridSidebar().show('filter.savedFilters');
+    });
+    $('#viewsMenu .typeVisualization').click(function(e)
+    {
+        e.preventDefault();
+        $('#gridSidebar').gridSidebar().show('visualize.savedVisualizations');
+    });
 
-        if ($this.hasClass('downArrow'))
-        {
-            // need to expand; measure how tall
-            $description
-                .removeClass('collapsed')
-                .css('height', null);
-            var targetHeight = $description.height();
-            $description
-                .addClass('collapsed')
-                .animate({
-                    height: targetHeight
-                },
-                datasetPageNS.adjustSize);
-            $this.removeClass('downArrow').addClass('upArrow');
-        }
-        else
-        {
-            // need to collapse
-            $description
-                .animate({
-                    height: $description.css('line-height')
-                },
-                datasetPageNS.adjustSize);
-            $this.removeClass('upArrow').addClass('downArrow');
-        }
+    $('#titleBox').expander({
+        contentSelector: '#description',
+        expandSelector: '.descriptionExpander',
+        resizeFinishCallback: datasetPageNS.adjustSize
     });
 
     var $dsIcon = $('#datasetIcon');
@@ -180,12 +160,11 @@ $(function()
     });
 
     // fetch some data that we'll need
-    $.ajax({ url: '/views.json',
+    $.Tache.Get({ url: '/views.json',
         data: { method: 'getByTableId', tableId: blist.display.view.tableId },
         dataType: 'json', contentType: 'application/json',
         success: function(views)
         {
-            // TODO: make views reusable for the views sidebar
             $('#viewsMenu .typeBlist a').attr('href', $.generateViewUrl(
                 _.detect(views, function(view) { return blist.dataset.getDisplayType(view) == 'Blist'; })));
         }});

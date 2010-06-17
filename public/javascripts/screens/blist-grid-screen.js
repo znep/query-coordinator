@@ -332,12 +332,14 @@ $(function ()
                                 .val(unescape(searchTerm))
                                 .closest('form')
                                     .submit();
-                        }
 
-                        $('#lensContainer .headerBar form .clearSearch').click(function()
-                        {
-                            window.location.href = window.location.href.replace(/\?.*$/, '');
-                        });
+                            $('#lensContainer .headerBar form .clearSearch')
+                                .click(function()
+                                {
+                                    window.location.href =
+                                        window.location.href.replace(/\?.*$/, '');
+                                });
+                        }
 
                         paramSearched = true;
                     }

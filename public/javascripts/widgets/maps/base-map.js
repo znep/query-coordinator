@@ -133,6 +133,9 @@
 
                 mapObj.resetData();
 
+                mapObj._markers = {};
+                mapObj._llKeys = {};
+
                 mapObj._idIndex = undefined;
                 mapObj._locCol = undefined;
                 mapObj._latIndex = undefined;
@@ -276,9 +279,9 @@
                     info  = '<table id="info_'
                     info += mapObj._llKeys[rowKey].id;
                     info += '"><tr><th>';
-                    info += mapObj._titleCol.name;
+                    info += (mapObj._titleCol || {}).name || '';
                     info += '</th><th>';
-                    info += mapObj._infoCol.name;
+                    info += (mapObj._infoCol || {}).name || '';
                     info += '</th></tr>';
                     var totalRows = mapObj._llKeys[rowKey].title.length;
                     for (var i = 0; i < totalRows; i++)
@@ -288,9 +291,9 @@
                         info += '_'+i+'" ';
                         if (i > rowsPerPage-1) { info += 'style="display: none;"'; }
                         info += '><td>';
-                        info += mapObj._llKeys[rowKey].title[i];
+                        info += mapObj._llKeys[rowKey].title[i] || '';
                         info += '</td><td>';
-                        info += mapObj._llKeys[rowKey].info[i];
+                        info += mapObj._llKeys[rowKey].info[i] || '';
                         info += '</td></tr>';
                     }
                     info += '</table>';

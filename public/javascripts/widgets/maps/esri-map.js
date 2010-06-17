@@ -232,7 +232,6 @@
                     (mapObj.map.spatialReference);
                 mapObj.map.graphics.clear();
                 mapObj.map.infoWindow.hide();
-                mapObj._markers = {};
             }
         }
     }));

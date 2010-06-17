@@ -74,7 +74,6 @@
                 var mapObj = this;
                 if (mapObj.infoWindow !== undefined) { mapObj.infoWindow.close(); }
                 _.each(mapObj._markers, function(m) { m.setMap(null); });
-                mapObj._markers = {};
 
                 mapObj._bounds = new google.maps.LatLngBounds();
                 mapObj._boundsCounts = 0;

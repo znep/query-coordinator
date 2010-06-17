@@ -730,6 +730,10 @@ $(function ()
     
     $('.attachmentsEdit').attachmentsEdit();
 
+    // Metadata editing
+    $('.customFieldAdd').customFieldAdd();
+    $('.customFieldEdit').customFieldEdit();
+
     blistGridNS.hookUpCreateViewMenu();
 
     $("#infoPane .singleInfoPublishing").infoPanePublish();

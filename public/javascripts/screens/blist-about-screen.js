@@ -173,4 +173,10 @@ $(function ()
         closeButton: $('.closeAttachmentsButton'),
         triggerButton: $('.editAttachments')
     });
+
+    $('.customFieldEdit').customFieldEdit({
+        triggerButton: $('.editMetadataLink')
+    });
+    $('.customFieldAdd').customFieldAdd();
+
 });

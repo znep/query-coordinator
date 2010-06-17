@@ -7,13 +7,31 @@
 
     $.fn.socrataTip = function(options)
     {
-        // Check if object was already created
-        var sTip = $(this[0]).data("socrataTip");
-        if (!sTip)
+        var $elems = $(this);
+        // If only one item, use object-return version
+        if ($elems.length < 2)
         {
-            sTip = new sTipObj(options, this[0]);
+            // Check if object was already created
+            var sTip = $elems.data("socrataTip");
+            if (!sTip)
+            {
+                sTip = new sTipObj(options, $elems[0]);
+            }
+            return sTip;
         }
-        return sTip;
+        // Else create it on every item that is not initialized,
+        // and return the elems
+        else
+        {
+            $elems.each(function()
+            {
+                var $t = $(this);
+                var curItem = $t.data("socrataTip");
+                if (!curItem)
+                { new sTipObj(options, $t[0]); }
+            });
+            return $elems;
+        }
     };
 
     var sTipObj = function(options, dom)
@@ -30,13 +48,15 @@
         defaults:
         {
             closeOnClick: true,
+            content: null,
             killTitle: false,
             isSolo: false,
             message: null,
+            overlap: 0,
             parent: 'body',
             positions: null,
             shrinkToFit: true,
-            trigger: 'now'
+            trigger: 'hover'
         },
 
         prototype:
@@ -47,14 +67,22 @@
                 var $domObj = sTipObj.$dom();
                 $domObj.data("socrataTip", sTipObj);
 
-                if (_.isNull(sTipObj.settings.message)) { return; }
+                if ($.isBlank(sTipObj.settings.message) &&
+                    $.isBlank(sTipObj.settings.content)) { return; }
 
                 var pos = sTipObj.settings.positions;
                 if (_.isNull(pos)) { pos = ['bottom', 'top']; }
                 else if (pos == 'auto') { pos = ['most']; }
 
+                var content = sTipObj.settings.content;
+                if ($.isBlank(content))
+                {
+                    content = $.tag({tagName: 'p',
+                        contents: sTipObj.settings.message}, true);
+                }
+
                 $domObj.bt({
-                        content: sTipObj.settings.message,
+                        content: content,
 
                         fill: '#fefbef',
                         strokeStyle: '#999999',
@@ -73,6 +101,7 @@
                         shrinkToFit: sTipObj.settings.shrinkToFit,
                         trigger: sTipObj.settings.trigger,
                         positions: pos,
+                        overlap: sTipObj.settings.overlap,
                         offsetParent: sTipObj.settings.parent,
                         killTitle: sTipObj.settings.killTitle,
 
@@ -87,7 +116,13 @@
                         hideTip: function(box, callback)
                             {
                                 sTipObj._visible = false;
-                                $(box).fadeOut(300, callback);
+                                if (sTipObj._isDestroy)
+                                {
+                                    $(box).hide();
+                                    _.defer(callback);
+                                }
+                                else
+                                { $(box).fadeOut(300, callback); }
                             }
                 });
             },
@@ -136,6 +171,7 @@
 
             destroy: function()
             {
+                this._isDestroy = true;
                 this.hide();
                 this.disable();
                 this.$dom().removeData('socrataTip');
@@ -211,7 +247,8 @@
     // plugin defaults
     //
     $.fn.socrataAlert.defaults = {
-        message: null
+        message: null,
+        trigger: 'now'
     };
 
 })(jQuery);

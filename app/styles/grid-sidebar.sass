@@ -1,0 +1,407 @@
+#gridSidebarOverlay
+  background-color: #000000
+  filter: alpha(opacity = 50)
+  opacity: 0.5
+  height: 100%
+  left: 0
+  position: fixed
+  top: 0
+  width: 100%
+  z-index: 50
+
+
+#gridSidebar
+  background-color: #ffffff
+  border-left: 1px solid #cecece
+  display: none
+  overflow: hidden
+  position: absolute
+  right: 0
+  top: 0
+  width: 30em
+
+  .close
+    @include sprite-button-icons
+    position: absolute
+    right: 0.5em
+    top: 0.7em
+    .ie7 & .icon
+      display: block
+
+  .paneOverlay
+    background-color: #cccccc
+    height: 100%
+    left: 0
+    filter: alpha(opacity = 30)
+    opacity: 0.3
+    position: absolute
+    top: 0
+    width: 100%
+    z-index: 60
+
+  .loadingOverlay
+    background-color: #eeeeee
+    height: 100%
+    left: 0
+    filter: alpha(opacity = 70)
+    opacity: 0.7
+    position: absolute
+    top: 0
+    width: 100%
+    z-index: 60
+
+  .loadingSpinner
+    top: 33%
+
+  .loadingOverlay, .loadingSpinner
+    display: none
+
+  &.processing .loadingOverlay, &.processing .loadingSpinner
+    display: block
+
+  .outerPane
+    .mainTitleBlock
+      @include vertical-gradient(#989898, #848484)
+      padding: 0.5em 1em
+
+      .title
+        color: #ffffff
+        font-size: 1.3em
+        text-transform: none
+
+    .paneSelect
+      background-color: #eeeeee
+      border: 1px solid #cccccc
+      margin: 0.5em
+      padding: 0.25em 0.75em
+
+      li
+        float: left
+
+        a
+          display: inline-block
+          font-size: 1.1em
+          font-weight: bold
+          padding: 4px 5px
+
+          &.selected
+            background-color: #ffffff
+            border: 1px solid #cccccc
+            color: #333333
+            cursor: default
+            padding: 3px 4px
+          &.disabled
+            color: #999999
+            cursor: default
+
+    &#gridSidebar_outer_filter
+      .mainTitleBlock
+        @include vertical-gradient($sidebar_filter_tab_color_top, #4ca9d0)
+      .paneSelect
+        background-color: #e1f4fd
+        border-color: #afe5ff
+
+    &#gridSidebar_outer_visualize
+      .mainTitleBlock
+        @include vertical-gradient($sidebar_visualize_tab_color_top, #005030)
+      .paneSelect
+        background-color: #e0ffe8
+        border-color: #a0ffb0
+
+    &#gridSidebar_outer_export
+      .mainTitleBlock
+        @include vertical-gradient($sidebar_export_tab_color_top, #004478)
+      .paneSelect
+        background-color: #b1dfed
+        border-color: #7db5bf
+
+    &#gridSidebar_outer_feed
+      .mainTitleBlock
+        @include vertical-gradient($sidebar_feed_tab_color_top, #d06000)
+      .paneSelect
+        background-color: #ffe3b0
+        border-color: #ffc060
+
+    &#gridSidebar_outer_embed
+      .mainTitleBlock
+        @include vertical-gradient($sidebar_embed_tab_color_top, #d0383b)
+      .paneSelect
+        background-color: #fde1e1
+        border-color: #ffa0a0
+
+    &#gridSidebar_outer_about
+      .mainTitleBlock
+        @include vertical-gradient($sidebar_about_tab_color_top, #78202a)
+      .paneSelect
+        background-color: #ffc3d1
+        border-color: #f8a0a8
+
+  .sidebarPane
+    position: relative
+
+    .disabledOverlay
+      background-color: #eeeeee
+      display: none
+      height: 100%
+      left: 0
+      filter: alpha(opacity = 70)
+      opacity: 0.7
+      position: absolute
+      top: 0
+      width: 100%
+      z-index: 80
+
+    .disabledMessage
+      color: #333333
+      display: none
+      font-size: 1.2em
+      font-weight: bold
+      position: absolute
+      text-align: center
+      top: 8em
+      width: 100%
+      z-index: 81
+
+    &.disabled .disabledOverlay, &.disabled .disabledMessage
+      display: block
+
+    &.initialLoad .formSection
+      filter: alpha(opacity = 30)
+      opacity: 0.3
+
+    .subtitleBlock
+      padding: 1em
+
+      .subtitle
+        color: #999999
+        font-size: 1.1em
+
+    .scrollContent
+      overflow: auto
+      padding: 0.75em
+      position: relative
+
+    .formSection
+      border-bottom: 1px solid #cccccc
+      margin-bottom: 1em
+      padding-bottom: 0.5em
+
+      &.noFinish
+        border-bottom: none
+
+      > .uniform.checker, .sectionSelect
+        display: none
+        margin-left: -0.5em
+
+      &.selectable > .uniform.checker, &.selectable .sectionSelect
+        display: inline-block
+
+      .formHeader
+        display: inline-block
+        font-size: 1.2em
+        font-weight: bold
+        margin-bottom: 0.3em
+        margin-left: -0.5em
+        padding-left: 0
+        &.hide
+          display: none
+
+      .sectionDisabledMessage
+        color: #999999
+        display: none
+        font-size: 1.3em
+        font-style: italic
+        margin: 1em 0
+        text-align: center
+
+      &.disabled
+        .sectionDisabledMessage
+          display: block
+        .sectionContent
+          display: none
+        &.error .sectionDisabledMessage
+          color: red
+
+      .line
+        margin: 0.5em 0
+
+        label
+          margin-right: 0.25em
+          width: 6.4em
+
+        textarea, input[type="text"]
+          width: 12.9em
+
+        select
+          width: 13.5em
+
+        input[type="radio"], .uniform.radio
+          margin-right: 0.5em
+
+        .ui-slider
+          margin-left: 0.5em
+          width: 11.9em
+
+        span.error
+          color: #ff0000
+          display: block
+          line-height: 1.7em
+          margin-left: 8.5em
+          padding-left: 12px
+
+        .columnSelector
+          @include text-hiding
+          background-image: url(/stylesheets/images/controls/column_select_sprite.png)
+          height: 20px
+          margin-bottom: 3px
+          margin-right: 0.5em
+          position: relative
+          vertical-align: bottom
+          width: 20px
+
+          &.inProcess
+            background-position: 0 -20px
+            z-index: 70
+
+        &.columnSelect select
+          font-size: 1em
+          width: 11.6em
+
+        &.slider
+          .ui-slider
+            margin-right: 0.7em
+            width: 9.4em
+
+          input
+            background-color: transparent
+            border: none
+            @include box-shadow-none
+            text-align: right
+            width: 1.8em
+
+        &.color
+          position: absolute
+          right: 0
+          top: 0
+
+          label
+            display: none
+
+        &.color + .line
+          margin-right: 24px
+
+          textarea, input[type="text"]
+            width: 10.9em
+
+          select
+            width: 11.5em
+
+          .ui-slider
+            width: 9.9em
+
+          &.columnSelect select
+            width: 9.6em
+
+        $group_border_color: #cccccc
+
+        &.radioGroup, &.group
+          border: 1px $group_border_color solid
+          margin-left: -0.75em
+          padding-left: 0.65em
+
+        &.group
+          padding-top: 0
+
+        .radioBlock
+          width: 16.27em
+          label
+            display: inline-block
+            font-size: 1.2em
+            font-weight: normal
+            margin-right: 0
+            padding-left: 0
+            vertical-align: bottom
+            width: 11.5em
+
+            .uniform.selector
+              font-size: 1em
+
+            select, input
+              font-size: 1em
+              width: 10.75em
+
+          .columnSelect .uniform.radio
+            margin-bottom: 3px
+
+          .columnSelect label select
+            width: 9.3333em
+
+          label span.error
+            font-size: 0.8333em
+            margin-left: 0
+            padding-left: 0
+
+        &.repeater
+          .addValue.hide
+            display: none
+
+          .line
+            position: relative
+
+            &.color
+              position: absolute
+
+            .removeLink
+              @include sprite-button-icons
+              background-color: $group_border_color
+              left: 0
+              line-height: 1em
+              padding: 0.3em
+              position: absolute
+              top: 0
+              z-index: 1
+
+        &.group .removeLink
+          left: 0.75em
+
+        &.colorArray
+          .line.color
+            clear: none
+            float: left
+            margin: 0 1px
+            padding: 0
+            position: static
+
+      &.collapsed
+        .formHeader
+          color: #999999
+
+        .sectionContent
+          display: none
+
+    .gridListWrapper
+      width: 26em
+
+    .finishButtons
+      margin-top: 0.75em
+
+      // Once the old app is gone, all these legacy actionButtons styles can go away
+      li
+        float: left
+
+.paneSelectWizard
+  .title
+    margin-bottom: 1em
+    text-transform: none
+
+  ul li
+    font-size: 1.1em
+    line-height: 1.1em
+    margin-top: 1em
+    a
+      display: block
+      font-weight: bold
+
+      &.disabled
+        color: #999999
+        cursor: default

@@ -159,7 +159,7 @@
                     datasetObj.settings.currentUserId == view.owner.id)
                 {
                     $.ajax({url: '/views/' + view.id + '.json',
-                        data: $.json.serialize({query: view.query}),
+                        data: JSON.stringify({query: view.query}),
                         type: 'PUT', contentType: 'application/json',
                         success: function(newView)
                         {
@@ -223,7 +223,7 @@
                     $.ajax({url: '/views/' + view.id + '/columns/' + columnId +
                         '.json', dataType: 'json', type: 'PUT',
                         contentType: 'application/json',
-                        data: $.json.serialize({'format':
+                        data: JSON.stringify({'format':
                             $.extend({}, col.format, {'aggregate': aggregate})}),
                         success: function(retCol)
                         {
@@ -266,7 +266,7 @@
                             {
                                 $.ajax({url: '/views/' + view.id + '/columns/' +
                                     col.id + '.json',
-                                    data: $.json.serialize({'hidden': hide}),
+                                    data: JSON.stringify({'hidden': hide}),
                                     type: 'PUT', dataType: 'json',
                                     contentType: 'application/json',
                                     success: function(retCol)
@@ -368,14 +368,14 @@
                             $.socrataServer.addRequest(
                                 {url: '/views/' + view.id + '/columns/' +
                                     col.id + '.json', type: 'PUT',
-                                data: $.json.serialize({'hidden': false})});
+                                data: JSON.stringify({'hidden': false})});
                             serverCols.push({id: col.id, name: col.name});
                         }
                     });
 
                     $.socrataServer.addRequest(
                         { url: '/views/' + view.id + '.json', type: 'PUT',
-                            data: $.json.serialize({columns: serverCols})});
+                            data: JSON.stringify({columns: serverCols})});
 
                     $.socrataServer.runRequests({complete: function()
                     {
@@ -481,11 +481,11 @@
                     {
                         $.ajax({url: '/views.json', type: 'POST',
                             contentType: 'application/json', dataType: 'json',
-                            data: $.json.serialize(view),
+                            data: JSON.stringify(view),
                             error: function(xhr)
                             {
                                 if (typeof errorCallback == 'function')
-                                { errorCallback($.json.deserialize
+                                { errorCallback(JSON.parse
                                     (xhr.responseText).message); }
                             },
                             success: function(resp)
@@ -515,7 +515,7 @@
                 else
                 {
                     $.socrataServer.addRequest({url: '/views/' + view.id + '.json',
-                        type: 'PUT', data: $.json.serialize(view),
+                        type: 'PUT', data: JSON.stringify(view),
                         error: errorCallback,
                         success: function(newView)
                         {
@@ -530,7 +530,7 @@
                             $.socrataServer.addRequest(
                                 {url: '/views/' + view.id + '/columns/' +
                                 c.id + '.json', type: 'PUT',
-                                data: $.json.serialize({hidden: c.hidden}),
+                                data: JSON.stringify({hidden: c.hidden}),
                                 error: errorCallback});
                         });
 
@@ -1066,13 +1066,15 @@
             }
             tipsRef[col.id] = $col;
 
+            var typeName = blist.data.types[col.type].title ||
+                col.type.displayable();
             var tooltipContent = '<div class="blist-th-tooltip ' +
                 col.type + '">'
                 + '<p class="name">' +
                 $.htmlEscape(col.name).replace(/ /, '&nbsp;') + '</p>' +
                 '<span class="blist-th-icon"></span>' +
                 '<p class="columnType">' +
-                col.type.displayable() +
+                typeName +
                 (col.grouping_aggregate !== undefined ?
                     ' (' + $.capitalize(col.grouping_aggregate) + ' on ' +
                     col.originalType.displayable() + ')' : '') +
@@ -1121,12 +1123,12 @@
                 });
 
 
-            $col.socrataTip({message: tooltipContent, trigger: 'none',
+            $col.socrataTip({content: tooltipContent, trigger: 'none',
                     parent: 'body'});
             showTip();
 
             $col.find('.menuLink').socrataTip({message: 'Click for Menu',
-                trigger: 'hover', parent: 'body'});
+                    parent: 'body'});
         }
     };
 
@@ -1346,7 +1348,7 @@
                 cache: false,
                 type: 'POST',
                 contentType: 'application/json',
-                data: $.json.serialize(tempView),
+                data: JSON.stringify(tempView),
                 success: function (data)
                 {
                     // On success, hash the summaries by column ID (they come
@@ -1601,7 +1603,7 @@
             if (datasetObj.settings.currentUserId == view.owner.id)
             {
                 $.ajax({url: '/views/' + view.id + '/columns/' + col.id + '.json',
-                    data: $.json.serialize({width: col.width}),
+                    data: JSON.stringify({width: col.width}),
                     type: 'PUT', contentType: 'application/json'});
             }
         }
@@ -1614,7 +1616,7 @@
             !datasetObj.isTempView)
         {
             $.ajax({url: '/views/' + view.id + '.json',
-                data: $.json.serialize({query: view.query}),
+                data: JSON.stringify({query: view.query}),
                 type: 'PUT', contentType: 'application/json'});
         }
         else
@@ -1653,7 +1655,7 @@
         {
             var modView = datasetObj.settings._model.getViewCopy(true);
             $.ajax({url: '/views/' + view.id + '.json',
-                    data: $.json.serialize({columns: modView.columns}),
+                    data: JSON.stringify({columns: modView.columns}),
                     type: 'PUT', contentType: 'application/json',
                     success: function()
                         {
@@ -1751,11 +1753,11 @@
 
         $.ajax({url: '/views/' + model.meta().view.id + '/columns/' +
             col.id + '.json',
-            data: $.json.serialize({name: col.name}),
+            data: JSON.stringify({name: col.name}),
             type: 'PUT', dataType: 'json', contentType: 'application/json',
             error: function(xhr)
             {
-                var errBody = $.json.deserialize(xhr.responseText);
+                var errBody = JSON.parse(xhr.responseText);
                 alert(errBody.message);
                 $th.addClass('error');
                 $input.removeAttr('disabled');

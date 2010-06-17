@@ -37,6 +37,8 @@ blist.util.humaneDate.getFromDate = function (date_obj, granularity)
         granularity = blist.util.humaneDate.MINUTE;
     }
 
+    if (_.isNumber(date_obj)) { date_obj = new Date(date_obj); }
+
     var dt = new Date();
     var seconds = (dt - date_obj) / 1000;
     var token = 'ago', list_choice = 1;

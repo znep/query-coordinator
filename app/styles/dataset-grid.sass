@@ -1,3 +1,16 @@
+$cell_vborder_color: #e2e2e2
+$cell_hborder_color: #d0d0d0
+$col_hover_color: #ddeaf0
+$fill_color: #f8f8f8
+$header_color: #e8e8e8
+$footer_locked_color: #fcedc1
+$footer_color: #fef8dc
+
+.blist-table
+  height: 100%
+  a
+    @include underline-on-hover
+
 .blist-table-locked-scrolls
   background-color: #ffffff
 
@@ -21,7 +34,7 @@
       height: 2.5em
 
 .blist-th
-  border-left: solid 1px #e2e2e2
+  border-left: solid 1px $cell_vborder_color
   overflow: hidden
   padding: 0 0.4em
 
@@ -32,7 +45,7 @@ div.blist-th-first
 .blist-table-header
   .hover,
   .blist-select-col
-    background-color: #ddeaf0
+    background-color: $col_hover_color
 
   .hover .indicator-container
     background-color: #cddae0
@@ -140,7 +153,7 @@ div.blist-th-first
       background-image: url(/stylesheets/images/content/table/column_drag_handle.gif)
 
 .blist-th-drag
-  background-color: #ddeaf0
+  background-color: $col_hover_color
   height: 100%
   top: 0
   z-index: 100
@@ -214,13 +227,16 @@ div.blist-th-first
 .blist-tdh .menuLink.clicked
   display: block
 
+.blist-table-header-scrolls
+  background: $header_color
+
 .blist-table-locked-header .blist-th
-  background-color: #e8e8e8
+  background: $header_color
   border: none
   padding: 0 4px
 
 .blist-th .blist-opener
-  border-right: 1px solid #e2e2e2
+  border-right: 1px solid $cell_vborder_color
   float: left
   height: 100%
   margin-left: -4px
@@ -272,7 +288,6 @@ div.blist-th-first
   width: 100%
 
 div.blist-table-ghost div.blist-column-adder
-  background-color: #e8e8e8
   background-image: url('/stylesheets/images/content/table/add_column_icons.gif')
   background-position: center 0
   background-repeat: no-repeat
@@ -289,7 +304,7 @@ div.blist-table-ghost div.blist-column-adder
 
 div.blist-tr-open div.blist-column-adder,
 div.blist-tr.blist-hot-row div.blist-column-adder
-  background-color: #e8e8e8
+  background-color: $header_color
   cursor: pointer
 
 div.blist-column-adder
@@ -303,7 +318,7 @@ div.blist-tr-sub.blist-hot-row div.blist-column-adder
   cursor: auto
 
   &.blist-tdfill
-    background-color: #f8f8f8
+    background-color: $fill_color
 
 div.blist-tr .blist-column-adder-icon
   background: none
@@ -314,7 +329,7 @@ div.blist-tr-open .blist-column-adder-icon
   background-image: url('/stylesheets/images/content/table/add_column_icons.gif')
   background-repeat: no-repeat
   background-position: center 0px
-  background-color: #e8e8e8
+  background-color: $header_color
   width: 15px
   height: 15px
 
@@ -323,7 +338,7 @@ div.blist-tr.blist-hot-row
     background-image: url('/stylesheets/images/content/table/add_column_icons.gif')
     background-repeat: no-repeat
     background-position: center 0px
-    background-color: #e8e8e8
+    background-color: $header_color
     width: 15px
     height: 15px
 
@@ -340,22 +355,23 @@ div.blist-tr.blist-hot-row
   z-index: 99
 
 .col-select-holder
-  border-left: solid 1px #ddeaf0
-  background-color: #ddeaf0
+  border-left: solid 1px $col_hover_color
+  background-color: $col_hover_color
   height: 100%
   padding: 0 0.4em
   position: absolute
   top: 0
   z-index: -1
 
+
 .blist-table-footer-scrolls,
 .blist-table-locked-footer
   background-color: #ffffff
-  border-top: solid 1px #d0d0d0
+  border-top: solid 1px $cell_hborder_color
   height: 2.6em
 
 .blist-table-footer
-  background-color: #ececec
+  background-color: $footer_color
   bottom: 0.2em
   height: 2em
 
@@ -382,7 +398,7 @@ div.blist-tr.blist-hot-row
 
 .blist-table-locked-footer
   .blist-tf
-    background-color: #ececec
+    background-color: $footer_locked_color
     border: none
     float: left
     font-size: 1em
@@ -438,16 +454,16 @@ div.blist-tr.blist-hot-row
   display: none
 
 .blist-td
-  border-bottom: solid 1px #d0d0d0
-  border-left: solid 1px #e2e2e2
+  border-bottom: solid 1px $cell_hborder_color
+  border-left: solid 1px $cell_vborder_color
 
 div.blist-table-expander,
 div.blist-table-edit-container.mode-expand
   background-color: #ffffff
-  border-top: solid 1px #d0d0d0
-  border-bottom: solid 1px #d0d0d0
-  border-left: solid 1px #e2e2e2
-  border-right: solid 1px #e2e2e2
+  border-top: solid 1px $cell_hborder_color
+  border-bottom: solid 1px $cell_hborder_color
+  border-left: solid 1px $cell_vborder_color
+  border-right: solid 1px $cell_vborder_color
 
 .blist-td.invalid,
 .invalid .blist-table-editor input
@@ -471,7 +487,7 @@ div.blist-tdh.blist-table-row-handle .blist-th-icon
 
 .blist-tr-open
   .blist-tdh
-    background-color: #e8e8e8
+    background-color: $header_color
     color: #333333
     cursor: inherit
 
@@ -482,7 +498,7 @@ div.blist-tdh.blist-table-row-handle .blist-th-icon
     display: block
 
   .blist-td
-    border-bottom-color: #f8f8f8
+    border-bottom-color: $fill_color
 
 .blist-tr
   .blist-td-colfill, .initial-tdfill
@@ -504,15 +520,15 @@ div.blist-table-edit-container.mode-select
 
 .blist-table .blist-td.blist-tdfill,
 .blist-table-locked .blist-tr-sub .blist-td
-  background-color: #f8f8f8
-  border-bottom-color: #f8f8f8
+  background-color: $fill_color
+  border-bottom-color: $fill_color
   text-align: left
   text-indent: -9999px
 
 .blist-table-inside .blist-tr .blist-tdfill
   &.blist-table-row-handle,
   &.blist-column-adder-space
-    border-left-color: #f8f8f8
+    border-left-color: $fill_color
 
 .blist-table .last .blist-td.blist-tdfill,
 .blist-table-locked .blist-tr-sub.last .blist-td
@@ -744,7 +760,7 @@ img.blist-table-option-icon
 
   /* Location editor */
   .blist-table-editor.type-location .labels
-    border-bottom-color: #d0d0d0
+    border-bottom-color: $cell_hborder_color
     border-top: 1px solid #06386a
 
   .blist-table-editor.type-location .labels.street
@@ -764,7 +780,7 @@ img.blist-table-option-icon
 
   .blist-table-editor.type-location .labels span.longitude,
   .blist-table-editor.type-location input.longitude
-    border-left: 1px solid #d0d0d0
+    border-left: 1px solid $cell_hborder_color
     left: 50%
     position: absolute
 

@@ -25,6 +25,9 @@
   color: #666666
   font-style: italic
 
+.clipText
+  @include clip-text
+
 .hiddenTextField
   //Colors need to be transparent, otherwise Firefox & IE show the field
     while trying to get rid of the border stops events from registering in
@@ -66,7 +69,7 @@
 a
   color: $color_links_normal
   text-decoration: none
-  &:hover, &:focus, &:active
+  p &:hover, p &:focus, p &:active
     text-decoration: underline
   &:visited
     color: $color_links_visited
@@ -76,3 +79,9 @@ a
 
 .hide
   display: none
+
+.mainError
+  color: #ff0000
+  font-size: 1.2em
+  padding: 0.25em 0 1em
+

@@ -32,6 +32,9 @@
     */
     $.tag = function(attrs, keepAsString)
     {
+        attrs = tag_parseConditionalElement(attrs);
+        if (attrs === false) { return null; }
+
         var result = '<' + attrs.tagName.toLowerCase();
 
         _.each(attrs, function(value, key)
@@ -96,11 +99,14 @@
             // strips 0.
             result += _.reject(_.map(children, function(child)
             {
-                if (!$.isBlank(child.tagName))
+                if ($.isPlainObject(child))
                 { child = $.tag(child, true); }
 
                 return child;
-            }), function(child) { return $.isBlank(child); }).join(' ');
+            }), function(child) { return $.isBlank(child); })
+                // Don't join with a space, because FF will add extra
+                // un-controllable padding
+                .join('');
             result += '</' + attrs.tagName + '>';
         }
         else
@@ -121,7 +127,7 @@
     {
         if ($.isBlank(elem))
         { return false; }
-        else if (!_.isUndefined(elem.value))
+        else if ($.isBlank(elem.tagName) && !_.isUndefined(elem.value))
         {
             if (elem.onlyIf === true)
             { return elem.value; }
@@ -131,4 +137,21 @@
         else
         { return elem; }
     };
+
+    $.button = function(opts, keepAsText)
+    {
+        if (_.isString(opts)) { opts = {text: opts, href: '#' + $.urlSafe(opts)}; }
+
+        return $.tag($.extend(opts.customAttrs,
+            {tagName: 'a', href: opts.href || '#',
+            'class': _.flatten(['button', opts.className, opts.iconClass]),
+            contents: [
+                {value: {tagName: 'span', 'class': 'left'}, onlyIf: $.browser.msie},
+                {value: {tagName: 'span', 'class': 'icon'},
+                    onlyIf: !$.isBlank(opts.iconClass)},
+                opts.text
+            ]
+            }), keepAsText);
+    };
+
 })(jQuery);

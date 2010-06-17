@@ -1,0 +1,246 @@
+html, body
+  height: 100%
+  overflow: hidden
+
+#datasetBar
+  background-color: #fff
+  border-top: 1px solid #cecece
+  padding: 0.25em
+    bottom: 0.3em
+  position: relative
+
+  // IE keeps z-indexes in separate position domains
+  .ie7 &
+    z-index: 99
+
+  #viewsMenu
+    height: 2.8em
+    left: 0.7em
+    position: absolute
+    top: 0.8em
+    width: 2em
+    a.menuButton
+      @include toolbar-button
+      padding: 0
+      height: 100%
+      width: 100%
+
+      .icon
+        @include center(13px)
+
+    .menuDropdown ul li
+      @include sprite-menu-icons
+      a
+        @include clip-text
+
+    &.open .menuButton .icon
+      background-position: 0 0
+
+  #titleBox
+    border: 1px solid #f4f4f4
+    margin-right: 55em
+    margin-left: 3em
+    padding-bottom: 0.4em
+    position: relative
+
+    .descriptionExpander
+      @include sprite-menu-icons
+      position: absolute
+      right: 0.2em
+      top: 0.2em
+
+    #datasetIcon
+      @include sprite-type-icons-30
+      left: 0.4em
+      top: 0.4em
+      position: absolute
+
+    #datasetName
+      font-size: 1.6em
+      font-weight: normal
+      margin: 0
+        left: 40px
+        right: 1em
+      padding: 0
+
+    #description
+      color: #999999
+      font-size: 1.1em
+      line-height: 1.1em
+      margin:
+        left: 40px
+        right: 1em
+        top: -0.2em
+      overflow: hidden
+      &.collapsed
+        height: 1.1em
+
+  #actionBox
+    bottom: -1px
+    position: absolute
+    right: 2.5em
+
+    #toolbarOptions
+      float: left
+
+      > li
+        display: block
+        float: left
+        margin-right: 1em
+
+        #searchButton
+          @include toolbar-button
+          position: relative
+
+          .searchIcon
+            @include dataset-toolbar-icon-search
+            margin-bottom: -13px
+            left: 1em
+            top: 0.4em
+
+          .searchForm
+            display: inline
+
+            .searchField
+              background: transparent
+              border: none
+              bottom: 1px
+              display: block
+              height: 13px
+              margin: 0.1em 0.3em 0 1.6em
+              padding: 1px
+              position: relative
+              width: 2em
+              &.prompt
+                font-style: normal
+              &.expanded
+                background-color: #fff
+
+            .clearSearch
+              @include sprite-menu-icons
+              display: none
+              position: absolute
+              right: 1em
+              top: 0.3em
+
+        #shareMenu
+          .ie7 &
+            z-index: 10 /* needs to be higher than tabs */
+
+          .menuButton
+            @include toolbar-button
+            margin-top: 0
+
+            .shareIcon
+              @include dataset-toolbar-icon-share
+            .shareIcon, .icon
+              display: inline-block
+
+              .ie7 &
+                display: block
+                float: left
+
+          .menuDropdown ul li ul li
+            @include sprite-menu-icons
+            a
+              font-size: 1.2em
+              line-height: 1em
+              min-width: 6em
+
+    #sidebarOptions
+      float: left
+      margin-left: 2em
+
+      li
+        @include sprite-dataset-tabs('> a')
+        border-bottom: 1px solid #cecece
+        float: left
+        margin-left: -7px
+        position: relative
+
+      li
+        z-index: 8
+        + li
+          z-index: 7
+          + li
+            z-index: 6
+            + li
+              z-index: 5
+              + li
+                z-index: 4
+                + li
+                  z-index: 3
+                  + li
+                    z-index: 2
+                    + li
+                      z-index: 1
+      li.active
+        z-index: 9
+        &.tabFilter
+          border-bottom-color: $sidebar_filter_tab_color_top
+        &.tabVisualize
+          border-bottom-color: $sidebar_visualize_tab_color_top
+        &.tabExport
+          border-bottom-color: $sidebar_export_tab_color_top
+        &.tabFeed
+          border-bottom-color: $sidebar_feed_tab_color_top
+        &.tabEmbed
+          border-bottom-color: $sidebar_embed_tab_color_top
+        &.tabAbout
+          border-bottom-color: $sidebar_about_tab_color_top
+
+    a
+      @include sprite-menu-icons
+      font-size: 1.1em
+
+  .fullscreenButton
+    @include toolbar-button
+    padding: 0
+    position: absolute
+    right: 0.4em
+    top: 0.4em
+
+    &.maximize .icon
+      @include dataset-toolbar-icon-maximize
+    &.minimize .icon
+      @include dataset-toolbar-icon-minimize
+
+.outerContainer
+  background-color: #fff
+  border: 1px solid #cecece
+    left: 0
+    right: 0
+  position: relative
+
+// Dataset page-specific grid styles
+
+.blist-td, .blist-table-editor
+  font-size: 1.2em
+  line-height: 1.3333em
+  padding: 0.3333em
+
+.blist-td
+  height: 1.3333em
+
+.blist-td-header
+  font-weight: bold
+
+.blist-tr .blist-td-first
+  border-left-width: 0
+  padding-left: 0.4167em
+
+// Login overlay
+#login, #signup
+  display: none
+  left: 50%
+  margin-top: 0
+  position: fixed
+  z-index: 5000
+
+#login
+  margin-left: -20em
+  top: 20em
+
+#signup
+  margin-left: -24em
+  top: 10em

@@ -84,7 +84,7 @@
                 dataType: "json",
                 error: function(xhr)
                 {
-                    var errBody = $.json.deserialize(xhr.responseText);
+                    var errBody = JSON.parse(xhr.responseText);
                     alert(errBody.message);
                 },
                 success: function(responseData)

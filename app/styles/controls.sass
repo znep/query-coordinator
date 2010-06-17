@@ -106,11 +106,10 @@ div.menu
     background-color: #fff
     @include border-radius(0.4em, 0)
     color: #000
-    display: inline-block
+    display: block
     font-size: 1.2em
     height: 1em
     line-height: 1em
-    margin-top: -4px
     padding: 0.6em 1em
     position: relative
     @include transition-property(border)
@@ -124,23 +123,15 @@ div.menu
   .menuDropdown
     background-color: #fff
     border: 1px solid #999999
-    @include border-radius(0.4em)
+    @include border-radius(0.3em)
     @include box-shadow(0,0,4px,rgba(0,0,0,0.5))
     display: none
-    margin-top: -1px
+    margin-top: 0.2em
     overflow: hidden
     position: absolute
-    z-index: 49
-    &.menuPosition-top.menuPosition-left
-      @include border-radius-corner(top, left, 0)
-    &.menuPosition-top.menuPosition-right
-      @include border-radius-corner(top, right, 0)
-    &.menuPosition-bottom.menuPosition-left
-      @include border-radius-corner(bottom, left, 0)
-    &.menuPosition-bottom.menuPosition-right
-      @include border-radius-corner(bottom, right, 0)
+    z-index: 51
     ul.menuColumns
-      margin: 1.2em 0
+      margin: 0.3em 0
       overflow: hidden
       li.menuColumn
         border-left: 1px solid #dedede
@@ -156,6 +147,16 @@ div.menu
           li.menuEntry
             clear: both
             display: block
+
+            &.divider
+              border-top: 1px solid #eee
+              margin-top: 0.2em
+              padding-top: 0.2em
+              &:first-child
+                border-top: none
+                margin-top: 0
+                padding-top: 0
+
             a
               border:
                 bottom: 1px solid #ffffff
@@ -163,8 +164,8 @@ div.menu
               display: block
               font-size: 1.2em
               padding: 0.3em
-                right: 1em
-                left: 2.8em
+                right: 0.8em
+                left: 2.6em
               position: relative
               &:hover
                 background-color: #f7f7f7
@@ -172,7 +173,7 @@ div.menu
                 text-decoration: none
 
               .icon
-                left: 1em
+                left: 0.8em
                 position: absolute
                 top: 0.3em
 
@@ -181,7 +182,6 @@ div.menu
                 font-size: 0.85em
                 margin: 0.2em 0.1em
   &.open
-    @include box-shadow(0,-3px,4px,rgba(0,0,0,0.5))
     .menuButton
       border: 1px solid #999999
         bottom: none
@@ -203,3 +203,120 @@ div.starsControl
 
   .starsControlInner
     background-position: 0 -16px
+
+
+//*** START: Tooltip styles ***//
+.bt-wrapper
+  .bt-content
+    .prompt
+      font-size: 1.1em
+
+    // Once the old app is gone, all these actionButtons styles can go away
+    .actionButtons
+      margin-left: -1em
+      margin-top: 0.75em
+      text-align: center
+
+      li
+        display: inline-block
+        float: none
+
+        a
+          display: inline-block
+
+  .wizardPrompt
+    text-align: left
+
+    .prompt
+      font-size: 1.2em
+//*** END: Tooltip styles ***//
+
+// Standard loading spinner
+.loadingSpinner
+  background: transparent url(/stylesheets/images/common/BrandedSpinner.gif) no-repeat center center
+  height: 48px
+  left: 50%
+  margin:
+    left: -24px
+    top: -24px
+  position: absolute
+  top: 50%
+  width: 48px
+  z-index: 100
+
+  .hidden
+    display: none
+
+// Optionally wrap it in a container against complex backgrounds
+.loadingSpinnerContainer
+  background: transparent url(/stylesheets/images/common/spinner_background.png) no-repeat
+  height: 48px
+  left: 50%
+  margin-left: -24px
+  margin-top: -24px
+  padding: 26px
+  position: absolute
+  top: 50%
+  width: 48px
+  z-index: 100
+
+  .loadingSpinner
+    margin: 0
+    position: static
+
+  &.hidden
+    display: none
+
+
+//*** START: colorpicker styles ***//
+div#color_selector
+  background-color: #ffffff
+  border: 1px solid #cccccc
+  margin-left: -125px
+  padding: 10px 5px
+  position: absolute
+  width: 137px
+  z-index: 3001
+
+
+  div#color_custom
+    float: left
+    margin-top: -10px
+    width: 100%
+
+    label
+      color: #2F2F2F
+      font-size: 0.95em
+      margin: 5px 2px
+      width: 25%
+
+    input
+      border: 1px solid #000
+      font-size: 0.95em
+      margin: 5px 2px 0
+      width: 65%
+
+  div.color_block
+    border: 1px solid #666666
+    border-right: none
+    margin-bottom: 10px
+
+    div.color_swatch
+      border-right: 1px solid #666666
+      cursor: pointer
+      float: left
+      height: 16px
+      line-height: 16px
+      width: 16px
+
+      .inner
+        height: 14px
+        width: 14px
+
+      &.selected .inner
+        border: 1px solid #20608f
+
+      &.hover .inner
+        border: 1px solid #ffffff
+
+//*** END: colorpicker styles ***//

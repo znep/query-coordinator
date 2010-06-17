@@ -10,10 +10,27 @@
 
         var contents = _.map(opts.contents, function(column)
         {
-            return _.reject(column, function(item)
-            {
-                return item.onlyIf === false;
-            });
+            var dividerNext = false;
+            return _.compact(
+                _.map(column, function(item)
+                {
+                    if (item.divider === true)
+                    {
+                        dividerNext = true;
+                        return null;
+                    }
+
+                    if (item.onlyIf === false)
+                    {
+                        return null;
+                    }
+                    else if (dividerNext)
+                    {
+                        item.className = (item.className || '') + ' divider';
+                        dividerNext = false;
+                    }
+                    return item;
+                }));
         });
 
         var itemDirective = {  // inner array for rows
@@ -89,9 +106,6 @@
 
         // reset then realign the menu if necessary; set styles as appropriate
         // show it so we can measure it
-        $menuDropdown.removeClass('menuPosition-bottom menuPosition-right');
-        if (opts.attached)
-        { $menuDropdown.addClass('menuPosition-top menuPosition-left'); }
         $menuDropdown
             .css('width', null)
             .css('right', null)
@@ -123,11 +137,6 @@
             }
             else
             {
-                if (opts.attached)
-                {
-                    $menuDropdown.removeClass('menuPosition-left');
-                    $menuDropdown.addClass('menuPosition-right');
-                }
                 $menuDropdown.css('right', 0);
             }
         }
@@ -137,19 +146,13 @@
             // if the menu can be flipped up, do so; otherwise, leave it alone
             if ($menuContainer.offset().top - $menuDropdown.outerHeight(true) > 0)
             {
-                if (opts.attached)
-                {
-                    $menuDropdown.removeClass('menuPosition-top');
-                    $menuDropdown.addClass('menuPosition-bottom');
-                }
                 $menuDropdown.css('bottom', $menuContainer.innerHeight());
             }
         }
         else
         {
             // if the menu should be on the bottom, make it so for the sake of IE7
-            // subtract 4 to account for the negative margin-top on the menu button
-            $menuDropdown.css('top', $menuButton.outerHeight() - 4);
+            $menuDropdown.css('top', $menuButton.outerHeight());
         }
 
         // Rehide and animate
@@ -158,6 +161,7 @@
             .fadeIn(200);
 
         // Hook to hide menu
+        $(document).unbind('click.menu'); // just to be sure
         $(document).bind('click.menu', function(event)
         {
             // close if user clicked out || if user clicked in link || if user clicked on linke
@@ -179,7 +183,6 @@
 
     $.fn.menu.defaults = {
         additionalDataKeys: [],
-        attached: true,
         contents: [],
         menuButtonClass: 'menuButton',
         menuButtonContents: 'Menu',

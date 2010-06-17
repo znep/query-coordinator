@@ -15,18 +15,7 @@ $.ajax({url: '/views/' + widgetNS.view.id + '.json',
 
 blist.widget.resizeViewport = function()
 {
-    var $contentWrapper = $('.widgetWrapper');
-    var $contentContainer = $('.widgetContent');
-    var targetHeight = $(window).height() -
-        ($contentWrapper.outerHeight(true) - $contentWrapper.height()) -
-        widgetNS.theme['frame']['padding']['value'];
-    $contentContainer.siblings(':visible').each(function()
-    {
-        targetHeight -= $(this).outerHeight(true);
-    });
-    $contentContainer.children().height(targetHeight);
-
-    widgetNS.resizeGrid();
+    widgetNS.$resizeContainer.fullScreen().adjustSize();
 
     if ($.browser.msie && ($.browser.majorVersion == 7))
     {
@@ -34,18 +23,6 @@ blist.widget.resizeViewport = function()
         // Jiggering this class seems to help it.
         $('.mainMenu').toggleClass('open').toggleClass('open');
     }
-};
-
-blist.widget.resizeGrid = function()
-{
-    // IE6 chokes if .widgetContentGrid is not visible
-    var $dataGrid = $('#data-grid:visible');
-    if ($dataGrid.length === 0)
-    { return; }
-
-    $dataGrid
-        .height($('.widgetContentGrid').innerHeight())
-        .trigger('resize');
 };
 
 blist.widget.searchToolbarShown = false;
@@ -144,7 +121,7 @@ blist.widget.showDataView = function()
         function()
         {
             $('.widgetContentGrid').fadeIn(200);
-            widgetNS.resizeGrid();
+            widgetNS.resizeViewport();
         });
 };
 
@@ -153,11 +130,13 @@ $(function()
     // keep track of some stuff for easy access
     widgetNS.orientation = widgetNS.theme['frame']['orientation'];
     widgetNS.isBlobby = (widgetNS.view.viewType === 'blobby');
+    widgetNS.isAltView = !_.include(['Blist', 'Filter', 'Grouped'],
+        blist.dataset.getDisplayType(widgetNS.view));
     widgetNS.interstitial = widgetNS.theme['behavior']['interstitial'];
 
     // sizing
-    widgetNS.resizeViewport();
-    $(window).resize(function() { widgetNS.resizeViewport(); });
+    widgetNS.$resizeContainer = $('.widgetContent');
+    widgetNS.$resizeContainer.fullScreen();
 
     // generic events
     $.live('a[rel$=external]', 'focus', function(event)
@@ -177,7 +156,6 @@ $(function()
     if (_.any(menuOptions))
     {
         $('.mainMenu').menu({
-            attached: false,
             additionalDataKeys: [ 'targetPane', 'iconColor' ],
             menuButtonTitle: 'Access additional information about this dataset.',
             menuButtonClass: 'mainMenuButton ' + ((widgetNS.orientation == 'downwards') ? 'upArrow' : 'downArrow'),
@@ -199,7 +177,7 @@ $(function()
                     iconColor: '#f93f06', onlyIf: menuOptions['api'] },
                 { text: 'Print', className: 'print', targetPane: 'print',
                     subtext: 'Print this dataset', href: '#print',
-                    iconColor: '#a460c4', onlyIf: !widgetNS.isBlobby && menuOptions['print'] },
+                    iconColor: '#a460c4', onlyIf: !widgetNS.isAltView && menuOptions['print'] },
                 { text: 'About the Socrata Social Data Player', className: 'about',
                     href: 'http://www.socrata.com/try-it-free', rel: 'external',
                     onlyIf: menuOptions['about_sdp'] }
@@ -249,26 +227,9 @@ $(function()
         }
     });
 
-    var tweet = escape('Check out the ' + $.htmlEscape(widgetNS.view.name) + ' dataset on ' + configNS.strings.company + ': ');
-    var seoPath = window.location.hostname + $.generateViewUrl(widgetNS.view);
-    var shortPath = window.location.hostname.replace(/www\./, '') + '/d/' + widgetNS.viewId;
-    $('.subHeaderBar .share .shareMenu').menu({
-        attached: false,
-        menuButtonClass: 'icon',
-        menuButtonContents: 'Socialize',
-        menuButtonTitle: 'Share this dataset',
-        contents: [
-            { text: 'Delicious', className: 'delicious', rel: 'external',
-              href: 'http://del.icio.us/post?url=' + seoPath + '&title=' + $.htmlEscape(widgetNS.view.name) },
-            { text: 'Digg', className: 'digg', rel: 'external',
-              href: 'http://digg.com/submit?phase=2&url=' + seoPath + '&title=' + $.htmlEscape(widgetNS.view.name) },
-            { text: 'Facebook', className: 'facebook', rel: 'external',
-              href: 'http://www.facebook.com/share.php?u=' + seoPath },
-            { text: 'Twitter', className: 'twitter', rel: 'external',
-              href: 'http://www.twitter.com/home?status=' + tweet + shortPath },
-            { text: 'Email', className: 'email', href: '#email', onlyIf: !widgetNS.isBlobby }
-        ]
-    });
+    blist.dataset.controls.hookUpShareMenu(widgetNS.view,
+        $('.subHeaderBar .share .shareMenu'),
+        { menuButtonClass: 'icon' });
 
     // toolbar
     var $toolbar = $('.toolbar');
@@ -471,7 +432,10 @@ $(function()
                 if ($this.attr('title') === '')
                 { return; }
 
-                $this.socrataTip({ message: $this.attr('title'), trigger: 'hover', shrinkToFit: false });
+                // This is returning with &nbsp;, so replace them all with
+                // normal spaces
+                $this.socrataTip({ message: $this.attr('title').replace(/\s/g, ' '),
+                    shrinkToFit: false });
             });
 
             $('.widgetContent_views table.gridList').combinationList({
@@ -491,30 +455,13 @@ $(function()
     });
 
     // downloads
-    var supportedDownloadTypes = [ 'CSV', 'JSON', 'PDF', 'XLS', 'XLSX', 'XML'  ];
     $('.widgetContent_downloads').append(
         $.renderTemplate(
             'downloadsTable',
-            supportedDownloadTypes,
-            {
-                'tbody .item': {
-                    'downloadType<-': {
-                        '.type a': '#{downloadType}',
-                        '.type a@href': function(downloadType) { 
-                            return '/views/' + widgetNS.view.id + '/rows.' +
-                            downloadType.item.toLowerCase() + '?accessType=DOWNLOAD'; }
-                        // TODO: add download count when supported
-                    }
-                }
-            }));
-    $('.widgetContent_downloads table.gridList').combinationList({
-        headerContainerSelector: '.widgetContent_downloads .gridListWrapper',
-        initialSort: [[0, 0]],
-        scrollableBody: false,
-        selectable: false,
-        sortGrouping: false,
-        sortHeaders: {0: {sorter: 'text'}}
-    });
+            { downloadTypes: $.templates.downloadsTable.downloadTypes,
+              viewId: widgetNS.view.id },
+            $.templates.downloadsTable.directive));
+    $.templates.downloadsTable.postRender($('.widgetContent_downloads'));
 
     // comments
 
@@ -743,6 +690,7 @@ $(function()
                     ]})
                 .click(function(event)
                 {
+                    event.preventDefault();
                     $(this).closest('form').submit();
                 }));
 

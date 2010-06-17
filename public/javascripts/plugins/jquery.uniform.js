@@ -96,6 +96,7 @@ Enjoy!
         function doSelect(elem){
 
             var divTag = $('<div />'),
+                innerDivTag = $('<div />'),
                 spanTag = $('<span />');
 
             divTag.addClass(options.selectClass).addClass(options.globalClass);
@@ -111,11 +112,13 @@ Enjoy!
 
             elem.css('opacity', 0);
             elem.wrap(divTag);
-            elem.before(spanTag);
+            innerDivTag.append(spanTag);
+            elem.before(innerDivTag);
 
             //redefine variables
             divTag = elem.parent("div");
-            spanTag = elem.siblings("span");
+            innerDivTag = elem.siblings('div');
+            spanTag = innerDivTag.find("span");
 
             elem.change(function() {
                 spanTag.text(elem.children(":selected").text());
@@ -154,7 +157,7 @@ Enjoy!
             if (!isNaN(targetWidth))
             {
                 divTag.css('width', targetWidth - 10);
-                spanTag.width(divTag.innerWidth() - 35);
+                spanTag.width(targetWidth - 37);
             }
 
             storeElement(elem);

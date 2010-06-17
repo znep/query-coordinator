@@ -82,12 +82,12 @@ class BlistsController < ApplicationController
 
     # If we're displaying a single dataset, set the meta tags as appropriate.
     @meta[:title] = @meta['og:title'] = "#{@view.name} | #{CurrentDomain.strings.site_title}"
-    @meta[:description] = @meta['og:description'] = help.meta_description(@view)
+    @meta[:description] = @meta['og:description'] = @view.meta_description
     @meta['og:url'] = @view.href
     # TODO: when we support a dataset image, allow that here if of appropriate size
 
     # Shuffle the default tags into the keywords list
-    @meta[:keywords] = help.meta_keywords(@view)
+    @meta[:keywords] = @view.meta_keywords
 
     @data_component = params[:dataComponent]
     @popup = params[:popup]
@@ -207,12 +207,16 @@ class BlistsController < ApplicationController
         w.uid == CurrentDomain.default_widget_customization_id}
 
     if @widget_customization.nil?
-      begin
-        @widget_customization = WidgetCustomization.create({
-          'customization' => WidgetCustomization.default_theme(1), 'name' => "Default Socrata" })
-      rescue CoreServer::CoreServerError => e
-        @widget_customization = WidgetCustomization.create({
-          'customization' => WidgetCustomization.default_theme(1), 'name' => "Default Socrata New" })
+      # Try this thing until it goes.
+      epic_fail, counter = true, 1
+      while epic_fail
+        begin
+          @widget_customization = WidgetCustomization.create({
+            'customization' => WidgetCustomization.default_theme(1), 'name' => "Default Socrata #{counter}" })
+          epic_fail = false # whew.
+        rescue CoreServer::CoreServerError => e
+          counter += 1
+        end
       end
     end
     @customization = @widget_customization.customization
@@ -943,13 +947,4 @@ private
     return title
   end
 
-  def help
-    Helper.instance
-  end
-
-end
-
-class Helper
-  include Singleton
-  include ApplicationHelper
 end

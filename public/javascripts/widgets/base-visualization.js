@@ -52,7 +52,7 @@
 
                 currentObj.initializeVisualization();
 
-                $domObj.resize(function(e) { currentObj.resizeHandle(e); });
+                $domObj.resize(function(e) { doResize(currentObj, e); });
 
                 currentObj._invalid = currentObj.settings.invalid;
                 if (currentObj._invalid) { return; }
@@ -211,6 +211,17 @@
 
         loadRows(vizObj, { method: 'getByIds', start: vizObj._rowsLoaded,
             length: toLoad });
+    };
+
+    var doResize = function(vizObj, e)
+    {
+        if (vizObj._prevHeight == vizObj.$dom().height() &&
+                vizObj._prevWidth == vizObj.$dom().width())
+        { return; }
+
+        vizObj._prevHeight = vizObj.$dom().height();
+        vizObj._prevWidth = vizObj.$dom().width();
+        vizObj.resizeHandle(e);
     };
 
 })(jQuery);

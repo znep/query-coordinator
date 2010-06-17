@@ -31,9 +31,9 @@ $.debug = function(msg, obj)
                 'height:10em;overflow:auto;"></div>');
             $console = $('#debug-console');
         }
-        if (obj && $.json)
+        if (obj && JSON)
         {
-            $console.append("<p>" + msg + ": " + $.json.serialize(obj) + "</p>");
+            $console.append("<p>" + msg + ": " + JSON.stringify(obj) + "</p>");
         } else {
             $console.append("<p>" + msg + "</p>");
         }

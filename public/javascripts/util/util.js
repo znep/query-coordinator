@@ -50,6 +50,12 @@ String.prototype.trim = function()
     return this.replace(/^\s+/, '').replace(/\s+$/, '');
 };
 
+String.prototype.clean = function()
+{
+    // Sometimes strings have &nbsp;, so replace them all with normal spaces
+    return this.replace(/\xa0/g, ' ');
+};
+
 // jQuery defs
 
 (function($) {
@@ -169,6 +175,23 @@ $.compact = function(a)
     }
 };
 
+/* Do a deep compact on any object.  For any array, run a normal compact on
+ * the array; then deep compact all sub-values.  For an object, leave out blank
+ * values; and deep compact all the non-blank ones */
+$.deepCompact = function(obj)
+{
+    if (_.isArray(obj))
+    { return _.map(_.compact(obj), function(o) { return $.deepCompact(o); }); }
+
+    if (!$.isPlainObject(obj)) { return obj; }
+
+    var newObj = {};
+    _.each(obj, function(v, k)
+    {
+        if (!$.isBlank(v)) { newObj[k] = $.deepCompact(v); }
+    });
+    return newObj;
+};
 
 /* Do a deep compare on two objects (if they are objects), or just compare
    directly if they are normal values.  For this case, null == undefined, but
@@ -235,5 +258,38 @@ $.renderTemplate = function(template, data, directive)
 
 $.isBlank = function(obj)
 { return _.isUndefined(obj) || _.isNull(obj) || obj === ''; };
+
+$.arrayify = function(obj)
+{ return !_.isArray(obj) ? [obj] : obj; };
+
+$.objectify = function(obj, key)
+{
+    if (!$.isPlainObject(obj))
+    {
+        var newObj = {};
+        newObj[key] = obj;
+        return newObj;
+    }
+    return obj;
+};
+
+$.safeId = function(id)
+{ return id.replace(/(\.|\:)/g, '\\$1'); };
+
+$.arrayToSentence = function(arr, joinWord, separator, alwaysUseSep)
+{
+    return arr.length < 3 ? arr.join((alwaysUseSep ? separator : '') +
+            ' ' + joinWord + ' ') :
+        arr.slice(0, -1).join(separator + ' ') + separator + ' ' + joinWord +
+            ' ' + arr[arr.length - 1];
+};
+
+$.wordify = function(num)
+{
+    var numWords = {'0' : 'zero', '1': 'one', '2': 'two', '3': 'three',
+        '4': 'four', '5': 'five', '6': 'six', '7': 'seven', '8': 'eight',
+        '9': 'nine'};
+    return numWords[num.toString()] || num;
+};
 
 })(jQuery);

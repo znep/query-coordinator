@@ -6,7 +6,7 @@ nominationsNS.changeStatus = function(url, newStatus)
     $.ajax({
         type: "PUT",
         url: url, 
-        data: $.json.serialize({status: newStatus}),
+        data: JSON.stringify({status: newStatus}),
         contentType: "application/json",
         success: function(response, status) {
             nominationsNS.loadData(nominationsNS.servicePath);
@@ -62,11 +62,11 @@ nominationsNS.configureEditing = function()
         requestDataCallback: function($form, fieldValue) {
             if ($form.hasClass("title"))
             {
-                return $.json.serialize({title: fieldValue});
+                return JSON.stringify({title: fieldValue});
             }
             else if ($form.hasClass("description"))
             {
-                return $.json.serialize({description: fieldValue});
+                return JSON.stringify({description: fieldValue});
             }
         }
     });

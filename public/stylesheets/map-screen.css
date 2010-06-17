@@ -51,3 +51,16 @@
 }
 
 .mapInfoContainer.html { font-size: 1em; }
+
+div.gmnoprint div { overflow: hidden !important; }
+.mapInfoContainer table, #dataGrid_infowindow table
+{
+    margin-bottom: 10px;
+}
+.mapInfoContainer table th + th, .mapInfoContainer table td + td,
+#dataGrid_infowindow table th + th, #dataGrid_infowindow table td + td
+{
+    padding-left: 10px;
+}
+.firstChild .VE_Pushpin_Popup_Title { font-size: 1.3em; }
+.firstChild .VE_Pushpin_Popup_Body { font-size: 1em; }

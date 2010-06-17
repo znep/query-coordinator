@@ -76,7 +76,8 @@ html, body
       @include box-shadow-none
 
     .menuDropdown
-      margin: 0.4em 0
+      @include border-radius(0.4em)
+      margin: 0
       min-width: 23em
       z-index: 2998 /* 1 lower than jqm */
 
@@ -166,13 +167,9 @@ html, body
       color: #eee
       &:hover
         text-decoration: none
-      .ie6 &
-        display: block
 
     .ie &.datasetName
       margin: 0.2em
-    .ie7 & .icon
-      display: block
     .ie6 &
       height: 13px
       width: 13px
@@ -242,11 +239,6 @@ html, body
     top: 0.3em
     &:hover
       text-decoration: none
-
-    // I don't even know anymore.
-    .ie6 & .icon,
-    .ie7 & .icon
-      display: block
 
 .widgetContent
   clear: both
@@ -368,10 +360,6 @@ html, body
 
             .rateUp, .rateDown
               @include sprite-menu-icons
-
-              .ie6 & .icon,
-              .ie7 & .icon
-                display: block
 
             .timestamp, .actionReply, .actionInappropriate
               float: left
@@ -568,17 +556,8 @@ html, body
 
 // START: GRID
 
-.blist-table
-  height: 100%
-
-  a
-    @include underline-on-hover
-
 .blist-table-scrolls
   background-color: #fff
-
-.blist-table-header-scrolls
-  background-color: #e8e8e2
 
 div.blist-th
   .info-container
@@ -629,14 +608,8 @@ img.blist-table-option-icon
 .blist-tstars
   margin: -4px 0
 
-.blist-table-row-numbers.blist-tf
-  background-color: #fcedc1
-  .blist-tf-value:after
-    content: ':'
-.blist-table-row-handle.blist-tf
-  background-color: #fcedc1
-.blist-table-footer .blist-tf
-  background-color: #fef8dc
+.blist-table-row-numbers.blist-tf .blist-tf-value:after
+  content: ':'
 
 @if $grid_wrap_header_text == true
   .blist-th .info-container

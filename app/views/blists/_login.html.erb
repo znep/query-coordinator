@@ -11,4 +11,9 @@
 
     <%= render(:partial => 'user_sessions/login') %>
   </div>
+
+  <script type="text/javascript">
+    blist.secureUrl = "https://<%= request.host %>:<%= SslRequirement.port_for_protocol('https') %>";
+  </script>
+
 <% end %>

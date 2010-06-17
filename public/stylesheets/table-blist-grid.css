@@ -8,6 +8,7 @@
     background: #e8e8e8 url(/stylesheets/images/content/table/header_right_top.png) no-repeat right top;
 }
 
+.blist-table-locked-header .blist-th { background-color: #e8e8e8; }
 .blist-table-locked-header .blist-table-row-numbers
 {
     background-image: url(/stylesheets/images/content/table/header_left_top.png);
@@ -54,3 +55,5 @@
 {
     text-decoration: underline;
 }
+
+.blist-table-footer, .blist-table-locked-footer .blist-tf { background-color: #ececec; }

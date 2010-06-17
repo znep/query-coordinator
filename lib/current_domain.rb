@@ -106,16 +106,20 @@ class CurrentDomain
     return @@current_domain[:site_properties_raw]
   end
 
-  def self.templates
-    return self.properties.templates || Hashie::Mash.new
+  def self.templates(version = 0)
+    if version == 0
+      return self.properties.templates || Hashie::Mash.new
+    else
+      return self.properties['templates_v' + version] || Hashie::Mash.new
+    end
   end
 
-  def self.theme
-    return self.properties.theme || Hashie::Mash.new
-  end
-
-  def self.theme_v2
-    return self.properties.theme_v2 || Hashie::Mash.new
+  def self.theme(version = 0)
+    if version == 0
+      return self.properties.theme || Hashie::Mash.new
+    else
+      return self.properties['theme_v' + version] || Hashie::Mash.new
+    end
   end
 
   def self.strings

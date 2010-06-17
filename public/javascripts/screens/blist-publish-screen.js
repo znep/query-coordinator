@@ -354,7 +354,7 @@ blist.publish.applyCustomizationToPreview = function(hash)
 
         publishNS.clearStyles();
         recurse(publishNS.customizationApplication, hash);
-        widgetNS.resizeViewport(); // TODO: This is going to merge poorly?
+        widgetNS.$resizeContainer.fullScreen().adjustSize();
 
         // ENABLE HACK: background-image won't take
         if (!$.support.linearGradient)
@@ -503,7 +503,7 @@ blist.publish.saveCustomization = function(hash)
         type: "PUT",
         cache: false,
         contentType: "application/json",
-        data: $.json.serialize({ 'customization': $.json.serialize(hash) }),
+        data: JSON.stringify({ 'customization': JSON.stringify(hash) }),
         dataType: "json",
         error: function(request, status, error)
         {
@@ -695,7 +695,7 @@ blist.publish.loadCustomization = function()
             publishNS.hideUnsavedChangesBar();
 
             // set customization anyway in case populate isn't called
-            var customization = $.json.deserialize(responseData['customization']);
+            var customization = JSON.parse(responseData['customization']);
             publishNS.currentTheme = customization;
 
             if (publishNS.checkVersion(customization))

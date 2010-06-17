@@ -1,8 +1,7 @@
 <% content_for :head do %>
   <%= auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss") %>
-  <%= rendered_stylesheet_tag 'grid' %>
-  <%= stylesheet_link_merged 'blists-show' %>
   <%= raw @display.render_stylesheet_includes %>
+  <%= stylesheet_link_merged 'blists-show' %>
 
   <title><%= h(@view.name) %> | <%= CurrentDomain.strings.site_title %></title>
   <link rel="canonical" href="<%= @view.href %>" />
@@ -431,7 +430,7 @@
 </div>
 
 <% content_for :templates do %>
-<%= render(:partial => 'grid_sidebar_templates') %>
+<%= render(:partial => 'datasets/grid_sidebar_templates') %>
 <% end %>
 
 <% content_for :js_footer do %>
@@ -450,7 +449,6 @@
     blist.currentUserId = "<%= current_user.id %>";
     <%- end -%>
     blist.parentViewId = "<%= @view.parent_dataset.id %>";
-    blist.blistGrid.secureUrl = "https://<%= request.host %>:<%= SslRequirement.port_for_protocol('https') %>";
     blist.blistGrid.blistId = "<%= @view.tableId %>";
     blist.blistGrid.viewId = "<%= @view.id %>";
     blist.blistGrid.viewName = "<%= @view.name %>";
@@ -461,9 +459,10 @@
     <%- end -%>
     blist.blistGrid.isAltView = <%= @view.is_alt_view? ? 'true' : 'false' %>;
   </script>
+
   <%- if !@view.is_blobby? -%>
-  <%= render(:partial => 'shared/table_editor_js') %>
+  <%= raw @display.render_edit_javascript_includes(self) %>
   <%- end -%>
-  <%= javascript_include_merged 'blists-show' %>
   <%= raw @display.render_javascript_includes(self) %>
+  <%= javascript_include_merged 'blists-show' %>
 <% end %>

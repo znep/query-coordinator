@@ -103,7 +103,7 @@
                 $.ajax({
                     url: $form.attr('action'),
                     type: 'PUT',
-                    data: $.json.serialize({
+                    data: JSON.stringify({
                         metadata: {
                             attachments: attachments
                         }

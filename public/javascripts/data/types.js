@@ -578,7 +578,7 @@ blist.namespace.fetch('blist.data.types');
         var pieces = [];
         if (!$.isBlank(value.human_address))
         {
-            var a = $.json.deserialize(value.human_address);
+            var a = JSON.parse(value.human_address);
             if (!$.isBlank(a.address) && a.address !== '')
             { pieces.push(a.address); }
             pieces.push(_.compact([_.compact([a.city, a.state]).join(', '),
@@ -767,6 +767,7 @@ blist.namespace.fetch('blist.data.types');
         invalid: { renderGen: renderGenEscapedText },
 
         text: {
+            title: 'Plain Text',
             renderGen: renderGenEscapedText,
             sortGen: sortGenText,
             filterRender: renderFilterEscapedText,
@@ -778,6 +779,7 @@ blist.namespace.fetch('blist.data.types');
         },
 
         html: {
+            title: 'Formatted Text',
             renderGen: renderGenHtml,
             filterRender: renderFilterText,
             sortGen: sortGenText,
@@ -788,6 +790,7 @@ blist.namespace.fetch('blist.data.types');
         },
 
         number: {
+            title: 'Number',
             renderGen: renderGenNumber,
             sortGen: sortGenNumeric,
             filterRender: renderFilterNumber,
@@ -799,6 +802,7 @@ blist.namespace.fetch('blist.data.types');
         },
 
         date: {
+            title: 'Date & Time (with timezone)',
             cls: 'date',
             renderGen: renderGenDate,
             sortGen: sortGenNumeric,
@@ -812,6 +816,7 @@ blist.namespace.fetch('blist.data.types');
         },
 
         calendar_date: {
+            title: 'Date & Time',
             cls: 'date',
             renderGen: renderGenDate,
             sortGen: sortGenNumeric,
@@ -826,18 +831,21 @@ blist.namespace.fetch('blist.data.types');
         },
 
         photo_obsolete: {
+            title: 'Photo (Image, old)',
             renderGen: renderGenPhoto,
             cls: 'photo',
             deleteable: true
         },
 
         photo: {
+            title: 'Photo (Image)',
             renderGen: renderGenPhoto,
             cls: 'photo',
             deleteable: true
         },
 
         money: {
+            title: 'Money',
             renderGen: renderGenMoney,
             sortGen: sortGenNumeric,
             filterRender: renderFilterMoney,
@@ -879,6 +887,7 @@ blist.namespace.fetch('blist.data.types');
         },
 
         phone: {
+            title: 'Phone',
             cls: 'phone',
             renderGen: renderGenPhone,
             sortGen: sortGenText,
@@ -891,6 +900,7 @@ blist.namespace.fetch('blist.data.types');
         },
 
         checkbox: {
+            title: 'Checkbox',
             renderGen: renderGenCheckbox,
             sortGen: sortGenNumeric,
             filterRender: renderFilterCheckbox,
@@ -902,6 +912,7 @@ blist.namespace.fetch('blist.data.types');
         },
 
         flag: {
+            title: 'Flag',
             renderGen: renderGenFlag,
             sortGen: sortGenText,
             filterRender: renderFilterFlag,
@@ -911,6 +922,7 @@ blist.namespace.fetch('blist.data.types');
         },
 
         stars: {
+            title: 'Star',
             cls: 'stars',
             renderGen: renderGenStars,
             sortGen: sortGenNumeric,
@@ -923,6 +935,7 @@ blist.namespace.fetch('blist.data.types');
         },
 
         percent: {
+            title: 'Percent',
             cls: 'percent',
             renderGen: renderGenPercent,
             sortGen: sortGenNumeric,
@@ -934,6 +947,7 @@ blist.namespace.fetch('blist.data.types');
         },
 
         url: {
+            title: 'Website URL',
             renderGen: renderGenURL,
             sortPreprocessor: sortHtmlPrepro,
             filterRender: renderFilterURL,
@@ -945,18 +959,21 @@ blist.namespace.fetch('blist.data.types');
         },
 
         document: {
+            title: 'Document',
             renderGen: renderGenDocument,
             deleteable: true,
             isObject: true
         },
 
         document_obsolete: {
+            title: 'Document (old)',
             renderGen: renderGenDocument,
             deleteable: true,
             isObject: true
         },
 
         location: {
+            title: 'Location',
             renderGen: renderGenLocation,
             deleteable: true,
             isObject: true,
@@ -966,6 +983,7 @@ blist.namespace.fetch('blist.data.types');
         },
 
         tag: {
+            title: 'Row Tag',
             renderGen: renderGenTags,
             filterRender: renderFilterText,
             filterText: true,
@@ -973,6 +991,7 @@ blist.namespace.fetch('blist.data.types');
         },
 
         email: {
+            title: 'Email',
             renderGen: renderGenEmail,
             sortGen: sortGenText,
             filterRender: renderFilterText,
@@ -983,11 +1002,13 @@ blist.namespace.fetch('blist.data.types');
         },
 
         nested_table: {
+            title: 'Nested Table',
             renderGen: renderGenText,
             deleteable: true
         },
 
         picklist: {
+            title: 'Multiple Choice',
             renderGen: renderGenPicklist,
             sortPreprocessor: sortPicklistPrepro,
             filterRender: renderFilterPicklist,
@@ -996,6 +1017,7 @@ blist.namespace.fetch('blist.data.types');
             deleteable: true
         },
         drop_down_list: {
+            title: 'Multiple Choice',
             renderGen: renderGenPicklist,
             sortPreprocessor: sortPicklistPrepro,
             filterRender: renderFilterPicklist,

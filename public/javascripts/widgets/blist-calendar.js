@@ -42,7 +42,8 @@
                 var fmt = currentObj.settings.displayFormat;
                 $domObj.fullCalendar({aspectRatio: 2,
                         editable: currentObj.settings.editable,
-                        disableResizing: fmt.endDateId === undefined,
+                        disableResizing: _.isUndefined(fmt.endDateId) &&
+                            _.isUndefined(fmt.endDateTableId),
                         eventRender: function(ce, e, v)
                             { eventRender(currentObj, ce, e, v); },
                         eventDragStart: function(ce, e, ui, v)
@@ -103,10 +104,17 @@
                 c.dataIndex = i;
                 if (c.dataTypeName == 'meta_data' && c.name == 'sid')
                 { currentObj._idIndex = i; }
-                else if (c.id == fmt.startDateId) { currentObj._startCol = c; }
-                else if (c.id == fmt.endDateId) { currentObj._endCol = c; }
-                else if (c.id == fmt.titleId) { currentObj._titleIndex = i; }
-                if (c.id == fmt.descriptionId)
+                else if (c.id == fmt.startDateId ||
+                    c.tableColumnId == fmt.startDateTableId)
+                { currentObj._startCol = c; }
+                else if (c.id == fmt.endDateId ||
+                    c.tableColumnId == fmt.endDateTableId)
+                { currentObj._endCol = c; }
+                else if (c.id == fmt.titleId ||
+                    c.tableColumnId == fmt.titleTableId)
+                { currentObj._titleIndex = i; }
+                if (c.id == fmt.descriptionId ||
+                    c.tableColumnId == fmt.descriptionTableId)
                 { currentObj._descriptionIndex = i; }
             });
             currentObj._rowsLeft = resp.meta.totalRows - currentObj._rowsLoaded;
@@ -161,8 +169,7 @@
     {
         if (calEvent.description)
         {
-            $(element).socrataTip({message: calEvent.description,
-                    trigger: 'hover'});
+            $(element).socrataTip(calEvent.description);
         }
     };
 
@@ -199,16 +206,16 @@
             if (!$.isBlank(colType(currentObj._startCol).stringFormat))
             { d = calEvent.start.toString(
                 colType(currentObj._startCol).stringFormat); }
-            data[fmt.startDateId] = d;
+            data[currentObj._startCol.id] = d;
         }
 
-        if (fmt.endDateId !== undefined && calEvent.end !== null)
+        if (currentObj._endCol !== undefined && calEvent.end !== null)
         {
             var d = calEvent.end.valueOf() / 1000;
             if (!$.isBlank(colType(currentObj._endCol).stringFormat))
             { d = calEvent.end.toString(
                 colType(currentObj._endCol).stringFormat); }
-            data[fmt.endDateId] = d;
+            data[currentObj._endCol] = d;
         }
 
         var url = '/views/' + currentObj.settings.viewId + '/rows/' +
@@ -216,7 +223,7 @@
         $.ajax({ url: url,
                 type: 'PUT',
                 contentType: 'application/json', dataType: 'json',
-                data: $.json.serialize(data),
+                data: JSON.stringify(data),
                 error: function() { revertFunc(); }
         });
     };

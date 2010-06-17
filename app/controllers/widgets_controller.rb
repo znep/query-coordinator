@@ -52,8 +52,8 @@ class WidgetsController < ApplicationController
       return (render 'shared/error', :status => :unauthorized)
     end
 
-    @meta_description = Helper.instance.meta_description(@view)
-    @meta_keywords = Helper.instance.meta_keywords(@view)
+    @meta_description = @view.meta_description
+    @meta_keywords = @view.meta_keywords
 
     # Wire in custom behaviors for whitehouse
     @theme[:style][:custom_stylesheet] = @variation
@@ -122,9 +122,4 @@ private
       render :partial => "blists/meta_tab_#{name}", :locals => locals
     end
   end
-end
-
-class Helper
-  include Singleton
-  include ApplicationHelper
 end

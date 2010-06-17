@@ -59,7 +59,7 @@
             else
             {
               // set customization anyway in case populate isn't called
-              var customization = $.json.deserialize(responseData['customization']);
+              var customization = JSON.parse(responseData['customization']);
               publishNS.currentTheme = customization;
 
               if (publishNS.checkVersion(customization))

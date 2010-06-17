@@ -206,7 +206,7 @@ blist.myBlists.filterGen = function(type, argument, callback)
             return callback(myBlistsNS.ownedByFilterGen(argument));
         case 'owner_group':
             var filterGenCallback = function(data) {
-                var group = $.json.deserialize(data);
+                var group = JSON.parse(data);
                 callback(myBlistsNS.ownedByGroupFilterGen(group));
             };
             return $.get("/groups/" + argument + ".json", null, filterGenCallback);
@@ -225,7 +225,7 @@ blist.myBlists.filterGen = function(type, argument, callback)
             return callback(myBlistsNS.sharedByFilterGen(argument));
         case 'shared_by_group':
             var filterGenCallbackGroup = function(data) {
-                var group = $.json.deserialize(data);
+                var group = JSON.parse(data);
                 callback(myBlistsNS.sharedByGroupFilterGen(group));
             };
             return $.get("/groups/" + argument + ".json", null, filterGenCallbackGroup);
@@ -608,7 +608,7 @@ blist.myBlists.sidebar.filterClickHandler = function(target, $triggerButton)
     var title = target.attr('title');
     if (target.attr('q') != "" && target.attr('q') != "{}")
     {
-        var query = $.json.deserialize(target.attr('q').replace(/'/g, '"'));
+        var query = JSON.parse(target.attr('q').replace(/'/g, '"'));
         for (var type in query)
         {
             // http://yuiblog.com/blog/2006/09/26/for-in-intrigue/

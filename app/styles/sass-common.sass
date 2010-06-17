@@ -2,6 +2,13 @@
 
 $box_gradient_alias_fix: 'rx=1&ry=1&rw=1'
 
+$sidebar_filter_tab_color_top: #57b6dd
+$sidebar_visualize_tab_color_top: #03723f
+$sidebar_export_tab_color_top: #0b5e9b
+$sidebar_feed_tab_color_top: #ff7400
+$sidebar_embed_tab_color_top: #e44044
+$sidebar_about_tab_color_top: #a03341
+
 // Compat functions
 
 @mixin border-radius($a, $b: true, $c: true, $d: true)
@@ -53,6 +60,22 @@ $box_gradient_alias_fix: 'rx=1&ry=1&rw=1'
     -moz-transition-property: $p
     -webkit-transition-property: $p
 
+@mixin vertical-gradient($s, $e)
+  background-color: $s
+  background: -moz-linear-gradient(0 0 270deg, $s, $e)
+  background: -webkit-gradient(linear, left top, left bottom, from($s), to($e))
+
+// Convenience methods
+
+@mixin center($width, $height: $width)
+  height: $height
+  left: 50%
+  margin-left: $width / 2 * -1
+  margin-top: $height / 2 * -1
+  position: absolute
+  top: 50%
+  width: $width
+
 // Common styles
 
 @mixin text-hiding
@@ -60,11 +83,12 @@ $box_gradient_alias_fix: 'rx=1&ry=1&rw=1'
     color: transparent
     position: 0 0
     repeat: no-repeat
-  display: inline-block
+  display: block
   text-align: left
   text-indent: -9999px
 
 @mixin clip-text
+  overflow: hidden
   text-overflow: ellipsis
   white-space: nowrap
 
@@ -74,7 +98,20 @@ $box_gradient_alias_fix: 'rx=1&ry=1&rw=1'
 @mixin rounded-ends
   @include border-radius(9999px)
 
-@mixin underline-on-hover  
+@mixin underline-on-hover
   text-decoration: none
   &:hover
     text-decoration: underline
+
+@mixin toolbar-button
+  @include gradient-toolbar-buttons-background
+  border: 1px solid $color_toolbar_buttons_border
+  @include border-radius(0.2em)
+  font-size: 1em
+  height: 14px
+  line-height: 14px
+  padding: 0.3em 0.7em
+  &:hover
+    @include box-shadow(0, 0, 0.3em, $color_toolbar_buttons_shadow)
+  .noLinearGradient &:hover
+    @include box-gradient-toolbar-buttons-background(3, 15, $box_gradient_alias_fix)

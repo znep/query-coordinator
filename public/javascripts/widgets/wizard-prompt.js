@@ -43,14 +43,13 @@
                 var $msg = $('<div class="wizardPrompt">' +
                     '<span class="prompt">' + wizObj.settings.prompt + '</span>' +
                     '</div>');
-                if (!_.isNull(wizObj.settings.buttons))
+                if (!_.isEmpty(wizObj.settings.buttons))
                 {
                     $msg.append('<ul class="actionButtons clearfix"></ul>');
                     var $list = $msg.find('ul.actionButtons');
                     _.each(wizObj.settings.buttons, function(b)
                     {
-                        var $link = $('<a href="#' + $.urlSafe(b.text) + '">' +
-                            $.htmlEscape(b.text) + '</a>');
+                        var $link = $.button($.htmlEscape(b.text));
                         $link.data('wizardValue', b.value);
                         $list.append($('<li></li>').append($link));
                     });
@@ -66,8 +65,9 @@
                     _.defer(function() { wizObj.close(); });
                 });
 
-                $domObj.socrataTip({message: $msg, closeOnClick: false,
-                    killTitle: false, positions: wizObj.settings.positions});
+                $domObj.socrataTip({content: $msg, closeOnClick: false,
+                    overlap: -10, trigger: 'now', killTitle: false,
+                    positions: wizObj.settings.positions});
 
                 var events = wizObj.settings.closeEvents;
                 if (_.isNull(events))

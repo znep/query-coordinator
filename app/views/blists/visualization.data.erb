@@ -92,7 +92,7 @@
             <option class='prompt' value=''>Select a Column</option>
             <%- cols[fcol['dataType']].each do |c| -%>
             <option format='<%= c.format.to_json %>'
-              dataType='<%= c.dataTypeName %>'
+              dataType='<%= c.renderTypeName %>'
               tableColumnId='<%= c.tableColumnId %>'
               value='<%= c.id %>' <%= c.id == cur_id ?
                 "selected='selected'" : '' %>><%= c.name %></option>
@@ -182,7 +182,7 @@
                 <option class='prompt' value=''>Select a Column</option>
                 <%- cols[dcol['dataType']].each do |c| -%>
                 <option format='<%= c.format.to_json %>'
-                  dataType='<%= c.dataTypeName %>'
+                  dataType='<%= c.renderTypeName %>'
                   tableColumnId='<%= c.tableColumnId %>'
                   value='<%= c.id %>' <%= c.id == cur_id ?
                     "selected='selected'" : '' %>><%= c.name %></option>
@@ -353,7 +353,7 @@
         var $color = $this.find('a.colorOption');
         if ($color.length > 0 && $color.attr('colorDefaults') !== undefined)
         {
-          var colors = $.json.deserialize($color.attr('colorDefaults'));
+          var colors = JSON.parse($color.attr('colorDefaults'));
           var newColor = colors[newIndex % colors.length];
           $color.css('background-color', newColor);
           $this.find('input[type=hidden]').val(newColor);
@@ -432,7 +432,7 @@
               if (id !== '')
               {
                   var $c = $t.find(':selected');
-                  var format = $.json.deserialize(
+                  var format = JSON.parse(
                     $.htmlUnescape($c.attr('format')));
                   if (_.include(<%= raw Displays::Config::NUMERIC_TYPES.to_json %>,
                       $c.attr('dataType')))
@@ -454,7 +454,7 @@
                   if (id !== '')
                   {
                       var $c = $t.find(':selected');
-                      var format = $.json.deserialize(
+                      var format = JSON.parse(
                           $.htmlUnescape($c.attr('format')));
                       if (_.include(
                             <%= raw Displays::Config::NUMERIC_TYPES.to_json %>,
@@ -505,8 +505,8 @@
       });
 
       var origOptions = data.options;
-      data.options = $.json.serialize(data.options);
-      data.columns = $.json.serialize(data.columns);
+      data.options = JSON.stringify(data.options);
+      data.columns = JSON.stringify(data.columns);
 
       var loginMsg = 'You must be signed in to create a chart';
       if (!$.isBlank(blist.util.inlineLogin))

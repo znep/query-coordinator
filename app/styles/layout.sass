@@ -1,0 +1,151 @@
+html, body
+  background-color: $color_chrome_background
+  height: 100%
+  padding: 0
+
+.siteOuterWrapper
+  min-height: 50em
+  min-width: 90em
+
+.siteInnerWrapper
+  min-height: 100%
+
+#skipLinks
+  position: absolute
+  top: -500px
+
+  a
+    color: #fff
+    font-size: 1.5em
+    font-weight: bold
+    padding: 0.6em
+    position: absolute
+    width: 30em
+    &:focus, &:active
+      top: 500px
+      z-index: 10000
+
+#siteHeader
+
+  .appLogo
+    float: left
+    margin: 0
+    padding: 0.3em 0.6em
+
+    a
+      @include text-hiding
+      background-image: $images_logo_header
+      height: $images_logo_header_height
+      width: $images_logo_header_width
+
+  .siteUserNav
+    float: right
+    margin: 1.3em
+
+    li
+      display: block
+      float: left
+      margin-left: 1.5em
+
+      a
+        @include underline-on-hover
+        color: #000
+        font-size: 1.1em
+
+      &.signUpLink a
+        font-weight: bold
+
+    // logged out state
+    li.signOutLink
+      display: none
+    // logged in state
+    &.loggedInNav
+      li.signOutLink
+        display: block
+      li.signUpLink,
+      li.signInLink
+        display: none
+
+  .siteMainNav
+    float: left
+    margin:
+      bottom: 1em
+      left: 1.4em
+
+    li
+      display: block
+      float: left
+      margin-right: 0.4em
+
+      a
+        @include gradient_chrome_nav_buttons_background
+        border: 1px solid $color_chrome_nav_buttons_border
+        @include border-radius(0.2em)
+        color: #fff
+        display: block
+        font-size: 1.3em
+        padding: 0.5em 1em
+
+        .noLinearGradient &
+          background: transparent repeat-x
+          @include box_gradient_chrome_nav_buttons_background(3,33,$box_gradient_alias_fix)
+
+  form.search
+    float: right
+    margin-right: 1em
+
+    label
+      display: none
+
+    .searchField
+      @include border-radius(0.1733em)
+      background: #fff url(/stylesheets/images/icons/search_large.png) no-repeat 8px 6px
+      font-size: 1.5em
+      margin: 0
+        right: 0.2em
+      padding: 0.25em
+        left: 2em
+      width: 15em
+      &.prompt
+        color: #ccc
+
+    .submit
+      @include toolbar-button
+      color: #444
+      height: auto
+      margin: 0
+      font-size: 1.3em
+      text-transform: uppercase
+
+      // The IEs don't position or size this quite right
+      // because they have special rules about input buttons.
+      .ie7 &
+        padding-bottom: 0.2em
+      .ie8 &
+        bottom: 2px
+        padding: 0.4em 0.6em 0.45em
+        position: relative
+
+#siteFooter
+
+  .footerLogo
+    @include text-hiding
+    background-image: $images_logo_footer
+    float: left
+    height: $images_logo_footer_height
+    margin: 1em
+    width: $images_logo_footer_width
+
+  .siteFooterNav
+    float: right
+    margin: 1.5em
+
+    li
+      display: block
+      float: left
+      margin-left: 2.5em
+
+      a
+        @include underline-on-hover
+        color: #444
+        font-size: 1.1em

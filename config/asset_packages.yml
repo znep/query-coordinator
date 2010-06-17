@@ -1,38 +1,54 @@
---- 
+---
 config:
   javascripts:
     cache_dir: cache
   stylesheets:
     cache_dir: cache
-javascripts: 
+javascripts:
 - base:
-  - plugins/jquery.sizes.min
-  - util/namespace
+  - plugins/jqModal
+  - plugins/jquery.bt
   - plugins/jquery.cookies.2.1.0.min
+  - plugins/jquery.example.min
+  - plugins/json2
+  - plugins/jquery.sizes.min
+  - plugins/jquery.tache
+  - plugins/jquery.validate
+  - plugins/pure
+  - plugins/ui.core
   - util/underscore-min
-  - util/google-analytics
-  - plugins/jquery.socrata
-- shared-common-all:
+  - util/namespace
+  - util/util
   - util/compat
+  - util/markup
+  - util/alert-override
+  - util/google-analytics
+  - util/dataset
+  - util/templates
+  - widgets/socrata-messaging
+  - widgets/text-prompt
+  - widgets/values
+  - widgets/dropdown-menu
+- shared-common-all:
   - util/events
   - util/sizing
-  - util/util
-  - util/markup
-  - plugins/jquery.tache
-  - plugins/jquery.json
-  - plugins/jquery.example.min
-  - plugins/jqModal
-  - plugins/jquery.validate.min
-  - widgets/text-prompt
-  - util/alert-override
   - widgets/clipped-text
   - screens/common-layout
-  - plugins/jquery.bt
-  - widgets/socrata-messaging
   - util/socrata-server
+  - widgets/scrollable
 - shared-calendar:
   - plugins/fullcalendar
   - widgets/blist-calendar
+- shared-table-render:
+  - plugins/ui.draggable
+  - plugins/date
+  - util/humane-number
+  - data/types
+  - data/model
+  - data/table
+  - data/table_nav
+  - widgets/scrollable
+  - widgets/dataset-grid
 - shared-table-editor:
   - data/editors/editor-base
   - data/editors/text-editor
@@ -47,7 +63,6 @@ javascripts:
   - data/editors/phone-editor
   - data/editors/location-editor
   - widgets/combo
-  - widgets/values
   - data/editors/flag-editor
   - data/editors/picklist-editor
   - data/editors/checkbox-editor
@@ -72,12 +87,10 @@ javascripts:
   - data/types
   - widgets/charts/highcharts
 - accounts-show:
-  - plugins/ui.core
   - plugins/ui.showedit
   - screens/account-screen
 - approval-show:
   - util/urls
-  - widgets/dropdown-menu
   - screens/approval-screen
 - admin-sdp-index:
   - screens/admin-sdp-index-screen
@@ -89,11 +102,9 @@ javascripts:
   - screens/blist-about-screen
   - screens/attribution-edit
   - screens/metadata-edit
-  - widgets/dropdown-menu
 - blists-index:
   - plugins/jquery.tablesorter
   - plugins/jquery.jqote.min
-  - plugins/ui.core
   - plugins/ui.draggable
   - plugins/ajaxupload.3.0
   - util/humane-date
@@ -104,7 +115,6 @@ javascripts:
   - data/table
   - widgets/combination-list
   - widgets/panel-expander
-  - widgets/dropdown-menu
   - widgets/selectable-list
   - widgets/sidebar-filter
   - widgets/pagination
@@ -118,41 +128,28 @@ javascripts:
   - screens/attribution-edit
   - screens/metadata-edit
   - widgets/combo
-  - widgets/values
 - blists-new:
   - plugins/ajaxupload.3.0
   - screens/blist-new-screen
 - blists-publish:
   - screens/info-pane
   - plugins/colorpicker
-  - plugins/ui.core
   - plugins/ui.draggable
   - plugins/ajaxupload.3.0
   - util/color
   - widgets/reorderable-list
   - screens/blist-publish-screen
 - blists-show:
-  - plugins/pure
   - plugins/jquery.tablesorter
-  - plugins/ui.core
-  - plugins/ui.draggable
-  - plugins/ui.resizable
   - plugins/ui.slider
   - plugins/ui.spinner
   - plugins/ajaxupload.3.0
   - util/extMouseWheel
   - util/navigation
   - util/inline-login
-  - util/humane-number
-  - plugins/date
   - plugins/jquery.colorPicker
-  - data/types
-  - data/model
-  - data/table
-  - data/table_nav
   - widgets/combination-list
   - widgets/inline-edit
-  - widgets/dropdown-menu
   - widgets/selectable-list
   - widgets/pagination
   - widgets/reorderable-list
@@ -162,8 +159,6 @@ javascripts:
   - widgets/info-pane-filtered
   - widgets/info-pane-sharing
   - widgets/info-pane-publish
-  - widgets/scrollable
-  - widgets/dataset-grid
   - screens/filter-screen
   - widgets/visualization
   - screens/info-pane
@@ -173,9 +168,9 @@ javascripts:
   - screens/blist-grid-screen
   - screens/signup-screen
   - widgets/combo
-  - widgets/values
   - screens/dataset-menu
-  - widgets/grid-sidebar
+  - controls/grid-sidebar/base-sidebar
+  - controls/grid-sidebar/location-create
   - widgets/wizard-prompt
 - communities-show:
   - plugins/jquery.jcarousel
@@ -201,9 +196,7 @@ javascripts:
   - widgets/inline-edit
   - screens/discover-screen
   - util/urls
-  - widgets/dropdown-menu
   - screens/nominations-screen
-  - widgets/text-prompt
   - plugins/date
   - plugins/ajaxupload.3.0
 - homes-show:
@@ -213,11 +206,9 @@ javascripts:
   - plugins/ajaxupload.3.0
   - widgets/selectable-list
   - widgets/combination-list
-  - plugins/ui.core
   - plugins/ui.showedit
   - screens/profile-screen
 - rpx-return:
-  - plugins/ui.core
   - screens/signup-screen
 - stats-index:
   - plugins/date
@@ -228,78 +219,61 @@ javascripts:
 - tweetsets:
   - screens/tweetsets-screen
 - widgets-show:
-  - plugins/jqModal
-  - plugins/jquery.example.min
-  - plugins/jquery.json
-  - plugins/ui.core
-  - plugins/ui.draggable
-  - plugins/jquery.tache
-  - plugins/jquery.validate.min
-  - plugins/jquery.bt
-  - widgets/socrata-messaging
   - util/navigation
-  - util/util
-  - util/humane-number
-  - plugins/date
-  - data/types
-  - data/model
-  - data/table
-  - data/table_nav
-  - widgets/text-prompt
-  - widgets/dropdown-menu
-  - widgets/scrollable
   - widgets/scrollTabs
   - widgets/inline-edit
-  - widgets/dataset-grid
   - widgets/info-pane-publish
   - widgets/visualization
   - screens/external-widget
   - screens/info-pane
   - screens/dataset-menu
 - widgets-show-new:
-  - plugins/pure
-  - plugins/jqModal
-  - plugins/jquery.example.min
-  - plugins/jquery.json
-  - plugins/ui.core
-  - plugins/ui.draggable
   - plugins/ui.effects.custom.min
-  - plugins/jquery.tache
-  - plugins/jquery.validate.min
-  - plugins/jquery.bt
   - plugins/jquery.uniform
   - plugins/jquery.tablesorter
+  - controls/full-screen
   - widgets/combination-list
-  - widgets/socrata-messaging
   - widgets/embed-form
   - util/humane-date
-  - util/humane-number
-  - util/compat
   - util/navigation
   - util/urls
-  - util/util
-  - util/markup
-  - util/dataset
-  - plugins/date
-  - data/types
-  - data/model
-  - data/table
-  - data/table_nav
+  - controls/dataset-controls
   - controls/stars
-  - widgets/text-prompt
-  - widgets/dropdown-menu
   - widgets/menu
-  - widgets/scrollable
   - widgets/scrollTabs
   - widgets/inline-edit
-  - widgets/dataset-grid
   - widgets/visualization
   - screens/external-widget-new
 - widgets-show-new-form:
-  - util/util
-  - util/compat
-  - util/markup
   - plugins/jquery.uniform
+- screen-dataset:
+  - plugins/jquery.colorPicker
+  - plugins/jquery.uniform
+  - plugins/ui.slider
+  - plugins/jquery.tablesorter
+  - widgets/combination-list
+  - util/events
+  - util/humane-date
+  - util/urls
+  - util/navigation
+  - util/inline-login
+  - widgets/menu
+  - widgets/wizard-prompt
+  - controls/expander
+  - controls/grid-sidebar/base-sidebar
+  - controls/grid-sidebar/calendar-create
+  - controls/grid-sidebar/chart-create
+  - controls/grid-sidebar/download-dataset
+  - controls/grid-sidebar/embed-sdp
+  - controls/grid-sidebar/form-create
+  - controls/grid-sidebar/location-create
+  - controls/grid-sidebar/map-create
+  - controls/grid-sidebar/print-dataset
+  - controls/grid-sidebar/view-list
+  - controls/dataset-controls
+  - widgets/embed-form
+  - controls/full-screen
+  - screens/dataset
 
 
 
@@ -398,3 +372,5 @@ stylesheets:
 - admin-sdp-index:
   - list-screen
   - admin-sdp-index-screen
+- dataset-page:
+  - ui.slider

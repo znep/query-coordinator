@@ -5,11 +5,12 @@
   <%- end -%>
 
   <title><%= @view.name %> | <%= CurrentDomain.strings.site_title %></title>
-  <link type="text/css" rel="stylesheet" href="/styles/widget/<%= params[:customization_id] %>.css" />
 
   <%- if @display.can_publish? -%>
   <%= raw @display.render_stylesheet_includes %>
   <%- end -%>
+
+  <link type="text/css" rel="stylesheet" href="/styles/widget/<%= params[:customization_id] %>.css" />
 <% end %>
 
 <div class="widgetWrapper">
@@ -37,7 +38,7 @@
       <%- end -%>
       <div class="gridContainer">
         <%- if !@view.is_invalid? -%>
-          <div id="data-grid">
+          <div id="data-grid" class='fullHeight'>
             <%- if !@view.is_blobby? -%>
               <noscript>
                 <h3><a href="<%= @view.href %>"><%= @view.name %></a></h3>
@@ -84,7 +85,7 @@
       <a href="#more" class="commentsViewMoreLink"></a>
     </div>
     <div class="widgetContentSection widgetContent_embed">
-      <%= render :partial => 'blists/embed_form',
+      <%= render :partial => 'datasets/embed_form',
                  :locals => { :view => @view, :cur => params[:cur] } %>
     </div>
     <div class="widgetContentSection widgetContent_api">
@@ -107,9 +108,14 @@
         </div>
       </div>
     </div>
+    <%- if !@view.is_alt_view? -%>
     <div class="widgetContentSection widgetContent_print">
-      <%= render :partial => 'blists/print_form_new', :locals => { :view => @view } %>
+      <% form_tag("/views/#{@view.id}/rows.pdf", :method => :get,
+        :target => "_blank", :class => 'commonForm') do %>
+        <%= render :partial => 'datasets/print_form', :locals => { :view => @view } %>
+      <% end %>
     </div>
+    <%- end -%>
   </div>
 
   <%- if @theme[:frame][:orientation] == 'upwards' -%>
@@ -160,9 +166,9 @@
 </div>
 
 <% content_for :templates do %>
-  <%= render :partial => 'blists/filters_table_template' %>
-  <%= render :partial => 'blists/downloads_table_template' %>
-  <%= render :partial => 'blists/comments_template' %>
+  <%= render :partial => 'filters_table_template' %>
+  <%= render :partial => 'datasets/downloads_table_template' %>
+  <%= render :partial => 'datasets/comments_template' %>
 <% end %>
 
 <% content_for :js_footer do %>
@@ -188,9 +194,11 @@
     <%- end -%>
   </script>
 
-  <%= render(:partial => 'shared/table_editor_js') %>
-  <%= javascript_include_merged 'widgets-show-new' %>
   <%= raw @display.render_javascript_includes(self) %>
+  <%- if @view.can_edit() && !@view.is_blobby? -%>
+  <%= raw @display.render_edit_javascript_includes(self) %>
+  <%- end -%>
+  <%= javascript_include_merged 'widgets-show-new' %>
 
   <%- unless @theme[:behavior][:ga_code].empty? -%>
     <script type="text/javascript">

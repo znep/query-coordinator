@@ -31,12 +31,17 @@
                 mapObj.map.AddShapeLayer(mapObj._shapeLayer);
             },
 
-            renderPoint: function(latVal, longVal, title, info, rowId)
+            renderPoint: function(latVal, longVal, title, info, rowId, icon)
             {
                 var mapObj = this;
 
                 var ll = new VELatLong(latVal, longVal);
                 var shape = new VEShape(VEShapeType.Pushpin, ll);
+                if (mapObj._markers[rowId])
+                {
+                    mapObj._shapeLayer.DeleteShape(mapObj._markers[rowId]);
+                }
+                mapObj._markers[rowId] = shape;
 
                 if (!_.isNull(title))
                 {
@@ -48,6 +53,10 @@
                     shape.SetDescription("<div class='mapInfoContainer" +
                         (mapObj._infoIsHtml ? ' html' : '') + "'>" +
                         info + "</div>");
+                }
+                if (icon)
+                {
+                    shape.SetCustomIcon(icon);
                 }
 
                 mapObj._shapeLayer.AddShape(shape);
@@ -79,6 +88,7 @@
                 mapObj.map.DeleteAllShapeLayers();
                 mapObj._shapeLayer = new VEShapeLayer();
                 mapObj.map.AddShapeLayer(mapObj._shapeLayer);
+                mapObj._markers = {};
             },
 
             resizeHandle: function()

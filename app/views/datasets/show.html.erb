@@ -1,0 +1,126 @@
+<% content_for :head do %>
+  <%= auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss") %>
+  <%= raw @view.display.render_stylesheet_includes %>
+  <%= stylesheet_link_merged 'dataset-page' %>
+  <%= rendered_stylesheet_tag 'dataset-page' %>
+
+  <title><%= h(@view.name) %> | <%= CurrentDomain.strings.site_title %></title>
+  <link rel="canonical" href="<%= @view.href %>" />
+<% end %>
+
+<div id='datasetBar' class='clearfix'>
+  <div id='viewsMenu' class='menu'></div>
+
+  <div id='titleBox'>
+    <a href="#expand" class="descriptionExpander downArrow" title="Click to expand">
+      <span class="icon"></span>
+    </a>
+    <div id='datasetIcon' class='type<%= @view.display.type.capitalize %>'>
+      <span class='icon'><%= @view.display.name %></span>
+    </div>
+    <h2 id='datasetName' class="clipText"><%= @view.name %></h2>
+    <div id='description' class="collapsed"><%= @view.description %></div>
+  </div>
+
+  <div id='actionBox' class='clearfix'>
+    <ul id="toolbarOptions">
+      <li>
+        <div id='searchButton'>
+          <span class='searchIcon'></span>
+          <form class="searchForm" action="#">
+            <input type="text" class="searchField textPrompt" title="Find in this Dataset" />
+            <a href="#clear" class="clearSearch close"><span class="icon"></span></a>
+          </form>
+        </div>
+      </li>
+      <li>
+        <div id='shareMenu' class='share menu'></div>
+      </li>
+    </ul>
+    <ul id='sidebarOptions' class="clearfix">
+      <li class="tabFilter"><a href='#Filter' title='Filter'
+        data-paneName='filter'>Filter</a></li>
+      <li class="tabVisualize"><a href='#Visualize' title='Visualize'
+        data-paneName='visualize'>Visualize</a></li>
+      <li class="tabExport"><a href='#Export' title='Export'
+        data-paneName='export'>Export</a></li>
+      <li class="tabFeed"><a href='#Feed' title='Feed'
+        data-paneName='feed'>Feed</a></li>
+      <li class="tabEmbed"><a href='#Embed' title='Embed'
+        data-paneName='embed'>Embed</a></li>
+      <li class="tabAbout"><a href='#About' title='About'
+        data-paneName='about'>About</a></li>
+    </ul>
+  </div>
+
+  <a href="#toggleFullScreen" class="fullscreenButton maximize"><span class="icon">Toggle full screen</span></a>
+</div>
+
+<div class='outerContainer'>
+  <div id='mainGrid'>
+    <%= raw @view.display.render_body(self) %>
+    <%= render(:partial => @view.display.render_partial) %>
+  </div>
+
+  <div id='gridSidebar'>
+    <a class='close' href='#close'><span class='icon'>Close</span></a>
+  </div>
+</div>
+
+<% content_for :templates do %>
+<%= render(:partial => 'grid_sidebar_templates') %>
+<div class="embedForm">
+  <%= render :partial => 'datasets/embed_form', :locals => { :view => @view, :cur => 'root' } %>
+</div>
+<div class="printForm">
+  <%= render :partial => 'datasets/print_form', :locals => { :view => @view } %>
+</div>
+<%= render :partial => 'datasets/downloads_table_template' %>
+<% end %>
+
+<% content_for :js_footer do %>
+  <%- if !current_user -%>
+  <%= render :partial => 'blists/login' %>
+  <%= render :partial => 'blists/signup' %>
+  <%- end -%>
+
+  <script type="text/javascript">
+    <%= raw @view.display.render_inline_setup_js('mainGrid', self) %>
+
+    <%- if !current_user.nil? -%>
+      blist.currentUserId = '<%= current_user.id %>';
+      blist.isOwner = <%= current_user.id == @view.owner.id ? 'true' : 'false' %>;
+    <%- end -%>
+
+    <%# Namespace to keep track of disabled sidebar sections %>
+    blist.namespace.fetch('blist.sidebarHidden');
+
+    <%# Visualize pane %>
+    blist.sidebarHidden.visualize = blist.sidebarHidden.visualize || {};
+    blist.sidebarHidden.visualize.calendarCreate = <%= @view.is_alt_view? %>;
+    blist.sidebarHidden.visualize.chartCreate = <%= @view.is_alt_view? %>;
+    blist.sidebarHidden.visualize.mapCreate = <%= @view.is_alt_view? ||
+      @view.is_grouped? ||
+      !module_available?(:map_publish) %>;
+
+    <%# Embed pane %>
+    blist.sidebarHidden.embed = blist.sidebarHidden.embed || {};
+    blist.sidebarHidden.embed.formCreate = <%= @view.is_alt_view? ||
+      @view.is_grouped? ||
+      !CurrentDomain.user_can?(current_user, :create_datasets) ||
+      !module_available?(:form_publish) ||
+      !@view.owned_by?(@current_user) ||
+      !@view.parent_dataset.owned_by?(@current_user) %>;
+
+    <%# Export pane %>
+    blist.sidebarHidden.exportSection = blist.sidebarHidden.exportSection || {};
+    blist.sidebarHidden.exportSection.print = <%= @view.is_alt_view? %>;
+  </script>
+
+  <%- if @view.can_edit() && !@view.is_blobby? -%>
+  <%= raw @view.display.render_edit_javascript_includes(self) %>
+  <%- end -%>
+  <%= raw @view.display.render_javascript_includes(self) %>
+
+  <%= javascript_include_merged 'screen-dataset' %>
+<% end %>

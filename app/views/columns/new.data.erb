@@ -150,9 +150,9 @@ blist.common.modalReady = function()
       if (column.type == 'location' && <%= @parent.nil? %>)
       {
           $('#gridSidebar').gridSidebar()
-            .addPane($.gridSidebarConfig.locationCreate,
-                {columnName: column.name || 'Location',
-                  columnDescription: column.description,
+            .addPane('locationCreate',
+                {name: column.name,
+                  description: column.description,
                   columnType: column.type});
           $('#gridSidebar').gridSidebar().show('locationCreate', true);
           $("#modal").jqmHide();
@@ -166,12 +166,12 @@ blist.common.modalReady = function()
         cache: false,
         dataType: 'json',
         data: {
-          json: $.json.serialize(column),
+          json: JSON.stringify(column),
           authenticity_token: "<%= form_authenticity_token %>"
         },
         error: function(request) {
           $("#columnCreateDialog .error")
-            .html($.json.deserialize(request.responseText).error).show();
+            .html(JSON.parse(request.responseText).error).show();
           toggleEnabled();
         },
         success: function(responseData) {

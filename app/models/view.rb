@@ -222,6 +222,26 @@ class View < Model
     @last_viewed
   end
 
+  # Returns the meta keyword tags for this view that we'll use in headers
+  @@default_meta_tags = ["public", "data", "statistics", "dataset"]
+  def meta_keywords
+    (self.tags.nil? ? @@default_meta_tags : self.tags + @@default_meta_tags).sort_by {rand}
+  end
+
+  # Return the description we'll use in the meta description header
+  def meta_description
+    if self.description.blank?
+      desc = "View this dataset"
+      updated_at = self.rowsUpdatedAt.nil? ? nil : blist_long_date(self.rowsUpdatedAt)
+      if updated_at
+        desc += ", last updated #{updated_at}"
+      end
+      return desc
+    else
+      return self.description
+    end
+  end
+
   def is_blist?
     flag?("default") && is_tabular?
   end

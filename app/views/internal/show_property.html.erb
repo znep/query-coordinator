@@ -46,7 +46,7 @@
     {
       $('form').submit(function(event)
       {
-        $(this).find('textarea').val($.json.serialize($('.bespin').get(0).bespin.value));
+        $(this).find('textarea').val(JSON.stringify($('.bespin').get(0).bespin.value));
       });
     }, 2000);
   });

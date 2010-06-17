@@ -25,7 +25,7 @@ $(function ()
                 },
                 error: function(xhr)
                 {
-                    var errBody = $.json.deserialize(xhr.responseText);
+                    var errBody = JSON.parse(xhr.responseText);
                     if (typeof origBR.error == 'function')
                     { origBR.error(errBody.message); }
                     if (typeof callbacks.error == 'function')
@@ -51,7 +51,7 @@ $(function ()
         $.ajax({url: '/batches',
                 dataType: 'json', contentType: 'application/json',
                 type: 'POST',
-                data: $.json.serialize({requests: serverReqs}),
+                data: JSON.stringify({requests: serverReqs}),
                 success: function(resp)
                 {
                     var isError = false;
@@ -65,7 +65,7 @@ $(function ()
                         }
                         else if (typeof br[i].success == 'function')
                         {
-                            br[i].success($.json.deserialize(r.response));
+                            br[i].success(JSON.parse(r.response));
                         }
                     });
 
@@ -92,7 +92,7 @@ $(function ()
                 },
                 error: function(xhr)
                 {
-                    var errBody = $.json.deserialize(xhr.responseText);
+                    var errBody = JSON.parse(xhr.responseText);
                     $.each(br, function(i, r)
                     {
                         if (typeof r.error == 'function')

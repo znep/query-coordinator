@@ -274,6 +274,8 @@ img.blist-table-option-icon
     text-decoration: underline;
 }
 
+.blist-table-footer, .blist-table-locked-footer .blist-tf { background-color: #ececec; }
+
 .blist-tstars { margin: -4px 0; }
 
 .widgetFooterWrapper

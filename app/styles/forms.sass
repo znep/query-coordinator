@@ -33,10 +33,14 @@ form textarea.text_wide
 .commonForm
   label
     font-size: 1.2em
+    padding-left: 12px
+
+    &.required
+      background: url(/stylesheets/images/common/required.png) no-repeat left 3px
 
   .formSection
     clear: both
-    margin-bottom: 1em
+    margin-bottom: 2em
     padding-left: 1em
 
     .formHeader
@@ -52,13 +56,53 @@ form textarea.text_wide
     font-size: 1.2em
 
   input[type=text],
-  textarea
+  textarea,
+  .ui-slider
     @include border-radius(0.3em)
     @include box-shadow(0,0,2px,rgba(0, 0, 0, 0.05))
     &:hover
       @include box-shadow(0,0,2px,rgba(0, 0, 0, 0.15))
     &:focus, &:active
       @include box-shadow(0,0,2px,rgba(0, 0, 0, 0.4))
+
+  .ui-slider
+    @include vertical-gradient(#ffffff, #f0f0f0)
+    border: 1px solid #cccccc
+    font-size: 1.2em
+    margin-top: 3px
+
+    .ui-slider-handle
+      @include gradient_buttons_active_background
+      @include border-radius(0.3em)
+      border: 1px solid $color_buttons_active_border
+      @include box-shadow(0,0,2px,$color_buttons_shadow)
+      cursor: pointer
+
+      &:hover
+        @include gradient_buttons_hover_background
+        border: 1px solid $color_buttons_hover_border
+      &:active, &:focus
+        @include gradient_buttons_focus_background
+        border: 1px solid $color_buttons_focus_border
+      &.disabled
+        @include gradient_buttons_disabled_background
+        border: 1px solid $color_buttons_disabled_border
+        cursor: default
+
+  .colorControl
+    background-image: url(/images/colorpicker/select_arrow.png)
+    background-position: right bottom
+    background-repeat: no-repeat
+    border: 2px ridge #000000
+    display: inline-block
+    height: 16px
+    text-indent: -9999px
+    width: 20px
+
+  div.required, span.required
+    background: url(/stylesheets/images/common/required.png) no-repeat left top
+    padding: 0.1em
+    padding-left: 1em
 
   div.line
     clear: both
@@ -88,7 +132,9 @@ form textarea.text_wide
       margin-right: 1em
 
     .uniform.selector
-      margin-top: -2px
+      margin:
+        left: -2px
+        top: -2px
 
 
 // uniform jQuery plugin styling
@@ -96,13 +142,17 @@ form textarea.text_wide
     modified to nest under uniform, not float
 
 div.uniform.selector,
-div.uniform.selector span,
+div.uniform.selector div,
 div.uniform.checker span,
 div.uniform.radio span,
 div.uniform.uploader,
 div.uniform.uploader span.action
   background-image: url(/stylesheets/images/common/uniform_sprite.png)
   background-repeat: no-repeat
+
+div.uniform.checker,
+div.uniform.radio
+  margin-right: 1em
 
 div.uniform.selector *,
 div.uniform.radio *,
@@ -111,70 +161,98 @@ div.uniform.uploader *
   margin: 0
   padding: 0
 
+div.uniform.selector select:focus,
+div.uniform.radio input:focus,
+div.uniform.checker input:focus,
+div.uniform.uploader input:focus
+  outline: 0
+
 div.uniform.selector
   background-position: -483px -130px
+  display: inline-block
+  font-size: 1.2em
   line-height: 26px
   height: 26px
   position: relative
   padding-left: 10px
+  vertical-align: bottom
 
-  span
+  div
     background-position: right 0px
-    display: block
+    cursor: pointer
     float: left
-    height: 26px
-    line-height: 26px
+    padding: 0px 25px 0px 2px
+
+    span
+      @include clip-text
+      color: #666
+      display: block
+      float: left
+      height: 26px
+      line-height: 26px
+      text-shadow: 0 1px 0 #fff
 
   select
     border: solid 1px #fff
-    top: 3px
-    left: 3px
-    right: 0px
     bottom: 3px
+    font-size: 1em
+    left: 3px
     opacity: 0
     position: absolute
+    right: 0px
+    top: 3px
 
   &:active, &.active
     background-position: -483px -156px
 
-    span
+    div
       background-position: right -26px
 
   &.focus, &.hover, &:hover
     background-position: -483px -182px
 
-    span
+    div
       background-position: right -52px
 
   &.focus:active, &.focus.active
     background-position: -483px -208px
 
-    span
+    div
       background-position: right -78px
 
   &:hover:active, &.active:hover
     background-position: -483px -208px
 
-    span
+    div
       background-position: right -78px
 
   &.disabled
     background-position: -483px -234px
 
-    span
+    div
       background-position: right -104px
+      span
+        color: #bbb
 
 div.uniform.checker
-  width: 19px
+  display: inline-block
   height: 19px
+  position: relative
+  vertical-align: bottom
+  width: 19px
 
   input
-    width: 19px
+    display: inline-block
     height: 19px
+    opacity: 0
+    width: 19px
 
   span
     background-position: 0px -260px
+    display: block
+    float: left
     height: 19px
+    text-align: center
     width: 19px
 
   &:active span, &.active span
@@ -210,17 +288,26 @@ div.uniform.checker
       background-position: -171px -260px
 
 div.uniform.radio
-  width: 18px
+  display: inline-block
   height: 18px
+  position: relative
+  vertical-align: bottom
+  width: 18px
 
   input
-    width: 18px
+    display: inline-block
     height: 18px
+    opacity: 0
+    text-align: center
+    width: 18px
 
   span
-    height: 18px
-    width: 18px
     background-position: 0px -279px
+    display: block
+    float: left
+    height: 18px
+    text-align: center
+    width: 18px
 
   &:active span, &.active span
     background-position: -18px -279px
@@ -255,17 +342,50 @@ div.uniform.radio
 
 div.uniform.uploader
   background-position: 0px -297px
+  cursor: pointer
   height: 28px
+  overflow: hidden
+  position: relative
+  width: 190px
 
   span.action
+    background-color: #fff
     background-position: right -409px
+    cursor: pointer
+    display: inline
+    float: left
+    font-size: 1.1em
+    font-weight: bold
     height: 24px
     line-height: 24px
+    overflow: hidden
+    padding: 2px 0px
+    text-align: center
+    text-shadow: #fff 0px 1px 0px
+    width: 85px
 
   span.filename
+    @include clip-text
+    border-right: solid 1px #bbb
+    color: #777
+    display: block
+    float: left
+    font-size: 1.1em
     height: 24px
-    margin: 2px 0px 2px 2px
     line-height: 24px
+    margin: 2px 0px 2px 2px
+    padding: 0px 10px
+    width: 82px
+
+  input
+    bottom: 0
+    float: right
+    height: 28px
+    opacity: 0
+    position: absolute
+    right: 0
+    top: 0
+    width: 190px
 
   &.focus, &.hover, &:hover
     background-position: 0px -353px
@@ -284,116 +404,8 @@ div.uniform.uploader
 
     span.action
       background-position: right -381px
-
-div.uniform.selector
-  margin-bottom: 20px
-  width: 190px
-  font-size: 12px
-
-  select
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif
-    font-size: 12px
-
-  span
-    padding: 0px 25px 0px 2px
-    cursor: pointer
-    color: #666
-    width: 158px
-    text-shadow: 0 1px 0 #fff
-
-  &.disabled span
-    color: #bbb
-
-div.uniform.checker,
-div.uniform.radio
-  margin-right: 10px
-
-div.uniform.uploader
-  width: 190px
-  margin-bottom: 20px
-  cursor: pointer
-
-  span.action
-    width: 85px
-    text-align: center
-    text-shadow: #fff 0px 1px 0px
-    background-color: #fff
-    font-size: 11px
-    font-weight: bold
-
-  span.filename
-    color: #777
-    width: 82px
-    border-right: solid 1px #bbb
-    font-size: 11px
-
-  input
-    height: 28px
-    width: 190px
-
-  &.disabled
-    span.action
       color: #aaa
 
     span.filename
       border-color: #ddd
       color: #aaa
-
-
-div.uniform.selector select:focus,
-div.uniform.radio input:focus,
-div.uniform.checker input:focus,
-div.uniform.uploader input:focus
-  outline: 0
-
-div.uniform.checker
-  position: relative
-
-  span
-    display: block
-    float: left
-    text-align: center
-
-  input
-    opacity: 0
-    display: inline-block
-
-div.uniform.radio
-  position: relative
-
-  span
-    display: block
-    float: left
-    text-align: center
-
-  input
-    opacity: 0
-    text-align: center
-    display: inline-block
-
-div.uniform.uploader
-  position: relative
-  overflow: hidden
-
-  span.action
-    float: left
-    display: inline
-    padding: 2px 0px
-    overflow: hidden
-    cursor: pointer
-
-  span.filename
-    padding: 0px 10px
-    float: left
-    display: block
-    overflow: hidden
-    text-overflow: ellipsis
-    white-space: nowrap
-
-  input
-    opacity: 0
-    position: absolute
-    top: 0
-    right: 0
-    bottom: 0
-    float: right

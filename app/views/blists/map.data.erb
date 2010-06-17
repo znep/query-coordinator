@@ -284,7 +284,6 @@
         $block.find('a.removeButton').click(function(event)
         {
             event.preventDefault();
-            var $section = $(event.target).closest('.section');
             $(event.target).closest('.configLineBlock').remove();
             layersChanged = true;
         });
@@ -382,8 +381,8 @@
       });
 
       var data = {viewName: $('.mapWrapper #mapName').val(),
-        vizType: 'map', options: $.json.serialize(options),
-        columnIds: $.json.serialize(colIds),
+        vizType: 'map', options: JSON.stringify(options),
+        columnIds: JSON.stringify(colIds),
         view_query: $('.mapWrapper #view_query').val()};
 
       var loginMsg = 'You must be signed in to create a map';

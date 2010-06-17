@@ -16,7 +16,7 @@ javascripts:
   - plugins/jquery.validate
   - plugins/pure
   - plugins/ui.core
-  - util/underscore-min
+  - plugins/underscore
   - util/namespace
   - util/util
   - util/compat

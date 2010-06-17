@@ -11,6 +11,8 @@
         priority: 1,
         title: 'Filter, Sort, Roll-Up',
         subtitle: 'You can filter a view down to certain rows; sort by one or more columns; and group rows together with a roll-up',
+        noReset: true,
+        dataSource: blist.display.view,
         sections: [
             {
                 title: 'Sort', name: 'filterSort', type: 'selectable',

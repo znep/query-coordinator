@@ -1035,7 +1035,9 @@
                 'data-notequalto': {value: '.' + (item.notequalto || '')
                         .split(' ').join(', .'),
                     onlyIf: !$.isBlank(item.notequalto)},
-                'data-defaultValue': item.defaultValue
+                'data-defaultValue': item.defaultValue,
+                'data-dataValue': {value: item.dataValue,
+                    onlyIf: !$.isBlank(item.dataValue)}
             };
         };
 
@@ -1061,6 +1063,21 @@
         var defValue = args.item.defaultValue;
         if (args.context.inRepeater && !_.isUndefined(args.item.repeaterValue))
         { defValue = args.item.repeaterValue; }
+
+        var curValue;
+        if (!$.isBlank(args.item.origName))
+        {
+            var nParts = args.item.origName.split('.');
+            var base = args.context.data;
+            while (nParts.length > 0 && !$.isBlank(base))
+            { base = base[nParts.shift()]; }
+            if (nParts.length == 0 && !$.isBlank(base))
+            {
+                curValue = base;
+                args.item = $.extend({}, args.item, {dataValue: curValue});
+            }
+        }
+
         switch (args.item.type)
         {
             case 'static':
@@ -1072,39 +1089,42 @@
             case 'text':
                 contents.push($.extend(commonAttrs(args.item),
                     {tagName: 'input', type: 'text', value:
-                        $.htmlEscape(args.context.data[args.item.origName] ||
-                            defValue)}));
+                        $.htmlEscape(curValue || defValue)}));
                 break;
 
             case 'textarea':
                 contents.push($.extend(commonAttrs(args.item),
                     {tagName: 'textarea', contents:
-                        $.htmlEscape(args.context.data[args.item.origName] ||
-                            defValue)}));
+                        $.htmlEscape(curValue || defValue)}));
                 break;
 
             case 'checkbox':
+                var v = curValue;
+                if ($.isBlank(v)) { v = defValue; }
                 contents.push($.extend(commonAttrs(args.item),
                     {tagName: 'input', type: 'checkbox',
                         'data-trueValue': args.item.trueValue,
                         'data-falseValue': args.item.falseValue,
                         checked: (!$.isBlank(args.item.trueValue) &&
-                            defValue === args.item.trueValue) ||
+                            v === args.item.trueValue) ||
                             _.include([true, 'true', 1, '1', 'yes', 'checked'],
-                                defValue)}));
-                    break;
+                                v)}));
+                break;
 
             case 'select':
                 var options = [];
                 if (!_.isNull(args.item.prompt))
                 {
-                    options.push([{tagName: 'option', value: '',
-                        contents: args.item.prompt || 'Select a value'}]);
+                    options.push({tagName: 'option', value: '',
+                        contents: args.item.prompt || 'Select a value'});
                 }
+                var v = curValue;
+                if (_.isBoolean(curValue)) { v = v.toString(); }
                 _.each(args.item.options, function(o)
                 {
                     var item = {tagName: 'option', value: o.value,
-                        selected: o.value === defValue, contents: o.text};
+                        selected: o.value === (v || defValue),
+                        contents: o.text};
                     var dataKeys = [];
                     _.each(o.data || {}, function(v, k)
                         {
@@ -1133,7 +1153,7 @@
                 {
                     var cId = args.item.isTableColumn ? c.tableColumnId : c.id;
                     options.push({tagName: 'option', value: cId,
-                        selected: defValue == cId,
+                        selected: (curValue || defValue) == cId,
                         contents: $.htmlEscape(c.name)});
                 });
                 contents.push($.extend(commonAttrs(args.item),
@@ -1150,13 +1170,14 @@
                     min *= scale;
                     max *= scale;
                     defValue *= scale;
+                    curValue *= scale;
                 }
                 contents.push({tagName: 'div', 'class': 'sliderControl',
                         'data-min': min, 'data-max': max});
 
                 contents.push($.extend(commonAttrs($.extend({}, args.item,
                         {defaultValue: defValue, extraClass: 'sliderInput'})),
-                    {tagName: 'input', type: 'text', value: defValue,
+                    {tagName: 'input', type: 'text', value: (curValue || defValue),
                     'data-scale': scale, disabled: true}));
                 break;
 
@@ -1197,7 +1218,7 @@
                                 {id: id, tagName: 'input', type: 'radio',
                                 'class': {value: 'wizExclude',
                                     onlyIf: opt.type != 'static'},
-                                checked: defValue == opt.name,
+                                checked: (curValue || defValue) == opt.name,
                                 'data-defaultValue': defValue == opt.name}),
                             {tagName: 'label', 'for': id,
                             contents:
@@ -1229,13 +1250,17 @@
                 templateLine.contents.unshift(removeButton);
                 templateLine = $.htmlEscape($.tag(templateLine, true));
 
-                for (var i = 0; i < (args.item.minimum || 1); i++)
+                curValue = curValue || [];
+                for (var i = 0; i < (curValue.length || args.item.minimum || 1);
+                    i++)
                 {
                     var l = renderLine(sidebarObj,
                                 {item: args.item.field,
                                     context: $.extend({}, args.context,
                                          {repeaterIndex: i, noTag: true,
-                                            inRepeater: i >= args.item.minimum})
+                                            inRepeater: i >= args.item.minimum,
+                                            data: curValue[i] || args.context.data
+                                    })
                     });
                     if (i >= args.item.minimum)
                     { l.contents.unshift(removeButton); }
@@ -1312,7 +1337,7 @@
         var rData = {title: config.title, subtitle: config.subtitle,
             sections: config.sections, paneId: paneId,
             finishButtons: (config.finishBlock || {}).buttons,
-            data: data || {}};
+            data: data || config.dataSource || {}};
         var sectionOnlyIfs = {};
         var customSections = {};
         var directive = {
@@ -1322,9 +1347,8 @@
             '.formSection': {
                 'section<-sections': {
                     '@class+': function(arg)
-                    { return _.compact([arg.item.type, arg.item.name,
-                        (arg.item.type == 'selectable' ? 'collapsed' : null)]
-                        ).join(' '); },
+                    { return _.compact([arg.item.type, arg.item.name])
+                        .join(' '); },
                     '@data-onlyIf': function(arg)
                     {
                         if (!$.isBlank(arg.item.onlyIf))
@@ -1498,6 +1522,14 @@
             });
 
             showHideSection();
+        });
+
+        $pane.find('.formSection.selectable').each(function()
+        {
+            var $s = $(this);
+            var hasData = $s.find('[data-dataValue]').length > 0;
+            $s.toggleClass('collapsed', !hasData);
+            $s.find('.sectionSelect').value(hasData);
         });
 
         $pane.find('.formSection.selectable .sectionSelect').click(function(e)
@@ -1900,6 +1932,13 @@
                 .closest('.line.hasWizard');
             resetWizard($errorLine);
             _.defer(function() { showWizard(sidebarObj, $errorLine); });
+            return true;
+        }
+
+        // If we hit an already-expanded section, go into
+        if ($item.is('.formSection.selectable:not(.collapsed)'))
+        {
+            wizardAction(sidebarObj, $item, wiz.defaultAction || 'nextField');
             return true;
         }
 

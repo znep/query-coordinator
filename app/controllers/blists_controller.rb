@@ -207,17 +207,8 @@ class BlistsController < ApplicationController
         w.uid == CurrentDomain.default_widget_customization_id}
 
     if @widget_customization.nil?
-      # Try this thing until it goes.
-      epic_fail, counter = true, 1
-      while epic_fail
-        begin
-          @widget_customization = WidgetCustomization.create({
-            'customization' => WidgetCustomization.default_theme(1), 'name' => "Default Socrata #{counter}" })
-          epic_fail = false # whew.
-        rescue CoreServer::CoreServerError => e
-          counter += 1
-        end
-      end
+      @widget_customization = WidgetCustomization.create_default!
+      CurrentDomain.set_default_widget_customization_id(@widget_customization.uid)
     end
     @customization = @widget_customization.customization
 
@@ -225,8 +216,8 @@ class BlistsController < ApplicationController
     # If a domain has a v0 template default, we can't really render this thing.
     # Remove this once all domains have been upgraded.
     unless @customization.has_key?(:version)
-      @widget_customization = WidgetCustomization.create({
-        'customization' => WidgetCustomization.default_theme(1), 'name' => "New Default" })
+      @widget_customization = WidgetCustomization.create_default!
+      CurrentDomain.set_default_widget_customization_id(@widget_customization.uid)
       @customization = @widget_customization.customization
     end
   end

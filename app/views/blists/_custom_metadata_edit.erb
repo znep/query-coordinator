@@ -1,6 +1,6 @@
 <%- 
   # See what fields they haven't populated. If none, there's no point in showing this pane
-  domain_fields = CurrentDomain.configuration.custom_dataset_metadata || []
+  domain_fields = CurrentDomain.custom_dataset_metadata || []
   
   if view.metadata && view.metadata.custom_fields
     used_fields = view.metadata.custom_fields.keys

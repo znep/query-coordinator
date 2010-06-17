@@ -217,6 +217,7 @@
     var config =
     {
         name: 'visualize.chartCreate',
+        priority: 1,
         title: 'Chart',
         subtitle: 'View data can be displayed with a variety of charts',
         sections: [

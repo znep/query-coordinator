@@ -31,6 +31,7 @@
     var config =
     {
         name: 'visualize.mapCreate',
+        priority: 2,
         title: 'Map',
         subtitle: 'Views with locations can be displayed as points on a map',
         onlyIf: function(view)

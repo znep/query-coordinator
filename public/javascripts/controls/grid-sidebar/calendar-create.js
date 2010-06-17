@@ -6,6 +6,7 @@
     var config =
     {
         name: 'visualize.calendarCreate',
+        priority: 5,
         title: 'Calendar',
         subtitle: 'Views with dates can be displayed in a monthly calendar format',
         onlyIf: function(view)

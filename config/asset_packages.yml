@@ -265,6 +265,7 @@ javascripts:
   - controls/grid-sidebar/chart-create
   - controls/grid-sidebar/download-dataset
   - controls/grid-sidebar/embed-sdp
+  - controls/grid-sidebar/filter-dataset
   - controls/grid-sidebar/form-create
   - controls/grid-sidebar/location-create
   - controls/grid-sidebar/map-create

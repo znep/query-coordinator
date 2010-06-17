@@ -3,6 +3,7 @@
     var config =
     {
         name: 'export.downloadDataset',
+        priority: 1,
         title: 'Download',
         subtitle: 'Download a copy of this dataset in a static format',
         disabledSubtitle: 'Only tabular data may be downloaded',

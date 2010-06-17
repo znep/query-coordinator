@@ -95,6 +95,10 @@
     <%# Namespace to keep track of disabled sidebar sections %>
     blist.namespace.fetch('blist.sidebarHidden');
 
+    <%# Filter pane %>
+    blist.sidebarHidden.filter = blist.sidebarHidden.filter || {};
+    blist.sidebarHidden.filter.filterDataset = <%= @view.is_alt_view? %>;
+
     <%# Visualize pane %>
     blist.sidebarHidden.visualize = blist.sidebarHidden.visualize || {};
     blist.sidebarHidden.visualize.calendarCreate = <%= @view.is_alt_view? %>;

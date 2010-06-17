@@ -44,6 +44,8 @@
         + title: main title
         + subtitle: appears under main title
         + noReset: boolean, if true form elements will not be reset on close
+        + priority: Optional value for sorting a sub-pane within a parent;
+            sorted ascending (lower values first)
         + sections: array of sections for entering data
         [
           {
@@ -110,7 +112,8 @@
                       the array.  Fields inside the repeater are rooted at the
                       particular object of the repeater array; so essentially
                       they are namespaced into the repeater
-                  + prompt: optional, prompt text for text/textarea/select
+                  + prompt: optional, prompt text for text/textarea/select.
+                      If null for select, will not add a prompt option
                   + defaultValue: default value to use for the field; for
                       checkboxes use true.  For radioGroup, the name of the option
                       that should be selected by default.  For color, also
@@ -135,7 +138,7 @@
                   + columns: for type columnSelect, tells what type of columns
                       should be available
                   {
-                    + type: array or single datatype names
+                    + type: array or single datatype names; empty for all
                     + hidden: boolean, whether or not to include hidden columns
                   }
                   + options: for group or radioGroup, array of sub-fields.
@@ -628,7 +631,7 @@
                     var p = name.split(':');
                     name = p[p.length - 1];
 
-                    if ($.isBlank(name)) { return null; }
+                    if ($.isBlank(name) || $.isBlank(value)) { return null; }
 
                     // Next pull apart the name into pieces.  For each level,
                     // recurse down, creating empty objects if needed.
@@ -712,6 +715,14 @@
                     {
                         value /= parseFloat($input.attr('data-scale'));
                     }
+                    else if ($input.is('select'))
+                    {
+                        // Convert select box values to real booleans if
+                        // appropriate
+                        if (value == 'true') { value = true; }
+                        if (value == 'false') { value = false; }
+                    }
+
 
                     var inputName = $input.attr('name');
 
@@ -1008,14 +1019,16 @@
         if (!args.context.inputOnly)
         {
             contents.push({tagName: 'label', 'for': args.item.name,
-                    'class': [args.item.required ? 'required' : null],
+                    'class': [{value: 'required', onlyIf: args.item.required &&
+                        !args.context.inRepeater}],
                     contents: args.item.text});
         }
 
         var commonAttrs = function(item)
         {
             return {id: item.name, name: item.name, title: item.prompt,
-                'class': [ {value: 'required', onlyIf: item.required},
+                'class': [ {value: 'required', onlyIf: item.required &&
+                    !args.context.isInRepeater},
                         {value: 'textPrompt', onlyIf: !$.isBlank(item.prompt)},
                         item.notequalto, item.extraClass ],
                 'data-isRequired': {value: true, onlyIf: item.required},
@@ -1082,9 +1095,12 @@
                     break;
 
             case 'select':
-                var options =
-                    [{tagName: 'option', value: '',
-                        contents: args.item.prompt || 'Select a value'}];
+                var options = [];
+                if (!_.isNull(args.item.prompt))
+                {
+                    options.push([{tagName: 'option', value: '',
+                        contents: args.item.prompt || 'Select a value'}]);
+                }
                 _.each(args.item.options, function(o)
                 {
                     var item = {tagName: 'option', value: o.value,
@@ -1207,23 +1223,29 @@
                                      {repeaterIndex: 'templateId', noTag: true,
                                         inRepeater: true})
                     });
-                templateLine.contents.unshift({tagName: 'a', href: '#remove',
+                var removeButton = {tagName: 'a', href: '#remove',
                     title: 'Remove', 'class': 'removeLink delete',
-                    contents: {tagName: 'span', 'class': 'icon'}});
+                    contents: {tagName: 'span', 'class': 'icon'}};
+                templateLine.contents.unshift(removeButton);
                 templateLine = $.htmlEscape($.tag(templateLine, true));
 
                 for (var i = 0; i < (args.item.minimum || 1); i++)
                 {
-                    contents.push(renderLine(sidebarObj,
+                    var l = renderLine(sidebarObj,
                                 {item: args.item.field,
                                     context: $.extend({}, args.context,
-                                         {repeaterIndex: i, noTag: true})
-                    }));
+                                         {repeaterIndex: i, noTag: true,
+                                            inRepeater: i >= args.item.minimum})
+                    });
+                    if (i >= args.item.minimum)
+                    { l.contents.unshift(removeButton); }
+                    contents.push(l);
                 }
 
                 contents.push($.button({text: args.item.addText || 'Add Value',
                     customAttrs: $.extend(commonAttrs(args.item),
                         {'data-template': templateLine,
+                        'data-count': args.item.minimum || 1,
                         'data-maximum': args.item.maximum}),
                     className: 'addValue'}, true));
                 break;
@@ -1529,14 +1551,56 @@
             });
         });
 
-        var checkRepeaterMax = function($repeater)
+        var addValue = function($button)
         {
+            var $container = $button.closest('.line.repeater');
+            var $newLine = $($.htmlUnescape($button.attr('data-template')));
+            $newLine.find('.required').removeClass('required');
+
+            var i = parseInt($button.attr('data-count'));
+            $button.attr('data-count', i + 1);
+            var attrMatch = '-templateId';
+            $newLine.find('[name$=' + attrMatch + '], [id$=' + attrMatch +
+                '], [for$=' + attrMatch + ']').each(function()
+            {
+                var $elem = $(this);
+                _.each(['name', 'id', 'for'], function(aName)
+                {
+                    var a = $elem.attr(aName);
+                    if (!$.isBlank(a) && a.endsWith(attrMatch))
+                    { $elem.attr(aName, a.slice(0, -attrMatch.length) + '-' + i); }
+                });
+            });
+
+            $newLine.find('.colorControl').each(function()
+            {
+                var $a = $(this);
+                var $i = $a.next(':input');
+                var colors = ($i.attr('data-defaultValue') || '').split(' ');
+                if (colors.length < 2) { return; }
+
+                var newColor = colors[i % colors.length];
+                $a.css('background-color', newColor);
+                $i.val(newColor);
+            });
+
+            hookUpFields($newLine);
+            $button.before($newLine);
+
+            checkRepeaterMaxMin($container);
+            updateWizardVisibility(sidebarObj);
+        };
+
+        var checkRepeaterMaxMin = function($repeater)
+        {
+            var numLines = $repeater.children('.line').length;
             var $button = $repeater.children('.button.addValue');
+            if (numLines < 1) { _.defer(function() { addValue($button); }); }
+
             var max = $button.attr('data-maximum');
             if ($.isBlank(max)) { return; }
 
-            $button.toggleClass('hide',
-                    $repeater.children('.line').length >= parseInt(max));
+            $button.toggleClass('hide', numLines >= parseInt(max));
             updateWizardVisibility(sidebarObj);
         };
 
@@ -1637,7 +1701,7 @@
                 });
 
             $container.find('.line.repeater').each(function()
-            { checkRepeaterMax($(this)); });
+            { checkRepeaterMaxMin($(this)); });
 
             $container.find('.removeLink').click(function(e)
             {
@@ -1645,7 +1709,7 @@
                 var $t = $(this);
                 var $repeater = $t.closest('.line.repeater');
                 $t.closest('.line').remove();
-                checkRepeaterMax($repeater);
+                checkRepeaterMaxMin($repeater);
                 updateWizardVisibility(sidebarObj);
             });
 
@@ -1664,43 +1728,7 @@
         $pane.find('.button.addValue').click(function(e)
         {
             e.preventDefault();
-
-            var $button = $(this);
-            var $container = $button.closest('.line.repeater');
-            var $newLine = $($.htmlUnescape($button.attr('data-template')));
-            $newLine.find('.required').removeClass('required');
-
-            var i = $container.children('.line').length;
-            var attrMatch = '-templateId';
-            $newLine.find('[name$=' + attrMatch + '], [id$=' + attrMatch +
-                '], [for$=' + attrMatch + ']').each(function()
-            {
-                var $elem = $(this);
-                _.each(['name', 'id', 'for'], function(aName)
-                {
-                    var a = $elem.attr(aName);
-                    if (!$.isBlank(a) && a.endsWith(attrMatch))
-                    { $elem.attr(aName, a.slice(0, -attrMatch.length) + '-' + i); }
-                });
-            });
-
-            $newLine.find('.colorControl').each(function()
-            {
-                var $a = $(this);
-                var $i = $a.next(':input');
-                var colors = ($i.attr('data-defaultValue') || '').split(' ');
-                if (colors.length < 2) { return; }
-
-                var newColor = colors[i % colors.length];
-                $a.css('background-color', newColor);
-                $i.val(newColor);
-            });
-
-            hookUpFields($newLine);
-            $button.before($newLine);
-
-            checkRepeaterMax($container);
-            updateWizardVisibility(sidebarObj);
+            addValue($(this));
         });
 
 

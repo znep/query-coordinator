@@ -153,11 +153,11 @@
                 }
             },
 
-            renderPoint: function(latVal, longVal, title, info, rowId)
+            renderPoint: function(latVal, longVal, title, info, rowId, icon)
             {
                 var mapObj = this;
                 // Create the map symbol
-                var symbol = getESRIMapSymbol(mapObj);
+                var symbol = getESRIMapSymbol(mapObj, icon);
 
                 mapObj._toProject = mapObj._toProject || [];
                 var point = new esri.geometry.Point(longVal, latVal,
@@ -237,9 +237,18 @@
         }
     }));
 
-    var getESRIMapSymbol = function(mapObj)
+    var getESRIMapSymbol = function(mapObj, icon)
     {
-        if (mapObj._esriSymbol === undefined)
+        if (mapObj._esriSymbol === undefined) { mapObj._esriSymbol = {}; }
+        if (icon && !mapObj._esriSymbol[icon])
+        {
+            var image = new Image();
+            image.src = icon;
+            mapObj._esriSymbol[icon] = new esri.symbol.PictureMarkerSymbol(
+                icon, image.width, image.height
+                );
+        }
+        else if (!mapObj._esriSymbol['default'])
         {
             var symbolConfig = {
                 backgroundColor: [ 255, 0, 255, .5 ],
@@ -259,14 +268,14 @@
                     symbolBorderColor,
                     symbolConfig.borderWidth
             );
-            mapObj._esriSymbol = new esri.symbol.SimpleMarkerSymbol(
+            mapObj._esriSymbol['default'] = new esri.symbol.SimpleMarkerSymbol(
                     symbolConfig.symbol,
                     symbolConfig.size,
                     symbolBorder,
                     symbolBackgroundColor
             );
         }
-        return mapObj._esriSymbol;
+        return mapObj._esriSymbol[icon || 'default'];
     };
 
 })(jQuery);

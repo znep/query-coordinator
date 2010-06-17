@@ -31,7 +31,7 @@
                 mapObj.map.AddShapeLayer(mapObj._shapeLayer);
             },
 
-            renderPoint: function(latVal, longVal, title, info, rowId)
+            renderPoint: function(latVal, longVal, title, info, rowId, icon)
             {
                 var mapObj = this;
 
@@ -53,6 +53,10 @@
                     shape.SetDescription("<div class='mapInfoContainer" +
                         (mapObj._infoIsHtml ? ' html' : '') + "'>" +
                         info + "</div>");
+                }
+                if (icon)
+                {
+                    shape.SetCustomIcon(icon);
                 }
 
                 mapObj._shapeLayer.AddShape(shape);

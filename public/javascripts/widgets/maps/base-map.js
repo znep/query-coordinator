@@ -311,11 +311,17 @@
                     info = mapObj._llKeys[rowKey].info.join();
                 }
 
+                var icon;
+                if (row[mapObj._metaIndex])
+                {
+                    icon = JSON.parse(row[mapObj._metaIndex]).mapIcon;
+                }
+
                 return mapObj.renderPoint(lat, longVal, title,
-                    info, mapObj._llKeys[rowKey].id);
+                    info, mapObj._llKeys[rowKey].id, icon);
             },
 
-            renderPoint: function(latVal, longVal, title, info, rowId)
+            renderPoint: function(latVal, longVal, title, info, rowId, icon)
             {
                 // Implement me
             },
@@ -377,6 +383,8 @@
         {
             if (c.dataTypeName == 'meta_data' && c.name == 'sid')
             { mapObj._idIndex = i; }
+            if (c.dataTypeName == 'meta_data' && c.name == 'meta')
+            { mapObj._metaIndex = i; }
 
             // Preferred location column
             if (c.tableColumnId == colFormat.locationId)

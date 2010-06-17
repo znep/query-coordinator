@@ -31,7 +31,7 @@
                 mapObj._boundsCounts = 0;
             },
 
-            renderPoint: function(latVal, longVal, title, info, rowId)
+            renderPoint: function(latVal, longVal, title, info, rowId, icon)
             {
                 var mapObj = this;
 
@@ -39,7 +39,7 @@
                 var ll = new google.maps.LatLng(latVal, longVal);
                 var marker = new google.maps.Marker({position: ll,
                     title: title, clickable: hasInfo || title !== null,
-                    map: mapObj.map});
+                    map: mapObj.map, icon: icon});
                 if (mapObj._markers[rowId]) mapObj._markers[rowId].setMap(null);
                 mapObj._markers[rowId] = marker;
 

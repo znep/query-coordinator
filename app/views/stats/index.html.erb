@@ -141,7 +141,7 @@
 
     <%# Initialize the data model for the grid %>
     <% (@stat.publish_activity || []).each_with_index do |(url, count), idx| %>
-      blist.stats.urlData.push({id: <%= idx %>, url: '<%= (url || '').gsub(/(\r|\n)*/, '').gsub(/'/, '\'') %>', views: <%= count %>, sparkline: null});
+      blist.stats.urlData.push({id: <%= idx %>, url: "<%= (url || '').gsub(/(\r|\n)*/, '') %>"", views: <%= count %>, sparkline: null});
     <% end %>
   </script>
   

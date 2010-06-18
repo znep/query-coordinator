@@ -279,9 +279,10 @@
               {:dimensions => { :width => '500',  :height => '425' }},
               CurrentDomain.default_widget_customization_id)) %>
 
-            <a id="previewWidgetLink"
-              href="/widgets_preview/<%= @view.id
-                %>?width=500&height=425&variation=<%= variation %>">See Preview</a>
+            <a id="previewWidgetLink" href="/widgets_preview/<%= @view.id
+              %>?width=500&height=425&variation=<%= CurrentDomain.default_widget_customization_id %>">
+              See Preview
+            </a>
             <%- end -%>
           </div>
           <%- end -%>

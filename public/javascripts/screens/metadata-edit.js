@@ -68,6 +68,7 @@
                 var fieldValue = $textField.val();
 
                 var customFields = JSON.parse($(opts.viewMetadataSelector).val());
+
                 if (_.isUndefined(customFields.custom_fields))
                 {
                     customFields.custom_fields = {};
@@ -199,7 +200,7 @@
                     attachments.push(attachment);
                 });
 
-                var metadata = JSON.parse($(opts.viewMetadataSelector).val());
+                var metadata = JSON.parse($(opts.viewMetadataSelector).val()) || {};
                 metadata.attachments = attachments;
 
                 $.ajax({

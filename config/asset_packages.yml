@@ -37,7 +37,9 @@ javascripts:
   - util/socrata-server
   - widgets/scrollable
 - shared-calendar:
+  - plugins/ui.draggable
   - plugins/fullcalendar
+  - data/types
   - widgets/blist-calendar
 - shared-table-render:
   - plugins/ui.draggable

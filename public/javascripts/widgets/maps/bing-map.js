@@ -88,7 +88,6 @@
                 mapObj.map.DeleteAllShapeLayers();
                 mapObj._shapeLayer = new VEShapeLayer();
                 mapObj.map.AddShapeLayer(mapObj._shapeLayer);
-                mapObj._markers = {};
             },
 
             resizeHandle: function()

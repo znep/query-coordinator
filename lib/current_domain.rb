@@ -62,30 +62,23 @@ class CurrentDomain
   end
 
   def self.default_widget_customization_id
-    # Return empty if the current domain doesn't have the customizer
-    if !self.module_available?(:sdp_customizer)
-      return ""
-    end
+    if @@current_domain[:widget_customization].blank?
+      # Use the given setting. Don't inherit.
+      result = Configuration.find_by_type('site_theme', true,
+        CurrentDomain.cname, false)[0].properties.sdp_template
 
-    if @@current_domain[:widget_customization].nil?
-      # Pull the default customization. Look in the site theme config.
-      customizations = WidgetCustomization.find
-
-      if !customizations.nil? && customizations.size > 0
-        # Look for sdp_template key in Current Theme configuration
-        defaults = self.properties.sdp_template ?
-          customizations.select { |c| c.uid = self.properties.sdp_template } : []
-
-        @@current_domain[:widget_customization] = defaults.blank? ?
-          customizations.first.uid : defaults.first.uid
-      else
-        # If they don't have any customizations, create one for them
-        @@current_domain[:widget_customization] = WidgetCustomization.create(
-          {'customization' => WidgetCustomization.default_theme(1),
-           'name' => "Default #{domain_name}" }).uid
+      if result.blank?
+        # if they don't have a default, create one for them
+        result = WidgetCustomization.create_default!.uid
+        self.set_default_widget_customization_id(result)
       end
+      @@current_domain[:widget_customization] = result
     end
     @@current_domain[:widget_customization]
+  end
+
+  def self.set_default_widget_customization_id(id)
+    self.current_theme.update_property('sdp_template', id)
   end
 
   def self.properties

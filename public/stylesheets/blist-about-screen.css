@@ -122,6 +122,33 @@ span.fieldValue
     width: 350px;
 }
 
+.customMetaSummary dd input[type="text"]
+{
+    position: relative;
+    top: -0.7em;
+}
+
+.customMetaSummary .aboutSummaryList
+{
+    margin-bottom: 0;
+}
+
+.customMetaSummary div .aboutSummaryList
+{
+    padding: 0;
+    margin-top: 0;
+}
+
+.customMetaSummary .customFieldAddHint:hover
+{
+    cursor: pointer;
+}
+
+.customMetaSummary
+{
+    margin-bottom: 20px;
+}
+
 .aboutSummaryList dd span object,
 .aboutSummaryList dd span embed
 {

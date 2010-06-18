@@ -274,12 +274,10 @@
             You can do so by simply copying and pasting the below HTML into
             your site.
             </p>
-            <%- customization_id = CurrentDomain.default_widget_customization_id -%>
-            <%- variation = customization_id.empty? ? 'normal' : customization_id %>
             <%= text_area_tag("publishCodeTemplate",
               get_publish_embed_code_for_view(@view,
               {:dimensions => { :width => '500',  :height => '425' }},
-              variation)) %>
+              CurrentDomain.default_widget_customization_id)) %>
 
             <a id="previewWidgetLink"
               href="/widgets_preview/<%= @view.id

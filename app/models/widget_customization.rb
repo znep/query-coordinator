@@ -22,6 +22,23 @@ class WidgetCustomization < Model
     parse(CoreServer::Base.connection.get_request(path, custom_headers))
   end
 
+  # Will fail if user is not an admin!
+  def self.create_default!
+    # Try this thing until it goes.
+    epic_fail, counter = true, 1
+    while epic_fail
+      begin
+        widget_customization = WidgetCustomization.create({
+          'customization' => WidgetCustomization.default_theme(1),
+          'name' => "Default #{CurrentDomain.domain_name} #{counter}" })
+        epic_fail = false # whew.
+      rescue CoreServer::CoreServerError => e
+        counter += 1
+      end
+    end
+    return widget_customization
+  end
+
   def save!
     unless @customization_hash.nil?
       @update_data['customization'] = @customization_hash.to_json

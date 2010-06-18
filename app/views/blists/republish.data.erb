@@ -18,16 +18,13 @@
           <label for="publishHeight">Height</label>
           <%= text_field_tag("publishHeight", "425") %> px
         </p>
-        <p class="field republishVariationSelect">
-          <label for="publishVariation">Color</label>
-          <%= select_tag("publishVariation", options_for_select({ 'Blue' => 'normal', 'Black' => 'black' })) %>
-        </p>
         <p id="sizeError" class="hide">The player must be at least 500 pixels wide by 425 pixels tall.</p>
       </div>
       <div class="copyCode">
         <%= text_area_tag("publishCode") %>
         <%= hidden_field_tag("publishCodeTemplate", get_publish_embed_code_for_view(@view,
-            {:dimensions => { :width => "#width#",  :height => "#height#" }}, "#variation#",
+            {:dimensions => { :width => "#width#",  :height => "#height#" }},
+            CurrentDomain.default_widget_customization_id,
             (params[:cur] || 'w'))) %>
       </div>
     </div>

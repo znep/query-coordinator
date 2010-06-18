@@ -159,6 +159,9 @@
               <a href="#close" class="closeButton closeAttachmentsButton">close</a>
             </div>
 
+            <%# Because attachments and custom metadata both write to the same field, mitigate conflicts %>
+            <%= hidden_field_tag('viewMetadataJson', @view.metadata.to_json) %>
+
             <div class="attributionSummary">
               <h2>Licensing, Attribution &amp; Terms of Use</h2>
               <a class="editLink editAttribution<%= can_edit ? "" : " hide" %>" href="<%= @view.href %>/about_edit" title="Edit Licensing and Attribution">Edit</a>
@@ -207,6 +210,34 @@
             <div class="attributionEdit hide">
               <%= render :partial => 'attribution_edit', :locals => { :view => @view } %>
               <a href="#close" class="closeButton closeAttribution">close</a>
+            </div>
+
+            <div class="customMetaSummary">
+              <h2>Additional Information</h2>
+              <a class="editLink editMetadataLink<%= can_edit ? "" : " hide" %>" href="<%= @view.href %>/about_edit" title="Edit Additional Information">Edit</a>
+              <%- if @view.metadata && @view.metadata.custom_fields -%>
+                <dl class="aboutSummaryList clearfix <%= can_edit ? 'actionList' : '' %>">
+                  <%- @view.metadata.custom_fields.each do |field, value| -%>
+                  <div class="customFieldEdit">
+                    <dt><%= h(field) %></dt>
+                    <dd> 
+                      <div class="textDisplay">
+                        <span class="textContent"><%= h(value) %></span>
+                      </div>
+                      <div class="editFieldForm hide">
+                        <%= form_tag("/api/views/#{@view.id}") %>
+                          <%= text_field_tag 'textValue', h(value), :class => 'textValue', :id => nil %>
+                          <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
+                          <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_path, :title => "Cancel", :class => "formCancelLink") %>
+                        </form>
+                      </div>
+                    </dd>
+                  </div>
+                  <%- end -%>
+                </dl>
+              <%- end -%>
+              <%= render :partial => 'blists/custom_metadata_edit', :locals => { :view => @view,
+                  :dl_class => 'aboutSummaryList clearfix', :show_edit_link => false } if can_edit %>
             </div>
 
             <h2 class="summaryInfoHeader">Summary Information</h2>

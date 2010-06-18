@@ -34,7 +34,7 @@
         <%= hidden_field_tag("publishCodeTemplate",
           get_publish_embed_code_for_view(view,
             {:dimensions => { :width => "#width#",  :height => "#height#" }},
-            (customization_id.empty? ? "#variation#" : customization_id ),
+            (customization_id.empty? ? CurrentDomain.default_widget_customization_id : customization_id ),
             cur_id)) %>
       </div>
       <div class="sizeOptions">
@@ -47,15 +47,6 @@
           <label for="publishHeight">Height</label>
           <%= text_field_tag("publishHeight", iframe_height.to_s) %>
           <span class='postfix'>px</span>
-        </div>
-        <div class="field">
-          <%- if customization_id.empty? -%>
-            <label for="publishVariation">Color</label>
-            <%= select_tag("publishVariation",
-              options_for_select({ 'Blue' => 'normal', 'Black' => 'black' })) %>
-          <%- else -%>
-            <%= hidden_field_tag("publishVariation", customization_id) %>
-          <%- end -%>
         </div>
         <ul class="actionButtons">
           <li><a id="previewWidgetLink"

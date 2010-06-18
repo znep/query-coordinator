@@ -34,6 +34,7 @@ class WidgetCustomization < Model
         epic_fail = false # whew.
       rescue CoreServer::CoreServerError => e
         counter += 1
+        return nil if counter > 100 # okay, something is really wrong here.
       end
     end
     return widget_customization

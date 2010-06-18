@@ -8,6 +8,6 @@ class TestPagesController < ApplicationController
   end
 
   def kaboom
-    throw new Exception
+    throw Exception.new
   end
 end

@@ -5,7 +5,8 @@
         if (this.optional(element)) { return true; }
         var isEqual = false;
         var $e = $(element);
-        $(param).each(function(i, p)
+        if (!$e.is(':visible')) { return true; }
+        $(param + ':visible').each(function(i, p)
         {
             var $p = $(p);
             if ($e.index($p) < 0 && $p.val() == value)
@@ -52,8 +53,11 @@
             + title: section title
             + type: optional, 'selectable' makes the field collapseable.
                 By default it will be collapsed; when collapsed, nothing is
-                validated or wizard-ed
-            + name: internal name for field; required if it is of type selectable
+                validated or wizard-ed.  'hidden' hides the section completely;
+                it can be manually opened by calling showSection() and passing
+                in the section name
+            + name: internal name for field; required if it is of type selectable.
+                Used to identify a hidden section to open
             + onlyIf: only display the section if these criteria are true.
                 Currently accepts an object or array of objects:
             {
@@ -376,6 +380,9 @@
 
                 if (!$.isBlank(sidebarObj._$panes[config.name]))
                 {
+                    if (sidebarObj.$currentPane() ==
+                        sidebarObj._$panes[config.name])
+                    { hideCurrentPane(sidebarObj); }
                     sidebarObj._$panes[config.name].remove();
                     delete sidebarObj._$panes[config.name];
                 }
@@ -584,6 +591,15 @@
                 if (updatedLinks && $.isBlank(sidebarObj._currentPane) &&
                     sidebarObj.$dom().is(':visible'))
                 { showPaneSelectWizard(sidebarObj, outerConfig); }
+            },
+
+            showSection: function($pane, sectionName)
+            {
+                var sidebarObj = this;
+                var $s = $pane.find('.formSection[name=' + sectionName + ']')
+                    .removeClass('hide');
+                if (!$.isBlank($s))
+                { wizardAction(sidebarObj, $s, 'nextField'); }
             },
 
             baseFormHandler: function($pane, value)
@@ -818,9 +834,16 @@
 
                 $pane.find('.formSection.selectable:not(.collapsed)')
                     .each(function()
-                { $(this).find('.sectionSelect').click(); });
+                {
+                    var $s = $(this);
+                    if ($s.find('[data-dataValue]').length < 1)
+                    { $s.find('.sectionSelect').click(); }
+                });
+
+                $pane.find('.formSection.hidden').addClass('hide');
 
                 $pane.find('.line.repeater .line.repeaterAdded').remove();
+                $pane.find('.line.repeater > .line.hide').removeClass('hide');
 
                 $pane.find('.ranWizard').removeClass('ranWizard');
 
@@ -829,7 +852,8 @@
 
                 var resetInput = function($input)
                 {
-                    var defValue = $input.attr('data-defaultValue') || null;
+                    var defValue = $input.attr('data-dataValue') ||
+                        $input.attr('data-defaultValue') || null;
                     $input.value(defValue);
                     // Fire events to make sure uniform controls are updated,
                     // and text prompts are reset
@@ -849,7 +873,8 @@
                     var $slider = $(this);
                     var $input = $slider.next(':input');
                     $slider.slider('value',
-                        parseInt($input.attr('data-defaultValue') || 0));
+                        parseInt($input.attr('data-dataValue') ||
+                            $input.attr('data-defaultValue') || 0));
                 });
 
                 $pane.find('.line :radio').each(function()
@@ -1118,12 +1143,12 @@
                     options.push({tagName: 'option', value: '',
                         contents: args.item.prompt || 'Select a value'});
                 }
-                var v = curValue;
-                if (_.isBoolean(curValue)) { v = v.toString(); }
+                if (_.isBoolean(curValue)) { curValue = curValue.toString(); }
+
                 _.each(args.item.options, function(o)
                 {
                     var item = {tagName: 'option', value: o.value,
-                        selected: o.value === (v || defValue),
+                        selected: o.value === (curValue || defValue),
                         contents: o.text};
                     var dataKeys = [];
                     _.each(o.data || {}, function(v, k)
@@ -1135,7 +1160,8 @@
                     { item['data-customKeys'] = dataKeys.join(','); }
                     options.push(item);
                 });
-                contents.push($.extend(commonAttrs(args.item),
+                contents.push($.extend(commonAttrs($.extend({}, args.item,
+                        {dataValue: curValue})),
                     {tagName: 'select', contents: options}));
                 break;
 
@@ -1176,7 +1202,8 @@
                         'data-min': min, 'data-max': max});
 
                 contents.push($.extend(commonAttrs($.extend({}, args.item,
-                        {defaultValue: defValue, extraClass: 'sliderInput'})),
+                        {defaultValue: defValue, dataValue: curValue,
+                            extraClass: 'sliderInput'})),
                     {tagName: 'input', type: 'text', value: (curValue || defValue),
                     'data-scale': scale, disabled: true}));
                 break;
@@ -1347,7 +1374,8 @@
             '.formSection': {
                 'section<-sections': {
                     '@class+': function(arg)
-                    { return _.compact([arg.item.type, arg.item.name])
+                    { return _.compact([arg.item.type, arg.item.name,
+                        (arg.item.type == 'hidden' ? 'hide' : '')])
                         .join(' '); },
                     '@data-onlyIf': function(arg)
                     {
@@ -1625,7 +1653,7 @@
 
         var checkRepeaterMaxMin = function($repeater)
         {
-            var numLines = $repeater.children('.line').length;
+            var numLines = $repeater.children('.line:not(.hide)').length;
             var $button = $repeater.children('.button.addValue');
             if (numLines < 1) { _.defer(function() { addValue($button); }); }
 
@@ -1740,7 +1768,10 @@
                 e.preventDefault();
                 var $t = $(this);
                 var $repeater = $t.closest('.line.repeater');
-                $t.closest('.line').remove();
+                var $line = $t.closest('.line');
+                if ($line.is('.repeaterAdded')) { $line.remove(); }
+                else { $line.addClass('hide'); }
+
                 checkRepeaterMaxMin($repeater);
                 updateWizardVisibility(sidebarObj);
             });
@@ -2086,7 +2117,7 @@
                     }
                 }
                 else
-                { showWizard(sidebarObj, $triggerItem); }
+                { _.defer(function() { showWizard(sidebarObj, $triggerItem); }); }
                 break;
 
             case 'expand':

@@ -93,6 +93,7 @@ blist.namespace.fetch('blist.data');
             blankRow: false,
             filterMinChars: 3,
             initialResponse: null,
+            masterView: null,
             pageSize: 50,
             progressiveLoading: false
         };
@@ -940,6 +941,9 @@ blist.namespace.fetch('blist.data');
 
                 // Ensure the meta has a columns object, even if it is empty
                 meta = newMeta;
+
+                if (!$.isBlank(curOptions.masterView))
+                { $.syncObjects(curOptions.masterView, meta.view); }
 
                 meta.sort = {};
 
@@ -2252,9 +2256,9 @@ blist.namespace.fetch('blist.data');
         /**
          * Notify listeners of column sort changes
          */
-        this.columnSortChange = function()
+        this.columnSortChange = function(isMulti)
         {
-            $(listeners).trigger('sort_change');
+            $(listeners).trigger('sort_change', [isMulti]);
         };
 
         /**
@@ -2510,7 +2514,7 @@ blist.namespace.fetch('blist.data');
             });
             sortConfigured = true;
 
-            this.columnSortChange();
+            this.columnSortChange(true);
 
             // Sort
             doSort();

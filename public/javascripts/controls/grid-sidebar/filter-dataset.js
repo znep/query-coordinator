@@ -6,12 +6,12 @@
     var sortableTypes = _.compact(_.map(blist.data.types, function(t, n)
     { return t.sortable ? n : null; }));
 
+    var configName = 'filter.filterDataset';
     var config = {
-        name: 'filter.filterDataset',
+        name: configName,
         priority: 1,
         title: 'Filter, Sort, Roll-Up',
         subtitle: 'You can filter a view down to certain rows; sort by one or more columns; and group rows together with a roll-up',
-        noReset: true,
         dataSource: blist.display.view,
         sections: [
             {
@@ -23,7 +23,7 @@
                             {type: 'columnSelect', text: 'Column',
                                 name: 'expression.columnId', required: true,
                                 notequalto: 'sortColumn',
-                                columns: {type: sortableTypes, hidden: true}},
+                                columns: {type: sortableTypes, hidden: false}},
                             {type: 'select', text: 'Direction',
                                 name: 'ascending', prompt: null, options: [
                                     {text: 'Ascending', value: 'true'},
@@ -35,14 +35,28 @@
                 ],
                 wizard: 'Do you want to sort this data?'
             }
-        ]
+        ],
+        finishBlock: {
+            buttons: [
+                {text: 'Apply', isDefault: true, value: true},
+                $.gridSidebar.buttons.cancel
+            ],
+            wizard: 'Choose whether to Apply these options to the current view of the data, or Save a new filter with these options'
+        }
     };
 
     config.finishCallback = function(sidebarObj, data, $pane, value)
     {
         if (!sidebarObj.baseFormHandler($pane, value)) { return; }
 
-        $.debug('view', sidebarObj.getFormValues($pane));
+        var filterView = sidebarObj.getFormValues($pane);
+        _.each(filterView.query.orderBys, function(ob)
+        { ob.expression.type = 'column'; });
+
+        sidebarObj.$grid().blistModel().multiSort(filterView.query.orderBys);
+        sidebarObj.finishProcessing();
+        sidebarObj.addPane(configName);
+        sidebarObj.show(configName);
     };
 
     $.gridSidebar.registerConfig(config);

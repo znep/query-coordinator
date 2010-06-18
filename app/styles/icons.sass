@@ -130,6 +130,8 @@
     background-position: 0 -494px
   &.close #{$subselector}
     background-position: 0 -507px
+  &.alert #{$subselector}
+    background-position: 0 -520px
 
 // icons/type_icons_30.png
 @mixin sprite-type-icons-30($subselector: '.icon')
@@ -166,8 +168,10 @@
     background-position: 0 -330px
   &.typeGrouped #{$subselector}
     background-position: 0 -360px
-  &.api .icon
+  &.api #{$subselector}
     background-position: 0 -390px
+  &.alert #{$subselector}
+    background-position: 0 -420px
 
 // interface/dataset_tabs.png
 @mixin sprite-dataset-tabs($subselector: '.icon')

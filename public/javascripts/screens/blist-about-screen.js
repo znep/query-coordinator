@@ -174,9 +174,9 @@ $(function ()
         triggerButton: $('.editAttachments')
     });
 
-    $('.customFieldEdit').customFieldEdit({
-        triggerButton: $('.editMetadataLink')
-    });
-    $('.customFieldAdd').customFieldAdd();
+    var customFieldOpts = {triggerButton: $('.editMetadataLink')};
+
+    $('.customFieldEdit').customFieldEdit(customFieldOpts);
+    $('.customFieldAdd').customFieldAdd(customFieldOpts);
 
 });

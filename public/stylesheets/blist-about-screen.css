@@ -130,18 +130,14 @@ span.fieldValue
 
 .customMetaSummary .aboutSummaryList
 {
-    margin-bottom: 0;
-}
-
-.customMetaSummary div .aboutSummaryList
-{
+    margin: 0;
     padding: 0;
-    margin-top: 0;
 }
 
-.customMetaSummary .customFieldAddHint:hover
+.customMetaSummary dt,
+.customMetaSummary dd
 {
-    cursor: pointer;
+    margin: 1em 0;
 }
 
 .customMetaSummary

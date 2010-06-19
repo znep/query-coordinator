@@ -19,9 +19,15 @@ class WidgetsNewController < ApplicationController
       else
         @theme = WidgetCustomization.find(params[:customization_id]).customization
       end
-    rescue CoreServer::CoreServerError => e
-      flash.now[:error] = e.error_message
-      return (render 'shared/error', :status => :not_found)
+    rescue CoreServer::ResourceNotFound
+      begin
+        @theme = WidgetCustomization.find(CurrentDomain.default_widget_customization_id).customization
+      rescue CoreServer::CoreServerError => e
+        # unless people are mucking around with the db directly, this
+        # should never happen (only if a domain has no default customization),
+        # but let's be safe.
+        @theme = WidgetCustomization.default_theme(1)
+      end
     end
 
     if !@theme[:version].present?

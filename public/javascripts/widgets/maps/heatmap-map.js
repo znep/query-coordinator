@@ -53,9 +53,17 @@
         var infoTemplate = new esri.InfoTemplate("${NAME}", info);
         var data = _.map(mapObj._rows, function(row)
             {
+                var redirectTarget;
+                if (mapObj._redirectCol)
+                {
+                    redirectTarget = mapObj._redirectCol.dataTypeName == 'url'
+                                    ? row[mapObj._redirectCol.dataIndex][mapObj._redirectCol.urlSubIndex]
+                                    : row[mapObj._redirectCol.dataIndex];
+                }
                 return {
                     state: JSON.parse(row[mapObj._locCol.dataIndex][0]).state,
                     description: row[mapObj._infoCol.dataIndex],
+                    redirect_to: redirectTarget,
                     value: parseInt(row[mapObj._quantityCol.dataIndex])
                 };
             });
@@ -85,6 +93,15 @@
                                                 description: datum.description,
                                                 quantity: datum.value })
                                            .setInfoTemplate(infoTemplate));
+            if (datum.redirect_to)
+            {
+                $(feature.getDojoShape().rawNode)
+                    .click(function(event)
+                        { window.open(datum.redirect_to); })
+                    .hover(
+                        function(event) { blist.$display.find('div .container').css('cursor', 'pointer'); },
+                        function(event) { blist.$display.find('div .container').css('cursor', 'default'); });
+            }
         });
         mapObj.map.centerAndZoom(esri.geometry.geographicToWebMercator(new esri.geometry.Point(-111.88, 41.75, new esri.SpatialReference({ wkid: 4326 }))), 3);
     };

@@ -431,6 +431,15 @@
                 c.dataIndex = i;
                 mapObj._quantityCol = c;
             }
+            if (c.tableColumnId == colFormat.redirectId)
+            {
+                c.dataIndex = i;
+                if (c.dataTypeName == 'url')
+                {
+                    c.urlSubIndex = _.indexOf(c.subColumnTypes, 'url');
+                }
+                mapObj._redirectCol = c;
+            }
         });
 
         return true;

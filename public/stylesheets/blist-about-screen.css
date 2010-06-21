@@ -291,7 +291,7 @@ span.helpie
 {
     padding-left: 1.7em;
 }
-.aboutBody .attachmentsSummary li
+.aboutBody .attachmentsSummary li.attachmentItem
 {
     font-size: 1.2em;
     line-height: 1.6em;

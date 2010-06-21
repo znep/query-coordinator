@@ -5,8 +5,6 @@
         this.settings = $.extend({}, $.socrataMap.heatmap.defaults, options);
         this.currentDom = dom;
         this.init();
-
-        console.log(this);
     };
 
 

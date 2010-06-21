@@ -51,7 +51,7 @@
         <div class='section'>
           <h3>Coordinates</h3>
           <p class='subtitle separator'>
-          Choose the data to map.  You must choose a location column.
+          Choose the data to map.  You must choose a location column<span class="subtitle heatmap"> with a state value</span>.
           </p>
 
           <%- uses_col_format = !@view.displayFormat.nil? &&
@@ -98,7 +98,7 @@
           <%- cur_id = @is_edit && uses_col_format ?
             col_format['titleCol'] : nil -%>
 
-          <div class='line'>
+          <div class='line configLine type- <%= cur_type != 'heatmap' ? 'default' : '' %>'>
             <label for='mapColumn_title'>
               Title
             </label>
@@ -129,7 +129,7 @@
             @view.datatypes_match(cur_cols[0], data_types) ?
               cur_cols.shift.id : cur_id -%>
 
-          <div class='line'>
+          <div class='line configLine type- type-heatmap default'>
             <label for='mapColumn_description'>
               Description
             </label>
@@ -150,6 +150,29 @@
               title="Content to display on clicking a marker">?</span>
           </div>
 
+          <%- data_types = ['number', 'money', 'percent'] -%>
+          <%- quantity_id = @is_edit && uses_col_format ?
+            col_format['quantityId'] : nil -%>
+
+          <div class='line configLine type-heatmap <%= @is_edit && cur_type == 'heatmap' ?  'default' : '' %>'>
+            <label class='required' for='mapColumn_quantity'>
+              Quantity
+            </label>
+            <select id='mapColumn_quantity' name='mapColumn_quantity'
+              class='<%= quantity_id.nil?() ? 'prompt' : '' %>'>
+              <option class='prompt' value=''>Select a Column</option>
+              <%- @view.columns_for_datatypes(data_types,
+                    @is_edit && !@view.is_grouped?).each do |c| -%>
+                <option value='<%= c.tableColumnId %>'
+                  data-columnId='<%= c.id %>'
+                  <%= c.tableColumnId.to_s == quantity_id ?
+                  "selected='selected'" : '' %>><%= c.name %></option>
+              <%- end -%>
+            </select>
+            <span class="helpie"
+              title="Number by which intensity is determined">?</span>
+          </div>
+
         </div>
 
       </div>
@@ -160,7 +183,7 @@
         (Choose a chart type to see more details)
       </div>
 
-      <div class='typeBlock type-esri <%= @is_edit && cur_type == 'esri' ?
+      <div class='typeBlock type-esri type-heatmap <%= @is_edit && cur_type == 'esri' ?
         'default' : '' %>'>
         <div class='section'>
           <h3>Layers</h3>
@@ -270,6 +293,9 @@
             var v = $sel.val();
             $('.mapWrapper .column.right .typeBlock').hide();
             $('.mapWrapper .column.right .typeBlock.type-' + v).show();
+            $('.mapWrapper .configLine').hide();
+            $('.mapWrapper .configLine.type-' + (v == 'heatmap' ? v : '')).show();
+            $('.mapWrapper .subtitle.heatmap').toggle(v == 'heatmap');
           }, 0);
     };
 
@@ -352,12 +378,27 @@
       options.plot.locationId = $sel.val();
       colIds.push($sel.find('option:selected').attr('data-columnId'));
 
-      $sel = $('.mapWrapper #mapColumn_title');
-      var titleId = $sel.val();
-      if (titleId !== '')
+      if ($('.mapWrapper #mapType').val() == 'heatmap')
       {
-          options.plot.titleId = titleId;
-          colIds.push($sel.find('option:selected').attr('data-columnId'));
+        $sel = $('.mapWrapper #mapColumn_quantity');
+        var descId = $sel.val();
+        if (descId !== '')
+        {
+            options.plot.quantityId = descId;
+            colIds.push($sel.find('option:selected').attr('data-columnId'));
+        }
+
+        options.heatmapType = 'us_state';
+      }
+      else
+      {
+        $sel = $('.mapWrapper #mapColumn_title');
+        var titleId = $sel.val();
+        if (titleId !== '')
+        {
+            options.plot.titleId = titleId;
+            colIds.push($sel.find('option:selected').attr('data-columnId'));
+        }
       }
 
       $sel = $('.mapWrapper #mapColumn_description');

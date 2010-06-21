@@ -82,6 +82,7 @@ javascripts:
   - widgets/maps/esri-map
   - widgets/maps/google-map
   - widgets/maps/bing-map
+  - widgets/maps/heatmap-map
 - shared-chart:
   - plugins/highcharts.src
   - widgets/base-visualization

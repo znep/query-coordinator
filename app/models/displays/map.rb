@@ -30,7 +30,8 @@ class Displays::Map < Displays::Base
   MAP_TYPES = [
     {'value' => 'google', 'label' => 'Google Maps'},
     {'value' => 'bing', 'label' => 'Bing Maps'},
-    {'value' => 'esri', 'label' => 'ESRI ArcGIS'}
+    {'value' => 'esri', 'label' => 'ESRI ArcGIS'},
+    {'value' => 'heatmap', 'label' => 'Heat Map'}
   ]
 
   ESRI_LAYERS = [

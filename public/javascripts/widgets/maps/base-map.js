@@ -426,6 +426,11 @@
                 mapObj._infoCol = c;
                 mapObj._infoIsHtml = c.renderTypeName == 'html';
             }
+            if (c.tableColumnId == colFormat.quantityId)
+            {
+                c.dataIndex = i;
+                mapObj._quantityCol = c;
+            }
         });
 
         return true;

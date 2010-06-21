@@ -64,7 +64,7 @@
         var max = Math.ceil( _.max(_.map(data, getValue))/50)*50;
         var min = Math.floor(_.min(_.map(data, getValue))/50)*50;
         var segments = [];
-        for (i = 0; i < 10; i++) { segments[i] = (i+1)*(max-min)/10; }
+        for (i = 0; i < 10; i++) { segments[i] = ((i+1)*(max-min)/10)+min; }
 
         _.each(featureSet.features, function(feature) {
             var stateAbbr = feature.attributes['ST_ABBREV'];

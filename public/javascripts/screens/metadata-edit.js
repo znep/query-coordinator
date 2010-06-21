@@ -64,8 +64,14 @@
 
                 $label.text($textField.val());
 
-                var fieldName = $this.find('dt').text();
-                var fieldValue = $textField.val();
+                var fieldName  = $.trim($this.find('dt').text() || '');
+                if ($.isBlank(fieldName))
+                {
+                    opts.editErrorCallback('Error: Can not save a custom field with no name.', opts);
+                    return false;
+                }
+
+                var fieldValue = $.trim($textField.val() || '');
 
                 var customFields = JSON.parse($(opts.viewMetadataSelector).val()) || {};
 

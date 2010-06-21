@@ -3,7 +3,7 @@
   domain_fields = CurrentDomain.custom_dataset_metadata || []
   
   if view.metadata && view.metadata.custom_fields
-    used_fields = view.metadata.custom_fields.keys
+    used_fields = view.metadata.custom_fields.map { |c| c[0] }
   else
     used_fields = []
   end

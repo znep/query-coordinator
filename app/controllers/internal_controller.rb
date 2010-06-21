@@ -75,11 +75,13 @@ class InternalController < ApplicationController
                                                     parentConfigId)[0].id
       end
 
-      Configuration.create({'name' => 'Current theme',
+      site_theme = Configuration.create({'name' => 'Current theme',
         'default' => true, 'type' => 'site_theme', 'parentId' => parentConfigId,
         'domainCName' => domain.cname})
       Configuration.create({'name' => 'Feature set',
         'default' => true, 'type' => 'feature_set', 'domainCName' => domain.cname})
+
+      site_theme.create_property('sdp_template', WidgetCustomization.create_default!.uid)
 
     rescue CoreServer::CoreServerError => e
       flash.now[:error] = e.error_message

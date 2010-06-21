@@ -37,8 +37,7 @@
                 }
                 window.open(
                     $link.attr('href') + "?width=" + width +
-                        "&height=" + height +
-                        "&variation=" + $(config.variationSelector).val(),
+                        "&height=" + height,
                     "Preview");
             });
 
@@ -58,8 +57,7 @@
                 $publishPane.find(config.textareaSelector)
                     .text($publishPane.find(config.templateSelector).val()
                         .replace('#width#', width)
-                        .replace('#height#', height)
-                        .replace('#variation#', $publishPane.find(config.variationSelector).val()));
+                        .replace('#height#', height));
 
                 // Restrict size to >= 500x425 px
                 if (parseInt(width,10) < 500 || parseInt(height,10) < 425 ||

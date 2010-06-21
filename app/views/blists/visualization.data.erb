@@ -92,7 +92,7 @@
             <option class='prompt' value=''>Select a Column</option>
             <%- cols[fcol['dataType']].each do |c| -%>
             <option format='<%= c.format.to_json %>'
-              dataType='<%= c.dataTypeName %>'
+              dataType='<%= c.renderTypeName %>'
               tableColumnId='<%= c.tableColumnId %>'
               value='<%= c.id %>' <%= c.id == cur_id ?
                 "selected='selected'" : '' %>><%= c.name %></option>
@@ -182,7 +182,7 @@
                 <option class='prompt' value=''>Select a Column</option>
                 <%- cols[dcol['dataType']].each do |c| -%>
                 <option format='<%= c.format.to_json %>'
-                  dataType='<%= c.dataTypeName %>'
+                  dataType='<%= c.renderTypeName %>'
                   tableColumnId='<%= c.tableColumnId %>'
                   value='<%= c.id %>' <%= c.id == cur_id ?
                     "selected='selected'" : '' %>><%= c.name %></option>
@@ -246,7 +246,8 @@
     // For now, throw an error when a user tries to create a chart
     // with too many rows
     var rowLimit = 100;
-    if (blist.$display.blistModel().length() > rowLimit)
+    if (!$.isBlank(blist.$display.blistModel) &&
+        blist.$display.blistModel().length() > rowLimit)
     {
       $("#modal").jqmHide();
       _.defer(function() { alert('Charting is a poor choice for a view with ' +

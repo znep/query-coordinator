@@ -12,7 +12,7 @@
                   <h3><%= link_to(h(view.name), view.href,
                     :title => h(view.name)) %></h3>
                   <%= image_tag(view.iconUrl.to_s, :size => "55x55",
-                    :alt => "placeholder") %>
+                    :alt => "placeholder") if view.iconUrl %>
                 </div>
                 <div class="itemMetaData">
                   <ul class="metaList">

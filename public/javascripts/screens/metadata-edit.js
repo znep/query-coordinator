@@ -1,6 +1,112 @@
 
 (function($)
 {
+    $.fn.customFieldAdd = function(options)
+    {
+        var opts = $.extend({}, $.fn.customFieldEdit.defaults, options||{});
+
+        return this.each(function()
+        {
+            var $this       = $(this);
+            var $trigger    = opts.triggerButton || $(opts.addTriggerSelector);
+            var $addPane    = opts.addPane || $(opts.addPaneSelector);
+            var $addHint    = opts.addHint || $(opts.addHintSelector);
+
+            $trigger.click(function(event)
+            {
+                event.preventDefault();
+
+                $addPane.slideDown('normal');
+                $addHint.slideUp('normal');
+            }); 
+        });
+
+    };
+
+    $.fn.customFieldEdit = function(options)
+    {
+        var opts = $.extend({}, $.fn.customFieldEdit.defaults, options||{});
+
+        return this.each(function()
+        {
+            var $this       = $(this);
+            var $trigger    = opts.triggerButton || $this.find(opts.triggerButtonSelector);
+            var $close      = opts.closeButton || $this.find(opts.closeButtonSelector);
+            var $form       = $this.find('form');
+            var $label      = $this.find('span.textContent');
+            var $textField  = $this.find('input.textValue');
+            var $displayPane= $this.find('.textDisplay');
+            var $editForm   = opts.editForm || $this.find(opts.editFormSelector);
+
+            $trigger.click(function(event)
+            {
+                if ($(event.target).is('input') || $(event.target).is('img'))
+                { return true; }
+
+                event.preventDefault();
+
+                $displayPane.hide();
+                $editForm.removeClass('hide');
+            });
+
+            $close.click(function(event)
+            {
+                event.preventDefault();
+
+                $displayPane.show();
+                $editForm.addClass('hide');
+                $textField.val($label.text());
+            });
+ 
+            $form.submit(function(event)
+            {
+                event.preventDefault();
+
+                $label.text($textField.val());
+
+                var fieldName  = $.trim($this.find('dt').text() || '');
+                if ($.isBlank(fieldName))
+                {
+                    opts.editErrorCallback('Error: Can not save a custom field with no name.', opts);
+                    return false;
+                }
+
+                var fieldValue = $.trim($textField.val() || '');
+
+                var customFields = JSON.parse($(opts.viewMetadataSelector).val()) || {};
+
+                if ($.isBlank(customFields.custom_fields))
+                {
+                    customFields.custom_fields = {};
+                }
+
+                if ($.isBlank(fieldValue))
+                {
+                    delete customFields.custom_fields[fieldName];
+                }
+                else
+                {
+                    customFields.custom_fields[fieldName] = fieldValue;
+                }
+
+                $.ajax({
+                    url: $form.attr('action'),
+                    type: 'PUT',
+                    data: JSON.stringify({metadata: customFields}),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    error: function(request, textStatus, error) {
+                        opts.editErrorCallback(
+                            "An error was encountered saving your metadata. Please retry later.", opts);
+                    },
+                    success: function(responseData) {
+                        opts.editSuccessCallback(responseData, opts, $displayPane, $editForm);
+                    } 
+               });
+            });
+        });
+    };
+
     $.fn.attachmentsEdit = function(options)
     {
         var opts = $.extend({}, $.fn.attachmentsEdit.attachmentDefaults, options);
@@ -98,20 +204,19 @@
                         $nameField.val($(this).find("input[name='filename']").val());
                     }
                     attachments.push(attachment);
-                }); 
+                });
+
+                var metadata = JSON.parse($(opts.viewMetadataSelector).val()) || {};
+                metadata.attachments = attachments;
 
                 $.ajax({
                     url: $form.attr('action'),
                     type: 'PUT',
-                    data: JSON.stringify({
-                        metadata: {
-                            attachments: attachments
-                        }
-                    }),
+                    data: JSON.stringify({metadata: metadata}),
                     dataType: 'json',
                     contentType: 'application/json',
                     error: function(request, textStatus, error) {
-                        opts.errorCallback("An error was encountered creating saving your attachments. Please retry later.", opts);
+                        opts.errorCallback("An error was encountered saving your attachments. Please retry later.", opts);
                     },
                     success: function(responseData) {
                         opts.successCallback(responseData, opts);
@@ -122,6 +227,31 @@
         
     };
 
+    $.fn.customFieldEdit.defaults = {
+        closeButtonSelector: '.formCancelLink',
+        editFormSelector: '.editFieldForm',
+        submitButtonSelector: '.customFieldSubmitLink',
+        triggerButtonSelector: '*',
+        addTriggerSelector: '.customFieldAddHint dl>*',
+        addPaneSelector: '.customFieldAdd',
+        addHintSelector: '.customFieldAddHint',
+        viewMetadataSelector: '#viewMetadataJson',
+        editSuccessCallback: function(responseData, opts, label, editForm)
+        {
+            label.show();
+            editForm.addClass('hide');
+            updateMetaData(opts.viewMetadataSelector, responseData);
+        },
+        editErrorCallback: function(message, opts)
+        {
+            alert(message);
+        },
+        addSuccessCallback: function(responseData, label)
+        {
+            updateMetaData(opts.viewMetadataSelector, responseData);
+        }
+    };
+
     $.fn.attachmentsEdit.attachmentDefaults = {
         triggerButtonSelector: '.attachmentsSummary dl.actionList>*',
         attachmentsContainerSelector: '.attachmentsSummary',
@@ -130,6 +260,7 @@
         deleteAttachmentSelector: '.deleteAttachmentLink',
         errorMessageContainerSelector: '.attachmentErrorItem',
         errorMessageSelector: '.attachmentErrorMessage',
+        viewMetadataSelector: '#viewMetadataJson',
         uploadAction: '/api/assets',
         uploadIndicator: '.uploadingIndicator',
         uploadLinkSelector: '.uploadNewAttachmentLink',
@@ -170,8 +301,17 @@
             }
 
             $('.attachmentsEdit').slideUp('normal');
-            $(opts.attachmentsContainerSelector).slideDown('normal');   
+            $(opts.attachmentsContainerSelector).slideDown('normal');
+            updateMetaData(opts.viewMetadataSelector, responseData);
         }
     };
+
+
+
+
+    var updateMetaData = function(selector, newMeta)
+    {
+        $(selector).val(JSON.stringify(newMeta.metadata));
+    }
 
 })(jQuery);

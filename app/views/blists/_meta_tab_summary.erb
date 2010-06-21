@@ -326,3 +326,34 @@
   <%= render :partial => 'blists/attachments_edit', :locals => { :view => view } %>
 </div>
 
+<%- if view.metadata && view.metadata.custom_fields -%>
+  <%- view.metadata.custom_fields.each do |field| -%>
+  <div class="customFieldEdit">
+    <dl class="summaryList <%= allow_edit ? 'actionList' : '' %>">
+      <dt><%= h(field[0]) %></dt>
+      <dd> 
+        <div class="textDisplay">
+          <div class="itemContent">
+            <span class="textContent"><%= h(field[1]) %></span>
+          </div>
+          <%- if allow_edit -%>
+          <div class="itemActions">
+            <a href="<%= view.href %>" class="action"><span>Edit</span></a>
+          </div>
+          <%- end -%>
+        </div>
+        <div class="editFieldForm hide">
+          <%= form_tag("/api/views/#{view.id}") %>
+            <%= text_field_tag 'textValue', h(field[1]), :class => 'textValue', :id => nil %>
+            <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
+            <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_path, :title => "Cancel", :class => "formCancelLink") %>
+          </form>
+        </div>
+      </dd>
+    </dl>
+  </div>
+  <%- end -%>
+<%- end -%>
+
+<%= render :partial => 'blists/custom_metadata_edit', :locals => { :view => view, :dl_class => 'summaryList', :show_edit_link => true } if allow_edit %>
+<%= hidden_field_tag('viewMetadataJson', view.metadata.to_json) %>

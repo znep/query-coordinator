@@ -122,6 +122,29 @@ span.fieldValue
     width: 350px;
 }
 
+.customMetaSummary dd input[type="text"]
+{
+    position: relative;
+    top: -0.7em;
+}
+
+.customMetaSummary .aboutSummaryList
+{
+    margin: 0;
+    padding: 0;
+}
+
+.customMetaSummary dt,
+.customMetaSummary dd
+{
+    margin: 1em 0;
+}
+
+.customMetaSummary
+{
+    margin-bottom: 20px;
+}
+
 .aboutSummaryList dd span object,
 .aboutSummaryList dd span embed
 {
@@ -268,7 +291,7 @@ span.helpie
 {
     padding-left: 1.7em;
 }
-.aboutBody .attachmentsSummary li
+.aboutBody .attachmentsSummary li.attachmentItem
 {
     font-size: 1.2em;
     line-height: 1.6em;

@@ -57,6 +57,7 @@
 .modalContentWrapper { padding: 1em; }
 
 .modalContentWrapper .subtitle { color: #999999; }
+.modalContentWrapper .subtitle.heatmap { display: none; }
 
 /*** END: Modal Dialogs ***/
 
@@ -1593,6 +1594,8 @@ dl.versionInfo dd
 .viewSetupWrapper form p { font-size: 1.1em; }
 
 .viewSetupWrapper .line { margin: 0.5em 0; }
+.viewSetupWrapper .configLine { display: none; }
+.viewSetupWrapper .configLine.default { display: block; }
 .viewSetupWrapper .line .helpie { line-height: 1.7em; }
 
 .viewSetupWrapper label

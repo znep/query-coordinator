@@ -37,7 +37,9 @@ javascripts:
   - util/socrata-server
   - widgets/scrollable
 - shared-calendar:
+  - plugins/ui.draggable
   - plugins/fullcalendar
+  - data/types
   - widgets/blist-calendar
 - shared-table-render:
   - plugins/ui.draggable
@@ -80,6 +82,7 @@ javascripts:
   - widgets/maps/esri-map
   - widgets/maps/google-map
   - widgets/maps/bing-map
+  - widgets/maps/heatmap-map
 - shared-chart:
   - plugins/highcharts.src
   - widgets/base-visualization

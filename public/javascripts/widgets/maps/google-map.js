@@ -31,7 +31,7 @@
                 mapObj._boundsCounts = 0;
             },
 
-            renderPoint: function(latVal, longVal, title, info, rowId)
+            renderPoint: function(latVal, longVal, title, info, rowId, icon)
             {
                 var mapObj = this;
 
@@ -39,7 +39,8 @@
                 var ll = new google.maps.LatLng(latVal, longVal);
                 var marker = new google.maps.Marker({position: ll,
                     title: title, clickable: hasInfo || title !== null,
-                    map: mapObj.map});
+                    map: mapObj.map, icon: icon});
+                if (mapObj._markers[rowId]) mapObj._markers[rowId].setMap(null);
                 mapObj._markers[rowId] = marker;
 
                 if (hasInfo)
@@ -73,7 +74,6 @@
                 var mapObj = this;
                 if (mapObj.infoWindow !== undefined) { mapObj.infoWindow.close(); }
                 _.each(mapObj._markers, function(m) { m.setMap(null); });
-                mapObj._markers = {};
 
                 mapObj._bounds = new google.maps.LatLngBounds();
                 mapObj._boundsCounts = 0;

@@ -237,6 +237,7 @@ javascripts:
   - util/humane-date
   - util/navigation
   - util/urls
+  - controls/modal-dialogs
   - controls/dataset-controls
   - controls/stars
   - controls/menu
@@ -259,6 +260,7 @@ javascripts:
   - util/inline-login
   - controls/menu
   - widgets/wizard-prompt
+  - controls/modal-dialogs
   - controls/expander
   - controls/grid-sidebar/base-sidebar
   - controls/grid-sidebar/calendar-create

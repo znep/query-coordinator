@@ -4,6 +4,9 @@ MAIN SITE:
 9 dataset grid active sidebar tab
 50 menu button
 51 menu
+3000 modal dialog
+3001 modal dialog overlay
+3002 modal dialog close
 
 
 DATASETv2:

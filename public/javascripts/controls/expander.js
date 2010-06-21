@@ -45,7 +45,12 @@
                         .animate({
                             height: $content.css('line-height')
                         },
-                        config.resizeFinishCallback);
+                        function()
+                        {
+                            // Un-set display so natural CSS styling can take effect
+                            $content.css('display', null);
+                            config.resizeFinishCallback();
+                        });
                     $this.removeClass('upArrow').addClass('downArrow');
                 }
             });

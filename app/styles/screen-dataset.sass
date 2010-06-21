@@ -54,26 +54,56 @@ html, body
       left: 0.4em
       top: 0.4em
       position: absolute
+      .alertIcon
+        display: none
+        position: absolute
+        top: 0
 
-    #datasetName
-      font-size: 1.6em
-      font-weight: normal
+    #datasetName, .unsavedLine, #description, .basedOn
       margin: 0
         left: 40px
         right: 1em
+
+    #datasetName, .unsavedLine h2
+      font-size: 1.6em
+      font-weight: normal
       padding: 0
 
     #description
       color: #999999
       font-size: 1.1em
       line-height: 1.1em
-      margin:
-        left: 40px
-        right: 1em
-        top: -0.2em
+      margin-top: -0.2em
       overflow: hidden
       &.collapsed
         height: 1.1em
+
+    .unsavedLine
+      display: none
+      h2
+        display: inline-block
+        margin-right: 1em
+      a.toolbarButton
+        @include toolbar-button
+        font-size: 1.2em
+        margin-right: 0.5em
+
+    .basedOn
+      color: #999999
+      display: none
+      font-size: 1.2em
+      line-height: 1.1em
+
+    &.unsavedView
+      background-color: #ffffc8
+      .unsavedLine, .basedOn
+        display: block
+      #datasetIcon .alertIcon
+        display: block
+      #description
+        margin-top: 0.5em
+      #datasetName, #description.collapsed
+        display: none
 
   #actionBox
     bottom: -1px
@@ -157,6 +187,11 @@ html, body
         float: left
         margin-left: -7px
         position: relative
+        a
+          @include sprite-menu-icons('.alertIcon')
+          .alertIcon
+            position: absolute
+            right: 8px
 
       li
         z-index: 8
@@ -228,6 +263,23 @@ html, body
 .blist-tr .blist-td-first
   border-left-width: 0
   padding-left: 0.4167em
+
+// Save view dialog
+.saveViewDialog
+  margin-left: -14em
+  width: 28em
+  .loadingOverlay
+    background-color: #cccccc
+    height: 100%
+    left: 0
+    filter: alpha(opacity = 50)
+    opacity: 0.5
+    position: absolute
+    top: 0
+    width: 100%
+    z-index: 3001
+  input
+    width: 95%
 
 // Login overlay
 #login, #signup

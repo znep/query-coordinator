@@ -53,10 +53,13 @@
         _.each(filterView.query.orderBys, function(ob)
         { ob.expression.type = 'column'; });
 
-        sidebarObj.$grid().blistModel().multiSort(filterView.query.orderBys);
         sidebarObj.finishProcessing();
-        sidebarObj.addPane(configName);
-        sidebarObj.show(configName);
+        sidebarObj.$grid().blistModel().multiSort(filterView.query.orderBys);
+        _.defer(function()
+        {
+            sidebarObj.addPane(configName);
+            sidebarObj.show(configName);
+        });
     };
 
     $.gridSidebar.registerConfig(config);

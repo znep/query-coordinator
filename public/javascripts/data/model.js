@@ -943,7 +943,7 @@ blist.namespace.fetch('blist.data');
                 meta = newMeta;
 
                 if (!$.isBlank(curOptions.masterView))
-                { $.syncObjects(curOptions.masterView, meta.view); }
+                { $.syncObjects(curOptions.masterView, this.getViewCopy(true)); }
 
                 meta.sort = {};
 
@@ -2504,6 +2504,8 @@ blist.namespace.fetch('blist.data');
             }
 
             meta.view.query.orderBys = orderBys;
+            if (!$.isBlank(curOptions.masterView))
+            { curOptions.masterView.query.orderBys = orderBys; }
             meta.sort = {};
             $.each(meta.view.query.orderBys, function(i, sort) {
                 var col = self.getColumnByID(sort.expression.columnId);
@@ -2844,7 +2846,7 @@ blist.namespace.fetch('blist.data');
         {
             var view = meta.view;
             // Update all the widths from the meta columns
-            $.each(meta.columns[0], function(i, c)
+            $.each((meta.columns || [])[0] || [], function(i, c)
             {
                 self.getColumnByID(c.id).width = c.width;
                 if (c.body && c.body.children)

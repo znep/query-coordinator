@@ -19,6 +19,19 @@ blist.datasetPage.adjustSize = function()
     $('.outerContainer').fullScreen().adjustSize();
 };
 
+blist.datasetPage.clearTempView = function()
+{
+    $('#sidebarOptions a.alert').removeClass('alert');
+    $('#titleBox').removeClass('unsavedView');
+};
+
+blist.datasetPage.setTempView = function()
+{
+    $('#titleBox').addClass('unsavedView');
+    // For now unsaved view means something has changed in filter tab
+    $('#sidebarOptions .tabFilter a').addClass('alert');
+};
+
 $(function()
 {
     $('.outerContainer').fullScreen();
@@ -30,8 +43,6 @@ $(function()
         if (blist.display.isGrid)
         {
             $dataGrid
-//                .bind('full_load',
-//                    function(){ $('#lensContainer .headerBar').removeClass('hide'); })
                 .datasetGrid({viewId: blist.display.viewId,
                     columnDeleteEnabled: blist.isOwner,
                     columnPropertiesEnabled: blist.isOwner,
@@ -39,9 +50,8 @@ $(function()
                     showAddColumns: blist.isOwner && blist.display.type == 'blist',
                     currentUserId: blist.currentUserId,
                     accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
-//                    clearTempViewCallback: blistGridNS.clearTempViewTab,
-//                    setTempViewCallback: blistGridNS.setTempViewTab,
-//                    updateTempViewCallback: blistGridNS.updateTempViewTab,
+                    clearTempViewCallback: datasetPageNS.clearTempView,
+                    setTempViewCallback: datasetPageNS.setTempView,
                     filterForm: '#searchButton .searchForm',
                     clearFilterItem: '#searchButton .clearSearch'
 //                    isInvalid: blist.display.isInvalid,
@@ -159,6 +169,95 @@ $(function()
         $(this)
             .toggleClass('maximize')
             .toggleClass('minimize');
+    });
+
+    // Unsaved view stuff
+    $('.unsavedLine a.save').click(function(e)
+    {
+        e.preventDefault();
+        var $a = $(this);
+        if ($a.is('.disabled')) { return; }
+
+        $a.data('saveText', $a.text());
+        $a.text($a.attr('data-savingText'));
+        $a.addClass('disabled');
+
+        $.ajax({url: '/views/' + blist.display.view.id + '.json',
+            type: 'PUT', contentType: 'application/json', dataType: 'json',
+            data: JSON.stringify(blist.display.view),
+            success: function()
+            {
+                $a.text($a.data('saveText'));
+                $a.removeClass('disabled');
+
+                if (blist.display.isGrid)
+                { $dataGrid.datasetGrid().clearTempView(null, true); }
+            }});
+    });
+
+    $('.unsavedLine a.saveAs').click(function(e)
+    {
+        e.preventDefault();
+        $('.saveViewDialog').jqmShow();
+    });
+
+    var saveView = function()
+    {
+        var name = $('.saveViewDialog .viewName').val();
+        if ($.isBlank(name))
+        {
+            $('.saveViewDialog .mainError').text('A view name is required');
+            return;
+        }
+
+        $('.saveViewDialog .mainError').text('');
+
+        var doSave = function()
+        {
+            $('.saveViewDialog').find('.loadingOverlay, .loadingSpinner')
+                .removeClass('hide');
+            $.ajax({url: '/views.json', type: 'POST', dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify($.extend({},
+                    blist.display.view, {name: name})),
+                error: function(xhr)
+                {
+                    $('.saveViewDialog').find('.loadingOverlay, .loadingSpinner')
+                        .addClass('hide');
+                    $('.saveViewDialog .mainError')
+                        .text(JSON.parse(xhr.responseText).message);
+                },
+                success: function(view)
+                {
+                    $('.saveViewDialog').jqmHide();
+                    blist.util.navigation.redirectToView(view.id);
+                }});
+        };
+
+        if (!$.isBlank(blist.util.inlineLogin))
+        {
+            var msg = 'You must be logged in to save a view';
+            blist.util.inlineLogin.verifyUser(
+                function(isSuccess)
+                {
+                    if (isSuccess) { doSave(); }
+                    else { $('.saveViewDialog .mainError').text(msg); }
+                }, msg);
+        }
+        else
+        { doSave(); }
+    };
+
+    $('.saveViewDialog form').submit(function(e)
+    {
+        e.preventDefault();
+        saveView();
+    });
+
+    $('.saveViewDialog a.save').click(function(e)
+    {
+        e.preventDefault();
+        saveView();
     });
 
     // fetch some data that we'll need

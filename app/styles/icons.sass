@@ -135,7 +135,8 @@
 
 // icons/type_icons_30.png
 @mixin sprite-type-icons-30($subselector: '.icon')
-  #{$subselector}
+  #{$subselector},
+  .alertIcon
     @include text-hiding
     @include ie6-fix
     background-image: url(/stylesheets/images/icons/type_icons_30.png)
@@ -170,7 +171,8 @@
     background-position: 0 -360px
   &.api #{$subselector}
     background-position: 0 -390px
-  &.alert #{$subselector}
+  &.alert #{$subselector},
+  .alertIcon
     background-position: 0 -420px
 
 // interface/dataset_tabs.png

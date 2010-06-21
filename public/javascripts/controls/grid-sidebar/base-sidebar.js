@@ -310,6 +310,17 @@
 
                 $(window).resize(function() { handleResize(sidebarObj); });
                 $domObj.resize(function() { handleResize(sidebarObj); });
+
+                $(document).bind(blist.events.MODAL_SHOWN, function()
+                {
+                    if (!$.isBlank(sidebarObj._$currentWizard))
+                    { sidebarObj._$currentWizard.socrataTip().quickHide(); }
+                });
+                $(document).bind(blist.events.MODAL_HIDDEN, function()
+                {
+                    if (!$.isBlank(sidebarObj._$currentWizard))
+                    { sidebarObj._$currentWizard.socrataTip().quickShow(); }
+                });
             },
 
             $dom: function()
@@ -1297,7 +1308,7 @@
                 contents.push($.button({text: args.item.addText || 'Add Value',
                     customAttrs: $.extend(commonAttrs(args.item),
                         {'data-template': templateLine,
-                        'data-count': args.item.minimum || 1,
+                        'data-count': (args.item.minimum || 1) + 1,
                         'data-maximum': args.item.maximum}),
                     className: 'addValue'}, true));
                 break;

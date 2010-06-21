@@ -8,7 +8,7 @@
     used_fields = []
   end
 
-  available_fields = domain_fields - used_fields
+  available_fields = domain_fields.sort { |a,b| a[0] <=> b[0] } - used_fields
 -%>
 <%- if available_fields.present? -%>
 <%= hidden_field_tag 'availableCustomFields', available_fields.to_json %>

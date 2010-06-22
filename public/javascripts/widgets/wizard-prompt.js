@@ -45,7 +45,7 @@
                     '</div>');
                 if (!_.isEmpty(wizObj.settings.buttons))
                 {
-                    $msg.append('<ul class="actionButtons clearfix"></ul>');
+                    $msg.append('<ul class="actionButtons"></ul>');
                     var $list = $msg.find('ul.actionButtons');
                     _.each(wizObj.settings.buttons, function(b)
                     {

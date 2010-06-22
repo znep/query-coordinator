@@ -81,16 +81,16 @@
     // Private methods
     var ajaxLoad = function(currentObj, data)
     {
-        currentObj.$dom().find('.loadingSpinner').removeClass('hidden');
+        currentObj.$dom().find('.loadingSpinner').removeClass('hide');
         $.ajax({url: '/views/' + currentObj.settings.viewId + '/rows.json',
                 dataType: 'json', data: data, cache: false,
                 success: function(r)
                 {
-                    currentObj.$dom().find('.loadingSpinner').addClass('hidden');
+                    currentObj.$dom().find('.loadingSpinner').addClass('hide');
                     addLoadedData(currentObj, r);
                 },
                 error: function()
-                { currentObj.$dom().find('.loadingSpinner').addClass('hidden');}
+                { currentObj.$dom().find('.loadingSpinner').addClass('hide'); }
         });
     };
 

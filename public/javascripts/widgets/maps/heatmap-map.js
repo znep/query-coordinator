@@ -38,7 +38,7 @@
     {
         var queryTask = new esri.tasks.QueryTask("http://server.arcgisonline.com/ArcGIS/rest/services/Demographics/USA_Tapestry/MapServer/4");
         var query = new esri.tasks.Query();
-        query.outFields = ["*"];
+        query.outFields = ["NAME", "ST_ABBREV"];
         query.returnGeometry = true;
         query.outSpatialReference = mapObj.map.spatialReference;
         query.where = "ST_ABBREV LIKE '%'";

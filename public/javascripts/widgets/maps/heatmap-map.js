@@ -14,6 +14,8 @@
         renderData: function(rows)
         {
             var mapObj = this;
+            if (mapObj._rows === undefined) { mapObj._rows = []; }
+            mapObj._rows = mapObj._rows.concat(rows);
 
             if (_.isUndefined(mapObj._locCol) && _.isUndefined(mapObj._quantityCol))
             {
@@ -42,8 +44,7 @@
         query.returnGeometry = true;
         query.outSpatialReference = mapObj.map.spatialReference;
         query.where = "ST_ABBREV LIKE '%'";
-        queryTask.execute(query, function(featureSet) { addFeatureSetToMap(mapObj, featureSet); },
-                                 function(error) { if (window.console && window.console.log) console.log(error); });
+        queryTask.execute(query, function(featureSet) { addFeatureSetToMap(mapObj, featureSet); });
     };
 
     var addFeatureSetToMap = function(mapObj, featureSet)

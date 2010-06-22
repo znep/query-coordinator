@@ -42,7 +42,8 @@
         query.returnGeometry = true;
         query.outSpatialReference = mapObj.map.spatialReference;
         query.where = "ST_ABBREV LIKE '%'";
-        queryTask.execute(query, function(featureSet) { addFeatureSetToMap(mapObj, featureSet); });
+        queryTask.execute(query, function(featureSet) { addFeatureSetToMap(mapObj, featureSet); },
+                                 function(error) { if (window.console && window.console.log) console.log(error); });
     };
 
     var addFeatureSetToMap = function(mapObj, featureSet)

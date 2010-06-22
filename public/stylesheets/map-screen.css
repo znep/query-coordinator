@@ -46,6 +46,7 @@
 .mapInfoContainer
 {
     font-size: 1.2em;
+    margin-right: 1.2em;
     max-height: 10em;
     max-width: 25em;
 }

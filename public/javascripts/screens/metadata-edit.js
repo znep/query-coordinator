@@ -64,8 +64,14 @@
 
                 $label.text($textField.val());
 
-                var fieldName = $this.find('dt').text();
-                var fieldValue = $textField.val();
+                var fieldName  = $.trim($this.find('dt').text() || '');
+                if ($.isBlank(fieldName))
+                {
+                    opts.editErrorCallback('Error: Can not save a custom field with no name.', opts);
+                    return false;
+                }
+
+                var fieldValue = $.trim($textField.val() || '');
 
                 var customFields = JSON.parse($(opts.viewMetadataSelector).val()) || {};
 
@@ -206,11 +212,11 @@
                 $.ajax({
                     url: $form.attr('action'),
                     type: 'PUT',
-                    data: JSON.stringify({metadata: metadata }),
+                    data: JSON.stringify({metadata: metadata}),
                     dataType: 'json',
                     contentType: 'application/json',
                     error: function(request, textStatus, error) {
-                        opts.errorCallback("An error was encountered creating saving your attachments. Please retry later.", opts);
+                        opts.errorCallback("An error was encountered saving your attachments. Please retry later.", opts);
                     },
                     success: function(responseData) {
                         opts.successCallback(responseData, opts);

@@ -104,14 +104,22 @@ $sidebar_about_tab_color_top: #a03341
     text-decoration: underline
 
 @mixin toolbar-button
-  @include gradient-toolbar-buttons-background
-  border: 1px solid $color_toolbar_buttons_border
+  @include gradient-toolbar-buttons-active-background
+  border: 1px solid $color_toolbar_buttons_active_border
   @include border-radius(0.2em)
+  color: $color_toolbar_buttons_active_text
   font-size: 1em
   height: 14px
   line-height: 14px
   padding: 0.3em 0.7em
   &:hover
-    @include box-shadow(0, 0, 0.3em, $color_toolbar_buttons_shadow)
+    @include box-shadow(0, 0, 0.3em, $color_toolbar_buttons_active_shadow)
   .noLinearGradient &:hover
-    @include box-gradient-toolbar-buttons-background(3, 15, $box_gradient_alias_fix)
+    @include box-gradient-toolbar-buttons-active-background(3, 15, $box_gradient_alias_fix)
+  &.disabled
+    @include gradient-toolbar-buttons-disabled-background
+    border: 1px solid $color_toolbar_buttons_disabled_border
+    color: $color_toolbar_buttons_disabled_text
+    cursor: default
+    &:hover
+      @include box-shadow-none

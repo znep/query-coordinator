@@ -64,8 +64,8 @@
                 $datasetGrid
                     .bind('col_width_change', function (event, c, f)
                         { columnResized(datasetObj, c, f); })
-                    .bind('sort_change', function (event)
-                        { sortChanged(datasetObj); })
+                    .bind('sort_change', function (event, isMulti)
+                        { sortChanged(datasetObj, isMulti); })
                     .bind('columns_rearranged', function (event)
                         { columnsRearranged(datasetObj); })
                     .bind('column_filter_change', function (event, c, s)
@@ -98,6 +98,7 @@
                     .blistModel()
                     .options({blankRow: datasetObj.settings.editEnabled,
                         filterMinChars: 0,
+                        masterView: blist.display.view,
                         progressiveLoading: !datasetObj.settings.isInvalid,
                         initialResponse: datasetObj.settings.initialResponse})
                     .ajax({url: '/views/' + datasetObj.settings.viewId +
@@ -1609,10 +1610,11 @@
         }
     };
 
-    var sortChanged = function(datasetObj)
+    var sortChanged = function(datasetObj, isMulti)
     {
         var view = datasetObj.settings._model.meta().view;
-        if (datasetObj.settings.currentUserId == view.owner.id &&
+        if (!isMulti &&
+            datasetObj.settings.currentUserId == view.owner.id &&
             !datasetObj.isTempView)
         {
             $.ajax({url: '/views/' + view.id + '.json',

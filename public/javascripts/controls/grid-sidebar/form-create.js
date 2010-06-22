@@ -6,6 +6,7 @@
     var config =
     {
         name: 'embed.formCreate',
+        priority: 5,
         title: 'Form',
         subtitle: 'Forms allow you to gather data directly from your website into a dataset',
         onlyIf: function(view)

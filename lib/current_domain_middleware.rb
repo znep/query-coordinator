@@ -19,10 +19,15 @@ class CurrentDomainMiddleware
 
   def call(env)
     request = Rack::Request.new(env)
-    host = env['HTTP_X_FORWARDED_HOST'] || request.host
-    puts host
+    host = env['HTTP_X_FORWARDED_HOST'].gsub(/:\d+\z/, '')
+    host = request.host if host.blank?
 
-    env['socrata.current_domain'] = current_domain = CurrentDomain.set(host, env['rack.session'][:custom_site_config])
+    if host
+      logger.debug "Current domain: #{host}"
+      env['socrata.current_domain'] = current_domain = CurrentDomain.set(host, env['rack.session'][:custom_site_config])
+    else
+      logger.warn "Unable to determine domain for request."
+    end
 
     if current_domain
       @app.call(env)
@@ -36,5 +41,10 @@ class CurrentDomainMiddleware
 </body></html>}
       [301, {'Location' => 'http://www.socrata.com'}, html]
     end
+  end
+
+  private
+  def logger
+    RAILS_DEFAULT_LOGGER || Logger.new
   end
 end

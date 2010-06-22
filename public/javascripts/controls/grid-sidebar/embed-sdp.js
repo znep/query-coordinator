@@ -3,6 +3,7 @@
     var config =
     {
         name: 'embed.embedSdp',
+        priority: 1,
         title: 'Social Data Player',
         subtitle: 'The Social Data Player enables you to publish this dataset on the Internet at large',
         disabledSubtitle: 'This view must be public before it can be published',

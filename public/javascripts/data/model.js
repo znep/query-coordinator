@@ -93,6 +93,7 @@ blist.namespace.fetch('blist.data');
             blankRow: false,
             filterMinChars: 3,
             initialResponse: null,
+            masterView: null,
             pageSize: 50,
             progressiveLoading: false
         };
@@ -940,6 +941,9 @@ blist.namespace.fetch('blist.data');
 
                 // Ensure the meta has a columns object, even if it is empty
                 meta = newMeta;
+
+                if (!$.isBlank(curOptions.masterView))
+                { $.syncObjects(curOptions.masterView, this.getViewCopy(true)); }
 
                 meta.sort = {};
 
@@ -2252,9 +2256,9 @@ blist.namespace.fetch('blist.data');
         /**
          * Notify listeners of column sort changes
          */
-        this.columnSortChange = function()
+        this.columnSortChange = function(isMulti)
         {
-            $(listeners).trigger('sort_change');
+            $(listeners).trigger('sort_change', [isMulti]);
         };
 
         /**
@@ -2500,6 +2504,8 @@ blist.namespace.fetch('blist.data');
             }
 
             meta.view.query.orderBys = orderBys;
+            if (!$.isBlank(curOptions.masterView))
+            { curOptions.masterView.query.orderBys = orderBys; }
             meta.sort = {};
             $.each(meta.view.query.orderBys, function(i, sort) {
                 var col = self.getColumnByID(sort.expression.columnId);
@@ -2510,7 +2516,7 @@ blist.namespace.fetch('blist.data');
             });
             sortConfigured = true;
 
-            this.columnSortChange();
+            this.columnSortChange(true);
 
             // Sort
             doSort();
@@ -2840,7 +2846,7 @@ blist.namespace.fetch('blist.data');
         {
             var view = meta.view;
             // Update all the widths from the meta columns
-            $.each(meta.columns[0], function(i, c)
+            $.each((meta.columns || [])[0] || [], function(i, c)
             {
                 self.getColumnByID(c.id).width = c.width;
                 if (c.body && c.body.children)

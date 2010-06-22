@@ -701,27 +701,6 @@ $(function()
         widgetNS.hideToolbar();
     });
 
-    // Set up modals
-    $('.widgetModal').jqm({
-        trigger: false,
-        modal: true,
-        onShow: function(jqm)
-        {
-            jqm.w.fadeIn('slow');
-            jqm.o.fadeIn('slow');
-        },
-        onHide: function(jqm)
-        {
-            jqm.w.fadeOut('slow');
-            jqm.o.fadeOut('slow');
-        }
-    });
-    $.live('a.jqmClose', 'click', function(event)
-    {
-        event.preventDefault();
-        $('.widgetModal').jqmHide();
-    });
-
     // Trigger interstitial if necessary
     if (!$.isBlank(document.referrer))
     { $('.leavingInterstitial').find('.serverName').text(

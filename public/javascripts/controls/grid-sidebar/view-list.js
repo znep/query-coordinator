@@ -156,6 +156,7 @@
     var filterConfig =
     {
         name: 'filter.savedFilters',
+        priority: 10,
         title: 'Saved Views',
         subtitle: 'See existing public filters and grouped views on this dataset',
         sections: [{
@@ -183,6 +184,7 @@
     var vizConfig =
     {
         name: 'visualize.savedVisualizations',
+        priority: 10,
         title: 'Saved Views',
         subtitle: 'See existing public maps, charts and calendars on this dataset',
         sections: [{

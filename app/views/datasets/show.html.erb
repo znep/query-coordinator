@@ -17,8 +17,21 @@
     </a>
     <div id='datasetIcon' class='type<%= @view.display.type.capitalize %>'>
       <span class='icon'><%= @view.display.name %></span>
+      <span class='alertIcon'></span>
+    </div>
+    <div class='unsavedLine'>
+      <h2 id='unsavedTitle'>Unsaved View</h2>
+      <%- if !@view.is_blist? && @view.owned_by?(current_user) -%>
+      <a href='#Save' title='Save current view' data-savingText='Saving...'
+        class='save toolbarButton'>Save</a>
+      <%- end -%>
+      <a href='#SaveAs' title='Save view as...'
+        class='saveAs toolbarButton'>Save As... </a>
     </div>
     <h2 id='datasetName' class="clipText"><%= @view.name %></h2>
+    <div class='basedOn clipText'>
+    (based on <span class='parentName'><%= @view.name %></span>)
+    </div>
     <div id='description' class="collapsed"><%= @view.description %></div>
   </div>
 
@@ -38,8 +51,8 @@
       </li>
     </ul>
     <ul id='sidebarOptions' class="clearfix">
-      <li class="tabFilter"><a href='#Filter' title='Filter'
-        data-paneName='filter'>Filter</a></li>
+      <li class="tabFilter"><a href='#Filter' title='Filter' class='none'
+        data-paneName='filter'>Filter<span class='alertIcon'></span></a></li>
       <li class="tabVisualize"><a href='#Visualize' title='Visualize'
         data-paneName='visualize'>Visualize</a></li>
       <li class="tabExport"><a href='#Export' title='Export'
@@ -65,6 +78,29 @@
   <div id='gridSidebar'>
     <a class='close' href='#close'><span class='icon'>Close</span></a>
   </div>
+</div>
+
+<div class="saveViewDialog modalDialog">
+  <a href="#close" class="jqmClose modalDialogClose">Close</a>
+  <div class='loadingSpinner hide'></div>
+  <div class='loadingOverlay hide'></div>
+  <h2>Enter a name for your new view</h2>
+  <form class='commonForm' action='#save'>
+    <input type='text' class='viewName' />
+  </form>
+  <div class='mainError'></div>
+  <ul class="actions clearfix">
+    <li>
+      <a class="jqmClose button cancel" href="#cancel">
+        <span class="icon"></span>Cancel
+      </a>
+    </li>
+    <li>
+      <a class="button save submit" href="#save">
+        <span class="icon"></span>Save
+      </a>
+    </li>
+  </ul>
 </div>
 
 <% content_for :templates do %>
@@ -94,6 +130,10 @@
 
     <%# Namespace to keep track of disabled sidebar sections %>
     blist.namespace.fetch('blist.sidebarHidden');
+
+    <%# Filter pane %>
+    blist.sidebarHidden.filter = blist.sidebarHidden.filter || {};
+    blist.sidebarHidden.filter.filterDataset = <%= @view.is_alt_view? %>;
 
     <%# Visualize pane %>
     blist.sidebarHidden.visualize = blist.sidebarHidden.visualize || {};

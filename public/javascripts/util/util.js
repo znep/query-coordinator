@@ -226,6 +226,13 @@ $.compareValues = function(obj1, obj2)
     return true;
 };
 
+$.syncObjects = function(dest, src)
+{
+    $.extend(dest, src);
+    _.each(dest, function(v, k)
+    { if (_.isUndefined(src[k])) { delete dest[k]; } });
+};
+
 /* Get all the keys for an object as an array */
 $.keys = function(obj)
 {

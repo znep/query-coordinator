@@ -4,6 +4,8 @@ class Metadata < Model
   end
 
   def custom_fields
-    data['custom_fields']
+    unless data['custom_fields'].blank?
+      return data['custom_fields'].to_a.sort {|a, b| a[0] <=> b[0]}
+    end
   end
 end

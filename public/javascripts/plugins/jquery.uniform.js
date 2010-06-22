@@ -431,7 +431,10 @@ Enjoy!
             //do to each item in the selector
             //function to reset all classes
             var $e = $(this);
+            if ($e.closest('body').length < 1) { return; }
 
+            var spanTag;
+            var divTag;
             if($e.is("select")){
                 //element is a select
                 spanTag = $e.siblings("span");
@@ -484,8 +487,8 @@ Enjoy!
                 }
             }else if($e.is(":file")){
               divTag = $e.parent("div");
-              filenameTag = $e.siblings(options.filenameClass);
-              btnTag = $e.siblings(options.fileBtnClass);
+              var filenameTag = $e.siblings(options.filenameClass);
+              var btnTag = $e.siblings(options.fileBtnClass);
 
               divTag.removeClass(options.hoverClass+" "+options.focusClass+" "+options.activeClass);
 

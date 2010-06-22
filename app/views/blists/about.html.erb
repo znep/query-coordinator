@@ -150,7 +150,11 @@
                 </div>
               </dd>
               <%- else -%>
-                <p>No Attachments</p>
+                <ul>
+                  <li>
+                    <p>No Attachments</p>
+                  </li>
+                </ul>
               <%- end -%>
             </div>
 
@@ -217,16 +221,16 @@
               <a class="editLink editMetadataLink<%= can_edit ? "" : " hide" %>" href="<%= @view.href %>/about_edit" title="Edit Additional Information">Edit</a>
               <%- if @view.metadata && @view.metadata.custom_fields -%>
                 <dl class="aboutSummaryList clearfix <%= can_edit ? 'actionList' : '' %>">
-                  <%- @view.metadata.custom_fields.each do |field, value| -%>
+                  <%- @view.metadata.custom_fields.each do |field| -%>
                   <div class="customFieldEdit">
-                    <dt><%= h(field) %></dt>
+                    <dt><%= h(field[0]) %></dt>
                     <dd> 
                       <div class="textDisplay">
-                        <span class="textContent"><%= h(value) %></span>
+                        <span class="textContent"><%= h(field[1]) %></span>
                       </div>
                       <div class="editFieldForm hide">
                         <%= form_tag("/api/views/#{@view.id}") %>
-                          <%= text_field_tag 'textValue', h(value), :class => 'textValue', :id => nil %>
+                          <%= text_field_tag 'textValue', h(field[1]), :class => 'textValue', :id => nil %>
                           <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
                           <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_path, :title => "Cancel", :class => "formCancelLink") %>
                         </form>

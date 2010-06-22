@@ -127,7 +127,8 @@
     {
         if ($.isBlank(elem))
         { return false; }
-        else if ($.isBlank(elem.tagName) && !_.isUndefined(elem.value))
+        else if ($.isBlank(elem.tagName) &&
+            (!_.isUndefined(elem.value) || !$.isBlank(elem.onlyIf)))
         {
             if (elem.onlyIf === true)
             { return elem.value; }

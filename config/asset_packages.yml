@@ -16,7 +16,7 @@ javascripts:
   - plugins/jquery.validate
   - plugins/pure
   - plugins/ui.core
-  - util/underscore-min
+  - plugins/underscore
   - util/namespace
   - util/util
   - util/compat
@@ -82,6 +82,7 @@ javascripts:
   - widgets/maps/esri-map
   - widgets/maps/google-map
   - widgets/maps/bing-map
+  - widgets/maps/heatmap-map
 - shared-chart:
   - plugins/highcharts.src
   - widgets/base-visualization
@@ -235,13 +236,14 @@ javascripts:
   - plugins/jquery.tablesorter
   - controls/full-screen
   - widgets/combination-list
-  - widgets/embed-form
+  - controls/embed-form
   - util/humane-date
   - util/navigation
   - util/urls
+  - controls/modal-dialogs
   - controls/dataset-controls
   - controls/stars
-  - widgets/menu
+  - controls/menu
   - widgets/scrollTabs
   - widgets/inline-edit
   - widgets/visualization
@@ -259,21 +261,23 @@ javascripts:
   - util/urls
   - util/navigation
   - util/inline-login
-  - widgets/menu
+  - controls/menu
   - widgets/wizard-prompt
+  - controls/modal-dialogs
   - controls/expander
   - controls/grid-sidebar/base-sidebar
   - controls/grid-sidebar/calendar-create
   - controls/grid-sidebar/chart-create
   - controls/grid-sidebar/download-dataset
   - controls/grid-sidebar/embed-sdp
+  - controls/grid-sidebar/filter-dataset
   - controls/grid-sidebar/form-create
   - controls/grid-sidebar/location-create
   - controls/grid-sidebar/map-create
   - controls/grid-sidebar/print-dataset
   - controls/grid-sidebar/view-list
   - controls/dataset-controls
-  - widgets/embed-form
+  - controls/embed-form
   - controls/full-screen
   - screens/dataset
 

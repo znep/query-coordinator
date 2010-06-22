@@ -6,6 +6,7 @@
     var config =
     {
         name: 'export.printDataset',
+        priority: 5,
         title: 'Print',
         subtitle: 'Export this dataset to a printable PDF format',
         noReset: true,

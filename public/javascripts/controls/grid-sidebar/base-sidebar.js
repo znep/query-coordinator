@@ -5,7 +5,8 @@
         if (this.optional(element)) { return true; }
         var isEqual = false;
         var $e = $(element);
-        $(param).each(function(i, p)
+        if (!$e.is(':visible')) { return true; }
+        $(param + ':visible').each(function(i, p)
         {
             var $p = $(p);
             if ($e.index($p) < 0 && $p.val() == value)
@@ -44,14 +45,19 @@
         + title: main title
         + subtitle: appears under main title
         + noReset: boolean, if true form elements will not be reset on close
+        + priority: Optional value for sorting a sub-pane within a parent;
+            sorted ascending (lower values first)
         + sections: array of sections for entering data
         [
           {
             + title: section title
             + type: optional, 'selectable' makes the field collapseable.
                 By default it will be collapsed; when collapsed, nothing is
-                validated or wizard-ed
-            + name: internal name for field; required if it is of type selectable
+                validated or wizard-ed.  'hidden' hides the section completely;
+                it can be manually opened by calling showSection() and passing
+                in the section name
+            + name: internal name for field; required if it is of type selectable.
+                Used to identify a hidden section to open
             + onlyIf: only display the section if these criteria are true.
                 Currently accepts an object or array of objects:
             {
@@ -110,7 +116,8 @@
                       the array.  Fields inside the repeater are rooted at the
                       particular object of the repeater array; so essentially
                       they are namespaced into the repeater
-                  + prompt: optional, prompt text for text/textarea/select
+                  + prompt: optional, prompt text for text/textarea/select.
+                      If null for select, will not add a prompt option
                   + defaultValue: default value to use for the field; for
                       checkboxes use true.  For radioGroup, the name of the option
                       that should be selected by default.  For color, also
@@ -135,7 +142,7 @@
                   + columns: for type columnSelect, tells what type of columns
                       should be available
                   {
-                    + type: array or single datatype names
+                    + type: array or single datatype names; empty for all
                     + hidden: boolean, whether or not to include hidden columns
                   }
                   + options: for group or radioGroup, array of sub-fields.
@@ -303,6 +310,17 @@
 
                 $(window).resize(function() { handleResize(sidebarObj); });
                 $domObj.resize(function() { handleResize(sidebarObj); });
+
+                $(document).bind(blist.events.MODAL_SHOWN, function()
+                {
+                    if (!$.isBlank(sidebarObj._$currentWizard))
+                    { sidebarObj._$currentWizard.socrataTip().quickHide(); }
+                });
+                $(document).bind(blist.events.MODAL_HIDDEN, function()
+                {
+                    if (!$.isBlank(sidebarObj._$currentWizard))
+                    { sidebarObj._$currentWizard.socrataTip().quickShow(); }
+                });
             },
 
             $dom: function()
@@ -373,6 +391,9 @@
 
                 if (!$.isBlank(sidebarObj._$panes[config.name]))
                 {
+                    if (sidebarObj.$currentPane() ==
+                        sidebarObj._$panes[config.name])
+                    { hideCurrentPane(sidebarObj); }
                     sidebarObj._$panes[config.name].remove();
                     delete sidebarObj._$panes[config.name];
                 }
@@ -583,6 +604,15 @@
                 { showPaneSelectWizard(sidebarObj, outerConfig); }
             },
 
+            showSection: function($pane, sectionName)
+            {
+                var sidebarObj = this;
+                var $s = $pane.find('.formSection[name=' + sectionName + ']')
+                    .removeClass('hide');
+                if (!$.isBlank($s))
+                { wizardAction(sidebarObj, $s, 'nextField'); }
+            },
+
             baseFormHandler: function($pane, value)
             {
                 if (!value)
@@ -628,7 +658,7 @@
                     var p = name.split(':');
                     name = p[p.length - 1];
 
-                    if ($.isBlank(name)) { return null; }
+                    if ($.isBlank(name) || $.isBlank(value)) { return null; }
 
                     // Next pull apart the name into pieces.  For each level,
                     // recurse down, creating empty objects if needed.
@@ -712,6 +742,14 @@
                     {
                         value /= parseFloat($input.attr('data-scale'));
                     }
+                    else if ($input.is('select'))
+                    {
+                        // Convert select box values to real booleans if
+                        // appropriate
+                        if (value == 'true') { value = true; }
+                        if (value == 'false') { value = false; }
+                    }
+
 
                     var inputName = $input.attr('name');
 
@@ -807,9 +845,16 @@
 
                 $pane.find('.formSection.selectable:not(.collapsed)')
                     .each(function()
-                { $(this).find('.sectionSelect').click(); });
+                {
+                    var $s = $(this);
+                    if ($s.find('[data-dataValue]').length < 1)
+                    { $s.find('.sectionSelect').click(); }
+                });
+
+                $pane.find('.formSection.hidden').addClass('hide');
 
                 $pane.find('.line.repeater .line.repeaterAdded').remove();
+                $pane.find('.line.repeater > .line.hide').removeClass('hide');
 
                 $pane.find('.ranWizard').removeClass('ranWizard');
 
@@ -818,7 +863,8 @@
 
                 var resetInput = function($input)
                 {
-                    var defValue = $input.attr('data-defaultValue') || null;
+                    var defValue = $input.attr('data-dataValue') ||
+                        $input.attr('data-defaultValue') || null;
                     $input.value(defValue);
                     // Fire events to make sure uniform controls are updated,
                     // and text prompts are reset
@@ -838,7 +884,8 @@
                     var $slider = $(this);
                     var $input = $slider.next(':input');
                     $slider.slider('value',
-                        parseInt($input.attr('data-defaultValue') || 0));
+                        parseInt($input.attr('data-dataValue') ||
+                            $input.attr('data-defaultValue') || 0));
                 });
 
                 $pane.find('.line :radio').each(function()
@@ -1008,21 +1055,25 @@
         if (!args.context.inputOnly)
         {
             contents.push({tagName: 'label', 'for': args.item.name,
-                    'class': [args.item.required ? 'required' : null],
+                    'class': [{value: 'required', onlyIf: args.item.required &&
+                        !args.context.inRepeater}],
                     contents: args.item.text});
         }
 
         var commonAttrs = function(item)
         {
             return {id: item.name, name: item.name, title: item.prompt,
-                'class': [ {value: 'required', onlyIf: item.required},
+                'class': [ {value: 'required', onlyIf: item.required &&
+                    !args.context.isInRepeater},
                         {value: 'textPrompt', onlyIf: !$.isBlank(item.prompt)},
                         item.notequalto, item.extraClass ],
                 'data-isRequired': {value: true, onlyIf: item.required},
                 'data-notequalto': {value: '.' + (item.notequalto || '')
                         .split(' ').join(', .'),
                     onlyIf: !$.isBlank(item.notequalto)},
-                'data-defaultValue': item.defaultValue
+                'data-defaultValue': item.defaultValue,
+                'data-dataValue': {value: item.dataValue,
+                    onlyIf: !$.isBlank(item.dataValue)}
             };
         };
 
@@ -1048,6 +1099,21 @@
         var defValue = args.item.defaultValue;
         if (args.context.inRepeater && !_.isUndefined(args.item.repeaterValue))
         { defValue = args.item.repeaterValue; }
+
+        var curValue;
+        if (!$.isBlank(args.item.origName))
+        {
+            var nParts = args.item.origName.split('.');
+            var base = args.context.data;
+            while (nParts.length > 0 && !$.isBlank(base))
+            { base = base[nParts.shift()]; }
+            if (nParts.length == 0 && !$.isBlank(base))
+            {
+                curValue = base;
+                args.item = $.extend({}, args.item, {dataValue: curValue});
+            }
+        }
+
         switch (args.item.type)
         {
             case 'static':
@@ -1059,36 +1125,42 @@
             case 'text':
                 contents.push($.extend(commonAttrs(args.item),
                     {tagName: 'input', type: 'text', value:
-                        $.htmlEscape(args.context.data[args.item.origName] ||
-                            defValue)}));
+                        $.htmlEscape(curValue || defValue)}));
                 break;
 
             case 'textarea':
                 contents.push($.extend(commonAttrs(args.item),
                     {tagName: 'textarea', contents:
-                        $.htmlEscape(args.context.data[args.item.origName] ||
-                            defValue)}));
+                        $.htmlEscape(curValue || defValue)}));
                 break;
 
             case 'checkbox':
+                var v = curValue;
+                if ($.isBlank(v)) { v = defValue; }
                 contents.push($.extend(commonAttrs(args.item),
                     {tagName: 'input', type: 'checkbox',
                         'data-trueValue': args.item.trueValue,
                         'data-falseValue': args.item.falseValue,
                         checked: (!$.isBlank(args.item.trueValue) &&
-                            defValue === args.item.trueValue) ||
+                            v === args.item.trueValue) ||
                             _.include([true, 'true', 1, '1', 'yes', 'checked'],
-                                defValue)}));
-                    break;
+                                v)}));
+                break;
 
             case 'select':
-                var options =
-                    [{tagName: 'option', value: '',
-                        contents: args.item.prompt || 'Select a value'}];
+                var options = [];
+                if (!_.isNull(args.item.prompt))
+                {
+                    options.push({tagName: 'option', value: '',
+                        contents: args.item.prompt || 'Select a value'});
+                }
+                if (_.isBoolean(curValue)) { curValue = curValue.toString(); }
+
                 _.each(args.item.options, function(o)
                 {
                     var item = {tagName: 'option', value: o.value,
-                        selected: o.value === defValue, contents: o.text};
+                        selected: o.value === (curValue || defValue),
+                        contents: o.text};
                     var dataKeys = [];
                     _.each(o.data || {}, function(v, k)
                         {
@@ -1099,7 +1171,8 @@
                     { item['data-customKeys'] = dataKeys.join(','); }
                     options.push(item);
                 });
-                contents.push($.extend(commonAttrs(args.item),
+                contents.push($.extend(commonAttrs($.extend({}, args.item,
+                        {dataValue: curValue})),
                     {tagName: 'select', contents: options}));
                 break;
 
@@ -1117,7 +1190,7 @@
                 {
                     var cId = args.item.isTableColumn ? c.tableColumnId : c.id;
                     options.push({tagName: 'option', value: cId,
-                        selected: defValue == cId,
+                        selected: (curValue || defValue) == cId,
                         contents: $.htmlEscape(c.name)});
                 });
                 contents.push($.extend(commonAttrs(args.item),
@@ -1134,13 +1207,15 @@
                     min *= scale;
                     max *= scale;
                     defValue *= scale;
+                    curValue *= scale;
                 }
                 contents.push({tagName: 'div', 'class': 'sliderControl',
                         'data-min': min, 'data-max': max});
 
                 contents.push($.extend(commonAttrs($.extend({}, args.item,
-                        {defaultValue: defValue, extraClass: 'sliderInput'})),
-                    {tagName: 'input', type: 'text', value: defValue,
+                        {defaultValue: defValue, dataValue: curValue,
+                            extraClass: 'sliderInput'})),
+                    {tagName: 'input', type: 'text', value: (curValue || defValue),
                     'data-scale': scale, disabled: true}));
                 break;
 
@@ -1181,7 +1256,7 @@
                                 {id: id, tagName: 'input', type: 'radio',
                                 'class': {value: 'wizExclude',
                                     onlyIf: opt.type != 'static'},
-                                checked: defValue == opt.name,
+                                checked: (curValue || defValue) == opt.name,
                                 'data-defaultValue': defValue == opt.name}),
                             {tagName: 'label', 'for': id,
                             contents:
@@ -1207,23 +1282,33 @@
                                      {repeaterIndex: 'templateId', noTag: true,
                                         inRepeater: true})
                     });
-                templateLine.contents.unshift({tagName: 'a', href: '#remove',
+                var removeButton = {tagName: 'a', href: '#remove',
                     title: 'Remove', 'class': 'removeLink delete',
-                    contents: {tagName: 'span', 'class': 'icon'}});
+                    contents: {tagName: 'span', 'class': 'icon'}};
+                templateLine.contents.unshift(removeButton);
                 templateLine = $.htmlEscape($.tag(templateLine, true));
 
-                for (var i = 0; i < (args.item.minimum || 1); i++)
+                curValue = curValue || [];
+                for (var i = 0; i < (curValue.length || args.item.minimum || 1);
+                    i++)
                 {
-                    contents.push(renderLine(sidebarObj,
+                    var l = renderLine(sidebarObj,
                                 {item: args.item.field,
                                     context: $.extend({}, args.context,
-                                         {repeaterIndex: i, noTag: true})
-                    }));
+                                         {repeaterIndex: i, noTag: true,
+                                            inRepeater: i >= args.item.minimum,
+                                            data: curValue[i] || args.context.data
+                                    })
+                    });
+                    if (i >= args.item.minimum)
+                    { l.contents.unshift(removeButton); }
+                    contents.push(l);
                 }
 
                 contents.push($.button({text: args.item.addText || 'Add Value',
                     customAttrs: $.extend(commonAttrs(args.item),
                         {'data-template': templateLine,
+                        'data-count': (args.item.minimum || 1) + 1,
                         'data-maximum': args.item.maximum}),
                     className: 'addValue'}, true));
                 break;
@@ -1290,7 +1375,7 @@
         var rData = {title: config.title, subtitle: config.subtitle,
             sections: config.sections, paneId: paneId,
             finishButtons: (config.finishBlock || {}).buttons,
-            data: data || {}};
+            data: data || config.dataSource || {}};
         var sectionOnlyIfs = {};
         var customSections = {};
         var directive = {
@@ -1301,8 +1386,8 @@
                 'section<-sections': {
                     '@class+': function(arg)
                     { return _.compact([arg.item.type, arg.item.name,
-                        (arg.item.type == 'selectable' ? 'collapsed' : null)]
-                        ).join(' '); },
+                        (arg.item.type == 'hidden' ? 'hide' : '')])
+                        .join(' '); },
                     '@data-onlyIf': function(arg)
                     {
                         if (!$.isBlank(arg.item.onlyIf))
@@ -1478,6 +1563,14 @@
             showHideSection();
         });
 
+        $pane.find('.formSection.selectable').each(function()
+        {
+            var $s = $(this);
+            var hasData = $s.find('[data-dataValue]').length > 0;
+            $s.toggleClass('collapsed', !hasData);
+            $s.find('.sectionSelect').value(hasData);
+        });
+
         $pane.find('.formSection.selectable .sectionSelect').click(function(e)
         {
             var $c = $(this);
@@ -1529,14 +1622,56 @@
             });
         });
 
-        var checkRepeaterMax = function($repeater)
+        var addValue = function($button)
         {
+            var $container = $button.closest('.line.repeater');
+            var $newLine = $($.htmlUnescape($button.attr('data-template')));
+            $newLine.find('.required').removeClass('required');
+
+            var i = parseInt($button.attr('data-count'));
+            $button.attr('data-count', i + 1);
+            var attrMatch = '-templateId';
+            $newLine.find('[name$=' + attrMatch + '], [id$=' + attrMatch +
+                '], [for$=' + attrMatch + ']').each(function()
+            {
+                var $elem = $(this);
+                _.each(['name', 'id', 'for'], function(aName)
+                {
+                    var a = $elem.attr(aName);
+                    if (!$.isBlank(a) && a.endsWith(attrMatch))
+                    { $elem.attr(aName, a.slice(0, -attrMatch.length) + '-' + i); }
+                });
+            });
+
+            $newLine.find('.colorControl').each(function()
+            {
+                var $a = $(this);
+                var $i = $a.next(':input');
+                var colors = ($i.attr('data-defaultValue') || '').split(' ');
+                if (colors.length < 2) { return; }
+
+                var newColor = colors[i % colors.length];
+                $a.css('background-color', newColor);
+                $i.val(newColor);
+            });
+
+            hookUpFields($newLine);
+            $button.before($newLine);
+
+            checkRepeaterMaxMin($container);
+            updateWizardVisibility(sidebarObj);
+        };
+
+        var checkRepeaterMaxMin = function($repeater)
+        {
+            var numLines = $repeater.children('.line:not(.hide)').length;
             var $button = $repeater.children('.button.addValue');
+            if (numLines < 1) { _.defer(function() { addValue($button); }); }
+
             var max = $button.attr('data-maximum');
             if ($.isBlank(max)) { return; }
 
-            $button.toggleClass('hide',
-                    $repeater.children('.line').length >= parseInt(max));
+            $button.toggleClass('hide', numLines >= parseInt(max));
             updateWizardVisibility(sidebarObj);
         };
 
@@ -1637,15 +1772,18 @@
                 });
 
             $container.find('.line.repeater').each(function()
-            { checkRepeaterMax($(this)); });
+            { checkRepeaterMaxMin($(this)); });
 
             $container.find('.removeLink').click(function(e)
             {
                 e.preventDefault();
                 var $t = $(this);
                 var $repeater = $t.closest('.line.repeater');
-                $t.closest('.line').remove();
-                checkRepeaterMax($repeater);
+                var $line = $t.closest('.line');
+                if ($line.is('.repeaterAdded')) { $line.remove(); }
+                else { $line.addClass('hide'); }
+
+                checkRepeaterMaxMin($repeater);
                 updateWizardVisibility(sidebarObj);
             });
 
@@ -1664,43 +1802,7 @@
         $pane.find('.button.addValue').click(function(e)
         {
             e.preventDefault();
-
-            var $button = $(this);
-            var $container = $button.closest('.line.repeater');
-            var $newLine = $($.htmlUnescape($button.attr('data-template')));
-            $newLine.find('.required').removeClass('required');
-
-            var i = $container.children('.line').length;
-            var attrMatch = '-templateId';
-            $newLine.find('[name$=' + attrMatch + '], [id$=' + attrMatch +
-                '], [for$=' + attrMatch + ']').each(function()
-            {
-                var $elem = $(this);
-                _.each(['name', 'id', 'for'], function(aName)
-                {
-                    var a = $elem.attr(aName);
-                    if (!$.isBlank(a) && a.endsWith(attrMatch))
-                    { $elem.attr(aName, a.slice(0, -attrMatch.length) + '-' + i); }
-                });
-            });
-
-            $newLine.find('.colorControl').each(function()
-            {
-                var $a = $(this);
-                var $i = $a.next(':input');
-                var colors = ($i.attr('data-defaultValue') || '').split(' ');
-                if (colors.length < 2) { return; }
-
-                var newColor = colors[i % colors.length];
-                $a.css('background-color', newColor);
-                $i.val(newColor);
-            });
-
-            hookUpFields($newLine);
-            $button.before($newLine);
-
-            checkRepeaterMax($container);
-            updateWizardVisibility(sidebarObj);
+            addValue($(this));
         });
 
 
@@ -1875,6 +1977,13 @@
             return true;
         }
 
+        // If we hit an already-expanded section, go into
+        if ($item.is('.formSection.selectable:not(.collapsed)'))
+        {
+            wizardAction(sidebarObj, $item, wiz.defaultAction || 'nextField');
+            return true;
+        }
+
         var alreadyCalled = false;
         if (!$.isBlank(wiz.actions))
         {
@@ -2019,7 +2128,7 @@
                     }
                 }
                 else
-                { showWizard(sidebarObj, $triggerItem); }
+                { _.defer(function() { showWizard(sidebarObj, $triggerItem); }); }
                 break;
 
             case 'expand':

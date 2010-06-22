@@ -150,7 +150,7 @@ class WidgetCustomization < Model
                      :input_color => 'fefbef' },
       :logo     => { :image      => { :type => 'static',
                                       :href => '/stylesheets/images/logos/socrata_sdp_logo_black.png',
-                                      :width => '400',
+                                      :width => '300',
                                       :height => '35' },
                      :href => 'http://socrata.com' },
       :menu     => { :button     => { :content => 'Menu',

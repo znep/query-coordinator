@@ -19,10 +19,11 @@ class CurrentDomainMiddleware
 
   def call(env)
     request = Rack::Request.new(env)
-    host = env['HTTP_X_FORWARDED_HOST'].gsub(/:\d+\z/, '')
+    host = env['HTTP_X_FORWARDED_HOST']
     host = request.host if host.blank?
 
     if host
+      host.gsub!(/:\d+\z/, '')
       logger.debug "Current domain: #{host}"
       env['socrata.current_domain'] = current_domain = CurrentDomain.set(host, env['rack.session'][:custom_site_config])
     else

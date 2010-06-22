@@ -144,13 +144,12 @@
             {
                 var mapObj = this;
                 mapObj._dataLoaded = true;
+
+                if (mapObj._rows === undefined) { mapObj._rows = []; }
+                mapObj._rows = mapObj._rows.concat(rows);
+
                 if (mapObj._mapLoaded)
                 { mapObj.renderData(rows); }
-                else
-                {
-                    if (mapObj._rows === undefined) { mapObj._rows = []; }
-                    mapObj._rows = mapObj._rows.concat(rows);
-                }
             },
 
             renderPoint: function(latVal, longVal, title, info, rowId, icon)

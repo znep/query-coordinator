@@ -6,6 +6,7 @@ config:
     cache_dir: cache
 javascripts:
 - base:
+  - plugins/date
   - plugins/jqModal
   - plugins/jquery.bt
   - plugins/jquery.cookies.2.1.0.min
@@ -43,7 +44,6 @@ javascripts:
   - widgets/blist-calendar
 - shared-table-render:
   - plugins/ui.draggable
-  - plugins/date
   - util/humane-number
   - data/types
   - data/model
@@ -112,7 +112,6 @@ javascripts:
   - plugins/ajaxupload.3.0
   - util/humane-date
   - util/urls
-  - plugins/date
   - data/types
   - data/model
   - data/table
@@ -200,7 +199,6 @@ javascripts:
   - screens/discover-screen
   - util/urls
   - screens/nominations-screen
-  - plugins/date
   - plugins/ajaxupload.3.0
 - homes-show:
   - screens/home-screen
@@ -214,7 +212,6 @@ javascripts:
 - rpx-return:
   - screens/signup-screen
 - stats-index:
-  - plugins/date
   - data/types
   - data/model
   - data/table

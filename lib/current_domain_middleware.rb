@@ -19,7 +19,9 @@ class CurrentDomainMiddleware
 
   def call(env)
     request = Rack::Request.new(env)
-    host = env['HTTP_X_FORWARDED_HOST'].gsub(/:\d+\z/, '')
+    unless env['HTTP_X_FORWARDED_HOST'].blank?
+      host = env['HTTP_X_FORWARDED_HOST'].gsub(/:\d+\z/, '')
+    end
     host = request.host if host.blank?
 
     if host

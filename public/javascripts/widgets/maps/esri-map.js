@@ -105,6 +105,9 @@
 
                     mapObj._multipoint = new esri.geometry.Multipoint
                         (mapObj.map.spatialReference);
+
+                    blist.$display.find('.infowindow .hide').removeClass('hide')
+                                                            .addClass('hide_infowindow');
                 });
             },
 

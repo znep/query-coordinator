@@ -135,6 +135,7 @@
 
                 mapObj._markers = {};
                 mapObj._llKeys = {};
+                mapObj._rows = [];
 
                 mapObj._idIndex = undefined;
                 mapObj._locCol = undefined;

@@ -70,9 +70,11 @@
 </div>
 
 <div class='outerContainer'>
-  <div id='mainGrid'>
-    <%= raw @view.display.render_body(self) %>
-    <%= render(:partial => @view.display.render_partial) %>
+  <div class='innerContainer'>
+    <div id='mainGrid' class='fullHeight'>
+      <%= raw @view.display.render_body(self) %>
+      <%= render(:partial => @view.display.render_partial) %>
+    </div>
   </div>
 
   <div id='gridSidebar'>

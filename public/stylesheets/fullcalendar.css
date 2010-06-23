@@ -7,6 +7,7 @@
  *
  */
 
+.fc { overflow: auto; }
 
 .fc table
 {
@@ -16,7 +17,7 @@
 
 .fc td, .fc th
 {
-    padding: 0;
+    padding: 0.2em 0.3em;
     vertical-align: top;
 }
 

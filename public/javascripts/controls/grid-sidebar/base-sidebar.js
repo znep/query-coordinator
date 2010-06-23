@@ -440,8 +440,20 @@
                             nameParts.secondary + ']').addClass('selected');
                     if (!$.isBlank(config.wizard))
                     { sidebarObj.$currentPane().addClass('initialLoad'); }
-                    sidebarObj.$currentPane()
-                        .fadeIn(function() { checkForm(sidebarObj); });
+
+                    // IE7 leaves weird debris when closing if we use an
+                    // animation
+                    if ($.browser.msie && $.browser.majorVersion <= 7)
+                    {
+                        sidebarObj.$currentPane().show();
+                        _.defer(function() { checkForm(sidebarObj); });
+                    }
+                    else
+                    {
+                        sidebarObj.$currentPane()
+                            .fadeIn(function() { checkForm(sidebarObj); });
+                    }
+
                     sidebarObj.$currentPane().find('.scrollContent')
                         .scroll(function(e)
                         { updateWizardVisibility(sidebarObj); });
@@ -481,7 +493,8 @@
                     // IE7 apparently isn't terribly happy the second time you
                     // open this pane if there is a fadeIn, but no fadeOut
                     // (because IE7 really has problems with that one)
-                    if ($('body').is('.ie7')) { $overlay.show(); }
+                    if ($.browser.msie && $.browser.majorVersion <= 7)
+                    { $overlay.show(); }
                     else { $overlay.fadeIn(500); }
 
                     sidebarObj.$grid().datasetGrid().disable();
@@ -522,7 +535,7 @@
                     $('body').css('overflow', sidebarObj._bodyOverflow);
 
                     // IE7 doesn't like this fade out
-                    if ($('body').is('.ie7'))
+                    if ($.browser.msie && $.browser.majorVersion <= 7)
                     { modalOverlay(sidebarObj).hide(); }
                     else { modalOverlay(sidebarObj).fadeOut(500); }
 
@@ -1092,7 +1105,7 @@
             {
                 colTypes = $.arrayify(args.item.columns.type);
                 cols = _.select(cols, function(c)
-                    { return _.include(colTypes, c.dataTypeName); });
+                    { return _.include(colTypes, c.renderTypeName); });
             }
         }
 
@@ -1386,7 +1399,8 @@
                 'section<-sections': {
                     '@class+': function(arg)
                     { return _.compact([arg.item.type, arg.item.name,
-                        (arg.item.type == 'hidden' ? 'hide' : '')])
+                        (!$.isBlank(arg.item.onlyIf) ||
+                            arg.item.type == 'hidden' ? 'hide' : '')])
                         .join(' '); },
                     '@data-onlyIf': function(arg)
                     {
@@ -1914,7 +1928,8 @@
                     { defActions.push($.gridSidebar.wizard.buttons.done); }
 
                     $l.addClass('hasWizard').data('sidebarWizard',
-                        $.extend({defaultAction: 'nextField', actions: defActions},
+                        $.extend({defaultAction: 'nextField', actions: defActions,
+                            selector: '.addValue'},
                             $.objectify(l.wizard, 'prompt'), {positions: ['left'],
                             closeEvents: $l.is('.repeater, .group') ?
                                 'none' : 'change'}));

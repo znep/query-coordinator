@@ -30,10 +30,7 @@
         $ul.empty();
         _.each(sorted, function(v)
         {
-            var $li = $.tag({tagName: 'li', 'class': ['viewItem',
-                {value: 'current', onlyIf: v.id == blist.display.view.id}],
-                'data-search': (v.name + ' ' + v.owner.displayName).toLowerCase()});
-            $li.append($.renderTemplate('viewItem', v, {
+            var $li = $.renderTemplate('viewItemContainer', v, {
                 '.viewIcon@title': function(a)
                 { return blist.dataset.getTypeName(a.context).capitalize(); },
                 '.viewIcon@class+': function(a)
@@ -51,7 +48,11 @@
                 },
                 '.authorLine .author': 'owner.displayName',
                 '.description': 'description'
-            }));
+            });
+            if (v.id == blist.display.view.id)
+            { $li.addClass('current'); }
+            $li.attr('data-search',
+                (v.name + ' ' + v.owner.displayName).toLowerCase());
 
             $li.expander({ contentSelector: '.description' });
 

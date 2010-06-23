@@ -105,6 +105,9 @@
 
                     mapObj._multipoint = new esri.geometry.Multipoint
                         (mapObj.map.spatialReference);
+
+                    blist.$display.find('.infowindow .hide').removeClass('hide')
+                                                            .addClass('hide_infowindow');
                 });
             },
 
@@ -144,13 +147,12 @@
             {
                 var mapObj = this;
                 mapObj._dataLoaded = true;
+
+                if (mapObj._rows === undefined) { mapObj._rows = []; }
+                mapObj._rows = mapObj._rows.concat(rows);
+
                 if (mapObj._mapLoaded)
                 { mapObj.renderData(rows); }
-                else
-                {
-                    if (mapObj._rows === undefined) { mapObj._rows = []; }
-                    mapObj._rows = mapObj._rows.concat(rows);
-                }
             },
 
             renderPoint: function(latVal, longVal, title, info, rowId, icon)

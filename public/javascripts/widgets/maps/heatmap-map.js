@@ -77,7 +77,7 @@
                                 ? row[mapObj._redirectCol.dataIndex][mapObj._redirectCol.urlSubIndex]
                                 : row[mapObj._redirectCol.dataIndex];
             }
-            var key = JSON.parse(row[mapObj._locCol.dataIndex][0]).state.toLowerCase();
+            var key = JSON.parse(row[mapObj._locCol.dataIndex][0]).state.toLowerCase().replace(/[^a-z ]/g, '');
             if (stateMapping[key])
             { key = stateMapping[key]; }
             if (!data[key])

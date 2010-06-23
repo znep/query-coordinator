@@ -237,6 +237,7 @@ javascripts:
   - util/humane-date
   - util/navigation
   - util/urls
+  - util/events
   - controls/modal-dialogs
   - controls/dataset-controls
   - controls/stars

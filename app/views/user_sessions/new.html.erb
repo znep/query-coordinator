@@ -3,21 +3,28 @@
 <% end %>
 
 <% dialog_content('login', "loginBox") do %>
-  <div class='header'>
+  <div class='header masterTheme'>
     <h1><%= CurrentDomain.strings.company %></h1>
   </div>
 
   <div class='mainContent'>
     <div class='title clearfix'>
-      <h2>Sign in using your <%= CurrentDomain.strings.company %> ID</h2> 
+      <h2>Sign in using your <%= MASTER_DOMAIN_PREFS['strings.company'] %> ID</h2>
     </div>
 
     <% if !CurrentDomain.strings.disclaimer.nil? %>
       <p class="loginDisclaimer"><%= raw CurrentDomain.strings.disclaimer %></p>
     <% end %>
 
-    <%= render(:partial => 'login') %>
+    <p>
+    <%=
+    # ok to use raw.  It is our own system config constant
+    raw(MASTER_DOMAIN_PREFS['strings.login_tips'])
+    %>
+    </p>
+    <br/>
 
+    <%= render(:partial => 'login') %>
     <%- if module_enabled? :openid_login -%>
       <div class='footer clearfix'>
         <%= render :partial => "rpx/buttons" %>

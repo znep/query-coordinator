@@ -183,7 +183,7 @@
         (Choose a chart type to see more details)
       </div>
 
-      <div class='typeBlock type-esri type-heatmap <%= @is_edit && cur_type == 'esri' ?
+      <div class='typeBlock type-esri type-heatmap <%= @is_edit && ['esri', 'heatmap'].include?(cur_type) ?
         'default' : '' %>'>
         <div class='section'>
           <h3>Layers</h3>

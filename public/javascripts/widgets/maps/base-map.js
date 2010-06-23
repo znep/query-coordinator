@@ -271,7 +271,7 @@
                 mapObj._llKeys[rowKey].title.push(getText(row, mapObj._titleCol, true));
                 mapObj._llKeys[rowKey].info.push(getText(row, mapObj._infoCol, false));
 
-                var title = mapObj._llKeys[rowKey].title.join(', ');
+                var title = _.compact(mapObj._llKeys[rowKey].title).join(', ');
                 if (title.length > 50) { title = title.slice(0, 50) + "..."; }
 
                 var info;

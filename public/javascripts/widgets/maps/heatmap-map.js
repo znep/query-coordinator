@@ -85,7 +85,7 @@
 
             if (mapObj._infoCol)
             { data[key].description.push(row[mapObj._infoCol.dataIndex]); }
-            data[key].redirect_to = redirectTarget || data[key].redirec_to; // Last value used for simplicity.
+            data[key].redirect_to = redirectTarget || data[key].redirect_to; // Last value used for simplicity.
             data[key].value.push(row[mapObj._quantityCol.dataIndex]);
         });
 

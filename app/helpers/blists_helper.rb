@@ -176,9 +176,9 @@ module BlistsHelper
     }
 
     # TODO: Content disposition and suggested filename
-    if @view.is_blobby?
+    if @view.is_blobby? || @view.is_href?
       options['download'] =  {'text' => 'Download', 'class' => 'export noExportIcon',
-        'href' => @view.blob_href, 'external' => true}
+        'href' => @view.dataset_href, 'external' => true}
     else
       options['download'] = {'text' => 'Download this ' + t(:blist_name).titleize,
         'if' => (theme.nil? ||

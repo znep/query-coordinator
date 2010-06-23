@@ -111,7 +111,7 @@
             </li>
             <%- end -%>
 
-            <%- if !@view.is_blobby? -%>
+            <%- if @view.is_tabular? -%>
             <li class='separator'>
               <a href='#' id='filterLink' class='dropdownLink'>
                 <div class='outerWrapper'><div class='midWrapper'>

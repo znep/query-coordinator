@@ -78,6 +78,7 @@ javascripts:
 - shared-map:
   - widgets/base-visualization
   - data/types
+  - util/color
   - widgets/maps/base-map
   - widgets/maps/esri-map
   - widgets/maps/google-map

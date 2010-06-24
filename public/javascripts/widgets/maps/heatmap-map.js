@@ -24,11 +24,24 @@
             if (_.isUndefined(mapObj._segmentSymbols))
             {
                 mapObj._segmentSymbols = [];
+                var lowColor  = mapObj._displayConfig.lowcolor  ? $.hexToRgb(mapObj._displayConfig.lowcolor)
+                                                                : { r: 209, g: 209, b: 209};
+                var highColor = mapObj._displayConfig.highcolor ? $.hexToRgb(mapObj._displayConfig.highcolor)
+                                                                : { r: 0, g: 255, b: 0};
+                var colorStep = {
+                    r: Math.round((highColor.r-lowColor.r)/10),
+                    g: Math.round((highColor.g-lowColor.g)/10),
+                    b: Math.round((highColor.b-lowColor.b)/10)
+                };
+
                 for (var i = 0; i < 10; i++)
                 {
                     mapObj._segmentSymbols[i] = new esri.symbol.SimpleFillSymbol();
                     mapObj._segmentSymbols[i].setColor(
-                        new dojo.Color([50,50+(20*i),50,0.8])
+                        new dojo.Color([lowColor.r+(colorStep.r*i),
+                                        lowColor.g+(colorStep.g*i),
+                                        lowColor.b+(colorStep.b*i),
+                                        0.8])
                     );
                 }
             }
@@ -57,7 +70,7 @@
         { mapObj._featureSet = featureSet; }
         else
         { featureSet = mapObj._featureSet; }
-        mapObj.resetData();
+        mapObj.map.graphics.clear();
 
         var info = mapObj._quantityCol.name + ": ${quantity}<br />${description}";
         var infoTemplate = new esri.InfoTemplate("${NAME}", info);

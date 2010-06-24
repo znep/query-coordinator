@@ -173,6 +173,15 @@
               title="Number by which intensity is determined">?</span>
           </div>
 
+          <%- options = [
+          {'label' => 'Color (Low)',  'name' => 'lowcolor',  'type' => 'color', 'default' => ['#d1d1d1'], 'help' => 'Color at minimum intensity'},
+          {'label' => 'Color (High)', 'name' => 'highcolor', 'type' => 'color', 'default' => ['#00ff00'], 'help' => 'Color at maximum intensity'}] -%>
+          <%- is_edit_block = @is_edit && cur_type == 'heatmap' -%>
+          <%= render(:partial => 'viz_opts',
+            :locals => {:options => options,
+            :name_prefix => 'heatmap', :existing_values => is_edit_block ?
+              @view.displayFormat.data : nil}) %>
+
         </div>
 
       </div>
@@ -295,7 +304,7 @@
             $('.mapWrapper .column.right .typeBlock.type-' + v).show();
             $('.mapWrapper .configLine').hide();
             $('.mapWrapper .configLine.type-' + (v == 'heatmap' ? v : '')).show();
-            $('.mapWrapper .subtitle.heatmap').toggle(v == 'heatmap');
+            $('.mapWrapper .subtitle.heatmap, .mapWrapper .line.color').toggle(v == 'heatmap');
           }, 0);
     };
 
@@ -389,6 +398,8 @@
         }
 
         options.heatmapType = 'us_state';
+        options.lowcolor  = $('#heatmap-lowcolor-0').val();
+        options.highcolor = $('#heatmap-highcolor-0').val();
       }
       else
       {
@@ -474,6 +485,19 @@
           }
       });
     };
+
+    $('.mapWrapper .colorOption').colorPicker().bind('color_change',
+        function(e, newColor)
+        {
+            var $target = $(e.target);
+            $target.css('background-color', newColor)
+              .next(':input').val(newColor);
+        })
+    .mousedown(function(e)
+        {
+            var $target = $(e.target);
+            $target.data('colorpicker-color', $target.next(':input').val());
+        });
 
     $('.mapWrapper form').submit(formSubmit);
     $('.mapWrapper a.create').click(formSubmit);

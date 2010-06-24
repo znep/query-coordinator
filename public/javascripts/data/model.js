@@ -590,8 +590,8 @@ blist.namespace.fetch('blist.data');
             min -= countSpecialTo(min);
             var len = Math.min(max - min + 1, curOptions.pageSize);
 
-            var tempView = this.getViewCopy(this.isGrouped() || 
-                this.shouldSendColumns());
+            var tempView = this.cleanViewForPost(this.getViewCopy(),
+                this.isGrouped() || this.shouldSendColumns());
             var ajaxOptions = $.extend({},
                     supplementalAjaxOptions,
                     { url: '/views/INLINE/rows.json?' + $.param(
@@ -691,8 +691,8 @@ blist.namespace.fetch('blist.data');
         {
             if (!_.isUndefined(meta.view.message)) { return; }
 
-            tempView = tempView || this.getViewCopy(this.isGrouped() || 
-                this.shouldSendColumns());
+            tempView = this.cleanViewForPost(tempView || this.getViewCopy(),
+                this.isGrouped() || this.shouldSendColumns());
             $.ajax({url: '/views/INLINE/rows.json?' +
                     $.param({method: 'getAggregates'}),
                     type: 'POST',
@@ -943,7 +943,7 @@ blist.namespace.fetch('blist.data');
                 meta = newMeta;
 
                 if (!$.isBlank(curOptions.masterView))
-                { $.syncObjects(curOptions.masterView, this.getViewCopy(true)); }
+                { $.syncObjects(curOptions.masterView, this.getViewCopy()); }
 
                 meta.sort = {};
 
@@ -2256,9 +2256,9 @@ blist.namespace.fetch('blist.data');
         /**
          * Notify listeners of column sort changes
          */
-        this.columnSortChange = function(isMulti)
+        this.columnSortChange = function(skipReq)
         {
-            $(listeners).trigger('sort_change', [isMulti]);
+            $(listeners).trigger('sort_change', [skipReq]);
         };
 
         /**
@@ -2486,20 +2486,19 @@ blist.namespace.fetch('blist.data');
             return changedRows;
         };
 
-        this.multiSort = function(orderBys)
+        this.multiSort = function(orderBys, skipRequest)
         {
-
-            if (orderBys.length == 1)
+            if ($.isBlank(orderBys) || orderBys.length === 0)
+            {
+                this.clearSort(null, skipRequest);
+                return;
+            }
+            else if (orderBys.length == 1)
             {
                 var sort = orderBys[0];
                 var colIndex = findColumnIndex(
                     parseInt(sort.expression.columnId, 10));
-                this.sort(colIndex, !sort.ascending);
-                return;
-            }
-            else if (orderBys.length === 0)
-            {
-                this.clearSort();
+                this.sort(colIndex, !sort.ascending, skipRequest);
                 return;
             }
 
@@ -2518,6 +2517,8 @@ blist.namespace.fetch('blist.data');
 
             this.columnSortChange(true);
 
+            if (skipRequest) { return; }
+
             // Sort
             doSort();
 
@@ -2532,7 +2533,7 @@ blist.namespace.fetch('blist.data');
          * @param order either a column index or a sort function
          * @param descending true to sort descending if order is a column index
          */
-        this.sort = function(order, descending)
+        this.sort = function(order, descending, skipRequest)
         {
             // Load the types
             if (typeof order == 'function')
@@ -2562,6 +2563,11 @@ blist.namespace.fetch('blist.data');
                         expression: {columnId: orderCol.id, type: 'column'},
                         ascending: !descending
                     }];
+                    if (!$.isBlank(curOptions.masterView))
+                    {
+                        curOptions.masterView.query.orderBys =
+                            meta.view.query.orderBys;
+                    }
                 }
 
                 var r1 = "a" + orderCol.dataLookupExpr;
@@ -2618,7 +2624,9 @@ blist.namespace.fetch('blist.data');
                 sortConfigured = true;
             }
 
-            this.columnSortChange();
+            this.columnSortChange(skipRequest);
+
+            if (skipRequest) { return; }
 
             // Sort
             doSort();
@@ -2628,7 +2636,7 @@ blist.namespace.fetch('blist.data');
             configureActive(active);
         };
 
-        this.clearSort = function(order)
+        this.clearSort = function(order, skipRequest)
         {
             if (typeof order == 'function') { order = null; }
 
@@ -2637,12 +2645,12 @@ blist.namespace.fetch('blist.data');
                 order = meta.columns[0][order];
             }
 
-            if (typeof order == 'object')
+            if ($.isPlainObject(order))
             {
                 delete meta.sort[order.id];
 
                 if (meta.view.query.orderBys !== undefined)
-                    {
+                {
                     for (var i = 0; i < meta.view.query.orderBys.length; i++)
                     {
                         if (meta.view.query.orderBys[i]
@@ -2653,6 +2661,12 @@ blist.namespace.fetch('blist.data');
                         }
                     }
 
+                    if (!$.isBlank(curOptions.masterView))
+                    {
+                        curOptions.masterView.query.orderBys =
+                            meta.view.query.orderBys;
+                    }
+
                     if (meta.view.query.orderBys.length == 1)
                     {
                         var newSort = meta.view.query.orderBys[0];
@@ -2660,7 +2674,7 @@ blist.namespace.fetch('blist.data');
                             findColumnIndex(newSort.expression.columnId);
                         if (colIndex !== undefined)
                         {
-                            this.sort(colIndex, !newSort.ascending);
+                            this.sort(colIndex, !newSort.ascending, skipRequest);
                             return;
                         }
                     }
@@ -2670,13 +2684,17 @@ blist.namespace.fetch('blist.data');
             {
                 meta.sort = {};
                 delete meta.view.query.orderBys;
+                if (!$.isBlank(curOptions.masterView))
+                { delete curOptions.masterView.query.orderBys; }
             }
             sortConfigured = true;
             orderCol = null;
             orderFn = null;
             orderPrepro = null;
 
-            this.columnSortChange();
+            this.columnSortChange(skipRequest);
+
+            if (skipRequest) { return; }
 
             var hasSort = false;
             $.each(meta.sort, function() { hasSort = true; return false; });
@@ -2842,7 +2860,7 @@ blist.namespace.fetch('blist.data');
             installIDs(true);
         };
 
-        this.getViewCopy = function(includeColumns)
+        this.getViewCopy = function()
         {
             var view = meta.view;
             // Update all the widths from the meta columns
@@ -2862,46 +2880,68 @@ blist.namespace.fetch('blist.data');
             delete view.sortBys;
             delete view.viewFilters;
 
+            // Filter out all metadata columns
+            view.columns = $.grep(view.columns, function(c, i)
+                { return c.id != -1; });
+
+            // Sort by position, because the attribute is ignored when
+            // saving columns
+            view.columns.sort(function(a, b)
+                { return a.position - b.position; });
+
+            var cleanColumn = function(col)
+            { delete col.dataIndex; };
+
+            // Clean out dataIndexes, and clean out child metadata columns
+            $.each(view.columns, function(i, c)
+            {
+                cleanColumn(c);
+                if (c.childColumns)
+                {
+                    c.childColumns = $.grep(c.childColumns, function(cc, j)
+                        { return cc.id != -1; });
+                    $.each(c.childColumns, function(j, cc)
+                        { cleanColumn(cc); });
+                }
+            });
+
+            view.originalViewId = view.id;
+            return view;
+        };
+
+
+        this.cleanViewForPost = function(view, includeColumns)
+        {
             if (includeColumns)
             {
-                // Filter out all metadata columns
-                view.columns = $.grep(view.columns, function(c, i)
-                    { return c.id != -1; });
-                // Sort by position, because the attribute is ignored when
-                // saving columns
-                view.columns.sort(function(a, b)
-                    { return a.position - b.position; });
                 var cleanColumn = function(col)
                 {
-                    delete col.dataIndex;
                     delete col.options;
                     delete col.dropDown;
                     delete col.renderTypeName;
                     delete col.dataTypeName;
                 };
+
                 // Clean out dataIndexes, and clean out child metadata columns
                 $.each(view.columns, function(i, c)
                 {
                     cleanColumn(c);
                     if (c.childColumns)
                     {
-                        c.childColumns = $.grep(c.childColumns, function(cc, j)
-                            { return cc.id != -1; });
                         $.each(c.childColumns, function(j, cc)
                             { cleanColumn(cc); });
                     }
                 });
             }
             else
-            {
-                view.columns = null;
-            }
-            delete view['grants'];
-            view.originalViewId = view.id;
+            { delete view.columns; }
+
+            delete view.grants;
             return view;
         };
 
-        this.getTempView = function(tempView)
+
+        this.getTempView = function(tempView, includeColumns)
         {
             // If we're doing progressive loading, set up a temporary
             //  view, then construct a query with a special URL and
@@ -2909,7 +2949,8 @@ blist.namespace.fetch('blist.data');
             // Only include columns if this view is grouped; otherwise, don't
             // include columns since we want them all back, and we don't need
             // to send all that extra data over or modify columns accidentally
-            tempView = tempView || this.getViewCopy(this.isGrouped());
+            tempView = this.cleanViewForPost(tempView || this.getViewCopy(),
+                includeColumns || this.isGrouped());
             var ajaxOptions = $.extend({},
                     supplementalAjaxOptions,
                     { url: '/views/INLINE/rows.json?' + $.param(
@@ -2971,16 +3012,11 @@ blist.namespace.fetch('blist.data');
          * Group columns
          */
 
-        this.group = function(columns)
+        this.group = function(grouping)
         {
-            if (!columns instanceof Array) { columns = [columns]; }
-            meta.view.query.groupBys = [];
-
-            $.each(columns, function(i, c)
-            {
-                meta.view.query.groupBys.push
-                    ({columnId: c.id || c, type: 'column'});
-            });
+            meta.view.query.groupBys = grouping;
+            if (!$.isBlank(curOptions.masterView))
+            { curOptions.masterView.query.groupBys = grouping; }
         };
 
         /**

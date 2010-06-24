@@ -141,14 +141,13 @@
             var $item = $(item);
 
             groupCols.push({
-                id: $item.find("input.columnId").val(),
-                name: $item.find('.name').text(),
-                data: JSON.parse($item.find('.columnJson').val()),
-                hidden: $item.find('.isHidden').val(),
-                position: parseInt($item.find(".orderIndex").text())
+                columnId: $item.find("input.columnId").val(),
+                position: parseInt($item.find(".orderIndex").text()),
+                type: 'column'
             });
         });
         groupCols.sort(function(s1, s2) { return s1.position - s2.position; });
+        _.each(groupCols, function(gc) { delete gc.position; });
 
         var successCallback = function()
         {
@@ -178,15 +177,13 @@
 
             aggCols.push({
                 id: $item.find("input.columnId").val(),
-                name: $item.find('.name').text(),
-                data: JSON.parse($item.find('.columnJson').val()),
-                hidden: $item.find('.isHidden').val(),
                 position: parseInt($item.find(".orderIndex").text()),
-                func: func
+                format: { grouping_aggregate: func }
             });
         });
         if (failed) { return; }
         aggCols.sort(function(s1, s2) { return s1.position - s2.position; });
+        _.each(aggCols, function(ac) { delete ac.position; });
 
         if (aggCols.length > 0 && groupCols.length < 1)
         {
@@ -199,14 +196,7 @@
           .each(function(i, item)
         {
             var $item = $(item);
-
-            aggCols.push({
-                id: $item.find("input.columnId").val(),
-                name: $item.find('.name').text(),
-                data: JSON.parse($item.find('.columnJson').val()),
-                hidden: true,
-                func: null
-            });
+            aggCols.push({ id: $item.find("input.columnId").val() });
         });
 
         var drillDown = $('.groupingWrapper #drillDownCheckBox').is(':checked');

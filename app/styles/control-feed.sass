@@ -1,0 +1,97 @@
+$feed_ui_color: #b3b3b3
+
+.feed
+  ul.feedList
+    > li
+      border-top: 1px solid $feed_ui_color
+      padding: 1em 0.2em
+      &:first-child
+        border-top: none
+
+      .feedCommon
+        @include sprite-feed-icons
+        margin-bottom: 0.3em
+
+        .icon
+          float: left
+          margin-right: 0.2em
+
+        .feedActor
+          font-size: 1.2em
+          font-weight: bold
+          margin-right: 0.2em
+        .feedBody
+          color: #333
+          font-size: 1.2em
+          line-height: 1.3em
+
+      .feedTimestamp
+        color: $feed_ui_color
+        font-size: 1.1em
+
+      .feedCustom, .feedChildren
+        border-left: 2px solid $feed_ui_color
+        margin: 0.3em 0
+        padding: 0.2em 0.5em
+
+      .feedChildren
+        margin: 0.3em 0
+
+        > li
+          margin-top: 1em
+          &:first-child
+            margin-top: 0
+
+          .feedCommon .icon
+            display: none
+
+        .feedChildren, .replyViewAllLink
+          display: none
+
+      // type specific styles
+      &.comment
+        .feedCustom
+          border-left: none
+          padding: 0.2em 0
+
+          .commentActions
+            li a
+              color: #888
+
+            .actionReply, .actionInappropriate
+              float: left
+              margin-right: 1em
+            .rateDown, .rateUp, .negativeRatings, .positiveRatings
+              float: right
+              margin-left: 0.5em
+            .rateUp, .rateDown
+              @include sprite-menu-icons
+
+      &.view
+        .feedCustom
+          min-height: 3.6em
+
+        .feedChildren, .replyViewAllLink
+          display: none
+
+        .viewDetails
+          @include sprite-type-icons-30
+
+          .icon
+            float: left
+            position: absolute
+
+          .viewName
+            display: block
+            font-size: 1.2em
+            font-weight: bold
+            margin-left: 3em
+
+          .viewDescription
+            color: #666
+            font-size: 1.2em
+            line-height: 1.3em
+            max-height: 2.6em
+            margin-left: 3em
+            overflow: hidden
+            text-overflow: ellipsis

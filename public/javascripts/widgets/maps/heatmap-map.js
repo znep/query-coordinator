@@ -31,13 +31,12 @@
                         new dojo.Color([50,50+(20*i),50,0.8])
                     );
                 }
+            }
 
-                doQueries(mapObj);
-            }
+            if (_.isUndefined(mapObj._featureSet))
+            { doQueries(mapObj); }
             else
-            {
-                addFeatureSetToMap(mapObj, null);
-            }
+            { addFeatureSetToMap(mapObj, null); }
         }
     });
 
@@ -77,7 +76,7 @@
                                 ? row[mapObj._redirectCol.dataIndex][mapObj._redirectCol.urlSubIndex]
                                 : row[mapObj._redirectCol.dataIndex];
             }
-            var key = JSON.parse(row[mapObj._locCol.dataIndex][0]).state.toLowerCase();
+            var key = JSON.parse(row[mapObj._locCol.dataIndex][0]).state.toLowerCase().replace(/[^a-z ]/g, '');
             if (stateMapping[key])
             { key = stateMapping[key]; }
             if (!data[key])
@@ -85,7 +84,7 @@
 
             if (mapObj._infoCol)
             { data[key].description.push(row[mapObj._infoCol.dataIndex]); }
-            data[key].redirect_to = redirectTarget || data[key].redirec_to; // Last value used for simplicity.
+            data[key].redirect_to = redirectTarget || data[key].redirect_to; // Last value used for simplicity.
             data[key].value.push(row[mapObj._quantityCol.dataIndex]);
         });
 
@@ -95,9 +94,10 @@
             if (!$.isArray(e.value)) return parseFloat(e.value);
 
             var quantityPrecision = 0;
-            e.value = _.reduce(e.value, 0.0, function(m, v)
+            e.value = _.reduce(_.compact(e.value), 0.0, function(m, v)
                 {
-                    var precision = v.length-v.lastIndexOf('.')-1;
+                    var precision = v.indexOf('.') > -1
+                                    ? v.length-v.lastIndexOf('.')-1 : 0;
                     quantityPrecision = quantityPrecision > precision
                                     ? quantityPrecision : precision;
                     return m + parseFloat(v);

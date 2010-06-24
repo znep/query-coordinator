@@ -175,6 +175,24 @@
   .alertIcon
     background-position: 0 -420px
 
+// icons/feed_icons.png
+@mixin sprite-feed-icons($subselector: '.icon')
+  #{$subselector}
+    @include text-hiding
+    @include ie6-fix
+    background-image: url(/stylesheets/images/icons/feed_icons.png)
+    height: 13px
+    width: 19px
+
+  &.comment #{$subselector}
+    background-position: 0 0
+  &.view #{$subselector}
+    background-position: 0 -13px
+  &.embed #{$subselector}
+    background-position: 0 -26px
+  &.trackback #{$subselector}
+    background-position: 0 -39px
+
 // interface/dataset_tabs.png
 @mixin sprite-dataset-tabs($subselector: '.icon')
   #{$subselector}

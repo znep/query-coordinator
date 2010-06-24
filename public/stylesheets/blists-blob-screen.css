@@ -1,14 +1,14 @@
-#fileDownloadLinks
+.externalLinkDisplay
 {
    padding: 2em 0 2em 2em;
 }
 
-#fileDownloadLinks h4
+.externalLinkDisplay h4
 {
     font-size: 2em;
 }
 
-#fileDownloadLinks a
+.externalLinkDisplay a
 {
     font-size: 1.8em;
 }

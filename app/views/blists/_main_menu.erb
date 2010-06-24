@@ -32,7 +32,7 @@
     </dd></dl>
   </li>
 
-  <%- if !@view.is_blobby? -%>
+  <%- if @view.is_tabular? -%>
   <li>
     <dl><dt><a href='#menuFilterView'>Filter, Visualize &amp; More</a></dt>
       <dd><%= menu_tag({'bare_menu' => true, 'class' => 'filterView',

@@ -1,5 +1,7 @@
 (function($)
 {
+    var NUM_SEGMENTS = 10;
+
     $.socrataMap.heatmap = function(options, dom)
     {
         this.settings = $.extend({}, $.socrataMap.heatmap.defaults, options);
@@ -29,12 +31,12 @@
                 var highColor = mapObj._displayConfig.highcolor ? $.hexToRgb(mapObj._displayConfig.highcolor)
                                                                 : { r: 0, g: 255, b: 0};
                 var colorStep = {
-                    r: Math.round((highColor.r-lowColor.r)/10),
-                    g: Math.round((highColor.g-lowColor.g)/10),
-                    b: Math.round((highColor.b-lowColor.b)/10)
+                    r: Math.round((highColor.r-lowColor.r)/NUM_SEGMENTS),
+                    g: Math.round((highColor.g-lowColor.g)/NUM_SEGMENTS),
+                    b: Math.round((highColor.b-lowColor.b)/NUM_SEGMENTS)
                 };
 
-                for (var i = 0; i < 10; i++)
+                for (var i = 0; i < NUM_SEGMENTS; i++)
                 {
                     mapObj._segmentSymbols[i] = new esri.symbol.SimpleFillSymbol();
                     mapObj._segmentSymbols[i].setColor(
@@ -121,7 +123,7 @@
         var max = Math.ceil( _.max(_.map(data, getValue))/50)*50;
         var min = Math.floor(_.min(_.map(data, getValue))/50)*50;
         var segments = [];
-        for (i = 0; i < 10; i++) { segments[i] = ((i+1)*(max-min)/10)+min; }
+        for (i = 0; i < NUM_SEGMENTS; i++) { segments[i] = ((i+1)*(max-min)/NUM_SEGMENTS)+min; }
 
         _.each(featureSet.features, function(feature)
         {
@@ -130,7 +132,7 @@
             if (!datum) return;
 
             var symbol;
-            for (i = 0; i < 10; i++)
+            for (i = 0; i < NUM_SEGMENTS; i++)
             {
                 if (parseFloat(datum.value) <= segments[i])
                 { symbol = mapObj._segmentSymbols[i]; break; }

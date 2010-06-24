@@ -263,6 +263,24 @@ $.renderTemplate = function(template, data, directive)
         .children();
 };
 
+$.compileTemplate = function(template, directive)
+{
+    var $templateCopy = $('#templates > .' + template)
+        .clone();
+
+    // pure needs a wrapping element
+    $templateCopy.appendTo($('<div/>'));
+
+    var compiledDirective = $templateCopy.compile(directive);
+
+    return function(data)
+    {
+        // strip off opening and closing tags of toplevel element
+        // to match behavior of $.renderTemplate
+        return compiledDirective(data).replace(/^<[^<>]+>/i, '').replace(/<\/[^<>]+>$/i, '');
+    };
+};
+
 $.isBlank = function(obj)
 { return _.isUndefined(obj) || _.isNull(obj) || obj === ''; };
 

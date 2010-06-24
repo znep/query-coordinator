@@ -14,6 +14,10 @@
 // Fixed a bug with context carrying over after looping into children
 // Add a space before pre- or ap- pending to a class
 
+// clint.tseng@socrata.com 21/06/2010
+// Added syntax to data selector: "object.property!" or "something #{variable!}"
+// The ! indicates that the contents should be html escaped.
+
 var $p, pure = $p = function(){
 	var sel = arguments[0], 
 		ctxt = false;
@@ -191,7 +195,7 @@ $p.core = function(sel, ctxt, plugins){
 			return sel;
 		}
 		//check for a valid js variable name with hyphen(for properties only), $, _ and :
-		var m = sel.match(/^[a-zA-Z\$_][\w\$:-]*(\.[\w\$:-]*[^\.])*$/);
+		var m = sel.match(/^[a-zA-Z\$_][\w\$:-]*(\.[\w\$:-]*[^\.])*!?$/);
 		if(m === null){
 			var found = false, s = sel, parts = [], pfns = [], i = 0, retStr;
 			// check if literal
@@ -216,6 +220,11 @@ $p.core = function(sel, ctxt, plugins){
 			return concatenator(parts, pfns);
 		}
 		m = sel.split('.');
+		var sanitize = sel.endsWith('!');
+		if (sanitize){
+		    // take out the ! so it doesn't confuse the data walker
+		    m[m.length - 1] = m[m.length - 1].substring(0, m[m.length - 1].length - 1);
+		}
 		return function(ctxt){
 			var data = ctxt.context;
 			if(!data){
@@ -232,7 +241,7 @@ $p.core = function(sel, ctxt, plugins){
 				if(!data){break;}
 				data = data[m[i]];
 			}
-			return (!data && data !== 0) ? '':data;
+			return (!data && data !== 0) ? '': (sanitize ? $.htmlEscape(data) : data);
 		};
 	}
 
@@ -348,6 +357,7 @@ $p.core = function(sel, ctxt, plugins){
 			}
 			quotefn = function(s) { return s; };
 		}
+
 		return { attr: attr, nodes: target, set: setfn, sel: osel, quotefn: quotefn };
 	}
 

@@ -411,8 +411,8 @@ $(function()
                                 '.type@title': function(filter) { return blist.dataset.getDisplayType(filter.item); },
                                 '.type@class+': function(filter) { return ' type' + blist.dataset.getDisplayType(filter.item); },
 
-                                '.name a': function(filter) { return $.htmlEscape(filter.item.name); },
-                                '.name a@title': function(filter) { return $.htmlEscape(filter.item.description || ''); },
+                                '.name a': 'filter.name!',
+                                '.name a@title': 'filter.description!',
                                 '.name a@href': function(filter) { return $.generateViewUrl(filter.item); },
 
                                 '.viewed .cellInner': 'filter.viewCount',
@@ -420,8 +420,8 @@ $(function()
                                 '.picture a@href': function(filter) { return $.generateProfileUrl(filter.item.owner); },
                                 '.picture img@src': function(filter) { return filter.item.owner.profileImageUrlMedium ||
                                                                               '/images/small-profile.png'; },
-                                '.picture img@alt': function(filter) { return $.htmlEscape(filter.item.owner.displayName); },
-                                '.picture img@title': function(filter) { return $.htmlEscape(filter.item.owner.displayName); }
+                                '.picture img@alt': 'filter.owner.displayName!',
+                                '.picture img@title': 'filter.owner.displayName!'
                             }
                         }
                     }));
@@ -482,19 +482,15 @@ $(function()
         '.replyAuthor img@src':
             function(reply) { return reply.item.user.profileImageUrlMedium ||
                                        '/images/large-profile.png'; },
-        '.replyAuthor img@alt':
-            function(reply) { return $.htmlEscape(reply.item.user.displayName); },
+        '.replyAuthor img@alt': 'reply.user.displayName!',
         '.replyAuthor a@href':
             function(reply) { return $.generateProfileUrl(reply.item.user); },
 
-        '.replyContainer .replyBody .replyAuthorName':
-            function(reply) { return $.htmlEscape(reply.item.user.displayName); },
+        '.replyContainer .replyBody .replyAuthorName': 'reply.user.displayName!',
         '.replyContainer .replyBody .replyAuthorName@href':
             function(reply) { return $.generateProfileUrl(reply.item.user); },
-        '.replyContainer .replyBody .replyTitle':
-            function(reply) { return ' ' + $.htmlEscape(reply.item.title || ''); },
-        '.replyContainer .replyBody+':
-            function(reply) { return ' ' + $.htmlEscape(reply.item.body || ''); },
+        '.replyContainer .replyBody .replyTitle': 'reply.title!',
+        '.replyContainer .replyBody+': 'reply.body!',
 
         '.replyContainer .replyActions .timestamp':
             function(reply) { return blist.util.humaneDate.getFromDate(new Date(reply.item.createdAt * 1000)); },
@@ -517,19 +513,15 @@ $(function()
                 '.commentAuthor img@src':
                     function(comment) { return comment.item.user.profileImageUrlMedium ||
                                                '/images/large-profile.png'; },
-                '.commentAuthor img@alt':
-                    function(comment) { return $.htmlEscape(comment.item.user.displayName); },
+                '.commentAuthor img@alt': 'comment.user.displayName!',
                 '.commentAuthor a@href':
                     function(comment) { return $.generateProfileUrl(comment.item.user); },
 
-                '.commentContainer .commentBody .commentAuthorName':
-                    function(comment) { return $.htmlEscape(comment.item.user.displayName); },
+                '.commentContainer .commentBody .commentAuthorName': 'comment.user.displayName!',
                 '.commentContainer .commentBody .commentAuthorName@href':
                     function(comment) { return $.generateProfileUrl(comment.item.user); },
-                '.commentContainer .commentBody .commentTitle':
-                    function(comment) { return ' ' + $.htmlEscape(comment.item.title || ''); },
-                '.commentContainer .commentBody+':
-                    function(comment) { return ' ' + $.htmlEscape(comment.item.body || ''); },
+                '.commentContainer .commentBody .commentTitle': 'comment.title!',
+                '.commentContainer .commentBody+': 'comment.body!',
 
                 '.commentContainer .commentActions .timestamp':
                     function(comment) { return blist.util.humaneDate.getFromDate(new Date(comment.item.createdAt * 1000)); },

@@ -159,7 +159,7 @@
               Quantity
             </label>
             <select id='mapColumn_quantity' name='mapColumn_quantity'
-              class='<%= quantity_id.nil?() ? 'prompt' : '' %>'>
+              class='required <%= quantity_id.nil?() ? 'prompt' : '' %>'>
               <option class='prompt' value=''>Select a Column</option>
               <%- @view.columns_for_datatypes(data_types,
                     @is_edit && !@view.is_grouped?).each do |c| -%>
@@ -183,7 +183,7 @@
         (Choose a chart type to see more details)
       </div>
 
-      <div class='typeBlock type-esri type-heatmap <%= @is_edit && cur_type == 'esri' ?
+      <div class='typeBlock type-esri type-heatmap <%= @is_edit && ['esri', 'heatmap'].include?(cur_type) ?
         'default' : '' %>'>
         <div class='section'>
           <h3>Layers</h3>
@@ -194,7 +194,7 @@
           <div class='scrollBlock'>
             <%- count = 0 -%>
             <%- layer_options = Displays::Map::ESRI_LAYERS -%>
-            <%- layers = @is_edit && cur_type == 'esri' ?
+            <%- layers = @is_edit && ['esri', 'heatmap'].include?(cur_type) ?
               @view.displayFormat.layers : nil -%>
             <%- layers = [layer_options[0]] if layers.nil? -%>
             <%- layers.each do |l| -%>

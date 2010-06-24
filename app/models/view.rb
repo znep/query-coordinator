@@ -38,7 +38,7 @@ class View < Model
   end
 
   def html
-    if !is_blobby?
+    if is_tabular?
       CoreServer::Base.connection.get_request("/#{self.class.name.pluralize.downcase}/#{id}/" +
         "rows.html?template=bare_template.html", {})
     end
@@ -298,6 +298,16 @@ class View < Model
     end
   end
 
+  def dataset_href
+    if is_href?
+      unless metadata.nil? || metadata.href.blank?
+        return metadata.href
+      end
+    elsif is_blobby?
+      return blob_href
+    end
+  end
+
   def user_role(user_id)
     if (user_id == tableAuthor.id)
       I18n.t(:blist_name).capitalize + " Author"
@@ -381,11 +391,11 @@ class View < Model
 
   def parent_dataset
     return @parent_dataset unless @parent_dataset.nil?
-    if is_blist? || (is_blobby? && flag?("default"))
+    if is_blist? || ((is_href? || is_blobby?) && flag?("default"))
       @parent_dataset = self
     else
       @parent_dataset = View.find({"method" => 'getByTableId', "tableId" => self.tableId}, true).
-                             find{ |l| l.is_blist? || (l.is_blobby? && l.flag?("default")) }
+                             find{ |l| l.is_blist? || ((l.is_href? || l.is_blobby?) && l.flag?("default")) }
     end
     return @parent_dataset
   end
@@ -434,8 +444,12 @@ class View < Model
     viewType == 'blobby'
   end
 
+  def is_href?
+    viewType == 'href'
+  end
+
   def can_email?
-    !is_blobby?
+    is_tabular?
   end
 
   def can_print?
@@ -467,6 +481,8 @@ class View < Model
     if !display_class
       if is_blobby?
         display_class = Displays::Blob
+      elsif is_href?
+        display_class = Displays::Href
       else
         # Table display is the default if the display type is absent or invalid
         display_class = Displays::Table

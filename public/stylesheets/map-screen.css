@@ -65,3 +65,7 @@ div.gmnoprint div { overflow: hidden !important; }
 }
 .firstChild .VE_Pushpin_Popup_Title { font-size: 1.3em; }
 .firstChild .VE_Pushpin_Popup_Body { font-size: 1em; }
+
+.infowindow .window .top .right .user .titlebar .hide_infowindow .sprite {margin-left:-752px; margin-top:-900px; cursor:pointer; display:block;}
+.infowindow .window .top .right .user .titlebar .hide_infowindow .sprite:hover {margin-top:-908px;}
+.infowindow .window .top .right .user .titlebar .hide_infowindow { height:8px; margin-top:5px; overflow:hidden; position:absolute; width:12px; }

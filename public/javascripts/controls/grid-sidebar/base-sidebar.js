@@ -566,6 +566,18 @@
                 sidebarObj.settings.onSidebarClosed();
             },
 
+            refresh: function()
+            {
+                var sidebarObj = this;
+
+                var pane = _.compact([sidebarObj._currentOuterPane,
+                        sidebarObj._currentPane]).join('.');
+                if ($.isBlank(pane)) { return; }
+
+                sidebarObj.addPane(pane);
+                sidebarObj.show(pane);
+            },
+
             updateEnabledSubPanes: function()
             {
                 var sidebarObj = this;
@@ -884,6 +896,7 @@
 
                 // Remove errors
                 $pane.find('form').validate().resetForm();
+                $pane.find('.mainError').text('');
 
                 var resetInput = function($input)
                 {

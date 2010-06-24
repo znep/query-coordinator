@@ -121,10 +121,13 @@
         var model = sidebarObj.$grid().blistModel();
         model.multiSort(filterView.query.orderBys, true);
 
-        sidebarObj.$grid().datasetGrid().groupAggregate(filterView.query.groupBys,
+        var dsGrid = sidebarObj.$grid().datasetGrid();
+        dsGrid.groupAggregate(filterView.query.groupBys,
             filterView.columns, false, null, true, null, null, true);
 
         model.getTempView($.extend(true, {}, blist.display.view));
+
+        dsGrid.setTempView('filterSidebar');
 
         _.defer(function()
         {

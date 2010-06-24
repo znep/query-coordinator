@@ -101,6 +101,8 @@
 
     .controlsBar
       position: relative
+      .ie7 &
+        z-index: 1
       .menu
         float: left
         .menuButton
@@ -124,7 +126,7 @@
         @include sprite-menu-icons
         display: none
         position: absolute
-        left: 24.5em
+        left: 24em
         right: auto
         top: 0.9em
 

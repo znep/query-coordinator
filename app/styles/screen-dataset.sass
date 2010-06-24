@@ -19,6 +19,8 @@ html, body
     position: absolute
     top: 0.8em
     width: 2em
+    .ie7 &
+      z-index: 1
     a.menuButton
       @include toolbar-button
       padding: 0
@@ -28,10 +30,13 @@ html, body
       .icon
         @include center(13px)
 
-    .menuDropdown ul li
-      @include sprite-menu-icons
-      a
-        @include clip-text
+    .menuDropdown
+      .ie7 &
+        width: 15em
+      ul li
+        @include sprite-menu-icons
+        a
+          @include clip-text
 
     &.open .menuButton .icon
       background-position: 0 0
@@ -81,7 +86,7 @@ html, body
     .unsavedLine
       display: none
       h2
-        display: inline-block
+        display: inline
         margin-right: 1em
       a.toolbarButton
         @include toolbar-button

@@ -36,6 +36,8 @@ $(function()
 {
     $('.outerContainer').fullScreen();
 
+    var sidebar;
+
     // grid
     var $dataGrid = $('#mainGrid');
     if ($dataGrid.length > 0)
@@ -43,6 +45,8 @@ $(function()
         if (blist.display.isGrid)
         {
             $dataGrid
+                .bind('columns_updated', function()
+                    { sidebar.refresh(); })
                 .datasetGrid({viewId: blist.display.viewId,
                     columnDeleteEnabled: blist.isOwner,
                     columnPropertiesEnabled: blist.isOwner,
@@ -67,7 +71,7 @@ $(function()
         subtitle: 'Placeholder'});
 
     // sidebar and sidebar tabs
-    var sidebar = $('#gridSidebar').gridSidebar({
+    sidebar = $('#gridSidebar').gridSidebar({
         dataGrid: $dataGrid[0],
         onSidebarShown: function(primaryPane)
         {
@@ -105,7 +109,8 @@ $(function()
         menuButtonTitle: 'More Views',
         contents: [
             { text: 'Parent Dataset', className: 'typeBlist', href: '#parent',
-              onlyIf: blist.dataset.getDisplayType(blist.display.view) != 'Blist' },
+              onlyIf: !_.include(['Blist', 'Blob'],
+                blist.dataset.getDisplayType(blist.display.view)) },
             { divider: true },
             { text: 'Saved Filters', className: 'typeFilter', href: '#savedFilters' },
             { text: 'Saved Visualizations', className: 'typeVisualization', href: '#savedVisualizations' },
@@ -258,13 +263,23 @@ $(function()
         saveView();
     });
 
+
+    $('.unsavedLine a.revert').click(function(e)
+    {
+        e.preventDefault();
+        $dataGrid.datasetGrid().clearTempView(null, true);
+    });
+
+
     // fetch some data that we'll need
     $.Tache.Get({ url: '/views.json',
         data: { method: 'getByTableId', tableId: blist.display.view.tableId },
         dataType: 'json', contentType: 'application/json',
         success: function(views)
         {
-            $('#viewsMenu .typeBlist a').attr('href', $.generateViewUrl(
-                _.detect(views, function(view) { return blist.dataset.getDisplayType(view) == 'Blist'; })));
+            var parDS = _.detect(views, function(view)
+                { return blist.dataset.getDisplayType(view) == 'Blist'; });
+            if (!$.isBlank(parDS))
+            { $('#viewsMenu .typeBlist a').attr('href', $.generateViewUrl(parDS)); }
         }});
 });

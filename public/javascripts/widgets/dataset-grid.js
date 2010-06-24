@@ -397,26 +397,9 @@
                     datasetObj.settings.currentUserId == view.owner.id;
                 var isGrouping = grouped instanceof Array && grouped.length > 0;
                 var wasGrouped = model.isGrouped();
-                var metadata = view.metadata || {};
 
                 var newCols = [];
                 var usedCols = {};
-
-                // Keep track of the parent columns for drill down usage
-                if (drillDown)
-                {
-                    $.extend(metadata, {
-                        // Map out the dataIndex field as it chokes the C.S.
-                        parentTableColumns: _.map(
-                            _.select(view.columns, function(col)
-                                {
-                                    return col.dataTypeName !== 'meta_data' &&
-                                        (!_.include(col.flags || [], 'hidden'))
-                                }),
-                            function(col)
-                            { return $.extend({}, col, {dataIndex: null}); })
-                    });
-                }
 
                 if (isGrouping)
                 {
@@ -477,8 +460,6 @@
 
                 if (isGrouping || wasGrouped)
                 { view.columns = newCols; }
-
-                view.metadata = metadata;
 
                 if (isNew) { view.name = newName; }
 
@@ -651,24 +632,41 @@
                 else
                 {
                     var currentColumns, parentColumns;
-                    if (view.metadata && view.metadata.parentTableColumns)
+
+                    // Grab the child column who's tableColumnId is the same as parentCol
+                    var getMatchingColumn = function(parentCol, childPool)
                     {
-                        parentColumns = view.metadata.parentTableColumns;
+                        var matchingColumn = _.detect(childPool, function(col)
+                            {
+                                return col.tableColumnId == parentCol.tableColumnId;
+                            });
+                        if(matchingColumn)
+                        {
+                            return matchingColumn.id;
+                        }
+                        return null;
                     }
+
                     var revealDrillDownCallBack = function()
                     {
                         var translatedColumns = [];
                         _.each(parentColumns, function(oCol)
                         {
-                            var matchingTableCols = _.select(currentColumns,
-                                function(col)
-                                {
-                                    return col.tableColumnId == oCol.tableColumnId
-                                });
-                            if(matchingTableCols.length > 0)
+                            var newColumnMatch = getMatchingColumn(oCol, currentColumns);
+                            if (newColumnMatch !== null)
                             {
                                 var newCol = $.extend(oCol,
-                                    { id: matchingTableCols[0].id });
+                                    { id: newColumnMatch });
+                                if (newCol.childColumns)
+                                {
+                                    var newChildColumns = [];
+                                    _.each(oCol.childColumns, function(oChildCol)
+                                    {
+                                        var newChildCol = $.extend(oChildCol,
+                                            { id: getMatchingColumn(oCol, newCol.childColumns) });
+                                    });
+                                    newCol.childColumns = newChildColumns;
+                                }
                                 if (newCol.format)
                                 {
                                     delete newCol.format.grouping_aggregate;
@@ -689,11 +687,13 @@
                     function(cols)
                     {
                         currentColumns = cols;
+                        if (view.id == blist.parentViewId)
+                        { parentColumns = cols; }
                         if(!_.isUndefined(parentColumns))
                         { revealDrillDownCallBack(); }
                     }, 'json');
 
-                    if(_.isUndefined(parentColumns))
+                    if (view.id !== blist.parentViewId)
                     {
                         $.get('/views/' + blist.parentViewId +
                                 '/columns.json',

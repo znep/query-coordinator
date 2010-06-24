@@ -194,7 +194,7 @@
           <div class='scrollBlock'>
             <%- count = 0 -%>
             <%- layer_options = Displays::Map::ESRI_LAYERS -%>
-            <%- layers = @is_edit && cur_type == 'esri' ?
+            <%- layers = @is_edit && ['esri', 'heatmap'].include?(cur_type) ?
               @view.displayFormat.layers : nil -%>
             <%- layers = [layer_options[0]] if layers.nil? -%>
             <%- layers.each do |l| -%>

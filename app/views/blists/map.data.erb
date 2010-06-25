@@ -173,9 +173,12 @@
               title="Number by which intensity is determined">?</span>
           </div>
 
+          <%- classes = ['configLine']
+              classes << 'default' if cur_type == 'heatmap'
+          -%>
           <%- options = [
-          {'label' => 'Color (Low)',  'name' => 'lowcolor',  'type' => 'color', 'default' => ['#d1d1d1'], 'help' => 'Color at minimum intensity'},
-          {'label' => 'Color (High)', 'name' => 'highcolor', 'type' => 'color', 'default' => ['#00ff00'], 'help' => 'Color at maximum intensity'}] -%>
+          {'label' => 'Color (Low)',  'name' => 'lowcolor',  'type' => 'color', 'classes' => classes, 'default' => ['#d1d1d1'], 'help' => 'Color at minimum intensity'},
+          {'label' => 'Color (High)', 'name' => 'highcolor', 'type' => 'color', 'classes' => classes, 'default' => ['#00ff00'], 'help' => 'Color at maximum intensity'}] -%>
           <%- is_edit_block = @is_edit && cur_type == 'heatmap' -%>
           <%= render(:partial => 'viz_opts',
             :locals => {:options => options,

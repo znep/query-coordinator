@@ -78,21 +78,17 @@
         { mapObj._featureSet = featureSet; }
         else
         { featureSet = mapObj._featureSet; }
-        mapObj.map.graphics.clear();
 
-        var info = mapObj._quantityCol.name + ": ${quantity}<br />${description}";
-        var infoTemplate = new esri.InfoTemplate("${NAME}", info);
-
-        if (type.type == 'state')
-        {
-            var stateMapping = {};
-            _.each(featureSet.features, function(feature)
-            { stateMapping[feature.attributes['NAME'].toLowerCase()] = feature.attributes['ST_ABBREV']; });
-        }
-
-        var data = {};
         _.each(mapObj._rows, function(row)
         {
+            var feature = findFeatureWithPoint(mapObj, row, featureSet);
+            if(!feature.attributes.description) { feature.attributes.description = []; }
+            if(!feature.attributes.quantity)    { feature.attributes.quantity = []; }
+
+            if (mapObj._infoCol)
+            { feature.attributes.description.push(row[mapObj._infoCol.dataIndex]); }
+            feature.attributes.quantity.push(row[mapObj._quantityCol.dataIndex]);
+
             var redirectTarget;
             if (mapObj._redirectCol)
             {
@@ -100,30 +96,27 @@
                                 ? row[mapObj._redirectCol.dataIndex][mapObj._redirectCol.urlSubIndex]
                                 : row[mapObj._redirectCol.dataIndex];
             }
-            var key;
-            if (type.type == 'state')
-            { key = JSON.parse(row[mapObj._locCol.dataIndex][0]).state.toLowerCase().replace(/[^a-z ]/g, ''); }
-            else
-            { key = row[mapObj._locCol.dataIndex]; }
-            if (stateMapping && stateMapping[key])
-            { key = stateMapping[key]; }
 
-            if (!data[key])
-            { data[key] = { description: [], value: [] }; }
-
-            if (mapObj._infoCol)
-            { data[key].description.push(row[mapObj._infoCol.dataIndex]); }
-            data[key].redirect_to = redirectTarget || data[key].redirect_to; // Last value used for simplicity.
-            data[key].value.push(row[mapObj._quantityCol.dataIndex]);
+            // Last value used for simplicity.
+            feature.attributes.redirect_to = redirectTarget || feature.attributes.redirect_to;
         });
 
         // Converts array to value if array; otherwise, just returns value.
         var getValue = function(e)
         {
-            if (!$.isArray(e.value)) return parseFloat(e.value);
+            if (!e.attributes.quantity)
+            { return null; }
+
+            if (!$.isArray(e.attributes.quantity))
+            { return parseFloat(e.attributes.quantity); }
+
+            e.attributes.quantity = _.compact(e.attributes.quantity);
+            if (e.attributes.quantity.length == 0)
+            { return null; }
 
             var quantityPrecision = 0;
-            e.value = _.reduce(_.compact(e.value), 0.0, function(m, v)
+            e.attributes.quantity = _.reduce(
+                e.attributes.quantity, 0.0, function(m, v)
                 {
                     var precision = v.indexOf('.') > -1
                                     ? v.length-v.lastIndexOf('.')-1 : 0;
@@ -132,41 +125,37 @@
                     return m + parseFloat(v);
                 }).toFixed(quantityPrecision);
 
-            return parseFloat(e.value);
+            return parseFloat(e.attributes.quantity);
         };
-        var max = Math.ceil( _.max(_.map(data, getValue))/50)*50;
-        var min = Math.floor(_.min(_.map(data, getValue))/50)*50;
+        var max = Math.ceil( _.max(_.map(featureSet.features, getValue))/50)*50;
+        var min = Math.floor(_.min(_.map(featureSet.features, getValue))/50)*50;
         var segments = [];
         for (i = 0; i < NUM_SEGMENTS; i++) { segments[i] = ((i+1)*(max-min)/NUM_SEGMENTS)+min; }
 
+        var info = mapObj._quantityCol.name + ": ${quantity}<br />${description}";
+        var infoTemplate = new esri.InfoTemplate("${NAME}", info);
+
+        mapObj.map.graphics.clear();
         var extents = [];
         _.each(featureSet.features, function(feature)
         {
-            var dataKey = type.type == 'state'
-                        ? feature.attributes['ST_ABBREV'].toLowerCase()
-                        : feature.attributes['NAME'];
-            var datum = data[dataKey];
-            if (!datum) return;
+            if (!feature.attributes.quantity) return;
+            feature.attributes.description = feature.attributes.description.join(', ');
 
             var symbol;
             for (i = 0; i < NUM_SEGMENTS; i++)
             {
-                if (parseFloat(datum.value) <= segments[i])
+                if (parseFloat(feature.attributes.quantity) <= segments[i])
                 { symbol = mapObj._segmentSymbols[i]; break; }
             }
             mapObj.map.graphics.add(feature.setSymbol(symbol)
-                                           .setAttributes({
-                                                NAME: feature.attributes['NAME'],
-                                                ST_ABBREV: feature.attributes['ST_ABBREV'],
-                                                description: datum.description.join(', '),
-                                                quantity: datum.value })
                                            .setInfoTemplate(infoTemplate));
             extents.push(feature.geometry.getExtent());
-            if (datum.redirect_to)
+            if (feature.attributes.redirect_to)
             {
                 $(feature.getDojoShape().rawNode)
                     .click(function(event)
-                        { window.open(datum.redirect_to); })
+                        { window.open(feature.attributes.redirect_to); })
                     .hover(
                         function(event) { blist.$display.find('div .container').css('cursor', 'pointer'); },
                         function(event) { blist.$display.find('div .container').css('cursor', 'default'); });
@@ -191,6 +180,45 @@
             mapObj.map.setExtent(
                 new esri.geometry.Extent(extents.xmin, extents.ymin, extents.xmax, extents.ymax, spatialReference), true);
         }
+    };
+
+    var findFeatureWithPoint = function(mapObj, datum, featureSet)
+    {
+        var point;
+
+        if (mapObj._locCol.renderTypeName == 'location')
+        {
+            var latVal  = datum[mapObj._locCol.dataIndex][mapObj._locCol.latSubIndex];
+            var longVal = datum[mapObj._locCol.dataIndex][mapObj._locCol.longSubIndex];
+            if (latVal && longVal)
+            {
+                point = new esri.geometry.Point(longVal, latVal, new esri.SpatialReference({ wkid: 4326 }));
+                if (mapObj.map.spatialReference.wkid == 102100)
+                { point = esri.geometry.geographicToWebMercator(point); }
+            }
+            else
+            {
+                // State is the only salient region to search for in a location w/o lat/lng.
+                // Well, there are ZIP codes, but we have no GIS data for those yet.
+                point = JSON.parse(datum[mapObj._locCol.dataIndex][0]).state;
+            }
+        }
+        else if (mapObj._locCol.renderTypeName == 'text')
+        {
+            point = datum[mapObj._locCol.dataIndex];
+        }
+
+        return _.detect(featureSet.features, function(feature)
+        {
+            if (point instanceof esri.geometry.Point)
+            { return feature.geometry.contains(point); }
+            else
+            {
+                return point.toLowerCase() ==
+                    ((point.length == 2) ? feature.attributes['ST_ABBREV'].toLowerCase()
+                                         : feature.attributes['NAME']).toLowerCase();
+            }
+        });
     };
 
 })(jQuery);

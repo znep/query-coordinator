@@ -183,32 +183,20 @@ class AdminController < ApplicationController
   def sdp_index
     session[:return_to] = url_for(:action => :sdp_index)
 
-
     @view = find_example_view
-    
     @preview_options = @@preview_options
-
-    # TODO[ORGS]:
-    # We don't yet have an orgs service and we're not sure how we want to do it
-    # just yet, so for now by default we are going to just go and create a new
-    # template on behalf of the user the first time we load this page and then
-    # automatically load the first template for them after that.
-    # Eventually, we should be by default fetching the org's default template.
-
+ 
     @widget_customizations = WidgetCustomization.find.select {|w| !w.hidden}
 
     if @widget_customizations.empty?
-        @widget_customizations << WidgetCustomization.create({
-          'customization' => WidgetCustomization.default_theme,
-          'name' => "Default Blue #{CurrentDomain.strings.company}" })
-        @widget_customizations << WidgetCustomization.create({
-          'customization' => WidgetCustomization.default_theme.deep_merge({:frame => {:color => '#000000'}}),
-          'name' => "Default Black #{CurrentDomain.strings.company}" })
+      @widget_customization = WidgetCustomization.create_default!
+      @widget_customizations = [@widget_customization]
+      CurrentDomain.set_default_widget_customization_id(@widget_customization.uid)
     else
       @widget_customizations.sort!{|a,b| a.name <=> b.name}
     end
-
-    @default_template = CurrentDomain.properties.sdp_template
+    
+    @default_template = CurrentDomain.default_widget_customization_id
   end
 
   def sdp
@@ -217,15 +205,6 @@ class AdminController < ApplicationController
       return (render 'shared/error', :status => :not_found)
     end
 
-    if params[:choose]
-      @allow_template_change = true
-      all_customizations = WidgetCustomization.find
-      unless all_customizations.blank?
-        @widget_customizations = all_customizations.select{ |w| !w.hidden } 
-      end
-    end
-
-    @show_embed_code = true if params[:show_embed]
     begin
       @view = View.find(params[:id])
     rescue CoreServer::ResourceNotFound
@@ -234,6 +213,7 @@ class AdminController < ApplicationController
         return (render 'shared/error', :status => :not_found)
       return
     end
+
     begin
       @widget_customization = WidgetCustomization.find(params[:customization_id])
       @customization = WidgetCustomization.merge_theme_with_default(@widget_customization.customization)
@@ -243,7 +223,10 @@ class AdminController < ApplicationController
       return
     end
 
-    @done_link = @allow_template_change ? @view.href : url_for(:action => :sdp_index)
+    @done_link = url_for(:controller => 'admin', :action => 'sdp_index')
+    @hide_template_select = true
+    @admin_panel = true
+    render 'blists/publish'
   end
   
   def set_default_template
@@ -285,30 +268,12 @@ class AdminController < ApplicationController
   end
 
   def new_customization
-    customizations = WidgetCustomization.find
-    @widget_customizations = customizations.select { |w| !w.hidden } unless customizations.nil?
+    @widget_customizations = WidgetCustomization.find.select { |w| !w.hidden }
+    example_view = find_example_view()
+    @return_to = "/admin/sdp/#{example_view.id}"
     respond_to do |format|
-      format.data { render(:layout => "modal_dialog") }
+      format.data { render 'blists/new_customization', :layout => 'modal_dialog' }
     end
-  end
-
-  def create_customization
-    from = WidgetCustomization.find(params[:new_customization][:from])
-    from.customization[:description] = params[:new_customization][:description]
-
-    begin
-      new_customization = WidgetCustomization.create({
-        'customization' => from.customization, 'name' => params[:new_customization][:name] })
-    rescue CoreServer::CoreServerError => e
-      return (render :json => {'error' => e.error_message}.to_json)
-    end
-
-    view = find_example_view
-    if view.nil?
-      return (redirect_to :action => :sdp_index)
-    end
-    redirect_to :action => :sdp, :id => view.id,
-      :customization_id => new_customization.uid
   end
 
 private
@@ -367,5 +332,5 @@ private
     return views.first unless views.nil?
   end
 
-  @@preview_options = {:height => '280', :width => '400'}
+  @@preview_options = {:height => '280', :width => '500'}
 end

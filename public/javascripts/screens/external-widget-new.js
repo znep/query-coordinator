@@ -129,7 +129,7 @@ $(function()
 {
     // keep track of some stuff for easy access
     widgetNS.orientation = widgetNS.theme['frame']['orientation'];
-    widgetNS.isBlobby = (widgetNS.view.viewType === 'blobby');
+    widgetNS.isNonTabular = (widgetNS.view.viewType !== 'tabular');
     widgetNS.isAltView = !_.include(['Blist', 'Filter', 'Grouped'],
         blist.dataset.getDisplayType(widgetNS.view));
     widgetNS.interstitial = widgetNS.theme['behavior']['interstitial'];
@@ -165,7 +165,7 @@ $(function()
                     iconColor: '#57b6dd', onlyIf: menuOptions['more_views'] },
                 { text: 'Download', className: 'downloads', targetPane: 'downloads',
                     subtext: 'Download in various formats', href: '#downloads',
-                    iconColor: '#959595', onlyIf: !widgetNS.isBlobby && menuOptions['downloads'] },
+                    iconColor: '#959595', onlyIf: !widgetNS.isNonTabular && menuOptions['downloads'] },
                 { text: 'Comments', className: 'comments', targetPane: 'comments',
                     subtext: 'Read comments on this dataset', href: '#comments',
                     iconColor: '#bed62b', onlyIf: menuOptions['comments'] },
@@ -311,7 +311,6 @@ $(function()
             );
         }
     };
-
     // force clear textbox; it acts weird on refresh because it thinks you've changed it
     $('.toolbarEmailForm .toolbarTextbox, .toolbarSearchForm .toolbarTextbox').val('').blur();
 
@@ -396,7 +395,7 @@ $(function()
             moreViews = _.reject(responseData, function(view)
             {
                 return (_.include(view.flags, 'default') && (view.viewType == 'tabular')) ||
-                       (view.viewType == 'blobby');
+                       (view.viewType == 'blobby') || (view.viewType == 'href');
             });
             moreViews.sort(function(a, b) { return b.viewCount - a.viewCount });
 

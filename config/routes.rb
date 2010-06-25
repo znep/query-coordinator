@@ -94,8 +94,6 @@ ActionController::Routing::Routes.draw do |map|
         {:id => UID_REGEXP, :customization_id => UID_REGEXP}
     admin.connect '/admin/sdp/new',               :action => 'new_customization',
       :conditions => { :method => :get }, :format => 'data'
-    admin.connect '/admin/sdp/create',            :action => 'create_customization',
-      :conditions => { :method => :put }, :format => 'data'
     admin.connect '/admin/sdp/:id/delete',        :action => 'hide_template',
       :requirements => {:id => UID_REGEXP}
     admin.connect '/admin/sdp/:id/default',       :action => 'set_default_template',

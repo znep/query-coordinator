@@ -58,6 +58,9 @@
             }
             else
             {
+            <%- if @return_to.present? -%>
+              window.location = '<%= @return_to %>/' + responseData['uid'];
+            <%- else -%>
               // set customization anyway in case populate isn't called
               var customization = JSON.parse(responseData['customization']);
               publishNS.currentTheme = customization;
@@ -69,10 +72,21 @@
               }
 
               $('.templateName').text(responseData['name']);
-              $('#template_name, #new_customization_from')
-                .append($('<option value="' + responseData['uid'] + '">' + responseData['name'] + '</option>'))
+              var newOption = $('<option value="' + responseData['uid'] + '">' + responseData['name'] + '</option>');
+
+              if ($('#template_name').is('input'))
+              {
+                $('#template_name').val(responseData['uid']);
+              }
+              else
+              {
+                $('#template_name').append(newOption).val(responseData['uid']);
+              }
+              $('#new_customization_from')
+                .append(newOption)
                 .val(responseData['uid']);
               $('#modal').jqmHide();
+            <%- end -%>
             }
           },
           error: function(request, status, error)

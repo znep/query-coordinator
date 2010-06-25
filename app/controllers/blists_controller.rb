@@ -220,6 +220,8 @@ class BlistsController < ApplicationController
       CurrentDomain.set_default_widget_customization_id(@widget_customization.uid)
       @customization = @widget_customization.customization
     end
+
+    @admin_panel = false
   end
 
   def new_customization

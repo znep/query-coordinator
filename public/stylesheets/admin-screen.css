@@ -4,7 +4,8 @@
 .content label,
 .content .line a
 { font-size: 1.2em; }
-.tabContainer .fullPageWithTabs
+.tabContainer .fullPageWithTabs,
+#publishContent .fullPageWithTabs .fullPageContent
 {
     margin-top: 0;
 }
@@ -178,4 +179,8 @@
     float: right;
     font-size: 1.5em;
     margin: 0.2em 0.4em 0 0;
+}
+#adminContent .invalidTemplateLink
+{
+    font-style: italic;
 }

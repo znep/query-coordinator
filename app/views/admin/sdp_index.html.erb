@@ -41,6 +41,11 @@
                   You can mark a template as the default one by clicking the link in the 'Default' column.</p>
               <%- end -%>
 
+              <%- if @widget_customizations.any? { |w| w.customization[:version] != 1 } -%>
+                <p class='information warning'>Your domain currently has out of date templates. These cannot be
+                  edited from this screen. To do so, navigate to the 'Publishing' tab of a <%= t(:blist_name) %>.</p>
+              <%- end -%>
+
               <div class="widgetTable" id="widgetTableList">
                   <div class="widgetTable-headerRow">
                   <div class="widgetTable-cell widgetTable-titleColumn">
@@ -60,10 +65,16 @@
                   <%- @widget_customizations.each do |customization| -%>
                   <div class="widgetTable-row<%= ' defaultRow' if customization.uid == @default_template %>">
                     <div class="widgetTable-cell widgetTable-titleColumn">
-                      <p><a href="#preview_<%= customization.uid %>" class="widgetOpener"></a>
-                      <%= link_to customization.name,
-                      {:action => 'sdp', :customization_id => customization.uid, :id => @view.id},
-                      {:class => 'templateNameLink'} %></p>
+                      <p>
+                        <a href="#preview_<%= customization.uid %>" class="widgetOpener"></a>
+                        <%- if customization.customization[:version] == 1 -%>
+                            <%= link_to customization.name,
+                            {:action => 'sdp', :customization_id => customization.uid, :id => @view.id},
+                            {:class => 'templateNameLink'} %>
+                        <%- else -%>
+                          <span class='invalidTemplateLink'><%= customization.name %></span>
+                        <%- end -%>
+                      </p>
                     </div>
                     <div class="widgetTable-cell widgetTable-previewColumn previewCell">
                       <input type="hidden" name="customizationId" class="customizationId" value="<%= customization.uid %>" />
@@ -71,10 +82,14 @@
                       <div class="loadingIndicator"></div>
                     </div>
                     <div class="widgetTable-cell widgetTable-defaultColumn">
-                      <%- if customization.uid != @default_template -%>
+                      <%- if customization.customization[:version] == 1-%>
+                        <%- if customization.uid != @default_template %>
                         <p class="defaultLink"><%= link_to '&rsaquo; Set Default', :action => 'set_default_template',
                             :id => customization.uid %></p>
-                      <%- else -%>
+                        <%- else -%>  
+                          <p class="templateAlreadyDefault">Yes</p>
+                        <%- end -%>
+                      <%- elsif customization.uid == @default_template %>
                         <p class="templateAlreadyDefault">Yes</p>
                       <%- end -%>
                     </div>

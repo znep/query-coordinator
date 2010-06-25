@@ -629,8 +629,11 @@ blist.publish.checkVersion = function(customization)
     if (customization['version'] !== 1)
     {
         $('.livePreviewText, .previewPane').hide();
-        $('#publishOptionsPane .summaryTabs').infoPaneNavigate().activateTab('#tabTemplates');
-        $('#publishOptionsPane .summaryTabs').children(':not(:first)').hide();
+        if (publishNS.showTemplateChooser !== false)
+        {
+            $('#publishOptionsPane .summaryTabs').infoPaneNavigate().activateTab('#tabTemplates');
+        }
+        $('#publishOptionsPane .summaryTabs').children(':not(#tabTemplates)').hide();
         $('.versionMessage').show();
         return false;
     }

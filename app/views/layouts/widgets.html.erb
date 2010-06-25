@@ -21,7 +21,7 @@
     <link href="/stylesheets/core-ie7.css" rel="stylesheet" type="text/css">
   <![endif]-->
 
-  <% unless CurrentDomain.google_analytics_id.blank? || (@variation == 'whitehouse') %>
+  <% unless CurrentDomain.google_analytics_id.blank? || (@variation == 'whitehouse') || (params[:no_cookie] == 'true') %>
     <script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', '<%= CurrentDomain.google_analytics_id %>'],
@@ -66,7 +66,7 @@
 
   <%# we don't trust custom tracking code to be nonblocking like the async
       GA, so put it down here. %>
-  <% unless CurrentDomain.custom_tracking_code.blank? %>
+  <% unless CurrentDomain.custom_tracking_code.blank? || (params[:no_cookie] == 'true') %>
     <!-- Custom Tracking Code -->
     <%= raw CurrentDomain.custom_tracking_code %>
   <% end %>

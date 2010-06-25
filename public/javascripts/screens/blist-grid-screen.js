@@ -710,7 +710,8 @@ $(function ()
         requestDataCallback: function($form, name)
         {
             // Get the view with columns
-            var view = $('#dataGrid').blistModel().getViewCopy(true);
+            var model = $('#dataGrid').blistModel();
+            var view = model.cleanViewForPost(model.getViewCopy(), true);
             view.name = name;
             return JSON.stringify(view);
         },

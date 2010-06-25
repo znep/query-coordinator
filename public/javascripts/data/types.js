@@ -760,6 +760,17 @@ blist.namespace.fetch('blist.data.types');
         }
     });
 
+    var rollUpAggs = [
+        {text: 'Average', value: 'average'},
+        {text: 'Count', value: 'count'},
+        {text: 'Sum', value: 'sum'},
+        {text: 'Maximum', value: 'maximum'},
+        {text: 'Minimum', value: 'minimum'}
+    ];
+
+    var nonNumericRollUpAggs = _.select(rollUpAggs, function(a)
+    { return 'count' == a.value; });
+
     /**
      * This is our main map of data types.
      */
@@ -774,6 +785,8 @@ blist.namespace.fetch('blist.data.types');
             filterText: true,
             group: groupText,
             sortable: true,
+            groupable: true,
+            rollUpAggregates: nonNumericRollUpAggs,
             filterable: true,
             deleteable: true
         },
@@ -785,6 +798,8 @@ blist.namespace.fetch('blist.data.types');
             sortGen: sortGenText,
             filterText: true,
             sortable: true,
+            groupable: true,
+            rollUpAggregates: nonNumericRollUpAggs,
             filterable: true,
             deleteable: true
         },
@@ -797,6 +812,8 @@ blist.namespace.fetch('blist.data.types');
             filterText: true,
             cls: 'number',
             sortable: true,
+            groupable: true,
+            rollUpAggregates: rollUpAggs,
             filterable: true,
             deleteable: true
         },
@@ -809,6 +826,8 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterDate,
             filterValue: function(v) { return v; },
             sortable: true,
+            groupable: true,
+            rollUpAggregates: nonNumericRollUpAggs,
             filterable: true,
             deleteable: true,
             group: groupDate,
@@ -823,6 +842,8 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterDate,
             filterValue: function(v) { return v; },
             sortable: true,
+            groupable: true,
+            rollUpAggregates: nonNumericRollUpAggs,
             filterable: true,
             deleteable: true,
             group: groupDate,
@@ -852,6 +873,8 @@ blist.namespace.fetch('blist.data.types');
             cls: 'money',
             filterText: true,
             sortable: true,
+            groupable: true,
+            rollUpAggregates: rollUpAggs,
             filterable: true,
             deleteable: true,
             currencies: {
@@ -906,6 +929,8 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterCheckbox,
             filterValue: valueFilterCheckbox,
             sortable: true,
+            groupable: true,
+            rollUpAggregates: nonNumericRollUpAggs,
             filterable: true,
             deleteable: true,
             isInlineEdit: true
@@ -917,6 +942,8 @@ blist.namespace.fetch('blist.data.types');
             sortGen: sortGenText,
             filterRender: renderFilterFlag,
             sortable: true,
+            groupable: true,
+            rollUpAggregates: nonNumericRollUpAggs,
             filterable: true,
             deleteable: true
         },
@@ -929,6 +956,9 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterStars,
             filterText: true,
             sortable: true,
+            groupable: true,
+            rollUpAggregates: _.reject(rollUpAggs, function(a)
+                { return a.value == 'sum'; }),
             filterable: true,
             deleteable: true,
             isInlineEdit: true
@@ -942,6 +972,8 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterPercent,
             filterText: true,
             sortable: true,
+            groupable: true,
+            rollUpAggregates: rollUpAggs,
             filterable: true,
             deleteable: true
         },
@@ -953,6 +985,8 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterURL,
             filterText: true,
             sortable: true,
+            groupable: true,
+            rollUpAggregates: nonNumericRollUpAggs,
             filterable: true,
             deleteable: true,
             isObject: true
@@ -997,6 +1031,8 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterText,
             filterText: true,
             sortable: true,
+            groupable: true,
+            rollUpAggregates: nonNumericRollUpAggs,
             filterable: true,
             deleteable: true
         },
@@ -1022,6 +1058,8 @@ blist.namespace.fetch('blist.data.types');
             sortPreprocessor: sortPicklistPrepro,
             filterRender: renderFilterPicklist,
             sortable: true,
+            groupable: true,
+            rollUpAggregates: nonNumericRollUpAggs,
             filterable: true,
             deleteable: true
         }

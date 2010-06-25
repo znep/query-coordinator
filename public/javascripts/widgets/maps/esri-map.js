@@ -232,6 +232,7 @@
                 var mapObj = this;
                 mapObj._multipoint = new esri.geometry.Multipoint
                     (mapObj.map.spatialReference);
+                delete mapObj._segmentSymbols;
                 mapObj.map.graphics.clear();
                 mapObj.map.infoWindow.hide();
             }

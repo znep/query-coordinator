@@ -64,8 +64,8 @@
                 $datasetGrid
                     .bind('col_width_change', function (event, c, f)
                         { columnResized(datasetObj, c, f); })
-                    .bind('sort_change', function (event, isMulti)
-                        { sortChanged(datasetObj, isMulti); })
+                    .bind('sort_change', function (event, skipReq)
+                        { sortChanged(datasetObj, skipReq); })
                     .bind('columns_rearranged', function (event)
                         { columnsRearranged(datasetObj); })
                     .bind('column_filter_change', function (event, c, s)
@@ -167,12 +167,12 @@
                             if (datasetObj.settings.isInvalid)
                             { updateValidity(datasetObj, newView); }
                             else
-                            { model.getTempView(model.getViewCopy(true)); }
+                            { model.getTempView(null, true); }
                         }});
                 }
                 else
                 {
-                    model.getTempView(model.getViewCopy(true));
+                    model.getTempView(null, true);
                     this.setTempView();
                 }
             },
@@ -387,97 +387,96 @@
             },
 
             groupAggregate: function(grouped, aggregates, doSave, newName,
-                drillDown, successCallback, errorCallback)
+                drillDown, successCallback, errorCallback, skipRequest)
             {
                 var datasetObj = this;
                 var model = datasetObj.settings._model;
-                var view = model.meta().view;
+                var view = blist.display.view;
                 var isNew = newName !== null && newName !== undefined;
                 var isUpdate = doSave && !isNew &&
                     datasetObj.settings.currentUserId == view.owner.id;
                 var isGrouping = grouped instanceof Array && grouped.length > 0;
                 var wasGrouped = model.isGrouped();
-                var metadata = view.metadata || {};
 
                 var newCols = [];
                 var usedCols = {};
-
-                // Keep track of the parent columns for drill down usage
-                if (drillDown)
-                {
-                    $.extend(metadata, {
-                        // Map out the dataIndex field as it chokes the C.S.
-                        parentTableColumns: _.map(
-                            _.select(view.columns, function(col)
-                                {
-                                    return col.dataTypeName !== 'meta_data' && 
-                                        (_.isUndefined(col.flags) || !_.include(col.flags, 'hidden'))
-                                }),
-                            function(col)
-                            { return $.extend({}, col, {dataIndex: null}); })
-                    });
-                }
 
                 if (isGrouping)
                 {
                     model.group(grouped);
                     $.each(grouped, function(i, c)
                     {
-                        var newWidth = drillDown ? c.data.width + 30 : c.data.width;
-                        var newFormat = $.extend({}, c.data.format, {drill_down: drillDown});
-                        newCols.push($.extend({},c.data,
-                            {id: c.id, name: c.name, hidden: c.hidden == 'true',
-                                position: newCols.length + 1, format: newFormat, width: newWidth}));
-                        usedCols[c.id] = newFormat;
+                        var col = _.detect(view.columns, function(vc)
+                        { return vc.id == c.columnId; });
+                        var alreadyGrouped = _.include(view.query.groupBys || [],
+                            function(gb) { return gb.columnId == col.id; });
+
+                        var newWidth = col.width + (drillDown ? 30 : 0);
+                        var newFormat = $.extend({}, col.format,
+                            {drill_down: drillDown});
+
+                        newCols.push($.extend({}, col,
+                            {hidden: alreadyGrouped &&
+                                _.include(col.flags || [], 'hidden'),
+                             position: newCols.length + 1,
+                             format: newFormat, width: newWidth}));
+                        usedCols[col.id] = newFormat;
                     });
+                    view.query.groupBys = grouped;
                 }
                 else { delete view.query.groupBys; }
 
                 if ((isGrouping || wasGrouped) &&
-                    aggregates instanceof Array && aggregates.length > 0)
+                    _.isArray(aggregates) && aggregates.length > 0)
                 {
-                    $.each(aggregates, function(i, a)
+                    _.each(aggregates, function(a)
                     {
-                        var existingFormat = usedCols[a.id] || a.data.format;
+                        var col = _.detect(view.columns, function(vc)
+                        { return vc.id == a.id; });
+
+                        var existingFormat = usedCols[col.id] || col.format || {};
                         var format = $.extend({}, existingFormat,
-                            {grouping_aggregate: a.func});
-                        // Column Totals don't work properly on grouped views,
-                        // so clear them out instead of inheriting them
-                        delete format.aggregate;
-                        if (format.grouping_aggregate === null)
+                            {grouping_aggregate:
+                                (a.format || {}).grouping_aggregate});
+                        if ($.isBlank(format.grouping_aggregate))
                         { delete format.grouping_aggregate; }
-                        if (usedCols[a.id] === undefined)
+
+                        if (_.isUndefined(usedCols[col.id]))
                         {
-                            newCols.push($.extend({}, a.data,
-                                {id: a.id, name: a.name,
-                                    hidden: a.hidden !== undefined ? a.hidden : false,
-                                    position: newCols.length + 1, format: format}));
+                            newCols.push($.extend({}, col,
+                                {hidden: $.isBlank(format.grouping_aggregate) ||
+                                    !$.isBlank(
+                                        existingFormat.grouping_aggregate) &&
+                                    _.include(col.flags || [], 'hidden'),
+                                position: newCols.length + 1, format: format}));
                         }
                         else
                         {
-                             $.each(newCols, function(j, c)
-                             { if (c.id == a.id) { c.format = format; } })
+                             _.detect(newCols, function(nc)
+                             { return nc.id == col.id; }).format = format;
                         }
                     });
                 }
 
                 if (isGrouping || wasGrouped)
-                { model.meta().view.columns = newCols; }
+                { view.columns = newCols; }
 
-                view = model.getViewCopy(isGrouping || wasGrouped);
-                view.metadata = metadata;
+                if (isNew) { view.name = newName; }
 
-                if (isNew) { view = $.extend(view, {name: newName}); }
+                if (skipRequest) { return; }
 
                 if (!doSave)
                 {
                     if (typeof successCallback == 'function')
                     { successCallback(); }
-                    model.getTempView(view);
+                    model.getTempView($.extend(true, {}, view),
+                        isGrouping || wasGrouped);
                     datasetObj.setTempView('grouping');
                 }
                 else if (isNew)
                 {
+                    view = model.cleanViewForPost($.extend(true, {}, view),
+                        isGrouping || wasGrouped);
                     var saveNewView = function()
                     {
                         $.ajax({url: '/views.json', type: 'POST',
@@ -515,6 +514,8 @@
                 }
                 else
                 {
+                    view = model.cleanViewForPost($.extend(true, {}, view),
+                        isGrouping || wasGrouped);
                     $.socrataServer.addRequest({url: '/views/' + view.id + '.json',
                         type: 'PUT', data: JSON.stringify(view),
                         error: errorCallback,
@@ -526,7 +527,7 @@
                             { model.reloadView(); }
                         }});
 
-                    $.each(newCols, function(i, c)
+                    _.each(newCols, function(c)
                         {
                             $.socrataServer.addRequest(
                                 {url: '/views/' + view.id + '/columns/' +
@@ -544,7 +545,7 @@
                     });
                 }
             },
-            
+
             drillDown: function(drillLink)
             {
                 var datasetObj = this;
@@ -558,7 +559,7 @@
 
                 if (filterColumn == '' || filterValue == '') { return false; }
 
-                var view = model.getViewCopy(true);
+                var view = model.cleanViewForPost(model.getViewCopy(), true);
 
                 // Now construct our beautiful filter
                 var filter;
@@ -631,24 +632,41 @@
                 else
                 {
                     var currentColumns, parentColumns;
-                    if (view.metadata && view.metadata.parentTableColumns)
+
+                    // Grab the child column who's tableColumnId is the same as parentCol
+                    var getMatchingColumn = function(parentCol, childPool)
                     {
-                        parentColumns = view.metadata.parentTableColumns;
+                        var matchingColumn = _.detect(childPool, function(col)
+                            {
+                                return col.tableColumnId == parentCol.tableColumnId;
+                            });
+                        if(matchingColumn)
+                        {
+                            return matchingColumn.id;
+                        }
+                        return null;
                     }
+
                     var revealDrillDownCallBack = function()
                     {
                         var translatedColumns = [];
                         _.each(parentColumns, function(oCol)
                         {
-                            var matchingTableCols = _.select(currentColumns,
-                                function(col)
-                                {
-                                    return col.tableColumnId == oCol.tableColumnId
-                                });
-                            if(matchingTableCols.length > 0)
+                            var newColumnMatch = getMatchingColumn(oCol, currentColumns);
+                            if (newColumnMatch !== null)
                             {
                                 var newCol = $.extend(oCol,
-                                    { id: matchingTableCols[0].id });
+                                    { id: newColumnMatch });
+                                if (newCol.childColumns)
+                                {
+                                    var newChildColumns = [];
+                                    _.each(oCol.childColumns, function(oChildCol)
+                                    {
+                                        var newChildCol = $.extend(oChildCol,
+                                            { id: getMatchingColumn(oCol, newCol.childColumns) });
+                                    });
+                                    newCol.childColumns = newChildColumns;
+                                }
                                 if (newCol.format)
                                 {
                                     delete newCol.format.grouping_aggregate;
@@ -669,11 +687,13 @@
                     function(cols)
                     {
                         currentColumns = cols;
+                        if (view.id == blist.parentViewId)
+                        { parentColumns = cols; }
                         if(!_.isUndefined(parentColumns))
                         { revealDrillDownCallBack(); }
                     }, 'json');
 
-                    if(_.isUndefined(parentColumns))
+                    if (view.id !== blist.parentViewId)
                     {
                         $.get('/views/' + blist.parentViewId +
                                 '/columns.json',
@@ -1610,10 +1630,10 @@
         }
     };
 
-    var sortChanged = function(datasetObj, isMulti)
+    var sortChanged = function(datasetObj, skipRequest)
     {
         var view = datasetObj.settings._model.meta().view;
-        if (!isMulti &&
+        if (!skipRequest &&
             datasetObj.settings.currentUserId == view.owner.id &&
             !datasetObj.isTempView)
         {
@@ -1655,7 +1675,8 @@
         if (datasetObj.settings.currentUserId == view.owner.id &&
             !datasetObj.isTempView)
         {
-            var modView = datasetObj.settings._model.getViewCopy(true);
+            var modView = datasetObj.settings._model.cleanViewForPost(
+                datasetObj.settings._model.getViewCopy(), true);
             $.ajax({url: '/views/' + view.id + '.json',
                     data: JSON.stringify({columns: modView.columns}),
                     type: 'PUT', contentType: 'application/json',

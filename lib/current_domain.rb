@@ -78,7 +78,13 @@ class CurrentDomain
   end
 
   def self.set_default_widget_customization_id(id)
-    self.current_theme.update_property('sdp_template', id)
+    begin
+      self.current_theme.update_property('sdp_template', id)
+    rescue
+      # Something went wrong when we tried to update the property. Probably it
+      # doesn't exist. Just create it.
+      self.current_theme.create_property('sdp_template', id)
+    end
   end
 
   def self.properties

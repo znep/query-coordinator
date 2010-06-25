@@ -1,5 +1,7 @@
 (function($)
 {
+    var NUM_SEGMENTS = 10;
+
     $.socrataMap.heatmap = function(options, dom)
     {
         this.settings = $.extend({}, $.socrataMap.heatmap.defaults, options);
@@ -24,11 +26,24 @@
             if (_.isUndefined(mapObj._segmentSymbols))
             {
                 mapObj._segmentSymbols = [];
-                for (var i = 0; i < 10; i++)
+                var lowColor  = mapObj._displayConfig.lowcolor  ? $.hexToRgb(mapObj._displayConfig.lowcolor)
+                                                                : { r: 209, g: 209, b: 209};
+                var highColor = mapObj._displayConfig.highcolor ? $.hexToRgb(mapObj._displayConfig.highcolor)
+                                                                : { r: 0, g: 255, b: 0};
+                var colorStep = {
+                    r: Math.round((highColor.r-lowColor.r)/NUM_SEGMENTS),
+                    g: Math.round((highColor.g-lowColor.g)/NUM_SEGMENTS),
+                    b: Math.round((highColor.b-lowColor.b)/NUM_SEGMENTS)
+                };
+
+                for (var i = 0; i < NUM_SEGMENTS; i++)
                 {
                     mapObj._segmentSymbols[i] = new esri.symbol.SimpleFillSymbol();
                     mapObj._segmentSymbols[i].setColor(
-                        new dojo.Color([50,50+(20*i),50,0.8])
+                        new dojo.Color([lowColor.r+(colorStep.r*i),
+                                        lowColor.g+(colorStep.g*i),
+                                        lowColor.b+(colorStep.b*i),
+                                        0.8])
                     );
                 }
             }
@@ -57,7 +72,7 @@
         { mapObj._featureSet = featureSet; }
         else
         { featureSet = mapObj._featureSet; }
-        mapObj.resetData();
+        mapObj.map.graphics.clear();
 
         var info = mapObj._quantityCol.name + ": ${quantity}<br />${description}";
         var infoTemplate = new esri.InfoTemplate("${NAME}", info);
@@ -108,7 +123,7 @@
         var max = Math.ceil( _.max(_.map(data, getValue))/50)*50;
         var min = Math.floor(_.min(_.map(data, getValue))/50)*50;
         var segments = [];
-        for (i = 0; i < 10; i++) { segments[i] = ((i+1)*(max-min)/10)+min; }
+        for (i = 0; i < NUM_SEGMENTS; i++) { segments[i] = ((i+1)*(max-min)/NUM_SEGMENTS)+min; }
 
         _.each(featureSet.features, function(feature)
         {
@@ -117,7 +132,7 @@
             if (!datum) return;
 
             var symbol;
-            for (i = 0; i < 10; i++)
+            for (i = 0; i < NUM_SEGMENTS; i++)
             {
                 if (parseFloat(datum.value) <= segments[i])
                 { symbol = mapObj._segmentSymbols[i]; break; }

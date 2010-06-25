@@ -1696,7 +1696,7 @@ dl.versionInfo dd
 .vizWrapper .dataColumnBlock .color label { display: none; }
 
 .vizWrapper .line input[type="checkbox"] { width: auto; }
-.vizWrapper .line .colorOption
+.viewSetupWrapper .line .colorOption
 {
     background-image: url(/images/colorpicker/select_arrow.png);
     background-position: right bottom;

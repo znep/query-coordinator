@@ -20,9 +20,10 @@ class WidgetsController < ApplicationController
     if params[:customization_id]
       begin
         @theme = WidgetCustomization.find(params[:customization_id]).customization
+      rescue CoreServer::ResourceNotFound => e
+        @theme = WidgetCustomization.default_theme
       rescue CoreServer::CoreServerError => e
-        flash.now[:error] = e.error_message
-        return (render 'shared/error', :status => :internal_server_error)
+        @theme = WidgetCustomization.default_theme
       end
     end
 

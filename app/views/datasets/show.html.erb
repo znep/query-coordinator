@@ -26,7 +26,9 @@
         class='save toolbarButton'>Save</a>
       <%- end -%>
       <a href='#SaveAs' title='Save view as...'
-        class='saveAs toolbarButton'>Save As... </a>
+        class='saveAs toolbarButton'>Save As...</a>
+      <a href='#Revert' title='Revert to saved view'
+        class='revert toolbarButton'>Revert</a>
     </div>
     <h2 id='datasetName' class="clipText"><%= @view.name %></h2>
     <div class='basedOn clipText'>
@@ -37,6 +39,7 @@
 
   <div id='actionBox' class='clearfix'>
     <ul id="toolbarOptions">
+      <%- if @view.is_tabular? -%>
       <li>
         <div id='searchButton'>
           <span class='searchIcon'></span>
@@ -46,6 +49,7 @@
           </form>
         </div>
       </li>
+      <%- end -%>
       <li>
         <div id='shareMenu' class='share menu'></div>
       </li>
@@ -133,6 +137,9 @@
 
     <%# Namespace to keep track of disabled sidebar sections %>
     blist.namespace.fetch('blist.sidebarHidden');
+
+    <%# Saved views %>
+    blist.sidebarHidden.savedViews = <%= !@view.is_tabular? %>;
 
     <%# Filter pane %>
     blist.sidebarHidden.filter = blist.sidebarHidden.filter || {};

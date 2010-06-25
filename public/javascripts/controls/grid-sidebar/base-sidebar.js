@@ -155,6 +155,15 @@
                         will be add as 'data-<key>' attributes to the select.
                         These can be used to store & retrieve extra data on
                         an option item
+                  }
+                      If used with linkedField, should be a function that
+                      accepts the current value of the linkedField,
+                      and returns an array of hashes as above, or null to
+                      disable the select input
+                  + linkedField: Used with select input.  Name of field that
+                      should be monitored.  On change, the value is passed to
+                      the options function and the options for the select are
+                      updated.
                }
             ]
           }
@@ -307,6 +316,8 @@
 
                 sidebarObj._$outerPanes = {};
                 sidebarObj._$panes = {};
+
+                sidebarObj._selectOptions = {};
 
                 $(window).resize(function() { handleResize(sidebarObj); });
                 $domObj.resize(function() { handleResize(sidebarObj); });
@@ -553,6 +564,18 @@
                 if (!$.browser.msie) { $(window).resize(); }
 
                 sidebarObj.settings.onSidebarClosed();
+            },
+
+            refresh: function()
+            {
+                var sidebarObj = this;
+
+                var pane = _.compact([sidebarObj._currentOuterPane,
+                        sidebarObj._currentPane]).join('.');
+                if ($.isBlank(pane)) { return; }
+
+                sidebarObj.addPane(pane);
+                sidebarObj.show(pane);
             },
 
             updateEnabledSubPanes: function()
@@ -873,6 +896,7 @@
 
                 // Remove errors
                 $pane.find('form').validate().resetForm();
+                $pane.find('.mainError').text('');
 
                 var resetInput = function($input)
                 {
@@ -1053,6 +1077,21 @@
 
     /*** Functions related to rendering a pane ***/
 
+    var renderSelectOption = function(opt, curVal)
+    {
+        var item = {tagName: 'option', value: opt.value,
+            selected: opt.value === curVal, contents: opt.text};
+        var dataKeys = [];
+        _.each(opt.data || {}, function(v, k)
+            {
+                item['data-custom-' + k] = v;
+                dataKeys.push(k);
+            });
+        if (dataKeys.length > 0)
+        { item['data-customKeys'] = dataKeys.join(','); }
+        return item;
+    };
+
     /* Render a single input field */
     var renderLine = function(sidebarObj, args)
     {
@@ -1077,9 +1116,10 @@
         {
             return {id: item.name, name: item.name, title: item.prompt,
                 'class': [ {value: 'required', onlyIf: item.required &&
-                    !args.context.isInRepeater},
+                    !args.context.inRepeater},
                         {value: 'textPrompt', onlyIf: !$.isBlank(item.prompt)},
                         item.notequalto, item.extraClass ],
+                'data-origName': item.origName,
                 'data-isRequired': {value: true, onlyIf: item.required},
                 'data-notequalto': {value: '.' + (item.notequalto || '')
                         .split(' ').join(', .'),
@@ -1113,19 +1153,47 @@
         if (args.context.inRepeater && !_.isUndefined(args.item.repeaterValue))
         { defValue = args.item.repeaterValue; }
 
-        var curValue;
-        if (!$.isBlank(args.item.origName))
+        var getValue = function(data, name)
         {
-            var nParts = args.item.origName.split('.');
-            var base = args.context.data;
+            var nParts = name.split('.');
+            var base = data;
             while (nParts.length > 0 && !$.isBlank(base))
             { base = base[nParts.shift()]; }
             if (nParts.length == 0 && !$.isBlank(base))
             {
-                curValue = base;
-                args.item = $.extend({}, args.item, {dataValue: curValue});
+                return base;
             }
+            return null;
+        };
+
+        var curValue;
+        if (!$.isBlank(args.item.origName))
+        {
+            curValue = getValue(args.context.data, args.item.origName);
+            if (!$.isBlank(curValue))
+            { args.item = $.extend({}, args.item, {dataValue: curValue}); }
         }
+
+
+        var checkRequiredData = function(contextData, field)
+        {
+            var fields = $.arrayify(field);
+            while (fields.length > 0)
+            {
+                var f = fields.shift();
+                if (f.type == 'group')
+                {
+                    fields = fields.concat(f.options);
+                    continue;
+                }
+
+                if (!f.required) { continue; }
+
+                if ($.isBlank(getValue(contextData, f.name))) { return false; }
+            }
+            return true;
+        };
+
 
         switch (args.item.type)
         {
@@ -1164,29 +1232,31 @@
                 var options = [];
                 if (!_.isNull(args.item.prompt))
                 {
-                    options.push({tagName: 'option', value: '',
+                    options.push({tagName: 'option', value: '', 'class': 'prompt',
                         contents: args.item.prompt || 'Select a value'});
                 }
                 if (_.isBoolean(curValue)) { curValue = curValue.toString(); }
 
-                _.each(args.item.options, function(o)
+                var tag = {tagName: 'select', contents: options};
+                if (_.isArray(args.item.options))
                 {
-                    var item = {tagName: 'option', value: o.value,
-                        selected: o.value === (curValue || defValue),
-                        contents: o.text};
-                    var dataKeys = [];
-                    _.each(o.data || {}, function(v, k)
-                        {
-                            item['data-custom-' + k] = v;
-                            dataKeys.push(k);
-                        });
-                    if (dataKeys.length > 0)
-                    { item['data-customKeys'] = dataKeys.join(','); }
-                    options.push(item);
-                });
+                    _.each(args.item.options, function(o)
+                    {
+                        options.push(renderSelectOption(o, curValue || defValue));
+                    });
+                }
+                else if (_.isFunction(args.item.options))
+                {
+                    var u = _.uniqueId();
+                    sidebarObj._selectOptions[u] = args.item.options;
+                    tag['data-selectOption'] = u;
+                }
+
+                if (!$.isBlank(args.item.linkedField))
+                { tag['data-linkedField'] = args.item.linkedField; }
+
                 contents.push($.extend(commonAttrs($.extend({}, args.item,
-                        {dataValue: curValue})),
-                    {tagName: 'select', contents: options}));
+                        {dataValue: curValue})), tag));
                 break;
 
             case 'columnSelect':
@@ -1301,27 +1371,34 @@
                 templateLine.contents.unshift(removeButton);
                 templateLine = $.htmlEscape($.tag(templateLine, true));
 
-                curValue = curValue || [];
+                curValue = _.select(curValue || [], function(v)
+                { return checkRequiredData(v, args.item.field); });
                 for (var i = 0; i < (curValue.length || args.item.minimum || 1);
                     i++)
                 {
+                    var contextData = curValue[i] || args.context.data;
+                    var hasRequiredData =
+                        checkRequiredData(contextData, args.item.field);
+
                     var l = renderLine(sidebarObj,
                                 {item: args.item.field,
                                     context: $.extend({}, args.context,
                                          {repeaterIndex: i, noTag: true,
                                             inRepeater: i >= args.item.minimum,
-                                            data: curValue[i] || args.context.data
-                                    })
+                                            data: hasRequiredData ?
+                                                contextData : null})
                     });
+
                     if (i >= args.item.minimum)
                     { l.contents.unshift(removeButton); }
+
                     contents.push(l);
                 }
 
                 contents.push($.button({text: args.item.addText || 'Add Value',
                     customAttrs: $.extend(commonAttrs(args.item),
                         {'data-template': templateLine,
-                        'data-count': (args.item.minimum || 1) + 1,
+                        'data-count': i, 'data-dataValue': null,
                         'data-maximum': args.item.maximum}),
                     className: 'addValue'}, true));
                 break;
@@ -1606,6 +1683,7 @@
                 // current flow, then start a temp set in the newly opened
                 // section
                 if (!$.isBlank(sidebarObj._$mainWizardItem) && $c.value() &&
+                    $sect.index(sidebarObj._$mainWizardItem) < 0 &&
                     $sect.has(sidebarObj._$mainWizardItem).length < 1)
                 {
                     sidebarObj._$mainFlowWizard = sidebarObj._$mainWizardItem;
@@ -1799,6 +1877,51 @@
 
                 checkRepeaterMaxMin($repeater);
                 updateWizardVisibility(sidebarObj);
+            });
+
+
+            // Find selects that have options linked to another field.  Hook
+            // them up to change whenever the associated field is changed
+            $container.find('select[data-linkedField]').each(function()
+            {
+                var $select = $(this);
+                var selOpt = sidebarObj._selectOptions[$select
+                    .attr('data-selectOption')];
+                if (!_.isFunction(selOpt)) { return; }
+
+                var linkedSel = ':input[data-origName=' +
+                    $select.attr('data-linkedField') + ']:first';
+                var $par = $select.closest('.line.group, .formSection');
+                var $linkedItem = $par.find(linkedSel);
+                if ($linkedItem.length < 1)
+                { $linkedItem = $select.closest('form').find(linkedSel); }
+
+                var adjustOptions = function()
+                {
+                    var newOpts = selOpt($linkedItem.val());
+                    $select.find('option:not(.prompt)').remove();
+                    $select.attr('disabled', $.isBlank(newOpts));
+
+                    _.each(newOpts || [], function(o)
+                    {
+                        $select.append($.tag(renderSelectOption(o)));
+                    });
+                    $select.val('').change();
+
+                    if (!$.isBlank($.uniform) && !$.isBlank($.uniform.update))
+                    { $.uniform.update(); }
+                };
+                var defAdjOpts = function() { _.defer(adjustOptions); }
+
+                $linkedItem.change(defAdjOpts).blur(defAdjOpts);
+                adjustOptions();
+
+                if (!$.isBlank($select.attr('data-dataValue')))
+                {
+                    $select.val($select.attr('data-dataValue'));
+                    if (!$.isBlank($.uniform) && !$.isBlank($.uniform.update))
+                    { $.uniform.update(); }
+                }
             });
 
             if (!$.isBlank($.uniform))

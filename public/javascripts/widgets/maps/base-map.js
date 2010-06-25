@@ -274,8 +274,10 @@
                 var title = _.compact(mapObj._llKeys[rowKey].title).join(', ');
                 if (title.length > 50) { title = title.slice(0, 50) + "..."; }
 
+                var totalRows = mapObj._llKeys[rowKey].title.length;
+
                 var info;
-                if (mapObj._llKeys[rowKey].info.length > 1)
+                if (totalRows > 1 && (mapObj._titleCol || mapObj._infoCol))
                 {
                     info  = '<table id="info_'
                     info += mapObj._llKeys[rowKey].id;
@@ -284,7 +286,6 @@
                     info += '</th><th>';
                     info += (mapObj._infoCol || {}).name || '';
                     info += '</th></tr>';
-                    var totalRows = mapObj._llKeys[rowKey].title.length;
                     for (var i = 0; i < totalRows; i++)
                     {
                         info += '<tr id="infoRow_';
@@ -312,7 +313,7 @@
                 }
                 else
                 {
-                    info = mapObj._llKeys[rowKey].info.join();
+                    info = _.compact(mapObj._llKeys[rowKey].info).join();
                 }
 
                 var icon;

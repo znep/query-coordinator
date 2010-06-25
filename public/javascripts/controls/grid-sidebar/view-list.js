@@ -1,5 +1,7 @@
 (function($)
 {
+    if (blist.sidebarHidden.savedViews) { return; }
+
     var $filterSection;
     var $vizSection;
     var filters;
@@ -96,7 +98,7 @@
 
         var doSearch = function()
         {
-            var s = $search.val();
+            var s = $search.val().toLowerCase();
             if ($search.is('.prompt')) { s = ''; }
             $clearSearch.toggle(!$.isBlank(s));
 

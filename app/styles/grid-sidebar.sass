@@ -365,12 +365,15 @@
             .removeLink
               @include sprite-button-icons
               background-color: $group_border_color
-              left: 0
+              left: -0.75em
               line-height: 1em
               padding: 0.3em
               position: absolute
-              top: 0
+              top: 0.5em
               z-index: 1
+            &.group .removeLink
+              left: 0
+              top: 0
 
         &.group .removeLink
           left: 0.75em

@@ -16,8 +16,10 @@
         renderData: function(rows)
         {
             var mapObj = this;
+            var heatmapType = mapObj._displayConfig.heatmapType.split('_');
+            type = { type: heatmapType[1], where: heatmapType[0] };
 
-            if (_.isUndefined(mapObj._locCol) && _.isUndefined(mapObj._quantityCol))
+            if (_.isUndefined(mapObj._locCol) || _.isUndefined(mapObj._quantityCol))
             {
                 mapObj.errorMessage = 'Required columns missing';
                 return false;
@@ -49,24 +51,28 @@
             }
 
             if (_.isUndefined(mapObj._featureSet))
-            { doQueries(mapObj); }
+            { doQueries(mapObj, type); }
             else
-            { addFeatureSetToMap(mapObj, null); }
+            { addFeatureSetToMap(mapObj, null, type); }
         }
     });
 
-    var doQueries = function(mapObj)
+    var doQueries = function(mapObj, type)
     {
-        var queryTask = new esri.tasks.QueryTask("http://server.arcgisonline.com/ArcGIS/rest/services/Demographics/USA_Tapestry/MapServer/4");
+        var featureLayer = type.type == 'counties' ? 3 : 4;
+        var queryTask = new esri.tasks.QueryTask("http://server.arcgisonline.com/ArcGIS/rest/services/Demographics/USA_Tapestry/MapServer/"+featureLayer);
         var query = new esri.tasks.Query();
         query.outFields = ["NAME", "ST_ABBREV"];
         query.returnGeometry = true;
         query.outSpatialReference = mapObj.map.spatialReference;
-        query.where = "ST_ABBREV LIKE '%'";
-        queryTask.execute(query, function(featureSet) { addFeatureSetToMap(mapObj, featureSet); });
+        query.where = "ST_ABBREV";
+        query.where += type.type == 'counties'
+                        ? " = '"+type.where.toUpperCase()+"'"
+                        : " LIKE '%'";
+        queryTask.execute(query, function(featureSet) { addFeatureSetToMap(mapObj, featureSet, type); });
     };
 
-    var addFeatureSetToMap = function(mapObj, featureSet)
+    var addFeatureSetToMap = function(mapObj, featureSet, type)
     {
         if (featureSet)
         { mapObj._featureSet = featureSet; }
@@ -77,9 +83,12 @@
         var info = mapObj._quantityCol.name + ": ${quantity}<br />${description}";
         var infoTemplate = new esri.InfoTemplate("${NAME}", info);
 
-        var stateMapping = {};
-        _.each(featureSet.features, function(feature)
-        { stateMapping[feature.attributes['NAME'].toLowerCase()] = feature.attributes['ST_ABBREV']; });
+        if (type.type == 'state')
+        {
+            var stateMapping = {};
+            _.each(featureSet.features, function(feature)
+            { stateMapping[feature.attributes['NAME'].toLowerCase()] = feature.attributes['ST_ABBREV']; });
+        }
 
         var data = {};
         _.each(mapObj._rows, function(row)
@@ -91,9 +100,14 @@
                                 ? row[mapObj._redirectCol.dataIndex][mapObj._redirectCol.urlSubIndex]
                                 : row[mapObj._redirectCol.dataIndex];
             }
-            var key = JSON.parse(row[mapObj._locCol.dataIndex][0]).state.toLowerCase().replace(/[^a-z ]/g, '');
-            if (stateMapping[key])
+            var key;
+            if (type.type == 'state')
+            { key = JSON.parse(row[mapObj._locCol.dataIndex][0]).state.toLowerCase().replace(/[^a-z ]/g, ''); }
+            else
+            { key = row[mapObj._locCol.dataIndex]; }
+            if (stateMapping && stateMapping[key])
             { key = stateMapping[key]; }
+
             if (!data[key])
             { data[key] = { description: [], value: [] }; }
 
@@ -125,10 +139,13 @@
         var segments = [];
         for (i = 0; i < NUM_SEGMENTS; i++) { segments[i] = ((i+1)*(max-min)/NUM_SEGMENTS)+min; }
 
+        var extents = [];
         _.each(featureSet.features, function(feature)
         {
-            var stateAbbr = feature.attributes['ST_ABBREV'].toLowerCase();
-            var datum = data[stateAbbr];
+            var dataKey = type.type == 'state'
+                        ? feature.attributes['ST_ABBREV'].toLowerCase()
+                        : feature.attributes['NAME'];
+            var datum = data[dataKey];
             if (!datum) return;
 
             var symbol;
@@ -144,6 +161,7 @@
                                                 description: datum.description.join(', '),
                                                 quantity: datum.value })
                                            .setInfoTemplate(infoTemplate));
+            extents.push(feature.geometry.getExtent());
             if (datum.redirect_to)
             {
                 $(feature.getDojoShape().rawNode)
@@ -154,7 +172,25 @@
                         function(event) { blist.$display.find('div .container').css('cursor', 'default'); });
             }
         });
-        mapObj.map.centerAndZoom(esri.geometry.geographicToWebMercator(new esri.geometry.Point(-111.88, 41.75, new esri.SpatialReference({ wkid: 4326 }))), 3);
+        if (type.type == 'state')
+        {
+            mapObj.map.centerAndZoom(esri.geometry.geographicToWebMercator(
+                new esri.geometry.Point(-111.88, 41.75, new esri.SpatialReference({ wkid: 4326 }))), 3);
+        }
+        else
+        {
+            var spatialReference = extents[0].spatialReference;
+            var base_extent = extents[0];
+            extents = _.reduce(extents, base_extent, function(memo, extent)
+                {
+                    return {
+                        xmin: Math.min(memo.xmin, extent.xmin), ymin: Math.min(memo.ymin, extent.ymin),
+                        xmax: Math.max(memo.xmax, extent.xmax), ymax: Math.max(memo.ymax, extent.ymax)
+                        };
+                });
+            mapObj.map.setExtent(
+                new esri.geometry.Extent(extents.xmin, extents.ymin, extents.xmax, extents.ymax, spatialReference), true);
+        }
     };
 
 })(jQuery);

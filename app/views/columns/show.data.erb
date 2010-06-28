@@ -17,6 +17,7 @@
           <%- if @column.has_totals? && !@view.is_grouped? -%>
               <li><a id="totals" href="#">Column Totals</a></li>
           <%- end -%>
+          <li><a id="rdf" href="#">RDF</a></li>
           <%#<li><a id="defaults" href="#">Default Values</a></li> %>
         </ul>
       </div>
@@ -135,6 +136,13 @@
           </tbody>
         </table>
       </div>
+
+      <%# RDF tab %>
+      <div id="rdfTab" class="tabContent">
+        <h3>Predicate / Property Mapping</h3>
+        <h4 class="subtitle separator"></h4>
+      </div>
+      
       <div class="saveBar">
         <div class="error errorMessage"></div>
         <h3 class="separator"></h3>
@@ -196,6 +204,7 @@ blist.common.modalReady = function()
     $("#columnPropertiesDialog #formattingTab").hide();
     $("#columnPropertiesDialog #totalsTab").hide();
     $("#columnPropertiesDialog #defaultsTab").hide();
+    $("#columnPropertiesDialog #rdfTab").hide();
 
     $("#columnPropertiesDialog #" + which + "Tab").show();
   };
@@ -218,12 +227,16 @@ blist.common.modalReady = function()
   $("#columnPropertiesDialog #totalsTab").columnTotalsRender(column);
   <%- end -%>
 
+  $("#columnPropertiesDialog #rdfTab").columnRdfRender(column);
+
 
   var updateColumn = function()
   {
       column.name = $("#columnPropertiesDialog #name").val();
       var $desc = $("#columnPropertiesDialog #description:not(.prompt)");
       column.description = $desc.length > 0 ? $desc.val() : null;
+      
+      column.rdf =  $("#columnProperties_rdf").value();
 
       var $alignment = $('#columnPropertiesDialog .alignment :radio:checked');
       if ($alignment.length > 0)

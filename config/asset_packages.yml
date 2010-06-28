@@ -162,6 +162,7 @@ javascripts:
   - widgets/reorderable-list
   - widgets/column-format
   - widgets/column-totals
+  - widgets/column-rdf
   - widgets/info-pane-comments
   - widgets/info-pane-filtered
   - widgets/info-pane-sharing

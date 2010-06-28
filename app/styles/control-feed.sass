@@ -61,15 +61,19 @@ $feed_ui_color: #b3b3b3
             .actionReply, .actionInappropriate
               float: left
               margin-right: 1em
-            .rateDown, .rateUp, .negativeRatings, .positiveRatings
+            .rateDown, .rateUp, .downRatings, .upRatings
               float: right
               margin-left: 0.5em
             .rateUp, .rateDown
               @include sprite-menu-icons
 
+            &.ownItem
+              .actionInappropriate, .rateDown, .rateUp
+                display: none
+
       &.view
         .feedCustom
-          min-height: 3.6em
+          min-height: 3em
 
         .feedChildren, .replyViewAllLink
           display: none
@@ -95,3 +99,33 @@ $feed_ui_color: #b3b3b3
             margin-left: 3em
             overflow: hidden
             text-overflow: ellipsis
+
+  .newCommentForm
+    margin: 1em 0.5em
+
+    label
+      display: block
+      font-size: 1.1em
+      font-weight: bold
+      padding: 0
+
+    textarea
+      display: block
+      width: 100%
+
+    .error
+      color: red
+      display: none
+      font-size: 1.1em
+      margin: 0.2em 0
+
+  .feedMoreItemsLink
+    background-color: #fff
+    border: 1px solid $feed_ui_color
+    @include border-radius(0.3em)
+    display: block
+    font-size: 1.3em
+    font-weight: bold
+    margin-top: 1em
+    padding: 0.6em 1em
+    text-align: center

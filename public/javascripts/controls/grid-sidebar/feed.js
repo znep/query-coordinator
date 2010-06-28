@@ -6,8 +6,9 @@
     {
         $feed.removeClass('loading');
 
-        $feed.feedList({
+        $feed.find('.feed').feedList({
             comments: comments,
+            mainViewId: blist.display.view.id,
             views: views
         });
     };

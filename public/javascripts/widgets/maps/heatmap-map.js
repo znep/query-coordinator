@@ -82,6 +82,7 @@
         _.each(mapObj._rows, function(row)
         {
             var feature = findFeatureWithPoint(mapObj, row, featureSet);
+            if(!feature) { return; }
             if(!feature.attributes.description) { feature.attributes.description = []; }
             if(!feature.attributes.quantity)    { feature.attributes.quantity = []; }
 

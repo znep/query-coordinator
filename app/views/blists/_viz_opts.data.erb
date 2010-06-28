@@ -10,7 +10,7 @@
 <%-   def_value = def_value[local_assigns[:value_index]] -%>
 <%- end -%>
 
-<div class='line <%= opt['type'] %>'>
+<div class='line <%= (Array(opt['classes']) << opt['type']).join(' ') %>'>
   <%- if opt['type'] == 'hidden' -%>
   <input id='<%= oname %>' name='<%= oname %>' type='hidden'
     value='<%= def_value %>' />

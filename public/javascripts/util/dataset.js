@@ -13,6 +13,7 @@ blist.dataset.getDisplayType = function(view)
     var type = view.displayType || 'blist';
 
     if (view.viewType == 'blobby') { type = 'blob'; }
+    if (view.viewType == 'href') { type = 'href'; }
 
     if (!$.isBlank(view.query) && !$.isBlank(view.query.groupBys) &&
         view.query.groupBys.length > 0)

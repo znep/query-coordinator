@@ -395,8 +395,11 @@
             if (c.tableColumnId == colFormat.locationId)
             {
                 c.dataIndex = i;
-                c.latSubIndex = _.indexOf(c.subColumnTypes, 'latitude');
-                c.longSubIndex = _.indexOf(c.subColumnTypes, 'longitude');
+                if (c.subColumnTypes)
+                {
+                    c.latSubIndex = _.indexOf(c.subColumnTypes, 'latitude');
+                    c.longSubIndex = _.indexOf(c.subColumnTypes, 'longitude');
+                }
                 mapObj._locCol = c;
             }
 

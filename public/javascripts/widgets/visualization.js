@@ -79,9 +79,20 @@
         $viz.empty();
         $viz.css('overflow', 'hidden');
         var chart = new blist.display.chartClass($viz[0]);
-        chart.draw(config._data, $.extend({legendFontSize: 12},
+        var options = $.extend({legendFontSize: 12},
             blist.display.options,
-            {height: $viz.height(), width: $viz.width()}) );
+            {height: $viz.height(), width: $viz.width()});
+        if (config._data.u[0].c.length == 4)
+        {
+            options = $.extend(options, {'dataMode': 'regions', 'region': 'US'});
+            google.visualization.events.addListener(chart, 'regionClick', function(e)
+            {
+                var url = _.detect(config._data.u, function(datum) { 
+                    return datum.c[0].v == e.region }).c[3].v;
+                if (url) { window.open(url); }
+            });
+        }
+        chart.draw(config._data, options);
     };
 
 })(jQuery);

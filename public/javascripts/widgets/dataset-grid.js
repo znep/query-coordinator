@@ -434,6 +434,8 @@
                         var col = _.detect(view.columns, function(vc)
                         { return vc.id == a.id; });
 
+                        if ($.isBlank(col)) { return; }
+
                         var existingFormat = usedCols[col.id] || col.format || {};
                         var format = $.extend({}, existingFormat,
                             {grouping_aggregate:

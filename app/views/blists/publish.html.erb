@@ -1,8 +1,42 @@
 <% content_for :head do %>
+<%- if @admin_panel-%>
+  <%= stylesheet_link_merged 'admin-shared' %>
+  <%= stylesheet_link_merged 'blists-publish' %>
+  <title>Administration Panel | <%= CurrentDomain.strings.site_title %></title>
+<%- else -%>
   <%= stylesheet_link_merged 'blists-publish' %>
   <title>Publishing <%= @view.name %> | <%= CurrentDomain.strings.site_title %></title>
+<%- end -%>
 <% end %>
 
+<%- if @admin_panel -%>
+<div id="publishContent" class="oneColumnContainer tabContainer">
+  <%= render :partial => 'admin/tabs', :locals => {:active => 'sdp'} %>
+  <div class="fullPageContentContainer fullPageWithTabs">
+    <div class="fullPageOuterContent">
+      <div class="fullPageContent">
+        <div class='outerContent'>
+          <div class='contentTR'><div class='contentTL'></div></div>
+          <div class='content' id='adminContent'>
+            <div class="publishHeader clearfix">
+              <%= render :partial => 'admin/refresh_theme_link' =%>
+                <h3>Social Data Player Customizations</h3>
+                
+                <%- if flash[:notice] -%>
+                  <p class='flashNotice'><%= flash[:notice] %></p>
+                <%- end -%>
+                
+                <p class="explanation">
+                  Use the controls at the bottom of this page to edit the look and 
+                  function of this Social Data Player. You can edit an existing 
+                  template or create a new one.
+                </p>
+                <p class="explanation">
+                  You can also <%= link_to 'return to the template list', :action => 'sdp_index' %>
+                  to view all of your templates.
+                </p>
+              </div>
+<%- else -%>
 <div id="publishContent" class="oneColumnContainer">
   <div class="fullPageContentContainer">
     <div class="fullPageOuterContent">
@@ -30,6 +64,8 @@
             Grab the embed code when things look right.
           </p>
         </div>
+<%- end -%>
+<%- @done_href = @done_link.present? ? @done_link : @view.href -%>
         <div class="unsavedChangesBar">
           <ul class="actionButtons clearfix">
             <li>
@@ -80,9 +116,11 @@
 <div id="publishOptionsPane" class="metadataPane">
   <div class="header">
     <ul class="summaryTabs clearfix">
+      <%- unless @hide_template_select -%>
       <li id="tabTemplates">
         <%= summary_tab 'Templates', 'templates' %>
       </li>
+      <%- end -%>
       <li id="tabVisual">
         <%= summary_tab 'Visual Options', 'visual' %>
       </li>
@@ -95,6 +133,9 @@
     </ul>
   </div>
   <% form_tag("/widget_customization/") do %>
+  <%- if @hide_template_select -%>
+    <%= hidden_field_tag("template_name", @widget_customization.uid) %>
+  <%- else %>
     <div class="infoContentOuter singleInfoTemplates listContainer">
       <div class="infoContentHeader clearfix">
         <h2 class="panelHeader clipText">
@@ -144,15 +185,18 @@
       </div>
       <div class="infoContentBR"><div class="infoContentBL"></div></div>
     </div>
+    <%- end -%>
     <div class="infoContentOuter singleInfoVisual listContainer">
       <div class="infoContentHeader clearfix">
         <h2 class="panelHeader clipText">
             Editing the <span class="templateName"><%= @widget_customization.name %></span> template
         </h2>
-        <a href="#changeTemplate" class="changeTemplateLink">Change &rsaquo;</a>
+        <%- unless @hide_template_select -%>
+          <a href="#changeTemplate" class="changeTemplateLink">Change &rsaquo;</a>
+        <%- end -%>
         <ul class="headerActions actionButtons">
           <li>
-            <a class="arrowButton submitLink" href="<%= @view.href %>">Done</a>
+            <a class="arrowButton submitLink" href="<%= @done_href %>">Done</a>
           </li>
         </ul>
         <p class="changesWarning">
@@ -494,10 +538,12 @@
         <h2 class="panelHeader clipText">
             Editing the <span class="templateName"><%= @widget_customization.name %></span> template
         </h2>
-        <a href="#changeTemplate" class="changeTemplateLink">Change &rsaquo;</a>
+        <%- unless @hide_template_select -%>
+          <a href="#changeTemplate" class="changeTemplateLink">Change &rsaquo;</a>
+        <%- end -%>
         <ul class="headerActions actionButtons">
           <li>
-            <a class="arrowButton submitLink" href="<%= @view.href %>">Done</a>
+            <a class="arrowButton submitLink" href="<%= @done_href %>">Done</a>
           </li>
         </ul>
         <p class="changesWarning">
@@ -656,10 +702,12 @@
         <h2 class="panelHeader clipText">
             Editing the <span class="templateName"><%= @widget_customization.name %></span> template
         </h2>
-        <a href="#changeTemplate" class="changeTemplateLink">Change &rsaquo;</a>
+        <%- unless @hide_template_select -%>
+          <a href="#changeTemplate" class="changeTemplateLink">Change &rsaquo;</a>
+        <%- end -%>
         <ul class="headerActions actionButtons">
           <li>
-            <a class="arrowButton submitLink" href="<%= @view.href %>">Done</a>
+            <a class="arrowButton submitLink" href="<%= @done_href %>">Done</a>
           </li>
         </ul>
         <p class="changesWarning">
@@ -698,6 +746,10 @@
     blist.publish.currentTheme = <%= raw @customization.to_json %>;
     blist.publish.v2Theme = <%= raw WidgetCustomization.default_theme(1).to_json %>;
     blist.publish.viewId = '<%= @view.id %>';
+    <%- if @hide_template_select -%>
+    blist.publish.showTemplateChooser = false;
+    blist.publish.showEmbed = false;
+    <%- end -%>
   </script>
   <%= javascript_include_merged 'blists-publish' %>
 <% end %>

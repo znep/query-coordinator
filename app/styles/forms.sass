@@ -137,12 +137,47 @@ form textarea.text_wide
         top: -2px
 
 
+// Custom combo boxes
+.blist-combo-wrapper
+  cursor: default
+  position: relative
+  &.active
+    z-index: 100
+
+  .blist-combo
+    overflow: hidden
+    position: relative
+
+    .blist-combo-value
+      float: none
+      overflow: hidden
+
+.blist-combo-dd
+  background: #fff
+  border: 1px solid #ccc
+  @include box-shadow(0,0,10px,rgba(0, 0, 0, 0.5))
+  display: none
+  max-height: 200px
+  overflow: auto
+  overflow-x: hidden
+  position: absolute
+  z-index: 5000
+
+  li
+    font-size: 1.2em
+    padding: 4px 5px
+    white-space: nowrap
+    &.selected
+      background-color: #e3ecf7
+
 // uniform jQuery plugin styling
   clint.tseng@socrata.com 13/05/10:
     modified to nest under uniform, not float
 
 div.uniform.selector,
 div.uniform.selector div,
+.blist-combo,
+.blist-combo-value,
 div.uniform.checker span,
 div.uniform.radio span,
 div.uniform.uploader,
@@ -167,7 +202,8 @@ div.uniform.checker input:focus,
 div.uniform.uploader input:focus
   outline: 0
 
-div.uniform.selector
+div.uniform.selector,
+.blist-combo
   background-position: -483px -130px
   display: inline-block
   font-size: 1.2em
@@ -233,6 +269,17 @@ div.uniform.selector
       background-position: right -104px
       span
         color: #bbb
+
+.blist-combo-focused
+  background-position: -483px -182px
+  div
+    background-position: right -52px
+
+  &:active, &.active
+    background-position: -483px -208px
+    div
+      background-position: right -78px
+
 
 div.uniform.checker
   display: inline-block

@@ -83,10 +83,14 @@
     }
 
     var model = $('#dataGrid').blistModel();
-    var columns = model.meta().columns[0];
     var view = model.meta().view;
 
-    columns = $.grep(columns, function(column) { return column.type !== 'nested_table'; });
+    var columns = _.select(view.columns,
+        function(column)
+        {
+            return column.dataTypeName !== 'meta_data' &&
+                column.renderTypeName !== 'nested_table';
+        });
 
     if ((view.query === undefined || view.query.filterCondition === undefined ||
           view.query.filterCondition === null ||

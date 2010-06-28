@@ -7,7 +7,10 @@
     { return t.sortable ? n : null; }));
 
     var groupableTypes = _.compact(_.map(blist.data.types, function(t, n)
-    { return t.groupable ? n : null; }));
+    { return !$.isBlank(t.rollUpAggregates) ? n : null; }));
+
+    var filterableTypes = _.compact(_.map(blist.data.types, function(t, n)
+    { return !$.isBlank(t.filterConditions) ? n : null; }));
 
     var rollUpFunctions = function(colId)
     {
@@ -17,14 +20,138 @@
         return blist.data.types[col.dataTypeName].rollUpAggregates;
     };
 
+    var filterOperators = function(colId)
+    {
+        if ($.isBlank(colId)) { return null; }
+        var col = _.detect(blist.display.view.columns, function(c)
+        { return c.id == parseInt(colId); });
+        return blist.data.types[col.renderTypeName].filterConditions;
+    };
+
+    var filterEditor = function(sidebarObj, $field, vals, curValue)
+    {
+        var colId = vals['children.0.columnId'];
+        var op = vals.value;
+        if ($.isBlank(colId) || $.isBlank(op)) { return false; }
+
+        if (_.include(['IS_BLANK', 'IS_NOT_BLANK'], op)) { return false; }
+
+        var col = $.extend(true, {},
+            _.detect(blist.display.view.columns, function(c)
+                { return c.id == parseInt(colId); }));
+
+        // Some types want different editors for filtering
+        if (_.include(['tag', 'email', 'html'], col.renderTypeName))
+        { col.renderTypeName = 'text'; }
+
+        var $editor = $.tag({tagName: 'div', 'class': 'editorWrapper'});
+        $editor.blistEditor({row: null, column: col, value: curValue});
+        $field.append($editor);
+
+        if (!$.isBlank($.uniform))
+        { $field.find('select, :checkbox, :radio, :file').uniform(); }
+
+        return true;
+    };
+
+    var filterEditorValue = function(sidebarObj, $field)
+    {
+        return $field.find('.editorWrapper').blistEditor().currentValue();
+    };
+
+    var filterEditorCleanup = function(sidebarObj, $field)
+    {
+        var $editor = $field.find('.editorWrapper');
+        if ($editor.length > 0) { $editor.blistEditor().finishEdit(); }
+    };
+
     var configName = 'filter.filterDataset';
     var config = {
         name: configName,
         priority: 1,
         title: 'Filter, Sort, Roll-Up',
-        subtitle: 'You can filter a view down to certain rows; sort by one or more columns; and group rows together with a roll-up',
+        subtitle: 'You can filter a view down to certain rows; ' +
+            'group rows together and summarize data with a roll-up; ' +
+            'and sort one or more columns',
         dataSource: blist.display.view,
         sections: [
+            // Filter section
+            {
+                title: 'Filter', name: 'filterFilter', type: 'selectable',
+                fields: [
+                    {type: 'select', text: 'Match', prompt: null,
+                        name: 'query.filterCondition.type',
+                        options: [
+                            {text: 'all conditions', value: 'AND'},
+                            {text: 'any conditions', value: 'OR'}
+                        ],
+                        wizard: 'Choose whether you want rows that match all ' +
+                            'the conditions you choose, or any one of them'
+                    },
+                    {type: 'repeater', addText: 'Add Condition', minimum: 0,
+                        name: 'query.filterCondition.children',
+                        field: {type: 'group', options: [
+                            {type: 'columnSelect', text: 'Column',
+                                name: 'children.0.columnId', required: true,
+                                columns: {type: filterableTypes, hidden: false}},
+                            {type: 'select', text: 'Operator', name: 'value',
+                                required: true, prompt: 'Select an operator',
+                                linkedField: 'children.0.columnId',
+                                options: filterOperators},
+                            {type: 'custom', text: 'Value', required: true,
+                                name: 'children.1.value',
+                                linkedField: ['children.0.columnId', 'value'],
+                                editorCallbacks: {create: filterEditor,
+                                    value: filterEditorValue,
+                                    cleanup: filterEditorCleanup}}
+                        ]},
+                        wizard: 'Choose a column to filter on, what type of ' +
+                            'comparison to do, and enter a value to compare ' +
+                            'against.  You may enter as many conditions as you ' +
+                            'want'
+                    }
+                ],
+                wizard: 'Do you wish to filter this data down to certain values?'
+            },
+
+
+            // Group section
+            {
+                title: 'Roll-Ups & Drill-Downs', name: 'filterGroup',
+                type: 'selectable',
+                fields: [
+                    {type: 'repeater', addText: 'Add Grouping Column',
+                        name: 'query.groupBys', minimum: 0,
+                        field: {type: 'columnSelect', text: 'Group By',
+                            name: 'columnId', notequalto: 'groupColumn',
+                            columns: {type: groupableTypes, hidden: false}},
+                        wizard: 'Choose one or more columns with repeated values ' +
+                            'to group all the repeated values into a single row'
+                    },
+                    {type: 'repeater', addText: 'Add Roll-Up Column', minimum: 0,
+                        name: 'columns',
+                        field: {type: 'group', options: [
+                            {type: 'columnSelect', text: 'Roll-Up',
+                                name: 'id', required: true,
+                                notequalto: 'rollUpColumn',
+                                columns: {type: groupableTypes, hidden: false}},
+                            {type: 'select', text: 'Function', required: true,
+                                name: 'format.grouping_aggregate',
+                                prompt: 'Select a function',
+                                linkedField: 'id', options: rollUpFunctions}
+                        ]},
+                        wizard: 'Choose one or more columns to summarize ' +
+                            'the data that has been grouped into a single row. ' +
+                            'Also choose a function such as sum or count to ' +
+                            'control how the data is summarized.'
+                    }
+                ],
+                wizard: 'Do you wish to group and roll-up your data? ' +
+                    'This will group repeated values into a single line, ' +
+                    'and summarize the grouped data.'
+            },
+
+
             // Sort section
             {
                 title: 'Sort', name: 'filterSort', type: 'selectable',
@@ -42,42 +169,13 @@
                                     {text: 'Descending', value: 'false'}
                                 ]}
                         ]},
-                        wizard: 'Choose one or more columns to sort by, and which direction to sort each column'
+                        wizard: 'Choose one or more columns to sort by, ' +
+                            'and which direction to sort each column'
                     }
                 ],
                 wizard: 'Do you want to sort this data?'
-            },
-
-            // Group section
-            {
-                title: 'Roll-Ups & Drill-Downs', name: 'filterGroup',
-                type: 'selectable',
-                fields: [
-                    {type: 'repeater', addText: 'Add Grouping Column',
-                        name: 'query.groupBys', minimum: 0,
-                        field: {type: 'columnSelect', text: 'Group By',
-                            name: 'columnId', notequalto: 'groupColumn',
-                            columns: {type: groupableTypes, hidden: false}},
-                        wizard: 'Choose one or more columns with repeated values to group all the repeated values into a single row'
-                    },
-                    {type: 'repeater', addText: 'Add Roll-Up Column', minimum: 0,
-                        name: 'columns',
-                        field: {type: 'group', options: [
-                            {type: 'columnSelect', text: 'Roll-Up',
-                                name: 'id', required: true,
-                                notequalto: 'rollUpColumn',
-                                columns: {type: groupableTypes, hidden: false}},
-                            {type: 'select', text: 'Function', required: true,
-                                name: 'format.grouping_aggregate',
-                                prompt: 'Select a function',
-                                linkedField: 'id', options: rollUpFunctions}
-                        ]},
-                        wizard: 'Choose one or more columns to summarize the data that has been grouped into a single row.  ' +
-                        'Also choose a function such as sum or count to control how the data is summarized.'
-                    }
-                ],
-                wizard: 'Do you wish to group and roll-up your data?  This groups repeated values into a single line, and summarizes the grouped data.'
             }
+
         ],
         finishBlock: {
             buttons: [

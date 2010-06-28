@@ -18,10 +18,10 @@
                 {
                     var value = $.htmlEscape(this.newValue ||
                         this.originalTextValue());
-                    var align = this.column.alignment ?
-                        ' align-' + this.column.alignment : '';
+                    var align = (this.column.format || {}).align ?
+                        ' align-' + this.column.format.align : '';
                     this._$editor = $('<div class="blist-table-editor' +
-                        ' type-' + this.column.type +
+                        ' type-' + this.column.renderTypeName +
                         '"><input type="text" class="' + align +  '" value="' +
                         value + '" /></div>');
                 }

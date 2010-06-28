@@ -13,13 +13,14 @@
         {
             type: function()
             {
-                return blist.data.types[this.column.type] || blist.data.types.date;
+                return blist.data.types[this.column.renderTypeName] ||
+                    blist.data.types.date;
             },
 
             originalTextValue: function()
             {
-                var formatName = this.column.format || 'date_time';
-                this._format = this.type().formats[this.column.format] ||
+                var formatName = (this.column.format || {}).view || 'date_time';
+                this._format = this.type().formats[formatName] ||
                     this.type().formats['date_time'];
                 if (typeof this.originalValue == 'number')
                 {
@@ -77,7 +78,8 @@
                     // have a day-month swapped format, manually flip them
                     try
                     {
-                        if (this.column.format.startsWith('date_dmy') &&
+                        if (((this.column.format || {}).view || '')
+                            .startsWith('date_dmy') &&
                             !$.isBlank(t.match(/\d{1,2}\/\d{1,2}\//)))
                         { d.set({day: d.getMonth() + 1, month: d.getDate() - 1}); }
                     }

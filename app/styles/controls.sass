@@ -266,3 +266,121 @@ div#color_selector
     li
       float: right
 
+
+//*** START: datepicker styles ***//
+div.datepicker
+  display: none
+  left: 0
+  margin-left: -4px
+  position: absolute
+  top: 0
+  z-index: 4000
+
+  .datepickerContainer
+    background-color: #e8e8e8
+
+    table
+      border-collapse: collapse
+      padding: 3px
+
+      th
+        color: #666666
+        font-weight: normal
+        text-align: center
+
+      td
+        padding: 0.5em
+        text-align: right
+
+        table td
+          padding: 0
+
+        .datepickerNotInMonth a
+          color: #999999
+          &:hover
+            color: #660000
+
+        &.datepickerDisabled
+          a, a:hover, &.datepickerNotInMonth a
+            color: #333
+
+        &.datepickerSpecial a
+          background: #700
+        &.datepickerSpecial.datepickerSelected a
+          background: #a00
+
+      tbody
+        th
+          text-align: right
+        a
+          display: block
+
+      table
+        th, td
+          font-size: 1.1em
+
+        &.datepickerViewDays
+          tbody.datepickerMonths, tbody.datepickerYears
+            display: none
+
+        &.datepickerViewMonths
+          tbody.datepickerDays, tbody.datepickerYears, tr.datepickerDoW
+            display: none
+
+        &.datepickerViewYears
+          tbody.datepickerDays, tbody.datepickerMonths, tr.datepickerDoW
+            display: none
+
+    a
+      color: #333333
+      cursor: default
+      text-decoration: none
+      &:hover
+        color: #660000
+
+    tbody.datepickerDays
+      a
+        height: 1.6em
+        line-height: 1.6em
+        padding-right: 0.2em
+        width: 2em
+
+      td.datepickerSelected
+        background-color: #20608f
+        a
+          color: #ffffff
+
+      td.datepickerNotInMonth.datepickerSelected
+        background-color: #10304f
+
+
+    .datepickerYears,
+    .datepickerMonths
+      a
+        height: 3.6em
+        line-height: 3.6em
+        text-align: center
+        width: 4em
+      td.datepickerSelected
+        background-color: #20608f
+
+    .datepickerSpace div
+      width: 2em
+
+    .datepickerGoNext a,
+    .datepickerGoPrev a,
+    .datepickerMonth a
+      height: 2em
+      line-height: 2em
+      text-align: center
+
+    .datepickerGoNext a,
+    .datepickerGoPrev a
+      width: 2em
+
+.datepickerHidden
+  display: none
+
+//*** END: datepicker styles ***//
+
+

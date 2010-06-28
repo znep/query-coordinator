@@ -712,7 +712,8 @@
                     'mode-' + mode + ' blist-table-util"></div>');
             $scrolls.append($curEditContainer);
             var blistEditor = $curEditContainer.blistEditor(
-                {row: row, column: col, value: value, newValue: newValue});
+                {row: row, column: model.getColumnByID(col.id),
+                  value: value, newValue: newValue});
             if (!blistEditor) { return; }
 
             configureEditor(cell, $curEditContainer, mode);

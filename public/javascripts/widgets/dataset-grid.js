@@ -1248,7 +1248,7 @@
                 // a separator.
                 htmlStr += '<li class="filterSeparator separator singleItem" />';
             }
-            htmlStr += '<li class="hide" >' +
+            htmlStr += '<li class="hideCol" >' +
                 '<a href="#hide-column_' + col.id + '">' +
                 '<span class="highlight">Hide Column</span>' +
                 '</a></li>';

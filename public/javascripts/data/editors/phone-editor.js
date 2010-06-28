@@ -11,7 +11,7 @@
     {
         var v = editObj.originalValue;
         var ret = v || '';
-        if (v instanceof Object) { ret = v[editObj.column.subTypes[0]]; }
+        if (v instanceof Object) { ret = v[editObj.column.subColumnTypes[0]]; }
         return ret || '';
     };
 
@@ -19,7 +19,7 @@
     {
         var v = editObj.originalValue;
         var ret = '';
-        if (v instanceof Object) { ret = v[editObj.column.subTypes[1]]; }
+        if (v instanceof Object) { ret = v[editObj.column.subColumnTypes[1]]; }
         return ret || '';
     };
 
@@ -50,7 +50,7 @@
                 {
                     var value = $.htmlEscape(this.newValue || numberValue(this));
                     this._$editor = $('<div class="blist-table-editor' +
-                        ' type-' + this.column.type +
+                        ' type-' + this.column.renderTypeName +
                         '">' +
                         '<input type="text" class="number" value="' +
                         value + '" />' +
@@ -103,8 +103,8 @@
                 if (newNum === null && newType === null) { return null; }
 
                 var ret = {};
-                ret[this.column.subTypes[0]] = newNum;
-                ret[this.column.subTypes[1]] = newType;
+                ret[this.column.subColumnTypes[0]] = newNum;
+                ret[this.column.subColumnTypes[1]] = newType;
                 return ret;
             },
 

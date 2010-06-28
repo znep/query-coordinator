@@ -36,12 +36,16 @@
                 var editObj = this;
                 editObj._valuesList = [ { id: 'null', label: '(Blank)'} ];
 
-                if (editObj.column.options !== undefined)
-                {
-                    $.each(editObj.column.options, function(id, v)
-                            { if (!v.deleted) { editObj._valuesList.push(
-                                {id: id, label: v.text, icon: v.icon}); } });
-                }
+                _.each((editObj.column.dropDown || {}).values || [],
+                    function(v)
+                    {
+                        if (!v.deleted)
+                        {
+                            editObj._valuesList.push({id: v.id,
+                                label: v.description || '', icon: v.icon});
+                        }
+                    });
+
                 editObj.setFullSize();
                 editObj.$dom().addClass('blist-combo-wrapper')
                     .addClass('combo-container');

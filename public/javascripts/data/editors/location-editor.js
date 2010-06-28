@@ -53,7 +53,7 @@
                 if (!editObj._$editor)
                 {
                     editObj._$editor = $('<div class="blist-table-editor' +
-                        ' type-' + editObj.column.type +
+                        ' type-' + editObj.column.renderTypeName +
                         '">' +
                         '<div class="labels street">' +
                         '<span>Street</span>' +

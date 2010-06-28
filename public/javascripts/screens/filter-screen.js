@@ -78,15 +78,17 @@ filterNS.filterRemove = function(event) {
 
 filterNS.createEditor = function($renderer, column, value) {
     var tempCol = $.extend({}, column);
-    if ((tempCol.type == "tag") || (tempCol.type == "email") || (tempCol.type == 'html'))
+    if (_.include(['tag', 'email', 'html'], tempCol.renderTypeName))
     {
-        tempCol.type = "text";
+        tempCol.renderTypeName = 'text';
     }
-    else if (tempCol.type == "date" || tempCol.type == 'calendar_date')
+    else if (_.include(['date', 'calendar_date'], tempCol.renderTypeName))
     {
-        tempCol.format = "date";
+        tempCol.format = tempCol.format || {};
+        tempCol.format.view = "date";
     }
-    else if ((tempCol.type == "document_obsolete") || (tempCol.type == "photo_obsolete") || (tempCol.type == "document") || (tempCol.type == "photo"))
+    else if (_.include(['document_obsolete', 'photo_obsolete', 'document',
+        'photo'], tempCol.renderTypeName))
     {
         return;
     }
@@ -125,7 +127,7 @@ filterNS.setColumns = function(columns)
     filterNS.columns = columns;
     filterNS.columnsValues = $.map(columns, function(col, i) {
         return { index: i, column: col, label: $.htmlEscape(col.name),
-            type: col.type };
+            type: col.renderTypeName };
     })
 };
 
@@ -174,7 +176,7 @@ filterNS.cloneTemplateRow = function($table, columns)
                     .append($conditionDropDown);
 
                 var column = selectedValue.column;
-                var conditions = filterNS.conditions[filterNS.filterableClass(column.type)];
+                var conditions = filterNS.conditions[filterNS.filterableClass(column.renderTypeName)];
                 $conditionDropDown.find('.filterTable-conditionDropDown')
                     .combo({
                         name: 'condition',
@@ -206,7 +208,8 @@ filterNS.row = function($row) {
     var column = selectedColumn.column;
     var operator = $row.find(".filterTable-conditionDropDown").value().operator;
 
-    if ((column.type == "document_obsolete") || (column.type == "photo_obsolete") || (column.type == "document") || (column.type == "photo"))
+    if (_.include(['document_obsolete', 'photo_obsolete', 'document', 'photo'],
+        column.renderTypeName))
     {
         return [
             {
@@ -238,7 +241,7 @@ filterNS.row = function($row) {
                      * we have to pas in value to trick core server into believing
                      * that the filter has a subcolumn for validation.
                      */
-                    value: column.type === 'location' ? 'HUMAN_ADDRESS' : null
+                    value: column.renderTypeName === 'location' ? 'HUMAN_ADDRESS' : null
                 }]
             };
         default:
@@ -248,7 +251,7 @@ filterNS.row = function($row) {
     }
 
     // Translate values. Complex types have a different format which is awesome.
-    if (column.type == "phone" || column.type == 'url' || column.type == 'location')
+    if (_.include(['phone', 'url', 'location'], column.renderTypeName))
     {
         var filter = [];
 
@@ -279,7 +282,7 @@ filterNS.row = function($row) {
 
         var hasValue = false;
         $.each(value, function(i, v) {
-            if ((v !== null) || (column.type == 'checkbox'))
+            if ((v !== null) || (column.renderTypeName == 'checkbox'))
             {
                 hasValue = true;
             }
@@ -289,7 +292,7 @@ filterNS.row = function($row) {
             return false;
         }
 
-        if (column.type == "checkbox")
+        if (column.renderTypeName == "checkbox")
         {
             if (value[0] == true)
             {
@@ -300,7 +303,7 @@ filterNS.row = function($row) {
                 value = "0";
             }
         }
-        else if (column.type == "date")
+        else if (column.renderTypeName == "date")
         {
             $.each(value, function(i, v) {
                 var dateObj = new Date();
@@ -356,31 +359,29 @@ filterNS.getFilter = function($table, operator)
     return hasConditions ? j : null;
 };
 
-filterNS.populate = function($table, filters, columns, allColumns)
+filterNS.populate = function($table, filters, columns)
 {
+    var visibleCols = _.select(columns, function(c)
+            { return !_.include(c.flags || [], 'hidden'); });
+
     for (var i=0; i < filters.children.length; i++)
     {
         var filterRow = filters.children[i];
 
-        var curColumns = columns.slice();
+        var curCols = visibleCols.slice();
 
-        var colChild = $.grep(filterRow.children, function(child)
-            { return child.type == 'column'; })[0];
-        var colMatches = $.grep(columns, function(c)
+        var colChild = _.detect(filterRow.children, function(child)
+            { return child.type == 'column'; });
+        var col = _.detect(columns, function(c)
             { return c.id == colChild.columnId; });
-        var col;
-        if (colMatches.length < 1)
-        {
-            col = allColumns[colChild.columnId];
-            curColumns.push(col);
-        }
-        else { col = colMatches[0]; }
+        if (!_.include(curCols, col))
+        { curCols.push(col); }
 
-        var $row = filterNS.addFilterRow($table, curColumns);
+        var $row = filterNS.addFilterRow($table, curCols);
 
         // Now set up column data
         var subcolumn;
-        var type = blist.data.types[col.type];
+        var type = blist.data.types[col.renderTypeName];
         if (type && type.isObject && colChild.value !== undefined)
         {
             subcolumn = colChild.value.toLowerCase();
@@ -393,7 +394,7 @@ filterNS.populate = function($table, filters, columns, allColumns)
                         })[0]);
         $row.find(".filterTable-conditionDropDown")
             .value($.grep(filterNS.conditions
-                        [filterNS.filterableClass(col.type)],
+                        [filterNS.filterableClass(col.renderTypeName)],
                         function(condition) {
                         return condition.operator ==
                         filterRow.value.toUpperCase();
@@ -433,7 +434,7 @@ filterNS.populate = function($table, filters, columns, allColumns)
                     value = child.value;
                 }
 
-                if (col.type == "date")
+                if (col.renderTypeName == "date")
                 {
                     value = new Date(value).getTime() / 1000;
                 }
@@ -443,7 +444,7 @@ filterNS.populate = function($table, filters, columns, allColumns)
     }
 
     // add empty row
-    filterNS.addFilterRow($table, columns);
+    filterNS.addFilterRow($table, visibleCols);
 
     // If there are no columns available, hide the ability to add a new row
     // and show an info message

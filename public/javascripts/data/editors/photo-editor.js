@@ -7,6 +7,13 @@
         this.init();
     };
 
+    var baseUrl = function(editObj)
+    {
+        return '/views/' + blist.display.view.id + '/' +
+            (editObj.column.renderTypeName.endsWith('_obsolete') ?
+                'obsolete_' : '') + 'files/';
+    };
+
     var buttonClicked = function(editObj, event)
     {
         var href = $(event.currentTarget).attr('href');
@@ -32,7 +39,7 @@
 
     var showDialog = function(editObj)
     {
-        $.uploadDialog().show(editObj.column.base,
+        $.uploadDialog().show(baseUrl(editObj),
                 function(id) { fileUploaded(editObj, id); },
                 function() { editObj.focus(); },
                 ['jpg', 'jpeg', 'gif', 'pjpeg', 'bmp', 'png', 'tif', 'tiff'],
@@ -61,7 +68,7 @@
             $add.hide();
             $editItems.show();
 
-            var url = editObj.column.base + editObj._curVal;
+            var url = baseUrl(editObj) + editObj._curVal;
             $d.find('.view').attr('href', url);
             $d.find('img').attr('src', url);
         }
@@ -106,7 +113,8 @@
                 {
                     this._curVal = this.originalValue;
                     var html = '<div class="blist-table-editor ' +
-                        'type-' + this.column.type + '"><div class="buttons">' +
+                        'type-' + this.column.renderTypeName +
+                        '"><div class="buttons">' +
                         '<a class="button add" href="#add" ' +
                         'title="Add a new image">Add</a>' +
                         '<a class="button view" target="blist-viewer" ' +

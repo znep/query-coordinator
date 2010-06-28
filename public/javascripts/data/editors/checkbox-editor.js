@@ -15,10 +15,10 @@
             {
                 if (!this._$editor)
                 {
-                    var align = this.column.alignment ?
-                        ' align-' + this.column.alignment : '';
+                    var align = (this.column.format || {}).align ?
+                        ' align-' + this.column.format.align : '';
                     this._$editor = $('<div class="blist-table-editor ' +
-                        'type-' + this.column.type + align + '">' +
+                        'type-' + this.column.renderTypeName + align + '">' +
                         '<input type="checkbox"' +
                         (this.originalValue && this.originalValue != '0' ?
                             ' checked="checked"' : '') +

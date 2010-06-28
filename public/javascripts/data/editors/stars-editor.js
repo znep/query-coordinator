@@ -71,10 +71,10 @@
             {
                 if (!this._$editor)
                 {
-                    var align = this.column.alignment ?
-                        ' align-' + this.column.alignment : '';
+                    var align = (this.column.format || {}).align ?
+                        ' align-' + this.column.format.align : '';
                     var edHtml = '<div class="blist-table-editor ' +
-                        'type-' + this.column.type + align + '">' +
+                        'type-' + this.column.renderTypeName + align + '">' +
                         '<input class="hiddenTextField" />' +
                         '<span class="star star-clear" title="Clear"></span>';
                     for (var i = 0; i < this.range(); i++)
@@ -112,7 +112,7 @@
             {
                 if (this._range === undefined)
                 {
-                    this._range = parseFloat(this.column.range);
+                    this._range = parseFloat((this.column.format || {}).range);
                     if (this._range <= 0 || isNaN(this._range)) { this._range = 5; }
                 }
                 return this._range;

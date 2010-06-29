@@ -1400,7 +1400,8 @@
                         {'data-template': templateLine,
                         'data-count': i, 'data-dataValue': null,
                         'data-maximum': args.item.maximum}),
-                    className: 'addValue'}, true));
+                    className: 'addValue',
+                    iconClass: 'add'}, true));
                 break;
         }
 
@@ -1477,7 +1478,8 @@
                     '@class+': function(arg)
                     { return _.compact([arg.item.type, arg.item.name,
                         (!$.isBlank(arg.item.onlyIf) ||
-                            arg.item.type == 'hidden' ? 'hide' : '')])
+                            arg.item.type == 'hidden' ? 'hide' : ''),
+                        (!$.isBlank(arg.item.customContent)) ? 'custom' : '' ])
                         .join(' '); },
                     '@data-onlyIf': function(arg)
                     {

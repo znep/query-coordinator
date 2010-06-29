@@ -1,3 +1,5 @@
+$form_elem_border_color: #cacaca
+
 form input[type="text"],
 form input.textInput,
 form textarea,
@@ -15,7 +17,7 @@ form input.textInput,
 form textarea,
 form input[type="password"],
 input[type="text"]
-  border: solid 1px #cacaca
+  border: solid 1px $form_elem_border_color
 
 label.error
   color: #f00
@@ -90,12 +92,10 @@ form textarea.text_wide
         cursor: default
 
   .colorControl
-    background-image: url(/images/colorpicker/select_arrow.png)
-    background-position: right bottom
-    background-repeat: no-repeat
-    border: 2px ridge #000000
+    background: transparent url(/images/colorpicker/select_arrow.png) no-repeat right bottom
+    border: 1px solid $form_elem_border_color
     display: inline-block
-    height: 16px
+    height: 18px
     text-indent: -9999px
     width: 20px
 

@@ -193,6 +193,39 @@
   &.trackback #{$subselector}
     background-position: 0 -39px
 
+// icons/dataset_toolbar_icons.png
+@mixin dataset-toolbar-icon-base
+  @include text-hiding
+  @include ie6-fix
+  background-image: url(/stylesheets/images/icons/dataset_toolbar_icons.png)
+  height: 13px
+  width: 16px
+@mixin dataset-toolbar-icon-search
+  @include dataset-toolbar-icon-base
+@mixin dataset-toolbar-icon-share
+  @include dataset-toolbar-icon-base
+  background-position: 0 -13px
+@mixin dataset-toolbar-icon-maximize
+  @include dataset-toolbar-icon-base
+  background-position: 0 -26px
+@mixin dataset-toolbar-icon-minimize
+  @include dataset-toolbar-icon-base
+  background-position: 0 -39px
+
+// icons/repeater_icons.png
+@mixin sprite-repeater-icons($subselector: '.icon')
+  #{$subselector}
+    @include text-hiding
+    @include ie6-fix
+    background-image: url(/stylesheets/images/icons/repeater_icons.png)
+    height: 14px
+    width: 14px
+
+  &.remove #{$subselector}
+    background-position: 0 0
+  &.add #{$subselector}
+    background-position: 0 -14px
+
 // interface/dataset_tabs.png
 @mixin sprite-dataset-tabs($subselector: '.icon')
   #{$subselector}
@@ -213,25 +246,6 @@
     background-position: 0 -116px
   &.tabAbout #{$subselector}
     background-position: 0 -145px
-
-// interface/dataset_toolbar_icons.png
-@mixin dataset-toolbar-icon-base
-  @include text-hiding
-  @include ie6-fix
-  background-image: url(/stylesheets/images/interface/dataset_toolbar_icons.png)
-  height: 13px
-  width: 16px
-@mixin dataset-toolbar-icon-search
-  @include dataset-toolbar-icon-base
-@mixin dataset-toolbar-icon-share
-  @include dataset-toolbar-icon-base
-  background-position: 0 -13px
-@mixin dataset-toolbar-icon-maximize
-  @include dataset-toolbar-icon-base
-  background-position: 0 -26px
-@mixin dataset-toolbar-icon-minimize
-  @include dataset-toolbar-icon-base
-  background-position: 0 -39px
 
 // common/close.png
 @mixin close-button

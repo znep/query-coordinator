@@ -1,3 +1,7 @@
+$sidebar_bg_color: #f7f7f7
+$sidebar_chrome_border_color: #cecece
+$sidebar_text_color: #666
+
 #gridSidebarOverlay
   background-color: #000000
   filter: alpha(opacity = 50)
@@ -11,7 +15,7 @@
 
 
 #gridSidebar
-  background-color: #ffffff
+  background-color: #f7f7f7
   border-left: 1px solid #cecece
   display: none
   overflow: hidden
@@ -72,7 +76,7 @@
     .paneSelect
       background-color: #eeeeee
       border: 1px solid #cccccc
-      margin: 0.5em
+      margin-bottom: 0.5em
       padding: 0.25em 0.75em
 
       li
@@ -183,16 +187,15 @@
       position: relative
 
     .formSection
-      border-bottom: 1px solid #cccccc
       margin-bottom: 1em
-      padding-bottom: 0.5em
+      padding: 0
 
       &.noFinish
         border-bottom: none
 
       > .uniform.checker, .sectionSelect
         display: none
-        margin-left: -0.5em
+        margin-right: 0.4em
         .ie7 &
           left: 1.2em
           position: absolute
@@ -201,11 +204,12 @@
         display: inline-block
 
       .formHeader
+        color: $sidebar_text_color
         display: inline-block
         font-size: 1.2em
         font-weight: bold
         margin-bottom: 0.3em
-        margin-left: -0.5em
+        margin-left: 0
         padding-left: 0
         &.hide
           display: none
@@ -231,18 +235,41 @@
         &.error .sectionDisabledMessage
           color: red
 
+      .sectionContent
+        background-color: #fff
+        border: 1px solid $sidebar_chrome_border_color
+        @include border-radius(0.3em)
+        margin-top: 0.3em
+        padding: 1px
+          bottom: 0.3em
+
+      // custom content is wrappen in a formSectionInner,
+         but shouldn't be styled that way.
+      &.custom > .sectionContent
+        background-color: transparent
+        border: none
+        margin: 0
+        padding: 0
+
       .line
         margin: 0.5em 0
 
         label
-          margin-right: 0.25em
+          background-position: left 5px
+          color: $sidebar_text_color
+          font-size: 1.1em
+          font-weight: bold
+          margin:
+            left: 0.7em
+            right: 1em
+          padding-top: 0.2em
           width: 6.4em
 
         textarea, input[type="text"]
           width: 12.9em
 
         select
-          width: 13.5em
+          width: 13.7em
 
         input[type="radio"], .uniform.radio
           margin-right: 0.5em
@@ -311,11 +338,7 @@
           &.columnSelect select
             width: 9.4em
 
-        $group_border_color: #cccccc
-
         &.radioGroup, &.group
-          border: 1px $group_border_color solid
-          margin-left: -0.75em
           padding-left: 0.65em
 
         &.group
@@ -351,10 +374,17 @@
             padding-left: 0
 
         &.repeater
-          .addValue.hide
-            display: none
+          .addValue
+            @include sprite-repeater-icons
+            margin-left: 1em
+            &.hide
+              display: none
+            .icon
+              float: left
+              margin-right: 0.4em
 
           .line
+            margin: 0
             position: relative
             .ie7 &
               float: none
@@ -363,17 +393,23 @@
               position: absolute
 
             .removeLink
-              @include sprite-button-icons
-              background-color: $group_border_color
-              left: -0.75em
+              @include sprite-repeater-icons
+              left: 0.1em
               line-height: 1em
               padding: 0.3em
               position: absolute
-              top: 0.5em
+              top: 0.1em
               z-index: 1
+
             &.group .removeLink
-              left: 0
-              top: 0
+              left: 0.1em
+              top: 0.5em
+
+          > .line
+            border: 1px dashed transparent
+            padding: 0.1em 0 0.3em 0.3em
+            &:hover
+              border-color: $sidebar_chrome_border_color
 
         &.group .removeLink
           left: 0.75em
@@ -397,6 +433,8 @@
       width: 26em
 
     .finishButtons
+      margin-top: 2em
+
       // Once the old app is gone, all these legacy actionButtons styles can go away
       li
         float: left

@@ -222,6 +222,7 @@ class BlistsController < ApplicationController
     end
 
     @admin_panel = false
+    @done_href = @view.href
   end
 
   def new_customization

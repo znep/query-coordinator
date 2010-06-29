@@ -262,7 +262,7 @@ $(function()
             }
             else
             {
-                widgetNS.showDataView();
+                widgetNS.closePane();
                 widgetNS.showToolbar('search');
             }
         });

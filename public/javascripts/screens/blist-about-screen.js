@@ -176,7 +176,7 @@ $(function ()
 
     var customFieldOpts = {triggerButton: $('.editMetadataLink')};
 
-    $('.customFieldEdit').customFieldEdit(customFieldOpts);
+    $('.customFieldEdit, .customFieldAddItem').customFieldEdit(customFieldOpts);
     $('.customFieldAdd').customFieldAdd(customFieldOpts);
 
 });

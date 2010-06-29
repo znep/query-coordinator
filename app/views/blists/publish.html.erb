@@ -1,5 +1,5 @@
 <% content_for :head do %>
-<%- if @admin_panel-%>
+<%- if @admin_panel -%>
   <%= stylesheet_link_merged 'admin-shared' %>
   <%= stylesheet_link_merged 'blists-publish' %>
   <title>Administration Panel | <%= CurrentDomain.strings.site_title %></title>

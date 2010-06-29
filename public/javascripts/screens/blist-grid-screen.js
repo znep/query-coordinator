@@ -733,7 +733,7 @@ $(function ()
 
     // Metadata editing
     $('.customFieldAdd').customFieldAdd();
-    $('.customFieldEdit').customFieldEdit();
+    $('.customFieldEdit, .customFieldAddItem').customFieldEdit();
 
     blistGridNS.hookUpCreateViewMenu();
 

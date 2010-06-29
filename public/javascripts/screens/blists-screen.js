@@ -484,7 +484,7 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
 
     // Metadata editing
     $('.customFieldAdd').customFieldAdd();
-    $('.customFieldEdit').customFieldEdit();
+    $('.customFieldEdit, .customFieldAddItem').customFieldEdit();
 
     // Creative Commons cascading dropdown
     if ($("#view_licenseId").val() == "CC")

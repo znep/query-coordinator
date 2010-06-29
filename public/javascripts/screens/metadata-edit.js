@@ -231,7 +231,7 @@
         closeButtonSelector: '.formCancelLink',
         editFormSelector: '.editFieldForm',
         submitButtonSelector: '.customFieldSubmitLink',
-        triggerButtonSelector: '*',
+        triggerButtonSelector: '.actionList>*',
         addTriggerSelector: '.customFieldAddHint dl>*',
         addPaneSelector: '.customFieldAdd',
         addHintSelector: '.customFieldAddHint',

@@ -13,6 +13,8 @@
     var TOKEN_CSS = 'color: #dddddd;';
     var LITERAL_CSS = 'color: #ffff44;';
     var ERROR_CSS = 'color: #ff4444;';
+    var TAG_CSS = 'color: #00ffff;';
+    var ATTR_CSS = 'color: #dddddd';
     var HELLO_HTML = '<div>Welcome to the Socrata console.  Type <span style="font-style: italic;">help</span> for help.</div>'
     var HELP_HTML = '<div>This is the Socrata console.  Syntax is largely JavaScript.  Built-in commands include:</div>' +
         '<div><span style="padding-left: 20px; font-style: italic;">help</span> - print this help</div>' +
@@ -33,8 +35,12 @@
         return text.replace(/</g, '&lt;');
     }
 
+    var escapeAttr = function(text) {
+        return escapeHtml(text).replace(/"/g, '&quot;').replace(/&/, '&apos;');
+    }
+
     var scroll = function() {
-        $inner.attr('scrollTop', $inner.attr("scrollHeight"));
+        $inner.parent().attr('scrollTop', $inner.attr("scrollHeight"));
     }
 
     var print = function(output, $target) {
@@ -48,10 +54,19 @@
     
     var literalPrefix = "<span style='" + LITERAL_CSS + "'>";
     var literalSuffix = "</span>";
+    var tagPrefix = "<span style='" + TAG_CSS + "'>";
+    var tagSuffix = "</span>";
+    var attrPrefix = "<span style='" + ATTR_CSS + "'>";
+    var attrSuffix = "</span>";
 
     var printObject = function(output, $target) {
-        var pretty = [ "<pre style='", FONT_CSS, ' ', TOKEN_CSS, "; margin: 0'>" ];
+        if (output instanceof Document) {
+            printObject(output.documentElement, $target);
+            return;
+        }
 
+        var pretty = [ "<pre style='", FONT_CSS, ' ', TOKEN_CSS, "; margin: 0'>" ];
+        
         var addObject = function(node, prefix) {
             if (node == null || node.constructor == Date) {
                 pretty.push(literalPrefix, '' + node, literalSuffix);
@@ -69,9 +84,45 @@
 
                 case 'object':
                     var prefix2 = prefix + '    ';
-                    if ($.isArray(node)) {
+                    if (node instanceof Node) {
+                        switch (node.nodeType) {
+                            case 1:
+                                pretty.push("&lt;", tagPrefix, node.tagName, tagSuffix);
+                                for (var i = 0; i < node.attributes.length; i++) {
+                                    var attr = node.attributes[i];
+                                    pretty.push(' ', escapeHtml(escapeAttr(attr.name)), '=', literalPrefix, '"', escapeHtml(escapeAttr(attr.value)), '"', literalSuffix);
+                                }
+                                if (!node.childNodes) {
+                                    pretty.push("/>");
+                                    break;
+                                }
+                                pretty.push(">");
+                                var hasChildElements;
+                                for (i = 0; i < node.childNodes.length; i++) {
+                                    var child = node.childNodes[i];
+                                    if (child instanceof Element) {
+                                        hasChildElements = true;
+                                        break;
+                                    }
+                                }
+                                for (i = 0; i < node.childNodes.length; i++) {
+                                    var child = node.childNodes[i];
+                                    if (hasChildElements)
+                                        pretty.push("\n", prefix2);
+                                    addObject(child, prefix2);
+                                }
+                                if (hasChildElements)
+                                    pretty.push("\n", prefix);
+                                pretty.push("&lt;/", tagPrefix, node.tagName, tagSuffix, ">");
+                                break;
+
+                            case 3:
+                                pretty.push(literalPrefix, escapeHtml(escapeHtml(node.textContent.trim())), literalSuffix);
+                                break;
+                        }
+                    } else if ($.isArray(node)) {
                         pretty.push("[");
-                        for (var i = 0; i < node.length; i++) {
+                        for (i = 0; i < node.length; i++) {
                             if (i)
                                 pretty.push(",");
                             pretty.push("\n", prefix2);
@@ -189,7 +240,11 @@
             cache: false,
 
             success: function(result) {
-                printObject(result, $outputNode);
+                try {
+                    printObject(result, $outputNode);
+                } catch (e) {
+                    printError(e + '', $outputNode);
+                }
             },
 
             error: function(xhr) {
@@ -207,6 +262,7 @@
         });
 
         $.ajax(options);
+        scroll();
     }
 
     var get = function(url, params, options) {
@@ -224,7 +280,6 @@
 
     var exit = function() {
         needOutput = false;
-        $window.unbind("resize", syncSize);
         $console.hide();
     }
 
@@ -237,8 +292,8 @@
         });
         */
 
-        $console = $('<div style="background: transparent url(' + defaultRoot + '/images/75pct-black.png); position: fixed; top: 0; left: 0; right: 0; bottom: 0; ' + FONT_CSS + ' overflow: visible; padding: ' + OUTER_PADDING + 'px; z-index: 1000001; color: #00ff00;">' +
-            '<div class="__socrata-console-inner__" style="overflow: auto">' +
+        $console = $('<div style="background: transparent url(' + defaultRoot + '/images/75pct-black.png); position: fixed; top: 0; left: 0; right: 0; bottom: 0; ' + FONT_CSS + ' overflow: auto; padding: ' + OUTER_PADDING + 'px; z-index: 1000001; color: #00ff00;">' +
+            '<div class="__socrata-console-inner__">' +
             '<div class="__socrata-console-output__">' + HELLO_HTML + '</div>' +
             '<table class="__socrata-console-input__" width="100%" style="padding: 0; margin: 0; border: none; border-collapse: collapse"><tr>' +
             '<td style="' + FONT_CSS + '; padding: 0">socrata&gt;&nbsp;</td>' +
@@ -293,14 +348,6 @@
     }
 
     var $window = $(window);
-    var syncSize = function() {
-        var width = $window.width();
-        var height = $window.height();
-        $inner.width(width - OUTER_PADDING);
-        $inner.height(height - OUTER_PADDING);
-        //$inner.css('width', width - 2 * OUTER_PADDING + 'px');
-        //$inner.css('height', height - 2 * OUTER_PADDING + 'px');
-    }
 
     $.socrata = function(options) {
         if (!options)
@@ -313,11 +360,8 @@
             exit();
         else
             $console.show();
-        if ($console.is(':visible')) {
-            $window.resize(syncSize);
-            syncSize();
+        if ($console.is(':visible'))
             $input.focus();
-        }
     }
     
     $.socrata.exec = function(code) {

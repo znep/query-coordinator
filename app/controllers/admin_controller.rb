@@ -268,7 +268,10 @@ class AdminController < ApplicationController
   end
 
   def new_customization
-    @widget_customizations = WidgetCustomization.find.select { |w| !w.hidden }
+    @widget_customizations = WidgetCustomization.find.select do |w|
+      !w.hidden && w.customization[:version] == 1
+    end
+
     example_view = find_example_view()
     @return_to = "/admin/sdp/#{example_view.id}"
     respond_to do |format|

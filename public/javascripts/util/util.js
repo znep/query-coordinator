@@ -255,12 +255,19 @@ $.renderTemplate = function(template, data, directive)
     var $templateCopy = $('#templates > .' + template)
         .clone();
 
-    // pure needs a wrapping element
-    $templateCopy.appendTo($('<div/>'));
+    if (_.isUndefined(data))
+    {
+        return $templateCopy.children();
+    }
+    else
+    {
+        // pure needs a wrapping element
+        $templateCopy.appendTo($('<div/>'));
 
-    return $templateCopy
-        .render(data, directive)
-        .children();
+        return $templateCopy
+            .render(data, directive)
+            .children();
+    }
 };
 
 $.compileTemplate = function(template, directive)

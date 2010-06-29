@@ -1,10 +1,12 @@
 <div class="feedList">
   <div class="feed">
+    <a href="#post" class="button feedNewCommentButton">Add Comment</a>
     <ul class="feedList"></ul>
+    <a href="#showAll" class="feedMoreItemsLink"></a>
   </div>
 </div>
 <ul class="feedItem">
-  <li>
+  <li class="feedItem">
     <div class="feedCommon">
       <span class="icon"></span>
       <a href="#" class="feedActor"></a>
@@ -22,8 +24,8 @@
     <li class="actionInappropriate"><a class="commentInappropriateLink" href="#inappropriate">Inappropriate</a></li>
     <li class="rateDown"><a class="icon commentRateDownLink" href="#rateDown" title="Rate this comment down"></a></li>
     <li class="rateUp"><a class="icon commentRateUpLink" href="#rateUp" title="Rate this comment up"></a></li>
-    <li class="negativeRatings"></li>
-    <li class="positiveRatings"></li>
+    <li class="downRatings"></li>
+    <li class="upRatings"></li>
   </ul>
 </div>
 <div class="feedItem_reply">
@@ -31,8 +33,8 @@
     <li class="actionInappropriate"><a class="commentInappropriateLink" href="#inappropriate">Inappropriate</a></li>
     <li class="rateDown"><a class="icon commentRateDownLink" href="#rateDown" title="Rate this comment down"></a></li>
     <li class="rateUp"><a class="icon commentRateUpLink" href="#rateUp" title="Rate this comment up"></a></li>
-    <li class="negativeRatings"></li>
-    <li class="positiveRatings"></li>
+    <li class="downRatings"></li>
+    <li class="upRatings"></li>
   </ul>
 </div>
 <div class="feedItem_view">
@@ -40,5 +42,14 @@
     <span class="icon"></span>
     <a class="viewName" href="#"></a>
     <div class="viewDescription"></div>
+  </div>
+</div>
+<div class="feedItem_newComment">
+  <div class="newCommentForm">
+    <label for="newCommentBody">New Comment:</label>
+    <textarea name="newCommentBody" id="newCommentBody"></textarea>
+    <span class="error"></span>
+    <a class="button postNewCommentButton" href="#post">Post</a>
+    <a class="button cancelNewCommentButton" href="#cancel">Cancel</a>
   </div>
 </div>

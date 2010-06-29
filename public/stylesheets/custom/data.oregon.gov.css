@@ -1,0 +1,126 @@
+#mainLogo {
+  top: 0;
+  left: 0;
+}
+#header {
+    background-image: none;
+    background-color: #600709;
+    height: 77px; 
+    padding-bottom: 0;
+    margin-bottom: 0.5em;
+}
+
+#header .userNav li a
+{
+    color: #fff;
+    font-size: 1.1em;
+}
+
+.bodyInterior {
+  border: none;
+}
+
+.oregonHeaderOuter {
+    margin-bottom: 1em;
+}
+
+.oregonHeaderContainer {
+    background-color: #fff;
+    padding-left: 1em;
+}
+
+.leftColumn {
+    float: left;
+    width: 55%;
+}
+
+.dataOregonLogo {
+    background: url(/stylesheets/images/domains/data.oregon.gov/data.oregon.gov.png) no-repeat;
+    height: 130px;
+    width: 513px;
+}
+
+.oregonDeveloperLogo {
+    background: url(/stylesheets/images/domains/data.oregon.gov/oregon.splash.png) no-repeat;
+    height: 162px;
+    width: 383px;
+    margin-bottom: 1em;
+}
+
+.leftSplashIntro,
+.developerSplash {
+    font-size: 1.5em;
+}
+
+.leftSplashIntro {
+    margin-top: 1em;
+}
+
+.developerSplash {
+    margin-left: 60%;
+}
+
+.pageBlockHeaderContent
+{
+    clear: none;
+}
+
+.pageBlockHeaderContent .pageBlockHeaderSide
+{
+    margin-top: 6em;
+}
+
+body.home #mainNav li.home, body.home #mainNav li.home a span, body.discover #mainNav li.discover a span, body.community #mainNav li.community a span, body.discover #mainNav li.discover, #mainNav ul.subNav li: hover, #mainNav ul.subNav li:hover a span, body.home #mainNav li.home .subNav li:hover, body.home #mainNav li.home .subNav li:hover a span {
+  background: none;
+}
+
+#mainNav li, #mainNav li a span {
+  background: none;
+}
+
+#mainNav li
+{
+    width: 13em;
+}
+
+#mainNav li.home .subNav li, #mainNav li.home .subNav li a span, body.home #mainNav li.home .subNav li, body.home #mainNav li.home .subNav li a span,
+#mainNav li.home .subnav li.last:hover
+{
+  background-image: none;
+  background-color: #600709;
+}
+
+#mainNav {
+  width: auto;
+  margin: 0;
+}
+
+#mainNav ul {
+  position: absolute;
+  top: 55px;
+  right: 1.2em;
+  z-index: 1000;
+}
+
+#mainNav a {
+  color: #ff;
+  cursor: pointer;
+}
+
+#mainNav ul.subNav {
+  top: auto;
+  background: #8ba7b5;
+  margin-left: 6px;
+  padding-top: 2px;
+  padding-bottom: 4px;
+}
+
+body.home #mainNav li.home,
+body.home #mainNav li.home a span,
+body.discover #mainNav li.discover a span,
+body.community #mainNav li.community a span,
+body.discover #mainNav li.discover,
+body.home #mainNav li.home .subNav li.last,
+#mainNav li.home .subnav li.last {
+  background: none;
+}

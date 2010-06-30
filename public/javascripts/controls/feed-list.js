@@ -318,7 +318,7 @@
                     else if ($this.is('.commentReplyLink') &&
                         ($this.closest('.feedItem').children('.newCommentForm').length === 0))
                     {
-                        $this.closest('.feedItem').find('>.feedChildren').before($.renderTemplate(
+                        $this.closest('.feedItem').children('.feedChildren').before($.renderTemplate(
                             'feedItem_newComment', { viewId: targetCommentData.viewId },
                             { '.postNewCommentButton@data-viewId': 'viewId' }))
                         $this.closest('.feedItem').find('#newCommentBody').focus();

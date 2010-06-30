@@ -29,9 +29,13 @@
         finishBlock: {
             buttons: [{text: 'Print', value: true, isDefault: true}, $.gridSidebar.buttons.cancel]
         },
-        finishCallback: function(sidebarObj, data, $pane)
+        finishCallback: function(sidebarObj, data, $pane, value)
         {
-            $pane.find('.printForm').closest('form').submit();
+            if (value === true)
+            {
+                $pane.find('.printForm').closest('form').submit();
+            }
+
             sidebarObj.finishProcessing();
             sidebarObj.hide();
         }

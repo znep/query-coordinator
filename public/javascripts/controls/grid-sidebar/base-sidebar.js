@@ -1984,11 +1984,6 @@
 
         addWizards(sidebarObj, $pane, config);
 
-        if ($pane.find('.finishButtons li').length < 1)
-        {
-            $pane.find('.formSection:last').addClass('noFinish');
-        }
-
         // Once we've hooked up everything standard, render any custom content.
         _.each(customSections, function(cs, uid)
         {

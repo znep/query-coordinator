@@ -24,8 +24,8 @@
     margin-bottom: 1em;
 }
 
-.ie7 .leftColumn,
-.ie7 .developerSplash {
+.leftColumn,
+.developerSplash {
     padding-bottom: 0.5em;
 }
 

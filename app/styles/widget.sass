@@ -2,7 +2,7 @@ html, body
   height: 100%
   overflow: hidden
 
-a.button
+.widgetWrapper a.button
   @include rounded-ends
   @include gradient_buttons_active_background
   @include sprite-button-icons
@@ -11,11 +11,13 @@ a.button
   color: $color_buttons_active_text
   display: inline-block
   font-size: 1.1em
+  font-weight: normal
   height: 1.9em
   line-height: 2em
   margin: 0.5em
   padding: 0 1.35em
   text-transform: uppercase
+  text-shadow: none
   &:hover
     @include gradient_buttons_hover_background
     border: 1px solid $color_buttons_hover_border

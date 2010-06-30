@@ -1,5 +1,5 @@
 <% content_for :head do %>
-<%- if @admin_panel-%>
+<%- if @admin_panel -%>
   <%= stylesheet_link_merged 'admin-shared' %>
   <%= stylesheet_link_merged 'blists-publish' %>
   <title>Administration Panel | <%= CurrentDomain.strings.site_title %></title>
@@ -65,7 +65,6 @@
           </p>
         </div>
 <%- end -%>
-<%- @done_href = @done_link.present? ? @done_link : @view.href -%>
         <div class="unsavedChangesBar">
           <ul class="actionButtons clearfix">
             <li>
@@ -497,10 +496,10 @@
                   <div class="itemContent">
                     <span class="textContent">
                       <%= radio_button_tag("customization[frame][orientation]", "downwards",
-                          @customization[:frame][:orientation]) %>
+                          @customization[:frame][:orientation] == 'downwards') %>
                       <%= label_tag("customization_frame_orientation_downwards", "Downwards") %>
                       <%= radio_button_tag("customization[frame][orientation]", "upwards",
-                          !@customization[:frame][:orientation]) %>
+                          @customization[:frame][:orientation]) == 'upwards' %>
                       <%= label_tag("customization_frame_orientation_upwards", "Upwards") %>
                     </span>
                   </div>

@@ -15,8 +15,8 @@ $sidebar_text_color: #666
 
 
 #gridSidebar
-  background-color: #f7f7f7
-  border-left: 1px solid #cecece
+  background-color: $sidebar_bg_color
+  border-left: 1px solid $sidebar_chrome_border_color
   display: none
   overflow: hidden
   position: absolute
@@ -190,9 +190,6 @@ $sidebar_text_color: #666
       margin-bottom: 1em
       padding: 0
 
-      &.noFinish
-        border-bottom: none
-
       > .uniform.checker, .sectionSelect
         display: none
         margin-right: 0.4em
@@ -317,8 +314,8 @@ $sidebar_text_color: #666
 
         &.color
           position: absolute
-          right: 0
-          top: 0
+          right: 0.2em
+          top: 0.2em
 
           label
             display: none
@@ -336,7 +333,7 @@ $sidebar_text_color: #666
             width: 9.9em
 
           &.columnSelect select
-            width: 9.4em
+            width: 10.1em
 
         &.radioGroup, &.group
           padding-left: 0.65em
@@ -384,10 +381,10 @@ $sidebar_text_color: #666
               margin-right: 0.4em
 
           .line
+            display: block
+            float: none
             margin: 0
             position: relative
-            .ie7 &
-              float: none
 
             &.color
               position: absolute
@@ -410,6 +407,9 @@ $sidebar_text_color: #666
             padding: 0.1em 0 0.3em 0.3em
             &:hover
               border-color: $sidebar_chrome_border_color
+
+            &.color:hover
+              border-color: transparent
 
         &.group .removeLink
           left: 0.75em

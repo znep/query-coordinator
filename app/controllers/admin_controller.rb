@@ -223,7 +223,7 @@ class AdminController < ApplicationController
       return
     end
 
-    @done_link = url_for(:controller => 'admin', :action => 'sdp_index')
+    @done_href = url_for(:controller => 'admin', :action => 'sdp_index')
     @hide_template_select = true
     @admin_panel = true
     render 'blists/publish'

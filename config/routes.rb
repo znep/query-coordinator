@@ -161,7 +161,10 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'datasets_alt', :controller => 'blists', :action => 'alt_index'
 
   # New dataset page
-  map.resources :datasets, :as => 'datasets_new'
+  map.resources :datasets, :as => 'datasets_new',
+    :member => {
+      :widget_preview => :get
+    }
 
   map.connect 'profile/:profile_name/:id', :controller => 'profile',
      :action => 'show', :conditions => { :method => :get },

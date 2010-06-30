@@ -35,9 +35,17 @@
                 {
                     return;
                 }
+
+                // grab current variation if necessary
+                var variationString = '';
+                if (!_.isUndefined(blist.widget))
+                {
+                    variationString = '&variation=' + blist.widget.customizationId;
+                }
+
                 window.open(
                     $link.attr('href') + "?width=" + width +
-                        "&height=" + height,
+                        "&height=" + height + variationString,
                     "Preview");
             });
 

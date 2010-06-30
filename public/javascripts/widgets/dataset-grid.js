@@ -994,7 +994,7 @@
             case 'row-tag':
                 var row = model.getByID($menu.attr('id').split('_')[1]);
                 $menu.find('li.tags .editContainer input')
-                    .val(row.tags.join(', '));
+                    .val(row.tags ? row.tags.join(', ') : '');
 
                 $link.closest('.rowMenu').toggleClass('tagsShown');
                 $menu.find('li.tags .editContainer input').focus().select();

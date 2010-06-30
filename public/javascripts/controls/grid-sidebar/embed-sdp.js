@@ -1,5 +1,7 @@
 (function($)
 {
+    var $embedForm;
+
     var config =
     {
         name: 'embed.embedSdp',
@@ -7,6 +9,7 @@
         title: 'Social Data Player',
         subtitle: 'The Social Data Player enables you to publish this dataset on the Internet at large',
         disabledSubtitle: 'This view must be public before it can be published',
+        noReset: true,
         sections: [
             {
                 customContent: {
@@ -15,6 +18,7 @@
                     data: {},
                     callback: function($formElem)
                     {
+                        $embedForm = $formElem;
                         $formElem.embedForm();
                     }
                 }
@@ -26,7 +30,27 @@
                     return _.any(grant.flags, function(flag) { return flag == 'public'; });
                 }),
         finishBlock: {
-            buttons: [$.gridSidebar.buttons.done, $.gridSidebar.buttons.cancel]
+            buttons: [$.gridSidebar.buttons.done,
+                      { text: 'Preview', value: 'preview', isDefault: false }]
+        },
+        finishCallback: function(sidebarObj, data, $pane, value)
+        {
+            sidebarObj.finishProcessing();
+
+            if (value == 'preview')
+            {
+                var width = $embedForm.find('#embed_width').val();
+                var height = $embedForm.find('#embed_height').val();
+                var customizationId = $embedForm.find('#embed_customization').val() || '';
+
+                window.open("/datasets_new/" + blist.display.view.id +
+                    "/widget_preview?width=" + width + "&height=" + height +
+                    "&customization_id=" + customizationId, "Preview");
+            }
+            else
+            {
+                sidebarObj.hide();
+            }
         }
     };
 

@@ -1,6 +1,6 @@
 class DatasetsController < ApplicationController
   include DatasetsHelper
-  skip_before_filter :require_user, :only => [:show]
+  skip_before_filter :require_user, :only => [:show, :widget_preview]
   layout 'dataset_v2'
 
   def show
@@ -8,27 +8,8 @@ class DatasetsController < ApplicationController
       return render_404
     end
 
-    begin
-      @view = View.find(params[:id])
-    rescue CoreServer::ResourceNotFound
-      flash.now[:error] = 'This ' + I18n.t(:blist_name).downcase +
-            ' or view cannot be found, or has been deleted.'
-            return (render 'shared/error', :status => :not_found)
-    rescue CoreServer::CoreServerError => e
-      if e.error_code == 'authentication_required'
-        return require_user(true)
-      elsif e.error_code == 'permission_denied'
-        flash.now[:error] = e.error_message
-        return (render 'shared/error', :status => :forbidden)
-      else
-        flash.now[:error] = e.error_message
-        return (render 'shared/error', :status => :internal_server_error)
-      end
-    end
-
-    if (@view.is_form? ? !@view.can_add : !@view.can_read())
-      return require_user(true)
-    end
+    @view = get_view(params[:id])
+    return if @view.nil?
 
     if !current_user
       @user_session = UserSession.new
@@ -47,5 +28,47 @@ class DatasetsController < ApplicationController
 
     @view.register_opening
 
+  end
+
+  def widget_preview
+    @view = get_view(params[:id])
+    return if @view.nil?
+
+    @customization_id = params[:customization_id]
+    @customization_id = CurrentDomain.default_widget_customization_id if @customization_id.blank?
+
+    render :layout => 'plain'
+  end
+
+protected
+  def get_view(id)
+    begin
+      view = View.find(id)
+    rescue CoreServer::ResourceNotFound
+      flash.now[:error] = 'This ' + I18n.t(:blist_name).downcase +
+            ' or view cannot be found, or has been deleted.'
+      render 'shared/error', :status => :not_found
+      return nil
+    rescue CoreServer::CoreServerError => e
+      if e.error_code == 'authentication_required'
+        require_user(true)
+        return nil
+      elsif e.error_code == 'permission_denied'
+        flash.now[:error] = e.error_message
+        render 'shared/error', :status => :forbidden
+        return nil
+      else
+        flash.now[:error] = e.error_message
+        render 'shared/error', :status => :internal_server_error
+        return nil
+      end
+    end
+
+    if (view.is_form? ? !view.can_add : !view.can_read())
+      require_user(true)
+      return nil
+    end
+
+    return view
   end
 end

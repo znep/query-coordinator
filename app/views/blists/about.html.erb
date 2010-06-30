@@ -226,7 +226,7 @@
                     <dt><%= h(field[0]) %></dt>
                     <dd> 
                       <div class="textDisplay">
-                        <span class="textContent"><%= h(field[1]) %></span>
+                        <span class="textContent"><%= raw auto_link(h(field[1]), :html => { :rel => 'nofollow' }) %></span>
                       </div>
                       <div class="editFieldForm hide">
                         <%= form_tag("/api/views/#{@view.id}") %>
@@ -365,7 +365,7 @@
               end -%>
     	    <%= menu_tag({'id' => 'downloadMenu', 'class' => 'noicon', 'items' => menu_items}) %>
         </li>
-          <%- if !@view.is_blobby? -%>
+          <%- if @view.is_tabular? -%>
             <li>
               <a href="<%= "/views/#{@view.id}/rows.rss" %>" class="socialActionLink" title="Stay up to date with this dataset with RSS" id="rssLink">
                 <span class="linkIcon">Subscribe to RSS</span>

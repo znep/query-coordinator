@@ -284,7 +284,7 @@ $.compileTemplate = function(template, directive)
     {
         // strip off opening and closing tags of toplevel element
         // to match behavior of $.renderTemplate
-        return compiledDirective(data).replace(/^<[^<>]+>/i, '').replace(/<\/[^<>]+>$/i, '');
+        return compiledDirective(data).replace(/^\s*<[^<>]+>/i, '').replace(/<\/[^<>]+>\s*$/i, '');
     };
 };
 

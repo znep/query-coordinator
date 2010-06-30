@@ -30,8 +30,8 @@
 
 <div class="customFieldAdd hide">
   <%- available_fields.each do |field| -%>
-    <dl class="<%= dl_class %> actionList">
-      <div class="customFieldAddItem customFieldEdit">
+    <div class="customFieldAddItem">
+      <dl class="<%= dl_class %> actionList">
         <dt><%= h(field) %></dt>
         <dd>
           <div class="textDisplay">
@@ -52,8 +52,8 @@
             </form>
           </div>
         </dd>
-      </div>
-    </dl>
+      </dl>
+    </div>
   <%- end -%>
 </div>
 <%- end -%>

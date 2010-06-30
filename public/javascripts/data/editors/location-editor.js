@@ -38,7 +38,10 @@
     {
         // Handle invalid values
         if (typeof editObj.originalValue == 'string')
-        { return editObj.originalValue.split(',')[1].trim(); }
+        {
+            var p = editObj.originalValue.split(',');
+            return p.length > 1 ? p[1].trim() : '';
+        }
 
         return (editObj.originalValue || {}).longitude || '';
     };

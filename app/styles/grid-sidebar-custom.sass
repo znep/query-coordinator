@@ -191,6 +191,36 @@
 
   #gridSidebar_filterDataset.sidebarPane
     .formSection .line.custom
+      .editorWrapper.stars
+        margin-left: -11px
+
+      .customWrapper.twoEditors
+        .joiner
+          float: left
+          font-size: 1.2em
+          margin-right: 0.2em
+          &.stars
+            margin-left: -2em
+
+        .editorWrapper
+          float: left
+
+          textarea, input[type="text"]
+            margin-right: 0.2em
+            width: 5.5em
+
+          .blist-combo
+            margin:
+              left: 0
+              right: 0.2em
+            width: 5.4em
+
+          &:first-child .blist-combo
+            margin-left: -2px
+
+          &.stars
+            float: none
+
       .blist-table-editor
         border: none
         font-size: 1em
@@ -199,6 +229,7 @@
         &.type-phone
           overflow: show
           input.number
+            margin-bottom: 0.3em
             padding: 0.2em
 
         &.type-url

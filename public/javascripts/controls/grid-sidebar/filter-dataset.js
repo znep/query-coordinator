@@ -44,9 +44,28 @@
         if (_.include(['tag', 'email', 'html'], col.renderTypeName))
         { col.renderTypeName = 'text'; }
 
-        var $editor = $.tag({tagName: 'div', 'class': 'editorWrapper'});
-        $editor.blistEditor({row: null, column: col, value: curValue});
+        var firstVal = curValue;
+        if (_.isArray(curValue)) { firstVal = curValue[0]; }
+
+        var $editor = $.tag({tagName: 'div',
+            'class': ['editorWrapper', col.renderTypeName]});
+        $editor.blistEditor({row: null, column: col, value: firstVal});
         $field.append($editor);
+
+        if (op == 'BETWEEN')
+        {
+            $field.addClass('twoEditors');
+            $field.append($.tag({tagName: 'span',
+                'class': ['joiner', col.renderTypeName], contents: '&amp;'}));
+
+            var secondVal;
+            if (_.isArray(curValue)) { secondVal = curValue[1]; }
+            $editor = $.tag({tagName: 'div',
+                'class': ['editorWrapper', col.renderTypeName]});
+            $editor.blistEditor({row: null, column: col, value: secondVal});
+            $field.append($editor);
+        }
+        else { $field.removeClass('twoEditors'); }
 
         if (!$.isBlank($.uniform))
         { $field.find('select, :checkbox, :radio, :file').uniform(); }
@@ -56,13 +75,31 @@
 
     var filterEditorValue = function(sidebarObj, $field)
     {
-        return $field.find('.editorWrapper').blistEditor().currentValue();
+        var $editor = $field.find('.editorWrapper');
+        if ($editor.length < 1) { return null; }
+
+        var vals = [];
+        $editor.each(function()
+        {
+            var $t = $(this);
+            var v = $t.blistEditor().currentValue();
+            if (_.isNull(v) &&
+                $t.blistEditor().column.renderTypeName == 'checkbox')
+            { v = '0'; }
+
+            if (!$.isBlank(v)) { vals.push(v); }
+        });
+
+        if (vals.length < $editor.length) { return null; }
+        if (vals.length == 1) { vals = vals[0]; }
+
+        return vals;
     };
 
     var filterEditorCleanup = function(sidebarObj, $field)
     {
         var $editor = $field.find('.editorWrapper');
-        if ($editor.length > 0) { $editor.blistEditor().finishEdit(); }
+        $editor.each(function() { $(this).blistEditor().finishEdit(); });
     };
 
     var configName = 'filter.filterDataset';
@@ -73,14 +110,13 @@
         subtitle: 'You can filter a view down to certain rows; ' +
             'group rows together and summarize data with a roll-up; ' +
             'and sort one or more columns',
-        dataSource: blist.display.view,
         sections: [
             // Filter section
             {
                 title: 'Filter', name: 'filterFilter', type: 'selectable',
                 fields: [
                     {type: 'select', text: 'Match', prompt: null,
-                        name: 'query.filterCondition.type',
+                        name: 'query.filterCondition.value',
                         options: [
                             {text: 'all conditions', value: 'AND'},
                             {text: 'any conditions', value: 'OR'}
@@ -186,6 +222,91 @@
         }
     };
 
+    config.dataSource = function()
+    {
+        var view = $.extend(true, {}, blist.display.view);
+
+        view.query = view.query || {};
+        view.query.filterCondition = view.query.filterCondition || {};
+        view.query.filterCondition.children =
+            view.query.filterCondition.children || [];
+
+        // We may have multi-part column conditions that are split apart
+        // in the filterCondition.  Assume these are adjacent in the children
+        // array, and attempt to put them back together
+        var i = 0;
+        while (i < view.query.filterCondition.children.length - 1)
+        {
+            var curItem = view.query.filterCondition.children[i];
+            var nextItem = view.query.filterCondition.children[i+1];
+            if (curItem.type != nextItem.type ||
+                    curItem.value != nextItem.value)
+            { i++; continue; }
+
+            var curCol = _.detect(curItem.children, function(c)
+                    { return c.type == 'column' && !$.isBlank(c.value); });
+            var nextCol = _.detect(nextItem.children, function(c)
+                    { return c.type == 'column' && !$.isBlank(c.value); });
+            if ($.isBlank(curCol) || $.isBlank(nextCol) ||
+                    curCol.columnId != nextCol.columnId ||
+                    curCol.value == nextCol.value)
+            { i++; continue; }
+
+            // We (probably) found a match!
+            var curVal = _.detect(curItem.children, function(c)
+                    { return c.type == 'literal'; });
+            var nextVal = _.detect(nextItem.children, function(c)
+                    { return c.type == 'literal'; });
+            if ($.isBlank(curVal) || $.isBlank(nextVal))
+            { i++; continue; }
+
+            if (!$.isPlainObject(curVal.value))
+            {
+                var o = {};
+                o[curCol.value] = curVal.value;
+                curVal.value = o;
+            }
+
+            if (_.any(curVal.value, function(v, k)
+                        { return k == nextCol.value; }))
+            { i++; continue; }
+
+            // Now we found a match for real, and we have the object set up
+            curVal.value[nextCol.value] = nextVal.value;
+            view.query.filterCondition.children.splice(i+1, 1);
+        }
+
+        _.each(view.query.filterCondition.children, function(c)
+        {
+            if (!_.isArray(c.children)) { return; }
+
+            var colObj = _.detect(c.children, function(cc)
+            { return cc.type == 'column'; });
+            var valObjs = _.select(c.children, function(cc)
+            { return cc.type == 'literal'; });
+
+            _.each(valObjs, function(v)
+            {
+                if (!$.isBlank(colObj.value) && !$.isBlank(v) &&
+                    !$.isPlainObject(v.value))
+                {
+                    var o = {};
+                    o[colObj.value] = v.value;
+                    v.value = o;
+                }
+            });
+
+            if (valObjs.length > 1)
+            {
+                valObjs = _.map(valObjs, function(v)
+                { return v.value; });
+                c.children = [colObj, {type: 'literal', value: valObjs}];
+            }
+        });
+
+        return view;
+    };
+
     config.finishCallback = function(sidebarObj, data, $pane, value)
     {
         if (!sidebarObj.baseFormHandler($pane, value)) { return; }
@@ -198,6 +319,49 @@
         { ob.expression.type = 'column'; });
         _.each(filterView.query.groupBys || [], function(gb)
         { gb.type = 'column'; });
+
+        if (!$.isBlank(filterView.query.filterCondition))
+        {
+            filterView.query.filterCondition.type = 'operator';
+            var newChildren = [];
+            _.each(filterView.query.filterCondition.children || [], function(c)
+            {
+                c.type = 'operator';
+                var splitVal;
+                var colObj;
+                var extraLiterals = [];
+                _.each(c.children || [], function(cc)
+                {
+                    cc.type = !$.isBlank(cc.columnId) ? 'column' : 'literal';
+                    if (cc.type == 'column')
+                    { colObj = cc; }
+                    else if ($.isPlainObject(cc.value))
+                    { splitVal = cc.value; }
+                    else if (_.isArray(cc.value))
+                    {
+                        for (var i = 1; i < cc.value.length; i++)
+                        {
+                            extraLiterals.push({type: 'literal',
+                                value: cc.value[i]});
+                        }
+                        cc.value = cc.value[0];
+                    }
+                });
+                c.children = c.children.concat(extraLiterals);
+
+                if ($.isBlank(splitVal)) { newChildren.push(c); }
+                else
+                {
+                    _.each(splitVal, function(v, k)
+                    {
+                        newChildren.push({type: 'operator', value: c.value,
+                            children: [$.extend({value: k}, colObj),
+                                {type: 'literal', value: v}]});
+                    });
+                }
+            });
+            filterView.query.filterCondition.children = newChildren;
+        }
 
         if ((filterView.columns || []).length > 0 &&
             filterView.query.groupBys.length < 1)
@@ -222,6 +386,8 @@
         var dsGrid = sidebarObj.$grid().datasetGrid();
         dsGrid.groupAggregate(filterView.query.groupBys,
             filterView.columns, false, null, true, null, null, true);
+
+        dsGrid.updateFilter(filterView.query.filterCondition, false, true);
 
         model.getTempView($.extend(true, {}, blist.display.view));
 

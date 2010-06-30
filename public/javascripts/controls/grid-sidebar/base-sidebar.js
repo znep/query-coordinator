@@ -47,6 +47,9 @@
         + noReset: boolean, if true form elements will not be reset on close
         + priority: Optional value for sorting a sub-pane within a parent;
             sorted ascending (lower values first)
+        + dataSource: object or function that returns an object that will be
+            used to fill in the pane on render if no data is passed in to
+            addPane
         + sections: array of sections for entering data
         [
           {
@@ -412,9 +415,7 @@
 
                 if (!$.isBlank(sidebarObj._$panes[config.name]))
                 {
-                    if (sidebarObj.$currentPane() ==
-                        sidebarObj._$panes[config.name])
-                    { hideCurrentPane(sidebarObj); }
+                    clearWizard(sidebarObj);
                     sidebarObj._$panes[config.name]
                         .find('.line.custom').each(function()
                         { cleanLine(sidebarObj, $(this)); });
@@ -750,30 +751,9 @@
                     return ret;
                 };
 
-                // Loop through all the inputs & sliders in dom order.
-                // Filter down to only the visible ones that are not
-                // .prompt (meaning not filled in), .sectionSelect (top-level
-                // inputs used for flow control), or in .radioLine label
-                // (these are in a radioGroup, and will be handled by getting
-                // the selected radio button in the group and manually getting
-                // the associated input)
-                $pane.find('form :input, form .colorControl, form .customWrapper')
-                    .filter(':visible:not(' +
-                        '.prompt, .sectionSelect, .radioLine label *, ' +
-                        '.customWrapper *)')
-                    .each(function()
+                var getInputValue = function($input)
                 {
-                    var $input = $(this);
-
-                    // If this is a radio input, then either skip it if not
-                    // selected; or find the input associated with it
-                    if ($input.is('.radioLine :radio'))
-                    {
-                        if (!$input.is(':checked')) { return; }
-                        $input = $input.closest('.radioLine')
-                            .find('label :input:not(.prompt)');
-                        if ($input.length < 1) { return; }
-                    }
+                    if ($input.is('.prompt')) { return null; }
 
                     if ($input.is('.colorControl'))
                     { $input = $input.next(':input'); }
@@ -809,7 +789,35 @@
                         if (_.isFunction(customValue))
                         { value = customValue(sidebarObj, $input); }
                     }
+                    return value;
+                };
 
+                // Loop through all the inputs & sliders in dom order.
+                // Filter down to only the visible ones that are not
+                // .prompt (meaning not filled in), .sectionSelect (top-level
+                // inputs used for flow control), or in .radioLine label
+                // (these are in a radioGroup, and will be handled by getting
+                // the selected radio button in the group and manually getting
+                // the associated input)
+                $pane.find('form :input, form .colorControl, form .customWrapper')
+                    .filter(':visible:not(' +
+                        '.prompt, .sectionSelect, .radioLine label *, ' +
+                        '.customWrapper *)')
+                    .each(function()
+                {
+                    var $input = $(this);
+
+                    // If this is a radio input, then either skip it if not
+                    // selected; or find the input associated with it
+                    if ($input.is('.radioLine :radio'))
+                    {
+                        if (!$input.is(':checked')) { return; }
+                        $input = $input.closest('.radioLine')
+                            .find('label :input:not(.prompt)');
+                        if ($input.length < 1) { return; }
+                    }
+
+                    var value = getInputValue($input);
 
                     var inputName = $input.attr('name');
 
@@ -817,19 +825,14 @@
                     // fields failed
                     if ($input.is('.group *'))
                     {
-                        if ($.isBlank($input.attr('data-isrequired')))
+                        var failed = false;
+                        $input.closest('.inputBlock')
+                            .find('[data-isrequired]').each(function()
                         {
-                            var failed = false;
-                            $input.closest('.inputBlock')
-                                .find(':input[data-isrequired]').each(function()
-                            {
-                                var $this = $(this);
-                                failed = failed || $this.is('.prompt') ||
-                                    $.isBlank($this.value()) ||
-                                    $this.value() === false;
-                            });
-                            if (failed) { return; }
-                        }
+                            var v = getInputValue($(this));
+                            failed = failed || $.isBlank(v) || v === false;
+                        });
+                        if (failed) { return; }
                     }
 
                     // Start the parent out as top-level results
@@ -917,8 +920,7 @@
                 {
                     var $line = $(this);
                     cleanLine(sidebarObj, $line);
-                    $line.remove();
-                });
+                }).remove();
                 $pane.find('.line.repeater > .line.hide').removeClass('hide');
 
                 $pane.find('.ranWizard').removeClass('ranWizard');
@@ -929,12 +931,18 @@
 
                 var resetInput = function($input)
                 {
-                    var defValue = $input.attr('data-dataValue') ||
-                        $input.attr('data-defaultValue') || null;
+                    var defValue =
+                        JSON.parse($input.attr('data-dataValue') || '""') ||
+                        JSON.parse($input.attr('data-defaultValue') || '""') ||
+                        null;
                     $input.value(defValue);
                     // Fire events to make sure uniform controls are updated,
                     // and text prompts are reset
-                    $input.change().focus().blur();
+                    _.defer(function()
+                    {
+                        $input.change();
+                        if ($input.is('.textPrompt')) { $input.focus().blur(); }
+                    });
                 };
 
                 // First reset everything but radio buttons, because in a
@@ -950,8 +958,16 @@
                     var $slider = $(this);
                     var $input = $slider.next(':input');
                     $slider.slider('value',
-                        parseInt($input.attr('data-dataValue') ||
-                            $input.attr('data-defaultValue') || 0));
+                        parseInt(JSON.parse(
+                                $input.attr('data-dataValue') || '""') ||
+                            JSON.parse($input.attr('data-defaultValue') || '""') ||
+                            0));
+                });
+
+                $pane.find('.line .customWrapper').each(function()
+                {
+                    var $cust = $(this);
+                    _.defer(function() { $cust.trigger('resetToDefault'); });
                 });
 
                 $pane.find('.line :radio').each(function()
@@ -1146,15 +1162,18 @@
             return {id: item.name, name: item.name, title: item.prompt,
                 'class': [ {value: 'required', onlyIf: item.required &&
                     !args.context.inRepeater},
-                        {value: 'textPrompt', onlyIf: !$.isBlank(item.prompt)},
+                        {value: 'textPrompt', onlyIf: !$.isBlank(item.prompt) &&
+                            _.include(['text', 'textarea'], item.type)},
                         item.notequalto, item.extraClass ],
                 'data-origName': item.origName,
                 'data-isRequired': {value: true, onlyIf: item.required},
                 'data-notequalto': {value: '.' + (item.notequalto || '')
                         .split(' ').join(', .'),
                     onlyIf: !$.isBlank(item.notequalto)},
-                'data-defaultValue': item.defaultValue,
-                'data-dataValue': {value: item.dataValue,
+                'data-defaultValue': $.htmlEscape(
+                        JSON.stringify(item.defaultValue || '')),
+                'data-dataValue': {value: $.htmlEscape(
+                        JSON.stringify(item.dataValue || '')),
                     onlyIf: !$.isBlank(item.dataValue)}
             };
         };
@@ -1380,7 +1399,8 @@
                                 'class': {value: 'wizExclude',
                                     onlyIf: opt.type != 'static'},
                                 checked: (curValue || defValue) == opt.name,
-                                'data-defaultValue': defValue == opt.name}),
+                                'data-defaultValue': $.htmlEscape(
+                                    JSON.stringify(defValue == opt.name))}),
                             {tagName: 'label', 'for': id,
                             contents:
                                 renderLine(sidebarObj,
@@ -1461,6 +1481,14 @@
 
     var cleanLine = function(sidebarObj, $line)
     {
+        $line.find('[data-linkedField]').each(function()
+        {
+            var $f = $(this);
+            var $li = $f.data('linkedGroup');
+            if (!$.isBlank($li))
+            { $li.unbind('.linkedField-' + $f.attr('data-linkedField')); }
+        });
+
         $line.find('.customWrapper').each(function()
         {
             var $f = $(this);
@@ -1515,10 +1543,18 @@
         var paneId = sidebarObj.$dom().attr('id') + '_' + config.name;
         var $pane = $.tag({tagName: 'div', id: paneId, 'class': 'sidebarPane'});
         if (config.noReset) { $pane.addClass('noReset'); }
+
+        if ($.isBlank(data))
+        {
+            data = config.dataSource;
+            if (_.isFunction(data))
+            { data = data(); }
+        }
         var rData = {title: config.title, subtitle: config.subtitle,
             sections: config.sections, paneId: paneId,
             finishButtons: (config.finishBlock || {}).buttons,
-            data: data || config.dataSource || {}};
+            data: data || {}};
+
         var sectionOnlyIfs = {};
         var customSections = {};
         var directive = {
@@ -1793,7 +1829,8 @@
             {
                 var $a = $(this);
                 var $i = $a.next(':input');
-                var colors = ($i.attr('data-defaultValue') || '').split(' ');
+                var colors = (JSON.parse($i.attr('data-defaultValue') || '""'))
+                    .split(' ');
                 if (colors.length < 2) { return; }
 
                 var newColor = colors[i % colors.length];
@@ -1921,8 +1958,8 @@
             $container.find('[data-linkedField]').each(function()
             {
                 var $field = $(this);
-                var customField = sidebarObj._customCallbacks[$field
-                    .attr('data-customId')];
+                var custId = $field.attr('data-customId');
+                var customField = sidebarObj._customCallbacks[custId];
                 if (!$.isBlank(customField)) { customField = customField.create; }
 
                 var selOpt = sidebarObj._selectOptions[$field
@@ -1941,12 +1978,14 @@
                     { $li = $field.closest('form').find(ls); }
                     $linkedItems = $linkedItems.add($li);
                 });
+                $field.data('linkedGroup', $linkedItems);
 
 
-                var adjustField = function(curValue)
+                var adjustField = function(curValue, force)
                 {
                     if ($.isBlank(curValue))
-                    { curValue = $field.attr('data-defaultValue'); }
+                    { curValue = JSON.parse(
+                        $field.attr('data-defaultValue') || '""'); }
 
                     var vals = {};
                     $linkedItems.each(function()
@@ -1955,7 +1994,7 @@
                     { vals = _.detect(vals, function() { return true; }); }
 
                     var curVals = $field.data('linkedFieldValues');
-                    if (_.isEqual(curVals, vals)) { return; }
+                    if (!force && _.isEqual(curVals, vals)) { return; }
                     $field.data('linkedFieldValues', vals);
 
                     if (_.isFunction(selOpt))
@@ -1966,9 +2005,9 @@
 
                         _.each(newOpts || [], function(o)
                         {
-                            $field.append($.tag(renderSelectOption(o)));
+                            $field.append($.tag(renderSelectOption(o, curValue)));
                         });
-                        $field.val(curValue || '').change();
+                        $field.change();
                     }
                     else if (_.isFunction(customField))
                     {
@@ -1983,10 +2022,17 @@
                     if (!$.isBlank($.uniform) && !$.isBlank($.uniform.update))
                     { $.uniform.update(); }
                 };
-                var defAdjField = function() { _.defer(adjustField); }
+                var defAdjField = function() { _.defer(adjustField); };
 
-                $linkedItems.change(defAdjField).blur(defAdjField);
-                adjustField($field.attr('data-dataValue'));
+                $linkedItems.bind('change.linkedField-' + custId, defAdjField)
+                    .bind('blur.linkedField-' + custId, defAdjField);
+                $field.bind('resetToDefault', function()
+                    {
+                        adjustField(JSON.parse(
+                                $field.attr('data-dataValue') || '""'),
+                            true);
+                    })
+                    .trigger('resetToDefault');
             });
 
             $container.find(':input').change(function()

@@ -118,6 +118,7 @@ class UserSession
         user = User.parse(response.body)
         create_core_session_credentials(user)
         self.new_session = false
+        cookies['logged_in'] = true
         UserSession.update_current_user(user, core_session)
       end
     end
@@ -168,7 +169,7 @@ class UserSession
 
       # Plumb the cookie from the core server back to the user's browser
       response.get_fields('set-cookie').each do |cookie_header|
-        if match = /^remember_token=([A-Za-z0-9]+)/.match(cookie_header)
+        if match = /\bremember_token=([A-Za-z0-9]+)/.match(cookie_header)
           cookies['remember_token'] = { :value => match[1], :expires => 2.weeks.from_now }
         end
       end

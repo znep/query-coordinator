@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   include SslRequirement
 
   before_filter :hook_auth_controller,  :create_core_server_connection,
-    :adjust_format, :patch_microsoft_office, :require_user, :set_user, :set_meta
+    :adjust_format, :patch_microsoft_office, :sync_logged_in_cookie, :require_user, :set_user, :set_meta
   helper :all # include all helpers, all the time
   helper_method :current_user
   helper_method :current_user_session
@@ -121,6 +121,10 @@ private
   # made by this request
   def create_core_server_connection
     CoreServer::Base.connection = CoreServer::Connection.new(Rails.logger, cookies)
+  end
+
+  def sync_logged_in_cookie
+    cookies.delete(:logged_in) unless current_user
   end
 
   def require_user(force_login = false)

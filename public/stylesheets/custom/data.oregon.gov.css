@@ -24,6 +24,11 @@
     margin-bottom: 1em;
 }
 
+.ie7 .leftColumn,
+.ie7 .developerSplash {
+    padding-bottom: 0.5em;
+}
+
 .oregonHeaderContainer {
     background-color: #fff;
     padding-left: 1em;

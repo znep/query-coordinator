@@ -38,7 +38,7 @@
 
                 // grab current variation if necessary
                 var variationString = '';
-                if (!_.isUndefined(blist.widget))
+                if (!_.isUndefined(blist.widget) && !_.isUndefined(blist.widget.customizationId))
                 {
                     variationString = '&variation=' + blist.widget.customizationId;
                 }

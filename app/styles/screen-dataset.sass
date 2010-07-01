@@ -162,6 +162,9 @@ html, body
           .ie7 &
             z-index: 10 /* needs to be higher than tabs */
 
+          .unsavedView &
+            display: none
+
           .menuButton
             @include toolbar-button
             margin-top: 0
@@ -252,6 +255,7 @@ html, body
     right: 0
   position: relative
   .innerContainer
+    overflow: hidden
     position: relative
 
 // Dataset page-specific grid styles

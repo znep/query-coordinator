@@ -492,8 +492,9 @@
 
                 // The big reveal
                 sidebarObj.$dom().show();
-                sidebarObj.$neighbor().css('margin-right',
-                    sidebarObj.$dom().outerWidth(true) + 'px');
+                var parW = sidebarObj.$dom().parent().innerWidth();
+                sidebarObj.$neighbor().width(parW -
+                    sidebarObj.$dom().outerWidth(true));
 
                 if (isModal)
                 {
@@ -548,7 +549,7 @@
             {
                 var sidebarObj = this;
                 sidebarObj.$dom().hide();
-                sidebarObj.$neighbor().css('margin-right', 0);
+                sidebarObj.$neighbor().css('width', '');
 
                 hideCurrentPane(sidebarObj);
 
@@ -973,7 +974,7 @@
                 $pane.find('.line :radio').each(function()
                 { resetInput($(this)); });
 
-                if (!$.isBlank($.uniform)) { $.uniform.update(); }
+                uniformUpdate();
             },
 
             genericErrorHandler: function($pane, xhr)
@@ -985,6 +986,12 @@
         }
     });
 
+
+    var uniformUpdate = function()
+    {
+        if (!$.isBlank($.uniform) && !$.isBlank($.uniform.update))
+        { $.uniform.update(); }
+    };
 
     var getConfigNames = function(configName)
     {
@@ -1905,7 +1912,7 @@
                             }
                             $sel.val($link.is('.tableColumn') ?
                                 c.tableColumnId : c.id).change();
-                            if (!$.isBlank($.uniform)) { $.uniform.update(); }
+                            uniformUpdate();
                         });
                 }
             });
@@ -2019,8 +2026,7 @@
                         $l.toggle(showLine);
                     }
 
-                    if (!$.isBlank($.uniform) && !$.isBlank($.uniform.update))
-                    { $.uniform.update(); }
+                    uniformUpdate();
                 };
                 var defAdjField = function() { _.defer(adjustField); };
 
@@ -2401,7 +2407,7 @@
                 if ($item.is('.selectable.collapsed'))
                 {
                     $item.find('.sectionSelect').click();
-                    if (!$.isBlank($.uniform)) { $.uniform.update(); }
+                    uniformUpdate();
                 }
 
                 _.defer(function()

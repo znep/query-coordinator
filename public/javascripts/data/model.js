@@ -1313,6 +1313,7 @@ blist.namespace.fetch('blist.data');
         this.isCellError = function(row, column)
         {
             if (!row.error) { return false; }
+            if (column) { column =  meta.allColumns[column.id]; }
             var v;
             eval('v = row.error' + column.dataLookupExpr + ';');
             return v;
@@ -1357,6 +1358,8 @@ blist.namespace.fetch('blist.data');
         {
             var validValue = isValid ? value : null;
             var invalidValue = isValid ? null : value;
+
+            if (column) { column =  meta.allColumns[column.id]; }
 
             var isCreate = false;
             if (row.type == 'blank')

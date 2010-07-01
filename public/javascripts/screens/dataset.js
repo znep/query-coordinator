@@ -22,12 +22,12 @@ blist.datasetPage.adjustSize = function()
 blist.datasetPage.clearTempView = function()
 {
     $('#sidebarOptions a.alert').removeClass('alert');
-    $('#titleBox').removeClass('unsavedView');
+    $('body, #titleBox').removeClass('unsavedView');
 };
 
 blist.datasetPage.setTempView = function()
 {
-    $('#titleBox').addClass('unsavedView');
+    $('body, #titleBox').addClass('unsavedView');
     // For now unsaved view means something has changed in filter tab
     $('#sidebarOptions .tabFilter a').addClass('alert');
 };
@@ -280,6 +280,9 @@ $(function()
             var parDS = _.detect(views, function(view)
                 { return blist.dataset.getDisplayType(view) == 'Blist'; });
             if (!$.isBlank(parDS))
-            { $('#viewsMenu .typeBlist a').attr('href', $.generateViewUrl(parDS)); }
+            {
+                $('#viewsMenu .typeBlist a').attr('href', $.generateViewUrl(parDS));
+                blist.parentViewId = parDS.id;
+            }
         }});
 });

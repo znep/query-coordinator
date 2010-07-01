@@ -416,7 +416,7 @@
                         {
                             var col = _.detect(allCols, function(vc)
                             { return vc.id == c.columnId; });
-                          
+
                             var alreadyGrouped = _.include(view.query.groupBys || [],
                                 function(gb) { return gb.columnId == col.id; });
 
@@ -472,7 +472,12 @@
 
                     if (isNew) { view.name = newName; }
 
-                    if (skipRequest) { return; }
+                    if (skipRequest)
+                    {
+                        if (_.isFunction(successCallback))
+                        { successCallback(); }
+                        return;
+                    }
 
                     if (!doSave)
                     {
@@ -610,7 +615,7 @@
                 {
                     view.query.filterCondition = filter;
                 }
-                
+
                 var drillDownCallBack = function(newView)
                 {
                     model.getTempView(newView);
@@ -697,13 +702,15 @@
                     function(cols)
                     {
                         currentColumns = cols;
-                        if (view.id == blist.parentViewId)
+                        if (!$.isBlank(blist.parentViewId) &&
+                            view.id == blist.parentViewId)
                         { parentColumns = cols; }
                         if(!_.isUndefined(parentColumns))
                         { revealDrillDownCallBack(); }
                     }, 'json');
 
-                    if (view.id !== blist.parentViewId)
+                    if (!$.isBlank(blist.parentViewId) &&
+                        view.id !== blist.parentViewId)
                     {
                         $.get('/views/' + blist.parentViewId +
                                 '/columns.json',

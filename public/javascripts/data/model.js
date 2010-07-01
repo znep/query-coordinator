@@ -410,6 +410,7 @@ blist.namespace.fetch('blist.data');
             {
                 //console.profile();
                 this.meta(config.meta);
+                updateColumns();
                 self.reloadAggregates();
 
                 if (config.meta.totalRows !== undefined)
@@ -648,6 +649,7 @@ blist.namespace.fetch('blist.data');
             if (config.meta)
             {
                 self.meta(config.meta);
+                updateColumns();
                 self.reloadAggregates();
 
                 var newRows = config.rows || (config.data !== undefined ?
@@ -703,7 +705,36 @@ blist.namespace.fetch('blist.data');
                         updateAggregateHash(resp);
                         self.footerChange();
                     }});
-        }
+        };
+
+        var updateColumns = function(callback)
+        {
+            // If we loaded a view that is grouped, then we may not have all
+            // the desired columns.  Load them separately
+            if (!self.isGrouped())
+            {
+                if (_.isFunction(callback)) { callback(); }
+                return;
+            }
+
+            $.ajax({url: '/views/' + meta.view.id + '/columns.json',
+                    type: 'GET', dataType: 'json',
+                    success: function(cols)
+                    {
+                        _.each(cols, function(c)
+                        {
+                            if ($.isBlank(self.getColumnByID(c.id)))
+                            {
+                                meta.view.columns.push(c);
+                                if (!$.isBlank(curOptions.masterView))
+                                { curOptions.masterView.columns.push(c); }
+                            }
+                        });
+
+                        if (_.isFunction(callback)) { callback(); }
+                    }
+            });
+        };
 
         var updateAggregateHash = function(newAggs)
         {
@@ -2944,7 +2975,7 @@ blist.namespace.fetch('blist.data');
         };
 
 
-        this.getTempView = function(tempView, includeColumns)
+        this.getTempView = function(tempView, includeColumns, callback)
         {
             // If we're doing progressive loading, set up a temporary
             //  view, then construct a query with a special URL and
@@ -2966,7 +2997,8 @@ blist.namespace.fetch('blist.data');
                     contentType: 'application/json',
                     data: JSON.stringify(tempView)
             });
-            doLoad(self, loadTempView, ajaxOptions);
+            doLoad(self, function(config) { loadTempView(config, callback); },
+                ajaxOptions);
         };
 
         /**
@@ -2976,7 +3008,7 @@ blist.namespace.fetch('blist.data');
          *  loaded, but did not come back with the sort.  So do some work to
          *  get active & rows in-sync
          */
-        var loadTempView = function(config)
+        var loadTempView = function(config, callback)
         {
             var newRows = config.rows || (config.data !== undefined ?
                 config.data.data : null) || config.data;
@@ -2988,10 +3020,13 @@ blist.namespace.fetch('blist.data');
                 config.meta.view.owner = meta.view.owner;
                 // Copy flags over so we know if this is the default view
                 config.meta.view.flags = meta.view.flags;
-                this.meta(config.meta);
+                self.meta(config.meta);
                 if (config.meta.totalRows !== undefined)
                 { activeCount = config.meta.totalRows; }
 
+                // Pass the callback all the way into updateColumns, because
+                // our view isn't valid until those have been updated
+                updateColumns(callback);
                 self.reloadAggregates();
             }
 

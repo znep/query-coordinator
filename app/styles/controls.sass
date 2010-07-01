@@ -249,6 +249,17 @@ div#color_selector
   top: 6em
   width: 40em
 
+  .loadingOverlay
+    background-color: #cccccc
+    height: 100%
+    left: 0
+    filter: alpha(opacity = 50)
+    opacity: 0.5
+    position: absolute
+    top: 0
+    width: 100%
+    z-index: 3001
+
   .modalDialogClose
     @include close-button
     position: absolute
@@ -270,6 +281,11 @@ div#color_selector
     li
       float: right
 
+
+// Photo/doc upload dialog
+#jqmUpload
+  label
+    margin-right: 0.5em
 
 //*** START: datepicker styles ***//
 div.datepicker

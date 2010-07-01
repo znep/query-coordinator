@@ -403,162 +403,153 @@
                 var newCols = [];
                 var usedCols = {};
 
-                // Hackity hack hack HACK!!
-                // blist.display.view doesn't contain the columns we (potentially)
-                // need... so let's ask for them again.
-                $.get('/views/' + view.id + '/columns.json',
-                function(allCols)
+                if (isGrouping)
                 {
-                    if (isGrouping)
+                    model.group(grouped);
+                    $.each(grouped, function(i, c)
                     {
-                        model.group(grouped);
-                        $.each(grouped, function(i, c)
+                        var col = _.detect(view.columns, function(vc)
+                        { return vc.id == c.columnId; });
+
+                        var alreadyGrouped = _.include(view.query.groupBys || [],
+                            function(gb) { return gb.columnId == col.id; });
+
+                        var newWidth = col.width + (drillDown ? 30 : 0);
+                        var newFormat = $.extend({}, col.format,
+                            {drill_down: drillDown});
+
+                        newCols.push($.extend({}, col,
+                            {hidden: alreadyGrouped &&
+                                _.include(col.flags || [], 'hidden'),
+                             position: newCols.length + 1,
+                             format: newFormat, width: newWidth}));
+                        usedCols[col.id] = newFormat;
+                    });
+                    view.query.groupBys = grouped;
+                }
+                else { delete view.query.groupBys; }
+
+                if ((isGrouping || wasGrouped) &&
+                    _.isArray(aggregates) && aggregates.length > 0)
+                {
+                    _.each(aggregates, function(a)
+                    {
+                        var col = _.detect(view.columns, function(vc)
+                        { return vc.id == a.id; });
+
+                        var existingFormat = usedCols[col.id] || col.format || {};
+                        var format = $.extend({}, existingFormat,
+                            {grouping_aggregate:
+                                (a.format || {}).grouping_aggregate || null});
+                        if ($.isBlank(format.grouping_aggregate))
+                        { delete format.grouping_aggregate; }
+
+                        if (_.isUndefined(usedCols[col.id]))
                         {
-                            var col = _.detect(allCols, function(vc)
-                            { return vc.id == c.columnId; });
-
-                            var alreadyGrouped = _.include(view.query.groupBys || [],
-                                function(gb) { return gb.columnId == col.id; });
-
-                            var newWidth = col.width + (drillDown ? 30 : 0);
-                            var newFormat = $.extend({}, col.format,
-                                {drill_down: drillDown});
-
                             newCols.push($.extend({}, col,
-                                {hidden: alreadyGrouped &&
+                                {hidden: $.isBlank(format.grouping_aggregate) ||
                                     _.include(col.flags || [], 'hidden'),
-                                 position: newCols.length + 1,
-                                 format: newFormat, width: newWidth}));
-                            usedCols[col.id] = newFormat;
-                        });
-                        view.query.groupBys = grouped;
-                    }
-                    else { delete view.query.groupBys; }
-
-                    if ((isGrouping || wasGrouped) &&
-                        _.isArray(aggregates) && aggregates.length > 0)
-                    {
-                        _.each(aggregates, function(a)
+                                position: newCols.length + 1, format: format}));
+                        }
+                        else
                         {
-                            var col = _.detect(allCols, function(vc)
-                            { return vc.id == a.id; });
+                             _.detect(newCols, function(nc)
+                             { return nc.id == col.id; }).format = format;
+                        }
+                    });
+                }
 
-                            var existingFormat = usedCols[col.id] || col.format || {};
-                            var format = $.extend({}, existingFormat,
-                                {grouping_aggregate:
-                                    (a.format || {}).grouping_aggregate});
-                            if ($.isBlank(format.grouping_aggregate))
-                            { delete format.grouping_aggregate; }
+                if (isGrouping || wasGrouped)
+                { view.columns = newCols; }
 
-                            if (_.isUndefined(usedCols[col.id]))
-                            {
-                                newCols.push($.extend({}, col,
-                                    {hidden: $.isBlank(format.grouping_aggregate) ||
-                                        !$.isBlank(
-                                            existingFormat.grouping_aggregate) &&
-                                        _.include(col.flags || [], 'hidden'),
-                                    position: newCols.length + 1, format: format}));
-                            }
-                            else
-                            {
-                                 _.detect(newCols, function(nc)
-                                 { return nc.id == col.id; }).format = format;
-                            }
-                        });
-                    }
+                if (isNew) { view.name = newName; }
 
-                    if (isGrouping || wasGrouped)
-                    { view.columns = newCols; }
+                if (skipRequest)
+                {
+                    if (_.isFunction(successCallback))
+                    { successCallback(); }
+                    return;
+                }
 
-                    if (isNew) { view.name = newName; }
-
-                    if (skipRequest)
+                if (!doSave)
+                {
+                    if (typeof successCallback == 'function')
+                    { successCallback(); }
+                    model.getTempView($.extend(true, {}, view),
+                        isGrouping || wasGrouped);
+                    datasetObj.setTempView('grouping');
+                }
+                else if (isNew)
+                {
+                    view = model.cleanViewForPost($.extend(true, {}, view),
+                        isGrouping || wasGrouped);
+                    var saveNewView = function()
                     {
-                        if (_.isFunction(successCallback))
-                        { successCallback(); }
-                        return;
-                    }
+                        $.ajax({url: '/views.json', type: 'POST',
+                            contentType: 'application/json', dataType: 'json',
+                            data: JSON.stringify(view),
+                            error: function(xhr)
+                            {
+                                if (typeof errorCallback == 'function')
+                                { errorCallback(JSON.parse
+                                    (xhr.responseText).message); }
+                            },
+                            success: function(resp)
+                            {
+                                if (typeof successCallback == 'function')
+                                { successCallback(); }
+                                blist.util.navigation.redirectToView(resp.id);
+                            }});
+                    };
 
-                    if (!doSave)
+                    if (blist.util && blist.util.inlineLogin)
+                    {
+                        var loginMessage =
+                            'You must be logged in to create a new view';
+                        blist.util.inlineLogin.verifyUser(
+                            function (isSuccess) {
+                                if (isSuccess) { saveNewView() }
+                                else
+                                {
+                                    if (typeof errorCallback == 'function')
+                                    { errorCallback(loginMessage); }
+                                }
+                            }, loginMessage);
+                    }
+                    else { saveNewView(); }
+                }
+                else
+                {
+                    view = model.cleanViewForPost($.extend(true, {}, view),
+                        isGrouping || wasGrouped);
+                    $.socrataServer.addRequest({url: '/views/' + view.id + '.json',
+                        type: 'PUT', data: JSON.stringify(view),
+                        error: errorCallback,
+                        success: function(newView)
+                        {
+                            if (datasetObj.settings.isInvalid)
+                            { updateValidity(datasetObj, newView); }
+                            else
+                            { model.reloadView(); }
+                        }});
+
+                    _.each(newCols, function(c)
+                        {
+                            $.socrataServer.addRequest(
+                                {url: '/views/' + view.id + '/columns/' +
+                                c.id + '.json', type: 'PUT',
+                                data: JSON.stringify({hidden: c.hidden}),
+                                error: errorCallback});
+                        });
+
+                    $.socrataServer.runRequests({success: function()
                     {
                         if (typeof successCallback == 'function')
                         { successCallback(); }
-                        model.getTempView($.extend(true, {}, view),
-                            isGrouping || wasGrouped);
-                        datasetObj.setTempView('grouping');
+                        $(document).trigger(blist.events.COLUMNS_CHANGED);
                     }
-                    else if (isNew)
-                    {
-                        view = model.cleanViewForPost($.extend(true, {}, view),
-                            isGrouping || wasGrouped);
-                        var saveNewView = function()
-                        {
-                            $.ajax({url: '/views.json', type: 'POST',
-                                contentType: 'application/json', dataType: 'json',
-                                data: JSON.stringify(view),
-                                error: function(xhr)
-                                {
-                                    if (typeof errorCallback == 'function')
-                                    { errorCallback(JSON.parse
-                                        (xhr.responseText).message); }
-                                },
-                                success: function(resp)
-                                {
-                                    if (typeof successCallback == 'function')
-                                    { successCallback(); }
-                                    blist.util.navigation.redirectToView(resp.id);
-                                }});
-                        };
-
-                        if (blist.util && blist.util.inlineLogin)
-                        {
-                            var loginMessage =
-                                'You must be logged in to create a new view';
-                            blist.util.inlineLogin.verifyUser(
-                                function (isSuccess) {
-                                    if (isSuccess) { saveNewView() }
-                                    else
-                                    {
-                                        if (typeof errorCallback == 'function')
-                                        { errorCallback(loginMessage); }
-                                    }
-                                }, loginMessage);
-                        }
-                        else { saveNewView(); }
-                    }
-                    else
-                    {
-                        view = model.cleanViewForPost($.extend(true, {}, view),
-                            isGrouping || wasGrouped);
-                        $.socrataServer.addRequest({url: '/views/' + view.id + '.json',
-                            type: 'PUT', data: JSON.stringify(view),
-                            error: errorCallback,
-                            success: function(newView)
-                            {
-                                if (datasetObj.settings.isInvalid)
-                                { updateValidity(datasetObj, newView); }
-                                else
-                                { model.reloadView(); }
-                            }});
-
-                        _.each(newCols, function(c)
-                            {
-                                $.socrataServer.addRequest(
-                                    {url: '/views/' + view.id + '/columns/' +
-                                    c.id + '.json', type: 'PUT',
-                                    data: JSON.stringify({hidden: c.hidden}),
-                                    error: errorCallback});
-                            });
-
-                        $.socrataServer.runRequests({success: function()
-                        {
-                            if (typeof successCallback == 'function')
-                            { successCallback(); }
-                            $(document).trigger(blist.events.COLUMNS_CHANGED);
-                        }
-                        });
-                    }
-                });
+                    });
+                }
             },
 
             drillDown: function(drillLink)

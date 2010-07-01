@@ -115,13 +115,13 @@
                     var html = '<div class="blist-table-editor ' +
                         'type-' + this.column.renderTypeName +
                         '"><div class="buttons">' +
-                        '<a class="button add" href="#add" ' +
+                        '<a class="tableButton add" href="#add" ' +
                         'title="Add a new image">Add</a>' +
-                        '<a class="button view" target="blist-viewer" ' +
+                        '<a class="tableButton view" target="blist-viewer" ' +
                         'title="View the image in a separate window">View</a>' +
-                        '<a class="button replace" href="#replace" ' +
+                        '<a class="tableButton replace" href="#replace" ' +
                         'title="Replace the image">Replace</a>' +
-                        '<a class="button remove" href="#remove" ' +
+                        '<a class="tableButton remove" href="#remove" ' +
                         'title="Remove the image">Remove</a></div>' +
                         '<img />' +
                         '<input class="hiddenTextField" />' +
@@ -136,7 +136,7 @@
                 this.setFullSize();
                 var editObj = this;
                 updateButtons(this);
-                editObj.$editor().find('a.button')
+                editObj.$editor().find('a.tableButton')
                     .click(function(e) { buttonClicked(editObj, e); })
                     .end()
                     .find('img')

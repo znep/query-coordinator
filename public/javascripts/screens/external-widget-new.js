@@ -127,6 +127,8 @@ blist.widget.showDataView = function()
 
 $(function()
 {
+    if (!$.isBlank($.uploadDialog)) { $.uploadDialog.version = 2; }
+
     // keep track of some stuff for easy access
     widgetNS.orientation = widgetNS.theme['frame']['orientation'];
     widgetNS.isNonTabular = (widgetNS.view.viewType !== 'tabular');

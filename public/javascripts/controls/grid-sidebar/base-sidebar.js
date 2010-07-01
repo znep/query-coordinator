@@ -828,7 +828,7 @@
                     {
                         var failed = false;
                         $input.closest('.inputBlock')
-                            .find('[data-isrequired]').each(function()
+                            .find('[data-isrequired]:visible').each(function()
                         {
                             var v = getInputValue($(this));
                             failed = failed || $.isBlank(v) || v === false;
@@ -1243,6 +1243,18 @@
                 }
 
                 if (!f.required) { continue; }
+
+                if (f.type == 'custom' && !$.isBlank(f.editorCallbacks) &&
+                    _.isFunction(f.editorCallbacks.required))
+                {
+                    var vals = {};
+                    _.each($.arrayify(f.linkedField), function(lf)
+                    { vals[lf] = getValue(contextData, lf); });
+                    if (_.size(vals) == 1)
+                    { vals = _.values(vals)[0]; }
+                    if (!f.editorCallbacks.required(sidebarObj, vals))
+                    { continue; }
+                }
 
                 if ($.isBlank(getValue(contextData, f.name))) { return false; }
             }

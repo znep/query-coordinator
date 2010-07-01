@@ -34,6 +34,8 @@ blist.datasetPage.setTempView = function()
 
 $(function()
 {
+    if (!$.isBlank($.uploadDialog)) { $.uploadDialog.version = 2; }
+
     $('.outerContainer').fullScreen();
 
     var sidebar;

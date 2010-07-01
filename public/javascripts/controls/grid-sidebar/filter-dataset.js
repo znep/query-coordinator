@@ -73,6 +73,17 @@
         return true;
     };
 
+    var filterEditorRequired = function(sidebarObj, vals)
+    {
+        var colId = vals['children.0.columnId'];
+        var op = vals.value;
+        if ($.isBlank(colId) || $.isBlank(op)) { return false; }
+
+        if (_.include(['IS_BLANK', 'IS_NOT_BLANK'], op)) { return false; }
+
+        return true;
+    };
+
     var filterEditorValue = function(sidebarObj, $field)
     {
         var $editor = $field.find('.editorWrapper');
@@ -138,6 +149,7 @@
                                 name: 'children.1.value',
                                 linkedField: ['children.0.columnId', 'value'],
                                 editorCallbacks: {create: filterEditor,
+                                    required: filterEditorRequired,
                                     value: filterEditorValue,
                                     cleanup: filterEditorCleanup}}
                         ]},
@@ -381,17 +393,19 @@
 
         var doViewCallback = function()
         {
-            model.getTempView($.extend(true, {}, blist.display.view));
+            model.getTempView($.extend(true, {}, blist.display.view), true,
+                function()
+                {
+                    sidebarObj.finishProcessing();
+
+                    _.defer(function()
+                    {
+                        sidebarObj.addPane(configName);
+                        sidebarObj.show(configName);
+                    });
+                });
 
             dsGrid.setTempView('filterSidebar');
-
-            sidebarObj.finishProcessing();
-
-            _.defer(function()
-            {
-                sidebarObj.addPane(configName);
-                sidebarObj.show(configName);
-            });
         };
 
         var model = sidebarObj.$grid().blistModel();

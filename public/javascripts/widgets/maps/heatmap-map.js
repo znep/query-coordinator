@@ -16,8 +16,22 @@
         renderData: function(rows)
         {
             var mapObj = this;
-            var heatmapType = mapObj._displayConfig.heatmapType.split('_');
-            type = { type: heatmapType[1], where: heatmapType[0] };
+            var config;
+            if (mapObj._displayConfig.heatmap)
+            { config = mapObj._displayConfig.heatmap; }
+            else
+            {
+                // Support for legacy config system.
+                var heatmapType = mapObj._displayConfig.heatmapType.split('_');
+                config = {
+                    type: heatmapType[1],
+                    region: heatmapType[0],
+                    colors: {
+                        low: mapObj._displayConfig.lowcolor,
+                        high: mapObj._displayConfig.highcolor
+                    }
+                };
+            }
 
             if (_.isUndefined(mapObj._locCol) || _.isUndefined(mapObj._quantityCol))
             {
@@ -28,10 +42,10 @@
             if (_.isUndefined(mapObj._segmentSymbols))
             {
                 mapObj._segmentSymbols = [];
-                var lowColor  = mapObj._displayConfig.lowcolor  ? $.hexToRgb(mapObj._displayConfig.lowcolor)
-                                                                : { r: 209, g: 209, b: 209};
-                var highColor = mapObj._displayConfig.highcolor ? $.hexToRgb(mapObj._displayConfig.highcolor)
-                                                                : { r: 0, g: 255, b: 0};
+                var lowColor  = config.colors.low  ? $.hexToRgb(config.colors.low)
+                                                   : { r: 209, g: 209, b: 209};
+                var highColor = config.colors.high ? $.hexToRgb(config.colors.high)
+                                                   : { r: 0, g: 255, b: 0};
                 var colorStep = {
                     r: Math.round((highColor.r-lowColor.r)/NUM_SEGMENTS),
                     g: Math.round((highColor.g-lowColor.g)/NUM_SEGMENTS),
@@ -51,28 +65,48 @@
             }
 
             if (_.isUndefined(mapObj._featureSet))
-            { doQueries(mapObj, type); }
+            { doQueries(mapObj, config); }
             else
-            { addFeatureSetToMap(mapObj, null, type); }
+            { addFeatureSetToMap(mapObj, null, config); }
         }
     });
 
-    var doQueries = function(mapObj, type)
-    {
-        var featureLayer = type.type == 'counties' ? 3 : 4;
-        var queryTask = new esri.tasks.QueryTask("http://server.arcgisonline.com/ArcGIS/rest/services/Demographics/USA_Tapestry/MapServer/"+featureLayer);
-        var query = new esri.tasks.Query();
-        query.outFields = ["NAME", "ST_ABBREV"];
-        query.returnGeometry = true;
-        query.outSpatialReference = mapObj.map.spatialReference;
-        query.where = "ST_ABBREV";
-        query.where += type.type == 'counties'
-                        ? " = '"+type.where.toUpperCase()+"'"
-                        : " LIKE '%'";
-        queryTask.execute(query, function(featureSet) { addFeatureSetToMap(mapObj, featureSet, type); });
+    var MAP_TYPE = {
+        'countries': {
+            'layerPath': "World_Topo_Map/MapServer/6",
+            'fieldsReturned': ["NAME"],
+            'where': function (mapObj, config)
+                { return "TYPE = 'Country'"; }
+        },
+        'state': {
+            'layerPath': "Demographics/USA_Tapestry/MapServer/4",
+            'fieldsReturned': ["NAME", "ST_ABBREV"],
+            'where': function (mapObj, config)
+                { return "ST_ABBREV LIKE '%'" },
+            'center': esri.geometry.geographicToWebMercator(new esri.geometry.Point(-111.88, 41.75, new esri.SpatialReference({ wkid: 4326 }))),
+            'zoom': 3
+        },
+        'counties': {
+            'layerPath': "Demographics/USA_Tapestry/MapServer/3",
+            'fieldsReturned': ["NAME", "ST_ABBREV"],
+            'where': function (mapObj, config)
+                { return "ST_ABBREV = '"+config.region.toUpperCase()+"'"; }
+        }
     };
 
-    var addFeatureSetToMap = function(mapObj, featureSet, type)
+    var doQueries = function(mapObj, config)
+    {
+        var query = new esri.tasks.Query();
+        query.outFields = MAP_TYPE[config.type].fieldsReturned;
+        query.returnGeometry = true;
+        query.outSpatialReference = mapObj.map.spatialReference;
+
+        query.where = MAP_TYPE[config.type].where(mapObj, config);
+        new esri.tasks.QueryTask("http://server.arcgisonline.com/ArcGIS/rest/services/" + MAP_TYPE[config.type].layerPath)
+            .execute(query, function(featureSet) { addFeatureSetToMap(mapObj, featureSet, config); });
+    };
+
+    var addFeatureSetToMap = function(mapObj, featureSet, config)
     {
         if (featureSet)
         { mapObj._featureSet = featureSet; }
@@ -128,6 +162,7 @@
 
             return parseFloat(e.attributes.quantity);
         };
+
         var max = Math.ceil( _.max(_.map(featureSet.features, getValue))/50)*50;
         var min = Math.floor(_.min(_.map(featureSet.features, getValue))/50)*50;
         var segments = [];
@@ -140,7 +175,7 @@
         var extents = [];
         _.each(featureSet.features, function(feature)
         {
-            if (!feature.attributes.quantity) return;
+            if (!feature.attributes.quantity) { return; }
             feature.attributes.description = feature.attributes.description.join(', ');
 
             var symbol;
@@ -162,25 +197,11 @@
                         function(event) { blist.$display.find('div .container').css('cursor', 'default'); });
             }
         });
-        if (type.type == 'state')
-        {
-            mapObj.map.centerAndZoom(esri.geometry.geographicToWebMercator(
-                new esri.geometry.Point(-111.88, 41.75, new esri.SpatialReference({ wkid: 4326 }))), 3);
-        }
+
+        if (MAP_TYPE[config.type].center && MAP_TYPE[config.type].zoom)
+        { mapObj.map.centerAndZoom(MAP_TYPE[config.type].center, MAP_TYPE[config.type].zoom); }
         else
-        {
-            var spatialReference = extents[0].spatialReference;
-            var base_extent = extents[0];
-            extents = _.reduce(extents, base_extent, function(memo, extent)
-                {
-                    return {
-                        xmin: Math.min(memo.xmin, extent.xmin), ymin: Math.min(memo.ymin, extent.ymin),
-                        xmax: Math.max(memo.xmax, extent.xmax), ymax: Math.max(memo.ymax, extent.ymax)
-                        };
-                });
-            mapObj.map.setExtent(
-                new esri.geometry.Extent(extents.xmin, extents.ymin, extents.xmax, extents.ymax, spatialReference), true);
-        }
+        { mapObj.map.setExtent(buildMinimumExtentFromSet(extents), true); }
     };
 
     var findFeatureWithPoint = function(mapObj, datum, featureSet)
@@ -215,11 +236,26 @@
             { return feature.geometry.contains(point); }
             else
             {
-                return point.toLowerCase() ==
-                    ((point.length == 2) ? feature.attributes['ST_ABBREV'].toLowerCase()
-                                         : feature.attributes['NAME']).toLowerCase();
+                var featureName = feature.attributes['NAME'];
+                if (point.length == 2) { featureName = feature.attributes['ST_ABBREV']; }
+
+                return point == featureName;
             }
         });
+    };
+
+    var buildMinimumExtentFromSet = function(extents)
+    {
+        var spatialReference = extents[0].spatialReference;
+        var base_extent = extents[0];
+        var extent = _.reduce(extents, base_extent, function(memo, extent)
+            {
+                return {
+                    xmin: Math.min(memo.xmin, extent.xmin), ymin: Math.min(memo.ymin, extent.ymin),
+                    xmax: Math.max(memo.xmax, extent.xmax), ymax: Math.max(memo.ymax, extent.ymax)
+                    };
+            });
+        return new esri.geometry.Extent(extent.xmin, extent.ymin, extent.xmax, extent.ymax, spatialReference);
     };
 
 })(jQuery);

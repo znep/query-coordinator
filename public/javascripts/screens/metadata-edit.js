@@ -40,7 +40,8 @@
 
             $trigger.click(function(event)
             {
-                if ($(event.target).is('input') || $(event.target).is('img'))
+                if ($(event.target).is('input') || $(event.target).is('img')
+                  || (!$trigger.is('a') && $(event.target).is('a')))
                 { return true; }
 
                 event.preventDefault();

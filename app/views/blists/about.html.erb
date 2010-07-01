@@ -64,7 +64,7 @@
               <%- if @view.description.nil? || @view.description.empty? -%>
                 No Description Provided
               <%- else -%>
-                <%= raw auto_link(h(@view.description), :html => { :rel => 'nofollow' }) %>
+                <%= raw auto_link(h(@view.description), :html => { :rel => 'nofollow external' }) %>
               <%- end -%>
               </p>
             </div>
@@ -226,7 +226,7 @@
                     <dt><%= h(field[0]) %></dt>
                     <dd> 
                       <div class="textDisplay">
-                        <span class="textContent"><%= raw auto_link(h(field[1]), :html => { :rel => 'nofollow' }) %></span>
+                        <span class="textContent"><%= raw auto_link(h(field[1]), :html => { :rel => 'nofollow external' }) %></span>
                       </div>
                       <div class="editFieldForm hide">
                         <%= form_tag("/api/views/#{@view.id}") %>

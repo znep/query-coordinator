@@ -1,5 +1,5 @@
 class StylesController < ApplicationController
-  skip_before_filter :require_user, :set_user, :hook_auth_controller
+  skip_before_filter :require_user, :set_user, :hook_auth_controller, :sync_logged_in_cookie
 
   def individual
     includes = get_includes

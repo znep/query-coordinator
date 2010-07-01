@@ -286,3 +286,10 @@ $(function()
             }
         }});
 });
+
+
+// register opening
+$.ajax({
+    url: '/views/' + blist.display.view.id + '.json?method=opening',
+    dataType: 'json'
+});

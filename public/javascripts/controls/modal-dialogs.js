@@ -6,6 +6,7 @@ $(function()
         modal: true,
         onShow: function(jqm)
         {
+            $('.menu').trigger('menu-close');
             $(document).trigger(blist.events.MODAL_SHOWN);
             jqm.w.fadeIn('slow');
             jqm.o.fadeIn('slow');

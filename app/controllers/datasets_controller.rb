@@ -26,8 +26,6 @@ class DatasetsController < ApplicationController
 #      redirect_to(@view.href + '?' + request.query_string)
 #    end
 
-    @view.register_opening
-
   end
 
   def widget_preview

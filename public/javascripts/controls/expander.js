@@ -21,9 +21,8 @@
             $expand.click(function(event)
             {
                 event.preventDefault();
-                var $this = $(this);
 
-                if ($this.hasClass('downArrow'))
+                if ($expand.hasClass('downArrow'))
                 {
                     // need to expand; measure how tall
                     $content
@@ -36,7 +35,9 @@
                             height: targetHeight
                         },
                         config.resizeFinishCallback);
-                    $this.removeClass('downArrow').addClass('upArrow');
+                    $expand.removeClass('downArrow')
+                           .addClass('upArrow')
+                           .attr('title', 'Click to collapse');
                 }
                 else
                 {
@@ -51,7 +52,9 @@
                             $content.css('display', '');
                             config.resizeFinishCallback();
                         });
-                    $this.removeClass('upArrow').addClass('downArrow');
+                    $expand.removeClass('upArrow')
+                           .addClass('downArrow')
+                           .attr('title', 'Click to expand');
                 }
             });
 

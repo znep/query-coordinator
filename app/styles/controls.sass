@@ -1,6 +1,7 @@
 a.button
   @include toolbar-button
   color: #333
+  display: inline-block
   font-size: 1.2em
   font-weight: bold
   height: auto
@@ -130,6 +131,9 @@ div.starsControl
       li
         display: inline-block
         float: none
+        .ie7 &
+          display: inline
+          zoom: 1
 
         a
           display: inline-block

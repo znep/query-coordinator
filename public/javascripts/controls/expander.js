@@ -48,7 +48,7 @@
                         function()
                         {
                             // Un-set display so natural CSS styling can take effect
-                            $content.css('display', null);
+                            $content.css('display', '');
                             config.resizeFinishCallback();
                         });
                     $this.removeClass('upArrow').addClass('downArrow');

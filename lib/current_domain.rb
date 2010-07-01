@@ -145,6 +145,10 @@ class CurrentDomain
     return @@current_domain[:data].default_configuration('site_theme').id
   end
 
+  def self.configuration(name)
+    return @@current_domain[:data].default_configuration(name)
+  end
+
   def self.module_available?(name_or_set)
     return false if self.modules.nil?
 

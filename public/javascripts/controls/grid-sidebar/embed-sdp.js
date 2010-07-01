@@ -27,7 +27,8 @@
         onlyIf: _.isArray(blist.display.view.grants) &&
                 _.any(blist.display.view.grants, function(grant)
                 {
-                    return _.any(grant.flags, function(flag) { return flag == 'public'; });
+                    return _.any(grant.flags || [],
+                        function(flag) { return flag == 'public'; });
                 }),
         finishBlock: {
             buttons: [$.gridSidebar.buttons.done,

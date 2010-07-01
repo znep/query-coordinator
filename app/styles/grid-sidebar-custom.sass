@@ -189,3 +189,78 @@
           right: 0.2em
           top: 0.2em
 
+  #gridSidebar_filterDataset.sidebarPane
+    .formSection .line.custom
+      .editorWrapper.stars
+        margin-left: -11px
+
+      .customWrapper.twoEditors
+        .joiner
+          float: left
+          font-size: 1.2em
+          margin-right: 0.2em
+          &.stars
+            margin-left: -2em
+
+        .editorWrapper
+          float: left
+
+          textarea, input[type="text"]
+            margin-right: 0.2em
+            width: 5.5em
+
+          .blist-combo
+            margin:
+              left: 0
+              right: 0.2em
+            width: 5.4em
+
+          &:first-child .blist-combo
+            margin-left: -2px
+
+          &.stars
+            float: none
+
+      .blist-table-editor
+        border: none
+        font-size: 1em
+        position: relative
+
+        &.type-phone
+          overflow: show
+          input.number
+            margin-bottom: 0.3em
+            padding: 0.2em
+
+        &.type-url
+          .labels
+            font-size: 1.1em
+            left: 0
+            position: absolute
+            text-align: right
+            width: 5em
+
+            span
+              display: block
+              margin-top: 0.5em
+
+          input
+            display: block
+            margin-left: 5em
+            margin-top: 0.1em
+            width: 7.9em
+
+        &.type-location
+          .lat_long
+            display: none
+          .labels span
+            font-size: 1.1em
+
+        .blist-combo-value
+          .icon
+            margin-top: 3px
+          img
+            float: left
+            margin:
+              right: 5px
+              top: 4px

@@ -39,7 +39,7 @@
 
   <div id='actionBox' class='clearfix'>
     <ul id="toolbarOptions">
-      <%- if @view.is_tabular? -%>
+      <%- unless @view.is_alt_view? -%>
       <li>
         <div id='searchButton'>
           <span class='searchIcon'></span>
@@ -167,7 +167,7 @@
     blist.sidebarHidden.exportSection.print = <%= @view.is_alt_view? %>;
   </script>
 
-  <%- if @view.can_edit() && !@view.is_blobby? -%>
+  <%- if !@view.is_blobby? -%>
   <%= raw @view.display.render_edit_javascript_includes(self) %>
   <%- end -%>
   <%= raw @view.display.render_javascript_includes(self) %>

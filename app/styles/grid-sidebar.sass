@@ -193,9 +193,11 @@ $sidebar_text_color: #666
       > .uniform.checker, .sectionSelect
         display: none
         margin-right: 0.4em
+
         .ie7 &
-          left: 1.2em
           position: absolute
+          + .formHeader
+            margin-left: 2.3em
 
       &.selectable > .uniform.checker, &.selectable .sectionSelect
         display: inline-block
@@ -274,6 +276,12 @@ $sidebar_text_color: #666
         .ui-slider
           margin-left: 0.5em
           width: 11.9em
+
+        .blist-combo
+          margin:
+            left: -2px
+            top: -3px
+          width: 12.9em
 
         span.error
           color: #ff0000
@@ -433,7 +441,6 @@ $sidebar_text_color: #666
       width: 26em
 
     .finishButtons
-      margin-top: 2em
 
       // Once the old app is gone, all these legacy actionButtons styles can go away
       li

@@ -30,6 +30,7 @@ javascripts:
   - widgets/text-prompt
   - widgets/values
   - widgets/dropdown-menu
+  - screens/all-screens
 - shared-common-all:
   - util/events
   - util/sizing

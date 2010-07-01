@@ -147,16 +147,18 @@
                 return this._$dom;
             },
 
-            updateFilter: function(filter, saveExisting)
+            updateFilter: function(filter, saveExisting, skipRequest)
             {
                 var datasetObj = this;
                 var model = datasetObj.settings._model;
                 model.meta().columnFilters = null;
                 model.meta().view.query.filterCondition = filter;
+                blist.display.view.query.filterCondition = filter;
+
+                if (skipRequest) { return; }
 
                 var view = datasetObj.settings._model.meta().view;
-                if (saveExisting && (view.flags === undefined ||
-                    $.inArray('default', view.flags) < 0) &&
+                if (saveExisting && !_.include(view.flags || [], 'default') &&
                     datasetObj.settings.currentUserId == view.owner.id)
                 {
                     $.ajax({url: '/views/' + view.id + '.json',
@@ -1248,7 +1250,7 @@
                 // a separator.
                 htmlStr += '<li class="filterSeparator separator singleItem" />';
             }
-            htmlStr += '<li class="hide" >' +
+            htmlStr += '<li class="hideCol" >' +
                 '<a href="#hide-column_' + col.id + '">' +
                 '<span class="highlight">Hide Column</span>' +
                 '</a></li>';

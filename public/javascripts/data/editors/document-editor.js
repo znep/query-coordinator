@@ -7,6 +7,13 @@
         this.init();
     };
 
+    var baseUrl = function(editObj)
+    {
+        return '/views/' + blist.display.view.id + '/' +
+            (editObj.column.renderTypeName.endsWith('_obsolete') ?
+                'obsolete_' : '') + 'files/';
+    };
+
     var buttonClicked = function(editObj, event)
     {
         event.preventDefault();
@@ -30,7 +37,7 @@
 
     var showDialog = function(editObj)
     {
-        $.uploadDialog().show(editObj.column.base,
+        $.uploadDialog().show(baseUrl(editObj),
                 function(id, name) { fileUploaded(editObj, id, name); },
                 function() { editObj.focus(); });
         editObj.focus();
@@ -38,7 +45,7 @@
 
     var idField = function(editObj)
     {
-        return (editObj.column.type == 'document') ? "file_id" : "id";
+        return (editObj.column.renderTypeName == 'document') ? "file_id" : "id";
     };
 
     var fileUploaded = function(editObj, fileId, fileName)
@@ -66,7 +73,7 @@
 
         var v = editObj._curVal;
         $d.find('.docLink')
-            .attr('href', v ? editObj.column.base + v[idField(editObj)] : '')
+            .attr('href', v ? baseUrl(editObj) + v[idField(editObj)] : '')
             .text(v ? v.filename : '');
         $d.trigger('resize');
     };
@@ -103,7 +110,7 @@
                 {
                     this._curVal = this.originalValue;
                     var html = '<div class="blist-table-editor ' +
-                        'type-' + this.column.type + '">' +
+                        'type-' + this.column.renderTypeName + '">' +
                         '<a class="button add" href="#add" ' +
                         'title="Add a new document">Add</a>' +
                         '<a class="button replace" href="#replace" ' +

@@ -24,6 +24,11 @@
     margin-bottom: 1em;
 }
 
+.leftColumn,
+.developerSplash {
+    padding-bottom: 0.5em;
+}
+
 .oregonHeaderContainer {
     background-color: #fff;
     padding-left: 1em;
@@ -36,15 +41,15 @@
 
 .dataOregonLogo {
     background: url(/stylesheets/images/domains/data.oregon.gov/data.oregon.gov.png) no-repeat;
-    height: 130px;
-    width: 513px;
+    height: 100px;
+    width: 407px;
+    margin-bottom: 2em;
 }
 
 .oregonDeveloperLogo {
     background: url(/stylesheets/images/domains/data.oregon.gov/oregon.splash.png) no-repeat;
-    height: 162px;
-    width: 383px;
-    margin-bottom: 1em;
+    height: 150px;
+    width: 257px;
 }
 
 .leftSplashIntro,

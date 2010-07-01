@@ -38,7 +38,10 @@
     {
         // Handle invalid values
         if (typeof editObj.originalValue == 'string')
-        { return editObj.originalValue.split(',')[1].trim(); }
+        {
+            var p = editObj.originalValue.split(',');
+            return p.length > 1 ? p[1].trim() : '';
+        }
 
         return (editObj.originalValue || {}).longitude || '';
     };
@@ -53,7 +56,7 @@
                 if (!editObj._$editor)
                 {
                     editObj._$editor = $('<div class="blist-table-editor' +
-                        ' type-' + editObj.column.type +
+                        ' type-' + editObj.column.renderTypeName +
                         '">' +
                         '<div class="labels street">' +
                         '<span>Street</span>' +

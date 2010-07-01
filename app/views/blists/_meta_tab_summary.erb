@@ -6,7 +6,8 @@
   </dt>
   <dd class="editItem">
     <div class="itemContent">
-      <span class="textContent"><%= raw auto_link(h(view.description), :html => { :rel => 'nofollow' }) %></span>
+      <span class="textContent"><%= raw auto_link(h(view.description),
+        :html => { :rel => 'nofollow external' }) %></span>
       <%- if allow_edit -%>
       <%- form_tag(view.href) do -%>
         <%= hidden_field_tag("fieldType", "description") %>
@@ -334,7 +335,8 @@
       <dd> 
         <div class="textDisplay">
           <div class="itemContent">
-            <span class="textContent"><%= raw auto_link(h(field[1]), :html => { :rel => 'nofollow' }) %></span>
+            <span class="textContent"><%= raw auto_link(h(field[1]), :html =>
+                { :rel => 'nofollow external'  }) %></span>
           </div>
           <%- if allow_edit -%>
           <div class="itemActions">

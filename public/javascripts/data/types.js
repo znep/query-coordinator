@@ -771,6 +771,42 @@ blist.namespace.fetch('blist.data.types');
     var nonNumericRollUpAggs = _.select(rollUpAggs, function(a)
     { return 'count' == a.value; });
 
+    var filterConditions = {
+        textual:    [ { value: "EQUALS", text: "equals" },
+                      { value: "NOT_EQUALS", text: "does not equal" },
+                      { value: "STARTS_WITH", text: "starts with" },
+                      { value: "CONTAINS", text: "contains" },
+                      { value: "IS_NOT_BLANK", text: "is not blank" },
+                      { value: "IS_BLANK", text: "is blank" }
+                    ],
+        date:       [ { value: "EQUALS", text: "on" },
+                      { value: "NOT_EQUALS", text: "not on" },
+                      { value: "LESS_THAN", text: "before" },
+                      { value: "GREATER_THAN", text: "after" },
+                      { value: "BETWEEN", text: "between" },
+                      { value: "IS_NOT_BLANK", text: "is not blank" },
+                      { value: "IS_BLANK", text: "is blank" }
+                    ],
+        comparable: [ { value: "EQUALS", text: "equals" },
+                      { value: "IS_NOT_BLANK", text: "is not blank" },
+                      { value: "IS_BLANK", text: "is blank" }
+                    ],
+        blob:       [ { value: "IS_BLANK", text: "is empty" },
+                      { value: "IS_NOT_BLANK", text: "exists" } ],
+        numeric:    [ { value: "EQUALS", text: "equals" },
+                      { value: "NOT_EQUALS", text: "not equals" },
+                      { value: "LESS_THAN", text: "less than" },
+                      { value: "LESS_THAN_OR_EQUALS",
+                        text: "less than or equal to" },
+                      { value: "GREATER_THAN", text: "greater than" },
+                      { value: "GREATER_THAN_OR_EQUALS",
+                        text: "greater than or equal to" },
+                      { value: "BETWEEN", text: "between" },
+                      { value: "IS_NOT_BLANK", text: "is not blank" },
+                      { value: "IS_BLANK", text: "is blank" }
+                    ]
+    };
+
     /**
      * This is our main map of data types.
      */
@@ -785,9 +821,9 @@ blist.namespace.fetch('blist.data.types');
             filterText: true,
             group: groupText,
             sortable: true,
-            groupable: true,
             rollUpAggregates: nonNumericRollUpAggs,
             filterable: true,
+            filterConditions: filterConditions.textual,
             deleteable: true
         },
 
@@ -798,9 +834,9 @@ blist.namespace.fetch('blist.data.types');
             sortGen: sortGenText,
             filterText: true,
             sortable: true,
-            groupable: true,
             rollUpAggregates: nonNumericRollUpAggs,
             filterable: true,
+            filterConditions: filterConditions.textual,
             deleteable: true
         },
 
@@ -812,9 +848,9 @@ blist.namespace.fetch('blist.data.types');
             filterText: true,
             cls: 'number',
             sortable: true,
-            groupable: true,
             rollUpAggregates: rollUpAggs,
             filterable: true,
+            filterConditions: filterConditions.numeric,
             deleteable: true
         },
 
@@ -826,9 +862,9 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterDate,
             filterValue: function(v) { return v; },
             sortable: true,
-            groupable: true,
             rollUpAggregates: nonNumericRollUpAggs,
             filterable: true,
+            filterConditions: filterConditions.date,
             deleteable: true,
             group: groupDate,
             formats: zDateTimeFormats
@@ -842,9 +878,9 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterDate,
             filterValue: function(v) { return v; },
             sortable: true,
-            groupable: true,
             rollUpAggregates: nonNumericRollUpAggs,
             filterable: true,
+            filterConditions: filterConditions.date,
             deleteable: true,
             group: groupDate,
             formats: dateTimeFormats,
@@ -855,6 +891,7 @@ blist.namespace.fetch('blist.data.types');
             title: 'Photo (Image, old)',
             renderGen: renderGenPhoto,
             cls: 'photo',
+            filterConditions: filterConditions.blob,
             deleteable: true
         },
 
@@ -862,6 +899,7 @@ blist.namespace.fetch('blist.data.types');
             title: 'Photo (Image)',
             renderGen: renderGenPhoto,
             cls: 'photo',
+            filterConditions: filterConditions.blob,
             deleteable: true
         },
 
@@ -873,9 +911,9 @@ blist.namespace.fetch('blist.data.types');
             cls: 'money',
             filterText: true,
             sortable: true,
-            groupable: true,
             rollUpAggregates: rollUpAggs,
             filterable: true,
+            filterConditions: filterConditions.numeric,
             deleteable: true,
             currencies: {
                 'dollar': "$",
@@ -918,6 +956,7 @@ blist.namespace.fetch('blist.data.types');
             filterText: true,
             sortable: true,
             filterable: true,
+            filterConditions: filterConditions.textual,
             deleteable: true,
             isObject: true
         },
@@ -929,9 +968,9 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterCheckbox,
             filterValue: valueFilterCheckbox,
             sortable: true,
-            groupable: true,
             rollUpAggregates: nonNumericRollUpAggs,
             filterable: true,
+            filterConditions: filterConditions.comparable,
             deleteable: true,
             isInlineEdit: true
         },
@@ -942,9 +981,9 @@ blist.namespace.fetch('blist.data.types');
             sortGen: sortGenText,
             filterRender: renderFilterFlag,
             sortable: true,
-            groupable: true,
             rollUpAggregates: nonNumericRollUpAggs,
             filterable: true,
+            filterConditions: filterConditions.comparable,
             deleteable: true
         },
 
@@ -956,10 +995,10 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterStars,
             filterText: true,
             sortable: true,
-            groupable: true,
             rollUpAggregates: _.reject(rollUpAggs, function(a)
                 { return a.value == 'sum'; }),
             filterable: true,
+            filterConditions: filterConditions.numeric,
             deleteable: true,
             isInlineEdit: true
         },
@@ -972,9 +1011,9 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterPercent,
             filterText: true,
             sortable: true,
-            groupable: true,
             rollUpAggregates: rollUpAggs,
             filterable: true,
+            filterConditions: filterConditions.numeric,
             deleteable: true
         },
 
@@ -985,9 +1024,9 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterURL,
             filterText: true,
             sortable: true,
-            groupable: true,
             rollUpAggregates: nonNumericRollUpAggs,
             filterable: true,
+            filterConditions: filterConditions.textual,
             deleteable: true,
             isObject: true
         },
@@ -995,6 +1034,7 @@ blist.namespace.fetch('blist.data.types');
         document: {
             title: 'Document',
             renderGen: renderGenDocument,
+            filterConditions: filterConditions.blob,
             deleteable: true,
             isObject: true
         },
@@ -1002,6 +1042,7 @@ blist.namespace.fetch('blist.data.types');
         document_obsolete: {
             title: 'Document (old)',
             renderGen: renderGenDocument,
+            filterConditions: filterConditions.blob,
             deleteable: true,
             isObject: true
         },
@@ -1013,6 +1054,7 @@ blist.namespace.fetch('blist.data.types');
             isObject: true,
             renderAddress: renderLocationAddress,
             filterable: true,
+            filterConditions: filterConditions.comparable,
             filterRender: renderFilterLocation
         },
 
@@ -1021,7 +1063,8 @@ blist.namespace.fetch('blist.data.types');
             renderGen: renderGenTags,
             filterRender: renderFilterText,
             filterText: true,
-            filterable: true
+            filterable: true,
+            filterConditions: filterConditions.textual
         },
 
         email: {
@@ -1031,9 +1074,9 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterText,
             filterText: true,
             sortable: true,
-            groupable: true,
             rollUpAggregates: nonNumericRollUpAggs,
             filterable: true,
+            filterConditions: filterConditions.textual,
             deleteable: true
         },
 
@@ -1050,6 +1093,7 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterPicklist,
             sortable: true,
             filterable: true,
+            filterConditions: filterConditions.numeric,
             deleteable: true
         },
         drop_down_list: {
@@ -1058,9 +1102,9 @@ blist.namespace.fetch('blist.data.types');
             sortPreprocessor: sortPicklistPrepro,
             filterRender: renderFilterPicklist,
             sortable: true,
-            groupable: true,
             rollUpAggregates: nonNumericRollUpAggs,
             filterable: true,
+            filterConditions: filterConditions.numeric,
             deleteable: true
         }
     });

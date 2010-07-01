@@ -290,32 +290,32 @@ div.blist-star-0
   text-indent: -9999px
 
 .blist-flag-blue,
-.blist-table-edit-container .blue .icon,
+.blist-table-editor .blue .icon,
 .blist-combo-dd.table-editor-combo .blue .icon
   background-image: url(/stylesheets/images/content/table/flags/blue.png)
 
 .blist-flag-green,
-.blist-table-edit-container .green .icon,
+.blist-table-editor .green .icon,
 .blist-combo-dd.table-editor-combo .green .icon
   background-image: url(/stylesheets/images/content/table/flags/green.png)
 
 .blist-flag-orange,
-.blist-table-edit-container .orange .icon,
+.blist-table-editor .orange .icon,
 .blist-combo-dd.table-editor-combo .orange .icon
   background-image: url(/stylesheets/images/content/table/flags/orange.png)
 
 .blist-flag-purple,
-.blist-table-edit-container .purple .icon,
+.blist-table-editor .purple .icon,
 .blist-combo-dd.table-editor-combo .purple .icon
   background-image: url(/stylesheets/images/content/table/flags/purple.png)
 
 .blist-flag-red,
-.blist-table-edit-container .red .icon,
+.blist-table-editor .red .icon,
 .blist-combo-dd.table-editor-combo .red .icon
   background-image: url(/stylesheets/images/content/table/flags/red.png)
 
 .blist-flag-yellow,
-.blist-table-edit-container .yellow .icon,
+.blist-table-editor .yellow .icon,
 .blist-combo-dd.table-editor-combo .yellow .icon
   background-image: url(/stylesheets/images/content/table/flags/yellow.png)
 
@@ -343,27 +343,27 @@ div.blist-table-editor
     text-align: left
 
 .blist-phone-icon-cell,
-.blist-table-edit-container .Cell .icon,
+.blist-table-editor .Cell .icon,
 .blist-combo-dd.table-editor-combo .Cell .icon
   background-image: url(/stylesheets/images/content/table/phones/cell.png)
 
 .blist-phone-icon-fax,
-.blist-table-edit-container .Fax .icon,
+.blist-table-editor .Fax .icon,
 .blist-combo-dd.table-editor-combo .Fax .icon
   background-image: url(/stylesheets/images/content/table/phones/fax.png)
 
 .blist-phone-icon-home,
-.blist-table-edit-container .Home .icon,
+.blist-table-editor .Home .icon,
 .blist-combo-dd.table-editor-combo .Home .icon
   background-image: url(/stylesheets/images/content/table/phones/home.png)
 
 .blist-phone-icon-other,
-.blist-table-edit-container .Other .icon,
+.blist-table-editor .Other .icon,
 .blist-combo-dd.table-editor-combo .Other .icon
   background-image: url(/stylesheets/images/content/table/phones/other.png)
 
 .blist-phone-icon-work,
-.blist-table-edit-container .Work .icon,
+.blist-table-editor .Work .icon,
 .blist-combo-dd.table-editor-combo .Work .icon
   background-image: url(/stylesheets/images/content/table/phones/work.png)
 
@@ -504,23 +504,30 @@ div.blist-table-editor
 .blist-table .blist-table-editor
   border: none
 
-.blist-combo-dd.table-editor-combo
-  border-top: none
-
 .blist-table
+  .blist-combo
+    background-image: url(/stylesheets/images/content/select_arrow.png)
+    background-position: center right
+    background-repeat: no-repeat
+    padding: 0
+    width: 100%
+
   .blist-combo-value,
   .blist-combo-focused .blist-combo-value
-    font-size: 1em
+    background-image: none
+    font-size: 0.8333em
     padding: 0
+  .blist-combo-focused .blist-combo-value
+    border: 1px dotted #ccc
 
 .blist-combo-dd.table-editor-combo li
-  height: 1.5833em
+  height: 1.2em
 
 .blist-table .blist-combo-value .label,
 .blist-combo-dd.table-editor-combo .label
-  line-height: 1.5833em
+  line-height: 1.2em
 
-.blist-table .blist-combo-value .icon,
+.blist-table-editor .blist-combo-value .icon,
 .blist-combo-dd.table-editor-combo .icon
   background-position: 3px -1px
   background-repeat: no-repeat

@@ -147,7 +147,6 @@
             {tagName: 'a', href: opts.href || '#',
             'class': _.flatten(['button', opts.className, opts.iconClass]),
             contents: [
-                {value: {tagName: 'span', 'class': 'left'}, onlyIf: $.browser.msie},
                 {value: {tagName: 'span', 'class': 'icon'},
                     onlyIf: !$.isBlank(opts.iconClass)},
                 opts.text

@@ -114,8 +114,6 @@ $sidebar_about_tab_color_top: #a03341
   padding: 0.3em 0.7em
   &:hover
     @include box-shadow(0, 0, 0.3em, $color_toolbar_buttons_active_shadow)
-  .noLinearGradient &:hover
-    @include box-gradient-toolbar-buttons-active-background(3, 15, $box_gradient_alias_fix)
   &.disabled
     @include gradient-toolbar-buttons-disabled-background
     border: 1px solid $color_toolbar_buttons_disabled_border
@@ -123,3 +121,7 @@ $sidebar_about_tab_color_top: #a03341
     cursor: default
     &:hover
       @include box-shadow-none
+  .noLinearGradient &
+    @include box-gradient-toolbar-buttons-active-background(3, 21, $box_gradient_alias_fix)
+    &:hover
+      border-color: $color_toolbar_buttons_active_border - #222

@@ -112,7 +112,8 @@
 <% content_for :templates do %>
 <%= render(:partial => 'grid_sidebar_templates') %>
 <div class="embedForm">
-  <%= render :partial => 'datasets/embed_form', :locals => { :view => @view, :cur => 'root' } %>
+  <%= render :partial => 'datasets/embed_form', :locals => { :view => @view, :cur => 'root',
+                      :customization_id => CurrentDomain.default_widget_customization_id} %>
 </div>
 <div class="printForm">
   <%= render :partial => 'datasets/print_form', :locals => { :view => @view } %>

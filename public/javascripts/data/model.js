@@ -2549,7 +2549,7 @@ blist.namespace.fetch('blist.data');
             });
             sortConfigured = true;
 
-            this.columnSortChange(true);
+            this.columnSortChange(skipRequest);
 
             if (skipRequest) { return; }
 

@@ -10,6 +10,14 @@
   <%- cur_type = @view.displayFormat.nil? ||
     @view.displayFormat.data['type'].nil? ?
     'google' : @view.displayFormat.data['type'] -%>
+  <%- heatmap_config = @view.displayFormat.nil? ||
+    @view.displayFormat.data['heatmap'].nil? ?
+    {} : @view.displayFormat.data['heatmap']
+
+    # Legacy support:
+    heatmap_config['type'] = 'state' if @view.displayFormat &&
+                                        @view.displayFormat.data['heatmapType'] == 'us_state'
+  -%>
 
   <% form_tag("#{@view.href}/create_visualization?edit=#{@is_edit}",
     :class => 'clearfix') do %>
@@ -41,6 +49,29 @@
             <%- end -%>
           </select>
         </div>
+        <div class='line configLine type-heatmap <%= @is_edit && cur_type == 'heatmap' ? 'default' : '' %>'>
+          <label class='required' for='heatmapType'>Region</label>
+          <select id='heatmapType' name='heatmapType'
+            class='required <%= @is_edit ? '' : 'prompt' %> <%=
+            @is_edit && heatmap_config['type'] == 'counties' ? 'default' : '' %>'>
+            <option class='prompt' value=''>Select a Region Type</option>
+            <%- Displays::Map::HEATMAP_TYPES.each do |t| -%>
+            <option value='<%= t['value'] %>'
+              <%= @is_edit && heatmap_config['type'] == t['value'] ?
+                "selected='selected'" : '' %>><%= t['label'] %></option>
+            <%- end -%>
+          </select><select id='heatmapRegion' name='heatmapRegion'
+            class='required <%= @is_edit ? '' : 'prompt' %> <%=
+            @is_edit && heatmap_config['type']  == 'counties'? 'default' : '' %>'>
+            <option class='prompt' value=''>Select a US State</option>
+            <%- User.fetch_state_list.sort.each do |t|
+                  next if ['DC','--'].include? t.first -%>
+            <option value='<%= t[0].downcase %>'
+              <%= @is_edit && heatmap_config['region'] == t[0].downcase ?
+                "selected='selected'" : '' %>><%= t[1] %></option>
+            <%- end -%>
+          </select>
+        </div>
       </div>
 
       <%- cur_cols = @is_edit ? @view.columns.select {|c| !c.flag?('hidden')} :
@@ -51,7 +82,7 @@
         <div class='section'>
           <h3>Coordinates</h3>
           <p class='subtitle separator'>
-          Choose the data to map.  You must choose a location column<span class="subtitle heatmap"> with a state value</span>.
+          Choose the data to map.  You must choose a location column.
           </p>
 
           <%- uses_col_format = !@view.displayFormat.nil? &&
@@ -307,12 +338,32 @@
             $('.mapWrapper .column.right .typeBlock.type-' + v).show();
             $('.mapWrapper .configLine').hide();
             $('.mapWrapper .configLine.type-' + (v == 'heatmap' ? v : '')).show();
-            $('.mapWrapper .subtitle.heatmap, .mapWrapper .line.color').toggle(v == 'heatmap');
           }, 0);
     };
 
     $('.mapWrapper #mapType').change(adjustMapType)
       .keypress(adjustMapType).click(adjustMapType);
+
+    var adjustHeatmapType = function(event)
+    {
+      var $sel = $(this);
+      setTimeout(function()
+          {
+            if ($sel.val() == 'counties')
+            {
+              $(".mapWrapper #heatmapType").css('width', '8em');
+              $(".mapWrapper #heatmapRegion").show();
+            }
+            else
+            {
+              $(".mapWrapper #heatmapType").css('width', '17em');
+              $(".mapWrapper #heatmapRegion").hide();
+            }
+          }, 0);
+    };
+
+    $('.mapWrapper #heatmapType').change(adjustHeatmapType)
+      .keypress(adjustHeatmapType).click(adjustHeatmapType);
 
     var layersChanged = false;
     var hookUpLayer = function(block)
@@ -400,9 +451,14 @@
             colIds.push($sel.find('option:selected').attr('data-columnId'));
         }
 
-        options.heatmapType = 'us_state';
-        options.lowcolor  = $('#heatmap-lowcolor-0').val();
-        options.highcolor = $('#heatmap-highcolor-0').val();
+        options.heatmap = {
+          type: $('.mapWrapper #heatmapType').val(),
+          region: $('.mapWrapper #heatmapRegion').val(),
+          colors: {
+            low: $('#heatmap-lowcolor-0').val(),
+            high: $('#heatmap-highcolor-0').val()
+          }
+        };
       }
       else
       {

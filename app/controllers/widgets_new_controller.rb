@@ -3,25 +3,19 @@ class WidgetsNewController < ApplicationController
   layout 'widgets_new'
 
   def show
-    if params[:customization_id].blank? ||
-       params[:customization_id] == 'normal' ||  # support older
-       params[:customization_id] == 'black'      # widget format
-      return redirect_to(params.merge!(
-        :customization_id => CurrentDomain.default_widget_customization_id))
-    elsif !params[:customization_id].match(/\w{4}-\w{4}/) &&
-           params[:customization_id] != 'default'
-      return render_404
-    end
-
     begin
-      if params[:customization_id] == 'default'
+      if params[:customization_id] == 'default' ||
+        !params[:customization_id].match(/\w{4}-\w{4}/)
         @theme_id = 'default'
         @theme = WidgetCustomization.default_theme(1)
       else
         @theme_id = params[:customization_id]
         @theme = WidgetCustomization.find(params[:customization_id]).customization
+
+        # complain if we see an out of date 4-4, so the rescue catches it
+        throw "invalid widget format (version 0)" if @theme[:version] != 1
       end
-    rescue CoreServer::ResourceNotFound
+    rescue
       begin
         @theme_id = CurrentDomain.default_widget_customization_id
         @theme = WidgetCustomization.find(@theme_id).customization
@@ -32,10 +26,6 @@ class WidgetsNewController < ApplicationController
         @theme_id = 'default'
         @theme = WidgetCustomization.default_theme(1)
       end
-    end
-
-    if !@theme[:version].present?
-      return redirect_to(params.merge!(:controller => 'widgets', :action => 'show'))
     end
 
     begin

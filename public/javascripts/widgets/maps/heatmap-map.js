@@ -33,6 +33,16 @@
                 };
             }
 
+            if (config.hideLayers) // Default is false.
+            {
+                var layers = mapObj.getLayers();
+                for (var i = 0; i < layers.length; i++)
+                { mapObj.map.getLayer(layers[0].id).hide(); }
+            }
+
+            if (config.hideZoomSlider) // Default is false.
+            { mapObj.map.hideZoomSlider(); }
+
             if (_.isUndefined(mapObj._locCol) || _.isUndefined(mapObj._quantityCol))
             {
                 mapObj.errorMessage = 'Required columns missing';

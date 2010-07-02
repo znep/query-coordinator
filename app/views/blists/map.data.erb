@@ -15,6 +15,10 @@
     {} : @view.displayFormat.data['heatmap']
 
     # Legacy support:
+    if @view.displayFormat && (@view.displayFormat.data['heatmapType'] || '').include?('counties')
+      heatmap_config['type'] = 'counties'
+      heatmap_config['region'] = @view.displayFormat.data['heatmapType'].split('_').first
+    end
     heatmap_config['type'] = 'state' if @view.displayFormat &&
                                         @view.displayFormat.data['heatmapType'] == 'us_state'
   -%>
@@ -243,7 +247,7 @@
             <%- layers.each do |l| -%>
             <%- layer_name = 'esri-layer-' + count.to_s -%>
 
-            <div class='layerBlock configLineBlock <%= count == 0 ?
+            <div class='layerBlock configLineBlock <%= count == 0 && cur_type != 'heatmap' ?
               'firstBlock' : '' %> clearfix'>
             <a class='removeButton' href='#removeDataBlock'
               title='Remove'>Remove</a>
@@ -338,6 +342,8 @@
             $('.mapWrapper .column.right .typeBlock.type-' + v).show();
             $('.mapWrapper .configLine').hide();
             $('.mapWrapper .configLine.type-' + (v == 'heatmap' ? v : '')).show();
+            if (v == 'heatmap')
+            { $('.mapWrapper .column.right .layerBlock:first').removeClass('firstBlock'); }
           }, 0);
     };
 
@@ -490,6 +496,8 @@
             type: $layer.find(':selected').attr('layer_type')};
           options.layers.push(layer);
       });
+      if (options.heatmap && (!options.layers || options.layers.length == 0))
+      { options.heatmap.hideLayers = true; }
 
       var data = {viewName: $('.mapWrapper #mapName').val(),
         vizType: 'map', options: JSON.stringify(options),

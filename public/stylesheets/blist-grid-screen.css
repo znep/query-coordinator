@@ -772,6 +772,17 @@ body#lensBody
 .invalidView .gridItem
 { display: none; }
 
+/* Show only download, print links for temp view*/
+.unsavedView #mainMenu > li,
+.unsavedView #mainMenu > li dd > ul > li
+{ display: none; }
+
+.unsavedView #mainMenu > li.download,
+.unsavedView #mainMenu > li.download li.export,
+.unsavedView #mainMenu > li.basic,
+.unsavedView #mainMenu > li.basic li.print
+{ display: block; }
+
 .unsavedView #lensContainer .headerBar .mainViewSeparator
 { border-right: none; }
 

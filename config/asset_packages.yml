@@ -165,6 +165,7 @@ javascripts:
   - widgets/info-pane-publish
   - screens/filter-screen
   - widgets/visualization
+  - widgets/form-inliner
   - screens/info-pane
   - screens/meta-tabs
   - screens/attribution-edit
@@ -238,6 +239,7 @@ javascripts:
   - widgets/scrollTabs
   - widgets/inline-edit
   - widgets/visualization
+  - widgets/form-inliner
   - screens/external-widget-new
 - widgets-show-new-form:
   - plugins/jquery.uniform
@@ -254,6 +256,7 @@ javascripts:
   - util/inline-login
   - controls/menu
   - widgets/wizard-prompt
+  - widgets/form-inliner
   - controls/modal-dialogs
   - controls/expander
   - controls/feed-list

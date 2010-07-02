@@ -9,8 +9,9 @@
 <script type="text/javascript" charset="utf-8">
   blist.common.modalReady = function()
   {
-    $('.printDatasetWrapper form').submit(function()
+    $('.printDatasetWrapper form').submit(function(event)
     {
+      blist.common.formInliner(event);
       $('#modal').jqmHide();
     });
   };

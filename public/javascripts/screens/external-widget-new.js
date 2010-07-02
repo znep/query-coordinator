@@ -720,6 +720,10 @@ $(function()
         }
     });
 
+    $('.needsInlineView').bind('submit', commonNS.formInliner);
+
+    $('.downloadsList .item .type a').downloadToFormCatcher();
+
     // Notify publisher that we are ready
     widgetNS.ready = true;
 });

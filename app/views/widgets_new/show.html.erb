@@ -110,8 +110,8 @@
     </div>
     <%- if !@view.is_alt_view? -%>
     <div class="widgetContentSection widgetContent_print">
-      <% form_tag("/views/#{@view.id}/rows.pdf", :method => :get,
-        :target => "_blank", :class => 'commonForm') do %>
+      <% form_tag("/views/INLINE/rows.pdf", :method => :get,
+        :target => "_blank", :class => 'commonForm needsInlineView') do %>
         <%= render :partial => 'datasets/print_form', :locals => { :view => @view } %>
       <% end %>
     </div>

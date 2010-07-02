@@ -18,10 +18,11 @@
                     data: {},
                     callback: function($sect)
                     {
+                        blist.namespace.fetch('blist.common');
                         $sect.closest('form').attr('target', '_blank')
+                            .submit(blist.common.formInliner)
                             .attr('method', 'GET')
-                            .attr('action', '/views/' + blist.display.view.id +
-                                '/rows.pdf');
+                            .attr('action', '/views/INLINE/rows.pdf');
                     }
                 }
             }

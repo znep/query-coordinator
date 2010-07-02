@@ -61,5 +61,6 @@ blist.dataset.getTypeName = function(view)
 
 blist.dataset.baseViewCopy = function(view)
 {
-    return {originalViewId: view.id, query: $.extend(true, {}, view.query)};
+    return {originalViewId: view.id, query: $.extend(true, {}, view.query),
+        displayFormat: $.extend(true, {}, view.displayFormat)};
 };

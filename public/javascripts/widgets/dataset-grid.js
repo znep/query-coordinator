@@ -2,6 +2,11 @@
 
 (function($)
 {
+    $.fn.isDatasetGrid = function()
+    {
+        return !_.isUndefined($(this[0]).data("datasetGrid"));
+    };
+
     $.fn.datasetGrid = function(options)
     {
         // Check if object was already created

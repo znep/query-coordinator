@@ -16,7 +16,7 @@
       <span class="icon"></span>
     </a>
     <div id='datasetIcon' class='type<%= @view.display.type.capitalize %>'>
-      <span class='icon'><%= @view.display.name %></span>
+      <span class='icon currentViewName'><%= @view.display.name %></span>
       <span class='alertIcon'></span>
     </div>
     <div class='unsavedLine'>
@@ -30,9 +30,9 @@
       <a href='#Revert' title='Revert to saved view'
         class='revert toolbarButton'>Revert</a>
     </div>
-    <h2 id='datasetName' class="clipText"><%= @view.name %></h2>
+    <h2 id='datasetName' class="clipText currentViewName"><%= @view.name %></h2>
     <div class='basedOn clipText'>
-    (based on <span class='parentName'><%= @view.name %></span>)
+    (based on <span class='parentName currentViewName'><%= @view.name %></span>)
     </div>
     <div id='description' class="collapsed"><%= @view.description %></div>
   </div>
@@ -156,7 +156,8 @@
 
     <%# Embed pane %>
     blist.sidebarHidden.embed = blist.sidebarHidden.embed || {};
-    blist.sidebarHidden.embed.formCreate = <%= @view.is_alt_view? ||
+    blist.sidebarHidden.embed.formCreate = <%= @view.is_alt_view? &&
+      !@view.is_form? ||
       @view.is_grouped? ||
       !CurrentDomain.user_can?(current_user, :create_datasets) ||
       !module_available?(:form_publish) ||

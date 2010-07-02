@@ -2,10 +2,8 @@
 {
     if (blist.sidebarHidden.savedViews) { return; }
 
-    var $filterSection;
-    var $vizSection;
-    var filters;
-    var vizViews;
+    var $sections = {};
+    var views = {};
 
     var renderViews = function(views, $section, sort)
     {
@@ -135,23 +133,30 @@
     $.Tache.Get({ url: '/views.json',
         data: { method: 'getByTableId', tableId: blist.display.view.tableId },
         dataType: 'json', contentType: 'application/json',
-        success: function(views)
+        success: function(v)
         {
-            filters = _.select(views, function(v)
+            views['filter'] = _.select(v, function(v)
             {
                 return _.include(['Filter', 'Grouped'],
                     blist.dataset.getDisplayType(v));
             });
 
-            if (!$.isBlank($filterSection))
-            { setupSection(filters, $filterSection); }
+            if (!$.isBlank($sections['filter']))
+            { setupSection(views['filter'], $sections['filter']); }
 
 
-            vizViews = _.select(views, function(v)
+            views['viz'] = _.select(v, function(v)
             { return 'Visualization' == blist.dataset.getDisplayType(v); });
 
-            if (!$.isBlank($vizSection))
-            { setupSection(vizViews, $vizSection); }
+            if (!$.isBlank($sections['viz']))
+            { setupSection(views['viz'], $sections['viz']); }
+
+
+            views['form'] = _.select(v, function(v)
+            { return 'Form' == blist.dataset.getDisplayType(v); });
+
+            if (!$.isBlank($sections['form']))
+            { setupSection(views['form'], $sections['form']); }
         }});
 
 
@@ -173,9 +178,9 @@
                 },
                 callback: function($s)
                 {
-                    $filterSection = $s;
-                    if (!$.isBlank(filters))
-                    { setupSection(filters, $filterSection); }
+                    $sections['filter'] = $s;
+                    if (!$.isBlank(views['filter']))
+                    { setupSection(views['filter'], $sections['filter']); }
                 }
             }
         }]
@@ -201,14 +206,42 @@
                 },
                 callback: function($s)
                 {
-                    $vizSection = $s;
-                    if (!$.isBlank(vizViews))
-                    { setupSection(vizViews, $vizSection); }
+                    $sections['viz'] = $s;
+                    if (!$.isBlank(views['viz']))
+                    { setupSection(views['viz'], $sections['viz']); }
                 }
             }
         }]
     };
 
     $.gridSidebar.registerConfig(vizConfig);
+
+
+    var formConfig =
+    {
+        name: 'embed.savedForms',
+        priority: 10,
+        title: 'Saved Views',
+        subtitle: 'See existing forms on this dataset',
+        sections: [{
+            customContent: {
+                template: 'itemsListBlock',
+                directive: {
+                    '.emptyResult .type': '#{resultType}s'
+                },
+                data: {
+                    resultType: 'view'
+                },
+                callback: function($s)
+                {
+                    $sections['form'] = $s;
+                    if (!$.isBlank(views['form']))
+                    { setupSection(views['form'], $sections['form']); }
+                }
+            }
+        }]
+    };
+
+    $.gridSidebar.registerConfig(formConfig);
 
 })(jQuery);

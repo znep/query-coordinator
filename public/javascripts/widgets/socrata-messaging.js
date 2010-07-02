@@ -55,6 +55,7 @@
             overlap: 0,
             parent: 'body',
             positions: null,
+            showSpike: true,
             shrinkToFit: true,
             trigger: 'hover'
         },
@@ -88,7 +89,7 @@
                         strokeStyle: '#999999',
                         cornerRadius: 3,
                         spikeGirth: 15,
-                        spikeLength: 12,
+                        spikeLength: sTipObj.settings.showSpike ? 12 : 0,
                         shadow: true,
                         shadowOffsetX: 0,
                         shadowOffsetY: 0,
@@ -238,6 +239,14 @@
 
             if (_.isNull(config.message)) { return; }
 
+            if (config.overlay)
+            {
+                config.positions = 'left';
+                config.overlap = $socrataAlert.width() / 2;
+                config.showSpike = false;
+                delete config.overlay;
+            }
+
             $socrataAlert.socrataTip(config);
             setTimeout(function() { $socrataAlert.socrataTip().hide(); }, 5000);
         });
@@ -248,6 +257,7 @@
     //
     $.fn.socrataAlert.defaults = {
         message: null,
+        overlay: false,
         trigger: 'now'
     };
 

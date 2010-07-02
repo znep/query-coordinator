@@ -265,6 +265,8 @@
         buttons: {
             create: {text: 'Create', value: true, isDefault: true,
                 requiresLogin: true},
+            update: {text: 'Update', value: true, isDefault: true,
+                requiresLogin: true},
             done: {text: 'Done', value: true, isDefault: true},
             cancel: {text: 'Cancel', value: false, isCancel: true}
         },
@@ -523,7 +525,8 @@
                     { $overlay.show(); }
                     else { $overlay.fadeIn(500); }
 
-                    sidebarObj.$grid().datasetGrid().disable();
+                    if (sidebarObj.$grid().isDatasetGrid())
+                    { sidebarObj.$grid().datasetGrid().disable(); }
                 }
                 else { sidebarObj._isModal = false; }
 
@@ -571,7 +574,8 @@
                     sidebarObj._origParent.css('z-index',
                         sidebarObj._origParentZIndex);
 
-                    sidebarObj.$grid().datasetGrid().enable();
+                    if (sidebarObj.$grid().isDatasetGrid())
+                    { sidebarObj.$grid().datasetGrid().enable(); }
                 }
 
                 // In non-IE we need to trigger a resize so the grid restores
@@ -642,9 +646,7 @@
                     { updateEnabled(sp, true); }
                     else if (_.isFunction(sp.onlyIf))
                     {
-                        updateEnabled(sp, sp.onlyIf(
-                            sidebarObj.$grid().blistModel().meta().view
-                        ));
+                        updateEnabled(sp, sp.onlyIf(blist.display.view));
                     }
                     else
                     { updateEnabled(sp, sp.onlyIf === true); }
@@ -1189,7 +1191,7 @@
         var colTypes = [];
         if (!$.isBlank(args.item.columns))
         {
-            cols = _.select(sidebarObj.$grid().blistModel().meta().view.columns,
+            cols = _.select(blist.display.view.columns,
                 function(c) { return c.dataTypeName != 'meta_data'; });
             if (!args.item.columns.hidden)
             {
@@ -1213,7 +1215,12 @@
             var nParts = (name || '').split('.');
             var base = data;
             while (nParts.length > 0 && !$.isBlank(base))
-            { base = base[nParts.shift()]; }
+            {
+                base = base[nParts.shift()];
+                if (_.isArray(base) && nParts.length > 0 &&
+                    $.isBlank(nParts[0].match(/^\d+$/)))
+                { base = _.include(base, nParts.shift()); }
+            }
             if (nParts.length == 0 && !$.isBlank(base))
             {
                 return base;

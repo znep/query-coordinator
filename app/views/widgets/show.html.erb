@@ -198,7 +198,7 @@
   <%- if @view.can_edit() && !@view.is_blobby? -%>
   <%= raw @display.render_edit_javascript_includes(self) %>
   <%- end -%>
-  <%= javascript_include_merged 'widgets-show-new' %>
+  <%= javascript_include_merged 'widgets-show' %>
 
   <%- unless @theme[:behavior][:ga_code].empty? -%>
     <script type="text/javascript">

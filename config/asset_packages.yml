@@ -221,7 +221,7 @@ javascripts:
   - screens/stats-screen
 - tweetsets:
   - screens/tweetsets-screen
-- widgets-show-new:
+- widgets-show:
   - plugins/ui.effects.custom.min
   - plugins/jquery.uniform
   - plugins/jquery.tablesorter
@@ -240,8 +240,8 @@ javascripts:
   - widgets/inline-edit
   - widgets/visualization
   - widgets/form-inliner
-  - screens/external-widget-new
-- widgets-show-new-form:
+  - screens/widget
+- widgets-show-form:
   - plugins/jquery.uniform
 - screen-dataset:
   - plugins/jquery.colorPicker

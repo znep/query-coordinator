@@ -180,13 +180,13 @@ ActionController::Routing::Routes.draw do |map|
   # accept anything/anything/4-4, which matches our widget customization
   # path of widgets/4-4/4-4
 
-  map.connect 'widgets/:id/:customization_id', :controller => 'widgets_new',
+  map.connect 'widgets/:id/:customization_id', :controller => 'widgets',
     :action => 'show', :requirements => {:id => UID_REGEXP}
-  map.connect 'widgets/:id', :controller => 'widgets_new',
+  map.connect 'widgets/:id', :controller => 'widgets',
     :action => 'show', :requirements => {:id => UID_REGEXP}
-  map.connect 'w/:id/:customization_id', :controller => 'widgets_new',
+  map.connect 'w/:id/:customization_id', :controller => 'widgets',
     :action => 'show', :requirements => {:id => UID_REGEXP}
-  map.connect 'w/:id', :controller => 'widgets_new',
+  map.connect 'w/:id', :controller => 'widgets',
     :action => 'show', :requirements => {:id => UID_REGEXP}
 
   map.connect ':category/:view_name/:id', :controller => 'blists',

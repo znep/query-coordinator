@@ -414,7 +414,8 @@
                         var alreadyGrouped = _.include(view.query.groupBys || [],
                             function(gb) { return gb.columnId == col.id; });
 
-                        var newWidth = col.width + (drillDown ? 30 : 0);
+                        var newWidth = col.width +
+                            (drillDown && !(col.format || {}).drill_down ? 30 : 0);
                         var newFormat = $.extend({}, col.format,
                             {drill_down: drillDown});
 
@@ -448,14 +449,12 @@
                         {
                             newCols.push($.extend({}, col,
                                 {hidden: $.isBlank(format.grouping_aggregate) ||
+                                !$.isBlank(existingFormat.grouping_aggregate) &&
                                     _.include(col.flags || [], 'hidden'),
-                                position: newCols.length + 1, format: format}));
+                                position: newCols.length + 1}));
                         }
-                        else
-                        {
-                             _.detect(newCols, function(nc)
-                             { return nc.id == col.id; }).format = format;
-                        }
+                        _.detect(newCols, function(nc)
+                            { return nc.id == col.id; }).format = format;
                     });
                 }
 
@@ -538,7 +537,8 @@
                             $.socrataServer.addRequest(
                                 {url: '/views/' + view.id + '/columns/' +
                                 c.id + '.json', type: 'PUT',
-                                data: JSON.stringify({hidden: c.hidden}),
+                                data: JSON.stringify({hidden: c.hidden,
+                                    format: c.format}),
                                 error: errorCallback});
                         });
 

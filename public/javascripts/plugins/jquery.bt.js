@@ -665,15 +665,15 @@ jQuery.bt = {version: '0.9.5-rc1'};
           var box = $(i).data('bt-box');
           var contentOrig = $(i).data('bt-content-orig');
           var overlay = $(i).data('bt-overlay');
-          if (typeof box == 'object') {
+          if (!$.isBlank(box) && typeof box == 'object') {
             $(box).remove();
             $(i).removeData('bt-box');
           }
-          if (typeof contentOrig == 'object') {
+          if (!$.isBlank(contentOrig) && typeof contentOrig == 'object') {
             var clones = $(contentOrig.original).data('bt-clones');
             $(contentOrig).data('bt-clones', arrayRemove(clones, contentOrig.clone));        
           }
-          if (typeof overlay == 'object') {
+          if (!$.isBlank(overlay) && typeof overlay == 'object') {
             $(overlay).remove();
             $(i).removeData('bt-overlay');
           }

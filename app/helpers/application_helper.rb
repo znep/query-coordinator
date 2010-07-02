@@ -442,7 +442,7 @@ HREF
 
   def jquery_include
     if ENV["RAILS_ENV"] != 'production'
-      return '<script src="/javascripts/jquery-1.4.1.js" type="text/javascript" ' +
+      return '<script src="/javascripts/jquery-1.4.2.js" type="text/javascript" ' +
         'charset="utf-8"></script>'
     else
       return <<-EOS
@@ -450,7 +450,7 @@ HREF
           document.write([
             "\\<script src='",
             ("https:" == document.location.protocol) ? "https://" : "http://",
-            "ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js'",
+            "ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js'",
             " type='text/javascript'>\\<\\/script>"
           ].join(''));
         </script>

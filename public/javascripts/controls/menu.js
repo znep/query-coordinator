@@ -91,6 +91,13 @@
                     openMenu(opts, $menuContainer, $menuButton, $menuDropdown);
                 }
             });
+            $menuContainer.bind('menu-close', function(event)
+            {
+                if ($menuDropdown.is(':visible'))
+                {
+                    closeMenu(opts, $menuContainer, $menuButton, $menuDropdown);
+                }
+            });
         });
     };
 

@@ -179,9 +179,8 @@ ActionController::Routing::Routes.draw do |map|
   # This needs to be more specific than the dataset routes, which will all
   # accept anything/anything/4-4, which matches our widget customization
   # path of widgets/4-4/4-4
-  map.connect 'widgets/:id/:customization_id', :controller => 'widgets',
-   :action => 'show', :requirements => {:id => UID_REGEXP, :customization_id => UID_REGEXP}
-
+  map.connect 'widgets/:id/:customization_id', :controller => 'widgets_new',
+   :action => 'show', :requirements => {:id => UID_REGEXP}
   map.connect 'w/:id/:customization_id', :controller => 'widgets_new',
     :action => 'show', :requirements => {:id => UID_REGEXP}
   map.connect 'w/:id', :controller => 'widgets_new',
@@ -246,20 +245,12 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'dataset/:id/meta_tab_header', :controller => 'blists', :action => 'meta_tab_header'
   map.connect 'dataset/:id/meta_tab', :controller => 'blists', :action => 'meta_tab'
 
-  map.connect 'widgets/:id/:variation', :controller => 'widgets', :action => 'show'
-  map.connect 'widgets/:id/:variation.data', :controller => 'widgets', :action => 'show', :format => 'data'
-  map.connect 'widgets/:id', :controller => 'widgets', :action => 'show'
-  map.connect 'widgets/:id.data', :controller => 'widgets', :action => 'show', :format => 'data'
-
   map.connect 'customization/new', :controller => 'blists', :action => 'new_customization',
     :conditions => { :method => :get }, :format => 'data'
   map.connect 'customization/create', :controller => 'blists', :action => 'create_customization',
     :conditions => { :method => :put }, :format => 'data'
 
   map.connect 'widgets_preview/:id', :controller => 'widgets_preview', :action => 'show'
-
-  map.connect 'widgets_meta/:id/meta_tab_header', :controller => 'widgets', :action => 'meta_tab_header'
-  map.connect 'widgets_meta/:id/meta_tab', :controller => 'widgets', :action => 'meta_tab'
 
   map.connect 'new_image', :controller => 'themes', :action => 'new_image'
 

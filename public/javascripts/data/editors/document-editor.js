@@ -111,11 +111,11 @@
                     this._curVal = this.originalValue;
                     var html = '<div class="blist-table-editor ' +
                         'type-' + this.column.renderTypeName + '">' +
-                        '<a class="button add" href="#add" ' +
+                        '<a class="tableButton add" href="#add" ' +
                         'title="Add a new document">Add</a>' +
-                        '<a class="button replace" href="#replace" ' +
+                        '<a class="tableButton replace" href="#replace" ' +
                         'title="Replace the document">Replace</a>' +
-                        '<a class="button remove" href="#remove" ' +
+                        '<a class="tableButton remove" href="#remove" ' +
                         'title="Remove the document">Remove</a>' +
                         '<a class="docLink" target="blist-viewer"></a>' +
                         '<input class="hiddenTextField" />' +
@@ -129,7 +129,7 @@
             {
                 var editObj = this;
                 updateButtons(this);
-                editObj.$editor().find('a.button')
+                editObj.$editor().find('a.tableButton')
                     .click(function(e) { buttonClicked(editObj, e); })
                     .end()
                     .find(':input')

@@ -1,5 +1,5 @@
 class View < Model
-  cattr_accessor :categories, :licenses, :creative_commons, :merged_licenses
+  cattr_accessor :licenses, :creative_commons, :merged_licenses
 
   def self.find(options = nil, get_all=false)
     if get_all || options.is_a?(String)
@@ -31,6 +31,13 @@ class View < Model
   def self.find_favorites()
     path = "/favorite_views.json"
     parse(CoreServer::Base.connection.get_request(path))
+  end
+
+  def self.categories
+    categories = CurrentDomain.configuration('view_categories').properties
+    map = @@default_categories.clone
+    categories.each {|c| map[c[0].titleize] = c[0].titleize}
+    return map
   end
 
   def column_by_id(column_id)
@@ -562,13 +569,8 @@ class View < Model
       "rows.json?method=email" + (email.nil? ? "" : "&email=#{email}"))
   end
 
-  @@categories = {
-    "" => "-- No category --",
-    "Fun" => "Fun",
-    "Personal" => "Personal",
-    "Business" => "Business",
-    "Education" => "Education",
-    "Government" => "Government"
+  @@default_categories = {
+    "" => "-- No category --"
   }
 
   @@licenses = {

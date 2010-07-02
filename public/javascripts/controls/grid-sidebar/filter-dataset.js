@@ -73,6 +73,17 @@
         return true;
     };
 
+    var filterEditorRequired = function(sidebarObj, vals)
+    {
+        var colId = vals['children.0.columnId'];
+        var op = vals.value;
+        if ($.isBlank(colId) || $.isBlank(op)) { return false; }
+
+        if (_.include(['IS_BLANK', 'IS_NOT_BLANK'], op)) { return false; }
+
+        return true;
+    };
+
     var filterEditorValue = function(sidebarObj, $field)
     {
         var $editor = $field.find('.editorWrapper');
@@ -138,6 +149,7 @@
                                 name: 'children.1.value',
                                 linkedField: ['children.0.columnId', 'value'],
                                 editorCallbacks: {create: filterEditor,
+                                    required: filterEditorRequired,
                                     value: filterEditorValue,
                                     cleanup: filterEditorCleanup}}
                         ]},
@@ -150,7 +162,6 @@
                 wizard: 'Do you wish to filter this data down to certain values?'
             },
 
-
             // Group section
             {
                 title: 'Roll-Ups & Drill-Downs', name: 'filterGroup',
@@ -162,7 +173,7 @@
                             name: 'columnId', notequalto: 'groupColumn',
                             columns: {type: groupableTypes, hidden: false}},
                         wizard: 'Choose one or more columns with repeated values ' +
-                            'to group all the repeated values into a single row'
+                            'to group them into a single row'
                     },
                     {type: 'repeater', addText: 'Add Roll-Up Column', minimum: 0,
                         name: 'columns',
@@ -311,8 +322,6 @@
     {
         if (!sidebarObj.baseFormHandler($pane, value)) { return; }
 
-        sidebarObj.finishProcessing();
-
         var filterView = sidebarObj.getFormValues($pane);
         filterView.query = filterView.query || {};
         _.each(filterView.query.orderBys || [], function(ob)
@@ -368,6 +377,7 @@
         {
             $pane.find('.mainError')
                 .text('You must group by at least one column to roll-up a column');
+            sidebarObj.finishProcessing();
             return;
         }
 
@@ -377,27 +387,35 @@
         {
             $pane.find('.mainError')
                 .text('Each roll-up column must have a function');
+            sidebarObj.finishProcessing();
             return;
         }
+
+        var doViewCallback = function()
+        {
+            model.getTempView($.extend(true, {}, blist.display.view), true,
+                function()
+                {
+                    sidebarObj.finishProcessing();
+
+                    _.defer(function()
+                    {
+                        sidebarObj.addPane(configName);
+                        sidebarObj.show(configName);
+                    });
+                });
+
+            dsGrid.setTempView('filterSidebar');
+        };
 
         var model = sidebarObj.$grid().blistModel();
         model.multiSort(filterView.query.orderBys, true);
 
         var dsGrid = sidebarObj.$grid().datasetGrid();
-        dsGrid.groupAggregate(filterView.query.groupBys,
-            filterView.columns, false, null, true, null, null, true);
-
         dsGrid.updateFilter(filterView.query.filterCondition, false, true);
 
-        model.getTempView($.extend(true, {}, blist.display.view));
-
-        dsGrid.setTempView('filterSidebar');
-
-        _.defer(function()
-        {
-            sidebarObj.addPane(configName);
-            sidebarObj.show(configName);
-        });
+        dsGrid.groupAggregate(filterView.query.groupBys,
+            filterView.columns, false, null, true, doViewCallback, null, true);
     };
 
     $.gridSidebar.registerConfig(config);

@@ -86,7 +86,7 @@
     </div>
     <div class="widgetContentSection widgetContent_embed">
       <%= render :partial => 'datasets/embed_form',
-                 :locals => { :view => @view, :cur => params[:cur] } %>
+                 :locals => { :view => @view, :cur => params[:cur], :customization_id => @theme_id } %>
     </div>
     <div class="widgetContentSection widgetContent_api">
       <div class="apiContentWrapper">

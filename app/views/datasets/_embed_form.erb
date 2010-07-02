@@ -3,7 +3,7 @@
   <div class="embedCodeWrapper">
     <textarea id="embed_code" name="embed_code"><%=
       get_publish_embed_code_for_view(view, {:dimensions => { :width => "#width#",  :height => "#height#" }},
-                                      CurrentDomain.default_widget_customization_id, cur)
+                                      (customization_id || CurrentDomain.default_widget_customization_id), cur)
     %></textarea>
   </div>
 

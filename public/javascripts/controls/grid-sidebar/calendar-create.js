@@ -17,12 +17,13 @@
             var dateCols = _.select(view.columns, function(c)
                 {
                     return _.include(['date', 'calendar_date'], c.dataTypeName) &&
-                        ($.isBlank(c.flags) || !_.include(c.flags, 'hidden'));
+                        (isEdit || ($.isBlank(c.flags) ||
+                            !_.include(c.flags, 'hidden')));
                 });
             var textCols = _.select(view.columns, function(c)
                 {
-                    return c.dataTypeName == 'text' &&
-                        ($.isBlank(c.flags) || !_.include(c.flags, 'hidden'));
+                    return c.dataTypeName == 'text' && (isEdit ||
+                        ($.isBlank(c.flags) || !_.include(c.flags, 'hidden')));
                 });
             return dateCols.length > 0 && textCols.length > 0;
         },
@@ -43,14 +44,14 @@
                     {text: 'Starting Date', name: 'displayFormat.startDateTableId',
                         type: 'columnSelect', required: true, notequalto: 'dateCol',
                         isTableColumn: true,
-                        columns: {type: ['calendar_date', 'date'], hidden: false},
+                        columns: {type: ['calendar_date', 'date'], hidden: isEdit},
                         wizard: {prompt: 'Select the column with the initial ' +
                             'date of events'}
                     },
                     {text: 'Ending Date', name: 'displayFormat.endDateTableId',
                         type: 'columnSelect', notequalto: 'dateCol',
                         isTableColumn: true,
-                        columns: {type: ['calendar_date', 'date'], hidden: false},
+                        columns: {type: ['calendar_date', 'date'], hidden: isEdit},
                         wizard: {prompt: 'Select the column with the ending ' +
                             'date of events'}
                     }
@@ -61,13 +62,13 @@
                 fields: [
                     {text: 'Event Title', name: 'displayFormat.titleTableId',
                         type: 'columnSelect', required: true, isTableColumn: true,
-                        columns: {type: 'text', hidden: false},
+                        columns: {type: 'text', hidden: isEdit},
                         wizard: {prompt: 'Select the column with the primary ' +
                             'text that should display in each event'}
                     },
                     {text: 'Description', name: 'displayFormat.descriptionTableId',
                         type: 'columnSelect', isTableColumn: true,
-                        columns: {type: 'text', hidden: false},
+                        columns: {type: 'text', hidden: isEdit},
                         wizard: {prompt: 'Select the column with the ' +
                             'descriptive text that will appear on mousing ' +
                             'over the event'}
@@ -147,14 +148,36 @@
 
                     $('.currentViewName').text(blist.display.view.name);
 
-                    sidebarObj.$grid().blistCalendar()
-                        .reload(blist.display.view.displayFormat);
+                    var finishUpdate = function()
+                    {
+                        sidebarObj.$grid().blistCalendar()
+                            .reload(blist.display.view.displayFormat);
 
-                    sidebarObj.$dom().socrataAlert(
-                        {message: 'Your calendar has been updated', overlay: true});
-                    sidebarObj.hide();
+                        sidebarObj.$dom().socrataAlert(
+                            {message: 'Your calendar has been updated',
+                                overlay: true});
 
-                    sidebarObj.addPane(configName);
+                        sidebarObj.hide();
+                        sidebarObj.addPane(configName);
+                    };
+
+                    var p = blist.display.view.displayFormat;
+                    _.each(_.compact([p.startDateTableId, p.endDateTableId,
+                        p.titleTableId, p.descriptionTableId]),
+                    function(tId)
+                    {
+                        var col = _.detect(blist.display.view.columns, function(c)
+                            { return c.tableColumnId == tId; });
+                        if (_.include(col.flags || [], 'hidden'))
+                        {
+                            $.socrataServer.addRequest({url: '/views/' +
+                                blist.display.view.id + '/columns/' + col.id +
+                                '.json', type: 'PUT',
+                                data: JSON.stringify({hidden: false})});
+                        }
+                    });
+                    if (!$.socrataServer.runRequests({success: finishUpdate}))
+                    { finishUpdate(); }
                 }
             }});
     };

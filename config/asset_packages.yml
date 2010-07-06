@@ -26,6 +26,7 @@ javascripts:
   - util/google-analytics
   - util/dataset
   - util/templates
+  - util/socrata-server
   - widgets/socrata-messaging
   - widgets/text-prompt
   - widgets/values
@@ -36,7 +37,6 @@ javascripts:
   - util/sizing
   - widgets/clipped-text
   - screens/common-layout
-  - util/socrata-server
   - widgets/scrollable
 - shared-calendar:
   - plugins/ui.draggable

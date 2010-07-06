@@ -235,7 +235,7 @@
 
                     views['viz'] = _.select(v, function(v)
                     {
-                        return _.include(['Visualization', 'Calendar'],
+                        return _.include(['Visualization', 'Calendar', 'Map'],
                             blist.dataset.getDisplayType(v));
                     });
 

@@ -907,6 +907,7 @@
 
             resetForm: function($pane)
             {
+                var sidebarObj = this;
                 if ($pane.is('.noReset')) { return; }
 
                 $pane.find('.formSection.selectable:not(.collapsed)')

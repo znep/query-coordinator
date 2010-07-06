@@ -246,7 +246,9 @@
             {
                 // State is the only salient region to search for in a location w/o lat/lng.
                 // Well, there are ZIP codes, but we have no GIS data for those yet.
-                point = JSON.parse(datum[mapObj._locCol.dataIndex][0]).state;
+                point = JSON.parse(datum[mapObj._locCol.dataIndex][0]);
+                if (point) { point = point.state; }
+                else { return; }
             }
         }
         else if (mapObj._locCol.renderTypeName == 'text')

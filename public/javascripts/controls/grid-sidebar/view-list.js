@@ -234,7 +234,10 @@
 
 
                     views['viz'] = _.select(v, function(v)
-                    { return 'Visualization' == blist.dataset.getDisplayType(v); });
+                    {
+                        return _.include(['Visualization', 'Calendar'],
+                            blist.dataset.getDisplayType(v));
+                    });
 
                     if (!$.isBlank($sections['viz']))
                     { setupSection(views['viz'], $sections['viz']); }

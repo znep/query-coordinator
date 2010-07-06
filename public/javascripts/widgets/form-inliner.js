@@ -26,27 +26,30 @@ blistCommonNS.formInliner.defaults = {
 {
     $.fn.downloadToFormCatcher = function()
     {
-        var dsGrid = blist.$display.datasetGrid();
-
-        return this.each(function()
+        if (! _.isUndefined(blist.$display.datasetGrid))
         {
-            $(this).click(function(event)
+            var dsGrid = blist.$display.datasetGrid();
+
+            return this.each(function()
             {
-                if (dsGrid.isTempView !== true)
-                { return true; }
+                $(this).click(function(event)
+                {
+                    if (dsGrid.isTempView !== true)
+                    { return true; }
 
-                event.preventDefault();
+                    event.preventDefault();
 
-                var href = $(this).attr('href')
-                    .replace(/\w{4}-\w{4}/,'INLINE');
+                    var href = $(this).attr('href')
+                        .replace(/\w{4}-\w{4}/,'INLINE');
 
-                var $form = $('<form>')
-                    .attr('ACTION', href);
+                    var $form = $('<form>')
+                        .attr('ACTION', href);
 
-                blist.$display.append($form);
-                $form.bind('submit', blistCommonNS.formInliner);
-                $form.submit();
+                    blist.$display.append($form);
+                    $form.bind('submit', blistCommonNS.formInliner);
+                    $form.submit();
+                });
             });
-        });
+        }
     }
 })(jQuery);

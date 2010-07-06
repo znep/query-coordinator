@@ -26,16 +26,16 @@
           <%= hidden_field_tag('original_action', @is_upload ? 'upload' : 'new') %>
 
           <h3>General Information</h3>
-        
+
           <label for="view_name" class="required"><%= t(:blist_name).capitalize %> Title:</label>
           <%= text_field_tag("view[name]", "", :title => "Enter a title", :class => "textPrompt") %>
-        
+
           <%- if @is_upload -%>
             <label for="view_file" class="required">File to Upload:</label>
           <%- else -%>
             <label for="view_file">Optional File Upload:</label>
           <%- end -%>
-          <%= text_field_tag("view_file", "Supported Formats: .csv .tsv .xml .xls .xlsx",
+          <%= text_field_tag("view_file", "Pick a file to upload",
                              :class => "prompt",
                              :readonly => true) %>
           <div class="fileBrowseButtonListContainer">
@@ -48,50 +48,50 @@
               </li>
             </ul>
           </div>
-          <br /><span class="helpie fileUploadHelpie" title="You can upload a data file to help get started with your <%= t(:blist_name) %>.">?</span>
+          <br /><span class="helpie fileUploadHelpie" title="You can upload a file to help get started with your <%= t(:blist_name) %>. CSV, TSV, XML, XLS, and XLSX files will be imported natively as data tables. PDFs and images will also be rendered in-browser for visitors, and other file types will be available for download.">?</span>
           <%= hidden_field_tag("datasetID") %>
           <label id="uploadMessage" class="hide"></label>
-        
+
           <label for="view_description">Short Description:</label>
           <%= text_area_tag("view[description]", "", :title => "Enter a description", :class => "textPrompt") %>
-        
+
           <label for="view_category">Type of <%= t(:blist_name).capitalize %>:</label>
           <%= select_tag("view[category]", category_select_options()) %>
           <br /><span class="helpie" title="What kind of <%= t(:blist_name) %> is this?">?</span>
-        
+
           <label for="view_tags">Tags / Keywords:</label>
           <%= text_field_tag("view[tags]", "", :title => "Enter keywords", :class => "textPrompt") %>
           <br /><span class="helpie" title="Keywords can help other people find this <%= t(:blist_name) %>.">?</span>
           <span class="additionalHelp">(Enter one or more keywords separated by commas)</span>
-        
+
           <h3>Licensing &amp; Attribution</h3>
 
           <div class="licensing">
             <label for="view_licenseId">Licensing:</label>
             <%= select_tag("view[licenseId]", license_select_options("")) %>
             <br /><span class="helpie" title="Choose licensing terms for people who wish to use this dataset.">?</span>
-          
+
             <div id="licensingCreativeCommons" class="hide">
               <hr />
               <label for="license_cc_type" class="required">License Type:</label>
               <%= select_tag("license_cc_type", creative_commons_select_options()) %>
             </div>
-          
+
             <label for="view_attribution">Data Provided By:</label>
             <%= text_field_tag("view[attribution]", "", :title => "Individual or Organization", :class => "textPrompt") %>
-          
+
             <label for="view_attributionLink">Source Link:</label>
             <%= text_field_tag("view[attributionLink]", "", :title => "Enter Web Address", :class => "textPrompt") %>
-          
+
             <%#<label for="view_attribution_logo">Attribution Logo:</label>%>
             <%# Someday turn this back into an AJAX upload for betterer styling %>
             <%#<%= text_field_tag("view[attribution_logo]", "", :title => "Upload", :class => "textPrompt") %>
             <%#<ul class="actionButtons"><li><a id="logoBrowseButton" href="#browse">Browse</a></li></ul> %>
             <%#= file_field_tag("attribution_logo") %>
           </div>
-      
+
           <h3>Privacy &amp; Security</h3>
-      
+
           <label>Privacy Settings:</label>
           <p id="privacyDisplayText">This <%= t(:blist_name) %> can be viewed by the public.</p>
           <p><a href="#modifyPrivacy" class="privacyExpander">Edit</a></p>
@@ -127,7 +127,7 @@
               </p>
             </div>
           </div>
-      
+
           <hr />
           <div class="requiredEntryText">Required Entry</div>
           <div class="clearfix">

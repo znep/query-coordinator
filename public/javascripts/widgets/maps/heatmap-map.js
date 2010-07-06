@@ -2,6 +2,33 @@
 {
     var NUM_SEGMENTS = 10;
 
+    var MAP_TYPE = {
+        'countries': {
+            'layerPath': "World_Topo_Map/MapServer/6",
+            'fieldsReturned': ["NAME"],
+            'where': function (mapObj, config)
+                { return "TYPE = 'Country'"; }
+        },
+        'state': {
+            'layerPath': "Demographics/USA_Tapestry/MapServer/4",
+            'fieldsReturned': ["NAME", "ST_ABBREV"],
+            'where': function (mapObj, config)
+                { return "ST_ABBREV LIKE '%'" },
+            'center': esri.geometry.geographicToWebMercator(new esri.geometry.Point(-104.98, 39.74, new esri.SpatialReference({ wkid: 4326 }))),
+            'zoom': 4,
+            'transformFeatures': {
+                'Alaska': { 'scale': 0.6, 'offset': { 'x': 1950000, 'y': -4500000 } },
+                'Hawaii': { 'scale': 1.2, 'offset': { 'x': 5000000, 'y': 800000 } }
+                }
+        },
+        'counties': {
+            'layerPath': "Demographics/USA_Tapestry/MapServer/3",
+            'fieldsReturned': ["NAME", "ST_ABBREV"],
+            'where': function (mapObj, config)
+                { return "ST_ABBREV = '"+config.region.toUpperCase()+"'"; }
+        }
+    };
+
     $.socrataMap.heatmap = function(options, dom)
     {
         this.settings = $.extend({}, $.socrataMap.heatmap.defaults, options);
@@ -9,7 +36,14 @@
         this.init();
     };
 
-
+    // Available configurations:
+    // - type (required)
+    // - region (required for type:counties)
+    // - colors (required): hash of low and high
+    // - hideLayers: automatically set when only layer is default
+    // - hideZoomSlider
+    // - ignoreTransforms: ignores default transformations in MAP_TYPE
+    // - transformFeatures: custom transforms at view level
     $.extend($.socrataMap.heatmap, $.socrataMap.extend($.socrataMap.esri));
     $.extend($.socrataMap.heatmap.prototype,
     {
@@ -32,6 +66,17 @@
                     }
                 };
             }
+
+            if (config.hideLayers || config.transformFeatures ||
+                (!config.ignoreTransforms && MAP_TYPE[config.type].transformFeatures))
+            {
+                var layers = mapObj.getLayers();
+                for (var i = 0; i < layers.length; i++)
+                { mapObj.map.getLayer(layers[0].id).hide(); }
+            }
+
+            if (config.hideZoomSlider)
+            { mapObj.map.hideZoomSlider(); }
 
             if (_.isUndefined(mapObj._locCol) || _.isUndefined(mapObj._quantityCol))
             {
@@ -70,29 +115,6 @@
             { addFeatureSetToMap(mapObj, null, config); }
         }
     });
-
-    var MAP_TYPE = {
-        'countries': {
-            'layerPath': "World_Topo_Map/MapServer/6",
-            'fieldsReturned': ["NAME"],
-            'where': function (mapObj, config)
-                { return "TYPE = 'Country'"; }
-        },
-        'state': {
-            'layerPath': "Demographics/USA_Tapestry/MapServer/4",
-            'fieldsReturned': ["NAME", "ST_ABBREV"],
-            'where': function (mapObj, config)
-                { return "ST_ABBREV LIKE '%'" },
-            'center': esri.geometry.geographicToWebMercator(new esri.geometry.Point(-111.88, 41.75, new esri.SpatialReference({ wkid: 4326 }))),
-            'zoom': 3
-        },
-        'counties': {
-            'layerPath': "Demographics/USA_Tapestry/MapServer/3",
-            'fieldsReturned': ["NAME", "ST_ABBREV"],
-            'where': function (mapObj, config)
-                { return "ST_ABBREV = '"+config.region.toUpperCase()+"'"; }
-        }
-    };
 
     var doQueries = function(mapObj, config)
     {
@@ -170,6 +192,8 @@
 
         var info = mapObj._quantityCol.name + ": ${quantity}<br />${description}";
         var infoTemplate = new esri.InfoTemplate("${NAME}", info);
+
+        transformFeatures(featureSet.features, config);
 
         mapObj.map.graphics.clear();
         var extents = [];
@@ -256,6 +280,45 @@
                     };
             });
         return new esri.geometry.Extent(extent.xmin, extent.ymin, extent.xmax, extent.ymax, spatialReference);
+    };
+
+    var transformFeatures = function(features, config)
+    {
+        if (!config.transformFeatures
+            && (config.ignoreTransforms || !MAP_TYPE[config.type].transformFeatures))
+        { return; }
+
+        _.each(features, function(feature)
+        {
+            var transform;
+            if (config.transformFeatures)
+            { transform = config.transformFeatures[feature.attributes['NAME']]; }
+            transform = transform || MAP_TYPE[config.type].transformFeatures[feature.attributes['NAME']];
+
+            if (!transform) return;
+
+            var geometry = feature.geometry;
+            var rings = geometry.rings;
+            var center = geometry.getExtent().getCenter();
+
+            for (var r = 0; r < rings.length; r++)
+            {
+                var points = rings[r];
+                for (var p = 0; p < points.length; p++)
+                {
+                    if (transform.scale)
+                    {
+                        var point = geometry.getPoint(r, p);
+                        geometry.setPoint(r, p, new esri.geometry.Point(
+                            center.x + (point.x - center.x) * transform.scale,
+                            center.y + (point.y - center.y) * transform.scale,
+                            point.spatialReference));
+                    }
+                    if (transform.offset)
+                    { geometry.setPoint(r, p, geometry.getPoint(r, p).offset(transform.offset.x, transform.offset.y)); }
+                }
+            }
+        });
     };
 
 })(jQuery);

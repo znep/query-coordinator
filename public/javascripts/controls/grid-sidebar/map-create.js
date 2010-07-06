@@ -121,7 +121,7 @@
         var view = blist.dataset.baseViewCopy(blist.display.view);
         view.displayType = 'map';
 
-        $.extend(view, sidebarObj.getFormValues($pane));
+        $.extend(true, view, sidebarObj.getFormValues($pane));
 
         $.ajax({url: '/views.json', type: 'POST', data: JSON.stringify(view),
             dataType: 'json', contentType: 'application/json',

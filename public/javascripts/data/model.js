@@ -2957,15 +2957,25 @@ blist.namespace.fetch('blist.data');
                 };
 
                 // Clean out dataIndexes, and clean out child metadata columns
-                $.each(view.columns, function(i, c)
+                _.each(view.columns, function(c)
                 {
                     cleanColumn(c);
                     if (c.childColumns)
                     {
-                        $.each(c.childColumns, function(j, cc)
+                        _.each(c.childColumns, function(cc)
                             { cleanColumn(cc); });
                     }
                 });
+
+                if (!$.isBlank((view.query || {}).groupBys))
+                {
+                    view.columns = _.reject(view.columns, function(c)
+                    {
+                        return $.isBlank((c.format || {}).grouping_aggregate) &&
+                            !_.any(view.query.groupBys, function(g)
+                            { return g.columnId == c.id; });
+                    });
+                }
             }
             else
             { delete view.columns; }

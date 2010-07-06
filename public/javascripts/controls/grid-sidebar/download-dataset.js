@@ -15,7 +15,11 @@
                     directive: $.templates.downloadsTable.directive,
                     data: { downloadTypes: $.templates.downloadsTable.downloadTypes,
                             viewId: blist.display.view.id },
-                    callback: $.templates.downloadsTable.postRender
+                    callback: function($sect)
+                    {
+                        $sect.find('.downloadsList .item a').downloadToFormCatcher();
+                        $.templates.downloadsTable.postRender($sect);
+                    }
                 }
             }
         ],

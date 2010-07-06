@@ -296,7 +296,7 @@
         var view = blist.dataset.baseViewCopy(blist.display.view);
         view.displayType = 'chart';
 
-        $.extend(view, sidebarObj.getFormValues($pane));
+        $.extend(true, view, sidebarObj.getFormValues($pane));
         view.columns = [];
         _.each(view.displayFormat.dataColumns, function(tcid)
         {

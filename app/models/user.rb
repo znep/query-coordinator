@@ -163,6 +163,10 @@ class User < Model
     self.rights && self.rights.include?(right)
   end
 
+  def User.fetch_state_list
+    @@states
+  end
+
   @@states = {
                 '--' => '------',
                 'AK' => 'Alaska',

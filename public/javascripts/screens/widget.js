@@ -45,11 +45,12 @@ blist.widget.showToolbar = function(sectionName)
 
     if (!$toolbar.is(':visible'))
     {
-        $toolbar.show('slide', { direction: ((widgetNS.orientation == 'downwards') ? 'up' : 'down') });
+        $toolbar.show('slide',
+            { direction: ((widgetNS.orientation == 'downwards') ? 'up' : 'down') },
+            500, widgetNS.resizeViewport);
         $toolbar
             .children(':not(.close)').hide()
             .filter('.' + sectionClass).show();
-        widgetNS.resizeViewport();
     }
     else if (toolbarChanged)
     {
@@ -719,6 +720,10 @@ $(function()
             $modal.jqmShow();
         }
     });
+
+    $('.needsInlineView').bind('submit', commonNS.formInliner);
+
+    $('.downloadsList .item .type a').downloadToFormCatcher();
 
     // Notify publisher that we are ready
     widgetNS.ready = true;

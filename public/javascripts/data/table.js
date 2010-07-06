@@ -1537,6 +1537,32 @@
             }
         };
 
+        // Adapted from http://cubiq.org/scrolling-div-on-iphone-ipod-touch
+        var touchLastY;
+        var onTouchStart = function(event)
+        {
+            var e = event.originalEvent;
+            e.preventDefault();
+
+            touchLastY = e.targetTouches[0].clientY;
+        };
+
+        var onTouchMove = function(event)
+        {
+            var e = event.originalEvent;
+
+            if (_.isUndefined(e.targetTouches) ||
+               (e.targetTouches.length !== 1))
+            {
+                return false;
+            }
+
+            var $scrolls = $outside.find('.blist-table-scrolls');
+
+            var delta = touchLastY - e.targetTouches[0].clientY;
+            $scrolls[0].scrollTop = $scrolls[0].scrollTop + delta;
+        };
+
         var $prevActiveCells;
         var onMouseDown = function(event)
         {
@@ -2074,7 +2100,9 @@
         // The scrolling container
         var $scrolls = $outside
             .find('.blist-table-scrolls')
-            .scroll(function () {onScroll(); renderRows();});
+            .scroll(function () {onScroll(); renderRows();})
+            .bind('touchstart', onTouchStart)
+            .bind('touchmove', onTouchMove);
 
         // The non-scrolling row container
         var inside = $scrolls

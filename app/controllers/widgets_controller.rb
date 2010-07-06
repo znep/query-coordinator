@@ -1,6 +1,6 @@
-class WidgetsNewController < ApplicationController
+class WidgetsController < ApplicationController
   skip_before_filter :require_user
-  layout 'widgets_new'
+  layout 'widgets'
 
   def show
     begin

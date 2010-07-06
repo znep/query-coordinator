@@ -57,7 +57,6 @@
 .modalContentWrapper { padding: 1em; }
 
 .modalContentWrapper .subtitle { color: #999999; }
-.modalContentWrapper .subtitle.heatmap { display: none; }
 
 /*** END: Modal Dialogs ***/
 
@@ -1582,6 +1581,7 @@ dl.versionInfo dd
 .viewSetupWrapper form { margin-top: 1em; }
 
 .viewSetupWrapper .section { margin-bottom: 3em; }
+.mapWrapper .section { margin-bottom: 2em; }
 
 .viewSetupWrapper h3
 {
@@ -1614,6 +1614,13 @@ dl.versionInfo dd
     margin-bottom: 0;
     width: 17em;
 }
+.viewSetupWrapper .line select#heatmapRegion
+{
+    display: none;
+    width: 9em;
+}
+.viewSetupWrapper .line select#heatmapType.default { width: 8em; display: inline; }
+.viewSetupWrapper .line select#heatmapRegion.default { display: inline; }
 .viewSetupWrapper .line input { width: 16.4333em; }
 .viewSetupWrapper .line input[type="checkbox"] { width: auto; }
 

@@ -34,6 +34,12 @@ class Displays::Map < Displays::Base
     {'value' => 'heatmap', 'label' => 'Heat Map'}
   ]
 
+  HEATMAP_TYPES = [
+    {'value' => 'countries', 'label' => 'Countries'},
+    {'value' => 'state', 'label' => 'US States'},
+    {'value' => 'counties', 'label' => 'Counties in'},
+  ]
+
   ESRI_LAYERS = [
     {'url' => 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer', 'type' => 'tile', 'name' => 'Street Map'},
     {'url' => 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer', 'type' => 'tile', 'name' => 'Satellite Imagery'},

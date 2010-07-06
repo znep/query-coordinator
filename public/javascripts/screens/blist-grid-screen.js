@@ -1,4 +1,5 @@
 var blistGridNS = blist.namespace.fetch('blist.blistGrid');
+var commonNS = blist.namespace.fetch('blist.common');
 
 blist.blistGrid.getCookieHash = function()
 {
@@ -180,6 +181,7 @@ blist.blistGrid.hookUpMainMenu = function()
 
     var timesClicked = 0;
     $('#mainMenuLink').click(function() { $.analytics.trackEvent('Dataset Page Menu', 'Main Menu clicked', blistGridNS.viewId, ++timesClicked); });
+    $('#mainMenu li.download .export li a').downloadToFormCatcher();
 };
 
 blist.blistGrid.setInfoMenuItem = function ($tab)
@@ -734,6 +736,7 @@ $(function ()
     // Metadata editing
     $('.customFieldAdd').customFieldAdd();
     $('.customFieldEdit, .customFieldAddItem').customFieldEdit();
+
 
     blistGridNS.hookUpCreateViewMenu();
 

@@ -86,7 +86,7 @@
     </div>
     <div class="widgetContentSection widgetContent_embed">
       <%= render :partial => 'datasets/embed_form',
-                 :locals => { :view => @view, :cur => params[:cur] } %>
+                 :locals => { :view => @view, :cur => params[:cur], :customization_id => @theme_id } %>
     </div>
     <div class="widgetContentSection widgetContent_api">
       <div class="apiContentWrapper">
@@ -110,8 +110,8 @@
     </div>
     <%- if !@view.is_alt_view? -%>
     <div class="widgetContentSection widgetContent_print">
-      <% form_tag("/views/#{@view.id}/rows.pdf", :method => :get,
-        :target => "_blank", :class => 'commonForm') do %>
+      <% form_tag("/views/INLINE/rows.pdf", :method => :get,
+        :target => "_blank", :class => 'commonForm needsInlineView') do %>
         <%= render :partial => 'datasets/print_form', :locals => { :view => @view } %>
       <% end %>
     </div>
@@ -198,7 +198,7 @@
   <%- if @view.can_edit() && !@view.is_blobby? -%>
   <%= raw @display.render_edit_javascript_includes(self) %>
   <%- end -%>
-  <%= javascript_include_merged 'widgets-show-new' %>
+  <%= javascript_include_merged 'widgets-show' %>
 
   <%- unless @theme[:behavior][:ga_code].empty? -%>
     <script type="text/javascript">

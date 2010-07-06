@@ -179,11 +179,14 @@ ActionController::Routing::Routes.draw do |map|
   # This needs to be more specific than the dataset routes, which will all
   # accept anything/anything/4-4, which matches our widget customization
   # path of widgets/4-4/4-4
-  map.connect 'widgets/:id/:customization_id', :controller => 'widgets_new',
-   :action => 'show', :requirements => {:id => UID_REGEXP}
-  map.connect 'w/:id/:customization_id', :controller => 'widgets_new',
+
+  map.connect 'widgets/:id/:customization_id', :controller => 'widgets',
     :action => 'show', :requirements => {:id => UID_REGEXP}
-  map.connect 'w/:id', :controller => 'widgets_new',
+  map.connect 'widgets/:id', :controller => 'widgets',
+    :action => 'show', :requirements => {:id => UID_REGEXP}
+  map.connect 'w/:id/:customization_id', :controller => 'widgets',
+    :action => 'show', :requirements => {:id => UID_REGEXP}
+  map.connect 'w/:id', :controller => 'widgets',
     :action => 'show', :requirements => {:id => UID_REGEXP}
 
   map.connect ':category/:view_name/:id', :controller => 'blists',

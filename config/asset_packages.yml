@@ -165,6 +165,7 @@ javascripts:
   - widgets/info-pane-publish
   - screens/filter-screen
   - widgets/visualization
+  - widgets/form-inliner
   - screens/info-pane
   - screens/meta-tabs
   - screens/attribution-edit
@@ -220,7 +221,7 @@ javascripts:
   - screens/stats-screen
 - tweetsets:
   - screens/tweetsets-screen
-- widgets-show-new:
+- widgets-show:
   - plugins/ui.effects.custom.min
   - plugins/jquery.uniform
   - plugins/jquery.tablesorter
@@ -238,8 +239,9 @@ javascripts:
   - widgets/scrollTabs
   - widgets/inline-edit
   - widgets/visualization
-  - screens/external-widget-new
-- widgets-show-new-form:
+  - widgets/form-inliner
+  - screens/widget
+- widgets-show-form:
   - plugins/jquery.uniform
 - screen-dataset:
   - plugins/jquery.colorPicker
@@ -254,6 +256,7 @@ javascripts:
   - util/inline-login
   - controls/menu
   - widgets/wizard-prompt
+  - widgets/form-inliner
   - controls/modal-dialogs
   - controls/expander
   - controls/feed-list

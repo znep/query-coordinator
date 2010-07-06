@@ -139,8 +139,8 @@
         {
             var feature = findFeatureWithPoint(mapObj, row, featureSet);
             if(!feature) { return; }
-            if(!feature.attributes.description) { feature.attributes.description = []; }
-            if(!feature.attributes.quantity)    { feature.attributes.quantity = []; }
+            feature.attributes.description = $.makeArray(feature.attributes.description);
+            feature.attributes.quantity    = $.makeArray(feature.attributes.quantity);
 
             if (mapObj._infoCol)
             { feature.attributes.description.push(row[mapObj._infoCol.dataIndex]); }
@@ -200,7 +200,7 @@
         _.each(featureSet.features, function(feature)
         {
             if (!feature.attributes.quantity) { return; }
-            feature.attributes.description = feature.attributes.description.join(', ');
+            feature.attributes.description = $.makeArray(feature.attributes.description).join(', ');
 
             var symbol;
             for (i = 0; i < NUM_SEGMENTS; i++)

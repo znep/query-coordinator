@@ -130,37 +130,6 @@
 
 
 
-    $.Tache.Get({ url: '/views.json',
-        data: { method: 'getByTableId', tableId: blist.display.view.tableId },
-        dataType: 'json', contentType: 'application/json',
-        success: function(v)
-        {
-            views['filter'] = _.select(v, function(v)
-            {
-                return _.include(['Filter', 'Grouped'],
-                    blist.dataset.getDisplayType(v));
-            });
-
-            if (!$.isBlank($sections['filter']))
-            { setupSection(views['filter'], $sections['filter']); }
-
-
-            views['viz'] = _.select(v, function(v)
-            { return 'Visualization' == blist.dataset.getDisplayType(v); });
-
-            if (!$.isBlank($sections['viz']))
-            { setupSection(views['viz'], $sections['viz']); }
-
-
-            views['form'] = _.select(v, function(v)
-            { return 'Form' == blist.dataset.getDisplayType(v); });
-
-            if (!$.isBlank($sections['form']))
-            { setupSection(views['form'], $sections['form']); }
-        }});
-
-
-
     var filterConfig =
     {
         name: 'filter.savedFilters',
@@ -243,5 +212,41 @@
     };
 
     $.gridSidebar.registerConfig(formConfig);
+
+    // Document ready; load data
+    $(function()
+    {
+        _.defer(function()
+        {
+            $.Tache.Get({ url: '/views.json', data: { method: 'getByTableId',
+                    tableId: blist.display.view.tableId },
+                dataType: 'json', contentType: 'application/json',
+                success: function(v)
+                {
+                    views['filter'] = _.select(v, function(v)
+                    {
+                        return _.include(['Filter', 'Grouped'],
+                            blist.dataset.getDisplayType(v));
+                    });
+
+                    if (!$.isBlank($sections['filter']))
+                    { setupSection(views['filter'], $sections['filter']); }
+
+
+                    views['viz'] = _.select(v, function(v)
+                    { return 'Visualization' == blist.dataset.getDisplayType(v); });
+
+                    if (!$.isBlank($sections['viz']))
+                    { setupSection(views['viz'], $sections['viz']); }
+
+
+                    views['form'] = _.select(v, function(v)
+                    { return 'Form' == blist.dataset.getDisplayType(v); });
+
+                    if (!$.isBlank($sections['form']))
+                    { setupSection(views['form'], $sections['form']); }
+                }});
+        });
+    });
 
 })(jQuery);

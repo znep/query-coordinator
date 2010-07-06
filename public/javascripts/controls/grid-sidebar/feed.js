@@ -14,27 +14,6 @@
     };
 
     var pendingRequests = 3;
-    $.Tache.Get({
-        url: '/views/' + blist.display.view.id + '/comments.json',
-        dataType: 'json',
-        success: function(responseData)
-        {
-            comments = responseData;
-            if (--pendingRequests === 0)
-                renderFeed();
-        }
-    });
-
-    $.Tache.Get({ url: '/views.json',
-        data: { method: 'getByTableId', tableId: blist.display.view.tableId },
-        dataType: 'json', contentType: 'application/json',
-        success: function(responseData)
-        {
-            views = responseData;
-            if (--pendingRequests === 0)
-                renderFeed();
-        }
-    });
 
     var config =
     {
@@ -60,5 +39,34 @@
     };
 
     $.gridSidebar.registerConfig(config);
+
+    // Document ready, load data
+    $(function()
+    {
+        _.defer(function()
+        {
+            $.Tache.Get({
+                url: '/views/' + blist.display.view.id + '/comments.json',
+                dataType: 'json',
+                success: function(responseData)
+                {
+                    comments = responseData;
+                    if (--pendingRequests === 0)
+                        renderFeed();
+                }
+            });
+
+            $.Tache.Get({ url: '/views.json', data: { method: 'getByTableId',
+                    tableId: blist.display.view.tableId },
+                dataType: 'json', contentType: 'application/json',
+                success: function(responseData)
+                {
+                    views = responseData;
+                    if (--pendingRequests === 0)
+                        renderFeed();
+                }
+            });
+        });
+    });
 
 })(jQuery);

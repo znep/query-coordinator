@@ -18,7 +18,7 @@ blistCommonNS.formInliner = function(event, options)
 }
 
 blistCommonNS.formInliner.defaults = {
-    submitMethod: 'post',
+    submitMethod: 'post'
 };
 
 // Grab links to download and auto-create a form if inline

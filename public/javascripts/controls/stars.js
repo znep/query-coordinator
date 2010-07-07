@@ -11,7 +11,7 @@
             var value = opts.value;
 
             $this.attr('title', opts.value + ' stars');
-            $this.append($inner);
+            $this.empty().append($inner);
             updateInner($inner, value);
 
             if (opts.enabled === true)

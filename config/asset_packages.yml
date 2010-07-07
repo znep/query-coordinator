@@ -260,7 +260,9 @@ javascripts:
   - controls/modal-dialogs
   - controls/expander
   - controls/feed-list
+  - controls/stars
   - controls/grid-sidebar/base-sidebar
+  - controls/grid-sidebar/about-dataset
   - controls/grid-sidebar/calendar-create
   - controls/grid-sidebar/chart-create
   - controls/grid-sidebar/download-dataset

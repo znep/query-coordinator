@@ -30,7 +30,7 @@
         text-align: center
 
       .sizePreview
-        background-color: #f7f7f7
+        background-color: $sidebar_bg_color
         border: 1px solid #777
         &.small
           height: 2.55em
@@ -147,7 +147,7 @@
       width: 25.75em
 
       .viewItem
-        border: 1px solid #cecece
+        border: 1px solid $sidebar_chrome_border_color
         margin: 0.5em 0
         padding: 0.5em
         position: relative
@@ -169,7 +169,7 @@
 
         .authorLine
           @include clip-text
-          color: #666666
+          color: $sidebar_text_color
           display: block
           font-size: 1.1em
           font-style: italic
@@ -227,7 +227,7 @@
         position: relative
 
         &.type-phone
-          overflow: show
+          overflow: visible
           input.number
             margin-bottom: 0.3em
             padding: 0.2em
@@ -264,3 +264,74 @@
             margin:
               right: 5px
               top: 4px
+
+  #gridSidebar_about .aboutDataset
+    .aboutHeader
+      margin-bottom: 1em
+
+      .aboutAuthorImage
+        height: 5em
+        float: left
+        margin-right: 1em
+        width: 5em
+
+      .aboutAuthorName
+        font-size: 1.2em
+        font-weight: bold
+        padding-top: 1em
+
+      p
+        font-size: 1.1em
+
+    .formSection
+      margin-top: 2em
+
+      a.expander
+        @include sprite-menu-icons
+        .icon
+          float: left
+          margin-right: 0.5em
+
+    .sectionContent
+      padding: 0
+
+      > p
+        font-size: 1.2em
+        line-height: 1.1em
+        padding: 1em
+
+      > dt
+        color: $sidebar_text_color
+        font-size: 1.1em
+        font-weight: bold
+        margin: 1em
+        position: absolute
+        &:first-child + dd
+          border-top: none
+
+      > dd
+        border-top: 1px solid $sidebar_chrome_border_color
+        color: $sidebar_text_color
+        font-size: 1.1em
+        padding: 1em
+        text-align: right
+
+        .wrap
+          display: inline-block
+          max-width: 17em
+
+        .hardWrap
+          display: inline-block
+          max-width: 17em
+          @include white-space-pre-wrap
+
+        .starsControl
+          float: right
+
+      > li
+        border-top: 1px solid $sidebar_chrome_border_color
+        color: $sidebar_text_color
+        font-size: 1.1em
+        padding: 1em
+        &:first-child
+          border-top: none

@@ -34,6 +34,9 @@ blist.datasetPage.setTempView = function()
 
 $(function()
 {
+    // Before we do anything else, clear away the about metadata.
+    $('.aboutDataset').appendTo('#templates');
+
     if (!$.isBlank($.uploadDialog)) { $.uploadDialog.version = 2; }
 
     $('.outerContainer').fullScreen();
@@ -67,10 +70,6 @@ $(function()
         else if (blist.display.invokeVisualization)
         { $dataGrid.visualization(); }
     }
-
-    // Placeholder config for tabs that haven't been implemented yet
-    $.gridSidebar.registerConfig({name: 'about.foo', title: 'Placeholder',
-        subtitle: 'Placeholder'});
 
     // sidebar and sidebar tabs
     sidebar = $('#gridSidebar').gridSidebar({

@@ -73,6 +73,9 @@
               + disable: boolean, if set the section will be disabled on a failed
                   test instead of hidden
               + disabledMessage: Message to display when the section is disabled
+              + negate: boolean, if true, the result will be flipped after
+                  computing it (so it will match everything but the provided
+                  value)
             }
             + customContent: Hash for rendering custom content using pure
             {
@@ -1704,6 +1707,9 @@
                         }
                         else if (_.isFunction(o.func))
                         { failed = !o.func(sidebarObj.$grid().blistModel()); }
+
+                        // If they want the opposite, then flip it
+                        if (o.negate) { failed = !failed; }
 
                         if (o.disable)
                         {

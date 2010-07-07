@@ -1398,6 +1398,7 @@
                 var defColor = item.defaultValue[args.context.repeaterIndex] ||
                     item.defaultValue[0];
                 contents.push({tagName: 'a', href: '#Color', title: 'Choose color',
+                    name: args.item.name,
                     'class': 'colorControl', contents: 'Choose color',
                     style: {'background-color': defColor}});
                 contents.push($.extend(commonAttrs(item),

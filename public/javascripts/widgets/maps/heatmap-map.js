@@ -139,8 +139,8 @@
         {
             var feature = findFeatureWithPoint(mapObj, row, featureSet);
             if(!feature) { return; }
-            if(!feature.attributes.description) { feature.attributes.description = []; }
-            if(!feature.attributes.quantity)    { feature.attributes.quantity = []; }
+            feature.attributes.description = $.makeArray(feature.attributes.description);
+            feature.attributes.quantity    = $.makeArray(feature.attributes.quantity);
 
             if (mapObj._infoCol)
             { feature.attributes.description.push(row[mapObj._infoCol.dataIndex]); }
@@ -200,7 +200,7 @@
         _.each(featureSet.features, function(feature)
         {
             if (!feature.attributes.quantity) { return; }
-            feature.attributes.description = feature.attributes.description.join(', ');
+            feature.attributes.description = $.makeArray(feature.attributes.description).join(', ');
 
             var symbol;
             for (i = 0; i < NUM_SEGMENTS; i++)
@@ -246,7 +246,9 @@
             {
                 // State is the only salient region to search for in a location w/o lat/lng.
                 // Well, there are ZIP codes, but we have no GIS data for those yet.
-                point = JSON.parse(datum[mapObj._locCol.dataIndex][0]).state;
+                point = JSON.parse(datum[mapObj._locCol.dataIndex][0]);
+                if (point) { point = point.state; }
+                else { return; }
             }
         }
         else if (mapObj._locCol.renderTypeName == 'text')

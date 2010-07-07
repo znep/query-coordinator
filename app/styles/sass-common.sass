@@ -9,6 +9,10 @@ $sidebar_feed_tab_color_top: #ff7400
 $sidebar_embed_tab_color_top: #e44044
 $sidebar_about_tab_color_top: #a03341
 
+$sidebar_bg_color: #f7f7f7
+$sidebar_chrome_border_color: #cecece
+$sidebar_text_color: #666
+
 // Compat functions
 
 @mixin border-radius($a, $b: true, $c: true, $d: true)
@@ -64,6 +68,13 @@ $sidebar_about_tab_color_top: #a03341
   background-color: $s
   background: -moz-linear-gradient(0 0 270deg, $s, $e)
   background: -webkit-gradient(linear, left top, left bottom, from($s), to($e))
+
+@mixin white-space-pre-wrap
+  white-space: pre-wrap
+  white-space: -moz-pre-wrap
+  white-space: -pre-wrap
+  white-space: -o-pre-wrap
+  word-wrap: break-word
 
 // Convenience methods
 

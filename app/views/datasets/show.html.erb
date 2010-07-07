@@ -121,6 +121,7 @@
 <%= render :partial => 'datasets/downloads_table_template' %>
 <%= render :partial => 'datasets/feed_template' %>
 <% end %>
+<%= render :partial => 'datasets/about_dataset' %>
 
 <% content_for :js_footer do %>
   <%- if !current_user -%>
@@ -148,9 +149,11 @@
 
     <%# Visualize pane %>
     blist.sidebarHidden.visualize = blist.sidebarHidden.visualize || {};
-    blist.sidebarHidden.visualize.calendarCreate = <%= @view.is_alt_view? %>;
+    blist.sidebarHidden.visualize.calendarCreate = <%= @view.is_alt_view? &&
+      (@view.display.type != 'calendar' || !@view.owned_by?(@current_user)) %>;
     blist.sidebarHidden.visualize.chartCreate = <%= @view.is_alt_view? %>;
-    blist.sidebarHidden.visualize.mapCreate = <%= @view.is_alt_view? ||
+    blist.sidebarHidden.visualize.mapCreate = <%= @view.is_alt_view? &&
+      (@view.display.type != 'map' || !@view.owned_by?(@current_user)) ||
       @view.is_grouped? ||
       !module_available?(:map_publish) %>;
 

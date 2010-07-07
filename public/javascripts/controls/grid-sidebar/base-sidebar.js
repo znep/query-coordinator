@@ -73,6 +73,9 @@
               + disable: boolean, if set the section will be disabled on a failed
                   test instead of hidden
               + disabledMessage: Message to display when the section is disabled
+              + negate: boolean, if true, the result will be flipped after
+                  computing it (so it will match everything but the provided
+                  value)
             }
             + customContent: Hash for rendering custom content using pure
             {
@@ -525,7 +528,7 @@
                     { $overlay.show(); }
                     else { $overlay.fadeIn(500); }
 
-                    if (sidebarObj.$grid().isDatasetGrid())
+                    if (isTable(sidebarObj))
                     { sidebarObj.$grid().datasetGrid().disable(); }
                 }
                 else { sidebarObj._isModal = false; }
@@ -574,7 +577,7 @@
                     sidebarObj._origParent.css('z-index',
                         sidebarObj._origParentZIndex);
 
-                    if (sidebarObj.$grid().isDatasetGrid())
+                    if (isTable(sidebarObj))
                     { sidebarObj.$grid().datasetGrid().enable(); }
                 }
 
@@ -907,6 +910,7 @@
 
             resetForm: function($pane)
             {
+                var sidebarObj = this;
                 if ($pane.is('.noReset')) { return; }
 
                 $pane.find('.formSection.selectable:not(.collapsed)')
@@ -988,6 +992,12 @@
         }
     });
 
+
+    var isTable = function(sidebarObj)
+    {
+        return !$.isBlank(sidebarObj.$grid().isDatasetGrid) &&
+            sidebarObj.$grid().isDatasetGrid();
+    };
 
     var uniformUpdate = function()
     {
@@ -1335,12 +1345,15 @@
                 break;
 
             case 'columnSelect':
-                contents.push({tagName: 'a',
-                    href: '#Select:' + colTypes.join('-'),
-                    title: 'Select a column from the grid',
-                    'class': ['columnSelector',
-                        {value: 'tableColumn', onlyIf: args.item.isTableColumn}],
-                    contents: 'Select a column from the grid'});
+                if (isTable(sidebarObj))
+                {
+                    contents.push({tagName: 'a',
+                        href: '#Select:' + colTypes.join('-'),
+                        title: 'Select a column from the grid',
+                        'class': ['columnSelector', {value: 'tableColumn',
+                                onlyIf: args.item.isTableColumn}],
+                        contents: 'Select a column from the grid'});
+                }
 
                 var options =
                     [{tagName: 'option', value: '', contents: 'Select a column'}];
@@ -1351,7 +1364,9 @@
                         selected: (curValue || defValue) == cId,
                         contents: $.htmlEscape(c.name)});
                 });
-                contents.push($.extend(commonAttrs(args.item),
+                contents.push($.extend(commonAttrs($.extend({}, args.item,
+                        {extraClass: {value: 'hasTable',
+                            onlyIf: isTable(sidebarObj)}})),
                     {tagName: 'select', contents: options}));
                 break;
 
@@ -1692,6 +1707,9 @@
                         }
                         else if (_.isFunction(o.func))
                         { failed = !o.func(sidebarObj.$grid().blistModel()); }
+
+                        // If they want the opposite, then flip it
+                        if (o.negate) { failed = !failed; }
 
                         if (o.disable)
                         {

@@ -132,6 +132,7 @@
                 mapObj.$dom().siblings('#mapLayers').addClass('hide');
 
                 mapObj.resetData();
+                mapObj.populateLayers();
 
                 mapObj._markers = {};
                 mapObj._llKeys = {};

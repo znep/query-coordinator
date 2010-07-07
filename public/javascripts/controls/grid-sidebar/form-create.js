@@ -78,7 +78,7 @@
         var view = blist.dataset.baseViewCopy(blist.display.view);
         view.displayType = 'form';
 
-        $.extend(true, view, sidebarObj.getFormValues($pane));
+        $.extend(view, sidebarObj.getFormValues($pane));
 
         var wasPublic = isPublicForm(blist.display.view);
         var isPublic = isPublicForm(view);

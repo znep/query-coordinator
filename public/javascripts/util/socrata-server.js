@@ -8,7 +8,7 @@ $(function ()
 
     $.socrataServer.runRequests = function(callbacks)
     {
-        if (batchRequests.length < 1) { return; }
+        if (batchRequests.length < 1) { return false; }
 
         callbacks = callbacks || {};
         if (batchRequests.length == 1)
@@ -38,7 +38,7 @@ $(function ()
                     if (typeof callbacks.success == 'function')
                     { callbacks.success(); }
                 }}));
-            return;
+            return true;
         }
 
         var serverReqs = [];
@@ -102,5 +102,7 @@ $(function ()
                     if (typeof callbacks.error == 'function')
                     { callbacks.error(); }
                 }});
+
+        return true;
     };
 });

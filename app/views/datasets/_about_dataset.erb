@@ -1,0 +1,142 @@
+<div class="aboutDataset">
+  <div class="aboutHeader clearfix">
+    <img class="aboutAuthorImage" alt="<%= @view.owner.displayName %>"
+      src="<%= @view.owner.profile_image_path("medium") %>"/>
+    <a class="aboutAuthorName" href="<%= @view.owner.href %>"><%= @view.owner.displayName %></a>
+    <p><em>created</em> <span class="aboutCreateDate"><%= blist_date(@view.createdAt) %></span></p>
+    <p><em>updated</em> <span class="aboutUpdateDate"><%= blist_date(@view.last_activity) %></span></p>
+  </div>
+
+  <div class="formSection">
+    <a class="expander expanded formHeader" href="#expand">
+      <span class="icon"></span>
+      Description
+    </a>
+    <div class="sectionContent">
+      <p><%= @view.description %></p>
+    </div>
+  </div>
+
+  <div class="formSection">
+    <a class="expander expanded formHeader" href="#expand">
+      <span class="icon"></span>
+      Activity
+    </a>
+    <dl class="sectionContent">
+      <dt>Rating</dt>
+      <dd class="clearfix">
+        <div class="starsControl datasetAverageRating" data-rating="<%= @view.averageRating %>">
+          <%= @view.averageRating %>
+        </div>
+      </dd>
+      <dt>Raters</dt>
+      <dd><%= @view.totalTimesRated %></dd>
+      <dt>Visits</dt>
+      <dd><%= @view.viewCount %></dd>
+      <dt>Comments</dt>
+      <dd><%= @view.numberOfComments %></dd>
+      <dt>Contributors</dt>
+      <dd><%= @view.contributor_users.length %></dd>
+    </dl>
+  </div>
+
+  <div class="formSection">
+    <a class="expander expanded formHeader" href="#expand">
+      <span class="icon"></span>
+      Meta
+    </a>
+    <dl class="sectionContent">
+      <dt>Category</dt>
+      <dd><%= @view.category || '(none)' %></dd>
+      <dt>Permissions</dt>
+      <dd><%= @view.is_public? ? 'Public' : 'Private' %></dd>
+      <dt>Tags</dt>
+      <dd><span class="wrap"><%= @view.tag_display_string %></span></dd>
+    </dl>
+  </div>
+
+  <div class="formSection">
+    <a class="expander expanded formHeader" href="#expand">
+      <span class="icon"></span>
+      Links
+    </a>
+    <dl class="sectionContent">
+      <dt>Permalink</dt>
+      <dd><span class="hardWrap"><%= request.protocol +
+        request.host_with_port + @view.href %></span></dd>
+      <dt>Short URL</dt>
+      <dd><span class="hardWrap"><%= request.protocol +
+        request.host_with_port.gsub(/www\./, '') + @view.short_href %></span></dd>
+    </dl>
+  </div>
+
+<%- if @view.metadata && !@view.metadata.attachments.blank? -%>
+  <div class="formSection">
+    <a class="expander expanded formHeader" href="#expand">
+      <span class="icon"></span>
+      Attachments
+    </a>
+    <ul class="sectionContent">
+      <%- @view.metadata.attachments.each do |attachment| -%>
+        <%- attachmentObj = Attachment.set_up_model(attachment) -%>
+        <li>
+          <%= link_to( h(attachmentObj.displayName), attachmentObj.href, :target => "_blank" ) %>
+        </li>
+      <%- end -%>
+    </ul>
+  </div>
+<%- end -%>
+
+  <div class="formSection">
+    <a class="expander expanded formHeader" href="#expand">
+      <span class="icon"></span>
+      Licensing and Attribution
+    </a>
+    <dl class="sectionContent">
+      <dt>Data Provided By</dt>
+      <dd><%= @view.attribution || '(none)' %></dd>
+      <dt>Source Link</dt>
+      <dd><%= @view.attributionLink.blank? ?
+                '(none)' :
+                link_to(h(@view.attributionLink)) %></dd>
+      <%- if @view.license -%>
+        <dt>License</dt>
+        <dd>
+          <%- if @view.license.nil? -%>
+            (none)
+          <%- elsif @view.license.logoUrl.blank? -%>
+            <%= @view.license.name %>
+          <%- else -%>
+            <a href="<%= @view.license.termsLink %>">
+              <img src="/<%= @view.license.logoUrl %>" alt="<%= @view.license.name %>" />
+            </a>
+          <%- end -%>
+        </dd>
+      <%- end -%>
+      <%- if @view.termsAndConditions -%>
+        <dt>Terms of Use</dt>
+        <dd><span class="wrap"><%= @view.termsAndConditions %></span></dd>
+      <%- end -%>
+    </dl>
+  </div>
+
+<%- if @view.metadata && @view.metadata.custom_fields -%>
+  <div class="formSection">
+    <a class="expander expanded formHeader" href="#expand">
+      <span class="icon"></span>
+      Additional Information
+    </a>
+    <dl class="sectionContent">
+      <%- @view.metadata.custom_fields.each do |field| -%>
+      <div class="customFieldEdit">
+        <dt><%= h(field.first) %></dt>
+        <dd><span class="wrap">
+          <%= raw auto_link(h(field.last), :html => { :rel => 'nofollow external' }) %>
+        </span></dd>
+      </div>
+      <%- end -%>
+    </dl>
+  </div>
+<%- end -%>
+
+</div>

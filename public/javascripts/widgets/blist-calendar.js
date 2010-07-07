@@ -39,31 +39,10 @@
                 currentObj._rowsLeft = 0;
                 currentObj._rowsLoaded = 0;
 
-                var fmt = currentObj.settings.displayFormat;
-                $domObj.fullCalendar({aspectRatio: 2,
-                        editable: currentObj.settings.editable,
-                        disableResizing: _.isUndefined(fmt.endDateId) &&
-                            _.isUndefined(fmt.endDateTableId),
-                        eventRender: function(ce, e, v)
-                            { eventRender(currentObj, ce, e, v); },
-                        eventDragStart: function(ce, e, ui, v)
-                            { eventActionStart.apply(this,
-                                [currentObj, ce, e, ui, v]); },
-                        eventResizeStart: function(ce, e, ui, v)
-                            { eventActionStart.apply(this,
-                                [currentObj, ce, e, ui, v]); },
-                        eventDragStop: function(ce, e, ui, v)
-                            { eventActionStop.apply(this,
-                                [currentObj, ce, e, ui, v]); },
-                        eventResizeStop: function(ce, e, ui, v)
-                            { eventActionStop.apply(this,
-                                [currentObj, ce, e, ui, v]); },
-                        eventDrop: function(ce, dd, md, rf, e, ui, v)
-                            { eventChange(currentObj, ce, dd, md, rf, e, ui, v); },
-                        eventResize: function(ce, dd, md, rf, e, ui, v)
-                            { eventChange(currentObj, ce, dd, md, rf, e, ui, v); }
-                        })
-                    .append('<div class="loadingSpinner"></div>');
+                setUpCalendar(currentObj);
+
+                $domObj.append('<div class="loadingSpinner"></div>');
+
                 ajaxLoad(currentObj,
                     { method: 'getByIds', meta: true, start: 0,
                         length: currentObj.settings.pageSize });
@@ -74,11 +53,64 @@
                 if (!this._$dom)
                 { this._$dom = $(this.currentDom); }
                 return this._$dom;
+            },
+
+            reload: function(newFormat)
+            {
+                var currentObj = this;
+                currentObj._rowsLeft = 0;
+                currentObj._rowsLoaded = 0;
+
+                // Adjust resizing enabled
+
+                delete currentObj._idIndex;
+                delete currentObj._startCol;
+                delete currentObj._endCol;
+                delete currentObj._titleIndex;
+                delete currentObj._descriptionIndex;
+
+                currentObj.settings.displayFormat = newFormat;
+
+                currentObj.$dom().fullCalendar('destroy');
+                setUpCalendar(currentObj);
+
+                ajaxLoad(currentObj,
+                    { method: 'getByIds', meta: true, start: 0,
+                        length: currentObj.settings.pageSize });
             }
         }
     });
 
+
     // Private methods
+    var setUpCalendar = function(currentObj)
+    {
+        var fmt = currentObj.settings.displayFormat;
+        currentObj.$dom().fullCalendar({aspectRatio: 2,
+                editable: currentObj.settings.editable,
+                disableResizing: _.isUndefined(fmt.endDateId) &&
+                    _.isUndefined(fmt.endDateTableId),
+                eventRender: function(ce, e, v)
+                    { eventRender(currentObj, ce, e, v); },
+                eventDragStart: function(ce, e, ui, v)
+                    { eventActionStart.apply(this,
+                        [currentObj, ce, e, ui, v]); },
+                eventResizeStart: function(ce, e, ui, v)
+                    { eventActionStart.apply(this,
+                        [currentObj, ce, e, ui, v]); },
+                eventDragStop: function(ce, e, ui, v)
+                    { eventActionStop.apply(this,
+                        [currentObj, ce, e, ui, v]); },
+                eventResizeStop: function(ce, e, ui, v)
+                    { eventActionStop.apply(this,
+                        [currentObj, ce, e, ui, v]); },
+                eventDrop: function(ce, dd, md, rf, e, ui, v)
+                    { eventChange(currentObj, ce, dd, md, rf, e, ui, v); },
+                eventResize: function(ce, dd, md, rf, e, ui, v)
+                    { eventChange(currentObj, ce, dd, md, rf, e, ui, v); }
+                });
+    };
+
     var ajaxLoad = function(currentObj, data)
     {
         currentObj.$dom().find('.loadingSpinner').removeClass('hide');

@@ -28,9 +28,12 @@
             data: {type: 'tile'}}
     ];
 
+    var isEdit = blist.dataset.getDisplayType(blist.display.view) == 'Map';
+
+    var configName = 'visualize.mapCreate';
     var config =
     {
-        name: 'visualize.mapCreate',
+        name: configName,
         priority: 2,
         title: 'Map',
         subtitle: 'Views with locations can be displayed as points on a map',
@@ -38,8 +41,8 @@
         {
             return _.select(view.columns, function(c)
                 {
-                    return c.dataTypeName == 'location' &&
-                        ($.isBlank(c.flags) || !_.include(c.flags, 'hidden'));
+                    return c.dataTypeName == 'location' && (isEdit ||
+                        ($.isBlank(c.flags) || !_.include(c.flags, 'hidden')));
                 }).length > 0;
         },
         disabledSubtitle: 'This view must have a location column',
@@ -63,8 +66,9 @@
                 fields: [
                     {text: 'Location', name: 'displayFormat.plot.locationId',
                         required: true, type: 'columnSelect', isTableColumn: true,
-                        columns: {type: 'location', hidden: false},
-                        wizard: {prompt: 'Choose a column with location coordinates to map'}
+                        columns: {type: 'location', hidden: isEdit},
+                        wizard: {prompt: 'Choose a column with location ' +
+                            'coordinates to map'}
                     }
                 ]
             },
@@ -73,16 +77,20 @@
                 fields: [
                     {text: 'Title', name: 'displayFormat.plot.titleId',
                         type: 'columnSelect', isTableColumn: true,
-                        columns: {type: ['text', 'location'], hidden: false},
-                        wizard: {prompt: 'Choose a column that contains titles for each point'}
+                        columns: {type: ['text', 'location'], hidden: isEdit},
+                        wizard: {prompt: 'Choose a column that contains ' +
+                            'titles for each point'}
                     },
                     {text: 'Description', name: 'displayFormat.plot.descriptionId',
                         type: 'columnSelect', isTableColumn: true,
-                        columns: {type: ['text', 'html', 'location'], hidden: false},
-                        wizard: {prompt: 'Choose a column that contains descriptions for each point'}
+                        columns: {type: ['text', 'html', 'location'],
+                            hidden: isEdit},
+                        wizard: {prompt: 'Choose a column that contains ' +
+                            'descriptions for each point'}
                     }
                 ],
-                wizard: {prompt: 'Do you have titles or descriptions for your points?'}
+                wizard: {prompt: 'Do you have titles or descriptions ' +
+                    'for your points?'}
             },
             {
                 title: 'Layers',
@@ -102,34 +110,115 @@
                                 defaultValue: 1, repeaterValue: 0.6,
                                 minimum: 0, maximum: 1}
                         ]},
-                        wizard: {prompt: 'Choose one or more layers to display for your map; and set their visibility'}
+                        wizard: {prompt: 'Choose one or more layers to ' +
+                            'display for your map; and set their visibility'}
                     }
                 ]
             }
         ],
         finishBlock: {
-            buttons: [$.gridSidebar.buttons.create, $.gridSidebar.buttons.cancel],
-            wizard: {prompt: "Now you're ready to create a new map"}
+            buttons: [isEdit ? $.gridSidebar.buttons.update :
+                $.gridSidebar.buttons.create, $.gridSidebar.buttons.cancel],
+            wizard: {prompt: "Now you're ready to " +
+                (isEdit ? 'update your' : 'create a new') + ' map'}
         }
+    };
+
+    config.dataSource = function()
+    {
+        var view = $.extend(true, {}, blist.display.view);
+        view.displayFormat = view.displayFormat || {};
+        view.displayFormat.plot = view.displayFormat.plot || {};
+
+        var colObj = view.displayFormat.plot || view.displayFormat;
+
+        if ($.isBlank(view.displayFormat.plot.titleId) &&
+            !$.isBlank(colObj.titleCol))
+        {
+            view.displayFormat.plot.titleId = _.detect(view.columns, function(c)
+                { return c.id == colObj.titleCol; }).tableColumnId;
+        }
+
+        if ($.isBlank(view.displayFormat.plot.descriptionId) &&
+            !$.isBlank(colObj.bodyCol))
+        {
+            view.displayFormat.plot.descriptionId = _.detect(view.columns,
+                function(c) { return c.id == colObj.bodyCol; }).tableColumnId;
+        }
+
+        return view;
     };
 
     config.finishCallback = function(sidebarObj, data, $pane, value)
     {
         if (!sidebarObj.baseFormHandler($pane, value)) { return; }
 
-        var model = sidebarObj.$grid().blistModel();
         var view = blist.dataset.baseViewCopy(blist.display.view);
         view.displayType = 'map';
 
-        $.extend(true, view, sidebarObj.getFormValues($pane));
+        $.extend(view, sidebarObj.getFormValues($pane));
 
-        $.ajax({url: '/views.json', type: 'POST', data: JSON.stringify(view),
-            dataType: 'json', contentType: 'application/json',
+        var needsFullReset = view.displayFormat.type !=
+            (blist.display.view.displayFormat || {}).type ||
+            !_.isEqual(view.displayFormat.layers,
+                (blist.display.view.displayFormat || {}).layers);
+
+        var url = '/views' + (isEdit ? '/' + blist.display.view.id : '') + '.json';
+        $.ajax({url: url, type: isEdit ? 'PUT' : 'POST', dataType: 'json',
+            data: JSON.stringify(view), contentType: 'application/json',
             error: function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); },
             success: function(resp)
             {
                 sidebarObj.finishProcessing();
-                blist.util.navigation.redirectToView(resp.id);
+                if (!isEdit)
+                { blist.util.navigation.redirectToView(resp.id); }
+                else
+                {
+                    $.syncObjects(blist.display.view, resp);
+
+                    $('.currentViewName').text(blist.display.view.name);
+
+                    var finishUpdate = function()
+                    {
+                        sidebarObj.hide();
+
+                        sidebarObj.$dom().socrataAlert(
+                            {message: 'Your map has been updated', overlay: true});
+
+                        sidebarObj.addPane(configName);
+
+                        _.defer(function()
+                        {
+                            if (needsFullReset)
+                            {
+                                sidebarObj.$grid().socrataMap()
+                                    .reset({displayFormat:
+                                        blist.display.view.displayFormat});
+                            }
+                            else
+                            {
+                                sidebarObj.$grid().socrataMap().reload();
+                            }
+                        });
+                    };
+
+                    var p = blist.display.view.displayFormat.plot;
+                    _.each(_.compact([p.locationId, p.titleId, p.descriptionId]),
+                    function(tId)
+                    {
+                        var col = _.detect(blist.display.view.columns, function(c)
+                            { return c.tableColumnId == tId; });
+                        if (_.include(col.flags || [], 'hidden'))
+                        {
+                            $.socrataServer.addRequest({url: '/views/' +
+                                blist.display.view.id + '/columns/' + col.id +
+                                '.json', type: 'PUT',
+                                data: JSON.stringify({hidden: false})});
+                        }
+                    });
+                    if (!$.socrataServer.runRequests({success: finishUpdate}))
+                    { finishUpdate(); }
+                }
             }});
     };
 

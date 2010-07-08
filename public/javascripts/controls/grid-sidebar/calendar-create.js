@@ -86,6 +86,8 @@
 
     config.dataSource = function()
     {
+        if (!isEdit) { return null; }
+
         var view = $.extend(true, {}, blist.display.view);
         view.displayFormat = view.displayFormat || {};
 

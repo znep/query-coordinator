@@ -27,11 +27,10 @@
                 var chartObj = this;
 
                 // Set up x-axis
-                var usesXCol = chartObj._view.displayType != 'imagesparkline' &&
-                    ($.isBlank(chartObj._displayConfig.fixedCount) ||
-                    chartObj._displayConfig.fixedCount > 0);
-                if (usesXCol) { chartObj._xColumn = chartObj._dataColumns[0]; }
-                if (!isDateTime(chartObj) && usesXCol)
+                if (_.isArray(chartObj._fixedColumns) &&
+                    chartObj._fixedColumns.length == 1)
+                { chartObj._xColumn = chartObj._fixedColumns[0]; }
+                if (!isDateTime(chartObj) && !$.isBlank(chartObj._xColumn))
                 { chartObj._xCategories = []; }
 
                 // Cache data
@@ -39,23 +38,21 @@
 
                 // Grab all remaining cols; pick out numeric columns for data,
                 // and associate all following non-nuneric columns with that line
-                var cols = chartObj._dataColumns.slice(usesXCol ? 1 : 0);
                 chartObj._yColumns = [];
-                _.each(cols, function(c)
+                _.each(chartObj._valueColumns, function(vc)
                 {
-                    if (_.include(['number', 'money', 'percent'], c.renderTypeName))
-                    { chartObj._yColumns.push({data: c}); }
-                    else
+                    var obj = {data: vc.column};
+                    _.each(vc.supplementalColumns || [], function(sc)
                     {
-                        var obj = chartObj._yColumns[chartObj._yColumns.length - 1];
-                        if (c.renderTypeName == 'text' && _.isUndefined(obj.title))
-                        { obj.title = c; }
+                        if (sc.renderTypeName == 'text' && $.isBlank(obj.title))
+                        { obj.title = sc; }
                         else
                         {
                             obj.metadata = obj.metadata || [];
-                            obj.metadata.push(c);
+                            obj.metadata.push(sc);
                         }
-                    }
+                    });
+                    chartObj._yColumns.push(obj);
                 });
 
                 // Set up y-axes
@@ -302,10 +299,13 @@
         // Make a copy of colors so we don't reverse the original
         var colors;
         if (!_.isUndefined(chartObj._displayConfig.colors))
+        { colors = chartObj._displayConfig.colors.slice(); }
+        else
         {
-            colors = chartObj._displayConfig.colors.slice();
-            if (chartObj._reverseOrder) { colors.reverse(); }
+            colors = _.map(chartObj._valueColumns, function(vc)
+            { return vc.color; });
         }
+        if (!$.isBlank(colors) && chartObj._reverseOrder) { colors.reverse(); }
 
         // Map recorded type to what Highcharts wants
         var seriesType = chartObj._chartType;

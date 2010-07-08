@@ -1193,7 +1193,8 @@
                         JSON.stringify(item.defaultValue || '')),
                 'data-dataValue': {value: $.htmlEscape(
                         JSON.stringify(item.dataValue || '')),
-                    onlyIf: !$.isBlank(item.dataValue)}
+                    onlyIf: !$.isBlank(item.dataValue) &&
+                        item.dataValue !== item.defaultValue}
             };
         };
 
@@ -1220,16 +1221,24 @@
         if (args.context.inRepeater && !_.isUndefined(args.item.repeaterValue))
         { defValue = args.item.repeaterValue; }
 
-        var getValue = function(data, name)
+        var getValue = function(data, name, valIndex)
         {
             var nParts = (name || '').split('.');
             var base = data;
             while (nParts.length > 0 && !$.isBlank(base))
             {
                 base = base[nParts.shift()];
-                if (_.isArray(base) && nParts.length > 0 &&
-                    $.isBlank(nParts[0].match(/^\d+$/)))
-                { base = _.include(base, nParts.shift()); }
+                if (_.isArray(base) && nParts.length > 0)
+                {
+                    if ($.isBlank(nParts[0].match(/^\d+$/)))
+                    { base = _.include(base, nParts.shift()); }
+                    else
+                    {
+                        var i = parseInt(nParts.shift());
+                        if (!$.isBlank(valIndex)) { i = valIndex; }
+                        base = base[i];
+                    }
+                }
             }
             if (nParts.length == 0 && !$.isBlank(base))
             {
@@ -1241,14 +1250,17 @@
         var curValue;
         if (!$.isBlank(args.item.origName))
         {
-            curValue = getValue(args.context.data, args.item.origName);
+            curValue = getValue(args.context.data, args.item.origName,
+                args.context.inRepeaterContext ?
+                    args.context.repeaterIndex : null);
             if (!$.isBlank(curValue))
             { args.item = $.extend({}, args.item, {dataValue: curValue}); }
         }
 
 
-        var checkRequiredData = function(contextData, field)
+        var getRequiredNames = function(contextData, field)
         {
+            var names = [];
             var fields = $.arrayify(field);
             while (fields.length > 0)
             {
@@ -1273,9 +1285,15 @@
                     { continue; }
                 }
 
-                if ($.isBlank(getValue(contextData, f.name))) { return false; }
+                names.push(f.name);
             }
-            return true;
+            return names;
+        };
+
+        var checkRequiredData = function(contextData, field)
+        {
+            return _.all(getRequiredNames(contextData, field),
+                function(n) { return !$.isBlank(getValue(contextData, n)); });
         };
 
 
@@ -1395,7 +1413,8 @@
             case 'color':
                 var item = $.extend({}, args.item,
                     {defaultValue: $.arrayify(args.item.defaultValue || [])});
-                var defColor = item.defaultValue[args.context.repeaterIndex] ||
+                var defColor = curValue ||
+                    item.defaultValue[args.context.repeaterIndex] ||
                     item.defaultValue[0];
                 contents.push({tagName: 'a', href: '#Color', title: 'Choose color',
                     name: args.item.name,
@@ -1473,10 +1492,26 @@
                 templateLine.contents.unshift(removeButton);
                 templateLine = $.htmlEscape($.tag(templateLine, true));
 
+                var populatedLength = 0;
+                if ($.isBlank(args.item.field.name))
+                {
+                    var names = getRequiredNames(args.context.data,
+                        args.item.field);
+                    if (names.length > 0)
+                    {
+                        var m = names[0].match(/^(.+)\.\d+(\..+)?$/);
+                        if (!$.isBlank(m))
+                        {
+                            var a = getValue(args.context.data, m[1]);
+                            if (_.isArray(a)) { populatedLength = a.length; }
+                        }
+                    }
+                }
                 curValue = _.select(curValue || [], function(v)
                 { return checkRequiredData(v, args.item.field); });
-                for (var i = 0; i < (curValue.length || args.item.minimum || 1);
-                    i++)
+
+                for (var i = 0; i < (curValue.length || populatedLength ||
+                    args.item.minimum || 1); i++)
                 {
                     var contextData = curValue[i] || args.context.data;
                     var hasRequiredData =
@@ -1487,6 +1522,8 @@
                                     context: $.extend({}, args.context,
                                          {repeaterIndex: i, noTag: true,
                                             inRepeater: i >= args.item.minimum,
+                                            inRepeaterContext:
+                                                !$.isBlank(args.item.field.name),
                                             data: hasRequiredData ?
                                                 contextData : null})
                     });
@@ -1707,7 +1744,7 @@
                             { $firstField = o.$field; }
                         }
                         else if (_.isFunction(o.func))
-                        { failed = !o.func(sidebarObj.$grid().blistModel()); }
+                        { failed = !o.func(blist.display.view); }
 
                         // If they want the opposite, then flip it
                         if (o.negate) { failed = !failed; }
@@ -1852,7 +1889,7 @@
         var addValue = function($button)
         {
             var $container = $button.closest('.line.repeater');
-            var $newLine = $($.htmlUnescape($button.attr('data-template')));
+            var $newLine = $($button.attr('data-template'));
             $newLine.find('.required').removeClass('required');
 
             var i = parseInt($button.attr('data-count'));
@@ -1874,8 +1911,7 @@
             {
                 var $a = $(this);
                 var $i = $a.next(':input');
-                var colors = (JSON.parse($i.attr('data-defaultValue') || '""'))
-                    .split(' ');
+                var colors = JSON.parse($i.attr('data-defaultValue') || '""');
                 if (colors.length < 2) { return; }
 
                 var newColor = colors[i % colors.length];

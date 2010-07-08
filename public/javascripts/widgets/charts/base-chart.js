@@ -31,7 +31,7 @@
         {
             var className = $.socrataChart.chartMapping[options.chartType];
             var chartClass = $.socrataChart[className];
-            if (chartClass !== null && chartClass !== undefined)
+            if (!$.isBlank(chartClass))
             {
                 socrataChart = new chartClass(options, this[0]);
             }
@@ -50,7 +50,7 @@
     {
         defaults:
         {
-            chartType: 'linechart'
+            chartType: 'line'
         },
 
         prototype:
@@ -80,10 +80,10 @@
                         _.each(aggData, function(a)
                             { aggMap[a.columnId] = {type: a.name, value: a.value}; }
                         );
-                        _.each(chartObj._dataColumns, function(c)
+                        _.each(chartObj._valueColumns, function(vc)
                         {
-                            if (aggMap[c.id] !== undefined)
-                            { c.aggregate = aggMap[c.id]; }
+                            if (!$.isBlank(aggMap[vc.column.id]))
+                            { vc.column.aggregate = aggMap[vc.column.id]; }
                         });
                         chartObj.columnsLoaded();
                     }});
@@ -102,7 +102,11 @@
 
                 chartObj.resetData();
 
-                delete chartObj._dataColumns;
+                delete chartObj._fixedColumns;
+                delete chartObj._valueColumns;
+
+                chartObj.settings.chartType = chartObj._displayConfig.chartType;
+                chartObj.initializeChart();
             },
 
             resetData: function()
@@ -112,35 +116,39 @@
         }
     }));
 
+
     var getColumns = function(chartObj, view)
     {
-        if (_.isUndefined(view.displayFormat) ||
-            _.isUndefined(view.displayFormat.dataColumns))
-        { return false; }
+        view = blist.dataset.convertLegacyChart(view);
 
         _.each(view.columns, function(c, i) { c.dataIndex = i; });
 
-        chartObj._dataColumns = _.map(view.displayFormat.dataColumns, function(tcId)
-        {
-            return _.detect(view.columns, function(c)
-                { return c.tableColumnId == tcId; });
-        });
-        chartObj._dataColumns = _.compact(chartObj._dataColumns);
+        chartObj._valueColumns = _.map(view.displayFormat.valueColumns,
+            function(vc)
+            {
+                var col = _.detect(view.columns, function(c)
+                    { return c.tableColumnId == vc.tableColumnId; });
+                if ($.isBlank(col)) { return null; }
+                vc = $.extend({}, vc);
+                vc.column = col;
+                vc.supplementalColumns = _.map(vc.supplementalColumns || [],
+                    function(sc)
+                    {
+                        return _.detect(view.columns, function(c)
+                            { return c.tableColumnId == sc; });
+                    });
+                return vc;
+            });
+        chartObj._valueColumns = _.compact(chartObj._valueColumns);
 
-        return chartObj._dataColumns.length > 0;
-    };
+        chartObj._fixedColumns = _.map(view.displayFormat.fixedColumns || [],
+            function(tcId)
+            {
+                return _.detect(view.columns, function(c)
+                    { return c.tableColumnId == tcId; });
+            });
+        chartObj._fixedColumns = _.compact(chartObj._fixedColumns);
 
-    var getLegacyColumns = function(chartObj, view)
-    {
-        _.each(view.columns, function(c, i) { c.dataIndex = i; });
-        var cols = _.select(view.columns, function(c)
-            { return c.dataTypeName != 'meta_data' &&
-                (c.flags === undefined || !_.include(c.flags, 'hidden')); });
-        cols = _.sortBy(cols, function(c) { return c.position; });
-
-        if (cols.length < 1) { return false; }
-
-        chartObj._dataColumns = cols;
         return true;
     };
 })(jQuery);

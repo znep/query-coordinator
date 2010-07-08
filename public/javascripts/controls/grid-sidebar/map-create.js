@@ -217,6 +217,8 @@
 
     config.dataSource = function()
     {
+        if (!isEdit) { return null; }
+
         var view = $.extend(true, {}, blist.display.view);
         view.displayFormat = view.displayFormat || {};
         view.displayFormat.plot = view.displayFormat.plot || {};
@@ -271,11 +273,10 @@
 
                     var finishUpdate = function()
                     {
-                        sidebarObj.hide();
-
                         sidebarObj.$dom().socrataAlert(
                             {message: 'Your map has been updated', overlay: true});
 
+                        sidebarObj.hide();
                         sidebarObj.addPane(configName);
 
                         _.defer(function()

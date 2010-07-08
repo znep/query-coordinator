@@ -414,7 +414,12 @@ blist.namespace.fetch('blist.data');
                 self.reloadAggregates();
 
                 if (config.meta.totalRows !== undefined)
-                { totalRows = config.meta.totalRows; }
+                {
+                    totalRows = config.meta.view.totalRows =
+                        config.meta.totalRows;
+                    if (!$.isBlank(curOptions.masterView))
+                    { $.syncObjects(curOptions.masterView, self.getViewCopy()); }
+                }
 
                 // Reset all config to defaults
                 filterFn = null;
@@ -658,7 +663,13 @@ blist.namespace.fetch('blist.data');
                 if (newRows)
                 {
                     if (config.meta.totalRows !== undefined)
-                    { totalRows = config.meta.totalRows; }
+                    {
+                        totalRows = config.meta.view.totalRows =
+                            config.meta.totalRows;
+                        if (!$.isBlank(curOptions.masterView))
+                        { $.syncObjects(curOptions.masterView,
+                            self.getViewCopy()); }
+                    }
                     this.rows(newRows, true);
                 }
                 else { configureActive(null, true); }
@@ -3032,7 +3043,12 @@ blist.namespace.fetch('blist.data');
                 config.meta.view.flags = meta.view.flags;
                 self.meta(config.meta);
                 if (config.meta.totalRows !== undefined)
-                { activeCount = config.meta.totalRows; }
+                {
+                    activeCount = config.meta.view.totalRows =
+                        config.meta.totalRows;
+                    if (!$.isBlank(curOptions.masterView))
+                    { $.syncObjects(curOptions.masterView, self.getViewCopy()); }
+                }
 
                 // Pass the callback all the way into updateColumns, because
                 // our view isn't valid until those have been updated

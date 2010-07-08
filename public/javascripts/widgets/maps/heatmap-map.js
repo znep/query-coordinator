@@ -65,18 +65,12 @@
                         high: mapObj._displayConfig.highcolor
                     }
                 };
+                mapObj._displayConfig.heatmap = config;
             }
 
             config.hideLayers = config.hideLayers || !mapObj._displayConfig.layers
                                 || mapObj._displayConfig.layers.length == 0;
-
-            if (config.hideLayers || config.transformFeatures ||
-                (!config.ignoreTransforms && MAP_TYPE[config.type].transformFeatures))
-            {
-                var layers = mapObj.getLayers();
-                for (var i = 0; i < layers.length; i++)
-                { mapObj.map.getLayer(layers[i].id).hide(); }
-            }
+            mapObj.hideLayers();
 
             if (config.hideZoomSlider)
             { mapObj.map.hideZoomSlider(); }
@@ -116,6 +110,19 @@
             { doQueries(mapObj, config); }
             else
             { addFeatureSetToMap(mapObj, null, config); }
+        },
+
+        hideLayers: function()
+        {
+            var mapObj = this;
+            var config = mapObj._displayConfig.heatmap;
+            if (config.hideLayers || config.transformFeatures ||
+                (!config.ignoreTransforms && MAP_TYPE[config.type].transformFeatures))
+            {
+                var layers = mapObj.getLayers();
+                for (var i = 0; i < layers.length; i++)
+                { mapObj.map.getLayer(layers[i].id).hide(); }
+            }
         }
     });
 

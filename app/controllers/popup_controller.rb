@@ -2,7 +2,7 @@ class PopupController < ApplicationController
   skip_before_filter :require_user
   
   def stats
-    render(:layout => "splash")
+    render(:partial => "shared/stats_popup", :layout => "splash")
   end
   
   def stats_screenshot

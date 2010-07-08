@@ -1,7 +1,7 @@
 $(function()
 {
     // Set up modals
-    $('.modalDialog').jqm({
+    $('.modalDialog, #modals > *').jqm({
         trigger: false,
         modal: true,
         onShow: function(jqm)

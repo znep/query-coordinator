@@ -75,7 +75,7 @@
             {
                 var layers = mapObj.getLayers();
                 for (var i = 0; i < layers.length; i++)
-                { mapObj.map.getLayer(layers[0].id).hide(); }
+                { mapObj.map.getLayer(layers[i].id).hide(); }
             }
 
             if (config.hideZoomSlider)
@@ -275,6 +275,7 @@
 
     var buildMinimumExtentFromSet = function(extents)
     {
+        if (extents.length == 0) { return; }
         var spatialReference = extents[0].spatialReference;
         var base_extent = extents[0];
         var extent = _.reduce(extents, base_extent, function(memo, extent)

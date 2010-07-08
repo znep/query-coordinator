@@ -202,6 +202,7 @@ $(function()
     $('.unsavedLine a.saveAs').click(function(e)
     {
         e.preventDefault();
+        $('.saveViewDialog .mainError').text('');
         $('.saveViewDialog').jqmShow();
     });
 
@@ -222,8 +223,8 @@ $(function()
                 .removeClass('hide');
             $.ajax({url: '/views.json', type: 'POST', dataType: 'json',
                 contentType: 'application/json',
-                data: JSON.stringify($.extend({},
-                    blist.display.view, {name: name})),
+                data: JSON.stringify(blist.dataset.cleanViewForPost($.extend({},
+                    blist.display.view, {name: name}), true)),
                 error: function(xhr)
                 {
                     $('.saveViewDialog').find('.loadingOverlay, .loadingSpinner')

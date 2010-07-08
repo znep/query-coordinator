@@ -34,7 +34,7 @@
                 fields: [
                     {text: 'Name', name: 'name', type: 'text', required: true,
                         prompt: 'Enter a name',
-                        wizard: {prompt: 'Enter a name for your calendar'}
+                        wizard: 'Enter a name for your calendar'
                     }
                 ]
             },
@@ -45,15 +45,13 @@
                         type: 'columnSelect', required: true, notequalto: 'dateCol',
                         isTableColumn: true,
                         columns: {type: ['calendar_date', 'date'], hidden: isEdit},
-                        wizard: {prompt: 'Select the column with the initial ' +
-                            'date of events'}
+                        wizard: 'Select the column with the initial date of events'
                     },
                     {text: 'Ending Date', name: 'displayFormat.endDateTableId',
                         type: 'columnSelect', notequalto: 'dateCol',
                         isTableColumn: true,
                         columns: {type: ['calendar_date', 'date'], hidden: isEdit},
-                        wizard: {prompt: 'Select the column with the ending ' +
-                            'date of events'}
+                        wizard: 'Select the column with the ending date of events'
                     }
                 ]
             },
@@ -63,15 +61,15 @@
                     {text: 'Event Title', name: 'displayFormat.titleTableId',
                         type: 'columnSelect', required: true, isTableColumn: true,
                         columns: {type: 'text', hidden: isEdit},
-                        wizard: {prompt: 'Select the column with the primary ' +
-                            'text that should display in each event'}
+                        wizard: 'Select the column with the primary ' +
+                            'text that should display in each event'
                     },
                     {text: 'Description', name: 'displayFormat.descriptionTableId',
                         type: 'columnSelect', isTableColumn: true,
                         columns: {type: 'text', hidden: isEdit},
-                        wizard: {prompt: 'Select the column with the ' +
+                        wizard: 'Select the column with the ' +
                             'descriptive text that will appear on mousing ' +
-                            'over the event'}
+                            'over the event'
                     }
                 ]
             }
@@ -79,8 +77,8 @@
         finishBlock: {
             buttons: [isEdit ? $.gridSidebar.buttons.update :
                 $.gridSidebar.buttons.create, $.gridSidebar.buttons.cancel],
-            wizard: {prompt: "Now you're ready to " +
-                (isEdit ? 'update your' : 'create a new') + ' calendar'}
+            wizard: "Now you're ready to " +
+                (isEdit ? 'update your' : 'create a new') + ' calendar'
         }
     };
 

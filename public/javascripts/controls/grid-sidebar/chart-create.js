@@ -54,7 +54,8 @@
             'want a legend'
     };
 
-    var colorOption = {type: 'color', name: 'color', defaultValue: defaultColors};
+    var colorOption = {type: 'color', name: 'color', defaultValue: defaultColors,
+        lineClass: 'colorCollapse'};
 
     var showLines = {text: 'Show Lines', name: 'displayFormat.lineSize',
         type: 'checkbox', trueValue: '2', falseValue: '0', defaultValue: '2',
@@ -294,8 +295,8 @@
         finishBlock: {
             buttons: [isEdit ? $.gridSidebar.buttons.update :
                 $.gridSidebar.buttons.create, $.gridSidebar.buttons.cancel],
-            wizard: {prompt: "Now you're ready to " +
-                (isEdit ? 'update your' : 'create a new') + ' chart'}
+            wizard: "Now you're ready to " +
+                (isEdit ? 'update your' : 'create a new') + ' chart'
         }
     };
 

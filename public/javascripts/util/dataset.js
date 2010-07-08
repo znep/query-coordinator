@@ -65,6 +65,47 @@ blist.dataset.baseViewCopy = function(view)
         displayFormat: $.extend(true, {}, view.displayFormat)};
 };
 
+blist.dataset.cleanViewForPost = function(view, includeColumns)
+{
+    if (includeColumns)
+    {
+        var cleanColumn = function(col)
+        {
+            delete col.options;
+            delete col.dropDown;
+            delete col.renderTypeName;
+            delete col.dataTypeName;
+        };
+
+        // Clean out dataIndexes, and clean out child metadata columns
+        _.each(view.columns, function(c)
+        {
+            cleanColumn(c);
+            if (c.childColumns)
+            {
+                _.each(c.childColumns, function(cc)
+                    { cleanColumn(cc); });
+            }
+        });
+
+        if (!$.isBlank((view.query || {}).groupBys))
+        {
+            view.columns = _.reject(view.columns, function(c)
+            {
+                return $.isBlank((c.format || {}).grouping_aggregate) &&
+                    !_.any(view.query.groupBys, function(g)
+                    { return g.columnId == c.id; });
+            });
+        }
+    }
+    else
+    { delete view.columns; }
+
+    delete view.totalRows;
+    delete view.grants;
+    return view;
+};
+
 blist.dataset.convertLegacyChart = function(view)
 {
     var LEGACY_CHART_TYPES = {

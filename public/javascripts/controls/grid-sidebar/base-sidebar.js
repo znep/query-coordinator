@@ -91,8 +91,9 @@
                   + text: label for input
                   + type: required, one of: 'static', 'text', 'textarea',
                       'checkbox', 'select', 'columnSelect', 'radioGroup', 'slider'
-                      - 'color' is a color picker.  By default, this will
-                          display on the right end of the following line
+                      - 'color' is a color picker.  If you add lineClass
+                          'colorCollapse', this will display on the right end
+                          of the following line
                       - 'group' is a special option that only needs an options
                           array of subfields.  Also accepts extraClass
                       - 'repeater' is a special option that allows the user
@@ -497,9 +498,6 @@
 
                 // The big reveal
                 sidebarObj.$dom().show();
-                var parW = sidebarObj.$dom().parent().innerWidth();
-                sidebarObj.$neighbor().width(parW -
-                    sidebarObj.$dom().outerWidth(true));
 
                 if (isModal)
                 {
@@ -1033,6 +1031,7 @@
             {
                 $paneSel.socrataTip().destroy();
                 sidebarObj._$currentWizard = null;
+                sidebarObj._currentWizardLeft = null;
                 sidebarObj._currentWizardTop = null;
                 sidebarObj._$mainWizardItem = null;
             }
@@ -1071,6 +1070,9 @@
         if (sidebarObj.settings.setSidebarTop)
         { sidebarObj.$dom().css('top', -gridHeight + 'px') }
 
+        var parW = sidebarObj.$dom().parent().innerWidth();
+        sidebarObj.$neighbor().width(parW - sidebarObj.$dom().outerWidth(true));
+
         // Adjust current pane to correct height, since it is what scrolls
         var $pane = sidebarObj.$dom().find('.outerPane:visible');
         var $scrollContent = $pane.find('.sidebarPane:visible .scrollContent');
@@ -1096,10 +1098,15 @@
 
         var $item = sidebarObj._$currentWizard;
         var itemTop = $item.offset().top;
-        if (itemTop == sidebarObj._currentWizardTop) { return; }
+        var itemLeft = $item.offset().left;
+        if (itemTop == sidebarObj._currentWizardTop &&
+            itemLeft == sidebarObj._currentWizardLeft) { return; }
 
         $item.socrataTip().adjustPosition(
-            {top: itemTop - sidebarObj._currentWizardTop});
+            {top: itemTop - sidebarObj._currentWizardTop,
+                left: itemLeft - sidebarObj._currentWizardLeft});
+        sidebarObj._currentWizardLeft = itemLeft;
+        if (itemTop == sidebarObj._currentWizardTop) { return; }
         sidebarObj._currentWizardTop = itemTop;
 
         if ($.isBlank(sidebarObj.$currentPane())) { return; }
@@ -1398,7 +1405,7 @@
                     min *= scale;
                     max *= scale;
                     defValue *= scale;
-                    curValue *= scale;
+                    if (!$.isBlank(curValue)) { curValue *= scale; }
                 }
                 contents.push({tagName: 'div', 'class': 'sliderControl',
                         'data-min': min, 'data-max': max});
@@ -2115,8 +2122,11 @@
                     .trigger('resetToDefault');
             });
 
-            $container.find(':input').change(function()
-            { _.defer(function() { checkForm(sidebarObj); }); });
+            $container.find(':input')
+                .change(function()
+                { _.defer(function() { checkForm(sidebarObj); }); })
+                .blur(function()
+                { _.defer(function() { checkForm(sidebarObj); }); });
 
             var checkRadio = function(e)
             {
@@ -2283,6 +2293,7 @@
         {
             sidebarObj._$currentWizard.wizardPrompt().close();
             sidebarObj._$currentWizard = null;
+            sidebarObj._currentWizardLeft = null;
             sidebarObj._currentWizardTop = null;
             sidebarObj._$mainWizardItem = null;
         }
@@ -2304,7 +2315,8 @@
             positions: wiz.positions || null,
             closeEvents: wiz.closeEvents || null};
 
-        if ($item.is('.ranWizard'))
+        if ($item.is('.ranWizard') ||
+            $item.children(':input:disabled, .uniform.disabled').length > 0)
         {
             wizardAction(sidebarObj, $item, wiz.defaultAction || 'nextField');
             return true;
@@ -2381,7 +2393,8 @@
         {
             var $mainItem = $item;
             /* Adjust actual item wizard is attached to */
-            if (!$.isBlank(wiz.selector)) { $item = $item.find(wiz.selector); }
+            if (!$.isBlank(wiz.selector))
+            { $item = $item.find(wiz.selector + ':visible'); }
             if ($item.length < 1) { $item = $mainItem; }
 
             /* Set scroll first, because fetching the scrollTop can trigger a
@@ -2390,6 +2403,7 @@
             sidebarObj._curScroll = $pane.scrollTop();
             $item.wizardPrompt(wizConfig);
             sidebarObj._$currentWizard = $item;
+            sidebarObj._currentWizardLeft = $item.offset().left;
             sidebarObj._currentWizardTop = $item.offset().top;
             sidebarObj._$mainWizardItem = $mainItem;
             $item.find(':text, textarea').focus();
@@ -2541,6 +2555,7 @@
         });
 
         sidebarObj._$currentWizard = sidebarObj._$mainWizardItem = $paneSel;
+        sidebarObj._currentWizardLeft = $paneSel.offset().left;
         sidebarObj._currentWizardTop = $paneSel.offset().top;
 
         // Defer this call because if we just destroyed the tip, we need

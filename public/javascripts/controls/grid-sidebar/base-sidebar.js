@@ -806,9 +806,8 @@
                 // the selected radio button in the group and manually getting
                 // the associated input)
                 $pane.find('form :input, form .colorControl, form .customWrapper')
-                    .filter(':visible:not(' +
-                        '.prompt, .sectionSelect, .radioLine label *, ' +
-                        '.customWrapper *)')
+                    .filter(':visible:not(:disabled, .prompt, ' +
+                        '.sectionSelect, .radioLine label *, .customWrapper *)')
                     .each(function()
                 {
                     var $input = $(this);
@@ -833,7 +832,8 @@
                     {
                         var failed = false;
                         $input.closest('.inputBlock')
-                            .find('[data-isrequired]:visible').each(function()
+                            .find('[data-isrequired]:visible:not(:disabled)')
+                            .each(function()
                         {
                             var v = getInputValue($(this));
                             failed = failed || $.isBlank(v) || v === false;
@@ -1398,6 +1398,7 @@
                 var defColor = item.defaultValue[args.context.repeaterIndex] ||
                     item.defaultValue[0];
                 contents.push({tagName: 'a', href: '#Color', title: 'Choose color',
+                    name: args.item.name,
                     'class': 'colorControl', contents: 'Choose color',
                     style: {'background-color': defColor}});
                 contents.push($.extend(commonAttrs(item),
@@ -2183,7 +2184,7 @@
         if ($.isBlank($pane)) { return; }
 
         $pane.find('.finishButtons .submit').toggleClass('disabled',
-            $pane.find(':input.required:visible')
+            $pane.find(':input.required:visible:not(:disabled)')
              .filter(':blank, .prompt, :checkbox:unchecked').length > 0 ||
             $pane.find('.formSection:visible.disabled').length > 0);
     };

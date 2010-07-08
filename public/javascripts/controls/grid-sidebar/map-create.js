@@ -6,7 +6,13 @@
     var mapTypes = [
         {text: 'Google Maps', value: 'google'},
         {text: 'Bing Maps', value: 'bing'},
-        {text: 'ESRI ArcGIS', value: 'esri'}
+        {text: 'ESRI ArcGIS', value: 'esri'},
+        {text: 'Heat Map', value: 'heatmap'}
+    ];
+    var regionTypes = [
+        {text: 'Countries', value: 'countries'},
+        {text: 'US States', value: 'state'},
+        {text: 'Counties in', value: 'counties'}
     ];
 
     var arcgisBaseService = 'http://server.arcgisonline.com/ArcGIS/rest/services/';
@@ -27,6 +33,68 @@
             value: arcgisBaseService + 'World_Physical_Map/MapServer',
             data: {type: 'tile'}}
     ];
+
+    var heatmapRegionOptions = function(heatmapType)
+    {
+        if ($.isBlank(heatmapType)) return null;
+        if (heatmapType != 'counties') return null;
+        return [
+            {value:'ak',text:'Alaska'},         {value:'al',text:'Alabama'},
+            {value:'ar',text:'Arkansas'},       {value:'az',text:'Arizona'},
+            {value:'ca',text:'California'},     {value:'co',text:'Colorado'},
+            {value:'ct',text:'Connecticut'},    {value:'de',text:'Delaware'},
+            {value:'fl',text:'Florida'},        {value:'ga',text:'Georgia'},
+            {value:'hi',text:'Hawaii'},         {value:'ia',text:'Iowa'},
+            {value:'id',text:'Idaho'},          {value:'il',text:'Illinois'},
+            {value:'in',text:'Indiana'},        {value:'ks',text:'Kansas'},
+            {value:'ky',text:'Kentucky'},       {value:'la',text:'Louisiana'},
+            {value:'ma',text:'Massachusetts'},  {value:'md',text:'Maryland'},
+            {value:'me',text:'Maine'},          {value:'mi',text:'Michigan'},
+            {value:'mn',text:'Minnesota'},      {value:'mo',text:'Missouri'},
+            {value:'ms',text:'Mississippi'},    {value:'mt',text:'Montana'},
+            {value:'nc',text:'North Carolina'}, {value:'nd',text:'North Dakota'},
+            {value:'ne',text:'Nebraska'},       {value:'nh',text:'New Hampshire'},
+            {value:'nj',text:'New Jersey'},     {value:'nm',text:'New Mexico'},
+            {value:'nv',text:'Nevada'},         {value:'ny',text:'New York'},
+            {value:'oh',text:'Ohio'},           {value:'ok',text:'Oklahoma'},
+            {value:'or',text:'Oregon'},         {value:'pa',text:'Pennsylvania'},
+            {value:'ri',text:'Rhode Island'},   {value:'sc',text:'South Carolina'},
+            {value:'sd',text:'South Dakota'},   {value:'tn',text:'Tennessee'},
+            {value:'tx',text:'Texas'},          {value:'ut',text:'Utah'},
+            {value:'va',text:'Virginia'},       {value:'vt',text:'Vermont'},
+            {value:'wa',text:'Washington'},     {value:'wi',text:'Wisconsin'},
+            {value:'wv',text:'West Virginia'},  {value:'wy',text:'Wyoming'}
+        ];
+    };
+
+    var configLayers = {
+            title: 'Layers',
+            onlyIf: {field: 'displayFormat.type', value: 'esri'},
+            fields: [
+                {type: 'repeater', minimum: 1, addText: 'Add Layer',
+                    name: 'displayFormat.layers',
+                    field: {type: 'group', options: [
+                        {text: 'Layer', type: 'select',
+                            name: 'url',
+                            defaultValue: mapLayers[0].value,
+                            repeaterValue: '',
+                            required: true, prompt: 'Select a layer',
+                            options: mapLayers},
+                        {text: 'Opacity', type: 'slider',
+                            name: 'options.opacity',
+                            defaultValue: 1, repeaterValue: 0.6,
+                            minimum: 0, maximum: 1}
+                    ]},
+                    wizard: {prompt: 'Choose one or more layers to ' +
+                        'display for your map; and set their visibility'}
+                }
+            ]
+        };
+    var configLayersHeatmap = $.extend(true, {}, configLayers);
+    configLayersHeatmap.onlyIf.value = 'heatmap';
+    configLayersHeatmap.type = 'selectable';
+    configLayersHeatmap.fields[0].minimum = 0;
+    configLayersHeatmap.wizard = {prompt: 'Do you want to add a layer?'};
 
     var isEdit = blist.dataset.getDisplayType(blist.display.view) == 'Map';
 
@@ -72,8 +140,9 @@
                     }
                 ]
             },
-            {
+            { // General Details section.
                 title: 'Details', type: 'selectable', name: 'detailsSection',
+                onlyIf: {field: 'displayFormat.type', value: 'heatmap', negate: true},
                 fields: [
                     {text: 'Title', name: 'displayFormat.plot.titleId',
                         type: 'columnSelect', isTableColumn: true,
@@ -92,29 +161,51 @@
                 wizard: {prompt: 'Do you have titles or descriptions ' +
                     'for your points?'}
             },
-            {
-                title: 'Layers',
-                onlyIf: {field: 'displayFormat.type', value: 'esri'},
+            { // Heatmap Details section.
+                title: 'Details', name: 'hmDetailsSection',
+                onlyIf: {field: 'displayFormat.type', value: 'heatmap'},
                 fields: [
-                    {type: 'repeater', minimum: 1, addText: 'Add Layer',
-                        name: 'displayFormat.layers',
-                        field: {type: 'group', options: [
-                            {text: 'Layer', type: 'select',
-                                name: 'url',
-                                defaultValue: mapLayers[0].value,
-                                repeaterValue: '',
-                                required: true, prompt: 'Select a layer',
-                                options: mapLayers},
-                            {text: 'Opacity', type: 'slider',
-                                name: 'options.opacity',
-                                defaultValue: 1, repeaterValue: 0.6,
-                                minimum: 0, maximum: 1}
-                        ]},
-                        wizard: {prompt: 'Choose one or more layers to ' +
-                            'display for your map; and set their visibility'}
+                    {text: 'Description', name: 'displayFormat.plot.descriptionId',
+                        type: 'columnSelect', isTableColumn: true,
+                        columns: {type: ['text', 'html', 'location'],
+                            hidden: isEdit},
+                        wizard: {prompt: 'Choose a column that contains ' +
+                            'descriptions for each point'}
+                    },
+                    {text: 'Quantity', name: 'displayFormat.plot.quantityId',
+                        required: true, type: 'columnSelect', isTableColumn: true,
+                        columns: {type: ['number', 'money', 'percent'], hidden: isEdit},
+                        wizard: {prompt: 'Choose a column that contains ' +
+                            'quantities for each point'}
+                    },
+                    {text: 'Region', name: 'displayFormat.heatmap.type', type: 'select',
+                        required: true, prompt: 'Select a region level',
+                        options: regionTypes,
+                        wizard: {prompt: 'Choose the type of regions the ' +
+                            'heat map will display'}
+                    },
+                    {text: '', name: 'displayFormat.heatmap.region', type: 'select',
+                        required: true, prompt: 'Select a region',
+                        linkedField: 'displayFormat.heatmap.type',
+                        options: heatmapRegionOptions,
+                        wizard: 'Choose the region in which this dataset is in'
+                    },
+                    {type: 'repeater', text: 'Color (Low)', minimum: 1, maximum: 1,
+                        field: {type: 'color', defaultValue: ['#c9c9c9'],
+                                name: 'displayFormat.heatmap.colors.low'},
+                        lineClass: 'colorArray',
+                        wizard: 'Color to display for lowest quantity'
+                    },
+                    {type: 'repeater', text: 'Color (High)', minimum: 1, maximum: 1,
+                        field: {type: 'color', defaultValue: ['#00ff00'],
+                                name: 'displayFormat.heatmap.colors.high'},
+                        lineClass: 'colorArray',
+                        wizard: 'Color to display for highest quantity'
                     }
-                ]
-            }
+                ],
+            },
+            configLayers,
+            configLayersHeatmap
         ],
         finishBlock: {
             buttons: [isEdit ? $.gridSidebar.buttons.update :

@@ -67,6 +67,9 @@
                 };
             }
 
+            config.hideLayers = config.hideLayers || !mapObj._displayConfig.layers
+                                || mapObj._displayConfig.layers.length == 0;
+
             if (config.hideLayers || config.transformFeatures ||
                 (!config.ignoreTransforms && MAP_TYPE[config.type].transformFeatures))
             {
@@ -87,10 +90,10 @@
             if (_.isUndefined(mapObj._segmentSymbols))
             {
                 mapObj._segmentSymbols = [];
-                var lowColor  = config.colors.low  ? $.hexToRgb(config.colors.low)
-                                                   : { r: 209, g: 209, b: 209};
-                var highColor = config.colors.high ? $.hexToRgb(config.colors.high)
-                                                   : { r: 0, g: 255, b: 0};
+                var lowColor  = config.colors && config.colors.low  ? $.hexToRgb(config.colors.low)
+                                                                    : { r: 209, g: 209, b: 209};
+                var highColor = config.colors && config.colors.high ? $.hexToRgb(config.colors.high)
+                                                                    : { r: 0, g: 255, b: 0};
                 var colorStep = {
                     r: Math.round((highColor.r-lowColor.r)/NUM_SEGMENTS),
                     g: Math.round((highColor.g-lowColor.g)/NUM_SEGMENTS),

@@ -26,3 +26,5 @@ dataset-page:
 - screen-dataset
 - control-feed
 - splash
+dataset-edit-metadata-page:
+- screen-dataset-edit-metadata

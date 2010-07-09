@@ -38,6 +38,22 @@ class DatasetsController < ApplicationController
     render :layout => 'plain'
   end
 
+  def edit_metadata
+    if params[:view].nil?
+      @view = get_view(params[:id])
+      return if @view.nil?
+    else
+      begin
+        @view = View.update_attributes!(params[:id], params[:view])
+        flash[:notice] = "The metadata has been updated."
+      rescue CoreServer::CoreServerError => e
+        return respond_to do |format|
+          flash[:error] = "An error occurred during your request: #{e.error_message}"
+        end
+      end
+    end
+  end
+
 protected
   def get_view(id)
     begin

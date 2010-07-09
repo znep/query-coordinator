@@ -163,7 +163,8 @@ ActionController::Routing::Routes.draw do |map|
   # New dataset page
   map.resources :datasets, :as => 'datasets_new',
     :member => {
-      :widget_preview => :get
+      :widget_preview => :get,
+      :edit_metadata => [:get, :put]
     }
 
   map.connect 'profile/:profile_name/:id', :controller => 'profile',

@@ -11,7 +11,7 @@ class StatsController < ApplicationController
 
     if !@dataset.owned_by(current_user) && !CurrentDomain.user_can?(current_user, :edit_others_datasets)
       # Current user is not a member of the org or the org doesn't have metrics
-      render_403
+      return render_403
     end
 
     if (@dataset.createdAt.nil?)

@@ -57,8 +57,8 @@
                 .text(template.replace('#width#', width)
                               .replace('#height#', height));
 
-            // Restrict size to >= 500x425 px
-            if (parseInt(width,10) < 500 || parseInt(height,10) < 425 ||
+            // Restrict size to >= 425x425 px
+            if (parseInt(width,10) < 425 || parseInt(height,10) < 425 ||
                 width == '' || height == '')
             {
                 $embedForm.find(config.errorMessageSelector).addClass('errorMessage');

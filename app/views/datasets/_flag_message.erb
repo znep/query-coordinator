@@ -1,0 +1,29 @@
+<div class="aboutDataset_contact">
+  <div class="contactOwnerFormWrapper">
+    <% form_tag("/views/#{@view.id}.json", :class => 'contactOwnerForm') do %>
+      <%= hidden_field_tag 'method', 'flag' %>
+      <div class="required"><label for="contactPurpose">Purpose:</label></div>
+      <select id="contactPurpose" name="type">
+        <%= options_for_select(
+            [['-- Select Purpose --', ''],
+             ['Copyright Violation', 'copyright_violation'],
+             ['Offensive Content', 'offensive_content'],
+             ['Spam or Junk', 'spam'],
+             ['Personal Information', 'personal_information'],
+             ['Other', 'other']]) -%>
+      </select>
+
+      <label for="contactSubject">Subject:</label>
+      <textarea id="contactSubject" name="subject"></textarea>
+
+      <div class="required"><label for="contactBody">Short Message:</label></div>
+      <textarea id="contactBody" name="message"></textarea>
+
+      <div class="required"><label for="from_address">Your Email:</label></div>
+      <input id="fromAddress" name="from_address" type="text" />
+
+      <a href="#submit" class="button sendContactButton">Send</a>
+      <a href="#cancel" class="button cancelContactButton contactButton">Cancel</a>
+    <% end %>
+  </div>
+</div>

@@ -159,4 +159,24 @@
   </div>
 <%- end -%>
 
+<%- if current_user.nil? || (current_user.id != @view.owner.id) -%>
+  <div class="formSection">
+    <a href="#expand" class="expander expanded formHeader">
+      <span class="icon"></span>
+      Actions
+    </a>
+    <div class="flash "></div>
+    <dl class="sectionContent contactOwnerLinks">
+      <dt class="widenedItem">
+        <%= link_to 'Flag Dataset', '#flag', :class => 'contactButton', 'data-select' => '' %>
+      </dt>
+      <dd>&nbsp;</dd>
+      <dt class="widenedItem">
+        <%= link_to 'Contact Dataset Owner', '#contact',
+            {:class => 'contactButton', 'data-select' => 'other'} %>
+      </dt>
+      <dd>&nbsp;</dd>
+    </dl>
+  </div>
+<%- end -%>
 </div>

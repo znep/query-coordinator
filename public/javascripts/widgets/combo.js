@@ -9,6 +9,7 @@
 
         // Initialize for rendering
         var values = options.values;
+        $this.data.keyName = options.keyName;
         var renderFn = options.renderFn || function(value)
             { this.html(value.label || value); };
         var rowRenderFn = options.rowRenderFn || renderFn;
@@ -23,7 +24,14 @@
         if (value == null)
         { value = defaultValue; }
         var $value = $('<div class="blist-combo-value clearfix"></div>');
+        var $valueText;
         var $input = $('<input class="hiddenTextField" />');
+
+        if (options.allowFreeEdit)
+        {
+            $valueText = $('<input type="text" class="blist-combo-text hide"/>');
+            $valueText.attr('name', $(this).attr('id') + '_freeText')
+        }
 
         // This object handles value management for the element.  See values.js
         // for details on how this works
@@ -46,7 +54,7 @@
         var valueLookup = {};
         $.each(values, function(i, v)
         {
-            var val = v instanceof String ? v : v.label;
+            var val = v instanceof String ? v : v[options.keyAccProp];
             if (val)
             {
                 var c = val.charAt(0).toLowerCase();
@@ -61,7 +69,7 @@
             var curI = -1;
             $.each(values, function(i, v)
                 {
-                    if (v.id == curVal || v == curVal)
+                    if (v[$this.data.keyName] == curVal || v == curVal)
                     {
                         curI = i;
                         return false;
@@ -76,7 +84,7 @@
             {
                 var newVal = values[newI];
                 if (newVal !== undefined)
-                { valueManager.set(newVal.id || newVal); }
+                { valueManager.set(newVal[$this.data.keyName] || newVal); }
             }
         };
 
@@ -130,7 +138,7 @@
                 {
                     // they clicked outside the control; collapse.
                     hideDropdown();
-                    var $inputs = $this.find(':input');
+                    var $inputs = $this.find(':input.hiddenTextField');
                     if ($inputs.length > 0)
                     {
                         $inputs[0].focus();
@@ -185,7 +193,7 @@
             setValueIndex($dropdown.children('li')
                 .index($(event.target).closest("li")));
             hideDropdown();
-            $this.find(':input')[0].focus();
+            $this.find(':input.hiddenTextField')[0].focus();
         };
 
         var onDropdownMouseDown = function(event)
@@ -208,7 +216,8 @@
         {
             if (dropdownOpen) { hideDropdown(); }
             else { showDropdown(); }
-            $this.find(':input')[0].focus();
+
+            $this.find(':input.hiddenTextField')[0].focus();
         };
 
         var getSelectedValueObject = function(value)
@@ -218,7 +227,7 @@
             {
                 for (var i = 0; i < values.length && valueObj === undefined; i++)
                 {
-                    var id = values[i].id;
+                    var id = values[i][$this.data.keyName];
                     if (id === undefined)
                     { id = values[i]; }
                     if (id === value)
@@ -242,9 +251,19 @@
             // Render empty values
             if (valueObj === undefined)
             {
-                $this.addClass('blist-combo-empty');
-                $value.html('&nbsp;');
-                return;
+                if (!options.allowFreeEdit)
+                {
+                    $this.addClass('blist-combo-empty');
+                    $value.html('&nbsp;');
+                    return;
+                }
+                else
+                {
+                    $this.removeClass('blist-combo-empty');
+                    $this.find('.blist-combo-text').val(value);
+                    $this.find('.blist-combo-value').text(value);
+                    return;
+                }
             }
 
             // Render non-empty values
@@ -254,7 +273,7 @@
 
         var onFocus = function(event)
         {
-            $this.find(':input')[0].focus();
+            $this.find(':input.hiddenTextField')[0].focus();
         };
 
         var updateSelectedItem = function(i)
@@ -336,11 +355,13 @@
                         break;
                 }
             }
-            else
+            else if (!$this.freeEditOn)
             {
+
                 switch (event.keyCode)
                 {
                     case 32: // Space
+                        if ($this.freeEditOn) { break; }
                         event.stopPropagation();
                         showDropdown();
                         break;
@@ -377,18 +398,77 @@
             $this.removeClass('blist-combo-focused');
         };
 
+        var textBlur = function(event)
+        {
+            var $textEl = $this.find('.blist-combo-text');
+            valueManager.set($textEl.val());
+        };
+
+        var toggleComboText = function(event)
+        {
+           var $valEl = $this.find('.blist-combo-value');
+           var $textEl = $this.find('.blist-combo-text');
+
+           var $toggle =  $this.parent().find('.toggleComboText');
+
+           if ($valEl.is(':visible'))
+           {
+               // show text hide combo
+               $this.freeEditOn = true;
+               $this.data.comboValueCopy = $this.value();
+
+               $this.unbind('click');
+               $textEl.width($textEl.parent().outerWidth() - ($textEl.outerWidth() - $textEl.width()));
+               $textEl.height($textEl.parent().outerHeight() - ($textEl.outerHeight() - $textEl.height()));
+               $textEl.unbind('blur', textBlur);
+               $textEl.blur(textBlur);
+               $textEl.show();
+               $valEl.hide();
+               $this.removeClass('blist-combo');
+               $this.css('backgroundPosition', '-100px');
+               $toggle.find('a').text('List');
+           }
+           else
+           {
+               // show combo hide text
+               $this.freeEditOn = false;
+               $this.value($this.data.comboValueCopy);
+
+               $this.addClass('blist-combo');
+               $textEl.hide();
+               $valEl.show();
+               $this.css('backgroundPosition', null);
+               $this.click(onClick);
+               $toggle.find('a').text('Custom');
+           }
+        };
+
         // Initialize the component
-        $this
-            .html($value)
-            .addClass('blist-combo')
+        $this.html($value);
+
+        if (options.allowFreeEdit)
+        {
+            $this.append($valueText);
+        }
+
+        $this.addClass('blist-combo')
             .valueManager(valueManager)
             .click(onClick)
             .append($input)
             .focus(onFocus)
-            .find(':input')
+            .find(':input.hiddenTextField')
                 .keydown(onKeyDown)
                 .focus(fieldFocus)
                 .blur(fieldBlur);
+
+        var $toggle;
+        if (options.allowFreeEdit)
+        {
+            $toggle = $('<ul class="actionButtons toggleComboText" style="position:absolute;top:0px;right:-9em;"><li><a style="cursor:pointer;width:5em;text-align:center;">Custom</a></li></ul>');
+            $toggle.find('a').click(toggleComboText);
+            $this.parent().append($toggle);
+        }
+
         renderValue();
 
         var comboValueObj = function()
@@ -410,6 +490,9 @@
                             // method
         values: [],         // List of values
         value: null,        // Current value
+        keyName: 'id',      // the property name where value will return
+        keyAccProp: 'label',// key accelerator property
+        allowFreeEdit: false,
         defaultValue: null  // Value to use if the value is null; leave this as
                             // null to allow for blanks
     };

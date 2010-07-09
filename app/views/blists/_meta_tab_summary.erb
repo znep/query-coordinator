@@ -246,6 +246,84 @@
 <%- end -%>
 
 
+ <dl class="summaryList <%= allow_edit ? 'actionList' : '' %>">
+      <dt>
+        Semantic Class
+      </dt>
+      <dd class="editItem">
+        <div class="itemContent">
+          <%-
+            rdf_class = view.metadata.nil? || view.metadata.rdfClass.nil? ? '' : view.metadata.rdfClass
+            display_value = rdf_class_display_name(rdf_class)
+          -%>
+          <span class="textContent"
+                key="<%= rdf_class %>">
+            <%= display_value %>
+          </span>
+          <%- if allow_edit -%>
+          <%- form_tag("/api/views/#{view.id}", :id => 'form_rdf_class' ) do -%>
+
+      <%= hidden_field_tag("fieldType", "metadata[rdfClass]") %>
+            <%= select_tag("view[metadata[rdfClass]]",
+              rdf_class_select_options(h(view.metadata.nil? || view.metadata.rdfClass.nil? ? '' : view.metadata.rdfClass)),
+              :hasCustomEdit => 1, :class => 'combo_button_edit' )
+            %>
+            <%= text_field_tag 'view_metadata_customRdfClass', rdf_class, :name=>'view_metadata_customRdfClass',
+              :class => 'textValue hide combo_button_edit' %>
+
+            <ul class="comboToggle actionButtons"><li><a>Custom</a></li></ul>
+
+            <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
+            <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel", :class => 'cancel'), blists_path, :title => "Cancel", :class => "formCancelLink cancel") %>
+
+          <%- end -%>
+          <%- end -%>
+        </div>
+        <%- if allow_edit -%>
+        <div class="itemActions">
+          <a href="<%= view.href %>" class="action editLink"><span>Edit</span></a>
+        </div>
+        <%- end -%>
+      </dd>
+  </dl>
+
+
+ <dl class="summaryList <%= allow_edit ? 'actionList' : '' %>">
+      <dt>
+        Subject Column
+      </dt>
+      <dd class="editItem">
+        <div class="itemContent">
+          <%-
+            if (!view.metadata.nil? && !view.metadata.rdfSubject.nil?)
+              rdfSubj = view.metadata.rdfSubject
+              rdfSubjCol = view.column_by_id(rdfSubj.to_i)
+            end
+            rdfSubjCol.nil? ? '' : rdfSubjCol.name
+          -%>
+          <span class="textContent" key="<%= rdfSubj %>">
+          <%= rdfSubjCol.nil? ? '' : rdfSubjCol.name %>
+          </span>
+          <%- if allow_edit -%>
+          <%- form_tag("/api/views/#{view.id}") do -%>
+            <%= #this hidden tag is working with info-pane edit for hide/show before/after edit
+              hidden_field_tag("fieldType", "metadata[rdfSubject]")
+            %>
+            <%= select_tag("view[metadata[rdfSubject]]",
+              rdf_subject_select_options(view.columns,  h(view.metadata.nil? || view.metadata.rdfSubject.nil? ? '' : view.metadata.rdfSubject))) %>
+            <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
+            <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_path, :title => "Cancel", :class => "formCancelLink") %>
+          <%- end -%>
+          <%- end -%>
+        </div>
+        <%- if allow_edit -%>
+        <div class="itemActions">
+          <a href="<%= view.href %>" class="action editLink"><span>Edit</span></a>
+        </div>
+        <%- end -%>
+      </dd>
+  </dl>
+
 <div class="attributionSummary">
   <dl class="summaryList <%= allow_edit ? 'actionList' : '' %>">
     <dt>

@@ -1,37 +1,60 @@
 var columnRdfNS = blist.namespace.fetch('blist.columns.properties.rdf');
 
-columnRdfNS.renderer =
-function(column, $container)
+columnRdfNS.renderer = function(column, $container)
 {
-    var render = ////'<h3 class="separator">Display Options</h3>' +
-        '<div class="xxxnumber xxxdisplayOptions"><table colspacing="0"><tbody>' +
+    var render = 
+        '<div><table colspacing="0"><tbody>' +
 
         '<tr><td class="labelColumn">' +
-        '<label for="columnProperties_rdf">Predicate:</label>' +
-        '</td><td>' +
-        '<div class="blist-combo-wrapper xxxprecisionStyle lr_justified" style="width:20em">' +
+        '<label for="columnProperties_rdf">Properties:</label>' +
+        '</td><td class="fieldColumn">' +
+        '<div class="blist-combo-wrapper rdfTerms">' +
         '<div id="columnProperties_rdf"></div></div>' +
         '</td></tr>' +
 
         '</tbody></table></div>';
 
-        $container.append(render);
+    $container.append(render);
 
-    var rdfValues = [
-        { id: "_", label: "Unspecified", info: "Column Title" },
-        { id: "foaf_1", label: "foaf:one", info: "foaf:one more info)" },
-        { id: "foaf_2", label: "foaf:two", info: "foaf:two more info)" },
-        { id: "foaf_3", label: "foaf:three", info: "foaf:three more info)" }
+    var rdfValues;
+/** examples
+    rdfValues = [
+        {"flags":[],"name":"Agent","class":true,"namespace":"Friend of a Friend","id":1},
+        {"flags":[],"name":"Document","class":true,"namespace":"Friend of a Friend","id":2},
     ];
+**/
+
+    rdfValues = column.rdfProperties;
+    // handle difference between string and int.  combo is pretty strict in type.
+    if (!$.isBlank(column.rdf) && !isNaN(column.rdf))
+    {
+        column.rdf = parseInt(column.rdf);
+    }
 
     $("#columnProperties_rdf").combo({
-        ddClass: 'lr_justified',
         name: 'rdf',
         values: rdfValues,
         value: column.rdf || "_",
-        renderFn: columnFormatNS.renderValueInfoFormatRow
+        keyName: 'CName',
+        renderFn: columnRdfNS.renderComboRow,
+        keyAccProp: 'namespace',
+        allowFreeEdit: true
     });
 };
+
+columnRdfNS.renderComboRow = function(value)
+{
+    if (typeof value == "string")
+    {
+        // value not in the combo list, just show raw value.
+        this.html(value);
+    }
+    else
+    {
+        this.html(value.namespace + ': ' + value.displayName || value.name);
+    }
+};
+
 
 $(function()
 {

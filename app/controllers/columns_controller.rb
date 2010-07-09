@@ -31,6 +31,8 @@ class ColumnsController < ApplicationController
     @view = View.find(params[:blist_id])
     @column = Column.find(params[:blist_id], params[:id])
     @parent = params[:parent]
+    @rdf_properties = RdfTerm.find({:type => 'property', :class => @view.metadata.rdfClass});
+
     respond_to do |format|
       format.data { render(:layout => "modal_dialog") }
     end

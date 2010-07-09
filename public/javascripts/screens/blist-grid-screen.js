@@ -310,6 +310,27 @@ blist.blistGrid.infoEditCallback = function(fieldType, fieldValue, itemId, respo
 blist.blistGrid.infoEditErrorCallback = function(fieldType, message)
 { alert(message); };
 
+
+blist.blistGrid.setUpRdfEdit = function()
+{
+    var $rdfClassValidator = $("#form_rdf_class").validate({
+        rules: {
+            "view_metadata_customRdfClass": {
+                url: true
+            }
+        },
+        errorPlacement: function(error, element) {
+            // if combo shows, we do not care about the hidden field
+            if (element.is(':visible'))
+            {
+                error.appendTo(element.parent());
+            }
+        }
+    });
+    $("#form_rdf_class").data('validator', $rdfClassValidator);
+}
+
+
 /* Initial start-up calls, and setting up bindings */
 
 $(function ()
@@ -764,6 +785,8 @@ $(function ()
     });
 
     $(".favoriteAction a").click( blistGridNS.favoriteActionClick );
+
+    blist.blistGrid.setUpRdfEdit();
 
     window.onbeforeunload = function ()
     {

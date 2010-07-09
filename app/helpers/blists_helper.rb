@@ -1,4 +1,10 @@
 module BlistsHelper
+  @@rdf_classes = nil
+
+  # rdf classes in a format ready for combo list.
+  @@rdf_class_options = nil
+
+
   def get_add_column(desc, view_id, type)
     link_to(desc, new_blist_column_path(view_id) + "?type=#{type}", :rel => "modal", :id => "addColumn_#{type}")
   end
@@ -478,6 +484,58 @@ module BlistsHelper
     else
       nil
     end
+  end
+
+  # include only url and text column types.
+  # In the future, we may allow people to have
+  # a namespace attached to a view and the subject column
+  # content does not have to contain full uri.
+  def rdf_subject_select_options(cols, selected_rdf_subject)
+    options = []
+    sel = nil
+    options.push(['--None--', 0])
+    cols.each do |m|
+      if (m.renderTypeName == 'text' || m.renderTypeName == 'url')
+        options.push([m.name, m.id])
+        if (m.id.to_s() == selected_rdf_subject)
+          sel = m.id
+        end
+      end
+    end
+    options_for_select(options, sel)
+  end
+
+  def rdf_class_display_name(selected_rdf_class)
+    if (selected_rdf_class.nil? || selected_rdf_class == '')
+      return selected_rdf_class
+    end
+
+    if @@rdf_classes.nil?
+      @@rdf_classes = RdfTerm.find({:type => 'class'})
+    end
+
+    @@rdf_classes.each do |m|
+      if (m.CName == selected_rdf_class)
+        return m.namespace + ': ' + (m.displayName.empty? ? m.name : m.displayName)
+      end
+    end
+    return selected_rdf_class
+  end
+
+  def rdf_class_select_options(selected_rdf_class)
+    if @@rdf_class_options.nil?
+      @@rdf_class_options = []
+
+      if @@rdf_classes.nil?
+        @@rdf_classes = RdfTerm.find({:type => 'class'})
+      end
+
+      @@rdf_classes.each do |m|
+        @@rdf_class_options.push([m.namespace + ': ' + (m.displayName.empty? ? m.name : m.displayName), m.CName]);
+      end
+    end
+
+    options_for_select(@@rdf_class_options, selected_rdf_class)
   end
 
   def category_select_options(selected_category = nil)

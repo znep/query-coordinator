@@ -17,7 +17,7 @@
     //  generate the new dropdown
     var $newLine = $.tag({
         tagName: 'div', 'class': 'line clearfix', contents: [
-            { tagName: 'label', 'for': 'licenseType', contents: 'License Type' },
+            { tagName: 'label', 'for': 'view_licenseType', contents: 'License Type' },
             { tagName: 'select', id: 'view_licenseType', name: 'view[licenseId]' }
         ]
     });
@@ -63,10 +63,12 @@
     $('select').uniform();
 
     // Default submit button styling is really inconsistent
-    $('.submitButton').replaceWith($.tag({
-        tagName: 'a', 'class': 'button submitButton',
-        contents: 'Save', title: 'Save changes', href: '#submit'
-    }));
+    $('.submitButton')
+        .hide()
+        .after($.tag({
+            tagName: 'a', 'class': 'button submitButton',
+            contents: 'Save', title: 'Save changes', href: '#submit'
+        }));
     $('.submitButton').click(function(event)
     {
         event.preventDefault();

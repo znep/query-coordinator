@@ -91,8 +91,9 @@
                   + text: label for input
                   + type: required, one of: 'static', 'text', 'textarea',
                       'checkbox', 'select', 'columnSelect', 'radioGroup', 'slider'
-                      - 'color' is a color picker.  By default, this will
-                          display on the right end of the following line
+                      - 'color' is a color picker.  If you add lineClass
+                          'colorCollapse', this will display on the right end
+                          of the following line
                       - 'group' is a special option that only needs an options
                           array of subfields.  Also accepts extraClass
                       - 'repeater' is a special option that allows the user
@@ -497,9 +498,6 @@
 
                 // The big reveal
                 sidebarObj.$dom().show();
-                var parW = sidebarObj.$dom().parent().innerWidth();
-                sidebarObj.$neighbor().width(parW -
-                    sidebarObj.$dom().outerWidth(true));
 
                 if (isModal)
                 {
@@ -1033,6 +1031,7 @@
             {
                 $paneSel.socrataTip().destroy();
                 sidebarObj._$currentWizard = null;
+                sidebarObj._currentWizardLeft = null;
                 sidebarObj._currentWizardTop = null;
                 sidebarObj._$mainWizardItem = null;
             }
@@ -1071,6 +1070,9 @@
         if (sidebarObj.settings.setSidebarTop)
         { sidebarObj.$dom().css('top', -gridHeight + 'px') }
 
+        var parW = sidebarObj.$dom().parent().innerWidth();
+        sidebarObj.$neighbor().width(parW - sidebarObj.$dom().outerWidth(true));
+
         // Adjust current pane to correct height, since it is what scrolls
         var $pane = sidebarObj.$dom().find('.outerPane:visible');
         var $scrollContent = $pane.find('.sidebarPane:visible .scrollContent');
@@ -1096,10 +1098,15 @@
 
         var $item = sidebarObj._$currentWizard;
         var itemTop = $item.offset().top;
-        if (itemTop == sidebarObj._currentWizardTop) { return; }
+        var itemLeft = $item.offset().left;
+        if (itemTop == sidebarObj._currentWizardTop &&
+            itemLeft == sidebarObj._currentWizardLeft) { return; }
 
         $item.socrataTip().adjustPosition(
-            {top: itemTop - sidebarObj._currentWizardTop});
+            {top: itemTop - sidebarObj._currentWizardTop,
+                left: itemLeft - sidebarObj._currentWizardLeft});
+        sidebarObj._currentWizardLeft = itemLeft;
+        if (itemTop == sidebarObj._currentWizardTop) { return; }
         sidebarObj._currentWizardTop = itemTop;
 
         if ($.isBlank(sidebarObj.$currentPane())) { return; }
@@ -1193,7 +1200,8 @@
                         JSON.stringify(item.defaultValue || '')),
                 'data-dataValue': {value: $.htmlEscape(
                         JSON.stringify(item.dataValue || '')),
-                    onlyIf: !$.isBlank(item.dataValue)}
+                    onlyIf: !$.isBlank(item.dataValue) &&
+                        item.dataValue !== item.defaultValue}
             };
         };
 
@@ -1220,16 +1228,24 @@
         if (args.context.inRepeater && !_.isUndefined(args.item.repeaterValue))
         { defValue = args.item.repeaterValue; }
 
-        var getValue = function(data, name)
+        var getValue = function(data, name, valIndex)
         {
             var nParts = (name || '').split('.');
             var base = data;
             while (nParts.length > 0 && !$.isBlank(base))
             {
                 base = base[nParts.shift()];
-                if (_.isArray(base) && nParts.length > 0 &&
-                    $.isBlank(nParts[0].match(/^\d+$/)))
-                { base = _.include(base, nParts.shift()); }
+                if (_.isArray(base) && nParts.length > 0)
+                {
+                    if ($.isBlank(nParts[0].match(/^\d+$/)))
+                    { base = _.include(base, nParts.shift()); }
+                    else
+                    {
+                        var i = parseInt(nParts.shift());
+                        if (!$.isBlank(valIndex)) { i = valIndex; }
+                        base = base[i];
+                    }
+                }
             }
             if (nParts.length == 0 && !$.isBlank(base))
             {
@@ -1241,14 +1257,17 @@
         var curValue;
         if (!$.isBlank(args.item.origName))
         {
-            curValue = getValue(args.context.data, args.item.origName);
+            curValue = getValue(args.context.data, args.item.origName,
+                args.context.inRepeaterContext ?
+                    args.context.repeaterIndex : null);
             if (!$.isBlank(curValue))
             { args.item = $.extend({}, args.item, {dataValue: curValue}); }
         }
 
 
-        var checkRequiredData = function(contextData, field)
+        var getRequiredNames = function(contextData, field)
         {
+            var names = [];
             var fields = $.arrayify(field);
             while (fields.length > 0)
             {
@@ -1273,9 +1292,15 @@
                     { continue; }
                 }
 
-                if ($.isBlank(getValue(contextData, f.name))) { return false; }
+                names.push(f.name);
             }
-            return true;
+            return names;
+        };
+
+        var checkRequiredData = function(contextData, field)
+        {
+            return _.all(getRequiredNames(contextData, field),
+                function(n) { return !$.isBlank(getValue(contextData, n)); });
         };
 
 
@@ -1380,7 +1405,7 @@
                     min *= scale;
                     max *= scale;
                     defValue *= scale;
-                    curValue *= scale;
+                    if (!$.isBlank(curValue)) { curValue *= scale; }
                 }
                 contents.push({tagName: 'div', 'class': 'sliderControl',
                         'data-min': min, 'data-max': max});
@@ -1395,7 +1420,8 @@
             case 'color':
                 var item = $.extend({}, args.item,
                     {defaultValue: $.arrayify(args.item.defaultValue || [])});
-                var defColor = item.defaultValue[args.context.repeaterIndex] ||
+                var defColor = curValue ||
+                    item.defaultValue[args.context.repeaterIndex] ||
                     item.defaultValue[0];
                 contents.push({tagName: 'a', href: '#Color', title: 'Choose color',
                     name: args.item.name,
@@ -1473,10 +1499,26 @@
                 templateLine.contents.unshift(removeButton);
                 templateLine = $.htmlEscape($.tag(templateLine, true));
 
+                var populatedLength = 0;
+                if ($.isBlank(args.item.field.name))
+                {
+                    var names = getRequiredNames(args.context.data,
+                        args.item.field);
+                    if (names.length > 0)
+                    {
+                        var m = names[0].match(/^(.+)\.\d+(\..+)?$/);
+                        if (!$.isBlank(m))
+                        {
+                            var a = getValue(args.context.data, m[1]);
+                            if (_.isArray(a)) { populatedLength = a.length; }
+                        }
+                    }
+                }
                 curValue = _.select(curValue || [], function(v)
                 { return checkRequiredData(v, args.item.field); });
-                for (var i = 0; i < (curValue.length || args.item.minimum || 1);
-                    i++)
+
+                for (var i = 0; i < (curValue.length || populatedLength ||
+                    args.item.minimum || 1); i++)
                 {
                     var contextData = curValue[i] || args.context.data;
                     var hasRequiredData =
@@ -1487,6 +1529,8 @@
                                     context: $.extend({}, args.context,
                                          {repeaterIndex: i, noTag: true,
                                             inRepeater: i >= args.item.minimum,
+                                            inRepeaterContext:
+                                                !$.isBlank(args.item.field.name),
                                             data: hasRequiredData ?
                                                 contextData : null})
                     });
@@ -1707,7 +1751,7 @@
                             { $firstField = o.$field; }
                         }
                         else if (_.isFunction(o.func))
-                        { failed = !o.func(sidebarObj.$grid().blistModel()); }
+                        { failed = !o.func(blist.display.view); }
 
                         // If they want the opposite, then flip it
                         if (o.negate) { failed = !failed; }
@@ -1852,7 +1896,7 @@
         var addValue = function($button)
         {
             var $container = $button.closest('.line.repeater');
-            var $newLine = $($.htmlUnescape($button.attr('data-template')));
+            var $newLine = $($button.attr('data-template'));
             $newLine.find('.required').removeClass('required');
 
             var i = parseInt($button.attr('data-count'));
@@ -1874,8 +1918,7 @@
             {
                 var $a = $(this);
                 var $i = $a.next(':input');
-                var colors = (JSON.parse($i.attr('data-defaultValue') || '""'))
-                    .split(' ');
+                var colors = JSON.parse($i.attr('data-defaultValue') || '""');
                 if (colors.length < 2) { return; }
 
                 var newColor = colors[i % colors.length];
@@ -2079,8 +2122,11 @@
                     .trigger('resetToDefault');
             });
 
-            $container.find(':input').change(function()
-            { _.defer(function() { checkForm(sidebarObj); }); });
+            $container.find(':input')
+                .change(function()
+                { _.defer(function() { checkForm(sidebarObj); }); })
+                .blur(function()
+                { _.defer(function() { checkForm(sidebarObj); }); });
 
             var checkRadio = function(e)
             {
@@ -2247,6 +2293,7 @@
         {
             sidebarObj._$currentWizard.wizardPrompt().close();
             sidebarObj._$currentWizard = null;
+            sidebarObj._currentWizardLeft = null;
             sidebarObj._currentWizardTop = null;
             sidebarObj._$mainWizardItem = null;
         }
@@ -2268,7 +2315,8 @@
             positions: wiz.positions || null,
             closeEvents: wiz.closeEvents || null};
 
-        if ($item.is('.ranWizard'))
+        if ($item.is('.ranWizard') ||
+            $item.children(':input:disabled, .uniform.disabled').length > 0)
         {
             wizardAction(sidebarObj, $item, wiz.defaultAction || 'nextField');
             return true;
@@ -2345,7 +2393,8 @@
         {
             var $mainItem = $item;
             /* Adjust actual item wizard is attached to */
-            if (!$.isBlank(wiz.selector)) { $item = $item.find(wiz.selector); }
+            if (!$.isBlank(wiz.selector))
+            { $item = $item.find(wiz.selector + ':visible'); }
             if ($item.length < 1) { $item = $mainItem; }
 
             /* Set scroll first, because fetching the scrollTop can trigger a
@@ -2354,6 +2403,7 @@
             sidebarObj._curScroll = $pane.scrollTop();
             $item.wizardPrompt(wizConfig);
             sidebarObj._$currentWizard = $item;
+            sidebarObj._currentWizardLeft = $item.offset().left;
             sidebarObj._currentWizardTop = $item.offset().top;
             sidebarObj._$mainWizardItem = $mainItem;
             $item.find(':text, textarea').focus();
@@ -2505,6 +2555,7 @@
         });
 
         sidebarObj._$currentWizard = sidebarObj._$mainWizardItem = $paneSel;
+        sidebarObj._currentWizardLeft = $paneSel.offset().left;
         sidebarObj._currentWizardTop = $paneSel.offset().top;
 
         // Defer this call because if we just destroyed the tip, we need

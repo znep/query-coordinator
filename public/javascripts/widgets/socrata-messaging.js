@@ -247,6 +247,9 @@
                 delete config.overlay;
             }
 
+            if ($socrataAlert.isSocrataTip())
+            { $socrataAlert.socrataTip().destroy(); }
+
             $socrataAlert.socrataTip(config);
             setTimeout(function() { $socrataAlert.socrataTip().hide(); }, 5000);
         });

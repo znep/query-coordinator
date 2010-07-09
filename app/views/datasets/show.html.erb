@@ -151,7 +151,8 @@
     blist.sidebarHidden.visualize = blist.sidebarHidden.visualize || {};
     blist.sidebarHidden.visualize.calendarCreate = <%= @view.is_alt_view? &&
       (@view.display.type != 'calendar' || !@view.owned_by?(@current_user)) %>;
-    blist.sidebarHidden.visualize.chartCreate = <%= @view.is_alt_view? %>;
+    blist.sidebarHidden.visualize.chartCreate = <%= @view.is_alt_view? &&
+      (@view.display.type != 'visualization' || !@view.owned_by?(@current_user)) %>;
     blist.sidebarHidden.visualize.mapCreate = <%= @view.is_alt_view? &&
       (@view.display.type != 'map' || !@view.owned_by?(@current_user)) ||
       @view.is_grouped? ||

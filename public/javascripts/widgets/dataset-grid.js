@@ -485,7 +485,7 @@
                 }
                 else if (isNew)
                 {
-                    view = model.cleanViewForPost($.extend(true, {}, view),
+                    view = blist.dataset.cleanViewForPost($.extend(true, {}, view),
                         isGrouping || wasGrouped);
                     var saveNewView = function()
                     {
@@ -524,7 +524,7 @@
                 }
                 else
                 {
-                    view = model.cleanViewForPost($.extend(true, {}, view),
+                    view = blist.dataset.cleanViewForPost($.extend(true, {}, view),
                         isGrouping || wasGrouped);
                     $.socrataServer.addRequest({url: '/views/' + view.id + '.json',
                         type: 'PUT', data: JSON.stringify(view),
@@ -570,7 +570,8 @@
 
                 if (filterColumn == '' || filterValue == '') { return false; }
 
-                var view = model.cleanViewForPost(model.getViewCopy(), true);
+                var view = blist.dataset.cleanViewForPost(
+                    model.getViewCopy(), true);
 
                 // Now construct our beautiful filter
                 var filter;
@@ -1346,7 +1347,8 @@
         }
 
         var colSum = datasetObj.settings._columnSummaries;
-        var modView = datasetObj.settings._model.meta().view;
+        var modView = blist.dataset.cleanViewForPost(
+                datasetObj.settings._model.getViewCopy());
         if (!modView) { return; }
 
         if (!blist.data.types[col.type].filterable ||
@@ -1374,15 +1376,13 @@
 
         // Set up the current view to send to the server to get the appropriate
         //  summary data back
-        var tempView = $.extend({}, modView,
-                {originalViewId: modView.id, columns: null});
         $.ajax({url: '/views/INLINE/rows.json?method=getSummary&columnId=' +
                     col.id,
                 dataType: 'json',
                 cache: false,
                 type: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify(tempView),
+                data: JSON.stringify(modView),
                 success: function (data)
                 {
                     // On success, hash the summaries by column ID (they come
@@ -1688,7 +1688,7 @@
         if (datasetObj.settings.currentUserId == view.owner.id &&
             !datasetObj.isTempView)
         {
-            var modView = datasetObj.settings._model.cleanViewForPost(
+            var modView = blist.dataset.cleanViewForPost(
                 datasetObj.settings._model.getViewCopy(), true);
             $.ajax({url: '/views/' + view.id + '.json',
                     data: JSON.stringify({columns: modView.columns}),

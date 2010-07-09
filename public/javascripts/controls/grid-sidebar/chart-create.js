@@ -3,6 +3,8 @@
     if (blist.sidebarHidden.visualize &&
         blist.sidebarHidden.visualize.chartCreate) { return; }
 
+    var isEdit = blist.dataset.getDisplayType(blist.display.view) ==
+        'Visualization';
 
     /*** Basic types ***/
 
@@ -24,7 +26,6 @@
         timeline: {value: 'timeline', text: 'Time Line',
             requiredColumns: [dateTypes, numericTypes]}
     };
-
 
     /*** Common configuration options ***/
 
@@ -49,18 +50,19 @@
             {text: 'Left', value: 'left'},
             {text: 'None', value: 'none'}
         ],
-        wizard: "Choose the position of the legend; or none if you don't want a legend"
+        wizard: "Choose the position of the legend; or none if you don't " +
+            'want a legend'
     };
 
-    var colorOption = {type: 'color', name: 'displayFormat.colors.0',
-        defaultValue: defaultColors};
+    var colorOption = {type: 'color', name: 'color', defaultValue: defaultColors,
+        lineClass: 'colorCollapse'};
 
     var showLines = {text: 'Show Lines', name: 'displayFormat.lineSize',
-        type: 'checkbox', trueValue: 2, falseValue: 0, defaultValue: 2,
+        type: 'checkbox', trueValue: '2', falseValue: '0', defaultValue: '2',
         wizard: 'Choose whether or not you want lines drawn for each data set'};
 
     var showPoints = {text: 'Show Points', name: 'displayFormat.pointSize',
-        type: 'checkbox', trueValue: 3, falseValue: 0, defaultValue: 3,
+        type: 'checkbox', trueValue: '3', falseValue: '0', defaultValue: '3',
         wizard: 'Choose whether or not you want points drawn for each data point'};
 
     var rowLimit = 100;
@@ -104,12 +106,12 @@
         };
     };
 
-    var chartTypeAvailable = function(chartConfig, model)
+    var chartTypeAvailable = function(chartConfig, view)
     {
-        var cols = model.meta().view.columns.slice();
+        var cols = view.columns.slice();
 
         // Limit number of rows
-        if (model.length() > rowLimit)
+        if (!$.isBlank(view.totalRows) && view.totalRows > rowLimit)
         {
             hitRowLimit = true;
             return false;
@@ -120,8 +122,8 @@
         {
             var col = _.detect(cols, function(c)
             {
-                return _.include(rc, c.renderTypeName) &&
-                    ($.isBlank(c.flags) || !_.include(c.flags, 'hidden'));
+                return _.include(rc, c.renderTypeName) && (isEdit ||
+                    ($.isBlank(c.flags) || !_.include(c.flags, 'hidden')));
             });
 
             if ($.isBlank(col)) { return false; }
@@ -144,9 +146,9 @@
             title: 'Configuration', name: chart.value + 'Basic',
             onlyIf: onlyIfForChart(chart, true),
             fields: [
-                {text: axisName, name: 'displayFormat.dataColumns.0',
+                {text: axisName, name: 'displayFormat.fixedColumns.0',
                     type: 'columnSelect', required: true, isTableColumn: true,
-                    columns: {type: colTypes, hidden: false},
+                    columns: {type: colTypes, hidden: isEdit},
                     wizard: 'Select a column that contains the data for the x-axis'
                 }
             ].concat(axisTitles)
@@ -160,14 +162,16 @@
             onlyIf: onlyIfForChart(chart, false),
             fields: [
                 {type: 'repeater', minimum: 1, addText: 'Add Data Column',
+                    name: 'displayFormat.valueColumns',
                     field: {type: 'group', options: [
                         colorOption,
                         {text: axisName, required: true, type: 'columnSelect',
                             isTableColumn: true,
-                            name: 'displayFormat.dataColumns.0',
-                            columns: {type: colTypes, hidden: false}}
+                            name: 'tableColumnId',
+                            columns: {type: colTypes, hidden: isEdit}}
                     ]},
-                    wizard: 'Select one or more columns that contain values for the chart'
+                    wizard: 'Select one or more columns that contain ' +
+                        'values for the chart'
                 }
             ]
         };
@@ -190,13 +194,16 @@
 
     var configPie = basicConfig(chartTypes.pie, textualTypes, 'Label');
     configPie.fields.splice(1, 2);
-    configPie.fields[0].wizard = 'Select a column that contains the categories for the pie slices';
-    configPie.fields.push({text: 'Values', name: 'displayFormat.dataColumns.1',
+    configPie.fields[0].wizard = 'Select a column that contains the categories ' +
+        'for the pie slices';
+    configPie.fields.push({text: 'Values',
+            name: 'displayFormat.valueColumns.0.tableColumnId',
             type: 'columnSelect', required: true, isTableColumn: true,
-            columns: {type: numericTypes, hidden: false},
+            columns: {type: numericTypes, hidden: isEdit},
             wizard: 'Select a column that contains the data for the pie slices'});
     configPie.fields.push({type: 'repeater', text: 'Colors',
-        minimum: 6, maximum: 6, field: colorOption, lineClass: 'colorArray',
+        field: $.extend({}, colorOption, {name: 'displayFormat.colors.0'}),
+        minimum: 6, maximum: 6, lineClass: 'colorArray',
         wizard: 'Choose colors for the slices of your pie chart'});
 
     var configTimeline = basicConfig(chartTypes.timeline, dateTypes, 'Date');
@@ -205,18 +212,19 @@
     var dataTimeline = basicData(chartTypes.timeline, numericTypes, 'Value');
     dataTimeline.fields[0].field.options.push(
         {text: 'Title', type: 'columnSelect', isTableColumn: true,
-        name: 'displayFormat.dataColumns.1',
-        columns: {type: 'text', hidden: false}},
+        name: 'supplementalColumns.0',
+        columns: {type: 'text', hidden: isEdit}},
         {text: 'Annotation', type: 'columnSelect', isTableColumn: true,
-        name: 'displayFormat.dataColumns.2',
-        columns: {type: 'text', hidden: false}}
+        name: 'supplementalColumns.1',
+        columns: {type: 'text', hidden: isEdit}}
     );
 
     /*** Main config ***/
 
+    var configName = 'visualize.chartCreate';
     var config =
     {
-        name: 'visualize.chartCreate',
+        name: configName,
         priority: 1,
         title: 'Chart',
         subtitle: 'View data can be displayed with a variety of charts',
@@ -263,7 +271,8 @@
             basicAdv(chartTypes.line, [legendPos, showLines, showPoints,
                 {text: 'Smooth Line', name: 'displayFormat.smoothLine',
                 type: 'checkbox', defaultValue: false,
-                wizard: 'Choose whether or not you want spline smoothing applied to the line'}
+                wizard: 'Choose whether or not you want spline smoothing ' +
+                    'applied to the line'}
             ]),
 
 
@@ -272,7 +281,8 @@
             basicAdv(chartTypes.pie, [legendPos,
                 {text: 'Min. Angle', name: 'displayFormat.pieJoinAngle',
                 type: 'slider', minimum: 0, maximum: 10, defaultValue: 1,
-                wizard: 'Slices below this angle in degrees will be combined into an "Other" slice'}
+                wizard: 'Slices below this angle in degrees will be ' +
+                    'combined into an "Other" slice'}
             ]),
 
 
@@ -283,24 +293,33 @@
 
         ],
         finishBlock: {
-            buttons: [$.gridSidebar.buttons.create, $.gridSidebar.buttons.cancel],
-            wizard: "Now you're ready to create a new chart"
+            buttons: [isEdit ? $.gridSidebar.buttons.update :
+                $.gridSidebar.buttons.create, $.gridSidebar.buttons.cancel],
+            wizard: "Now you're ready to " +
+                (isEdit ? 'update your' : 'create a new') + ' chart'
         }
+    };
+
+    config.dataSource = function()
+    {
+        if (!isEdit) { return null; }
+
+        return blist.dataset.convertLegacyChart(
+            $.extend(true, {}, blist.display.view));
     };
 
     config.finishCallback = function(sidebarObj, data, $pane, value)
     {
         if (!sidebarObj.baseFormHandler($pane, value)) { return; }
 
-        var model = sidebarObj.$grid().blistModel();
         var view = blist.dataset.baseViewCopy(blist.display.view);
         view.displayType = 'chart';
 
         $.extend(view, sidebarObj.getFormValues($pane));
         view.columns = [];
-        _.each(view.displayFormat.dataColumns, function(tcid)
+        var addColumn = function(tcid)
         {
-            var col = _.detect(model.meta().view.columns, function(c)
+            var col = _.detect(blist.display.view.columns, function(c)
             { return c.tableColumnId == tcid; });
 
             var fmt = $.extend({}, col.format);
@@ -308,15 +327,72 @@
             { $.extend(fmt, {aggregate: 'sum'}); }
 
             view.columns.push({id: col.id, name: col.name, format: fmt});
+        };
+
+        _.each(view.displayFormat.fixedColumns || [], addColumn);
+
+        _.each(view.displayFormat.valueColumns || [], function(vc)
+        {
+            addColumn(vc.tableColumnId);
+            _.each(vc.supplementalColumns || [], function(sc)
+            { addColumn(sc); });
         });
 
-        $.ajax({url: '/views.json', type: 'POST', data: JSON.stringify(view),
-            dataType: 'json', contentType: 'application/json',
+        var url = '/views' + (isEdit ? '/' + blist.display.view.id : '') + '.json';
+        $.ajax({url: url, type: isEdit ? 'PUT' : 'POST', dataType: 'json',
+            data: JSON.stringify(view), contentType: 'application/json',
             error: function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); },
             success: function(resp)
             {
                 sidebarObj.finishProcessing();
-                blist.util.navigation.redirectToView(resp.id);
+                if (!isEdit)
+                { blist.util.navigation.redirectToView(resp.id); }
+                else
+                {
+                    $.syncObjects(blist.display.view, resp);
+
+                    $('.currentViewName').text(blist.display.view.name);
+
+                    var finishUpdate = function()
+                    {
+                        sidebarObj.$dom().socrataAlert(
+                            {message: 'Your chart has been updated',
+                                overlay: true});
+
+                        sidebarObj.hide();
+
+                        sidebarObj.addPane(configName);
+
+                        _.defer(function()
+                        {
+                            blist.$display.socrataChart()
+                                .reload(blist.display.view.displayFormat);
+                        });
+                    };
+
+                    var tcIds = (view.displayFormat.fixedColumns || []).slice();
+                    tcIds = tcIds.concat(_(view.displayFormat.valueColumns || [])
+                        .chain()
+                        .map(function(vc)
+                        {
+                            return $.makeArray(vc.tableColumnId).concat(
+                                vc.supplementalColumns || []);
+                        }).flatten().value());
+                    _.each(tcIds, function(tcId)
+                    {
+                        var col = _.detect(blist.display.view.columns, function(c)
+                            { return c.tableColumnId == tcId; });
+                        if (_.include(col.flags || [], 'hidden'))
+                        {
+                            $.socrataServer.addRequest({url: '/views/' +
+                                blist.display.view.id + '/columns/' + col.id +
+                                '.json', type: 'PUT',
+                                data: JSON.stringify({hidden: false})});
+                        }
+                    });
+                    if (!$.socrataServer.runRequests({success: finishUpdate}))
+                    { finishUpdate(); }
+                }
             }});
     };
 

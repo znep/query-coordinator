@@ -29,6 +29,12 @@
                                 .siblings('.sectionContent')
                                     .slideToggle();
                         });
+
+                        $sect.find('.showStatisticsLink').click(function(event)
+                        {
+                            event.preventDefault();
+                            $('.statsPopupModal').jqmShow();
+                        });
                     }
                 }
             }

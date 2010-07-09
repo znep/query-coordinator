@@ -13,7 +13,7 @@
       Description
     </a>
     <div class="sectionContent">
-      <p><%= @view.description %></p>
+      <p><%= @view.description || "(none)" %></p>
     </div>
   </div>
 
@@ -37,6 +37,22 @@
       <dd><%= @view.numberOfComments %></dd>
       <dt>Contributors</dt>
       <dd><%= @view.contributor_users.length %></dd>
+      <%- if ((@view.owned_by?(current_user) || CurrentDomain.user_can?(current_user, :edit_others_datasets)) && module_available?(:advanced_metrics)) -%>
+        <dt class='widenedItem'>
+          <%= link_to 'View Statistics', "#{@view.href}/stats" %>
+        </dt>
+        <dd>&nbsp;</dd>
+      <%- elsif upsell? -%>
+        <%- content_for :modals do -%>
+          <div class='statsPopupModal jqmWindow'>
+            <%= render :partial => 'shared/stats_popup', :layout => 'shared/splash' %>
+          </div>
+        <%- end -%>
+        <dt class='widenedItem'>
+          <%= link_to 'View Statistics', '#statistics', :class => 'showStatisticsLink' %>
+        </dt>
+        <dd>&nbsp;</dd>
+      <%- end -%>
     </dl>
   </div>
 

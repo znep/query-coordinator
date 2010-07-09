@@ -28,19 +28,19 @@
                 fields: [
                     {type: 'text', text: 'Name', name: 'name', required: true,
                         prompt: 'Enter a name',
-                        wizard: {prompt: 'Enter a name for your form'}
+                        wizard: 'Enter a name for your form'
                     },
                     {type: 'text', text: 'Success URL',
                         name: 'displayFormat.successRedirect',
                         extraClass: 'url', prompt: 'Enter a webpage URL',
-                        wizard: {prompt: 'Enter a URL for a page that should ' +
-                            'be displayed after the data is submitted'}
+                        wizard: 'Enter a URL for a page that should ' +
+                            'be displayed after the data is submitted'
                     },
                     {type: 'checkbox', text: 'Public?', name: 'flags.dataPublicAdd',
                         defaultValue: true,
-                        wizard: {prompt: 'Choose whether anyone can submit ' +
+                        wizard: 'Choose whether anyone can submit ' +
                             'data via your form.  If not, only those given ' +
-                            'permission individually will be able to use it.'}
+                            'permission individually will be able to use it.'
                     }
                 ]
             }
@@ -48,8 +48,8 @@
         finishBlock: {
             buttons: [isEdit ? $.gridSidebar.buttons.update :
                 $.gridSidebar.buttons.create, $.gridSidebar.buttons.cancel],
-            wizard: {prompt: "Now you're ready to " +
-                (isEdit ? 'update your' : 'create a new') + ' form'}
+            wizard: "Now you're ready to " +
+                (isEdit ? 'update your' : 'create a new') + ' form'
         }
     };
 
@@ -63,6 +63,8 @@
 
     config.dataSource = function()
     {
+        if (!isEdit) { return null; }
+
         var view = $.extend(true, {}, blist.display.view);
         view.flags = view.flags || [];
         if (isPublicForm(view))

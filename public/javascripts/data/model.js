@@ -414,7 +414,12 @@ blist.namespace.fetch('blist.data');
                 self.reloadAggregates();
 
                 if (config.meta.totalRows !== undefined)
-                { totalRows = config.meta.totalRows; }
+                {
+                    totalRows = config.meta.view.totalRows =
+                        config.meta.totalRows;
+                    if (!$.isBlank(curOptions.masterView))
+                    { $.syncObjects(curOptions.masterView, self.getViewCopy()); }
+                }
 
                 // Reset all config to defaults
                 filterFn = null;
@@ -591,8 +596,8 @@ blist.namespace.fetch('blist.data');
             min -= countSpecialTo(min);
             var len = Math.min(max - min + 1, curOptions.pageSize);
 
-            var tempView = this.cleanViewForPost(this.getViewCopy(),
-                this.isGrouped() || this.shouldSendColumns());
+            var tempView = blist.dataset.cleanViewForPost(
+                this.getViewCopy(), this.isGrouped() || this.shouldSendColumns());
             var ajaxOptions = $.extend({},
                     supplementalAjaxOptions,
                     { url: '/views/INLINE/rows.json?' + $.param(
@@ -658,7 +663,13 @@ blist.namespace.fetch('blist.data');
                 if (newRows)
                 {
                     if (config.meta.totalRows !== undefined)
-                    { totalRows = config.meta.totalRows; }
+                    {
+                        totalRows = config.meta.view.totalRows =
+                            config.meta.totalRows;
+                        if (!$.isBlank(curOptions.masterView))
+                        { $.syncObjects(curOptions.masterView,
+                            self.getViewCopy()); }
+                    }
                     this.rows(newRows, true);
                 }
                 else { configureActive(null, true); }
@@ -693,7 +704,8 @@ blist.namespace.fetch('blist.data');
         {
             if (!_.isUndefined(meta.view.message)) { return; }
 
-            tempView = this.cleanViewForPost(tempView || this.getViewCopy(),
+            tempView = blist.dataset.cleanViewForPost(
+                tempView || this.getViewCopy(),
                 this.isGrouped() || this.shouldSendColumns());
             $.ajax({url: '/views/INLINE/rows.json?' +
                     $.param({method: 'getAggregates'}),
@@ -2944,47 +2956,6 @@ blist.namespace.fetch('blist.data');
         };
 
 
-        this.cleanViewForPost = function(view, includeColumns)
-        {
-            if (includeColumns)
-            {
-                var cleanColumn = function(col)
-                {
-                    delete col.options;
-                    delete col.dropDown;
-                    delete col.renderTypeName;
-                    delete col.dataTypeName;
-                };
-
-                // Clean out dataIndexes, and clean out child metadata columns
-                _.each(view.columns, function(c)
-                {
-                    cleanColumn(c);
-                    if (c.childColumns)
-                    {
-                        _.each(c.childColumns, function(cc)
-                            { cleanColumn(cc); });
-                    }
-                });
-
-                if (!$.isBlank((view.query || {}).groupBys))
-                {
-                    view.columns = _.reject(view.columns, function(c)
-                    {
-                        return $.isBlank((c.format || {}).grouping_aggregate) &&
-                            !_.any(view.query.groupBys, function(g)
-                            { return g.columnId == c.id; });
-                    });
-                }
-            }
-            else
-            { delete view.columns; }
-
-            delete view.grants;
-            return view;
-        };
-
-
         this.getTempView = function(tempView, includeColumns, callback)
         {
             // If we're doing progressive loading, set up a temporary
@@ -2993,7 +2964,8 @@ blist.namespace.fetch('blist.data');
             // Only include columns if this view is grouped; otherwise, don't
             // include columns since we want them all back, and we don't need
             // to send all that extra data over or modify columns accidentally
-            tempView = this.cleanViewForPost(tempView || this.getViewCopy(),
+            tempView = blist.dataset.cleanViewForPost(
+                tempView || this.getViewCopy(),
                 includeColumns || this.isGrouped());
             var ajaxOptions = $.extend({},
                     supplementalAjaxOptions,
@@ -3032,7 +3004,12 @@ blist.namespace.fetch('blist.data');
                 config.meta.view.flags = meta.view.flags;
                 self.meta(config.meta);
                 if (config.meta.totalRows !== undefined)
-                { activeCount = config.meta.totalRows; }
+                {
+                    activeCount = config.meta.view.totalRows =
+                        config.meta.totalRows;
+                    if (!$.isBlank(curOptions.masterView))
+                    { $.syncObjects(curOptions.masterView, self.getViewCopy()); }
+                }
 
                 // Pass the callback all the way into updateColumns, because
                 // our view isn't valid until those have been updated

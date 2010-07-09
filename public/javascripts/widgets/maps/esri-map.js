@@ -89,7 +89,11 @@
                         {
                             if (this.loaded) { layersLoaded++; }
                             if (layersLoaded >= layers.length)
-                            { mapObj.populateLayers(); }
+                            {
+                                if (mapObj.hideLayers)
+                                { mapObj.hideLayers(); }
+                                mapObj.populateLayers();
+                            }
                         });
 
                         mapObj.map.addLayer(layer);

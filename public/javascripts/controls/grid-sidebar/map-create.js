@@ -85,16 +85,17 @@
                             defaultValue: 1, repeaterValue: 0.6,
                             minimum: 0, maximum: 1}
                     ]},
-                    wizard: {prompt: 'Choose one or more layers to ' +
-                        'display for your map; and set their visibility'}
+                    wizard: 'Choose one or more layers to ' +
+                        'display for your map; and set their visibility'
                 }
             ]
         };
     var configLayersHeatmap = $.extend(true, {}, configLayers);
     configLayersHeatmap.onlyIf.value = 'heatmap';
     configLayersHeatmap.type = 'selectable';
+    configLayersHeatmap.name = 'heatmapLayers';
     configLayersHeatmap.fields[0].minimum = 0;
-    configLayersHeatmap.wizard = {prompt: 'Do you want to add a layer?'};
+    configLayersHeatmap.wizard = 'Do you want to add a layer?';
 
     var isEdit = blist.dataset.getDisplayType(blist.display.view) == 'Map';
 
@@ -120,12 +121,12 @@
                 fields: [
                     {text: 'Name', name: 'name', type: 'text', required: true,
                         prompt: 'Enter a name',
-                        wizard: {prompt: 'Enter a name for your map'}
+                        wizard: 'Enter a name for your map'
                     },
                     {text: 'Map Type', name: 'displayFormat.type', type: 'select',
                         required: true, prompt: 'Select a map type',
                         options: mapTypes,
-                        wizard: {prompt: 'Select a map type'}
+                        wizard: 'Select a map type'
                     }
                 ]
             },
@@ -135,8 +136,8 @@
                     {text: 'Location', name: 'displayFormat.plot.locationId',
                         required: true, type: 'columnSelect', isTableColumn: true,
                         columns: {type: 'location', hidden: isEdit},
-                        wizard: {prompt: 'Choose a column with location ' +
-                            'coordinates to map'}
+                        wizard: 'Choose a column with location ' +
+                            'coordinates to map'
                     }
                 ]
             },
@@ -147,19 +148,18 @@
                     {text: 'Title', name: 'displayFormat.plot.titleId',
                         type: 'columnSelect', isTableColumn: true,
                         columns: {type: ['text', 'location'], hidden: isEdit},
-                        wizard: {prompt: 'Choose a column that contains ' +
-                            'titles for each point'}
+                        wizard: 'Choose a column that contains ' +
+                            'titles for each point'
                     },
                     {text: 'Description', name: 'displayFormat.plot.descriptionId',
                         type: 'columnSelect', isTableColumn: true,
                         columns: {type: ['text', 'html', 'location'],
                             hidden: isEdit},
-                        wizard: {prompt: 'Choose a column that contains ' +
-                            'descriptions for each point'}
+                        wizard: 'Choose a column that contains ' +
+                            'descriptions for each point'
                     }
                 ],
-                wizard: {prompt: 'Do you have titles or descriptions ' +
-                    'for your points?'}
+                wizard: 'Do you have titles or descriptions for your points?'
             },
             { // Heatmap Details section.
                 title: 'Details', name: 'hmDetailsSection',
@@ -169,20 +169,20 @@
                         type: 'columnSelect', isTableColumn: true,
                         columns: {type: ['text', 'html', 'location'],
                             hidden: isEdit},
-                        wizard: {prompt: 'Choose a column that contains ' +
-                            'descriptions for each point'}
+                        wizard: 'Choose a column that contains ' +
+                            'descriptions for each point'
                     },
                     {text: 'Quantity', name: 'displayFormat.plot.quantityId',
                         required: true, type: 'columnSelect', isTableColumn: true,
                         columns: {type: ['number', 'money', 'percent'], hidden: isEdit},
-                        wizard: {prompt: 'Choose a column that contains ' +
-                            'quantities for each point'}
+                        wizard: 'Choose a column that contains ' +
+                            'quantities for each point'
                     },
                     {text: 'Region', name: 'displayFormat.heatmap.type', type: 'select',
                         required: true, prompt: 'Select a region level',
                         options: regionTypes,
-                        wizard: {prompt: 'Choose the type of regions the ' +
-                            'heat map will display'}
+                        wizard: 'Choose the type of regions the ' +
+                            'heat map will display'
                     },
                     {text: '', name: 'displayFormat.heatmap.region', type: 'select',
                         required: true, prompt: 'Select a region',
@@ -190,19 +190,15 @@
                         options: heatmapRegionOptions,
                         wizard: 'Choose the region in which this dataset is in'
                     },
-                    {type: 'repeater', text: 'Color (Low)', minimum: 1, maximum: 1,
-                        field: {type: 'color', defaultValue: ['#c9c9c9'],
-                                name: 'displayFormat.heatmap.colors.low'},
-                        lineClass: 'colorArray',
+                    {type: 'color', text: 'Color (Low)', defaultValue: ['#c9c9c9'],
+                        name: 'displayFormat.heatmap.colors.low',
                         wizard: 'Color to display for lowest quantity'
                     },
-                    {type: 'repeater', text: 'Color (High)', minimum: 1, maximum: 1,
-                        field: {type: 'color', defaultValue: ['#00ff00'],
-                                name: 'displayFormat.heatmap.colors.high'},
-                        lineClass: 'colorArray',
+                    {type: 'color', defaultValue: ['#00ff00'], text: 'Color (High)',
+                        name: 'displayFormat.heatmap.colors.high',
                         wizard: 'Color to display for highest quantity'
                     }
-                ],
+                ]
             },
             configLayers,
             configLayersHeatmap
@@ -210,13 +206,15 @@
         finishBlock: {
             buttons: [isEdit ? $.gridSidebar.buttons.update :
                 $.gridSidebar.buttons.create, $.gridSidebar.buttons.cancel],
-            wizard: {prompt: "Now you're ready to " +
-                (isEdit ? 'update your' : 'create a new') + ' map'}
+            wizard: "Now you're ready to " +
+                (isEdit ? 'update your' : 'create a new') + ' map'
         }
     };
 
     config.dataSource = function()
     {
+        if (!isEdit) { return null; }
+
         var view = $.extend(true, {}, blist.display.view);
         view.displayFormat = view.displayFormat || {};
         view.displayFormat.plot = view.displayFormat.plot || {};
@@ -271,11 +269,10 @@
 
                     var finishUpdate = function()
                     {
-                        sidebarObj.hide();
-
                         sidebarObj.$dom().socrataAlert(
                             {message: 'Your map has been updated', overlay: true});
 
+                        sidebarObj.hide();
                         sidebarObj.addPane(configName);
 
                         _.defer(function()

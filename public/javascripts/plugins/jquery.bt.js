@@ -728,11 +728,17 @@ jQuery.bt = {version: '0.9.5-rc1'};
       
       }
       else if (opts.trigger[0] == 'hover') {
+        var isHover = false;
         $(this).hover(
           function() {
-            this.btOn();
+            if (!isHover)
+            {
+                isHover = true;
+                this.btOn();
+            }
           },
           function() {
+            isHover = false;
             this.btOff();
           }
         );

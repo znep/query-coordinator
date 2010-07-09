@@ -76,6 +76,10 @@ class ApplicationController < ActionController::Base
   end
 
 protected
+  def render_403
+    render_error(403)
+  end
+
   def render_404
     render_error(404)
   end

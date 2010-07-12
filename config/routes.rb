@@ -259,10 +259,6 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'new_image', :controller => 'themes', :action => 'new_image'
 
   map.connect 'stylesheets/theme/:id.css', :controller => 'themes', :action => 'theme'
-  
-  map.connect '/tweetsets/:action', :controller => 'tweetsets'
-  map.connect '/tweetsets', :controller => 'tweetsets', :action => 'index'
-  map.connect '/tweetset', :controller => 'tweetsets', :action => 'redirect'
 
   # Seattle Data-Policy hack
   map.connect '/data-policy', :controller => "data_policy", :action => "index"

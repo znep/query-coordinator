@@ -219,8 +219,6 @@ javascripts:
   - data/model
   - data/table
   - screens/stats-screen
-- tweetsets:
-  - screens/tweetsets-screen
 - widgets-show:
   - plugins/ui.effects.custom.min
   - plugins/jquery.uniform
@@ -358,10 +356,6 @@ stylesheets:
 - stats-index:
   - table-core
   - stats-screen
-- tweetsets-index:
-  - form-common
-  - carousel/discover-carousel-skin
-  - tweetsets-screen
 - internal-shared:
   - internal-screen
   - form-common

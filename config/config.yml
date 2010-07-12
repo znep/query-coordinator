@@ -4,15 +4,12 @@ default: &default
   rpx_facebook_url: https://socrata-test.rpxnow.com/facebook/start
   rpx_windowslive_url: https://socrata-test.rpxnow.com/liveid/start
   rpx_openid_url: https://socrata-test.rpxnow.com/openid/start
-  tweetsets_user: tweetsets
-  tweetsets_category: Fun
 
 # Local development
 development:
   ssl_port: 9443
   http_port: 9292
   max_core_server_requests: 15
-  tweetsets_password: tweetsets
   <<: *default
 
 # Running unit tests; NOT test.socrata.com
@@ -24,7 +21,6 @@ staging:
   coreservice_uri: http://localhost:8081
   google_analytics_id: UA-9046230-2
   max_core_server_requests: 15
-  tweetsets_password: tw3etsets!
   <<: *default
 
 # www.socrata.com
@@ -35,7 +31,6 @@ production:
   rpx_facebook_url: https://socrata.rpxnow.com/facebook/start
   rpx_windowslive_url: https://socrata.rpxnow.com/liveid/start
   rpx_openid_url: https://socrata.rpxnow.com/openid/start
-  tweetsets_password: tw3etsets!
   <<: *default
 
 

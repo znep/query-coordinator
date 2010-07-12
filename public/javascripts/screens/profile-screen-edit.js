@@ -11,7 +11,7 @@ $(function ()
     // Profile form.
     $(".profileContent form").validate({
         rules: {
-            'user[login]': "required"
+            'user[screenName]': "required"
         },
         submitHandler: function(form)
         {

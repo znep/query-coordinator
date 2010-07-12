@@ -1,17 +1,10 @@
 <h2 class="panelHeader">Activity</h2>
-<%- if (!in_widget) -%>
-  <%- if ((@view.owned_by?(current_user) || CurrentDomain.user_can?(current_user, :edit_others_datasets)) && module_available?(:advanced_metrics)) -%>
-    <ul class="headerActions actionButtons">
-      <li>
-        <a href="<%= "#{view.href}/stats" %>" class="arrowButton">View Statistics</a>
-      </li>
-    </ul>
-  <%- elsif upsell? -%>
-    <ul class="headerActions actionButtons">
-      <li>
-        <a href="/popup/stats" class="arrowButton" rel="modal">View Statistics</a>
-      </li>
-    </ul>
-  <%- end -%>
+<%# Allow access to dataset owners and those with admin permissions %>
+<%- if @view.owned_by?(current_user) || CurrentDomain.user_can?(current_user, :edit_others_datasets) -%>
+  <ul class="headerActions actionButtons">
+    <li>
+      <a href="<%= "#{@view.href}/stats" %>" class="arrowButton">View Statistics</a>
+    </li>
+  </ul>
 <%- end -%>
 

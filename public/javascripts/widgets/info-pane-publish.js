@@ -1,4 +1,4 @@
-;(function($) 
+;(function($)
 {
     // Common code for the publish meta tab.
     $.fn.infoPanePublish = function(options) {
@@ -30,7 +30,7 @@
                 var $link = $(this);
                 var width = $(config.widthSelector).val();
                 var height = $(config.heightSelector).val();
-                if (parseInt(width,10) < 500 || parseInt(height,10) < 425 ||
+                if (parseInt(width,10) < 425 || parseInt(height,10) < 425 ||
                     width == '' || height == '')
                 {
                     return;
@@ -67,8 +67,8 @@
                         .replace('#width#', width)
                         .replace('#height#', height));
 
-                // Restrict size to >= 500x425 px
-                if (parseInt(width,10) < 500 || parseInt(height,10) < 425 ||
+                // Restrict size to >= 425x425 px
+                if (parseInt(width,10) < 425 || parseInt(height,10) < 425 ||
                     width == '' || height == '')
                 {
                     $publishPane.find(config.sizeErrorSelector).removeClass('hide');

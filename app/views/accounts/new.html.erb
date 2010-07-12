@@ -4,16 +4,16 @@
 <% end %>
 
 <% dialog_content('signup', "signupBox") do %>
-  <div class='header'>
+  <div class='header masterTheme'>
     <h1><%= CurrentDomain.strings.company %></h1>
   </div>
 
   <div class='mainContent modalContentWrapper'>
     <div class='title clearfix'>
-      <h2><strong>We're glad you want to join <%= CurrentDomain.strings.company %>!</strong></h2>
+      <h2><strong>We're glad you want to join <%= MASTER_DOMAIN_PREFS['strings.company'] %>!</strong></h2>
     </div>
 
-    <h3>Create a new <%= CurrentDomain.strings.company %> ID</h3>
+    <h3>Create a new <%= MASTER_DOMAIN_PREFS['strings.company'] %> ID</h3>
 
     <% if !CurrentDomain.strings.disclaimer.nil? %>
       <p class="signupDisclaimer"><%= raw CurrentDomain.strings.disclaimer %></p>

@@ -32,7 +32,7 @@ class UserSessionsController < ApplicationController
         format.json { render :json => {:user_id => current_user.id}, :callback => params[:callback] }
       end
     else
-      notice = "Unable to login with that username and password;" +
+      notice = "Unable to login with that email and password;" +
         " please try again"
       respond_to do |format|
         format.html do

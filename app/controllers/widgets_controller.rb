@@ -19,7 +19,10 @@ class WidgetsController < ApplicationController
       begin
         @theme_id = CurrentDomain.default_widget_customization_id
         @theme = WidgetCustomization.find(@theme_id).customization
-      rescue CoreServer::CoreServerError => e
+
+        # complain if we see an out of date 4-4, so the rescue catches it
+        throw "invalid widget format (version 0)" if @theme[:version] != 1
+      rescue
         # unless people are mucking around with the db directly, this
         # should never happen (only if a domain has no default customization),
         # but let's be safe.

@@ -326,6 +326,8 @@ class BlistsController < ApplicationController
     elsif (params[:items])
       @item_count = params[:items].to_i
       render(:partial => "blists/info_for_list.html", :locals => { :item_count => @item_count })
+    else
+      render_404
     end
   end
 

@@ -620,3 +620,10 @@ span.helpie
 
 /* Pure templates */
 #templates { display: none; }
+
+
+.dialogBox .header.masterTheme h1
+{
+    background-image: url("/stylesheets/images/common/socrata_logo_light.png");
+    background-color: #20608F;
+}

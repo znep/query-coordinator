@@ -1,4 +1,5 @@
 <% content_for :head do %>
+  <%= stylesheet_link_tag "form-common" %>
   <%= stylesheet_link_tag "profile-screen" %>
   <title><%= @user.displayName %> | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
@@ -66,14 +67,15 @@
                 <%= profile_item 'userTitle', h(@user.title), 'Add your title here', @is_user_current %>
                 <%= profile_item 'userTags', h(@user.tag_display_string), 'Add some tags here so others in the community can find you', @is_user_current %>
                 <%- if (@is_user_current) -%>
-                  <p class="editProfileContentActions">
-                    <a class='first action showListBoxLink' href="<%= @user.href %>/edit">Edit</a><a 
+                  <p class="editContainer editProfileContentActions">
+                    <a class='action showListBoxLink' href="<%= @user.href %>/edit">Edit</a>
+                    <!-- a
                     id='switchUsernameLink' class='action'
                       href='#show_<%= @user.privacyControl == "login" ?
                         'fullName' : 'login' %>'>
                       Display <%= current_user.privacyControl == "login" ?
                         'Full Name' : 'Username' %>
-                    </a>
+                    </a -->
                   </p>
                 <%- elsif module_enabled? :community_module -%>
                   <div class="publicProfileContentActions">
@@ -118,6 +120,7 @@
                   <div class="formListBoxBL"><div class="formListBoxBR">
                     <% form_tag(@user.href, :class => "clearfix") do %>
                       <dl class="clearfix">
+                        <!--
                         <dt>Name Display</dt>
                         <dd>
                           <%= radio_button_tag("user[privacyControl]",
@@ -132,6 +135,8 @@
                             Display Username
                           </label>
                         </dd>
+                            -->
+
                         <dt><label for="user_firstName">First Name</label></dt>
                         <dd>
                           <%= text_field_tag("user[firstName]",
@@ -142,9 +147,9 @@
                           <%= text_field_tag("user[lastName]",
                             h(@user.lastName)) %>
                         </dd>
-                        <dt><label for="user_login">Username</label></dt>
+                        <dt><label class="required" for="user_screenName">Display Name</label></dt>
                         <dd>
-                          <%= text_field_tag("user[login]", h(@user.login)) %>
+                          <%= text_field_tag("user[screenName]", h(@user.screenName)) %>
                         </dd>
                         <dt><label for="user_company">Company</label></dt>
                         <dd>

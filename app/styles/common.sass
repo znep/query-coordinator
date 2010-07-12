@@ -84,3 +84,26 @@ a
   font-size: 1.2em
   padding: 0.25em 0
 
+// do a mixin here rather than derive or the box will render
+@mixin flash
+  border: 1px solid
+  @include border-radius(0.2em)
+  font-size: 1.2em
+  font-weight: bold
+  padding: 0.7em 1em
+  margin: 1em 0
+.flash.notice
+  @include flash
+  border-color: #ecd776
+  background-color: #fef8dc
+  color: #7a6710
+.flash.error
+  @include flash
+  border-color: #7e1818
+  background-color: #e9b9b9
+  color: #590606
+
+// login and signup screen always use socrata branding logo.
+.dialogBox .header.masterTheme h1
+  background-image: url("/stylesheets/images/common/socrata_logo_light.png")
+  background-color: #20608F

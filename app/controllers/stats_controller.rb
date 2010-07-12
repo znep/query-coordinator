@@ -2,17 +2,16 @@ class StatsController < ApplicationController
   skip_before_filter :require_user, :only => [:index]
 
   rescue_from ActionView::MissingTemplate do |exception|
-    render 404
+    render_404
   end
 
   def index
     @dataset = View.find(params[:id])
     @show_search_form = false
 
-    if (!(@dataset.owned_by(current_user) || CurrentDomain.user_can?(current_user, :edit_others_datasets)) ||
-        !CurrentDomain.module_available?(:advanced_metrics))
+    if !(@dataset.owned_by(current_user) || !CurrentDomain.user_can?(current_user, :edit_others_datasets))
       # Current user is not a member of the org or the org doesn't have metrics
-      return upsell_or_404
+      return render_403
     end
 
     if (@dataset.createdAt.nil?)

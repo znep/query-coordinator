@@ -1,3 +1,5 @@
+// Outer Shell
+
 html, body
   background-color: $color_chrome_background
   height: 100%
@@ -8,6 +10,8 @@ html, body
   min-width: 90em
 
 .siteInnerWrapper
+  max-width: 100em
+  margin: 0 auto
   min-height: 100%
 
 #skipLinks
@@ -24,6 +28,8 @@ html, body
     &:focus, &:active
       top: 500px
       z-index: 10000
+
+// Header and Footer
 
 #siteHeader
   .ie7 &
@@ -152,9 +158,25 @@ html, body
         color: #444
         font-size: 1.1em
 
-.jqmWindow
-  display: none
-  left: 50%
-  min-height: 0
-  position: fixed
-  top: 0
+// Site content
+
+.contentBox
+  background-color: #fff
+  border: 1px solid #cecece
+  @include border-radius(0.2em)
+  margin: 1em
+  padding: 1em
+
+  h1
+    font-size: 1.8em
+  h2
+    color: #444
+    font-size: 1.5em
+    margin-top: 1em
+  
+  .jqmWindow
+    display: none
+    left: 50%
+    min-height: 0
+    position: fixed
+    top: 0

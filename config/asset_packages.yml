@@ -278,6 +278,9 @@ javascripts:
   - controls/embed-form
   - controls/full-screen
   - screens/dataset
+- screen-dataset-edit-metadata:
+  - plugins/jquery.uniform
+  - screens/dataset-edit-metadata
 
 
 

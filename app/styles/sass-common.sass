@@ -136,3 +136,15 @@ $sidebar_text_color: #666
     @include box-gradient-toolbar-buttons-active-background(3, 21, $box_gradient_alias_fix)
     &:hover
       border-color: $color_toolbar_buttons_active_border - #222
+
+// mix this into a commonForm to give it the appropriate width styling
+@mixin common-form($labelWidth, $controlWidth: true)
+  label
+    width: $labelWidth
+  .additionalHelp
+    margin-left: $labelWidth + 3.5em
+  label.error
+    margin-left: $labelWidth + 3em
+  @if $controlWidth != true
+    input[type=text], textarea, label.error
+      width: $controlWidth

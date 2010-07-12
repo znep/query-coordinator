@@ -7,6 +7,8 @@ class AccountsController < ApplicationController
 
   def show
     @openid_identifiers = current_user.openid_identifiers
+##    @createdOnDomain = Domain.findById(current_user.data['createdOnDomainId'])
+
     @accountEditClasses = ['content']
     if @openid_identifiers.length > 0
       @accountEditClasses << 'has_openid'

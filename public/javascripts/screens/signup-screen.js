@@ -27,6 +27,9 @@ $(function ()
     // Signup form validation.
     var $validator = $("#signup #signupForm").validate({
         rules: {
+            "signup[screenName]": {
+                required: true
+            },
             "signup[email]": {
                 required: true,
                 email: true
@@ -34,19 +37,6 @@ $(function ()
             "signup[emailConfirm]": {
                 required: true,
                 equalTo: "#signup_email"
-            },
-            "signup[login]": {
-                required: true,
-                loginRegex: true,
-                login4x4: true,
-                remote: {
-                    url: "/users?method=loginAvailable",
-                    data: {
-                        login: function() { 
-                            return $("#signup_login").val();
-                        }
-                    }
-                }
             },
             "signup[password]": {
                 required: true,

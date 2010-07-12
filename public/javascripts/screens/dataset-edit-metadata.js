@@ -79,6 +79,7 @@
     });
 
     $('#attachment_new').replaceWith($uploadLink);
+    $('.newAttachmentLabel').html('&nbsp;');
 
     var $uploader = new AjaxUpload($uploadLink, {
         action: '/api/assets',

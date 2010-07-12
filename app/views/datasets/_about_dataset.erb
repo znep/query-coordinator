@@ -148,12 +148,10 @@
     </a>
     <dl class="sectionContent">
       <%- @view.metadata.custom_fields.each do |field| -%>
-      <div class="customFieldEdit">
         <dt><%= h(field.first) %></dt>
         <dd><span class="wrap">
           <%= raw auto_link(h(field.last), :html => { :rel => 'nofollow external' }) %>
         </span></dd>
-      </div>
       <%- end -%>
     </dl>
   </div>

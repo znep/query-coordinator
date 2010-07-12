@@ -110,9 +110,34 @@
                     mapObj._multipoint = new esri.geometry.Multipoint
                         (mapObj.map.spatialReference);
 
+                    mapObj.buildIdentifyTask();
+
                     blist.$display.find('.infowindow .hide').removeClass('hide')
                                                             .addClass('hide_infowindow');
                 });
+            },
+
+            buildIdentifyTask: function()
+            {
+                var mapObj = this;
+                mapObj._identifyConfig = mapObj._displayConfig.identifyTask;
+// mapObj._identifyConfig = { // Test!
+//     url: "http://navigator.state.or.us/ArcGIS/rest/services/Projects/ARRA_Unemployment/MapServer",
+//     layerId: 2,
+//     attributes: [{key:'March2010',text:'Unemployment Rate in March 2010'}]
+// };
+                if (!mapObj._identifyConfig || !mapObj._identifyConfig.url || !mapObj._identifyConfig.layerId
+                    || !mapObj._identifyConfig.attributes || mapObj._identifyConfig.attributes.length == 0)
+                { return; }
+
+                dojo.connect(mapObj.map, 'onClick', function(evt) { identifyFeature(mapObj, evt); });
+                mapObj._identifyParameters = new esri.tasks.IdentifyParameters();
+                mapObj._identifyParameters.tolerance = 3;
+                mapObj._identifyParameters.returnGeometry = false;
+                mapObj._identifyParameters.layerIds = [mapObj._identifyConfig.layerId];
+                mapObj._identifyParameters.layerOption = esri.tasks.IdentifyParameters.LAYER_OPTION_ALL;
+                mapObj._identifyParameters.width  = mapObj.map.width;
+                mapObj._identifyParameters.height = mapObj.map.height;
             },
 
             getLayers: function()
@@ -282,6 +307,28 @@
             );
         }
         return mapObj._esriSymbol[icon || 'default'];
+    };
+
+    var identifyFeature = function(mapObj, evt)
+    {
+        if (!mapObj._identifyParameters) { return; }
+        mapObj._identifyParameters.geometry = evt.mapPoint;
+        mapObj._identifyParameters.mapExtent = mapObj.map.extent;
+        mapObj.map.infoWindow.setContent("Loading...").setTitle('')
+                             .show(evt.screenPoint, mapObj.map.getInfoWindowAnchor(evt.screenPoint));
+        new esri.tasks.IdentifyTask(mapObj._identifyConfig.url)
+                      .execute(mapObj._identifyParameters, function(idResults) { displayIdResult(mapObj, evt, idResults[0]); });
+    };
+
+    var displayIdResult = function(mapObj, evt, idResult)
+    {
+        if (!idResult) { return; }
+
+        var feature = idResult.feature;
+        var info = _.map(mapObj._identifyConfig.attributes, function(attribute)
+        { return attribute.text + ': ' + feature.attributes[attribute.key]; }).join('<br />');
+        mapObj.map.infoWindow.setContent(info).setTitle(feature.attributes[idResult.displayFieldName])
+                             .show(evt.screenPoint, mapObj.map.getInfoWindowAnchor(evt.screenPoint));
     };
 
 })(jQuery);

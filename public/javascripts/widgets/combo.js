@@ -437,7 +437,8 @@
                $this.addClass('blist-combo');
                $textEl.hide();
                $valEl.show();
-               $this.css('backgroundPosition', null);
+               // setting background to null works in FF but not IE, Chrome
+               $this.css('backgroundPosition', 'right center');
                $this.click(onClick);
                $toggle.find('a').text('Custom');
            }

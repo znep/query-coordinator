@@ -1,9 +1,4 @@
 module BlistsHelper
-  @@rdf_classes = nil
-
-  # rdf classes in a format ready for combo list.
-  @@rdf_class_options = nil
-
 
   def get_add_column(desc, view_id, type)
     link_to(desc, new_blist_column_path(view_id) + "?type=#{type}", :rel => "modal", :id => "addColumn_#{type}")
@@ -510,32 +505,14 @@ module BlistsHelper
       return selected_rdf_class
     end
 
-    if @@rdf_classes.nil?
-      @@rdf_classes = RdfTerm.find({:type => 'class'})
-    end
+    rdf_classes = RdfTerm.all_classes
 
-    @@rdf_classes.each do |m|
+    rdf_classes.each do |m|
       if (m.CName == selected_rdf_class)
         return m.namespace + ': ' + (m.displayName.empty? ? m.name : m.displayName)
       end
     end
     return selected_rdf_class
-  end
-
-  def rdf_class_select_options(selected_rdf_class)
-    if @@rdf_class_options.nil?
-      @@rdf_class_options = []
-
-      if @@rdf_classes.nil?
-        @@rdf_classes = RdfTerm.find({:type => 'class'})
-      end
-
-      @@rdf_classes.each do |m|
-        @@rdf_class_options.push([m.namespace + ': ' + (m.displayName.empty? ? m.name : m.displayName), m.CName]);
-      end
-    end
-
-    options_for_select(@@rdf_class_options, selected_rdf_class)
   end
 
   def category_select_options(selected_category = nil)

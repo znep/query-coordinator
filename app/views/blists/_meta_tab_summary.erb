@@ -265,7 +265,9 @@
 
       <%= hidden_field_tag("fieldType", "metadata[rdfClass]") %>
             <%= select_tag("view[metadata[rdfClass]]",
-              rdf_class_select_options(h(view.metadata.nil? || view.metadata.rdfClass.nil? ? '' : view.metadata.rdfClass)),
+              options_for_select(
+                RdfTerm.all_class_options,
+                h(view.metadata.nil? || view.metadata.rdfClass.nil? ? '' : view.metadata.rdfClass)),
               :hasCustomEdit => 1, :class => 'combo_button_edit' )
             %>
             <%= text_field_tag 'view_metadata_customRdfClass', rdf_class, :name=>'view_metadata_customRdfClass',

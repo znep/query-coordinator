@@ -86,3 +86,9 @@ select.prompt option.prompt
 {
     margin-right:5px;
 }
+
+.summaryList .combo_button_edit
+{
+    float: left;
+    margin-right: 10px;
+}

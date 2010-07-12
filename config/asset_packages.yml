@@ -280,6 +280,7 @@ javascripts:
   - screens/dataset
 - screen-dataset-edit-metadata:
   - plugins/jquery.uniform
+  - plugins/ajaxupload.3.0
   - screens/dataset-edit-metadata
 
 

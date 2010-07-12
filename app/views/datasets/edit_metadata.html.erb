@@ -8,7 +8,7 @@
 <% end %>
 
 <div class="contentBox">
-  <% form_tag({}, {:id => "editMetadataForm", :class => 'commonForm', :method => :put}) do %>
+  <% form_tag({}, {:id => "editMetadataForm", :class => 'commonForm', :method => :post, :multipart => true}) do %>
     <h1>Edit Metadata for <%= @view.name %></h1>
     <a href="<%= @view.href %>" class="returnLink">Return to Dataset</a>
 
@@ -54,6 +54,55 @@
       <label for="view_attributionLink">Source Link</label>
       <%= text_field_tag("view[attributionLink]", @view.attributionLink, :title => "Enter Web Address", :class => "textPrompt") %>
     </div>
+
+    <h2>Attachments</h2>
+
+    <div class="line clearfix">
+      <label>Existing Attachments</label>
+      <div class="existingAttachments">
+        <ul>
+          <%- if @view.metadata && !@view.metadata.attachments.blank? -%>
+            <%- @view.metadata.attachments.each do |attachment| -%>
+              <%- attachmentObj = Attachment.set_up_model(attachment) -%>
+              <li>
+                <%= hidden_field_tag("view[metadata[attachments]][][blobId]",   attachment['blobId']) %>
+                <%= hidden_field_tag("view[metadata[attachments]][][filename]", attachment['filename']) %>
+                <%= text_field_tag(  "view[metadata[attachments]][][name]",     attachmentObj.displayName) %>
+                <span class="deleteLinks">
+                  <label>Delete</label>
+                  <%= check_box_tag("view[metadata[attachments]][][delete]") %>
+                </span>
+              </li>
+            <%- end -%>
+          <%- else -%>
+            <li class="noAttachmentsItem">(none)</li>
+          <%- end -%>
+        </ul>
+      </div>
+    </div>
+
+    <div class="line clearfix">
+      <label for="attachment_new">New Attachment</label>
+      <%= file_field_tag("attachment_new") %>
+      <span class="uploadAttachmentThrobber"></span>
+    </div>
+
+    <%- if CurrentDomain.custom_dataset_metadata -%>
+      <%- existing_fields = (@view.metadata && @view.metadata.custom_fields) ?
+          @view.metadata.custom_fields : [] -%>
+
+      <h2>Additional Information</h2>
+
+      <%- CurrentDomain.custom_dataset_metadata.each do |field| -%>
+        <%- value = existing_fields.assoc(field)
+            existing_value = (value.nil? ? "" : value.last) -%>
+        <div class="line clearfix">
+          <label for="view_metadata_custom_fields_<%= field %>">
+            <%= field %></label>
+          <%= text_field_tag("view[metadata[custom_fields[#{field}]]]", existing_value) %>
+        </div>
+      <%- end -%>
+    <%- end -%>
 
     <div class="required">Required Field</div>
     <div class="clearfix submitActions">

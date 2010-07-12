@@ -164,7 +164,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :datasets, :as => 'datasets_new',
     :member => {
       :widget_preview => :get,
-      :edit_metadata => [:get, :put]
+      :edit_metadata => [:get, :post]
     }
 
   map.connect 'profile/:profile_name/:id', :controller => 'profile',

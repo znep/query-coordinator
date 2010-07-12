@@ -24,6 +24,7 @@
         {
             displayFormat: null,
             editable: false,
+            invalid: false,
             pageSize: 50,
             viewId: null
         },
@@ -38,6 +39,9 @@
 
                 currentObj._rowsLeft = 0;
                 currentObj._rowsLoaded = 0;
+
+                currentObj._invalid = currentObj.settings.invalid;
+                if (currentObj._invalid) { return; }
 
                 setUpCalendar(currentObj);
 
@@ -60,6 +64,9 @@
                 var currentObj = this;
                 currentObj._rowsLeft = 0;
                 currentObj._rowsLoaded = 0;
+
+                // If reloading, assume it is valid now
+                currentObj._invalid = false;
 
                 // Adjust resizing enabled
 
@@ -130,23 +137,21 @@
     {
         if (resp.meta && !currentObj._startCol)
         {
-            var fmt = currentObj.settings.displayFormat;
-            $.each(resp.meta.view.columns, function(i, c)
+            var view = blist.dataset.calendar.convertLegacy(resp.meta.view);
+            var fmt = view.displayFormat;
+            _.each(view.columns, function(c, i)
             {
                 c.dataIndex = i;
+
                 if (c.dataTypeName == 'meta_data' && c.name == 'sid')
                 { currentObj._idIndex = i; }
-                else if (c.id == fmt.startDateId ||
-                    c.tableColumnId == fmt.startDateTableId)
+                else if (c.tableColumnId == fmt.startDateTableId)
                 { currentObj._startCol = c; }
-                else if (c.id == fmt.endDateId ||
-                    c.tableColumnId == fmt.endDateTableId)
+                else if (c.tableColumnId == fmt.endDateTableId)
                 { currentObj._endCol = c; }
-                else if (c.id == fmt.titleId ||
-                    c.tableColumnId == fmt.titleTableId)
+                else if (c.tableColumnId == fmt.titleTableId)
                 { currentObj._titleIndex = i; }
-                if (c.id == fmt.descriptionId ||
-                    c.tableColumnId == fmt.descriptionTableId)
+                if (c.tableColumnId == fmt.descriptionTableId)
                 { currentObj._descriptionIndex = i; }
             });
             currentObj._rowsLeft = resp.meta.totalRows - currentObj._rowsLoaded;

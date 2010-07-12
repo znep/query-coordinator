@@ -8,7 +8,7 @@ class Displays::Chart < Displays::Base
   end
 
   def invalid_message
-    'There are not enough columns to display this chart'
+    'Columns required for this chart are missing'
   end
 
   def type

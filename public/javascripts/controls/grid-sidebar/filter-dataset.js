@@ -121,6 +121,13 @@
         subtitle: 'You can filter a view down to certain rows; ' +
             'group rows together and summarize data with a roll-up; ' +
             'and sort one or more columns',
+        onlyIf: function(view)
+        {
+            return !blist.display.isInvalid ||
+                _.include(['Blist', 'Filter', 'Grouped'],
+                    blist.dataset.getDisplayType(view));
+        },
+        disabledSubtitle: 'This view must be valid',
         sections: [
             // Filter section
             {
@@ -391,33 +398,55 @@
             return;
         }
 
+        var dsGrid = sidebarObj.$grid().datasetGrid();
+
         var doViewCallback = function()
         {
-            model.getTempView($.extend(true, {}, blist.display.view), true,
-                function()
+            var resultCallback = function(view)
+            {
+                sidebarObj.finishProcessing();
+
+                if (!$.isBlank(view))
+                { $.syncObjects(blist.display.view, view); }
+
+                if (blist.display.isInvalid)
                 {
-                    sidebarObj.finishProcessing();
+                    blist.display.isInvalid = false;
+                    dsGrid.updateValidity(blist.display.view);
+                }
 
-                    _.defer(function()
-                    {
-                        sidebarObj.addPane(configName);
-                        sidebarObj.show(configName);
-                    });
+                _.defer(function()
+                {
+                    sidebarObj.addPane(configName);
+                    sidebarObj.show(configName);
                 });
+            };
 
-            dsGrid.setTempView('filterSidebar');
+            if (blist.display.isInvalid &&
+                !_.include(filterView.flags || [], 'default') &&
+                blist.currentUserId == blist.display.view.owner.id)
+            {
+                $.ajax({url: '/views/' + blist.display.view.id + '.json',
+                    type: 'PUT', dataType: 'json', contentType: 'application/json',
+                    data: JSON.stringify(filterView), success: resultCallback});
+            }
+            else
+            {
+                model.getTempView($.extend(true, {}, blist.display.view), true,
+                    resultCallback);
+                dsGrid.setTempView('filterSidebar');
+            }
         };
 
         var model = sidebarObj.$grid().blistModel();
         model.multiSort(filterView.query.orderBys, true);
 
-        var dsGrid = sidebarObj.$grid().datasetGrid();
         dsGrid.updateFilter(filterView.query.filterCondition, false, true);
 
         dsGrid.groupAggregate(filterView.query.groupBys,
             filterView.columns, false, null, true, doViewCallback, null, true);
     };
 
-    $.gridSidebar.registerConfig(config);
+    $.gridSidebar.registerConfig(config, ['Filter', 'Grouped']);
 
 })(jQuery);

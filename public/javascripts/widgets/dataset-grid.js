@@ -172,7 +172,7 @@
                         success: function(newView)
                         {
                             if (datasetObj.settings.isInvalid)
-                            { updateValidity(datasetObj, newView); }
+                            { datasetObj.updateValidity(newView); }
                             else
                             { model.getTempView(null, true); }
                         }});
@@ -532,7 +532,7 @@
                         success: function(newView)
                         {
                             if (datasetObj.settings.isInvalid)
-                            { updateValidity(datasetObj, newView); }
+                            { datasetObj.updateValidity(newView); }
                             else
                             { model.reloadView(); }
                         }});
@@ -806,6 +806,33 @@
                 datasetObj.clearTempView('searchString');
                 if (datasetObj.settings.autoHideClearFilterItem)
                 { $(e.currentTarget).hide(); }
+            },
+
+            updateValidity: function(view)
+            {
+                var datasetObj = this;
+
+                if (!datasetObj.settings.isInvalid) { return true; }
+
+                if (view.message === undefined || view.message === '')
+                {
+                    datasetObj.settings.isInvalid = false;
+                    datasetObj.settings.validViewCallback(view);
+                    datasetObj.settings._model.options({progressiveLoading: true})
+                        .ajax({url: '/views/' + datasetObj.settings.viewId +
+                            '/rows.json', cache: false,
+                            data: {accessType: datasetObj.settings.accessType},
+                            dataType: 'json'});
+                    $(window).resize();
+                    return true;
+                }
+                else
+                {
+                    datasetObj.settings._model.options(
+                        {progressiveLoading: false});
+                    datasetObj.settings.isInvalid = true;
+                    return false;
+                }
             },
 
             /* Disables all normal interactions other than scrolling and hover
@@ -1827,29 +1854,5 @@
     {
         if (event.keyCode == 27)
         { columnEditEnd(datasetObj, $(event.target).closest('.blist-th')); }
-    };
-
-    var updateValidity = function(datasetObj, view)
-    {
-        if (!datasetObj.settings.isInvalid) { return true; }
-
-        if (view.message === undefined || view.message === '')
-        {
-            datasetObj.settings.isInvalid = false;
-            datasetObj.settings.validViewCallback(view);
-            datasetObj.settings._model.options({progressiveLoading: true})
-                .ajax({url: '/views/' + datasetObj.settings.viewId +
-                    '/rows.json', cache: false,
-                    data: {accessType: datasetObj.settings.accessType},
-                    dataType: 'json'});
-            $(window).resize();
-            return true;
-        }
-        else
-        {
-            datasetObj.settings._model.options({progressiveLoading: false});
-            datasetObj.settings.isInvalid = true;
-            return false;
-        }
     };
 })(jQuery);

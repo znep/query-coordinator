@@ -32,6 +32,14 @@ blist.datasetPage.setTempView = function()
     $('#sidebarOptions .tabFilter a').addClass('alert');
 };
 
+blist.datasetPage.updateValidView = function(view)
+{ $('.invalidView').removeClass('invalidView'); };
+
+(function($)
+{
+    if (blist.display.isInvalid) { $('body').addClass('invalidView'); }
+})(jQuery);
+
 $(function()
 {
     // Before we do anything else, clear away the about metadata.
@@ -62,9 +70,9 @@ $(function()
                     clearTempViewCallback: datasetPageNS.clearTempView,
                     setTempViewCallback: datasetPageNS.setTempView,
                     filterForm: '#searchButton .searchForm',
-                    clearFilterItem: '#searchButton .clearSearch'
-//                    isInvalid: blist.display.isInvalid,
-//                    validViewCallback: blistGridNS.updateValidView
+                    clearFilterItem: '#searchButton .clearSearch',
+                    isInvalid: blist.display.isInvalid,
+                    validViewCallback: datasetPageNS.updateValidView
                 });
         }
         else if (blist.display.invokeVisualization)
@@ -176,6 +184,9 @@ $(function()
     });
 
     // Unsaved view stuff
+    $(document).bind(blist.events.VALID_VIEW,
+        function() { datasetPageNS.updateValidView(); });
+
     $('.unsavedLine a.save').click(function(e)
     {
         e.preventDefault();
@@ -188,7 +199,8 @@ $(function()
 
         $.ajax({url: '/views/' + blist.display.view.id + '.json',
             type: 'PUT', contentType: 'application/json', dataType: 'json',
-            data: JSON.stringify(blist.display.view),
+            data: JSON.stringify(blist.dataset.cleanViewForPost(
+                $.extend(true, {}, blist.display.view))),
             success: function()
             {
                 $a.text($a.data('saveText'));
@@ -235,7 +247,7 @@ $(function()
                 success: function(view)
                 {
                     $('.saveViewDialog').jqmHide();
-                    blist.util.navigation.redirectToView(view.id);
+                    blist.util.navigation.redirectToView(view);
                 }});
         };
 
@@ -273,6 +285,44 @@ $(function()
     });
 
 
+    // Invalid views
+
+    var viewEditPane = $.gridSidebar.paneForDisplayType[
+        blist.dataset.getDisplayType(blist.display.view)];
+    if ($.isBlank(viewEditPane) || !sidebar.isPaneEnabled(viewEditPane))
+    { $('.invalidActions .editView').hide(); }
+    else
+    {
+        $('.invalidActions .editView').click(function(e)
+        {
+            e.preventDefault();
+            sidebar.show(viewEditPane);
+        });
+    }
+
+    $('.invalidActions .removeView').click(function(e)
+    {
+        e.preventDefault();
+        if (!confirm('Are you sure you want to remove this view?'))
+        { return; }
+
+        $.ajax({url: '/datasets/' + blist.display.view.id,
+            type: 'DELETE', contentType: "application/json",
+            success: function()
+            {
+                if (!$.isBlank(blist.parentViewId))
+                {
+                    window.location = blist.util.navigation
+                        .getViewUrl(blist.parentViewId);
+                }
+                else
+                { window.location = '/datasets'; }
+            }
+        });
+    });
+
+
+    // Data calls
     _.defer(function()
     {
         // register opening

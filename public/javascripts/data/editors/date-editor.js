@@ -89,7 +89,7 @@
                     if (!$.isBlank(this.type().stringFormat))
                     { d = d.toString(this.type().stringFormat); }
                     else
-                    { d = d.valueOf() / 1000; }
+                    { d = Math.floor(d.valueOf() / 1000); }
                 }
                 return d || t;
             },

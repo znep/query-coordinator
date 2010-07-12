@@ -88,7 +88,7 @@ blist.display.view = #{@view.to_json};
 blist.display.options = #{@options.to_json};
 blist.display.editable = #{@view.can_edit};
 blist.display.scrollsInline = #{scrolls_inline?};
-blist.display.isInvalid = #{!valid?};
+blist.display.isInvalid = !blist.dataset.isValid(blist.display.view);
 blist.$display = $('##{target_dom_id}')
 END
 

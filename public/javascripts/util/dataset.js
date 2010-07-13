@@ -130,3 +130,13 @@ blist.dataset.isValid = function(view)
     return true;
 };
 
+blist.dataset.isPublic = function(view)
+{
+    return (_.isArray(view.grants) && _.any(view.grants, function(grant)
+    {
+        return _.any(grant.flags || [], function(flag)
+        {
+            return flag == 'public';
+        });
+    }));
+}

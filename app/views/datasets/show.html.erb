@@ -115,6 +115,56 @@
   </div>
 </div>
 
+<div class="emailDatasetDialog modalDialog<%= ' ownerDialog' if @view.owned_by?(current_user) %>">
+  <a href="#close" class="jqmClose modalDialogClose">Close</a>
+  <h2>Email this Dataset</h2>
+  <div class="emailSuccess">
+    <div class="flash notice">
+      Your email has been successfully sent.
+    </div>
+    <ul class="actions clearfix">
+      <li>
+        <a href="#cancel" class="jqmClose button">Close</a>
+      </li>
+      <li>
+    </ul>
+  </div>
+  <div class="emailDatasetContent">
+    <div class="flash" id="emailDatasetMessage"></div>
+    <form class='commonForm' id='emailDatasetForm' action='/views/<%= @view.id %>.json?method=sendAsEmail' method='post'>
+      <p>Share this dataset with</p>
+      <div class="emailLine">
+        <a href="#remove" title="Remove" class="removeLink delete hiddenLink">
+          <span class="icon"></span>
+        </a>
+        <input type="hidden" class="recipientUid" />
+        <input type="text" class="emailRecipient email" name="emailRecipient0" />
+        <%- if @view.owned_by?(current_user) -%>
+          <%= select_tag 'role', options_for_select(['Viewer', 'Contributor', 'Owner']),
+                :class => 'recipientRole', :id => nil %>
+        <%- end -%>
+      </div>
+    </form>
+    <div class="addMoreLine">
+      <a class="button addMoreRecipientsButton add" href="#add">
+        <span class="icon"></span>Add More
+      </a>
+    </div>
+    <ul class="actions clearfix">
+      <li>
+        <a href="#cancel" class="jqmClose button cancel">
+          <span class="icon"></span>Cancel
+        </a>
+      </li>
+      <li>
+        <a href="#email" class="button" id="emailSubmitButton">
+          <span class="icon"></span>Email
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+
 <% content_for :templates do %>
 <%= render(:partial => 'grid_sidebar_templates') %>
 <%= render(:partial => 'show_hide_template') %>

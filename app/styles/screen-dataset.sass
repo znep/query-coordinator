@@ -324,6 +324,56 @@ html, body
   input
     width: 95%
 
+// Email view dialog
+.emailDatasetDialog
+  width: 33em
+
+  &.ownerDialog
+    width: 45em
+
+  .emailSuccess
+    display: none
+
+  p
+    margin-bottom: 0.7em
+
+  input.emailRecipient
+    margin: 0.5em 0 0.5em 0em
+    width: 25em
+
+  div.selector.uniform
+    margin-left: 0.8em
+    position: relative
+    top: -0.3em
+
+  select.recipientRole
+    width: 9em
+
+  .removeLink
+    @include sprite-repeater-icons
+    float: left
+    margin: 1em 1em 0 0
+
+    &.hiddenLink
+      visibility: hidden
+
+  label.error
+    float: left
+
+  .addMoreLine
+    clear: both
+    margin-top: 0.7em
+
+    .button
+      @include sprite-repeater-icons
+      margin-left: 0
+      .icon
+        float: left
+        margin-right: 0.4em
+
+  ul.actions
+    margin-top: 1em
+
 // Login modals (someday maybe these will have to move somewhere common)
 #login
   form

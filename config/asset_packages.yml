@@ -247,6 +247,7 @@ javascripts:
   - plugins/jquery.uniform
 - screen-dataset:
   - plugins/jquery.colorPicker
+  - plugins/jquery.awesomecomplete
   - plugins/jquery.uniform
   - plugins/ui.slider
   - plugins/jquery.tablesorter
@@ -281,6 +282,7 @@ javascripts:
   - controls/embed-form
   - controls/full-screen
   - screens/dataset
+  - screens/dataset-email
 - screen-dataset-edit-metadata:
   - plugins/jquery.uniform
   - plugins/ajaxupload.3.0

@@ -9,7 +9,7 @@
 
         // Initialize for rendering
         var values = options.values;
-        $this.data.keyName = options.keyName;
+        $this.data('keyName', options.keyName);
         var renderFn = options.renderFn || function(value)
             { this.html(value.label || value); };
         var rowRenderFn = options.rowRenderFn || renderFn;
@@ -69,7 +69,7 @@
             var curI = -1;
             $.each(values, function(i, v)
                 {
-                    if (v[$this.data.keyName] == curVal || v == curVal)
+                    if (v[$this.data('keyName')] == curVal || v == curVal)
                     {
                         curI = i;
                         return false;
@@ -84,7 +84,7 @@
             {
                 var newVal = values[newI];
                 if (newVal !== undefined)
-                { valueManager.set(newVal[$this.data.keyName] || newVal); }
+                { valueManager.set(newVal[$this.data('keyName')] || newVal); }
             }
         };
 
@@ -227,7 +227,7 @@
             {
                 for (var i = 0; i < values.length && valueObj === undefined; i++)
                 {
-                    var id = values[i][$this.data.keyName];
+                    var id = values[i][$this.data('keyName')];
                     if (id === undefined)
                     { id = values[i]; }
                     if (id === value)
@@ -415,7 +415,7 @@
            {
                // show text hide combo
                $this.freeEditOn = true;
-               $this.data.comboValueCopy = $this.value();
+               $this.data('comboValueCopy', $this.value());
 
                $this.unbind('click');
                $textEl.width($textEl.parent().outerWidth() - ($textEl.outerWidth() - $textEl.width()));
@@ -432,7 +432,7 @@
            {
                // show combo hide text
                $this.freeEditOn = false;
-               $this.value($this.data.comboValueCopy);
+               $this.value($this.data('comboValueCopy'));
 
                $this.addClass('blist-combo');
                $textEl.hide();

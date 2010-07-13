@@ -113,6 +113,9 @@
         $editor.each(function() { $(this).blistEditor().finishEdit(); });
     };
 
+    var isEdit = _.include(['Filter', 'Grouped'],
+        blist.dataset.getDisplayType(blist.display.view));
+
     var configName = 'filter.filterDataset';
     var config = {
         name: configName,
@@ -123,11 +126,14 @@
             'and sort one or more columns',
         onlyIf: function(view)
         {
-            return !blist.display.isInvalid ||
-                _.include(['Blist', 'Filter', 'Grouped'],
-                    blist.dataset.getDisplayType(view));
+            return _.any(view.columns, function(c)
+                { return c.dataTypeName != 'meta_data' &&
+                    (isEdit || !_.include(c.flags || [], 'hidden')); }) &&
+                (!blist.display.isInvalid || isEdit);
         },
-        disabledSubtitle: 'This view must be valid',
+        disabledSubtitle: function()
+        { return blist.display.isInvalid && !isEdit ? 'This view must be valid' :
+            'This view has no columns to filter, roll-up or sort'; },
         sections: [
             // Filter section
             {
@@ -147,7 +153,7 @@
                         field: {type: 'group', options: [
                             {type: 'columnSelect', text: 'Column',
                                 name: 'children.0.columnId', required: true,
-                                columns: {type: filterableTypes, hidden: false}},
+                                columns: {type: filterableTypes, hidden: isEdit}},
                             {type: 'select', text: 'Operator', name: 'value',
                                 required: true, prompt: 'Select an operator',
                                 linkedField: 'children.0.columnId',
@@ -178,7 +184,7 @@
                         name: 'query.groupBys', minimum: 0,
                         field: {type: 'columnSelect', text: 'Group By',
                             name: 'columnId', notequalto: 'groupColumn',
-                            columns: {type: groupableTypes, hidden: false}},
+                            columns: {type: groupableTypes, hidden: isEdit}},
                         wizard: 'Choose one or more columns with repeated values ' +
                             'to group them into a single row'
                     },
@@ -188,7 +194,7 @@
                             {type: 'columnSelect', text: 'Roll-Up',
                                 name: 'id', required: true,
                                 notequalto: 'rollUpColumn',
-                                columns: {type: groupableTypes, hidden: false}},
+                                columns: {type: groupableTypes, hidden: isEdit}},
                             {type: 'select', text: 'Function', required: true,
                                 name: 'format.grouping_aggregate',
                                 prompt: 'Select a function',
@@ -216,7 +222,7 @@
                             {type: 'columnSelect', text: 'Column',
                                 name: 'expression.columnId', required: true,
                                 notequalto: 'sortColumn',
-                                columns: {type: sortableTypes, hidden: false}},
+                                columns: {type: sortableTypes, hidden: isEdit}},
                             {type: 'select', text: 'Direction',
                                 name: 'ascending', prompt: null, options: [
                                     {text: 'Ascending', value: 'true'},

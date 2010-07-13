@@ -89,11 +89,11 @@ blist.display.options = #{@options.to_json};
 blist.display.editable = #{@view.can_edit?};
 blist.display.scrollsInline = #{scrolls_inline?};
 blist.display.isInvalid = !blist.dataset.isValid(blist.display.view);
-blist.$display = $('##{target_dom_id}')
+$(function() { blist.$display = $('##{target_dom_id}'); });
 END
 
         # Disable scrolling if the display shouldn't scroll
-        js << "blist.$display.removeClass('scrollContent')" unless scrolls_inline?
+        js << "$(function() { blist.$display.removeClass('scrollContent'); });" unless scrolls_inline?
 
         js
     end

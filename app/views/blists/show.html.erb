@@ -13,7 +13,7 @@
 
 <%- is_owner = current_user && @view.owner.id == current_user.id -%>
 <%- is_blist = @view.is_blist? %>
-<%- can_edit = current_user && @view.can_edit() -%>
+<%- can_edit = current_user && @view.can_edit? -%>
 
 <div id='overlay'></div>
 
@@ -152,7 +152,7 @@
             </li>
             <%- end -%>
 
-            <%- if @view.can_edit() && !@view.is_alt_view? -%>
+            <%- if @view.can_edit? && !@view.is_alt_view? -%>
             <li class='separator mainViewSeparator ungroupedOption'>
               <a id='formatLink' class='staticLink' href='#formatMenu'>
                 <span class='linkIcon'>Format</span>
@@ -200,7 +200,7 @@
           <%- end -%>
         </div>
 
-        <%- if @view.can_edit() && !@view.is_alt_view? -%>
+        <%- if @view.can_edit? && !@view.is_alt_view? -%>
         <div id='formatMenu' class='fixedMenu disabled ungroupedOption'>
           <div class='outerWrapper'>
             <ul class='innerWrapper clearfix'>

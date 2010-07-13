@@ -329,17 +329,17 @@ class View < Model
     end
   end
 
-  def can_edit()
+  def can_edit?
     data['rights'] && (data['rights'].include?('write') ||
       data['rights'].include?('add') ||
       data['rights'].include?('delete')) && !is_grouped?
   end
 
-  def can_read()
+  def can_read?
     data['rights'] && data['rights'].include?('read')
   end
 
-  def can_add()
+  def can_add?
     data['rights'] && data['rights'].include?('add')
   end
 
@@ -550,7 +550,7 @@ class View < Model
     # The user can modify the data if:
     # - This is a blist
     # - They can edit it
-    return (self.can_edit && self.is_blist?)
+    return (self.can_edit? && self.is_blist?)
   end
 
   def columns_for_datatypes(datatypes, include_hidden = false)

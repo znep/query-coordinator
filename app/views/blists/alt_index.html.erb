@@ -52,8 +52,10 @@
                   <td header="datasetListInfo"><%= link_to 'More Info', view.about_href %></td>
                   <td header="datasetListGo"><%= link_to 'View Dataset', "#{view.href}/alt" %></td>
                   <td header="datasetListActions">
-                    <%- form_tag("/datasets/#{view.id}?redirect_to=/datasets_alt", :method => :delete) do -%>
-                      <%= submit_tag 'Delete Dataset' %>
+                    <%- if view.can_edit? -%>
+                      <%- form_tag("/datasets/#{view.id}?redirect_to=/datasets_alt", :method => :delete) do -%>
+                        <%= submit_tag 'Delete Dataset' %>
+                      <%- end -%>
                     <%- end -%>
                   </td>
                 </tr>

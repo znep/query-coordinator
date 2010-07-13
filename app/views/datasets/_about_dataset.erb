@@ -7,7 +7,7 @@
     <p><em>updated</em> <span class="aboutUpdateDate"><%= blist_date(@view.last_activity) %></span></p>
   </div>
 
-  <%- if @view.can_edit -%>
+  <%- if @view.can_edit? -%>
     <%= link_to 'Edit Metadata', { :action => 'edit_metadata' }, :class => 'fullButton' %>
   <%- end -%>
 

@@ -2,8 +2,14 @@ body
 { 
     background-color: #002042;
 }
-.footerContainer
+.footerContainer,
+#header
 {
     background-image: none;
     background: #002042;
+}
+#header .userNav a,
+#footer li a
+{
+    color: #fff;
 }

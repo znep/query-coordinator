@@ -126,6 +126,11 @@ blist.widget.showDataView = function()
         });
 };
 
+(function($)
+{
+    if (blist.display.isInvalid) { $('body').addClass('invalidView'); }
+})(jQuery);
+
 $(function()
 {
     if (!$.isBlank($.uploadDialog)) { $.uploadDialog.version = 2; }

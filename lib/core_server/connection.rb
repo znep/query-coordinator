@@ -63,33 +63,6 @@ module CoreServer
       generic_request(req).body
     end
 
-    # For creating tweetsets only
-    def create_tweetset(query, name, for_user, follow = false)
-      request = Net::HTTP::Post.new('/views.json')
-      request.basic_auth APP_CONFIG['tweetsets_user'], APP_CONFIG['tweetsets_password']
-
-      dhash = {:name => name, :tags => ['tweetset', query], :category => APP_CONFIG['tweetsets_category']}
-      dhash[:tags] << 'live-updates' if follow
-      dhash[:tags].insert(0, for_user.email.tr("A-Za-z@", "N-ZA-Mn-za-m#").reverse) if for_user
-
-      request.body = dhash.to_json
-      request.content_type = "application/json"
-      request['X-Socrata-Host'] = CurrentDomain.cname
-
-      @request_count += 1
-
-      result = log(request) do
-        Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port) do |http|
-          http.request(request)
-        end
-      end
-
-      raise CoreServer::ResourceNotFound.new(result) if result.is_a?(Net::HTTPNotFound)
-
-      json = JSON.parse(result.body) unless result.nil?
-      json['id']
-    end
-
     def log_info(message, ms)
       if @logger && @logger.debug?
         log_output = 'Core server request: %s (%.1fms)' % [message, ms]

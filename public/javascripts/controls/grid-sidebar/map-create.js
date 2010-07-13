@@ -112,9 +112,13 @@
                 {
                     return c.dataTypeName == 'location' && (isEdit ||
                         ($.isBlank(c.flags) || !_.include(c.flags, 'hidden')));
-                }).length > 0;
+                }).length > 0 && (!blist.display.isInvalid || isEdit);
         },
-        disabledSubtitle: 'This view must have a location column',
+        disabledSubtitle: function()
+        {
+            return blist.display.isInvalid ? 'This view must be valid' :
+                'This view must have a location column';
+        },
         sections: [
             {
                 title: 'Map Setup',
@@ -215,27 +219,8 @@
     {
         if (!isEdit) { return null; }
 
-        var view = $.extend(true, {}, blist.display.view);
-        view.displayFormat = view.displayFormat || {};
-        view.displayFormat.plot = view.displayFormat.plot || {};
-
-        var colObj = view.displayFormat.plot || view.displayFormat;
-
-        if ($.isBlank(view.displayFormat.plot.titleId) &&
-            !$.isBlank(colObj.titleCol))
-        {
-            view.displayFormat.plot.titleId = _.detect(view.columns, function(c)
-                { return c.id == colObj.titleCol; }).tableColumnId;
-        }
-
-        if ($.isBlank(view.displayFormat.plot.descriptionId) &&
-            !$.isBlank(colObj.bodyCol))
-        {
-            view.displayFormat.plot.descriptionId = _.detect(view.columns,
-                function(c) { return c.id == colObj.bodyCol; }).tableColumnId;
-        }
-
-        return view;
+        return blist.dataset.map.convertLegacy(
+            $.extend(true, {}, blist.display.view));
     };
 
     config.finishCallback = function(sidebarObj, data, $pane, value)
@@ -247,8 +232,9 @@
 
         $.extend(view, sidebarObj.getFormValues($pane));
 
-        var needsFullReset = view.displayFormat.type !=
-            (blist.display.view.displayFormat || {}).type ||
+        var needsFullReset = blist.display.isInvalid ||
+            view.displayFormat.type !=
+                (blist.display.view.displayFormat || {}).type ||
             !_.isEqual(view.displayFormat.layers,
                 (blist.display.view.displayFormat || {}).layers);
 
@@ -260,7 +246,7 @@
             {
                 sidebarObj.finishProcessing();
                 if (!isEdit)
-                { blist.util.navigation.redirectToView(resp.id); }
+                { blist.util.navigation.redirectToView(resp); }
                 else
                 {
                     $.syncObjects(blist.display.view, resp);
@@ -274,6 +260,9 @@
 
                         sidebarObj.hide();
                         sidebarObj.addPane(configName);
+
+                        $(document).trigger(blist.events.VALID_VIEW);
+                        $(window).resize();
 
                         _.defer(function()
                         {
@@ -310,6 +299,6 @@
             }});
     };
 
-    $.gridSidebar.registerConfig(config);
+    $.gridSidebar.registerConfig(config, 'Map');
 
 })(jQuery);

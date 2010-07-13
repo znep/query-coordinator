@@ -25,6 +25,9 @@ javascripts:
   - util/alert-override
   - util/google-analytics
   - util/dataset
+  - util/datasetTypes/calendar
+  - util/datasetTypes/chart
+  - util/datasetTypes/map
   - util/templates
   - util/socrata-server
   - widgets/socrata-messaging
@@ -159,6 +162,7 @@ javascripts:
   - widgets/reorderable-list
   - widgets/column-format
   - widgets/column-totals
+  - widgets/column-rdf
   - widgets/info-pane-comments
   - widgets/info-pane-filtered
   - widgets/info-pane-sharing
@@ -219,8 +223,6 @@ javascripts:
   - data/model
   - data/table
   - screens/stats-screen
-- tweetsets:
-  - screens/tweetsets-screen
 - widgets-show:
   - plugins/ui.effects.custom.min
   - plugins/jquery.uniform
@@ -280,6 +282,7 @@ javascripts:
   - screens/dataset
 - screen-dataset-edit-metadata:
   - plugins/jquery.uniform
+  - plugins/ajaxupload.3.0
   - screens/dataset-edit-metadata
 
 
@@ -357,10 +360,6 @@ stylesheets:
 - stats-index:
   - table-core
   - stats-screen
-- tweetsets-index:
-  - form-common
-  - carousel/discover-carousel-skin
-  - tweetsets-screen
 - internal-shared:
   - internal-screen
   - form-common

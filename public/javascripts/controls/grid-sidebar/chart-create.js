@@ -6,27 +6,6 @@
     var isEdit = blist.dataset.getDisplayType(blist.display.view) ==
         'Visualization';
 
-    /*** Basic types ***/
-
-    var textualTypes = ['text', 'drop_down_list'];
-    var numericTypes = ['number', 'percent', 'money'];
-    var dateTypes = ['calendar_date', 'date'];
-
-    var chartTypes = {
-        area: {value: 'area', text: 'Area Chart',
-            requiredColumns: [textualTypes, numericTypes]},
-        bar: {value: 'bar', text: 'Bar Chart',
-            requiredColumns: [textualTypes, numericTypes]},
-        column: {value: 'column', text: 'Column Chart',
-            requiredColumns: [textualTypes, numericTypes]},
-        line: {value: 'line', text: 'Line Chart',
-            requiredColumns: [numericTypes]},
-        pie: {value: 'pie', text: 'Pie Chart',
-            requiredColumns: [textualTypes, numericTypes]},
-        timeline: {value: 'timeline', text: 'Time Line',
-            requiredColumns: [dateTypes, numericTypes]}
-    };
-
     /*** Common configuration options ***/
 
     var defaultColors = ['#042656', '#19538b', '#6a9feb', '#bed6f7',
@@ -108,8 +87,6 @@
 
     var chartTypeAvailable = function(chartConfig, view)
     {
-        var cols = view.columns.slice();
-
         // Limit number of rows
         if (!$.isBlank(view.totalRows) && view.totalRows > rowLimit)
         {
@@ -118,18 +95,8 @@
         }
         hitRowLimit = false;
 
-        return _.all(chartConfig.requiredColumns, function(rc)
-        {
-            var col = _.detect(cols, function(c)
-            {
-                return _.include(rc, c.renderTypeName) && (isEdit ||
-                    ($.isBlank(c.flags) || !_.include(c.flags, 'hidden')));
-            });
-
-            if ($.isBlank(col)) { return false; }
-            cols = _.without(cols, col);
-            return true;
-        });
+        return blist.dataset.chart.hasRequiredColumns(view.columns,
+            chartConfig.requiredColumns, isEdit);
     };
 
     var onlyIfForChart = function(chart, disable)
@@ -189,27 +156,31 @@
 
 
     /*** Specific configs that need small overrides ***/
-    var configLine = basicConfig(chartTypes.line, textualTypes, 'Categories');
+    var configLine = basicConfig(blist.dataset.chart.types.line,
+        blist.dataset.chart.textualTypes, 'Categories');
     configLine.fields[0].required = false;
 
-    var configPie = basicConfig(chartTypes.pie, textualTypes, 'Label');
+    var configPie = basicConfig(blist.dataset.chart.types.pie,
+        blist.dataset.chart.textualTypes, 'Label');
     configPie.fields.splice(1, 2);
     configPie.fields[0].wizard = 'Select a column that contains the categories ' +
         'for the pie slices';
     configPie.fields.push({text: 'Values',
             name: 'displayFormat.valueColumns.0.tableColumnId',
             type: 'columnSelect', required: true, isTableColumn: true,
-            columns: {type: numericTypes, hidden: isEdit},
+            columns: {type: blist.dataset.chart.numericTypes, hidden: isEdit},
             wizard: 'Select a column that contains the data for the pie slices'});
     configPie.fields.push({type: 'repeater', text: 'Colors',
         field: $.extend({}, colorOption, {name: 'displayFormat.colors.0'}),
         minimum: 6, maximum: 6, lineClass: 'colorArray',
         wizard: 'Choose colors for the slices of your pie chart'});
 
-    var configTimeline = basicConfig(chartTypes.timeline, dateTypes, 'Date');
+    var configTimeline = basicConfig(blist.dataset.chart.types.timeline,
+        blist.dataset.chart.dateTypes, 'Date');
     configTimeline.fields = _.reject(configTimeline.fields,
         function(f) { return f.name == 'displayFormat.titleX'; });
-    var dataTimeline = basicData(chartTypes.timeline, numericTypes, 'Value');
+    var dataTimeline = basicData(blist.dataset.chart.types.timeline,
+        blist.dataset.chart.numericTypes, 'Value');
     dataTimeline.fields[0].field.options.push(
         {text: 'Title', type: 'columnSelect', isTableColumn: true,
         name: 'supplementalColumns.0',
@@ -228,6 +199,9 @@
         priority: 1,
         title: 'Chart',
         subtitle: 'View data can be displayed with a variety of charts',
+        onlyIf: function(view)
+        { return !blist.display.isInvalid || isEdit; },
+        disabledSubtitle: 'This view must be valid',
         sections: [
             {
                 title: 'Chart Setup',
@@ -239,7 +213,7 @@
                     {text: 'Chart Type', name: 'displayFormat.chartType',
                         type: 'select', required: true,
                         prompt: 'Select a chart type',
-                        options: _.sortBy(chartTypes, function(ct)
+                        options: _.sortBy(blist.dataset.chart.types, function(ct)
                             { return ct.text; }),
                         wizard: 'Select a chart type'
                     }
@@ -248,37 +222,46 @@
 
 
             // Area chart
-            basicConfig(chartTypes.area, textualTypes, 'Categories'),
-            basicData(chartTypes.area, numericTypes, 'Value'),
-            basicAdv(chartTypes.area, [legendPos, showLines, showPoints]),
+            basicConfig(blist.dataset.chart.types.area,
+                blist.dataset.chart.textualTypes, 'Categories'),
+            basicData(blist.dataset.chart.types.area,
+                blist.dataset.chart.numericTypes, 'Value'),
+            basicAdv(blist.dataset.chart.types.area,
+                [legendPos, showLines, showPoints]),
 
 
             // Bar chart
-            basicConfig(chartTypes.bar, textualTypes, 'Groups'),
-            basicData(chartTypes.bar, numericTypes, 'Values'),
-            basicAdv(chartTypes.bar, [legendPos]),
+            basicConfig(blist.dataset.chart.types.bar,
+                blist.dataset.chart.textualTypes, 'Groups'),
+            basicData(blist.dataset.chart.types.bar,
+                blist.dataset.chart.numericTypes, 'Values'),
+            basicAdv(blist.dataset.chart.types.bar, [legendPos]),
 
 
             // Column chart
-            basicConfig(chartTypes.column, textualTypes, 'Groups'),
-            basicData(chartTypes.column, numericTypes, 'Values'),
-            basicAdv(chartTypes.column, [legendPos]),
+            basicConfig(blist.dataset.chart.types.column,
+                blist.dataset.chart.textualTypes, 'Groups'),
+            basicData(blist.dataset.chart.types.column,
+                blist.dataset.chart.numericTypes, 'Values'),
+            basicAdv(blist.dataset.chart.types.column, [legendPos]),
 
 
             // Line chart
             configLine,
-            basicData(chartTypes.line, numericTypes, 'Value'),
-            basicAdv(chartTypes.line, [legendPos, showLines, showPoints,
-                {text: 'Smooth Line', name: 'displayFormat.smoothLine',
-                type: 'checkbox', defaultValue: false,
-                wizard: 'Choose whether or not you want spline smoothing ' +
-                    'applied to the line'}
-            ]),
+            basicData(blist.dataset.chart.types.line,
+                blist.dataset.chart.numericTypes, 'Value'),
+            basicAdv(blist.dataset.chart.types.line,
+                [legendPos, showLines, showPoints,
+                    {text: 'Smooth Line', name: 'displayFormat.smoothLine',
+                    type: 'checkbox', defaultValue: false,
+                    wizard: 'Choose whether or not you want spline smoothing ' +
+                        'applied to the line'}
+                ]),
 
 
             // Pie chart
             configPie,
-            basicAdv(chartTypes.pie, [legendPos,
+            basicAdv(blist.dataset.chart.types.pie, [legendPos,
                 {text: 'Min. Angle', name: 'displayFormat.pieJoinAngle',
                 type: 'slider', minimum: 0, maximum: 10, defaultValue: 1,
                 wizard: 'Slices below this angle in degrees will be ' +
@@ -289,7 +272,7 @@
             // Time line
             configTimeline,
             dataTimeline,
-            basicAdv(chartTypes.timeline, [legendPos])
+            basicAdv(blist.dataset.chart.types.timeline, [legendPos])
 
         ],
         finishBlock: {
@@ -304,8 +287,8 @@
     {
         if (!isEdit) { return null; }
 
-        return blist.dataset.convertLegacyChart(
-            $.extend(true, {}, blist.display.view));
+        return blist.dataset.chart.convertLegacy(
+            $.extend(true, {}, blist.display.view), isEdit);
     };
 
     config.finishCallback = function(sidebarObj, data, $pane, value)
@@ -323,7 +306,7 @@
             { return c.tableColumnId == tcid; });
 
             var fmt = $.extend({}, col.format);
-            if (_.include(numericTypes, col.renderTypeName))
+            if (_.include(blist.dataset.chart.numericTypes, col.renderTypeName))
             { $.extend(fmt, {aggregate: 'sum'}); }
 
             view.columns.push({id: col.id, name: col.name, format: fmt});
@@ -346,7 +329,7 @@
             {
                 sidebarObj.finishProcessing();
                 if (!isEdit)
-                { blist.util.navigation.redirectToView(resp.id); }
+                { blist.util.navigation.redirectToView(resp); }
                 else
                 {
                     $.syncObjects(blist.display.view, resp);
@@ -365,6 +348,8 @@
 
                         _.defer(function()
                         {
+                            $(document).trigger(blist.events.VALID_VIEW);
+
                             blist.$display.socrataChart()
                                 .reload(blist.display.view.displayFormat);
                         });
@@ -396,6 +381,6 @@
             }});
     };
 
-    $.gridSidebar.registerConfig(config);
+    $.gridSidebar.registerConfig(config, 'Visualization');
 
 })(jQuery);

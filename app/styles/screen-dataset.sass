@@ -261,6 +261,24 @@ html, body
     overflow: hidden
     position: relative
 
+    .viewErrorContainer
+      display: none
+      text-align: center
+      .invalidView &
+        display: block
+      .viewError
+        font-size: 1.4em
+        font-weight: bold
+        padding: 3em 0 1em
+      .invalidActions li
+        display: inline-block
+        .ie7 &
+          display: inline
+
+.invalidView
+  #mainGrid, #toolbarOptions
+    display: none
+
 // Dataset page-specific grid styles
 
 .blist-td, .blist-table-editor

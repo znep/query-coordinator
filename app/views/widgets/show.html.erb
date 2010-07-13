@@ -37,9 +37,8 @@
         </div>
       <%- end -%>
       <div class="gridContainer">
-        <%- if !@view.is_invalid? -%>
           <div id="data-grid" class='fullHeight'>
-            <%- if @view.is_tabular? -%>
+            <%- if @view.is_tabular? && @view.display.valid? -%>
               <noscript>
                 <h3><a href="<%= @view.href %>"><%= @view.name %></a></h3>
 
@@ -58,19 +57,17 @@
               <%= render(:partial => @display.render_partial) %>
             <%- end -%>
           </div>
-        <%- else -%>
           <div class='viewErrorContainer content'>
             <%- if current_user.id == @view.owner.id -%>
-            <div class='viewError'><%= @view.message %></div>
-            <ul class='actionButtons clearfix'>
-              <li><a href="<%= @view.href %>" rel="external"
-                class='arrowButton'>Edit View</a></li>
+            <div class='viewError'><%= @view.display.invalid_message %></div>
+            <ul class='invalidActions'>
+              <li><a href='<%= @view.href %>' rel='external'
+                  class='editView button'>Edit View</a></li>
             </ul>
             <%- else -%>
-            <div class='viewError'>Unable to display this view.</div>
+            <div class='viewError'>This view cannot be displayed</div>
             <%- end -%>
           </div>
-        <%- end -%>
       </div>
     </div>
 

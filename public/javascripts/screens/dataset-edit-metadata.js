@@ -58,6 +58,58 @@
     $licenseType.change(updateCascadingDropdown);
     updateCascadingDropdown();
 
+    var deleteLinkOptions = { tagName: 'a', contents: 'Delete', 'href': '#delete', 'class': 'deleteAttachmentNow' };
+
+    _.each($('.existingAttachments .deleteLinks'), function(link){
+        $(link).replaceWith(
+            $.tag(deleteLinkOptions));
+    });
+
+    $.live('.existingAttachments .deleteAttachmentNow', 'click', function(event){
+        event.preventDefault();
+
+        if (confirm('Are you sure you want to delete this attachment?'))
+        {
+            $(this).closest('li').remove();
+        }
+    });
+
+    var $uploadLink = $.tag({
+        tagName: 'a', 'href': '#upload', contents: 'Upload New Attachment', 'class': 'button'
+    });
+
+    $('#attachment_new').replaceWith($uploadLink);
+    $('.newAttachmentLabel').html('&nbsp;');
+
+    var $uploader = new AjaxUpload($uploadLink, {
+        action: '/api/assets',
+        autoSubmit: true,
+        responseType: 'json',
+        onSubmit: function (file, extension)
+        {
+            $('.uploadAttachmentThrobber').show();
+        },
+        onComplete: function (file, response)
+        {
+            $('.uploadAttachmentThrobber').hide();
+            if (response.error)
+            {
+                $('.flash').addClass('error')
+                    .text(response.message)
+                    .fadeIn();
+                return;
+            }
+
+            $.tag({ tagName: 'li', contents: [
+                {tagName: 'input', type: 'hidden', name: 'view[metadata[attachments]][][blobId]',   value: response.id},
+                {tagName: 'input', type: 'hidden', name: 'view[metadata[attachments]][][filename]', value: response.nameForOutput},
+                {tagName: 'input', type: 'text',   name: 'view[metadata[attachments]][][name]',     value: response.nameForOutput},
+                 deleteLinkOptions ]})
+                .appendTo('.existingAttachments ul');
+
+            $('.noAttachmentsItem').remove();
+        }
+    });
 
     // Now we're ready to uniform everything
     $('select').uniform();

@@ -17,6 +17,7 @@
           <%- if @column.has_totals? && !@view.is_grouped? -%>
               <li><a id="totals" href="#">Column Totals</a></li>
           <%- end -%>
+          <li><a id="advanced" href="#">Advanced</a></li>
           <%#<li><a id="defaults" href="#">Default Values</a></li> %>
         </ul>
       </div>
@@ -132,9 +133,17 @@
                     </div>
                 </td>
             </tr>
+
           </tbody>
         </table>
       </div>
+
+      <%# Advanced tab %>
+      <div id="advancedTab" class="tabContent">
+        <h3>Semantics</h3>
+        <h4 class="subtitle separator"></h4>
+      </div>
+      
       <div class="saveBar">
         <div class="error errorMessage"></div>
         <h3 class="separator"></h3>
@@ -170,6 +179,9 @@ blist.common.modalReady = function()
   var picklistManagerCallback = picklistManagerSetup();
   <%- end -%>
 
+  // static available rdf terms data.
+  column.rdfProperties = <%= raw(@rdf_properties.to_json) %>;
+
   var loading = function()
   {
     $("#columnPropertiesDialog #loadingSpinner")
@@ -196,6 +208,7 @@ blist.common.modalReady = function()
     $("#columnPropertiesDialog #formattingTab").hide();
     $("#columnPropertiesDialog #totalsTab").hide();
     $("#columnPropertiesDialog #defaultsTab").hide();
+    $("#columnPropertiesDialog #advancedTab").hide();
 
     $("#columnPropertiesDialog #" + which + "Tab").show();
   };
@@ -218,12 +231,16 @@ blist.common.modalReady = function()
   $("#columnPropertiesDialog #totalsTab").columnTotalsRender(column);
   <%- end -%>
 
+  $("#columnPropertiesDialog #advancedTab").columnRdfRender(column);
+
 
   var updateColumn = function()
   {
       column.name = $("#columnPropertiesDialog #name").val();
       var $desc = $("#columnPropertiesDialog #description:not(.prompt)");
       column.description = $desc.length > 0 ? $desc.val() : null;
+
+      column.rdf =  $("#columnProperties_rdf").value();
 
       var $alignment = $('#columnPropertiesDialog .alignment :radio:checked');
       if ($alignment.length > 0)
@@ -243,6 +260,13 @@ blist.common.modalReady = function()
 
   var save = function()
   {
+
+      if (!$("#columnProperties").data('validate').valid())
+      {
+        toggleEnabled(); // reenable form for editing
+        return;
+      }
+
       updateColumn();
 
       $.ajax({
@@ -322,5 +346,16 @@ blist.common.modalReady = function()
 
       save();
   });
+
+
+  var $validator = $("#columnProperties").validate({
+    rules: {
+        "columnProperties_rdf_freeText": {
+            url: true
+        }
+    }
+  });
+  $("#columnProperties").data('validate', $validator);
+
 };
 </script>

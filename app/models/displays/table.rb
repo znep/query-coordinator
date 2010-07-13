@@ -42,7 +42,7 @@ class Displays::Table < Displays::Base
   end
 
   def invalid_message
-    @view.message
+    (@view.message || '') + '.'
   end
 
   def valid?

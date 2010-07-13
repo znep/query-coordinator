@@ -249,6 +249,13 @@ class Column < Model
     if js.key?("humane")
       update_data[:format]["humane"] = js["humane"]
     end
+
+    if js.key?("rdf") && (js["rdf"].blank? || js["rdf"] == "_")
+      update_data[:format].delete "rdf"
+    elsif js.key?("rdf")
+      update_data[:format]["rdf"] = js["rdf"]
+    end
+
   end
 
   def self.to_core(js)
@@ -301,6 +308,10 @@ class Column < Model
 
       if !self.format.humane.nil?
         col[:humane] = self.format.humane
+      end
+
+      if !self.format.rdf.nil?
+        col[:rdf] = self.format.rdf;
       end
 
       col[:alignment] = alignment unless aligment.nil?

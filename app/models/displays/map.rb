@@ -1,4 +1,8 @@
 class Displays::Map < Displays::Base
+  def invalid_message
+    'Columns required for this map are missing'
+  end
+
   def required_javascripts
     [ 'http://serverapi.arcgisonline.com/jsapi/arcgis/?v=1.6', 'shared-map' ]
   end
@@ -22,7 +26,8 @@ class Displays::Map < Displays::Base
 
   def render_inline_runtime_js(context)
     js = <<-END
-      blist.$display.socrataMap({displayFormat: blist.display.options});
+      blist.$display.socrataMap({displayFormat: blist.display.options,
+        invalid: blist.display.isInvalid});
     END
     super << js
   end

@@ -10,6 +10,13 @@
         title: 'Print',
         subtitle: 'Export this dataset to a printable PDF format',
         noReset: true,
+        onlyIf: function()
+        { return blist.display.isGrid && !blist.display.isInvalid; },
+        disabledSubtitle: function()
+        {
+            return blist.display.isInvalid ? 'This view must be valid' :
+                'Only tabular data may be printed';
+        },
         sections: [
             {
                 customContent: {

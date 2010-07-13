@@ -25,9 +25,14 @@
                     return c.dataTypeName == 'text' && (isEdit ||
                         ($.isBlank(c.flags) || !_.include(c.flags, 'hidden')));
                 });
-            return dateCols.length > 0 && textCols.length > 0;
+            return dateCols.length > 0 && textCols.length > 0 &&
+                (!blist.display.isInvalid || isEdit);
         },
-        disabledSubtitle: 'This view must have a date column and a text column',
+        disabledSubtitle: function()
+        {
+            return blist.display.isInvalid ? 'This view must be valid' :
+                'This view must have a date column and a text column';
+        },
         sections: [
             {
                 title: 'Calendar Name',
@@ -86,42 +91,8 @@
     {
         if (!isEdit) { return null; }
 
-        var view = $.extend(true, {}, blist.display.view);
-        view.displayFormat = view.displayFormat || {};
-
-        if ($.isBlank(view.displayFormat.startDateTableId) &&
-            !$.isBlank(view.displayFormat.startDateId))
-        {
-            view.displayFormat.startDateTableId = _.detect(view.columns,
-                function(c) { return c.id == view.displayFormat.startDateId; })
-                .tableColumnId;
-        }
-
-        if ($.isBlank(view.displayFormat.endDateTableId) &&
-            !$.isBlank(view.displayFormat.endDateId))
-        {
-            view.displayFormat.endDateTableId = _.detect(view.columns,
-                function(c) { return c.id == view.displayFormat.endDateId; })
-                .tableColumnId;
-        }
-
-        if ($.isBlank(view.displayFormat.titleTableId) &&
-            !$.isBlank(view.displayFormat.titleId))
-        {
-            view.displayFormat.titleTableId = _.detect(view.columns,
-                function(c) { return c.id == view.displayFormat.titleId; })
-                .tableColumnId;
-        }
-
-        if ($.isBlank(view.displayFormat.descriptionTableId) &&
-            !$.isBlank(view.displayFormat.descriptionId))
-        {
-            view.displayFormat.descriptionTableId = _.detect(view.columns,
-                function(c) { return c.id == view.displayFormat.descriptionId; })
-                .tableColumnId;
-        }
-
-        return view;
+        return blist.dataset.calendar.convertLegacy(
+            $.extend(true, {}, blist.display.view));
     };
 
     config.finishCallback = function(sidebarObj, data, $pane, value)
@@ -141,7 +112,7 @@
             {
                 sidebarObj.finishProcessing();
                 if (!isEdit)
-                { blist.util.navigation.redirectToView(resp.id); }
+                { blist.util.navigation.redirectToView(resp); }
                 else
                 {
                     $.syncObjects(blist.display.view, resp);
@@ -150,6 +121,8 @@
 
                     var finishUpdate = function()
                     {
+                        $(document).trigger(blist.events.VALID_VIEW);
+
                         sidebarObj.$grid().blistCalendar()
                             .reload(blist.display.view.displayFormat);
 
@@ -182,6 +155,6 @@
             }});
     };
 
-    $.gridSidebar.registerConfig(config);
+    $.gridSidebar.registerConfig(config, 'Calendar');
 
 })(jQuery);

@@ -50,6 +50,9 @@
         + dataSource: object or function that returns an object that will be
             used to fill in the pane on render if no data is passed in to
             addPane
+        + onlyIf: boolean, or function that takes the view and returns true if
+            the pane is enabled, false if not
+        + disabledSubtitle: String to display when the pane is disabled
         + sections: array of sections for entering data
         [
           {
@@ -237,11 +240,16 @@
     */
 
     var paneConfigs = {};
+
     $.gridSidebar =
     {
-        registerConfig: function(config)
+        registerConfig: function(config, displayTypes)
         {
             if ($.isBlank(config.name)) { throw 'Sidebar config requires a name'; }
+
+            _.each($.makeArray(displayTypes || []), function(dt)
+                { $.gridSidebar.paneForDisplayType[dt] = config.name; });
+
             var p = config.name.split('.');
             if (p.length == 1)
             {
@@ -264,6 +272,8 @@
                 throw "Pane config: can't name with more than one or two parts";
             }
         },
+
+        paneForDisplayType: {},
 
         // Pre-defined buttons for easy access
         buttons: {
@@ -609,13 +619,16 @@
                     .find('.paneSelect');
                 var updateEnabled = function(sp, isEnabled)
                 {
+                    var disSub = sp.disabledSubtitle;
+                    if (_.isFunction(disSub))
+                    { disSub = disSub(); }
+
                     var $a = $paneSelect.find('[data-panename="' + sp.name + '"]');
                     if ($a.hasClass('disabled') != !isEnabled)
                     {
                         updatedLinks = true;
                         $a.toggleClass('disabled', !isEnabled)
-                            .attr('title', isEnabled ?
-                                sp.subtitle : sp.disabledSubtitle);
+                            .attr('title', isEnabled ?  sp.subtitle : disSub);
                     }
 
                     if (sp.name == sidebarObj._currentPane)
@@ -636,7 +649,7 @@
                             }
                         }
                         $pane.toggleClass('disabled', !isEnabled)
-                            .find('.disabledMessage').text(sp.disabledSubtitle);
+                            .find('.disabledMessage').text(disSub);
                     }
                 };
 
@@ -656,6 +669,25 @@
                 if (updatedLinks && $.isBlank(sidebarObj._currentPane) &&
                     sidebarObj.$dom().is(':visible'))
                 { showPaneSelectWizard(sidebarObj, outerConfig); }
+            },
+
+            isPaneEnabled: function(paneName)
+            {
+                var sidebarObj = this;
+
+                var nameParts = getConfigNames(paneName);
+                var outerConfig = paneConfigs[nameParts.primary];
+                if ($.isBlank(outerConfig)) { return false; }
+                var config = (outerConfig.subPanes || {})[nameParts.secondary] ||
+                    paneConfigs[nameParts.secondary];
+                if ($.isBlank(config)) { return false; }
+
+                if ($.isBlank(config.onlyIf))
+                { return true; }
+                else if (_.isFunction(config.onlyIf))
+                { return config.onlyIf(blist.display.view); }
+                else
+                { return config.onlyIf === true; }
             },
 
             showSection: function($pane, sectionName)
@@ -1024,19 +1056,6 @@
 
     var hideCurrentPane = function(sidebarObj)
     {
-        if (!$.isBlank(sidebarObj.$currentOuterPane()))
-        {
-            var $paneSel = sidebarObj.$currentOuterPane().find('.paneSelect');
-            if ($paneSel.isSocrataTip())
-            {
-                $paneSel.socrataTip().destroy();
-                sidebarObj._$currentWizard = null;
-                sidebarObj._currentWizardLeft = null;
-                sidebarObj._currentWizardTop = null;
-                sidebarObj._$mainWizardItem = null;
-            }
-        }
-
         if (!$.isBlank(sidebarObj.$currentPane()))
         { sidebarObj.resetForm(sidebarObj.$currentPane()); }
 

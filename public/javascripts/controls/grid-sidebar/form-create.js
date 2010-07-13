@@ -19,9 +19,13 @@
                 {
                     return c.dataTypeName != 'meta_data' &&
                         ($.isBlank(c.flags) || !_.include(c.flags, 'hidden'));
-                }).length > 0;
+                }).length > 0 && (!blist.display.isInvalid || isEdit);
         },
-        disabledSubtitle: 'This view must have visible columns to create a form',
+        disabledSubtitle: function()
+        {
+            return blist.display.isInvalid ? 'This view must be valid' :
+                'This view must have visible columns to create a form';
+        },
         sections: [
             {
                 title: 'Form Information',
@@ -97,7 +101,7 @@
                 {
                     sidebarObj.finishProcessing();
                     if (!isEdit)
-                    { blist.util.navigation.redirectToView(resp.id); }
+                    { blist.util.navigation.redirectToView(resp); }
                     else
                     {
                         $.syncObjects(blist.display.view, resp);
@@ -134,6 +138,6 @@
         { updateView(); }
     };
 
-    $.gridSidebar.registerConfig(config);
+    $.gridSidebar.registerConfig(config, 'Form');
 
 })(jQuery);

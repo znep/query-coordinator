@@ -280,6 +280,20 @@ html, body
           .fc-header, .fc-content
             position: relative
 
+    .viewErrorContainer
+      display: none
+      text-align: center
+      .invalidView &
+        display: block
+      .viewError
+        font-size: 1.4em
+        font-weight: bold
+        padding: 3em 0 1em
+      .invalidActions li
+        display: inline-block
+        .ie7 &
+          display: inline
+
   .widgetContent_views,
   .widgetContent_downloads
     .gridListWrapper
@@ -502,6 +516,10 @@ html, body
       .submitActions li
         display: block
         float: left
+
+.invalidView
+  #data-grid
+    display: none
 
 // modals
 .leavingInterstitial

@@ -6,8 +6,13 @@
         priority: 1,
         title: 'Download',
         subtitle: 'Download a copy of this dataset in a static format',
-        disabledSubtitle: 'Only tabular data may be downloaded',
-        onlyIf: blist.display.isGrid,
+        onlyIf: function()
+        { return blist.display.isGrid && !blist.display.isInvalid; },
+        disabledSubtitle: function()
+        {
+            return blist.display.isInvalid ? 'This view must be valid' :
+                'Only tabular data may be downloaded';
+        },
         sections: [
             {
                 customContent: {

@@ -43,7 +43,24 @@ class DatasetsController < ApplicationController
       @view = get_view(params[:id])
       return if @view.nil?
     else
+      if params[:view][:metadata] && params[:view][:metadata][:attachments]
+        params[:view][:metadata][:attachments].delete_if { |a| a[:delete].present? }
+      end
       begin
+        # This sucks, but is necessary for the accessible version
+        if params[:attachment_new]
+          if (params[:view][:metadata].nil? || params[:view][:metadata][:attachments].nil?)
+            params[:view].deep_merge!({ :metadata => { :attachments => []} } )
+          end
+
+          attachment = JSON.parse(
+            CoreServer::Base.connection.multipart_post_file('/assets',
+              params[:attachment_new]))
+
+          params[:view][:metadata][:attachments] << {:blobId => attachment['id'],
+            :filename => attachment['nameForOutput'],
+            :name => attachment['nameForOutput']}
+        end
         @view = View.update_attributes!(params[:id], params[:view])
         flash[:notice] = "The metadata has been updated."
       rescue CoreServer::CoreServerError => e

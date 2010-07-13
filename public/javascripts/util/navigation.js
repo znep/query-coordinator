@@ -12,9 +12,12 @@ blist.util.navigation.getViewUrl = function (viewId, args)
     return url;
 };
 
-blist.util.navigation.redirectToView = function (viewId, args)
+blist.util.navigation.redirectToView = function (viewOrId, args)
 {
-    window.location = navigationUtilNS.getViewUrl(viewId, args);
+    if (_.isString(viewOrId))
+    { window.location = navigationUtilNS.getViewUrl(viewOrId, args); }
+    else if ($.isPlainObject(viewOrId))
+    { window.location = $.generateViewUrl(viewOrId); }
 };
 
 blist.util.navigation.redirectToNewView = function ()

@@ -73,6 +73,26 @@
                         .find(opts.actionSelector)
                         .trigger("click");
             });
+
+            $this.find('.comboToggle').click(function(event)
+            {
+                event.preventDefault();
+                var $cbo = $(this).parent().find('select');
+
+                if ($cbo.is(':visible'))
+                {
+                    $(this).find('a').text('List');
+                    $cbo.hide();
+                    $cbo.next('input').removeClass('hide');
+                }
+                else
+                {
+                    $(this).find('a').text('Custom');
+                    $cbo.show();
+                    $cbo.next('input').addClass('hide');
+                    $(this).closest('form').data('validator').resetForm();
+                }
+            });
         });
     };
 
@@ -108,6 +128,25 @@
                 }
             });
             $form.show().find("input[type='text']").focus().select();
+
+            // Combo which can be take custom value is followed by textbox followed by toggle button.
+            // We hide combo and show textbox if value is not in combo
+            var fieldType = $form.find("input[name='fieldType']").val();
+            var selector = ":input[name*='" + fieldType + "']";
+            var $valEl = $form.find(selector);
+            if ($valEl.get(0).tagName == "SELECT" && $valEl.attr('hasCustomEdit') != undefined)
+            {
+                if ($currentItemContainer.find("span").text().trim() != $valEl.find(':selected').text())
+                {
+                    hideComboShowEdit($valEl);
+                }
+            }
+        };
+
+        function hideComboShowEdit($valEl)
+        {
+            if (!$valEl.is(':visible')) {return;}
+            $valEl.parent().find('.comboToggle').click();
         };
 
         function closeAllForms()
@@ -116,11 +155,27 @@
             $allItemContainers.each(function(i, item)
             {
                 var $item = $(item);
-                var oldText = $item.find('span').text();
+
+                var $oldTextEl = $item.find('span');
+
+                // if you want to display label and store key/id,
+                // you may put the id in the key attribute.
+                // The display value is put in the span.
+                var oldText = $oldTextEl.text();
+                if ($oldTextEl.attr('key') != undefined)
+                {
+                    oldText = $oldTextEl.attr('key');
+                }
+
                 var $form = $item.find("form").hide();
                 var fieldType = $form.find("input[name='fieldType']").val();
                 $form.find(":input[name*='" + fieldType + "']").val(oldText);
                 $item.find("span").show();
+                var $validator = $form.data('validator');
+                if ($validator)
+                {
+                    $validator.resetForm();
+                }
             });
         };
 
@@ -129,14 +184,49 @@
             event.preventDefault();
             var $form = $(this);
 
+            // if there is validator, check it.
+            var $validator = $form.data('validator');
+            if ($validator && !$validator.valid())
+            {
+                return;
+            }
+
             var fieldType = $form.find("input[name='fieldType']").val();
-            var fieldValue = $form.find(":input[name*='" + fieldType + "']").val();
+            var selector = ":input[name*='" + fieldType + "']";
+            var $valEl = $form.find(selector);
+            var fieldValue = $valEl.val();
+            // displayValue will be empty selector returns nothing
+            var displayValue = $(selector + ' :selected').text();
+
+            // handle fields that are stored under the lenses.metadata as direct and well know children.
+            // Initially, there is rdfClass, rdfSubject
+            var payload;
+            var metaMatched = fieldType.match("metadata\\[(\\S*)\\]");
+            if (metaMatched)
+            {
+                var metadata = JSON.parse($($.fn.customFieldEdit.defaults.viewMetadataSelector).val()) || {};
+                // combo that allow custom value is invisible, use custom textbox value.
+                if (!$valEl.is(':visible'))
+                {
+                    fieldValue = $valEl.next('input').val();
+                    displayValue = fieldValue;
+                }
+
+                metadata[metaMatched[1]] = fieldValue; // metaMatch[1] holds the name of the field under metadata from regex
+                payload = JSON.stringify({metadata: metadata});
+            }
+            else
+            {
+                payload = fieldValue;
+            }
+
 
             $.ajax({
                 url: $form.attr("action"),
                 type: "PUT",
-                data: $form.find(":input"),
+                data: payload,
                 dataType: "json",
+                contentType: metaMatched ? 'application/json' : '',
                 success: function(responseData)
                 {
                     if (responseData.error !== undefined &&
@@ -147,10 +237,27 @@
                     else
                     {
                         $form.hide();
-                        $form.closest(opts.itemContentSelector)
-                            .find("span").text(fieldValue).show();
-                        opts.submitSuccessCallback(fieldType, fieldValue,
-                            responseData.id, responseData);
+
+                        var $span = $form.closest(opts.itemContentSelector).find("span");
+
+                        $span.text(displayValue).show();
+
+                        // combo box which has key and value needs to copy the new id to key attr
+                        if ($span.attr('key') != undefined)
+                        {
+                            $span.attr('key', fieldValue);
+                        }
+
+                        // also save the combo value to the hidden custom textbox
+                        if ($valEl.get(0).tagName == "SELECT" && $valEl.attr('hasCustomEdit') != undefined)
+                        {
+                            $valEl.next('input').val(displayValue);
+                        }
+
+
+                        $($.fn.customFieldEdit.defaults.viewMetadataSelector).val(JSON.stringify(metadata));
+
+                        opts.submitSuccessCallback(fieldType, fieldValue, responseData.id, responseData);
                     }
                 },
                 error: function(request, textStatus, errorThrown)
@@ -270,7 +377,7 @@
                         if (tabNavigator.settings.isWidget)
                         {
                             tabNavigator.toggleWidgetTabPanels(function()
-                                { tabNavigator.activateTab($tab); },
+                                {tabNavigator.activateTab($tab);},
                                 $tab.is("." +
                                     tabNavigator.settings.activationClass) ?
                                         undefined : true);
@@ -278,7 +385,7 @@
                         else
                         {
                             tabNavigator.toggleTabPanels(function()
-                                { tabNavigator.activateTab($tab); },
+                                {tabNavigator.activateTab($tab);},
                                 $tab.is("." +
                                     tabNavigator.settings.activationClass) ?
                                         undefined : true);
@@ -429,7 +536,7 @@
                     var metaPosition = $metaContainer.height() -
                         tabNavigator.settings.initialMetaHeight;
                     $metaContainer.animate(
-                        { top: metaPosition + "px" },
+                        {top: metaPosition + "px"},
                         function()
                         {
                             $metaContainer.removeClass("expanded").height("");
@@ -470,12 +577,12 @@
                     $metaContainer.addClass("expanded")
                         .height($(tabNavigator.settings
                             .widgetOuterContainerSelector).height());
-                    $metaContainer.animate({ top: "0" },
+                    $metaContainer.animate({top: "0"},
                         function()
                         {
                             tabNavigator.settings.switchCompleteCallback();
                             if (openCallback !== undefined)
-                            { openCallback(); }
+                            {openCallback();}
                         });
 
                 }

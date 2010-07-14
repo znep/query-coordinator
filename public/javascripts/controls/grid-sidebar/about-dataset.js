@@ -111,10 +111,12 @@
                                     },
                                     messages: {
                                         'type'   : 'You must select a purpose for this message.',
-                                        'subject': 'You must select a purpose for this message above.',
+                                        'subject': 'You must choose a subject for this message.',
                                         'message': 'The message must have a body.',
                                         'from_address': 'Your email address is required.'
-                                    }
+                                    },
+                                    errorPlacement: function($error, $element)
+                                    { $error.appendTo($element.closest('.lined')); }
                                 });
 
                                 $sect.find('#contactPurpose')
@@ -153,6 +155,10 @@
                                     $form.submit();
                                 });
                             }
+
+                            var form = $sect.find('.contactOwnerForm');
+                            form[0].reset();
+                            form.validate().resetForm();
 
                             toggleContactActions();
 

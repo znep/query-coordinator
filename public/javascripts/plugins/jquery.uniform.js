@@ -439,7 +439,7 @@ Enjoy!
             var divTag;
             if($e.is("select")){
                 //element is a select
-                spanTag = $e.siblings("span");
+                spanTag = $e.siblings('div').find('span');
                 divTag = $e.parent("div");
 
                 divTag.removeClass(options.hoverClass+" "+options.focusClass+" "+options.activeClass);

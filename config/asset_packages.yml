@@ -281,6 +281,7 @@ javascripts:
   - controls/dataset-controls
   - controls/embed-form
   - controls/full-screen
+  - controls/format-options
   - screens/dataset
   - screens/dataset-email
 - screen-dataset-edit-metadata:

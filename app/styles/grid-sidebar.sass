@@ -145,33 +145,8 @@
         border-color: #f8a0a8
 
   .sidebarPane
+    @include disabled-overlay(8em)
     position: relative
-
-    .disabledOverlay
-      background-color: #eeeeee
-      display: none
-      height: 100%
-      left: 0
-      filter: alpha(opacity = 70)
-      opacity: 0.7
-      position: absolute
-      top: 0
-      width: 100%
-      z-index: 80
-
-    .disabledMessage
-      color: #333333
-      display: none
-      font-size: 1.2em
-      font-weight: bold
-      position: absolute
-      text-align: center
-      top: 8em
-      width: 100%
-      z-index: 81
-
-    &.disabled .disabledOverlay, &.disabled .disabledMessage
-      display: block
 
     &.initialLoad .formSection
       filter: alpha(opacity = 30)

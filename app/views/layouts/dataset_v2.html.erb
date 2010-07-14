@@ -94,6 +94,15 @@
 
   <div id="modals">
     <%= yield :modals %>
+
+    <div class="modalDialog" id="jqmAlert">
+      <a href="#close" class="jqmClose modalDialogClose">Close</a>
+      <h2>Alert</h2>
+      <p class="alertMessage"></p>
+      <div class="finishButtons">
+        <a href="#close" class="button jqmClose">Close</a>
+      </div>
+    </div>
   </div>
 
   <%= yield :js_footer %>

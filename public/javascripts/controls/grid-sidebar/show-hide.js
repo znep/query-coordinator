@@ -35,7 +35,7 @@
 
     var updateColumns = function()
     {
-        var cols = _(blist.display.view.columns).chain()
+        var cols = _($.extend(true, [], blist.display.view.columns)).chain()
             .select(function(c) { return c.dataTypeName != 'meta_data'; })
             .map(function(c)
             {

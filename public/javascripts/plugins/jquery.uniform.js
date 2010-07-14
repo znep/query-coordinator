@@ -108,7 +108,7 @@ Enjoy!
             var $selected = elem.find(':selected:first');
             if ($selected.length === 0)
             { $selected = elem.find('option:first'); }
-            spanTag.html($selected.text());
+            spanTag.text($selected.text());
 
             elem.css('opacity', 0);
             elem.wrap(divTag);
@@ -312,8 +312,10 @@ Enjoy!
           var $el = $(elem);
 
             var divTag = $('<div />'),
-                filenameTag = $('<span>'+options.fileDefaultText+'</span>'),
-                btnTag = $('<span>'+options.fileBtnText+'</span>');
+                filenameTag = $('<span>' +
+                    $.htmlEscape(options.fileDefaultText) + '</span>'),
+                btnTag = $('<span>' +
+                    $.htmlEscape(options.fileBtnText) + '</span>');
 
             divTag.addClass(options.fileClass).addClass(options.globalClass);
             filenameTag.addClass(options.filenameClass);

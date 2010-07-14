@@ -96,6 +96,9 @@ blist.dataset.chart.convertLegacy = function(view)
     {
         if (!$.isBlank(view.displayFormat.fixedCount))
         {
+            if (view.displayFormat.chartType == 'pie' &&
+                view.displayFormat.fixedCount > 1)
+            { view.displayFormat.fixedCount--; }
             view.displayFormat.fixedColumns =
                 view.displayFormat.dataColumns.splice(0,
                         view.displayFormat.fixedCount);
@@ -122,8 +125,9 @@ blist.dataset.chart.convertLegacy = function(view)
         {
             var tcid = cols.shift();
             var c = blist.dataset.columnForTCID(view, tcid);
-            if (!$.isBlank(c) &&
-                _.include(blist.dataset.chart.numericTypes, c.renderTypeName))
+            if ($.isBlank(c)) { continue; }
+
+            if (_.include(blist.dataset.chart.numericTypes, c.renderTypeName))
             {
                 valueCols.push(vcVal);
                 vcVal = {tableColumnId: tcid};

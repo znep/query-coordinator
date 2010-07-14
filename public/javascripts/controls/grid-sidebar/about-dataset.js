@@ -22,12 +22,16 @@
                         $.live('#gridSidebar_about .expander', 'click', function(event)
                         {
                             event.preventDefault();
+                            var $this = $(this);
 
-                            $(this)
+                            $this
                                 .toggleClass('expanded')
                                 .toggleClass('collapsed')
                                 .siblings('.sectionContent')
-                                    .slideToggle();
+                                // IE8 can't handle the slideToggle.
+                                // It also gets confused about the current state.
+                                    [($.browser.msie && ($.browser.majorVersion == 8)) ?
+                                        'toggle' : 'slideToggle']($this.hasClass('expanded'));
                         });
 
                         $sect.find('.showStatisticsLink').click(function(event)

@@ -8,7 +8,7 @@
   </div>
 
   <%- if @view.can_edit? -%>
-    <%= link_to 'Edit Metadata', { :action => 'edit_metadata' }, :class => 'fullButton' %>
+    <%= link_to 'Edit Metadata', { :action => 'edit_metadata' }, :class => 'fullButton editMetadataButton' %>
   <%- end -%>
 
   <div class="formSection">
@@ -82,10 +82,10 @@
     </a>
     <dl class="sectionContent">
       <dt>Permalink</dt>
-      <dd><span class="hardWrap"><%= request.protocol +
+      <dd><span class="hardWrap"><%= link_to_url request.protocol +
         request.host_with_port + @view.href %></span></dd>
       <dt>Short URL</dt>
-      <dd><span class="hardWrap"><%= request.protocol +
+      <dd><span class="hardWrap"><%= link_to_url request.protocol +
         request.host_with_port.gsub(/www\./, '') + @view.short_href %></span></dd>
     </dl>
   </div>
@@ -118,7 +118,7 @@
       <dt>Source Link</dt>
       <dd><%= @view.attributionLink.blank? ?
                 '(none)' :
-                link_to(h(@view.attributionLink)) %></dd>
+                link_to(h(@view.attributionLink), h(@view.attributionLink), :rel => 'nofollow external') %></dd>
       <%- if @view.license -%>
         <dt>License</dt>
         <dd>
@@ -127,7 +127,7 @@
           <%- elsif @view.license.logoUrl.blank? -%>
             <%= @view.license.name %>
           <%- else -%>
-            <a href="<%= @view.license.termsLink %>">
+            <a href="<%= @view.license.termsLink %>" rel="nofollow external">
               <img src="/<%= @view.license.logoUrl %>" alt="<%= @view.license.name %>" />
             </a>
           <%- end -%>

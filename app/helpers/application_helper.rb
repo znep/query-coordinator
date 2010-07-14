@@ -367,6 +367,10 @@ HREF
     EOF
   end
 
+  def link_to_url(url)
+      return link_to url, url
+  end
+
   # Generate a parameter hash given a current page state and additional flags
   def generate_filter_url(current_state, type, additional_flags = {}, delimiter = '?')
     if current_state.nil?

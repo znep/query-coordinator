@@ -123,6 +123,7 @@ $(function()
 
     // toolbar area
     $('#viewsMenu').menu({
+        additionalDataKeys: [ 'targetPane' ],
         menuButtonContents: '',
         menuButtonTitle: 'More Views',
         contents: [
@@ -130,10 +131,13 @@ $(function()
               onlyIf: !_.include(['Blist', 'Blob'],
                 blist.dataset.getDisplayType(blist.display.view)) },
             { divider: true },
-            { text: 'Saved Filters', className: 'typeFilter', href: '#savedFilters' },
-            { text: 'Saved Visualizations', className: 'typeVisualization', href: '#savedVisualizations' },
+            { text: 'Saved Filters', className: 'typeFilter', href: '#savedFilters',
+              targetPane: 'filter.savedFilters' },
+            { text: 'Saved Visualizations', className: 'typeVisualization',
+              href: '#savedVisualizations', targetPane: 'visualize.savedVisualizations' },
             { divider: true },
-            { text: 'About This Dataset', className: 'about', href: '#about' }
+            { text: 'About This Dataset', className: 'about', href: '#about',
+              targetPane: 'about' }
         ],
         onOpen: function()
         {
@@ -142,15 +146,10 @@ $(function()
         }
     });
 
-    $('#viewsMenu .typeFilter').click(function(e)
+    $('#viewsMenu a[data-targetPane]').click(function(e)
     {
         e.preventDefault();
-        $('#gridSidebar').gridSidebar().show('filter.savedFilters');
-    });
-    $('#viewsMenu .typeVisualization').click(function(e)
-    {
-        e.preventDefault();
-        $('#gridSidebar').gridSidebar().show('visualize.savedVisualizations');
+        $('#gridSidebar').gridSidebar().show($(this).attr('data-targetPane'));
     });
 
     $('#titleBox').expander({

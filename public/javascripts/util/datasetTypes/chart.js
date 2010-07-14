@@ -106,7 +106,8 @@ blist.dataset.chart.convertLegacy = function(view)
         {
             var firstCol = _.detect(view.columns, function(c)
             { return c.tableColumnId == view.displayFormat.dataColumns[0]; });
-            if (!_.include(['number', 'percent', 'money'], firstCol.renderTypeName))
+            if (!_.include(blist.dataset.chart.numericTypes,
+                firstCol.renderTypeName))
             {
                 view.displayFormat.fixedColumns =
                     view.displayFormat.dataColumns.splice(0, 1);
@@ -120,9 +121,9 @@ blist.dataset.chart.convertLegacy = function(view)
         while (cols.length > 0)
         {
             var tcid = cols.shift();
-            var c = _.detect(view.columns, function(c)
-                { return c.tableColumnId == tcid; });
-            if (_.include(['number', 'money', 'percent'], c.renderTypeName))
+            var c = blist.dataset.columnForTCID(view, tcid);
+            if (!$.isBlank(c) &&
+                _.include(blist.dataset.chart.numericTypes, c.renderTypeName))
             {
                 valueCols.push(vcVal);
                 vcVal = {tableColumnId: tcid};

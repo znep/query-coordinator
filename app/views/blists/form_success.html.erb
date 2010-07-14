@@ -4,6 +4,6 @@
 <p>Thank you for your submission!</p>
 
 <%- parent_dataset = !@view.nil? ? @view.parent_dataset : nil -%>
-<%- if !parent_dataset.nil? && parent_dataset.can_read() -%>
+<%- if !parent_dataset.nil? && parent_dataset.can_read? -%>
 <a href='<%= parent_dataset.href %>'>View all the data submitted so far</a>
 <%- end -%>

@@ -34,7 +34,7 @@ columnRdfNS.renderer = function(column, $container)
     $("#columnProperties_rdf").combo({
         name: 'rdf',
         values: rdfValues,
-        value: column.rdf || "_",
+        value: column.rdf || '',
         keyName: 'CName',
         renderFn: columnRdfNS.renderComboRow,
         keyAccProp: 'namespace',

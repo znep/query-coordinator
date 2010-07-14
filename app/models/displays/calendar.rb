@@ -15,6 +15,10 @@ class Displays::Calendar < Displays::Base
     [ 'fullcalendar' ]
   end
 
+  def required_style_packages
+    [ 'screen-calendar' ]
+  end
+
   def render_inline_runtime_js(context)
     js = <<END
 blist.$display.blistCalendar({

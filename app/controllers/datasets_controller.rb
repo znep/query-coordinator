@@ -95,7 +95,7 @@ protected
       end
     end
 
-    if (view.is_form? ? !view.can_add : !view.can_read())
+    if (view.is_form? ? !view.can_add? : !view.can_read?)
       require_user(true)
       return nil
     end

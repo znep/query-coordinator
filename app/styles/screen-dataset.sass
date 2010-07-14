@@ -3,7 +3,7 @@ html, body
   overflow: hidden
 
 .siteInnerWrapper
-  max-width: inherit
+  max-width: 100%
 
 #datasetBar
   background-color: #fff
@@ -25,7 +25,7 @@ html, body
     .ie7 &
       z-index: 1
     a.menuButton
-      @include toolbar-button
+      @include button
       padding: 0
       height: 100%
       width: 100%
@@ -92,7 +92,7 @@ html, body
         display: inline
         margin-right: 1em
       a.toolbarButton
-        @include toolbar-button
+        @include button
         font-size: 1.2em
         margin-right: 0.5em
 
@@ -127,7 +127,7 @@ html, body
         margin-right: 1em
 
         #searchButton
-          @include toolbar-button
+          @include button
           position: relative
 
           .searchIcon
@@ -169,7 +169,7 @@ html, body
             display: none
 
           .menuButton
-            @include toolbar-button
+            @include button
             margin-top: 0
 
             .shareIcon
@@ -222,6 +222,8 @@ html, body
                       z-index: 1
       li.active
         z-index: 9
+        &.tabEdit
+          border-bottom-color: $sidebar_edit_tab_color_top
         &.tabFilter
           border-bottom-color: $sidebar_filter_tab_color_top
         &.tabVisualize
@@ -240,7 +242,7 @@ html, body
       font-size: 1.1em
 
   .fullscreenButton
-    @include toolbar-button
+    @include button
     padding: 0
     position: absolute
     right: 0.4em
@@ -303,18 +305,28 @@ html, body
   input
     width: 95%
 
-// Login overlay
-#login, #signup
-  display: none
-  left: 50%
-  margin-top: 0
-  position: fixed
-  z-index: 5000
-
+// Login modals (someday maybe these will have to move somewhere common)
 #login
-  margin-left: -20em
-  top: 20em
+  form
+    @include common-form(8em)
+
+  .accountMaint
+    bottom: 2.6em
+    left: 18em
+    position: absolute
+
+    a
+      font-size: 1.2em
 
 #signup
-  margin-left: -24em
-  top: 10em
+  form
+    @include common-form(9em, 14em)
+
+    span
+      font-size: 1.2em
+
+    div.required
+      margin-top: 1em
+
+    .signup_loadingIndicator
+      @include throbber-icon

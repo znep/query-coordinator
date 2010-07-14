@@ -402,18 +402,23 @@
 
         // Create the chart
         chartObj.startLoading();
-        chartObj.chart = new Highcharts.Chart(chartConfig);
 
-        if (!_.isUndefined(colors))
-        {
-            // Set colors after chart is created so they don't get merged with the
-            // default colors; we want to override them, instead
-            chartObj.chart.options.colors = colors;
-        }
+        // IE7 seems to have some problem creating the chart right away;
+        // add a delay and it seems to work.  Do I know why (for either part)? No
+        _.defer(function() {
+            chartObj.chart = new Highcharts.Chart(chartConfig);
 
-        if (isDateTime(chartObj)) { createDateTimeOverview(chartObj); }
+            if (!_.isUndefined(colors))
+            {
+                // Set colors after chart is created so they don't get merged
+                // with the default colors; we want to override them, instead
+                chartObj.chart.options.colors = colors;
+            }
 
-        chartObj._loadedOnce = true;
+            if (isDateTime(chartObj)) { createDateTimeOverview(chartObj); }
+
+            chartObj._loadedOnce = true;
+        });
     };
 
     var xPoint = function(chartObj, row, value)

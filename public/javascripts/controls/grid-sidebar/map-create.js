@@ -116,7 +116,7 @@
         },
         disabledSubtitle: function()
         {
-            return blist.display.isInvalid ? 'This view must be valid' :
+            return blist.display.isInvalid && !isEdit ? 'This view must be valid' :
                 'This view must have a location column';
         },
         sections: [

@@ -50,7 +50,7 @@ class BlistsController < ApplicationController
       end
     end
 
-    if (@view.is_form? ? !@view.can_add : !@view.can_read())
+    if (@view.is_form? ? !@view.can_add? : !@view.can_read?)
       return require_user(true)
     end
 
@@ -116,7 +116,7 @@ class BlistsController < ApplicationController
       end
     end
 
-    if !@view.can_read() || (!current_user && params[:force_login])
+    if !@view.can_read? || (!current_user && params[:force_login])
       return require_user(true)
     end
 
@@ -188,7 +188,7 @@ class BlistsController < ApplicationController
       end
     end
 
-    if !@view.can_edit() && !CurrentDomain.user_can?(current_user, :edit_sdp)
+    if !@view.can_edit? && !CurrentDomain.user_can?(current_user, :edit_sdp)
       return require_user(true)
     end
 

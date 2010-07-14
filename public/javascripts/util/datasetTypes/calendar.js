@@ -20,9 +20,10 @@ blist.dataset.calendar.convertLegacy = function(view)
         if ($.isBlank(view.displayFormat[n + 'TableId']) &&
             !$.isBlank(view.displayFormat[n + 'Id']))
         {
-            view.displayFormat[n + 'TableId'] = _.detect(view.columns,
-                function(c) { return c.id == view.displayFormat[n + 'Id']; })
-                .tableColumnId;
+            var c = _.detect(view.columns,
+                function(c) { return c.id == view.displayFormat[n + 'Id']; });
+            if (!$.isBlank(c))
+            { view.displayFormat[n + 'TableId'] = c.tableColumnId; }
         }
     });
 

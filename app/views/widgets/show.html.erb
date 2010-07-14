@@ -44,7 +44,7 @@
 
                 <p><%= @view.description %></p>
 
-                <%- if @view.can_read -%>
+                <%- if @view.can_read? -%>
                   <% cache ['widget-bare-html', @view.id], :expires_in => 1.hour do %>
                     <%= raw @view.html.dup %>
                   <% end %>
@@ -183,7 +183,7 @@
     blist.widget.customizationId = '<%= params[:customization_id] || '' %>';
     blist.widget.isAltView = <%= @view.is_alt_view? ? 'true' : 'false' %>;
 
-    <%- if !@view.is_invalid? && !@view.is_blobby? && @view.can_read -%>
+    <%- if !@view.is_invalid? && !@view.is_blobby? && @view.can_read? -%>
     <%# Hard-code parameters for initial call here; if the Javascript ever
     changes, these will need to be updated %>
     blist.widget.viewJson = <%= @view.json({'accessType' => 'WIDGET',
@@ -192,7 +192,7 @@
   </script>
 
   <%= raw @display.render_javascript_includes(self) %>
-  <%- if @view.can_edit() && !@view.is_blobby? -%>
+  <%- if @view.can_edit? && !@view.is_blobby? -%>
   <%= raw @display.render_edit_javascript_includes(self) %>
   <%- end -%>
   <%= javascript_include_merged 'widgets-show' %>

@@ -103,6 +103,9 @@
 
     var openMenu = function(opts, $menuContainer, $menuButton, $menuDropdown)
     {
+        if (_.isFunction(opts.onOpen))
+            opts.onOpen();
+
         // close any menu that might already be open
         $(document).trigger('click.menu');
 
@@ -171,7 +174,7 @@
         $(document).unbind('click.menu'); // just to be sure
         $(document).bind('click.menu', function(event)
         {
-            // close if user clicked out || if user clicked in link || if user clicked on linke
+            // close if user clicked out || if user clicked in link || if user clicked on link
             if (($menuContainer.has(event.target).length === 0) ||
                 ($menuDropdown.find('a').has(event.target).length > 0) ||
                 $(event.target).is('.menuDropdown a'))
@@ -183,6 +186,9 @@
 
     var closeMenu = function(opts, $menuContainer, $menuButton, $menuDropdown)
     {
+        if (_.isFunction(opts.onClose))
+            opts.onClose();
+
         $(document).unbind('click.menu');
         $menuContainer.removeClass('open');
         $menuDropdown.fadeOut(200);
@@ -193,6 +199,8 @@
         contents: [],
         menuButtonClass: 'menuButton',
         menuButtonContents: 'Menu',
-        menuButtonTitle: 'Menu'
+        menuButtonTitle: 'Menu',
+        onOpen: function() {},
+        onClose: function() {}
     };
 })(jQuery);

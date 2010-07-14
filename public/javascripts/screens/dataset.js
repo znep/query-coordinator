@@ -79,6 +79,12 @@ $(function()
         { $dataGrid.visualization(); }
     }
 
+    $.gridSidebar.registerConfig({
+        name: 'edit',
+        title: 'Edit',
+        subtitle: 'Edit and manage this dataset'
+    });
+
     // sidebar and sidebar tabs
     sidebar = $('#gridSidebar').gridSidebar({
         dataGrid: $dataGrid[0],
@@ -97,12 +103,15 @@ $(function()
     $('#sidebarOptions a[data-paneName]').each(function()
     {
         var $a = $(this);
-        if (sidebar.hasPane($a.attr('data-paneName')))
+        var dataPaneName = $a.attr('data-paneName');
+        if (sidebar.hasPane(dataPaneName))
         {
             $a.click(function(e)
             {
                 e.preventDefault();
-                sidebar.show($a.attr('data-paneName'));
+                sidebar.show(dataPaneName);
+                $.analytics.trackEvent('dataset page (v4-chrome)',
+                    dataPaneName + ' pane opened', blist.display.view.id);
             });
         }
         else
@@ -125,7 +134,12 @@ $(function()
             { text: 'Saved Visualizations', className: 'typeVisualization', href: '#savedVisualizations' },
             { divider: true },
             { text: 'About This Dataset', className: 'about', href: '#about' }
-        ]
+        ],
+        onOpen: function()
+        {
+            $.analytics.trackEvent('dataset page (v4-chrome)', 'views menu opened',
+                blist.display.view.id);
+        }
     });
 
     $('#viewsMenu .typeFilter').click(function(e)
@@ -168,7 +182,21 @@ $(function()
 
     blist.dataset.controls.hookUpShareMenu(blist.display.view,
         $('#shareMenu'),
-        { menuButtonContents: $.tag({ tagName: 'span', 'class': 'shareIcon' }, true)});
+        {
+            menuButtonContents: $.tag({ tagName: 'span', 'class': 'shareIcon',
+            onOpen: function()
+            {
+                $.analytics.trackEvent('dataset page (v4-chrome)', 'share menu opened',
+                    blist.display.view.id);
+            }
+        }, true)});
+
+    // hook up menu items for events analytics
+    $('#shareMenu .menuDropdown a, #viewsMenu .menuDropdown a').click(function()
+    {
+        $.analytics.trackEvent('dataset page (v4-chrome)', 'menu item clicked: ' +
+            $(this).attr('href'), blist.display.view.id);
+    });
 
     $('.fullscreenButton').click(function(event)
     {
@@ -347,5 +375,8 @@ $(function()
                     blist.parentViewId = parDS.id;
                 }
             }});
+
+        // report to events analytics for easier aggregation
+        $.analytics.trackEvent('dataset page (v4-chrome)', 'page loaded', blist.display.view.id);
     });
 });

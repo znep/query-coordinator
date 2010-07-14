@@ -9,7 +9,8 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
         if ($login.length < 1 || $signup.length < 1)
         { throw 'Trying to use inline login, but #login or #signup is missing!'; }
 
-        $login.jqmShow().find('.flash').text(msg).end()
+        $login.jqmShow()
+            .find('.flash').text(msg).addClass('notice').end()
             .find('a.close').unbind('click.inlineLogin')
                 .bind('click.inlineLogin', function (event)
                 {
@@ -33,6 +34,12 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                             .find(':checked').attr('checked', false).end()
                             .find('form').validate().resetForm();
                     }, 0);
+                }).end()
+            .find('a.loginButton').unbind('click.inlineLogin')
+                .bind('click.inlineLogin', function (event)
+                {
+                    event.preventDefault();
+                    $(this).closest('form').trigger('submit.inlineLogin');
                 }).end()
             .find('form').unbind('keyup.inlineLogin')
                 .bind('keyup.inlineLogin', function (event)
@@ -63,7 +70,7 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                             {
                                 blist.currentUserId = responseData.user_id;
                                 $login.jqmHide();
-                                $('#header .userNav').addClass('loggedInNav');
+                                $('#header .userNav, #siteHeader .siteUserNav').addClass('loggedInNav');
                                 callback(true, true);
                             }
                         }
@@ -78,6 +85,12 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                     event.preventDefault();
                     $signup.jqmHide();
                     callback(false, true);
+                }).end()
+            .find('a#signup_submit').unbind('click.inlineLogin')
+                .bind('click.inlineLogin', function(event)
+                {
+                    event.preventDefault();
+                    $(this).closest('form').trigger('submit.inlineLogin');
                 }).end()
             .find('form').unbind('keyup.inlineLogin')
                 .bind('keyup.inlineLogin', function (event)
@@ -142,7 +155,7 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
 
                 $signup.jqmHide();
                 $login.jqmHide();
-                $('#header .userNav').addClass('loggedInNav');
+                $('#header .userNav, #siteHeader .siteUserNav').addClass('loggedInNav');
                 callback(true, true);
             }
         };

@@ -136,7 +136,8 @@
             var $valEl = $form.find(selector);
             if ($valEl.get(0).tagName == "SELECT" && $valEl.attr('hasCustomEdit') != undefined)
             {
-                if ($currentItemContainer.find("span").text().trim() != $valEl.find(':selected').text())
+                var spanVal = $currentItemContainer.find("span").text().trim();
+                if (!$.isBlank(spanVal) && spanVal != $valEl.find(':selected').text())
                 {
                     hideComboShowEdit($valEl);
                 }

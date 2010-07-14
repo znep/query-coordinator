@@ -355,13 +355,13 @@
                         break;
                 }
             }
-            else if (!$this.freeEditOn)
+            else if (!$this.data('freeEditOn'))
             {
 
                 switch (event.keyCode)
                 {
                     case 32: // Space
-                        if ($this.freeEditOn) { break; }
+                        if ($this.data('freeEditOn')) { break; }
                         event.stopPropagation();
                         showDropdown();
                         break;
@@ -414,7 +414,7 @@
            if ($valEl.is(':visible'))
            {
                // show text hide combo
-               $this.freeEditOn = true;
+               $this.data('freeEditOn', true);
                $this.data('comboValueCopy', $this.value());
 
                $this.unbind('click');
@@ -427,11 +427,13 @@
                $this.removeClass('blist-combo');
                $this.css('backgroundPosition', '-100px');
                $toggle.find('a').text('List');
+                // show free text edit validation error if it exists
+               $this.find("label.error").show();
            }
            else
            {
                // show combo hide text
-               $this.freeEditOn = false;
+               $this.data('freeEditOn', false);
                $this.value($this.data('comboValueCopy'));
 
                $this.addClass('blist-combo');
@@ -441,6 +443,8 @@
                $this.css('backgroundPosition', 'right center');
                $this.click(onClick);
                $toggle.find('a').text('Custom');
+                // hide free text edit validation error if it exists
+               $this.find("label.error").hide();
            }
         };
 

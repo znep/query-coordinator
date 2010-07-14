@@ -8,6 +8,14 @@
   <link rel="canonical" href="<%= @view.href %>" />
 <% end %>
 
+<% content_for :skip_links do %>
+  <%= link_to 'Go to an accessible version of this page', @view.alt_href %>
+
+  <%- if @view.can_edit? -%>
+    <%= link_to 'Edit the metadata of this dataset', @view.href + '/edit_metadata' %>
+  <%- end -%>
+<% end %>
+
 <div id='datasetBar' class='clearfix'>
   <div id='viewsMenu' class='menu'></div>
 

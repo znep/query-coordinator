@@ -41,7 +41,7 @@
 
     <div class="line clearfix">
       <label for="view_licenseId">Licensing</label>
-      <%= select_tag("view[licenseId]", merged_license_select_options(h(@view.license.nil? ? '' : @view.license.capitalize))) %>
+      <%= select_tag("view[licenseId]", merged_license_select_options(@view.licenseId)) %>
       <div class="additionalHelp">Choose licensing terms for people who wish to use this dataset.</div>
     </div>
 

@@ -167,6 +167,7 @@
                             {
                                $('#contactPurpose').val($this.attr('data-select'));
                                contactPurposeChange();
+                               $.uniform.update();
                             }
                         });
                     }

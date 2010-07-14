@@ -9,7 +9,7 @@
     var awesomeRenderFunction = function(dataItem, topMatch)
     {
         return '<p class="title">' + dataItem['displayName'] + '</p>' +
-               '<p class="matchRow"><span class="matchedField">Email</span>:' +
+               '<p class="matchRow"><span class="matchedField">Email:</span> ' +
                dataItem['email'] + '</p>';
     };
 

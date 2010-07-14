@@ -179,7 +179,11 @@ $(function()
                 { text: 'About the Socrata Social Data Player', className: 'about',
                     href: 'http://www.socrata.com/try-it-free', rel: 'external',
                     onlyIf: menuOptions['about_sdp'] }
-            ]
+            ],
+            onOpen: function()
+            {
+                $.analytics.trackEvent('widget (v2)', 'main menu opened', document.referrer);
+            }
         });
         if (menuOptions['about_sdp'])
         { $('.mainMenu .menuColumns').addClass('hasAbout'); }
@@ -222,12 +226,21 @@ $(function()
                     if (_.isFunction(paneHandlers[target]))
                     { paneHandlers[target](); }
                 });
+
+            $.analytics.trackEvent('widget (v2)', 'menu item clicked: ' +
+                $this.attr('href'), document.referrer);
         }
     });
 
     blist.dataset.controls.hookUpShareMenu(widgetNS.view,
         $('.subHeaderBar .share .shareMenu'),
-        { menuButtonClass: 'icon' });
+        {
+            menuButtonClass: 'icon',
+            onOpen: function()
+            {
+                $.analytics.trackEvent('widget (v2)', 'share menu opened', document.referrer);
+            }
+        });
 
     // toolbar
     var $toolbar = $('.toolbar');
@@ -732,6 +745,12 @@ $(function()
 
     // Notify publisher that we are ready
     widgetNS.ready = true;
+
+    _.defer(function()
+    {
+        // report to events analytics for easier aggregation
+        $.analytics.trackEvent('widget (v2)', 'page loaded', document.referrer);
+    });
 });
 
 

@@ -77,7 +77,7 @@
                         { columnFilterChanged(datasetObj, c, s); })
                     .bind('server_row_change', function(event)
                         { serverRowChange(datasetObj); })
-                    .bind('columns_update', function(event)
+                    .bind('columns_updated', function(event)
                         { columnsUpdated(datasetObj); })
                     .bind('full_load', function(event)
                         { viewLoaded(datasetObj); })
@@ -360,7 +360,7 @@
                 }
             },
 
-            updateVisibleColumns: function(columns)
+            updateVisibleColumns: function(columns, callback)
             {
                 var datasetObj = this;
                 var view = datasetObj.settings._model.meta().view;
@@ -388,7 +388,7 @@
                     $.socrataServer.runRequests({complete: function()
                     {
                         datasetObj.settings._model.reloadView();
-                        $(document).trigger(blist.events.COLUMNS_CHANGED);
+                        if (_.isFunction(callback)) { callback(); }
                     }});
                 }
             },
@@ -1038,6 +1038,7 @@
     var columnsUpdated = function(datasetObj)
     {
         datasetObj.summaryStale = true;
+        $(document).trigger(blist.events.COLUMNS_CHANGED);
     };
 
     var serverRowChange = function(datasetObj)

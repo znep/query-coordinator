@@ -16,9 +16,13 @@ html, body
 
 #skipLinks
   position: absolute
-  top: -500px
+  left: 5px
+  top: -495px
 
   a
+    @include gradient_chrome_nav_buttons_background
+    @include border-radius(0.2em)
+    @include box-shadow(0, 0, 0.5em, rgba(0, 0, 0, 0.3))
     color: #fff
     font-size: 1.5em
     font-weight: bold
@@ -118,7 +122,7 @@ html, body
         color: #ccc
 
     .submit
-      @include toolbar-button
+      @include button
       color: #444
       height: auto
       margin: 0

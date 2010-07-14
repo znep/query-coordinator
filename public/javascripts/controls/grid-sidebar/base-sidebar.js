@@ -596,16 +596,23 @@
                 sidebarObj.settings.onSidebarClosed();
             },
 
-            refresh: function()
+            refresh: function(pane)
             {
                 var sidebarObj = this;
 
-                var pane = _.compact([sidebarObj._currentOuterPane,
-                        sidebarObj._currentPane]).join('.');
+                if ($.isBlank(pane))
+                {
+                    pane = _.compact([sidebarObj._currentOuterPane,
+                            sidebarObj._currentPane]).join('.');
+                }
                 if ($.isBlank(pane)) { return; }
 
+                var nameParts = getConfigNames(pane);
+                var isCur = sidebarObj._currentOuterPane == nameParts.primary &&
+                    sidebarObj._currentPane == nameParts.secondary;
+                if (isCur) { sidebarObj.hide(pane); }
                 sidebarObj.addPane(pane);
-                sidebarObj.show(pane);
+                if (isCur) { sidebarObj.show(pane); }
             },
 
             updateEnabledSubPanes: function()

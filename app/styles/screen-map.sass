@@ -1,3 +1,24 @@
+// TODO (v4-chrome dataset grid): remove!
+.loadingSpinnerContainer
+  background: transparent url(/stylesheets/images/common/spinner_background.png) no-repeat
+  height: 48px
+  left: 50%
+  margin-left: -24px
+  margin-top: -24px
+  padding: 26px
+  position: absolute
+  top: 50%
+  width: 48px
+  z-index: 100
+
+  .loadingSpinner
+    margin: 0
+    position: static
+
+  &.hidden
+    display: none
+// END TODO
+
 #mapLayers
   background-color: #ffffff
   border: 1px solid #333333
@@ -27,3 +48,38 @@
 
   &.html
     font-size: 1em
+
+div.gmnoprint div
+  overflow: hidden !important
+
+.mapInfoContainer table,
+#dataGrid_infowindow table
+  margin-bottom: 10px
+
+.mapInfoContainer table th + th,
+.mapInfoContainer table td + td,
+#dataGrid_infowindow table th + th,
+#dataGrid_infowindow table td + td
+  padding-left: 10px
+
+.firstChild
+  .VE_Pushpin_Popup_Title
+    font-size: 1.3em
+  .VE_Pushpin_Popup_Body
+    font-size: 1em
+
+.infowindow .window .top .right .user .titlebar .hide_infowindow
+  height: 8px
+  margin-top: 5px
+  overflow: hidden
+  position: absolute
+  width: 12px
+
+  .sprite
+    margin-left: -752px
+    margin-top: -900px
+    cursor: pointer
+    display: block
+
+    &:hover
+      margin-top: -908px

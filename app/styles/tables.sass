@@ -42,6 +42,22 @@
       padding: 0.6em 1em
       vertical-align: middle
 
+// minor overrides in sidebar
+#gridSidebar .gridListWrapper
+  border: 1px solid $sidebar_chrome_border_color
+  @include border-radius(0.3em)
+  background-color: #fff
+
+  .gridList
+    thead tr th
+      border-bottom: 1px solid $sidebar_chrome_border_color
+      &:first-child
+        @include border-radius-corner(top, left, 0.2em)
+        @include border-radius-corner(bottom, left, 0)
+      &:last-child
+        @include border-radius-corner(top, right, 0.2em)
+        @include border-radius-corner(bottom, right, 0)
+
 // specific tables
 .gridList.filterList
   thead

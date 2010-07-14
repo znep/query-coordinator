@@ -260,8 +260,7 @@ blist.common.modalReady = function()
 
   var save = function()
   {
-
-      if (!$("#columnProperties").data('validate').valid())
+      if ($("#columnProperties_rdf").data('freeEditOn') && !$("#columnProperties").data('validate').valid())
       {
         toggleEnabled(); // reenable form for editing
         return;

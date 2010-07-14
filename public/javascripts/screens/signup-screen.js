@@ -2,7 +2,7 @@ $(function ()
 {
     if ($('body').is('.signup'))
     {
-        $("#signup #signup_login").focus();
+        $("#signup #signup_email").focus();
     }
 
     $.validator.addMethod("loginRegex", function(value, element) {

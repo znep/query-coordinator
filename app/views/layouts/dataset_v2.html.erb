@@ -6,6 +6,8 @@
   <meta http-equiv="content-type" content="text/html;charset=utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=8" />
 
+  <link rel="apple-touch-icon-precomposed" media="screen" href="/stylesheets/images/icons/retina_display_icon.png"/>
+
   <%= rendered_stylesheet_tag 'base' %>
 
   <%= jquery_include %>
@@ -62,10 +64,6 @@
     <%= yield :templates %>
   </div>
 
-  <div id="modals">
-    <%= yield :modals %>
-  </div>
-
   <%# Libraries for use with BeautyTip %>
   <!--[if IE]>
   <script type="text/javascript" src="/javascripts/plugins/excanvas.compiled.js"></script>
@@ -93,6 +91,10 @@
         }
     })(jQuery);
   </script>
+
+  <div id="modals">
+    <%= yield :modals %>
+  </div>
 
   <%= yield :js_footer %>
 

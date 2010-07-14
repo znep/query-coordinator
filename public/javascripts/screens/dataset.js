@@ -52,7 +52,7 @@ $(function()
     var sidebar;
 
     // grid
-    var $dataGrid = $('#mainGrid');
+    var $dataGrid = blist.$display;
     if ($dataGrid.length > 0)
     {
         if (blist.display.isGrid)
@@ -182,13 +182,13 @@ $(function()
     blist.dataset.controls.hookUpShareMenu(blist.display.view,
         $('#shareMenu'),
         {
-            menuButtonContents: $.tag({ tagName: 'span', 'class': 'shareIcon',
+            menuButtonContents: $.tag({tagName: 'span', 'class': 'shareIcon'}, true),
             onOpen: function()
             {
                 $.analytics.trackEvent('dataset page (v4-chrome)', 'share menu opened',
                     blist.display.view.id);
             }
-        }, true)});
+        });
 
     // hook up menu items for events analytics
     $('#shareMenu .menuDropdown a, #viewsMenu .menuDropdown a').click(function()
@@ -230,6 +230,12 @@ $(function()
         $('#editOptions .undo').toggleClass('disabled', !model.canUndo());
         $('#editOptions .redo').toggleClass('disabled', !model.canRedo());
     });
+
+
+    // Format toolbar
+    $('#formatOptions select').uniform();
+
+    $('#formatOptions').formatOptions({gridSelector: $dataGrid});
 
 
     // Unsaved view stuff

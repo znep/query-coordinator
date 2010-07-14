@@ -274,3 +274,36 @@
   background-image: url(/stylesheets/images/content/snuffleupasnake.gif)
   height: 16px
   width: 16px
+
+// Format icons
+@mixin format-icon($subselector: '.icon')
+  #{$subselector}
+    @include text-hiding
+    background-image: url(/stylesheets/images/content/table_menu/rich_text_format_sprites.png)
+    height: 16px
+    width: 16px
+
+  &.bold #{$subselector}
+    background-position: 4px -3px
+  &.underline #{$subselector}
+    background-position: 3px -22px
+  &.italic #{$subselector}
+    background-position: 4px -43px
+  &.strike #{$subselector}
+    background-position: 4px -62px
+    width: 30px
+  &.bulletedList #{$subselector}
+    background-position: 2px -83px
+  &.numberedList #{$subselector}
+    background-position: 2px -103px
+  &.color #{$subselector}
+    background-position: 2px -123px
+  &.alignLeft #{$subselector}
+    background-position: 4px -143px
+    width: 20px
+  &.alignCenter #{$subselector}
+    background-position: 4px -183px
+    width: 20px
+  &.alignRight #{$subselector}
+    background-position: 4px -163px
+    width: 20px

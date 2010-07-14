@@ -100,6 +100,55 @@ protected
     return result
   end
 
+  def get_gradient_definition(name, value)
+    result = ''
+
+    stops = value.each{ |stop| stop['position'] =
+      stop['position'].to_f unless stop['position'].nil? }
+
+    gradient_string = stops.map{ |stop| stop.has_key?('position') ?
+      "#{stop['color']}:#{stop['position']}" : stop['color'] }.join(',')
+
+    # ie (based on raw string)
+    result += "@mixin box_gradient_#{name}($width, $height, $additional)\n"
+    result += '  background-image: url(/ui/box.png?w=#{$width}&h=#{$height}&fc=' +
+                 gradient_string + '&#{$additional})' + "\n"
+
+    first_stop = stops.first
+    last_stop = stops.last
+    stops.delete(stops.first) if stops.first['position'].nil?
+    stops.delete(stops.last) if stops.last['position'].nil?
+
+    result += "@mixin gradient_#{name}\n"
+
+    # firefox
+    result += "  background: -moz-linear-gradient(0 0 270deg, ##{first_stop['color']}, ##{last_stop['color']}"
+    prev_stop_position = 0
+    stops.each do |stop|
+      stop_position = (stop['position'] * 100).round
+      if prev_stop_position == stop_position
+        # firefox will ignore stops with duplicate positions
+        prev_stop_position = stop_position + 1
+      else
+        prev_stop_position = stop_position
+      end
+
+      result += ", ##{stop['color']} #{prev_stop_position}%"
+    end
+    result += ")\n"
+
+    # webkit
+    result += "  background: -webkit-gradient(linear, left top, left bottom," +
+              " from(##{first_stop['color']}), to(##{last_stop['color']})" +
+              stops.map{ |stop| ", color-stop(#{stop['position']},##{stop['color']})" }.join +
+              ")\n"
+
+    # default background-color for fallback
+    result += "  background-color: ##{first_stop['color']}\n"
+
+    return result
+  end
+
   def get_includes_recurse(hash, definition, path = '')
     result = ''
     unless hash.nil?
@@ -134,46 +183,17 @@ protected
             # gradient
             next unless value.first.is_a? Hash # hack to accomodate current header color format
 
-            stops = value.each{ |stop| stop['position'] = stop['position'].to_f unless stop['position'].nil? }
-
-            gradient_string = stops.map{ |stop| stop.has_key?('position') ? "#{stop['color']}:#{stop['position']}" :
-                                          stop['color'] }.join(',')
-
-            # ie (based on raw string)
-            result += "@mixin box_gradient_#{path}#{key}($width, $height, $additional)\n"
-            result += '  background-image: url(/ui/box.png?w=#{$width}&h=#{$height}&fc=' +
-                         gradient_string + '&#{$additional})' + "\n"
-
-            first_stop = stops.first
-            last_stop = stops.last
-            stops.delete(stops.first) if stops.first['position'].nil?
-            stops.delete(stops.last) if stops.last['position'].nil?
-
-            result += "@mixin gradient_#{path}#{key}\n"
-
-            # firefox
-            result += "  background: -moz-linear-gradient(0 0 270deg, ##{first_stop['color']}, ##{last_stop['color']}"
-            prev_stop_position = 0
-            stops.each do |stop|
-              stop_position = (stop['position'] * 100).round
-              if prev_stop_position == stop_position
-                prev_stop_position = stop_position + 1  # firefox will ignore stops with duplicate positions
-              else
-                prev_stop_position = stop_position
+            result += get_gradient_definition(path + key, value.clone())
+            colors = value.map {|s| s['color']}.reverse
+            rev = []
+            value.each_with_index do |s, i|
+              a = {'color' => colors[i]}
+              if !s['position'].nil?
+                a['position'] = 1.0 - s['position'].to_f
               end
-
-              result += ", ##{stop['color']} #{prev_stop_position}%"
+              rev << a
             end
-            result += ")\n"
-
-            # webkit
-            result += "  background: -webkit-gradient(linear, left top, left bottom," +
-                      " from(##{first_stop['color']}), to(##{last_stop['color']})" +
-                      stops.map{ |stop| ", color-stop(#{stop['position']},##{stop['color']})" }.join +
-                      ")\n"
-
-            # default background-color for fallback
-            result += "  background-color: ##{first_stop['color']}\n"
+            result += get_gradient_definition(path + key + '_reverse', rev)
 
           end
         elsif definition[key.to_sym].is_a? Hash

@@ -45,17 +45,6 @@
     <div id='description' class="collapsed"><%= @view.description %></div>
   </div>
 
-  <%- if @view.can_edit? && !@view.is_alt_view? -%>
-  <ul id='editOptions'>
-    <li><a href='#Undo' class='button undo' title='Undo'>
-      <span class='icon'>Undo</span>
-    </a></li>
-    <li><a href='#Redo' class='button redo' title='Redo'>
-      <span class='icon'>Redo</span>
-    </a></li>
-  </ul>
-  <%- end -%>
-
   <div id='actionBox' class='clearfix'>
     <ul id="toolbarOptions">
       <%- unless @view.is_alt_view? -%>
@@ -111,6 +100,51 @@
       <div class='viewError'>This view cannot be displayed</div>
       <%- end -%>
     </div>
+
+    <%- if @view.can_edit? && !@view.is_alt_view? -%>
+    <div id='editBar' class='clearfix'>
+      <ul id='editOptions'>
+        <li><a href='#Undo' class='button undo' title='Undo'>
+          <span class='icon'>Undo</span>
+        </a></li>
+        <li><a href='#Redo' class='button redo' title='Redo'>
+          <span class='icon'>Redo</span>
+        </a></li>
+      </ul>
+
+      <div id='formatOptions' class='disabled'>
+        <div class='disabledOverlay'></div>
+        <div class='disabledMessage'>You are not editing a formattable type</div>
+        <ul>
+          <li><a href='#format_bold' class='button bold toggleButton'
+            title='Bold'><span class='icon'>Bold</span></a></li>
+          <li><a href='#format_underline' class='button underline toggleButton'
+            title='Underline'><span class='icon'>Underline</span></a></li>
+          <li><a href='#format_italic' class='button italic toggleButton'
+            title='Italic'><span class='icon'>Italic</span></a></li>
+          <li><a href='#format_strikethrough' class='button strike toggleButton'
+            title='Strikethrough'><span class='icon'>Strike</span></a></li>
+          <li><a href='#format_unorderedList'
+            class='button bulletedList toggleButton'
+            title='Bulleted List'><span class='icon'>Bulleted List</span></a></li>
+          <li><a href='#format_orderedList' class='button numberedList toggleButton'
+            title='Numbered List'><span class='icon'>Numbered List</span></a></li>
+          <li><a href='#format_link' class='button link toggleButton'
+            title='Link'>Link</a></li>
+          <li><%= select_tag("format_fontFamily", font_select_options('Helvetica'),
+            {:class => 'fontFamily'}) %></li>
+          <li><%= select_tag("format_fontSize", font_size_select_options(12),
+            {:class => 'fontSize'}) %></li>
+          <li><div class='menu color'>
+            <a class='menuButton color' title='Font Color'>
+              <span class='colorIcon colorIndicator'></span><span class='icon'></span>
+            </a>
+          </div></li>
+          <li><div class='align menu alignLeft'></div></li>
+        </ul>
+      </div>
+    </div>
+    <%- end -%>
 
     <div id='mainGrid' class='fullHeight'>
       <%= raw @view.display.render_body(self) %>

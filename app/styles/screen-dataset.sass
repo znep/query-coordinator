@@ -113,6 +113,25 @@ html, body
       #datasetName, #description.collapsed
         display: none
 
+  #editOptions
+    li
+      display: inline-block
+      .ie7 &
+        display: inline
+      .button
+        padding: 0.25em
+        .icon
+          @include text-hiding
+          @include ie6-fix
+          background-image: url(/stylesheets/images/content/table_menu/menu_bar_sprites.png)
+          height: 20px
+          width: 20px
+
+        &.undo .icon
+          background-position: 0 0
+        &.redo .icon
+          background-position: 0 -20px
+
   #actionBox
     bottom: -1px
     position: absolute

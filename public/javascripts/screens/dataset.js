@@ -211,6 +211,28 @@ $(function()
             .toggleClass('minimize');
     });
 
+
+    // Edit toolbar
+    $('#editOptions .undo').click(function (event)
+    {
+        event.preventDefault();
+        if (!$(event.target).is('.disabled'))
+        { $dataGrid.blistModel().undo(); }
+    });
+    $('#editOptions .redo').click(function (event)
+    {
+        event.preventDefault();
+        if (!$(event.target).is('.disabled'))
+        { $dataGrid.blistModel().redo(); }
+    });
+    $dataGrid.bind('undo_redo_change', function(e)
+    {
+        var model = $dataGrid.blistModel();
+        $('#editOptions .undo').toggleClass('disabled', !model.canUndo());
+        $('#editOptions .redo').toggleClass('disabled', !model.canRedo());
+    });
+
+
     // Unsaved view stuff
     $(document).bind(blist.events.VALID_VIEW,
         function() { datasetPageNS.updateValidView(); });

@@ -37,6 +37,17 @@
     <div id='description' class="collapsed"><%= @view.description %></div>
   </div>
 
+  <%- if @view.can_edit? && !@view.is_alt_view? -%>
+  <ul id='editOptions'>
+    <li><a href='#Undo' class='button undo' title='Undo'>
+      <span class='icon'>Undo</span>
+    </a></li>
+    <li><a href='#Redo' class='button redo' title='Redo'>
+      <span class='icon'>Redo</span>
+    </a></li>
+  </ul>
+  <%- end -%>
+
   <div id='actionBox' class='clearfix'>
     <ul id="toolbarOptions">
       <%- unless @view.is_alt_view? -%>

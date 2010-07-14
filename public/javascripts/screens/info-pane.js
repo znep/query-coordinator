@@ -185,6 +185,48 @@
             event.preventDefault();
             var $form = $(this);
 
+            var fieldType = $form.find("input[name='fieldType']").val();
+            var fieldValue = $form.find(":input[name*='" + fieldType + "']").val();
+
+            var metaMatched = fieldType.match("metadata\\[(\\S*)\\]");
+            if (metaMatched)
+            {
+                editSubmitMetadata($form, metaMatched)
+                return;
+            }
+
+
+            $.ajax({
+                url: $form.attr("action"),
+                type: "PUT",
+                data: $form.find(":input"),
+                dataType: "json",
+                success: function(responseData)
+                {
+                    if (responseData.error !== undefined &&
+                        responseData.error !== null)
+                    {
+                        opts.submitErrorCallback(fieldType, responseData.error);
+                    }
+                    else
+                    {
+                        $form.hide();
+                        $form.closest(opts.itemContentSelector)
+                            .find("span").text(fieldValue).show();
+                        opts.submitSuccessCallback(fieldType, fieldValue,
+                            responseData.id, responseData);
+                    }
+                },
+                error: function(request, textStatus, errorThrown)
+                {
+                    opts.submitErrorCallback(fieldType,
+                            JSON.parse(request.responseText).message);
+                }
+            });
+        };
+
+        function editSubmitMetadata($form, metaMatched)
+        {
             // if there is validator, check it.
             var $validator = $form.data('validator');
             if ($validator && !$validator.valid())
@@ -202,32 +244,24 @@
             // handle fields that are stored under the lenses.metadata as direct and well know children.
             // Initially, there is rdfClass, rdfSubject
             var payload;
-            var metaMatched = fieldType.match("metadata\\[(\\S*)\\]");
-            if (metaMatched)
-            {
-                var metadata = JSON.parse($($.fn.customFieldEdit.defaults.viewMetadataSelector).val()) || {};
-                // combo that allow custom value is invisible, use custom textbox value.
-                if (!$valEl.is(':visible'))
-                {
-                    fieldValue = $valEl.next('input').val();
-                    displayValue = fieldValue;
-                }
 
-                metadata[metaMatched[1]] = fieldValue; // metaMatch[1] holds the name of the field under metadata from regex
-                payload = JSON.stringify({metadata: metadata});
-            }
-            else
+            var metadata = JSON.parse($($.fn.customFieldEdit.defaults.viewMetadataSelector).val()) || {};
+            // combo that allow custom value is invisible, use custom textbox value.
+            if (!$valEl.is(':visible'))
             {
-                payload = fieldValue;
+                fieldValue = $valEl.next('input').val();
+                displayValue = fieldValue;
             }
 
+            metadata[metaMatched[1]] = fieldValue; // metaMatch[1] holds the name of the field under metadata from regex
+            payload = JSON.stringify({metadata: metadata});
 
             $.ajax({
                 url: $form.attr("action"),
                 type: "PUT",
                 data: payload,
                 dataType: "json",
-                contentType: metaMatched ? 'application/json' : '',
+                contentType: 'application/json',
                 success: function(responseData)
                 {
                     if (responseData.error !== undefined &&

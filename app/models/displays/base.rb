@@ -4,40 +4,40 @@ class Displays::Base
 
     # Access the human readable name for this type of display
     def name
-        self.class.name[10..-1]
+      self.class.name[10..-1]
     end
 
     # Access the internal name for this type of display
     def type
-        name.underscore
+      name.underscore
     end
 
     # Initialize the display.  Stores the view and initializes model fields from the view's display format object
     def initialize(view)
-        @options = view.displayFormat || Hashie::Mash.new
-        @view = view
+      @options = view.displayFormat || Hashie::Mash.new
+      @view = view
     end
 
     # This CSS class is applied to HTML anchors that reference views of this display type
     def link_css_class
-        type
+      type
     end
 
     # Is this display type publishable as a widget?  Theoretically all display types should be publishable but
     # this isn't currently the case
     def can_publish?
-        true
+      true
     end
 
     # Whether or not the display type has an advanced option that loads a
     # separate UI for configuration
     def can_advanced_publish?
-        true
+      true
     end
 
     # Does the display scroll inline?  Return false to disable default management of the display container's size
     def scrolls_inline?
-        true
+      true
     end
 
     # Controls for displaying the widget
@@ -51,7 +51,7 @@ class Displays::Base
 
     # Is the view properly configured to work with the underlying dataset?
     def valid?
-        true
+      true
     end
 
     # If the invalid view can be edited; not permissions-related, but if it
@@ -78,8 +78,8 @@ class Displays::Base
     # Render inline javascript to be included in the body *before* the bulk of javascript initializes.  Called by view
     # logic
     def render_inline_setup_js(target_dom_id, context)
-        # Set common base variables communicating display configuration to JS
-        js = <<END
+      # Set common base variables communicating display configuration to JS
+      js = <<END
 blist.namespace.fetch('blist.display');
 blist.display.name = '#{name}';
 blist.display.type = '#{type}';
@@ -92,10 +92,10 @@ blist.display.isInvalid = !blist.dataset.isValid(blist.display.view);
 $(function() { blist.$display = $('##{target_dom_id}'); });
 END
 
-        # Disable scrolling if the display shouldn't scroll
-        js << "$(function() { blist.$display.removeClass('scrollContent'); });" unless scrolls_inline?
+      # Disable scrolling if the display shouldn't scroll
+      js << "$(function() { blist.$display.removeClass('scrollContent'); });" unless scrolls_inline?
 
-        js
+      js
     end
 
     # Retrieve rendered CSS links to include in the page.  Called by view logic
@@ -130,7 +130,7 @@ END
     # Render the body of the view as HTML.  Context is the "self" for the view in which the display is embedded.  You
     # can use this to render partials if so desired.
     def render_body(context)
-        return ''
+      return ''
     end
 
     # Partial for the publishing tab content
@@ -142,7 +142,7 @@ END
 
     # Retrieve a list of stylesheet asset bundles that must be included for this display
     def required_stylesheets
-        []
+      []
     end
 
     # List of style packages (sass bundles)
@@ -152,40 +152,40 @@ END
 
     # Retrieve a list of javascript asset bundles that must be included for this display
     def required_javascripts
-        []
+      []
     end
 
     # Retrieve a list of javascript asset bundles that must be included for
     # editing this display
     def required_edit_javascripts
-        []
+      []
     end
 
     # Render links to javascript files
     def render_javascript_links
-        required_javascripts.map { |js| @@asset_helper.javascript_include_merged js }.join
+      required_javascripts.map { |js| @@asset_helper.javascript_include_merged js }.join
     end
 
     # Render links to javascript files for editing
     def render_edit_javascript_links
-        required_edit_javascripts.map { |js| @@asset_helper.javascript_include_merged js }.join
+      required_edit_javascripts.map { |js| @@asset_helper.javascript_include_merged js }.join
     end
 
     # Render inline javascript to be included *after* the bulk of javascript initializes.
     def render_inline_runtime_js(context)
-        ''
+      ''
     end
 
     # Utility for escaping HTML
     def h(text)
-        CGI.escapeHTML text
+      CGI.escapeHTML text
     end
 
     private
 
     @@asset_helper = Class.new do
-        include Synthesis::AssetPackageHelper
-        include ActionView::Helpers
+      include Synthesis::AssetPackageHelper
+      include ActionView::Helpers
     end.new
 
     @@app_helper = Class.new do

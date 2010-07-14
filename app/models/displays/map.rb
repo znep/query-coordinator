@@ -21,7 +21,11 @@ class Displays::Map < Displays::Base
   end
 
   def required_stylesheets
-    [ 'http://serverapi.arcgisonline.com/jsapi/arcgis/1.5/js/dojo/dijit/themes/tundra/tundra.css', 'map-screen' ]
+    [ 'http://serverapi.arcgisonline.com/jsapi/arcgis/1.5/js/dojo/dijit/themes/tundra/tundra.css' ]
+  end
+
+  def required_style_packages
+    [ 'screen-map' ]
   end
 
   def render_inline_runtime_js(context)

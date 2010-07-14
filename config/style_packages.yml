@@ -20,6 +20,10 @@ base-sdp:
 grid:
 - table-core
 - dataset-grid
+screen-map:
+- screen-map
+screen-calendar:
+- screen-calendar
 dataset-page:
 - grid-sidebar
 - grid-sidebar-custom

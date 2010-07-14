@@ -95,6 +95,13 @@
             color: #999999
             cursor: default
 
+    &#gridSidebar_outer_edit
+      .mainTitleBlock
+        @include vertical-gradient($sidebar_edit_tab_color_top, #e3b000)
+      .paneSelect
+        background-color: #e1f4fd
+        border-color: #afe5ff
+
     &#gridSidebar_outer_filter
       .mainTitleBlock
         @include vertical-gradient($sidebar_filter_tab_color_top, #4ca9d0)
@@ -449,6 +456,7 @@
       text-align: center
 
     .finishButtons
+      margin-top: 0
 
       // Once the old app is gone, all these legacy actionButtons styles can go away
       li

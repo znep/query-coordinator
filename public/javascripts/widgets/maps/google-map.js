@@ -35,19 +35,28 @@
             {
                 var mapObj = this;
 
-                var hasInfo = info !== null;
+                var hasInfo = !$.isBlank(info) || !$.isBlank(title);
                 var ll = new google.maps.LatLng(latVal, longVal);
                 var marker = new google.maps.Marker({position: ll,
-                    title: title, clickable: hasInfo || title !== null,
+                    title: title, clickable: hasInfo,
                     map: mapObj.map, icon: icon});
                 if (mapObj._markers[rowId]) mapObj._markers[rowId].setMap(null);
                 mapObj._markers[rowId] = marker;
 
                 if (hasInfo)
                 {
-                    marker.infoContent = "<div class='mapInfoContainer" +
-                        (mapObj._infoIsHtml ? ' html' : '') + "'>" +
-                        info + "</div>";
+                    marker.infoContent = '';
+                    if (!$.isBlank(title))
+                    {
+                        marker.infoContent += "<div class='mapTitle'>" +
+                            title + '</div>';
+                    }
+                    if (!$.isBlank(info))
+                    {
+                        marker.infoContent += "<div class='mapInfoContainer" +
+                            (mapObj._infoIsHtml ? ' html' : '') + "'>" +
+                            info + "</div>";
+                    }
                     google.maps.event.addListener(marker, 'click',
                         function() { markerClick(mapObj, marker); });
                 }

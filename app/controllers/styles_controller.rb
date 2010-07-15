@@ -193,7 +193,7 @@ protected
               end
               rev << a
             end
-            result += get_gradient_definition(path + key + '_reverse', rev)
+            result += get_gradient_definition(path + key.to_s + '_reverse', rev)
 
           end
         elsif definition[key.to_sym].is_a? Hash

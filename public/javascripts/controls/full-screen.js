@@ -62,13 +62,7 @@
                     targetHeight -= $t.outerHeight() - $t.height();
                 });
 
-                fsObj.$dom().siblings(':visible').each(function()
-                {
-                    var $t = $(this);
-                    if ($t.css('position') != 'fixed' &&
-                        $t.css('position') != 'absolute')
-                    { targetHeight -= $t.outerHeight(true); }
-                });
+                targetHeight -= siblingsHeight(fsObj.$dom());
 
                 fsObj.$dom().children().height(targetHeight).each(function()
                 {
@@ -76,12 +70,29 @@
                     if (!$t.is(':visible')) { return; }
 
                     $t.find(fsObj.settings.fullHeightSelector + ':visible')
-                        .height($t.innerHeight())
-                        .resize();
+                        .each(function()
+                        {
+                            var $f = $(this);
+                            $f.height($t.innerHeight() - siblingsHeight($f))
+                                .resize();
+                        });
                     $t.resize();
                 });
             }
         }
     });
+
+    var siblingsHeight = function($item)
+    {
+        var h = 0;
+        $item.siblings(':visible').each(function()
+        {
+            var $t = $(this);
+            if ($t.css('position') != 'fixed' &&
+                $t.css('position') != 'absolute')
+            { h += $t.outerHeight(true); }
+        });
+        return h;
+    };
 
 })(jQuery);

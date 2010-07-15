@@ -1,5 +1,6 @@
 ;$(function()
 {
+    blist.namespace.fetch('blist.dialog');
     var $form = $('#emailDatasetForm');
     var $flash = $('#emailDatasetMessage');
     var emailValidationMessage = 'That does not look like a valid email address.';
@@ -33,10 +34,12 @@
         });
     };
 
-    // Modal show link
-    $('#shareMenu .menuEntries .email a').click(function(e)
+    blist.dialog.sharing = function(e)
     {
         e.preventDefault();
+
+        $('.emailDatasetDialog.ownerDialog .emailDatasetHint').text('Share');
+
         $('.emailDatasetContent').show();
         $('.emailSuccess').hide();
         $('.emailDatasetDialog').jqmShow();
@@ -69,7 +72,10 @@
         }
 
         $form.find('.emailLine > select').uniform();
-    });
+    };
+
+    // Modal show link
+    $.live('#shareMenu .menuEntries .email a', 'click', blist.dialog.sharing);
 
     $.live('.emailDatasetDialog .removeLink', 'click', function(e)
     {

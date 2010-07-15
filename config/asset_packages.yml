@@ -279,11 +279,11 @@ javascripts:
   - controls/grid-sidebar/show-hide
   - controls/grid-sidebar/view-list
   - controls/dataset-controls
+  - controls/dataset-email
   - controls/embed-form
   - controls/full-screen
   - controls/format-options
   - screens/dataset
-  - screens/dataset-email
 - screen-dataset-edit-metadata:
   - plugins/jquery.uniform
   - plugins/ajaxupload.3.0

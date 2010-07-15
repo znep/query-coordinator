@@ -367,8 +367,8 @@ HREF
     EOF
   end
 
-  def link_to_url(url)
-      return link_to url, url
+  def link_to_url(url, *args)
+      return link_to url, url, *args
   end
 
   # Generate a parameter hash given a current page state and additional flags

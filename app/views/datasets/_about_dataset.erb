@@ -73,10 +73,11 @@
     <dl class="sectionContent">
       <dt>Permalink</dt>
       <dd><span class="hardWrap"><%= link_to_url request.protocol +
-        request.host_with_port + @view.href %></span></dd>
+        request.host_with_port + @view.href, :rel => 'external' %></span></dd>
       <dt>Short URL</dt>
       <dd><span class="hardWrap"><%= link_to_url request.protocol +
-        request.host_with_port.gsub(/www\./, '') + @view.short_href %></span></dd>
+        request.host_with_port.gsub(/www\./, '') + @view.short_href,
+        :rel => 'external' %></span></dd>
     </dl>
   </div>
 
@@ -108,7 +109,7 @@
       <dt>Source Link</dt>
       <dd><%= @view.attributionLink.blank? ?
                 '(none)' :
-                link_to(h(@view.attributionLink), h(@view.attributionLink), :rel => 'nofollow external') %></dd>
+                link_to_url(h(@view.attributionLink), :rel => 'nofollow external') %></dd>
       <%- if @view.license -%>
         <dt>License</dt>
         <dd>

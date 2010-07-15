@@ -413,25 +413,35 @@ html, body
   .emailSuccess
     display: none
 
+  .emailDatasetContent
+    padding-left: 2em
+
   p
     margin-bottom: 0.7em
 
   input.emailRecipient
-    margin: 0.5em 0 0.5em 0em
     width: 25em
+
+  .textWrapper
+    float: left
+    position: relative
 
   div.selector.uniform
     margin-left: 0.8em
     position: relative
     top: -0.3em
 
+    .ie7 &
+      display: inline
+
   select.recipientRole
     width: 9em
 
   .removeLink
     @include sprite-repeater-icons
-    float: left
-    margin: 1em 1em 0 0
+    position: relative
+    left: -2em
+    top: 1.9em
 
     &.hiddenLink
       visibility: hidden

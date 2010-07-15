@@ -81,6 +81,11 @@
     {
         $(this).closest('.emailLine').remove();
         emailCount --;
+        if (emailCount < 10)
+        {
+            $('.emailDatasetDialog .addMoreRecipientsButton')
+                .removeClass('disabled');
+        }
     });
 
     var emailCount = 1;

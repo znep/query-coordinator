@@ -301,6 +301,15 @@
     <%# Saved views %>
     blist.sidebarHidden.savedViews = <%= !@view.is_tabular? %>;
 
+    <%# Edit pane %>
+    blist.sidebarHidden.edit = blist.sidebarHidden.edit || {};
+    blist.sidebarHidden.edit.append = <%= !@view.is_blist? ||
+      !@view.can_edit? ||
+      !CurrentDomain.module_available?(:dataset_append) %>;
+    blist.sidebarHidden.edit.replace = <%= !@view.is_blist? ||
+      !@view.can_edit? ||
+      !CurrentDomain.module_available?(:dataset_refresh) %>;
+
     <%# Filter pane %>
     blist.sidebarHidden.filter = blist.sidebarHidden.filter || {};
     blist.sidebarHidden.filter.filterDataset = <%= @view.is_alt_view? %>;

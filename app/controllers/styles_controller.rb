@@ -183,7 +183,7 @@ protected
             # gradient
             next unless value.first.is_a? Hash # hack to accomodate current header color format
 
-            result += get_gradient_definition(path + key, value.clone())
+            result += get_gradient_definition(path + key.to_s, value.clone())
             colors = value.map {|s| s['color']}.reverse
             rev = []
             value.each_with_index do |s, i|

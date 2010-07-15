@@ -135,12 +135,8 @@ module Displays::Config
             ]
         },
 
-        'intensitymap' => {'display' => 'google', 'library' => 'google.visualization.IntensityMap',
-                           'hidden' => true},
-
-        'geomap' => {'display' => 'google', 'library' => 'google.visualization.GeoMap',
-                     'hidden' => true},
-
+        'intensitymap' => {'display' => 'map', 'hidden' => true},
+        'geomap' => {'display' => 'map', 'hidden' => true},
 
         # Fusion maps types
         'FCMap_Afghanistan' => { 'display' => 'fusion', 'hidden' => true },

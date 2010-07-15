@@ -22,6 +22,26 @@ blist.dataset.map.convertLegacy = function(view)
     view.displayFormat = view.displayFormat || {};
     view.displayFormat.plot = view.displayFormat.plot || {};
 
+    if (view.displayType == 'geomap' || view.displayType == 'intensitymap')
+    {
+        view.displayType = 'map';
+        view.displayFormat.type = 'heatmap';
+        var region = view.displayFormat.region || '';
+        view.displayFormat.heatmap = {
+            type: region.toLowerCase().match(/^usa?$/) ? 'state' : 'countries'
+        };
+
+        var columns = _.select(view.columns, function(column)
+            { return column.dataTypeName != "meta_data"; });
+
+        _.each(['locationId', 'quantityId', 'descriptionId', 'redirectId'],
+            function (key, index)
+            {
+                if (index < columns.length)
+                { view.displayFormat.plot[key] = columns[index].tableColumnId; }
+            });
+    }
+
     if (isOldest)
     {
         var cols = _(view.columns).chain().select(function(c)

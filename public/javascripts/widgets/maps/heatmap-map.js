@@ -1,13 +1,14 @@
 (function($)
 {
-    var NUM_SEGMENTS = 10;
+    var NUM_SEGMENTS = 6;
 
     var MAP_TYPE = {
         'countries': {
             'layerPath': "World_Topo_Map/MapServer/6",
             'fieldsReturned': ["NAME"],
             'where': function (mapObj, config)
-                { return "TYPE = 'Country'"; }
+                { return "TYPE = 'Country'"; },
+            'zoom' : 1
         },
         'state': {
             'layerPath': "Demographics/USA_Tapestry/MapServer/4",
@@ -87,7 +88,7 @@
                 var lowColor  = config.colors && config.colors.low  ? $.hexToRgb(config.colors.low)
                                                                     : { r: 209, g: 209, b: 209};
                 var highColor = config.colors && config.colors.high ? $.hexToRgb(config.colors.high)
-                                                                    : { r: 0, g: 255, b: 0};
+                                                                    : { r: 44, g: 119, b: 14};
                 var colorStep = {
                     r: Math.round((highColor.r-lowColor.r)/NUM_SEGMENTS),
                     g: Math.round((highColor.g-lowColor.g)/NUM_SEGMENTS),
@@ -101,10 +102,16 @@
                         new dojo.Color([lowColor.r+(colorStep.r*i),
                                         lowColor.g+(colorStep.g*i),
                                         lowColor.b+(colorStep.b*i),
-                                        0.8])
+                                        config.hideLayers ? 1.0 : 0.8])
                     );
                 }
             }
+
+            mapObj.startLoading();
+            // Queries only need to be run once.
+            // renderData actions happening during a query can be ignored,
+            // because addFeatureSetToMap uses mapObj._rows for processing.
+            if (mapObj._runningQuery) { return; }
 
             if (_.isUndefined(mapObj._featureSet))
             { doQueries(mapObj, config); }
@@ -136,6 +143,7 @@
         query.where = MAP_TYPE[config.type].where(mapObj, config);
         new esri.tasks.QueryTask("http://server.arcgisonline.com/ArcGIS/rest/services/" + MAP_TYPE[config.type].layerPath)
             .execute(query, function(featureSet) { addFeatureSetToMap(mapObj, featureSet, config); });
+        mapObj._runningQuery = true;
     };
 
     var addFeatureSetToMap = function(mapObj, featureSet, config)
@@ -144,6 +152,8 @@
         { mapObj._featureSet = featureSet; }
         else
         { featureSet = mapObj._featureSet; }
+
+        mapObj._runningQuery = false;
 
         _.each(mapObj._rows, function(row)
         {
@@ -232,10 +242,13 @@
             }
         });
 
-        if (MAP_TYPE[config.type].center && MAP_TYPE[config.type].zoom)
-        { mapObj.map.centerAndZoom(MAP_TYPE[config.type].center, MAP_TYPE[config.type].zoom); }
+        var center = MAP_TYPE[config.type].center ? MAP_TYPE[config.type].center : mapObj.map.extent.getCenter();
+        if (MAP_TYPE[config.type].zoom)
+        { mapObj.map.centerAndZoom(center, MAP_TYPE[config.type].zoom); }
         else
         { mapObj.map.setExtent(buildMinimumExtentFromSet(extents), true); }
+
+        mapObj.finishLoading();
     };
 
     var findFeatureWithPoint = function(mapObj, datum, featureSet)
@@ -264,6 +277,8 @@
         else if (mapObj._locCol.renderTypeName == 'text')
         {
             point = datum[mapObj._locCol.dataIndex];
+            if (point.substr(0, 3) == 'US-')
+            { point = point.substr(3, 2); }
         }
 
         return _.detect(featureSet.features, function(feature)

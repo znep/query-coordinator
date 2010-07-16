@@ -114,7 +114,7 @@
                                         'subject': 'You must choose a subject for this message.',
                                         'message': 'The message must have a body.',
                                         'from_address': {
-                                            required: 'Your email address is required.',
+                                            required: 'Your email address is required.'
                                         }
                                     },
                                     errorPlacement: function($error, $element)

@@ -117,7 +117,7 @@
             .attr('name', 'emailRecipient' + emailCount);
 
         $emailField.rules('add', {
-            email: true,
+            email: true
         }); 
 
         if (friends && friends.length > 0)

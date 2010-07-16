@@ -251,6 +251,8 @@
 
         input[type="radio"], .uniform.radio
           margin-right: 0.5em
+          .ie7 &
+            display: inline
 
         .ui-slider
           margin-left: 0.5em
@@ -263,9 +265,11 @@
           width: 12.1em
 
         .uploader
-          width: 15.2em
+          width: 16.06em
           .filename
-            width: 6.72em
+            width: 7.5em
+            .ie8 &
+              width: 7.48em
             input
               @include box-shadow-none
               background-color: transparent
@@ -286,12 +290,16 @@
         .columnSelector
           @include text-hiding
           background-image: url(/stylesheets/images/controls/column_select_sprite.png)
+          display: inline-block
           height: 20px
           margin-bottom: 3px
           margin-right: 0.5em
           position: relative
           vertical-align: bottom
           width: 20px
+          .ie7 &
+            display: block
+            float: left
 
           &.inProcess
             background-position: 0 -20px
@@ -343,28 +351,30 @@
           padding-top: 0
 
         .radioBlock
-          width: 16.27em
+          width: 15.41em
           label
             display: inline-block
             font-size: 1.2em
             font-weight: normal
-            margin-right: 0
+            margin:
+              left: 0
+              right: 0
             padding-left: 0
             vertical-align: bottom
-            width: 11.5em
+            width: 10.9em
 
             .uniform.selector
               font-size: 1em
 
             select, input
               font-size: 1em
-              width: 10.75em
+              width: 10.15em
 
           .columnSelect .uniform.radio
             margin-bottom: 3px
 
           .columnSelect label select.hasTable
-            width: 9.3333em
+            width: 8.7333em
 
           label span.error
             font-size: 0.8333em

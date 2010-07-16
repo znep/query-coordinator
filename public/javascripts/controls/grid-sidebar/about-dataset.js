@@ -115,7 +115,6 @@
                                         'message': 'The message must have a body.',
                                         'from_address': {
                                             required: 'Your email address is required.',
-                                            email:  'That does not look like a valid email address.'
                                         }
                                     },
                                     errorPlacement: function($error, $element)

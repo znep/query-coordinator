@@ -3,7 +3,6 @@
     blist.namespace.fetch('blist.dialog');
     var $form = $('#emailDatasetForm');
     var $flash = $('#emailDatasetMessage');
-    var emailValidationMessage = 'That does not look like a valid email address.';
     var friends = false;
 
     // Awesomecomplete's way of rendering result
@@ -79,6 +78,7 @@
 
     $.live('.emailDatasetDialog .removeLink', 'click', function(e)
     {
+        e.preventDefault();
         $(this).closest('.emailLine').remove();
         emailCount --;
         if (emailCount < 10)
@@ -106,14 +106,18 @@
             .find('input').val('').end()
             .find('.removeLink').removeClass('hiddenLink').end();
 
+        var $select = $copy.find('.recipientRole');
+        $copy.find('.selector.uniform').replaceWith($select);
+
         $copy.appendTo($form);
+
+        $select.uniform();
 
         var $emailField = $copy.find('.emailRecipient')
             .attr('name', 'emailRecipient' + emailCount);
 
         $emailField.rules('add', {
             email: true,
-            messages: { email: emailValidationMessage }
         }); 
 
         if (friends && friends.length > 0)
@@ -126,11 +130,10 @@
     // Use lazy validation, otherwise it interferes with the autocomplete
     $form.validate({
         rules: {
-            emailAddress: 'email'
+          emailRecipient0: 'email'
         },
-        messages: {
-            email: emailValidationMessage
-        },
+        errorPlacement: function($error, $element)
+        { $error.appendTo($element.closest('.emailLine')); },
         onkeyup: false,
         onfocusout: false,
         focusInvalid: false

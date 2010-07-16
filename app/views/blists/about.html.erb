@@ -357,7 +357,10 @@
                   {'text' => 'XML Data (.xml)', 'external' => true,
                   'href' => "/views/#{@view.id}/rows.xml?accessType=DOWNLOAD"},
                   {'text' => 'JavaScript Object Notation (.json)', 'external' => true,
-                  'href' => "/views/#{@view.id}/rows.json?accessType=DOWNLOAD"}]
+                  'href' => "/views/#{@view.id}/rows.json?accessType=DOWNLOAD"},
+                  {'text' => 'RDF (.rdf)', 'external' => true,
+                  'href' => "/views/#{@view.id}/rows.rdf?accessType=DOWNLOAD"}
+                  ]
               else
                 menu_items = [
                   {'text' => 'Download File', 'external' => true,

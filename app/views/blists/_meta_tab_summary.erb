@@ -246,6 +246,8 @@
 <%- end -%>
 
 
+
+ <%- if view.is_tabular? -%>
  <dl class="summaryList <%= allow_edit ? 'actionList' : '' %>">
       <dt>
         Semantic Class
@@ -325,6 +327,7 @@
         <%- end -%>
       </dd>
   </dl>
+<%- end -%>
 
 <div class="attributionSummary">
   <dl class="summaryList <%= allow_edit ? 'actionList' : '' %>">

@@ -72,7 +72,12 @@ $(function()
                     filterForm: '#searchButton .searchForm',
                     clearFilterItem: '#searchButton .clearSearch',
                     isInvalid: blist.display.isInvalid,
-                    validViewCallback: datasetPageNS.updateValidView
+                    validViewCallback: datasetPageNS.updateValidView,
+                    addColumnCallback: function(e, parId)
+                    {
+                        sidebar.addPane('edit.addColumn', {parentId: parId});
+                        sidebar.show('edit.addColumn');
+                    }
                 });
         }
         else if (blist.display.invokeVisualization)

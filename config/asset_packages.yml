@@ -266,6 +266,7 @@ javascripts:
   - controls/stars
   - controls/grid-sidebar/base-sidebar
   - controls/grid-sidebar/about-dataset
+  - controls/grid-sidebar/add-column
   - controls/grid-sidebar/append-replace
   - controls/grid-sidebar/calendar-create
   - controls/grid-sidebar/chart-create
@@ -274,7 +275,6 @@ javascripts:
   - controls/grid-sidebar/feed
   - controls/grid-sidebar/filter-dataset
   - controls/grid-sidebar/form-create
-  - controls/grid-sidebar/location-create
   - controls/grid-sidebar/map-create
   - controls/grid-sidebar/print-dataset
   - controls/grid-sidebar/share-dataset

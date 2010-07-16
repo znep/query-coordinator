@@ -2209,6 +2209,28 @@
                     .trigger('resetToDefault');
             });
 
+            $container.find('[data-selectOption]:not([data-linkedField])')
+            .each(function()
+            {
+                var $field = $(this);
+                var selOpt = sidebarObj._selectOptions[$field
+                    .attr('data-selectOption')];
+                if (!_.isFunction(selOpt)) { return; }
+
+                var curValue = JSON.parse(
+                    $field.attr('data-defaultValue') || '""');
+                var newOpts = selOpt(data);
+                $field.find('option:not(.prompt)').remove();
+                $field.attr('disabled', $.isBlank(newOpts));
+
+                _.each(newOpts || [], function(o)
+                {
+                    $field.append($.tag(renderSelectOption(o, curValue)));
+                });
+                $field.change();
+                uniformUpdate();
+            });
+
             $container.find(':input')
                 .change(function()
                 { _.defer(function() { checkForm(sidebarObj); }); })

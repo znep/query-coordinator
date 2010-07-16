@@ -49,7 +49,7 @@
                             returnValue = valueManager.get(value);
                         }
                         else if (this.tagName == 'TEXTAREA') {
-                            returnValue = $this.text();
+                            returnValue = $this.val();
                             if (returnValue === '')
                             {
                                 // Convert empty textarea elements to a "null" value

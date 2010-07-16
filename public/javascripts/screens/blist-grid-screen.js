@@ -359,7 +359,13 @@ $(function ()
                 filterForm: '#lensContainer .headerBar form',
                 clearFilterItem: '#lensContainer .headerBar form .clearSearch',
                 isInvalid: blist.display.isInvalid,
-                validViewCallback: blistGridNS.updateValidView
+                validViewCallback: blistGridNS.updateValidView,
+                addColumnCallback: function (e, parId)
+                {
+                    var l = '/datasets/' + blistGridNS.viewId + '/columns/new';
+                    if (!$.isBlank(parId)) { l += '?parent=' + parId; }
+                    $('<a href="' + l + '" rel="modal" />').click();
+                }
             });
         $('#gridSidebar').gridSidebar({dataGrid: $('#dataGrid')[0],
             modalHiddenSelector: '#lensContainer .headerBar, #infoPane'});

@@ -30,6 +30,7 @@
         defaults:
         {
             accessType: 'DEFAULT',
+            addColumnCallback: function() {},
             autoHideClearFilterItem: true,
             clearFilterItem: null,
             clearTempViewCallback: function () {},
@@ -115,9 +116,7 @@
                 $.live('#' + $datasetGrid.attr('id') + ' .blist-table-row-handle', 'mouseover',
                         function (e) { hookUpRowMenu(datasetObj, this, e); });
                 $.live('#' + $datasetGrid.attr('id') + ' .add-column', "click",
-                        function (e) {
-                          $('<a href="/datasets/' + datasetObj.settings.viewId + '/columns/new" rel="modal" />').click();
-                        });
+                    datasetObj.settings.addColumnCallback);
 
                 $.live('#' + $datasetGrid.attr('id') + ' .drillDown', 'click',
                     function(e){
@@ -1066,7 +1065,7 @@
         {
             event.preventDefault();
             // Display the add column dialog.
-            $('<a href="/datasets/' + model.meta().view.id + '/columns/new?parent=' + column.id + '" rel="modal" />').click();
+            datasetObj.settings.addColumnCallback(event, column.id);
         }
     };
 

@@ -815,6 +815,8 @@ blist.namespace.fetch('blist.data.types');
 
         text: {
             title: 'Plain Text',
+            priority: 1,
+            createable: true,
             renderGen: renderGenEscapedText,
             sortGen: sortGenText,
             filterRender: renderFilterEscapedText,
@@ -829,6 +831,8 @@ blist.namespace.fetch('blist.data.types');
 
         html: {
             title: 'Formatted Text',
+            priority: 2,
+            createable: true,
             renderGen: renderGenHtml,
             filterRender: renderFilterText,
             sortGen: sortGenText,
@@ -842,6 +846,8 @@ blist.namespace.fetch('blist.data.types');
 
         number: {
             title: 'Number',
+            priority: 3,
+            createable: true,
             renderGen: renderGenNumber,
             sortGen: sortGenNumeric,
             filterRender: renderFilterNumber,
@@ -856,6 +862,8 @@ blist.namespace.fetch('blist.data.types');
 
         date: {
             title: 'Date & Time (with timezone)',
+            priority: 7,
+            createable: true,
             cls: 'date',
             renderGen: renderGenDate,
             sortGen: sortGenNumeric,
@@ -872,6 +880,8 @@ blist.namespace.fetch('blist.data.types');
 
         calendar_date: {
             title: 'Date & Time',
+            priority: 6,
+            createable: true,
             cls: 'date',
             renderGen: renderGenDate,
             sortGen: sortGenNumeric,
@@ -897,6 +907,8 @@ blist.namespace.fetch('blist.data.types');
 
         photo: {
             title: 'Photo (Image)',
+            priority: 16,
+            createable: true,
             renderGen: renderGenPhoto,
             cls: 'photo',
             filterConditions: filterConditions.blob,
@@ -905,6 +917,8 @@ blist.namespace.fetch('blist.data.types');
 
         money: {
             title: 'Money',
+            priority: 4,
+            createable: true,
             renderGen: renderGenMoney,
             sortGen: sortGenNumeric,
             filterRender: renderFilterMoney,
@@ -949,6 +963,8 @@ blist.namespace.fetch('blist.data.types');
 
         phone: {
             title: 'Phone',
+            priority: 14,
+            createable: true,
             cls: 'phone',
             renderGen: renderGenPhone,
             sortGen: sortGenText,
@@ -963,6 +979,8 @@ blist.namespace.fetch('blist.data.types');
 
         checkbox: {
             title: 'Checkbox',
+            priority: 11,
+            createable: true,
             renderGen: renderGenCheckbox,
             sortGen: sortGenNumeric,
             filterRender: renderFilterCheckbox,
@@ -977,6 +995,8 @@ blist.namespace.fetch('blist.data.types');
 
         flag: {
             title: 'Flag',
+            priority: 12,
+            createable: true,
             renderGen: renderGenFlag,
             sortGen: sortGenText,
             filterRender: renderFilterFlag,
@@ -989,6 +1009,8 @@ blist.namespace.fetch('blist.data.types');
 
         stars: {
             title: 'Star',
+            priority: 13,
+            createable: true,
             cls: 'stars',
             renderGen: renderGenStars,
             sortGen: sortGenNumeric,
@@ -1005,6 +1027,8 @@ blist.namespace.fetch('blist.data.types');
 
         percent: {
             title: 'Percent',
+            priority: 5,
+            createable: true,
             cls: 'percent',
             renderGen: renderGenPercent,
             sortGen: sortGenNumeric,
@@ -1019,6 +1043,8 @@ blist.namespace.fetch('blist.data.types');
 
         url: {
             title: 'Website URL',
+            priority: 9,
+            createable: true,
             renderGen: renderGenURL,
             sortPreprocessor: sortHtmlPrepro,
             filterRender: renderFilterURL,
@@ -1033,6 +1059,8 @@ blist.namespace.fetch('blist.data.types');
 
         document: {
             title: 'Document',
+            priority: 17,
+            createable: true,
             renderGen: renderGenDocument,
             filterConditions: filterConditions.blob,
             deleteable: true,
@@ -1049,6 +1077,8 @@ blist.namespace.fetch('blist.data.types');
 
         location: {
             title: 'Location',
+            priority: 8,
+            createable: true,
             renderGen: renderGenLocation,
             deleteable: true,
             isObject: true,
@@ -1060,6 +1090,7 @@ blist.namespace.fetch('blist.data.types');
 
         tag: {
             title: 'Row Tag',
+            priority: 19,
             renderGen: renderGenTags,
             filterRender: renderFilterText,
             filterText: true,
@@ -1069,6 +1100,8 @@ blist.namespace.fetch('blist.data.types');
 
         email: {
             title: 'Email',
+            priority: 10,
+            createable: true,
             renderGen: renderGenEmail,
             sortGen: sortGenText,
             filterRender: renderFilterText,
@@ -1082,6 +1115,9 @@ blist.namespace.fetch('blist.data.types');
 
         nested_table: {
             title: 'Nested Table',
+            priority: 18,
+            createable: true,
+            excludeInNestedTable: true,
             renderGen: renderGenText,
             deleteable: true
         },
@@ -1098,6 +1134,8 @@ blist.namespace.fetch('blist.data.types');
         },
         drop_down_list: {
             title: 'Multiple Choice',
+            priority: 15,
+            createable: true,
             renderGen: renderGenPicklist,
             sortPreprocessor: sortPicklistPrepro,
             filterRender: renderFilterPicklist,

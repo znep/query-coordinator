@@ -159,7 +159,7 @@
 
 <div class="emailDatasetDialog modalDialog<%= ' ownerDialog' if @view.owned_by?(current_user) %>">
   <a href="#close" class="jqmClose modalDialogClose">Close</a>
-  <h2>Email this Dataset</h2>
+  <h2><span class='emailDatasetHint'>Email</span> this Dataset</h2>
   <div class="emailSuccess">
     <div class="flash notice">
       Your email has been successfully sent.
@@ -173,24 +173,28 @@
   </div>
   <div class="emailDatasetContent">
     <div class="flash" id="emailDatasetMessage"></div>
-    <form class='commonForm' id='emailDatasetForm' action='/views/<%= @view.id %>.json?method=sendAsEmail' method='post'>
-      <p>Share this dataset with</p>
-      <div class="emailLine">
-        <a href="#remove" title="Remove" class="removeLink delete hiddenLink">
-          <span class="icon"></span>
+    <p>Share this dataset with the following email addresses and users</p>
+    <div class="emailFormContent">
+      <form class='commonForm' id='emailDatasetForm' action='/views/<%= @view.id %>.json?method=sendAsEmail' method='post'>
+        <div class="emailLine">
+          <a href="#remove" title="Remove" class="removeLink delete hiddenLink">
+            <span class="icon"></span>
+          </a>
+          <input type="hidden" class="recipientUid" />
+          <div class="textWrapper">
+            <input type="text" class="emailRecipient email" name="emailRecipient0" />
+          </div>
+          <%- if @view.owned_by?(current_user) -%>
+            <%= select_tag 'role', options_for_select(['Viewer', 'Contributor', 'Owner']),
+                  :class => 'recipientRole', :id => nil %>
+          <%- end -%>
+        </div>
+      </form>
+      <div class="addMoreLine">
+        <a class="button addMoreRecipientsButton add" href="#add">
+          <span class="icon"></span>Add More
         </a>
-        <input type="hidden" class="recipientUid" />
-        <input type="text" class="emailRecipient email" name="emailRecipient0" />
-        <%- if @view.owned_by?(current_user) -%>
-          <%= select_tag 'role', options_for_select(['Viewer', 'Contributor', 'Owner']),
-                :class => 'recipientRole', :id => nil %>
-        <%- end -%>
       </div>
-    </form>
-    <div class="addMoreLine">
-      <a class="button addMoreRecipientsButton add" href="#add">
-        <span class="icon"></span>Add More
-      </a>
     </div>
     <ul class="actions clearfix">
       <li>
@@ -200,7 +204,7 @@
       </li>
       <li>
         <a href="#email" class="button" id="emailSubmitButton">
-          <span class="icon"></span>Email
+          <span class="icon"></span><span class='emailDatasetHint'>Email</span>
         </a>
       </li>
     </ul>
@@ -296,6 +300,15 @@
 
     <%# Saved views %>
     blist.sidebarHidden.savedViews = <%= !@view.is_tabular? %>;
+
+    <%# Edit pane %>
+    blist.sidebarHidden.edit = blist.sidebarHidden.edit || {};
+    blist.sidebarHidden.edit.append = <%= !@view.is_blist? ||
+      !@view.can_edit? ||
+      !CurrentDomain.module_available?(:dataset_append) %>;
+    blist.sidebarHidden.edit.replace = <%= !@view.is_blist? ||
+      !@view.can_edit? ||
+      !CurrentDomain.module_available?(:dataset_refresh) %>;
 
     <%# Filter pane %>
     blist.sidebarHidden.filter = blist.sidebarHidden.filter || {};

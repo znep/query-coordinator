@@ -79,12 +79,6 @@ $(function()
         { $dataGrid.visualization(); }
     }
 
-    $.gridSidebar.registerConfig({
-        name: 'edit',
-        title: 'Edit',
-        subtitle: 'Edit and manage this dataset'
-    });
-
     // sidebar and sidebar tabs
     sidebar = $('#gridSidebar').gridSidebar({
         dataGrid: $dataGrid[0],

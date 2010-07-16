@@ -562,6 +562,7 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
     // Force a window resize.
     blist.util.sizing.cachedInfoPaneHeight = $("#infoPane").height();
     blist.common.forceWindowResize();
+    blist.meta.setUpRdfEdit();
 };
 
 /* Functions for sidebar related to blists */

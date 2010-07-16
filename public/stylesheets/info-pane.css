@@ -1396,6 +1396,29 @@
 }
 
 
+/* handle combo which has custom option to handle custom value */
+.summaryList .combo_button_edit:not(.hide)
+{
+    display:inline;
+    float:left;
+}
+.summaryList .comboToggle
+{
+    display:inline;
+}
+
+.summaryList .comboToggle li
+{
+    margin-right:5px;
+}
+
+.summaryList .combo_button_edit
+{
+    float: left;
+    margin-right: 10px;
+}
+
 /*** END: single info activity tab ***/
 
 /*** END: content ***/
+

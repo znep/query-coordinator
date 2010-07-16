@@ -52,3 +52,33 @@ blist.meta.updateMetaTab = function(tabKey, viewId, onTabSuccess)
         });
     }
 };
+
+blist.meta.setUpRdfEdit = function()
+{
+    var $rdfClassValidator = $("#form_rdf_class").validate({
+        rules: {
+            "view_metadata_customRdfClass": {
+                url: true
+            }
+        },
+        showErrors: function(mapErr, arErr)
+        {
+            var $el = $("#view_metadata_customRdfClass");
+            // only show error (using default handler) if
+            // combo box use custom value.  If it picks from a list,
+            // it is always valid.
+            if ($el.is(':visible'))
+            {
+                this.defaultShowErrors();
+            }
+        },
+        errorPlacement: function(error, element) {
+            // if combo shows, we do not care about the hidden field
+            if (element.is(':visible'))
+            {
+                error.appendTo(element.parent());
+            }
+        }
+    });
+    $("#form_rdf_class").data('validator', $rdfClassValidator);
+}

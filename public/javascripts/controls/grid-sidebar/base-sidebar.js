@@ -2,7 +2,6 @@
 {
     $.validator.addMethod('data-notEqualTo', function(value, element, param)
     {
-        if (this.optional(element)) { return true; }
         var isEqual = false;
         var $e = $(element);
         if (!$e.is(':visible')) { return true; }
@@ -23,10 +22,16 @@
     // a disabled section appearing
     $.validator.addMethod('data-onlyIfInput', function(value, element, param)
     {
-        if (this.optional(element)) { return true; }
         return _.isNull(element.className.match(/\bsectionDisabled-/));
     },
     'This value is invalid');
+
+    // Special validator for validating required file types
+    $.validator.addMethod('data-requiredTypes', function(value, element, param)
+    {
+        return $.isBlank(param);
+    },
+    $.format('{0} file is required'));
 
 
     /* Config hash:
@@ -97,6 +102,12 @@
                       - 'color' is a color picker.  If you add lineClass
                           'colorCollapse', this will display on the right end
                           of the following line
+                      - 'file' is a file picker.  It will return an object
+                          of type AjaxUpload instead of a normal value -- you
+                          must then manually call submit on it, as appropriate.
+                          It has the following custom options:
+                          + action: URL for form action to upload to
+                          + fileTypes: single or array of required file types
                       - 'group' is a special option that only needs an options
                           array of subfields.  Also accepts extraClass
                       - 'repeater' is a special option that allows the user
@@ -832,6 +843,10 @@
                         if (_.isFunction(customValue))
                         { value = customValue(sidebarObj, $input); }
                     }
+                    else if ($input.is('.fileChooser :input'))
+                    {
+                        value = $input.closest('.fileChooser').data('ajaxupload');
+                    }
                     return value;
                 };
 
@@ -980,6 +995,11 @@
                         JSON.parse($input.attr('data-defaultValue') || '""') ||
                         null;
                     $input.value(defValue);
+                    if ($input.is('.fileChooser :input'))
+                    {
+                        $input.closest('.fileChooser')
+                            .data('ajaxupload')._input.value = '';
+                    }
                     // Fire events to make sure uniform controls are updated,
                     // and text prompts are reset
                     _.defer(function()
@@ -1455,6 +1475,19 @@
                     style: {'background-color': defColor}});
                 contents.push($.extend(commonAttrs(item),
                     {tagName: 'input', type: 'hidden', value: defColor}));
+                break;
+
+            case 'file':
+                contents.push({tagName: 'div', 'class': ['uploader', 'uniform',
+                        'fileChooser'],
+                    'data-fileTypes': $.htmlEscape(JSON.stringify(
+                        $.makeArray(args.item.fileTypes))),
+                    'data-action': args.item.fileAction,
+                    contents: [{tagName: 'span', 'class': 'filename',
+                        contents: $.extend(commonAttrs(args.item),
+                            {tagName: 'input', type: 'text', readonly: true})},
+                        {tagName: 'span', 'class': 'action',
+                            contents: 'Choose'}]});
                 break;
 
             case 'custom':
@@ -2046,6 +2079,34 @@
                     $t.data('colorpicker-color', $t.next(':input').val());
                 });
 
+            $container.find('.fileChooser').each(function()
+            {
+                var $f = $(this);
+                var $input = $f.find('.filename :input');
+
+                var ftOrig = JSON.parse($f.attr('data-fileTypes') || '[]');
+                var ft = _.map(ftOrig, function(t) { return t.toLowerCase(); });
+
+                $f.data('ajaxupload', new AjaxUpload($f, {
+                    action: $f.attr('data-fileAction'),
+                    autoSubmit: false,
+                    name: $f.attr('id') + '_ajaxupload',
+                    responseType: 'json',
+                    onChange: function(filename, ext)
+                    {
+                        $input.val(filename);
+                        if (ft.length > 0 && ($.isBlank(ext) ||
+                            !_.include(ft, ext[0].toLowerCase())))
+                        {
+                            $input.attr('data-requiredTypes',
+                                $.arrayToSentence(ftOrig, 'or', ',', true));
+                        }
+                        else { $input.attr('data-requiredTypes', ''); }
+                        _.defer(function() { $input.change(); });
+                    }
+                }));
+            });
+
             $container.find('.line.repeater').each(function()
             { checkRepeaterMaxMin($(this)); });
 
@@ -2432,7 +2493,7 @@
             sidebarObj._currentWizardLeft = $item.offset().left;
             sidebarObj._currentWizardTop = $item.offset().top;
             sidebarObj._$mainWizardItem = $mainItem;
-            $item.find(':text, textarea').focus();
+            $item.find(':text, textarea').filter(':not([readonly])').focus();
         };
 
         if (newScroll != origScroll)

@@ -209,7 +209,11 @@ module BlistsHelper
             {'text' => 'as XML', 'external' => true, 'class' => 'xml',
             'link_class' => is_widget ? 'noInterstitial' : '',
             'if' => (theme.nil? || theme[:menu][:download_menu][:xml]),
-            'href' => "/views/#{view.id}/rows.xml?accessType=DOWNLOAD"}
+            'href' => "/views/#{view.id}/rows.xml?accessType=DOWNLOAD"},
+            {'text' => 'as RDF', 'external' => true, 'class' => 'xml',
+            'link_class' => is_widget ? 'noInterstitial' : '',
+            'if' => (theme.nil? || theme[:menu][:download_menu][:rdf]),
+            'href' => "/views/#{view.id}/rows.rdf?accessType=DOWNLOAD"}
           ]}}
     end
 

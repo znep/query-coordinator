@@ -71,7 +71,7 @@
 
     .paneSelect
       background-color: #eeeeee
-      border: 1px solid #cccccc
+      border-bottom: 1px solid #cccccc
       margin-bottom: 0.5em
       padding: 0.25em 0.75em
 
@@ -99,8 +99,8 @@
       .mainTitleBlock
         @include vertical-gradient($sidebar_edit_tab_color_top, #e3b000)
       .paneSelect
-        background-color: #e1f4fd
-        border-color: #afe5ff
+        background-color: #fff0a0
+        border-color: #f0d060
 
     &#gridSidebar_outer_filter
       .mainTitleBlock
@@ -261,6 +261,20 @@
             left: -2px
             top: -3px
           width: 12.1em
+
+        .uploader
+          width: 15.2em
+          .filename
+            width: 6.72em
+            input
+              @include box-shadow-none
+              background-color: transparent
+              border: none
+              color: inherit
+              font-size: 1em
+              width: 100%
+          .action
+            width: 5em
 
         span.error
           color: #ff0000

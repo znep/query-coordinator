@@ -22,7 +22,13 @@
         var socrataMap = $(this[0]).data("socrataVisualization");
         if (!socrataMap)
         {
-            var mapClass = $.socrataMap[options.displayFormat.type || 'google'];
+            var mapType;
+            if (_.include(['geomap', 'intensitymap'], blist.display.view.displayType))
+            { mapType = 'heatmap'; }
+            else
+            { mapType = options.displayFormat.type || 'google'; }
+
+            var mapClass = $.socrataMap[mapType];
             if (mapClass !== null && mapClass !== undefined)
             {
                 socrataMap = new mapClass(options, this[0]);
@@ -378,6 +384,7 @@
 
     var getColumns = function(mapObj, view)
     {
+        view = blist.dataset.map.convertLegacy(view);
         if (view.displayFormat === undefined ||
             (view.displayFormat.plot === undefined &&
              view.displayFormat.latitudeId === undefined))

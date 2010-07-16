@@ -71,24 +71,3 @@ select.prompt option.prompt
 {
     width: 30em;
 }
-
-.summaryList .combo_button_edit:not(.hide)
-{
-    display:inline;
-    float:left;
-}
-.summaryList .comboToggle
-{
-    display:inline;
-}
-
-.summaryList .comboToggle li
-{
-    margin-right:5px;
-}
-
-.summaryList .combo_button_edit
-{
-    float: left;
-    margin-right: 10px;
-}

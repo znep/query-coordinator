@@ -1,0 +1,58 @@
+/*#mainNav a {
+  color: red;
+}
+
+*/
+/*
+html {
+  font-family:Arial,Helvetica,sans-serif
+} 
+*/
+
+
+body {
+  background-color: #999999;
+  font-family: Arial,Helvetica,sans-serif;
+  background-image: none;
+}
+
+body,  h2,  .pageBlockIntro p,  .tabList a, .tabList .innerWrapper {
+  color: #666;
+}
+
+#mainLogo {
+  top: 0px;
+}
+/*fix this height thing*/
+#header {
+  background: white;
+  height: 50px;
+}
+/*
+body.home #mainNav li span{
+body.home li.home span,
+body.community li.community span,
+body.discover  li.discover span
+  color: #666666;
+}
+
+*/
+body.home #mainNav li.home span,
+body.community #mainNav li.community span,
+body.discover #mainNav li.discover span
+{
+  color: white;
+
+}
+
+body #mainNav li span {
+  color: #666666;
+}
+
+body li span:hover {
+  color: #0d9fc4;
+}
+
+#home {
+  padding-top: 5px;
+}

@@ -113,7 +113,10 @@
                                         'type'   : 'You must select a purpose for this message.',
                                         'subject': 'You must choose a subject for this message.',
                                         'message': 'The message must have a body.',
-                                        'from_address': 'Your email address is required.'
+                                        'from_address': {
+                                            required: 'Your email address is required.',
+                                            email:  'That does not look like a valid email address.'
+                                        }
                                     },
                                     errorPlacement: function($error, $element)
                                     { $error.appendTo($element.closest('.lined')); }

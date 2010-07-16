@@ -10,7 +10,8 @@ blist.dataset.columnForTCID = function(view, tcId)
 };
 
 var VIZ_TYPES = ['chart', 'annotatedtimeline', 'imagesparkline', 'areachart',
-    'barchart', 'columnchart', 'linechart', 'piechart', 'intensitymap', 'geomap'];
+    'barchart', 'columnchart', 'linechart', 'piechart'];
+var MAP_TYPES = ['geomap', 'intensitymap'];
 
 /* The display type string is not always the simplest thing -- a lot of munging
  * goes on in Raisl; we roughly duplicate it here */
@@ -27,6 +28,9 @@ blist.dataset.getDisplayType = function(view)
 
     if (_.include(VIZ_TYPES, type) || type.startsWith('FCMap_'))
     { type = 'visualization'; }
+
+    if (_.include(MAP_TYPES, type))
+    { type = 'map'; }
 
     if (type == 'blist' && (_.isUndefined(view.flags) ||
         !_.include(view.flags, 'default')))

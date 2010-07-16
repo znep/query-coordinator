@@ -6,7 +6,7 @@ columnRdfNS.renderer = function(column, $container)
         '<div><table colspacing="0"><tbody>' +
 
         '<tr><td class="labelColumn">' +
-        '<label for="columnProperties_rdf">Properties:</label>' +
+        '<label for="columnProperties_rdf">Property:</label>' +
         '</td><td class="fieldColumn">' +
         '<div class="blist-combo-wrapper rdfTerms">' +
         '<div id="columnProperties_rdf"></div></div>' +

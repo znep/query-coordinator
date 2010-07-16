@@ -1,16 +1,10 @@
-body 
-{ 
-    background-color: #002042;
-    background-image: none;
+body {
+background-color:#002042;
+background-image:none;
 }
-.footerContainer,
-#header
-{
-    background-image: none;
-    background: #002042;
+.footerContainer, #header {
+background:none repeat scroll 0 0 #002042;
 }
-#header .userNav a,
-#footer li a
-{
-    color: #fff;
+#header .userNav a, #footer li a, #footer .copyright {
+color:#FFFFFF;
 }

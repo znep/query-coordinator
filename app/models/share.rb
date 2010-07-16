@@ -1,4 +1,5 @@
 class Share
+  cattr_accessor :types
   VIEWER = 'Viewer'
   CONTRIBUTOR = 'Contributor'
   OWNER = 'Owner'
@@ -25,4 +26,6 @@ class Share
     end
     out
   end
+
+  @@types = [VIEWER, CONTRIBUTOR, OWNER]
 end

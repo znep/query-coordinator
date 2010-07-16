@@ -181,6 +181,24 @@
                 {
                     $form.closest('.emailDatasetContent').slideToggle();
                     $('.emailSuccess').slideToggle();
+
+                    // HACK: we don't get grant data back from the server,
+                    // so manually pull the view JSON for the sharing pane to
+                    // update itself with
+                    $.ajax({
+                        url: '/views/' + blist.display.view.id + '.json',
+                        dataType: 'json',
+                        success: function(responseData)
+                        {
+                            blist.display.view.grants = responseData.grants;
+
+                            // Update the sharing pane to reflect
+                            if ($form.closest('.emailDatasetDialog').hasClass('ownerDialog'))
+                            { $('#gridSidebar').gridSidebar().refresh('edit.shareDataset'); }
+                        }
+                    });
+
+
                 },
                 error: function()
                 {

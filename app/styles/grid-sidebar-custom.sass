@@ -379,3 +379,63 @@
         padding-left: 0
       .ie7 & .checker.uniform
         display: inline
+
+  #gridSidebar_shareDataset .sharingForm
+
+    .removeShareLink
+      @include sprite-repeater-icons
+      float: left
+      padding-left: 0.5em
+
+    .shareDatasetButton
+      @include sprite-repeater-icons
+      margin-bottom: 1em
+
+      .icon
+        float: left
+        margin-right: 0.4em
+
+    .loadingShares
+      font-size: 1.2em
+      margin: 1em 0 1em 1em
+
+    .loadingSharesIndicator
+      @include throbber-icon
+      float: left
+      margin-right: 0.5em
+
+    .noShares
+      display: none
+      font-size: 1.2em
+      margin: 1em
+
+    .itemsList
+      margin-top: 1.5em
+
+      .line
+        margin-top: 1em
+
+        .name
+          float: left
+          font-size: 1.2em
+          margin-right: 0.5em
+
+        .profileImage
+          background-image: url(/images/small-profile.png)
+          display: block
+          float: left
+          height: 24px
+          margin: 0 0.5em
+          position: relative
+          top: -0.5em
+          width: 24px
+
+
+        .selector.uniform
+          float: right
+          margin: -0.5em 0.5em 0 0
+
+        select.type
+          width: 10em
+
+

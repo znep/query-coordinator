@@ -185,7 +185,7 @@
             <input type="text" class="emailRecipient email" name="emailRecipient0" />
           </div>
           <%- if @view.owned_by?(current_user) -%>
-            <%= select_tag 'role', options_for_select(['Viewer', 'Contributor', 'Owner']),
+            <%= select_tag 'role', options_for_select(Share.types),
                   :class => 'recipientRole', :id => nil %>
           <%- end -%>
         </div>
@@ -224,6 +224,7 @@
 <%= render :partial => 'downloads_table_template' %>
 <%= render :partial => 'feed_template' %>
 <%= render :partial => 'flag_message' %>
+<%= render :partial => 'sharing' %>
 <% end %>
 <%= render :partial => 'about_dataset' %>
 
@@ -340,6 +341,9 @@
     <%# Export pane %>
     blist.sidebarHidden.exportSection = blist.sidebarHidden.exportSection || {};
     blist.sidebarHidden.exportSection.print = <%= @view.is_alt_view? %>;
+
+    <%# Sharing pane %>
+    blist.sidebarHidden.sharing = <%= !@view.owned_by?(@current_user) %>;
   </script>
 
   <%- if !@view.is_blobby? -%>

@@ -277,6 +277,7 @@ javascripts:
   - controls/grid-sidebar/location-create
   - controls/grid-sidebar/map-create
   - controls/grid-sidebar/print-dataset
+  - controls/grid-sidebar/share-dataset
   - controls/grid-sidebar/show-hide
   - controls/grid-sidebar/view-list
   - controls/dataset-controls

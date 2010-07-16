@@ -81,4 +81,4 @@ blist.meta.setUpRdfEdit = function()
         }
     });
     $("#form_rdf_class").data('validator', $rdfClassValidator);
-}
+};

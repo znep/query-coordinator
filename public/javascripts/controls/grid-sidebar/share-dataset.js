@@ -117,7 +117,7 @@
             $ul.append($li);
         });
 
-        $ul.find('select').uniform();
+        $ul.find('li > select').uniform();
         $('#gridSidebar_shareDataset .type').change(changeShare);
         $('#gridSidebar_shareDataset .removeShareLink').click(removeShare);
     };

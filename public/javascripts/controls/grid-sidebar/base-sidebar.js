@@ -2,6 +2,7 @@
 {
     $.validator.addMethod('data-notEqualTo', function(value, element, param)
     {
+        if (this.optional(element)) { return true; }
         var isEqual = false;
         var $e = $(element);
         if (!$e.is(':visible')) { return true; }
@@ -22,6 +23,7 @@
     // a disabled section appearing
     $.validator.addMethod('data-onlyIfInput', function(value, element, param)
     {
+        if (this.optional(element)) { return true; }
         return _.isNull(element.className.match(/\bsectionDisabled-/));
     },
     'This value is invalid');
@@ -29,6 +31,7 @@
     // Special validator for validating required file types
     $.validator.addMethod('data-requiredTypes', function(value, element, param)
     {
+        if (this.optional(element)) { return true; }
         return $.isBlank(param);
     },
     $.format('{0} file is required'));
@@ -2515,7 +2518,7 @@
             sidebarObj._currentWizardLeft = $item.offset().left;
             sidebarObj._currentWizardTop = $item.offset().top;
             sidebarObj._$mainWizardItem = $mainItem;
-            $item.find(':text, textarea').filter(':not([readonly])').focus();
+            $item.children(':text, textarea').filter(':not([readonly])').focus();
         };
 
         if (newScroll != origScroll)

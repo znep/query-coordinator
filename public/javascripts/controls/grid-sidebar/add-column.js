@@ -46,10 +46,13 @@
                 title: 'Column Type',
                 fields: [
                     {text: 'Data Type', type: 'select', required: true,
+                    prompt: 'Select a data type',
                     name: 'dataTypeName', options: getTypes,
                     wizard: 'Choose what type of column you want'}
                 ]
             },
+
+            // Multiple choice value chooser
             {
                 title: 'Multiple Choice Options',
                 onlyIf: {field: 'dataTypeName', value: 'drop_down_list'},
@@ -61,6 +64,8 @@
                         'multiple choice column'}
                 ]
             },
+
+            // Location convert
             {
                 title: 'Use Existing Latitude & Longitude',
                 onlyIf: {field: 'dataTypeName', value: 'location'},

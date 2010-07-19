@@ -585,6 +585,18 @@ class View < Model
     '(none)'
   end
 
+  # Looks for property with _name_, or asks Configurations service
+  def property_or_default(path)
+    unless path.is_a?(Array)
+      path = path.to_s.split('.')
+    end
+    value = data.deep_value_at(path)
+    return value unless value.nil?
+
+    defaults = CurrentDomain.properties.dataset_defaults || Hashie::Mash.new
+    return defaults.deep_value_at(path)
+  end
+
   @@default_categories = {
     "" => "-- No category --"
   }

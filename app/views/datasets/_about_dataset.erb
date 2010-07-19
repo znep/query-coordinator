@@ -105,28 +105,28 @@
     </a>
     <dl class="sectionContent">
       <dt>Data Provided By</dt>
-      <dd><%= @view.attribution || '(none)' %></dd>
+      <dd><%= @view.property_or_default([:attribution]) || '(none)' %></dd>
       <dt>Source Link</dt>
-      <dd><%= @view.attributionLink.blank? ?
+      <dd><%= @view.property_or_default([:attributionLink]).blank? ?
                 '(none)' :
-                link_to_url(h(@view.attributionLink), :rel => 'nofollow external') %></dd>
-      <%- if @view.license -%>
+                link_to_url(h(@view.property_or_default([:attributionLink])), :rel => 'nofollow external') %></dd>
+      <%- if @view.property_or_default([:license]) -%>
         <dt>License</dt>
         <dd>
-          <%- if @view.license.nil? -%>
+          <%- if @view.property_or_default([:license]).nil? -%>
             (none)
-          <%- elsif @view.license.logoUrl.blank? -%>
-            <%= @view.license.name %>
+          <%- elsif @view.property_or_default([:license, :logoUrl]).blank? -%>
+            <%= @view.property_or_default([:license, :name]) %>
           <%- else -%>
-            <a href="<%= @view.license.termsLink %>" rel="nofollow external">
-              <img src="/<%= @view.license.logoUrl %>" alt="<%= @view.license.name %>" />
+            <a href="<%= @view.property_or_default([:license, :termsLink]) %>" rel="nofollow external">
+              <img src="/<%= @view.property_or_default([:license, :logoUrl]) %>" alt="<%= @view.property_or_default([:license, :name]) %>" />
             </a>
           <%- end -%>
         </dd>
       <%- end -%>
-      <%- if @view.termsAndConditions -%>
+      <%- if @view.property_or_default([:termsAndConditions]) -%>
         <dt>Terms of Use</dt>
-        <dd><span class="wrap"><%= @view.termsAndConditions %></span></dd>
+        <dd><span class="wrap"><%= @view.property_or_default([:termsAndConditions]) %></span></dd>
       <%- end -%>
     </dl>
   </div>

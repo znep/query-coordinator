@@ -105,6 +105,8 @@
                                         config.hideLayers ? 1.0 : 0.8])
                     );
                 }
+
+                mapObj.buildLegend();
             }
 
             mapObj.startLoading();
@@ -130,6 +132,34 @@
                 for (var i = 0; i < layers.length; i++)
                 { mapObj.map.getLayer(layers[i].id).hide(); }
             }
+        },
+
+        buildLegend: function()
+        {
+            var mapObj = this;
+
+            var SWATCH_WIDTH = 17;
+
+            mapObj._legend = mapObj.$dom().siblings('#mapLegend');
+            if (mapObj._legend.length)
+            { return; }
+
+            mapObj.$dom().before('<div id="mapLegend">' +
+                '<div class="contentBlock">' +
+                '<h3>' + mapObj._quantityCol.name +
+                '</h3><div style="width: ' + (NUM_SEGMENTS*SWATCH_WIDTH) +
+                'px;"><ul></ul><span></span>' +
+                '<span style="float: right;"></span></div>' +
+                '</div></div>');
+
+            mapObj._legend = mapObj.$dom().siblings('#mapLegend');
+            var $ul = mapObj._legend.find('ul');
+            _.each(mapObj._segmentSymbols, function(symbol)
+            {
+                $ul.append( $("<div class='color_swatch'><div class='inner'>&nbsp;</div></div>")
+                        .css('background-color', symbol.color.toCss(true))
+                    );
+            });
         }
     });
 
@@ -207,6 +237,8 @@
 
         var max = Math.ceil( _.max(_.map(featureSet.features, getValue))/50)*50;
         var min = Math.floor(_.min(_.map(featureSet.features, getValue))/50)*50;
+        mapObj._legend.find('span:first').text(min);
+        mapObj._legend.find('span:last').text(max);
         var segments = [];
         for (i = 0; i < NUM_SEGMENTS; i++) { segments[i] = ((i+1)*(max-min)/NUM_SEGMENTS)+min; }
 

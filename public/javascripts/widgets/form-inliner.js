@@ -7,7 +7,8 @@ blistCommonNS.formInliner = function(event, options)
     var opts  = $.extend({}, blistCommonNS.formInliner.defaults, options);
     var $form = $(event.target);
     var model = blist.$display.blistModel();
-    var view  = blist.dataset.cleanViewForPost(blist.display.view);
+    var view  = blist.dataset.cleanViewForPost(
+        $.extend(true, {}, blist.display.view));
 
     $form.append(
             $('<input type="hidden" name="view"/>')

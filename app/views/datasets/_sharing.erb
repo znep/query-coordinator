@@ -1,0 +1,30 @@
+<div class="sharingForm commonForm">
+  <a class="button shareDatasetButton add" href="#share">
+    <span class="icon"></span>
+    Share this Dataset
+  </a>
+  <div class="formSection">
+    <div class="sectionContent">
+      <ul class="itemsList">
+        <li class="loadingShares">Loading Shares...
+          <span class="loadingSharesIndicator"></span>
+        </li>
+      </ul>
+      <div class="noShares">
+        <p>You are not currently sharing this dataset with anybody else</p>
+      </div>
+    </div>
+  </div>
+  <div class="flash sharingFlash"></div>
+</div>
+
+<ul class="sharesList">
+  <li class="line clearfix">
+    <a href="#removeShare" class="removeShareLink remove" title="Remove">
+      <span class="icon"></span>
+    </a>
+    <span class="profileImage"></span>
+    <span class="name"></span>
+    <%= select_tag 'type', options_for_select(Share.types), :class => 'type' %>
+  </li>
+</ul>

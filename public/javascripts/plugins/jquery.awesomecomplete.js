@@ -67,6 +67,7 @@
                             config.onComplete($active.data('awesomecomplete-dataItem'), $this);
                             $list.hide();
                         }
+                        config.blurFunction($list);
                         $list.hide();
                         suppressKey = true;
                         break;
@@ -95,6 +96,7 @@
                         }
                         break;
                     case 27:
+                        config.blurFunction($list);
                         $list.hide();
                         suppressKey = true;
                         break;
@@ -114,6 +116,7 @@
                 if (blurWait)
                 {
                     blurWait = false;
+                    config.blurFunction($list);
                     $list.hide();
                 }
             });
@@ -131,13 +134,17 @@
                         $this.val($active.data('awesomecomplete-value'));
                         config.onComplete($active.data('awesomecomplete-dataItem'), $this);
                     }
+                    config.blurFunction($list);
                     $list.hide();
                 }
             });
             $this.focus(function()
             {
                 if ($list.children(':not(.' + config.noResultsClass + ')').length > 0)
+                {
+                    config.showFunction($list);
                     $list.show();
+                }
             });
         });
     };
@@ -276,7 +283,11 @@
             $list.append($('<li class="' + config.noResultsClass + '">' + config.noResultsMessage + '</li>'));
 
         if ((results.length > 0) || (config.noResultsMessage !== undefined))
+        {
+            config.showFunction($list);
             $list.show();
+        }
+
     };
 
 // default functions
@@ -289,7 +300,7 @@
                    '<p class="matchRow"><span class="matchedField">' + topMatch + '</span>: ' +
                         dataItem[topMatch] + '</p>';
     };
-    
+
     var defaultValueFunction = function(dataItem)
     {
         return dataItem[config.nameField];
@@ -298,6 +309,7 @@
     $.fn.awesomecomplete.defaults = {
         activeItemClass: 'active',
         attachTo: undefined,
+        blurFunction: function(list) {},
         dataMethod: undefined,
         dontMatch: [],
         highlightMatches: true,
@@ -307,6 +319,7 @@
         noResultsClass: 'noResults',
         noResultsMessage: undefined,
         onComplete: function(dataItem, context) {},
+        showFunction: function(list) {},
         splitTerm: true,
         staticData: [],
         suggestionListClass: "autocomplete",

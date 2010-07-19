@@ -19,11 +19,19 @@
             .val(dataItem['id']).end();
     };
 
+    var awesomeShow = function($list)
+    { $list.parent().css('z-index', 3001); };
+
+    var awesomeBlur = function($list)
+    { $list.parent().css('z-index', ''); };
+
     var autoCompleteForFriends = function(item)
     {
         item.awesomecomplete({
+            blurFunction: awesomeBlur,
             dontMatch: ['id'],
             onComplete: awesomeAchieved,
+            showFunction: awesomeShow,
             staticData: friends,
             renderFunction: awesomeRenderFunction,
             valueFunction: function(dataItem)

@@ -7,6 +7,7 @@
     var createGrantObject = function($line)
     {
         return {userId: $line.attr('data-uid'),
+                userEmail: $line.attr('data-email'),
                 type: $line.find('.type').val().toLowerCase()}
     };
 
@@ -86,14 +87,18 @@
                     }
                 });
             }
-        });
-        // Then match up with the grants
-        $.socrataServer.runRequests({
-            success: function(response)
+            else if (!$.isBlank(grant.userEmail))
             {
-                sharesRenderCallback(context, shares);
+                shares.push({userEmail: grant.userEmail,
+                    displayName: grant.userEmail,
+                    shareType: grant.type});
             }
         });
+        // Then match up with the grants
+        if (!$.socrataServer.runRequests({
+                success: function(response) { sharesRenderCallback(context, shares); }
+            }))
+        { sharesRenderCallback(context, shares); }
     };
 
     var sharesRenderCallback = function(context, data)
@@ -107,7 +112,8 @@
             var $li = $.renderTemplate('sharesList', share, {
                     '.name': 'displayName',
                     'li@data-uid': 'id',
-                    'li@data-currtype': 'shareType'
+                    'li@data-currtype': 'shareType',
+                    'li@data-email': 'userEmail'
                 });
             $li.find('.type').val($.capitalize(share.shareType));
 
@@ -117,7 +123,10 @@
             $ul.append($li);
         });
 
-        $ul.find('li > select').uniform();
+        _.defer(function(){
+            $ul.find('li > select').uniform();
+        });
+
         $('#gridSidebar_shareDataset .type').change(changeShare);
         $('#gridSidebar_shareDataset .removeShareLink').click(removeShare);
     };

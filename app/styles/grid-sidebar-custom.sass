@@ -416,9 +416,11 @@
         margin-top: 1em
 
         .name
+          @include clip-text
           float: left
           font-size: 1.2em
           margin-right: 0.5em
+          width: 8em
 
         .profileImage
           background-image: url(/images/small-profile.png)
@@ -434,6 +436,9 @@
         .selector.uniform
           float: right
           margin: -0.5em 0.5em 0 0
+
+          .ie &
+            margin-top: -1.5em
 
         select.type
           width: 10em

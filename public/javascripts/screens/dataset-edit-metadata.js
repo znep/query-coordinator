@@ -42,9 +42,11 @@
     var $licenseId = $('#view_licenseId');
     $licenseId.closest('.line').before($newLine);
 
+    var creativeSelected = $licenseId.val().match(/^CC/);
+
     //  move over relevant options, choose CC if relevant
     $licenseType.append($licenseId.children('option:first,option[value=CC],option[value=PUBLIC_DOMAIN]'));
-    if ($licenseId.find('option:selected').length > 0)
+    if (creativeSelected)
     {
         $licenseType.val('CC');
     }

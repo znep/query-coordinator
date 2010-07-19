@@ -569,6 +569,22 @@ class View < Model
       "rows.json?method=email" + (email.nil? ? "" : "&email=#{email}"))
   end
 
+
+  def rdf_class
+    self.metadata.nil? || self.metadata.rdfClass.nil? ? '(none)' : self.metadata.rdfClass
+  end
+
+  def rdf_subject
+    if (!self.metadata.nil? && !self.metadata.rdfSubject.nil?)
+      rdfSubj = self.metadata.rdfSubject
+      rdfSubjCol = self.column_by_id(rdfSubj.to_i)
+      if !rdfSubjCol.nil?
+        return rdfSubjCol.name
+      end
+    end
+    '(none)'
+  end
+
   @@default_categories = {
     "" => "-- No category --"
   }

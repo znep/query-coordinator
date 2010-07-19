@@ -131,6 +131,21 @@
     </dl>
   </div>
 
+<%- if @view.is_tabular? -%>
+  <div class="formSection">
+    <a class="expander expanded formHeader" href="#expand">
+      <span class="icon"></span>
+      Advanced
+    </a>
+    <dl class="sectionContent">
+      <dt>Semantic Class</dt>
+      <dd><span class="hardWrap"><%= rdf_class_display_name(@view.rdf_class) %></span></dd>
+      <dt>Subject Column</dt>
+      <dd><%= @view.rdf_subject %></dd>
+    </dl>
+  </div>
+<%- end -%>
+
 <%- if @view.metadata && @view.metadata.custom_fields -%>
   <div class="formSection">
     <a class="expander expanded formHeader" href="#expand">
@@ -168,4 +183,5 @@
     </dl>
   </div>
 <%- end -%>
+
 </div>

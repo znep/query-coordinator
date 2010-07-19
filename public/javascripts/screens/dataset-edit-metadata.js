@@ -2,15 +2,32 @@
 {
     // Validation
     var $form = $('#editMetadataForm');
-    $form.validate({
+    var $validator = $form.validate({
         rules: {
             'view[name]': 'required',
-            'view[attributionLink]': 'customUrl'
+            'view[attributionLink]': 'customUrl',
+            "view[metadata[customRdfClass]]": { url: true }
         },
         messages: {
             'view[name]': 'The dataset must have a title.',
-            'view[attributionLink]': 'That does not appear to be a valid url.'
-        }
+            'view[attributionLink]': 'That does not appear to be a valid url.',
+            "view[metadata[customRdfClass]]": 'Custom semantic class must be url.'
+        },
+        errorPlacement:
+            function(error, element) {
+                switch (element.get(0).id)
+                {
+                    case 'view_metadata_customRdfClass':
+                        // if rdf combo shows, we do not care about the hidden field
+                        if (element.is(':visible'))
+                        {
+                            error.appendTo(element.parent());
+                        }
+                        break;
+                    default:
+                        error.insertAfter(element);
+                }
+            }
     });
 
     // Make licensing dropdowns cascading instead.
@@ -78,6 +95,59 @@
         }
     });
 
+    var initCustomRdf = function()
+    {
+        var $rdfClass = $form.find('#view_metadata_rdfClass');
+        // non-tabular dataset, no rdf
+        if ($rdfClass.length <= 0) { return; }
+
+        var val = $form.find('#view_metadata_customRdfClass').val();
+        var cboVal = $rdfClass.val();
+
+        if (val != '(none)' && !$.isBlank(val) && val != cboVal)
+        {
+            $form.find('.comboToggle').click();
+        }
+    };
+
+    // rdfClass has 2 html input behind it - rdfClass and customRdfClass.
+    // merge them into one - rdfClass to make downstream saving easy.
+    var preSubmitCustomRdf = function()
+    {
+        var $customRdfClass = $form.find('#view_metadata_customRdfClass');
+        var $rdfClass = $form.find('#view_metadata_rdfClass');
+        var val;
+
+        // non-tabular dataset, no rdf
+        if ($rdfClass.length <= 0) { return; }
+
+        if ($customRdfClass.is(':visible'))
+        {
+            if (!$validator.element($customRdfClass) && !$.isBlank($customRdfClass.val()))
+            {
+                // abort merging because customRdfClass is invalid url
+                return;
+            }
+
+            if (!$form.valid()) { return; }
+            val = $customRdfClass.val();
+            $rdfClass.append($("<option/>").attr('value', val)).val(val);
+        }
+        else
+        {
+            $customRdfClass.val('');
+            if (!$form.valid()) { return; }
+        }
+
+        // setting name to empty prevent customRdfClass from persisting to metadata.
+        $customRdfClass.attr('name', '');
+        if ($rdfClass.val().startsWith('_'))
+        {
+            // this remove meta.rdfClass when metadata persist
+            $rdfClass.attr('name', '');
+        }
+    };
+
     var $uploadLink = $.tag({
         tagName: 'a', 'href': '#upload', contents: 'Upload New Attachment', 'class': 'button'
     });
@@ -128,10 +198,43 @@
     $('.submitButton').click(function(event)
     {
         event.preventDefault();
-
+        preSubmitCustomRdf();
         if ($form.valid())
         {
             $form.submit();
         }
     });
+
+
+    $form.find('.comboToggle').click(function(event)
+    {
+        event.preventDefault();
+        var $cbo = $(this).parent().find('.uniform');
+
+        if ($cbo.is(':visible'))
+        {
+            $(this).find('a').text('List');
+            $cbo.hide();
+            var $txt = $cbo.next('input');
+            if ($txt.val()=='(none)')
+            {
+                $txt.val('');
+            }
+
+            $txt.removeClass('hide');
+            // revalidate custom rdf
+            $validator.element($txt);
+        }
+        else
+        {
+            // custom rdf class is visible
+            $(this).find('a').text('Custom');
+            $cbo.show();
+            $cbo.next('input').addClass('hide');
+            // hide custom rdf error
+            $cbo.parent().find('label.error').hide();
+        }
+    });
+
+    initCustomRdf();
 });

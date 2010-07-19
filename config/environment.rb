@@ -13,6 +13,7 @@ require File.join(File.dirname(__FILE__), 'boot')
 Rails::Initializer.run do |config|
   config.middleware.use "CurrentDomainMiddleware"
   config.middleware.use "HealthCheckMiddleware"
+  config.middleware.use "LogRefererMiddleware"
 
   # Settings in config/environments/* take precedence over those specified here.
   # Application configuration should go into files in config/initializers
@@ -88,6 +89,8 @@ Rails::Initializer.run do |config|
   # Edit Gemfile instead of here!
   # They can be installed with "bundle install" on new installations
 end
+
+LogRefererMiddleware.stomp_server_uri = "stomp://localhost:61613"
 
 ActionMailer::Base.smtp_settings = {
   :address => "mail",

@@ -46,6 +46,11 @@
         e.preventDefault();
 
         $('.emailDatasetDialog.ownerDialog .emailDatasetHint').text('Share');
+        $('.emailDatasetDialog.ownerDialog .emailDatasetExplanation').text(' and users');
+        $form.validate().resetForm();
+
+        $('.emailDatasetDialog .emailLine:not(:first)').remove();
+        $('.emailDatasetDialog .emailRecipient').val('');
 
         $('.emailDatasetContent').show();
         $('.emailSuccess').hide();
@@ -141,7 +146,7 @@
           emailRecipient0: 'email'
         },
         errorPlacement: function($error, $element)
-        { $error.appendTo($element.closest('.emailLine')); },
+        { $element.closest('.emailLine').after($error); },
         onkeyup: false,
         onfocusout: false,
         focusInvalid: false

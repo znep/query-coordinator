@@ -190,7 +190,7 @@
 
                 datasetObj.settings._filterIds = {};
                 datasetObj.settings._filterCount = 0;
-                datasetObj.isTempView = false;
+                blist.display.isTempView = datasetObj.isTempView = false;
 
                 if (datasetObj.settings.filterForm)
                 { datasetObj.settings.filterForm.find(':input').val('').blur(); }
@@ -746,6 +746,8 @@
                     return;
                 }
 
+                blist.display.isTempView = datasetObj.isTempView = false;
+
                 if (datasetObj.settings.clearTempViewCallback != null)
                 {
                     datasetObj.settings.clearTempViewCallback();
@@ -756,8 +758,6 @@
                 if (datasetObj.settings.autoHideClearFilterItem)
                 { datasetObj.settings.clearFilterItem.hide(); }
                 datasetObj.summaryStale = true;
-
-                datasetObj.isTempView = false;
 
                 datasetObj.settings._model.reloadView();
             },
@@ -782,12 +782,12 @@
                     return;
                 }
 
+                blist.display.isTempView = datasetObj.isTempView = true;
+
                 if (datasetObj.settings.setTempViewCallback != null)
                 {
                     datasetObj.settings.setTempViewCallback();
                 }
-
-                datasetObj.isTempView = true;
             },
 
             clearFilterInput: function(e)

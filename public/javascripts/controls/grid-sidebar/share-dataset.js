@@ -138,6 +138,14 @@
         title: 'Sharing',
         subtitle: 'Manage sharing and permissions of this dataset',
         noReset: true,
+        onlyIf: function(view)
+        {
+            return !blist.display.isInvalid && !blist.display.isTempView;
+        },
+        disabledSubtitle: function()
+        {
+            return 'This view must be valid and saved';
+        },
         sections: [
             {
                 customContent: {

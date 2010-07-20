@@ -23,6 +23,7 @@ blist.datasetPage.clearTempView = function()
 {
     $('#sidebarOptions a.alert').removeClass('alert');
     $('body, #titleBox').removeClass('unsavedView');
+    datasetPageNS.sidebar.updateEnabledSubPanes();
 };
 
 blist.datasetPage.setTempView = function()
@@ -30,6 +31,7 @@ blist.datasetPage.setTempView = function()
     $('body, #titleBox').addClass('unsavedView');
     // For now unsaved view means something has changed in filter tab
     $('#sidebarOptions .tabFilter a').addClass('alert');
+    datasetPageNS.sidebar.updateEnabledSubPanes();
 };
 
 blist.datasetPage.updateValidView = function(view)
@@ -49,8 +51,6 @@ $(function()
 
     $('.outerContainer').fullScreen();
 
-    var sidebar;
-
     // grid
     var $dataGrid = blist.$display;
     if ($dataGrid.length > 0)
@@ -59,7 +59,7 @@ $(function()
         {
             $dataGrid
                 .bind('columns_updated', function()
-                    { sidebar.refresh(); })
+                    { datasetPageNS.sidebar.refresh(); })
                 .datasetGrid({viewId: blist.display.viewId,
                     columnDeleteEnabled: blist.isOwner,
                     columnPropertiesEnabled: blist.isOwner,
@@ -75,8 +75,9 @@ $(function()
                     validViewCallback: datasetPageNS.updateValidView,
                     addColumnCallback: function(parId)
                     {
-                        sidebar.addPane('edit.addColumn', {parentId: parId});
-                        sidebar.show('edit.addColumn');
+                        datasetPageNS.sidebar
+                            .addPane('edit.addColumn', {parentId: parId});
+                        datasetPageNS.sidebar.show('edit.addColumn');
                     },
                     editColumnCallback: function(colId, parId)
                     {
@@ -87,8 +88,8 @@ $(function()
                             col = _.detect(col.childColumns, function(c)
                                 { return c.id == colId; });
                         }
-                        sidebar.addPane('columnProperties', col);
-                        sidebar.show('columnProperties');
+                        datasetPageNS.sidebar.addPane('columnProperties', col);
+                        datasetPageNS.sidebar.show('columnProperties');
                     }
                 });
         }
@@ -97,7 +98,7 @@ $(function()
     }
 
     // sidebar and sidebar tabs
-    sidebar = $('#gridSidebar').gridSidebar({
+    datasetPageNS.sidebar = $('#gridSidebar').gridSidebar({
         dataGrid: $dataGrid[0],
         onSidebarShown: function(primaryPane)
         {
@@ -115,12 +116,12 @@ $(function()
     {
         var $a = $(this);
         var dataPaneName = $a.attr('data-paneName');
-        if (sidebar.hasPane(dataPaneName))
+        if (datasetPageNS.sidebar.hasPane(dataPaneName))
         {
             $a.click(function(e)
             {
                 e.preventDefault();
-                sidebar.show(dataPaneName);
+                datasetPageNS.sidebar.show(dataPaneName);
                 $.analytics.trackEvent('dataset page (v4-chrome)',
                     dataPaneName + ' pane opened', blist.display.view.id);
             });
@@ -130,7 +131,7 @@ $(function()
     });
 
     $(document).bind(blist.events.COLUMNS_CHANGED,
-        function() { sidebar.updateEnabledSubPanes(); });
+        function() { datasetPageNS.sidebar.updateEnabledSubPanes(); });
 
     // toolbar area
     $('#viewsMenu').menu({
@@ -355,14 +356,15 @@ $(function()
 
     var viewEditPane = $.gridSidebar.paneForDisplayType[
         blist.dataset.getDisplayType(blist.display.view)];
-    if ($.isBlank(viewEditPane) || !sidebar.isPaneEnabled(viewEditPane))
+    if ($.isBlank(viewEditPane) ||
+        !datasetPageNS.sidebar.isPaneEnabled(viewEditPane))
     { $('.invalidActions .editView').hide(); }
     else
     {
         $('.invalidActions .editView').click(function(e)
         {
             e.preventDefault();
-            sidebar.show(viewEditPane);
+            datasetPageNS.sidebar.show(viewEditPane);
         });
     }
 

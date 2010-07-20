@@ -44,7 +44,7 @@
                         name: 'convertStreetGroup',
                         defaultValue: 'streetNone',
                         options: [
-                            {text: 'None', name: 'streetNone', type: 'static'},
+                            {value: 'None', name: 'streetNone', type: 'static'},
                             {type: 'columnSelect', name: 'convert.addressColumn',
                                 notequalto: 'convertText',
                                 columns: {type: 'text', hidden: false} }
@@ -54,7 +54,7 @@
                     {text: 'City', type: 'radioGroup', name: 'convertCityGroup',
                         defaultValue: 'cityNone',
                         options: [
-                            {text: 'None', type: 'static', name: 'cityNone'},
+                            {value: 'None', type: 'static', name: 'cityNone'},
                             {type: 'columnSelect', name: 'convert.cityColumn',
                                 notequalto: 'convertText',
                                 columns: {type: 'text', hidden: false} },
@@ -66,7 +66,7 @@
                     {text: 'State', type: 'radioGroup', name: 'convertStateGroup',
                         defaultValue: 'stateNone',
                         options: [
-                            {text: 'None', type: 'static', name: 'stateNone'},
+                            {value: 'None', type: 'static', name: 'stateNone'},
                             {type: 'columnSelect', name: 'convert.stateColumn',
                                 notequalto: 'convertText',
                                 columns: {type: 'text', hidden: false} },
@@ -78,7 +78,7 @@
                     {text: 'Zip Code', type: 'radioGroup', name: 'convertZipGroup',
                         defaultValue: 'zipNone',
                         options: [
-                            {text: 'None', type: 'static', name: 'zipNone'},
+                            {value: 'None', type: 'static', name: 'zipNone'},
                             {type: 'columnSelect', name: 'convert.zipColumn',
                                 notequalto: 'convertText convertNumber',
                                 columns: {type: ['text', 'number'],

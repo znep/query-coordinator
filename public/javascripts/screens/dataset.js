@@ -73,10 +73,22 @@ $(function()
                     clearFilterItem: '#searchButton .clearSearch',
                     isInvalid: blist.display.isInvalid,
                     validViewCallback: datasetPageNS.updateValidView,
-                    addColumnCallback: function(e, parId)
+                    addColumnCallback: function(parId)
                     {
                         sidebar.addPane('edit.addColumn', {parentId: parId});
                         sidebar.show('edit.addColumn');
+                    },
+                    editColumnCallback: function(colId, parId)
+                    {
+                        var col = _.detect(blist.display.view.columns, function(c)
+                            { return c.id == colId || c.id == parId; });
+                        if (col.id != colId)
+                        {
+                            col = _.detect(col.childColumns, function(c)
+                                { return c.id == colId; });
+                        }
+                        sidebar.addPane('columnProperties', col);
+                        sidebar.show('columnProperties');
                     }
                 });
         }
@@ -254,7 +266,7 @@ $(function()
         $.ajax({url: '/views/' + blist.display.view.id + '.json',
             type: 'PUT', contentType: 'application/json', dataType: 'json',
             data: JSON.stringify(blist.dataset.cleanViewForPost(
-                $.extend(true, {}, blist.display.view))),
+                $.extend(true, {}, blist.display.view), true)),
             success: function()
             {
                 $a.text($a.data('saveText'));

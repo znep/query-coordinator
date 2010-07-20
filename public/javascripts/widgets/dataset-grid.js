@@ -30,7 +30,7 @@
         defaults:
         {
             accessType: 'DEFAULT',
-            addColumnCallback: function() {},
+            addColumnCallback: function(parentId) {},
             autoHideClearFilterItem: true,
             clearFilterItem: null,
             clearTempViewCallback: function () {},
@@ -38,6 +38,7 @@
             columnNameEdit: false,
             columnPropertiesEnabled: false,
             currentUserId: null,
+            editColumnCallback: function(columnId, parentId) {},
             editEnabled: true,
             filterForm: null,
             initialResponse: null,
@@ -116,7 +117,7 @@
                 $.live('#' + $datasetGrid.attr('id') + ' .blist-table-row-handle', 'mouseover',
                         function (e) { hookUpRowMenu(datasetObj, this, e); });
                 $.live('#' + $datasetGrid.attr('id') + ' .add-column', "click",
-                    datasetObj.settings.addColumnCallback);
+                    function() { datasetObj.settings.addColumnCallback(); });
 
                 $.live('#' + $datasetGrid.attr('id') + ' .drillDown', 'click',
                     function(e){
@@ -1065,7 +1066,7 @@
         {
             event.preventDefault();
             // Display the add column dialog.
-            datasetObj.settings.addColumnCallback(event, column.id);
+            datasetObj.settings.addColumnCallback(column.id);
         }
     };
 
@@ -1300,10 +1301,8 @@
                 // a separator.
                 htmlStr += '<li class="separator singleItem" />';
                 htmlStr += '<li class="properties singleItem">' +
-                    '<a href="/datasets/' + view.id + '/columns/' + col.id +
-                    '.json' + (col.nestedIn ?
-                        '?parent=' + col.nestedIn.header.id : '') +
-                    '" rel="modal">' +
+                    '<a href="#edit-column_' + col.id +
+                    (col.nestedIn ?  '_' + col.nestedIn.header.id : '') + '">' +
                     '<span class="highlight">Edit Column Properties</span>' +
                     '</a>' +
                     '</li>';
@@ -1647,6 +1646,9 @@
                 $.each(selCols, function(colId, val)
                         { cols.push(colId); });
                 datasetObj.deleteColumns(cols);
+                break;
+            case 'edit-column':
+                datasetObj.settings.editColumnCallback(colIdIndex, s[2]);
                 break;
         }
         // Update the grid header to reflect updated sorting, filtering

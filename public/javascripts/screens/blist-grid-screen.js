@@ -360,9 +360,16 @@ $(function ()
                 clearFilterItem: '#lensContainer .headerBar form .clearSearch',
                 isInvalid: blist.display.isInvalid,
                 validViewCallback: blistGridNS.updateValidView,
-                addColumnCallback: function (e, parId)
+                addColumnCallback: function (parId)
                 {
                     var l = '/datasets/' + blistGridNS.viewId + '/columns/new';
+                    if (!$.isBlank(parId)) { l += '?parent=' + parId; }
+                    $('<a href="' + l + '" rel="modal" />').click();
+                },
+                editColumnCallback: function(colId, parId)
+                {
+                    var l = '/datasets/' + blistGridNS.viewId + '/columns/' +
+                        colId + '.json';
                     if (!$.isBlank(parId)) { l += '?parent=' + parId; }
                     $('<a href="' + l + '" rel="modal" />').click();
                 }

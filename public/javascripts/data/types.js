@@ -760,7 +760,7 @@ blist.namespace.fetch('blist.data.types');
         }
     });
 
-    var rollUpAggs = [
+    var aggs = [
         {text: 'Average', value: 'average'},
         {text: 'Count', value: 'count'},
         {text: 'Sum', value: 'sum'},
@@ -768,7 +768,7 @@ blist.namespace.fetch('blist.data.types');
         {text: 'Minimum', value: 'minimum'}
     ];
 
-    var nonNumericRollUpAggs = _.select(rollUpAggs, function(a)
+    var nonNumericAggs = _.select(aggs, function(a)
     { return 'count' == a.value; });
 
     var filterConditions = {
@@ -807,6 +807,27 @@ blist.namespace.fetch('blist.data.types');
                     ]
     };
 
+    var alignLeft = {text: 'Left', value: 'left'};
+    var alignCenter = {text: 'Center', value: 'center'};
+    var alignRight ={text: 'Right', value: 'right'};
+
+    var alignment = [alignLeft, alignCenter, alignRight];
+    var numericAlignment = [alignRight, alignLeft, alignCenter];
+
+    var dateViews = [
+        {value: 'date', text: 'month/day/year'},
+        {value: 'date_time', text: 'month/day/year hour:minute'},
+        {value: 'date_dmy', text: 'day/month/year'},
+        {value: 'date_dmy_time', text: 'day/month/year hour:minute'},
+        {value: 'date_ymd', text: 'year/month/day'},
+        {value: 'date_ymd_time', text: 'year/month/day hour:minute'},
+        {value: 'date_monthdy', text: 'month day, year'},
+        {value: 'date_dmonthy', text: 'day month year'},
+        {value: 'date_ymonthd', text: 'year month day'}
+    ];
+
+    var numericConvertTypes = ['money', 'number', 'percent', 'stars'];
+
     /**
      * This is our main map of data types.
      */
@@ -823,7 +844,11 @@ blist.namespace.fetch('blist.data.types');
             filterText: true,
             group: groupText,
             sortable: true,
-            rollUpAggregates: nonNumericRollUpAggs,
+            aggregates: nonNumericAggs,
+            rollUpAggregates: nonNumericAggs,
+            alignment: alignment,
+            convertableTypes: ['html', 'calendar_date', 'date', 'phone',
+                'email', 'url', 'checkbox', 'flag'].concat(numericConvertTypes),
             filterable: true,
             filterConditions: filterConditions.textual,
             deleteable: true
@@ -838,7 +863,10 @@ blist.namespace.fetch('blist.data.types');
             sortGen: sortGenText,
             filterText: true,
             sortable: true,
-            rollUpAggregates: nonNumericRollUpAggs,
+            aggregates: nonNumericAggs,
+            rollUpAggregates: nonNumericAggs,
+            convertableTypes: ['text', 'calendar_date', 'date', 'phone',
+                'email', 'url', 'checkbox', 'flag'].concat(numericConvertTypes),
             filterable: true,
             filterConditions: filterConditions.textual,
             deleteable: true
@@ -854,7 +882,13 @@ blist.namespace.fetch('blist.data.types');
             filterText: true,
             cls: 'number',
             sortable: true,
-            rollUpAggregates: rollUpAggs,
+            aggregates: aggs,
+            rollUpAggregates: aggs,
+            alignment: numericAlignment,
+            convertableTypes: _.without(numericConvertTypes, 'number')
+                .concat('text'),
+            precisionStyle: [{text: 'Standard (1,020.4)', value: 'standard'},
+                {text: 'Scientific (1.0204e+3)', value: 'scientific'}],
             filterable: true,
             filterConditions: filterConditions.numeric,
             deleteable: true
@@ -870,7 +904,11 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterDate,
             filterValue: function(v) { return v; },
             sortable: true,
-            rollUpAggregates: nonNumericRollUpAggs,
+            aggregates: nonNumericAggs,
+            rollUpAggregates: nonNumericAggs,
+            alignment: alignment,
+            convertableTypes: ['text', 'calendar_date'],
+            viewTypes: dateViews,
             filterable: true,
             filterConditions: filterConditions.date,
             deleteable: true,
@@ -888,7 +926,11 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterDate,
             filterValue: function(v) { return v; },
             sortable: true,
-            rollUpAggregates: nonNumericRollUpAggs,
+            aggregates: nonNumericAggs,
+            rollUpAggregates: nonNumericAggs,
+            alignment: alignment,
+            convertableTypes: ['text', 'date'],
+            viewTypes: dateViews,
             filterable: true,
             filterConditions: filterConditions.date,
             deleteable: true,
@@ -925,7 +967,11 @@ blist.namespace.fetch('blist.data.types');
             cls: 'money',
             filterText: true,
             sortable: true,
-            rollUpAggregates: rollUpAggs,
+            aggregates: aggs,
+            rollUpAggregates: aggs,
+            alignment: numericAlignment,
+            convertableTypes: _.without(numericConvertTypes, 'money')
+                .concat('text'),
             filterable: true,
             filterConditions: filterConditions.numeric,
             deleteable: true,
@@ -971,6 +1017,8 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterPhone,
             filterText: true,
             sortable: true,
+            alignment: alignment,
+            convertableTypes: ['text'],
             filterable: true,
             filterConditions: filterConditions.textual,
             deleteable: true,
@@ -986,7 +1034,10 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterCheckbox,
             filterValue: valueFilterCheckbox,
             sortable: true,
-            rollUpAggregates: nonNumericRollUpAggs,
+            aggregates: nonNumericAggs,
+            rollUpAggregates: nonNumericAggs,
+            alignment: [alignCenter, alignLeft, alignRight],
+            convertableTypes: ['text'],
             filterable: true,
             filterConditions: filterConditions.comparable,
             deleteable: true,
@@ -1001,7 +1052,10 @@ blist.namespace.fetch('blist.data.types');
             sortGen: sortGenText,
             filterRender: renderFilterFlag,
             sortable: true,
-            rollUpAggregates: nonNumericRollUpAggs,
+            aggregates: nonNumericAggs,
+            rollUpAggregates: nonNumericAggs,
+            alignment: alignment,
+            convertableTypes: ['text'],
             filterable: true,
             filterConditions: filterConditions.comparable,
             deleteable: true
@@ -1017,8 +1071,13 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterStars,
             filterText: true,
             sortable: true,
-            rollUpAggregates: _.reject(rollUpAggs, function(a)
+            aggregates: _.reject(aggs, function(a)
                 { return a.value == 'sum'; }),
+            rollUpAggregates: _.reject(aggs, function(a)
+                { return a.value == 'sum'; }),
+            alignment: alignment,
+            convertableTypes: _.without(numericConvertTypes, 'stars')
+                .concat('text'),
             filterable: true,
             filterConditions: filterConditions.numeric,
             deleteable: true,
@@ -1035,7 +1094,14 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterPercent,
             filterText: true,
             sortable: true,
-            rollUpAggregates: rollUpAggs,
+            aggregates: aggs,
+            rollUpAggregates: aggs,
+            alignment: numericAlignment,
+            convertableTypes: _.without(numericConvertTypes, 'percent')
+                .concat('text'),
+            viewTypes: [{value: 'percent_bar_and_text', text: 'Bar &amp; Text' },
+                { value: 'percent_bar', text: 'Bar Only' },
+                { value: 'percent_text', text: 'Text Only' }],
             filterable: true,
             filterConditions: filterConditions.numeric,
             deleteable: true
@@ -1050,7 +1116,10 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterURL,
             filterText: true,
             sortable: true,
-            rollUpAggregates: nonNumericRollUpAggs,
+            aggregates: nonNumericAggs,
+            rollUpAggregates: nonNumericAggs,
+            alignment: alignment,
+            convertableTypes: ['text'],
             filterable: true,
             filterConditions: filterConditions.textual,
             deleteable: true,
@@ -1082,6 +1151,7 @@ blist.namespace.fetch('blist.data.types');
             renderGen: renderGenLocation,
             deleteable: true,
             isObject: true,
+            alignment: alignment,
             renderAddress: renderLocationAddress,
             filterable: true,
             filterConditions: filterConditions.comparable,
@@ -1092,6 +1162,7 @@ blist.namespace.fetch('blist.data.types');
             title: 'Row Tag',
             priority: 19,
             renderGen: renderGenTags,
+            aggregates: nonNumericAggs,
             filterRender: renderFilterText,
             filterText: true,
             filterable: true,
@@ -1107,7 +1178,10 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterText,
             filterText: true,
             sortable: true,
-            rollUpAggregates: nonNumericRollUpAggs,
+            aggregates: nonNumericAggs,
+            rollUpAggregates: nonNumericAggs,
+            alignment: alignment,
+            convertableTypes: ['text'],
             filterable: true,
             filterConditions: filterConditions.textual,
             deleteable: true
@@ -1140,7 +1214,9 @@ blist.namespace.fetch('blist.data.types');
             sortPreprocessor: sortPicklistPrepro,
             filterRender: renderFilterPicklist,
             sortable: true,
-            rollUpAggregates: nonNumericRollUpAggs,
+            aggregates: nonNumericAggs,
+            rollUpAggregates: nonNumericAggs,
+            alignment: alignment,
             filterable: true,
             filterConditions: filterConditions.numeric,
             deleteable: true

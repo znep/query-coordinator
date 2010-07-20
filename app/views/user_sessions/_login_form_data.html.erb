@@ -2,10 +2,9 @@
   <p>
     <%= f.label :login, 'Email' %>
     <%= f.text_field :login %>
-    <% if !CurrentDomain.strings.login_disclaimer.nil? %>
-      <span class="helpie"
-        title="<%= CurrentDomain.strings.login_disclaimer %>">?</span>
-    <% end %>
+    <span class="helpie"
+      title="<%= "Legacy users can still sign in using their old usernames, although they have been deprecated and cannot be changed." +
+        (CurrentDomain.strings.login_disclaimer.nil? ? "" : "\n\n#{CurrentDomain.strings.login_disclaimer}") %>">?</span>
   </p>
   <p>
     <%= f.label :password %>

@@ -622,8 +622,7 @@ span.helpie
 #templates { display: none; }
 
 
-.dialogBox .header.masterTheme h1
+.dialogBox .header.authDialog h1
 {
     background-image: url("/stylesheets/images/common/socrata_logo_light.png");
-    background-color: #20608F;
 }

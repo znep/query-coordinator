@@ -273,11 +273,13 @@
         if (mapObj._esriSymbol === undefined) { mapObj._esriSymbol = {}; }
         if (icon && !mapObj._esriSymbol[icon])
         {
+            mapObj._esriSymbol[icon] = new esri.symbol.PictureMarkerSymbol(icon, 10, 10);
             var image = new Image();
+            image.onload = function() {
+                mapObj._esriSymbol[icon].setHeight(image.height);
+                mapObj._esriSymbol[icon].setWidth(image.width);
+            };
             image.src = icon;
-            mapObj._esriSymbol[icon] = new esri.symbol.PictureMarkerSymbol(
-                icon, image.width, image.height
-                );
         }
         else if (!mapObj._esriSymbol['default'])
         {

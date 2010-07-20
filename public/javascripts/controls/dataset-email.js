@@ -19,11 +19,19 @@
             .val(dataItem['id']).end();
     };
 
+    var awesomeShow = function($list)
+    { $list.parent().css('z-index', 3001); };
+
+    var awesomeBlur = function($list)
+    { $list.parent().css('z-index', ''); };
+
     var autoCompleteForFriends = function(item)
     {
         item.awesomecomplete({
+            blurFunction: awesomeBlur,
             dontMatch: ['id'],
             onComplete: awesomeAchieved,
+            showFunction: awesomeShow,
             staticData: friends,
             renderFunction: awesomeRenderFunction,
             valueFunction: function(dataItem)
@@ -38,6 +46,11 @@
         e.preventDefault();
 
         $('.emailDatasetDialog.ownerDialog .emailDatasetHint').text('Share');
+        $('.emailDatasetDialog.ownerDialog .emailDatasetExplanation').text(' and users');
+        $form.validate().resetForm();
+
+        $('.emailDatasetDialog .emailLine:not(:first)').remove();
+        $('.emailDatasetDialog .emailRecipient').val('');
 
         $('.emailDatasetContent').show();
         $('.emailSuccess').hide();
@@ -133,7 +146,7 @@
           emailRecipient0: 'email'
         },
         errorPlacement: function($error, $element)
-        { $error.appendTo($element.closest('.emailLine')); },
+        { $element.closest('.emailLine').after($error); },
         onkeyup: false,
         onfocusout: false,
         focusInvalid: false

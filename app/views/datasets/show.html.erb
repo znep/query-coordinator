@@ -173,7 +173,7 @@
   </div>
   <div class="emailDatasetContent">
     <div class="flash" id="emailDatasetMessage"></div>
-    <p>Share this dataset with the following email addresses and users</p>
+    <p>Share this dataset with the following email addresses<span class='emailDatasetExplanation'></span></p>
     <div class="emailFormContent">
       <form class='commonForm' id='emailDatasetForm' action='/views/<%= @view.id %>.json?method=sendAsEmail' method='post'>
         <div class="emailLine">

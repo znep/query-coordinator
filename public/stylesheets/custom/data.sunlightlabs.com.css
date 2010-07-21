@@ -205,3 +205,7 @@ form.search p {
 .dialogBox .header h1 {
 	background-position: 6px 5px; height:60px;
 }
+
+.dialogBox .header.authDialog h1 {
+  background-image: url(/stylesheets/images/domains/data.sunlightlabs.com/socrata_black.png);
+}

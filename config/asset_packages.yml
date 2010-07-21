@@ -271,6 +271,7 @@ javascripts:
   - controls/grid-sidebar/feed
   - controls/grid-sidebar/filter-dataset
   - controls/grid-sidebar/form-create
+  - controls/grid-sidebar/guided-filter
   - controls/grid-sidebar/map-create
   - controls/grid-sidebar/print-dataset
   - controls/grid-sidebar/share-dataset

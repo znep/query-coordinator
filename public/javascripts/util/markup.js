@@ -82,31 +82,14 @@
             }
         });
 
-        if (attrs.tagName == 'input' || attrs.tagName == 'img')
+        if (_.include(['input', 'img', 'link', 'meta'], attrs.tagName))
         {
             result += '/>';
         }
         else if (!$.isBlank(attrs.contents))
         {
             result += '>';
-
-            var children = attrs.contents;
-            if (!_.isArray(children))
-            { children = [ children ]; }
-
-            // for each child, $.tag recurse if necessary, then "compact"
-            // and join the resultant array. Don't use _.compact since that
-            // strips 0.
-            result += _.reject(_.map(children, function(child)
-            {
-                if ($.isPlainObject(child))
-                { child = $.tag(child, true); }
-
-                return child;
-            }), function(child) { return $.isBlank(child); })
-                // Don't join with a space, because FF will add extra
-                // un-controllable padding
-                .join('');
+            result += tag_renderChildren(attrs.contents);
             result += '</' + attrs.tagName + '>';
         }
         else
@@ -137,6 +120,27 @@
         }
         else
         { return elem; }
+    };
+    var tag_renderChildren = function(children)
+    {
+        children = $.makeArray(children);
+
+        // for each child, $.tag recurse if necessary, then "compact"
+        // and join the resultant array. Don't use _.compact since that
+        // strips 0.
+        return _.reject(_.map(children, function(child)
+        {
+            if ($.isPlainObject(child))
+            { child = $.tag(child, true); }
+
+            if (_.isArray(child))
+            { child = tag_renderChildren(child); }
+
+            return child;
+        }), function(child) { return $.isBlank(child); })
+            // Don't join with a space, because FF will add extra
+            // un-controllable padding
+            .join('');
     };
 
     $.button = function(opts, keepAsText)

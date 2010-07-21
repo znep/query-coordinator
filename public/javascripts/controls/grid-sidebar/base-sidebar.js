@@ -224,6 +224,8 @@
             ]
           }
         ]
+        + showCallback: function that is called when a sidebar pane is shown;
+            args: ($pane)
         + finishCallback: function that is called when a finish button is clicked;
             args: (sidebarObj, data, $pane, value)
         + finishBlock: specifies final actions
@@ -592,6 +594,10 @@
 
                 sidebarObj.settings.onSidebarShown(nameParts.primary,
                     nameParts.secondary);
+                if (_.isFunction(config.showCallback))
+                {
+                    config.showCallback(sidebarObj, sidebarObj.$currentPane);
+                }
             },
 
             /* Hide the sidebar and all panes.  If it was modal, then undo the
@@ -993,6 +999,11 @@
                 // compact any arrays (especially repeaters, that may have
                 // been filled in sparsely)
                 return $.deepCompact(results);
+            },
+
+            startProcessing: function()
+            {
+                this.$dom().addClass('processing');
             },
 
             finishProcessing: function()

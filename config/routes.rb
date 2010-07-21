@@ -135,7 +135,18 @@ ActionController::Routing::Routes.draw do |map|
     :delete_friend => :get
   }
 
-  # Old dataset page - change this to new when relevant
+  # New dataset page
+  map.resources :datasets,
+    :conditions => {:has_v4_dataset => true},
+    :member => {
+      :widget_preview => :get,
+      :edit_metadata => [:get, :post]
+    },
+    :except => :all # you see, we actually abandoned RESTful routes, I guess
+
+  map.resource :approval
+
+  # Old dataset page
   ['datasets', 'datasets_old'].each do |as_route|
     map.resources :blists, :as => as_route,
       :collection => { :detail => :get },

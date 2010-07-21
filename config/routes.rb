@@ -135,37 +135,42 @@ ActionController::Routing::Routes.draw do |map|
     :delete_friend => :get
   }
 
-  map.resource :approval
-  map.resources :blists, :as => 'datasets',
-    :collection => { :detail => :get },
-    :member => {
-      :detail => :get,
-      :post_comment => :post,
-      :update_comment => [:put, :get],
-      :create_favorite => :get,
-      :delete_favorite => :get,
-      :notify_all_of_changes => :post,
-      :modify_permission => :post,
-      :alt => :get,
-      :save_filter => :post,
-      :help_me => :get
-    } do |blist|
-      blist.connect 'stats', :controller => 'stats', :action => 'index'
-      blist.resources :columns
-      blist.resources :sort_bys
-      blist.resources :groupings
-      blist.resources :show_hides
-      blist.resources :filters
-    end
-
-  map.connect 'datasets_alt', :controller => 'blists', :action => 'alt_index'
-
   # New dataset page
-  map.resources :datasets, :as => 'datasets_new',
+  map.resources :datasets,
+    :conditions => {:has_v4_dataset => true},
     :member => {
       :widget_preview => :get,
       :edit_metadata => [:get, :post]
     }
+
+  map.resource :approval
+
+  # Old dataset page
+  ['datasets', 'datasets_old'].each do |as_route|
+    map.resources :blists, :as => as_route,
+      :collection => { :detail => :get },
+      :member => {
+        :detail => :get,
+        :post_comment => :post,
+        :update_comment => [:put, :get],
+        :create_favorite => :get,
+        :delete_favorite => :get,
+        :notify_all_of_changes => :post,
+        :modify_permission => :post,
+        :alt => :get,
+        :save_filter => :post,
+        :help_me => :get
+      } do |blist|
+        blist.connect 'stats', :controller => 'stats', :action => 'index'
+        blist.resources :columns
+        blist.resources :sort_bys
+        blist.resources :groupings
+        blist.resources :show_hides
+        blist.resources :filters
+      end
+  end
+
+  map.connect 'datasets_alt', :controller => 'blists', :action => 'alt_index'
 
   map.connect 'profile/:profile_name/:id', :controller => 'profile',
      :action => 'show', :conditions => { :method => :get },
@@ -190,6 +195,26 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'w/:id', :controller => 'widgets',
     :action => 'show', :requirements => {:id => UID_REGEXP}
 
+  # New SEO URL
+  map.connect ':category/:view_name/:id', :controller => 'datasets',
+    :action => 'show', :conditions => { :method => :get },
+    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
+      :category => /(\w|-)+/},
+    :conditions => {:has_v4_dataset => true}
+
+  # New short URLs
+  map.connect 'dataset/:id', :controller => 'datasets',
+    :action => 'show', :conditions => { :method => :get },
+    :requirements => {:id => UID_REGEXP},
+    :conditions => {:has_v4_dataset => true}
+
+  map.connect 'd/:id', :controller => 'datasets',
+    :action => 'show', :conditions => { :method => :get },
+    :requirements => {:id => UID_REGEXP},
+    :conditions => {:has_v4_dataset => true}
+
+
+  # Old SEO URLs
   map.connect ':category/:view_name/:id', :controller => 'blists',
     :action => 'show', :conditions => { :method => :get },
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
@@ -237,7 +262,7 @@ ActionController::Routing::Routes.draw do |map|
   :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
     :category => /(\w|-)+/}
 
-  # Support /dataset and /d short URLs
+  # Support /dataset and /d short URLs for old page
   map.connect 'dataset/:id', :controller => 'blists',
     :action => 'show', :conditions => { :method => :get },
     :requirements => {:id => UID_REGEXP}

@@ -270,6 +270,7 @@ javascripts:
   - controls/grid-sidebar/append-replace
   - controls/grid-sidebar/calendar-create
   - controls/grid-sidebar/chart-create
+  - controls/grid-sidebar/column-properties
   - controls/grid-sidebar/download-dataset
   - controls/grid-sidebar/embed-sdp
   - controls/grid-sidebar/feed

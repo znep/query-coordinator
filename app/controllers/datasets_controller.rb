@@ -15,16 +15,14 @@ class DatasetsController < ApplicationController
       @user_session = UserSession.new
     end
 
-    # Add this back once we flip this over to the main page
     # See if it matches the authoritative URL; if not, redirect
-#    if request.path != @view.href
-#      # Log redirects in development
-#      if ENV["RAILS_ENV"] != 'production' &&
-#        request.path =~ /^\/dataset\/\w{4}-\w{4}/
-#        logger.info("Doing a dataset redirect from #{request.referrer}")
-#      end
-#      redirect_to(@view.href + '?' + request.query_string)
-#    end
+    if request.path != @view.href
+      # Log redirects in development
+      if Rails.env.production? && request.path =~ /^\/dataset\/\w{4}-\w{4}/
+        logger.info("Doing a dataset redirect from #{request.referrer}")
+      end
+      redirect_to(@view.href + '?' + request.query_string)
+    end
 
   end
 

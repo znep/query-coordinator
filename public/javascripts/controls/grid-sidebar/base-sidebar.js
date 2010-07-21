@@ -58,6 +58,9 @@
         + dataSource: object or function that returns an object that will be
             used to fill in the pane on render if no data is passed in to
             addPane
+        + dataPreProcess: function that takes a copy of the data, and returns a
+            processed version.  It is preferable to use this with an object
+            dataSource instead of the function version of dataSource
         + onlyIf: boolean, or function that takes the view and returns true if
             the pane is enabled, false if not
         + disabledSubtitle: String to display when the pane is disabled
@@ -125,6 +128,9 @@
                               this has been reached, the Add button will disappear
                           + addText: Text of the button to add new fields; defaults
                               to 'Add Value'
+                          + savedField: name of a value that is not editable
+                             but is part of the object, and should propagated
+                             through edits
                       - 'custom' renders a field using a callback. It takes a
                           special object named 'editorCallbacks',
                           with the following fields:
@@ -149,6 +155,8 @@
                       they are namespaced into the repeater
                   + prompt: optional, prompt text for text/textarea/select.
                       If null for select, will not add a prompt option
+                  + value: For a static field, the value to display.  Can also
+                      be a function (passed data)
                   + defaultValue: default value to use for the field; for
                       checkboxes use true.  For radioGroup, the name of the option
                       that should be selected by default.  For color, also
@@ -158,6 +166,9 @@
                       lines in a repeater; falls back to defaultValue (if set)
                   + required: optional, boolean, whether or not the input should be
                       validated as required (if visible)
+                  + disabled: boolean or function (passed data); if true, the
+                      field will be disabled.  Overrides options function
+                      returning null
                   + minimum, maximum: For slider, limits of the range
                   + trueValue, falseValue: For checkbox, optional values to map
                       true & false to.  defaultValue can be either of these
@@ -189,8 +200,12 @@
                   }
                       If used with linkedField, should be a function that
                       accepts the current value of the linkedField,
-                      and returns an array of hashes as above, or null to
-                      disable the select input
+                      and returns an array of hashes as above, 'disabled' to
+                      disable the select input, 'hidden' to hide it
+                      (it still accepts blank values to disable for legacy
+                      support, but the string versions are preferred).
+                      This may also be a function without linked field, in
+                      which case it is called once at render time with the data
                   + linkedField: Used with select or custom inputs.
                       Name of field, or array of field names, that should be
                       monitored.  On change, the values are passed to the options
@@ -616,12 +631,18 @@
 
                 if ($.isBlank(pane))
                 {
-                    pane = _.compact([sidebarObj._currentOuterPane,
+                    pane = sidebarObj._currentOuterPane;
+                    if (sidebarObj._currentOuterPane != sidebarObj._currentPane)
+                    {
+                        pane = _.compact([sidebarObj._currentOuterPane,
                             sidebarObj._currentPane]).join('.');
+                    }
                 }
                 if ($.isBlank(pane)) { return; }
 
                 var nameParts = getConfigNames(pane);
+                if ($.isBlank(sidebarObj._$panes[nameParts.secondary])) { return; }
+
                 var isCur = sidebarObj._currentOuterPane == nameParts.primary &&
                     sidebarObj._currentPane == nameParts.secondary;
                 if (isCur) { sidebarObj.hide(pane); }
@@ -916,6 +937,14 @@
                         // that as the parent
                         if (!$.isBlank(parArray))
                         { parObj = parArray[parIndex] || {}; }
+
+                        var $savedDataLine =
+                            $input.closest('.line[data-savedData]');
+                        if ($savedDataLine.length > 0)
+                        {
+                            $.extend(parObj, JSON.parse(
+                                $savedDataLine.attr('data-savedData') || '{}'));
+                        }
                     }
 
                     // If this is a column select, then parse the value as a num,
@@ -1234,7 +1263,10 @@
 
         var commonAttrs = function(item)
         {
+            var isDisabled = _.isFunction(item.disabled) ?
+                item.disabled(args.context.data) : item.disabled;
             return {id: item.name, name: item.name, title: item.prompt,
+                disabled: isDisabled, 'data-isDisabled': isDisabled,
                 'class': [ {value: 'required', onlyIf: item.required &&
                     !args.context.inRepeater},
                         {value: 'textPrompt', onlyIf: !$.isBlank(item.prompt) &&
@@ -1356,9 +1388,16 @@
         switch (args.item.type)
         {
             case 'static':
-                contents = [];
-                contents.push($.extend(commonAttrs(args.item),
-                    {tagName: 'span', contents: args.item.text}));
+                var val = _.isFunction(args.item.value) ?
+                    args.item.value(_.isEmpty(args.context.data) ?
+                        null : args.context.data) : args.item.value;
+                if (!$.isBlank(val))
+                {
+                    contents.push($.extend(commonAttrs(args.item),
+                        {tagName: 'span', contents: val}));
+                }
+                else
+                { contents = []; }
                 break;
 
             case 'text':
@@ -1463,7 +1502,7 @@
                         {defaultValue: defValue, dataValue: curValue,
                             extraClass: 'sliderInput'})),
                     {tagName: 'input', type: 'text', value: (curValue || defValue),
-                    'data-scale': scale, disabled: true}));
+                    'data-scale': scale, readonly: true}));
                 break;
 
             case 'color':
@@ -1522,22 +1561,21 @@
                 var items = _.map(args.item.options, function(opt, i)
                 {
                     var id = itemAttrs.id + '-' + i;
+                    var subLine = renderLine(sidebarObj,
+                        {context: $.extend({}, args.context,
+                            {noTag: true, inputOnly: true}),
+                        item: opt, items: args.item.options, pos: i});
                     return {tagName: 'div', 'class': ['radioLine', opt.type],
                         contents: [
                             $.extend({}, itemAttrs,
                                 {id: id, tagName: 'input', type: 'radio',
                                 'class': {value: 'wizExclude',
                                     onlyIf: opt.type != 'static'},
-                                checked: (curValue || defValue) == opt.name,
+                                checked: (curValue || defValue) == opt.name ||
+                                    (subLine[0]['data-dataValue'] || {}).onlyIf,
                                 'data-defaultValue': $.htmlEscape(
                                     JSON.stringify(defValue == opt.name))}),
-                            {tagName: 'label', 'for': id,
-                            contents:
-                                renderLine(sidebarObj,
-                                    {context: $.extend({}, args.context,
-                                        {noTag: true, inputOnly: true}),
-                                    item: opt, items: args.item.options, pos: i})
-                            }
+                            {tagName: 'label', 'for': id, contents: subLine}
                         ]};
                 });
                 contents.push({tagName: 'div', 'class': 'radioBlock',
@@ -1597,6 +1635,18 @@
                                                 contextData : null})
                     });
 
+                    if (!$.isBlank(args.item.savedField))
+                    {
+                        var savedData = getValue(contextData,
+                            args.item.savedField);
+                        if (!$.isBlank(savedData))
+                        {
+                            var o = {};
+                            o[args.item.savedField] = savedData;
+                            l['data-savedData'] = $.htmlEscape(JSON.stringify(o));
+                        }
+                    }
+
                     if (i >= args.item.minimum)
                     { l.contents.unshift(removeButton); }
 
@@ -1612,6 +1662,8 @@
                     iconClass: 'add'}, true));
                 break;
         }
+
+        if (contents.length < 1) { return null; }
 
         if (args.context.inputOnly)
         {
@@ -1698,6 +1750,9 @@
             if (_.isFunction(data))
             { data = data(); }
         }
+        if (_.isFunction(config.dataPreProcess) && !$.isBlank(data))
+        { data = config.dataPreProcess($.extend(true, {}, data)); }
+
         var rData = {title: config.title, subtitle: config.subtitle,
             sections: config.sections, paneId: paneId,
             finishButtons: (config.finishBlock || {}).buttons,
@@ -1813,7 +1868,7 @@
                             { $firstField = o.$field; }
                         }
                         else if (_.isFunction(o.func))
-                        { failed = !o.func(blist.display.view); }
+                        { failed = !o.func(blist.display.view, data); }
 
                         // If they want the opposite, then flip it
                         if (o.negate) { failed = !failed; }
@@ -2179,7 +2234,11 @@
                     {
                         var newOpts = selOpt(vals);
                         $field.find('option:not(.prompt)').remove();
-                        $field.attr('disabled', $.isBlank(newOpts));
+                        $field.attr('disabled', $.isBlank(newOpts) ||
+                            newOpts == 'disabled' ||
+                            !!$field.attr('data-isDisabled'));
+                        $field.closest('.line')
+                            .toggleClass('hide', newOpts == 'hidden');
 
                         _.each(newOpts || [], function(o)
                         {
@@ -2221,10 +2280,14 @@
                 if (!_.isFunction(selOpt)) { return; }
 
                 var curValue = JSON.parse(
+                    $field.attr('data-dataValue') ||
                     $field.attr('data-defaultValue') || '""');
                 var newOpts = selOpt(data);
                 $field.find('option:not(.prompt)').remove();
-                $field.attr('disabled', $.isBlank(newOpts));
+                $field.attr('disabled', $.isBlank(newOpts) ||
+                    newOpts == 'disabled' || !!$field.attr('data-isDisabled'));
+                $field.closest('.line')
+                    .toggleClass('hide', newOpts == 'hidden');
 
                 _.each(newOpts || [], function(o)
                 {

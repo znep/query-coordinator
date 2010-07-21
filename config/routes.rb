@@ -141,7 +141,8 @@ ActionController::Routing::Routes.draw do |map|
     :member => {
       :widget_preview => :get,
       :edit_metadata => [:get, :post]
-    }
+    },
+    :except => :all # you see, we actually abandoned RESTful routes, I guess
 
   map.resource :approval
 

@@ -55,7 +55,8 @@ class BlistsController < ApplicationController
     end
 
     # See if it matches the authoritative URL; if not, redirect
-    if request.path != @view.href
+    if request.path != @view.href &&
+      !CurrentDomain.module_available?('new_datasets_page')
       # Log redirects in development
       if ENV["RAILS_ENV"] != 'production' &&
         request.path =~ /^\/dataset\/\w{4}-\w{4}/

@@ -18,6 +18,9 @@
             embedHTML = '<iframe id="blobIFrame" src="http://docs.google.com/gview?url=<%= blob_location %>' +
                 '&embedded=true" width="100%" height="99%" frameborder="0" scrolling="no"></iframe>';
         }
-        blist.$display.html(embedHTML);
+
+        _.defer(function(){
+            blist.$display.html(embedHTML);
+        });
     });
 </script>

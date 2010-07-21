@@ -18,7 +18,7 @@
                             var $star = $(this);
 
                             $star.stars({
-                                value: $(star).attr('data-rating'),
+                                value: $star.attr('data-rating'),
                                 enabled: true,
                                 onChange: function(value)
                                 {

@@ -8,19 +8,12 @@
  */
 
 (function($) {
-    var FONT_CSS = 'font-size: 12px; line-height: 15px; font-family: monaco, lucida console, fixed;';
-    var OUTER_PADDING = 20;
-    var TOKEN_CSS = 'color: #dddddd;';
-    var LITERAL_CSS = 'color: #ffff44;';
-    var ERROR_CSS = 'color: #ff4444;';
-    var TAG_CSS = 'color: #00ffff;';
-    var ATTR_CSS = 'color: #dddddd';
-    var HELLO_HTML = '<div>Welcome to the Socrata console.  Type <span style="font-style: italic;">help</span> for help.</div>'
-    var HELP_HTML = '<div>This is the Socrata console.  Syntax is largely JavaScript.  Built-in commands include:</div>' +
-        '<div><span style="padding-left: 20px; font-style: italic;">help</span> - print this help</div>' +
-        '<div><span style="padding-left: 20px; font-style: italic;">exit</span> - close the console (or type <span style="font-style: italic;">ctrl-shift-g</span> or <span style="font-style: italic;">command-shift-g</span>)</div>' +
-        '<div><span style="padding-left: 20px; font-style: italic;">clear</span> - clear the console</div>' +
-        '<div>To invoke APIs, use get(<span style="font-style: italic;">url</span>, <span style="font-style: italic;">params</span>) or post(<span style="font-style: italic;">url</span>, <span style="font-style: italic;">params</span>, <span style="font-style: italic;">body</span>).</div>';
+    var HELLO_HTML = '<div>Welcome to the Socrata Open Data API console.  Type <code>help</code> for help.</div>'
+    var HELP_HTML = '<div>This is the Socrata Open Data API console.  Syntax is largely JavaScript.  Built-in commands include:</div>' +
+        '<div><code>help</code> - print this help</div>' +
+        '<div><code>exit</code> - close the console (or type <code>ctrl-shift-g</code> or <code>command-shift-g</code>)</div>' +
+        '<div><code>clear</code> - clear the console</div>' +
+        '<div>To invoke APIs, use <code>get(url, params)</code> or <code>post(url, params, body)</code>.</div>';
 
     var $console;
     var $inner;
@@ -52,11 +45,11 @@
         scroll();
     }
     
-    var literalPrefix = "<span style='" + LITERAL_CSS + "'>";
+    var literalPrefix = "<span class=\"literal\">";
     var literalSuffix = "</span>";
-    var tagPrefix = "<span style='" + TAG_CSS + "'>";
+    var tagPrefix = "<span class=\"tag\">";
     var tagSuffix = "</span>";
-    var attrPrefix = "<span style='" + ATTR_CSS + "'>";
+    var attrPrefix = "<span class=\"attr\">";
     var attrSuffix = "</span>";
 
     var printObject = function(output, $target) {
@@ -65,7 +58,7 @@
             return;
         }
 
-        var pretty = [ "<pre style='", FONT_CSS, ' ', TOKEN_CSS, "; margin: 0'>" ];
+        var pretty = [ "<pre class=\"token\">" ];
         
         var addObject = function(node, prefix) {
             if (node == null || node.constructor == Date) {
@@ -172,7 +165,7 @@
         if (error == "")
             error = "Error (no details available)";
         if (typeof error == "string")
-            print('<span style="' + ERROR_CSS + '">' + escapeHtml(error) + '</span>', $target);
+            print('<span class="error">' + escapeHtml(error) + '</span>', $target);
         else
             printObject(error, $target);
     }
@@ -192,7 +185,7 @@
             commandHistory.push(command);
         commandHistoryPosition = commandHistory.length;
         var escapedCommand = escapeHtml(command);
-        $output.append('<div>socrata&gt;&nbsp;' + escapedCommand + '</div>');
+        $output.append('<div>soda&gt;&nbsp;' + escapedCommand + '</div>');
 
         try {
             needOutput = true;
@@ -216,7 +209,7 @@
     }
 
     var ajax = function(method, url, params, options) {
-        $outputNode = $('<div><div style="background: transparent url(' + defaultRoot + '/images/shell-spinner.gif) no-repeat 0 50%;">&nbsp;</div></div>')
+        $outputNode = $('<div><div class="spinner" style="">&nbsp;</div></div>')
         $output.append($outputNode);
         needOutput = false;
 
@@ -292,12 +285,12 @@
         });
         */
 
-        $console = $('<div style="background: transparent url(' + defaultRoot + '/images/75pct-black.png); position: fixed; top: 0; left: 0; right: 0; bottom: 0; ' + FONT_CSS + ' overflow: auto; padding: ' + OUTER_PADDING + 'px; z-index: 1000001; color: #00ff00;">' +
+        $console = $('<div class="console">' +
             '<div class="__socrata-console-inner__">' +
             '<div class="__socrata-console-output__">' + HELLO_HTML + '</div>' +
-            '<table class="__socrata-console-input__" width="100%" style="padding: 0; margin: 0; border: none; border-collapse: collapse"><tr>' +
-            '<td style="' + FONT_CSS + '; padding: 0">socrata&gt;&nbsp;</td>' +
-            '<td width="100%" style="padding: 0"><input autocomplete="off" style="margin-left: -1px; border: none; background: transparent; overflow: visible; color: #00ff00; width: 100%; ' + FONT_CSS + ' padding: 0; height: 15px; outline: none;"/></td>' +
+            '<table class="console-input __socrata-console-input__" width="100%"><tr>' +
+            '<td class="no-padding">socrata&gt;&nbsp;</td>' +
+            '<td width="100%" class="no-padding"><input autocomplete="off" class="console-entry"/></td>' +
             '</table>' +
             '</div></div>');
         $inner = $console.children();

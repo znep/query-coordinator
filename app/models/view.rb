@@ -211,6 +211,10 @@ class View < Model
     (data['averageRating'] || 0) / 20.0
   end
 
+  def average_rating(type)
+    (data.deep_value_at(['ratings', type]) || 0) / 20.0
+  end
+
   def totalTimesRated
     data['totalTimesRated'] || 0
   end

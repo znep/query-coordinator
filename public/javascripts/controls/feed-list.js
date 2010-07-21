@@ -194,25 +194,6 @@
             {
                 eventsBound = true;
 
-                // Wrapper around inlineLogin.verifyUser; simply does nothing
-                // if auth fails
-                var doAuthedAction = function(actionText, callback)
-                {
-                    if (!$.isBlank(blist.util.inlineLogin))
-                    {
-                        blist.util.inlineLogin.verifyUser(
-                            function(isSuccess)
-                            {
-                                if (isSuccess)
-                                    callback();
-                            }, 'You must be logged in to ' + actionText);
-                    }
-                    else
-                    {
-                        callback();
-                    }
-                };
-
                 // Expand visible comments
                 $.live('.feed .replyViewAllLink', 'click', function(event)
                 {
@@ -253,7 +234,7 @@
                     // Take action
                     if ($this.is('.commentInappropriateLink:not(.disabled)'))
                     {
-                        doAuthedAction('flag a comment', function()
+                        blist.util.doAuthedAction('flag a comment', function()
                         {
                             $.ajax({
                                 url: '/views/' + targetCommentData.viewId + '/comments/' +
@@ -277,7 +258,7 @@
                              $this.is('.commentRateDownLink:not(.ratedDown)'))
                     {
                         var thumbsUp = $this.hasClass('commentRateUpLink');
-                        doAuthedAction('rate a comment', function()
+                        blist.util.doAuthedAction('rate a comment', function()
                         {
                             $.ajax({
                                 url: '/views/' + targetCommentData.viewId + '/comments/' +
@@ -359,7 +340,7 @@
                             commentData.parent = { id: parentCommentId };
                         }
 
-                        doAuthedAction('post a comment', function()
+                        blist.util.doAuthedAction('post a comment', function()
                         {
                             $.ajax({
                                 url: '/views/' + viewId + '/comments.json',

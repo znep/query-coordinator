@@ -6,11 +6,6 @@ class Comment < Model
   end
 
   def self.create(view_id, attributes)
-    if attributes[:viewRating].blank? || attributes[:viewRating].to_i == 0
-      attributes[:viewRating] = nil
-    else
-      attributes[:viewRating] = attributes[:viewRating].to_i * 20
-    end
     if attributes[:title].blank?
       attributes[:title] = nil
     end
@@ -18,7 +13,7 @@ class Comment < Model
       attributes[:body] = nil
     end
 
-    if attributes[:body].nil? && attributes[:viewRating].nil? && attributes[:title].nil?
+    if attributes[:body].nil? && attributes[:title].nil?
       return nil
     end
 

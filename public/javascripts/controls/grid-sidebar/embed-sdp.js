@@ -48,7 +48,7 @@
                 var height = $embedForm.find('#embed_height').val();
                 var customizationId = $embedForm.find('#embed_customization').val() || '';
 
-                window.open("/datasets_new/" + blist.display.view.id +
+                window.open($.generateViewUrl(blist.display.view) +
                     "/widget_preview?width=" + width + "&height=" + height +
                     "&customization_id=" + customizationId, "Preview");
             }

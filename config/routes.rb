@@ -135,18 +135,7 @@ ActionController::Routing::Routes.draw do |map|
     :delete_friend => :get
   }
 
-  # New dataset page
-  map.resources :datasets,
-    :conditions => {:has_v4_dataset => true},
-    :member => {
-      :widget_preview => :get,
-      :edit_metadata => [:get, :post]
-    },
-    :except => :all # you see, we actually abandoned RESTful routes, I guess
-
-  map.resource :approval
-
-  # Old dataset page
+  # Old dataset page - change this to new when relevant
   ['datasets', 'datasets_old'].each do |as_route|
     map.resources :blists, :as => as_route,
       :collection => { :detail => :get },
@@ -199,6 +188,12 @@ ActionController::Routing::Routes.draw do |map|
   # New SEO URL
   map.connect ':category/:view_name/:id', :controller => 'datasets',
     :action => 'show', :conditions => { :method => :get },
+    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
+      :category => /(\w|-)+/},
+    :conditions => {:has_v4_dataset => true}
+
+  map.connect ':category/:view_name/:id/widget_preview', :controller => 'datasets',
+    :action => 'widget_preview', :conditions => { :method => :get },
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
       :category => /(\w|-)+/},
     :conditions => {:has_v4_dataset => true}

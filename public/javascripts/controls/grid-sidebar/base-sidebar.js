@@ -1069,7 +1069,7 @@
                 $pane.find('.line :radio').each(function()
                 { resetInput($(this)); });
 
-                uniformUpdate();
+                uniformUpdate($pane.find('.uniform :input'));
             },
 
             genericErrorHandler: function($pane, xhr)
@@ -1088,10 +1088,10 @@
             sidebarObj.$grid().isDatasetGrid();
     };
 
-    var uniformUpdate = function()
+    var uniformUpdate = function(items)
     {
         if (!$.isBlank($.uniform) && !$.isBlank($.uniform.update))
-        { $.uniform.update(); }
+        { $.uniform.update(items); }
     };
 
     var getConfigNames = function(configName)
@@ -2110,7 +2110,7 @@
                             }
                             $sel.val($link.is('.tableColumn') ?
                                 c.tableColumnId : c.id).change();
-                            uniformUpdate();
+                            uniformUpdate($sel);
                         });
                 }
             });
@@ -2256,7 +2256,7 @@
                         $l.toggle(showLine);
                     }
 
-                    uniformUpdate();
+                    uniformUpdate($field);
                 };
                 var defAdjField = function() { _.defer(adjustField); };
 
@@ -2288,13 +2288,14 @@
                     newOpts == 'disabled' || !!$field.attr('data-isDisabled'));
                 $field.closest('.line')
                     .toggleClass('hide', newOpts == 'hidden');
+                if (!_.isArray(newOpts)) { newOpts = null; }
 
                 _.each(newOpts || [], function(o)
                 {
                     $field.append($.tag(renderSelectOption(o, curValue)));
                 });
                 $field.change();
-                uniformUpdate();
+                uniformUpdate($field);
             });
 
             $container.find(':input')
@@ -2669,8 +2670,8 @@
             case 'expand':
                 if ($item.is('.selectable.collapsed'))
                 {
-                    $item.find('.sectionSelect').click();
-                    uniformUpdate();
+                    var $selBox = $item.find('.sectionSelect').click();
+                    uniformUpdate($selBox);
                 }
 
                 _.defer(function()

@@ -24,4 +24,6 @@
         }
     }, $.blistEditor.text));
 
+    $.blistEditor.addEditor($.blistEditor.email, 'email');
+
 })(jQuery);

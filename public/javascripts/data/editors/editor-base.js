@@ -11,6 +11,15 @@
                 defaults: $.extend({}, extObj.defaults, extHash.defaults || {}),
                 prototype: $.extend({}, extObj.prototype, extHash.prototype || {})
             });
+        },
+
+        addEditor: function(editor, type)
+        {
+            _.each($.makeArray(type), function(t)
+            {
+                if (!$.isBlank(blist.data.types[t]))
+                { blist.data.types[t].editor = editor; }
+            });
         }
     };
 
@@ -88,6 +97,12 @@
                 if (!this._$dom)
                 { this._$dom = $(this.currentDom); }
                 return this._$dom;
+            },
+
+            flattenValue: function()
+            {
+                if ($.isPlainObject(this.originalValue))
+                { this.originalValue = _.values(this.originalValue)[0]; }
             },
 
             $editor: function()

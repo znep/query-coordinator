@@ -161,4 +161,7 @@
         }
     }));
 
+    $.blistEditor.addEditor($.blistEditor.document,
+        ['document', 'document_obsolete']);
+
 })(jQuery);

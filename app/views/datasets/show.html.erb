@@ -313,6 +313,10 @@
     blist.sidebarHidden.edit.addColumn = <%= !@view.is_blist? ||
       !@view.owned_by?(@current_user) %>;
 
+    <%# Columm properties %>
+    blist.sidebarHidden.columnProperties = <%= @view.is_alt_view? ||
+      !@view.owned_by?(@current_user) %>;
+
     <%# Filter pane %>
     blist.sidebarHidden.filter = blist.sidebarHidden.filter || {};
     blist.sidebarHidden.filter.filterDataset = <%= @view.is_alt_view? %>;

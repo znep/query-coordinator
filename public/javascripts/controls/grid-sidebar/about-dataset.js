@@ -93,6 +93,7 @@
                         $.live('#gridSidebar_about .contactButton',
                             'click', function(event)
                         {
+                            event.preventDefault();
                             var $this = $(this);
 
                             // Grab the form from its template
@@ -167,9 +168,10 @@
                             // Pre-populate message subject
                             if (!_.isUndefined($this.attr('data-select')))
                             {
-                               $('#contactPurpose').val($this.attr('data-select'));
+                               var $sel = $sect.find('#contactPurpose');
+                               $sel.val($this.attr('data-select'));
                                contactPurposeChange();
-                               $.uniform.update();
+                               $.uniform.update($sel);
                             }
                         });
                     }

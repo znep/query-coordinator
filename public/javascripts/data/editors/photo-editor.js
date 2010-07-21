@@ -111,6 +111,7 @@
             {
                 if (!this._$editor)
                 {
+                    this.flattenValue();
                     this._curVal = this.originalValue;
                     var html = '<div class="blist-table-editor ' +
                         'type-' + this.column.renderTypeName +
@@ -178,5 +179,7 @@
             }
         }
     }));
+
+    $.blistEditor.addEditor($.blistEditor.photo, ['photo', 'photo_obsolete']);
 
 })(jQuery);

@@ -20,4 +20,6 @@
         }
     }, $.blistEditor.text));
 
+    $.blistEditor.addEditor($.blistEditor.number, 'number');
+
 })(jQuery);

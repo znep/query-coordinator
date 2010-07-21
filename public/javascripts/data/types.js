@@ -1223,32 +1223,6 @@ blist.namespace.fetch('blist.data.types');
         }
     });
 
-    // Set editors, but make sure they exist first
-    if ($.blistEditor)
-    {
-        blist.data.types.text.editor = $.blistEditor.text;
-        blist.data.types.date.editor = $.blistEditor.date;
-        blist.data.types.calendar_date.editor = $.blistEditor.date;
-        blist.data.types.number.editor = $.blistEditor.number;
-        blist.data.types.percent.editor = $.blistEditor.percent;
-        blist.data.types.money.editor = $.blistEditor.money;
-        blist.data.types.email.editor = $.blistEditor.email;
-        blist.data.types.url.editor = $.blistEditor.url;
-        blist.data.types.phone.editor = $.blistEditor.phone;
-        blist.data.types.flag.editor = $.blistEditor.flag;
-        blist.data.types.picklist.editor = $.blistEditor.picklist;
-        blist.data.types.drop_down_list.editor = $.blistEditor.picklist;
-        blist.data.types.checkbox.editor = $.blistEditor.checkbox;
-        blist.data.types.stars.editor = $.blistEditor.stars;
-        blist.data.types.html.editor = $.blistEditor.html;
-        blist.data.types.document.editor = $.blistEditor.document;
-        blist.data.types.document_obsolete.editor = $.blistEditor.document;
-        blist.data.types.photo.editor = $.blistEditor.photo;
-        blist.data.types.photo_obsolete.editor = $.blistEditor.photo;
-        blist.data.types.tag.editor = $.blistEditor.tag;
-        blist.data.types.location.editor = $.blistEditor.location;
-    }
-
     for (var name in blist.data.types) {
         var type = blist.data.types[name];
         if (typeof type == "object") {

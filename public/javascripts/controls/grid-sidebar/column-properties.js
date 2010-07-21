@@ -1,5 +1,7 @@
 (function($)
 {
+    if (blist.sidebarHidden.columnProperties) { return; }
+
     var isDataset = blist.dataset.getDisplayType(blist.display.view) == 'Blist';
 
     var canConvert = function(col)
@@ -279,7 +281,7 @@
 
         var newType = column.dataTypeName;
         delete column.dataTypeName;
-        var needsConvert = newType != data.dataTypeName;
+        var needsConvert = !$.isBlank(newType) && newType != data.dataTypeName;
 
         var url = '/views/' + blist.display.view.id + '/columns/' +
             data.id + '.json';

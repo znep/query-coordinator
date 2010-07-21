@@ -276,4 +276,6 @@
         }
     }));
 
+    $.blistEditor.addEditor($.blistEditor.location, 'location');
+
 })(jQuery);

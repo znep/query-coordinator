@@ -71,6 +71,7 @@
             {
                 if (!this._$editor)
                 {
+                    this.flattenValue();
                     var align = (this.column.format || {}).align ?
                         ' align-' + this.column.format.align : '';
                     var edHtml = '<div class="blist-table-editor ' +
@@ -92,6 +93,7 @@
             editorInserted: function()
             {
                 var editObj = this;
+                editObj.flattenValue();
                 editObj.curValue = editObj.originalValue;
                 editObj.$dom()
                     .click(function() { editObj.focus(); })
@@ -137,5 +139,7 @@
             }
         }
     }));
+
+    $.blistEditor.addEditor($.blistEditor.stars, 'stars');
 
 })(jQuery);

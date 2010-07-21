@@ -30,6 +30,7 @@ javascripts:
   - util/datasetTypes/map
   - util/templates
   - util/socrata-server
+  - data/types
   - widgets/socrata-messaging
   - widgets/text-prompt
   - widgets/values
@@ -44,12 +45,10 @@ javascripts:
 - shared-calendar:
   - plugins/ui.draggable
   - plugins/fullcalendar
-  - data/types
   - widgets/blist-calendar
 - shared-table-render:
   - plugins/ui.draggable
   - util/humane-number
-  - data/types
   - data/model
   - data/table
   - data/table_nav
@@ -81,7 +80,6 @@ javascripts:
   - data/editors/photo-editor
 - shared-map:
   - widgets/base-visualization
-  - data/types
   - util/color
   - widgets/maps/base-map
   - widgets/maps/esri-map
@@ -92,7 +90,6 @@ javascripts:
   - plugins/highcharts.src
   - widgets/base-visualization
   - widgets/charts/base-chart
-  - data/types
   - widgets/charts/highcharts
 - accounts-show:
   - plugins/ui.showedit
@@ -117,7 +114,6 @@ javascripts:
   - plugins/ajaxupload.3.0
   - util/humane-date
   - util/urls
-  - data/types
   - data/model
   - data/table
   - widgets/combination-list
@@ -219,7 +215,6 @@ javascripts:
 - rpx-return:
   - screens/signup-screen
 - stats-index:
-  - data/types
   - data/model
   - data/table
   - screens/stats-screen

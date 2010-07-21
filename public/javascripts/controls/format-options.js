@@ -201,7 +201,8 @@
                 else { $alignment.addClass('alignLeft'); }
 
                 if (!$.isBlank($.uniform) && !$.isBlank($.uniform.update))
-                { _.defer(function() { $.uniform.update(); }); }
+                { _.defer(function()
+                    { $.uniform.update($fmtMenu.find('.uniform :input')); }); }
             });
 
             config.$grid.bind('edit-finished', function(e)

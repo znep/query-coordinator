@@ -15,6 +15,7 @@
             {
                 if (!this._$editor)
                 {
+                    this.flattenValue();
                     var align = (this.column.format || {}).align ?
                         ' align-' + this.column.format.align : '';
                     this._$editor = $('<div class="blist-table-editor ' +
@@ -53,5 +54,7 @@
             }
         }
     }));
+
+    $.blistEditor.addEditor($.blistEditor.checkbox, 'checkbox');
 
 })(jQuery);

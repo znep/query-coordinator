@@ -28,4 +28,6 @@
         }
     }, $.blistEditor.text));
 
+    $.blistEditor.addEditor($.blistEditor.tag, 'tag');
+
 })(jQuery);

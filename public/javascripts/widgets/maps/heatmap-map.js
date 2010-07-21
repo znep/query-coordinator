@@ -157,7 +157,7 @@
             _.each(mapObj._segmentSymbols, function(symbol)
             {
                 $ul.append( $("<div class='color_swatch'><div class='inner'>&nbsp;</div></div>")
-                        .css('background-color', symbol.color.toCss(true))
+                        .css('background-color', symbol.color.toCss(false))
                     );
             });
         }

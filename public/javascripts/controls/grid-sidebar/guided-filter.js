@@ -1,6 +1,6 @@
 (function($)
 {
-    if (_.isUndefined(blist.display.view.metadata) &&
+    if (_.isUndefined(blist.display.view.metadata) ||
         _.isUndefined(blist.display.view.metadata.facets)) { return; }
 
     var configName = 'filter.guidedFilter';

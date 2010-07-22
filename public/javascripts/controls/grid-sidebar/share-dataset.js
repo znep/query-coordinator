@@ -163,7 +163,8 @@
                         });
 
                          // Grab non-public grants (shares)
-                        var grants = _.reject(blist.display.view.grants, function(g)
+                        var grants = _.reject(blist.display.view.grants || [],
+                        function(g)
                         {
                             return _.include(g.flags || [], 'public');
                         });

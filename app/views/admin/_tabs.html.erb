@@ -22,4 +22,7 @@
     <%= link_to 'Theme', :action => :theme %>
   </div></li>
   <%- end -%>
+  <li class='<%= active == 'federations' ? ' active' : '' %>'><div class='wrapper'>
+    <%= link_to 'Federations', :action => :federations %>
+  </div></li>
 </ul>

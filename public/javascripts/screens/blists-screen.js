@@ -750,7 +750,7 @@ blist.myBlists.customDatasetName = function(value)
         'class="name-cell clipText" ' +
         'title="\' + $.htmlEscape(' + value +
         ' || "") + \'"><a href="\' + $.generateViewUrl(row) + \'" ' +
-        'class="dataset-name">\' + $.htmlEscape(' + value + ') + \'</a></div>\' + ' +
+        'class="dataset-name" \' + $.generateViewRel(row) + \' >\' + $.htmlEscape(' + value + ') + \'</a></div>\' + ' +
         form;
 };
 

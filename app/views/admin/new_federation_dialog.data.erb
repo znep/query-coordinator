@@ -1,0 +1,75 @@
+<%- content_for(:wrapper_class, "newFederation") -%>
+
+<%- content_for :headline do -%>
+  <h1>Share datasets to a new domain</h1>
+<%- end -%>
+
+<div class="modalContentWrapper newFederationWrapper">
+  <div class="errorMessage"></div>
+  <% form_tag('/admin/federations/create', :id => "newFederationForm") do %>
+    <br/><br/>
+    <label for="new_federation_target_domain" class="required">Target Domain</label>
+    <%= text_field_tag('new_federation[target_domain]') %>
+    <br/><br/><br/>
+    <div class="submitLine clearfix">
+      <span class="requiredText">Required Entry</span>
+      <ul class="submitActions">
+        <li>
+          <ul class="actionButtons">
+            <li><a class="arrowButton" href="#submit" id="submitNewFederation">Create</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  <% end %>
+</div>
+
+
+<script type="text/javascript" charset="utf-8">
+  blist.common.modalReady = function()
+  {
+    var $form = $('#newFederationForm');
+
+    $form.validate({
+      rules: { "new_federation[target_domain]": "required" },
+      messages: {  "new_federation[target_domain]": "You must specify a target domain." }
+    });
+
+    var submitForm = function(event)
+    {
+      event.preventDefault();
+      if ($form.valid())
+      {
+        $.ajax({
+          url: $form.attr('action'),
+          type: 'PUT',
+          data: $form.find(':input'),
+          dataType: 'json',
+          success: function(responseData)
+          {
+            if (responseData['error'] !== undefined)
+            {
+              $('.newFederationWrapper .errorMessage').text(responseData['error']);
+              $('#new_federation_target_domain').focus();
+            }
+            else
+            {
+              $('#modal').jqmHide();
+              window.location = '/admin/federations';
+            }
+          },
+          error: function(request, status, error)
+          {
+            $('.newFederationWrapper .errorMessage').text("An error was encountered creating federation. Please retry later.");
+            $('#new_federation_target_domain').focus();
+          }
+        });
+      }
+    };
+
+    $('#submitNewFederation').click(submitForm);
+    $form.submit(submitForm);
+
+    $('#new_federation_target_domain').focus();
+  };
+</script>

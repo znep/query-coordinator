@@ -40,17 +40,17 @@
     <div id="discoverTabSearchResults" class="tabContentContainer clearfix<%=
       ' active' if @active_tab == :search %>">
       <%= render(:partial => 'cached_view_list_merged',
-                 :locals => { :tab_to_render => :search }) if @active_tab == :search %>
+                 :locals => { :tab_to_render => :search, :port => @current_state['port'] }) if @active_tab == :search %>
     </div>
     <div id="discoverTabPopular" class="tabContentContainer clearfix<%=
       ' active' if @active_tab == :popular %>">
       <%= render(:partial => 'cached_view_list_merged',
-                 :locals => { :tab_to_render => :popular }) if @active_tab == :popular %>
+                 :locals => { :tab_to_render => :popular, :port => @current_state['port'] }) if @active_tab == :popular %>
     </div>
     <div id="discoverTabAll" class="tabContentContainer clearfix<%=
       ' active' if @active_tab == :all %>">
       <%= render(:partial => 'cached_view_list_merged',
-                 :locals => { :tab_to_render => :all }) if @active_tab == :all %>
+                 :locals => { :tab_to_render => :all, :port => @current_state['port'] }) if @active_tab == :all %>
     </div>
     <%- if @active_tab == :nominations || !params[:no_js] -%>
       <% module_enabled :dataset_nomination do %>

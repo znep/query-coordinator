@@ -32,7 +32,9 @@
         <%- end -%>
       </div>
       <ul class="discoverContentList">
-        <%= render(:partial => "view_list_item", :collection => views) %>
+        <%= render(:partial => "view_list_item", :collection => views,
+              :locals => {:port => port })
+        %>
       </ul>
 
       <div class="viewPager">

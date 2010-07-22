@@ -27,6 +27,9 @@
               <%- if false && CurrentDomain.user_can?(current_user, :edit_site_theme) -%>
                 <p>To control the site's appearance, click the <%= link_to 'theme', :action => :theme %> tab.</p>
               <%- end -%>
+              <%- if CurrentDomain.user_can?(current_user, :federations) -%>
+                <p>To configure open data federation, click the <%= link_to 'federations', :action => :federations %> tab.</p>
+              <%- end -%>
             </div>
           </div>
         </div>

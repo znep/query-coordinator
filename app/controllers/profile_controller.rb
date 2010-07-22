@@ -8,6 +8,7 @@ class ProfileController < ApplicationController
   end
   
   def show
+    @port = request.port
     user_id = params[:id]
     if (!current_user || user_id != current_user.id)
       @is_user_current = false

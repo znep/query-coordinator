@@ -60,10 +60,10 @@ class DatasetsController < ApplicationController
             :name => attachment['nameForOutput']}
         end
         @view = View.update_attributes!(params[:id], params[:view])
-        flash[:notice] = "The metadata has been updated."
+        flash.now[:notice] = "The metadata has been updated."
       rescue CoreServer::CoreServerError => e
         return respond_to do |format|
-          flash[:error] = "An error occurred during your request: #{e.error_message}"
+          flash.now[:error] = "An error occurred during your request: #{e.error_message}"
         end
       end
     end

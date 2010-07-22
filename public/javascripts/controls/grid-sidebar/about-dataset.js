@@ -13,10 +13,30 @@
                     data: {},
                     callback: function($sect)
                     {
-                        var $stars = $sect.find('.datasetAverageRating');
-                        $stars.stars({
-                            value: $stars.attr('data-rating'),
-                            enabled: false
+                        $sect.find('.datasetAverageRating').each(function()
+                        {
+                            var $star = $(this);
+
+                            $star.stars({
+                                value: $star.attr('data-rating'),
+                                enabled: true,
+                                onChange: function(value)
+                                {
+                                    blist.util.doAuthedAction('rate this dataset', function()
+                                    {
+                                        $.ajax({
+                                            url: '/views/' + blist.display.view.id + '/ratings.json',
+                                            type: 'post',
+                                            contentType: 'application/json',
+                                            dataType: 'json',
+                                            data: JSON.stringify({
+                                                type: $star.attr('data-rating-type'),
+                                                rating: (value * 20)
+                                            })
+                                        });
+                                    });
+                                }
+                            });
                         });
 
                         $.live('#gridSidebar_about .expander', 'click', function(event)
@@ -93,6 +113,7 @@
                         $.live('#gridSidebar_about .contactButton',
                             'click', function(event)
                         {
+                            event.preventDefault();
                             var $this = $(this);
 
                             // Grab the form from its template
@@ -167,9 +188,10 @@
                             // Pre-populate message subject
                             if (!_.isUndefined($this.attr('data-select')))
                             {
-                               $('#contactPurpose').val($this.attr('data-select'));
+                               var $sel = $sect.find('#contactPurpose');
+                               $sel.val($this.attr('data-select'));
                                contactPurposeChange();
-                               $.uniform.update();
+                               $.uniform.update($sel);
                             }
                         });
                     }

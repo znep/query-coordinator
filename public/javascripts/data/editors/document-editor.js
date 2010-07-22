@@ -117,7 +117,8 @@
                         'title="Replace the document">Replace</a>' +
                         '<a class="tableButton remove" href="#remove" ' +
                         'title="Remove the document">Remove</a>' +
-                        '<a class="docLink" target="blist-viewer"></a>' +
+                        '<a class="docLink" target="blist-viewer" ' +
+                        'rel="external"></a>' +
                         '<input class="hiddenTextField" />' +
                         '</div>';
                     this._$editor = $(html);
@@ -160,5 +161,8 @@
             }
         }
     }));
+
+    $.blistEditor.addEditor($.blistEditor.document,
+        ['document', 'document_obsolete']);
 
 })(jQuery);

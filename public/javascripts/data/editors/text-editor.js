@@ -35,6 +35,7 @@
 
             originalTextValue: function()
             {
+                this.flattenValue();
                 return this.originalValue || '';
             },
 
@@ -79,4 +80,7 @@
             }
         }
     }));
+
+    $.blistEditor.addEditor($.blistEditor.text, 'text');
+
 })(jQuery);

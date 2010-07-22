@@ -22,4 +22,6 @@
         }
     }, $.blistEditor.number));
 
+    $.blistEditor.addEditor($.blistEditor.percent, 'percent');
+
 })(jQuery);

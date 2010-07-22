@@ -176,6 +176,14 @@
                   + extraClass: extra class(es) to be applied to the input;
                       should be a single string, could have multiple
                       space-separated classes
+                  + onlyIf: only display the field if these criteria are true.
+                    Currently accepts an object:
+                    {
+                      + field: Name of input field to check the value of
+                          (will find the closest field with that name)
+                      + value: Value that the field should be set to for this
+                          field to be shown
+                    }
                   + notequalto: optional, string to use for validating notequalto;
                       all fields that are validated like this should have the
                       same string
@@ -216,6 +224,8 @@
             ]
           }
         ]
+        + showCallback: function that is called when a sidebar pane is shown;
+            args: ($pane)
         + finishCallback: function that is called when a finish button is clicked;
             args: (sidebarObj, data, $pane, value)
         + finishBlock: specifies final actions
@@ -584,6 +594,10 @@
 
                 sidebarObj.settings.onSidebarShown(nameParts.primary,
                     nameParts.secondary);
+                if (_.isFunction(config.showCallback))
+                {
+                    config.showCallback(sidebarObj, sidebarObj.$currentPane);
+                }
             },
 
             /* Hide the sidebar and all panes.  If it was modal, then undo the
@@ -987,6 +1001,11 @@
                 return $.deepCompact(results);
             },
 
+            startProcessing: function()
+            {
+                this.$dom().addClass('processing');
+            },
+
             finishProcessing: function()
             {
                 this.$dom().removeClass('processing');
@@ -1069,7 +1088,7 @@
                 $pane.find('.line :radio').each(function()
                 { resetInput($(this)); });
 
-                uniformUpdate();
+                uniformUpdate($pane.find('.uniform :input'));
             },
 
             genericErrorHandler: function($pane, xhr)
@@ -1088,10 +1107,10 @@
             sidebarObj.$grid().isDatasetGrid();
     };
 
-    var uniformUpdate = function()
+    var uniformUpdate = function(items)
     {
         if (!$.isBlank($.uniform) && !$.isBlank($.uniform.update))
-        { $.uniform.update(); }
+        { $.uniform.update(items); }
     };
 
     var getConfigNames = function(configName)
@@ -1282,7 +1301,10 @@
                 'data-dataValue': {value: $.htmlEscape(
                         JSON.stringify(item.dataValue || '')),
                     onlyIf: !$.isBlank(item.dataValue) &&
-                        item.dataValue !== item.defaultValue}
+                        item.dataValue !== item.defaultValue},
+                'data-onlyIf': {value: $.htmlEscape(
+                        JSON.stringify(item.onlyIf || '')),
+                    onlyIf: $.isPlainObject(item.onlyIf)}
             };
         };
 
@@ -2110,7 +2132,7 @@
                             }
                             $sel.val($link.is('.tableColumn') ?
                                 c.tableColumnId : c.id).change();
-                            uniformUpdate();
+                            uniformUpdate($sel);
                         });
                 }
             });
@@ -2186,23 +2208,32 @@
             });
 
 
-            // Find fields that are linked to another field.  Hook
-            // them up to change whenever the associated field is changed
-            $container.find('[data-linkedField]').each(function()
+            // Find fields that are linked to another field, either through
+            // linkedField or onlyIf.  Hook them up to change or show/hide
+            // whenever the associated field is changed
+            $container.find('[data-linkedField], [data-onlyIf]').each(function()
             {
                 var $field = $(this);
                 var custId = $field.attr('data-customId');
                 var customField = sidebarObj._customCallbacks[custId];
                 if (!$.isBlank(customField)) { customField = customField.create; }
+                var onlyIf = JSON.parse($field.attr('data-onlyIf') || '""');
 
                 var selOpt = sidebarObj._selectOptions[$field
                     .attr('data-selectOption')];
-                if (!_.isFunction(selOpt) && !_.isFunction(customField))
+                if (!_.isFunction(selOpt) && !_.isFunction(customField) &&
+                    !$.isPlainObject(onlyIf))
                 { return; }
 
 
                 var $linkedItems = $();
-                _.each($field.attr('data-linkedField').split(','), function(lf)
+                var linkedFields = $.makeArray((onlyIf || {}).field || null);
+                if (!$.isBlank($field.attr('data-linkedField')))
+                {
+                    linkedFields = linkedFields
+                        .concat($field.attr('data-linkedField').split(','));
+                }
+                _.each(linkedFields, function(lf)
                 {
                     var ls = ':input[data-origName=' + lf + ']:first';
                     var $par = $field.closest('.line.group, .formSection');
@@ -2223,12 +2254,15 @@
                     var vals = {};
                     $linkedItems.each(function()
                     { vals[$(this).attr('data-origName')] = $(this).val(); });
-                    if (_.size(vals) == 1)
-                    { vals = _.detect(vals, function() { return true; }); }
+                    if (_.size(vals) == 1) { vals = _.values(vals)[0]; }
 
                     var curVals = $field.data('linkedFieldValues');
                     if (!force && _.isEqual(curVals, vals)) { return; }
                     $field.data('linkedFieldValues', vals);
+
+                    var $l = $field.closest('.line');
+                    if ($.isPlainObject(onlyIf))
+                    { $l.toggle(onlyIf.value == (vals[onlyIf.field] || vals)); }
 
                     if (_.isFunction(selOpt))
                     {
@@ -2248,7 +2282,6 @@
                     }
                     else if (_.isFunction(customField))
                     {
-                        var $l = $field.closest('.line');
                         cleanLine(sidebarObj, $l);
                         $field.empty();
                         var showLine = customField(sidebarObj, $field, vals,
@@ -2256,7 +2289,7 @@
                         $l.toggle(showLine);
                     }
 
-                    uniformUpdate();
+                    uniformUpdate($field);
                 };
                 var defAdjField = function() { _.defer(adjustField); };
 
@@ -2288,13 +2321,14 @@
                     newOpts == 'disabled' || !!$field.attr('data-isDisabled'));
                 $field.closest('.line')
                     .toggleClass('hide', newOpts == 'hidden');
+                if (!_.isArray(newOpts)) { newOpts = null; }
 
                 _.each(newOpts || [], function(o)
                 {
                     $field.append($.tag(renderSelectOption(o, curValue)));
                 });
                 $field.change();
-                uniformUpdate();
+                uniformUpdate($field);
             });
 
             $container.find(':input')
@@ -2669,8 +2703,8 @@
             case 'expand':
                 if ($item.is('.selectable.collapsed'))
                 {
-                    $item.find('.sectionSelect').click();
-                    uniformUpdate();
+                    var $selBox = $item.find('.sectionSelect').click();
+                    uniformUpdate($selBox);
                 }
 
                 _.defer(function()

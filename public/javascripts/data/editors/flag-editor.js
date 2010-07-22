@@ -41,6 +41,7 @@
 
             editorInserted: function()
             {
+                this.flattenValue();
                 this.setFullSize();
                 this.$dom().addClass('blist-combo-wrapper')
                     .addClass('combo-container');
@@ -84,5 +85,7 @@
             }
         }
     }));
+
+    $.blistEditor.addEditor($.blistEditor.flag, 'flag');
 
 })(jQuery);

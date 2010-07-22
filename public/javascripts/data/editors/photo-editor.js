@@ -111,6 +111,7 @@
             {
                 if (!this._$editor)
                 {
+                    this.flattenValue();
                     this._curVal = this.originalValue;
                     var html = '<div class="blist-table-editor ' +
                         'type-' + this.column.renderTypeName +
@@ -118,6 +119,7 @@
                         '<a class="tableButton add" href="#add" ' +
                         'title="Add a new image">Add</a>' +
                         '<a class="tableButton view" target="blist-viewer" ' +
+                        'rel="external" ' +
                         'title="View the image in a separate window">View</a>' +
                         '<a class="tableButton replace" href="#replace" ' +
                         'title="Replace the image">Replace</a>' +
@@ -178,5 +180,7 @@
             }
         }
     }));
+
+    $.blistEditor.addEditor($.blistEditor.photo, ['photo', 'photo_obsolete']);
 
 })(jQuery);

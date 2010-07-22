@@ -1,5 +1,6 @@
-// Prototype defs
+blist.namespace.fetch('blist.util');
 
+// Prototype defs
 String.prototype.startsWith = function(str)
 { return this.indexOf(str) == 0; };
 
@@ -322,6 +323,25 @@ $.wordify = function(num)
         '4': 'four', '5': 'five', '6': 'six', '7': 'seven', '8': 'eight',
         '9': 'nine'};
     return numWords[num.toString()] || num;
+};
+
+// Wrapper around inlineLogin.verifyUser; simply does nothing
+// if auth fails
+blist.util.doAuthedAction = function(actionText, callback)
+{
+    if (!$.isBlank(blist.util.inlineLogin))
+    {
+        blist.util.inlineLogin.verifyUser(
+            function(isSuccess)
+            {
+                if (isSuccess)
+                    callback();
+            }, 'You must be logged in to ' + actionText);
+    }
+    else
+    {
+        callback();
+    }
 };
 
 })(jQuery);

@@ -356,6 +356,7 @@
                 }
                 else
                 {
+                    this.flattenValue();
                     this._value = this.originalValue;
                 }
 
@@ -461,4 +462,7 @@
             { return true; }
         }
     }));
+
+    $.blistEditor.addEditor($.blistEditor.html, 'html');
+
 })(jQuery);

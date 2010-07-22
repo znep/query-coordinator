@@ -46,6 +46,7 @@
                         }
                     });
 
+                editObj.flattenValue();
                 editObj.setFullSize();
                 editObj.$dom().addClass('blist-combo-wrapper')
                     .addClass('combo-container');
@@ -92,5 +93,7 @@
             }
         }
     }));
+
+    $.blistEditor.addEditor($.blistEditor.picklist, ['drop_down_list', 'picklist']);
 
 })(jQuery);

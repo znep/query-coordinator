@@ -268,12 +268,22 @@ class BlistsController < ApplicationController
   end
 
   def post_comment
+    # TODO: Deprecate this function when the old app is gone
     @is_child = !params[:comment][:parent].nil?
     @comment = Comment.create(params[:id], params[:comment])
+
+    if params[:comment][:viewRating].present?
+      begin
+        # Note: No type is specified, use default
+        @rating = Rating.create(params[:id], {:rating => params[:comment][:viewRating]})
+      rescue
+        # They already posted a rating for this category, ignore...
+      end
+    end
     @view = View.find(params[:id])
 
     redirect_path = params[:redirect_to] ||
-                    ('?metadata_pane=tabComments&comment=' + @comment.id.to_s)
+                    (('?metadata_pane=tabComments&comment=' + @comment.id.to_s) unless @comment.nil?)
 
     respond_to do |format|
       format.html { redirect_to(@view.href + redirect_path) }

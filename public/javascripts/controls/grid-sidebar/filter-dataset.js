@@ -119,7 +119,7 @@
     var configName = 'filter.filterDataset';
     var config = {
         name: configName,
-        priority: 1,
+        priority: 3,
         title: 'Filter, Sort, Roll-Up',
         subtitle: 'You can filter a view down to certain rows; ' +
             'group rows together and summarize data with a roll-up; ' +

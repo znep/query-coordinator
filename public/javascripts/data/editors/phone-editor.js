@@ -129,4 +129,6 @@
         }
     }));
 
+    $.blistEditor.addEditor($.blistEditor.phone, 'phone');
+
 })(jQuery);

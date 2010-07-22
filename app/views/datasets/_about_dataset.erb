@@ -27,12 +27,14 @@
       Activity
     </a>
     <dl class="sectionContent">
-      <dt>Rating</dt>
-      <dd class="clearfix">
-        <div class="starsControl datasetAverageRating" data-rating="<%= @view.averageRating %>">
-          <%= @view.averageRating %>
-        </div>
-      </dd>
+      <%- (CurrentDomain.properties.rating_types || ["rating"]).each do |rating_type| -%>
+        <dt><%= rating_type.titleize %></dt>
+        <dd class="clearfix">
+          <div class="starsControl datasetAverageRating" data-rating="<%= @view.average_rating(rating_type) %>" data-rating-type="<%= rating_type %>">
+            <%= @view.average_rating(rating_type) %>
+          </div>
+        </dd>
+      <%- end -%>
       <dt>Raters</dt>
       <dd><%= @view.totalTimesRated %></dd>
       <dt>Visits</dt>

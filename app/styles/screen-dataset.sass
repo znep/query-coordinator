@@ -403,6 +403,22 @@ html, body
   input
     width: 95%
 
+  p
+    margin: 0.5em 0
+
+  .info
+    font-weight: bold
+    margin-bottom: 1.5em
+
+  .leavingSave
+    display: none
+
+  &.leavingSaveDialog
+    .leavingSave
+      display: block
+    .normalSave
+      display: none
+
 // Email view dialog
 .emailDatasetDialog
   width: 35em

@@ -107,4 +107,6 @@
         }
     }));
 
+    $.blistEditor.addEditor($.blistEditor.url, 'url');
+
 })(jQuery);

@@ -23,4 +23,6 @@
         }
     }, $.blistEditor.number));
 
+    $.blistEditor.addEditor($.blistEditor.money, 'money');
+
 })(jQuery);

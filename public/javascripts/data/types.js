@@ -460,8 +460,8 @@ blist.namespace.fetch('blist.data.types');
         if (plain) { return url || ''; }
 
         if (!captionIsHTML) { caption = htmlEscape(caption); }
-        return "<a target='blist-viewer' href='" + htmlEscape(url) + "'>" +
-            caption + "</a>";
+        return "<a target='blist-viewer' rel='external' href='" +
+            htmlEscape(url) + "'>" + caption + "</a>";
     };
 
     var renderGenURL = function(value, plain)

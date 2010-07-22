@@ -32,7 +32,17 @@
                                             data: JSON.stringify({
                                                 type: $star.attr('data-rating-type'),
                                                 rating: (value * 20)
-                                            })
+                                            }),
+                                            success: function(responseData)
+                                            {
+                                                // If the type is returned, that means it's newly created.
+                                                // Update totals
+                                                if (!_.isUndefined(responseData.type))
+                                                {
+                                                    $sect.find('.totalTimesRated').text(
+                                                        parseInt($.trim($sect.find('.totalTimesRated').text())) + 1);
+                                                }
+                                            }
                                         });
                                     });
                                 }

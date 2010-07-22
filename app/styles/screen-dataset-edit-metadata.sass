@@ -30,3 +30,15 @@
     @include throbber-icon
     display: none
     margin: 1em 0 0 1em
+
+  .comboToggle
+    cursor: pointer
+
+  // IE8 work around
+  // The uniform <select> (combo) adjusts its width to the widest option in FF & IE7.
+  // But its width (the non-dropdown portion) is the current selected option in IE8.
+  // This causes problem when we add toggle button after the combo.
+  // Setting explicit width to get around the problem.
+  #view_metadata_rdfClass
+    width: 25em
+

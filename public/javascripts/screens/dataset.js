@@ -344,7 +344,7 @@ $(function()
         // fetch some data that we'll need
         $.Tache.Get({ url: '/views.json',
             data: { method: 'getByTableId', tableId: blist.display.view.tableId },
-            dataType: 'json', contentType: 'application/json',
+            cache: false, dataType: 'json', contentType: 'application/json',
             success: function(views)
             {
                 var parDS = _.detect(views, function(view)

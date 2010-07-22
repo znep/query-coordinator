@@ -262,6 +262,7 @@ javascripts:
   - controls/grid-sidebar/base-sidebar
   - controls/grid-sidebar/about-dataset
   - controls/grid-sidebar/add-column
+  - controls/grid-sidebar/api
   - controls/grid-sidebar/append-replace
   - controls/grid-sidebar/calendar-create
   - controls/grid-sidebar/chart-create

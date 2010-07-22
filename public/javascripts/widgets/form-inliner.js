@@ -15,7 +15,8 @@ blistCommonNS.formInliner = function(event, options)
                 .val(JSON.stringify(view)))
         .append(
             $('<input type="hidden" name="method" value="index" />'))
-        .attr('METHOD', opts.submitMethod);
+        .attr('METHOD', opts.submitMethod)
+        .attr('method', opts.submitMethod);
 }
 
 blistCommonNS.formInliner.defaults = {

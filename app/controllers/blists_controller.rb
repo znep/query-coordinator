@@ -270,7 +270,6 @@ class BlistsController < ApplicationController
   def post_comment
     # TODO: Deprecate this function when the old app is gone
     @is_child = !params[:comment][:parent].nil?
-    @comment = Comment.create(params[:id], params[:comment])
 
     if params[:comment][:viewRating].present?
       begin
@@ -279,7 +278,9 @@ class BlistsController < ApplicationController
       rescue
         # They already posted a rating for this category, ignore...
       end
+      params[:comment].delete(:viewRating)
     end
+    @comment = Comment.create(params[:id], params[:comment])
     @view = View.find(params[:id])
 
     redirect_path = params[:redirect_to] ||

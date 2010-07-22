@@ -78,18 +78,18 @@ form textarea.text_wide
       @include gradient_buttons_active_background
       @include border-radius(0.3em)
       border: 1px solid $color_buttons_active_border
-      @include box-shadow(0,0,2px,$color_buttons_shadow)
+      @include box-shadow(0,0,2px,rgba(0,0,0,0.7))
       cursor: pointer
 
       &:hover
-        @include gradient_buttons_hover_background
-        border: 1px solid $color_buttons_hover_border
+        @include vertical-gradient(#ee3c39, #b01e2d)
+        border: 1px solid #b01e2d
       &:active, &:focus
-        @include gradient_buttons_focus_background
-        border: 1px solid $color_buttons_focus_border
+        @include vertical-gradient(#ee3c39, #b01e2d)
+        border: 1px solid #f1ca7e
       &.disabled
-        @include gradient_buttons_disabled_background
-        border: 1px solid $color_buttons_disabled_border
+        @include vertical-gradient(#e6e6e6, #cccccc)
+        border: 1px solid #cccccc
         cursor: default
 
   .colorControl

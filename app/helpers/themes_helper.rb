@@ -10,8 +10,12 @@ module ThemesHelper
     end
 
     def link_from_theme(options)
+      return unless options[:ifModuleEnabled].blank? ||
+                    CurrentDomain.module_enabled?(options[:ifModuleEnabled])
+
       text = options[:text]
       options.delete(:text)
+      options.delete(:ifModuleEnabled)
       return content_tag('a', text, options)
     end
 

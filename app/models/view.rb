@@ -575,13 +575,13 @@ class View < Model
 
 
   def rdf_class
-    self.metadata.nil? || self.metadata.rdfClass.nil? ? '(none)' : self.metadata.rdfClass
+    metadata.nil? || metadata.rdfClass.nil? ? '(none)' : metadata.rdfClass
   end
 
   def rdf_subject
-    if (!self.metadata.nil? && !self.metadata.rdfSubject.nil?)
-      rdfSubj = self.metadata.rdfSubject
-      rdfSubjCol = self.column_by_id(rdfSubj.to_i)
+    if (!metadata.nil? && !metadata.rdfSubject.nil?)
+      rdfSubj = metadata.rdfSubject
+      rdfSubjCol = column_by_id(rdfSubj.to_i)
       if !rdfSubjCol.nil?
         return rdfSubjCol.name
       end

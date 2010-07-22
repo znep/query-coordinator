@@ -41,10 +41,6 @@ class Comment < Model
       "thumbsUp=" + rating))
   end
 
-  def viewRating
-    (data['viewRating'] || 0) / 20.0
-  end
-
   def rated?
     !data['currentUserRating'].nil?
   end

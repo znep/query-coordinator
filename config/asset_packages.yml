@@ -164,7 +164,6 @@ javascripts:
   - widgets/info-pane-sharing
   - widgets/info-pane-publish
   - screens/filter-screen
-  - widgets/visualization
   - widgets/form-inliner
   - screens/info-pane
   - screens/meta-tabs
@@ -235,7 +234,6 @@ javascripts:
   - controls/menu
   - widgets/scrollTabs
   - widgets/inline-edit
-  - widgets/visualization
   - widgets/form-inliner
   - screens/widget
 - widgets-show-form:

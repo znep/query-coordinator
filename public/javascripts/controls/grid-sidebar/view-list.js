@@ -219,7 +219,7 @@
         _.defer(function()
         {
             $.Tache.Get({ url: '/views.json', data: { method: 'getByTableId',
-                    tableId: blist.display.view.tableId },
+                    tableId: blist.display.view.tableId }, cache: false,
                 dataType: 'json', contentType: 'application/json',
                 success: function(v)
                 {

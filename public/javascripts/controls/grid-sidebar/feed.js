@@ -47,7 +47,7 @@
         {
             $.Tache.Get({
                 url: '/views/' + blist.display.view.id + '/comments.json',
-                dataType: 'json',
+                dataType: 'json', cache: false,
                 success: function(responseData)
                 {
                     comments = responseData;
@@ -57,7 +57,7 @@
             });
 
             $.Tache.Get({ url: '/views.json', data: { method: 'getByTableId',
-                    tableId: blist.display.view.tableId },
+                    tableId: blist.display.view.tableId }, cache: false,
                 dataType: 'json', contentType: 'application/json',
                 success: function(responseData)
                 {

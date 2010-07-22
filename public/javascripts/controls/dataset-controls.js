@@ -50,7 +50,7 @@ blist.dataset.controls.unsavedViewPrompt = function()
         { href = origHref.slice(window.location.href.length); }
 
         // Skip local URLs
-        if (href[0] == '#') { return; }
+        if (href.charAt(0) == '#') { return; }
 
         e.preventDefault();
 

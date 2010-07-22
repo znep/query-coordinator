@@ -116,31 +116,31 @@ $sidebar_text_color: #666
     text-decoration: underline
 
 @mixin button
-  @include gradient-toolbar-buttons-active-background
-  border: 1px solid $color_toolbar_buttons_active_border
+  @include gradient-buttons-active-background
+  border: 1px solid $color_buttons_active_border
   @include border-radius(0.2em)
-  color: $color_toolbar_buttons_active_text
+  color: $color_buttons_active_text
   font-size: 1em
   height: 14px
   line-height: 14px
   padding: 0.3em 0.7em
   &:hover
-    @include box-shadow(0, 0, 0.3em, $color_toolbar_buttons_active_shadow)
+    @include box-shadow(0, 0, 0.3em, $color_buttons_active_shadow)
   &.disabled
-    @include gradient-toolbar-buttons-disabled-background
-    border: 1px solid $color_toolbar_buttons_disabled_border
-    color: $color_toolbar_buttons_disabled_text
+    @include gradient-buttons-disabled-background
+    border: 1px solid $color_buttons_disabled_border
+    color: $color_buttons_disabled_text
     cursor: default
     &:hover
       @include box-shadow-none
   .noLinearGradient &
-    @include box-gradient-toolbar-buttons-active-background(3, 21, $box_gradient_alias_fix)
+    @include box-gradient-buttons-active-background(3, 21, $box_gradient_alias_fix)
     &:hover
-      border-color: $color_toolbar_buttons_active_border - #222
+      border-color: $color_buttons_active_border - #222
   &.active
-    @include gradient-toolbar-buttons-active-background_reverse
-    border-color: $color_toolbar_buttons_active_border - #444
-    @include box-shadow(0, 0, 0.1em, $color_toolbar_buttons_active_shadow)
+    @include gradient-buttons-active-background_reverse
+    border-color: $color_buttons_active_border - #444
+    @include box-shadow(0, 0, 0.1em, $color_buttons_active_shadow)
 
 // mix this into a commonForm to give it the appropriate width styling
 @mixin common-form($labelWidth, $controlWidth: true)

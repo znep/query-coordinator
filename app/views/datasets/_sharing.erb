@@ -1,9 +1,18 @@
 <div class="sharingForm commonForm">
-  <a class="button shareDatasetButton add" href="#share">
-    <span class="icon"></span>
-    Share this Dataset
-  </a>
   <div class="formSection">
+    <p>
+      <a class="button shareDatasetButton add" href="#share">
+        <span class="icon"></span>
+        Share this Dataset
+      </a>
+    </p>
+    <p class="formHeader">This dataset is
+      <%= link_to (@view.is_public? ? 'Public' : 'Private'), '#togglePermissions',
+      :class => 'toggleDatasetPermissions', 'data-public-perm' => "public.#{@view.display.public_perm_type}" %>
+      <span class='andSharedHint<%= ' hide' unless @view.is_shared? -%>'>
+        and shared with the following <span class='friendsHint'></span>
+      </span>
+    </p>
     <div class="sectionContent">
       <ul class="itemsList">
         <li class="loadingShares">Loading Shares...

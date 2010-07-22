@@ -37,7 +37,17 @@
         modifyShare($line, 'i?method=delete', 'PUT',
             createGrantObject($line),
             function(responseData)
-            { $line.slideToggle(); });
+            {
+                $line.slideToggle();
+                var newGrants = _.reject(blist.display.view.grants || [],
+                    function(grant)
+                    {
+                        return (grant.userId == $line.attr('data-uid') ||
+                                grant.userEmail == $line.attr('data-email'));
+                    });
+                blist.display.view.grants = newGrants;
+                updateShareText($line.closest('form'));
+            });
     };
 
     // The most beautiful code you have ever seen
@@ -131,6 +141,73 @@
         $('#gridSidebar_shareDataset .removeShareLink').click(removeShare);
     };
 
+    var togglePermissions = function(event)
+    {
+        event.preventDefault();
+
+        var view = blist.display.view;
+        var isPublic = blist.dataset.isPublic(view);
+        var $link = $(event.target);
+
+        var serverValue = isPublic ? 'private' : $link.attr('data-public-perm');
+
+        $.ajax({
+            url: '/api/views/' + view.id,
+            data: {'method': 'setPermission', 'value': serverValue},
+            success: function(responseData)
+            {
+                $link.text(isPublic ? 'Private' : 'Public');
+                if (!isPublic)
+                {
+                    if ($.isBlank(blist.display.view.grants))
+                    { blist.display.view.grants = []; }
+
+                    blist.display.view.grants.push({
+                        flags: ['public']
+                    });
+                }
+                else
+                {
+                    // Manually pull out the public grants
+                    blist.display.view.grants = getNonPublicGrants(blist.display.view.grants);
+                }
+                $('#gridSidebar').gridSidebar().updateEnabledSubPanes();
+            },
+            error: function(request, textStatus, errorThrown)
+            {
+                $('#gridSidebar_shareDataset .sharingFlash').addClass('error')
+                    .text('There was an error modifying your dataset permissions. Please try again later');
+            },
+        });
+    };
+
+    var updateShareText = function(context)
+    {
+        var $span = context.find('.andSharedHint');
+        var $friends = context.find('.friendsHint');
+
+        var friends = getNonPublicGrants(blist.display.view.grants);
+        if (friends.length == 0)
+        {
+            $span.addClass('hide');
+        }
+        else
+        {
+            $span.removeClass('hide');
+            $friends
+                .text((friends.length > 1) ? 'friends' : 'friend');
+        }
+    };
+
+    var getNonPublicGrants = function(grants)
+    {
+        return _.reject(grants || [],
+            function(g)
+            {
+                return _.include(g.flags || [], 'public');
+            });
+    };
+
     var config =
     {
         name: 'edit.shareDataset',
@@ -162,16 +239,18 @@
                             { blist.dialog.sharing(event); }
                         });
 
-                         // Grab non-public grants (shares)
-                        var grants = _.reject(blist.display.view.grants || [],
-                        function(g)
-                        {
-                            return _.include(g.flags || [], 'public');
-                        });
+                        $formElem.find('.toggleDatasetPermissions').click(togglePermissions);
+
+
+                        // Grab non-public grants (shares)
+                        var grants = getNonPublicGrants(blist.display.view.grants);
 
                         // Clear out the message area
                         $('#gridSidebar_shareDataset .sharingFlash').text('')
                             .removeClass('error').removeClass('notice');
+
+                        // When this pane gets refreshed, update to reflect who it's shared with
+                        updateShareText($formElem);
 
                         // If they have no shares
                         if ($.isBlank(grants) || grants.length == 0)

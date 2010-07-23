@@ -1,14 +1,17 @@
 body {
-    background-color:#1776C0;
+    background-color:#0075C2;
     background-image:none;
 }
 
 .footerContainer {
-    background:none repeat scroll 0 0 #1776C0;
+    background:none repeat scroll 0 0 #0075C2;
 }
 
-#mainLogo {
+#mainLogo a {
     top: 0;
+    height: 51px;
+    width: 123px;
+
 }
 
 #header .userNav a, #footer li a, #footer .copyright {
@@ -16,6 +19,6 @@ body {
 }
 
 #header {
-    background:none repeat scroll 0 0 #1776C0;
-    height: 100px;
+    background:none repeat scroll 0 0 #0075C2;
+    height: 60px;
 }

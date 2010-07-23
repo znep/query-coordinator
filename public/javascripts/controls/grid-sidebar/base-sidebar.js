@@ -153,6 +153,8 @@
                       the array.  Fields inside the repeater are rooted at the
                       particular object of the repeater array; so essentially
                       they are namespaced into the repeater
+                  + change: optional, handler for when control value changes.
+                      Arguments are ($control, event).
                   + prompt: optional, prompt text for text/textarea/select.
                       If null for select, will not add a prompt option
                   + value: For a static field, the value to display.  Can also
@@ -386,6 +388,8 @@
 
                 sidebarObj._selectOptions = {};
                 sidebarObj._customCallbacks = {};
+
+                sidebarObj._changeHandlers = {};
 
                 $(window).resize(function() { handleResize(sidebarObj); });
                 $domObj.resize(function() { handleResize(sidebarObj); });
@@ -1284,7 +1288,8 @@
         {
             var isDisabled = _.isFunction(item.disabled) ?
                 item.disabled(args.context.data) : item.disabled;
-            return {id: item.name, name: item.name, title: item.prompt,
+
+            var result = {id: item.name, name: item.name, title: item.prompt,
                 disabled: isDisabled, 'data-isDisabled': isDisabled,
                 'class': [ {value: 'required', onlyIf: item.required &&
                     !args.context.inRepeater},
@@ -1306,6 +1311,20 @@
                         JSON.stringify(item.onlyIf || '')),
                     onlyIf: $.isPlainObject(item.onlyIf)}
             };
+
+            if (_.isFunction(item.change))
+            {
+                var uid = 'handler_' + _.uniqueId();
+                sidebarObj._changeHandlers[uid] = item.change;
+                result['data-change'] = uid;
+            }
+
+            _.each(item.data || {}, function(v, k)
+                {
+                    result['data-custom-' + k] = v;
+                });
+
+            return result;
         };
 
         var cols;
@@ -2137,6 +2156,35 @@
                             uniformUpdate($sel);
                         });
                 }
+            });
+
+            // Fields that have custom handlers specified against them.
+            // Defined before default behaviors in case someone wants to
+            // stop propagation for some reason.
+            $container.find('[data-change]').each(function()
+            {
+                var $field = $(this);
+                var handler = sidebarObj._changeHandlers[$field.attr('data-change')];
+                var handlerProxy = function(event)
+                {
+                    handler($field, event);
+                };
+
+                // deal with each field type manually
+                if ($field.is('input[type=text],select,input[type=file]'))
+                    $field.change(handlerProxy);
+                else if ($field.is('input[type=checkbox],input[type=radio]'))
+                {
+                    $field.change(handlerProxy)
+                    if ($.browser.msie)
+                    {
+                        $field.click(handlerProxy);
+                    }
+                }
+                else if ($field.hasClass('sliderInput'))
+                    $field.bind('slide', handlerProxy);
+                else if ($field.hasClass('colorControl'))
+                    $field.bind('color_change', handlerProxy);
             });
 
             $container.find('.sliderControl').each(function()

@@ -1517,7 +1517,7 @@
                     defValue *= scale;
                     if (!$.isBlank(curValue)) { curValue *= scale; }
                 }
-                contents.push({tagName: 'div', 'class': 'sliderControl',
+                contents.push({tagName: 'span', 'class': 'sliderControl',
                         'data-min': min, 'data-max': max});
 
                 contents.push($.extend(commonAttrs($.extend({}, args.item,
@@ -1594,7 +1594,9 @@
                                 'class': {value: 'wizExclude',
                                     onlyIf: opt.type != 'static'},
                                 checked: (curValue || defValue) == opt.name ||
-                                    (subLine[0]['data-dataValue'] || {}).onlyIf,
+                                    _.any(subLine, function(sl)
+                                    { return (sl['data-dataValue'] ||
+                                        {}).onlyIf; }),
                                 'data-defaultValue': $.htmlEscape(
                                     JSON.stringify(defValue == opt.name))}),
                             {tagName: 'label', 'for': id, contents: subLine}
@@ -2492,7 +2494,7 @@
             $pane.find('.finishButtons').addClass('hasWizard')
                 .data('sidebarWizard', $.extend({selector: '.button.submit'},
                     $.objectify(config.finishBlock.wizard, 'prompt'),
-                    {positions: ['top']}));
+                    {positions: ['left']}));
         }
     };
 

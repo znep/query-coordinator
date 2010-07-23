@@ -88,6 +88,7 @@ $(function()
                             col = _.detect(col.childColumns, function(c)
                                 { return c.id == colId; });
                         }
+                        datasetPageNS.sidebar.hide();
                         datasetPageNS.sidebar.addPane('columnProperties', col);
                         datasetPageNS.sidebar.show('columnProperties');
                     }

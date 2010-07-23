@@ -1,0 +1,21 @@
+body {
+    background-color:#1776C0;
+    background-image:none;
+}
+
+.footerContainer {
+    background:none repeat scroll 0 0 #1776C0;
+}
+
+#mainLogo {
+    top: 0;
+}
+
+#header .userNav a, #footer li a, #footer .copyright {
+    color:#FFFFFF;
+}
+
+#header {
+    background:none repeat scroll 0 0 #1776C0;
+    height: 100px;
+}

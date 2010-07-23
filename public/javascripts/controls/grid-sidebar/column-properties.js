@@ -156,9 +156,12 @@
                 { return _.include(['number', 'percent'],
                     (col || {}).renderTypeName); }},
                 fields: [
-                    {text: 'Precision', type: 'slider',
-                    minimum: 0, maximum: 10, defaultValue: 0,
-                    name: 'format.precision'},
+                    {text: 'Precision', type: 'radioGroup', name: 'precisionGroup',
+                    defaultValue: 'format.precisionNone', options: [
+                        {type: 'static', value: 'None',
+                        name: 'format.precisionNone'},
+                        {type: 'slider', minimum: 0, maximum: 10, defaultValue: 0,
+                        name: 'format.precision'}]},
                     {text: 'Display', type: 'select',
                     name: 'format.precisionStyle', prompt: null,
                     options: precisionStyle}
@@ -171,9 +174,13 @@
                 onlyIf: {func: function(view, col)
                 { return (col || {}).renderTypeName == 'money'; }},
                 fields: [
-                    {text: 'Precision', type: 'slider',
-                    minimum: 0, maximum: 2, defaultValue: 2,
-                    name: 'format.precision'},
+                    {text: 'Precision', type: 'radioGroup',
+                    name: 'moneyPrecisionGroup',
+                    defaultValue: 'format.precisionNone', options: [
+                        {type: 'static', value: 'None',
+                        name: 'format.precisionNone'},
+                        {type: 'slider', minimum: 0, maximum: 2, defaultValue: 2,
+                        name: 'format.precision'}]},
                     {text: 'Currency', type: 'select',
                     name: 'format.currency', prompt: null,
                     defaultValue: 'dollar', options: currencyOptions},
@@ -211,7 +218,7 @@
             {
                 title: 'Advanced', type: 'selectable', name: 'advanced',
                 fields: [
-                    {type: 'radioGroup', text: 'Semantics',
+                    {type: 'radioGroup', text: 'Semantics', name: 'rdfGroup',
                     options: [
                         {type: 'select', name: 'format.rdf',
                         options: rdfOptions},

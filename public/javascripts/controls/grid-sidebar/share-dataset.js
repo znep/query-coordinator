@@ -177,7 +177,7 @@
             {
                 $('#gridSidebar_shareDataset .sharingFlash').addClass('error')
                     .text('There was an error modifying your dataset permissions. Please try again later');
-            },
+            }
         });
     };
 

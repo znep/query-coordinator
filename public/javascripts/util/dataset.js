@@ -26,11 +26,9 @@ blist.dataset.getDisplayType = function(view)
         view.query.groupBys.length > 0)
     { type = 'grouped'; }
 
-    if (_.include(VIZ_TYPES, type) || type.startsWith('FCMap_'))
-    { type = 'visualization'; }
+    if (_.include(VIZ_TYPES, type)) { type = 'visualization'; }
 
-    if (_.include(MAP_TYPES, type))
-    { type = 'map'; }
+    if (_.include(MAP_TYPES, type)) { type = 'map'; }
 
     if (type == 'blist' && (_.isUndefined(view.flags) ||
         !_.include(view.flags, 'default')))

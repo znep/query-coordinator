@@ -313,17 +313,18 @@
           font-size: 1.2em
           padding-top: 0.2em
 
-        &.slider
-          .ui-slider
-            margin-right: 0.7em
-            width: 8.6em
+        .ui-slider
+          display: inline-block
+          margin-right: 0.7em
+          vertical-align: bottom
+          width: 8.6em
 
-          input
-            background-color: transparent
-            border: none
-            @include box-shadow-none
-            text-align: right
-            width: 1.8em
+        input.sliderInput
+          background-color: transparent
+          border: none
+          @include box-shadow-none
+          text-align: right
+          width: 1.8em
 
         &.colorCollapse
           position: absolute
@@ -373,6 +374,12 @@
             select, input
               font-size: 1em
               width: 10.15em
+
+            .ui-slider
+              width: 5em
+
+            input.sliderInput
+              width: 1.8em
 
           .columnSelect .uniform.radio
             margin-bottom: 3px

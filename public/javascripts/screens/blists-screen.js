@@ -142,8 +142,7 @@ blist.myBlists.visualizationFilter = function(view)
 
 blist.myBlists.mapFilter = function(view)
 {
-    return _.include(['map', 'geomap', 'intensitymap'], view.displayType) ||
-        view.displayType && view.displayType.startsWith('FCMap_');
+    return _.include(['map', 'geomap', 'intensitymap'], view.displayType);
 };
 
 blist.myBlists.groupedFilter = function(view)

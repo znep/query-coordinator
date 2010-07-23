@@ -56,6 +56,8 @@
         $('.emailSuccess').hide();
         $('.emailDatasetDialog').jqmShow();
 
+        $flash.removeClass('notice').removeClass('error').text('');
+
         // Set up warning message if this is a private view
         if (!blist.dataset.isPublic(blist.display.view))
         {

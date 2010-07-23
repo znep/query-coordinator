@@ -380,6 +380,8 @@
                                                 .prepend(compiledFeedDirectiveNest([newCommentData]));
                                     }
 
+                                    $('#gridSidebar_about .numberOfComments').text(
+                                        parseInt($.trim($('#gridSidebar_about .numberOfComments').text())) + 1);
                                     $this.closest('.newCommentForm').remove();
                                 }
                             });

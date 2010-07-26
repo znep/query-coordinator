@@ -23,6 +23,7 @@ blist.datasetPage.clearTempView = function()
 {
     $('#sidebarOptions a.alert').removeClass('alert');
     $('body, #titleBox').removeClass('unsavedView');
+    $('#gridSidebar_guidedFilter :radio').val('');
     datasetPageNS.sidebar.updateEnabledSubPanes();
 };
 
@@ -269,7 +270,7 @@ $(function()
 
         $.ajax({url: '/views/' + blist.display.view.id + '.json',
             type: 'PUT', contentType: 'application/json', dataType: 'json',
-            data: JSON.stringify(blist.dataset.cleanViewForPost(
+            data: JSON.stringify(blist.dataset.cleanViewForSave(
                 $.extend(true, {}, blist.display.view), true)),
             success: function()
             {

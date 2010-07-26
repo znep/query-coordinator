@@ -11,8 +11,12 @@
         subtitle: 'If you want to explore this dataset, but aren\'t entirely ' +
             'certain what you\'re looking for, you can use the Guided ' +
             'Filter to help find interesting trends',
-        // TODO: onlyIf
-        disabledSubtitle: 'This view must be valid',
+        onlyIf: function(view)
+        {
+            // disallow groupbys
+            return (_.isUndefined(view.query) || _.isUndefined(view.query.groupBys));
+        },
+        disabledSubtitle: 'Grouped views cannot be used with the guided filter.',
         noReset: true,
         finishBlock: {
             buttons: [
@@ -48,7 +52,7 @@
     {
         if (_.isEmpty(facetedFilters))
         {
-            dsGrid.clearTempView(null, true);
+            dsGrid.clearTempView();
         }
         else
         {
@@ -70,6 +74,11 @@
             });
     };
 
+    var formatForColumn = function(value, column)
+    {
+        return blist.data.types[column.renderTypeName].filterRender(value, column);
+    };
+
     var changeProxy = function(sidebarObj, column, callback)
     {
         return function($field, event)
@@ -82,9 +91,10 @@
             }
             else
             {
-                callback($fieldLabel, event)
+                callback($fieldLabel, event);
             }
             mergeAndPostFilter(sidebarObj.$grid().datasetGrid());
+            
         }
     };
 
@@ -101,9 +111,8 @@
 
             // get required aggregate/freq data from core server
             var cleanedData = blist.dataset.cleanViewForPost(
-                $.extend({}, blist.display.view), true);
+                $.extend(true, {}, blist.display.view), true);
             var columnsToPush = [];
-            delete cleanedData.query;
 
             _.each(facets, function(facet)
             {
@@ -178,8 +187,9 @@
                             {
                                 _.each(aggregatedData[column.id], function(freq)
                                 {
-                                    options.push({ value: freq.value + ' <em>(' + freq.count + ')</em>',
-                                        type: 'static', data: { facetValue: freq.value } });
+                                    options.push({ value: formatForColumn(freq.value, column) +
+                                        ' <em>(' + freq.count + ')</em>', type: 'static',
+                                        data: { facetValue: freq.value } });
                                 });
                             }
 
@@ -225,10 +235,10 @@
                             // okay, now render those ranges.
                             while (renderedRanges.length > 1)
                             {
-                                options.push({ value: renderedRanges[0] + ' &mdash; ' +
-                                    renderedRanges[1], type: 'static', data: {
-                                    facetRangeMin: renderedRanges[0], facetRangeMax:
-                                    renderedRanges[1] } });
+                                options.push({ value: formatForColumn(renderedRanges[0], column) +
+                                    ' &mdash; ' + formatForColumn(renderedRanges[1], column),
+                                    type: 'static', data: { facetRangeMin: renderedRanges[0],
+                                    facetRangeMax: renderedRanges[1] } });
                                 renderedRanges.shift();
                             }
 

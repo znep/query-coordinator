@@ -331,6 +331,14 @@
         return view;
     };
 
+    config.showCallback = function(sidebarObj, $pane)
+    {
+        sidebarObj.$grid().bind('meta_change', function()
+        {
+            sidebarObj.refresh(configName);
+        });
+    };
+
     config.finishCallback = function(sidebarObj, data, $pane, value)
     {
         if (!sidebarObj.baseFormHandler($pane, value)) { return; }

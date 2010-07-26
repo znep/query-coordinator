@@ -115,6 +115,11 @@
         name: configName,
         title: 'Column Properties',
         subtitle: 'Update various properites on this column',
+        onlyIf: function(view)
+        {
+            return !blist.display.isTempView;
+        },
+        disabledSubtitle: 'You cannot edit column properties for an unsaved view',
         sections: [
             {
                 title: 'Basic Information',

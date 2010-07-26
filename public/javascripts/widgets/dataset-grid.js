@@ -1228,7 +1228,7 @@
         {
             features.remove = true;
         }
-        if (datasetObj.settings.columnPropertiesEnabled && !datasetObj.isTempView)
+        if (datasetObj.settings.columnPropertiesEnabled)
         {
             features.properties = true;
         }

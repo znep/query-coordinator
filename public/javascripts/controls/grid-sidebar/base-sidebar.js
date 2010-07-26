@@ -385,6 +385,7 @@
 
                 sidebarObj._$outerPanes = {};
                 sidebarObj._$panes = {};
+                sidebarObj._paneData = {};
 
                 sidebarObj._selectOptions = {};
                 sidebarObj._customCallbacks = {};
@@ -491,6 +492,7 @@
 
                 if (config.isParent) { return; }
 
+                sidebarObj._paneData[config.name] = data;
                 var $pane = renderPane(sidebarObj, config, data);
                 sidebarObj._$panes[config.name] = $pane;
                 sidebarObj._$outerPanes[outerConfig.name]
@@ -670,7 +672,8 @@
                 var isCur = sidebarObj._currentOuterPane == nameParts.primary &&
                     sidebarObj._currentPane == nameParts.secondary;
                 if (isCur) { sidebarObj.hide(pane); }
-                sidebarObj.addPane(pane);
+                sidebarObj.addPane(pane,
+                        sidebarObj._paneData[nameParts.secondary]);
                 if (isCur) { sidebarObj.show(pane); }
             },
 
@@ -720,7 +723,8 @@
                 };
 
                 var outerConfig = paneConfigs[sidebarObj._currentOuterPane];
-                _.each(outerConfig.subPanes || {}, function(sp)
+                _.each(outerConfig.subPanes || $.makeArray(outerConfig),
+                function(sp)
                 {
                     if ($.isBlank(sp.onlyIf))
                     { updateEnabled(sp, true); }

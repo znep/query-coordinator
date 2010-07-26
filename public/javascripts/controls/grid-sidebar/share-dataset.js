@@ -190,6 +190,7 @@
         if (friends.length == 0)
         {
             $span.addClass('hide');
+            context.find('.noShares').show();
         }
         else
         {

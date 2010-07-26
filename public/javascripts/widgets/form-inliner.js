@@ -2,9 +2,8 @@ var blistCommonNS = blist.namespace.fetch('blist.common');
 
 // Attach the view as a hidden form parameter to allow
 // printing/downloading inline views
-blistCommonNS.formInliner = function(event, options)
+blistCommonNS.formInliner = function(event)
 {
-    var opts  = $.extend({}, blistCommonNS.formInliner.defaults, options);
     var $form = $(event.target);
     var model = blist.$display.blistModel();
     var view  = blist.dataset.cleanViewForPost(
@@ -14,13 +13,7 @@ blistCommonNS.formInliner = function(event, options)
             $('<input type="hidden" name="view"/>')
                 .val(JSON.stringify(view)))
         .append(
-            $('<input type="hidden" name="method" value="index" />'))
-        .attr('METHOD', opts.submitMethod)
-        .attr('method', opts.submitMethod);
-}
-
-blistCommonNS.formInliner.defaults = {
-    submitMethod: 'post'
+            $('<input type="hidden" name="method" value="index" />'));
 };
 
 // Grab links to download and auto-create a form if inline
@@ -45,7 +38,8 @@ blistCommonNS.formInliner.defaults = {
                         .replace(/\w{4}-\w{4}/,'INLINE');
 
                     var $form = $('<form>')
-                        .attr('ACTION', href);
+                        .attr('ACTION', href)
+                        .attr('method', 'post');
 
                     blist.$display.append($form);
                     $form.bind('submit', blistCommonNS.formInliner);

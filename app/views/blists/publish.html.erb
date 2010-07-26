@@ -15,9 +15,8 @@
   <div class="fullPageContentContainer fullPageWithTabs">
     <div class="fullPageOuterContent">
       <div class="fullPageContent">
-        <div class='outerContent'>
+        <div class='outerContent' id='adminContent'>
           <div class='contentTR'><div class='contentTL'></div></div>
-          <div class='content' id='adminContent'>
             <div class="publishHeader clearfix">
               <%= render :partial => 'admin/refresh_theme_link' =%>
                 <h3>Social Data Player Customizations</h3>
@@ -36,6 +35,7 @@
                   to view all of your templates.
                 </p>
               </div>
+            </div>
 <%- else -%>
 <div id="publishContent" class="oneColumnContainer">
   <div class="fullPageContentContainer">

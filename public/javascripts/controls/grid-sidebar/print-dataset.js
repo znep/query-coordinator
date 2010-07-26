@@ -28,7 +28,7 @@
                         blist.namespace.fetch('blist.common');
                         $sect.closest('form').attr('target', '_blank')
                             .submit(blist.common.formInliner)
-                            .attr('method', 'POST')
+                            .attr('method', 'post')
                             .attr('action', '/views/INLINE/rows.pdf');
                     }
                 }

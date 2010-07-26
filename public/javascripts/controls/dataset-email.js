@@ -54,6 +54,7 @@
         $('.emailDatasetDialog .recipientRole').val(
             $('.emailDatasetDialog .recipientRole option:first').val());
         $.uniform.update('.emailDatasetDialog .recipientRole');
+        $('.emailDatasetDialog #emailMessage').val('');
 
         $('.emailDatasetContent').show();
         $('.emailSuccess').hide();
@@ -131,7 +132,7 @@
         var $select = $copy.find('.recipientRole');
         $copy.find('.selector.uniform').replaceWith($select);
 
-        $copy.appendTo($form);
+        $copy.insertAfter($form.find('.emailLine:last'));
 
         $select.uniform();
 
@@ -170,12 +171,14 @@
             if ($.isBlank(blist.display.view.grants))
             { blist.display.view.grants = []; }
 
-            _.each($form.find('.emailLine'), function(e, i, list)
+            var message = $form.find('#emailMessage').val();
+
+            $form.find('.emailLine').each(function()
             {
                 // Send notification email
-                var address = $(e).find('.emailRecipient').val();
-                var uid = $(e).find('recipientUid').val();
-                var grantType = $(e).find('.recipientRole').val();
+                var address = $(this).find('.emailRecipient').val();
+                var uid = $(this).find('recipientUid').val();
+                var grantType = $(this).find('.recipientRole').val();
 
                 if (!$.isBlank(address))
                 {
@@ -183,7 +186,7 @@
                     if (!isPublic || !$.isBlank(grantType))
                     {
                         var grant = {userEmail: address,
-                                type: grantType, userId: uid, message: ''};
+                                type: grantType, userId: uid, message: message};
                         // Create a grant for the user
                         $.socrataServer.addRequest({
                             url: '/views/' + blist.display.view.id + '/grants',
@@ -197,7 +200,7 @@
                         $.socrataServer.addRequest({
                             url: $form.attr('action'),
                             type: 'POST',
-                            data: JSON.stringify({recipient: address})
+                            data: JSON.stringify({recipient: address, message: message})
                         });
                     }
                 }

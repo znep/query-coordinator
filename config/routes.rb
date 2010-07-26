@@ -138,6 +138,7 @@ ActionController::Routing::Routes.draw do |map|
   # New dataset page
   # Temporary hack for datasets/new so it doesn't get routed to show:
   map.connect '/datasets/new', :controller => :blists, :action => 'new'
+  map.connect '/datasets/detail', :controller => :blists, :action => 'detail'
 
   map.resources :datasets,
     :conditions => {:has_v4_dataset => true},

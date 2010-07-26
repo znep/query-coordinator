@@ -638,7 +638,9 @@
 
                 // In non-IE we need to trigger a resize so the grid restores
                 // properly.  In IE7, this will crash; IE8 works either way
-                if (!$.browser.msie) { $(window).resize(); }
+                // This is only for the grid; so other types do the resize
+                if (!$.browser.msie || !isTable(sidebarObj))
+                { $(window).resize(); }
 
                 sidebarObj.settings.onSidebarClosed();
             },
@@ -1599,6 +1601,8 @@
 
             case 'radioGroup':
                 var itemAttrs = commonAttrs(args.item);
+                var defChecked;
+                var valChecked;
                 var items = _.map(args.item.options, function(opt, i)
                 {
                     var id = itemAttrs.id + '-' + i;
@@ -1606,21 +1610,32 @@
                         {context: $.extend({}, args.context,
                             {noTag: true, inputOnly: true}),
                         item: opt, items: args.item.options, pos: i});
+
+                    var radioItem = $.extend({}, itemAttrs,
+                        {id: id, tagName: 'input', type: 'radio',
+                        'class': {value: 'wizExclude',
+                            onlyIf: opt.type != 'static'},
+                            'data-defaultValue': $.htmlEscape(
+                                JSON.stringify(defValue == opt.name))});
+
+                    if ((curValue || defValue) == opt.name)
+                    { defChecked = radioItem; }
+                    if (_.any(subLine, function(sl)
+                            { return (sl['data-dataValue'] || {}).onlyIf; }))
+                    { valChecked = radioItem; }
+
                     return {tagName: 'div', 'class': ['radioLine', opt.type],
                         contents: [
-                            $.extend({}, itemAttrs,
-                                {id: id, tagName: 'input', type: 'radio',
-                                'class': {value: 'wizExclude',
-                                    onlyIf: opt.type != 'static'},
-                                checked: (curValue || defValue) == opt.name ||
-                                    _.any(subLine, function(sl)
-                                    { return (sl['data-dataValue'] ||
-                                        {}).onlyIf; }),
-                                'data-defaultValue': $.htmlEscape(
-                                    JSON.stringify(defValue == opt.name))}),
+                            radioItem,
                             {tagName: 'label', 'for': id, contents: subLine}
                         ]};
                 });
+
+                if (!$.isBlank(valChecked))
+                { valChecked.checked = true; }
+                else if (!$.isBlank(defChecked))
+                { defChecked.checked = true; }
+
                 contents.push({tagName: 'div', 'class': 'radioBlock',
                     contents: items});
                 break;

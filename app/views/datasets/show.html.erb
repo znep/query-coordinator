@@ -364,7 +364,7 @@
     blist.sidebarHidden.exportSection.print = <%= @view.is_alt_view? %>;
 
     <%# Sharing pane %>
-    blist.sidebarHidden.sharing = <%= !@view.owned_by?(@current_user) %>;
+    blist.sidebarHidden.sharing = <%= !@view.owned_by?(@current_user) || (@view.owner.id != @view.tableAuthor.id) %>;
   </script>
 
   <%- if !@view.is_blobby? -%>

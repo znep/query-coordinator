@@ -42,8 +42,10 @@
                 var newGrants = _.reject(blist.display.view.grants || [],
                     function(grant)
                     {
-                        return (grant.userId == $line.attr('data-uid') ||
-                                grant.userEmail == $line.attr('data-email'));
+                        return ((!$.isBlank(grant.userId) &&
+                                    grant.userId == $line.attr('data-uid')) ||
+                                (!$.isBlank(grant.userEmail) &&
+                                    grant.userEmail == $line.attr('data-email')));
                     });
                 blist.display.view.grants = newGrants;
                 updateShareText($line.closest('form'));
@@ -209,12 +211,14 @@
             });
     };
 
+    var displayName = blist.dataset.getTypeName(blist.display.view);
+
     var config =
     {
         name: 'edit.shareDataset',
         priority: 8,
         title: 'Sharing',
-        subtitle: 'Manage sharing and permissions of this dataset',
+        subtitle: 'Manage sharing and permissions of this ' + displayName,
         noReset: true,
         onlyIf: function(view)
         {
@@ -242,9 +246,8 @@
 
                         $formElem.find('.toggleDatasetPermissions').click(togglePermissions);
 
-
-                        // Grab non-public grants (shares)
-                        var grants = getNonPublicGrants(blist.display.view.grants);
+                        $formElem.find('.datasetTypeName').text(displayName);
+                        $formElem.find('.datasetTypeNameUpcase').text(displayName.capitalize());
 
                         // Clear out the message area
                         $('#gridSidebar_shareDataset .sharingFlash').text('')
@@ -252,6 +255,8 @@
 
                         // When this pane gets refreshed, update to reflect who it's shared with
                         updateShareText($formElem);
+
+                        var grants = getNonPublicGrants(blist.display.view.grants);
 
                         // If they have no shares
                         if ($.isBlank(grants) || grants.length == 0)

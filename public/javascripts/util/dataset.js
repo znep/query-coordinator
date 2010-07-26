@@ -59,6 +59,9 @@ blist.dataset.getTypeName = function(view)
         case 'blob':
             retType = 'embedded file';
             break;
+        case 'href':
+            retType = 'linked dataset';
+            break;
         default:
             retType = dType;
             break;

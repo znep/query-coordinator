@@ -51,6 +51,9 @@
 
         $('.emailDatasetDialog .emailLine:not(:first)').remove();
         $('.emailDatasetDialog .emailRecipient').val('');
+        $('.emailDatasetDialog .recipientRole').val(
+            $('.emailDatasetDialog .recipientRole option:first').val());
+        $.uniform.update('.emailDatasetDialog .recipientRole');
 
         $('.emailDatasetContent').show();
         $('.emailSuccess').hide();
@@ -62,7 +65,7 @@
         if (!blist.dataset.isPublic(blist.display.view))
         {
             $flash.addClass('notice')
-                .text('Notice: This dataset is currently private. ' +
+                .text('Notice: This ' + displayName + ' is currently private. ' +
                     'Emailing will grant access to all recipients.');
         }
 
@@ -90,6 +93,10 @@
 
     // Modal show link
     $.live('#shareMenu .menuEntries .email a', 'click', blist.dialog.sharing);
+
+    var displayName = blist.dataset.getTypeName(blist.display.view);
+    $('.emailDatasetDialog .datasetTypeName').text(displayName);
+    $('.emailDatasetDialog .datasetTypeNameUpcase').text(displayName.capitalize());
 
     $.live('.emailDatasetDialog .removeLink', 'click', function(e)
     {
@@ -160,6 +167,8 @@
         if ($form.valid())
         {
             var isPublic = blist.dataset.isPublic(blist.display.view);
+            if ($.isBlank(blist.display.view.grants))
+            { blist.display.view.grants = []; }
 
             _.each($form.find('.emailLine'), function(e, i, list)
             {
@@ -173,13 +182,15 @@
                     // Grant access as necessary
                     if (!isPublic || !$.isBlank(grantType))
                     {
+                        var grant = {userEmail: address,
+                                type: grantType, userId: uid, message: ''};
                         // Create a grant for the user
                         $.socrataServer.addRequest({
                             url: '/views/' + blist.display.view.id + '/grants',
                             type: 'POST',
-                            data: JSON.stringify({userEmail: address,
-                                type: grantType, userId: uid, message: ''})
+                            data: JSON.stringify(grant)
                         });
+                        blist.display.view.grants.push(grant);
                     }
                     else
                     {
@@ -197,23 +208,9 @@
                     $form.closest('.emailDatasetContent').slideToggle();
                     $('.emailSuccess').slideToggle();
 
-                    // HACK: we don't get grant data back from the server,
-                    // so manually pull the view JSON for the sharing pane to
-                    // update itself with
-                    $.ajax({
-                        url: '/views/' + blist.display.view.id + '.json',
-                        dataType: 'json',
-                        success: function(responseData)
-                        {
-                            blist.display.view.grants = responseData.grants;
-
-                            // Update the sharing pane to reflect
-                            if ($form.closest('.emailDatasetDialog').hasClass('ownerDialog'))
-                            { $('#gridSidebar').gridSidebar().refresh('edit.shareDataset'); }
-                        }
-                    });
-
-
+                    // Update the sharing pane to reflect
+                    if ($form.closest('.emailDatasetDialog').hasClass('ownerDialog'))
+                    { $('#gridSidebar').gridSidebar().refresh('edit.shareDataset'); }
                 },
                 error: function()
                 {

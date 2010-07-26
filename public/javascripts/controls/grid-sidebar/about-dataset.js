@@ -42,6 +42,7 @@
                                                     $sect.find('.totalTimesRated').text(
                                                         parseInt($.trim($sect.find('.totalTimesRated').text())) + 1);
                                                 }
+                                                $star.attr('title', '');
                                             }
                                         });
                                     });

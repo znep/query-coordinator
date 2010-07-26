@@ -386,6 +386,7 @@
                 sidebarObj._$outerPanes = {};
                 sidebarObj._$panes = {};
                 sidebarObj._paneData = {};
+                sidebarObj._dirtyPanes = {};
 
                 sidebarObj._selectOptions = {};
                 sidebarObj._customCallbacks = {};
@@ -494,6 +495,7 @@
 
                 sidebarObj._paneData[config.name] = data;
                 var $pane = renderPane(sidebarObj, config, data);
+                sidebarObj._dirtyPanes[config.name] = false;
                 sidebarObj._$panes[config.name] = $pane;
                 sidebarObj._$outerPanes[outerConfig.name]
                     .find('.panes').append($pane);
@@ -519,6 +521,13 @@
                     (!config.isParent &&
                         $.isBlank(sidebarObj._$panes[nameParts.secondary])))
                 { sidebarObj.addPane(paneName); }
+
+                // Check if our pane needs to be refreshed
+                if (sidebarObj._dirtyPanes[nameParts.secondary])
+                {
+                    sidebarObj.addPane(paneName,
+                        sidebarObj._paneData[nameParts.secondary]);
+                }
 
                 sidebarObj._currentOuterPane = nameParts.primary;
                 sidebarObj.$currentOuterPane().show();
@@ -669,12 +678,16 @@
                 var nameParts = getConfigNames(pane);
                 if ($.isBlank(sidebarObj._$panes[nameParts.secondary])) { return; }
 
-                var isCur = sidebarObj._currentOuterPane == nameParts.primary &&
-                    sidebarObj._currentPane == nameParts.secondary;
-                if (isCur) { sidebarObj.hide(pane); }
-                sidebarObj.addPane(pane,
-                        sidebarObj._paneData[nameParts.secondary]);
-                if (isCur) { sidebarObj.show(pane); }
+                if (sidebarObj._currentOuterPane == nameParts.primary &&
+                        sidebarObj._currentPane == nameParts.secondary)
+                {
+                    sidebarObj.hide(pane);
+                    sidebarObj.addPane(pane,
+                            sidebarObj._paneData[nameParts.secondary]);
+                    sidebarObj.show(pane);
+                }
+                else
+                { sidebarObj._dirtyPanes[nameParts.secondary] = true; }
             },
 
             updateEnabledSubPanes: function()

@@ -106,7 +106,7 @@ blist.dataset.controls.showSaveViewDialog = function(customClass, saveCallback,
             $dialog.find('.loadingOverlay, .loadingSpinner').removeClass('hide');
             $.ajax({url: '/views.json', type: 'POST', dataType: 'json',
                 contentType: 'application/json',
-                data: JSON.stringify(blist.dataset.cleanViewForPost($.extend({},
+                data: JSON.stringify(blist.dataset.cleanViewForSave($.extend({},
                     blist.display.view, {name: name}), true)),
                 error: function(xhr)
                 {

@@ -117,6 +117,18 @@ blist.dataset.cleanViewForPost = function(view, includeColumns)
     return view;
 };
 
+blist.dataset.cleanViewForSave = function(view, includeColumns)
+{
+    view = blist.dataset.cleanViewForPost(view, includeColumns);
+
+    if (!_.isUndefined(view.metadata))
+    {
+        delete view.metadata.facets;
+    }
+
+    return view;
+};
+
 blist.dataset.isValid = function(view)
 {
     if (!$.isBlank(view.message)) { return false; }

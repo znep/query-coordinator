@@ -232,9 +232,6 @@
         });
     };
 
-    $(document).bind(blist.events.COLUMNS_CHANGED, function()
-    { $('#gridSidebar').gridSidebar().refresh(configName); });
-
     $.gridSidebar.registerConfig(config);
 
 })(jQuery);

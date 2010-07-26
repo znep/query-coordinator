@@ -1,7 +1,7 @@
 // extend jQuery with Firebug console logging: http://muzso.hu/2008/03/07/logging-to-the-firebug-console-in-jquery
-$.fn.log = function (msg)
+$.fn.log = function (msg, obj)
 {
-    $.debug(msg, this);
+    $.debug(msg, this, obj);
     return this;
 };
 
@@ -9,17 +9,20 @@ var debugNS = blist.namespace.fetch('blist.debug');
 blist.debug.uid = 0;
 
 // extend jQuery with generic console logging.
-$.debug = function(msg, obj)
+$.debug = function(msg, obj, obj2)
 {
     msg = '[' + debugNS.uid++ + '] ' + msg;
     if (window.console && window.console.log)
     {
         if (obj)
         {
-            window.console.log("%s: %o", msg, obj);
-        } else {
-        	window.console.log(msg);
+            if (obj2)
+            { window.console.log("%s: %o; %o", msg, obj, obj2); }
+            else
+            { window.console.log("%s: %o", msg, obj); }
         }
+        else
+        { window.console.log(msg); }
     }
     else
     {
@@ -33,10 +36,14 @@ $.debug = function(msg, obj)
         }
         if (obj && JSON)
         {
-            $console.append("<p>" + msg + ": " + JSON.stringify(obj) + "</p>");
-        } else {
-            $console.append("<p>" + msg + "</p>");
+            if (obj2)
+            { $console.append("<p>" + msg + ": " + JSON.stringify(obj) + "; " +
+                JSON.stringify(obj2) + "</p>"); }
+            else
+            { $console.append("<p>" + msg + ": " + JSON.stringify(obj) + "</p>"); }
         }
+        else
+        { $console.append("<p>" + msg + "</p>"); }
         $console[0].scrollTop = $console[0].scrollHeight;
     }
 };

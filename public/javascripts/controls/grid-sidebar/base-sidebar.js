@@ -2792,7 +2792,8 @@
         if (!$item.is(':visible')) { return; }
 
         if (!$.isBlank(sidebarObj._$mainFlowWizard) &&
-            sidebarObj._$mainFlowWizard.index($item) > -1)
+            (sidebarObj._$mainFlowWizard.index($item) > -1 ||
+            sidebarObj._$mainFlowWizard.has($item).length > 0))
         { return; }
 
         // After the first wizard action, clear initialLoad

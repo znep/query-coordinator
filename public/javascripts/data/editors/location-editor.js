@@ -214,7 +214,7 @@
 
                 if (newStreet !== '') { address.address = newStreet; }
 
-                var zipResult = newCSZ.match(/\s+(\d{5}(\-\d{4})?)\s*$/);
+                var zipResult = newCSZ.match(/(?:^|\s+)(\d{5}(\-\d{4})?)\s*$/);
                 if (!_.isNull(zipResult) && zipResult.length > 1)
                 {
                     address.zip = zipResult[1];

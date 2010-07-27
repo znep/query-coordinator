@@ -37,7 +37,6 @@
             columnDeleteEnabled: false,
             columnNameEdit: false,
             columnPropertiesEnabled: false,
-            currentUserId: null,
             editColumnCallback: function(columnId, parentId) {},
             editEnabled: true,
             filterForm: null,
@@ -164,7 +163,7 @@
 
                 var view = datasetObj.settings._model.meta().view;
                 if (saveExisting && !_.include(view.flags || [], 'default') &&
-                    datasetObj.settings.currentUserId == view.owner.id)
+                    _.include(view.rights, 'update_view'))
                 {
                     $.ajax({url: '/views/' + view.id + '.json',
                         data: JSON.stringify({query: view.query}),
@@ -270,7 +269,7 @@
 
                         if (!skipRequest)
                         {
-                            if (datasetObj.settings.currentUserId == view.owner.id)
+                            if (_.include(view.rights, 'update_view'))
                             {
                                 $.ajax({url: '/views/' + view.id + '/columns/' +
                                     col.id + '.json',
@@ -365,7 +364,7 @@
                 var datasetObj = this;
                 var view = datasetObj.settings._model.meta().view;
 
-                if (datasetObj.settings.currentUserId == view.owner.id)
+                if (_.include(view.rights, 'update_view'))
                 {
                     var serverCols = [];
                     $.each(columns, function(i, colId)
@@ -401,7 +400,7 @@
                 var view = blist.display.view;
                 var isNew = newName !== null && newName !== undefined;
                 var isUpdate = doSave && !isNew &&
-                    datasetObj.settings.currentUserId == view.owner.id;
+                    _.include(view.rights, 'update_view');
                 var isGrouping = grouped instanceof Array && grouped.length > 0;
                 var wasGrouped = model.isGrouped();
 
@@ -1663,7 +1662,7 @@
             var view = datasetObj.settings._model.meta().view;
             $.each(view.columns, function(i, c)
                 { if (c.id == col.id) { c.width = col.width; return false; } });
-            if (datasetObj.settings.currentUserId == view.owner.id)
+            if (_.include(view.rights, 'update_view'))
             {
                 $.ajax({url: '/views/' + view.id + '/columns/' + col.id + '.json',
                     data: JSON.stringify({width: col.width}),
@@ -1675,8 +1674,7 @@
     var sortChanged = function(datasetObj, skipRequest)
     {
         var view = datasetObj.settings._model.meta().view;
-        if (!skipRequest &&
-            datasetObj.settings.currentUserId == view.owner.id &&
+        if (!skipRequest && _.include(view.rights, 'update_view') &&
             !datasetObj.isTempView)
         {
             $.ajax({url: '/views/' + view.id + '.json',
@@ -1714,7 +1712,7 @@
     var columnsRearranged = function(datasetObj)
     {
         var view = datasetObj.settings._model.meta().view;
-        if (datasetObj.settings.currentUserId == view.owner.id &&
+        if (_.include(view.rights, 'update_view') &&
             !datasetObj.isTempView)
         {
             var modView = blist.dataset.cleanViewForPost(

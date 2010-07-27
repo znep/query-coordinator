@@ -50,7 +50,7 @@
                 '.description': 'description',
                 '.deleteViewLink@class+': function(a)
                 {
-                    return blist.currentUserId != a.context.owner.id ? 'hide' : '';
+                    return _.include(a.context.rights, 'delete_view') ? '' : 'hide';
                 }
             });
             if (v.id == blist.display.view.id)

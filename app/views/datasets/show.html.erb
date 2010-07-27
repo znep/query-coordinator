@@ -29,7 +29,7 @@
     </div>
     <div class='unsavedLine'>
       <h2 id='unsavedTitle'>Unsaved View</h2>
-      <%- if !@view.is_blist? && @view.owned_by?(current_user) -%>
+      <%- if !@view.is_blist? && @view.has_rights?('update_view') -%>
       <a href='#Save' title='Save current view' data-savingText='Saving...'
         class='save toolbarButton'>Save</a>
       <%- end -%>
@@ -86,15 +86,17 @@
 <div class='outerContainer'>
   <div class='innerContainer'>
     <div class='viewErrorContainer'>
-      <%- if @view.owned_by?(current_user) -%>
+      <%- if @view.has_rights?('update_view') -%>
       <div class='viewError'><%= @view.display.invalid_message %></div>
       <ul class='invalidActions'>
         <li>
           <a href='#Edit' class='editView button'>Edit View</a>
         </li>
+        <%- if @view.has_rights?('delete_view') -%>
         <li>
           <a href='#Remove' class='removeView button'>Delete View</a>
         </li>
+        <%- end -%>
       </ul>
       <%- else -%>
       <div class='viewError'>This view cannot be displayed</div>
@@ -328,26 +330,27 @@
       !@view.can_edit? ||
       !CurrentDomain.module_available?(:dataset_refresh) %>;
     blist.sidebarHidden.edit.addColumn = <%= !@view.is_blist? ||
-      !@view.owned_by?(@current_user) %>;
+      !@view.has_rights?('add_column') %>;
 
     <%# Columm properties %>
     blist.sidebarHidden.columnProperties = <%= @view.is_alt_view? ||
-      !@view.owned_by?(@current_user) %>;
+      !@view.has_rights?('update_view') %>;
 
     <%# Filter pane %>
     blist.sidebarHidden.filter = blist.sidebarHidden.filter || {};
     blist.sidebarHidden.filter.filterDataset = <%= @view.is_alt_view? %>;
     blist.sidebarHidden.filter.showHide = <%= @view.is_alt_view? ||
-      !@view.owned_by?(@current_user) %>;
+      !@view.has_rights?('update_view') %>;
 
     <%# Visualize pane %>
     blist.sidebarHidden.visualize = blist.sidebarHidden.visualize || {};
     blist.sidebarHidden.visualize.calendarCreate = <%= @view.is_alt_view? &&
-      (@view.display.type != 'calendar' || !@view.owned_by?(@current_user)) %>;
+      (@view.display.type != 'calendar' || !@view.has_rights?('update_view')) %>;
     blist.sidebarHidden.visualize.chartCreate = <%= @view.is_alt_view? &&
-      (@view.display.type != 'visualization' || !@view.owned_by?(@current_user)) %>;
+      (@view.display.type != 'visualization' ||
+       !@view.has_rights?('update_view')) %>;
     blist.sidebarHidden.visualize.mapCreate = <%= @view.is_alt_view? &&
-      (@view.display.type != 'map' || !@view.owned_by?(@current_user)) ||
+      (@view.display.type != 'map' || !@view.has_rights?('update_view')) ||
       @view.is_grouped? ||
       !module_available?(:map_publish) %>;
 
@@ -366,7 +369,7 @@
     blist.sidebarHidden.exportSection.print = <%= @view.is_alt_view? %>;
 
     <%# Sharing pane %>
-    blist.sidebarHidden.sharing = <%= !@view.owned_by?(@current_user) || (@view.owner.id != @view.tableAuthor.id) %>;
+    blist.sidebarHidden.sharing = <%= !@view.has_rights?('grant') %>;
 
     <%# Please see admin_controller#add_custom_layer for explanation %>
     <%# custom_layer_config = Configuration.find_by_type('custom_layers', true).first

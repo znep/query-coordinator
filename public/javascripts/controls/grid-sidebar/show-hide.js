@@ -10,6 +10,9 @@
         priority: 5,
         title: 'Show &amp; Hide Columns',
         subtitle: 'Adjust which columns are visible in this view',
+        onlyIf: function(view)
+        { return !blist.display.isInvalid; },
+        disabledSubtitle: 'This view must be valid',
         sections: [{
             title: 'Columns',
             customContent: {

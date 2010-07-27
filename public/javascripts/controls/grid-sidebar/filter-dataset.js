@@ -114,7 +114,8 @@
     };
 
     var isEdit = _.include(['Filter', 'Grouped'],
-        blist.dataset.getDisplayType(blist.display.view));
+        blist.dataset.getDisplayType(blist.display.view)) &&
+        _.include(blist.display.view.rights, 'update_view');
 
     var configName = 'filter.filterDataset';
     var config = {
@@ -331,12 +332,15 @@
         return view;
     };
 
+    var registeredChange = false;
     config.showCallback = function(sidebarObj, $pane)
     {
-        sidebarObj.$grid().bind('meta_change', function()
+        if (!registeredChange)
         {
-            sidebarObj.refresh(configName);
-        });
+            sidebarObj.$grid().bind('meta_change', function()
+            { sidebarObj.refresh(configName); });
+            registeredChange = true;
+        }
     };
 
     config.finishCallback = function(sidebarObj, data, $pane, value)
@@ -438,7 +442,7 @@
 
             if (blist.display.isInvalid &&
                 !_.include(filterView.flags || [], 'default') &&
-                blist.currentUserId == blist.display.view.owner.id)
+                _.include(blist.display.view.rights, 'update_view'))
             {
                 $.ajax({url: '/views/' + blist.display.view.id + '.json',
                     type: 'PUT', dataType: 'json', contentType: 'application/json',

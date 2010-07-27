@@ -94,9 +94,9 @@
                                 { mapObj.hideLayers(); }
                                 mapObj.populateLayers();
                             }
-                        });
 
-                        mapObj.map.addLayer(layer);
+                            mapObj.map.addLayer(layer);
+                        });
                     }
 
                     // Not sure we want to be saving every single update a user

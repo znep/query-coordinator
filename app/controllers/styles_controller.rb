@@ -92,6 +92,11 @@ class StylesController < ApplicationController
     end
   end
 
+  def current_site
+    headers['Content-Type'] = 'text/css'
+    render :text => CurrentDomain.properties.custom_css
+  end
+
 protected
   def get_includes
     result = STYLE_PACKAGES['includes'].map{ |incl| "@import \"#{incl}.sass\"\n" }.join +

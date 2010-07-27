@@ -14,6 +14,10 @@
 
   <%= yield :head %>
 
+  <%- unless CurrentDomain.properties.custom_css.blank? -%>
+    <link type="text/css" rel="stylesheet" href="/styles/current_site.css"/>
+  <%- end -%>
+
   <% unless CurrentDomain.google_analytics_id.blank? %>
     <script type="text/javascript">
       var _gaq = _gaq || [];

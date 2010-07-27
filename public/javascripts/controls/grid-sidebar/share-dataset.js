@@ -95,7 +95,8 @@
                     success: function(response)
                     {
                         shares.push($.extend({},response,
-                            {shareType: grant.type}));
+                            {shareType: grant.type,
+                             shareInherited: grant.inherited}));
                     }
                 });
             }
@@ -103,7 +104,8 @@
             {
                 shares.push({userEmail: grant.userEmail,
                     displayName: grant.userEmail,
-                    shareType: grant.type});
+                    shareType: grant.type,
+                    shareInherited: grant.inherited});
             }
         });
         // Then match up with the grants
@@ -125,7 +127,8 @@
                     '.name': 'displayName',
                     'li@data-uid': 'id',
                     'li@data-currtype': 'shareType',
-                    'li@data-email': 'userEmail'
+                    'li@data-email': 'userEmail',
+                    'a.removeShareLink@class+': function(a) { return (a.context.shareInherited === true ? 'invisible' : '');  }
                 });
             $li.find('.type').val($.capitalize(share.shareType));
 
@@ -139,8 +142,8 @@
             $ul.find('li > select').uniform();
         });
 
-        $('#gridSidebar_shareDataset .type').change(changeShare);
-        $('#gridSidebar_shareDataset .removeShareLink').click(removeShare);
+        context.find('.type').change(changeShare);
+        context.find('.removeShareLink').click(removeShare);
     };
 
     var togglePermissions = function(event)

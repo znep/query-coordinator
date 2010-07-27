@@ -1,0 +1,68 @@
+/* HEADER */
+body {
+	background: #dfdfdd url(/stylesheets/images/domains/data.wa.gov/background-tile.png) repeat-x top;
+}
+.bodyExterior {
+	min-height:inherit;
+}
+.bodyInterior {
+	border:none;
+}
+#outerContainer {
+	background:url(/stylesheets/images/domains/data.wa.gov/background-banner.jpg) no-repeat 1em 0;
+}
+#header {
+	background:none;
+	padding:0;
+	height:100px;
+	margin-bottom:1em;
+}
+#header form.search {
+	top:50px;
+}
+/* User Nav */
+#header .userNav {
+	background:url(/stylesheets/images/domains/data.wa.gov/background-usernav.png);
+	padding:7px 10px 7px 20px;
+	right:1em;
+	top:7px;
+	border:#979fb6 solid 1px;
+	-moz-border-radius:4px;
+	-webkit-border-radius:4px;
+}
+#header .userNav li {
+	border-right:#ccc dotted 1px;
+}
+#header .userNav a {
+	color:#fff;
+}
+#header .userNav a:hover {
+	color:#ccc;
+	text-decoration:none;
+}
+/* DISCOVERY */
+.pageBlockHeaderCarousel.carouselWrapper, .pageBlockHeaderCarousel .carouselOuter, .pageBlockHeaderCarousel .carouselInner {
+	background-image:url(/stylesheets/images/domains/data.wa.gov/box.png);
+}
+/* FOOTER */
+.footerContainer {
+	background:none;
+}
+#footer a.awLogo {
+	float:left;
+	height:35px;
+	width:130px;
+	display:block;
+	background:url(/stylesheets/images/domains/data.wa.gov/aw_footer_logo.gif) no-repeat;
+	margin-left:1em;
+}
+#footer a:hover.awLogo {
+	text-decoration:none;
+}
+#footer li {
+	color:#999;
+}
+#footer li a {
+	color:#0133cc;
+}
+

@@ -138,6 +138,7 @@ ActionController::Routing::Routes.draw do |map|
   # New dataset page
   # Temporary hack for datasets/new so it doesn't get routed to show:
   map.connect '/datasets/new', :controller => :blists, :action => 'new'
+  map.connect '/datasets/detail', :controller => :blists, :action => 'detail'
 
   map.resources :datasets,
     :conditions => {:has_v4_dataset => true},
@@ -201,27 +202,27 @@ ActionController::Routing::Routes.draw do |map|
 
   # New SEO URL
   map.connect ':category/:view_name/:id', :controller => 'datasets',
-    :action => 'show', :conditions => { :method => :get },
+    :action => 'show',
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
       :category => /(\w|-)+/},
-    :conditions => {:has_v4_dataset => true}
+    :conditions => {:method => :get, :has_v4_dataset => true}
 
   map.connect ':category/:view_name/:id/widget_preview', :controller => 'datasets',
-    :action => 'widget_preview', :conditions => { :method => :get },
+    :action => 'widget_preview',
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
       :category => /(\w|-)+/},
-    :conditions => {:has_v4_dataset => true}
+    :conditions => {:method => :get, :has_v4_dataset => true}
 
   # New short URLs
   map.connect 'dataset/:id', :controller => 'datasets',
-    :action => 'show', :conditions => { :method => :get },
+    :action => 'show',
     :requirements => {:id => UID_REGEXP},
-    :conditions => {:has_v4_dataset => true}
+    :conditions => {:method => :get, :has_v4_dataset => true}
 
   map.connect 'd/:id', :controller => 'datasets',
-    :action => 'show', :conditions => { :method => :get },
+    :action => 'show',
     :requirements => {:id => UID_REGEXP},
-    :conditions => {:has_v4_dataset => true}
+    :conditions => {:method => :get, :has_v4_dataset => true}
 
 
   # Old SEO URLs

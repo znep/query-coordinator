@@ -1,8 +1,18 @@
-.fc-header .fc-state-default a
-  @include button
-  cursor: pointer
-  font-weight: bold
-  text-transform: capitalize
+.fc
+  position: relative
+  overflow-x: hidden
 
-.fc-header-right table td
-  padding-top: 0.6em
+.fc-header .fc-state-default
+  background-image: none
+  height: auto
+
+  a
+    @include button
+    cursor: pointer
+    font-weight: bold
+    text-transform: capitalize
+
+.fc .fc-header-right
+  padding-right: 20px
+  table td
+    padding-top: 0.6em

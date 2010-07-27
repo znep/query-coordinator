@@ -385,9 +385,12 @@
 
                 sidebarObj._$outerPanes = {};
                 sidebarObj._$panes = {};
+                sidebarObj._paneData = {};
+                sidebarObj._dirtyPanes = {};
 
                 sidebarObj._selectOptions = {};
                 sidebarObj._customCallbacks = {};
+                sidebarObj._columnSelects = [];
 
                 sidebarObj._changeHandlers = {};
 
@@ -404,6 +407,9 @@
                     if (!$.isBlank(sidebarObj._$currentWizard))
                     { sidebarObj._$currentWizard.socrataTip().quickShow(); }
                 });
+
+                $(document).bind(blist.events.COLUMNS_CHANGED, function()
+                { updateColumnSelects(sidebarObj); });
             },
 
             $dom: function()
@@ -487,7 +493,9 @@
 
                 if (config.isParent) { return; }
 
+                sidebarObj._paneData[config.name] = data;
                 var $pane = renderPane(sidebarObj, config, data);
+                sidebarObj._dirtyPanes[config.name] = false;
                 sidebarObj._$panes[config.name] = $pane;
                 sidebarObj._$outerPanes[outerConfig.name]
                     .find('.panes').append($pane);
@@ -513,6 +521,13 @@
                     (!config.isParent &&
                         $.isBlank(sidebarObj._$panes[nameParts.secondary])))
                 { sidebarObj.addPane(paneName); }
+
+                // Check if our pane needs to be refreshed
+                if (sidebarObj._dirtyPanes[nameParts.secondary])
+                {
+                    sidebarObj.addPane(paneName,
+                        sidebarObj._paneData[nameParts.secondary]);
+                }
 
                 sidebarObj._currentOuterPane = nameParts.primary;
                 sidebarObj.$currentOuterPane().show();
@@ -638,7 +653,9 @@
 
                 // In non-IE we need to trigger a resize so the grid restores
                 // properly.  In IE7, this will crash; IE8 works either way
-                if (!$.browser.msie) { $(window).resize(); }
+                // This is only for the grid; so other types do the resize
+                if (!$.browser.msie || !isTable(sidebarObj))
+                { $(window).resize(); }
 
                 sidebarObj.settings.onSidebarClosed();
             },
@@ -661,11 +678,16 @@
                 var nameParts = getConfigNames(pane);
                 if ($.isBlank(sidebarObj._$panes[nameParts.secondary])) { return; }
 
-                var isCur = sidebarObj._currentOuterPane == nameParts.primary &&
-                    sidebarObj._currentPane == nameParts.secondary;
-                if (isCur) { sidebarObj.hide(pane); }
-                sidebarObj.addPane(pane);
-                if (isCur) { sidebarObj.show(pane); }
+                if (sidebarObj._currentOuterPane == nameParts.primary &&
+                        sidebarObj._currentPane == nameParts.secondary)
+                {
+                    sidebarObj.hide(pane);
+                    sidebarObj.addPane(pane,
+                            sidebarObj._paneData[nameParts.secondary]);
+                    sidebarObj.show(pane);
+                }
+                else
+                { sidebarObj._dirtyPanes[nameParts.secondary] = true; }
             },
 
             updateEnabledSubPanes: function()
@@ -714,7 +736,8 @@
                 };
 
                 var outerConfig = paneConfigs[sidebarObj._currentOuterPane];
-                _.each(outerConfig.subPanes || {}, function(sp)
+                _.each(outerConfig.subPanes || $.makeArray(outerConfig),
+                function(sp)
                 {
                     if ($.isBlank(sp.onlyIf))
                     { updateEnabled(sp, true); }
@@ -1264,6 +1287,38 @@
         return item;
     };
 
+    var renderColumnSelectOptions = function(columnsObj, isTableColumn, curVal)
+    {
+        var cols;
+        if (!$.isBlank(columnsObj))
+        {
+            cols = _.select(blist.display.view.columns,
+                function(c) { return c.dataTypeName != 'meta_data'; });
+            if (!columnsObj.hidden)
+            {
+                cols = _.select(cols, function(c)
+                    { return !c.flags || !_.include(c.flags, 'hidden'); });
+            }
+            if (!$.isBlank(columnsObj.type))
+            {
+                cols = _.select(cols, function(c)
+                    { return _.include($.makeArray(columnsObj.type),
+                        c.renderTypeName); });
+            }
+        }
+
+        var options = [{tagName: 'option', value: '',
+            contents: 'Select a column'}];
+        _.each(cols, function(c)
+        {
+            var cId = isTableColumn ? c.tableColumnId : c.id;
+            options.push({tagName: 'option', value: cId,
+                selected: curVal == cId, contents: $.htmlEscape(c.name)});
+        });
+
+        return options;
+    };
+
     /* Render a single input field */
     var renderLine = function(sidebarObj, args)
     {
@@ -1295,7 +1350,7 @@
                     !args.context.inRepeater},
                         {value: 'textPrompt', onlyIf: !$.isBlank(item.prompt) &&
                             _.include(['text', 'textarea'], item.type)},
-                        item.notequalto, item.extraClass ],
+                        item.notequalto].concat(item.extraClass),
                 'data-origName': item.origName,
                 'data-isRequired': {value: true, onlyIf: item.required},
                 'data-notequalto': {value: '.' + (item.notequalto || '')
@@ -1326,25 +1381,6 @@
 
             return result;
         };
-
-        var cols;
-        var colTypes = [];
-        if (!$.isBlank(args.item.columns))
-        {
-            cols = _.select(blist.display.view.columns,
-                function(c) { return c.dataTypeName != 'meta_data'; });
-            if (!args.item.columns.hidden)
-            {
-                cols = _.select(cols, function(c)
-                    { return !c.flags || !_.include(c.flags, 'hidden'); });
-            }
-            if (!$.isBlank(args.item.columns.type))
-            {
-                colTypes = $.arrayify(args.item.columns.type);
-                cols = _.select(cols, function(c)
-                    { return _.include(colTypes, c.renderTypeName); });
-            }
-        }
 
         var defValue = args.item.defaultValue;
         if (args.context.inRepeater && !_.isUndefined(args.item.repeaterValue))
@@ -1502,26 +1538,25 @@
                 if (isTable(sidebarObj))
                 {
                     contents.push({tagName: 'a',
-                        href: '#Select:' + colTypes.join('-'),
+                        href: '#Select:' + $.makeArray(args.item.columns.type)
+                            .join('-'),
                         title: 'Select a column from the grid',
                         'class': ['columnSelector', {value: 'tableColumn',
                                 onlyIf: args.item.isTableColumn}],
                         contents: 'Select a column from the grid'});
                 }
 
-                var options =
-                    [{tagName: 'option', value: '', contents: 'Select a column'}];
-                _.each(cols, function(c)
-                {
-                    var cId = args.item.isTableColumn ? c.tableColumnId : c.id;
-                    options.push({tagName: 'option', value: cId,
-                        selected: (curValue || defValue) == cId,
-                        contents: $.htmlEscape(c.name)});
-                });
+                var options = renderColumnSelectOptions(args.item.columns,
+                    args.item.isTableColumn, curValue || defValue);
+
                 contents.push($.extend(commonAttrs($.extend({}, args.item,
-                        {extraClass: {value: 'hasTable',
-                            onlyIf: isTable(sidebarObj)}})),
-                    {tagName: 'select', contents: options}));
+                        {extraClass: ['columnSelectControl', {value: 'hasTable',
+                            onlyIf: isTable(sidebarObj)}]})),
+                    {tagName: 'select', contents: options,
+                    'data-isTableColumn': args.item.isTableColumn,
+                    'data-columnOptions': $.htmlEscape(JSON.stringify(
+                        args.item.columns || ''))}
+                    ));
                 break;
 
             case 'slider':
@@ -1599,6 +1634,8 @@
 
             case 'radioGroup':
                 var itemAttrs = commonAttrs(args.item);
+                var defChecked;
+                var valChecked;
                 var items = _.map(args.item.options, function(opt, i)
                 {
                     var id = itemAttrs.id + '-' + i;
@@ -1606,21 +1643,32 @@
                         {context: $.extend({}, args.context,
                             {noTag: true, inputOnly: true}),
                         item: opt, items: args.item.options, pos: i});
+
+                    var radioItem = $.extend({}, itemAttrs,
+                        {id: id, tagName: 'input', type: 'radio',
+                        'class': {value: 'wizExclude',
+                            onlyIf: opt.type != 'static'},
+                            'data-defaultValue': $.htmlEscape(
+                                JSON.stringify(defValue == opt.name))});
+
+                    if ((curValue || defValue) == opt.name)
+                    { defChecked = radioItem; }
+                    if (_.any(subLine, function(sl)
+                            { return (sl['data-dataValue'] || {}).onlyIf; }))
+                    { valChecked = radioItem; }
+
                     return {tagName: 'div', 'class': ['radioLine', opt.type],
                         contents: [
-                            $.extend({}, itemAttrs,
-                                {id: id, tagName: 'input', type: 'radio',
-                                'class': {value: 'wizExclude',
-                                    onlyIf: opt.type != 'static'},
-                                checked: (curValue || defValue) == opt.name ||
-                                    _.any(subLine, function(sl)
-                                    { return (sl['data-dataValue'] ||
-                                        {}).onlyIf; }),
-                                'data-defaultValue': $.htmlEscape(
-                                    JSON.stringify(defValue == opt.name))}),
+                            radioItem,
                             {tagName: 'label', 'for': id, contents: subLine}
                         ]};
                 });
+
+                if (!$.isBlank(valChecked))
+                { valChecked.checked = true; }
+                else if (!$.isBlank(defChecked))
+                { defChecked.checked = true; }
+
                 contents.push({tagName: 'div', 'class': 'radioBlock',
                     contents: items});
                 break;
@@ -1739,6 +1787,27 @@
             if (!$.isBlank(cleaner)) { cleaner = cleaner.cleanup; }
             if (!_.isFunction(cleaner)) { return; }
             cleaner(sidebarObj, $f);
+        });
+
+        $line.find('select.columnSelectControl').each(function()
+        {
+            sidebarObj._columnSelects = _.without(sidebarObj._columnSelects, this);
+        });
+    };
+
+    var updateColumnSelects = function(sidebarObj)
+    {
+        _.each(sidebarObj._columnSelects, function(csItem)
+        {
+            var $sel = $(csItem);
+            var newOpts = renderColumnSelectOptions(
+                JSON.parse($sel.attr('data-columnOptions') || '""'),
+                !$.isBlank($sel.attr('data-isTableColumn')),
+                $sel.val());
+            $sel.find('option').remove();
+            _.each(newOpts, function(o)
+            { $sel.append($.tag(o)); });
+            $.uniform.update($sel);
         });
     };
 
@@ -2157,6 +2226,9 @@
                         });
                 }
             });
+
+            $container.find('select.columnSelectControl').each(function()
+            { sidebarObj._columnSelects.push(this); });
 
             // Fields that have custom handlers specified against them.
             // Defined before default behaviors in case someone wants to

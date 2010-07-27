@@ -3,10 +3,10 @@
     <p>
       <a class="button shareDatasetButton add" href="#share">
         <span class="icon"></span>
-        Share this Dataset
+        Share this <span class="datasetTypeNameUpcase">Dataset</span>
       </a>
     </p>
-    <p class="formHeader">This dataset is
+    <p class="formHeader">This <span class="datasetTypeName">dataset</span> is
       <%= link_to (@view.is_public? ? 'Public' : 'Private'), '#togglePermissions',
       :class => 'toggleDatasetPermissions', 'data-public-perm' => "public.#{@view.display.public_perm_type}" %>
       <span class='andSharedHint<%= ' hide' unless @view.is_shared? -%>'>
@@ -20,7 +20,7 @@
         </li>
       </ul>
       <div class="noShares">
-        <p>You are not currently sharing this dataset with anyone</p>
+        <p>You are not currently sharing this <span class="datasetTypeName">dataset</span> with anyone</p>
       </div>
     </div>
   </div>

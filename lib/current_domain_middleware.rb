@@ -24,7 +24,7 @@ class CurrentDomainMiddleware
     end
     host = request.host if host.blank?
 
-    if host
+    if !host.blank?
       logger.debug "Current domain: #{host}"
       env['socrata.current_domain'] = current_domain = CurrentDomain.set(host, env['rack.session'][:custom_site_config])
     else

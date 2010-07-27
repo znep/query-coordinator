@@ -47,7 +47,11 @@
                         blist.util.humaneDate.DAY).capitalize();
                 },
                 '.authorLine .author': 'owner.displayName',
-                '.description': 'description'
+                '.description': 'description',
+                '.deleteViewLink@class+': function(a)
+                {
+                    return blist.currentUserId != a.context.owner.id ? 'hide' : '';
+                }
             });
             if (v.id == blist.display.view.id)
             { $li.addClass('current'); }
@@ -55,6 +59,30 @@
                 (v.name + ' ' + v.owner.displayName).toLowerCase());
 
             $li.expander({ contentSelector: '.description' });
+
+            $li.find('.deleteViewLink:not(.hide)').click(function(e)
+            {
+                e.preventDefault();
+                if (confirm('Are you sure you want to delete ' +
+                    $.htmlEscape(v.name) + '?'))
+                {
+                    var deletedCallback = function()
+                    {
+                        $li.remove();
+                        views.splice(_.indexOf(views, v), 1);
+                        if (blist.display.view.id == v.id &&
+                            !$.isBlank(blist.parentViewId))
+                        {
+                            blist.util.navigation
+                                .redirectToView(blist.parentViewId);
+                        }
+                    };
+
+                    $.ajax({url: '/views/' + v.id + '.json',
+                        type: 'DELETE',
+                        success: deletedCallback});
+                }
+            });
 
             $ul.append($li);
         });

@@ -367,6 +367,17 @@
 
     <%# Sharing pane %>
     blist.sidebarHidden.sharing = <%= !@view.owned_by?(@current_user) || (@view.owner.id != @view.tableAuthor.id) %>;
+
+    <%# Please see admin_controller#add_custom_layer for explanation %>
+    <%# custom_layer_config = Configuration.find_by_type('custom_layers', true).first
+        custom_layers = {}
+        ['esri'].each do |map_type|
+          custom_layers[map_type] = custom_layer_config.data['properties'].detect { |property|
+            property['name'] == map_type
+          }['value']
+        end if custom_layer_config
+    -%>
+    <%#blist.custom_layers = JSON.parse($.htmlUnescape("<%= h custom_layers.to_json.gsub(/\\/, '\\\\\\') % >")); -%>
   </script>
 
   <%- if !@view.is_blobby? -%>

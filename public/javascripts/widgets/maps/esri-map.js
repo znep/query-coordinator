@@ -59,7 +59,7 @@
                     {
                         var layer = layers[i];
                         if (layer === undefined || layer === null ||
-                            layer.url === undefined)
+                            (layer.url === undefined && layer.custom_url === undefined))
                         { continue; }
 
                         switch (layer.type)
@@ -83,7 +83,7 @@
                                 continue;
                         }
 
-                        layer = new constructor(layer.url, layer.options);
+                        layer = new constructor(layer.custom_url || layer.url, layer.options);
 
                         dojo.connect(layer, 'onLoad', function()
                         {

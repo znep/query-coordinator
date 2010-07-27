@@ -279,6 +279,27 @@ class AdminController < ApplicationController
     end
   end
 
+  def verify_layer_url
+    response = fetch_layer_info(params[:url])
+    respond_to do |format| format.data { render :json => response.to_json } end
+  end
+
+#  # TODO: Abandoned this functionality since we're not going to add domain-level
+#  # custom layers quite yet. This action still needs to be hooked into permissions.
+#  def add_custom_layer
+#    layer = fetch_layer_info(params[:url])
+#
+#    config = Array(Configuration.find_by_type("custom_layers", true)).first
+#    config = Configuration.create({ 'type' => 'custom_layers', 'name' => 'Custom Layers', 'default' => true }) unless config
+#
+#    unless layer[:error]
+#      layers = config.properties['esri']
+#      method = layers ? :update_property : :create_property
+#      config.send(method, 'esri', Array(layers) << layer)
+#    end
+#    respond_to do |format| format.data { render :text => config.to_s } end
+#  end
+
 private
   def check_auth(level = 'manage_users')
     unless CurrentDomain.user_can?(current_user, level)
@@ -333,6 +354,32 @@ private
     # Get a sample dataset to use
     views = View.find(:public_only => true, :limit => 1)
     return views.first unless views.nil?
+  end
+
+  def fetch_layer_info(layer_url)
+    begin
+      uri = URI.parse(URI.extract(layer_url).first)
+      uri.query = "f=json"
+      layer_info = JSON.parse(Net::HTTP.get(uri))
+    rescue SocketError, URI::InvalidURIError, JSON::ParserError
+      error = "url invalid"
+    end
+    error = 'url invalid' if layer_info && (layer_info['error'] \
+                                          || !layer_info['spatialReference'])
+
+    if error
+      return { 'error' => error }
+    else
+      title = layer_info['documentInfo']['Title'] if layer_info['documentInfo']
+      title = uri.path.slice(uri.path.index('services')+8..-1) if title.blank?
+
+      layer = {}
+      layer['text']  = "#{title} (#{uri.host})"
+      layer['value'] = uri.to_s.sub /\?.*$/, ''
+      layer['data']  = { 'type' => layer_info['tileInfo'] ? 'tile' : 'dynamic' }
+
+      return layer
+    end
   end
 
   @@preview_options = {:height => '280', :width => '500'}

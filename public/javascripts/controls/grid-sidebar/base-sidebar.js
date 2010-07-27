@@ -36,6 +36,40 @@
     },
     $.format('{0} file is required'));
 
+    // Special validator for handling ESRI Layer URLs
+    $.validator.addMethod('data-custom-validlayerurl', function(value, element, param)
+    {
+        if (this.optional(element)) { return true; }
+        if (param == 'valid') { return true; }
+        if (_.include(['invalid', 'verifying'], param)) { return false; }
+
+        var $element = $(element);
+        var validator = this;
+        $element.attr('data-custom-validlayerurl', 'verifying');
+        $.getJSON("/admin/verify_layer_url", {'url': value}, function(data)
+            {
+                if (data.value)
+                {
+                    $element.val(data.value);
+                    $element.attr('data-custom-validlayerurl', 'valid');
+                    $element.closest('.inputBlock')
+                        .find('select option:selected')
+                            .attr('data-custom-type', data.data.type);
+                }
+                else
+                {
+                    $element.attr('data-custom-validlayerurl', 'invalid');
+                }
+                validator.element(element);
+            });
+    },
+    function (value, element)
+    {
+        return _.include(['unverified', 'verifying'], value)
+                ? 'Verifying URL'
+                : 'This URL is not valid';
+    });
+
 
     /* Config hash:
     {

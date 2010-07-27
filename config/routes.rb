@@ -100,6 +100,7 @@ ActionController::Routing::Routes.draw do |map|
       :requirements => {:id => UID_REGEXP}
     admin.connect '/admin/sdp/create_blank_view', :action => 'create_blank_dataset'
     admin.connect '/admin/theme',                 :action => 'theme'
+    admin.connect '/admin/verify_layer_url',      :action => 'verify_layer_url'
   end
 
   map.resources :contacts,

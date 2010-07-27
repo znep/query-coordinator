@@ -3,7 +3,7 @@
     <% form_tag("/views/#{@view.id}.json", :class => 'contactOwnerForm') do %>
       <%= hidden_field_tag 'method', 'flag' %>
       <div class="lined">
-        <div class="required"><label for="contactPurpose">Purpose:</label></div>
+        <div><label for="contactPurpose" class="required">Purpose:</label></div>
         <select id="contactPurpose" name="type">
           <%= options_for_select(
               [['-- Select Purpose --', ''],
@@ -21,12 +21,12 @@
       </div>
 
       <div class="lined">
-        <div class="required"><label for="contactBody">Short Message:</label></div>
+        <div><label for="contactBody" class="required">Short Message:</label></div>
         <textarea id="contactBody" name="message"></textarea>
       </div>
 
       <div class="lined">
-        <div class="required"><label for="from_address">Your Email:</label></div>
+        <div><label for="from_address" class="required">Your Email:</label></div>
         <input id="fromAddress" name="from_address" type="text" />
       </div>
 

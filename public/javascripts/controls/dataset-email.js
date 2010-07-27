@@ -187,7 +187,10 @@
                     if (!isPublic || !$.isBlank(grantType))
                     {
                         var grant = {userEmail: address,
-                                type: grantType, userId: uid, message: message};
+                                type: grantType, message: message};
+                        if (!$.isBlank(uid))
+                        { grant['userId'] = uid; }
+
                         // Create a grant for the user
                         $.socrataServer.addRequest({
                             url: '/views/' + blist.display.view.id + '/grants',

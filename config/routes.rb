@@ -165,7 +165,8 @@ ActionController::Routing::Routes.draw do |map|
         :modify_permission => :post,
         :alt => :get,
         :save_filter => :post,
-        :help_me => :get
+        :help_me => :get,
+        :embed_code => :get
       } do |blist|
         blist.connect 'stats', :controller => 'stats', :action => 'index'
         blist.resources :columns

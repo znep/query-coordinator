@@ -247,7 +247,8 @@
                             { blist.dialog.sharing(event); }
                         });
 
-                        $formElem.find('.toggleDatasetPermissions').click(togglePermissions);
+                        $formElem.find('.toggleDatasetPermissions').click(togglePermissions)
+                            .text(blist.dataset.isPublic(blist.display.view) ? 'Public' : 'Private');
 
                         $formElem.find('.datasetTypeName').text(displayName);
                         $formElem.find('.datasetTypeNameUpcase').text(displayName.capitalize());

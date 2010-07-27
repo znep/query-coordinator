@@ -27,7 +27,7 @@
 
       <div class="lined">
         <div><label for="from_address" class="required">Your Email:</label></div>
-        <input id="fromAddress" name="from_address" type="text" />
+        <input id="fromAddress" name="from_address" type="text" value="<%= current_user.email unless (current_user.nil? || current_user.email.nil?) %>"/>
       </div>
 
       <a href="#submit" class="button sendContactButton">Send</a>

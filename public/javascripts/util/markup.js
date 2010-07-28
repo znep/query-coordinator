@@ -41,7 +41,9 @@
         {
             if (key == 'tagName' || key == 'contents')
             { return; }
-            else if (value === true)
+            else if ((value === true) && _.include(['checked', 'selected',
+                'disabled', 'readonly', 'multiple', 'ismap', 'defer',
+                'declare', 'noresize', 'nowrap', 'noshade', 'compact'], key.toLowerCase()))
             { result += tag_append(key, key); }
             else if (value === false)
             { return; }

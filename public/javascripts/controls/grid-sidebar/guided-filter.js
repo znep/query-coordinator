@@ -36,7 +36,7 @@
                 name: column.name,
                 defaultValue: '',
                 type: 'radioGroup',
-                lineClass: 'noLabel facet' + facet.type.capitalize(),
+                lineClass: 'noLabel facetFilterRow facet' + facet.type.capitalize(),
                 options: [
                     { value: 'No Filter', name: '', type: 'static', data: { facetClear: 'true' } }
                 ]
@@ -52,7 +52,7 @@
     {
         if (_.isEmpty(facetedFilters))
         {
-            dsGrid.clearTempView();
+            dsGrid.updateFilter(originalFilter, false, false);
         }
         else
         {
@@ -94,7 +94,6 @@
                 callback($fieldLabel, event);
             }
             mergeAndPostFilter(sidebarObj.$grid().datasetGrid());
-            
         }
     };
 

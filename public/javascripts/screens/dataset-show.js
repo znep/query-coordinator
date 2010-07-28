@@ -91,6 +91,18 @@ $(function()
     $(document).bind(blist.events.DISPLAY_ROW, function(e, rowId)
         { datasetPageNS.displayRow(rowId); });
 
+
+    // Render types
+    $('#renderTypeOptions .button').click(function(e)
+    {
+        e.preventDefault();
+        if ($.hashHref($(this).attr('href')) == 'page')
+        { datasetPageNS.pageRenderType.show(); }
+        else
+        { datasetPageNS.pageRenderType.hide(); }
+    });
+
+
     // grid
     var $dataGrid = blist.$display;
     if ($dataGrid.length > 0)

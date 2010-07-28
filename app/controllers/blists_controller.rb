@@ -1,7 +1,7 @@
 class BlistsController < ApplicationController
   include BlistsHelper
   helper_method :get_title
-  skip_before_filter :require_user, :only => [:help_me, :show, :alt, :alt_filter, :about, :print, :email, :flag, :republish, :about_sdp, :form_success, :form_error, :map, :visualization, :calendar]
+  skip_before_filter :require_user, :only => [:help_me, :show, :alt, :alt_filter, :about, :print, :email, :flag, :republish, :about_sdp, :form_success, :form_error, :map, :visualization, :calendar, :embed_code]
 
   def index
     @body_class = 'home'
@@ -804,6 +804,11 @@ class BlistsController < ApplicationController
        @view_activities = Activity.find({:viewId => @view.id})
      end
      render(:layout => 'main.data')
+   end
+
+   def embed_code
+     @view = View.find(params[:id])
+     render :partial => 'embed_code'
    end
 
 

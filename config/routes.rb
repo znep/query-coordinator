@@ -34,6 +34,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/styles/individual/:stylesheet.css', :controller => 'styles', :action => 'individual'
   map.connect '/styles/merged/:stylesheet.css', :controller => 'styles', :action => 'merged'
   map.connect '/styles/widget/:customization_id.css', :controller => 'styles', :action => 'widget'
+  map.connect '/styles/current_site.css', :controller => 'styles', :action => 'current_site'
 
   map.connect '/internal', :controller => 'internal', :action => 'index'
   map.connect '/internal/orgs', :controller => 'internal', :action => 'create_org',
@@ -100,6 +101,7 @@ ActionController::Routing::Routes.draw do |map|
       :requirements => {:id => UID_REGEXP}
     admin.connect '/admin/sdp/create_blank_view', :action => 'create_blank_dataset'
     admin.connect '/admin/theme',                 :action => 'theme'
+    admin.connect '/admin/verify_layer_url',      :action => 'verify_layer_url'
   end
 
   map.resources :contacts,
@@ -164,7 +166,8 @@ ActionController::Routing::Routes.draw do |map|
         :modify_permission => :post,
         :alt => :get,
         :save_filter => :post,
-        :help_me => :get
+        :help_me => :get,
+        :embed_code => :get
       } do |blist|
         blist.connect 'stats', :controller => 'stats', :action => 'index'
         blist.resources :columns

@@ -79,6 +79,9 @@ a
 .hide
   display: none !important
 
+.invisible
+  visibility: hidden
+
 .mainError
   color: #ff0000
   font-size: 1.2em
@@ -155,6 +158,8 @@ a
     height: 1px
     position: absolute
     width: 1px
+    .ie &
+      position: static
 
   .actions
     margin-top: 2em

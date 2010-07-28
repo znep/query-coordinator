@@ -7,7 +7,7 @@
       </a>
     </p>
     <p class="formHeader">This <span class="datasetTypeName">dataset</span> is
-      <%= link_to (@view.is_public? ? 'Public' : 'Private'), '#togglePermissions',
+      <%= link_to 'Public', '#togglePermissions',
       :class => 'toggleDatasetPermissions', 'data-public-perm' => "public.#{@view.display.public_perm_type}" %>
       <span class='andSharedHint<%= ' hide' unless @view.is_shared? -%>'>
         and shared with the following <span class='friendsHint'></span>

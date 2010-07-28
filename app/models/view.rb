@@ -347,6 +347,10 @@ class View < Model
     data['rights'] && data['rights'].include?('add')
   end
 
+  def has_rights?(right)
+    data['rights'] && data['rights'].include?(right)
+  end
+
   def contributor_users
     (grants || []).select {|g| !g.flag?('public') && g.type.downcase == 'contributor'}.
       collect do |g|

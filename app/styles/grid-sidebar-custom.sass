@@ -340,7 +340,6 @@
 
         &.widenedItem
           text-align: center
-          width: 88%
 
       > dd
         border-top: 1px solid $sidebar_chrome_border_color
@@ -373,8 +372,7 @@
       display: block
       font-size: 1.1em
       font-weight: bold
-      padding: 0
-        bottom: 0.2em
+      padding-bottom: 0.2em
 
     div.selector.uniform
       label.error
@@ -388,7 +386,10 @@
       textarea, input
         display: block
         margin: 0.5em 0
+        overflow: auto
         width: 100%
+        .ie7 &
+          width: 93%
 
       #uniform-contactPurpose
         margin-bottom: 1em

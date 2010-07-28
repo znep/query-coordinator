@@ -33,6 +33,13 @@
             value: arcgisBaseService + 'World_Physical_Map/MapServer',
             data: {type: 'tile'}}
     ];
+    var newMapLayer = {text: 'Custom Layer', value: 'custom', data: {type: null}};
+    mapLayers = mapLayers.concat(newMapLayer);
+
+    var normalizeLayerUrl = function($control, event)
+    {
+        $control.attr('data-custom-validlayerurl', 'unverified');
+    };
 
     var heatmapRegionOptions = function(heatmapType)
     {
@@ -80,6 +87,11 @@
                             repeaterValue: '',
                             required: true, prompt: 'Select a layer',
                             options: mapLayers},
+                        {text: 'Layer URL', type: 'text',
+                            name: 'custom_url', onlyIf: {field: 'url', value: 'custom'},
+                            defaultValue: 'http://', required: true,
+                            data: { 'validlayerurl': 'unverified' },
+                            change: normalizeLayerUrl },
                         {text: 'Opacity', type: 'slider',
                             name: 'options.opacity',
                             defaultValue: 1, repeaterValue: 0.6,

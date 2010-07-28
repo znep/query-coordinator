@@ -118,7 +118,6 @@
                                     .focus().end().end()
                                 .find('.contactOwnerLinks')
                                     .slideToggle().end();
-                            $('#gridSidebar_about .scrollContent > div.required').toggleClass('hide');
                         };
 
                         $.live('#gridSidebar_about .contactButton',

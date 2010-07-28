@@ -36,7 +36,10 @@ blist.datasetPage.setTempView = function()
 };
 
 blist.datasetPage.updateValidView = function(view)
-{ $('.invalidView').removeClass('invalidView'); };
+{
+    $('.invalidView').removeClass('invalidView');
+    datasetPageNS.sidebar.updateEnabledSubPanes();
+};
 
 (function($)
 {
@@ -62,11 +65,14 @@ $(function()
                 .bind('columns_updated', function()
                     { datasetPageNS.sidebar.refresh(); })
                 .datasetGrid({viewId: blist.display.viewId,
-                    columnDeleteEnabled: blist.isOwner,
-                    columnPropertiesEnabled: blist.isOwner,
-                    columnNameEdit: blist.isOwner,
-                    showAddColumns: blist.isOwner && blist.display.type == 'blist',
-                    currentUserId: blist.currentUserId,
+                    columnDeleteEnabled: _.include(blist.display.view.rights,
+                        'remove_column'),
+                    columnPropertiesEnabled: _.include(blist.display.view.rights,
+                        'update_view'),
+                    columnNameEdit: _.include(blist.display.view.rights,
+                        'update_view'),
+                    showAddColumns: blist.display.type == 'blist' &&
+                        _.include(blist.display.view.rights, 'add_column'),
                     accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
                     clearTempViewCallback: datasetPageNS.clearTempView,
                     setTempViewCallback: datasetPageNS.setTempView,

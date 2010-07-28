@@ -15,7 +15,7 @@
 
     var awesomeAchieved = function(dataItem, context)
     {
-        context.siblings('.recipientUid')
+        context.closest('div').siblings('.recipientUid')
             .val(dataItem['id']).end();
     };
 
@@ -79,7 +79,8 @@
                 success: function(data)
                 {
                     // Strip off stuff we don't want people searching by
-                    friends = _.map(data, function(friend)
+                    friends = _.map(_.select(data, function(u)
+                        { return !$.isBlank(u.email); }), function(friend)
                     {
                         return {displayName: friend.displayName,
                             email: friend.email, id: friend.id};
@@ -177,7 +178,7 @@
             {
                 // Send notification email
                 var address = $(this).find('.emailRecipient').val();
-                var uid = $(this).find('recipientUid').val();
+                var uid = $(this).find('.recipientUid').val();
                 var grantType = $(this).find('.recipientRole').val();
 
                 if (!$.isBlank(address))
@@ -186,7 +187,10 @@
                     if (!isPublic || !$.isBlank(grantType))
                     {
                         var grant = {userEmail: address,
-                                type: grantType, userId: uid, message: message};
+                                type: grantType, message: message};
+                        if (!$.isBlank(uid))
+                        { grant['userId'] = uid; }
+
                         // Create a grant for the user
                         $.socrataServer.addRequest({
                             url: '/views/' + blist.display.view.id + '/grants',

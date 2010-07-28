@@ -155,6 +155,27 @@
       <%= raw @view.display.render_body(self) %>
       <%= render(:partial => @view.display.render_partial) %>
     </div>
+
+    <div id='pageRenderType' class='fullHeight <%= @row.nil? ? 'hide' : '' %>'>
+      <div class='content'></div>
+      <ul class='navigation'>
+        <li><a href='#first' title='View first row' class='first button'>
+          <span class='icon'></span>
+        </a></li>
+        <li><a href='#previous' title='View previous row' class='previous button'>
+          <span class='icon'></span>
+        </a></li>
+        <li class='info'>
+        Viewing row <span class='curRow'></span> of <span class='totalRows'></span>
+        </li>
+        <li><a href='#next' title='View next row' class='next button'>
+          <span class='icon'></span>
+        </a></li>
+        <li><a href='#last' title='View last row' class='last button'>
+          <span class='icon'></span>
+        </a></li>
+      </ul>
+    </div>
   </div>
 
   <div id='gridSidebar'>
@@ -318,6 +339,10 @@
 
     <%- if !current_user.nil? -%>
       blist.currentUserId = '<%= current_user.id %>';
+    <%- end -%>
+
+    <%- if !@row.nil? -%>
+    blist.display.initialRow = <%= @row['position'] %>;
     <%- end -%>
 
     <%# Namespace to keep track of disabled sidebar sections %>

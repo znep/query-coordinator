@@ -38,6 +38,24 @@ blist.datasetPage.updateValidView = function()
     datasetPageNS.sidebar.updateEnabledSubPanes();
 };
 
+blist.datasetPage.pageRenderTypeHidden = function()
+{
+    $('body').removeClass('pageRenderType');
+    $(window).resize();
+};
+
+blist.datasetPage.pageRenderTypeShown = function()
+{
+    $('body').addClass('pageRenderType');
+    $(window).resize();
+};
+
+blist.datasetPage.displayRow = function(rowId)
+{
+    datasetPageNS.pageRenderType.displayRowByID(rowId);
+};
+
+
 (function($)
 {
     if (!blist.dataset.valid) { $('body').addClass('invalidView'); }
@@ -57,6 +75,21 @@ $(function()
         .appendTo('.siteInnerWrapper');
 
     $('.outerContainer').fullScreen();
+
+
+    // Page render type
+    datasetPageNS.pageRenderType = $('#pageRenderType').pageRenderType({
+        hideCallback: datasetPageNS.pageRenderTypeHidden,
+        showCallback: datasetPageNS.pageRenderTypeShown,
+        view: blist.display.view
+    });
+    if ($.isBlank(blist.display.initialRow))
+    { datasetPageNS.pageRenderType.hide(); }
+    else
+    { datasetPageNS.pageRenderType.displayRowByIndex(blist.display.initialRow); }
+
+    $(document).bind(blist.events.DISPLAY_ROW, function(e, rowId)
+        { datasetPageNS.displayRow(rowId); });
 
     // grid
     var $dataGrid = blist.$display;

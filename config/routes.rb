@@ -140,7 +140,7 @@ ActionController::Routing::Routes.draw do |map|
       :contact_detail => :get,
       :group_detail => :get,
     }
-  
+
   map.data 'data/', :controller => 'data', :action => 'redirect_to_root'
   map.with_options :controller => 'data' do |data|
     data.data_filter        'data/filter',      :action => 'filter'
@@ -151,13 +151,13 @@ ActionController::Routing::Routes.draw do |map|
     data.nominations        'data/nominations', :action => 'nominations'
     data.suggest            'data/suggest',     :action => 'suggest'
   end
-  
+
   map.resource :community, :member => { :filter => :get, :activities => :get, :tags => :get }
   map.resource :home
   map.resource :account
   map.resources :suggestions
-  map.resources :profile, :member => { 
-    :create_link => :post, 
+  map.resources :profile, :member => {
+    :create_link => :post,
     :delete_link => :delete,
     :update_link => :put,
     :create_friend => :get,
@@ -244,6 +244,12 @@ ActionController::Routing::Routes.draw do |map|
 
   # New SEO URL
   map.connect ':category/:view_name/:id', :controller => 'datasets',
+    :action => 'show',
+    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
+      :category => /(\w|-)+/},
+    :conditions => {:method => :get, :has_v4_dataset => true}
+
+  map.connect ':category/:view_name/:id/:row_id', :controller => 'datasets',
     :action => 'show',
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
       :category => /(\w|-)+/},

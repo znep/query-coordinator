@@ -321,6 +321,7 @@ javascripts:
   - controls/embed-form
   - controls/full-screen
   - controls/format-options
+  - controls/page-render-type
   - screens/dataset-show
 - screen-dataset-edit-metadata:
   - plugins/jquery.uniform

@@ -31,6 +31,7 @@ dataset-new:
 dataset-show:
 - grid-sidebar
 - grid-sidebar-custom
+- screen-page-render-type
 - screen-dataset
 - control-feed
 - splash

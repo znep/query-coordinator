@@ -428,10 +428,7 @@
                 { $.syncObjects(blist.display.view, view); }
 
                 if (blist.display.isInvalid)
-                {
-                    blist.display.isInvalid = false;
-                    dsGrid.updateValidity(blist.display.view);
-                }
+                { dsGrid.updateValidity(blist.display.view); }
 
                 _.defer(function()
                 {

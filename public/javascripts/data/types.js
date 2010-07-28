@@ -944,6 +944,7 @@ blist.namespace.fetch('blist.data.types');
             renderGen: renderGenPhoto,
             cls: 'photo',
             filterConditions: filterConditions.blob,
+            aggregates: nonNumericAggs,
             deleteable: true
         },
 
@@ -954,6 +955,7 @@ blist.namespace.fetch('blist.data.types');
             renderGen: renderGenPhoto,
             cls: 'photo',
             filterConditions: filterConditions.blob,
+            aggregates: nonNumericAggs,
             deleteable: true
         },
 
@@ -1132,6 +1134,7 @@ blist.namespace.fetch('blist.data.types');
             createable: true,
             renderGen: renderGenDocument,
             filterConditions: filterConditions.blob,
+            aggregates: nonNumericAggs,
             deleteable: true,
             isObject: true
         },
@@ -1140,6 +1143,7 @@ blist.namespace.fetch('blist.data.types');
             title: 'Document (old)',
             renderGen: renderGenDocument,
             filterConditions: filterConditions.blob,
+            aggregates: nonNumericAggs,
             deleteable: true,
             isObject: true
         },

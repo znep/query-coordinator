@@ -37,6 +37,7 @@ blist.datasetPage.setTempView = function()
 
 blist.datasetPage.updateValidView = function(view)
 {
+    blist.display.isInvalid = false;
     $('.invalidView').removeClass('invalidView');
     datasetPageNS.sidebar.updateEnabledSubPanes();
 };

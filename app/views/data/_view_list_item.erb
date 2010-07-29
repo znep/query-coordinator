@@ -8,7 +8,8 @@
       <div class="itemTitleInner clearfix">
         <div class="itemTitleWrapper">
           <h3 class="<%= get_permissions_icon_class_for_view(view) %> clipText">
-            <%= link_to(h(view.name), view.href, :title => h(view.name)) %>
+            <%= link_to(h(view.name), view.href(port), :title => h(view.name),
+              :rel => view.browserOpenTarget) %>
           </h3>
         </div>
         <p class="dateLine"><%= blist_date(view.last_activity) %></p>
@@ -41,8 +42,12 @@
     </div>
     <div class="itemActionContainer">
       <ul class="itemActions actionButtons clearfix">
-        <li><%= link_to("<span>About</span>", "#{view.href}/about") %></li>
-        <li><%= link_to("<span>Open</span>", view.href, :class => "arrowButton") %></li>
+        <li><%= link_to("<span>About</span>", "#{view.href(port)}/about",
+                :rel => view.browserOpenTarget) %>
+        </li>
+        <li><%= link_to("<span>Open</span>", view.href(port),
+                :class => "arrowButton", :rel => view.browserOpenTarget) %>
+        </li>
       </ul>
     </div>
   </div>

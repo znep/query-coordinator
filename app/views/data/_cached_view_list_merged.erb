@@ -5,6 +5,7 @@
       :views => @search_views, :views_total => @search_views_total,
       :current_page => @current_state['page'], :type => "search", :current_filter => params[:filter],
       :sort_by => nil, :tag_list => nil, :current_tag => nil,
+      :port => @current_state['port'],
       :search_term => @search_term, :page_size => @page_size } ) %>
   <%- else -%>
     <%= render(:partial => "view_list_tab_noresult", :locals => { :term => @search_term }) %>
@@ -25,6 +26,7 @@
       :sort_by => @current_state['sort_by'] || 'POPULARITY',
       :tag_list => @popular_views_tags || @filtered_views_tags,
       :current_tag => @current_state['tag'], :search_term => nil,
+      :port => port,
       :page_size => @page_size }) %>
   <% end %>
 
@@ -43,6 +45,7 @@
         :sort_by => @current_state['sort_by'] || 'LAST_CHANGED',
         :tag_list => @all_views_tags || @filtered_views_tags,
         :current_tag => @current_state['tag'], :search_term => nil,
+        :port => port,
         :page_size => @page_size }) %>
     <% end %>
 

@@ -102,6 +102,15 @@ ActionController::Routing::Routes.draw do |map|
     admin.connect '/admin/sdp/create_blank_view', :action => 'create_blank_dataset'
     admin.connect '/admin/theme',                 :action => 'theme'
     admin.connect '/admin/verify_layer_url',      :action => 'verify_layer_url'
+
+    admin.connect '/admin/federations',           :action => 'federations'
+    admin.connect '/admin/federations/:id/delete',:action => 'delete_federation'
+    admin.connect '/admin/federations/:id/accept',:action => 'accept_federation'
+    admin.connect '/admin/federations/:id/reject',:action => 'reject_federation'
+    admin.connect '/admin/federations/new',       :action => 'new_federation',
+      :conditions => { :method => :get }, :format => 'data'
+    admin.connect '/admin/federations/create', :action => 'create_federation',
+      :conditions => { :method => :put }, :format => 'data'
   end
 
   map.resources :contacts,

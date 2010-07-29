@@ -5,7 +5,7 @@ require 'timeout'
 class HomesController < ApplicationController
   def show
     @body_class = 'home'
-
+    @port = request.port
     @recently_opened_blists = View.find_recent(5)
 
     @favorite_blists = View.find_favorites().

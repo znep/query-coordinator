@@ -286,9 +286,20 @@ class View < Model
     end
   end
 
-  def href
+  def federated?
+    !domainCName.blank?
+  end
+
+  def browserOpenTarget
+    #federated? ? "_blank" : "_self"
+    federated? ? "external" : ""
+  end
+
+  def href(port = 80)
+    url_port = (port == 80) ? '' : ':' + port.to_s
+    protocol = federated? ? "http://#{domainCName}#{url_port}" : ''
     prefix = self.category || 'dataset'
-    "/#{prefix.convert_to_url}/#{name.convert_to_url}/#{id}"
+    "#{protocol}/#{prefix.convert_to_url}/#{name.convert_to_url}/#{id}"
   end
 
   def alt_href

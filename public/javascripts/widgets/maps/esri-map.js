@@ -88,14 +88,13 @@
                         dojo.connect(layer, 'onLoad', function()
                         {
                             if (this.loaded) { layersLoaded++; }
+                            mapObj.map.addLayer(this);
                             if (layersLoaded >= layers.length)
                             {
                                 if (mapObj.hideLayers)
                                 { mapObj.hideLayers(); }
                                 mapObj.populateLayers();
                             }
-
-                            mapObj.map.addLayer(layer);
                         });
                     }
 

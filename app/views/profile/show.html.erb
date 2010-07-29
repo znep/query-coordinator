@@ -396,7 +396,8 @@
                         </thead>
                         <tbody>
                           <%= render( :partial => "public_blist_row", 
-                                      :collection => @public_views) %>
+                                      :collection => @public_views,
+                                      :locals => { :port => @port } ) %>
                         </tbody>
                       </table>
                     </div>

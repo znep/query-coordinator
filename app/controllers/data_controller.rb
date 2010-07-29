@@ -35,7 +35,10 @@ class DataController < ApplicationController
     # build current state string
     @current_state = { 'filter' => params[:filter], 'page' => opts[:page].to_i,
       'tag' => opts[:tags], 'sort_by' => params[:sort_by], 'search' => opts[:q],
-      'no_js' => params[:no_js] }
+      'no_js' => params[:no_js],
+     #federation
+      'port' => request.port
+    }
 
   # TODO: Tags should also allow filtering by org
     # "Top 100" tab
@@ -128,7 +131,7 @@ class DataController < ApplicationController
       format.html{ redirect_to(data_path(params)) }
       format.data do
         render(:partial => "data/cached_view_list_merged",
-               :locals => { :tab_to_render => params[:type].to_sym })
+               :locals => { :tab_to_render => params[:type].to_sym, :port => request.port })
       end
     end
 

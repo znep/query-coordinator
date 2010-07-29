@@ -300,6 +300,57 @@ class AdminController < ApplicationController
 #    respond_to do |format| format.data { render :text => config.to_s } end
 #  end
 
+  ## open data federation
+  def federations
+    if (params[:dataset].nil?)
+      @federations = DataFederation.find
+    else
+      @federations = DataFederation.find(:dataset => params[:dataset])
+    end
+  end
+
+  def delete_federation
+    DataFederation.delete(params[:id])
+    redirect_to :action => :federations
+  end
+
+  def accept_federation
+    DataFederation.accept(params[:id])
+    redirect_to :action => :federations
+  end
+
+  def reject_federation
+    DataFederation.reject(params[:id])
+    redirect_to :action => :federations
+  end
+
+  def new_federation
+    respond_to do |format|
+      format.data { render 'admin/new_federation_dialog', :layout => 'modal_dialog' }
+    end
+  end
+
+  def create_federation
+    begin
+      data = DataFederation.new
+      target_domain = Domain.find(params[:new_federation][:target_domain])
+      data.targetDomainId = target_domain.id
+      DataFederation.create(data)
+    rescue CoreServer::ResourceNotFound => e
+      return respond_to do |format|
+        format.data { render :json => {'error' => 'Target domain is invalid'}.to_json }
+      end
+    rescue CoreServer::CoreServerError => e
+      return respond_to do |format|
+        format.data { render :json => {'error' => e.error_message}.to_json }
+      end
+    end
+    respond_to do |format|
+      format.data { render :json => data.to_json() }
+    end
+  end
+  ## end open data federation
+
 private
   def check_auth(level = 'manage_users')
     unless CurrentDomain.user_can?(current_user, level)

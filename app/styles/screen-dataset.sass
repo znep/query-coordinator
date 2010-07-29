@@ -290,10 +290,14 @@ html, body
       left: 0.5em
       top: 0
     padding: 0.3em 0.5em
+
+    .ie7 &
+      z-index: 1
+      > ul > li
+        display: inline
+
     li
       display: inline-block
-      .ie7 &
-        display: inline
 
       .button
         @include format-icon

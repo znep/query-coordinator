@@ -372,5 +372,8 @@ stylesheets:
 - admin-sdp-index:
   - list-screen
   - admin-sdp-index-screen
+- admin-federation:
+  - list-screen
+  - admin-federation-screen
 - dataset-page:
   - ui.slider

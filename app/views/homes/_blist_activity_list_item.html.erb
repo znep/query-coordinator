@@ -1,5 +1,5 @@
 <%- item = blist_activity_list_item -%>
 <li>
-  <p><%= link_to(h(item.name), item.href, :title => h(item.name)) %></p>
+  <p><%= link_to(h(item.name), item.href(port), :title => h(item.name), :rel => item.browserOpenTarget) %></p>
   <p class="preview"><%= item.description %></p>
 </li>

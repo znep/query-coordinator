@@ -1471,6 +1471,11 @@
                 }
 
                 if (!f.required) { continue; }
+                if (f.onlyIf)
+                {
+                    if (getValue(contextData, f.onlyIf.field) != f.onlyIf.value)
+                    { continue; }
+                }
 
                 if (f.type == 'custom' && !$.isBlank(f.editorCallbacks) &&
                     _.isFunction(f.editorCallbacks.required))

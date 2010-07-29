@@ -79,6 +79,7 @@ javascripts:
   - data/editors/document-editor
   - data/editors/photo-editor
 - shared-map:
+  - plugins/ui.sortable
   - widgets/base-visualization
   - util/color
   - widgets/maps/base-map

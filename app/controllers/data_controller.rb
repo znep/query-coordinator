@@ -29,15 +29,16 @@ class DataController < ApplicationController
     @show_search_form = false
     @page_size = PAGE_SIZE
 
+    #federation
+    @port = request.port
+
     # TODO: Community activity needs to be filtered by domain
     @community_activity = Activity.find({:maxResults => 3}) unless CurrentDomain.revolutionize?
 
     # build current state string
     @current_state = { 'filter' => params[:filter], 'page' => opts[:page].to_i,
       'tag' => opts[:tags], 'sort_by' => params[:sort_by], 'search' => opts[:q],
-      'no_js' => params[:no_js],
-     #federation
-      'port' => request.port
+      'no_js' => params[:no_js]
     }
 
   # TODO: Tags should also allow filtering by org

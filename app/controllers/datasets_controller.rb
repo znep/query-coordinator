@@ -4,10 +4,6 @@ class DatasetsController < ApplicationController
   layout 'dataset_v2'
 
   def show
-    if !CurrentDomain.module_available?('new_datasets_page')
-      return render_404
-    end
-
     @view = get_view(params[:id])
     return if @view.nil?
 
@@ -15,8 +11,9 @@ class DatasetsController < ApplicationController
       @user_session = UserSession.new
     end
 
-    # See if it matches the authoritative URL; if not, redirect
-    if request.path != @view.href
+    # See if it matches the authoritative URL; if not, redirect (but only if we
+    # aren't cheating and showing them the new datasets page)
+    if request.path != @view.href && CurrentDomain.module_available?('new_datasets_page')
       # Log redirects in development
       if Rails.env.production? && request.path =~ /^\/dataset\/\w{4}-\w{4}/
         logger.info("Doing a dataset redirect from #{request.referrer}")

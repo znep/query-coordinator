@@ -187,6 +187,13 @@ ActionController::Routing::Routes.draw do |map|
       end
   end
 
+  map.resources :datasets,
+    :as => "datasets_new",
+    :member => {
+      :widget_preview => :get,
+      :edit_metadata => [:get, :post]
+    }
+
   map.connect 'datasets_alt', :controller => 'blists', :action => 'alt_index'
 
   map.connect 'profile/:profile_name/:id', :controller => 'profile',

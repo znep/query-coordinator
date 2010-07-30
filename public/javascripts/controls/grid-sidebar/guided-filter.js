@@ -106,6 +106,14 @@
             dataGotten = true;
             sidebarObj.startProcessing();
 
+            sidebarObj.$grid().bind('clear_temp_view', function()
+            {
+                // I have NO idea why this works to reset the values
+                $pane.find(':radio').remove();
+
+                facetedFilters = {};
+            });
+
             var facets = blist.display.view.metadata.facets;
 
             // get required aggregate/freq data from core server
@@ -117,20 +125,22 @@
             {
                 var column = blist.dataset.columnForTCID(cleanedData, facet.tableColumnId);
 
-                if (facet.type == 'discrete') // CR: check for predef
+                if ((facet.type == 'discrete') && !_.isArray(facet.values))
                 {
                     $.socrataServer.addRequest({
                         url: '/views/INLINE/rows.json?method=getSummary&limit=' +
                             facet.top + '&columnId=' + column.id,
                         type: 'POST',
-                        data: JSON.stringify(cleanedData),
+                        data: JSON.stringify($.extend(true, {}, cleanedData, {query: {}})),
                         success: function(result)
                         {
                             aggregatedData[column.id] = result.columnSummaries[0].topFrequencies;
                         }
                     });
                 }
-                if ((facet.type == 'ranges') && !_.isArray(facet.ranges))
+                if (((facet.type == 'ranges') && !_.isArray(facet.ranges))/* ||
+                    TEMPORARY HACK: Why does calendar_date not support min/max?
+                    ((facet.type == 'dateRanges') && !_.isArray(facet.ranges))*/)
                 {
                     columnsToPush.push(column);
                 }
@@ -141,11 +151,12 @@
                 $.socrataServer.addRequest({
                     url: '/views/INLINE/rows.json?method=getAggregates',
                     type: 'POST',
-                    data: JSON.stringify($.extend({}, cleanedData, { columns:
-                        _.map(columnsToPush, function(column)
-                        {
-                            return $.extend({}, column, { format: { aggregate: aggregateType } });
-                        })})),
+                    data: JSON.stringify($.extend({}, $.extend(true, {}, cleanedData, {query: {}}),
+                        { columns:
+                            _.map(columnsToPush, function(column)
+                            {
+                                return $.extend({}, column, { format: { aggregate: aggregateType } });
+                            })})),
                     success: function(result)
                     {
                         _.each(result, function(summary)
@@ -207,28 +218,96 @@
                                     };
                             });
                         }
-                        else if (facet.type == 'ranges')
+                        else if ((facet.type == 'ranges') || (facet.type == 'dateRanges'))
                         {
                             // render
                             var renderedRanges = facet.ranges;
                             if (!_.isArray(renderedRanges))
                             {
-                                // we don't have prespecified ranges; calculate
-                                // from the data we got back
-                                var min = parseFloat(aggregatedData[column.id]['minimum']);
-                                var max = parseFloat(aggregatedData[column.id]['maximum']);
-                                var range = max - min;
-                                var buckets = facet.buckets * 1.0;
-                                renderedRanges = [];
-
-                                while (renderedRanges.length < buckets)
+                                // date ranges are slightly special, but a
+                                // lot of it carries over.
+                                if (facet.type == 'ranges')
                                 {
-                                    // If the number is less than 4 digits, give 4 sig figs
-                                    var exp = (min > 999) ? 1 : Math.pow(10, Math.ceil(Math.log(Math.abs(min))) - 3);
-                                    renderedRanges.push(Math.round(min * exp) / exp);
-                                    min += (range / buckets);
+                                    // we don't have prespecified ranges; calculate
+                                    // from the data we got back
+                                    var min = parseFloat(aggregatedData[column.id]['minimum']);
+                                    var max = parseFloat(aggregatedData[column.id]['maximum']);
+                                    var range = max - min;
+                                    var buckets = facet.buckets * 1.0;
+                                    renderedRanges = [];
+
+                                    while (renderedRanges.length < buckets)
+                                    {
+                                        // If the number is less than 4 digits, give 4 sig figs
+                                        var exp = (min > 999) ? 1 : Math.pow(10, Math.ceil(Math.log(Math.abs(min))) - 3);
+                                        renderedRanges.push(Math.round(min * exp) / exp);
+                                        min += (range / buckets);
+                                    }
+                                    renderedRanges.push(max);
                                 }
-                                renderedRanges.push(max);
+                                else if (facet.type == 'dateRanges')
+                                {
+                                    /*var min = parseInt(aggregatedData[column.id]['minimum']);
+                                    var max = parseInt(aggregatedData[column.id]['maximum']);
+                                    TEMPORARY HACK: Why does calendar_date not support min/max?*/
+                                    var min = Date.parse(facet.dateMin) / 1000;
+                                    var max = Date.parse(facet.dateMax) / 1000;
+
+                                    var minDate = new Date(min * 1000);
+                                    var maxDate = new Date(max * 1000);
+
+                                    // Round to extremes of scale zone; figure out
+                                    // unit size.
+                                    var unitSize = 1;
+                                    switch (facet.dateRangeScale)
+                                    {
+                                        case 'decades':
+                                            minDate.setYear(minDate.getYear() / 10 * 10);
+                                            maxDate.setYear(maxDate.getYear() / 10 * 10 + 9);
+                                            unitSize *= 10;
+                                        case 'years':
+                                            minDate.setMonth(0);
+                                            maxDate.setMonth(11);
+                                            unitSize *= 365;
+                                        case 'months':
+                                            minDate.setDate(1);
+                                            // This will round to the first day of next month
+                                            // in the worst case scenario
+                                            maxDate.setDate(31);
+                                            // account for unitSize specially in a bit
+                                        case 'days':
+                                            minDate.setHours(0);
+                                            maxDate.setHours(23);
+                                            unitSize *= 24;
+                                        default:
+                                            minDate.setMinutes(0);
+                                            maxDate.setMinutes(59);
+                                            unitSize *= 60;
+
+                                            minDate.setSeconds(0)
+                                            maxDate.setSeconds(59);
+                                            unitSize *= 60;
+                                    }
+                                    if (facet.dateRangeScale == 'months')
+                                    {
+                                        // set this to 30 and hope it's all double rainbow in the end
+                                        unitSize *= 30;
+                                    }
+
+                                    // Figure out bucket size
+                                    var bucketSize = Math.ceil(
+                                        ((max - min) / unitSize) / facet.buckets) * unitSize;
+
+                                    // Aggregate points
+                                    renderedRanges = [];
+                                    var oneDay = 60 * 60 * 24;
+                                    while (min < max)
+                                    {
+                                        renderedRanges.push(min);
+                                        min += bucketSize + oneDay;
+                                    }
+                                    renderedRanges.push(max);
+                                }
                             }
 
                             // okay, now render those ranges.
@@ -291,7 +370,7 @@
                     });
 
                     sidebarObj.finishProcessing();
-                    sidebarObj.refresh($pane.name);
+                    sidebarObj.refresh(configName);
                 }
             });
         }

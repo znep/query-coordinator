@@ -23,7 +23,6 @@ blist.datasetPage.clearTempView = function()
 {
     $('#sidebarOptions a.alert').removeClass('alert');
     $('body, #titleBox').removeClass('unsavedView');
-    $('#gridSidebar_guidedFilter :radio').val('');
     datasetPageNS.sidebar.updateEnabledSubPanes();
 };
 
@@ -339,6 +338,9 @@ $(function()
         });
     });
 
+
+    // Fire up guided filter if available
+    datasetPageNS.sidebar.show('filter.guidedFilter');
 
     // Data calls
     _.defer(function()

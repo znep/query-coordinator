@@ -751,6 +751,7 @@
                 {
                     datasetObj.settings.clearTempViewCallback();
                 }
+                $(datasetObj.currentGrid).trigger('clear_temp_view');
 
                 if (datasetObj.settings.filterForm)
                 { datasetObj.settings.filterForm.find(':input').val('').blur(); }

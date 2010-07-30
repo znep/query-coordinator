@@ -649,7 +649,7 @@
                     nameParts.secondary);
                 if (_.isFunction(config.showCallback))
                 {
-                    config.showCallback(sidebarObj, sidebarObj.$currentPane);
+                    config.showCallback(sidebarObj, sidebarObj.$currentPane());
                 }
             },
 

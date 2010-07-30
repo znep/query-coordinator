@@ -182,9 +182,13 @@ class View < Model
     self.class.delete_favorite(self.id)
   end
 
-  def register_opening
-    View.parse(CoreServer::Base.connection.create_request("/#{self.class.name.pluralize.downcase}/#{id}.json" +
-      "?method=opening"))
+  def register_opening(referrer)
+    params = {"method" => "opening"}
+
+    if !referrer.blank?
+      params["referrer"] = referrer
+    end
+    View.parse(CoreServer::Base.connection.create_request("/#{self.class.name.pluralize.downcase}/#{id}.json?" + params.to_param))
   end
 
   def set_permissions(perm_value)

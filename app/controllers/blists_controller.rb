@@ -74,7 +74,7 @@ class BlistsController < ApplicationController
         @parent_view = par_view
       end
     end
-    @view.register_opening
+    @view.register_opening(request.referrer)
     @view_activities = Activity.find({:viewId => @view.id})
 
     if !current_user

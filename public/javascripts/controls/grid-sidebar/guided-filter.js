@@ -27,7 +27,7 @@
 
     config.sections = _.map(blist.display.view.metadata.facets, function(facet)
     {
-        var column = blist.dataset.columnForTCID(blist.display.view, facet.tableColumnId);
+        var column = blist.datasetUtil.columnForTCID(blist.display.view, facet.tableColumnId);
         var sectionConfig = {
             title: column.name,
             name: 'facet_' + column.name,
@@ -168,13 +168,13 @@
             var facets = blist.display.view.metadata.facets;
 
             // get required aggregate/freq data from core server
-            var cleanedData = blist.dataset.cleanViewForPost(
+            var cleanedData = blist.datasetUtil.cleanViewForPost(
                 $.extend(true, {}, blist.display.view), true);
             var columnsToPush = [];
 
             _.each(facets, function(facet)
             {
-                var column = blist.dataset.columnForTCID(cleanedData, facet.tableColumnId);
+                var column = blist.datasetUtil.columnForTCID(cleanedData, facet.tableColumnId);
 
                 if ((facet.type == 'discrete') && !_.isArray(facet.values))
                 {
@@ -229,7 +229,7 @@
 
                     _.each(facets, function(facet)
                     {
-                        var column = blist.dataset.columnForTCID(blist.display.view, facet.tableColumnId);
+                        var column = blist.datasetUtil.columnForTCID(blist.display.view, facet.tableColumnId);
                         var fields = findSectionForColumn(column).fields;
                         var field = fields[0];
 

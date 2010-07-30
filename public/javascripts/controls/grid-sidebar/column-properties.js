@@ -2,7 +2,7 @@
 {
     if (blist.sidebarHidden.columnProperties) { return; }
 
-    var isDataset = blist.dataset.getDisplayType(blist.display.view) == 'Blist';
+    var isDataset = blist.datasetUtil.getDisplayType(blist.display.view) == 'Blist';
 
     var canConvert = function(col)
     {

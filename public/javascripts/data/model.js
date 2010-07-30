@@ -596,7 +596,7 @@ blist.namespace.fetch('blist.data');
             min -= countSpecialTo(min);
             var len = Math.min(max - min + 1, curOptions.pageSize);
 
-            var tempView = blist.dataset.cleanViewForPost(
+            var tempView = blist.datasetUtil.cleanViewForPost(
                 this.getViewCopy(), this.isGrouped() || this.shouldSendColumns());
             var ajaxOptions = $.extend({},
                     supplementalAjaxOptions,
@@ -704,7 +704,7 @@ blist.namespace.fetch('blist.data');
         {
             if (!_.isUndefined(meta.view.message)) { return; }
 
-            tempView = blist.dataset.cleanViewForPost(
+            tempView = blist.datasetUtil.cleanViewForPost(
                 tempView || this.getViewCopy(),
                 this.isGrouped() || this.shouldSendColumns());
             $.ajax({url: '/views/INLINE/rows.json?' +
@@ -2965,7 +2965,7 @@ blist.namespace.fetch('blist.data');
             // Only include columns if this view is grouped; otherwise, don't
             // include columns since we want them all back, and we don't need
             // to send all that extra data over or modify columns accidentally
-            tempView = blist.dataset.cleanViewForPost(
+            tempView = blist.datasetUtil.cleanViewForPost(
                 tempView || this.getViewCopy(),
                 includeColumns || this.isGrouped());
             var ajaxOptions = $.extend({},

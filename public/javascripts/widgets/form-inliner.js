@@ -6,7 +6,7 @@ blistCommonNS.formInliner = function(event)
 {
     var $form = $(event.target);
     var model = blist.$display.blistModel();
-    var view  = blist.dataset.cleanViewForPost(
+    var view  = blist.datasetUtil.cleanViewForPost(
         $.extend(true, {}, blist.display.view));
 
     $form.append(

@@ -3,7 +3,7 @@
     if (blist.sidebarHidden.visualize &&
         blist.sidebarHidden.visualize.calendarCreate) { return; }
 
-    var isEdit = blist.dataset.getDisplayType(blist.display.view) == 'Calendar';
+    var isEdit = blist.datasetUtil.getDisplayType(blist.display.view) == 'Calendar';
 
     var configName = 'visualize.calendarCreate';
     var config =
@@ -91,7 +91,7 @@
     {
         if (!isEdit) { return null; }
 
-        return blist.dataset.calendar.convertLegacy(
+        return blist.datasetUtil.calendar.convertLegacy(
             $.extend(true, {}, blist.display.view));
     };
 
@@ -99,7 +99,7 @@
     {
         if (!sidebarObj.baseFormHandler($pane, value)) { return; }
 
-        var view = blist.dataset.baseViewCopy(blist.display.view);
+        var view = blist.datasetUtil.baseViewCopy(blist.display.view);
         view.displayType = 'calendar';
 
         $.extend(view, sidebarObj.getFormValues($pane));

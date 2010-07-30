@@ -10,7 +10,7 @@
         subtitle: 'The Social Data Player enables you to publish this dataset on the Internet at large',
         onlyIf: function(view)
         {
-            return blist.dataset.isPublic(view) && !blist.display.isInvalid &&
+            return blist.datasetUtil.isPublic(view) && !blist.display.isInvalid &&
                 !blist.display.isTempView;
         },
         disabledSubtitle: function()

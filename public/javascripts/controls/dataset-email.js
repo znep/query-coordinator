@@ -62,7 +62,7 @@
         $flash.removeClass('notice').removeClass('error').text('');
 
         // Set up warning message if this is a private view
-        if (!blist.dataset.isPublic(blist.display.view))
+        if (!blist.datasetUtil.isPublic(blist.display.view))
         {
             $flash.addClass('notice')
                 .text('Notice: This ' + displayName + ' is currently private. ' +
@@ -95,7 +95,7 @@
     // Modal show link
     $.live('#shareMenu .menuEntries .email a', 'click', blist.dialog.sharing);
 
-    var displayName = blist.dataset.getTypeName(blist.display.view);
+    var displayName = blist.datasetUtil.getTypeName(blist.display.view);
     $('.emailDatasetDialog .datasetTypeName').text(displayName);
     $('.emailDatasetDialog .datasetTypeNameUpcase').text(displayName.capitalize());
 
@@ -167,7 +167,7 @@
         e.preventDefault();
         if ($form.valid())
         {
-            var isPublic = blist.dataset.isPublic(blist.display.view);
+            var isPublic = blist.datasetUtil.isPublic(blist.display.view);
             if ($.isBlank(blist.display.view.grants))
             { blist.display.view.grants = []; }
 

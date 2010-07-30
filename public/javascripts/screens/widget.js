@@ -179,7 +179,7 @@ $(function()
     widgetNS.orientation = widgetNS.theme['frame']['orientation'];
     widgetNS.isNonTabular = (widgetNS.view.viewType !== 'tabular');
     widgetNS.isAltView = !_.include(['Blist', 'Filter', 'Grouped'],
-        blist.dataset.getDisplayType(widgetNS.view));
+        blist.datasetUtil.getDisplayType(widgetNS.view));
     widgetNS.interstitial = widgetNS.theme['behavior']['interstitial'];
 
     // sizing
@@ -272,7 +272,7 @@ $(function()
         }
     });
 
-    blist.dataset.controls.hookUpShareMenu(widgetNS.view,
+    blist.datasetControls.hookUpShareMenu(widgetNS.view,
         $('.subHeaderBar .share .shareMenu'),
         {
             menuButtonClass: 'icon',
@@ -478,9 +478,9 @@ $(function()
                     {
                         'tbody .item': {
                             'filter<-': {
-                                '.type .cellInner.icon': function(filter) { return blist.dataset.getDisplayType(filter.item); },
-                                '.type@title': function(filter) { return blist.dataset.getDisplayType(filter.item); },
-                                '.type@class+': function(filter) { return ' type' + blist.dataset.getDisplayType(filter.item); },
+                                '.type .cellInner.icon': function(filter) { return blist.datasetUtil.getDisplayType(filter.item); },
+                                '.type@title': function(filter) { return blist.datasetUtil.getDisplayType(filter.item); },
+                                '.type@class+': function(filter) { return ' type' + blist.datasetUtil.getDisplayType(filter.item); },
 
                                 '.name a': 'filter.name!',
                                 '.name a@title': 'filter.description!',

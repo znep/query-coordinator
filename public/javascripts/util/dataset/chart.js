@@ -22,6 +22,8 @@ Dataset.chartTypes = {
         requiredColumns: [Dataset.textualTypes, Dataset.numericTypes]},
     column: {value: 'column', text: 'Column Chart',
         requiredColumns: [Dataset.textualTypes, Dataset.numericTypes]},
+    donut: {value: 'donut', text: 'Donut Chart',
+        requiredColumns: [Dataset.textualTypes, Dataset.numericTypes]},
     line: {value: 'line', text: 'Line Chart',
         requiredColumns: [Dataset.numericTypes]},
     pie: {value: 'pie', text: 'Pie Chart',
@@ -97,7 +99,7 @@ Dataset.modules['visualization'] =
             {
                 var firstCol = view.columnForTCID(
                     view.displayFormat.dataColumns[0]);
-                if (!_.include(blist.dataset.chart.numericTypes,
+                if (!_.include(blist.datasetUtil.chart.numericTypes,
                     firstCol.renderTypeName))
                 {
                     view.displayFormat.fixedColumns =

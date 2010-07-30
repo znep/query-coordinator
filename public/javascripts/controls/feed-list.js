@@ -110,10 +110,10 @@
             return {
                 itemType: 'view',
                 itemId: view.id,
-                body: 'created a ' + blist.dataset.getTypeName(view) + ':',
+                body: 'created a ' + blist.datasetUtil.getTypeName(view) + ':',
                 timestamp: view.createdAt,
                 viewName: view.name,
-                viewType: 'type' + blist.dataset.getDisplayType(view),
+                viewType: 'type' + blist.datasetUtil.getDisplayType(view),
                 viewPath: $.generateViewUrl(view),
                 viewDescription: view.description,
                 user: view.owner

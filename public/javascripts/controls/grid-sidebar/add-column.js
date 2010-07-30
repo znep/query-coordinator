@@ -29,7 +29,7 @@
         onlyIf: function(view)
         {
             return !blist.display.isInvalid && !blist.display.isTempView &&
-                blist.dataset.getDisplayType(blist.display.view) == 'Blist';
+                blist.datasetUtil.getDisplayType(blist.display.view) == 'Blist';
         },
         disabledSubtitle: function()
         {

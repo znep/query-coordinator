@@ -137,7 +137,7 @@
     {
         if (resp.meta && !currentObj._startCol)
         {
-            var view = blist.dataset.calendar.convertLegacy(resp.meta.view);
+            var view = blist.datasetUtil.calendar.convertLegacy(resp.meta.view);
             var fmt = view.displayFormat;
             _.each(view.columns, function(c, i)
             {

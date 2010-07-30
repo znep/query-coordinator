@@ -166,7 +166,7 @@ $(function()
         contents: [
             { text: 'Parent Dataset', className: 'typeBlist', href: '#parent',
               onlyIf: !_.include(['Blist', 'Blob'],
-                blist.dataset.getDisplayType(blist.display.view)) },
+                blist.datasetUtil.getDisplayType(blist.display.view)) },
             { divider: true },
             { text: 'Saved Filters', className: 'typeFilter', href: '#savedFilters',
               targetPane: 'filter.savedFilters' },
@@ -216,7 +216,7 @@ $(function()
         }, hideCheck)
         .find('.searchField').blur(hideCheck);
 
-    blist.dataset.controls.hookUpShareMenu(blist.display.view,
+    blist.datasetControls.hookUpShareMenu(blist.display.view,
         $('#shareMenu'),
         {
             menuButtonContents: $.tag({tagName: 'span', 'class': 'shareIcon'}, true),
@@ -279,7 +279,7 @@ $(function()
     $(document).bind(blist.events.VALID_VIEW,
         function() { datasetPageNS.updateValidView(); });
 
-    blist.dataset.controls.unsavedViewPrompt();
+    blist.datasetControls.unsavedViewPrompt();
 
     $('.unsavedLine a.save').click(function(e)
     {
@@ -293,7 +293,7 @@ $(function()
 
         $.ajax({url: '/views/' + blist.display.view.id + '.json',
             type: 'PUT', contentType: 'application/json', dataType: 'json',
-            data: JSON.stringify(blist.dataset.cleanViewForSave(
+            data: JSON.stringify(blist.datasetUtil.cleanViewForSave(
                 $.extend(true, {}, blist.display.view), true)),
             success: function()
             {
@@ -308,7 +308,7 @@ $(function()
     $('.unsavedLine a.saveAs').click(function(e)
     {
         e.preventDefault();
-        blist.dataset.controls.showSaveViewDialog();
+        blist.datasetControls.showSaveViewDialog();
     });
 
     $('.unsavedLine a.revert').click(function(e)
@@ -321,7 +321,7 @@ $(function()
     // Invalid views
 
     var viewEditPane = $.gridSidebar.paneForDisplayType[
-        blist.dataset.getDisplayType(blist.display.view)];
+        blist.datasetUtil.getDisplayType(blist.display.view)];
     if ($.isBlank(viewEditPane) ||
         !datasetPageNS.sidebar.isPaneEnabled(viewEditPane))
     { $('.invalidActions .editView').hide(); }
@@ -389,7 +389,7 @@ $(function()
             success: function(views)
             {
                 var parDS = _.detect(views, function(view)
-                    { return blist.dataset.getDisplayType(view) == 'Blist'; });
+                    { return blist.datasetUtil.getDisplayType(view) == 'Blist'; });
                 if (!$.isBlank(parDS))
                 {
                     $('#viewsMenu .typeBlist a').attr('href',

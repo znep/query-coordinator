@@ -3,7 +3,7 @@
     if (blist.sidebarHidden.embed &&
         blist.sidebarHidden.embed.formCreate) { return; }
 
-    var isEdit = blist.dataset.getDisplayType(blist.display.view) == 'Form';
+    var isEdit = blist.datasetUtil.getDisplayType(blist.display.view) == 'Form';
 
     var configName = 'embed.formCreate';
     var config =
@@ -81,7 +81,7 @@
         if (!sidebarObj.baseFormHandler($pane, value)) { return; }
 
 
-        var view = blist.dataset.baseViewCopy(blist.display.view);
+        var view = blist.datasetUtil.baseViewCopy(blist.display.view);
         view.displayType = 'form';
 
         $.extend(view, sidebarObj.getFormValues($pane));

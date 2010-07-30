@@ -1,6 +1,6 @@
-datasetControlsNS = blist.namespace.fetch('blist.dataset.controls');
+datasetControlsNS = blist.namespace.fetch('blist.datasetControls');
 
-blist.dataset.controls.hookUpShareMenu = function(view, $menu, overrides)
+blist.datasetControls.hookUpShareMenu = function(view, $menu, overrides)
 {
     var tweet = escape('Check out the ' + $.htmlEscape(view.name) +
         ' dataset on ' + blist.configuration.strings.company + ': ');
@@ -29,7 +29,7 @@ blist.dataset.controls.hookUpShareMenu = function(view, $menu, overrides)
     $menu.menu(opts);
 };
 
-blist.dataset.controls.unsavedViewPrompt = function()
+blist.datasetControls.unsavedViewPrompt = function()
 {
     $.live('a', 'click', function(e)
     {
@@ -67,7 +67,7 @@ blist.dataset.controls.unsavedViewPrompt = function()
     });
 };
 
-blist.dataset.controls.showSaveViewDialog = function(customClass, saveCallback,
+blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
     dontSaveCallback)
 {
     var dialogObj = datasetControlsNS.showSaveViewDialog;
@@ -109,7 +109,7 @@ blist.dataset.controls.showSaveViewDialog = function(customClass, saveCallback,
             $dialog.find('.loadingOverlay, .loadingSpinner').removeClass('hide');
             $.ajax({url: '/views.json', type: 'POST', dataType: 'json',
                 contentType: 'application/json',
-                data: JSON.stringify(blist.dataset.cleanViewForSave($.extend({},
+                data: JSON.stringify(blist.datasetUtil.cleanViewForSave($.extend({},
                     blist.display.view, {name: name}), true)),
                 error: function(xhr)
                 {

@@ -121,7 +121,7 @@
 
     var getColumns = function(chartObj, view)
     {
-        view = blist.dataset.chart.convertLegacy(view);
+        view = blist.datasetUtil.chart.convertLegacy(view);
 
         _.each(view.columns, function(c, i) { c.dataIndex = i; });
 

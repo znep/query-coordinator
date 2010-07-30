@@ -32,9 +32,9 @@
         {
             var $li = $.renderTemplate('viewItemContainer', v, {
                 '.viewIcon@title': function(a)
-                { return blist.dataset.getTypeName(a.context).capitalize(); },
+                { return blist.datasetUtil.getTypeName(a.context).capitalize(); },
                 '.viewIcon@class+': function(a)
-                { return 'type' + blist.dataset.getDisplayType(a.context); },
+                { return 'type' + blist.datasetUtil.getDisplayType(a.context); },
                 '.name': 'name',
                 '.name@title': 'name',
                 '.name@href': function(a)
@@ -254,7 +254,7 @@
                     views['filter'] = _.select(v, function(v)
                     {
                         return _.include(['Filter', 'Grouped'],
-                            blist.dataset.getDisplayType(v));
+                            blist.datasetUtil.getDisplayType(v));
                     });
 
                     if (!$.isBlank($sections['filter']))
@@ -264,7 +264,7 @@
                     views['viz'] = _.select(v, function(v)
                     {
                         return _.include(['Visualization', 'Calendar', 'Map'],
-                            blist.dataset.getDisplayType(v));
+                            blist.datasetUtil.getDisplayType(v));
                     });
 
                     if (!$.isBlank($sections['viz']))
@@ -272,7 +272,7 @@
 
 
                     views['form'] = _.select(v, function(v)
-                    { return 'Form' == blist.dataset.getDisplayType(v); });
+                    { return 'Form' == blist.datasetUtil.getDisplayType(v); });
 
                     if (!$.isBlank($sections['form']))
                     { setupSection(views['form'], $sections['form']); }

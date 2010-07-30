@@ -726,7 +726,7 @@ $(function ()
         {
             // Get the view with columns
             var model = $('#dataGrid').blistModel();
-            var view = blist.dataset.cleanViewForPost(model.getViewCopy(), true);
+            var view = blist.datasetUtil.cleanViewForPost(model.getViewCopy(), true);
             view.name = name;
             return JSON.stringify(view);
         },

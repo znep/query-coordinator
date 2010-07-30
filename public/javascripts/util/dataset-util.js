@@ -1,9 +1,9 @@
 
 /* Misc. functions related to datasets */
 
-blist.namespace.fetch('blist.dataset');
+blist.namespace.fetch('blist.datasetUtil');
 
-blist.dataset.columnForTCID = function(view, tcId)
+blist.datasetUtil.columnForTCID = function(view, tcId)
 {
     return _.detect(view.columns, function(c)
             { return c.tableColumnId == tcId; });
@@ -15,7 +15,7 @@ var MAP_TYPES = ['geomap', 'intensitymap'];
 
 /* The display type string is not always the simplest thing -- a lot of munging
  * goes on in Raisl; we roughly duplicate it here */
-blist.dataset.getDisplayType = function(view)
+blist.datasetUtil.getDisplayType = function(view)
 {
     var type = view.displayType || 'blist';
 
@@ -37,9 +37,9 @@ blist.dataset.getDisplayType = function(view)
     return type.capitalize();
 };
 
-blist.dataset.getTypeName = function(view)
+blist.datasetUtil.getTypeName = function(view)
 {
-    var dType = blist.dataset.getDisplayType(view);
+    var dType = blist.datasetUtil.getDisplayType(view);
     var retType;
 
     switch (dType.toLowerCase())
@@ -70,13 +70,13 @@ blist.dataset.getTypeName = function(view)
     return retType;
 };
 
-blist.dataset.baseViewCopy = function(view)
+blist.datasetUtil.baseViewCopy = function(view)
 {
     return {originalViewId: view.id, query: $.extend(true, {}, view.query),
         displayFormat: $.extend(true, {}, view.displayFormat)};
 };
 
-blist.dataset.cleanViewForPost = function(view, includeColumns)
+blist.datasetUtil.cleanViewForPost = function(view, includeColumns)
 {
     if (includeColumns)
     {
@@ -118,9 +118,9 @@ blist.dataset.cleanViewForPost = function(view, includeColumns)
     return view;
 };
 
-blist.dataset.cleanViewForSave = function(view, includeColumns)
+blist.datasetUtil.cleanViewForSave = function(view, includeColumns)
 {
-    view = blist.dataset.cleanViewForPost(view, includeColumns);
+    view = blist.datasetUtil.cleanViewForPost(view, includeColumns);
 
     if (!_.isUndefined(view.metadata))
     {
@@ -130,25 +130,25 @@ blist.dataset.cleanViewForSave = function(view, includeColumns)
     return view;
 };
 
-blist.dataset.isValid = function(view)
+blist.datasetUtil.isValid = function(view)
 {
     if (!$.isBlank(view.message)) { return false; }
 
-    switch(blist.dataset.getDisplayType(view))
+    switch(blist.datasetUtil.getDisplayType(view))
     {
         case 'Visualization':
-            return blist.dataset.chart.isValid(view);
+            return blist.datasetUtil.chart.isValid(view);
         case 'Calendar':
-            return blist.dataset.calendar.isValid(view);
+            return blist.datasetUtil.calendar.isValid(view);
         case 'Map':
-            return blist.dataset.map.isValid(view);
+            return blist.datasetUtil.map.isValid(view);
     }
 
     // Default
     return true;
 };
 
-blist.dataset.isPublic = function(view)
+blist.datasetUtil.isPublic = function(view)
 {
     return (_.isArray(view.grants) && _.any(view.grants, function(grant)
     {

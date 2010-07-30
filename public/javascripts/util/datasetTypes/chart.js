@@ -1,6 +1,6 @@
-blist.namespace.fetch('blist.dataset.chart');
+blist.namespace.fetch('blist.datasetUtil.chart');
 
-blist.dataset.chart.legacyTypes =
+blist.datasetUtil.chart.legacyTypes =
 {
     imagesparkline: 'line',
     annotatedtimeline: 'timeline',
@@ -11,43 +11,43 @@ blist.dataset.chart.legacyTypes =
     piechart: 'pie'
 };
 
-blist.dataset.chart.textualTypes = ['text', 'drop_down_list'];
-blist.dataset.chart.numericTypes = ['number', 'percent', 'money'];
-blist.dataset.chart.dateTypes = ['calendar_date', 'date'];
+blist.datasetUtil.chart.textualTypes = ['text', 'drop_down_list'];
+blist.datasetUtil.chart.numericTypes = ['number', 'percent', 'money'];
+blist.datasetUtil.chart.dateTypes = ['calendar_date', 'date'];
 
-blist.dataset.chart.types = {
+blist.datasetUtil.chart.types = {
     area: {value: 'area', text: 'Area Chart',
-        requiredColumns: [blist.dataset.chart.textualTypes,
-            blist.dataset.chart.numericTypes]},
+        requiredColumns: [blist.datasetUtil.chart.textualTypes,
+            blist.datasetUtil.chart.numericTypes]},
     bar: {value: 'bar', text: 'Bar Chart',
-        requiredColumns: [blist.dataset.chart.textualTypes,
-            blist.dataset.chart.numericTypes]},
+        requiredColumns: [blist.datasetUtil.chart.textualTypes,
+            blist.datasetUtil.chart.numericTypes]},
     column: {value: 'column', text: 'Column Chart',
-        requiredColumns: [blist.dataset.chart.textualTypes,
-            blist.dataset.chart.numericTypes]},
+        requiredColumns: [blist.datasetUtil.chart.textualTypes,
+            blist.datasetUtil.chart.numericTypes]},
     donut: {value: 'donut', text: 'Donut Chart',
-        requiredColumns: [blist.dataset.chart.textualTypes,
-            blist.dataset.chart.numericTypes]},
+        requiredColumns: [blist.datasetUtil.chart.textualTypes,
+            blist.datasetUtil.chart.numericTypes]},
     line: {value: 'line', text: 'Line Chart',
-        requiredColumns: [blist.dataset.chart.numericTypes]},
+        requiredColumns: [blist.datasetUtil.chart.numericTypes]},
     pie: {value: 'pie', text: 'Pie Chart',
-        requiredColumns: [blist.dataset.chart.textualTypes,
-            blist.dataset.chart.numericTypes]},
+        requiredColumns: [blist.datasetUtil.chart.textualTypes,
+            blist.datasetUtil.chart.numericTypes]},
     timeline: {value: 'timeline', text: 'Time Line',
-        requiredColumns: [blist.dataset.chart.dateTypes,
-            blist.dataset.chart.numericTypes]},
+        requiredColumns: [blist.datasetUtil.chart.dateTypes,
+            blist.datasetUtil.chart.numericTypes]},
     treemap: {value: 'treemap', text: 'Tree Map',
-        requiredColumns: [blist.dataset.chart.textualTypes,
-            blist.dataset.chart.numericTypes]}
+        requiredColumns: [blist.datasetUtil.chart.textualTypes,
+            blist.datasetUtil.chart.numericTypes]}
 };
 
-blist.dataset.chart.getType = function(view)
+blist.datasetUtil.chart.getType = function(view)
 {
     var ct = view.displayFormat.chartType || view.displayType;
-    return blist.dataset.chart.legacyTypes[ct] || ct;
+    return blist.datasetUtil.chart.legacyTypes[ct] || ct;
 };
 
-blist.dataset.chart.hasRequiredColumns = function(cols, reqCols, includeHidden)
+blist.datasetUtil.chart.hasRequiredColumns = function(cols, reqCols, includeHidden)
 {
     cols = cols.slice();
     return _.all(reqCols, function(rc)
@@ -64,27 +64,27 @@ blist.dataset.chart.hasRequiredColumns = function(cols, reqCols, includeHidden)
     });
 };
 
-blist.dataset.chart.isValid = function(view)
+blist.datasetUtil.chart.isValid = function(view)
 {
-    view = blist.dataset.chart.convertLegacy($.extend(true, {}, view));
+    view = blist.datasetUtil.chart.convertLegacy($.extend(true, {}, view));
 
     var foundCols = [];
     _.each(view.displayFormat.fixedColumns || [], function(fc)
-    { foundCols.push(blist.dataset.columnForTCID(view, fc)); });
+    { foundCols.push(blist.datasetUtil.columnForTCID(view, fc)); });
 
     _.each(view.displayFormat.valueColumns || [], function(vc)
-    { foundCols.push(blist.dataset.columnForTCID(view, vc.tableColumnId)); });
+    { foundCols.push(blist.datasetUtil.columnForTCID(view, vc.tableColumnId)); });
 
-    return blist.dataset.chart.hasRequiredColumns(_.compact(foundCols),
-        blist.dataset.chart.types[blist.dataset.chart.getType(view)]
+    return blist.datasetUtil.chart.hasRequiredColumns(_.compact(foundCols),
+        blist.datasetUtil.chart.types[blist.datasetUtil.chart.getType(view)]
             .requiredColumns);
 };
 
-blist.dataset.chart.convertLegacy = function(view)
+blist.datasetUtil.chart.convertLegacy = function(view)
 {
     view.displayFormat = view.displayFormat || {};
 
-    view.displayFormat.chartType = blist.dataset.chart.getType(view);
+    view.displayFormat.chartType = blist.datasetUtil.chart.getType(view);
 
     if ($.isBlank(view.displayFormat.dataColumns) &&
         $.isBlank(view.displayFormat.fixedColumns) &&
@@ -115,7 +115,7 @@ blist.dataset.chart.convertLegacy = function(view)
         {
             var firstCol = _.detect(view.columns, function(c)
             { return c.tableColumnId == view.displayFormat.dataColumns[0]; });
-            if (!_.include(blist.dataset.chart.numericTypes,
+            if (!_.include(blist.datasetUtil.chart.numericTypes,
                 firstCol.renderTypeName))
             {
                 view.displayFormat.fixedColumns =
@@ -130,10 +130,10 @@ blist.dataset.chart.convertLegacy = function(view)
         while (cols.length > 0)
         {
             var tcid = cols.shift();
-            var c = blist.dataset.columnForTCID(view, tcid);
+            var c = blist.datasetUtil.columnForTCID(view, tcid);
             if ($.isBlank(c)) { continue; }
 
-            if (_.include(blist.dataset.chart.numericTypes, c.renderTypeName))
+            if (_.include(blist.datasetUtil.chart.numericTypes, c.renderTypeName))
             {
                 valueCols.push(vcVal);
                 vcVal = {tableColumnId: tcid};

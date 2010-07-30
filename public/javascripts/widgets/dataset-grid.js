@@ -484,7 +484,7 @@
                 }
                 else if (isNew)
                 {
-                    view = blist.dataset.cleanViewForPost($.extend(true, {}, view),
+                    view = blist.datasetUtil.cleanViewForPost($.extend(true, {}, view),
                         isGrouping || wasGrouped);
                     var saveNewView = function()
                     {
@@ -523,7 +523,7 @@
                 }
                 else
                 {
-                    view = blist.dataset.cleanViewForPost($.extend(true, {}, view),
+                    view = blist.datasetUtil.cleanViewForPost($.extend(true, {}, view),
                         isGrouping || wasGrouped);
                     $.socrataServer.addRequest({url: '/views/' + view.id + '.json',
                         type: 'PUT', data: JSON.stringify(view),
@@ -569,7 +569,7 @@
 
                 if (filterColumn == '' || filterValue == '') { return false; }
 
-                var view = blist.dataset.cleanViewForPost(
+                var view = blist.datasetUtil.cleanViewForPost(
                     model.getViewCopy(), true);
 
                 // Now construct our beautiful filter
@@ -1377,7 +1377,7 @@
         }
 
         var colSum = datasetObj.settings._columnSummaries;
-        var modView = blist.dataset.cleanViewForPost(
+        var modView = blist.datasetUtil.cleanViewForPost(
                 datasetObj.settings._model.getViewCopy());
         if (!modView) { return; }
 
@@ -1720,7 +1720,7 @@
         if (_.include(view.rights, 'update_view') &&
             !datasetObj.isTempView)
         {
-            var modView = blist.dataset.cleanViewForPost(
+            var modView = blist.datasetUtil.cleanViewForPost(
                 datasetObj.settings._model.getViewCopy(), true);
             $.ajax({url: '/views/' + view.id + '.json',
                     data: JSON.stringify({columns: modView.columns}),

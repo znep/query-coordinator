@@ -1,17 +1,17 @@
-blist.namespace.fetch('blist.dataset.calendar');
+blist.namespace.fetch('blist.datasetUtil.calendar');
 
-blist.dataset.calendar.isValid = function(view)
+blist.datasetUtil.calendar.isValid = function(view)
 {
-    view = blist.dataset.calendar.convertLegacy($.extend(true, {}, view));
-    var startCol = blist.dataset.columnForTCID(view,
+    view = blist.datasetUtil.calendar.convertLegacy($.extend(true, {}, view));
+    var startCol = blist.datasetUtil.columnForTCID(view,
         view.displayFormat.startDateTableId);
-    var titleCol = blist.dataset.columnForTCID(view,
+    var titleCol = blist.datasetUtil.columnForTCID(view,
         view.displayFormat.titleTableId);
 
     return !$.isBlank(startCol) && !$.isBlank(titleCol);
 };
 
-blist.dataset.calendar.convertLegacy = function(view)
+blist.datasetUtil.calendar.convertLegacy = function(view)
 {
     view.displayFormat = view.displayFormat || {};
 

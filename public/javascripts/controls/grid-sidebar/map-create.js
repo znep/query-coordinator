@@ -142,7 +142,7 @@
     configLayersHeatmap.fields[0].minimum = 0;
     configLayersHeatmap.wizard = 'Do you want to add a layer?';
 
-    var isEdit = blist.dataset.getDisplayType(blist.display.view) == 'Map';
+    var isEdit = blist.datasetUtil.getDisplayType(blist.display.view) == 'Map';
 
     var configName = 'visualize.mapCreate';
     var config =
@@ -283,7 +283,7 @@
     {
         if (!isEdit) { return null; }
 
-        return blist.dataset.map.convertLegacy(
+        return blist.datasetUtil.map.convertLegacy(
             $.extend(true, {}, blist.display.view));
     };
 
@@ -291,7 +291,7 @@
     {
         if (!sidebarObj.baseFormHandler($pane, value)) { return; }
 
-        var view = blist.dataset.baseViewCopy(blist.display.view);
+        var view = blist.datasetUtil.baseViewCopy(blist.display.view);
         view.displayType = 'map';
 
         $.extend(view, sidebarObj.getFormValues($pane));

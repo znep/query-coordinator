@@ -2971,7 +2971,7 @@
             contents: [
                 {tagName: 'h3', 'class': 'title',
                 contents: [config.subtitle || config.title + ' this ' +
-                    blist.dataset.getTypeName(blist.display.view)]},
+                    blist.datasetUtil.getTypeName(blist.display.view)]},
                 {tagName: 'p',
                 contents:
                     'Start by making one of the following selections above:'},

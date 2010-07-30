@@ -114,7 +114,7 @@
     };
 
     var isEdit = _.include(['Filter', 'Grouped'],
-        blist.dataset.getDisplayType(blist.display.view)) &&
+        blist.datasetUtil.getDisplayType(blist.display.view)) &&
         _.include(blist.display.view.rights, 'update_view');
 
     var configName = 'filter.filterDataset';

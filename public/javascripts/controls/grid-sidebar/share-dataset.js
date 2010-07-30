@@ -151,7 +151,7 @@
         event.preventDefault();
 
         var view = blist.display.view;
-        var isPublic = blist.dataset.isPublic(view);
+        var isPublic = blist.datasetUtil.isPublic(view);
         var $link = $(event.target);
 
         var serverValue = isPublic ? 'private' : $link.attr('data-public-perm');
@@ -214,7 +214,7 @@
             });
     };
 
-    var displayName = blist.dataset.getTypeName(blist.display.view);
+    var displayName = blist.datasetUtil.getTypeName(blist.display.view);
 
     var config =
     {
@@ -269,7 +269,7 @@
                         if ($.isBlank(publicGrant) || publicGrant.inherited == false)
                         {
                             $toggleLink.click(togglePermissions)
-                                .text(blist.dataset.isPublic(blist.display.view) ? 'Public' : 'Private');
+                                .text(blist.datasetUtil.isPublic(blist.display.view) ? 'Public' : 'Private');
                         }
                         else
                         { $toggleLink.replaceWith($('<span>Public</span>')); }

@@ -486,7 +486,7 @@
 
     var getColumns = function(mapObj, view)
     {
-        view = blist.dataset.map.convertLegacy(view);
+        view = blist.datasetUtil.map.convertLegacy(view);
         if (view.displayFormat === undefined ||
             (view.displayFormat.plot === undefined &&
              view.displayFormat.latitudeId === undefined))

@@ -1,20 +1,20 @@
-blist.namespace.fetch('blist.dataset.map');
+blist.namespace.fetch('blist.datasetUtil.map');
 
-blist.dataset.map.isValid = function(view)
+blist.datasetUtil.map.isValid = function(view)
 {
-    view = blist.dataset.map.convertLegacy($.extend(true, {}, view));
-    var latCol = blist.dataset.columnForTCID(view,
+    view = blist.datasetUtil.map.convertLegacy($.extend(true, {}, view));
+    var latCol = blist.datasetUtil.columnForTCID(view,
         view.displayFormat.plot.latitudeId);
-    var longCol = blist.dataset.columnForTCID(view,
+    var longCol = blist.datasetUtil.columnForTCID(view,
         view.displayFormat.plot.longitudeId);
-    var locCol = blist.dataset.columnForTCID(view,
+    var locCol = blist.datasetUtil.columnForTCID(view,
         view.displayFormat.plot.locationId);
 
     return !$.isBlank(locCol) || (!$.isBlank(latCol) && !$.isBlank(longCol))
         || view.displayFormat.noLocations;
 };
 
-blist.dataset.map.convertLegacy = function(view)
+blist.datasetUtil.map.convertLegacy = function(view)
 {
     var isOldest = $.isBlank(view.displayFormat) ||
         ($.isBlank(view.displayFormat.plot) &&

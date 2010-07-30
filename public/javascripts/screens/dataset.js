@@ -340,7 +340,10 @@ $(function()
 
 
     // Fire up guided filter if available
-    datasetPageNS.sidebar.show('filter.guidedFilter');
+    setTimeout(function()
+    {
+        datasetPageNS.sidebar.show('filter.guidedFilter');
+    }, 2000); // CR: what?
 
     // Data calls
     _.defer(function()

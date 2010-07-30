@@ -1,4 +1,4 @@
-<% cache ["discover-view-list-item", view_list_item.id], :expires_in => 15.minutes do %>
+<% cache ["discover-view-list-item", view_list_item.id, CurrentDomain.cname ], :expires_in => 15.minutes do %>
 <%- view = view_list_item -%>
 
 <li class="viewListItem clearfix">
@@ -9,6 +9,8 @@
         <div class="itemTitleWrapper">
           <h3 class="<%= get_permissions_icon_class_for_view(view) %> clipText">
             <%= link_to(h(view.name), view.href(port), :title => h(view.name),
+              #_domain temporarily for debug, prod will not see attrib at all
+              :_domain => Rails.env.staging? ? CurrentDomain.cname + '-' + view.domainCName : nil,
               :rel => view.browserOpenTarget) %>
           </h3>
         </div>

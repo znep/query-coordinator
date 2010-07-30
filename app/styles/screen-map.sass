@@ -35,11 +35,35 @@
     text-align: right
     width: 100%
 
+  .sliderControl
+    display: inline-block
+    margin-right: 0.7em
+    vertical-align: bottom
+    width: 8.6em
+
+  .ui-slider-handle
+    width: 1.2em
+
+  .sliderInput
+    background-color: transparent
+    border: none
+    @include box-shadow-none
+    text-align: right
+    width: 1.8em
+    position: relative
+    top: 3px
+
 #mapLayers li
   margin: 0.5em 0
+  padding: 0.3em
 
   label
     font-size: 1.1em
+    cursor: pointer
+
+  &:hover
+    cursor: pointer
+    background-color: #ddeaf0
 
 #mapLegend
   background-color: #ffffff

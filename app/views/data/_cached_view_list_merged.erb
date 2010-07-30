@@ -5,7 +5,7 @@
       :views => @search_views, :views_total => @search_views_total,
       :current_page => @current_state['page'], :type => "search", :current_filter => params[:filter],
       :sort_by => nil, :tag_list => nil, :current_tag => nil,
-      :port => @current_state['port'],
+      :port => port,
       :search_term => @search_term, :page_size => @page_size } ) %>
   <%- else -%>
     <%= render(:partial => "view_list_tab_noresult", :locals => { :term => @search_term }) %>

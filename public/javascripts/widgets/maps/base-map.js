@@ -61,7 +61,7 @@
 
                 if (mapObj.$dom().siblings('#mapLayers').length < 1)
                 {
-                    mapObj.$dom().before('<div id="mapLayers" class="hide">' +
+                    mapObj.$dom().before('<div id="mapLayers" class="commonForm hide">' +
                         '<a href="#toggleLayers" class="toggleLayers">' +
                         'Layer Options' +
                         '</a>' +
@@ -165,10 +165,42 @@
                 _.each(layers, function(l)
                 {
                     var lId = 'mapLayer_' + l.id;
-                    $layersList.append('<li><input type="checkbox" id="' + lId +
+                    $layersList.append('<li data-layerid="' + l.id + '"' +
+                        '><input type="checkbox" id="' + lId +
                         '"' + (l.visible ? ' checked="checked"' : '') +
-                        ' /><label for="' + lId + '">' + l.name + '</label></li>');
+                        ' /><label for="' + lId + '">' + l.name + '</label><br />' +
+                        '<span class="sliderControl" data-min="0" data-max="100" ' +
+                        'data-origvalue="' + (mapObj.map.getLayer(l.id).opacity*100) + '" /></li>');
                 });
+                $layersList.find('.sliderControl').each(function()
+                {
+                    var $slider = $(this);
+                    $slider.slider({min: parseInt($slider.attr('data-min')),
+                        max: parseInt($slider.attr('data-max')),
+                        value: parseInt($slider.attr('data-origvalue'))});
+                    $slider.after($.tag(
+                        {tagName: 'input', type: 'text', value: $slider.attr('data-origvalue'),
+                        readonly: true, 'class': 'sliderInput'}
+                    , true));
+                    $slider.bind('slide', function(event, ui)
+                    {
+                        var $_this = $(this);
+                        mapObj.map.getLayer($_this.parent().attr('data-layerid')).setOpacity(ui.value/100);
+                        $_this.next(':input').val(ui.value);
+                    });
+                });
+
+                var reorderLayers = function(event, ui)
+                {
+                    var layer = mapObj.map.getLayer(ui.item.attr('data-layerid'));
+                    var index = $layersList.find('li').index(ui.item);
+                    if (layer)
+                    { mapObj.map.reorderLayer(layer, index); }
+                };
+                $layersList.sortable({containment: 'parent', placeholder: 'ui-state-highlight',
+                                      forcePlaceholderSize: true, tolerance: 'pointer',
+                                      update: reorderLayers
+                            });
 
                 $layers.find(':checkbox').click(function(e)
                 {

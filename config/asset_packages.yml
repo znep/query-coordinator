@@ -18,8 +18,10 @@ javascripts:
   - plugins/pure
   - plugins/ui.core
   - plugins/underscore
+  - plugins/inheritance
   - util/namespace
   - util/util
+  - util/base-model
   - util/compat
   - util/markup
   - util/alert-override
@@ -28,6 +30,11 @@ javascripts:
   - util/datasetTypes/calendar
   - util/datasetTypes/chart
   - util/datasetTypes/map
+  - util/dataset/column
+  - util/dataset/dataset
+  - util/dataset/calendar
+  - util/dataset/chart
+  - util/dataset/map
   - util/templates
   - util/socrata-server
   - data/types

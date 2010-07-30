@@ -216,7 +216,7 @@
             {
                 if (!$.isBlank(column.description))
                 {
-                    $.ajax({url: '/views/' + blist.display.viewId +
+                    $.ajax({url: '/views/' + blist.display.view.id +
                         '/columns/' + resp.id + '.json', type: 'PUT',
                         contentType: 'application/json', dataType: 'json',
                         data: JSON.stringify({description: column.description}),

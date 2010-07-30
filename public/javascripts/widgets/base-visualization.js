@@ -184,7 +184,7 @@
     var loadRows = function(vizObj, args)
     {
         vizObj.startLoading();
-        $.ajax({url: '/views/' + blist.display.viewId + '/rows.json',
+        $.ajax({url: '/views/' + blist.display.view.id + '/rows.json',
                 cache: false, data: args, type: 'GET', dataType: 'json',
                 error: function() { vizObj.finishLoading(); },
                 success: function(data)

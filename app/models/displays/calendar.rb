@@ -22,7 +22,7 @@ class Displays::Calendar < Displays::Base
   def render_inline_runtime_js(context)
     js = <<END
 blist.$display.blistCalendar({
-  viewId: blist.display.viewId,
+  viewId: blist.display.view.id,
   editable: blist.display.editable,
   displayFormat: blist.display.options,
   invalid: blist.display.isInvalid

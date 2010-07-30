@@ -70,7 +70,7 @@ $(function()
             $dataGrid
                 .bind('columns_updated', function()
                     { datasetPageNS.sidebar.refresh(); })
-                .datasetGrid({viewId: blist.display.viewId,
+                .datasetGrid({viewId: blist.display.view.id,
                     columnDeleteEnabled: _.include(blist.display.view.rights,
                         'remove_column'),
                     columnPropertiesEnabled: _.include(blist.display.view.rights,

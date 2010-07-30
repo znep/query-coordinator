@@ -83,8 +83,8 @@ class Displays::Base
 blist.namespace.fetch('blist.display');
 blist.display.name = '#{name}';
 blist.display.type = '#{type}';
-blist.display.viewId = '#{@view.id}';
 blist.display.view = JSON.parse($.htmlUnescape("#{h(@view.to_json.gsub(/\\/, '\\\\\\'))}"));
+blist.dsNew = new Dataset(JSON.parse($.htmlUnescape("#{h(@view.to_json.gsub(/\\/, '\\\\\\'))}")));
 blist.display.options = #{@options.to_json};
 blist.display.editable = #{@view.can_edit?};
 blist.display.scrollsInline = #{scrolls_inline?};

@@ -241,7 +241,7 @@
                 }
 
                 // Write to server
-                $.ajax({ url: '/views/' + blist.display.viewId + '.json',
+                $.ajax({ url: '/views/' + blist.display.view.id + '.json',
                         type: 'PUT',
                         contentType: 'application/json',
                         data: JSON.stringify(

@@ -129,7 +129,7 @@
 
     var convertLocation = function(sidebarObj, column, $pane)
     {
-        $.ajax({url: '/views/' + blist.display.viewId + '/columns.json?' +
+        $.ajax({url: '/views/' + blist.display.view.id + '/columns.json?' +
             'method=addressify' +
             '&deleteOriginalColumns=false' +
             '&location=' + column.name + '&' +
@@ -140,7 +140,7 @@
             {
                 if (!$.isBlank(column.description))
                 {
-                    $.ajax({url: '/views/' + blist.display.viewId +
+                    $.ajax({url: '/views/' + blist.display.view.id +
                         '/columns/' + resp.id + '.json', type: 'PUT',
                         contentType: 'application/json', dataType: 'json',
                         data: JSON.stringify({description: column.description}),
@@ -156,7 +156,7 @@
 
     var createLocation = function(sidebarObj, column, $pane)
     {
-        $.ajax({url: '/views/' + blist.display.viewId + '/columns.json',
+        $.ajax({url: '/views/' + blist.display.view.id + '/columns.json',
             type: 'POST', contentType: 'application/json', dataType: 'json',
             data: JSON.stringify(column),
             error: function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); },

@@ -107,18 +107,10 @@ blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
         var doSave = function()
         {
             $dialog.find('.loadingOverlay, .loadingSpinner').removeClass('hide');
-            $.ajax({url: '/views.json', type: 'POST', dataType: 'json',
-                contentType: 'application/json',
-                data: JSON.stringify(blist.datasetUtil.cleanViewForSave($.extend({},
-                    blist.display.view, {name: name}), true)),
-                error: function(xhr)
-                {
-                    $dialog.find('.loadingOverlay, .loadingSpinner')
-                        .addClass('hide');
-                    $dialog.find('.mainError')
-                        .text(JSON.parse(xhr.responseText).message);
-                },
-                success: function(view)
+            blist.dataset.name = name;
+            blist.dataset.save(
+                // Success
+                function(view)
                 {
                     clearCustomClass();
                     $dialog.jqmHide();
@@ -129,7 +121,15 @@ blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
 
                     if (!preventRedirect)
                     { blist.util.navigation.redirectToView(view); }
-                }});
+                },
+                // Error
+                function(xhr)
+                {
+                    $dialog.find('.loadingOverlay, .loadingSpinner')
+                        .addClass('hide');
+                    $dialog.find('.mainError')
+                        .text(JSON.parse(xhr.responseText).message);
+                });
         };
 
         if (!$.isBlank(blist.util.inlineLogin))

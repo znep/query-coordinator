@@ -62,7 +62,7 @@
         $flash.removeClass('notice').removeClass('error').text('');
 
         // Set up warning message if this is a private view
-        if (!blist.datasetUtil.isPublic(blist.display.view))
+        if (!blist.dataset.isPublic())
         {
             $flash.addClass('notice')
                 .text('Notice: This ' + displayName + ' is currently private. ' +
@@ -95,7 +95,7 @@
     // Modal show link
     $.live('#shareMenu .menuEntries .email a', 'click', blist.dialog.sharing);
 
-    var displayName = blist.datasetUtil.getTypeName(blist.display.view);
+    var displayName = blist.dataset.displayName;
     $('.emailDatasetDialog .datasetTypeName').text(displayName);
     $('.emailDatasetDialog .datasetTypeNameUpcase').text(displayName.capitalize());
 
@@ -167,9 +167,9 @@
         e.preventDefault();
         if ($form.valid())
         {
-            var isPublic = blist.datasetUtil.isPublic(blist.display.view);
-            if ($.isBlank(blist.display.view.grants))
-            { blist.display.view.grants = []; }
+            var isPublic = blist.dataset.isPublic();
+            if ($.isBlank(blist.dataset.grants))
+            { blist.dataset.grants = []; }
 
             var message = $form.find('#emailMessage').val();
 
@@ -192,11 +192,11 @@
 
                         // Create a grant for the user
                         $.socrataServer.addRequest({
-                            url: '/views/' + blist.display.view.id + '/grants',
+                            url: '/views/' + blist.dataset.id + '/grants',
                             type: 'POST',
                             data: JSON.stringify(grant)
                         });
-                        blist.display.view.grants.push(grant);
+                        blist.dataset.grants.push(grant);
                     }
                     else
                     {

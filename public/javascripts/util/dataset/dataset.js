@@ -11,7 +11,7 @@ this.Dataset = Model.extend({
 
         this.displayType = getDisplayType(this);
         this.displayClass = this.displayType.capitalize();
-        this.typeName = getTypeName(this);
+        this.displayName = getDisplayName(this);
 
         this.displayFormat = this.displayFormat || {};
 
@@ -42,6 +42,21 @@ this.Dataset = Model.extend({
     {
         return _.any(this.grants || [], function(grant)
         { return _.include(grant.flags || [], 'public'); });
+    },
+
+    save: function(successCallback, errorCallback)
+    {
+        $.ajax({url: '/views.json', type: 'POST', dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify(cleanViewForSave(this)),
+            error: errorCallback,
+            success: successCallback
+        });
+    },
+
+    cleanCopy: function()
+    {
+        return cleanViewForPost(this);
     },
 
     _checkValidity: function()
@@ -95,7 +110,7 @@ function getDisplayType(ds)
     return type;
 };
 
-function getTypeName(ds)
+function getDisplayName(ds)
 {
     var retType = ds.displayType;
 
@@ -124,7 +139,7 @@ function getTypeName(ds)
     return retType;
 };
 
-function cleanViewForPost(ds, includeColumns)
+function cleanViewForPost(ds)
 {
     ds = $.extend(true, {}, ds);
 
@@ -139,62 +154,59 @@ function cleanViewForPost(ds, includeColumns)
 
     cleanFuncs(ds);
 
-    if (includeColumns)
+    ds.columns = ds.realColumns;
+    var cleanColumn = function(col)
     {
-        ds.columns = ds.realColumns;
-        var cleanColumn = function(col)
-        {
-            cleanFuncs(col);
-            delete col.options;
-            delete col.dropDown;
-            delete col.hidden;
-            delete col.dataType;
-            delete col.renderType;
-            delete col.renderTypeName;
-            delete col.dataTypeName;
-            delete col.view;
-            delete col.parentColumn;
-            delete col.realChildren;
-            delete col.visibleChildren;
-        };
+        cleanFuncs(col);
+        delete col.options;
+        delete col.dropDown;
+        delete col.hidden;
+        delete col.dataIndex;
+        delete col.dataType;
+        delete col.renderType;
+        delete col.renderTypeName;
+        delete col.dataTypeName;
+        delete col.view;
+        delete col.parentColumn;
+        delete col.realChildren;
+        delete col.visibleChildren;
+    };
 
-        // Clean out dataIndexes, and clean out child metadata columns
-        _.each(ds.columns, function(c)
+    // Clean out dataIndexes, and clean out child metadata columns
+    _.each(ds.columns, function(c)
+    {
+        cleanColumn(c);
+        if (c.childColumns)
         {
-            cleanColumn(c);
-            if (c.childColumns)
-            {
-                _.each(c.childColumns, function(cc) { cleanColumn(cc); });
-            }
-        });
-
-        if (!$.isBlank((ds.query || {}).groupBys))
-        {
-            ds.columns = _.reject(ds.columns, function(c)
-            {
-                return $.isBlank((c.format || {}).grouping_aggregate) &&
-                    !_.any(ds.query.groupBys, function(g)
-                    { return g.columnId == c.id; });
-            });
+            _.each(c.childColumns, function(cc) { cleanColumn(cc); });
         }
+    });
+
+    if (!$.isBlank((ds.query || {}).groupBys))
+    {
+        ds.columns = _.reject(ds.columns, function(c)
+        {
+            return $.isBlank((c.format || {}).grouping_aggregate) &&
+                !_.any(ds.query.groupBys, function(g)
+                { return g.columnId == c.id; });
+        });
     }
-    else
-    { delete ds.columns; }
+
     delete ds.visibleColumns;
     delete ds.realColumns;
 
     delete ds.origDisplayType;
     delete ds.displayClass;
-    delete ds.typeName;
+    delete ds.displayName;
     delete ds.isValid;
     delete ds.totalRows;
     delete ds.grants;
     return ds;
 };
 
-function cleanViewForSave(ds, includeColumns)
+function cleanViewForSave(ds)
 {
-    ds = cleanViewForPost(ds, includeColumns);
+    ds = cleanViewForPost(ds);
 
     if (!_.isUndefined(ds.metadata))
     { delete ds.metadata.facets; }

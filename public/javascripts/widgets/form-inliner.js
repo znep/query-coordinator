@@ -5,9 +5,7 @@ var blistCommonNS = blist.namespace.fetch('blist.common');
 blistCommonNS.formInliner = function(event)
 {
     var $form = $(event.target);
-    var model = blist.$display.blistModel();
-    var view  = blist.datasetUtil.cleanViewForPost(
-        $.extend(true, {}, blist.display.view));
+    var view  = blist.dataset.cleanCopy();
 
     $form.append(
             $('<input type="hidden" name="view"/>')

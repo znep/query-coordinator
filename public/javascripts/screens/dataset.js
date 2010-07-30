@@ -340,10 +340,14 @@ $(function()
 
 
     // Fire up guided filter if available
-    setTimeout(function()
+    if (!_.isUndefined(blist.display.view.metadata) &&
+        !_.isUndefined(blist.display.view.metadata.facets))
     {
-        datasetPageNS.sidebar.show('filter.guidedFilter');
-    }, 2000); // CR: what?
+        setTimeout(function()
+        {
+            datasetPageNS.sidebar.show('filter.guidedFilter');
+        }, 2000); // CR: what?
+    }
 
     // Data calls
     _.defer(function()

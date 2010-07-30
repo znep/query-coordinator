@@ -206,17 +206,33 @@
                             // events
                             field.change = changeProxy(sidebarObj, column, function($fieldLabel, event)
                             {
+                                var selectedValue;
+                                if ($fieldLabel.find(':text').length !== 0)
+                                {
+                                    selectedValue = $fieldLabel.find(':text').val();
+                                }
+                                else
+                                {
+                                    selectedValue = $fieldLabel.children('span')
+                                                        .attr('data-custom-facetValue');
+                                }
+
                                 facetedFilters[column.tableColumnId] =
                                     { type: 'operator',
                                       value: 'EQUALS',
                                       children: [
                                         { columnId: column.id,
                                           type: 'column' },
-                                        { value: $fieldLabel.children('span')
-                                                            .attr('data-custom-facetValue'),
+                                        { value: selectedValue,
                                           type: 'literal' } ]
                                     };
                             });
+
+                            if (facet.includeOther === true)
+                            {
+                                options.push({ type: 'text', prompt: 'Other...', name: 'facet_other',
+                                    change: field.change });
+                            }
                         }
                         else if ((facet.type == 'ranges') || (facet.type == 'dateRanges'))
                         {
@@ -348,24 +364,6 @@
                                         }
                                       ] };
                             });
-                        }
-                        else if (facet.type == 'range')
-                        {
-                            // render
-                            if ((column.dataTypeName == 'calendar_date') ||
-                                (column.dataTypeName == 'date'))
-                            {
-                                // date range picker here.
-                            }
-                            else
-                            {
-                                options.push({ type: 'group', options: [
-                                    { type: 'text', prompt: 'Minimum', name: 'range_facet_min' },
-                                    { type: 'static', value: ' &mdash; ' },
-                                    { type: 'text', prompt: 'Maximum', name: 'range_facet_max',
-                                      data: {test: 'aoeu'}, change: function() { alert('aoeu'); }}
-                                ]});
-                            }
                         }
                     });
 

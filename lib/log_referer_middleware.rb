@@ -51,21 +51,21 @@ class LogRefererMiddleware
       end
 
       if ref.blank?
-        # Was it by typing a link in the address bar or hiding our referer
+        # Was it by typing a link in the address bar or hiding our referrer
         # for whatever perfidious reason?
-        logger.debug "Blank referer, not logging."
+        logger.debug "Blank referrer, not logging."
       else
         # Or was it by click on a link?
         uri = URI::parse(ref)
 
         if uri.host != domain
-          # If the referer and the domain aren't the same thing, we should 
+          # If the referrer and the domain aren't the same thing, we should 
           # really tell someone about this by squawking at them over STOMP.
-          logger.info "Attempting to log referer #{domain} -> #{ref}."
+          logger.info "Attempting to log referrer #{domain} -> #{ref}."
 
           client.publish(
             "/queue/Metrics", 
-            {"timestamp" => Time.now.to_i * 1000, "entityId" => "referers-#{domain}", "referer-#{ref}" => 1}.to_json,
+            {"timestamp" => Time.now.to_i * 1000, "entityId" => "referrers-#{domain}", "referrer-#{ref}" => 1}.to_json,
             :persistent => true,
             :suppress_content_length => true
           )
@@ -79,7 +79,7 @@ class LogRefererMiddleware
       end
     end
   rescue
-    logger.error "There was a serious problem logging the referer. This should probably be looked at ASAP."
+    logger.error "There was a serious problem logging the referrer. This should probably be looked at ASAP."
     logger.error $!, $!.inspect
   ensure
     # No matter what, we want to call the next item in the middleware chain. No

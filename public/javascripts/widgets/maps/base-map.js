@@ -400,7 +400,9 @@
     {
         var t = !_.isUndefined(col) ?
             row[col.dataIndex] : null;
-        if (!_.isNull(t) && col.renderTypeName == 'location')
+
+        if (_.isNull(t)) { return t; }
+        if (col.renderTypeName == 'location')
         {
             var a = t[col.addressSubIndex];
             if (_.isNull(a) || _.isUndefined(a))
@@ -410,6 +412,10 @@
                 t = blist.data.types.location
                     .renderAddress({human_address: a}, plain);
             }
+        }
+        else if (_.include(['number', 'money', 'percent'], col.renderTypeName))
+        {
+            t = blist.data.types[col.renderTypeName].filterRender(t, col, plain);
         }
         return t;
     };

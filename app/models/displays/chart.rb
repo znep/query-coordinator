@@ -41,8 +41,7 @@ class Displays::Chart < Displays::Base
 
   def render_inline_runtime_js(context)
     js = <<-END
-      blist.$display.socrataChart({displayFormat: blist.display.options,
-        chartType: '#{chart_type}', invalid: blist.display.isInvalid});
+      blist.$display.socrataChart({view: blist.dataset});
     END
     super << js
   end

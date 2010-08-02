@@ -22,8 +22,8 @@
     {
         defaults:
         {
-            invalid: false,
-            pageSize: 100
+            maxRows: 500,
+            view: null
         },
 
         prototype:
@@ -34,10 +34,11 @@
                 var $domObj = currentObj.$dom();
                 $domObj.data("socrataVisualization", currentObj);
 
-                currentObj._displayConfig = currentObj.settings.displayFormat || {};
-
-                currentObj._rowsLeft = 0;
-                currentObj._rowsLoaded = 0;
+                currentObj.settings.view
+                    .bind('start_request',
+                        function() { currentObj.startLoading(); })
+                    .bind('finish_request', function()
+                        { currentObj.finishLoading(); });
 
                 if ($domObj.parent().find('.loadingSpinnerContainer').length < 1)
                 {
@@ -54,12 +55,14 @@
 
                 $domObj.resize(function(e) { doResize(currentObj, e); });
 
-                currentObj._invalid = currentObj.settings.invalid;
-                if (currentObj._invalid) { return; }
 
-                loadRows(currentObj,
-                    {method: 'getByIds', meta: true, start: 0,
-                        length: currentObj.settings.pageSize});
+                if (!currentObj.settings.view.valid) { return; }
+
+                currentObj.getColumns();
+
+                currentObj.settings.view.getRows(0, currentObj.settings.maxRows,
+                    function()
+                    { currentObj.handleRowsLoaded.apply(currentObj, arguments); });
             },
 
             $dom: function()
@@ -91,25 +94,18 @@
                 // Implement me
             },
 
-            reload: function(newOptions)
+            reload: function()
             {
                 var vizObj = this;
                 vizObj.$dom().siblings('#vizError').hide().text('');
 
-                if (newOptions !== undefined)
-                { vizObj._displayConfig = newOptions; }
-
-                // If reloading, assume it is valid now
-                vizObj._invalid = false;
-
                 vizObj.reloadVisualization();
 
-                vizObj._rowsLeft = 0;
-                vizObj._rowsLoaded = 0;
+                vizObj.getColumns();
 
-                loadRows(vizObj,
-                    {method: 'getByIds', meta: true, start: 0,
-                        length: vizObj.settings.pageSize});
+                vizObj.settings.view.getRows(0, vizObj.settings.maxRows,
+                    function()
+                    { vizObj.handleRowsLoaded.apply(vizObj, arguments); });
             },
 
             handleRowsLoaded: function(rows)
@@ -173,53 +169,13 @@
                 // Implement if you need to do anything on resize
             },
 
-            getColumns: function(view)
+            getColumns: function()
             {
                 // Implement me to get the specific columns you need for
                 // this view
             }
         }
     });
-
-    var loadRows = function(vizObj, args)
-    {
-        vizObj.startLoading();
-        $.ajax({url: '/views/' + blist.display.view.id + '/rows.json',
-                cache: false, data: args, type: 'GET', dataType: 'json',
-                error: function() { vizObj.finishLoading(); },
-                success: function(data)
-                {
-                    vizObj.finishLoading();
-                    rowsLoaded(vizObj, data);
-                }});
-    };
-
-    var rowsLoaded = function(vizObj, data)
-    {
-        if (data.meta !== undefined)
-        {
-            vizObj.getColumns(data.meta.view);
-            vizObj._displayConfig = data.meta.view.displayFormat || {};
-            vizObj._rowsLeft = data.meta.totalRows - vizObj._rowsLoaded;
-        }
-
-        var rows = data.data.data || data.data;
-        vizObj._rowsLoaded += rows.length;
-        vizObj._rowsLeft -= rows.length;
-        loadMoreRows(vizObj);
-
-        vizObj.handleRowsLoaded(rows);
-    };
-
-    var loadMoreRows = function(vizObj)
-    {
-        if (vizObj._rowsLeft < 1) { return; }
-
-        var toLoad = Math.min(vizObj._rowsLeft, vizObj.settings.pageSize);
-
-        loadRows(vizObj, { method: 'getByIds', start: vizObj._rowsLoaded,
-            length: toLoad });
-    };
 
     var doResize = function(vizObj, e)
     {

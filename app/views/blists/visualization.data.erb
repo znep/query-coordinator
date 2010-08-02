@@ -541,7 +541,8 @@
               <%- if @is_edit -%>
               $('.viewErrorContainer').hide();
               $('.invalidView').removeClass('invalidView');
-              blist.$display.socrataChart().reload(origOptions);
+              blist.dataset.update({displayFormat: origOptions});
+              blist.$display.socrataChart().reload();
               <%- else -%>
               blist.util.navigation.redirectToView(data.newViewId);
               <%- end -%>

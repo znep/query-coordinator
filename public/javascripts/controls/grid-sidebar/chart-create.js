@@ -388,8 +388,8 @@
                         {
                             $(document).trigger(blist.events.VALID_VIEW);
 
-                            blist.$display.socrataChart()
-                                .reload(blist.display.view.displayFormat);
+                            blist.dataset.update(resp);
+                            blist.$display.socrataChart().reload();
                         });
                     };
 

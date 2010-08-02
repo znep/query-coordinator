@@ -41,7 +41,7 @@ this.Model = Class.extend({
         // that is never fired
         this.registerEvent = function(evName)
         {
-            events[evName] = true;
+            _.each($.makeArray(evName), function(e) { events[e] = true; });
             return that;
         };
 

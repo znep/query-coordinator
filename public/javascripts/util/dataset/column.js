@@ -14,15 +14,30 @@ this.Column = Model.extend({
         this.hidden = _.include(this.flags || [], 'hidden');
         this.dataType = blist.data.types[this.dataTypeName];
         this.renderType = blist.data.types[this.renderTypeName];
+        this.isMeta = this.dataTypeName == 'meta_data';
 
-        this._updateColumns();
+        this.aggregates = {};
+
+        this._updateChildren();
     },
 
-    _updateColumns: function()
+    _update: function(newCol)
     {
-        if ($.isBlank(this.childColumns)) { return; }
+        this._updateChildren(newCol.childColumns);
+    },
+
+    _updateChildren: function(newChildren)
+    {
+        if ($.isBlank(this.childColumns) && $.isBlank(newChildren)) { return; }
 
         var col = this;
+
+        // TODO: fill this in
+        if (!$.isBlank(newChildren))
+        {
+            this.childColumns = this.childColumns || [];
+        }
+
         this.childColumns = _.map(this.childColumns, function(c, i)
             {
                 c = new Column(c, col.view, col);
@@ -30,7 +45,7 @@ this.Column = Model.extend({
                 return c;
             });
         this.realChildren = _.reject(this.childColumns, function(c)
-            { return c.dataTypeName == 'meta_data'; });
+            { return c.isMeta; });
         this.visibleChildren = _(this.realChildren).chain()
             .reject(function(c) { return c.hidden; })
             .sortBy(function(c) { return c.position; })

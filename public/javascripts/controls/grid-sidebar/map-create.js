@@ -328,13 +328,13 @@
                         $(document).trigger(blist.events.VALID_VIEW);
                         $(window).resize();
 
+                        blist.dataset.update(resp);
                         _.defer(function()
                         {
                             if (needsFullReset)
                             {
                                 sidebarObj.$grid().socrataMap()
-                                    .reset({displayFormat:
-                                        blist.display.view.displayFormat});
+                                    .reset({view: blist.dataset});
                             }
                             else
                             {

@@ -538,8 +538,7 @@
               if ('<%= cur_type %>' != $('.mapWrapper #mapType').val()
                 || layersChanged)
               {
-                  blist.$display.socrataMap()
-                    .reset({displayFormat: newDisplayFormat});
+                  blist.$display.socrataMap().reset({view: blist.dataset});
               }
               else
               {

@@ -12,8 +12,8 @@ this.Column = Model.extend({
 
         this.format = this.format || {};
         this.hidden = _.include(this.flags || [], 'hidden');
-        this.dataType = blist.data.types[this.dataTypeName];
-        this.renderType = blist.data.types[this.renderTypeName];
+        this.dataType = blist.data.types[this.dataTypeName] || {};
+        this.renderType = blist.data.types[this.renderTypeName] || {};
         this.isMeta = this.dataTypeName == 'meta_data';
 
         this.aggregates = {};

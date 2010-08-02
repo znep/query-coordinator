@@ -63,6 +63,8 @@
                 currentObj.settings.view.getRows(0, currentObj.settings.maxRows,
                     function()
                     { currentObj.handleRowsLoaded.apply(currentObj, arguments); });
+
+                currentObj.columnsLoaded();
             },
 
             $dom: function()
@@ -94,6 +96,11 @@
                 // Implement me
             },
 
+            columnsLoaded: function()
+            {
+                // Called once the columns are loaded
+            },
+
             reload: function()
             {
                 var vizObj = this;
@@ -106,6 +113,8 @@
                 vizObj.settings.view.getRows(0, vizObj.settings.maxRows,
                     function()
                     { vizObj.handleRowsLoaded.apply(vizObj, arguments); });
+
+                vizObj.columnsLoaded();
             },
 
             handleRowsLoaded: function(rows)

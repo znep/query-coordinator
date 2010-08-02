@@ -36,13 +36,12 @@ this.Dataset = Model.extend({
 
     columnForID: function(id)
     {
-        return _.detect(this.columns, function(c) { return c.id == parseInt(id); });
+        return this._columnIDLookup[parseInt(id)];
     },
 
     columnForTCID: function(tcId)
     {
-        return _.detect(this.columns, function(c)
-                { return c.tableColumnId == parseInt(tcId); });
+        return this._columnTCIDLookup[parseInt(tcId)];
     },
 
     isPublic: function()
@@ -173,25 +172,60 @@ this.Dataset = Model.extend({
         }
     },
 
-    getAggregates: function(callback)
+    getAggregates: function(callback, customAggs)
     {
-        var view = this;
+        var ds = this;
         var aggResult = function(aggs)
         {
             _.each(aggs, function(a)
             {
-                var c = view.columnForID(a.columnId);
-                if (!$.isBlank(c)) { c.aggregates[a.name] = a.value; }
+                var c = ds.columnForID(a.columnId);
+                if (!$.isBlank(c)) { c.aggregates[a.name] = parseFloat(a.value); }
             });
 
-            view._aggregatesStale = false;
-            if (_.isFunction(callback)) { callback(); }
+            if ($.isBlank(customAggs))
+            {
+                ds._aggregatesStale = false;
+                if (_.isFunction(callback)) { callback(); }
+            }
         };
 
-        if (view._aggregatesStale)
+        var isStale = ds._aggregatesStale ||
+            _.any(customAggs || {}, function(aList, cId)
+            {
+                var col = ds.columnForID(cId);
+                if ($.isBlank(col)) { return true; }
+                return _.any($.makeArray(aList),
+                    function(a) { return $.isBlank(col.aggregates[a]); });
+            });
+
+        if (isStale)
         {
-            view._makeRequest({type: 'PUT', success: aggResult}, true,
-                {method: 'getAggregates'});
+            var args = {success: aggResult};
+            var params = {method: 'getAggregates'};
+
+            if (!$.isBlank(customAggs))
+            {
+                var ilViews = [];
+                _.each(customAggs, function(aggList, cId)
+                {
+                    _.each(aggList, function(a, i)
+                    {
+                        if ($.isBlank(ilViews[i]))
+                        { ilViews[i] = cleanViewForPost(ds); }
+                        var col = _.detect(ilViews[i].columns, function(c)
+                        { return c.id == parseInt(cId); });
+                        col.format.aggregate = a;
+                    });
+                });
+                _.each(ilViews, function(v)
+                {
+                    args = $.extend({}, args, {data: JSON.stringify(v)});
+                    ds._makeRequest(args, true, params, true);
+                });
+                ds._sendBatch(callback);
+            }
+            else { ds._makeRequest(args, true, params); }
         }
         else
         { callback(); }
@@ -237,10 +271,15 @@ this.Dataset = Model.extend({
             });
         }
 
+        this._columnIDLookup = {};
+        this._columnTCIDLookup = {};
         this.columns = _.map(this.columns, function(c, i)
             {
-                c = new Column(c, ds);
+                if (!(c instanceof Column))
+                { c = new Column(c, ds); }
                 c.dataIndex = i;
+                ds._columnIDLookup[c.id] = c;
+                ds._columnTCIDLookup[c.tableColumnId] = c;
                 return c;
             });
         this.realColumns = _.reject(this.columns, function(c) { return c.isMeta; });
@@ -250,7 +289,7 @@ this.Dataset = Model.extend({
             .value();
     },
 
-    _makeRequest: function(req, isInline, inlineParams)
+    _makeRequest: function(req, isInline, inlineParams, isBatch)
     {
         var view = this;
         var finishCallback = function(callback)
@@ -270,9 +309,16 @@ this.Dataset = Model.extend({
         {
             req.url = '/views/INLINE/rows.json?' + $.param(inlineParams || {});
             req.type = 'POST';
-            req.data = JSON.stringify(cleanViewForPost(this));
+            req.data = req.data || JSON.stringify(cleanViewForPost(this));
         }
-        $.ajax(req);
+
+        if (isBatch) { $.socrataServer.addRequest(req); }
+        else { $.ajax(req); }
+    },
+
+    _sendBatch: function(successCallback)
+    {
+        $.socrataServer.runRequests({success: successCallback});
     },
 
     _loadRows: function(start, len, callback, includeMeta)
@@ -305,7 +351,41 @@ this.Dataset = Model.extend({
             var tr = {};
             _.each(view.columns, function(c)
             {
-                tr[c.isMeta ? c.name : c.id] = r[c.dataIndex];
+                var adjId = c.isMeta ? c.name : c.id;
+                if (c.dataTypeName == 'tag') { adjId = 'tags'; }
+                else if (c.isMeta && c.name == 'sid') { adjId = 'id'; }
+                else if (c.isMeta && c.name == 'id') { adjId = 'uuid'; }
+
+                var val = r[c.dataIndex];
+                if (c.isMeta && c.name == 'meta')
+                { val = JSON.parse(val || 'null'); }
+
+                if (c.renderType.isObject && _.isArray(val))
+                {
+                    // First, convert an empty array into a null
+                    // Booleans in the array don't count because location type
+                    // has a flag that may be set even if there is no data.  If
+                    // some type actually cares about only having a boolean,
+                    // this will need to be made more specific
+                    if (_.all(val, function(v)
+                        { return $.isBlank(v) || _.isBoolean(v); }))
+                    { val = null; }
+
+                    // Otherwise, turn it into object keyed by sub-type
+                    else
+                    {
+                        var o = {};
+                        _.each(val, function(v, k)
+                        { o[c.subColumnTypes[k]] = v === '' ? null : v; });
+                        val = o;
+                    }
+                }
+
+                if (c.renderTypeName == 'checkbox' && val === false ||
+                        c.renderTypeName == 'stars' && val === 0)
+                { val = null; }
+
+                tr[adjId] = val;
             });
             return tr;
         };

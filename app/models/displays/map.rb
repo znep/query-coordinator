@@ -34,8 +34,7 @@ class Displays::Map < Displays::Base
 
   def render_inline_runtime_js(context)
     js = <<-END
-      blist.$display.socrataMap({displayFormat: blist.display.options,
-        invalid: blist.display.isInvalid});
+      blist.$display.socrataMap({view: blist.dataset});
     END
     super << js
   end

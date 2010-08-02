@@ -199,7 +199,7 @@
                 };
                 $layersList.sortable({containment: 'parent', placeholder: 'ui-state-highlight',
                                       forcePlaceholderSize: true, tolerance: 'pointer',
-                                      update: reorderLayers
+                                      update: reorderLayers, cancel: 'a.ui-slider-handle'
                             });
 
                 $layers.find(':checkbox').click(function(e)

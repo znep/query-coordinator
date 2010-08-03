@@ -85,7 +85,6 @@ blist.display.name = '#{name}';
 blist.display.type = '#{type}';
 blist.display.view = JSON.parse($.htmlUnescape("#{h(@view.to_json.gsub(/\\/, '\\\\\\'))}"));
 blist.dataset = new Dataset(JSON.parse($.htmlUnescape("#{h(@view.to_json.gsub(/\\/, '\\\\\\'))}")));
-blist.display.options = #{@options.to_json};
 blist.display.editable = #{@view.can_edit?};
 blist.display.scrollsInline = #{scrolls_inline?};
 blist.display.isInvalid = !blist.datasetUtil.isValid(blist.display.view);

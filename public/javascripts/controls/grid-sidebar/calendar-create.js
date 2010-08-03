@@ -123,8 +123,8 @@
                     {
                         $(document).trigger(blist.events.VALID_VIEW);
 
-                        sidebarObj.$grid().blistCalendar()
-                            .reload(blist.display.view.displayFormat);
+                        blist.dataset.update(resp);
+                        sidebarObj.$grid().socrataCalendar().reload();
 
                         sidebarObj.$dom().socrataAlert(
                             {message: 'Your calendar has been updated',

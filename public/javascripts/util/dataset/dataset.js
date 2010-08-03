@@ -27,7 +27,7 @@ this.Dataset = Model.extend({
         this.valid = this._checkValidity();
 
         this._rows = {};
-        this._rowsByID = {};
+        this._rowIDLookup = {};
 
         this._aggregatesStale = true;
 
@@ -42,6 +42,11 @@ this.Dataset = Model.extend({
     columnForTCID: function(tcId)
     {
         return this._columnTCIDLookup[parseInt(tcId)];
+    },
+
+    rowForID: function(id)
+    {
+        return this._rowIDLookup[parseInt(id)];
     },
 
     isPublic: function()
@@ -170,6 +175,36 @@ this.Dataset = Model.extend({
                 loadAllRows();
             }
         }
+    },
+
+    setRowValue: function(value, rowId, columnId)
+    {
+        var row = this.rowForID(rowId);
+        if ($.isBlank(row)) { throw 'Row ' + rowId + ' not found'; }
+        var col = this.columnForID(columnId)
+        if ($.isBlank(col)) { throw 'Column ' + columnId + ' not found'; }
+        row[col._lookup] = value;
+    },
+
+    saveRow: function(rowId, successCallback, errorCallback)
+    {
+        var ds = this;
+
+        var row = this.rowForID(rowId);
+        if ($.isBlank(row)) { throw 'Row ' + rowId + ' not found'; }
+
+        var sendRow = $.extend(true, {}, row);
+        if (!$.isBlank(sendRow.tags))
+        {
+            sendRow._tags = sendRow.tags;
+            delete sendRow.tags;
+        }
+        if (!$.isBlank(sendRow.meta))
+        { sendRow.meta = JSON.stringify(sendRow.meta); }
+
+        ds._makeRequest({url: '/views/' + ds.id + '/rows/' + sendRow.id + '.json',
+            type: 'PUT', data: JSON.stringify(sendRow),
+            success: successCallback, error: errorCallback});
     },
 
     getAggregates: function(callback, customAggs)
@@ -351,11 +386,6 @@ this.Dataset = Model.extend({
             var tr = {};
             _.each(view.columns, function(c)
             {
-                var adjId = c.isMeta ? c.name : c.id;
-                if (c.dataTypeName == 'tag') { adjId = 'tags'; }
-                else if (c.isMeta && c.name == 'sid') { adjId = 'id'; }
-                else if (c.isMeta && c.name == 'id') { adjId = 'uuid'; }
-
                 var val = r[c.dataIndex];
                 if (c.isMeta && c.name == 'meta')
                 { val = JSON.parse(val || 'null'); }
@@ -385,7 +415,7 @@ this.Dataset = Model.extend({
                         c.renderTypeName == 'stars' && val === 0)
                 { val = null; }
 
-                tr[adjId] = val;
+                tr[c._lookup] = val;
             });
             return tr;
         };
@@ -396,6 +426,7 @@ this.Dataset = Model.extend({
             var r = translateRow(nr);
             r.index = start + i;
             view._rows[r.index] = r;
+            view._rowIDLookup[r.id] = r;
             adjRows.push(r);
         });
 

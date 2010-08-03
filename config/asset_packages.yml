@@ -52,7 +52,8 @@ javascripts:
 - shared-calendar:
   - plugins/ui.draggable
   - plugins/fullcalendar
-  - widgets/blist-calendar
+  - widgets/base-visualization
+  - widgets/calendars/default-calendar
 - shared-table-render:
   - plugins/ui.draggable
   - util/humane-number

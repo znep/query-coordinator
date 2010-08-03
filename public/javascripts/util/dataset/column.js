@@ -16,6 +16,11 @@ this.Column = Model.extend({
         this.renderType = blist.data.types[this.renderTypeName] || {};
         this.isMeta = this.dataTypeName == 'meta_data';
 
+        this._lookup = this.isMeta ? this.name : this.id;
+        if (this.dataTypeName == 'tag') { this._lookup = 'tags'; }
+        else if (this.isMeta && this.name == 'sid') { this._lookup = 'id'; }
+        else if (this.isMeta && this.name == 'id') { this._lookup = 'uuid'; }
+
         this.aggregates = {};
 
         this._updateChildren();

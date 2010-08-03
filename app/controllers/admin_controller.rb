@@ -302,10 +302,17 @@ class AdminController < ApplicationController
 
   ## open data federation
   def federations
+    @added = params[:added] # refresh after a record was added
     if (params[:dataset].nil?)
       @federations = DataFederation.find
     else
+      @search_dataset = params[:dataset]
       @federations = DataFederation.find(:dataset => params[:dataset])
+    end
+
+    if (!params[:domain].nil?)
+      @search_domain = params[:domain]
+      @domains = Domain.findAvailableFederationTargets(params[:domain])
     end
   end
 
@@ -345,6 +352,7 @@ class AdminController < ApplicationController
         format.data { render :json => {'error' => e.error_message}.to_json }
       end
     end
+
     respond_to do |format|
       format.data { render :json => data.to_json() }
     end

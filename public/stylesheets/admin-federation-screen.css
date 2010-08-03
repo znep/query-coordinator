@@ -3,6 +3,27 @@
     float: right;
 }
 
+#adminContent .federationSearch td
+{
+    padding-right: 5em;
+}
+
+#adminContent .availableTargetDomains div
+{
+    clear: both;
+}
+
+#adminContent .availableTargetDomains span
+{
+    float: left;
+    padding: 0.5em;
+}
+
+#adminContent .availableTargetDomains span.domain
+{
+    width: 12em;
+    font-size:1.5em;
+}
 
 #adminContent .widgetTable
 {

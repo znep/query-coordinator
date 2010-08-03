@@ -102,6 +102,8 @@ javascripts:
   - screens/admin-sdp-index-screen
 - admin-users:
   - screens/admin-users-screen
+- admin-federations:
+  - screens/admin-federations-screen
 - blists-about:
   - util/urls
   - plugins/ajaxupload.3.0

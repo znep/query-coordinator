@@ -11,6 +11,11 @@ class Domain < Model
     parse(CoreServer::Base.connection.get_request(path, headers))
   end
 
+  def self.findAvailableFederationTargets(target_domain)
+    path = "/domains.json?method=findAvailableFederationTargets&domain=#{target_domain}"
+    parse(CoreServer::Base.connection.get_request(path))
+  end
+
   def self.findById(id)
     # We don't know our cname yet, so we need to pass it in to connection.rb
     # manually

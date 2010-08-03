@@ -222,7 +222,7 @@ blist.blistGrid.newViewCreated = function($iEdit, responseData)
 {
     if (!blistGridNS.isAltView)
     {
-        $('#dataGrid').datasetGrid().isTempView = false;
+        blist.dataset.markTemp(false);
     }
     blist.util.navigation.redirectToView(responseData.id);
 };
@@ -784,7 +784,7 @@ $(function ()
     {
         var $grid = $('#dataGrid');
         if (!blistGridNS.isAltView &&
-            $grid.length > 0 && $grid.datasetGrid().isTempView)
+            $grid.length > 0 && blist.dataset.temporary)
         {
             return 'You will lose your temporary filter.';
         }

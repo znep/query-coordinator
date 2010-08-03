@@ -11,11 +11,11 @@
         onlyIf: function(view)
         {
             return blist.datasetUtil.isPublic(view) && blist.dataset.valid &&
-                !blist.display.isTempView;
+                !blist.dataset.temporary;
         },
         disabledSubtitle: function()
         {
-            return !blist.dataset.valid || blist.display.isTempView ?
+            return !blist.dataset.valid || blist.dataset.temporary ?
                 'This view must be valid and saved' :
                 'This view must be public before it can be published';
         },

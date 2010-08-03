@@ -10,11 +10,11 @@
                     return !_.include(['document', 'document_obsolete', 'tag',
                         'photo', 'photo_obsolete', 'nested_table'],
                         c.dataTypeName) || _.include(c.flags || [], 'hidden');
-                }) && blist.dataset.valid && !blist.display.isTempView;
+                }) && blist.dataset.valid && !blist.dataset.temporary;
         },
         disabledSubtitle: function()
         {
-            return !blist.dataset.valid || blist.display.isTempView ?
+            return !blist.dataset.valid || blist.dataset.temporary ?
                 'This view must be valid and saved' :
                 'You cannot upload data into a dataset that contains a photo, ' +
                 'document, nested table, or tags column. ' +

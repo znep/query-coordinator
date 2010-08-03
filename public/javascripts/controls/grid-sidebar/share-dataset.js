@@ -225,7 +225,7 @@
         noReset: true,
         onlyIf: function(view)
         {
-            return blist.dataset.valid && !blist.display.isTempView;
+            return blist.dataset.valid && !blist.dataset.temporary;
         },
         disabledSubtitle: function()
         {

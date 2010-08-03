@@ -75,7 +75,7 @@
 <script type="text/javascript" charset="utf-8">
   blist.common.modalReady = function()
   {
-    if ($('#dataGrid').datasetGrid().isTempView)
+    if (blist.dataset.temporary)
     {
         $('.filterDatasetWrapper .submitLine a.update').hide();
         $('.filterDatasetWrapper .submitLine a.create')

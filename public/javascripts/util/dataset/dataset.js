@@ -24,6 +24,7 @@ this.Dataset = Model.extend({
 
         if (_.isFunction(this._convertLegacy)) { this._convertLegacy(); }
 
+        this.temporary = false;
         this.valid = this._checkValidity();
         this.url = this._generateUrl();
 
@@ -59,6 +60,12 @@ this.Dataset = Model.extend({
     hasRight: function(right)
     {
         return _.include(this.rights, right);
+    },
+
+    // TODO: Can we get rid of this eventually?
+    markTemp: function(isTemp)
+    {
+        this.temporary = isTemp;
     },
 
     save: function(successCallback, errorCallback)
@@ -673,6 +680,7 @@ function cleanViewForPost(ds)
     delete ds.displayClass;
     delete ds.displayName;
     delete ds.valid;
+    delete ds.temporary;
     delete ds.url;
     delete ds.totalRows;
     delete ds.grants;

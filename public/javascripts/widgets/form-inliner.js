@@ -27,7 +27,7 @@ blistCommonNS.formInliner = function(event)
             {
                 $(this).click(function(event)
                 {
-                    if (dsGrid.isTempView !== true)
+                    if (blist.dataset.temporary !== true)
                     { return true; }
 
                     event.preventDefault();

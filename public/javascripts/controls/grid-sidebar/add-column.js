@@ -28,7 +28,7 @@
         subtitle: 'Add a new column to your dataset',
         onlyIf: function(view)
         {
-            return blist.dataset.valid && !blist.display.isTempView &&
+            return blist.dataset.valid && !blist.dataset.temporary &&
                 blist.datasetUtil.getDisplayType(blist.display.view) == 'Blist';
         },
         disabledSubtitle: function()

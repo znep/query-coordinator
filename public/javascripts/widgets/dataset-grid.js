@@ -189,7 +189,7 @@
 
                 datasetObj.settings._filterIds = {};
                 datasetObj.settings._filterCount = 0;
-                blist.display.isTempView = datasetObj.isTempView = false;
+                blist.dataset.markTemp(false);
 
                 if (datasetObj.settings.filterForm)
                 { datasetObj.settings.filterForm.find(':input').val('').blur(); }
@@ -750,7 +750,7 @@
                     return;
                 }
 
-                blist.display.isTempView = datasetObj.isTempView = false;
+                blist.dataset.markTemp(false);
 
                 if (datasetObj.settings.clearTempViewCallback != null)
                 {
@@ -780,14 +780,14 @@
                     { datasetObj.settings._filterIds[countId] = true; }
                 }
 
-                if (datasetObj.isTempView)
+                if (blist.dataset.temporary)
                 {
                     if (datasetObj.settings.updateTempViewCallback != null)
                     { datasetObj.settings.updateTempViewCallback(); }
                     return;
                 }
 
-                blist.display.isTempView = datasetObj.isTempView = true;
+                blist.dataset.markTemp(true);
 
                 if (datasetObj.settings.setTempViewCallback != null)
                 {
@@ -865,8 +865,6 @@
             // This keeps track of when the column summary data is stale and
             // needs to be refreshed
             summaryStale: true,
-
-            isTempView: false,
 
             rowHandleRenderer: function(col)
             {
@@ -1681,7 +1679,7 @@
     {
         var view = datasetObj.settings._model.meta().view;
         if (!skipRequest && _.include(view.rights, 'update_view') &&
-            !datasetObj.isTempView)
+            !blist.dataset.temporary)
         {
             $.ajax({url: '/views/' + view.id + '.json',
                 data: JSON.stringify({query: view.query}),
@@ -1719,7 +1717,7 @@
     {
         var view = datasetObj.settings._model.meta().view;
         if (_.include(view.rights, 'update_view') &&
-            !datasetObj.isTempView)
+            !blist.dataset.temporary)
         {
             var modView = blist.datasetUtil.cleanViewForPost(
                 datasetObj.settings._model.getViewCopy(), true);
@@ -1764,7 +1762,7 @@
 
     var columnNameEdit = function(datasetObj, event, origEvent)
     {
-        if (!datasetObj.settings.columnNameEdit || datasetObj.isTempView)
+        if (!datasetObj.settings.columnNameEdit || blist.dataset.temporary)
         { return; }
 
         var $target = $(origEvent.currentTarget).find('.blist-th-name');

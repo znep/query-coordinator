@@ -75,7 +75,7 @@ blist.datasetMenu.menuHandler = function(event)
             });
             params.push('aggs=' + aggs.join(','));
 
-            if ($('.blist-table').datasetGrid().isTempView)
+            if (blist.dataset.temporary)
             { params.push('isTempView=true'); }
 
             if (params.length > 0) { url += '?' + params.join('&'); }

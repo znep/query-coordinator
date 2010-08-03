@@ -220,6 +220,7 @@ this.Dataset = Model.extend({
         ds._makeRequest({url: '/views/' + ds.id + '/rows/' + sendRow.id + '.json',
             type: 'PUT', data: JSON.stringify(sendRow),
             success: successCallback, error: errorCallback});
+        ds._aggregatesStale = true;
     },
 
     getAggregates: function(callback, customAggs)
@@ -329,7 +330,7 @@ this.Dataset = Model.extend({
         return $.isBlank(this.message);
     },
 
-    _updateColumns: function(newCols)
+    _updateColumns: function(newCols, updateOrder)
     {
         var ds = this;
 
@@ -348,12 +349,16 @@ this.Dataset = Model.extend({
                 var ci = _.indexOf(ds.columns, c);
 
                 // If it is new, just splice it in
-                if ($.isBlank(c)) { ds.columns.splice(i, 0, nc); }
+                if ($.isBlank(c))
+                {
+                    if (updateOrder) { ds.columns.splice(i, 0, nc); }
+                    else { ds.columns.push(nc); }
+                }
                 else
                 {
                     // If the column existed but not at this index, remove it from
                     // the old spot and put it in the new one
-                    if (ci != i)
+                    if (updateOrder && ci != i)
                     {
                         ds.columns.splice(ci, 1);
                         ds.columns.splice(i, 0, c);
@@ -427,7 +432,7 @@ this.Dataset = Model.extend({
             if (!$.isBlank(result.meta))
             {
                 view.totalRows = result.meta.totalRows;
-                view._updateColumns(result.meta.view.columns);
+                view._updateColumns(result.meta.view.columns, true);
             }
 
             var rows = view._addRows(result.data.data || result.data, start);

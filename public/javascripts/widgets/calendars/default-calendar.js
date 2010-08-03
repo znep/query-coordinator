@@ -22,7 +22,6 @@
     {
         defaults:
         {
-            editable: false
         },
 
         prototype:
@@ -96,7 +95,7 @@
     var setUpCalendar = function(calObj)
     {
         calObj.$dom().fullCalendar({aspectRatio: 2,
-                editable: calObj.settings.editable,
+                editable: calObj.settings.view.hasRight('write'),
                 disableResizing: $.isBlank(calObj.settings.view
                     .displayFormat.endDateTableId),
                 eventRender: function(ce, e, v)

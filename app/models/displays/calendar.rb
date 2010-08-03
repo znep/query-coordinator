@@ -21,10 +21,7 @@ class Displays::Calendar < Displays::Base
 
   def render_inline_runtime_js(context)
     js = <<END
-blist.$display.socrataCalendar({
-  view: blist.dataset,
-  editable: blist.display.editable
-});
+blist.$display.socrataCalendar({view: blist.dataset});
 END
     super << js
   end

@@ -81,10 +81,8 @@ class Displays::Base
       # Set common base variables communicating display configuration to JS
       js = <<END
 blist.namespace.fetch('blist.display');
-blist.display.name = '#{name}';
 blist.display.view = JSON.parse($.htmlUnescape("#{h(@view.to_json.gsub(/\\/, '\\\\\\'))}"));
 blist.dataset = new Dataset(JSON.parse($.htmlUnescape("#{h(@view.to_json.gsub(/\\/, '\\\\\\'))}")));
-blist.display.editable = #{@view.can_edit?};
 blist.display.scrollsInline = #{scrolls_inline?};
 $(function() { blist.$display = $('##{target_dom_id}'); });
 END

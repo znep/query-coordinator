@@ -4,7 +4,7 @@ var commonNS = blist.namespace.fetch('blist.common');
 blist.blistGrid.getCookieHash = function()
 {
     return {name: $.htmlUnescape(blistGridNS.viewName), id: blistGridNS.viewId,
-        path: window.location.pathname, displayType: blist.display.type};
+        path: window.location.pathname, displayType: blist.dataset.displayType};
 };
 
 blist.blistGrid.setUpTabs = function ()
@@ -358,7 +358,7 @@ $(function ()
                 updateTempViewCallback: blistGridNS.updateTempViewTab,
                 filterForm: '#lensContainer .headerBar form',
                 clearFilterItem: '#lensContainer .headerBar form .clearSearch',
-                isInvalid: blist.display.isInvalid,
+                isInvalid: !blist.dataset.valid,
                 validViewCallback: blistGridNS.updateValidView,
                 addColumnCallback: function (parId)
                 {

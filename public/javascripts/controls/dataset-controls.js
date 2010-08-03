@@ -4,7 +4,7 @@ blist.datasetControls.hookUpShareMenu = function(view, $menu, overrides)
 {
     var tweet = escape('Check out the ' + $.htmlEscape(view.name) +
         ' dataset on ' + blist.configuration.strings.company + ': ');
-    var seoPath = window.location.hostname + $.generateViewUrl(view);
+    var seoPath = window.location.hostname + view.url;
     var shortPath = window.location.hostname.replace(/www\./, '') + '/d/' + view.id;
     var opts = {
         menuButtonContents: 'Socialize',
@@ -108,7 +108,7 @@ blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
         {
             $dialog.find('.loadingOverlay, .loadingSpinner').removeClass('hide');
             blist.dataset.name = name;
-            blist.dataset.save(
+            blist.dataset.saveNew(
                 // Success
                 function(view)
                 {

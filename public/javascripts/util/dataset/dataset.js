@@ -25,6 +25,7 @@ this.Dataset = Model.extend({
         if (_.isFunction(this._convertLegacy)) { this._convertLegacy(); }
 
         this.valid = this._checkValidity();
+        this.url = this._generateUrl();
 
         this._rows = {};
         this._rowIDLookup = {};
@@ -55,7 +56,21 @@ this.Dataset = Model.extend({
         { return _.include(grant.flags || [], 'public'); });
     },
 
+    hasRight: function(right)
+    {
+        return _.include(this.rights, right);
+    },
+
     save: function(successCallback, errorCallback)
+    {
+        this._makeRequest({url: '/views/' + this.id + '.json',
+            type: 'PUT', data: JSON.stringify(cleanViewForSave(this)),
+            error: errorCallback,
+            success: successCallback
+        });
+    },
+
+    saveNew: function(successCallback, errorCallback)
     {
         this._makeRequest({url: '/views.json', type: 'POST',
             data: JSON.stringify(cleanViewForSave(this)),
@@ -114,7 +129,7 @@ this.Dataset = Model.extend({
             if ($.isBlank(r))
             {
                 doLoaded();
-                if ($.isBlank(curReq)) { curReq = {start: start}; }
+                if ($.isBlank(curReq)) { curReq = {start: start, finish: start}; }
                 else
                 {
                     if (start - curReq.start + 1 > pageSize)
@@ -266,6 +281,49 @@ this.Dataset = Model.extend({
         { callback(); }
     },
 
+    remove: function(successCallback, errorCallback)
+    {
+        this._makeRequest({url: '/datasets/' + this.id + '.json',
+            type: 'DELETE',
+            success: successCallback, error: errorCallback});
+    },
+
+    registerOpening: function()
+    {
+        this._makeRequest({url: '/views/' + this.id + '.json?method=opening'});
+    },
+
+    getParentDataset: function(callback)
+    {
+        var ds = this;
+        // Check related views, because this may not have a parent
+        if ($.isBlank(ds._relatedViews))
+        {
+            ds._loadRelatedViews(function()
+            { callback(ds._parent); });
+        }
+        else { callback(ds._parent); }
+    },
+
+    getRelatedViews: function(callback)
+    {
+        var ds = this;
+        if ($.isBlank(ds._relatedViews))
+        {
+            ds._loadRelatedViews(function()
+            { callback(ds._relatedViews); });
+        }
+        else { callback(ds._relatedViews); }
+    },
+
+    redirectTo: function()
+    {
+        window.location = this.url;
+    },
+
+
+    // Private methods
+
     _checkValidity: function()
     {
         return $.isBlank(this.message);
@@ -324,7 +382,7 @@ this.Dataset = Model.extend({
             .value();
     },
 
-    _makeRequest: function(req, isInline, inlineParams, isBatch)
+    _makeRequest: function(req, isInline, inlineParams, isBatch, cacheGet)
     {
         var view = this;
         var finishCallback = function(callback)
@@ -346,8 +404,10 @@ this.Dataset = Model.extend({
             req.type = 'POST';
             req.data = req.data || JSON.stringify(cleanViewForPost(this));
         }
+        if (req.type == 'GET') { req.cache = false; }
 
-        if (isBatch) { $.socrataServer.addRequest(req); }
+        if (cacheGet) { $.Tache.Get(req); }
+        else if (isBatch) { $.socrataServer.addRequest(req); }
         else { $.ajax(req); }
     },
 
@@ -431,8 +491,50 @@ this.Dataset = Model.extend({
         });
 
         return adjRows;
-    }
+    },
 
+    _generateUrl: function()
+    {
+        var ds = this;
+        var base = '';
+
+        // federated dataset has nonblank domain cname
+        if (!$.isBlank(ds.domainCName))
+        {
+            var loc = document.location;
+            base = loc.protocol + '//' + ds.domainCName;
+            if (loc.port != 80) { base += ':' + loc.port; }
+        }
+
+        return base + "/" + $.urlSafe(ds.category || "dataset") +
+               "/" + $.urlSafe(ds.name) +
+               "/" + ds.id;
+    },
+
+    _loadRelatedViews: function(callback)
+    {
+        var ds = this;
+        var processDS = function(views)
+        {
+            views = _.map(views, function(v) { return new Dataset(v); });
+
+            var parDS = _.detect(views, function(v)
+                    { return v.displayType == 'blist'; });
+            if (!$.isBlank(parDS) && parDS.id != ds.id)
+            {
+                ds._parent = parDS;
+                views = _.without(views, parDS);
+            }
+
+            ds._relatedViews = views;
+
+            if (_.isFunction(callback)) { callback(); }
+        };
+
+        this._makeRequest({url: '/views.json',
+                data: { method: 'getByTableId', tableId: this.tableId },
+                success: processDS}, false, null, false, true);
+    }
 });
 
 Dataset.modules = {};
@@ -566,6 +668,7 @@ function cleanViewForPost(ds)
     delete ds.displayClass;
     delete ds.displayName;
     delete ds.valid;
+    delete ds.url;
     delete ds.totalRows;
     delete ds.grants;
     return ds;

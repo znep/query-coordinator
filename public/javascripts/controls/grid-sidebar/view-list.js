@@ -70,11 +70,12 @@
                     {
                         $li.remove();
                         views.splice(_.indexOf(views, v), 1);
-                        if (blist.display.view.id == v.id &&
-                            !$.isBlank(blist.parentViewId))
+                        if (blist.dataset.id == v.id)
                         {
-                            blist.util.navigation
-                                .redirectToView(blist.parentViewId);
+                            blist.dataset.getParentDataset(function(parDS)
+                            {
+                                if (!$.isBlank(parDS)) { parDS.redirectTo(); }
+                            });
                         }
                     };
 

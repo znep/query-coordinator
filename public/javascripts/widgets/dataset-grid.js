@@ -702,24 +702,25 @@
                     function(cols)
                     {
                         currentColumns = cols;
-                        if (!$.isBlank(blist.parentViewId) &&
-                            view.id == blist.parentViewId)
+                        if (blist.datasetUtil.getDisplayType(view) == 'Blist')
                         { parentColumns = cols; }
                         if(!_.isUndefined(parentColumns))
                         { revealDrillDownCallBack(); }
                     }, 'json');
 
-                    if (!$.isBlank(blist.parentViewId) &&
-                        view.id !== blist.parentViewId)
+                    if (blist.datasetUtil.getDisplayType(view) != 'Blist')
                     {
-                        $.get('/views/' + blist.parentViewId +
-                                '/columns.json',
-                            function(pcols)
+                        // TODO: switch to view passed in?
+                        blist.dataset.getParentDataset(function(parDS)
+                        {
+                            if (!$.isBlank(parDS))
                             {
-                                parentColumns = pcols;
+                                // TODO: is this a problem that it is Column obj?
+                                parentColumns = parDS.realColumns;
                                 if(!_.isUndefined(currentColumns))
                                 { revealDrillDownCallBack(); }
-                        },'json');
+                            }
+                        });
                     }
                 }
             },

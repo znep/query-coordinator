@@ -26,6 +26,12 @@ this.Column = Model.extend({
         this._updateChildren();
     },
 
+    childForID: function(id)
+    {
+        return this._childIDLookup[parseInt(id)];
+    },
+
+
     _update: function(newCol)
     {
         this._updateChildren(newCol.childColumns);
@@ -43,10 +49,13 @@ this.Column = Model.extend({
             this.childColumns = this.childColumns || [];
         }
 
+        this._childIDLookup = {};
         this.childColumns = _.map(this.childColumns, function(c, i)
             {
-                c = new Column(c, col.view, col);
+                if (!(c instanceof Column))
+                { c = new Column(c, col.view, col); }
                 c.dataIndex = i;
+                col._childIDLookup[c.id] = c;
                 return c;
             });
         this.realChildren = _.reject(this.childColumns, function(c)

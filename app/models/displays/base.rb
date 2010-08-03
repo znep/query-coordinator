@@ -82,7 +82,6 @@ class Displays::Base
       js = <<END
 blist.namespace.fetch('blist.display');
 blist.display.name = '#{name}';
-blist.display.type = '#{type}';
 blist.display.view = JSON.parse($.htmlUnescape("#{h(@view.to_json.gsub(/\\/, '\\\\\\'))}"));
 blist.dataset = new Dataset(JSON.parse($.htmlUnescape("#{h(@view.to_json.gsub(/\\/, '\\\\\\'))}")));
 blist.display.editable = #{@view.can_edit?};

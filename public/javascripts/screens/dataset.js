@@ -36,14 +36,15 @@ blist.datasetPage.setTempView = function()
 
 blist.datasetPage.updateValidView = function(view)
 {
-    blist.display.isInvalid = false;
+    // Pretty sure this isn't needed with new Dataset...
+    //blist.display.isInvalid = false;
     $('.invalidView').removeClass('invalidView');
     datasetPageNS.sidebar.updateEnabledSubPanes();
 };
 
 (function($)
 {
-    if (blist.display.isInvalid) { $('body').addClass('invalidView'); }
+    if (!blist.dataset.valid) { $('body').addClass('invalidView'); }
 })(jQuery);
 
 $(function()
@@ -70,21 +71,18 @@ $(function()
             $dataGrid
                 .bind('columns_updated', function()
                     { datasetPageNS.sidebar.refresh(); })
-                .datasetGrid({viewId: blist.display.view.id,
-                    columnDeleteEnabled: _.include(blist.display.view.rights,
-                        'remove_column'),
-                    columnPropertiesEnabled: _.include(blist.display.view.rights,
-                        'update_view'),
-                    columnNameEdit: _.include(blist.display.view.rights,
-                        'update_view'),
-                    showAddColumns: blist.display.type == 'blist' &&
-                        _.include(blist.display.view.rights, 'add_column'),
+                .datasetGrid({viewId: blist.dataset.id,
+                    columnDeleteEnabled: blist.dataset.hasRight('remove_column'),
+                    columnPropertiesEnabled: blist.dataset.hasRight('update_view'),
+                    columnNameEdit: blist.dataset.hasRight('update_view'),
+                    showAddColumns: blist.dataset.displayType == 'blist' &&
+                        blist.dataset.hasRight('add_column'),
                     accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
                     clearTempViewCallback: datasetPageNS.clearTempView,
                     setTempViewCallback: datasetPageNS.setTempView,
                     filterForm: '#searchButton .searchForm',
                     clearFilterItem: '#searchButton .clearSearch',
-                    isInvalid: blist.display.isInvalid,
+                    isInvalid: !blist.dataset.valid,
                     validViewCallback: datasetPageNS.updateValidView,
                     addColumnCallback: function(parId)
                     {
@@ -94,13 +92,10 @@ $(function()
                     },
                     editColumnCallback: function(colId, parId)
                     {
-                        var col = _.detect(blist.display.view.columns, function(c)
-                            { return c.id == colId || c.id == parId; });
-                        if (col.id != colId)
-                        {
-                            col = _.detect(col.childColumns, function(c)
-                                { return c.id == colId; });
-                        }
+                        var col = blist.dataset.columnForID(colId) ||
+                            blist.dataset.columnForID(parId);
+                        if (col.id != colId) { col = col.childForID(colId); }
+
                         datasetPageNS.sidebar.hide();
                         datasetPageNS.sidebar.addPane('columnProperties', col);
                         datasetPageNS.sidebar.show('columnProperties');
@@ -108,8 +103,8 @@ $(function()
                 });
 
             // Fire up guided filter if available
-            if (!_.isUndefined(blist.display.view.metadata) &&
-                !_.isUndefined(blist.display.view.metadata.facets))
+            if (!_.isUndefined(blist.dataset.metadata) &&
+                !_.isUndefined(blist.dataset.metadata.facets))
             {
                 blist.$display.bind('full_load.loadGuidedFilter', function()
                 {
@@ -148,7 +143,7 @@ $(function()
                 e.preventDefault();
                 datasetPageNS.sidebar.show(dataPaneName);
                 $.analytics.trackEvent('dataset page (v4-chrome)',
-                    dataPaneName + ' pane opened', blist.display.view.id);
+                    dataPaneName + ' pane opened', blist.dataset.id);
             });
         }
         else
@@ -165,8 +160,7 @@ $(function()
         menuButtonTitle: 'More Views',
         contents: [
             { text: 'Parent Dataset', className: 'typeBlist', href: '#parent',
-              onlyIf: !_.include(['Blist', 'Blob'],
-                blist.datasetUtil.getDisplayType(blist.display.view)) },
+              onlyIf: !_.include(['blist', 'blob'], blist.dataset.displayType) },
             { divider: true },
             { text: 'Saved Filters', className: 'typeFilter', href: '#savedFilters',
               targetPane: 'filter.savedFilters' },
@@ -179,7 +173,7 @@ $(function()
         onOpen: function()
         {
             $.analytics.trackEvent('dataset page (v4-chrome)', 'views menu opened',
-                blist.display.view.id);
+                blist.dataset.id);
         }
     });
 
@@ -216,14 +210,14 @@ $(function()
         }, hideCheck)
         .find('.searchField').blur(hideCheck);
 
-    blist.datasetControls.hookUpShareMenu(blist.display.view,
+    blist.datasetControls.hookUpShareMenu(blist.dataset,
         $('#shareMenu'),
         {
             menuButtonContents: $.tag({tagName: 'span', 'class': 'shareIcon'}, true),
             onOpen: function()
             {
                 $.analytics.trackEvent('dataset page (v4-chrome)', 'share menu opened',
-                    blist.display.view.id);
+                    blist.dataset.id);
             }
         });
 
@@ -231,7 +225,7 @@ $(function()
     $('#shareMenu .menuDropdown a, #viewsMenu .menuDropdown a').click(function()
     {
         $.analytics.trackEvent('dataset page (v4-chrome)', 'menu item clicked: ' +
-            $(this).attr('href'), blist.display.view.id);
+            $(this).attr('href'), blist.dataset.id);
     });
 
     $('.fullscreenButton').click(function(event)
@@ -291,18 +285,14 @@ $(function()
         $a.text($a.attr('data-savingText'));
         $a.addClass('disabled');
 
-        $.ajax({url: '/views/' + blist.display.view.id + '.json',
-            type: 'PUT', contentType: 'application/json', dataType: 'json',
-            data: JSON.stringify(blist.datasetUtil.cleanViewForSave(
-                $.extend(true, {}, blist.display.view), true)),
-            success: function()
-            {
-                $a.text($a.data('saveText'));
-                $a.removeClass('disabled');
+        blist.dataset.save(function()
+        {
+            $a.text($a.data('saveText'));
+            $a.removeClass('disabled');
 
-                if (blist.display.isGrid)
-                { $dataGrid.datasetGrid().clearTempView(null, true); }
-            }});
+            if (blist.display.isGrid)
+            { $dataGrid.datasetGrid().clearTempView(null, true); }
+        });
     });
 
     $('.unsavedLine a.saveAs').click(function(e)
@@ -320,8 +310,7 @@ $(function()
 
     // Invalid views
 
-    var viewEditPane = $.gridSidebar.paneForDisplayType[
-        blist.datasetUtil.getDisplayType(blist.display.view)];
+    var viewEditPane = $.gridSidebar.paneForDisplayType[blist.dataset.displayType];
     if ($.isBlank(viewEditPane) ||
         !datasetPageNS.sidebar.isPaneEnabled(viewEditPane))
     { $('.invalidActions .editView').hide(); }
@@ -340,18 +329,13 @@ $(function()
         if (!confirm('Are you sure you want to remove this view?'))
         { return; }
 
-        $.ajax({url: '/datasets/' + blist.display.view.id,
-            type: 'DELETE', contentType: "application/json",
-            success: function()
+        blist.dataset.remove(function()
+        {
+            blist.dataset.getParentDataset(function(parDS)
             {
-                if (!$.isBlank(blist.parentViewId))
-                {
-                    window.location = blist.util.navigation
-                        .getViewUrl(blist.parentViewId);
-                }
-                else
-                { window.location = '/datasets'; }
-            }
+                if (!$.isBlank(parDS)) { parDS.redirectTo(); }
+                else { window.location = '/datasets'; }
+            });
         });
     });
 
@@ -369,36 +353,20 @@ $(function()
     _.defer(function()
     {
         // register opening
-        var params = { method: "opening"};
-        if (!$.isBlank(document.referrer))
-        {
-            params.referrer = document.referrer;
-        }
+        blist.dataset.registerOpening(null, document.referrer);
 
-        $.ajax({
-            url: '/views/' + blist.display.view.id + '.json',
-            data: params, 
-            dataType: 'json'
+
+        // set up the main menu
+        blist.dataset.getParentDataset(function(parDS)
+        {
+            if (!$.isBlank(parDS))
+            {
+                $('#viewsMenu .typeBlist a').attr('href', parDS.url);
+            }
         });
 
-
-        // fetch some data that we'll need
-        $.Tache.Get({ url: '/views.json',
-            data: { method: 'getByTableId', tableId: blist.display.view.tableId },
-            cache: false, dataType: 'json', contentType: 'application/json',
-            success: function(views)
-            {
-                var parDS = _.detect(views, function(view)
-                    { return blist.datasetUtil.getDisplayType(view) == 'Blist'; });
-                if (!$.isBlank(parDS))
-                {
-                    $('#viewsMenu .typeBlist a').attr('href',
-                        $.generateViewUrl(parDS));
-                    blist.parentViewId = parDS.id;
-                }
-            }});
-
         // report to events analytics for easier aggregation
-        $.analytics.trackEvent('dataset page (v4-chrome)', 'page loaded', blist.display.view.id);
+        $.analytics.trackEvent('dataset page (v4-chrome)',
+            'page loaded', blist.dataset.id);
     });
 });

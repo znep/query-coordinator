@@ -448,7 +448,6 @@
     <%- if !current_user.nil? -%>
     blist.currentUserId = "<%= current_user.id %>";
     <%- end -%>
-    blist.parentViewId = "<%= @view.parent_dataset.id %>";
     blist.blistGrid.blistId = "<%= @view.tableId %>";
     blist.blistGrid.viewId = "<%= @view.id %>";
     blist.blistGrid.viewName = "<%= @view.name %>";

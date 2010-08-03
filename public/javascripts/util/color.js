@@ -151,14 +151,6 @@ $.gradient = function(stops, colors, options)
     });
     var toColor = colors[0];
 
-    var complement = function(hue)
-    {
-        var complement = (hue*2)+137;
-        return complement < 360
-            ? complement
-            : Math.floor(hue/2)-137;
-    }
-
     // Anchor on black if it's a high value color
     // Anchor on white if it's a high saturation color
     var lowColor = colors.length > 1
@@ -186,6 +178,23 @@ $.gradient = function(stops, colors, options)
     }
 
     return colorList.reverse();
+};
+
+$.complementaryGradient = function(stops, color)
+{
+    var hsv = $.rgbToHsv($.hexToRgb(color))
+
+    var complementHue = (hsv.h*2)+137;
+    complementHue = complementHue < 360
+        ? complementHue
+        : Math.floor(hsv.h/2)-137;
+
+    var lowStops = stops % 2 == 0 ? stops/2+1 : Math.ceil(stops/2);
+    var highStops = stops - lowStops + 1;
+
+    var gradient = $.gradient(lowStops, $.hsvToRgb($.extend({}, hsv, {h:complementHue}))).reverse();
+    gradient.pop();
+    return gradient.concat($.gradient(highStops, color));
 };
 
 })(jQuery);

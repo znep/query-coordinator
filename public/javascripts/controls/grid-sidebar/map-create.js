@@ -169,7 +169,7 @@
                     },
                     {text: 'Description', name: 'displayFormat.plot.descriptionId',
                         type: 'columnSelect', isTableColumn: true,
-                        columns: {type: ['text', 'html', 'location'],
+                        columns: {type: ['text', 'html', 'number', 'percent', 'money', 'location'],
                             hidden: isEdit},
                         wizard: 'Choose a column that contains ' +
                             'descriptions for each point'

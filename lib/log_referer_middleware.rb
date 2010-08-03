@@ -1,4 +1,5 @@
 require 'stomp'
+require 'pp'
 
 # I'm middleware that logs HTTP_REFERER's to domains to a stomp service (that's
 # consumed by some ActiveMQ consumer). All y'all jive turkeys be careful: I 
@@ -37,6 +38,17 @@ class LogRefererMiddleware
     else
       # Second we need to figure out how we got here.
       ref = env["HTTP_REFERER"]
+
+      if env['HTTP_ACCEPT'].include?("text/html")
+        # If the request is for an html page, then log a pageview event.
+        logger.info "Attempting to log a page view to the #{domain} domain."
+        client.publish(
+          "/queue/Metrics", 
+          {"timestamp" => Time.now.to_i * 1000, "entityId" => domain, "page-views" => 1}.to_json,
+          :persistent => true,
+          :suppress_content_length => true
+        )
+      end
 
       if ref.blank?
         # Was it by typing a link in the address bar or hiding our referer

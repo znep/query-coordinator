@@ -26,11 +26,11 @@
                         ($.isBlank(c.flags) || !_.include(c.flags, 'hidden')));
                 });
             return dateCols.length > 0 && textCols.length > 0 &&
-                (!blist.display.isInvalid || isEdit);
+                (blist.dataset.valid || isEdit);
         },
         disabledSubtitle: function()
         {
-            return blist.display.isInvalid && !isEdit ? 'This view must be valid' :
+            return !blist.dataset.valid && !isEdit ? 'This view must be valid' :
                 'This view must have a date column and a text column';
         },
         sections: [

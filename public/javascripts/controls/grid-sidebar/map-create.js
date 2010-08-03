@@ -157,11 +157,11 @@
                 {
                     return c.dataTypeName == 'location' && (isEdit ||
                         ($.isBlank(c.flags) || !_.include(c.flags, 'hidden')));
-                }).length > 0 && (!blist.display.isInvalid || isEdit);
+                }).length > 0 && (blist.dataset.valid || isEdit);
         },
         disabledSubtitle: function()
         {
-            return blist.display.isInvalid && !isEdit ? 'This view must be valid' :
+            return !blist.dataset.valid && !isEdit ? 'This view must be valid' :
                 'This view must have a location column';
         },
         sections: [
@@ -296,7 +296,7 @@
 
         $.extend(view, sidebarObj.getFormValues($pane));
 
-        var needsFullReset = blist.display.isInvalid ||
+        var needsFullReset = !blist.dataset.valid ||
             view.displayFormat.type !=
                 (blist.display.view.displayFormat || {}).type ||
             !_.isEqual(view.displayFormat.layers,

@@ -130,10 +130,10 @@
             return _.any(view.columns, function(c)
                 { return c.dataTypeName != 'meta_data' &&
                     (isEdit || !_.include(c.flags || [], 'hidden')); }) &&
-                (!blist.display.isInvalid || isEdit);
+                (blist.dataset.valid || isEdit);
         },
         disabledSubtitle: function()
-        { return blist.display.isInvalid && !isEdit ? 'This view must be valid' :
+        { return !blist.dataset.valid && !isEdit ? 'This view must be valid' :
             'This view has no columns to filter, roll-up or sort'; },
         sections: [
             // Filter section
@@ -427,7 +427,7 @@
                 if (!$.isBlank(view))
                 { $.syncObjects(blist.display.view, view); }
 
-                if (blist.display.isInvalid)
+                if (!blist.dataset.valid)
                 { dsGrid.updateValidity(blist.display.view); }
 
                 _.defer(function()
@@ -437,7 +437,7 @@
                 });
             };
 
-            if (blist.display.isInvalid &&
+            if (!blist.dataset.valid &&
                 !_.include(filterView.flags || [], 'default') &&
                 _.include(blist.display.view.rights, 'update_view'))
             {

@@ -168,7 +168,7 @@ blist.widget.showDataView = function()
 
 (function($)
 {
-    if (blist.display.isInvalid) { $('body').addClass('invalidView'); }
+    if (!blist.dataset.valid) { $('body').addClass('invalidView'); }
 })(jQuery);
 
 $(function()

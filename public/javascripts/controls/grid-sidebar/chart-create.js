@@ -217,7 +217,7 @@
         title: 'Chart',
         subtitle: 'View data can be displayed with a variety of charts',
         onlyIf: function(view)
-        { return !blist.display.isInvalid || isEdit; },
+        { return blist.dataset.valid || isEdit; },
         disabledSubtitle: 'This view must be valid',
         sections: [
             {

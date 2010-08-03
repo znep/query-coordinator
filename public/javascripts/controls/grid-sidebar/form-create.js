@@ -19,11 +19,11 @@
                 {
                     return c.dataTypeName != 'meta_data' &&
                         ($.isBlank(c.flags) || !_.include(c.flags, 'hidden'));
-                }).length > 0 && (!blist.display.isInvalid || isEdit);
+                }).length > 0 && (blist.dataset.valid || isEdit);
         },
         disabledSubtitle: function()
         {
-            return blist.display.isInvalid ? 'This view must be valid' :
+            return !blist.dataset.valid ? 'This view must be valid' :
                 'This view must have visible columns to create a form';
         },
         sections: [

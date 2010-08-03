@@ -7,10 +7,10 @@
         title: 'Download',
         subtitle: 'Download a copy of this dataset in a static format',
         onlyIf: function()
-        { return blist.display.isGrid && !blist.display.isInvalid; },
+        { return blist.display.isGrid && blist.dataset.valid; },
         disabledSubtitle: function()
         {
-            return blist.display.isInvalid ? 'This view must be valid' :
+            return !blist.dataset.valid ? 'This view must be valid' :
                 'Only tabular data may be downloaded';
         },
         sections: [

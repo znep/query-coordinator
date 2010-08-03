@@ -28,12 +28,12 @@
         subtitle: 'Add a new column to your dataset',
         onlyIf: function(view)
         {
-            return !blist.display.isInvalid && !blist.display.isTempView &&
+            return blist.dataset.valid && !blist.display.isTempView &&
                 blist.datasetUtil.getDisplayType(blist.display.view) == 'Blist';
         },
         disabledSubtitle: function()
         {
-            return blist.display.isInvalid ? 'This view must be valid' :
+            return !blist.dataset.valid ? 'This view must be valid' :
                 'You cannot add a column to a view';
         },
         sections: [

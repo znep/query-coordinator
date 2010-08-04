@@ -139,6 +139,13 @@ blist.discover.sortSelectChangeHandler = function (event)
     hash = hash.replace(/filter_type1=[A-Z_]*/gi, '');
     hash += "&filter_type1=" + $filterType1Select.val();
 
+    // chaning filter type potentially change number of pages.
+    // reset to page 1.
+    if ($this.attr('name') == 'filter_type1')
+    {
+        hash = hash.replace(/page=\d*/gi, 'page=1');
+    }
+
     hash = hash.replace(/&&+/g, '&');
     $.historyLoad(hash);
 };

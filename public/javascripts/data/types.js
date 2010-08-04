@@ -626,8 +626,7 @@ blist.namespace.fetch('blist.data.types');
         var type = blist.data.types[column.type || column.renderTypeName] ||
             blist.data.types.date;
         var format = type.formats[_.isString(column.format) ? column.format :
-            column.format.view] ||
-            type.formats['date_time'];
+            (column.format || {}).view] || type.formats['date_time'];
         return renderDate(value, format, type.stringParse);
     };
 

@@ -168,8 +168,6 @@
         if ($form.valid())
         {
             var isPublic = blist.dataset.isPublic();
-            if ($.isBlank(blist.dataset.grants))
-            { blist.dataset.grants = []; }
 
             var message = $form.find('#emailMessage').val();
 
@@ -191,12 +189,7 @@
                         { grant['userId'] = uid; }
 
                         // Create a grant for the user
-                        $.socrataServer.addRequest({
-                            url: '/views/' + blist.dataset.id + '/grants',
-                            type: 'POST',
-                            data: JSON.stringify(grant)
-                        });
-                        blist.dataset.grants.push(grant);
+                        blist.dataset.addGrant(grant, null, null, true);
                     }
                     else
                     {

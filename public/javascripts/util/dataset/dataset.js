@@ -289,6 +289,15 @@ this.Dataset = Model.extend({
         { callback(); }
     },
 
+    addGrant: function(grant, successCallback, errorCallback, isBatch)
+    {
+        this._makeRequest({url: '/views/' + this.id + '/grants.json', type: 'POST',
+                data: JSON.stringify(grant),
+                success: successCallback, error: errorCallback}, false, null, true);
+        this.grants = this.grants || [];
+        this.grants.push(grant);
+    },
+
     remove: function(successCallback, errorCallback)
     {
         this._makeRequest({url: '/datasets/' + this.id + '.json',

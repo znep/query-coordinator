@@ -58,6 +58,7 @@
                 var mapObj = this;
 
                 mapObj._markers = {};
+                mapObj._numSegments = 6;
 
                 if (mapObj.$dom().siblings('#mapLayers').length < 1)
                 {
@@ -143,6 +144,7 @@
                 mapObj._markers = {};
                 mapObj._llKeys = {};
                 mapObj._rows = [];
+                mapObj._gradient = undefined;
 
                 mapObj._idIndex = undefined;
                 mapObj._locCol = undefined;
@@ -355,17 +357,43 @@
                     info = _.compact(mapObj._llKeys[rowKey].info).join();
                 }
 
-                var icon;
-                if (row[mapObj._metaIndex])
+                var details = {title: title, info: info};
+                if (mapObj._sizeValueCol)
                 {
-                    icon = JSON.parse(row[mapObj._metaIndex]).mapIcon;
+                    for (var i = 0; i < mapObj._numSegments; i++)
+                    {
+                        if (parseFloat(row[mapObj._sizeValueCol.dataIndex]) <= mapObj._sizeValueCol._segments[i])
+                        { details.size  = 10+(6*i); break; }
+                    }
+                }
+                if (mapObj._colorValueCol)
+                {
+                    for (var i = 0; i < mapObj._numSegments; i++)
+                    {
+                        if (parseFloat(row[mapObj._colorValueCol.dataIndex]) <= mapObj._colorValueCol._segments[i])
+                        {
+                            var rgb = mapObj._gradient[i];
+                            details.color = [ rgb.r, rgb.g, rgb.b ];
+                            break;
+                        }
+                    }
                 }
 
-                return mapObj.renderPoint(lat, longVal, title,
-                    info, mapObj._llKeys[rowKey].id, icon);
+                if (row[mapObj._metaIndex])
+                {
+                    var metadata  = JSON.parse(row[mapObj._metaIndex]);
+                    var mapping = { 'mapIcon': 'icon', 'pinSize': 'size', 'pinColor': 'color' };
+                    _.each(_.keys(mapping), function(key)
+                    {
+                        if (metadata[key]) { details[mapping[key]] = metadata[key]; }
+                    });
+                }
+
+                return mapObj.renderPoint(
+                    lat, longVal, mapObj._llKeys[rowKey].id, details);
             },
 
-            renderPoint: function(latVal, longVal, title, info, rowId, icon)
+            renderPoint: function(latVal, longVal, rowId, details)
             {
                 // Implement me
             },
@@ -392,6 +420,21 @@
                 var mapObj = this;
                 if (!getColumns(mapObj, view))
                 { getLegacyColumns(mapObj, view); }
+
+                // TODO: This is a bad place for this.
+                if (mapObj.buildLegend && mapObj._colorValueCol)
+                {
+                    if (!mapObj._gradient)
+                    {
+                        mapObj._gradient = $.gradient(mapObj._numSegments,
+                               blist.display.view.displayFormat.color || "#0000ff");
+                    }
+
+                    mapObj.buildLegend(mapObj._colorValueCol.name,
+                        _.map(mapObj._gradient,
+                              function(c) { return "#"+$.rgbToHex(c); }
+                    ));
+                }
             }
         }
     }));
@@ -477,11 +520,15 @@
                 mapObj._infoCol = c;
                 mapObj._infoIsHtml = c.renderTypeName == 'html';
             }
-            if (c.tableColumnId == colFormat.quantityId)
+            _.each(['colorValue', 'sizeValue', 'quantity'], function(colName)
             {
-                c.dataIndex = i;
-                mapObj._quantityCol = c;
-            }
+                if (c.tableColumnId == colFormat[colName + 'Id'])
+                {
+                    calculateSegmentSizes(mapObj, c);
+                    c.dataIndex = i;
+                    mapObj['_'+colName+'Col'] = c;
+                }
+            });
             if (c.tableColumnId == colFormat.redirectId)
             {
                 c.dataIndex = i;
@@ -518,6 +565,52 @@
             mapObj._infoIsHtml = infoCol.renderTypeName == 'html';
         }
         return true;
+    };
+
+    var calculateSegmentSizes = function(mapObj, column)
+    {
+        if (!mapObj._delayRenderData) { mapObj._delayRenderData = 0; }
+        mapObj._delayRenderData++;
+
+        var cleanedData = blist.dataset.cleanViewForPost(
+            $.extend(true, {}, blist.display.view), true);
+        cleanedData.originalViewId = blist.display.viewId;
+
+        var columnData = $.extend({}, column);
+        delete columnData.dataIndex;
+
+        _.each(['minimum', 'maximum'], function(aggregateType)
+        {
+            $.socrataServer.addRequest({
+                url: '/views/INLINE/rows.json?method=getAggregates', type: 'POST',
+                data: JSON.stringify($.extend({}, cleanedData, {columns: [
+                    $.extend({}, columnData, { format: { aggregate: aggregateType }})
+                ]})), dataType: 'json',
+                success: function(result) { column[result[0].name] = parseFloat(result[0].value); }
+            });
+        });
+        $.socrataServer.runRequests({
+            success: function(result)
+            {
+                var difference = column.maximum - column.minimum;
+                var granularity = difference / mapObj._numSegments;
+                column._segments = [];
+                for (i = 0; i < mapObj._numSegments; i++)
+                { column._segments[i] = ((i+1)*granularity)+column.minimum; }
+
+                mapObj._delayRenderData--;
+                if (!mapObj._delayRenderData && mapObj._delayedRenderData)
+                {
+                    _.each(mapObj._delayedRenderData, function(f) { f(); });
+                    mapObj._delayedRenderData = [];
+                }
+                if (mapObj._$legend.length > 0)
+                {
+                    mapObj._$legend.find('span:first').text(column.minimum);
+                    mapObj._$legend.find('span:last').text(column.maximum);
+                }
+            }
+        });
     };
 
 })(jQuery);

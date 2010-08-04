@@ -183,11 +183,11 @@
                 { mapObj.renderData(rows); }
             },
 
-            renderPoint: function(latVal, longVal, title, info, rowId, icon)
+            renderPoint: function(latVal, longVal, rowId, details)
             {
                 var mapObj = this;
                 // Create the map symbol
-                var symbol = getESRIMapSymbol(mapObj, icon);
+                var symbol = getESRIMapSymbol(mapObj, details);
 
                 mapObj._toProject = mapObj._toProject || [];
                 var point = new esri.geometry.Point(longVal, latVal,
@@ -203,7 +203,7 @@
                 }
 
                 var g = new esri.Graphic(point, symbol,
-                    { title: title, body : info });
+                    { title: details.title, body : details.info });
 
                 if (g.attributes.title !== null || g.attributes.body !== null)
                 { g.setInfoTemplate(new esri.InfoTemplate("${title}", "${body}")); }
@@ -263,29 +263,99 @@
                 delete mapObj._segmentSymbols;
                 mapObj.map.graphics.clear();
                 mapObj.map.infoWindow.hide();
+            },
+
+            buildLegend: function(name, gradient)
+            {
+                var mapObj = this;
+
+                var SWATCH_WIDTH = 17;
+
+                mapObj._$legend = mapObj.$dom().siblings('#mapLegend');
+                if (!mapObj._$legend.length)
+                {
+                    mapObj.$dom().before('<div id="mapLegend">' +
+                        '<div class="contentBlock">' +
+                        '<h3>' + name +
+                        '</h3><div style="width: ' + (mapObj._numSegments*SWATCH_WIDTH) +
+                        'px;"><ul></ul><span></span>' +
+                        '<span style="float: right;"></span></div>' +
+                        '</div></div>');
+                    mapObj._$legend = $('#mapLegend');
+                }
+
+                var $ul = mapObj._$legend.find('ul');
+                $ul.empty();
+                _.each(gradient, function(color)
+                    {
+                        $ul.append( $("<div class='color_swatch'><div class='inner'>&nbsp;</div></div>")
+                                .css('background-color', color)
+                            );
+                    }
+                );
             }
         }
     }));
 
-    var getESRIMapSymbol = function(mapObj, icon)
+    var getESRIMapSymbol = function(mapObj, details)
     {
         if (mapObj._esriSymbol === undefined) { mapObj._esriSymbol = {}; }
-        if (icon && !mapObj._esriSymbol[icon])
+
+        var customRender = function(point)
         {
-            mapObj._esriSymbol[icon] = new esri.symbol.PictureMarkerSymbol(icon, 10, 10);
+            var customization = {};
+
+            if (!_.isUndefined(point.icon))
+            {
+                customization.icon = point.icon;
+                customization.key = point.icon;
+                customization.type = 'picture';
+                return customization;
+            }
+
+            _.each(['size', 'color', 'shape', 'opacity'], function(property)
+            {
+                if (point[property])
+                { customization[property] = point[property]; }
+            });
+
+            if (!_.isEmpty(customization))
+            {
+                customization.key = _.map(_.keys(customization), function(element)
+                    { return element + '=' + customization[element]; }).join('|');
+                customization.type = 'simple';
+                return customization;
+            }
+
+            return null;
+        };
+
+        var customization = customRender(details) || { type: 'simple', key: 'default' };
+        if (mapObj._esriSymbol[customization.key])
+        { return mapObj._esriSymbol[customization.key]; }
+
+        var renderers = {};
+        renderers['picture'] = function(customization)
+        {
+            var key = customization.key;
+
+            mapObj._esriSymbol[key] = new esri.symbol.PictureMarkerSymbol(customization.icon, 10, 10);
             var image = new Image();
             image.onload = function() {
-                mapObj._esriSymbol[icon].setHeight(image.height);
-                mapObj._esriSymbol[icon].setWidth(image.width);
+                mapObj._esriSymbol[key].setHeight(image.height);
+                mapObj._esriSymbol[key].setWidth(image.width);
             };
-            image.src = icon;
-        }
-        else if (!mapObj._esriSymbol['default'])
+            image.src = customization.icon;
+
+            return mapObj._esriSymbol[key];
+        };
+
+        renderers['simple'] = function(customization)
         {
             var symbolConfig = {
-                backgroundColor: [ 255, 0, 255, .5 ],
-                size: 10,
-                symbol: 'circle',
+                backgroundColor: customization.color || [ 255, 0, 255 ],
+                size: customization.size || 10,
+                symbol: customization.shape || 'circle',
                 borderColor: [ 0, 0, 0, .5 ],
                 borderStyle: 'solid',
                 borderWidth: 1
@@ -294,20 +364,23 @@
             $.extend(symbolConfig, mapObj._displayConfig.plot);
             var symbolBackgroundColor =
                 new dojo.Color(symbolConfig.backgroundColor);
+            symbolBackgroundColor.a = customization.opacity || 0.8;
             var symbolBorderColor = new dojo.Color(symbolConfig.borderColor);
             var symbolBorder = new esri.symbol.SimpleLineSymbol(
                     symbolConfig.borderStyle,
                     symbolBorderColor,
                     symbolConfig.borderWidth
             );
-            mapObj._esriSymbol['default'] = new esri.symbol.SimpleMarkerSymbol(
+            mapObj._esriSymbol[customization.key] = new esri.symbol.SimpleMarkerSymbol(
                     symbolConfig.symbol,
                     symbolConfig.size,
                     symbolBorder,
                     symbolBackgroundColor
             );
+
+            return mapObj._esriSymbol[customization.key];
         }
-        return mapObj._esriSymbol[icon || 'default'];
+        return renderers[customization.type](customization);
     };
 
     var identifyFeature = function(mapObj, evt)

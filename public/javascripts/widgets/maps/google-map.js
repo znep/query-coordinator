@@ -31,31 +31,31 @@
                 mapObj._boundsCounts = 0;
             },
 
-            renderPoint: function(latVal, longVal, title, info, rowId, icon)
+            renderPoint: function(latVal, longVal, rowId, details)
             {
                 var mapObj = this;
 
-                var hasInfo = !$.isBlank(info) || !$.isBlank(title);
+                var hasInfo = !$.isBlank(details.info) || !$.isBlank(details.title);
                 var ll = new google.maps.LatLng(latVal, longVal);
                 var marker = new google.maps.Marker({position: ll,
-                    title: title, clickable: hasInfo,
-                    map: mapObj.map, icon: icon});
+                    title: details.title, clickable: hasInfo,
+                    map: mapObj.map, icon: details.icon});
                 if (mapObj._markers[rowId]) mapObj._markers[rowId].setMap(null);
                 mapObj._markers[rowId] = marker;
 
                 if (hasInfo)
                 {
                     marker.infoContent = '';
-                    if (!$.isBlank(title))
+                    if (!$.isBlank(details.title))
                     {
                         marker.infoContent += "<div class='mapTitle'>" +
-                            title + '</div>';
+                            details.title + '</div>';
                     }
-                    if (!$.isBlank(info))
+                    if (!$.isBlank(details.info))
                     {
                         marker.infoContent += "<div class='mapInfoContainer" +
                             (mapObj._infoIsHtml ? ' html' : '') + "'>" +
-                            info + "</div>";
+                            details.info + "</div>";
                     }
                     google.maps.event.addListener(marker, 'click',
                         function() { markerClick(mapObj, marker); });

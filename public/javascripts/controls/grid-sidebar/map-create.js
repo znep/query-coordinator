@@ -173,7 +173,25 @@
                             hidden: isEdit},
                         wizard: 'Choose a column that contains ' +
                             'descriptions for each point'
-                    }
+                    },
+                    {text: 'Value (size)', name: 'displayFormat.plot.sizeValueId',
+                        onlyIf: {field: 'displayFormat.type', value: 'esri'},
+                        type: 'columnSelect', isTableColumn: true,
+                        columns: {type: ['number', 'money', 'percent'], hidden: isEdit},
+                        wizard: 'Choose a column that contains ' +
+                            'quantities specifying the size of each point'
+                    },
+                    {type: 'group', options: [
+                        {name: 'displayFormat.color', type: 'color', lineClass: 'colorCollapse',
+                            onlyIf: {field: 'displayFormat.type', value: 'esri'},
+                            defaultValue: "#0000ff"},
+                        {text: 'Value (color)', name: 'displayFormat.plot.colorValueId',
+                            onlyIf: {field: 'displayFormat.type', value: 'esri'},
+                            type: 'columnSelect', isTableColumn: true,
+                            columns: {type: ['number', 'money', 'percent'], hidden: isEdit},
+                        }
+                    ], lineClass: 'colorValueGroup', wizard: 'Choose a column that contains ' +
+                            'quantities specifying the color of each point'}
                 ],
                 wizard: 'Do you have titles or descriptions for your points?'
             },
@@ -292,7 +310,8 @@
                     };
 
                     var p = blist.display.view.displayFormat.plot;
-                    _.each(_.compact([p.locationId, p.titleId, p.descriptionId]),
+                    _.each(_.compact([p.locationId, p.titleId, p.descriptionId,
+                        p.quantityId, p.colorValueId, p.sizeValueId]),
                     function(tId)
                     {
                         var col = _.detect(blist.display.view.columns, function(c)

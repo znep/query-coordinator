@@ -122,6 +122,14 @@
             {
                 var vizObj = this;
 
+                if (this._delayRenderData)
+                {
+                    if (!this._delayedRenderData) { this._delayedRenderData = []; }
+                    var _this = this;
+                    this._delayedRenderData.push(function() { _this.renderData(rows); });
+                    return;
+                }
+
                 var addedRows = false;
                 var badPoints = false;
                 _.each(rows, function(r)

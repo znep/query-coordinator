@@ -1,7 +1,5 @@
 (function($)
 {
-    var NUM_SEGMENTS = 6;
-
     var MAP_TYPE = {
         'countries': {
             'layerPath': "World_Topo_Map/MapServer/6",
@@ -90,12 +88,12 @@
                 var highColor = config.colors && config.colors.high ? $.hexToRgb(config.colors.high)
                                                                     : { r: 44, g: 119, b: 14};
                 var colorStep = {
-                    r: Math.round((highColor.r-lowColor.r)/NUM_SEGMENTS),
-                    g: Math.round((highColor.g-lowColor.g)/NUM_SEGMENTS),
-                    b: Math.round((highColor.b-lowColor.b)/NUM_SEGMENTS)
+                    r: Math.round((highColor.r-lowColor.r)/mapObj._numSegments),
+                    g: Math.round((highColor.g-lowColor.g)/mapObj._numSegments),
+                    b: Math.round((highColor.b-lowColor.b)/mapObj._numSegments)
                 };
 
-                for (var i = 0; i < NUM_SEGMENTS; i++)
+                for (var i = 0; i < mapObj._numSegments; i++)
                 {
                     mapObj._segmentSymbols[i] = new esri.symbol.SimpleFillSymbol();
                     mapObj._segmentSymbols[i].setColor(
@@ -106,7 +104,8 @@
                     );
                 }
 
-                mapObj.buildLegend();
+                mapObj.buildLegend(mapObj._quantityCol.name,
+                    _.map(mapObj._segmentSymbols, function(symbol) { return symbol.color.toCss(false); }));
             }
 
             mapObj.startLoading();
@@ -132,35 +131,6 @@
                 for (var i = 0; i < layers.length; i++)
                 { mapObj.map.getLayer(layers[i].id).hide(); }
             }
-        },
-
-        buildLegend: function()
-        {
-            var mapObj = this;
-
-            var SWATCH_WIDTH = 17;
-
-            mapObj._$legend = mapObj.$dom().siblings('#mapLegend');
-            if (!mapObj._$legend.length)
-            {
-                mapObj.$dom().before('<div id="mapLegend">' +
-                    '<div class="contentBlock">' +
-                    '<h3>' + mapObj._quantityCol.name +
-                    '</h3><div style="width: ' + (NUM_SEGMENTS*SWATCH_WIDTH) +
-                    'px;"><ul></ul><span></span>' +
-                    '<span style="float: right;"></span></div>' +
-                    '</div></div>');
-                mapObj._$legend = $('#mapLegend');
-            }
-
-            var $ul = mapObj._$legend.find('ul');
-            $ul.empty();
-            _.each(mapObj._segmentSymbols, function(symbol)
-            {
-                $ul.append( $("<div class='color_swatch'><div class='inner'>&nbsp;</div></div>")
-                        .css('background-color', symbol.color.toCss(false))
-                    );
-            });
         }
     });
 
@@ -241,7 +211,7 @@
         mapObj._$legend.find('span:first').text(min);
         mapObj._$legend.find('span:last').text(max);
         var segments = [];
-        for (i = 0; i < NUM_SEGMENTS; i++) { segments[i] = ((i+1)*(max-min)/NUM_SEGMENTS)+min; }
+        for (i = 0; i < mapObj._numSegments; i++) { segments[i] = ((i+1)*(max-min)/mapObj._numSegments)+min; }
 
         var info = mapObj._quantityCol.name + ": ${quantity}<br />${description}";
         var infoTemplate = new esri.InfoTemplate("${NAME}", info);
@@ -256,7 +226,7 @@
             feature.attributes.description = $.makeArray(feature.attributes.description).join(', ');
 
             var symbol;
-            for (i = 0; i < NUM_SEGMENTS; i++)
+            for (i = 0; i < mapObj._numSegments; i++)
             {
                 if (parseFloat(feature.attributes.quantity) <= segments[i])
                 { symbol = mapObj._segmentSymbols[i]; break; }

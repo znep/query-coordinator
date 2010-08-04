@@ -25,6 +25,56 @@ $.rgbToHex = function(rgb)
 	return hex.join('');
 };
 
+// Adapted from http://svn.dojotoolkit.org/low/dojox/trunk/color/_base.js
+$.hsvToRgb = function(hsv){
+    //  hue from 0-359 (degrees), saturation and value 0-100.
+    var hue=hsv.h, saturation=hsv.s, value=hsv.v;
+
+    if(hue==360){ hue=0; }
+    saturation/=100;
+    value/=100;
+
+    var r, g, b;
+    if(saturation==0){
+        r=value, b=value, g=value;
+    }else{
+        var hTemp=hue/60, i=Math.floor(hTemp), f=hTemp-i;
+        var p=value*(1-saturation);
+        var q=value*(1-(saturation*f));
+        var t=value*(1-(saturation*(1-f)));
+        switch(i){
+            case 0:{ r=value, g=t, b=p; break; }
+            case 1:{ r=q, g=value, b=p; break; }
+            case 2:{ r=p, g=value, b=t; break; }
+            case 3:{ r=p, g=q, b=value; break; }
+            case 4:{ r=t, g=p, b=value; break; }
+            case 5:{ r=value, g=p, b=q; break; }
+        }
+    }
+    return { r:Math.round(r*255), g:Math.round(g*255), b:Math.round(b*255) };
+}
+
+// Adapted from http://svn.dojotoolkit.org/low/dojox/trunk/color/_base.js
+$.rgbToHsv = function(rgb){
+    var r=rgb.r/255, g=rgb.g/255, b=rgb.b/255;
+    var min = Math.min(r, b, g), max = Math.max(r, g, b);
+    var delta = max-min;
+    var h = null, s = (max==0)?0:(delta/max);
+    if(s==0){
+        h = 0;
+    }else{
+        if(r==max){
+            h = 60*(g-b)/delta;
+        }else if(g==max){
+            h = 120 + 60*(b-r)/delta;
+        }else{
+            h = 240 + 60*(r-g)/delta;
+        }
+
+        if(h<0){ h+=360; }
+    }
+    return { h:h, s:Math.round(s*100), v:Math.round(max*100) };
+};
 
 $.addColors = function(a, b)
 {
@@ -87,6 +137,64 @@ $.urlToImageBuilder = function(options, format, css)
     }
     result += properties.join('&');
     return ((css === true) ? ('url(' + result + ')') : result);
+};
+
+$.gradient = function(stops, colors, options)
+{
+    options = options || {};
+
+    if (!_.isArray(colors)) { colors = [colors]; }
+    colors = _.map(colors, function(color)
+    {
+        if (!color.r) { color = $.hexToRgb(color); }
+        return $.rgbToHsv(color);
+    });
+    var toColor = colors[0];
+
+    // Anchor on black if it's a high value color
+    // Anchor on white if it's a high saturation color
+    var lowColor = colors.length > 1
+        ? colors[1]
+        : {
+            h: toColor.h,
+            s: toColor.s > 50 ? 0 : 100,
+            v: toColor.v > 50 ? 0 : 100
+        };
+
+    var colorStep = {
+        h: (toColor.h - lowColor.h)/(stops-1),
+        s: (toColor.s - lowColor.s)/(stops-1),
+        v: (toColor.v - lowColor.v)/(stops-1)
+    };
+
+    var colorList = [];
+    for (var i = 0; i < stops; i++)
+    {
+        colorList[i] = $.hsvToRgb({
+            h: toColor.h - (i * colorStep.h),
+            s: toColor.s - (i * colorStep.s),
+            v: toColor.v - (i * colorStep.v)
+            });
+    }
+
+    return colorList.reverse();
+};
+
+$.complementaryGradient = function(stops, color)
+{
+    var hsv = $.rgbToHsv($.hexToRgb(color))
+
+    var complementHue = (hsv.h*2)+137;
+    complementHue = complementHue < 360
+        ? complementHue
+        : Math.floor(hsv.h/2)-137;
+
+    var lowStops = stops % 2 == 0 ? stops/2+1 : Math.ceil(stops/2);
+    var highStops = stops - lowStops + 1;
+
+    var gradient = $.gradient(lowStops, $.hsvToRgb($.extend({}, hsv, {h:complementHue}))).reverse();
+    gradient.pop();
+    return gradient.concat($.gradient(highStops, color));
 };
 
 })(jQuery);

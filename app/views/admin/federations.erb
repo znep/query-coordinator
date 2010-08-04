@@ -14,27 +14,59 @@
           <div class='contentTR'><div class='contentTL'></div></div>
           <div class='content' id='adminContent'>
             <h3>Open Data Federation</h3>
-         
-         <ul class="actionButtons newTemplateHeader">
-           <li>
-             <%= link_to 'Create a new federation', '/admin/federations/new', {:rel => 'modal', :class => 'newTemplateLink arrowButton clearfix'} %>
-           </li>
-         </ul>
 
 <div class='explanation'>
-<p>Creating federation is a two step process:</P>
-<ul>
-<li>- An admin signs in to the source domain and creates a new federation record where a target domain is specified.</li>
-<li>- An admin signs in to the target domain and accepts the federation.</li>
-</ul>
+<p>Creating federation is a two step process:</p>
+<p>- An admin signs in to the source domain and publish the source domain to a target domain.</p>
+<p>- An admin signs in to the target domain and accepts the federation.</p>
 </div>
+
 <br/><br/>
-   <form class="search" action="/admin/federations">
+
+<table class="federationSearch">
+  <tr><td>
+  <form class="search" action="/admin/federations">
       <p>
-        <input type="text" class="searchField textPrompt" title="Search for Federated Datasets" name="dataset" />
-        <input type="image" alt="search" src="/stylesheets/images/common/empty.gif" name="searchDatasetFederationSubmit" class="submit">
+        <input type="text" class="searchField textPrompt" title="Search for Domains to Publish" name="domain"
+          value="<%= @search_domain %>"/>
+        <input type="image" alt="search" src="/stylesheets/images/common/empty.gif" name="searchDomainSubmit" class="submit"/>
       </p>
    </form>
+      </td>
+      <td>
+   <form class="search" action="/admin/federations">
+      <p>
+        <input type="text" class="searchField textPrompt" title="Search for Published Datasets" name="dataset"
+               value="<%= @search_dataset %>"/>
+        <input type="image" alt="search" src="/stylesheets/images/common/empty.gif" name="searchDatasetFederationSubmit" class="submit"/>
+      </p>
+   </form>
+  </td></tr>
+</table>
+
+<%- if (!@search_domain.blank?) && @domains.blank? && @added.blank? -%>
+<p>No available domains match <%=@search_domain%>.</p>
+<%- end -%>
+
+<%- unless @domains.nil? -%>
+ <div class="availableTargetDomains">
+   <%- @domains.each do |d| -%>
+   <div>
+      <span class="domain"><%= d.cname %></span>
+      <span>
+          <% form_tag('/admin/federations/create', :method => 'put', :id => "newFederationForm") do %>
+          <%= hidden_field_tag('new_federation[target_domain]', d.cname) %>
+          <ul class="actionButtons"><li>
+            <a class="button publishDomainSubmit" href="#">Publish</a>
+          </li></ul>
+          <% end %>
+      </span>
+      <span class="errorMessage"></span>
+   </div>
+   <%- end -%>
+ </div>
+<%- end -%>
+
 
 <%- unless @federations.nil? -%>
 
@@ -89,9 +121,6 @@
   </div>
 </div>
 
-
-
-  <!-- /div -->
 <%- end -%>
 
 
@@ -105,4 +134,5 @@
 
 <% content_for :js_footer do %>
   <%= javascript_include_merged 'shared-common-all' %>
+  <%= javascript_include_merged 'admin-federations' %>
 <% end %>

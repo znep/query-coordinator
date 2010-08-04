@@ -31,7 +31,7 @@
                 mapObj.map.AddShapeLayer(mapObj._shapeLayer);
             },
 
-            renderPoint: function(latVal, longVal, title, info, rowId, icon)
+            renderPoint: function(latVal, longVal, rowId, details)
             {
                 var mapObj = this;
 
@@ -43,20 +43,20 @@
                 }
                 mapObj._markers[rowId] = shape;
 
-                if (!_.isNull(title))
+                if (!_.isNull(details.title))
                 {
-                    shape.SetTitle(title);
+                    shape.SetTitle(details.title);
                 }
 
-                if (!_.isNull(info))
+                if (!_.isNull(details.info))
                 {
                     shape.SetDescription("<div class='mapInfoContainer" +
                         (mapObj._infoIsHtml ? ' html' : '') + "'>" +
-                        info + "</div>");
+                        details.info + "</div>");
                 }
-                if (icon)
+                if (details.icon)
                 {
-                    shape.SetCustomIcon(icon);
+                    shape.SetCustomIcon(details.icon);
                 }
 
                 mapObj._shapeLayer.AddShape(shape);

@@ -38,7 +38,7 @@ class DataController < ApplicationController
     # build current state string
     @current_state = { 'filter' => params[:filter], 'page' => opts[:page].to_i,
       'tag' => opts[:tags], 'sort_by' => params[:sort_by], 'search' => opts[:q],
-      'no_js' => params[:no_js]
+      'no_js' => params[:no_js], 'filter_type1' => params[:filter_type1] || opts[:filterType1]
     }
 
   # TODO: Tags should also allow filtering by org
@@ -46,7 +46,8 @@ class DataController < ApplicationController
     if @active_tab == :popular
       mod_state = @current_state.merge(
         {'type' => 'popular', 'domain' => CurrentDomain.cname,
-        'sort_by' => @current_state['sort_by'] || 'POPULARITY'})
+        'sort_by' => @current_state['sort_by'] || 'POPULARITY',
+        'filter_type1' => @current_state[:filter_type1]})
       unless @popular_views_rendered = read_fragment(app_helper.cache_key("discover-tab", mod_state))
         @popular_views = View.find_filtered(opts.merge({ :top100 => true }))
         @popular_views_total = View.find(opts.merge({ :top100 => true, :count => true}), true).count
@@ -59,7 +60,8 @@ class DataController < ApplicationController
     if @active_tab == :all
       mod_state = @current_state.merge(
         {'type' => 'all', 'domain' => CurrentDomain.cname,
-        'sort_by' => @current_state['sort_by'] || 'LAST_CHANGED'})
+        'sort_by' => @current_state['sort_by'] || 'LAST_CHANGED',
+        'filter_type1' => @current_state['filter_type1']})
       unless @all_views_rendered = read_fragment(app_helper.cache_key("discover-tab", mod_state))
         @all_views = View.find(opts, true)
         @all_views_total = View.find(opts.merge({ :count => true }), true).count
@@ -125,7 +127,7 @@ class DataController < ApplicationController
 
     # build current state string
     @current_state = { 'filter' => params[:filter], 'page' => opts[:page],
-      'tag' => opts[:tags], 'sort_by' => params[:sort_by], 'search' => opts[:q] }
+      'tag' => opts[:tags], 'sort_by' => params[:sort_by], 'search' => opts[:q], 'filter_type1' => params[:filter_type1] }
 
     # render the appropriate view
     respond_to do |format|
@@ -205,6 +207,7 @@ private
     page = params[:page].present? ? params[:page].to_i : 1
     sort_by_selection = params[:sort_by] || (params[:type] == "popular" ? "POPULAR" : "LAST_CHANGED")
     sort_by = sort_by_selection
+    filter_type1 = params[:filter_type1] || 'ALL'
 
     is_asc = true
     case sort_by_selection
@@ -231,6 +234,8 @@ private
       opts[:sortBy] = sort_by
       opts[:isAsc] = is_asc
     end
+
+    opts[:filterType1] = filter_type1
 
     opts[:tags] = params[:tag] unless params[:tag].nil?
     opts.update(params[:filter]) unless params[:filter].blank?

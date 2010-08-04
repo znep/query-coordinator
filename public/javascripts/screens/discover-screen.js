@@ -97,12 +97,20 @@ blist.discover.historyChangeHandler = function (hash)
     });
 };
 
+/**
+ * Sort content/function or whatever are expanded to handle simple filter on filter_type1
+ * despite the names remain sort.
+ */
 blist.discover.sortSelectChangeHandler = function (event)
 {
     event.preventDefault();
+    var $this = $(this);
+    var $form = $this.closest("form");
 
-    var $sortSelect = $(this);
-    var sortUrl = $sortSelect.closest("form").attr("action");
+    var $sortSelect = $form.find('[name=sort_by]');
+    var $filterType1Select = $form.find('[name=filter_type1]');
+
+    var sortUrl = $form.attr("action");
 
     var hash = window.location.href.match(/#/) ? window.location.href.replace(/^.*#/, '') : '';
 
@@ -127,6 +135,10 @@ blist.discover.sortSelectChangeHandler = function (event)
 
     hash = hash.replace(/sort_by=[A-Z_]*/gi, '');
     hash += "&sort_by=" + $sortSelect.val();
+
+    hash = hash.replace(/filter_type1=[A-Z_]*/gi, '');
+    hash += "&filter_type1=" + $filterType1Select.val();
+
     hash = hash.replace(/&&+/g, '&');
     $.historyLoad(hash);
 };

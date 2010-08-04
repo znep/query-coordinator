@@ -11,6 +11,15 @@ module DataHelper
     end
   end
 
+  def filter_type1_select_options(current_filter = 'ALL')
+    out = ""
+    View.filter_type1s.each do |type1|
+      selected = current_filter == type1[:key] ? " selected=\"selected\"" : ""
+      out += "<option value=\"#{type1[:key]}\"#{selected}>#{type1[:name]}</option>"
+    end
+    out
+  end
+
   def sort_select_options(current_sort = nil)
     sort_select_options_internal(View.sorts, current_sort)
   end

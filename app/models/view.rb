@@ -1,5 +1,5 @@
 class View < Model
-  cattr_accessor :licenses, :creative_commons, :merged_licenses
+  cattr_accessor :licenses, :creative_commons, :merged_licenses, :filter_type1s
 
   def self.find(options = nil, get_all=false)
     if get_all || options.is_a?(String)
@@ -714,6 +714,26 @@ class View < Model
     sorts
   end
 
+  @@filter_type1s = [
+    { :key => "ALL",
+      :name => "All"
+    },
+    { :key => "PARENT_DATASETS",
+      :name => "Parent Datasets"
+    },
+    { :key => "FILTERED_VIEWS",
+      :name => "Filtered Views"
+    },
+    { :key => "CHARTS",
+      :name => "Charts"
+    },
+    { :key => "MAPS",
+      :name => "Maps"
+    },
+    { :key => "CALENDARS",
+      :name => "Calendars"
+    }
+  ]
 
   memoize :href
 end

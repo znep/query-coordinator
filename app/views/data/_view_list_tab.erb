@@ -16,6 +16,11 @@
         <%- unless type == 'search' -%>
           <% form_tag(root_path, :class => "sortForm", :method => :get) do %>
             <p>
+              <%- if type == 'popular' || type == 'all' -%>
+                <label for="filter_type1_<%= type %>">Type</label>
+                <%= select_tag("filter_type1", filter_type1_select_options(filter_type1), :id => "filter_type1_" + type) %>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <%- end -%>
               <label for="sort_by_<%= type %>">Sort by</label>
               <%= select_tag("sort_by", (type == "search") ? 
                              sort_select_options_for_search(sort_by) : sort_select_options(sort_by), 

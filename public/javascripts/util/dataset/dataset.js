@@ -106,7 +106,9 @@ this.Dataset = Model.extend({
 
     cleanCopy: function()
     {
-        return cleanViewForPost(this);
+        var ds = this._super();
+        ds.columns = _.reject(ds.columns, function(c) { c.id == -1; });
+        return ds;
     },
 
     // Callback may be called multiple times with smaller batches of rows
@@ -270,7 +272,7 @@ this.Dataset = Model.extend({
                     _.each(aggList, function(a, i)
                     {
                         if ($.isBlank(ilViews[i]))
-                        { ilViews[i] = cleanViewForPost(ds); }
+                        { ilViews[i] = ds.cleanCopy(); }
                         var col = _.detect(ilViews[i].columns, function(c)
                         { return c.id == parseInt(cId); });
                         col.format.aggregate = a;
@@ -423,7 +425,7 @@ this.Dataset = Model.extend({
         {
             req.url = '/views/INLINE/rows.json?' + $.param(inlineParams || {});
             req.type = 'POST';
-            req.data = req.data || JSON.stringify(cleanViewForPost(this));
+            req.data = req.data || JSON.stringify(this.cleanCopy());
         }
         if (req.type == 'GET') { req.cache = false; }
 
@@ -555,7 +557,29 @@ this.Dataset = Model.extend({
         this._makeRequest({url: '/views.json',
                 data: { method: 'getByTableId', tableId: this.tableId },
                 success: processDS}, false, null, false, true);
+    },
+
+    _validKeys: {
+        attribution: true,
+        attributionLink: true,
+        category: true,
+        columns: true,
+        description: true,
+        displayFormat: true,
+        displayType: true,
+        flags: true,
+        iconUrl: true,
+        licenseId: true,
+        metadata: true,
+        name: true,
+        originalViewId: true,
+        query: true,
+        queryString: true,
+        searchString: true,
+        tags: true,
+        termsAndConditions: true
     }
+
 });
 
 Dataset.modules = {};
@@ -615,90 +639,9 @@ function getDisplayName(ds)
     return retType;
 };
 
-function cleanViewForPost(ds)
-{
-    var cleanCopy = function(val)
-    {
-        var obj = {};
-        _.each(val, function(v, k)
-                {
-                    if (!_.isFunction(v) && !k.startsWith('_'))
-                    {
-                        if (_.isArray(v))
-                        { obj[k] = v.slice(); }
-                        else if ($.isPlainObject(v))
-                        { obj[k] = $.extend(true, {}, v); }
-                        else if (v instanceof Class)
-                        { obj[k] = cleanCopy(v); }
-                        else
-                        { obj[k] = v; }
-                    }
-                });
-        return obj;
-    };
-
-    ds = cleanCopy(ds);
-
-    ds.columns = ds.realColumns;
-    var cleanColumn = function(col)
-    {
-        col = cleanCopy(col);
-        delete col.options;
-        delete col.dropDown;
-        delete col.hidden;
-        delete col.dataIndex;
-        delete col.dataType;
-        delete col.renderType;
-        delete col.renderTypeName;
-        delete col.dataTypeName;
-        delete col.isMeta;
-        delete col.aggregates;
-        delete col.view;
-        delete col.parentColumn;
-        delete col.realChildren;
-        delete col.visibleChildren;
-        return col;
-    };
-
-    // Clean out dataIndexes, and clean out child metadata columns
-    ds.columns = _.map(ds.columns, function(c)
-    {
-        c = cleanColumn(c);
-        if (!$.isBlank(c.childColumns))
-        {
-            c.childColumns = _.map(c.childColumns,
-                function(cc) { return cleanColumn(cc); });
-        }
-        return c;
-    });
-
-    if (!$.isBlank((ds.query || {}).groupBys))
-    {
-        ds.columns = _.reject(ds.columns, function(c)
-        {
-            return $.isBlank((c.format || {}).grouping_aggregate) &&
-                !_.any(ds.query.groupBys, function(g)
-                { return g.columnId == c.id; });
-        });
-    }
-
-    delete ds.visibleColumns;
-    delete ds.realColumns;
-
-    delete ds.origDisplayType;
-    delete ds.displayClass;
-    delete ds.displayName;
-    delete ds.valid;
-    delete ds.temporary;
-    delete ds.url;
-    delete ds.totalRows;
-    delete ds.grants;
-    return ds;
-};
-
 function cleanViewForSave(ds)
 {
-    ds = cleanViewForPost(ds);
+    ds = ds.cleanCopy();
 
     if (!_.isUndefined(ds.metadata))
     { delete ds.metadata.facets; }

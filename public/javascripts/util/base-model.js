@@ -47,7 +47,42 @@ this.Model = Class.extend({
 
         this.availableEvents = function()
         { return _.keys(events).sort(); };
-    }
+    },
+
+    // Return a cleaned copy that has no functions, private keys, or anything
+    // not valid outside the Model
+    cleanCopy: function()
+    {
+        var that = this;
+        var cleanObj = function(val)
+        {
+            if (val instanceof Model)
+            { return val.cleanCopy(); }
+
+            else if (_.isArray(val))
+            { return _.map(val, function(v) { return cleanObj(v); }); }
+
+            else if ($.isPlainObject(val))
+            {
+                var obj = {};
+                _.each(val, function(v, k) { obj[k] = cleanObj(v); });
+                return obj;
+            }
+
+            else
+            { return val; }
+        };
+
+        var obj = {};
+        _.each(this, function(v, k)
+        {
+            if (!_.isFunction(v) && !k.startsWith('_') && that._validKeys[k])
+            { obj[k] = cleanObj(v); }
+        });
+        return obj;
+    },
+
+    _validKeys: {}
 });
 
 })();

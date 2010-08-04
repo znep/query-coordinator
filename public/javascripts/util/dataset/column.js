@@ -64,6 +64,18 @@ this.Column = Model.extend({
             .reject(function(c) { return c.hidden; })
             .sortBy(function(c) { return c.position; })
             .value();
+    },
+
+    _validKeys: {
+        childColumns: true,
+        defaultValues: true,
+        description: true,
+        dropDownList: true,
+        flags: true,
+        format: true,
+        name: true,
+        position: true,
+        width: true
     }
 });
 

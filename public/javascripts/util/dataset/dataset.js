@@ -261,8 +261,8 @@ this.Dataset = Model.extend({
 
         if (isStale)
         {
-            var args = {success: aggResult};
-            var params = {method: 'getAggregates'};
+            var args = {success: aggResult, params: {method: 'getAggregates'},
+                inline: true};
 
             if (!$.isBlank(customAggs))
             {
@@ -280,12 +280,13 @@ this.Dataset = Model.extend({
                 });
                 _.each(ilViews, function(v)
                 {
-                    args = $.extend({}, args, {data: JSON.stringify(v)});
-                    ds._makeRequest(args, true, params, true);
+                    args = $.extend({}, args,
+                        {data: JSON.stringify(v), batch: true});
+                    ds._makeRequest(args);
                 });
                 ds._sendBatch(callback);
             }
-            else { ds._makeRequest(args, true, params); }
+            else { ds._makeRequest(args); }
         }
         else
         { callback(); }
@@ -295,7 +296,7 @@ this.Dataset = Model.extend({
     {
         this._makeRequest({url: '/views/' + this.id + '/grants.json', type: 'POST',
                 data: JSON.stringify(grant),
-                success: successCallback, error: errorCallback}, false, null, true);
+                success: successCallback, error: errorCallback, batch: isBatch});
         this.grants = this.grants || [];
         this.grants.push(grant);
     },
@@ -309,7 +310,8 @@ this.Dataset = Model.extend({
 
     registerOpening: function()
     {
-        this._makeRequest({url: '/views/' + this.id + '.json?method=opening'});
+        this._makeRequest({url: '/views/' + this.id + '.json',
+            params: {method: 'opening'}});
     },
 
     getParentDataset: function(callback)
@@ -405,7 +407,7 @@ this.Dataset = Model.extend({
             .value();
     },
 
-    _makeRequest: function(req, isInline, inlineParams, isBatch, cacheGet)
+    _makeRequest: function(req)
     {
         var view = this;
         var finishCallback = function(callback)
@@ -421,17 +423,46 @@ this.Dataset = Model.extend({
         $.extend(req, {contentType: 'application/json', dataType: 'json',
                 error: finishCallback(req.error),
                 success: finishCallback(req.success)});
-        if (isInline)
+
+        if (req.inline)
         {
-            req.url = '/views/INLINE/rows.json?' + $.param(inlineParams || {});
+            req.url = '/views/INLINE/rows.json';
             req.type = 'POST';
             req.data = req.data || JSON.stringify(this.cleanCopy());
         }
+
+        if (!$.isBlank(req.params))
+        {
+             req.url += (req.url.indexOf('?') >= 0 ? '&' : '?') +
+                $.param(req.params);
+        }
+
+        // We never want the browser cache, because our data can change frequently
         if (req.type == 'GET') { req.cache = false; }
 
-        if (cacheGet) { $.Tache.Get(req); }
-        else if (isBatch) { $.socrataServer.addRequest(req); }
-        else { $.ajax(req); }
+        var cleanReq = function()
+        {
+            delete req.batch;
+            delete req.inline;
+            delete req.pageCache;
+            delete req.params;
+        };
+
+        if (req.pageCache)
+        {
+            cleanReq();
+            $.Tache.Get(req);
+        }
+        else if (req.batch)
+        {
+            cleanReq();
+            $.socrataServer.addRequest(req);
+        }
+        else
+        {
+            cleanReq();
+            $.ajax(req);
+        }
     },
 
     _sendBatch: function(successCallback)
@@ -442,8 +473,8 @@ this.Dataset = Model.extend({
     _loadRows: function(start, len, callback, includeMeta)
     {
         var view = this;
-        var ilParams = {method: 'getByIds', start: start, 'length': len};
-        if (includeMeta) { ilParams.meta = true; }
+        var params = {method: 'getByIds', start: start, 'length': len};
+        if (includeMeta) { params.meta = true; }
 
         var rowsLoaded = function(result)
         {
@@ -458,7 +489,7 @@ this.Dataset = Model.extend({
             if (_.isFunction(callback)) { callback(rows); }
         };
 
-        view._makeRequest({success: rowsLoaded}, true, ilParams);
+        view._makeRequest({success: rowsLoaded, params: params, inline: true});
     },
 
     _addRows: function(newRows, start)
@@ -554,9 +585,9 @@ this.Dataset = Model.extend({
             if (_.isFunction(callback)) { callback(); }
         };
 
-        this._makeRequest({url: '/views.json',
+        this._makeRequest({url: '/views.json', pageCache: true,
                 data: { method: 'getByTableId', tableId: this.tableId },
-                success: processDS}, false, null, false, true);
+                success: processDS});
     },
 
     _validKeys: {

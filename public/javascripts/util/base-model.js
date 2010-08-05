@@ -47,6 +47,8 @@ this.Model = Class.extend({
 
         this.availableEvents = function()
         { return _.keys(events).sort(); };
+
+        this.registerEvent(['start_request', 'finish_request']);
     },
 
     // Return a cleaned copy that has no functions, private keys, or anything
@@ -80,6 +82,61 @@ this.Model = Class.extend({
             { obj[k] = cleanObj(v); }
         });
         return obj;
+    },
+
+    _makeRequest: function(req)
+    {
+        var model = this;
+        var finishCallback = function(callback)
+        {
+            return function()
+            {
+                model.trigger('finish_request');
+                if (_.isFunction(callback)) { callback.apply(this, arguments); }
+            };
+        };
+
+        this.trigger('start_request');
+        $.extend(req, {contentType: 'application/json', dataType: 'json',
+                error: finishCallback(req.error),
+                success: finishCallback(req.success)});
+
+        if (!$.isBlank(req.params))
+        {
+             req.url += (req.url.indexOf('?') >= 0 ? '&' : '?') +
+                $.param(req.params);
+        }
+
+        // We never want the browser cache, because our data can change frequently
+        if (req.type == 'GET') { req.cache = false; }
+
+        var cleanReq = function()
+        {
+            delete req.batch;
+            delete req.pageCache;
+            delete req.params;
+        };
+
+        if (req.pageCache)
+        {
+            cleanReq();
+            $.Tache.Get(req);
+        }
+        else if (req.batch)
+        {
+            cleanReq();
+            $.socrataServer.addRequest(req);
+        }
+        else
+        {
+            cleanReq();
+            $.ajax(req);
+        }
+    },
+
+    _sendBatch: function(successCallback)
+    {
+        $.socrataServer.runRequests({success: successCallback});
     },
 
     _validKeys: {}

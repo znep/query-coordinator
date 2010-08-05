@@ -48,8 +48,11 @@
         if (!sidebarObj.baseFormHandler($pane, value)) { return; }
 
 
+        // In theory, it would be nice to have append/replace functions on
+        // Dataset.  However, that is kind of difficult since it requires doing
+        // a form upload, which is tied rather tightly to the UI
         var vals = sidebarObj.getFormValues($pane);
-        vals.uploadFile._settings.action = '/views/' + blist.display.view.id +
+        vals.uploadFile._settings.action = '/views/' + blist.dataset.id +
             '/rows.txt?method=' + data.uploadType +
             '&skip_headers=' + vals.skipHeader;
         vals.uploadFile._settings.onComplete = function(file, response)

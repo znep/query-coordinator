@@ -4,8 +4,7 @@
         name: 'export.api',
         priority: 10,
         title: 'API',
-        subtitle: 'Access this ' + blist.datasetUtil.getTypeName(blist.display.view) +
-            ' via SODA',
+        subtitle: 'Access this ' + blist.dataset.displayName + ' via SODA',
         sections: [
             {
                 customContent: {

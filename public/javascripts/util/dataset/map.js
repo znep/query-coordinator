@@ -20,7 +20,7 @@ Dataset.modules['map'] =
 
         view.displayFormat.plot = view.displayFormat.plot || {};
 
-        if (_.include(['geomap', 'intensitymap'], view.origDisplayType))
+        if (_.include(['geomap', 'intensitymap'], view.displayType))
         {
             view.displayFormat.type = 'heatmap';
             var region = view.displayFormat.region || '';

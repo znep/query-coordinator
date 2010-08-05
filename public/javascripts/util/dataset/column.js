@@ -31,11 +31,57 @@ this.Column = Model.extend({
         return this._childIDLookup[parseInt(id)];
     },
 
-
-    _update: function(newCol)
+    addColumn: function(column, successCallback, errorCallback)
     {
-        this._updateChildren(newCol.childColumns);
+        var col = this;
+        var columnAdded = function(newCol)
+        {
+            col.childColumns.push(newCol);
+            col._updateChildren();
+            if (_.isFunction(successCallback))
+            { successCallback(col.childForID(newCol.id)); }
+        };
+
+        this._makeRequest({url: '/views/' + this.view.id + '/columns/' +
+                this.id + '/sub_columns.json',
+                type: 'POST', data: JSON.stringify(new Column(column).cleanCopy()),
+                success: successCallback, error: errorCallback});
     },
+
+    save: function(successCallback, errorCallback)
+    {
+        this._makeRequest({url: '/views/' + this.view.id +
+                '/columns/' + this.id + '.json', type: 'PUT',
+                data: JSON.stringify(this.cleanCopy()),
+                success: successCallback, error: errorCallback});
+    },
+
+    show: function(successCallback, errorCallback, isBatch)
+    {
+        this._makeRequest({url: '/views/' + this.view.id + '/columns/' + this.id +
+            '.json', type: 'PUT', data: JSON.stringify({hidden: false}),
+            batch: isBatch, success: successCallback, error: errorCallback});
+    },
+
+    update: function(newCol)
+    {
+        var col = this;
+        this._updateChildren(newCol.childColumns);
+        _.each(newCol, function(v, k)
+        { if (col._validKeys[k]) { col[k] = v; } });
+    },
+
+    cleanCopy: function()
+    {
+        var col = this._super();
+        if (!$.isBlank(col.childColumns))
+        {
+            col.childColumns = _.reject(col.childColumns,
+                function(c) { return c.id == -1; });
+        }
+        return col;
+    },
+
 
     _updateChildren: function(newChildren)
     {
@@ -68,11 +114,13 @@ this.Column = Model.extend({
 
     _validKeys: {
         childColumns: true,
+        dataTypeName: true,
         defaultValues: true,
         description: true,
         dropDownList: true,
         flags: true,
         format: true,
+        id: true,
         name: true,
         position: true,
         width: true

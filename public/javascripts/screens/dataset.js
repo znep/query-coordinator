@@ -75,7 +75,7 @@ $(function()
                     columnDeleteEnabled: blist.dataset.hasRight('remove_column'),
                     columnPropertiesEnabled: blist.dataset.hasRight('update_view'),
                     columnNameEdit: blist.dataset.hasRight('update_view'),
-                    showAddColumns: blist.dataset.displayType == 'blist' &&
+                    showAddColumns: blist.dataset.type == 'blist' &&
                         blist.dataset.hasRight('add_column'),
                     accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
                     clearTempViewCallback: datasetPageNS.clearTempView,
@@ -160,7 +160,7 @@ $(function()
         menuButtonTitle: 'More Views',
         contents: [
             { text: 'Parent Dataset', className: 'typeBlist', href: '#parent',
-              onlyIf: !_.include(['blist', 'blob'], blist.dataset.displayType) },
+              onlyIf: !_.include(['blist', 'blob'], blist.dataset.type) },
             { divider: true },
             { text: 'Saved Filters', className: 'typeFilter', href: '#savedFilters',
               targetPane: 'filter.savedFilters' },
@@ -310,7 +310,7 @@ $(function()
 
     // Invalid views
 
-    var viewEditPane = $.gridSidebar.paneForDisplayType[blist.dataset.displayType];
+    var viewEditPane = $.gridSidebar.paneForDisplayType[blist.dataset.type];
     if ($.isBlank(viewEditPane) ||
         !datasetPageNS.sidebar.isPaneEnabled(viewEditPane))
     { $('.invalidActions .editView').hide(); }

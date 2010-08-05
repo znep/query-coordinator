@@ -812,7 +812,7 @@
                     { updateEnabled(sp, true); }
                     else if (_.isFunction(sp.onlyIf))
                     {
-                        updateEnabled(sp, sp.onlyIf(blist.display.view));
+                        updateEnabled(sp, sp.onlyIf(blist.dataset));
                     }
                     else
                     { updateEnabled(sp, sp.onlyIf === true); }
@@ -837,7 +837,7 @@
                 if ($.isBlank(config.onlyIf))
                 { return true; }
                 else if (_.isFunction(config.onlyIf))
-                { return config.onlyIf(blist.display.view); }
+                { return config.onlyIf(blist.dataset); }
                 else
                 { return config.onlyIf === true; }
             },
@@ -1363,23 +1363,8 @@
 
     var renderColumnSelectOptions = function(columnsObj, isTableColumn, curVal)
     {
-        var cols;
-        if (!$.isBlank(columnsObj))
-        {
-            cols = _.select(blist.display.view.columns,
-                function(c) { return c.dataTypeName != 'meta_data'; });
-            if (!columnsObj.hidden)
-            {
-                cols = _.select(cols, function(c)
-                    { return !c.flags || !_.include(c.flags, 'hidden'); });
-            }
-            if (!$.isBlank(columnsObj.type))
-            {
-                cols = _.select(cols, function(c)
-                    { return _.include($.makeArray(columnsObj.type),
-                        c.renderTypeName); });
-            }
-        }
+        var cols = blist.dataset.columnsForType((columnsObj || {}).type,
+            (columnsObj || {}).hidden);
 
         var options = [{tagName: 'option', value: '',
             contents: 'Select a column'}];
@@ -2079,7 +2064,7 @@
                             { $firstField = o.$field; }
                         }
                         else if (_.isFunction(o.func))
-                        { failed = !o.func(blist.display.view, data); }
+                        { failed = !o.func(blist.dataset, data); }
 
                         // If they want the opposite, then flip it
                         if (o.negate) { failed = !failed; }
@@ -2300,7 +2285,9 @@
                 else
                 {
                     $overlay.css('cursor', 'crosshair').removeClass('hide');
-                    sidebarObj._$currentWizard.socrataTip().quickHide();
+                    _.defer(function()
+                    { sidebarObj._$currentWizard.socrataTip().quickHide(); });
+
                     // Cancel on ESC
                     $(document).bind('keypress.pane_' + sidebarObj._currentPane,
                         function(e) { if (e.keyCode == 27) { cancelSelect(); } });
@@ -2971,7 +2958,7 @@
             contents: [
                 {tagName: 'h3', 'class': 'title',
                 contents: [config.subtitle || config.title + ' this ' +
-                    blist.datasetUtil.getTypeName(blist.display.view)]},
+                    blist.dataset.displayName]},
                 {tagName: 'p',
                 contents:
                     'Start by making one of the following selections above:'},

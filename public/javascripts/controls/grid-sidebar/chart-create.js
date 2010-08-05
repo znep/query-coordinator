@@ -3,8 +3,7 @@
     if (blist.sidebarHidden.visualize &&
         blist.sidebarHidden.visualize.chartCreate) { return; }
 
-    var isEdit = blist.datasetUtil.getDisplayType(blist.display.view) ==
-        'Visualization';
+    var isEdit = blist.dataset.type == 'visualization';
 
     /*** Common configuration options ***/
 
@@ -323,100 +322,81 @@
 
     config.dataSource = function()
     {
-        if (!isEdit) { return null; }
-
-        return blist.datasetUtil.chart.convertLegacy(
-            $.extend(true, {}, blist.display.view), isEdit);
+        return isEdit ? blist.dataset : null;
     };
+
 
     config.finishCallback = function(sidebarObj, data, $pane, value)
     {
         if (!sidebarObj.baseFormHandler($pane, value)) { return; }
 
-        var view = blist.datasetUtil.baseViewCopy(blist.display.view);
-        view.displayType = 'chart';
+        var view = $.extend({displayType: 'chart'},
+            sidebarObj.getFormValues($pane));
 
-        $.extend(view, sidebarObj.getFormValues($pane));
-        view.columns = [];
         var addColumn = function(tcid)
         {
-            var col = _.detect(blist.display.view.columns, function(c)
-            { return c.tableColumnId == tcid; });
-
-            var fmt = $.extend({}, col.format);
-            if (_.include(blist.datasetUtil.chart.numericTypes, col.renderTypeName))
-            { $.extend(fmt, {aggregate: 'sum'}); }
-
-            view.columns.push({id: col.id, name: col.name, format: fmt});
+            var col = blist.dataset.columnForTCID(tcid);
+            if (_.any(col.renderType.aggregates,
+                function(a) { return a.value == 'sum'; }))
+            col.format.aggregate = 'sum';
         };
 
         _.each(view.displayFormat.fixedColumns || [], addColumn);
 
-        _.each(view.displayFormat.valueColumns || [], function(vc)
-        {
-            addColumn(vc.tableColumnId);
-            _.each(vc.supplementalColumns || [], function(sc)
-            { addColumn(sc); });
-        });
+        blist.dataset.update(view);
 
-        var url = '/views' + (isEdit ? '/' + blist.display.view.id : '') + '.json';
-        $.ajax({url: url, type: isEdit ? 'PUT' : 'POST', dataType: 'json',
-            data: JSON.stringify(view), contentType: 'application/json',
-            error: function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); },
-            success: function(resp)
+        if (!isEdit)
+        {
+            blist.dataset.saveNew(function(newView)
             {
                 sidebarObj.finishProcessing();
-                if (!isEdit)
-                { blist.util.navigation.redirectToView(resp); }
-                else
+                newView.redirectTo();
+            },
+            function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); });
+        }
+        else
+        {
+            blist.dataset.save(function(newView)
+            {
+                sidebarObj.finishProcessing();
+
+                $('.currentViewName').text(newView.name);
+
+                var finishUpdate = function()
                 {
-                    $.syncObjects(blist.display.view, resp);
+                    sidebarObj.$dom().socrataAlert(
+                        {message: 'Your chart has been updated', overlay: true});
 
-                    $('.currentViewName').text(blist.display.view.name);
+                    sidebarObj.hide();
 
-                    var finishUpdate = function()
+                    sidebarObj.addPane(configName);
+
+                    _.defer(function()
                     {
-                        sidebarObj.$dom().socrataAlert(
-                            {message: 'Your chart has been updated',
-                                overlay: true});
+                        $(document).trigger(blist.events.VALID_VIEW);
 
-                        sidebarObj.hide();
-
-                        sidebarObj.addPane(configName);
-
-                        _.defer(function()
-                        {
-                            $(document).trigger(blist.events.VALID_VIEW);
-
-                            blist.dataset.update(resp);
-                            blist.$display.socrataChart().reload();
-                        });
-                    };
-
-                    var tcIds = (view.displayFormat.fixedColumns || []).slice();
-                    tcIds = tcIds.concat(_(view.displayFormat.valueColumns || [])
-                        .chain()
-                        .map(function(vc)
-                        {
-                            return $.makeArray(vc.tableColumnId).concat(
-                                vc.supplementalColumns || []);
-                        }).flatten().value());
-                    _.each(tcIds, function(tcId)
-                    {
-                        var col = _.detect(blist.display.view.columns, function(c)
-                            { return c.tableColumnId == tcId; });
-                        if (_.include(col.flags || [], 'hidden'))
-                        {
-                            $.socrataServer.addRequest({url: '/views/' +
-                                blist.display.view.id + '/columns/' + col.id +
-                                '.json', type: 'PUT',
-                                data: JSON.stringify({hidden: false})});
-                        }
+                        blist.$display.socrataChart().reload();
                     });
-                    if (!$.socrataServer.runRequests({success: finishUpdate}))
-                    { finishUpdate(); }
-                }
-            }});
+                };
+
+                var tcIds = (newView.displayFormat.fixedColumns || []).slice();
+                tcIds = tcIds.concat(_(newView.displayFormat.valueColumns || [])
+                    .chain()
+                    .map(function(vc)
+                    {
+                        return $.makeArray(vc.tableColumnId).concat(
+                            vc.supplementalColumns || []);
+                    }).flatten().value());
+                _.each(tcIds, function(tcId)
+                {
+                    var col = newView.columnForTCID(tcId);
+                    if (col.hidden) { col.show(null, null, true); }
+                });
+                if (!$.socrataServer.runRequests({success: finishUpdate}))
+                { finishUpdate(); }
+            },
+            function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); });
+        }
     };
 
     $.gridSidebar.registerConfig(config, 'Visualization');

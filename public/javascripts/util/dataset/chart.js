@@ -71,7 +71,7 @@ Dataset.modules['visualization'] =
     {
         var view = this;
 
-        var ct = view.displayFormat.chartType || view.origDisplayType;
+        var ct = view.displayFormat.chartType || view.displayType;
         view.displayFormat.chartType = legacyTypes[ct] || ct;
 
         if ($.isBlank(view.displayFormat.dataColumns) &&

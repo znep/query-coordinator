@@ -3,7 +3,7 @@
     if (blist.sidebarHidden.visualize &&
         blist.sidebarHidden.visualize.calendarCreate) { return; }
 
-    var isEdit = blist.datasetUtil.getDisplayType(blist.display.view) == 'Calendar';
+    var isEdit = blist.dataset.type == 'calendar';
 
     var configName = 'visualize.calendarCreate';
     var config =
@@ -89,70 +89,61 @@
 
     config.dataSource = function()
     {
-        if (!isEdit) { return null; }
-
-        return blist.datasetUtil.calendar.convertLegacy(
-            $.extend(true, {}, blist.display.view));
+        return isEdit ? blist.dataset : null;
     };
 
     config.finishCallback = function(sidebarObj, data, $pane, value)
     {
         if (!sidebarObj.baseFormHandler($pane, value)) { return; }
 
-        var view = blist.datasetUtil.baseViewCopy(blist.display.view);
-        view.displayType = 'calendar';
+        var view = $.extend({displayType: 'calendar'},
+            sidebarObj.getFormValues($pane));
+        blist.dataset.update(view);
 
-        $.extend(view, sidebarObj.getFormValues($pane));
-
-        var url = '/views' + (isEdit ? '/' + blist.display.view.id : '') + '.json';
-        $.ajax({url: url, type: isEdit ? 'PUT' : 'POST', dataType: 'json',
-            data: JSON.stringify(view), contentType: 'application/json',
-            error: function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); },
-            success: function(resp)
+        if (!isEdit)
+        {
+            blist.dataset.saveNew(function(newView)
             {
                 sidebarObj.finishProcessing();
-                if (!isEdit)
-                { blist.util.navigation.redirectToView(resp); }
-                else
+                newView.redirectTo();
+            },
+            function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); });
+        }
+        else
+        {
+            blist.dataset.save(function(newView)
+            {
+                sidebarObj.finishProcessing();
+
+                $('.currentViewName').text(newView.name);
+
+                var finishUpdate = function()
                 {
-                    $.syncObjects(blist.display.view, resp);
+                    $(document).trigger(blist.events.VALID_VIEW);
 
-                    $('.currentViewName').text(blist.display.view.name);
+                    sidebarObj.$grid().socrataCalendar().reload();
 
-                    var finishUpdate = function()
-                    {
-                        $(document).trigger(blist.events.VALID_VIEW);
+                    sidebarObj.$dom().socrataAlert(
+                        {message: 'Your calendar has been updated',
+                            overlay: true});
 
-                        blist.dataset.update(resp);
-                        sidebarObj.$grid().socrataCalendar().reload();
+                    sidebarObj.hide();
+                    sidebarObj.addPane(configName);
+                };
 
-                        sidebarObj.$dom().socrataAlert(
-                            {message: 'Your calendar has been updated',
-                                overlay: true});
-
-                        sidebarObj.hide();
-                        sidebarObj.addPane(configName);
-                    };
-
-                    var p = blist.display.view.displayFormat;
-                    _.each(_.compact([p.startDateTableId, p.endDateTableId,
-                        p.titleTableId, p.descriptionTableId]),
-                    function(tId)
-                    {
-                        var col = _.detect(blist.display.view.columns, function(c)
-                            { return c.tableColumnId == tId; });
-                        if (_.include(col.flags || [], 'hidden'))
-                        {
-                            $.socrataServer.addRequest({url: '/views/' +
-                                blist.display.view.id + '/columns/' + col.id +
-                                '.json', type: 'PUT',
-                                data: JSON.stringify({hidden: false})});
-                        }
-                    });
-                    if (!$.socrataServer.runRequests({success: finishUpdate}))
-                    { finishUpdate(); }
-                }
-            }});
+                var p = newView.displayFormat;
+                _.each(_.compact([p.startDateTableId, p.endDateTableId,
+                    p.titleTableId, p.descriptionTableId]),
+                function(tId)
+                {
+                    var col = newView.columnForTCID(tId);
+                    if (col.hidden) { col.show(null, null, true); }
+                });
+                if (!$.socrataServer.runRequests({success: finishUpdate}))
+                { finishUpdate(); }
+            },
+            function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); });
+        }
     };
 
     $.gridSidebar.registerConfig(config, 'Calendar');

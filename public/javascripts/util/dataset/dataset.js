@@ -7,17 +7,15 @@ this.Dataset = Model.extend({
 
         $.extend(this, v);
 
-        this.origDisplayType = this.displayType;
-
-        this.displayType = getDisplayType(this);
-        this.displayClass = this.displayType.capitalize();
+        this.type = getType(this);
+        this.styleClass = this.type.capitalize();
         this.displayName = getDisplayName(this);
 
         this.displayFormat = this.displayFormat || {};
 
         this.originalViewId = this.id;
 
-        Dataset.addProperties(this, Dataset.modules[this.displayType] || {},
+        Dataset.addProperties(this, Dataset.modules[this.type] || {},
             Dataset.prototype);
 
         this._updateColumns();
@@ -32,8 +30,6 @@ this.Dataset = Model.extend({
         this._rowIDLookup = {};
 
         this._aggregatesStale = true;
-
-        this.registerEvent(['start_request', 'finish_request']);
     },
 
     columnForID: function(id)
@@ -44,6 +40,17 @@ this.Dataset = Model.extend({
     columnForTCID: function(tcId)
     {
         return this._columnTCIDLookup[parseInt(tcId)];
+    },
+
+    columnsForType: function(type, includeHidden)
+    {
+        var cols = includeHidden ? this.realColumns : this.visibleColumns;
+        if (!$.isBlank(type))
+        {
+            cols = _.select(cols, function(c)
+                { return _.include($.makeArray(type), c.renderTypeName); });
+        }
+        return cols;
     },
 
     rowForID: function(id)
@@ -70,19 +77,32 @@ this.Dataset = Model.extend({
 
     save: function(successCallback, errorCallback)
     {
+        var ds = this;
+        var dsSaved = function(newDS)
+        {
+            ds.update(newDS);
+            if (_.isFunction(successCallback)) { successCallback(ds); }
+        };
+
         this._makeRequest({url: '/views/' + this.id + '.json',
             type: 'PUT', data: JSON.stringify(cleanViewForSave(this)),
             error: errorCallback,
-            success: successCallback
+            success: dsSaved
         });
     },
 
     saveNew: function(successCallback, errorCallback)
     {
+        var dsCreated = function(newDS)
+        {
+            newDS = new Dataset(newDS);
+            if (_.isFunction(successCallback)) { successCallback(newDS); }
+        };
+
         this._makeRequest({url: '/views.json', type: 'POST',
             data: JSON.stringify(cleanViewForSave(this)),
             error: errorCallback,
-            success: successCallback
+            success: dsCreated
         });
     },
 
@@ -92,23 +112,56 @@ this.Dataset = Model.extend({
         if (!$.isBlank(newDS.columns)) { ds._updateColumns(newDS.columns); }
         delete newDS.columns;
 
-        if (!$.isBlank(newDS.displayFormat))
-        {
-            ds.displayFormat = newDS.displayFormat;
-            if (_.isFunction(ds._convertLegacy)) { ds._convertLegacy(); }
+        _.each(newDS, function(v, k) { if (ds._validKeys[k]) { ds[k] = v; } });
 
-            ds.valid = ds._checkValidity();
-        }
-        delete newDS.displayFormat;
+        ds.type = getType(ds);
+        ds.styleClass = ds.type.capitalize();
+        ds.displayName = getDisplayName(ds);
 
-        // TODO: update other data
+        ds.displayFormat = ds.displayFormat || {};
+
+        if (_.isFunction(ds._convertLegacy)) { ds._convertLegacy(); }
+        ds.valid = ds._checkValidity();
+        ds.url = ds._generateUrl();
     },
 
     cleanCopy: function()
     {
         var ds = this._super();
-        ds.columns = _.reject(ds.columns, function(c) { c.id == -1; });
+        ds.columns = _.reject(ds.columns, function(c) { return c.id == -1; });
         return ds;
+    },
+
+    addColumn: function(column, successCallback, errorCallback, customParams)
+    {
+        if (!$.isBlank((column || {}).parentId))
+        {
+            var par = this.columnForID(column.parentId);
+            if ($.isBlank(par))
+            { throw 'Column ' + column.parentId + ' not found'; }
+            par.addColumn(column, successCallback, errorCallback);
+            return;
+        }
+
+        var ds = this;
+        var columnAdded = function(newCol)
+        {
+            ds.columns.push(newCol);
+            ds._updateColumns();
+            if (_.isFunction(successCallback))
+            { successCallback(ds.columnForID(newCol.id)); }
+        };
+
+        var req = {url: '/views/' + this.id + '/columns.json', type: 'POST',
+                success: columnAdded, error: errorCallback};
+
+        if (!$.isBlank(column))
+        { req.data = JSON.stringify(new Column(column).cleanCopy()); }
+
+        if (!$.isBlank(customParams))
+        { req.params = customParams; }
+
+        this._makeRequest(req);
     },
 
     // Callback may be called multiple times with smaller batches of rows
@@ -301,6 +354,13 @@ this.Dataset = Model.extend({
         this.grants.push(grant);
     },
 
+    updateRating: function(rating, successCallback, errorCallback)
+    {
+        this._makeRequest({url: '/views/' + this.id + '/ratings.json',
+            type: 'POST', data: JSON.stringify(rating),
+            success: successCallback, error: errorCallback});
+    },
+
     remove: function(successCallback, errorCallback)
     {
         this._makeRequest({url: '/datasets/' + this.id + '.json',
@@ -384,7 +444,7 @@ this.Dataset = Model.extend({
                         ds.columns.splice(i, 0, c);
                     }
                     // Update the column object in-place
-                    c._update(nc);
+                    c.update(nc);
                 }
             });
         }
@@ -409,65 +469,15 @@ this.Dataset = Model.extend({
 
     _makeRequest: function(req)
     {
-        var view = this;
-        var finishCallback = function(callback)
-        {
-            return function()
-            {
-                view.trigger('finish_request');
-                if (_.isFunction(callback)) { callback.apply(this, arguments); }
-            };
-        };
-
-        this.trigger('start_request');
-        $.extend(req, {contentType: 'application/json', dataType: 'json',
-                error: finishCallback(req.error),
-                success: finishCallback(req.success)});
-
         if (req.inline)
         {
             req.url = '/views/INLINE/rows.json';
             req.type = 'POST';
             req.data = req.data || JSON.stringify(this.cleanCopy());
-        }
-
-        if (!$.isBlank(req.params))
-        {
-             req.url += (req.url.indexOf('?') >= 0 ? '&' : '?') +
-                $.param(req.params);
-        }
-
-        // We never want the browser cache, because our data can change frequently
-        if (req.type == 'GET') { req.cache = false; }
-
-        var cleanReq = function()
-        {
-            delete req.batch;
             delete req.inline;
-            delete req.pageCache;
-            delete req.params;
-        };
+        }
 
-        if (req.pageCache)
-        {
-            cleanReq();
-            $.Tache.Get(req);
-        }
-        else if (req.batch)
-        {
-            cleanReq();
-            $.socrataServer.addRequest(req);
-        }
-        else
-        {
-            cleanReq();
-            $.ajax(req);
-        }
-    },
-
-    _sendBatch: function(successCallback)
-    {
-        $.socrataServer.runRequests({success: successCallback});
+        this._super(req);
     },
 
     _loadRows: function(start, len, callback, includeMeta)
@@ -573,7 +583,7 @@ this.Dataset = Model.extend({
             views = _.map(views, function(v) { return new Dataset(v); });
 
             var parDS = _.detect(views, function(v)
-                    { return v.displayType == 'blist'; });
+                    { return v.type == 'blist'; });
             if (!$.isBlank(parDS) && parDS.id != ds.id)
             {
                 ds._parent = parDS;
@@ -600,6 +610,7 @@ this.Dataset = Model.extend({
         displayType: true,
         flags: true,
         iconUrl: true,
+        id: true,
         licenseId: true,
         metadata: true,
         name: true,
@@ -619,9 +630,9 @@ var VIZ_TYPES = ['chart', 'annotatedtimeline', 'imagesparkline',
     'areachart', 'barchart', 'columnchart', 'linechart', 'piechart'];
 var MAP_TYPES = ['geomap', 'intensitymap'];
 
-/* The display type string is not always the simplest thing -- a lot of munging
+/* The type string is not always the simplest thing -- a lot of munging
  * goes on in Rails; we roughly duplicate it here */
-function getDisplayType(ds)
+function getType(ds)
 {
     var type = ds.displayType || 'blist';
 
@@ -643,9 +654,9 @@ function getDisplayType(ds)
 
 function getDisplayName(ds)
 {
-    var retType = ds.displayType;
+    var retType = ds.type;
 
-    switch (ds.displayType)
+    switch (ds.type)
     {
         case 'blist':
             retType = 'dataset';

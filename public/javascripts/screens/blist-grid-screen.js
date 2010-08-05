@@ -4,7 +4,7 @@ var commonNS = blist.namespace.fetch('blist.common');
 blist.blistGrid.getCookieHash = function()
 {
     return {name: $.htmlUnescape(blistGridNS.viewName), id: blistGridNS.viewId,
-        path: window.location.pathname, displayType: blist.dataset.displayType};
+        path: window.location.pathname, displayType: blist.dataset.type};
 };
 
 blist.blistGrid.setUpTabs = function ()

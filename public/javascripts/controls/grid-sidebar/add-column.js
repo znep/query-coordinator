@@ -29,7 +29,7 @@
         onlyIf: function(view)
         {
             return blist.dataset.valid && !blist.dataset.temporary &&
-                blist.datasetUtil.getDisplayType(blist.display.view) == 'Blist';
+                blist.dataset.type == 'blist';
         },
         disabledSubtitle: function()
         {
@@ -205,29 +205,21 @@
 
     var convertLocation = function(sidebarObj, column, $pane)
     {
-        $.ajax({url: '/views/' + blist.display.view.id + '/columns.json?' +
-            'method=addressify' +
-            '&deleteOriginalColumns=false' +
-            '&location=' + column.name + '&' +
-            _.map(column.convert, function(v, k) { return k + '=' + v; }).join('&'),
-            type: 'POST', contentType: 'application/json', dataType: 'json',
-            error: function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); },
-            success: function(resp)
+        blist.dataset.addColumn(null,
+            function(newCol)
             {
                 if (!$.isBlank(column.description))
                 {
-                    $.ajax({url: '/views/' + blist.display.view.id +
-                        '/columns/' + resp.id + '.json', type: 'PUT',
-                        contentType: 'application/json', dataType: 'json',
-                        data: JSON.stringify({description: column.description}),
-                        error: function(xhr)
-                        { sidebarObj.genericErrorHandler($pane, xhr); },
-                        success: function(nc) { columnCreated(sidebarObj, nc); }
-                    });
+                    newCol.description = column.description;
+                    newCol.save(function(nc) { columnCreated(sidebarObj, nc); },
+                        function(xhr)
+                        { sidebarObj.genericErrorHandler($pane, xhr); });
                 }
-                else { columnCreated(sidebarObj, resp); }
-            }
-        });
+                else { columnCreated(sidebarObj, newCol); }
+            },
+            function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); },
+            $.extend({method: 'addressify', deleteOriginalColumns: false,
+                location: column.name}, column.convert));
     };
 
 
@@ -248,15 +240,10 @@
             return;
         }
 
-        var url = '/views/' + blist.display.view.id + '/columns';
-        if (!$.isBlank((data || {}).parentId))
-        { url += '/' + data.parentId + '/sub_columns'; }
-        url += '.json';
-        $.ajax({url: url, type: 'POST', dataType: 'json',
-            contentType: 'application/json', data: JSON.stringify(column),
-            error: function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); },
-            success: function(nc) { columnCreated(sidebarObj, nc); }
-        });
+        column.parentId = (data || {}).parentId;
+        blist.dataset.addColumn(column,
+            function(nc) { columnCreated(sidebarObj, nc); },
+            function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); });
     };
 
     $.gridSidebar.registerConfig(config);

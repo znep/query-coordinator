@@ -188,7 +188,7 @@
                         {text: 'Value (color)', name: 'displayFormat.plot.colorValueId',
                             onlyIf: {field: 'displayFormat.type', value: 'esri'},
                             type: 'columnSelect', isTableColumn: true,
-                            columns: {type: ['number', 'money', 'percent'], hidden: isEdit},
+                            columns: {type: ['number', 'money', 'percent'], hidden: isEdit}
                         }
                     ], lineClass: 'colorValueGroup', wizard: 'Choose a column that contains ' +
                             'quantities specifying the color of each point'}

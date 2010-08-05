@@ -88,13 +88,8 @@
 
                 chartObj.settings.view.getAggregates(function()
                 { chartObj.columnsLoaded(); });
-            },
 
-            columnsLoaded: function()
-            {
-                // Implement me if you want to deal with the columns in more
-                // detail -- either munge them into a more useable format, or
-                // initialize parts of the chart
+                return false;
             },
 
             reloadVisualization: function()

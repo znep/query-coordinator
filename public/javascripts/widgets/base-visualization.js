@@ -58,13 +58,12 @@
 
                 if (!currentObj.settings.view.valid) { return; }
 
-                currentObj.getColumns();
-
                 currentObj.settings.view.getRows(0, currentObj.settings.maxRows,
                     function()
                     { currentObj.handleRowsLoaded.apply(currentObj, arguments); });
 
-                currentObj.columnsLoaded();
+                if (currentObj.getColumns())
+                { currentObj.columnsLoaded(); }
             },
 
             $dom: function()
@@ -108,13 +107,12 @@
 
                 vizObj.reloadVisualization();
 
-                vizObj.getColumns();
-
                 vizObj.settings.view.getRows(0, vizObj.settings.maxRows,
                     function()
                     { vizObj.handleRowsLoaded.apply(vizObj, arguments); });
 
-                vizObj.columnsLoaded();
+                if (vizObj.getColumns())
+                { vizObj.columnsLoaded(); }
             },
 
             handleRowsLoaded: function(rows)

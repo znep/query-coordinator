@@ -130,8 +130,8 @@
                     if (!_.isNull(value) &&
                         !_.isUndefined(chartObj.settings
                             .view.displayFormat.pieJoinAngle) &&
-                        !_.isUndefined(cs.data.aggregates['sum']) &&
-                        (value / cs.data.aggregates['sum']) * 100 <
+                        !$.isBlank(cs.data.aggregates.sum) &&
+                        (value / cs.data.aggregates.sum) * 100 <
                             chartObj.settings.view.displayFormat.pieJoinAngle)
                     {
                         chartObj._seriesRemainders =
@@ -192,14 +192,15 @@
                 if (!_.isUndefined(chartObj.chart))
                 {
                     chartObj.chart.xAxis[0].setCategories(
-                        chartObj._xCategories, false);
+                            chartObj._xCategories, false);
                     chartObj.chart.redraw();
                 }
                 if (!_.isUndefined(chartObj.secondChart))
                 {
                     chartObj.secondChart.xAxis[0].setCategories(
-                        chartObj._xCategories, false);
+                            chartObj._xCategories, false);
                     chartObj.secondChart.redraw();
+                    setInitialDetailBounds(chartObj);
                 }
             },
 
@@ -374,11 +375,11 @@
         if (!_.isUndefined(colors)) { chartConfig.colors = colors; }
 
         // If we already have data loaded, use it
-        if (!_.isUndefined(chartObj._seriesCache))
+        if (!_.isEmpty(chartObj._seriesCache))
         { chartConfig.series = chartObj._seriesCache; }
 
         // If we already have categories loaded, use it
-        if (!_.isUndefined(chartObj._xCategories))
+        if (!_.isEmpty(chartObj._xCategories))
         { chartConfig.xAxis.categories = chartObj._xCategories; }
 
         if (isDateTime(chartObj))
@@ -520,6 +521,9 @@
 
     var createDateTimeOverview = function(chartObj)
     {
+        // Caught in middle of refresh?
+        if ($.isBlank(chartObj.chart)) { return; }
+
         var $secondChart = chartObj.$dom().find('.secondaryChart');
         if ($secondChart.length < 1)
         {
@@ -561,22 +565,31 @@
         };
 
         // If we already have data loaded, use it
-        if (!_.isUndefined(chartObj._seriesCache))
+        if (!_.isEmpty(chartObj._seriesCache))
         { config.series = chartObj._seriesCache; }
 
         // If we already have categories loaded, use it
-        if (!_.isUndefined(chartObj._xCategories))
+        if (!_.isEmpty(chartObj._xCategories))
         { config.xAxis.categories = chartObj._xCategories; }
 
         chartObj.secondChart = new Highcharts.Chart(config);
 
-        if (_.isUndefined(chartObj._curMin))
+        setInitialDetailBounds(chartObj);
+    };
+
+    var setInitialDetailBounds = function(chartObj)
+    {
+        if ($.isBlank(chartObj.secondChart)) { return; }
+
+        if ($.isBlank(chartObj._curMin))
         {
             var extremes = chartObj.secondChart.xAxis[0].getExtremes();
             chartObj._curMax = extremes.max;
-            chartObj._curMin = (extremes.max - extremes.min) * 0.7 + extremes.min;
+            chartObj._curMin = ((extremes.max - extremes.min) * 0.7 +
+                extremes.min) || undefined;
         }
-        adjustDetailBounds(chartObj, chartObj._curMin, chartObj._curMax);
+        if (!$.isBlank(chartObj._curMin) && !$.isBlank(chartObj._curMax))
+        { adjustDetailBounds(chartObj, chartObj._curMin, chartObj._curMax); }
     };
 
     var secondChartSelect = function(chartObj, event)
@@ -588,6 +601,8 @@
 
     var adjustDetailBounds = function(chartObj, min, max)
     {
+        if ($.isBlank(chartObj.chart)) { return; }
+
         chartObj._curMin = min;
         chartObj._curMax = max;
 

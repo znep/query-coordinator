@@ -479,6 +479,8 @@
                     view.getAggregates(function()
                     { calculateSegmentSizes(mapObj, aggs) }, aggs);
                 }
+
+                return true;
             }
         }
     }));

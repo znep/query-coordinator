@@ -2,7 +2,9 @@
   <div class="tabContent<%= views_total == 0 ? ' noresult' : '' %>">
     <h2>
       <%= tab_title %>
-      <%- dataset_name_with_type = @current_state['filter_type1'].sub('ALL', 'datasets').sub('_', ' ') -%>
+      <%- dataset_name_with_type =
+        (@current_state['filter_type1'] || t(:blist_name).pluralize).sub('ALL', 'datasets').sub('_', ' ')
+      -%>
       <%- if @current_state['filter'].present? -%>
         <%= "#{dataset_name_with_type} in my Network" if @current_state['filter'][:inNetwork] %>
         <%= "#{@current_state['filter'][:category]} #{dataset_name_with_type}" if @current_state['filter'][:category] %>

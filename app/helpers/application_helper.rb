@@ -491,7 +491,7 @@ HREF
 
     tmpl.gsub!(/\{\{urls\.(\w+)\}\}/) do |match|
       (CurrentDomain.theme(version).urls[$1] || []).map do |url|
-        '<li>' + link_from_theme(url) + '</li>'
+        '<li>' + (link_from_theme(url) || '') + '</li>' # at least fail silently rather than break everything.
       end.join('')
     end
 

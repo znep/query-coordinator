@@ -1,0 +1,146 @@
+// Shared analytics styles
+
+#analyticsDataContainer
+  #analyticsTimeControl
+    float: right
+
+    .currentTimeSlice
+      width: 13em
+      &:hover
+        cursor: pointer
+
+    .sliceDepth
+      width: 8em
+    div.selector.uniform
+      position: relative
+      top: 0.1em
+
+  .chartArea
+    clear: both
+    height: 25em
+    &.noDataAvailable
+      height: 5em
+      .flash
+        display: block
+
+    .flash
+      clear: both
+      display: none
+      text-align: center
+
+  .chartMenu
+    cursor: pointer
+    float: right
+    a.menuButton
+      @include button
+      font-size: 1.2em
+      padding: 0.2em 0 0.4em 0.4em
+
+      .icon
+        float: left
+        padding-left: 0.5em
+        position: relative
+        top: 0.2em
+      .contents
+        float: left
+        margin: 0.1em 0
+
+    .menuDropdown ul.menuColumns li.menuColumn ul.menuEntries li.menuEntry a
+      padding: 0.3em 0.8em
+
+  .loadingSpinner
+    position: relative
+    top: 11em
+
+  .metricsTopContainer
+    display: none
+    min-height: 22em
+    width: 49%
+    &.left
+      float: left
+    &.right
+      float: right
+    &.noDataAvailable
+      .metricsList
+        display: none
+      .flash
+        display: block
+    .flash
+      display: none
+      margin: 0
+
+    .sectionTitle
+      padding-bottom: 0.5em
+
+    .gridList thead tr th
+      background-color: #dedede
+    .description
+      width: 85%
+
+    .value
+      text-align: right
+
+    .item
+      border-bottom: 1px solid #eee
+      line-height: 1.2em
+      padding: 0.4em 0.8em
+      &:last-child
+        border-bottom: 2px solid #eee
+
+      .description
+        @include clip-text
+
+      .subLinksContainer, .subValuesContainer
+        display: none
+      .subLinksContainer
+        padding-left: 2em
+
+      .subItemBox
+        padding-top: 0.3em
+
+  .summaryDisplay
+    margin: 2em 0
+    width: 100%
+
+    .summaryContainer
+      background-color: #fafafa
+      @include border-radius(0.3em)
+      border: 1px solid #dedede
+      float: left
+      margin-left: 13px
+      &:first-child
+        margin-left: 0
+      padding: 0.5em 10px
+
+      .summaryTitle
+        font-size: 1.2em
+        padding-bottom: 0.5em
+
+      .totalValue
+        font-size: 2em
+        font-weight: bold
+
+      .deltaBox
+        @include analytic-icons
+        @include border-radius(0.4em)
+        color: #fff
+        float: right
+        height: 13px
+        padding: 0.5em
+        &.plus
+          background-color: #05c25a
+          border-color: #05c25a
+        &.minus
+          background-color: #b01e2d
+          border-color: #b01e2d
+
+        .icon
+          float: left
+          margin-top: 2px
+
+        .deltaValue
+          font-size: 1.5em
+          font-weight: bold
+          padding-left: 0.5em
+
+

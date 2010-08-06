@@ -292,6 +292,17 @@ javascripts:
   - plugins/jquery.uniform
   - plugins/ajaxupload.3.0
   - screens/dataset-edit-metadata
+- shared-metrics:
+  - plugins/jquery.uniform
+  - plugins/ui.datepicker
+  - plugins/daterangepicker.jquery
+  - plugins/jquery.tablesorter
+  - plugins/highcharts.src
+  - widgets/charts/metric-charts
+  - util/urls
+  - controls/menu
+  - controls/metrics
+
 
 
 
@@ -383,3 +394,6 @@ stylesheets:
   - admin-federation-screen
 - dataset-page:
   - ui.slider
+- analytics-shared:
+  - jquery-ui-1.8.4.custom
+  - ui.daterangepicker

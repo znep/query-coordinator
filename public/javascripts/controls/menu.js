@@ -47,6 +47,12 @@
             itemDirective['a@data-' + key] = 'row.' + key;
         });
 
+        _.each(opts.additionalJsonKeys, function(key)
+        {
+            itemDirective['a@data-' + key] = function(k)
+            { return $.htmlEscape(JSON.stringify(k.item[key])); };
+        });
+
         var renderDirective = {
             '+a.menuButton': 'menuButtonContents',
             'a.menuButton@title': 'menuButtonTitle',
@@ -196,6 +202,7 @@
 
     $.fn.menu.defaults = {
         additionalDataKeys: [],
+        additionalJsonKeys: [],
         contents: [],
         menuButtonClass: 'menuButton',
         menuButtonContents: 'Menu',

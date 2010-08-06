@@ -307,3 +307,41 @@
   &.alignRight #{$subselector}
     background-position: 4px -163px
     width: 20px
+
+// icons/menu_icons.png
+@mixin admin-icons($subselector: '.icon')
+  #{$subselector}
+    @include text-hiding
+    @include ie6-fix
+    background-image: url(/stylesheets/images/interface/admin_icons.png)
+    height: 13px
+    width: 13px
+
+  &.home #{$subselector}
+    background-position: 0 0
+  &.datasets #{$subselector}
+    background-position: 0 -13px
+  &.comments #{$subselector}
+    background-position: 0 -26px
+  &.analytics #{$subselector}
+    background-position: 0 -39px
+  &.appearance #{$subselector}
+    background-position: 0 -52px
+  &.users #{$subselector}
+    background-position: 0 -65px
+  &.billing #{$subselector}
+    background-position: 0 -78px
+
+// icons/analytic_icons.png
+@mixin analytic-icons($subselector: '.icon')
+  #{$subselector}
+    @include text-hiding
+    @include ie6-fix
+    background-image: url(/stylesheets/images/icons/analytic_icons.png)
+    height: 9px
+    width: 9px
+
+  &.plus #{$subselector}
+    background-position: 0 0
+  &.minus #{$subselector}
+    background-position: 0 -9px

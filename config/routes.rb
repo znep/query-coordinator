@@ -113,6 +113,11 @@ ActionController::Routing::Routes.draw do |map|
       :conditions => { :method => :put }, :format => 'data'
   end
 
+  map.with_options :controller => 'administration' do |admin|
+    admin.connect '/admin_new/analytics',         :action => 'analytics'
+    admin.connect '/admin_new/users',             :action => 'users'
+  end
+
   map.resources :contacts,
     :collection => {
       :detail => :get,

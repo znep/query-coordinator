@@ -272,7 +272,24 @@
             // Time line
             configTimeline,
             dataTimeline,
-            basicAdv(blist.dataset.chart.types.timeline, [legendPos])
+            basicAdv(blist.dataset.chart.types.timeline, [legendPos]),
+
+
+            // Tree Map
+            { title: 'Configuration', name: 'treemapBasic',
+            onlyIf: onlyIfForChart(blist.dataset.chart.types.treemap, true),
+            fields: [
+                {text: 'Names', name: 'displayFormat.fixedColumns.0',
+                    type: 'columnSelect', required: true, isTableColumn: true,
+                    columns: {type: blist.dataset.chart.textualTypes, hidden: isEdit},
+                    wizard: 'Select a column that contains the names'
+                },
+                {text: 'Values', name: 'displayFormat.valueColumns.0.tableColumnId',
+                    type: 'columnSelect', required: true, isTableColumn: true,
+                    columns: {type: blist.dataset.chart.numericTypes, hidden: isEdit},
+                    wizard: 'Select a column that contains the values'
+                }
+            ] },
 
         ],
         finishBlock: {

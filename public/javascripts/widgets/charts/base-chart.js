@@ -19,7 +19,8 @@
             'column': 'highcharts',
             'line': 'highcharts',
             'pie': 'highcharts',
-            'timeline': 'highcharts'
+            'timeline': 'highcharts',
+            'treemap': 'jit'
         }
     };
 

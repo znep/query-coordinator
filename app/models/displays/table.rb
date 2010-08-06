@@ -22,7 +22,6 @@ class Displays::Table < Displays::Base
 
   def render_inline_setup_js(target_dom_id, context)
     js = super
-    js << 'blist.display.isGrid = true;'
     # When our JS is bundled, tinymce can't figure out where to load components
     # from; so we have to tell it before it loads up
     js << "window.tinyMCEPreInit = {base: '/javascripts/tiny_mce', suffix: '', query: ''};"

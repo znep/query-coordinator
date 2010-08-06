@@ -11,46 +11,47 @@ var legacyTypes =
     piechart: 'pie'
 };
 
-Dataset.textualTypes = ['text', 'drop_down_list'];
-Dataset.numericTypes = ['number', 'percent', 'money'];
-Dataset.dateTypes = ['calendar_date', 'date'];
+Dataset.chart = {};
+Dataset.chart.textualTypes = ['text', 'drop_down_list'];
+Dataset.chart.numericTypes = ['number', 'percent', 'money'];
+Dataset.chart.dateTypes = ['calendar_date', 'date'];
 
-Dataset.chartTypes = {
+Dataset.chart.types = {
     area: {value: 'area', text: 'Area Chart',
-        requiredColumns: [Dataset.textualTypes, Dataset.numericTypes]},
+        requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes]},
     bar: {value: 'bar', text: 'Bar Chart',
-        requiredColumns: [Dataset.textualTypes, Dataset.numericTypes]},
+        requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes]},
     column: {value: 'column', text: 'Column Chart',
-        requiredColumns: [Dataset.textualTypes, Dataset.numericTypes]},
+        requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes]},
     donut: {value: 'donut', text: 'Donut Chart',
-        requiredColumns: [Dataset.textualTypes, Dataset.numericTypes]},
+        requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes]},
     line: {value: 'line', text: 'Line Chart',
-        requiredColumns: [Dataset.numericTypes]},
+        requiredColumns: [Dataset.chart.numericTypes]},
     pie: {value: 'pie', text: 'Pie Chart',
-        requiredColumns: [Dataset.textualTypes, Dataset.numericTypes]},
+        requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes]},
     timeline: {value: 'timeline', text: 'Time Line',
-        requiredColumns: [Dataset.dateTypes, Dataset.numericTypes]}
+        requiredColumns: [Dataset.chart.dateTypes, Dataset.chart.numericTypes]}
+};
+
+Dataset.chart.hasRequiredColumns = function(cols, reqCols, includeHidden)
+{
+    cols = cols.slice();
+    return _.all(reqCols, function(rc)
+    {
+        var col = _.detect(cols, function(c)
+        {
+            return _.include(rc, c.renderTypeName) && (includeHidden ||
+                !c.hidden);
+        });
+
+        if ($.isBlank(col)) { return false; }
+        cols = _.without(cols, col);
+        return true;
+    });
 };
 
 Dataset.modules['visualization'] =
 {
-    hasRequiredColumns: function(cols, reqCols, includeHidden)
-    {
-        cols = cols.slice();
-        return _.all(reqCols, function(rc)
-        {
-            var col = _.detect(cols, function(c)
-            {
-                return _.include(rc, c.renderTypeName) && (includeHidden ||
-                    !c.hidden);
-            });
-
-            if ($.isBlank(col)) { return false; }
-            cols = _.without(cols, col);
-            return true;
-        });
-    },
-
     _checkValidity: function()
     {
         if (!this._super()) { return false; }
@@ -63,8 +64,8 @@ Dataset.modules['visualization'] =
         _.each(this.displayFormat.valueColumns || [], function(vc)
         { foundCols.push(view.columnForTCID(vc.tableColumnId)); });
 
-        return this.hasRequiredColumns(_.compact(foundCols),
-            Dataset.chartTypes[this.displayFormat.chartType].requiredColumns);
+        return Dataset.chart.hasRequiredColumns(_.compact(foundCols),
+            Dataset.chart.types[this.displayFormat.chartType].requiredColumns);
     },
 
     _convertLegacy: function()
@@ -99,7 +100,7 @@ Dataset.modules['visualization'] =
             {
                 var firstCol = view.columnForTCID(
                     view.displayFormat.dataColumns[0]);
-                if (!_.include(blist.datasetUtil.chart.numericTypes,
+                if (!_.include(Dataset.chart.numericTypes,
                     firstCol.renderTypeName))
                 {
                     view.displayFormat.fixedColumns =
@@ -117,7 +118,7 @@ Dataset.modules['visualization'] =
                 var c = view.columnForTCID(tcid);
                 if ($.isBlank(c)) { continue; }
 
-                if (_.include(Dataset.numericTypes, c.renderTypeName))
+                if (_.include(Dataset.chart.numericTypes, c.renderTypeName))
                 {
                     valueCols.push(vcVal);
                     vcVal = {tableColumnId: tcid};

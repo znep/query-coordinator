@@ -359,39 +359,6 @@
                 }
             },
 
-            updateVisibleColumns: function(columns, callback)
-            {
-                var datasetObj = this;
-                var view = datasetObj.settings._model.meta().view;
-
-                if (_.include(view.rights, 'update_view'))
-                {
-                    var serverCols = [];
-                    $.each(columns, function(i, colId)
-                    {
-                        var col = datasetObj.settings._model.getColumnByID(colId);
-                        if (col)
-                        {
-                            $.socrataServer.addRequest(
-                                {url: '/views/' + view.id + '/columns/' +
-                                    col.id + '.json', type: 'PUT',
-                                data: JSON.stringify({'hidden': false})});
-                            serverCols.push({id: col.id, name: col.name});
-                        }
-                    });
-
-                    $.socrataServer.addRequest(
-                        { url: '/views/' + view.id + '.json', type: 'PUT',
-                            data: JSON.stringify({columns: serverCols})});
-
-                    $.socrataServer.runRequests({complete: function()
-                    {
-                        datasetObj.settings._model.reloadView();
-                        if (_.isFunction(callback)) { callback(); }
-                    }});
-                }
-            },
-
             groupAggregate: function(grouped, aggregates, doSave, newName,
                 drillDown, successCallback, errorCallback, skipRequest)
             {

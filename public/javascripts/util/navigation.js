@@ -1,5 +1,7 @@
 var navigationUtilNS = blist.namespace.fetch('blist.util.navigation');
 
+// TODO: This whole file should be deprecated once the old dataset page and
+// blists list is gone
 blist.util.navigation.getViewUrl = function (viewId, args)
 {
     // This is the simple URL; it will automatically be redirected to the
@@ -23,14 +25,4 @@ blist.util.navigation.redirectToView = function (viewOrId, args)
 blist.util.navigation.redirectToNewView = function ()
 {
     window.location = '/datasets/new';
-};
-
-blist.util.navigation.urlToViewId = function(url)
-{
-    var matches = url.match(/(\/[a-zA-Z0-9_\-]+){1,2}\/(\w{4}-\w{4})/);
-    if (matches && matches.length > 2)
-    {
-        return matches[2];
-    }
-    return null;
 };

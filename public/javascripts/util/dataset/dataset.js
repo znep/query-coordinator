@@ -24,6 +24,8 @@ this.Dataset = Model.extend({
     {
         this._super();
 
+        this.registerEvent(['columns_changed']);
+
         $.extend(this, v);
 
         this.type = getType(this);
@@ -72,6 +74,34 @@ this.Dataset = Model.extend({
         return cols;
     },
 
+    setVisibleColumns: function(visColIds, callback)
+    {
+        var ds = this;
+
+        if (!ds.hasRight('update_view'))
+        { throw 'No permissions to update columns'; }
+
+        var vizCols = [];
+        _.each(visColIds, function(colId)
+        {
+            var col = ds.columnForID(colId);
+            if (!$.isBlank(col))
+            {
+                col.show(null, null, true);
+                vizCols.push({id: col.id, name: col.name});
+            }
+        });
+
+        this._makeRequest({url: '/views/' + ds.id + '.json', type: 'PUT',
+            data: JSON.stringify({columns: vizCols}), batch: true});
+
+        ds._sendBatch(function()
+        {
+            ds._reload();
+            if (_.isFunction(callback)) { callback(); }
+        });
+    },
+
     rowForID: function(id)
     {
         return this._rowIDLookup[parseInt(id)];
@@ -90,6 +120,11 @@ this.Dataset = Model.extend({
         return _.include(this.rights, right);
     },
 
+    isGrid: function()
+    {
+        return _.include(['blist', 'filter', 'grouped'], this.type);
+    },
+
     // TODO: Can we get rid of this eventually?
     markTemp: function(isTemp)
     {
@@ -101,7 +136,7 @@ this.Dataset = Model.extend({
         var ds = this;
         var dsSaved = function(newDS)
         {
-            ds.update(newDS);
+            ds.update(newDS, true);
             if (_.isFunction(successCallback)) { successCallback(ds); }
         };
 
@@ -127,10 +162,20 @@ this.Dataset = Model.extend({
         });
     },
 
-    update: function(newDS)
+    update: function(newDS, forceFull, updateColOrder)
     {
         var ds = this;
-        if (!$.isBlank(newDS.columns)) { ds._updateColumns(newDS.columns); }
+
+        if (forceFull)
+        {
+            // If we are updating the entire dataset, then clean out all the
+            // valid keys; then the next lines will copy all the new ones over
+            _.each(ds._validKeys, function(v, k)
+            { if (k != 'columns') { delete ds[k]; } });
+        }
+
+        if (!$.isBlank(newDS.columns))
+        { ds._updateColumns(newDS.columns, updateColOrder); }
         delete newDS.columns;
 
         _.each(newDS, function(v, k) { if (ds._validKeys[k]) { ds[k] = v; } });
@@ -469,10 +514,12 @@ this.Dataset = Model.extend({
             success: successCallback, error: errorCallback});
     },
 
-    registerOpening: function()
+    registerOpening: function(accessType, referrer)
     {
-        this._makeRequest({url: '/views/' + this.id + '.json',
-            params: {method: 'opening'}});
+        var params = {method: 'opening'};
+        if (!$.isBlank(accessType)) { params.accessType = accessType; }
+        if (!$.isBlank(referrer)) { params.referrer = referrer; }
+        this._makeRequest({url: '/views/' + this.id + '.json', params: params});
     },
 
     getComments: function(callback)
@@ -617,7 +664,7 @@ this.Dataset = Model.extend({
                         ds.columns.splice(i, 0, c);
                     }
                     // Update the column object in-place
-                    c.update(nc);
+                    c.update(nc, true);
                 }
             });
         }
@@ -638,6 +685,8 @@ this.Dataset = Model.extend({
             .reject(function(c) { return c.hidden; })
             .sortBy(function(c) { return c.position; })
             .value();
+
+        this.trigger('columns_changed');
     },
 
     _makeRequest: function(req)
@@ -647,8 +696,8 @@ this.Dataset = Model.extend({
             req.url = '/views/INLINE/rows.json';
             req.type = 'POST';
             req.data = req.data || JSON.stringify(this.cleanCopy());
-            delete req.inline;
         }
+        delete req.inline;
 
         this._super(req);
     },
@@ -659,9 +708,9 @@ this.Dataset = Model.extend({
         this._rowIDLookup = {};
     },
 
-    _loadRows: function(start, len, callback, includeMeta)
+    _loadRows: function(start, len, callback, includeMeta, fullLoad)
     {
-        var view = this;
+        var ds = this;
         var params = {method: 'getByIds', start: start, 'length': len};
         if (includeMeta) { params.meta = true; }
 
@@ -669,16 +718,22 @@ this.Dataset = Model.extend({
         {
             if (!$.isBlank(result.meta))
             {
-                view.totalRows = result.meta.totalRows;
-                view._updateColumns(result.meta.view.columns, true);
+                ds.totalRows = result.meta.totalRows;
+                ds.update(result.meta.view, true, true);
             }
 
-            var rows = view._addRows(result.data.data || result.data, start);
+            var rows = ds._addRows(result.data.data || result.data, start);
 
             if (_.isFunction(callback)) { callback(rows); }
         };
 
-        view._makeRequest({success: rowsLoaded, params: params, inline: true});
+        var req = {success: rowsLoaded, params: params, inline: !fullLoad};
+        if (fullLoad)
+        {
+            req.url = '/views/' + ds.id + '/rows.json';
+            req.type = 'GET';
+        }
+        ds._makeRequest(req);
     },
 
     _addRows: function(newRows, start)
@@ -734,6 +789,13 @@ this.Dataset = Model.extend({
         });
 
         return adjRows;
+    },
+
+    _reload: function()
+    {
+        var ds = this;
+        ds._invalidateRows();
+        ds._loadRows(0, 1, null, true, true);
     },
 
     _generateUrl: function()

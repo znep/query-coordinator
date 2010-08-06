@@ -20,7 +20,8 @@
                 directive: {
                     'li.columnItem': {
                         'column<-': {
-                            'input@checked': 'column.visible',
+                            'input@checked': function(a)
+                            { return a.item.hidden ? '' : 'checked'; },
                             'input@data-columnId': 'column.id',
                             'input@id': 'showHide_#{column.id}',
                             'label .name': 'column.name!',
@@ -55,7 +56,7 @@
     };
     updateColumns();
 
-    $(document).bind(blist.events.COLUMNS_CHANGED, function()
+    blist.dataset.bind('columns_changed', function()
     {
         updateColumns();
         $('#gridSidebar').gridSidebar().refresh(configName);
@@ -74,7 +75,7 @@
         $pane.find('.columnItem :input:checked').each(function()
         { cols.push($(this).attr('data-columnId')); });
 
-        sidebarObj.$grid().datasetGrid().updateVisibleColumns(cols, function()
+        blist.dataset.setVisibleColumns(cols, function()
         {
             sidebarObj.finishProcessing();
             sidebarObj.hide();

@@ -66,7 +66,7 @@ $(function()
     var $dataGrid = blist.$display;
     if ($dataGrid.length > 0)
     {
-        if (blist.display.isGrid)
+        if (blist.dataset.isGrid())
         {
             $dataGrid
                 .bind('columns_updated', function()
@@ -113,8 +113,6 @@ $(function()
                 });
             }
         }
-        else if (blist.display.invokeVisualization)
-        { $dataGrid.visualization(); }
     }
 
     // sidebar and sidebar tabs
@@ -290,7 +288,7 @@ $(function()
             $a.text($a.data('saveText'));
             $a.removeClass('disabled');
 
-            if (blist.display.isGrid)
+            if (_.include(['blist', 'filter', 'grouped'], blist.dataset.type))
             { $dataGrid.datasetGrid().clearTempView(null, true); }
         });
     });

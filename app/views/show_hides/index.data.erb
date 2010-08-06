@@ -99,8 +99,7 @@
 
         cols.sort(function(s1, s2) { return s1.position - s2.position; });
 
-        $("#dataGrid").datasetGrid().updateVisibleColumns($.map(cols,
-            function(c) { return c.id; }));
+        blist.dataset.setVisibleColumns(_.pluck(cols, 'id'));
         $("#modal").jqmHide();
     });
   };

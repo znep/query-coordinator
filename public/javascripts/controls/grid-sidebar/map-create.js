@@ -334,15 +334,19 @@
                 };
 
                 var p = newView.displayFormat.plot;
-                _.each(_.compact([p.locationId, p.titleId, p.descriptionId,
-                    p.quantityId, p.colorValueId, p.sizeValueId]),
-                function(tId)
-                {
-                    var col = newView.columnForTCID(tId);
-                    if (col.hidden) { col.show(null, null, true); }
-                });
-                if (!$.socrataServer.runRequests({success: finishUpdate}))
-                { finishUpdate(); }
+                var colIds = _([p.locationId, p.titleId, p.descriptionId,
+                    p.quantityId, p.colorValueId, p.sizeValueId]).chain()
+                    .compact()
+                    .map(function(tcId)
+                    {
+                        var col = newView.columnForTCID(tcId);
+                        return col.hidden ? col.id : null;
+                    })
+                    .compact()
+                    .value();
+                if (colIds.length > 0)
+                { newView.setVisibleColumns(colIds, finishUpdate); }
+                else { finishUpdate(); }
             });
         }
     };

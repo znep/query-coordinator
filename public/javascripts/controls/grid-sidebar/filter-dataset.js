@@ -113,9 +113,8 @@
         $editor.each(function() { $(this).blistEditor().finishEdit(); });
     };
 
-    var isEdit = _.include(['Filter', 'Grouped'],
-        blist.datasetUtil.getDisplayType(blist.display.view)) &&
-        _.include(blist.display.view.rights, 'update_view');
+    var isEdit = _.include(['filter', 'grouped'], blist.dataset.type) &&
+        blist.dataset.hasRight('update_view');
 
     var configName = 'filter.filterDataset';
     var config = {

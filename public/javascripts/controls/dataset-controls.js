@@ -119,8 +119,7 @@ blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
                     if (_.isFunction(dialogObj._saveCallback))
                     { preventRedirect = dialogObj._saveCallback(view); }
 
-                    if (!preventRedirect)
-                    { blist.util.navigation.redirectToView(view); }
+                    if (!preventRedirect) { view.redirectTo(); }
                 },
                 // Error
                 function(xhr)

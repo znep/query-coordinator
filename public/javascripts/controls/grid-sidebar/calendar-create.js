@@ -130,15 +130,19 @@
                 };
 
                 var p = newView.displayFormat;
-                _.each(_.compact([p.startDateTableId, p.endDateTableId,
-                    p.titleTableId, p.descriptionTableId]),
-                function(tId)
-                {
-                    var col = newView.columnForTCID(tId);
-                    if (col.hidden) { col.show(null, null, true); }
-                });
-                if (!$.socrataServer.runRequests({success: finishUpdate}))
-                { finishUpdate(); }
+                var colIds = _([p.startDateTableId, p.endDateTableId,
+                    p.titleTableId, p.descriptionTableId]).chain()
+                    .compact()
+                    .map(function(tcId)
+                    {
+                        var col = newView.columnForTCID(tcId);
+                        return col.hidden ? col.id : null;
+                    })
+                    .compact()
+                    .value();
+                if (colIds.length > 0)
+                { newView.setVisibleColumns(colIds, finishUpdate); }
+                else { finishUpdate(); }
             },
             function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); });
         }

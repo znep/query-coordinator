@@ -100,7 +100,7 @@
                 $.urlParam($dataForm.attr('action'), 'successRedirect',
                   escape($form.find('#form_successRedirect').val())));
               $('#infoPane .singleInfoSharing').infoPaneSharing()
-                  .refresh(blist.display.view.id);
+                  .refresh(blist.dataset.id);
               <%- else -%>
               blist.util.navigation.redirectToView(data.newViewId);
               <%- end -%>

@@ -32,13 +32,12 @@
         {
             var $li = $.renderTemplate('viewItemContainer', v, {
                 '.viewIcon@title': function(a)
-                { return blist.datasetUtil.getTypeName(a.context).capitalize(); },
+                { return a.context.displayName.capitalize(); },
                 '.viewIcon@class+': function(a)
-                { return 'type' + blist.datasetUtil.getDisplayType(a.context); },
+                { return 'type' + a.context.styleClass; },
                 '.name': 'name',
                 '.name@title': 'name',
-                '.name@href': function(a)
-                { return $.generateViewUrl(a.context); },
+                '.name@href': 'url',
                 '.authorLine .date': function(a)
                 {
                     return blist.util.humaneDate.getFromDate(
@@ -252,8 +251,7 @@
                 {
                     views['filter'] = _.select(v, function(v)
                     {
-                        return _.include(['Filter', 'Grouped'],
-                            blist.datasetUtil.getDisplayType(v));
+                        return _.include(['filter', 'grouped'], v.type);
                     });
 
                     if (!$.isBlank($sections['filter']))
@@ -262,8 +260,8 @@
 
                     views['viz'] = _.select(v, function(v)
                     {
-                        return _.include(['Visualization', 'Calendar', 'Map'],
-                            blist.datasetUtil.getDisplayType(v));
+                        return _.include(['visualization', 'calendar', 'map'],
+                            v.type);
                     });
 
                     if (!$.isBlank($sections['viz']))
@@ -271,7 +269,7 @@
 
 
                     views['form'] = _.select(v, function(v)
-                    { return 'Form' == blist.datasetUtil.getDisplayType(v); });
+                    { return 'form' == v.type; });
 
                     if (!$.isBlank($sections['form']))
                     { setupSection(views['form'], $sections['form']); }

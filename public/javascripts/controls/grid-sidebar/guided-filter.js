@@ -27,7 +27,7 @@
 
     config.sections = _.map(blist.display.view.metadata.facets, function(facet)
     {
-        var column = blist.datasetUtil.columnForTCID(blist.display.view, facet.tableColumnId);
+        var column = blist.dataset.columnForTCID(facet.tableColumnId);
         var sectionConfig = {
             title: column.name,
             name: 'facet_' + column.name,
@@ -229,7 +229,7 @@
 
                     _.each(facets, function(facet)
                     {
-                        var column = blist.datasetUtil.columnForTCID(blist.display.view, facet.tableColumnId);
+                        var column = blist.dataset.columnForTCID(facet.tableColumnId);
                         var fields = findSectionForColumn(column).fields;
                         var field = fields[0];
 

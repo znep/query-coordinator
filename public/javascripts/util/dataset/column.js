@@ -42,7 +42,7 @@ this.Column = Model.extend({
         var col = this;
         var colSaved = function(newCol)
         {
-            col.update(newCol);
+            col.update(newCol, true);
             if (_.isFunction(successCallback)) { successCallback(col); }
         };
 
@@ -54,14 +54,30 @@ this.Column = Model.extend({
 
     show: function(successCallback, errorCallback, isBatch)
     {
+        var col = this;
+
+        var columnShown = function()
+        {
+            col.hidden = false;
+            col.flags = _.without(col.flags || [], 'hidden');
+            if (!isBatch) { col.view.trigger('columns_changed'); }
+        };
+
         this._makeRequest({url: '/views/' + this.view.id + '/columns/' + this.id +
             '.json', type: 'PUT', data: JSON.stringify({hidden: false}),
-            batch: isBatch, success: successCallback, error: errorCallback});
+            batch: isBatch, success: columnShown, error: errorCallback});
     },
 
-    update: function(newCol)
+    update: function(newCol, forceFull)
     {
         var col = this;
+        if (forceFull)
+        {
+            // If we are updating the entire column, then clean out all the
+            // valid keys; then the next lines will copy all the new ones over
+            _.each(col._validKeys, function(v, k) { delete col[k]; });
+        }
+
         this._updateChildren(newCol.childColumns);
         _.each(newCol, function(v, k)
         { if (col._validKeys[k]) { col[k] = v; } });
@@ -73,7 +89,7 @@ this.Column = Model.extend({
         var col = this;
         var columnConverted = function(newCol)
         {
-            col.update(newCol);
+            col.update(newCol, true);
             col.view._invalidateRows();
             if (_.isFunction(successCallback)) { successCallback(col); }
         };

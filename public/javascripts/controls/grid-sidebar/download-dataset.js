@@ -7,7 +7,9 @@
         title: 'Download',
         subtitle: 'Download a copy of this dataset in a static format',
         onlyIf: function()
-        { return blist.display.isGrid && blist.dataset.valid; },
+        {
+            return blist.dataset.isGrid() && blist.dataset.valid;
+        },
         disabledSubtitle: function()
         {
             return !blist.dataset.valid ? 'This view must be valid' :

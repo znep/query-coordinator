@@ -377,8 +377,6 @@ $(function ()
         $('#gridSidebar').gridSidebar({dataGrid: $('#dataGrid')[0],
             modalHiddenSelector: '#lensContainer .headerBar, #infoPane'});
     }
-    else if (blist.display.invokeVisualization)
-    { $('#dataGrid').visualization(); }
 
     $('.viewErrorContainer .removeViewLink').click(function(event)
     {
@@ -725,8 +723,7 @@ $(function ()
         requestDataCallback: function($form, name)
         {
             // Get the view with columns
-            var model = $('#dataGrid').blistModel();
-            var view = blist.datasetUtil.cleanViewForPost(model.getViewCopy(), true);
+            var view = blist.dataset.cleanCopy();
             view.name = name;
             return JSON.stringify(view);
         },

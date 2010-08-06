@@ -110,7 +110,7 @@ blist.blistGrid.toggleFormatMenu = function ()
     blist.common.forceWindowResize();
 };
 
-blist.blistGrid.columnsChangedHandler = function (event, columnIds)
+blist.blistGrid.columnsChangedHandler = function ()
 {
     // This is a heavy-handed approach to updating column totals or other
     //  parts of the menu that will change with the columns; but until we
@@ -200,7 +200,7 @@ blist.blistGrid.clearTempViewTab = function ()
     $('.tabList .origView').addClass('active').removeClass('origView');
     $('body').removeClass('unsavedView groupedView');
     $('#infoPane').show();
-    $(document).trigger(blist.events.COLUMNS_CHANGED);
+    blist.dataset.trigger('columns_changed');
 };
 
 blist.blistGrid.setTempViewTab = function ()
@@ -408,8 +408,7 @@ $(function ()
         numVisible: 3
     });
 
-    $(document).bind(blist.events.COLUMNS_CHANGED,
-        blistGridNS.columnsChangedHandler);
+    blist.dataset.bind('columns_changed', blistGridNS.columnsChangedHandler);
 
     blist.util.sizing.cachedInfoPaneHeight =
         $("#infoPane .header").height() +

@@ -34,10 +34,8 @@ blist.datasetPage.setTempView = function()
     datasetPageNS.sidebar.updateEnabledSubPanes();
 };
 
-blist.datasetPage.updateValidView = function(view)
+blist.datasetPage.updateValidView = function()
 {
-    // Pretty sure this isn't needed with new Dataset...
-    //blist.display.isInvalid = false;
     $('.invalidView').removeClass('invalidView');
     datasetPageNS.sidebar.updateEnabledSubPanes();
 };
@@ -148,7 +146,7 @@ $(function()
         { $a.closest('li').hide(); }
     });
 
-    $(document).bind(blist.events.COLUMNS_CHANGED,
+    blist.dataset.bind('columns_changed',
         function() { datasetPageNS.sidebar.updateEnabledSubPanes(); });
 
     // toolbar area
@@ -268,8 +266,7 @@ $(function()
 
 
     // Unsaved view stuff
-    $(document).bind(blist.events.VALID_VIEW,
-        function() { datasetPageNS.updateValidView(); });
+    blist.dataset.bind('valid', function() { datasetPageNS.updateValidView(); });
 
     blist.datasetControls.unsavedViewPrompt();
 

@@ -117,8 +117,6 @@
 
                 var finishUpdate = function()
                 {
-                    $(document).trigger(blist.events.VALID_VIEW);
-
                     sidebarObj.$grid().socrataCalendar().reload();
 
                     sidebarObj.$dom().socrataAlert(

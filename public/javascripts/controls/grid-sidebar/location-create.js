@@ -120,9 +120,6 @@
 
     var columnCreated = function(sidebarObj, newCol)
     {
-        sidebarObj.$grid().blistModel().updateColumn(newCol);
-        $(document).trigger(blist.events.COLUMNS_CHANGED, [newCol.id]);
-        $.Tache.DeleteAll();
         sidebarObj.finishProcessing();
         sidebarObj.hide();
     };

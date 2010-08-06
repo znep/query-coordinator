@@ -109,7 +109,10 @@
                 { window.location = blist.util.navigation.getViewUrl(s[2]); }
                 // Reload menu for More Views under FVM
                 else
-                { $(document).trigger(blist.events.COLUMNS_CHANGED); }
+                {
+                    if (!$.isBlank(blist.dataset))
+                    { blist.dataset.trigger('columns_changed'); }
+                }
             }
         });
     };

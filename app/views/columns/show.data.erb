@@ -268,29 +268,17 @@ blist.common.modalReady = function()
 
       updateColumn();
 
-      $.ajax({
-        type: "PUT",
-        url: '<%= @column.href(@view.id)%>',
-        cache: false,
-        data: {
-          json: JSON.stringify(column),
-          authenticity_token: "<%= form_authenticity_token %>"
-          },
-        dataType: 'json',
-        error: function(request) {
-          $("#columnPropertiesDialog .error")
-            .html(JSON.parse(request.responseText).error).show();
-        },
-        success: function(responseData) {
-            var $grid = $("#dataGrid");
-            if ($grid.length != 0)
-            {
-                $grid.blistModel().updateColumn(responseData);
-            }
-            $(document).trigger(blist.events.COLUMNS_CHANGED, [<%= @column.id %>]);
+      var curCol = blist.dataset.columnForID(column.id);
+      // TODO: handle nested columns
+      curCol.update(column);
+      curCol.save(
+        function(responseData) {
             $("#modal .jqmClose").click();
-        }
-      });
+        },
+        function(request) {
+          $("#columnPropertiesDialog .error")
+            .html(JSON.parse(request.responseText).message).show();
+        });
   };
 
   var converting = false;
@@ -304,23 +292,16 @@ blist.common.modalReady = function()
 
     var type = $(this).attr("id");
 
-    $.ajax({
-      type: "POST",
-      url: '<%= @column.convert_href(@view.id) %>&type=' + $(this).attr('id'),
-      cache: false,
-      dataType: 'json',
-      contentType: "application/json",
-      error: function(request) {
+    var curCol = blist.dataset.columnForID(column.id);
+    // TODO: handle nested columns
+    curCol.convert(type,
+      function (responseData) {
+        $("#modal .jqmClose").click();
+      },
+      function(request) {
         $("#columnPropertiesDialog .error")
           .html(JSON.parse(request.responseText).message).show();
-      },
-      success: function (responseData) {
-        $("#modal .jqmClose").click();
-        $("#dataGrid").blistModel()
-          .convertColumn(<%= @column.id %>, responseData);
-        $(document).trigger(blist.events.COLUMNS_CHANGED, [<%= @column.id %>]);
-      }
-    });
+      });
   });
 
   $("#columnPropertiesDialog #converter").click(function(e) {

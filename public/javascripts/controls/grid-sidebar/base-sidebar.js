@@ -472,7 +472,7 @@
                     { sidebarObj._$currentWizard.socrataTip().quickShow(); }
                 });
 
-                $(document).bind(blist.events.COLUMNS_CHANGED, function()
+                blist.dataset.bind('columns_changed', function()
                 { updateColumnSelects(sidebarObj); });
             },
 
@@ -2138,8 +2138,7 @@
                 }
                 else if (isFunc)
                 {
-                    $(document).bind(blist.events.COLUMNS_CHANGED,
-                        showHideSection);
+                    blist.dataset.bind('columns_changed', showHideSection);
                 }
             });
 

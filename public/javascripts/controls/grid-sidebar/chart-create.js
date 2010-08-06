@@ -374,8 +374,6 @@
 
                     _.defer(function()
                     {
-                        $(document).trigger(blist.events.VALID_VIEW);
-
                         blist.$display.socrataChart().reload();
                     });
                 };

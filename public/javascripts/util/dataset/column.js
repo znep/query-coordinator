@@ -43,6 +43,7 @@ this.Column = Model.extend({
         var colSaved = function(newCol)
         {
             col.update(newCol, true);
+            col.view.trigger('columns_changed');
             if (_.isFunction(successCallback)) { successCallback(col); }
         };
 
@@ -91,6 +92,7 @@ this.Column = Model.extend({
         {
             col.update(newCol, true);
             col.view._invalidateRows();
+            col.view.trigger('columns_changed');
             if (_.isFunction(successCallback)) { successCallback(col); }
         };
 
@@ -156,6 +158,8 @@ this.Column = Model.extend({
             .reject(function(c) { return c.hidden; })
             .sortBy(function(c) { return c.position; })
             .value();
+
+        this.view.trigger('columns_changed');
     },
 
     _validKeys: {

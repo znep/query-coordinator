@@ -24,7 +24,7 @@ this.Dataset = Model.extend({
     {
         this._super();
 
-        this.registerEvent(['columns_changed']);
+        this.registerEvent(['columns_changed', 'valid']);
 
         $.extend(this, v);
 
@@ -187,8 +187,11 @@ this.Dataset = Model.extend({
         ds.displayFormat = ds.displayFormat || {};
 
         if (_.isFunction(ds._convertLegacy)) { ds._convertLegacy(); }
-        ds.valid = ds._checkValidity();
         ds.url = ds._generateUrl();
+
+        var oldValid = ds.valid;
+        ds.valid = ds._checkValidity();
+        if (!oldValid && ds.valid) { ds.trigger('valid'); }
     },
 
     cleanCopy: function()

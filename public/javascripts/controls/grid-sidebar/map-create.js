@@ -321,7 +321,6 @@
                     sidebarObj.hide();
                     sidebarObj.addPane(configName);
 
-                    $(document).trigger(blist.events.VALID_VIEW);
                     $(window).resize();
 
                     _.defer(function()

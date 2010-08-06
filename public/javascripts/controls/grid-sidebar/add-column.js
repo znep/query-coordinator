@@ -196,8 +196,6 @@
     {
         sidebarObj.finishProcessing();
 
-        sidebarObj.$grid().blistModel().updateColumn(newCol);
-
         sidebarObj.$dom().socrataAlert(
             {message: 'Your column has been added', overlay: true});
         sidebarObj.hide();

@@ -235,7 +235,7 @@
                         success: function(retCol)
                         {
                             datasetObj.settings._model.updateColumn(retCol);
-                            $(document).trigger(blist.events.COLUMNS_CHANGED);
+                            blist.dataset.trigger('columns_changed');
                         }
                     });
                 }
@@ -289,8 +289,8 @@
                                         successCount++;
                                         if (successCount == columns.length)
                                         {
-                                            $(document)
-                                                .trigger(blist.events.COLUMNS_CHANGED);
+                                            blist.dataset
+                                                .trigger('columns_changed');
                                             if (typeof successCallback ==
                                                 'function')
                                             { successCallback(); }
@@ -349,8 +349,7 @@
                                 if (successCount == columns.length)
                                 {
                                     model.deleteColumns(columns);
-                                    $(document)
-                                        .trigger(blist.events.COLUMNS_CHANGED);
+                                    blist.dataset.trigger('columns_changed');
                                 }
                             }});
                     });
@@ -517,7 +516,7 @@
                     {
                         if (typeof successCallback == 'function')
                         { successCallback(); }
-                        $(document).trigger(blist.events.COLUMNS_CHANGED);
+                        blist.dataset.trigger('columns_changed');
                     }
                     });
                 }
@@ -1008,7 +1007,7 @@
     var columnsUpdated = function(datasetObj)
     {
         datasetObj.summaryStale = true;
-        $(document).trigger(blist.events.COLUMNS_CHANGED);
+        blist.dataset.trigger('columns_changed');
     };
 
     var serverRowChange = function(datasetObj)
@@ -1693,7 +1692,7 @@
                     type: 'PUT', contentType: 'application/json',
                     success: function()
                         {
-                            $(document).trigger(blist.events.COLUMNS_CHANGED);
+                            blist.dataset.trigger('columns_changed');
                             // If we change the column order on the server,
                             // data will come back in a different order;
                             // so reload the view with the proper order of
@@ -1800,7 +1799,7 @@
             {
                 columnEditEnd(datasetObj, $th);
                 model.updateColumn(newCol);
-                $(document).trigger(blist.events.COLUMNS_CHANGED);
+                blist.dataset.trigger('columns_changed');
             }});
     };
 

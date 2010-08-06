@@ -159,33 +159,20 @@ blist.common.modalReady = function()
           return;
       }
 
-      $.ajax({
-        type: "POST",
-        url: '<%= blist_columns_url(@view_id) %><%= @parent.nil? ?
-          '' : "?parent=#{@parent}" %>',
-        cache: false,
-        dataType: 'json',
-        data: {
-          json: JSON.stringify(column),
-          authenticity_token: "<%= form_authenticity_token %>"
-        },
-        error: function(request) {
-          $("#columnCreateDialog .error")
-            .html(JSON.parse(request.responseText).error).show();
-          toggleEnabled();
-        },
-        success: function(responseData) {
-            var $grid = $("#dataGrid");
-            if ($grid.length != 0)
-            {
-              $grid.blistModel()
-                .updateColumn(responseData, <%= @parent.nil? ? 'null' : @parent %>);
-            }
-            $(document).trigger(blist.events.COLUMNS_CHANGED, [responseData.id]);
+      <%- if !@parent.nil? -%>
+      column.parentId = <%= @parent %>;
+      <%- end -%>
+
+      blist.dataset.addColumn(column,
+        function(responseData) {
             $.Tache.DeleteAll();
             $("#modal").jqmHide();
-        }
-      });
+        },
+        function(request) {
+          $("#columnCreateDialog .error")
+            .html(JSON.parse(request.responseText).message).show();
+          toggleEnabled();
+        });
   };
 
   $("#columnCreateDialog .columnCreate").submit( function(e) {

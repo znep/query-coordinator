@@ -13,9 +13,9 @@
         title: 'Form',
         subtitle: 'Forms allow you to gather data directly from your ' +
             'website into a dataset',
-        onlyIf: function(view)
+        onlyIf: function()
         {
-            return view.visibleColumns.length > 0 &&
+            return blist.dataset.visibleColumns.length > 0 &&
                 (blist.dataset.valid || isEdit);
         },
         disabledSubtitle: function()

@@ -11,10 +11,10 @@
         subtitle: 'If you want to explore this dataset, but aren\'t entirely ' +
             'certain what you\'re looking for, you can use the Guided ' +
             'Filter to help find interesting trends',
-        onlyIf: function(view)
+        onlyIf: function()
         {
             // disallow groupbys
-            return (_.isUndefined(view.query) || _.isUndefined(view.query.groupBys));
+            return (_.isUndefined(blist.dataset.query) || _.isUndefined(blist.dataset.query.groupBys));
         },
         disabledSubtitle: 'Grouped views cannot be used with the guided filter.',
         noReset: true,

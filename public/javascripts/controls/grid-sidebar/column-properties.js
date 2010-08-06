@@ -116,7 +116,7 @@
         name: configName,
         title: 'Column Properties',
         subtitle: 'Update various properites on this column',
-        onlyIf: function(view)
+        onlyIf: function()
         {
             return !blist.dataset.temporary;
         },
@@ -141,7 +141,7 @@
             },
             {
                 title: 'Formatting',
-                onlyIf: {func: function(view, c)
+                onlyIf: {func: function(c)
                 {
                     if ($.isBlank(c)) { return false; }
                     var t = c.origColumn.renderType;
@@ -158,7 +158,7 @@
             // Number-specific info
             {
                 title: 'Number Formatting',
-                onlyIf: {func: function(view, c)
+                onlyIf: {func: function(c)
                 {
                     if ($.isBlank(c)) { return false; }
                     return _.include(['number', 'percent'],
@@ -180,7 +180,7 @@
             // Money-specific styles
             {
                 title: 'Money Formatting',
-                onlyIf: {func: function(view, c)
+                onlyIf: {func: function(c)
                 {
                     if ($.isBlank(c)) { return false; }
                     return c.origColumn.renderTypeName == 'money';
@@ -204,7 +204,7 @@
             // Multiple choice value chooser
             {
                 title: 'Multiple Choice Options',
-                onlyIf: {func: function(view, c)
+                onlyIf: {func: function(c)
                 {
                     if ($.isBlank(c)) { return false; }
                     return c.origColumn.renderTypeName == 'drop_down_list';
@@ -242,7 +242,7 @@
 
             {
                 title: 'Column Totals',
-                onlyIf: {func: function(view, c)
+                onlyIf: {func: function(c)
                 {
                     if ($.isBlank(c)) { return false; }
                     return !$.isBlank(c.origColumn.renderType.aggregates);

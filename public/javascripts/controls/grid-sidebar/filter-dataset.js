@@ -125,12 +125,10 @@
         subtitle: 'You can filter a view down to certain rows; ' +
             'group rows together and summarize data with a roll-up; ' +
             'and sort one or more columns',
-        onlyIf: function(view)
+        onlyIf: function()
         {
-            return _.any(view.columns, function(c)
-                { return c.dataTypeName != 'meta_data' &&
-                    (isEdit || !_.include(c.flags || [], 'hidden')); }) &&
-                (blist.dataset.valid || isEdit);
+            return isEdit ? blist.dataset.realColumns.length > 0 :
+                blist.dataset.visibleColumns.length > 0 && blist.dataset.valid;
         },
         disabledSubtitle: function()
         { return !blist.dataset.valid && !isEdit ? 'This view must be valid' :

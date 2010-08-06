@@ -3,13 +3,13 @@
     var baseConfig =
     {
         priority: 5,
-        onlyIf: function(view)
+        onlyIf: function()
         {
-            return _.all(view.columns, function(c)
+            return _.all(blist.dataset.visibleColumns, function(c)
                 {
                     return !_.include(['document', 'document_obsolete', 'tag',
                         'photo', 'photo_obsolete', 'nested_table'],
-                        c.dataTypeName) || _.include(c.flags || [], 'hidden');
+                        c.dataTypeName);
                 }) && blist.dataset.valid && !blist.dataset.temporary;
         },
         disabledSubtitle: function()

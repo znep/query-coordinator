@@ -12,18 +12,16 @@
         priority: 5,
         title: 'Calendar',
         subtitle: 'Views with dates can be displayed in a monthly calendar format',
-        onlyIf: function(view)
+        onlyIf: function()
         {
-            var dateCols = _.select(view.columns, function(c)
+            var dateCols = _.select(blist.dataset.realColumns, function(c)
                 {
                     return _.include(['date', 'calendar_date'], c.dataTypeName) &&
-                        (isEdit || ($.isBlank(c.flags) ||
-                            !_.include(c.flags, 'hidden')));
+                        (isEdit || !c.hidden);
                 });
-            var textCols = _.select(view.columns, function(c)
+            var textCols = _.select(blist.dataset.realColumns, function(c)
                 {
-                    return c.dataTypeName == 'text' && (isEdit ||
-                        ($.isBlank(c.flags) || !_.include(c.flags, 'hidden')));
+                    return c.dataTypeName == 'text' && (isEdit || !c.hidden);
                 });
             return dateCols.length > 0 && textCols.length > 0 &&
                 (blist.dataset.valid || isEdit);

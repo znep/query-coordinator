@@ -151,12 +151,11 @@
         priority: 2,
         title: 'Map',
         subtitle: 'Views with locations can be displayed as points on a map',
-        onlyIf: function(view)
+        onlyIf: function()
         {
-            return _.select(view.columns, function(c)
+            return _.select(blist.dataset.realColumns, function(c)
                 {
-                    return c.dataTypeName == 'location' && (isEdit ||
-                        ($.isBlank(c.flags) || !_.include(c.flags, 'hidden')));
+                    return c.dataTypeName == 'location' && (isEdit || !c.hidden);
                 }).length > 0 && (blist.dataset.valid || isEdit);
         },
         disabledSubtitle: function()
@@ -293,7 +292,7 @@
         var needsFullReset = !blist.dataset.valid ||
             view.displayFormat.type != blist.dataset.displayFormat.type ||
             !_.isEqual(view.displayFormat.layers,
-                blist.dataser.displayFormat.layers);
+                blist.dataset.displayFormat.layers);
 
         blist.dataset.update(view);
 

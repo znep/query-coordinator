@@ -169,7 +169,7 @@
         title: 'Sharing',
         subtitle: 'Manage sharing and permissions of this ' + displayName,
         noReset: true,
-        onlyIf: function(view)
+        onlyIf: function()
         {
             return blist.dataset.valid && !blist.dataset.temporary;
         },

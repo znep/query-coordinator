@@ -812,7 +812,7 @@
                     { updateEnabled(sp, true); }
                     else if (_.isFunction(sp.onlyIf))
                     {
-                        updateEnabled(sp, sp.onlyIf(blist.dataset));
+                        updateEnabled(sp, sp.onlyIf());
                     }
                     else
                     { updateEnabled(sp, sp.onlyIf === true); }
@@ -837,7 +837,7 @@
                 if ($.isBlank(config.onlyIf))
                 { return true; }
                 else if (_.isFunction(config.onlyIf))
-                { return config.onlyIf(blist.dataset); }
+                { return config.onlyIf(); }
                 else
                 { return config.onlyIf === true; }
             },
@@ -2064,7 +2064,7 @@
                             { $firstField = o.$field; }
                         }
                         else if (_.isFunction(o.func))
-                        { failed = !o.func(blist.dataset, data); }
+                        { failed = !o.func(data); }
 
                         // If they want the opposite, then flip it
                         if (o.negate) { failed = !failed; }

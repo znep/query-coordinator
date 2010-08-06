@@ -26,7 +26,7 @@
         priority: 1,
         title: 'Add Column',
         subtitle: 'Add a new column to your dataset',
-        onlyIf: function(view)
+        onlyIf: function()
         {
             return blist.dataset.valid && !blist.dataset.temporary &&
                 blist.dataset.type == 'blist';

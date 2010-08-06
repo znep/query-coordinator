@@ -84,25 +84,26 @@
         };
     };
 
-    var chartTypeAvailable = function(chartConfig, view)
+    var chartTypeAvailable = function(chartConfig)
     {
         // Limit number of rows
-        if (!$.isBlank(view.totalRows) && view.totalRows > rowLimit)
+        if (!$.isBlank(blist.dataset.totalRows) &&
+            blist.dataset.totalRows > rowLimit)
         {
             hitRowLimit = true;
             return false;
         }
         hitRowLimit = false;
 
-        return blist.datasetUtil.chart.hasRequiredColumns(view.columns,
+        return blist.dataset.hasRequiredColumns(blist.dataset.realColumns,
             chartConfig.requiredColumns, isEdit);
     };
 
     var onlyIfForChart = function(chart, disable)
     {
         return [{field: 'displayFormat.chartType', value: chart.value},
-               {disable: disable, func: function(m)
-                   { return chartTypeAvailable(chart, m); },
+               {disable: disable, func: function()
+                   { return chartTypeAvailable(chart); },
                 disabledMessage: getDisabledMessage(chart)}];
     };
 
@@ -215,7 +216,7 @@
         priority: 1,
         title: 'Chart',
         subtitle: 'View data can be displayed with a variety of charts',
-        onlyIf: function(view)
+        onlyIf: function()
         { return blist.dataset.valid || isEdit; },
         disabledSubtitle: 'This view must be valid',
         sections: [

@@ -19,7 +19,7 @@
                     template: 'downloadsTable',
                     directive: $.templates.downloadsTable.directive,
                     data: { downloadTypes: $.templates.downloadsTable.downloadTypes,
-                            viewId: blist.display.view.id },
+                            viewId: blist.dataset.id },
                     callback: function($sect)
                     {
                         $sect.find('.downloadsList .item a').downloadToFormCatcher();

@@ -8,9 +8,9 @@
         priority: 1,
         title: 'Social Data Player',
         subtitle: 'The Social Data Player enables you to publish this dataset on the Internet at large',
-        onlyIf: function(view)
+        onlyIf: function()
         {
-            return blist.datasetUtil.isPublic(view) && blist.dataset.valid &&
+            return blist.dataset.isPublic() && blist.dataset.valid &&
                 !blist.dataset.temporary;
         },
         disabledSubtitle: function()
@@ -48,7 +48,7 @@
                 var height = $embedForm.find('#embed_height').val();
                 var customizationId = $embedForm.find('#embed_customization').val() || '';
 
-                window.open($.generateViewUrl(blist.display.view) +
+                window.open(blist.dataset.url +
                     "/widget_preview?width=" + width + "&height=" + height +
                     "&customization_id=" + customizationId, "Preview");
             }

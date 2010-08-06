@@ -53,7 +53,7 @@
                     return _.include(a.context.rights, 'delete_view') ? '' : 'hide';
                 }
             });
-            if (v.id == blist.display.view.id)
+            if (v.id == blist.dataset.id)
             { $li.addClass('current'); }
             $li.attr('data-search',
                 (v.name + ' ' + v.owner.displayName).toLowerCase());
@@ -247,10 +247,8 @@
     {
         _.defer(function()
         {
-            $.Tache.Get({ url: '/views.json', data: { method: 'getByTableId',
-                    tableId: blist.display.view.tableId }, cache: false,
-                dataType: 'json', contentType: 'application/json',
-                success: function(v)
+            blist.dataset.getRelatedViews(
+                function(v)
                 {
                     views['filter'] = _.select(v, function(v)
                     {
@@ -277,7 +275,7 @@
 
                     if (!$.isBlank($sections['form']))
                     { setupSection(views['form'], $sections['form']); }
-                }});
+                });
         });
     });
 

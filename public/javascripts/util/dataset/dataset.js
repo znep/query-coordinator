@@ -1,5 +1,24 @@
 (function(){
 
+/* Properties on Dataset:
+
+    + displayType: from core server, this can be set by the client to tell the
+        front-end how to render data.  Available values: 'calendar', 'chart',
+        'map', 'form'
+    + viewType: set by core server, this defines whether a dataset is tabular data,
+        blobby data, or an href.  Possible values: 'tabular', 'blobby', 'href'
+    + type: set by this Model, it rolls up several pieces of data to give a simple
+        type for the Dataset that code can check against.  Possible values:
+        'blist', 'filter', 'grouped', 'visualization', 'map', 'form', 'calendar',
+        'blob', 'href'
+    + styleClass: set by this Model, this can be set as a class on an HTML element
+        to pick up styling for this type of Dataset
+    + displayName: set by this Model, a displayable string that should used in the
+        UI to indicate this item.  For example, it can be 'dataset',
+        'filtered view', 'grouped view', etc.
+
+*/
+
 this.Dataset = Model.extend({
     _init: function (v)
     {
@@ -60,8 +79,10 @@ this.Dataset = Model.extend({
 
     isPublic: function()
     {
+        var ds = this;
         return _.any(this.grants || [], function(grant)
-        { return _.include(grant.flags || [], 'public'); });
+        { return _.include(grant.flags || [], 'public') &&
+            grant.type == (ds.type == 'form' ? 'contributor' : 'viewer'); });
     },
 
     hasRight: function(right)
@@ -130,6 +151,95 @@ this.Dataset = Model.extend({
         var ds = this._super();
         ds.columns = _.reject(ds.columns, function(c) { return c.id == -1; });
         return ds;
+    },
+
+    userGrants: function()
+    {
+        return _.reject(this.grants || [],
+                function(g) { return _.include(g.flags || [], 'public'); });
+    },
+
+    removeGrant: function(grant, successCallback, errorCallback)
+    {
+        var ds = this;
+
+        var grantDeleted = function()
+        {
+            ds.grants = _.reject(ds.grants || [], function(g)
+            {
+                return (!$.isBlank(grant.userId) && grant.userId == g.userId) ||
+                    (!$.isBlank(grant.userEmail) && grant.userEmail == g.userEmail);
+            });
+            if (_.isFunction(successCallback)) { successCallback(); }
+        }
+
+        ds._makeRequest({url: '/api/views/' + ds.id + '/grants/i',
+            params: {method: 'delete'}, type: 'PUT', data: JSON.stringify(grant),
+            success: grantDeleted, error: errorCallback});
+    },
+
+    createGrant: function(grant, successCallback, errorCallback, isBatch)
+    {
+        var ds = this;
+
+        var grantCreated = function()
+        {
+            ds.grants = ds.grants || [];
+            ds.grants.push(grant);
+            if (_.isFunction(successCallback)) { successCallback(); }
+        };
+
+        ds._makeRequest({url: '/api/views/' + ds.id + '/grants/',
+                type: 'POST', data: JSON.stringify(grant), batch: isBatch,
+                success: grantCreated, error: errorCallback});
+    },
+
+    replaceGrant: function(oldGrant, newGrant, successCallback, errorCallback)
+    {
+        var ds = this;
+
+        var grantDeleted = function()
+        {
+            ds.createGrant(newGrant, successCallback, errorCallback);
+        };
+
+        // Core server only accepts creation or deletion for grants, so...
+        ds.removeGrant(oldGrant, grantDeleted, errorCallback);
+    },
+
+    makePublic: function(successCallback, errorCallback)
+    {
+        var ds = this;
+
+        if (!ds.isPublic())
+        {
+            ds.grants = ds.grants || [];
+            ds.grants.push({type: (ds.type == 'form' ? 'contributor' : 'viewer'),
+                flags: ['public']});
+
+            ds._makeRequest({url: '/views/' + ds.id + '.json', type: 'GET',
+                    data: {method: 'setPermission',
+                    value: ds.type == 'form' ? 'public.add' : 'public.read'},
+                    success: successCallback, error: errorCallback});
+        }
+        else if (_.isFunction(successCallback)) { successCallback(); }
+    },
+
+    makePrivate: function(successCallback, errorCallback)
+    {
+        var ds = this;
+
+        if (ds.isPublic())
+        {
+            ds.grants = _.reject(ds.grants,
+                function(g) { return _.include(g.flags || [], 'public') &&
+                    g.inherited === false; });
+
+            ds._makeRequest({url: '/views/' + ds.id + '.json', type: 'GET',
+                    data: {method: 'setPermission', value: 'private'},
+                    success: successCallback, error: errorCallback});
+        }
+        else if (_.isFunction(successCallback)) { successCallback(); }
     },
 
     addColumn: function(column, successCallback, errorCallback, customParams)
@@ -345,15 +455,6 @@ this.Dataset = Model.extend({
         { callback(); }
     },
 
-    addGrant: function(grant, successCallback, errorCallback, isBatch)
-    {
-        this._makeRequest({url: '/views/' + this.id + '/grants.json', type: 'POST',
-                data: JSON.stringify(grant),
-                success: successCallback, error: errorCallback, batch: isBatch});
-        this.grants = this.grants || [];
-        this.grants.push(grant);
-    },
-
     updateRating: function(rating, successCallback, errorCallback)
     {
         this._makeRequest({url: '/views/' + this.id + '/ratings.json',
@@ -372,6 +473,78 @@ this.Dataset = Model.extend({
     {
         this._makeRequest({url: '/views/' + this.id + '.json',
             params: {method: 'opening'}});
+    },
+
+    getComments: function(callback)
+    {
+        var ds = this;
+        if ($.isBlank(ds._comments))
+        {
+            ds._makeRequest({url: '/views/' + ds.id + '/comments.json',
+                type: 'GET', pageCache: true, success: function(comms)
+                {
+                    ds._comments = comms;
+                    callback(ds._comments);
+                }});
+        }
+        else { callback(ds._comments); }
+    },
+
+    addComment: function(comment, successCallback, errorCallback)
+    {
+        var ds = this;
+
+        var addedComment = function(newCom)
+        {
+            if (!$.isBlank(ds._comments)) { ds._comments.unshift(newCom); }
+            if (_.isFunction(successCallback)) { successCallback(newCom); }
+        };
+
+        ds._makeRequest({url: '/views/' + ds.id + '/comments.json',
+                type: 'POST', data: JSON.stringify(comment),
+                success: addedComment, error: errorCallback});
+    },
+
+    flagComment: function(commentId, successCallback, errorCallback)
+    {
+        var ds = this;
+
+        var com = _.detect(ds._comments || [],
+            function(c) { return c.id == parseInt(commentId); });
+        if (!$.isBlank(com))
+        {
+            com.flags = com.flags || [];
+            if (!_.include(com.flags, 'flag')) { com.flags.push('flag'); }
+        }
+
+        ds._makeRequest({url: '/views/' + this.id + '/comments/' +
+                commentId + '.json', type: 'PUT',
+                data: JSON.stringify({ flags: [ 'flag' ] }),
+                success: successCallback, error: errorCallback});
+    },
+
+    rateComment: function(commentId, thumbsUp, successCallback, errorCallback)
+    {
+        var ds = this;
+
+        var com = _.detect(ds._comments || [],
+            function(c) { return c.id == parseInt(commentId); });
+        if (!$.isBlank(com))
+        {
+            if ((com.currentUserRating || {}).thumbUp !== thumbsUp)
+            {
+                var dir = thumbsUp ? 'up' : 'down';
+                com[dir + 'Ratings']++;
+                if (!$.isBlank(com.currentUserRating))
+                { com[(thumbsUp ? 'down' : 'up') + 'Ratings']--; }
+                com.currentUserRating = com.currentUserRating || {};
+                com.currentUserRating.thumbUp = thumbsUp;
+            }
+        }
+
+        ds._makeRequest({url: '/views/' + ds.id + '/comments/' +
+                commentId + '/ratings.json', params: {thumbsUp: thumbsUp},
+                type: 'POST', success: successCallback, error: errorCallback});
     },
 
     getParentDataset: function(callback)
@@ -478,6 +651,12 @@ this.Dataset = Model.extend({
         }
 
         this._super(req);
+    },
+
+    _invalidateRows: function()
+    {
+        this._rows = {};
+        this._rowIDLookup = {};
     },
 
     _loadRows: function(start, len, callback, includeMeta)
@@ -590,12 +769,13 @@ this.Dataset = Model.extend({
                 views = _.without(views, parDS);
             }
 
-            ds._relatedViews = views;
+            ds._relatedViews = _.reject(views,
+                function(v) { return v.id == ds.id; });
 
             if (_.isFunction(callback)) { callback(); }
         };
 
-        this._makeRequest({url: '/views.json', pageCache: true,
+        this._makeRequest({url: '/views.json', pageCache: true, type: 'GET',
                 data: { method: 'getByTableId', tableId: this.tableId },
                 success: processDS});
     },

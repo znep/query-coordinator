@@ -3,7 +3,7 @@
     if (blist.sidebarHidden.embed &&
         blist.sidebarHidden.embed.formCreate) { return; }
 
-    var isEdit = blist.datasetUtil.getDisplayType(blist.display.view) == 'Form';
+    var isEdit = blist.dataset.type == 'form';
 
     var configName = 'embed.formCreate';
     var config =
@@ -15,11 +15,8 @@
             'website into a dataset',
         onlyIf: function(view)
         {
-            return _.select(view.columns, function(c)
-                {
-                    return c.dataTypeName != 'meta_data' &&
-                        ($.isBlank(c.flags) || !_.include(c.flags, 'hidden'));
-                }).length > 0 && (blist.dataset.valid || isEdit);
+            return view.visibleColumns.length > 0 &&
+                (blist.dataset.valid || isEdit);
         },
         disabledSubtitle: function()
         {
@@ -69,9 +66,9 @@
     {
         if (!isEdit) { return null; }
 
-        var view = $.extend(true, {}, blist.display.view);
+        var view = blist.dataset.cleanCopy();
         view.flags = view.flags || [];
-        if (isPublicForm(view))
+        if (blist.dataset.isPublic())
         { view.flags.push('dataPublicAdd'); }
         return view;
     };
@@ -80,62 +77,56 @@
     {
         if (!sidebarObj.baseFormHandler($pane, value)) { return; }
 
+        var view = $.extend({displayType: 'form'}, sidebarObj.getFormValues($pane));
 
-        var view = blist.datasetUtil.baseViewCopy(blist.display.view);
-        view.displayType = 'form';
-
-        $.extend(view, sidebarObj.getFormValues($pane));
-
-        var wasPublic = isPublicForm(blist.display.view);
+        var wasPublic = blist.dataset.isPublic();
         var isPublic = isPublicForm(view);
 
-        var updateView = function()
+        blist.dataset.update(view);
+
+        if (!isEdit)
         {
-            var url = '/views' + (isEdit ? '/' + blist.display.view.id : '') +
-                '.json';
-            $.ajax({url: url, type: isEdit ? 'PUT' : 'POST', dataType: 'json',
-                contentType: 'application/json', data: JSON.stringify(view),
-                error: function(xhr)
-                { sidebarObj.genericErrorHandler($pane, xhr); },
-                success: function(resp)
-                {
-                    sidebarObj.finishProcessing();
-                    if (!isEdit)
-                    { blist.util.navigation.redirectToView(resp); }
-                    else
-                    {
-                        $.syncObjects(blist.display.view, resp);
-
-                        var $form = sidebarObj.$grid().find('form.formView');
-                        var newRedirect = (blist.display.view.displayFormat || {})
-                            .successRedirect;
-                        if ($.isBlank(newRedirect))
-                        { newRedirect = $form.attr('data-defaultSuccessRedirect'); }
-                        var act = $form.attr('action');
-                        act = $.urlParam(act, 'successRedirect',
-                            escape(newRedirect));
-                        $form.attr('action', act);
-
-                        $('.currentViewName').text(blist.display.view.name);
-
-                        sidebarObj.$dom().socrataAlert(
-                            {message: 'Your form has been updated', overlay: true});
-                        sidebarObj.hide();
-
-                        sidebarObj.addPane(configName);
-                    }
-                }});
-        };
-
-        if (isEdit && wasPublic !== isPublic)
-        {
-            $.ajax({url: '/views/' + blist.display.view.id + '.json',
-                data: {method: 'setPermission',
-                    value: isPublic ? 'public.add' : 'private'},
-                success: function() { updateView(); }});
+            blist.dataset.saveNew(function(newView)
+            {
+                sidebarObj.finishProcessing();
+                newView.redirectTo();
+            },
+            function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); });
         }
         else
-        { updateView(); }
+        {
+            var updateView = function()
+            {
+                blist.dataset.save(function(newView)
+                {
+                    sidebarObj.finishProcessing();
+
+                    var $form = sidebarObj.$grid().find('form.formView');
+                    var newRedirect = newView.displayFormat.successRedirect;
+                    if ($.isBlank(newRedirect))
+                    { newRedirect = $form.attr('data-defaultSuccessRedirect'); }
+                    var act = $form.attr('action');
+                    act = $.urlParam(act, 'successRedirect', escape(newRedirect));
+                    $form.attr('action', act);
+
+                    $('.currentViewName').text(newView.name);
+
+                    sidebarObj.$dom().socrataAlert(
+                        {message: 'Your form has been updated', overlay: true});
+                    sidebarObj.hide();
+
+                    sidebarObj.addPane(configName);
+                });
+            }
+
+            if (wasPublic !== isPublic)
+            {
+                blist.dataset['make' + (isPublic ? 'Public' : 'Private')](
+                    updateView);
+            }
+            else
+            { updateView(); }
+        }
     };
 
     $.gridSidebar.registerConfig(config, 'Form');

@@ -81,7 +81,7 @@
                     friends = _.map(_.select(data, function(u)
                         { return !$.isBlank(u.email); }), function(friend)
                     {
-                        return {displayName: friend.displayName,
+                        return {displayName: $.htmlEscape(friend.displayName),
                             email: friend.email, id: friend.id};
                     });
                     autoCompleteForFriends($('.emailRecipient'));
@@ -189,7 +189,7 @@
                         { grant['userId'] = uid; }
 
                         // Create a grant for the user
-                        blist.dataset.addGrant(grant, null, null, true);
+                        blist.dataset.createGrant(grant, null, null, true);
                     }
                     else
                     {

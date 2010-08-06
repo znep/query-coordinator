@@ -39,24 +39,17 @@
 
     var updateColumns = function()
     {
-        var cols = _($.extend(true, [], blist.display.view.columns)).chain()
-            .select(function(c) { return c.dataTypeName != 'meta_data'; })
-            .map(function(c)
-            {
-                c.visible = !_.include(c.flags || [], 'hidden');
-                return c;
-            })
-            .sortBy(function(c)
+        var cols = _.sortBy(blist.dataset.realColumns,
+            function(c)
             {
                 // Sort all the visible columns first, so start the sort string
                 // with 'a'; then sort by position.  For hidden columns, start
                 // with 'z' to sort them at the end; then just sort
                 // alphabetically
-                if (c.visible)
+                if (!c.hidden)
                 { return 'a' + ('000' + c.position).slice(-3); }
                 return 'z' + c.name;
-            })
-            .value();
+            });
 
         config.sections[0].customContent.data = cols;
     };

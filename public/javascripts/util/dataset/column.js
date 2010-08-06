@@ -10,18 +10,7 @@ this.Column = Model.extend({
         this.view = view;
         this.parentColumn = parentCol;
 
-        this.format = this.format || {};
-        this.hidden = _.include(this.flags || [], 'hidden');
-        this.dataType = blist.data.types[this.dataTypeName] || {};
-        this.renderType = blist.data.types[this.renderTypeName] || {};
-        this.isMeta = this.dataTypeName == 'meta_data';
-
-        this._lookup = this.isMeta ? this.name : this.id;
-        if (this.dataTypeName == 'tag') { this._lookup = 'tags'; }
-        else if (this.isMeta && this.name == 'sid') { this._lookup = 'id'; }
-        else if (this.isMeta && this.name == 'id') { this._lookup = 'uuid'; }
-
-        this.aggregates = {};
+        this._setUpColumn();
 
         this._updateChildren();
     },
@@ -50,10 +39,17 @@ this.Column = Model.extend({
 
     save: function(successCallback, errorCallback)
     {
+        var col = this;
+        var colSaved = function(newCol)
+        {
+            col.update(newCol);
+            if (_.isFunction(successCallback)) { successCallback(col); }
+        };
+
         this._makeRequest({url: '/views/' + this.view.id +
                 '/columns/' + this.id + '.json', type: 'PUT',
                 data: JSON.stringify(this.cleanCopy()),
-                success: successCallback, error: errorCallback});
+                success: colSaved, error: errorCallback});
     },
 
     show: function(successCallback, errorCallback, isBatch)
@@ -69,6 +65,22 @@ this.Column = Model.extend({
         this._updateChildren(newCol.childColumns);
         _.each(newCol, function(v, k)
         { if (col._validKeys[k]) { col[k] = v; } });
+        this._setUpColumn();
+    },
+
+    convert: function(newType, successCallback, errorCallback)
+    {
+        var col = this;
+        var columnConverted = function(newCol)
+        {
+            col.update(newCol);
+            col.view._invalidateRows();
+            if (_.isFunction(successCallback)) { successCallback(col); }
+        };
+
+        this._makeRequest({url: '/views/' + this.view.id + '/columns/' +
+            this.id + '.json', data: {method: 'convert', type: newType},
+            type: 'POST', success: columnConverted, error: errorCallback});
     },
 
     cleanCopy: function()
@@ -82,6 +94,24 @@ this.Column = Model.extend({
         return col;
     },
 
+
+    _setUpColumn: function()
+    {
+        this.format = this.format || {};
+        this.dropDownList = this.dropDown;
+        delete this.dropDown;
+        this.hidden = _.include(this.flags || [], 'hidden');
+        this.dataType = blist.data.types[this.dataTypeName] || {};
+        this.renderType = blist.data.types[this.renderTypeName] || {};
+        this.isMeta = this.dataTypeName == 'meta_data';
+
+        this._lookup = this.isMeta ? this.name : this.id;
+        if (this.dataTypeName == 'tag') { this._lookup = 'tags'; }
+        else if (this.isMeta && this.name == 'sid') { this._lookup = 'id'; }
+        else if (this.isMeta && this.name == 'id') { this._lookup = 'uuid'; }
+
+        this.aggregates = {};
+    },
 
     _updateChildren: function(newChildren)
     {

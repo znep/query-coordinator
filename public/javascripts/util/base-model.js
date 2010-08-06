@@ -108,7 +108,8 @@ this.Model = Class.extend({
         }
 
         // We never want the browser cache, because our data can change frequently
-        if (req.type == 'GET') { req.cache = false; }
+        if ($.isBlank(req.type) || req.type.toLowerCase() == 'get')
+        { req.cache = false; }
 
         var cleanReq = function()
         {

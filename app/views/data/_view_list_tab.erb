@@ -2,11 +2,14 @@
   <div class="tabContent<%= views_total == 0 ? ' noresult' : '' %>">
     <h2>
       <%= tab_title %>
+      <%- dataset_name_with_type =
+        (@current_state['filter_type1'] || t(:blist_name).pluralize).sub('ALL', 'datasets').sub('_', ' ')
+      -%>
       <%- if @current_state['filter'].present? -%>
-        <%= "datasets in my Network" if @current_state['filter'][:inNetwork] %>
-        <%= "#{@current_state['filter'][:category]} datasets" if @current_state['filter'][:category] %>
+        <%= "#{dataset_name_with_type} in my Network" if @current_state['filter'][:inNetwork] %>
+        <%= "#{@current_state['filter'][:category]} #{dataset_name_with_type}" if @current_state['filter'][:category] %>
       <%- elsif @active_tab != :search -%>
-        datasets
+        <%= "#{dataset_name_with_type}" %>
       <%- end -%>
       <%= "tagged '#{@current_state['tag']}'" if @current_state['tag'] %>
     </h2>
@@ -27,7 +30,8 @@
                              :id => "sort_by_" + type) %>
               <%- if @current_state['no_js'] -%>
                 <%- @current_state.each_pair do |key, value| -%>
-                  <%= hidden_field_tag(key, value) unless value.blank? || key == 'sort_by' %>
+                  <%= hidden_field_tag(key, value) unless value.blank? ||
+                    key == 'sort_by' || key == 'filter_type1' %>
                 <%- end -%>
                 <%= hidden_field_tag('type', type) %>
                 <%= submit_tag('go') %>
@@ -47,7 +51,7 @@
       </div>
     <%- else -%>
       <p class="clearBoth">
-        There are no <%= t(:blist_name).pluralize %> that match that filter.  Try broadening your search.
+        There are no <%= "#{dataset_name_with_type.downcase}" %> that match that filter.  Try broadening your search.  Go back to <a href="/">all</a>.
       </p>
     <%- end -%>
   </div>

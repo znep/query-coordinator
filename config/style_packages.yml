@@ -32,3 +32,6 @@ dataset-page:
 - splash
 dataset-edit-metadata-page:
 - screen-dataset-edit-metadata
+administration-analytics-screen:
+- screen-admin
+- screen-metrics

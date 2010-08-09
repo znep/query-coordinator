@@ -1,0 +1,14 @@
+<div class="adminNavBox">
+  <ul class="adminNav">
+    <li class="analytics">
+      <%= link_to_unless_current \
+          raw('<span class="icon"></span>Analytics'),
+          {:action => 'analytics'} %>
+    </li>
+    <li class="users">
+      <%= link_to_unless_current \
+          raw('<span class="icon"></span>Users'),
+          {:action => 'users'} %>
+    </li>
+  </ul>
+</div>

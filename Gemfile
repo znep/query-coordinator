@@ -9,3 +9,4 @@ gem "multipart-post", "1.0", :require => 'net/http/post/multipart'
 gem "googlecharts", "1.3.6", :require => 'gchart'
 gem "hashie", "0.1.5"
 gem "haml", "3.0.6"
+gem "stomp", "1.1.6"

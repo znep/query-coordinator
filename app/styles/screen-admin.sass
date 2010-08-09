@@ -1,0 +1,66 @@
+.siteInnerWrapper
+  max-width: 100%
+
+.adminNavBox
+  background-color: #fff
+  border: 1px solid #cecece
+  @include border-radius(0.2em)
+  float: left
+  margin: 1em
+  width: 14em
+  padding: 1em
+
+  .adminNav
+
+    li
+      @include admin-icons
+      border-top: 1px solid #cecece
+      line-height: 2em
+      font-size: 1.4em
+
+      &:first-child
+        border-top: none
+
+    .icon
+      float: left
+      margin: 0.5em 0.5em 0 0
+
+
+.contentBox
+  margin-left: 18em
+
+  .navigation
+    margin-bottom: 1em
+
+#adminContent
+  .userInformation
+    .usersFind
+      float: right
+
+  .information
+    font-size: 1.2em
+
+  .usersFind
+    margin: 1em 0
+
+  .adminUsersTable
+    tr
+      font-size: 1.2em
+    td
+      padding: 0 1em
+      vertical-align: middle
+    .odd
+      background-color: #eee
+
+    .roleSelect
+      width: 9em
+
+
+  .rolesExplanation
+    margin-top: 2em
+
+    li
+      font-size: 1.2em
+      padding: 0.5em 0
+      .roleTitle
+        font-weight: bold

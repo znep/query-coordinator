@@ -32,6 +32,9 @@ blist.dataset.chart.types = {
             blist.dataset.chart.numericTypes]},
     timeline: {value: 'timeline', text: 'Time Line',
         requiredColumns: [blist.dataset.chart.dateTypes,
+            blist.dataset.chart.numericTypes]},
+    treemap: {value: 'treemap', text: 'Tree Map',
+        requiredColumns: [blist.dataset.chart.textualTypes,
             blist.dataset.chart.numericTypes]}
 };
 

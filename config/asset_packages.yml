@@ -89,9 +89,11 @@ javascripts:
   - widgets/maps/heatmap-map
 - shared-chart:
   - plugins/highcharts.src
+  - plugins/jit
   - widgets/base-visualization
   - widgets/charts/base-chart
   - widgets/charts/highcharts
+  - widgets/charts/jit
 - accounts-show:
   - plugins/ui.showedit
   - screens/account-screen

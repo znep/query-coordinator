@@ -685,7 +685,13 @@ this.Dataset = Model.extend({
         ds.valid = ds._checkValidity();
         if (!oldValid && ds.valid) { ds.trigger('valid'); }
 
-        if (!_.isEqual(oldQuery, ds.query)) { ds.trigger('query_change'); }
+        if (!_.isEqual(oldQuery, ds.query))
+        {
+            // Clear out the rows, since the data is different now
+            ds._rows = {};
+            ds._rowIDLookup = {};
+            ds.trigger('query_change');
+        }
     },
 
     _updateGroupings: function(oldGroupings, oldGroupAggs)

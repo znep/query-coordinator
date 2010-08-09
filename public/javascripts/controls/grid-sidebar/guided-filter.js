@@ -1,7 +1,6 @@
 (function($)
 {
-    if (_.isUndefined(blist.display.view.metadata) ||
-        _.isUndefined(blist.display.view.metadata.facets)) { return; }
+    if (_.isUndefined((blist.dataset.metadata || {}).facets)) { return; }
 
     var configName = 'filter.guidedFilter';
     var config = {
@@ -14,7 +13,7 @@
         onlyIf: function()
         {
             // disallow groupbys
-            return (_.isUndefined(blist.dataset.query) || _.isUndefined(blist.dataset.query.groupBys));
+            return (_.isUndefined((blist.dataset.query || {}).groupBys));
         },
         disabledSubtitle: 'Grouped views cannot be used with the guided filter.',
         noReset: true,
@@ -25,7 +24,7 @@
         }
     };
 
-    config.sections = _.map(blist.display.view.metadata.facets, function(facet)
+    config.sections = _.map(blist.dataset.metadata.facets, function(facet)
     {
         var column = blist.dataset.columnForTCID(facet.tableColumnId);
         var sectionConfig = {
@@ -54,13 +53,15 @@
         return sectionConfig;
     });
 
-    var originalFilter = (blist.display.view.query || {}).filterCondition,
+    var originalFilter = (blist.dataset.query || {}).filterCondition,
         facetedFilters = {};
     var mergeAndPostFilter = function(dsGrid)
     {
         if (_.isEmpty(facetedFilters))
         {
-            dsGrid.updateFilter(originalFilter, false, false);
+            var origQuery = $.extend({}, blist.dataset.query,
+                {filterCondition: originalFilter});
+            blist.dataset.update({query: origQuery});
         }
         else
         {
@@ -95,7 +96,9 @@
                 children: _.compact(topLevelChildren.concat(originalFilter))
             };
 
-            dsGrid.updateFilter(mergedFilter, false, false);
+            var mergedQuery = $.extend({}, blist.dataset.query,
+                {filterCondition: mergedFilter});
+            blist.dataset.update({query: mergedQuery});
         }
     };
 
@@ -109,7 +112,7 @@
 
     var formatForColumn = function(value, column)
     {
-        return blist.data.types[column.renderTypeName].filterRender(value, column);
+        return column.renderType.filterRender(value, column);
     };
 
     var changeProxy = function(sidebarObj, column, callback)
@@ -144,7 +147,7 @@
             {
                 callback($dataTarget, event);
             }
-            mergeAndPostFilter(sidebarObj.$grid().datasetGrid());
+            mergeAndPostFilter();
         }
     };
 
@@ -157,7 +160,7 @@
             dataGotten = true;
             sidebarObj.startProcessing();
 
-            sidebarObj.$grid().bind('clear_temp_view', function()
+            blist.dataset.bind('clear_temporary', function()
             {
                 // I have NO idea why this works to reset the values
                 $pane.find(':radio').remove();
@@ -165,19 +168,21 @@
                 facetedFilters = {};
             });
 
-            var facets = blist.display.view.metadata.facets;
+            var facets = blist.dataset.metadata.facets;
 
             // get required aggregate/freq data from core server
-            var cleanedData = blist.datasetUtil.cleanViewForPost(
-                $.extend(true, {}, blist.display.view), true);
+            var cleanedData = blist.dataset.cleanCopy();
             var columnsToPush = [];
 
             _.each(facets, function(facet)
             {
-                var column = blist.datasetUtil.columnForTCID(cleanedData, facet.tableColumnId);
+                var column = blist.dataset.columnForTCID(facet.tableColumnId);
 
                 if ((facet.type == 'discrete') && !_.isArray(facet.values))
                 {
+                    // In theory this should probably be on Dataset; but
+                    // since we're working with a view that has the query nulled
+                    // out, it is a bit more complex
                     $.socrataServer.addRequest({
                         url: '/views/INLINE/rows.json?method=getSummary&limit=' +
                             facet.top + '&columnId=' + column.id,
@@ -199,6 +204,9 @@
 
             _.each(['maximum', 'minimum'], function(aggregateType)
             {
+                // In theory this should probably be on Dataset; but
+                // since we're working with a view that has the query nulled
+                // out, it is a bit more complex
                 $.socrataServer.addRequest({
                     url: '/views/INLINE/rows.json?method=getAggregates',
                     type: 'POST',

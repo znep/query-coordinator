@@ -289,7 +289,7 @@
                     columns: {type: blist.dataset.chart.numericTypes, hidden: isEdit},
                     wizard: 'Select a column that contains the values'
                 }
-            ] },
+            ] }
 
         ],
         finishBlock: {

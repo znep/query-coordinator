@@ -1,0 +1,148 @@
+#marqueeContainer
+{
+	background: url(/stylesheets/images/marketing/marqueeBg.png) repeat-x top;
+	border-top-right-radius: .4em;
+	-moz-border-radius-topright: .4em;
+	webkit-border-top-right-radius: .4em;
+	border-top-left-radius: .4em;
+	-moz-border-radius-topleft: .4em;
+	webkit-border-top-left-radius: .4em;	
+	color: #FFF;
+	font-size: 1.1em;
+	margin: 0em 0 2.5em 0;
+}
+
+/* MARQUEE */
+.marquee
+{
+	background: url(/stylesheets/images/marketing/callOut.jpg) no-repeat;	
+	border-top-left-radius: .4em;
+	height: 306px;	
+	-moz-border-radius-topleft: .4em;
+	webkit-border-top-left-radius: .4em;	
+}
+.marqueeContent
+{
+	display: table;
+	float: right;
+	height: 306px;
+	padding: 0 30px;
+	width: 45%;	
+}
+.marqueeContent div
+{
+	display: table-cell;
+	vertical-align: middle;
+}
+.marqueeContent h2
+{
+	color: #FFF;
+	font-size: 3em;
+}
+.marqueeContent p
+{
+	font-size: 1.5em;
+	line-height: 1.5em;
+}
+
+a.learnButton
+{
+	background: url(/stylesheets/images/marketing/learnButtonSprites.png) no-repeat;		
+	display: block;
+	height: 48px;		
+	margin-top: 20px;
+	width: 126px;
+	text-indent:-9999px;	
+}
+a:hover.learnButton
+{
+	background-position: -128px 0px;
+}
+
+/* FEATURETTE */
+.featurettesContainer
+{
+	background: url(/stylesheets/images/marketing/featureBg.png) repeat-x;		
+	border-bottom-left-radius: .4em;
+	-moz-border-radius-bottomleft: .4em;
+	webkit-border-bottom-left-radius: .4em;
+	border-bottom-right-radius: .4em;
+	-moz-border-radius-bottomright: .4em;
+	webkit-border-bottom-right-radius: .4em;	
+	height: 83px;		
+}
+
+.featuredItemWrapper
+{
+	display: inline;	
+	float: left;
+	height: 83px;		
+	width: 33.33%;
+}
+.divider
+{
+	background: url(/stylesheets/images/marketing/featureBorder.png) no-repeat right;	
+}
+.featuredItem
+{
+	background: url(/stylesheets/images/marketing/arrowOff.png) no-repeat right center;
+	color: #999;
+	cursor: pointer;	
+	display: table;
+	height: 83px;	
+	margin: 0 .5em 0 1em;
+	padding-right: 40px;	
+
+}
+.featuredItem:hover
+{
+	background-image: url(/stylesheets/images/marketing/arrowOn.png);
+}
+
+.featuredItem a
+{
+	color: #999;
+	display:table-cell;
+	height: 83px;	
+	margin: auto;		
+	text-decoration: none;			
+	vertical-align: middle;	
+	width: 33.33%;	
+}
+
+.featuredItem a:hover
+{
+	color:#FFF;	
+	text-decoration:none;
+}
+.featuredItem a span
+{
+	background: url(/stylesheets/images/marketing/iconSprites.png) no-repeat center;	
+	display: block;
+	float: left;
+	height: 45px;	
+	margin-left: 10px;
+	width: 45px;		
+}
+
+.featuredItem a.survey span { background-position: 0px 0px; }
+.featuredItem:hover a.survey span { background-position: -50px 0px; }
+.featuredItem a.developer span { background-position: 0px -50px; }
+.featuredItem:hover a.developer span { background-position: -50px -50px; } 
+.featuredItem a.news span { background-position: 0px -100px; } 
+.featuredItem:hover a.news span { background-position: -50px -100px; }
+
+.featuredItem a p
+{
+	float: left;
+	line-height: 1.4em;
+	margin: 0 1em;
+	width: 195px;
+}
+
+.featuredItem a p strong
+{
+	display: block;
+	font-size: 1.6em;	
+	font-weight: normal;
+}

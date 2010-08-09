@@ -14,14 +14,8 @@
   <%= stylesheet_link_merged 'base' %>
   <%= stylesheet_link_tag "theme/#{CurrentDomain.cname.gsub(/\./, '_')}.css" %>
 
-  <!--[if lt IE 7]>
-    <link href="/stylesheets/core-ie6.css" rel="stylesheet" type="text/css">
-    <script type="text/javascript" charset="utf-8">
-      var isOldIE = true;
-    </script>
-  <![endif]-->
   <!--[if IE 7]>
-    <link href="/stylesheets/core-ie7.css" rel="stylesheet" type="text/css">
+    <link href="/stylesheets/core-ie7.css" rel="stylesheet" type="text/css"/>
   <![endif]-->
 
   <%= theme_stylesheet_tag(CurrentDomain.theme.stylesheet) %>
@@ -30,10 +24,6 @@
   <%= javascript_error_helper_tag %>
 
   <%= yield :head %>
-
-  <%- if is_gov_site? -%>
-  <%= stylesheet_link_tag "gov-override" %>
-  <%- end -%>
 
   <link rel="shortcut icon" href="<%= theme_image_url(CurrentDomain.theme.images.favicon) %>" />
 

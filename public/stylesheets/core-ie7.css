@@ -1,0 +1,13 @@
+/* IE7 version of marketing.css*/
+#marqueeContainer .marqueeContent div
+{
+	position: relative;
+	top: 50px;
+}
+.featurettesContainer .featuredItem a
+{
+	display: block;
+	width: 300px;
+	position: relative;
+	top: 20px;
+}

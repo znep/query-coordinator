@@ -46,7 +46,6 @@
         e.preventDefault();
 
         $('.emailDatasetDialog.ownerDialog .emailDatasetHint').text('Share');
-        $('.emailDatasetDialog.ownerDialog .emailDatasetExplanation').text(' and users');
         $form.validate().resetForm();
 
         $('.emailDatasetDialog .emailLine:not(:first)').remove();

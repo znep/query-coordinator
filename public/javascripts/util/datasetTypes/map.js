@@ -79,3 +79,34 @@ blist.dataset.map.convertLegacy = function(view)
 
     return view;
 };
+
+blist.dataset.map.esriToGoogle = function(geometry)
+{
+    return new google.maps.Polygon({
+        paths: _.map(geometry.rings, function(ring, r)
+        {
+            return _.map(ring, function(point, p)
+            {
+                var point = geometry.getPoint(r, p);
+                if (point.spatialReference.wkid == 102100)
+                { point = esri.geometry.webMercatorToGeographic(point); }
+                return new google.maps.LatLng(point.y, point.x);
+            });
+        })
+    });
+};
+
+blist.dataset.map.esriToBing = function(geometry)
+{
+    // Bing does not support multiple-ring Polygons. As a result, we're picking
+    // the largest ring and using that as the polygon's definition.
+    var largestRing = _.max(geometry.rings, function(ring) { return ring.length; });
+    var r = _.indexOf(geometry.rings, largestRing);
+    return new VEShape(VEShapeType.Polygon, _.map(largestRing, function(point, p)
+    {
+        var point = geometry.getPoint(r, p);
+        if (point.spatialReference.wkid == 102100)
+        { point = esri.geometry.webMercatorToGeographic(point); }
+        return new VELatLong(point.y, point.x);
+    }));
+};

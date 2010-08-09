@@ -155,8 +155,15 @@ this.Dataset = Model.extend({
             if (_.isFunction(successCallback)) { successCallback(newDS); }
         };
 
+        var ds = cleanViewForSave(this);
+        if (!$.isBlank(ds.columns))
+        {
+            ds.columns = _.reject(ds.columns,
+                function(c) { return c.dataTypeName == 'tag'; });
+        }
+
         this._makeRequest({url: '/views.json', type: 'POST',
-            data: JSON.stringify(cleanViewForSave(this)),
+            data: JSON.stringify(ds),
             error: errorCallback,
             success: dsCreated
         });
@@ -165,6 +172,9 @@ this.Dataset = Model.extend({
     update: function(newDS, forceFull, updateColOrder)
     {
         var ds = this;
+
+        // Back-update the ID, because we don't want the new temporary one
+        newDS.id = ds.id;
 
         if (forceFull)
         {
@@ -179,6 +189,8 @@ this.Dataset = Model.extend({
         delete newDS.columns;
 
         _.each(newDS, function(v, k) { if (ds._validKeys[k]) { ds[k] = v; } });
+
+        ds.originalViewId = ds.id;
 
         ds.type = getType(ds);
         ds.styleClass = ds.type.capitalize();

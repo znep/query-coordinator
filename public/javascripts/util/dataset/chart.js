@@ -30,7 +30,9 @@ Dataset.chart.types = {
     pie: {value: 'pie', text: 'Pie Chart',
         requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes]},
     timeline: {value: 'timeline', text: 'Time Line',
-        requiredColumns: [Dataset.chart.dateTypes, Dataset.chart.numericTypes]}
+        requiredColumns: [Dataset.chart.dateTypes, Dataset.chart.numericTypes]},
+    treemap: {value: 'treemap', text: 'Tree Map',
+        requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes]}
 };
 
 Dataset.chart.hasRequiredColumns = function(cols, reqCols, includeHidden)

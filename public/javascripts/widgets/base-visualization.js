@@ -60,7 +60,13 @@
 
                 currentObj.settings.view.getRows(0, currentObj.settings.maxRows,
                     function()
-                    { currentObj.handleRowsLoaded.apply(currentObj, arguments); });
+                    {
+                        // Use a defer so that if the rows are already loaded,
+                        // getColumns has a chance to run first
+                        var args = arguments;
+                        _.defer(function()
+                        { currentObj.handleRowsLoaded.apply(currentObj, args); });
+                    });
 
                 if (currentObj.getColumns())
                 { currentObj.columnsLoaded(); }
@@ -109,7 +115,13 @@
 
                 vizObj.settings.view.getRows(0, vizObj.settings.maxRows,
                     function()
-                    { vizObj.handleRowsLoaded.apply(vizObj, arguments); });
+                    {
+                        // Use a defer so that if the rows are already loaded,
+                        // getColumns has a chance to run first
+                        var args = arguments;
+                        _.defer(function()
+                        { vizObj.handleRowsLoaded.apply(vizObj, args); });
+                    });
 
                 if (vizObj.getColumns())
                 { vizObj.columnsLoaded(); }

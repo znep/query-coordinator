@@ -82,6 +82,11 @@ this.Column = Model.extend({
         this._updateChildren(newCol.childColumns);
         _.each(newCol, function(v, k)
         { if (col._validKeys[k]) { col[k] = v; } });
+
+        // dropDown is special, because it only comes from the server; it isn't
+        // posted back, so it isn't considered valid
+        if (!$.isBlank(newCol.dropDown)) { col.dropDown = newCol.dropDown; }
+
         this._setUpColumn();
     },
 
@@ -116,7 +121,8 @@ this.Column = Model.extend({
     _setUpColumn: function()
     {
         this.format = this.format || {};
-        this.dropDownList = this.dropDown;
+        if (!$.isBlank(this.dropDown))
+        { this.dropDownList = this.dropDown; }
         delete this.dropDown;
         this.hidden = _.include(this.flags || [], 'hidden');
         this.dataType = blist.data.types[this.dataTypeName] || {};

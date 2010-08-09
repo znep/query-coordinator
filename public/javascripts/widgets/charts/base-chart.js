@@ -63,6 +63,11 @@
                 chartObj.initializeChart();
             },
 
+            initializeChart: function()
+            {
+                // Override me with chart-specific initialization
+            },
+
             getColumns: function()
             {
                 var chartObj = this;

@@ -16,28 +16,27 @@
 
         prototype:
         {
-            initializeChart: function()
-            {
-                var chartObj = this;
-            },
-
             renderData: function(rows)
             {
                 var chartObj = this;
 
                 chartObj._jitData = { id: 'root', name: '', data: {},
-                    children: _.map(rows, function(row)
+                    children: _.compact(_.map(rows, function(row)
                     {
+                        var area = parseFloat(row[chartObj.
+                            _valueColumns[0].column.id]);
+                        if (_.isNaN(area)) { return null; }
                         return {
-                            id: _.uniqueId(), // TODO: will be able to use row.id later which is better
-                            name: row[chartObj._fixedColumns[0].dataIndex],
+                            id: row.id,
+                            name: row[chartObj._fixedColumns[0].id],
                             data: {
-                                $area:  parseFloat(row[chartObj._valueColumns[0].column.dataIndex]),
-                                amount: row[chartObj._valueColumns[0].column.dataIndex]
+                                $area: area,
+                                amount:
+                                    row[chartObj._valueColumns[0].column.id] || 0
                             },
                             children: []
                         };
-                    }) };
+                    })) };
 
                 if (!chartObj._jit)
                 { initializeJITObject(chartObj); }
@@ -93,13 +92,13 @@
               offsetX: -10,
               offsetY: 10,
               onShow: function(tip, node, isLeaf, domElement) {
-                var html = "<div class=\"tip-title\">" + node.name 
+                var html = "<div class=\"tip-title\">" + node.name
                   + "</div><div class=\"tip-text\">";
                 var data = node.data;
                 if(data.amount) {
                   html += chartObj._valueColumns[0].column.name + ": " + data.amount;
                 }
-                tip.innerHTML =  html; 
+                tip.innerHTML =  html;
               }
             },
             onCreateLabel: function(domElement, node){

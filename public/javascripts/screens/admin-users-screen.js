@@ -11,7 +11,7 @@ adminUsersNS.onPromoteError = function(request, context)
     {
         errorText = "There was an error processing your permission request.";
     }
-    context.parent().find('.errorMessage').text(errorText);
+    context.closest('form').find('.errorMessage').text(errorText);
 }
 
 $(function()
@@ -20,7 +20,7 @@ $(function()
 
     $('#adminContent .adminUsersTable .roleSelect').change(function()
     {
-        var id = $(this).siblings('input.hiddenID').val();
+        var id = $(this).closest('form').find('input.hiddenID').val();
         var $select = $(this);
         
         $.ajax({
@@ -30,7 +30,7 @@ $(function()
             type: "POST",
             success: function(responseData)
             {
-                $select.parent().find('.statusMessage')
+                $select.closest('form').find('.statusMessage')
                     .show()
                     .text('Saved')
                     .fadeOut(3000);
@@ -42,5 +42,6 @@ $(function()
         });
         
     });
-    
+
+    $('#adminContent.contentBox select').uniform();
 });

@@ -104,6 +104,7 @@ javascripts:
 - admin-sdp-index:
   - screens/admin-sdp-index-screen
 - admin-users:
+  - plugins/jquery.uniform
   - screens/admin-users-screen
 - admin-federations:
   - screens/admin-federations-screen
@@ -300,6 +301,7 @@ javascripts:
   - plugins/highcharts.src
   - widgets/charts/metric-charts
   - util/urls
+  - controls/equiwidth
   - controls/menu
   - controls/metrics
 

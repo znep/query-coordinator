@@ -3,7 +3,31 @@ class AdministrationController < ApplicationController
   layout 'dataset_v2'
 
   def analytics
-    @type = params[:type] || @@default_analytics_type
+  end
+
+  def users
+    @roles_list = User.roles_list
+    if !params[:username].blank?
+      @search = params[:username]
+      @user_search_results= User.find :name => params[:username]
+    else
+      @admins = find_privileged_users.sort{|x,y| x.displayName <=> y.displayName}
+    end
+
+    if params[:userid].present? && params[:role].present?
+      success = false
+      begin
+        success = User.set_role(params[:userid], params[:role])
+      rescue CoreServer::CoreServerError => ex
+        error_message = ex.error_message
+      end
+      if success
+        flash[:notice] = "User '#{updated_user.displayName}' successfully saved"
+      else
+        flash[:error] = "Error saving user. #{error_message}"
+      end
+    end
+
   end
 
   private
@@ -14,5 +38,7 @@ class AdministrationController < ApplicationController
     end
   end
 
-  @@default_analytics_type = 'overview'
+  def find_privileged_users(level=1)
+    User.find :method => 'usersWithRole', :role => level
+  end
 end

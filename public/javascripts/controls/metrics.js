@@ -233,25 +233,16 @@ metricsNS.summarySectionCallback = function($context)
                 .concat(mergeItems(opts.summarySections, opts.summaryDefaults))
                 .concat(opts.topListSections);
 
-        var summaryResize = function($display)
-        {
-            var length = opts.summarySections.length;
-            $display.find('> div').width(
-                (($display.width() -
-                    ((length - 1) * opts.summaryMargin) - //Margin-left
-                    (length * opts.summaryPadding)) // Border + padding
-                )
-                / length
-            );
-        };
-
         var $summaryDisplay = $screen.find('.summaryDisplay').append(
             $.renderTemplate('metricsSummaryItem', opts.summarySections,
                     opts.summaryDirective)
         );
 
+        $summaryDisplay.equiWidth();
+
         // Load each of the charts and create their menus
-        var chartDisplay =  $.renderTemplate('metricsCharts', opts.chartSections, opts.chartDirective);
+        var chartDisplay =  $.renderTemplate('metricsCharts',
+            opts.chartSections, opts.chartDirective);
 
         _.each(opts.chartSections, function(section)
         {
@@ -259,7 +250,8 @@ metricsNS.summarySectionCallback = function($context)
 
             currentChart.parent().siblings('.menu').menu({
                 additionalJsonKeys: ['series'],
-                menuButtonContents: '<span class="contents">' + section.children[0].text + '</span>',
+                menuButtonContents: '<span class="contents">' +
+                    section.children[0].text + '</span>',
                 menuButtonTitle: section.children[0].text,
                 contents: section.children
             });
@@ -305,7 +297,7 @@ metricsNS.summarySectionCallback = function($context)
         );
 
         _.defer(function(){
-            summaryResize($summaryDisplay);
+            $summaryDisplay.trigger('resize');
         });
 
         _.each(opts.summarySections, function(section)
@@ -361,8 +353,6 @@ metricsNS.summarySectionCallback = function($context)
                         chart.redrawTimer = null;
                     }, opts.redrawTimeout);
             });
-
-            summaryResize($summaryDisplay);
         });
         return this;
     };
@@ -484,8 +474,6 @@ metricsNS.summarySectionCallback = function($context)
                 }
             }
         },
-        summaryMargin: 15,
-        summaryPadding: 22,
         topListSections: [],
         topListDirective: {
             '.metricsTopContainer': {

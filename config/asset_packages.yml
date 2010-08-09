@@ -80,6 +80,7 @@ javascripts:
   - data/editors/photo-editor
 - shared-map:
   - plugins/ui.sortable
+  - plugins/markerclusterer
   - widgets/base-visualization
   - util/color
   - widgets/maps/base-map

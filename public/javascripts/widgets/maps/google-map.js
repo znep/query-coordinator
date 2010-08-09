@@ -29,6 +29,13 @@
 
                 mapObj._bounds = new google.maps.LatLngBounds();
                 mapObj._boundsCounts = 0;
+
+                var listener = google.maps.event.addListener(mapObj.map, 'tilesloaded', function() 
+                {
+                    if (!mapObj._markerClusterer)
+                    { mapObj._markerClusterer = new MarkerClusterer(mapObj.map, _.values(mapObj._markers)); }
+                    google.maps.event.removeListener(listener);
+                });
             },
 
             renderPoint: function(latVal, longVal, rowId, details)

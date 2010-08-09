@@ -24,7 +24,8 @@ this.Dataset = Model.extend({
     {
         this._super();
 
-        this.registerEvent(['columns_changed', 'valid']);
+        this.registerEvent(['columns_changed', 'valid', 'query_change',
+            'set_temporary', 'clear_temporary']);
 
         $.extend(this, v);
 
@@ -134,9 +135,12 @@ this.Dataset = Model.extend({
     save: function(successCallback, errorCallback)
     {
         var ds = this;
+        if (!ds.hasRight('update_view')) { return false; }
+
         var dsSaved = function(newDS)
         {
-            ds.update(newDS, true);
+            ds._update(newDS, true);
+            ds._clearTemporary();
             if (_.isFunction(successCallback)) { successCallback(ds); }
         };
 
@@ -145,6 +149,8 @@ this.Dataset = Model.extend({
             error: errorCallback,
             success: dsSaved
         });
+
+        return true;
     },
 
     saveNew: function(successCallback, errorCallback)
@@ -169,41 +175,18 @@ this.Dataset = Model.extend({
         });
     },
 
-    update: function(newDS, forceFull, updateColOrder)
+    update: function(newDS)
+    {
+        this._update(newDS);
+        this.temporary = true;
+        this.trigger('set_temporary');
+    },
+
+    reload: function()
     {
         var ds = this;
-
-        // Back-update the ID, because we don't want the new temporary one
-        newDS.id = ds.id;
-
-        if (forceFull)
-        {
-            // If we are updating the entire dataset, then clean out all the
-            // valid keys; then the next lines will copy all the new ones over
-            _.each(ds._validKeys, function(v, k)
-            { if (k != 'columns') { delete ds[k]; } });
-        }
-
-        if (!$.isBlank(newDS.columns))
-        { ds._updateColumns(newDS.columns, updateColOrder); }
-        delete newDS.columns;
-
-        _.each(newDS, function(v, k) { if (ds._validKeys[k]) { ds[k] = v; } });
-
-        ds.originalViewId = ds.id;
-
-        ds.type = getType(ds);
-        ds.styleClass = ds.type.capitalize();
-        ds.displayName = getDisplayName(ds);
-
-        ds.displayFormat = ds.displayFormat || {};
-
-        if (_.isFunction(ds._convertLegacy)) { ds._convertLegacy(); }
-        ds.url = ds._generateUrl();
-
-        var oldValid = ds.valid;
-        ds.valid = ds._checkValidity();
-        if (!oldValid && ds.valid) { ds.trigger('valid'); }
+        ds._invalidateRows();
+        ds._loadRows(0, 1, null, true, true);
     },
 
     cleanCopy: function()
@@ -645,7 +628,113 @@ this.Dataset = Model.extend({
         return $.isBlank(this.message);
     },
 
-    _updateColumns: function(newCols, updateOrder)
+    _clearTemporary: function()
+    {
+        this.temporary = false;
+        this.trigger('clear_temporary');
+    },
+
+    _update: function(newDS, forceFull, updateColOrder)
+    {
+        var ds = this;
+
+        // Back-update the ID, because we don't want the new temporary one
+        newDS.id = ds.id;
+
+        var oldGroupings = (ds.query || {}).groupBys;
+        var oldGroupAggs = [];
+        if ((oldGroupings || []).length > 0)
+        {
+            _.each(ds.realColumns, function(c)
+            {
+                if (!$.isBlank(c.format.grouping_aggregate))
+                { oldGroupAggs.push(c.id); }
+            });
+        }
+
+        var oldQuery = ds.query;
+
+        if (forceFull)
+        {
+            // If we are updating the entire dataset, then clean out all the
+            // valid keys; then the next lines will copy all the new ones over
+            _.each(ds._validKeys, function(v, k)
+            { if (k != 'columns') { delete ds[k]; } });
+        }
+
+        if (!$.isBlank(newDS.columns))
+        { ds._updateColumns(newDS.columns, forceFull, updateColOrder); }
+        delete newDS.columns;
+
+        _.each(newDS, function(v, k) { if (ds._validKeys[k]) { ds[k] = v; } });
+
+        ds.originalViewId = ds.id;
+
+        ds.type = getType(ds);
+        ds.styleClass = ds.type.capitalize();
+        ds.displayName = getDisplayName(ds);
+
+        ds.displayFormat = ds.displayFormat || {};
+
+        if (_.isFunction(ds._convertLegacy)) { ds._convertLegacy(); }
+        ds.url = ds._generateUrl();
+
+        ds._updateGroupings(oldGroupings, oldGroupAggs);
+
+        var oldValid = ds.valid;
+        ds.valid = ds._checkValidity();
+        if (!oldValid && ds.valid) { ds.trigger('valid'); }
+
+        if (!_.isEqual(oldQuery, ds.query)) { ds.trigger('query_change'); }
+    },
+
+    _updateGroupings: function(oldGroupings, oldGroupAggs)
+    {
+        var ds = this;
+        // Do we care if  there was a grouping but now there isn't?
+        if ($.isBlank((ds.query || {}).groupBys) ||
+            _.isEqual(ds.query.groupBys, oldGroupings)) { return; }
+
+        var newColOrder = [];
+        _.each(ds.query.groupBys, function(g)
+        {
+            var col = ds.columnForID(g.columnId);
+
+            if (!col.format.drill_down) { col.width += 30; }
+            col.format.drill_down = true;
+
+            if (col.hidden && !_.any(oldGroupings, function(og)
+                { return og.columnId == col.id; }))
+            { col.update({flags: _.without(col.flags, 'hidden')}); }
+
+            newColOrder.push(col.id);
+        });
+
+        _(ds.realColumns).chain()
+            .select(function(c) { return !$.isBlank(c.format.grouping_aggregate); })
+            .each(function(c)
+            {
+                if (c.hidden && !_.include(oldGroupAggs, c.id))
+                { c.update({flags: _.without(c.flags, 'hidden')}); }
+
+                newColOrder.push(c.id);
+            });
+
+        _.each(ds.realColumns, function(c)
+        {
+            var i = _.indexOf(newColOrder, c.id);
+            if (i < 0) { i = c.position + newColOrder.length; }
+            c.position = i + 1;
+            if (i < 0 && !c.hidden)
+            {
+                var f = c.flags || [];
+                f.push('hidden');
+                c.update({flags: f});
+            }
+        });
+    },
+
+    _updateColumns: function(newCols, forceFull, updateOrder)
     {
         var ds = this;
 
@@ -679,7 +768,7 @@ this.Dataset = Model.extend({
                         ds.columns.splice(i, 0, c);
                     }
                     // Update the column object in-place
-                    c.update(nc, true);
+                    c.update(nc, forceFull);
                 }
             });
         }
@@ -734,8 +823,10 @@ this.Dataset = Model.extend({
             if (!$.isBlank(result.meta))
             {
                 ds.totalRows = result.meta.totalRows;
-                ds.update(result.meta.view, true, true);
+                ds._update(result.meta.view, true, true);
             }
+
+            if (fullLoad) { ds._clearTemporary(); }
 
             var rows = ds._addRows(result.data.data || result.data, start);
 
@@ -804,13 +895,6 @@ this.Dataset = Model.extend({
         });
 
         return adjRows;
-    },
-
-    _reload: function()
-    {
-        var ds = this;
-        ds._invalidateRows();
-        ds._loadRows(0, 1, null, true, true);
     },
 
     _generateUrl: function()

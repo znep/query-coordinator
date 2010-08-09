@@ -64,7 +64,7 @@
             }
             else
             {
-                sidebarObj.$grid().blistModel().reloadView();
+                blist.dataset.reload();
                 sidebarObj.$dom().socrataAlert(
                         {message: 'Your dataset has been updated', overlay: true});
                 sidebarObj.hide();

@@ -15,17 +15,13 @@
     var rollUpFunctions = function(colId)
     {
         if ($.isBlank(colId)) { return null; }
-        var col = _.detect(blist.display.view.columns, function(c)
-        { return c.id == parseInt(colId); });
-        return blist.data.types[col.dataTypeName].rollUpAggregates;
+        return blist.dataset.columnForID(colId).dataType.rollUpAggregates;
     };
 
     var filterOperators = function(colId)
     {
         if ($.isBlank(colId)) { return null; }
-        var col = _.detect(blist.display.view.columns, function(c)
-        { return c.id == parseInt(colId); });
-        return blist.data.types[col.renderTypeName].filterConditions;
+        return blist.dataset.columnForID(colId).renderType.filterConditions;
     };
 
     var filterEditor = function(sidebarObj, $field, vals, curValue)
@@ -36,33 +32,33 @@
 
         if (_.include(['IS_BLANK', 'IS_NOT_BLANK'], op)) { return false; }
 
-        var col = $.extend(true, {},
-            _.detect(blist.display.view.columns, function(c)
-                { return c.id == parseInt(colId); }));
+        var col = blist.dataset.columnForID(colId);
+        var colCopy = col.cleanCopy();
+        colCopy.renderTypeName = col.renderTypeName;
 
         // Some types want different editors for filtering
-        if (_.include(['tag', 'email', 'html'], col.renderTypeName))
-        { col.renderTypeName = 'text'; }
+        if (_.include(['tag', 'email', 'html'], colCopy.renderTypeName))
+        { colCopy.renderTypeName = 'text'; }
 
         var firstVal = curValue;
         if (_.isArray(curValue)) { firstVal = curValue[0]; }
 
         var $editor = $.tag({tagName: 'div',
-            'class': ['editorWrapper', col.renderTypeName]});
-        $editor.blistEditor({row: null, column: col, value: firstVal});
+            'class': ['editorWrapper', colCopy.renderTypeName]});
+        $editor.blistEditor({row: null, column: colCopy, value: firstVal});
         $field.append($editor);
 
         if (op == 'BETWEEN')
         {
             $field.addClass('twoEditors');
             $field.append($.tag({tagName: 'span',
-                'class': ['joiner', col.renderTypeName], contents: '&amp;'}));
+                'class': ['joiner', colCopy.renderTypeName], contents: '&amp;'}));
 
             var secondVal;
             if (_.isArray(curValue)) { secondVal = curValue[1]; }
             $editor = $.tag({tagName: 'div',
-                'class': ['editorWrapper', col.renderTypeName]});
-            $editor.blistEditor({row: null, column: col, value: secondVal});
+                'class': ['editorWrapper', colCopy.renderTypeName]});
+            $editor.blistEditor({row: null, column: colCopy, value: secondVal});
             $field.append($editor);
         }
         else { $field.removeClass('twoEditors'); }
@@ -246,7 +242,7 @@
 
     config.dataSource = function()
     {
-        var view = $.extend(true, {}, blist.display.view);
+        var view = blist.dataset.cleanCopy();
 
         view.query = view.query || {};
         view.query.filterCondition = view.query.filterCondition || {};
@@ -334,7 +330,7 @@
     {
         if (!registeredChange)
         {
-            sidebarObj.$grid().bind('meta_change', function()
+            blist.dataset.bind('query_change', function()
             { sidebarObj.refresh(configName); });
             registeredChange = true;
         }
@@ -413,50 +409,35 @@
             return;
         }
 
-        var dsGrid = sidebarObj.$grid().datasetGrid();
-
-        var doViewCallback = function()
+        // Make new columns have the correct format
+        _.each(filterView.columns, function(c)
         {
-            var resultCallback = function(view)
+            var col = blist.dataset.columnForID(c.id);
+            c.format = $.extend({}, col.format, c.format);
+        });
+
+        var wasInvalid = !blist.dataset.valid;
+
+        blist.dataset.update(filterView);
+
+        var finishCallback = function()
+        {
+            sidebarObj.finishProcessing();
+
+            _.defer(function()
             {
-                sidebarObj.finishProcessing();
-
-                if (!$.isBlank(view))
-                { $.syncObjects(blist.display.view, view); }
-
-                if (!blist.dataset.valid)
-                { dsGrid.updateValidity(blist.display.view); }
-
-                _.defer(function()
-                {
-                    sidebarObj.addPane(configName);
-                    sidebarObj.show(configName);
-                });
-            };
-
-            if (!blist.dataset.valid &&
-                !_.include(filterView.flags || [], 'default') &&
-                _.include(blist.display.view.rights, 'update_view'))
-            {
-                $.ajax({url: '/views/' + blist.display.view.id + '.json',
-                    type: 'PUT', dataType: 'json', contentType: 'application/json',
-                    data: JSON.stringify(filterView), success: resultCallback});
-            }
-            else
-            {
-                model.getTempView($.extend(true, {}, blist.display.view), true,
-                    resultCallback);
-                dsGrid.setTempView('filterSidebar');
-            }
+                sidebarObj.addPane(configName);
+                sidebarObj.show(configName);
+            });
         };
 
-        var model = sidebarObj.$grid().blistModel();
-        model.multiSort(filterView.query.orderBys, true);
-
-        dsGrid.updateFilter(filterView.query.filterCondition, false, true);
-
-        dsGrid.groupAggregate(filterView.query.groupBys,
-            filterView.columns, false, null, true, doViewCallback, null, true);
+        if (wasInvalid && blist.dataset.type != 'blist')
+        {
+            if (!blist.dataset.save(finishCallback))
+            { finishCallback(); }
+        }
+        else
+        { finishCallback(); }
     };
 
     $.gridSidebar.registerConfig(config, ['Filter', 'Grouped']);

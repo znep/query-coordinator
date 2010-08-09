@@ -148,6 +148,8 @@ $(function()
 
     blist.dataset.bind('columns_changed',
         function() { datasetPageNS.sidebar.updateEnabledSubPanes(); });
+    blist.dataset.bind('set_temporary', datasetPageNS.setTempView);
+    blist.dataset.bind('clear_temporary', datasetPageNS.clearTempView);
 
     // toolbar area
     $('#viewsMenu').menu({
@@ -284,9 +286,6 @@ $(function()
         {
             $a.text($a.data('saveText'));
             $a.removeClass('disabled');
-
-            if (_.include(['blist', 'filter', 'grouped'], blist.dataset.type))
-            { $dataGrid.datasetGrid().clearTempView(null, true); }
         });
     });
 
@@ -299,7 +298,7 @@ $(function()
     $('.unsavedLine a.revert').click(function(e)
     {
         e.preventDefault();
-        $dataGrid.datasetGrid().clearTempView(null, true);
+        blist.dataset.reload();
     });
 
 

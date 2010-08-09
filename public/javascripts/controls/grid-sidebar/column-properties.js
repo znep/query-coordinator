@@ -346,6 +346,7 @@
                         function(xhr)
                         {
                             // Really shouldn't happen; but just in case...
+                            // TODO: should go away
                             sidebarObj.$grid().blistModel().updateColumn(c);
                             sidebarObj.genericErrorHandler($pane, xhr);
                         }

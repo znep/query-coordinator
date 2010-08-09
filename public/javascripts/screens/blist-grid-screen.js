@@ -200,7 +200,6 @@ blist.blistGrid.clearTempViewTab = function ()
     $('.tabList .origView').addClass('active').removeClass('origView');
     $('body').removeClass('unsavedView groupedView');
     $('#infoPane').show();
-    blist.dataset.trigger('columns_changed');
 };
 
 blist.blistGrid.setTempViewTab = function ()
@@ -220,10 +219,6 @@ blist.blistGrid.updateTempViewTab = function()
 
 blist.blistGrid.newViewCreated = function($iEdit, responseData)
 {
-    if (!blistGridNS.isAltView)
-    {
-        blist.dataset.markTemp(false);
-    }
     blist.util.navigation.redirectToView(responseData.id);
 };
 
@@ -409,6 +404,8 @@ $(function ()
     });
 
     blist.dataset.bind('columns_changed', blistGridNS.columnsChangedHandler);
+    blist.dataset.bind('set_temporary', blistGridNS.setTempViewTab);
+    blist.dataset.bind('clear_temporary', blistGridNS.clearTempViewTab);
 
     blist.util.sizing.cachedInfoPaneHeight =
         $("#infoPane .header").height() +
@@ -426,7 +423,7 @@ $(function ()
         function (event)
         {
             event.preventDefault();
-            $('#dataGrid').datasetGrid().setTempView();
+            blist.dataset.update({});
         });
 
     $.live('#createViewMenu li.calendar a, .filterView > .calendar > a, ' +
@@ -443,7 +440,7 @@ $(function ()
     $('.tempViewTab a.close').click(function (event)
     {
         event.preventDefault();
-        $('#dataGrid').datasetGrid().clearTempView(null, true);
+        blist.dataset.reload();
     });
 
     $.live('.filter a.close', 'click', function(event)

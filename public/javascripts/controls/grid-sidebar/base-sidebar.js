@@ -231,6 +231,8 @@
                     + type: array or single datatype names; empty for all
                     + hidden: boolean, whether or not to include hidden columns
                   }
+                  + inputFirst: for checkbox, you can opt to move the checkboxes
+                      ahead of the labels with this boolean.
                   + options: for group or radioGroup, array of sub-fields.
                       Same options as top-level fields.  For select, array of
                       hashes:
@@ -1540,8 +1542,7 @@
                             _.include([true, 'true', 1, '1', 'yes', 'checked'],
                                 v)}));
 
-                // CR/HACK(?): is this an option we want?
-                if (args.item.inputFirst)
+                if (args.item.inputFirst === true)
                 {
                     // swap around last two elements, which are
                     // the label and input respectively

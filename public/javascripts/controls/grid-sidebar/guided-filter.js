@@ -67,7 +67,7 @@
             var filterChildren = [];
             _.each(_.values(facetedFilters), function(filterCondition)
             {
-                if (_.isArray(filterCondition))
+                if (_.isArray(filterCondition) && (filterCondition.length > 0))
                 {
                     filterChildren.push({
                         type: 'operator',
@@ -118,6 +118,14 @@
             else
             {
                 $dataTarget = $fieldLine.children('label');
+                if ($fieldLine.is('.static'))
+                {
+                    $dataTarget = $dataTarget.children('span');
+                }
+                else if ($fieldLine.is('.text'))
+                {
+                    $dataTarget = $dataTarget.children('input[type=text]');
+                }
             }
 
             if (!$.isBlank($fieldLine.find('> label > span').attr('data-custom-facetClear')))
@@ -229,7 +237,7 @@
                                 {
                                     fieldTarget.push({
                                         value: value, type: fieldType, text: value,
-                                        data: { facetValue: value }
+                                        data: { facetValue: value }, inputFirst: true
                                     });
                                 });
                             }
@@ -249,21 +257,13 @@
                             var changeHandler = changeProxy(sidebarObj, column, function($dataTarget, event)
                             {
                                 var selectedValue;
-                                if ($dataTarget.find(':text').length !== 0)
+                                if ($dataTarget.is('input[type=text]'))
                                 {
-                                    selectedValue = $dataTarget.find(':text').val();
+                                    selectedValue = $dataTarget.val();
                                 }
                                 else
                                 {
-                                    if ($dataTarget.is(':checkbox'))
-                                    {
-                                        selectedValue = $dataTarget.attr('data-custom-facetValue');
-                                    }
-                                    else
-                                    {
-                                        selectedValue = $dataTarget.children('span')
-                                                            .attr('data-custom-facetValue');
-                                    }
+                                    selectedValue = $dataTarget.attr('data-custom-facetValue');
                                 }
 
                                 var filterCondition = {
@@ -426,18 +426,8 @@
                             // events
                             var changeHandler = changeProxy(sidebarObj, column, function($dataTarget, event)
                             {
-                                var selectedMinValue, selectedMaxValue;
-
-                                if ($dataTarget.is(':checkbox'))
-                                {
-                                    selectedMinValue = $dataTarget.attr('data-custom-facetRangeMin');
-                                    selectedMaxValue = $dataTarget.attr('data-custom-facetRangeMax');
-                                }
-                                else
-                                {
-                                    selectedMinValue = $dataTarget.children('span').attr('data-custom-facetRangeMin');
-                                    selectedMaxValue = $dataTarget.children('span').attr('data-custom-facetRangeMax');
-                                }
+                                var selectedMinValue = $dataTarget.attr('data-custom-facetRangeMin');
+                                var selectedMaxValue = $dataTarget.attr('data-custom-facetRangeMax');
 
                                 var filterCondition =
                                     { type: 'operator',
@@ -478,12 +468,12 @@
                                         {
                                             if(_.all(filterArray[i].children, function(subCondition)
                                             {
-                                                var compareValue = (subCondition.value == 'LESS_THAN_OR_EQUALS') ?
+                                                var compareValue = (subCondition.value == 'GREATER_THAN_OR_EQUALS') ?
                                                     selectedMinValue : selectedMaxValue;
 
                                                 return _.any(subCondition.children, function(child)
                                                 {
-                                                    return (child.value == compareValue) && (type == 'literal');
+                                                    return (child.value == compareValue) && (child.type == 'literal');
                                                 });
                                             }))
                                             {

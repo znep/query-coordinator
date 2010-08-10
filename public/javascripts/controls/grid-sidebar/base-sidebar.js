@@ -1539,6 +1539,18 @@
                             v === args.item.trueValue) ||
                             _.include([true, 'true', 1, '1', 'yes', 'checked'],
                                 v)}));
+
+                // CR/HACK(?): is this an option we want?
+                if (args.item.inputFirst)
+                {
+                    // swap around last two elements, which are
+                    // the label and input respectively
+                    var input = contents.pop();
+                    var label = contents.pop();
+                    contents.push(input);
+                    contents.push(label);
+                }
+
                 break;
 
             case 'select':

@@ -136,21 +136,22 @@
                     .end().end(), currentSlice);
         });
 
-        /*
+        // Workaround for IE7 SVG overlay issues
         if($('body').hasClass('ie7'))
         {
             $screen.find('.chartMenu .menuButton').click(function(event)
             {
                 $(event.target).closest('.chartMenu').siblings('.chartArea')
-                    .css('visibility', 'hidden');
+                  .find('.chartContent').empty().end()
+                  .find('.emptyHint').fadeIn();
             });
 
-            $(document).bind('click', function(event)
+            $screen.find('.chartContainer .menu ul > li > a').click(function(event)
             {
-                $screen.find('.chartArea').css('visibility', 'visible');
+                $(event.target).closest('.chartContainer')
+                    .find('.emptyHint').hide();
             });
         }
-        */
 
         $screen.find('.topDisplay').append(
             $.renderTemplate('metricsTopList', opts.topListSections, opts.topListDirective))
@@ -394,35 +395,3 @@
     });
 })(jQuery);
 
-metricsNS.topListItemDirective = {
-  '.item' : {
-      'topItem <- ': {
-          '.titleText'       : 'topItem.name',
-          '.titleLink'       : 'topItem.linkText',
-          '.titleLink@href'  : 'topItem.href',
-          '.titleLink@class+': 'topItem.linkClass',
-          '.value .primary'  : 'topItem.value',
-          '.subLinks': {
-              'subItem <- topItem.children' : {
-                  '.subLink'      : 'subItem.linkText',
-                  '.subLink@href' : 'subItem.href'
-              }
-          },
-          '.subValues': {
-              'subItem <- topItem.children' : {
-                  '.subValue': 'subItem.value'
-              }
-          }
-      }
-  }
-};
-
-metricsNS.summaryDataDirective = {
-    '.deltaValue' : 'delta',
-    '.totalValue' : 'total',
-    '.deltaBox@class+': 'deltaClass'
-};
-
-metricsNS.detailDataDirective = {
-    '.totalValue' : 'total'
-};

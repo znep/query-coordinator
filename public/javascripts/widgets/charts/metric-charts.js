@@ -198,7 +198,8 @@ metricsNS.chartDefaults = {
         area: {
             marker: {
                 fillColor: '#fff',
-                lineWidth: 2
+                lineWidth: 2,
+                symbol: 'circle'
             }
         }
     }

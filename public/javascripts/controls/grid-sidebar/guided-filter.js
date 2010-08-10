@@ -31,8 +31,16 @@
         var sectionConfig = {
             title: column.name,
             name: 'facet_' + column.name,
-            tableColumnId: facet.tableColumnId,
-            fields: [{
+            tableColumnId: facet.tableColumnId
+        };
+
+        if (facet.multiSelect === true)
+        {
+            sectionConfig.fields = [];
+        }
+        else
+        {
+            sectionConfig.fields = [{
                 name: column.name,
                 defaultValue: '',
                 type: 'radioGroup',
@@ -40,8 +48,8 @@
                 options: [
                     { value: 'No Filter', name: '', type: 'static', data: { facetClear: 'true' } }
                 ]
-            }]
-        };
+            }];
+        }
 
         return sectionConfig;
     });
@@ -56,10 +64,27 @@
         }
         else
         {
+            var filterChildren = [];
+            _.each(_.values(facetedFilters), function(filterCondition)
+            {
+                if (_.isArray(filterCondition))
+                {
+                    filterChildren.push({
+                        type: 'operator',
+                        value: 'OR',
+                        children: filterCondition
+                    });
+                }
+                else
+                {
+                    filterChildren.push(filterCondition);
+                }
+            });
+
             var mergedFilter = {
                 type: 'operator',
                 value: 'AND',
-                children: _.compact(_.values(facetedFilters).concat(originalFilter))
+                children: _.compact(filterChildren.concat(originalFilter))
             };
 
             dsGrid.updateFilter(mergedFilter, false, false);
@@ -83,21 +108,31 @@
     {
         return function($field, event)
         {
-            var $fieldLabel = $field.closest('.radioLine')
-                                    .children('label');
-            if (!$.isBlank($fieldLabel.children('span').attr('data-custom-facetClear')))
+            var $dataTarget;
+
+            var $fieldLine = $field.closest('.radioLine');
+            if ($fieldLine.length === 0)
+            {
+                $dataTarget = $field.closest('.line').find(':checkbox');
+            }
+            else
+            {
+                $dataTarget = $fieldLine.children('label');
+            }
+
+            if (!$.isBlank($fieldLine.find('> label > span').attr('data-custom-facetClear')))
             {
                 delete facetedFilters[column.tableColumnId];
             }
             else
             {
-                callback($fieldLabel, event);
+                callback($dataTarget, event);
             }
             mergeAndPostFilter(sidebarObj.$grid().datasetGrid());
         }
     };
 
-    var dataGotten = false, 
+    var dataGotten = false,
         aggregatedData = {};
     config.showCallback = function(sidebarObj, $pane)
     {
@@ -179,8 +214,11 @@
                     _.each(facets, function(facet)
                     {
                         var column = blist.dataset.columnForTCID(blist.display.view, facet.tableColumnId);
-                        var field = findSectionForColumn(column).fields[0];
-                        var options = field.options;
+                        var fields = findSectionForColumn(column).fields;
+                        var field = fields[0];
+
+                        var fieldTarget = (facet.multiSelect === true) ? fields : field.options;
+                        var fieldType = (facet.multiSelect === true) ? 'checkbox' : 'static';
 
                         if (facet.type == 'discrete')
                         {
@@ -189,48 +227,96 @@
                             {
                                 _.each(facet.values, function(value)
                                 {
-                                    options.push({ value: value, type: 'static', data: {
-                                        facetValue: value } });
+                                    fieldTarget.push({
+                                        value: value, type: fieldType, text: value,
+                                        data: { facetValue: value }
+                                    });
                                 });
                             }
                             else
                             {
                                 _.each(aggregatedData[column.id], function(freq)
                                 {
-                                    options.push({ value: formatForColumn(freq.value, column) +
-                                        ' <em>(' + freq.count + ')</em>', type: 'static',
-                                        data: { facetValue: freq.value } });
+                                    var labelText = formatForColumn(freq.value, column) +
+                                        ' <em>(' + freq.count + ')</em>';
+                                    fieldTarget.push({ value: labelText, text: labelText,
+                                        type: fieldType, data: { facetValue: freq.value },
+                                        inputFirst: true });
                                 });
                             }
 
                             // events
-                            field.change = changeProxy(sidebarObj, column, function($fieldLabel, event)
+                            var changeHandler = changeProxy(sidebarObj, column, function($dataTarget, event)
                             {
                                 var selectedValue;
-                                if ($fieldLabel.find(':text').length !== 0)
+                                if ($dataTarget.find(':text').length !== 0)
                                 {
-                                    selectedValue = $fieldLabel.find(':text').val();
+                                    selectedValue = $dataTarget.find(':text').val();
                                 }
                                 else
                                 {
-                                    selectedValue = $fieldLabel.children('span')
-                                                        .attr('data-custom-facetValue');
+                                    if ($dataTarget.is(':checkbox'))
+                                    {
+                                        selectedValue = $dataTarget.attr('data-custom-facetValue');
+                                    }
+                                    else
+                                    {
+                                        selectedValue = $dataTarget.children('span')
+                                                            .attr('data-custom-facetValue');
+                                    }
                                 }
 
-                                facetedFilters[column.tableColumnId] =
-                                    { type: 'operator',
-                                      value: 'EQUALS',
-                                      children: [
-                                        { columnId: column.id,
-                                          type: 'column' },
-                                        { value: selectedValue,
-                                          type: 'literal' } ]
-                                    };
+                                var filterCondition = {
+                                    type: 'operator',
+                                    value: 'EQUALS',
+                                    children: [
+                                      { columnId: column.id,
+                                        type: 'column' },
+                                      { value: selectedValue,
+                                        type: 'literal' } ]
+                                };
+
+                                if (facet.multiSelect)
+                                {
+                                    var filterArray =
+                                        facetedFilters[column.tableColumnId] =
+                                        facetedFilters[column.tableColumnId] || [];
+
+                                    if ($dataTarget.is(':checked'))
+                                    {
+                                        filterArray.push(filterCondition);
+                                    }
+                                    else
+                                    {
+                                        // dig into the array to find the one we want
+                                        for (var i = 0; i < filterArray.length; i++)
+                                        {
+                                            if (_.any(filterArray[i].children, function(child) {
+                                                return (child.value == selectedValue) && (child.type == 'literal');
+                                            }))
+                                            {
+                                                filterArray.splice(i, 1);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    facetedFilters[column.tableColumnId] = filterCondition;
+                                }
+                            });
+
+                            // will only be one field for single-select, but
+                            // many for multi-select
+                            _.each(fields, function(field)
+                            {
+                                field.change = changeHandler;
                             });
 
                             if (facet.includeOther === true)
                             {
-                                options.push({ type: 'text', prompt: 'Other...', name: 'facet_other',
+                                fieldTarget.push({ type: 'text', prompt: 'Other...', name: 'facet_other',
                                     change: field.change });
                             }
                         }
@@ -329,18 +415,31 @@
                             // okay, now render those ranges.
                             while (renderedRanges.length > 1)
                             {
-                                options.push({ value: formatForColumn(renderedRanges[0], column) +
-                                    ' &mdash; ' + formatForColumn(renderedRanges[1], column),
-                                    type: 'static', data: { facetRangeMin: renderedRanges[0],
-                                    facetRangeMax: renderedRanges[1] } });
+                                var labelText = formatForColumn(renderedRanges[0], column) +
+                                    ' &mdash; ' + formatForColumn(renderedRanges[1], column);
+                                fieldTarget.push({ value: labelText, text: labelText,
+                                    type: fieldType, data: { facetRangeMin: renderedRanges[0],
+                                    facetRangeMax: renderedRanges[1] }, inputFirst: true });
                                 renderedRanges.shift();
                             }
 
                             // events
-                            field.change = changeProxy(sidebarObj, column, function($fieldLabel, event)
+                            var changeHandler = changeProxy(sidebarObj, column, function($dataTarget, event)
                             {
-                                var $span = $fieldLabel.children('span');
-                                facetedFilters[column.tableColumnId] =
+                                var selectedMinValue, selectedMaxValue;
+
+                                if ($dataTarget.is(':checkbox'))
+                                {
+                                    selectedMinValue = $dataTarget.attr('data-custom-facetRangeMin');
+                                    selectedMaxValue = $dataTarget.attr('data-custom-facetRangeMax');
+                                }
+                                else
+                                {
+                                    selectedMinValue = $dataTarget.children('span').attr('data-custom-facetRangeMin');
+                                    selectedMaxValue = $dataTarget.children('span').attr('data-custom-facetRangeMax');
+                                }
+
+                                var filterCondition =
                                     { type: 'operator',
                                       value: 'AND',
                                       children: [
@@ -349,8 +448,7 @@
                                           children: [
                                             { columnId: column.id,
                                               type: 'column' },
-                                            { value: $fieldLabel.children('span')
-                                                                .attr('data-custom-facetRangeMin'),
+                                            { value: selectedMinValue,
                                               type: 'literal' } ]
                                         },
                                         { type: 'operator',
@@ -358,11 +456,52 @@
                                           children: [
                                             { columnId: column.id,
                                               type: 'column' },
-                                            { value: $fieldLabel.children('span')
-                                                                .attr('data-custom-facetRangeMax'),
+                                            { value: selectedMaxValue,
                                               type: 'literal' } ]
                                         }
                                       ] };
+
+                                if (facet.multiSelect)
+                                {
+                                    var filterArray =
+                                        facetedFilters[column.tableColumnId] =
+                                        facetedFilters[column.tableColumnId] || [];
+
+                                    if ($dataTarget.is(':checked'))
+                                    {
+                                        filterArray.push(filterCondition);
+                                    }
+                                    else
+                                    {
+                                        // dig into the array to find the one we want
+                                        for (var i = 0; i < filterArray.length; i++)
+                                        {
+                                            if(_.all(filterArray[i].children, function(subCondition)
+                                            {
+                                                var compareValue = (subCondition.value == 'LESS_THAN_OR_EQUALS') ?
+                                                    selectedMinValue : selectedMaxValue;
+
+                                                return _.any(subCondition.children, function(child)
+                                                {
+                                                    return (child.value == compareValue) && (type == 'literal');
+                                                });
+                                            }))
+                                            {
+                                                filterArray.splice(i, 1);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    facetedFilters[column.tableColumnId] = filterCondition;
+                                }
+                            });
+
+                            _.each(fields, function(field)
+                            {
+                                field.change = changeHandler;
                             });
                         }
                     });

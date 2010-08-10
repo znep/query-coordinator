@@ -55,18 +55,37 @@ this.Column = Model.extend({
 
     show: function(successCallback, errorCallback, isBatch)
     {
+        return this.setVisible(true, successCallback, errorCallback, isBatch);
+    },
+
+    hide: function(successCallback, errorCallback, isBatch)
+    {
+        return this.setVisible(false, successCallback, errorCallback, isBatch);
+    },
+
+    setVisible: function(isVisible, successCallback, errorCallback, isBatch)
+    {
         var col = this;
+        if (col.hidden !== isVisible) { return false; }
 
         var columnShown = function()
         {
-            col.hidden = false;
-            col.flags = _.without(col.flags || [], 'hidden');
+            col.hidden = !isVisible;
+            if (isVisible)
+            { col.flags = _.without(col.flags || [], 'hidden'); }
+            else
+            {
+                col.flags = col.flags || [];
+                col.flags.push('hidden');
+            }
+
             if (!isBatch) { col.view.trigger('columns_changed'); }
         };
 
         this._makeRequest({url: '/views/' + this.view.id + '/columns/' + this.id +
-            '.json', type: 'PUT', data: JSON.stringify({hidden: false}),
+            '.json', type: 'PUT', data: JSON.stringify({hidden: !isVisible}),
             batch: isBatch, success: columnShown, error: errorCallback});
+        return true;
     },
 
     update: function(newCol, forceFull)

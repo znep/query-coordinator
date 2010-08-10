@@ -126,12 +126,6 @@ this.Dataset = Model.extend({
         return _.include(['blist', 'filter', 'grouped'], this.type);
     },
 
-    // TODO: Can we get rid of this eventually?
-    markTemp: function(isTemp)
-    {
-        this.temporary = isTemp;
-    },
-
     save: function(successCallback, errorCallback)
     {
         var ds = this;
@@ -697,9 +691,8 @@ this.Dataset = Model.extend({
     _updateGroupings: function(oldGroupings, oldGroupAggs)
     {
         var ds = this;
-        // Do we care if  there was a grouping but now there isn't?
-        if ($.isBlank((ds.query || {}).groupBys) ||
-            _.isEqual(ds.query.groupBys, oldGroupings)) { return; }
+        // Do we care if there was a grouping but now there isn't?
+        if ($.isBlank((ds.query || {}).groupBys)) { return; }
 
         var newColOrder = [];
         _.each(ds.query.groupBys, function(g)
@@ -717,7 +710,8 @@ this.Dataset = Model.extend({
         });
 
         _(ds.realColumns).chain()
-            .select(function(c) { return !$.isBlank(c.format.grouping_aggregate); })
+            .select(function(c)
+                { return !$.isBlank(c.format.grouping_aggregate); })
             .each(function(c)
             {
                 if (c.hidden && !_.include(oldGroupAggs, c.id))
@@ -738,6 +732,8 @@ this.Dataset = Model.extend({
                 c.update({flags: f});
             }
         });
+
+        ds._updateColumns();
     },
 
     _updateColumns: function(newCols, forceFull, updateOrder)

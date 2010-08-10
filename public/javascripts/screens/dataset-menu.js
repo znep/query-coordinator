@@ -100,8 +100,8 @@ blist.datasetMenu.menuHandler = function(event)
             break;
         case 'hide-show-col':
             var $li = $target.closest('li');
-            $('.blist-table').datasetGrid().showHideColumns(actionId,
-                $li.hasClass('checked'));
+            blist.dataset.columnForID(actionId).setVisible(
+                !$li.hasClass('checked'));
             break;
         case 'delete-col':
             $('.blist-table').datasetGrid().deleteColumns(actionId);

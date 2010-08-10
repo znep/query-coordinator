@@ -433,7 +433,7 @@ $(function()
         if ($dataGrid.length > 0)
         {
             $dataGrid
-                .datasetGrid({viewId: blist.dataset.id,
+                .datasetGrid({view: blist.dataset,
                     accessType: 'WIDGET',
                     showRowNumbers: widgetNS.theme['grid']['row_numbers'],
                     showRowHandle: widgetNS.theme['grid']['row_numbers'],

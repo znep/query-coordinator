@@ -111,6 +111,7 @@
 
     var isEdit = _.include(['filter', 'grouped'], blist.dataset.type) &&
         blist.dataset.hasRight('update_view');
+    var isGrouped = ((blist.dataset.query || {}).groupBys || []).length > 0;
 
     var configName = 'filter.filterDataset';
     var config = {
@@ -147,7 +148,8 @@
                         field: {type: 'group', options: [
                             {type: 'columnSelect', text: 'Column',
                                 name: 'children.0.columnId', required: true,
-                                columns: {type: filterableTypes, hidden: isEdit}},
+                                columns: {type: filterableTypes,
+                                    hidden: isEdit || isGrouped}},
                             {type: 'select', text: 'Operator', name: 'value',
                                 required: true, prompt: 'Select an operator',
                                 linkedField: 'children.0.columnId',
@@ -178,7 +180,8 @@
                         name: 'query.groupBys', minimum: 0,
                         field: {type: 'columnSelect', text: 'Group By',
                             name: 'columnId', notequalto: 'groupColumn',
-                            columns: {type: groupableTypes, hidden: isEdit}},
+                            columns: {type: groupableTypes,
+                                hidden: isEdit || isGrouped}},
                         wizard: 'Choose one or more columns with repeated values ' +
                             'to group them into a single row'
                     },
@@ -188,7 +191,8 @@
                             {type: 'columnSelect', text: 'Roll-Up',
                                 name: 'id', required: true,
                                 notequalto: 'rollUpColumn',
-                                columns: {type: groupableTypes, hidden: isEdit}},
+                                columns: {type: groupableTypes,
+                                    hidden: isEdit || isGrouped}},
                             {type: 'select', text: 'Function', required: true,
                                 name: 'format.grouping_aggregate',
                                 prompt: 'Select a function',
@@ -390,8 +394,10 @@
             filterView.query.filterCondition.children = newChildren;
         }
 
-        if ((filterView.columns || []).length > 0 &&
-            filterView.query.groupBys.length < 1)
+        filterView.columns = filterView.columns || [];
+
+        if (filterView.columns.length > 0 &&
+            (filterView.query.groupBys || []).length < 1)
         {
             $pane.find('.mainError')
                 .text('You must group by at least one column to roll-up a column');
@@ -399,7 +405,7 @@
             return;
         }
 
-        if (_.any(filterView.columns || [], function(c)
+        if (_.any(filterView.columns, function(c)
             { return $.isBlank(c.format) ||
                 $.isBlank(c.format.grouping_aggregate); }))
         {
@@ -414,6 +420,40 @@
         {
             var col = blist.dataset.columnForID(c.id);
             c.format = $.extend({}, col.format, c.format);
+        });
+
+        _.each(blist.dataset.realColumns, function(c)
+        {
+            if (!$.isBlank(c.format.grouping_aggregate) &&
+                !_.any(filterView.columns, function(fvc)
+                    { return fvc.id == c.id; }))
+            {
+                filterView.columns.push({id: c.id,
+                    format: $.extend({}, c.format, {grouping_aggregate: null})});
+            }
+        });
+
+        // Show hidden columns if we are grouped
+        isGrouped = (filterView.query.groupBys || []).length > 0;
+        _.each(config.sections, function(s)
+        {
+            if (_.include(['filterFilter', 'filterGroup'], s.name))
+            {
+                _.each(s.fields, function(f)
+                {
+                    if (f.type == 'repeater')
+                    {
+                        f = f.field;
+                        if (f.type == 'group')
+                        {
+                            f = _.detect(f.options, function(o)
+                                { return o.type == 'columnSelect'; });
+                        }
+                        if (f.type == 'columnSelect')
+                        { f.columns.hidden = isEdit || isGrouped; }
+                    }
+                });
+            }
         });
 
         var wasInvalid = !blist.dataset.valid;

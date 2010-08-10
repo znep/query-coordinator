@@ -128,13 +128,15 @@
       var operator = $("#filterOperator").val();
       var viewFilters = blist.filter.getFilter($(".filterDatasetWrapper #filterTable"), operator);
 
-      $("#dataGrid").datasetGrid().updateFilter(viewFilters,
-          $(this).attr('href').endsWith('#update'));
+      var q = $.extend({}, blist.dataset.query, {filterCondition: viewFilters});
+      blist.dataset.update({query: q});
+      if ($(this).attr('href').endsWith('#update'))
+      { blist.dataset.save(); }
     });
 
     $.live('#filterTable .filterTableFooter .filterTable-add a', 'click', blist.filter.filterAdd);
     $.live('#filterTable .filterTableBody .filterTable-delete a', 'click', blist.filter.filterRemove);
     
-    $.analytics.trackEvent('Dataset Page Menu', 'Filter dialog opened', blistGridNS.viewId);
+    $.analytics.trackEvent('Dataset Page Menu', 'Filter dialog opened', blist.dataset.id);
   };
 </script>

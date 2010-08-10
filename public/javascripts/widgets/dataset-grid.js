@@ -49,7 +49,7 @@
             showRowNumbers: true,
             showAddColumns: false,
             validViewCallback: function (view) {},
-            viewId: null
+            view: null
         },
 
         prototype:
@@ -107,7 +107,7 @@
                         masterView: blist.display.view,
                         progressiveLoading: !datasetObj.settings.isInvalid,
                         initialResponse: datasetObj.settings.initialResponse})
-                    .ajax({url: '/views/' + datasetObj.settings.viewId +
+                    .ajax({url: '/views/' + datasetObj.settings.view.id +
                                 (datasetObj.settings.isInvalid ? '.json' :
                                 '/rows.json'), cache: false,
                             data: {accessType: datasetObj.settings.accessType},
@@ -139,6 +139,8 @@
                         $(datasetObj.settings.clearFilterItem);
                     datasetObj.settings.clearFilterItem
                         .click(function (e) { datasetObj.clearFilterInput(e); });
+                    datasetObj.settings.view.bind('clear_temporary', function()
+                        { datasetObj.clearFilterInput(); });
                     if (datasetObj.settings.autoHideClearFilterItem)
                     { datasetObj.settings.clearFilterItem.hide(); }
                 }
@@ -149,75 +151,6 @@
                 if (!this._$dom)
                 { this._$dom = $(this.currentGrid); }
                 return this._$dom;
-            },
-
-            updateFilter: function(filter, saveExisting, skipRequest)
-            {
-                var datasetObj = this;
-                var model = datasetObj.settings._model;
-                model.meta().columnFilters = null;
-                model.meta().view.query.filterCondition = filter;
-                blist.display.view.query.filterCondition = filter;
-
-                if (skipRequest) { return; }
-
-                var view = datasetObj.settings._model.meta().view;
-                if (saveExisting && !_.include(view.flags || [], 'default') &&
-                    _.include(view.rights, 'update_view'))
-                {
-                    $.ajax({url: '/views/' + view.id + '.json',
-                        data: JSON.stringify({query: view.query}),
-                        type: 'PUT', contentType: 'application/json',
-                        success: function(newView)
-                        {
-                            if (datasetObj.settings.isInvalid)
-                            { datasetObj.updateValidity(newView); }
-                            else
-                            { model.getTempView(null, true); }
-                        }});
-                }
-                else
-                {
-                    model.getTempView(null, true);
-                    this.setTempView();
-                }
-            },
-
-            updateView: function(newView)
-            {
-                var datasetObj = this;
-
-                datasetObj.settings._filterIds = {};
-                datasetObj.settings._filterCount = 0;
-                blist.dataset.markTemp(false);
-
-                if (datasetObj.settings.filterForm)
-                { datasetObj.settings.filterForm.find(':input').val('').blur(); }
-                if (datasetObj.settings.autoHideClearFilterItem)
-                { datasetObj.settings.clearFilterItem.hide(); }
-                datasetObj.summaryStale = true;
-
-                if (typeof newView == 'string')
-                {
-                    // Assume ID
-                    newView = {id: newView};
-                }
-                if (!newView.meta && newView.id)
-                {
-                    // Assume view with no rows
-                    datasetObj.settings.viewId = newView.id;
-                    datasetObj.settings._model
-                        .ajax({url: '/views/' + datasetObj.settings.viewId +
-                                '/rows.json', cache: false,
-                            data: {accessType: datasetObj.settings.accessType},
-                            dataType: 'json'});
-                }
-                else if (newView.meta && newView.data)
-                {
-                    datasetObj.settings.viewId = o.meta.view.id;
-                    datasetObj.settings._model.meta(o.meta);
-                    datasetObj.settings._model.rows(o.data);
-                }
             },
 
             setColumnAggregate: function(columnId, aggregate)
@@ -235,92 +168,25 @@
                         success: function(retCol)
                         {
                             datasetObj.settings._model.updateColumn(retCol);
-                            blist.dataset.trigger('columns_changed');
+                            datasetObj.settings.view.trigger('columns_changed');
                         }
                     });
                 }
             },
 
-            showHideColumns: function(columns, hide, skipRequest, successCallback)
-            {
-                if (!(columns instanceof Array)) { columns = [columns]; }
-                var datasetObj = this;
-                var view = datasetObj.settings._model.meta().view;
-                var successCount = 0;
-                $.each(columns, function(i, colId)
-                {
-                    var col = datasetObj.settings._model.getColumnByID(colId);
-                    if (col)
-                    {
-                        if (!col.flags) { col.flags = []; }
-                        if (hide)
-                        { col.flags.push('hidden'); }
-                        else
-                        {
-                            var ind = $.inArray('hidden', col.flags);
-                            if (ind > -1) { col.flags.splice(ind, 1); }
-                        }
-                        datasetObj.settings._model.updateColumn(col);
-
-                        var $li = $('.columnsShow a[href*="_' + colId + '"]')
-                            .closest('li');
-                        if (hide) { $li.removeClass('checked'); }
-                        else { $li.addClass('checked'); }
-
-                        if (!skipRequest)
-                        {
-                            if (_.include(view.rights, 'update_view'))
-                            {
-                                $.ajax({url: '/views/' + view.id + '/columns/' +
-                                    col.id + '.json',
-                                    data: JSON.stringify({'hidden': hide}),
-                                    type: 'PUT', dataType: 'json',
-                                    contentType: 'application/json',
-                                    success: function(retCol)
-                                    {
-                                        // Update the column as it comes from
-                                        // the server if it has an aggregate
-                                        if (retCol.updatedAggregate !== null &&
-                                            retCol.updatedAggregate !== undefined)
-                                        {
-                                            datasetObj.settings._model
-                                                .updateColumn(retCol);
-                                        }
-                                        successCount++;
-                                        if (successCount == columns.length)
-                                        {
-                                            blist.dataset
-                                                .trigger('columns_changed');
-                                            if (typeof successCallback ==
-                                                'function')
-                                            { successCallback(); }
-                                        }
-                                    }
-                                    });
-                            }
-                            else
-                            {
-                                datasetObj.setTempView('columnShowHide-' + colId);
-                            }
-                        }
-                    }
-                });
-            },
-
             showHideTags: function(hide)
             {
                 var datasetObj = this;
-                var model = datasetObj.settings._model;
-                var column = $.grep(model.meta().view.columns, function(c, i)
-                        { return c.dataTypeName == 'tag'; })[0];
-
-                datasetObj.showHideColumns(column.id, hide, false,
-                    function ()
+                _.each(datasetObj.settings.view.columnsForType('tag', true),
+                    function(c)
                     {
-                        if (!hide && column.position > 1)
-                        { model.moveColumn(column, 0); }
-                    }
-                );
+                        c.setVisible(!hide,
+                            function ()
+                            {
+                                if (!hide && c.position > 1)
+                                { model.moveColumn(c, 0); }
+                            });
+                    });
             },
 
             deleteColumns: function(columns)
@@ -349,176 +215,12 @@
                                 if (successCount == columns.length)
                                 {
                                     model.deleteColumns(columns);
-                                    blist.dataset.trigger('columns_changed');
+                                    datasetObj.settings.view
+                                        .trigger('columns_changed');
                                 }
                             }});
                     });
                     // Hide columns so they disappear immediately
-                    datasetObj.showHideColumns(columns, true, true);
-                }
-            },
-
-            groupAggregate: function(grouped, aggregates, doSave, newName,
-                drillDown, successCallback, errorCallback, skipRequest)
-            {
-                var datasetObj = this;
-                var model = datasetObj.settings._model;
-                var view = blist.display.view;
-                var isNew = newName !== null && newName !== undefined;
-                var isUpdate = doSave && !isNew &&
-                    _.include(view.rights, 'update_view');
-                var isGrouping = grouped instanceof Array && grouped.length > 0;
-                var wasGrouped = model.isGrouped();
-
-                var newCols = [];
-                var usedCols = {};
-
-                if (isGrouping)
-                {
-                    model.group(grouped);
-                    $.each(grouped, function(i, c)
-                    {
-                        var col = _.detect(view.columns, function(vc)
-                        { return vc.id == c.columnId; });
-
-                        var alreadyGrouped = _.include(view.query.groupBys || [],
-                            function(gb) { return gb.columnId == col.id; });
-
-                        var newWidth = col.width +
-                            (drillDown && !(col.format || {}).drill_down ? 30 : 0);
-                        var newFormat = $.extend({}, col.format,
-                            {drill_down: drillDown});
-
-                        newCols.push($.extend({}, col,
-                            {hidden: alreadyGrouped &&
-                                _.include(col.flags || [], 'hidden'),
-                             position: newCols.length + 1,
-                             format: newFormat, width: newWidth}));
-                        usedCols[col.id] = newFormat;
-                    });
-                    view.query.groupBys = grouped;
-                }
-                else { delete view.query.groupBys; }
-
-                if ((isGrouping || wasGrouped) &&
-                    _.isArray(aggregates) && aggregates.length > 0)
-                {
-                    _.each(aggregates, function(a)
-                    {
-                        var col = _.detect(view.columns, function(vc)
-                        { return vc.id == a.id; });
-
-                        var existingFormat = usedCols[col.id] || col.format || {};
-                        var format = $.extend({}, existingFormat,
-                            {grouping_aggregate:
-                                (a.format || {}).grouping_aggregate || null});
-                        if ($.isBlank(format.grouping_aggregate))
-                        { delete format.grouping_aggregate; }
-
-                        if (_.isUndefined(usedCols[col.id]))
-                        {
-                            newCols.push($.extend({}, col,
-                                {hidden: $.isBlank(format.grouping_aggregate) ||
-                                !$.isBlank(existingFormat.grouping_aggregate) &&
-                                    _.include(col.flags || [], 'hidden'),
-                                position: newCols.length + 1}));
-                        }
-                        _.detect(newCols, function(nc)
-                            { return nc.id == col.id; }).format = format;
-                    });
-                }
-
-                if (isGrouping || wasGrouped)
-                { view.columns = newCols; }
-
-                if (isNew) { view.name = newName; }
-
-                if (skipRequest)
-                {
-                    if (_.isFunction(successCallback))
-                    { successCallback(); }
-                    return;
-                }
-
-                if (!doSave)
-                {
-                    if (typeof successCallback == 'function')
-                    { successCallback(); }
-                    model.getTempView($.extend(true, {}, view),
-                        isGrouping || wasGrouped);
-                    datasetObj.setTempView('grouping');
-                }
-                else if (isNew)
-                {
-                    view = blist.datasetUtil.cleanViewForPost($.extend(true, {}, view),
-                        isGrouping || wasGrouped);
-                    var saveNewView = function()
-                    {
-                        $.ajax({url: '/views.json', type: 'POST',
-                            contentType: 'application/json', dataType: 'json',
-                            data: JSON.stringify(view),
-                            error: function(xhr)
-                            {
-                                if (typeof errorCallback == 'function')
-                                { errorCallback(JSON.parse
-                                    (xhr.responseText).message); }
-                            },
-                            success: function(resp)
-                            {
-                                if (typeof successCallback == 'function')
-                                { successCallback(); }
-                                blist.util.navigation.redirectToView(resp.id);
-                            }});
-                    };
-
-                    if (blist.util && blist.util.inlineLogin)
-                    {
-                        var loginMessage =
-                            'You must be logged in to create a new view';
-                        blist.util.inlineLogin.verifyUser(
-                            function (isSuccess) {
-                                if (isSuccess) { saveNewView() }
-                                else
-                                {
-                                    if (typeof errorCallback == 'function')
-                                    { errorCallback(loginMessage); }
-                                }
-                            }, loginMessage);
-                    }
-                    else { saveNewView(); }
-                }
-                else
-                {
-                    view = blist.datasetUtil.cleanViewForPost($.extend(true, {}, view),
-                        isGrouping || wasGrouped);
-                    $.socrataServer.addRequest({url: '/views/' + view.id + '.json',
-                        type: 'PUT', data: JSON.stringify(view),
-                        error: errorCallback,
-                        success: function(newView)
-                        {
-                            if (datasetObj.settings.isInvalid)
-                            { datasetObj.updateValidity(newView); }
-                            else
-                            { model.reloadView(); }
-                        }});
-
-                    _.each(newCols, function(c)
-                        {
-                            $.socrataServer.addRequest(
-                                {url: '/views/' + view.id + '/columns/' +
-                                c.id + '.json', type: 'PUT',
-                                data: JSON.stringify({hidden: c.hidden,
-                                    format: c.format}),
-                                error: errorCallback});
-                        });
-
-                    $.socrataServer.runRequests({success: function()
-                    {
-                        if (typeof successCallback == 'function')
-                        { successCallback(); }
-                        blist.dataset.trigger('columns_changed');
-                    }
-                    });
                 }
             },
 
@@ -584,8 +286,9 @@
 
                 var drillDownCallBack = function(newView)
                 {
+                    // TODO: switch to Dataset
                     model.getTempView(newView, true);
-                    datasetObj.setTempView('drilldown');
+                    //datasetObj.setTempView('drilldown');
                     model.forceSendColumns(true);
                 };
 
@@ -674,10 +377,9 @@
                         { revealDrillDownCallBack(); }
                     }, 'json');
 
-                    if (blist.datasetUtil.getDisplayType(view) != 'Blist')
+                    if (datasetObj.settings.view.type != 'blist')
                     {
-                        // TODO: switch to view passed in?
-                        blist.dataset.getParentDataset(function(parDS)
+                        datasetObj.settings.view.getParentDataset(function(parDS)
                         {
                             if (!$.isBlank(parDS))
                             {
@@ -691,76 +393,6 @@
                 }
             },
 
-            clearTempView: function(countId, forceAll)
-            {
-                var datasetObj = this;
-                if (datasetObj.settings._filterCount < 1) { return; }
-
-                if (!datasetObj.settings._filterIds)
-                {datasetObj.settings._filterIds = {};}
-                if (countId != null)
-                {
-                    if (datasetObj.settings._filterIds[countId])
-                    { datasetObj.settings._filterCount--; }
-                    delete datasetObj.settings._filterIds[countId];
-                }
-                else { datasetObj.settings._filterCount--; }
-
-                if (forceAll)
-                {
-                    datasetObj.settings._filterCount = 0;
-                    datasetObj.settings._filterIds = {};
-                }
-                else if (datasetObj.settings._filterCount > 0)
-                {
-                    return;
-                }
-
-                blist.dataset.markTemp(false);
-
-                if (datasetObj.settings.clearTempViewCallback != null)
-                {
-                    datasetObj.settings.clearTempViewCallback();
-                }
-                $(datasetObj.currentGrid).trigger('clear_temp_view');
-
-                if (datasetObj.settings.filterForm)
-                { datasetObj.settings.filterForm.find(':input').val('').blur(); }
-                if (datasetObj.settings.autoHideClearFilterItem)
-                { datasetObj.settings.clearFilterItem.hide(); }
-                datasetObj.summaryStale = true;
-
-                datasetObj.settings._model.reloadView();
-            },
-
-            setTempView: function(countId)
-            {
-                var datasetObj = this;
-                if (!datasetObj.settings._filterIds)
-                {datasetObj.settings._filterIds = {};}
-                if (countId == null ||
-                    datasetObj.settings._filterIds[countId] == null)
-                {
-                    datasetObj.settings._filterCount++;
-                    if (countId != null)
-                    { datasetObj.settings._filterIds[countId] = true; }
-                }
-
-                if (blist.dataset.temporary)
-                {
-                    if (datasetObj.settings.updateTempViewCallback != null)
-                    { datasetObj.settings.updateTempViewCallback(); }
-                    return;
-                }
-
-                blist.dataset.markTemp(true);
-
-                if (datasetObj.settings.setTempViewCallback != null)
-                {
-                    datasetObj.settings.setTempViewCallback();
-                }
-            },
-
             clearFilterInput: function(e)
             {
                 var datasetObj = this;
@@ -769,14 +401,13 @@
                     return;
                 }
 
-                e.preventDefault();
+                if (!$.isBlank(e)) { e.preventDefault(); }
                 if (datasetObj.settings.filterForm)
                 { datasetObj.settings.filterForm.find(':input').val('').blur(); }
                 datasetObj.summaryStale = true;
                 datasetObj.settings._model.filter('');
-                datasetObj.clearTempView('searchString');
                 if (datasetObj.settings.autoHideClearFilterItem)
-                { $(e.currentTarget).hide(); }
+                { datasetObj.settings.clearFilterItem.hide(); }
             },
 
             updateValidity: function(view)
@@ -790,7 +421,7 @@
                     datasetObj.settings.isInvalid = false;
                     datasetObj.settings.validViewCallback(view);
                     datasetObj.settings._model.options({progressiveLoading: true})
-                        .ajax({url: '/views/' + datasetObj.settings.viewId +
+                        .ajax({url: '/views/' + datasetObj.settings.view.id +
                             '/rows.json', cache: false,
                             data: {accessType: datasetObj.settings.accessType},
                             dataType: 'json'});
@@ -1007,7 +638,7 @@
     var columnsUpdated = function(datasetObj)
     {
         datasetObj.summaryStale = true;
-        blist.dataset.trigger('columns_changed');
+        datasetObj.settings.view.trigger('columns_changed');
     };
 
     var serverRowChange = function(datasetObj)
@@ -1054,13 +685,11 @@
         model.filter(searchText);
         if (!searchText || searchText === '')
         {
-            datasetObj.clearTempView('searchString');
             if (datasetObj.settings.autoHideClearFilterItem)
             { datasetObj.settings.clearFilterItem.hide(); }
         }
         else
         {
-            datasetObj.setTempView('searchString');
             if (datasetObj.settings.autoHideClearFilterItem)
             { datasetObj.settings.clearFilterItem.show(); }
         }
@@ -1601,9 +1230,13 @@
                 var selHideCols = $(datasetObj.currentGrid).blistTableAccessor()
                     .getSelectedColumns();
                 selHideCols[colIdIndex] = true;
-                var hideCols = [];
-                $.each(selHideCols, function(colId, val) { hideCols.push(colId); });
-                datasetObj.showHideColumns(hideCols, true);
+                $.each(selHideCols, function(colId, val)
+                {
+                    datasetObj.settings.view.columnForID(colId)
+                        .hide(null, null, true);
+                });
+                $.socrataServer.runRequests({success: function()
+                    { datasetObj.settings.view.trigger('columns_changed'); }});
                 break;
             case 'delete-column':
                 var view = model.meta().view;
@@ -1645,7 +1278,7 @@
     {
         var view = datasetObj.settings._model.meta().view;
         if (!skipRequest && _.include(view.rights, 'update_view') &&
-            !blist.dataset.temporary)
+            !datasetObj.settings.view.temporary)
         {
             $.ajax({url: '/views/' + view.id + '.json',
                 data: JSON.stringify({query: view.query}),
@@ -1673,9 +1306,6 @@
                     }
                 }
             }
-
-            if (matches) { datasetObj.clearTempView('sort'); }
-            else { datasetObj.setTempView('sort'); }
         }
     };
 
@@ -1683,7 +1313,7 @@
     {
         var view = datasetObj.settings._model.meta().view;
         if (_.include(view.rights, 'update_view') &&
-            !blist.dataset.temporary)
+            !datasetObj.settings.view.temporary)
         {
             var modView = blist.datasetUtil.cleanViewForPost(
                 datasetObj.settings._model.getViewCopy(), true);
@@ -1692,7 +1322,7 @@
                     type: 'PUT', contentType: 'application/json',
                     success: function()
                         {
-                            blist.dataset.trigger('columns_changed');
+                            datasetObj.settings.view.trigger('columns_changed');
                             // If we change the column order on the server,
                             // data will come back in a different order;
                             // so reload the view with the proper order of
@@ -1707,8 +1337,6 @@
     {
         if ($(col.dom).isSocrataTip()) { $(col.dom).socrataTip().hide(); }
         datasetObj.summaryStale = true;
-        if (!setFilter) { datasetObj.clearTempView('filter_' + col.id); }
-        else { datasetObj.setTempView('filter_' + col.id); }
     };
 
     var viewLoaded = function(datasetObj)
@@ -1728,7 +1356,8 @@
 
     var columnNameEdit = function(datasetObj, event, origEvent)
     {
-        if (!datasetObj.settings.columnNameEdit || blist.dataset.temporary)
+        if (!datasetObj.settings.columnNameEdit ||
+            datasetObj.settings.view.temporary)
         { return; }
 
         var $target = $(origEvent.currentTarget).find('.blist-th-name');
@@ -1799,7 +1428,7 @@
             {
                 columnEditEnd(datasetObj, $th);
                 model.updateColumn(newCol);
-                blist.dataset.trigger('columns_changed');
+                datasetObj.settings.view.trigger('columns_changed');
             }});
     };
 

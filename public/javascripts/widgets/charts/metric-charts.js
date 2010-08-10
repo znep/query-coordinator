@@ -141,7 +141,7 @@ metricsNS.chartDefaults = {
     },
     navigation: {
         menuStyle: {
-            float: 'right'
+            'float': 'right'
         }
     },
     xAxis: {

@@ -353,8 +353,15 @@ $(function()
     _.defer(function()
     {
         // register opening
+        var params = { method: "opening"};
+        if (!$.isBlank(document.referrer))
+        {
+            params.referrer = document.referrer;
+        }
+
         $.ajax({
-            url: '/views/' + blist.display.view.id + '.json?method=opening',
+            url: '/views/' + blist.display.view.id + '.json',
+            data: params, 
             dataType: 'json'
         });
 

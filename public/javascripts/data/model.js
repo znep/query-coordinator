@@ -338,16 +338,6 @@ blist.namespace.fetch('blist.data');
                 meta.view.query.groupBys.length > 0;
         };
 
-        this.shouldSendColumns = function()
-        {
-            return this.willSendColumns;
-        };
-
-        this.forceSendColumns = function(value)
-        {
-            this.willSendColumns = value;
-        };
-
         /**
          * Get rights for this view
          */
@@ -597,7 +587,7 @@ blist.namespace.fetch('blist.data');
             var len = Math.min(max - min + 1, curOptions.pageSize);
 
             var tempView = blist.datasetUtil.cleanViewForPost(
-                this.getViewCopy(), this.isGrouped() || this.shouldSendColumns());
+                this.getViewCopy(), this.isGrouped());
             var ajaxOptions = $.extend({},
                     supplementalAjaxOptions,
                     { url: '/views/INLINE/rows.json?' + $.param(
@@ -705,8 +695,7 @@ blist.namespace.fetch('blist.data');
             if (!_.isUndefined(meta.view.message)) { return; }
 
             tempView = blist.datasetUtil.cleanViewForPost(
-                tempView || this.getViewCopy(),
-                this.isGrouped() || this.shouldSendColumns());
+                tempView || this.getViewCopy(), this.isGrouped());
             $.ajax({url: '/views/INLINE/rows.json?' +
                     $.param({method: 'getAggregates'}),
                     type: 'POST',
@@ -2093,87 +2082,6 @@ blist.namespace.fetch('blist.data');
             }
 
             configureActive();
-            $(listeners).trigger('columns_updated', [this]);
-        };
-
-        this.deleteColumns = function(cols)
-        {
-            if (meta.view != null)
-            {
-                var removedData = [];
-                var subRemovedData = {};
-                $.each(cols, function(j, cId)
-                {
-                    $.each(meta.view.columns, function(i, c)
-                    {
-                        if (c.id == cId)
-                        {
-                            removedData.push(meta.view.columns[i].dataIndex);
-                            meta.view.columns.splice(i, 1);
-                            return false;
-                        }
-                        else if (c.childColumns instanceof Array)
-                        {
-                            var found = false;
-                            $.each(c.childColumns, function(j, cc)
-                            {
-                                if (cc.id == cId)
-                                {
-                                    if (subRemovedData[c.dataIndex] === undefined)
-                                    { subRemovedData[c.dataIndex] = []; }
-                                    subRemovedData[c.dataIndex].push(cc.dataIndex);
-                                    c.childColumns.splice(j, 1);
-                                    found = true;
-                                    return false;
-                                }
-                            });
-                            if (found) { return false; }
-                        }
-                    });
-
-                    if (meta.aggregates !== null && meta.aggregates !== undefined)
-                    {
-                        $.each(meta.aggregates, function(i, a)
-                        {
-                            if (a.columnId == cId)
-                            {
-                                meta.aggregates.splice(i, 1);
-                                meta.aggregateHash = {};
-                                return false;
-                            }
-                        });
-                    }
-                });
-
-                // Sort reverse numerical so we can properly splice out data
-                removedData.sort(function(a, b) { return b - a; });
-                _.each(rows, function(r)
-                {
-                    _.each(removedData, function(dataI)
-                        { r.splice(dataI, 1); });
-                });
-                _.each(subRemovedData, function(subIndexes, index)
-                {
-                    subIndexes.sort(function(a, b) { return b - a; });
-                    _.each(rows, function(r)
-                    {
-                        if (r[index] instanceof Object)
-                        {
-                            _.each(r[index], function(subRow)
-                            {
-                                _.each(subIndexes, function(dataI)
-                                {
-                                    subRow.splice(dataI, 1);
-                                });
-                            });
-                        }
-                    });
-                });
-            }
-
-            // Refresh the meta data and redraw the grid.
-            meta.columns = null;
-            this.meta(meta);
             $(listeners).trigger('columns_updated', [this]);
         };
 

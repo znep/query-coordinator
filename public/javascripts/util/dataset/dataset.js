@@ -98,7 +98,7 @@ this.Dataset = Model.extend({
 
         ds._sendBatch(function()
         {
-            ds._reload();
+            ds.reload();
             if (_.isFunction(callback)) { callback(); }
         });
     },
@@ -169,9 +169,9 @@ this.Dataset = Model.extend({
         });
     },
 
-    update: function(newDS)
+    update: function(newDS, fullUpdate)
     {
-        this._update(newDS);
+        this._update(newDS, fullUpdate, fullUpdate);
         this.temporary = true;
         this.trigger('set_temporary');
     },
@@ -311,6 +311,36 @@ this.Dataset = Model.extend({
         this._makeRequest(req);
     },
 
+    removeColumns: function(columnIds, successCallback, errorCallback)
+    {
+        var ds = this;
+        _.each($.makeArray(columnIds), function(cId)
+        {
+            var c = ds.columnForID(cId);
+            c.remove(null, errorCallback, true);
+        });
+
+        var columnsRemoved = function()
+        {
+            ds._updateColumns();
+            if (_.isFunction(successCallback)) { successCallback(); }
+        };
+
+        ds._sendBatch(columnsRemoved);
+    },
+
+    // Removes a column from the model without doing anything on the server;
+    // use removeColumns or Column.remove for that
+    clearColumn: function(colId)
+    {
+        var ds = this;
+        var col = ds.columnForID(colId);
+
+        ds.columns = _.without(ds.columns, col);
+
+        _.each(ds._rows, function(r) { delete r[col.id]; });
+    },
+
     // Callback may be called multiple times with smaller batches of rows
     getRows: function(start, len, callback)
     {
@@ -389,7 +419,7 @@ this.Dataset = Model.extend({
                 view._loadRows(initReq.start, initReq.finish - initReq.start + 1,
                     function(rows)
                     {
-                        callback(rows);
+                        if (_.isFunction(callback)) { callback(rows); }
                         loadAllRows();
                     }, true);
             }

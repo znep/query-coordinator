@@ -40,6 +40,8 @@ this.Column = Model.extend({
     save: function(successCallback, errorCallback)
     {
         var col = this;
+        if (!col.view.hasRight('update_view')) { return false; }
+
         var colSaved = function(newCol)
         {
             col.update(newCol, true);
@@ -51,6 +53,7 @@ this.Column = Model.extend({
                 '/columns/' + this.id + '.json', type: 'PUT',
                 data: JSON.stringify(this.cleanCopy()),
                 success: colSaved, error: errorCallback});
+        return true;
     },
 
     show: function(successCallback, errorCallback, isBatch)
@@ -107,6 +110,22 @@ this.Column = Model.extend({
         if (!$.isBlank(newCol.dropDown)) { col.dropDown = newCol.dropDown; }
 
         this._setUpColumn();
+    },
+
+    remove: function(successCallback, errorCallback, isBatch)
+    {
+        var col = this;
+
+        var colRemoved = function()
+        {
+            col.view.clearColumn(col.id);
+            if (!isBatch) { col.view._updateColumns(); }
+            if (_.isFunction(successCallback)) { successCallback(col); }
+        };
+
+        col._makeRequest({url: '/views/' + col.view.id + '/columns/' +
+                col.id + '.json', type: 'DELETE', batch: isBatch,
+                success: colRemoved, error: errorCallback});
     },
 
     convert: function(newType, successCallback, errorCallback)

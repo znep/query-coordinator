@@ -67,6 +67,7 @@
                 // * The main JS grid: headerMods hooks up the column menus
                 // * blistModel: disable minimum characters for full-text search,
                 //     enable progressive loading of data, and hook up Ajax info
+                // TODO: which of these events change/go away?
                 $datasetGrid
                     .bind('col_width_change', function (event, c, f)
                         { columnResized(datasetObj, c, f); })
@@ -113,7 +114,8 @@
                             data: {accessType: datasetObj.settings.accessType},
                             dataType: 'json'});
 
-                $.live('#' + $datasetGrid.attr('id') + ' .blist-table-row-handle', 'mouseover',
+                $.live('#' + $datasetGrid.attr('id') +
+                    ' .blist-table-row-handle', 'mouseover',
                         function (e) { hookUpRowMenu(datasetObj, this, e); });
                 $.live('#' + $datasetGrid.attr('id') + ' .add-column', "click",
                     function() { datasetObj.settings.addColumnCallback(); });
@@ -153,6 +155,7 @@
                 return this._$dom;
             },
 
+            // TODO: this goes away with dataset-menu (old DS page)
             setColumnAggregate: function(columnId, aggregate)
             {
                 var datasetObj = this;
@@ -193,9 +196,6 @@
             {
                 if (!(columns instanceof Array)) { columns = [columns]; }
                 var datasetObj = this;
-                var model = datasetObj.settings._model;
-                var view = model.meta().view;
-                var successCount = 0;
 
                 var multiCols = columns.length > 1;
                 if (confirm('Do you want to delete the ' +
@@ -203,46 +203,25 @@
                         'selected column') + '? All data in ' +
                     (multiCols ? 'these columns' : 'this column') +
                     ' will be removed!'))
-                {
-                    $.each(columns, function(i, colId)
-                    {
-                        $.ajax({url: '/views/' + view.id + '/columns/' +
-                            colId + '.json', type: 'DELETE',
-                            contentType: 'application/json',
-                            complete: function()
-                            {
-                                successCount++;
-                                if (successCount == columns.length)
-                                {
-                                    model.deleteColumns(columns);
-                                    datasetObj.settings.view
-                                        .trigger('columns_changed');
-                                }
-                            }});
-                    });
-                    // Hide columns so they disappear immediately
-                }
+                { datasetObj.settings.view.removeColumns(columns); }
             },
 
             drillDown: function(drillLink)
             {
                 var datasetObj = this;
-                var model = datasetObj.settings._model;
 
                 var filterValue = $(drillLink).attr('cellvalue');
-                var filterColumn = $(drillLink).attr('column');
-                var filterColumnId = parseInt(filterColumn, 10);
+                var filterColumnId = parseInt($(drillLink).attr('column'), 10);
                 var dataTypeName  = $(drillLink).attr('datatype');
-                var isBlank = false;
 
-                if (filterColumn == '' || filterValue == '') { return false; }
+                if ($.isBlank(filterColumnId) || filterValue == '')
+                { return false; }
 
-                var view = blist.datasetUtil.cleanViewForPost(
-                    model.getViewCopy(), true);
+                var view = datasetObj.settings.view.cleanCopy();
 
                 // Now construct our beautiful filter
                 var filter;
-                var columnJson = { columnId: filterColumn,
+                var columnJson = { columnId: filterColumnId,
                     type: 'column', value: dataTypeName };
 
                 if (filterValue == 'null')
@@ -255,13 +234,13 @@
                     filter = { type: 'operator', value: 'EQUALS',
                         children: [
                             columnJson,
-                            { type: 'literal', value: $.unescapeQuotes(filterValue) }
+                            { type: 'literal',
+                                value: $.unescapeQuotes(filterValue) }
                         ]
                     };
                 }
 
-                if (view.query.filterCondition != null &&
-                        view.query.filterCondition.type == 'operator')
+                if ((view.query.filterCondition || {}).type == 'operator')
                 {
                     if (view.query.filterCondition.value == 'AND')
                     {
@@ -274,9 +253,9 @@
                     else
                     {
                         var existingQuery = view.query.filterCondition;
-                        view.query.filterCondition = { type: 'operator', value: 'AND',
-                            children: [ existingQuery, filter ]
-                        };
+                        view.query.filterCondition =
+                            { type: 'operator', value: 'AND',
+                                children: [ existingQuery, filter ] };
                     }
                 }
                 else
@@ -286,14 +265,12 @@
 
                 var drillDownCallBack = function(newView)
                 {
-                    // TODO: switch to Dataset
-                    model.getTempView(newView, true);
-                    //datasetObj.setTempView('drilldown');
-                    model.forceSendColumns(true);
+                    datasetObj.settings.view.update(newView, true);
                 };
 
                 var otherGroupBys = _.select(view.query.groupBys || [], function(g)
                     { return g.columnId != filterColumnId; });
+
                 // We need to hide the drilled col, persist other groupings
                 if (otherGroupBys.length > 0)
                 {
@@ -312,23 +289,19 @@
                     view.query.groupBys = otherGroupBys;
                     drillDownCallBack(view);
                 }
+
                 // Otherwise, grab parent's columns and replace
                 else
                 {
                     var currentColumns, parentColumns;
 
-                    // Grab the child column who's tableColumnId is the same as parentCol
+                    // Grab the child column who's tableColumnId is the same as
+                    // parentCol
                     var getMatchingColumn = function(parentCol, childPool)
                     {
-                        var matchingColumn = _.detect(childPool, function(col)
-                            {
-                                return col.tableColumnId == parentCol.tableColumnId;
-                            });
-                        if(matchingColumn)
-                        {
-                            return matchingColumn.id;
-                        }
-                        return null;
+                        return (_.detect(childPool, function(col)
+                            { return col.tableColumnId ==
+                                parentCol.tableColumnId; }) || {}).id;
                     }
 
                     var revealDrillDownCallBack = function()
@@ -336,46 +309,42 @@
                         var translatedColumns = [];
                         _.each(parentColumns, function(oCol)
                         {
-                            var newColumnMatch = getMatchingColumn(oCol, currentColumns);
-                            if (newColumnMatch !== null)
+                            var newColumnMatch =
+                                getMatchingColumn(oCol, currentColumns);
+                            if (!$.isBlank(newColumnMatch))
                             {
-                                var newCol = $.extend(oCol,
-                                    { id: newColumnMatch });
-                                if (newCol.childColumns)
+                                var newCol = oCol.cleanCopy();
+                                newCol.id = newColumnMatch;
+                                if (!$.isBlank(newCol.childColumns))
                                 {
                                     var newChildColumns = [];
                                     _.each(oCol.childColumns, function(oChildCol)
                                     {
-                                        newChildColumns.push($.extend(oChildCol,
-                                            { id: getMatchingColumn(oCol, newCol.childColumns) }));
+                                        var nc = oChildCol.cleanCopy();
+                                        nc.id = getMatchingColumn(oCol,
+                                            newCol.childColumns);
+                                        newChildColumns.push(nc);
                                     });
                                     newCol.childColumns = newChildColumns;
                                 }
-                                if (newCol.format)
+                                if (!$.isBlank(newCol.format))
                                 {
                                     delete newCol.format.grouping_aggregate;
                                     delete newCol.format.drill_down;
                                 }
-                                delete newCol.options;
                                 translatedColumns.push(newCol);
                             }
                         });
                         view.columns = translatedColumns;
                         drillDownCallBack(view);
                     }
-                    view.query.groupBys = null;
+                    delete view.query.groupBys;
 
-                    // First fetch all the currently available columns,
-                    // because hidden, grouped columns aren't ret'd by Core Server
-                    $.get('/views/' + view.id + '/columns.json',
-                    function(cols)
-                    {
-                        currentColumns = cols;
-                        if (blist.datasetUtil.getDisplayType(view) == 'Blist')
-                        { parentColumns = cols; }
-                        if(!_.isUndefined(parentColumns))
-                        { revealDrillDownCallBack(); }
-                    }, 'json');
+                    currentColumns = datasetObj.settings.view.realColumns;
+                    if (datasetObj.settings.view.type == 'blist')
+                    { parentColumns = datasetObj.settings.view.realColumns; }
+                    if (!_.isUndefined(parentColumns))
+                    { revealDrillDownCallBack(); }
 
                     if (datasetObj.settings.view.type != 'blist')
                     {
@@ -383,10 +352,8 @@
                         {
                             if (!$.isBlank(parDS))
                             {
-                                // TODO: is this a problem that it is Column obj?
                                 parentColumns = parDS.realColumns;
-                                if(!_.isUndefined(currentColumns))
-                                { revealDrillDownCallBack(); }
+                                revealDrillDownCallBack();
                             }
                         });
                     }
@@ -408,33 +375,6 @@
                 datasetObj.settings._model.filter('');
                 if (datasetObj.settings.autoHideClearFilterItem)
                 { datasetObj.settings.clearFilterItem.hide(); }
-            },
-
-            updateValidity: function(view)
-            {
-                var datasetObj = this;
-
-                if (!datasetObj.settings.isInvalid) { return true; }
-
-                if (view.message === undefined || view.message === '')
-                {
-                    datasetObj.settings.isInvalid = false;
-                    datasetObj.settings.validViewCallback(view);
-                    datasetObj.settings._model.options({progressiveLoading: true})
-                        .ajax({url: '/views/' + datasetObj.settings.view.id +
-                            '/rows.json', cache: false,
-                            data: {accessType: datasetObj.settings.accessType},
-                            dataType: 'json'});
-                    $(window).resize();
-                    return true;
-                }
-                else
-                {
-                    datasetObj.settings._model.options(
-                        {progressiveLoading: false});
-                    datasetObj.settings.isInvalid = true;
-                    return false;
-                }
             },
 
             /* Disables all normal interactions other than scrolling and hover
@@ -461,6 +401,7 @@
 
             // This keeps track of when the column summary data is stale and
             // needs to be refreshed
+            // TODO: move to Dataset?
             summaryStale: true,
 
             rowHandleRenderer: function(col)
@@ -1258,6 +1199,7 @@
     };
 
 
+    // TODO: move to Dataset? or just partially
     var columnResized = function(datasetObj, col, isFinished)
     {
         if (isFinished)
@@ -1274,6 +1216,7 @@
         }
     };
 
+    // TODO: I'm guessing this goes away?
     var sortChanged = function(datasetObj, skipRequest)
     {
         var view = datasetObj.settings._model.meta().view;
@@ -1309,6 +1252,7 @@
         }
     };
 
+    // TODO: move to Dataset, or refactor
     var columnsRearranged = function(datasetObj)
     {
         var view = datasetObj.settings._model.meta().view;
@@ -1339,6 +1283,7 @@
         datasetObj.summaryStale = true;
     };
 
+    // TODO; linked to sortChanged
     var viewLoaded = function(datasetObj)
     {
         datasetObj.origOrderBys = [];
@@ -1408,28 +1353,18 @@
             return;
         }
 
-        var model = datasetObj.settings._model;
-        var col = model.getColumnByID($th.data('column').id);
-        col.name = newName;
+        var col = datasetObj.settings.view.columnForID($th.data('column').id);
+        col.update({name: newName});
         $input.attr('disabled', 'disabled');
 
-        $.ajax({url: '/views/' + model.meta().view.id + '/columns/' +
-            col.id + '.json',
-            data: JSON.stringify({name: col.name}),
-            type: 'PUT', dataType: 'json', contentType: 'application/json',
-            error: function(xhr)
+        col.save(function(newCol) { columnEditEnd(datasetObj, $th); },
+            function(xhr)
             {
                 var errBody = JSON.parse(xhr.responseText);
                 alert(errBody.message);
                 $th.addClass('error');
                 $input.removeAttr('disabled');
-            },
-            success: function(newCol)
-            {
-                columnEditEnd(datasetObj, $th);
-                model.updateColumn(newCol);
-                datasetObj.settings.view.trigger('columns_changed');
-            }});
+            });
     };
 
     var columnEditDocMouse = function(datasetObj, event, $th)

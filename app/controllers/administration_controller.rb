@@ -5,6 +5,16 @@ class AdministrationController < ApplicationController
   def analytics
   end
 
+  def dataset_analytics
+    begin
+      @view = View.find(params[:id])
+    rescue CoreServer::ResourceNotFound
+      flash.now[:error] = 'This ' + I18n.t(:blist_name).downcase +
+        ' cannot be found, or has been deleted.'
+      return (render 'shared/error', :status => :not_found)
+    end
+  end
+
   def users
     @roles_list = User.roles_list
     if !params[:username].blank?

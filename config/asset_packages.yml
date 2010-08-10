@@ -303,6 +303,7 @@ javascripts:
   - util/urls
   - controls/equiwidth
   - controls/menu
+  - controls/metrics-shared
   - controls/metrics
 
 

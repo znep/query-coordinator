@@ -103,28 +103,6 @@ metricsNS.tooltipFormats = {
     'YEARLY': '%Y'
 };
 
-metricsNS.updateChartCallback = function($chart, sliceType, options)
-{
-    var data = $chart.data(metricsNS.DATA_KEY),
-        series = $chart.data(metricsNS.SERIES_KEY);
-
-    $chart.siblings('.loadingSpinner').hide();
-
-    if (!$.isBlank(data) && data.length > 0)
-    {
-        $chart.parent().removeClass('noDataAvailable');
-        metricsNS.renderMetricsChart(data, $chart, sliceType, series, options);
-    }
-    else
-    {
-        _.defer(function() {
-            $chart.parent().addClass('noDataAvailable').fadeIn();
-        });
-    }
-};
-
-metricsNS.chartLoading = function($chart)
-{ $chart.empty().siblings('.loadingSpinner').fadeIn(); };
 
 metricsNS.chartDefaults = {
     chart: {

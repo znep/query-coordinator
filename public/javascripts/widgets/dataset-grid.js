@@ -597,6 +597,10 @@
                 {
                     if (view.query.filterCondition.value == 'AND')
                     {
+                        if ($.isBlank(view.query.filterCondition.children))
+                        {
+                            view.query.filterCondition.children = [];
+                        }
                         view.query.filterCondition.children.push(filter);
                     }
                     else
@@ -614,12 +618,12 @@
 
                 var drillDownCallBack = function(newView)
                 {
-                    model.getTempView(newView);
+                    model.getTempView(newView, true);
                     datasetObj.setTempView('drilldown');
                     model.forceSendColumns(true);
                 };
 
-                var otherGroupBys = _.select(view.query.groupBys, function(g)
+                var otherGroupBys = _.select(view.query.groupBys || [], function(g)
                     { return g.columnId != filterColumnId; });
                 // We need to hide the drilled col, persist other groupings
                 if (otherGroupBys.length > 0)
@@ -673,8 +677,8 @@
                                     var newChildColumns = [];
                                     _.each(oCol.childColumns, function(oChildCol)
                                     {
-                                        var newChildCol = $.extend(oChildCol,
-                                            { id: getMatchingColumn(oCol, newCol.childColumns) });
+                                        newChildColumns.push($.extend(oChildCol,
+                                            { id: getMatchingColumn(oCol, newCol.childColumns) }));
                                     });
                                     newCol.childColumns = newChildColumns;
                                 }
@@ -690,7 +694,7 @@
                         view.columns = translatedColumns;
                         drillDownCallBack(view);
                     }
-                    view.query.groupBys = [];
+                    view.query.groupBys = null;
 
                     // First fetch all the currently available columns,
                     // because hidden, grouped columns aren't ret'd by Core Server

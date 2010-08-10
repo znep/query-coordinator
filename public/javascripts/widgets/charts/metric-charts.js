@@ -44,7 +44,7 @@ metricsNS.renderMetricsChart = function(data, $chart, sliceType, series, options
                     { ungappedData.push(0); }
                 }
                 intervalEnd = row['__end__'];
-                ungappedData.push(row.metrics[s.method] || 0);
+                ungappedData.push((row.metrics || {})[s.method] || 0);
             });
 
             var plot = $.extend({}, seriesDefaults, {

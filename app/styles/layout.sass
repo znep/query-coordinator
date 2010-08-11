@@ -10,7 +10,6 @@ html, body
   min-width: 90em
 
 .siteInnerWrapper
-  max-width: 100em
   margin: 0 auto
   min-height: 100%
 
@@ -136,8 +135,12 @@ html, body
   background-color: #fff
   border: 1px solid #cecece
   @include border-radius(0.2em)
+  max-width: 100%
   margin: 1em
   padding: 1em
+  &.fixedWidth
+    max-width: 100em
+    margin: 1em auto
 
   h1
     font-size: 1.8em

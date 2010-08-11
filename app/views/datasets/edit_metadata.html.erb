@@ -7,7 +7,7 @@
   <a href="?no_js=true">Disable Javascript on this page</a>
 <% end %>
 
-<div class="contentBox">
+<div class="contentBox fixedWidth">
   <% form_tag({}, {:id => "editMetadataForm", :class => 'commonForm', :method => :post, :multipart => true}) do %>
     <h1>Edit Metadata for <%= @view.name %></h1>
     <a href="<%= @view.href %>" class="returnLink">Return to Dataset</a>

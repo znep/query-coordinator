@@ -41,7 +41,6 @@
     <script type="text/javascript">
       blist.namespace.fetch('blist.metrics');
       blist.metrics.viewID = '<%= @view.id %>';
-      blist.metrics.metricsScreenOptions = {redrawOnResize: false};
     </script>
     <%= javascript_include_merged 'shared-metrics' %>
     <%= javascript_include_tag 'screens/dataset-metrics' %>

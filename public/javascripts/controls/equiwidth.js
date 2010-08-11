@@ -24,11 +24,10 @@
                                      $children.eq(marginSelector).outerWidth(),
                     padding        = $children.first().outerWidth() -
                                      $children.first().width(),
-                    totalMargins   = opts.firstChildIsUnique ?
-                        ((length - 1) * margin) : (length * margin);
+                    totalMargins   = ((length - marginSelector) * margin);
 
                 $children.width(
-                    ($container.width() - 1 - totalMargins - (length * padding))
+                    ($container.width() - 2 - totalMargins - (length * padding))
                     / length
                 );
             };

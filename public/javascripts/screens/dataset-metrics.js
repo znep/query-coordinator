@@ -28,13 +28,12 @@ $(function()
             }
         ],
         detailSections: [
-            {id: 'detailFilters',   detail: 'Filters'},
-            {id: 'detailGroups',    detail: 'Groups'},
-            {id: 'detailCharts',    detail: 'Charts'},
-            {id: 'detailMaps',      detail: 'Maps'},
+            {id: 'detailFilters',   displayName: 'Filters',  detail: 'filters-created'},
+            {id: 'detailCharts',    displayName: 'Charts',   detail: 'charts-created'},
+            {id: 'detailMaps',      displayName: 'Maps',     detail: 'maps-created'},
             {id: 'detailFavorites', detail: 'Favorites'},
-            {id: 'detailRatings',   detail: 'Ratings'},
-            {id: 'detailComments',  detail: 'Comments'}
+            {id: 'detailRatings',   displayName: 'Ratings',  detail: 'ratings-count'},
+            {id: 'detailComments',  displayName: 'Comments', detail: 'comments-created'}
         ],
         summarySections: [
             { id: 'summaryViews',     displayName: 'Views',     summary: {plus: 'visits'} },

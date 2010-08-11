@@ -282,6 +282,7 @@ javascripts:
   - controls/grid-sidebar/print-dataset
   - controls/grid-sidebar/share-dataset
   - controls/grid-sidebar/show-hide
+  - controls/grid-sidebar/signed-dataset
   - controls/grid-sidebar/view-list
   - controls/dataset-controls
   - controls/dataset-email

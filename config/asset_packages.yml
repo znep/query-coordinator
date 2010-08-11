@@ -129,8 +129,8 @@ javascripts:
   - plugins/ajaxupload.3.0
   - util/humane-date
   - util/urls
-  - data/model
-  - data/table
+  - data/legacy-model
+  - data/legacy-table
   - widgets/combination-list
   - widgets/panel-expander
   - widgets/selectable-list
@@ -229,8 +229,8 @@ javascripts:
 - rpx-return:
   - screens/signup-screen
 - stats-index:
-  - data/model
-  - data/table
+  - data/legacy-model
+  - data/legacy-table
   - screens/stats-screen
 - widgets-show:
   - plugins/ui.effects.custom.min

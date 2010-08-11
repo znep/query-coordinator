@@ -183,6 +183,15 @@ HREF
     content_tag 'div', flash_to_display, :class => "flash #{level}"
   end
 
+  def display_maintenance_notification
+    if DOWNTIME_MESSAGE.present? &&
+      (DOWNTIME_START.nil? || DOWNTIME_START < DateTime.now) &&
+      (DOWNTIME_END.nil?   || DOWNTIME_END   > DateTime.now)
+        return content_tag 'div', simple_format(DOWNTIME_MESSAGE),
+          :class => 'flash notice', :id => 'maintenanceNotice'
+    end
+  end
+
   def is_gov_site?
     I18n.locale == 'gov'
   end

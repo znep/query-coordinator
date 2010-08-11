@@ -35,4 +35,9 @@
         }
         return false;
     });
+
+    setTimeout(
+        function() { $('#maintenanceNotice').fadeOut(); },
+        5000
+    );
 });

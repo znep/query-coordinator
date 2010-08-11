@@ -9,7 +9,7 @@
 
     var baseUrl = function(editObj)
     {
-        return '/views/' + blist.display.view.id + '/' +
+        return '/views/' + blist.dataset.id + '/' +
             (editObj.column.renderTypeName.endsWith('_obsolete') ?
                 'obsolete_' : '') + 'files/';
     };

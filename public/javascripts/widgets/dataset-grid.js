@@ -105,7 +105,6 @@
                     .blistModel()
                     .options({blankRow: datasetObj.settings.editEnabled,
                         filterMinChars: 0,
-                        masterView: blist.display.view,
                         progressiveLoading: !datasetObj.settings.isInvalid,
                         initialResponse: datasetObj.settings.initialResponse})
                     .ajax({url: '/views/' + datasetObj.settings.view.id +
@@ -371,7 +370,6 @@
                 if (!$.isBlank(e)) { e.preventDefault(); }
                 if (datasetObj.settings.filterForm)
                 { datasetObj.settings.filterForm.find(':input').val('').blur(); }
-                datasetObj.summaryStale = true;
                 datasetObj.settings._model.filter('');
                 if (datasetObj.settings.autoHideClearFilterItem)
                 { datasetObj.settings.clearFilterItem.hide(); }
@@ -398,11 +396,6 @@
 
                 delete datasetObj._disabled;
             },
-
-            // This keeps track of when the column summary data is stale and
-            // needs to be refreshed
-            // TODO: move to Dataset?
-            summaryStale: true,
 
             rowHandleRenderer: function(col)
             {
@@ -563,7 +556,6 @@
                             { rows.push(model.getByID(id)); });
                     model.remove(rows, true);
                 }
-                datasetObj.summaryStale = true;
                 break;
             case 'row-tag':
                 var row = model.getByID($menu.attr('id').split('_')[1]);
@@ -578,13 +570,11 @@
 
     var columnsUpdated = function(datasetObj)
     {
-        datasetObj.summaryStale = true;
         datasetObj.settings.view.trigger('columns_changed');
     };
 
     var serverRowChange = function(datasetObj)
     {
-        datasetObj.summaryStale = true;
         datasetObj.settings._model.reloadAggregates();
     };
 
@@ -621,7 +611,6 @@
         }
 
         var searchText = $(e.currentTarget).find(':input').val();
-        datasetObj.summaryStale = true;
         var model = datasetObj.settings._model;
         model.filter(searchText);
         if (!searchText || searchText === '')
@@ -857,7 +846,6 @@
             $colDom.append(htmlStr);
             var $menu = $colDom.find('ul.columnHeaderMenu');
             hookUpHeaderMenu(datasetObj, $colDom, $menu);
-            addFilterMenu(datasetObj, col, $menu);
         });
     };
 
@@ -879,22 +867,19 @@
 
         var selCols = $(datasetObj.currentGrid).blistTableAccessor()
             .getSelectedColumns();
-        var col = $colHeader.data('column');
+        var headerCol = $colHeader.data('column');
         var numSel = 0;
         $.each(selCols, function() { numSel++; });
 
-        if (numSel < 1 || (numSel == 1 && selCols[col.id] !== undefined))
+        if (numSel < 1 || (numSel == 1 && selCols[headerCol.id] !== undefined))
         {
             $menu.find('.singleItem').show();
-            if (col)
-            {
-                loadFilterMenu(datasetObj, col, $menu);
+            loadFilterMenu(datasetObj, headerCol, $menu);
 
-                var curSort = datasetObj.settings._model.meta().sort[col.id];
-                $menu.find('.sortAsc').toggle(!curSort || !curSort.ascending);
-                $menu.find('.sortDesc').toggle(!curSort || curSort.ascending);
-                $menu.find('.sortClear').toggle(curSort !== undefined);
-            }
+            var curSort = datasetObj.settings._model.meta().sort[headerCol.id];
+            $menu.find('.sortAsc').toggle(!curSort || !curSort.ascending);
+            $menu.find('.sortDesc').toggle(!curSort || curSort.ascending);
+            $menu.find('.sortClear').toggle(curSort !== undefined);
         }
         else
         {
@@ -902,32 +887,11 @@
         }
     };
 
-    var loadFilterMenu = function(datasetObj, col, $menu)
+    var loadFilterMenu = function(datasetObj, headerCol, $menu)
     {
-        if (datasetObj.summaryStale ||
-            datasetObj.settings._columnSummaries === undefined)
-        {
-            datasetObj.settings._columnSummaries = {};
-            datasetObj.summaryStale = false;
-        }
-
-        var colSum = datasetObj.settings._columnSummaries;
-        var modView = blist.datasetUtil.cleanViewForPost(
-                datasetObj.settings._model.getViewCopy());
-        if (!modView) { return; }
-
-        if (!blist.data.types[col.type].filterable ||
-            datasetObj.settings._model.isGrouped())
+        var col = datasetObj.settings.view.columnForID(headerCol.id);
+        if (!col.renderType.filterable || datasetObj.settings.view.isGrouped())
         { return; }
-
-        if (colSum[col.id] !== undefined)
-        {
-            // Use setTimeout to simulate the async response of the ajax call
-            // below; this is necessary so we don't recreate the menu in the
-            // middle of another call that is using it.
-            setTimeout(function() { addFilterMenu(datasetObj, col, $menu); }, 0);
-            return;
-        }
 
         // Remove the old filter menu if necessary
         $menu.children('.autofilter').prev('.separator').andSelf().remove();
@@ -939,60 +903,34 @@
         if ($sortItem.length > 0) { $sortItem.before(spinnerStr); }
         else { $menu.prepend(spinnerStr); }
 
-        // Set up the current view to send to the server to get the appropriate
-        //  summary data back
-        $.ajax({url: '/views/INLINE/rows.json?method=getSummary&columnId=' +
-                    col.id,
-                dataType: 'json',
-                cache: false,
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(modView),
-                success: function (data)
-                {
-                    // On success, hash the summaries by column ID (they come
-                    //  in an array)
-                    $.each(data.columnSummaries, function (i, s)
-                    {
-                        if (s.topFrequencies === undefined ||
-                            s.topFrequencies.length < 1) { return true; }
-
-                        if (colSum[s.columnId] === undefined)
-                        { colSum[s.columnId] = {}; }
-
-                        colSum[s.columnId][s.subColumnType] = s;
-                    });
-                    // Then update the column header menu
-                    addFilterMenu(datasetObj, col, $menu);
-                }
+        _.defer(function()
+        {
+            col.getSummary(function (sum)
+                { addFilterMenu(datasetObj, headerCol, $menu, sum); });
         });
     };
 
     /* Add auto-filter sub-menu for a particular column that we get from the JS
      * grid */
-    var addFilterMenu = function(datasetObj, col, $menu)
+    var addFilterMenu = function(datasetObj, headerCol, $menu, summary)
     {
         // If this column doesn't have a dom, we don't support it yet...
-        if (!col.dom) { return; }
+        if (!headerCol.dom) { return; }
 
         // Remove spinner
         $menu.children('.autofilter.loading').remove();
 
-        // Make sure this column is filterable, and we have data for it
-        if (datasetObj.settings._columnSummaries === undefined ||
-                !blist.data.types[col.type].filterable)
-        { return; }
+        var col = datasetObj.settings.view.columnForID(headerCol.id);
 
         // Get the current filter for this column (if it exists)
         var colFilters = datasetObj.settings._model
             .meta().columnFilters;
-        var cf = colFilters ? colFilters[col.id] || undefined : undefined;
+        var cf = (colFilters || {})[headerCol.id] || undefined;
 
         // Remove the old filter menu if necessary
         $menu.children('.autofilter').prev('.separator').andSelf().remove();
 
-        var colSum = datasetObj.settings._columnSummaries[col.id];
-        if (cf === undefined && colSum === undefined) { return; }
+        if ($.isBlank(cf) && $.isBlank(summary)) { return; }
 
         var filterStr =
             '<li class="autofilter submenu singleItem">' +
@@ -1000,17 +938,17 @@
             '<span class="highlight">Filter This Column</span></a>' +
             '<ul class="menu optionMenu">';
         // If we already have a filter for this column, give them a clear link
-        if (cf !== undefined)
+        if (!$.isBlank(cf))
         {
             filterStr +=
                 '<li class="clearFilter">' +
-                '<a href="#clear-filter-column_' + col.uid + '">' +
+                '<a href="#clear-filter-column_' + headerCol.uid + '">' +
                 '<span class="highlight">Clear Column Filter</span>' +
                 '</a>' +
                 '</li>';
-            if (colSum === undefined)
+            if ($.isBlank(summary))
             {
-                colSum = {curVal:
+                summary = {curVal:
                     { topFrequencies: [{value: cf.value, count: 0}] } };
             }
         }
@@ -1023,16 +961,16 @@
             '</a></li>';
 
         // Sort type keys in a specific order for URL and phone
-        var typeKeys = $.keys(colSum);
-        if (col.type == 'url')
+        var typeKeys = _.keys(summary);
+        if (col.renderType == 'url')
         { typeKeys.sort(); }
-        else if (col.type == 'phone')
+        else if (col.renderType == 'phone')
         { typeKeys.sort().reverse(); }
 
         var sumSections = [];
-        $.each(typeKeys, function(i, k)
+        _.each(typeKeys, function(k)
         {
-            var cs = colSum[k];
+            var cs = summary[k];
             var section = '';
 
             var searchMethod = function(a, b)
@@ -1049,22 +987,21 @@
                 searchMethod = function(a, b) { return a.value - b.value; };
             }
 
-            if (cs.topFrequencies !== undefined)
+            if (!$.isBlank(cs.topFrequencies))
             {
                 // First loop through and set up variations on the value
                 // to use in the menu
-                $.each(cs.topFrequencies, function (i, f)
+                _.each(cs.topFrequencies, function (f)
                     {
-                        f.isMatching = cf !== undefined && cf.value == f.value;
-                        var curType = blist.data.types[col.type] ||
-                            blist.data.types['text'];
+                        f.isMatching = !$.isBlank(cf) && cf.value == f.value;
+                        var curType = col.renderType;
                         f.escapedValue = escape(
-                            curType.filterValue !== undefined ?
-                                curType.filterValue(f.value, col) :
+                            _.isFunction(curType.filterValue) ?
+                                curType.filterValue(f.value) :
                                 $.htmlStrip(f.value + ''));
                         f.renderedValue =
-                            curType.filterRender !== undefined ?
-                                curType.filterRender(f.value, col,
+                            _.isFunction(curType.filterRender) ?
+                                curType.filterRender(f.value, headerCol,
                                     cs.subColumnType) :
                                 '';
                         f.titleValue = $.htmlStrip(f.renderedValue + '');
@@ -1087,7 +1024,7 @@
                                 '<a href="' +
                                 (f.isMatching ? '#clear-filter-column_' :
                                     '#filter-column_') +
-                                col.uid + '_' + cs.subColumnType + ':' +
+                                headerCol.uid + '_' + cs.subColumnType + ':' +
                                 f.escapedValue + '|" title="' +
                                 f.titleValue +
                                 (f.count > 1 ? ' (' + f.count + ')' : '') +
@@ -1124,7 +1061,7 @@
             $sortItem.before(filterStr);
         }
         else { $menu.prepend(filterStr); }
-        hookUpHeaderMenu(datasetObj, $(col.dom), $menu);
+        hookUpHeaderMenu(datasetObj, $(headerCol.dom), $menu);
     };
 
 
@@ -1280,7 +1217,6 @@
     var columnFilterChanged = function(datasetObj, col, setFilter)
     {
         if ($(col.dom).isSocrataTip()) { $(col.dom).socrataTip().hide(); }
-        datasetObj.summaryStale = true;
     };
 
     // TODO; linked to sortChanged

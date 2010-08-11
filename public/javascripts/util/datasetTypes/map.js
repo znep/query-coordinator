@@ -81,7 +81,7 @@ blist.datasetUtil.map.convertLegacy = function(view)
     return view;
 };
 
-blist.dataset.map.esriToGoogle = function(geometry)
+blist.datasetUtil.map.esriToGoogle = function(geometry)
 {
     return new google.maps.Polygon({
         paths: _.map(geometry.rings, function(ring, r)
@@ -97,7 +97,7 @@ blist.dataset.map.esriToGoogle = function(geometry)
     });
 };
 
-blist.dataset.map.esriToBing = function(geometry)
+blist.datasetUtil.map.esriToBing = function(geometry)
 {
     // Bing does not support multiple-ring Polygons. As a result, we're picking
     // the largest ring and using that as the polygon's definition.

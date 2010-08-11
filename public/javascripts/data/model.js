@@ -93,7 +93,6 @@ blist.namespace.fetch('blist.data');
             blankRow: false,
             filterMinChars: 3,
             initialResponse: null,
-            masterView: null,
             pageSize: 50,
             progressiveLoading: false
         };
@@ -407,8 +406,6 @@ blist.namespace.fetch('blist.data');
                 {
                     totalRows = config.meta.view.totalRows =
                         config.meta.totalRows;
-                    if (!$.isBlank(curOptions.masterView))
-                    { $.syncObjects(curOptions.masterView, self.getViewCopy()); }
                 }
 
                 // Reset all config to defaults
@@ -656,9 +653,6 @@ blist.namespace.fetch('blist.data');
                     {
                         totalRows = config.meta.view.totalRows =
                             config.meta.totalRows;
-                        if (!$.isBlank(curOptions.masterView))
-                        { $.syncObjects(curOptions.masterView,
-                            self.getViewCopy()); }
                     }
                     this.rows(newRows, true);
                 }
@@ -727,8 +721,6 @@ blist.namespace.fetch('blist.data');
                             if ($.isBlank(self.getColumnByID(c.id)))
                             {
                                 meta.view.columns.push(c);
-                                if (!$.isBlank(curOptions.masterView))
-                                { curOptions.masterView.columns.push(c); }
                             }
                         });
 
@@ -974,9 +966,6 @@ blist.namespace.fetch('blist.data');
 
                 // Ensure the meta has a columns object, even if it is empty
                 meta = newMeta;
-
-                if (!$.isBlank(curOptions.masterView))
-                { $.syncObjects(curOptions.masterView, this.getViewCopy()); }
 
                 meta.sort = {};
 
@@ -2422,8 +2411,6 @@ blist.namespace.fetch('blist.data');
             }
 
             meta.view.query.orderBys = orderBys;
-            if (!$.isBlank(curOptions.masterView))
-            { curOptions.masterView.query.orderBys = orderBys; }
             meta.sort = {};
             $.each(meta.view.query.orderBys, function(i, sort) {
                 var col = self.getColumnByID(sort.expression.columnId);
@@ -2482,11 +2469,6 @@ blist.namespace.fetch('blist.data');
                         expression: {columnId: orderCol.id, type: 'column'},
                         ascending: !descending
                     }];
-                    if (!$.isBlank(curOptions.masterView))
-                    {
-                        curOptions.masterView.query.orderBys =
-                            meta.view.query.orderBys;
-                    }
                 }
 
                 var r1 = "a" + orderCol.dataLookupExpr;
@@ -2580,12 +2562,6 @@ blist.namespace.fetch('blist.data');
                         }
                     }
 
-                    if (!$.isBlank(curOptions.masterView))
-                    {
-                        curOptions.masterView.query.orderBys =
-                            meta.view.query.orderBys;
-                    }
-
                     if (meta.view.query.orderBys.length == 1)
                     {
                         var newSort = meta.view.query.orderBys[0];
@@ -2603,8 +2579,6 @@ blist.namespace.fetch('blist.data');
             {
                 meta.sort = {};
                 delete meta.view.query.orderBys;
-                if (!$.isBlank(curOptions.masterView))
-                { delete curOptions.masterView.query.orderBys; }
             }
             sortConfigured = true;
             orderCol = null;
@@ -2880,8 +2854,6 @@ blist.namespace.fetch('blist.data');
                 {
                     activeCount = config.meta.view.totalRows =
                         config.meta.totalRows;
-                    if (!$.isBlank(curOptions.masterView))
-                    { $.syncObjects(curOptions.masterView, self.getViewCopy()); }
                 }
 
                 // Pass the callback all the way into updateColumns, because
@@ -2913,8 +2885,6 @@ blist.namespace.fetch('blist.data');
         this.group = function(grouping)
         {
             meta.view.query.groupBys = grouping;
-            if (!$.isBlank(curOptions.masterView))
-            { curOptions.masterView.query.groupBys = grouping; }
         };
 
         /**

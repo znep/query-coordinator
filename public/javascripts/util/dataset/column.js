@@ -20,6 +20,39 @@ this.Column = Model.extend({
         return this._childIDLookup[parseInt(id)];
     },
 
+    getSummary: function(successCallback)
+    {
+        var col = this;
+
+        var colSumLoaded = function(resp)
+        {
+            col._summary = {};
+            _(resp.columnSummaries).chain()
+                .select(function(s) { return s.columnId == col.id; })
+                .each(function(s)
+                {
+                    if ((s.topFrequencies || []).length > 0)
+                    { col._summary[s.subColumnType] = s; }
+                });
+
+            if (_.isFunction(successCallback)) { successCallback(col._summary); }
+        };
+
+        if ($.isBlank(col._summary))
+        {
+            col.view._makeRequest({inline: true,
+                params: {method: 'getSummary', columnId: col.id},
+                success: colSumLoaded});
+        }
+        else
+        { if (_.isFunction(successCallback)) { successCallback(col._summary); } }
+    },
+
+    invalidateData: function()
+    {
+        delete this._summary;
+    },
+
     addColumn: function(column, successCallback, errorCallback)
     {
         var col = this;
@@ -135,6 +168,7 @@ this.Column = Model.extend({
         {
             col.update(newCol, true);
             col.view._invalidateRows();
+            col.invalidateData();
             col.view.trigger('columns_changed');
             if (_.isFunction(successCallback)) { successCallback(col); }
         };

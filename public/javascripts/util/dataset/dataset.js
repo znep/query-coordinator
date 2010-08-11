@@ -126,6 +126,11 @@ this.Dataset = Model.extend({
         return _.include(['blist', 'filter', 'grouped'], this.type);
     },
 
+    isGrouped: function()
+    {
+        return ((this.query || {}).groupBys || []).length > 0;
+    },
+
     save: function(successCallback, errorCallback)
     {
         var ds = this;
@@ -438,6 +443,8 @@ this.Dataset = Model.extend({
         var col = this.columnForID(columnId)
         if ($.isBlank(col)) { throw 'Column ' + columnId + ' not found'; }
         row[col._lookup] = value;
+        row._changed = row._changed || [];
+        row._changed.push(col.id);
     },
 
     saveRow: function(rowId, successCallback, errorCallback)
@@ -446,6 +453,9 @@ this.Dataset = Model.extend({
 
         var row = this.rowForID(rowId);
         if ($.isBlank(row)) { throw 'Row ' + rowId + ' not found'; }
+
+        var colChanges = row._changed;
+        delete row._changed;
 
         var sendRow = $.extend(true, {}, row);
         if (!$.isBlank(sendRow.tags))
@@ -460,6 +470,8 @@ this.Dataset = Model.extend({
             type: 'PUT', data: JSON.stringify(sendRow),
             success: successCallback, error: errorCallback});
         ds._aggregatesStale = true;
+        _.each(colChanges, function(cId)
+        { ds.columnForID(cId).invalidateData(); });
     },
 
     getAggregates: function(callback, customAggs)
@@ -644,6 +656,14 @@ this.Dataset = Model.extend({
         window.location = this.url;
     },
 
+    getSignature: function(successCallback, errorCallback)
+    {
+        // If not already signed, then we need to create it first
+        this._makeRequest({url: '/views/' + this.id + '/signatures.json',
+            type: (this.signed === true) ? 'GET' : 'POST',
+            success: successCallback, error: errorCallback});
+    },
+
 
     // Private methods
 
@@ -677,6 +697,7 @@ this.Dataset = Model.extend({
         }
 
         var oldQuery = ds.query;
+        var oldSearch = ds.searchString;
 
         if (forceFull)
         {
@@ -709,11 +730,10 @@ this.Dataset = Model.extend({
         ds.valid = ds._checkValidity();
         if (!oldValid && ds.valid) { ds.trigger('valid'); }
 
-        if (!_.isEqual(oldQuery, ds.query))
+        if (!_.isEqual(oldQuery, ds.query) || oldSearch !== ds.searchString)
         {
             // Clear out the rows, since the data is different now
-            ds._rows = {};
-            ds._rowIDLookup = {};
+            ds._invalidateRows();
             ds.trigger('query_change');
         }
     },
@@ -842,6 +862,7 @@ this.Dataset = Model.extend({
     {
         this._rows = {};
         this._rowIDLookup = {};
+        _.each(this.columns, function(c) { c.invalidateData(); });
     },
 
     _loadRows: function(start, len, callback, includeMeta, fullLoad)

@@ -1,5 +1,6 @@
 class InternalController < ApplicationController
   before_filter :check_auth
+  layout 'dataset_v2'
 
   def index
   end

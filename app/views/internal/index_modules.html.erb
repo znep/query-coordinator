@@ -1,63 +1,55 @@
 <% content_for :head do %>
+<%= rendered_stylesheet_tag 'internal-screen' %>
 <%= stylesheet_link_merged 'internal-shared' %>
 <title>Modules | Admin Panel | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
-<div class="twoColumnContainer tabContainer clearfix">
-  <div id="mainColumnContent" class="column mainContent">
-    <ul class='tabList'>
-      <li class='even active'><div class='wrapper'>
-        <%= link_to 'Admin Home', '/internal' %>
-      </div></li>
-    </ul>
+<%= render :partial => 'left_nav' %>
 
-    <div class='outerContent'>
-      <div class="contentTR"><div class="contentTL"></div></div>
-      <div class='content'>
+<div class="contentBox">
+  <div class='content'>
 
-        <h1>All Modules:</h1>
+    <h1>All Modules:</h1>
 
-        <%- if @modules.nil? || @modules.size <= 0 -%>
-          <p>No modules found.</p>
-        <%- else -%>
-          <form action="/internal/modules/bulk" class='wide' method="POST">
-            <div class='line'>
-              <label><strong>Module</strong></label>
-              <%- @tiers.each do |tier| -%>
-              <span class='cell'><a href="/internal/tiers/<%= tier.name %>">
-                  <%= tier.name %>
-              </a></span>
-              <%- end -%>
-            </div>
-            <%- @modules.each do |mod| -%>
-            <div class='line'>
-              <label><%= mod.name %></label>
-              <%- @tiers.each do |tier| -%>
-              <%- enabled = tier.has_module?(mod.name) -%>
-              <span class='cell'><input type="checkbox"
-                name="modules[<%= mod.name %>][<%= tier.name %>]"
-                <%= enabled ? 'checked="checked"': '' %> /></span>
-              <%- end -%>
-            </div>
-            <% end %>
-            <input type="submit" value="Update" />
-          </form>
+    <%- if @modules.nil? || @modules.size <= 0 -%>
+      <p>No modules found.</p>
+    <%- else -%>
+      <form action="/internal/modules/bulk" class='wide' method="POST">
+        <div class='line'>
+          <label><strong>Module</strong></label>
+          <%- @tiers.each do |tier| -%>
+          <span class='cell'><a href="/internal/tiers/<%= tier.name %>">
+              <%= tier.name %>
+          </a></span>
+          <%- end -%>
+        </div>
+        <%- @modules.each do |mod| -%>
+        <div class='line'>
+          <label><%= mod.name %></label>
+          <%- @tiers.each do |tier| -%>
+          <%- enabled = tier.has_module?(mod.name) -%>
+          <span class='cell'><input type="checkbox"
+            name="modules[<%= mod.name %>][<%= tier.name %>]"
+            <%= enabled ? 'checked="checked"': '' %> /></span>
+          <%- end -%>
+        </div>
+        <% end %>
+        <input type="submit" value="Update" />
+      </form>
 
-          <h2>Add a module</h2>
-          <form action="/internal/modules" method="post">
-            <div class='line'>
-              <label>Name:</label>
-              <input type="text" name="mod[name]" />
-            </div>
-            <div class='line'>
-              <label>Description:</label>
-              <input type="text" name="mod[description]" />
-            </div>
-            <input type="submit" value="Add"/>
-          </form>
-        <%- end -%>
+      <h2>Add a module</h2>
+      <form action="/internal/modules" method="post">
+        <div class='line'>
+          <label>Name:</label>
+          <input type="text" name="mod[name]" />
+        </div>
+        <div class='line'>
+          <label>Description:</label>
+          <input type="text" name="mod[description]" />
+        </div>
+        <input type="submit" value="Add"/>
+      </form>
+    <%- end -%>
 
-      </div>
-    </div>
   </div>
 </div>

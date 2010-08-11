@@ -386,7 +386,7 @@ stylesheets:
 - internal-shared:
   - internal-screen
   - form-common
-  - BespinEmbedded.compressed
+  - BespinEmbedded
 - admin-shared:
   - admin-screen
   - form-common

@@ -115,6 +115,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.with_options :controller => 'administration' do |admin|
     admin.connect '/admin_new/analytics',         :action => 'analytics'
+    admin.connect '/admin_new/analytics/datasets/:id',
+      :action => 'dataset_analytics', :requirements => {:id => UID_REGEXP}
     admin.connect '/admin_new/users',             :action => 'users'
   end
 
@@ -259,8 +261,15 @@ ActionController::Routing::Routes.draw do |map|
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
       :category => /(\w|-)+/}
 
+  # TODO: Deprecated
   map.connect ':category/:view_name/:id/stats', :controller => 'stats',
     :action => 'index', :conditions => { :method => :get },
+    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
+      :category => /(\w|-)+/}
+
+  # TEMPORARY: Until balboa is stable on production
+  map.connect ':category/:view_name/:id/balboa_stats', :controller => 'datasets',
+    :action => 'stats', :conditions => { :method => :get },
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
       :category => /(\w|-)+/}
 

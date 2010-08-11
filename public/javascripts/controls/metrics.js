@@ -1,154 +1,5 @@
 ;var metricsNS = blist.namespace.fetch('blist.metrics');
 
-metricsNS.SERIES_KEY = 'data-series';
-metricsNS.DATA_KEY   = 'data-metrics';
-
-/*
- * Publicly accessible callback functions for shared analytics
- * functionality between sitewide and dataset-specific data
- *
- */
-
-// Common render function to take a list of data and make table
-metricsNS.renderTopList = function(data, $target)
-{
-    var table = $target.find('.metricsList')
-        .find('tbody').remove().end();
-
-    if (data.length > 0)
-    {
-        table.parent().removeClass('noDataAvailable').end()
-            .append(
-                $.renderTemplate('metricsTopItem', data,
-                    metricsNS.topListItemDirective))
-                .trigger('update')
-                .trigger('sorton', [[[1,1]]])
-                .end().fadeIn();
-    }
-    else
-    { table.parent().addClass('noDataAvailable').fadeIn(); }
-};
-
-// Shared data processing function to turn balboa metrics hash, call
-// appropriate transformation then rendering function
-metricsNS.updateTopListWrapper = function($context, data, mapFunction, postProcess)
-{
-    var mapped   = [];
-
-    for (var key in data)
-    {
-        if (!key.startsWith('__') && data.hasOwnProperty(key))
-        {
-            if (_.isFunction(mapFunction))
-            { mapFunction(key, data[key], mapped); }
-            else
-            { mapped.push({name: key, value: data[key]}); }
-        }
-    }
-
-    if (_.isFunction(postProcess))
-    { postProcess(mapped, $context); }
-    else
-    { metricsNS.renderTopList(mapped, $context); }
-};
-
-// This one's pretty easy
-metricsNS.updateTopSearchesCallback = function($context, key)
-{
-    metricsNS.updateTopListWrapper($context, $context.data(metricsNS.DATA_KEY)[key]);
-};
-
-// Need to do some extra work here because only UIDs are returned from balboa
-metricsNS.topDatasetsCallback = function($context)
-{
-    metricsNS.updateTopListWrapper($context,
-        $context.data(metricsNS.DATA_KEY),
-        function(key, value, results) {
-            $.socrataServer.addRequest({
-                cache: false,
-                url: '/views/' + key  + '.json',
-                type: 'GET',
-                success: function(responseData) {
-                    results.push({linkText: responseData.name,
-                        value: value,
-                        href: $.generateViewUrl(responseData)
-                    });
-                }
-            });
-        },
-        function(data, $context) {
-            // Success won't be called if data is empty
-            if (!$.socrataServer.runRequests({
-                    success: function() {
-                        metricsNS.renderTopList(data, $context);
-                    }
-                }))
-            { metricsNS.renderTopList(data, $context); }
-        }
-    );
-};
-
-// Take the url maps and transform them into usable links with sublinks
-metricsNS.urlMapCallback = function($context)
-{
-    metricsNS.updateTopListWrapper($context,
-        $context.data(metricsNS.DATA_KEY),
-        function(key, urlHash, results) {
-            var totalCount = 0,
-                subLinks = [];
-            for (var subKey in urlHash)
-            {
-                if (urlHash.hasOwnProperty(subKey))
-                {
-                    totalCount += urlHash[subKey];
-                    subLinks.push({linkText: subKey,
-                        href: key + subKey,
-                        value: urlHash[subKey]
-                    });
-                }
-            }
-            results.push({linkText: key, value: totalCount,
-                href: '#expand', linkClass: 'expandTopSection',
-                children: _.sortBy(subLinks, function(subItem) {
-                    return -subItem.value;
-                })
-            });
-        }
-    );
-};
-
-metricsNS.summarySectionCallback = function($context)
-{
-    var summaries = $context.data('data-summary'),
-        data      = $context.data(metricsNS.DATA_KEY),
-        mappedData = {
-            total: data[summaries.plus + '-total'] || 0,
-            delta: data[summaries.plus] || 0,
-            deltaClass: 'plus'
-        };
-
-    if (!$.isBlank(summaries.minus))
-    {
-        var minusAmount = data[summaries.minus + '-total'] || 0,
-            minusDelta  = data[summaries.minus] || 0;
-
-        mappedData.total -= minusAmount;
-        mappedData.delta -=  minusDelta;
-    }
-
-    if (mappedData.delta < 0)
-    {
-        mappedData.delta *= -1;
-        mappedData.deltaClass = 'minus';
-    }
-
-    $context.find('.dynamicContent').empty().append(
-        $.renderTemplate('metricsSummaryData',
-            mappedData,
-            metricsNS.summaryDataDirective)
-    ).end().fadeIn();
-};
-
 (function($)
 {
     var fireSectionUpdate = function(section, $screen, urlBase, dateStr, type, slice)
@@ -172,9 +23,16 @@ metricsNS.summarySectionCallback = function($context)
             url: url,
             success: function(data)
             {
-                $section.data(metricsNS.DATA_KEY, data);
+                $section.data(metricsNS.DATA_KEY, data)
+                    .removeClass('error');
                 if (_.isFunction(section.callback))
                 { section.callback($section, slice); }
+            },
+            error: function(request, textStatus, error)
+            {
+                $section.addClass('error');
+                if (_.isFunction(section.error))
+                { section.error($section, request, textStatus, error); }
             }
         });
     };
@@ -218,7 +76,7 @@ metricsNS.summarySectionCallback = function($context)
     var mergeItems = function(list, defaults)
     {
         return _.map(list, function(item)
-            { return $.extend(item, defaults); });
+            { return $.extend({}, defaults, item); });
     };
 
     $.fn.metricsScreen = function(options)
@@ -228,9 +86,12 @@ metricsNS.summarySectionCallback = function($context)
             currentInterval = null,
             currentSlice    = opts.initialSliceDepth,
             currentStart    = null,
-            sections = [] // Add any page-specific sections
-                .concat(mergeItems(opts.chartSections, opts.chartDefaults))
-                .concat(mergeItems(opts.summarySections, opts.summaryDefaults))
+            chartSections   = mergeItems(opts.chartSections, opts.chartDefaults),
+            detailSections  = mergeItems(opts.detailSections, opts.detailDefaults),
+            summarySections = mergeItems(opts.summarySections, opts.summaryDefaults),
+            sections = chartSections
+                .concat(detailSections)
+                .concat(summarySections)
                 .concat(opts.topListSections);
 
         var $summaryDisplay = $screen.find('.summaryDisplay').append(
@@ -240,11 +101,16 @@ metricsNS.summarySectionCallback = function($context)
 
         $summaryDisplay.equiWidth();
 
+        var $detailDisplay = $screen.find('.detailDisplay').append(
+            $.renderTemplate('metricsSummaryItem', detailSections,
+                  opts.summaryDirective)
+        ).equiWidth();
+
         // Load each of the charts and create their menus
         var chartDisplay =  $.renderTemplate('metricsCharts',
-            opts.chartSections, opts.chartDirective);
+            chartSections, opts.chartDirective);
 
-        _.each(opts.chartSections, function(section)
+        _.each(chartSections, function(section)
         {
             var currentChart = chartDisplay.find('#' + section.id);
 
@@ -270,21 +136,22 @@ metricsNS.summarySectionCallback = function($context)
                     .end().end(), currentSlice);
         });
 
-        /*
+        // Workaround for IE7 SVG overlay issues
         if($('body').hasClass('ie7'))
         {
             $screen.find('.chartMenu .menuButton').click(function(event)
             {
                 $(event.target).closest('.chartMenu').siblings('.chartArea')
-                    .css('visibility', 'hidden');
+                  .find('.chartContent').empty().end()
+                  .find('.emptyHint').fadeIn();
             });
 
-            $(document).bind('click', function(event)
+            $screen.find('.chartContainer .menu ul > li > a').click(function(event)
             {
-                $screen.find('.chartArea').css('visibility', 'visible');
+                $(event.target).closest('.chartContainer')
+                    .find('.emptyHint').hide();
             });
         }
-        */
 
         $screen.find('.topDisplay').append(
             $.renderTemplate('metricsTopList', opts.topListSections, opts.topListDirective))
@@ -298,10 +165,8 @@ metricsNS.summarySectionCallback = function($context)
 
         _.defer(function(){
             $summaryDisplay.trigger('resize');
+            $detailDisplay.trigger('resize');
         });
-
-        _.each(opts.summarySections, function(section)
-        { $screen.find('#' + section.id).data('data-summary', section.summary); });
 
         // Listen for a custom event to trigger data refresh
         $screen.bind('metricsTimeChanged', function(event, newStart, newInterval, newSlice)
@@ -313,7 +178,7 @@ metricsNS.summarySectionCallback = function($context)
             }
             else if (newSlice != currentSlice)
             {
-                refreshData($screen, opts.chartSections, opts,
+                refreshData($screen, chartSections, opts,
                     newStart, newInterval, newSlice);
             }
             currentInterval = newInterval;
@@ -326,7 +191,7 @@ metricsNS.summarySectionCallback = function($context)
         {
             if (newSlice != currentSlice)
             {
-                refreshData($screen, opts.chartSections, opts,
+                refreshData($screen, chartSections, opts,
                     currentStart, currentInterval, newSlice);
             }
             currentSlice = newSlice;
@@ -334,26 +199,39 @@ metricsNS.summarySectionCallback = function($context)
 
         // Store a copy of the necessary information
         _.each(sections, function(section)
-        { $screen.find('#' + section.id).data('data-callback', section.callback); });
+        {
+            var $section = $screen.find('#' + section.id);
+            $section.data('data-callback', section.callback);
+            if (!$.isBlank(section.dataKeys))
+            {
+                _.each(section.dataKeys, function(key)
+                {
+                    $section.data('data-' + key, section[key] || {});
+                });
+            }
+        });
 
         $.live('.expandTopSection', 'click', expandTopSubSection);
 
-        $(window).bind('resize', function(event)
+        if (opts.redrawOnResize)
         {
-            _.each(opts.chartSections, function(chart)
+            $(window).bind('resize', function(event)
             {
-                // Redraw without animation
-                if (!$.isBlank(chart.redrawTimer)) 
-                { clearTimeout(chart.redrawTimer); }
-                chart.redrawTimer = setTimeout(
-                    function()
-                    {
-                        redrawChart($screen.find('#' + chart.id),
-                            currentSlice, false);
-                        chart.redrawTimer = null;
-                    }, opts.redrawTimeout);
+                _.each(chartSections, function(chart)
+                {
+                    // Redraw without animation
+                    if (!$.isBlank(chart.redrawTimer))
+                    { clearTimeout(chart.redrawTimer); }
+                    chart.redrawTimer = setTimeout(
+                        function()
+                        {
+                            redrawChart($screen.find('#' + chart.id),
+                                currentSlice, false);
+                            chart.redrawTimer = null;
+                        }, opts.redrawTimeout);
+                });
             });
-        });
+        }
         return this;
     };
 
@@ -449,7 +327,8 @@ metricsNS.summarySectionCallback = function($context)
     $.fn.metricsScreen.defaults = {
         chartSections: [],
         chartDefaults: {
-            callback: metricsNS.updateChartCallback
+            callback: metricsNS.updateChartCallback,
+            error:    metricsNS.chartError
         },
         chartDirective: {
             '.chartContainer' : {
@@ -459,17 +338,25 @@ metricsNS.summarySectionCallback = function($context)
                 }
             }
         },
-        customSections: [],
+        detailDefaults: {
+            callback: metricsNS.detailSectionCallback,
+            dataKeys: ['detail']
+        },
+        detailSections: [],
         initialSliceDepth: 'Daily',
         redrawTimeout: 50,
+        redrawOnResize: true,
         summarySections: [],
         summaryDefaults: {
-            callback: metricsNS.summarySectionCallback
+            callback: metricsNS.summarySectionCallback,
+            dataKeys: ['summary']
         },
         summaryDirective: {
             '.summaryContainer': {
                 'section <- ': {
-                    '.summaryTitle': 'section.displayName',
+                    '.summaryTitle': function(context) {
+                        return context.item.displayName || context.item.detail;
+                    },
                     '@id': 'section.id'
                 }
             }
@@ -508,31 +395,3 @@ metricsNS.summarySectionCallback = function($context)
     });
 })(jQuery);
 
-metricsNS.topListItemDirective = {
-  '.item' : {
-      'topItem <- ': {
-          '.titleText'       : 'topItem.name',
-          '.titleLink'       : 'topItem.linkText',
-          '.titleLink@href'  : 'topItem.href',
-          '.titleLink@class+': 'topItem.linkClass',
-          '.value .primary'  : 'topItem.value',
-          '.subLinks': {
-              'subItem <- topItem.children' : {
-                  '.subLink'      : 'subItem.linkText',
-                  '.subLink@href' : 'subItem.href'
-              }
-          },
-          '.subValues': {
-              'subItem <- topItem.children' : {
-                  '.subValue': 'subItem.value'
-              }
-          }
-      }
-  }
-};
-
-metricsNS.summaryDataDirective = {
-    '.deltaValue' : 'delta',
-    '.totalValue' : 'total',
-    '.deltaBox@class+': 'deltaClass'
-};

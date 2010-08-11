@@ -28,7 +28,7 @@
                         ((length - 1) * margin) : (length * margin);
 
                 $children.width(
-                    ($container.width() - totalMargins - (length * padding))
+                    ($container.width() - 1 - totalMargins - (length * padding))
                     / length
                 );
             };

@@ -14,19 +14,24 @@
     div.selector.uniform
       position: relative
       top: 0.1em
+      .ie7 &
+        display: inline
+        top: -0.2em
 
   .chartArea
     clear: both
     height: 25em
     &.noDataAvailable
       height: 5em
-      .flash
+      .chartNotice
         display: block
 
     .flash
       clear: both
       display: none
       text-align: center
+    .emptyHint
+      display: none
 
   .chartMenu
     cursor: pointer
@@ -74,8 +79,6 @@
 
     .gridList thead tr th
       background-color: #dedede
-    .description
-      width: 85%
 
     .value
       text-align: right
@@ -98,9 +101,11 @@
       .subItemBox
         padding-top: 0.3em
 
-  .summaryDisplay
+  .summaryDisplay, .detailDisplay
     margin: 2em 0
     width: 100%
+    .ie7 &
+      display: inline
 
     .summaryContainer
       background-color: #fafafa

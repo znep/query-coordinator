@@ -15,10 +15,14 @@
 
   <%= display_standard_flashes %>
 
-  <%- if @user_search_results.nil? -%>
-    <p class='information'>To modify user privileges on this domain,
-      search for them below or choose from the list of currently privileged users below.</p>
-  <%- end -%>
+  <p class='information'>
+    <%- if @user_search_results.nil? -%>
+      To modify user privileges on this domain,
+        search for them below or choose from the list of currently privileged users below.
+    <%- else -%>
+      <%= link_to 'Return to users overview', :action => 'users' %>
+    <%- end -%>
+  </p>
   <form class='search usersFind' action='<%= url_for :action => 'users' %>' method='get'>
     <label for='username'>Search for users to add</label>
     <input type='text' class='textPrompt searchField prompt' name='username' id='username'

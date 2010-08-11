@@ -66,6 +66,10 @@ class DatasetsController < ApplicationController
     end
   end
 
+  def stats
+    @view = get_view(params[:id])
+  end
+
 protected
   def get_view(id)
     begin

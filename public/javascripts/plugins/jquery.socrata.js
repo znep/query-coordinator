@@ -289,7 +289,7 @@
             '<div class="__socrata-console-inner__">' +
             '<div class="__socrata-console-output__">' + HELLO_HTML + '</div>' +
             '<table class="console-input __socrata-console-input__" width="100%"><tr>' +
-            '<td class="no-padding">socrata&gt;&nbsp;</td>' +
+            '<td class="no-padding">soda&gt;&nbsp;</td>' +
             '<td width="100%" class="no-padding"><input autocomplete="off" class="console-entry"/></td>' +
             '</table>' +
             '</div></div>');

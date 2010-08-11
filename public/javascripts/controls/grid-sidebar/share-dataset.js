@@ -247,8 +247,20 @@
                             { blist.dialog.sharing(event); }
                         });
 
-                        $formElem.find('.toggleDatasetPermissions').click(togglePermissions)
-                            .text(blist.dataset.isPublic(blist.display.view) ? 'Public' : 'Private');
+                        // If the publicness is inherited from the parent dataset, they can't make it private
+                        var publicGrant = _.detect(blist.display.view.grants || [], function(grant)
+                            {
+                                return _.include(grant.flags || [], 'public');
+                            }),
+                            $toggleLink = $formElem.find('.toggleDatasetPermissions');
+
+                        if ($.isBlank((publicGrant || {}).inherited))
+                        {
+                            $toggleLink.click(togglePermissions)
+                                .text(blist.dataset.isPublic(blist.display.view) ? 'Public' : 'Private');
+                        }
+                        else
+                        { $toggleLink.replaceWith($('<span>Public</span>')); }
 
                         $formElem.find('.datasetTypeName').text(displayName);
                         $formElem.find('.datasetTypeNameUpcase').text(displayName.capitalize());

@@ -66,7 +66,7 @@ $(function()
             },
             {
                 id: 'topEmbeds', displayName: 'Top Embeds',
-                heading: 'Hits', className: 'right',
+                heading: 'Embeds', className: 'right',
                 callback: blist.metrics.urlMapCallback, top: 'EMBEDS'
             }
         ]

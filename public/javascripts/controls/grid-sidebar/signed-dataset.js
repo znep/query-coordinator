@@ -1,5 +1,8 @@
 (function($)
 {
+    if ((blist.display.view.signed === false) &&
+         blist.sidebarHidden.exportSection.signedDataset) { return; }
+
     var config =
     {
         name: 'export.signedDataset',
@@ -21,11 +24,23 @@
                     template: 'signedDataset',
                     callback: function($sect)
                     {
-                        $sect.find('.signedDatasetLink').click(function(event)
+                        var $link = $sect.find('.signedDatasetLink');
+
+                        if (blist.display.view.owner.id == blist.currentUserId)
+                        {
+                            // swap out the copy
+                            _.defer(function()
+                            {
+                                $sect.find('.consumerText').hide();
+                                $sect.find('.publisherText').show();
+                            });
+                        }
+
+                        $link.click(function(event)
                         {
                             event.preventDefault();
 
-                            var $line = $(this).closest('li');
+                            var $line = $link.closest('li');
                             $line.addClass('loading');
 
                             // TODO/MERGE: move into dataset?
@@ -49,10 +64,8 @@
                             });
                         });
 
-                        $sect.find('.datasetSignature').click(function(event)
+                        $sect.find('.datasetSignature').click(function()
                         {
-                            event.preventDefault();
-
                             $(this).select();
                         });
                     }

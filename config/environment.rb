@@ -90,8 +90,6 @@ Rails::Initializer.run do |config|
   # They can be installed with "bundle install" on new installations
 end
 
-LogRefererMiddleware.stomp_server_uri = "stomp://localhost:61613"
-
 ActionMailer::Base.smtp_settings = {
   :address => "mail",
   :domain => "socrata.com"

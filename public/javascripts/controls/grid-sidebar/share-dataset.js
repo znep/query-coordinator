@@ -254,7 +254,7 @@
                             }),
                             $toggleLink = $formElem.find('.toggleDatasetPermissions');
 
-                        if ($.isBlank((publicGrant || {}).inherited))
+                        if ($.isBlank(publicGrant) || publicGrant.inherited == false)
                         {
                             $toggleLink.click(togglePermissions)
                                 .text(blist.dataset.isPublic(blist.display.view) ? 'Public' : 'Private');

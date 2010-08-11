@@ -411,6 +411,18 @@ blist.namespace.fetch('blist.data.types');
             (type.stringParse || '') + "')";
     };
 
+
+    var renderPicklist = function(valueLookupVariable, value)
+    {
+        if (typeof value == 'string')
+        {
+            return valueLookupVariable[value.toLowerCase()] ||
+                '<div class="blist-dataset-link-dangling">{0}</div>'.format(value);
+        }
+
+        return '';
+    };
+
     var renderGenPicklist = function(value, plain, column, context) {
         var valueLookupVariable = createUniqueName();
         if (column.options) {
@@ -430,8 +442,8 @@ blist.namespace.fetch('blist.data.types');
                     valueLookup[key.toLowerCase()] = icon + htmlEscape(option.text);
                 }
             }
-            return "(" + valueLookupVariable + "[(typeof " + value +
-                " == 'string' ? " + value + " : '').toLowerCase()] || '')";
+
+            return "(renderPicklist(" + valueLookupVariable + "," + value + "))";
         }
         return "'?'";
     };
@@ -1222,6 +1234,21 @@ blist.namespace.fetch('blist.data.types');
             alignment: alignment,
             filterable: true,
             filterConditions: filterConditions.numeric,
+            deleteable: true
+        },
+        dataset_link: {
+            title: 'Dataset Link',
+            priority: 19, // haven't check what priority does yet.
+            createable: true,
+            renderGen: renderGenPicklist,
+            sortPreprocessor: sortPicklistPrepro,
+            filterRender: renderFilterPicklist,
+            sortable: true,
+            aggregates: nonNumericAggs,
+            rollUpAggregates: nonNumericAggs,
+            alignment: alignment,
+            filterable: true,
+            filterConditions: filterConditions.textual,
             deleteable: true
         }
     });

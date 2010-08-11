@@ -39,7 +39,17 @@
             name: options.name,
 
             get: function()
-            { return value; },
+            {
+                if (options.allowFreeEdit && $this.data('freeEditOn'))
+                {
+                    var $textEl = $this.find('.blist-combo-text');
+                    return $textEl.val();
+                }
+                else
+                {
+                    return value;
+                }
+            },
 
             set: function(val)
             {
@@ -160,7 +170,7 @@
             var pos = $this.offset();
             var layout = {
                 left: pos.left,
-                top: pos.top + $this.outerHeight() - 1,
+                top: pos.top + $this.offsetParent().outerHeight(true),
                 width: $this.outerWidth() - 2
             };
             if (options.adjustDropdownLayout)
@@ -218,6 +228,12 @@
             else { showDropdown(); }
 
             $this.find(':input.hiddenTextField')[0].focus();
+            fixCombo();
+        };
+
+        var onDblClick = function(event)
+        {
+            toggleComboText(event);
         };
 
         var getSelectedValueObject = function(value)
@@ -404,6 +420,23 @@
             valueManager.set($textEl.val());
         };
 
+        /**
+         * Sidebar create and destroy editor is causing combobox problem in
+         * free edit mode.  Some inner contents were lost.
+         * This function fixes the problem and is only needed when the object
+         * lives inside gridSidebar.
+         */
+        var fixCombo = function()
+        {
+           if ($this.closest("#gridSidebar").length <= 0) { return; }
+           var $valEl = $this.find('.blist-combo-value');
+           if ($valEl.find('span').length <= 0)
+           {
+                $valEl.html('<span class="icon-filler"></span><span class="label">(Blank)</span>');
+           }
+           $this.css('backgroundPosition', $.browser.msie ? 'auto' : '');
+        };
+
         var toggleComboText = function(event)
         {
            var $valEl = $this.find('.blist-combo-value');
@@ -414,28 +447,39 @@
            if ($valEl.is(':visible'))
            {
                // show text hide combo
-               $this.data('freeEditOn', true);
                $this.data('comboValueCopy', $this.value());
-
+               $this.data('freeEditOn', true);
                $this.unbind('click');
-               $textEl.width($textEl.parent().outerWidth() - ($textEl.outerWidth() - $textEl.width()));
-               $textEl.height($textEl.parent().outerHeight() - ($textEl.outerHeight() - $textEl.height()));
+               // css class affects dimension calculation so it is done before
+               // calculating width and height.
+               $this.removeClass('blist-combo');
+               if ($this.closest("#gridSidebar").length <= 0)
+               {
+                   $textEl.width($textEl.parent().outerWidth() - ($textEl.outerWidth() - $textEl.width()));
+                   $textEl.height($textEl.parent().outerHeight() - ($textEl.outerHeight() - $textEl.height()));
+               }
+
                $textEl.unbind('blur', textBlur);
                $textEl.blur(textBlur);
+               $textEl.removeClass('hide');
+               if ($this.data('comboValueCopy') != "null")
+               {
+                   $textEl.val($this.data('comboValueCopy'));
+               }
+
                $textEl.show();
                $valEl.hide();
-               $this.removeClass('blist-combo');
                $this.css('backgroundPosition', '-100px');
                $toggle.find('a').text('List');
                 // show free text edit validation error if it exists
                $this.find("label.error").show();
+               $textEl.focus();
            }
            else
            {
-               // show combo hide text
-               $this.data('freeEditOn', false);
+                // show combo hide text
                $this.value($this.data('comboValueCopy'));
-
+               $this.data('freeEditOn', false);
                $this.addClass('blist-combo');
                $textEl.hide();
                $valEl.show();
@@ -445,7 +489,16 @@
                $toggle.find('a').text('Custom');
                 // hide free text edit validation error if it exists
                $this.find("label.error").hide();
+
            }
+
+           if (dropdownOpen)
+           {
+               hideDropdown();
+           }
+
+           // fix issue when used inside sidebar
+           fixCombo();
         };
 
         // Initialize the component
@@ -469,9 +522,16 @@
         var $toggle;
         if (options.allowFreeEdit)
         {
-            $toggle = $('<ul class="actionButtons toggleComboText" style="position:absolute;top:0px;right:-9em;"><li><a style="cursor:pointer;width:5em;text-align:center;">Custom</a></li></ul>');
-            $toggle.find('a').click(toggleComboText);
-            $this.parent().append($toggle);
+            if (options.freeEditButton)
+            {
+                $toggle = $('<ul class="actionButtons toggleComboText" style="position:absolute;top:0px;right:-9em;"><li><a style="cursor:pointer;width:5em;text-align:center;">Custom</a></li></ul>');
+                $toggle.find('a').click(toggleComboText);
+                $this.parent().append($toggle);
+            }
+            else
+            {
+                $this.dblclick(onDblClick);
+            }
         }
 
         renderValue();
@@ -498,6 +558,7 @@
         keyName: 'id',      // the property name where value will return
         keyAccProp: 'label',// key accelerator property
         allowFreeEdit: false,
+        freeEditButton: false, // whether to use trailing button or double click to toggle free edit and selction mode.
         defaultValue: null  // Value to use if the value is null; leave this as
                             // null to allow for blanks
     };

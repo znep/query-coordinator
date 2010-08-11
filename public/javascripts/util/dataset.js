@@ -154,3 +154,79 @@ blist.dataset.isPublic = function(view)
         return _.include(grant.flags || [], 'public');
     }));
 }
+
+blist.dataset.getLinkedDatasetOptions = function(linkedDatasetUid, col, $field, useRdfKeyAsDefault)
+{
+    if (blist.dataset.getLinkedDatasetOptions.cachedLinkedDatasetOptions === undefined)
+    {
+        blist.dataset.getLinkedDatasetOptions.cachedLinkedDatasetOptions = {};
+    }
+
+    var cachedLinkedDatasetOptions = blist.dataset.getLinkedDatasetOptions.cachedLinkedDatasetOptions;
+
+    var viewUid = linkedDatasetUid;
+    if ($.isBlank(viewUid) || !viewUid.match(blist.util.patterns.UID))
+    {
+        return [];
+    }
+
+    if (cachedLinkedDatasetOptions[viewUid] == null)
+    {
+        $.Tache.Get({url: '/api/views/{0}.json'.format(viewUid),
+            error: function(req)
+            {
+                alert('Fail to get columns from dataset {0}.'.format(viewUid));
+           },
+            success: function(linkedDataset)
+            {
+                cachedLinkedDatasetOptions[viewUid] = [];
+                var cldo = cachedLinkedDatasetOptions[viewUid];
+
+                var opt;
+                var rdfSubject = linkedDataset && linkedDataset.metadata &&
+                        linkedDataset.metadata.rdfSubject ?
+                        linkedDataset.metadata.rdfSubject : undefined;
+
+                _.each(linkedDataset.columns, function(c)
+                {
+                    switch (c.dataTypeName)
+                    {
+                        case 'text':
+                            opt = {value: String(c.id), text: c.name};
+                            if (useRdfKeyAsDefault && opt.value === rdfSubject)
+                            {
+                                opt.selected = true;
+                            }
+                        //TODO: support other datatype like url
+                            cldo.push(opt);
+                            break;
+                    }
+                });
+
+                if (cachedLinkedDatasetOptions[viewUid].length <= 0)
+                {
+                    alert('Dataset {0} does not have any column.'.fromat(viewUid));
+                }
+                else
+                {
+                    $field.data('linkedFieldValues', '_reset');
+                    _.each($field.data('linkedGroup'), function(f) {
+                        $(f).trigger('change');
+                    });
+                }
+            }});
+         return [];
+    }
+
+    return cachedLinkedDatasetOptions[viewUid];
+};
+
+blist.dataset.getLinkedDatasetOptionsDefault = function(linkedDatasetUid, col, $field)
+{
+    return blist.dataset.getLinkedDatasetOptions(linkedDatasetUid, col, $field, true);
+};
+
+blist.dataset.getLinkedDatasetOptionsNoDefault = function(linkedDatasetUid, col, $field)
+{
+    return blist.dataset.getLinkedDatasetOptions(linkedDatasetUid, col, $field, false);
+};

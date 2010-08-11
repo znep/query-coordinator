@@ -24,15 +24,12 @@ class LogRefererMiddleware
     config = {
       :hosts => [],
       :randomize => true,
-      :max_reconnect_attempts => 1,
-      :max_reconnect_delay => 1.0
+      :max_reconnect_attempts => 0
     }
     uris.each do |uri|
       uri = URI.parse(uri)
       config[:hosts] << {:host => uri.host, :port => uri.port}
     end
-
-    pp config
 
     Stomp::Client.open(config)
   end

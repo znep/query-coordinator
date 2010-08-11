@@ -246,8 +246,7 @@
     // For now, throw an error when a user tries to create a chart
     // with too many rows
     var rowLimit = 100;
-    if (!$.isBlank(blist.$display.blistModel) &&
-        blist.$display.blistModel().length() > rowLimit)
+    if (blist.dataset.totalRows > rowLimit)
     {
       $("#modal").jqmHide();
       _.defer(function() { alert('Charting is a poor choice for a view with ' +

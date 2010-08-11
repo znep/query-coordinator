@@ -276,9 +276,6 @@
     {
         sidebarObj.finishProcessing();
 
-        // TODO: should go away
-        sidebarObj.$grid().blistModel().updateColumn(column);
-
         sidebarObj.$dom().socrataAlert(
             {message: 'Your column has been updated', overlay: true});
         _.defer(function() { sidebarObj.hide(); });
@@ -287,9 +284,6 @@
     var columnConverted = function(sidebarObj, oldId, column)
     {
         sidebarObj.finishProcessing();
-
-        // TODO: should go away
-        sidebarObj.$grid().blistModel().convertColumn(oldId, column);
 
         sidebarObj.$dom().socrataAlert(
             {message: 'Your column has been updated', overlay: true});
@@ -346,8 +340,6 @@
                         function(xhr)
                         {
                             // Really shouldn't happen; but just in case...
-                            // TODO: should go away
-                            sidebarObj.$grid().blistModel().updateColumn(c);
                             sidebarObj.genericErrorHandler($pane, xhr);
                         }
                     );

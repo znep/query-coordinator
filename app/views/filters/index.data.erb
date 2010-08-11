@@ -82,19 +82,10 @@
           .text('Update Unsaved Filter');
     }
 
-    var model = $('#dataGrid').blistModel();
-    var view = model.meta().view;
+    var columns = _.select(blist.dataset.realColumns,
+        function(column) { return column.renderTypeName !== 'nested_table'; });
 
-    var columns = _.select(view.columns,
-        function(column)
-        {
-            return column.dataTypeName !== 'meta_data' &&
-                column.renderTypeName !== 'nested_table';
-        });
-
-    if ((view.query === undefined || view.query.filterCondition === undefined ||
-          view.query.filterCondition === null ||
-          view.query.filterCondition.children === undefined) &&
+    if ($.isBlank(((blist.dataset.query || {}).filterCondition || {}).children) &&
         columns.length === 0)
     {
       $('.filterDatasetWrapper #filterTable, .filterDatasetWrapper #filterList').hide();
@@ -103,14 +94,13 @@
       $('.filterDatasetWrapper .submitLine .actionButtons a').text('Continue');
       return;
     }
-    else if (view.query !== undefined &&
-        view.query.filterCondition !== undefined &&
-        view.query.filterCondition !== null &&
-        view.query.filterCondition.children !== undefined)
+    else if (!$.isBlank(((blist.dataset.query || {})
+            .filterCondition || {}).children))
     {
-      $("#filterOperator").val(view.query.filterCondition.value.toLowerCase());
+      $("#filterOperator").val(blist.dataset.query
+          .filterCondition.value.toLowerCase());
       blist.filter.populate($(".filterDatasetWrapper #filterTable"),
-          view.query.filterCondition, columns, model.meta().allColumns);
+          blist.dataset.query.filterCondition, columns, blist.dataset.realColumns);
     }
     else
     {

@@ -214,14 +214,14 @@ blist.blistGrid.setTempViewTab = function ()
     $('.tabList .active').addClass('origView').removeClass('active');
     $('.tabList .filter.tempViewTab').addClass('active');
     $('body').addClass('unsavedView');
-    if ($('#dataGrid').blistModel().isGrouped())
+    if (blist.dataset.isGrouped())
     { $('body').addClass('groupedView'); }
     $('#infoPane').hide();
 };
 
 blist.blistGrid.updateTempViewTab = function()
 {
-    $('body').toggleClass('groupedView', $('#dataGrid').blistModel().isGrouped());
+    $('body').toggleClass('groupedView', blist.dataset.isGrouped());
 };
 
 blist.blistGrid.newViewCreated = function($iEdit, responseData)

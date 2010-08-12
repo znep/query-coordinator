@@ -72,6 +72,9 @@ ActionController::Routing::Routes.draw do |map|
     :controller => 'internal', :action => 'set_property',
     :requirements => {:domain_id => /(\w|\.)+/},
     :conditions => { :method => :post }
+  map.connect '/internal/orgs/:org_id/domains/:domain_id/site_config/:config_id/edit_property',
+    :controller => 'internal', :action => 'show_property',
+    :requirements => {:domain_id => /(\w|\.)+/}
   map.connect '/internal/tiers', :controller => 'internal',
     :action => 'index_tiers'
   map.connect '/internal/tiers/:name', :controller => 'internal',

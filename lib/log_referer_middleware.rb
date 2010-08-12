@@ -6,7 +6,6 @@ require 'pp'
 # know you've been. 
 class LogRefererMiddleware
   @@client = nil
-  cattr_accessor :stomp_server_uri
 
   def initialize(app)
     @app = app
@@ -14,14 +13,25 @@ class LogRefererMiddleware
 
   def client
     if @@client.nil?
-      @@client = connect(@@stomp_server_uri)
+      uris = APP_CONFIG['activemq_hosts'].split(',')
+      @@client = connect(uris)
     end
 
     return @@client
   end
 
-  def connect(uri)
-    Stomp::Client.open uri 
+  def connect(uris)
+    config = {
+      :hosts => [],
+      :randomize => true,
+      :max_reconnect_attempts => 0
+    }
+    uris.each do |uri|
+      uri = URI.parse(uri)
+      config[:hosts] << {:host => uri.host, :port => uri.port}
+    end
+
+    Stomp::Client.open(config)
   end
 
   def call(env)

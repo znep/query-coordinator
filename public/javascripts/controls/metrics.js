@@ -24,13 +24,13 @@
             success: function(data)
             {
                 $section.data(metricsNS.DATA_KEY, data)
-                    .removeClass('error');
+                    .closest('.container').removeClass('metricsError');
                 if (_.isFunction(section.callback))
                 { section.callback($section, slice); }
             },
             error: function(request, textStatus, error)
             {
-                $section.addClass('error');
+                $section.closest('.container').addClass('metricsError');
                 if (_.isFunction(section.error))
                 { section.error($section, request, textStatus, error); }
             }
@@ -328,7 +328,6 @@
         chartSections: [],
         chartDefaults: {
             callback: metricsNS.updateChartCallback,
-            error:    metricsNS.chartError
         },
         chartDirective: {
             '.chartContainer' : {

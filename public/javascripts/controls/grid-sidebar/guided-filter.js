@@ -75,7 +75,7 @@
                         children: filterCondition
                     });
                 }
-                else
+                else if (!_.isArray(filterCondition));
                 {
                     filterChildren.push(filterCondition);
                 }

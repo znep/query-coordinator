@@ -59,7 +59,7 @@ $(function()
             },
             {
                 id: 'topSearches', displayName: 'Top Search Terms',
-                heading: 'Visits', className: 'left',
+                heading: 'Searches', className: 'left',
                 callback: function($context) {
                     blist.metrics.updateTopSearchesCallback($context, 'top-dataset-searches');
                 },  top: 'SEARCHES'

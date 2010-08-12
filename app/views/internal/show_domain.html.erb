@@ -1,139 +1,132 @@
 <% content_for :head do %>
+<%= rendered_stylesheet_tag 'internal-screen' %>
 <%= stylesheet_link_merged 'internal-shared' %>
 <title>Domain <%= @domain.nil? ? '' : @domain.name %> | Admin Panel |
   <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
-<div class="twoColumnContainer tabContainer clearfix">
-  <div id="mainColumnContent" class="column mainContent">
-    <ul class='tabList'>
-      <li class='even active'><div class='wrapper'>
-        <%= link_to 'Admin Home', '/internal' %>
-      </div></li>
-    </ul>
+<%= render :partial => 'left_nav' %>
 
-    <div class='outerContent'>
-      <div class="contentTR"><div class="contentTL"></div></div>
-      <div class='content'>
 
-        <% if @domain.nil? %>
-          <p>Domain could not be found</p>
+<div class="contentBox">
+  <div class='content'>
 
-        <% else %>
-          <h1><%= @domain.name %> (<%= @domain.cname %>)</h1>
+    <% if @domain.nil? %>
+      <p>Domain could not be found</p>
 
-          <p>This is a
-          <a href="/internal/tiers/<%= @domain.accountTier.name %>">
-            <em><%= @domain.accountTier.name %></em>
-          </a>
-          domain.</p>
+    <% else %>
+      <h1><%= @domain.name %> (<%= @domain.cname %>)</h1>
 
-          <%- sorted_configs = @domain.configurations('site_theme').
-            sort {|a,b| a.default == b.default ?
-              a.name.downcase <=> b.name.downcase :
-              (a.default ? -1 : 1)} -%>
-          <h2>Property Configurations:</h2>
-          <% form_tag '/internal/orgs/' + @domain.organizationId.to_s +
-            '/domains/' + @domain.cname + '/default_site_config' do %>
-          <ul>
+      <p>This is a
+      <a href="/internal/tiers/<%= @domain.accountTier.name %>">
+        <em><%= @domain.accountTier.name %></em>
+      </a>
+      domain.</p>
+
+      <%- sorted_configs = @domain.configurations('site_theme').
+        sort {|a,b| a.default == b.default ?
+          a.name.downcase <=> b.name.downcase :
+          (a.default ? -1 : 1)} -%>
+      <h2>Property Configurations:</h2>
+      <% form_tag '/internal/orgs/' + @domain.organizationId.to_s +
+        '/domains/' + @domain.cname + '/default_site_config' do %>
+      <ul>
+        <%- sorted_configs.each do |conf| -%>
+        <li>
+        <%= radio_button_tag 'default-site-config', conf.id, conf.default %>
+        <a href='/internal/orgs/<%= @domain.organizationId
+          %>/domains/<%= @domain.cname %>/site_config/<%= conf.id %>'>
+          <%= conf.name %>
+        </a>
+        <%- if @domain.cname == CurrentDomain.cname &&
+          session[:custom_site_config] != conf.id.to_s -%>
+        |
+        <a class='minor' href='/internal/orgs/<%= @domain.organizationId
+          %>/domains/<%= @domain.cname
+          %>/preview_site_config?config_id=<%= conf.id %>'>(Preview)</a>
+        <%- end -%>
+        </li>
+        <%- end -%>
+      </ul>
+      <input type='submit' value='Set Default' />
+      <%- if @domain.cname == CurrentDomain.cname &&
+        session[:custom_site_config] != nil -%>
+      |
+      <a class='minor' href='/internal/orgs/<%= @domain.organizationId
+        %>/domains/<%= @domain.cname
+        %>/preview_site_config?config_id=nil'>(Reset to Default)</a>
+      <%- end -%>
+      <% end %>
+
+      <h2>Add Configurations:</h2>
+      <% form_tag '/internal/orgs/' + @domain.organizationId.to_s +
+        '/domains/' + @domain.cname + '/site_config' do %>
+        <div class='line'>
+          <label>Name</label>
+          <input type='text' name='config[name]' />
+        </div>
+        <div class='line'>
+          <label>Parent Config</label>
+          <select name='config[parentId]'>
+            <option value=''>(none)</option>
             <%- sorted_configs.each do |conf| -%>
-            <li>
-            <%= radio_button_tag 'default-site-config', conf.id, conf.default %>
-            <a href='/internal/orgs/<%= @domain.organizationId
-              %>/domains/<%= @domain.cname %>/site_config/<%= conf.id %>'>
-              <%= conf.name %>
-            </a>
-            <%- if @domain.cname == CurrentDomain.cname &&
-              session[:custom_site_config] != conf.id.to_s -%>
-            |
-            <a class='minor' href='/internal/orgs/<%= @domain.organizationId
-              %>/domains/<%= @domain.cname
-              %>/preview_site_config?config_id=<%= conf.id %>'>(Preview)</a>
+            <option value='<%= conf.id %>'><%= conf.name %></option>
             <%- end -%>
-            </li>
-            <%- end -%>
-          </ul>
-          <input type='submit' value='Set Default' />
-          <%- if @domain.cname == CurrentDomain.cname &&
-            session[:custom_site_config] != nil -%>
-          |
-          <a class='minor' href='/internal/orgs/<%= @domain.organizationId
-            %>/domains/<%= @domain.cname
-            %>/preview_site_config?config_id=nil'>(Reset to Default)</a>
-          <%- end -%>
-          <% end %>
+          </select>
+        </div>
+        <input type='submit' value='Create' />
+      <% end %>
 
-          <h2>Add Configurations:</h2>
-          <% form_tag '/internal/orgs/' + @domain.organizationId.to_s +
-            '/domains/' + @domain.cname + '/site_config' do %>
-            <div class='line'>
-              <label>Name</label>
-              <input type='text' name='config[name]' />
-            </div>
-            <div class='line'>
-              <label>Parent Config</label>
-              <select name='config[parentId]'>
-                <option value=''>(none)</option>
-                <%- sorted_configs.each do |conf| -%>
-                <option value='<%= conf.id %>'><%= conf.name %></option>
-                <%- end -%>
-              </select>
-            </div>
-            <input type='submit' value='Create' />
-          <% end %>
+      <h2>Features:</h2>
+      <% form_tag '/internal/orgs/' + @domain.organizationId.to_s +
+        '/domains/' + @domain.cname + '/feature' do %>
+        <%- @domain.features.each do |feature, enabled| -%>
+        <div class='line'>
+          <label><%= feature %></label>
+          <%= hidden_field_tag 'features[name[' + feature + ']]',
+            feature %>
+          <%= check_box_tag 'features[enabled[' + feature + ']]',
+            'enabled', enabled %>
+        </div>
+        <%- end -%>
+        <input type="submit" value="Update"/>
+      <% end %>
 
-          <h2>Features:</h2>
-          <% form_tag '/internal/orgs/' + @domain.organizationId.to_s +
-            '/domains/' + @domain.cname + '/feature' do %>
-            <%- @domain.features.each do |feature, enabled| -%>
-            <div class='line'>
-              <label><%= feature %></label>
-              <%= hidden_field_tag 'features[name[' + feature + ']]',
-                feature %>
-              <%= check_box_tag 'features[enabled[' + feature + ']]',
-                'enabled', enabled %>
-            </div>
-            <%- end -%>
-            <input type="submit" value="Update"/>
-          <% end %>
+      <h2>Add Feature</h2>
+      <% form_tag '/internal/orgs/' + @domain.organizationId.to_s +
+        '/domains/' + @domain.cname + '/feature' do %>
+        <div class='line'>
+          <input type="text" name="new-feature_name" />
+          <%= check_box_tag 'new-feature_enabled', 'enabled', true %>
+        </div>
+        <input type="submit" value="Add"/>
+      <% end %>
 
-          <h2>Add Feature</h2>
-          <% form_tag '/internal/orgs/' + @domain.organizationId.to_s +
-            '/domains/' + @domain.cname + '/feature' do %>
-            <div class='line'>
-              <input type="text" name="new-feature_name" />
-              <%= check_box_tag 'new-feature_enabled', 'enabled', true %>
-            </div>
-            <input type="submit" value="Add"/>
+      <h2>Account Modules:</h2>
+      <% if @domain.accountModules.nil? || @domain.accountModules.size <= 0 %>
+        <p>No account modules configured.</p>
+      <% else %>
+        <ul>
+          <% @domain.accountModules.each do |mod| %>
+            <li><%= mod.name %> (<%= mod.description %>)</li>
           <% end %>
+        </ul>
+      <% end %>
 
-          <h2>Account Modules:</h2>
-          <% if @domain.accountModules.nil? || @domain.accountModules.size <= 0 %>
-            <p>No account modules configured.</p>
-          <% else %>
-            <ul>
-              <% @domain.accountModules.each do |mod| %>
-                <li><%= mod.name %> (<%= mod.description %>)</li>
-              <% end %>
-            </ul>
-          <% end %>
+      <h2>Add an account module</h2>
+      <% form_tag '/internal/orgs/' + @domain.organizationId.to_s +
+        '/domains/' + @domain.cname + '/account_modules' do %>
+        <div class='line'>
+          <label>Module:</label>
+          <select name="module[name]">
+            <% @modules.each do |mod| %>
+            <option value="<%= mod.name %>"><%= mod.name %></option>
+            <% end %>
+          </select>
+        </div>
+        <input type="submit" value="Add"/>
+      <% end %>
+    <% end %>
 
-          <h2>Add an account module</h2>
-          <% form_tag '/internal/orgs/' + @domain.organizationId.to_s +
-            '/domains/' + @domain.cname + '/account_modules' do %>
-            <div class='line'>
-              <label>Module:</label>
-              <select name="module[name]">
-                <% @modules.each do |mod| %>
-                <option value="<%= mod.name %>"><%= mod.name %></option>
-                <% end %>
-              </select>
-            </div>
-            <input type="submit" value="Add"/>
-          <% end %>
-        <% end %>
-
-      </div>
-    </div>
   </div>
 </div>

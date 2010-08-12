@@ -15,6 +15,15 @@ rescue
   REVISION_DATE = nil
 end
 
+begin
+  downtime = YAML.load_file(File.join(Rails.root, "config/downtime.yml"))
+  DOWNTIME_MESSAGE = downtime['message']
+  DOWNTIME_START   = downtime['start'].present? ? DateTime.parse(downtime['start'].to_s) : nil
+  DOWNTIME_END     = downtime['end'].present?   ? DateTime.parse(downtime['end'].to_s) : nil
+rescue
+  DOWNTIME_MESSAGE = DOWNTIME_START = DOWNTIME_END = nil
+end
+
 DOMAIN_TEMPLATES = Dir.glob('app/views/shared/template/_*.html.erb').map do |f|
   f.match(/\/_(\w+)\.html\.erb$/)[1]
 end

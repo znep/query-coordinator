@@ -1,54 +1,53 @@
 <% content_for :head do %>
+<%= rendered_stylesheet_tag 'internal-screen' %>
 <%= stylesheet_link_merged 'internal-shared' %>
 <title>Property <%= @property_id %> |
   Domain <%= @domain.nil? ? '' : @domain.name %> | Admin Panel |
   <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
-<div class="twoColumnContainer tabContainer clearfix">
-  <div id="mainColumnContent" class="column mainContent">
-    <ul class='tabList'>
-      <li class='even active'><div class='wrapper'>
-        <%= link_to 'Admin Home', '/internal' %>
-      </div></li>
-    </ul>
+<%= render :partial => 'left_nav' %>
 
-    <div class='outerContent'>
-      <div class="contentTR"><div class="contentTL"></div></div>
-      <div class='content'>
-        <h1>
-          <%= @property_key %> for
-          <a href="/internal/orgs/<%= @domain.organizationId %>/domains/<%= @domain.cname %>">
-            <%= @domain.name %> (<%= @domain.cname %>)
-          </a>
-        </h1>
+<%- is_json = !@property.is_a?(String) -%>
 
-        <% form_tag('/internal/orgs/' + @domain.organizationId.to_s +
-          '/domains/' + @domain.cname + '/site_config/' + @config.id.to_s +
-          '/property', {:class => 'wide'}) do %>
-          <div class="bespin" data-bespinoptions='{"stealFocus":true, "syntax":"js"}' style="height: 60em"><%=
-            raw (@property.is_a?(String) ? @property : @property.to_json).gsub(/\\n/, "\n") if @property
-          %></div>
-          <%= text_area_tag 'properties[' + @property_key + ']', '', :style => 'display: none' %>
-          <input type="submit" value="Save"/>
-        <%- end -%>
-      </div>
-    </div>
+<div class="contentBox">
+  <div class='content'>
+    <h1>
+      <%= @property_key %> for
+      <a href="/internal/orgs/<%= @domain.organizationId %>/domains/<%= @domain.cname %>">
+        <%= @domain.name %> (<%= @domain.cname %>)
+      </a>
+    </h1>
+
+    <% form_tag('/internal/orgs/' + @domain.organizationId.to_s +
+      '/domains/' + @domain.cname + '/site_config/' + @config.id.to_s +
+      '/property', {:class => 'wide'}) do %>
+      <div class="bespin" data-bespinoptions='{"stealFocus":true, "syntax":"<%= is_json ? 'js' : 'html' %>"}'
+        style="height: 60em"><%=
+        raw (is_json ? @property.to_json.gsub(/\\n/, "\n") : @property) if @property
+      %></div>
+      <%= text_area_tag 'properties[' + @property_key + ']', '', :style => 'display: none' %>
+      <input type="submit" value="Save"/>
+    <%- end -%>
   </div>
 </div>
 
 <% content_for :js_footer do %>
-  <%= javascript_include_tag 'widgets/BespinEmbedded.compressed.js' %>
+  <link id="bespin_base" href="/javascripts/plugins/bespin/">
+  <%= javascript_include_tag 'plugins/bespin/BespinEmbedded.js' %>
   <script type="text/javascript">
+  var isJson = <%= is_json == true %>;
   $(function()
   {
-    setTimeout(function() // bespin is stupid broken.
-    {
       $('form').submit(function(event)
       {
-        $(this).find('textarea').val(JSON.stringify($('.bespin').get(0).bespin.value));
+        var bespinVal = $('.bespin').get(0).bespin.editor.value;
+
+        if (!$.isBlank($.trim(bespinVal)) || confirm('Do you want to clear this field?'))
+        {
+          $(this).find('textarea').val(isJson ? bespinVal : JSON.stringify(bespinVal));
+        }
       });
-    }, 2000);
   });
   </script>
 <% end %>

@@ -1,50 +1,41 @@
 <% content_for :head do %>
+<%= rendered_stylesheet_tag 'internal-screen' %>
 <%= stylesheet_link_merged 'internal-shared' %>
-<title>Organizations | Admin Panel |
-  <%= CurrentDomain.strings.site_title %></title>
+<title>Organizations | Admin Panel | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
-<div class="twoColumnContainer tabContainer clearfix">
-  <div id="mainColumnContent" class="column mainContent">
-    <ul class='tabList'>
-      <li class='even active'><div class='wrapper'>
-        <%= link_to 'Admin Home', '/internal' %>
-      </div></li>
-    </ul>
+<%= render :partial => 'left_nav' %>
 
-    <div class='outerContent'>
-      <div class="contentTR"><div class="contentTL"></div></div>
-      <div class='content'>
-        <h1>All Organizations:</h1>
+<div class="contentBox">
+  <div class='content'>
+    <h1>All Organizations:</h1>
 
-        <% if @orgs.nil? || @orgs.size <= 0 %>
-          <p>No organizations found.</p>
-        <% else %>
-          <ul>
-            <% @orgs.each do |org| %>
-              <li><a href="/internal/orgs/<%= org.id %>"><%= org.name %></a></li>
-            <% end %>
-          </ul>
+    <% if @orgs.nil? || @orgs.size <= 0 %>
+      <p>No organizations found.</p>
+    <% else %>
+      <ul>
+        <% @orgs.each do |org| %>
+          <li><a href="/internal/orgs/<%= org.id %>"><%= org.name %></a></li>
         <% end %>
+      </ul>
+    <% end %>
 
-        <h2>Create an organization:</h2>
-        <% form_tag('/internal/orgs') do %>
-          <div class='line'>
-            <label>Name:</label>
-            <input type="text" name="org[name]"/>
-          </div>
-          <div class='line'>
-            <label>Short Name:</label>
-            <input type="text" name="org[shortName]"/>
-          </div>
-          <div class='line'>
-            <label>URL:</label>
-            <input type="text" name="org[url]"/>
-          </div>
-          <input type="submit" value="Create"/>
-        <% end %>
-
+    <h2>Create an organization:</h2>
+    <% form_tag('/internal/orgs') do %>
+      <div class='line'>
+        <label>Name:</label>
+        <input type="text" name="org[name]"/>
       </div>
-    </div>
+      <div class='line'>
+        <label>Short Name:</label>
+        <input type="text" name="org[shortName]"/>
+      </div>
+      <div class='line'>
+        <label>URL:</label>
+        <input type="text" name="org[url]"/>
+      </div>
+      <input type="submit" value="Create"/>
+    <% end %>
+
   </div>
 </div>

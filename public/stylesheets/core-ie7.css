@@ -8,6 +8,9 @@
 {
 	display: block;
 	width: 300px;
+}
+.featuredItem a span, .featuredItem a p
+{
 	position: relative;
-	top: 20px;
+	top:15px;	
 }

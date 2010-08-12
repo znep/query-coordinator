@@ -371,7 +371,7 @@ ActionController::Routing::Routes.draw do |map|
     :controller => 'robots_txt', :action => 'show'
 
   # Static content
-  ['about', 'solution', 'company-info', 'press'].each do |static_section|
+  ['about', 'solution', 'company-info', 'press', 'developers'].each do |static_section|
     controller_name = static_section.underscore.camelize
     map.connect "/#{static_section}", :controller => controller_name
     map.connect "/#{static_section}/:page", :controller => controller_name, :action => 'show'

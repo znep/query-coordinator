@@ -64,27 +64,35 @@
         }
         else
         {
-            var filterChildren = [];
+            var topLevelChildren = [];
             _.each(_.values(facetedFilters), function(filterCondition)
             {
-                if (_.isArray(filterCondition) && (filterCondition.length > 0))
+                // intermediate format: arrays indicate OR groups
+                if (_.isArray(filterCondition))
                 {
-                    filterChildren.push({
-                        type: 'operator',
-                        value: 'OR',
-                        children: filterCondition
-                    });
+                    if (filterCondition.length == 1)
+                    {
+                        topLevelChildren.push(filterCondition[0]);
+                    }
+                    else if (filterCondition.length > 1)
+                    {
+                        topLevelChildren.push({
+                            type: 'operator',
+                            value: 'OR',
+                            children: filterCondition
+                        });
+                    }
                 }
-                else if (!_.isArray(filterCondition));
+                else
                 {
-                    filterChildren.push(filterCondition);
+                    topLevelChildren.push(filterCondition);
                 }
             });
 
             var mergedFilter = {
                 type: 'operator',
                 value: 'AND',
-                children: _.compact(filterChildren.concat(originalFilter))
+                children: _.compact(topLevelChildren.concat(originalFilter))
             };
 
             dsGrid.updateFilter(mergedFilter, false, false);

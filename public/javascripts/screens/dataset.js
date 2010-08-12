@@ -100,6 +100,17 @@ $(function()
                         datasetPageNS.sidebar.show('columnProperties');
                     }
                 });
+
+            // Fire up guided filter if available
+            if (!_.isUndefined(blist.display.view.metadata) &&
+                !_.isUndefined(blist.display.view.metadata.facets))
+            {
+                blist.$display.bind('full_load.loadGuidedFilter', function()
+                {
+                    datasetPageNS.sidebar.show('filter.guidedFilter');
+                    blist.$display.unbind('full_load.loadGuidedFilter');
+                });
+            }
         }
         else if (blist.display.invokeVisualization)
         { $dataGrid.visualization(); }
@@ -338,16 +349,6 @@ $(function()
         });
     });
 
-
-    // Fire up guided filter if available
-    if (!_.isUndefined(blist.display.view.metadata) &&
-        !_.isUndefined(blist.display.view.metadata.facets))
-    {
-        setTimeout(function()
-        {
-            datasetPageNS.sidebar.show('filter.guidedFilter');
-        }, 2000); // CR: what?
-    }
 
     // Data calls
     _.defer(function()

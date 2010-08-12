@@ -1,12 +1,12 @@
 #marqueeContainer
 {
 	background: url(/stylesheets/images/marketing/marqueeBg.png) repeat-x top;
-	border-top-right-radius: .4em;
-	-moz-border-radius-topright: .4em;
-	webkit-border-top-right-radius: .4em;
-	border-top-left-radius: .4em;
-	-moz-border-radius-topleft: .4em;
-	webkit-border-top-left-radius: .4em;	
+	border-top-right-radius: 0.4em;
+	-moz-border-radius-topright: 0.4em;
+	webkit-border-top-right-radius: 0.4em;
+	border-top-left-radius: 0.4em;
+	-moz-border-radius-topleft: 0.4em;
+	webkit-border-top-left-radius: 0.4em;	
 	color: #FFF;
 	font-size: 1.1em;
 	margin: 0em 0 2.5em 0;
@@ -37,7 +37,10 @@
 .marqueeContent h2
 {
 	color: #FFF;
-	font-size: 3em;
+	font-size: 3.1em;
+	letter-spacing: -0.1px;
+	line-height: 1.3em;
+	font-weight:normal;
 }
 .marqueeContent p
 {
@@ -85,24 +88,19 @@ a:hover.learnButton
 }
 .featuredItem
 {
-	background: url(/stylesheets/images/marketing/arrowOff.png) no-repeat right center;
 	color: #999;
-	cursor: pointer;	
 	display: table;
 	height: 83px;	
-	margin: 0 .5em 0 1em;
-	padding-right: 40px;	
+	margin: 0 1.5em 0 1.5em;	
 
-}
-.featuredItem:hover
-{
-	background-image: url(/stylesheets/images/marketing/arrowOn.png);
 }
 
 .featuredItem a
 {
-	color: #999;
-	display:table-cell;
+	color: #BBB;
+	cursor: pointer;	
+	background: url(/stylesheets/images/marketing/arrowOff.png) no-repeat right center;	
+	display: table-cell;
 	height: 83px;	
 	margin: auto;		
 	text-decoration: none;			
@@ -113,6 +111,7 @@ a:hover.learnButton
 .featuredItem a:hover
 {
 	color:#FFF;	
+	background-image: url(/stylesheets/images/marketing/arrowOn.png);	
 	text-decoration:none;
 }
 .featuredItem a span
@@ -137,12 +136,12 @@ a:hover.learnButton
 	float: left;
 	line-height: 1.4em;
 	margin: 0 1em;
-	width: 195px;
+	width: 190px;
 }
 
 .featuredItem a p strong
 {
 	display: block;
-	font-size: 1.6em;	
+	font-size: 1.4em;	
 	font-weight: normal;
 }

@@ -367,7 +367,7 @@
     <%# Export pane %>
     blist.sidebarHidden.exportSection = blist.sidebarHidden.exportSection || {};
     blist.sidebarHidden.exportSection.signedDataset = <%= !(@view.owned_by?(@current_user) &&
-      module_enabled?(:digital_signing)) %>;
+      module_enabled?(:digital_signatures)) %>;
     blist.sidebarHidden.exportSection.print = <%= @view.is_alt_view? %>;
 
     <%# Sharing pane %>

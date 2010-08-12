@@ -77,8 +77,6 @@
                         { columnsRearranged(datasetObj); })
                     .bind('column_filter_change', function (event, c, s)
                         { columnFilterChanged(datasetObj, c, s); })
-                    .bind('server_row_change', function(event)
-                        { serverRowChange(datasetObj); })
                     .bind('columns_updated', function(event)
                         { columnsUpdated(datasetObj); })
                     .bind('full_load', function(event)
@@ -106,12 +104,8 @@
                     .options({blankRow: datasetObj.settings.editEnabled,
                         filterMinChars: 0,
                         progressiveLoading: !datasetObj.settings.isInvalid,
-                        initialResponse: datasetObj.settings.initialResponse})
-                    .ajax({url: '/views/' + datasetObj.settings.view.id +
-                                (datasetObj.settings.isInvalid ? '.json' :
-                                '/rows.json'), cache: false,
-                            data: {accessType: datasetObj.settings.accessType},
-                            dataType: 'json'});
+                        initialResponse: datasetObj.settings.initialResponse,
+                        view: datasetObj.settings.view});
 
                 $.live('#' + $datasetGrid.attr('id') +
                     ' .blist-table-row-handle', 'mouseover',
@@ -139,7 +133,8 @@
                     datasetObj.settings.clearFilterItem =
                         $(datasetObj.settings.clearFilterItem);
                     datasetObj.settings.clearFilterItem
-                        .click(function (e) { datasetObj.clearFilterInput(e); });
+                        .click(function (e)
+                            { datasetObj.clearFilterInput(e, true); });
                     datasetObj.settings.view.bind('clear_temporary', function()
                         { datasetObj.clearFilterInput(); });
                     if (datasetObj.settings.autoHideClearFilterItem)
@@ -158,21 +153,12 @@
             setColumnAggregate: function(columnId, aggregate)
             {
                 var datasetObj = this;
-                var view = datasetObj.settings._model.meta().view;
-                var col = datasetObj.settings._model.getColumnByID(columnId);
+                var col = datasetObj.settings.view.columnForID(columnId);
                 if (col)
                 {
-                    $.ajax({url: '/views/' + view.id + '/columns/' + columnId +
-                        '.json', dataType: 'json', type: 'PUT',
-                        contentType: 'application/json',
-                        data: JSON.stringify({'format':
-                            $.extend({}, col.format, {'aggregate': aggregate})}),
-                        success: function(retCol)
-                        {
-                            datasetObj.settings._model.updateColumn(retCol);
-                            datasetObj.settings.view.trigger('columns_changed');
-                        }
-                    });
+                    col.update({format: $.extend({}, col.format,
+                        {'aggregate': aggregate})});
+                    col.save();
                 }
             },
 
@@ -359,7 +345,7 @@
                 }
             },
 
-            clearFilterInput: function(e)
+            clearFilterInput: function(e, clearView)
             {
                 var datasetObj = this;
                 if ($(datasetObj.currentGrid).closest('body').length < 1)
@@ -370,9 +356,11 @@
                 if (!$.isBlank(e)) { e.preventDefault(); }
                 if (datasetObj.settings.filterForm)
                 { datasetObj.settings.filterForm.find(':input').val('').blur(); }
-                datasetObj.settings._model.filter('');
                 if (datasetObj.settings.autoHideClearFilterItem)
                 { datasetObj.settings.clearFilterItem.hide(); }
+
+                if (clearView)
+                { datasetObj.settings.view.update({searchString: null}); }
             },
 
             /* Disables all normal interactions other than scrolling and hover
@@ -496,21 +484,17 @@
     {
         $menu.trigger('close');
 
-        var model = datasetObj.settings._model;
-
         var newVal = $.map($menu.find('li.tags .editContainer input')
             .val().split(','), function(t, i) { return $.trim(t); });
-        var row = model.getByID($menu.attr('id').split('_')[1]);
+        var row = datasetObj.settings.view
+            .rowForID($menu.attr('id').split('_')[1]);
         if ($.compareValues(row.tags, newVal)) { return; }
 
-        var column = $.grep(model.meta().view.columns, function(c, i)
-            { return c.dataTypeName == 'tag'; })[0];
+        datasetObj.settings.view.setRowValue(newVal, row.id, 'tags');
+        datasetObj.settings.view.saveRow(row.id);
 
-        model.saveRowValue(newVal, row, model.meta().allColumns[column.id],
-            true);
-
-        if (column.flags !== undefined && _.include(column.flags, 'hidden'))
-        { datasetObj.showHideTags(false); }
+        var column = datasetObj.settings.view.columnsForType('tag')[0];
+        if (column.hidden) { datasetObj.showHideTags(false); }
     };
 
     var hideRowTagsMenu = function($menu)
@@ -539,26 +523,24 @@
         var action = s[0];
         var rowId = s[1];
         var model = datasetObj.settings._model;
-        var view = model.meta().view;
         switch (action)
         {
             case 'row-delete':
                 if (s[2] !== undefined)
                 {
-                    model.removeChildRows(model.getByID(rowId),
-                            model.column(s[2]), true);
+                    var col = datasetObj.settings.view.columnForID(s[2]);
+                    col.removeRows(rowId);
                 }
                 else
                 {
                     model.selectRow(model.getByID(rowId));
-                    var rows = [];
-                    $.each(model.selectedRows, function(id, index)
-                            { rows.push(model.getByID(id)); });
-                    model.remove(rows, true);
+                    datasetObj.settings.view
+                        .removeRows(_.keys(model.selectedRows));
                 }
                 break;
             case 'row-tag':
-                var row = model.getByID($menu.attr('id').split('_')[1]);
+                var row = datasetObj.settings.rowForID(
+                    $menu.attr('id').split('_')[1]);
                 $menu.find('li.tags .editContainer input')
                     .val(row.tags ? row.tags.join(', ') : '');
 
@@ -573,16 +555,11 @@
         datasetObj.settings.view.trigger('columns_changed');
     };
 
-    var serverRowChange = function(datasetObj)
-    {
-        datasetObj.settings._model.reloadAggregates();
-    };
-
     var cellClick = function(datasetObj, event, row, column, origEvent)
     {
         var model = datasetObj.settings._model;
         if (!column || row.level > 0) { return; }
-        if (column.dataIndex == 'rowNumber')
+        if (column.id == 'rowNumberCol')
         {
             if (origEvent.shiftKey)
             {
@@ -611,8 +588,7 @@
         }
 
         var searchText = $(e.currentTarget).find(':input').val();
-        var model = datasetObj.settings._model;
-        model.filter(searchText);
+        datasetObj.settings.view.update({searchString: searchText});
         if (!searchText || searchText === '')
         {
             if (datasetObj.settings.autoHideClearFilterItem)
@@ -632,13 +608,13 @@
             var $row = $(r.row);
 
             if (!$row.is('.blist-tr-open')) { return true; }
-            $row.find('.blist-tdh[uid]')
+            $row.find('.blist-tdh[colId]')
                 .each(function(i, tdh)
                 {
                     var $tdh = $(tdh);
                     if ($tdh.find('a.menuLink').length > 0) { return true; }
-                    var uid = $tdh.attr('uid');
-                    var col = datasetObj.settings._model.column(uid);
+                    var colId = $tdh.attr('colId');
+                    var col = datasetObj.settings.view.columnForID(colId);
                     if (col) { setupHeader(datasetObj, col, $tdh, false); }
                 });
         });
@@ -657,10 +633,10 @@
             }
             tipsRef[col.id] = $col;
 
-            var typeName = blist.data.types[col.type].title ||
-                col.type.displayable();
+            var typeName = col.renderType.title ||
+                col.renderTypeName.displayable();
             var tooltipContent = '<div class="blist-th-tooltip ' +
-                col.type + '">'
+                col.renderTypeName + '">'
                 + '<p class="name">' +
                 $.htmlEscape(col.name).replace(/ /, '&nbsp;') + '</p>' +
                 (col.description !== undefined ?
@@ -669,9 +645,9 @@
                 '<p class="columnType">' +
                 '<span class="blist-th-icon"></span>' +
                 typeName +
-                (col.grouping_aggregate !== undefined ?
-                    ' (' + $.capitalize(col.grouping_aggregate) + ' on ' +
-                    col.originalType.displayable() + ')' : '') +
+                (col.format.grouping_aggregate !== undefined ?
+                    ' (' + $.capitalize(col.format.grouping_aggregate) + ' on ' +
+                    col.dataTypeName.displayable() + ')' : '') +
                 '</p>' +
                 '</div>';
             var contentIsMain = true;
@@ -732,27 +708,25 @@
 
     var createHeaderMenu = function(datasetObj, col, $colDom)
     {
-        var view = datasetObj.settings._model.meta().view;
-        var isNested = col.nestedIn !== undefined;
+        // TODO: fixme for nt
+        var isNested = !$.isBlank(col.parentColumn);
         // Create an object containing flags describing what should be present
         // in the menu
         var features = {};
-        if (!isNested && blist.data.types[col.type].sortable)
+        if (!isNested && col.renderType.sortable)
         {
             features.sort = true;
         }
-        if (!isNested && blist.data.types[col.type].filterable &&
-            !datasetObj.settings._model.isGrouped())
+        if (!isNested && col.renderType.filterable &&
+            !datasetObj.settings.view.isGrouped())
         {
             features.filter = true;
         }
         if (datasetObj.settings.columnDeleteEnabled &&
-            view.flags !== undefined && $.inArray('default', view.flags) >= 0 &&
-            blist.data.types[col.type].deleteable && view && view.rights &&
-            $.inArray('remove_column', view.rights) >= 0 &&
-            (!datasetObj.settings._model.isGrouped() ||
-                $.grep(view.query.groupBys, function(g, i)
-                    { return g.columnId == col.id; }).length < 1))
+            col.renderType.deleteable &&
+            (!datasetObj.settings.view.isGrouped() ||
+                !_.any(datasetObj.settings.view.query.groupBys, function(g)
+                    { return g.columnId == col.id; })))
         {
             features.remove = true;
         }
@@ -772,7 +746,7 @@
 
         // Install the menu indicator DOM elements
         $colDom.append('<a class="menuLink action-item" href="#column-menu_' +
-            col.uid + '"></a>');
+            col.id + '"></a>');
 
         // Install an event handler that actually builds the menu on first
         // mouse over
@@ -781,24 +755,24 @@
             if ($colDom.find('ul.menu').length > 0) { return; }
             var htmlStr =
                 '<ul class="menu columnHeaderMenu action-item" id="column-menu_' +
-                col.uid + '">';
+                col.id + '">';
 
             // Render sorting
             if (features.sort)
             {
                 htmlStr +=
                     '<li class="sortAsc singleItem">' +
-                    '<a href="#column-sort-asc_' + col.uid + '">' +
+                    '<a href="#column-sort-asc_' + col.id + '">' +
                     '<span class="highlight">Sort Ascending</span>' +
                     '</a>' +
                     '</li>' +
                     '<li class="sortDesc singleItem">' +
-                    '<a href="#column-sort-desc_' + col.uid + '">' +
+                    '<a href="#column-sort-desc_' + col.id + '">' +
                     '<span class="highlight">Sort Descending</span>' +
                     '</a>' +
                     '</li>' +
                     '<li class="sortClear singleItem">' +
-                    '<a href="#column-sort-clear_' + col.uid + '">' +
+                    '<a href="#column-sort-clear_' + col.id + '">' +
                     '<span class="highlight">Clear Sort</span>' +
                     '</a>' +
                     '</li>';
@@ -830,7 +804,7 @@
                 htmlStr += '<li class="separator singleItem" />';
                 htmlStr += '<li class="properties singleItem">' +
                     '<a href="#edit-column_' + col.id +
-                    (col.nestedIn ?  '_' + col.nestedIn.header.id : '') + '">' +
+                    (isNested ?  '_' + col.parentColumn.id : '') + '">' +
                     '<span class="highlight">Edit Column Properties</span>' +
                     '</a>' +
                     '</li>';
@@ -876,6 +850,7 @@
             $menu.find('.singleItem').show();
             loadFilterMenu(datasetObj, headerCol, $menu);
 
+            // TODO: probably change this
             var curSort = datasetObj.settings._model.meta().sort[headerCol.id];
             $menu.find('.sortAsc').toggle(!curSort || !curSort.ascending);
             $menu.find('.sortDesc').toggle(!curSort || curSort.ascending);
@@ -923,6 +898,7 @@
         var col = datasetObj.settings.view.columnForID(headerCol.id);
 
         // Get the current filter for this column (if it exists)
+        // TODO: Change this...
         var colFilters = datasetObj.settings._model
             .meta().columnFilters;
         var cf = (colFilters || {})[headerCol.id] || undefined;
@@ -962,9 +938,9 @@
 
         // Sort type keys in a specific order for URL and phone
         var typeKeys = _.keys(summary);
-        if (col.renderType == 'url')
+        if (col.renderTypeName == 'url')
         { typeKeys.sort(); }
-        else if (col.renderType == 'phone')
+        else if (col.renderTypeName == 'phone')
         { typeKeys.sort().reverse(); }
 
         var sumSections = [];
@@ -1080,6 +1056,7 @@
 
         var action = s[0];
         var colIdIndex = s[1];
+        // TODO: fixme
         var model = datasetObj.settings._model;
         switch (action)
         {
@@ -1117,15 +1094,11 @@
                     { datasetObj.settings.view.trigger('columns_changed'); }});
                 break;
             case 'delete-column':
-                var view = model.meta().view;
                 var selCols = $(datasetObj.currentGrid).blistTableAccessor()
                     .getSelectedColumns();
                 selCols[colIdIndex] = true;
 
-                var cols = [];
-                $.each(selCols, function(colId, val)
-                        { cols.push(colId); });
-                datasetObj.deleteColumns(cols);
+                datasetObj.deleteColumns(_.keys(selCols));
                 break;
             case 'edit-column':
                 datasetObj.settings.editColumnCallback(colIdIndex, s[2]);

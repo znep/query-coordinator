@@ -57,6 +57,7 @@
     var makeTable = function(options)
     {
         var model;
+        var dsReady = false;
 
         /*** MISC. VARIABLES AND INITIALIZATION ***/
 
@@ -76,7 +77,7 @@
         // Calculate the number of digits in the handle.  This is important
         // because we need to recreate our layout if the width of the column
         // changes.
-        var calculateHandleDigits = function(model)
+        var calculateHandleDigits = function()
         {
             return Math.ceil(Math.log(model.length() || 1) * Math.LOG10E);
         };
@@ -145,34 +146,9 @@
             }
         };
 
-        // Filter data
-        var applyFilter = function()
-        {
-            setTimeout(function() {
-                var searchText = $filterBox[0].value;
-                model.filter(searchText, 250);
-                if (!searchText || searchText == '')
-                {
-                    $filterClear.hide();
-                }
-                else
-                {
-                    $filterClear.show();
-                }
-            }, 10);
-        };
-
-        var clearFilter = function(e)
-        {
-            e.preventDefault();
-            $filterBox.val('').blur();
-            $filterClear.hide();
-            model.filter('');
-        };
-
         // Obtain a model column associated with a column header DOM node
         var getColumnForHeader = function(e) {
-            return model.column(e.getAttribute('uid'));
+            return model.columnForID(e.getAttribute('colId'));
         };
 
         // Given a DOM node, retrieve the logical row in which the cell resides
@@ -188,32 +164,32 @@
         // Given a DOM node, retrieve the logical column in which the cell resides
         var getColumn = function(cell) {
             // The cell will have a class like 'tableId-c4'; we need to
-            //  extra the part after the tableId-c, which is the uid of
+            //  extra the part after the tableId-c, which is the id of
             //  the column that can be looked up
             var classIndex = cell.className.indexOf(id + '-c');
             if (classIndex == -1) {
                 return null;
             }
-            var endOfUID = cell.className.indexOf(' ', classIndex);
-            if (endOfUID == -1) {
-                endOfUID = cell.className.length;
+            var endOfID = cell.className.indexOf(' ', classIndex);
+            if (endOfID == -1) {
+                endOfID = cell.className.length;
             }
-            var colUID = cell.className.slice(classIndex + id.length + 2, endOfUID);
-            if (colUID == 'rowHandleCol')
+            var colID = cell.className.slice(classIndex + id.length + 2, endOfID);
+            if (colID == 'rowHandleCol')
             {
                 return rowHandleColumn;
             }
-            else if (colUID == 'rowNumberCol')
+            else if (colID == 'rowNumberCol')
             {
                 return rowNumberColumn;
             }
-            return model.column(colUID);
+            return model.columnForID(colID);
         };
 
         // Takes a column, and gets the real px width for it
         var getColumnWidthPx = function(col)
         {
-            if (col.type == 'opener')
+            if (col.renderTypeName == 'opener')
             {
                 return openerWidth + paddingX;
             }
@@ -436,7 +412,7 @@
             if ($activeCells && $activeCells.length > 0)
             {
                 var column = getColumn($activeCells[0]);
-                var type = column ? blist.data.types[column.type] : null;
+                var type = column ? column.renderType : null;
                 // If this is an inline edit type in edit mode, then just
                 // launch the editor instead of select
                 if (type && type.isInlineEdit)
@@ -607,7 +583,7 @@
         };
 
         /**
-         * Navigate to a particular location (column UID, row ID pair).
+         * Navigate to a particular location (column ID, row ID pair).
          * Returns true iff the location contains a focusable table cell.
          */
         var cellNavToXY = function(xy, event, selecting, wrap)
@@ -702,8 +678,8 @@
 
             var row = getRow(cell);
             var col = getColumn(cell);
-            if (!col || col.dataIndex == 'rowHandle' ||
-                col.dataIndex == 'rowNumber' || !row) { return false; }
+            if (!col || col.id == 'rowHandleCol' ||
+                col.id == 'rowNumberCol' || !row) { return false; }
             var value = model.getRowValue(row, col);
             if (!value) { value = model.getInvalidValue(row, col); }
 
@@ -712,7 +688,7 @@
                     'mode-' + mode + ' blist-table-util"></div>');
             $scrolls.append($curEditContainer);
             var blistEditor = $curEditContainer.blistEditor(
-                {row: row, column: model.getColumnByID(col.id),
+                {row: row, column: model.columnForID(col.id),
                   value: value, newValue: newValue});
             if (!blistEditor) { return; }
 
@@ -905,7 +881,7 @@
             hotCellTimer = null;
 
             var column = getColumn(hotCell);
-            var type = column ? blist.data.types[column.type] : null;
+            var type = column ? column.renderType : null;
             // If this is an inline edit type in edit mode, then just launch the
             //  editor instead of hover
             if (type && type.isInlineEdit)
@@ -1349,7 +1325,7 @@
                 varDenom[0] -= col.percentWidth;
                 delete col.percentWidth;
                 variableColumns[0] = $.grep(variableColumns[0], function (c, i)
-                    { return c.dataIndex == col.dataIndex; }, true);
+                    { return c.id == col.id; }, true);
                 if (col.minWidth)
                 {
                     varMinWidth[0] -= col.minWidth;
@@ -2016,25 +1992,7 @@
             '   </div>' +
             '   <div class="blist-table-locked-footer">&nbsp;</div>' +
             '</div>' +
-            '<div class="blist-table-top">';
-        if (options.showTitle)
-        {
-            headerStr +=
-                '<div class="blist-table-title-tl">' +
-                ' <div class="blist-table-title-tr">' +
-                '   <div class="blist-table-title">' +
-                '     <div class="blist-table-filter-l">' +
-                '       <div class="blist-table-filter-r">' +
-                '         <input class="blist-table-filter"/>' +
-                '         <a class="blist-table-clear-filter" title="Clear Search" href="#clear_filter">Clear Search</a>' +
-                '     </div></div>';
-            if (options.showName)
-            {
-                headerStr += '<div class="blist-table-name">&nbsp;</div>';
-            }
-            headerStr += '</div></div></div>';
-        }
-        headerStr +=
+            '<div class="blist-table-top">' +
             '  <div class="blist-table-header-scrolls">' +
             '    <div class="blist-table-header">&nbsp;</div>' +
             '    <div class="indicator-container"></div>' +
@@ -2076,24 +2034,6 @@
 
         // The top area
         var $top = $outside.find('.blist-table-top');
-
-        var $title;
-        var $nameLabel;
-        var $filterBox;
-        var $filterClear;
-        if (options.showTitle)
-        {
-            // The title bar
-            $title = $top.find('.blist-table-title');
-            $nameLabel = $title.find('.blist-table-name');
-            $filterBox = $title
-                .find('.blist-table-filter')
-                .keydown(applyFilter)
-                .change(applyFilter)
-                .example('Find');
-            $filterClear = $title.find('.blist-table-clear-filter')
-                .bind('click', clearFilter).hide();
-        }
 
         // The table header elements
         var $headerScrolls = $top
@@ -2183,6 +2123,8 @@
         // Window sizing
         var updateLayout = function()
         {
+            if (!dsReady) { return; }
+
             begin("updateLayout.size");
             $headerScrolls.height($header.outerHeight());
 
@@ -2401,16 +2343,16 @@
 
         // Obtain a CSS class for a column
         var getColumnClass = function(column) {
-            return id + '-c' + column.uid;
+            return id + '-c' + column.id;
         };
 
         // Obtain a CSS style for a column
         var colStyles = [];
         var getColumnStyle = function(column) {
-            var result = colStyles[column.uid];
+            var result = colStyles[column.id];
             if (!result)
             {
-                throw "Uninitialized column style access for " + column.uid;
+                throw "Uninitialized column style access for " + column.id;
             }
             return result;
         };
@@ -2519,7 +2461,7 @@
                         skippable: true,
                         skipCount: children.length,
                         mcol: mcol,
-                        logical: mcol.uid
+                        logical: mcol.id
                     });
                     if (options.showRowHandle)
                     {
@@ -2531,7 +2473,7 @@
                             type: 'handle',
                             canFocus: false,
                             mcol: mcol,
-                            logical: mcol.uid
+                            logical: mcol.id
                         });
                     }
                     for (var k = 0; k < children.length; k++)
@@ -2540,11 +2482,11 @@
                         colParts.push(
                             "\"<div class='blist-td blist-tdh " +
                             getColumnClass(child) +
-                            ' ' + child.type +
-                            "' uid='" +
-                            child.uid +
+                            ' ' + child.renderTypeName +
+                            "' colId='" +
+                            child.id +
                             "'>" +
-                            (canEdit() || child.type == 'tag' ?
+                            (canEdit() || child.renderTypeName == 'tag' ?
                                 "<div class='blist-th-icon'></div>" : "") +
                             "<span class='blist-th-name'>" +
                             htmlEscape(child.name) +
@@ -2554,7 +2496,7 @@
                             type: 'header',
                             canFocus: false,
                             mcol: child,
-                            logical: mcol.uid
+                            logical: mcol.id
                         });
                     }
 
@@ -2564,7 +2506,7 @@
                             type: 'adder',
                             canFocus: false,
                             mcol: mcol,
-                            logical: mcol.uid
+                            logical: mcol.id
                         });
                         colParts.push("\"<div class='" + getColumnClass(mcol) +
                             " blist-td blist-tdh blist-column-adder'>" +
@@ -2592,8 +2534,8 @@
                         colParts.push(
                             "\"<div class='blist-td blist-tdh " +
                             getColumnClass(child) +
-                            "' uid='" +
-                            child.uid +
+                            "' colId='" +
+                            child.id +
                             "'></div>\""
                         );
                     }
@@ -2620,7 +2562,7 @@
                         skippable: true,
                         skipCount: mcol.children.length,
                         mcol: mcol,
-                        logical: mcol.uid
+                        logical: mcol.id
                     });
                     if (options.showRowHandle)
                     {
@@ -2630,7 +2572,7 @@
                             canFocus: false,
                             skippable: true,
                             mcol: mcol,
-                            logical: mcol.uid
+                            logical: mcol.id
                         });
                     }
                     // If there is data, recursively render the row and add
@@ -2658,7 +2600,7 @@
                             canFocus: false,
                             skippable: true,
                             mcol: mcol,
-                            logical: mcol.uid
+                            logical: mcol.id
                         });
                     }
 
@@ -2686,7 +2628,7 @@
                     }
                     completeStatement();
                 }
-                else if (mcol.type && mcol.type == 'fill')
+                else if (mcol.renderTypeName == 'fill')
                 {
                     // Fill column -- covers background for a range of columns
                     // that aren't present in this row
@@ -2702,14 +2644,14 @@
                 else
                 {
                     // Standard cell
-                    var type = blist.data.types[mcol.type] ||
-                        blist.data.types.text;
+                    var type = mcol.renderType;
 
                     var renderer = mcol.renderer || type.renderGen;
                     var invalidRenderer = blist.data.types.invalid.renderGen;
                     var cls = mcol.cls || type.cls;
                     cls = cls ? ' blist-td-' + cls : '';
-                    var align = mcol.alignment ? ' align-' + mcol.alignment : '';
+                    var align = mcol.format.align ?
+                        ' align-' + mcol.format.align : '';
 
                     var parCol = mcol.nestedIn ? mcol.nestedIn.header : mcol;
                     var childLookup = mcol.nestedIn ? parCol.dataLookupExpr : '';
@@ -2719,10 +2661,14 @@
                         ".meta.invalidCells[" + mcol.tableColumnId +
                         "] ? ' invalid' : '')";
 
-                    var drillDown = mcol.drillDown ? ("<a class='drillDown'" +
-                        " cellvalue='\" + $.escapeQuotes($.htmlStrip('' + row" + mcol.dataLookupExpr +
-                        ")) + \"' datatype='" + mcol.type + "' column='\" + " + mcol.id + " + \"' href='#drillDown'></a>") : '';
-                    var cellDrillStyle = mcol.drillDown ?  ' drill-td' : '';
+                    var drillDown = mcol.format.drill_down ?
+                        ("<a class='drillDown'" +
+                        " cellvalue='\" + $.escapeQuotes($.htmlStrip('' + row" +
+                        mcol.dataLookupExpr +
+                        ")) + \"' datatype='" + mcol.renderTypeName +
+                        "' column='\" + " + mcol.id +
+                        " + \"' href='#drillDown'></a>") : '';
+                    var cellDrillStyle = mcol.format.drill_down ? ' drill-td' : '';
 
                     renderer = "(row" + mcol.dataLookupExpr + " !== null ? " +
                         renderer("row" + mcol.dataLookupExpr, false, mcol,
@@ -2745,7 +2691,7 @@
 
                     lcols.push({
                         mcol: mcol,
-                        logical: mcol.uid
+                        logical: mcol.id
                     });
                 }
 
@@ -2773,7 +2719,7 @@
         {
             begin("initMeta");
 
-            model = newModel;
+            if (!$.isBlank(newModel)) { model = newModel; }
 
             clearCellNav();
             endEdit(DEFAULT_EDIT_MODE);
@@ -2786,50 +2732,49 @@
             var cssColumnConfig = [];
 
             // Set up variable columns at each level
-            for (var j = 0; j < model.meta().columns.length; j++)
+            // TODO: fixme for nt
+            var j = 0;
+            //for (var j = 0; j < model.columns().length; j++)
             {
                 variableColumns[j] = [];
                 varMinWidth[j] = 0;
                 varDenom[j] = 0.0;
-                var mcols = model.meta().columns[j];
+                var mcols = model.columns();
                 for (var i = 0; i < mcols.length; i++)
                 {
                     var mcol = mcols[i];
-                    var col = $.extend(false, { index: i }, mcol);
-                    if (col.hasOwnProperty('percentWidth'))
+                    //var col = $.extend(false, { index: i }, mcol);
+                    if (mcol.hasOwnProperty('percentWidth'))
                     {
-                        varDenom[j] += col.percentWidth;
-                        if (col.minWidth)
+                        varDenom[j] += mcol.percentWidth;
+                        if (mcol.minWidth)
                         {
-                            varMinWidth[j] += col.minWidth;
+                            varMinWidth[j] += mcol.minWidth;
                         }
-                        col.width = 0;
-                        variableColumns[j].push(col);
-                    }
-                    else if (!col.hasOwnProperty('width'))
-                    {
-                        col.width = 100;
+                        mcol.width = 0;
+                        variableColumns[j].push(mcol);
                     }
                     if (j == 0)
                     {
-                        columns.push(col);
+                        columns.push(mcol);
                     }
-                    if (!colStyles[col.uid])
+                    if (!colStyles[mcol.id])
                     {
-                        cssColumnConfig.push([ "." + getColumnClass(col),
-                            "colStyles[" + col.uid + "]" ]);
+                        cssColumnConfig.push([ "." + getColumnClass(mcol),
+                            "colStyles[" + mcol.id + "]" ]);
                     }
-                    if (col.body !== undefined && col.body.children !== undefined)
-                    {
-                        _.each(col.body.children, function(c)
-                        {
-                            if (!colStyles[c.uid])
-                            {
-                                cssColumnConfig.push([ "." + getColumnClass(c),
-                                    "colStyles[" + c.uid + "]" ]);
-                            }
-                        });
-                    }
+                    // TODO: fixme for nt
+//                    if (mcol.body !== undefined && mcol.body.children !== undefined)
+//                    {
+//                        _.each(col.body.children, function(c)
+//                        {
+//                            if (!colStyles[c.id])
+//                            {
+//                                cssColumnConfig.push([ "." + getColumnClass(c),
+//                                    "colStyles[" + c.id + "]" ]);
+//                            }
+//                        });
+//                    }
                 }
             }
             if (cssColumnConfig.length)
@@ -2850,8 +2795,7 @@
             lockedColumns = [];
             if (options.showRowNumbers)
             {
-                lockedColumns.push(rowNumberColumn = {uid: 'rowNumberCol',
-                    dataIndex: 'rowNumber',
+                lockedColumns.push(rowNumberColumn = {id: 'rowNumberCol',
                     cls: 'blist-table-row-numbers',
                     measureText: Math.max(model.length(), 100),
                     renderer: '(row.type == "blank" ? "new" : renderIndex + 1)',
@@ -2859,14 +2803,13 @@
             }
             if (options.showRowHandle)
             {
-                lockedColumns.push(rowHandleColumn = {uid: 'rowHandleCol',
-                    dataIndex: 'rowHandle',
+                lockedColumns.push(rowHandleColumn = {id: 'rowHandleCol',
                     cls: 'blist-table-row-handle',
                     width: options.rowHandleWidth,
                     renderer: options.rowHandleRenderer()});
             }
 
-            handleDigits = calculateHandleDigits(model);
+            handleDigits = calculateHandleDigits();
 
             // Measure width of a default cell and height and width of the cell
             measureUtilDOM.innerHTML = '<div class="blist-td">x</div>';
@@ -2957,11 +2900,12 @@
 
             // Create default column rendering
             var levelRender = [];
-            for (i = 0; i < model.meta().columns.length; i++)
+            // TODO: fix for multiple levels
+            //for (i = 0; i < model.columns().length; i++)
             {
-                mcols = model.meta().columns[i];
-                var lcols = layout[i] = [];
-                levelRender[i] = createColumnRendering(mcols, lcols, contextVariables);
+                //mcols = model.meta().columns[i];
+                var lcols = layout[0] = [];
+                levelRender[0] = createColumnRendering(model.columns(), lcols, contextVariables);
             }
             if (cellNav)
             {
@@ -2991,7 +2935,7 @@
                 '(function(html, index, renderIndex, row) {' +
                 '   html.push(' +
                 '       "<div id=\'' + id + '-r", ' +
-                '       (row.id || row[0]), ' +
+                '       row.id, ' +
                 '       "\' ' + rowDivContents + '>"' +
                 '       );' +
                 '   switch (row.level || 0) {' +
@@ -3042,12 +2986,6 @@
             $headerScrolls.css('margin-left', lockedWidth);
             $footerScrolls.css('margin-left', lockedWidth);
 
-            // Set the title of the table
-            if ($nameLabel)
-            {
-                $nameLabel.html(model.title());
-            }
-
             end("initMeta");
 
             configureWidths();
@@ -3063,11 +3001,12 @@
             // Compute the actual width for all columns with static widths
             begin("configureWidths.levels");
             insideWidth = 0;
-            var mcols = model.meta().columns;
-            for (var i = 0; i < mcols.length; i++)
-            {
-                configureLevelWidths(mcols[i], i);
-            }
+            // TODO: fixme for nt
+            //var mcols = model.meta().columns;
+            //for (var i = 0; i < mcols.length; i++)
+            //{
+                configureLevelWidths(model.columns(), 0);
+            //}
             end("configureWidths.levels");
 
             // Configure grouping header column widths
@@ -3143,7 +3082,7 @@
 
                 // Cache position information for cell navigation
                 // TODO
-                //columnLayout[mcol.uid] = { left: hpos, width: colWidth };
+                //columnLayout[mcol.id] = { left: hpos, width: colWidth };
 
                 // Initialize the column's style
                 if (colWidth)
@@ -3235,8 +3174,8 @@
 
             if (($target.closest('.sort').length > 0 ||
                         (!event.metaKey && !event.shiftKey)) &&
-                    ((blist.data.types[col.type] !== undefined &&
-                      blist.data.types[col.type].sortable) ||
+                    ((col.renderType !== undefined &&
+                      col.renderType.sortable) ||
                      col.sortable))
             {
                 clearCellNav();
@@ -3269,16 +3208,16 @@
                 html.push(
                     '<div class="blist-th ',
                     !i ? 'blist-th-first ' : '',
-                    (col.originalType || col.type),
+                    (col.dataTypeName || col.renderTypeName),
                     ' ',
                     getColumnClass(col),
                     cls,
                     //'" title="',
                     //colName,
-                    '" uid="',
-                    col.uid,
+                    '" colId="',
+                    col.id,
                     '">');
-                if (col.type == 'nested_table')
+                if (col.renderTypeName == 'nested_table')
                 {
                     html.push('<div class="blist-tdh blist-opener ',
                         openerClass,
@@ -3293,9 +3232,9 @@
                             '></div>');
                 }
                 html.push('<div class="info-container',
-                    (canEdit() || col.type == 'tag') ? ' icon-display' : '',
+                    (canEdit() || col.renderTypeName == 'tag') ? ' icon-display' : '',
                     '">');
-                if (canEdit() || col.type == 'tag')
+                if (canEdit() || col.renderTypeName == 'tag')
                 { html.push('<span class="blist-th-icon"></span>'); }
                 html.push(
                     '<div class="name-wrapper"><span class="blist-th-name">',
@@ -3598,142 +3537,130 @@
 
         var updateFooter = function()
         {
-
-            var updateColAgg = function(col)
-            {
-                var modelCol = _.detect(model.meta().allColumns,
-                    function(c) { return c.id == col.id; });
-                col.aggregate = modelCol.aggregate;
-                if (col.body !== undefined)
-                { _.each(col.body.children, function(c) { updateColAgg(c); }); }
-            };
-            _.each(columns, function(c) { updateColAgg(c); });
-
             renderFooter();
             updateLayout();
         };
+
+        var pendingAggs = false;
 
         /**
          * Create column footer elements for the current row configuration
          */
         var renderFooter = function()
         {
-            var html = [];
-            var showAgg = false;
-            var renderColFooter = function (col)
-            {
-                var cls = col.cls ? ' blist-tf-' + col.cls : '';
-                showAgg = showAgg || col.aggregate !== undefined;
-                // Convert string to float, then clip to desired number of digits;
-                //  then convert back to float to strip extra zeros
-                var val = col.aggregate ?
-                    parseFloat(parseFloat(col.aggregate.value || 0)
-                        .toFixed(col.decimalPlaces || 3)) :
-                    '';
+            if (pendingAggs) { return; }
 
-                // some aggregate will be displayed in a format specific to the datatype
-                // money will show $99.99
-                if (col.aggregate)
+            var gotAggs = function()
+            {
+                var html = [];
+                var showAgg = false;
+                var renderColFooter = function (col)
                 {
-                    switch (col.type)
+                    var cls = col.cls ? ' blist-tf-' + col.cls : '';
+                    var agg = col.aggregates[col.format.aggregate];
+                    showAgg = showAgg || !$.isBlank(agg);
+                    // Convert string to float, then clip to desired number of
+                    // digits; then convert back to float to strip extra zeros
+                    var val = !$.isBlank(agg) ?
+                        parseFloat(parseFloat(agg || 0)
+                            .toFixed(col.format.precision || 3)) :
+                        '';
+
+                    // specific aggregates are formatted for the column;
+                    // for ex., money will show $99.99
+                    if (!$.isBlank(agg) &&
+                            _.include(['money', 'percent'], col.renderTypeName) &&
+                            _.include(['sum', 'average', 'maximum', 'minimum'],
+                                col.format.aggregate))
+                    { val = col.renderType.filterRender(val, col); }
+
+                    html.push(
+                        '<div class="blist-tf ',
+                        !i ? 'blist-tf-first ' : '',
+                        getColumnClass(col),
+                        cls,
+                        '" title="',
+                        (col.format.aggregate || '').capitalize(),
+                        '" colId="',
+                        col.id,
+                        '">',
+                        '<span class="blist-tf-value">',
+                        val,
+                        '</span></div>');
+                };
+
+                for (var i = 0; i < columns.length; i++)
+                {
+                    var col = columns[i];
+                    if (col.body)
                     {
-                        case 'money':
-                        case 'percent':
-                            switch (col.aggregate.type)
-                            {
-                                case 'sum':
-                                case 'average':
-                                case 'maximum':
-                                case 'minimum':
-                                    val = blist.data.types[col.type].filterRender(val, col);
-                                    break;
-                            }
-                            
-                            break;
+                        // This assumes that columns with children in the body
+                        //  fit inside the width of this column, and override any
+                        //  parent aggregate
+                        html.push(
+                            '<div class="blist-tf blist-opener ',
+                            id,
+                            '-opener"></div>');
+                        if (options.showRowHandle)
+                        {
+                            html.push('<div class="' +
+                                getColumnClass(rowHandleColumn) +
+                                ' blist-tf blist-table-row-handle"></div>');
+                        }
+                        $.each(col.body.children,
+                            function(i, cc) {renderColFooter(cc);});
+                        if (options.showAddColumns)
+                        {
+                            html.push('<div class="blist-tf blist-column-adder">' +
+                                '</div>');
+                        }
+                    }
+                    else
+                    {
+                        renderColFooter(col);
                     }
                 }
-
-                html.push(
-                    '<div class="blist-tf ',
-                    !i ? 'blist-tf-first ' : '',
-                    getColumnClass(col),
-                    cls,
-                    '" title="',
-                    col.aggregate ? $.capitalize(col.aggregate.type) : '',
-                    '" uid="',
-                    col.uid,
-                    '">',
-                    '<span class="blist-tf-value">',
-                    val,
-                    '</span></div>');
-            };
-            for (var i = 0; i < columns.length; i++)
-            {
-                var col = columns[i];
-                if (col.body)
+                if (options.showGhostColumn)
                 {
-                    // This assumes that columns with children in the body
-                    //  fit inside the width of this column, and override any
-                    //  parent aggregate
-                    html.push(
-                        '<div class="blist-tf blist-opener ',
-                        id,
-                        '-opener"></div>');
-                    if (options.showRowHandle)
-                    {
-                        html.push('<div class="' +
-                            getColumnClass(rowHandleColumn) +
-                            ' blist-tf blist-table-row-handle"></div>');
-                    }
-                    $.each(col.body.children,
-                        function(i, cc) {renderColFooter(cc);});
-                    if (options.showAddColumns)
-                    {
-                        html.push('<div class="blist-tf blist-column-adder">' +
-                            '</div>');
-                    }
+                    html.push('<div class="blist-tf blist-table-ghost ',
+                        columns.length < 1 ? 'blist-tf-first ' : '',
+                        ghostClass, '"></div>');
+                }
+                if (showAgg)
+                {
+                    $footer.html(html.join(''));
+                    $footerScrolls.show();
+                    $lockedFooter.show();
                 }
                 else
                 {
-                    renderColFooter(col);
+                    $footerScrolls.hide();
+                    $lockedFooter.hide();
                 }
-            }
-            if (options.showGhostColumn)
-            {
-                html.push('<div class="blist-tf blist-table-ghost ',
-                    columns.length < 1 ? 'blist-tf-first ' : '',
-                    ghostClass, '"></div>');
-            }
-            if (showAgg)
-            {
-                $footer.html(html.join(''));
-                $footerScrolls.show();
-                $lockedFooter.show();
-            }
-            else
-            {
-                $footerScrolls.hide();
-                $lockedFooter.hide();
-            }
 
-            var lockedHtml = '';
-            $.each(lockedColumns, function (i, c)
-            {
-                lockedHtml += '<div class="blist-tf ' + (c.cls || '') +
-                    ' ' + getColumnClass(c) + '"><span class="blist-tf-value">' +
-                    (c.footerText || '') + '</span></div>';
-            });
-            $lockedFooter.html(lockedHtml);
+                var lockedHtml = '';
+                $.each(lockedColumns, function (i, c)
+                {
+                    lockedHtml += '<div class="blist-tf ' + (c.cls || '') +
+                        ' ' + getColumnClass(c) +
+                        '"><span class="blist-tf-value">' +
+                        (c.footerText || '') + '</span></div>';
+                });
+                $lockedFooter.html(lockedHtml);
+
+                pendingAggs = false;
+            };
+
+            if (model.getAggregates(gotAggs)) { pendingAggs = true; }
         };
 
 
         /*** ROWS ***/
 
         var renderedRows = {}; // All rows that are rendered, by ID
+        var pendingRows = {}; // All rows that are to be rendered, by index
         var dirtyRows = {}; // Rows that are rendered but need to re-render
         var rowIndices = {}; // Position of rendered rows (triggers re-rendering if a row moves)
-        var rowLoadTimer = null;
-        var rowLoadRows = null;
 
         var appendRows = function(html) {
             // These functions only exist for profiling purposes.  We call this relatively infrequently so it's OK to
@@ -3821,7 +3748,6 @@
             // Determine the range of rows we need to render, with safety
             // checks to be sure we don't attempt the impossible
             var stop = Math.ceil(start + pageSize * 1.5);
-            var rows = model.rows();
             if (start < 0) { start = 0; }
             if (stop > model.length()) { stop = model.length(); }
 
@@ -3836,104 +3762,129 @@
             if (renderTop + renderHeight > insideHeight)
             { renderTop = insideHeight - renderHeight; }
 
-            // Adjust render divs to the new positions/sizes
-            $render.css('top', renderTop);
-            $render.height(renderHeight);
-            $lockedRender.css('top', renderTop);
-            $lockedRender.height(renderHeight);
             end("renderRows.setup");
 
+            begin("renderRows.destroy");
+            // Destroy the rows that are no longer visible
+            for (var rowID in renderedRows)
+            {
+                if (rowIndices[rowID] < start || rowIndices[rowID] >= stop)
+                {
+                    row = renderedRows[rowID].row;
+                    if (row !== undefined) { row.parentNode.removeChild(row); }
+                    row = renderedRows[rowID].locked;
+                    if (row !== undefined) { row.parentNode.removeChild(row); }
+                    delete renderedRows[rowID];
+                }
+            }
+            end("renderRows.destroy");
+
+            pendingRows = {};
+
+            var pendingTop = renderTop;
+            var prevTop = parseInt($render.css('top'));
 
             // Render the rows that are newly visible
-            begin("renderRows.render");
-            var unusedRows = $.extend({}, renderedRows);
-            var html = [];
-            var lockedHtml = [];
-            var rowsToLoad = [];
-            for (var i = start; i < stop; i++)
+            var rowsLoaded = function(rows)
             {
-                var row = rows[i];
-                if (typeof row == 'object')
+                if (!$.isBlank(pendingTop) &&
+                    parseInt($render.css('top')) == prevTop)
                 {
-                    // Loaded row -- render immediately
-                    var rowID = row.id || row[0];
-                    if (unusedRows[rowID] && rowIndices[rowID] == i)
+                    // Adjust render divs to the new positions/sizes
+                    $render.css('top', renderTop);
+                    $render.height(renderHeight);
+                    $lockedRender.css('top', renderTop);
+                    $lockedRender.height(renderHeight);
+
+                    pendingTop = undefined;
+                    prevTop = undefined;
+                }
+
+                // If it moved while we were loading, then skip
+                if (!$.isBlank(pendingTop) ||
+                    parseInt($render.css('top')) != renderTop)
+                {
+                    _.each(rows, function(r) { delete pendingRows[r.index]; });
+                    return;
+                }
+
+                var html = [];
+                var lockedHtml = [];
+                begin("renderRows.render");
+                for (var i = 0; i < rows.length; i++)
+                {
+                    var row = rows[i];
+                    var rowID = row.id;
+                    if (renderedRows[rowID] && rowIndices[rowID] == row.index)
                     {
-                        // Keep the existing row
-                        delete unusedRows[rowID];
                         // We need to adjust top positions, since the render
                         // divs (may) have moved, and rows are rendered relative
                         // to those
                         // Cache the jQuery wrapping?
                         $(renderedRows[rowID].row).css('top',
-                            (i - start) * rowOffset);
+                            (row.index - start) * rowOffset);
                         var locked = renderedRows[rowID].locked;
                         if (locked !== undefined)
-                        { $(locked).css('top', (i - start) * rowOffset); }
+                        { $(locked).css('top', (row.index - start) * rowOffset); }
                     }
                     else
                     {
                         // Add a new row
                         // Rows are rendered in position relative to the top
                         // of the render div, which is why we subtract start from i
-                        rowRenderFn(html, i - start, i, row);
+                        rowRenderFn(html, row.index - start, row.index, row);
                         if (rowLockedRenderFn != null)
-                        { rowLockedRenderFn(lockedHtml, i - start, i, row); }
-                        rowIndices[rowID] = i;
+                        {
+                            rowLockedRenderFn(lockedHtml,
+                                row.index - start, row.index, row);
+                        }
+                        rowIndices[rowID] = row.index;
                     }
+                    delete pendingRows[row.index];
                 }
-                else
+                end("renderRows.render");
+
+                // Now add new/moved rows
+                // appendLockedRows must be called first; it should probably
+                //  be consolidated with appendRows
+                begin("renderRows.appendLocked");
+                appendLockedRows(lockedHtml.join(''));
+                end("renderRows.appendLocked");
+                begin("renderRows.append");
+                appendRows(html.join(''));
+                end("renderRows.append");
+
+                begin("renderRows.rowMods");
+                if (options.rowMods !== null) { options.rowMods(renderedRows); }
+                end("renderRows.rowMods");
+
+                begin("renderRows.finalize");
+
+                if (cellNav)
                 {
-                    // Unloaded row -- record for load request
-                    rowsToLoad.push(i);
+                    // Cell selection and navigation
+                    updateCellNavCues();
+                    expandActiveCell();
+                }
+                // Row selection
+                updateRowSelection();
+                end("renderRows.finalize");
+            };
+
+            var adjStart = start;
+            while (adjStart < stop && pendingRows[adjStart]) { adjStart++; }
+            var adjStop = stop;
+            while (adjStop > adjStart && pendingRows[adjStop]) { adjStop--; }
+
+            if (adjStart != adjStop)
+            {
+                if (model.loadRows(adjStart, adjStop,
+                        function(r) {  _.defer(function() { rowsLoaded(r); }); }))
+                {
+                    for (var i = start; i < stop; i++)
+                    { pendingRows[i] = true; }
                 }
             }
-            end("renderRows.render");
-
-            begin("renderRows.destroy");
-            // Destroy the rows that are no longer visible
-            for (var unusedID in unusedRows)
-            {
-                row = unusedRows[unusedID].row;
-                if (row !== undefined) { row.parentNode.removeChild(row); }
-                row = unusedRows[unusedID].locked;
-                if (row !== undefined) { row.parentNode.removeChild(row); }
-                delete renderedRows[unusedID];
-            }
-            end("renderRows.destroy");
-
-            // Now add new/moved rows
-            // appendLockedRows must be called first; it should probably
-            //  be consolidated with appendRows
-            begin("renderRows.appendLocked");
-            appendLockedRows(lockedHtml.join(''));
-            end("renderRows.appendLocked");
-            begin("renderRows.append");
-            appendRows(html.join(''));
-            end("renderRows.append");
-
-            begin("renderRows.rowMods");
-            if (options.rowMods !== null) { options.rowMods(renderedRows); }
-            end("renderRows.rowMods");
-
-            begin("renderRows.finalize");
-            // Load rows that aren't currently present
-            if (rowsToLoad.length)
-            {
-                if (rowLoadTimer) { clearTimeout(rowLoadTimer); }
-                rowLoadTimer = setTimeout(loadMissingRows, MISSING_ROW_LOAD_DELAY);
-                rowLoadRows = rowsToLoad;
-            }
-
-            if (cellNav)
-            {
-                // Cell selection and navigation
-                updateCellNavCues();
-                expandActiveCell();
-            }
-            // Row selection
-            updateRowSelection();
-            end("renderRows.finalize");
         };
 
         var updateRowSelection = function()
@@ -3948,30 +3899,16 @@
             updateCellNavCues();
         };
 
-        var loadMissingRows = function() {
-            if (!rowLoadTimer)
-            {
-                return;
-            }
-            rowLoadTimer = null;
-            if (!rowLoadRows)
-            {
-                return;
-            }
-            model.loadRows(rowLoadRows);
-            rowLoadRows = null;
-        };
-
         /**
          * Initialize the row container for the current row set.
          */
-        var initRows = function(model)
+        var initRows = function()
         {
             //inside.css("display", "hidden");
             begin("initRows.handle");
-            if (handleDigits != calculateHandleDigits(model)) {
+            if (handleDigits != calculateHandleDigits()) {
                 // The handle changed.  Reinitialize columns.
-                initMeta(model);
+                initMeta();
                 renderHeader();
                 renderFooter();
             }
@@ -4017,7 +3954,7 @@
                 var $c = $(c.dom);
                 var left = $c.position().left;
                 var divClass = 'disabled-overlay';
-                if (_.include(types, c.type))
+                if (_.include(types, c.renderTypeName))
                 { divClass = 'select-overlay'; }
 
                 var $h = $('<div class="' + divClass + ' col-' + c.id + '"></div>')
@@ -4030,7 +3967,7 @@
                         { $h.add($f).add($m).removeClass('overlay-hover'); }
                     );
 
-                if (_.include(types, c.type))
+                if (_.include(types, c.renderTypeName))
                 {
                     $h.click(function()
                     { if (_.isFunction(callback)) { callback(c); } });
@@ -4062,11 +3999,39 @@
         /*** MODEL ***/
 
         // Monitor model events
-        $this.bind('meta_change', function(event, model) {
-            initMeta(model);
+
+        // Need to listen for view to be set
+        $this.bind('dataset_ready', function(event, model)
+        {
+            model.view.bind('start_request', function()
+            { $outside.addClass('blist-loading'); });
+            model.view.bind('finish_request', function()
+            { $outside.removeClass('blist-loading'); });
+
+            var isReady = function()
+            {
+                dsReady = true;
+                initMeta(model);
+                renderHeader();
+                renderFooter();
+                initRows();
+            };
+
+            // Need to get first batch of rows so that the total count is
+            // available
+            if (model.length() < 0)
+            {
+                model.loadRows(0, 50, function()
+                { isReady(); });
+            }
+            else { isReady(); }
+        });
+
+        $this.bind('meta_change', function(event) {
+            initMeta();
             renderHeader();
             renderFooter();
-            initRows(model);
+            initRows();
         });
         $this.bind('footer_change', function(event)
         { updateFooter(); });
@@ -4074,16 +4039,10 @@
         {
             updateHeader(model);
         });
-        $this.bind('before_load', function() {
-            $outside.addClass('blist-loading');
-        });
-        $this.bind('load', function(event, model) {
+        $this.bind('load', function(event) {
             begin("load");
-            initRows(model);
+            initRows();
             end("load");
-        });
-        $this.bind('after_load', function() {
-            $outside.removeClass('blist-loading');
         });
         $this.bind('row_change', function(event, rows) {
             updateRows(rows);
@@ -4102,10 +4061,6 @@
         // Install the model
         $this.blistModel(options.model);
 
-
-        /*** STARTUP ***/
-
-        updateLayout();
 
         var table = this;
         var isDisabled = false;
@@ -4161,10 +4116,8 @@
         rowMods: function(renderedRows) {},
         selectionEnabled: true,
         showGhostColumn: false,
-        showName: true,
         showRowNumbers: true,
         showRowHandle: false,
-        showTitle: true,
         showAddColumns: false
     };
 

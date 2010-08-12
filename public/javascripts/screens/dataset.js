@@ -70,7 +70,8 @@ $(function()
                 .bind('columns_updated', function()
                     { datasetPageNS.sidebar.refresh(); })
                 .datasetGrid({view: blist.dataset,
-                    columnDeleteEnabled: blist.dataset.hasRight('remove_column'),
+                    columnDeleteEnabled: blist.dataset.type == 'blist' &&
+                        blist.dataset.hasRight('remove_column'),
                     columnPropertiesEnabled: blist.dataset.hasRight('update_view'),
                     columnNameEdit: blist.dataset.hasRight('update_view'),
                     showAddColumns: blist.dataset.type == 'blist' &&

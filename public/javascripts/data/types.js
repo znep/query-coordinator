@@ -90,18 +90,6 @@ blist.namespace.fetch('blist.data.types');
         return sortGenCore("return " + a + " - " + b);
     };
 
-    var sortHtmlPrepro = function(html) {
-        return removeTags(html).toLowerCase();
-    };
-
-    var sortPicklistPrepro = function(value, column) {
-        var option = column.options[value];
-        if (option) {
-            return (option.text || '').toLowerCase();
-        }
-        return '';
-    };
-
 
     /*** GROUPING FUNCTIONS ***/
 
@@ -200,8 +188,8 @@ blist.namespace.fetch('blist.data.types');
     };
 
     var renderGenNumber = function(value, plain, column) {
-        return "renderNumber(" + value + ", " + column.decimalPlaces + ", '" +
-            column.precisionStyle + "')";
+        return "renderNumber(" + value + ", " + column.format.precision + ", '" +
+            column.format.precisionStyle + "')";
     };
 
     var renderPercentBar = function(value) {
@@ -226,12 +214,12 @@ blist.namespace.fetch('blist.data.types');
     {
         if (plain)
         {
-            return "renderNumber(" + value + ", " + column.decimalPlaces +
-                ", '" + column.precisionStyle + "', null, '%')";
+            return "renderNumber(" + value + ", " + column.format.precision +
+                ", '" + column.format.precisionStyle + "', null, '%')";
         }
         var renderText;
         var renderBar;
-        switch (column.format) {
+        switch (column.format.view) {
             case 'percent_bar':
                 renderText = false;
                 renderBar = true;
@@ -252,8 +240,8 @@ blist.namespace.fetch('blist.data.types');
         }
         if (renderText) {
             rv += " + '<div class=\"blist-cell blist-percent-num\">' + " +
-                "renderNumber(" + value + ", " + column.decimalPlaces +
-                ", '" + column.precisionStyle + "', null, '%') + '</div>'";
+                "renderNumber(" + value + ", " + column.format.precision +
+                ", '" + column.format.precisionStyle + "', null, '%') + '</div>'";
         }
         rv += "+ '</div>'";
         return rv;
@@ -262,10 +250,11 @@ blist.namespace.fetch('blist.data.types');
     var renderGenMoney = function(value, plain, column) {
         var rv = "renderNumber({0}, {1}, {2}, '{3}', null, {4})".format(
             value,
-            column.decimalPlaces || 2,
-            column.precisionStyle ? "'" + column.precisionStyle + "'" : 'undefined',
-            blist.data.types.money.currencies[column.currency || 'dollar'],
-            column.humane || 'false');
+            column.format.precision || 2,
+            column.format.precisionStyle ? "'" + column.format.precisionStyle +
+                "'" : 'undefined',
+            blist.data.types.money.currencies[column.format.currency || 'dollar'],
+            column.format.humane || 'false');
         return rv;
     };
 
@@ -400,8 +389,8 @@ blist.namespace.fetch('blist.data.types');
 
     var renderGenDate = function(value, plain, column)
     {
-        var type = blist.data.types[column.type] || blist.data.types.date;
-        var format = type.formats[column.format] || type.formats['date_time'];
+        var type = column.renderType;
+        var format = type.formats[column.format.view] || type.formats['date_time'];
         if (format == OPTIMIZE_FORMAT_DATETIME1)
         {
             return "renderDate_dateTime1(" + value + ", '" +
@@ -410,7 +399,6 @@ blist.namespace.fetch('blist.data.types');
         return "renderDate(" + value + ", '" + format + "', '" +
             (type.stringParse || '') + "')";
     };
-
 
     var renderPicklist = function(valueLookupVariable, value)
     {
@@ -423,25 +411,29 @@ blist.namespace.fetch('blist.data.types');
         return '';
     };
 
-    var renderGenPicklist = function(value, plain, column, context) {
+    var renderGenPicklist = function(value, plain, column, context)
+    {
         var valueLookupVariable = createUniqueName();
-        if (column.options) {
+        if (column.dropDownList)
+        {
             var valueLookup = context[valueLookupVariable] = {};
-            for (var key in column.options) {
-                var option = column.options[key];
+            _.each(column.dropDownList.values, function(opt)
+            {
                 if (plain)
+                { valueLookup[opt.id.toLowerCase()] = option.text; }
+                else
                 {
-                    valueLookup[key.toLowerCase()] = option.text;
-                } else {
-                    var icon = option.icon;
-                    if (icon) {
-                        icon = "<img class='blist-table-option-icon' src='" + icon + "'> ";
-                    } else {
-                        icon = "";
+                    var icon = opt.icon;
+                    if (icon)
+                    {
+                        icon = "<img class='blist-table-option-icon' src='" +
+                            icon + "'> ";
                     }
-                    valueLookup[key.toLowerCase()] = icon + htmlEscape(option.text);
+                    else { icon = ""; }
+                    valueLookup[opt.id.toLowerCase()] =
+                        icon + htmlEscape(opt.description || '');
                 }
-            }
+            });
 
             return "(renderPicklist(" + valueLookupVariable + "," + value + "))";
         }
@@ -515,7 +507,7 @@ blist.namespace.fetch('blist.data.types');
     var renderGenStars = function(value, plain, column)
     {
         if (plain) { return "renderTextStars(" + value + ")"; }
-        var range = parseFloat(column.range);
+        var range = parseFloat(column.format.range);
         if (range <= 0 || isNaN(range))
         {
             range = 5;
@@ -525,7 +517,7 @@ blist.namespace.fetch('blist.data.types');
 
     var renderGenPhoto = function(value, plain, column)
     {
-        var url = "'" + (column.base || '') + "' + " + value;
+        var url = "'" + column.baseUrl() + "' + " + value;
         if (plain)
         {
             // TODO
@@ -579,7 +571,8 @@ blist.namespace.fetch('blist.data.types');
     };
 
     var renderGenDocument = function(value, plain, column) {
-        return "renderDocument(" + value + ", " + (column.base ? "'" + column.base + "'" : "null") + ", " + plain + ")";
+        return "renderDocument(" + value + ", " + "'" + column.baseUrl() +
+            "'" + ", " + plain + ")";
     };
 
 
@@ -630,30 +623,29 @@ blist.namespace.fetch('blist.data.types');
 
     var renderFilterNumber = function(value, column)
     {
-        return renderNumber(value, column.decimalPlaces, column.precisionStyle);
+        return renderNumber(value, column.format.precision,
+            column.foramt.precisionStyle);
     };
 
     var renderFilterDate = function(value, column)
     {
-        var type = blist.data.types[column.type || column.renderTypeName] ||
-            blist.data.types.date;
-        var format = type.formats[_.isString(column.format) ? column.format :
-            (column.format || {}).view] || type.formats['date_time'];
+        var type = column.renderType || blist.data.types.date;
+        var format = type.formats[column.format.view] || type.formats['date_time'];
         return renderDate(value, format, type.stringParse);
     };
 
     var renderFilterMoney = function(value, column)
     {
-        return renderNumber(value, (column.decimalPlaces || 2),
-            column.precisionStyle,
-            blist.data.types.money.currencies[column.currency || 'dollar'],
+        return renderNumber(value, (column.format.precision || 2),
+            column.format.precisionStyle,
+            blist.data.types.money.currencies[column.format.currency || 'dollar'],
             null,
-            column.humane);
+            column.format.humane);
     };
 
     var renderFilterCheckbox = function(value, column)
     {
-        var format = column.format || 'check';
+        var format = column.format.view || 'check';
         return "<div class='blist-cell blist-checkbox blist-" +
                 format + "-" + (value ? 'on' : 'off') + "'>" +
                 (value ? 'True' : 'False') + "</div>";
@@ -672,7 +664,7 @@ blist.namespace.fetch('blist.data.types');
 
     var renderFilterStars = function(value, column)
     {
-        var range = parseFloat(column.range);
+        var range = parseFloat(column.format.range);
         if (range <= 0 || isNaN(range)) {
             range = 5;
         }
@@ -682,8 +674,8 @@ blist.namespace.fetch('blist.data.types');
 
     var renderFilterPercent = function(value, column)
     {
-        return renderNumber(value, column.decimalPlaces, column.precisionStyle,
-            null, '%');
+        return renderNumber(value, column.format.precision,
+            column.format.precisionStyle, null, '%');
     };
 
     var renderFilterURL = function(value)
@@ -697,13 +689,12 @@ blist.namespace.fetch('blist.data.types');
 
     var renderFilterPicklist = function(value, column)
     {
-        if (column.options)
+        if (column.dropDownList)
         {
             var valueLookup = {};
-            for (var key in column.options)
+            _.each(column.dropDownList.values, function(opt)
             {
-                var option = column.options[key];
-                var icon = option.icon;
+                var icon = opt.icon;
                 if (icon)
                 {
                     icon = "<img class='blist-table-option-icon' src='" +
@@ -713,11 +704,12 @@ blist.namespace.fetch('blist.data.types');
                 {
                     icon = "";
                 }
-                valueLookup[key.toLowerCase()] = {};
-                valueLookup[key.toLowerCase()]['text'] = htmlStrip(option.text);
-                valueLookup[key.toLowerCase()]['html'] =
-                    icon + htmlStrip(option.text);
-            }
+                valueLookup[opt.id.toLowerCase()] = {};
+                valueLookup[opt.id.toLowerCase()]['text'] =
+                    htmlStrip(opt.description || '');
+                valueLookup[opt.id.toLowerCase()]['html'] =
+                    icon + htmlStrip(opt.description || '');
+            });
             return "<div class='blist-picklist-wrapper'>" +
                 ( (valueLookup[value.toLowerCase()] || {})['html'] || '') +
                 "</div>";
@@ -1125,7 +1117,6 @@ blist.namespace.fetch('blist.data.types');
             priority: 9,
             createable: true,
             renderGen: renderGenURL,
-            sortPreprocessor: sortHtmlPrepro,
             filterRender: renderFilterURL,
             filterText: true,
             sortable: true,
@@ -1214,7 +1205,6 @@ blist.namespace.fetch('blist.data.types');
         picklist: {
             title: 'Multiple Choice',
             renderGen: renderGenPicklist,
-            sortPreprocessor: sortPicklistPrepro,
             filterRender: renderFilterPicklist,
             sortable: true,
             filterable: true,
@@ -1226,7 +1216,6 @@ blist.namespace.fetch('blist.data.types');
             priority: 15,
             createable: true,
             renderGen: renderGenPicklist,
-            sortPreprocessor: sortPicklistPrepro,
             filterRender: renderFilterPicklist,
             sortable: true,
             aggregates: nonNumericAggs,
@@ -1241,7 +1230,6 @@ blist.namespace.fetch('blist.data.types');
             priority: 19, // haven't check what priority does yet.
             createable: true,
             renderGen: renderGenPicklist,
-            sortPreprocessor: sortPicklistPrepro,
             filterRender: renderFilterPicklist,
             sortable: true,
             aggregates: nonNumericAggs,

@@ -15,6 +15,13 @@ this.Column = Model.extend({
         this._updateChildren();
     },
 
+    baseUrl: function()
+    {
+        return '/views/' + this.view.id + '/' +
+            (this.renderTypeName.endsWith('_obsolete') ?
+                'obsolete_' : '') + 'files/';
+    },
+
     childForID: function(id)
     {
         return this._childIDLookup[parseInt(id)];
@@ -189,6 +196,11 @@ this.Column = Model.extend({
         return col;
     },
 
+    removeRows: function(rowIds)
+    {
+        $.makeArray(rowIds);
+        // TODO: implement me
+    },
 
     _setUpColumn: function()
     {
@@ -205,6 +217,14 @@ this.Column = Model.extend({
         if (this.dataTypeName == 'tag') { this._lookup = 'tags'; }
         else if (this.isMeta && this.name == 'sid') { this._lookup = 'id'; }
         else if (this.isMeta && this.name == 'id') { this._lookup = 'uuid'; }
+
+        // Wouldn't mind getting rid of this; currently req for rendering the grid
+        this.dataLookupExpr = _.isString(this._lookup) ?
+            ('.' + this._lookup ) : ('[' + this._lookup + ']');
+
+        // Set up min width and default
+        this.minWidth = 50;
+        this.width = Math.max(this.minWidth, this.width || 100);
 
         this.aggregates = {};
     },

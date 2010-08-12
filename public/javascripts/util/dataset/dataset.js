@@ -56,7 +56,7 @@ this.Dataset = Model.extend({
 
     columnForID: function(id)
     {
-        return this._columnIDLookup[parseInt(id)];
+        return this._columnIDLookup[parseInt(id) || id];
     },
 
     columnForTCID: function(tcId)
@@ -105,7 +105,7 @@ this.Dataset = Model.extend({
 
     rowForID: function(id)
     {
-        return this._rowIDLookup[parseInt(id)];
+        return this._rows[this._rowIDLookup[parseInt(id)]];
     },
 
     isPublic: function()
@@ -342,6 +342,9 @@ this.Dataset = Model.extend({
         var col = ds.columnForID(colId);
 
         ds.columns = _.without(ds.columns, col);
+        delete ds._columnIDLookup[col.id];
+        delete ds._columnIDLookup[col._lookup];
+        delete ds._columnTCIDLookup[col.tableColumnId];
 
         _.each(ds._rows, function(r) { delete r[col.id]; });
     },
@@ -472,6 +475,24 @@ this.Dataset = Model.extend({
         ds._aggregatesStale = true;
         _.each(colChanges, function(cId)
         { ds.columnForID(cId).invalidateData(); });
+    },
+
+    removeRows: function(rowIds, successCallback, errorCallback)
+    {
+        var ds = this;
+        rowIds = $.makeArray(rowIds);
+
+        _.each(rowIds, function(rId)
+        {
+            var ri = ds._rowIDLookup[rId];
+            if ($.isBlank(ri)) { return; }
+
+            removeItemsFromObject(ds._rows, ri, 1);
+            delete ds._rowIDLookup[rId];
+            this._makeRequest({batch: true, url: '/views/' + ds.id + '/rows/' +
+                rId + '.json', type: 'DELETE'});
+        });
+        ds._sendBatch({success: successCallback, error: errorCallback});
     },
 
     getAggregates: function(callback, customAggs)
@@ -833,6 +854,8 @@ this.Dataset = Model.extend({
                 { c = new Column(c, ds); }
                 c.dataIndex = i;
                 ds._columnIDLookup[c.id] = c;
+                if (c._lookup != c.id)
+                { ds._columnIDLookup[c._lookup] = c; }
                 ds._columnTCIDLookup[c.tableColumnId] = c;
                 return c;
             });
@@ -943,7 +966,7 @@ this.Dataset = Model.extend({
             var r = translateRow(nr);
             r.index = start + i;
             view._rows[r.index] = r;
-            view._rowIDLookup[r.id] = r;
+            view._rowIDLookup[r.id] = r.index;
             adjRows.push(r);
         });
 
@@ -1083,6 +1106,26 @@ function cleanViewForSave(ds)
     { delete ds.metadata.facets; }
 
     return ds;
+};
+
+var removeItemsFromObject = function(obj, index, numItems)
+{
+    // Remove specified number of items
+    for (var i = 0; i < numItems; i++)
+    { delete obj[index + i]; }
+
+    // Get all larger indexes
+    var adjustIndexes = [];
+    _.each(obj, function(r, i)
+        { if (i > index) { adjustIndexes.push(parseInt(i)); } });
+    // Sort ascending so we don't collide while moving
+    adjustIndexes.sort(function(a, b) { return a - b; });
+    // Move each item down one
+    _.each(adjustIndexes, function(i)
+    {
+        obj[i - numItems] = obj[i];
+        delete obj[i];
+    });
 };
 
 })();

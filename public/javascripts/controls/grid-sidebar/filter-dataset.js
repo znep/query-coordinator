@@ -111,7 +111,6 @@
 
     var isEdit = _.include(['filter', 'grouped'], blist.dataset.type) &&
         blist.dataset.hasRight('update_view');
-    var isGrouped = ((blist.dataset.query || {}).groupBys || []).length > 0;
 
     var configName = 'filter.filterDataset';
     var config = {
@@ -149,7 +148,7 @@
                             {type: 'columnSelect', text: 'Column',
                                 name: 'children.0.columnId', required: true,
                                 columns: {type: filterableTypes,
-                                    hidden: isEdit || isGrouped}},
+                                    hidden: isEdit || blist.dataset.isGrouped()}},
                             {type: 'select', text: 'Operator', name: 'value',
                                 required: true, prompt: 'Select an operator',
                                 linkedField: 'children.0.columnId',
@@ -181,7 +180,7 @@
                         field: {type: 'columnSelect', text: 'Group By',
                             name: 'columnId', notequalto: 'groupColumn',
                             columns: {type: groupableTypes,
-                                hidden: isEdit || isGrouped}},
+                                hidden: isEdit || blist.dataset.isGrouped()}},
                         wizard: 'Choose one or more columns with repeated values ' +
                             'to group them into a single row'
                     },
@@ -192,7 +191,7 @@
                                 name: 'id', required: true,
                                 notequalto: 'rollUpColumn',
                                 columns: {type: groupableTypes,
-                                    hidden: isEdit || isGrouped}},
+                                    hidden: isEdit || blist.dataset.isGrouped()}},
                             {type: 'select', text: 'Function', required: true,
                                 name: 'format.grouping_aggregate',
                                 prompt: 'Select a function',
@@ -434,7 +433,6 @@
         });
 
         // Show hidden columns if we are grouped
-        isGrouped = (filterView.query.groupBys || []).length > 0;
         _.each(config.sections, function(s)
         {
             if (_.include(['filterFilter', 'filterGroup'], s.name))
@@ -450,7 +448,7 @@
                                 { return o.type == 'columnSelect'; });
                         }
                         if (f.type == 'columnSelect')
-                        { f.columns.hidden = isEdit || isGrouped; }
+                        { f.columns.hidden = isEdit || blist.dataset.isGrouped(); }
                     }
                 });
             }

@@ -94,29 +94,18 @@ blist.namespace.fetch('blist.data');
             filterMinChars: 3,
             initialResponse: null,
             pageSize: 50,
+            view: null,
             // TODO: gone?
             progressiveLoading: false
         };
 
-        // TODO: gone?
-        // Total number of rows, loaded and unloaded
-        var totalRows = 0;
         // Count of rows in active set
         var activeCount = 0;
-        // Count number of loaded rows, so we know when to disable progressive
-        // loading
-        var rowsLoaded = 0;
 
-        // TODO: gone?
-        // All the rows
-        var rows = {};
-
+// TODO: go away
+var rows = {};
         // The active dataset (rows or a filtered version of rows)
-        var active = rows;
-
-        // TODO: gone?
-        // Row lookup-by-ID
-        var lookup = {};
+        var active = {};
 
         var activeLookup = {};
 
@@ -305,7 +294,14 @@ blist.namespace.fetch('blist.data');
         {
             if (newOpt)
             {
+                var wasDS = !$.isBlank(this.view);
                 $.extend(curOptions, newOpt);
+                if (!$.isBlank(curOptions.view))
+                {
+                    this.view = curOptions.view;
+                    if (!wasDS)
+                    { $(listeners).trigger('dataset_ready', [self]); }
+                }
             }
             return this;
         };
@@ -340,49 +336,30 @@ blist.namespace.fetch('blist.data');
             return isProg;
         };
 
-        // TODO: proxy
-        /**
-         * Access the dataset title.
-         */
-        this.title = function()
-        {
-            return meta.title || (meta.view && meta.view.name) || "";
-        };
-
-        // TODO: gone
-        this.isGrouped = function()
-        {
-            return meta.view !== undefined && meta.view.query !== undefined &&
-                meta.view.query.groupBys !== undefined &&
-                meta.view.query.groupBys.length > 0;
-        };
-
-        // TODO: proxy all can...
         /**
          * Get rights for this view
          */
         this.canRead = function()
         {
-            return meta.view && meta.view.rights &&
-                $.inArray('read', meta.view.rights) >= 0;
+            return this.view && this.view.hasRight('read');
         };
 
         this.canWrite = function()
         {
-            return meta.view && !this.isGrouped() && meta.view.rights &&
-                $.inArray('write', meta.view.rights) >= 0;
+            return this.view && this.view.hasRight('write') &&
+                !this.view.isGrouped();
         };
 
         this.canAdd = function()
         {
-            return meta.view && !this.isGrouped() && meta.view.rights &&
-                $.inArray('add', meta.view.rights) >= 0;
+            return this.view && this.view.hasRight('add') &&
+                !this.view.isGrouped();
         };
 
         this.canDelete = function()
         {
-            return meta.view && !this.isGrouped() && meta.view.rights &&
-                $.inArray('delete', meta.view.rights) >= 0;
+            return this.view && this.view.hasRight('delete') &&
+                !this.view.isGrouped();
         };
 
         this.useBlankRows = function()
@@ -409,75 +386,6 @@ blist.namespace.fetch('blist.data');
             if (pos == -1) { listeners = listeners.splice(pos, 1); }
         };
 
-        // TODO: gone
-        /**
-         * Set the metadata and rows for the model.
-         */
-        this.load = function(config)
-        {
-            var newRows = config.rows || (config.data !== undefined ?
-                config.data.data : null) || config.data;
-
-            if (config.meta)
-            {
-                //console.profile();
-                this.meta(config.meta);
-                updateColumns();
-                self.reloadAggregates();
-
-                if (config.meta.totalRows !== undefined)
-                {
-                    totalRows = config.meta.view.totalRows =
-                        config.meta.totalRows;
-                }
-
-                // Reset all config to defaults
-                filterFn = null;
-                filterText = "";
-                orderCol = null;
-                orderFn = null;
-                sortConfigured = false;
-
-                //console.profileEnd();
-            }
-
-            if (newRows)
-            {
-                //console.profile();
-                this.rows(newRows);
-                //console.profileEnd();
-            }
-            $(listeners).trigger('full_load');
-        };
-
-        // TODO: blists-screen
-        /**
-         * Configure a function for translating server requests to client requests.
-         */
-        this.translate = function(newTranslateFn)
-        {
-            translateFn = newTranslateFn;
-        };
-
-        // TODO: blists-screen
-        /**
-         * Load the metadata and rows for the model via an AJAX request.
-         */
-        this.ajax = function(ajaxOptions)
-        {
-            if (typeof ajaxOptions == 'string')
-            {
-                ajaxOptions = { url: ajaxOptions };
-            }
-            supplementalAjaxOptions = $.extend({}, ajaxOptions);
-            if (curOptions.progressiveLoading)
-            {
-                ajaxOptions.data = $.extend({}, ajaxOptions.data,
-                        {method: 'getByIds', meta: true,
-                        start: 0, length: curOptions.pageSize});
-            }
-            doLoad(this, this.load, ajaxOptions);
-        };
 
         var doLoad = function(model, onLoad, ajaxOptions)
         {
@@ -585,71 +493,28 @@ blist.namespace.fetch('blist.data');
                     }});
         };
 
-        // TODO: proxy
-        /**
-         * Load a set of rows.  The table must have been populated via AJAX for
-         * this to succeed.  Supplementary requests will be requested of the
-         * original URL using ids[] query parameters in the POST body.
-         *
-         * @param rows an array of row IDs
-         */
-        this.loadRows = function(rowsToLoad)
+        this.loadRows = function(start, stop, callback)
         {
-            if (!supplementalAjaxOptions) { return; }
+            if ($.isBlank(this.view)) { return false; }
 
-            var min = this.length() + 1;
-            var max = -1;
-            _.each(rowsToLoad, function(n)
-            {
-                min = Math.min(n, min);
-                max = Math.max(n, max);
-            });
             // Adjust max & min account for special rows, so we get real
             // offsets to the server
-            max -= countSpecialTo(max);
-            min -= countSpecialTo(min);
-            var len = Math.min(max - min + 1, curOptions.pageSize);
+            stop -= countSpecialTo(stop);
+            start -= countSpecialTo(start);
 
-            var tempView = blist.datasetUtil.cleanViewForPost(
-                this.getViewCopy(), this.isGrouped());
-            var ajaxOptions = $.extend({},
-                    supplementalAjaxOptions,
-                    { url: '/views/INLINE/rows.json?' + $.param(
-                        $.extend({}, supplementalAjaxOptions.data,
-                        { method: 'getByIds', start: min, length: len })),
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(tempView) });
-            doLoad(this, function(d) { onSupplementalLoad(d, min); },
-                ajaxOptions);
+            // TODO: how to handle active?
+            this.view.getRows(start, stop - start, callback);
+
+            return true;
         };
 
-        var onSupplementalLoad = function(response, start)
+        this.getAggregates = function(callback)
         {
-            // Install the rows
-            var supplement = response.data;
-            setRowMetadata(supplement, meta.metaColumns, meta.dataMungeColumns);
-            for (var i = 0; i < supplement.length; i++, start++)
-            {
-                // Figure out the real position in active
-                var adjStart = start + countSpecialTo(start);
-                var row = supplement[i];
-                if (active == rows && active[adjStart] === undefined)
-                { rowsLoaded++; }
-                active[adjStart] = row;
+            if ($.isBlank(this.view)) { return false; }
 
-                var id = row.id || (row.id = row[0]);
-                activeLookup[id] = adjStart;
-                if (rows == active) { lookup[id] = adjStart; }
-            }
+            this.view.getAggregates(callback);
 
-            // Do not call installIDs here as it is expensive on tall datasets!
-            // Above installation must take care of everything that installIDs
-            // does.
-
-
-            // Notify listeners of row load via the "change" event
-            self.change(supplement);
+            return true;
         };
 
         // TODO: gone
@@ -664,13 +529,12 @@ blist.namespace.fetch('blist.data');
             doLoad(self, viewReloaded, ajaxOptions);
         };
 
+        // TODO: gone?
         var viewReloaded = function(config)
         {
             if (config.meta)
             {
                 self.meta(config.meta);
-                updateColumns();
-                self.reloadAggregates();
 
                 var newRows = config.rows || (config.data !== undefined ?
                         config.data.data : null) || config.data;
@@ -711,77 +575,6 @@ blist.namespace.fetch('blist.data');
                 level.id = id;
             }
             return level;
-        };
-
-        // TODO: gone
-        this.reloadAggregates = function(tempView)
-        {
-            if (!_.isUndefined(meta.view.message)) { return; }
-
-            tempView = blist.datasetUtil.cleanViewForPost(
-                tempView || this.getViewCopy(), this.isGrouped());
-            $.ajax({url: '/views/INLINE/rows.json?' +
-                    $.param({method: 'getAggregates'}),
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(tempView),
-                    success: function(resp)
-                    {
-                        updateAggregateHash(resp);
-                        self.footerChange();
-                    }});
-        };
-
-        // TODO: gone
-        var updateColumns = function(callback)
-        {
-            // If we loaded a view that is grouped, then we may not have all
-            // the desired columns.  Load them separately
-            if (!self.isGrouped())
-            {
-                if (_.isFunction(callback)) { callback(); }
-                return;
-            }
-
-            $.ajax({url: '/views/' + meta.view.id + '/columns.json',
-                    type: 'GET', dataType: 'json',
-                    success: function(cols)
-                    {
-                        _.each(cols, function(c)
-                        {
-                            if ($.isBlank(self.getColumnByID(c.id)))
-                            {
-                                meta.view.columns.push(c);
-                            }
-                        });
-
-                        if (_.isFunction(callback)) { callback(); }
-                    }
-            });
-        };
-
-        // TODO: gone
-        var updateAggregateHash = function(newAggs)
-        {
-            meta.aggregates = newAggs;
-            if (!meta.aggregateHash)
-            {
-                meta.aggregateHash = {};
-            }
-            if (newAggs)
-            {
-                _.each(newAggs, function (a)
-                {
-                    if (meta.aggregateHash[a.columnId] === undefined)
-                    {
-                        meta.aggregateHash[a.columnId] = {};
-                    }
-                    meta.aggregateHash[a.columnId].type = a.name;
-                    meta.aggregateHash[a.columnId].value = a.value;
-                });
-            }
-            _.each(meta.allColumns, function(c)
-                { c.aggregate = meta.aggregateHash[c.id]; });
         };
 
         // TODO: gone
@@ -865,8 +658,6 @@ blist.namespace.fetch('blist.data');
                     originalType: vcol.dataTypeName,
                     id: vcol.id,
                     tableColumnId: vcol.tableColumnId,
-                    aggregate: meta.aggregateHash !== undefined ?
-                        meta.aggregateHash[vcol.id] : undefined,
                     subTypes: vcol.subColumnTypes
                 };
 
@@ -874,9 +665,11 @@ blist.namespace.fetch('blist.data');
                 if (nestedIn) {
                     col.nestedIn = nestedIn;
                     col.dataLookupExpr = nestedIn.header.dataLookupExpr +
-                        "[" + col.dataIndex + "]";
+                        _.isString(col._lookup) ? ('.' + col._lookup ) :
+                            ('[' + col._lookup + ']');
                 } else {
-                    col.dataLookupExpr = "[" + col.dataIndex + "]";
+                    col.dataLookupExpr = _.isString(col._lookup) ?
+                        ('.' + col._lookup ) : ('[' + col._lookup + ']');
                 }
 
                 switch (col.type)
@@ -1102,20 +895,15 @@ blist.namespace.fetch('blist.data');
                 for (i = 0; i < rootColumns.length; i++)
                 {
                     var col = rootColumns[i];
-                    var dataIndex = col.dataIndex;
-                    if (!dataIndex == undefined)
-                    {
-                        dataIndex = col.dataIndex = i;
-                    }
                     if (!col.dataLookupExpr)
                     {
-                        if (typeof dataIndex == "string")
+                        if (_.isString(col._lookup))
                         {
-                            col.dataLookupExpr = "['" + dataIndex + "']";
+                            col.dataLookupExpr = "['" + col._lookup + "']";
                         }
                         else
                         {
-                            col.dataLookupExpr = '[' + dataIndex + ']';
+                            col.dataLookupExpr = '[' + col._lookup + ']';
                         }
                     }
                 }
@@ -1271,8 +1059,7 @@ blist.namespace.fetch('blist.data');
             if (parRowId)
             { url += parRowId + '/columns/' + parColId + '/subrows/'; }
             url += rowId + '.json';
-            $.ajax({url: url, contentType: 'application/json', type: 'DELETE',
-                    complete: function() { finishRowChange(); }});
+            $.ajax({url: url, contentType: 'application/json', type: 'DELETE'});
         };
 
         // TODO: proxy
@@ -1329,8 +1116,7 @@ blist.namespace.fetch('blist.data');
             if (row === undefined) { return undefined; }
 
             var value;
-            eval('value = row' + (column.dataLookupExpr ||
-                ('[' + column.dataIndex + ']')) + ';');
+            eval('value = row' + column.dataLookupExpr + ';');
             return value;
         };
 
@@ -1408,15 +1194,6 @@ blist.namespace.fetch('blist.data');
         var startRowChange = function()
         {
             rowChangesPending++;
-        };
-
-        var finishRowChange = function()
-        {
-            rowChangesPending--;
-            if (rowChangesPending == 0)
-            {
-                $(listeners).trigger('server_row_change');
-            }
         };
 
         // TODO: proxy
@@ -1622,7 +1399,6 @@ blist.namespace.fetch('blist.data');
                     {
                         if (row === null || row === undefined)
                         {
-                            finishRowChange();
                             return;
                         }
 
@@ -1668,7 +1444,6 @@ blist.namespace.fetch('blist.data');
                             }
                         }
 
-                        finishRowChange();
                         model.change([row]);
                     },
                     error: function()
@@ -1977,91 +1752,6 @@ blist.namespace.fetch('blist.data');
             activeLookup = {};
         };
 
-        // TODO: gone (col prop, dsGrid)
-        this.updateColumn = function(column)
-        {
-            var isColumnPresent = false;
-
-            $.each(meta.view.columns, function(i, c)
-            {
-                if (c.id == column.id)
-                {
-                    // If the column has children, they must be copied over:
-                    // children can't be updated via a parent, and if a column
-                    // is updated, it may not come back with all the original
-                    // meta children.
-                    column.childColumns = meta.view.columns[i].childColumns;
-                    meta.view.columns[i] = column;
-                    isColumnPresent = true;
-                    return false;
-                }
-                else if (c.childColumns instanceof Array)
-                {
-                    var found = false;
-                    $.each(c.childColumns, function(j, cc)
-                    {
-                        if (cc.id == column.id)
-                        {
-                            c.childColumns[j] = column;
-                            isColumnPresent = true;
-                            found = true;
-                            return false;
-                        }
-                    });
-                    if (found) { return false; }
-                }
-            });
-
-
-            if (meta.aggregates === null || meta.aggregates === undefined)
-            { meta.aggregates = []; }
-            if (column.updatedAggregate !== null &&
-                column.updatedAggregate !== undefined)
-            {
-                var found = false;
-
-                $.each(meta.aggregates, function(i, a) {
-                    if (a.columnId == column.id)
-                    {
-                        meta.aggregates[i] = column.updatedAggregate;
-                        found = true;
-                    }
-                });
-
-                if (!found)
-                {
-                    meta.aggregates.push(column.updatedAggregate);
-                }
-            }
-            else
-            {
-                for (var i=0; i < meta.aggregates.length; i++)
-                {
-                    if (meta.aggregates[i].columnId == column.id)
-                    {
-                        meta.aggregates.splice(i, 1);
-                        meta.aggregateHash = {};
-                        break;
-                    }
-                }
-            }
-
-            if (!isColumnPresent)
-            {
-                // Reload columns from server
-                this.reloadView();
-            }
-            else
-            {
-                // Refresh the meta data and redraw the grid.
-                meta.columns = null;
-                this.meta(meta);
-                updateAggregateHash(meta.aggregates);
-                self.footerChange();
-                $(listeners).trigger('columns_updated', [this]);
-            }
-        };
-
         // TODO: proxy
         this.moveColumn = function(oldPosOrCol, newPos)
         {
@@ -2198,24 +1888,19 @@ blist.namespace.fetch('blist.data');
             return row;
         };
 
-        // TODO: proxy
-        /**
-         * Retrieve a column object by UID.
-         */
-        this.column = function(uid) {
-            return columnLookup[uid];
-        };
-
-        // TODO: proxy
         /**
          * Retrieve all columns in visual order.
          */
-        this.columns = function() {
-            return columnLookup;
-        }
+        this.columns = function()
+        {
+            return (this.view || {}).visibleColumns || [];
+        };
 
-        // TODO: proxy
-        this.getColumnByID = function(id) { return columnIDLookup[id]; };
+        this.columnForID = function(id)
+        {
+            return $.isBlank(this.view) ?
+                this.view.columnForID(id) : null;
+        };
 
         // TODO: proxy
         /**
@@ -2223,7 +1908,7 @@ blist.namespace.fetch('blist.data');
          */
         this.length = function()
         {
-            return activeCount;
+            return (this.view || {}).totalRows || -1;
         };
 
         /**
@@ -2719,12 +2404,12 @@ blist.namespace.fetch('blist.data');
             // Update all the widths from the meta columns
             $.each((meta.columns || [])[0] || [], function(i, c)
             {
-                self.getColumnByID(c.id).width = c.width;
+                self.columnForID(c.id).width = c.width;
                 if (c.body && c.body.children)
                 {
                     $.each(c.body.children, function(j, cc)
                     {
-                        self.getColumnByID(cc.id).width = cc.width;
+                        self.columnForID(cc.id).width = cc.width;
                     });
                 }
             });
@@ -2772,9 +2457,7 @@ blist.namespace.fetch('blist.data');
             // Only include columns if this view is grouped; otherwise, don't
             // include columns since we want them all back, and we don't need
             // to send all that extra data over or modify columns accidentally
-            tempView = blist.datasetUtil.cleanViewForPost(
-                tempView || this.getViewCopy(),
-                includeColumns || this.isGrouped());
+            tempView = this.view.cleanCopy();
             var ajaxOptions = $.extend({},
                     supplementalAjaxOptions,
                     { url: '/views/INLINE/rows.json?' + $.param(
@@ -2791,6 +2474,7 @@ blist.namespace.fetch('blist.data');
                 ajaxOptions);
         };
 
+        // TODO: gone
         /**
          * When we load the sorted data from the server, we may have
          *  a different set of full rows than was previously loaded, updated
@@ -2816,11 +2500,6 @@ blist.namespace.fetch('blist.data');
                     activeCount = config.meta.view.totalRows =
                         config.meta.totalRows;
                 }
-
-                // Pass the callback all the way into updateColumns, because
-                // our view isn't valid until those have been updated
-                updateColumns(callback);
-                self.reloadAggregates();
             }
 
             // active is now the new set of rows from the server, and not
@@ -2849,7 +2528,7 @@ blist.namespace.fetch('blist.data');
             meta.view.query.groupBys = grouping;
         };
 
-        // TODO: blists-screen, stats-screen; also table, but should probably go away
+        // TODO: blists-screen, stats-screen
         /**
          * Filter the data.
          *
@@ -3305,8 +2984,6 @@ blist.namespace.fetch('blist.data');
                 this.each(function() {
                     model.addListener(this);
                 });
-                this.trigger('meta_change', [ model ]);
-                this.trigger('load', [ model ]);
                 return model;
             }
             var currentModel = this.data('blistModel');

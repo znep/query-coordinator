@@ -307,6 +307,7 @@
 
 <% content_for :js_footer do %>
 
+  <script type="text/javascript" src="http://api.recaptcha.net/js/recaptcha_ajax.js"></script>
   <script type="text/javascript">
     <%= raw @view.display.render_inline_setup_js('mainGrid', self) %>
 
@@ -383,6 +384,8 @@
         end if custom_layer_config
     -%>
     <%#blist.custom_layers = JSON.parse($.htmlUnescape("<%= h custom_layers.to_json.gsub(/\\/, '\\\\\\') % >")); -%>
+
+    blist.recaptchaPublicKey = '<%= APP_CONFIG['recaptcha_public_key'] %>';
   </script>
 
   <%- if !@view.is_blobby? -%>

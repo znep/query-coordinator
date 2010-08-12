@@ -1,6 +1,7 @@
 class DatasetsController < ApplicationController
   include DatasetsHelper
-  skip_before_filter :require_user, :only => [:show, :widget_preview]
+  require 'net/http'
+  skip_before_filter :require_user, :only => [:show, :widget_preview, :captcha_validate]
   layout 'dataset_v2'
 
   def show
@@ -21,6 +22,23 @@ class DatasetsController < ApplicationController
       redirect_to(@view.href + '?' + request.query_string)
     end
 
+  end
+
+  def captcha_validate
+    @view = get_view(params[:id])
+    return if @view.nil?
+    recaptcha_response = RecaptchaVerify.verify(request.remote_ip, params[:recaptcha_challenge_field], params[:recaptcha_response_field])
+
+    if recaptcha_response[:answer] == 'true'
+      flag_params = {}
+      keys = [:id, :type, :subject, :message, :from_address]
+      keys.each { |key| flag_params[key] = params[key] }
+
+      @view.flag(flag_params)
+      render :json => { :success => true }
+    else
+      render :json => { :success => false }
+    end
   end
 
   def widget_preview

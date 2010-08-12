@@ -165,7 +165,8 @@ ActionController::Routing::Routes.draw do |map|
     :conditions => {:has_v4_dataset => true},
     :member => {
       :widget_preview => :get,
-      :edit_metadata => [:get, :post]
+      :edit_metadata => [:get, :post],
+      :captcha_validate => :post
     },
     :only => [ :show ] # you see, we actually abandoned RESTful routes, I guess
 

@@ -134,16 +134,21 @@ this.Column = Model.extend({
     update: function(newCol, forceFull)
     {
         var col = this;
+
+        newCol.id = col.id;
+
         if (forceFull)
         {
             // If we are updating the entire column, then clean out all the
             // valid keys; then the next lines will copy all the new ones over
-            _.each(col._validKeys, function(v, k) { delete col[k]; });
+            _.each(col._validKeys, function(v, k)
+            { if (k != 'childColumns') { delete col[k]; } });
         }
 
-        this._updateChildren(newCol.childColumns);
         _.each(newCol, function(v, k)
-        { if (col._validKeys[k]) { col[k] = v; } });
+        { if (k != 'childColumns' && col._validKeys[k]) { col[k] = v; } });
+
+        this._updateChildren(newCol.childColumns);
 
         // dropDown is special, because it only comes from the server; it isn't
         // posted back, so it isn't considered valid
@@ -246,7 +251,6 @@ this.Column = Model.extend({
             {
                 if (!(c instanceof Column))
                 { c = new Column(c, col.view, col); }
-                c.dataIndex = i;
                 col._childIDLookup[c.id] = c;
                 return c;
             });

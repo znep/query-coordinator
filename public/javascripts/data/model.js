@@ -1037,7 +1037,7 @@ var rows = {};
 
                 if (serverDelete)
                 {
-                    startRowChange();
+                    //startRowChange();
                     if (pendingRowEdits[id])
                     {
                         pendingRowDeletes[id] = true;
@@ -1088,7 +1088,7 @@ var rows = {};
 
                 if (serverDelete)
                 {
-                    startRowChange();
+                    //startRowChange();
                     if (pendingRowEdits[fr.id])
                     {
                         pendingRowDeletes[fr.id] = {subRow: subRow,
@@ -1109,66 +1109,29 @@ var rows = {};
 
         };
 
-        // TODO: proxy
         // Get the value in a row for a column
         this.getRowValue = function(row, column)
         {
-            if (row === undefined) { return undefined; }
+            if ($.isBlank(row)) { return undefined; }
 
-            var value;
-            eval('value = row' + column.dataLookupExpr + ';');
-            return value;
+            if (row.invalid[column.id]) { return null; }
+
+            return row[column._lookup];
         };
 
-        // TODO: proxy
         // Get the invalid value in a row for a column
         this.getInvalidValue = function(row, column)
         {
-            var parCol = column.nestedIn ? column.nestedIn.header : column;
-            var childLookup = column.nestedIn ? parCol.dataLookupExpr : '';
-            var realRow;
-            eval("realRow = row" + childLookup + ";");
-            return realRow.meta && realRow.meta.invalidCells &&
-                realRow.meta.invalidCells[column.tableColumnId] || null;
+            if ($.isBlank(row)) { return undefined; }
+
+            if (!row.invalid[column.id]) { return null; }
+
+            return row[column._lookup];
         };
 
-        // TODO: proxy
-        // Set the value in a row for a column
-        this.setRowValue = function(value, row, column)
-        {
-            eval('row' + column.dataLookupExpr + ' = value;');
-        };
-
-        // TODO: proxy
-        this.setInvalidValue = function(value, row, column)
-        {
-            var parCol = column.nestedIn ? column.nestedIn.header : column;
-            var childLookup = column.nestedIn ? parCol.dataLookupExpr : '';
-            var realRow;
-            eval("realRow = row" + childLookup + ";");
-            if (!realRow.meta) { realRow.meta = {'invalidCells': {}}; }
-            if (!realRow.meta.invalidCells) { realRow.meta.invalidCells = {}; }
-            realRow.meta.invalidCells[column.tableColumnId] = value;
-            var metaCols = column.nestedIn ? parCol.metaChildren :
-                meta.metaColumns;
-            $.each(metaCols, function(i, c)
-                {
-                    if (c.name == 'meta')
-                    {
-                        realRow[c.index] = JSON.stringify(realRow.meta);
-                        return false;
-                    }
-                });
-        };
-
-        // TODO: proxy
         this.isCellError = function(row, column)
         {
-            if (!row.error) { return false; }
-            if (column) { column =  meta.allColumns[column.id]; }
-            var v;
-            eval('v = row.error' + column.dataLookupExpr + ';');
-            return v;
+            return row.error[column.id];
         };
 
         var resetChildRows = function(row)
@@ -1190,336 +1153,209 @@ var rows = {};
         var pendingRowCreates = [];
         var pendingRowEdits = {};
         var pendingRowDeletes = {};
-        var rowChangesPending = 0;
-        var startRowChange = function()
-        {
-            rowChangesPending++;
-        };
 
-        // TODO: proxy
         // Set the value for a row, save it to the server, and notify listeners
         this.saveRowValue = function(value, row, column, isValid, skipUndo)
         {
-            var validValue = isValid ? value : null;
-            var invalidValue = isValid ? null : value;
+            if ($.isBlank(this.view)) { return; }
 
-            if (column) { column =  meta.allColumns[column.id]; }
+            // Deal with invalid vlaues
 
             var isCreate = false;
-            if (row.type == 'blank')
-            {
-                row = $.extend(row, {id: 'saving' + saveUID++, isNew: true,
-                    type: null});
-                var lastRow = rows[totalRows - 1];
-                if (totalRows < 1 || lastRow === undefined || !lastRow.isNew)
-                {
-                    rows[totalRows] = row;
-                    totalRows++;
-                    if (active == rows) { activeCount = totalRows; }
-                }
-                installIDs();
-                // Our view should be in the correct configuration, so we don't
-                // need to reload a temp view on this call
-                configureActive(null, true);
-                isCreate = true;
-                if (!skipUndo) { this.addUndoItem({type: 'create', rows: [row]}); }
-            }
+            // Handle creating a blank row
 
-            var prevValue;
-            var prevValueInvalid = false;
-            if (column)
-            {
-                prevValue = this.getRowValue(row, column);
-                if (prevValue === null || prevValue === undefined)
-                {
-                    prevValue = this.getInvalidValue(row, column);
-                    prevValueInvalid = prevValue !== null;
-                }
-                this.setRowValue(validValue, row, column);
-                this.setInvalidValue(invalidValue, row, column);
-            }
+            // Fetch prev value for undo
+//            if (!skipUndo && !isCreate)
+//            {
+//                this.addUndoItem({type: 'edit', column: column,
+//                        row: row, value: prevValue, invalid: prevValueInvalid});
+//            }
 
-            if (!row.saving) { row.saving = []; }
-            var data = {};
-            if (column)
-            {
-                if (column.type == 'tag')
-                { data['_tags'] = validValue; }
-                else { data[column.id] = validValue; }
-            }
-            if (row.meta) { data.meta = JSON.stringify(row.meta); }
+            this.view.setRowValue(value, row.id, column.id, !isValid);
+            this.view.saveRow(row.id);
 
-            if (column && column.nestedIn)
-            {
-                var parCol = column.nestedIn.header;
+//            if (row.type == 'blank')
+//            {
+//                row = $.extend(row, {id: 'saving' + saveUID++, isNew: true,
+//                    type: null});
+//                var lastRow = rows[totalRows - 1];
+//                if (totalRows < 1 || lastRow === undefined || !lastRow.isNew)
+//                {
+//                    rows[totalRows] = row;
+//                    totalRows++;
+//                    if (active == rows) { activeCount = totalRows; }
+//                }
+//                installIDs();
+//                // Our view should be in the correct configuration, so we don't
+//                // need to reload a temp view on this call
+//                configureActive(null, true);
+//                isCreate = true;
+//                if (!skipUndo) { this.addUndoItem({type: 'create', rows: [row]}); }
+//            }
 
-                var childRow = self.getRowValue(row, parCol);
-                isCreate = childRow.type == 'blank';
-                if (isCreate)
-                {
-                    delete childRow.type;
-                    var parRow = row.parent;
+//            var prevValue;
+//            var prevValueInvalid = false;
+//            if (column)
+//            {
+//                prevValue = this.getRowValue(row, column);
+//                if (prevValue === null || prevValue === undefined)
+//                {
+//                    prevValue = this.getInvalidValue(row, column);
+//                    prevValueInvalid = prevValue !== null;
+//                }
+//            }
 
-                    // Since child rows get re-created, save the index and pull
-                    // out the new one
-                    var curRowI = this.index(row);
+//            if (!row.saving) { row.saving = []; }
 
-                    // If we're in a blank row, create that row first
-                    if (parRow.type == 'blank')
-                    {
-                        this.saveRowValue(null, parRow, null, true);
-                        skipUndo = true;
-                    }
+            // TODO: nt
+//            if (column && column.nestedIn)
+//            {
+//                var parCol = column.nestedIn.header;
+//
+//                var childRow = self.getRowValue(row, parCol);
+//                isCreate = childRow.type == 'blank';
+//                if (isCreate)
+//                {
+//                    delete childRow.type;
+//                    var parRow = row.parent;
+//
+//                    // Since child rows get re-created, save the index and pull
+//                    // out the new one
+//                    var curRowI = this.index(row);
+//
+//                    // If we're in a blank row, create that row first
+//                    if (parRow.type == 'blank')
+//                    {
+//                        this.saveRowValue(null, parRow, null, true);
+//                        skipUndo = true;
+//                    }
+//
+//                    // Add the new row to the parent
+//                    if (!parRow[parCol.dataIndex])
+//                    { parRow[parCol.dataIndex] = []; }
+//                    parRow[parCol.dataIndex].push(childRow);
+//
+//                    // Now force refresh by collapsing, clearing
+//                    // child rows, and then re-expanding.
+//                    resetChildRows(parRow);
+//                    row = this.get(curRowI);
+//                    if (!row.saving) { row.saving = []; }
+//
+//                    if (!skipUndo) { this.addUndoItem({type: 'childCreate',
+//                        rows: [row], parentColumn: parCol}); }
+//                }
+//
+//                setRowMetadata([row], parCol.metaChildren,
+//                    parCol.dataMungeChildren);
+//
+//                if (!row.saving[parCol.dataIndex])
+//                { row.saving[parCol.dataIndex] = []; }
+//                row.saving[parCol.dataIndex][column.dataIndex] = true;
+//                if (row.error && row.error[parCol.dataIndex])
+//                { delete row.error[parCol.dataIndex][column.dataIndex]; }
+//            }
 
-                    // Add the new row to the parent
-                    if (!parRow[parCol.dataIndex])
-                    { parRow[parCol.dataIndex] = []; }
-                    parRow[parCol.dataIndex].push(childRow);
+//            else if (column)
+//            {
+//                if (row.error) { delete row.error[column.dataIndex]; }
+//            }
 
-                    // Now force refresh by collapsing, clearing
-                    // child rows, and then re-expanding.
-                    resetChildRows(parRow);
-                    row = this.get(curRowI);
-                    if (!row.saving) { row.saving = []; }
-
-                    if (!skipUndo) { this.addUndoItem({type: 'childCreate',
-                        rows: [row], parentColumn: parCol}); }
-                }
-
-                setRowMetadata([row], parCol.metaChildren,
-                    parCol.dataMungeChildren);
-
-                if (!row.saving[parCol.dataIndex])
-                { row.saving[parCol.dataIndex] = []; }
-                row.saving[parCol.dataIndex][column.dataIndex] = true;
-                if (row.error && row.error[parCol.dataIndex])
-                { delete row.error[parCol.dataIndex][column.dataIndex]; }
-            }
-            else if (column)
-            {
-                setRowMetadata([row], meta.metaColumns, meta.dataMungeColumns);
-
-                row.saving[column.dataIndex] = true;
-                if (row.error) { delete row.error[column.dataIndex]; }
-            }
-
-            if (!skipUndo && !isCreate)
-            {
-                this.addUndoItem({type: 'edit', column: column,
-                        row: row, value: prevValue, invalid: prevValueInvalid});
-            }
-
-            this.change([row]);
-
-            registerRowSave(row, column, data, isCreate);
+//            registerRowSave(row, column, data, isCreate);
         };
 
-        var registerRowSave = function(row, column, data, isCreate, childRow,
-            parentRow, parentColumn)
-        {
-            startRowChange();
-            if (!isCreate && row && pendingRowEdits[row.id])
-            {
-                pendingRowEdits[row.id].push({column: column,
-                    parentColumn: parentColumn, data: data});
-                return;
-            }
-            else if (isCreate && parentRow && pendingRowEdits[parentRow.id])
-            {
-                pendingRowEdits[parentRow.id].push({row: row, column: column,
-                        childRow: childRow, parentRow: parentRow,
-                        parentColumn: parentColumn, data: data, isCreate: true});
-                return;
-            }
+//        var registerRowSave = function(row, column, data, isCreate, childRow,
+//            parentRow, parentColumn)
+//        {
+//            else if (isCreate && parentRow && pendingRowEdits[parentRow.id])
+//            {
+//                pendingRowEdits[parentRow.id].push({row: row, column: column,
+//                        childRow: childRow, parentRow: parentRow,
+//                        parentColumn: parentColumn, data: data, isCreate: true});
+//                return;
+//            }
+//
+//            if (isCreate)
+//            {
+//                if (isRowCreate)
+//                {
+//                    pendingRowCreates.push({row: row, column: column,
+//                        childRow: childRow, parentRow: parentRow,
+//                        parentColumn: parentColumn, data: data});
+//                    return;
+//                }
+//                isRowCreate = true;
+//            }
+//
+//            serverSaveRow(row, column, data, isCreate, childRow, parentRow,
+//                parentColumn);
+//        };
 
-            if (row && !pendingRowEdits[row.id]) { pendingRowEdits[row.id] = []; }
+//        var serverSaveRow = function(row, column, data, isCreate, childRow,
+//            parentRow, parentColumn, skipBatchRequest)
+//        {
 
-            if (isCreate)
-            {
-                if (isRowCreate)
-                {
-                    pendingRowCreates.push({row: row, column: column,
-                        childRow: childRow, parentRow: parentRow,
-                        parentColumn: parentColumn, data: data});
-                    return;
-                }
-                isRowCreate = true;
-            }
+//            if (parentColumn || column && column.nestedIn)
+//            {
+//                parentColumn = parentColumn || column.nestedIn.header;
+//                if (childRow === undefined || childRow === null)
+//                { childRow = self.getRowValue(row, parentColumn); }
+//                newRow = isCreate ? childRow : null;
+//            }
 
-            serverSaveRow(row, column, data, isCreate, childRow, parentRow,
-                parentColumn);
-        };
+//                    success: function(resp)
+//                    {
+//                        if (newRow)
+//                        {
+//                            var oldID = newRow.id;
 
-        var getSaveURL = function(row, column, isCreate, childRow, parentRow,
-            parentColumn)
-        {
-            if (parentColumn || column && column.nestedIn)
-            {
-                parentColumn = parentColumn || column.nestedIn.header;
-                return getChildSaveURL(childRow ||
-                        self.getRowValue(row, parentColumn),
-                    parentRow || row.parent, parentColumn, isCreate);
-            }
-
-            var url = '/views/' + self.meta().view.id + '/rows';
-            if (isCreate) { url += '.json'; }
-            else { url += '/' + row.uuid + '.json'; }
-            return url;
-        };
-
-        var getChildSaveURL = function(childRow, parentRow, parentColumn, isCreate)
-        {
-            var url = '/views/' + self.meta().view.id + '/rows/' +
-                parentRow.uuid + '/columns/' + parentColumn.id + '/subrows';
-                if (!isCreate) { url += '/' + childRow.uuid; }
-                url += '.json';
-            return url;
-        };
-
-        var serverSaveRow = function(row, column, data, isCreate, childRow,
-            parentRow, parentColumn, skipBatchRequest)
-        {
-            var url = getSaveURL(row, column, isCreate, childRow, parentRow,
-                parentColumn);
-            var newRow = isCreate ? row : null;
-            if (parentColumn || column && column.nestedIn)
-            {
-                parentColumn = parentColumn || column.nestedIn.header;
-                if (childRow === undefined || childRow === null)
-                { childRow = self.getRowValue(row, parentColumn); }
-                newRow = isCreate ? childRow : null;
-            }
-
-            var model = self;
-            addBatchRequest(
-                    { url: url,
-                    type: isCreate ? 'POST' : 'PUT',
-                    data: JSON.stringify(data),
-                    complete: function()
-                    {
-                        if (row === null || row === undefined)
-                        {
-                            return;
-                        }
-
-                        if (row.saving !== undefined)
-                        {
-                            if (parentColumn && column == 'all')
-                            { row.saving[parentColumn.dataIndex] = []; }
-                            else if (parentColumn)
-                            { delete row.saving[parentColumn.dataIndex]
-                                [column.dataIndex]; }
-                            else if (column == 'all')
-                            { delete row.saving; }
-                            else if (column && row.saving)
-                            { delete row.saving[column.dataIndex]; }
-                        }
-
-                        // Are there any pending edits to this row?
-                        // If so, save the next one
-                        if (pendingRowEdits[row.id] &&
-                            pendingRowEdits[row.id].length > 0)
-                        {
-                            while (pendingRowEdits[row.id].length > 0)
-                            {
-                                var u = pendingRowEdits[row.id].shift();
-                                serverSaveRow(row, u.column, u.data, u.isCreate,
-                                    u.childRow, u.parentRow, u.parentColumn, true);
-                            }
-                            runBatch();
-                        }
-                        else
-                        {
-                            delete pendingRowEdits[row.id];
-                            if (pendingRowDeletes[row.id])
-                            {
-                                var pd = pendingRowDeletes[row.id];
-                                if (pd === true) { serverDeleteRow(row.id); }
-                                else
-                                {
-                                    serverDeleteRow(pd.subRow.uuid,
-                                        pd.parCol.id, pd.parRow.uuid);
-                                }
-                                delete pendingRowDeletes[row.id];
-                            }
-                        }
-
-                        model.change([row]);
-                    },
-                    error: function()
-                    {
-                        if (!row.error) { row.error = []; }
-                        if (column == 'all')
-                        {
-                            var errorArray = parentColumn === undefined ?
-                                row.error : row.error[parentColumn.dataIndex];
-                            var columns = parentColumn === undefined ?
-                                meta.view.columns : parentColumn.body.children;
-                            $.each(columns, function(i, c)
-                            { if ((c.dataTypeName == 'tag') ||
-                                c.id > -1) { errorArray[c.dataIndex] = true; } });
-                        }
-                        else if (parentColumn)
-                        { row.error[parentColumn.dataIndex]
-                            [column.dataIndex] = true; }
-                        else if (column)
-                        { row.error[column.dataIndex] = true; }
-                        model.change([row]);
-                    },
-                    success: function(resp)
-                    {
-                        if (newRow)
-                        {
-                            var oldID = newRow.id;
                             // Add metadata to new row
                             // FIXME: The server response for this should be
                             // changing; we can run into problems if there is
                             // a user column named something like '_id'
-                            var metaCols = parentColumn ?
-                                parentColumn.metaChildren : meta.metaColumns;
-                            $.each(metaCols, function(i, c)
-                            {
-                                var n = '_' + c.name;
-                                if (resp[n] !== undefined)
-                                { newRow[c.name] = newRow[c.index] = resp[n]; }
-                            });
+//                            var metaCols = parentColumn ?
+//                                parentColumn.metaChildren : meta.metaColumns;
+//                            $.each(metaCols, function(i, c)
+//                            {
+//                                var n = '_' + c.name;
+//                                if (resp[n] !== undefined)
+//                                { newRow[c.name] = newRow[c.index] = resp[n]; }
+//                            });
 
-                            installIDs();
-                            delete newRow.isNew;
-                            delete newRow.type;
+//                            installIDs();
+//                            delete newRow.isNew;
+//                            delete newRow.type;
 
-                            setRowMetadata([newRow], metaCols,
-                                    parentColumn ?
-                                        parentColumn.dataMungeChildren :
-                                        meta.dataMungeColumns);
+//                            setRowMetadata([newRow], metaCols,
+//                                    parentColumn ?
+//                                        parentColumn.dataMungeChildren :
+//                                        meta.dataMungeColumns);
 
-                            pendingRowEdits[newRow.id] = pendingRowEdits[oldID];
-                            delete pendingRowEdits[oldID];
-                            if (pendingRowDeletes[oldID])
-                            {
-                                pendingRowDeletes[newRow.id] =
-                                    pendingRowDeletes[oldID];
-                                delete pendingRowDeletes[oldID];
-                            }
+//                            pendingRowEdits[newRow.id] = pendingRowEdits[oldID];
+//                            delete pendingRowEdits[oldID];
+//                            if (pendingRowDeletes[oldID])
+//                            {
+//                                pendingRowDeletes[newRow.id] =
+//                                    pendingRowDeletes[oldID];
+//                                delete pendingRowDeletes[oldID];
+//                            }
 
-                            if (pendingRowCreates.length > 0)
-                            {
-                                var c = pendingRowCreates.shift();
-                                serverSaveRow(c.row, c.column, c.data, true,
-                                    c.childRow, c.parentRow, c.parentColumn);
-                            }
-                            else
-                            {
-                                isRowCreate = false;
-                            }
+//                            if (pendingRowCreates.length > 0)
+//                            {
+//                                var c = pendingRowCreates.shift();
+//                                serverSaveRow(c.row, c.column, c.data, true,
+//                                    c.childRow, c.parentRow, c.parentColumn);
+//                            }
+//                            else
+//                            {
+//                                isRowCreate = false;
+//                            }
 
-                            model.change([newRow]);
-                        }
-                    }
-                });
+//                        }
+//                    }
+//                });
 
-            if (!skipBatchRequest) { runBatch(); }
-        };
+//            if (!skipBatchRequest) { runBatch(); }
+//        };
 
         var undeleteRow = function(row, parentRow, parentColumn, childCascade)
         {
@@ -1605,7 +1441,7 @@ var rows = {};
                     fakeRow = parentRow.childRows[row.origPosition];
                     // Copy over the saving info for the UI
                     fakeRow.saving[parentColumn.dataIndex] = savingArray;
-                    self.change([fakeRow]);
+//                    self.change([fakeRow]);
                 }
 
                 registerRowSave(fakeRow, 'all', data, true, row, parentRow,
@@ -1803,14 +1639,6 @@ var rows = {};
             $(listeners).trigger('columns_rearranged', [ this ]);
         };
 
-        // TODO: blists-screen, stats-screen, table
-        /**
-         * Notify the model of row changes.
-         */
-        this.change = function(rows) {
-            $(listeners).trigger('row_change', [ rows ]);
-        };
-
         /**
          * Notify the model of metadata model changes.
          */
@@ -1862,30 +1690,22 @@ var rows = {};
             $(listeners).trigger('undo_redo_change');
         };
 
-        // TODO: proxy
         /**
          * Retrieve a single row by index.
          */
-        this.get = function(index) {
-            return active[index];
+        this.get = function(index)
+        {
+            if ($.isBlank(this.view)) { return undefined; }
+            return this.view.rowForIndex(index);
         };
 
-        // TODO: proxy
         /**
          * Retrieve a single row by ID.
          */
         this.getByID = function(id)
         {
-            var row = undefined;
-            if (lookup[id] != undefined)
-            {
-                row = rows[lookup[id]];
-            }
-            else if (activeLookup[id] != undefined)
-            {
-                row = active[activeLookup[id]];
-            }
-            return row;
+            if ($.isBlank(this.view)) { return undefined; }
+            return this.view.rowForID(id);
         };
 
         /**
@@ -1898,7 +1718,7 @@ var rows = {};
 
         this.columnForID = function(id)
         {
-            return $.isBlank(this.view) ?
+            return !$.isBlank(this.view) ?
                 this.view.columnForID(id) : null;
         };
 
@@ -2341,7 +2161,7 @@ var rows = {};
             installIDs(true);
 
             // Fire events
-            if (!skipEvent) { this.change([ row ]); }
+//            if (!skipEvent) { this.change([ row ]); }
         };
 
         // TODO: gone

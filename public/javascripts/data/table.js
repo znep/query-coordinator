@@ -158,7 +158,7 @@
 
             // + 2 for "-r" suffix prior to row ID
             var rowID = rowDOM.id.substring(id.length + 2);
-            return model.getByID(rowID);
+            return model.getByID(parseInt(rowID));
         };
 
         // Given a DOM node, retrieve the logical column in which the cell resides
@@ -524,7 +524,7 @@
             }
             if (lcol === undefined) { return null; }
 
-            return { x: x, y: model.index(row) };
+            return { x: x, y: row.index };
         };
 
         var cellFromXY = function(x, y)
@@ -795,12 +795,17 @@
             var col = editor.column;
             var isValid = editor.isValid();
 
-            $curEditContainer.remove();
             delete $editContainers[mode];
 
             if (isSave && (!$.compareValues(origValue, value) ||
                 model.isCellError(row, col)))
             { model.saveRowValue(value, row, col, isValid); }
+
+            // Need to defer this because saveRowValue eventually calls
+            // to renderRows, which defers rendering even for loaded rows, and
+            // if we don't defer, there is a flash of the old value in the cell
+            // when the editor disappears from above it
+            _.defer(function() { $curEditContainer.remove(); });
         };
 
         var handleEditEnd = function(event, isSave, origEvent, mode)
@@ -2457,7 +2462,7 @@
                         "'></div>\"");
                     var children = mcol.body.children;
                     lcols.push({
-                        type: 'opener',
+                        renderTypeName: 'opener',
                         skippable: true,
                         skipCount: children.length,
                         mcol: mcol,
@@ -2470,7 +2475,7 @@
                             " blist-td blist-tdh blist-table-row-handle'>" +
                             "</div>\"");
                         lcols.push({
-                            type: 'handle',
+                            renderTypeName: 'handle',
                             canFocus: false,
                             mcol: mcol,
                             logical: mcol.id
@@ -2493,7 +2498,7 @@
                             "</span></div>\""
                         );
                         lcols.push({
-                            type: 'header',
+                            renderTypeName: 'header',
                             canFocus: false,
                             mcol: child,
                             logical: mcol.id
@@ -2503,7 +2508,7 @@
                     if (options.showAddColumns)
                     {
                         lcols.push({
-                            type: 'adder',
+                            renderTypeName: 'adder',
                             canFocus: false,
                             mcol: mcol,
                             logical: mcol.id
@@ -2557,7 +2562,7 @@
                     children = mcol.children;
                     // First for opener
                     lcols.push({
-                        type: 'nest-header',
+                        renderTypeName: 'nest-header',
                         canFocus: false,
                         skippable: true,
                         skipCount: mcol.children.length,
@@ -2568,7 +2573,7 @@
                     {
                         // Second for handle
                         lcols.push({
-                            type: 'nest-header',
+                            renderTypeName: 'nest-header',
                             canFocus: false,
                             skippable: true,
                             mcol: mcol,
@@ -2596,7 +2601,7 @@
                     {
                         // Finally for adder
                         lcols.push({
-                            type: 'nest-header',
+                            renderTypeName: 'nest-header',
                             canFocus: false,
                             skippable: true,
                             mcol: mcol,
@@ -2636,7 +2641,7 @@
                       getColumnClass(mcol) + (j == 0 ? ' initial-tdfill' : '') +
                       "'>&nbsp;</div>\"");
                     lcols.push({
-                        type: 'fill',
+                        renderTypeName: 'fill',
                         canFocus: false,
                         mcol: mcol
                     });
@@ -2655,11 +2660,9 @@
 
                     var parCol = mcol.nestedIn ? mcol.nestedIn.header : mcol;
                     var childLookup = mcol.nestedIn ? parCol.dataLookupExpr : '';
-                    var invalid = "(!row" + mcol.dataLookupExpr + " && row" +
-                        childLookup + ".meta && row" + childLookup +
-                        ".meta.invalidCells && row" + childLookup +
-                        ".meta.invalidCells[" + mcol.tableColumnId +
-                        "] ? ' invalid' : '')";
+                    // TODO: nt
+                    var invalid = "(row.invalid" + mcol.dataLookupExpr +
+                        " ? ' invalid' : '')";
 
                     var drillDown = mcol.format.drill_down ?
                         ("<a class='drillDown'" +
@@ -2670,18 +2673,16 @@
                         " + \"' href='#drillDown'></a>") : '';
                     var cellDrillStyle = mcol.format.drill_down ? ' drill-td' : '';
 
-                    renderer = "(row" + mcol.dataLookupExpr + " !== null ? " +
+                    renderer = "(!row.invalid" + mcol.dataLookupExpr + " ? " +
                         renderer("row" + mcol.dataLookupExpr, false, mcol,
                                 contextVariables) +
-                        " : (row" + childLookup + ".meta && row" + childLookup +
-                        ".meta.invalidCells ? " + invalidRenderer("row" +
-                            childLookup + ".meta.invalidCells[" +
-                                mcol.tableColumnId + "]") + " : ''))";
+                        " : " + invalidRenderer("row" +
+                            mcol.dataLookupExpr) + ")";
 
                     colParts.push(
                         "\"<div class='blist-td " + getColumnClass(mcol) + cls +
                             cellDrillStyle + align + "\" + " + invalid +
-                            " + (row.saving && row.saving" +
+                            " + (row.changed && row.changed" +
                             mcol.dataLookupExpr + " ? \" saving\" : \"\") + " +
                             "(row.error && row.error" +
                             mcol.dataLookupExpr + " ? \" error\" : \"\") + " +
@@ -3764,18 +3765,21 @@
 
             end("renderRows.setup");
 
+            var cleanRow = function(rowID)
+            {
+                row = renderedRows[rowID].row;
+                if (row !== undefined) { row.parentNode.removeChild(row); }
+                row = renderedRows[rowID].locked;
+                if (row !== undefined) { row.parentNode.removeChild(row); }
+                delete renderedRows[rowID];
+            };
+
             begin("renderRows.destroy");
             // Destroy the rows that are no longer visible
             for (var rowID in renderedRows)
             {
                 if (rowIndices[rowID] < start || rowIndices[rowID] >= stop)
-                {
-                    row = renderedRows[rowID].row;
-                    if (row !== undefined) { row.parentNode.removeChild(row); }
-                    row = renderedRows[rowID].locked;
-                    if (row !== undefined) { row.parentNode.removeChild(row); }
-                    delete renderedRows[rowID];
-                }
+                { cleanRow(rowID); }
             }
             end("renderRows.destroy");
 
@@ -3808,6 +3812,7 @@
                     return;
                 }
 
+                var badRows = [];
                 var html = [];
                 var lockedHtml = [];
                 begin("renderRows.render");
@@ -3827,6 +3832,11 @@
                         if (locked !== undefined)
                         { $(locked).css('top', (row.index - start) * rowOffset); }
                     }
+                    else if (renderedRows[rowID])
+                    {
+                        // Existing row, but not in the right place; destroy
+                        badRows.push(rowID);
+                    }
                     else
                     {
                         // Add a new row
@@ -3843,6 +3853,9 @@
                     delete pendingRows[row.index];
                 }
                 end("renderRows.render");
+
+                for (var i = 0; i < badRows.length; i++)
+                { cleanRow(badRows[i]); }
 
                 // Now add new/moved rows
                 // appendLockedRows must be called first; it should probably
@@ -3929,10 +3942,11 @@
          */
         var updateRows = function(rows)
         {
+            rows = $.makeArray(rows);
             for (var i = 0; i < rows.length; i++)
             {
                 var row = rows[i];
-                var rowID = row.id || row[0];
+                var rowID = row.id;
                 var rendered = renderedRows[rowID];
                 if (rendered)
                 {
@@ -4004,9 +4018,9 @@
         $this.bind('dataset_ready', function(event, model)
         {
             model.view.bind('start_request', function()
-            { $outside.addClass('blist-loading'); });
-            model.view.bind('finish_request', function()
-            { $outside.removeClass('blist-loading'); });
+                    { $outside.addClass('blist-loading'); })
+                .bind('finish_request', function()
+                    { $outside.removeClass('blist-loading'); });
 
             var isReady = function()
             {
@@ -4015,6 +4029,24 @@
                 renderHeader();
                 renderFooter();
                 initRows();
+
+                model.view.bind('row_change', function(rows)
+                        { updateRows(rows); })
+                    // These seem a bit heavy-handed...
+                    .bind('query_change', function()
+                        {
+                            initMeta();
+                            renderHeader();
+                            renderFooter();
+                            initRows();
+                        })
+                    .bind('columns_changed', function()
+                        {
+                            initMeta();
+                            renderHeader();
+                            renderFooter();
+                            initRows();
+                        });
             };
 
             // Need to get first batch of rows so that the total count is
@@ -4027,12 +4059,6 @@
             else { isReady(); }
         });
 
-        $this.bind('meta_change', function(event) {
-            initMeta();
-            renderHeader();
-            renderFooter();
-            initRows();
-        });
         $this.bind('footer_change', function(event)
         { updateFooter(); });
         $this.bind('header_change', function(event, model)
@@ -4043,9 +4069,6 @@
             begin("load");
             initRows();
             end("load");
-        });
-        $this.bind('row_change', function(event, rows) {
-            updateRows(rows);
         });
         $this.bind('selection_change', function(event, rows) {
             begin("selectionChange");

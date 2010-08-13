@@ -29,13 +29,6 @@
 
                 mapObj._bounds = new google.maps.LatLngBounds();
                 mapObj._boundsCounts = 0;
-
-                var listener = google.maps.event.addListener(mapObj.map, 'tilesloaded', function() 
-                {
-                    if (!mapObj._markerClusterer)
-                    { mapObj._markerClusterer = new MarkerClusterer(mapObj.map, _.values(mapObj._markers)); }
-                    google.maps.event.removeListener(listener);
-                });
             },
 
             renderPoint: function(latVal, longVal, rowId, details)
@@ -71,6 +64,26 @@
                 mapObj._boundsCounts++;
 
                 return true;
+            },
+
+            rowsRendered: function()
+            {
+                var mapObj = this;
+                if (mapObj._markerClusterer)
+                {
+                    mapObj._markerClusterer.clearMarkers();
+                    _.each(mapObj._markers, function(marker)
+                    { marker.setMap(mapObj.map); marker.setVisible(true); });
+                }
+                if (mapObj._displayConfig.clusterMarkers
+                    && mapObj._rowsLeft == 0)
+                {
+                    if (!mapObj._markerClusterer)
+                    { mapObj._markerClusterer = new MarkerClusterer(mapObj.map, _.values(mapObj._markers)); }
+                    else
+                    { mapObj._markerClusterer.addMarkers(_.values(mapObj._markers)); }
+                }
+                mapObj.adjustBounds();
             },
 
             adjustBounds: function()

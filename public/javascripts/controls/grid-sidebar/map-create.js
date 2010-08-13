@@ -174,6 +174,9 @@
                         wizard: 'Choose a column that contains ' +
                             'descriptions for each point'
                     },
+                    {text: 'Group Pins?', type: 'checkbox',
+                        onlyIf: {field: 'displayFormat.type', value: 'google'},
+                        name: 'displayFormat.clusterMarkers'},
                     {text: 'Value (size)', name: 'displayFormat.plot.sizeValueId',
                         onlyIf: {field: 'displayFormat.type', value: 'esri'},
                         type: 'columnSelect', isTableColumn: true,

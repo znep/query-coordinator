@@ -251,6 +251,7 @@ javascripts:
   - plugins/jquery.uniform
   - plugins/ui.slider
   - plugins/jquery.tablesorter
+  - plugins/iscroll
   - widgets/combination-list
   - util/events
   - util/humane-date

@@ -1538,13 +1538,14 @@
         };
 
         // Adapted from http://cubiq.org/scrolling-div-on-iphone-ipod-touch
-        var touchLastY;
+        var touchLastY, touchLastX;
         var onTouchStart = function(event)
         {
             var e = event.originalEvent;
             e.preventDefault();
 
             touchLastY = e.targetTouches[0].clientY;
+            touchLastX = e.targetTouches[0].clientX;
         };
 
         var onTouchMove = function(event)
@@ -1559,8 +1560,11 @@
 
             var $scrolls = $outside.find('.blist-table-scrolls');
 
-            var delta = touchLastY - e.targetTouches[0].clientY;
-            $scrolls[0].scrollTop = $scrolls[0].scrollTop + delta;
+            var deltaY = touchLastY - e.targetTouches[0].clientY;
+            $scrolls[0].scrollTop = $scrolls[0].scrollTop + deltaY;
+
+            var deltaX = touchLastX - e.targetTouches[0].clientX;
+            $scrolls[0].scrollLeft = $scrolls[0].scrollLeft + deltaX;
         };
 
         var $prevActiveCells;

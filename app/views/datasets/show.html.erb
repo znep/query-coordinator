@@ -4,6 +4,8 @@
   <%= stylesheet_link_merged 'dataset-page' %>
   <%= rendered_stylesheet_tag 'dataset-page' %>
 
+  <meta name="viewport" content="width=1024, user-scalable=no, maximum-scale=1.0" />
+
   <title><%= h(@view.name) %> | <%= CurrentDomain.strings.site_title %></title>
   <link rel="canonical" href="<%= @view.href %>" />
 <% end %>

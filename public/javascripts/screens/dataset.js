@@ -349,6 +349,15 @@ $(function()
         });
     });
 
+    // iPad special casing
+    if ($.device.ipad)
+    {
+        // essentially, disable scrolling of the main container
+        $(document).bind('touchmove', function(event)
+        {
+            event.originalEvent.preventDefault();
+        });
+    }
 
     // Data calls
     _.defer(function()

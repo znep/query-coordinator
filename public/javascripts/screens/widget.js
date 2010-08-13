@@ -378,8 +378,6 @@ $(function()
         if ($dataGrid.length > 0)
         {
             $dataGrid
-                .bind('full_load',
-                    function(){ $('#header .headerBar').removeClass('hide'); })
                 .datasetGrid({viewId: widgetNS.viewId,
                     accessType: 'WIDGET',
                     showRowNumbers: widgetNS.theme['grid']['row_numbers'],
@@ -745,6 +743,29 @@ $(function()
 
     // Notify publisher that we are ready
     widgetNS.ready = true;
+
+    // Make adjustments for mobile
+    if ($.device.iphone || $.device.android)
+    {
+        // supposedly scroll past address bar in webkit mobile
+        _.defer(function() { window.scrollTo(0, 1); });
+
+        // show the mobile site notice
+        $dataGrid.bind('full_load', function()
+        {
+            $('.mobileNotice').fadeIn();
+            setTimeout(function()
+            {
+                $('.mobileNotice').fadeOut();
+            }, 10000);
+        });
+
+        // essentially, disable scrolling of the main container
+        $(document).bind('touchmove', function(event)
+        {
+            event.originalEvent.preventDefault();
+        });
+    }
 
     _.defer(function()
     {

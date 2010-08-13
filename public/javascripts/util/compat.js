@@ -26,6 +26,22 @@
         $.support.linearGradient = true;
     }
 
+    // Add device detection
+    $.device = $.device || {};
+
+    if (navigator.userAgent.match(/iPad/i) != null)
+    {
+        $.device.ipad = true;
+    }
+    if (navigator.userAgent.match(/(iPhone|iPod)/i) != null)
+    {
+        $.device.iphone = true;
+    }
+    if (navigator.userAgent.match(/Android/i) != null)
+    {
+        $.device.android = true;
+    }
+
 })(jQuery);
 
 $(function()

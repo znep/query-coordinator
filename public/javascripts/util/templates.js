@@ -7,7 +7,7 @@
     // DEPENDENCIES:
     //   combination-list.js
     $.templates.downloadsTable = {
-        downloadTypes: [ 'CSV', 'JSON', 'PDF', 'XLS', 'XLSX', 'XML', 'RDF'  ],
+        downloadTypes: [ 'CSV', 'JSON', 'PDF', 'RDF', 'RSS', 'XLS', 'XLSX', 'XML'  ],
         directive: {
             'tbody .item': {
                 'downloadType<-downloadTypes': {

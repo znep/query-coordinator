@@ -592,6 +592,10 @@ class View < Model
       "rows.json?method=email" + (email.nil? ? "" : "&email=#{email}"))
   end
 
+  def flag(params = {})
+    CoreServer::Base.connection.get_request("/#{self.class.name.pluralize.downcase}/#{id}.json" +
+      "?method=flag&" + params.to_param)
+  end
 
   def rdf_class
     metadata.nil? || metadata.rdfClass.nil? ? '(none)' : metadata.rdfClass

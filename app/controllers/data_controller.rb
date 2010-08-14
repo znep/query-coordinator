@@ -26,7 +26,7 @@ class DataController < ApplicationController
 
     # set up page params
     @body_class = 'discover'
-    @show_search_form = false
+    @show_search_form = CurrentDomain.theme.show_search_on_discover || false
     @page_size = PAGE_SIZE
 
     #federation

@@ -996,38 +996,26 @@ blist.namespace.fetch('blist.data');
 
         this.selectedRows = {};
 
-        this.hasSelectedRows = function() {
-            for (var i in this.selectedRows)
-            {
-                return true;
-            }
+        this.hasSelectedRows = function()
+        {
+            return !_.isEmpty(this.selectedRows);
         }
 
         this.toggleSelectRow = function(row)
         {
-            if (this.selectedRows[row.id] === undefined ||
-                this.selectedRows[row.id] === null)
-            {
-                return this.selectRow(row);
-            }
+            if ($.isBlank(this.selectedRows[row.id]))
+            { return this.selectRow(row); }
+
             else
-            {
-                return this.unselectRow(row);
-            }
+            { return this.unselectRow(row); }
         };
 
         this.selectRow = function(row, suppressChange)
         {
-            if (row.level < 0 || row.type == 'blank')
-            {
-                return;
-            }
+            if (row.level < 0 || row.type == 'blank') { return; }
 
             this.selectedRows[row.id] = row.index + countSpecialTo(row.index);
-            if (!suppressChange)
-            {
-                this.selectionChange([row]);
-            }
+            if (!suppressChange) { this.selectionChange([row]); }
             return [row];
         };
 
@@ -1041,15 +1029,11 @@ blist.namespace.fetch('blist.data');
         this.unselectAllRows = function(suppressChange)
         {
             var unselectedRows = [];
-            $.each(this.selectedRows, function (id, v)
-            {
-                unselectedRows.push(self.getByID(id));
-            });
+            _.each(this.selectedRows, function (v, id)
+            { unselectedRows.push(self.getByID(id)); });
+
             this.selectedRows = {};
-            if (!suppressChange)
-            {
-                this.selectionChange(unselectedRows);
-            }
+            if (!suppressChange) { this.selectionChange(unselectedRows); }
             return unselectedRows;
         };
 
@@ -1064,18 +1048,13 @@ blist.namespace.fetch('blist.data');
         this.selectRowsTo = function(row)
         {
             var minIndex;
-            $.each(this.selectedRows, function (id, index)
+            _.each(this.selectedRows, function (index)
             {
-                if (minIndex == null || minIndex > index)
-                {
-                    minIndex = index;
-                }
+                if (minIndex == null || minIndex > index) { minIndex = index; }
             });
 
-            if (minIndex == null)
-            {
-                return this.selectRow(row);
-            }
+            if (minIndex == null) { return this.selectRow(row); }
+
             var curIndex = row.index + countSpecialTo(row.index);
             var maxIndex = curIndex;
             if (curIndex < minIndex)
@@ -1087,14 +1066,13 @@ blist.namespace.fetch('blist.data');
             var changedRows = this.unselectAllRows(true);
             for (var i = minIndex; i <= maxIndex; i++)
             {
-//                var curRow = active[i];
-//                if (curRow !== undefined &&
-//                    (curRow.level >= 0 || curRow.level === undefined) &&
-//                    curRow.type != 'blank')
-//                {
-//                    this.selectedRows[curRow.id] = i;
-//                    changedRows.push(curRow);
-//                }
+                var curRow = this.get(i);
+                if (!$.isBlank(curRow) && (curRow.level || 0) >= 0 &&
+                    curRow.type != 'blank')
+                {
+                    this.selectedRows[curRow.id] = i;
+                    changedRows.push(curRow);
+                }
             }
             this.selectionChange(changedRows);
             return changedRows;

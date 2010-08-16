@@ -1083,7 +1083,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
         // Create a mapping from an output column to the source column
         var mapFnSrc = '(function(row, selmap) {';
         var didOne = false;
-        for (i = 0; i < usedCols.length; i++) 
+        for (i = 0; i < usedCols.length; i++)
         {
             if (usedCols[i]) {
                 col = usedCols[i];
@@ -1119,7 +1119,9 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
         var mapFn = blist.data.types.compile(mapFnSrc, renderContextVars);
 
         // Walk selected rows, building the selection document
-        this.processSelection(model.rows(), mapFn, function() {});
+        // This doesn't actually work, because processSelection wants an array
+        // of rendered rows, not model rows
+//        this.processSelection(model.rows(), mapFn, function() {});
         rawDoc.pop(); // Remove final carriage return
         if (rawDoc.length == 1)
         {

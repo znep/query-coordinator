@@ -327,7 +327,7 @@
     $.fn.metricsScreen.defaults = {
         chartSections: [],
         chartDefaults: {
-            callback: metricsNS.updateChartCallback,
+            callback: metricsNS.updateChartCallback
         },
         chartDirective: {
             '.chartContainer' : {

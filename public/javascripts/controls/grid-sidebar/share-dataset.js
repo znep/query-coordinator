@@ -128,7 +128,7 @@
                     'li@data-uid': 'id',
                     'li@data-currtype': 'shareType',
                     'li@data-email': 'userEmail',
-                    'a.removeShareLink@class+': function(a) { return (a.context.shareInherited === true ? 'invisible' : '');  }
+                    'li@class+': function(a) { return (a.context.shareInherited === true ? 'inherited' : '');  }
                 });
             $li.find('.type').val($.capitalize(share.shareType));
 

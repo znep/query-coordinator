@@ -27,11 +27,11 @@ class AdministrationController < ApplicationController
     if params[:userid].present? && params[:role].present?
       success = false
       begin
-        success = User.set_role(params[:userid], params[:role])
+        updated_user = User.set_role(params[:userid], params[:role])
       rescue CoreServer::CoreServerError => ex
         error_message = ex.error_message
       end
-      if success
+      if updated_user
         flash[:notice] = "User '#{updated_user.displayName}' successfully saved"
       else
         flash[:error] = "Error saving user. #{error_message}"

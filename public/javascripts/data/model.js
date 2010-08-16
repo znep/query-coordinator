@@ -94,28 +94,15 @@ blist.namespace.fetch('blist.data');
             filterMinChars: 3,
             initialResponse: null,
             pageSize: 50,
-            view: null,
-            // TODO: gone?
-            progressiveLoading: false
+            view: null
         };
 
-        // Count of rows in active set
-        var activeCount = 0;
+        // Count of special rows added to main set
+        var specialCount = 0;
 
-// TODO: go away
-var rows = {};
-        // The active dataset (rows or a filtered version of rows)
-        var active = {};
-
-        var activeLookup = {};
-
-        // TODO: gone?
-        // Column lookup by UID
-        var columnLookup = [];
-
-        // TODO: gone?
-        // Column lookup by ID
-        var columnIDLookup = {};
+        // The special rows to interweave into rows
+        var specialRows = {};
+        var specialLookup = {};
 
         // Event listeners
         var listeners = [];
@@ -131,20 +118,6 @@ var rows = {};
         var filterFn;
         var filterText = "";
         var filterTimer;
-
-        // TODO: gone?
-        // Grouping configuration
-        var groupFn;
-
-        // TODO: gone?
-        // Data translation
-        var translateFn = null;
-
-        // TODO: gone?
-        // Data load configuration
-        var autoBaseURL = true;
-        var baseURL = null;
-        var supplementalAjaxOptions = null;
 
         // Undo/redo buffer
         var undoBuffer = [];
@@ -180,106 +153,6 @@ var rows = {};
         };
 
         // TODO: gone?
-        /**
-         * Create a mapping of ids to positions for both rows & active
-         *  (since these arrays may be different)
-         */
-        var installIDs = function(activeOnly)
-        {
-            if (!activeOnly || rows == active)
-            {
-                lookup = {};
-                // Count the total number of rows we have actual data for
-                rowsLoaded = 0;
-                _.each(rows, function(row, i)
-                {
-                    var id = row.id || (row.id = row[0]);
-                    rowsLoaded++;
-
-                    lookup[id] = i;
-                    if (rows == active)
-                    { activeLookup[id] = i; }
-                });
-            }
-            if (rows != active)
-            {
-                activeLookup = {};
-                _.each(active, function(row, i)
-                {
-                    var id = row.id || (row.id = row[0]);
-                    activeLookup[id] = i;
-                });
-            }
-        };
-
-        // TODO: gone?
-        var setRowMetadata = function(newRows, metaCols, dataMungeCols)
-        {
-            _.each(newRows, function(r, i)
-            {
-                if (metaCols)
-                {
-                    for (var j = 0; j < metaCols.length; j++)
-                    {
-                        var c = metaCols[j];
-                        if (c.name == 'meta')
-                        {
-                            var md = r[c.index];
-                            if (md !== null && md !== undefined)
-                            { r[c.name] = JSON.parse(md); }
-                        }
-                        else if (r[c.index] !== undefined)
-                        { r[c.name] = r[c.index]; }
-                    }
-                }
-                if (dataMungeCols)
-                {
-                    for (var j = 0; j < dataMungeCols.length; j++)
-                    {
-                        var c = dataMungeCols[j];
-                        if (c.type == 'nullifyArrays' &&
-                            r[c.index] && r[c.index] instanceof Array)
-                        {
-                            var isEmpty = true;
-                            $.each(r[c.index], function(k, v)
-                                {
-                                    // Booleans don't count because location
-                                    // type has a flag that may be set even if
-                                    // there is no data.  If some type actually
-                                    // cares about only having a boolean,
-                                    // this will need to be made more specific
-                                    if (v !== null && v !== undefined &&
-                                        typeof v != 'boolean')
-                                    { isEmpty = false; return false; }
-                                });
-                            if (isEmpty) { r[c.index] = null; }
-                        }
-
-                        if (c.type == 'arrayToObject' &&
-                            r[c.index] && r[c.index] instanceof Array)
-                        {
-                            var o = {};
-                            $.each(r[c.index], function(k, v)
-                                {
-                                    o[c.types[k]] = v === '' ? null : v;
-                                });
-                            r[c.index] = o;
-                        }
-
-                        if (c.type == 'arrayToFirstValue' &&
-                            r[c.index] && r[c.index] instanceof Array)
-                        { r[c.index] = r[c.index][0]; }
-
-                        if (c.type == 'falseToNull' && r[c.index] === false)
-                        { r[c.index] = null; }
-                        if (c.type == 'zeroToNull' && r[c.index] === 0)
-                        { r[c.index] = null; }
-                    }
-                }
-            });
-        };
-
-        // TODO: gone?
         var dataChange = function()
         {
             self.unselectAllRows(true);
@@ -299,41 +172,15 @@ var rows = {};
                 if (!$.isBlank(curOptions.view))
                 {
                     this.view = curOptions.view;
+                    this.view.bind('row_count_change', function()
+                            { configureActive(); })
+                        .bind('query_change', function()
+                            { configureActive(); });
                     if (!wasDS)
                     { $(listeners).trigger('dataset_ready', [self]); }
                 }
             }
             return this;
-        };
-
-        // TODO: gone?
-        /**
-         * Whether or not to do progressive loading from the server,
-         * i.e., whether or not to do sorting & filtering locally
-         */
-        this.isProgressiveLoading = function()
-        {
-            if (!curOptions.progressiveLoading) { return false; }
-
-            if (rowsLoaded < totalRows || meta.view.searchString !== null)
-            { return true; }
-
-            var isProg = false;
-            // If there are any column filters, do progressive loading
-            if (meta.columnFilters != null)
-            {
-                $.each(meta.columnFilters, function (i, v)
-                    { if (v != null) { isProg = true; return false; } });
-            }
-
-            // If there are multiple sort bys, then do prog loading
-            if (meta.view !== undefined && meta.view.query !== undefined &&
-                meta.view.query.orderBys !== undefined &&
-                meta.view.query.orderBys.length > 1)
-            {
-               isProg = true;
-            }
-            return isProg;
         };
 
         /**
@@ -387,123 +234,31 @@ var rows = {};
         };
 
 
-        var doLoad = function(model, onLoad, ajaxOptions)
-        {
-            if (!ajaxOptions.success)
-            {
-                if (!ajaxOptions.dataType) { ajaxOptions.dataType = 'json'; }
-                ajaxOptions.success = function(config) {
-                    if (config.id !== undefined)
-                    { config = {meta: {view: config}}; }
-                    if (translateFn)
-                    { config = translateFn.apply(this, [ config ]); }
-                    onLoad.apply(model, [ config ]);
-                };
-                ajaxOptions.complete = function() {
-                    $(listeners).trigger('after_load');
-                };
-            }
-            if (!$(listeners).trigger('before_load', [ ajaxOptions ])) { return; }
-
-            if (autoBaseURL)
-            {
-                var url = ajaxOptions.url;
-                var endOfProt = url.indexOf('://');
-                if (endOfProt != -1)
-                {
-                    endOfProt += 3;
-                    var endOfHost = url.indexOf('/', endOfProt);
-                    if (endOfHost == -1) { baseURL = url; }
-                    else { baseURL = url.substring(0, endOfHost); }
-                }
-                else { baseURL = ''; }
-            }
-
-            if (curOptions.initialResponse !== null)
-            {
-                // Make sure things calling this have a chance to finish their
-                // init, just like they would for an async ajax call
-                setTimeout(function()
-                {
-                    ajaxOptions.success(curOptions.initialResponse);
-                    ajaxOptions.complete();
-                    curOptions.initialResponse = null;
-                }, 0);
-            }
-            else { $.ajax(ajaxOptions); }
-        };
-
-        // TODO: gone
-        var batchRequests = [];
-        var addBatchRequest = function(req)
-        { batchRequests.push(req); };
-
-        var runBatch = function()
-        {
-            if (batchRequests.length < 1) { return; }
-
-            if (batchRequests.length == 1)
-            {
-                $.ajax($.extend(batchRequests.shift(),
-                    { dataType: 'json', contentType: 'application/json' }));
-                return;
-            }
-
-            var serverReqs = [];
-            var br = batchRequests;
-            batchRequests = [];
-            $.each(br, function(i, r)
-                { serverReqs.push({url: r.url,
-                    requestType: r.type, body: r.data}); });
-
-            $.ajax({url: '/batches',
-                    dataType: 'json', contentType: 'application/json',
-                    type: 'POST',
-                    data: JSON.stringify({requests: serverReqs}),
-                    success: function(resp)
-                    {
-                        $.each(resp, function(i, r)
-                        {
-                            if (r.error)
-                            {
-                                if (typeof br[i].error == 'function')
-                                { br[i].error(r.errorMessage); }
-                            }
-                            else if (typeof br[i].success == 'function')
-                            {
-                                br[i].success(JSON.parse(r.response));
-                            }
-                        });
-                    },
-                    complete: function()
-                    {
-                        $.each(br, function(i, r)
-                        {
-                            if (typeof r.complete == 'function') { r.complete(); }
-                        });
-                    },
-                    error: function(xhr)
-                    {
-                        var errBody = JSON.parse(xhr.responseText);
-                        $.each(br, function(i, r)
-                        {
-                            if (typeof r.error == 'function')
-                            { r.error(errBody.message); }
-                        });
-                    }});
-        };
-
         this.loadRows = function(start, stop, callback)
         {
             if ($.isBlank(this.view)) { return false; }
 
             // Adjust max & min account for special rows, so we get real
             // offsets to the server
-            stop -= countSpecialTo(stop);
-            start -= countSpecialTo(start);
+            var specToStop = countSpecialTo(stop);
+            var adjStop = stop - specToStop;
+            var specToStart = countSpecialTo(start);
+            var adjStart = start - specToStart;
 
-            // TODO: how to handle active?
-            this.view.getRows(start, stop - start, callback);
+            var gotRows = function(modelRows)
+            {
+                if (specToStart != specToStop)
+                {
+                    for (var i = start; i < stop; i++)
+                    {
+                        if (!$.isBlank(specialRows[i]))
+                        { modelRows.splice(i - start, 0, specialRows[i]); }
+                    }
+                }
+                if (_.isFunction(callback)) { callback(modelRows); }
+            };
+
+            this.view.getRows(adjStart, adjStop - adjStart, gotRows);
 
             return true;
         };
@@ -517,269 +272,85 @@ var rows = {};
             return true;
         };
 
-        // TODO: gone
-        this.reloadView = function()
-        {
-            var ajaxOptions = $.extend({}, supplementalAjaxOptions);
-            if (curOptions.progressiveLoading)
-            {
-                ajaxOptions.data = $.extend({}, ajaxOptions.data,
-                        { method: 'getByIds', start: 0, length: 1, meta: true });
-            }
-            doLoad(self, viewReloaded, ajaxOptions);
-        };
+        // TODO: gone?
+//        var getColumnLevel = function(columns, id) {
+//            var level = columns[id];
+//            if (!level) {
+//                level = columns[id] = [];
+//                level.id = id;
+//            }
+//            return level;
+//        };
 
         // TODO: gone?
-        var viewReloaded = function(config)
-        {
-            if (config.meta)
-            {
-                self.meta(config.meta);
-
-                var newRows = config.rows || (config.data !== undefined ?
-                        config.data.data : null) || config.data;
-
-                if (newRows)
-                {
-                    if (config.meta.totalRows !== undefined)
-                    {
-                        totalRows = config.meta.view.totalRows =
-                            config.meta.totalRows;
-                    }
-                    this.rows(newRows, true);
-                }
-                else { configureActive(null, true); }
-                $(listeners).trigger('columns_updated', [self]);
-                $(listeners).trigger('full_load');
-            }
-        };
-
-        // TODO: gone
-        var translatePicklistFromView = function(col) {
-            var values = col.dropDown && col.dropDown.values;
-            if (values) {
-                var options = col.options = {};
-                for (var j = 0; j < values.length; j++) {
-                    var value = values[j];
-                    options[value.id] = { text: value.description || '',
-                        icon: value.icon, deleted: value.deleted || false };
-                }
-            }
-            return options;
-        };
-
-        var getColumnLevel = function(columns, id) {
-            var level = columns[id];
-            if (!level) {
-                level = columns[id] = [];
-                level.id = id;
-            }
-            return level;
-        };
-
-        // TODO: gone
-        var translateMetaColumns = function(viewCols, metaCols, dataMungeCols)
-        {
-            if (!viewCols) { return; }
-
-            for (var i = 0; i < viewCols.length; i++)
-            {
-                var v = viewCols[i];
-                if (v.dataTypeName == 'meta_data' ||
-                    v.dataTypeName == 'tag')
-                {
-                    var adjName = v.name;
-                    if (v.dataTypeName == 'tag') { adjName = 'tags'; }
-                    else if (v.name == 'sid') { adjName = 'id'; }
-                    else if (v.name == 'id') { adjName = 'uuid'; }
-                    metaCols.push({name: adjName, index: i});
-                }
-
-                var type = blist.data.types[v.renderTypeName];
-                if (type && type.isObject)
-                {
-                    dataMungeCols.push({index: i, type: 'nullifyArrays'});
-                    dataMungeCols.push({index: i, type: 'arrayToObject',
-                        types: v.subColumnTypes});
-                }
-
-
-                if (v.renderTypeName == 'checkbox')
-                { dataMungeCols.push({index: i, type: 'falseToNull'}); }
-
-                if (v.renderTypeName == 'stars')
-                { dataMungeCols.push({index: i, type: 'zeroToNull'}); }
-            }
-        };
-
-        // TODO: gone?
-        var translateViewColumns = function(view, viewCols, columns, allColumns,
-            nestDepth, nestedIn)
-        {
-            if (!viewCols) { return; }
-
-            viewCols = viewCols.slice();
-            for (var i = 0; i < viewCols.length; i++)
-            { viewCols[i].dataIndex = i; }
-            viewCols.sort(function(col1, col2)
-                { return col1.position - col2.position; });
-
-            var levelCols = getColumnLevel(columns, nestDepth);
-
-            var filledTo = 0;
-            var addNestFiller = function()
-            {
-                if (filledTo < levelCols.length)
-                {
-                    var fillFor = [];
-                    for (var i = filledTo; i < levelCols.length; i++)
-                    { fillFor.push(levelCols[i]); }
-                    filledTo = levelCols.length + 1;
-                    getColumnLevel(columns, nestDepth + 1).push({
-                        type: 'fill',
-                        fillFor: fillFor
-                    });
-                }
-                else { filledTo++; }
-            };
-
-            for (i = 0; i < viewCols.length; i++)
-            {
-                var vcol = viewCols[i];
-                if (vcol.dataTypeName == 'meta_data')
-                { continue; }
-
-                var col = {
-                    name: vcol.name,
-                    description: vcol.description,
-                    width: Math.max(50, vcol.width || 100),
-                    minWidth: 50,
-                    type: vcol.renderTypeName || "text",
-                    originalType: vcol.dataTypeName,
-                    id: vcol.id,
-                    tableColumnId: vcol.tableColumnId,
-                    subTypes: vcol.subColumnTypes
-                };
-
-                col.dataIndex = vcol.dataIndex;
-                if (nestedIn) {
-                    col.nestedIn = nestedIn;
-                    col.dataLookupExpr = nestedIn.header.dataLookupExpr +
-                        _.isString(col._lookup) ? ('.' + col._lookup ) :
-                            ('[' + col._lookup + ']');
-                } else {
-                    col.dataLookupExpr = _.isString(col._lookup) ?
-                        ('.' + col._lookup ) : ('[' + col._lookup + ']');
-                }
-
-                switch (col.type)
-                {
-                    case 'picklist':
-                    case 'drop_down_list':
-                    case 'dataset_link':
-                        col.options = translatePicklistFromView(vcol);
-                        break;
-
-                    case 'photo_obsolete':
-                    case 'document_obsolete':
-                        col.base = baseURL + "/views/" + view.id + "/obsolete_files/";
-                        break;
-                    case 'photo':
-                    case 'document':
-                        col.base = baseURL + "/views/" + view.id + "/files/";
-                        break;
-
-                    case 'nested_table':
-                        // Create the "body" column that appears in the next level
-                        var children = [];
-                        col.body = {
-                            type: 'nested',
-                            children: children,
-                            header: col
-                        };
-                        col.metaChildren = [];
-                        col.dataMungeChildren = [];
-                        translateMetaColumns(vcol.childColumns, col.metaChildren,
-                            col.dataMungeChildren);
-                        translateViewColumns(view, vcol.childColumns, columns,
-                            allColumns, nestDepth + 1, col.body);
-
-                        if (!vcol.flags || $.inArray("hidden", vcol.flags) < 0)
-                        {
-                            // Add the body column to the next nesting level
-                            addNestFiller();
-                            if (columns[nestDepth + 1])
-                            { columns[nestDepth + 1].push(col.body); }
-                        }
-
-                        break;
-                }
-
-                var format = vcol.format;
-                if (format)
-                {
-                    if (col.type == "stars" &&
-                        format.view == "stars_number")
-                    {
-                        col.type = "number";
-                    }
-                    if (col.originalType == "stars" &&
-                        format.view == "stars_number")
-                    {
-                        col.originalType = "number";
-                    }
-
-                    else if (format.view)
-                    {
-                        col.format = vcol.format.view;
-                    }
-                    if (format.range)
-                    {
-                        col.range = format.range;
-                    }
-                    if (format.precision)
-                    {
-                        // This isn't actual precision, it's decimal places
-                        col.decimalPlaces = format.precision;
-                    }
-                    if (format.precisionStyle)
-                    {
-                        // Standard or scientific notation
-                        col.precisionStyle = format.precisionStyle;
-                    }
-                    if (format.currency)
-                    { col.currency = format.currency; }
-                    if (format.humane)
-                    {
-                        col.humane = format.humane;
-                    }
-                    if (format.align)
-                    {
-                        col.alignment = format.align;
-                    }
-                    if (format.grouping_aggregate)
-                    { col.grouping_aggregate = format.grouping_aggregate; }
-                    if (format.drill_down &&
-                        !format.grouping_aggregate && 
-                        vcol.renderTypeName != 'url')
-                    {
-                        col.drillDown = (format.drill_down === 'true' ||
-                            format.drill_down === true);
-                    }
-                }
-
-                if (!vcol.flags || $.inArray("hidden", vcol.flags) < 0)
-                {
-                    if (nestedIn) { nestedIn.children.push(col); }
-                    else { levelCols.push(col); }
-                }
-                allColumns[col.id] = col;
-            }
-
-            // Add filler for trailing unnested columns to the next nesting
-            // depth if applicable
-            if (columns[nestDepth + 1]) { addNestFiller(); }
-        };
+//        var translateViewColumns = function(view, viewCols, columns, allColumns,
+//            nestDepth, nestedIn)
+//        {
+//            var levelCols = getColumnLevel(columns, nestDepth);
+//
+//            var filledTo = 0;
+//            var addNestFiller = function()
+//            {
+//                if (filledTo < levelCols.length)
+//                {
+//                    var fillFor = [];
+//                    for (var i = filledTo; i < levelCols.length; i++)
+//                    { fillFor.push(levelCols[i]); }
+//                    filledTo = levelCols.length + 1;
+//                    getColumnLevel(columns, nestDepth + 1).push({
+//                        type: 'fill',
+//                        fillFor: fillFor
+//                    });
+//                }
+//                else { filledTo++; }
+//            };
+//
+//            for (i = 0; i < viewCols.length; i++)
+//            {
+//                if (nestedIn) {
+//                    col.nestedIn = nestedIn;
+//                    col.dataLookupExpr = nestedIn.header.dataLookupExpr +
+//                        _.isString(col._lookup) ? ('.' + col._lookup ) :
+//                            ('[' + col._lookup + ']');
+//                }
+//
+//                switch (col.type)
+//                {
+//                    case 'nested_table':
+//                        // Create the "body" column that appears in the next level
+//                        var children = [];
+//                        col.body = {
+//                            type: 'nested',
+//                            children: children,
+//                            header: col
+//                        };
+//                        col.metaChildren = [];
+//                        col.dataMungeChildren = [];
+//                        translateViewColumns(view, vcol.childColumns, columns,
+//                            allColumns, nestDepth + 1, col.body);
+//
+//                        if (!vcol.flags || $.inArray("hidden", vcol.flags) < 0)
+//                        {
+//                            // Add the body column to the next nesting level
+//                            addNestFiller();
+//                            if (columns[nestDepth + 1])
+//                            { columns[nestDepth + 1].push(col.body); }
+//                        }
+//
+//                        break;
+//                }
+//
+//                if (!vcol.flags || $.inArray("hidden", vcol.flags) < 0)
+//                {
+//                    if (nestedIn) { nestedIn.children.push(col); }
+//                    else { levelCols.push(col); }
+//                }
+//            }
+//
+//            // Add filler for trailing unnested columns to the next nesting
+//            // depth if applicable
+//            if (columns[nestDepth + 1]) { addNestFiller(); }
+//        };
 
         // TODO: blists-screen, stats-screen
         /**
@@ -792,168 +363,9 @@ var rows = {};
                 // Columns may be different, so our undo/redo is no longer valid
                 resetUndo();
 
-                // Ensure the meta has a columns object, even if it is empty
                 meta = newMeta;
-
-                meta.sort = {};
-
-                // Assign a unique numeric ID (UID) and level ID to each column
-                columnLookup = [];
-                var nextID = 0;
-                var assignIDs = function(cols, level)
-                {
-                    for (var i = 0; i < cols.length; i++)
-                    {
-                        var col = cols[i];
-                        col.uid = nextID++;
-                        col.level = level;
-                        col.indexInLevel = i;
-                        columnLookup[col.uid] = col;
-                        if (col.children) { assignIDs(col.children, level); }
-                    }
-                };
-
-                if (!meta.columns)
-                {
-                    meta.columns = [[]];
-                    meta.allColumns = {};
-                    meta.metaColumns = [];
-                    meta.dataMungeColumns = [];
-                    columnIDLookup = {};
-                    if (meta.view)
-                    {
-                        if (meta.view.columns)
-                        {
-                            translateMetaColumns(meta.view.columns,
-                                meta.metaColumns, meta.dataMungeColumns);
-                            translateViewColumns(meta.view, meta.view.columns,
-                                meta.columns, meta.allColumns, 0);
-                            $.each(meta.view.columns, function(i, col)
-                            {
-                                if (col.id != -1)
-                                { columnIDLookup[col.id] = col; }
-                                if (col.childColumns)
-                                {
-                                    $.each(col.childColumns, function(j, cc)
-                                    {
-                                        if (cc.id != -1)
-                                        { columnIDLookup[cc.id] = cc; }
-                                    });
-                                }
-                            });
-                        }
-                    }
-
-                    for (var i = 0; i < meta.columns.length; i++)
-                    { assignIDs(meta.columns[i], meta.columns[i]); }
-
-                    // If there are rows, reset all child rows since there may
-                    // be new nested columns
-                    _.each(rows, function(r, i)
-                    {
-                        // We're in the process of resetting things,
-                        // so catch an un-init style error and ignore it
-                        try { resetChildRows(r); }
-                        catch (e) { /*ignore*/ }
-                    });
-                }
-                else
-                {
-                    for (var i = 0; i < meta.columns.length; i++)
-                    { assignIDs(meta.columns[i], meta.columns[i]); }
-                }
-
-                var rootColumns = meta.columns[0];
-
-                // Configure root column sorting based on view configuration if
-                // a view is present
-                var sorts = {};
-
-                if (meta.view !== undefined && meta.view.query !== undefined &&
-                        meta.view.query.orderBys !== undefined &&
-                        meta.view.query.orderBys.length > 0)
-                {
-                    $.each(meta.view.query.orderBys, function(i, order) {
-                        sorts[order.expression.columnId] = order;
-                    });
-
-                    $.each(meta.view.columns, function (i, c)
-                    {
-                        if (sorts[c.id] != undefined)
-                        {
-                            meta.sort[c.id] = {
-                                ascending: sorts[c.id].ascending,
-                                column: c
-                              };
-                        }
-                    });
-                }
-
-                // For each column at the root nesting level, ensure that
-                // dataIndex is present, and that a "dataLookupExpr" is
-                // present.  Other levels must configure these explicitly.
-                for (i = 0; i < rootColumns.length; i++)
-                {
-                    var col = rootColumns[i];
-                    if (!col.dataLookupExpr)
-                    {
-                        if (_.isString(col._lookup))
-                        {
-                            col.dataLookupExpr = "['" + col._lookup + "']";
-                        }
-                        else
-                        {
-                            col.dataLookupExpr = '[' + col._lookup + ']';
-                        }
-                    }
-                }
-
-                // Notify listeners of the metadata change
-                this.metaChange();
             }
             return meta;
-        };
-
-        // TODO: blists-screen, stats-screen
-        /**
-         * Get and/or set the rows for the model.  Returns only "active" rows,
-         * that is, those that are visible.
-         */
-        this.rows = function(newRows, loadedTempView)
-        {
-            if (newRows !== null && newRows !== undefined)
-            {
-                if (totalRows === 0) { totalRows = _.size(newRows); }
-                rows = {};
-                // Convert array of rows into object
-                _.each(newRows, function(r, i) { rows[i] = r; });
-                active = rows;
-                activeCount = totalRows;
-                setRowMetadata(rows, meta.metaColumns, meta.dataMungeColumns);
-                installIDs();
-
-                // Apply sorting if so configured
-                if (sortConfigured && !this.isProgressiveLoading())
-                {
-                    doSort();
-                }
-
-                // Apply filtering and grouping
-                configureActive(active, loadedTempView);
-            }
-
-            return active;
-        };
-
-        // TODO: proxy
-        /**
-         * Given a row or a row ID, retrieve the ordinal index of the row in the active set.
-         */
-        this.index = function(rowOrRowID)
-        {
-            if (typeof rowOrRowID == 'object')
-            { return parseInt(activeLookup[rowOrRowID.id]); }
-            return parseInt(activeLookup[rowOrRowID]);
         };
 
         var addItemsToObject = function(obj, values, index)
@@ -995,71 +407,23 @@ var rows = {};
             });
         };
 
-        // TODO: proxy
         /**
          * Remove rows from the model.
          */
-        this.remove = function(delRows, serverDelete, skipUndo)
+        this.removeRows = function(delRowIds, skipUndo)
         {
-            if (!(delRows instanceof Array) || delRows.id)
-            { delRows = [delRows]; }
+            delRowIds = $.makeArray(delRowIds);
 
-            if (!skipUndo && serverDelete)
-            { this.addUndoItem({type: 'delete', rows: delRows}); }
+            if (!skipUndo)
+            { this.addUndoItem({type: 'delete', rows: delRowIds}); }
 
-            for (var i = 0; i < delRows.length; i++)
-            {
-                var row = delRows[i];
-                if (row.expanded) { this.expand(row, false); }
-                var id = row.id;
-                var index = parseInt(lookup[id]);
-                row.origPosition = index;
-                if (index !== undefined)
-                {
-                    delete lookup[id];
-                    removeItemsFromObject(rows, index, 1);
-                    rowsLoaded--;
-                    totalRows--;
-                }
-                if (rows != active)
-                {
-                    index = parseInt(activeLookup[id]);
-                    row.origActivePosition = index;
-                    if (index !== undefined)
-                    {
-                        delete activeLookup[id];
-                        removeItemsFromObject(active, index, 1);
-                        activeCount--;
-                    }
-                }
-                else { activeCount = totalRows; }
-                this.unselectRow(row);
+            // TODO: Deal with expanded rows, selected rows
+            this.view.removeRows(delRowIds);
 
-                if (serverDelete)
-                {
-                    //startRowChange();
-                    if (pendingRowEdits[id])
-                    {
-                        pendingRowDeletes[id] = true;
-                    }
-                    else
-                    {
-                        serverDeleteRow(id);
-                    }
-                }
-                // Update IDs after each loop, since positions have adjusted
-                installIDs();
-            }
-            $(listeners).trigger('row_remove', [ delRows ]);
-        };
-
-        var serverDeleteRow = function(rowId, parColId, parRowId)
-        {
-            var url = '/views/' + meta.view.id + '/rows/';
-            if (parRowId)
-            { url += parRowId + '/columns/' + parColId + '/subrows/'; }
-            url += rowId + '.json';
-            $.ajax({url: url, contentType: 'application/json', type: 'DELETE'});
+//            for (var i = 0; i < delRows.length; i++)
+//            {
+//                if (row.expanded) { this.expand(row, false); }
+//                this.unselectRow(row);
         };
 
         // TODO: proxy
@@ -1141,7 +505,6 @@ var rows = {};
                 self.expand(row, false, true);
                 delete row.childRows;
                 self.expand(row, true, true);
-                installIDs();
                 configureActive();
             }
             else
@@ -1149,8 +512,6 @@ var rows = {};
         };
 
         var saveUID = 0;
-        var isRowCreate = false;
-        var pendingRowCreates = [];
         var pendingRowEdits = {};
         var pendingRowDeletes = {};
 
@@ -1159,10 +520,14 @@ var rows = {};
         {
             if ($.isBlank(this.view)) { return; }
 
-            // Deal with invalid vlaues
-
             var isCreate = false;
-            // Handle creating a blank row
+            if (row.type == 'blank')
+            {
+                delete row.type;
+                row.id = this.view.createRow();
+                isCreate = true;
+//                if (!skipUndo) { this.addUndoItem({type: 'create', rows: [row]}); }
+            }
 
             // Fetch prev value for undo
 //            if (!skipUndo && !isCreate)
@@ -1173,25 +538,6 @@ var rows = {};
 
             this.view.setRowValue(value, row.id, column.id, !isValid);
             this.view.saveRow(row.id);
-
-//            if (row.type == 'blank')
-//            {
-//                row = $.extend(row, {id: 'saving' + saveUID++, isNew: true,
-//                    type: null});
-//                var lastRow = rows[totalRows - 1];
-//                if (totalRows < 1 || lastRow === undefined || !lastRow.isNew)
-//                {
-//                    rows[totalRows] = row;
-//                    totalRows++;
-//                    if (active == rows) { activeCount = totalRows; }
-//                }
-//                installIDs();
-//                // Our view should be in the correct configuration, so we don't
-//                // need to reload a temp view on this call
-//                configureActive(null, true);
-//                isCreate = true;
-//                if (!skipUndo) { this.addUndoItem({type: 'create', rows: [row]}); }
-//            }
 
 //            var prevValue;
 //            var prevValueInvalid = false;
@@ -1204,8 +550,6 @@ var rows = {};
 //                    prevValueInvalid = prevValue !== null;
 //                }
 //            }
-
-//            if (!row.saving) { row.saving = []; }
 
             // TODO: nt
 //            if (column && column.nestedIn)
@@ -1255,108 +599,9 @@ var rows = {};
 //                { delete row.error[parCol.dataIndex][column.dataIndex]; }
 //            }
 
-//            else if (column)
-//            {
-//                if (row.error) { delete row.error[column.dataIndex]; }
-//            }
-
-//            registerRowSave(row, column, data, isCreate);
         };
 
-//        var registerRowSave = function(row, column, data, isCreate, childRow,
-//            parentRow, parentColumn)
-//        {
-//            else if (isCreate && parentRow && pendingRowEdits[parentRow.id])
-//            {
-//                pendingRowEdits[parentRow.id].push({row: row, column: column,
-//                        childRow: childRow, parentRow: parentRow,
-//                        parentColumn: parentColumn, data: data, isCreate: true});
-//                return;
-//            }
-//
-//            if (isCreate)
-//            {
-//                if (isRowCreate)
-//                {
-//                    pendingRowCreates.push({row: row, column: column,
-//                        childRow: childRow, parentRow: parentRow,
-//                        parentColumn: parentColumn, data: data});
-//                    return;
-//                }
-//                isRowCreate = true;
-//            }
-//
-//            serverSaveRow(row, column, data, isCreate, childRow, parentRow,
-//                parentColumn);
-//        };
-
-//        var serverSaveRow = function(row, column, data, isCreate, childRow,
-//            parentRow, parentColumn, skipBatchRequest)
-//        {
-
-//            if (parentColumn || column && column.nestedIn)
-//            {
-//                parentColumn = parentColumn || column.nestedIn.header;
-//                if (childRow === undefined || childRow === null)
-//                { childRow = self.getRowValue(row, parentColumn); }
-//                newRow = isCreate ? childRow : null;
-//            }
-
-//                    success: function(resp)
-//                    {
-//                        if (newRow)
-//                        {
-//                            var oldID = newRow.id;
-
-                            // Add metadata to new row
-                            // FIXME: The server response for this should be
-                            // changing; we can run into problems if there is
-                            // a user column named something like '_id'
-//                            var metaCols = parentColumn ?
-//                                parentColumn.metaChildren : meta.metaColumns;
-//                            $.each(metaCols, function(i, c)
-//                            {
-//                                var n = '_' + c.name;
-//                                if (resp[n] !== undefined)
-//                                { newRow[c.name] = newRow[c.index] = resp[n]; }
-//                            });
-
-//                            installIDs();
-//                            delete newRow.isNew;
-//                            delete newRow.type;
-
-//                            setRowMetadata([newRow], metaCols,
-//                                    parentColumn ?
-//                                        parentColumn.dataMungeChildren :
-//                                        meta.dataMungeColumns);
-
-//                            pendingRowEdits[newRow.id] = pendingRowEdits[oldID];
-//                            delete pendingRowEdits[oldID];
-//                            if (pendingRowDeletes[oldID])
-//                            {
-//                                pendingRowDeletes[newRow.id] =
-//                                    pendingRowDeletes[oldID];
-//                                delete pendingRowDeletes[oldID];
-//                            }
-
-//                            if (pendingRowCreates.length > 0)
-//                            {
-//                                var c = pendingRowCreates.shift();
-//                                serverSaveRow(c.row, c.column, c.data, true,
-//                                    c.childRow, c.parentRow, c.parentColumn);
-//                            }
-//                            else
-//                            {
-//                                isRowCreate = false;
-//                            }
-
-//                        }
-//                    }
-//                });
-
-//            if (!skipBatchRequest) { runBatch(); }
-//        };
-
+        // TODO: Wow this is messy
         var undeleteRow = function(row, parentRow, parentColumn, childCascade)
         {
             // First set up the data we're sending, and include the original
@@ -1450,12 +695,10 @@ var rows = {};
             else
             {
                 // Stick the row back in and update things
-                addItemsToObject(rows, [row], row.origPosition);
+//                addItemsToObject(rows, [row], row.origPosition);
                 totalRows++;
-                activeCount++;
-                if (active != rows)
-                { addItemsToObject(active, [row], row.origActivePosition); }
-                installIDs();
+                //if (active != rows)
+                //{ addItemsToObject(active, [row], row.origActivePosition); }
                 configureActive();
                 $(listeners).trigger('row_add', [ [row] ]);
 
@@ -1493,7 +736,7 @@ var rows = {};
                 case 'create':
                     oppItem = {type: 'delete', rows: item.rows};
 
-                    self.remove(item.rows, true, true);
+                    self.removeRows(_.pluck(item.rows, 'id'), true);
                     break;
                 case 'childCreate':
                     oppItem = {type: 'childDelete',
@@ -1577,17 +820,6 @@ var rows = {};
             return fakeRow[parentColumn.dataIndex];
         };
 
-        // TODO: gone
-        this.invalidateRows = function()
-        {
-            removeSpecialRows();
-            active = rows = {};
-            activeCount = totalRows;
-            rowsLoaded = 0;
-            lookup = {};
-            activeLookup = {};
-        };
-
         // TODO: proxy
         this.moveColumn = function(oldPosOrCol, newPos)
         {
@@ -1640,20 +872,6 @@ var rows = {};
         };
 
         /**
-         * Notify the model of metadata model changes.
-         */
-        this.metaChange = function() {
-            $(listeners).trigger('meta_change', [ this ]);
-        };
-
-        /**
-         * Notify the model of footer data changes.
-         */
-        this.footerChange = function() {
-            $(listeners).trigger('footer_change', [ this ]);
-        };
-
-        /**
          * Notify listeners of row selectionchanges.
          */
         this.selectionChange = function(rows)
@@ -1696,7 +914,8 @@ var rows = {};
         this.get = function(index)
         {
             if ($.isBlank(this.view)) { return undefined; }
-            return this.view.rowForIndex(index);
+            return specialRows[index] ||
+                this.view.rowForIndex(index - countSpecialTo(index));
         };
 
         /**
@@ -1705,7 +924,7 @@ var rows = {};
         this.getByID = function(id)
         {
             if ($.isBlank(this.view)) { return undefined; }
-            return this.view.rowForID(id);
+            return specialLookup[id] || this.view.rowForID(id);
         };
 
         /**
@@ -1722,11 +941,18 @@ var rows = {};
                 this.view.columnForID(id) : null;
         };
 
-        // TODO: proxy
         /**
          * Retrieve the total number of rows.
          */
         this.length = function()
+        {
+            return this.dataLength() + specialCount;
+        };
+
+        /**
+         * Real rows from the Dataset
+         */
+        this.dataLength = function()
         {
             return (this.view || {}).totalRows || -1;
         };
@@ -1738,51 +964,33 @@ var rows = {};
             return meta.columns[id];
         };
 
-        // TODO: proxy
-        /**
-         * Retrieve the total number of rows, excluding group headers or other
-         *  special rows, but including all children of rows
-         */
-        this.dataLength = function()
-        {
-            var total = activeCount;
-            _.each(active, function(row, i)
-            {
-                // Don't count rows with level not equal to 0 or blank rows
-                if (row.level !== 0 && row.level !== undefined ||
-                    row.type == 'blank') { total--; }
-                // Count child rows, expanded or not
-                if (row.childRows !== undefined) { total += row.childRows.length; }
-            });
-            return total;
-        };
-
         /**
          * Scan to find the next or previous row in the same level.
          */
         this.nextInLevel = function(from, backward) {
             var pos = from;
             var level = 0;
-            if (active[pos] !== undefined) { level = active[pos].level || 0; }
-            if (backward)
-            {
-                while (--pos >= 0)
-                {
-                    if ((active[pos] !== undefined ?
-                        (active[pos].level || 0) : 0) == level)
-                    { return pos; }
-                }
-            }
-            else
-            {
-                var end = activeCount;
-                while (++pos < end)
-                {
-                    if (active[pos] === undefined ||
-                        (active[pos].level || 0) == level)
-                    { return pos; }
-                }
-            }
+//            if (active[pos] !== undefined) { level = active[pos].level || 0; }
+//            if (backward)
+//            {
+//                while (--pos >= 0)
+//                {
+//                    if ((active[pos] !== undefined ?
+//                        (active[pos].level || 0) : 0) == level)
+//                    { return pos; }
+//                }
+//            }
+//            else
+//            {
+//                // TODO: special
+//                var end = 0;//activeCount;
+//                while (++pos < end)
+//                {
+//                    if (active[pos] === undefined ||
+//                        (active[pos].level || 0) == level)
+//                    { return pos; }
+//                }
+//            }
             return null;
         };
 
@@ -1815,8 +1023,7 @@ var rows = {};
                 return;
             }
 
-            var rowId = row.id;
-            this.selectedRows[rowId] = activeLookup[rowId];
+            this.selectedRows[row.id] = row.index + countSpecialTo(row.index);
             if (!suppressChange)
             {
                 this.selectionChange([row]);
@@ -1869,7 +1076,7 @@ var rows = {};
             {
                 return this.selectRow(row);
             }
-            var curIndex = activeLookup[row.id];
+            var curIndex = row.index + countSpecialTo(row.index);
             var maxIndex = curIndex;
             if (curIndex < minIndex)
             {
@@ -1880,14 +1087,14 @@ var rows = {};
             var changedRows = this.unselectAllRows(true);
             for (var i = minIndex; i <= maxIndex; i++)
             {
-                var curRow = active[i];
-                if (curRow !== undefined &&
-                    (curRow.level >= 0 || curRow.level === undefined) &&
-                    curRow.type != 'blank')
-                {
-                    this.selectedRows[curRow.id] = i;
-                    changedRows.push(curRow);
-                }
+//                var curRow = active[i];
+//                if (curRow !== undefined &&
+//                    (curRow.level >= 0 || curRow.level === undefined) &&
+//                    curRow.type != 'blank')
+//                {
+//                    this.selectedRows[curRow.id] = i;
+//                    changedRows.push(curRow);
+//                }
             }
             this.selectionChange(changedRows);
             return changedRows;
@@ -1974,16 +1181,6 @@ var rows = {};
                     }
                 }
 
-                // Install the grouping function, if applicable
-                if (orderCol.group === true)
-                {
-                    groupFn = columnType(order).group;
-                }
-                else
-                {
-                    groupFn = orderCol.group;
-                }
-
                 sortConfigured = true;
             }
 
@@ -1996,7 +1193,7 @@ var rows = {};
 
             // If there's an active filter, or grouping function, re-apply now
             // that we're sorted
-            configureActive(active);
+            //configureActive(active);
         };
 
         // TODO: gone
@@ -2057,7 +1254,7 @@ var rows = {};
             if (hasSort) { doSort(); }
             // The only way to guarantee a correct ordering of rows (right now)
             //  when clearing all sorts is to go to the server
-            else { this.getTempView(); }
+            //else { this.getTempView(); }
 
             // If there's an active filter, or grouping function, re-apply now
             // that we're sorted
@@ -2104,8 +1301,8 @@ var rows = {};
                         childRow[col.dataIndex] = [];
                         childRow[col.dataIndex].type = 'blank';
                     }
-                    setRowMetadata([childRow[col.dataIndex]], col.metaChildren,
-                        col.dataMungeChildren);
+//                    setRowMetadata([childRow[col.dataIndex]], col.metaChildren,
+//                        col.dataMungeChildren);
                 }
             }
 
@@ -2135,351 +1332,69 @@ var rows = {};
                 var childRows = getChildRows(row);
 
                 // Install child rows into the active set if the row is open
-                if (active == rows)
-                { active = _.clone(rows); }
-                var i = parseInt(activeLookup[row.id]);
-                addItemsToObject(active, childRows, i + 1);
-                activeCount += childRows.length;
+//                if (active == rows)
+//                { active = _.clone(rows); }
+//                var i = parseInt(activeLookup[row.id]);
+//                addItemsToObject(active, childRows, i + 1);
+                // TODO: special
+                //activeCount += childRows.length;
             }
             else
             {
                 // Remove the child rows
-                if (row.childRows && row.childRows.length)
-                {
-                    var i = parseInt(activeLookup[row.id]);
-                    removeItemsFromObject(active, i + 1,
-                        row.childRows.length);
-                    activeCount -= row.childRows.length;
-                    if (active == rows) { totalRows = activeCount; }
-                }
+//                if (row.childRows && row.childRows.length)
+//                {
+//                    var i = parseInt(activeLookup[row.id]);
+//                    removeItemsFromObject(active, i + 1,
+//                        row.childRows.length);
+                // TODO: special
+                    //activeCount -= row.childRows.length;
+                    //if (active == rows) { totalRows = activeCount; }
+                //}
             }
 
             // Record the new row state
             row.expanded = open;
 
             // Update IDs for the rows that moved
-            installIDs(true);
 
             // Fire events
 //            if (!skipEvent) { this.change([ row ]); }
         };
 
-        // TODO: gone
-        /**
-         * Get or set the base URL for retrieving child documents.  This is set automatically when you use the ajax
-         * calls.
-         */
-        this.baseURL = function(newBaseURL) {
-            if (newBaseURL) {
-                baseURL = newBaseURL;
-                autoBaseURL = !baseURL;
-            }
-            return baseURL;
-        };
-
+        // TODO: gone?
         // Run sorting based on the current filter configuration.  Does not
         // fire events
         var doSort = function()
         {
-            if (!sortConfigured) { return; }
-
-            removeSpecialRows();
-
-            if (self.isProgressiveLoading())
-            {
-                self.getTempView();
-                // Bail out early, since the server does the sorting
-                return;
-            }
-
-            // Apply preprocessing function if necessary.  We then sort a new
-            // array that contains a [ 'value', originalRecord ] pair for each
-            // item.  This allows us to avoid complex ordering functions.
-            var toSort = new Array(activeCount);
-            _.each(active, function(rec, i)
-            {
-                toSort[i] = orderPrepro !== undefined ?
-                    [orderPrepro(rec[orderCol.dataIndex], orderCol), rec] : rec;
-            });
-
-            // Perform the actual sort
-            if (orderFn) { toSort.sort(orderFn); }
-            else { toSort.sort(); }
-
-            var activeIsRows = active == rows;
-            // Update the original object
-            active = {};
-            if (activeIsRows) { rows = active; }
-            for (i = 0; i < toSort.length; i++)
-            { active[i] = orderPrepro !== undefined ? toSort[i][1] : toSort[i]; }
-
-            // Update ID lookup
-            installIDs(true);
+//            if (!sortConfigured) { return; }
+//
+//            removeSpecialRows();
+//
+//            // Apply preprocessing function if necessary.  We then sort a new
+//            // array that contains a [ 'value', originalRecord ] pair for each
+//            // item.  This allows us to avoid complex ordering functions.
+//            var toSort = new Array(activeCount);
+//            _.each(active, function(rec, i)
+//            {
+//                toSort[i] = orderPrepro !== undefined ?
+//                    [orderPrepro(rec[orderCol.dataIndex], orderCol), rec] : rec;
+//            });
+//
+//            // Perform the actual sort
+//            if (orderFn) { toSort.sort(orderFn); }
+//            else { toSort.sort(); }
+//
+//            var activeIsRows = active == rows;
+//            // Update the original object
+//            active = {};
+//            if (activeIsRows) { rows = active; }
+//            for (i = 0; i < toSort.length; i++)
+//            { active[i] = orderPrepro !== undefined ? toSort[i][1] : toSort[i]; }
+//
+//            // Update ID lookup
         };
 
-        // TODO: gone
-        this.getViewCopy = function()
-        {
-            var view = meta.view;
-            // Update all the widths from the meta columns
-            $.each((meta.columns || [])[0] || [], function(i, c)
-            {
-                self.columnForID(c.id).width = c.width;
-                if (c.body && c.body.children)
-                {
-                    $.each(c.body.children, function(j, cc)
-                    {
-                        self.columnForID(cc.id).width = cc.width;
-                    });
-                }
-            });
-
-            view = $.extend(true, {}, view);
-            delete view.sortBys;
-            delete view.viewFilters;
-
-            // Filter out all metadata columns
-            view.columns = $.grep(view.columns, function(c, i)
-                { return c.id != -1; });
-
-            // Sort by position, because the attribute is ignored when
-            // saving columns
-            view.columns.sort(function(a, b)
-                { return a.position - b.position; });
-
-            var cleanColumn = function(col)
-            { delete col.dataIndex; };
-
-            // Clean out dataIndexes, and clean out child metadata columns
-            $.each(view.columns, function(i, c)
-            {
-                cleanColumn(c);
-                if (c.childColumns)
-                {
-                    c.childColumns = $.grep(c.childColumns, function(cc, j)
-                        { return cc.id != -1; });
-                    $.each(c.childColumns, function(j, cc)
-                        { cleanColumn(cc); });
-                }
-            });
-
-            view.originalViewId = view.id;
-            return view;
-        };
-
-
-        // TODO: gone
-        this.getTempView = function(tempView, includeColumns, callback)
-        {
-            // If we're doing progressive loading, set up a temporary
-            //  view, then construct a query with a special URL and
-            //  appropriate params to get rows back for the specified view
-            // Only include columns if this view is grouped; otherwise, don't
-            // include columns since we want them all back, and we don't need
-            // to send all that extra data over or modify columns accidentally
-            tempView = this.view.cleanCopy();
-            var ajaxOptions = $.extend({},
-                    supplementalAjaxOptions,
-                    { url: '/views/INLINE/rows.json?' + $.param(
-                        $.extend({}, supplementalAjaxOptions.data,
-                        {   method: 'getByIds', start: 0,
-                            length: curOptions.pageSize,
-                            meta: true
-                        })),
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(tempView)
-            });
-            doLoad(self, function(config) { loadTempView(config, callback); },
-                ajaxOptions);
-        };
-
-        // TODO: gone
-        /**
-         * When we load the sorted data from the server, we may have
-         *  a different set of full rows than was previously loaded, updated
-         *  data, or possibly new rows.  We may also have rows that were already
-         *  loaded, but did not come back with the sort.  So do some work to
-         *  get active & rows in-sync
-         */
-        var loadTempView = function(config, callback)
-        {
-            var newRows = config.rows || (config.data !== undefined ?
-                config.data.data : null) || config.data;
-            if (config.meta)
-            {
-                meta.columns = null;
-                config.meta.columnFilters = meta.columnFilters;
-                config.meta.view.id = meta.view.id;
-                config.meta.view.owner = meta.view.owner;
-                // Copy flags over so we know if this is the default view
-                config.meta.view.flags = meta.view.flags;
-                self.meta(config.meta);
-                if (config.meta.totalRows !== undefined)
-                {
-                    activeCount = config.meta.view.totalRows =
-                        config.meta.totalRows;
-                }
-            }
-
-            // active is now the new set of rows from the server, and not
-            //  linked-to or based-on rows
-            active = {};
-            // Convert array of rows into object
-            _.each(newRows, function(r, i) { active[i] = r; });
-            setRowMetadata(active, meta.metaColumns, meta.dataMungeColumns);
-            _.each(active, function(curRow, i)
-            {
-                // Copy over loaded rows in case they are updated
-                var rowPos = lookup[curRow.id];
-                if (rowPos !== undefined) { rows[rowPos] = curRow; }
-            });
-            installIDs(true);
-            configureActive(null, true);
-        };
-
-        /**
-         * Group columns
-         */
-
-        // TODO: gone
-        this.group = function(grouping)
-        {
-            meta.view.query.groupBys = grouping;
-        };
-
-        // TODO: blists-screen, stats-screen
-        /**
-         * Filter the data.
-         *
-         * @param filter either filter text or a filtering function
-         * @param timeout an optional async delay value (in milliseconds)
-         */
-        this.filter = function(filter, timeout)
-        {
-            if (filterTimer) { clearTimeout(filterTimer); }
-            // Configure for filtering.  toFilter is an optimized set that may
-            // be a subset of all rows if a previous filter is in place.
-            var toFilter = configureFilter(filter);
-
-            // If there's nothing to filter, return now
-            if (!toFilter || !filterFn) { return; }
-
-            // Filter
-            if (timeout)
-            {
-                // Filter, but only after a short timeout
-                filterTimer = setTimeout(function() {
-                    window.clearTimeout(filterTimer);
-                    configureActive(toFilter || active);
-                }, 250);
-            }
-            else
-            {
-                configureActive(toFilter);
-            }
-        };
-
-        var configureFilter = function(filter)
-        {
-            var toFilter;
-            if (typeof filter == "function")
-            {
-                filterFn = filter;
-                filterText = null;
-            }
-            else
-            {
-                if (filter === null) { filter = ""; }
-                if (filter === filterText) { return null; }
-
-                // Clear the filter if it contains less than the minimum characters
-                if (filter.length < curOptions.filterMinChars || filter.length == 0)
-                {
-                    filterFn = null;
-                    filterText = "";
-                    meta.view.searchString = null;
-                    if (self.isProgressiveLoading())
-                    {
-                        self.getTempView();
-                    }
-                    else if (active != rows)
-                    {
-                        active = rows;
-                        activeCount = totalRows;
-                        $(listeners).trigger('client_filter');
-                        configureActive();
-                    }
-                    return null;
-                }
-
-                // Generate a filter function
-                var regexp = createRegExp(filter);
-                var filterParts = [ "(function(r) { return false" ];
-                var rootColumns = meta.columns[0];
-                for (var i = 0; i < rootColumns.length; i++)
-                {
-                    var type = rootColumns[i].type || 'text';
-                    if (blist.data.types[type].filterText)
-                    {
-                        // Textual column -- apply the regular expression to
-                        // each instance
-                        filterParts.push(' || ',
-                            type == 'html' ? '$.htmlStrip' : '', '(r',
-                            rootColumns[i].dataLookupExpr, ' + "").match(regexp)');
-                    }
-                    else if (type == "picklist" || type == 'drop_down_list')
-                    {
-                        // Picklist column -- prefilter and then search by ID
-                        var options = rootColumns[i].options;
-                        if (options) {
-                            var matches = [];
-                            for (var key in options)
-                            {
-                                if (options[key].text.match(regexp))
-                                { matches.push(key); }
-                            }
-                            for (var j = 0; j < matches.length; j++)
-                            {
-                                filterParts.push(' || (r' +
-                                    rootColumns[i].dataLookupExpr + ' == "' +
-                                    matches[j] + '")');
-                            }
-                        }
-                    }
-                }
-                filterParts.push("; });");
-                filterFn = new Function('regexp',
-                    'return ' + filterParts.join(''))(regexp);
-
-                // Filter the current filter set if the filter is a subset of
-                // the current filter
-                if (filterText !== null &&
-                    filter.substring(0, filterText.length) == filterText)
-                { toFilter = active; }
-                filterText = filter;
-                meta.view.searchString = filterText;
-            }
-
-            return toFilter || rows;
-        };
-
-        // Create a regular expression to match user entered text
-        var createRegExp = function(text)
-        {
-            // Collapse whitespace
-            text = $.trim(text).replace(/\s+/, ' ');
-
-            // Detect case and perform case sensitive match if capital letters
-            // are present
-            if (text.match(/[A-Z]/)) { var modifiers = ""; }
-            else { modifiers = "i"; }
-
-            // Escape special characters and create the regexp
-            return new RegExp(
-                text.replace(/(\/|\.|\*|\+|\?|\||\(|\)|\[|\]|\{|\})/g, "\\$1"),
-                modifiers);
-        };
 
         /* Clear out the filter for a particular column.  Takes a column obj
          *  or a column index.
@@ -2578,10 +1493,6 @@ var rows = {};
                 {column: filterCol, value: filterVal, viewFilter: filterItem};
 
             this.columnFilterChange(filterCol, true);
-
-            // Reload the view from the server; eventually we should do this
-            //  locally if not in progressiveLoading mode
-            this.getTempView();
         };
 
         // TODO: gone
@@ -2606,55 +1517,40 @@ var rows = {};
 
             this.columnFilterChange(filterCol, false);
 
-            this.getTempView();
+            //this.getTempView();
         };
 
         // Apply filtering, grouping, and sub-row expansion to the active set.
         // This applies current settings to the active set and then notifies
         // listeners of the data change.
-        var configureActive = function(filterSource, loadedTempView)
+        var configureActive = function()
         {
             var idChange = removeSpecialRows();
-            // If we just loaded a temp view, the set is already filtered
-            if (!loadedTempView && filterFn)
-            {
-                doFilter(filterSource);
-                idChange = true;
-            }
-            if (groupFn)
-            {
-                doGroup();
-                idChange = true;
-            }
-
             if (doExpansion()) { idChange = true; }
 
             // Add in blank row at the end
             if (self.useBlankRows())
             {
-                var blankRow = [];
-                blankRow.level = 0;
+                var blankRow = {invalid: {}, changed: {}, error: {}};
                 blankRow.type = 'blank';
                 blankRow.id = 'blank';
-                active[activeCount] = blankRow;
-                activeCount++;
-                if (active == rows) { totalRows = activeCount; }
+                blankRow.index = self.length();
+                specialRows[self.length()] = blankRow;
+                specialLookup[blankRow.id] = blankRow;
+                specialCount++;
                 idChange = true;
             }
 
-            if (idChange) { installIDs(); }
             dataChange();
         };
 
         var countSpecialTo = function(max)
         {
             var count = 0;
-            if (max === undefined) { max = activeCount; }
-            _.each(active, function(r, i)
+            if ($.isBlank(max)) { max = self.length(); }
+            _.each(specialRows, function(r, i)
             {
-                if (parseInt(i) < max &&
-                    (r.level !== 0 && r.level !== undefined || r.type == 'blank'))
-                { count++; }
+                if (parseInt(i) < max) { count++; }
             });
             return count;
         };
@@ -2662,45 +1558,14 @@ var rows = {};
         // Remove "special" (non-top-level) rows
         var removeSpecialRows = function()
         {
-            var removed = false;
-            var toRemove = [];
-            _.each(active, function(r, i)
-            {
-                if (r.level !== 0 && r.level !== undefined || r.type == 'blank')
-                {
-                    toRemove.push(parseInt(i));
-                    removed = true;
-                }
-            });
-            toRemove.sort(function(a,b) { return b - a; });
-            _.each(toRemove, function(i)
-            {
-                removeItemsFromObject(active, i, 1);
-                activeCount--;
-            });
-            if (rows != active)
-            {
-                toRemove = [];
-                _.each(rows, function(r, i)
-                {
-                    if (r.level !== 0 && r.level !== undefined ||
-                        r.type == 'blank')
-                    {
-                        toRemove.push(parseInt(i));
-                        removed = true;
-                    }
-                });
-                toRemove.sort(function(a,b) { return b - a; });
-                _.each(toRemove, function(i)
-                {
-                    removeItemsFromObject(rows, i, 1);
-                    totalRows--;
-                });
-            }
-            else { totalRows = activeCount; }
+            var removed = specialCount > 0;
+            specialRows = {};
+            specialLookup = {};
+            specialCount = 0;
             return removed;
         };
 
+        // TODO: gone?
         // Run filtering based on current filter configuration
         var doFilter = function(toFilter)
         {
@@ -2711,75 +1576,32 @@ var rows = {};
                 filterTimer = null;
             }
 
-            if (self.isProgressiveLoading())
-            {
-                self.getTempView();
-                // Bail out early, since the server does the sorting
-                return;
-            }
-
             // Perform the actual filter
-            var filteredArray = _.sortBy($.objSelect(toFilter || rows, filterFn),
-                function(v, k) { return k; });
-            activeCount = filteredArray.length;
-            active = {};
-            _.each(filteredArray, function(r, i) { active[i] = r; });
+//            var filteredArray = _.sortBy($.objSelect(toFilter || rows, filterFn),
+//                function(v, k) { return k; });
+//            active = {};
+//            _.each(filteredArray, function(r, i) { active[i] = r; });
             $(listeners).trigger('client_filter');
-        };
-
-        // Generate group headers based on the current grouping configuration.
-        // Does not fire events.  Note that grouping is not currently supported
-        // in progressive rendering mode.
-        var doGroup = function()
-        {
-            if (!groupFn || !orderCol) { return; }
-            var i = 0;
-            var currentGroup;
-            var groupOn = orderCol.dataIndex;
-            // We need to traverse this in order, even though things are stored in
-            // an object
-            while (i < activeCount)
-            {
-                // This isn't supported in progressive loading mode, so active[i]
-                // shouldn't ever be undefined here
-                var group = groupFn(active[i][groupOn]);
-                if (group != currentGroup)
-                {
-                    addItemsToObject(active,
-                            [{
-                                level: -1,
-                                type: 'group',
-                                title: group,
-                                id: 'special-' + i
-                            }], i);
-                    activeCount++;
-                    i++;
-                    currentGroup = group;
-                }
-                i++;
-            }
-            if (rows == active) { totalRows = activeCount; }
-            // Update ID lookup
-            installIDs(true);
         };
 
         // Expand rows that the user has opened
         var doExpansion = function()
         {
             var toExpand = [];
-            _.each(active, function(r, i)
-            {
-                if (r.expanded) { toExpand.push(parseInt(i)); }
-            });
+//            _.each(active, function(r, i)
+//            {
+//                if (r.expanded) { toExpand.push(parseInt(i)); }
+//            });
 
             toExpand.sort(function(a,b) { return b - a; });
+            // TODO: special
             _.each(toExpand, function(i)
             {
-                var childRows = getChildRows(active[i]);
-                addItemsToObject(active, childRows, i + 1);
-                activeCount += childRows.length;
+//                var childRows = getChildRows(active[i]);
+//                addItemsToObject(active, childRows, i + 1);
+                //activeCount += childRows.length;
             });
-            if (active == rows) { totalRows = activeCount; }
+            //if (active == rows) { totalRows = activeCount; }
 
             return toExpand.length > 0;
         };

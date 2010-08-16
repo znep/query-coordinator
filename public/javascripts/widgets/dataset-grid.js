@@ -534,8 +534,7 @@
                 else
                 {
                     model.selectRow(model.getByID(rowId));
-                    datasetObj.settings.view
-                        .removeRows(_.keys(model.selectedRows));
+                    model.removeRows(_.keys(model.selectedRows));
                 }
                 break;
             case 'row-tag':
@@ -851,10 +850,10 @@
             loadFilterMenu(datasetObj, headerCol, $menu);
 
             // TODO: probably change this
-            var curSort = datasetObj.settings._model.meta().sort[headerCol.id];
-            $menu.find('.sortAsc').toggle(!curSort || !curSort.ascending);
-            $menu.find('.sortDesc').toggle(!curSort || curSort.ascending);
-            $menu.find('.sortClear').toggle(curSort !== undefined);
+//            var curSort = datasetObj.settings._model.meta().sort[headerCol.id];
+//            $menu.find('.sortAsc').toggle(!curSort || !curSort.ascending);
+//            $menu.find('.sortDesc').toggle(!curSort || curSort.ascending);
+//            $menu.find('.sortClear').toggle(curSort !== undefined);
         }
         else
         {
@@ -899,8 +898,8 @@
 
         // Get the current filter for this column (if it exists)
         // TODO: Change this...
-        var colFilters = datasetObj.settings._model
-            .meta().columnFilters;
+        var colFilters;
+        // = datasetObj.settings._model.meta().columnFilters;
         var cf = (colFilters || {})[headerCol.id] || undefined;
 
         // Remove the old filter menu if necessary
@@ -1114,77 +1113,76 @@
     {
         if (isFinished)
         {
-            var view = datasetObj.settings._model.meta().view;
-            $.each(view.columns, function(i, c)
-                { if (c.id == col.id) { c.width = col.width; return false; } });
-            if (_.include(view.rights, 'update_view'))
-            {
-                $.ajax({url: '/views/' + view.id + '/columns/' + col.id + '.json',
-                    data: JSON.stringify({width: col.width}),
-                    type: 'PUT', contentType: 'application/json'});
-            }
+//            var view = datasetObj.settings._model.meta().view;
+//            $.each(view.columns, function(i, c)
+//                { if (c.id == col.id) { c.width = col.width; return false; } });
+//            if (_.include(view.rights, 'update_view'))
+//            {
+//                $.ajax({url: '/views/' + view.id + '/columns/' + col.id + '.json',
+//                    data: JSON.stringify({width: col.width}),
+//                    type: 'PUT', contentType: 'application/json'});
+//            }
         }
     };
 
     // TODO: I'm guessing this goes away?
     var sortChanged = function(datasetObj, skipRequest)
     {
-        var view = datasetObj.settings._model.meta().view;
-        if (!skipRequest && _.include(view.rights, 'update_view') &&
-            !datasetObj.settings.view.temporary)
-        {
-            $.ajax({url: '/views/' + view.id + '.json',
-                data: JSON.stringify({query: view.query}),
-                type: 'PUT', contentType: 'application/json'});
-        }
-        else
-        {
-            var oldSorts = datasetObj.origOrderBys;
-            var newSorts = [];
-            if (view.query.orderBys !== undefined)
-            { newSorts = view.query.orderBys; }
-
-            var matches = oldSorts.length == newSorts.length;
-            if (matches)
-            {
-                for (var i = 0; i < oldSorts.length; i++)
-                {
-                    var o = oldSorts[i];
-                    var n = newSorts[i];
-                    if (o.columnId != n.expression.columnId ||
-                            o.ascending != n.ascending)
-                    {
-                        matches = false;
-                        break;
-                    }
-                }
-            }
-        }
+//        var view = datasetObj.settings._model.meta().view;
+//        if (!skipRequest && _.include(view.rights, 'update_view') &&
+//            !datasetObj.settings.view.temporary)
+//        {
+//            $.ajax({url: '/views/' + view.id + '.json',
+//                data: JSON.stringify({query: view.query}),
+//                type: 'PUT', contentType: 'application/json'});
+//        }
+//        else
+//        {
+//            var oldSorts = datasetObj.origOrderBys;
+//            var newSorts = [];
+//            if (view.query.orderBys !== undefined)
+//            { newSorts = view.query.orderBys; }
+//
+//            var matches = oldSorts.length == newSorts.length;
+//            if (matches)
+//            {
+//                for (var i = 0; i < oldSorts.length; i++)
+//                {
+//                    var o = oldSorts[i];
+//                    var n = newSorts[i];
+//                    if (o.columnId != n.expression.columnId ||
+//                            o.ascending != n.ascending)
+//                    {
+//                        matches = false;
+//                        break;
+//                    }
+//                }
+//            }
+//        }
     };
 
     // TODO: move to Dataset, or refactor
     var columnsRearranged = function(datasetObj)
     {
-        var view = datasetObj.settings._model.meta().view;
-        if (_.include(view.rights, 'update_view') &&
-            !datasetObj.settings.view.temporary)
-        {
-            var modView = blist.datasetUtil.cleanViewForPost(
-                datasetObj.settings._model.getViewCopy(), true);
-            $.ajax({url: '/views/' + view.id + '.json',
-                    data: JSON.stringify({columns: modView.columns}),
-                    type: 'PUT', contentType: 'application/json',
-                    success: function()
-                        {
-                            datasetObj.settings.view.trigger('columns_changed');
-                            // If we change the column order on the server,
-                            // data will come back in a different order;
-                            // so reload the view with the proper order of
-                            // columns & row data
-                            datasetObj.settings._model.reloadView();
-                        }
-                    });
-        }
+//        var view = datasetObj.settings._model.meta().view;
+//        if (_.include(view.rights, 'update_view') &&
+//            !datasetObj.settings.view.temporary)
+//        {
+//            var modView = datasetObj.settings.view.cleanCopy();
+//            $.ajax({url: '/views/' + view.id + '.json',
+//                    data: JSON.stringify({columns: modView.columns}),
+//                    type: 'PUT', contentType: 'application/json',
+//                    success: function()
+//                        {
+//                            datasetObj.settings.view.trigger('columns_changed');
+//                            // If we change the column order on the server,
+//                            // data will come back in a different order;
+//                            // so reload the view with the proper order of
+//                            // columns & row data
+//                            datasetObj.settings.view.reload();
+//                        }
+//                    });
+//        }
     };
 
     var columnFilterChanged = function(datasetObj, col, setFilter)
@@ -1196,16 +1194,16 @@
     var viewLoaded = function(datasetObj)
     {
         datasetObj.origOrderBys = [];
-        var view = datasetObj.settings._model.meta().view;
-        if (view.query.orderBys !== undefined)
-        {
-            $.each(view.query.orderBys, function(i, o)
-            {
-                var curO = {columnId: o.expression.columnId};
-                curO.ascending = o.ascending;
-                datasetObj.origOrderBys.push(curO);
-            });
-        }
+//        var view = datasetObj.settings._model.meta().view;
+//        if (view.query.orderBys !== undefined)
+//        {
+//            $.each(view.query.orderBys, function(i, o)
+//            {
+//                var curO = {columnId: o.expression.columnId};
+//                curO.ascending = o.ascending;
+//                datasetObj.origOrderBys.push(curO);
+//            });
+//        }
     };
 
     var columnNameEdit = function(datasetObj, event, origEvent)

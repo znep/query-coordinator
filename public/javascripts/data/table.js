@@ -86,13 +86,14 @@
         var sort = function(index)
         {
             begin("sort.configure");
-            var columnSort = model.meta().sort[columns[index].id];
+            // TODO: fixme
+//            var columnSort = model.meta().sort[columns[index].id];
 
             var sortDescending = false;
-            if (columnSort != undefined)
-            {
-                sortDescending = columnSort.ascending;
-            }
+//            if (columnSort != undefined)
+//            {
+//                sortDescending = columnSort.ascending;
+//            }
             end("sort.configure");
 
             begin("sort.sort");
@@ -108,42 +109,44 @@
                 .removeClass('active')
                 .closest('.blist-th').removeClass('sorted');
 
-            for (var i=0; i < columns.length; i++)
-            {
-                var columnSort = model.meta().sort[columns[i].id];
-                if (columns[i].dom && columnSort != undefined)
-                {
-                    var sortDescending = !columnSort.ascending;
-                    var col = columns[i];
-                    var oldClass = 'sort-' + (sortDescending ? 'asc' : 'desc');
-                    var newClass = 'sort-' + (sortDescending ? 'desc' : 'asc');
-                    var newTitle = 'Sort ' +
-                        (sortDescending ? 'ascending' : 'descending');
-                    $('.sort', col.dom)
-                        .removeClass(oldClass).addClass(newClass)
-                        .attr('title', newTitle)
-                        .addClass('active')
-                        .closest('.blist-th').addClass('sorted');
-                }
-            }
+            // TODO: fixme
+//            for (var i=0; i < columns.length; i++)
+//            {
+//                var columnSort = model.meta().sort[columns[i].id];
+//                if (columns[i].dom && columnSort != undefined)
+//                {
+//                    var sortDescending = !columnSort.ascending;
+//                    var col = columns[i];
+//                    var oldClass = 'sort-' + (sortDescending ? 'asc' : 'desc');
+//                    var newClass = 'sort-' + (sortDescending ? 'desc' : 'asc');
+//                    var newTitle = 'Sort ' +
+//                        (sortDescending ? 'ascending' : 'descending');
+//                    $('.sort', col.dom)
+//                        .removeClass(oldClass).addClass(newClass)
+//                        .attr('title', newTitle)
+//                        .addClass('active')
+//                        .closest('.blist-th').addClass('sorted');
+//                }
+//            }
         };
 
         var configureFilterHeaders = function()
         {
             $('.filter.active', $header).removeClass('active')
                 .closest('.blist-th').removeClass('filtered');
-            var colFilters = model.meta().columnFilters;
-            if (colFilters != null)
-            {
-                $.each(columns, function (i, c)
-                {
-                    if (colFilters[c.id] != null)
-                    {
-                        $('.filter', c.dom).addClass('active')
-                            .closest('.blist-th').addClass('filtered');
-                    }
-                });
-            }
+            // TODO: fixme
+//            var colFilters = model.meta().columnFilters;
+//            if (colFilters != null)
+//            {
+//                $.each(columns, function (i, c)
+//                {
+//                    if (colFilters[c.id] != null)
+//                    {
+//                        $('.filter', c.dom).addClass('active')
+//                            .closest('.blist-th').addClass('filtered');
+//                    }
+//                });
+//            }
         };
 
         // Obtain a model column associated with a column header DOM node
@@ -158,7 +161,7 @@
 
             // + 2 for "-r" suffix prior to row ID
             var rowID = rowDOM.id.substring(id.length + 2);
-            return model.getByID(parseInt(rowID));
+            return model.getByID(rowID);
         };
 
         // Given a DOM node, retrieve the logical column in which the cell resides
@@ -2716,11 +2719,9 @@
         /**
          * Initialize based on current model metadata.
          */
-        var initMeta = function(newModel)
+        var initMeta = function()
         {
             begin("initMeta");
-
-            if (!$.isBlank(newModel)) { model = newModel; }
 
             clearCellNav();
             endEdit(DEFAULT_EDIT_MODE);
@@ -3436,9 +3437,10 @@
         {
             configureSortHeader();
             configureFilterHeaders();
-            $outside.toggleClass('indicators-inactive',
-                    $.keys(model.meta().sort).length <= 0 &&
-                        $.keys(model.meta().columnFilters).length <= 0);
+            // TODO: fixme
+//            $outside.toggleClass('indicators-inactive',
+//                    $.keys(model.meta().sort).length <= 0 &&
+//                        $.keys(model.meta().columnFilters).length <= 0);
 
             // Readjust locked position since the header height may have changed
             $locked.css('top', $header.outerHeight() - $scrolls[0].scrollTop);
@@ -3765,13 +3767,13 @@
 
             end("renderRows.setup");
 
-            var cleanRow = function(rowID)
+            var cleanRow = function(rowID, rowSet)
             {
-                row = renderedRows[rowID].row;
+                row = rowSet[rowID].row;
                 if (row !== undefined) { row.parentNode.removeChild(row); }
-                row = renderedRows[rowID].locked;
+                row = rowSet[rowID].locked;
                 if (row !== undefined) { row.parentNode.removeChild(row); }
-                delete renderedRows[rowID];
+                delete rowSet[rowID];
             };
 
             begin("renderRows.destroy");
@@ -3779,7 +3781,16 @@
             for (var rowID in renderedRows)
             {
                 if (rowIndices[rowID] < start || rowIndices[rowID] >= stop)
-                { cleanRow(rowID); }
+                { cleanRow(rowID, renderedRows); }
+            }
+
+            // Now check for dirty rows that don't exist anymore
+            var dirtyIds =_.keys(dirtyRows);
+            for (var i = 0; i < dirtyIds.length; i++)
+            {
+                var rowID = dirtyIds[i];
+                if ($.isBlank(model.getByID(rowID)))
+                { cleanRow(rowID, dirtyRows); }
             }
             end("renderRows.destroy");
 
@@ -3792,7 +3803,8 @@
             var rowsLoaded = function(rows)
             {
                 if (!$.isBlank(pendingTop) &&
-                    parseInt($render.css('top')) == prevTop)
+                    Math.round(parseFloat($render.css('top'))) ==
+                        Math.round(prevTop))
                 {
                     // Adjust render divs to the new positions/sizes
                     $render.css('top', renderTop);
@@ -3806,7 +3818,8 @@
 
                 // If it moved while we were loading, then skip
                 if (!$.isBlank(pendingTop) ||
-                    parseInt($render.css('top')) != renderTop)
+                    Math.round(parseFloat($render.css('top'))) !=
+                        Math.round(renderTop))
                 {
                     _.each(rows, function(r) { delete pendingRows[r.index]; });
                     return;
@@ -3855,7 +3868,7 @@
                 end("renderRows.render");
 
                 for (var i = 0; i < badRows.length; i++)
-                { cleanRow(badRows[i]); }
+                { cleanRow(badRows[i], renderedRows); }
 
                 // Now add new/moved rows
                 // appendLockedRows must be called first; it should probably
@@ -4015,8 +4028,9 @@
         // Monitor model events
 
         // Need to listen for view to be set
-        $this.bind('dataset_ready', function(event, model)
+        $this.bind('dataset_ready', function(event, newModel)
         {
+            model = newModel;
             model.view.bind('start_request', function()
                     { $outside.addClass('blist-loading'); })
                 .bind('finish_request', function()
@@ -4025,7 +4039,7 @@
             var isReady = function()
             {
                 dsReady = true;
-                initMeta(model);
+                initMeta();
                 renderHeader();
                 renderFooter();
                 initRows();
@@ -4059,8 +4073,6 @@
             else { isReady(); }
         });
 
-        $this.bind('footer_change', function(event)
-        { updateFooter(); });
         $this.bind('header_change', function(event, model)
         {
             updateHeader(model);

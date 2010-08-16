@@ -25,7 +25,8 @@ this.Dataset = Model.extend({
         this._super();
 
         this.registerEvent(['columns_changed', 'valid', 'query_change',
-            'set_temporary', 'clear_temporary', 'row_change']);
+            'set_temporary', 'clear_temporary', 'row_change',
+            'row_count_change']);
 
         $.extend(this, v);
 
@@ -49,6 +50,7 @@ this.Dataset = Model.extend({
         this.url = this._generateUrl();
 
         this._pendingRowEdits = {};
+        this._pendingRowDeletes = {};
 
         this._rows = {};
         this._rowIDLookup = {};
@@ -107,7 +109,7 @@ this.Dataset = Model.extend({
 
     rowForID: function(id)
     {
-        return this.rowForIndex(this._rowIDLookup[parseInt(id)]);
+        return this._rowIDLookup[parseInt(id) || id];
     },
 
     rowForIndex: function(index)
@@ -446,10 +448,40 @@ this.Dataset = Model.extend({
         }
     },
 
+    // Assume it goes at the end
+    createRow: function(successCallback, errorCallback)
+    {
+        var ds = this;
+
+        var newRow = {invalid: {}, error: {}, changed: {},
+            id: 'saving' + _.uniqueId(), index: ds.totalRows};
+        ds._rows[newRow.index] = newRow;
+        ds._rowIDLookup[newRow.id] = newRow;
+        ds.totalRows++;
+        ds.trigger('row_count_change');
+
+        _.each(ds.realColumns, function(c) { newRow.changed[c._lookup] = true; });
+
+        ds._pendingRowEdits[newRow.id] = [];
+
+        if ($.isBlank(ds._pendingRowCreates))
+        {
+        setTimeout(function(){
+            ds._serverCreateRow(newRow);
+        }, 5000);
+            ds._pendingRowCreates = [];
+        }
+        else
+        { ds._pendingRowCreates.push(newRow); }
+
+        return newRow.id;
+    },
+
     setRowValue: function(value, rowId, columnId, isInvalid)
     {
         var row = this.rowForID(rowId);
-        if ($.isBlank(row)) { throw 'Row ' + rowId + ' not found'; }
+        if ($.isBlank(row))
+        { throw 'Row ' + rowId + ' not found while setting value'; }
 
         var col = this.columnForID(columnId)
         if ($.isBlank(col)) { throw 'Column ' + columnId + ' not found'; }
@@ -471,7 +503,8 @@ this.Dataset = Model.extend({
         var ds = this;
 
         var row = this.rowForID(rowId);
-        if ($.isBlank(row)) { throw 'Row ' + rowId + ' not found'; }
+        if ($.isBlank(row))
+        { throw 'Row ' + rowId + ' not found while saving'; }
 
         // Keep track of which columns need to be saved, and only use those values
         var saving = _.keys(row.changed);
@@ -517,74 +550,8 @@ this.Dataset = Model.extend({
             return;
         }
 
-        var serverSave = function(r, isBatch)
-        {
-            // On save, unmark each item, and fire an event
-            var rowSaved = function(newRow)
-            {
-                _.each(r.columnsSaving, function(cId)
-                    { delete r.row.changed[cId]; });
-                ds.trigger('row_change', [r.row]);
-                if (_.isFunction(r.success)) { r.success(r.row); }
-            };
-
-            // On error, mark as such and notify
-            var rowErrored = function(xhr)
-            {
-                _.each(r.columnsSaving, function(cId)
-                    { r.row.error[cId] = true; });
-                ds.trigger('row_change', [r.row]);
-                if (_.isFunction(r.error)) { r.error(xhr); }
-            };
-
-            // On complete, kick off any pending saves/deletes
-            var rowCompleted = function()
-            {
-                // Are there any pending edits to this row?
-                // If so, save the next one
-                if (ds._pendingRowEdits[r.row.id] &&
-                    ds._pendingRowEdits[r.row.id].length > 0)
-                {
-                    while (ds._pendingRowEdits[r.row.id].length > 0)
-                    {
-                        // Do save
-                        serverSave(ds._pendingRowEdits[r.row.id].shift(), true);
-                    }
-                    ds._sendBatch();
-                }
-                else
-                {
-                    delete ds._pendingRowEdits[r.row.id];
-//                    if (ds._pendingRowDeletes[r.row.id])
-//                    {
-//                        var pd = ds._pendingRowDeletes[r.row.id];
-//                        if (pd === true)
-//                        {
-//                            serverDeleteRow(row.id);
-//                        }
-//                        else
-//                        {
-//                            serverDeleteRow(pd.subRow.uuid,
-//                                pd.parCol.id, pd.parRow.uuid);
-//                        }
-//                        delete ds._pendingRowDeletes[r.row.id];
-//                    }
-                }
-            };
-
-
-            ds._makeRequest({url: '/views/' + ds.id + '/rows/' +
-                r.row.id + '.json', type: 'PUT', data: JSON.stringify(r.rowData),
-                batch: isBatch,
-                success: rowSaved, error: rowErrored, complete: rowCompleted});
-
-            ds._aggregatesStale = true;
-            _.each(r.columnsSaving, function(cId)
-            { ds.columnForID(cId).invalidateData(); });
-        };
-
         ds._pendingRowEdits[row.id] = [];
-        serverSave(reqObj);
+        ds._serverSaveRow(reqObj);
     },
 
     removeRows: function(rowIds, successCallback, errorCallback)
@@ -594,14 +561,24 @@ this.Dataset = Model.extend({
 
         _.each(rowIds, function(rId)
         {
-            var ri = ds._rowIDLookup[rId];
-            if ($.isBlank(ri)) { return; }
+            var r = ds._rowIDLookup[rId];
+            if ($.isBlank(r)) { return; }
 
-            removeItemsFromObject(ds._rows, ri, 1);
+            removeItemsFromObject(ds._rows, r.index, 1);
             delete ds._rowIDLookup[rId];
-            this._makeRequest({batch: true, url: '/views/' + ds.id + '/rows/' +
-                rId + '.json', type: 'DELETE'});
+            ds.totalRows--;
+
+            if (!$.isBlank(ds._pendingRowEdits[rId]))
+            {
+                ds._pendingRowDeletes[rId] = true;
+                return;
+            }
+
+            ds._serverRemoveRow(rId, true);
         });
+        ds.trigger('row_count_change');
+        ds._aggregatesStale = true;
+        _.each(ds.realColumns, function(c) { c.invalidateData(); });
         ds._sendBatch({success: successCallback, error: errorCallback});
     },
 
@@ -1021,6 +998,7 @@ this.Dataset = Model.extend({
 
         var rowsLoaded = function(result)
         {
+            var oldCount = ds.totalRows;
             if (!$.isBlank(result.meta))
             {
                 ds.totalRows = result.meta.totalRows;
@@ -1030,6 +1008,9 @@ this.Dataset = Model.extend({
             if (fullLoad) { ds._clearTemporary(); }
 
             var rows = ds._addRows(result.data.data || result.data, start, cols);
+
+            if (oldCount !== ds.totalRows)
+            { ds.trigger('row_count_change'); }
 
             if (_.isFunction(callback)) { callback(rows); }
         };
@@ -1102,11 +1083,149 @@ this.Dataset = Model.extend({
             var r = translateRow(nr);
             r.index = start + i;
             ds._rows[r.index] = r;
-            ds._rowIDLookup[r.id] = r.index;
+            ds._rowIDLookup[r.id] = r;
             adjRows.push(r);
         });
 
         return adjRows;
+    },
+
+    _serverCreateRow: function(newRow, isBatch)
+    {
+        var ds = this;
+        var rowCreated = function(rr)
+        {
+            var oldID = newRow.id;
+            // Add metadata to new row
+            // FIXME: The server response for this should be changing; we can
+            // run into problems if there is a user column named something like
+            // '_id'
+            _.each(rr, function(v, k)
+                {
+                    if (k.startsWith('_'))
+                    {
+                        var c = ds.columnForID(k.slice(1));
+                        if (!$.isBlank(c)) { newRow[c._lookup] = v; }
+                    }
+                });
+
+            ds._rowIDLookup[newRow.id] = newRow;
+            delete ds._rowIDLookup[oldID];
+
+            ds._pendingRowEdits[newRow.id] = ds._pendingRowEdits[oldID];
+            delete ds._pendingRowEdits[oldID];
+            ds._pendingRowDeletes[newRow.id] = ds._pendingRowDeletes[oldID];
+            delete ds._pendingRowDeletes[oldID];
+
+            _.each(ds.realColumns, function(c)
+            { delete newRow.changed[c._lookup]; });
+
+            ds.trigger('row_change', [{id: oldID}, newRow]);
+            ds._processPending(newRow.id);
+        };
+
+        var rowErrored = function(xhr)
+        {
+            _.each(ds.realColumns, function(c)
+                    { newRow.error[c.id] = true; });
+            ds.trigger('row_change', [newRow]);
+            if (_.isFunction(errorCallback)) { errorCallback(xhr); }
+        };
+
+        // On complete, kick off any pending creates
+        var rowCompleted = function()
+        {
+            if ((ds._pendingRowCreates || []).length > 0)
+            {
+                while (ds._pendingRowCreates.length > 0)
+                { ds._serverCreateRow(ds._pendingRowCreates.shift(), true); }
+                ds._sendBatch();
+            }
+            else
+            {
+                delete ds._pendingRowCreates;
+            }
+        };
+
+        ds._makeRequest({url: '/views/' + ds.id + '/rows.json',
+            type: 'POST', data: JSON.stringify({}), batch: isBatch,
+            success: rowCreated, error: rowErrored, complete: rowCompleted});
+    },
+
+    _serverSaveRow: function(r, isBatch)
+    {
+        var ds = this;
+        // On save, unmark each item, and fire an event
+        var rowSaved = function(newRow)
+        {
+            _.each(r.columnsSaving, function(cId)
+                { delete r.row.changed[cId]; });
+            ds.trigger('row_change', [r.row]);
+            if (_.isFunction(r.success)) { r.success(r.row); }
+        };
+
+        // On error, mark as such and notify
+        var rowErrored = function(xhr)
+        {
+            _.each(r.columnsSaving, function(cId)
+                { r.row.error[cId] = true; });
+            ds.trigger('row_change', [r.row]);
+            if (_.isFunction(r.error)) { r.error(xhr); }
+        };
+
+        // On complete, kick off any pending saves/deletes
+        var rowCompleted = function()
+        {
+            ds._processPending(r.row.id);
+        };
+
+
+        ds._makeRequest({url: '/views/' + ds.id + '/rows/' +
+            r.row.id + '.json', type: 'PUT', data: JSON.stringify(r.rowData),
+            batch: isBatch,
+            success: rowSaved, error: rowErrored, complete: rowCompleted});
+
+        ds._aggregatesStale = true;
+        _.each(r.columnsSaving, function(cId)
+        { ds.columnForID(cId).invalidateData(); });
+    },
+
+    _serverRemoveRow: function(rowId, isBatch)
+    {
+        this._makeRequest({batch: isBatch, url: '/views/' + this.id + '/rows/' +
+                rowId + '.json', type: 'DELETE'});
+    },
+
+    _processPending: function(rowId)
+    {
+        var ds = this;
+        // Are there any pending edits to this row?
+        // If so, save the next one
+        if (ds._pendingRowEdits[rowId] &&
+            ds._pendingRowEdits[rowId].length > 0)
+        {
+            while (ds._pendingRowEdits[rowId].length > 0)
+            {
+                // Do save
+                ds._serverSaveRow(ds._pendingRowEdits[rowId].shift(), true);
+            }
+            ds._sendBatch();
+        }
+        else
+        {
+            delete ds._pendingRowEdits[rowId];
+            if (ds._pendingRowDeletes[rowId])
+            {
+                var pd = ds._pendingRowDeletes[rowId];
+                if (pd === true) { ds._serverRemoveRow(rowId); }
+//                        else
+//                        {
+//                            serverDeleteRow(pd.subRow.uuid,
+//                                pd.parCol.id, pd.parRow.uuid);
+//                        }
+                delete ds._pendingRowDeletes[rowId];
+            }
+        }
     },
 
     _generateUrl: function()
@@ -1259,6 +1378,8 @@ var removeItemsFromObject = function(obj, index, numItems)
     // Move each item down one
     _.each(adjustIndexes, function(i)
     {
+        if (!$.isBlank(obj[i].index))
+        { obj[i].index = i - numItems; }
         obj[i - numItems] = obj[i];
         delete obj[i];
     });

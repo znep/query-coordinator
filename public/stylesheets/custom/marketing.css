@@ -1,3 +1,4 @@
+/* HOME MARQUEE */
 #marqueeContainer
 {
 	background: url(/stylesheets/images/marketing/marqueeBg.png) repeat-x top;
@@ -9,57 +10,23 @@
 	webkit-border-top-left-radius: 0.4em;	
 	color: #FFF;
 	font-size: 1.1em;
-	margin: 0em 0 2.5em 0;
+  margin-top: 1em;
 }
 
-/* MARQUEE */
-.marquee
+#marqueeContainer a.bannerLink
 {
-	background: url(/stylesheets/images/marketing/callOut.jpg) no-repeat;	
-	border-top-left-radius: .4em;
-	height: 306px;	
-	-moz-border-radius-topleft: .4em;
-	webkit-border-top-left-radius: .4em;	
-}
-.marqueeContent
-{
-	display: table;
-	float: right;
-	height: 306px;
-	padding: 0 30px;
-	width: 45%;	
-}
-.marqueeContent div
-{
-	display: table-cell;
-	vertical-align: middle;
-}
-.marqueeContent h2
-{
-	color: #FFF;
-	font-size: 3.1em;
-	letter-spacing: -0.1px;
-	line-height: 1.3em;
-	font-weight:normal;
-}
-.marqueeContent p
-{
-	font-size: 1.5em;
-	line-height: 1.5em;
-}
-
-a.learnButton
-{
-	background: url(/stylesheets/images/marketing/learnButtonSprites.png) no-repeat;		
+	background: url(/stylesheets/images/marketing/promo.jpg) no-repeat center;		
 	display: block;
-	height: 48px;		
-	margin-top: 20px;
-	width: 126px;
-	text-indent:-9999px;	
+	height: 305px;		
+	margin:auto;	
+	text-indent:-9999px;
 }
-a:hover.learnButton
+/* If we need to swithch to a text-based marquee, uncomment below*/
+
+#marqueeContainer .marqueeContent
 {
-	background-position: -128px 0px;
+	text-indent:-9999px;
+	height:0px;
 }
 
 /* FEATURETTE */
@@ -75,71 +42,70 @@ a:hover.learnButton
 	height: 83px;		
 }
 
-.featuredItemWrapper
+.featurette
 {
+	color: #999;
 	display: inline;	
-	float: left;
-	height: 83px;		
-	width: 33.33%;
+	float: left;	
+	height: 83px;	
+	width: 33.33%;	
 }
+
 .divider
 {
 	background: url(/stylesheets/images/marketing/featureBorder.png) no-repeat right;	
 }
-.featuredItem
-{
-	color: #999;
-	display: table;
-	height: 83px;	
-	margin: 0 1.5em 0 1.5em;	
 
-}
-
-.featuredItem a
+.featurette a
 {
+	background: url(/stylesheets/images/marketing/arrowOff.png) no-repeat right center;		
 	color: #BBB;
 	cursor: pointer;	
-	background: url(/stylesheets/images/marketing/arrowOff.png) no-repeat right center;	
-	display: table-cell;
+	display: block;
 	height: 83px;	
-	margin: auto;		
+	margin-right:10px;
 	text-decoration: none;			
-	vertical-align: middle;	
-	width: 33.33%;	
+	vertical-align: middle;
 }
 
-.featuredItem a:hover
+.featurette a:hover
 {
 	color:#FFF;	
 	background-image: url(/stylesheets/images/marketing/arrowOn.png);	
 	text-decoration:none;
 }
-.featuredItem a span
+.featurette a span
 {
-	background: url(/stylesheets/images/marketing/iconSprites.png) no-repeat center;	
-	display: block;
+	background: url(/stylesheets/images/marketing/iconSprites.png) no-repeat;	
 	float: left;
 	height: 45px;	
-	margin-left: 10px;
+	margin: 20px 5px 20px 15px;	
 	width: 45px;		
 }
+.survey a span { background-position: 0px 0px; }
+.survey:hover a span { background-position: -50px 0px; }
+.developer a span { background-position: 0px -50px; }
+.developer:hover a span { background-position: -50px -50px; } 
+.news a span { background-position: 0px -100px; } 
+.news:hover a span { background-position: -50px -100px; }
+.experience a span { background-position: 0px -150px; } 
+.experience:hover a span { background-position: -50px -150px; }
 
-.featuredItem a.survey span { background-position: 0px 0px; }
-.featuredItem:hover a.survey span { background-position: -50px 0px; }
-.featuredItem a.developer span { background-position: 0px -50px; }
-.featuredItem:hover a.developer span { background-position: -50px -50px; } 
-.featuredItem a.news span { background-position: 0px -100px; } 
-.featuredItem:hover a.news span { background-position: -50px -100px; }
+.experience a p
+{
+	position: relative;
+	top: 5px;
+}
 
-.featuredItem a p
+.featurette a p
 {
 	float: left;
 	line-height: 1.4em;
-	margin: 0 1em;
-	width: 190px;
+	margin: 20px 5px;
+	width: 195px;
 }
 
-.featuredItem a p strong
+.featurette a p strong
 {
 	display: block;
 	font-size: 1.4em;	

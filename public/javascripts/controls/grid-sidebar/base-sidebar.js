@@ -641,6 +641,11 @@
                 {
                     showWizard(sidebarObj, sidebarObj.$currentPane()
                         .find('.hasWizard:visible:first'));
+
+                    if ($.device.ipad)
+                    {
+                        var scroller = new iScroll(sidebarObj.$currentPane().find('.scrollContentInner').get(0));
+                    }
                 }
                 else
                 {

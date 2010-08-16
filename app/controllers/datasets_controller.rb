@@ -5,6 +5,10 @@ class DatasetsController < ApplicationController
   layout 'dataset_v2'
 
   def show
+    if is_mobile? && (params[:no_mobile] != 'true')
+      redirect_to :controller => 'widgets', :action => 'show', :id => params[:id]
+    end
+
     @view = get_view(params[:id])
     return if @view.nil?
 
@@ -27,7 +31,8 @@ class DatasetsController < ApplicationController
   def captcha_validate
     @view = get_view(params[:id])
     return if @view.nil?
-    recaptcha_response = RecaptchaVerify.verify(request.remote_ip, params[:recaptcha_challenge_field], params[:recaptcha_response_field])
+    recaptcha_response = RecaptchaVerify.verify(request.remote_ip,
+      params[:recaptcha_challenge_field], params[:recaptcha_response_field])
 
     if recaptcha_response[:answer] == 'true'
       flag_params = {}

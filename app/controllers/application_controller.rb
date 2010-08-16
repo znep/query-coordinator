@@ -97,6 +97,10 @@ protected
     end
   end
 
+  def is_mobile?
+    return request.env['HTTP_USER_AGENT'] && request.env['HTTP_USER_AGENT'][/(iPhone|iPod|Android)/i]
+  end
+
   # We use a custom page_cache_directory based on the theme of the site.
   # The builtin rails page_cache_file function is broken with this type of
   # implementation...

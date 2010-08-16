@@ -163,10 +163,10 @@
             }
         );
 
-        _.defer(function(){
+        setTimeout(function(){
             $summaryDisplay.trigger('resize');
             $detailDisplay.trigger('resize');
-        });
+        }, 200);
 
         // Listen for a custom event to trigger data refresh
         $screen.bind('metricsTimeChanged', function(event, newStart, newInterval, newSlice)

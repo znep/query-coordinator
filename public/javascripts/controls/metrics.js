@@ -248,9 +248,11 @@
             $slicer    = $this.find('.sliceDepth');
 
         // We can't slice on weekly, but it's still a valid interval
-        var sliceOptionForInterval = function(interval)
+        var sliceOptionForInterval = function(interval, start, end)
         {
-            if ('Weekly' == interval)
+            if (start.clone().addDays(opts.maxDaysToSliceHourly) > end)
+            { return $slicer.find('option:first'); }
+            else if ('Weekly' == interval )
             { return $slicer.find('[value="Daily"]'); }
             return $slicer.find('[value="' + interval + '"]').prev();
         }
@@ -281,7 +283,7 @@
                 else
                 { interval = 'Yearly'; }
 
-                $sliceDepth = sliceOptionForInterval(interval);
+                $sliceDepth = sliceOptionForInterval(interval, startDate, endDate);
             }
 
             // Disable slices shallower than the current range,
@@ -378,6 +380,7 @@
 
     $.fn.metricsTimeControl.defaults = {
         displayDateFormat: 'M d, yy',
+        maxDaysToSliceHourly: 4,
         metricsScreen: null,
         minimumDate: Date.parse('2008-01-01'),
         parseDateFormat: 'MMM d, yyyy',

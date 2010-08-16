@@ -1,6 +1,6 @@
 (function($)
 {
-    if ((blist.display.view.signed === false) &&
+    if ((blist.dataset.signed === false) &&
          blist.sidebarHidden.exportSection.signedDataset) { return; }
 
     var config =
@@ -24,7 +24,7 @@
                     {
                         var $link = $sect.find('.signedDatasetLink');
 
-                        if (blist.display.view.owner.id == blist.currentUserId)
+                        if (blist.dataset.owner.id == blist.currentUserId)
                         {
                             // swap out the copy
                             _.defer(function()

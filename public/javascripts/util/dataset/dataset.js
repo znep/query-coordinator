@@ -452,13 +452,22 @@ this.Dataset = Model.extend({
     },
 
     // Assume it goes at the end
-    createRow: function(successCallback, errorCallback)
+    createRow: function(data, successCallback, errorCallback)
     {
         var ds = this;
 
-        var newRow = {invalid: {}, error: {}, changed: {},
-            id: 'saving' + _.uniqueId(), index: ds.totalRows};
-        ds._rows[newRow.index] = newRow;
+        data = data || {};
+        var newRow = {invalid: {}, error: {}, changed: {}};
+        _.each(ds.columns, function(c)
+        {
+            if (!$.isBlank(data[c._lookup]))
+            { newRow[c._lookup] = data[c._lookup]; }
+        });
+        newRow.id = 'saving' + _.uniqueId();
+        delete newRow.uuid;
+        newRow.index = data.index || ds.totalRows;
+
+        addItemsToObject(ds._rows, newRow, newRow.index)
         ds._rowIDLookup[newRow.id] = newRow;
         ds.totalRows++;
         ds.trigger('row_count_change');
@@ -467,15 +476,17 @@ this.Dataset = Model.extend({
 
         ds._pendingRowEdits[newRow.id] = [];
 
+        var reqObj = {row: newRow, rowData: ds._rowData(newRow,
+            _.pluck(_.reject(ds.realColumns, function(c)
+                { return c.dataTypeName == 'nested_table'; }), 'id')),
+            success: successCallback, error: errorCallback};
         if ($.isBlank(ds._pendingRowCreates))
         {
-        setTimeout(function(){
-            ds._serverCreateRow(newRow);
-        }, 5000);
+            ds._serverCreateRow(reqObj);
             ds._pendingRowCreates = [];
         }
         else
-        { ds._pendingRowCreates.push(newRow); }
+        { ds._pendingRowCreates.push(reqObj); }
 
         return newRow.id;
     },
@@ -512,37 +523,7 @@ this.Dataset = Model.extend({
         // Keep track of which columns need to be saved, and only use those values
         var saving = _.keys(row.changed);
 
-        var sendRow = {};
-        _.each(saving, function(cId)
-        {
-            var c = ds.columnForID(cId);
-            sendRow[c._lookup] = row[c._lookup];
-        });
-
-        // Tags has to be sent as a special key
-        if (!$.isBlank(sendRow.tags))
-        {
-            sendRow._tags = sendRow.tags;
-            delete sendRow.tags;
-        }
-
-        // Invalid values need to be saved into metadata
-        _.each(row.invalid, function(isI, cId)
-        {
-            if (isI)
-            {
-                var c = ds.columnForID(cId);
-                sendRow.meta = sendRow.meta || {};
-                sendRow.meta.invalidCells = sendRow.meta.invalidCells || {};
-                sendRow.meta.invalidCells[c.tableColumnId] = sendRow[cId];
-                delete sendRow[cId];
-            }
-        });
-
-        // Metadata is a JSON sring
-        if (!$.isBlank(sendRow.meta))
-        { sendRow.meta = JSON.stringify(sendRow.meta); }
-
+        var sendRow = ds._rowData(row, saving);
 
         var reqObj = {row: row, rowData: sendRow, columnsSaving: saving,
             success: successCallback, error: errorCallback};
@@ -1107,12 +1088,53 @@ this.Dataset = Model.extend({
         return adjRows;
     },
 
-    _serverCreateRow: function(newRow, isBatch)
+    _rowData: function(row, savingIds)
+    {
+        var ds = this;
+        var data = {};
+        _.each(savingIds, function(cId)
+        {
+            var c = ds.columnForID(cId);
+            data[c._lookup] = row[c._lookup];
+        });
+
+        // Tags has to be sent as a special key
+        if (!$.isBlank(data.tags))
+        {
+            data._tags = data.tags;
+            delete data.tags;
+        }
+
+        // Copy over desired metadata columns
+        data.position = row.position;
+        data.meta = row.meta;
+
+        // Invalid values need to be saved into metadata
+        _.each(row.invalid, function(isI, cId)
+        {
+            if (isI)
+            {
+                var c = ds.columnForID(cId);
+                data.meta = data.meta || {};
+                data.meta.invalidCells = data.meta.invalidCells || {};
+                data.meta.invalidCells[c.tableColumnId] = data[cId];
+                delete data[cId];
+            }
+        });
+
+        // Metadata is a JSON sring
+        if (!$.isBlank(data.meta))
+        { data.meta = JSON.stringify(data.meta); }
+
+        return data;
+    },
+
+    _serverCreateRow: function(req, isBatch)
     {
         var ds = this;
         var rowCreated = function(rr)
         {
-            var oldID = newRow.id;
+            var oldID = req.row.id;
             // Add metadata to new row
             // FIXME: The server response for this should be changing; we can
             // run into problems if there is a user column named something like
@@ -1122,31 +1144,33 @@ this.Dataset = Model.extend({
                     if (k.startsWith('_'))
                     {
                         var c = ds.columnForID(k.slice(1));
-                        if (!$.isBlank(c)) { newRow[c._lookup] = v; }
+                        if (!$.isBlank(c)) { req.row[c._lookup] = v; }
                     }
                 });
 
-            ds._rowIDLookup[newRow.id] = newRow;
+            ds._rowIDLookup[req.row.id] = req.row;
             delete ds._rowIDLookup[oldID];
 
-            ds._pendingRowEdits[newRow.id] = ds._pendingRowEdits[oldID];
+            ds._pendingRowEdits[req.row.id] = ds._pendingRowEdits[oldID];
             delete ds._pendingRowEdits[oldID];
-            ds._pendingRowDeletes[newRow.id] = ds._pendingRowDeletes[oldID];
+            ds._pendingRowDeletes[req.row.id] = ds._pendingRowDeletes[oldID];
             delete ds._pendingRowDeletes[oldID];
 
             _.each(ds.realColumns, function(c)
-            { delete newRow.changed[c._lookup]; });
+            { delete req.row.changed[c._lookup]; });
 
-            ds.trigger('row_change', [{id: oldID}, newRow]);
-            ds._processPending(newRow.id);
+            ds.trigger('row_change', [{id: oldID}, req.row]);
+            ds._processPending(req.row.id);
+
+            if (_.isFunction(req.success)) { req.success(req.row); }
         };
 
         var rowErrored = function(xhr)
         {
             _.each(ds.realColumns, function(c)
-                    { newRow.error[c.id] = true; });
-            ds.trigger('row_change', [newRow]);
-            if (_.isFunction(errorCallback)) { errorCallback(xhr); }
+                    { req.row.error[c.id] = true; });
+            ds.trigger('row_change', [req.row]);
+            if (_.isFunction(req.error)) { req.error(xhr); }
         };
 
         // On complete, kick off any pending creates
@@ -1165,7 +1189,7 @@ this.Dataset = Model.extend({
         };
 
         ds._makeRequest({url: '/views/' + ds.id + '/rows.json',
-            type: 'POST', data: JSON.stringify({}), batch: isBatch,
+            type: 'POST', data: JSON.stringify(req.rowData), batch: isBatch,
             success: rowCreated, error: rowErrored, complete: rowCompleted});
     },
 
@@ -1378,6 +1402,33 @@ function cleanViewForSave(ds)
     { delete ds.metadata.facets; }
 
     return ds;
+};
+
+var addItemsToObject = function(obj, values, index)
+{
+    values = $.makeArray(values);
+    var numInserts = values.length;
+    // Get all larger indexes
+    var adjustIndexes = [];
+    _.each(obj, function(r, i)
+        { if (i >= index) { adjustIndexes.push(parseInt(i)); } });
+    // Sort descending so we don't collide while moving
+    adjustIndexes.sort(function(a, b) { return b - a; });
+    // Move each index up one
+    _.each(adjustIndexes, function(i)
+    {
+        if (!$.isBlank(obj[i].index))
+        { obj[i].index = i + numInserts; }
+        obj[i + numInserts] = obj[i];
+        delete obj[i];
+    });
+    // Add all the new values
+    _.each(values, function(v, i)
+    {
+        if (!$.isBlank(v.index))
+        { v.index = index + parseInt(i); }
+        obj[index + parseInt(i)] = v;
+    });
 };
 
 var removeItemsFromObject = function(obj, index, numItems)

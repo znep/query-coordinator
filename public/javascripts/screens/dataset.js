@@ -258,6 +258,9 @@ $(function()
         $('#editOptions .undo').toggleClass('disabled', !model.canUndo());
         $('#editOptions .redo').toggleClass('disabled', !model.canRedo());
     });
+    var model = $dataGrid.blistModel();
+    $('#editOptions .undo').toggleClass('disabled', !model.canUndo());
+    $('#editOptions .redo').toggleClass('disabled', !model.canRedo());
 
 
     // Format toolbar

@@ -491,7 +491,7 @@
         datasetObj.settings.view.setRowValue(newVal, row.id, 'tags');
         datasetObj.settings.view.saveRow(row.id);
 
-        var column = datasetObj.settings.view.columnsForType('tag')[0];
+        var column = datasetObj.settings.view.columnsForType('tag', true)[0];
         if (column.hidden) { datasetObj.showHideTags(false); }
     };
 
@@ -536,7 +536,7 @@
                 }
                 break;
             case 'row-tag':
-                var row = datasetObj.settings.rowForID(
+                var row = datasetObj.settings.view.rowForID(
                     $menu.attr('id').split('_')[1]);
                 $menu.find('li.tags .editContainer input')
                     .val(row.tags ? row.tags.join(', ') : '');

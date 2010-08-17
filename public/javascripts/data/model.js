@@ -134,7 +134,12 @@ blist.namespace.fetch('blist.data');
                     this.view.bind('row_count_change', function()
                             { configureActive(); })
                         .bind('query_change', function()
-                            { configureActive(); });
+                            {
+                                resetUndo();
+                                configureActive();
+                            })
+                        .bind('columns_changed', function()
+                            { resetUndo(); });
                     if (!wasDS)
                     { $(listeners).trigger('dataset_ready', [self]); }
                 }
@@ -357,62 +362,66 @@ blist.namespace.fetch('blist.data');
         {
             delRowIds = $.makeArray(delRowIds);
 
-            if (!skipUndo)
-            { this.addUndoItem({type: 'delete', rows: delRowIds}); }
+            var rows = _.map(delRowIds, function(rId)
+                { return self.getByID(rId); });
 
-            // TODO: Deal with expanded rows, selected rows
+            if (!skipUndo)
+            { this.addUndoItem({type: 'delete', rows: rows}); }
+
+            _.each(rows, function(r) { self.unselectRow(r); });
+
             this.view.removeRows(delRowIds);
 
+            // TODO: Deal with expanded rows
 //            for (var i = 0; i < delRows.length; i++)
 //            {
 //                if (row.expanded) { this.expand(row, false); }
-//                this.unselectRow(row);
         };
 
         // TODO: proxy
         this.removeChildRows = function(fakeRows, parCol, serverDelete, skipUndo)
         {
-            if (!(fakeRows instanceof Array) || fakeRows.id)
-            { fakeRows = [fakeRows]; }
-
-            var removedRows = [];
-            $.each(fakeRows, function(i, fr)
-            {
-                var parRow = fr.parent;
-                var subRow = self.getRowValue(fr, parCol);
-                var subRowSet = self.getRowValue(parRow, parCol);
-                for (var j = 0; j < subRowSet.length; j++)
-                {
-                    if (subRow.id == subRowSet[j].id)
-                    {
-                        subRowSet.splice(j, 1);
-                        subRow.origPosition = j;
-                        removedRows.push({row: subRow, parentRow: parRow});
-                        break;
-                    }
-                }
-                resetChildRows(parRow);
-
-                if (serverDelete)
-                {
-                    //startRowChange();
-                    if (pendingRowEdits[fr.id])
-                    {
-                        pendingRowDeletes[fr.id] = {subRow: subRow,
-                            parRow: parRow, parCol: parCol};
-                    }
-                    else
-                    {
-                        serverDeleteRow(subRow.uuid, parCol.id, parRow.uuid);
-                    }
-                }
-            });
-
-            if (!skipUndo && serverDelete)
-            {
-                this.addUndoItem({type: 'childDelete', rows: removedRows,
-                    parentColumn: parCol});
-            }
+//            if (!(fakeRows instanceof Array) || fakeRows.id)
+//            { fakeRows = [fakeRows]; }
+//
+//            var removedRows = [];
+//            $.each(fakeRows, function(i, fr)
+//            {
+//                var parRow = fr.parent;
+//                var subRow = self.getRowValue(fr, parCol);
+//                var subRowSet = self.getRowValue(parRow, parCol);
+//                for (var j = 0; j < subRowSet.length; j++)
+//                {
+//                    if (subRow.id == subRowSet[j].id)
+//                    {
+//                        subRowSet.splice(j, 1);
+//                        subRow.origPosition = j;
+//                        removedRows.push({row: subRow, parentRow: parRow});
+//                        break;
+//                    }
+//                }
+//                resetChildRows(parRow);
+//
+//                if (serverDelete)
+//                {
+//                    //startRowChange();
+//                    if (pendingRowEdits[fr.id])
+//                    {
+//                        pendingRowDeletes[fr.id] = {subRow: subRow,
+//                            parRow: parRow, parCol: parCol};
+//                    }
+//                    else
+//                    {
+//                        serverDeleteRow(subRow.uuid, parCol.id, parRow.uuid);
+//                    }
+//                }
+//            });
+//
+//            if (!skipUndo && serverDelete)
+//            {
+//                this.addUndoItem({type: 'childDelete', rows: removedRows,
+//                    parentColumn: parCol});
+//            }
 
         };
 
@@ -469,30 +478,32 @@ blist.namespace.fetch('blist.data');
                 delete row.type;
                 row.id = this.view.createRow();
                 isCreate = true;
-//                if (!skipUndo) { this.addUndoItem({type: 'create', rows: [row]}); }
+                var newRow = this.getByID(row.id);
+                if (!skipUndo)
+                { this.addUndoItem({type: 'create', rows: [newRow]}); }
             }
 
-            // Fetch prev value for undo
-//            if (!skipUndo && !isCreate)
-//            {
-//                this.addUndoItem({type: 'edit', column: column,
-//                        row: row, value: prevValue, invalid: prevValueInvalid});
-//            }
+            if (!skipUndo && !isCreate)
+            {
+                // Fetch prev value for undo
+                var prevValue;
+                var prevValueInvalid = false;
+                if (!$.isBlank(column))
+                {
+                    prevValue = this.getRowValue(row, column);
+                    if ($.isBlank(prevValue))
+                    {
+                        prevValue = this.getInvalidValue(row, column);
+                        prevValueInvalid = !$.isBlank(prevValue);
+                    }
+                }
+
+                this.addUndoItem({type: 'edit', column: column,
+                        row: row, value: prevValue, invalid: prevValueInvalid});
+            }
 
             this.view.setRowValue(value, row.id, column.id, !isValid);
             this.view.saveRow(row.id);
-
-//            var prevValue;
-//            var prevValueInvalid = false;
-//            if (column)
-//            {
-//                prevValue = this.getRowValue(row, column);
-//                if (prevValue === null || prevValue === undefined)
-//                {
-//                    prevValue = this.getInvalidValue(row, column);
-//                    prevValueInvalid = prevValue !== null;
-//                }
-//            }
 
             // TODO: nt
 //            if (column && column.nestedIn)
@@ -544,22 +555,12 @@ blist.namespace.fetch('blist.data');
 
         };
 
-        // TODO: Wow this is messy
         var undeleteRow = function(row, parentRow, parentColumn, childCascade)
         {
-//            // First set up the data we're sending, and include the original
-//            //  position
-//            var data = {};
-//            data.position = row.position;
-//
-//            // We need to set up the columns & array to record saving info
-//            //  in, based on whether or not we are a child row
-//            var columns = parentColumn === undefined ?
-//                meta.view.columns : parentColumn.body === undefined ?
-//                    parentColumn.childColumns : parentColumn.body.children;
-//            var fakeRow;
-//            var savingArray;
-//            if (parentRow !== undefined && parentRow.childRows !== undefined)
+            self.view.createRow(row);
+
+            // TODO: nt
+//            if (!$.isBlank((parentRow || {}).childRows))
 //            {
 //                fakeRow = parentRow.childRows[row.origPosition];
 //                if (fakeRow)
@@ -569,17 +570,11 @@ blist.namespace.fetch('blist.data');
 //                    savingArray = fakeRow.saving[parentColumn.dataIndex];
 //                }
 //            }
-//            else { savingArray = row.saving = []; }
-//
+
 //            var undeleteChildren = [];
 //            // Now set up all the data to be saved
-//            $.each(columns, function(i, c)
+//            _.each(columns, function(c)
 //            {
-//                if (c.dataTypeName == 'tag')
-//                {
-//                    data['_tags'] = row[c.dataIndex];
-//                    savingArray[c.dataIndex] = true;
-//                }
 //                else if (c.dataTypeName == 'nested_table')
 //                {
 //                    if (row[c.dataIndex] instanceof Array)
@@ -594,25 +589,8 @@ blist.namespace.fetch('blist.data');
 //                        });
 //                    }
 //                }
-//                else if (c.id > -1)
-//                {
-//                    data[c.id] = row[c.dataIndex];
-//                    savingArray[c.dataIndex] = true;
-//                }
 //            });
-//            if (row.meta) { data.meta = JSON.stringify(row.meta); }
-//
-//            // Set it up like a new row
-//            row.isNew = true;
-//            var oldID = row.id;
-//            row.id = 'saving' + saveUID++;
-//            delete row.uuid;
-//
-//            pendingRowEdits[row.id] = pendingRowEdits[oldID];
-//            delete pendingRowEdits[oldID];
-//            pendingRowDeletes[row.id] = pendingRowDeletes[oldID];
-//            delete pendingRowDeletes[oldID];
-//
+
 //            if (parentRow !== undefined)
 //            {
 //                // If we are a child row, then stick the row back into the
@@ -637,17 +615,8 @@ blist.namespace.fetch('blist.data');
 //            }
 //            else
 //            {
-//                // Stick the row back in and update things
-////                addItemsToObject(rows, [row], row.origPosition);
-//                totalRows++;
-//                //if (active != rows)
-//                //{ addItemsToObject(active, [row], row.origActivePosition); }
-//                configureActive();
-//                $(listeners).trigger('row_add', [ [row] ]);
-//
-//                registerRowSave(row, 'all', data, true);
-//
-//                $.each(undeleteChildren, function(i, cr)
+//                // After restoring main row:
+//                _.each(undeleteChildren, function(cr)
 //                {
 //                    undeleteRow(cr.row, cr.parentRow, cr.parentColumn, true);
 //                });
@@ -665,10 +634,10 @@ blist.namespace.fetch('blist.data');
                 case 'edit':
                     var curValue = self.getRowValue(item.row, item.column);
                     var isInvalid = false;
-                    if (curValue === null || curValue === undefined)
+                    if ($.isBlank(curValue))
                     {
                         curValue = self.getInvalidValue(item.row, item.column);
-                        isInvalid = curValue !== null;
+                        isInvalid = !$.isBlank(curValue);
                     }
                     oppItem = {type: 'edit', value: curValue, invalid: isInvalid,
                         row: item.row, column: item.column};
@@ -676,41 +645,48 @@ blist.namespace.fetch('blist.data');
                     self.saveRowValue(item.value, item.row,
                             item.column, !item.invalid, true);
                     break;
+
                 case 'create':
                     oppItem = {type: 'delete', rows: item.rows};
 
                     self.removeRows(_.pluck(item.rows, 'id'), true);
                     break;
-                case 'childCreate':
-                    oppItem = {type: 'childDelete',
-                        rows: $.map(item.rows, function(r, i)
-                            { return {parentRow: r.parent,
-                                row: fakeRowToChild(r, item.parentColumn)}; }),
-                        parentColumn: item.parentColumn};
 
-                    self.removeChildRows(item.rows, item.parentColumn,
-                        true, true);
-                    break;
+                // TODO: nt
+//                case 'childCreate':
+//                    oppItem = {type: 'childDelete',
+//                        rows: _.map(item.rows, function(r)
+//                            { return {parentRow: r.parent,
+//                                row: fakeRowToChild(r, item.parentColumn)}; }),
+//                        parentColumn: item.parentColumn};
+//
+//                    self.removeChildRows(item.rows, item.parentColumn,
+//                        true, true);
+//                    break;
+
                 case 'delete':
                     oppItem = {type: 'create', rows: item.rows.slice()};
 
                     item.rows.reverse();
-                    $.each(item.rows, function(i, r) { undeleteRow(r); });
+                    _.each(item.rows, function(r) { undeleteRow(r); });
                     break;
-                case 'childDelete':
-                    var reversedRows = item.rows.slice();
-                    reversedRows.reverse();
-                    $.each(reversedRows, function(i, r)
-                        { undeleteRow(r.row, r.parentRow,
-                            item.parentColumn); });
 
-                    oppItem = {type: 'childCreate',
-                        rows: $.map(item.rows, function(r, i)
-                                { return [childRowToFake(r.parentRow,
-                                    r.row.origPosition)]; }),
-                        parentColumn: item.parentColumn};
-                    break;
+                // TODO: nt
+//                case 'childDelete':
+//                    var reversedRows = item.rows.slice();
+//                    reversedRows.reverse();
+//                    $.each(reversedRows, function(i, r)
+//                        { undeleteRow(r.row, r.parentRow,
+//                            item.parentColumn); });
+//
+//                    oppItem = {type: 'childCreate',
+//                        rows: $.map(item.rows, function(r, i)
+//                                { return [childRowToFake(r.parentRow,
+//                                    r.row.origPosition)]; }),
+//                        parentColumn: item.parentColumn};
+//                    break;
             }
+
             return oppItem;
         };
 
@@ -1114,6 +1090,9 @@ blist.namespace.fetch('blist.data');
 
             return toExpand.length > 0;
         };
+
+        // Call intially
+        resetUndo();
     };
 
     $.fn.extend({

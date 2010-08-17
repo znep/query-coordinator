@@ -3934,6 +3934,7 @@
             $lockedRender.empty();
             $render.empty();
             renderedRows = {};
+            dirtyRows = {};
 
             updateLayout();
             end("initRows.layout");

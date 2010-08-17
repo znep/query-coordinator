@@ -50,6 +50,7 @@ $(function()
 {
     // Before we do anything else, clear away the about metadata.
     $('.aboutDataset').appendTo('#templates');
+    $('.aboutLoad').remove();
 
     if (!$.isBlank($.uploadDialog)) { $.uploadDialog.version = 2; }
 

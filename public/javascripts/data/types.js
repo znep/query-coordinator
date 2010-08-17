@@ -624,7 +624,7 @@ blist.namespace.fetch('blist.data.types');
     var renderFilterNumber = function(value, column)
     {
         return renderNumber(value, column.format.precision,
-            column.foramt.precisionStyle);
+            column.format.precisionStyle);
     };
 
     var renderFilterDate = function(value, column)

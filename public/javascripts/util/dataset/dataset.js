@@ -847,6 +847,15 @@ this.Dataset = Model.extend({
         if (!$.isBlank(newDS.columns))
         { ds._updateColumns(newDS.columns, forceFull, updateColOrder); }
 
+        // Update sorts on each column
+        _.each(ds.realColumns, function(c)
+                { delete c.sortAscending; });
+        _.each((ds.query || {}).orderBys || [], function(ob)
+        {
+            var c = ds.columnForID(ob.expression.columnId);
+            if (!$.isBlank(c)) { c.sortAscending = ob.ascending; }
+        });
+
         if (!_.isEqual(oldQuery, ds.query) || oldSearch !== ds.searchString)
         {
             // Clear out the rows, since the data is different now

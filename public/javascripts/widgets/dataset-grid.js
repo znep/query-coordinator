@@ -69,10 +69,10 @@
                 //     enable progressive loading of data, and hook up Ajax info
                 // TODO: which of these events change/go away?
                 $datasetGrid
+                    .bind('column_sort', function(event, c, a)
+                        { columnSorted(datasetObj, c, a); })
                     .bind('col_width_change', function (event, c, f)
                         { columnResized(datasetObj, c, f); })
-                    .bind('sort_change', function (event, skipReq)
-                        { sortChanged(datasetObj, skipReq); })
                     .bind('columns_rearranged', function (event)
                         { columnsRearranged(datasetObj); })
                     .bind('column_filter_change', function (event, c, s)
@@ -849,11 +849,10 @@
             $menu.find('.singleItem').show();
             loadFilterMenu(datasetObj, headerCol, $menu);
 
-            // TODO: probably change this
-//            var curSort = datasetObj.settings._model.meta().sort[headerCol.id];
-//            $menu.find('.sortAsc').toggle(!curSort || !curSort.ascending);
-//            $menu.find('.sortDesc').toggle(!curSort || curSort.ascending);
-//            $menu.find('.sortClear').toggle(curSort !== undefined);
+            $menu.find('.sortAsc').toggle(!headerCol.sortAscending);
+            $menu.find('.sortDesc').toggle($.isBlank(headerCol.sortAscending) ||
+                headerCol.sortAscending);
+            $menu.find('.sortClear').toggle(!$.isBlank(headerCol.sortAscending));
         }
         else
         {
@@ -1060,13 +1059,16 @@
         switch (action)
         {
             case 'column-sort-asc':
-                model.sort(colIdIndex, false);
+                datasetObj.$dom().trigger('column_sort',
+                    [datasetObj.settings.view.columnForID(colIdIndex), true]);
                 break;
             case 'column-sort-desc':
-                model.sort(colIdIndex, true);
+                datasetObj.$dom().trigger('column_sort',
+                    [datasetObj.settings.view.columnForID(colIdIndex), false]);
                 break;
             case 'column-sort-clear':
-                model.clearSort(colIdIndex);
+                datasetObj.$dom().trigger('column_sort',
+                    [datasetObj.settings.view.columnForID(colIdIndex), null]);
                 break;
             case 'filter-column':
                 // Rejoin remainder of parts in case the filter value had _
@@ -1125,17 +1127,29 @@
         }
     };
 
-    // TODO: I'm guessing this goes away?
-    var sortChanged = function(datasetObj, skipRequest)
+    var columnSorted = function(datasetObj, column, ascending)
     {
-//        var view = datasetObj.settings._model.meta().view;
-//        if (!skipRequest && _.include(view.rights, 'update_view') &&
-//            !datasetObj.settings.view.temporary)
-//        {
-//            $.ajax({url: '/views/' + view.id + '.json',
-//                data: JSON.stringify({query: view.query}),
-//                type: 'PUT', contentType: 'application/json'});
-//        }
+        var isTemp = datasetObj.settings.view.temporary;
+        var query = $.extend({}, datasetObj.settings.view.query);
+        if ($.isBlank(ascending))
+        {
+            query.orderBys = _.reject(query.orderBys || [], function(ob)
+                { return ob.expression.columnId == column.id; });
+            if (query.orderBys.length == 0) { delete query.orderBys; }
+        }
+        else
+        {
+            query.orderBys = [{expression: {columnId: column.id, type: 'column'},
+                        ascending: ascending}];
+        }
+
+        datasetObj.settings.view.update({query: query});
+
+        if ((query.orderBys || []).length < 2 &&
+            datasetObj.settings.view.hasRight('update_view') && !isTemp)
+        { datasetObj.settings.view.save(); }
+
+        // TODO: do we really need this?
 //        else
 //        {
 //            var oldSorts = datasetObj.origOrderBys;

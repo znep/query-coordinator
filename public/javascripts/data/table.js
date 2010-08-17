@@ -83,21 +83,17 @@
         };
 
         // Sort data
-        var sort = function(index)
+        var sort = function(col)
         {
             begin("sort.configure");
-            // TODO: fixme
-//            var columnSort = model.meta().sort[columns[index].id];
 
-            var sortDescending = false;
-//            if (columnSort != undefined)
-//            {
-//                sortDescending = columnSort.ascending;
-//            }
+            var sortAscending = true;
+            if (!$.isBlank(col.sortAscending))
+            { sortAscending = !col.sortAscending; }
             end("sort.configure");
 
             begin("sort.sort");
-            model.sort(index, sortDescending);
+            $this.trigger('column_sort', [col, sortAscending]);
             end("sort.sort");
         };
 
@@ -109,25 +105,23 @@
                 .removeClass('active')
                 .closest('.blist-th').removeClass('sorted');
 
-            // TODO: fixme
-//            for (var i=0; i < columns.length; i++)
-//            {
-//                var columnSort = model.meta().sort[columns[i].id];
-//                if (columns[i].dom && columnSort != undefined)
-//                {
-//                    var sortDescending = !columnSort.ascending;
-//                    var col = columns[i];
-//                    var oldClass = 'sort-' + (sortDescending ? 'asc' : 'desc');
-//                    var newClass = 'sort-' + (sortDescending ? 'desc' : 'asc');
-//                    var newTitle = 'Sort ' +
-//                        (sortDescending ? 'ascending' : 'descending');
-//                    $('.sort', col.dom)
-//                        .removeClass(oldClass).addClass(newClass)
-//                        .attr('title', newTitle)
-//                        .addClass('active')
-//                        .closest('.blist-th').addClass('sorted');
-//                }
-//            }
+            for (var i=0; i < columns.length; i++)
+            {
+                var col = columns[i];
+                if (col.dom && !$.isBlank(col.sortAscending))
+                {
+                    var sortDescending = !col.sortAscending;
+                    var oldClass = 'sort-' + (sortDescending ? 'asc' : 'desc');
+                    var newClass = 'sort-' + (sortDescending ? 'desc' : 'asc');
+                    var newTitle = 'Sort ' +
+                        (sortDescending ? 'ascending' : 'descending');
+                    $('.sort', col.dom)
+                        .removeClass(oldClass).addClass(newClass)
+                        .attr('title', newTitle)
+                        .addClass('active')
+                        .closest('.blist-th').addClass('sorted');
+                }
+            }
         };
 
         var configureFilterHeaders = function()
@@ -260,7 +254,7 @@
             for (var i = 0; i < columns.length; i++)
             {
                 var mcol = columns[i];
-                var col = $header.find('.' + id + '-c' + mcol.index);
+                var col = $header.find('.' + id + '-c' + mcol.id);
                 var colClass = getColumnClass(mcol);
                 if (cellNav.isColumnSelected(mcol))
                 {
@@ -3170,7 +3164,7 @@
             if ($target.closest('.filter').length > 0)
             {
                 clearCellNav();
-                model.clearColumnFilter(col.index);
+                model.clearColumnFilter(col);
                 return;
             }
 
@@ -3181,7 +3175,7 @@
                      col.sortable))
             {
                 clearCellNav();
-                sort(col.index);
+                sort(col);
                 return;
             }
 
@@ -3382,7 +3376,7 @@
                                     if (curDropPos == null) { return; }
 
                                     var col = $(this).data('column');
-                                    model.moveColumn(col.index, curDropPos);
+                                    model.moveColumn(col, curDropPos);
                                     curDropPos = null;
                             }});
                     }
@@ -3437,9 +3431,9 @@
         {
             configureSortHeader();
             configureFilterHeaders();
-            // TODO: fixme
-//            $outside.toggleClass('indicators-inactive',
-//                    $.keys(model.meta().sort).length <= 0 &&
+            $outside.toggleClass('indicators-inactive',
+                    ((model.view.query || {}).orderBys || []).length <= 0);
+                    // TODO: fixme
 //                        $.keys(model.meta().columnFilters).length <= 0);
 
             // Readjust locked position since the header height may have changed
@@ -4090,8 +4084,6 @@
         $this.bind('row_add', updateLayout);
         $this.bind('row_remove', updateLayout);
         $this.bind('col_width_change', configureWidths);
-
-        $this.bind('sort_change', updateHeader);
 
         // Install the model
         $this.blistModel(options.model);

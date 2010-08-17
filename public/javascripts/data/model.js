@@ -107,12 +107,6 @@ blist.namespace.fetch('blist.data');
         // Event listeners
         var listeners = [];
 
-        // Sorting configuration
-        var sortConfigured;
-        var orderFn;
-        var orderPrepro;
-        var orderCol;
-
         // TODO: gone?
         // Filtering configuration
         var filterFn;
@@ -122,35 +116,6 @@ blist.namespace.fetch('blist.data');
         // Undo/redo buffer
         var undoBuffer = [];
         var redoBuffer = [];
-
-        // TODO: gone?
-        var findColumnIndex = function(id)
-        {
-            var index;
-            $.each(meta.columns[0], function(i, col)
-            {
-                if (col.id == id)
-                {
-                    index = i;
-                    return false;
-                }
-            });
-            return index;
-        };
-
-        // TODO: gone?
-        var columnType = function(index)
-        {
-            if (meta.columns)
-            {
-                var column = meta.columns[0][index];
-                if (column) {
-                    var type = blist.data.types[column.type];
-                    if (type) { return type; }
-                }
-            }
-            return blist.data.types.text;
-        };
 
         // TODO: gone?
         var dataChange = function()
@@ -352,7 +317,7 @@ blist.namespace.fetch('blist.data');
 //            if (columns[nestDepth + 1]) { addNestFiller(); }
 //        };
 
-        // TODO: blists-screen, stats-screen
+        // TODO: gone?
         /**
          * Get and/or set the metadata for the model.
          */
@@ -821,7 +786,7 @@ blist.namespace.fetch('blist.data');
         };
 
         // TODO: proxy
-        this.moveColumn = function(oldPosOrCol, newPos)
+        this.moveColumn = function(oldPosOrCol, newPos)// now takes column
         {
             // First update widths on view columns, since they may have been
             // updated on the model columns
@@ -885,14 +850,6 @@ blist.namespace.fetch('blist.data');
          */
         this.colWidthChange = function(col, isFinished) {
             $(listeners).trigger('col_width_change', [ col, isFinished ]);
-        };
-
-        /**
-         * Notify listeners of column sort changes
-         */
-        this.columnSortChange = function(skipReq)
-        {
-            $(listeners).trigger('sort_change', [skipReq]);
         };
 
         /**
@@ -1078,167 +1035,6 @@ blist.namespace.fetch('blist.data');
             return changedRows;
         };
 
-        // TODO: proxy
-        // TODO: blists-screen, stats-screen
-        /**
-         * Sort the data by a single column.
-         *
-         * @param order either a column index or a sort function
-         * @param descending true to sort descending if order is a column index
-         */
-        this.sort = function(order, descending, skipRequest)
-        {
-            // Load the types
-            if (typeof order == 'function')
-            {
-                orderFn = order;
-            }
-            else
-            {
-                // Column reference expressions
-                if (typeof order == 'object')
-                {
-                    orderCol = order;
-                }
-                else
-                {
-                    orderCol = meta.columns[0][order];
-                }
-
-                meta.sort = {};
-                meta.sort[orderCol.id] = {column: orderCol, ascending: !descending};
-
-                // Update the view in-memory, so we can always serialize it to
-                //  the server and get the correct sort options
-                if (meta.view.query !== undefined)
-                {
-                    meta.view.query.orderBys = [{
-                        expression: {columnId: orderCol.id, type: 'column'},
-                        ascending: !descending
-                    }];
-                }
-
-                var r1 = "a" + orderCol.dataLookupExpr;
-                var r2 = "b" + orderCol.dataLookupExpr;
-
-                // Swap expressions for descending sort
-                if (descending)
-                {
-                    var temp = r1;
-                    r1 = r2;
-                    r2 = temp;
-                }
-
-                // Compile an ordering function specific to the column positions
-                var sortGen = columnType(order).sortGen;
-                if (sortGen)
-                {
-                    orderFn = sortGen(r1, r2);
-                }
-                else
-                {
-                    orderFn = null;
-                }
-
-                // Record preprocessing function for when we actually perform
-                // the sort
-                orderPrepro = columnType(order).sortPreprocessor;
-                if (orderPrepro && !orderFn)
-                {
-                    if (descending)
-                    {
-                        orderFn = function(a, b) {
-                            return a[0] > b[0] ? -1 : a[0] < b[0] ? 1 : 0;
-                        };
-                    }
-                    else
-                    {
-                        orderFn = function(a, b) {
-                            return a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0;
-                        };
-                    }
-                }
-
-                sortConfigured = true;
-            }
-
-            this.columnSortChange(skipRequest);
-
-            if (skipRequest) { return; }
-
-            // Sort
-            doSort();
-
-            // If there's an active filter, or grouping function, re-apply now
-            // that we're sorted
-            //configureActive(active);
-        };
-
-        // TODO: gone
-        this.clearSort = function(order, skipRequest)
-        {
-            if (typeof order == 'function') { order = null; }
-
-            if (order && typeof order != 'object')
-            {
-                order = meta.columns[0][order];
-            }
-
-            if ($.isPlainObject(order))
-            {
-                delete meta.sort[order.id];
-
-                if (meta.view.query.orderBys !== undefined)
-                {
-                    for (var i = 0; i < meta.view.query.orderBys.length; i++)
-                    {
-                        if (meta.view.query.orderBys[i]
-                            .expression.columnId == order.id)
-                        {
-                            meta.view.query.orderBys.splice(i, 1);
-                            break;
-                        }
-                    }
-
-                    if (meta.view.query.orderBys.length == 1)
-                    {
-                        var newSort = meta.view.query.orderBys[0];
-                        var colIndex =
-                            findColumnIndex(newSort.expression.columnId);
-                        if (colIndex !== undefined)
-                        {
-                            this.sort(colIndex, !newSort.ascending, skipRequest);
-                            return;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                meta.sort = {};
-                delete meta.view.query.orderBys;
-            }
-            sortConfigured = true;
-            orderCol = null;
-            orderFn = null;
-            orderPrepro = null;
-
-            this.columnSortChange(skipRequest);
-
-            if (skipRequest) { return; }
-
-            var hasSort = false;
-            $.each(meta.sort, function() { hasSort = true; return false; });
-            if (hasSort) { doSort(); }
-            // The only way to guarantee a correct ordering of rows (right now)
-            //  when clearing all sorts is to go to the server
-            //else { this.getTempView(); }
-
-            // If there's an active filter, or grouping function, re-apply now
-            // that we're sorted
-            configureActive();
-        };
-
         var getChildRows = function(row)
         {
             if (row.childRows) { return row.childRows; }
@@ -1338,39 +1134,6 @@ blist.namespace.fetch('blist.data');
 
             // Fire events
 //            if (!skipEvent) { this.change([ row ]); }
-        };
-
-        // TODO: gone?
-        // Run sorting based on the current filter configuration.  Does not
-        // fire events
-        var doSort = function()
-        {
-//            if (!sortConfigured) { return; }
-//
-//            removeSpecialRows();
-//
-//            // Apply preprocessing function if necessary.  We then sort a new
-//            // array that contains a [ 'value', originalRecord ] pair for each
-//            // item.  This allows us to avoid complex ordering functions.
-//            var toSort = new Array(activeCount);
-//            _.each(active, function(rec, i)
-//            {
-//                toSort[i] = orderPrepro !== undefined ?
-//                    [orderPrepro(rec[orderCol.dataIndex], orderCol), rec] : rec;
-//            });
-//
-//            // Perform the actual sort
-//            if (orderFn) { toSort.sort(orderFn); }
-//            else { toSort.sort(); }
-//
-//            var activeIsRows = active == rows;
-//            // Update the original object
-//            active = {};
-//            if (activeIsRows) { rows = active; }
-//            for (i = 0; i < toSort.length; i++)
-//            { active[i] = orderPrepro !== undefined ? toSort[i][1] : toSort[i]; }
-//
-//            // Update ID lookup
         };
 
 
@@ -1475,7 +1238,7 @@ blist.namespace.fetch('blist.data');
 
         // TODO: gone
         /* Clear out the filtr for a particular column */
-        this.clearColumnFilter = function(filterCol)
+        this.clearColumnFilter = function(filterCol)// takes col
         {
             // Turn index into obj
             if (typeof filterCol != 'object')

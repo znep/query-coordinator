@@ -231,6 +231,32 @@ html, body
         font-size: 1.1em
         width: 98% /* when IE tries 100%, it calculates it wrong */
 
+  .toolbarAboutBox
+    margin-right: 2em
+    overflow-x: hidden
+    overflow-y: auto
+
+    dl
+      margin-bottom: 0.4em
+
+      dt
+        color: #eee
+        font-size: 1.1em
+        font-weight: bold
+        height: 2em
+        margin-bottom: -2em
+        text-align: right
+        width: 10em
+      dd
+        color: #eee
+        font-size: 1.1em
+        margin-bottom: 0.3em
+        margin-left: 11em
+
+        a
+          border-bottom: 1px dotted #ccc
+          color: #ccc
+
   .close
     @include sprite-button-icons
     display: inline-block
@@ -311,14 +337,6 @@ html, body
 
     .commentTopLevelActions
       margin: 1em 2em 0
-
-      .addCommentButton
-        float: right
-
-      .datasetAverageRating
-        float: left
-        margin: 0.5em
-          top: 1em
 
     .emptyDataText
       font-size: 1.2em

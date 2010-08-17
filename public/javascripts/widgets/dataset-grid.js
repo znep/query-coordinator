@@ -71,14 +71,12 @@
                 $datasetGrid
                     .bind('column_sort', function(event, c, a)
                         { columnSorted(datasetObj, c, a); })
+                    .bind('clear_filter', function(event, c)
+                        { clearColumnFilter(datasetObj, c); })
                     .bind('col_width_change', function (event, c, f)
                         { columnResized(datasetObj, c, f); })
                     .bind('columns_rearranged', function (event)
                         { columnsRearranged(datasetObj); })
-                    .bind('column_filter_change', function (event, c, s)
-                        { columnFilterChanged(datasetObj, c, s); })
-                    .bind('columns_updated', function(event)
-                        { columnsUpdated(datasetObj); })
                     .bind('full_load', function(event)
                         { viewLoaded(datasetObj); })
                     .bind('column_name_dblclick', function(event, origEvent)
@@ -549,11 +547,6 @@
         }
     };
 
-    var columnsUpdated = function(datasetObj)
-    {
-        datasetObj.settings.view.trigger('columns_changed');
-    };
-
     var cellClick = function(datasetObj, event, row, column, origEvent)
     {
         var model = datasetObj.settings._model;
@@ -840,19 +833,19 @@
 
         var selCols = $(datasetObj.currentGrid).blistTableAccessor()
             .getSelectedColumns();
-        var headerCol = $colHeader.data('column');
+        var col = $colHeader.data('column');
         var numSel = 0;
         $.each(selCols, function() { numSel++; });
 
-        if (numSel < 1 || (numSel == 1 && selCols[headerCol.id] !== undefined))
+        if (numSel < 1 || (numSel == 1 && selCols[col.id] !== undefined))
         {
             $menu.find('.singleItem').show();
-            loadFilterMenu(datasetObj, headerCol, $menu);
+            loadFilterMenu(datasetObj, col, $menu);
 
-            $menu.find('.sortAsc').toggle(!headerCol.sortAscending);
-            $menu.find('.sortDesc').toggle($.isBlank(headerCol.sortAscending) ||
-                headerCol.sortAscending);
-            $menu.find('.sortClear').toggle(!$.isBlank(headerCol.sortAscending));
+            $menu.find('.sortAsc').toggle(!col.sortAscending);
+            $menu.find('.sortDesc').toggle($.isBlank(col.sortAscending) ||
+                col.sortAscending);
+            $menu.find('.sortClear').toggle(!$.isBlank(col.sortAscending));
         }
         else
         {
@@ -860,9 +853,8 @@
         }
     };
 
-    var loadFilterMenu = function(datasetObj, headerCol, $menu)
+    var loadFilterMenu = function(datasetObj, col, $menu)
     {
-        var col = datasetObj.settings.view.columnForID(headerCol.id);
         if (!col.renderType.filterable || datasetObj.settings.view.isGrouped())
         { return; }
 
@@ -879,32 +871,24 @@
         _.defer(function()
         {
             col.getSummary(function (sum)
-                { addFilterMenu(datasetObj, headerCol, $menu, sum); });
+                { addFilterMenu(datasetObj, col, $menu, sum); });
         });
     };
 
     /* Add auto-filter sub-menu for a particular column that we get from the JS
      * grid */
-    var addFilterMenu = function(datasetObj, headerCol, $menu, summary)
+    var addFilterMenu = function(datasetObj, col, $menu, summary)
     {
         // If this column doesn't have a dom, we don't support it yet...
-        if (!headerCol.dom) { return; }
+        if (!col.dom) { return; }
 
         // Remove spinner
         $menu.children('.autofilter.loading').remove();
 
-        var col = datasetObj.settings.view.columnForID(headerCol.id);
-
-        // Get the current filter for this column (if it exists)
-        // TODO: Change this...
-        var colFilters;
-        // = datasetObj.settings._model.meta().columnFilters;
-        var cf = (colFilters || {})[headerCol.id] || undefined;
-
         // Remove the old filter menu if necessary
         $menu.children('.autofilter').prev('.separator').andSelf().remove();
 
-        if ($.isBlank(cf) && $.isBlank(summary)) { return; }
+        if ($.isBlank(col.currentFilter) && $.isBlank(summary)) { return; }
 
         var filterStr =
             '<li class="autofilter submenu singleItem">' +
@@ -912,18 +896,18 @@
             '<span class="highlight">Filter This Column</span></a>' +
             '<ul class="menu optionMenu">';
         // If we already have a filter for this column, give them a clear link
-        if (!$.isBlank(cf))
+        if (!$.isBlank(col.currentFilter))
         {
             filterStr +=
                 '<li class="clearFilter">' +
-                '<a href="#clear-filter-column_' + headerCol.uid + '">' +
+                '<a href="#clear-filter-column_' + col.id + '">' +
                 '<span class="highlight">Clear Column Filter</span>' +
                 '</a>' +
                 '</li>';
             if ($.isBlank(summary))
             {
-                summary = {curVal:
-                    { topFrequencies: [{value: cf.value, count: 0}] } };
+                summary = {curVal: { topFrequencies:
+                    [{value: col.currentFilter.value, count: 0}] } };
             }
         }
         // Previous button for scrolling
@@ -967,7 +951,8 @@
                 // to use in the menu
                 _.each(cs.topFrequencies, function (f)
                     {
-                        f.isMatching = !$.isBlank(cf) && cf.value == f.value;
+                        f.isMatching = !$.isBlank(col.currentFilter) &&
+                            col.currentFilter.value == f.value;
                         var curType = col.renderType;
                         f.escapedValue = escape(
                             _.isFunction(curType.filterValue) ?
@@ -975,7 +960,7 @@
                                 $.htmlStrip(f.value + ''));
                         f.renderedValue =
                             _.isFunction(curType.filterRender) ?
-                                curType.filterRender(f.value, headerCol,
+                                curType.filterRender(f.value, col,
                                     cs.subColumnType) :
                                 '';
                         f.titleValue = $.htmlStrip(f.renderedValue + '');
@@ -984,7 +969,7 @@
                 cs.topFrequencies.sort(searchMethod);
 
                 // Add an option for each filter item
-                $.each(cs.topFrequencies, function (i, f)
+                _.each(cs.topFrequencies, function (f)
                     {
                         if (f.renderedValue === '') { return true; }
                         // Add an extra | at the end of the URL in case there
@@ -998,7 +983,7 @@
                                 '<a href="' +
                                 (f.isMatching ? '#clear-filter-column_' :
                                     '#filter-column_') +
-                                headerCol.uid + '_' + cs.subColumnType + ':' +
+                                col.id + '_' + cs.subColumnType + ':' +
                                 f.escapedValue + '|" title="' +
                                 f.titleValue +
                                 (f.count > 1 ? ' (' + f.count + ')' : '') +
@@ -1035,7 +1020,7 @@
             $sortItem.before(filterStr);
         }
         else { $menu.prepend(filterStr); }
-        hookUpHeaderMenu(datasetObj, $(headerCol.dom), $menu);
+        hookUpHeaderMenu(datasetObj, $(col.dom), $menu);
     };
 
 
@@ -1054,8 +1039,6 @@
 
         var action = s[0];
         var colIdIndex = s[1];
-        // TODO: fixme
-        var model = datasetObj.settings._model;
         switch (action)
         {
             case 'column-sort-asc':
@@ -1076,11 +1059,12 @@
                 // pull it off, then rejoin the remainder.  Finally, strip off
                 // the ending | in case there are spaces at the end of the value
                 var p = s.slice(2).join('_').split(':');
-                model.filterColumn(colIdIndex,
+                datasetObj.settings.view.columnForID(colIdIndex).filter(
                     unescape(p.slice(1).join(':').slice(0, -1)), p[0]);
                 break;
             case 'clear-filter-column':
-                model.clearColumnFilter(colIdIndex);
+                datasetObj.$dom().trigger('clear_filter',
+                    [datasetObj.settings.view.columnForID(colIdIndex)]);
                 break;
             case 'hide-column':
                 var selHideCols = $(datasetObj.currentGrid).blistTableAccessor()
@@ -1105,8 +1089,6 @@
                 datasetObj.settings.editColumnCallback(colIdIndex, s[2]);
                 break;
         }
-        // Update the grid header to reflect updated sorting, filtering
-        $(datasetObj.currentGrid).trigger('header_change', [model]);
     };
 
 
@@ -1175,6 +1157,12 @@
 //        }
     };
 
+    var clearColumnFilter = function(datasetObj, col)
+    {
+        col.clearFilter();
+        if ($(col.dom).isSocrataTip()) { $(col.dom).socrataTip().hide(); }
+    };
+
     // TODO: move to Dataset, or refactor
     var columnsRearranged = function(datasetObj)
     {
@@ -1197,11 +1185,6 @@
 //                        }
 //                    });
 //        }
-    };
-
-    var columnFilterChanged = function(datasetObj, col, setFilter)
-    {
-        if ($(col.dom).isSocrataTip()) { $(col.dom).socrataTip().hide(); }
     };
 
     // TODO; linked to sortChanged

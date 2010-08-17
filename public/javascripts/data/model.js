@@ -107,12 +107,6 @@ blist.namespace.fetch('blist.data');
         // Event listeners
         var listeners = [];
 
-        // TODO: gone?
-        // Filtering configuration
-        var filterFn;
-        var filterText = "";
-        var filterTimer;
-
         // Undo/redo buffer
         var undoBuffer = [];
         var redoBuffer = [];
@@ -852,14 +846,6 @@ blist.namespace.fetch('blist.data');
             $(listeners).trigger('col_width_change', [ col, isFinished ]);
         };
 
-        /**
-         * Notify listeners of column filter changes
-         */
-        this.columnFilterChange = function(col, setFilter)
-        {
-            $(listeners).trigger('column_filter_change', [ col, setFilter ]);
-        };
-
         this.undoRedoChange = function()
         {
             $(listeners).trigger('undo_redo_change');
@@ -1137,130 +1123,6 @@ blist.namespace.fetch('blist.data');
         };
 
 
-        /* Clear out the filter for a particular column.  Takes a column obj
-         *  or a column index.
-         * This clears both the short version stored on the meta obj, and
-         * updates the meta.view.query.filterCondition that is sent to the
-         * server. */
-        var clearColumnFilterData = function(filterCol)
-        {
-            // Turn index into obj
-            if (typeof filterCol != 'object')
-            {
-                filterCol = meta.columns[0][filterCol];
-            }
-
-            if (meta.columnFilters != null)
-            {
-                var cf = meta.columnFilters[filterCol.id];
-                // First check if this is the only viewFilter; if so, clear it
-                if (meta.view.query.filterCondition == cf.viewFilter)
-                {
-                    meta.view.query.filterCondition = null;
-                }
-                else
-                {
-                    // Else it is a child of the top-level filter; splice it out
-                    meta.view.query.filterCondition.children.splice(
-                            $.inArray(cf.viewFilter,
-                                meta.view.query.filterCondition.children), 1);
-                    // If the top-level filter is empty, get rid of it
-                    if (meta.view.query.filterCondition.children.length < 1)
-                    {
-                        meta.view.query.filterCondition = null;
-                    }
-                }
-                meta.columnFilters[filterCol.id] = null;
-            }
-        };
-
-        // TODO: gone
-        /* Filter a single column (column obj or index) on a value.
-         *  These filters are additive (all ANDed at the top level).
-         *  Currently it only supports one filter per column.
-         */
-        this.filterColumn = function(filterCol, filterVal, subColumnType)
-        {
-            // Turn index into obj
-            if (typeof filterCol != 'object')
-            {
-                filterCol = meta.columns[0][filterCol];
-            }
-
-            if (meta.columnFilters == null)
-            {
-                meta.columnFilters = {};
-            }
-
-            // If there is already a filter for this column, clear it out
-            if (meta.columnFilters[filterCol.id])
-            {
-                clearColumnFilterData(filterCol);
-            }
-
-            // Update the view in-memory, so we can always serialize it to
-            //  the server and get the correct filter
-            var filterItem = { type: 'operator', value: 'EQUALS', children: [
-                { type: 'column', columnId: filterCol.id, value: subColumnType },
-                { type: 'literal', value: filterVal } ] };
-            if (meta.view.query.filterCondition == null)
-            {
-                // Make it the top-level filter
-                meta.view.query.filterCondition = filterItem;
-            }
-            else if (meta.view.query.filterCondition.type == 'operator' &&
-                meta.view.query.filterCondition.value == 'AND')
-            {
-                // Add it to the top-level filter
-                if (!meta.view.query.filterCondition.children)
-                {
-                    meta.view.query.filterCondition.children = [];
-                }
-                meta.view.query.filterCondition.children.push(filterItem);
-            }
-            else
-            {
-                // Else push the top-level filter down one level, and
-                //  add this to the new top-level filter
-                var topF = { type: 'operator', value: 'AND', children: [
-                    meta.view.query.filterCondition, filterItem
-                ] };
-                meta.view.query.filterCondition = topF;
-            }
-
-            // Store the filter in an easier format to deal with elsewhere;
-            //  also keep a pointer back to the viewFilter
-            meta.columnFilters[filterCol.id] =
-                {column: filterCol, value: filterVal, viewFilter: filterItem};
-
-            this.columnFilterChange(filterCol, true);
-        };
-
-        // TODO: gone
-        /* Clear out the filtr for a particular column */
-        this.clearColumnFilter = function(filterCol)// takes col
-        {
-            // Turn index into obj
-            if (typeof filterCol != 'object')
-            {
-                filterCol = meta.columns[0][filterCol];
-            }
-
-            if (meta.columnFilters == null)
-            {
-                meta.columnFilters = {};
-            }
-
-            if (meta.columnFilters[filterCol.id])
-            {
-                clearColumnFilterData(filterCol);
-            }
-
-            this.columnFilterChange(filterCol, false);
-
-            //this.getTempView();
-        };
-
         // Apply filtering, grouping, and sub-row expansion to the active set.
         // This applies current settings to the active set and then notifies
         // listeners of the data change.
@@ -1304,25 +1166,6 @@ blist.namespace.fetch('blist.data');
             specialLookup = {};
             specialCount = 0;
             return removed;
-        };
-
-        // TODO: gone?
-        // Run filtering based on current filter configuration
-        var doFilter = function(toFilter)
-        {
-            // Remove the filter timer, if any
-            if (filterTimer)
-            {
-                window.clearTimeout(filterTimer);
-                filterTimer = null;
-            }
-
-            // Perform the actual filter
-//            var filteredArray = _.sortBy($.objSelect(toFilter || rows, filterFn),
-//                function(v, k) { return k; });
-//            active = {};
-//            _.each(filteredArray, function(r, i) { active[i] = r; });
-            $(listeners).trigger('client_filter');
         };
 
         // Expand rows that the user has opened

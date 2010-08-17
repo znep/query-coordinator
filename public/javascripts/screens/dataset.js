@@ -67,8 +67,6 @@ $(function()
         if (blist.dataset.isGrid())
         {
             $dataGrid
-                .bind('columns_updated', function()
-                    { datasetPageNS.sidebar.refresh(); })
                 .datasetGrid({view: blist.dataset,
                     columnDeleteEnabled: blist.dataset.type == 'blist' &&
                         blist.dataset.hasRight('remove_column'),

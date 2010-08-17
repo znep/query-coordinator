@@ -157,6 +157,57 @@ this.Column = Model.extend({
         this._setUpColumn();
     },
 
+    filter: function(value, subColumnType)
+    {
+        var col = this;
+        var query = $.extend({}, col.view.query);
+
+        // If there is already a filter for this column, clear it out
+        col._clearFilterData(query);
+
+        // Update the parent view with the new filter
+        var filterItem = { type: 'operator', value: 'EQUALS', children: [
+            { type: 'column', columnId: col.id, value: subColumnType },
+                { type: 'literal', value: value } ] };
+
+        if ($.isBlank(query.filterCondition))
+        {
+            // Make it the top-level filter
+            query.filterCondition = filterItem;
+        }
+        else if (query.filterCondition.type == 'operator' &&
+                query.filterCondition.value == 'AND')
+        {
+            // Add it to the top-level filter
+            if (!query.filterCondition.children)
+            { query.filterCondition.children = []; }
+            query.filterCondition.children.push(filterItem);
+        }
+        else
+        {
+            // Else push the top-level filter down one level, and
+            //  add this to the new top-level filter
+            var topF = { type: 'operator', value: 'AND', children: [
+                col.view.query.filterCondition, filterItem
+                    ] };
+            query.filterCondition = topF;
+        }
+
+        // Store the filter in an easier format to deal with elsewhere;
+        //  also keep a pointer back to the viewFilter
+        col.currentFilter = {value: value, viewFilter: filterItem};
+
+        col.view.update({query: query});
+    },
+
+    clearFilter: function()
+    {
+        var col = this;
+        var query = $.extend({}, col.view.query);
+        col._clearFilterData(query);
+        col.view.update({query: query});
+    },
+
     remove: function(successCallback, errorCallback, isBatch)
     {
         var col = this;
@@ -262,6 +313,29 @@ this.Column = Model.extend({
             .value();
 
         this.view.trigger('columns_changed');
+    },
+
+    _clearFilterData: function(query)
+    {
+        var col = this;
+        if ($.isBlank(col.currentFilter)) { return; }
+
+        // First check if this is the only viewFilter; if so, clear it
+        if (query.filterCondition == col.currentFilter.viewFilter)
+        { query.filterCondition = null; }
+
+        else
+        {
+            // Else it is a child of the top-level filter; splice it out
+            query.filterCondition.children =
+                _.without(query.filterCondition.children,
+                        col.currentFilter.viewFilter);
+            // If the top-level filter is empty, get rid of it
+            if (query.filterCondition.children.length < 1)
+            { query.filterCondition = null; }
+        }
+
+        delete col.currentFilter;
     },
 
     _validKeys: {

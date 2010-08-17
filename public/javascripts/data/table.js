@@ -128,19 +128,14 @@
         {
             $('.filter.active', $header).removeClass('active')
                 .closest('.blist-th').removeClass('filtered');
-            // TODO: fixme
-//            var colFilters = model.meta().columnFilters;
-//            if (colFilters != null)
-//            {
-//                $.each(columns, function (i, c)
-//                {
-//                    if (colFilters[c.id] != null)
-//                    {
-//                        $('.filter', c.dom).addClass('active')
-//                            .closest('.blist-th').addClass('filtered');
-//                    }
-//                });
-//            }
+            _.each(columns, function (c)
+            {
+                if (!$.isBlank(c.currentFilter))
+                {
+                    $('.filter', c.dom).addClass('active')
+                        .closest('.blist-th').addClass('filtered');
+                }
+            });
         };
 
         // Obtain a model column associated with a column header DOM node
@@ -3156,7 +3151,7 @@
             if (isDisabled) { return; }
 
             var col = $target.closest('.blist-th').data('column');
-            if (col === undefined || col === null) { return; }
+            if ($.isBlank(col)) { return; }
 
             $(event.currentTarget).removeClass('hover')
                 .data('column-clicked', false);
@@ -3164,7 +3159,7 @@
             if ($target.closest('.filter').length > 0)
             {
                 clearCellNav();
-                model.clearColumnFilter(col);
+                $this.trigger('clear_filter', [col]);
                 return;
             }
 
@@ -3432,9 +3427,9 @@
             configureSortHeader();
             configureFilterHeaders();
             $outside.toggleClass('indicators-inactive',
-                    ((model.view.query || {}).orderBys || []).length <= 0);
-                    // TODO: fixme
-//                        $.keys(model.meta().columnFilters).length <= 0);
+                    ((model.view.query || {}).orderBys || []).length <= 0 &&
+                    _.all(columns, function(c)
+                        { return $.isBlank(c.currentFilter); }));
 
             // Readjust locked position since the header height may have changed
             $locked.css('top', $header.outerHeight() - $scrolls[0].scrollTop);
@@ -4067,10 +4062,6 @@
             else { isReady(); }
         });
 
-        $this.bind('header_change', function(event, model)
-        {
-            updateHeader(model);
-        });
         $this.bind('load', function(event) {
             begin("load");
             initRows();

@@ -771,14 +771,6 @@ blist.namespace.fetch('blist.data');
             $(listeners).trigger('selection_change', [ rows ]);
         };
 
-        /**
-         * Notify the model of column width changes.  This function allows clients to perform optimized rendering vs.
-         * completely replacing all metadata.
-         */
-        this.colWidthChange = function(col, isFinished) {
-            $(listeners).trigger('col_width_change', [ col, isFinished ]);
-        };
-
         this.undoRedoChange = function()
         {
             $(listeners).trigger('undo_redo_change');

@@ -73,7 +73,7 @@
                         { columnSorted(datasetObj, c, a); })
                     .bind('clear_filter', function(event, c)
                         { clearColumnFilter(datasetObj, c); })
-                    .bind('col_width_change', function (event, c, f)
+                    .bind('column_resized', function (event, c, f)
                         { columnResized(datasetObj, c, f); })
                     .bind('column_moved', function (event, c, p)
                         { columnMove(datasetObj, c, p); })
@@ -1092,20 +1092,12 @@
     };
 
 
-    // TODO: move to Dataset? or just partially
     var columnResized = function(datasetObj, col, isFinished)
     {
         if (isFinished)
         {
-//            var view = datasetObj.settings._model.meta().view;
-//            $.each(view.columns, function(i, c)
-//                { if (c.id == col.id) { c.width = col.width; return false; } });
-//            if (_.include(view.rights, 'update_view'))
-//            {
-//                $.ajax({url: '/views/' + view.id + '/columns/' + col.id + '.json',
-//                    data: JSON.stringify({width: col.width}),
-//                    type: 'PUT', contentType: 'application/json'});
-//            }
+            if (!datasetObj.settings.view.temporary)
+            { datasetObj.settings.view.save(); }
         }
     };
 

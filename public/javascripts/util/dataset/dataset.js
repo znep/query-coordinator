@@ -26,7 +26,7 @@ this.Dataset = Model.extend({
 
         this.registerEvent(['columns_changed', 'valid', 'query_change',
             'set_temporary', 'clear_temporary', 'row_change',
-            'row_count_change']);
+            'row_count_change', 'column_resized']);
 
         $.extend(this, v);
 

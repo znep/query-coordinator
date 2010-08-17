@@ -1328,9 +1328,9 @@
                     varMinWidth[0] -= col.minWidth;
                 }
             }
-            col.width = width;
-            adjustHeaderStyling($(columns[col.indexInLevel].dom), true);
-            model.colWidthChange(col, isFinished);
+            col.update({width: width});
+            adjustHeaderStyling($(col.dom), true);
+            $this.trigger('column_resized', [col, isFinished]);
             updateColumnSelection();
         };
 
@@ -4050,7 +4050,8 @@
                             renderHeader();
                             renderFooter();
                             initRows();
-                        });
+                        })
+                    .bind('column_resized', configureWidths);
             };
 
             // Need to get first batch of rows so that the total count is
@@ -4075,7 +4076,6 @@
         });
         $this.bind('row_add', updateLayout);
         $this.bind('row_remove', updateLayout);
-        $this.bind('col_width_change', configureWidths);
 
         // Install the model
         $this.blistModel(options.model);

@@ -143,6 +143,8 @@ this.Column = Model.extend({
 
         newCol.id = col.id;
 
+        var oldWidth = col.width;
+
         if (forceFull)
         {
             // If we are updating the entire column, then clean out all the
@@ -161,6 +163,8 @@ this.Column = Model.extend({
         if (!$.isBlank(newCol.dropDown)) { col.dropDown = newCol.dropDown; }
 
         this._setUpColumn();
+
+        if (oldWidth !== col.width) { col.view.trigger('column_resized', [col]); }
     },
 
     filter: function(value, subColumnType)

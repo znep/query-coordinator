@@ -167,8 +167,9 @@ this.Column = Model.extend({
 
         // Update the parent view with the new filter
         var filterItem = { type: 'operator', value: 'EQUALS', children: [
-            { type: 'column', columnId: col.id, value: subColumnType },
-                { type: 'literal', value: value } ] };
+            { type: 'column', columnId: col.id,
+                value: subColumnType.toUpperCase() },
+            { type: 'literal', value: value } ] };
 
         if ($.isBlank(query.filterCondition))
         {
@@ -260,6 +261,7 @@ this.Column = Model.extend({
 
     _setUpColumn: function()
     {
+        var col = this;
         this.format = this.format || {};
         if (!$.isBlank(this.dropDown))
         { this.dropDownList = this.dropDown; }
@@ -283,6 +285,12 @@ this.Column = Model.extend({
         this.width = Math.max(this.minWidth, this.width || 100);
 
         this.aggregates = {};
+
+        if (!$.isBlank(this.currentFilter) &&
+                !_.any(((this.view.query || {}).filterCondition || {})
+                    .children || [], function(fc)
+                    { return _.isEqual(fc, col.currentFilter.viewFilter); }))
+        { delete this.currentFilter; }
     },
 
     _updateChildren: function(newChildren)
@@ -328,8 +336,8 @@ this.Column = Model.extend({
         {
             // Else it is a child of the top-level filter; splice it out
             query.filterCondition.children =
-                _.without(query.filterCondition.children,
-                        col.currentFilter.viewFilter);
+                _.reject(query.filterCondition.children, function(fc)
+                        { return _.isEqual(fc, col.currentFilter.viewFilter); });
             // If the top-level filter is empty, get rid of it
             if (query.filterCondition.children.length < 1)
             { query.filterCondition = null; }

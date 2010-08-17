@@ -85,7 +85,7 @@ blist.namespace.fetch('blist.data');
     /**
      * This class provides functionality for managing a table of data.
      */
-    blist.data.Model = function(meta)
+    blist.data.Model = function()
     {
         var self = this;
 
@@ -310,22 +310,6 @@ blist.namespace.fetch('blist.data');
 //            // depth if applicable
 //            if (columns[nestDepth + 1]) { addNestFiller(); }
 //        };
-
-        // TODO: gone?
-        /**
-         * Get and/or set the metadata for the model.
-         */
-        this.meta = function(newMeta)
-        {
-            if (newMeta)
-            {
-                // Columns may be different, so our undo/redo is no longer valid
-                resetUndo();
-
-                meta = newMeta;
-            }
-            return meta;
-        };
 
         var addItemsToObject = function(obj, values, index)
         {
@@ -563,111 +547,111 @@ blist.namespace.fetch('blist.data');
         // TODO: Wow this is messy
         var undeleteRow = function(row, parentRow, parentColumn, childCascade)
         {
-            // First set up the data we're sending, and include the original
-            //  position
-            var data = {};
-            data.position = row.position;
-
-            // We need to set up the columns & array to record saving info
-            //  in, based on whether or not we are a child row
-            var columns = parentColumn === undefined ?
-                meta.view.columns : parentColumn.body === undefined ?
-                    parentColumn.childColumns : parentColumn.body.children;
-            var fakeRow;
-            var savingArray;
-            if (parentRow !== undefined && parentRow.childRows !== undefined)
-            {
-                fakeRow = parentRow.childRows[row.origPosition];
-                if (fakeRow)
-                {
-                    if (!fakeRow.saving) { fakeRow.saving = []; }
-                    fakeRow.saving[parentColumn.dataIndex] = [];
-                    savingArray = fakeRow.saving[parentColumn.dataIndex];
-                }
-            }
-            else { savingArray = row.saving = []; }
-
-            var undeleteChildren = [];
-            // Now set up all the data to be saved
-            $.each(columns, function(i, c)
-            {
-                if (c.dataTypeName == 'tag')
-                {
-                    data['_tags'] = row[c.dataIndex];
-                    savingArray[c.dataIndex] = true;
-                }
-                else if (c.dataTypeName == 'nested_table')
-                {
-                    if (row[c.dataIndex] instanceof Array)
-                    {
-                        // keep track of nested rows so we can re-post them along
-                        // with the parent row
-                        $.each(row[c.dataIndex], function(j, cr)
-                        {
-                            cr.origPosition = j;
-                            undeleteChildren.push({parentRow: row, row: cr,
-                                parentColumn: meta.allColumns[c.id]});
-                        });
-                    }
-                }
-                else if (c.id > -1)
-                {
-                    data[c.id] = row[c.dataIndex];
-                    savingArray[c.dataIndex] = true;
-                }
-            });
-            if (row.meta) { data.meta = JSON.stringify(row.meta); }
-
-            // Set it up like a new row
-            row.isNew = true;
-            var oldID = row.id;
-            row.id = 'saving' + saveUID++;
-            delete row.uuid;
-
-            pendingRowEdits[row.id] = pendingRowEdits[oldID];
-            delete pendingRowEdits[oldID];
-            pendingRowDeletes[row.id] = pendingRowDeletes[oldID];
-            delete pendingRowDeletes[oldID];
-
-            if (parentRow !== undefined)
-            {
-                // If we are a child row, then stick the row back into the
-                //  parent, and update rows
-                if (!childCascade)
-                {
-                    var subRowSet = self.getRowValue(parentRow, parentColumn);
-                    subRowSet.splice(row.origPosition, 0, row);
-                }
-                resetChildRows(parentRow);
-
-                if (parentRow.childRows !== undefined)
-                {
-                    fakeRow = parentRow.childRows[row.origPosition];
-                    // Copy over the saving info for the UI
-                    fakeRow.saving[parentColumn.dataIndex] = savingArray;
-//                    self.change([fakeRow]);
-                }
-
-                registerRowSave(fakeRow, 'all', data, true, row, parentRow,
-                    parentColumn);
-            }
-            else
-            {
-                // Stick the row back in and update things
-//                addItemsToObject(rows, [row], row.origPosition);
-                totalRows++;
-                //if (active != rows)
-                //{ addItemsToObject(active, [row], row.origActivePosition); }
-                configureActive();
-                $(listeners).trigger('row_add', [ [row] ]);
-
-                registerRowSave(row, 'all', data, true);
-
-                $.each(undeleteChildren, function(i, cr)
-                {
-                    undeleteRow(cr.row, cr.parentRow, cr.parentColumn, true);
-                });
-            }
+//            // First set up the data we're sending, and include the original
+//            //  position
+//            var data = {};
+//            data.position = row.position;
+//
+//            // We need to set up the columns & array to record saving info
+//            //  in, based on whether or not we are a child row
+//            var columns = parentColumn === undefined ?
+//                meta.view.columns : parentColumn.body === undefined ?
+//                    parentColumn.childColumns : parentColumn.body.children;
+//            var fakeRow;
+//            var savingArray;
+//            if (parentRow !== undefined && parentRow.childRows !== undefined)
+//            {
+//                fakeRow = parentRow.childRows[row.origPosition];
+//                if (fakeRow)
+//                {
+//                    if (!fakeRow.saving) { fakeRow.saving = []; }
+//                    fakeRow.saving[parentColumn.dataIndex] = [];
+//                    savingArray = fakeRow.saving[parentColumn.dataIndex];
+//                }
+//            }
+//            else { savingArray = row.saving = []; }
+//
+//            var undeleteChildren = [];
+//            // Now set up all the data to be saved
+//            $.each(columns, function(i, c)
+//            {
+//                if (c.dataTypeName == 'tag')
+//                {
+//                    data['_tags'] = row[c.dataIndex];
+//                    savingArray[c.dataIndex] = true;
+//                }
+//                else if (c.dataTypeName == 'nested_table')
+//                {
+//                    if (row[c.dataIndex] instanceof Array)
+//                    {
+//                        // keep track of nested rows so we can re-post them along
+//                        // with the parent row
+//                        $.each(row[c.dataIndex], function(j, cr)
+//                        {
+//                            cr.origPosition = j;
+//                            undeleteChildren.push({parentRow: row, row: cr,
+//                                parentColumn: meta.allColumns[c.id]});
+//                        });
+//                    }
+//                }
+//                else if (c.id > -1)
+//                {
+//                    data[c.id] = row[c.dataIndex];
+//                    savingArray[c.dataIndex] = true;
+//                }
+//            });
+//            if (row.meta) { data.meta = JSON.stringify(row.meta); }
+//
+//            // Set it up like a new row
+//            row.isNew = true;
+//            var oldID = row.id;
+//            row.id = 'saving' + saveUID++;
+//            delete row.uuid;
+//
+//            pendingRowEdits[row.id] = pendingRowEdits[oldID];
+//            delete pendingRowEdits[oldID];
+//            pendingRowDeletes[row.id] = pendingRowDeletes[oldID];
+//            delete pendingRowDeletes[oldID];
+//
+//            if (parentRow !== undefined)
+//            {
+//                // If we are a child row, then stick the row back into the
+//                //  parent, and update rows
+//                if (!childCascade)
+//                {
+//                    var subRowSet = self.getRowValue(parentRow, parentColumn);
+//                    subRowSet.splice(row.origPosition, 0, row);
+//                }
+//                resetChildRows(parentRow);
+//
+//                if (parentRow.childRows !== undefined)
+//                {
+//                    fakeRow = parentRow.childRows[row.origPosition];
+//                    // Copy over the saving info for the UI
+//                    fakeRow.saving[parentColumn.dataIndex] = savingArray;
+////                    self.change([fakeRow]);
+//                }
+//
+//                registerRowSave(fakeRow, 'all', data, true, row, parentRow,
+//                    parentColumn);
+//            }
+//            else
+//            {
+//                // Stick the row back in and update things
+////                addItemsToObject(rows, [row], row.origPosition);
+//                totalRows++;
+//                //if (active != rows)
+//                //{ addItemsToObject(active, [row], row.origActivePosition); }
+//                configureActive();
+//                $(listeners).trigger('row_add', [ [row] ]);
+//
+//                registerRowSave(row, 'all', data, true);
+//
+//                $.each(undeleteChildren, function(i, cr)
+//                {
+//                    undeleteRow(cr.row, cr.parentRow, cr.parentColumn, true);
+//                });
+//            }
         };
 
         var doUndoRedo = function(buffer)
@@ -784,50 +768,50 @@ blist.namespace.fetch('blist.data');
         {
             // First update widths on view columns, since they may have been
             // updated on the model columns
-            $.each(meta.columns, function(i, colList)
-            {
-                $.each(colList, function(j, c)
-                {
-                    if (c.dataIndex)
-                    {
-                        meta.view.columns[c.dataIndex].width = c.width;
-                    }
-                });
-            });
-
-            var column = null;
-            var oldPos = -1;
-            if (typeof oldPosOrCol == 'object')
-            {
-                column = oldPosOrCol;
-                if (column.flags !== undefined &&
-                    _.include(column.flags, 'hidden'))
-                { column.flags = _.without(column.flags, 'hidden'); }
-            }
-            else
-            { oldPos = oldPosOrCol; }
-
-            // Filter view columns down to just the visible, and sort them
-            var viewCols = $.grep(meta.view.columns, function(c)
-                { return c.dataTypeName != 'meta_data' &&
-                    (!c.flags || $.inArray('hidden', c.flags) < 0); });
-            viewCols.sort(function(col1, col2)
-                { return col1.position - col2.position; });
-
-            if (column !== null)
-            { oldPos = _.indexOf(viewCols, column); }
-
-            // Stick the column in the new spot, then remove it from the old
-            viewCols.splice(newPos, 0, viewCols[oldPos]);
-            viewCols.splice((newPos < oldPos ? oldPos + 1 : oldPos), 1);
-
-            // Update the adjusted positions
-            $.each(viewCols, function(i, c) { c.position = i + 1; });
-
-            // Null out the meta columns, and then force a reset
-            meta.columns = null;
-            this.meta(meta);
-            $(listeners).trigger('columns_rearranged', [ this ]);
+//            $.each(meta.columns, function(i, colList)
+//            {
+//                $.each(colList, function(j, c)
+//                {
+//                    if (c.dataIndex)
+//                    {
+//                        meta.view.columns[c.dataIndex].width = c.width;
+//                    }
+//                });
+//            });
+//
+//            var column = null;
+//            var oldPos = -1;
+//            if (typeof oldPosOrCol == 'object')
+//            {
+//                column = oldPosOrCol;
+//                if (column.flags !== undefined &&
+//                    _.include(column.flags, 'hidden'))
+//                { column.flags = _.without(column.flags, 'hidden'); }
+//            }
+//            else
+//            { oldPos = oldPosOrCol; }
+//
+//            // Filter view columns down to just the visible, and sort them
+//            var viewCols = $.grep(meta.view.columns, function(c)
+//                { return c.dataTypeName != 'meta_data' &&
+//                    (!c.flags || $.inArray('hidden', c.flags) < 0); });
+//            viewCols.sort(function(col1, col2)
+//                { return col1.position - col2.position; });
+//
+//            if (column !== null)
+//            { oldPos = _.indexOf(viewCols, column); }
+//
+//            // Stick the column in the new spot, then remove it from the old
+//            viewCols.splice(newPos, 0, viewCols[oldPos]);
+//            viewCols.splice((newPos < oldPos ? oldPos + 1 : oldPos), 1);
+//
+//            // Update the adjusted positions
+//            $.each(viewCols, function(i, c) { c.position = i + 1; });
+//
+//            // Null out the meta columns, and then force a reset
+//            meta.columns = null;
+//            this.meta(meta);
+//            $(listeners).trigger('columns_rearranged', [ this ]);
         };
 
         /**
@@ -903,9 +887,9 @@ blist.namespace.fetch('blist.data');
         /**
          * Retrieve the columns for a level.
          */
-        this.level = function(id) {
-            return meta.columns[id];
-        };
+//        this.level = function(id) {
+//            return meta.columns[id];
+//        };
 
         /**
          * Scan to find the next or previous row in the same level.
@@ -1023,52 +1007,52 @@ blist.namespace.fetch('blist.data');
 
         var getChildRows = function(row)
         {
-            if (row.childRows) { return row.childRows; }
-
-            var cols = meta.columns[row.level || 0];
-            var childRows = row.childRows = [];
-            var childLevel = (row.level || 0) + 1;
-
-            for (var i = 0; i < cols.length; i++)
-            {
-                var col = cols[i];
-                if (!col.body) { continue; }
-
-                var cell = row[col.dataIndex];
-                if (!cell && !self.useBlankRows()) { continue; }
-                if (!cell) { cell = []; }
-
-                var numCells = (cell.length || 0) + (self.useBlankRows() ? 1 : 0);
-                for (var j = 0; j < numCells; j++) {
-                    var childRow = childRows[j];
-                    if (!childRow)
-                    {
-                        childRow = childRows[j] = [];
-                        childRow.id = "t" + nextTempID++;
-                        childRow.level = childLevel;
-                        childRow.parent = row;
-                    }
-
-                    // Set up saving & error arrays so we don't need to do
-                    // two level checks in the row renderer
-                    if (!childRow.saving) { childRow.saving = []; }
-                    childRow.saving[col.dataIndex] = [];
-                    if (!childRow.error) { childRow.error = []; }
-                    childRow.error[col.dataIndex] = [];
-                    childRow[col.dataIndex] = cell[j];
-                    if (!childRow[col.dataIndex])
-                    {
-                        childRow[col.dataIndex] = [];
-                        childRow[col.dataIndex].type = 'blank';
-                    }
-//                    setRowMetadata([childRow[col.dataIndex]], col.metaChildren,
-//                        col.dataMungeChildren);
-                }
-            }
-
-            if (childRows.length)
-            { childRows[childRows.length - 1].groupLast = true; }
-            return childRows;
+//            if (row.childRows) { return row.childRows; }
+//
+//            var cols = meta.columns[row.level || 0];
+//            var childRows = row.childRows = [];
+//            var childLevel = (row.level || 0) + 1;
+//
+//            for (var i = 0; i < cols.length; i++)
+//            {
+//                var col = cols[i];
+//                if (!col.body) { continue; }
+//
+//                var cell = row[col.dataIndex];
+//                if (!cell && !self.useBlankRows()) { continue; }
+//                if (!cell) { cell = []; }
+//
+//                var numCells = (cell.length || 0) + (self.useBlankRows() ? 1 : 0);
+//                for (var j = 0; j < numCells; j++) {
+//                    var childRow = childRows[j];
+//                    if (!childRow)
+//                    {
+//                        childRow = childRows[j] = [];
+//                        childRow.id = "t" + nextTempID++;
+//                        childRow.level = childLevel;
+//                        childRow.parent = row;
+//                    }
+//
+//                    // Set up saving & error arrays so we don't need to do
+//                    // two level checks in the row renderer
+//                    if (!childRow.saving) { childRow.saving = []; }
+//                    childRow.saving[col.dataIndex] = [];
+//                    if (!childRow.error) { childRow.error = []; }
+//                    childRow.error[col.dataIndex] = [];
+//                    childRow[col.dataIndex] = cell[j];
+//                    if (!childRow[col.dataIndex])
+//                    {
+//                        childRow[col.dataIndex] = [];
+//                        childRow[col.dataIndex].type = 'blank';
+//                    }
+////                    setRowMetadata([childRow[col.dataIndex]], col.metaChildren,
+////                        col.dataMungeChildren);
+//                }
+//            }
+//
+//            if (childRows.length)
+//            { childRows[childRows.length - 1].groupLast = true; }
+//            return childRows;
         };
 
         /**
@@ -1189,10 +1173,6 @@ blist.namespace.fetch('blist.data');
 
             return toExpand.length > 0;
         };
-
-        // Install initial metadata
-        if (meta) { this.meta(meta); }
-        else { this.meta({}); }
     };
 
     $.fn.extend({

@@ -860,6 +860,10 @@ this.Dataset = Model.extend({
         {
             // Clear out the rows, since the data is different now
             ds._invalidateRows();
+            if (oldSearch !== ds.searchString ||
+                !_.isEqual(oldQuery.filterCondition, ds.query.filterCondition) ||
+                !_.isEqual(oldQuery.groupBys, ds.query.groupBys))
+            { ds._rowCountInvalid = true; }
             ds.trigger('query_change');
         }
     },
@@ -1002,7 +1006,7 @@ this.Dataset = Model.extend({
         // of the columns so we know what order our data will come back in.
         // This is in case columns get changed while we're busy requesting data
         var cols;
-        if (includeMeta) { params.meta = true; }
+        if (includeMeta || ds._rowCountInvalid) { params.meta = true; }
         else { cols = ds.columns.slice(); }
 
         var rowsLoaded = function(result)
@@ -1011,6 +1015,7 @@ this.Dataset = Model.extend({
             if (!$.isBlank(result.meta))
             {
                 ds.totalRows = result.meta.totalRows;
+                delete ds._rowCountInvalid;
                 ds._update(result.meta.view, true, true);
             }
 

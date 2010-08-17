@@ -1159,8 +1159,8 @@
 
     var clearColumnFilter = function(datasetObj, col)
     {
-        col.clearFilter();
         if ($(col.dom).isSocrataTip()) { $(col.dom).socrataTip().hide(); }
+        col.clearFilter();
     };
 
     // TODO: move to Dataset, or refactor

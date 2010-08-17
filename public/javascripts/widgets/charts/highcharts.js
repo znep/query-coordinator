@@ -387,8 +387,11 @@
 
 
         // Set up config for this particular chart type
-        var typeConfig = {allowPointSelect: true,
-            marker: {enabled: chartObj._displayConfig.pointSize != '0'} };
+        var typeConfig = {allowPointSelect: true};
+
+        // Disable marker if no point size set
+        if (chartObj._displayConfig.pointSize == '0')
+        { typeConfig.marker = {enabled: false}; }
 
         // If we already loaded and are just re-rendering, don't animate
         if (chartObj._loadedOnce) { typeConfig.animation = false; }

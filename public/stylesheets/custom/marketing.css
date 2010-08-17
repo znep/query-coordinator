@@ -10,12 +10,12 @@
 	webkit-border-top-left-radius: 0.4em;	
 	color: #FFF;
 	font-size: 1.1em;
-  margin-top: 1em;
+	margin-top: 1em;
 }
 
 #marqueeContainer a.bannerLink
 {
-	background: url(/stylesheets/images/marketing/promo.jpg) no-repeat center;		
+	background: url(/stylesheets/images/marketing/promo.jpg) no-repeat center bottom;		
 	display: block;
 	height: 305px;		
 	margin:auto;	

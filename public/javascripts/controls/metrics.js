@@ -163,11 +163,6 @@
             }
         );
 
-        _.defer(function(){
-            $summaryDisplay.trigger('resize');
-            $detailDisplay.trigger('resize');
-        });
-
         // Listen for a custom event to trigger data refresh
         $screen.bind('metricsTimeChanged', function(event, newStart, newInterval, newSlice)
         {
@@ -232,6 +227,12 @@
                 });
             });
         }
+
+        setTimeout(function(){
+            $summaryDisplay.trigger('resize');
+            $detailDisplay.trigger('resize');
+        }, 500);
+
         return this;
     };
 
@@ -247,9 +248,11 @@
             $slicer    = $this.find('.sliceDepth');
 
         // We can't slice on weekly, but it's still a valid interval
-        var sliceOptionForInterval = function(interval)
+        var sliceOptionForInterval = function(interval, start, end)
         {
-            if ('Weekly' == interval)
+            if (start.clone().addDays(opts.maxDaysToSliceHourly) > end)
+            { return $slicer.find('option:first'); }
+            else if ('Weekly' == interval )
             { return $slicer.find('[value="Daily"]'); }
             return $slicer.find('[value="' + interval + '"]').prev();
         }
@@ -280,7 +283,7 @@
                 else
                 { interval = 'Yearly'; }
 
-                $sliceDepth = sliceOptionForInterval(interval);
+                $sliceDepth = sliceOptionForInterval(interval, startDate, endDate);
             }
 
             // Disable slices shallower than the current range,
@@ -327,7 +330,7 @@
     $.fn.metricsScreen.defaults = {
         chartSections: [],
         chartDefaults: {
-            callback: metricsNS.updateChartCallback,
+            callback: metricsNS.updateChartCallback
         },
         chartDirective: {
             '.chartContainer' : {
@@ -377,6 +380,7 @@
 
     $.fn.metricsTimeControl.defaults = {
         displayDateFormat: 'M d, yy',
+        maxDaysToSliceHourly: 4,
         metricsScreen: null,
         minimumDate: Date.parse('2008-01-01'),
         parseDateFormat: 'MMM d, yyyy',

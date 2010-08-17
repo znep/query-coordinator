@@ -31,7 +31,8 @@ blist.widget.showToolbar = function(sectionName)
     var sectionClassLookup = {
         search: 'toolbarSearchForm',
         email: 'toolbarEmailForm',
-        closePane: 'toolbarClosePaneBox'
+        closePane: 'toolbarClosePaneBox',
+        about: 'toolbarAboutBox'
     };
     var sectionClass = sectionClassLookup[sectionName];
 
@@ -43,8 +44,27 @@ blist.widget.showToolbar = function(sectionName)
     if (sectionName == 'search')
     { widgetNS.searchToolbarShown = true; }
 
+    var maxAboutBoxHeight = $('.widgetContent').innerHeight() * 0.5;
+    $('.toolbarAboutBox').css('max-height', maxAboutBoxHeight);
+
     if (!$toolbar.is(':visible'))
     {
+        // need to adjust height to fit about text
+        if (sectionName == 'about')
+        {
+            $toolbar
+                .show()
+                .children().show();
+            $toolbar
+                .height(Math.min($toolbar.find('.toolbarAboutBox').outerHeight(true),
+                    maxAboutBoxHeight))
+                .hide();
+        }
+        else
+        {
+            $toolbar.height(20);
+        }
+
         $toolbar.show('slide',
             { direction: ((widgetNS.orientation == 'downwards') ? 'up' : 'down') },
             500, widgetNS.resizeViewport);
@@ -54,6 +74,26 @@ blist.widget.showToolbar = function(sectionName)
     }
     else if (toolbarChanged)
     {
+        // need to go back to the grid if we select something dangerous
+        if (sectionName != 'closePane')
+        {
+            widgetNS.closePane();
+        }
+
+        // need to adjust height to fit about text
+        if (sectionName == 'about')
+        {
+            var $aboutBox = $toolbar.find('.toolbarAboutBox');
+
+            $aboutBox.show();
+            $toolbar.animate({ height: Math.min($aboutBox.outerHeight(true), maxAboutBoxHeight) },
+                500, widgetNS.resizeViewport);
+            $aboutBox.hide();
+        }
+        else
+        {
+            $toolbar.animate({ height: 20 }, 500, widgetNS.resizeViewport);
+        }
         $toolbar
             .children(':not(.close):visible').fadeOut('fast', function()
             {
@@ -263,6 +303,17 @@ $(function()
 
         widgetNS.hideToolbar();
     });
+    $('.subHeaderBar .about a').click(function(event)
+    {
+        if ($toolbar.hasClass('about') && $toolbar.is(':visible'))
+        {
+            widgetNS.hideToolbar();
+        }
+        else
+        {
+            widgetNS.showToolbar('about');
+        }
+    });
     $('.subHeaderBar .search a')
         .click(function(event)
         {
@@ -273,7 +324,6 @@ $(function()
             }
             else
             {
-                widgetNS.closePane();
                 widgetNS.showToolbar('search');
             }
         });
@@ -369,6 +419,18 @@ $(function()
           $emailTextbox
             .attr('disabled', true)
             .animate({ 'background-color': '#cdc9b7' });
+    });
+
+    $('.toolbarAboutBox .datasetAverageRating').stars({
+        onChange: function()
+        {
+            $('.actionInterstitial').jqmShow()
+                .find('.actionPhrase').text('rate this dataset');
+            return false;
+        },
+        starMargin: 1,
+        starWidth: 10,
+        value: widgetNS.view.averageRating || 0
     });
 
     // grid
@@ -472,16 +534,6 @@ $(function()
     $.templates.downloadsTable.postRender($('.widgetContent_downloads'));
 
     // comments
-
-    $('.widgetContent_comments .datasetAverageRating').stars({
-        onChange: function()
-        {
-            $('.actionInterstitial').jqmShow()
-                .find('.actionPhrase').text('rate this dataset');
-            return false;
-        },
-        value: widgetNS.view.averageRating || 0
-    });
 
     // TODO: maybe refactor these into one?
     var repliesDirective = {

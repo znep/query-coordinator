@@ -17,4 +17,52 @@
   <div class="toolbarClosePaneBox">
     <div class="toolbarClosePaneName"></div>
   </div>
+  <% cache ['widget-about-box', @view.id], :expires_in => 1.hour do %>
+    <div class="toolbarAboutBox">
+      <dl>
+        <dt>Author</dt>
+        <dd><a href="<%= @view.owner.href %>"><%= @view.owner.displayName %></a></dd>
+        <dt>Description</dt>
+        <dd><%= @view.description || '(none)' %></dd>
+        <%- if @view.category -%>
+          <dt>Category</dt>
+          <dd><%= @view.category %></dd>
+        <%- end -%>
+        <%- if @view.tags -%>
+          <dt>Tags</dt>
+          <dd><%= @view.tag_display_string %></dd>
+        <%- end -%>
+        <dt>Rating</dt>
+        <dd><div class="starsControl smallStars datasetAverageRating" data-rating="<%= @view.averageRating %>">
+          <%= @view.averageRating %>
+        </div></dd>
+        <%- if @view.property_or_default(['attribution']) -%>
+          <dt>Data Provided By</dt>
+          <dd><%= @view.property_or_default(['attribution']) %></dd>
+        <%- end -%>
+        <%- if @view.property_or_default(['attributionLink']) -%>
+          <dt>Source Link</dt>
+          <dd><%= link_to_url(h(@view.property_or_default(['attributionLink'])), :rel => 'nofollow external') %></dd>
+        <%- end -%>
+        <%- if @view.property_or_default(['license']) -%>
+          <dt>License</dt>
+          <dd>
+            <%- if @view.property_or_default(['license']).nil? -%>
+              (none)
+            <%- elsif @view.property_or_default(['license', 'logoUrl']).blank? -%>
+              <%= @view.property_or_default(['license', 'name']) %>
+            <%- else -%>
+              <a href="<%= @view.property_or_default(['license', 'termsLink']) %>" rel="nofollow external">
+                <img src="/<%= @view.property_or_default(['license', 'logoUrl']) %>" alt="<%= @view.property_or_default(['license', 'name']) %>" />
+              </a>
+            <%- end -%>
+          </dd>
+        <%- end -%>
+        <%- if @view.property_or_default(['termsAndConditions']) -%>
+          <dt>Terms of Use</dt>
+          <dd><span class="wrap"><%= @view.property_or_default(['termsAndConditions']) %></span></dd>
+        <%- end -%>
+      </dl>
+    </div>
+  <% end %>
 </div>

@@ -12,7 +12,7 @@
 
             $this.attr('title', opts.value + ' stars');
             $this.empty().append($inner);
-            updateInner($inner, value);
+            updateInner($inner, value, opts);
 
             if (opts.enabled === true)
             {
@@ -22,12 +22,12 @@
                 $this.mousemove(function(event)
                 {
                     var actualX = event.pageX - $this.offset().left;
-                    temporaryValue = Math.ceil(actualX / 19); // star is 19px wide with margin
-                    updateInner($inner, temporaryValue);
+                    temporaryValue = Math.ceil(actualX / (opts.starWidth + opts.starMargin));
+                    updateInner($inner, temporaryValue, opts);
                 });
                 $this.mouseleave(function(event)
                 {
-                    updateInner($inner, value);
+                    updateInner($inner, value, opts);
                 });
                 $this.click(function(event)
                 {
@@ -41,15 +41,16 @@
         });
     };
 
-    var updateInner = function($inner, value)
+    var updateInner = function($inner, value, opts)
     {
-        // the star is 17 pixels wide, + 2 pixels of right margin
-        $inner.width((value * 17) + (Math.floor(value) * 2));
+        $inner.width((value * (opts.starWidth)) + (Math.floor(value) * (opts.starMargin)));
     };
 
     $.fn.stars.defaults = {
         enabled: true,
         onChange: function(value) {},
+        starMargin: 2,
+        starWidth: 17,
         value: 2.5
     };
 })(jQuery);

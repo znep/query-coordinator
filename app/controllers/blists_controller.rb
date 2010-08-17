@@ -134,7 +134,7 @@ class BlistsController < ApplicationController
       @data, @viewable_columns, @aggregates, @row_count = @view.find_data(@per_page, @page, @conditions)
     end
 
-    @view.register_opening
+    @view.register_opening(request.referrer)
     @view_activities = Activity.find({:viewId => @view.id})
   end
   

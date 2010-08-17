@@ -243,6 +243,12 @@ ActionController::Routing::Routes.draw do |map|
       :category => /(\w|-)+/},
     :conditions => {:method => :get, :has_v4_dataset => true}
 
+  map.connect ':category/:view_name/:id/edit_metadata', :controller => 'datasets',
+    :action => 'edit_metadata',
+    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
+      :category => /(\w|-)+/},
+    :conditions => {:method => [:get, :post], :has_v4_dataset => true}
+
   # New short URLs
   map.connect 'dataset/:id', :controller => 'datasets',
     :action => 'show',

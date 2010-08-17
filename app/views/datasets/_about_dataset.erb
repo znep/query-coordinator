@@ -8,7 +8,7 @@
   </div>
 
   <%- if @view.can_edit? -%>
-    <%= link_to 'Edit Metadata', { :action => 'edit_metadata' }, :class => 'fullButton editMetadataButton' %>
+    <a href="<%= @view.href %>/edit_metadata" class="fullButton editMetadataButton">Edit Metadata</a>
   <%- end -%>
 
   <div class="formSection">

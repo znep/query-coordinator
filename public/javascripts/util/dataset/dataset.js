@@ -79,32 +79,35 @@ this.Dataset = Model.extend({
         return cols;
     },
 
-    setVisibleColumns: function(visColIds, callback)
+    setVisibleColumns: function(visColIds, callback, skipRequest)
     {
         var ds = this;
 
-        if (!ds.hasRight('update_view'))
-        { throw 'No permissions to update columns'; }
-
         var vizCols = [];
-        _.each(visColIds, function(colId)
+        _.each(visColIds, function(colId, i)
         {
             var col = ds.columnForID(colId);
             if (!$.isBlank(col))
             {
                 col.show(null, null, true);
-                vizCols.push({id: col.id, name: col.name});
+                col.update({position: i + 1});
+                vizCols.push(col.cleanCopy());
             }
         });
 
-        this._makeRequest({url: '/views/' + ds.id + '.json', type: 'PUT',
-            data: JSON.stringify({columns: vizCols}), batch: true});
+        ds.update({columns: vizCols});
 
-        ds._sendBatch(function()
+        if (ds.hasRight('update_view') && !skipRequest)
         {
-            ds.reload();
-            if (_.isFunction(callback)) { callback(); }
-        });
+            this._makeRequest({url: '/views/' + ds.id + '.json', type: 'PUT',
+                data: JSON.stringify({columns: vizCols}), batch: true});
+
+            ds._sendBatch(function()
+            {
+                ds.reload();
+                if (_.isFunction(callback)) { callback(); }
+            });
+        }
     },
 
     rowForID: function(id)

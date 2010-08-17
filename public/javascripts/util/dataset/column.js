@@ -125,9 +125,15 @@ this.Column = Model.extend({
             if (!isBatch) { col.view.trigger('columns_changed'); }
         };
 
-        this._makeRequest({url: '/views/' + this.view.id + '/columns/' + this.id +
-            '.json', type: 'PUT', data: JSON.stringify({hidden: !isVisible}),
-            batch: isBatch, success: columnShown, error: errorCallback});
+        if (col.view.hasRight('update_right'))
+        {
+            this._makeRequest({url: '/views/' + this.view.id + '/columns/' +
+                this.id + '.json', type: 'PUT',
+                data: JSON.stringify({hidden: !isVisible}),
+                batch: isBatch, success: columnShown, error: errorCallback});
+        }
+        else { columnShown(); }
+
         return true;
     },
 

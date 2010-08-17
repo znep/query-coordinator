@@ -3371,11 +3371,12 @@
                                     if (curDropPos == null) { return; }
 
                                     var col = $(this).data('column');
-                                    model.moveColumn(col, curDropPos);
+                                    $this.trigger('column_moved',
+                                        [col, curDropPos]);
                                     curDropPos = null;
                             }});
                     }
-                    
+
                     if (options.headerMods != null)
                     {
                         options.headerMods(columns[index]);

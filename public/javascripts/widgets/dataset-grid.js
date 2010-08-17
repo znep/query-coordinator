@@ -75,8 +75,8 @@
                         { clearColumnFilter(datasetObj, c); })
                     .bind('col_width_change', function (event, c, f)
                         { columnResized(datasetObj, c, f); })
-                    .bind('columns_rearranged', function (event)
-                        { columnsRearranged(datasetObj); })
+                    .bind('column_moved', function (event, c, p)
+                        { columnMove(datasetObj, c, p); })
                     .bind('full_load', function(event)
                         { viewLoaded(datasetObj); })
                     .bind('column_name_dblclick', function(event, origEvent)
@@ -170,7 +170,7 @@
                             function ()
                             {
                                 if (!hide && c.position > 1)
-                                { model.moveColumn(c, 0); }
+                                { columnMove(datasetObj, c, 0); }
                             });
                     });
             },
@@ -531,7 +531,7 @@
                 }
                 else
                 {
-                    model.selectRow(model.getByID(rowId));
+                    model.selectRow(datasetObj.settings.view.rowForID(rowId));
                     model.removeRows(_.keys(model.selectedRows));
                 }
                 break;
@@ -1163,28 +1163,16 @@
         col.clearFilter();
     };
 
-    // TODO: move to Dataset, or refactor
-    var columnsRearranged = function(datasetObj)
+    var columnMove = function(datasetObj, col, newPos)
     {
-//        var view = datasetObj.settings._model.meta().view;
-//        if (_.include(view.rights, 'update_view') &&
-//            !datasetObj.settings.view.temporary)
-//        {
-//            var modView = datasetObj.settings.view.cleanCopy();
-//            $.ajax({url: '/views/' + view.id + '.json',
-//                    data: JSON.stringify({columns: modView.columns}),
-//                    type: 'PUT', contentType: 'application/json',
-//                    success: function()
-//                        {
-//                            datasetObj.settings.view.trigger('columns_changed');
-//                            // If we change the column order on the server,
-//                            // data will come back in a different order;
-//                            // so reload the view with the proper order of
-//                            // columns & row data
-//                            datasetObj.settings.view.reload();
-//                        }
-//                    });
-//        }
+        var visColIds = _.pluck(datasetObj.settings.view.visibleColumns, 'id');
+        var oldPos = _.indexOf(visColIds, col.id);
+        // Stick the column in the new spot, then remove it from the old
+        visColIds.splice(newPos, 0, col.id);
+        visColIds.splice((newPos < oldPos ? oldPos + 1 : oldPos), 1);
+
+        datasetObj.settings.view.setVisibleColumns(visColIds, null,
+            datasetObj.settings.view.temporary);
     };
 
     // TODO; linked to sortChanged

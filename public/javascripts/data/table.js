@@ -4065,18 +4065,16 @@
             else { isReady(); }
         });
 
-        $this.bind('load', function(event) {
-            begin("load");
+        $this.bind('rows_changed', function(event) {
+            begin("updateRows");
             initRows();
-            end("load");
+            end("updateRows");
         });
         $this.bind('selection_change', function(event, rows) {
             begin("selectionChange");
             updateRowSelection(rows);
             end("selectionChange");
         });
-        $this.bind('row_add', updateLayout);
-        $this.bind('row_remove', updateLayout);
 
         // Install the model
         $this.blistModel(options.model);

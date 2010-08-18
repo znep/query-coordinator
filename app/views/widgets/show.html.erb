@@ -169,13 +169,6 @@
 
     blist.widget.theme = <%= raw @theme.to_json %>;
     blist.widget.customizationId = '<%= params[:customization_id] || '' %>';
-
-    <%- if !@view.is_invalid? && !@view.is_blobby? && @view.can_read? -%>
-    <%# Hard-code parameters for initial call here; if the Javascript ever
-    changes, these will need to be updated %>
-    blist.widget.viewJson = <%= @view.json({'accessType' => 'WIDGET',
-        'method' => 'getByIds', 'meta' => true, 'start' => 0, 'length' => 50}) %>;
-    <%- end -%>
   </script>
 
   <%= raw @display.render_javascript_includes(self) %>

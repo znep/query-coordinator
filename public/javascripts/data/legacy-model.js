@@ -585,73 +585,6 @@ blist.namespace.fetch('blist.data');
                     }});
         };
 
-        // TODO: proxy
-        /**
-         * Load a set of rows.  The table must have been populated via AJAX for
-         * this to succeed.  Supplementary requests will be requested of the
-         * original URL using ids[] query parameters in the POST body.
-         *
-         * @param rows an array of row IDs
-         */
-        this.loadRows = function(rowsToLoad)
-        {
-            if (!supplementalAjaxOptions) { return; }
-
-            var min = this.length() + 1;
-            var max = -1;
-            _.each(rowsToLoad, function(n)
-            {
-                min = Math.min(n, min);
-                max = Math.max(n, max);
-            });
-            // Adjust max & min account for special rows, so we get real
-            // offsets to the server
-            max -= countSpecialTo(max);
-            min -= countSpecialTo(min);
-            var len = Math.min(max - min + 1, curOptions.pageSize);
-
-            var tempView = blist.datasetUtil.cleanViewForPost(
-                this.getViewCopy(), this.isGrouped());
-            var ajaxOptions = $.extend({},
-                    supplementalAjaxOptions,
-                    { url: '/views/INLINE/rows.json?' + $.param(
-                        $.extend({}, supplementalAjaxOptions.data,
-                        { method: 'getByIds', start: min, length: len })),
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(tempView) });
-            doLoad(this, function(d) { onSupplementalLoad(d, min); },
-                ajaxOptions);
-        };
-
-        var onSupplementalLoad = function(response, start)
-        {
-            // Install the rows
-            var supplement = response.data;
-            setRowMetadata(supplement, meta.metaColumns, meta.dataMungeColumns);
-            for (var i = 0; i < supplement.length; i++, start++)
-            {
-                // Figure out the real position in active
-                var adjStart = start + countSpecialTo(start);
-                var row = supplement[i];
-                if (active == rows && active[adjStart] === undefined)
-                { rowsLoaded++; }
-                active[adjStart] = row;
-
-                var id = row.id || (row.id = row[0]);
-                activeLookup[id] = adjStart;
-                if (rows == active) { lookup[id] = adjStart; }
-            }
-
-            // Do not call installIDs here as it is expensive on tall datasets!
-            // Above installation must take care of everything that installIDs
-            // does.
-
-
-            // Notify listeners of row load via the "change" event
-            self.change(supplement);
-        };
-
         // TODO: gone
         this.reloadView = function()
         {
@@ -711,25 +644,6 @@ blist.namespace.fetch('blist.data');
                 level.id = id;
             }
             return level;
-        };
-
-        // TODO: gone
-        this.reloadAggregates = function(tempView)
-        {
-            if (!_.isUndefined(meta.view.message)) { return; }
-
-            tempView = blist.datasetUtil.cleanViewForPost(
-                tempView || this.getViewCopy(), this.isGrouped());
-            $.ajax({url: '/views/INLINE/rows.json?' +
-                    $.param({method: 'getAggregates'}),
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(tempView),
-                    success: function(resp)
-                    {
-                        updateAggregateHash(resp);
-                        self.footerChange();
-                    }});
         };
 
         // TODO: gone
@@ -2761,82 +2675,6 @@ blist.namespace.fetch('blist.data');
             return view;
         };
 
-
-        // TODO: gone
-        this.getTempView = function(tempView, includeColumns, callback)
-        {
-            // If we're doing progressive loading, set up a temporary
-            //  view, then construct a query with a special URL and
-            //  appropriate params to get rows back for the specified view
-            // Only include columns if this view is grouped; otherwise, don't
-            // include columns since we want them all back, and we don't need
-            // to send all that extra data over or modify columns accidentally
-            tempView = blist.datasetUtil.cleanViewForPost(
-                tempView || this.getViewCopy(),
-                includeColumns || this.isGrouped());
-            var ajaxOptions = $.extend({},
-                    supplementalAjaxOptions,
-                    { url: '/views/INLINE/rows.json?' + $.param(
-                        $.extend({}, supplementalAjaxOptions.data,
-                        {   method: 'getByIds', start: 0,
-                            length: curOptions.pageSize,
-                            meta: true
-                        })),
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(tempView)
-            });
-            doLoad(self, function(config) { loadTempView(config, callback); },
-                ajaxOptions);
-        };
-
-        /**
-         * When we load the sorted data from the server, we may have
-         *  a different set of full rows than was previously loaded, updated
-         *  data, or possibly new rows.  We may also have rows that were already
-         *  loaded, but did not come back with the sort.  So do some work to
-         *  get active & rows in-sync
-         */
-        var loadTempView = function(config, callback)
-        {
-            var newRows = config.rows || (config.data !== undefined ?
-                config.data.data : null) || config.data;
-            if (config.meta)
-            {
-                meta.columns = null;
-                config.meta.columnFilters = meta.columnFilters;
-                config.meta.view.id = meta.view.id;
-                config.meta.view.owner = meta.view.owner;
-                // Copy flags over so we know if this is the default view
-                config.meta.view.flags = meta.view.flags;
-                self.meta(config.meta);
-                if (config.meta.totalRows !== undefined)
-                {
-                    activeCount = config.meta.view.totalRows =
-                        config.meta.totalRows;
-                }
-
-                // Pass the callback all the way into updateColumns, because
-                // our view isn't valid until those have been updated
-                updateColumns(callback);
-                self.reloadAggregates();
-            }
-
-            // active is now the new set of rows from the server, and not
-            //  linked-to or based-on rows
-            active = {};
-            // Convert array of rows into object
-            _.each(newRows, function(r, i) { active[i] = r; });
-            setRowMetadata(active, meta.metaColumns, meta.dataMungeColumns);
-            _.each(active, function(curRow, i)
-            {
-                // Copy over loaded rows in case they are updated
-                var rowPos = lookup[curRow.id];
-                if (rowPos !== undefined) { rows[rowPos] = curRow; }
-            });
-            installIDs(true);
-            configureActive(null, true);
-        };
 
         /**
          * Group columns

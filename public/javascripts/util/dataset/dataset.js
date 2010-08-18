@@ -1339,6 +1339,82 @@ this.Dataset = Model.extend({
 
 Dataset.modules = {};
 
+var cachedLinkedDatasetOptions = {};
+Dataset.getLinkedDatasetOptions = function(linkedDatasetUid, col, $field, curVal,
+    useRdfKeyAsDefault)
+{
+    var viewUid = linkedDatasetUid;
+    if ($.isBlank(viewUid) || !viewUid.match(blist.util.patterns.UID))
+    {
+        return [];
+    }
+
+    if (cachedLinkedDatasetOptions[viewUid] == null)
+    {
+        $.Tache.Get({url: '/api/views/{0}.json'.format(viewUid),
+            error: function(req)
+            {
+                alert('Fail to get columns from dataset {0}.'.format(viewUid));
+           },
+            success: function(linkedDataset)
+            {
+                cachedLinkedDatasetOptions[viewUid] = [];
+                var cldo = cachedLinkedDatasetOptions[viewUid];
+
+                var opt;
+                var rdfSubject = linkedDataset && linkedDataset.metadata &&
+                        linkedDataset.metadata.rdfSubject ?
+                        linkedDataset.metadata.rdfSubject : undefined;
+
+                _.each(linkedDataset.columns || [], function(c)
+                {
+                    switch (c.dataTypeName)
+                    {
+                        case 'text':
+                            opt = {value: String(c.id), text: c.name};
+                            if (useRdfKeyAsDefault && opt.value === rdfSubject)
+                            {
+                                opt.selected = true;
+                            }
+                        //TODO: support other datatype like url
+                            cldo.push(opt);
+                            break;
+                    }
+                });
+
+                if (cachedLinkedDatasetOptions[viewUid].length <= 0)
+                {
+                    alert('Dataset {0} does not have any column.'.format(viewUid));
+                }
+                else
+                {
+                    $field.data('linkedFieldValues', '_reset');
+                    _.each($field.data('linkedGroup'), function(f) {
+                        $(f).trigger('change');
+                    });
+                    _.defer(function() { $field.val(curVal); });
+                }
+            }});
+         return [];
+    }
+
+    return cachedLinkedDatasetOptions[viewUid];
+};
+
+Dataset.getLinkedDatasetOptionsDefault = function(linkedDatasetUid, col, $field,
+    curVal)
+{
+    return Dataset.getLinkedDatasetOptions(linkedDatasetUid, col, $field, curVal,
+        true);
+};
+
+Dataset.getLinkedDatasetOptionsNoDefault = function(linkedDatasetUid, col, $field,
+    curVal)
+{
+    return Dataset.getLinkedDatasetOptions(linkedDatasetUid, col, $field, curVal,
+        false);
+};
+
 var VIZ_TYPES = ['chart', 'annotatedtimeline', 'imagesparkline',
     'areachart', 'barchart', 'columnchart', 'linechart', 'piechart'];
 var MAP_TYPES = ['geomap', 'intensitymap'];

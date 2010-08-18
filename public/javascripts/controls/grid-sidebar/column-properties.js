@@ -231,11 +231,11 @@
                         // edit column has no default.  ui cannot tell the diff
                         // between default (unsaved) or saved value.
                         linkedField: 'format.linkedDataset',
-                        options: blist.dataset.getLinkedDatasetOptionsNoDefault,
+                        options: Dataset.getLinkedDatasetOptionsNoDefault,
                         wizard: 'Select the key column'},
                     {text: 'Label Column', type: 'select', name: 'format.labelColumn',
                         linkedField: 'format.linkedDataset',
-                        options: blist.dataset.getLinkedDatasetOptionsDefault,
+                        options: Dataset.getLinkedDatasetOptionsDefault,
                         wizard: 'Select the label column'}
                 ]
             },

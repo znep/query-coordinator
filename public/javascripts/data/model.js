@@ -1,82 +1,31 @@
 /**
- * This file implements the Blist data model.  The data model is a flexible container for dynamic data that is
- * decoupled from any specific presentation mechanism.
+ * This is mostly deprecated now; it provides some basic ties between the new
+ * Dataset model, datasetGrid and blistTable.  It proxies a few things, and adds
+ * a bit of new functionality:
+ *  + Provide appropriate rows to render in the table.  This includes
+ *    adding blank rows for entering new data, and expanded nested table rows
+ *  + Handling row selection for batch operations
+ *  + Handling undo/redo for row edit/create/delete events
  *
- * The model holds two types of information, metadata and data.  Internally metadata is stored in a private variable
- * called "meta", data is stored in a private variable called "rows".  Additionally, the model supports filtering,
- * grouping and sorting.  Sorting is applied against the full dataset.  Grouping and filtering is applied to a subset
- * of the dataset stored in a private variable called "active".
+ * This does not store or load data by itself anymore
  *
- * <h2>Metadata</h2>
+ * In addition to actual data and server metadata,
+ * this may add the following properties to rows:
  *
- * Metadata is an object with any of the following optional fields:
- *
- * <ul>
- *   <li>columns - a hierarchical list of column configuration objects.  This is an array of arrays.  Each sub-array
- *     describes the columns such as they might appear in the corresponding level of a tree.  For example, columns[0]
- *     is the root column set.  Columns[1] contains the columns that display if a root row is expanded.  Etc.</li>
- *   <li>view - a Blist view object, used to configure options that aren't otherwise set</li>
- *   <li>title - the name displayed as the title of the grid</li>
- * </ul>
- *
- * Columns are described using an object with the following fields:
- *
- * <ul>
- *   <li>name - the display name of the column<li>
- *   <li>description - the user defined description of the column<li>
- *   <li>dataIndex - the index of the value within rows (a string for object rows, a number for array rows)</li>
- *   <li>type - the type of data in the column (standard Blist type; defaults to "text").  See types.js for
- *     more information on supported types</li>
- *   <li>width - the width of the column</li>
- *   <li>option - an array of possible picklist values of the form { id: { text: 'My Label', icon: 'icon_url' }
- *     }</li>
- *   <li>format - a type specific parameter that describes the display format for the data</li>
- *   <li>group - a function that generates a "group" object for a given value.  If this value is present a
- *     table displays group headers when ordered by this column.  Set to "true" to use the default grouping
- *     function for the type</li>
- *   <li>children - if a column has associated "sub-columns", these columns are referenced here</li>
- * </ul>
+ *  + level - the level of the row, or -1 if the row is "special" (that is, uses a custom renderer)
+ *  + expanded - true iff the row is in an "open" state
+ *  + children - columns that are nested within this column, if applicable
  *
  *
- * <h2>Rows</h2>
- *
- * Row data is stored as an array of records.  Records may be arrays or objects.  Once installed, changes to row data
- * must occur via public model methods.  Model backed objects can register for events to check data (as well as
- * metadata) changes.
- *
- * Row data may be stored "sparsely".  In sparse mode, one or more elements in the row array are represented by a
- * primitive value rather than actual row data in an object or array.  These primitive value represent row IDs.  To
- * retrieve actual row data clients may pass an array of such rows to loadRows().  loadRows() is an asynchronous
- * operation.  When loadRows() succeeds, the row_change is fired with the list of freshly populated rows.
- *
- * In addition to actual data, rows may have the following properties:
- *
- * <ul>
- *   <li>level - the level of the row, or -1 if the row is "special" (that is, uses a custom renderer)
- *   <li>expanded - true iff the row is in an "open" state
- *   <li>children - columns that are nested within this column, if applicable
- * </ul>
- *
- * Each row is identified by an ID.  IDs must be unique across rows.  If column data is stored in an object then the
- * ID is the field "id".  If column data is stored in a row then the first column is used as the ID.
- *
- *
- * <h2>Events</h2>
+ * Events
  *
  * The model fires the following events:
  *
- * <ul>
- *   <li>meta_change - when metadata (column, data name, etc.) changes</li>
- *   <li>before_load - called prior to intiating an AJAX load of data.  Return false to cancel the load</li>
- *   <li>load - called when the entire set of rows is replaced</li>
- *   <li>after_load - called after an AJAX load of data</li>
- *   <li>row_change - called with an array of rows that have had their contents change</li>
- *   <li>selection_change - called with an array of rows that have had their selection change</li>
- *   <li>row_add - called with an array of rows that have been newly added to the model</li>
- *   <li>row_remove - called with an array of rows that are no longer present in the model</li>
- *   <li>col_width_change - called when there is a metadata change that only affects column widths</li>
- *   <li>client_filter - called when a filter is run on the client, not the server</li>
- * </ul>
+ *  + rows_changed - called when the entire set of rows is replaced
+ *  + selection_change - called with an array of rows that have had their
+ *     selection change
+ *  + dataset_ready - once it has an actual Dataset hooked up
+ *  + undo_redo_change - whenever the undo/redo buffers add/remove items
  */
 
 blist.namespace.fetch('blist.data');
@@ -92,7 +41,6 @@ blist.namespace.fetch('blist.data');
         var curOptions = {
             blankRow: false,
             filterMinChars: 3,
-            initialResponse: null,
             pageSize: 50,
             view: null
         };
@@ -110,13 +58,6 @@ blist.namespace.fetch('blist.data');
         // Undo/redo buffer
         var undoBuffer = [];
         var redoBuffer = [];
-
-        // TODO: gone?
-        var dataChange = function()
-        {
-            self.unselectAllRows(true);
-            $(listeners).trigger('load', [ self ]);
-        };
 
         /**
          * Set options
@@ -178,7 +119,6 @@ blist.namespace.fetch('blist.data');
             return curOptions.blankRow && self.canAdd() && self.canWrite();
         };
 
-        // TODO: listeners gone?
         /**
          * Add a model listener.  A model listener receives events fired by the model.
          */
@@ -236,7 +176,7 @@ blist.namespace.fetch('blist.data');
             return true;
         };
 
-        // TODO: gone?
+        // TODO: nt
 //        var getColumnLevel = function(columns, id) {
 //            var level = columns[id];
 //            if (!level) {
@@ -246,7 +186,7 @@ blist.namespace.fetch('blist.data');
 //            return level;
 //        };
 
-        // TODO: gone?
+        // TODO: nt
 //        var translateViewColumns = function(view, viewCols, columns, allColumns,
 //            nestDepth, nestedIn)
 //        {
@@ -811,9 +751,11 @@ blist.namespace.fetch('blist.data');
         /**
          * Scan to find the next or previous row in the same level.
          */
-        this.nextInLevel = function(from, backward) {
-            var pos = from;
-            var level = 0;
+        this.nextInLevel = function(from, backward)
+        {
+        // TODO: nt
+//            var pos = from;
+//            var level = 0;
 //            if (active[pos] !== undefined) { level = active[pos].level || 0; }
 //            if (backward)
 //            {
@@ -826,7 +768,6 @@ blist.namespace.fetch('blist.data');
 //            }
 //            else
 //            {
-//                // TODO: special
 //                var end = 0;//activeCount;
 //                while (++pos < end)
 //                {
@@ -835,7 +776,7 @@ blist.namespace.fetch('blist.data');
 //                    { return pos; }
 //                }
 //            }
-            return null;
+//            return null;
         };
 
         this.selectedRows = {};
@@ -1045,7 +986,8 @@ blist.namespace.fetch('blist.data');
                 idChange = true;
             }
 
-            dataChange();
+            self.unselectAllRows(true);
+            $(listeners).trigger('rows_changed');
         };
 
         var countSpecialTo = function(max)

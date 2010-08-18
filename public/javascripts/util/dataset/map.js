@@ -9,7 +9,8 @@ Dataset.modules['map'] =
         var longCol = this.columnForTCID(this.displayFormat.plot.longitudeId);
         var locCol = this.columnForTCID(this.displayFormat.plot.locationId);
 
-        return !$.isBlank(locCol) || (!$.isBlank(latCol) && !$.isBlank(longCol));
+        return !$.isBlank(locCol) || (!$.isBlank(latCol) && !$.isBlank(longCol)) ||
+            this.displayFormat.noLocations;
     },
 
     _convertLegacy: function()

@@ -441,8 +441,7 @@ $(function()
                     manualResize: true,
                     columnNameEdit: false,
                     filterForm: '.toolbar .toolbarSearchForm',
-                    autoHideClearFilterItem: false,
-                    initialResponse: $.unescapeObject(widgetNS.viewJson)
+                    autoHideClearFilterItem: false
                 });
         }
     }

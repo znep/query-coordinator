@@ -40,7 +40,6 @@
             editColumnCallback: function(columnId, parentId) {},
             editEnabled: true,
             filterForm: null,
-            initialResponse: null,
             isInvalid: false,
             manualResize: false,
             setTempViewCallback: function () {},
@@ -77,10 +76,10 @@
                         { columnResized(datasetObj, c, f); })
                     .bind('column_moved', function (event, c, p)
                         { columnMove(datasetObj, c, p); })
-                    .bind('full_load', function(event)
-                        { viewLoaded(datasetObj); })
                     .bind('column_name_dblclick', function(event, origEvent)
                         { columnNameEdit(datasetObj, event, origEvent); })
+                    .bind('cellclick', function (e, r, c, o)
+                        { cellClick(datasetObj, e, r, c, o); })
                     .blistTable({cellNav: true, selectionEnabled: false,
                         generateHeights: false, columnDrag: true,
                         editEnabled: datasetObj.settings.editEnabled,
@@ -96,13 +95,9 @@
                             datasetObj.rowHandleRenderer :
                             function() { return '""'; }),
                         showRowNumbers: datasetObj.settings.showRowNumbers})
-                    .bind('cellclick', function (e, r, c, o)
-                        { cellClick(datasetObj, e, r, c, o); })
                     .blistModel()
                     .options({blankRow: datasetObj.settings.editEnabled,
                         filterMinChars: 0,
-                        progressiveLoading: !datasetObj.settings.isInvalid,
-                        initialResponse: datasetObj.settings.initialResponse,
                         view: datasetObj.settings.view});
 
                 $.live('#' + $datasetGrid.attr('id') +
@@ -1168,9 +1163,9 @@
     };
 
     // TODO; linked to sortChanged
-    var viewLoaded = function(datasetObj)
-    {
-        datasetObj.origOrderBys = [];
+//    var viewLoaded = function(datasetObj)
+//    {
+//        datasetObj.origOrderBys = [];
 //        var view = datasetObj.settings._model.meta().view;
 //        if (view.query.orderBys !== undefined)
 //        {
@@ -1181,7 +1176,7 @@
 //                datasetObj.origOrderBys.push(curO);
 //            });
 //        }
-    };
+//    };
 
     var columnNameEdit = function(datasetObj, event, origEvent)
     {

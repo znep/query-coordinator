@@ -3,8 +3,6 @@
     if (blist.sidebarHidden.edit &&
         blist.sidebarHidden.edit.addColumn) { return; }
 
-    var cachedLinkedDatasetOptions = {};
-
     var getTypes = function(data)
     {
         return _(blist.data.types).chain()
@@ -88,11 +86,11 @@
         // this is done by setting default value to '_selected' and
         // adding _selected attrib = true in the desired option.
                         defaultValue: '_selected',
-                        options: blist.dataset.getLinkedDatasetOptionsDefault,
+                        options: Dataset.getLinkedDatasetOptionsDefault,
                         wizard: 'Select the key column'},
                     {text: 'Label Column', type: 'select', name: 'format.labelColumn',
                         linkedField: 'format.linkedDataset',
-                        options: blist.dataset.getLinkedDatasetOptionsDefault,
+                        options: Dataset.getLinkedDatasetOptionsDefault,
                         wizard: 'Select the label column'}
                 ]
             },

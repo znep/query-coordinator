@@ -1,3 +1,8 @@
+#outerContainer
+{ 
+	max-width: 100%; 
+}
+
 #mainLogo {
   top: 0;
   left: 0;

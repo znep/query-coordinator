@@ -289,11 +289,6 @@
 
         var view = $.extend({displayType: 'map'}, sidebarObj.getFormValues($pane));
 
-        var needsFullReset = !blist.dataset.valid ||
-            view.displayFormat.type != blist.dataset.displayFormat.type ||
-            !_.isEqual(view.displayFormat.layers,
-                blist.dataset.displayFormat.layers);
-
         blist.dataset.update(view);
 
         if (!isEdit)
@@ -321,15 +316,7 @@
                     sidebarObj.hide();
                     sidebarObj.addPane(configName);
 
-                    $(window).resize();
-
-                    _.defer(function()
-                    {
-                        if (needsFullReset)
-                        { sidebarObj.$grid().socrataMap().reset({view: newView}); }
-                        else
-                        { sidebarObj.$grid().socrataMap().reload(); }
-                    });
+                    _.defer(function() { $(window).resize(); });
                 };
 
                 var p = newView.displayFormat.plot;
@@ -337,11 +324,7 @@
                     p.quantityId, p.colorValueId, p.sizeValueId]).chain()
                     .compact()
                     .map(function(tcId)
-                    {
-                        var col = newView.columnForTCID(tcId);
-                        return col.hidden ? col.id : null;
-                    })
-                    .compact()
+                    { return newView.columnForTCID(tcId).id; })
                     .value();
                 if (colIds.length > 0)
                 { newView.setVisibleColumns(colIds, finishUpdate); }

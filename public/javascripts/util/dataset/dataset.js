@@ -26,7 +26,7 @@ this.Dataset = Model.extend({
 
         this.registerEvent(['columns_changed', 'valid', 'query_change',
             'set_temporary', 'clear_temporary', 'row_change',
-            'row_count_change', 'column_resized']);
+            'row_count_change', 'column_resized', 'displayformat_change']);
 
         $.extend(this, v);
 
@@ -805,6 +805,7 @@ this.Dataset = Model.extend({
 
         var oldQuery = ds.query;
         var oldSearch = ds.searchString;
+        var oldDispFmt = ds.displayFormat;
 
         if (forceFull)
         {
@@ -855,6 +856,11 @@ this.Dataset = Model.extend({
                 !_.isEqual(oldQuery.groupBys, ds.query.groupBys))
             { ds._rowCountInvalid = true; }
             ds.trigger('query_change');
+        }
+
+        if (!_.isEqual(oldDispFmt, ds.displayFormat))
+        {
+            ds.trigger('displayformat_change');
         }
 
         if (masterUpdate)
@@ -1082,8 +1088,11 @@ this.Dataset = Model.extend({
                 if (!$.isBlank(v))
                 {
                     var c = ds.columnForTCID(tcId);
-                    tr.invalid[c.id] = true;
-                    tr[c._lookup] = v;
+                    if (!$.isBlank(c))
+                    {
+                        tr.invalid[c.id] = true;
+                        tr[c._lookup] = v;
+                    }
                 }
             });
 

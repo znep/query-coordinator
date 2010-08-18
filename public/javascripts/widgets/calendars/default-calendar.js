@@ -117,6 +117,8 @@
                 eventResize: function(ce, dd, md, rf, e, ui, v)
                     { eventChange(calObj, ce, dd, md, rf, e, ui, v); }
                 });
+
+        calObj.ready();
     };
 
     var eventRender = function(calObj, calEvent, element, view)

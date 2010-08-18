@@ -92,7 +92,10 @@
                 chartObj._fixedColumns = _.compact(chartObj._fixedColumns);
 
                 chartObj.settings.view.getAggregates(function()
-                { chartObj.columnsLoaded(); });
+                {
+                    chartObj.columnsLoaded();
+                    chartObj.ready();
+                });
 
                 return false;
             },

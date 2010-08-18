@@ -371,11 +371,6 @@
                     sidebarObj.hide();
 
                     sidebarObj.addPane(configName);
-
-                    _.defer(function()
-                    {
-                        blist.$display.socrataChart().reload();
-                    });
                 };
 
                 var tcIds = (newView.displayFormat.fixedColumns || []).slice();
@@ -387,14 +382,8 @@
                             vc.supplementalColumns || []);
                     }).flatten().value());
 
-                var colIds = _(tcIds).chain()
-                    .map(function(tcId)
-                    {
-                        var col = newView.columnForTCID(tcId);
-                        return col.hidden ? col.id : null;
-                    })
-                    .compact()
-                    .value();
+                var colIds = _.map(tcIds, function(tcId)
+                    { return newView.columnForTCID(tcId).id; });
                 if (colIds.length > 0)
                 { newView.setVisibleColumns(colIds, finishUpdate); }
                 else { finishUpdate(); }

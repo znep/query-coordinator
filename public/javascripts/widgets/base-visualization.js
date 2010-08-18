@@ -56,7 +56,13 @@
                 $domObj.resize(function(e) { doResize(currentObj, e); });
 
 
-                if (!currentObj.settings.view.valid) { return; }
+                if (!currentObj.settings.view.valid)
+                {
+                    currentObj.ready();
+                    return;
+                }
+
+                currentObj._initialLoad = true;
 
                 currentObj.settings.view.getRows(0, currentObj.settings.maxRows,
                     function()
@@ -65,7 +71,10 @@
                         // getColumns has a chance to run first
                         var args = arguments;
                         _.defer(function()
-                        { currentObj.handleRowsLoaded.apply(currentObj, args); });
+                        {
+                            currentObj.handleRowsLoaded.apply(currentObj, args);
+                            delete currentObj._initialLoad;
+                        });
                     });
 
                 if (currentObj.getColumns())
@@ -106,10 +115,40 @@
                 // Called once the columns are loaded
             },
 
+            ready: function()
+            {
+                var vizObj = this;
+                var handleChange = function()
+                {
+                    if (!vizObj._pendingReload && !vizObj._initialLoad)
+                    {
+                        vizObj._pendingReload = true;
+                        _.defer(function() { vizObj.reload(); });
+                    }
+                };
+
+                vizObj.settings.view
+                    .bind('query_change', handleChange)
+                    .bind('displayformat_change', handleChange);
+            },
+
             reload: function()
             {
                 var vizObj = this;
+                if (vizObj.needsFullReset())
+                {
+                    delete vizObj._pendingReload;
+                    vizObj.reset();
+                    return;
+                }
+
                 vizObj.$dom().siblings('#vizError').hide().text('');
+
+                if (!vizObj.settings.view.valid)
+                {
+                    delete vizObj._pendingReload;
+                    return;
+                }
 
                 vizObj.reloadVisualization();
 
@@ -125,6 +164,19 @@
 
                 if (vizObj.getColumns())
                 { vizObj.columnsLoaded(); }
+
+                delete vizObj._pendingReload;
+            },
+
+            reset: function()
+            {
+                // Implement how to do a full reset
+            },
+
+            needsFullReset: function()
+            {
+                // Override if you need to do a bigger reset
+                return false;
             },
 
             handleRowsLoaded: function(rows)
@@ -141,7 +193,8 @@
                 {
                     if (!this._delayedRenderData) { this._delayedRenderData = []; }
                     var _this = this;
-                    this._delayedRenderData.push(function() { _this.renderData(rows); });
+                    this._delayedRenderData.push(function()
+                        { _this.renderData(rows); });
                     return;
                 }
 

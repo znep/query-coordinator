@@ -111,21 +111,21 @@ this.Column = Model.extend({
         var col = this;
         if (col.hidden !== isVisible) { return false; }
 
+        col.hidden = !isVisible;
+        if (isVisible)
+        { col.flags = _.without(col.flags || [], 'hidden'); }
+        else
+        {
+            col.flags = col.flags || [];
+            col.flags.push('hidden');
+        }
+
         var columnShown = function()
         {
-            col.hidden = !isVisible;
-            if (isVisible)
-            { col.flags = _.without(col.flags || [], 'hidden'); }
-            else
-            {
-                col.flags = col.flags || [];
-                col.flags.push('hidden');
-            }
-
             if (!isBatch) { col.view.trigger('columns_changed'); }
         };
 
-        if (col.view.hasRight('update_right'))
+        if (col.view.hasRight('update_view'))
         {
             this._makeRequest({url: '/views/' + this.view.id + '/columns/' +
                 this.id + '.json', type: 'PUT',
@@ -330,7 +330,7 @@ this.Column = Model.extend({
             .sortBy(function(c) { return c.position; })
             .value();
 
-        this.view.trigger('columns_changed');
+        _.defer(function() { col.view.trigger('columns_changed'); });
     },
 
     _clearFilterData: function(query)

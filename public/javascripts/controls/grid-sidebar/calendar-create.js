@@ -117,8 +117,6 @@
 
                 var finishUpdate = function()
                 {
-                    sidebarObj.$grid().socrataCalendar().reload();
-
                     sidebarObj.$dom().socrataAlert(
                         {message: 'Your calendar has been updated',
                             overlay: true});
@@ -132,11 +130,7 @@
                     p.titleTableId, p.descriptionTableId]).chain()
                     .compact()
                     .map(function(tcId)
-                    {
-                        var col = newView.columnForTCID(tcId);
-                        return col.hidden ? col.id : null;
-                    })
-                    .compact()
+                    { return newView.columnForTCID(tcId).id; })
                     .value();
                 if (colIds.length > 0)
                 { newView.setVisibleColumns(colIds, finishUpdate); }

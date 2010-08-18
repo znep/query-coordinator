@@ -117,6 +117,12 @@
                         $("#prev_"+id+", #next_"+id).show();
                     }
                 });
+
+                mapObj._origData = {valid: mapObj.settings.view.valid,
+                    mapType: mapObj.settings.view.displayFormat.type,
+                    layers: mapObj.settings.view.displayFormat.layers};
+
+                mapObj.ready();
             },
 
             columnsLoaded: function()
@@ -138,7 +144,7 @@
                 }
             },
 
-            reset: function(newOptions)
+            reset: function()
             {
                 var mapObj = this;
                 mapObj.$dom().removeData('socrataVisualization');
@@ -146,7 +152,17 @@
                 // We need to change the ID so that maps (such as ESRI) recognize
                 // something has changed, and reload properly
                 mapObj.$dom().attr('id', mapObj.$dom().attr('id') + 'n');
-                mapObj.$dom().socrataMap(newOptions);
+                mapObj.$dom().socrataMap(mapObj.settings);
+            },
+
+            needsFullReset: function()
+            {
+                var od = this._origData || {};
+                var view = this.settings.view;
+                return view.valid !== od.valid ||
+                    view.displayFormat.type != od.mapType ||
+                    !_.isEqual(view.displayFormat.layers,
+                            od.layers);
             },
 
             reloadVisualization: function()

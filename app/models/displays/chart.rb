@@ -24,6 +24,10 @@ class Displays::Chart < Displays::Base
     [ 'shared-chart' ]
   end
 
+  def required_edit_javascripts
+    ['shared-table-editor']
+  end
+
   def required_stylesheets
     [ 'chart-screen' ]
   end

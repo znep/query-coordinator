@@ -11,6 +11,10 @@ class Displays::Calendar < Displays::Base
     [ 'shared-calendar' ]
   end
 
+  def required_edit_javascripts
+    ['shared-table-editor']
+  end
+
   def required_stylesheets
     [ 'fullcalendar' ]
   end

@@ -1,6 +1,8 @@
 require 'hashie'
 
 class CurrentDomain
+  REFRESH_CHECK_TIME = 300
+
   def self.load_all
     @@property_store = {}
 
@@ -25,9 +27,12 @@ class CurrentDomain
     return @@current_domain = @@property_store[cname]
   end
 
-  def self.reload(cname, site_config_id = nil)
-    @@property_store.delete(cname)
-    self.set(cname, site_config_id)
+  def self.reload
+    # Blow away the cached version of the domain,
+    # forcing a refresh from the Core Server on configs and properties
+    @@current_domain[:data].flush_configurations
+    @@current_domain[:site_properties] = nil
+    @@current_domain[:site_properties_raw] = nil
   end
 
   # Main properties
@@ -54,11 +59,40 @@ class CurrentDomain
   end
   
   def self.preferences_out_of_date?
-    @@current_domain[:out_of_date] || false
+    # TODO: Deprecated
+    false
   end
-  
-  def self.flag_preferences_out_of_date!
-    @@current_domain[:out_of_date] = true
+
+  def self.flag_domain_id_out_of_date!(domain_id)
+    domain = @@property_store[domain_id]
+    unless domain.nil?
+      domain[:data].flag_out_of_date!
+    end
+  end
+
+  def self.flag_out_of_date!
+    @@current_domain[:data].flag_out_of_date!
+  end
+
+  def self.needs_refresh_check?
+    @@current_domain[:last_refresh_check].nil? || \
+      (Time.now - @@current_domain[:last_refresh_check] > REFRESH_CHECK_TIME)
+  end
+
+  def self.flag_refresh_checked!
+    @@current_domain[:last_refresh_check] = Time.now
+  end
+
+  def self.check_for_theme_update
+    # Check memcache to see if we need to fetch a new theme. 
+    refresh_mtime = @@current_domain[:data].last_refresh
+    # If the key is present, and the value is larger (newer)
+    # than our local copy, time to update
+    if !refresh_mtime.nil? && (@@current_domain[:updated_at].nil? || \
+        (refresh_mtime > @@current_domain[:updated_at]))
+      @@current_domain[:updated_at] = refresh_mtime
+      self.reload
+    end
   end
 
   def self.default_widget_customization_id
@@ -142,7 +176,15 @@ class CurrentDomain
   end
 
   def self.default_config_id
-    return @@current_domain[:data].default_configuration('site_theme').id
+    default_config.id
+  end
+
+  def self.default_config_updated_at
+    default_config.updatedAt
+  end
+
+  def self.default_config
+    return @@current_domain[:data].default_configuration('site_theme')
   end
 
   def self.configuration(name)
@@ -204,7 +246,7 @@ class CurrentDomain
 private
   def self.current_theme
     @@current_domain[:site_config_id].nil? ?
-      @@current_domain[:data].default_configuration('site_theme') : 
+      default_config :
       Configuration.find(@@current_domain[:site_config_id].to_s)
   end
 end

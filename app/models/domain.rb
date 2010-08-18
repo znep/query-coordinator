@@ -66,23 +66,43 @@ class Domain < Model
     end
   end
 
+  def flag_out_of_date!
+    # By writing the time to this key, we're notifying all
+    # frontend servers to reload this domain as soon as they notice
+    Rails.cache.write(generate_cache_key, Time.now)
+  end
+
+  def last_refresh
+    Rails.cache.read(generate_cache_key)
+  end
+
+  def flush_configurations
+    @default_configs = Hash.new
+    @configs = Hash.new
+  end
+
+  private
+  def generate_cache_key
+    "domains.#{self.id}.updated_at"
+  end
+
   # Customer-available per-domain configuration options
   @@themeable_items =
     ['urls.footer', 'urls.header']
 
-  @@configurable_features = 
+  @@configurable_features =
     ['show_tags', 'show_categories']
 
   @@flippable_modules =
     ['discovery_module', 'community_module', 'community_creation']
 
-  @@comment_modules = 
+  @@comment_modules =
     ['community_comment_moderation', 'publisher_comment_moderation']
 
   @@configurable_strings =
     ['company', 'copyright_string', 'site_title', 'discover_header']
 
-  @@site_theme_options = 
+  @@site_theme_options =
     [ { :name => 'emails.from_address',
         :description => 'The address from which automatic emails are sent'} ]
 end

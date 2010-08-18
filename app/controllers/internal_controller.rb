@@ -127,6 +127,9 @@ class InternalController < ApplicationController
   def set_default_site_config
     Configuration.update_attributes!(params['default-site-config'],
                                      {'default' => true})
+
+    CurrentDomain.flag_domain_id_out_of_date!(params[:domain_id])
+
     redirect_to '/internal/orgs/' + params[:org_id] + '/domains/' +
       params[:domain_id]
   end
@@ -144,6 +147,9 @@ class InternalController < ApplicationController
         end
       end
     end
+
+    CurrentDomain.flag_domain_id_out_of_date!(params[:domain_id])
+
     redirect_to '/internal/orgs/' + params[:org_id] + '/domains/' +
       params[:domain_id]
   end
@@ -180,6 +186,7 @@ class InternalController < ApplicationController
       end
     end
 
+    CurrentDomain.flag_domain_id_out_of_date!(params[:domain_id])
     redirect_to '/internal/orgs/' + params[:org_id] + '/domains/' +
       params[:domain_id] + '/site_config/' + params[:id]
   end

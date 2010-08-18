@@ -32,7 +32,10 @@ this.Model = Class.extend({
         this.trigger = function(evName, args)
         {
             verifyEvent(evName);
-            _.each(listeners[evName] || [], function(f) { f.apply(that, args); });
+            // IE requires that if you pass something for args, it must be
+            // an array; not null or undefined
+            _.each(listeners[evName] || [], function(f)
+                { f.apply(that, args || []); });
             return that;
         };
 

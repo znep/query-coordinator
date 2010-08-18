@@ -66,7 +66,6 @@
                 // * The main JS grid: headerMods hooks up the column menus
                 // * blistModel: disable minimum characters for full-text search,
                 //     enable progressive loading of data, and hook up Ajax info
-                // TODO: which of these events change/go away?
                 $datasetGrid
                     .bind('column_sort', function(event, c, a)
                         { columnSorted(datasetObj, c, a); })
@@ -1117,31 +1116,6 @@
         if ((query.orderBys || []).length < 2 &&
             datasetObj.settings.view.hasRight('update_view') && !isTemp)
         { datasetObj.settings.view.save(); }
-
-        // TODO: do we really need this?
-//        else
-//        {
-//            var oldSorts = datasetObj.origOrderBys;
-//            var newSorts = [];
-//            if (view.query.orderBys !== undefined)
-//            { newSorts = view.query.orderBys; }
-//
-//            var matches = oldSorts.length == newSorts.length;
-//            if (matches)
-//            {
-//                for (var i = 0; i < oldSorts.length; i++)
-//                {
-//                    var o = oldSorts[i];
-//                    var n = newSorts[i];
-//                    if (o.columnId != n.expression.columnId ||
-//                            o.ascending != n.ascending)
-//                    {
-//                        matches = false;
-//                        break;
-//                    }
-//                }
-//            }
-//        }
     };
 
     var clearColumnFilter = function(datasetObj, col)
@@ -1161,22 +1135,6 @@
         datasetObj.settings.view.setVisibleColumns(visColIds, null,
             datasetObj.settings.view.temporary);
     };
-
-    // TODO; linked to sortChanged
-//    var viewLoaded = function(datasetObj)
-//    {
-//        datasetObj.origOrderBys = [];
-//        var view = datasetObj.settings._model.meta().view;
-//        if (view.query.orderBys !== undefined)
-//        {
-//            $.each(view.query.orderBys, function(i, o)
-//            {
-//                var curO = {columnId: o.expression.columnId};
-//                curO.ascending = o.ascending;
-//                datasetObj.origOrderBys.push(curO);
-//            });
-//        }
-//    };
 
     var columnNameEdit = function(datasetObj, event, origEvent)
     {

@@ -56,6 +56,9 @@ this.Dataset = Model.extend({
         this._rowIDLookup = {};
 
         this._aggregatesStale = true;
+
+        this._origQuery = $.extend(true, {}, this.query);
+        this._origSearchString = this.searchString;
     },
 
     columnForID: function(id)
@@ -150,7 +153,7 @@ this.Dataset = Model.extend({
 
         var dsSaved = function(newDS)
         {
-            ds._update(newDS, true);
+            ds._update(newDS, true, false, true);
             ds._clearTemporary();
             if (_.isFunction(successCallback)) { successCallback(ds); }
         };
@@ -766,11 +769,14 @@ this.Dataset = Model.extend({
 
     _clearTemporary: function()
     {
-        this.temporary = false;
-        this.trigger('clear_temporary');
+        if (this.temporary)
+        {
+            this.temporary = false;
+            this.trigger('clear_temporary');
+        }
     },
 
-    _update: function(newDS, forceFull, updateColOrder)
+    _update: function(newDS, forceFull, updateColOrder, masterUpdate)
     {
         var ds = this;
 
@@ -850,6 +856,15 @@ this.Dataset = Model.extend({
             { ds._rowCountInvalid = true; }
             ds.trigger('query_change');
         }
+
+        if (masterUpdate)
+        {
+            ds._origQuery = $.extend(true, {}, ds.query);
+            ds._origSearchString = ds.searchString;
+        }
+        else if (ds._origSearchString == ds.searchString &&
+            _.isEqual(ds._origQuery, ds.query))
+        { ds._clearTemporary(); }
     },
 
     _updateGroupings: function(oldGroupings, oldGroupAggs)
@@ -1000,7 +1015,7 @@ this.Dataset = Model.extend({
             {
                 ds.totalRows = result.meta.totalRows;
                 delete ds._rowCountInvalid;
-                ds._update(result.meta.view, true, true);
+                ds._update(result.meta.view, true, true, fullLoad);
             }
 
             if (fullLoad) { ds._clearTemporary(); }

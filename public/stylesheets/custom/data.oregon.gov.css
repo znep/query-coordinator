@@ -108,8 +108,8 @@ body.home #mainNav li.home, body.home #mainNav li.home a span, body.discover #ma
 
 #mainNav ul {
   position: absolute;
-  top: 55px;
-  right: 1.2em;
+  top: 4.5em;
+  right: 0em;
   z-index: 1000;
 }
 
@@ -134,4 +134,15 @@ body.discover #mainNav li.discover,
 body.home #mainNav li.home .subNav li.last,
 #mainNav li.home .subnav li.last {
   background: none;
+}
+
+#header .userNav
+{
+	float: right;
+	margin: 1em;
+	padding: 0em;
+	position: absolute;
+	right: 0em;
+	top: 0em;
+	
 }

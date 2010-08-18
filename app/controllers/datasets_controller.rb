@@ -26,6 +26,15 @@ class DatasetsController < ApplicationController
       redirect_to(@view.href + '?' + request.query_string)
     end
 
+    # If we're displaying a single dataset, set the meta tags as appropriate.
+    @meta[:title] = @meta['og:title'] = "#{@view.name} | #{CurrentDomain.strings.site_title}"
+    @meta[:description] = @meta['og:description'] = @view.meta_description
+    @meta['og:url'] = @view.href
+    # TODO: when we support a dataset image, allow that here if of appropriate size
+
+    # Shuffle the default tags into the keywords list
+    @meta[:keywords] = @view.meta_keywords
+
   end
 
   def captcha_validate

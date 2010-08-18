@@ -305,6 +305,7 @@ $(function()
     });
     $('.subHeaderBar .about a').click(function(event)
     {
+        event.preventDefault();
         if ($toolbar.hasClass('about') && $toolbar.is(':visible'))
         {
             widgetNS.hideToolbar();

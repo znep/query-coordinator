@@ -178,7 +178,10 @@
 <%= render :partial => 'api_access' %>
 <%= render :partial => 'signed_dataset' %>
 <% end %>
-<%= render :partial => 'about_dataset' %>
+
+<div class="aboutLoad">
+  <%= render :partial => 'about_dataset' %>
+</div>
 
 <%- content_for :modals do -%>
   <div class="emailDatasetDialog modalDialog<%= ' ownerDialog' if

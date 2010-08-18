@@ -362,17 +362,17 @@
 
     <%# Embed pane %>
     blist.sidebarHidden.embed = blist.sidebarHidden.embed || {};
-    blist.sidebarHidden.embed.formCreate = <%= @view.is_alt_view? &&
-      !@view.is_form? ||
+    blist.sidebarHidden.embed.formCreate = <%= (@view.is_alt_view? &&
+      !@view.is_form?) ||
       @view.is_grouped? ||
       !CurrentDomain.user_can?(current_user, :create_datasets) ||
       !module_available?(:form_publish) ||
-      !@view.owned_by?(@current_user) ||
-      !@view.parent_dataset.owned_by?(@current_user) %>;
+      !@view.owned_by?(current_user) ||
+      !@view.parent_dataset.owned_by?(current_user) %>;
 
     <%# Export pane %>
     blist.sidebarHidden.exportSection = blist.sidebarHidden.exportSection || {};
-    blist.sidebarHidden.exportSection.signedDataset = <%= !(@view.owned_by?(@current_user) &&
+    blist.sidebarHidden.exportSection.signedDataset = <%= !(@view.owned_by?(current_user) &&
       module_enabled?(:digital_signatures)) %>;
     blist.sidebarHidden.exportSection.print = <%= @view.is_alt_view? %>;
 

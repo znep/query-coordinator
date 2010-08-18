@@ -927,9 +927,11 @@ this.Dataset = Model.extend({
 
         if (!$.isBlank(newCols))
         {
+            var newColIds = {};
             ds.columns = ds.columns || [];
             _.each(newCols, function(nc, i)
             {
+                newColIds[nc.id] = true;
                 // Columns may or may not be in the list already; they may
                 // also be at the wrong spot.  So find the column and index
                 // if it already exists
@@ -958,6 +960,12 @@ this.Dataset = Model.extend({
                     c.update(nc, forceFull);
                 }
             });
+
+            if (forceFull)
+            {
+                this.columns = _.reject(this.columns, function(c)
+                        { return !newColIds[c.id]; });
+            }
         }
 
         this._columnIDLookup = {};

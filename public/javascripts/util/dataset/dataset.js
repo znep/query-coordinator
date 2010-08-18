@@ -54,6 +54,8 @@ this.Dataset = Model.extend({
 
         this._rows = {};
         this._rowIDLookup = {};
+        this._rowsLoading = {};
+        this._pendingRowReqs = [];
 
         this._aggregatesStale = true;
 
@@ -367,11 +369,12 @@ this.Dataset = Model.extend({
     // Callback may be called multiple times with smaller batches of rows
     getRows: function(start, len, callback)
     {
-        var view = this;
+        var ds = this;
 
         var pageSize = 100;
         var reqs = [];
         var curReq;
+        var pendReq;
         var finish = start + len - 1;
         var loaded = [];
 
@@ -385,21 +388,47 @@ this.Dataset = Model.extend({
         };
 
         while (start <= finish &&
-            ($.isBlank(view.totalRows) || start < view.totalRows))
+            ($.isBlank(ds.totalRows) || start < ds.totalRows))
         {
-            var r = view._rows[start];
+            var r = ds._rows[start];
             if ($.isBlank(r))
             {
                 doLoaded();
-                if ($.isBlank(curReq)) { curReq = {start: start, finish: start}; }
-                else
+                if (ds._rowsLoading[start])
                 {
-                    if (start - curReq.start + 1 > pageSize)
+                    if (!$.isBlank(curReq))
                     {
                         reqs.push(curReq);
-                        curReq = {start: start};
+                        curReq = null;
                     }
-                    else { curReq.finish = start; }
+
+                    if ($.isBlank(pendReq))
+                    {
+                        pendReq = {start: start, length: 1,
+                            callback: callback};
+                    }
+                    else
+                    { pendReq.length++; }
+                }
+                else
+                {
+                    if (!$.isBlank(pendReq))
+                    {
+                        ds._pendingRowReqs.push(pendReq);
+                        pendReq = null;
+                    }
+
+                    if ($.isBlank(curReq))
+                    { curReq = {start: start, finish: start}; }
+                    else
+                    {
+                        if (start - curReq.start + 1 > pageSize)
+                        {
+                            reqs.push(curReq);
+                            curReq = {start: start};
+                        }
+                        else { curReq.finish = start; }
+                    }
                 }
             }
             else
@@ -408,6 +437,11 @@ this.Dataset = Model.extend({
                 {
                     reqs.push(curReq);
                     curReq = null;
+                }
+                if (!$.isBlank(pendReq))
+                {
+                    ds._pendingRowReqs.push(pendReq);
+                    pendReq = null;
                 }
                 loaded.push(r);
             }
@@ -428,18 +462,18 @@ this.Dataset = Model.extend({
             {
                 _.each(reqs, function(req)
                 {
-                    if (req.start >= view.totalRows) { return false; }
-                    if (req.finish >= view.totalRows)
-                    { req.finish = view.totalRows - 1; }
-                    view._loadRows(req.start, req.finish - req.start + 1, callback);
+                    if (req.start >= ds.totalRows) { return false; }
+                    if (req.finish >= ds.totalRows)
+                    { req.finish = ds.totalRows - 1; }
+                    ds._loadRows(req.start, req.finish - req.start + 1, callback);
                 });
             };
 
-            if ($.isBlank(view.totalRows))
+            if ($.isBlank(ds.totalRows))
             {
                 // Need to make init req to get all the meta
                 var initReq = reqs.shift();
-                view._loadRows(initReq.start, initReq.finish - initReq.start + 1,
+                ds._loadRows(initReq.start, initReq.finish - initReq.start + 1,
                     function(rows)
                     {
                         if (_.isFunction(callback)) { callback(rows); }
@@ -1006,6 +1040,8 @@ this.Dataset = Model.extend({
     _invalidateRows: function()
     {
         this._rows = {};
+        this._rowsLoading = {};
+        this._pendingRowReqs = [];
         this._rowIDLookup = {};
         _.each(this.columns, function(c) { c.invalidateData(); });
     },
@@ -1036,11 +1072,24 @@ this.Dataset = Model.extend({
 
             var rows = ds._addRows(result.data.data || result.data, start, cols);
 
+            // Mark all rows as loaded
+            for (var i = 0; i < len; i++)
+            { delete ds._rowsLoading[i + start]; }
+
+            var pending = ds._pendingRowReqs;
+            ds._pendingRowReqs = [];
+            _.each(pending, function(p)
+            { ds.getRows(p.start, p.length, p.callback); });
+
             if (oldCount !== ds.totalRows)
             { ds.trigger('row_count_change'); }
 
             if (_.isFunction(callback)) { callback(rows); }
         };
+
+        // Keep track of rows that are being loaded
+        for (var i = 0; i < len; i++)
+        { ds._rowsLoading[i + start] = true; }
 
         var req = {success: rowsLoaded, params: params, inline: !fullLoad};
         if (fullLoad)

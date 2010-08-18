@@ -1098,7 +1098,7 @@
     var columnSorted = function(datasetObj, column, ascending)
     {
         var isTemp = datasetObj.settings.view.temporary;
-        var query = $.extend({}, datasetObj.settings.view.query);
+        var query = $.extend(true, {}, datasetObj.settings.view.query);
         if ($.isBlank(ascending))
         {
             query.orderBys = _.reject(query.orderBys || [], function(ob)

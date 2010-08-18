@@ -3651,7 +3651,6 @@
         /*** ROWS ***/
 
         var renderedRows = {}; // All rows that are rendered, by ID
-        var pendingRows = {}; // All rows that are to be rendered, by index
         var dirtyRows = {}; // Rows that are rendered but need to re-render
         var rowIndices = {}; // Position of rendered rows (triggers re-rendering if a row moves)
 
@@ -3784,8 +3783,6 @@
             }
             end("renderRows.destroy");
 
-            pendingRows = {};
-
             var pendingTop = renderTop;
             var prevTop = parseInt($render.css('top'));
 
@@ -3810,10 +3807,7 @@
                 if (!$.isBlank(pendingTop) ||
                     Math.round(parseFloat($render.css('top'))) !=
                         Math.round(renderTop))
-                {
-                    _.each(rows, function(r) { delete pendingRows[r.index]; });
-                    return;
-                }
+                { return; }
 
                 var badRows = [];
                 var html = [];
@@ -3853,7 +3847,6 @@
                         }
                         rowIndices[rowID] = row.index;
                     }
-                    delete pendingRows[row.index];
                 }
                 end("renderRows.render");
 
@@ -3887,19 +3880,10 @@
                 end("renderRows.finalize");
             };
 
-            var adjStart = start;
-            while (adjStart < stop && pendingRows[adjStart]) { adjStart++; }
-            var adjStop = stop;
-            while (adjStop > adjStart && pendingRows[adjStop]) { adjStop--; }
-
-            if (adjStart != adjStop)
+            if (start != stop)
             {
-                if (model.loadRows(adjStart, adjStop,
-                        function(r) {  _.defer(function() { rowsLoaded(r); }); }))
-                {
-                    for (var i = start; i < stop; i++)
-                    { pendingRows[i] = true; }
-                }
+                model.loadRows(start, stop,
+                        function(r) {  _.defer(function() { rowsLoaded(r); }); });
             }
         };
 

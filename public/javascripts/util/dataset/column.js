@@ -170,7 +170,7 @@ this.Column = Model.extend({
     filter: function(value, subColumnType)
     {
         var col = this;
-        var query = $.extend({}, col.view.query);
+        var query = $.extend(true, {}, col.view.query);
 
         // If there is already a filter for this column, clear it out
         col._clearFilterData(query);
@@ -183,8 +183,9 @@ this.Column = Model.extend({
 
         if ($.isBlank(query.filterCondition))
         {
-            // Make it the top-level filter
-            query.filterCondition = filterItem;
+            // Make it the top-level filter, wrapped in an AND section
+            query.filterCondition = { type: 'operator', value: 'AND',
+                children: [filterItem] };
         }
         else if (query.filterCondition.type == 'operator' &&
                 query.filterCondition.value == 'AND')
@@ -214,7 +215,7 @@ this.Column = Model.extend({
     clearFilter: function()
     {
         var col = this;
-        var query = $.extend({}, col.view.query);
+        var query = $.extend(true, {}, col.view.query);
         col._clearFilterData(query);
         col.view.update({query: query});
     },
@@ -350,7 +351,7 @@ this.Column = Model.extend({
                         { return _.isEqual(fc, col.currentFilter.viewFilter); });
             // If the top-level filter is empty, get rid of it
             if (query.filterCondition.children.length < 1)
-            { query.filterCondition = null; }
+            { delete query.filterCondition; }
         }
 
         delete col.currentFilter;

@@ -10,6 +10,10 @@ class LogRefererMiddleware
 
   def initialize(app)
     @app = app
+
+    at_exit do
+      flush_requests(true)
+    end
   end
 
   def call(env)
@@ -67,36 +71,41 @@ class LogRefererMiddleware
     return @app.call(env)
   end
 
-  at_exit do
-    dump_requests
-  end
-
 private
 
   def push_request(uri, data, params)
     @@requests << { :uri => uri, :data => data, :params => params }
 
-    if @@requests.size >= BATCH_REQUESTS_BY
-      dump_requests
-    end
+    flush_requests if @@requests.size >= BATCH_REQUESTS_BY
   end
 
-  def dump_requests
+  def flush_requests(synchronous = false)
     current_requests = @@requests
     @@requests = []
 
-    Thread.new {
-      begin
-        logger.debug "Hit batch limit of #{BATCH_REQUESTS_BY}, firing off requests..."
-        @@requests.each do |request|
-          client.publish(request[:uri], request[:data], request[:params])
-        end
-        logger.debug "Done firing off requests."
-      rescue
-        logger.error "There was a serious problem logging the referrer. This should probably be looked at ASAP."
-        logger.error $!, $!.inspect
+    if synchronous
+      do_flush_requests
+    else
+      Thread.new {
+        # be chivalrous
+        Thread.pass
+
+        do_flush_requests
+      }
+    end
+  end
+
+  def do_flush_requests
+    begin
+      logger.debug "Hit batch limit of #{BATCH_REQUESTS_BY}, firing off requests..."
+      @@requests.each do |request|
+        client.publish(request[:uri], request[:data], request[:params])
       end
-    }
+      logger.debug "Done firing off requests."
+    rescue
+      logger.error "There was a serious problem logging the referrer. This should probably be looked at ASAP."
+      logger.error $!, $!.inspect
+    end
   end
 
   def client

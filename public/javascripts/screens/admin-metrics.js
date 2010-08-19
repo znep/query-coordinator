@@ -31,19 +31,27 @@ $(function()
         summarySections: [
             {
                 id: 'summaryDatasets',    displayName: 'Datasets',
-                summary: {plus: 'datasets-created', minus: 'datasets-deleted'}
+                summary: {plus: 'datasets-created', minus: 'datasets-deleted',
+                    verbPhrase: 'datasets created', verbPhraseSingular: 'dataset created'
+                }
             },
             {
                 id: 'summaryRows',        displayName: 'Rows',
-                summary: {plus: 'rows-created',     minus: 'rows-deleted'}
+                summary: {plus: 'rows-created',     minus: 'rows-deleted',
+                    verbPhrase: 'rows created', verbPhraseSingular: 'row created'
+                }
             },
             {
                 id: 'summaryVisits',      displayName: 'Visits',
-                summary: {plus: 'page-views'}
+                summary: {plus: 'page-views', verbPhrase: 'pages viewed',
+                    verbPhraseSingular: 'page viewed'
+                }
             },
             {
                 id: 'summaryEmbeds',      displayName: 'Embeds',
-                summary: {plus: 'embeds'}
+                summary: {plus: 'embeds', verbPhrase: 'embeds',
+                    verbPhraseSingular: 'embed'
+                }
             }
         ],
         topListSections: [

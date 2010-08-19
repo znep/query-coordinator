@@ -91,7 +91,7 @@ $(function()
                     {
                         var col = blist.dataset.columnForID(colId) ||
                             blist.dataset.columnForID(parId);
-                        if (col.id != colId) { col = col.childForID(colId); }
+                        if (col.id != colId) { col = col.childColumnForID(colId); }
 
                         datasetPageNS.sidebar.hide();
                         datasetPageNS.sidebar.addPane('columnProperties', col);

@@ -26,6 +26,7 @@ javascripts:
   - util/markup
   - util/alert-override
   - util/google-analytics
+  - util/dataset/column-container
   - util/dataset/column
   - util/dataset/dataset
   - util/dataset/calendar

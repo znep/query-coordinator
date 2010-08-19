@@ -1,18 +1,32 @@
 (function(){
 
 this.Column = Model.extend({
-    _init: function (c, view, parentCol)
+    _init: function (c, parent)
     {
         this._super();
 
         $.extend(this, c);
 
-        this.view = view;
-        this.parentColumn = parentCol;
+        if (parent instanceof Column)
+        {
+            this.parentColumn = parent;
+            this.view = parent.view;
+        }
+        else if (parent instanceof Dataset)
+        { this.view = parent; }
+
+        if ($.isBlank(this.parentColumn) && this.dataTypeName == 'nested_table')
+        {
+            // This ID really shouldn't be changing; if it does, this URL
+            // will be out-of-date...
+            Column.addProperties(this, ColumnContainer('childColumn',
+                    '/views/' + this.view.id + '/columns/' + this.id +
+                    '/sub_columns'), Column.prototype);
+        }
 
         this._setUpColumn();
 
-        this._updateChildren();
+        this._updateChildColumns();
     },
 
     baseUrl: function()
@@ -20,11 +34,6 @@ this.Column = Model.extend({
         return '/views/' + this.view.id + '/' +
             (this.renderTypeName.endsWith('_obsolete') ?
                 'obsolete_' : '') + 'files/';
-    },
-
-    childForID: function(id)
-    {
-        return this._childIDLookup[parseInt(id)];
     },
 
     getSummary: function(successCallback)
@@ -58,23 +67,6 @@ this.Column = Model.extend({
     invalidateData: function()
     {
         delete this._summary;
-    },
-
-    addColumn: function(column, successCallback, errorCallback)
-    {
-        var col = this;
-        var columnAdded = function(newCol)
-        {
-            col.childColumns.push(newCol);
-            col._updateChildren();
-            if (_.isFunction(successCallback))
-            { successCallback(col.childForID(newCol.id)); }
-        };
-
-        this._makeRequest({url: '/views/' + this.view.id + '/columns/' +
-                this.id + '/sub_columns.json',
-                type: 'POST', data: JSON.stringify(new Column(column).cleanCopy()),
-                success: successCallback, error: errorCallback});
     },
 
     save: function(successCallback, errorCallback)
@@ -156,7 +148,7 @@ this.Column = Model.extend({
         _.each(newCol, function(v, k)
         { if (k != 'childColumns' && col._validKeys[k]) { col[k] = v; } });
 
-        this._updateChildren(newCol.childColumns);
+        this._updateChildColumns(newCol.childColumns);
 
         // dropDown is special, because it only comes from the server; it isn't
         // posted back, so it isn't considered valid
@@ -253,17 +245,6 @@ this.Column = Model.extend({
             type: 'POST', success: columnConverted, error: errorCallback});
     },
 
-    cleanCopy: function()
-    {
-        var col = this._super();
-        if (!$.isBlank(col.childColumns))
-        {
-            col.childColumns = _.reject(col.childColumns,
-                function(c) { return c.id == -1; });
-        }
-        return col;
-    },
-
     removeRows: function(rowIds)
     {
         $.makeArray(rowIds);
@@ -304,34 +285,9 @@ this.Column = Model.extend({
         { delete this.currentFilter; }
     },
 
-    _updateChildren: function(newChildren)
+    _updateChildColumns: function()
     {
-        if ($.isBlank(this.childColumns) && $.isBlank(newChildren)) { return; }
-
-        var col = this;
-
-        // TODO: fill this in
-        if (!$.isBlank(newChildren))
-        {
-            this.childColumns = this.childColumns || [];
-        }
-
-        this._childIDLookup = {};
-        this.childColumns = _.map(this.childColumns, function(c, i)
-            {
-                if (!(c instanceof Column))
-                { c = new Column(c, col.view, col); }
-                col._childIDLookup[c.id] = c;
-                return c;
-            });
-        this.realChildren = _.reject(this.childColumns, function(c)
-            { return c.isMeta; });
-        this.visibleChildren = _(this.realChildren).chain()
-            .reject(function(c) { return c.hidden; })
-            .sortBy(function(c) { return c.position; })
-            .value();
-
-        _.defer(function() { col.view.trigger('columns_changed'); });
+        // Do nothing; provided for fallback
     },
 
     _clearFilterData: function(query)

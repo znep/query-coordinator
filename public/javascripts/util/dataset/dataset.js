@@ -30,6 +30,11 @@ this.Dataset = Model.extend({
 
         $.extend(this, v);
 
+        // This ID really shouldn't be changing; if it does, this URL
+        // will be out-of-date...
+        Dataset.addProperties(this, ColumnContainer('column',
+                '/views/' + this.id + '/columns'), Dataset.prototype);
+
         this.type = getType(this);
         this.styleClass = this.type.capitalize();
         this.displayName = getDisplayName(this);
@@ -63,27 +68,7 @@ this.Dataset = Model.extend({
         this._origSearchString = this.searchString;
     },
 
-    columnForID: function(id)
-    {
-        return this._columnIDLookup[parseInt(id) || id];
-    },
-
-    columnForTCID: function(tcId)
-    {
-        return this._columnTCIDLookup[parseInt(tcId)];
-    },
-
-    columnsForType: function(type, includeHidden)
-    {
-        var cols = includeHidden ? this.realColumns : this.visibleColumns;
-        if (!$.isBlank(type))
-        {
-            cols = _.select(cols, function(c)
-                { return _.include($.makeArray(type), c.renderTypeName); });
-        }
-        return cols;
-    },
-
+    // Move to ColumnContainer?
     setVisibleColumns: function(visColIds, callback, skipRequest)
     {
         var ds = this;
@@ -178,6 +163,7 @@ this.Dataset = Model.extend({
         };
 
         var ds = cleanViewForSave(this);
+        // Can't handle saving a new view with tags
         if (!$.isBlank(ds.columns))
         {
             ds.columns = _.reject(ds.columns,
@@ -203,13 +189,6 @@ this.Dataset = Model.extend({
         var ds = this;
         ds._invalidateRows();
         ds._loadRows(0, 1, null, true, true);
-    },
-
-    cleanCopy: function()
-    {
-        var ds = this._super();
-        ds.columns = _.reject(ds.columns, function(c) { return c.id == -1; });
-        return ds;
     },
 
     userGrants: function()
@@ -308,62 +287,15 @@ this.Dataset = Model.extend({
             var par = this.columnForID(column.parentId);
             if ($.isBlank(par))
             { throw 'Column ' + column.parentId + ' not found'; }
-            par.addColumn(column, successCallback, errorCallback);
-            return;
+            par.addChildColumn(column, successCallback, errorCallback);
+            // True means abort (don't handle)
+            return true;
         }
-
-        var ds = this;
-        var columnAdded = function(newCol)
-        {
-            ds.columns.push(newCol);
-            ds._updateColumns();
-            if (_.isFunction(successCallback))
-            { successCallback(ds.columnForID(newCol.id)); }
-        };
-
-        var req = {url: '/views/' + this.id + '/columns.json', type: 'POST',
-                success: columnAdded, error: errorCallback};
-
-        if (!$.isBlank(column))
-        { req.data = JSON.stringify(new Column(column).cleanCopy()); }
-
-        if (!$.isBlank(customParams))
-        { req.params = customParams; }
-
-        this._makeRequest(req);
     },
 
-    removeColumns: function(columnIds, successCallback, errorCallback)
-    {
-        var ds = this;
-        _.each($.makeArray(columnIds), function(cId)
-        {
-            var c = ds.columnForID(cId);
-            c.remove(null, errorCallback, true);
-        });
-
-        var columnsRemoved = function()
-        {
-            ds._updateColumns();
-            if (_.isFunction(successCallback)) { successCallback(); }
-        };
-
-        ds._sendBatch(columnsRemoved);
-    },
-
-    // Removes a column from the model without doing anything on the server;
-    // use removeColumns or Column.remove for that
     clearColumn: function(colId)
     {
-        var ds = this;
-        var col = ds.columnForID(colId);
-
-        ds.columns = _.without(ds.columns, col);
-        delete ds._columnIDLookup[col.id];
-        delete ds._columnIDLookup[col.lookup];
-        delete ds._columnTCIDLookup[col.tableColumnId];
-
-        _.each(ds._rows, function(r) { delete r[col.id]; });
+        _.each(ds._rows, function(r) { delete r[colId]; });
     },
 
     // Callback may be called multiple times with smaller batches of rows
@@ -953,75 +885,6 @@ this.Dataset = Model.extend({
         });
 
         ds._updateColumns();
-    },
-
-    _updateColumns: function(newCols, forceFull, updateOrder)
-    {
-        var ds = this;
-
-        if (!$.isBlank(newCols))
-        {
-            var newColIds = {};
-            ds.columns = ds.columns || [];
-            _.each(newCols, function(nc, i)
-            {
-                newColIds[nc.id] = true;
-                // Columns may or may not be in the list already; they may
-                // also be at the wrong spot.  So find the column and index
-                // if it already exists
-                var c = nc.dataTypeName != 'meta_data' ? ds.columnForID(nc.id) :
-                    _.detect(ds.columns, function(mc)
-                        { return mc.dataTypeName == 'meta_data' &&
-                            mc.name == nc.name; });
-                var ci = _.indexOf(ds.columns, c);
-
-                // If it is new, just splice it in
-                if ($.isBlank(c))
-                {
-                    if (updateOrder) { ds.columns.splice(i, 0, nc); }
-                    else { ds.columns.push(nc); }
-                }
-                else
-                {
-                    // If the column existed but not at this index, remove it from
-                    // the old spot and put it in the new one
-                    if (updateOrder && ci != i)
-                    {
-                        ds.columns.splice(ci, 1);
-                        ds.columns.splice(i, 0, c);
-                    }
-                    // Update the column object in-place
-                    c.update(nc, forceFull);
-                }
-            });
-
-            if (forceFull)
-            {
-                this.columns = _.reject(this.columns, function(c)
-                        { return !newColIds[c.id]; });
-            }
-        }
-
-        this._columnIDLookup = {};
-        this._columnTCIDLookup = {};
-        this.columns = _.map(this.columns, function(c, i)
-            {
-                if (!(c instanceof Column))
-                { c = new Column(c, ds); }
-                ds._columnIDLookup[c.id] = c;
-                if (c.lookup != c.id)
-                { ds._columnIDLookup[c.lookup] = c; }
-                ds._columnTCIDLookup[c.tableColumnId] = c;
-                return c;
-            });
-        this.realColumns = _.reject(this.columns, function(c)
-            { return c.isMeta; });
-        this.visibleColumns = _(this.realColumns).chain()
-            .reject(function(c) { return c.hidden; })
-            .sortBy(function(c) { return c.position; })
-            .value();
-
-        this.trigger('columns_changed');
     },
 
     _makeRequest: function(req)

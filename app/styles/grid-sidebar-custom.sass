@@ -414,9 +414,17 @@
     .columnItem
       line-height: 1.5833em
       label
+        @include datatype-icons
         padding-left: 0
-      .ie7 & .checker.uniform
-        display: inline
+
+        .icon
+          display: inline-block
+          margin-bottom: -5px
+
+      .checker.uniform
+        margin-right: 2px
+        .ie7 &
+          display: inline
 
   #gridSidebar_shareDataset .sharingForm
     .formHeader

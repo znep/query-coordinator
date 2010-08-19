@@ -23,8 +23,9 @@
                             'input@checked': 'column.visible',
                             'input@data-columnId': 'column.id',
                             'input@id': 'showHide_#{column.id}',
-                            'label': 'column.name!',
-                            'label@for': 'showHide_#{column.id}'
+                            'label .name': 'column.name!',
+                            'label@for': 'showHide_#{column.id}',
+                            'label@class+': 'column.renderTypeName'
                         }
                     }
                 }

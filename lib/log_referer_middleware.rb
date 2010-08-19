@@ -4,21 +4,23 @@ require 'stomp'
 # consumed by some ActiveMQ consumer). All y'all jive turkeys be careful: I 
 # know you've been. 
 class LogRefererMiddleware
-  @@client = nil
+  class << self
+    attr_accessor :client
+  end
+
   @@requests = []
-  BATCH_REQUESTS_BY = 100
+  BATCH_REQUESTS_BY = Rails.env.development? ? 1 : 100
 
   def initialize(app)
     @app = app
 
     at_exit do
       flush_requests(true)
+      self.class.client.close unless self.class.client.nil?
     end
   end
 
   def call(env)
-    client # init connection
-
     # First we need to figure out what the domain is so that we know which
     # site to log the metrics too...
     request = Rack::Request.new(env)
@@ -80,18 +82,25 @@ private
   end
 
   def flush_requests(synchronous = false)
+    return if @@requests.empty?
+
+    get_client # init connection in main thread
+
     current_requests = @@requests
     @@requests = []
 
-    if synchronous
+    if Rails.env.development?
+      do_flush_requests
+      get_client.close
+    elsif synchronous
       do_flush_requests
     else
-      Thread.new {
+      Thread.new do
         # be chivalrous
         Thread.pass
 
         do_flush_requests
-      }
+      end
     end
   end
 
@@ -99,7 +108,7 @@ private
     begin
       logger.debug "Hit batch limit of #{BATCH_REQUESTS_BY}, firing off requests..."
       @@requests.each do |request|
-        client.publish(request[:uri], request[:data], request[:params])
+        get_client.publish(request[:uri], request[:data], request[:params])
       end
       logger.debug "Done firing off requests."
     rescue
@@ -108,13 +117,11 @@ private
     end
   end
 
-  def client
-    if @@client.nil?
+  def get_client
+    self.class.client ||= begin
       uris = APP_CONFIG['activemq_hosts'].split(/\s*,\s*/)
-      @@client = connect(uris)
+      connect(uris)
     end
-
-    return @@client
   end
 
   def connect(uris)

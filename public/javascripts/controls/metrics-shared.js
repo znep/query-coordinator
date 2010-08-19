@@ -122,7 +122,7 @@ metricsNS.summarySectionCallback = function($context)
     var summaries = $context.data('data-summary'),
         data      = $context.data(metricsNS.DATA_KEY),
         mappedData = {},
-        summaryCalculator = function(key, append, region)
+        summaryCalculator = function(key, append)
     {
         mappedData[key] = data[summaries.plus + (append || '')] || 0;
 
@@ -130,20 +130,28 @@ metricsNS.summarySectionCallback = function($context)
         {
             mappedData[key] -= (data[summaries.minus + (append || '')] || 0);
         }
-
+    },
+        summaryToolTip = function(key, region)
+    {
         if (!$.isBlank(summaries.verbPhrase))
         {
             mappedData[key + 'Text'] =
                 (mappedData[key] == 0 ? 'No' : mappedData[key]) + ' ' +
                 (mappedData[key] == 1 ? summaries.verbPhraseSingular :
-                      summaries.verbPhrase) +
-                ' ' + region + ' this time period';
+                      summaries.verbPhrase) + ' ' +
+                region + ' this time period';
         }
     };
 
+    summaryCalculator('total', '-total');
+    summaryCalculator('delta');
 
-    summaryCalculator('total', '-total', 'before');
-    summaryCalculator('delta', '', 'during');
+    // Semi-hack: balboa returns _before_ this time period as 'total',
+    // but that really doesn't make much sense, so calculate the actual total
+    mappedData.total += mappedData.delta;
+
+    summaryToolTip('total', 'through');
+    summaryToolTip('delta', 'during');
 
     if (mappedData.delta < 0)
     {

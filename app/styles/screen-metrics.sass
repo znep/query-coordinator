@@ -84,10 +84,17 @@
       .subLinksContainer, .subValuesContainer
         display: none
       .subLinksContainer
+        max-width: 25em
         padding-left: 2em
+        .subLinks
+          @include clip-text
 
       .subItemBox
         padding-top: 0.3em
+
+    &.expanding
+      col.description
+        width: 80%
 
   .summaryDisplay, .detailDisplay
     margin: 2em 0

@@ -54,7 +54,7 @@ $(function()
             },
             {
                 id: 'topReferrers', displayName: 'Top Referrers',
-                heading: 'Hits', className: 'right',
+                heading: 'Hits', className: 'right expanding',
                 callback: blist.metrics.urlMapCallback, top: 'REFERRERS'
             },
             {
@@ -66,7 +66,7 @@ $(function()
             },
             {
                 id: 'topEmbeds', displayName: 'Top Embeds',
-                heading: 'Embeds', className: 'right',
+                heading: 'Embeds', className: 'right expanding',
                 callback: blist.metrics.urlMapCallback, top: 'EMBEDS'
             }
         ]

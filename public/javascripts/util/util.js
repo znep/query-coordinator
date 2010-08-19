@@ -1,4 +1,5 @@
 blist.namespace.fetch('blist.util');
+blist.namespace.fetch('blist.util.patterns');
 
 // Prototype defs
 String.prototype.startsWith = function(str)
@@ -343,5 +344,7 @@ blist.util.doAuthedAction = function(actionText, callback)
         callback();
     }
 };
+
+blist.util.patterns.UID = /^\w{4}-\w{4}$/;
 
 })(jQuery);

@@ -54,7 +54,7 @@
   </select>
 </div>
 
-<%- when 'picklist', 'drop_down_list' -%>
+<%- when 'picklist', 'drop_down_list', 'dataset_link' -%>
 <select class='fieldInput' id='<%= id %>' name='<%= column.id %>'>
   <option value=''>(Blank)</option>
   <%- column.dropDown.values.each do |dd| -%>

@@ -100,6 +100,11 @@ class DatasetsController < ApplicationController
 
   def stats
     @view = get_view(params[:id])
+    if !(@view.owned_by?(current_user) || \
+        CurrentDomain.user_can?(current_user, :edit_others_datasets) || \
+        @view.can_edit?)
+      return render_403
+    end
   end
 
 protected

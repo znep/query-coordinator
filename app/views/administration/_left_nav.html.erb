@@ -12,5 +12,12 @@
           raw('<span class="icon"></span>Users'),
           {:action => 'users'} %>
     </li>
+    <%- if current_user && current_user.is_admin? -%>
+      <li class="internal">
+        <%= link_to_unless_current \
+            raw('<span class="icon"></span>Internal'),
+            {:controller => 'internal', :action => 'index'} %>
+      </li>
+    <%- end -%>
   </ul>
 </div>

@@ -28,6 +28,28 @@
     },
     'This value is invalid');
 
+    $.validator.addMethod('data-custom-4x4uid', function(value, element, param)
+    {
+        var viewUid = value;
+
+        if ($.isBlank(viewUid) || viewUid.match(blist.util.patterns.UID))
+        {
+            return true;
+        }
+
+        viewUid = blist.util.navigation.urlToViewId(viewUid);
+        if ($.isBlank(viewUid))
+        {
+            return false;
+        }
+        else
+        {
+            $(element).val(viewUid);
+        }
+        return true;
+    },
+    'This requires a 4x4 view UID');
+
     // Special validator for validating required file types
     $.validator.addMethod('data-requiredTypes', function(value, element, param)
     {
@@ -1315,8 +1337,13 @@
 
     var renderSelectOption = function(opt, curVal)
     {
+        // allow selected value to be determined until options are loaded.
+        // this is done by setting default value to '_selected' and
+        // adding _selected attrib = true in the desired option.
+        var isSelected = (curVal === '_selected' && opt.selected === true) ||
+            opt.value === curVal;
         var item = {tagName: 'option', value: opt.value,
-            selected: opt.value === curVal, contents: opt.text};
+            selected: isSelected, contents: opt.text};
         var dataKeys = [];
         _.each(opt.data || {}, function(v, k)
             {
@@ -2445,7 +2472,7 @@
 
                     if (_.isFunction(selOpt))
                     {
-                        var newOpts = selOpt(vals);
+                        var newOpts = selOpt(vals, data, $field);
                         $field.find('option:not(.prompt)').remove();
                         $field.attr('disabled', $.isBlank(newOpts) ||
                             newOpts == 'disabled' ||

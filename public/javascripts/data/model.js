@@ -868,6 +868,7 @@ blist.namespace.fetch('blist.data');
                 {
                     case 'picklist':
                     case 'drop_down_list':
+                    case 'dataset_link':
                         col.options = translatePicklistFromView(vcol);
                         break;
 

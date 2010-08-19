@@ -108,7 +108,6 @@
         blist.data.types.money.currencies[c.value] + ')'}; });
 
     var rdfOptions = [];
-
     var configName = 'columnProperties';
     var config =
     {
@@ -203,6 +202,30 @@
                     {type: 'repeater', addText: 'Add Option',
                     name: 'dropDownList.values',  minimum: 1, savedField: 'id',
                     field: {type: 'text', text: 'Option', name: 'description'}}
+                ]
+            },
+
+            // Dataset Link
+            {
+                title: 'Linked Dataset',
+                onlyIf: {func: function(view, col)
+                { return (col || {}).renderTypeName == 'dataset_link'; }},
+                fields: [
+                    {text: 'Dataset', type: 'text', name: 'format.linkedDataset',
+                        data: { '4x4uid': 'unverified'},
+                        prompt: 'Dataset URL or 4x4 UID',
+                        wizard: 'Enter the URL or 4x4 UID of the linked dataset'},
+                    {text: 'Key Column', type: 'select', name: 'format.keyColumn',
+                        // add column has default - rdf key.
+                        // edit column has no default.  ui cannot tell the diff
+                        // between default (unsaved) or saved value.
+                        linkedField: 'format.linkedDataset',
+                        options: blist.dataset.getLinkedDatasetOptionsNoDefault,
+                        wizard: 'Select the key column'},
+                    {text: 'Label Column', type: 'select', name: 'format.labelColumn',
+                        linkedField: 'format.linkedDataset',
+                        options: blist.dataset.getLinkedDatasetOptionsDefault,
+                        wizard: 'Select the label column'}
                 ]
             },
 

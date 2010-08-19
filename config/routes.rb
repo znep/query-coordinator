@@ -45,36 +45,36 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/internal/orgs/:id/domains', :controller => 'internal',
     :action => 'create_domain', :conditions => { :method => :post }
   map.connect '/internal/orgs/:org_id/domains/:id', :controller => 'internal',
-    :action => 'show_domain', :requirements => {:id => /(\w|\.)+/}
+    :action => 'show_domain', :requirements => {:id => /(\w|-|\.)+/}
   map.connect '/internal/orgs/:org_id/domains/:domain_id/preview_site_config',
     :controller => 'internal', :action => 'preview_site_config',
-    :requirements => {:domain_id => /(\w|\.)+/}
+    :requirements => {:domain_id => /(\w|-|\.)+/}
   map.connect '/internal/orgs/:org_id/domains/:domain_id/site_config',
     :controller => 'internal', :action => 'create_site_config',
-    :requirements => {:domain_id => /(\w|\.)+/},
+    :requirements => {:domain_id => /(\w|-|\.)+/},
     :conditions => { :method => :post }
   map.connect '/internal/orgs/:org_id/domains/:domain_id/default_site_config',
     :controller => 'internal', :action => 'set_default_site_config',
-    :requirements => {:domain_id => /(\w|\.)+/},
+    :requirements => {:domain_id => /(\w|-|\.)+/},
     :conditions => { :method => :post }
   map.connect '/internal/orgs/:org_id/domains/:domain_id/feature',
     :controller => 'internal', :action => 'set_features',
-    :requirements => {:domain_id => /(\w|\.)+/},
+    :requirements => {:domain_id => /(\w|-|\.)+/},
     :conditions => { :method => :post }
   map.connect '/internal/orgs/:org_id/domains/:domain_id/account_modules',
     :controller => 'internal', :action => 'add_module_to_domain',
-    :requirements => {:domain_id => /(\w|\.)+/},
+    :requirements => {:domain_id => /(\w|-|\.)+/},
     :conditions => { :method => :post }
   map.connect '/internal/orgs/:org_id/domains/:domain_id/site_config/:id',
     :controller => 'internal', :action => 'show_config',
-    :requirements => {:domain_id => /(\w|\.)+/}
+    :requirements => {:domain_id => /(\w|-|\.)+/}
   map.connect '/internal/orgs/:org_id/domains/:domain_id/site_config/:id/property',
     :controller => 'internal', :action => 'set_property',
-    :requirements => {:domain_id => /(\w|\.)+/},
+    :requirements => {:domain_id => /(\w|-|\.)+/},
     :conditions => { :method => :post }
   map.connect '/internal/orgs/:org_id/domains/:domain_id/site_config/:config_id/edit_property',
     :controller => 'internal', :action => 'show_property',
-    :requirements => {:domain_id => /(\w|\.)+/}
+    :requirements => {:domain_id => /(\w|-|\.)+/}
   map.connect '/internal/tiers', :controller => 'internal',
     :action => 'index_tiers'
   map.connect '/internal/tiers/:name', :controller => 'internal',

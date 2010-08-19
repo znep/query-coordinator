@@ -3,6 +3,8 @@
     if (blist.sidebarHidden.edit &&
         blist.sidebarHidden.edit.addColumn) { return; }
 
+    var cachedLinkedDatasetOptions = {};
+
     var getTypes = function(data)
     {
         return _(blist.data.types).chain()
@@ -67,6 +69,31 @@
                     field: {type: 'text', text: 'Option', name: 'description'},
                     wizard: 'Enter all the possible options for your ' +
                         'multiple choice column'}
+                ]
+            },
+
+            // Dataset Link
+            {
+                title: 'Linked Dataset',
+                onlyIf: {field: 'dataTypeName', value: 'dataset_link'},
+                fields: [
+                    {text: 'Dataset', type: 'text', name: 'format.linkedDataset',
+                        data: { '4x4uid': 'unverified' },
+                        prompt: 'Dataset URL or 4x4 UID',
+                        wizard: 'Enter the URL or 4x4 UID of the linked dataset'
+                    },
+                    {text: 'Key Column', type: 'select', name: 'format.keyColumn',
+                        linkedField: 'format.linkedDataset',
+        // allow selected value to be determined until options are loaded.
+        // this is done by setting default value to '_selected' and
+        // adding _selected attrib = true in the desired option.
+                        defaultValue: '_selected',
+                        options: blist.dataset.getLinkedDatasetOptionsDefault,
+                        wizard: 'Select the key column'},
+                    {text: 'Label Column', type: 'select', name: 'format.labelColumn',
+                        linkedField: 'format.linkedDataset',
+                        options: blist.dataset.getLinkedDatasetOptionsDefault,
+                        wizard: 'Select the label column'}
                 ]
             },
 

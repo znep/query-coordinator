@@ -210,7 +210,8 @@ protected
   end
 
   def generate_cache_key(item)
-    return "#{CurrentDomain.cname}.#{item}.#{REVISION_NUMBER}.#{CurrentDomain.default_config_id}"
+    return  "%s.%s.%s.%s.%s" % [CurrentDomain.cname, item, REVISION_NUMBER,
+      CurrentDomain.default_config_id, CurrentDomain.default_config_updated_at]
   end
 
   @@site_theme_parse = {

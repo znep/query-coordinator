@@ -38,7 +38,8 @@ columnRdfNS.renderer = function(column, $container)
         keyName: 'CName',
         renderFn: columnRdfNS.renderComboRow,
         keyAccProp: 'namespace',
-        allowFreeEdit: true
+        allowFreeEdit: true,
+        freeEditButton: true
     });
 };
 

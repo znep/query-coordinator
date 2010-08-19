@@ -117,27 +117,8 @@ class AdminController < ApplicationController
       return (render 'shared/error', :status => :not_found)
     end
 
-    CurrentDomain.flag_preferences_out_of_date!
+    CurrentDomain.flag_out_of_date!
     redirect_to :action => :config
-  end
-
-  def theme
-    session[:return_to] = url_for(:action => :theme)
-    configuration = Configuration.find_by_type('site_theme', true, request.host)[0]
-    @theme = configuration.properties.theme
-    @configID = configuration.data['id']
-  end
-
-  def update_theme
-    if params[:configID].present?
-      configuration = Configuration.find_unmerged(params[:configID])
-
-      # Logic goes here ...
-
-      # !! Note: We might not be working on the active theme, need more LOGIC
-      CurrentDomain.flag_preferences_out_of_date!
-    end
-    redirect_to :action => :theme
   end
 
   def users
@@ -176,7 +157,7 @@ class AdminController < ApplicationController
   def reload
     # Note!! This only reloads for the current server. We need to
     # re-think our CurrentDomain caching scheme if we want real-time refresh
-    CurrentDomain.reload(request.host)
+    CurrentDomain.reload
     redirect_back_or_default(url_for :action => :index)
   end
 

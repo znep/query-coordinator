@@ -47,54 +47,58 @@
     top: 11em
 
 
-  .metricsTopContainer
-    display: none
-    min-height: 22em
-    width: 49%
-    &.left
+  .topDisplay
+    .leftColumn
       float: left
-    &.right
+    .rightColumn
       float: right
-    &.noDataAvailable
-      .metricsList
+    > div
+      width: 49%
+
+      .metricsTopContainer
         display: none
-    .flash
-      display: none
-      margin: 0
+        min-height: 22em
+        &:last-child
+          min-height: 0
+        &.noDataAvailable
+          .metricsList
+            display: none
+        .flash.message
+          margin: 0
 
-    .sectionTitle
-      padding-bottom: 0.5em
+        .sectionTitle
+          padding-bottom: 0.5em
 
-    .gridList thead tr th
-      background-color: #dedede
+        .gridList thead tr th
+          background-color: #dedede
 
-    col.description
-      width: 85%
+        col.description
+          width: 85%
 
-    .value
-      text-align: right
+        .value
+          text-align: right
 
-    .item
-      border-bottom: 1px solid #eee
-      line-height: 1.2em
-      padding: 0.4em 0.8em
-      &:last-child
-        border-bottom: 2px solid #eee
+        .item
+          border-bottom: 1px solid #eee
+          line-height: 1.2em
+          padding: 0.4em 0.8em
+          &:last-child
+            border-bottom: 2px solid #eee
 
-      .subLinksContainer, .subValuesContainer
-        display: none
-      .subLinksContainer
-        max-width: 25em
-        padding-left: 2em
-        .subLinks
-          @include clip-text
+          .subLinksContainer, .subValuesContainer
+            display: none
+          .subLinksContainer
+            max-width: 25em
+            padding-left: 2em
+            .subLinks
+              @include clip-text
 
-      .subItemBox
-        padding-top: 0.3em
+          .subItemBox
+            padding-top: 0.3em
 
-    &.expanding
-      col.description
-        width: 80%
+        &.expanding
+          col.description
+            width: 80%
 
   .summaryDisplay, .detailDisplay
     margin: 2em 0

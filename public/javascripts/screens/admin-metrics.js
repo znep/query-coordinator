@@ -57,24 +57,24 @@ $(function()
         topListSections: [
             {
                 id: 'topDatasets', displayName: 'Top Datasets',
-                heading: 'Hits', className: 'left',
+                heading: 'Hits', renderTo: 'leftColumn',
                 callback: blist.metrics.topDatasetsCallback,  top: 'DATASETS'
             },
             {
                 id: 'topReferrers', displayName: 'Top Referrers',
-                heading: 'Hits', className: 'right expanding',
+                heading: 'Hits', className: 'expanding', renderTo: 'rightColumn',
                 callback: blist.metrics.urlMapCallback, top: 'REFERRERS'
             },
             {
                 id: 'topSearches', displayName: 'Top Search Terms',
-                heading: 'Searches', className: 'left',
+                heading: 'Searches', renderTo: 'leftColumn',
                 callback: function($context) {
                     blist.metrics.updateTopSearchesCallback($context, 'top-dataset-searches');
                 },  top: 'SEARCHES'
             },
             {
                 id: 'topEmbeds', displayName: 'Top Embeds',
-                heading: 'Embeds', className: 'right expanding',
+                heading: 'Embeds', className: 'expanding', renderTo: 'rightColumn',
                 callback: blist.metrics.urlMapCallback, top: 'EMBEDS'
             }
         ]

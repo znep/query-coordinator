@@ -61,12 +61,12 @@ $(function()
         topListSections: [
             {
                 id: 'topViews', displayName: 'Top Embeds',
-                heading: 'Embeds', className: 'left',
+                heading: 'Embeds', className: 'expanding', renderTo: 'leftColumn',
                 callback: blist.metrics.urlMapCallback,  top: 'EMBEDS'
             },
             {
                 id: 'topReferrers', displayName: 'Top Referrers',
-                heading: 'Hits', className: 'right',
+                heading: 'Hits', className: 'expanding', renderTo: 'rightColumn',
                 callback: blist.metrics.urlMapCallback, top: 'REFERRERS'
             }
         ]

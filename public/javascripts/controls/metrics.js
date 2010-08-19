@@ -163,6 +163,12 @@
             }
         );
 
+        _.each(opts.topListSections, function(section)
+        {
+            $screen.find('#' + section.id)
+                .appendTo($screen.find('.' + section.renderTo));
+        });
+
         // Listen for a custom event to trigger data refresh
         $screen.bind('metricsTimeChanged', function(event, newStart, newInterval, newSlice)
         {

@@ -23,9 +23,7 @@
       '/domains/' + @domain.cname + '/site_config/' + @config.id.to_s +
       '/property', {:class => 'wide'}) do %>
       <div class="bespin" data-bespinoptions='{"stealFocus":true, "syntax":"<%= is_json ? 'js' : 'html' %>"}'
-        style="height: 60em"><%=
-        raw (is_json ? @property.to_json.gsub(/\\n/, "\n") : @property) if @property
-      %></div>
+        style="height: 60em"><%= raw(@property) if (@property && !is_json) %></div>
       <%= text_area_tag 'properties[' + @property_key + ']', '', :style => 'display: none' %>
       <input type="submit" value="Save"/>
     <%- end -%>
@@ -39,6 +37,11 @@
   var isJson = <%= is_json == true %>;
   $(function()
   {
+      <%- if is_json -%>
+      $('div.bespin').text(
+        <%= raw( "JSON.stringify(#{@property.to_json}, null, 4)") %>
+      );
+      <%- end -%>
       $('form').submit(function(event)
       {
         var bespinVal = $('.bespin').get(0).bespin.editor.value;

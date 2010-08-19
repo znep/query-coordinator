@@ -160,6 +160,23 @@
         blist.dataset.chart.textualTypes, 'Categories');
     configLine.fields[0].required = false;
 
+    var configDonut = basicConfig(blist.dataset.chart.types.donut,
+        blist.dataset.chart.textualTypes, 'Label');
+    configDonut.fields.splice(1, 2);
+    configDonut.fields[0].wizard = 'Select a column that contains the categories ' +
+        'for the donut slices';
+    configDonut.fields.push({type: 'repeater', name: 'displayFormat.valueColumns',
+            field: {text: 'Values', name: 'tableColumnId',
+            type: 'columnSelect', required: true, isTableColumn: true,
+            columns: {type: blist.dataset.chart.numericTypes, hidden: isEdit},
+            wizard: 'Select a column that contains the data for the donut slices'},
+            minimum: 1, addText: 'Add Data Column'
+        });
+    configDonut.fields.push({type: 'repeater', text: 'Colors',
+        field: $.extend({}, colorOption, {name: 'displayFormat.colors.0'}),
+        minimum: 6, maximum: 6, lineClass: 'colorArray',
+        wizard: 'Choose colors for the slices of your donut chart'});
+
     var configPie = basicConfig(blist.dataset.chart.types.pie,
         blist.dataset.chart.textualTypes, 'Label');
     configPie.fields.splice(1, 2);
@@ -244,6 +261,10 @@
             basicData(blist.dataset.chart.types.column,
                 blist.dataset.chart.numericTypes, 'Values'),
             basicAdv(blist.dataset.chart.types.column, [legendPos]),
+
+
+            // Donut chart
+            configDonut,
 
 
             // Line chart

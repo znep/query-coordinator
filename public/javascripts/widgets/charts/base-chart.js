@@ -17,6 +17,7 @@
             'area': 'highcharts',
             'bar': 'highcharts',
             'column': 'highcharts',
+            'donut': 'highcharts',
             'line': 'highcharts',
             'pie': 'highcharts',
             'timeline': 'highcharts',

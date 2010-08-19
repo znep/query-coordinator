@@ -214,8 +214,8 @@ blist.namespace.fetch('blist.data');
 //                if (nestedIn) {
 //                    col.nestedIn = nestedIn;
 //                    col.dataLookupExpr = nestedIn.header.dataLookupExpr +
-//                        _.isString(col._lookup) ? ('.' + col._lookup ) :
-//                            ('[' + col._lookup + ']');
+//                        _.isString(col.lookup) ? ('.' + col.lookup ) :
+//                            ('[' + col.lookup + ']');
 //                }
 //
 //                switch (col.type)
@@ -372,7 +372,7 @@ blist.namespace.fetch('blist.data');
 
             if (row.invalid[column.id]) { return null; }
 
-            return row[column._lookup];
+            return row[column.lookup];
         };
 
         // Get the invalid value in a row for a column
@@ -382,7 +382,7 @@ blist.namespace.fetch('blist.data');
 
             if (!row.invalid[column.id]) { return null; }
 
-            return row[column._lookup];
+            return row[column.lookup];
         };
 
         this.isCellError = function(row, column)
@@ -692,6 +692,14 @@ blist.namespace.fetch('blist.data');
             $(listeners).trigger('undo_redo_change');
         };
 
+        // Retrieve the index for a row, adjusted for specials
+        this.index = function(row)
+        {
+            if ($.isBlank(this.view)) { return undefined; }
+            if (!$.isBlank(specialRows[row.id])) { return row.index; }
+            return row.index + countSpecialTo(row.index);
+        };
+
         /**
          * Retrieve a single row by index.
          */
@@ -799,7 +807,7 @@ blist.namespace.fetch('blist.data');
         {
             if (row.level < 0 || row.type == 'blank') { return; }
 
-            this.selectedRows[row.id] = row.index + countSpecialTo(row.index);
+            this.selectedRows[row.id] = this.index(row);
             if (!suppressChange) { this.selectionChange([row]); }
             return [row];
         };
@@ -840,7 +848,7 @@ blist.namespace.fetch('blist.data');
 
             if (minIndex == null) { return this.selectRow(row); }
 
-            var curIndex = row.index + countSpecialTo(row.index);
+            var curIndex = this.index(row);
             var maxIndex = curIndex;
             if (curIndex < minIndex)
             {

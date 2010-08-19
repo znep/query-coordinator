@@ -282,14 +282,14 @@ this.Column = Model.extend({
         this.renderType = blist.data.types[this.renderTypeName] || {};
         this.isMeta = this.dataTypeName == 'meta_data';
 
-        this._lookup = this.isMeta ? this.name : this.id;
-        if (this.dataTypeName == 'tag') { this._lookup = 'tags'; }
-        else if (this.isMeta && this.name == 'sid') { this._lookup = 'id'; }
-        else if (this.isMeta && this.name == 'id') { this._lookup = 'uuid'; }
+        this.lookup = this.isMeta ? this.name : this.id;
+        if (this.dataTypeName == 'tag') { this.lookup = 'tags'; }
+        else if (this.isMeta && this.name == 'sid') { this.lookup = 'id'; }
+        else if (this.isMeta && this.name == 'id') { this.lookup = 'uuid'; }
 
         // Wouldn't mind getting rid of this; currently req for rendering the grid
-        this.dataLookupExpr = _.isString(this._lookup) ?
-            ('.' + this._lookup ) : ('[' + this._lookup + ']');
+        this.dataLookupExpr = _.isString(this.lookup) ?
+            ('.' + this.lookup ) : ('[' + this.lookup + ']');
 
         // Set up min width and default
         this.minWidth = 50;

@@ -360,7 +360,7 @@ this.Dataset = Model.extend({
 
         ds.columns = _.without(ds.columns, col);
         delete ds._columnIDLookup[col.id];
-        delete ds._columnIDLookup[col._lookup];
+        delete ds._columnIDLookup[col.lookup];
         delete ds._columnTCIDLookup[col.tableColumnId];
 
         _.each(ds._rows, function(r) { delete r[col.id]; });
@@ -497,8 +497,8 @@ this.Dataset = Model.extend({
         var newRow = {invalid: {}, error: {}, changed: {}};
         _.each(ds.columns, function(c)
         {
-            if (!$.isBlank(data[c._lookup]))
-            { newRow[c._lookup] = data[c._lookup]; }
+            if (!$.isBlank(data[c.lookup]))
+            { newRow[c.lookup] = data[c.lookup]; }
         });
         newRow.id = 'saving' + _.uniqueId();
         delete newRow.uuid;
@@ -509,7 +509,7 @@ this.Dataset = Model.extend({
         ds.totalRows++;
         ds.trigger('row_count_change');
 
-        _.each(ds.realColumns, function(c) { newRow.changed[c._lookup] = true; });
+        _.each(ds.realColumns, function(c) { newRow.changed[c.lookup] = true; });
 
         ds._pendingRowEdits[newRow.id] = [];
 
@@ -538,13 +538,13 @@ this.Dataset = Model.extend({
         if ($.isBlank(col)) { throw 'Column ' + columnId + ' not found'; }
         if (col.isMeta) { throw 'Cannot modify metadata on rows: ' + columnId; }
 
-        row[col._lookup] = value;
+        row[col.lookup] = value;
 
-        delete row.error[col._lookup];
+        delete row.error[col.lookup];
 
-        row.changed[col._lookup] = true;
+        row.changed[col.lookup] = true;
 
-        row.invalid[col._lookup] = isInvalid || false;
+        row.invalid[col.lookup] = isInvalid || false;
 
         this.trigger('row_change', [row]);
     },
@@ -1009,8 +1009,8 @@ this.Dataset = Model.extend({
                 if (!(c instanceof Column))
                 { c = new Column(c, ds); }
                 ds._columnIDLookup[c.id] = c;
-                if (c._lookup != c.id)
-                { ds._columnIDLookup[c._lookup] = c; }
+                if (c.lookup != c.id)
+                { ds._columnIDLookup[c.lookup] = c; }
                 ds._columnTCIDLookup[c.tableColumnId] = c;
                 return c;
             });
@@ -1137,7 +1137,7 @@ this.Dataset = Model.extend({
                         c.renderTypeName == 'stars' && val === 0)
                 { val = null; }
 
-                tr[c._lookup] = val;
+                tr[c.lookup] = val;
             });
 
             _.each((tr.meta || {}).invalidCells || {}, function(v, tcId)
@@ -1148,7 +1148,7 @@ this.Dataset = Model.extend({
                     if (!$.isBlank(c))
                     {
                         tr.invalid[c.id] = true;
-                        tr[c._lookup] = v;
+                        tr[c.lookup] = v;
                     }
                 }
             });
@@ -1176,7 +1176,7 @@ this.Dataset = Model.extend({
         _.each(savingIds, function(cId)
         {
             var c = ds.columnForID(cId);
-            data[c._lookup] = row[c._lookup];
+            data[c.lookup] = row[c.lookup];
         });
 
         // Tags has to be sent as a special key
@@ -1225,7 +1225,7 @@ this.Dataset = Model.extend({
                     if (k.startsWith('_'))
                     {
                         var c = ds.columnForID(k.slice(1));
-                        if (!$.isBlank(c)) { req.row[c._lookup] = v; }
+                        if (!$.isBlank(c)) { req.row[c.lookup] = v; }
                     }
                 });
 
@@ -1238,7 +1238,7 @@ this.Dataset = Model.extend({
             delete ds._pendingRowDeletes[oldID];
 
             _.each(ds.realColumns, function(c)
-            { delete req.row.changed[c._lookup]; });
+            { delete req.row.changed[c.lookup]; });
 
             ds.trigger('row_change', [{id: oldID}, req.row]);
             ds._processPending(req.row.id);

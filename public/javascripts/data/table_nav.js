@@ -313,7 +313,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
             var row = rows[i];
 
             // Determine the index into the rows set and the actual model row
-            var index = row.index;
+            var index = model.index(row);
             var modelRow;
             if (index === undefined) {
                 index = i;
@@ -615,8 +615,8 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
                 // so we need to adjust columns by one and set y to the
                 // first or last child row in this nt
                 var childRows = oldRow.parent.childRows;
-                var ntY = deltaY < 0 ?
-                    childRows[childRows.length - 1].index : childRows[0].index;
+                var ntY = model.index(deltaY < 0 ?
+                    childRows[childRows.length - 1] : childRows[0]);
                 var adjXNT = getAdjustedX(deltaY < 0 ? -1 : 1, event, x, ntY);
                 if (adjXNT)
                 {
@@ -859,7 +859,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
                             (!subT || subT.length < 1)) { continue; }
                     }
 
-                    y = newRow.index;
+                    y = model.index(newRow);
                     x = getColumnInLevel(prevCol.mcol.nestedIn.header, newRow);
                     if (x === null) { return null; }
                     layoutLevel = layout[newRow !== undefined ?
@@ -914,7 +914,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
                 curRow = model.get(y);
                 if (curRow !== undefined && curRow.parent)
                 { curRow = curRow.parent; }
-                y = model.nextInLevel(curRow.index, delta < 0);
+                y = model.nextInLevel(model.index(curRow), delta < 0);
                 if (y == null) { return null; }
 
                 newX = newX < 0 ? layoutLevel.length : -1;

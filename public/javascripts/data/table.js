@@ -289,10 +289,9 @@
             var rows = [];
             for (var id in renderedRows) {
                 var row = renderedRows[id];
-                row.index = rowIndices[id]; // Logical row position -- required by the selection processor
                 rows.push(row);
             }
-            return rows.sort(function(a, b) { return a.index - b.index; });
+            return rows = _.sortBy(rows, function(r) { return model.index(r); });
         };
 
         var clearRowSelection = function(row)
@@ -516,7 +515,7 @@
             }
             if (lcol === undefined) { return null; }
 
-            return { x: x, y: row.index };
+            return { x: x, y: model.index(row) };
         };
 
         var cellFromXY = function(x, y)
@@ -3817,17 +3816,18 @@
                 {
                     var row = rows[i];
                     var rowID = row.id;
-                    if (renderedRows[rowID] && rowIndices[rowID] == row.index)
+                    var rowIndex = model.index(row);
+                    if (renderedRows[rowID] && rowIndices[rowID] == rowIndex)
                     {
                         // We need to adjust top positions, since the render
                         // divs (may) have moved, and rows are rendered relative
                         // to those
                         // Cache the jQuery wrapping?
                         $(renderedRows[rowID].row).css('top',
-                            (row.index - start) * rowOffset);
+                            (rowIndex - start) * rowOffset);
                         var locked = renderedRows[rowID].locked;
                         if (locked !== undefined)
-                        { $(locked).css('top', (row.index - start) * rowOffset); }
+                        { $(locked).css('top', (rowIndex - start) * rowOffset); }
                     }
                     else if (renderedRows[rowID])
                     {
@@ -3839,13 +3839,13 @@
                         // Add a new row
                         // Rows are rendered in position relative to the top
                         // of the render div, which is why we subtract start from i
-                        rowRenderFn(html, row.index - start, row.index, row);
+                        rowRenderFn(html, rowIndex - start, rowIndex, row);
                         if (rowLockedRenderFn != null)
                         {
                             rowLockedRenderFn(lockedHtml,
-                                row.index - start, row.index, row);
+                                rowIndex - start, rowIndex, row);
                         }
-                        rowIndices[rowID] = row.index;
+                        rowIndices[rowID] = rowIndex;
                     }
                 }
                 end("renderRows.render");

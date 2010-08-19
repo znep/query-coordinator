@@ -1139,16 +1139,16 @@
                 col.type + '">'
                 + '<p class="name">' +
                 $.htmlEscape(col.name).replace(/ /, '&nbsp;') + '</p>' +
-                '<span class="blist-th-icon"></span>' +
+                (col.description !== undefined ?
+                    '<p class="description">' + $.htmlEscape(col.description) +
+                    '</p>' : '') +
                 '<p class="columnType">' +
+                '<span class="blist-th-icon"></span>' +
                 typeName +
                 (col.grouping_aggregate !== undefined ?
                     ' (' + $.capitalize(col.grouping_aggregate) + ' on ' +
                     col.originalType.displayable() + ')' : '') +
                 '</p>' +
-                (col.description !== undefined ?
-                    '<p class="description">' + $.htmlEscape(col.description) +
-                    '</p>' : '') +
                 '</div>';
             var contentIsMain = true;
 

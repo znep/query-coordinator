@@ -859,7 +859,7 @@ blist.namespace.fetch('blist.data.types');
             rollUpAggregates: nonNumericAggs,
             alignment: alignment,
             convertableTypes: ['html', 'calendar_date', 'date', 'phone',
-                'email', 'url', 'checkbox', 'flag'].concat(numericConvertTypes),
+                'email', 'url', 'checkbox', 'flag', 'dataset_link'].concat(numericConvertTypes),
             filterable: true,
             filterConditions: filterConditions.textual,
             deleteable: true
@@ -877,7 +877,7 @@ blist.namespace.fetch('blist.data.types');
             aggregates: nonNumericAggs,
             rollUpAggregates: nonNumericAggs,
             convertableTypes: ['text', 'calendar_date', 'date', 'phone',
-                'email', 'url', 'checkbox', 'flag'].concat(numericConvertTypes),
+                'email', 'url', 'checkbox', 'flag', 'dataset_link'].concat(numericConvertTypes),
             filterable: true,
             filterConditions: filterConditions.textual,
             deleteable: true
@@ -897,7 +897,7 @@ blist.namespace.fetch('blist.data.types');
             rollUpAggregates: aggs,
             alignment: numericAlignment,
             convertableTypes: _.without(numericConvertTypes, 'number')
-                .concat('text'),
+                .concat('text').concat('dataset_link'),
             precisionStyle: [{text: 'Standard (1,020.4)', value: 'standard'},
                 {text: 'Scientific (1.0204e+3)', value: 'scientific'}],
             filterable: true,
@@ -1132,7 +1132,7 @@ blist.namespace.fetch('blist.data.types');
             aggregates: nonNumericAggs,
             rollUpAggregates: nonNumericAggs,
             alignment: alignment,
-            convertableTypes: ['text'],
+            convertableTypes: ['text', 'dataset_link'],
             filterable: true,
             filterConditions: filterConditions.textual,
             deleteable: true,
@@ -1249,6 +1249,7 @@ blist.namespace.fetch('blist.data.types');
             alignment: alignment,
             filterable: true,
             filterConditions: filterConditions.textual,
+            convertableTypes: ['text'],
             deleteable: true
         }
     });

@@ -286,7 +286,7 @@
 
     config.dataPreProcess = function(col)
     {
-        if (!$.isBlank(col.dropDown))
+        if (!$.isBlank(col.dropDown) && !$.isBlank(col.dropDown.values))
         {
             col.dropDownList = {values: _.reject(col.dropDown.values, function(dd)
                 { return dd.deleted; })};

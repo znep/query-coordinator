@@ -57,9 +57,11 @@
 <%- when 'picklist', 'drop_down_list', 'dataset_link' -%>
 <select class='fieldInput' id='<%= id %>' name='<%= column.id %>'>
   <option value=''>(Blank)</option>
-  <%- column.dropDown.values.each do |dd| -%>
-  <%- next if dd['deleted'] -%>
-  <option value='<%= dd['id'] %>'><%= dd['description'] %></option>
+  <% if column.dropDown && column.dropDown.values %>
+    <%- column.dropDown.values.each do |dd| -%>
+    <%- next if dd['deleted'] -%>
+    <option value='<%= dd['id'] %>'><%= dd['description'] %></option>
+  <%- end -%>
   <%- end -%>
 </select>
 

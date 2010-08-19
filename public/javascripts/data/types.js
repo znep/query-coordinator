@@ -719,7 +719,7 @@ blist.namespace.fetch('blist.data.types');
                     icon + htmlStrip(option.text);
             }
             return "<div class='blist-picklist-wrapper'>" +
-                (valueLookup[value.toLowerCase()]['html'] || '') +
+                ( (valueLookup[value.toLowerCase()] || {})['html'] || '') +
                 "</div>";
         }
         return '?';

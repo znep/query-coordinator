@@ -358,6 +358,23 @@
                 }
 
                 var details = {title: title, info: info};
+                if (mapObj._iconCol && row[mapObj._iconCol.dataIndex])
+                {
+                    var icon;
+                    if (mapObj._iconCol.dataTypeName == 'url')
+                    {
+                        icon = row[mapObj._iconCol.dataIndex]
+                            [mapObj._iconCol.urlSubIndex];
+                    }
+                    else
+                    {
+                        icon = '/views/' + blist.display.view.id + '/' +
+                            (editObj.column.renderTypeName.endsWith('_obsolete') ?
+                                'obsolete_' : '') + 'files/' +
+                            row[mapObj._iconCol.dataIndex];
+                    }
+                    if (icon) { details.icon = icon; }
+                }
                 if (mapObj._sizeValueCol)
                 {
                     for (var i = 0; i < mapObj._numSegments; i++)
@@ -529,6 +546,15 @@
                     mapObj['_'+colName+'Col'] = c;
                 }
             });
+            if (c.tableColumnId == colFormat.iconId)
+            {
+                c.dataIndex = i;
+                if (c.dataTypeName == 'url')
+                {
+                    c.urlSubIndex = _.indexOf(c.subColumnTypes, 'url');
+                }
+                mapObj._iconCol = c;
+            }
             if (c.tableColumnId == colFormat.redirectId)
             {
                 c.dataIndex = i;

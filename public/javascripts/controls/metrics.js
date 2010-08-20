@@ -236,10 +236,10 @@
             });
         }
 
-        setTimeout(function(){
+        $(window).bind('load', function(){
             $summaryDisplay.trigger('resize');
             $detailDisplay.trigger('resize');
-        }, 500);
+        });
 
         return this;
     };

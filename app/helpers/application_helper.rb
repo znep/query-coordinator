@@ -404,12 +404,14 @@ HREF
     state.delete('page') if state['page'] == 1
 
     # Deal with subhash case
+    to_add = {}
     state.each do |key, value|
       if value.is_a? Hash
-        value.each{ |subkey, subvalue| state["#{key}[#{subkey}]"] = subvalue }
+        value.each{ |subkey, subvalue| to_add["#{key}[#{subkey}]"] = subvalue }
         state.delete(key)
       end
     end
+    state.merge!(to_add)
 
     # Final cleanup and output
     state.reject! { |key, value| value.nil? || (value == "") || (value == false) }

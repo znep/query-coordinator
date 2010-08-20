@@ -37,7 +37,7 @@
   var isJson = <%= is_json == true %>;
   $(function()
   {
-      <%- if is_json -%>
+      <%- if (is_json && @property)-%>
       $('div.bespin').text(
         <%= raw( "JSON.stringify(#{@property.to_json}, null, 4)") %>
       );

@@ -39,7 +39,7 @@ class InternalController < ApplicationController
     @domain = Domain.find(params[:domain_id])
     @config = Configuration.find_unmerged(params[:config_id])
     @property_key = params[:property_id]
-    @property = CurrentDomain.raw_properties[@property_key]
+    @property = @config.data['properties'].detect {|p| p['name'] == @property_key}['value']
   end
 
   def index_modules

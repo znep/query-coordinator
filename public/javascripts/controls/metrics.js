@@ -40,9 +40,12 @@
     var subChartTypeChanged = function($link, sliceDepth)
     {
         // Swap out the menu's text for the current selection
-        var chart = $link
-            .closest('.menu').find('.menuButton .contents')
-                .text($.trim($link.text())).end().end()
+        var chartName = $.trim($link.text()),
+            chart = $link
+            .closest('.menu').find('.menuButton').attr('title', chartName)
+                .find('.contents')
+                    .text(chartName).end()
+                .end()
             .closest('.chartContainer').find('.chartContent');
 
         chart.data(metricsNS.SERIES_KEY,
@@ -132,7 +135,6 @@
             event.preventDefault();
             subChartTypeChanged($(event.target).closest('a')
                 .closest('.chartMenu').siblings('.chartArea')
-                //.css('visibility','visibile')
                     .end().end(), currentSlice);
         });
 

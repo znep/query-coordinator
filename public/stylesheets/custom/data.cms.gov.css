@@ -1,69 +1,85 @@
-/* HEADER */
 body
 {
-    background: #cfcab4 url(/stylesheets/images/domains/data.cms.gov/cms_background_slice.gif) repeat-y top center;
+	background: none #FFF;
+	font-family: "Lucida Grande",Verdana,Arial,Helvetica,sans-serif;
 }
-
-body#lensBody
-{
-    background: #eae7d7 none;
-}
-
 .bodyInterior
 {
-    border-top: none;
-    padding-bottom: 96px;
+	border: none;
 }
-
-#outerContainer #header
+a
 {
-    background: transparent url(/stylesheets/images/domains/data.cms.gov/cms_header_slice.png) repeat-x;
-    height: 125px;
-    min-width: 98.9em;
+	color: #103D89;
 }
-
-#mainLogo
+a:hover
 {
-    left: 0;
-    top: 0;
+	color: #FF7800;
 }
+#outerContainer
+{
+	max-width: 100%;
+}	
+/* HEADER */
 
 #header
 {
-    padding-bottom: 1.5em;
+	background: url(/stylesheets/images/domains/data.cms.gov/header_bg.jpg) repeat-x;
+	height: 170px;
 }
-
+#mainLogo
+{
+	position: absolute;
+	left: 0px;
+	top: 49px;
+}
 #header #hhsLink
+{
+	background: url(/stylesheets/images/domains/data.cms.gov/headbar_left.gif) no-repeat;
+    display: block;
+    height: 45px;
+    position: absolute;
+    text-indent: -9999px;
+    left: -1px;
+    top: 0px;
+    width: 353px;	
+}
+#header #hhsLinkRight
 {
     background: transparent url(/stylesheets/images/domains/data.cms.gov/cms_hhs_link.gif) no-repeat;
     display: block;
     height: 22px;
     position: absolute;
     text-indent: -9999px;
-    right: 1px;
+    right: 13px;
     top: 12px;
-    width: 115px;
+    width: 115px;	
 }
-
-#header form.search
+#header form.search 
 {
-    right: 2em;
-    top: 5.5em;
-    width: auto;
+	position: absolute;
+	top: 70px;
 }
-
 #header .userNav
 {
-    font-size: 1.1em;
-    height: 19px;
-    right: 0.5em;
-    top: 7.8em;
+	background: #103D89;
+	border-top: solid 2px #999;
+	border-bottom: solid 1px #999;	
+	padding: 0.7em 0.5em 0.5em;
+	position: relative;
+	text-transform: none;
+	top: 130px;
+}
+#header .userNav ul
+{
+	margin: auto;
+	width: 60em;
 }
 #header .userNav li
 {
     background: transparent url(/stylesheets/images/domains/data.cms.gov/cms_header_icons.png) no-repeat;
     border-color: #aaa;
     display: inline-block;
+	float: left;
     height: 19px;
     line-height: 19px;
     padding-left: 25px;
@@ -77,23 +93,30 @@ body#lensBody
     display: inline-block;
 }
 #header .userNav li.signInLink,
+#header .userNav li.home { background-position: 0 -91px; }
 #header .userNav li.accountLink { background-position: 0 -37px; }
 #header .userNav li.dataLink { background-position: 0 -19px; }
 #header .userNav li.signOutLink { background-position: 0 -55px; }
 #header .userNav li.signUpLink { background-position: 0 -73px; }
 #header .userNav li a
 {
-    color: #0c427b;
+    color: #fff;
+	padding: 0.2em;
 }
-
+#header .userNav li a:hover
+{
+	background: #191919;
+}
 #outerContainer #header .userNav .dataLink .userMenu
 {
-    background: #f6e6c0 none;
-    border: 2px solid #e4ad28;
+    background: #E5E5E5 none;
+    border: 2px solid #C9C9C9;
     display: none;
-    padding-bottom: 0.5em;
+	height: 8em;
     padding: 0;
     position: absolute;
+	top: 25px;
+	width: 12em;
 }
 #outerContainer #header .userNav .dataLink:hover .userMenu
 {
@@ -103,130 +126,121 @@ body#lensBody
 {
     background: none;
     border: none;
-    display: block;
-    margin: 0.3em 0;
+    display: table;
+    margin: 0;
     padding: 0;
     width: 12em;
 }
 #outerContainer #header .userNav .dataLink .userMenu li a
 {
-    display: block;
-    padding: 0.3em;
-    padding-left: 0.6em;
+	color: #000;
+    display: table-cell;
+    padding: .3em 0.5em;
 }
 #outerContainer #header .userNav .dataLink .userMenu li a:hover
 {
-    background-color: #c7ba9a;
+    background-color: #103D89;
+	color: #fff;
     text-decoration: none;
+}
+#discover .jcarousel-skin-discover .jcarousel-prev-horizontal
+{
+	background: url(/stylesheets/images/domains/data.cms.gov/carousel_arrow_sprites.png) no-repeat scroll 0 0 transparent;
+}
+#discover .jcarousel-skin-discover .jcarousel-next-horizontal
+{
+	background: url(/stylesheets/images/domains/data.cms.gov/carousel_arrow_sprites.png) no-repeat scroll 0 -32px transparent;	
+}
+.pageBlockHeaderCarousel.carouselWrapper, .pageBlockHeaderCarousel .carouselOuter, .pageBlockHeaderCarousel .carouselInner 
+{
+	background: none;
+}
+.pageBlockHeaderCarousel h2, .pageBlockHeaderSide h2
+{
+	color: #000;
+}
+.pageBlockHeaderOuter
+{
+	border: solid 1px #C9C9C9;
+	margin: 3em 0em;
+}
+.pageBlockIntro p
+{
+	background: #E5E5E5;
+	border-bottom: solid 1px #C9C9C9;	
+	color: #000;
+	font-size:1.6em;
+	font-weight:bold;	
+	margin-bottom: 1em;
+	padding: 0.5em;
 }
 
 /* FOOTER */
 .footerContainer
 {
-    background: transparent url(/stylesheets/images/domains/data.cms.gov/cms_footer_slice.png) repeat-x;
-    height: 86px;
-    margin: -86px auto 0;
-    max-width: 140em;
+	background: none #fff;
+	text-align: center;
+	margin: -10px 0 0;
 }
-body#lensBody .footerContainer
+.cmsFooterUpper ul li
 {
-    max-width: 100%;
+	display: inline;
+	border-right: solid 1px #000;	
 }
-
-.footerContainer li:first-child
+.cmsFooterUpper ul li a
 {
-    border-left: none;
+	padding: 0.1em 0.4em;
+	line-height: 1.5em;
+	text-decoration: underline;	
 }
-.footerContainer li
-{
-    border-left: 1px solid #fff;
-    display: inline-block;
-    padding: 0 0.6em;
-}
-.footerContainer li a
-{
-    color: #fff;
-    font-size: 1.2em;
-}
-
-.cmsFooterUpper
-{
-    padding-top: 12px;
-    text-align: center;
-}
-.cmsFooterUpper ul
-{
-    padding-top: 4px;
-}
-
 .cmsFooterLower
 {
-    color: #fff;
-    font-size: 1.1em;
-    padding-top: 20px;
-    text-align: center;
+	margin-top: 0.5em;
 }
-
-/* WIDGETS */
-form.search.large .searchContainer
-{
-    background: #fff none;
-    border: 1px solid #704f2a;
-    height: 24px;
-    overflow: visible;
-    padding-left: 0;
-    width: 350px;
-}
-
-form.search.large #search
-{
-    background: transparent;
-    border: none;
-    height: 24px;
-    font-size: 1.4em;
-    padding: 0.3em 0 0 0.5em;
-    width: 289px;
-}
-
-form.search.large .actionsBox
-{
-    margin-right: -110px;
-    width: 110px;
-}
-
-form.search.large .actionsBox .clearBox
-{
-    border: none;
-    height: 24px;
-}
-
-form.search.large .actionsBox .clearBox .clearSearch
-{
-    margin-top: 5px;
-}
-
-form.search.large .actionsBox input
-{
-    background: transparent url(/stylesheets/images/domains/data.cms.gov/cms_search_button.png) no-repeat;
-    border-left: 2px solid #704f2a;
-    height: 24px;
-    width: 94px;
-}
-
 /* CONTENT */
 
+.outerContent
+{
+	border: solid 1px #C9C9C9;	
+}
+.tabList a, .tabList .innerWrapper
+{
+	border: solid 1px #C9C9C9;	
+}
+.tabList li
+{
+	background-image: none;	
+}
+.tabList li.even a, .tabList li.even .innerWrapper, .tabList li .wrapper, .tabList a, .tabList .innerWrapper
+{
+	background-image: none;	
+	background-color: #FFF;		
+}
+#home .tabList li.home a, #blists .tabList li.blists a, #contacts .tabList li.contacts a, #profile .tabList li.profile a, #approval .tabList li.approval a, #overview .tabList li.overview a, #directories .tabList li.directories a, #solution .tabList li.solution a, #sales .tabList li.sales a, #try-it-free .tabList li.try-it-free a, .tabList li.active a, .tabList li.active .innerWrapper
+{
+	background-color: #E5E5E5;
+}
+
 /* sidebar grey */
-#sidebar .box .boxTR,
-#sidebar .box .boxTL,
-#sidebar .box .boxBR,
-#sidebar .box .boxBL,
+.tabContentContainer
+{
+	border: solid 1px #C9C9C9;	
+}
+.tabContentOuter
+{
+	border-right: solid 1px #C9C9C9;	
+}
+.tabContentNav
+{
+    background: none #E5E5E5;	
+}
 .tabContentNavT,
 .tabContentNavB
 {
-    background-image: url(/stylesheets/images/domains/data.cms.gov/cms_tx_sidebar_corners.png);
+    background: none #E5E5E5;		
+	border-left: solid 1px #C9C9C9;
 }
-#sidebar .box .content,
-.tabContentNav
+.tabContentNav h2
 {
-    background-color: #d8d4c2;
+	font-weight: bold;
 }

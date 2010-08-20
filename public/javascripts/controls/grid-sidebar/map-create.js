@@ -74,6 +74,39 @@
         ];
     };
 
+    var configLocation = {
+            title: 'Location',
+            onlyIf: {field: 'displayFormat.type', value: 'esri', negate: true},
+            fields: [
+                {text: 'Location', name: 'displayFormat.plot.locationId',
+                    required: true, type: 'columnSelect', isTableColumn: true,
+                    columns: {type: 'location', hidden: isEdit},
+                    wizard: 'Choose a column with location ' +
+                        'coordinates to map'
+                }
+            ]
+        };
+    var configLocationESRI = {
+            title: 'Location',
+            onlyIf: {field: 'displayFormat.type', value: 'esri'},
+            fields: [
+                {text: 'Location', type: 'radioGroup',
+                    name: 'locationSection',
+                    defaultValue: 'displayFormat.plot.locationId',
+                    options: [
+                        {name: 'displayFormat.plot.locationId',
+                            type: 'columnSelect', isTableColumn: true,
+                            columns: {type: 'location', hidden: isEdit},
+                        },
+                        {value: 'No Locations', type: 'static',
+                            name: 'displayFormat.noLocations', isInput: true }
+                    ],
+                    wizard: 'Choose a column with location ' +
+                        'coordinates to map'
+                }
+            ]
+        };
+
     var configLayers = {
             title: 'Layers',
             onlyIf: {field: 'displayFormat.type', value: 'esri'},
@@ -146,17 +179,8 @@
                     }
                 ]
             },
-            {
-                title: 'Location',
-                fields: [
-                    {text: 'Location', name: 'displayFormat.plot.locationId',
-                        required: true, type: 'columnSelect', isTableColumn: true,
-                        columns: {type: 'location', hidden: isEdit},
-                        wizard: 'Choose a column with location ' +
-                            'coordinates to map'
-                    }
-                ]
-            },
+            configLocation,
+            configLocationESRI,
             { // General Details section.
                 title: 'Details', type: 'selectable', name: 'detailsSection',
                 onlyIf: {field: 'displayFormat.type', value: 'heatmap', negate: true},

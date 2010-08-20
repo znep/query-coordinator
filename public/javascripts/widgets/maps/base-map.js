@@ -267,6 +267,10 @@
             renderRow: function(row)
             {
                 var mapObj = this;
+
+                if (mapObj._displayConfig.noLocations)
+                { return true; }
+
                 if (_.isUndefined(mapObj._locCol) &&
                     (_.isUndefined(mapObj._latIndex) ||
                      _.isUndefined(mapObj._longIndex)))

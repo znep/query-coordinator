@@ -1544,8 +1544,17 @@
                         null : args.context.data) : args.item.value;
                 if (!$.isBlank(val))
                 {
-                    contents.push($.extend(commonAttrs(args.item),
-                        {tagName: 'span', contents: val}));
+                    if (args.item.isInput)
+                    {
+                        contents.push({tagName: 'span', contents: val});
+                        contents.push($.extend(commonAttrs(args.item),
+                            {tagName: 'input', type: 'hidden', value: val}));
+                    }
+                    else
+                    {
+                        contents.push($.extend(commonAttrs(args.item),
+                            {tagName: 'span', contents: val}));
+                    }
                 }
                 else
                 { contents = []; }

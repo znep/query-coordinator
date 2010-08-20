@@ -48,7 +48,7 @@
     <%- unless (type == "search") -%>
       <h2>Show People</h2>
       <ul class="filterList hilightList">
-        <li><%= link_to("<span>With public #{t(:blists_name)}</span>", 
+        <li><%= link_to(raw("<span>With public #{t(:blists_name)}</span>"),
                 generate_filter_url(@current_state, type, {:filter => {:publicOnly => 'true'}}),
                 :class => "filterLink#{get_filter_hilight_class({'publicOnly' => 'true'}, current_filter, ' hilight')}") %></li>
       </ul>
@@ -57,14 +57,14 @@
       <ul class="tagList hilightList">
         <%- tag_list.each do |tag| -%>
           <li>
-            <%= link_to("<span>#{h(tag.name)}</span>", 
+            <%= link_to(raw("<span>#{h(tag.name)}</span>"),
                   generate_filter_url(@current_state, type, {:tag => tag.name}),
                   :class => "filterLink#{' hilight' if tag.name == @current_state[:tag]}" ) %>
           </li>
         <%- end -%>
         <li class="moreLink">
-          <%= link_to("More", 
-              tags_community_path + generate_filter_url(@current_state, type, {}, '?'), 
+          <%= link_to("More",
+              tags_community_path + generate_filter_url(@current_state, type, {}, '?'),
                 :class => "moreTagsLink") %>
         </li>
       </ul>

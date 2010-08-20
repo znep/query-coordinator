@@ -31,42 +31,50 @@ $(function()
         summarySections: [
             {
                 id: 'summaryDatasets',    displayName: 'Datasets',
-                summary: {plus: 'datasets-created', minus: 'datasets-deleted'}
+                summary: {plus: 'datasets-created', minus: 'datasets-deleted',
+                    verbPhrase: 'datasets created', verbPhraseSingular: 'dataset created'
+                }
             },
             {
                 id: 'summaryRows',        displayName: 'Rows',
-                summary: {plus: 'rows-created',     minus: 'rows-deleted'}
+                summary: {plus: 'rows-created',     minus: 'rows-deleted',
+                    verbPhrase: 'rows created', verbPhraseSingular: 'row created'
+                }
             },
             {
                 id: 'summaryVisits',      displayName: 'Visits',
-                summary: {plus: 'page-views'}
+                summary: {plus: 'page-views', verbPhrase: 'pages viewed',
+                    verbPhraseSingular: 'page viewed'
+                }
             },
             {
                 id: 'summaryEmbeds',      displayName: 'Embeds',
-                summary: {plus: 'embeds'}
+                summary: {plus: 'embeds', verbPhrase: 'embeds',
+                    verbPhraseSingular: 'embed'
+                }
             }
         ],
         topListSections: [
             {
                 id: 'topDatasets', displayName: 'Top Datasets',
-                heading: 'Hits', className: 'left',
+                heading: 'Hits', renderTo: 'leftColumn',
                 callback: blist.metrics.topDatasetsCallback,  top: 'DATASETS'
             },
             {
                 id: 'topReferrers', displayName: 'Top Referrers',
-                heading: 'Hits', className: 'right',
+                heading: 'Hits', className: 'expanding', renderTo: 'rightColumn',
                 callback: blist.metrics.urlMapCallback, top: 'REFERRERS'
             },
             {
                 id: 'topSearches', displayName: 'Top Search Terms',
-                heading: 'Searches', className: 'left',
+                heading: 'Searches', renderTo: 'leftColumn',
                 callback: function($context) {
                     blist.metrics.updateTopSearchesCallback($context, 'top-dataset-searches');
                 },  top: 'SEARCHES'
             },
             {
                 id: 'topEmbeds', displayName: 'Top Embeds',
-                heading: 'Embeds', className: 'right',
+                heading: 'Embeds', className: 'expanding', renderTo: 'rightColumn',
                 callback: blist.metrics.urlMapCallback, top: 'EMBEDS'
             }
         ]

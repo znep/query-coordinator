@@ -57,10 +57,19 @@
 
                 // Set up y-axes
                 if (chartObj._reverseOrder) { chartObj._yColumns.reverse(); }
-                _.each(chartObj._yColumns, function(cs)
+                _.each(chartObj._yColumns, function(cs, colIndex)
                 {
                     var series = {name: $.htmlEscape(cs.data.name),
                         data: [], column: cs.data};
+                    if (chartObj._chartType == 'donut')
+                    {
+                        var segment = 100 / (chartObj._yColumns.length + 1);
+                        $.extend(series, {
+                            innerSize:    Math.round(segment * (colIndex+1)) + '%',
+                            size:         Math.round(segment * (colIndex+2)) + '%',
+                            showInLegend: colIndex == 0
+                        });
+                    }
                     if (!_.isUndefined(chartObj.chart))
                     { chartObj.chart.addSeries(series, false); }
                     if (!_.isUndefined(chartObj.secondChart))
@@ -312,6 +321,7 @@
         if (seriesType == 'line' && chartObj._displayConfig.smoothLine)
         { seriesType = 'spline'; }
         if (seriesType == 'timeline') { seriesType = 'line'; }
+        if (seriesType == 'donut') { seriesType = 'pie'; }
 
         // Main config
         var chartConfig =
@@ -350,6 +360,15 @@
                     style: { backgroundColor: '#ffffff',
                         border: '1px solid #909090', padding: '3px' } } }
         };
+
+        if (chartObj._chartType == 'donut')
+        {
+            $.extend(chartConfig, { tooltip: { formatter: function()
+            {
+                return '<b>'+ this.series.name +'</b><br/>'+
+                    this.point.name +': '+ this.y +' %';
+            } }});
+        }
 
         if (!_.isUndefined(colors)) { chartConfig.colors = colors; }
 
@@ -444,7 +463,8 @@
 
     var yPoint = function(chartObj, row, value, seriesIndex, basePt)
     {
-        if (_.isNull(value) && chartObj._chartType == 'pie')
+        var isPieTypeChart = _.include(['pie', 'donut'], chartObj._chartType);
+        if (_.isNull(value) && isPieTypeChart)
         { return null; }
 
         var point = {y: value};
@@ -455,7 +475,7 @@
         if (!_.isUndefined(colSet.title) && !_.isNull(row))
         { point.name = $.htmlEscape(row[colSet.title.dataIndex]); }
 
-        else if (chartObj._chartType == 'pie')
+        else if (isPieTypeChart)
         { point.name = chartObj._xCategories[point.x] || point.x; }
 
         else { point.name = chartObj._seriesCache[seriesIndex].name; }
@@ -467,8 +487,7 @@
             { point.subtitle += $.htmlEscape(row[c.dataIndex]); });
         }
 
-        if (chartObj._chartType == 'pie' &&
-            !_.isUndefined(chartObj._displayConfig.colors))
+        if (isPieTypeChart && !_.isUndefined(chartObj._displayConfig.colors))
         {
             point.color = chartObj._displayConfig
                 .colors[chartObj._seriesCache[seriesIndex].data.length %

@@ -187,7 +187,7 @@ blist.dataset.getLinkedDatasetOptions = function(linkedDatasetUid, col, $field, 
                         linkedDataset.metadata.rdfSubject ?
                         linkedDataset.metadata.rdfSubject : undefined;
 
-                _.each(linkedDataset.columns, function(c)
+                _.each(linkedDataset.columns || [], function(c)
                 {
                     switch (c.dataTypeName)
                     {
@@ -205,7 +205,7 @@ blist.dataset.getLinkedDatasetOptions = function(linkedDatasetUid, col, $field, 
 
                 if (cachedLinkedDatasetOptions[viewUid].length <= 0)
                 {
-                    alert('Dataset {0} does not have any column.'.fromat(viewUid));
+                    alert('Dataset {0} does not have any column.'.format(viewUid));
                 }
                 else
                 {

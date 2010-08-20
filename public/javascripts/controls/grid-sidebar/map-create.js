@@ -174,6 +174,13 @@
                         wizard: 'Choose a column that contains ' +
                             'descriptions for each point'
                     },
+                    {text: 'Icon', name: 'displayFormat.plot.iconId',
+                        type: 'columnSelect', isTableColumn: true,
+                        columns: {type: ['photo', 'photo_obsolete', 'url'],
+                            hidden: isEdit},
+                        wizard: 'Choose a column that contains ' +
+                            'an icon for each point'
+                    },
                     {text: 'Group Pins?', type: 'checkbox',
                         onlyIf: {field: 'displayFormat.type', value: 'google'},
                         name: 'displayFormat.clusterMarkers'},

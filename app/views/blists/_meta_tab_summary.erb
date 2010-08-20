@@ -6,8 +6,7 @@
   </dt>
   <dd class="editItem">
     <div class="itemContent">
-      <span class="textContent"><%= raw auto_link(h(view.description),
-        :html => { :rel => 'nofollow external' }) %></span>
+      <span class="textContent"><%= raw auto_link(h(view.description), :html => { :rel => 'nofollow external' }) %></span>
       <%- if allow_edit -%>
       <%- form_tag(view.href) do -%>
         <%= hidden_field_tag("fieldType", "description") %>
@@ -364,7 +363,7 @@
       <div class="itemContent">
         <span class="infoAttribution textContent">
           <%- attr_link_opts = in_widget ? { :rel => "external" } : {} -%>
-          <%= (view.attributionLink.nil? || view.attributionLink.empty?) ? view.attribution : link_to(h(view.attribution), h(view.attributionLink), attr_link_opts) %>
+          <%= (view.attributionLink.nil? || view.attributionLink.empty?) ? view.attribution : link_to(view.attribution, h(view.attributionLink), attr_link_opts) %>
         </span>
       </div>
       <%- if allow_edit -%>
@@ -391,7 +390,7 @@
             <%- view.metadata.attachments.each do |attachment| -%>
               <%- attachmentObj = Attachment.set_up_model(attachment) -%>
               <li class="attachmentItem">
-                <%= link_to( h(attachmentObj.displayName), attachmentObj.href, :target => "_blank" ) %>
+                <%= link_to( attachmentObj.displayName, attachmentObj.href, :target => "_blank" ) %>
               </li>
             <%- end -%>
           <%- end -%>
@@ -418,8 +417,7 @@
       <dd> 
         <div class="textDisplay">
           <div class="itemContent">
-            <span class="textContent"><%= raw auto_link(h(field[1]), :html =>
-                { :rel => 'nofollow external'  }) %></span>
+            <span class="textContent"><%= raw auto_link(h(field[1]), :html => { :rel => 'nofollow external'  }) %></span>
           </div>
           <%- if allow_edit -%>
           <div class="itemActions">

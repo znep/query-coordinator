@@ -4,7 +4,7 @@
     <ul class="myNetworkList">
       <%- @network_views.each do |view| -%>
         <li class="clearfix">
-          <%= link_to(h(view.name), view.href, :title => h(view.name),
+          <%= link_to(view.name, view.href, :title => view.name,
             :class => "clipText") %>
           <span class="authorLine">by <%= view.owner.displayName %></span>
         </li>

@@ -8,7 +8,7 @@
       <div class="itemTitleInner clearfix">
         <div class="itemTitleWrapper">
           <h3 class="<%= get_permissions_icon_class_for_view(view) %> clipText">
-            <%= link_to(h(view.name), view.href(port), :title => h(view.name),
+            <%= link_to(view.name, view.href(port), :title => h(view.name),
               #_domain temporarily for debug, prod will not see attrib at all
               :_domain => Rails.env.staging? ? CurrentDomain.cname + '-' + view.domainCName : nil,
               :rel => view.browserOpenTarget) %>
@@ -44,10 +44,10 @@
     </div>
     <div class="itemActionContainer">
       <ul class="itemActions actionButtons clearfix">
-        <li><%= link_to("<span>About</span>", "#{view.href(port)}/about",
+        <li><%= link_to(raw("<span>About</span>"), "#{view.href(port)}/about",
                 :rel => view.browserOpenTarget) %>
         </li>
-        <li><%= link_to("<span>Open</span>", view.href(port),
+        <li><%= link_to(raw("<span>Open</span>"), view.href(port),
                 :class => "arrowButton", :rel => view.browserOpenTarget) %>
         </li>
       </ul>

@@ -212,6 +212,7 @@
                 // Any actions on the comment actions line goes here
                 $.live('.feed .commentActions a', 'click', function(event)
                 {
+                    event.preventDefault();
                     var $this = $(this);
                     var data = getData($this);
 

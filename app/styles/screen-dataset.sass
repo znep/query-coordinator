@@ -292,6 +292,11 @@ html, body
       top: 0
     padding: 0.3em 0.5em
 
+    &.disabled .disabledMessage
+      display: none
+    &.disabled:hover .disabledMessage
+      display: block
+
     .ie7 &
       z-index: 1
       > ul > li

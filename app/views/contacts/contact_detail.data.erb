@@ -42,7 +42,7 @@
             <span class="textContent"><%= @contact.htmlDescription %></span>
           </div>
           <div class="itemActions">
-            <%= link_to("<span>View profile</span>", @contact.href, :class => "action") %>
+            <%= link_to(raw("<span>View profile</span>"), @contact.href, :class => "action") %>
           </div>
         </dd>
       </dl>
@@ -56,7 +56,7 @@
             <span class="textContent"><%= @contact.tag_display_string %></span>
           </div>
           <div class="itemActions">
-            <%= link_to("<span>View profile</span>", @contact.href, :class => "action") %>
+            <%= link_to(raw("<span>View profile</span>"), @contact.href, :class => "action") %>
           </div>
         </dd>
       </dl>
@@ -136,7 +136,7 @@
                   <%= get_type_string_for_view(share) %></div>
                 </td>
                 <td class="name"><div class="cellInner clipText">
-                  <%= link_to(h(share.name), share.href) %>
+                  <%= link_to(share.name, share.href) %>
                 </div></td>
                 <td class="description"><div class="cellInner clipText"><%= share.description %></div></td>
                 <td class="sharedOn"><div class="cellInner">
@@ -190,7 +190,7 @@
                   get_share_direction_icon_class_for_view(blist) %>">
                   <%= get_type_string_for_view(blist) %></div>
                 </td>
-                <td class="name"><div class="cellInner"><%= link_to(h(blist.name), blist.href) %></div></td>
+                <td class="name"><div class="cellInner"><%= link_to(blist.name, blist.href) %></div></td>
                 <td class="views"><div class="cellInner"><%= blist.viewCount %></div></td>
                 <td class="copies"><div class="cellInner"><%= blist.copyCount %></div></td>
                 <td class="lastUpdated"><div class="cellInner"><%= blist_date(blist.last_activity) %>

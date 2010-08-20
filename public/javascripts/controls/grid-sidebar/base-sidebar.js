@@ -32,7 +32,8 @@
     {
         var viewUid = value;
 
-        if ($.isBlank(viewUid) || viewUid.match(blist.util.patterns.UID))
+        // caller passes in prompt as value where value should be empty.
+        if ($.isBlank(viewUid) || viewUid == $(element).attr('title') || viewUid.match(blist.util.patterns.UID))
         {
             return true;
         }

@@ -121,25 +121,46 @@ metricsNS.summarySectionCallback = function($context)
 {
     var summaries = $context.data('data-summary'),
         data      = $context.data(metricsNS.DATA_KEY),
-        mappedData = {
-            total: data[summaries.plus + '-total'] || 0,
-            delta: data[summaries.plus] || 0,
-            deltaClass: 'plus'
-        };
-
-    if (!$.isBlank(summaries.minus))
+        mappedData = {},
+        summaryCalculator = function(key, append)
     {
-        var minusAmount = data[summaries.minus + '-total'] || 0,
-            minusDelta  = data[summaries.minus] || 0;
+        mappedData[key] = data[summaries.plus + (append || '')] || 0;
 
-        mappedData.total -= minusAmount;
-        mappedData.delta -=  minusDelta;
-    }
+        if (!$.isBlank(summaries.minus))
+        {
+            mappedData[key] -= (data[summaries.minus + (append || '')] || 0);
+        }
+    },
+        summaryToolTip = function(key, region)
+    {
+        if (!$.isBlank(summaries.verbPhrase))
+        {
+            mappedData[key + 'Text'] =
+                (mappedData[key] == 0 ? 'No' : mappedData[key]) + ' ' +
+                (mappedData[key] == 1 ? summaries.verbPhraseSingular :
+                      summaries.verbPhrase) + ' ' +
+                region + ' this time period';
+        }
+    };
+
+    summaryCalculator('total', '-total');
+    summaryCalculator('delta');
+
+    // Semi-hack: balboa returns _before_ this time period as 'total',
+    // but that really doesn't make much sense, so calculate the actual total
+    mappedData.total += mappedData.delta;
+
+    summaryToolTip('total', 'through');
+    summaryToolTip('delta', 'during');
 
     if (mappedData.delta < 0)
     {
         mappedData.delta *= -1;
         mappedData.deltaClass = 'minus';
+    }
+    else
+    {
+        mappedData.deltaClass = 'plus';
     }
 
     metricsNS.renderSummarySection($context, mappedData,
@@ -213,7 +234,9 @@ metricsNS.topListItemDirective = {
 
 metricsNS.summaryDataDirective = {
     '.deltaValue' : 'delta',
+    '.deltaBox@title' : 'deltaText',
     '.totalValue' : 'total',
+    '.totalValue@title' : 'totalText',
     '.deltaBox@class+': 'deltaClass'
 };
 

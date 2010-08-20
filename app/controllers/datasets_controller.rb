@@ -103,7 +103,7 @@ class DatasetsController < ApplicationController
     if !(@view.owned_by?(current_user) || \
         CurrentDomain.user_can?(current_user, :edit_others_datasets) || \
         @view.can_edit?)
-      return render_403
+      return render_forbidden
     end
   end
 
@@ -121,8 +121,7 @@ protected
         require_user(true)
         return nil
       elsif e.error_code == 'permission_denied'
-        flash.now[:error] = e.error_message
-        render 'shared/error', :status => :forbidden
+        render_forbidden(e.error_message)
         return nil
       else
         flash.now[:error] = e.error_message
@@ -132,7 +131,7 @@ protected
     end
 
     if (view.is_form? ? !view.can_add? : !view.can_read?)
-      require_user(true)
+      render_forbidden("You do not have permission to view this dataset")
       return nil
     end
 

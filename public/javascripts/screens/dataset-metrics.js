@@ -36,19 +36,37 @@ $(function()
             {id: 'detailComments',  displayName: 'Comments', detail: 'comments-created'}
         ],
         summarySections: [
-            { id: 'summaryViews',     displayName: 'Views',     summary: {plus: 'visits'} },
-            { id: 'summaryDownloads', displayName: 'Downloads', summary: {plus: 'downloads'} },
-            { id: 'summaryEmbeds',    displayName: 'Embeds',    summary: {plus: 'embeds'} }
+            {
+                id: 'summaryViews',     displayName: 'Views',
+                summary: {
+                    plus: 'visits',  verbPhrase: 'pages viewed',
+                    verbPhraseSingular: 'page viewed'
+                }
+            },
+            {
+                id: 'summaryDownloads', displayName: 'Downloads',
+                summary: {
+                    plus: 'downloads', verbPhrase: 'downloads',
+                    verbPhraseSingular: 'download'
+                }
+            },
+            {
+                id: 'summaryEmbeds',    displayName: 'Embeds',
+                summary: {
+                    plus: 'embeds', verbPhrase: 'embeds',
+                    verbPhraseSingular: 'embed'
+                }
+            }
         ],
         topListSections: [
             {
                 id: 'topViews', displayName: 'Top Embeds',
-                heading: 'Embeds', className: 'left',
+                heading: 'Embeds', className: 'expanding', renderTo: 'leftColumn',
                 callback: blist.metrics.urlMapCallback,  top: 'EMBEDS'
             },
             {
                 id: 'topReferrers', displayName: 'Top Referrers',
-                heading: 'Hits', className: 'right',
+                heading: 'Hits', className: 'expanding', renderTo: 'rightColumn',
                 callback: blist.metrics.urlMapCallback, top: 'REFERRERS'
             }
         ]

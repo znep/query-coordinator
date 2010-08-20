@@ -10,7 +10,7 @@
                 image_tag(member.profile_image_path("medium"), :size => "65x65",
                 :alt => h(member.displayName)), member.href) %>
           <h3 class="clipText">
-            <%= link_to(h(member.displayName), member.href, :title => h(member.displayName)) %>
+            <%= link_to(member.displayName, member.href, :title => member.displayName) %>
           </h3>
         </div>
         <div class="itemMetaData">

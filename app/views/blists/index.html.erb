@@ -198,8 +198,7 @@
             <![CDATA[
             <li>
             <a href="?tag=<$= escape(this.tag) $>"
-              title='<%= raw get_title({'tag' =>
-                  '<$= $.htmlEscape(this.tag) $>'}) %>'
+              title='<%= raw get_title({'tag' => '<$= $.htmlEscape(this.tag) $>'}) %>'
               q="{'tag':'<$= $.htmlEscape(this.tag.replace(/"/g, "\\\"")) $>'}">
                 <span><$= $.htmlEscape(this.tag) $></span>
               </a>

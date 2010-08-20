@@ -21,12 +21,12 @@
             <p>
               <%- if type == 'popular' || type == 'all' -%>
                 <label for="filter_type1_<%= type %>">Type</label>
-                <%= select_tag("filter_type1", filter_type1_select_options(filter_type1), :id => "filter_type1_" + type) %>
+                <%= select_tag("filter_type1", raw(filter_type1_select_options(filter_type1)), :id => "filter_type1_" + type) %>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <%- end -%>
               <label for="sort_by_<%= type %>">Sort by</label>
               <%= select_tag("sort_by", (type == "search") ? 
-                             sort_select_options_for_search(sort_by) : sort_select_options(sort_by), 
+                             raw(sort_select_options_for_search(sort_by)) : raw(sort_select_options(sort_by)), 
                              :id => "sort_by_" + type) %>
               <%- if @current_state['no_js'] -%>
                 <%- @current_state.each_pair do |key, value| -%>
@@ -69,7 +69,7 @@
           <li><a href="<%= generate_filter_url(@current_state, 'all') %>" class="tabLink all"><span>All <%= t(:blists_name) %></span></a></li>
         <%- end -%>
         <%- if (!@current_user.nil?) -%>
-          <li><%= link_to("<span>In my network</span>", generate_filter_url(@current_state, type, {'filter' => {:inNetwork => 'true'}}),
+          <li><%= link_to(raw("<span>In my network</span>"), generate_filter_url(@current_state, type, {'filter' => {:inNetwork => 'true'}}),
                   :class => "filterLink#{get_filter_hilight_class({'inNetwork' => 'true'}, current_filter, ' hilight')}") %>
           </li>
         <%- end -%>
@@ -80,7 +80,7 @@
         <ul class="tagList hilightList">
           <%- tag_list.each do |tag| -%>
             <li>
-              <%= link_to("<span>#{h(tag.name)}</span>", generate_filter_url(@current_state, type, {'tag' => tag.name}),
+              <%= link_to(raw("<span>#{h(tag.name)}</span>"), generate_filter_url(@current_state, type, {'tag' => tag.name}),
                     :class => "filterLink#{' hilight' if tag.name == @current_state['tag']}" ) %>
             </li>
           <%- end -%>
@@ -97,7 +97,7 @@
         <ul class="categoryList hilightList">
           <%- View.categories.keys.sort.each do |category| -%>
             <%- next if category.nil? || category.length == 0 -%>
-            <li><%= link_to("<span>#{category}</span>", generate_filter_url(@current_state, type, {'filter' => {:category => category}}),
+            <li><%= link_to(raw("<span>#{category}</span>"), generate_filter_url(@current_state, type, {'filter' => {:category => category}}),
                     :class => "filterLink#{get_filter_hilight_class({'category' => category}, current_filter, ' hilight')}") %></li>
           <%- end -%>
         </ul>

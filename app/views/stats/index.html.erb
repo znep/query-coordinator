@@ -13,7 +13,7 @@
     <div class="statsHeaderContainer">
       <div class="statsBlockIntro clearfix">
         <div class="left">
-          <p class="title">Statistics for "<%= link_to(h(@dataset.name), @dataset.href, :title => @dataset.name) %>"</p>
+          <p class="title">Statistics for "<%= link_to(@dataset.name, @dataset.href, :title => @dataset.name) %>"</p>
           <p class="timeline">Since <%= duration_in_words(@since) %></p>
         </div>
         <div class="right miniMenu">

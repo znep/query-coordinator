@@ -18,7 +18,7 @@
   </td>
   <td class="edit_action">
     <p class="cellInner smallButton">
-      <%= link_to("<span>edit</span>", update_link_profile_path(current_user.id, :link_id => link.id)) %>
+      <%= link_to(raw("<span>edit</span>"), update_link_profile_path(current_user.id, :link_id => link.id)) %>
     </p>
   </td>
 </tr>

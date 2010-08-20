@@ -1,17 +1,17 @@
 --- 
 dependencies: 
+  rails: 
+    group: 
+    - :default
+    version: ~> 2.3.8
+    require: []
+
   multipart-post: 
     group: 
     - :default
     version: = 1.0
     require: 
     - net/http/post/multipart
-  rails: 
-    group: 
-    - :default
-    version: ~> 2.3.5
-    require: []
-
   haml: 
     group: 
     - :default
@@ -20,28 +20,18 @@ dependencies:
     group: 
     - :default
     version: = 0.1.5
-  abstract: 
-    group: 
-    - :default
-    version: = 1.0.0
   rack: 
     group: 
     - :default
-    version: = 1.0.1
-  json: 
-    group: 
-    - :default
-    version: = 1.1.9
+    version: = 1.1.0
   erubis: 
     group: 
     - :default
     version: ">= 2.6.4"
-  googlecharts: 
+  json: 
     group: 
     - :default
-    version: = 1.3.6
-    require: 
-    - gchart
+    version: = 1.1.9
   stomp: 
     group: 
     - :default
@@ -52,21 +42,19 @@ specs:
 - abstract: 
     version: 1.0.0
 - activesupport: 
-    version: 2.3.5
+    version: 2.3.8
 - rack: 
-    version: 1.0.1
+    version: 1.1.0
 - actionpack: 
-    version: 2.3.5
+    version: 2.3.8
 - actionmailer: 
-    version: 2.3.5
+    version: 2.3.8
 - activerecord: 
-    version: 2.3.5
+    version: 2.3.8
 - activeresource: 
-    version: 2.3.5
+    version: 2.3.8
 - erubis: 
     version: 2.6.6
-- googlecharts: 
-    version: 1.3.6
 - haml: 
     version: 3.0.17
 - hashie: 
@@ -76,10 +64,10 @@ specs:
 - multipart-post: 
     version: "1.0"
 - rails: 
-    version: 2.3.5
+    version: 2.3.8
 - stomp: 
     version: 1.1.6
-hash: d73812a25875edf61c1396793f09c02feca5ee85
+hash: 17c1f98a2f30c6f57cdd903f19df6b9d96e96c97
 sources: 
 - Rubygems: 
     uri: http://gemcutter.org

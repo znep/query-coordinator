@@ -24,7 +24,7 @@ module ActiveSupport
         def middleware
           @middleware ||= begin
             klass = Class.new
-            klass.class_eval(<<-EOS, __FILE__, __LINE__)
+            klass.class_eval(<<-EOS, __FILE__, __LINE__ + 1)
               def initialize(app)
                 @app = app
               end

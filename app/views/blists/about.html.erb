@@ -20,7 +20,7 @@
 
           <div class="aboutHeader">
 
-            <h1 class="dataName"><%= link_to(h(@view.name), @view.href, :class => 'linkToDataset') %></h1>
+            <h1 class="dataName"><%= link_to(@view.name, @view.href, :class => 'linkToDataset') %></h1>
             <a class="editLink editName<%= can_edit ? "" : " hide" %>" href="<%= @view.href %>/about_edit" title="Edit Dataset Name">Edit</a>
             <div class="editNameForm hide">
               <%= form_tag(@view.href) %>
@@ -143,7 +143,7 @@
                     <%- @view.metadata.attachments.each do |attachment| -%>
                       <%- attachmentObj = Attachment.set_up_model(attachment) -%>
                       <li class="attachmentItem">
-                        <%= link_to( h(attachmentObj.displayName), attachmentObj.href, :target => "_blank" ) %>
+                        <%= link_to( attachmentObj.displayName, attachmentObj.href, :target => "_blank" ) %>
                       </li>
                     <%- end -%>
                   </ul>
@@ -184,7 +184,7 @@
                   <%- if @view.attributionLink.nil? || @view.attributionLink.empty? -%>
                     None
                   <%- else -%>
-                    <%= link_to(h(@view.attributionLink)) %>
+                    <%= link_to(@view.attributionLink) %>
                   <%- end -%>
                   </span>
                 </li>
@@ -248,7 +248,7 @@
             <dl class="aboutSummaryList clearfix">
               <dt>Added By</dt>
               <dd>
-                <%= link_to(image_tag(@view.owner.profile_image_path("small"), :size => "16x16", :alt => h(@view.owner.displayName), :class => "summaryProfileImage"), @view.owner.href) %><%= link_to(h(@view.owner.displayName), @view.owner.href) %></dd>
+                <%= link_to(image_tag(@view.owner.profile_image_path("small"), :size => "16x16", :alt => h(@view.owner.displayName), :class => "summaryProfileImage"), @view.owner.href) %><%= link_to(@view.owner.displayName, @view.owner.href) %></dd>
               <dt>Added On</dt>
               <dd><%= blist_date(@view.createdAt) %></dd>
               <dt>Last Update</dt>
@@ -256,7 +256,7 @@
                 up_user = @view.last_updated_user
               %>
               <dd>
-                <%= raw up_user.nil? ? '' : link_to(h(up_user.displayName), up_user.href) + ':' %>
+                <%= raw up_user.nil? ? '' : link_to(up_user.displayName, up_user.href) + ':' %>
                 <%= blist_date(@view.last_activity) %>
               </dd>
               <dt>Filtered Views</dt>
@@ -315,7 +315,7 @@
     <% render(:layout => "shared/sidebar_box") do %>
       <div class="ownerProfileContainer clearfix">
         <ul class="ownerData">
-          <li><strong>Added By:</strong> <%= link_to(h(@view.owner.displayName), @view.owner.href) %></li>
+          <li><strong>Added By:</strong> <%= link_to(@view.owner.displayName, @view.owner.href) %></li>
           <li><strong>Added On:</strong> <%= blist_date(@view.createdAt) %></li>
           <li><strong>Last Update:</strong> <%= blist_date(@view.last_activity) %></li>
         </ul>

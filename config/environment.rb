@@ -5,7 +5,7 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '2.3.2' unless defined? RAILS_GEM_VERSION
+RAILS_GEM_VERSION = '2.3.8' unless defined? RAILS_GEM_VERSION
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
@@ -23,7 +23,7 @@ Rails::Initializer.run do |config|
   # Skip frameworks you're not going to use. To use Rails without a database
   # you must remove the Active Record framework.
   # config.frameworks -= [ :active_record, :active_resource, :action_mailer ]
-  config.frameworks -= [ :active_record ]
+  config.frameworks -= [ :active_record, :action_mailer ]
 
   # request_store only caches things in-memory for a single request
   # config.cache_store = :mem_cache_store
@@ -90,10 +90,5 @@ Rails::Initializer.run do |config|
   # They can be installed with "bundle install" on new installations
 end
 
-ActionMailer::Base.smtp_settings = {
-  :address => "mail",
-  :domain => "socrata.com"
-}
-
-ActiveSupport::JSON.backend = "JSONGem" 
+ActiveSupport::JSON.backend = "JSONGem"
 

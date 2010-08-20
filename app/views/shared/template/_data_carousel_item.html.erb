@@ -9,8 +9,8 @@
 
               <div class="carouselContainer">
                 <div class="itemTitle clearfix">
-                  <h3><%= link_to(h(view.name), view.href,
-                    :title => h(view.name)) %></h3>
+                  <h3><%= link_to(view.name, view.href,
+                    :title => view.name) %></h3>
                   <%= image_tag(view.iconUrl.to_s, :size => "55x55",
                     :alt => "placeholder") if view.iconUrl %>
                 </div>

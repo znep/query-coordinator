@@ -7,7 +7,7 @@
   <div class='itemContent'>
     <%- title_opts = in_widget ? {:rel => "external"} : {} -%>
     <span><%= page_single ? view.name :
-      link_to(h(view.name), view.href, title_opts) %></span>
+      link_to(view.name, view.href, title_opts) %></span>
     <%- if allow_edit -%>
     <%- form_tag(view.href) do -%>
     <%= hidden_field_tag("fieldType", "name") %>

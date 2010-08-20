@@ -267,6 +267,10 @@
             renderRow: function(row)
             {
                 var mapObj = this;
+
+                if (mapObj._displayConfig.noLocations)
+                { return true; }
+
                 if (_.isUndefined(mapObj._locCol) &&
                     (_.isUndefined(mapObj._latIndex) ||
                      _.isUndefined(mapObj._longIndex)))
@@ -369,7 +373,7 @@
                     else
                     {
                         icon = '/views/' + blist.display.view.id + '/' +
-                            (editObj.column.renderTypeName.endsWith('_obsolete') ?
+                            (mapObj._iconCol.renderTypeName.endsWith('_obsolete') ?
                                 'obsolete_' : '') + 'files/' +
                             row[mapObj._iconCol.dataIndex];
                     }

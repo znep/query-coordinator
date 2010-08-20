@@ -6,7 +6,7 @@
     ) %>
   </div>
   <div class="userInfo">
-    <h2><%= link_to(h(user.displayName), user.href) %></h2>
+    <h2><%= link_to(user.displayName, user.href) %></h2>
     <p>Last Login: <%= blist_date(user.lastLogin) %></p>
   </div>
 </div>

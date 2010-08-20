@@ -8,7 +8,7 @@
           :alt => h(member.displayName)), member.href) %>
   </div>
   <div class="memberInfo">
-    <h3 class="clipText"><%= link_to(h(member.displayName), member.href, :title => h(member.displayName)) %></h3>
+    <h3 class="clipText"><%= link_to(member.displayName, member.href, :title => member.displayName) %></h3>
     <ul>
       <li><%= member.displayLocation %></li>
       <li><%= member.company %></li>
@@ -34,17 +34,17 @@
         <%- if (!@current_user.nil? && @current_user.id != member.id && @current_user.privacyControl != 'anonymousPerson') -%>
           <li>
             <%- if (member.my_friend?) -%>
-              <%= link_to("<span>Remove</end>", 
-                          delete_friend_profile_path(member.id), 
-                          :class=> "followAction", :title => "Remove as Friend") %>
+              <a href="<%= delete_friend_profile_path(member.id) %>"
+                  class="followAction" title="Remove as Friend"><span>Remove</span></a>
             <%- else -%>
-              <%= link_to("<span>Add Friend</span>", 
-                          create_friend_profile_path(member.id), 
-                          :class=> "followAction", :title => "Add Friend") %>
+              <a href="<%= create_friend_profile_path(member.id) %>"
+                  class="followAction" title="Add Friend"><span>Add Friend</span></a>
             <%- end -%>
           </li>
         <%- end -%>
-        <li class="last"><%= link_to("<span>Profile</span>", member.href, :class => "arrowButton") %></li>
+        <li class="last">
+          <a href="<%= member.href %>" class="arrowButton"><span>Profile</span></a>
+        </li>
       </ul>
     </div>
   </div>

@@ -1,5 +1,5 @@
-require 'lib/v4_routing/routeset'
-require 'lib/v4_routing/route'
+require "#{Rails.root}/lib/v4_routing/routeset"
+require "#{Rails.root}/lib/v4_routing/route"
 require 'action_controller/routing'
 
 ActionController::Routing::RouteSet.send :include,

@@ -179,7 +179,7 @@
                   <%= get_type_string_for_view(share) %></div>
                 </td>
                 <td class="name"><div class="clipText">
-                  <%= link_to(h(share.name), share.href) %>
+                  <%= link_to(share.name, share.href) %>
                 </div></td>
                 <td class="description"><div class="clipText"><%= share.description %></div></td>
                 <td class="sharedOn"><div>[10/18/2008]</div></td>
@@ -231,7 +231,7 @@
                   get_share_direction_icon_class_for_view(blist) %>">
                   <%= get_type_string_for_view(blist) %></div>
                 </td>
-                <td class="name"><div><%= link_to(h(blist.name), blist.href) %></div></td>
+                <td class="name"><div><%= link_to(blist.name, blist.href) %></div></td>
                 <td class="views"><div><%= blist.viewCount %></div></td>
                 <td class="copies"><div>[123]</div></td>
                 <td class="lastUpdated"><div><%= blist_date(blist.last_activity) %>

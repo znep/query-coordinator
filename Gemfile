@@ -6,7 +6,7 @@ gem "json", "1.4.6"
 gem "erubis", ">= 2.6.4"
 gem "googlecharts", "1.3.6", :require => 'gchart'
 gem "multipart-post", "1.0.1", :require => 'net/http/post/multipart'
-gem "hashie", "0.3.0"
+gem "hashie", "0.3.1"
 gem "haml", "3.0.17"
 gem "stomp", "1.1.6"
 

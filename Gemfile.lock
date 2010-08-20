@@ -1,5 +1,5 @@
 --- 
-hash: ed349a398823c2d9401ce385da2b1e2c4098d5cc
+hash: 0cd563f611bb6bd205ce2d7462d023601decf995
 sources: 
 - Rubygems: 
     uri: http://gemcutter.org
@@ -31,7 +31,7 @@ specs:
 - haml: 
     version: 3.0.17
 - hashie: 
-    version: 0.3.0
+    version: 0.3.1
 - json: 
     version: 1.4.6
 - multipart-post: 
@@ -74,7 +74,7 @@ dependencies:
     require: 
     - net/http/post/multipart
   hashie: 
-    version: = 0.3.0
+    version: = 0.3.1
     group: 
     - :default
   haml: 

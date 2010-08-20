@@ -155,7 +155,7 @@ blist.dataset.isPublic = function(view)
     }));
 }
 
-blist.dataset.getLinkedDatasetOptions = function(linkedDatasetUid, col, $field, useRdfKeyAsDefault)
+blist.dataset.getLinkedDatasetOptions = function(linkedDatasetUid, col, $field, curVal, useRdfKeyAsDefault)
 {
     if (blist.dataset.getLinkedDatasetOptions.cachedLinkedDatasetOptions === undefined)
     {
@@ -213,6 +213,7 @@ blist.dataset.getLinkedDatasetOptions = function(linkedDatasetUid, col, $field, 
                     _.each($field.data('linkedGroup'), function(f) {
                         $(f).trigger('change');
                     });
+                    _.defer(function() { $field.val(curVal); });
                 }
             }});
          return [];
@@ -221,12 +222,12 @@ blist.dataset.getLinkedDatasetOptions = function(linkedDatasetUid, col, $field, 
     return cachedLinkedDatasetOptions[viewUid];
 };
 
-blist.dataset.getLinkedDatasetOptionsDefault = function(linkedDatasetUid, col, $field)
+blist.dataset.getLinkedDatasetOptionsDefault = function(linkedDatasetUid, col, $field, curVal)
 {
-    return blist.dataset.getLinkedDatasetOptions(linkedDatasetUid, col, $field, true);
+    return blist.dataset.getLinkedDatasetOptions(linkedDatasetUid, col, $field, curVal, true);
 };
 
-blist.dataset.getLinkedDatasetOptionsNoDefault = function(linkedDatasetUid, col, $field)
+blist.dataset.getLinkedDatasetOptionsNoDefault = function(linkedDatasetUid, col, $field, curVal)
 {
-    return blist.dataset.getLinkedDatasetOptions(linkedDatasetUid, col, $field, false);
+    return blist.dataset.getLinkedDatasetOptions(linkedDatasetUid, col, $field, curVal, false);
 };

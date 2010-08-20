@@ -2482,7 +2482,7 @@
 
                     if (_.isFunction(selOpt))
                     {
-                        var newOpts = selOpt(vals, data, $field);
+                        var newOpts = selOpt(vals, data, $field, curValue);
                         $field.find('option:not(.prompt)').remove();
                         $field.attr('disabled', $.isBlank(newOpts) ||
                             newOpts == 'disabled' ||
@@ -2504,8 +2504,7 @@
                             curValue);
                         $l.toggle(showLine);
                     }
-
-                    uniformUpdate($field);
+                    _.defer(function() { uniformUpdate($field); });
                 };
                 var defAdjField = function() { _.defer(adjustField); };
 

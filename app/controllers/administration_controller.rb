@@ -55,11 +55,6 @@ class AdministrationController < ApplicationController
     render_forbidden unless CurrentDomain.member?(current_user)
   end
 
-  def render_forbidden
-    flash.now[:error] = 'You do not have permission to view this page'
-    return (render 'shared/error', :status => :forbidden)
-  end
-
   def find_privileged_users(level=1)
     User.find :method => 'usersWithRole', :role => level
   end

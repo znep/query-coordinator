@@ -96,7 +96,7 @@
                     options: [
                         {name: 'displayFormat.plot.locationId',
                             type: 'columnSelect', isTableColumn: true,
-                            columns: {type: 'location', hidden: isEdit},
+                            columns: {type: 'location', hidden: isEdit}
                         },
                         {value: 'No Locations', type: 'static',
                             name: 'displayFormat.noLocations', isInput: true }

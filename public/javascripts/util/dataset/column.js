@@ -15,7 +15,7 @@ this.Column = Model.extend({
         else if (parent instanceof Dataset)
         { this.view = parent; }
 
-        if ($.isBlank(this.parentColumn) && this.dataTypeName == 'nested_table')
+        if (this.dataTypeName == 'nested_table')
         {
             // This ID really shouldn't be changing; if it does, this URL
             // will be out-of-date...
@@ -148,7 +148,7 @@ this.Column = Model.extend({
         _.each(newCol, function(v, k)
         { if (k != 'childColumns' && col._validKeys[k]) { col[k] = v; } });
 
-        this._updateChildColumns(newCol.childColumns);
+        this._updateChildColumns(newCol.childColumns, forceFull, forceFull);
 
         // dropDown is special, because it only comes from the server; it isn't
         // posted back, so it isn't considered valid
@@ -249,6 +249,14 @@ this.Column = Model.extend({
     {
         $.makeArray(rowIds);
         // TODO: implement me
+    },
+
+    cleanCopy: function()
+    {
+        var col = this._super();
+        // Support for picklists
+        if (col.dataTypeName == 'picklist') { delete col.dropDownList; }
+        return col;
     },
 
     _setUpColumn: function()

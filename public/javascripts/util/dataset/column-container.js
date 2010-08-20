@@ -100,7 +100,8 @@ this.ColumnContainer = function(colName, urlBase)
     props.cleanCopy = function()
     {
         var item = this._super();
-        item[colSet] = _.reject(item[colSet], function(c) { return c.id == -1; });
+        item[colSet] = _.reject(item[colSet] || [],
+            function(c) { return c.id == -1; });
         return item;
     };
 

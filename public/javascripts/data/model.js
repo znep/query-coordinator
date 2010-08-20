@@ -59,6 +59,9 @@ blist.namespace.fetch('blist.data');
         var undoBuffer = [];
         var redoBuffer = [];
 
+        // Translated columns with levels for table
+        var trCols;
+
         /**
          * Set options
          */
@@ -80,7 +83,11 @@ blist.namespace.fetch('blist.data');
                                 configureActive();
                             })
                         .bind('columns_changed', function()
-                            { resetUndo(); });
+                            {
+                                resetUndo();
+                                trCols = null;
+                                $(listeners).trigger('columns_changed');
+                            });
                     if (!wasDS)
                     { $(listeners).trigger('dataset_ready', [self]); }
                 }
@@ -174,6 +181,27 @@ blist.namespace.fetch('blist.data');
             this.view.getAggregates(callback);
 
             return true;
+        };
+
+        var setUpColumns = function()
+        {
+            trCols = [[], []];
+            var fillFor = [];
+            _.each(self.view.visibleColumns, function(c)
+            {
+                trCols[0].push(c);
+                if (c.dataTypeName == 'nested_table')
+                {
+                    if (fillFor.length > 0)
+                    { trCols[1].push({renderTypeName: 'fill', fillFor: fillFor}); }
+                    fillFor = [];
+                    trCols[1].push(c);
+                }
+                else
+                { fillFor.push(c); }
+            });
+            if (fillFor.length > 0)
+            { trCols[1].push({renderTypeName: 'fill', fillFor: fillFor}); }
         };
 
         // TODO: nt
@@ -724,7 +752,12 @@ blist.namespace.fetch('blist.data');
          */
         this.columns = function()
         {
-            return (this.view || {}).visibleColumns || [];
+            if ($.isBlank(this.view)) { return null; }
+
+            if ($.isBlank(trCols))
+            { setUpColumns(); }
+
+            return trCols;
         };
 
         this.columnForID = function(id)

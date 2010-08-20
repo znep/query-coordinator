@@ -369,7 +369,7 @@
                     else
                     {
                         icon = '/views/' + blist.display.view.id + '/' +
-                            (editObj.column.renderTypeName.endsWith('_obsolete') ?
+                            (mapObj._iconCol.renderTypeName.endsWith('_obsolete') ?
                                 'obsolete_' : '') + 'files/' +
                             row[mapObj._iconCol.dataIndex];
                     }

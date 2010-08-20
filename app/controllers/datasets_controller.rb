@@ -131,7 +131,7 @@ protected
     end
 
     if (view.is_form? ? !view.can_add? : !view.can_read?)
-      require_user(true)
+      render_forbidden("You do not have permission to view this dataset")
       return nil
     end
 

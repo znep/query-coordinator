@@ -343,6 +343,8 @@ stylesheets:
 - blists-index-alt:
   - list-screen
   - blists-alt-screen
+- blist-show-alt:
+  - blist-show-alt
 - blists-new:
   - blist-new-screen
   - form-common

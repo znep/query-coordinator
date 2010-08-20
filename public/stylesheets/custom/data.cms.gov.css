@@ -92,8 +92,8 @@ a:hover
 {
     display: inline-block;
 }
-#header .userNav li.signInLink,
 #header .userNav li.home { background-position: 0 -91px; }
+#header .userNav li.signInLink,
 #header .userNav li.accountLink { background-position: 0 -37px; }
 #header .userNav li.dataLink { background-position: 0 -19px; }
 #header .userNav li.signOutLink { background-position: 0 -55px; }

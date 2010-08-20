@@ -32,8 +32,7 @@
     <% end %>
     <p class="clearfix">
       <span><%= check_box_tag 'signup[accept_terms]', "1", false, :class => 'required' %>
-      I agree to the <%= raw CurrentDomain.theme.urls.signup.map{|link| link_from_theme(link)}.to_sentence(
-      :words_connector => ', ', :two_words_connector => ' and ', :last_word_connector => ', and ') %></span>
+      I agree to the <%= raw CurrentDomain.theme.urls.signup.map{|link| link_from_theme(link)}.to_sentence(:words_connector => ', ', :two_words_connector => ' and ', :last_word_connector => ', and ') %></span>
       <label class="error" for="signup[accept_terms]" generated="true"></label>
     </p>
   </fieldset>

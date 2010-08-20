@@ -31,7 +31,7 @@
       <% form_tag('/internal/orgs/' + @domain.organizationId.to_s +
         '/domains/' + @domain.cname + '/site_config/' + @config.id.to_s +
         '/property', {:class => 'wide'}) do %>
-        <%- @config.data['properties'].each do |prop| -%>
+        <%- @config.data['properties'].sort{ |a, b| a['name'] <=> b['name'] }.each do |prop| -%>
         <div class='line'>
           <%- cur_props[prop['name']] = true -%>
           <label><%= prop['name'] %></label>

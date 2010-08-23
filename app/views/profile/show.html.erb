@@ -167,15 +167,13 @@
                         </dd>
                         <dt><label for="user_state">State</label></dt>
                         <dd>
-                          <%= select_tag("user[state]",
-                            us_state_select_options(@user.state)) %>
+                          <%= select_tag("user[state]", raw(us_state_select_options(@user.state))) %>
                         </dd>
                         <dt class='sectionEnd'>
                           <label for="user_country">Country</label>
                         </dt>
                         <dd class='sectionEnd'>
-                          <%= select_tag("user[country]",
-                            country_select_options(@user.country)) %>
+                          <%= select_tag("user[country]", raw(country_select_options(@user.country))) %>
                         </dd>
                         <dt><label for="user_tags">Tags</label></dt>
                         <dd>

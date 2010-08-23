@@ -4,7 +4,11 @@ class Displays::Map < Displays::Base
   end
 
   def required_javascripts
-    [ 'http://serverapi.arcgisonline.com/jsapi/arcgis/?v=1.6', 'shared-map' ]
+    [ 'shared-map' ]
+  end
+
+  def required_javascript_links
+    [ 'http://serverapi.arcgisonline.com/jsapi/arcgis/?v=1.6' ]
   end
 
   def render_javascript_links
@@ -20,7 +24,7 @@ class Displays::Map < Displays::Base
     result
   end
 
-  def required_stylesheets
+  def required_style_links
     [ 'http://serverapi.arcgisonline.com/jsapi/arcgis/1.5/js/dojo/dijit/themes/tundra/tundra.css' ]
   end
 

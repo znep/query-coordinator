@@ -15,6 +15,7 @@
         <p>Domain or Configuration could not be found</p>
 
       <%- else -%>
+      <%= render :partial => 'production_warning' %>
       <h1><%= @config.name %> for
         <a href="/internal/orgs/<%= @domain.organizationId
           %>/domains/<%= @domain.cname %>">

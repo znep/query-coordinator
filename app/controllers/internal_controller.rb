@@ -186,7 +186,7 @@ class InternalController < ApplicationController
           begin
             new_value = JSON.parse(value)
           rescue JSON::ParserError
-            new_value = value.gsub(/(\\+n)/, "\n") # avoid double-escaping
+            new_value = value.gsub(/(\\u000a)|(\\+n)/, "\n") # avoid double-escaping
           end
           config.update_property(name, new_value)
         end

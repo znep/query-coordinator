@@ -1,5 +1,5 @@
 --- 
-hash: 0cd563f611bb6bd205ce2d7462d023601decf995
+hash: 1206087a0b19a621e096a11907810ef1cfd19f4e
 sources: 
 - Rubygems: 
     uri: http://gemcutter.org
@@ -32,6 +32,8 @@ specs:
     version: 3.0.17
 - hashie: 
     version: 0.3.1
+- hoptoad_notifier: 
+    version: 2.3.5
 - json: 
     version: 1.4.6
 - multipart-post: 
@@ -83,6 +85,10 @@ dependencies:
     - :default
   stomp: 
     version: = 1.1.6
+    group: 
+    - :default
+  hoptoad_notifier: 
+    version: ">= 0"
     group: 
     - :default
   thin: 

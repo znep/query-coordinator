@@ -9,5 +9,6 @@ gem "multipart-post", "1.0.1", :require => 'net/http/post/multipart'
 gem "hashie", "0.3.1"
 gem "haml", "3.0.17"
 gem "stomp", "1.1.6"
+gem "hoptoad_notifier"
 
 gem "thin", :group => :development

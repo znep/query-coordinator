@@ -10,7 +10,8 @@ blist.dataset.map.isValid = function(view)
     var locCol = blist.dataset.columnForTCID(view,
         view.displayFormat.plot.locationId);
 
-    return !$.isBlank(locCol) || (!$.isBlank(latCol) && !$.isBlank(longCol));
+    return !$.isBlank(locCol) || (!$.isBlank(latCol) && !$.isBlank(longCol))
+        || view.displayFormat.noLocations;
 };
 
 blist.dataset.map.convertLegacy = function(view)

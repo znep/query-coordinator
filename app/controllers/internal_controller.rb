@@ -181,7 +181,14 @@ class InternalController < ApplicationController
         end
 
         params[:properties].each do |name, value|
-          config.update_property(name, JSON.parse("[" + value + "]")[0])
+          # well, if it doesn't parse it must be a string, right?
+          # </famous-last-words>
+          begin
+            new_value = JSON.parse(value)
+          rescue JSON::ParserError
+            new_value = value.gsub(/(\\+n)/, "\n") # avoid double-escaping
+          end
+          config.update_property(name, new_value)
         end
       end
     end

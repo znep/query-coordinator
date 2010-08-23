@@ -224,6 +224,7 @@
             {
                 var mapObj = this;
                 if (mapObj._extentSet) { return; }
+                if (mapObj._multipoint.points.length == 0) { return; }
 
                 var extent = mapObj._multipoint.getExtent();
                 // Adjust x & y by about 10% so points aren't on the very edge

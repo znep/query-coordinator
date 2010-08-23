@@ -384,13 +384,13 @@ class Column < Model
       'dollar' : self.format.currency
     return {
       'dollar' => "$",
-      'pound' => "£",
-      'euro' => "€",
-      'yen' => "¥",
+      'pound' => "&pound;",
+      'euro' => "&euro;",
+      'yen' => "&#165;",
       'forint' => "Ft",
       'hk_dollar' => "HK$",
       'kuna' => "Kn",
-      'koruna' => "Kč",
+      'koruna' => "K&#269;",
       'lats' => "Ls",
       'litas' => "Lt",
       'nt_dollar' => "NT$",
@@ -403,14 +403,14 @@ class Column < Model
       'new_lira' => "YTL",
       'krone' => "kr",
       'lei_noi' => "lei",
-      'zloty' => "zł",
-      'baht' => "฿",
-      'dong' => "₫",
-      'won' => "₩",
-      'ruble' => "р.",
-      'lev' => "лв.",
-      'dinar' => "Дин.",
-      'hryvnia' => "грн."
+      'zloty' => "z&#322;",
+      'baht' => "&#3647;",
+      'dong' => "&#8363;",
+      'won' => "&#8361;",
+      'ruble' => "&#1088;.",
+      'lev' => "&#1083;&#1074;.",
+      'dinar' => "&#1044;&#1080;&#1085;.",
+      'hryvnia' => "&#1075;&#1088;&#1085;."
     }[currency]
   end
 

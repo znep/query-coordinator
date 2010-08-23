@@ -1544,8 +1544,17 @@
                         null : args.context.data) : args.item.value;
                 if (!$.isBlank(val))
                 {
-                    contents.push($.extend(commonAttrs(args.item),
-                        {tagName: 'span', contents: val}));
+                    if (args.item.isInput)
+                    {
+                        contents.push({tagName: 'span', contents: val});
+                        contents.push($.extend(commonAttrs(args.item),
+                            {tagName: 'input', type: 'hidden', value: val}));
+                    }
+                    else
+                    {
+                        contents.push($.extend(commonAttrs(args.item),
+                            {tagName: 'span', contents: val}));
+                    }
                 }
                 else
                 { contents = []; }
@@ -2473,7 +2482,7 @@
 
                     if (_.isFunction(selOpt))
                     {
-                        var newOpts = selOpt(vals, data, $field);
+                        var newOpts = selOpt(vals, data, $field, curValue);
                         $field.find('option:not(.prompt)').remove();
                         $field.attr('disabled', $.isBlank(newOpts) ||
                             newOpts == 'disabled' ||
@@ -2495,8 +2504,7 @@
                             curValue);
                         $l.toggle(showLine);
                     }
-
-                    uniformUpdate($field);
+                    _.defer(function() { uniformUpdate($field); });
                 };
                 var defAdjField = function() { _.defer(adjustField); };
 

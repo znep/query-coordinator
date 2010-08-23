@@ -54,12 +54,12 @@
       <a name="content"></a>
       <%= yield :layout %>
 
-      <a name="footerLinks"></a>
-      <div id="siteFooter" class="clearfix">
-        <%= render_domain_template('footer', '2b') %>
-      </div>
-
     </div>
+  </div>
+
+  <div id="siteFooter">
+    <a name="footerLinks"></a>
+    <%= render_domain_template('footer', '2b') %>
   </div>
 
   <%#

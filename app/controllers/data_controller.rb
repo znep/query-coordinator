@@ -1,5 +1,6 @@
 class DataController < ApplicationController
   caches_page :splash, :noie, :redirected
+  before_filter :check_lockdown, :only => [:show]
   skip_before_filter :require_user
 
   PAGE_SIZE = 10
@@ -248,6 +249,16 @@ private
       new_tag = Tag.new
       new_tag.data['name'] = required_tag
       list << new_tag
+    end
+  end
+
+  def check_lockdown
+    if CurrentDomain.feature? :staging_lockdown
+      if current_user.nil?
+        return require_user(true)
+      elsif !CurrentDomain.member?(current_user)
+        return render_forbidden
+      end
     end
   end
 

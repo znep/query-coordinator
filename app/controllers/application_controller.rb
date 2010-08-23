@@ -151,10 +151,7 @@ private
   end
 
   def require_domain_member
-    unless CurrentDomain.member?(current_user)
-      flash.now[:error] = "You do not have permission to view this page"
-      return (render 'shared/error', :status => :forbidden)
-    end
+    return render_forbidden unless CurrentDomain.member?(current_user)
   end
 
   def set_user

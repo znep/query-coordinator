@@ -174,8 +174,8 @@ END
 
     # Render links to javascript files
     def render_javascript_links
-      required_javascripts.map { |js| @@asset_helper.javascript_include_merged js }.join +
-        required_javascript_links.map { |link| @@app_helper.javascript_include_tag link }.join
+      required_javascript_links.map { |link| @@app_helper.javascript_include_tag link }.join +
+        required_javascripts.map { |js| @@asset_helper.javascript_include_merged js }.join
     end
 
     # Render links to javascript files for editing

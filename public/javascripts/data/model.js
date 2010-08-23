@@ -87,6 +87,20 @@ blist.namespace.fetch('blist.data');
                                 resetUndo();
                                 trCols = null;
                                 $(listeners).trigger('columns_changed');
+                            })
+                        // Dataset doesn't know about weird constructed
+                        // child rows, so whenever a parent changes, fire
+                        // all the fake children
+                        .bind('row_change', function(rows)
+                            {
+                                _.each($.makeArray(rows), function(r)
+                                {
+                                    if (r.expanded)
+                                    {
+                                        self.view.trigger('row_change',
+                                            [r.childRows]);
+                                    }
+                                });
                             });
                     if (!wasDS)
                     { $(listeners).trigger('dataset_ready', [self]); }
@@ -284,45 +298,6 @@ blist.namespace.fetch('blist.data');
 //            if (columns[nestDepth + 1]) { addNestFiller(); }
 //        };
 
-        var addItemsToObject = function(obj, values, index)
-        {
-            var numInserts = values.length;
-            // Get all larger indexes
-            var adjustIndexes = [];
-            _.each(obj, function(r, i)
-                { if (i >= index) { adjustIndexes.push(parseInt(i)); } });
-            // Sort descending so we don't collide while moving
-            adjustIndexes.sort(function(a, b) { return b - a; });
-            // Move each index up one
-            _.each(adjustIndexes, function(i)
-            {
-                obj[i + numInserts] = obj[i];
-                delete obj[i];
-            });
-            // Add all the new values
-            _.each(values, function(v, i) { obj[index + parseInt(i)] = v; });
-        };
-
-        var removeItemsFromObject = function(obj, index, numItems)
-        {
-            // Remove specified number of items
-            for (var i = 0; i < numItems; i++)
-            { delete obj[index + i]; }
-
-            // Get all larger indexes
-            var adjustIndexes = [];
-            _.each(obj, function(r, i)
-                { if (i > index) { adjustIndexes.push(parseInt(i)); } });
-            // Sort ascending so we don't collide while moving
-            adjustIndexes.sort(function(a, b) { return a - b; });
-            // Move each item down one
-            _.each(adjustIndexes, function(i)
-            {
-                obj[i - numItems] = obj[i];
-                delete obj[i];
-            });
-        };
-
         /**
          * Remove rows from the model.
          */
@@ -393,14 +368,28 @@ blist.namespace.fetch('blist.data');
 
         };
 
+        var isInvalid = function(row, column)
+        {
+            if (!$.isBlank(column.parentColumn))
+            { row = row[column.parentColumn.lookup]; }
+            return (row.invalid || {})[column.lookup];
+        };
+
+        var getRawValue = function(row, column)
+        {
+            if (!$.isBlank(column.parentColumn))
+            { row = row[column.parentColumn.lookup]; }
+            return row[column.lookup];
+        };
+
         // Get the value in a row for a column
         this.getRowValue = function(row, column)
         {
             if ($.isBlank(row)) { return undefined; }
 
-            if (row.invalid[column.id]) { return null; }
+            if (isInvalid(row, column)) { return null; }
 
-            return row[column.lookup];
+            return getRawValue(row, column);
         };
 
         // Get the invalid value in a row for a column
@@ -408,14 +397,16 @@ blist.namespace.fetch('blist.data');
         {
             if ($.isBlank(row)) { return undefined; }
 
-            if (!row.invalid[column.id]) { return null; }
+            if (!isInvalid(row, column)) { return null; }
 
-            return row[column.lookup];
+            return getRawValue(row, column);
         };
 
         this.isCellError = function(row, column)
         {
-            return row.error[column.id];
+            if (!$.isBlank(column.parentColumn))
+            { row = row[column.parentColumn.lookup]; }
+            return row.error[column.lookup];
         };
 
         var resetChildRows = function(row)
@@ -431,10 +422,6 @@ blist.namespace.fetch('blist.data');
             { delete row.childRows; }
         };
 
-        var saveUID = 0;
-        var pendingRowEdits = {};
-        var pendingRowDeletes = {};
-
         // Set the value for a row, save it to the server, and notify listeners
         this.saveRowValue = function(value, row, column, isValid, skipUndo)
         {
@@ -446,9 +433,50 @@ blist.namespace.fetch('blist.data');
                 delete row.type;
                 row.id = this.view.createRow();
                 isCreate = true;
-                var newRow = this.getByID(row.id);
+                row = this.getByID(row.id);
                 if (!skipUndo)
-                { this.addUndoItem({type: 'create', rows: [newRow]}); }
+                { this.addUndoItem({type: 'create', rows: [row]}); }
+            }
+
+            var parRow;
+            var childRow;
+            var parCol;
+            if (!$.isBlank(column || {}).parentColumn)
+            {
+                parCol = column.parentColumn;
+
+                childRow = self.getRowValue(row, parCol);
+                parRow = row.parent;
+                isCreate = childRow.type == 'blank';
+                if (isCreate)
+                {
+                    delete childRow.type;
+
+                    // Since child rows get re-created, save the index and pull
+                    // out the new one
+                    var curRowI = this.index(row);
+
+                    // If we're in a blank row, create that row first
+                    if (parRow.type == 'blank')
+                    {
+                        parRow = this.saveRowValue(null, parRow, null, true);
+                        skipUndo = true;
+                    }
+
+                    // Add the new row to the parent
+//                    if (!parRow[parCol.dataIndex])
+//                    { parRow[parCol.dataIndex] = []; }
+//                    parRow[parCol.dataIndex].push(childRow);
+
+                    // Now force refresh by collapsing, clearing
+                    // child rows, and then re-expanding.
+//                    resetChildRows(parRow);
+//                    row = this.get(curRowI);
+//                    if (!row.saving) { row.saving = []; }
+
+                    if (!skipUndo) { this.addUndoItem({type: 'childCreate',
+                        rows: [row], parentColumn: parCol}); }
+                }
             }
 
             if (!skipUndo && !isCreate)
@@ -470,57 +498,18 @@ blist.namespace.fetch('blist.data');
                         row: row, value: prevValue, invalid: prevValueInvalid});
             }
 
-            this.view.setRowValue(value, row.id, column.id, !isValid);
-            this.view.saveRow(row.id);
-
-            // TODO: nt
-//            if (column && column.nestedIn)
-//            {
-//                var parCol = column.nestedIn.header;
-//
-//                var childRow = self.getRowValue(row, parCol);
-//                isCreate = childRow.type == 'blank';
-//                if (isCreate)
-//                {
-//                    delete childRow.type;
-//                    var parRow = row.parent;
-//
-//                    // Since child rows get re-created, save the index and pull
-//                    // out the new one
-//                    var curRowI = this.index(row);
-//
-//                    // If we're in a blank row, create that row first
-//                    if (parRow.type == 'blank')
-//                    {
-//                        this.saveRowValue(null, parRow, null, true);
-//                        skipUndo = true;
-//                    }
-//
-//                    // Add the new row to the parent
-//                    if (!parRow[parCol.dataIndex])
-//                    { parRow[parCol.dataIndex] = []; }
-//                    parRow[parCol.dataIndex].push(childRow);
-//
-//                    // Now force refresh by collapsing, clearing
-//                    // child rows, and then re-expanding.
-//                    resetChildRows(parRow);
-//                    row = this.get(curRowI);
-//                    if (!row.saving) { row.saving = []; }
-//
-//                    if (!skipUndo) { this.addUndoItem({type: 'childCreate',
-//                        rows: [row], parentColumn: parCol}); }
-//                }
-//
-//                setRowMetadata([row], parCol.metaChildren,
-//                    parCol.dataMungeChildren);
-//
-//                if (!row.saving[parCol.dataIndex])
-//                { row.saving[parCol.dataIndex] = []; }
-//                row.saving[parCol.dataIndex][column.dataIndex] = true;
-//                if (row.error && row.error[parCol.dataIndex])
-//                { delete row.error[parCol.dataIndex][column.dataIndex]; }
-//            }
-
+            if ($.isBlank(childRow))
+            {
+                this.view.setRowValue(value, row.id, column.id, !isValid);
+                this.view.saveRow(row.id);
+            }
+            else
+            {
+                this.view.setRowValue(value, childRow.id, column.id,
+                    !isValid, parRow.id, parCol.id);
+                this.view.saveRow(childRow.id, parRow.id, parCol.id);
+            }
+            return row;
         };
 
         var undeleteRow = function(row, parentRow, parentColumn, childCascade)
@@ -702,10 +691,11 @@ blist.namespace.fetch('blist.data');
             return parentRow.childRows[childRowPos];
         };
 
-        var fakeRowToChild = function(fakeRow, parentColumn)
-        {
-            return fakeRow[parentColumn.dataIndex];
-        };
+        // TODO: Used by undo-redo; still needed?
+//        var fakeRowToChild = function(fakeRow, parentColumn)
+//        {
+//            return fakeRow[parentColumn.lookup];
+//        };
 
         /**
          * Notify listeners of row selectionchanges.
@@ -724,8 +714,8 @@ blist.namespace.fetch('blist.data');
         this.index = function(row)
         {
             if ($.isBlank(this.view)) { return undefined; }
-            if (!$.isBlank(specialRows[row.id])) { return row.index; }
-            return row.index + countSpecialTo(row.index);
+            if (!$.isBlank(specialLookup[row.id])) { return row.index; }
+            return row.index + countSpecialTo(row.index + 1);
         };
 
         /**
@@ -762,8 +752,17 @@ blist.namespace.fetch('blist.data');
 
         this.columnForID = function(id)
         {
-            return !$.isBlank(this.view) ?
-                this.view.columnForID(id) : null;
+            if ($.isBlank(this.view)) { return null; }
+            var col = this.view.columnForID(id);
+            if ($.isBlank(col))
+            {
+                _.each(this.view.columnsForType('nested_table'), function(c)
+                {
+                    col = c.childColumnForID(id);
+                    if (!$.isBlank(col)) { _.breakLoop(); }
+                });
+                return col;
+            }
         };
 
         /**
@@ -785,39 +784,44 @@ blist.namespace.fetch('blist.data');
         /**
          * Retrieve the columns for a level.
          */
-//        this.level = function(id) {
-//            return meta.columns[id];
-//        };
+        this.level = function(level)
+        {
+            if ($.isBlank(this.view) || $.isBlank(trCols))
+            { return null; }
+
+            return trCols[level];
+        };
 
         /**
          * Scan to find the next or previous row in the same level.
          */
         this.nextInLevel = function(from, backward)
         {
-        // TODO: nt
-//            var pos = from;
-//            var level = 0;
-//            if (active[pos] !== undefined) { level = active[pos].level || 0; }
-//            if (backward)
-//            {
-//                while (--pos >= 0)
-//                {
-//                    if ((active[pos] !== undefined ?
-//                        (active[pos].level || 0) : 0) == level)
-//                    { return pos; }
-//                }
-//            }
-//            else
-//            {
-//                var end = 0;//activeCount;
-//                while (++pos < end)
-//                {
-//                    if (active[pos] === undefined ||
-//                        (active[pos].level || 0) == level)
-//                    { return pos; }
-//                }
-//            }
-//            return null;
+            var pos = from;
+            var level = 0;
+            // Everything not in specialRows is level 0
+            if (!$.isBlank(specialRows[pos]))
+            { level = specialRows[pos].level || 0; }
+
+            if (backward)
+            {
+                while (--pos >= 0)
+                {
+                    if (((this.get(pos) || {}).level || 0) == level)
+                    { return pos; }
+                }
+            }
+            else
+            {
+                var end = this.length();
+                while (++pos < end)
+                {
+                    var r = this.get(pos);
+                    if ($.isBlank(r) || (r.level || 0) == level)
+                    { return pos; }
+                }
+            }
+            return null;
         };
 
         this.selectedRows = {};
@@ -906,58 +910,53 @@ blist.namespace.fetch('blist.data');
 
         var getChildRows = function(row)
         {
-//            if (row.childRows) { return row.childRows; }
-//
-//            var cols = meta.columns[row.level || 0];
-//            var childRows = row.childRows = [];
-//            var childLevel = (row.level || 0) + 1;
-//
-//            for (var i = 0; i < cols.length; i++)
-//            {
-//                var col = cols[i];
-//                if (!col.body) { continue; }
-//
-//                var cell = row[col.dataIndex];
-//                if (!cell && !self.useBlankRows()) { continue; }
-//                if (!cell) { cell = []; }
-//
-//                var numCells = (cell.length || 0) + (self.useBlankRows() ? 1 : 0);
-//                for (var j = 0; j < numCells; j++) {
-//                    var childRow = childRows[j];
-//                    if (!childRow)
-//                    {
-//                        childRow = childRows[j] = [];
-//                        childRow.id = "t" + nextTempID++;
-//                        childRow.level = childLevel;
-//                        childRow.parent = row;
-//                    }
-//
-//                    // Set up saving & error arrays so we don't need to do
-//                    // two level checks in the row renderer
-//                    if (!childRow.saving) { childRow.saving = []; }
-//                    childRow.saving[col.dataIndex] = [];
-//                    if (!childRow.error) { childRow.error = []; }
-//                    childRow.error[col.dataIndex] = [];
-//                    childRow[col.dataIndex] = cell[j];
-//                    if (!childRow[col.dataIndex])
-//                    {
-//                        childRow[col.dataIndex] = [];
-//                        childRow[col.dataIndex].type = 'blank';
-//                    }
-////                    setRowMetadata([childRow[col.dataIndex]], col.metaChildren,
-////                        col.dataMungeChildren);
-//                }
-//            }
-//
-//            if (childRows.length)
-//            { childRows[childRows.length - 1].groupLast = true; }
-//            return childRows;
+            if (row.childRows) { return row.childRows; }
+
+            var cols = self.columns()[row.level || 0];
+            var childRows = row.childRows = [];
+            var childLevel = (row.level || 0) + 1;
+
+            for (var i = 0; i < cols.length; i++)
+            {
+                var col = cols[i];
+                if ($.isBlank(col.visibleChildColumns)) { continue; }
+
+                var cell = row[col.lookup];
+                if ($.isBlank(cell) && !self.useBlankRows()) { continue; }
+                cell = cell || [];
+
+                var numCells = (cell.length || 0) + (self.useBlankRows() ? 1 : 0);
+                for (var j = 0; j < numCells; j++)
+                {
+                    var childRow = childRows[j];
+                    if (!childRow)
+                    {
+                        childRow = childRows[j] = {};
+                        childRow.id = "t" + _.uniqueId();
+                        childRow.level = childLevel;
+                        childRow.parent = row;
+                        // Index will be set for real when inserted into special
+                        childRow.index = -1;
+                    }
+
+                    childRow[col.lookup] = cell[j];
+                    if (!childRow[col.lookup])
+                    {
+                        childRow[col.lookup] =
+                            {invalid: {}, changed: {}, error: {}};
+                        childRow[col.lookup].type = 'blank';
+                    }
+                }
+            }
+
+            if (childRows.length)
+            { childRows[childRows.length - 1].groupLast = true; }
+            return childRows;
         };
 
         /**
          * Open or close a row (open rows display nested records).
          */
-        var nextTempID = 0;
         this.expand = function(row, open, skipEvent)
         {
             if (row === undefined) { return; }
@@ -974,35 +973,34 @@ blist.namespace.fetch('blist.data');
                 // Create the child rows
                 var childRows = getChildRows(row);
 
-                // Install child rows into the active set if the row is open
-//                if (active == rows)
-//                { active = _.clone(rows); }
-//                var i = parseInt(activeLookup[row.id]);
-//                addItemsToObject(active, childRows, i + 1);
-                // TODO: special
-                //activeCount += childRows.length;
+                // Install child rows into the special set if the row is open
+                $.addItemsToObject(specialRows, childRows, this.index(row) + 1);
+                _.each(childRows, function(cr) { specialLookup[cr.id] = cr; });
+                specialCount += childRows.length;
             }
             else
             {
                 // Remove the child rows
-//                if (row.childRows && row.childRows.length)
-//                {
-//                    var i = parseInt(activeLookup[row.id]);
-//                    removeItemsFromObject(active, i + 1,
-//                        row.childRows.length);
-                // TODO: special
-                    //activeCount -= row.childRows.length;
-                    //if (active == rows) { totalRows = activeCount; }
-                //}
+                if (row.childRows && row.childRows.length)
+                {
+                    $.removeItemsFromObject(specialRows, this.index(row) + 1,
+                        row.childRows.length);
+                    specialCount -= row.childRows.length;
+                    _.each(row.childRows, function(cr)
+                        { delete specialLookup[cr.id]; });
+                }
             }
 
             // Record the new row state
             row.expanded = open;
 
-            // Update IDs for the rows that moved
-
             // Fire events
-//            if (!skipEvent) { this.change([ row ]); }
+            if (!skipEvent)
+            {
+                var rows = [row];
+                if (!row.expanded) { rows = rows.concat(row.childRows); }
+                this.view.trigger('row_change', [rows]);
+            }
         };
 
 
@@ -1034,11 +1032,17 @@ blist.namespace.fetch('blist.data');
         var countSpecialTo = function(max)
         {
             var count = 0;
-            if ($.isBlank(max)) { max = self.length(); }
-            _.each(specialRows, function(r, i)
+            if ($.isBlank(max)) { max = self.dataLength(); }
+            var i = 0;
+            while (i < max)
             {
-                if (parseInt(i) < max) { count++; }
-            });
+                if (!$.isBlank(specialRows[i]))
+                {
+                    count++;
+                    max++;
+                }
+                i++;
+            }
             return count;
         };
 
@@ -1066,7 +1070,7 @@ blist.namespace.fetch('blist.data');
             _.each(toExpand, function(i)
             {
 //                var childRows = getChildRows(active[i]);
-//                addItemsToObject(active, childRows, i + 1);
+//                $.addItemsToObject(active, childRows, i + 1);
                 //activeCount += childRows.length;
             });
             //if (active == rows) { totalRows = activeCount; }

@@ -307,6 +307,70 @@ $.objectify = function(obj, key)
     return obj;
 };
 
+// Used to insert items into an object that is acting like a sparse array
+$.addItemsToObject = function(obj, values, index)
+{
+    values = $.makeArray(values);
+    var numInserts = values.length;
+
+    // Use a temporary object to hold new indices, so we don't overwrite old
+    // as we iterate
+    var tmp = {};
+
+    // Move each index up one
+    _.each(obj, function(r, i)
+    {
+        i = parseInt(i);
+        if (i >= index)
+        {
+            if (!$.isBlank(r.index))
+            { r.index = i + numInserts; }
+            tmp[i + numInserts] = r;
+            delete obj[i];
+        }
+    });
+
+    // Merge moved values into original
+    $.extend(obj, tmp);
+
+    // Add all the new values
+    _.each(values, function(v, i)
+    {
+        i = parseInt(i);
+        if (!$.isBlank(v.index))
+        { v.index = index + i; }
+        obj[index + i] = v;
+    });
+};
+
+// Used to remove items from an object that is acting like a sparse array
+$.removeItemsFromObject = function(obj, index, numItems)
+{
+    // Remove specified number of items
+    for (var i = 0; i < numItems; i++)
+    { delete obj[index + i]; }
+
+    // Use a temporary object to hold new indices, so we don't overwrite old
+    // as we iterate
+    var tmp = {};
+
+    // Move each item down one
+    _.each(obj, function(r, i)
+    {
+        i = parseInt(i);
+        if (i > index)
+        {
+            if (!$.isBlank(r.index))
+            { r.index = i - numItems; }
+            tmp[i - numItems] = r;
+            delete obj[i];
+        }
+    });
+
+    // Merge moved values into original
+    $.extend(obj, tmp);
+};
+
 $.safeId = function(id)
 { return id.replace(/(\.|\:)/g, '\\$1'); };
 

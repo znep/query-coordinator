@@ -279,6 +279,12 @@ this.Column = Model.extend({
         // Wouldn't mind getting rid of this; currently req for rendering the grid
         this.dataLookupExpr = _.isString(this.lookup) ?
             ('.' + this.lookup ) : ('[' + this.lookup + ']');
+        if (!$.isBlank(this.parentColumn))
+        {
+            this.directLookupExpr = this.dataLookupExpr;
+            this.dataLookupExpr = this.parentColumn.dataLookupExpr +
+                this.dataLookupExpr;
+        }
 
         // Set up min width and default
         this.minWidth = 50;

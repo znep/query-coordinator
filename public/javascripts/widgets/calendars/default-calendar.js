@@ -173,6 +173,6 @@
             view.setRowValue(d, calEvent.row.id, calObj._endCol.id);
         }
 
-        view.saveRow(calEvent.row.id, null, revertFunc);
+        view.saveRow(calEvent.row.id, null, null, null, revertFunc);
     };
 })(jQuery);

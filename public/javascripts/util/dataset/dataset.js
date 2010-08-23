@@ -436,7 +436,7 @@ this.Dataset = Model.extend({
         delete newRow.uuid;
         newRow.index = data.index || ds.totalRows;
 
-        addItemsToObject(ds._rows, newRow, newRow.index)
+        $.addItemsToObject(ds._rows, newRow, newRow.index)
         ds._rowIDLookup[newRow.id] = newRow;
         ds.totalRows++;
         ds.trigger('row_count_change');
@@ -460,15 +460,34 @@ this.Dataset = Model.extend({
         return newRow.id;
     },
 
-    setRowValue: function(value, rowId, columnId, isInvalid)
+    setRowValue: function(value, rowId, columnId, isInvalid, parRowId, parColId)
     {
-        var row = this.rowForID(rowId);
-        if ($.isBlank(row))
-        { throw 'Row ' + rowId + ' not found while setting value'; }
+        var parCol;
+        var col;
+        if (!$.isBlank(parColId))
+        {
+            parCol = this.columnForID(parColId);
+            col = parCol.childColumnForID(columnId);
+        }
+        else { col = this.columnForID(columnId); }
 
-        var col = this.columnForID(columnId)
         if ($.isBlank(col)) { throw 'Column ' + columnId + ' not found'; }
         if (col.isMeta) { throw 'Cannot modify metadata on rows: ' + columnId; }
+
+        var row;
+        if (!$.isBlank(parRowId))
+        {
+            var parRow = this.rowForID(parRowId);
+            // Someday an actual lookup for child rows might be good; but these
+            // should be rare and small, so don't bother yet
+            var cell = parRow[parCol.lookup];
+            row = _.detect(cell || {}, function(sr)
+                    { return sr.id == rowId; });
+        }
+        else
+        { row = this.rowForID(rowId); }
+        if ($.isBlank(row))
+        { throw 'Row ' + rowId + ' not found while setting value'; }
 
         row[col.lookup] = value;
 
@@ -478,23 +497,39 @@ this.Dataset = Model.extend({
 
         row.invalid[col.lookup] = isInvalid || false;
 
-        this.trigger('row_change', [row]);
+        this.trigger('row_change', [parRow || row]);
     },
 
-    saveRow: function(rowId, successCallback, errorCallback)
+    saveRow: function(rowId, parRowId, parColId, successCallback, errorCallback)
     {
         var ds = this;
 
-        var row = this.rowForID(rowId);
+        var parCol;
+        if (!$.isBlank(parColId)) { parCol = this.columnForID(parColId); }
+
+        var parRow;
+        var row;
+        if (!$.isBlank(parRowId))
+        {
+            parRow = this.rowForID(parRowId);
+            // Someday an actual lookup for child rows might be good; but these
+            // should be rare and small, so don't bother yet
+            var cell = parRow[parCol.lookup];
+            row = _.detect(cell || {}, function(sr)
+                    { return sr.id == rowId; });
+        }
+        else
+        { row = this.rowForID(rowId); }
         if ($.isBlank(row))
         { throw 'Row ' + rowId + ' not found while saving'; }
 
         // Keep track of which columns need to be saved, and only use those values
         var saving = _.keys(row.changed);
 
-        var sendRow = ds._rowData(row, saving);
+        var sendRow = ds._rowData(row, saving, parCol);
 
         var reqObj = {row: row, rowData: sendRow, columnsSaving: saving,
+            parentRow: parRow, parentColumn: parCol,
             success: successCallback, error: errorCallback};
 
         if (!$.isBlank(ds._pendingRowEdits[row.id]))
@@ -517,7 +552,7 @@ this.Dataset = Model.extend({
             var r = ds._rowIDLookup[rId];
             if ($.isBlank(r)) { return; }
 
-            removeItemsFromObject(ds._rows, r.index, 1);
+            $.removeItemsFromObject(ds._rows, r.index, 1);
             delete ds._rowIDLookup[rId];
             ds.totalRows--;
 
@@ -966,10 +1001,10 @@ this.Dataset = Model.extend({
     _addRows: function(newRows, start, columns)
     {
         var ds = this;
-        var translateRow = function(r)
+        var translateRow = function(r, cols, parCol)
         {
             var tr = {invalid: {}, changed: {}, error: {}};
-            _.each(columns || ds.columns, function(c, i)
+            _.each(cols, function(c, i)
             {
                 var val = r[i];
                 if (c.isMeta && c.name == 'meta')
@@ -1000,6 +1035,14 @@ this.Dataset = Model.extend({
                         c.renderTypeName == 'stars' && val === 0)
                 { val = null; }
 
+                if (c.dataTypeName == 'nested_table' && _.isArray(val))
+                {
+                    val = _.map(val, function(cr)
+                    {
+                        return translateRow(cr, c.childColumns, c);
+                    });
+                }
+
                 tr[c.lookup] = val;
             });
 
@@ -1007,7 +1050,8 @@ this.Dataset = Model.extend({
             {
                 if (!$.isBlank(v))
                 {
-                    var c = ds.columnForTCID(tcId);
+                    var c = !$.isBlank(parCol) ? parCol.childColumnForTCID(tcId) :
+                        ds.columnForTCID(tcId);
                     if (!$.isBlank(c))
                     {
                         tr.invalid[c.id] = true;
@@ -1022,7 +1066,7 @@ this.Dataset = Model.extend({
         var adjRows = [];
         _.each(newRows, function(nr, i)
         {
-            var r = translateRow(nr);
+            var r = translateRow(nr, columns || ds.columns);
             r.index = start + i;
             ds._rows[r.index] = r;
             ds._rowIDLookup[r.id] = r;
@@ -1032,13 +1076,14 @@ this.Dataset = Model.extend({
         return adjRows;
     },
 
-    _rowData: function(row, savingIds)
+    _rowData: function(row, savingIds, parCol)
     {
         var ds = this;
         var data = {};
         _.each(savingIds, function(cId)
         {
-            var c = ds.columnForID(cId);
+            var c = !$.isBlank(parCol) ? parCol.childColumnForID(cId) :
+                ds.columnForID(cId);
             data[c.lookup] = row[c.lookup];
         });
 
@@ -1058,11 +1103,12 @@ this.Dataset = Model.extend({
         {
             if (isI)
             {
-                var c = ds.columnForID(cId);
+                var c = !$.isBlank(parCol) ? parCol.childColumnForID(cId) :
+                    ds.columnForID(cId);
                 data.meta = data.meta || {};
                 data.meta.invalidCells = data.meta.invalidCells || {};
                 data.meta.invalidCells[c.tableColumnId] = data[cId];
-                delete data[cId];
+                data[cId] = null;
             }
         });
 
@@ -1145,7 +1191,7 @@ this.Dataset = Model.extend({
         {
             _.each(r.columnsSaving, function(cId)
                 { delete r.row.changed[cId]; });
-            ds.trigger('row_change', [r.row]);
+            ds.trigger('row_change', [r.parentRow || r.row]);
             if (_.isFunction(r.success)) { r.success(r.row); }
         };
 
@@ -1154,7 +1200,7 @@ this.Dataset = Model.extend({
         {
             _.each(r.columnsSaving, function(cId)
                 { r.row.error[cId] = true; });
-            ds.trigger('row_change', [r.row]);
+            ds.trigger('row_change', [r.parentRow || r.row]);
             if (_.isFunction(r.error)) { r.error(xhr); }
         };
 
@@ -1165,14 +1211,20 @@ this.Dataset = Model.extend({
         };
 
 
-        ds._makeRequest({url: '/views/' + ds.id + '/rows/' +
-            r.row.id + '.json', type: 'PUT', data: JSON.stringify(r.rowData),
+        var url = '/views/' + ds.id + '/rows/';
+        if (!$.isBlank(r.parentRow))
+        { url += r.parentRow.id + '/columns/' + r.parentColumn.id + '/subrows/'; }
+        url += r.row.uuid + '.json';
+        ds._makeRequest({url: url, type: 'PUT', data: JSON.stringify(r.rowData),
             batch: isBatch,
             success: rowSaved, error: rowErrored, complete: rowCompleted});
 
         ds._aggregatesStale = true;
         _.each(r.columnsSaving, function(cId)
-        { ds.columnForID(cId).invalidateData(); });
+        {
+            (!$.isBlank(r.parentColumn) ? r.parentColumn.childColumnForID(cId) :
+                ds.columnForID(cId)).invalidateData();
+        });
     },
 
     _serverRemoveRow: function(rowId, isBatch)
@@ -1422,55 +1474,6 @@ function cleanViewForSave(ds)
     { delete ds.metadata.facets; }
 
     return ds;
-};
-
-var addItemsToObject = function(obj, values, index)
-{
-    values = $.makeArray(values);
-    var numInserts = values.length;
-    // Get all larger indexes
-    var adjustIndexes = [];
-    _.each(obj, function(r, i)
-        { if (i >= index) { adjustIndexes.push(parseInt(i)); } });
-    // Sort descending so we don't collide while moving
-    adjustIndexes.sort(function(a, b) { return b - a; });
-    // Move each index up one
-    _.each(adjustIndexes, function(i)
-    {
-        if (!$.isBlank(obj[i].index))
-        { obj[i].index = i + numInserts; }
-        obj[i + numInserts] = obj[i];
-        delete obj[i];
-    });
-    // Add all the new values
-    _.each(values, function(v, i)
-    {
-        if (!$.isBlank(v.index))
-        { v.index = index + parseInt(i); }
-        obj[index + parseInt(i)] = v;
-    });
-};
-
-var removeItemsFromObject = function(obj, index, numItems)
-{
-    // Remove specified number of items
-    for (var i = 0; i < numItems; i++)
-    { delete obj[index + i]; }
-
-    // Get all larger indexes
-    var adjustIndexes = [];
-    _.each(obj, function(r, i)
-        { if (i > index) { adjustIndexes.push(parseInt(i)); } });
-    // Sort ascending so we don't collide while moving
-    adjustIndexes.sort(function(a, b) { return a - b; });
-    // Move each item down one
-    _.each(adjustIndexes, function(i)
-    {
-        if (!$.isBlank(obj[i].index))
-        { obj[i].index = i - numItems; }
-        obj[i - numItems] = obj[i];
-        delete obj[i];
-    });
 };
 
 })();

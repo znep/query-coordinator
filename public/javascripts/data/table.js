@@ -2654,9 +2654,8 @@
 
                     var childLookup = (mcol.parentColumn ||
                         {}).dataLookupExpr || '';
-                    // TODO: nt
-                    var invalid = "(row.invalid" + mcol.dataLookupExpr +
-                        " ? ' invalid' : '')";
+                    var invalid = "(row" + childLookup + ".invalid" +
+                        mcol.directLookupExpr + " ? ' invalid' : '')";
 
                     var drillDown = mcol.format.drill_down ?
                         ("<a class='drillDown'" +
@@ -2667,7 +2666,8 @@
                         " + \"' href='#drillDown'></a>") : '';
                     var cellDrillStyle = mcol.format.drill_down ? ' drill-td' : '';
 
-                    renderer = "(!row.invalid" + mcol.dataLookupExpr + " ? " +
+                    renderer = "(!row" + childLookup + ".invalid" +
+                        mcol.directLookupExpr + " ? " +
                         renderer("row" + mcol.dataLookupExpr, false, mcol,
                                 contextVariables) +
                         " : " + invalidRenderer("row" +
@@ -2676,10 +2676,12 @@
                     colParts.push(
                         "\"<div class='blist-td " + getColumnClass(mcol) + cls +
                             cellDrillStyle + align + "\" + " + invalid +
-                            " + (row.changed && row.changed" +
-                            mcol.dataLookupExpr + " ? \" saving\" : \"\") + " +
-                            "(row.error && row.error" +
-                            mcol.dataLookupExpr + " ? \" error\" : \"\") + " +
+                            " + (row" + childLookup + ".changed && row" +
+                            childLookup + ".changed" +
+                            mcol.directLookupExpr + " ? \" saving\" : \"\") + " +
+                            "(row" + childLookup + ".error && row" +
+                            childLookup + ".error" +
+                            mcol.directLookupExpr + " ? \" error\" : \"\") + " +
                             "\"'>"+ drillDown + "\", " +
                             renderer + ", \"</div>\""
                     );
@@ -3833,13 +3835,13 @@
                         if (locked !== undefined)
                         { $(locked).css('top', (rowIndex - start) * rowOffset); }
                     }
-                    else if (renderedRows[rowID])
-                    {
-                        // Existing row, but not in the right place; destroy
-                        badRows.push(rowID);
-                    }
                     else
                     {
+                        if (renderedRows[rowID])
+                        {
+                            // Existing row, but not in the right place; destroy
+                            badRows.push(rowID);
+                        }
                         // Add a new row
                         // Rows are rendered in position relative to the top
                         // of the render div, which is why we subtract start from i

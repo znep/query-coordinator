@@ -456,14 +456,19 @@
                 $(window).resize(function() { handleResize(sidebarObj); });
                 $domObj.resize(function() { handleResize(sidebarObj); });
 
+                sidebarObj._modalCount = 0;
                 $(document).bind(blist.events.MODAL_SHOWN, function()
                 {
-                    if (!$.isBlank(sidebarObj._$currentWizard))
+                    if (sidebarObj._modalCount === 0 &&
+                        !$.isBlank(sidebarObj._$currentWizard))
                     { sidebarObj._$currentWizard.socrataTip().quickHide(); }
+                    sidebarObj._modalCount++;
                 });
                 $(document).bind(blist.events.MODAL_HIDDEN, function()
                 {
-                    if (!$.isBlank(sidebarObj._$currentWizard))
+                    sidebarObj._modalCount--;
+                    if (sidebarObj._modalCount === 0 &&
+                        !$.isBlank(sidebarObj._$currentWizard))
                     { sidebarObj._$currentWizard.socrataTip().quickShow(); }
                 });
 

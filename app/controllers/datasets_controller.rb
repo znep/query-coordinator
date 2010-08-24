@@ -34,7 +34,30 @@ class DatasetsController < ApplicationController
 
     # Shuffle the default tags into the keywords list
     @meta[:keywords] = @view.meta_keywords
+  end
 
+  def alt
+    @view = get_view(params[:id])
+
+    if !current_user && params[:force_login]
+      return require_user(true)
+    end
+
+    @conditions = parse_alt_conditions(params)
+
+    # build state for the sake of the pager
+    @state_param = {}
+    [:filter, :sort, :search_string].each{ |key| @state_param[key] = params[key] unless params[key].nil? }
+    @state_param = @state_param.to_param
+
+    if @view.is_tabular?
+      # get rows
+      @per_page = 50
+      @data, @viewable_columns, @aggregates, @row_count = @view.find_data(@per_page, @page, @conditions)
+    end
+
+    @view.register_opening(request.referrer)
+    @view_activities = Activity.find({:viewId => @view.id})
   end
 
   def captcha_validate
@@ -136,5 +159,58 @@ protected
     end
 
     return view
+  end
+
+  def parse_alt_conditions(params)
+    # parse params
+    @conditions = {}
+    #   page params
+    @page = (params[:page] || 1).to_i
+    #   filter params
+    unless params[:filter].nil?
+      filters = []
+      params[:filter].each do |column_id, filter|
+        next if filter[:operator].blank?
+        filter_condition = {
+          'type' => 'operator',
+          'value' => filter[:operator],
+          'children' => [ {
+            'type' => 'column',
+            'columnId' => column_id
+          } ]
+        }
+        filter_condition['children'].push({
+            'type' => 'literal',
+            'value' => filter[:value]
+        }) if !filter[:value].nil?
+        filters.push(filter_condition)
+      end
+      unless filters.empty?
+        @conditions['filterCondition'] = {
+          'type' => 'operator',
+          'value' => 'AND',
+          'children' => filters
+        }
+      end
+    end
+    #   sort params
+    unless params[:sort].nil?
+      sorts = []
+      params[:sort].each do |idx, sort|
+        next if sort[:field].blank?
+        sorts.push({
+          'ascending' => (sort[:direction].downcase == 'ascending'),
+          'expression' => {
+            'type' => 'column',
+            'columnId' => sort[:field]
+          }
+        })
+      end
+      @conditions['orderBys'] = sorts unless sorts.empty?
+    end
+    # search params
+    @conditions['searchString'] = params[:search_string] unless params[:search_string].blank?
+
+    return @conditions
   end
 end

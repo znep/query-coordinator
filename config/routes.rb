@@ -166,7 +166,8 @@ ActionController::Routing::Routes.draw do |map|
     :member => {
       :widget_preview => :get,
       :edit_metadata => [:get, :post],
-      :captcha_validate => :post
+      :captcha_validate => :post,
+      :alt => [:get, :post]
     },
     :only => [ :show ] # you see, we actually abandoned RESTful routes, I guess
 
@@ -205,6 +206,7 @@ ActionController::Routing::Routes.draw do |map|
       :edit_metadata => [:get, :post]
     }
 
+  # TODO/v4: no longer necessary
   map.connect 'datasets_alt', :controller => 'blists', :action => 'alt_index'
 
   map.connect 'profile/:profile_name/:id', :controller => 'profile',
@@ -248,6 +250,13 @@ ActionController::Routing::Routes.draw do |map|
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
       :category => /(\w|-)+/},
     :conditions => {:method => [:get, :post], :has_v4_dataset => true}
+
+  map.connect ':category/:view_name/:id/alt', :controller => 'datasets',
+    :action => 'alt',
+    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
+      :category => /(\w|-)+/},
+    :conditions => {:method => [:get, :post], :has_v4_dataset => true}
+
 
   # New short URLs
   map.connect 'dataset/:id', :controller => 'datasets',

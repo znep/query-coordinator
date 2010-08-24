@@ -1,0 +1,70 @@
+h2, h3
+  padding-top: 1em
+
+#datasetMenu li
+  display: inline-block
+  padding: 0.3em 1em
+  text-transform: uppercase
+
+  a
+    color: #666
+    font-size: 1.2em
+
+.dataGridWrapper
+  overflow-x: auto
+  margin-top: 1em
+  padding: 1em
+
+#dataGrid
+  thead, tfoot
+    background-color: #ddd
+
+  tbody
+    tr.odd
+      background-color: #eee
+    tr.even
+      background-color: #fff
+
+  th
+    border-left: 1px solid #aaa
+    font-size: 1.2em
+    font-weight: normal
+    max-width: 15em
+    overflow: hidden
+    padding: 1em 2em
+    white-space: nowrap
+    width: auto
+    &:first-child
+      border-left: none
+    &.nested_table
+      border-bottom: 1px solid #aaa
+
+  td
+    border-left: 1px solid #aaa
+    font-size: 1.1em
+    padding: 0.6em
+    &.type_nested_table
+      padding: 0
+      vertical-align: top
+
+    table
+      width: 100%
+
+      td
+        font-size: 1em
+
+      th
+        font-size: 1.0909em
+
+.altMeta
+  p, li, label
+    font-size: 1.2em
+
+  #publishCodeTemplate
+    font-size: 1.2em
+    height: 10em
+    margin-top: 1em
+    width: 35em
+
+ul.metaDataList
+  list-style: circle inside

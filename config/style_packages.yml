@@ -30,6 +30,8 @@ dataset-page:
 - screen-dataset
 - control-feed
 - splash
+dataset-alt:
+- screen-dataset-alt
 dataset-edit-metadata-page:
 - screen-dataset-edit-metadata
 dataset-analytics:

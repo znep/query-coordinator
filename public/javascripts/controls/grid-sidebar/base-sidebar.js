@@ -115,7 +115,7 @@
         + dataSource: object or function that returns an object that will be
             used to fill in the pane on render if no data is passed in to
             addPane
-        + dataPreProcess: function that takes a copy of the data, and returns a
+        + dataPreProcess: function that takes the data, and returns a
             processed version.  It is preferable to use this with an object
             dataSource instead of the function version of dataSource
         + onlyIf: boolean, or function that takes the view and returns true if
@@ -1947,7 +1947,7 @@
             { data = data(); }
         }
         if (_.isFunction(config.dataPreProcess) && !$.isBlank(data))
-        { data = config.dataPreProcess($.extend(true, {}, data)); }
+        { data = config.dataPreProcess(data); }
 
         var rData = {title: config.title, subtitle: config.subtitle,
             sections: config.sections, paneId: paneId,

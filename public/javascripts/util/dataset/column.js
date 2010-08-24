@@ -26,7 +26,7 @@ this.Column = Model.extend({
 
         this._setUpColumn();
 
-        this._updateChildColumns();
+        this.updateChildColumns();
     },
 
     baseUrl: function()
@@ -43,7 +43,7 @@ this.Column = Model.extend({
         var colSumLoaded = function(resp)
         {
             col._summary = {};
-            _(resp.columnSummaries).chain()
+            _(resp.columnSummaries || []).chain()
                 .select(function(s) { return s.columnId == col.id; })
                 .each(function(s)
                 {
@@ -77,7 +77,9 @@ this.Column = Model.extend({
         var colSaved = function(newCol)
         {
             col.update(newCol, true);
-            col.view.trigger('columns_changed');
+            if (!$.isBlank(col.parentColumn))
+            { col.parentColumn.updateChildColumns(); }
+            else { col.view.updateColumns(); }
             if (_.isFunction(successCallback)) { successCallback(col); }
         };
 
@@ -112,19 +114,20 @@ this.Column = Model.extend({
             col.flags.push('hidden');
         }
 
-        var columnShown = function()
+        if (!isBatch)
         {
-            if (!isBatch) { col.view.trigger('columns_changed'); }
-        };
+            if (!$.isBlank(col.parentColumn))
+            { col.parentColumn.updateChildColumns(); }
+            else { col.view.updateColumns(); }
+        }
 
         if (col.view.hasRight('update_view'))
         {
             this._makeRequest({url: '/views/' + this.view.id + '/columns/' +
                 this.id + '.json', type: 'PUT',
                 data: JSON.stringify({hidden: !isVisible}),
-                batch: isBatch, success: columnShown, error: errorCallback});
+                batch: isBatch, success: successCallback, error: errorCallback});
         }
-        else { columnShown(); }
 
         return true;
     },
@@ -148,7 +151,7 @@ this.Column = Model.extend({
         _.each(newCol, function(v, k)
         { if (k != 'childColumns' && col._validKeys[k]) { col[k] = v; } });
 
-        this._updateChildColumns(newCol.childColumns, forceFull, forceFull);
+        this.updateChildColumns(newCol.childColumns, forceFull, forceFull);
 
         // dropDown is special, because it only comes from the server; it isn't
         // posted back, so it isn't considered valid
@@ -218,8 +221,13 @@ this.Column = Model.extend({
 
         var colRemoved = function()
         {
-            col.view.clearColumn(col.id);
-            if (!isBatch) { col.view._updateColumns(); }
+            col.view.clearColumn(col);
+            if (!isBatch)
+            {
+                if (!$.isBlank(col.parentColumn))
+                { col.parentColumn.updateChildColumns(); }
+                else { col.view.updateColumns(); }
+            }
             if (_.isFunction(successCallback)) { successCallback(col); }
         };
 
@@ -236,7 +244,9 @@ this.Column = Model.extend({
             col.update(newCol, true);
             col.view._invalidateRows();
             col.invalidateData();
-            col.view.trigger('columns_changed');
+            if (!$.isBlank(col.parentColumn))
+            { col.parentColumn.updateChildColumns(); }
+            else { col.view.updateColumns(); }
             if (_.isFunction(successCallback)) { successCallback(col); }
         };
 
@@ -293,7 +303,7 @@ this.Column = Model.extend({
         { delete this.currentFilter; }
     },
 
-    _updateChildColumns: function()
+    updateChildColumns: function()
     {
         // Do nothing; provided for fallback
     },

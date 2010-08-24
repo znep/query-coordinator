@@ -2488,8 +2488,8 @@
                             "\"<div class='blist-td blist-tdh " +
                             getColumnClass(child) +
                             ' ' + child.renderTypeName +
-                            "' colId='" +
-                            child.id +
+                            "' parentColId='" + child.parentColumn.id +
+                            "' colId='" + child.id +
                             "'>" +
                             (canEdit() || child.renderTypeName == 'tag' ?
                                 "<div class='blist-th-icon'></div>" : "") +
@@ -2539,8 +2539,8 @@
                         colParts.push(
                             "\"<div class='blist-td blist-tdh " +
                             getColumnClass(child) +
-                            "' colId='" +
-                            child.id +
+                            "' parentColId='" + child.parentColumn.id +
+                            "' colId='" + child.id +
                             "'></div>\""
                         );
                     }

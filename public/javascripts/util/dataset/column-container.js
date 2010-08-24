@@ -12,7 +12,7 @@ this.ColumnContainer = function(colName, urlBase)
     // Convenience methods
     var forID = function(item, id) { return item[colName + 'ForID'](id); };
     var update = function(item, nc, ff, uo)
-    { return item['_update' + capSet](nc, ff, uo); };
+    { return item['update' + capSet](nc, ff, uo); };
     var realSet = function(item) { return item['real' + capSet]; };
     var visibleSet = function(item) { return item['visible' + capSet]; };
 
@@ -30,16 +30,15 @@ this.ColumnContainer = function(colName, urlBase)
 
     // Removes a column from the model without doing anything on the server;
     // use removeColumns or Column.remove for that
-    props['clear' + capName] = function(colId)
+    props['clear' + capName] = function(col)
     {
-        this._super(colId);
-
-        var col = forID(this, colId);
+        if (!$.isBlank(this._super)) { this._super(col); }
 
         this[colSet] = _.without(this[colSet], col);
         delete _columnIDLookup[col.id];
         delete _columnIDLookup[col.lookup];
         delete _columnTCIDLookup[col.tableColumnId];
+        update(this);
     };
 
     props[colSet + 'ForType'] = function(type, includeHidden)
@@ -56,7 +55,8 @@ this.ColumnContainer = function(colName, urlBase)
     props['add' + capName] = function(column, successCallback, errorCallback,
         customParams)
     {
-        if (this._super(arguments)) { return true; } // true means abort
+        if (!$.isBlank(this._super) && this._super(arguments))
+        { return true; } // true means abort
 
         var cont = this;
         var columnAdded = function(newCol)
@@ -71,7 +71,7 @@ this.ColumnContainer = function(colName, urlBase)
                 success: columnAdded, error: errorCallback};
 
         if (!$.isBlank(column))
-        { req.data = JSON.stringify(new Column(column).cleanCopy()); }
+        { req.data = JSON.stringify(new Column(column, cont).cleanCopy()); }
 
         if (!$.isBlank(customParams))
         { req.params = customParams; }
@@ -105,7 +105,7 @@ this.ColumnContainer = function(colName, urlBase)
         return item;
     };
 
-    props['_update' + capSet] = function(newCols, forceFull, updateOrder)
+    props['update' + capSet] = function(newCols, forceFull, updateOrder)
     {
         if ($.isBlank(this[colSet]) && $.isBlank(newCols)) { return; }
 

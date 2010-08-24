@@ -46,7 +46,7 @@ this.Dataset = Model.extend({
         Dataset.addProperties(this, Dataset.modules[this.type] || {},
             Dataset.prototype);
 
-        this._updateColumns();
+        this.updateColumns();
 
         if (_.isFunction(this._convertLegacy)) { this._convertLegacy(); }
 
@@ -308,9 +308,26 @@ this.Dataset = Model.extend({
         }
     },
 
-    clearColumn: function(colId)
+    clearColumn: function(col)
     {
-        _.each(ds._rows, function(r) { delete r[colId]; });
+        var ds = this;
+        var colLookup = col.lookup;
+        var childLookup;
+        if (!$.isBlank(col.parentColumn))
+        {
+            childLookup = colLookup;
+            colLookup = col.parentColumn.lookup;
+            col.parentColumn.clearChildColumn(col);
+        }
+        _.each(ds._rows, function(r)
+        {
+            if ($.isBlank(childLookup)) { delete r[colLookup]; }
+            else
+            {
+                _.each(r[colLookup] || [], function(cr)
+                    { delete cr[childLookup]; });
+            }
+        });
     },
 
     // Callback may be called multiple times with smaller batches of rows
@@ -898,7 +915,7 @@ this.Dataset = Model.extend({
         if (!oldValid && ds.valid) { ds.trigger('valid'); }
 
         if (!$.isBlank(newDS.columns))
-        { ds._updateColumns(newDS.columns, forceFull, updateColOrder); }
+        { ds.updateColumns(newDS.columns, forceFull, updateColOrder); }
 
         // Update sorts on each column
         _.each(ds.realColumns, function(c)
@@ -980,7 +997,7 @@ this.Dataset = Model.extend({
             }
         });
 
-        ds._updateColumns();
+        ds.updateColumns();
     },
 
     _makeRequest: function(req)

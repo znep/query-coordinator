@@ -327,7 +327,7 @@
         delete column.dataTypeName;
         var needsConvert = !$.isBlank(newType) && newType != data.dataTypeName;
 
-        var col = blist.dataset.columnForID(data.id);
+        var col = data.origColumn;
         col.update(column);
         col.save(function(c)
             {

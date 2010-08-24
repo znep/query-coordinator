@@ -236,10 +236,19 @@
             return;
         }
 
-        column.parentId = (data || {}).parentId;
-        blist.dataset.addColumn(column,
-            function(nc) { columnCreated(sidebarObj, nc); },
-            function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); });
+        if (!$.isBlank((data || {}).parentId))
+        {
+            var parCol = blist.dataset.columnForID(data.parentId);
+            parCol.addChildColumn(column,
+                function(nc) { columnCreated(sidebarObj, nc); },
+                function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); });
+        }
+        else
+        {
+            blist.dataset.addColumn(column,
+                function(nc) { columnCreated(sidebarObj, nc); },
+                function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); });
+        }
     };
 
     $.gridSidebar.registerConfig(config);

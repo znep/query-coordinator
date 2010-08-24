@@ -246,13 +246,12 @@ blist.namespace.fetch('blist.data');
 
         };
 
-        this.removeChildRows = function(fakeRowIds, parCol, skipUndo)
+        this.removeChildRows = function(fakeRows, parCol, skipUndo)
         {
             var removedRows = [];
             var removedByPar = {};
-            _.each($.makeArray(fakeRowIds), function(frId)
+            _.each($.makeArray(fakeRows), function(fr)
             {
-                var fr = self.getByID(frId);
                 var parRow = fr.parent;
                 var subRow = self.getRowValue(fr, parCol);
                 var subRowSet = self.getRowValue(parRow, parCol);
@@ -424,72 +423,40 @@ blist.namespace.fetch('blist.data');
             return row;
         };
 
-        var undeleteRow = function(row, parentRow, parentColumn, childCascade)
+        var undeleteRow = function(row)
         {
-            self.view.createRow(row);
+            // Children can't be created with the parent, so pull them out
+            // and add them separately
+            var undeleteChildren = [];
+            _.each(self.view.columnsForType('nested_table', true), function(c)
+            {
+                if (row[c.lookup] instanceof Array)
+                {
+                    // keep track of nested rows so we can re-post them along
+                    // with the parent row
+                    _.each(row[c.lookup], function(cr, i)
+                    {
+                        cr.origPosition = i;
+                        undeleteChildren.push({row: cr, parentColumn: c});
+                    });
+                    delete row[c.lookup];
+                }
+            });
 
-            // TODO: nt
-//            if (!$.isBlank((parentRow || {}).childRows))
-//            {
-//                fakeRow = parentRow.childRows[row.origPosition];
-//                if (fakeRow)
-//                {
-//                    if (!fakeRow.saving) { fakeRow.saving = []; }
-//                    fakeRow.saving[parentColumn.dataIndex] = [];
-//                    savingArray = fakeRow.saving[parentColumn.dataIndex];
-//                }
-//            }
+            var newId = self.view.createRow(row);
+            row = self.view.rowForID(newId);
 
-//            var undeleteChildren = [];
-//            // Now set up all the data to be saved
-//            _.each(columns, function(c)
-//            {
-//                else if (c.dataTypeName == 'nested_table')
-//                {
-//                    if (row[c.dataIndex] instanceof Array)
-//                    {
-//                        // keep track of nested rows so we can re-post them along
-//                        // with the parent row
-//                        $.each(row[c.dataIndex], function(j, cr)
-//                        {
-//                            cr.origPosition = j;
-//                            undeleteChildren.push({parentRow: row, row: cr,
-//                                parentColumn: meta.allColumns[c.id]});
-//                        });
-//                    }
-//                }
-//            });
+            // After restoring main row:
+            _.each(undeleteChildren, function(cr)
+            {
+                undeleteChildRow(cr.row, row, cr.parentColumn);
+            });
+        };
 
-//            if (parentRow !== undefined)
-//            {
-//                // If we are a child row, then stick the row back into the
-//                //  parent, and update rows
-//                if (!childCascade)
-//                {
-//                    var subRowSet = self.getRowValue(parentRow, parentColumn);
-//                    subRowSet.splice(row.origPosition, 0, row);
-//                }
-//                resetChildRows(parentRow);
-//
-//                if (parentRow.childRows !== undefined)
-//                {
-//                    fakeRow = parentRow.childRows[row.origPosition];
-//                    // Copy over the saving info for the UI
-//                    fakeRow.saving[parentColumn.dataIndex] = savingArray;
-////                    self.change([fakeRow]);
-//                }
-//
-//                registerRowSave(fakeRow, 'all', data, true, row, parentRow,
-//                    parentColumn);
-//            }
-//            else
-//            {
-//                // After restoring main row:
-//                _.each(undeleteChildren, function(cr)
-//                {
-//                    undeleteRow(cr.row, cr.parentRow, cr.parentColumn, true);
-//                });
-//            }
+        var undeleteChildRow = function(row, parentRow, parentColumn)
+        {
+            row.index = row.origPosition;
+            self.view.createRow(row, parentRow.id, parentColumn.id);
         };
 
         var doUndoRedo = function(buffer)
@@ -521,16 +488,15 @@ blist.namespace.fetch('blist.data');
                     self.removeRows(_.pluck(item.rows, 'id'), true);
                     break;
 
-                // TODO: nt
-//                case 'childCreate':
-//                    oppItem = {type: 'childDelete',
-//                        rows: _.map(item.rows, function(r)
-//                            { return {parentRow: r.parent,
-//                                row: fakeRowToChild(r, item.parentColumn)}; }),
-//                        parentColumn: item.parentColumn};
-//
-//                    self.removeChildRows(item.rows, item.parentColumn, true);
-//                    break;
+                case 'childCreate':
+                    oppItem = {type: 'childDelete',
+                        rows: _.map(item.rows, function(r)
+                            { return {parentRow: r.parent,
+                                row: fakeRowToChild(r, item.parentColumn)}; }),
+                        parentColumn: item.parentColumn};
+
+                    self.removeChildRows(item.rows, item.parentColumn, true);
+                    break;
 
                 case 'delete':
                     oppItem = {type: 'create', rows: item.rows.slice()};
@@ -539,20 +505,19 @@ blist.namespace.fetch('blist.data');
                     _.each(item.rows, function(r) { undeleteRow(r); });
                     break;
 
-                // TODO: nt
-//                case 'childDelete':
-//                    var reversedRows = item.rows.slice();
-//                    reversedRows.reverse();
-//                    $.each(reversedRows, function(i, r)
-//                        { undeleteRow(r.row, r.parentRow,
-//                            item.parentColumn); });
-//
-//                    oppItem = {type: 'childCreate',
-//                        rows: $.map(item.rows, function(r, i)
-//                                { return [childRowToFake(r.parentRow,
-//                                    r.row.origPosition)]; }),
-//                        parentColumn: item.parentColumn};
-//                    break;
+                case 'childDelete':
+                    var reversedRows = item.rows.slice();
+                    reversedRows.reverse();
+                    _.each(reversedRows, function(r)
+                        { undeleteChildRow(r.row, r.parentRow,
+                            item.parentColumn); });
+
+                    oppItem = {type: 'childCreate',
+                        rows: _.map(item.rows, function(r)
+                                { return childRowToFake(r.parentRow,
+                                    r.row.origPosition); }),
+                        parentColumn: item.parentColumn};
+                    break;
             }
 
             return oppItem;
@@ -597,16 +562,14 @@ blist.namespace.fetch('blist.data');
 
         var childRowToFake = function(parentRow, childRowPos)
         {
-            if (parentRow.childRows === undefined || parentRow.childRows === null)
-            { getChildRows(parentRow); }
+            if ($.isBlank(parentRow.childRows)) { getChildRows(parentRow); }
             return parentRow.childRows[childRowPos];
         };
 
-        // TODO: Used by undo-redo; still needed?
-//        var fakeRowToChild = function(fakeRow, parentColumn)
-//        {
-//            return fakeRow[parentColumn.lookup];
-//        };
+        var fakeRowToChild = function(fakeRow, parentColumn)
+        {
+            return fakeRow[parentColumn.lookup];
+        };
 
         /**
          * Notify listeners of row selectionchanges.

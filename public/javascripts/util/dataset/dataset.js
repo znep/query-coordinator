@@ -454,10 +454,10 @@ this.Dataset = Model.extend({
         });
         newRow.id = 'saving' + _.uniqueId();
         delete newRow.uuid;
-        newRow.index = data.index || ds.totalRows;
 
         if ($.isBlank(parRow))
         {
+            newRow.index = data.index || ds.totalRows;
             $.addItemsToObject(ds._rows, newRow, newRow.index);
             ds._rowIDLookup[newRow.id] = newRow;
             ds.totalRows++;
@@ -466,7 +466,9 @@ this.Dataset = Model.extend({
         else
         {
             parRow[parCol.lookup] = parRow[parCol.lookup] || [];
-            parRow[parCol.lookup].push(newRow);
+            if (!$.isBlank(data.index))
+            { parRow[parCol.lookup].splice(data.index, 0, newRow); }
+            else { parRow[parCol.lookup].push(newRow); }
             ds.trigger('row_change', [[parRow], true]);
         }
 
@@ -1218,7 +1220,7 @@ this.Dataset = Model.extend({
                 req.parentColumn.realChildColumns : ds.realColumns, function(c)
             { delete req.row.changed[c.lookup]; });
 
-            ds.trigger('row_change', [{id: oldID}, req.parentRow || req.row]);
+            ds.trigger('row_change', [[{id: oldID}, req.parentRow || req.row]]);
             ds._processPending(req.row.id, (req.parentRow || {}).id,
                 (req.parentColumn || {}).id);
 

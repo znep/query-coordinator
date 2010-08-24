@@ -296,44 +296,42 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
         // column selection information
         var selmapTemplate = [];
         var hasColumnSelection;
-        if (selectionLevel == 0) {
+        if (selectionLevel == 0)
+        {
             var layoutLevel = layout[selectionLevel];
-            for (var i = 0; i < layoutLevel.length; i++) {
+            for (var i = 0; i < layoutLevel.length; i++)
+            {
                 var selected = selmapTemplate[i] =
                     selectedColumns[layoutLevel[i].mcol.id];
-                if (selected) {
-                    hasColumnSelection = true;
-                }
+                if (selected) { hasColumnSelection = true; }
             }
         }
 
         var len = rows.length;
-        for (i = 0; i < len; i++)
+        for (var i = 0; i < len; i++)
         {
             var row = rows[i];
 
             // Determine the index into the rows set and the actual model row
             var index = model.index(row);
             var modelRow;
-            if (index === undefined) {
+            if ($.isBlank(index) || _.isNaN(index))
+            {
                 index = i;
-                modelRow = row;
-            } else {
                 modelRow = model.get(index);
             }
+            else { modelRow = row; }
 
             // Skip the blank row
-            if (modelRow === undefined || modelRow.id == "blank")
-            {
-                continue;
-            }
+            if ($.isBlank(modelRow) || modelRow.id == "blank") { continue; }
 
-            // Update the selection map, and clear the selection if there's no selection in the row
-            if (model.selectedRows[modelRow.id] !== undefined)
+            // Update the selection map, and clear the selection if there's no
+            // selection in the row
+            if (!$.isBlank(model.selectedRows[modelRow.id]))
             {
                 selmap = [];
-                $.each(layout[modelRow.level || 0], function(i, c)
-                    { selmap[i] = true; });
+                _.each(layout[modelRow.level || 0], function(c, j)
+                    { selmap[j] = true; });
             }
             else
             {
@@ -345,26 +343,28 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
                 }
 
                 // Drop selection boxes that appear before this row
-                while (selection.length && selection[0][3] < index) {
+                while (selection.length && selection[0][3] < index)
+                {
                     selection.shift();
                     selmap = undefined;
                 }
 
                 // Count the number of selection boxes that apply to this row
-                for (var selCount = 0; selCount < selection.length; selCount++) {
-                    if (selection[selCount][1] > index) {
-                        break;
-                    }
+                for (var selCount = 0; selCount < selection.length; selCount++)
+                {
+                    if (selection[selCount][1] > index) { break; }
                 }
 
                 // Update the row
-                if (selCount == 0 && !hasColumnSelection) {
+                if (selCount == 0 && !hasColumnSelection)
+                {
                     clearRowSelectionFn(row);
                     continue;
                 }
 
                 // Build the selection map if a cached version isn't available
-                if (!selmap || selmapSelectionCount != selCount) {
+                if (!selmap || selmapSelectionCount != selCount)
+                {
                     selmapSelectionCount = selCount;
                     selmap = createSelectionMap(selection, selCount,
                         selmapTemplate);

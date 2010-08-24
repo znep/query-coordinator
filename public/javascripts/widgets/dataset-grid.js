@@ -521,7 +521,7 @@
                 if (!$.isBlank(s[2]))
                 {
                     var col = datasetObj.settings.view.columnForID(s[2]);
-                    model.removeChildRows(rowId, col);
+                    model.removeChildRows(model.getByID(rowId), col);
                 }
                 else
                 {

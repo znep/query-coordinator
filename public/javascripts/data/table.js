@@ -310,15 +310,22 @@
             delete row.selected;
         };
 
-        var setRowSelection = function(row, selmap) {
+        var setRowSelection = function(row, selmap)
+        {
             row.selected = true;
-            for (var pos = 0, node = row.row.firstChild; node; node = node.nextSibling, pos++) {
-                if (selmap[pos]) {
-                    if (!node.selected) {
+            for (var pos = 0, node = row.row.firstChild; node;
+                node = node.nextSibling, pos++)
+            {
+                if (selmap[pos])
+                {
+                    if (!node.selected)
+                    {
                         $(node).addClass('blist-cell-selected');
                         node._sel = true;
                     }
-                } else if (node._sel) {
+                }
+                else if (node._sel)
+                {
                     $(node).removeClass('blist-cell-selected');
                     node._sel = false;
                 }

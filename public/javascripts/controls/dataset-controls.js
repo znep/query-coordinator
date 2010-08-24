@@ -40,6 +40,9 @@ blist.dataset.controls.unsavedViewPrompt = function()
         // Skip links that open a new window
         if (a.rel.indexOf('external') > -1) { return; }
 
+        // Skip links we explicitly don't want to save off/prompt on
+        if (a.className.indexOf('noRedirPrompt') > -1) { return; }
+
         var origHref = a.href;
 
         // If there is no href, nothing could happen anyway

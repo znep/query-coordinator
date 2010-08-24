@@ -230,6 +230,9 @@ protected
     :images    => { :logo_header => 'image',
                     :logo_footer => 'image' },
     :chrome    => { :background  => 'color',
+                    :box_border  => 'color',
+                    :sidebar     => { :background => 'color',
+                                      :text => 'color' },
                     :nav_buttons => { :background => 'color',
                                       :border => 'color' } } }
 

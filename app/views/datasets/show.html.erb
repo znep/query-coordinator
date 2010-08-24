@@ -290,8 +290,8 @@
       <% end %>
 
       <ul class="accountMaint">
-        <li><%= link_to "Forgot your password?", forgot_password_path%></li>
-        <li><%= link_to "No account yet?", signup_url, { :class => "signupLink" } %></li>
+        <li><%= link_to "Forgot your password?", forgot_password_path, :class => 'noRedirPrompt' %></li>
+        <li><%= link_to "No account yet?", signup_url, { :class => "signupLink noRedirPrompt" } %></li>
       </ul>
 
       <script type="text/javascript">

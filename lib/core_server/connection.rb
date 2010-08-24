@@ -139,7 +139,7 @@ module CoreServer
       custom_headers.each { |key, value| request[key] = value }
 
       if (!json.blank?)
-        request.body = json
+        request.body = json.to_s
         request.content_type = "application/json"
       end
       result = log(request) do

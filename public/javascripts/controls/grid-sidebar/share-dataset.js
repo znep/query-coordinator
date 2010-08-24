@@ -196,13 +196,8 @@
                         $formElem.find('.shareNotifyLink').click(function(event)
                         {
                             event.preventDefault();
-                            $.ajax({
-                                url: '/api/views/' + blist.display.view.id + '.json?method=notifyUsers',
-                                method: 'POST',
-                                success: function(responseData) {
-                                    $formElem.find('.shareNoticeSent').fadeIn();
-                                }
-                            });
+                            blist.dataset.notifyUsers(function(responseData)
+                                { $formElem.find('.shareNoticeSent').fadeIn(); });
                         });
 
                         // If the publicness is inherited from the parent dataset, they can't make it private

@@ -288,6 +288,13 @@ this.Dataset = Model.extend({
         else if (_.isFunction(successCallback)) { successCallback(); }
     },
 
+    notifyUsers: function(successCallback, errorCallback)
+    {
+        this._makeRequest({url: '/api/views/' + this.id + '.json',
+            params: {method: 'notifyUsers'}, type: 'POST',
+            success: successCallback, error: errorCallback});
+    },
+
     addColumn: function(column, successCallback, errorCallback, customParams)
     {
         if (!$.isBlank((column || {}).parentId))

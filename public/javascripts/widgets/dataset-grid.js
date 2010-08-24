@@ -381,10 +381,10 @@
             {
                 var colAdjust = '';
                 var subRowLookup = '';
-                if (col && col.header)
+                if (!$.isBlank((col || {}).childColumns))
                 {
-                    colAdjust = '_' + col.header.indexInLevel;
-                    subRowLookup = col.header.dataLookupExpr;
+                    colAdjust = '_' + col.lookup;
+                    subRowLookup = col.dataLookupExpr;
                 }
                 return '((permissions.canDelete || ' +
                             'permissions.canEdit && !(row.level > 0)) && row' +
@@ -518,10 +518,10 @@
         switch (action)
         {
             case 'row-delete':
-                if (s[2] !== undefined)
+                if (!$.isBlank(s[2]))
                 {
                     var col = datasetObj.settings.view.columnForID(s[2]);
-                    col.removeRows(rowId);
+                    model.removeChildRows(rowId, col);
                 }
                 else
                 {
@@ -589,7 +589,7 @@
 
     var rowMods = function(datasetObj, renderedRows)
     {
-        $.each(renderedRows, function(i, r)
+        _.each(renderedRows, function(r)
         {
             var $row = $(r.row);
 

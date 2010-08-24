@@ -110,6 +110,14 @@ this.Dataset = Model.extend({
         return this._rows[index];
     },
 
+    _childRowForID: function(id, parRow, parCol)
+    {
+        // Someday an actual lookup for child rows might be good; but these
+        // should be rare and small, so don't bother yet
+        var cell = parRow[parCol.lookup];
+        return _.detect(cell || {}, function(sr) { return sr.id == id; });
+    },
+
     isPublic: function()
     {
         var ds = this;
@@ -421,13 +429,18 @@ this.Dataset = Model.extend({
     },
 
     // Assume it goes at the end
-    createRow: function(data, successCallback, errorCallback)
+    createRow: function(data, parRowId, parColId, successCallback, errorCallback)
     {
         var ds = this;
 
+        var parCol;
+        if (!$.isBlank(parColId)) { parCol = this.columnForID(parColId); }
+        var parRow;
+        if (!$.isBlank(parRowId)) { parRow = this.rowForID(parRowId); }
+
         data = data || {};
         var newRow = {invalid: {}, error: {}, changed: {}};
-        _.each(ds.columns, function(c)
+        _.each(!$.isBlank(parCol) ? parCol.childColumns : ds.columns, function(c)
         {
             if (!$.isBlank(data[c.lookup]))
             { newRow[c.lookup] = data[c.lookup]; }
@@ -436,18 +449,33 @@ this.Dataset = Model.extend({
         delete newRow.uuid;
         newRow.index = data.index || ds.totalRows;
 
-        $.addItemsToObject(ds._rows, newRow, newRow.index)
-        ds._rowIDLookup[newRow.id] = newRow;
-        ds.totalRows++;
-        ds.trigger('row_count_change');
+        if ($.isBlank(parRow))
+        {
+            $.addItemsToObject(ds._rows, newRow, newRow.index);
+            ds._rowIDLookup[newRow.id] = newRow;
+            ds.totalRows++;
+            ds.trigger('row_count_change');
+        }
+        else
+        {
+            parRow[parCol.lookup] = parRow[parCol.lookup] || [];
+            parRow[parCol.lookup].push(newRow);
+            ds.trigger('row_change', [[parRow], true]);
+        }
 
-        _.each(ds.realColumns, function(c) { newRow.changed[c.lookup] = true; });
 
-        ds._pendingRowEdits[newRow.id] = [];
+        _.each(!$.isBlank(parCol) ? parCol.realChildColumns : ds.realColumns,
+            function(c) { newRow.changed[c.lookup] = true; });
+
+        var key = newRow.id;
+        if (!$.isBlank(parRow)) { key += ':' + parRow.id +  ':' + parCol.id; }
+        ds._pendingRowEdits[key] = [];
 
         var reqObj = {row: newRow, rowData: ds._rowData(newRow,
-            _.pluck(_.reject(ds.realColumns, function(c)
-                { return c.dataTypeName == 'nested_table'; }), 'id')),
+            _.pluck(_.reject(!$.isBlank(parCol) ? parCol.realChildColumns :
+                ds.realColumns, function(c)
+                { return c.dataTypeName == 'nested_table'; }), 'id'), parCol),
+            parentRow: parRow, parentColumn: parCol,
             success: successCallback, error: errorCallback};
         if ($.isBlank(ds._pendingRowCreates))
         {
@@ -478,11 +506,7 @@ this.Dataset = Model.extend({
         if (!$.isBlank(parRowId))
         {
             var parRow = this.rowForID(parRowId);
-            // Someday an actual lookup for child rows might be good; but these
-            // should be rare and small, so don't bother yet
-            var cell = parRow[parCol.lookup];
-            row = _.detect(cell || {}, function(sr)
-                    { return sr.id == rowId; });
+            row = this._childRowForID(rowId, parRow, parCol);
         }
         else
         { row = this.rowForID(rowId); }
@@ -512,11 +536,7 @@ this.Dataset = Model.extend({
         if (!$.isBlank(parRowId))
         {
             parRow = this.rowForID(parRowId);
-            // Someday an actual lookup for child rows might be good; but these
-            // should be rare and small, so don't bother yet
-            var cell = parRow[parCol.lookup];
-            row = _.detect(cell || {}, function(sr)
-                    { return sr.id == rowId; });
+            row = this._childRowForID(rowId, parRow, parCol);
         }
         else
         { row = this.rowForID(rowId); }
@@ -532,41 +552,73 @@ this.Dataset = Model.extend({
             parentRow: parRow, parentColumn: parCol,
             success: successCallback, error: errorCallback};
 
-        if (!$.isBlank(ds._pendingRowEdits[row.id]))
+        var key = row.id;
+        if (!$.isBlank(parRow)) { key += ':' + parRow.id + ':' + parCol.id; }
+        if (!$.isBlank(ds._pendingRowEdits[key]))
         {
-            ds._pendingRowEdits[row.id].push(reqObj);
+            ds._pendingRowEdits[key].push(reqObj);
             return;
         }
 
-        ds._pendingRowEdits[row.id] = [];
+        ds._pendingRowEdits[key] = [];
         ds._serverSaveRow(reqObj);
     },
 
-    removeRows: function(rowIds, successCallback, errorCallback)
+    removeRows: function(rowIds, parRowId, parColId,
+        successCallback, errorCallback)
     {
         var ds = this;
         rowIds = $.makeArray(rowIds);
 
+        var parCol;
+        if (!$.isBlank(parColId)) { parCol = this.columnForID(parColId); }
+        var parRow;
+        if (!$.isBlank(parRowId)) { parRow = this.rowForID(parRowId); }
+
         _.each(rowIds, function(rId)
         {
-            var r = ds._rowIDLookup[rId];
-            if ($.isBlank(r)) { return; }
-
-            $.removeItemsFromObject(ds._rows, r.index, 1);
-            delete ds._rowIDLookup[rId];
-            ds.totalRows--;
-
-            if (!$.isBlank(ds._pendingRowEdits[rId]))
+            // Subrows need UUID
+            var uuid;
+            if ($.isBlank(parRow))
             {
-                ds._pendingRowDeletes[rId] = true;
+                var r = ds.rowForID(rId);
+                if ($.isBlank(r)) { return; }
+                uuid = r.uuid;
+                $.removeItemsFromObject(ds._rows, r.index, 1);
+                delete ds._rowIDLookup[rId];
+                ds.totalRows--;
+            }
+            else
+            {
+                parRow[parCol.lookup] = _.reject(parRow[parCol.lookup],
+                    function(cr)
+                    {
+                        if (cr.id == rId)
+                        {
+                            uuid = cr.uuid;
+                            return true;
+                        }
+                        return false;
+                    });
+            }
+
+            var key = rId;
+            if (!$.isBlank(parRow)) { key += ':' + parRow.id + ':' + parCol.id; }
+            if (!$.isBlank(ds._pendingRowEdits[key]))
+            {
+                ds._pendingRowDeletes[key] = {rowId: uuid, parRowId: parRowId,
+                    parColId: parColId};
                 return;
             }
 
-            ds._serverRemoveRow(rId, true);
+            ds._serverRemoveRow(uuid, parRowId, parColId, true);
         });
-        ds.trigger('row_count_change');
+
+        if (!$.isBlank(parRow)) { ds.trigger('row_change', [[parRow], true]); }
+        else { ds.trigger('row_count_change'); }
         ds._aggregatesStale = true;
-        _.each(ds.realColumns, function(c) { c.invalidateData(); });
+        _.each(!$.isBlank(parCol) ? parCol.realChildColumns : ds.realColumns,
+            function(c) { c.invalidateData(); });
         ds._sendBatch({success: successCallback, error: errorCallback});
     },
 
@@ -1133,7 +1185,9 @@ this.Dataset = Model.extend({
                 {
                     if (k.startsWith('_'))
                     {
-                        var c = ds.columnForID(k.slice(1));
+                        var c = !$.isBlank(req.parentColumn) ?
+                            req.parentColumn.childColumnForID(k.slice(1)) :
+                            ds.columnForID(k.slice(1));
                         if (!$.isBlank(c)) { req.row[c.lookup] = v; }
                     }
                 });
@@ -1141,25 +1195,35 @@ this.Dataset = Model.extend({
             ds._rowIDLookup[req.row.id] = req.row;
             delete ds._rowIDLookup[oldID];
 
-            ds._pendingRowEdits[req.row.id] = ds._pendingRowEdits[oldID];
-            delete ds._pendingRowEdits[oldID];
-            ds._pendingRowDeletes[req.row.id] = ds._pendingRowDeletes[oldID];
-            delete ds._pendingRowDeletes[oldID];
+            var oldKey = oldID;
+            var newKey = req.row.id;
+            if (!$.isBlank(req.parentRow))
+            {
+                oldKey += ':' + req.parentRow.id + ':' + req.parentColumn.id;
+                newKey += ':' + req.parentRow.id + ':' + req.parentColumn.id;
+            }
+            ds._pendingRowEdits[newKey] = ds._pendingRowEdits[oldKey];
+            delete ds._pendingRowEdits[oldKey];
+            ds._pendingRowDeletes[newKey] = ds._pendingRowDeletes[oldKey];
+            delete ds._pendingRowDeletes[oldKey];
 
-            _.each(ds.realColumns, function(c)
+            _.each(!$.isBlank(req.parentColumn) ?
+                req.parentColumn.realChildColumns : ds.realColumns, function(c)
             { delete req.row.changed[c.lookup]; });
 
-            ds.trigger('row_change', [{id: oldID}, req.row]);
-            ds._processPending(req.row.id);
+            ds.trigger('row_change', [{id: oldID}, req.parentRow || req.row]);
+            ds._processPending(req.row.id, (req.parentRow || {}).id,
+                (req.parentColumn || {}).id);
 
             if (_.isFunction(req.success)) { req.success(req.row); }
         };
 
         var rowErrored = function(xhr)
         {
-            _.each(ds.realColumns, function(c)
+            _.each(!$.isBlank(req.parentColumn) ?
+                req.parentColumn.realChildColumns : ds.realColumns, function(c)
                     { req.row.error[c.id] = true; });
-            ds.trigger('row_change', [req.row]);
+            ds.trigger('row_change', [req.parentRow || req.row]);
             if (_.isFunction(req.error)) { req.error(xhr); }
         };
 
@@ -1178,7 +1242,14 @@ this.Dataset = Model.extend({
             }
         };
 
-        ds._makeRequest({url: '/views/' + ds.id + '/rows.json',
+        var url = '/views/' + ds.id + '/rows';
+        if (!$.isBlank(req.parentRow))
+        {
+            url += '/' + req.parentRow.id + '/columns/' + req.parentColumn.id +
+                '/subrows';
+        }
+        url += '.json';
+        ds._makeRequest({url: url,
             type: 'POST', data: JSON.stringify(req.rowData), batch: isBatch,
             success: rowCreated, error: rowErrored, complete: rowCompleted});
     },
@@ -1207,7 +1278,8 @@ this.Dataset = Model.extend({
         // On complete, kick off any pending saves/deletes
         var rowCompleted = function()
         {
-            ds._processPending(r.row.id);
+            ds._processPending(r.row.id, (r.parentRow || {}).id,
+                (r.parentColumn || {}).id);
         };
 
 
@@ -1227,40 +1299,41 @@ this.Dataset = Model.extend({
         });
     },
 
-    _serverRemoveRow: function(rowId, isBatch)
+    _serverRemoveRow: function(rowId, parRowId, parColId, isBatch)
     {
-        this._makeRequest({batch: isBatch, url: '/views/' + this.id + '/rows/' +
-                rowId + '.json', type: 'DELETE'});
+        var url = '/views/' + this.id + '/rows/';
+        if (!$.isBlank(parRowId))
+        { url += parRowId + '/columns/' + parColId + '/subrows/'; }
+        url += rowId + '.json';
+        this._makeRequest({batch: isBatch, url: url, type: 'DELETE'});
     },
 
-    _processPending: function(rowId)
+    _processPending: function(rowId, parRowId, parColId)
     {
         var ds = this;
+        var key = rowId;
+        if (!$.isBlank(parRowId)) { key += ':' + parRowId + ':' + parColId; }
+
         // Are there any pending edits to this row?
         // If so, save the next one
-        if (ds._pendingRowEdits[rowId] &&
-            ds._pendingRowEdits[rowId].length > 0)
+        if (ds._pendingRowEdits[key] &&
+            ds._pendingRowEdits[key].length > 0)
         {
-            while (ds._pendingRowEdits[rowId].length > 0)
+            while (ds._pendingRowEdits[key].length > 0)
             {
                 // Do save
-                ds._serverSaveRow(ds._pendingRowEdits[rowId].shift(), true);
+                ds._serverSaveRow(ds._pendingRowEdits[key].shift(), true);
             }
             ds._sendBatch();
         }
         else
         {
-            delete ds._pendingRowEdits[rowId];
-            if (ds._pendingRowDeletes[rowId])
+            delete ds._pendingRowEdits[key];
+            if (ds._pendingRowDeletes[key])
             {
-                var pd = ds._pendingRowDeletes[rowId];
-                if (pd === true) { ds._serverRemoveRow(rowId); }
-//                        else
-//                        {
-//                            serverDeleteRow(pd.subRow.uuid,
-//                                pd.parCol.id, pd.parRow.uuid);
-//                        }
-                delete ds._pendingRowDeletes[rowId];
+                var pd = ds._pendingRowDeletes[key];
+                ds._serverRemoveRow(pd.rowId, pd.parRowId, pd.parColId);
+                delete ds._pendingRowDeletes[key];
             }
         }
     },

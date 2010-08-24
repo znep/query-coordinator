@@ -245,12 +245,6 @@ this.Column = Model.extend({
             type: 'POST', success: columnConverted, error: errorCallback});
     },
 
-    removeRows: function(rowIds)
-    {
-        $.makeArray(rowIds);
-        // TODO: implement me
-    },
-
     cleanCopy: function()
     {
         var col = this._super();

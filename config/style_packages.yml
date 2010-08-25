@@ -20,6 +20,8 @@ base-sdp:
 grid:
 - table-core
 - dataset-grid
+screen-login:
+- screen-login
 screen-map:
 - screen-map
 screen-calendar:

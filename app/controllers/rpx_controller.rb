@@ -3,6 +3,7 @@ class RpxController < ApplicationController
   skip_before_filter :require_user
   protect_from_forgery :except => [:return_login, :return_signup]
   before_filter :set_empty_user_session
+  cattr_accessor :auth_providers
 
   # Create a new user, automatically associating the OpenID credentials they
   # already provided to sign them up.
@@ -67,4 +68,15 @@ private
       render :template => 'rpx/return_login'
     end
   end
+
+  
+  private
+  @@auth_providers = [
+    {:name => 'Facebook', :hint => 'Connect with', :rpx_url => APP_CONFIG['rpx_facebook_url']},
+    {:name => 'Twitter', :hint => 'Connect with', :rpx_url => APP_CONFIG['rpx_twitter_url']},
+    {:name => 'Google', :hint => 'Sign in with', :rpx_url => APP_CONFIG['rpx_openid_url'],
+      :openid_identifier => 'https://www.google.com/accounts/o8/id'},
+    {:name => 'OpenID', :hint => 'Sign in with', :rpx_url => APP_CONFIG['rpx_signin_url'],
+      :class => 'rpxnow', :href => true}
+  ]
 end

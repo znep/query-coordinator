@@ -425,6 +425,7 @@ HREF
     link_to name, "#{APP_CONFIG['rpx_signin_url']}?token_url=#{return_url}", html_options
   end
 
+# TODO: Deprecated : All these rpx_submit_* functions should be gone once v3 chrome is gone
   def rpx_submit_facebook(action = "Sign in", return_url = rpx_return_login_url)
     description = "#{action} with Facebook"
     content_tag(:form, {:action => "#{APP_CONFIG['rpx_facebook_url']}?token_url=#{return_url}", :method => 'post'}) do

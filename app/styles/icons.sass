@@ -316,7 +316,7 @@
   #{$subselector}
     @include text-hiding
     @include ie6-fix
-    background-image: url(/stylesheets/images/interface/admin_icons.png)
+    background-image: url(/stylesheets/images/interface/admin_icons.png?1)
     height: 13px
     width: 13px
 
@@ -342,7 +342,7 @@
   #{$subselector}
     @include text-hiding
     @include ie6-fix
-    background-image: url(/stylesheets/images/icons/analytic_icons.png)
+    background-image: url(/stylesheets/images/icons/analytic_icons.png?1)
     height: 9px
     width: 9px
 
@@ -401,3 +401,23 @@
     background-position: 0 -80px
   &.url #{$subselector}
     background-position: 0 -360px
+
+// Login icons
+@mixin authentication-icons($subselector: '.icon')
+  #{$subselector}
+    @include text-hiding
+    @include ie6-fix
+    background-image: url(/stylesheets/images/interface/authentication_icons.png?1)
+    height: 25px
+    width: 25px 
+
+  &.socrata #{$subselector}
+    background-position: 0 0
+  &.facebook #{$subselector}
+    background-position: 0 -25px
+  &.twitter #{$subselector}
+    background-position: 0 -50px
+  &.google #{$subselector}
+    background-position: 0 -75px
+  &.openid #{$subselector}
+    background-position: 0 -100px

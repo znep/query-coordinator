@@ -40,7 +40,7 @@ $(function ()
             },
             "signup[password]": {
                 required: true,
-                minlength: 4
+                minlength: 6
             },
             "signup[passwordConfirm]": {
                 required: true,

@@ -50,6 +50,10 @@ class CurrentDomain
     end
   end
 
+  def self.short_name
+    @@current_domain[:data].shortName
+  end
+
   def self.accountTier
     @@current_domain[:data].accountTier
   end

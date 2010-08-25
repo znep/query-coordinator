@@ -599,5 +599,6 @@ module BlistsHelper
     out
   end
 
-  safe_helper :get_blist_rating_html, :get_comment_rating_html
+  safe_helper :get_blist_rating_html, :get_comment_rating_html,
+    :font_select_options, :font_size_select_options
 end

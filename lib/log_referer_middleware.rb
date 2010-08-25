@@ -58,9 +58,22 @@ class LogRefererMiddleware
           # really tell someone about this by squawking at them over STOMP.
           logger.info "Attempting to log referrer #{domain} -> #{ref}."
 
+          host = uri.scheme + "://" + uri.host
+          path = uri.path
+          if !uri.query.blank?
+            path += "?#{uri.query}"
+          end
+
           push_request(
             "/queue/Metrics",
-            {"timestamp" => Time.now.to_i * 1000, "entityId" => "referrers-#{domain}", "referrer-#{ref}" => 1}.to_json,
+            {"timestamp" => Time.now.to_i * 1000, "entityId" => "referrer-hosts-#{domain}", "referrer-#{host}" => 1}.to_json,
+            :persistent => true,
+            :suppress_content_length => true
+          )
+
+          push_request(
+            "/queue/Metrics",
+            {"timestamp" => Time.now.to_i * 1000, "entityId" => "referrer-paths-#{domain}-#{host}", "path-#{path}" => 1}.to_json,
             :persistent => true,
             :suppress_content_length => true
           )

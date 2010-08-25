@@ -396,6 +396,10 @@ $(function()
                         $.generateViewUrl(parDS));
                     blist.parentViewId = parDS.id;
                 }
+                else
+                {
+                    $('#viewsMenu .typeBlist').hide().next().removeClass('divider');
+                }
             }});
 
         // report to events analytics for easier aggregation

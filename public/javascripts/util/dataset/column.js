@@ -26,6 +26,8 @@ this.Column = Model.extend({
 
         this._setUpColumn();
 
+        this.aggregates = {};
+
         this.updateChildColumns();
     },
 
@@ -139,6 +141,7 @@ this.Column = Model.extend({
         newCol.id = col.id;
 
         var oldWidth = col.width;
+        var oldAgg = col.format.aggregate;
 
         if (forceFull)
         {
@@ -160,6 +163,7 @@ this.Column = Model.extend({
         this._setUpColumn();
 
         if (oldWidth !== col.width) { col.view.trigger('column_resized', [col]); }
+        if (oldAgg !== col.format.aggregate) { col.view.aggregatesChanged(); }
     },
 
     filter: function(value, subColumnType)
@@ -293,8 +297,6 @@ this.Column = Model.extend({
         // Set up min width and default
         this.minWidth = 50;
         this.width = Math.max(this.minWidth, this.width || 100);
-
-        this.aggregates = {};
 
         if (!$.isBlank(this.currentFilter) &&
                 !_.any(((this.view.query || {}).filterCondition || {})

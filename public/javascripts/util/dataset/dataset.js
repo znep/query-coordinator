@@ -26,7 +26,8 @@ this.Dataset = Model.extend({
 
         this.registerEvent(['columns_changed', 'valid', 'query_change',
             'set_temporary', 'clear_temporary', 'row_change',
-            'row_count_change', 'column_resized', 'displayformat_change']);
+            'row_count_change', 'column_resized', 'displayformat_change',
+            'column_totals_changed']);
 
         $.extend(this, v);
 
@@ -706,6 +707,12 @@ this.Dataset = Model.extend({
         }
         else
         { callback(); }
+    },
+
+    aggregatesChanged: function()
+    {
+        this._aggregatesStale = true;
+        this.trigger('column_totals_changed');
     },
 
     updateRating: function(rating, successCallback, errorCallback)

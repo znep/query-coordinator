@@ -22,9 +22,9 @@ columnTotalsNS.totals = {
 
 columnTotalsNS.populate = function(column, $container)
 {
-    if (column.aggregate)
+    if (column.format.aggregate)
     {
-        $container.find("#" + column.aggregate.type).each(function()
+        $container.find("#" + column.format.aggregate).each(function()
                 { this.checked = true; });
     }
     else
@@ -36,7 +36,7 @@ columnTotalsNS.populate = function(column, $container)
 columnTotalsNS.fetchValue = function($parent)
 {
     var $total = $parent.find("#columnTotals :radio:checked");
-    return $total.length > 0 && $total.val() !== '' ? {type: $total.val()} : null;
+    return $total.length > 0 && $total.val() !== '' ? $total.val() : null;
 };
 
 columnTotalsNS.renderers = {};
@@ -112,7 +112,7 @@ function(column, $container)
 $(function()
 {
     $.fn.columnTotalsRender = function(column)
-    { return columnTotalsNS.renderers[column.type](column, $(this)); };
+    { return columnTotalsNS.renderers[column.renderTypeName](column, $(this)); };
 
     $.fn.columnTotalsValue = function()
     { return columnTotalsNS.fetchValue($(this)); }

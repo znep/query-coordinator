@@ -273,49 +273,10 @@ class Column < Model
   # Convert the core server column data to what JS expects as a model so the
   # JS doesn't have to do it itself.
   def to_js
-    col = {
-      :name => CGI.escapeHTML(name),
-      :description => CGI.escapeHTML(description),
-      :width => width || 100,
-      :type => renderTypeName || "text",
-      :originalType => dataTypeName,
-      :id => id
-    }
-
-    if aggregate != 'none'
-      col['aggregate'] = {:type => aggregate}
-    end
-
-    if !self.format.nil?
-      col[:type] = client_type
-      col[:format] = self.format.view
-
-      if !self.format.range.nil?
-        col[:range] = self.format.range
-      end
-
-      if !self.format.precision.nil?
-        col[:decimalPlaces] = self.format.precision
-      end
-
-      if !self.format.precisionStyle.nil?
-        col[:precisionStyle] = self.format.precisionStyle
-      end
-
-      if !self.format.currency.nil?
-        col[:currency] = self.format.currency
-      end
-
-      if !self.format.humane.nil?
-        col[:humane] = self.format.humane
-      end
-
-      if !self.format.rdf.nil?
-        col[:rdf] = self.format.rdf;
-      end
-
-      col[:alignment] = alignment unless aligment.nil?
-    end
+    col = self.data.clone
+    col['name'] = CGI.escapeHTML(self.name)
+    col['description'] = CGI.escapeHTML(self.description)
+    col['format'] ||= {}
 
     return col.to_json.html_safe!
   end

@@ -244,12 +244,12 @@ blist.common.modalReady = function()
 
       var $alignment = $('#columnPropertiesDialog .alignment :radio:checked');
       if ($alignment.length > 0)
-      { column.alignment = $alignment.val(); }
+      { column.format.align = $alignment.val(); }
 
       blist.columns.properties.format.updateColumn(column);
 
       <%- if @column.has_totals? -%>
-      column.aggregate =
+      column.format.aggregate =
           $("#columnPropertiesDialog #totalsTab").columnTotalsValue();
       <%- end -%>
 
@@ -268,8 +268,12 @@ blist.common.modalReady = function()
 
       updateColumn();
 
+      <%- if !@parent.nil? -%>
+      var parCol = blist.dataset.columnForID(<%= @parent %>);
+      var curCol = parCol.childColumnForID(column.id);
+      <%- else -%>
       var curCol = blist.dataset.columnForID(column.id);
-      // TODO: handle nested columns
+      <%- end -%>
       curCol.update(column);
       curCol.save(
         function(responseData) {
@@ -292,8 +296,12 @@ blist.common.modalReady = function()
 
     var type = $(this).attr("id");
 
+    <%- if !@parent.nil? -%>
+    var parCol = blist.dataset.columnForID(<%= @parent %>);
+    var curCol = parCol.childColumnForID(column.id);
+    <%- else -%>
     var curCol = blist.dataset.columnForID(column.id);
-    // TODO: handle nested columns
+    <%- end -%>
     curCol.convert(type,
       function (responseData) {
         $("#modal .jqmClose").click();

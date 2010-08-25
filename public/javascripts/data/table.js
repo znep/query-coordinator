@@ -2352,7 +2352,7 @@
         };
 
         // Obtain a CSS style for a column
-        var colStyles = [];
+        var colStyles = {};
         var getColumnStyle = function(column) {
             var result = colStyles[column.id];
             if (!result)
@@ -2972,7 +2972,7 @@
                 '(row.id || row[0]), ' +
                 '"\' ' + rowDivContents + '>");';
 
-            $.each(lockedColumns, function (i, c)
+            _.each(lockedColumns, function (c)
             {
                 renderLockedFnSource += 'html.push(' +
                     '"<div class=\'' + (c.cls || '') + ' blist-td ' +
@@ -3545,12 +3545,6 @@
             end("updateHeader");
         };
 
-        var updateFooter = function()
-        {
-            renderFooter();
-            updateLayout();
-        };
-
         var pendingAggs = false;
 
         /**
@@ -3661,7 +3655,8 @@
                 pendingAggs = false;
             };
 
-            if (model.getAggregates(gotAggs)) { pendingAggs = true; }
+            if (model.getAggregates(function() { _.defer(gotAggs); }))
+            { pendingAggs = true; }
         };
 
 
@@ -4047,7 +4042,8 @@
                             renderFooter();
                             initRows();
                         })
-                    .bind('column_resized', configureWidths);
+                    .bind('column_resized', configureWidths)
+                    .bind('column_totals_changed', renderFooter);
 
                 // Bind to events on the DOM that are thrown by the model
                 $this.bind('columns_changed', function()

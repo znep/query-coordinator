@@ -33,7 +33,7 @@ function(column, $container)
 {
     var render = '<h3 class="separator">Display Options</h3>' +
         '<div class="number displayOptions"><table colspacing="0"><tbody>' +
-        columnFormatNS.renderPrecision(column.decimalPlaces) +
+        columnFormatNS.renderPrecision(column.format.precision) +
 
         '<tr><td class="labelColumn">' +
         '<label for="columnProperties_precisionStyle">Number Style:</label>' +
@@ -57,7 +57,7 @@ function(column, $container)
         ddClass: 'lr_justified',
         name: "precisionStyle",
         values: precisionStyleValues,
-        value: column.precisionStyle || 'standard',
+        value: column.format.precisionStyle || 'standard',
         renderFn: columnFormatNS.renderValueInfoFormatRow
     });
 };
@@ -71,7 +71,7 @@ function(column, $container)
         '<tr><td class="labelColumn"><label for="columnProperties_precision">' +
         'Number of Decimal Places:</label></td><td>' +
         '<input class="incrementer" type="text" id="columnProperties_precision" ' +
-        'value="' + column.decimalPlaces + '" /></td></tr>' +
+        'value="' + column.format.precision + '" /></td></tr>' +
 
         '<tr><td class="labelColumn">' +
         '<label for="columnProperties_currency">Currency:</label>' +
@@ -83,7 +83,7 @@ function(column, $container)
         '<tr><td class="labelColumn"><label for="columnProperties_humane">' +
         'Human Readable:</label></td><td>' +
         '<input type="checkbox" id="columnProperties_humane" ' +
-        (column.humane === 'true' ? 'checked="checked"' : '') +
+        (column.format.humane === 'true' ? 'checked="checked"' : '') +
         ' /></td></tr>' +
 
         '</tbody></table></div>';
@@ -128,7 +128,7 @@ function(column, $container)
         ddClass: 'lr_justified',
         name: "currency",
         values: currencyValues,
-        value: column.currency || 'dollar',
+        value: column.format.currency || 'dollar',
         renderFn: columnFormatNS.renderValueInfoFormatRow
     });
 };
@@ -138,7 +138,7 @@ function(column, $container)
 {
     var render = '<h3 class="separator">Display Options</h3>' +
         '<div class="percent displayOptions"><table colspacing="0"><tbody>' +
-        columnFormatNS.renderPrecision(column.decimalPlaces) +
+        columnFormatNS.renderPrecision(column.format.precision) +
         '<tr><td class="labelColumn"><label for="columnProperties_displayView">' +
         'Percent View Style:</label></td><td>' +
         '<div class="blist-combo-wrapper lr_justified format_percent_view">' +
@@ -158,7 +158,7 @@ function(column, $container)
         ddClass: 'lr_justified format_percent_view',
         name: "percent-view",
         values: percentFormatValues,
-        value: column.format || 'percent_bar_and_text',
+        value: column.format.view || 'percent_bar_and_text',
         renderFn: columnFormatNS.renderValueInfoFormatRow
     });
 };
@@ -189,15 +189,15 @@ function(column, $container)
         {id: 'date_dmonthy', info: '(Date [day month year])'},
         {id: 'date_ymonthd', info: '(Date [year month day])'}
     ];
-    var type = blist.data.types[column.type] || blist.data.types.date;
-    var dateFormatValues = $.map(dateViews, function(v)
+    var type = blist.data.types[column.renderTypeName] || blist.data.types.date;
+    var dateFormatValues = _.map(dateViews, function(v)
         { return $.extend(v, {label: today.format(type.formats[v.id])}); });
 
     $("#columnProperties_displayView").combo({
       ddClass: 'lr_justified format_date_view',
       name: "date-view",
       values: dateFormatValues,
-      value: column.format || 'date_time',
+      value: column.format.view || 'date_time',
       renderFn: columnFormatNS.renderValueInfoFormatRow
     });
 };
@@ -212,26 +212,38 @@ columnFormatNS.renderValueInfoFormatRow = function(value)
 
 columnFormatNS.updateColumn = function(column)
 {
-    column.decimalPlaces =
-        $("#columnProperties_precisionEnabled:checked").length > 0 ?
-        $("#columnProperties_precision").val() : null;
+    if ($("#columnProperties_precisionEnabled:checked").length > 0)
+    {
+        column.format.precision = $("#columnProperties_precision").val();
+    }
 
     var $view = $("#columnProperties_displayView");
-    column.format = $view.length > 0 ? $view.value() : null;
+    if ($view.length > 0)
+    {
+        column.format.view = $view.value();
+    }
 
     var $precisionStyle = $("#columnProperties_precisionStyle");
-    column.precisionStyle = $precisionStyle.length > 0 ?
-        $precisionStyle.value() : null;
+    if ($precisionStyle.length > 0)
+    {
+        column.format.precisionStyle = $precisionStyle.value();
+    }
 
     var $currency = $("#columnProperties_currency");
-    column.currency = $currency.length > 0 ? $currency.value() : null;
+    if ($currency.length > 0)
+    {
+        column.format.currency = $currency.value();
+    }
 
-    column.humane = $("#columnProperties_humane").value();
-
+    var $humane = $("#columnProperties_humane");
+    if ($humane.length > 0)
+    {
+        column.format.humane = $humane.value();
+    }
 };
 
 $(function()
 {
     $.fn.columnFormatRender = function(column)
-    { columnFormatNS.renderers[column.type](column, $(this)); };
+    { columnFormatNS.renderers[column.renderTypeName](column, $(this)); };
 });

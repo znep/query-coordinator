@@ -84,7 +84,7 @@
                     <div class="widgetTable-cell widgetTable-defaultColumn">
                       <%- if customization.customization[:version] == 1-%>
                         <%- if customization.uid != @default_template %>
-                        <p class="defaultLink"><%= link_to '&rsaquo; Set Default', :action => 'set_default_template',
+                        <p class="defaultLink"><%= link_to raw('&rsaquo; Set Default'), :action => 'set_default_template',
                             :id => customization.uid %></p>
                         <%- else -%>  
                           <p class="templateAlreadyDefault">Yes</p>

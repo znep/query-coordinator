@@ -1,7 +1,7 @@
 module BlistsHelper
 
   def get_add_column(desc, view_id, type)
-    link_to(desc, new_blist_column_path(view_id) + "?type=#{type}", :rel => "modal", :id => "addColumn_#{type}")
+    link_to(raw(desc), new_blist_column_path(view_id) + "?type=#{type}", :rel => "modal", :id => "addColumn_#{type}")
   end
 
   # Used for lists of views, to determine shared in/out

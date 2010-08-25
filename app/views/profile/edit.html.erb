@@ -39,7 +39,7 @@
           <%= text_field_tag("user[city]", current_user.city, :class => "textPrompt") %>
 
           <label for="user_country">Country:</label>
-          <%= select_tag("user[country]", country_select_options(current_user.country)) %>
+          <%= select_tag("user[country]", raw(country_select_options(current_user.country))) %>
 
           <label for="user_tags">Tags:</label>
           <%= text_field_tag("user[tags]", current_user.tags.nil? ? '' : current_user.tags.join(', '), :class => "textPrompt") %>

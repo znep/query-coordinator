@@ -11,8 +11,8 @@
 
 
 #gridSidebar
-  background-color: $sidebar_bg_color
-  border-left: 1px solid $sidebar_chrome_border_color
+  background-color: $color_chrome_sidebar_background
+  border-left: 1px solid $color_chrome_box_border
   display: none
   overflow: hidden
   position: absolute
@@ -181,7 +181,7 @@
         display: inline-block
 
       .formHeader
-        color: $sidebar_text_color
+        color: $color_chrome_sidebar_text
         display: inline-block
         font-size: 1.2em
         font-weight: bold
@@ -215,7 +215,7 @@
 
       .sectionContent
         background-color: #fff
-        border: 1px solid $sidebar_chrome_border_color
+        border: 1px solid $color_chrome_box_border
         @include border-radius(0.3em)
         margin-top: 0.3em
         padding: 1px
@@ -234,7 +234,7 @@
 
         label
           background-position: left 5px
-          color: $sidebar_text_color
+          color: $color_chrome_sidebar_text
           font-size: 1.1em
           font-weight: bold
           margin:
@@ -438,7 +438,7 @@
             border: 1px dashed transparent
             padding: 0.1em 0 0.3em 0.3em
             &:hover
-              border-color: $sidebar_chrome_border_color
+              border-color: $color_chrome_box_border
 
             &.color:hover
               border-color: transparent
@@ -466,7 +466,7 @@
 
     .fullButton
       background-color: #fff
-      border: 1px solid $sidebar_chrome_border_color
+      border: 1px solid $color_chrome_box_border
       @include border-radius(0.3em)
       display: block
       font-size: 1.3em

@@ -1,4 +1,3 @@
---- 
 dependencies: 
   multipart-post: 
     group: 
@@ -46,6 +45,12 @@ dependencies:
     group: 
     - :default
     version: = 1.1.6
+=======
+hash: 1206087a0b19a621e096a11907810ef1cfd19f4e
+sources: 
+- Rubygems: 
+    uri: http://gemcutter.org
+>>>>>>> origin/master
 specs: 
 - rake: 
     version: 0.8.7
@@ -75,6 +80,8 @@ specs:
     version: 3.0.17
 - hashie: 
     version: 0.3.1
+- hoptoad_notifier: 
+    version: 2.3.5
 - json: 
     version: 1.4.6
 - multipart-post: 
@@ -85,7 +92,60 @@ specs:
     version: 1.1.6
 - thin: 
     version: 1.2.7
+<<<<<<< HEAD
 hash: 0cd563f611bb6bd205ce2d7462d023601decf995
 sources: 
 - Rubygems: 
     uri: http://gemcutter.org
+=======
+dependencies: 
+  rails: 
+    version: ~> 2.3.8
+    group: 
+    - :default
+    require: []
+
+  rack: 
+    version: = 1.1.0
+    group: 
+    - :default
+  json: 
+    version: = 1.4.6
+    group: 
+    - :default
+  erubis: 
+    version: ">= 2.6.4"
+    group: 
+    - :default
+  googlecharts: 
+    version: = 1.3.6
+    group: 
+    - :default
+    require: 
+    - gchart
+  multipart-post: 
+    version: = 1.0.1
+    group: 
+    - :default
+    require: 
+    - net/http/post/multipart
+  hashie: 
+    version: = 0.3.1
+    group: 
+    - :default
+  haml: 
+    version: = 3.0.17
+    group: 
+    - :default
+  stomp: 
+    version: = 1.1.6
+    group: 
+    - :default
+  hoptoad_notifier: 
+    version: ">= 0"
+    group: 
+    - :default
+  thin: 
+    version: ">= 0"
+    group: 
+    - :development

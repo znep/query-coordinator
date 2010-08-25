@@ -12,6 +12,7 @@
 
 <div class="contentBox">
   <div class='content'>
+    <%= render :partial => 'production_warning' %>
     <h1>
       <%= @property_key %> for
       <a href="/internal/orgs/<%= @domain.organizationId %>/domains/<%= @domain.cname %>">

@@ -247,6 +247,18 @@
                             { blist.dialog.sharing(event); }
                         });
 
+                        $formElem.find('.shareNotifyLink').click(function(event)
+                        {
+                            event.preventDefault();
+                            $.ajax({
+                                url: '/api/views/' + blist.display.view.id + '.json?method=notifyUsers',
+                                method: 'POST',
+                                success: function(responseData) {
+                                    $formElem.find('.shareNoticeSent').fadeIn();
+                                }
+                            });
+                        });
+
                         // If the publicness is inherited from the parent dataset, they can't make it private
                         var publicGrant = _.detect(blist.display.view.grants || [], function(grant)
                             {
@@ -283,6 +295,10 @@
                             });
                             return;
                         }
+
+                        _.defer(function(){
+                            $formElem.find('.shareNotifyArea').fadeIn();
+                        });
 
                         // Start ajax for getting user names from UIDs
                         grabShares($formElem, grants);

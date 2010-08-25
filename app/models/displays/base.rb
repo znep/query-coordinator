@@ -101,7 +101,8 @@ END
     # Retrieve rendered CSS links to include in the page.  Called by view logic
     def render_stylesheet_includes
       return required_stylesheets.map { |css| @@asset_helper.stylesheet_link_merged css }.join +
-        required_style_packages.map { |sass| @@app_helper.rendered_stylesheet_tag sass }.join
+        required_style_packages.map { |sass| @@app_helper.rendered_stylesheet_tag sass }.join +
+        required_style_links.map { |link| @@app_helper.stylesheet_link_tag link }.join
     end
 
     # Retrieve rendered JavaScript to include in the page.  Called by view logic
@@ -150,8 +151,18 @@ END
       []
     end
 
+    # List of stylesheets to be directly included via link tags, e.g. externally hosted
+    def required_style_links
+      []
+    end
+
     # Retrieve a list of javascript asset bundles that must be included for this display
     def required_javascripts
+      []
+    end
+
+    # A list of javascript source files to be directly translated to tags, e.g. externally hosted
+    def required_javascript_links
       []
     end
 
@@ -163,7 +174,8 @@ END
 
     # Render links to javascript files
     def render_javascript_links
-      required_javascripts.map { |js| @@asset_helper.javascript_include_merged js }.join
+      required_javascript_links.map { |link| @@app_helper.javascript_include_tag link }.join +
+        required_javascripts.map { |js| @@asset_helper.javascript_include_merged js }.join
     end
 
     # Render links to javascript files for editing

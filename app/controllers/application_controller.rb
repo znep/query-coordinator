@@ -151,10 +151,7 @@ private
   end
 
   def require_domain_member
-    unless CurrentDomain.member?(current_user)
-      flash.now[:error] = "You do not have permission to view this page"
-      return (render 'shared/error', :status => :forbidden)
-    end
+    return render_forbidden unless CurrentDomain.member?(current_user)
   end
 
   def set_user
@@ -226,7 +223,14 @@ private
 
   def render_error(code)
     respond_to do |format|
-      format.html { render :template => "errors/error_#{code}", :layout => 'main', :status => code }
+      format.html do
+        begin
+          render :template => "errors/error_#{code}", :layout => 'main', :status => code
+        rescue
+          render :template => "errors/error_#{code}_nodomain", :layout => 'main_nodomain', :status => code
+        end
+      end
+
       format.all { render :nothing => true, :status => code }
     end
     true # so we can do "render_404 and return"

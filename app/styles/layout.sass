@@ -6,12 +6,13 @@ html, body
   padding: 0
 
 .siteOuterWrapper
-  min-height: 50em
+  min-height: 100%
   min-width: 90em
 
 .siteInnerWrapper
   margin: 0 auto
   min-height: 100%
+  padding-bottom: 5em
 
 #skipLinks
   position: absolute
@@ -106,6 +107,11 @@ html, body
     margin-right: 1em
 
 #siteFooter
+  overflow: hidden
+
+  body > &
+    height: 4.1em
+    margin-top: -4.2em
 
   .footerLogo
     @include text-hiding
@@ -133,7 +139,7 @@ html, body
 
 .contentBox
   background-color: #fff
-  border: 1px solid #cecece
+  border: 1px solid $color_chrome_box_border
   @include border-radius(0.2em)
   max-width: 100%
   margin: 1em

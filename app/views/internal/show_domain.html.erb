@@ -15,6 +15,7 @@
       <p>Domain could not be found</p>
 
     <% else %>
+      <%= render :partial => 'production_warning' %>
       <h1><%= @domain.name %> (<%= @domain.cname %>)</h1>
 
       <p>This is a

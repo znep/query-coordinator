@@ -30,7 +30,7 @@
         text-align: center
 
       .sizePreview
-        background-color: $sidebar_bg_color
+        background-color: $color_chrome_sidebar_background
         border: 1px solid #777
         &.small
           height: 2.55em
@@ -165,7 +165,7 @@
       width: 25.75em
 
       .viewItem
-        border: 1px solid $sidebar_chrome_border_color
+        border: 1px solid $color_chrome_box_border
         margin: 0.5em 0
         padding: 0.5em
         position: relative
@@ -188,7 +188,7 @@
 
         .authorLine
           @include clip-text
-          color: $sidebar_text_color
+          color: $color_chrome_sidebar_text
           display: block
           font-size: 1.1em
           font-style: italic
@@ -329,7 +329,7 @@
         padding: 1em
 
       > dt
-        color: $sidebar_text_color
+        color: $color_chrome_sidebar_text
         font-size: 1.1em
         font-weight: bold
         height: 2em
@@ -343,8 +343,8 @@
           text-align: center
 
       > dd
-        border-top: 1px solid $sidebar_chrome_border_color
-        color: $sidebar_text_color
+        border-top: 1px solid $color_chrome_box_border
+        color: $color_chrome_sidebar_text
         font-size: 1.1em
         padding: 1em
         text-align: right
@@ -362,8 +362,8 @@
           float: right
 
       > li
-        border-top: 1px solid $sidebar_chrome_border_color
-        color: $sidebar_text_color
+        border-top: 1px solid $color_chrome_box_border
+        color: $color_chrome_sidebar_text
         font-size: 1.1em
         padding: 1em
         &:first-child
@@ -399,7 +399,7 @@
         height: 3em
 
       .captcha
-        border: 1px solid $sidebar_chrome_border_color
+        border: 1px solid $color_chrome_box_border
         overflow: hidden
         width: 100%
         #recaptcha_area
@@ -456,6 +456,12 @@
       display: none
       font-size: 1.2em
       margin: 1em
+
+    .shareNotifyArea
+      display: none
+      margin-top: 1em
+      .shareNoticeSent
+        display: none
 
     .itemsList
       margin-top: 1.5em
@@ -553,7 +559,7 @@
         display: none
 
     ul.sectionContent li
-      border-top: 1px solid $sidebar_chrome_border_color
+      border-top: 1px solid $color_chrome_box_border
       padding: 0.6em
       text-align: center
       

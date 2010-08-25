@@ -364,6 +364,8 @@ stylesheets:
   - grid-sidebar
   - form-common
   - combo
+- chart-screen:
+  - chart-screen
 - communities-show:
   - community-screen
   - carousel/jquery.jcarousel

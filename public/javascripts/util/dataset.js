@@ -86,6 +86,7 @@ blist.dataset.cleanViewForPost = function(view, includeColumns)
             delete col.dropDown;
             delete col.renderTypeName;
             delete col.dataTypeName;
+            delete col.cachedContents;
         };
 
         // Clean out dataIndexes, and clean out child metadata columns

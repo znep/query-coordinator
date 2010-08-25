@@ -1,5 +1,8 @@
 (function($)
 {
+    if (blist.sidebarHidden.exportSection &&
+        blist.sidebarHidden.exportSection.download) { return; }
+
     var config =
     {
         name: 'export.downloadDataset',

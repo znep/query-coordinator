@@ -90,24 +90,25 @@ private
     @@requests = []
 
     if Rails.env.development?
-      do_flush_requests
+      do_flush_requests(current_requests)
       get_client.close
     elsif synchronous
-      do_flush_requests
+      do_flush_requests(current_requests)
     else
       Thread.new do
         # be chivalrous
         Thread.pass
 
-        do_flush_requests
+        do_flush_requests(current_requests)
       end
     end
   end
 
-  def do_flush_requests
+  def do_flush_requests(current_requests)
     begin
       logger.debug "Hit batch limit of #{BATCH_REQUESTS_BY}, firing off requests..."
-      @@requests.each do |request|
+      logger.debug current_requests.inspect
+      current_requests.each do |request|
         get_client.publish(request[:uri], request[:data], request[:params])
       end
       logger.debug "Done firing off requests."

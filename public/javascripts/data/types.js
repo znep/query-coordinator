@@ -1030,6 +1030,7 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterPhone,
             filterText: true,
             sortable: true,
+            aggregates: nonNumericAggs,
             alignment: alignment,
             convertableTypes: ['text'],
             filterable: true,

@@ -33,8 +33,9 @@ this.Dataset = Model.extend({
 
         // This ID really shouldn't be changing; if it does, this URL
         // will be out-of-date...
+        var selfUrl = '/views/' + this.id;
         Dataset.addProperties(this, ColumnContainer('column',
-                '/views/' + this.id + '/columns'), Dataset.prototype);
+                selfUrl + '.json', selfUrl + '/columns'), Dataset.prototype);
 
         this.type = getType(this);
         this.styleClass = this.type.capitalize();
@@ -67,38 +68,6 @@ this.Dataset = Model.extend({
 
         this._origQuery = $.extend(true, {}, this.query);
         this._origSearchString = this.searchString;
-    },
-
-    // Move to ColumnContainer?
-    setVisibleColumns: function(visColIds, callback, skipRequest)
-    {
-        var ds = this;
-
-        var vizCols = [];
-        _.each(visColIds, function(colId, i)
-        {
-            var col = ds.columnForID(colId);
-            if (!$.isBlank(col))
-            {
-                col.show(null, null, true);
-                col.update({position: i + 1});
-                vizCols.push(col.cleanCopy());
-            }
-        });
-
-        ds.update({columns: vizCols});
-
-        if (ds.hasRight('update_view') && !skipRequest)
-        {
-            this._makeRequest({url: '/views/' + ds.id + '.json', type: 'PUT',
-                data: JSON.stringify({columns: vizCols}), batch: true});
-
-            ds._sendBatch(function()
-            {
-                ds.reload();
-                if (_.isFunction(callback)) { callback(); }
-            });
-        }
     },
 
     rowForID: function(id)

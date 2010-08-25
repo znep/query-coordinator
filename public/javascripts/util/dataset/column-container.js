@@ -1,6 +1,6 @@
 (function(){
 
-this.ColumnContainer = function(colName, urlBase)
+this.ColumnContainer = function(colName, selfUrl, urlBase)
 {
     var _columnIDLookup;
     var _columnTCIDLookup;
@@ -95,6 +95,52 @@ this.ColumnContainer = function(colName, urlBase)
         };
 
         cont._sendBatch(columnsRemoved);
+    };
+
+    props['setVisible' + capSet] = function(visColIds, callback, skipRequest)
+    {
+        var cont = this;
+
+        var vizCols = [];
+        _.each(visColIds, function(colId, i)
+        {
+            var col = forID(cont, colId);
+            if (!$.isBlank(col))
+            {
+                col.show(null, null, true);
+                col.update({position: i + 1});
+                var cc = col.cleanCopy();
+                if (!$.isBlank(cc.childColumns))
+                {
+                    cc.childColumns = _.reject(cc.childColumns, function(ccc)
+                        { return _.include(ccc.flags || [], 'hidden'); });
+                }
+                vizCols.push(cc);
+            }
+        });
+
+        _.each(realSet(cont), function(c)
+        {
+            if ($.isBlank(_.detect(vizCols, function(vc)
+                { return vc.id == c.id; })))
+            { c.hide(null, null, true); }
+        });
+
+        update(cont, vizCols);
+
+        if ((cont.view || cont).hasRight('update_view') && !skipRequest)
+        {
+            var item = {};
+            item[colSet] = vizCols;
+            this._makeRequest({url: selfUrl, type: 'PUT',
+                data: JSON.stringify(item), batch: true});
+
+            cont._sendBatch(function()
+            {
+                (cont.view || cont).reload();
+                if (_.isFunction(callback)) { callback(); }
+            });
+        }
     };
 
     props.cleanCopy = function()

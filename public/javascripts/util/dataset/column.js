@@ -19,9 +19,9 @@ this.Column = Model.extend({
         {
             // This ID really shouldn't be changing; if it does, this URL
             // will be out-of-date...
+            var selfUrl = '/views/' + this.view.id + '/columns/' + this.id;
             Column.addProperties(this, ColumnContainer('childColumn',
-                    '/views/' + this.view.id + '/columns/' + this.id +
-                    '/sub_columns'), Column.prototype);
+                    selfUrl + '.json', selfUrl + '/sub_columns'), Column.prototype);
         }
 
         this._setUpColumn();

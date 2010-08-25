@@ -2305,10 +2305,13 @@
         var ghostClass;
         var openerClass;
 
-        // Create CSS rules.  Expects an array of rules.  One rule is created for each entry in the array.  The entry
-        // can either be selector text or an array containing (selector text, variable) to assign a scoped variable.
+        // Create CSS rules.  Expects an array of rules.  One rule is created
+        // for each entry in the array.  The entry can either be selector text
+        // or an array containing (selector text, variable) to assign a scoped
+        // variable.
         var cssSheetID = 0;
-        var createCssRules = function(config) {
+        var createCssRules = function(config)
+        {
             // Create the stylesheet source
             var cssID = id + '-styles-' + (++cssSheetID);
             var cssText = [ '<style type="text/css" id="', cssID, '">\n' ];
@@ -2735,6 +2738,7 @@
             varMinWidth = [];
             varDenom = [];
             var cssColumnConfig = [];
+            var pendingStyles = {};
 
             // Set up variable columns at each level
             for (var j = 0; j < model.columns().length; j++)
@@ -2762,29 +2766,33 @@
                         columns.push(col);
                     }
 
-                    if (!colStyles[col.id])
+                    if (!colStyles[col.id] && !pendingStyles[col.id])
                     {
                         cssColumnConfig.push([ "." + getColumnClass(col),
                             'colStyles' + (_.isString(col.id) ? ('.' + col.id) :
                                 ('[' + col.id + ']')) ]);
+                        pendingStyles[col.id] = true;
                     }
 
                     if (!$.isBlank(col.visibleChildColumns))
                     {
                         _.each(col.visibleChildColumns, function(c)
                         {
-                            if (!colStyles[c.id])
+                            if (!colStyles[c.id] && !pendingStyles[c.id])
                             {
                                 cssColumnConfig.push([ "." + getColumnClass(c),
                                     'colStyles' + (_.isString(c.id) ?
                                         ('.' + c.id) : ('[' + c.id + ']')) ]);
+                                pendingStyles[c.id] = true;
                             }
                         });
                     }
                 }
             }
-            if (cssColumnConfig.length)
-                createCssRules(cssColumnConfig);
+
+            if (cssColumnConfig.length > 0)
+            { createCssRules(cssColumnConfig); }
+
             if (variableColumns[0].length < 1 && options.showGhostColumn)
             {
                 variableColumns[0].push({percentWidth: 100,
@@ -3096,7 +3104,13 @@
                 if (colWidth)
                 {
                     hpos += colWidth;
-                    var style = getColumnStyle(mcol);
+                    // If we're in the middle of a refresh, the visible columns
+                    // on a nested table might be updated slightly before
+                    // we actually get the columns_changed event to initialze
+                    // the column styles.  If that happens, just ignore this
+                    // error because things will be re-rendered shortly
+                    try { var style = getColumnStyle(mcol); }
+                    catch (e) { continue; }
 
                     var widthStyle = (colWidth - paddingX) + 'px';
 

@@ -35,7 +35,7 @@ class LogRefererMiddleware
       # Second we need to figure out how we got here.
       ref = env["HTTP_REFERER"]
 
-      if env['HTTP_ACCEPT'].include?("text/html")
+      if env['HTTP_ACCEPT'] && env['HTTP_ACCEPT'].include?("text/html")
         # If the request is for an html page, then log a pageview event.
         logger.info "Attempting to log a page view to the #{domain} domain."
         push_request(

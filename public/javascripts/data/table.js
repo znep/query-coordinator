@@ -2662,7 +2662,8 @@
                     var childLookup = (mcol.parentColumn ||
                         {}).dataLookupExpr || '';
                     var invalid = "(row" + childLookup + ".invalid" +
-                        mcol.directLookupExpr + " ? ' invalid' : '')";
+                        (mcol.directLookupExpr || mcol.dataLookupExpr) +
+                        " ? ' invalid' : '')";
 
                     var drillDown = mcol.format.drill_down ?
                         ("<a class='drillDown'" +
@@ -2674,7 +2675,7 @@
                     var cellDrillStyle = mcol.format.drill_down ? ' drill-td' : '';
 
                     renderer = "(!row" + childLookup + ".invalid" +
-                        mcol.directLookupExpr + " ? " +
+                        (mcol.directLookupExpr || mcol.dataLookupExpr) + " ? " +
                         renderer("row" + mcol.dataLookupExpr, false, mcol,
                                 contextVariables) +
                         " : " + invalidRenderer("row" +
@@ -2685,10 +2686,12 @@
                             cellDrillStyle + align + "\" + " + invalid +
                             " + (row" + childLookup + ".changed && row" +
                             childLookup + ".changed" +
-                            mcol.directLookupExpr + " ? \" saving\" : \"\") + " +
+                            (mcol.directLookupExpr || mcol.dataLookupExpr) +
+                            " ? \" saving\" : \"\") + " +
                             "(row" + childLookup + ".error && row" +
                             childLookup + ".error" +
-                            mcol.directLookupExpr + " ? \" error\" : \"\") + " +
+                            (mcol.directLookupExpr || mcol.dataLookupExpr) +
+                            " ? \" error\" : \"\") + " +
                             "\"'>"+ drillDown + "\", " +
                             renderer + ", \"</div>\""
                     );
@@ -2762,7 +2765,8 @@
                     if (!colStyles[col.id])
                     {
                         cssColumnConfig.push([ "." + getColumnClass(col),
-                            "colStyles[" + col.id + "]" ]);
+                            'colStyles' + (_.isString(col.id) ? ('.' + col.id) :
+                                ('[' + col.id + ']')) ]);
                     }
 
                     if (!$.isBlank(col.visibleChildColumns))
@@ -2772,7 +2776,8 @@
                             if (!colStyles[c.id])
                             {
                                 cssColumnConfig.push([ "." + getColumnClass(c),
-                                    "colStyles[" + c.id + "]" ]);
+                                    'colStyles' + (_.isString(c.id) ?
+                                        ('.' + c.id) : ('[' + c.id + ']')) ]);
                             }
                         });
                     }

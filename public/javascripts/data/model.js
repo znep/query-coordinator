@@ -206,21 +206,28 @@ blist.namespace.fetch('blist.data');
         {
             trCols = [[], []];
             var fillFor = [];
+            var addFill = function()
+            {
+                if (fillFor.length > 0)
+                {
+                    trCols[1].push({renderTypeName: 'fill',
+                            fillFor: fillFor, id: 'fill' + _.uniqueId()});
+                }
+                fillFor = [];
+            };
+
             _.each(self.view.visibleColumns, function(c)
             {
                 trCols[0].push(c);
                 if (c.dataTypeName == 'nested_table')
                 {
-                    if (fillFor.length > 0)
-                    { trCols[1].push({renderTypeName: 'fill', fillFor: fillFor}); }
-                    fillFor = [];
+                    addFill();
                     trCols[1].push(c);
                 }
                 else
                 { fillFor.push(c); }
             });
-            if (fillFor.length > 0)
-            { trCols[1].push({renderTypeName: 'fill', fillFor: fillFor}); }
+            addFill();
         };
 
         /**

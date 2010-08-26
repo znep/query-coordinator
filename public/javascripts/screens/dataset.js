@@ -3,15 +3,13 @@ var datasetPageNS = blist.namespace.fetch('blist.datasetPage');
 blist.datasetPage.expandSearch = function()
 {
     $('#searchForm .searchField:not(.expanded)')
-        .animate({ width: '12em', paddingLeft: '0.3em', paddingRight: '1.6em' })
-        .css('background-color', '#fff')
+        .animate({ width: '11em' })
         .addClass('expanded');
 };
 blist.datasetPage.collapseSearch = function()
 {
     $('#searchForm .searchField')
-        .animate({ width: '2em', paddingLeft: '1px', paddingRight: '1px' })
-        .css('background-color', '')
+        .animate({ width: '2em' })
         .removeClass('expanded');
 };
 blist.datasetPage.adjustSize = function()

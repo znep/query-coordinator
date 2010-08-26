@@ -78,7 +78,7 @@ class ProfileController < ApplicationController
         updated_link = params[:links][link.id.to_s.to_sym]
         continue if updated_link.nil?
 
-        if (updated_link[:linkType].empty? && updated_link[:url].empty?)
+        if (updated_link[:linkType].blank? && updated_link[:url].blank?)
           UserLink.delete(current_user.id, link.id)
         else
           UserLink.update(current_user.id, link.id, updated_link)
@@ -89,7 +89,7 @@ class ProfileController < ApplicationController
 
       params[:links].each do |id, new_link|
         UserLink.create(current_user.id, new_link) unless (new_link.nil? ||
-          new_link[:linkType].empty? || new_link[:url].empty?)
+          new_link[:linkType].blank? || new_link[:url].blank?)
       end
     end
 

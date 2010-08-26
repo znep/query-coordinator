@@ -348,6 +348,13 @@ class View < Model
     end
   end
 
+  def user_granted?(user)
+    if user
+      return user_role(user).present?
+    end
+    false
+  end
+
   def can_edit?
     data['rights'] && (data['rights'].include?('write') ||
       data['rights'].include?('add') ||

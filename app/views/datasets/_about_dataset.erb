@@ -45,7 +45,7 @@
       <dd class="numberOfComments"><%= @view.numberOfComments %></dd>
       <dt>Contributors</dt>
       <dd><%= @view.contributor_users.length %></dd>
-      <%- if @view.owned_by?(current_user) || CurrentDomain.user_can?(current_user, :edit_others_datasets) -%>
+      <%- if @view.user_granted?(current_user) || CurrentDomain.user_can?(current_user, :edit_others_datasets) -%>
         <dt class='widenedItem'>
           <%= link_to 'View Statistics', "#{@view.href}/stats" %>
         </dt>

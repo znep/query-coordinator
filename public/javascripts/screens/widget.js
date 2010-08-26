@@ -465,7 +465,8 @@ $(function()
         dataType: 'json',
         success: function (responseData)
         {
-            moreViews = _.reject(responseData || [], function(view)
+            if (!_.isArray(responseData)) { responseData = []; }
+            moreViews = _.reject(responseData, function(view)
             {
                 return (_.include(view.flags, 'default') && (view.viewType == 'tabular')) ||
                        (view.viewType == 'blobby') || (view.viewType == 'href');

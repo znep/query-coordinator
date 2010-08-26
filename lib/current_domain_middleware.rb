@@ -29,9 +29,10 @@ class CurrentDomainMiddleware
       env['socrata.current_domain'] = current_domain = CurrentDomain.set(host, env['rack.session'][:custom_site_config])
 
       # Check every n minutes if the current domain needs to be refreshed
-      if !Rails.env.development? && CurrentDomain.needs_refresh_check?
-        CurrentDomain.check_for_theme_update
-        CurrentDomain.flag_refresh_checked!
+      if !Rails.env.development? && CurrentDomain.needs_refresh_check?(host)
+        logger.debug("Checking memcache to see if domain '#{host}' needs update")
+        CurrentDomain.check_for_theme_update(host)
+        CurrentDomain.flag_refresh_checked!(host)
       end
     else
       logger.warn "Unable to determine domain for request."

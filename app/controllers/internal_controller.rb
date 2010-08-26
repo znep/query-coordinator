@@ -128,7 +128,7 @@ class InternalController < ApplicationController
     Configuration.update_attributes!(params['default-site-config'],
                                      {'default' => true})
 
-    CurrentDomain.flag_domain_id_out_of_date!(params[:domain_id])
+    CurrentDomain.flag_out_of_date!(params[:domain_id])
 
     redirect_to '/internal/orgs/' + params[:org_id] + '/domains/' +
       params[:domain_id]
@@ -148,7 +148,7 @@ class InternalController < ApplicationController
       end
     end
 
-    CurrentDomain.flag_domain_id_out_of_date!(params[:domain_id])
+    CurrentDomain.flag_out_of_date!(params[:domain_id])
 
     redirect_to '/internal/orgs/' + params[:org_id] + '/domains/' +
       params[:domain_id]
@@ -156,6 +156,9 @@ class InternalController < ApplicationController
 
   def add_module_to_domain
     Domain.add_account_module(params[:domain_id], params[:module][:name])
+
+    CurrentDomain.flag_out_of_date!(params[:domain_id])
+
     redirect_to '/internal/orgs/' + params[:org_id] + '/domains/' +
       params[:domain_id]
   end
@@ -186,7 +189,7 @@ class InternalController < ApplicationController
       end
     end
 
-    CurrentDomain.flag_domain_id_out_of_date!(params[:domain_id])
+    CurrentDomain.flag_out_of_date!(params[:domain_id])
     redirect_to '/internal/orgs/' + params[:org_id] + '/domains/' +
       params[:domain_id] + '/site_config/' + params[:id]
   end

@@ -41,27 +41,30 @@
           <div class="labelLine">
             <%= f.label :login, 'Email', :class => 'main' %>
           </div>
-          <%= f.text_field :login %>
+          <%= f.text_field :login, :tabindex => '1' %>
         </div>
 
         <div class="line">
           <div class="labelLine">
             <%= f.label :password, 'Password', :class => 'passwordLabel main' %>
-            <%= link_to 'Forgot?', forgot_password_path %>
+            <%= link_to 'Forgot?', forgot_password_path, :tabindex => '6' %>
           </div>
-          <%= f.password_field :password %>
+          <%= f.password_field :password, :tabindex => '2' %>
         </div>
 
         <%- if feature? :remember_me -%>
           <div class="line">
-            <%= f.check_box :remember_me %>
+            <%= f.check_box :remember_me, :tabindex => '3' %>
             <%= f.label :remember_me, 'Remember me', :class => 'pushUp' %>
           </div>
         <%- end -%>
 
         <div class="formActionButtons">
-          <%= submit_tag 'Sign In', :class => 'button default' %>
-          <%= link_to 'Sign up now', signup_path, :class => 'signUpText' %>
+          <%= submit_tag 'Sign In', :class => 'button default', :tabindex => '4' %>
+          <span class="accountSignupHint">
+            <span class="noAccountYet">Don't have an account?</span>
+            <%= link_to 'Sign up now', signup_path, :class => 'signUpText', :tabindex => '5' %>.
+          </span>
         </div>
       <%- end -%>
     </div>
@@ -80,6 +83,7 @@
   <script>
     $(function() {
       $(':checkbox').uniform();
+      $('#user_session_login').focus();
     });
     RPXNOW.overlay = true;
     RPXNOW.language_preference = 'en'

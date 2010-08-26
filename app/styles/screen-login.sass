@@ -37,6 +37,13 @@
     .loginTips
       margin-top: 0.5em
 
+    .noAccountYet
+      color: #666
+      padding-left: 1em
+
+    .signUpText
+      font-weight: bold
+
     .line
       margin-top: 1em
 
@@ -55,8 +62,12 @@
     .passwordHint
       font-style: italic
 
-    .signUpText
-      font-size: 1.4em
+    .accountSignupHint
+      font-size: 1.1em
+      .ie7 &
+        font-size: 1em
+        position: relative
+        top: -0.9em
 
     label.error
       display: block
@@ -64,6 +75,10 @@
 
     div.uniform.checker
       margin-right: 0.5em
+      .ie7 &
+        display: inline
+        position: relative
+        top: -0.3em
 
     .formActionButtons
       padding-top: 1em

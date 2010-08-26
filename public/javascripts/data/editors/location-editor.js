@@ -30,6 +30,8 @@
         // Handle invalid values
         if (typeof editObj.originalValue == 'string')
         { return editObj.originalValue.split(',')[0].trim(); }
+        else if (_.isArray(editObj.originalValue))
+        { return editObj.originalValue[0] || ''; }
 
         return (editObj.originalValue || {}).latitude || '';
     };
@@ -42,6 +44,8 @@
             var p = editObj.originalValue.split(',');
             return p.length > 1 ? p[1].trim() : '';
         }
+        else if (_.isArray(editObj.originalValue))
+        { return editObj.originalValue[1] || ''; }
 
         return (editObj.originalValue || {}).longitude || '';
     };

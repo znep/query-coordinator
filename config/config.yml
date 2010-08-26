@@ -4,6 +4,7 @@ default: &default
   rpx_signin_url: https://socrata-test.rpxnow.com/openid/v2/signin
   rpx_facebook_url: https://socrata-test.rpxnow.com/facebook/start
   rpx_windowslive_url: https://socrata-test.rpxnow.com/liveid/start
+  rpx_twitter_url: https://socrata-test.rpxnow.com/twitter/start
   rpx_openid_url: https://socrata-test.rpxnow.com/openid/start
   recaptcha_private_key: 6LdYQAkAAAAAANXMIbBwYDC5OHQj6j6N5Mqs1Kfd
   recaptcha_public_key: 6LdYQAkAAAAAAFDLJhrXAu8afiNeqTSPCXP18fBd
@@ -34,6 +35,7 @@ production:
   rpx_signin_url: https://socrata.rpxnow.com/openid/v2/signin
   rpx_facebook_url: https://socrata.rpxnow.com/facebook/start
   rpx_windowslive_url: https://socrata.rpxnow.com/liveid/start
+  rpx_twitter_url: https://socrata.rpxnow.com/twitter/start
   rpx_openid_url: https://socrata.rpxnow.com/openid/start
   <<: *default
 

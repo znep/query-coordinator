@@ -1,0 +1,87 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'screen-login' %>
+  <title><%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<% content_for :skip_links do %>
+  <%- unless params[:no_js].present? -%>
+    <%= link_to 'Disable Javascript on this page', '?no_js=true' %>
+  <%- end -%>
+<% end %>
+
+<%- openid_login = CurrentDomain.module_available?(:openid_login) -%>
+
+<div class="modalContentBox siteContent <%= openid_login ? 'wide' : 'socrataLoginOnly' %>">
+  <div class="contentHeader">
+    <h1>
+      Sign In
+      <%- unless CurrentDomain.short_name == 'socrata' -%>
+        to <%= CurrentDomain.strings.company %>
+      <%- end -%>
+    </h1>
+  </div>
+  <div class="contentBoxInner clearfix">
+    <div class="loginSignupForm firstColumn column">
+      <div class="authProvider socrata">
+        <span class="iconContainer">
+          <span class="icon"></span>
+        </span>
+        <span class="description">
+          Sign in with your
+          <strong><%= MASTER_DOMAIN_PREFS['strings.company'] %> ID</strong>
+        </span>
+        <p class="loginTips">
+          <%= raw MASTER_DOMAIN_PREFS['strings.login_tips'] %>
+        </p>
+      </div>
+      <%- form_for @user_session do |f| -%>
+        <%= display_standard_flashes %>
+        <%= f.error_messages %>
+        <div class="line">
+          <div class="labelLine">
+            <%= f.label :login, 'Email', :class => 'main' %>
+          </div>
+          <%= f.text_field :login %>
+        </div>
+
+        <div class="line">
+          <div class="labelLine">
+            <%= f.label :password, 'Password', :class => 'passwordLabel main' %>
+            <%= link_to 'Forgot?', forgot_password_path %>
+          </div>
+          <%= f.password_field :password %>
+        </div>
+
+        <%- if feature? :remember_me -%>
+          <div class="line">
+            <%= f.check_box :remember_me %>
+            <%= f.label :remember_me, 'Remember me', :class => 'pushUp' %>
+          </div>
+        <%- end -%>
+
+        <div class="formActionButtons">
+          <%= submit_tag 'Sign In', :class => 'button default' %>
+          <%= link_to 'Sign up now', signup_path, :class => 'signUpText' %>
+        </div>
+      <%- end -%>
+    </div>
+
+    <%- if openid_login -%>
+      <div class="rpxLoginPane column">
+        <%= render :partial => 'rpx/openid_login' %> 
+      </div>
+    <%- end -%>
+  </div>
+</div>
+
+<% content_for :js_footer do %>
+  <%= javascript_include_merged 'screen-login-signup' %>
+  <%= javascript_include_tag 'https://rpxnow.com/openid/v2/widget' %>
+  <script>
+    $(function() {
+      $(':checkbox').uniform();
+    });
+    RPXNOW.overlay = true;
+    RPXNOW.language_preference = 'en'
+  </script>
+<% end %>

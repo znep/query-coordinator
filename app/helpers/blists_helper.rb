@@ -1,7 +1,7 @@
 module BlistsHelper
 
   def get_add_column(desc, view_id, type)
-    link_to(desc, new_blist_column_path(view_id) + "?type=#{type}", :rel => "modal", :id => "addColumn_#{type}")
+    link_to(raw(desc), new_blist_column_path(view_id) + "?type=#{type}", :rel => "modal", :id => "addColumn_#{type}")
   end
 
   # Used for lists of views, to determine shared in/out
@@ -599,5 +599,6 @@ module BlistsHelper
     out
   end
 
-  safe_helper :get_blist_rating_html, :get_comment_rating_html
+  safe_helper :get_blist_rating_html, :get_comment_rating_html,
+    :font_select_options, :font_size_select_options
 end

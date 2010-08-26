@@ -1,7 +1,7 @@
 class DatasetsController < ApplicationController
   include DatasetsHelper
   require 'net/http'
-  skip_before_filter :require_user, :only => [:show, :widget_preview, :captcha_validate]
+  skip_before_filter :require_user, :only => [:show, :alt, :widget_preview, :captcha_validate]
   layout 'dataset_v2'
 
   def show
@@ -38,6 +38,7 @@ class DatasetsController < ApplicationController
 
   def alt
     @view = get_view(params[:id])
+    return if @view.nil?
 
     if !current_user && params[:force_login]
       return require_user(true)

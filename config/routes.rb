@@ -362,14 +362,22 @@ ActionController::Routing::Routes.draw do |map|
   map.import '/upload', :controller => 'blists', :action => 'upload' 
   map.import '/upload_alt', :controller => 'blists', :action => 'upload_alt'
   map.import_redirect '/upload/redirect', :controller => 'imports', :action => 'redirect'
+  map.forgot_password '/forgot_password', :controller => 'accounts', :action => 'v4_forgot_password',
+    :conditions => {:has_v4_dataset => true}
   map.forgot_password '/forgot_password', :controller => 'accounts', :action => 'forgot_password'
+  map.reset_password '/reset_password/:uid/:reset_code', :controller => 'accounts', :action => 'v4_reset_password',
+    :conditions => {:uid => UID_REGEXP, :has_v4_dataset => true}
   map.reset_password '/reset_password/:uid/:reset_code', :controller => 'accounts', :action => 'reset_password',
-    :uid => UID_REGEXP
+    :conditions => {:uid => UID_REGEXP}
 
   map.with_options :protocol => "https", :port => SslRequirement.port_for_protocol('https') do |https|
+    https.login '/login', :controller => 'user_sessions', :action => 'v4_new',
+      :conditions => {:has_v4_dataset => true}
     https.login '/login', :controller => 'user_sessions', :action => 'new'
     https.login_json '/login.json', :controller => 'user_sessions', :action => 'create', :format => 'json'
     https.logout '/logout', :controller => 'user_sessions', :action => 'destroy'
+    https.signup '/signup', :controller => 'accounts', :action => 'v4_new',
+      :conditions => {:has_v4_dataset => true}
     https.signup '/signup', :controller => 'accounts', :action => 'new'
     https.signup_json '/signup.json', :controller => 'accounts', :action => 'create', :format => 'json'
     https.accounts_json '/accounts.json', :controller => 'accounts', :action => 'update', :format => 'json'

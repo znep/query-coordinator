@@ -35,7 +35,7 @@ class LogRefererMiddleware
       # Second we need to figure out how we got here.
       ref = env["HTTP_REFERER"]
 
-      if env['HTTP_ACCEPT'].include?("text/html")
+      if env['HTTP_ACCEPT'] && env['HTTP_ACCEPT'].include?("text/html")
         # If the request is for an html page, then log a pageview event.
         logger.info "Attempting to log a page view to the #{domain} domain."
         push_request(
@@ -58,9 +58,22 @@ class LogRefererMiddleware
           # really tell someone about this by squawking at them over STOMP.
           logger.info "Attempting to log referrer #{domain} -> #{ref}."
 
+          host = uri.scheme + "://" + uri.host
+          path = uri.path
+          if !uri.query.blank?
+            path += "?#{uri.query}"
+          end
+
           push_request(
             "/queue/Metrics",
-            {"timestamp" => Time.now.to_i * 1000, "entityId" => "referrers-#{domain}", "referrer-#{ref}" => 1}.to_json,
+            {"timestamp" => Time.now.to_i * 1000, "entityId" => "referrer-hosts-#{domain}", "referrer-#{host}" => 1}.to_json,
+            :persistent => true,
+            :suppress_content_length => true
+          )
+
+          push_request(
+            "/queue/Metrics",
+            {"timestamp" => Time.now.to_i * 1000, "entityId" => "referrer-paths-#{domain}-#{host}", "path-#{path}" => 1}.to_json,
             :persistent => true,
             :suppress_content_length => true
           )
@@ -90,24 +103,25 @@ private
     @@requests = []
 
     if Rails.env.development?
-      do_flush_requests
+      do_flush_requests(current_requests)
       get_client.close
     elsif synchronous
-      do_flush_requests
+      do_flush_requests(current_requests)
     else
       Thread.new do
         # be chivalrous
         Thread.pass
 
-        do_flush_requests
+        do_flush_requests(current_requests)
       end
     end
   end
 
-  def do_flush_requests
+  def do_flush_requests(current_requests)
     begin
       logger.debug "Hit batch limit of #{BATCH_REQUESTS_BY}, firing off requests..."
-      @@requests.each do |request|
+      logger.debug current_requests.inspect
+      current_requests.each do |request|
         get_client.publish(request[:uri], request[:data], request[:params])
       end
       logger.debug "Done firing off requests."

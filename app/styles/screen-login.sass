@@ -1,0 +1,114 @@
+.modalContentBox.socrataLoginOnly
+  max-width: 36em
+
+.contentBoxInner
+  font-size: 1.2em
+  padding: 2em
+  .column
+    width: 29em
+
+    .socrataLoginOnly &
+      width: 26em
+
+  .explanation
+    margin-bottom: 1em
+    font-size: 1.2em
+
+  .submitLine
+    padding-top: 1em
+    
+  input[type='text'], input[type='password']
+    width: 18em
+
+  .commonForm .line
+    label
+      width: 9em
+    input[type='text'], input[type='password']
+      width: 15em
+
+  #forgotPasswordForm
+    .line
+      label
+        width: 6em
+
+  .loginSignupForm
+    float: left
+
+    .loginTips
+      margin-top: 0.5em
+
+    .line
+      margin-top: 1em
+
+    .labelLine
+      margin-bottom: 0.5em
+
+    label.main
+      font-weight: bold
+
+    label.pushUp
+      position: relative
+      top: -0.3em
+
+    .passwordLabel
+      padding-right: 1em
+    .passwordHint
+      font-style: italic
+
+    .signUpText
+      font-size: 1.4em
+
+    label.error
+      display: block
+      margin-top: 0.2em
+
+    div.uniform.checker
+      margin-right: 0.5em
+
+    .formActionButtons
+      padding-top: 1em
+
+    .signUpHint
+      padding-top: 1.5em
+
+    .authProvider .iconContainer
+      margin-right: 0.5em
+      padding-left: 0
+
+  .authProvider
+    @include authentication-icons
+
+    .iconContainer
+      float: left
+      padding: 0.7em
+      margin-right: 1.5em
+
+    .description
+      font-size: 1.4em
+      line-height: 2.4em
+
+  .rpxLoginPane
+    float: right
+    margin-top: 0.5em
+
+    .thirdPartyLinks
+
+      .button
+        font-size: 1em
+        font-weight: normal
+        margin-top: 1em
+        padding: 0
+        width: 28em
+
+        .iconContainer
+          border-right: 1px solid $color_chrome_box_border
+
+      .simpleLoginButton
+        font-size: 1.4em
+        font-weight: normal
+        height: 2.4em
+        padding-left: 3.2em
+        text-align: left
+        width: 20em
+
+

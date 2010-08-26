@@ -1,17 +1,6 @@
-#mainNav li
-{
-    width: 15em;
-}
-
-#mainNav li a
-{
-    color: #000066;
-}
-
 body
 {
-    background: none;
-    background-color: #000066;
+        background: #006;
 }
 
 .bodyInterior
@@ -21,45 +10,91 @@ body
 
 #header
 {
-    background: none;
-    padding-bottom: 1em;
+	background: none;
+	display: block;
+	height: 80px;	
 }
-
-#header .userNav a
+#header .appLogo
 {
-    color: #ffffff;
+        padding: 0;
+        margin: -2px 0 0 -5px;
 }
-
+#header .siteTitle
+{
+        color: #FFF;
+        font: bold 2.4em "Verdana",arial,sans-serif;        
+        position: absolute;
+        top: 35px;
+        left: 185px;
+}
+#header .userNav
+{
+        float: left;
+        margin: 6px auto 0.5em 170px;
+        padding: 0.7em 0.5em 0.5em;
+		position: static;
+}
 #header .userNav li
 {
-    border-right-color: #ffffff;
+        border-right:1px solid #FFF;
+        margin:0;
+		padding-right: 0em;
 }
-
-form.search.large .clearBox
+#header .userNav li a
 {
-    background-color: #ffffff;
+        color: #FFF;
+        font-size:1.2em;        
+        padding:0 10px;   
+        text-transform:uppercase;             
 }
-
-.footerContainer
+#header form.search
 {
-    background: none;
+        float: left;
+        margin: 5px;
+		position: static;
+		width: auto;
 }
-
-#footer
+#header form.search .searchField
 {
-    color: #ffffff;
+        background-position: 8px 3px;
+        color: #777;
+		background:url("/stylesheets/images/icons/search_large.png") no-repeat scroll 8px 3px white;
+		margin:0 0.2em 0 0;
+		padding:0.2em 0.2em 0.2em 2em;
+		width: 15em;
 }
-
-#footer a
+#header form.search .submit 
 {
-    color: #ffffff;
+		background: #FEFEFE;
+		background-image: none;
+		border:1px solid #999999;
+		color:#444444;
+		font-size:1.3em;
+		height:auto;
+		line-height: 13px;
+		margin:0;
+		padding:0.2em;
+		text-transform:uppercase;
+		text-indent:0px;
 }
-
 #discover .kingCountyWelcomeHeader
 {
     background: url("http://www.kingcounty.gov/~/media/global/homepage/kcBackgrounds/HomePageBg.ashx") repeat-x scroll left top #ffffff;
+	border-top-right-radius: 1em;
+	-moz-border-radius-topright: 1em;
+	webkit-border-top-right-radius: 1em;
+	border-top-left-radius: 1em;
+	-moz-border-radius-topleft: 1em;
+	webkit-border-top-left-radius: 1em;
+	border-bottom-left-radius: 1em;
+	-moz-border-radius-bottomleft: 1em;
+	webkit-border-bottom-left-radius: 1em;
+	border-bottom-right-radius: 1em;
+	-moz-border-radius-bottomright: 1em;
+	webkit-border-bottom-right-radius: 1em;
     min-height: 17em;
     padding: 2em;
+	margin: 1em 0em 2em;
 }
 
 #discover .kingCountyWelcomeHeader .pageBlockSearch
@@ -72,9 +107,15 @@ form.search.large .clearBox
     color: #000000;
     font-size: 1.4em;
     font-weight: bold;
-    margin: 1em 1.5em 0.5em;
-    max-width: 50em;
+    margin: 1em 1em 0.5em;
+    max-width: 48em;
 }
+
+form.search.large .clearBox
+{
+    background-color: #ffffff;
+}
+
 
 .pageBlockHeaderContainer
 {
@@ -82,3 +123,15 @@ form.search.large .clearBox
     padding: 0px;
 }
 
+.footerContainer
+{
+    background: none;
+}
+#footer, #footer a
+{
+    color: #ffffff;
+}
+#footer .copyright, #footer ul
+{
+	padding: 1em 1em 0 1.5em;
+}

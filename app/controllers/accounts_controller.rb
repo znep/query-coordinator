@@ -80,6 +80,7 @@ class AccountsController < ApplicationController
         format.json { render :json => {:user_id => current_user.id}, :callback => params[:callback]}
       else
         flash.now[:error] = @signup.errors.join(", ")
+        @user_session = UserSession.new
         # TODO: Deprecated: just action => :new when we deprecate v3
         layout_string, action = (CurrentDomain.module_available?(:new_datasets_page)) ?
           ['dataset_v2', :v4_new] : ['main', :new]

@@ -277,10 +277,6 @@
                         $formElem.find('.datasetTypeName').text(displayName);
                         $formElem.find('.datasetTypeNameUpcase').text(displayName.capitalize());
 
-                        // Clear out the message area
-                        $('#gridSidebar_shareDataset .sharingFlash').text('')
-                            .removeClass('error').removeClass('notice');
-
                         // When this pane gets refreshed, update to reflect who it's shared with
                         updateShareText($formElem);
 
@@ -306,6 +302,13 @@
                 }
             }
         ],
+        showCallback: function(sidebarObj, $currentPane)
+        {
+            $currentPane
+                .find('.flash')
+                .text('')
+                .removeClass('error notice');
+        },
         finishBlock: {
             buttons: [$.gridSidebar.buttons.done]
         }

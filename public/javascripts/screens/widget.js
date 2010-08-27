@@ -180,6 +180,7 @@ $(function()
     widgetNS.isNonTabular = (widgetNS.view.viewType !== 'tabular');
     widgetNS.isAltView = !_.include(['Blist', 'Filter', 'Grouped'],
         blist.dataset.getDisplayType(widgetNS.view));
+    widgetNS.isBlobby = (blist.dataset.getDisplayType(widgetNS.view) == 'Blob');
     widgetNS.interstitial = widgetNS.theme['behavior']['interstitial'];
 
     // sizing
@@ -200,7 +201,7 @@ $(function()
             contents: [
                 { text: 'More Views', className: 'views', targetPane: 'views',
                     subtext: 'Filters, Charts, and Maps', href: '#views',
-                    iconColor: '#57b6dd', onlyIf: menuOptions['more_views'] },
+                    iconColor: '#57b6dd', onlyIf: !widgetNS.isBlobby && menuOptions['more_views'] },
                 { text: 'Download', className: 'downloads', targetPane: 'downloads',
                     subtext: 'Download in various formats', href: '#downloads',
                     iconColor: '#959595', onlyIf: !widgetNS.isNonTabular && menuOptions['downloads'] },
@@ -212,7 +213,7 @@ $(function()
                     iconColor: '#e44044', onlyIf: menuOptions['embed'] },
                 { text: 'API', className: 'api', targetPane: 'api',
                     subtext: 'Access this Dataset via SODA', href: '#api',
-                    iconColor: '#f93f06', onlyIf: menuOptions['api'] },
+                    iconColor: '#f93f06', onlyIf: !widgetNS.isBlobby && menuOptions['api'] },
                 { text: 'Print', className: 'print', targetPane: 'print',
                     subtext: 'Print this dataset', href: '#print',
                     iconColor: '#a460c4', onlyIf: !widgetNS.isAltView && menuOptions['print'] },
@@ -464,7 +465,8 @@ $(function()
         dataType: 'json',
         success: function (responseData)
         {
-            moreViews = _.reject(responseData || [], function(view)
+            if (!_.isArray(responseData)) { responseData = []; }
+            moreViews = _.reject(responseData, function(view)
             {
                 return (_.include(view.flags, 'default') && (view.viewType == 'tabular')) ||
                        (view.viewType == 'blobby') || (view.viewType == 'href');

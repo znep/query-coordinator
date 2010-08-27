@@ -1,0 +1,66 @@
+<div class="signupForm">
+  <div class="authProvider socrata">
+    <span class="iconContainer"> <span class="icon"></span> </span>
+    <span class="description">
+      Create a new <strong><%= MASTER_DOMAIN_PREFS['strings.company'] %> ID</strong>
+    </span>
+    <p class="loginTips">
+      <%= raw MASTER_DOMAIN_PREFS['strings.login_tips'] %>
+    </p>
+  </div>
+
+  <%- if !CurrentDomain.strings.disclaimer.nil? -%>
+    <p class="signupDisclaimer"><%= raw CurrentDomain.strings.disclaimer %></p>
+  <%- end -%>
+
+  <% form_for :signup, @signup, :url => account_path,
+    :html => {:id => 'signupForm', :multipart => true} do |f| %>
+    <%= display_standard_flashes %>
+    <%= f.hidden_field :inviteToken %>
+    <%= f.hidden_field :openIdIdentifierId %>
+    <%= f.hidden_field :firstName %>
+    <%= f.hidden_field :lastName %>
+    <%# TODO: Remove me when v3 is deprecated %>
+    <%= hidden_field_tag 'signup[accept_terms]', 'true' %>
+
+    <div class="line">
+      <div class="labelLine">
+        <%= f.label :email, 'Email Address', :class => 'main' %>
+      </div>
+      <%= f.text_field :email %>
+    </div>
+
+    <div class="line">
+      <div class="labelLine">
+        <%= f.label :screenName, 'Display Name', :class => 'main' %>
+      </div>
+      <%= f.text_field :screenName, :maxlength => 40 %>
+    </div>
+
+    <div class="line">
+      <div class="labelLine">
+        <%= f.label :password, 'Password', :class => 'passwordLabel main' %>
+        <span class="passwordHint">(6 characters or more)</span>
+      </div>
+      <%= f.password_field :password %>
+    </div>
+
+    <div class="line">
+      <div class="labelLine">
+        <%= label_tag :passwordConfirm, 'Confirm Password', :class => 'main' %>
+      </div>
+      <%= f.password_field :passwordConfirm %>
+    </div>
+
+    <p class="signUpHint">
+      <%= raw MASTER_DOMAIN_PREFS['strings.signup_terms'] %>
+    </p>
+
+    <div class="formActionButtons">
+      <input type="submit" class="button default" value="Create My Account" />
+      <span class="accountSignupHint">
+        <%= link_to 'I already have an account', login_path, :class => 'logInLink' %>.
+      </span>
+    </div>
+  <% end %>
+</div>

@@ -366,7 +366,7 @@
             $.extend(chartConfig, { tooltip: { formatter: function()
             {
                 return '<b>'+ this.series.name +'</b><br/>'+
-                    this.point.name +': '+ this.y +' %';
+                    this.point.name +': '+ this.y;
             } }});
         }
 

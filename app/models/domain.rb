@@ -66,26 +66,6 @@ class Domain < Model
     end
   end
 
-  def flag_out_of_date!
-    # By writing the time to this key, we're notifying all
-    # frontend servers to reload this domain as soon as they notice
-    Rails.cache.write(generate_cache_key, Time.now)
-  end
-
-  def last_refresh
-    Rails.cache.read(generate_cache_key)
-  end
-
-  def flush_configurations
-    @default_configs = Hash.new
-    @configs = Hash.new
-  end
-
-  private
-  def generate_cache_key
-    "domains.#{self.id}.updated_at"
-  end
-
   # Customer-available per-domain configuration options
   @@themeable_items =
     ['urls.footer', 'urls.header']

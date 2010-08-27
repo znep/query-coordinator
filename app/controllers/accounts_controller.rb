@@ -1,9 +1,13 @@
 class AccountsController < ApplicationController
-  ssl_required :new, :update, :create, :add_rpx_token
+  ssl_required :new, :update, :create, :add_rpx_token, :v4_new
   ssl_allowed :show
-  skip_before_filter :require_user, :only => [:new, :create, :forgot_password, :reset_password]
+  skip_before_filter :require_user, :only => [:new, :create, :forgot_password, :reset_password,
+    :v4_new, :v4_forgot_password, :v4_reset_password]
   skip_before_filter :adjust_format, :only => [:update]
   protect_from_forgery :except => [:add_rpx_token]
+
+# TODO: Remove me in v3 deprecation pass
+  layout :choose_v4_layout
 
   def show
     @openid_identifiers = current_user.openid_identifiers
@@ -57,6 +61,12 @@ class AccountsController < ApplicationController
   def new
     @signup = SignupPresenter.new({}, params[:token])
     @body_class = 'signup'
+    # This is so we can display the login screen dynamically
+    @user_session = UserSession.new unless params[:no_js].present?
+  end
+
+  def v4_new
+    new()
   end
 
   def create
@@ -70,7 +80,10 @@ class AccountsController < ApplicationController
         format.json { render :json => {:user_id => current_user.id}, :callback => params[:callback]}
       else
         flash.now[:error] = @signup.errors.join(", ")
-        format.html { render :action => :new }
+        # TODO: Deprecated: just action => :new when we deprecate v3
+        layout_string, action = (CurrentDomain.module_available?(:new_datasets_page)) ?
+          ['dataset_v2', :v4_new] : ['main', :new]
+        format.html { render :action => action, :layout => layout_string }
         format.json { render :json => {:error => flash[:error], :promptLogin => false}, :callback => params[:callback] }
       end
     end
@@ -91,11 +104,15 @@ class AccountsController < ApplicationController
 
       if result.is_a? Net::HTTPSuccess
         flash[:notice] = "Thank you. An email has been sent to the account on file with further information."
-        redirect_to login_path
+        return redirect_to login_path
       else
         flash.now[:warning] = "There was a problem submitting your password reset request. Please try again."
       end
     end
+  end
+
+  def v4_forgot_password
+    forgot_password()
   end
 
   def reset_password
@@ -126,18 +143,22 @@ class AccountsController < ApplicationController
         user = User.parse(result.body)
         @user_session = UserSession.new('login' => user.login, 'password' => params[:password])
         if @user_session.save
-          redirect_to root_path
+          return redirect_to root_path
         else
           # Hmmm. They successfully reset their password, but we couldn't log them in?
           # Something's very wrong. Let's just put them at the login page and have them
           # try again. :-(
-          redirect_to login_path
+          return redirect_to login_path
         end
       else
         flash[:warning] = 'There was a problem resetting your password. Please try again.'
-        redirect_to forgot_password_path
+        return redirect_to forgot_password_path
       end
     end
+  end
+
+  def v4_reset_password
+    reset_password()
   end
 
   def add_rpx_token

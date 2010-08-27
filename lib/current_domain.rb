@@ -30,9 +30,9 @@ class CurrentDomain
   def self.reload
     # Blow away the cached version of the domain,
     # forcing a refresh from the Core Server on configs and properties
-    @@current_domain[:data].flush_configurations
-    @@current_domain[:site_properties] = nil
-    @@current_domain[:site_properties_raw] = nil
+    cname = @@current_domain[:data].cname
+    @@property_store.delete(cname)
+    self.set(cname)
   end
 
   # Main properties
@@ -50,6 +50,10 @@ class CurrentDomain
     end
   end
 
+  def self.short_name
+    @@current_domain[:data].shortName
+  end
+
   def self.accountTier
     @@current_domain[:data].accountTier
   end
@@ -57,40 +61,48 @@ class CurrentDomain
   def self.organizationId
     @@current_domain[:data].organizationId
   end
-  
+
   def self.preferences_out_of_date?
     # TODO: Deprecated
     false
   end
 
-  def self.flag_domain_id_out_of_date!(domain_id)
-    domain = @@property_store[domain_id]
-    unless domain.nil?
-      domain[:data].flag_out_of_date!
+  def self.flag_out_of_date!(domain_id)
+    # By writing the time to this key, we're notifying all
+    # frontend servers to reload this domain as soon as they notice
+    Rails.cache.write(generate_cache_key(domain_id), Time.now)
+  end
+
+  def self.needs_refresh_check?(cname)
+    @@refresh_times = {} unless defined? @@refresh_times
+
+    @@refresh_times[cname].nil? || \
+      ((Time.now - @@refresh_times[cname]) > REFRESH_CHECK_TIME)
+  end
+
+  def self.flag_refresh_checked!(cname)
+    @@refresh_times[cname] = Time.now
+  end
+
+  def self.last_refresh(cname)
+    Rails.cache.read(generate_cache_key(cname))
+  end
+
+  def self.check_for_theme_update(cname)
+    @@update_times = {} unless defined? @@update_times
+
+    # Check memcache to see if we need to fetch a new theme.
+    refresh_mtime = self.last_refresh(cname)
+
+    if refresh_mtime.nil?
+      refresh_time = Time.now
+      self.flag_out_of_date!(cname)
     end
-  end
 
-  def self.flag_out_of_date!
-    @@current_domain[:data].flag_out_of_date!
-  end
-
-  def self.needs_refresh_check?
-    @@current_domain[:last_refresh_check].nil? || \
-      (Time.now - @@current_domain[:last_refresh_check] > REFRESH_CHECK_TIME)
-  end
-
-  def self.flag_refresh_checked!
-    @@current_domain[:last_refresh_check] = Time.now
-  end
-
-  def self.check_for_theme_update
-    # Check memcache to see if we need to fetch a new theme. 
-    refresh_mtime = @@current_domain[:data].last_refresh
     # If the key is present, and the value is larger (newer)
     # than our local copy, time to update
-    if !refresh_mtime.nil? && (@@current_domain[:updated_at].nil? || \
-        (refresh_mtime > @@current_domain[:updated_at]))
-      @@current_domain[:updated_at] = refresh_mtime
+    if @@update_times[cname].nil? || (refresh_mtime > @@update_times[cname])
+      @@update_times[cname] = refresh_mtime
       self.reload
     end
   end
@@ -248,5 +260,9 @@ private
     @@current_domain[:site_config_id].nil? ?
       default_config :
       Configuration.find(@@current_domain[:site_config_id].to_s)
+  end
+
+  def self.generate_cache_key(key)
+    "domains.#{key.to_s}.updated_at"
   end
 end

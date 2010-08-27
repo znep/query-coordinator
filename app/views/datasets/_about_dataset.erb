@@ -1,7 +1,9 @@
 <div class="aboutDataset">
   <div class="aboutHeader clearfix">
-    <img class="aboutAuthorImage" alt="<%= @view.owner.displayName %>"
-      src="<%= @view.owner.profile_image_path("medium") %>"/>
+    <a class="aboutAuthorImageLink" href="<%= @view.owner.href %>">
+      <img class="aboutAuthorImage" alt="<%= @view.owner.displayName %>"
+        src="<%= @view.owner.profile_image_path("medium") %>"/>
+    </a>
     <a class="aboutAuthorName" href="<%= @view.owner.href %>"><%= @view.owner.displayName %></a>
     <p><em>created</em> <span class="aboutCreateDate"><%= blist_date(@view.createdAt) %></span></p>
     <p><em>updated</em> <span class="aboutUpdateDate"><%= blist_date(@view.last_activity) %></span></p>
@@ -43,7 +45,7 @@
       <dd class="numberOfComments"><%= @view.numberOfComments %></dd>
       <dt>Contributors</dt>
       <dd><%= @view.contributor_users.length %></dd>
-      <%- if @view.owned_by?(current_user) || CurrentDomain.user_can?(current_user, :edit_others_datasets) -%>
+      <%- if @view.user_granted?(current_user) || CurrentDomain.user_can?(current_user, :edit_others_datasets) -%>
         <dt class='widenedItem'>
           <%= link_to 'View Statistics', "#{@view.href}/stats" %>
         </dt>

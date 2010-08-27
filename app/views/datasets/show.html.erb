@@ -51,13 +51,11 @@
     <ul id="toolbarOptions">
       <%- unless @view.is_alt_view? -%>
       <li>
-        <div id='searchButton'>
-          <span class='searchIcon'></span>
-          <form class="searchForm" action="#">
-            <input type="text" class="searchField textPrompt" title="Find in this Dataset" />
-            <a href="#clear" class="clearSearch close"><span class="icon"></span></a>
-          </form>
-        </div>
+        <form id="searchForm" action="#">
+          <span class="icon"></span>
+          <input type="text" class="searchField textPrompt" title="Find in this Dataset" />
+          <a href="#clear" class="clearSearch close"><span class="icon"></span></a>
+        </form>
       </li>
       <%- end -%>
       <li>
@@ -82,7 +80,9 @@
     </ul>
   </div>
 
-  <a href="#toggleFullScreen" class="fullscreenButton maximize"><span class="icon">Toggle full screen</span></a>
+  <a href="#toggleFullScreen" class="fullscreenButton maximize" title="Toggle full screen">
+    <span class="icon">Toggle full screen</span>
+  </a>
 </div>
 
 <div class='outerContainer'>
@@ -376,6 +376,8 @@
     blist.sidebarHidden.exportSection.signedDataset = <%= !(@view.owned_by?(current_user) &&
       module_enabled?(:digital_signatures)) %>;
     blist.sidebarHidden.exportSection.print = <%= @view.is_alt_view? %>;
+    blist.sidebarHidden.exportSection.download = <%= !@view.is_tabular? %>;
+    blist.sidebarHidden.exportSection.api = <%= !@view.is_tabular? %>;
 
     <%# Sharing pane %>
     blist.sidebarHidden.sharing = <%= !@view.has_rights?('grant') %>;

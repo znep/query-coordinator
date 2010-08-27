@@ -1,8 +1,11 @@
 class UserSessionsController < ApplicationController
-  ssl_required :new, :create, :rpx
+  ssl_required :new, :create, :rpx, :v4_new
   ssl_allowed :destroy
   skip_before_filter :require_user
   protect_from_forgery :except => [:rpx]
+
+#TODO: Remove me in v3 deprecation pass
+  layout :choose_v4_layout
 
   def index
     HoptoadNotifier.notify(
@@ -21,6 +24,11 @@ class UserSessionsController < ApplicationController
     if params[:referer_redirect]
       session[:return_to] = request.referer
     end
+  end
+
+#TODO: Remove me in v3 deprecation pass
+  def v4_new
+    new() 
   end
 
   def create

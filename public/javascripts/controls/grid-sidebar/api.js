@@ -1,5 +1,8 @@
 (function($)
 {
+    if (blist.sidebarHidden.exportSection &&
+        blist.sidebarHidden.exportSection.api) { return; }
+
     var config = {
         name: 'export.api',
         priority: 10,

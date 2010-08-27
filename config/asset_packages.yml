@@ -312,6 +312,10 @@ javascripts:
   - controls/menu
   - controls/metrics-shared
   - controls/metrics
+- screen-login-signup:
+  - plugins/jquery.uniform
+  - screens/login-shared
+  - screens/signup-screen
 
 
 

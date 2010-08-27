@@ -1,0 +1,47 @@
+<% auth_action ||= "sign in" %>
+<% return_url ||= rpx_return_login_url %>
+
+<p>
+  <strong>
+    Or... Use one of these accounts to <span class="authAction"><%= auth_action %></span>.
+  </strong>
+</p>
+<p>
+  Take advantage of additional features these accounts provide and sign in with one click.
+</p>
+
+<div class="thirdPartyLinks">
+  <%- RpxController.auth_providers.each do |provider| -%>
+    <%- action_url = "#{provider[:rpx_url]}?token_url=#{return_url}" -%>
+    <% form_tag action_url, :method => 'post' do %>
+      <%- if provider[:openid_identifier] -%>
+        <%= hidden_field_tag :openid_identifier, provider[:openid_identifier] %>
+      <%- end -%>
+      <%- if params[:no_js].present? -%>
+        <%= submit_tag "Connect with " + provider[:name], :class => 'button simpleLoginButton' %>
+      <%- else -%>
+        <a class="authProvider tall button <%= provider[:name].downcase +
+          (provider[:class].present? ? " #{provider[:class]}" : '') %>"
+          href="<%= provider[:href].present? ? action_url : '#Login' %>">
+          <span class="iconContainer">
+            <span class="icon"></span>
+          </span>
+          <span class="description"><%= provider[:hint] %> <span class="emphasis">
+              <%= provider[:name] %></span>
+          </span>
+        </a>
+      <%- end -%>
+    <% end -%>
+  <%- end -%>
+</div>
+
+<script type="text/javascript">
+  $(function()
+  {
+      $('.thirdPartyLinks .authProvider:not(.openid)').click(function(event)
+      {
+          event.preventDefault();
+          $(this).closest('form').submit();
+      });
+  });
+</script>

@@ -25,7 +25,7 @@ $(function ()
     });
 
     // Signup form validation.
-    var $validator = $("#signup #signupForm").validate({
+    var $validator = $("#signup #signupForm, .loginScreen #signupForm").validate({
         rules: {
             "signup[screenName]": {
                 required: true
@@ -40,7 +40,7 @@ $(function ()
             },
             "signup[password]": {
                 required: true,
-                minlength: 4
+                minlength: 6
             },
             "signup[passwordConfirm]": {
                 required: true,

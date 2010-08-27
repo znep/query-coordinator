@@ -128,7 +128,7 @@ class InternalController < ApplicationController
     Configuration.update_attributes!(params['default-site-config'],
                                      {'default' => true})
 
-    CurrentDomain.flag_domain_id_out_of_date!(params[:domain_id])
+    CurrentDomain.flag_out_of_date!(params[:domain_id])
 
     redirect_to '/internal/orgs/' + params[:org_id] + '/domains/' +
       params[:domain_id]
@@ -148,7 +148,7 @@ class InternalController < ApplicationController
       end
     end
 
-    CurrentDomain.flag_domain_id_out_of_date!(params[:domain_id])
+    CurrentDomain.flag_out_of_date!(params[:domain_id])
 
     redirect_to '/internal/orgs/' + params[:org_id] + '/domains/' +
       params[:domain_id]
@@ -156,6 +156,9 @@ class InternalController < ApplicationController
 
   def add_module_to_domain
     Domain.add_account_module(params[:domain_id], params[:module][:name])
+
+    CurrentDomain.flag_out_of_date!(params[:domain_id])
+
     redirect_to '/internal/orgs/' + params[:org_id] + '/domains/' +
       params[:domain_id]
   end
@@ -168,7 +171,7 @@ class InternalController < ApplicationController
         # Wrap incoming value in [] to get around the fact the JSON parser
         # doesn't handle plain string tokens
         config.create_property(params['new-property_name'],
-                             JSON.parse("[" + params['new-property_value'] + "]")[0])
+                             get_json_or_string(params['new-property_value']))
 
       else
         if !params[:delete_properties].nil?
@@ -181,19 +184,12 @@ class InternalController < ApplicationController
         end
 
         params[:properties].each do |name, value|
-          # well, if it doesn't parse it must be a string, right?
-          # </famous-last-words>
-          begin
-            new_value = JSON.parse(value)
-          rescue JSON::ParserError
-            new_value = value.gsub(/(\\u000a)|(\\+n)/, "\n") # avoid double-escaping
-          end
-          config.update_property(name, new_value)
+          config.update_property(name, get_json_or_string(value))
         end
       end
     end
 
-    CurrentDomain.flag_domain_id_out_of_date!(params[:domain_id])
+    CurrentDomain.flag_out_of_date!(params[:domain_id])
     redirect_to '/internal/orgs/' + params[:org_id] + '/domains/' +
       params[:domain_id] + '/site_config/' + params[:id]
   end
@@ -208,4 +204,14 @@ private
     end
   end
 
+  def get_json_or_string(value)
+    # well, if it doesn't parse it must be a string, right?
+    # </famous-last-words>
+    begin
+      new_value = JSON.parse(value)
+    rescue JSON::ParserError
+      new_value = value.gsub(/(\\u000a)|(\\+n)/, "\n") # avoid double-escaping
+    end
+    return new_value
+  end
 end

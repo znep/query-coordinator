@@ -219,12 +219,7 @@
                         $formElem.find('.datasetTypeNameUpcase')
                             .text(displayName.capitalize());
 
-                        // Clear out the message area
-                        $('#gridSidebar_shareDataset .sharingFlash').text('')
-                            .removeClass('error').removeClass('notice');
-
-                        // When this pane gets refreshed, update to reflect who
-                        // it's shared with
+                        // When this pane gets refreshed, update to reflect who it's shared with
                         updateShareText($formElem);
 
                         var grants = blist.dataset.userGrants();
@@ -249,6 +244,13 @@
                 }
             }
         ],
+        showCallback: function(sidebarObj, $currentPane)
+        {
+            $currentPane
+                .find('.flash')
+                .text('')
+                .removeClass('error notice');
+        },
         finishBlock: {
             buttons: [$.gridSidebar.buttons.done]
         }

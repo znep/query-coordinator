@@ -133,10 +133,24 @@ $sidebar_about_tab_color_top: #a03341
     @include box-gradient-buttons-active-background(3, 21, $box_gradient_alias_fix)
     &:hover
       border-color: $color_buttons_active_border - #222
+  .noLinearGradient &.tall
+    @include box-gradient-buttons-active-background(3, 46, $box_gradient_alias_fix)
   &.active
     @include gradient-buttons-active-background_reverse
     border-color: $color_buttons_active_border - #444
     @include box-shadow(0, 0, 0.1em, $color_buttons_active_shadow)
+  &.default
+    @include gradient-buttons-emphasized-background
+    border-color: $color_buttons_emphasized_border
+    color: $color_buttons_emphasized_text
+    cursor: pointer
+    text-shadow: none
+    .noLinearGradient.noBorderRadius &
+      @include box-gradient-buttons-emphasized-background(3, 30, $box_gradient_alias_fix)
+    .ie7.noLinearGradient.noBorderRadius &
+      @include box-gradient-buttons-emphasized-background(3, 42, $box_gradient_alias_fix)
+    .noLinearGradient &, .ie7.noLinearGradint.noBorderRadius & 
+      @include box-gradient-buttons-emphasized-background(3, 35, $box_gradient_alias_fix)
 
 // mix this into a commonForm to give it the appropriate width styling
 @mixin common-form($labelWidth, $controlWidth: true)

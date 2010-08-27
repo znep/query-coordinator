@@ -2,16 +2,14 @@ var datasetPageNS = blist.namespace.fetch('blist.datasetPage');
 
 blist.datasetPage.expandSearch = function()
 {
-    $('#searchButton .searchField:not(.expanded)')
-        .animate({ width: '12em', paddingLeft: '0.3em', paddingRight: '1.6em' })
-        .css('background-color', '#fff')
+    $('#searchForm .searchField:not(.expanded)')
+        .animate({ width: '11em' })
         .addClass('expanded');
 };
 blist.datasetPage.collapseSearch = function()
 {
-    $('#searchButton .searchField')
-        .animate({ width: '2em', paddingLeft: '1px', paddingRight: '1px' })
-        .css('background-color', '')
+    $('#searchForm .searchField')
+        .animate({ width: '2em' })
         .removeClass('expanded');
 };
 blist.datasetPage.adjustSize = function()
@@ -77,8 +75,8 @@ $(function()
                     accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
                     clearTempViewCallback: datasetPageNS.clearTempView,
                     setTempViewCallback: datasetPageNS.setTempView,
-                    filterForm: '#searchButton .searchForm',
-                    clearFilterItem: '#searchButton .clearSearch',
+                    filterForm: '#searchForm',
+                    clearFilterItem: '#searchForm .clearSearch',
                     isInvalid: !blist.dataset.valid,
                     validViewCallback: datasetPageNS.updateValidView,
                     addColumnCallback: function(parId)
@@ -160,9 +158,13 @@ $(function()
               onlyIf: !_.include(['blist', 'blob'], blist.dataset.type) },
             { divider: true },
             { text: 'Saved Filters', className: 'typeFilter', href: '#savedFilters',
-              targetPane: 'filter.savedFilters' },
+              targetPane: 'filter.savedFilters',
+              onlyIf: !_.include(['Href', 'Blob'],
+                blist.dataset.getDisplayType(blist.display.view)) },
             { text: 'Saved Visualizations', className: 'typeVisualization',
-              href: '#savedVisualizations', targetPane: 'visualize.savedVisualizations' },
+              href: '#savedVisualizations', targetPane: 'visualize.savedVisualizations',
+              onlyIf: !_.include(['Href', 'Blob'],
+                blist.dataset.getDisplayType(blist.display.view)) },
             { divider: true },
             { text: 'About This Dataset', className: 'about', href: '#about',
               targetPane: 'about' }
@@ -195,11 +197,11 @@ $(function()
         clearTimeout(hideTimeout);
         _.defer(function()
         {
-            if ($('#searchButton .searchField').hasClass('prompt'))
+            if ($('#searchForm .searchField').hasClass('prompt'))
             { hideTimeout = setTimeout(datasetPageNS.collapseSearch, 1500); }
         });
     };
-    $('#searchButton')
+    $('#searchForm')
         .hover(function()
         {
             clearTimeout(hideTimeout);
@@ -362,7 +364,11 @@ $(function()
             {
                 $('#viewsMenu .typeBlist a').attr('href', parDS.url);
             }
-        });
+            else
+            {
+                $('#viewsMenu .typeBlist').hide().next().removeClass('divider');
+            }
+        }});
 
         // report to events analytics for easier aggregation
         $.analytics.trackEvent('dataset page (v4-chrome)',

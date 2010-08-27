@@ -61,6 +61,8 @@ class AccountsController < ApplicationController
   def new
     @signup = SignupPresenter.new({}, params[:token])
     @body_class = 'signup'
+    # This is so we can display the login screen dynamically
+    @user_session = UserSession.new unless params[:no_js].present?
   end
 
   def v4_new

@@ -1,6 +1,13 @@
 .modalContentBox.socrataLoginOnly
   max-width: 36em
 
+.signupModal
+  .loginHeader, .loginForm
+    display: none
+.loginModal
+  .signupHeader, .signupForm
+    display: none
+
 .contentBoxInner
   font-size: 1.2em
   padding: 2em
@@ -31,6 +38,7 @@
       label
         width: 6em
 
+
   .loginSignupForm
     float: left
 
@@ -39,9 +47,8 @@
 
     .noAccountYet
       color: #666
-      padding-left: 1em
 
-    .signUpText
+    .signUpLink, .logInLink
       font-weight: bold
 
     .line
@@ -62,8 +69,11 @@
     .passwordHint
       font-style: italic
 
-    .accountSignupHint
+    .loginSignupHint
       font-size: 1.1em
+
+    .accountSignupHint
+      padding-left: 1em
       .ie7 &
         font-size: 1em
         position: relative

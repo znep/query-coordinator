@@ -116,6 +116,10 @@ class AccountsController < ApplicationController
   end
 
   def reset_password
+    if !current_user.nil?
+      flash[:error] = "Cannot reset your password; you are already logged in"
+      return redirect_to forgot_password_path
+    end
     @body_id = 'resetPassword'
     if request.post?
       if params[:confirm_password] != params[:password]

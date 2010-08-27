@@ -368,7 +368,7 @@ $(function()
             {
                 $('#viewsMenu .typeBlist').hide().next().removeClass('divider');
             }
-        }});
+        });
 
         // report to events analytics for easier aggregation
         $.analytics.trackEvent('dataset page (v4-chrome)',

@@ -12,37 +12,6 @@
     </p>
   </div>
   <%- form_for @user_session do |f| -%>
-    <%= display_standard_flashes %>
-    <%= f.error_messages %>
-    <div class="line">
-      <div class="labelLine">
-        <%= f.label :login, 'Email', :class => 'main' %>
-      </div>
-      <%= f.text_field :login, :tabindex => '1' %>
-    </div>
-
-    <div class="line">
-      <div class="labelLine">
-        <%= f.label :password, 'Password', :class => 'passwordLabel main' %>
-        <%= link_to 'Forgot?', forgot_password_path, :tabindex => '6' %>
-      </div>
-      <%= f.password_field :password, :tabindex => '2' %>
-    </div>
-
-    <%- if feature? :remember_me -%>
-      <div class="line">
-        <%= f.check_box :remember_me, :tabindex => '3' %>
-        <%= f.label :remember_me, 'Remember me', :class => 'pushUp' %>
-      </div>
-    <%- end -%>
-
-    <div class="formActionButtons">
-      <%= submit_tag 'Sign In', :class => 'button default', :tabindex => '4' %>
-      <span class="accountSignupHint loginSignupHint">
-        <span class="noAccountYet">Don't have an account?</span>
-        <%= link_to 'Sign up now', signup_path, :class => 'signUpLink', :tabindex => '5' %>.
-      </span>
-    </div>
+    <%= render :partial => 'user_sessions/v4_login_form_data.html.erb', :locals => {:f => f} %>
   <%- end -%>
 </div>
-

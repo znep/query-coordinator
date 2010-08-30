@@ -84,8 +84,10 @@
     };
     updateColumns();
 
+    var isLoading = false;
     blist.dataset.bind('columns_changed', function()
     {
+        if (isLoading) { return; }
         updateColumns();
         $('#gridSidebar').gridSidebar().refresh(configName);
     });
@@ -101,7 +103,7 @@
 
         var cols = [];
         var children = {};
-        $pane.find('.columnItem :input:checked').each(function()
+        $pane.find('.columnItem :input:checked:visible').each(function()
         {
             var $t = $(this);
             var $colItem = $t.closest('li.columnItem');
@@ -123,10 +125,12 @@
             blist.dataset.columnForID(id).setVisibleChildColumns(cols, null, true);
         });
 
+        isLoading = true;
         blist.dataset.setVisibleColumns(cols, function()
         {
             sidebarObj.finishProcessing();
             sidebarObj.hide();
+            isLoading = false;
         });
     };
 

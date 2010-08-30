@@ -262,8 +262,9 @@ this.Column = Model.extend({
     cleanCopy: function()
     {
         var col = this._super();
-        // Support for picklists
-        if (col.dataTypeName == 'picklist') { delete col.dropDownList; }
+        // Support for picklists, linked columns
+        if (_.include(['dataset_link', 'picklist'], col.dataTypeName))
+        { delete col.dropDownList; }
         return col;
     },
 

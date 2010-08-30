@@ -1187,15 +1187,20 @@ this.Dataset = Model.extend({
                 {
                     if (k.startsWith('_'))
                     {
+                        var adjName = k.slice(1);
                         var c = !$.isBlank(req.parentColumn) ?
-                            req.parentColumn.childColumnForID(k.slice(1)) :
-                            ds.columnForID(k.slice(1));
+                            req.parentColumn.childColumnForID(adjName) :
+                            ds.columnForID(adjName);
                         if (!$.isBlank(c)) { req.row[c.lookup] = v; }
+                        else { req.row[adjName] = v; }
                     }
                 });
 
-            ds._rowIDLookup[req.row.id] = req.row;
-            delete ds._rowIDLookup[oldID];
+            if ($.isBlank(req.parentRow))
+            {
+                ds._rowIDLookup[req.row.id] = req.row;
+                delete ds._rowIDLookup[oldID];
+            }
 
             var oldKey = oldID;
             var newKey = req.row.id;

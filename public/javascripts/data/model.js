@@ -188,7 +188,10 @@ blist.namespace.fetch('blist.data');
                 if (_.isFunction(callback)) { callback(modelRows); }
             };
 
-            this.view.getRows(adjStart, adjStop - adjStart, gotRows);
+            if (adjStop == adjStart)
+            { gotRows([]); }
+            else
+            { this.view.getRows(adjStart, adjStop - adjStart, gotRows); }
 
             return true;
         };
@@ -659,7 +662,8 @@ blist.namespace.fetch('blist.data');
          */
         this.dataLength = function()
         {
-            return (this.view || {}).totalRows || -1;
+            return $.isBlank((this.view || {}).totalRows) ? -1 :
+                this.view.totalRows;
         };
 
         /**

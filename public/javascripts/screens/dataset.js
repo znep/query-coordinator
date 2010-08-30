@@ -205,7 +205,12 @@ $(function()
             clearTimeout(hideTimeout);
             datasetPageNS.expandSearch();
         }, hideCheck)
-        .find('.searchField').blur(hideCheck);
+        .find('.searchField').blur(hideCheck).end()
+        .find('.icon').click(function()
+        {
+            $(this).closest('form').submit();
+        });
+
 
     blist.datasetControls.hookUpShareMenu(blist.dataset,
         $('#shareMenu'),

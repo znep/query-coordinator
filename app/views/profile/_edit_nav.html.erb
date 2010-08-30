@@ -1,0 +1,19 @@
+<div class="leftNavBox editProfileNav">
+  <ul class="navigationList">
+    <li class="basicInfo">
+      <%= link_to \
+        raw('<span class="icon"></span>Basic Info'),
+          "#{current_user.href}/edit" %>
+    </li>
+    <li class="profileImage">
+      <%= link_to \
+        raw('<span class="icon"></span>Profile Image'),
+        {:action => 'edit_image'} %>
+    </li>
+    <li class="accountSettings">
+      <%= link_to \
+        raw('<span class="icon"></span>Account Settings'),
+        {:action => 'edit_account'} %>
+    </li>
+  </ul>
+</div>

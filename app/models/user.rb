@@ -67,6 +67,13 @@ class User < Model
     country.nil? ? '' : @@countries[country.upcase]
   end
 
+  def displayTitleAndOrg
+    title_pieces = []
+    title_pieces << title if (!title.blank?)
+    title_pieces << company if (!company.blank?)
+    title_pieces.join(', ')
+  end
+
   def displayLocation
     loc_pieces = []
     if (!city.blank?)
@@ -121,8 +128,10 @@ class User < Model
 
   # size can be "medium", or "small"
   def profile_image_path(size = "medium")
-    if size == 'medium'
-      return profileImageUrlMedium || '/images/large-profile.png'
+    if size == 'large'
+      return profileImageUrlLarge || '/images/large-profile.png'
+    elsif size == 'medium'
+      return profileImageUrlMedium || '/images/medium-profile.png'
     elsif size == 'small'
       return profileImageUrlSmall || '/images/small-profile.png'
     else

@@ -63,7 +63,8 @@
   &.rightArrow:hover #{$subselector},
   &.rightArrowHighlight #{$subselector}
     background-position: 0 -65px
-  &.leftArrow #{$subselector}
+  &.leftArrow #{$subselector},
+  &.leftArrowNoHover #{$subselector}
     background-position: 0 -78px
   &.leftArrow:hover #{$subselector},
   &.leftArrowHighlight #{$subselector}
@@ -134,6 +135,8 @@
     background-position: 0 -507px
   &.alert #{$subselector}
     background-position: 0 -520px
+  &.subscribe #{$subselector}
+    background-position: 0 -533px
 
 // icons/type_icons_30.png
 @mixin sprite-type-icons-30($subselector: '.icon')
@@ -445,3 +448,22 @@
     background-position: 0 -75px
   &.openid #{$subselector}
     background-position: 0 -100px
+
+// Profile edit icons
+@mixin profile-icons($subselector: '.icon')
+  #{$subselector}
+    @include text-hiding
+    @include ie6-fix
+    background-image: url(/stylesheets/images/interface/profile_icons.png?1)
+    height: 13px
+    width: 15px 
+
+  &.basicInfo #{$subselector}
+    background-position: 0 0
+  &.profileImage #{$subselector}
+    background-position: 0 -13px
+  &.community #{$subselector}
+    background-position: 0 -26px
+  &.accountSettings #{$subselector}
+    background-position: 0 -39px
+

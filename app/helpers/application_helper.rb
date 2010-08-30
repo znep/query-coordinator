@@ -420,9 +420,8 @@ HREF
   end
 
   def link_to_rpx(name, return_url = rpx_return_login_url, html_options = {})
-    html_options.merge!({:class => 'rpxnow', :onclick => 'return false;'})
-
-    link_to name, "#{APP_CONFIG['rpx_signin_url']}?token_url=#{return_url}", html_options
+    options = {:class => 'rpxnow', :onclick => 'return false;'}.merge(html_options)
+    link_to name, "#{APP_CONFIG['rpx_signin_url']}?token_url=#{return_url}", options
   end
 
 # TODO: Deprecated : All these rpx_submit_* functions should be gone once v3 chrome is gone

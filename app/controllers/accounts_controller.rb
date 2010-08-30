@@ -10,6 +10,7 @@ class AccountsController < ApplicationController
   layout :choose_v4_layout
   include NewChromeMethodProxy
 
+# TODO/v4: Deprecated. See ProfileController#edit_account
   def show
     @openid_identifiers = current_user.openid_identifiers
 ##    @createdOnDomain = Domain.findById(current_user.data['createdOnDomainId'])
@@ -27,6 +28,7 @@ class AccountsController < ApplicationController
     end
   end
 
+# TODO/v4: Remove me. Now in profile_controller
   def update
     error_msg = nil
     begin
@@ -159,6 +161,7 @@ class AccountsController < ApplicationController
   rescue CoreServer::CoreServerError => e
     flash[:openid_error] = e.error_message
   ensure
+    # TODO/v4: This should be profile/user/id//account
     redirect_to account_url(:anchor => params[:section])
   end
 end

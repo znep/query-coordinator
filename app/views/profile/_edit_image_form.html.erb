@@ -1,0 +1,28 @@
+<div class="editImageForm editForm">
+  <h1>Profile Image</h1>
+
+  <%= display_standard_flashes %>
+
+  <div class="editArea">
+    <div class="editSection clearfix">
+      <h3>Current Image</h3>
+      <div class="line clearfix">
+        <label>&nbsp;</label>
+        <div id="profileImage">
+          <img src="<%= current_user.profile_image_path('large') %>" alt="<%= current_user.displayName %>" />
+        </div>
+      </div>
+      <div class="line fullLine imageErrorLine">
+        <label>&nbsp;</label>
+        <div class="flash errorMessage error">Please choose an image file (jpg, gif, png or tiff)</div>
+      </div>
+      <div class="line fullLine">
+        <label>&nbsp;</label>
+        <%= link_to 'Upload New Image',
+            current_user.profile_image_path('replace').gsub('/replace', ''),
+            :class => 'button default uploadNewImage' %>
+        <span class="uploadIndicator"></span>
+      </div>
+    </div>
+  </div>
+</div>

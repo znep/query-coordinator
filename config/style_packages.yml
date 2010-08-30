@@ -45,3 +45,6 @@ administration-analytics-screen:
 - screen-metrics
 administration-users-screen:
 - screen-admin
+profile-screen:
+- screen-profile
+- control-feed

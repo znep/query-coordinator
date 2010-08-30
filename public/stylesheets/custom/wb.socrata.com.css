@@ -1,0 +1,28 @@
+body {
+    background-color:#D8DCD0;
+    background-image:none;
+}
+
+.footerContainer {
+    background:none repeat scroll 0 0 #4F5248;
+}
+
+#mainLogo a {
+    top: 0;
+    height: 67px;
+    width: 300px;
+
+}
+
+#header .userNav a {
+    color:#5F5F61;
+}
+
+#footer li a, #footer .copyright {
+    color:#FFFFFF;
+}
+
+#header {
+    background:none repeat scroll 0 0 #FFFFFF;
+    height: 73px;
+}

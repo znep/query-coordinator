@@ -273,7 +273,7 @@
             {
                 var mapObj = this;
 
-                if (mapObj._displayConfig.noLocations)
+                if (mapObj.settings.view.displayFormat.noLocations)
                 { return true; }
 
                 if (_.isUndefined(mapObj._locCol) &&

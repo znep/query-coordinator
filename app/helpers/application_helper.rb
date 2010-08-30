@@ -457,7 +457,7 @@ HREF
   end
 
   def jquery_include
-    if ENV["RAILS_ENV"] != 'production'
+    if Rails.env != 'production'
       return '<script src="/javascripts/jquery-1.4.2.js" type="text/javascript" ' +
         'charset="utf-8"></script>'
     else
@@ -511,7 +511,7 @@ HREF
   end
 
   def rendered_stylesheet_tag(stylesheet)
-    if RAILS_ENV == 'development'
+    if Rails.env == 'development'
       return STYLE_PACKAGES[stylesheet.to_s].
         map{ |req| "<link type=\"text/css\" rel=\"stylesheet\" media=\"screen\"" +
                    " href=\"/styles/individual/#{req}.css\"/>" }.

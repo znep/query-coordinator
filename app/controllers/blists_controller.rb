@@ -58,7 +58,7 @@ class BlistsController < ApplicationController
     if request.path != @view.href &&
       !CurrentDomain.module_available?('new_datasets_page')
       # Log redirects in development
-      if ENV["RAILS_ENV"] != 'production' &&
+      if Rails.env != 'production' &&
         request.path =~ /^\/dataset\/\w{4}-\w{4}/
         logger.info("Doing a dataset redirect from #{request.referrer}")
       end

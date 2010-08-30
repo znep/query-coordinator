@@ -66,12 +66,12 @@ class StylesController < ApplicationController
     headers['Content-Type'] = 'text/css'
 
     cache_key = generate_cache_key("widget.#{params[:customization_id]}.#{updated_at || 0}")
-    cached = Rails.cache.read(cache_key) unless RAILS_ENV == 'development'
+    cached = Rails.cache.read(cache_key) unless Rails.env == 'development'
 
     if cached.nil?
       # get sitewide includes
       includes_cache_key = generate_cache_key('_includes')
-      includes = Rails.cache.read(includes_cache_key) unless RAILS_ENV == 'development'
+      includes = Rails.cache.read(includes_cache_key) unless Rails.env == 'development'
       if includes.nil?
         includes = get_includes
         Rails.cache.write(includes_cache_key, includes)

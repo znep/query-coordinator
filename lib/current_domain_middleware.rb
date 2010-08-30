@@ -54,6 +54,6 @@ class CurrentDomainMiddleware
 
   private
   def logger
-    RAILS_DEFAULT_LOGGER || Logger.new
+    Rails.logger || Logger.new
   end
 end

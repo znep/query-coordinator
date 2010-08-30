@@ -21,6 +21,10 @@
                 var chartObj = this;
                 chartObj._chartType = chartObj.settings
                     .view.displayFormat.chartType;
+
+                if (Dataset.chart.types[chartObj._chartType].displayLimit)
+                { chartObj._maxRows = Dataset.chart.types[chartObj._chartType]
+                    .displayLimit; }
             },
 
             columnsLoaded: function()
@@ -55,6 +59,9 @@
                     });
                     chartObj._yColumns.push(obj);
                 });
+
+                chartObj._seriesRemainders = _.map(chartObj._yColumns, function(col)
+                    { return col.data.aggregates.sum; });
 
                 // Set up y-axes
                 if (chartObj._reverseOrder) { chartObj._yColumns.reverse(); }
@@ -127,31 +134,30 @@
                     if (_.isNaN(value)) { value = null; }
 
                     // First check if this should be subsumed into a remainder
-                    if (!_.isNull(value) &&
+                    var sliceTooSmall = !_.isNull(value) &&
                         !_.isUndefined(chartObj.settings
                             .view.displayFormat.pieJoinAngle) &&
                         !$.isBlank(cs.data.aggregates.sum) &&
-                        (value / cs.data.aggregates.sum) * 100 <
-                            chartObj.settings.view.displayFormat.pieJoinAngle)
-                    {
-                        chartObj._seriesRemainders =
-                            chartObj._seriesRemainders || [];
-                        chartObj._seriesRemainders[i] =
-                            chartObj._seriesRemainders[i] || 0;
-                        chartObj._seriesRemainders[i] += value;
-                    }
-                    else
-                    {
-                        // Render point and cache it
-                        var point = yPoint(chartObj, row, value, i, basePt);
-                        if (_.isNull(point)) { return; }
+                        (value / cs.data.aggregates.sum) * 360 <
+                            chartObj.settings.view.displayFormat.pieJoinAngle;
 
-                        if (!_.isUndefined(chartObj.chart))
-                        { chartObj.chart.series[i].addPoint(point, false); }
-                        if (!_.isUndefined(chartObj.secondChart))
-                        { chartObj.secondChart.series[i].addPoint(point, false); }
-                        chartObj._seriesCache[i].data.push(point);
+                    // Render point and cache it
+                    var point = yPoint(chartObj, row, value, i, basePt);
+                    if (_.isNull(point)) { return; }
+
+                    if ($.isBlank(point.y))
+                    {
+                        if (!chartObj._nullCache) { chartObj._nullCache = []; }
+                        chartObj._nullCache.push(point);
+                        return;
                     }
+                    else if (chartObj._nullCache && !$.isBlank(point.y))
+                    {
+                        _.each(chartObj._nullCache, function(n)
+                            { addPoint(chartObj, n, i); });
+                        chartObj._nullCache = undefined;
+                    }
+                    addPoint(chartObj, point, i, !sliceTooSmall);
 
                     hasPoints = true;
                 });
@@ -169,7 +175,9 @@
                 if (!chartObj._columnsLoaded) { return; }
 
                 // Check if there are remainders to stick on the end
-                if (!_.isUndefined(chartObj._seriesRemainders))
+                if (!_.isUndefined(chartObj._seriesRemainders) &&
+                    (Dataset.chart.types[chartObj._chartType].renderOther ||
+                    chartObj.settings.view.displayFormat.renderOther))
                 {
                     var otherPt = xPoint(chartObj, null, 'Other');
                     if (!_.isUndefined(chartObj._xCategories))
@@ -647,6 +655,20 @@
             to: overviewExtremes.max,
             color: 'rgba(0, 0, 0, 0.2)'
         });
+    };
+
+    var addPoint = function(chartObj, point, seriesIndex, showPoint)
+    {
+        if (!_.isUndefined(chartObj.chart) && showPoint)
+        { chartObj.chart.series[seriesIndex].addPoint(point, false); }
+        if (!_.isUndefined(chartObj.secondChart) && showPoint)
+        { chartObj.secondChart.series[seriesIndex].addPoint(point, false); }
+
+        if (showPoint)
+        {
+            chartObj._seriesCache[seriesIndex].data.push(point);
+            chartObj._seriesRemainders[seriesIndex] -= point.y;
+        }
     };
 
 })(jQuery);

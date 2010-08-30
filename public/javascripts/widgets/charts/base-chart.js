@@ -85,6 +85,13 @@
                         return vc;
                     });
                 chartObj._valueColumns = _.compact(chartObj._valueColumns);
+                var customAggs = {};
+                _.each(chartObj._valueColumns, function(col)
+                {
+                    if (_.any(col.column.renderType.aggregates,
+                        function(a) { return a.value == 'sum'; }))
+                    { customAggs[col.column.id] = ['sum'] }
+                });
 
                 chartObj._fixedColumns =
                     _.map(view.displayFormat.fixedColumns || [],
@@ -95,7 +102,7 @@
                 {
                     chartObj.columnsLoaded();
                     chartObj.ready();
-                });
+                }, customAggs);
 
                 return false;
             },

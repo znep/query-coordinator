@@ -75,7 +75,7 @@
                     _.each(mapObj._markers, function(marker)
                     { marker.setMap(mapObj.map); marker.setVisible(true); });
                 }
-                if (mapObj._displayConfig.clusterMarkers
+                if (mapObj.settings.view.displayFormat.clusterMarkers
                     && mapObj._rowsLeft == 0)
                 {
                     if (!mapObj._markerClusterer)

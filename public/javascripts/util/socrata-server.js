@@ -65,7 +65,7 @@ $(function ()
                         }
                         else if (typeof br[i].success == 'function')
                         {
-                            br[i].success(JSON.parse(r.response));
+                            br[i].success(JSON.parse(r.response || '""'));
                         }
                     });
 

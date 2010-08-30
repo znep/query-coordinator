@@ -448,15 +448,6 @@
     <%- if !current_user.nil? -%>
     blist.currentUserId = "<%= current_user.id %>";
     <%- end -%>
-    blist.parentViewId = "<%= @view.parent_dataset.id %>";
-    blist.blistGrid.blistId = "<%= @view.tableId %>";
-    blist.blistGrid.viewId = "<%= @view.id %>";
-    blist.blistGrid.viewName = "<%= @view.name %>";
-    blist.blistGrid.isOwner = <%= is_owner ? 'true' : 'false' %>;
-    blist.blistGrid.canAddColumns = <%= is_owner && is_blist ? 'true' : 'false' %>;
-    <%- if @is_child_view -%>
-    blist.blistGrid.isFilter = true;
-    <%- end -%>
     blist.blistGrid.isAltView = <%= @view.is_alt_view? ? 'true' : 'false' %>;
   </script>
 

@@ -31,7 +31,8 @@
         var socrataChart = $(this[0]).data("socrataVisualization");
         if (!socrataChart)
         {
-            var className = $.socrataChart.chartMapping[options.chartType];
+            var className = $.socrataChart.chartMapping[
+                options.view.displayFormat.chartType];
             var chartClass = $.socrataChart[className];
             if (!$.isBlank(chartClass))
             {
@@ -52,7 +53,6 @@
     {
         defaults:
         {
-            chartType: 'line'
         },
 
         prototype:
@@ -63,39 +63,41 @@
                 chartObj.initializeChart();
             },
 
-            getColumns: function(view)
+            initializeChart: function()
             {
-                var chartObj = this;
-                if (!getColumns(chartObj, view))
-                { getLegacyColumns(chartObj, view); }
-
-                chartObj._view = view;
-                chartObj.startLoading();
-                $.ajax({url: '/views/' + view.id + '/rows.json',
-                    data: {method: 'getAggregates'}, cache: false,
-                    dataType: 'json',
-                    error: function() { chartObj.finishLoading(); },
-                    success: function(aggData)
-                    {
-                        chartObj.finishLoading();
-                        var aggMap = {};
-                        _.each(aggData, function(a)
-                            { aggMap[a.columnId] = {type: a.name, value: a.value}; }
-                        );
-                        _.each(chartObj._valueColumns, function(vc)
-                        {
-                            if (!$.isBlank(aggMap[vc.column.id]))
-                            { vc.column.aggregate = aggMap[vc.column.id]; }
-                        });
-                        chartObj.columnsLoaded();
-                    }});
+                // Override me with chart-specific initialization
             },
 
-            columnsLoaded: function()
+            getColumns: function()
             {
-                // Implement me if you want to deal with the columns in more
-                // detail -- either munge them into a more useable format, or
-                // initialize parts of the chart
+                var chartObj = this;
+                var view = chartObj.settings.view;
+
+                chartObj._valueColumns = _.map(view.displayFormat.valueColumns,
+                    function(vc)
+                    {
+                        var col = view.columnForTCID(vc.tableColumnId);
+                        if ($.isBlank(col)) { return null; }
+                        vc = $.extend({}, vc);
+                        vc.column = col;
+                        vc.supplementalColumns = _.map(vc.supplementalColumns || [],
+                            function(sc) { return view.columnForTCID(sc); });
+                        return vc;
+                    });
+                chartObj._valueColumns = _.compact(chartObj._valueColumns);
+
+                chartObj._fixedColumns =
+                    _.map(view.displayFormat.fixedColumns || [],
+                        function(tcId) { return view.columnForTCID(tcId); });
+                chartObj._fixedColumns = _.compact(chartObj._fixedColumns);
+
+                chartObj.settings.view.getAggregates(function()
+                {
+                    chartObj.columnsLoaded();
+                    chartObj.ready();
+                });
+
+                return false;
             },
 
             reloadVisualization: function()
@@ -107,7 +109,6 @@
                 delete chartObj._fixedColumns;
                 delete chartObj._valueColumns;
 
-                chartObj.settings.chartType = chartObj._displayConfig.chartType;
                 chartObj.initializeChart();
             },
 
@@ -118,39 +119,4 @@
         }
     }));
 
-
-    var getColumns = function(chartObj, view)
-    {
-        view = blist.dataset.chart.convertLegacy(view);
-
-        _.each(view.columns, function(c, i) { c.dataIndex = i; });
-
-        chartObj._valueColumns = _.map(view.displayFormat.valueColumns,
-            function(vc)
-            {
-                var col = _.detect(view.columns, function(c)
-                    { return c.tableColumnId == vc.tableColumnId; });
-                if ($.isBlank(col)) { return null; }
-                vc = $.extend({}, vc);
-                vc.column = col;
-                vc.supplementalColumns = _.map(vc.supplementalColumns || [],
-                    function(sc)
-                    {
-                        return _.detect(view.columns, function(c)
-                            { return c.tableColumnId == sc; });
-                    });
-                return vc;
-            });
-        chartObj._valueColumns = _.compact(chartObj._valueColumns);
-
-        chartObj._fixedColumns = _.map(view.displayFormat.fixedColumns || [],
-            function(tcId)
-            {
-                return _.detect(view.columns, function(c)
-                    { return c.tableColumnId == tcId; });
-            });
-        chartObj._fixedColumns = _.compact(chartObj._fixedColumns);
-
-        return true;
-    };
 })(jQuery);

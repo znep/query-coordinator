@@ -22,8 +22,8 @@
     {
         defaults:
         {
-            invalid: false,
-            pageSize: 100
+            maxRows: 500,
+            view: null
         },
 
         prototype:
@@ -34,10 +34,11 @@
                 var $domObj = currentObj.$dom();
                 $domObj.data("socrataVisualization", currentObj);
 
-                currentObj._displayConfig = currentObj.settings.displayFormat || {};
-
-                currentObj._rowsLeft = 0;
-                currentObj._rowsLoaded = 0;
+                currentObj.settings.view
+                    .bind('start_request',
+                        function() { currentObj.startLoading(); })
+                    .bind('finish_request', function()
+                        { currentObj.finishLoading(); });
 
                 if ($domObj.parent().find('.loadingSpinnerContainer').length < 1)
                 {
@@ -54,12 +55,30 @@
 
                 $domObj.resize(function(e) { doResize(currentObj, e); });
 
-                currentObj._invalid = currentObj.settings.invalid;
-                if (currentObj._invalid) { return; }
 
-                loadRows(currentObj,
-                    {method: 'getByIds', meta: true, start: 0,
-                        length: currentObj.settings.pageSize});
+                if (!currentObj.settings.view.valid)
+                {
+                    currentObj.ready();
+                    return;
+                }
+
+                currentObj._initialLoad = true;
+
+                currentObj.settings.view.getRows(0, currentObj.settings.maxRows,
+                    function()
+                    {
+                        // Use a defer so that if the rows are already loaded,
+                        // getColumns has a chance to run first
+                        var args = arguments;
+                        _.defer(function()
+                        {
+                            currentObj.handleRowsLoaded.apply(currentObj, args);
+                            delete currentObj._initialLoad;
+                        });
+                    });
+
+                if (currentObj.getColumns())
+                { currentObj.columnsLoaded(); }
             },
 
             $dom: function()
@@ -91,25 +110,73 @@
                 // Implement me
             },
 
-            reload: function(newOptions)
+            columnsLoaded: function()
+            {
+                // Called once the columns are loaded
+            },
+
+            ready: function()
             {
                 var vizObj = this;
+                var handleChange = function()
+                {
+                    if (!vizObj._pendingReload && !vizObj._initialLoad)
+                    {
+                        vizObj._pendingReload = true;
+                        _.defer(function() { vizObj.reload(); });
+                    }
+                };
+
+                vizObj.settings.view
+                    .bind('query_change', handleChange)
+                    .bind('displayformat_change', handleChange);
+            },
+
+            reload: function()
+            {
+                var vizObj = this;
+                if (vizObj.needsFullReset())
+                {
+                    delete vizObj._pendingReload;
+                    vizObj.reset();
+                    return;
+                }
+
                 vizObj.$dom().siblings('#vizError').hide().text('');
 
-                if (newOptions !== undefined)
-                { vizObj._displayConfig = newOptions; }
-
-                // If reloading, assume it is valid now
-                vizObj._invalid = false;
+                if (!vizObj.settings.view.valid)
+                {
+                    delete vizObj._pendingReload;
+                    return;
+                }
 
                 vizObj.reloadVisualization();
 
-                vizObj._rowsLeft = 0;
-                vizObj._rowsLoaded = 0;
+                vizObj.settings.view.getRows(0, vizObj.settings.maxRows,
+                    function()
+                    {
+                        // Use a defer so that if the rows are already loaded,
+                        // getColumns has a chance to run first
+                        var args = arguments;
+                        _.defer(function()
+                        { vizObj.handleRowsLoaded.apply(vizObj, args); });
+                    });
 
-                loadRows(vizObj,
-                    {method: 'getByIds', meta: true, start: 0,
-                        length: vizObj.settings.pageSize});
+                if (vizObj.getColumns())
+                { vizObj.columnsLoaded(); }
+
+                delete vizObj._pendingReload;
+            },
+
+            reset: function()
+            {
+                // Implement how to do a full reset
+            },
+
+            needsFullReset: function()
+            {
+                // Override if you need to do a bigger reset
+                return false;
             },
 
             handleRowsLoaded: function(rows)
@@ -126,7 +193,8 @@
                 {
                     if (!this._delayedRenderData) { this._delayedRenderData = []; }
                     var _this = this;
-                    this._delayedRenderData.push(function() { _this.renderData(rows); });
+                    this._delayedRenderData.push(function()
+                        { _this.renderData(rows); });
                     return;
                 }
 
@@ -173,53 +241,13 @@
                 // Implement if you need to do anything on resize
             },
 
-            getColumns: function(view)
+            getColumns: function()
             {
                 // Implement me to get the specific columns you need for
                 // this view
             }
         }
     });
-
-    var loadRows = function(vizObj, args)
-    {
-        vizObj.startLoading();
-        $.ajax({url: '/views/' + blist.display.viewId + '/rows.json',
-                cache: false, data: args, type: 'GET', dataType: 'json',
-                error: function() { vizObj.finishLoading(); },
-                success: function(data)
-                {
-                    vizObj.finishLoading();
-                    rowsLoaded(vizObj, data);
-                }});
-    };
-
-    var rowsLoaded = function(vizObj, data)
-    {
-        if (data.meta !== undefined)
-        {
-            vizObj.getColumns(data.meta.view);
-            vizObj._displayConfig = data.meta.view.displayFormat || {};
-            vizObj._rowsLeft = data.meta.totalRows - vizObj._rowsLoaded;
-        }
-
-        var rows = data.data.data || data.data;
-        vizObj._rowsLoaded += rows.length;
-        vizObj._rowsLeft -= rows.length;
-        loadMoreRows(vizObj);
-
-        vizObj.handleRowsLoaded(rows);
-    };
-
-    var loadMoreRows = function(vizObj)
-    {
-        if (vizObj._rowsLeft < 1) { return; }
-
-        var toLoad = Math.min(vizObj._rowsLeft, vizObj.settings.pageSize);
-
-        loadRows(vizObj, { method: 'getByIds', start: vizObj._rowsLoaded,
-            length: toLoad });
-    };
 
     var doResize = function(vizObj, e)
     {

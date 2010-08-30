@@ -90,10 +90,6 @@
     </div>
 
   </div>
-  <div class="line clearfix">
-    <input type="checkbox" id="drillDownCheckBox"<%= (@drill_down ? ' checked="checked"' : '') %>/>
-    <label for="drillDownCheckBox">Add Drill Down capabilities to this view</label>
-  </div>
 
   <div class='error mainError'></div>
   <%- end -%>
@@ -154,10 +150,11 @@
             $("#modal").jqmHide();
         };
 
-        var errorCallback = function(error)
+        var errorCallback = function(xhr)
         {
             $('.groupingWrapper .loading').hide();
-            $('.groupingWrapper .mainError').text(error);
+            $('.groupingWrapper .mainError')
+                .text(JSON.parse(xhr.responseText).message);
         };
 
         var aggCols = [];
@@ -175,10 +172,12 @@
                 return false;
             }
 
+            var id = $item.find("input.columnId").val();
+            var col = blist.dataset.columnForID(id);
             aggCols.push({
-                id: $item.find("input.columnId").val(),
+                id: id,
                 position: parseInt($item.find(".orderIndex").text()),
-                format: { grouping_aggregate: func }
+                format: $.extend({}, col.format, { grouping_aggregate: func })
             });
         });
         if (failed) { return; }
@@ -196,10 +195,14 @@
           .each(function(i, item)
         {
             var $item = $(item);
-            aggCols.push({ id: $item.find("input.columnId").val() });
+            var id = $item.find("input.columnId").val();
+            var col = blist.dataset.columnForID(id);
+            aggCols.push({ id: id,
+              format: $.extend({}, col.format, {grouping_aggregate: null}) });
         });
 
-        var drillDown = $('.groupingWrapper #drillDownCheckBox').is(':checked');
+        var query = $.extend({}, blist.dataset.query, {groupBys: groupCols});
+        blist.dataset.update({query: query, columns: aggCols});
 
         switch (action)
         {
@@ -216,28 +219,24 @@
                     {
                         $('.groupingWrapper .loading').show();
                         // create view
-                        $('#dataGrid').datasetGrid()
-                            .groupAggregate(groupCols, aggCols, true, newName,
-                                drillDown, successCallback, errorCallback);
+                        blist.dataset.update({name: newName});
+                        blist.dataset.saveNew(successCallback, errorCallback);
                     }
                 }
                 break;
             case 'save':
                 // save to view
                 $('.groupingWrapper .loading').show();
-                $('#dataGrid').datasetGrid().groupAggregate(groupCols, aggCols,
-                    true, null, drillDown, successCallback, errorCallback);
+                blist.dataset.save(successCallback, errorCallback);
                 break;
             case 'update':
                 // do temp view
-                $('.groupingWrapper .loading').show();
-                $('#dataGrid').datasetGrid().groupAggregate(groupCols, aggCols,
-                    false, null, drillDown, successCallback, errorCallback);
+                successCallback();
                 break;
         }
     });
 
-    $.analytics.trackEvent('Dataset Page Menu', 'Grouping dialog opened', blistGridNS.viewId);
+    $.analytics.trackEvent('Dataset Page Menu', 'Grouping dialog opened', blist.dataset.id);
   };
 </script>
 <%- end -%>

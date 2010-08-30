@@ -100,7 +100,7 @@
                 $.urlParam($dataForm.attr('action'), 'successRedirect',
                   escape($form.find('#form_successRedirect').val())));
               $('#infoPane .singleInfoSharing').infoPaneSharing()
-                  .refresh(blist.display.viewId);
+                  .refresh(blist.dataset.id);
               <%- else -%>
               blist.util.navigation.redirectToView(data.newViewId);
               <%- end -%>
@@ -112,6 +112,6 @@
     $('.formWrapper form').submit(formSubmit);
     $('.formWrapper a.create').click(formSubmit);
 
-    $.analytics.trackEvent('Dataset Page Menu', 'Create a Form dialog opened', blistGridNS.viewId);
+    $.analytics.trackEvent('Dataset Page Menu', 'Create a Form dialog opened', blist.dataset.id);
   };
 </script>

@@ -2,59 +2,61 @@
 {
     if (blist.sidebarHidden.columnProperties) { return; }
 
-    var isDataset = blist.dataset.getDisplayType(blist.display.view) == 'Blist';
+    var isDataset = blist.dataset.type == 'blist';
 
     var canConvert = function(col)
     {
         if ($.isBlank(col)) { return false; }
-        var convT = blist.data.types[col.dataTypeName].convertableTypes;
-        return isDataset && $.isBlank((col.format || {}).grouping_aggregate) &&
+        var convT = col.dataType.convertableTypes;
+        return isDataset && $.isBlank(col.format.grouping_aggregate) &&
             _.isArray(convT) && convT.length > 0;
     };
 
-    var convertTypes = function(col)
+    var convertTypes = function(c)
     {
-        if ($.isBlank(col) || !canConvert(col)) { return 'hidden'; }
+        if ($.isBlank(c) || !canConvert(c.origColumn)) { return 'hidden'; }
+        var col = c.origColumn;
 
-        var t = blist.data.types[col.dataTypeName];
-        var types = [{text: blist.data.types[col.renderTypeName].title,
-            value: col.renderTypeName}];
+        var t = col.dataType;
+        var types = [{text: col.renderType.title, value: col.renderTypeName}];
         return types.concat(_(t.convertableTypes || []).chain()
             .sortBy(function(ct) { return blist.data.types[ct].priority; })
             .map(function(ct)
             { return {value: ct, text: blist.data.types[ct].title}; }).value());
     };
 
-    var staticDataType = function(col)
+    var staticDataType = function(c)
     {
-        if ($.isBlank(col) || canConvert(col)) { return ''; }
+        if ($.isBlank(c) || canConvert(c.origColumn)) { return ''; }
+        var col = c.origColumn;
 
-        var text = blist.data.types[col.renderTypeName].title;
-        if (!$.isBlank((col.format || {}).grouping_aggregate))
+        var text = col.renderType.title;
+        if (!$.isBlank(col.format.grouping_aggregate))
         {
             text += ' (' + $.capitalize(col.format.grouping_aggregate) + ' on ' +
-                blist.data.types[col.dataTypeName].title + ')';
+                col.dataType.title + ')';
         }
         return text;
     };
 
-    var alignmentOptions = function(col)
+    var alignmentOptions = function(c)
     {
-        if ($.isBlank(col)) { return 'hidden'; }
-        return blist.data.types[col.renderTypeName].alignment || 'hidden';
+        if ($.isBlank(c)) { return 'hidden'; }
+        return c.origColumn.renderType.alignment || 'hidden';
     };
 
-    var aggregateOptions = function(col)
+    var aggregateOptions = function(c)
     {
-        if ($.isBlank(col)) { return 'hidden'; }
-        return blist.data.types[col.renderTypeName].aggregates || 'hidden';
+        if ($.isBlank(c)) { return 'hidden'; }
+        return c.origColumn.renderType.aggregates || 'hidden';
     };
 
-    var viewOptions = function(col)
+    var viewOptions = function(c)
     {
-        if ($.isBlank(col)) { return 'hidden'; }
+        if ($.isBlank(c)) { return 'hidden'; }
+        var col = c.origColumn;
 
-        var type = blist.data.types[col.renderTypeName];
+        var type = col.renderType;
         var vt = type.viewTypes;
         if (_.include(['date', 'calendar_date'], col.renderTypeName))
         {
@@ -69,10 +71,10 @@
         return vt || 'hidden';
     };
 
-    var precisionStyle = function(col)
+    var precisionStyle = function(c)
     {
-        if ($.isBlank(col)) { return 'hidden'; }
-        return blist.data.types[col.renderTypeName].precisionStyle || 'hidden';
+        if ($.isBlank(c)) { return 'hidden'; }
+        return c.origColumn.renderType.precisionStyle || 'hidden';
     };
 
     var currencyOptions = _.map([
@@ -114,9 +116,9 @@
         name: configName,
         title: 'Column Properties',
         subtitle: 'Update various properites on this column',
-        onlyIf: function(view)
+        onlyIf: function()
         {
-            return !blist.display.isTempView;
+            return !blist.dataset.temporary;
         },
         disabledSubtitle: 'You cannot edit column properties for an unsaved view',
         sections: [
@@ -139,10 +141,10 @@
             },
             {
                 title: 'Formatting',
-                onlyIf: {func: function(view, col)
+                onlyIf: {func: function(c)
                 {
-                    if ($.isBlank(col)) { return false; }
-                    var t = blist.data.types[col.renderTypeName];
+                    if ($.isBlank(c)) { return false; }
+                    var t = c.origColumn.renderType;
                     return !$.isBlank(t.alignment) || !$.isBlank(t.viewTypes);
                 }},
                 fields: [
@@ -156,9 +158,12 @@
             // Number-specific info
             {
                 title: 'Number Formatting',
-                onlyIf: {func: function(view, col)
-                { return _.include(['number', 'percent'],
-                    (col || {}).renderTypeName); }},
+                onlyIf: {func: function(c)
+                {
+                    if ($.isBlank(c)) { return false; }
+                    return _.include(['number', 'percent'],
+                            c.origColumn.renderTypeName);
+                }},
                 fields: [
                     {text: 'Precision', type: 'radioGroup', name: 'precisionGroup',
                     defaultValue: 'format.precisionNone', options: [
@@ -175,8 +180,11 @@
             // Money-specific styles
             {
                 title: 'Money Formatting',
-                onlyIf: {func: function(view, col)
-                { return (col || {}).renderTypeName == 'money'; }},
+                onlyIf: {func: function(c)
+                {
+                    if ($.isBlank(c)) { return false; }
+                    return c.origColumn.renderTypeName == 'money';
+                }},
                 fields: [
                     {text: 'Precision', type: 'radioGroup',
                     name: 'moneyPrecisionGroup',
@@ -196,8 +204,11 @@
             // Multiple choice value chooser
             {
                 title: 'Multiple Choice Options',
-                onlyIf: {func: function(view, col)
-                { return (col || {}).renderTypeName == 'drop_down_list'; }},
+                onlyIf: {func: function(c)
+                {
+                    if ($.isBlank(c)) { return false; }
+                    return c.origColumn.renderTypeName == 'drop_down_list';
+                }},
                 fields: [
                     {type: 'repeater', addText: 'Add Option',
                     name: 'dropDownList.values',  minimum: 1, savedField: 'id',
@@ -220,22 +231,21 @@
                         // edit column has no default.  ui cannot tell the diff
                         // between default (unsaved) or saved value.
                         linkedField: 'format.linkedDataset',
-                        options: blist.dataset.getLinkedDatasetOptionsNoDefault,
+                        options: Dataset.getLinkedDatasetOptionsNoDefault,
                         wizard: 'Select the key column'},
                     {text: 'Label Column', type: 'select', name: 'format.labelColumn',
                         linkedField: 'format.linkedDataset',
-                        options: blist.dataset.getLinkedDatasetOptionsDefault,
+                        options: Dataset.getLinkedDatasetOptionsDefault,
                         wizard: 'Select the label column'}
                 ]
             },
 
             {
                 title: 'Column Totals',
-                onlyIf: {func: function(view, col)
+                onlyIf: {func: function(c)
                 {
-                    if ($.isBlank(col)) { return false; }
-                    return !$.isBlank(blist.data.types[
-                        col.renderTypeName].aggregates);
+                    if ($.isBlank(c)) { return false; }
+                    return !$.isBlank(c.origColumn.renderType.aggregates);
                 }},
                 fields: [
                     {text: 'Total', type: 'select', name: 'format.aggregate',
@@ -266,8 +276,6 @@
     {
         sidebarObj.finishProcessing();
 
-        sidebarObj.$grid().blistModel().updateColumn(column);
-
         sidebarObj.$dom().socrataAlert(
             {message: 'Your column has been updated', overlay: true});
         _.defer(function() { sidebarObj.hide(); });
@@ -277,8 +285,6 @@
     {
         sidebarObj.finishProcessing();
 
-        sidebarObj.$grid().blistModel().convertColumn(oldId, column);
-
         sidebarObj.$dom().socrataAlert(
             {message: 'Your column has been updated', overlay: true});
         _.defer(function() { sidebarObj.hide(); });
@@ -286,20 +292,23 @@
 
     config.dataPreProcess = function(col)
     {
-        if (!$.isBlank(col.dropDown) && !$.isBlank(col.dropDown.values))
+        var cleanCol = col.cleanCopy();
+        cleanCol.origColumn = col;
+        if (!$.isBlank(cleanCol.dropDownList))
         {
-            col.dropDownList = {values: _.reject(col.dropDown.values, function(dd)
-                { return dd.deleted; })};
+            cleanCol.dropDownList =
+                {values: _.reject(cleanCol.dropDownList.values || [],
+                        function(dd) { return dd.deleted; })};
         }
 
-        if (!$.isBlank((col.format || {}).rdf) && !_.any(rdfOptions, function(r)
-                { return r.value == col.format.rdf; }))
+        if (!$.isBlank(cleanCol.format.rdf) && !_.any(rdfOptions, function(r)
+                { return r.value == cleanCol.format.rdf; }))
         {
-            col.format.customRdf = col.format.rdf;
-            delete col.format.rdf;
+            cleanCol.format.customRdf = cleanCol.format.rdf;
+            delete cleanCol.format.rdf;
         }
 
-        return col;
+        return cleanCol;
     };
 
     config.finishCallback = function(sidebarObj, data, $pane, value)
@@ -318,32 +327,28 @@
         delete column.dataTypeName;
         var needsConvert = !$.isBlank(newType) && newType != data.dataTypeName;
 
-        var url = '/views/' + blist.display.view.id + '/columns/' +
-            data.id + '.json';
-        $.ajax({url: url, type: 'PUT', dataType: 'json',
-            contentType: 'application/json', data: JSON.stringify(column),
-            error: function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); },
-            success: function(c)
+        var col = data.origColumn;
+        col.update(column);
+        col.save(function(c)
             {
                 if (needsConvert)
                 {
-                    $.ajax({url: '/views/' + blist.display.view.id + '/columns/' +
-                        c.id + '.json', data: {method: 'convert', type: newType},
-                        type: 'POST', dataType: 'json',
-                        error: function(xhr)
+                    var oldId = c.id;
+                    c.convert(newType,
+                        function(convertedCol)
+                        { columnConverted(sidebarObj, oldId, convertedCol); },
+                        function(xhr)
                         {
                             // Really shouldn't happen; but just in case...
-                            sidebarObj.$grid().blistModel().updateColumn(c);
                             sidebarObj.genericErrorHandler($pane, xhr);
-                        },
-                        success: function(convertedCol)
-                        { columnConverted(sidebarObj, c.id, convertedCol); }
-                    });
+                        }
+                    );
                 }
                 else
                 { columnUpdated(sidebarObj, c); }
-            }
-        });
+            },
+            function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); }
+        );
     };
 
     $.gridSidebar.registerConfig(config);
@@ -354,7 +359,7 @@
         _.defer(function()
         {
             $.Tache.Get({url: '/api/rdfTerms.json', data: {type: 'property',
-                'class': (blist.display.view.metadata || {}).rdfClass},
+                'class': (blist.dataset.metadata || {}).rdfClass},
                 success: function(rdfs)
                 {
                     _.each(rdfs, function(r)

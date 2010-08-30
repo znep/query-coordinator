@@ -244,12 +244,12 @@ blist.common.modalReady = function()
 
       var $alignment = $('#columnPropertiesDialog .alignment :radio:checked');
       if ($alignment.length > 0)
-      { column.alignment = $alignment.val(); }
+      { column.format.align = $alignment.val(); }
 
       blist.columns.properties.format.updateColumn(column);
 
       <%- if @column.has_totals? -%>
-      column.aggregate =
+      column.format.aggregate =
           $("#columnPropertiesDialog #totalsTab").columnTotalsValue();
       <%- end -%>
 
@@ -268,29 +268,21 @@ blist.common.modalReady = function()
 
       updateColumn();
 
-      $.ajax({
-        type: "PUT",
-        url: '<%= @column.href(@view.id)%>',
-        cache: false,
-        data: {
-          json: JSON.stringify(column),
-          authenticity_token: "<%= form_authenticity_token %>"
-          },
-        dataType: 'json',
-        error: function(request) {
-          $("#columnPropertiesDialog .error")
-            .html(JSON.parse(request.responseText).error).show();
-        },
-        success: function(responseData) {
-            var $grid = $("#dataGrid");
-            if ($grid.length != 0)
-            {
-                $grid.blistModel().updateColumn(responseData);
-            }
-            $(document).trigger(blist.events.COLUMNS_CHANGED, [<%= @column.id %>]);
+      <%- if !@parent.nil? -%>
+      var parCol = blist.dataset.columnForID(<%= @parent %>);
+      var curCol = parCol.childColumnForID(column.id);
+      <%- else -%>
+      var curCol = blist.dataset.columnForID(column.id);
+      <%- end -%>
+      curCol.update(column);
+      curCol.save(
+        function(responseData) {
             $("#modal .jqmClose").click();
-        }
-      });
+        },
+        function(request) {
+          $("#columnPropertiesDialog .error")
+            .html(JSON.parse(request.responseText).message).show();
+        });
   };
 
   var converting = false;
@@ -304,23 +296,20 @@ blist.common.modalReady = function()
 
     var type = $(this).attr("id");
 
-    $.ajax({
-      type: "POST",
-      url: '<%= @column.convert_href(@view.id) %>&type=' + $(this).attr('id'),
-      cache: false,
-      dataType: 'json',
-      contentType: "application/json",
-      error: function(request) {
+    <%- if !@parent.nil? -%>
+    var parCol = blist.dataset.columnForID(<%= @parent %>);
+    var curCol = parCol.childColumnForID(column.id);
+    <%- else -%>
+    var curCol = blist.dataset.columnForID(column.id);
+    <%- end -%>
+    curCol.convert(type,
+      function (responseData) {
+        $("#modal .jqmClose").click();
+      },
+      function(request) {
         $("#columnPropertiesDialog .error")
           .html(JSON.parse(request.responseText).message).show();
-      },
-      success: function (responseData) {
-        $("#modal .jqmClose").click();
-        $("#dataGrid").blistModel()
-          .convertColumn(<%= @column.id %>, responseData);
-        $(document).trigger(blist.events.COLUMNS_CHANGED, [<%= @column.id %>]);
-      }
-    });
+      });
   });
 
   $("#columnPropertiesDialog #converter").click(function(e) {

@@ -62,6 +62,11 @@
     {
         var opts = $.extend({}, $.fn.feedList.defaults, options);
 
+        var getView = function(viewId)
+        {
+            return _.detect(opts.views, function(v) { return v.id == viewId; });
+        };
+
         // This directive is declared here because it needs access to opts.
         var feedDirective = {
             'li': {
@@ -110,18 +115,18 @@
             return {
                 itemType: 'view',
                 itemId: view.id,
-                body: 'created a ' + blist.dataset.getTypeName(view) + ':',
+                body: 'created a ' + view.displayName + ':',
                 timestamp: view.createdAt,
                 viewName: view.name,
-                viewType: 'type' + blist.dataset.getDisplayType(view),
-                viewPath: $.generateViewUrl(view),
+                viewType: 'type' + view.styleClass,
+                viewPath: view.url,
                 viewDescription: view.description,
                 user: view.owner
             };
         });
 
         // combine and sort
-        var feedData = comments.concat(views)
+        var feedData = comments.concat(views);
         feedData.sort(function(a, b) { return b.timestamp - a.timestamp; });
 
         var feedMap = {};
@@ -237,22 +242,18 @@
                     {
                         blist.util.doAuthedAction('flag a comment', function()
                         {
-                            $.ajax({
-                                url: '/views/' + targetCommentData.viewId + '/comments/' +
-                                     targetCommentData.itemId + '.json',
-                                type: 'put',
-                                contentType: 'application/json',
-                                dataType: 'json',
-                                data: JSON.stringify({ flags: [ 'flag' ] }),
-                                success: function(response)
+                            getView(targetCommentData.viewId).flagComment(
+                                targetCommentData.itemId,
+                                function()
                                 {
                                     targetCommentData.commentFlagged = true;
                                     $this.fadeOut(function()
                                     {
-                                        $this.addClass('disabled').text('Flagged!').fadeIn();
+                                        $this.addClass('disabled')
+                                            .text('Flagged!').fadeIn();
                                     });
                                 }
-                            });
+                            );
                         });
                     }
                     else if ($this.is('.commentRateUpLink:not(.ratedUp)') ||
@@ -261,13 +262,9 @@
                         var thumbsUp = $this.hasClass('commentRateUpLink');
                         blist.util.doAuthedAction('rate a comment', function()
                         {
-                            $.ajax({
-                                url: '/views/' + targetCommentData.viewId + '/comments/' +
-                                    targetCommentData.itemId + '/ratings?thumbsUp=' + thumbsUp,
-                                type: 'post',
-                                contentType: 'application/json',
-                                dataType: 'json',
-                                success: function(response)
+                            getView(targetCommentData.viewId).rateComment(
+                                targetCommentData.itemId, thumbsUp,
+                                function()
                                 {
                                     var direction = thumbsUp ? 'up' : 'down';
 
@@ -294,15 +291,17 @@
                                         $this.closest('li').siblings('.' + direction + 'Ratings').text(text);
                                     });
                                 }
-                            });
+                            );
                         });
                     }
                     else if ($this.is('.commentReplyLink') &&
                         ($this.closest('.feedItem').children('.newCommentForm').length === 0))
                     {
-                        $this.closest('.feedItem').children('.feedChildren').before($.renderTemplate(
-                            'feedItem_newComment', { viewId: targetCommentData.viewId },
-                            { '.postNewCommentButton@data-viewId': 'viewId' }))
+                        var $newCom = $.renderTemplate('feedItem_newComment');
+                        $newCom.find('.postNewCommentButton')
+                            .data('view', getView(targetCommentData.viewId));
+                        $this.closest('.feedItem').children('.feedChildren')
+                            .before($newCom);
                         $this.closest('.feedItem').find('#newCommentBody').focus();
                     }
                 });
@@ -325,7 +324,7 @@
                     event.preventDefault();
                     var $this = $(this);
 
-                    var viewId = $this.attr('data-viewId');
+                    var view = $this.data('view');
 
                     var commentBody = $this.siblings('#newCommentBody').val();
                     if (!$.isBlank(commentBody))
@@ -343,13 +342,8 @@
 
                         blist.util.doAuthedAction('post a comment', function()
                         {
-                            $.ajax({
-                                url: '/views/' + viewId + '/comments.json',
-                                type: 'post',
-                                contentType: 'application/json',
-                                dataType: 'json',
-                                data: JSON.stringify(commentData),
-                                success: function(response)
+                            view.addComment(commentData,
+                                function(response)
                                 {
                                     var data = getData($this);
 
@@ -385,7 +379,7 @@
                                         parseInt($.trim($('#gridSidebar_about .numberOfComments').text())) + 1);
                                     $this.closest('.newCommentForm').remove();
                                 }
-                            });
+                            );
                         });
                     }
                     else
@@ -402,9 +396,10 @@
 
                     if ($this.siblings('.newCommentForm').length === 0)
                     {
-                        $this.after($.renderTemplate('feedItem_newComment',
-                            { viewId: getData($this).opts.mainViewId },
-                            { '.postNewCommentButton@data-viewId': 'viewId' }))
+                        var $newCom = $.renderTemplate('feedItem_newComment');
+                        $newCom.find('.postNewCommentButton')
+                            .data('view', getData($this).opts.mainView);
+                        $this.after($newCom);
                         $this.siblings('.newCommentForm').find('#newCommentBody').focus();
                     }
                 });
@@ -424,7 +419,7 @@
 
     $.fn.feedList.defaults = {
         comments: [],
-        mainViewId: '',
+        mainView: null,
         pageSize: 20,
         replyPageLimit: 2,
         scrollContainerSelector: '.scrollContent',

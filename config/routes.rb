@@ -381,6 +381,8 @@ ActionController::Routing::Routes.draw do |map|
     https.signup '/signup', :controller => 'accounts', :action => 'new'
     https.signup_json '/signup.json', :controller => 'accounts', :action => 'create', :format => 'json'
     https.accounts_json '/accounts.json', :controller => 'accounts', :action => 'update', :format => 'json'
+    https.rpx_return_login '/login/rpx_return_login', :controller => 'rpx', :action => 'v4_return_login',
+      :conditions => {:has_v4_dataset => true}
     https.rpx_return_login '/login/rpx_return_login', :controller => 'rpx', :action => 'return_login'
     https.rpx_return_signup '/login/rpx_return_signup', :controller => 'rpx', :action => 'return_signup'
     https.rpx_login '/login/rpx_login', :controller => 'rpx', :action => 'login'

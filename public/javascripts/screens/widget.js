@@ -5,13 +5,7 @@ var configNS = blist.namespace.fetch('blist.configuration');
 widgetNS.ready = false;
 
 // Report we've opened for metrics
-$.ajax({url: '/views/' + widgetNS.view.id + '.json',
-    data: {
-      method: 'opening',
-      accessType: 'WIDGET',
-      referrer: document.referrer
-    }
-});
+blist.dataset.registerOpening('WIDGET', document.referrer);
 
 blist.widget.resizeViewport = function()
 {
@@ -168,7 +162,7 @@ blist.widget.showDataView = function()
 
 (function($)
 {
-    if (blist.display.isInvalid) { $('body').addClass('invalidView'); }
+    if (!blist.dataset.valid) { $('body').addClass('invalidView'); }
 })(jQuery);
 
 $(function()
@@ -177,10 +171,8 @@ $(function()
 
     // keep track of some stuff for easy access
     widgetNS.orientation = widgetNS.theme['frame']['orientation'];
-    widgetNS.isNonTabular = (widgetNS.view.viewType !== 'tabular');
-    widgetNS.isAltView = !_.include(['Blist', 'Filter', 'Grouped'],
-        blist.dataset.getDisplayType(widgetNS.view));
-    widgetNS.isBlobby = (blist.dataset.getDisplayType(widgetNS.view) == 'Blob');
+    widgetNS.isNonTabular = (blist.dataset.viewType !== 'tabular');
+    widgetNS.isBlobby = (blist.dataset.viewType == 'blobby');
     widgetNS.interstitial = widgetNS.theme['behavior']['interstitial'];
 
     // sizing
@@ -216,7 +208,7 @@ $(function()
                     iconColor: '#f93f06', onlyIf: !widgetNS.isBlobby && menuOptions['api'] },
                 { text: 'Print', className: 'print', targetPane: 'print',
                     subtext: 'Print this dataset', href: '#print',
-                    iconColor: '#a460c4', onlyIf: !widgetNS.isAltView && menuOptions['print'] },
+                    iconColor: '#a460c4', onlyIf: blist.datset.isGrid() && menuOptions['print'] },
                 { text: 'About the Socrata Social Data Player', className: 'about',
                     href: 'http://www.socrata.com/try-it-free', rel: 'external',
                     onlyIf: menuOptions['about_sdp'] }
@@ -273,7 +265,7 @@ $(function()
         }
     });
 
-    blist.dataset.controls.hookUpShareMenu(widgetNS.view,
+    blist.datasetControls.hookUpShareMenu(blist.dataset,
         $('.subHeaderBar .share .shareMenu'),
         {
             menuButtonClass: 'icon',
@@ -432,17 +424,17 @@ $(function()
         },
         starMargin: 1,
         starWidth: 10,
-        value: widgetNS.view.averageRating || 0
+        value: blist.dataset.averageRating || 0
     });
 
     // grid
     var $dataGrid = $('#data-grid');
-    if (!widgetNS.isAltView)
+    if (blist.dataset.isGrid())
     {
         if ($dataGrid.length > 0)
         {
             $dataGrid
-                .datasetGrid({viewId: widgetNS.viewId,
+                .datasetGrid({view: blist.dataset,
                     accessType: 'WIDGET',
                     showRowNumbers: widgetNS.theme['grid']['row_numbers'],
                     showRowHandle: widgetNS.theme['grid']['row_numbers'],
@@ -450,26 +442,18 @@ $(function()
                     manualResize: true,
                     columnNameEdit: false,
                     filterForm: '.toolbar .toolbarSearchForm',
-                    autoHideClearFilterItem: false,
-                    initialResponse: $.unescapeObject(widgetNS.viewJson)
+                    autoHideClearFilterItem: false
                 });
         }
     }
-    else if (blist.display.invokeVisualization)
-    { $('#data-grid').visualization(); }
 
     // more views
     var moreViews = [];
-    $.ajax({
-        url: '/views.json?method=getByTableId&tableId=' + widgetNS.view.tableId,
-        dataType: 'json',
-        success: function (responseData)
+    blist.dataset.getRelatedViews(function(views)
         {
-            if (!_.isArray(responseData)) { responseData = []; }
-            moreViews = _.reject(responseData, function(view)
+            moreViews = _.reject(views, function(view)
             {
-                return (_.include(view.flags, 'default') && (view.viewType == 'tabular')) ||
-                       (view.viewType == 'blobby') || (view.viewType == 'href');
+                return _.include(['blob', 'href'], view.type);
             });
             moreViews.sort(function(a, b) { return b.viewCount - a.viewCount });
 
@@ -480,13 +464,16 @@ $(function()
                     {
                         'tbody .item': {
                             'filter<-': {
-                                '.type .cellInner.icon': function(filter) { return blist.dataset.getDisplayType(filter.item); },
-                                '.type@title': function(filter) { return blist.dataset.getDisplayType(filter.item); },
-                                '.type@class+': function(filter) { return ' type' + blist.dataset.getDisplayType(filter.item); },
+                                '.type .cellInner.icon': function(filter)
+                                { return filter.item.displayName.capitalize(); },
+                                '.type@title': function(filter)
+                                { return filter.item.displayName.capitalize(); },
+                                '.type@class+': function(filter)
+                                { return ' type' + filter.item.styleClass; },
 
                                 '.name a': 'filter.name!',
                                 '.name a@title': 'filter.description!',
-                                '.name a@href': function(filter) { return $.generateViewUrl(filter.item); },
+                                '.name a@href': 'filter.url',
 
                                 '.viewed .cellInner': 'filter.viewCount',
 
@@ -520,19 +507,14 @@ $(function()
                 sortHeaders: {0: {sorter: 'text'}, 1: {sorter: 'text'},
                     2: {sorter: 'digit'}, 3: {sorter: false}}
             });
-        },
-        error: function(xhr)
-        {
-            // TODO: handle somehow?
-        }
-    });
+        });
 
     // downloads
     $('.widgetContent_downloads').append(
         $.renderTemplate(
             'downloadsTable',
             { downloadTypes: $.templates.downloadsTable.downloadTypes,
-              viewId: widgetNS.view.id },
+              viewId: blist.dataset.id },
             $.templates.downloadsTable.directive));
     $.templates.downloadsTable.postRender($('.widgetContent_downloads'));
 
@@ -642,10 +624,8 @@ $(function()
                 Math.min(10, allCommentsCount - shownCommentCount) + ' comments');
         }
     };
-    $.ajax({
-        url: '/views/' + widgetNS.view.id + '/comments.json',
-        dataType: 'json',
-        success: function (responseData)
+
+    blist.dataset.getComments(function (responseData)
         {
             allComments = _.reject(responseData, function(comment)
             {
@@ -674,8 +654,7 @@ $(function()
 
                 showMoreComments();                
             }
-        }
-    });
+        });
     $('.commentsViewMoreLink').click(function(event)
     {
         event.preventDefault();

@@ -142,7 +142,7 @@
     configLayersHeatmap.fields[0].minimum = 0;
     configLayersHeatmap.wizard = 'Do you want to add a layer?';
 
-    var isEdit = blist.dataset.getDisplayType(blist.display.view) == 'Map';
+    var isEdit = blist.dataset.type == 'map';
 
     var configName = 'visualize.mapCreate';
     var config =
@@ -151,17 +151,16 @@
         priority: 2,
         title: 'Map',
         subtitle: 'Views with locations can be displayed as points on a map',
-        onlyIf: function(view)
+        onlyIf: function()
         {
-            return _.select(view.columns, function(c)
+            return _.select(blist.dataset.realColumns, function(c)
                 {
-                    return c.dataTypeName == 'location' && (isEdit ||
-                        ($.isBlank(c.flags) || !_.include(c.flags, 'hidden')));
-                }).length > 0 && (!blist.display.isInvalid || isEdit);
+                    return c.dataTypeName == 'location' && (isEdit || !c.hidden);
+                }).length > 0 && (blist.dataset.valid || isEdit);
         },
         disabledSubtitle: function()
         {
-            return blist.display.isInvalid && !isEdit ? 'This view must be valid' :
+            return !blist.dataset.valid && !isEdit ? 'This view must be valid' :
                 'This view must have a location column';
         },
         sections: [
@@ -281,87 +280,57 @@
 
     config.dataSource = function()
     {
-        if (!isEdit) { return null; }
-
-        return blist.dataset.map.convertLegacy(
-            $.extend(true, {}, blist.display.view));
+        return isEdit ? blist.dataset : null;
     };
 
     config.finishCallback = function(sidebarObj, data, $pane, value)
     {
         if (!sidebarObj.baseFormHandler($pane, value)) { return; }
 
-        var view = blist.dataset.baseViewCopy(blist.display.view);
-        view.displayType = 'map';
+        var view = $.extend({displayType: 'map'}, sidebarObj.getFormValues($pane));
 
-        $.extend(view, sidebarObj.getFormValues($pane));
+        blist.dataset.update(view);
 
-        var needsFullReset = blist.display.isInvalid ||
-            view.displayFormat.type !=
-                (blist.display.view.displayFormat || {}).type ||
-            !_.isEqual(view.displayFormat.layers,
-                (blist.display.view.displayFormat || {}).layers);
-
-        var url = '/views' + (isEdit ? '/' + blist.display.view.id : '') + '.json';
-        $.ajax({url: url, type: isEdit ? 'PUT' : 'POST', dataType: 'json',
-            data: JSON.stringify(view), contentType: 'application/json',
-            error: function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); },
-            success: function(resp)
+        if (!isEdit)
+        {
+            blist.dataset.saveNew(function(newView)
             {
                 sidebarObj.finishProcessing();
-                if (!isEdit)
-                { blist.util.navigation.redirectToView(resp); }
-                else
+                newView.redirectTo();
+            },
+            function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); });
+        }
+        else
+        {
+            blist.dataset.save(function(newView)
+            {
+                sidebarObj.finishProcessing();
+
+                $('.currentViewName').text(newView.name);
+
+                var finishUpdate = function()
                 {
-                    $.syncObjects(blist.display.view, resp);
+                    sidebarObj.$dom().socrataAlert(
+                        {message: 'Your map has been updated', overlay: true});
 
-                    $('.currentViewName').text(blist.display.view.name);
+                    sidebarObj.hide();
+                    sidebarObj.addPane(configName);
 
-                    var finishUpdate = function()
-                    {
-                        sidebarObj.$dom().socrataAlert(
-                            {message: 'Your map has been updated', overlay: true});
+                    _.defer(function() { $(window).resize(); });
+                };
 
-                        sidebarObj.hide();
-                        sidebarObj.addPane(configName);
-
-                        $(document).trigger(blist.events.VALID_VIEW);
-                        $(window).resize();
-
-                        _.defer(function()
-                        {
-                            if (needsFullReset)
-                            {
-                                sidebarObj.$grid().socrataMap()
-                                    .reset({displayFormat:
-                                        blist.display.view.displayFormat});
-                            }
-                            else
-                            {
-                                sidebarObj.$grid().socrataMap().reload();
-                            }
-                        });
-                    };
-
-                    var p = blist.display.view.displayFormat.plot;
-                    _.each(_.compact([p.locationId, p.titleId, p.descriptionId,
-                        p.quantityId, p.colorValueId, p.sizeValueId]),
-                    function(tId)
-                    {
-                        var col = _.detect(blist.display.view.columns, function(c)
-                            { return c.tableColumnId == tId; });
-                        if (_.include(col.flags || [], 'hidden'))
-                        {
-                            $.socrataServer.addRequest({url: '/views/' +
-                                blist.display.view.id + '/columns/' + col.id +
-                                '.json', type: 'PUT',
-                                data: JSON.stringify({hidden: false})});
-                        }
-                    });
-                    if (!$.socrataServer.runRequests({success: finishUpdate}))
-                    { finishUpdate(); }
-                }
-            }});
+                var p = newView.displayFormat.plot;
+                var colIds = _([p.locationId, p.titleId, p.descriptionId,
+                    p.quantityId, p.colorValueId, p.sizeValueId]).chain()
+                    .compact()
+                    .map(function(tcId)
+                    { return newView.columnForTCID(tcId).id; })
+                    .value();
+                if (colIds.length > 0)
+                { newView.setVisibleColumns(colIds, finishUpdate); }
+                else { finishUpdate(); }
+            });
+        }
     };
 
     $.gridSidebar.registerConfig(config, 'Map');

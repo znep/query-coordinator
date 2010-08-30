@@ -1,4 +1,4 @@
-.modalContentBox.socrataLoginOnly
+.modalContentBox.narrow
   max-width: 40em
 
 .signupModal
@@ -11,6 +11,8 @@
 .contentBoxInner
   font-size: 1.2em
   padding: 2em
+  &.rpxReturnLogin
+    padding-top: 0
   .column
     width: 29em
 
@@ -27,6 +29,8 @@
   .commonForm .line
     label
       width: 9em
+      &.error
+        width: auto
     input[type='text'], input[type='password']
       width: 15em
 
@@ -38,6 +42,14 @@
 
   .loginSignupForm
     float: left
+
+    .ie7 &
+      .button
+        padding: 0.5em 0
+      .signupForm .button
+        width: 11em
+      .loginForm .button
+        width: 8em
 
     .loginTips
       margin-top: 0.5em

@@ -3,18 +3,18 @@
     var baseConfig =
     {
         priority: 5,
-        onlyIf: function(view)
+        onlyIf: function()
         {
-            return _.all(view.columns, function(c)
+            return _.all(blist.dataset.visibleColumns, function(c)
                 {
                     return !_.include(['document', 'document_obsolete', 'tag',
                         'photo', 'photo_obsolete', 'nested_table'],
-                        c.dataTypeName) || _.include(c.flags || [], 'hidden');
-                }) && !blist.display.isInvalid && !blist.display.isTempView;
+                        c.dataTypeName);
+                }) && blist.dataset.valid && !blist.dataset.temporary;
         },
         disabledSubtitle: function()
         {
-            return blist.display.isInvalid || blist.display.isTempView ?
+            return !blist.dataset.valid || blist.dataset.temporary ?
                 'This view must be valid and saved' :
                 'You cannot upload data into a dataset that contains a photo, ' +
                 'document, nested table, or tags column. ' +
@@ -48,8 +48,11 @@
         if (!sidebarObj.baseFormHandler($pane, value)) { return; }
 
 
+        // In theory, it would be nice to have append/replace functions on
+        // Dataset.  However, that is kind of difficult since it requires doing
+        // a form upload, which is tied rather tightly to the UI
         var vals = sidebarObj.getFormValues($pane);
-        vals.uploadFile._settings.action = '/views/' + blist.display.view.id +
+        vals.uploadFile._settings.action = '/views/' + blist.dataset.id +
             '/rows.txt?method=' + data.uploadType +
             '&skip_headers=' + vals.skipHeader;
         vals.uploadFile._settings.onComplete = function(file, response)
@@ -61,7 +64,7 @@
             }
             else
             {
-                sidebarObj.$grid().blistModel().reloadView();
+                blist.dataset.reload();
                 sidebarObj.$dom().socrataAlert(
                         {message: 'Your dataset has been updated', overlay: true});
                 sidebarObj.hide();

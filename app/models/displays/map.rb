@@ -11,6 +11,10 @@ class Displays::Map < Displays::Base
     [ 'http://serverapi.arcgisonline.com/jsapi/arcgis/?v=1.6' ]
   end
 
+  def required_edit_javascripts
+    ['shared-table-editor']
+  end
+
   def render_javascript_links
     result = super
 
@@ -34,8 +38,7 @@ class Displays::Map < Displays::Base
 
   def render_inline_runtime_js(context)
     js = <<-END
-      blist.$display.socrataMap({displayFormat: blist.display.options,
-        invalid: blist.display.isInvalid});
+      blist.$display.socrataMap({view: blist.dataset});
     END
     super << js
   end

@@ -8,7 +8,7 @@
 
         $feed.find('.feed').feedList({
             comments: comments,
-            mainViewId: blist.display.view.id,
+            mainView: blist.dataset,
             views: views
         });
     };
@@ -45,27 +45,18 @@
     {
         _.defer(function()
         {
-            $.Tache.Get({
-                url: '/views/' + blist.display.view.id + '/comments.json',
-                dataType: 'json', cache: false,
-                success: function(responseData)
+            blist.dataset.getComments(function(responseData)
                 {
                     comments = responseData;
                     if (--pendingRequests === 0)
                         renderFeed();
-                }
-            });
+                });
 
-            $.Tache.Get({ url: '/views.json', data: { method: 'getByTableId',
-                    tableId: blist.display.view.tableId }, cache: false,
-                dataType: 'json', contentType: 'application/json',
-                success: function(responseData)
+            blist.dataset.getRelatedViews(function(relatedViews)
                 {
-                    views = responseData;
-                    if (--pendingRequests === 0)
-                        renderFeed();
-                }
-            });
+                    views = relatedViews.concat(blist.dataset);
+                    if (--pendingRequests === 0) { renderFeed(); }
+                });
         });
     });
 

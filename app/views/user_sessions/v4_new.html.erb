@@ -11,12 +11,13 @@
 
 <%- openid_login = CurrentDomain.module_available?(:openid_login) -%>
 
-<div class="modalContentBox loginModal siteContent <%= openid_login ? 'wide' : 'socrataLoginOnly' %>">
+<div class="modalContentBox loginModal siteContent <%= openid_login ? 'wide' : 'narrow' %>">
   <div class="contentHeader">
     <%= render :partial => 'accounts/v4_login_header' %>
   </div>
   <div class="contentBoxInner loginScreen clearfix">
     <div class="loginSignupForm firstColumn column">
+      <%= display_standard_flashes %>
       <%= render :partial => 'v4_login_form' %>
       <%- unless params[:no_js].present? -%>
         <%= render :partial => 'accounts/v4_signup_form' %>

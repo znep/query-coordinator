@@ -24,12 +24,16 @@ class Displays::Chart < Displays::Base
     [ 'shared-chart' ]
   end
 
+  def required_edit_javascripts
+    ['shared-table-editor']
+  end
+
   def required_stylesheets
     [ 'chart-screen' ]
   end
 
   def render_javascript_links
-    # This is being used for /javascripts/widgets/chart/jit.js and piecharts.
+    # This is being used for /javascripts/widgets/chart/jit.js
     js = <<-END
     <!--[if IE]>
       <script type="text/javascript" src="/javascripts/plugins/excanvas.compiled.js"></script>
@@ -41,8 +45,7 @@ class Displays::Chart < Displays::Base
 
   def render_inline_runtime_js(context)
     js = <<-END
-      blist.$display.socrataChart({displayFormat: blist.display.options,
-        chartType: '#{chart_type}', invalid: blist.display.isInvalid});
+      blist.$display.socrataChart({view: blist.dataset});
     END
     super << js
   end

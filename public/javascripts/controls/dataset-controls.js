@@ -1,10 +1,10 @@
-datasetControlsNS = blist.namespace.fetch('blist.dataset.controls');
+datasetControlsNS = blist.namespace.fetch('blist.datasetControls');
 
-blist.dataset.controls.hookUpShareMenu = function(view, $menu, overrides)
+blist.datasetControls.hookUpShareMenu = function(view, $menu, overrides)
 {
     var tweet = escape('Check out the ' + $.htmlEscape(view.name) +
         ' dataset on ' + blist.configuration.strings.company + ': ');
-    var seoPath = window.location.hostname + $.generateViewUrl(view);
+    var seoPath = window.location.hostname + view.url;
     var shortPath = window.location.hostname.replace(/www\./, '') + '/d/' + view.id;
     var opts = {
         menuButtonContents: 'Socialize',
@@ -29,12 +29,12 @@ blist.dataset.controls.hookUpShareMenu = function(view, $menu, overrides)
     $menu.menu(opts);
 };
 
-blist.dataset.controls.unsavedViewPrompt = function()
+blist.datasetControls.unsavedViewPrompt = function()
 {
     $.live('a', 'click', function(e)
     {
         // We only care about temp views
-        if (!blist.display.isTempView) { return; }
+        if (!blist.dataset.temporary) { return; }
 
         var a = e.currentTarget;
         // Skip links that open a new window
@@ -67,7 +67,7 @@ blist.dataset.controls.unsavedViewPrompt = function()
     });
 };
 
-blist.dataset.controls.showSaveViewDialog = function(customClass, saveCallback,
+blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
     dontSaveCallback)
 {
     var dialogObj = datasetControlsNS.showSaveViewDialog;
@@ -107,18 +107,10 @@ blist.dataset.controls.showSaveViewDialog = function(customClass, saveCallback,
         var doSave = function()
         {
             $dialog.find('.loadingOverlay, .loadingSpinner').removeClass('hide');
-            $.ajax({url: '/views.json', type: 'POST', dataType: 'json',
-                contentType: 'application/json',
-                data: JSON.stringify(blist.dataset.cleanViewForSave($.extend({},
-                    blist.display.view, {name: name}), true)),
-                error: function(xhr)
-                {
-                    $dialog.find('.loadingOverlay, .loadingSpinner')
-                        .addClass('hide');
-                    $dialog.find('.mainError')
-                        .text(JSON.parse(xhr.responseText).message);
-                },
-                success: function(view)
+            blist.dataset.name = name;
+            blist.dataset.saveNew(
+                // Success
+                function(view)
                 {
                     clearCustomClass();
                     $dialog.jqmHide();
@@ -127,9 +119,16 @@ blist.dataset.controls.showSaveViewDialog = function(customClass, saveCallback,
                     if (_.isFunction(dialogObj._saveCallback))
                     { preventRedirect = dialogObj._saveCallback(view); }
 
-                    if (!preventRedirect)
-                    { blist.util.navigation.redirectToView(view); }
-                }});
+                    if (!preventRedirect) { view.redirectTo(); }
+                },
+                // Error
+                function(xhr)
+                {
+                    $dialog.find('.loadingOverlay, .loadingSpinner')
+                        .addClass('hide');
+                    $dialog.find('.mainError')
+                        .text(JSON.parse(xhr.responseText).message);
+                });
         };
 
         if (!$.isBlank(blist.util.inlineLogin))

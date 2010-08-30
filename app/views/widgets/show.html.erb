@@ -165,21 +165,10 @@
     blist.namespace.fetch('blist.widget');
     <%- if !current_user.nil? -%>
       blist.currentUserId = "<%= current_user.id %>";
-      blist.isOwner = <%= current_user.id == @view.owner.id ? 'true' : 'false' %>;
     <%- end -%>
-    blist.widget.viewId = '<%= @view.id %>';
-    blist.widget.view = <%= raw @view.to_json %>;
 
     blist.widget.theme = <%= raw @theme.to_json %>;
     blist.widget.customizationId = '<%= params[:customization_id] || '' %>';
-    blist.widget.isAltView = <%= @view.is_alt_view? ? 'true' : 'false' %>;
-
-    <%- if !@view.is_invalid? && !@view.is_blobby? && @view.can_read? -%>
-    <%# Hard-code parameters for initial call here; if the Javascript ever
-    changes, these will need to be updated %>
-    blist.widget.viewJson = <%= @view.json({'accessType' => 'WIDGET',
-        'method' => 'getByIds', 'meta' => true, 'start' => 0, 'length' => 50}) %>;
-    <%- end -%>
   </script>
 
   <%= raw @display.render_javascript_includes(self) %>

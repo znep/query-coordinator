@@ -3,8 +3,6 @@
     if (blist.sidebarHidden.edit &&
         blist.sidebarHidden.edit.addColumn) { return; }
 
-    var cachedLinkedDatasetOptions = {};
-
     var getTypes = function(data)
     {
         return _(blist.data.types).chain()
@@ -26,14 +24,14 @@
         priority: 1,
         title: 'Add Column',
         subtitle: 'Add a new column to your dataset',
-        onlyIf: function(view)
+        onlyIf: function()
         {
-            return !blist.display.isInvalid && !blist.display.isTempView &&
-                blist.dataset.getDisplayType(blist.display.view) == 'Blist';
+            return blist.dataset.valid && !blist.dataset.temporary &&
+                blist.dataset.type == 'blist';
         },
         disabledSubtitle: function()
         {
-            return blist.display.isInvalid ? 'This view must be valid' :
+            return !blist.dataset.valid ? 'This view must be valid' :
                 'You cannot add a column to a view';
         },
         sections: [
@@ -88,11 +86,11 @@
         // this is done by setting default value to '_selected' and
         // adding _selected attrib = true in the desired option.
                         defaultValue: '_selected',
-                        options: blist.dataset.getLinkedDatasetOptionsDefault,
+                        options: Dataset.getLinkedDatasetOptionsDefault,
                         wizard: 'Select the key column'},
                     {text: 'Label Column', type: 'select', name: 'format.labelColumn',
                         linkedField: 'format.linkedDataset',
-                        options: blist.dataset.getLinkedDatasetOptionsDefault,
+                        options: Dataset.getLinkedDatasetOptionsDefault,
                         wizard: 'Select the label column'}
                 ]
             },
@@ -196,8 +194,6 @@
     {
         sidebarObj.finishProcessing();
 
-        sidebarObj.$grid().blistModel().updateColumn(newCol);
-
         sidebarObj.$dom().socrataAlert(
             {message: 'Your column has been added', overlay: true});
         sidebarObj.hide();
@@ -205,29 +201,21 @@
 
     var convertLocation = function(sidebarObj, column, $pane)
     {
-        $.ajax({url: '/views/' + blist.display.view.id + '/columns.json?' +
-            'method=addressify' +
-            '&deleteOriginalColumns=false' +
-            '&location=' + column.name + '&' +
-            _.map(column.convert, function(v, k) { return k + '=' + v; }).join('&'),
-            type: 'POST', contentType: 'application/json', dataType: 'json',
-            error: function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); },
-            success: function(resp)
+        blist.dataset.addColumn(null,
+            function(newCol)
             {
                 if (!$.isBlank(column.description))
                 {
-                    $.ajax({url: '/views/' + blist.display.viewId +
-                        '/columns/' + resp.id + '.json', type: 'PUT',
-                        contentType: 'application/json', dataType: 'json',
-                        data: JSON.stringify({description: column.description}),
-                        error: function(xhr)
-                        { sidebarObj.genericErrorHandler($pane, xhr); },
-                        success: function(nc) { columnCreated(sidebarObj, nc); }
-                    });
+                    newCol.description = column.description;
+                    newCol.save(function(nc) { columnCreated(sidebarObj, nc); },
+                        function(xhr)
+                        { sidebarObj.genericErrorHandler($pane, xhr); });
                 }
-                else { columnCreated(sidebarObj, resp); }
-            }
-        });
+                else { columnCreated(sidebarObj, newCol); }
+            },
+            function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); },
+            $.extend({method: 'addressify', deleteOriginalColumns: false,
+                location: column.name}, column.convert));
     };
 
 
@@ -248,15 +236,19 @@
             return;
         }
 
-        var url = '/views/' + blist.display.view.id + '/columns';
         if (!$.isBlank((data || {}).parentId))
-        { url += '/' + data.parentId + '/sub_columns'; }
-        url += '.json';
-        $.ajax({url: url, type: 'POST', dataType: 'json',
-            contentType: 'application/json', data: JSON.stringify(column),
-            error: function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); },
-            success: function(nc) { columnCreated(sidebarObj, nc); }
-        });
+        {
+            var parCol = blist.dataset.columnForID(data.parentId);
+            parCol.addChildColumn(column,
+                function(nc) { columnCreated(sidebarObj, nc); },
+                function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); });
+        }
+        else
+        {
+            blist.dataset.addColumn(column,
+                function(nc) { columnCreated(sidebarObj, nc); },
+                function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); });
+        }
     };
 
     $.gridSidebar.registerConfig(config);

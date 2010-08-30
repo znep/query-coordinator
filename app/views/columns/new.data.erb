@@ -102,12 +102,12 @@ blist.common.modalReady = function()
   typeValues.push({id: "nested_table", label: "Nested Table"});
   <%- end -%>
 
-  column.type = "<%= @type.nil? ? "text" : @type %>";
+  column.dataTypeName = "<%= @type.nil? ? "text" : @type %>";
 
   $("#columnCreateDialog #types").combo({
     name: "types",
     values: typeValues,
-    value: column.type,
+    value: column.dataTypeName,
     renderFn: renderValueInfoFormatRow
   });
 
@@ -134,9 +134,9 @@ blist.common.modalReady = function()
       column.name = $("#columnCreateDialog #columnCreate_name:not(.prompt)").val();
       var $desc = $("#columnCreateDialog #description:not(.prompt)");
       column.description = $desc.length > 0 ? $desc.val() : null;
-      column.type = $("#columnCreateDialog #types").value();
+      column.dataTypeName = $("#columnCreateDialog #types").value();
 
-      if (column.type == 'drop_down_list')
+      if (column.dataTypeName == 'drop_down_list')
       { column.dropDownList = {values: picklistManagerCallback()}; }
   };
 
@@ -147,45 +147,33 @@ blist.common.modalReady = function()
 
       updateColumn();
 
-      if (column.type == 'location' && <%= @parent.nil? %>)
+      if (column.dataTypeName == 'location' && <%= @parent.nil? %>)
       {
           $('#gridSidebar').gridSidebar()
             .addPane('locationCreate',
                 {name: column.name,
                   description: column.description,
-                  columnType: column.type});
+                  columnType: column.dataTypeName});
           $('#gridSidebar').gridSidebar().show('locationCreate', true);
           $("#modal").jqmHide();
           return;
       }
 
-      $.ajax({
-        type: "POST",
-        url: '<%= blist_columns_url(@view_id) %><%= @parent.nil? ?
-          '' : "?parent=#{@parent}" %>',
-        cache: false,
-        dataType: 'json',
-        data: {
-          json: JSON.stringify(column),
-          authenticity_token: "<%= form_authenticity_token %>"
-        },
-        error: function(request) {
-          $("#columnCreateDialog .error")
-            .html(JSON.parse(request.responseText).error).show();
-          toggleEnabled();
-        },
-        success: function(responseData) {
-            var $grid = $("#dataGrid");
-            if ($grid.length != 0)
-            {
-              $grid.blistModel()
-                .updateColumn(responseData, <%= @parent.nil? ? 'null' : @parent %>);
-            }
-            $(document).trigger(blist.events.COLUMNS_CHANGED, [responseData.id]);
+      <%- if !@parent.nil? -%>
+      var parCol = blist.dataset.columnForID(<%= @parent %>);
+      parCol.addChildColumn(column,
+      <%- else -%>
+      blist.dataset.addColumn(column,
+      <%- end -%>
+        function(responseData) {
             $.Tache.DeleteAll();
             $("#modal").jqmHide();
-        }
-      });
+        },
+        function(request) {
+          $("#columnCreateDialog .error")
+            .html(JSON.parse(request.responseText).message).show();
+          toggleEnabled();
+        });
   };
 
   $("#columnCreateDialog .columnCreate").submit( function(e) {

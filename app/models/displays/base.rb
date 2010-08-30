@@ -80,15 +80,7 @@ class Displays::Base
     def render_inline_setup_js(target_dom_id, context)
       # Set common base variables communicating display configuration to JS
       js = <<END
-blist.namespace.fetch('blist.display');
-blist.display.name = '#{name}';
-blist.display.type = '#{type}';
-blist.display.viewId = '#{@view.id}';
-blist.display.view = JSON.parse($.htmlUnescape("#{h(@view.to_json.gsub(/\\/, '\\\\\\'))}"));
-blist.display.options = #{@options.to_json};
-blist.display.editable = #{@view.can_edit?};
-blist.display.scrollsInline = #{scrolls_inline?};
-blist.display.isInvalid = !blist.dataset.isValid(blist.display.view);
+blist.dataset = new Dataset(JSON.parse($.htmlUnescape("#{h(@view.to_json.gsub(/\\/, '\\\\\\'))}")));
 $(function() { blist.$display = $('##{target_dom_id}'); });
 END
 

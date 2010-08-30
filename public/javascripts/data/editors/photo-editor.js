@@ -7,13 +7,6 @@
         this.init();
     };
 
-    var baseUrl = function(editObj)
-    {
-        return '/views/' + blist.display.view.id + '/' +
-            (editObj.column.renderTypeName.endsWith('_obsolete') ?
-                'obsolete_' : '') + 'files/';
-    };
-
     var buttonClicked = function(editObj, event)
     {
         var href = $(event.currentTarget).attr('href');
@@ -39,7 +32,7 @@
 
     var showDialog = function(editObj)
     {
-        $.uploadDialog().show(baseUrl(editObj),
+        $.uploadDialog().show(editObj.column.baseUrl(),
                 function(id) { fileUploaded(editObj, id); },
                 function() { editObj.focus(); },
                 ['jpg', 'jpeg', 'gif', 'pjpeg', 'bmp', 'png', 'tif', 'tiff'],
@@ -68,7 +61,7 @@
             $add.hide();
             $editItems.show();
 
-            var url = baseUrl(editObj) + editObj._curVal;
+            var url = editObj.column.baseUrl() + editObj._curVal;
             $d.find('.view').attr('href', url);
             $d.find('img').attr('src', url);
         }

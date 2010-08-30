@@ -246,8 +246,7 @@
     // For now, throw an error when a user tries to create a chart
     // with too many rows
     var rowLimit = 100;
-    if (!$.isBlank(blist.$display.blistModel) &&
-        blist.$display.blistModel().length() > rowLimit)
+    if (blist.dataset.totalRows > rowLimit)
     {
       $("#modal").jqmHide();
       _.defer(function() { alert('Charting is a poor choice for a view with ' +
@@ -541,7 +540,8 @@
               <%- if @is_edit -%>
               $('.viewErrorContainer').hide();
               $('.invalidView').removeClass('invalidView');
-              blist.$display.socrataChart().reload(origOptions);
+              blist.dataset.update({displayFormat: origOptions});
+              blist.$display.socrataChart().reload();
               <%- else -%>
               blist.util.navigation.redirectToView(data.newViewId);
               <%- end -%>
@@ -553,6 +553,6 @@
     $('.vizWrapper form').submit(formSubmit);
     $('.vizWrapper a.create').click(formSubmit);
 
-    $.analytics.trackEvent('Dataset Page Menu', 'Create a Viz dialog opened', blistGridNS.viewId);
+    $.analytics.trackEvent('Dataset Page Menu', 'Create a Viz dialog opened', blist.dataset.id);
   };
 </script>

@@ -62,7 +62,7 @@
         $flash.removeClass('notice').removeClass('error').text('');
 
         // Set up warning message if this is a private view
-        if (!blist.dataset.isPublic(blist.display.view))
+        if (!blist.dataset.isPublic())
         {
             $flash.addClass('notice')
                 .text('Notice: This ' + displayName + ' is currently private. ' +
@@ -81,7 +81,7 @@
                     friends = _.map(_.select(data, function(u)
                         { return !$.isBlank(u.email); }), function(friend)
                     {
-                        return {displayName: friend.displayName,
+                        return {displayName: $.htmlEscape(friend.displayName),
                             email: friend.email, id: friend.id};
                     });
                     autoCompleteForFriends($('.emailRecipient'));
@@ -95,7 +95,7 @@
     // Modal show link
     $.live('#shareMenu .menuEntries .email a', 'click', blist.dialog.sharing);
 
-    var displayName = blist.dataset.getTypeName(blist.display.view);
+    var displayName = blist.dataset.displayName;
     $('.emailDatasetDialog .datasetTypeName').text(displayName);
     $('.emailDatasetDialog .datasetTypeNameUpcase').text(displayName.capitalize());
 
@@ -167,9 +167,7 @@
         e.preventDefault();
         if ($form.valid())
         {
-            var isPublic = blist.dataset.isPublic(blist.display.view);
-            if ($.isBlank(blist.display.view.grants))
-            { blist.display.view.grants = []; }
+            var isPublic = blist.dataset.isPublic();
 
             var message = $form.find('#emailMessage').val();
 
@@ -191,12 +189,7 @@
                         { grant['userId'] = uid; }
 
                         // Create a grant for the user
-                        $.socrataServer.addRequest({
-                            url: '/views/' + blist.display.view.id + '/grants',
-                            type: 'POST',
-                            data: JSON.stringify(grant)
-                        });
-                        blist.display.view.grants.push(grant);
+                        blist.dataset.createGrant(grant, null, null, true);
                     }
                     else
                     {

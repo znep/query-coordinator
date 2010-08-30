@@ -10,10 +10,12 @@
         title: 'Download',
         subtitle: 'Download a copy of this dataset in a static format',
         onlyIf: function()
-        { return blist.display.isGrid && !blist.display.isInvalid; },
+        {
+            return blist.dataset.isGrid() && blist.dataset.valid;
+        },
         disabledSubtitle: function()
         {
-            return blist.display.isInvalid ? 'This view must be valid' :
+            return !blist.dataset.valid ? 'This view must be valid' :
                 'Only tabular data may be downloaded';
         },
         sections: [
@@ -22,7 +24,7 @@
                     template: 'downloadsTable',
                     directive: $.templates.downloadsTable.directive,
                     data: { downloadTypes: $.templates.downloadsTable.downloadTypes,
-                            viewId: blist.display.view.id },
+                            viewId: blist.dataset.id },
                     callback: function($sect)
                     {
                         $sect.find('.downloadsList .item a').downloadToFormCatcher();

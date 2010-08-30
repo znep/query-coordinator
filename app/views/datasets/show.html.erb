@@ -319,7 +319,6 @@
 
     <%- if !current_user.nil? -%>
       blist.currentUserId = '<%= current_user.id %>';
-      blist.isOwner = <%= current_user.id == @view.owner.id ? 'true' : 'false' %>;
     <%- end -%>
 
     <%# Namespace to keep track of disabled sidebar sections %>
@@ -345,7 +344,8 @@
 
     <%# Filter pane %>
     blist.sidebarHidden.filter = blist.sidebarHidden.filter || {};
-    blist.sidebarHidden.filter.filterDataset = <%= @view.is_alt_view? %>;
+    blist.sidebarHidden.filter.filterDataset = <%= !@view.is_tabular? ||
+      @view.is_form? %>;
     blist.sidebarHidden.filter.showHide = <%= @view.is_alt_view? ||
       !@view.has_rights?('update_view') %>;
 
@@ -396,7 +396,7 @@
     blist.recaptchaPublicKey = '<%= APP_CONFIG['recaptcha_public_key'] %>';
   </script>
 
-  <%- if !@view.is_blobby? -%>
+  <%- if @view.is_tabular? -%>
   <%= raw @view.display.render_edit_javascript_includes(self) %>
   <%- end -%>
   <%= raw @view.display.render_javascript_includes(self) %>

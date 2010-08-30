@@ -30,13 +30,14 @@
                 dojo.addOnLoad(function()
                 {
                     var options = {};
-                    if (mapObj._displayConfig.zoom !== undefined)
-                    { options.zoom = mapObj._displayConfig.zoom; }
+                    if (!$.isBlank(mapObj.settings.view.displayFormat.zoom))
+                    { options.zoom = mapObj.settings.view.displayFormat.zoom; }
 
-                    mapObj._extentSet = mapObj._displayConfig.extent !== undefined;
+                    mapObj._extentSet =
+                        !$.isBlank(mapObj.settings.view.displayFormat.extent);
                     if (mapObj._extentSet)
                     { options.extent = new esri.geometry
-                        .Extent(mapObj._displayConfig.extent); }
+                        .Extent(mapObj.settings.view.displayFormat.extent); }
                     mapObj.map = new esri.Map(mapObj.$dom().attr('id'), options);
 
                     dojo.connect(mapObj.map, 'onLoad', function()
@@ -46,7 +47,7 @@
                         { mapObj.renderData(mapObj._rows); }
                     });
 
-                    var layers = mapObj._displayConfig.layers ||
+                    var layers = mapObj.settings.view.displayFormat.layers ||
                         mapObj.settings.defaultLayers;
                     if (!$.isArray(layers) || !layers.length)
                     {
@@ -58,8 +59,8 @@
                     for (var i = 0; i < layers.length; i++)
                     {
                         var layer = layers[i];
-                        if (layer === undefined || layer === null ||
-                            (layer.url === undefined && layer.custom_url === undefined))
+                        if ($.isBlank(layer) ||
+                            ($.isBlank(layer.url) && $.isBlank(layer.custom_url)))
                         { continue; }
 
                         switch (layer.type)
@@ -83,7 +84,8 @@
                                 continue;
                         }
 
-                        layer = new constructor(layer.custom_url || layer.url, layer.options);
+                        layer = new constructor(layer.custom_url || layer.url,
+                            layer.options);
 
                         dojo.connect(layer, 'onLoad', function()
                         {
@@ -98,43 +100,41 @@
                         });
                     }
 
-                    // Not sure we want to be saving every single update a user
-                    // makes to a map
-                    //mapObj.map.onPanEnd = function(extent)
-                    //{ mapObj.updateMap({ extent: extent }); }
-
-                    //mapObj.map.onZoomEnd = function(extent, factor)
-                    //{ mapObj.updateMap({ extent: extent, zoom: factor }); }
-
                     mapObj._multipoint = new esri.geometry.Multipoint
                         (mapObj.map.spatialReference);
 
                     mapObj.buildIdentifyTask();
 
                     blist.$display.find('.infowindow .hide').removeClass('hide')
-                                                            .addClass('hide_infowindow');
+                        .addClass('hide_infowindow');
                 });
             },
 
             buildIdentifyTask: function()
             {
                 var mapObj = this;
-                mapObj._identifyConfig = mapObj._displayConfig.identifyTask;
+                mapObj._identifyConfig =
+                    mapObj.settings.view.displayFormat.identifyTask;
 // mapObj._identifyConfig = { // Test!
 //     url: "http://navigator.state.or.us/ArcGIS/rest/services/Projects/ARRA_Unemployment/MapServer",
 //     layerId: 2,
 //     attributes: [{key:'March2010',text:'Unemployment Rate in March 2010'}]
 // };
-                if (!mapObj._identifyConfig || !mapObj._identifyConfig.url || !mapObj._identifyConfig.layerId
-                    || !mapObj._identifyConfig.attributes || mapObj._identifyConfig.attributes.length == 0)
+                if (!mapObj._identifyConfig || !mapObj._identifyConfig.url ||
+                    !mapObj._identifyConfig.layerId
+                    || !mapObj._identifyConfig.attributes ||
+                    mapObj._identifyConfig.attributes.length == 0)
                 { return; }
 
-                dojo.connect(mapObj.map, 'onClick', function(evt) { identifyFeature(mapObj, evt); });
+                dojo.connect(mapObj.map, 'onClick',
+                    function(evt) { identifyFeature(mapObj, evt); });
                 mapObj._identifyParameters = new esri.tasks.IdentifyParameters();
                 mapObj._identifyParameters.tolerance = 3;
                 mapObj._identifyParameters.returnGeometry = false;
-                mapObj._identifyParameters.layerIds = [mapObj._identifyConfig.layerId];
-                mapObj._identifyParameters.layerOption = esri.tasks.IdentifyParameters.LAYER_OPTION_ALL;
+                mapObj._identifyParameters.layerIds =
+                    [mapObj._identifyConfig.layerId];
+                mapObj._identifyParameters.layerOption =
+                    esri.tasks.IdentifyParameters.LAYER_OPTION_ALL;
                 mapObj._identifyParameters.width  = mapObj.map.width;
                 mapObj._identifyParameters.height = mapObj.map.height;
             },
@@ -278,7 +278,8 @@
                     mapObj.$dom().before('<div id="mapLegend">' +
                         '<div class="contentBlock">' +
                         '<h3>' + name +
-                        '</h3><div style="width: ' + (mapObj._numSegments*SWATCH_WIDTH) +
+                        '</h3><div style="width: ' +
+                        (mapObj._numSegments*SWATCH_WIDTH) +
                         'px;"><ul></ul><span></span>' +
                         '<span style="float: right;"></span></div>' +
                         '</div></div>');
@@ -289,7 +290,8 @@
                 $ul.empty();
                 _.each(gradient, function(color)
                     {
-                        $ul.append( $("<div class='color_swatch'><div class='inner'>&nbsp;</div></div>")
+                        $ul.append( $("<div class='color_swatch'>" +
+                            "<div class='inner'>&nbsp;</div></div>")
                                 .css('background-color', color)
                             );
                     }
@@ -331,7 +333,8 @@
             return null;
         };
 
-        var customization = customRender(details) || { type: 'simple', key: 'default' };
+        var customization = customRender(details) ||
+            { type: 'simple', key: 'default' };
         if (mapObj._esriSymbol[customization.key])
         { return mapObj._esriSymbol[customization.key]; }
 
@@ -340,7 +343,8 @@
         {
             var key = customization.key;
 
-            mapObj._esriSymbol[key] = new esri.symbol.PictureMarkerSymbol(customization.icon, 10, 10);
+            mapObj._esriSymbol[key] =
+                new esri.symbol.PictureMarkerSymbol(customization.icon, 10, 10);
             var image = new Image();
             image.onload = function() {
                 mapObj._esriSymbol[key].setHeight(image.height);
@@ -362,7 +366,7 @@
                 borderWidth: 1
             };
 
-            $.extend(symbolConfig, mapObj._displayConfig.plot);
+            $.extend(symbolConfig, mapObj.settings.view.displayFormat.plot);
             var symbolBackgroundColor =
                 new dojo.Color(symbolConfig.backgroundColor);
             symbolBackgroundColor.a = customization.opacity || 0.8;
@@ -389,10 +393,13 @@
         if (!mapObj._identifyParameters) { return; }
         mapObj._identifyParameters.geometry = evt.mapPoint;
         mapObj._identifyParameters.mapExtent = mapObj.map.extent;
+
         mapObj.map.infoWindow.setContent("Loading...").setTitle('')
-                             .show(evt.screenPoint, mapObj.map.getInfoWindowAnchor(evt.screenPoint));
+            .show(evt.screenPoint, mapObj.map.getInfoWindowAnchor(evt.screenPoint));
+
         new esri.tasks.IdentifyTask(mapObj._identifyConfig.url)
-                      .execute(mapObj._identifyParameters, function(idResults) { displayIdResult(mapObj, evt, idResults[0]); });
+            .execute(mapObj._identifyParameters,
+            function(idResults) { displayIdResult(mapObj, evt, idResults[0]); });
     };
 
     var displayIdResult = function(mapObj, evt, idResult)
@@ -401,9 +408,12 @@
 
         var feature = idResult.feature;
         var info = _.map(mapObj._identifyConfig.attributes, function(attribute)
-        { return attribute.text + ': ' + feature.attributes[attribute.key]; }).join('<br />');
-        mapObj.map.infoWindow.setContent(info).setTitle(feature.attributes[idResult.displayFieldName])
-                             .show(evt.screenPoint, mapObj.map.getInfoWindowAnchor(evt.screenPoint));
+        { return attribute.text + ': ' +
+            feature.attributes[attribute.key]; }).join('<br />');
+
+        mapObj.map.infoWindow.setContent(info)
+            .setTitle(feature.attributes[idResult.displayFieldName])
+            .show(evt.screenPoint, mapObj.map.getInfoWindowAnchor(evt.screenPoint));
     };
 
 })(jQuery);

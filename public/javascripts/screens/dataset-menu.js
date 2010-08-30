@@ -19,14 +19,12 @@ blist.datasetMenu.menuHandler = function(event)
     {
         case 'sort':
             var url = s.slice(1).join('_');
-            var model = $('.blist-table').blistModel();
-            var view = model.meta().view;
             var params = [];
 
             var sortIds = {};
-            if (view.query.orderBys !== undefined)
+            if (!$.isBlank((blist.dataset.query || {}).orderBys))
             {
-                var sorts = $.map(view.query.orderBys, function(o, i)
+                var sorts = _.map(blist.dataset.query.orderBys, function(o)
                 {
                     sortIds[o.expression.columnId] = true;
                     return o.expression.columnId + ':' +
@@ -37,13 +35,12 @@ blist.datasetMenu.menuHandler = function(event)
             }
             else { params.push('sorts='); }
 
-            if (model.isGrouped())
+            if (blist.dataset.isGrouped())
             {
-                var unsorts = $.map(view.columns, function(c, i)
+                var unsorts = _.compact(_.map(blist.dataset.realColumns, function(c)
                 {
-                    if (c.dataTypeName !== 'meta_data' && !sortIds[c.id])
-                    { return c.id; }
-                });
+                    if (!sortIds[c.id]) { return c.id; }
+                }));
                 if (unsorts.length > 0)
                 { params.push('unsorts=' + unsorts.join(',')); }
             }
@@ -53,29 +50,26 @@ blist.datasetMenu.menuHandler = function(event)
             break;
         case 'group':
             var url = s.slice(1).join('_');
-            var model = $('.blist-table').blistModel();
-            var view = model.meta().view;
             var params = [];
             var groups = '';
-            if (model.isGrouped())
+            if (blist.dataset.isGrouped())
             {
-                groups = $.map(view.query.groupBys, function(g, i)
+                groups = _.map(blist.dataset.query.groupBys, function(g)
                     { return g.columnId; }).join(',');
             }
             params.push('groups=' + groups);
 
             var aggs = [];
-            $.each(view.columns, function(i, c)
+            _.each(blist.dataset.realColumns, function(c)
             {
-                if (c.format !== undefined &&
-                    c.format.grouping_aggregate !== undefined)
+                if (!$.isBlank(c.format.grouping_aggregate))
                 {
                     aggs.push(c.id + ':' + c.format.grouping_aggregate);
                 }
             });
             params.push('aggs=' + aggs.join(','));
 
-            if ($('.blist-table').datasetGrid().isTempView)
+            if (blist.dataset.temporary)
             { params.push('isTempView=true'); }
 
             if (params.length > 0) { url += '?' + params.join('&'); }
@@ -100,8 +94,8 @@ blist.datasetMenu.menuHandler = function(event)
             break;
         case 'hide-show-col':
             var $li = $target.closest('li');
-            $('.blist-table').datasetGrid().showHideColumns(actionId,
-                $li.hasClass('checked'));
+            blist.dataset.columnForID(actionId).setVisible(
+                !$li.hasClass('checked'));
             break;
         case 'delete-col':
             $('.blist-table').datasetGrid().deleteColumns(actionId);

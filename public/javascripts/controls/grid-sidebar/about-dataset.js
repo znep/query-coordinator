@@ -24,16 +24,12 @@
                                 {
                                     blist.util.doAuthedAction('rate this dataset', function()
                                     {
-                                        $.ajax({
-                                            url: '/views/' + blist.display.view.id + '/ratings.json',
-                                            type: 'post',
-                                            contentType: 'application/json',
-                                            dataType: 'json',
-                                            data: JSON.stringify({
+                                        blist.dataset.updateRating(
+                                            {
                                                 type: $star.attr('data-rating-type'),
                                                 rating: (value * 20)
-                                            }),
-                                            success: function(responseData)
+                                            },
+                                            function(responseData)
                                             {
                                                 // If the type is returned, that means it's newly created.
                                                 // Update totals
@@ -44,7 +40,7 @@
                                                 }
                                                 $star.attr('title', '');
                                             }
-                                        });
+                                        );
                                     });
                                 }
                             });
@@ -84,12 +80,12 @@
                             if (type == 'other')
                             {
                                 subject = 'A visitor has sent you a message about your "' +
-                                      blist.display.view.name + '" ' +
+                                      blist.dataset.name + '" ' +
                                       blist.configuration.strings.company + ' dataset';
                             }
                             else
                             {
-                                subject = 'Your dataset "' + blist.display.view.name + '" has been flagged ';
+                                subject = 'Your dataset "' + blist.dataset.name + '" has been flagged ';
                                 switch (type)
                                 {
                                     case 'copyright_violation':

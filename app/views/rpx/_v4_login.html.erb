@@ -1,0 +1,30 @@
+<div class="authProvider socrata">
+  <span class="iconContainer">
+    <span class="icon"></span>
+  </span>
+  <span class="description">
+    Sign in with your
+    <strong><%= MASTER_DOMAIN_PREFS['strings.company'] %> ID</strong>
+  </span>
+</div>
+<% if flash[:notice_login]  %>
+  <div class="flash notice"><%= flash[:notice_login] %></div>
+<% else %>
+  <p class="chooseMessage loginTips">After signing in, your 3rd-party credentials will be associated with this
+  account.</p>
+<% end %>
+
+<% form_for @user_session, :url => rpx_login_path do |f| %>
+  <%# Save off the form fields from the signup side, in case they change their mind
+      and go create a new account. %>
+  <% fields_for :signup, @signup do |signup|  %>
+    <%= signup.hidden_field :openIdIdentifierId %>
+    <%= signup.hidden_field :firstName %>
+    <%= signup.hidden_field :lastName %>
+    <%= signup.hidden_field :email %>
+    <%= signup.hidden_field :emailConfirm %>
+    <%= signup.hidden_field :login %>
+  <% end %>
+  <%= render :partial => 'user_sessions/v4_login_form_data', :locals => { :f => f } %>
+<% end %>
+

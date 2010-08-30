@@ -11,22 +11,11 @@
                 type: $line.find('.type').val().toLowerCase()}
     };
 
-    var modifyShare = function($line, method, type, data, successFunction)
+    var commonError = function()
     {
-        $.ajax({
-            url: '/api/views/' + blist.display.view.id + '/grants/' + method,
-            contentType: 'application/json',
-            dataType: 'json',
-            type: type,
-            data: JSON.stringify(data),
-            error: function(request, textStatus, errorThrown)
-            {
-                $('#gridSidebar_shareDataset .sharingFlash').addClass('error')
-                    .text('There was an error modifying your shares. Please try again later');
-            },
-            success: successFunction
-        });
-    }
+        $('#gridSidebar_shareDataset .sharingFlash').addClass('error')
+            .text('There was an error modifying your shares. Please try again later');
+    };
 
     // Send an update request to the C.S. to delete the grant
     var removeShare = function(event)
@@ -34,50 +23,31 @@
         event.preventDefault();
         var $line = $(event.target).closest('.line');
 
-        modifyShare($line, 'i?method=delete', 'PUT',
-            createGrantObject($line),
-            function(responseData)
+        blist.dataset.removeGrant(createGrantObject($line),
+            function()
             {
                 $line.slideToggle();
-                var newGrants = _.reject(blist.display.view.grants || [],
-                    function(grant)
-                    {
-                        return ((!$.isBlank(grant.userId) &&
-                                    grant.userId == $line.attr('data-uid')) ||
-                                (!$.isBlank(grant.userEmail) &&
-                                    grant.userEmail == $line.attr('data-email')));
-                    });
-                blist.display.view.grants = newGrants;
                 updateShareText($line.closest('form'));
-            });
+            }, commonError);
     };
 
-    // The most beautiful code you have ever seen
     var changeShare = function(event)
     {
         var $line = $(event.target).closest('.line');
 
         var existingGrant = createGrantObject($line);
 
-        // Core server only accepts creation or deletion for grants, so...
-        modifyShare($line, 'i?method=delete', 'PUT',
+        blist.dataset.replaceGrant(
             $.extend({}, existingGrant, {type: $line.attr('data-currtype')}),
-            function(responseData)
+            existingGrant,
+            function()
             {
-                // Now make a POST (create) request
-                modifyShare($line, '', 'POST',
-                    existingGrant,
-                    function(responseData)
-                    {
-                        $('#gridSidebar_shareDataset .sharingFlash').removeClass('error')
-                            .addClass('notice')
-                            .text('Your permissions have been updated');
-                        // Update the hidden type in case they update again
-                        $line.attr('data-currtype', existingGrant.type);
-                    }
-                );
-            }
-        );
+                $('#gridSidebar_shareDataset .sharingFlash').removeClass('error')
+                    .addClass('notice')
+                    .text('Your permissions have been updated');
+                // Update the hidden type in case they update again
+                $line.attr('data-currtype', existingGrant.type);
+            }, commonError);
     };
 
     var grabShares = function(context, grants)
@@ -110,7 +80,8 @@
         });
         // Then match up with the grants
         if (!$.socrataServer.runRequests({
-                success: function(response) { sharesRenderCallback(context, shares); }
+                success: function(response)
+                { sharesRenderCallback(context, shares); }
             }))
         { sharesRenderCallback(context, shares); }
     };
@@ -150,40 +121,24 @@
     {
         event.preventDefault();
 
-        var view = blist.display.view;
-        var isPublic = blist.dataset.isPublic(view);
         var $link = $(event.target);
 
-        var serverValue = isPublic ? 'private' : $link.attr('data-public-perm');
+        var serverValue = blist.dataset.isPublic() ?
+            'private' : $link.attr('data-public-perm');
 
-        $.ajax({
-            url: '/api/views/' + view.id,
-            data: {'method': 'setPermission', 'value': serverValue},
-            success: function(responseData)
+        blist.dataset['make' + (blist.dataset.isPublic() ? 'Private' : 'Public')](
+            function()
             {
-                $link.text(isPublic ? 'Private' : 'Public');
-                if (!isPublic)
-                {
-                    if ($.isBlank(blist.display.view.grants))
-                    { blist.display.view.grants = []; }
-
-                    blist.display.view.grants.push({
-                        flags: ['public']
-                    });
-                }
-                else
-                {
-                    // Manually pull out the public grants
-                    blist.display.view.grants = getNonPublicGrants(blist.display.view.grants);
-                }
+                $link.text(blist.dataset.isPublic() ? 'Public' : 'Private');
                 $('#gridSidebar').gridSidebar().updateEnabledSubPanes();
             },
-            error: function(request, textStatus, errorThrown)
+            function(request, textStatus, errorThrown)
             {
                 $('#gridSidebar_shareDataset .sharingFlash').addClass('error')
-                    .text('There was an error modifying your dataset permissions. Please try again later');
+                    .text('There was an error modifying your dataset ' +
+                        'permissions. Please try again later');
             }
-        });
+        );
     };
 
     var updateShareText = function(context)
@@ -191,7 +146,7 @@
         var $span = context.find('.andSharedHint');
         var $friends = context.find('.friendsHint');
 
-        var friends = getNonPublicGrants(blist.display.view.grants);
+        var friends = blist.dataset.userGrants();
         if (friends.length == 0)
         {
             $span.addClass('hide');
@@ -205,16 +160,7 @@
         }
     };
 
-    var getNonPublicGrants = function(grants)
-    {
-        return _.reject(grants || [],
-            function(g)
-            {
-                return _.include(g.flags || [], 'public');
-            });
-    };
-
-    var displayName = blist.dataset.getTypeName(blist.display.view);
+    var displayName = blist.dataset.displayName;
 
     var config =
     {
@@ -223,9 +169,9 @@
         title: 'Sharing',
         subtitle: 'Manage sharing and permissions of this ' + displayName,
         noReset: true,
-        onlyIf: function(view)
+        onlyIf: function()
         {
-            return !blist.display.isInvalid && !blist.display.isTempView;
+            return blist.dataset.valid && !blist.dataset.temporary;
         },
         disabledSubtitle: function()
         {
@@ -250,17 +196,12 @@
                         $formElem.find('.shareNotifyLink').click(function(event)
                         {
                             event.preventDefault();
-                            $.ajax({
-                                url: '/api/views/' + blist.display.view.id + '.json?method=notifyUsers',
-                                method: 'POST',
-                                success: function(responseData) {
-                                    $formElem.find('.shareNoticeSent').fadeIn();
-                                }
-                            });
+                            blist.dataset.notifyUsers(function(responseData)
+                                { $formElem.find('.shareNoticeSent').fadeIn(); });
                         });
 
                         // If the publicness is inherited from the parent dataset, they can't make it private
-                        var publicGrant = _.detect(blist.display.view.grants || [], function(grant)
+                        var publicGrant = _.detect(blist.dataset.grants || [], function(grant)
                             {
                                 return _.include(grant.flags || [], 'public');
                             }),
@@ -269,18 +210,19 @@
                         if ($.isBlank(publicGrant) || publicGrant.inherited == false)
                         {
                             $toggleLink.click(togglePermissions)
-                                .text(blist.dataset.isPublic(blist.display.view) ? 'Public' : 'Private');
+                                .text(blist.dataset.isPublic() ? 'Public' : 'Private');
                         }
                         else
                         { $toggleLink.replaceWith($('<span>Public</span>')); }
 
                         $formElem.find('.datasetTypeName').text(displayName);
-                        $formElem.find('.datasetTypeNameUpcase').text(displayName.capitalize());
+                        $formElem.find('.datasetTypeNameUpcase')
+                            .text(displayName.capitalize());
 
                         // When this pane gets refreshed, update to reflect who it's shared with
                         updateShareText($formElem);
 
-                        var grants = getNonPublicGrants(blist.display.view.grants);
+                        var grants = blist.dataset.userGrants();
 
                         // If they have no shares
                         if ($.isBlank(grants) || grants.length == 0)

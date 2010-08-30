@@ -22,14 +22,10 @@
         var socrataMap = $(this[0]).data("socrataVisualization");
         if (!socrataMap)
         {
-            var mapType;
-            if (_.include(['geomap', 'intensitymap'], blist.display.view.displayType))
-            { mapType = 'heatmap'; }
-            else
-            { mapType = options.displayFormat.type || 'google'; }
+            var mapType = options.view.displayFormat.type || 'google';
 
             var mapClass = $.socrataMap[mapType];
-            if (mapClass !== null && mapClass !== undefined)
+            if (!$.isBlank(mapClass))
             {
                 socrataMap = new mapClass(options, this[0]);
             }
@@ -62,7 +58,8 @@
 
                 if (mapObj.$dom().siblings('#mapLayers').length < 1)
                 {
-                    mapObj.$dom().before('<div id="mapLayers" class="commonForm hide">' +
+                    mapObj.$dom()
+                        .before('<div id="mapLayers" class="commonForm hide">' +
                         '<a href="#toggleLayers" class="toggleLayers">' +
                         'Layer Options' +
                         '</a>' +
@@ -94,7 +91,7 @@
                     var index = parseInt(rows.filter(':visible:first')
                                              .attr('id').split('_')[2]);
 
-                    var new_index = cmd == 'next' ? index+rowsPerPage 
+                    var new_index = cmd == 'next' ? index+rowsPerPage
                                                   : index-rowsPerPage;
                     new_index--; // :gt needs one less.
                     if (new_index < -1) return;
@@ -120,9 +117,34 @@
                         $("#prev_"+id+", #next_"+id).show();
                     }
                 });
+
+                mapObj._origData = {valid: mapObj.settings.view.valid,
+                    mapType: mapObj.settings.view.displayFormat.type,
+                    layers: mapObj.settings.view.displayFormat.layers};
+
+                mapObj.ready();
             },
 
-            reset: function(newOptions)
+            columnsLoaded: function()
+            {
+                var mapObj = this;
+                if (mapObj.buildLegend && mapObj._colorValueCol)
+                {
+                    if (!mapObj._gradient)
+                    {
+                        mapObj._gradient = $.gradient(mapObj._numSegments,
+                                mapObj.settings.view.displayFormat.color ||
+                                "#0000ff");
+                    }
+
+                    mapObj.buildLegend(mapObj._colorValueCol.name,
+                        _.map(mapObj._gradient,
+                              function(c) { return "#"+$.rgbToHex(c); }
+                    ));
+                }
+            },
+
+            reset: function()
             {
                 var mapObj = this;
                 mapObj.$dom().removeData('socrataVisualization');
@@ -130,7 +152,17 @@
                 // We need to change the ID so that maps (such as ESRI) recognize
                 // something has changed, and reload properly
                 mapObj.$dom().attr('id', mapObj.$dom().attr('id') + 'n');
-                mapObj.$dom().socrataMap(newOptions);
+                mapObj.$dom().socrataMap(mapObj.settings);
+            },
+
+            needsFullReset: function()
+            {
+                var od = this._origData || {};
+                var view = this.settings.view;
+                return view.valid !== od.valid ||
+                    view.displayFormat.type != od.mapType ||
+                    !_.isEqual(view.displayFormat.layers,
+                            od.layers);
             },
 
             reloadVisualization: function()
@@ -146,10 +178,9 @@
                 mapObj._rows = [];
                 mapObj._gradient = undefined;
 
-                mapObj._idIndex = undefined;
                 mapObj._locCol = undefined;
-                mapObj._latIndex = undefined;
-                mapObj._longIndex = undefined;
+                mapObj._latCol = undefined;
+                mapObj._longCol = undefined;
                 mapObj._titleCol = undefined;
                 mapObj._infoCol = undefined;
                 mapObj._infoIsHtml = false;
@@ -172,7 +203,8 @@
                         '"' + (l.visible ? ' checked="checked"' : '') +
                         ' /><label for="' + lId + '">' + l.name + '</label><br />' +
                         '<span class="sliderControl" data-min="0" data-max="100" ' +
-                        'data-origvalue="' + (mapObj.map.getLayer(l.id).opacity*100) + '" /></li>');
+                        'data-origvalue="' +
+                        (mapObj.map.getLayer(l.id).opacity*100) + '" /></li>');
                 });
                 $layersList.find('.sliderControl').each(function()
                 {
@@ -181,13 +213,15 @@
                         max: parseInt($slider.attr('data-max')),
                         value: parseInt($slider.attr('data-origvalue'))});
                     $slider.after($.tag(
-                        {tagName: 'input', type: 'text', value: $slider.attr('data-origvalue'),
+                        {tagName: 'input', type: 'text',
+                        value: $slider.attr('data-origvalue'),
                         readonly: true, 'class': 'sliderInput'}
                     , true));
                     $slider.bind('slide', function(event, ui)
                     {
                         var $_this = $(this);
-                        mapObj.map.getLayer($_this.parent().attr('data-layerid')).setOpacity(ui.value/100);
+                        mapObj.map.getLayer($_this.parent()
+                            .attr('data-layerid')).setOpacity(ui.value/100);
                         $_this.next(':input').val(ui.value);
                     });
                 });
@@ -199,10 +233,11 @@
                     if (layer)
                     { mapObj.map.reorderLayer(layer, index); }
                 };
-                $layersList.sortable({containment: 'parent', placeholder: 'ui-state-highlight',
-                                      forcePlaceholderSize: true, tolerance: 'pointer',
-                                      update: reorderLayers, cancel: 'a.ui-slider-handle'
-                            });
+                $layersList.sortable({containment: 'parent',
+                    placeholder: 'ui-state-highlight',
+                    forcePlaceholderSize: true, tolerance: 'pointer',
+                    update: reorderLayers, cancel: 'a.ui-slider-handle'
+                });
 
                 $layers.find(':checkbox').click(function(e)
                 {
@@ -217,36 +252,6 @@
             setLayer: function(layerId, isDisplayed)
             {
                 // Implement me
-            },
-
-            updateMap: function(settings)
-            {
-                var mapObj = this;
-                // Can't save settings w/ out editable view
-                if (!blist.display.editable) { return; }
-
-                // Gather state information
-                var zoom = settings.zoom;
-                if (zoom !== undefined) { mapObj._displayConfig.zoom = zoom; }
-                var extent = settings.extent;
-                if (extent !== undefined)
-                {
-                    mapObj._displayConfig.extent = {
-                        xmin: extent.xmin,
-                        ymin: extent.ymin,
-                        xmax: extent.xmax,
-                        ymax: extent.ymax,
-                        spatialReference: { wkid: extent.spatialReference.wkid }
-                    };
-                }
-
-                // Write to server
-                $.ajax({ url: '/views/' + blist.display.viewId + '.json',
-                        type: 'PUT',
-                        contentType: 'application/json',
-                        data: JSON.stringify(
-                            { displayFormat: mapObj._displayConfig })
-                    });
             },
 
             initializeMap: function()
@@ -272,8 +277,8 @@
                 { return true; }
 
                 if (_.isUndefined(mapObj._locCol) &&
-                    (_.isUndefined(mapObj._latIndex) ||
-                     _.isUndefined(mapObj._longIndex)))
+                    (_.isUndefined(mapObj._latCol) ||
+                     _.isUndefined(mapObj._longCol)))
                 {
                     mapObj.errorMessage = 'No columns defined';
                     return false;
@@ -283,15 +288,15 @@
                 var longVal;
                 if (!_.isUndefined(mapObj._locCol))
                 {
-                    var loc = row[mapObj._locCol.dataIndex];
+                    var loc = row[mapObj._locCol.id];
                     if (_.isNull(loc)) { return true; }
-                    lat = parseFloat(loc[mapObj._locCol.latSubIndex]);
-                    longVal = parseFloat(loc[mapObj._locCol.longSubIndex]);
+                    lat = parseFloat(loc.latitude);
+                    longVal = parseFloat(loc.longitude);
                 }
                 else
                 {
-                    lat = row[mapObj._latIndex];
-                    longVal = row[mapObj._longIndex];
+                    lat = row[mapObj._latCol.id];
+                    longVal = row[mapObj._longCol.id];
                 }
 
                 // Incomplete points will be safely ignored
@@ -311,10 +316,12 @@
                 if (!mapObj._llKeys[rowKey])
                 {
                     mapObj._llKeys[rowKey] = { title: [], info: [] };
-                    mapObj._llKeys[rowKey].id = row[mapObj._idIndex];
+                    mapObj._llKeys[rowKey].id = row.id;
                 }
-                mapObj._llKeys[rowKey].title.push(getText(row, mapObj._titleCol, true));
-                mapObj._llKeys[rowKey].info.push(getText(row, mapObj._infoCol, false));
+                mapObj._llKeys[rowKey].title.push(getText(row,
+                    mapObj._titleCol, true));
+                mapObj._llKeys[rowKey].info.push(getText(row,
+                    mapObj._infoCol, false));
 
                 var title = _.compact(mapObj._llKeys[rowKey].title).join(', ');
                 if (title.length > 50) { title = title.slice(0, 50) + "..."; }
@@ -362,20 +369,16 @@
                 }
 
                 var details = {title: title, info: info};
-                if (mapObj._iconCol && row[mapObj._iconCol.dataIndex])
+                if (mapObj._iconCol && row[mapObj._iconCol.id])
                 {
                     var icon;
                     if (mapObj._iconCol.dataTypeName == 'url')
                     {
-                        icon = row[mapObj._iconCol.dataIndex]
-                            [mapObj._iconCol.urlSubIndex];
+                        icon = row[mapObj._iconCol.id].url;
                     }
                     else
                     {
-                        icon = '/views/' + blist.display.view.id + '/' +
-                            (mapObj._iconCol.renderTypeName.endsWith('_obsolete') ?
-                                'obsolete_' : '') + 'files/' +
-                            row[mapObj._iconCol.dataIndex];
+                        icon = mapObj._iconCol.baseUrl() + row[mapObj._iconCol.id];
                     }
                     if (icon) { details.icon = icon; }
                 }
@@ -383,7 +386,8 @@
                 {
                     for (var i = 0; i < mapObj._numSegments; i++)
                     {
-                        if (parseFloat(row[mapObj._sizeValueCol.dataIndex]) <= mapObj._sizeValueCol._segments[i])
+                        if (parseFloat(row[mapObj._sizeValueCol.id]) <=
+                            mapObj._segments[mapObj._sizeValueCol.id][i])
                         { details.size  = 10+(6*i); break; }
                     }
                 }
@@ -391,7 +395,8 @@
                 {
                     for (var i = 0; i < mapObj._numSegments; i++)
                     {
-                        if (parseFloat(row[mapObj._colorValueCol.dataIndex]) <= mapObj._colorValueCol._segments[i])
+                        if (parseFloat(row[mapObj._colorValueCol.id]) <=
+                            mapObj._segments[mapObj._colorValueCol.id][i])
                         {
                             var rgb = mapObj._gradient[i];
                             details.color = [ rgb.r, rgb.g, rgb.b ];
@@ -400,13 +405,14 @@
                     }
                 }
 
-                if (row[mapObj._metaIndex])
+                if (row.meta)
                 {
-                    var metadata  = JSON.parse(row[mapObj._metaIndex]);
-                    var mapping = { 'mapIcon': 'icon', 'pinSize': 'size', 'pinColor': 'color' };
+                    var mapping = { 'mapIcon': 'icon',
+                        'pinSize': 'size', 'pinColor': 'color' };
                     _.each(_.keys(mapping), function(key)
                     {
-                        if (metadata[key]) { details[mapping[key]] = metadata[key]; }
+                        if (row.meta[key])
+                        { details[mapping[key]] = row.meta[key]; }
                     });
                 }
 
@@ -436,41 +442,74 @@
                 // Implement if you need to do anything on resize
             },
 
-            getColumns: function(view)
+            getColumns: function()
             {
                 var mapObj = this;
-                if (!getColumns(mapObj, view))
-                { getLegacyColumns(mapObj, view); }
+                var view = mapObj.settings.view;
+                mapObj._infoIsHtml = false;
 
-                // TODO: This is a bad place for this.
-                if (mapObj.buildLegend && mapObj._colorValueCol)
+                // Preferred location column
+                if (!$.isBlank(view.displayFormat.plot.locationId))
+                { mapObj._locCol =
+                    view.columnForTCID(view.displayFormat.plot.locationId); }
+
+                // Older separate lat/long
+                if (!$.isBlank(view.displayFormat.plot.latitudeId))
+                { mapObj._latCol =
+                    view.columnForTCID(view.displayFormat.plot.latitudeId); }
+                if (!$.isBlank(view.displayFormat.plot.longitudeId))
+                { mapObj._longCol =
+                    view.columnForTCID(view.displayFormat.plot.longitudeId); }
+
+                mapObj._titleCol =
+                    view.columnForTCID(view.displayFormat.plot.titleId);
+
+                mapObj._infoCol =
+                    view.columnForTCID(view.displayFormat.plot.descriptionId);
+                mapObj._infoIsHtml =
+                    (mapObj._infoCol || {}).renderTypeName == 'html';
+
+                mapObj._redirectCol =
+                    view.columnForTCID(view.displayFormat.plot.redirectId);
+
+               mapObj._iconCol = view.columnForTCID(view.displayFormat.plot.iconId);
+
+                var aggs = {};
+                _.each(['colorValue', 'sizeValue', 'quantity'], function(colName)
                 {
-                    if (!mapObj._gradient)
+                    var c = view.columnForTCID(
+                        view.displayFormat.plot[colName + 'Id']);
+                    if (!$.isBlank(c))
                     {
-                        mapObj._gradient = $.gradient(mapObj._numSegments,
-                               blist.display.view.displayFormat.color || "#0000ff");
+                        mapObj['_' + colName + 'Col'] = c;
+                        aggs[c.id] = ['maximum', 'minimum'];
+                        //calculateSegmentSizes(mapObj, c);
                     }
+                });
 
-                    mapObj.buildLegend(mapObj._colorValueCol.name,
-                        _.map(mapObj._gradient,
-                              function(c) { return "#"+$.rgbToHex(c); }
-                    ));
+                if (!_.isEmpty(aggs))
+                {
+                    if (!mapObj._delayRenderData) { mapObj._delayRenderData = 0; }
+                    mapObj._delayRenderData++;
+
+                    view.getAggregates(function()
+                    { calculateSegmentSizes(mapObj, aggs) }, aggs);
                 }
+
+                return true;
             }
         }
     }));
 
     var getText = function(row, col, plain)
     {
-        var t = !_.isUndefined(col) ?
-            row[col.dataIndex] : null;
+        var t = !_.isUndefined(col) ? row[col.id] : null;
 
         if (_.isNull(t)) { return t; }
         if (col.renderTypeName == 'location')
         {
-            var a = t[col.addressSubIndex];
-            if (_.isNull(a) || _.isUndefined(a))
-            { t = null; }
+            var a = t.human_address;
+            if (_.isNull(a) || _.isUndefined(a)) { t = null; }
             else
             {
                 t = blist.data.types.location
@@ -484,163 +523,36 @@
         return t;
     };
 
-    var getColumns = function(mapObj, view)
+
+    var calculateSegmentSizes = function(mapObj, aggs)
     {
-        view = blist.dataset.map.convertLegacy(view);
-        if (view.displayFormat === undefined ||
-            (view.displayFormat.plot === undefined &&
-             view.displayFormat.latitudeId === undefined))
-        { return false; }
-
-        mapObj._infoIsHtml = false;
-        var colFormat = view.displayFormat.plot || view.displayFormat;
-        _.each(view.columns, function(c, i)
+        mapObj._segments = {};
+        _.each(aggs, function(a, cId)
         {
-            if (c.dataTypeName == 'meta_data' && c.name == 'sid')
-            { mapObj._idIndex = i; }
-            if (c.dataTypeName == 'meta_data' && c.name == 'meta')
-            { mapObj._metaIndex = i; }
+            var column = mapObj.settings.view.columnForID(cId);
+            var difference = column.aggregates.maximum - column.aggregates.minimum;
+            var granularity = difference / mapObj._numSegments;
 
-            // Preferred location column
-            if (c.tableColumnId == colFormat.locationId)
+            mapObj._segments[column.id] = [];
+            for (i = 0; i < mapObj._numSegments; i++)
             {
-                c.dataIndex = i;
-                if (c.subColumnTypes)
-                {
-                    c.latSubIndex = _.indexOf(c.subColumnTypes, 'latitude');
-                    c.longSubIndex = _.indexOf(c.subColumnTypes, 'longitude');
-                }
-                mapObj._locCol = c;
+                mapObj._segments[column.id][i] =
+                    ((i+1)*granularity) + column.aggregates.minimum;
             }
 
-            // Older separate lat/long
-            if (c.tableColumnId == colFormat.latitudeId || c.id == colFormat.ycol)
-            { mapObj._latIndex = i; }
-            if (c.tableColumnId == colFormat.longitudeId || c.id == colFormat.xcol)
-            { mapObj._longIndex = i; }
-
-            if (c.tableColumnId == colFormat.titleId || c.id == colFormat.titleCol)
+            if (mapObj._$legend.length > 0 && mapObj._colorValueCol == column)
             {
-                c.dataIndex = i;
-                if (c.renderTypeName == 'location')
-                {
-                    c.addressSubIndex =
-                        _.indexOf(c.subColumnTypes, 'human_address');
-                }
-                mapObj._titleCol = c;
-            }
-            if (c.tableColumnId == colFormat.descriptionId ||
-                c.id == colFormat.bodyCol)
-            {
-                c.dataIndex = i;
-                if (c.renderTypeName == 'location')
-                {
-                    c.addressSubIndex =
-                        _.indexOf(c.subColumnTypes, 'human_address');
-                }
-                mapObj._infoCol = c;
-                mapObj._infoIsHtml = c.renderTypeName == 'html';
-            }
-            _.each(['colorValue', 'sizeValue', 'quantity'], function(colName)
-            {
-                if (c.tableColumnId == colFormat[colName + 'Id'])
-                {
-                    calculateSegmentSizes(mapObj, c);
-                    c.dataIndex = i;
-                    mapObj['_'+colName+'Col'] = c;
-                }
-            });
-            if (c.tableColumnId == colFormat.iconId)
-            {
-                c.dataIndex = i;
-                if (c.dataTypeName == 'url')
-                {
-                    c.urlSubIndex = _.indexOf(c.subColumnTypes, 'url');
-                }
-                mapObj._iconCol = c;
-            }
-            if (c.tableColumnId == colFormat.redirectId)
-            {
-                c.dataIndex = i;
-                if (c.dataTypeName == 'url')
-                {
-                    c.urlSubIndex = _.indexOf(c.subColumnTypes, 'url');
-                }
-                mapObj._redirectCol = c;
+                mapObj._$legend.find('span:first').text(column.aggregates.minimum);
+                mapObj._$legend.find('span:last').text(column.aggregates.maximum);
             }
         });
 
-        return true;
-    };
-
-    var getLegacyColumns = function(mapObj, view)
-    {
-        _.each(view.columns, function(c, i) { c.dataIndex = i; });
-        var cols = _.select(view.columns, function(c)
-            { return c.dataTypeName != 'meta_data' &&
-                (c.flags === undefined || !_.include(c.flags, 'hidden')); });
-        cols = _.sortBy(cols, function(c) { return c.position; });
-
-        if (cols.length < 2) { return false; }
-
-        mapObj._idIndex = _.detect(view.columns, function(c)
-            { return c.dataTypeName == 'meta_data' && c.name == 'sid'; }).dataIndex;
-        mapObj._latIndex = cols[0].dataIndex;
-        mapObj._longIndex = cols[1].dataIndex;
-        mapObj._infoIsHtml = false;
-        if (cols.length > 2)
+        mapObj._delayRenderData--;
+        if (!mapObj._delayRenderData && mapObj._delayedRenderData)
         {
-            var infoCol = cols[2];
-            mapObj._infoCol = infoCol;
-            mapObj._infoIsHtml = infoCol.renderTypeName == 'html';
+            _.each(mapObj._delayedRenderData, function(f) { f(); });
+            mapObj._delayedRenderData = [];
         }
-        return true;
-    };
-
-    var calculateSegmentSizes = function(mapObj, column)
-    {
-        if (!mapObj._delayRenderData) { mapObj._delayRenderData = 0; }
-        mapObj._delayRenderData++;
-
-        var cleanedData = blist.dataset.cleanViewForPost(
-            $.extend(true, {}, blist.display.view), true);
-        cleanedData.originalViewId = blist.display.viewId;
-
-        var columnData = $.extend({}, column);
-        delete columnData.dataIndex;
-
-        _.each(['minimum', 'maximum'], function(aggregateType)
-        {
-            $.socrataServer.addRequest({
-                url: '/views/INLINE/rows.json?method=getAggregates', type: 'POST',
-                data: JSON.stringify($.extend({}, cleanedData, {columns: [
-                    $.extend({}, columnData, { format: { aggregate: aggregateType }})
-                ]})), dataType: 'json',
-                success: function(result) { column[result[0].name] = parseFloat(result[0].value); }
-            });
-        });
-        $.socrataServer.runRequests({
-            success: function(result)
-            {
-                var difference = column.maximum - column.minimum;
-                var granularity = difference / mapObj._numSegments;
-                column._segments = [];
-                for (i = 0; i < mapObj._numSegments; i++)
-                { column._segments[i] = ((i+1)*granularity)+column.minimum; }
-
-                mapObj._delayRenderData--;
-                if (!mapObj._delayRenderData && mapObj._delayedRenderData)
-                {
-                    _.each(mapObj._delayedRenderData, function(f) { f(); });
-                    mapObj._delayedRenderData = [];
-                }
-                if (mapObj._$legend.length > 0)
-                {
-                    mapObj._$legend.find('span:first').text(column.minimum);
-                    mapObj._$legend.find('span:last').text(column.maximum);
-                }
-            }
-        });
     };
 
 })(jQuery);

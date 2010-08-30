@@ -26,15 +26,15 @@ columnRdfNS.renderer = function(column, $container)
 
     rdfValues = column.rdfProperties;
     // handle difference between string and int.  combo is pretty strict in type.
-    if (!$.isBlank(column.rdf) && !isNaN(column.rdf))
+    if (!$.isBlank(column.format.rdf) && !isNaN(column.format.rdf))
     {
-        column.rdf = parseInt(column.rdf);
+        column.format.rdf = parseInt(column.format.rdf);
     }
 
     $("#columnProperties_rdf").combo({
         name: 'rdf',
         values: rdfValues,
-        value: column.rdf || '',
+        value: column.format.rdf || '',
         keyName: 'CName',
         renderFn: columnRdfNS.renderComboRow,
         keyAccProp: 'namespace',

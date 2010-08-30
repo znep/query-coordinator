@@ -538,8 +538,7 @@
               if ('<%= cur_type %>' != $('.mapWrapper #mapType').val()
                 || layersChanged)
               {
-                  blist.$display.socrataMap()
-                    .reset({displayFormat: newDisplayFormat});
+                  blist.$display.socrataMap().reset({view: blist.dataset});
               }
               else
               {
@@ -569,6 +568,6 @@
     $('.mapWrapper form').submit(formSubmit);
     $('.mapWrapper a.create').click(formSubmit);
 
-    $.analytics.trackEvent('Dataset Page Menu', 'Create a Map dialog opened', blistGridNS.viewId);
+    $.analytics.trackEvent('Dataset Page Menu', 'Create a Map dialog opened', blist.dataset.id);
   };
 </script>

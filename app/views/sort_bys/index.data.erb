@@ -181,11 +181,12 @@
         orderBys.sort(function(s1, s2) { return s1.position - s2.position; });
         $.each(orderBys, function(i, o) { delete o.position; });
 
-        $("#dataGrid").blistModel().multiSort(orderBys);
+        var q = $.extend({}, blist.dataset.query, {orderBys: orderBys});
+        blist.dataset.update({query: q});
         $("#modal .jqmClose").click();
     });
 
-    $.analytics.trackEvent('Dataset Page Menu', 'Sort dialog opened', blistGridNS.viewId);
+    $.analytics.trackEvent('Dataset Page Menu', 'Sort dialog opened', blist.dataset.id);
   };
 </script>
 <%- end -%>

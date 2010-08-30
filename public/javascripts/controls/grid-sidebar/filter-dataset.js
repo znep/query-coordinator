@@ -15,17 +15,13 @@
     var rollUpFunctions = function(colId)
     {
         if ($.isBlank(colId)) { return null; }
-        var col = _.detect(blist.display.view.columns, function(c)
-        { return c.id == parseInt(colId); });
-        return blist.data.types[col.dataTypeName].rollUpAggregates;
+        return blist.dataset.columnForID(colId).dataType.rollUpAggregates;
     };
 
     var filterOperators = function(colId)
     {
         if ($.isBlank(colId)) { return null; }
-        var col = _.detect(blist.display.view.columns, function(c)
-        { return c.id == parseInt(colId); });
-        return blist.data.types[col.renderTypeName].filterConditions;
+        return blist.dataset.columnForID(colId).renderType.filterConditions;
     };
 
     var filterEditor = function(sidebarObj, $field, vals, curValue)
@@ -36,33 +32,33 @@
 
         if (_.include(['IS_BLANK', 'IS_NOT_BLANK'], op)) { return false; }
 
-        var col = $.extend(true, {},
-            _.detect(blist.display.view.columns, function(c)
-                { return c.id == parseInt(colId); }));
+        var col = blist.dataset.columnForID(colId);
+        var colCopy = col.cleanCopy();
+        colCopy.renderTypeName = col.renderTypeName;
 
         // Some types want different editors for filtering
-        if (_.include(['tag', 'email', 'html'], col.renderTypeName))
-        { col.renderTypeName = 'text'; }
+        if (_.include(['tag', 'email', 'html'], colCopy.renderTypeName))
+        { colCopy.renderTypeName = 'text'; }
 
         var firstVal = curValue;
         if (_.isArray(curValue)) { firstVal = curValue[0]; }
 
         var $editor = $.tag({tagName: 'div',
-            'class': ['editorWrapper', col.renderTypeName]});
-        $editor.blistEditor({row: null, column: col, value: firstVal});
+            'class': ['editorWrapper', colCopy.renderTypeName]});
+        $editor.blistEditor({row: null, column: colCopy, value: firstVal});
         $field.append($editor);
 
         if (op == 'BETWEEN')
         {
             $field.addClass('twoEditors');
             $field.append($.tag({tagName: 'span',
-                'class': ['joiner', col.renderTypeName], contents: '&amp;'}));
+                'class': ['joiner', colCopy.renderTypeName], contents: '&amp;'}));
 
             var secondVal;
             if (_.isArray(curValue)) { secondVal = curValue[1]; }
             $editor = $.tag({tagName: 'div',
-                'class': ['editorWrapper', col.renderTypeName]});
-            $editor.blistEditor({row: null, column: col, value: secondVal});
+                'class': ['editorWrapper', colCopy.renderTypeName]});
+            $editor.blistEditor({row: null, column: colCopy, value: secondVal});
             $field.append($editor);
         }
         else { $field.removeClass('twoEditors'); }
@@ -113,9 +109,8 @@
         $editor.each(function() { $(this).blistEditor().finishEdit(); });
     };
 
-    var isEdit = _.include(['Filter', 'Grouped'],
-        blist.dataset.getDisplayType(blist.display.view)) &&
-        _.include(blist.display.view.rights, 'update_view');
+    var isEdit = _.include(['filter', 'grouped'], blist.dataset.type) &&
+        blist.dataset.hasRight('update_view');
 
     var configName = 'filter.filterDataset';
     var config = {
@@ -125,15 +120,13 @@
         subtitle: 'You can filter a view down to certain rows; ' +
             'group rows together and summarize data with a roll-up; ' +
             'and sort one or more columns',
-        onlyIf: function(view)
+        onlyIf: function()
         {
-            return _.any(view.columns, function(c)
-                { return c.dataTypeName != 'meta_data' &&
-                    (isEdit || !_.include(c.flags || [], 'hidden')); }) &&
-                (!blist.display.isInvalid || isEdit);
+            return isEdit ? blist.dataset.realColumns.length > 0 :
+                blist.dataset.visibleColumns.length > 0 && blist.dataset.valid;
         },
         disabledSubtitle: function()
-        { return blist.display.isInvalid && !isEdit ? 'This view must be valid' :
+        { return !blist.dataset.valid && !isEdit ? 'This view must be valid' :
             'This view has no columns to filter, roll-up or sort'; },
         sections: [
             // Filter section
@@ -154,7 +147,8 @@
                         field: {type: 'group', options: [
                             {type: 'columnSelect', text: 'Column',
                                 name: 'children.0.columnId', required: true,
-                                columns: {type: filterableTypes, hidden: isEdit}},
+                                columns: {type: filterableTypes,
+                                    hidden: isEdit || blist.dataset.isGrouped()}},
                             {type: 'select', text: 'Operator', name: 'value',
                                 required: true, prompt: 'Select an operator',
                                 linkedField: 'children.0.columnId',
@@ -185,7 +179,8 @@
                         name: 'query.groupBys', minimum: 0,
                         field: {type: 'columnSelect', text: 'Group By',
                             name: 'columnId', notequalto: 'groupColumn',
-                            columns: {type: groupableTypes, hidden: isEdit}},
+                            columns: {type: groupableTypes,
+                                hidden: isEdit || blist.dataset.isGrouped()}},
                         wizard: 'Choose one or more columns with repeated values ' +
                             'to group them into a single row'
                     },
@@ -195,7 +190,8 @@
                             {type: 'columnSelect', text: 'Roll-Up',
                                 name: 'id', required: true,
                                 notequalto: 'rollUpColumn',
-                                columns: {type: groupableTypes, hidden: isEdit}},
+                                columns: {type: groupableTypes,
+                                    hidden: isEdit || blist.dataset.isGrouped()}},
                             {type: 'select', text: 'Function', required: true,
                                 name: 'format.grouping_aggregate',
                                 prompt: 'Select a function',
@@ -249,7 +245,7 @@
 
     config.dataSource = function()
     {
-        var view = $.extend(true, {}, blist.display.view);
+        var view = blist.dataset.cleanCopy();
 
         view.query = view.query || {};
         view.query.filterCondition = view.query.filterCondition || {};
@@ -337,7 +333,7 @@
     {
         if (!registeredChange)
         {
-            sidebarObj.$grid().bind('meta_change', function()
+            blist.dataset.bind('query_change', function()
             { sidebarObj.refresh(configName); });
             registeredChange = true;
         }
@@ -397,8 +393,10 @@
             filterView.query.filterCondition.children = newChildren;
         }
 
-        if ((filterView.columns || []).length > 0 &&
-            filterView.query.groupBys.length < 1)
+        filterView.columns = filterView.columns || [];
+
+        if (filterView.columns.length > 0 &&
+            (filterView.query.groupBys || []).length < 1)
         {
             $pane.find('.mainError')
                 .text('You must group by at least one column to roll-up a column');
@@ -406,7 +404,7 @@
             return;
         }
 
-        if (_.any(filterView.columns || [], function(c)
+        if (_.any(filterView.columns, function(c)
             { return $.isBlank(c.format) ||
                 $.isBlank(c.format.grouping_aggregate); }))
         {
@@ -416,50 +414,68 @@
             return;
         }
 
-        var dsGrid = sidebarObj.$grid().datasetGrid();
-
-        var doViewCallback = function()
+        // Make new columns have the correct format
+        _.each(filterView.columns, function(c)
         {
-            var resultCallback = function(view)
+            var col = blist.dataset.columnForID(c.id);
+            c.format = $.extend({}, col.format, c.format);
+        });
+
+        _.each(blist.dataset.realColumns, function(c)
+        {
+            if (!$.isBlank(c.format.grouping_aggregate) &&
+                !_.any(filterView.columns, function(fvc)
+                    { return fvc.id == c.id; }))
             {
-                sidebarObj.finishProcessing();
+                filterView.columns.push({id: c.id,
+                    format: $.extend({}, c.format, {grouping_aggregate: null})});
+            }
+        });
 
-                if (!$.isBlank(view))
-                { $.syncObjects(blist.display.view, view); }
-
-                if (blist.display.isInvalid)
-                { dsGrid.updateValidity(blist.display.view); }
-
-                _.defer(function()
+        // Show hidden columns if we are grouped
+        _.each(config.sections, function(s)
+        {
+            if (_.include(['filterFilter', 'filterGroup'], s.name))
+            {
+                _.each(s.fields, function(f)
                 {
-                    sidebarObj.addPane(configName);
-                    sidebarObj.show(configName);
+                    if (f.type == 'repeater')
+                    {
+                        f = f.field;
+                        if (f.type == 'group')
+                        {
+                            f = _.detect(f.options, function(o)
+                                { return o.type == 'columnSelect'; });
+                        }
+                        if (f.type == 'columnSelect')
+                        { f.columns.hidden = isEdit || blist.dataset.isGrouped(); }
+                    }
                 });
-            };
+            }
+        });
 
-            if (blist.display.isInvalid &&
-                !_.include(filterView.flags || [], 'default') &&
-                _.include(blist.display.view.rights, 'update_view'))
+        var wasInvalid = !blist.dataset.valid;
+
+        blist.dataset.update(filterView);
+
+        var finishCallback = function()
+        {
+            sidebarObj.finishProcessing();
+
+            _.defer(function()
             {
-                $.ajax({url: '/views/' + blist.display.view.id + '.json',
-                    type: 'PUT', dataType: 'json', contentType: 'application/json',
-                    data: JSON.stringify(filterView), success: resultCallback});
-            }
-            else
-            {
-                model.getTempView($.extend(true, {}, blist.display.view), true,
-                    resultCallback);
-                dsGrid.setTempView('filterSidebar');
-            }
+                sidebarObj.addPane(configName);
+                sidebarObj.show(configName);
+            });
         };
 
-        var model = sidebarObj.$grid().blistModel();
-        model.multiSort(filterView.query.orderBys, true);
-
-        dsGrid.updateFilter(filterView.query.filterCondition, false, true);
-
-        dsGrid.groupAggregate(filterView.query.groupBys,
-            filterView.columns, false, null, true, doViewCallback, null, true);
+        if (wasInvalid && blist.dataset.type != 'blist')
+        {
+            if (!blist.dataset.save(finishCallback))
+            { finishCallback(); }
+        }
+        else
+        { finishCallback(); }
     };
 
     $.gridSidebar.registerConfig(config, ['Filter', 'Grouped']);

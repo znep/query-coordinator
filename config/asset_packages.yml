@@ -18,16 +18,20 @@ javascripts:
   - plugins/pure
   - plugins/ui.core
   - plugins/underscore
+  - plugins/inheritance
   - util/namespace
   - util/util
+  - util/base-model
   - util/compat
   - util/markup
   - util/alert-override
   - util/google-analytics
-  - util/dataset
-  - util/datasetTypes/calendar
-  - util/datasetTypes/chart
-  - util/datasetTypes/map
+  - util/dataset/column-container
+  - util/dataset/column
+  - util/dataset/dataset
+  - util/dataset/calendar
+  - util/dataset/chart
+  - util/dataset/map
   - util/templates
   - util/socrata-server
   - data/types
@@ -45,7 +49,8 @@ javascripts:
 - shared-calendar:
   - plugins/ui.draggable
   - plugins/fullcalendar
-  - widgets/blist-calendar
+  - widgets/base-visualization
+  - widgets/calendars/default-calendar
 - shared-table-render:
   - plugins/ui.draggable
   - util/humane-number
@@ -121,8 +126,8 @@ javascripts:
   - plugins/ajaxupload.3.0
   - util/humane-date
   - util/urls
-  - data/model
-  - data/table
+  - data/legacy-model
+  - data/legacy-table
   - widgets/combination-list
   - widgets/panel-expander
   - widgets/selectable-list
@@ -221,8 +226,8 @@ javascripts:
 - rpx-return:
   - screens/signup-screen
 - stats-index:
-  - data/model
-  - data/table
+  - data/legacy-model
+  - data/legacy-table
   - screens/stats-screen
 - widgets-show:
   - plugins/ui.effects.custom.min

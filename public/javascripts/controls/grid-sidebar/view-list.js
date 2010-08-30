@@ -32,13 +32,12 @@
         {
             var $li = $.renderTemplate('viewItemContainer', v, {
                 '.viewIcon@title': function(a)
-                { return blist.dataset.getTypeName(a.context).capitalize(); },
+                { return a.context.displayName.capitalize(); },
                 '.viewIcon@class+': function(a)
-                { return 'type' + blist.dataset.getDisplayType(a.context); },
+                { return 'type' + a.context.styleClass; },
                 '.name': 'name',
                 '.name@title': 'name',
-                '.name@href': function(a)
-                { return $.generateViewUrl(a.context); },
+                '.name@href': 'url',
                 '.authorLine .date': function(a)
                 {
                     return blist.util.humaneDate.getFromDate(
@@ -53,7 +52,7 @@
                     return _.include(a.context.rights, 'delete_view') ? '' : 'hide';
                 }
             });
-            if (v.id == blist.display.view.id)
+            if (v.id == blist.dataset.id)
             { $li.addClass('current'); }
             $li.attr('data-search',
                 (v.name + ' ' + v.owner.displayName).toLowerCase());
@@ -70,11 +69,12 @@
                     {
                         $li.remove();
                         views.splice(_.indexOf(views, v), 1);
-                        if (blist.display.view.id == v.id &&
-                            !$.isBlank(blist.parentViewId))
+                        if (blist.dataset.id == v.id)
                         {
-                            blist.util.navigation
-                                .redirectToView(blist.parentViewId);
+                            blist.dataset.getParentDataset(function(parDS)
+                            {
+                                if (!$.isBlank(parDS)) { parDS.redirectTo(); }
+                            });
                         }
                     };
 
@@ -246,15 +246,12 @@
     {
         _.defer(function()
         {
-            $.Tache.Get({ url: '/views.json', data: { method: 'getByTableId',
-                    tableId: blist.display.view.tableId }, cache: false,
-                dataType: 'json', contentType: 'application/json',
-                success: function(v)
+            blist.dataset.getRelatedViews(
+                function(v)
                 {
                     views['filter'] = _.select(v, function(v)
                     {
-                        return _.include(['Filter', 'Grouped'],
-                            blist.dataset.getDisplayType(v));
+                        return _.include(['filter', 'grouped'], v.type);
                     });
 
                     if (!$.isBlank($sections['filter']))
@@ -263,8 +260,8 @@
 
                     views['viz'] = _.select(v, function(v)
                     {
-                        return _.include(['Visualization', 'Calendar', 'Map'],
-                            blist.dataset.getDisplayType(v));
+                        return _.include(['visualization', 'calendar', 'map'],
+                            v.type);
                     });
 
                     if (!$.isBlank($sections['viz']))
@@ -272,11 +269,11 @@
 
 
                     views['form'] = _.select(v, function(v)
-                    { return 'Form' == blist.dataset.getDisplayType(v); });
+                    { return 'form' == v.type; });
 
                     if (!$.isBlank($sections['form']))
                     { setupSection(views['form'], $sections['form']); }
-                }});
+                });
         });
     });
 

@@ -11,10 +11,12 @@
         subtitle: 'Export this dataset to a printable PDF format',
         noReset: true,
         onlyIf: function()
-        { return blist.display.isGrid && !blist.display.isInvalid; },
+        {
+            return blist.dataset.isGrid() && blist.dataset.valid;
+        },
         disabledSubtitle: function()
         {
-            return blist.display.isInvalid ? 'This view must be valid' :
+            return !blist.dataset.valid ? 'This view must be valid' :
                 'Only tabular data may be printed';
         },
         sections: [

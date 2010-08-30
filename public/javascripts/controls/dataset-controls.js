@@ -80,13 +80,14 @@ blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
     if (!$.isBlank(dialogObj._customClass))
     { $dialog.addClass(dialogObj._customClass); }
 
-    var clearCustomClass = function()
+    var cleanDialog = function()
     {
         // Do this after the fade out...
         setTimeout(function()
         {
             if (!$.isBlank(dialogObj._customClass))
             { $dialog.removeClass(dialogObj._customClass); }
+            $dialog.find('.viewName').val('');
         }, 1000);
     };
 
@@ -112,7 +113,7 @@ blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
                 // Success
                 function(view)
                 {
-                    clearCustomClass();
+                    cleanDialog();
                     $dialog.jqmHide();
 
                     var preventRedirect = false;
@@ -160,7 +161,7 @@ blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
         });
 
         $dialog.find('.jqmClose').click(function()
-        { clearCustomClass() });
+        { cleanDialog() });
 
         $dialog.find('.dontSave').click(function()
         {

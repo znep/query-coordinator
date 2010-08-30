@@ -60,6 +60,7 @@ javascripts:
   - widgets/scrollable
   - widgets/dataset-grid
 - shared-table-editor:
+  - util/humane-number
   - data/editors/editor-base
   - data/editors/text-editor
   - plugins/datepicker

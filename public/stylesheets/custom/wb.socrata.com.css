@@ -1,28 +1,84 @@
 body {
-    background-color:#D8DCD0;
+    background-color:#DEE7EF;
     background-image:none;
 }
-
-.footerContainer {
-    background:none repeat scroll 0 0 #4F5248;
+.bodyInterior
+{
+	border: none;
 }
-
-#mainLogo a {
+#header
+{
+	background: url(/stylesheets/images/domains/wb.socrata.com/world-bank-header-bg.png) repeat-x;
+	height: 65px;
+}
+#mainLogo
+{
+	position: static;
+}
+#mainLogo a 
+{
     top: 0;
-    height: 67px;
-    width: 300px;
+    height: 65px;
+    width: 447px;
 
 }
-
+#header .userNav li
+{
+border-right-color: #AAA;
+}
 #header .userNav a {
-    color:#5F5F61;
+    color: #FFF;
 }
-
+#wbHeaderContainer
+{
+	background: url(/stylesheets/images/domains/wb.socrata.com/world-bank-splash.png) no-repeat right #FFF;
+	border: solid 1px #369;
+	border-top-right-radius: 0.5em;
+	-moz-border-radius-topright: 0.5em;
+	webkit-border-top-right-radius: 0.5em;
+	border-top-left-radius: 0.5em;
+	-moz-border-radius-topleft: 0.5em;
+	webkit-border-top-left-radius: 0.5em;
+	border-bottom-left-radius: 0.5em;
+	-moz-border-radius-bottomleft: 0.5em;
+	webkit-border-bottom-left-radius: 0.5em;
+	border-bottom-right-radius: 0.5em;
+	-moz-border-radius-bottomright: 0.5em;
+	webkit-border-bottom-right-radius: 0.5em;
+	display: block;	
+	padding: 1.5em;	
+	min-height:0;
+	height: 330px;
+	padding:0 37em 0 1em;
+}
+.pageBlockHeaderContent .pageBlockHeaderSide
+{
+	margin-right: -35.5em;
+}
+form.search.large .clearBox
+{
+	background: #FFF;
+}
+.pageBlockSearch 
+{
+	margin-top: 1em;
+}
+.pageBlockIntro p 
+{
+	color: #9A3131;
+	margin-top: 1em;
+}
+.pageBlockSearch p.searchIntro, .pageBlockHeaderSide h2, ul.activityList li, ul.activityList li a
+{
+	color:#FFF;
+}
+.footerContainer {
+    background:none repeat scroll 0 0 #69C;
+}
+#footer .copyright, #footer ul
+{
+	padding: 1em;
+}
 #footer li a, #footer .copyright {
-    color:#FFFFFF;
-}
-
-#header {
-    background:none repeat scroll 0 0 #FFFFFF;
-    height: 73px;
+    color:#FFF;
 }

@@ -101,11 +101,8 @@ $(function()
             if (!_.isUndefined(blist.dataset.metadata) &&
                 !_.isUndefined(blist.dataset.metadata.facets))
             {
-                blist.$display.bind('full_load.loadGuidedFilter', function()
-                {
-                    datasetPageNS.sidebar.show('filter.guidedFilter');
-                    blist.$display.unbind('full_load.loadGuidedFilter');
-                });
+                blist.$display.bind('dataset_ready', function()
+                { datasetPageNS.sidebar.show('filter.guidedFilter'); });
             }
         }
     }

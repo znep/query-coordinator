@@ -154,6 +154,11 @@ this.Column = Model.extend({
         _.each(newCol, function(v, k)
         { if (k != 'childColumns' && col._validKeys[k]) { col[k] = v; } });
 
+        // renderTypeName is not a valid key to post back, but we want to copy
+        // it over if present
+        if (!$.isBlank(newCol.renderTypeName))
+        { col.renderTypeName = newCol.renderTypeName; }
+
         this.updateChildColumns(newCol.childColumns, forceFull, forceFull);
 
         // dropDown is special, because it only comes from the server; it isn't
@@ -245,6 +250,8 @@ this.Column = Model.extend({
         var col = this;
         var columnConverted = function(newCol)
         {
+            // Got new ID, so manually need to copy that over
+            col.id = newCol.id;
             col.update(newCol, true);
             col.view._invalidateRows();
             col.invalidateData();
@@ -255,7 +262,7 @@ this.Column = Model.extend({
         };
 
         this._makeRequest({url: '/views/' + this.view.id + '/columns/' +
-            this.id + '.json', data: {method: 'convert', type: newType},
+            this.id + '.json', params: {method: 'convert', type: newType},
             type: 'POST', success: columnConverted, error: errorCallback});
     },
 

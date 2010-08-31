@@ -194,7 +194,9 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
                 }
             });
 
-            if (forceFull)
+            // If this is the master order of columns, then reject any that
+            // aren't in the new set
+            if (updateOrder)
             {
                 this[colSet] = _.reject(this[colSet], function(c)
                         { return !newColIds[c.id]; });

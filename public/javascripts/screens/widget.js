@@ -785,7 +785,7 @@ $(function()
         _.defer(function() { window.scrollTo(0, 1); });
 
         // show the mobile site notice
-        $dataGrid.bind('full_load', function()
+        $dataGrid.bind('dataset_ready', function()
         {
             $('.mobileNotice').fadeIn();
             setTimeout(function()

@@ -8,6 +8,7 @@ class AccountsController < ApplicationController
 
 # TODO: Remove me in v3 deprecation pass
   layout :choose_v4_layout
+  include NewChromeMethodProxy
 
   def show
     @openid_identifiers = current_user.openid_identifiers
@@ -65,10 +66,6 @@ class AccountsController < ApplicationController
     @user_session = UserSession.new unless params[:no_js].present?
   end
 
-  def v4_new
-    new()
-  end
-
   def create
     @body_class = 'signup'
     @token = params[:inviteToken] || ""
@@ -112,13 +109,8 @@ class AccountsController < ApplicationController
     end
   end
 
-  def v4_forgot_password
-    forgot_password()
-  end
-
   def reset_password
     if !current_user.nil?
-      flash[:error] = "Cannot reset your password; you are already logged in"
       return redirect_to forgot_password_path
     end
     @body_id = 'resetPassword'
@@ -160,10 +152,6 @@ class AccountsController < ApplicationController
         return redirect_to forgot_password_path
       end
     end
-  end
-
-  def v4_reset_password
-    reset_password()
   end
 
   def add_rpx_token

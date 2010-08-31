@@ -7,6 +7,7 @@ class RpxController < ApplicationController
 
   #TODO: Remove me in v3 deprecation pass
   layout :choose_v4_layout
+  include NewChromeMethodProxy
 
   # Create a new user, automatically associating the OpenID credentials they
   # already provided to sign them up.
@@ -51,10 +52,6 @@ class RpxController < ApplicationController
   def return_login
     return (redirect_to login_path) unless params[:token]
     login_or_signup
-  end
-
-  def v4_return_login
-    return_login
   end
 
 private

@@ -208,7 +208,7 @@ $(function()
                     iconColor: '#f93f06', onlyIf: !widgetNS.isBlobby && menuOptions['api'] },
                 { text: 'Print', className: 'print', targetPane: 'print',
                     subtext: 'Print this dataset', href: '#print',
-                    iconColor: '#a460c4', onlyIf: blist.datset.isGrid() && menuOptions['print'] },
+                    iconColor: '#a460c4', onlyIf: blist.dataset.isGrid() && menuOptions['print'] },
                 { text: 'About the Socrata Social Data Player', className: 'about',
                     href: 'http://www.socrata.com/try-it-free', rel: 'external',
                     onlyIf: menuOptions['about_sdp'] }

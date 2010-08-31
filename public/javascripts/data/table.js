@@ -3751,6 +3751,8 @@
         };
 
 
+        var pendingTop;
+        var prevTop;
         /**
          * Render all rows that should be visible but are not yet rendered.
          * Removes invisible rows.
@@ -3809,8 +3811,8 @@
             }
             end("renderRows.destroy");
 
-            var pendingTop = renderTop;
-            var prevTop = parseInt($render.css('top'));
+            pendingTop = renderTop;
+            prevTop = parseInt($render.css('top'));
 
             // Render the rows that are newly visible
             var rowsLoaded = function(rows)
@@ -3820,19 +3822,31 @@
                         Math.round(prevTop))
                 {
                     // Adjust render divs to the new positions/sizes
-                    $render.css('top', renderTop);
+                    $render.css('top', pendingTop);
                     $render.height(renderHeight);
-                    $lockedRender.css('top', renderTop);
+                    $lockedRender.css('top', pendingTop);
                     $lockedRender.height(renderHeight);
 
                     pendingTop = undefined;
-                    prevTop = undefined;
+                    prevTop = parseInt($render.css('top'));
                 }
 
                 // If it moved while we were loading, then skip
-                if (!$.isBlank(pendingTop) ||
-                    Math.round(parseFloat($render.css('top'))) !=
-                        Math.round(renderTop))
+                // Firefox (at a minimum) gets less and less precise for
+                // how accurate tne actual top is versus what we tell it
+                // to be.  For example, if I tell it 1000004.9999, it might
+                // end up rendering 1000000 or 1000010.  So do some fuzzy
+                // matching for this check
+                var compPending = Math.round(renderTop);
+                if (compPending >= 1000000)
+                { compPending = compPending.toPrecision(6); }
+                var compTop = Math.round(parseFloat($render.css('top')));
+                var topMatches = compPending == compTop;
+                if (!topMatches &&
+                    (Math.abs(compPending - compTop) / compTop < 0.00001))
+                { topMatches = true; }
+
+                if (!topMatches)
                 { return; }
 
                 var badRows = [];

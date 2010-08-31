@@ -23,7 +23,7 @@ class ProfileController < ApplicationController
     # See if it matches the authoritative URL; if not, redirect
     if request.path != @user.href
       # Log redirects in development
-      if ENV["RAILS_ENV"] != 'production' &&
+      if Rails.env != 'production' &&
         request.path =~ /^\w{4}-\w{4}/
         logger.info("Doing a profile redirect from #{request.referrer}")
       end

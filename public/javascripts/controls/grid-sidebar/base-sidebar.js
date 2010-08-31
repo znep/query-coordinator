@@ -38,14 +38,15 @@
             return true;
         }
 
-        viewUid = blist.util.navigation.urlToViewId(viewUid);
-        if ($.isBlank(viewUid))
+        var viewUidMatches = viewUid.match(
+            /(\/[a-zA-Z0-9_\-]+){1,2}\/(\w{4}-\w{4})/);
+        if ($.isBlank(viewUidMatches))
         {
             return false;
         }
         else
         {
-            $(element).val(viewUid);
+            $(element).val(viewUidMatches[2]);
         }
         return true;
     },

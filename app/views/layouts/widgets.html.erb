@@ -53,7 +53,7 @@
 
   <%= javascript_include_merged 'base' %>
 
-  <% if ENV["RAILS_ENV"] != 'production' %>
+  <% if Rails.env != 'production' %>
       <%= javascript_include_tag "util/debug" %>
   <% end %>
 

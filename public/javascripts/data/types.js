@@ -188,8 +188,9 @@ blist.namespace.fetch('blist.data.types');
     };
 
     var renderGenNumber = function(value, plain, column) {
-        return "renderNumber(" + value + ", " + column.format.precision + ", '" +
-            column.format.precisionStyle + "')";
+        return "renderNumber(" + value + ", " +
+            (column.format || {}).precision + ", '" +
+            (column.format || {}).precisionStyle + "')";
     };
 
     var renderPercentBar = function(value) {

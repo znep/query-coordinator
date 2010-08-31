@@ -247,9 +247,12 @@
         showCallback: function(sidebarObj, $currentPane)
         {
             $currentPane
-                .find('.flash')
-                .text('')
-                .removeClass('error notice');
+                .find('.flash:not(.shareNoticeSent)')
+                    .removeClass('error notice')
+                    .text('')
+                .end()
+                .find('.shareNoticeSent')
+                    .hide();
         },
         finishBlock: {
             buttons: [$.gridSidebar.buttons.done]

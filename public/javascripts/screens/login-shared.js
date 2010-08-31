@@ -9,7 +9,7 @@ $(function() {
         $('.authAction').text('join');
         $('.modalHeader').toggle();
     });
-    $('.logInLink').click(function(event)
+    $('.signInLink').click(function(event)
     {
         event.preventDefault();
         $('.signupForm').slideUp();

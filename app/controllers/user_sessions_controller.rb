@@ -6,6 +6,7 @@ class UserSessionsController < ApplicationController
 
 #TODO: Remove me in v3 deprecation pass
   layout :choose_v4_layout
+  include NewChromeMethodProxy
 
   def index
     HoptoadNotifier.notify(
@@ -26,10 +27,6 @@ class UserSessionsController < ApplicationController
     end
   end
 
-#TODO: Remove me in v3 deprecation pass
-  def v4_new
-    new() 
-  end
 
   def create
     @body_id = 'login'

@@ -36,10 +36,10 @@
                 var editObj = this;
                 editObj._valuesList = [ { id: 'null', label: '(Blank)'} ];
 
-                _.each((editObj.column.dropDown || {}).values || [],
+                _.each((editObj.column.dropDownList || {}).values || [],
                     function(v)
                     {
-                        if (!v.deleted)
+                        if (!v.deleted && !$.isBlank(v.id))
                         {
                             editObj._valuesList.push({id: v.id,
                                 label: v.description || '', icon: v.icon});

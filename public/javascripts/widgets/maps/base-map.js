@@ -540,7 +540,8 @@
                     ((i+1)*granularity) + column.aggregates.minimum;
             }
 
-            if (mapObj._$legend.length > 0 && mapObj._colorValueCol == column)
+            if (!$.isBlank(mapObj._$legend) && mapObj._$legend.length > 0 &&
+                mapObj._colorValueCol == column)
             {
                 mapObj._$legend.find('span:first').text(column.aggregates.minimum);
                 mapObj._$legend.find('span:last').text(column.aggregates.maximum);

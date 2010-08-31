@@ -420,6 +420,8 @@ blist.namespace.fetch('blist.data.types');
             var valueLookup = context[valueLookupVariable] = {};
             _.each(column.dropDownList.values, function(opt)
             {
+                if ($.isBlank(opt.id)) { return; }
+
                 if (plain)
                 { valueLookup[opt.id.toLowerCase()] = option.text; }
                 else
@@ -695,6 +697,8 @@ blist.namespace.fetch('blist.data.types');
             var valueLookup = {};
             _.each(column.dropDownList.values, function(opt)
             {
+                if ($.isBlank(opt.id)) { return; }
+
                 var icon = opt.icon;
                 if (icon)
                 {
@@ -712,7 +716,7 @@ blist.namespace.fetch('blist.data.types');
                     icon + htmlStrip(opt.description || '');
             });
             return "<div class='blist-picklist-wrapper'>" +
-                ( (valueLookup[value.toLowerCase()] || {})['html'] || '') +
+                ( (valueLookup[value.toLowerCase()] || {})['html'] || value) +
                 "</div>";
         }
         return '?';

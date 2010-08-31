@@ -191,6 +191,10 @@
 
                 if (!_.isUndefined(chartObj.chart))
                 {
+                    // Make sure data is cleaned, or sometimes setCategories
+                    // will throw an error
+                    _.each(chartObj.chart.series, function(s)
+                            { s.cleanData(); });
                     chartObj.chart.xAxis[0].setCategories(
                             chartObj._xCategories, false);
                     chartObj.chart.redraw();
@@ -470,7 +474,7 @@
         if (_.isNull(value) && isPieTypeChart)
         { return null; }
 
-        var point = {y: value};
+        var point = {y: value || 0};
         if (!_.isNull(basePt) && !_.isUndefined(basePt))
         { _.extend(point, basePt); }
 
@@ -503,9 +507,9 @@
     // Handle rendering values for different column types here
     var renderXValue = function(val, col)
     {
-        if (!$.isBlank(col.dropDown))
+        if (!$.isBlank(col.dropDownList))
         {
-            val = (_.detect(col.dropDown.values, function(v)
+            val = (_.detect(col.dropDownList.values, function(v)
                 { return v.id == val; }) || {description: val}).description;
         }
         return $.htmlEscape(val);

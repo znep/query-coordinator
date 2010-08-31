@@ -4,6 +4,9 @@ Dataset.modules['calendar'] =
 {
     _checkValidity: function()
     {
+        if ($.isBlank(this.displayFormat.startDateTableId) ||
+            $.isBlank(this.displayFormat.titleTableId)) { return false; }
+
         var startCol = this.columnForTCID(this.displayFormat.startDateTableId);
         var titleCol = this.columnForTCID(this.displayFormat.titleTableId);
 

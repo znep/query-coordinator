@@ -66,8 +66,10 @@ Dataset.modules['visualization'] =
         _.each(this.displayFormat.valueColumns || [], function(vc)
         { foundCols.push(view.columnForTCID(vc.tableColumnId)); });
 
+        var ct = Dataset.chart.types[this.displayFormat.chartType];
+        if ($.isBlank(ct)) { return false; }
         return Dataset.chart.hasRequiredColumns(_.compact(foundCols),
-            Dataset.chart.types[this.displayFormat.chartType].requiredColumns);
+            ct.requiredColumns);
     },
 
     _convertLegacy: function()
@@ -79,7 +81,8 @@ Dataset.modules['visualization'] =
 
         if ($.isBlank(view.displayFormat.dataColumns) &&
             $.isBlank(view.displayFormat.fixedColumns) &&
-            $.isBlank(view.displayFormat.valueColumns))
+            $.isBlank(view.displayFormat.valueColumns) &&
+            !$.isBlank(view.visibleColumns))
         {
             view.displayFormat.dataColumns = _.map(view.visibleColumns,
                 function(c) { return c.tableColumnId; });

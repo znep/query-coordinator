@@ -278,6 +278,14 @@
   background-image: url(/stylesheets/images/content/snuffleupasnake.gif)
   background-repeat: no-repeat
 
+// common/BrandedSpinner.gif
+@mixin branded-spinner
+  @include text-hiding
+  @include ie6-fix
+  background-image: url(/stylesheets/images/common/BrandedSpinner.gif)
+  height: 48px
+  width: 48px
+
 // Format icons
 @mixin format-icon($subselector: '.icon')
   #{$subselector}
@@ -336,6 +344,21 @@
     background-position: 0 -78px
   &.internal #{$subselector}
     background-position: 0 -91px
+
+// icons/new_dataset_icons.png
+@mixin new-dataset-icons($subselector: '.icon')
+  #{$subselector}
+    @include text-hiding
+    background-image: url(/stylesheets/images/icons/new_dataset_icons.png)
+    height: 64px
+    width: 64px
+
+  &.create #{$subselector}
+    background-position: 0 0
+  &.upload #{$subselector}
+    background-position: 0 -64px
+  &.blobby #{$subselector}
+    background-position: 0 -128px
 
 // icons/analytic_icons.png
 @mixin analytic-icons($subselector: '.icon')

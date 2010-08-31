@@ -251,6 +251,13 @@ javascripts:
   - screens/widget
 - widgets-show-form:
   - plugins/jquery.uniform
+- screen-dataset-new:
+  - util/serialize.js
+  - plugins/jquery.uniform
+  - plugins/ajaxupload.3.0
+  - controls/attachments-editor
+  - controls/wizard
+  - screens/dataset-new
 - screen-dataset:
   - plugins/jquery.colorPicker
   - plugins/jquery.awesomecomplete
@@ -300,6 +307,7 @@ javascripts:
 - screen-dataset-edit-metadata:
   - plugins/jquery.uniform
   - plugins/ajaxupload.3.0
+  - controls/attachments-editor
   - screens/dataset-edit-metadata
 - shared-metrics:
   - plugins/jquery.uniform
@@ -411,7 +419,7 @@ stylesheets:
 - admin-federation:
   - list-screen
   - admin-federation-screen
-- dataset-page:
+- dataset-show:
   - ui.slider
 - analytics-shared:
   - jquery-ui-1.8.4.custom

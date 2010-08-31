@@ -130,6 +130,27 @@ div.starsControl
     .starsControlInner
       background-position: 0 -10px
 
+div.wizard
+  overflow: hidden
+
+  > ul
+    display: block
+
+    > li
+      display: none // hide by default so we avoid ugly pop-in
+      float: left
+
+ul.wizardButtons
+  margin: 1em
+
+  li
+    display: block
+
+    &.cancel
+      float: left
+    &.prev, &.next
+      float: right
+
 
 //*** START: Tooltip styles ***//
 .bt-wrapper

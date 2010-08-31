@@ -1,5 +1,5 @@
 <% content_for :head do %>
-  <%= rendered_stylesheet_tag 'dataset-edit-metadata-page' %>
+  <%= rendered_stylesheet_tag 'dataset-edit-metadata' %>
   <title>Edit Dataset Metadata | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
@@ -22,12 +22,12 @@
     </div>
 
     <div class="line clearfix">
-      <label for="view_description">Short Description</label>
+      <label for="view_description">Brief Description</label>
       <%= text_area_tag("view[description]", @view.description, :title => "Enter a description", :class => "textPrompt") %>
     </div>
 
     <div class="line clearfix">
-      <label for="view_category">Type of Dataset</label>
+      <label for="view_category">Category</label>
       <%= select_tag("view[category]", category_select_options(h(@view.category.nil? ? '' : @view.category.capitalize))) %>
     </div>
 
@@ -85,34 +85,36 @@
 
     <h2>Attachments</h2>
 
-    <div class="line clearfix">
-      <label>Existing Attachments</label>
-      <div class="existingAttachments">
-        <ul>
-          <%- if @view.metadata && !@view.metadata.attachments.blank? -%>
-            <%- @view.metadata.attachments.each do |attachment| -%>
-              <%- attachmentObj = Attachment.set_up_model(attachment) -%>
-              <li>
-                <%= hidden_field_tag("view[metadata[attachments]][][blobId]",   attachment['blobId']) %>
-                <%= hidden_field_tag("view[metadata[attachments]][][filename]", attachment['filename']) %>
-                <%= text_field_tag(  "view[metadata[attachments]][][name]",     attachmentObj.displayName) %>
-                <span class="deleteLinks">
-                  <label>Delete</label>
-                  <%= check_box_tag("view[metadata[attachments]][][delete]") %>
-                </span>
-              </li>
+    <div class="attachments">
+      <div class="line clearfix">
+        <label>Existing Attachments</label>
+        <div class="existingAttachments">
+          <ul>
+            <%- if @view.metadata && !@view.metadata.attachments.blank? -%>
+              <%- @view.metadata.attachments.each do |attachment| -%>
+                <%- attachmentObj = Attachment.set_up_model(attachment) -%>
+                <li>
+                  <%= hidden_field_tag("view[metadata[attachments]][][blobId]",   attachment['blobId']) %>
+                  <%= hidden_field_tag("view[metadata[attachments]][][filename]", attachment['filename']) %>
+                  <%= text_field_tag(  "view[metadata[attachments]][][name]",     attachmentObj.displayName) %>
+                  <span class="deleteLinks">
+                    <label>Delete</label>
+                    <%= check_box_tag("view[metadata[attachments]][][delete]") %>
+                  </span>
+                </li>
+              <%- end -%>
+            <%- else -%>
+              <li class="noAttachmentsItem">(none)</li>
             <%- end -%>
-          <%- else -%>
-            <li class="noAttachmentsItem">(none)</li>
-          <%- end -%>
-        </ul>
+          </ul>
+        </div>
       </div>
-    </div>
 
-    <div class="line clearfix">
-      <label for="attachment_new" class="newAttachmentLabel">New Attachment</label>
-      <%= file_field_tag("attachment_new") %>
-      <span class="uploadAttachmentThrobber"></span>
+      <div class="line clearfix">
+        <label for="attachment_new" class="newAttachmentLabel">New Attachment</label>
+        <%= file_field_tag("attachment_new") %>
+        <span class="uploadAttachmentThrobber"></span>
+      </div>
     </div>
 
     <%- if CurrentDomain.custom_dataset_metadata -%>

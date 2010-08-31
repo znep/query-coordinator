@@ -4,6 +4,11 @@ class DatasetsController < ApplicationController
   skip_before_filter :require_user, :only => [:show, :alt, :widget_preview, :captcha_validate]
   layout 'dataset_v2'
 
+# collection actions
+  def new
+  end
+
+# member actions
   def show
     if is_mobile? && (params[:no_mobile] != 'true')
       redirect_to :controller => 'widgets', :action => 'show', :id => params[:id]

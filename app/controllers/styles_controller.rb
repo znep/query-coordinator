@@ -225,7 +225,11 @@ protected
                    :disabled     => { :background  => 'color',
                                       :border      => 'color',
                                       :text        => 'color' },
-                   :emphasized   => { :background  => 'color',
+                   :default      => { :background  => 'color',
+                                      :border      => 'color',
+                                      :text        => 'color' },
+                   :default_disabled =>
+                                    { :background  => 'color',
                                       :border      => 'color',
                                       :text        => 'color' } },
     :table     => { :header      => { :inactive => 'color',

@@ -873,7 +873,7 @@ this.Dataset = Model.extend({
             });
         }
 
-        var oldQuery = ds.query;
+        var oldQuery = ds.query || {};
         var oldSearch = ds.searchString;
         var oldDispFmt = ds.displayFormat;
 
@@ -909,7 +909,7 @@ this.Dataset = Model.extend({
         { ds.updateColumns(newDS.columns, forceFull, updateColOrder); }
 
         // Update sorts on each column
-        _.each(ds.realColumns, function(c)
+        _.each(ds.realColumns || [], function(c)
                 { delete c.sortAscending; });
         _.each((ds.query || {}).orderBys || [], function(ob)
         {
@@ -917,7 +917,10 @@ this.Dataset = Model.extend({
             if (!$.isBlank(c)) { c.sortAscending = ob.ascending; }
         });
 
-        if (!_.isEqual(oldQuery, ds.query) || oldSearch !== ds.searchString)
+        // the core server will do this anyway.
+        ds.query = ds.query || {};
+
+        if (!_.isEqual(oldQuery, ds.query) || (oldSearch !== ds.searchString))
         {
             // Clear out the rows, since the data is different now
             ds._invalidateRows();
@@ -1011,7 +1014,7 @@ this.Dataset = Model.extend({
         this._rowsLoading = {};
         this._pendingRowReqs = [];
         this._rowIDLookup = {};
-        _.each(this.columns, function(c) { c.invalidateData(); });
+        _.each(this.columns || [], function(c) { c.invalidateData(); });
         this.trigger('row_change', [invRows]);
     },
 

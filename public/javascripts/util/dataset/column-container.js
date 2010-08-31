@@ -159,47 +159,55 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
 
         if (!$.isBlank(newCols))
         {
-            var newColIds = {};
-            cont[colSet] = cont[colSet] || [];
-            _.each(newCols, function(nc, i)
+            // if we have no columns to begin with just set them
+            if ($.isBlank(cont[colSet]))
             {
-                newColIds[nc.id] = true;
-                // Columns may or may not be in the list already; they may
-                // also be at the wrong spot.  So find the column and index
-                // if it already exists
-                var c = nc.dataTypeName != 'meta_data' ?
-                    forID(cont, nc.id) :
-                    _.detect(cont[colSet], function(mc)
-                        { return mc.dataTypeName == 'meta_data' &&
-                            mc.name == nc.name; });
-                var ci = _.indexOf(cont[colSet], c);
+                cont[colSet] = newCols;
+            }
+            else
+            {
+                var newColIds = {};
 
-                // If it is new, just splice it in
-                if ($.isBlank(c))
+                _.each(newCols, function(nc, i)
                 {
-                    if (updateOrder) { cont[colSet].splice(i, 0, nc); }
-                    else { cont[colSet].push(nc); }
-                }
-                else
-                {
-                    // If the column existed but not at this index, remove it from
-                    // the old spot and put it in the new one
-                    if (updateOrder && ci != i)
+                    newColIds[nc.id] = true;
+                    // Columns may or may not be in the list already; they may
+                    // also be at the wrong spot.  So find the column and index
+                    // if it already exists
+                    var c = nc.dataTypeName != 'meta_data' ?
+                        forID(cont, nc.id) :
+                        _.detect(cont[colSet], function(mc)
+                            { return mc.dataTypeName == 'meta_data' &&
+                                mc.name == nc.name; });
+                    var ci = _.indexOf(cont[colSet], c);
+
+                    // If it is new, just splice it in
+                    if ($.isBlank(c))
                     {
-                        cont[colSet].splice(ci, 1);
-                        cont[colSet].splice(i, 0, c);
+                        if (updateOrder) { cont[colSet].splice(i, 0, nc); }
+                        else { cont[colSet].push(nc); }
                     }
-                    // Update the column object in-place
-                    c.update(nc, forceFull);
-                }
-            });
+                    else
+                    {
+                        // If the column existed but not at this index, remove it from
+                        // the old spot and put it in the new one
+                        if (updateOrder && ci != i)
+                        {
+                            cont[colSet].splice(ci, 1);
+                            cont[colSet].splice(i, 0, c);
+                        }
+                        // Update the column object in-place
+                        c.update(nc, forceFull);
+                    }
+                });
 
-            // If this is the master order of columns, then reject any that
-            // aren't in the new set
-            if (updateOrder)
-            {
-                this[colSet] = _.reject(this[colSet], function(c)
-                        { return !newColIds[c.id]; });
+                // If this is the master order of columns, then reject any that
+                // aren't in the new set
+                if (updateOrder)
+                {
+                    this[colSet] = _.reject(this[colSet], function(c)
+                            { return !newColIds[c.id]; });
+                }
             }
         }
 

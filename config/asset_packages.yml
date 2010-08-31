@@ -252,7 +252,7 @@ javascripts:
 - widgets-show-form:
   - plugins/jquery.uniform
 - screen-dataset-new:
-  - util/serialize.js
+  - util/serialize
   - plugins/jquery.uniform
   - plugins/ajaxupload.3.0
   - controls/attachments-editor

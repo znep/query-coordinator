@@ -1892,7 +1892,7 @@
             $sel.find('option').remove();
             _.each(newOpts, function(o)
             { $sel.append($.tag(o)); });
-            $.uniform.update($sel);
+            uniformUpdate($sel);
         });
     };
 

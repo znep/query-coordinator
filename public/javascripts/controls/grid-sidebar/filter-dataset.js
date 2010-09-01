@@ -427,8 +427,9 @@
                 !_.any(filterView.columns, function(fvc)
                     { return fvc.id == c.id; }))
             {
-                filterView.columns.push({id: c.id,
-                    format: $.extend({}, c.format, {grouping_aggregate: null})});
+                var fmt = $.extend({}, c.format);
+                delete fmt.grouping_aggregate;
+                filterView.columns.push({id: c.id, format: fmt});
             }
         });
 

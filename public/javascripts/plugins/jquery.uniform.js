@@ -445,7 +445,7 @@ Enjoy!
                 divTag.removeClass(options.hoverClass+" "+options.focusClass+" "+options.activeClass);
 
                 //reset current selected text
-                spanTag.html($e.children(":selected").text());
+                spanTag.html($.htmlEscape($e.children(":selected").text()));
 
                 if($e.is(":disabled")){
                     divTag.addClass(options.disabledClass);

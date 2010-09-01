@@ -1,0 +1,165 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'dataset-new' %>
+  <title>New Dataset | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<% content_for :skip_links do %>
+  <a href="/upload_alt">Upload a new dataset accessibly</a>
+<% end %>
+
+<div class="contentBox fixedWidth">
+  <form class="newDatasetForm">
+    <h1>Create a new Dataset</h1>
+
+    <%= display_standard_flashes %>
+
+    <div class="newDatasetWizard wizard">
+      <ul class="clearfix">
+        <li class="selectTypePane" data-wizardPaneName="selectType">
+          <p class="headline">Please choose how you would like to create this Dataset.</p>
+          <ul class="newKindList clearfix">
+            <li>
+              <a href="#create" class="create" title="Choose this if you don't already have data you wish to import. You will be able to define a schema for your data, and input it online.">
+                <span class="icon"></span>
+                <p>Design from Scratch</p>
+              </a>
+            </li>
+            <li>
+              <a href="#import" class="upload" title="Choose this if you already have a data file on your computer you wish to import. We support .csv, .tsv, .xml, .xls, and .xlsx formats.">
+                <span class="icon"></span>
+                <p>Import a Data File</p>
+              </a>
+            </li>
+            <li>
+              <a href="#blobby" class="blobby" title="Choose this if you have a file that has data in it but which cannot be imported, such as a PDF, or an image file. It will be imported into the data catalog, but will not be as interactive as real data.">
+                <span class="icon"></span>
+                <p>Upload a Non-Data File</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="uploadFilePane" data-wizardPaneName="uploadFile">
+          <p class="headline"></p>
+          <div class="uploadFileContainer">
+            <input type="text" class="uploadFileName" readonly="readonly" value="No file selected yet."/>
+            <a href="/imports.txt?two_step_import=true" class="button uploadFileButton">Choose a File</a>
+            <div class="uploadThrobber"></div>
+            <p class="uploadFileFormats">We support .csv, .tsv, .xml, .xls, and .xlsx formats.</p>
+          </div>
+        </li>
+        <li class="metadataPane" data-wizardPaneName="metadata">
+          <div class="flash"></div>
+          <p class="headline">Tell us about your data.</p>
+          <div class="commonForm metadataForm">
+            <div class="line clearfix">
+              <label for="view_name" class="required">Dataset Title</label>
+              <%= text_field_tag("view[name]", '', :title => "Enter a title", :class => "textPrompt") %>
+            </div>
+
+            <div class="line clearfix">
+              <label for="view_description">Brief Description</label>
+              <%= text_area_tag("view[description]", '', :title => "Enter a description", :class => "textPrompt") %>
+            </div>
+
+            <div class="line clearfix">
+              <label for="view_category">Category</label>
+              <%= select_tag("view[category]", category_select_options) %>
+            </div>
+
+            <div class="line clearfix">
+              <label for="view_tags">Tags / Keywords</label>
+              <%= text_field_tag("view[tags]", '', :title => "Enter keywords", :class => "textPrompt") %>
+              <div class="additionalHelp">Enter one or more keywords separated by commas</div>
+            </div>
+
+            <h2>Licensing &amp; Attribution</h2>
+
+            <div class="line clearfix">
+              <label for="view_licenseId">Licensing</label>
+              <%= select_tag("view[licenseId]", license_select_options('')) %>
+              <div class="additionalHelp">Choose licensing terms for people who wish to use this dataset.</div>
+            </div>
+
+            <div class="line creativeCommonsLine clearfix">
+              <label for="view_ccLicenseId" class="required">Creative Commons Type</label>
+              <%= select_tag("view_ccLicenseId", creative_commons_select_options) %>
+            </div>
+
+            <div class="line clearfix">
+              <label for="view_attribution">Data Provided By</label>
+              <%= text_field_tag("view[attribution]", '', :title => "Individual or Organization", :class => "textPrompt") %>
+            </div>
+
+            <div class="line clearfix">
+              <label for="view_attributionLink">Source Link</label>
+              <%= text_field_tag("view[attributionLink]", '', :title => "Enter Web Address", :class => "textPrompt") %>
+            </div>
+
+            <h2>Attachments</h2>
+
+            <div class="attachments">
+              <div class="line existingAttachmentsContainer clearfix">
+                <label>Existing Attachments</label>
+                <div class="existingAttachments">
+                  <ul></ul>
+                </div>
+              </div>
+
+              <div class="line newAttachmentsContainer clearfix">
+                <label for="attachment_new" class="newAttachmentLabel">&nbsp;</label>
+                <a class="button uploadLink" href="#upload_attachment">Upload New Attachment</a>
+                <span class="uploadAttachmentThrobber"></span>
+              </div>
+            </div>
+
+            <%- if CurrentDomain.custom_dataset_metadata -%>
+              <h2>Additional Information</h2>
+
+              <%- CurrentDomain.custom_dataset_metadata.each do |field| -%>
+                <div class="line clearfix">
+                  <label for="view_metadata_custom_fields_<%= field %>">
+                    <%= field %></label>
+                  <%= text_field_tag("view[metadata][custom_fields][#{field}]", '') %>
+                </div>
+              <%- end -%>
+            <%- end -%>
+
+            <h2>Privacy &amp; Security</h2>
+
+            <div class="line clearfix">
+              <label>Privacy Settings</label>
+              <div class="radioblock">
+                <div>
+                  <%= radio_button_tag("privacy", "public", true) %>
+                  <label for="privacy_public_view">
+                    My data is <strong>public</strong>: it can only be modified by me, but everyone can view it.
+                  </label>
+                </div>
+                <div>
+                  <%= radio_button_tag("privacy", "private") %>
+                  <label for="privacy_private">
+                    My data is <strong>private</strong>.
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="required">Required Field</div>
+          </div>
+        </li>
+        <li class="workingPane" data-wizardPaneName="working">
+          <p class="headline">Processing...</p>
+          <div class="brandedSpinner"></div>
+        </li>
+        <li class="finishPane" data-wizardPaneName="finish">
+          <p class="headline">Your Dataset has been created.</p>
+          <p class="subheadline">Click on Finish to see it!</p>
+        </li>
+      </ul>
+    </div>
+  </form>
+</div>
+
+<% content_for :js_footer do %>
+  <%= javascript_include_merged 'screen-dataset-new' %>
+<% end %>

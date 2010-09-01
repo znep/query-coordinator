@@ -320,7 +320,7 @@ $(function ()
     {
         var paramSearched = false;
         $('#dataGrid')
-            .bind('full_load',
+            .bind('dataset_ready',
                 function()
                 {
                     $('#lensContainer .headerBar').removeClass('hide');

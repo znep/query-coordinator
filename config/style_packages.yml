@@ -26,7 +26,9 @@ screen-map:
 - screen-map
 screen-calendar:
 - screen-calendar
-dataset-page:
+dataset-new:
+- screen-dataset-new
+dataset-show:
 - grid-sidebar
 - grid-sidebar-custom
 - screen-dataset
@@ -34,7 +36,7 @@ dataset-page:
 - splash
 dataset-alt:
 - screen-dataset-alt
-dataset-edit-metadata-page:
+dataset-edit-metadata:
 - screen-dataset-edit-metadata
 dataset-analytics:
 - screen-metrics

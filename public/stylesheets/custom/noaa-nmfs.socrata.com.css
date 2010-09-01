@@ -1,0 +1,81 @@
+body {
+    background: url(/stylesheets/images/domains/noaa-nmfs.socrata.com/bg.png);
+    margin: 0;
+}
+#mainLogo {
+	top: 0px;
+	left: 0px;
+	height:75px;
+	padding: 0em;
+}
+#mainLogo a {
+	display:block;
+	width: 548px;
+	height:75px;
+}
+#header {
+    background: url(/stylesheets/images/domains/noaa-nmfs.socrata.com/header_gradient.png) repeat-x;
+	height:113px;
+}
+#header .swoosh {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 180px;
+    height: 76px;
+    background: url(/stylesheets/images/domains/noaa-nmfs.socrata.com/swoosh.png) no-repeat;
+}
+.bodyInterior {
+  border:none;
+}
+body.home #mainNav li.home, body.home #mainNav li.home a span, body.discover #mainNav li.discover a span, body.community #mainNav li.community a span, body.discover #mainNav li.discover, #mainNav ul.subNav li:hover, #mainNav ul.subNav li:hover a span, body.home #mainNav li.home .subNav li:hover, body.home #mainNav li.home .subNav li:hover a span {
+	background:none;
+}
+#mainNav li, #mainNav li a span {
+    background-color:#0058a6;
+    background-image:none;
+}
+#mainNav li.home .subNav li,
+#mainNav li.home .subNav li a span,
+body.home #mainNav li.home .subNav li,
+body.home #mainNav li.home .subNav li a span {
+	background-image:none;
+	background-color:#0058a6;
+}
+#mainNav {
+	width:auto;
+	margin:0;
+}
+#mainNav ul,
+.userNav ul
+{
+	position:relative;
+	top:82px;
+	z-index:1000;
+	padding-left:3px;
+}
+#header .userNav a{
+    color:#fff;
+}
+#mainNav a {
+	color:#fff;
+	cursor:pointer;
+}
+#mainNav ul.subNav {
+	top:auto;
+	background:#0058a6;
+	margin-left:6px;
+	padding-top:2px;
+	padding-bottom:4px;
+}
+#header form.search {
+	top:22px;
+	right: 100px;
+}
+.footerContainer {
+	background:#fff;
+	border-top:#666 solid 1px;
+}
+.dialogBox .header {
+	background:#00a3e3;
+}

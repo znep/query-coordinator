@@ -212,6 +212,8 @@
                         { sidebarObj.genericErrorHandler($pane, xhr); });
                 }
                 else { columnCreated(sidebarObj, newCol); }
+                // Since we imported data, need to reload
+                blist.dataset.reload();
             },
             function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); },
             $.extend({method: 'addressify', deleteOriginalColumns: false,

@@ -1,0 +1,113 @@
+.headline
+  font-size: 1.8em
+  margin-top: 1em
+  text-align: center
+
+.subheadline
+  color: #444
+  font-size: 1.4em
+  margin: 1em 0 2em
+  text-align: center
+
+// PANE ZERO: choose type
+.newKindList
+  margin: 2em auto 5em
+  width: 75.6em
+
+  li
+    display: block
+    float: left
+    padding-left: 4em
+    .ie7 &
+      padding-left: 2em
+
+    a
+      @include new-dataset-icons
+      @include border-radius(0.3em)
+      background-color: #f7f7f7
+      border: 1px solid $color_chrome_box_border
+      color: #333
+      cursor: pointer
+      display: block
+      height: 9.3em
+      text-align: center
+      text-shadow: 1px 1px 0 #fff
+      @include transition-property(background-color)
+      @include transition-duration(0.5s)
+      padding: 2em
+      width: 17em
+
+      &:hover
+        background-color: #eee
+
+      .icon
+        display: block
+        margin: 0 auto 1em
+
+      p
+        font-size: 1.4em
+        font-weight: bold
+
+// PANE ONE: upload
+.uploadFilePane
+  .uploadFileContainer
+    text-align: center
+
+    .uploadFileName
+      @include border-radius(0.2em)
+      font-size: 1.4em
+      margin: 2em 0
+      padding: 0.4em
+      width: 40em
+      &.error
+        color: #b33
+    .uploadFileButton
+      .ie7 &
+        bottom: 1.3em
+        position: relative
+    .uploadThrobber
+      @include throbber-icon
+      display: inline-block
+      margin-left: 1em
+      visibility: hidden
+      &.uploading
+        visibility: visible
+
+    .uploadFileFormats
+      color: #666
+      font-size: 1.3em
+      margin-bottom: 2em
+
+// PANE TWO: metadata
+.metadataPane
+  .metadataForm
+    @include common-form(14em, 40em)
+    margin:
+      bottom: 3.5em
+      left: 6em
+      top: 2em
+
+    div.required
+      margin-top: 1.5em
+
+    .creativeCommonsLine
+      display: none
+
+    .existingAttachmentsContainer
+      display: none
+      padding-bottom: 3em
+
+    .newAttachmentsContainer
+      margin-top: -3em
+
+    .radioblock
+      .ie7 & .uniform.radio
+        display: inline
+        zoom: 1
+      label
+        padding-left: 0
+
+// PANE THREE: working on it...
+.brandedSpinner
+  @include branded-spinner
+  margin: 2em auto 3em

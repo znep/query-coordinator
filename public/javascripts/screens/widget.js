@@ -494,7 +494,7 @@ $(function()
 
                 // This is returning with &nbsp;, so replace them all with
                 // normal spaces
-                $this.socrataTip({ message: $this.attr('title').replace(/\s/g, ' '),
+                $this.socrataTip({ message: $this.attr('title').clean(),
                     shrinkToFit: false });
             });
 
@@ -785,7 +785,7 @@ $(function()
         _.defer(function() { window.scrollTo(0, 1); });
 
         // show the mobile site notice
-        $dataGrid.bind('full_load', function()
+        $dataGrid.bind('dataset_ready', function()
         {
             $('.mobileNotice').fadeIn();
             setTimeout(function()

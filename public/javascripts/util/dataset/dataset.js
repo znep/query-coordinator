@@ -165,8 +165,7 @@ this.Dataset = Model.extend({
     reload: function()
     {
         var ds = this;
-        ds._invalidateRows();
-        ds._loadRows(0, 1, null, true, true);
+        ds._loadRows(0, 1, function() { ds._invalidateRows(); }, true, true);
     },
 
     userGrants: function()
@@ -814,6 +813,22 @@ this.Dataset = Model.extend({
             success: successCallback, error: errorCallback});
     },
 
+    cleanCopy: function()
+    {
+        var ds = this._super();
+        // If this is grouped, strip out all non-grouped/agged cols
+        if (this.isGrouped())
+        {
+            ds.columns = _.select(ds.columns, function(c)
+            {
+                return !$.isBlank(c.format.grouping_aggregate) ||
+                    _.any(ds.query.groupBys, function(g)
+                        { return g.columnId == c.id; });
+            });
+        }
+        return ds;
+    },
+
 
     // Private methods
 
@@ -858,7 +873,7 @@ this.Dataset = Model.extend({
             });
         }
 
-        var oldQuery = ds.query;
+        var oldQuery = ds.query || {};
         var oldSearch = ds.searchString;
         var oldDispFmt = ds.displayFormat;
 
@@ -894,7 +909,7 @@ this.Dataset = Model.extend({
         { ds.updateColumns(newDS.columns, forceFull, updateColOrder); }
 
         // Update sorts on each column
-        _.each(ds.realColumns, function(c)
+        _.each(ds.realColumns || [], function(c)
                 { delete c.sortAscending; });
         _.each((ds.query || {}).orderBys || [], function(ob)
         {
@@ -902,7 +917,10 @@ this.Dataset = Model.extend({
             if (!$.isBlank(c)) { c.sortAscending = ob.ascending; }
         });
 
-        if (!_.isEqual(oldQuery, ds.query) || oldSearch !== ds.searchString)
+        // the core server will do this anyway.
+        ds.query = ds.query || {};
+
+        if (!_.isEqual(oldQuery, ds.query) || (oldSearch !== ds.searchString))
         {
             // Clear out the rows, since the data is different now
             ds._invalidateRows();
@@ -991,11 +1009,13 @@ this.Dataset = Model.extend({
 
     _invalidateRows: function()
     {
+        var invRows = _.values(this._rows);
         this._rows = {};
         this._rowsLoading = {};
         this._pendingRowReqs = [];
         this._rowIDLookup = {};
-        _.each(this.columns, function(c) { c.invalidateData(); });
+        _.each(this.columns || [], function(c) { c.invalidateData(); });
+        this.trigger('row_change', [invRows]);
     },
 
     _loadRows: function(start, len, callback, includeMeta, fullLoad)

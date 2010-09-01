@@ -146,8 +146,12 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
     props.cleanCopy = function()
     {
         var item = this._super();
-        item[colSet] = _.reject(item[colSet] || [],
-            function(c) { return c.id == -1; });
+
+        if (!_.isUndefined(item[colSet]))
+        {
+            item[colSet] = _.reject(item[colSet],
+                function(c) { return c.id == -1; });
+        }
         return item;
     };
 

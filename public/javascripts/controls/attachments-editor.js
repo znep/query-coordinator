@@ -39,7 +39,6 @@
                 onComplete: function (file, response)
                 {
                     $editor.find('.uploadAttachmentThrobber').hide();
-                    $editor.find('.existingAttachments').show();
                     if (response.error)
                     {
                         $editor.find('.flash').addClass('error')
@@ -57,6 +56,7 @@
                                 {tagName: 'input', type: 'text',   name: 'view[metadata][attachments][][name]',     value: response.nameForOutput},
                                  deleteLinkOptions ]}));
 
+                    $editor.find('.existingAttachmentsContainer').show();
                     $editor.find('.noAttachmentsItem').remove();
                 }
             });

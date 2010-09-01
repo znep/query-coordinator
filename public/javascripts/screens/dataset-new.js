@@ -69,7 +69,7 @@ $(function()
 
 // WIZARD
     $wizard.wizard({
-        cancelPath: '/',
+        cancelPath: '/home',
         finishCallback: function()
         {
             submittedView.redirectTo();

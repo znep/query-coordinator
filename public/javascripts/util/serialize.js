@@ -28,7 +28,16 @@
             var iter = result;
             for (var i = 0; i < subkeys.length - 1; i++)
             {
-                var subkey = (subkeys[i] === '') ? iter.length : subkeys[i];
+                var subkey = subkeys[i];
+                if (subkey === '')
+                {
+                    subkey = iter.length - 1;
+                    // do we want to make a new array or join with the last?
+                    if ((subkey < 0) || !_.isUndefined(iter[subkey][subkeys[i + 1]]))
+                    {
+                        subkey++;
+                    }
+                }
                 if (_.isUndefined(iter[subkey])) { iter[subkey] = (subkeys[i + 1] === '') ? [] : {} }
                 iter = iter[subkey];
             }

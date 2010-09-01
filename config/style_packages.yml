@@ -43,5 +43,3 @@ dataset-analytics:
 administration-analytics-screen:
 - screen-admin
 - screen-metrics
-internal-screen:
-- screen-admin

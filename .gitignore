@@ -1,6 +1,7 @@
 public/javascripts/cache
 public/stylesheets/cache
 vendor/bundler_gems
+vendor/bundle
 .bundle
 .*.swp
 .DS_Store

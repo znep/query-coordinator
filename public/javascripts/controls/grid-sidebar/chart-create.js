@@ -32,6 +32,10 @@
             'want a legend'
     };
 
+    var renderOther = {text: 'Use Other', type: 'checkbox', defaultValue: false,
+        name: 'displayFormat.renderOther', wizard: 'Collect extra' +
+        'values into Other category?'};
+
     var colorOption = {type: 'color', name: 'color', defaultValue: defaultColors,
         lineClass: 'colorCollapse'};
 
@@ -43,9 +47,6 @@
         type: 'checkbox', trueValue: '3', falseValue: '0', defaultValue: '3',
         wizard: 'Choose whether or not you want points drawn for each data point'};
 
-    var rowLimit = 100;
-    var hitRowLimit = false;
-
 
     /*** Helpers ***/
 
@@ -54,15 +55,6 @@
         return function()
         {
             var chartName = chartConfig.text.toLowerCase();
-            if (hitRowLimit)
-            {
-                return chartName.capitalize() + ' requires ' +
-                    'less than ' + rowLimit + ' distinct values (rows). ' +
-                    'Try creating a Roll Up or a filter which limits the ' +
-                    'number of values and then create a' +
-                    (!_.isNull(chartName.match(/^[aeiou]/)) ? 'n' : '') +
-                    ' ' + chartName + ' of that.';
-            }
 
             var newTypes = [];
             var copy = chartConfig.requiredColumns.slice();
@@ -84,19 +76,42 @@
         };
     };
 
+    var getWarningMessage = function(chartConfig)
+    {
+        return function()
+        {
+            var chartName = chartConfig.text.toLowerCase();
+            var rowLimit = chartConfig.displayLimit || 100;
+            if (chartConfig.renderOther)
+            { return 'Warning: ' + chartName.capitalize() + ' will aggregate ' +
+                ' distinct values (rows) past the ' + rowLimit + 'th into an ' +
+                'Other category. Try creating a Roll Up or a filter which ' +
+                'limits the number of values and then create a' +
+                (!_.isNull(chartName.match(/^[aeiou]/)) ? 'n' : '') +
+                ' ' + chartName + ' of that.'; }
+            else
+            { return 'Warning: ' + chartName.capitalize() + ' will truncate ' +
+                'datasets with more than ' + rowLimit + ' distinct values ' +
+                '(rows). Try creating a Roll Up or a filter which limits the ' +
+                'number of values and then create a' +
+                (!_.isNull(chartName.match(/^[aeiou]/)) ? 'n' : '') +
+                ' ' + chartName + ' of that.'; }
+        };
+    };
+
     var chartTypeAvailable = function(chartConfig)
+    {
+        return Dataset.chart.hasRequiredColumns(blist.dataset.realColumns,
+            chartConfig.requiredColumns, isEdit);
+    };
+
+    var datasetTooLarge = function(chartConfig)
     {
         // Limit number of rows
         if (!$.isBlank(blist.dataset.totalRows) &&
-            blist.dataset.totalRows > rowLimit)
-        {
-            hitRowLimit = true;
-            return false;
-        }
-        hitRowLimit = false;
-
-        return Dataset.chart.hasRequiredColumns(blist.dataset.realColumns,
-            chartConfig.requiredColumns, isEdit);
+            blist.dataset.totalRows > (chartConfig.displayLimit || 100))
+        { return false; }
+        return true;
     };
 
     var onlyIfForChart = function(chart, disable)
@@ -104,7 +119,10 @@
         return [{field: 'displayFormat.chartType', value: chart.value},
                {disable: disable, func: function()
                    { return chartTypeAvailable(chart); },
-                disabledMessage: getDisabledMessage(chart)}];
+                disabledMessage: getDisabledMessage(chart)},
+               {warn: disable, func: function()
+                   { return datasetTooLarge(chart); },
+                warningMessage: getWarningMessage(chart)}];
     };
 
     var basicConfig = function(chart, colTypes, axisName)
@@ -252,7 +270,7 @@
                 Dataset.chart.textualTypes, 'Groups'),
             basicData(Dataset.chart.types.bar,
                 Dataset.chart.numericTypes, 'Values'),
-            basicAdv(Dataset.chart.types.bar, [legendPos]),
+            basicAdv(Dataset.chart.types.bar, [legendPos, renderOther]),
 
 
             // Column chart
@@ -260,7 +278,7 @@
                 Dataset.chart.textualTypes, 'Groups'),
             basicData(Dataset.chart.types.column,
                 Dataset.chart.numericTypes, 'Values'),
-            basicAdv(Dataset.chart.types.column, [legendPos]),
+            basicAdv(Dataset.chart.types.column, [legendPos, renderOther]),
 
 
             // Donut chart
@@ -344,6 +362,17 @@
 
         _.each(view.displayFormat.fixedColumns || [], addColumn);
 
+        if (_.include(['pie', 'donut'], view.displayFormat.chartType))
+        { view.query = $.extend(view.query, blist.dataset.query,
+            { orderBys: _.map(view.displayFormat.valueColumns, function(col)
+                {
+                    var orderBy = { ascending: false, expression: {
+                        columnId: blist.dataset.columnForTCID(col.tableColumnId).id,
+                        type: 'column'
+                    }};
+                    return orderBy;
+                }) }
+        ); }
         blist.dataset.update(view);
 
         if (!isEdit)

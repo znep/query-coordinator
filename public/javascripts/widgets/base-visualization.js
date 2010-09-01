@@ -22,7 +22,6 @@
     {
         defaults:
         {
-            maxRows: 500,
             view: null
         },
 
@@ -51,6 +50,8 @@
                 { $domObj.before('<div id="vizError" class="mainError"></div>'); }
                 $domObj.siblings('#vizError').hide();
 
+                currentObj._maxRows = 500;
+
                 currentObj.initializeVisualization();
 
                 $domObj.resize(function(e) { doResize(currentObj, e); });
@@ -64,7 +65,7 @@
 
                 currentObj._initialLoad = true;
 
-                currentObj.settings.view.getRows(0, currentObj.settings.maxRows,
+                currentObj.settings.view.getRows(0, currentObj._maxRows,
                     function()
                     {
                         // Use a defer so that if the rows are already loaded,
@@ -152,7 +153,7 @@
 
                 vizObj.reloadVisualization();
 
-                vizObj.settings.view.getRows(0, vizObj.settings.maxRows,
+                vizObj.settings.view.getRows(0, vizObj._maxRows,
                     function()
                     {
                         // Use a defer so that if the rows are already loaded,

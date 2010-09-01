@@ -18,19 +18,26 @@ Dataset.chart.dateTypes = ['calendar_date', 'date'];
 
 Dataset.chart.types = {
     area: {value: 'area', text: 'Area Chart',
-        requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes]},
+        requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes],
+        displayLimit: 100},
     bar: {value: 'bar', text: 'Bar Chart',
-        requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes]},
+        requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes],
+        displayLimit: 30},
     column: {value: 'column', text: 'Column Chart',
-        requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes]},
+        requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes],
+        displayLimit: 100},
     donut: {value: 'donut', text: 'Donut Chart',
-        requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes]},
+        requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes],
+        displayLimit: 30, renderOther: true},
     line: {value: 'line', text: 'Line Chart',
-        requiredColumns: [Dataset.chart.numericTypes]},
+        requiredColumns: [Dataset.chart.numericTypes],
+        displayLimit: 100},
     pie: {value: 'pie', text: 'Pie Chart',
-        requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes]},
+        requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes],
+        displayLimit: 30, renderOther: true},
     timeline: {value: 'timeline', text: 'Time Line',
-        requiredColumns: [Dataset.chart.dateTypes, Dataset.chart.numericTypes]},
+        requiredColumns: [Dataset.chart.dateTypes, Dataset.chart.numericTypes],
+        displayLimit: 300},
     treemap: {value: 'treemap', text: 'Tree Map',
         requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes]}
 };
@@ -66,8 +73,10 @@ Dataset.modules['visualization'] =
         _.each(this.displayFormat.valueColumns || [], function(vc)
         { foundCols.push(view.columnForTCID(vc.tableColumnId)); });
 
+        var ct = Dataset.chart.types[this.displayFormat.chartType];
+        if ($.isBlank(ct)) { return false; }
         return Dataset.chart.hasRequiredColumns(_.compact(foundCols),
-            Dataset.chart.types[this.displayFormat.chartType].requiredColumns);
+            ct.requiredColumns);
     },
 
     _convertLegacy: function()
@@ -79,7 +88,8 @@ Dataset.modules['visualization'] =
 
         if ($.isBlank(view.displayFormat.dataColumns) &&
             $.isBlank(view.displayFormat.fixedColumns) &&
-            $.isBlank(view.displayFormat.valueColumns))
+            $.isBlank(view.displayFormat.valueColumns) &&
+            !$.isBlank(view.visibleColumns))
         {
             view.displayFormat.dataColumns = _.map(view.visibleColumns,
                 function(c) { return c.tableColumnId; });

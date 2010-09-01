@@ -5,6 +5,10 @@ Dataset.modules['map'] =
 
     _checkValidity: function()
     {
+        if (($.isBlank(this.displayFormat.plot.latitudeId) ||
+            $.isBlank(this.displayFormat.plot.longitudeId)) &&
+            $.isBlank(this.displayFormat.plot.locationId)) { return false; }
+
         var latCol = this.columnForTCID(this.displayFormat.plot.latitudeId);
         var longCol = this.columnForTCID(this.displayFormat.plot.longitudeId);
         var locCol = this.columnForTCID(this.displayFormat.plot.locationId);
@@ -32,7 +36,7 @@ Dataset.modules['map'] =
             _.each(['locationId', 'quantityId', 'descriptionId', 'redirectId'],
             function (key, index)
             {
-                if (index < view.visibleColumns.length)
+                if (index < (view.visibleColumns || []).length)
                 {
                     view.displayFormat.plot[key] =
                         view.visibleColumns[index].tableColumnId;
@@ -42,14 +46,14 @@ Dataset.modules['map'] =
 
         if (isOldest)
         {
-            if (view.visibleColumns.length > 1)
+            if ((view.visibleColumns || []).length > 1)
             {
                 view.displayFormat.plot.latitudeId =
                     view.visibleColumns[0].tableColumnId;
                 view.displayFormat.plot.longitudeId =
                     view.visibleColumns[1].tableColumnId;
             }
-            if (view.visibleColumns.length > 2)
+            if ((view.visibleColumns || []).length > 2)
             {
                 view.displayFormat.plot.descriptionId =
                     view.visibleColumns[2].tableColumnId;

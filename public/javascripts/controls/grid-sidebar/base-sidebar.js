@@ -2049,6 +2049,7 @@
                 {
                     var isHidden = false;
                     var isDisabled = false;
+                    var needsWarning = false;
                     var msg = '';
 
                     $section.removeClass('error');
@@ -2070,6 +2071,10 @@
                         // If they want the opposite, then flip it
                         if (o.negate) { failed = !failed; }
 
+                        // Something of a hack:
+                        // if warn: false, then ignore the onlyIf
+                        if (o.warn === false) { return; }
+
                         if (o.disable)
                         {
                             isDisabled = isDisabled || failed;
@@ -2079,8 +2084,19 @@
                                     o.disabledMessage() : o.disabledMessage;
                             }
                         }
+                        // Displays a warning message but does not hide or disable
+                        else if (o.warn && failed)
+                        {
+                            needsWarning = needsWarning || failed;
+                            if (!$.isBlank(o.warningMessage))
+                            {
+                                msg += _.isFunction(o.warningMessage) ?
+                                    o.warningMessage() : o.warningMessage;
+                            }
+                        }
                         else
                         { isHidden = isHidden || failed; }
+
                     });
 
                     // If this section is being hidden or disabled and has an
@@ -2111,7 +2127,10 @@
 
                     $section.toggleClass('hide', isHidden);
                     $section.toggleClass('disabled', isDisabled);
+                    $section.toggleClass('warned', needsWarning);
 
+                    if (needsWarning)
+                    { $section.find('.sectionWarningMessage').text(msg); }
                     if (isDisabled)
                     { $section.find('.sectionDisabledMessage').text(msg); }
 

@@ -112,7 +112,8 @@
                 }
 
                 mapObj.buildLegend(mapObj._quantityCol.name,
-                    _.map(mapObj._segmentSymbols, function(symbol) { return symbol.color.toCss(false); }));
+                    _.map(mapObj._segmentSymbols, function(symbol)
+                        { return symbol.color.toCss(false); }));
             }
 
             mapObj.startLoading();
@@ -279,6 +280,8 @@
 
         if (mapObj._locCol.renderTypeName == 'location')
         {
+            if ($.isBlank(datum[mapObj._locCol.id])) { return; }
+
             var latVal  = datum[mapObj._locCol.id].latitude;
             var longVal = datum[mapObj._locCol.id].longitude;
             if (latVal && longVal)

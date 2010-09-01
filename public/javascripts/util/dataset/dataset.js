@@ -1290,6 +1290,7 @@ this.Dataset = Model.extend({
             _.each(r.columnsSaving, function(cId)
                 { delete r.row.changed[cId]; });
             ds.trigger('row_change', [r.parentRow || r.row]);
+            ds.aggregatesChanged();
             if (_.isFunction(r.success)) { r.success(r.row); }
         };
 
@@ -1328,11 +1329,15 @@ this.Dataset = Model.extend({
 
     _serverRemoveRow: function(rowId, parRowId, parColId, isBatch)
     {
-        var url = '/views/' + this.id + '/rows/';
+        var ds = this;
+        var rowRemoved = function() { ds.aggregatesChanged(); };
+
+        var url = '/views/' + ds.id + '/rows/';
         if (!$.isBlank(parRowId))
         { url += parRowId + '/columns/' + parColId + '/subrows/'; }
         url += rowId + '.json';
-        this._makeRequest({batch: isBatch, url: url, type: 'DELETE'});
+        ds._makeRequest({batch: isBatch, url: url, type: 'DELETE',
+            success: rowRemoved});
     },
 
     _processPending: function(rowId, parRowId, parColId)

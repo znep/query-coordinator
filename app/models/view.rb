@@ -595,8 +595,8 @@ class View < Model
   end
 
   def email(email = nil)
-    CoreServer::Base.connection.get_request("/#{self.class.name.pluralize.downcase}/#{id}/" +
-      "rows.json?method=email" + (email.nil? ? "" : "&email=#{email}"))
+    CoreServer::Base.connection.create_request("/#{self.class.name.pluralize.downcase}/#{id}" +
+      ".json?method=sendAsEmail", { :message => '', :recipient => email }.to_json)
   end
 
   def flag(params = {})

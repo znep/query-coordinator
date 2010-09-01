@@ -388,6 +388,11 @@ this.Dataset = Model.extend({
             reqs.push(curReq);
             curReq = null;
         }
+        if (!$.isBlank(pendReq))
+        {
+            ds._pendingRowReqs.push(pendReq);
+            pendReq = null;
+        }
 
         if (reqs.length > 0)
         {
@@ -1048,15 +1053,15 @@ this.Dataset = Model.extend({
             for (var i = 0; i < len; i++)
             { delete ds._rowsLoading[i + start]; }
 
-            var pending = ds._pendingRowReqs;
-            ds._pendingRowReqs = [];
-            _.each(pending, function(p)
-            { ds.getRows(p.start, p.length, p.callback); });
-
             if (oldCount !== ds.totalRows)
             { ds.trigger('row_count_change'); }
 
             if (_.isFunction(callback)) { callback(rows); }
+
+            var pending = ds._pendingRowReqs;
+            ds._pendingRowReqs = [];
+            _.each(pending, function(p)
+            { ds.getRows(p.start, p.length, p.callback); });
         };
 
         // Keep track of rows that are being loaded

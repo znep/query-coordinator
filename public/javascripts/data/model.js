@@ -921,6 +921,18 @@ blist.namespace.fetch('blist.data');
             var count = 0;
             if ($.isBlank(max)) { max = self.dataLength(); }
             var i = 0;
+
+            // For large datasets, this sequential scanning is painfully slow.
+            // Special rows should normally be relativly small, so use that for
+            // the first pass.  Then we can adjust max up by how many we found;
+            // then do a sequential scan for that (hopefully small) last adjustment
+            if (max > specialCount)
+            {
+                _.each(specialRows, function(r, i) { if (i < max) { count++; } });
+                i = max;
+                max += count;
+            }
+
             while (i < max)
             {
                 if (!$.isBlank(specialRows[i]))

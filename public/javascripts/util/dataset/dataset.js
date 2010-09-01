@@ -158,8 +158,7 @@ this.Dataset = Model.extend({
     update: function(newDS, fullUpdate)
     {
         this._update(newDS, fullUpdate, fullUpdate);
-        this.temporary = true;
-        this.trigger('set_temporary');
+        this._markTemporary();
     },
 
     reload: function()
@@ -630,6 +629,15 @@ this.Dataset = Model.extend({
             _.each(aggs, function(a)
             {
                 var c = ds.columnForID(a.columnId);
+                // Might be a child column...
+                if ($.isBlank(c))
+                {
+                    _.each(ds.columnsForType('nested_table', true), function(pc)
+                    {
+                        c = pc.childColumnForID(a.columnId);
+                        if (!$.isBlank(c)) { _.breakLoop(); }
+                    });
+                }
                 if (!$.isBlank(c)) { c.aggregates[a.name] = parseFloat(a.value); }
             });
 
@@ -842,6 +850,15 @@ this.Dataset = Model.extend({
         return $.isBlank(this.message);
     },
 
+    _markTemporary: function()
+    {
+        if (!this.temporary)
+        {
+            this.temporary = true;
+            this.trigger('set_temporary');
+        }
+    },
+
     _clearTemporary: function()
     {
         if (this.temporary)
@@ -927,13 +944,13 @@ this.Dataset = Model.extend({
 
         if (!_.isEqual(oldQuery, ds.query) || (oldSearch !== ds.searchString))
         {
-            // Clear out the rows, since the data is different now
-            ds._invalidateRows();
             if (oldSearch !== ds.searchString ||
                 !_.isEqual(oldQuery.filterCondition, ds.query.filterCondition) ||
                 !_.isEqual(oldQuery.groupBys, ds.query.groupBys))
             { ds._rowCountInvalid = true; }
             ds.trigger('query_change');
+            // Clear out the rows, since the data is different now
+            ds._invalidateRows();
         }
 
         if (!_.isEqual(oldDispFmt, ds.displayFormat))

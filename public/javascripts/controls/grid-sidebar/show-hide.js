@@ -73,7 +73,7 @@
             .sortBy(sortFunc)
             .map(function(c)
             {
-                if (c.dataTypeName == 'nested_table')
+                if (!$.isBlank(c.realChildColumns))
                 { return [c].concat(_.sortBy(c.realChildColumns, sortFunc)); }
                 else { return c; }
             })

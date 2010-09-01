@@ -1086,8 +1086,9 @@
                         datasetObj.settings.view.columnForID(colId)
                             .hide(null, null, true);
                     });
-                    $.socrataServer.runRequests({success: function()
-                        { datasetObj.settings.view.updateColumns(); }});
+                    if (!$.socrataServer.runRequests({success: function()
+                                { datasetObj.settings.view.updateColumns(); }}))
+                    { datasetObj.settings.view.updateColumns(); }
                 }
                 break;
             case 'delete-column':

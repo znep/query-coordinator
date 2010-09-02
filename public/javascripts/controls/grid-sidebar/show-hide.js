@@ -129,9 +129,15 @@
             }
         });
 
+        cols = _.sortBy(cols, function(cId)
+            { return blist.dataset.columnForID(cId).position; });
+
         _.each(children, function(cols, id)
         {
-            blist.dataset.columnForID(id).setVisibleChildColumns(cols, null, true);
+            var parCol = blist.dataset.columnForID(id);
+            cols = _.sortBy(cols, function(cId)
+                { return parCol.childColumnForID(cId).position; });
+            parCol.setVisibleChildColumns(cols, null, true);
         });
 
         isLoading = true;

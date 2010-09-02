@@ -9,6 +9,7 @@
   </div>
 
   <div class="mainContent printContent">
-    <%= render :partial => 'print_form', :locals => { :view => @view } %>
+    <%= render :partial => 'print_form', :locals => {
+        :post_url => "/views/#{@view.id}/rows.pdf", :view => @view } %>
   </div>
 <% end %>

@@ -136,6 +136,9 @@
             $(document).resize(adjustSize);
             adjustSize();
 
+            // track the height of the current pane
+            setInterval(animateState, 2000);
+
             // default state
             updateButtonState();
         });

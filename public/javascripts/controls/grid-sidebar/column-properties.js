@@ -219,8 +219,11 @@
             // Dataset Link
             {
                 title: 'Linked Dataset',
-                onlyIf: {func: function(view, col)
-                { return (col || {}).renderTypeName == 'dataset_link'; }},
+                onlyIf: {func: function(c)
+                {
+                    if ($.isBlank(c)) { return false; }
+                    return c.origColumn.renderTypeName == 'dataset_link';
+                }},
                 fields: [
                     {text: 'Dataset', type: 'text', name: 'format.linkedDataset',
                         data: { '4x4uid': 'unverified'},

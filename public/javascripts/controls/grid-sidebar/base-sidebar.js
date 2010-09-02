@@ -2631,7 +2631,11 @@
                     function(isSuccess)
                     {
                         if (isSuccess) { doCallback(); }
-                        else { $pane.find('.mainError').text(msg); }
+                        else
+                        {
+                            $pane.find('.mainError').text(msg);
+                            sidebarObj.finishProcessing();
+                        }
                     }, msg);
             }
             else

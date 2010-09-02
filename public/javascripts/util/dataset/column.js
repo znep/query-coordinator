@@ -74,7 +74,6 @@ this.Column = Model.extend({
     save: function(successCallback, errorCallback)
     {
         var col = this;
-        if (!col.view.hasRight('update_view')) { return false; }
 
         var colSaved = function(newCol)
         {
@@ -85,11 +84,22 @@ this.Column = Model.extend({
             if (_.isFunction(successCallback)) { successCallback(col); }
         };
 
-        this._makeRequest({url: '/views/' + this.view.id +
-                '/columns/' + this.id + '.json', type: 'PUT',
-                data: JSON.stringify(this.cleanCopy()),
-                success: colSaved, error: errorCallback});
-        return true;
+        if (col.view.hasRight('update_view'))
+        {
+            this._makeRequest({url: '/views/' + this.view.id +
+                    '/columns/' + this.id + '.json', type: 'PUT',
+                    data: JSON.stringify(this.cleanCopy()),
+                    success: colSaved, error: errorCallback});
+            return true;
+        }
+        else
+        {
+            if (!$.isBlank(col.parentColumn))
+            { col.parentColumn.updateChildColumns(); }
+            else { col.view.updateColumns(); }
+            col.view._markTemporary();
+            return false;
+        }
     },
 
     show: function(successCallback, errorCallback, isBatch)

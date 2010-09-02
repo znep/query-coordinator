@@ -6,7 +6,9 @@
 
     var canConvert = function(col)
     {
-        if ($.isBlank(col)) { return false; }
+        if ($.isBlank(col) || !blist.dataset.hasRight('update_view'))
+        { return false; }
+
         var convT = col.dataType.convertableTypes;
         return isDataset && $.isBlank(col.format.grouping_aggregate) &&
             _.isArray(convT) && convT.length > 0;
@@ -270,7 +272,8 @@
             }
         ],
         finishBlock: {
-            buttons: [$.gridSidebar.buttons.update, $.gridSidebar.buttons.cancel]
+            buttons: [$.extend({}, $.gridSidebar.buttons.update,
+                {requiresLogin: false}), $.gridSidebar.buttons.cancel]
         }
     };
 
@@ -332,26 +335,27 @@
 
         var col = data.origColumn;
         col.update(column);
-        col.save(function(c)
-            {
-                if (needsConvert)
+        if (!col.save(function(c)
                 {
-                    var oldId = c.id;
-                    c.convert(newType,
-                        function(convertedCol)
-                        { columnConverted(sidebarObj, oldId, convertedCol); },
-                        function(xhr)
-                        {
-                            // Really shouldn't happen; but just in case...
-                            sidebarObj.genericErrorHandler($pane, xhr);
-                        }
-                    );
-                }
-                else
-                { columnUpdated(sidebarObj, c); }
-            },
-            function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); }
-        );
+                    if (needsConvert)
+                    {
+                        var oldId = c.id;
+                        c.convert(newType,
+                            function(convertedCol)
+                            { columnConverted(sidebarObj, oldId, convertedCol); },
+                            function(xhr)
+                            {
+                                // Really shouldn't happen; but just in case...
+                                sidebarObj.genericErrorHandler($pane, xhr);
+                            }
+                        );
+                    }
+                    else
+                    { columnUpdated(sidebarObj, c); }
+                },
+                function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); }
+            ))
+        { columnUpdated(sidebarObj, col); }
     };
 
     $.gridSidebar.registerConfig(config);

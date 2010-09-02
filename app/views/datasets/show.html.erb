@@ -339,8 +339,7 @@
       !@view.has_rights?('add_column') %>;
 
     <%# Columm properties %>
-    blist.sidebarHidden.columnProperties = <%= @view.is_alt_view? ||
-      !@view.has_rights?('update_view') %>;
+    blist.sidebarHidden.columnProperties = <%= @view.is_alt_view? %>;
 
     <%# Filter pane %>
     blist.sidebarHidden.filter = blist.sidebarHidden.filter || {};

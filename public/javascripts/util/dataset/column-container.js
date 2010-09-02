@@ -146,8 +146,12 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
     props.cleanCopy = function()
     {
         var item = this._super();
-        item[colSet] = _.reject(item[colSet] || [],
-            function(c) { return c.id == -1; });
+
+        if (!_.isUndefined(item[colSet]))
+        {
+            item[colSet] = _.reject(item[colSet],
+                function(c) { return c.id == -1; });
+        }
         return item;
     };
 
@@ -166,11 +170,8 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
             }
             else
             {
-                var newColIds = {};
-
                 _.each(newCols, function(nc, i)
                 {
-                    newColIds[nc.id] = true;
                     // Columns may or may not be in the list already; they may
                     // also be at the wrong spot.  So find the column and index
                     // if it already exists
@@ -189,8 +190,8 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
                     }
                     else
                     {
-                        // If the column existed but not at this index, remove it from
-                        // the old spot and put it in the new one
+                        // If the column existed but not at this index, remove
+                        // it from the old spot and put it in the new one
                         if (updateOrder && ci != i)
                         {
                             cont[colSet].splice(ci, 1);
@@ -200,14 +201,6 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
                         c.update(nc, forceFull);
                     }
                 });
-
-                // If this is the master order of columns, then reject any that
-                // aren't in the new set
-                if (updateOrder)
-                {
-                    this[colSet] = _.reject(this[colSet], function(c)
-                            { return !newColIds[c.id]; });
-                }
             }
         }
 

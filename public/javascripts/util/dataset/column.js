@@ -130,6 +130,7 @@ this.Column = Model.extend({
                 data: JSON.stringify({hidden: !isVisible}),
                 batch: isBatch, success: successCallback, error: errorCallback});
         }
+        else { col.view._markTemporary(); }
 
         return true;
     },
@@ -158,6 +159,9 @@ this.Column = Model.extend({
         // it over if present
         if (!$.isBlank(newCol.renderTypeName))
         { col.renderTypeName = newCol.renderTypeName; }
+        // Same for subColumnTypes
+        if (!$.isBlank(newCol.subColumnTypes))
+        { col.subColumnTypes = newCol.subColumnTypes; }
 
         this.updateChildColumns(newCol.childColumns, forceFull, forceFull);
 

@@ -164,7 +164,7 @@
               <%- lat = cell[column.sub_type_index('latitude')] -%>
               <%- long = cell[column.sub_type_index('longitude')] -%>
               <%- if !lat.blank? || !long.blank? -%>
-              <%- pieces << '(' + lat + '&deg;, ' + long + '&deg;)' -%>
+              <%- pieces << '(' + (lat || '') + '&deg;, ' + (long || '') + '&deg;)' -%>
               <%- end -%>
 
               <%= raw pieces.compact.join('<br />') %>

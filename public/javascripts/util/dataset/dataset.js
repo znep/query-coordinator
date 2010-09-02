@@ -158,8 +158,7 @@ this.Dataset = Model.extend({
     update: function(newDS, fullUpdate)
     {
         this._update(newDS, fullUpdate, fullUpdate);
-        this.temporary = true;
-        this.trigger('set_temporary');
+        this._markTemporary();
     },
 
     reload: function()
@@ -387,6 +386,11 @@ this.Dataset = Model.extend({
         {
             reqs.push(curReq);
             curReq = null;
+        }
+        if (!$.isBlank(pendReq))
+        {
+            ds._pendingRowReqs.push(pendReq);
+            pendReq = null;
         }
 
         if (reqs.length > 0)
@@ -625,6 +629,15 @@ this.Dataset = Model.extend({
             _.each(aggs, function(a)
             {
                 var c = ds.columnForID(a.columnId);
+                // Might be a child column...
+                if ($.isBlank(c))
+                {
+                    _.each(ds.columnsForType('nested_table', true), function(pc)
+                    {
+                        c = pc.childColumnForID(a.columnId);
+                        if (!$.isBlank(c)) { _.breakLoop(); }
+                    });
+                }
                 if (!$.isBlank(c)) { c.aggregates[a.name] = parseFloat(a.value); }
             });
 
@@ -837,6 +850,15 @@ this.Dataset = Model.extend({
         return $.isBlank(this.message);
     },
 
+    _markTemporary: function()
+    {
+        if (!this.temporary)
+        {
+            this.temporary = true;
+            this.trigger('set_temporary');
+        }
+    },
+
     _clearTemporary: function()
     {
         if (this.temporary)
@@ -863,13 +885,13 @@ this.Dataset = Model.extend({
         }
 
         var oldGroupings = (ds.query || {}).groupBys;
-        var oldGroupAggs = [];
+        var oldGroupAggs = {};
         if ((oldGroupings || []).length > 0)
         {
             _.each(ds.realColumns, function(c)
             {
                 if (!$.isBlank(c.format.grouping_aggregate))
-                { oldGroupAggs.push(c.id); }
+                { oldGroupAggs[c.id] = c.format.grouping_aggregate; }
             });
         }
 
@@ -899,8 +921,6 @@ this.Dataset = Model.extend({
         if (_.isFunction(ds._convertLegacy)) { ds._convertLegacy(); }
         ds.url = ds._generateUrl();
 
-        ds._updateGroupings(oldGroupings, oldGroupAggs);
-
         var oldValid = ds.valid;
         ds.valid = ds._checkValidity();
         if (!oldValid && ds.valid) { ds.trigger('valid'); }
@@ -920,15 +940,17 @@ this.Dataset = Model.extend({
         // the core server will do this anyway.
         ds.query = ds.query || {};
 
+        ds._updateGroupings(oldGroupings, oldGroupAggs);
+
         if (!_.isEqual(oldQuery, ds.query) || (oldSearch !== ds.searchString))
         {
-            // Clear out the rows, since the data is different now
-            ds._invalidateRows();
             if (oldSearch !== ds.searchString ||
                 !_.isEqual(oldQuery.filterCondition, ds.query.filterCondition) ||
                 !_.isEqual(oldQuery.groupBys, ds.query.groupBys))
             { ds._rowCountInvalid = true; }
             ds.trigger('query_change');
+            // Clear out the rows, since the data is different now
+            ds._invalidateRows();
         }
 
         if (!_.isEqual(oldDispFmt, ds.displayFormat))
@@ -950,14 +972,27 @@ this.Dataset = Model.extend({
     {
         var ds = this;
         // Do we care if there was a grouping but now there isn't?
-        if ($.isBlank((ds.query || {}).groupBys)) { return; }
+        // Yes
+        if ($.isBlank((ds.query || {}).groupBys) &&
+            $.isBlank(oldGroupings)) { return; }
+
+        // Save off original column order to restore later
+        if ($.isBlank(oldGroupings))
+        { ds._origColOrder = _.pluck(ds.visibleColumns, 'id'); }
+
+        var curGrouped = {};
+        _.each(ds.realColumns, function(c)
+        {
+            if (c.format.drill_down) { curGrouped[c.id] = true; }
+            delete c.format.drill_down;
+        });
 
         var newColOrder = [];
-        _.each(ds.query.groupBys, function(g)
+        _.each(ds.query.groupBys || [], function(g)
         {
             var col = ds.columnForID(g.columnId);
 
-            if (!col.format.drill_down) { col.width += 30; }
+            if (!curGrouped[col.id]) { col.width += 30; }
             col.format.drill_down = true;
 
             if (col.hidden && !_.any(oldGroupings, function(og)
@@ -967,31 +1002,47 @@ this.Dataset = Model.extend({
             newColOrder.push(col.id);
         });
 
+        var newGroupAggs = {};
         _(ds.realColumns).chain()
             .select(function(c)
                 { return !$.isBlank(c.format.grouping_aggregate); })
             .each(function(c)
             {
-                if (c.hidden && !_.include(oldGroupAggs, c.id))
+                if (c.hidden && !oldGroupAggs[c.id])
                 { c.update({flags: _.without(c.flags, 'hidden')}); }
+                newGroupAggs[c.id] = c.format.grouping_aggregate;
 
                 newColOrder.push(c.id);
             });
 
-        _.each(ds.realColumns, function(c)
+        if ($.isBlank(ds.query.groupBys))
         {
-            var i = _.indexOf(newColOrder, c.id);
-            if (i < 0) { i = c.position + newColOrder.length; }
-            c.position = i + 1;
-            if (i < 0 && !c.hidden)
+            if (!$.isBlank(ds._origColOrder))
+            { ds.setVisibleColumns(ds._origColOrder, null, true) }
+        }
+        else
+        {
+            _.each(ds.realColumns, function(c)
             {
-                var f = c.flags || [];
-                f.push('hidden');
-                c.update({flags: f});
-            }
-        });
+                var i = _.indexOf(newColOrder, c.id);
+                if (i < 0 && !c.hidden)
+                {
+                    var f = c.flags || [];
+                    f.push('hidden');
+                    c.update({flags: f});
+                }
+                if (i < 0) { i = c.position + newColOrder.length; }
+                c.position = i + 1;
+            });
 
-        ds.updateColumns();
+            ds.updateColumns();
+        }
+
+        if (!_.isEqual(oldGroupAggs, newGroupAggs))
+        {
+            ds._columnsInvalid = true;
+            ds._invalidateRows();
+        }
     },
 
     _makeRequest: function(req)
@@ -1027,7 +1078,8 @@ this.Dataset = Model.extend({
         // of the columns so we know what order our data will come back in.
         // This is in case columns get changed while we're busy requesting data
         var cols;
-        if (includeMeta || ds._rowCountInvalid) { params.meta = true; }
+        if (includeMeta || ds._rowCountInvalid || ds._columnsInvalid)
+        { params.meta = true; }
         else { cols = ds.columns.slice(); }
 
         var rowsLoaded = function(result)
@@ -1037,6 +1089,7 @@ this.Dataset = Model.extend({
             {
                 ds.totalRows = result.meta.totalRows;
                 delete ds._rowCountInvalid;
+                delete ds._columnsInvalid;
                 ds._update(result.meta.view, true, true, fullLoad);
             }
 
@@ -1048,15 +1101,15 @@ this.Dataset = Model.extend({
             for (var i = 0; i < len; i++)
             { delete ds._rowsLoading[i + start]; }
 
-            var pending = ds._pendingRowReqs;
-            ds._pendingRowReqs = [];
-            _.each(pending, function(p)
-            { ds.getRows(p.start, p.length, p.callback); });
-
             if (oldCount !== ds.totalRows)
             { ds.trigger('row_count_change'); }
 
             if (_.isFunction(callback)) { callback(rows); }
+
+            var pending = ds._pendingRowReqs;
+            ds._pendingRowReqs = [];
+            _.each(pending, function(p)
+            { ds.getRows(p.start, p.length, p.callback); });
         };
 
         // Keep track of rows that are being loaded

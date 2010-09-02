@@ -341,6 +341,45 @@ this.Column = Model.extend({
         // Do nothing; provided for fallback
     },
 
+    isLinked: function()
+    {
+        var col = this;
+        return (col.format && col.format.linkedKey != null);
+    },
+
+    _sanitizeName: function(colName)
+    {
+        var sname = colName.toLowerCase()
+        // refer to core server ViewColumn.underscoreName
+        sname = sname.replace(/^[^A-z]+/gi, "_");
+        sname = sname.replace(/[^A-z0-9]+/gi, "_");
+        sname = sname.replace(/^xml/gi, "_");
+        sname = sname.replace(/_+/gi, "_");
+        return sname;
+    },
+
+    underscoreName: function(ds)
+    {
+        var col = this;
+        var otherCol;
+        var otherUname;
+        var uname = this._sanitizeName(col.name);
+
+        for (var n = 0; n < ds.columns.length; n++)
+        {
+            otherCol = ds.columns[n];
+            if (otherCol.id == col.id) { continue; }
+            otherUname = this._sanitizeName(otherCol.name);
+            if (uname == otherUname)
+            {
+                uname += "_" + col.position;
+                break;
+            }
+        }
+
+        return uname;
+    },
+
     _clearFilterData: function(query)
     {
         var col = this;

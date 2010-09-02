@@ -5,7 +5,7 @@
 
     var getTypes = function(data)
     {
-        return _(blist.data.types).chain()
+        var types = _(blist.data.types).chain()
             .map(function(t, k)
             {
                 return t.createable && ($.isBlank((data || {}).parentId) ||
@@ -15,6 +15,13 @@
             .compact()
             .sortBy(function(t) { return t.priority; })
             .value();
+
+        if (Dataset.hasDatasetLinkColumn(blist.dataset))
+        {
+            types.push({value: 'link', text: 'Link Column'});
+        }
+
+        return types;
     };
 
     var configName = 'edit.addColumn';
@@ -53,7 +60,22 @@
                     {text: 'Data Type', type: 'select', required: true,
                     prompt: 'Select a data type',
                     name: 'dataTypeName', options: getTypes,
-                    wizard: 'Choose what type of column you want'}
+                    wizard: 'Choose what type of column you want'},
+
+                    {text: 'Key', type: 'columnSelect', name: 'format.linkedKey',
+                        required: true,
+                        onlyIf: {field: 'dataTypeName', value: 'link'},
+                        columns: {type: 'dataset_link', hidden: false},
+                        wizard: {prompt: 'Choose a local key column'}
+                    },
+                    {text: 'Source', type: 'select', name: 'format.linkedSource',
+                        required: true,
+                        onlyIf: {field: 'dataTypeName', value: 'link'},
+                        linkedField: 'format.linkedKey',
+                        options: blist.dataset.getLinkedColumnOptions,
+                        wizard: 'Select a remote source column'
+                    }
+
                 ]
             },
 
@@ -236,6 +258,12 @@
         {
             convertLocation(sidebarObj, column, $pane);
             return;
+        }
+        else if (column.dataTypeName == 'link')
+        {
+            var keyColId = column.format.linkedKey;
+            var srcColId = column.format.linkedSource;
+            column.dataTypeName = blist.dataset.getLinkSourceDataType(null, srcColId, keyColId).value;
         }
 
         if (!$.isBlank((data || {}).parentId))

@@ -479,6 +479,6 @@
         { finishCallback(); }
     };
 
-    $.gridSidebar.registerConfig(config, ['Filter', 'Grouped']);
+    $.gridSidebar.registerConfig(config, ['filter', 'grouped']);
 
 })(jQuery);

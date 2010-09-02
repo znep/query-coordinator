@@ -483,7 +483,6 @@
                     {
                         mapObj['_' + colName + 'Col'] = c;
                         aggs[c.id] = ['maximum', 'minimum'];
-                        //calculateSegmentSizes(mapObj, c);
                     }
                 });
 

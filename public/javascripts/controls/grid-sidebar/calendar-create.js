@@ -140,6 +140,6 @@
         }
     };
 
-    $.gridSidebar.registerConfig(config, 'Calendar');
+    $.gridSidebar.registerConfig(config, 'calendar');
 
 })(jQuery);

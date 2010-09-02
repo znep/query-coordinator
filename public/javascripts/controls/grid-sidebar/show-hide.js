@@ -84,13 +84,22 @@
     };
     updateColumns();
 
+    var registeredChange = false;
     var isLoading = false;
-    blist.dataset.bind('columns_changed', function()
+    config.showCallback = function(sidebarObj, $pane)
     {
-        if (isLoading) { return; }
-        updateColumns();
-        $('#gridSidebar').gridSidebar().refresh(configName);
-    });
+        if (!registeredChange)
+        {
+            blist.dataset.bind('columns_changed', function()
+            {
+                if (isLoading) { return; }
+                updateColumns();
+                sidebarObj.refresh(configName);
+            });
+
+            registeredChange = true;
+        }
+    };
 
     config.finishCallback = function(sidebarObj, data, $pane, value)
     {

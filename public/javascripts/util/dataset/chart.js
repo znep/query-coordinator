@@ -112,7 +112,7 @@ Dataset.modules['visualization'] =
             {
                 var firstCol = view.columnForTCID(
                     view.displayFormat.dataColumns[0]);
-                if (!_.include(Dataset.chart.numericTypes,
+                if (!$.isBlank(firstCol) && !_.include(Dataset.chart.numericTypes,
                     firstCol.renderTypeName))
                 {
                     view.displayFormat.fixedColumns =
@@ -139,11 +139,14 @@ Dataset.modules['visualization'] =
                     i++;
                     continue;
                 }
-                vcVal.supplementalColumns = vcVal.supplementalColumns || [];
-                vcVal.supplementalColumns.push(tcid);
+                if (!$.isBlank(vcVal))
+                {
+                    vcVal.supplementalColumns = vcVal.supplementalColumns || [];
+                    vcVal.supplementalColumns.push(tcid);
+                }
             }
 
-            valueCols.push(vcVal);
+            if (!$.isBlank(vcVal)) { valueCols.push(vcVal); }
             view.displayFormat.valueColumns = _.compact(valueCols);
         }
 

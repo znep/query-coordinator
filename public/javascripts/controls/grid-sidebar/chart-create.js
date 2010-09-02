@@ -421,6 +421,6 @@
         }
     };
 
-    $.gridSidebar.registerConfig(config, 'Visualization');
+    $.gridSidebar.registerConfig(config, 'visualization');
 
 })(jQuery);

@@ -1580,18 +1580,17 @@ function getType(ds)
     var type = ds.displayType || 'blist';
 
     if (ds.viewType == 'blobby') { type = 'blob'; }
-    if (ds.viewType == 'href') { type = 'href'; }
+    else if (ds.viewType == 'href') { type = 'href'; }
 
-    if (!$.isBlank(ds.query) && !$.isBlank(ds.query.groupBys) &&
+    else if (_.include(VIZ_TYPES, type)) { type = 'visualization'; }
+    else if (_.include(MAP_TYPES, type)) { type = 'map'; }
+
+    else if (!$.isBlank(ds.query) && !$.isBlank(ds.query.groupBys) &&
         ds.query.groupBys.length > 0)
     { type = 'grouped'; }
-
-    if (_.include(VIZ_TYPES, type)) { type = 'visualization'; }
-
-    if (_.include(MAP_TYPES, type)) { type = 'map'; }
-
-    if (type == 'blist' && !_.include(ds.flags || [], 'default'))
+    else if (type == 'blist' && !_.include(ds.flags || [], 'default'))
     { type = 'filter'; }
+
     return type;
 };
 

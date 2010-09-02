@@ -44,6 +44,25 @@ Dataset.modules['map'] =
             });
         }
 
+        if ($.isBlank(view.displayFormat.heatmap) &&
+            !$.isBlank(view.displayFormat.heatmapType))
+        {
+            // Support for legacy config system.
+            var heatmapType = view.displayFormat.heatmapType.split('_');
+            config = {
+                type: heatmapType[1],
+                region: heatmapType[0],
+                colors: {
+                    low: view.displayFormat.lowcolor,
+                    high: view.displayFormat.highcolor
+                }
+            };
+            view.displayFormat.heatmap = config;
+            delete view.displayFormat.lowcolor;
+            delete view.displayFormat.highcolor;
+            delete view.displayFormat.heatmapType;
+        }
+
         if (isOldest)
         {
             if ((view.visibleColumns || []).length > 1)

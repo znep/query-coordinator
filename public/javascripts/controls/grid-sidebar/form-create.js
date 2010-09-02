@@ -129,6 +129,6 @@
         }
     };
 
-    $.gridSidebar.registerConfig(config, 'Form');
+    $.gridSidebar.registerConfig(config, 'form');
 
 })(jQuery);

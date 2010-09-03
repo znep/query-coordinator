@@ -8,6 +8,7 @@
         $accountForm = $('#editAccountForm');
 
     // Dynamic pane switching
+    /*
     $('.editProfileNav li a').click(function(event)
     {
         event.preventDefault();
@@ -30,6 +31,7 @@
             $currentPane = $newPane;
         }
     });
+    */
 
     var $profileImage  = $form.find('#profileImage'),
         $throbber      = $form.find('.uploadIndicator'),

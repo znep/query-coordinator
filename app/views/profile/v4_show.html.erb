@@ -135,11 +135,6 @@
 
     <%- if (module_enabled?(:community_creation) || CurrentDomain.user_can?(@user, :create_datasets)) -%>
       <div class="datasetsList content">
-        <%# TODO: Subscribe link to ?? %>
-        <a class="subscribe iconLink subscribeLink" href="#Subscribe">
-          <span class="icon"></span>
-          Subscribe
-        </a>
         <h2><%= @user.displayName %> Datasets</h2>
         <%# TODO/v4 / Browse2.0: Put actual control in here %>
         <p>Placeholder for Browse 2.0 control.</p>
@@ -147,11 +142,6 @@
     <%- end -%>
 
     <div class="newsFeed content">
-      <%# TODO: Subscribe link to ?? %>
-      <a class="subscribe iconLink subscribeLink" href="#Subscribe">
-        <span class="icon"></span>
-        Subscribe
-      </a>
       <h2>News Feed</h2>
       <div class="feed"></div>
     </div>

@@ -303,7 +303,7 @@ javascripts:
   - controls/embed-form
   - controls/full-screen
   - controls/format-options
-  - screens/dataset
+  - screens/dataset-show
 - screen-dataset-edit-metadata:
   - plugins/jquery.uniform
   - plugins/ajaxupload.3.0

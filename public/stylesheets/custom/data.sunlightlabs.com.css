@@ -1,224 +1,142 @@
-/* HEADER */
-body {
-  background: #ececec;
+body
+{
+	background:url(/stylesheets/images/domains/data.sunlightlabs.com/bg_grid.jpg) repeat left top;
+	color: #4F4D4D;
+	font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+	line-height: 21px;	
 }
-.bodyInterior {
-  border:none;
-  padding-bottom:140px;
+/* PAGE CONTAINERS */ 
+.bodyInterior
+{
+	background:url(/stylesheets/images/domains/data.sunlightlabs.com/bg_repeat2.jpg) repeat-x center top;
+	border: none;
+	padding-bottom: 1em;
+}
+.outerContainer
+{
+	background:url(/stylesheets/images/domains/data.sunlightlabs.com/bg_repeat2.jpg) repeat-x  300% 0;
 }
 /* Header */
-#header {
-  background:none;
-  height:153px;
-  padding:0;
-  z-index:0;
-}
-/* Logo */
-#mainLogo {
-  top:43px;
-}
-#mainLogo a {
-  display:block;
-  width:293px;
-  height:89px;
+#header
+{
+	background: none;
+	height: 150px;
 }
 /* Main Nav */
-body.home #mainNav li.home, body.home #mainNav li.home a span, body.discover #mainNav li.discover a span, body.community #mainNav li.community a span, body.discover #mainNav li.discover, #mainNav ul.subNav li:hover, #mainNav ul.subNav li:hover a span, body.home #mainNav li.home .subNav li:hover, body.home #mainNav li.home .subNav li:hover a span, #mainNav li.home a span {
-  background:none;
-  margin:0;
-  text-indent:0;
+#mainNav
+{
+	/*background:url(/stylesheets/images/domains/data.sunlightlabs.com/nav_bg.png);
+		margin: 0 auto;*/
+	border-top: solid 1px #9BA99F;
+	border-bottom: solid 1px #9BA99F;	
+	position: relative;
+	top: 110px;
+	margin: 0 auto;
+	width: 98%;
 }
-#mainNav {
-  margin:0;
-  width:auto;
+#mainNav a
+{
+	line-height: 30px;
 }
-#mainNav ul {
-  padding:15px 0 0 0;
+#mainNav li
+{
+	height:auto;	
 }
-#mainNav li {
-  line-height:normal;
-  height:auto;
-  margin:0;
-  padding:0 15px;
-  text-align:left;
-  width:auto;
+body.home #mainNav li.home, body.home #mainNav li.home a span, body.discover #mainNav li.discover a span, body.community #mainNav li.community a span, body.discover #mainNav li.discover, #mainNav ul.subNav li:hover, #mainNav ul.subNav li:hover a span, body.home #mainNav li.home .subNav li:hover, body.home #mainNav li.home .subNav li:hover a span, #mainNav li, #mainNav li.home ul.subNav li a span, #mainNav li, #mainNav li a span,
+body.home #mainNav li.home .subNav li.last
+{
+	background-image: none;
+	background-color: none;
 }
-#mainNav li a {
-  color:#666;
-  line-height:normal;
-  cursor:pointer;
+#mainNav li a span
+{
+	color: #184259;
+	text-transform: uppercase;
 }
-#mainNav li, #mainNav li a span {
-  background:none;
-  font-weight:normal;
+#mainNav li a:hover
+{
+	color: #000;
 }
-#mainNav li:hover, #mainNav li a span:hover {
-  background:none;
+#mainNav ul.subNav, body.discover #mainNav ul.subNav, body.home #mainNav ul.subNav, #mainNav li.home.loggedInNav:hover ul.subNav
+{
+	display: none;
+	height: 0;
 }
-#mainNav li.home {
-  border-left:#666 solid 1px;
-}
-#mainNav ul.subNav {
-  background:#ececec;
-  border-left:#666 solid 1px;
-  left:-1px;
-  padding-top:.5em
-}
-body.home #mainNav li.home .subNav li, body.home #mainNav li.home .subNav li a span {
-  background:none;
-}
-#mainNav li.home .subNav li, #mainNav li.home .subNav li a span {
-  background:none;
-}
+
 /* User Nav */
-#header .userNav {
-  padding:15px 0 0 0
+#header .userNav a
+{
+	color: #FFF;
+	font-size: 1.2em;
 }
-#header .userNav a {
-  font-size:1.3em;
+/* Data Splash */
+.pageBlockHeaderContainer
+{
+	background: none;
+	margin-bottom: 2em;
 }
-#header .userNav li {
-  margin:0;
-  padding:0 15px;
+.pageBlockIntro p
+{
+	margin-top: 1em;
 }
-/* adjustments */
 
-.pageBlockHeaderTR, .pageBlockHeaderBR {
-  display:none;
+.pageBlockIntro p, .pageBlockHeaderCarousel h2
+{
+	color: #333;
 }
-.pageBlockHeaderContainer {
-  background:none;
-  padding:0 34em 0 0;
+form.search.large .clearBox
+{
+	background: #FFF;
 }
-.pageBlockIntro {
-  display:none;
+.pageBlockHeaderCarousel .carouselOuter, .pageBlockHeaderCarousel .carouselInner
+{
+	background-image: none;
 }
-.pageBlockHeaderOuter {
-  margin-top:-63px;
-  padding-bottom:67px;
-  background:url(/stylesheets/images/domains/data.sunlightlabs.com/divider.png) repeat-x bottom;
-  position:relative;
-  z-index:1000;
+.pageBlockHeaderCarousel.carouselWrapper
+{
+	background: url(/stylesheets/images/domains/data.sunlightlabs.com/featureBox_bg_sm.png) no-repeat bottom;	
 }
-.pageBlockSearch p {
-  display:none;
-}
-.pageBlockHeaderCarousel.carouselWrapper {
-  margin-top:36px;
-}
-.pageBlockHeaderCarousel .carouselInner {
-  background:#0f3c69 url(/stylesheets/images/domains/data.sunlightlabs.com/carosel-bg.png) repeat-x top;
-  -moz-border-radius:5px;
-  -webkit-border-radius:5px;
-  padding:10px;
-}
-.pageBlockHeaderCarousel h2 {
-  margin-bottom:.5em;
-}
-.pageBlockHeaderContent .pageBlockHeaderSide {
-  margin-right:-34em;
-}
-/* Search Boxes */
-form.search.large .searchContainer {
-  background-image:none;
-  background-color:#fff;
-  width:auto;
-  border:#979797 solid 1px;
-  -moz-border-radius:10px;
-  -webkit-border-radius:10px;
-}
-form.search input.textPrompt {
-  border:none;
-  font-family:Georgia, "Times New Roman", Times, serif;
-  font-size:2.4em;
-  height:32px;
-  width:100%;
-}
-form.search p input.textPrompt {
-  width:226px;
-}
-form.search.large .clearBox {
-  border:none;
-}
-form.search.large input.submit, form.search input.submit {
-  height:37px;
-  background:#c9c9c9 url(/stylesheets/images/domains/data.sunlightlabs.com/find_button_large.png) no-repeat;
-}
-form.search p input.submit {
-  width:40px;
-  float:right;
-  margin-right:-40px;
-}
-.pageBlockSearch {
-  margin-right:-34em;
-}
-#header form.search {
-  width:299px;
-  height:37px;
-  top:95px;
-}
-form.search p {
-  background-image:none;
-  background-color:#fff;
-  padding-left:17px;
-  width:auto;
-  padding-right:40px;
-  border:#979797 solid 1px;
-  -moz-border-radius:10px;
-  -webkit-border-radius:10px;
-}
+
 /* FOOTER */
-.footerContainer {
-  background:#06386a url(/stylesheets/images/domains/data.sunlightlabs.com/footer-bg.png) repeat-x;
-  height:120px;
-  margin:-120px 0px 0px;
+#sunlightLabsFooter
+{
+	background: url(/stylesheets/images/domains/data.sunlightlabs.com/footer_repeat2.png) repeat-x;
+	height: 372px;
 }
-#footer {
-  background:url(/stylesheets/images/domains/data.sunlightlabs.com/footer-logos.png) no-repeat 10px 22px;
-  height:120px;
-  overflow:hidden;
+#footer
+{
+	background: url(/stylesheets/images/domains/data.sunlightlabs.com/footer_mainBottom.png) no-repeat center bottom;
+	max-width: auto;
+	height:372px;
+	margin:0 auto;
+	width:960px;
 }
-#footer .copyright {
-  font-weight:normal;
-  padding:0 10px;
-  color:#fff;
-  font-size:11px;
-  margin-top:102px;
+.footerContent
+{
+	background: url(/stylesheets/images/domains/data.sunlightlabs.com/footer_mainTop.png) no-repeat center top;
+	height: 242px;
+	margin: 0 auto;
+	width: 960px;
 }
-#footer ul {
-  padding:0;
-  margin-top:102px;
+#footer .copyright
+{
+	padding: 0;	
+	position: relative;
+	top: 85px;
+	float: left;
 }
-#footer li {
-  margin:0 10px;
+#footer .copyright a
+{
+	background: url(/stylesheets/images/domains/data.sunlightlabs.com/foundationLogo.png) no-repeat center top;	
+	display: block;
+	height: 38px;	
+	text-indent: -9999px;
+	text-align: left;	
+	width: 83px;	
 }
-#footer li a {
-  font-size:11px;
-  color:#fff;
-  text-decoration:none;
-}
-/* Login Box */
-#login.dialogWrapper {
-  width: 50em;
-}
-
-.dialogBox, .dialogBox .header, .dialogBL, .dialogOuter, .dialogBR {
-  background: none;
-  margin: 0;
-  padding: 0;
-}
-
-.dialogTL {
-  border: #082c49 solid 3px;
-  padding: 0.5em;
-  -moz-border-radius: 10px;
-  -webkit-border-radius: 10px;
-}
-
-.dialogBox .header h1 {
-  background-position: 6px 5px; height:60px;
-}
-
-.dialogBox .header.authDialog h1 {
-  background-image: url(/stylesheets/images/domains/data.sunlightlabs.com/socrata_black.png);
+#footer ul
+{
+	float: right;
+	position: relative;
+	top: 70px;
 }

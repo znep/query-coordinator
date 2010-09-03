@@ -320,6 +320,13 @@ this.Column = Model.extend({
         this.minWidth = 50;
         this.width = Math.max(this.minWidth, this.width || 100);
 
+        if (!$.isBlank(this.format.grouping_aggregate) &&
+            !$.isBlank(this.format.drill_down))
+        {
+            delete this.format.drill_down;
+            this.width -= 30;
+        }
+
         if (!$.isBlank(this.currentFilter) &&
                 !_.any(((this.view.query || {}).filterCondition || {})
                     .children || [], function(fc)

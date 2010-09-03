@@ -16,7 +16,7 @@
     <div class="newDatasetWizard wizard">
       <ul class="clearfix">
         <li class="selectTypePane" data-wizardPaneName="selectType">
-          <p class="headline">Please choose how you would like to create this Dataset.</p>
+          <p class="headline">How would you like to create your new Dataset?</p>
           <ul class="newKindList clearfix">
             <li>
               <a href="#create" class="create" title="Choose this if you don't already have data you wish to import. You will be able to define a schema for your data, and input it online.">
@@ -25,7 +25,7 @@
               </a>
             </li>
             <li>
-              <a href="#import" class="upload" title="Choose this if you already have a data file on your computer you wish to import. We support .csv, .tsv, .xml, .xls, and .xlsx formats.">
+              <a href="#import" class="upload" title="Choose this if you already have a data file on your computer you wish to import. Supported formats are .csv, .tsv, .xml, .xls, and .xlsx.">
                 <span class="icon"></span>
                 <p>Import a Data File</p>
               </a>
@@ -43,13 +43,13 @@
           <div class="uploadFileContainer">
             <input type="text" class="uploadFileName" readonly="readonly" value="No file selected yet."/>
             <a href="/imports.txt?two_step_import=true" class="button uploadFileButton">Choose a File</a>
-            <div class="uploadThrobber"></div>
-            <p class="uploadFileFormats">We support .csv, .tsv, .xml, .xls, and .xlsx formats.</p>
+            <div class="uploadThrobber">Import in progress...</div>
+            <p class="uploadFileFormats">Supported formats are .csv, .tsv, .xml, .xls, and .xlsx.</p>
           </div>
         </li>
         <li class="metadataPane" data-wizardPaneName="metadata">
           <div class="flash"></div>
-          <p class="headline">Tell us about your data.</p>
+          <p class="headline">Please describe your data.</p>
           <div class="commonForm metadataForm">
             <div class="line clearfix">
               <label for="view_name" class="required">Dataset Title</label>

@@ -101,6 +101,22 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
     {
         var cont = this;
 
+        // First figure out if we need to update positions.  If the newly-visible
+        // columns are in the same order as their existing position says, then
+        // we just need to hide/show each column
+        var prevPos = -1;
+        var needsReorder = false;
+        _.each(visColIds, function(colId)
+        {
+            var col = forID(cont, colId);
+            if (col.position <= prevPos)
+            {
+                needsReorder = true;
+                _.breakLoop();
+            }
+            prevPos = col.position;
+        });
+
         var vizCols = [];
         _.each(visColIds, function(colId, i)
         {
@@ -108,7 +124,7 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
             if (!$.isBlank(col))
             {
                 col.show(null, null, true);
-                col.update({position: i + 1});
+                if (needsReorder) { col.update({position: i + 1}); }
                 var cc = col.cleanCopy();
                 if (!$.isBlank(cc.childColumns))
                 {
@@ -130,10 +146,13 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
 
         if ((cont.view || cont).hasRight('update_view') && !skipRequest)
         {
-            var item = {};
-            item[colSet] = vizCols;
-            this._makeRequest({url: selfUrl, type: 'PUT',
-                data: JSON.stringify(item), batch: true});
+            if (needsReorder)
+            {
+                var item = {};
+                item[colSet] = vizCols;
+                this._makeRequest({url: selfUrl, type: 'PUT',
+                    data: JSON.stringify(item), batch: true});
+            }
 
             cont._sendBatch(function()
             {

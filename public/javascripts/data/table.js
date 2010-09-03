@@ -3753,6 +3753,7 @@
 
         var pendingTop;
         var prevTop;
+        var setTop;
         /**
          * Render all rows that should be visible but are not yet rendered.
          * Removes invisible rows.
@@ -3827,26 +3828,13 @@
                     $lockedRender.css('top', pendingTop);
                     $lockedRender.height(renderHeight);
 
+                    setTop = pendingTop;
                     pendingTop = undefined;
                     prevTop = parseInt($render.css('top'));
                 }
 
-                // If it moved while we were loading, then skip
-                // Firefox (at a minimum) gets less and less precise for
-                // how accurate tne actual top is versus what we tell it
-                // to be.  For example, if I tell it 1000004.9999, it might
-                // end up rendering 1000000 or 1000010.  So do some fuzzy
-                // matching for this check
-                var compPending = Math.round(renderTop);
-                if (compPending >= 1000000)
-                { compPending = compPending.toPrecision(6); }
-                var compTop = Math.round(parseFloat($render.css('top')));
-                var topMatches = compPending == compTop;
-                if (!topMatches &&
-                    (Math.abs(compPending - compTop) / compTop < 0.00001))
-                { topMatches = true; }
-
-                if (!topMatches)
+                // If it moved while we were loading, then skip rendering
+                if (Math.round(setTop) != Math.round(renderTop))
                 { return; }
 
                 var badRows = [];

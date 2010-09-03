@@ -68,7 +68,7 @@ $(function()
                 .datasetGrid({view: blist.dataset,
                     columnDeleteEnabled: blist.dataset.type == 'blist' &&
                         blist.dataset.hasRight('remove_column'),
-                    columnPropertiesEnabled: blist.dataset.hasRight('update_view'),
+                    columnPropertiesEnabled: true,
                     columnNameEdit: blist.dataset.hasRight('update_view'),
                     showAddColumns: blist.dataset.type == 'blist' &&
                         blist.dataset.hasRight('add_column'),

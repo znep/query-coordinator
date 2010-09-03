@@ -17,17 +17,14 @@
 
           <h3>General Information</h3>
 
-          <label for="user_privacyControl">Name Display:</label>
-          <%= select_tag("view[privacyControl]", options_for_select({ 'Display Full Name' => :fullName, 'Display Username' => :login }, current_user.privacyControl)) %>
-
           <label for="user_firstName">First Name:</label>
           <%= text_field_tag("user[firstName]", current_user.firstName, :class => "textPrompt") %>
 
           <label for="user_lastName">Last Name:</label>
           <%= text_field_tag("user[lastName]", current_user.lastName, :class => "textPrompt") %>
 
-          <label for="user_login" class="required">Username:</label>
-          <%= text_field_tag("user[login]", current_user.login, :class => "textPrompt") %>
+          <label for="user_screenName" class="required">Display Name:</label>
+          <%= text_field_tag("user[screenName]", current_user.screenName, :class => "textPrompt") %>
 
           <label for="user_company">Company:</label>
           <%= text_field_tag("user[company]", current_user.company, :class => "textPrompt") %>

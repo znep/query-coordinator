@@ -147,6 +147,8 @@ html, body
   &.fixedWidth
     max-width: 100em
     margin: 1em auto
+  &.withLeftNavigation
+    margin-left: 18em
 
   h1
     font-size: 1.8em
@@ -161,6 +163,8 @@ html, body
     min-height: 0
     position: fixed
     top: 0
+
+
 
 // "Modal" content
 
@@ -202,3 +206,27 @@ html, body
 #errorBox
   margin: 0 auto
   width: 50%
+
+// Left navigation pane (administration, internal, profile)
+.leftNavBox
+  background-color: #fff
+  border: 1px solid $color_chrome_box_border
+  @include border-radius(0.2em)
+  float: left
+  margin: 1em
+  width: 14em
+  padding: 1em
+
+  .navigationList
+    li
+      border-top: 1px solid $color_chrome_box_border
+      line-height: 2em
+      font-size: 1.4em
+
+      &:first-child
+        border-top: none
+
+    .icon
+      float: left
+      margin: 0.5em 0.5em 0 0
+

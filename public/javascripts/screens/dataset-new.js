@@ -94,6 +94,7 @@ $(function()
         // reset everything, we've gone back to the first page
         $uploadFilePane.insertAfter($('.selectTypePane'));
         $('.metadataPane .flash').removeClass('warning notice error');
+        $('.metadataPane .headline').text('Please describe your data.');
 
         if (submittedView !== null)
         {
@@ -140,6 +141,7 @@ $(function()
 // PAGE ONE: UPLOAD FILE
     // upload button
     var $uploadFileButton = $('.uploadFileButton');
+    var fileName = '';
     var uploader = new AjaxUpload($uploadFileButton, {
         action: $uploadFileButton.attr('href'),
         autoSubmit: true,
@@ -159,6 +161,7 @@ $(function()
                 $('.uploadFileName')
                     .val(file)
                     .removeClass('error');
+                    fileName = file;
             }
         },
         onSubmit: function (file, ext)
@@ -190,6 +193,12 @@ $(function()
             {
                 $wizard.trigger('wizard-next');
                 submittedView = new Dataset(response);
+                $('.metadataPane .headline').html('Please describe &ldquo;' +
+                    $.htmlEscape(fileName) + '.&rdquo;');
+                $('.metadataPane #view_name')
+                    .val(submittedView.name)
+                    .removeClass('prompt');
+                $('.uploadFileName').val('No file selected yet.');
             }, 1000);
         }
     });

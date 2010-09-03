@@ -52,24 +52,7 @@
         renderData: function(rows)
         {
             var mapObj = this;
-            var config;
-            if (mapObj.settings.view.displayFormat.heatmap)
-            { config = mapObj.settings.view.displayFormat.heatmap; }
-            else
-            {
-                // Support for legacy config system.
-                var heatmapType =
-                    mapObj.settings.view.displayFormat.heatmapType.split('_');
-                config = {
-                    type: heatmapType[1],
-                    region: heatmapType[0],
-                    colors: {
-                        low: mapObj.settings.view.displayFormat.lowcolor,
-                        high: mapObj.settings.view.displayFormat.highcolor
-                    }
-                };
-                mapObj.settings.view.displayFormat.heatmap = config;
-            }
+            var config = mapObj.settings.view.displayFormat.heatmap;
 
             config.hideLayers = config.hideLayers ||
                 !mapObj.settings.view.displayFormat.layers
@@ -171,7 +154,7 @@
         _.each(mapObj._rows, function(row)
         {
             var feature = findFeatureWithPoint(mapObj, row, featureSet);
-            if(!feature) { return; }
+            if ($.isBlank(feature)) { return; }
             feature.attributes.description =
                 $.makeArray(feature.attributes.description);
             feature.attributes.quantity =
@@ -179,7 +162,8 @@
 
             if (mapObj._infoCol)
             { feature.attributes.description.push(row[mapObj._infoCol.id]); }
-            feature.attributes.quantity.push(row[mapObj._quantityCol.id]);
+            if (!row.invalid[mapObj._quantityCol.id])
+            { feature.attributes.quantity.push(row[mapObj._quantityCol.id]); }
 
             var redirectTarget;
             if (mapObj._redirectCol)
@@ -200,7 +184,7 @@
             if (!e.attributes.quantity)
             { return null; }
 
-            if (!$.isArray(e.attributes.quantity))
+            if (!_.isArray(e.attributes.quantity))
             { return parseFloat(e.attributes.quantity); }
 
             e.attributes.quantity = _.compact(e.attributes.quantity);
@@ -280,7 +264,7 @@
 
         if (mapObj._locCol.renderTypeName == 'location')
         {
-            if ($.isBlank(datum[mapObj._locCol.id])) { return; }
+            if ($.isBlank(datum[mapObj._locCol.id])) { return null; }
 
             var latVal  = datum[mapObj._locCol.id].latitude;
             var longVal = datum[mapObj._locCol.id].longitude;
@@ -293,13 +277,13 @@
             }
             else
             {
-                if (!datum[mapObj._locCol.id].human_address) { return; }
+                if (!datum[mapObj._locCol.id].human_address) { return null; }
                 // State is the only salient region to search for in a location
                 // w/o lat/lng.  Well, there are ZIP codes, but we have no GIS
                 // data for those yet.
                 point = JSON.parse(datum[mapObj._locCol.id].human_address);
                 if (point) { point = point.state; }
-                else { return; }
+                else { return null; }
             }
         }
         else if (mapObj._locCol.renderTypeName == 'text')

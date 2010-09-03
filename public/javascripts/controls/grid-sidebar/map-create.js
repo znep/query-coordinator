@@ -15,6 +15,8 @@
         {text: 'Counties in', value: 'counties'}
     ];
 
+    var isEdit = blist.dataset.type == 'map';
+
     var arcgisBaseService = 'http://server.arcgisonline.com/ArcGIS/rest/services/';
     var mapLayers = [
         {text: 'Street Map',
@@ -141,8 +143,6 @@
     configLayersHeatmap.name = 'heatmapLayers';
     configLayersHeatmap.fields[0].minimum = 0;
     configLayersHeatmap.wizard = 'Do you want to add a layer?';
-
-    var isEdit = blist.dataset.type == 'map';
 
     var configName = 'visualize.mapCreate';
     var config =
@@ -333,6 +333,6 @@
         }
     };
 
-    $.gridSidebar.registerConfig(config, 'Map');
+    $.gridSidebar.registerConfig(config, 'map');
 
 })(jQuery);

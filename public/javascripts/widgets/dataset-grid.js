@@ -279,9 +279,9 @@
                     // parentCol
                     var getMatchingColumn = function(parentCol, childPool)
                     {
-                        return (_.detect(childPool, function(col)
+                        return _.detect(childPool, function(col)
                             { return col.tableColumnId ==
-                                parentCol.tableColumnId; }) || {}).id;
+                                parentCol.tableColumnId; });
                     }
 
                     var revealDrillDownCallBack = function()
@@ -294,15 +294,15 @@
                             if (!$.isBlank(newColumnMatch))
                             {
                                 var newCol = oCol.cleanCopy();
-                                newCol.id = newColumnMatch;
+                                newCol.id = newColumnMatch.id;
                                 if (!$.isBlank(newCol.childColumns))
                                 {
                                     var newChildColumns = [];
                                     _.each(oCol.childColumns, function(oChildCol)
                                     {
                                         var nc = oChildCol.cleanCopy();
-                                        nc.id = getMatchingColumn(oCol,
-                                            newCol.childColumns);
+                                        nc.id = getMatchingColumn(oChildCol,
+                                            newColumnMatch.childColumns).id;
                                         newChildColumns.push(nc);
                                     });
                                     newCol.childColumns = newChildColumns;

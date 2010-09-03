@@ -84,13 +84,22 @@
     };
     updateColumns();
 
+    var registeredChange = false;
     var isLoading = false;
-    blist.dataset.bind('columns_changed', function()
+    config.showCallback = function(sidebarObj, $pane)
     {
-        if (isLoading) { return; }
-        updateColumns();
-        $('#gridSidebar').gridSidebar().refresh(configName);
-    });
+        if (!registeredChange)
+        {
+            blist.dataset.bind('columns_changed', function()
+            {
+                if (isLoading) { return; }
+                updateColumns();
+                sidebarObj.refresh(configName);
+            });
+
+            registeredChange = true;
+        }
+    };
 
     config.finishCallback = function(sidebarObj, data, $pane, value)
     {
@@ -120,9 +129,15 @@
             }
         });
 
+        cols = _.sortBy(cols, function(cId)
+            { return blist.dataset.columnForID(cId).position; });
+
         _.each(children, function(cols, id)
         {
-            blist.dataset.columnForID(id).setVisibleChildColumns(cols, null, true);
+            var parCol = blist.dataset.columnForID(id);
+            cols = _.sortBy(cols, function(cId)
+                { return parCol.childColumnForID(cId).position; });
+            parCol.setVisibleChildColumns(cols, null, true);
         });
 
         isLoading = true;

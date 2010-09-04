@@ -8,7 +8,7 @@
         $accountForm = $('#editAccountForm');
 
     // Dynamic pane switching
-    /*
+
     $('.editProfileNav li a').click(function(event)
     {
         event.preventDefault();
@@ -26,12 +26,17 @@
 
         if (!_.isNull($newPane) && $newPane[0] != $currentPane[0])
         {
-            $newPane.slideDown();
-            $currentPane.slideUp();
-            $currentPane = $newPane;
+            $currentPane.animate({opacity: 0}, function()
+            {
+                $currentPane.hide();
+                $newPane
+                    .css('opacity', 0)
+                    .show()
+                    .animate({opacity: 1});
+                $currentPane = $newPane;
+            });
         }
     });
-    */
 
     var $profileImage  = $form.find('#profileImage'),
         $throbber      = $form.find('.uploadIndicator'),

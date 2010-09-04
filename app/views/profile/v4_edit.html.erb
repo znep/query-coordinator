@@ -20,11 +20,11 @@
     <% form_tag(current_user.href, :id => "editProfileForm", :class => 'commonForm', :method => :put) do %>
       <%= render :partial => 'edit_form' %>
       <%- unless params[:no_js].present? -%>
-        <%#= render :partial => 'edit_image_form' %>
+        <%= render :partial => 'edit_image_form' %>
       <%- end -%>
     <%- end -%>
     <%- unless params[:no_js].present? -%>
-      <%#= render :partial => 'edit_account_form' %>
+      <%= render :partial => 'edit_account_form' %>
     <%- end -%>
 
   </div>

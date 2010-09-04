@@ -150,7 +150,13 @@
                 }
             },
             "user[password_new]": {
-                minlength: 6
+                minlength: 6,
+                required: {
+                    depends: function(element) {
+                        // They can't set a blank password
+                        return isPresent('#user_password_old');
+                    }
+                }
             },
             "user[password_confirm]": {
                 equalTo: '#user_password_new'

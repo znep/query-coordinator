@@ -826,22 +826,6 @@ this.Dataset = Model.extend({
             success: successCallback, error: errorCallback});
     },
 
-    cleanCopy: function()
-    {
-        var ds = this._super();
-        // If this is grouped, strip out all non-grouped/agged cols
-        if (this.isGrouped())
-        {
-            ds.columns = _.select(ds.columns, function(c)
-            {
-                return !$.isBlank(c.format.grouping_aggregate) ||
-                    _.any(ds.query.groupBys, function(g)
-                        { return g.columnId == c.id; });
-            });
-        }
-        return ds;
-    },
-
 
     // Private methods
 
@@ -992,8 +976,11 @@ this.Dataset = Model.extend({
         {
             var col = ds.columnForID(g.columnId);
 
-            if (!curGrouped[col.id]) { col.width += 30; }
-            col.format.drill_down = true;
+            if ($.isBlank(col.format.grouping_aggregate))
+            {
+                if (!curGrouped[col.id]) { col.width += 30; }
+                col.format.drill_down = true;
+            }
 
             if (col.hidden && !_.any(oldGroupings, function(og)
                 { return og.columnId == col.id; }))
@@ -1186,6 +1173,7 @@ this.Dataset = Model.extend({
                     }
                 }
             });
+            delete (tr.meta || {}).invalidCells;
 
             return tr;
         };

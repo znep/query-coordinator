@@ -160,6 +160,8 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
                 if (_.isFunction(callback)) { callback(); }
             });
         }
+        else
+        { (cont.view || cont)._markTemporary(); }
     };
 
     props.cleanCopy = function()

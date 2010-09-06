@@ -3911,8 +3911,7 @@
 
             if (start != stop)
             {
-                model.loadRows(start, stop,
-                        function(r) {  _.defer(function() { rowsLoaded(r); }); });
+                model.loadRows(start, stop, function(r) { rowsLoaded(r); });
             }
         };
 
@@ -4050,20 +4049,13 @@
 
                 model.view.bind('row_change', function(rows)
                         { updateRows(rows); })
-                    // These seem a bit heavy-handed...
-                    .bind('query_change', function()
-                        {
-                            initMeta();
-                            renderHeader();
-                            renderFooter();
-                            initRows();
-                        })
                     .bind('column_resized', configureWidths)
                     .bind('column_totals_changed', renderFooter);
 
                 // Bind to events on the DOM that are thrown by the model
                 $this.bind('columns_changed', function()
                         {
+                            // This seem a bit heavy-handed...
                             initMeta();
                             renderHeader();
                             renderFooter();

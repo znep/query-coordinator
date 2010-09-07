@@ -1,4 +1,8 @@
 <div class="signupForm">
+  <%- unless defined? @flashes_displayed -%>
+    <%= display_standard_flashes %>
+    <%- @flashes_displayed = true -%>
+  <%- end -%>
   <div class="authProvider socrata">
     <span class="iconContainer"> <span class="icon"></span> </span>
     <span class="description">
@@ -17,4 +21,4 @@
   :html => {:id => 'signupForm', :multipart => true} do |f| %>
     <%= render :partial => 'accounts/v4_signup_form_data', :locals => {:f => f} %>
   <% end %>
- </div>
+</div>

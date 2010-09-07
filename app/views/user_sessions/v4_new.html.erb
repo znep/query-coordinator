@@ -17,7 +17,6 @@
   </div>
   <div class="contentBoxInner loginScreen clearfix">
     <div class="loginSignupForm firstColumn column">
-      <%= display_standard_flashes %>
       <%= render :partial => 'v4_login_form' %>
       <%- unless params[:no_js].present? -%>
         <%= render :partial => 'accounts/v4_signup_form' %>

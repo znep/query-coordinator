@@ -146,6 +146,18 @@ this.Model = Class.extend({
         $.socrataServer.runRequests({success: successCallback});
     },
 
+    _generateBaseUrl: function(domain)
+    {
+        var loc = document.location,
+        base = loc.protocol + '//' +
+            ($.isBlank(domain) ? loc.hostname : domain);
+
+        if (loc.port != 80)
+        { base += ':' + loc.port; }
+
+        return base;
+    },
+
     _validKeys: {}
 });
 

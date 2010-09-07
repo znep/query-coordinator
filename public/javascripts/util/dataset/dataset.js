@@ -55,6 +55,7 @@ this.Dataset = Model.extend({
         this.temporary = false;
         this.valid = this._checkValidity();
         this.url = this._generateUrl();
+        this.apiUrl = this._generateApiUrl();
 
         this._pendingRowEdits = {};
         this._pendingRowDeletes = {};
@@ -905,6 +906,7 @@ this.Dataset = Model.extend({
 
         if (_.isFunction(ds._convertLegacy)) { ds._convertLegacy(); }
         ds.url = ds._generateUrl();
+        ds.apiUrl = ds._generateApiUrl();
 
         var oldValid = ds.valid;
         ds.valid = ds._checkValidity();
@@ -1419,15 +1421,16 @@ this.Dataset = Model.extend({
 
         // federated dataset has nonblank domain cname
         if (!$.isBlank(ds.domainCName))
-        {
-            var loc = document.location;
-            base = loc.protocol + '//' + ds.domainCName;
-            if (loc.port != 80) { base += ':' + loc.port; }
-        }
+        { base = ds._generateBaseUrl(ds.domainCName); }
 
         return base + "/" + $.urlSafe(ds.category || "dataset") +
                "/" + $.urlSafe(ds.name) +
                "/" + ds.id;
+    },
+
+    _generateApiUrl: function()
+    {
+        return this._generateBaseUrl() + '/api/views/' + this.id;
     },
 
     _loadRelatedViews: function(callback)

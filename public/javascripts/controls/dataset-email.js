@@ -130,6 +130,8 @@
             .find('.removeLink').removeClass('hiddenLink').end();
 
         var $select = $copy.find('.recipientRole');
+        $select[0].selectedIndex = 0;
+
         $copy.find('.selector.uniform').replaceWith($select);
 
         $copy.insertAfter($form.find('.emailLine:last'));

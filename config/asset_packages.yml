@@ -31,6 +31,7 @@ javascripts:
   - util/dataset/dataset
   - util/dataset/calendar
   - util/dataset/chart
+  - util/dataset/form
   - util/dataset/map
   - util/templates
   - util/socrata-server

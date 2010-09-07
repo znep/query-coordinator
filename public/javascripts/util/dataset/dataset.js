@@ -164,6 +164,7 @@ this.Dataset = Model.extend({
     reload: function()
     {
         var ds = this;
+        ds._aggregatesStale = true;
         ds._loadRows(0, 1, function() { ds._invalidateRows(); }, true, true);
     },
 

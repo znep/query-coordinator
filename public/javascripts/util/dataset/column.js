@@ -145,7 +145,7 @@ this.Column = Model.extend({
         return true;
     },
 
-    update: function(newCol, forceFull)
+    update: function(newCol, forceFull, updateColOrder)
     {
         var col = this;
 
@@ -173,7 +173,7 @@ this.Column = Model.extend({
         if (!$.isBlank(newCol.subColumnTypes))
         { col.subColumnTypes = newCol.subColumnTypes; }
 
-        this.updateChildColumns(newCol.childColumns, forceFull, forceFull);
+        this.updateChildColumns(newCol.childColumns, forceFull, updateColOrder);
 
         // dropDown is special, because it only comes from the server; it isn't
         // posted back, so it isn't considered valid
@@ -266,12 +266,14 @@ this.Column = Model.extend({
         {
             // Got new ID, so manually need to copy that over
             col.id = newCol.id;
+            col.tableColumnId = newCol.tableColumnId;
             col.update(newCol, true);
-            col.view._invalidateRows();
             col.invalidateData();
             if (!$.isBlank(col.parentColumn))
             { col.parentColumn.updateChildColumns(); }
             else { col.view.updateColumns(); }
+            // Need to refresh the view
+            col.view.reload();
             if (_.isFunction(successCallback)) { successCallback(col); }
         };
 

@@ -348,9 +348,10 @@ class View < Model
     end
   end
 
+  # Whether or not the user has priviliges above an anonymous user
   def user_granted?(user)
     if user
-      return user_role(user).present?
+      return owned_by?(user) || user_role(user).present?
     end
     false
   end

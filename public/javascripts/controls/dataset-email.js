@@ -156,7 +156,7 @@
           emailRecipient0: 'email'
         },
         errorPlacement: function($error, $element)
-        { $element.closest('.emailLine').after($error); },
+        { $element.closest('.emailLine').append($error); },
         onkeyup: false,
         onfocusout: false,
         focusInvalid: false

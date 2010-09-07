@@ -4,35 +4,39 @@
   <%= display_standard_flashes %>
   <%- openid_identifiers = current_user.openid_identifiers -%>
   <% form_tag(update_account_profile_path, :method => 'put',
-     :class => 'commonForm' + (openid_identifiers.empty? ? '' : ' hasOpenId'), :id => 'editAccountForm') do %> 
+       :class => 'commonForm' + (openid_identifiers.empty? ? '' : ' hasOpenId'),
+       :id => 'editAccountForm') do %>
     <div class="editArea">
-      <div class="editSection clearfix">
-        <div class="line clearfix">
-          <label>Current Email</label>
-          <span class="field textItem"><%= current_user.email %></p>
+      <%- unless current_user.flag?('nopassword') -%>
+        <div class="editSection clearfix">
+          <div class="line clearfix">
+            <label>Current Email</label>
+            <span class="field textItem"><%= current_user.email %></p>
+          </div>
+          <div class="line clearfix">
+            <label for="user_email">New Email</label>
+            <%= text_field_tag('user[email]', '', :class => 'textPrompt email') %>
+          </div>
+          <div class="line clearfix">
+            <label for="user_email_confirm">Confirm Email</label>
+            <%= text_field_tag('user[email_confirm]', '', :class => 'textPrompt email') %>
+          </div>
+          <div class="line clearfix">
+            <label for="user_email_password">Password</label>
+            <%= password_field_tag('user[email_password]', '') %>
+            <span class="fieldHint textItem">
+              (For your security)
+            </span>
+          </div>
         </div>
-        <div class="line clearfix">
-          <label for="user_email">New Email</label>
-          <%= text_field_tag('user[email]', '', :class => 'textPrompt email') %>
-        </div>
-        <div class="line clearfix">
-          <label for="user_email_confirm">Confirm Email</label>
-          <%= text_field_tag('user[email_confirm]', '', :class => 'textPrompt email') %>
-        </div>
-        <div class="line clearfix">
-          <label for="user_email_password">Password</label>
-          <%= password_field_tag('user[email_password]', '') %>
-          <span class="fieldHint textItem">
-            (For your security)
-          </span>
-        </div>
-      </div>
+      <%- end -%>
 
       <div class="editSection clearfix">
         <h3>Password</h3>
         <div class="line clearfix">
           <label for="user_password_old">Old Password</label>
-          <%= password_field_tag('user[password_old]', '', :class => 'currentPassword' + (current_user.flag?('nopassword') ? ' noPassword' : '')) %>
+          <%= password_field_tag('user[password_old]', '', :class => 'currentPassword' + 
+              (current_user.flag?('nopassword') ? ' noPassword' : '')) %>
         </div>
         <div class="line clearfix">
           <label for="user_password_new">New Password</label>

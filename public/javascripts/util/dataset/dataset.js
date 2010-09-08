@@ -1568,6 +1568,18 @@ this.Dataset = Model.extend({
         return null;
     },
 
+    hasDatasetLinkColumn: function()
+    {
+        // no link column in bnb
+        var ds = this;
+        if (ds && ds.parentId) { return false; }
+        return _.any(ds.columns,
+            function(c)
+            {
+                return (c.dataTypeName == 'dataset_link');
+            });
+    },
+
     _validKeys: {
         attribution: true,
         attributionLink: true,
@@ -1593,21 +1605,6 @@ this.Dataset = Model.extend({
 });
 
 Dataset.modules = {};
-
-/*
- *doc says data is model/dataset.  but is it not.  not column either.
- *only has parentId for bnb or empty object {}
- */
-Dataset.hasDatasetLinkColumn = function(ds)
-{
-    // no link column in bnb
-    if (ds && ds.parentId) { return false; }
-    return _.any(ds.columns || blist.dataset.columns,
-        function(c)
-        {
-            return (c.dataTypeName == 'dataset_link');
-        });
-};
 
 var cachedLinkedDatasetOptions = {};
 

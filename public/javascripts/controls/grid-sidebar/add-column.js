@@ -16,7 +16,7 @@
             .sortBy(function(t) { return t.priority; })
             .value();
 
-        if (Dataset.hasDatasetLinkColumn(blist.dataset))
+        if ($.isBlank((data || {}).parentId) && blist.dataset.hasDatasetLinkColumn())
         {
             types.push({value: 'link', text: 'Link Column'});
         }

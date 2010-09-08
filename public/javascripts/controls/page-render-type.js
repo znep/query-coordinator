@@ -39,8 +39,14 @@
                     { resizeHandle(prtObj); });
 
                 hookUpNavigation(prtObj);
+                renderLayout(prtObj);
                 prtObj.settings.view.bind('row_count_change', function()
                     { updateNavigation(prtObj); });
+                prtObj.settings.view.bind('columns_changed', function()
+                    {
+                        renderLayout(prtObj);
+                        renderCurrentRow(prtObj);
+                    });
                 prtObj._visible = false;
 
                 prtObj._curRowIndex = 0;
@@ -168,12 +174,38 @@
             .toggleClass('disabled', prtObj._curRowIndex >= rowCount - 1);
     };
 
+    var renderLayout = function(prtObj)
+    {
+        prtObj.$content().empty();
+
+        var $col = $('<div class="pageColumn" data-pageColumn="1"></div>');
+        prtObj.$content().append($col);
+
+        _.each(prtObj.settings.view.visibleColumns, function(c)
+        {
+            $col.append('<div class="pageLine ' + c.renderTypeName +
+                '" data-columnId="' + c.id + '">' +
+                '<span class="pageLabel">' + $.htmlEscape(c.name) + '</span>' +
+                '<div class="pageItem"></div>' +
+                '</div>');
+        });
+    };
+
     var renderCurrentRow = function(prtObj)
     {
+        if ($.isBlank(prtObj._curRowIndex)) { return; }
+
         var rowLoaded = function(rows)
         {
             if (rows.length != 1) { return; }
             var row = rows[0];
+
+            _.each(prtObj.settings.view.visibleColumns, function(c)
+            {
+                var $line = prtObj.$content()
+                    .find('.pageLine[data-columnId=' + c.id + ']');
+                $line.find('.pageItem').text(row[c.id]);
+            });
         };
         prtObj.settings.view.getRows(prtObj._curRowIndex, 1, rowLoaded);
     };

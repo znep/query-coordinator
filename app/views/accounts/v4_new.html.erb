@@ -12,13 +12,12 @@
 
 <%- openid_login = CurrentDomain.module_available?(:openid_login) -%>
 
-<div class="modalContentBox signupModal siteContent<%= ' wide' if openid_login %>">
+<div class="modalContentBox signupModal siteContent <%= openid_login ? 'wide' : 'narrow' %>">
   <div class="contentHeader">
     <%= render :partial => 'accounts/v4_login_header' %> 
   </div>
   <div class='contentBoxInner clearfix'>
     <div class="loginSignupForm firstColumn column" id="signup">
-      <%= display_standard_flashes %>
       <%- unless params[:no_js].present? -%>
       <%= render :partial => 'user_sessions/v4_login_form' %>
       <%- end -%>

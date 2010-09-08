@@ -4049,6 +4049,7 @@
 
                 model.view.bind('row_change', function(rows)
                         { updateRows(rows); })
+                    .bind('query_change', updateHeader)
                     .bind('column_resized', configureWidths)
                     .bind('column_totals_changed', renderFooter);
 

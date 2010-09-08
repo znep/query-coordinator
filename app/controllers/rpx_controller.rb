@@ -85,11 +85,12 @@ private
 
 
   @@auth_providers = [
-    {:name => 'Facebook', :hint => 'Connect ', :rpx_url => APP_CONFIG['rpx_facebook_url']},
-    {:name => 'Twitter', :hint => 'Connect ', :rpx_url => APP_CONFIG['rpx_twitter_url']},
-    {:name => 'Google', :hint => 'Sign in ', :rpx_url => APP_CONFIG['rpx_openid_url'],
+    {:name => 'Facebook', :hint => 'Connect', :rpx_url => APP_CONFIG['rpx_facebook_url']},
+    {:name => 'Twitter', :hint => 'Connect', :rpx_url => APP_CONFIG['rpx_twitter_url']},
+    {:name => 'Google', :hint => 'Sign in', :rpx_url => APP_CONFIG['rpx_openid_url'],
+      :class => 'hintSwap',
       :openid_identifier => 'https://www.google.com/accounts/o8/id'},
-    {:name => 'OpenID', :hint => 'Sign in ', :rpx_url => APP_CONFIG['rpx_signin_url'],
-      :class => 'rpxnow', :href => true}
+    {:name => 'OpenID', :hint => 'Sign in', :rpx_url => APP_CONFIG['rpx_signin_url'],
+      :class => 'rpxnow hintSwap', :href => true}
   ]
 end

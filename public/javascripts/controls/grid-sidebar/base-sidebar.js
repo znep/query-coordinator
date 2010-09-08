@@ -1499,8 +1499,9 @@
                 if (!f.required) { continue; }
                 if (f.onlyIf)
                 {
-                    if (getValue(contextData, f.onlyIf.field) != f.onlyIf.value)
-                    { continue; }
+                    var onlyIf = getValue(contextData, f.onlyIf.field) != f.onlyIf.value;
+                    if (f.onlyIf.negate) { onlyIf = !onlyIf; }
+                    if (onlyIf) { continue; }
                 }
 
                 if (f.type == 'custom' && !$.isBlank(f.editorCallbacks) &&
@@ -2489,7 +2490,11 @@
 
                     var $l = $field.closest('.line');
                     if ($.isPlainObject(onlyIf))
-                    { $l.toggle(onlyIf.value == (vals[onlyIf.field] || vals)); }
+                    {
+                        var showField = onlyIf.value == (vals[onlyIf.field] || vals);
+                        if (onlyIf.negate) { showField = !showField; }
+                        $l.toggle(showField);
+                    }
 
                     if (_.isFunction(selOpt))
                     {

@@ -390,6 +390,19 @@ $.wordify = function(num)
     return numWords[num.toString()] || num;
 };
 
+$.mixin = function(obj, mixin)
+{
+    var clone = function()
+    { return obj.apply(this, arguments); };
+    for (property in obj)
+    {
+        if (obj.hasOwnProperty(property) && property !== 'prototype')
+        { clone[property] = obj[property]; }
+    }
+    $.extend(clone.prototype, obj.prototype, mixin.prototype);
+    return clone;
+};
+
 // Wrapper around inlineLogin.verifyUser; simply does nothing
 // if auth fails
 blist.util.doAuthedAction = function(actionText, callback)

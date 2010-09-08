@@ -31,6 +31,7 @@ javascripts:
   - util/dataset/dataset
   - util/dataset/calendar
   - util/dataset/chart
+  - util/dataset/form
   - util/dataset/map
   - util/templates
   - util/socrata-server
@@ -296,6 +297,7 @@ javascripts:
   - controls/grid-sidebar/print-dataset
   - controls/grid-sidebar/share-dataset
   - controls/grid-sidebar/show-hide
+  - controls/grid-sidebar/subscribe
   - controls/grid-sidebar/signed-dataset
   - controls/grid-sidebar/view-list
   - controls/dataset-controls

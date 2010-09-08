@@ -6,13 +6,16 @@
     var mapTypes = [
         {text: 'Google Maps', value: 'google'},
         {text: 'Bing Maps', value: 'bing'},
-        {text: 'ESRI ArcGIS', value: 'esri'},
-        {text: 'Heat Map', value: 'heatmap'}
+        {text: 'ESRI ArcGIS', value: 'esri'}
     ];
     var regionTypes = [
         {text: 'Countries', value: 'countries'},
         {text: 'US States', value: 'state'},
         {text: 'Counties in', value: 'counties'}
+    ];
+    var plotStyles = [
+        {text: 'Point Map', value: 'point'},
+        {text: 'Heat Map', value: 'heatmap'}
     ];
 
     var isEdit = blist.dataset.type == 'map';
@@ -111,7 +114,8 @@
 
     var configLayers = {
             title: 'Layers',
-            onlyIf: {field: 'displayFormat.type', value: 'esri'},
+            onlyIf: [{field: 'displayFormat.type', value: 'esri'},
+                     {field: 'displayFormat.plotStyle', value: 'point'}],
             fields: [
                 {type: 'repeater', minimum: 1, addText: 'Add Layer',
                     name: 'displayFormat.layers',
@@ -138,7 +142,9 @@
             ]
         };
     var configLayersHeatmap = $.extend(true, {}, configLayers);
-    configLayersHeatmap.onlyIf.value = 'heatmap';
+    configLayersHeatmap.onlyIf = [
+        { field: 'displayFormat.plotStyle', value: 'heatmap' },
+        { field: 'displayFormat.type', value: 'esri' }];
     configLayersHeatmap.type = 'selectable';
     configLayersHeatmap.name = 'heatmapLayers';
     configLayersHeatmap.fields[0].minimum = 0;
@@ -175,6 +181,12 @@
                         required: true, prompt: 'Select a map type',
                         options: mapTypes,
                         wizard: 'Select a map type'
+                    },
+                    {text: 'Plot Style', name: 'displayFormat.plotStyle', type: 'select',
+                        onlyIf: {field: 'displayFormat.type', value: 'bing', negate: true},
+                        required: true, prompt: 'Select a plot style',
+                        options: plotStyles,
+                        wizard: 'Select a plotting style'
                     }
                 ]
             },
@@ -182,7 +194,7 @@
             configLocationESRI,
             { // General Details section.
                 title: 'Details', type: 'selectable', name: 'detailsSection',
-                onlyIf: {field: 'displayFormat.type', value: 'heatmap', negate: true},
+                onlyIf: {field: 'displayFormat.plotStyle', value: 'heatmap', negate: true},
                 fields: [
                     {text: 'Title', name: 'displayFormat.plot.titleId',
                         type: 'columnSelect', isTableColumn: true,
@@ -230,7 +242,7 @@
             },
             { // Heatmap Details section.
                 title: 'Details', name: 'hmDetailsSection',
-                onlyIf: {field: 'displayFormat.type', value: 'heatmap'},
+                onlyIf: {field: 'displayFormat.plotStyle', value: 'heatmap'},
                 fields: [
                     {text: 'Description', name: 'displayFormat.plot.descriptionId',
                         type: 'columnSelect', isTableColumn: true,

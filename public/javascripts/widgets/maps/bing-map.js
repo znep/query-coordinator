@@ -64,6 +64,44 @@
                 return true;
             },
 
+            renderFeature: function(feature, segmentIndex)
+            {
+                var mapObj = this;
+                var polygons = Dataset.map.toBing.feature(feature.geometry);
+
+                var dojoColor = mapObj._segmentSymbols[segmentIndex].color;
+                var color = new VEColor(dojoColor.r, dojoColor.g,
+                                        dojoColor.b, dojoColor.a);
+                _.each(polygons, function(polygon)
+                {
+                    polygon.SetFillColor(color);
+                    polygon.HideIcon();
+
+                    var info = mapObj._quantityCol.name;
+                    info    += ': ';
+                    info    += feature.attributes.quantity;
+                    info    += '<br />';
+                    info    += feature.attributes.description;
+
+                    polygon.SetTitle(feature.attributes['NAME']);
+                    polygon.SetDescription(info);
+
+                    mapObj._shapeLayer.AddShape(polygon);
+                });
+
+                if (!mapObj._customInfoBoxSet)
+                {
+                    mapObj.map.AttachEvent('onclick', function(event)
+                    {
+                        if (feature.attributes.redirect_to)
+                        { window.open(feature.attributes.redirect_to); }
+                        mapObj.map.ShowInfoBox(
+                            mapObj.map.GetShapeByID(event.elementID));
+                    });
+                    mapObj._customInfoBoxSet = true;
+                }
+            },
+
             adjustBounds: function()
             {
                 var mapObj = this;
@@ -79,6 +117,13 @@
                             (mapObj._shapeLayer.GetShapeByIndex(0).GetPoints()[0],
                             mapObj.settings.defaultZoom);
                 }
+            },
+
+            hideLayers: function()
+            {
+                var mapObj = this;
+                mapObj.map.HideBaseTileLayer();
+                mapObj.map.HideDashboard();
             },
 
             resetData: function()
@@ -98,6 +143,11 @@
                 mapObj.$dom().siblings(':visible').each(function()
                 { sibH += $(this).height(); });
                 mapObj.map.Resize($par.width(), $par.height() - sibH);
+            },
+
+            clearFeatures: function()
+            {
+                this.resetData();
             }
         }
     }));

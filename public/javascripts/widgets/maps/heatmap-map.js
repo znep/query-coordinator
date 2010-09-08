@@ -31,12 +31,8 @@
         }
     };
 
-    $.socrataMap.heatmap = function(options, dom)
-    {
-        this.settings = $.extend({}, $.socrataMap.heatmap.defaults, options);
-        this.currentDom = dom;
-        this.init();
-    };
+    if (!$.socrataMap.mixin) { $.socrataMap.mixin = function() { }; }
+    $.socrataMap.mixin.heatmap = function() { };
 
     // Available configurations:
     // - type (required)
@@ -46,8 +42,7 @@
     // - hideZoomSlider
     // - ignoreTransforms: ignores default transformations in MAP_TYPE
     // - transformFeatures: custom transforms at view level
-    $.extend($.socrataMap.heatmap, $.socrataMap.extend($.socrataMap.esri));
-    $.extend($.socrataMap.heatmap.prototype,
+    $.extend($.socrataMap.mixin.heatmap.prototype,
     {
         renderData: function(rows)
         {
@@ -57,7 +52,7 @@
             config.hideLayers = config.hideLayers ||
                 !mapObj.settings.view.displayFormat.layers
                 || mapObj.settings.view.displayFormat.layers.length == 0;
-            mapObj.hideLayers();
+            if (config.hideLayers && mapObj.hideLayers) { mapObj.hideLayers(); }
 
             if (config.hideZoomSlider)
             { mapObj.map.hideZoomSlider(); }
@@ -94,9 +89,11 @@
                     );
                 }
 
-                mapObj.buildLegend(mapObj._quantityCol.name,
-                    _.map(mapObj._segmentSymbols, function(symbol)
-                        { return symbol.color.toCss(false); }));
+                mapObj.$legend({
+                    name: mapObj._quantityCol.name,
+                    gradient: _.map(mapObj._segmentSymbols, function(symbol)
+                        { return symbol.color.toCss(false); })
+                });
             }
 
             mapObj.startLoading();
@@ -109,20 +106,6 @@
             { doQueries(mapObj, config); }
             else
             { addFeatureSetToMap(mapObj, null, config); }
-        },
-
-        hideLayers: function()
-        {
-            var mapObj = this;
-            var config = mapObj.settings.view.displayFormat.heatmap;
-            if (config.hideLayers || config.transformFeatures ||
-                (!config.ignoreTransforms &&
-                    MAP_TYPE[config.type].transformFeatures))
-            {
-                var layers = mapObj.getLayers();
-                for (var i = 0; i < layers.length; i++)
-                { mapObj.map.getLayer(layers[i].id).hide(); }
-            }
         }
     });
 
@@ -131,7 +114,7 @@
         var query = new esri.tasks.Query();
         query.outFields = MAP_TYPE[config.type].fieldsReturned;
         query.returnGeometry = true;
-        query.outSpatialReference = mapObj.map.spatialReference;
+        query.outSpatialReference = mapObj.map.spatialReference || 4326;
 
         query.where = MAP_TYPE[config.type].where(mapObj, config);
         new esri.tasks.QueryTask(
@@ -161,7 +144,8 @@
                 $.makeArray(feature.attributes.quantity);
 
             if (mapObj._infoCol)
-            { feature.attributes.description.push(row[mapObj._infoCol.id]); }
+            { feature.attributes.description.push(
+                mapObj.getText(row, mapObj._infoCol)); }
             if (!row.invalid[mapObj._quantityCol.id])
             { feature.attributes.quantity.push(row[mapObj._quantityCol.id]); }
 
@@ -205,55 +189,44 @@
             return parseFloat(e.attributes.quantity);
         };
 
-        var max = Math.ceil( _.max(_.map(featureSet.features, getValue))/50)*50;
-        var min = Math.floor(_.min(_.map(featureSet.features, getValue))/50)*50;
-        mapObj._$legend.find('span:first').text(min);
-        mapObj._$legend.find('span:last').text(max);
+        var max = _.max(_.map(featureSet.features, getValue));
+        var min = _.min(_.map(featureSet.features, getValue));
+        mapObj.$legend({ minimum: min, maximum: max });
         var segments = [];
         for (i = 0; i < mapObj._numSegments; i++)
         { segments[i] = ((i+1)*(max-min)/mapObj._numSegments)+min; }
 
-        var info = mapObj._quantityCol.name + ": ${quantity}<br />${description}";
-        var infoTemplate = new esri.InfoTemplate("${NAME}", info);
+        if (!mapObj._featuresTransformed)
+        {
+            transformFeatures(featureSet.features, config);
+            mapObj._featuresTransformed = true;
+        }
 
-        transformFeatures(featureSet.features, config);
-
-        mapObj.map.graphics.clear();
+        mapObj.clearFeatures();
         var extents = [];
         _.each(featureSet.features, function(feature)
         {
             if (!feature.attributes.quantity) { return; }
-            feature.attributes.description =
-                $.makeArray(feature.attributes.description).join(', ');
+            feature.attributes.description = _.compact(
+                $.makeArray(feature.attributes.description)).join(', ');
 
-            var symbol;
-            for (i = 0; i < mapObj._numSegments; i++)
+            var segmentIndex;
+            for (segmentIndex = 0; segmentIndex < mapObj._numSegments; segmentIndex++)
             {
-                if (parseFloat(feature.attributes.quantity) <= segments[i])
-                { symbol = mapObj._segmentSymbols[i]; break; }
+                if (parseFloat(feature.attributes.quantity) <= segments[segmentIndex])
+                { break; }
             }
-            mapObj.map.graphics.add(feature.setSymbol(symbol)
-                                           .setInfoTemplate(infoTemplate));
+
+            mapObj.renderFeature(feature, segmentIndex);
             extents.push(feature.geometry.getExtent());
-            if (feature.attributes.redirect_to)
-            {
-                $(feature.getDojoShape().rawNode)
-                    .click(function(event)
-                        { window.open(feature.attributes.redirect_to); })
-                    .hover(
-                        function(event) { blist.$display
-                            .find('div .container').css('cursor', 'pointer'); },
-                        function(event) { blist.$display
-                            .find('div .container').css('cursor', 'default'); });
-            }
         });
 
-        var center = MAP_TYPE[config.type].center ?
-            MAP_TYPE[config.type].center : mapObj.map.extent.getCenter();
-        if (MAP_TYPE[config.type].zoom)
-        { mapObj.map.centerAndZoom(center, MAP_TYPE[config.type].zoom); }
-        else
-        { mapObj.map.setExtent(buildMinimumExtentFromSet(extents), true); }
+        mapObj.adjustBounds();
+
+        if (config.hideLayers || config.transformFeatures ||
+            (!config.ignoreTransforms &&
+                MAP_TYPE[config.type].transformFeatures))
+        { if (mapObj.hideLayers) { mapObj.hideLayers(); } }
 
         mapObj.finishLoading();
     };
@@ -262,6 +235,7 @@
     {
         var point;
 
+        if (!datum[mapObj._locCol.id]) { return null; }
         if (mapObj._locCol.renderTypeName == 'location')
         {
             if ($.isBlank(datum[mapObj._locCol.id])) { return null; }
@@ -272,7 +246,8 @@
             {
                 point = new esri.geometry.Point(longVal, latVal,
                     new esri.SpatialReference({ wkid: 4326 }));
-                if (mapObj.map.spatialReference.wkid == 102100)
+                if (!mapObj.map.spatialReference ||
+                     mapObj.map.spatialReference.wkid == 102100)
                 { point = esri.geometry.geographicToWebMercator(point); }
             }
             else
@@ -306,24 +281,6 @@
                 return point == featureName;
             }
         });
-    };
-
-    var buildMinimumExtentFromSet = function(extents)
-    {
-        if (extents.length == 0) { return; }
-        var spatialReference = extents[0].spatialReference;
-        var base_extent = extents[0];
-        var extent = _.reduce(extents, base_extent, function(memo, extent)
-            {
-                return {
-                    xmin: Math.min(memo.xmin, extent.xmin),
-                    ymin: Math.min(memo.ymin, extent.ymin),
-                    xmax: Math.max(memo.xmax, extent.xmax),
-                    ymax: Math.max(memo.ymax, extent.ymax)
-                    };
-            });
-        return new esri.geometry.Extent(extent.xmin, extent.ymin,
-            extent.xmax, extent.ymax, spatialReference);
     };
 
     var transformFeatures = function(features, config)

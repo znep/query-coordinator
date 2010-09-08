@@ -33,32 +33,32 @@
         if (_.include(['IS_BLANK', 'IS_NOT_BLANK'], op)) { return false; }
 
         var col = blist.dataset.columnForID(colId);
-        var colCopy = col.cleanCopy();
-        colCopy.renderTypeName = col.renderTypeName;
+        var typeName = col.renderTypeName;
 
         // Some types want different editors for filtering
-        if (_.include(['tag', 'email', 'html'], colCopy.renderTypeName))
-        { colCopy.renderTypeName = 'text'; }
+        if (_.include(['tag', 'email', 'html'], typeName)) { typeName = 'text'; }
 
         var firstVal = curValue;
         if (_.isArray(curValue)) { firstVal = curValue[0]; }
 
         var $editor = $.tag({tagName: 'div',
-            'class': ['editorWrapper', colCopy.renderTypeName]});
-        $editor.blistEditor({row: null, column: colCopy, value: firstVal});
+            'class': ['editorWrapper', typeName]});
+        $editor.blistEditor({row: null, column: col, value: firstVal,
+            typeName: typeName});
         $field.append($editor);
 
         if (op == 'BETWEEN')
         {
             $field.addClass('twoEditors');
             $field.append($.tag({tagName: 'span',
-                'class': ['joiner', colCopy.renderTypeName], contents: '&amp;'}));
+                'class': ['joiner', typeName], contents: '&amp;'}));
 
             var secondVal;
             if (_.isArray(curValue)) { secondVal = curValue[1]; }
             $editor = $.tag({tagName: 'div',
-                'class': ['editorWrapper', colCopy.renderTypeName]});
-            $editor.blistEditor({row: null, column: colCopy, value: secondVal});
+                'class': ['editorWrapper', typeName]});
+            $editor.blistEditor({row: null, column: col, value: secondVal,
+                typeName: typeName});
             $field.append($editor);
         }
         else { $field.removeClass('twoEditors'); }

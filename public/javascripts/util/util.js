@@ -265,6 +265,10 @@ $.renderTemplate = function(template, data, directive)
     {
         // pure needs a wrapping element
         $templateCopy.appendTo($('<div/>'));
+        // I think this is the cause of the 'ep is null' error in pure; but can't
+        // figure out why it would happen...
+        if ($.isBlank($templateCopy[0].parentNode))
+        { throw 'templateCopy has no parent!'; }
 
         return $templateCopy
             .render(data, directive)

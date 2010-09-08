@@ -284,7 +284,7 @@
             if (!$.isPlainObject(curVal.value))
             {
                 var o = {};
-                o[curCol.value] = curVal.value;
+                o[curCol.value.toLowerCase()] = curVal.value;
                 curVal.value = o;
             }
 
@@ -293,7 +293,7 @@
             { i++; continue; }
 
             // Now we found a match for real, and we have the object set up
-            curVal.value[nextCol.value] = nextVal.value;
+            curVal.value[nextCol.value.toLowerCase()] = nextVal.value;
             view.query.filterCondition.children.splice(i+1, 1);
         }
 
@@ -312,7 +312,7 @@
                     !$.isPlainObject(v.value))
                 {
                     var o = {};
-                    o[colObj.value] = v.value;
+                    o[colObj.value.toLowerCase()] = v.value;
                     v.value = o;
                 }
             });
@@ -385,7 +385,7 @@
                     _.each(splitVal, function(v, k)
                     {
                         newChildren.push({type: 'operator', value: c.value,
-                            children: [$.extend({value: k}, colObj),
+                            children: [$.extend({value: k.toUpperCase()}, colObj),
                                 {type: 'literal', value: v}]});
                     });
                 }

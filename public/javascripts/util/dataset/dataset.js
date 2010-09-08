@@ -936,6 +936,7 @@ this.Dataset = Model.extend({
                 !_.isEqual(oldQuery.groupBys, ds.query.groupBys))
             { ds._rowCountInvalid = true; }
             ds.trigger('query_change');
+            ds._aggregatesStale = true;
             // Clear out the rows, since the data is different now
             ds._invalidateRows();
         }

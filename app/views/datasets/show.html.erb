@@ -380,7 +380,7 @@
     blist.sidebarHidden.exportSection.api = <%= !@view.is_tabular? %>;
 
     <%# Sharing pane %>
-    blist.sidebarHidden.sharing = <%= !@view.has_rights?('grant') %>;
+    blist.sidebarHidden.sharing = <%= !@view.user_granted?(current_user) %>;
 
     <%# Please see admin_controller#add_custom_layer for explanation %>
     <%# custom_layer_config = Configuration.find_by_type('custom_layers', true).first

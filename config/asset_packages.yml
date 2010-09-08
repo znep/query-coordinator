@@ -115,6 +115,12 @@ javascripts:
   - screens/admin-users-screen
 - admin-federations:
   - screens/admin-federations-screen
+- admin-moderation:
+  - plugins/jquery.uniform
+  - plugins/jquery.tablesorter
+  - widgets/combination-list
+  - util/user
+  - screens/admin-moderation
 - blists-about:
   - util/urls
   - plugins/ajaxupload.3.0

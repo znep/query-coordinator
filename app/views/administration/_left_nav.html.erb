@@ -12,6 +12,13 @@
           raw('<span class="icon"></span>Users'),
           {:action => 'users'} %>
     </li>
+    <%- if module_available? :publisher_comment_moderation -%>
+      <li class="comments">
+        <%= link_to_unless_current \
+            raw('<span class="icon"></span>Moderation'),
+            {:action => 'moderation'} %>
+      </li>
+    <%- end -%>
     <%- if current_user && current_user.is_admin? -%>
       <li class="internal">
         <%= link_to_unless_current \

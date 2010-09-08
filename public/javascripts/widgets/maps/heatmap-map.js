@@ -123,6 +123,18 @@
             .execute(query, function(featureSet)
                 { addFeatureSetToMap(mapObj, featureSet, config); });
         mapObj._runningQuery = true;
+
+        setTimeout(function()
+        {
+            // query took too long and probably timed out
+            // so we're just going to kill the spinner and error it
+            // if the query does finish, it will load behind the alert
+            if (mapObj._runningQuery)
+            {
+                mapObj.finishLoading();
+                alert('A data request has taken too long and timed out.');
+            }
+        }, 60000);
     };
 
     var addFeatureSetToMap = function(mapObj, featureSet, config)

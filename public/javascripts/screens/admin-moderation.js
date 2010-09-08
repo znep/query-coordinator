@@ -37,6 +37,16 @@
             });
             $('.tableContainer').append(
                 $.renderTemplate('moderationsTable', _.values(comments), directive));
+
+            $('.commentModerationList.gridList').combinationList({
+                headerContainerSelector: '.gridListWrapper',
+                initialSort: [[1, 1]],
+                scrollableBody: false,
+                selectable: false,
+                sortGrouping: false,
+                sortHeaders: {0: {sorter: 'text'}, 1: {sorter: 'date'},
+                    2: {sorter: 'text'}, 3: {sorter: 'text'}}
+            });
         }
     });
 

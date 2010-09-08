@@ -41,6 +41,10 @@
         </div>
       <%- end -%>
       <div class="gridContainer">
+          <div class='mainSpinner loadingSpinnerContainer hide'>
+            <div class='loadingSpinner'></div>
+          </div>
+
           <div id="data-grid" class='fullHeight'>
             <%- if @view.is_tabular? && @view.display.valid? -%>
               <noscript>

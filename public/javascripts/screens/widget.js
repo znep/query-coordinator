@@ -4,9 +4,6 @@ var configNS = blist.namespace.fetch('blist.configuration');
 
 widgetNS.ready = false;
 
-// Report we've opened for metrics
-blist.dataset.registerOpening('WIDGET', document.referrer);
-
 blist.widget.resizeViewport = function()
 {
     widgetNS.$resizeContainer.fullScreen().adjustSize();
@@ -163,6 +160,7 @@ blist.widget.showDataView = function()
 (function($)
 {
     if (!blist.dataset.valid) { $('body').addClass('invalidView'); }
+
 })(jQuery);
 
 $(function()
@@ -803,6 +801,9 @@ $(function()
 
     _.defer(function()
     {
+        // Report we've opened for metrics
+        blist.dataset.registerOpening('WIDGET', document.referrer);
+
         // report to events analytics for easier aggregation
         $.analytics.trackEvent('widget (v2)', 'page loaded', document.referrer);
     });

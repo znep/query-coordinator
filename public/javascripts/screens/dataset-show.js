@@ -50,15 +50,16 @@ blist.datasetPage.pageRenderTypeShown = function()
     $(window).resize();
 };
 
-blist.datasetPage.displayRow = function(rowId)
+blist.datasetPage.displayRow = function(rowIndex)
 {
-    datasetPageNS.pageRenderType.displayRowByID(rowId);
+    datasetPageNS.pageRenderType.displayRowByIndex(rowIndex);
 };
 
 
 (function($)
 {
     if (!blist.dataset.valid) { $('body').addClass('invalidView'); }
+
 })(jQuery);
 
 $(function()
@@ -81,15 +82,15 @@ $(function()
     datasetPageNS.pageRenderType = $('#pageRenderType').pageRenderType({
         hideCallback: datasetPageNS.pageRenderTypeHidden,
         showCallback: datasetPageNS.pageRenderTypeShown,
-        view: blist.display.view
+        view: blist.dataset
     });
-    if ($.isBlank(blist.display.initialRow))
+    if ($.isBlank(blist.initialRow))
     { datasetPageNS.pageRenderType.hide(); }
     else
-    { datasetPageNS.pageRenderType.displayRowByIndex(blist.display.initialRow); }
+    { datasetPageNS.pageRenderType.displayRowByIndex(blist.initialRow); }
 
-    $(document).bind(blist.events.DISPLAY_ROW, function(e, rowId)
-        { datasetPageNS.displayRow(rowId); });
+    $(document).bind(blist.events.DISPLAY_ROW, function(e, rowIndex)
+        { datasetPageNS.displayRow(rowIndex); });
 
 
     // Render types

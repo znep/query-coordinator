@@ -33,19 +33,6 @@
                 var $domObj = currentObj.$dom();
                 $domObj.data("socrataVisualization", currentObj);
 
-                currentObj.settings.view
-                    .bind('start_request',
-                        function() { currentObj.startLoading(); })
-                    .bind('finish_request', function()
-                        { currentObj.finishLoading(); });
-
-                if ($domObj.parent().find('.loadingSpinnerContainer').length < 1)
-                {
-                    $domObj.parent().append(
-                        '<div class="loadingSpinnerContainer hidden">' +
-                        '<div class="loadingSpinner"></div></div>');
-                }
-
                 if ($domObj.siblings('#vizError').length < 1)
                 { $domObj.before('<div id="vizError" class="mainError"></div>'); }
                 $domObj.siblings('#vizError').hide();
@@ -94,16 +81,15 @@
                 this.$dom().siblings('#vizError').show().text(errorMessage);
             },
 
+            // Used in a few places for non-dataset status
             startLoading: function()
             {
-                this.$dom().parent().find('.loadingSpinnerContainer')
-                    .removeClass('hidden');
+                this.settings.view.trigger('start_request');
             },
 
             finishLoading: function()
             {
-                this.$dom().parent().find('.loadingSpinnerContainer')
-                    .addClass('hidden');
+                this.settings.view.trigger('finish_request');
             },
 
             initializeVisualization: function()

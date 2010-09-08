@@ -542,7 +542,8 @@
                 break;
 
             case 'view-row':
-                $(document).trigger(blist.events.DISPLAY_ROW, [rowId]);
+                $(document).trigger(blist.events.DISPLAY_ROW,
+                    [datasetObj.settings.view.rowForID(rowId).index]);
                 break;
         }
     };

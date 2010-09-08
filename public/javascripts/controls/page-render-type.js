@@ -37,7 +37,10 @@
 
                 $domObj.bind('resize', function(e)
                     { resizeHandle(prtObj); });
+
                 hookUpNavigation(prtObj);
+                prtObj.settings.view.bind('row_count_change', function()
+                    { updateNavigation(prtObj); });
                 prtObj._visible = false;
 
                 prtObj._curRowIndex = 0;
@@ -105,8 +108,17 @@
             displayRowByID: function(rowId)
             {
                 var prtObj = this;
+
+                var row = prtObj.settings.view.getRowByID(rowId);
+                if ($.isBlank(row)) { throw 'No row for ' + rowId; }
+                prtObj._curRowIndex = row.index;
+
                 if (!prtObj._visible) { prtObj.show(); }
-                // TODO
+                else
+                {
+                    renderCurrentRow(prtObj);
+                    updateNavigation(prtObj);
+                }
             }
         }
     });
@@ -158,7 +170,12 @@
 
     var renderCurrentRow = function(prtObj)
     {
-        prtObj.$content().text('Showing row ' + prtObj._curRowIndex);
+        var rowLoaded = function(rows)
+        {
+            if (rows.length != 1) { return; }
+            var row = rows[0];
+        };
+        prtObj.settings.view.getRows(prtObj._curRowIndex, 1, rowLoaded);
     };
 
 })(jQuery);

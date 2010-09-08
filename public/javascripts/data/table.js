@@ -4036,10 +4036,6 @@
         $this.bind('dataset_ready', function(event, newModel)
         {
             model = newModel;
-            model.view.bind('start_request', function()
-                    { $outside.addClass('blist-loading'); })
-                .bind('finish_request', function()
-                    { $outside.removeClass('blist-loading'); });
 
             var isReady = function()
             {

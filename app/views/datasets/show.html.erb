@@ -99,6 +99,10 @@
 
 <div class='outerContainer'>
   <div class='innerContainer'>
+    <div class='mainSpinner loadingSpinnerContainer hide'>
+      <div class='loadingSpinner'></div>
+    </div>
+
     <div class='viewErrorContainer'>
       <%- if @view.has_rights?('update_view') -%>
       <div class='viewError'><%= @view.display.invalid_message %></div>
@@ -354,7 +358,7 @@
     <%- end -%>
 
     <%- if !@row.nil? -%>
-    blist.display.initialRow = <%= @row['position'] %>;
+    blist.initialRow = <%= @row['position'] %>;
     <%- end -%>
 
     <%# Namespace to keep track of disabled sidebar sections %>

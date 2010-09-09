@@ -49,9 +49,14 @@
       </div>
 
       <div class="editSection clearfix">
-        <h3 class="unfixed">External Accounts</h3>
-        <h4>Log in with your Facebook, Twitter, Google, or other 3rd-party credentials.
-          <%= link_to "Learn about OpenID", openid_explained_url(account_url) %></h4>
+        <h3>External Accounts</h3>
+        <div class="line clearfix">
+          <label>&nbsp;</label>
+          <span class="field textItem">
+            Log in with your Facebook, Twitter, Google, or other 3rd-party credentials.
+            <%= link_to "Learn about OpenID", openid_explained_url(account_url) %>
+          </span>
+        </div>
 
         <%- if openid_identifiers.empty? -%>
           <p class="textItem">You have no OpenID identifiers associated with this account yet.<p>
@@ -69,7 +74,8 @@
         <%- end -%>
         <div class="line">
           <label>&nbsp;</label>
-          <%= link_to_rpx raw('<span class="icon"></span>Add an OpenID or External Account'), add_rpx_token_url(:section => 'openid'), :class => 'rpxnow button add addOpenIdButton' %>
+          <%= link_to_rpx raw('<span class="icon"></span>Add an OpenID or External Account'),
+                add_rpx_token_url(:section => 'openid'), :class => 'rpxnow button add addOpenIdButton' %>
         </div>
       </div>
     </div>

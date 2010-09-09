@@ -45,3 +45,6 @@ administration-analytics-screen:
 - screen-metrics
 administration-users-screen:
 - screen-admin
+administration-moderation:
+- screen-admin
+- screen-administration-moderation

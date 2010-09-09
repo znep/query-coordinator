@@ -677,7 +677,9 @@
             var row = getRow(cell);
             var col = getColumn(cell);
             if (!col || col.id == 'rowHandleCol' ||
-                col.id == 'rowNumberCol' || !row) { return false; }
+                col.id == 'rowNumberCol' || 
+                col.isLinked() ||
+                !row) { return false; }
             var value = model.getRowValue(row, col);
             if (!value) { value = model.getInvalidValue(row, col); }
 

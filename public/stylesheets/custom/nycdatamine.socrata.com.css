@@ -1,0 +1,121 @@
+body
+{
+	background: #EEEEEC;
+	background-image: none;
+}
+
+.bodyInterior
+{
+	border: 0px none;
+}
+
+
+/* Header */
+#header
+{
+	background: url(/stylesheets/images/domains/nycdatamine.socrata.com/header-bg.jpg) repeat-x;
+	border-left: solid 1px #333;
+	border-right: solid 1px #333;	
+	height: 130px;
+	padding-bottom: 0;
+}
+#mainLogo
+{
+	top: 0;
+	left: 0;
+}
+#mainNav
+{
+	position: absolute;
+	right: 0;
+	top: 26px;
+	width: auto;
+}
+#mainNav li a span
+{
+	font-weight: normal;
+}
+#mainNav li
+{
+	border-right: dotted 1px #CCC;
+}
+#mainNav li.last
+{
+	border-right: none;
+}
+#header .userNav li
+{
+	border-right: none;
+}
+/* Data Splash */
+.dataSplashContainer
+{
+	background: url(/stylesheets/images/domains/nycdatamine.socrata.com/banner.jpg) no-repeat #9DD6E9 left bottom;
+	border: solid 1px #8CC1D2;
+	border-top-right-radius: 0.5em;
+	-moz-border-radius-topright: 0.5em;
+	webkit-border-top-right-radius: 0.5em;
+	border-top-left-radius: 0.5em;
+	-moz-border-radius-topleft: 0.5em;
+	webkit-border-top-left-radius: 0.5em;
+	border-bottom-left-radius: 0.5em;
+	-moz-border-radius-bottomleft: 0.5em;
+	webkit-border-bottom-left-radius: 0.5em;
+	border-bottom-right-radius: 0.5em;
+	-moz-border-radius-bottomright: 0.5em;
+	webkit-border-bottom-right-radius: 0.5em;
+	display: block;	
+	height: 300px;
+	margin-top: 1em;
+	min-height:0;	
+	padding:0 37em 0 1em;
+}
+.pageBlockHeaderContent .pageBlockHeaderSide
+{
+	margin-right: -35.5em;
+}
+form.search.large .clearBox
+{
+	background: #FFF;
+}
+.pageBlockSearch 
+{
+	margin-top: 1em;
+}
+.pageBlockIntro p 
+{
+	color: #4B4B4B;
+	margin-top: 1em;
+}
+.pageBlockHeaderCarousel h2, .pageBlockSearch p.searchIntro, .pageBlockHeaderSide h2, ul.activityList li, ul.activityList li a
+{
+	color:#333;
+}
+.pageBlockHeaderSide h2
+{
+	border-bottom: solid 1px #8CC1D2;
+}
+.pageBlockHeaderCarousel.carouselWrapper, .pageBlockHeaderCarousel .carouselOuter, .pageBlockHeaderCarousel .carouselInner
+{
+	background: none;
+}
+
+/* Footer */
+.footerContainer
+{
+	background: #494b4c;
+}
+#footer .copyright
+{
+	color: #EEE;
+	padding: 1.5em;
+}
+#footer ul 
+{
+	padding: 1.5em;
+}
+#footer a 
+{
+	color: #F9D053;
+}
+

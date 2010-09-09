@@ -52,7 +52,7 @@
                     this._$editor = $('<div class="blist-table-editor' +
                         ' type-' + this.column.renderTypeName +
                         '">' +
-                        '<input type="text" class="number" value="' +
+                        '<input type="text" class="phoneNumber" value="' +
                         value + '" />' +
                         '<div class="blist-combo-wrapper">' +
                         '<div class="type-combo"></div></div></div>');
@@ -78,7 +78,7 @@
                         layout.width += 4;
                     } : null
                 });
-                editObj.$dom().find(':text.number').keydown(function(e)
+                editObj.$dom().find(':text.phoneNumber').keydown(function(e)
                     { if (e.keyCode == 9 && !e.shiftKey)
                         { e.stopPropagation(); } });
                 editObj.$dom().find('.type-combo').keydown(function(e)
@@ -88,7 +88,7 @@
 
             currentNumberValue: function()
             {
-                var newNum = this.$editor().find(':text.number').val();
+                var newNum = this.$editor().find(':text.phoneNumber').val();
                 return newNum === '' || newNum === undefined ? null : newNum;
             },
 
@@ -118,7 +118,7 @@
                 $sz.css({ width: width + 'px', height: height + 'px' });
                 $outer.width(outerWidth).height(outerHeight);
 
-                var $input = this.$dom().find(':text.number');
+                var $input = this.$dom().find(':text.phoneNumber');
                 var padding = $input.innerHeight() - $input.height();
                 $input.height(height - padding);
             },

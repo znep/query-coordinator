@@ -1,6 +1,8 @@
 <div class="feedList">
   <div class="feed">
-    <a href="#post" class="button feedNewCommentButton">Add Comment</a>
+    <%- if CurrentDomain.module_enabled? :allow_comments -%>
+      <a href="#post" class="button feedNewCommentButton">Add Comment</a>
+    <%- end -%>
     <ul class="feedList"></ul>
     <a href="#showMore" class="feedMoreItemsLink fullButton"></a>
   </div>

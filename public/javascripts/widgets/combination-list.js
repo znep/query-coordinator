@@ -39,6 +39,7 @@
             sortable: true,
             sortGrouping: true,
             sortHeaders: {},
+            sortTextExtraction: 'complex',
             treeTable: false,
             treeColumn: 0
         },
@@ -107,7 +108,7 @@
                      // First column is not sortable
                      headers: comboListObj.settings.sortHeaders,
                      // Don't use simple extraction
-                     textExtraction: "complex",
+                     textExtraction: comboListObj.settings.sortTextExtraction,
                      widgets: []
                     };
                     if (comboListObj.settings.scrollableBody)

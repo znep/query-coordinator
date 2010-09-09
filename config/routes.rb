@@ -119,6 +119,7 @@ ActionController::Routing::Routes.draw do |map|
   map.with_options :controller => 'administration' do |admin|
     admin.connect '/admin_new/analytics',         :action => 'analytics'
     admin.connect '/admin_new/users',             :action => 'users'
+    admin.connect '/admin_new/moderation',        :action => 'moderation'
   end
 
   map.resources :contacts,

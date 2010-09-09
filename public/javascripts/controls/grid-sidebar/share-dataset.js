@@ -100,8 +100,15 @@
                     'li@data-currtype': 'shareType',
                     'li@data-email': 'userEmail',
                     'li@class+': function(a) { return (a.context.shareInherited === true ? 'inherited' : '');  }
-                });
-            $li.find('.type').val($.capitalize(share.shareType));
+                }),
+                shareType = $.capitalize(share.shareType);
+
+            $li
+                .find('select.type')
+                    .val(shareType)
+                    .end()
+                .find('span.type')
+                    .text(shareType);
 
             if (!$.isBlank(share.profileImageUrlSmall))
             { $li.find('.profileImage').css('background-image', 'url(' + share.profileImageUrlSmall + ')'); }
@@ -211,7 +218,9 @@
                             }),
                             $toggleLink = $formElem.find('.toggleDatasetPermissions');
 
-                        if ($.isBlank(publicGrant) || publicGrant.inherited == false)
+                        // Only owned, parent-public datasets can be toggled
+                        if (blist.dataset.hasRight('update_view') &&
+                            ($.isBlank(publicGrant) || publicGrant.inherited == false))
                         {
                             $toggleLink.click(togglePermissions)
                                 .text(blist.dataset.isPublic() ? 'Public' : 'Private');

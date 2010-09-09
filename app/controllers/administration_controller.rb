@@ -1,7 +1,7 @@
 class AdministrationController < ApplicationController
-  before_filter :check_auth,   :except => [:analytics]
-  before_filter :check_member, :only => [:analytics]
-  before_filter :check_module, :only => [:analytics]
+  before_filter :check_auth_level, :except => [:analytics]
+  before_filter :check_member,     :only => [:analytics]
+  before_filter :check_module,     :only => [:analytics]
 
   layout 'dataset_v2'
 
@@ -32,8 +32,11 @@ class AdministrationController < ApplicationController
     end
   end
 
+  def moderation
+  end
+
   private
-  def check_auth(level = 'manage_users')
+  def check_auth_level(level = 'manage_users')
     render_forbidden unless CurrentDomain.user_can?(current_user, level)
   end
 

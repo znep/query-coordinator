@@ -42,6 +42,9 @@ blist.datasetPage.pageRenderTypeHidden = function()
 {
     $('body').removeClass('pageRenderType');
     $(window).resize();
+    // If initially loaded page view, the grid doesn't draw properly until
+    // a full refresh
+    blist.$display.trigger('refresh');
 };
 
 blist.datasetPage.pageRenderTypeShown = function()

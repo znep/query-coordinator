@@ -204,7 +204,17 @@
             {
                 var $line = prtObj.$content()
                     .find('.pageLine[data-columnId=' + c.id + ']');
-                $line.find('.pageItem').text(row[c.id]);
+
+                var $item = $line.find('.pageItem');
+                if (row.invalid[c.lookup])
+                {
+                    $item.addClass('invalid')
+                        .html(blist.data.types.invalid.renderer(row[c.lookup]));
+                    return;
+                }
+                $item.removeClass('invalid');
+
+                $item.html(c.renderType.renderer(row[c.lookup], c));
             });
         };
         prtObj.settings.view.getRows(prtObj._curRowIndex, 1, rowLoaded);

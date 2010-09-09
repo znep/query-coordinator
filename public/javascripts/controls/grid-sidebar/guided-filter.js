@@ -112,7 +112,7 @@
 
     var formatForColumn = function(value, column)
     {
-        return column.renderType.filterRender(value, column);
+        return column.renderType.renderer(value, column);
     };
 
     var changeProxy = function(sidebarObj, column, callback)

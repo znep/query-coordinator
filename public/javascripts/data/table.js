@@ -4071,6 +4071,13 @@
                             begin("selectionChange");
                             updateRowSelection(rows);
                             end("selectionChange");
+                        })
+                    .bind('refresh', function()
+                        {
+                            initMeta();
+                            renderHeader();
+                            renderFooter();
+                            initRows();
                         });
 
             };

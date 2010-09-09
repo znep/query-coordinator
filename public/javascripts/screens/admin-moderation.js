@@ -44,8 +44,11 @@
                 scrollableBody: false,
                 selectable: false,
                 sortGrouping: false,
-                sortHeaders: {0: {sorter: 'text'}, 1: {sorter: 'date'},
-                    2: {sorter: 'text'}, 3: {sorter: 'text'}}
+                sortHeaders: {0: {sorter: 'text'}, 1: {sorter: 'autoDateTime'},
+                    2: {sorter: 'text'}, 3: {sorter: 'text'}},
+                sortTextExtraction: function(node) {
+                    return $(node).find('.cellInner').text();
+                }
             });
         }
     });

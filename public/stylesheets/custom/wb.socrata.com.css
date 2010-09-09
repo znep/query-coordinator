@@ -72,6 +72,11 @@ form.search.large .clearBox
 {
 	color:#FFF;
 }
+
+.myNetworkList a
+{
+	color: #6A2020;
+}
 .footerContainer {
     background:none repeat scroll 0 0 #69C;
 }

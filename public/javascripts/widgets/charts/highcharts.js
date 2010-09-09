@@ -117,11 +117,13 @@
 
                 // Get useable value for x-axis
                 var basePt = xPoint(chartObj, row);
+                // Null dates can't really be rendered in a timeline; not sure
+                // if that holds for other chart types, though
+                if (isDateTime(chartObj) && _.isNull(basePt.x)) { return true; }
 
                 if (!_.isUndefined(chartObj._xCategories))
                 {
-                    var xCat = row[chartObj._xColumn.id];
-                    if (_.isNull(xCat) || _.isUndefined(xCat)) { xCat = ''; }
+                    var xCat = basePt.x;
                     xCat = renderXValue(xCat, chartObj._xColumn);
                     chartObj._xCategories.push(xCat);
                 }
@@ -464,7 +466,7 @@
 
         if (isDateTime(chartObj))
         {
-            if (!_.isNull(row) && !_.isUndefined(row))
+            if (!$.isBlank(row))
             { pt.x = row[chartObj._xColumn.id]; }
             else { pt.x = ''; }
             if (_.isNumber(pt.x)) { pt.x *= 1000; }

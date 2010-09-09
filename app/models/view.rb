@@ -339,6 +339,8 @@ class View < Model
       I18n.t(:blist_name).capitalize + " Author"
     elsif (user_id == owner.id)
       "View Author"
+    elsif owner_users.any? {|cu| cu == user_id}
+      I18n.t(:blist_name).capitalize + " Owner"
     elsif contributor_users.any? {|cu| cu == user_id}
       I18n.t(:blist_name).capitalize + " Contributor"
     elsif viewer_users.any? {|vu| vu == user_id}
@@ -348,9 +350,10 @@ class View < Model
     end
   end
 
+  # Whether or not the user has priviliges above an anonymous user
   def user_granted?(user)
     if user
-      return user_role(user).present?
+      return user_role(user.id).present?
     end
     false
   end
@@ -373,8 +376,9 @@ class View < Model
     data['rights'] && data['rights'].include?(right)
   end
 
-  def contributor_users
-    (grants || []).select {|g| !g.flag?('public') && g.type.downcase == 'contributor'}.
+
+  def users_with_grant(grant_type)
+    (grants || []).select {|g| !g.flag?('public') && g.type.downcase == grant_type}.
       collect do |g|
         if !g.userId.nil?
           g.userId
@@ -384,17 +388,16 @@ class View < Model
       end.flatten.sort.uniq
   end
 
+  def owner_users
+    users_with_grant('owner')
+  end
+
+  def contributor_users
+    users_with_grant('contributor')
+  end
+
   def viewer_users
-    contributors = contributor_users
-    view_grants = (grants || []).select {|g| !g.flag?('public') &&
-      g.type.downcase == 'viewer'}.
-      collect do |g|
-        if !g.userId.nil?
-          g.userId
-        else
-          g.userEmail
-        end
-      end.flatten.sort.uniq.reject {|u| contributors.include? u}
+    users_with_grant('viewer').reject {|u| contributor_users.include? u}
   end
 
   def shares

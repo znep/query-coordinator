@@ -93,6 +93,9 @@
  *      * Parse full long dates without time
  *      * Sort empty text below real text
  *      * Remove unneeded function
+ *
+ * v2.2 (clint.tseng@socrata.com):
+ *      * Added generic date sorter ('autoDateTime')
  */
 
 (function($) {
@@ -845,6 +848,15 @@
       type: "numeric"
     });
 
+    ts.addParser({
+        id: 'autoDateTime',
+        is: function(s) {
+            return !isNaN((new Date(s)).getTime())
+        },
+        format: function(s) {
+            return $.tablesorter.formatFloat((new Date(s)).getTime());
+        }
+    })
 
     ts.addParser({
         id: "metadata",

@@ -31,6 +31,7 @@ javascripts:
   - util/dataset/dataset
   - util/dataset/calendar
   - util/dataset/chart
+  - util/dataset/form
   - util/dataset/map
   - util/templates
   - util/socrata-server
@@ -114,6 +115,12 @@ javascripts:
   - screens/admin-users-screen
 - admin-federations:
   - screens/admin-federations-screen
+- admin-moderation:
+  - plugins/jquery.uniform
+  - plugins/jquery.tablesorter
+  - widgets/combination-list
+  - util/user
+  - screens/admin-moderation
 - blists-about:
   - util/urls
   - plugins/ajaxupload.3.0
@@ -296,6 +303,7 @@ javascripts:
   - controls/grid-sidebar/print-dataset
   - controls/grid-sidebar/share-dataset
   - controls/grid-sidebar/show-hide
+  - controls/grid-sidebar/subscribe
   - controls/grid-sidebar/signed-dataset
   - controls/grid-sidebar/view-list
   - controls/dataset-controls
@@ -303,7 +311,7 @@ javascripts:
   - controls/embed-form
   - controls/full-screen
   - controls/format-options
-  - screens/dataset
+  - screens/dataset-show
 - screen-dataset-edit-metadata:
   - plugins/jquery.uniform
   - plugins/ajaxupload.3.0

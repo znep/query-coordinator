@@ -50,3 +50,6 @@ profile-show:
 - control-feed
 profile-edit:
 - screen-profile-edit
+administration-moderation:
+- screen-admin
+- screen-administration-moderation

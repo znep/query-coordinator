@@ -2,7 +2,7 @@
 // @compilation_level SIMPLE_OPTIMIZATIONS
 
 /** 
- * @license Highcharts JS v2.0.3 (2010-08-07)
+ * @license Highcharts JS v2.0.4 (2010-09-07)
  * 
  * (c) 2009-2010 Torstein Hønsi
  * 
@@ -21,6 +21,7 @@ var doc = document,
 	math = Math,
 	mathRound = math.round,
 	mathFloor = math.floor,
+	mathCeil = math.ceil,
 	mathMax = math.max,
 	mathMin = math.min,
 	mathAbs = math.abs,
@@ -55,7 +56,18 @@ var doc = document,
 	NONE = 'none',
 	M = 'M',
 	L = 'L',
-	TRACKER_FILL = 'rgba(192,192,192,0.005)', // invisible but clickable
+	/*
+	 * Empirical lowest possible opacities for TRACKER_FILL
+	 * IE6: 0.002
+	 * IE7: 0.002
+	 * IE8: 0.002
+	 * IE9: 0.00000000001 (unlimited)
+	 * FF: 0.00000000001 (unlimited)
+	 * Chrome: 0.000001
+	 * Safari: 0.000001
+	 * Opera: 0.00000000001 (unlimited)
+	 */
+	TRACKER_FILL = 'rgba(192,192,192,'+ (hasSVG ? 0.000001 : 0.002) +')', // invisible but clickable
 	NORMAL_STATE = '',
 	HOVER_STATE = 'hover',
 	SELECT_STATE = 'select',
@@ -869,6 +881,8 @@ var defaultXAxisOptions =  {
 			//font: defaultFont.replace('normal', 'bold')
 			fontWeight: 'bold'
 		}
+		//x: 0, //docs
+		//y: 0 // docs
 	},
 	type: 'linear' // linear or datetime
 },
@@ -1287,6 +1301,9 @@ SVGElement.prototype = {
 					if (typeof value != 'string') { // join path
 						value = value.join(' ');
 					}
+					if (/(NaN|  )/.test(value)) {
+						value = 'M 0 0';
+					}
 					
 				// update child tspans x values
 				} else if (key == 'x' && nodeName == 'text') { 
@@ -1378,12 +1395,12 @@ SVGElement.prototype = {
 		var wrapper = this;
 		
 		wrapper.x = pick(hash.x, wrapper.x);
-		wrapper.y = pick(hash.y, wrapper.y);
+		wrapper.y = parseFloat(pick(hash.y, wrapper.y)); // mootools animation bug needs parseFloat
 		wrapper.r = pick(hash.r, wrapper.r);
 		wrapper.start = pick(hash.start, wrapper.start);
 		wrapper.end = pick(hash.end, wrapper.end);
 		wrapper.width = pick(hash.width, wrapper.width);
-		wrapper.height = pick(hash.height, wrapper.height);
+		wrapper.height = parseFloat(pick(hash.height, wrapper.height));
 		wrapper.innerR = pick(hash.innerR, wrapper.innerR);
 		
 		wrapper.attr({ 
@@ -1535,11 +1552,10 @@ SVGElement.prototype = {
 	 *    to append the element to the renderer.box.
 	 */ 
 	add: function(parent) {
-		
-		
-		
-			
-		var parentNode = parent ? parent.element : this.renderer.box,
+	
+		var renderer = this.renderer,
+			parentWrapper = parent || renderer,
+			parentNode = parentWrapper.element || renderer.box,
 			childNodes = parentNode.childNodes,
 			element = this.element,
 			zIndex = attr(element, 'zIndex'),
@@ -1549,22 +1565,30 @@ SVGElement.prototype = {
 			
 		// mark as inverted
 		this.parentInverted = parent && parent.inverted;
+		
+		// mark the container as having z indexed children
+		if (zIndex) {
+			parentWrapper.handleZ = true;
+		}
 
 		// insert according to this and other elements' zIndex
-		for (i = 0; i < childNodes.length; i++) {
-			otherElement = childNodes[i];
-			otherZIndex = attr(otherElement, 'zIndex');
-			if (otherElement != element && (
-					// insert before the first element with a higher zIndex
-					otherZIndex > zIndex || 
-					// if no zIndex given, insert before the first element with a zIndex
-					(!defined(zIndex) && defined(otherZIndex))  
-					
-					)) {
-				parentNode.insertBefore(element, otherElement);
-				return this;
+		if (parentWrapper.handleZ) { // this element or any of its siblings has a z index
+			for (i = 0; i < childNodes.length; i++) {
+				otherElement = childNodes[i];
+				otherZIndex = attr(otherElement, 'zIndex');
+				if (otherElement != element && (
+						// insert before the first element with a higher zIndex
+						otherZIndex > zIndex || 
+						// if no zIndex given, insert before the first element with a zIndex
+						(!defined(zIndex) && defined(otherZIndex))  
+						
+						)) {
+					parentNode.insertBefore(element, otherElement);
+					return this;
+				}
 			}
 		}
+		
 		// default: append at the end
 		parentNode.appendChild(element);
 		return this;
@@ -1715,9 +1739,9 @@ SVGRenderer.prototype = {
 				.replace(/<(i|em)>/g, '<span style="font-style:italic">')
 				.replace(/<a/g, '<span')
 				.replace(/<\/(b|strong|i|em|a)>/g, '</span>')
-				.split('<br/>'),
+				.split(/<br[^>]?>/g),
 			childNodes = textNode.childNodes,
-			styleRegex = /style="([ 0-9a-z:;\-]+)"/,
+			styleRegex = /style="([^"]+)"/,
 			hrefRegex = /href="([^"]+)"/,
 			parentX = attr(textNode, 'x'),
 			i;
@@ -1736,9 +1760,10 @@ SVGRenderer.prototype = {
 			spans = line.split('|||');
 			
 			each (spans, function (span) {
-				if (span !== '') {
+				if (span !== '' || spans.length == 1) {
 					var attributes = {},
 						tspan = doc.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+					
 					if (styleRegex.test(span)) {
 						attr(
 							tspan, 
@@ -2247,7 +2272,7 @@ var VMLElement = extendClass( SVGElement, {
 		
 		// divs and shapes need size
 		if (nodeName == 'shape' || nodeName == DIV) {
-			style.push('left:0;top:0;width:10px;height:10px;');
+			style.push('left:0;top:0;width:10px;height:10px');
 		}
 		markup.push(' style="', style.join(''), '"/>');
 		
@@ -2294,8 +2319,6 @@ var VMLElement = extendClass( SVGElement, {
 			
 		}
 		
-		//css(element, { visibility: 'visible' });
-		
 		// append it
 		parentNode.appendChild(element);
 		
@@ -2317,6 +2340,7 @@ var VMLElement = extendClass( SVGElement, {
 			symbolName = this.symbolName,
 			hasSetSymbolSize,
 			shadows = this.shadows,
+			documentMode = doc.documentMode,
 			skipAttr,
 			ret = this;
 			
@@ -2389,7 +2413,8 @@ var VMLElement = extendClass( SVGElement, {
 						}
 						
 					}
-					value = convertedPath.join(' ') || 'x';							
+					
+					value = convertedPath.join(' ') || 'x';
 					element.path = value;
 			
 					// update shadows
@@ -2404,6 +2429,13 @@ var VMLElement = extendClass( SVGElement, {
 				// directly mapped to css
 				} else if (key == 'zIndex' || key == 'visibility') {
 					elemStyle[key] = value;
+					
+					// issue 61 workaround
+					if (documentMode == 8 && key == 'visibility' && nodeName == 'DIV') {
+						each(element.childNodes, function(childNode) {
+							css(childNode, { visibility: value });
+						});
+					}
 					
 					skipAttr = true;
 				
@@ -2426,7 +2458,6 @@ var VMLElement = extendClass( SVGElement, {
 					if (key == 'y' && element.tagName == 'SPAN' && element.lineHeight) { // subtract lineHeight
 						value -= element.lineHeight;
 					}
-					
 					elemStyle[{ x: 'left', y: 'top' }[key]] = value;
 					
 				// class name
@@ -2489,7 +2520,7 @@ var VMLElement = extendClass( SVGElement, {
 					// only one node allowed
 					element.innerHTML = value;
 				} else if (!skipAttr) {
-					if (doc.documentMode == 8) { // IE8 setAttribute bug
+					if (documentMode == 8) { // IE8 setAttribute bug
 						element[key] = value;
 					} else {
 						attr(element, key, value);
@@ -2514,7 +2545,7 @@ var VMLElement = extendClass( SVGElement, {
 		wrapper.destroyClip = function() {
 			clipMembers.splice(index, 1);
 		};
-		return wrapper.css({ clip: clipRect.getCSS(wrapper.inverted) });
+		return wrapper.css(clipRect.getCSS(wrapper.inverted));
 	},
 	
 	/**
@@ -2636,12 +2667,18 @@ var VMLElement = extendClass( SVGElement, {
 			renderer = this.renderer,
 			shadow,
 			elemStyle = element.style,
-			markup;
+			markup,
+			path = element.path;
 			
-		if (apply && typeof element.path == 'string') {
+		// the path is some mysterious string-like object that can be cast to a string
+		if (''+ element.path == '') {
+			path = 'x';
+		}
+			
+		if (apply) {
 			for (i = 1; i <= 3; i++) {
 				markup = ['<shape isShadow="true" strokeweight="', ( 7 - 2 * i ) ,
-					'" filled="false" path="', element.path,
+					'" filled="false" path="', path,
 					'" coordsize="100,100" style="', element.style.cssText, '" />'];
 				shadow = createElement(renderer.prepVML(markup),
 					null, {
@@ -2690,6 +2727,8 @@ VMLRenderer.prototype = merge( SVGRenderer.prototype, { // inherit SVGRenderer
 	init: function(container, width, height) {
 		
 		// generate the containing box
+		this.width = width;
+		this.height = height;
 		this.box = createElement(DIV, null, {
 				width: width + PX,
 				height: height + PX
@@ -2743,18 +2782,29 @@ VMLRenderer.prototype = merge( SVGRenderer.prototype, { // inherit SVGRenderer
 					top = elemStyle.top,
 					left = elemStyle.left,
 					right = left + elemStyle.width,
-					bottom = top + elemStyle.height;
-				return 'rect('+ 
-					(inverted ? left : top) + 'px,'+ 
-					(inverted ? bottom : right) + 'px,'+ 
-					(inverted ? right : bottom) + 'px,'+ 
-					(inverted ? top : left) +'px)';
+					bottom = top + elemStyle.height,
+					ret = {
+						clip: 'rect('+ 
+							(inverted ? left : top) + 'px,'+ 
+							(inverted ? bottom : right) + 'px,'+ 
+							(inverted ? right : bottom) + 'px,'+ 
+							(inverted ? top : left) +'px)'
+					};
+					
+				// issue 74 workaround
+				if (!inverted && doc.documentMode == 8) {
+					extend(ret, {
+						width: right +PX,
+						height: bottom +PX
+					});
+				}
+				return ret;			
 			},
 			
 			// used in attr and animation to update the clipping of all members
 			updateClipping: function() {
 				each (clipRect.members, function(member) {
-					member.css({ clip: clipRect.getCSS(member.inverted) });
+					member.css(clipRect.getCSS(member.inverted));
 				});
 			}
 		});
@@ -2813,11 +2863,10 @@ VMLRenderer.prototype = merge( SVGRenderer.prototype, { // inherit SVGRenderer
 			
 			// when colors attribute is used, the meanings of opacity and o:opacity2
 			// are reversed.
-			markup = ['<fill colors="0% ', color1, ',100% ', color2, '" angle="', angle,
+			markup = ['<', prop, ' colors="0% ', color1, ',100% ', color2, '" angle="', angle,
 				'" opacity="', opacity2, '" o:opacity2="', opacity1,
 				'" type="gradient" focus="100%" />'];
 			createElement(this.prepVML(markup), null, null, elem);
-			
 			
 		
 		// if the color is an rgba color, split it and add a fill node
@@ -2968,14 +3017,12 @@ VMLRenderer.prototype = merge( SVGRenderer.prototype, { // inherit SVGRenderer
 				textpathok: true
 			}, null, elem);
 			
-			
 			// for reasons unknown, the style must be set on init
 			createElement(
 				'<hcv:textpath style="v-text-align:'+ align +';'+ serializeCSS(style).replace(/"/g, "'") +
-				'" on="true" string="'+ str +'">',
+				'" on="true" string="'+ str.toString().replace(/<br[^>]?>/g, '\n') +'">',
 			null, null, elem);
 
-			
 		}
 		
 		return elemWrapper;
@@ -3517,7 +3564,10 @@ function Chart (options) {
 				cvsOffset -= sign * axisLength;
 			}
 			
-			if (backwards) { // reverse translation
+			if (min === UNDEFINED) { // points in a single hidden series, axis has no min or max
+				returnValue = null;
+			
+			} else if (backwards) { // reverse translation
 				if (reversed) {
 					val = axisLength - val;
 				}
@@ -3870,7 +3920,7 @@ function Chart (options) {
 			
 			var i,
 				roundedMin = mathFloor(min / tickInterval) * tickInterval,
-				roundedMax = math.ceil(max / tickInterval) * tickInterval;
+				roundedMax = mathCeil(max / tickInterval) * tickInterval;
 				
 			tickPositions = [];
 			
@@ -4290,12 +4340,14 @@ function Chart (options) {
 				
 				axis.axisTitle = renderer.text(
 					axisTitleOptions.text,
-					horiz ? 
+					(horiz ? 
 						alongAxis: 
-						offAxis + (opposite ? plotWidth : 0) + offset, // x
-					horiz ? 
+						offAxis + (opposite ? plotWidth : 0) + offset)
+						+ (axisTitleOptions.x || 0),
+					(horiz ? 
 						offAxis - (opposite ? plotHeight : 0) + offset: 
-						alongAxis, // y
+						alongAxis)
+						+ (axisTitleOptions.y || 0),
 					axisTitleOptions.style, 
 					axisTitleOptions.rotation || 0,
 					{ low: 'left', middle: 'center', high: 'right' }[axisTitleOptions.align]
@@ -4493,6 +4545,7 @@ function Chart (options) {
 				css(style).
 				add(group);
 				
+				
 		/**
 		 * Provide a soft movement for the tooltip
 		 * 
@@ -4534,7 +4587,6 @@ function Chart (options) {
 		function refresh(point) {
 			var 
 				series = point.series,
-				
 				borderColor = options.borderColor || point.color || series.color || '#606060',
 				x,
 				y,
@@ -4550,8 +4602,8 @@ function Chart (options) {
 			currentSeries = series;
 			
 			// get the reference point coordinates (pie charts use tooltipPos)
-			x = tooltipPos ? tooltipPos[0] : (inverted ? plotWidth - point.plotY : point.plotX);
-			y = tooltipPos ? tooltipPos[1] : (inverted ? plotHeight - point.plotX : point.plotY);
+			x = mathRound(tooltipPos ? tooltipPos[0] : (inverted ? plotWidth - point.plotY : point.plotX));
+			y = mathRound(tooltipPos ? tooltipPos[1] : (inverted ? plotHeight - point.plotX : point.plotY));
 				
 				
 			// hide tooltip if the point falls outside the plot
@@ -5046,7 +5098,7 @@ function Chart (options) {
 				textColor = visible ? options.itemStyle.color : hiddenColor,
 				symbolColor = visible ? item.color : hiddenColor;
 			if (legendItem) {
-				legendItem.attr({ fill: textColor });
+				legendItem.css({ color: textColor });
 			}
 			if (legendLine) {
 				legendLine.attr({ stroke: symbolColor });
@@ -5144,7 +5196,7 @@ function Chart (options) {
 						0, 
 						0
 					)
-					.css(itemStyle)
+					.css(item.visible ? itemStyle : itemHiddenStyle)
 					.on('mouseover', function() {
 						item.setState(HOVER_STATE);
 						li.css(itemHoverStyle);
@@ -6054,8 +6106,9 @@ function Chart (options) {
 			series[i].destroy();
 		}
 		
-		// remove all SVG
-		container.innerHTML = '';
+		// remove container and all SVG
+		container.onmousedown = container.onmousemove = container.onmouseup = container.onclick = null;
+		container.parentNode.removeChild(container);
 		
 		// IE6 leak 
 		container =	null;
@@ -6182,7 +6235,7 @@ Point.prototype = {
 		point.pointAttr = {};
 		
 		if (series.options.colorByPoint) {
-			defaultColors = defaultOptions.colors;
+			defaultColors = series.chart.options.colors;
 			if (!point.options) {
 				point.options = {};
 			}
@@ -6206,6 +6259,7 @@ Point.prototype = {
 		var point = this,
 			series = point.series;
 	
+		point.config = options;
 		
 		// onedimensional array input
 		if (typeof options == 'number' || options === null) {
@@ -7007,8 +7061,8 @@ Series.prototype = {
 				graphic = point.graphic;
 				
 				// only draw the point if y is defined
-				if (point.plotY !== UNDEFINED) {
-				
+				if (plotY !== UNDEFINED) {
+
 					/* && removed this code because points stayed after zoom
 						point.plotX >= 0 && point.plotX <= chart.plotSizeX &&
 						point.plotY >= 0 && point.plotY <= chart.plotSizeY*/
@@ -7135,12 +7189,15 @@ Series.prototype = {
 		while (i--) {
 			point = data[i];
 			normalOptions = (point.options && point.options.marker) || point.options;
+			if (normalOptions && normalOptions.enabled === false) {
+				normalOptions.radius = 0;
+			}
 			hasPointSpecificOptions = false;
 			
 			// check if the point has specific visual options
 			if (point.options) {
 				for (var key in pointAttrToOptions) {
-					if (normalOptions[pointAttrToOptions[key]]) {
+					if (defined(normalOptions[pointAttrToOptions[key]])) {
 						hasPointSpecificOptions = true;
 					}
 				}
@@ -7331,7 +7388,10 @@ Series.prototype = {
 						options.rotation, 
 						align
 					)
-					.attr({ zIndex: 1 })
+					.attr({ 
+						zIndex: 1,
+						visibility: point.visible === false ? HIDDEN : 'inherit' // for pies
+					})
 					.add(dataLabelsGroup); // pies have point.group
 				}
 				
@@ -7361,12 +7421,13 @@ Series.prototype = {
 			renderer = chart.renderer,
 			translatedThreshold = series.yAxis.getThreshold(options.threshold || 0),
 			useArea = /^area/.test(series.type),
+			singlePoints = [], // used in drawTracker
 			areaPath = [];
 			
 		
 		// divide into segments and build graph and area paths
 		each(series.segments, function(segment) {
-			if (segment.length > 0) {
+			if (segment.length > 1) {
 				segmentPath = [];
 				
 				// build the segment line
@@ -7395,7 +7456,7 @@ Series.prototype = {
 				graphPath = graphPath.concat(segmentPath);
 				
 				// build the area
-				if (useArea && segment.length > 1) {
+				if (useArea) {
 					var areaSegmentPath = [],
 						i,
 						segLength = segmentPath.length;
@@ -7419,10 +7480,14 @@ Series.prototype = {
 					}
 					areaPath = areaPath.concat(areaSegmentPath);
 				}
+			} else {
+				singlePoints.push(segment[0]);
 			}
 		});
-
-		series.graphPath = graphPath; // used in drawTracker
+		
+		// used in drawTracker:
+		series.graphPath = graphPath;
+		series.singlePoints = singlePoints; 
 
 		// draw the graph
 		if (graph) {
@@ -7704,6 +7769,8 @@ Series.prototype = {
 			tracker = series.tracker,
 			cursor = options.cursor,
 			css = cursor && { cursor: cursor },
+			singlePoints = series.singlePoints,
+			singlePoint,
 			i;
 	
 		// if only one series, use the whole plot area as tracker
@@ -7721,11 +7788,10 @@ Series.prototype = {
 		}*/
 		
 		// handle single points
-		for (i = 0; i < trackerPath.length; i++) {
-			if (trackerPath[i] == M && trackerPath[i + 3] == M) { // is single point
-				trackerPath[i + 1] -= 2; // move x value left
-				trackerPath.splice(i + 3, 0, L, trackerPath[i + 1] + 4, trackerPath[i + 2]);
-			}
+		for (i = 0; i < singlePoints.length; i++) {
+			singlePoint = singlePoints[i];
+			trackerPath.push(M, singlePoint.plotX - 3, singlePoint.plotY,
+				L, singlePoint.plotX + 3, singlePoint.plotY);
 		}
 		
 		// draw the tracker
@@ -7914,6 +7980,7 @@ var SplineSeries = extendClass( Series, {
 			chart = series.chart,
 			//data = this.data,
 			splinedata = [],
+			plotSizeX = chart.plotSizeX,
 			num;
 			
 		each (series.segments, function(data) {
@@ -7928,14 +7995,14 @@ var SplineSeries = extendClass( Series, {
 			each (data, function(point, i) {
 				nextUp = data[i+2] || data[i+1] || point;
 				nextDown = data[i-2] || data[i-1] || point;
-				if (nextUp.plotX >= 0 && nextDown.plotX <= chart.plotWidth) {
+				if (nextUp.plotX >= 0 && nextDown.plotX <= plotSizeX) {
 					croppedData.push(point);
 				}
 			});
 			
 			// 3px intervals:
 			if (croppedData.length > 1) {
-				num = mathRound(mathMax(chart.plotWidth, 
+				num = mathRound(mathMax(plotSizeX, 
 					croppedData[croppedData.length-1].clientX	- croppedData[0].clientX) / 3);
 			}
 			splinedata.push (
@@ -8048,9 +8115,9 @@ var ColumnSeries = extendClass(Series, {
 		each (data, function(point) {
 			var plotY = point.plotY,
 				barX = point.plotX + pointXOffset,
-				barY = mathMin(plotY, translatedThreshold), 
+				barY = mathCeil(mathMin(plotY, translatedThreshold)), 
 				barW = pointWidth,
-				barH = mathAbs((point.yBottom || translatedThreshold) - plotY),
+				barH = mathCeil(mathAbs((point.yBottom || translatedThreshold) - plotY)),
 				trackerY;
 			
 			// handle options.minPointLength and tracker for small points
@@ -8079,12 +8146,11 @@ var ColumnSeries = extendClass(Series, {
 			};
 			
 			// make small columns responsive to mouse
-			if (defined(trackerY)) {
-				point.trackerArgs = merge(point.shapeArgs, { 
-					height: 6,
-					y: trackerY
-				});
-			}
+			point.trackerArgs = defined(trackerY) && merge(point.shapeArgs, { 
+				height: 6,
+				y: trackerY
+			});
+			
 		});
 		
 	},
@@ -8386,25 +8452,22 @@ var PiePoint = extendClass(Point, {
 	setVisible: function(vis) {
 	
 		var point = this, 
-			chart = point.series.chart;
+			chart = point.series.chart,
+			method;
 		
 		// if called without an argument, toggle visibility
 		point.visible = vis = vis === UNDEFINED ? !point.visible : vis;
 		
+		method = vis ? 'show' : 'hide';
 		
-		if (vis) {
-			//layer.show();
-			point.group.show();
-			point.tracker.show();
-			
-			
-		} else { 
-			//layer.hide();
-			point.group.hide();
-			point.tracker.hide();
-			
+		point.group[method]();
+		if (point.tracker) {
+			point.tracker[method]();
 		}
-	
+		if (point.dataLabel) {
+			point.dataLabel[method]();
+		}
+		
 		if (point.legendItem) {
 			chart.legend.colorizeItem(point, vis);
 		}

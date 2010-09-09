@@ -1,4 +1,13 @@
 class Displays::Form < Displays::Base
+  def valid?
+    @view.columns.any? {|c| return !c.flag?('hidden') &&
+      c.dataTypeame != 'tag' && c.dataTypeName != 'nested_table'}
+  end
+
+  def invalid_message
+    'A form must have at least one visible column'
+  end
+
   def scrolls_inline?
     false
   end

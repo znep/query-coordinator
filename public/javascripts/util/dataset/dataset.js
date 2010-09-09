@@ -55,6 +55,7 @@ this.Dataset = Model.extend({
         this.temporary = false;
         this.valid = this._checkValidity();
         this.url = this._generateUrl();
+        this.apiUrl = this._generateApiUrl();
 
         this._pendingRowEdits = {};
         this._pendingRowDeletes = {};
@@ -164,6 +165,7 @@ this.Dataset = Model.extend({
     reload: function()
     {
         var ds = this;
+        ds._aggregatesStale = true;
         ds._loadRows(0, 1, function() { ds._invalidateRows(); }, true, true);
     },
 
@@ -526,7 +528,6 @@ this.Dataset = Model.extend({
     saveRow: function(rowId, parRowId, parColId, successCallback, errorCallback)
     {
         var ds = this;
-
         var parCol;
         if (!$.isBlank(parColId)) { parCol = this.columnForID(parColId); }
 
@@ -826,22 +827,6 @@ this.Dataset = Model.extend({
             success: successCallback, error: errorCallback});
     },
 
-    cleanCopy: function()
-    {
-        var ds = this._super();
-        // If this is grouped, strip out all non-grouped/agged cols
-        if (this.isGrouped())
-        {
-            ds.columns = _.select(ds.columns, function(c)
-            {
-                return !$.isBlank(c.format.grouping_aggregate) ||
-                    _.any(ds.query.groupBys, function(g)
-                        { return g.columnId == c.id; });
-            });
-        }
-        return ds;
-    },
-
 
     // Private methods
 
@@ -920,6 +905,7 @@ this.Dataset = Model.extend({
 
         if (_.isFunction(ds._convertLegacy)) { ds._convertLegacy(); }
         ds.url = ds._generateUrl();
+        ds.apiUrl = ds._generateApiUrl();
 
         var oldValid = ds.valid;
         ds.valid = ds._checkValidity();
@@ -949,6 +935,7 @@ this.Dataset = Model.extend({
                 !_.isEqual(oldQuery.groupBys, ds.query.groupBys))
             { ds._rowCountInvalid = true; }
             ds.trigger('query_change');
+            ds._aggregatesStale = true;
             // Clear out the rows, since the data is different now
             ds._invalidateRows();
         }
@@ -992,8 +979,11 @@ this.Dataset = Model.extend({
         {
             var col = ds.columnForID(g.columnId);
 
-            if (!curGrouped[col.id]) { col.width += 30; }
-            col.format.drill_down = true;
+            if ($.isBlank(col.format.grouping_aggregate))
+            {
+                if (!curGrouped[col.id]) { col.width += 30; }
+                col.format.drill_down = true;
+            }
 
             if (col.hidden && !_.any(oldGroupings, function(og)
                 { return og.columnId == col.id; }))
@@ -1186,6 +1176,7 @@ this.Dataset = Model.extend({
                     }
                 }
             });
+            delete (tr.meta || {}).invalidCells;
 
             return tr;
         };
@@ -1334,6 +1325,21 @@ this.Dataset = Model.extend({
             success: rowCreated, error: rowErrored, complete: rowCompleted});
     },
 
+    _updateLinkedColumns: function(keyCol, row, newRow)
+    {
+        var ds = this;
+        if (keyCol.dataTypeName == "dataset_link")
+        {
+            for (var n = ds.columns.length - 1; n >= 0; n--)
+            {
+                var col = ds.columns[n];
+                if (!col.isLinked()) continue;
+                var uname = col.underscoreName(ds);
+                row[col.id] = newRow[uname];
+            }
+        }
+    },
+
     _serverSaveRow: function(r, isBatch)
     {
         var ds = this;
@@ -1342,6 +1348,13 @@ this.Dataset = Model.extend({
         {
             _.each(r.columnsSaving, function(cId)
                 { delete r.row.changed[cId]; });
+
+            _.each(r.columnsSaving, function(cId)
+            {
+                var col = ds.columnForID(cId);
+                ds._updateLinkedColumns(col, r.row, newRow);
+            });
+
             ds.trigger('row_change', [r.parentRow || r.row]);
             ds.aggregatesChanged();
             if (_.isFunction(r.success)) { r.success(r.row); }
@@ -1430,15 +1443,16 @@ this.Dataset = Model.extend({
 
         // federated dataset has nonblank domain cname
         if (!$.isBlank(ds.domainCName))
-        {
-            var loc = document.location;
-            base = loc.protocol + '//' + ds.domainCName;
-            if (loc.port != 80) { base += ':' + loc.port; }
-        }
+        { base = ds._generateBaseUrl(ds.domainCName); }
 
         return base + "/" + $.urlSafe(ds.category || "dataset") +
                "/" + $.urlSafe(ds.name) +
                "/" + ds.id;
+    },
+
+    _generateApiUrl: function()
+    {
+        return this._generateBaseUrl() + '/api/views/' + this.id;
     },
 
     _loadRelatedViews: function(callback)
@@ -1465,6 +1479,105 @@ this.Dataset = Model.extend({
         this._makeRequest({url: '/views.json', pageCache: true, type: 'GET',
                 data: { method: 'getByTableId', tableId: this.tableId },
                 success: processDS});
+    },
+
+    cachedLinkedColumnOptions: {},
+
+    getLinkedColumnOptions: function(keyCol, notUsed, $field, curVal)
+    {
+        var ds = blist.dataset;
+        var localKeyColumnId = keyCol && keyCol["format.linkedKey"] ?
+            keyCol["format.linkedKey"] : keyCol;
+
+        if ($.isBlank(localKeyColumnId) || isNaN(localKeyColumnId))
+        {
+            return [];
+        }
+
+        var viewUid = ds.columnForID(localKeyColumnId).format.linkedDataset;
+
+        if (ds.cachedLinkedColumnOptions[viewUid] == null)
+        {
+            ds._makeRequest({url: '/api/views/{0}.json'.format(viewUid),
+                pageCache: true, type: 'GET',
+                error: function(req)
+                {
+                    alert('Fail to get columns from dataset {0}.'.format(viewUid));
+                },
+                success: function(linkedDataset)
+                {
+                    ds.cachedLinkedColumnOptions[viewUid] = [];
+                    var cldo = ds.cachedLinkedColumnOptions[viewUid];
+                    var opt;
+                    _.each(linkedDataset.columns || [], function(c)
+                    {
+                        switch (c.dataTypeName)
+                        {
+                            case 'dataset_link':
+                            case 'blist_in_blist':
+                            case 'drop_down_list':
+                                break;
+                            default:
+                                opt = {value: String(c.id), text: c.name, dataType: c.dataTypeName};
+                                cldo.push(opt);
+                                break;
+                        }
+                    });
+
+                    if (ds.cachedLinkedColumnOptions[viewUid].length <= 0)
+                    {
+                        alert('Dataset {0} does not have any column.'.format(viewUid));
+                    }
+                    else
+                    {
+                        $field.data('linkedFieldValues', '_reset');
+                        _.each($field.data('linkedGroup'), function(f) {
+                            $(f).trigger('change');
+                        });
+                        _.defer(function() { $field.val(curVal); });
+                    }
+                }});
+             return [];
+        }
+
+        // set up another key to get the remote columns.  used by add new column dialog.
+        ds.cachedLinkedColumnOptions[localKeyColumnId] = ds.cachedLinkedColumnOptions[viewUid];
+
+        return ds.cachedLinkedColumnOptions[viewUid];
+    },
+
+    getLinkSourceDataType: function(col, linkSrcColId, keyColId)
+    {
+        var localKeyColId = col && col.format ? col.format['linkedKey'] : keyColId;
+        var ds = blist.dataset;
+        var keyCol = ds.columnForID(localKeyColId);
+        if (keyCol == undefined) { return null; }
+        var viewUid = keyCol.format.linkedDataset;
+        var remoteColumns = ds.cachedLinkedColumnOptions[viewUid];
+        if (remoteColumns == null) { return null; }
+
+        for (var n = remoteColumns.length - 1; n >= 0; n--)
+        {
+            if (remoteColumns[n].value == linkSrcColId)
+            {
+                var dt = remoteColumns[n].dataType;
+                return { value: dt, text: blist.data.types[dt].title };
+            }
+        }
+
+        return null;
+    },
+
+    hasDatasetLinkColumn: function()
+    {
+        // no link column in bnb
+        var ds = this;
+        if (ds && ds.parentId) { return false; }
+        return _.any(ds.columns,
+            function(c)
+            {
+                return (c.dataTypeName == 'dataset_link');
+            });
     },
 
     _validKeys: {
@@ -1494,6 +1607,7 @@ this.Dataset = Model.extend({
 Dataset.modules = {};
 
 var cachedLinkedDatasetOptions = {};
+
 Dataset.getLinkedDatasetOptions = function(linkedDatasetUid, col, $field, curVal,
     useRdfKeyAsDefault)
 {

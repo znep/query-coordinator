@@ -475,12 +475,13 @@
         margin-top: 1em
 
         &.inherited
-          .removeShareLink
-            visibility: hidden
           .selector
             display: none
           .name
             width: 16em
+        &.inherited, &.noGrant
+          .removeShareLink
+            visibility: hidden
 
         .name
           @include clip-text
@@ -488,6 +489,9 @@
           font-size: 1.2em
           margin-right: 0.5em
           width: 8em
+
+        span.type
+          font-size: 1.2em
 
         .profileImage
           background-image: url(/images/small-profile.png)
@@ -507,7 +511,7 @@
           .ie8 &
             margin-top: -1.5em
 
-        select.type
+        .type
           width: 10em
 
   #gridSidebar_guidedFilter
@@ -587,3 +591,21 @@
         font-size: 1.2em
         font-weight: bold
         padding-top: 0.4em
+
+  #gridSidebar_subscribe
+    .feedList
+      padding: 0.75em 1em
+      text-align: center
+
+      .feedItem
+        display: inline-block
+        padding: 0.3em
+        .text
+          font-size: 1.2em
+        .subscribe
+          @include sprite-menu-icons
+          .icon
+            float: left
+            padding-right: 0.5em
+        &.separated
+          padding-top: 1.2em

@@ -10,8 +10,8 @@
         { return false; }
 
         var convT = col.dataType.convertableTypes;
-        return isDataset && $.isBlank(col.format.grouping_aggregate) &&
-            _.isArray(convT) && convT.length > 0;
+        var dataTypePass = col.isLinked() ? true : _.isArray(convT) && convT.length > 0;
+        return isDataset && $.isBlank(col.format.grouping_aggregate) && dataTypePass;
     };
 
     var convertTypes = function(c)
@@ -25,6 +25,11 @@
             .sortBy(function(ct) { return blist.data.types[ct].priority; })
             .map(function(ct)
             { return {value: ct, text: blist.data.types[ct].title}; }).value());
+    };
+
+    var showLinkSection = function(c)
+    {
+        return $.isBlank(c) ? false : c.origColumn.isLinked();
     };
 
     var staticDataType = function(c)
@@ -133,14 +138,36 @@
                     name: 'description', prompt: 'Enter a description'}
                 ]
             },
+
             {
                 title: 'Data Type',
+                onlyIf: { func: function(c) { return !showLinkSection(c); } },
                 fields: [
                     {text: 'Data Type', type: 'select', required: true,
                     name: 'dataTypeName', prompt: null, options: convertTypes},
                     {text: 'Data Type', type: 'static', value: staticDataType}
                 ]
             },
+
+            // Link Column
+            {
+                title: 'Link',
+                onlyIf: { func: showLinkSection },
+                fields: [
+                    {text: 'Key', type: 'columnSelect', name: 'format.linkedKey',
+                        required: true,
+                        columns: {type: 'dataset_link', hidden: false},
+                        wizard: {prompt: 'Choose a local key column'}
+                    },
+                    {text: 'Source', type: 'select', name: 'format.linkedSource',
+                        required: true,
+                        linkedField: 'format.linkedKey',
+                        options: blist.dataset.getLinkedColumnOptions,
+                        wizard: 'Select a remote source column'
+                    }
+                ]
+            },
+
             {
                 title: 'Formatting',
                 onlyIf: {func: function(c)
@@ -322,6 +349,7 @@
         if (!sidebarObj.baseFormHandler($pane, value)) { return; }
 
         var column = sidebarObj.getFormValues($pane);
+        var col = data.origColumn;
 
         if (!$.isBlank(column.format))
         {
@@ -329,11 +357,17 @@
             delete column.format.customRdf;
         }
 
+        if (col.isLinked())
+        {
+            var keyColId = column.format.linkedKey;
+            var srcColId = column.format.linkedSource;
+            column.dataTypeName = blist.dataset.getLinkSourceDataType(null, srcColId, keyColId).value;
+        }
+
         var newType = column.dataTypeName;
         delete column.dataTypeName;
         var needsConvert = !$.isBlank(newType) && newType != data.dataTypeName;
 
-        var col = data.origColumn;
         col.update(column);
         if (!col.save(function(c)
                 {

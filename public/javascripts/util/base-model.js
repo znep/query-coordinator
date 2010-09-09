@@ -52,6 +52,7 @@ this.Model = Class.extend({
         { return _.keys(events).sort(); };
 
         this.registerEvent(['start_request', 'finish_request']);
+        this._reqCount = 0;
     },
 
     // Return a cleaned copy that has no functions, private keys, or anything
@@ -94,12 +95,14 @@ this.Model = Class.extend({
         {
             return function()
             {
-                model.trigger('finish_request');
+                model._reqCount--;
+                if (model._reqCount < 1) { model.trigger('finish_request'); }
                 if (_.isFunction(callback)) { callback.apply(this, arguments); }
             };
         };
 
-        this.trigger('start_request');
+        if (model._reqCount < 1) { this.trigger('start_request'); }
+        model._reqCount++;
         $.extend(req, {contentType: 'application/json', dataType: 'json',
                 error: finishCallback(req.error),
                 success: finishCallback(req.success)});
@@ -141,6 +144,18 @@ this.Model = Class.extend({
     _sendBatch: function(successCallback)
     {
         $.socrataServer.runRequests({success: successCallback});
+    },
+
+    _generateBaseUrl: function(domain)
+    {
+        var loc = document.location,
+        base = loc.protocol + '//' +
+            ($.isBlank(domain) ? loc.hostname : domain);
+
+        if (loc.port != 80)
+        { base += ':' + loc.port; }
+
+        return base;
     },
 
     _validKeys: {}

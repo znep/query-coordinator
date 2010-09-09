@@ -92,11 +92,7 @@
                             if (this.loaded) { layersLoaded++; }
                             mapObj.map.addLayer(this);
                             if (layersLoaded >= layers.length)
-                            {
-                                if (mapObj.hideLayers)
-                                { mapObj.hideLayers(); }
-                                mapObj.populateLayers();
-                            }
+                            { mapObj.populateLayers(); }
                         });
                     }
 
@@ -220,13 +216,51 @@
                 return true;
             },
 
+            renderFeature: function(feature, segmentIndex)
+            {
+                var mapObj = this;
+
+                var info = mapObj._quantityCol.name +
+                    ": ${quantity}<br />${description}";
+                mapObj._infoTemplate = new esri.InfoTemplate("${NAME}", info);
+
+                var symbol = mapObj._segmentSymbols[segmentIndex];
+                mapObj.map.graphics.add(feature.setSymbol(symbol)
+                                               .setInfoTemplate(mapObj._infoTemplate));
+                if (feature.attributes.redirect_to)
+                {
+                    $(feature.getDojoShape().rawNode)
+                        .click(function(event)
+                            { window.open(feature.attributes.redirect_to); })
+                        .hover(
+                            function(event) { blist.$display
+                                .find('div .container').css('cursor', 'pointer'); },
+                            function(event) { blist.$display
+                                .find('div .container').css('cursor', 'default'); });
+                }
+
+                if (!mapObj._bounds)
+                { mapObj._bounds = feature.geometry.getExtent(); }
+                else
+                { mapObj._bounds = mapObj._bounds.union(feature.geometry.getExtent()); }
+            },
+
+            hideLayers: function()
+            {
+                var mapObj = this;
+                var layers = mapObj.getLayers();
+                for (var i = 0; i < layers.length; i++)
+                { mapObj.map.getLayer(layers[i].id).hide(); }
+            },
+
             adjustBounds: function()
             {
                 var mapObj = this;
                 if (mapObj._extentSet) { return; }
-                if (mapObj._multipoint.points.length == 0) { return; }
+                if (!mapObj._bounds && mapObj._multipoint.points.length == 0)
+                { return; }
 
-                var extent = mapObj._multipoint.getExtent();
+                var extent = mapObj._bounds || mapObj._multipoint.getExtent();
                 // Adjust x & y by about 10% so points aren't on the very edge
                 // Use max & min diff since lat/long may be negative, and we
                 // want to expand the viewport.  Using height/width may cause it
@@ -266,36 +300,10 @@
                 mapObj.map.infoWindow.hide();
             },
 
-            buildLegend: function(name, gradient)
+            clearFeatures: function()
             {
                 var mapObj = this;
-
-                var SWATCH_WIDTH = 17;
-
-                mapObj._$legend = mapObj.$dom().siblings('#mapLegend');
-                if (!mapObj._$legend.length)
-                {
-                    mapObj.$dom().before('<div id="mapLegend">' +
-                        '<div class="contentBlock">' +
-                        '<h3>' + name +
-                        '</h3><div style="width: ' +
-                        (mapObj._numSegments*SWATCH_WIDTH) +
-                        'px;"><ul></ul><span></span>' +
-                        '<span style="float: right;"></span></div>' +
-                        '</div></div>');
-                    mapObj._$legend = $('#mapLegend');
-                }
-
-                var $ul = mapObj._$legend.find('ul');
-                $ul.empty();
-                _.each(gradient, function(color)
-                    {
-                        $ul.append( $("<div class='color_swatch'>" +
-                            "<div class='inner'>&nbsp;</div></div>")
-                                .css('background-color', color)
-                            );
-                    }
-                );
+                if (mapObj.map.graphics) { mapObj.map.graphics.clear(); }
             }
         }
     }));

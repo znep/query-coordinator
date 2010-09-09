@@ -1,0 +1,50 @@
+.contentBox h2
+  margin-top: 0
+
+.commentStatusContainer
+  float: right
+  margin-top: -2.3em
+  label
+    bottom: 0.5em
+    font-size: 1.3em
+    padding-right: 0.3em
+    position: relative
+  #commentStatusDropdown
+    width: 9em
+
+.gridListWrapper
+  margin-top: 1em
+
+  .commentModerationList
+    tbody
+      tr
+        .button
+          visibility: hidden
+        &:hover .button
+          visibility: visible
+      td.author .cellInner
+        display: inline-block
+        line-height: 24px
+        padding-left: 0.7em
+        vertical-align: bottom
+      td.comment .cellInner
+        color: #666
+        font-size: 0.8em
+        font-weight: bold
+        margin-bottom: 0.4em
+      td.status .cellInner
+        display: inline-block
+        font-size: 1.4em
+        font-weight: bold
+        text-transform: capitalize
+        margin-right: 0.5em
+        width: 5em
+
+        .loading
+          @include throbber-icon
+
+.noResultsMessage
+  display: none
+  font-size: 1.4em
+  margin: 5em 0
+  text-align: center

@@ -145,7 +145,7 @@ this.Column = Model.extend({
         return true;
     },
 
-    update: function(newCol, forceFull)
+    update: function(newCol, forceFull, updateColOrder)
     {
         var col = this;
 
@@ -173,7 +173,7 @@ this.Column = Model.extend({
         if (!$.isBlank(newCol.subColumnTypes))
         { col.subColumnTypes = newCol.subColumnTypes; }
 
-        this.updateChildColumns(newCol.childColumns, forceFull, forceFull);
+        this.updateChildColumns(newCol.childColumns, forceFull, updateColOrder);
 
         // dropDown is special, because it only comes from the server; it isn't
         // posted back, so it isn't considered valid
@@ -266,12 +266,14 @@ this.Column = Model.extend({
         {
             // Got new ID, so manually need to copy that over
             col.id = newCol.id;
+            col.tableColumnId = newCol.tableColumnId;
             col.update(newCol, true);
-            col.view._invalidateRows();
             col.invalidateData();
             if (!$.isBlank(col.parentColumn))
             { col.parentColumn.updateChildColumns(); }
             else { col.view.updateColumns(); }
+            // Need to refresh the view
+            col.view.reload();
             if (_.isFunction(successCallback)) { successCallback(col); }
         };
 
@@ -320,6 +322,13 @@ this.Column = Model.extend({
         this.minWidth = 50;
         this.width = Math.max(this.minWidth, this.width || 100);
 
+        if (!$.isBlank(this.format.grouping_aggregate) &&
+            !$.isBlank(this.format.drill_down))
+        {
+            delete this.format.drill_down;
+            this.width -= 30;
+        }
+
         if (!$.isBlank(this.currentFilter) &&
                 !_.any(((this.view.query || {}).filterCondition || {})
                     .children || [], function(fc)
@@ -330,6 +339,45 @@ this.Column = Model.extend({
     updateChildColumns: function()
     {
         // Do nothing; provided for fallback
+    },
+
+    isLinked: function()
+    {
+        var col = this;
+        return (col.format && col.format.linkedKey != null);
+    },
+
+    _sanitizeName: function(colName)
+    {
+        var sname = colName.toLowerCase()
+        // refer to core server ViewColumn.underscoreName
+        sname = sname.replace(/^[^A-z]+/gi, "_");
+        sname = sname.replace(/[^A-z0-9]+/gi, "_");
+        sname = sname.replace(/^xml/gi, "_");
+        sname = sname.replace(/_+/gi, "_");
+        return sname;
+    },
+
+    underscoreName: function(ds)
+    {
+        var col = this;
+        var otherCol;
+        var otherUname;
+        var uname = this._sanitizeName(col.name);
+
+        for (var n = 0; n < ds.columns.length; n++)
+        {
+            otherCol = ds.columns[n];
+            if (otherCol.id == col.id) { continue; }
+            otherUname = this._sanitizeName(otherCol.name);
+            if (uname == otherUname)
+            {
+                uname += "_" + col.position;
+                break;
+            }
+        }
+
+        return uname;
     },
 
     _clearFilterData: function(query)

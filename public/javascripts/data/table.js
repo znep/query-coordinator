@@ -677,7 +677,9 @@
             var row = getRow(cell);
             var col = getColumn(cell);
             if (!col || col.id == 'rowHandleCol' ||
-                col.id == 'rowNumberCol' || !row) { return false; }
+                col.id == 'rowNumberCol' || 
+                col.isLinked() ||
+                !row) { return false; }
             var value = model.getRowValue(row, col);
             if (!value) { value = model.getInvalidValue(row, col); }
 
@@ -3911,8 +3913,7 @@
 
             if (start != stop)
             {
-                model.loadRows(start, stop,
-                        function(r) {  _.defer(function() { rowsLoaded(r); }); });
+                model.loadRows(start, stop, function(r) { rowsLoaded(r); });
             }
         };
 
@@ -4050,20 +4051,14 @@
 
                 model.view.bind('row_change', function(rows)
                         { updateRows(rows); })
-                    // These seem a bit heavy-handed...
-                    .bind('query_change', function()
-                        {
-                            initMeta();
-                            renderHeader();
-                            renderFooter();
-                            initRows();
-                        })
+                    .bind('query_change', updateHeader)
                     .bind('column_resized', configureWidths)
                     .bind('column_totals_changed', renderFooter);
 
                 // Bind to events on the DOM that are thrown by the model
                 $this.bind('columns_changed', function()
                         {
+                            // This seem a bit heavy-handed...
                             initMeta();
                             renderHeader();
                             renderFooter();

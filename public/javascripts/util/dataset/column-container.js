@@ -63,6 +63,7 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
         {
             cont[colSet].push(newCol);
             update(cont);
+            (cont.view || cont).reload();
             if (_.isFunction(successCallback))
             { successCallback(forID(cont, newCol.id)); }
         };
@@ -160,6 +161,8 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
                 if (_.isFunction(callback)) { callback(); }
             });
         }
+        else
+        { (cont.view || cont)._markTemporary(); }
     };
 
     props.cleanCopy = function()
@@ -168,8 +171,10 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
 
         if (!_.isUndefined(item[colSet]))
         {
-            item[colSet] = _.reject(item[colSet],
-                function(c) { return c.id == -1; });
+            item[colSet] = _(item[colSet]).chain()
+                .reject(function(c) { return c.id == -1; })
+                .sortBy(function(c) { return c.position; })
+                .value();
         }
         return item;
     };
@@ -217,7 +222,7 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
                             cont[colSet].splice(i, 0, c);
                         }
                         // Update the column object in-place
-                        c.update(nc, forceFull);
+                        c.update(nc, forceFull, updateOrder);
                     }
                 });
             }

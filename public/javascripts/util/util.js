@@ -265,6 +265,10 @@ $.renderTemplate = function(template, data, directive)
     {
         // pure needs a wrapping element
         $templateCopy.appendTo($('<div/>'));
+        // I think this is the cause of the 'ep is null' error in pure; but can't
+        // figure out why it would happen...
+        if ($.isBlank($templateCopy[0].parentNode))
+        { throw 'templateCopy has no parent!'; }
 
         return $templateCopy
             .render(data, directive)
@@ -388,6 +392,19 @@ $.wordify = function(num)
         '4': 'four', '5': 'five', '6': 'six', '7': 'seven', '8': 'eight',
         '9': 'nine'};
     return numWords[num.toString()] || num;
+};
+
+$.mixin = function(obj, mixin)
+{
+    var clone = function()
+    { return obj.apply(this, arguments); };
+    for (property in obj)
+    {
+        if (obj.hasOwnProperty(property) && property !== 'prototype')
+        { clone[property] = obj[property]; }
+    }
+    $.extend(clone.prototype, obj.prototype, mixin.prototype);
+    return clone;
 };
 
 // Wrapper around inlineLogin.verifyUser; simply does nothing

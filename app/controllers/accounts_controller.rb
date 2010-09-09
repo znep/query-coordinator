@@ -104,7 +104,7 @@ class AccountsController < ApplicationController
 
       if result.is_a? Net::HTTPSuccess
         flash[:notice] = "Thank you. An email has been sent to the account on file with further information."
-        return redirect_to login_path
+        return redirect_to(login_path)
       else
         flash.now[:warning] = "There was a problem submitting your password reset request. Please try again."
       end
@@ -113,7 +113,7 @@ class AccountsController < ApplicationController
 
   def reset_password
     if !current_user.nil?
-      return redirect_to forgot_password_path
+      return redirect_to(forgot_password_path)
     end
     @body_id = 'resetPassword'
     if request.post?
@@ -142,16 +142,16 @@ class AccountsController < ApplicationController
         user = User.parse(result.body)
         @user_session = UserSession.new('login' => user.login, 'password' => params[:password])
         if @user_session.save
-          return redirect_to root_path
+          return redirect_to(root_path)
         else
           # Hmmm. They successfully reset their password, but we couldn't log them in?
           # Something's very wrong. Let's just put them at the login page and have them
           # try again. :-(
-          return redirect_to login_path
+          return redirect_to(login_path)
         end
       else
         flash[:warning] = 'There was a problem resetting your password. Please try again.'
-        return redirect_to forgot_password_path
+        return redirect_to(forgot_password_path)
       end
     end
   end

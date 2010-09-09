@@ -58,7 +58,7 @@ class LogRefererMiddleware
           # really tell someone about this by squawking at them over STOMP.
           logger.info "Attempting to log referrer #{domain} -> #{ref}."
 
-          host = uri.scheme + "://" + uri.host
+          host = uri.scheme + "-" + uri.host
           path = uri.path
           if !uri.query.blank?
             path += "?#{uri.query}"

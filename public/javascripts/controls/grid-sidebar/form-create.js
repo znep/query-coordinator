@@ -15,7 +15,8 @@
             'website into a dataset',
         onlyIf: function()
         {
-            return blist.dataset.visibleColumns.length > 0 &&
+            return _.any(blist.dataset.visibleColumns, function(c)
+                { return !_.include(['tag', 'nested_table'], c.dataTypeName); }) &&
                 (blist.dataset.valid || isEdit);
         },
         disabledSubtitle: function()

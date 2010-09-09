@@ -1,0 +1,114 @@
+body
+{
+	background: gray;
+	background-image: none;
+}
+
+.bodyInterior
+{
+	border: 0px none;
+}
+
+
+/* Header */
+#header
+{
+	background: url(/stylesheets/images/domains/oklahoma.socrata.com/header_back.jpg) repeat-x;
+	height: 130px;
+	padding-bottom: 0;
+	margin-bottom: 1em;
+}
+#mainLogo
+{
+	top: 0;
+	left: 0;
+}
+#mainNav
+{
+	background: url(/stylesheets/images/domains/oklahoma.socrata.com/grade_blue2.jpg) repeat-x;
+	position: relative;
+	right: 0;
+	top: 102px;
+	width: auto;
+	z-index: 10;
+}
+#mainNav li
+{
+	width: auto;
+}
+#mainNav a
+{
+	padding: 0 1.5em;
+}
+#mainNav li, #mainNav li a span
+{
+	background: none;
+}
+#mainNav li a:hover
+{
+	background: #FEE063;
+	color: #015EC6;
+}
+#mainNav ul.subNav, body.discover #mainNav ul.subNav, body.home #mainNav ul.subNav, #mainNav li.home.loggedInNav:hover ul.subNav
+{
+	display: none;
+	height: 0;
+}
+body.home #mainNav li.home, body.home #mainNav li.home a span, body.discover #mainNav li.discover a span, body.community #mainNav li.community a span, body.discover #mainNav li.discover, #mainNav ul.subNav li:hover, #mainNav ul.subNav li:hover a span, body.home #mainNav li.home .subNav li:hover, body.home #mainNav li.home .subNav li:hover a span
+{
+	background-image: none;
+}
+#header .userNav
+{
+	background: url(/stylesheets/images/domains/oklahoma.socrata.com/header_right.jpg) no-repeat;	
+	height: 102px;
+	padding: 0;
+	text-align: right;
+	width: 320px;
+}
+#header .userNav ul
+{
+	padding: 0.5em 1em;
+}
+#header .userNav li 
+{
+	border-right: none;
+}
+#header .userNav li a
+{
+	color: #015EC6;
+}
+
+/* Data Splash */
+.pageBlockIntro p 
+{
+	color: #4B4B4B;
+	margin-top: 1em;
+}
+
+/* Footer */
+.footerContainer
+{
+	background: url(/stylesheets/images/domains/oklahoma.socrata.com/footer_bg.jpg) repeat-x bottom #015EC6;
+}
+#footer
+{
+	text-align: center;
+}
+#footer .copyright
+{
+	color: #EEE;
+	float: none;
+	padding: 1.5em;
+}
+#footer ul 
+{
+	padding: 1em;
+}
+#footer li {
+margin:0 1em;
+}
+#footer a 
+{
+	color: #FFF;
+}

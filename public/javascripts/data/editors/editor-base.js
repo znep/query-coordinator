@@ -29,8 +29,8 @@
         var blistEditor = $(this[0]).data("blistEditor");
         if (!blistEditor)
         {
-            var type = blist.data.types[options.column.renderTypeName] ||
-                blist.data.types.text;
+            var type = blist.data.types[options.typeName ||
+                options.column.renderTypeName] || blist.data.types.text;
             var editor = type.editor;
             if (editor !== null && editor !== undefined)
             {

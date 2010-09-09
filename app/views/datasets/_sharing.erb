@@ -1,11 +1,14 @@
+<%- grantable = @view.has_rights?('grant') -%>
 <div class="sharingForm commonForm">
   <div class="formSection">
-    <p>
-      <a class="button shareDatasetButton add" href="#share">
-        <span class="icon"></span>
-        Share this <span class="datasetTypeNameUpcase">Dataset</span>
-      </a>
-    </p>
+    <%- if grantable -%>
+      <p>
+        <a class="button shareDatasetButton add" href="#share">
+          <span class="icon"></span>
+          Share this <span class="datasetTypeNameUpcase">Dataset</span>
+        </a>
+      </p>
+    <%- end -%>
     <p class="formHeader">This <span class="datasetTypeName">dataset</span> is
       <%= link_to 'Public', '#togglePermissions',
       :class => 'toggleDatasetPermissions', 'data-public-perm' => "public.#{@view.display.public_perm_type}" %>
@@ -36,12 +39,16 @@
 </div>
 
 <ul class="sharesList">
-  <li class="line clearfix">
+  <li class="line clearfix<%= ' noGrant' unless grantable %>">
     <a href="#removeShare" class="removeShareLink remove" title="Remove">
       <span class="icon"></span>
     </a>
     <span class="profileImage"></span>
     <span class="name"></span>
-    <%= select_tag 'type', options_for_select(Share.types), :class => 'type' %>
+    <%- if grantable -%>
+      <%= select_tag 'type', options_for_select(Share.types), :class => 'type' %>
+    <%- else -%>
+      <span class="type"></span>
+    <%- end -%>
   </li>
 </ul>

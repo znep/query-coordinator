@@ -91,7 +91,7 @@ protected
   # v4 chrome style error messages
   def render_forbidden(message = 'You do not have permission to view this page')
     flash.now[:error] = message
-    return render 'shared/error', :status => :forbidden
+    return render('shared/error', :status => :forbidden)
   end
 
   # Render a 404 error, or redirect to '/solution' if upsell is enabled

@@ -83,6 +83,7 @@ blist.namespace.fetch('blist.data');
                         .bind('query_change', function()
                             {
                                 resetUndo();
+                                collapseAll();
                                 configureActive();
                             })
                         .bind('columns_changed', function()
@@ -953,6 +954,13 @@ blist.namespace.fetch('blist.data');
             specialLookup = {};
             specialCount = 0;
             return removed;
+        };
+
+        // Collapse all rows
+        var collapseAll = function()
+        {
+            _.each(_.keys(expandedRows), function(rId)
+            { self.expand(self.getByID(rId), false, true); });
         };
 
         // Expand rows that the user has opened

@@ -130,6 +130,8 @@
             .find('.removeLink').removeClass('hiddenLink').end();
 
         var $select = $copy.find('.recipientRole');
+        $select[0].selectedIndex = 0;
+
         $copy.find('.selector.uniform').replaceWith($select);
 
         $copy.insertAfter($form.find('.emailLine:last'));
@@ -156,7 +158,7 @@
           emailRecipient0: 'email'
         },
         errorPlacement: function($error, $element)
-        { $element.closest('.emailLine').after($error); },
+        { $element.closest('.emailLine').append($error); },
         onkeyup: false,
         onfocusout: false,
         focusInvalid: false

@@ -291,6 +291,7 @@ class User < Model
             "CY" => "Cyprus",
             "CZ" => "Czech Republic",
             "DK" => "Denmark",
+            "CD" => "Democratic Republic of the Congo",
             "DJ" => "Djibouti",
             "DM" => "Dominica",
             "DO" => "Dominican Republic",
@@ -475,7 +476,6 @@ class User < Model
             "EH" => "Western Sahara",
             "YE" => "Yemen",
             "YU" => "Yugoslavia",
-            "ZR" => "Zaire",
             "ZM" => "Zambia",
             "ZW" => "Zimbabwe"
   }

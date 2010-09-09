@@ -48,6 +48,20 @@ this.User = Model.extend({
                 }});
         }
         else { callback(user._datasets); }
+    },
+
+    getProfileImageUrl: function(size)
+    {
+        var user = this;
+        size = size.toLowerCase();
+        return user['profileImageUrl' + size.capitalize()] ||
+               '/images/' + size + '-profile.png';
+    },
+
+    getProfileUrl: function()
+    {
+        var user = this;
+        return '/profile/' + $.urlSafe(user.displayName) + '/' + user.id;
     }
 });
 

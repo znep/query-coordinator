@@ -22,11 +22,19 @@
         var socrataMap = $(this[0]).data("socrataVisualization");
         if (!socrataMap)
         {
-            var mapType = options.view.displayFormat.type || 'google';
+            var mapService = options.view.displayFormat.type || 'google';
+            var plotStyle = options.view.displayFormat.plotStyle;
+            if (mapService == 'heatmap')
+            {
+                mapService = 'esri';
+                plotStyle  = 'heatmap';
+            }
 
-            var mapClass = $.socrataMap[mapType];
+            var mapClass = $.socrataMap[mapService];
             if (!$.isBlank(mapClass))
             {
+                if (plotStyle && $.socrataMap.mixin[plotStyle])
+                { mapClass = $.mixin(mapClass, $.socrataMap.mixin[plotStyle]); }
                 socrataMap = new mapClass(options, this[0]);
             }
         }
@@ -120,6 +128,7 @@
 
                 mapObj._origData = {valid: mapObj.settings.view.valid,
                     mapType: mapObj.settings.view.displayFormat.type,
+                    plotStyle: mapObj.settings.view.displayFormat.plotStyle,
                     layers: mapObj.settings.view.displayFormat.layers};
 
                 mapObj.ready();
@@ -128,7 +137,7 @@
             columnsLoaded: function()
             {
                 var mapObj = this;
-                if (mapObj.buildLegend && mapObj._colorValueCol)
+                if (mapObj._colorValueCol)
                 {
                     if (!mapObj._gradient)
                     {
@@ -137,10 +146,11 @@
                                 "#0000ff");
                     }
 
-                    mapObj.buildLegend(mapObj._colorValueCol.name,
-                        _.map(mapObj._gradient,
+                    mapObj.$legend({
+                        name: mapObj._colorValueCol.name,
+                        gradient: _.map(mapObj._gradient,
                               function(c) { return "#"+$.rgbToHex(c); }
-                    ));
+                    )});
                 }
             },
 
@@ -149,6 +159,7 @@
                 var mapObj = this;
                 mapObj.$dom().removeData('socrataVisualization');
                 mapObj.$dom().empty();
+                if (mapObj._legend) { mapObj._legend.$dom.hide(); }
                 // We need to change the ID so that maps (such as ESRI) recognize
                 // something has changed, and reload properly
                 mapObj.$dom().attr('id', mapObj.$dom().attr('id') + 'n');
@@ -161,6 +172,7 @@
                 var view = this.settings.view;
                 return view.valid !== od.valid ||
                     view.displayFormat.type != od.mapType ||
+                    view.displayFormat.plotStyle != od.plotStyle ||
                     !_.isEqual(view.displayFormat.layers,
                             od.layers);
             },
@@ -269,6 +281,16 @@
                 // Implement if you need to reset any data when the map is reset
             },
 
+            handleRowsLoaded: function(rows)
+            {
+                var mapObj = this;
+
+                if (mapObj._rows === undefined) { mapObj._rows = []; }
+                mapObj._rows = mapObj._rows.concat(rows);
+
+                mapObj.renderData(rows);
+            },
+
             renderRow: function(row)
             {
                 var mapObj = this;
@@ -318,9 +340,9 @@
                     mapObj._llKeys[rowKey] = { title: [], info: [] };
                     mapObj._llKeys[rowKey].id = row.id;
                 }
-                mapObj._llKeys[rowKey].title.push(getText(row,
+                mapObj._llKeys[rowKey].title.push(mapObj.getText(row,
                     mapObj._titleCol, true));
-                mapObj._llKeys[rowKey].info.push(getText(row,
+                mapObj._llKeys[rowKey].info.push(mapObj.getText(row,
                     mapObj._infoCol, false));
 
                 var title = _.compact(mapObj._llKeys[rowKey].title).join(', ');
@@ -425,6 +447,11 @@
                 // Implement me
             },
 
+            renderFeature: function(feature)
+            {
+                // Implement me
+            },
+
             rowsRendered: function()
             {
                 // Override if you wish to do something other than adjusting the
@@ -496,32 +523,89 @@
                 }
 
                 return true;
+            },
+
+            $legend: function(options)
+            {
+                var mapObj = this;
+                if (options == null) { return mapObj._legend; }
+
+                var SWATCH_WIDTH = 17;
+
+                if (!mapObj._legend)
+                { mapObj._legend = { minimum: '', maximum: '' }; }
+
+                if (!mapObj.$dom().siblings('#mapLegend').length)
+                {
+                    mapObj.$dom().before('<div id="mapLegend">' +
+                        '<div class="contentBlock">' +
+                        '<h3></h3><div style="width: ' +
+                        (mapObj._numSegments*SWATCH_WIDTH) +
+                        'px;"><ul></ul><span>' +
+                        mapObj._legend.minimum + '</span>' +
+                        '<span style="float: right;">' +
+                        mapObj._legend.maximum + '</span></div>' +
+                        '</div></div>');
+                }
+                if (!mapObj._legend.$dom)
+                { mapObj._legend.$dom = $('#mapLegend'); }
+
+                if (options.name)
+                { mapObj._legend.$dom.find('h3').text(options.name); }
+
+                if (options.gradient)
+                {
+                    var $ul = mapObj._legend.$dom.find('ul');
+                    $ul.empty();
+                    _.each(options.gradient, function(color)
+                        {
+                            $ul.append( $("<div class='color_swatch'>" +
+                                "<div class='inner'>&nbsp;</div></div>")
+                                    .css('background-color', color)
+                                );
+                        }
+                    );
+                }
+
+                if (options.minimum)
+                {
+                    mapObj._legend.minimum = options.minimum;
+                    if (mapObj._legend.$dom)
+                    { mapObj._legend.$dom.find('span:first').text(options.minimum); }
+                }
+                if (options.maximum)
+                {
+                    mapObj._legend.maximum = options.maximum;
+                    if (mapObj._legend.$dom)
+                    { mapObj._legend.$dom.find('span:last').text(options.maximum); }
+                }
+
+                mapObj._legend.$dom.show();
+            },
+
+            getText: function(row, col, plain)
+            {
+                var t = !_.isUndefined(col) ? row[col.id] : null;
+
+                if (_.isNull(t)) { return t; }
+                if (col.renderTypeName == 'location')
+                {
+                    var a = t.human_address;
+                    if (_.isNull(a) || _.isUndefined(a)) { t = null; }
+                    else
+                    {
+                        t = blist.data.types.location
+                            .renderAddress({human_address: a}, plain);
+                    }
+                }
+                else if (_.include(['number', 'money', 'percent'], col.renderTypeName))
+                {
+                    t = blist.data.types[col.renderTypeName].filterRender(t, col, plain);
+                }
+                return t;
             }
         }
     }));
-
-    var getText = function(row, col, plain)
-    {
-        var t = !_.isUndefined(col) ? row[col.id] : null;
-
-        if (_.isNull(t)) { return t; }
-        if (col.renderTypeName == 'location')
-        {
-            var a = t.human_address;
-            if (_.isNull(a) || _.isUndefined(a)) { t = null; }
-            else
-            {
-                t = blist.data.types.location
-                    .renderAddress({human_address: a}, plain);
-            }
-        }
-        else if (_.include(['number', 'money', 'percent'], col.renderTypeName))
-        {
-            t = blist.data.types[col.renderTypeName].filterRender(t, col, plain);
-        }
-        return t;
-    };
-
 
     var calculateSegmentSizes = function(mapObj, aggs)
     {
@@ -539,12 +623,10 @@
                     ((i+1)*granularity) + column.aggregates.minimum;
             }
 
-            if (!$.isBlank(mapObj._$legend) && mapObj._$legend.length > 0 &&
-                mapObj._colorValueCol == column)
-            {
-                mapObj._$legend.find('span:first').text(column.aggregates.minimum);
-                mapObj._$legend.find('span:last').text(column.aggregates.maximum);
-            }
+            mapObj.$legend({
+                minimum: column.aggregates.minimum,
+                maximum: column.aggregates.maximum
+            });
         });
 
         mapObj._delayRenderData--;

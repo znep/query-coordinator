@@ -1,0 +1,74 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-moderation' %>
+  <title>Moderation | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<div class="contentBox withLeftNavigation">
+  <h2>Moderate Comments</h2>
+
+  <div class="commentStatusContainer">
+    <label for="commentStatusDropdown">Show</label>
+    <select id="commentStatusDropdown">
+      <option value="all">All</option>
+      <option value="pending">Pending</option>
+      <option value="approved">Approved</option>
+      <option value="rejected">Rejected</option>
+    </select>
+  </div>
+
+  <div class="tableContainer"></div>
+
+  <p class="noResultsMessage">No comments match your current filter.</p>
+</div>
+
+<%- content_for :templates do -%>
+  <div class="moderationsTable">
+    <div class="gridListWrapper">
+      <table class="gridList commentModerationList" cellspacing="0">
+        <colgroup>
+          <col class='author' />
+          <col class='comment' />
+          <col class='dataset' />
+          <col class='status' />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="author"><div>Author</div><span class="icon"></span></th>
+            <th class="comment"><div>Comment</div><span class="icon"></span></th>
+            <th class="dataset"><div>Dataset</div><span class="icon"></span></th>
+            <th class="status"><div>Status</div><span class="icon"></span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="item">
+            <td class="author"><a href="#" class="profileLink">
+              <img alt="author image"/><span class="cellInner"></span>
+            </a></td>
+            <td class="comment"><div class="cellInner"></div><p class="commentBody"></p></td>
+            <td class="dataset"><a class="cellInner" rel="external"></a></td>
+            <td class="status">
+              <div class="cellInner"></div>
+              <a href="#approve" class="approveComment button" data-action="approved">
+                <span class="icon"></span>Approve
+              </a>
+              <a href="#reject" class="rejectComment button" data-action="rejected">
+                <span class="icon"></span>Reject
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<%- end -%>
+
+<%- content_for :js_footer do -%>
+  <script type="text/javascript">
+    blist.namespace.fetch('blist.moderation');
+    blist.moderation.servicePath = '/api/users/<%= @current_user.id %>/comments/';
+  </script>
+
+  <%= javascript_include_merged 'admin-moderation' %>
+<%- end -%>

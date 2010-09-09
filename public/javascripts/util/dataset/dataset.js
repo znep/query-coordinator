@@ -1286,6 +1286,7 @@ this.Dataset = Model.extend({
             ds._processPending(req.row.id, (req.parentRow || {}).id,
                 (req.parentColumn || {}).id);
 
+            ds.aggregatesChanged();
             if (_.isFunction(req.success)) { req.success(req.row); }
         };
 

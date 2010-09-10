@@ -1286,6 +1286,7 @@ this.Dataset = Model.extend({
             ds._processPending(req.row.id, (req.parentRow || {}).id,
                 (req.parentColumn || {}).id);
 
+            ds.aggregatesChanged();
             if (_.isFunction(req.success)) { req.success(req.row); }
         };
 
@@ -1506,24 +1507,19 @@ this.Dataset = Model.extend({
                 },
                 success: function(linkedDataset)
                 {
+                    var lds = new Dataset(linkedDataset);
                     ds.cachedLinkedColumnOptions[viewUid] = [];
                     var cldo = ds.cachedLinkedColumnOptions[viewUid];
                     var opt;
-                    _.each(linkedDataset.columns || [], function(c)
+
+                    _.each(lds.columns || [], function(c)
                     {
-                        switch (c.dataTypeName)
+                        if (c.canBeLinkSource())
                         {
-                            case 'dataset_link':
-                            case 'blist_in_blist':
-                            case 'drop_down_list':
-                                break;
-                            default:
-                                opt = {value: String(c.id), text: c.name, dataType: c.dataTypeName};
-                                cldo.push(opt);
-                                break;
+                            opt = {value: String(c.id), text: c.name, dataType: c.dataTypeName};
+                            cldo.push(opt);
                         }
                     });
-
                     if (ds.cachedLinkedColumnOptions[viewUid].length <= 0)
                     {
                         alert('Dataset {0} does not have any column.'.format(viewUid));
@@ -1626,6 +1622,7 @@ Dataset.getLinkedDatasetOptions = function(linkedDatasetUid, col, $field, curVal
            },
             success: function(linkedDataset)
             {
+                var lds = new Dataset(linkedDataset);
                 cachedLinkedDatasetOptions[viewUid] = [];
                 var cldo = cachedLinkedDatasetOptions[viewUid];
 
@@ -1634,19 +1631,16 @@ Dataset.getLinkedDatasetOptions = function(linkedDatasetUid, col, $field, curVal
                         linkedDataset.metadata.rdfSubject ?
                         linkedDataset.metadata.rdfSubject : undefined;
 
-                _.each(linkedDataset.columns || [], function(c)
+                _.each(lds.columns || [], function(c)
                 {
-                    switch (c.dataTypeName)
+                    if (c.canBeDatasetLink())
                     {
-                        case 'text':
-                            opt = {value: String(c.id), text: c.name};
-                            if (useRdfKeyAsDefault && opt.value === rdfSubject)
-                            {
-                                opt.selected = true;
-                            }
-                        //TODO: support other datatype like url
-                            cldo.push(opt);
-                            break;
+                        opt = {value: String(c.id), text: c.name};
+                        if (useRdfKeyAsDefault && opt.value === rdfSubject)
+                        {
+                            opt.selected = true;
+                        }
+                        cldo.push(opt);
                     }
                 });
 

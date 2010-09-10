@@ -152,7 +152,7 @@ this.Model = Class.extend({
         base = loc.protocol + '//' +
             ($.isBlank(domain) ? loc.hostname : domain);
 
-        if (loc.port != 80)
+        if (loc.port && loc.port != 80)
         { base += ':' + loc.port; }
 
         return base;

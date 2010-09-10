@@ -403,6 +403,29 @@ this.Column = Model.extend({
         delete col.currentFilter;
     },
 
+    canBeDatasetLink: function()
+    {
+        if (this.dataTypeName != 'text') { return false; }
+        if (this.format && this.format.drill_down == true) { return false; }
+        if (this.hidden) { return false; }
+        return true;
+    },
+
+    canBeLinkSource: function()
+    {
+        switch (this.dataTypeName)
+        {
+            case 'dataset_link':
+            case 'nested_table':
+            case 'drop_down_list':
+            case 'tag':
+                return false;
+            default:
+                if (this.hidden) { return false; }
+                return true;
+        }
+    },
+
     _validKeys: {
         childColumns: true,
         dataTypeName: true,

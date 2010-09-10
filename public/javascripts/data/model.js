@@ -462,6 +462,8 @@ blist.namespace.fetch('blist.data');
             {
                 undeleteChildRow(cr.row, row, cr.parentColumn);
             });
+
+            return row;
         };
 
         var undeleteChildRow = function(row, parentRow, parentColumn)
@@ -510,10 +512,11 @@ blist.namespace.fetch('blist.data');
                     break;
 
                 case 'delete':
-                    oppItem = {type: 'create', rows: item.rows.slice()};
+                    oppItem = {type: 'create', rows: []};
 
                     item.rows.reverse();
-                    _.each(item.rows, function(r) { undeleteRow(r); });
+                    _.each(item.rows, function(r)
+                        { oppItem.rows.push(undeleteRow(r)); });
                     break;
 
                 case 'childDelete':

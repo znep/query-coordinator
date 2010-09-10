@@ -9,7 +9,8 @@ class StatsController < ApplicationController
     @dataset = View.find(params[:id])
     @show_search_form = false
 
-    if !(@dataset.owned_by?(current_user) || CurrentDomain.user_can?(current_user, :edit_others_datasets))
+    if !(@dataset.user_granted?(current_user) || \
+        CurrentDomain.user_can?(current_user, :edit_others_datasets))
       # Current user is not a member of the org or the org doesn't have metrics
       return render_403
     end

@@ -207,7 +207,12 @@ metricsNS.updateChartCallback = function($chart, sliceType, options)
 };
 
 metricsNS.chartLoading = function($chart)
-{ $chart.empty().siblings('.loadingSpinner').fadeIn(); };
+{
+    $chart
+      .hide()
+      .siblings('.loadingSpinner')
+      .fadeIn();
+};
 
 metricsNS.topListItemDirective = {
   '.item' : {

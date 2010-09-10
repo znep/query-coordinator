@@ -167,7 +167,7 @@ ActionController::Routing::Routes.draw do |map|
     :member => {
       :widget_preview => :get,
       :edit_metadata => [:get, :post],
-      :captcha_validate => :post,
+      :math_validate => :post,
       :alt => [:get, :post]
     },
     :only => [ :show ] # you see, we actually abandoned RESTful routes, I guess

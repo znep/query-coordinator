@@ -1,6 +1,6 @@
 <div class="aboutDataset_contact">
   <div class="contactOwnerFormWrapper">
-    <% form_tag(url_for({:action => "captcha_validate"}), :class => 'contactOwnerForm') do %>
+    <% form_tag(url_for({:action => "math_validate"}), :class => 'contactOwnerForm') do %>
       <%= hidden_field_tag 'method', 'flag' %>
       <div class="lined">
         <div><label for="contactPurpose" class="required">Purpose:</label></div>
@@ -31,10 +31,27 @@
       </div>
 
       <div class="lined">
-        <div><label for="recaptcha" class="required">Captcha:</label></div>
-        <div class="captcha_message flash"></div>
-        <div class="captcha"></div>
+        <% 
+        numbers = ['zero','one','two','three','four','five']
+        operations = ['plus', 'minus']
+
+        num1 = numbers[rand(numbers.length)]
+        num2 = numbers[rand(numbers.length)]
+        operation = operations[rand(operations.size)]
+
+        if numbers.index(num1) < numbers.index(num2)
+          num1,num2 = num2,num1
+        end
+        
+        output = sprintf('%s %s %s', num1, operation, num2)
+        encoded = ActiveSupport::Base64.encode64(output.center(20))
+          %> 
+        <div><label for="noSpam" class="required">What is <%= output %> as a word?</label></div>
+        <input class="noSpamAnswer" type="text" name="user_answer" />
       </div>
+
+      <input type="text" class="encrypted" name="equation_token" style="display:none;" value="<%= encoded %>"/>
+      <div class="math_message flash"></div>
 
       <a href="#submit" class="button sendContactButton">Send</a>
       <a href="#cancel" class="button cancelContactButton contactButton">Cancel</a>

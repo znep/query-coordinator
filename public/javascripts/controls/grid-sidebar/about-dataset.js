@@ -130,11 +130,6 @@
                             if ($sect.find('.contactOwnerForm').length === 0)
                             {
                                 $this.closest('.formSection').after($.renderTemplate('aboutDataset_contact'));
-
-                                var captchaId = 'captcha' + _.uniqueId();
-                                $sect.find('div.captcha')[0].id = captchaId;
-                                Recaptcha.create(blist.recaptchaPublicKey, captchaId);
-
                                 var $form = $sect.find('.contactOwnerForm');
 
                                 $form.validate({
@@ -171,29 +166,26 @@
                                             data: $form.serialize(),
                                             type: 'post',
                                             error: function(request, textStatus, errorThrown) {
-                                                $sect.find('.flash:not(.captcha_message)')
+                                                $sect.find('.flash:not(.math_message)')
                                                   .removeClass('notice').addClass('error')
                                                   .text('There was an error sending feedback for this dataset. Please retry later.').fadeIn();
                                             },
                                             success: function(response) {
                                                 if(response['success'] == true) {
                                                     _.defer(function() {
-                                                        $sect.find('.flash').not('.captcha_message')
+                                                        $sect.find('.flash').not('.math_message')
                                                             .removeClass('error').addClass('notice')
                                                             .text('The dataset owner has been notified.').fadeIn();
                                                         toggleContactActions();
                                                     });
 
-                                                    $sect.find('.captcha_message')
+                                                    $sect.find('.math_message')
                                                         .removeClass('error').fadeOut();
                                                 } else if (response['success'] == false) {
-                                                    $sect.find('.captcha_message')
+                                                    $sect.find('.math_message')
                                                         .removeClass('notice').addClass('error')
-                                                        .text('Incorrect Captcha response, please try again.').fadeIn();
+                                                        .text('Incorrect answer, please try again.').fadeIn();
                                                 }
-                                            },
-                                            complete: function() {
-                                                setTimeout("Recaptcha.reload()", 100);
                                             }
                                         });
                                     }

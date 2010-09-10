@@ -82,7 +82,22 @@ class AdministrationController < ApplicationController
     end
   end
 
-private
+  ## open data federation
+  def federations
+    @added = params[:added] # refresh after a record was added
+    if (params[:dataset].nil?)
+      @federations = DataFederation.find
+    else
+      @search_dataset = params[:dataset]
+      @federations = DataFederation.find(:dataset => params[:dataset])
+    end
+
+    if (!params[:domain].nil?)
+      @search_domain = params[:domain]
+      @domains = Domain.find(:method => 'findAvailableFederationTargets', :domain => params[:domain])
+    end
+  end
+
   def check_auth_level(level = 'manage_users')
     render_forbidden unless CurrentDomain.user_can?(current_user, level)
   end
@@ -91,6 +106,7 @@ private
     render_forbidden unless CurrentDomain.module_available?(mod)
   end
 
+private
   def check_member
     render_forbidden unless CurrentDomain.member?(current_user)
   end

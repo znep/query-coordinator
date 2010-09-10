@@ -275,9 +275,19 @@
                 }
                 else
                 {
-                    $this.removeClass('blist-combo-empty');
                     $this.find('.blist-combo-text').val(value);
-                    $this.find('.blist-combo-value').text(value);
+                    if ($this.closest("#gridSidebar").length <= 0
+                        && !$this.data('freeEditOn'))
+                    {
+                        $this.removeClass('blist-combo-empty');
+                        $this.find('.blist-combo-text').val(value);
+                        $this.find('.blist-combo-value').text(value);
+                    }
+                    else
+                    {
+                        $this.addClass('blist-combo-empty');
+                        $value.html('&nbsp;');
+                    }
                     return;
                 }
             }
@@ -428,13 +438,22 @@
          */
         var fixCombo = function()
         {
-           if ($this.closest("#gridSidebar").length <= 0) { return; }
+           if (!options.allowFreeEdit || $this.closest("#gridSidebar").length <= 0) { return; }
+           if ($this.data('freeEditOn') == true) { return; };
            var $valEl = $this.find('.blist-combo-value');
            if ($valEl.find('span').length <= 0)
            {
-                $valEl.html('<span class="icon-filler"></span><span class="label">(Blank)</span>');
+                $valEl.html('<SPAN class="icon-filler"></SPAN><SPAN class="label">(Blank)</SPAN>');
            }
-           $this.css('backgroundPosition', $.browser.msie ? 'auto' : '');
+
+           if ($.browser.msie)
+           {
+               $this.removeAttr('style');
+           }
+           else
+           {
+               $this.css('backgroundPosition', '');
+           }
         };
 
         var toggleComboText = function(event)
@@ -484,12 +503,15 @@
                $textEl.hide();
                $valEl.show();
                // setting background to null works in FF but not IE, Chrome
-               $this.css('backgroundPosition', 'right center');
+               if ($this.closest("#gridSidebar").length <= 0)
+               {
+                    $this.css('backgroundPosition', 'right center');
+               }
+
                $this.click(onClick);
                $toggle.find('a').text('Custom');
                 // hide free text edit validation error if it exists
                $this.find("label.error").hide();
-
            }
 
            if (dropdownOpen)

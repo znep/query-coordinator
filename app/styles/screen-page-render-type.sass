@@ -16,8 +16,8 @@
           font-size: 1.2em
           font-weight: bold
           line-height: 1.2em
-          margin-right: 1em
           max-width: 10em
+          padding: 0.2em 1em 0.2em 0.2em
           vertical-align: top
           width: 33%
 
@@ -25,9 +25,14 @@
           display: inline-block
           font-size: 1.2em
           line-height: 1.2em
+          padding: 0.2em
           &.invalid
             color: #888888
             font-style: italic
+
+        &:nth-child(odd)
+          .pageLabel
+            background-color: #eeeeee
 
         // Renderer-specific styles
         &.photo, &.photo_obsolete

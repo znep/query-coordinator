@@ -48,3 +48,6 @@ administration-users-screen:
 administration-moderation:
 - screen-admin
 - screen-administration-moderation
+administration-sdp-templates:
+- screen-admin
+- screen-admin-sdp-templates

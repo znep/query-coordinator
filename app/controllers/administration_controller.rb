@@ -35,7 +35,54 @@ class AdministrationController < ApplicationController
   def moderation
   end
 
-  private
+  def sdp_templates
+    @templates = WidgetCustomization.find.reject{ |t| t.hidden }
+    @default_template_id = CurrentDomain.default_widget_customization_id
+  end
+  def sdp_set_default_template
+    configuration = Configuration.find_by_type('site_theme',  true, request.host, false)[0]
+    begin
+      customization = WidgetCustomization.find(params[:id])
+    rescue CoreServer::ResourceNotFound
+      flash.now[:error] = 'Can not set template as default: template not found'
+      return (render 'shared/error', :status => :not_found)
+    end
+
+    update_or_create_property(configuration, "sdp_template", params[:id]) do 
+      configuration.raw_properties["sdp_template"].nil?
+    end
+
+    CurrentDomain.flag_preferences_out_of_date!
+    respond_to do |format|
+      format.data { render :json => { :success => true } }
+      format.html { redirect_to :action => :sdp_templates }
+    end
+  end
+  def sdp_delete_template
+    begin
+      customization = WidgetCustomization.find(params[:id])
+    rescue CoreServer::ResourceNotFound
+      flash.now[:error] = 'Can not set template as default: template not found'
+      return (render 'shared/error', :status => :not_found)
+    end
+
+    if customization.uid == CurrentDomain.default_widget_customization_id
+      flash.now[:error] = 'Can not delete the default template. Please choose a new default first.'
+      return (render 'shared/error', :status => :invalid_request)
+    end
+
+    # Don't actually delete it, just don't show it in the UI
+    customization.hidden = true
+    customization.save!
+
+    CurrentDomain.flag_preferences_out_of_date!
+    respond_to do |format|
+      format.data { render :json => { :success => true } }
+      format.html { redirect_to :action => :sdp_templates }
+    end
+  end
+
+private
   def check_auth_level(level = 'manage_users')
     render_forbidden unless CurrentDomain.user_can?(current_user, level)
   end
@@ -50,5 +97,15 @@ class AdministrationController < ApplicationController
 
   def find_privileged_users(level=1)
     User.find :method => 'usersWithRole', :role => level
+  end
+
+  def update_or_create_property(configuration, name, value)
+    unless value.nil?
+      if (yield)
+        configuration.create_property(name,value)
+      else
+        configuration.update_property(name,value)
+      end
+    end
   end
 end

@@ -19,6 +19,13 @@
             {:action => 'moderation'} %>
       </li>
     <%- end -%>
+    <%- if module_available? :sdp_customizer -%>
+      <li class="appearance">
+        <%= link_to_unless_current \
+            raw('<span class="icon"></span>SDP Templates'),
+            {:action => 'sdp_templates'} %>
+      </li>
+    <%- end -%>
     <%- if current_user && current_user.is_admin? -%>
       <li class="internal">
         <%= link_to_unless_current \

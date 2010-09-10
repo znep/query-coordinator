@@ -133,6 +133,7 @@
     {
         prtObj.$content().height(prtObj.$dom().height() -
             (prtObj.$content().outerHeight(true) - prtObj.$content().height()));
+        adjustLayout(prtObj);
     };
 
     var hookUpNavigation = function(prtObj)
@@ -178,17 +179,48 @@
     {
         prtObj.$content().empty();
 
-        var $col = $('<div class="pageColumn" data-pageColumn="1"></div>');
-        prtObj.$content().append($col);
+        var $cols = [];
+        $cols[0] = $('<div class="pageColumn" data-pageColumn="0"></div>');
+        prtObj.$content().append($cols[0]);
+        $cols[1] = $('<div class="pageColumn" data-pageColumn="1"></div>');
+        prtObj.$content().append($cols[1]);
 
         _.each(prtObj.settings.view.visibleColumns, function(c)
         {
-            $col.append('<div class="pageLine ' + c.renderTypeName +
+            var $line = $('<div class="pageLine ' + c.renderTypeName +
                 '" data-columnId="' + c.id + '">' +
                 '<span class="pageLabel">' + $.htmlEscape(c.name) + '</span>' +
                 '<div class="pageItem"></div>' +
                 '</div>');
+            $cols[0].append($line);
         });
+        adjustLayout(prtObj, true);
+    };
+
+    var adjustLayout = function(prtObj, forceFull)
+    {
+        var $cols = prtObj.$content().find('.pageColumn');
+        var col0Bottom = $cols.eq(0).outerHeight() + $cols.eq(0).offset().top;
+        var contentBottom = prtObj.$content().offset().top +
+            prtObj.$content().outerHeight();
+
+        // If all the content fits in one column, move everything there
+        if (col0Bottom + $cols.eq(1).outerHeight() < contentBottom)
+        {
+            $cols.eq(0).append($cols.eq(1).find('.pageLine'));
+        }
+        // Otherwise, balance them
+        else if (forceFull || col0Bottom > contentBottom)
+        {
+            // Move fields over until the second column is bigger or equal
+            while ($cols.eq(1).outerHeight() < $cols.eq(0).outerHeight())
+            { $cols.eq(1).prepend($cols.eq(0).find('.pageLine:last')); }
+
+            // Then if the second column is bigger, move fields back,
+            // so that the first column is just longer than the second
+            while ($cols.eq(1).outerHeight() > $cols.eq(0).outerHeight())
+            { $cols.eq(0).append($cols.eq(1).find('.pageLine:first')); }
+        }
     };
 
     var renderCurrentRow = function(prtObj)
@@ -215,7 +247,14 @@
                 $item.removeClass('invalid');
 
                 $item.html(c.renderType.renderer(row[c.lookup], c));
+                // Need to re-adjust layout when an image size is known
+                if (c.renderTypeName.startsWith('photo'))
+                {
+                    $item.find('img').one('load', function()
+                        { adjustLayout(prtObj, true); });
+                }
             });
+            adjustLayout(prtObj, true);
         };
         prtObj.settings.view.getRows(prtObj._curRowIndex, 1, rowLoaded);
     };

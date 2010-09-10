@@ -125,6 +125,10 @@ javascripts:
   - plugins/jquery.tablesorter
   - widgets/combination-list
   - screens/admin-sdp-templates
+- admin-federation:
+  - plugins/jquery.tablesorter
+  - widgets/combination-list
+  - screens/admin-federation-screen
 - blists-about:
   - util/urls
   - plugins/ajaxupload.3.0

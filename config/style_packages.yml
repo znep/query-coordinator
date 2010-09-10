@@ -51,3 +51,6 @@ administration-moderation:
 administration-sdp-templates:
 - screen-admin
 - screen-admin-sdp-templates
+administration-federation:
+- screen-admin
+- screen-administration-federation

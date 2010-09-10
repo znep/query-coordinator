@@ -1,0 +1,123 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-federation' %>
+  <title>Open Data Federation | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<div id="federationContent" class="contentBox withLeftNavigation">
+  <h1>Open Data Federation</h1>
+
+  <%= display_standard_flashes %>
+
+  <div class="searchFields">
+    <form class='search domainsSearch' method='get'>
+      <label for='domain'>Search for Domains to Publish to</label>
+      <input type='text' class='textPrompt searchField' name='domain' id='domain'
+        title='Search for Domains to Publish to'<%= " value='#{@search_domain}'" unless @search_domain.nil? %> />
+      <input type="submit" class="submit" alt="search" value="Search" />
+    </form>
+
+    <%- if false # We don't have a UI for federating individual datasets yet, so this is less than helpful -%>
+      <form class='search datasetsSearch' method='get'>
+        <label for='dataset'>Search for Published Datasets</label>
+        <input type='text' class='textPrompt searchField' name='dataset' id='dataset'
+         title='Search for Published Datasets' <%= " value='#{@search_dataset}'" unless @search_dataset.nil? %> />
+        <input type="submit" class="submit" alt="search" value="Search" />
+      </form>
+    <%- end -%>
+  </div>
+
+  <%- if (!@search_domain.blank?) && @domains.blank? -%>
+    <p class="noAvailableTargets">No available domains match <%= @search_domain %>.</p>
+  <%- end -%>
+
+  <%- unless @domains.nil? -%>
+   <div class="availableTargetDomains">
+     <p class="explanation">The following is a list of domains you may begin data federation with. Once you click publish, an administrator from the target domain must accept your request.</p>
+     <%- @domains.each do |d| -%>
+      <% form_tag(:action => 'create_federation', :method => 'post', :class => "newFederationForm") do %>
+        <label class="domain"><%= d.cname %></label>
+        <%= hidden_field_tag('new_federation[target_domain]', d.cname) %>
+        <%= submit_tag 'Publish', :class => 'button' %>
+      <% end %>
+     <%- end -%>
+   </div>
+  <%- end -%>
+
+  <%- unless @federations.blank? -%>
+    <div class="gridListWrapper">
+      <table class="gridList federationList" cellspacing="0">
+        <colgroup>
+
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="source"><div>Source Domain</div><span class="icon"></span></th>
+            <th class="target"><div>Target Domain</div><span class="icon"></span></th>
+            <th class="dataset"><div>Dataset</div><span class="icon"></span></th>
+            <th class="acceptedBy"><div>Accepted By</div><span class="icon"></span></th>
+            <th class="status"><div>Status</div><span class="icon"></span></th>
+            <th class="delete"><div>Terminate</div><span class="icon"></span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <%- @federations.each do |f| -%>
+            <tr class="item">
+              <td class="source">
+                <span class="cellInner"><%= f.sourceDomainCName %></span>
+              </td>
+              <td class="target">
+                <span class="cellInner"><%= f.targetDomainCName %></span>
+              </td>
+              <td class="dataset">
+                <%- if f.lensId.nil? %>
+                  <em>(all)</em>
+                <%- else -%>
+                  <span class="cellInner"><%= f.lensName %></span>
+                <%- end -%>
+              </td>
+              <td class="acceptedBy">
+                <%- if !f.acceptedUserId.nil?%>
+                  <div class="cellInner"><%= f.acceptorScreenName %></div>
+                <%- end -%>
+              </td>
+              <td class="status">
+                <span class="loading"></span>
+                <%- accepted = f.acceptedUserId.present? -%>
+                <span class="cellInner"><%= accepted ? 'Accepted' : 'Rejected' %></span>
+                <%- if f.targetDomainCName == CurrentDomain.cname %>
+                  <%= link_to 'Accept', url_for(:action => :accept_federation, :id => f.id),
+                      :class => 'button' + (accepted ? ' disabled' : '') %>
+                  <%= link_to 'Reject', url_for(:action => :reject_federation, :id => f.id),
+                      :class => 'button' + (accepted ? '' : ' disabled') %>
+                <%- end -%>
+              </td>
+              <td class="delete">
+                <%= link_to 'Terminate', url_for(:action => :delete_federation, :id => f.id), :class => 'button' %>
+              </td>
+            </tr>
+          <%- end -%>
+        </tbody>
+
+      </table>
+    </div>
+  <%- else -%>
+    <p class="noFederations">
+      <%- if @search_dataset.present? -%>
+        No published datasets match your search criteria.
+      <%- else -%>
+        No federations exist for this domain yet.
+      <%- end -%>
+    </p>
+  <%- end -%>
+
+
+</div>
+
+<%- content_for :js_footer do -%>
+  <%- unless params[:no_js].present? -%>
+
+  <%= javascript_include_merged 'admin-federation' %>
+  <%- end -%>
+<%- end -%>

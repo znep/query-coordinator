@@ -12,6 +12,13 @@
           raw('<span class="icon"></span>Users'),
           {:action => 'users'} %>
     </li>
+    <%- if module_available? :federations -%>
+      <li class="datasets">
+        <%= link_to_unless_current \
+            raw('<span class="icon"></span>Federation'),
+            {:action => 'federations'} %>
+      </li>
+    <%- end -%>
     <%- if module_available? :publisher_comment_moderation -%>
       <li class="comments">
         <%= link_to_unless_current \

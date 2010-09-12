@@ -216,6 +216,18 @@
   @include dataset-toolbar-icon-base
   background-position: 0 -39px
 
+// icons/dataset_edit_icons.png
+@mixin dataset-edit-icons($subselector: '.icon')
+  #{$subselector}
+    @include text-hiding
+    background-image: url(/stylesheets/images/icons/dataset_edit_icons.png)
+    height: 16px
+    width: 16px
+  &.undo #{$subselector}
+    background-position: 0 0
+  &.redo #{$subselector}
+    background-position: 0 -16px
+
 // icons/repeater_icons.png
 @mixin sprite-repeater-icons($subselector: '.icon')
   #{$subselector}
@@ -230,28 +242,31 @@
   &.add #{$subselector}
     background-position: 0 -14px
 
-// interface/dataset_tabs.png
-@mixin sprite-dataset-tabs($subselector: '.icon')
+// icons/dataset_button_icons.png
+@mixin dataset-sidebar-icons($subselector: '.icon')
   #{$subselector}
     @include text-hiding
-    background-image: url(/stylesheets/images/interface/dataset_tabs.png)
-    height: 29px
-    width: 40px
-
-  &.tabFilter #{$subselector}
+    background-image: url(/stylesheets/images/icons/dataset_sidebar_icons.png)
+    height: 13px
+    width: 15px
+  &.filter #{$subselector}
     background-position: 0 0
-  &.tabVisualize #{$subselector}
-    background-position: 0 -29px
-  &.tabExport #{$subselector}
-    background-position: 0 -58px
-  &.tabFeed #{$subselector}
-    background-position: 0 -87px
-  &.tabEmbed #{$subselector}
-    background-position: 0 -116px
-  &.tabAbout #{$subselector}
-    background-position: 0 -145px
-  &.tabEdit #{$subselector}
-    background-position: 0 -174px
+  &.visualize #{$subselector}
+    background-position: 0 -13px
+  &.export #{$subselector}
+    background-position: 0 -26px
+  &.feed #{$subselector}
+    background-position: 0 -39px
+  &.embed #{$subselector}
+    background-position: 0 -52px
+  &.about #{$subselector}
+    background-position: 0 -65px
+  &.edit #{$subselector}
+    background-position: 0 -78px
+  &.moreViews #{$subselector}
+    background-position: 0 -91px
+  &.alert #{$subselector}
+    background-position: 0 -104px
 
 // common/close.png
 @mixin close-button

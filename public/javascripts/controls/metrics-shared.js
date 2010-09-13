@@ -42,7 +42,8 @@ metricsNS.updateTopListWrapper = function($context, data, mapFunction, postProce
             if (_.isFunction(mapFunction))
             { mapFunction(key, data[key], mapped); }
             else
-            { mapped.push({name: key, value: data[key]}); }
+            { mapped.push({name: key, value: data[key],
+                           textValue: Highcharts.numberFormat(data[key], 0)}); }
         }
     }
 
@@ -109,6 +110,7 @@ metricsNS.urlMapCallback = function($context)
                 }
             }
             results.push({linkText: key, value: totalCount,
+                textValue: Highcharts.numberFormat(totalCount, 0),
                 href: '#expand', linkClass: 'expandTopSection',
                 children: _.sortBy(subLinks, function(subItem) {
                     return -subItem.value;

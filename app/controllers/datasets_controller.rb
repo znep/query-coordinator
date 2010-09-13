@@ -18,7 +18,11 @@ class DatasetsController < ApplicationController
 
     if !params[:row_id].nil?
       @row = @view.get_row(params[:row_id])
-      return render_404 if @row.nil?
+      if @row.nil?
+        flash.now[:error] = 'This row cannot be found, or has been deleted.'
+        render 'shared/error', :status => :not_found
+        return nil
+      end
     end
 
     if !current_user

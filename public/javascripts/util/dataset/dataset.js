@@ -81,6 +81,20 @@ this.Dataset = Model.extend({
         return this._rows[index];
     },
 
+    rowIndex: function(id, successCallback)
+    {
+        var ds = this;
+        if (!$.isBlank(ds.rowForID(id)))
+        { successCallback(ds.rowForID(id).index); }
+        else
+        {
+            var gotID = function(data) { successCallback(data[id]); };
+            ds._makeRequest({url: '/views/' + ds.id + '/rows.json',
+                params: {method: 'getByIds', indexesOnly: true, ids: id},
+                success: gotID});
+        }
+    },
+
     _childRowForID: function(id, parRow, parCol)
     {
         // Someday an actual lookup for child rows might be good; but these

@@ -358,7 +358,7 @@
     <%- end -%>
 
     <%- if !@row.nil? -%>
-    blist.initialRow = <%= @row['position'] %>;
+    blist.initialRowId = "<%= @row['sid'] %>";
     <%- end -%>
 
     <%# Namespace to keep track of disabled sidebar sections %>

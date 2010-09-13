@@ -87,10 +87,10 @@ $(function()
         showCallback: datasetPageNS.pageRenderTypeShown,
         view: blist.dataset
     });
-    if ($.isBlank(blist.initialRow))
+    if ($.isBlank(blist.initialRowId))
     { datasetPageNS.pageRenderType.hide(); }
     else
-    { datasetPageNS.pageRenderType.displayRowByIndex(blist.initialRow); }
+    { datasetPageNS.pageRenderType.displayRowByID(blist.initialRowId); }
 
     $(document).bind(blist.events.DISPLAY_ROW, function(e, rowIndex)
         { datasetPageNS.displayRow(rowIndex); });

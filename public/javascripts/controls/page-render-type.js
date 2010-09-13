@@ -115,16 +115,15 @@
             {
                 var prtObj = this;
 
-                var row = prtObj.settings.view.getRowByID(rowId);
-                if ($.isBlank(row)) { throw 'No row for ' + rowId; }
-                prtObj._curRowIndex = row.index;
-
-                if (!prtObj._visible) { prtObj.show(); }
-                else
+                prtObj.settings.view.rowIndex(rowId, function(rowIndex)
                 {
+                    if ($.isBlank(rowIndex)) { throw 'No row for ' + rowId; }
+                    prtObj._curRowIndex = rowIndex;
                     renderCurrentRow(prtObj);
                     updateNavigation(prtObj);
-                }
+                });
+
+                if (!prtObj._visible) { prtObj.show(); }
             }
         }
     });

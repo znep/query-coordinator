@@ -38,8 +38,10 @@ blist.datasetPage.updateValidView = function()
     datasetPageNS.sidebar.updateEnabledSubPanes();
 };
 
-blist.datasetPage.pageRenderTypeHidden = function()
+blist.datasetPage.hidePageRenderType = function()
 {
+    if (!datasetPageNS.$pageRenderType.is(':visible')) { return; }
+    datasetPageNS.$pageRenderType.addClass('hide');
     $('body').removeClass('pageRenderType');
     $(window).resize();
     // If initially loaded page view, the grid doesn't draw properly until
@@ -47,16 +49,14 @@ blist.datasetPage.pageRenderTypeHidden = function()
     blist.$display.trigger('refresh');
 };
 
-blist.datasetPage.pageRenderTypeShown = function()
+blist.datasetPage.showPageRenderType = function()
 {
+    if (datasetPageNS.$pageRenderType.is(':visible')) { return; }
+    datasetPageNS.$pageRenderType.removeClass('hide');
     $('body').addClass('pageRenderType');
     $(window).resize();
 };
 
-blist.datasetPage.displayRow = function(rowIndex)
-{
-    datasetPageNS.pageRenderType.displayRowByIndex(rowIndex);
-};
 
 
 (function($)
@@ -82,18 +82,15 @@ $(function()
 
 
     // Page render type
-    datasetPageNS.pageRenderType = $('#pageRenderType').pageRenderType({
-        hideCallback: datasetPageNS.pageRenderTypeHidden,
-        showCallback: datasetPageNS.pageRenderTypeShown,
-        view: blist.dataset
-    });
-    if ($.isBlank(blist.initialRowId))
-    { datasetPageNS.pageRenderType.hide(); }
+    datasetPageNS.$pageRenderType = $('#pageRenderType');
+    datasetPageNS.$pageRenderType.pageRenderType({ view: blist.dataset });
+    if ($.isBlank(blist.initialRowId)) { datasetPageNS.hidePageRenderType(); }
     else
-    { datasetPageNS.pageRenderType.displayRowByID(blist.initialRowId); }
-
-    $(document).bind(blist.events.DISPLAY_ROW, function(e, rowIndex)
-        { datasetPageNS.displayRow(rowIndex); });
+    {
+        datasetPageNS.showPageRenderType();
+        datasetPageNS.$pageRenderType.pageRenderType()
+            .displayRowByID(blist.initialRowId);
+    }
 
 
     // Render types
@@ -101,10 +98,12 @@ $(function()
     {
         e.preventDefault();
         if ($.hashHref($(this).attr('href')) == 'page')
-        { datasetPageNS.pageRenderType.show(); }
+        { datasetPageNS.showPageRenderType(); }
         else
-        { datasetPageNS.pageRenderType.hide(); }
+        { datasetPageNS.hidePageRenderType(); }
     });
+    $(document).bind(blist.events.DISPLAY_ROW, function()
+            { datasetPageNS.showPageRenderType(); });
 
 
     // grid

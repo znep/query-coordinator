@@ -263,6 +263,7 @@ javascripts:
   - controls/dataset-controls
   - controls/stars
   - controls/menu
+  - controls/page-render-type
   - widgets/scrollTabs
   - widgets/inline-edit
   - widgets/form-inliner

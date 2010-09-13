@@ -114,6 +114,39 @@ blist.widget.hideToolbar = function()
             widgetNS.resizeViewport);
 };
 
+// Additional actions for specific panes
+blist.widget.paneHandlers = {
+    embed: function()
+    {
+        $('#embed_code').focus().select();
+    }
+};
+
+blist.widget.showPane = function(paneName, paneText, paneColor)
+{
+    if ($('.widgetContent_' + paneName).is(':visible')) { return; }
+
+    $('.widgetContent > :visible:first').fadeOut(200,
+        function()
+        {
+            $('.widgetContent_' + paneName).fadeIn(200);
+
+            // set up close pane
+            if (!$.isBlank(paneText))
+            { $('.toolbarClosePaneName').text(paneText); }
+            widgetNS.showToolbar('closePane');
+            if (!$.isBlank(paneColor))
+            { $('.toolbar').animate({'background-color': paneColor}); }
+
+            // call any custom handlers
+            if (_.isFunction(widgetNS.paneHandlers[paneName]))
+            { widgetNS.paneHandlers[paneName](); }
+        });
+
+    $.analytics.trackEvent('widget (v2)', 'pane shown: ' + paneName,
+        document.referrer);
+};
+
 blist.widget.closePane = function()
 {
     // get the color from the subHeaderBar in case we're in the publisher
@@ -156,6 +189,7 @@ blist.widget.showDataView = function()
             widgetNS.resizeViewport();
         });
 };
+
 
 (function($)
 {
@@ -220,14 +254,6 @@ $(function()
         { $('.mainMenu .menuColumns').addClass('hasAbout'); }
     }
 
-    // Additional actions for specific panes
-    var paneHandlers = {
-        embed: function()
-        {
-            $('#embed_code').focus().select();
-        }
-    };
-
     $('.mainMenu .menuDropdown a').click(function(event)
     {
         var $this = $(this);
@@ -241,23 +267,10 @@ $(function()
         }
 
         event.preventDefault();
+        widgetNS.showPane(target, $this.find('.contents').text(),
+            $this.attr('data-iconColor'));
         if (!$('.widgetContent_' + target).is(':visible'))
         {
-            $('.widgetContent > :visible:first').fadeOut(200,
-                function()
-                {
-                    $('.widgetContent_' + target).fadeIn(200);
-
-                    // set up close pane
-                    $('.toolbarClosePaneName').text($this.find('.contents').text());
-                    widgetNS.showToolbar('closePane');
-                    $('.toolbar').animate({ 'background-color': $this.attr('data-iconColor') });
-
-                    // call any custom handlers
-                    if (_.isFunction(paneHandlers[target]))
-                    { paneHandlers[target](); }
-                });
-
             $.analytics.trackEvent('widget (v2)', 'menu item clicked: ' +
                 $this.attr('href'), document.referrer);
         }
@@ -444,6 +457,12 @@ $(function()
                 });
         }
     }
+
+    // Page render type
+    $('#pageRenderType').pageRenderType({ view: blist.dataset });
+    $(document).bind(blist.events.DISPLAY_ROW, function()
+            { widgetNS.showPane('pageRenderType', 'Row View'); });
+
 
     // more views
     var moreViews = [];

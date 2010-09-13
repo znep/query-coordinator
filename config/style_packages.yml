@@ -16,6 +16,7 @@ base-sdp:
 - old-controls
 - controls
 - tables
+- screen-page-render-type
 - screen-map
 grid:
 - table-core

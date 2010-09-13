@@ -1,3 +1,8 @@
+;
+/*
+ * For ajaxing with button-style links. Replaces the working button with a
+ * loading spinner of the same size, handles Ajaxing
+ */
 (function($)
 {
     $.fn.adminButton = function(options)
@@ -27,7 +32,7 @@
                 $loadingSpinner.css('margin-left', loadingWidth)
                                .css('margin-right', loadingWidth);
 
-                $this.hide();
+                $this.addClass('hide');
 
                 $.ajax({
                     url: $this.attr('href'),
@@ -35,7 +40,7 @@
                     dataType: 'json',
                     success: function(response)
                     {
-                        $this.show();
+                        $this.removeClass('hide');
                         $container.find(opts.workingSelector).removeClass(opts.workingClass);
 
                         if (_.isFunction(opts.callback))

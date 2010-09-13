@@ -53,55 +53,20 @@
             }
         });
 
-        var actionButtonHandler = function(callback)
-        {
-            return function(event)
+        $('.deleteTemplateButton').adminButton({
+            callback: function(response, $row)
             {
-                event.preventDefault();
+                $row.slideUp().remove();
+            }
+        });
 
-                var $this = $(this);
-                if ($this.hasClass('disabled'))
-                {
-                    return;
-                }
 
-                var $row = $this.closest('tr');
-                var templateId = $row.attr('data-templateid');
-
-                $row.find('.actions').addClass('isWorking');
-
-                var $loadingSpinner = $row.find('.loading');
-                $loadingSpinner.insertAfter($this);
-                var loadingWidth = ($this.outerWidth(true) -
-                                    $loadingSpinner.outerWidth(false)) / 2;
-                $loadingSpinner.css('margin-left', loadingWidth)
-                               .css('margin-right', loadingWidth);
-
-                $this.hide();
-
-                $.ajax({
-                    url: $this.attr('href'),
-                    method: 'get',
-                    success: function(response)
-                    {
-                        $this.show();
-                        $row.find('.actions').removeClass('isWorking');
-                        callback(response, $row);
-                    }
-                })
-            };
-        };
-        $.live('.makeDefaultButton', 'click',
-            actionButtonHandler(function(response, $row)
+        $('.makeDefaultButton').adminButton({
+            callback: function(response, $row)
             {
                 $('.actions').removeClass('isDefault');
                 $row.find('.actions').addClass('isDefault');
-            }));
-
-        $.live('.deleteTemplateButton', 'click',
-            actionButtonHandler(function(response, $row)
-            {
-                $row.slideUp().remove();
-            }));
+            }
+        });
     });
 })(jQuery);

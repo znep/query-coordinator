@@ -122,10 +122,12 @@ javascripts:
   - util/user
   - screens/admin-moderation
 - admin-sdp-templates:
+  - controls/admin-buttons
   - plugins/jquery.tablesorter
   - widgets/combination-list
   - screens/admin-sdp-templates
 - admin-federation:
+  - controls/admin-buttons
   - plugins/jquery.tablesorter
   - widgets/combination-list
   - screens/admin-federation-screen

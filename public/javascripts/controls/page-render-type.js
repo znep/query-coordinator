@@ -223,6 +223,89 @@
         }
     };
 
+
+    var renderItem = function(prtObj, row, column)
+    {
+        if (row.invalid[column.lookup])
+        {
+            return $('<span class="invalid">' +
+                blist.data.types.invalid.renderer(row[column.lookup]) + '</span>');
+        }
+
+        var item = (column.renderType.renderer(row[column.lookup], column) ||
+            '') + '';
+        if (!item.startsWith('<')) { item = '<span>' + item + '</span>'; }
+        var $item = $(item);
+
+        // Need to re-adjust layout when an image size is known
+        if (column.renderTypeName.startsWith('photo') && !$.isBlank($item))
+        {
+            $item.find('img').andSelf().filter('img').one('load', function()
+                { adjustLayout(prtObj, true); });
+        }
+        return $item;
+    };
+
+    var renderNestedTable = function(prtObj, row, column)
+    {
+        var $table = $('<table><colgroup></colgroup><thead><tr></tr></thead>' +
+            '<tbody></tbody></table>');
+        var $colgroup = $table.find('colgroup');
+        var $thead = $table.find('thead tr');
+        _.each(column.visibleChildColumns, function(cc)
+        {
+            $colgroup.append($.tag({tagName: 'col', 'class': 'col' + cc.id}));
+            $thead.append($.tag({tagName: 'th', 'class': 'col' + cc.id,
+                contents: $.htmlEscape(cc.name)}));
+            // First set up styles; do these all before using them
+            // so they get created in the same style block for efficiency
+            if ($.isBlank(blist.styles.getStyle('pageNestedColumn' + cc.id)))
+            {
+                blist.styles.addStyle('pageNestedColumn' + cc.id,
+                    '.pageColumn .nested_table table .col' + cc.id);
+            }
+        });
+
+        var $tbody = $table.find('tbody');
+        _.each(row[column.lookup] || [], function(subRow)
+        {
+            var $row = $('<tr></tr>');
+            _.each(column.visibleChildColumns, function(cc)
+            {
+                var $cell = $.tag({tagName: 'td', 'class': ['col' + cc.id,
+                    cc.renderTypeName,
+                    (cc.format.align ? 'align-' + cc.format.align : null)]});
+                $cell.append(renderItem(prtObj, subRow, cc));
+                $row.append($cell);
+            });
+            $tbody.append($row);
+        });
+
+        if ((row[column.lookup] || []).length < 1)
+        {
+            $tbody.append($.tag({tagName: 'tr', contents: {tagName: 'td',
+                'class': ['invalid', 'noResults'],
+                colspan: column.visibleChildColumns.length,
+                contents: 'No rows'}}));
+        }
+
+        return $table;
+    };
+
+    var setUpNestedTableWidths = function(prtObj, $nt, column)
+    {
+        // Now set up column widths; measure first so we know how much to
+        // take off for padding
+        var $cell = $nt.find('thead th:first');
+        var padding = $cell.outerWidth() - $cell.width();
+        _.each(column.visibleChildColumns, function(cc)
+        {
+            blist.styles.getStyle('pageNestedColumn' + cc.id).width =
+                (cc.width - padding) + 'px';
+        });
+    };
+
+
     var renderCurrentRow = function(prtObj)
     {
         if ($.isBlank(prtObj._curRowIndex)) { return; }
@@ -238,21 +321,15 @@
                     .find('.pageLine[data-columnId=' + c.id + ']');
 
                 var $item = $line.find('.pageItem');
-                if (row.invalid[c.lookup])
-                {
-                    $item.addClass('invalid')
-                        .html(blist.data.types.invalid.renderer(row[c.lookup]));
-                    return;
-                }
-                $item.removeClass('invalid');
+                $item.empty();
 
-                $item.html(c.renderType.renderer(row[c.lookup], c));
-                // Need to re-adjust layout when an image size is known
-                if (c.renderTypeName.startsWith('photo'))
+                if (c.dataTypeName == 'nested_table')
                 {
-                    $item.find('img').one('load', function()
-                        { adjustLayout(prtObj, true); });
+                    $item.append(renderNestedTable(prtObj, row, c));
+                    setUpNestedTableWidths(prtObj, $item, c);
                 }
+                else
+                { $item.append(renderItem(prtObj, row, c)); }
             });
             adjustLayout(prtObj, true);
         };

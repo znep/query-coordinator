@@ -400,18 +400,6 @@
       #contactSubject
         height: 3em
 
-      .captcha
-        border: 1px solid $color_chrome_box_border
-        overflow: hidden
-        width: 100%
-        #recaptcha_area
-          margin-left: -10px
-          #recaptcha_response_field
-            height: 16px
-        #recaptcha_image
-          img
-            width: 250px
-
   #gridSidebar_showHide
     .columnItem
       line-height: 1.5833em
@@ -474,14 +462,24 @@
       .line
         margin-top: 1em
 
+        .readOnlyType
+          display: none
         &.inherited
           .selector
             display: none
           .name
             width: 16em
         &.inherited, &.noGrant
+          .name
+            width: 10em
+          .selector.uniform
+            display: none
           .removeShareLink
             visibility: hidden
+          .readOnlyType
+            display: inline
+            width: 8em
+            float: right
 
         .name
           @include clip-text
@@ -513,12 +511,6 @@
 
         select.type
           width: 10em
-        &.noGrant
-          span.type
-            width: 8em
-            float: right
-          .name
-            width: 10em
 
   #gridSidebar_guidedFilter
     label em

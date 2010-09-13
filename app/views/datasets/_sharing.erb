@@ -47,8 +47,7 @@
     <span class="name"></span>
     <%- if grantable -%>
       <%= select_tag 'type', options_for_select(Share.types), :class => 'type' %>
-    <%- else -%>
-      <span class="type"></span>
     <%- end -%>
+    <span class="type readOnlyType"></span>
   </li>
 </ul>

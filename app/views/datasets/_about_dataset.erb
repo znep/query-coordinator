@@ -167,7 +167,7 @@
   </div>
 <%- end -%>
 
-<%- if current_user.nil? || (current_user.id != @view.owner.id) -%>
+<%- if !CurrentDomain.feature?("disable_owner_contact") && (current_user.nil? || (current_user.id != @view.owner.id)) -%>
   <div class="formSection">
     <a href="#expand" class="expander expanded formHeader">
       <span class="icon"></span>

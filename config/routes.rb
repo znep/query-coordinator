@@ -120,6 +120,9 @@ ActionController::Routing::Routes.draw do |map|
     admin.connect '/admin_new/analytics',         :action => 'analytics'
     admin.connect '/admin_new/users',             :action => 'users'
     admin.connect '/admin_new/moderation',        :action => 'moderation'
+    admin.connect '/admin_new/sdp_templates',     :action => 'sdp_templates'
+    admin.connect '/admin_new/sdp_templates/:id/set_default', :action => 'sdp_set_default_template'
+    admin.connect '/admin_new/sdp_templates/:id/delete', :action => 'sdp_delete_template'
   end
 
   map.resources :contacts,
@@ -167,7 +170,7 @@ ActionController::Routing::Routes.draw do |map|
     :member => {
       :widget_preview => :get,
       :edit_metadata => [:get, :post],
-      :captcha_validate => :post,
+      :math_validate => :post,
       :alt => [:get, :post]
     },
     :only => [ :show ] # you see, we actually abandoned RESTful routes, I guess

@@ -313,8 +313,6 @@
 <%- end -%>
 
 <% content_for :js_footer do %>
-
-  <script type="text/javascript" src="http://api.recaptcha.net/js/recaptcha_ajax.js"></script>
   <script type="text/javascript">
     <%= raw @view.display.render_inline_setup_js('mainGrid', self) %>
 
@@ -380,7 +378,8 @@
     blist.sidebarHidden.exportSection.api = <%= !@view.is_tabular? %>;
 
     <%# Sharing pane %>
-    blist.sidebarHidden.sharing = <%= !@view.user_granted?(current_user) %>;
+    blist.sidebarHidden.sharing = <%= !@view.user_granted?(current_user) &&
+      !CurrentDomain.user_can?(current_user, :edit_others_datasets) %>;
 
     <%# Please see admin_controller#add_custom_layer for explanation %>
     <%# custom_layer_config = Configuration.find_by_type('custom_layers', true).first
@@ -392,8 +391,6 @@
         end if custom_layer_config
     -%>
     <%#blist.custom_layers = JSON.parse($.htmlUnescape("<%= h custom_layers.to_json.gsub(/\\/, '\\\\\\') % >")); -%>
-
-    blist.recaptchaPublicKey = '<%= APP_CONFIG['recaptcha_public_key'] %>';
   </script>
 
   <%- if @view.is_tabular? -%>

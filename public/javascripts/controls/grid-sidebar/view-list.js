@@ -241,6 +241,33 @@
 
     $.gridSidebar.registerConfig(formConfig);
 
+    var allConfig =
+    {
+        name: 'moreViews',
+        priority: 1,
+        title: 'More Views',
+        subtitle: 'See existing filters, maps, charts and other views on this dataset',
+        sections: [{
+            customContent: {
+                template: 'itemsListBlock',
+                directive: {
+                    '.emptyResult .type': '#{resultType}s'
+                },
+                data: {
+                    resultType: 'view'
+                },
+                callback: function($s)
+                {
+                    $sections['all'] = $s;
+                    if (!$.isBlank(views['all']))
+                    { setupSection(views['all'], $sections['all']); }
+                }
+            }
+        }]
+    };
+
+    $.gridSidebar.registerConfig(allConfig);
+
     // Document ready; load data
     $(function()
     {
@@ -273,6 +300,11 @@
 
                     if (!$.isBlank($sections['form']))
                     { setupSection(views['form'], $sections['form']); }
+
+                    views['all'] = v;
+
+                    if (!$.isBlank($sections['all']))
+                    { setupSection(views['all'], $sections['all']); }
                 });
         });
     });

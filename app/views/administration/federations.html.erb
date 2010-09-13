@@ -32,7 +32,7 @@
     <p class="noAvailableTargets">No available domains match <%= @search_domain %>.</p>
   <%- end -%>
 
-  <%- unless @domains.nil? -%>
+  <%- unless @domains.blank? -%>
    <div class="availableTargetDomains">
      <p class="explanation">The following is a list of domains you may begin data federation with. Once you click publish, an administrator from the target domain must accept your request.</p>
      <%- @domains.each do |d| -%>
@@ -49,7 +49,12 @@
     <div class="gridListWrapper">
       <table class="gridList federationList" cellspacing="0">
         <colgroup>
-
+          <col class="source" />
+          <col class="target" />
+          <col class="dataset" />
+          <col class="acceptedBy" />
+          <col class="status" />
+          <col class="delete" />
         </colgroup>
         <thead>
           <tr>

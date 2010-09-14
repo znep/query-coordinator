@@ -26,9 +26,73 @@ blist.datasetPage.updateValidView = function()
     datasetPageNS.sidebar.updateEnabledSubPanes();
 };
 
+blist.datasetPage.hidePageRenderType = function()
+{
+    if (!datasetPageNS.$pageRenderType.is(':visible')) { return; }
+    datasetPageNS.$pageRenderType.addClass('hide');
+    $('body').removeClass('pageRenderType');
+    $(window).resize();
+    // If initially loaded page view, the grid hasn't been rendered yet
+    datasetPageNS.initGrid();
+
+    $('#renderTypeOptions li a').removeClass('active');
+    $('#renderTypeOptions li .grid').addClass('active');
+};
+
+blist.datasetPage.showPageRenderType = function()
+{
+    if (datasetPageNS.$pageRenderType.is(':visible')) { return; }
+    datasetPageNS.$pageRenderType.removeClass('hide');
+    $('body').addClass('pageRenderType');
+    $(window).resize();
+
+    $('#renderTypeOptions li a').removeClass('active');
+    $('#renderTypeOptions li .page').addClass('active');
+};
+
+blist.datasetPage.initGrid = function()
+{
+    if (datasetPageNS.gridInitialized) { return; }
+
+    datasetPageNS.$dataGrid
+        .datasetGrid({view: blist.dataset,
+            columnDeleteEnabled: blist.dataset.type == 'blist' &&
+                blist.dataset.hasRight('remove_column'),
+            columnPropertiesEnabled: true,
+            columnNameEdit: blist.dataset.hasRight('update_view'),
+            showAddColumns: blist.dataset.type == 'blist' &&
+                blist.dataset.hasRight('add_column'),
+            accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
+            clearTempViewCallback: datasetPageNS.clearTempView,
+            setTempViewCallback: datasetPageNS.setTempView,
+            filterForm: '#searchForm', clearFilterItem: '#searchForm .clearSearch',
+            isInvalid: !blist.dataset.valid,
+            validViewCallback: datasetPageNS.updateValidView,
+            addColumnCallback: function(parId)
+            {
+                datasetPageNS.sidebar.addPane('edit.addColumn', {parentId: parId});
+                datasetPageNS.sidebar.show('edit.addColumn');
+            },
+            editColumnCallback: function(colId, parId)
+            {
+                var col = blist.dataset.columnForID(colId) ||
+                    blist.dataset.columnForID(parId);
+                if (col.id != colId) { col = col.childColumnForID(colId); }
+
+                datasetPageNS.sidebar.hide();
+                datasetPageNS.sidebar.addPane('columnProperties', col);
+                datasetPageNS.sidebar.show('columnProperties');
+            }
+        });
+    datasetPageNS.gridInitialized = true;
+};
+
+
+
 (function($)
 {
     if (!blist.dataset.valid) { $('body').addClass('invalidView'); }
+
 })(jQuery);
 
 $(function()
@@ -46,44 +110,41 @@ $(function()
 
     $('.outerContainer').fullScreen();
 
+
+    // Page render type
+    datasetPageNS.$pageRenderType = $('#pageRenderType');
+    datasetPageNS.$pageRenderType.pageRenderType({ view: blist.dataset });
+    var isPageRT = !$.isBlank(blist.initialRowId);
+    if (!isPageRT) { datasetPageNS.hidePageRenderType(); }
+    else
+    {
+        datasetPageNS.showPageRenderType();
+        datasetPageNS.$pageRenderType.pageRenderType()
+            .displayRowByID(blist.initialRowId);
+    }
+
+
+    // Render types
+    $('#renderTypeOptions').pillButtons();
+    $('#renderTypeOptions a').click(function(e)
+    {
+        e.preventDefault();
+        if ($.hashHref($(this).attr('href')) == 'page')
+        { datasetPageNS.showPageRenderType(); }
+        else
+        { datasetPageNS.hidePageRenderType(); }
+    });
+    $(document).bind(blist.events.DISPLAY_ROW, function()
+            { datasetPageNS.showPageRenderType(); });
+
+
     // grid
-    var $dataGrid = blist.$display;
-    if ($dataGrid.length > 0)
+    datasetPageNS.$dataGrid = blist.$display;
+    if (datasetPageNS.$dataGrid.length > 0)
     {
         if (blist.dataset.isGrid())
         {
-            $dataGrid
-                .datasetGrid({view: blist.dataset,
-                    columnDeleteEnabled: blist.dataset.type == 'blist' &&
-                        blist.dataset.hasRight('remove_column'),
-                    columnPropertiesEnabled: true,
-                    columnNameEdit: blist.dataset.hasRight('update_view'),
-                    showAddColumns: blist.dataset.type == 'blist' &&
-                        blist.dataset.hasRight('add_column'),
-                    accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
-                    clearTempViewCallback: datasetPageNS.clearTempView,
-                    setTempViewCallback: datasetPageNS.setTempView,
-                    filterForm: '#searchForm',
-                    clearFilterItem: '#searchForm .clearSearch',
-                    isInvalid: !blist.dataset.valid,
-                    validViewCallback: datasetPageNS.updateValidView,
-                    addColumnCallback: function(parId)
-                    {
-                        datasetPageNS.sidebar
-                            .addPane('edit.addColumn', {parentId: parId});
-                        datasetPageNS.sidebar.show('edit.addColumn');
-                    },
-                    editColumnCallback: function(colId, parId)
-                    {
-                        var col = blist.dataset.columnForID(colId) ||
-                            blist.dataset.columnForID(parId);
-                        if (col.id != colId) { col = col.childColumnForID(colId); }
-
-                        datasetPageNS.sidebar.hide();
-                        datasetPageNS.sidebar.addPane('columnProperties', col);
-                        datasetPageNS.sidebar.show('columnProperties');
-                    }
-                });
+            if (!isPageRT) { datasetPageNS.initGrid(); }
 
             // Fire up guided filter if available
             if (!_.isUndefined(blist.dataset.metadata) &&
@@ -97,7 +158,7 @@ $(function()
 
     // sidebar and sidebar tabs
     datasetPageNS.sidebar = $('#gridSidebar').gridSidebar({
-        dataGrid: $dataGrid[0],
+        dataGrid: datasetPageNS.$dataGrid[0],
         onSidebarShown: function(primaryPane)
         {
             var $activeLink = $('#sidebarOptions a[data-paneName=' + primaryPane + ']');
@@ -187,23 +248,23 @@ $(function()
     {
         event.preventDefault();
         if (!$(event.target).is('.disabled'))
-        { $dataGrid.blistModel().undo(); }
+        { datasetPageNS.$dataGrid.blistModel().undo(); }
     });
     $('#editOptions .redo').click(function (event)
     {
         event.preventDefault();
         if (!$(event.target).is('.disabled'))
-        { $dataGrid.blistModel().redo(); }
+        { datasetPageNS.$dataGrid.blistModel().redo(); }
     });
-    $dataGrid.bind('undo_redo_change', function(e)
+    datasetPageNS.$dataGrid.bind('undo_redo_change', function(e)
     {
-        var model = $dataGrid.blistModel();
+        var model = datasetPageNS.$dataGrid.blistModel();
         $('#editOptions .undo').toggleClass('disabled', !model.canUndo());
         $('#editOptions .redo').toggleClass('disabled', !model.canRedo());
     });
-    if (!$.isBlank($dataGrid.blistModel))
+    if (!$.isBlank(datasetPageNS.$dataGrid.blistModel))
     {
-        var model = $dataGrid.blistModel();
+        var model = datasetPageNS.$dataGrid.blistModel();
         $('#editOptions .undo').toggleClass('disabled', !model.canUndo());
         $('#editOptions .redo').toggleClass('disabled', !model.canRedo());
     }
@@ -212,7 +273,7 @@ $(function()
     // Format toolbar
     $('#formatOptions select').uniform();
 
-    $('#formatOptions').formatOptions({gridSelector: $dataGrid});
+    $('#formatOptions').formatOptions({gridSelector: datasetPageNS.$dataGrid});
 
 
     // Unsaved view stuff

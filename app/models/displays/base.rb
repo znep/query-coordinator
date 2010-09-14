@@ -81,7 +81,15 @@ class Displays::Base
       # Set common base variables communicating display configuration to JS
       js = <<END
 blist.dataset = new Dataset(JSON.parse($.htmlUnescape("#{h(@view.to_json.gsub(/\\/, '\\\\\\'))}")));
-$(function() { blist.$display = $('##{target_dom_id}'); });
+$(function()
+{
+    blist.$display = $('##{target_dom_id}');
+
+    blist.dataset.bind('start_request', function()
+        { $('.mainSpinner.loadingSpinnerContainer').removeClass('hide'); })
+    .bind('finish_request', function()
+        { $('.mainSpinner.loadingSpinnerContainer').addClass('hide'); });
+});
 END
 
       # Disable scrolling if the display shouldn't scroll

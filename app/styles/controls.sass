@@ -151,6 +151,39 @@ ul.wizardButtons
     &.prev, &.next
       float: right
 
+.pillButtons
+  @include border-radius(0.2em)
+  overflow: hidden // poor mans clearfix guarantee
+  &:hover
+    @include box-shadow(0, 0, 0.3em, $color_buttons_active_shadow)
+
+  li
+    display: block
+    float: left
+
+    a
+      @include gradient-buttons-active-background
+      border: 1px solid $color_buttons_active_border
+        left: none
+      color: $color_buttons_active_text
+      display: block
+      padding: 0.3em 0.45em
+        left: 0.5em
+      .noLinearGradient &
+        @include box-gradient-buttons-active-background(3, 21, $box_gradient_alias_fix)
+
+      &.active
+        @include vertical-gradient(#777, #aaa)
+        @include box-shadow(0, 0, 0.3em, rgba(0, 0, 0, 0.3), true)
+
+    &:first-child a, &.first a
+      @include border-radius-corner(top, left, 0.2em)
+      @include border-radius-corner(bottom, left, 0.2em)
+      border: 1px solid $color_buttons_active_border
+    &:last-child a, &.last a
+      @include border-radius-corner(top, right, 0.2em)
+      @include border-radius-corner(bottom, right, 0.2em)
+
 
 //*** START: Tooltip styles ***//
 .bt-wrapper
@@ -214,7 +247,7 @@ ul.wizardButtons
     margin: 0
     position: static
 
-  &.hidden
+  &.hide
     display: none
 
 

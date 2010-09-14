@@ -16,6 +16,7 @@ base-sdp:
 - old-controls
 - controls
 - tables
+- screen-page-render-type
 - screen-map
 grid:
 - table-core
@@ -31,6 +32,7 @@ dataset-new:
 dataset-show:
 - grid-sidebar
 - grid-sidebar-custom
+- screen-page-render-type
 - screen-dataset
 - control-feed
 - splash

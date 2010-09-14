@@ -4036,10 +4036,6 @@
         $this.bind('dataset_ready', function(event, newModel)
         {
             model = newModel;
-            model.view.bind('start_request', function()
-                    { $outside.addClass('blist-loading'); })
-                .bind('finish_request', function()
-                    { $outside.removeClass('blist-loading'); });
 
             var isReady = function()
             {
@@ -4075,6 +4071,13 @@
                             begin("selectionChange");
                             updateRowSelection(rows);
                             end("selectionChange");
+                        })
+                    .bind('refresh', function()
+                        {
+                            initMeta();
+                            renderHeader();
+                            renderFooter();
+                            initRows();
                         });
 
             };

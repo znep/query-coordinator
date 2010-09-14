@@ -39,10 +39,15 @@ $sidebar_about_tab_color_top: #a03341
   -moz-border-radius-#{$v}#{$h}: $r
   -webkit-border-#{$v}-#{$h}-radius: $r
 
-@mixin box-shadow($x,$y,$r,$c)
-  box-shadow: $x $y $r $c
-  -moz-box-shadow: $x $y $r $c
-  -webkit-box-shadow: $x $y $r $c
+@mixin box-shadow($x,$y,$r,$c,$inset: false)
+  @if $inset == true
+    box-shadow: inset $x $y $r $c
+    -moz-box-shadow: inset $x $y $r $c
+    -webkit-box-shadow: inset $x $y $r $c
+  @else
+    box-shadow: $x $y $r $c
+    -moz-box-shadow: $x $y $r $c
+    -webkit-box-shadow: $x $y $r $c
 @mixin box-shadow-none
   box-shadow: none
   -moz-box-shadow: none
@@ -66,6 +71,8 @@ $sidebar_about_tab_color_top: #a03341
   background-color: $s
   background: -moz-linear-gradient(0 0 270deg, $s, $e)
   background: -webkit-gradient(linear, left top, left bottom, from($s), to($e))
+  .noLinearGradient &
+    background-image: none
 
 @mixin white-space-pre-wrap
   white-space: pre-wrap

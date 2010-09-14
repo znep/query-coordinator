@@ -3,6 +3,12 @@
   .ie6 &
     overflow: hidden
 
+@mixin icon-include-active($className, $subselector, $top, $left)
+  &.#{$className} #{$subselector}
+    background-position: 0 $top
+  &.#{$className}.active #{$subselector}
+    background-position: $left $top
+
 // icons/button_icons.png
 @mixin sprite-button-icons($subselector: '.icon')
   #{$subselector}
@@ -58,12 +64,14 @@
   &.upArrowHighlight #{$subselector},
   &.expanded #{$subselector}
     background-position: 0 -39px
-  &.rightArrow #{$subselector}
+  &.rightArrow #{$subselector},
+  &.next #{$subselector}
     background-position: 0 -52px
   &.rightArrow:hover #{$subselector},
   &.rightArrowHighlight #{$subselector}
     background-position: 0 -65px
-  &.leftArrow #{$subselector}
+  &.leftArrow #{$subselector},
+  &.previous #{$subselector}
     background-position: 0 -78px
   &.leftArrow:hover #{$subselector},
   &.leftArrowHighlight #{$subselector}
@@ -267,6 +275,20 @@
     background-position: 0 -91px
   &.alert #{$subselector}
     background-position: 0 -104px
+
+// icons/renderType_toggle_icons.png
+@mixin renderType-toggle-icons($subselector: '.icon')
+  #{$subselector}
+    @include text-hiding
+    background-image: url(/stylesheets/images/icons/renderType_toggle_icons.png)
+    height: 13px
+    width: 13px
+  @include icon-include-active(grid, $subselector, 0, -13px)
+  @include icon-include-active(chart, $subselector, -13px, -13px)
+  @include icon-include-active(calendar, $subselector, -26px, -13px)
+  @include icon-include-active(map, $subselector, -39px, -13px)
+  @include icon-include-active(page, $subselector, -52px, -13px)
+  @include icon-include-active(fatrow, $subselector, -65px, -13px)
 
 // common/close.png
 @mixin close-button

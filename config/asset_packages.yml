@@ -33,6 +33,7 @@ javascripts:
   - util/dataset/chart
   - util/dataset/form
   - util/dataset/map
+  - util/styles
   - util/templates
   - util/socrata-server
   - data/types
@@ -262,6 +263,7 @@ javascripts:
   - controls/dataset-controls
   - controls/stars
   - controls/menu
+  - controls/page-render-type
   - widgets/scrollTabs
   - widgets/inline-edit
   - widgets/form-inliner
@@ -321,6 +323,8 @@ javascripts:
   - controls/embed-form
   - controls/full-screen
   - controls/format-options
+  - controls/page-render-type
+  - controls/pill-buttons
   - screens/dataset-show
 - screen-dataset-edit-metadata:
   - plugins/jquery.uniform

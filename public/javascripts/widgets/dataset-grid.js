@@ -110,6 +110,10 @@
                         datasetObj.drillDown(this);
                     });
 
+                $.live('#' + $datasetGrid.attr('id') +
+                    ' .blist-table-row-numbers a', 'click',
+                    function(e) { rowMenuHandler(datasetObj, e); });
+
                 datasetObj.settings._model = $datasetGrid.blistModel();
 
                 if (datasetObj.settings.filterForm)
@@ -393,7 +397,8 @@
                        '<ul class=\'menu rowMenu\' id=\'row-menu_" + row.id + "' +
                        colAdjust + '\'>" + ' +
                        '"<li class=\'pageView\'>' +
-                       '<a href=\'#view-row_" + row.id + "\'>View Row</a></li>' +
+                       '<a href=\'' + this.settings.view.url +
+                       '/" + row.id + "\'>View Row</a></li>' +
                        (this.settings.editEnabled ?
                            ('" + (permissions.canEdit && !(row.level > 0) ? ' +
                            '"<li class=\'tags\'>' +
@@ -506,16 +511,30 @@
     {
         event.preventDefault();
         var $link = $(event.currentTarget);
-        // Href that we care about starts with # and parts are separated with _
-        // IE sticks the full thing, so slice everything up to #
         var href = $link.attr('href');
-        var s = href.slice(href.indexOf('#') + 1).split('_');
-        if (s.length < 2)
-        { return; }
+        var hashIndex = href.indexOf('#');
+
+        var action;
+        var rowId;
+        // If # isn't present, but ends with /\d+ then it is a row URL
+        if (hashIndex < 0 && !$.isBlank(href.match(/\/\d+$/)))
+        {
+            action = 'view-row';
+            rowId = href.slice(href.lastIndexOf('/') + 1);
+        }
+        else
+        {
+            // Href that we care about starts with # and parts are separated with _
+            // IE sticks the full thing, so slice everything up to #
+            var s = href.slice(hashIndex + 1).split('_');
+            if (s.length < 2)
+            { return; }
+
+            action = s[0];
+            rowId = s[1];
+        }
 
         var $menu = $link.closest('.rowMenu');
-        var action = s[0];
-        var rowId = s[1];
         var model = datasetObj.settings._model;
         switch (action)
         {

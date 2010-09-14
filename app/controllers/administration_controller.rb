@@ -3,6 +3,12 @@ class AdministrationController < ApplicationController
   before_filter :check_member,     :only => [:analytics]
   before_filter :check_module,     :only => [:analytics]
 
+  # Federation permission/module checking
+  before_filter :only => [:federations] do |controller|
+      controller.check_auth_level('federations')
+      controller.check_module('federations')
+  end
+
   layout 'dataset_v2'
 
   def analytics
@@ -82,7 +88,74 @@ class AdministrationController < ApplicationController
     end
   end
 
-private
+  ## open data federation
+  def federations
+    if (params[:dataset].nil?)
+      @federations = DataFederation.find
+    else
+      @search_dataset = params[:dataset]
+      @federations = DataFederation.find(:dataset => params[:dataset])
+    end
+
+    if (!params[:domain].nil?)
+      @search_domain = params[:domain]
+      @domains = Domain.find(:method => 'findAvailableFederationTargets', :domain => params[:domain])
+    end
+  end
+  def delete_federation
+    DataFederation.delete(params[:id])
+    respond_to do |format|
+      format.data { render :json => { :success => true } }
+      format.html { redirect_federation("Federation successfully deleted") }
+    end
+  end
+  def accept_federation
+    DataFederation.accept(params[:id])
+    respond_to do |format|
+      format.data { render :json => { :success => true, :message => 'Accepted' } }
+      format.html { redirect_federation("Federation successfully accepted") }
+    end
+  end
+  def reject_federation
+    DataFederation.reject(params[:id])
+    respond_to do |format|
+      format.data { render :json => { :success => true, :message => 'Rejected' } }
+      format.html { redirect_federation("Federation successfully rejected") }
+    end
+  end
+  def create_federation
+    begin
+      data = DataFederation.new
+      target_domain = Domain.find(params[:new_federation][:target_domain])
+      data.targetDomainId = target_domain.id
+      DataFederation.create(data)
+    rescue CoreServer::ResourceNotFound => e
+      return respond_to do |format|
+        format.data { render :json => {'error' => 'Target domain is invalid'}.to_json }
+        format.html do
+          flash[:error] = "Could not create data federation: target domain is invalid"
+          redirect_to :action => :federations
+        end
+      end
+    rescue CoreServer::CoreServerError => e
+      return respond_to do |format|
+        format.data { render :json => {'error' => e.error_message}.to_json }
+        format.html do
+          flash[:error] = e.error_message
+          redirect_to :action => :federations
+        end
+      end
+    end
+
+    respond_to do |format|
+      format.data { render :json => data.to_json() }
+      format.html do
+        flash[:notice] = "Federation successfully created"
+        redirect_to :action => :federations
+      end
+    end
+  end
+
   def check_auth_level(level = 'manage_users')
     render_forbidden unless CurrentDomain.user_can?(current_user, level)
   end
@@ -91,12 +164,18 @@ private
     render_forbidden unless CurrentDomain.module_available?(mod)
   end
 
+private
   def check_member
     render_forbidden unless CurrentDomain.member?(current_user)
   end
 
   def find_privileged_users(level=1)
     User.find :method => 'usersWithRole', :role => level
+  end
+
+  def redirect_federation(message = nil)
+    flash[:notice] = message unless message.nil?
+    redirect_to :action => :federations
   end
 
   def update_or_create_property(configuration, name, value)

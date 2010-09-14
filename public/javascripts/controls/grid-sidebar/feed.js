@@ -18,8 +18,8 @@
     var config =
     {
         name: 'feed',
-        title: 'Feed',
-        subtitle: 'The feed shows you the discussion and activity around a dataset',
+        title: 'Discuss',
+        subtitle: 'The discussion feed shows you the conversation and activity around a dataset',
         sections: [
             {
                 customContent: {

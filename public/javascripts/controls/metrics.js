@@ -160,7 +160,7 @@
             .find('table').tablesorter(
             {
                 textExtraction: function(node) {
-                    return $(node).find('.primary').text();
+                    return $(node).find('.primaryValue').text();
                 }
             }
         );

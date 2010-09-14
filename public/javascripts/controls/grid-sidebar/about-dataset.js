@@ -168,14 +168,14 @@
                                             error: function(request, textStatus, errorThrown) {
                                                 $sect.find('.flash:not(.math_message)')
                                                   .removeClass('notice').addClass('error')
-                                                  .text('There was an error sending feedback for this dataset. Please retry later.').fadeIn();
+                                                  .text('There was an error sending feedback for this dataset. Please retry later.').show();
                                             },
                                             success: function(response) {
                                                 if(response['success'] == true) {
                                                     _.defer(function() {
-                                                        $sect.find('.flash').not('.math_message')
+                                                        $sect.find('.flash:not(.math_message)')
                                                             .removeClass('error').addClass('notice')
-                                                            .text('The dataset owner has been notified.').fadeIn();
+                                                            .text('The dataset owner has been notified.').show();
                                                         toggleContactActions();
                                                     });
 

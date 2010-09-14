@@ -422,6 +422,7 @@ this.Column = Model.extend({
                 return false;
             default:
                 if (this.hidden) { return false; }
+                if (this.dataTypeName.indexOf('obsolete') >= 0) { return false; }
                 return true;
         }
     },

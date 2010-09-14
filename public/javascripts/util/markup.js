@@ -32,6 +32,14 @@
     */
     $.tag = function(attrs, keepAsString)
     {
+        // deal with toplevel array case
+        if (_.isArray(attrs))
+        {
+            var markup = _.map(attrs, function(tag) { return $.tag(tag, true); }).join('');
+            return (keepAsString === true) ? markup : $(markup);
+        }
+
+        // normal case
         attrs = tag_parseConditionalElement(attrs);
         if (attrs === false) { return null; }
 

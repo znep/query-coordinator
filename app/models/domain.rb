@@ -6,14 +6,10 @@ class Domain < Model
   def self.find(cname)
     # We don't know our cname yet, so we need to pass it in to connection.rb
     # manually
-    headers = { "X-Socrata-Host" => cname }
-    path = "/domains/#{cname}.json"
-    parse(CoreServer::Base.connection.get_request(path, headers))
-  end
-
-  def self.findAvailableFederationTargets(target_domain)
-    path = "/domains.json?method=findAvailableFederationTargets&domain=#{target_domain}"
-    parse(CoreServer::Base.connection.get_request(path))
+    if cname.is_a? String
+      headers = { "X-Socrata-Host" => cname }
+    end
+    super(cname, headers || {})
   end
 
   def self.findById(id)

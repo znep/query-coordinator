@@ -123,6 +123,12 @@ ActionController::Routing::Routes.draw do |map|
     admin.connect '/admin_new/sdp_templates',     :action => 'sdp_templates'
     admin.connect '/admin_new/sdp_templates/:id/set_default', :action => 'sdp_set_default_template'
     admin.connect '/admin_new/sdp_templates/:id/delete', :action => 'sdp_delete_template'
+    admin.connect '/admin_new/federations',       :action => 'federations'
+    admin.connect '/admin_new/federations/:id/delete',       :action => 'delete_federation'
+    admin.connect '/admin_new/federations/:id/accept',       :action => 'accept_federation'
+    admin.connect '/admin_new/federations/:id/reject',       :action => 'reject_federation'
+    admin.connect '/admin_new/federations/create',           :action => 'create_federation',
+      :conditions => { :method => :post }
   end
 
   map.resources :contacts,

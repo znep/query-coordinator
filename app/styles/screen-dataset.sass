@@ -9,54 +9,19 @@ html, body
 #datasetBar
   background-color: #fff
   border-top: 1px solid $color_chrome_box_border
-  padding: 0.25em
-    bottom: 0.3em
+  min-height: 5.7em
   position: relative
 
   // IE keeps z-indexes in separate position domains
   .ie7 &
     z-index: 99
 
-  #viewsMenu
-    height: 2.8em
-    left: 0.7em
-    position: absolute
-    top: 0.8em
-    width: 2em
-    .ie7 &
-      z-index: 1
-    a.menuButton
-      @include button
-      padding: 0
-      height: 100%
-      width: 100%
-
-      .icon
-        @include center(13px)
-
-    .menuDropdown
-      .ie7 &
-        width: 15em
-      ul li
-        @include sprite-menu-icons
-        a
-          @include clip-text
-
-    &.open .menuButton .icon
-      background-position: 0 0
-
-  #titleBox
-    border: 1px solid #f4f4f4
+  #infoBox
     margin-right: 55em
-    margin-left: 3em
-    padding-bottom: 0.4em
+    padding: 0.25em
+      bottom: 0.4em
     position: relative
-
-    .descriptionExpander
-      @include sprite-menu-icons
-      position: absolute
-      right: 0.2em
-      top: 0.2em
+    z-index: 1
 
     #datasetIcon
       @include sprite-type-icons-30
@@ -68,7 +33,7 @@ html, body
         position: absolute
         top: 0
 
-    #datasetName, .unsavedLine, #description, .basedOn
+    #datasetName, .unsavedLine, #description, .basedOnTemp, .basedOnParent
       margin: 0
         left: 40px
         right: 1em
@@ -79,13 +44,23 @@ html, body
       padding: 0
 
     #description
-      color: #999999
-      font-size: 1.1em
-      line-height: 1.1em
       margin-top: -0.2em
-      overflow: hidden
-      &.collapsed
-        height: 1.1em
+      position: relative
+      p
+        color: #999999
+        font-size: 1.1em
+        line-height: 1.1em
+        margin-right: 1.6em
+        overflow: hidden
+        text-align: justify
+        &.collapsed
+          height: 1.1em
+
+      .descriptionExpander
+        @include sprite-menu-icons
+        position: absolute
+        right: 0.3em
+        top: -0.1em
 
     .unsavedLine
       display: none
@@ -97,30 +72,36 @@ html, body
         font-size: 1.2em
         margin-right: 0.5em
 
-    .basedOn
+    .basedOnParent, .basedOnTemp
       color: #999999
       display: none
       font-size: 1.2em
       line-height: 1.1em
+      margin-bottom: 0.2em
+    .basedOnParent.hasParent
+      display: block
 
-    &.unsavedView
-      background-color: #ffffc8
-      .unsavedLine, .basedOn
+  &.unsavedView
+    background: #fff url(/stylesheets/images/interface/dataset_unsaved_fade.png) repeat-y
+
+    #infoBox
+      .unsavedLine, .basedOnTemp
         display: block
       #datasetIcon .alertIcon
         display: block
-      #description
-        margin-top: 0.5em
-      #datasetName, #description.collapsed
+      #datasetName, #description.collapsed, .basedOnParent
         display: none
 
   #actionBox
-    bottom: -1px
+    height: 100%
     position: absolute
-    right: 2.5em
+    right: 0
+    top: 0
 
     #toolbarOptions
-      float: left
+      float: right
+      margin: 0.6em 1.9em 0.3em
+        left: 0
 
       > li
         display: block
@@ -128,7 +109,8 @@ html, body
         margin-right: 1em
 
         #searchForm
-          border: 1px solid #cacaca
+          background-color: #fff
+          border: 1px solid $color_buttons_active_border
           @include border-radius(0.2em)
           @include box-shadow(0, 0, 2px, rgba(0, 0, 0, 0.05))
           display: inline-block
@@ -149,11 +131,9 @@ html, body
             height: 13px
             padding: 0
             -webkit-appearance: none // otherwise iOS renders inset shadow
-            width: 2.2em
+            width: 13em
             &.prompt
               font-style: normal
-            &.expanded
-              background-color: #fff
 
           .clearSearch
             @include sprite-menu-icons
@@ -180,6 +160,8 @@ html, body
           .menuButton
             @include button
             margin-top: 0
+            .ie7 &
+              padding-right: 1.7em
 
             .shareIcon
               @include dataset-toolbar-icon-share
@@ -190,6 +172,21 @@ html, body
                 display: block
                 float: left
 
+            .shareText
+              bottom: 0.2em
+              font-size: 1.2em
+              margin:
+                left: 0.5em
+                right: 0.2em
+              position: relative
+              .ie7 &
+                bottom: 0
+
+            .ie7 & .icon
+              position: absolute
+              right: 0.3em
+              top: 0.3em
+
           .menuDropdown ul li ul li
             @include sprite-menu-icons
             a
@@ -197,54 +194,80 @@ html, body
               line-height: 1em
               min-width: 6em
 
+    .sidebarOptionsContainer
+      bottom: 0
+      position: absolute
+      right: 0
+      width: 65em
+      .ie7 &
+        width: 75em
+
     #sidebarOptions
-      float: left
-      margin-left: 2em
+      background-image: -moz-linear-gradient(0 0 270deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.7)), -moz-linear-gradient(0 0 0deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0))
+      background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 1)), to(rgba(255, 255, 255, 0.7))), -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 1)), to(rgba(255, 255, 255, 0)))
+      background-repeat: no-repeat
+      clear: right
+      float: right
+      padding: 0.2em 0.6em 0.4em 10em
+      @transition-property(background-color)
+      @transition-duration(0.3s)
+      .noLinearGradient &
+        background-image: url(/stylesheets/images/interface/dataset_sidebar_fade.png)
 
       li
-        @include sprite-dataset-tabs('> a')
-        border-bottom: 1px solid $color_chrome_box_border
         float: left
-        margin-left: -7px
+        margin-left: 0.6em
         position: relative
+
         a
-          @include sprite-menu-icons('.alertIcon')
+          @include dataset-sidebar-icons
+          @include border-radius(0.35em)
+          color: #fff
+          display: block
+          font-size: 0.9em
+          height: 13px
+          line-height: 13px
+          padding: 0.4em 0.7em 0.5em
+
+          .ie7 &
+            overflow: hidden // ghetto clearfix
+            .icon
+              float: left
+
+          &.edit
+            background-color: $sidebar_edit_tab_color_top
+          &.moreViews
+            background-color: $sidebar_more_views_tab_color_top
+          &.filter
+            background-color: $sidebar_filter_tab_color_top
+          &.visualize
+            background-color: $sidebar_visualize_tab_color_top
+          &.export
+            background-color: $sidebar_export_tab_color_top
+          &.feed
+            background-color: $sidebar_feed_tab_color_top
+          &.embed
+            background-color: $sidebar_embed_tab_color_top
+          &.about
+            background-color: $sidebar_about_tab_color_top
+
+          .icon
+            display: inline-block
+            margin-right: 0.4em
+            vertical-align: bottom
+            .ie7 &
+              display: inline
+              zoom: 1
+
           .alertIcon
             position: absolute
             right: 8px
 
-      li
-        z-index: 8
-        + li
-          z-index: 7
-          + li
-            z-index: 6
-            + li
-              z-index: 5
-              + li
-                z-index: 4
-                + li
-                  z-index: 3
-                  + li
-                    z-index: 2
-                    + li
-                      z-index: 1
-      li.active
-        z-index: 9
-        &.tabEdit
-          border-bottom-color: $sidebar_edit_tab_color_top
-        &.tabFilter
-          border-bottom-color: $sidebar_filter_tab_color_top
-        &.tabVisualize
-          border-bottom-color: $sidebar_visualize_tab_color_top
-        &.tabExport
-          border-bottom-color: $sidebar_export_tab_color_top
-        &.tabFeed
-          border-bottom-color: $sidebar_feed_tab_color_top
-        &.tabEmbed
-          border-bottom-color: $sidebar_embed_tab_color_top
-        &.tabAbout
-          border-bottom-color: $sidebar_about_tab_color_top
+        &.active
+          margin: -2px
+            left: 0.4em
+          a
+            border: 2px solid #fff
 
     a
       @include sprite-menu-icons
@@ -254,8 +277,8 @@ html, body
     @include button
     padding: 0
     position: absolute
-    right: 0.4em
-    top: 0.4em
+    right: 0.6em
+    top: 0.6em
 
     &.maximize .icon
       @include dataset-toolbar-icon-maximize
@@ -263,8 +286,8 @@ html, body
       @include dataset-toolbar-icon-minimize
 
 #editBar
-  background-color: #f4f4f4
-  border-bottom: 1px solid $color_chrome_box_border
+  margin-left: 3.5em
+
   #editOptions
     float: left
     margin:
@@ -275,35 +298,31 @@ html, body
       .ie7 &
         display: inline
       .button
-        margin:
-          left: 0.1em
-          right: 0.1em
+        @include dataset-edit-icons
+        margin: 0.1em
+          top: 0.2em
         padding: 0.1em
-        .icon
-          @include text-hiding
-          background-image: url(/stylesheets/images/content/table_menu/menu_bar_sprites.png)
-          height: 20px
-          width: 20px
 
-        &.undo .icon
-          background-position: 0 0
-        &.redo .icon
-          background-position: 0 -20px
+        &.disabled .icon
+          opacity: 0.3
 
   #formatOptions
-    @include disabled-overlay
+    @include disabled-overlay(0.75em, 80, #fff)
     float: left
-    border-left: 1px solid $color_chrome_box_border
     margin:
       bottom: 0
       left: 0.5em
       top: 0
-    padding: 0.3em 0.5em
+    padding: 0.1em 0.5em
 
+    .disabledOverlay
+      opacity: 0
     &.disabled .disabledMessage
       display: none
     &.disabled:hover .disabledMessage
       display: block
+    &.disabled ul
+      opacity: 0.45
 
     .ie7 &
       z-index: 1
@@ -312,12 +331,15 @@ html, body
 
     li
       display: inline-block
+      .ie7 &
+        margin:
+          left: 0.2em
+          top: 0.1em
+        vertical-align: top
 
       .button
         @include format-icon
-        margin:
-          left: 0.1em
-          right: 0.1em
+        margin: 0.1em
         padding: 0.1em
         &.link
           height: 16px

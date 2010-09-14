@@ -3,9 +3,10 @@
 $box_gradient_alias_fix: 'rx=1&ry=1&rw=1'
 
 $sidebar_edit_tab_color_top: #e7b300
-$sidebar_filter_tab_color_top: #57b6dd
+$sidebar_more_views_tab_color_top: #ba44b3
+$sidebar_filter_tab_color_top: #0b5e9b
 $sidebar_visualize_tab_color_top: #03723f
-$sidebar_export_tab_color_top: #0b5e9b
+$sidebar_export_tab_color_top: #57b6dd
 $sidebar_feed_tab_color_top: #ff7400
 $sidebar_embed_tab_color_top: #e44044
 $sidebar_about_tab_color_top: #a03341
@@ -168,10 +169,10 @@ $sidebar_about_tab_color_top: #a03341
     input[type=text], input[type=password], textarea, label.error
       width: $controlWidth
 
-@mixin disabled-overlay($messageTop: 0.75em, $zIndex: 80)
+@mixin disabled-overlay($messageTop: 0.75em, $zIndex: 80, $backgroundColor: #eee)
   position: relative
   .disabledOverlay
-    background-color: #eeeeee
+    background-color: $backgroundColor
     display: none
     height: 100%
     left: 0

@@ -42,7 +42,8 @@ metricsNS.updateTopListWrapper = function($context, data, mapFunction, postProce
             if (_.isFunction(mapFunction))
             { mapFunction(key, data[key], mapped); }
             else
-            { mapped.push({name: key, value: data[key]}); }
+            { mapped.push({name: key, value: data[key],
+                           textValue: Highcharts.numberFormat(data[key], 0)}); }
         }
     }
 
@@ -71,6 +72,7 @@ metricsNS.topDatasetsCallback = function($context)
                 success: function(responseData) {
                     results.push({linkText: responseData.name,
                         value: value,
+                        textValue: Highcharts.numberFormat(value, 0),
                         href: $.generateViewUrl(responseData)
                     });
                 }
@@ -108,6 +110,7 @@ metricsNS.urlMapCallback = function($context)
                 }
             }
             results.push({linkText: key, value: totalCount,
+                textValue: Highcharts.numberFormat(totalCount, 0),
                 href: '#expand', linkClass: 'expandTopSection',
                 children: _.sortBy(subLinks, function(subItem) {
                     return -subItem.value;
@@ -136,8 +139,8 @@ metricsNS.summarySectionCallback = function($context)
         if (!$.isBlank(summaries.verbPhrase))
         {
             mappedData[key + 'Text'] =
-                (mappedData[key] == 0 ? 'No' : mappedData[key]) + ' ' +
-                (mappedData[key] == 1 ? summaries.verbPhraseSingular :
+                (mappedData[key] == 0 ? 'No' : Highcharts.numberFormat(mappedData[key], 0)) +
+                   ' ' + (mappedData[key] == 1 ? summaries.verbPhraseSingular :
                       summaries.verbPhrase) + ' ' +
                 region + ' this time period';
         }
@@ -162,6 +165,9 @@ metricsNS.summarySectionCallback = function($context)
     {
         mappedData.deltaClass = 'plus';
     }
+
+    mappedData.total = Highcharts.numberFormat(mappedData.total, 0);
+    mappedData.delta = Highcharts.numberFormat(mappedData.delta, 0);
 
     metricsNS.renderSummarySection($context, mappedData,
         metricsNS.summaryDataDirective, 'metricsSummaryData');
@@ -221,7 +227,8 @@ metricsNS.topListItemDirective = {
           '.titleLink'       : 'topItem.linkText',
           '.titleLink@href'  : 'topItem.href',
           '.titleLink@class+': 'topItem.linkClass',
-          '.value .primary'  : 'topItem.value',
+          '.value .primaryValue' : 'topItem.value',
+          '.value .primary'  : 'topItem.textValue',
           '.subLinks': {
               'subItem <- topItem.children' : {
                   '.subLink'      : 'subItem.linkText',

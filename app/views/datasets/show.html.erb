@@ -19,12 +19,7 @@
 <% end %>
 
 <div id='datasetBar' class='clearfix'>
-  <div id='viewsMenu' class='menu'></div>
-
-  <div id='titleBox'>
-    <a href="#expand" class="descriptionExpander downArrow" title="Click to expand">
-      <span class="icon"></span>
-    </a>
+  <div id='infoBox'>
     <div id='datasetIcon' class='type<%= @view.display.type.capitalize %>'>
       <span class='icon currentViewName'><%= @view.display.name %></span>
       <span class='alertIcon'></span>
@@ -41,87 +36,21 @@
         class='revert toolbarButton'>Revert</a>
     </div>
     <h2 id='datasetName' class="clipText currentViewName"><%= @view.name %></h2>
-    <div class='basedOn clipText'>
-    (based on <span class='parentName currentViewName'><%= @view.name %></span>)
+    <div class="basedOnParent">
+      Based on <a class="parentName"></a>
     </div>
-    <div id='description' class="collapsed"><%= @view.description %></div>
-  </div>
-
-  <div id='actionBox' class='clearfix'>
-    <ul id="toolbarOptions">
-      <%- unless @view.is_alt_view? -%>
-      <li>
-        <form id="searchForm" action="#">
-          <span class="icon"></span>
-          <input type="text" class="searchField textPrompt" title="Find in this Dataset" />
-          <a href="#clear" class="clearSearch close"><span class="icon"></span></a>
-        </form>
-      </li>
-
-      <li>
-      <ul id='renderTypeOptions'>
-        <li><a href='#grid' class='button grid' title='View as table'>
-          <span class='icon'></span>
-        </a></li>
-        <li><a href='#page' class='button page' title='View a single row'>
-          <span class='icon'></span>
-        </a></li>
-      </ul>
-      </li>
-
-      <%- end -%>
-      <li>
-        <div id='shareMenu' class='share menu'></div>
-      </li>
-    </ul>
-    <ul id='sidebarOptions' class="clearfix">
-      <li class="tabEdit"><a href='#Edit' title='Edit'
-        data-paneName='edit'>Edit</a></li>
-      <li class="tabFilter"><a href='#Filter' title='Filter' class='none'
-        data-paneName='filter'>Filter<span class='alertIcon'></span></a></li>
-      <li class="tabVisualize"><a href='#Visualize' title='Visualize'
-        data-paneName='visualize'>Visualize</a></li>
-      <li class="tabExport"><a href='#Export' title='Export'
-        data-paneName='export'>Export</a></li>
-      <li class="tabFeed"><a href='#Feed' title='Feed'
-        data-paneName='feed'>Feed</a></li>
-      <li class="tabEmbed"><a href='#Embed' title='Embed'
-        data-paneName='embed'>Embed</a></li>
-      <li class="tabAbout"><a href='#About' title='About'
-        data-paneName='about'>About</a></li>
-    </ul>
-  </div>
-
-  <a href="#toggleFullScreen" class="fullscreenButton maximize" title="Toggle full screen">
-    <span class="icon">Toggle full screen</span>
-  </a>
-</div>
-
-<div class='outerContainer'>
-  <div class='innerContainer'>
-    <div class='mainSpinner loadingSpinnerContainer hide'>
-      <div class='loadingSpinner'></div>
+    <div class='basedOnTemp'>
+      Based on <a class='revertLink currentViewName' href="#revert"><%= @view.name %></a>
     </div>
 
-    <div class='viewErrorContainer'>
-      <%- if @view.has_rights?('update_view') -%>
-      <div class='viewError'><%= @view.display.invalid_message %></div>
-      <ul class='invalidActions'>
-        <li>
-          <a href='#Edit' class='editView button'>Edit View</a>
-        </li>
-        <%- if @view.has_rights?('delete_view') -%>
-        <li>
-          <a href='#Remove' class='removeView button'>Delete View</a>
-        </li>
-        <%- end -%>
-      </ul>
-      <%- else -%>
-      <div class='viewError'>This view cannot be displayed</div>
-      <%- end -%>
+    <%- unless @view.can_edit? && !@view.is_alt_view? -%>
+    <div id='description'>
+      <p class="collapsed"><%= @view.description || '(No description provided)'%></p>
+      <a href="#expand" class="descriptionExpander rightArrow" title="Click to expand">
+        <span class="icon"></span>
+      </a>
     </div>
-
-    <%- if @view.can_edit? && !@view.is_alt_view? -%>
+    <%- else -%>
     <div id='editBar' class='clearfix'>
       <ul id='editOptions'>
         <li><a href='#Undo' class='button undo' title='Undo'>
@@ -166,6 +95,84 @@
       </div>
     </div>
     <%- end -%>
+
+  </div>
+
+  <div id='actionBox' class='clearfix'>
+    <ul id="toolbarOptions" class='clearfix'>
+      <li>
+        <ul id='renderTypeOptions'>
+          <li><a href='#grid' class='button grid' title='View as table'>
+            <span class='icon'></span>
+          </a></li>
+          <li><a href='#page' class='button page' title='View a single row'>
+            <span class='icon'></span>
+          </a></li>
+        </ul>
+      </li>
+      <li>
+        <div id='shareMenu' class='share menu'></div>
+      </li>
+      <%- unless @view.is_alt_view? -%>
+      <li>
+        <form id="searchForm" action="#">
+          <span class="icon"></span>
+          <input type="text" class="searchField textPrompt" title="Find in this Dataset" />
+          <a href="#clear" class="clearSearch close"><span class="icon"></span></a>
+        </form>
+      </li>
+      <%- end -%>
+    </ul>
+    <div class="sidebarOptionsContainer clearfix">
+      <ul id='sidebarOptions' class="clearfix">
+        <li><a href='#Edit' title='Edit' class="edit"
+          data-paneName='edit'><span class="icon"></span>Edit</a></li>
+        <li><a href='#More Views' title='More Views' class="moreViews"
+          data-paneName='moreViews'><span class="icon"></span>More Views</a></li>
+        <li><a href='#Filter' title='Filter' class='filter'
+          data-paneName='filter'><span class="icon"></span>Filter
+          <span class='alertIcon'></span></a></li>
+        <li><a href='#Visualize' title='Visualize' class="visualize"
+          data-paneName='visualize'><span class="icon"></span>Visualize</a></li>
+        <li><a href='#Export' title='Export' class="export"
+          data-paneName='export'><span class="icon"></span>Export</a></li>
+        <li><a href='#Feed' title='Feed' class="feed"
+          data-paneName='feed'><span class="icon"></span>Discuss</a></li>
+        <li><a href='#Embed' title='Embed' class="embed"
+          data-paneName='embed'><span class="icon"></span>Embed</a></li>
+        <li><a href='#About' title='About' class="about"
+          data-paneName='about'><span class="icon"></span>About</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <a href="#toggleFullScreen" class="fullscreenButton maximize" title="Toggle full screen">
+    <span class="icon">Toggle full screen</span>
+  </a>
+</div>
+
+<div class='outerContainer'>
+  <div class='innerContainer'>
+    <div class='mainSpinner loadingSpinnerContainer hide'>
+      <div class='loadingSpinner'></div>
+    </div>
+    <div class='viewErrorContainer'>
+      <%- if @view.has_rights?('update_view') -%>
+      <div class='viewError'><%= @view.display.invalid_message %></div>
+      <ul class='invalidActions'>
+        <li>
+          <a href='#Edit' class='editView button'>Edit View</a>
+        </li>
+        <%- if @view.has_rights?('delete_view') -%>
+        <li>
+          <a href='#Remove' class='removeView button'>Delete View</a>
+        </li>
+        <%- end -%>
+      </ul>
+      <%- else -%>
+      <div class='viewError'>This view cannot be displayed</div>
+      <%- end -%>
+    </div>
 
     <div id='mainGrid' class='fullHeight'>
       <%= raw @view.display.render_body(self) %>

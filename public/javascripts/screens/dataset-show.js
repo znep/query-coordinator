@@ -34,6 +34,9 @@ blist.datasetPage.hidePageRenderType = function()
     $(window).resize();
     // If initially loaded page view, the grid hasn't been rendered yet
     datasetPageNS.initGrid();
+
+    $('#renderTypeOptions li a').removeClass('active');
+    $('#renderTypeOptions li .grid').addClass('active');
 };
 
 blist.datasetPage.showPageRenderType = function()
@@ -42,6 +45,9 @@ blist.datasetPage.showPageRenderType = function()
     datasetPageNS.$pageRenderType.removeClass('hide');
     $('body').addClass('pageRenderType');
     $(window).resize();
+
+    $('#renderTypeOptions li a').removeClass('active');
+    $('#renderTypeOptions li .page').addClass('active');
 };
 
 blist.datasetPage.initGrid = function()
@@ -119,7 +125,8 @@ $(function()
 
 
     // Render types
-    $('#renderTypeOptions .button').click(function(e)
+    $('#renderTypeOptions').pillButtons();
+    $('#renderTypeOptions a').click(function(e)
     {
         e.preventDefault();
         if ($.hashHref($(this).attr('href')) == 'page')

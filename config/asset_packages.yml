@@ -324,6 +324,7 @@ javascripts:
   - controls/full-screen
   - controls/format-options
   - controls/page-render-type
+  - controls/pill-buttons
   - screens/dataset-show
 - screen-dataset-edit-metadata:
   - plugins/jquery.uniform

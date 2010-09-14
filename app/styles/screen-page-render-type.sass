@@ -20,6 +20,8 @@
           padding: 0.2em 1em 0.2em 0.2em
           vertical-align: top
           width: 33%
+          .ie7 &
+            display: inline
 
         .pageItem
           display: inline-block
@@ -29,6 +31,8 @@
           .invalid
             color: #888888
             font-style: italic
+          .ie7 &
+            display: inline
 
         &:nth-child(odd)
           .pageLabel
@@ -44,7 +48,7 @@
           min-width: 10em
 
         &.nested_table .pageItem table
-          thead
+          th
             background-color: #d8d8d8
 
           td, th
@@ -84,7 +88,10 @@
       vertical-align: middle
       &.info
         font-size: 1.2em
+        line-height: 1.2em
         margin: 0 0.5em
       .button
         @include sprite-menu-icons
         padding: 0.3em
+      .ie7 &
+        display: inline

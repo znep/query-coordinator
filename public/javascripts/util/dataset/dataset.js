@@ -964,8 +964,8 @@ this.Dataset = Model.extend({
             $.isBlank(oldGroupings)) { return; }
 
         // Save off original column order to restore later
-        if ($.isBlank(oldGroupings))
-        { ds._origColOrder = _.pluck(ds.visibleColumns, 'id'); }
+        var isNewOrder = $.isBlank(oldGroupings);
+        if (isNewOrder) { ds._origColOrder = _.pluck(ds.visibleColumns, 'id'); }
 
         var curGrouped = {};
         _.each(ds.realColumns, function(c)
@@ -1021,8 +1021,11 @@ this.Dataset = Model.extend({
                     f.push('hidden');
                     c.update({flags: f});
                 }
-                if (i < 0) { i = c.position + newColOrder.length; }
-                c.position = i + 1;
+                if (isNewOrder)
+                {
+                    if (i < 0) { i = c.position + newColOrder.length; }
+                    c.position = i + 1;
+                }
             });
 
             ds.updateColumns();

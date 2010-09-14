@@ -102,7 +102,8 @@
     <ul id="toolbarOptions" class='clearfix'>
       <li>
         <ul id='renderTypeOptions' class="pillButtons">
-          <li><a href='#grid' class='grid' title='View as table'>
+          <li><a href='#main' class='main <%= @view.display.type %>'
+            title='View as <%= @view.display.name.downcase %>'>
             <span class='icon'></span>
           </a></li>
           <li><a href='#page' class='page' title='View a single row'>

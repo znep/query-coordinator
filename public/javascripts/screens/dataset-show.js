@@ -36,7 +36,7 @@ blist.datasetPage.hidePageRenderType = function()
     datasetPageNS.initGrid();
 
     $('#renderTypeOptions li a').removeClass('active');
-    $('#renderTypeOptions li .grid').addClass('active');
+    $('#renderTypeOptions li .main').addClass('active');
 };
 
 blist.datasetPage.showPageRenderType = function()
@@ -52,7 +52,7 @@ blist.datasetPage.showPageRenderType = function()
 
 blist.datasetPage.initGrid = function()
 {
-    if (datasetPageNS.gridInitialized) { return; }
+    if (datasetPageNS.gridInitialized || !blist.dataset.isGrid()) { return; }
 
     datasetPageNS.$dataGrid
         .datasetGrid({view: blist.dataset,
@@ -142,10 +142,10 @@ $(function()
     datasetPageNS.$dataGrid = blist.$display;
     if (datasetPageNS.$dataGrid.length > 0)
     {
+        if (!isPageRT) { datasetPageNS.initGrid(); }
+
         if (blist.dataset.isGrid())
         {
-            if (!isPageRT) { datasetPageNS.initGrid(); }
-
             // Fire up guided filter if available
             if (!_.isUndefined(blist.dataset.metadata) &&
                 !_.isUndefined(blist.dataset.metadata.facets))

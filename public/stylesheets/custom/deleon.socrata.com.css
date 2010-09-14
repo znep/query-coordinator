@@ -1,0 +1,120 @@
+/* HEADER */
+body {
+  background: none #E8E8E8;
+}
+.bodyExterior {
+  min-height:inherit;
+}
+.bodyInterior {
+  border:none;
+}
+#header {
+  background:none;
+  padding:0;
+  height:120px;
+  margin-bottom:1em;
+}
+/* Main Logo*/
+#mainLogo
+{
+  position: static;
+  margin: 1em;
+}
+
+/* Main Nav */
+#mainNav {
+  width:auto;
+  margin-left:10px;
+  margin-right:10px;
+  padding:3px 0 0 5px;
+}
+#mainNav li {
+  width:auto;
+  height:auto;
+  margin:0;
+}
+#mainNav li a {
+  background: #480003 url(/stylesheets/images/domains/deleon.socrata.com/mainNav-bg.png) top repeat-x;	
+  border-top-right-radius: 0.3em;
+  -moz-border-radius-topright: 0.3em;
+  webkit-border-top-right-radius: 0.3em;
+  border-top-left-radius: 0.3em;
+  -moz-border-radius-topleft: 0.3em;
+  webkit-border-top-left-radius: 0.3em;
+  border-bottom-left-radius: 0.3em;
+  -moz-border-radius-bottomleft: 0.3em;
+  webkit-border-bottom-left-radius: 0.3em;
+  border-bottom-right-radius: 0.3em;
+  -moz-border-radius-bottomright: 0.3em;
+  webkit-border-bottom-right-radius: 0.3em;	
+  font-family:Georgia, "Times New Roman", Times, serif;
+  font-size:1.5em;
+  border-right:#b3b3b3 solid 1px;
+  padding: 0.4em 1.2em;
+  margin:0 0.2em 0;
+}
+#mainNav li a:hover {
+  background: #c3000a url(/stylesheets/images/domains/deleon.socrata.com/tab-hover.png) top repeat-x;
+  text-decoration:none;
+  cursor:pointer;
+}
+#mainNav li span {
+  padding:0;
+  margin:0;
+}
+#mainNav li.home a span, body.home #mainNav li.home a span, #mainNav li.discover a span {
+  font-weight: normal;
+  margin:0;
+  text-indent:0;
+}
+body.home #mainNav li.home, body.home #mainNav li.home a span, body.discover #mainNav li.discover a span, body.community #mainNav li.community a span, body.discover #mainNav li.discover, #mainNav ul.subNav li:hover, #mainNav ul.subNav li:hover a span, body.home #mainNav li.home .subNav li:hover, body.home #mainNav li.home .subNav li:hover a span {background:none;}
+#mainNav li, #mainNav li a span {background:none;}
+/* Main Nav Subnav */
+
+#mainNav ul.subNav {
+  background:#195a9c;
+}
+#mainNav li.home .subNav li, #mainNav li.home .subNav li a span, body.home #mainNav li.home .subNav li, body.home #mainNav li.home .subNav li a span {
+  background:none;
+}
+#mainNav ul.subNav, body.discover #mainNav ul.subNav, body.home #mainNav ul.subNav, #mainNav li.home.loggedInNav:hover ul.subNav
+{
+  display: none;
+  height: 0;
+}
+/* Login Box */
+.dialogBox .header {
+}
+.dialogBox .header h1 {
+}
+
+/* FOOTER */
+#footer
+{
+  height: 45px;
+}
+
+.footerLogoContainer
+{
+  float:left;		
+  margin: 1em;	
+  width: 90px;	
+}
+
+.footerLogoContainer .footerLogo
+{
+  background:url(/stylesheets/images/domains/deleon.socrata.com/texas.png) no-repeat;
+  display: block;
+  height: 50px;
+  text-align: left;
+  text-indent:-9999px;
+  width: 49px;		
+}
+
+.siteFooterNav a {
+  color:#333;
+  font-weight:bold;
+  font-size:1em;
+  font-family:Verdana, Arial, Helvetica, sans-serif;
+}
+

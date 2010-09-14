@@ -25,7 +25,7 @@ $(function()
         // manually update some things in JSON
         if (!_.isUndefined(viewData.tags))
         {
-            viewData.tags = viewData.tags.split(/,/).map(function(tag) { return tag.trim(); });
+            viewData.tags = viewData.tags.split(/\s*,\s*/);
         }
         if (formData.privacy == 'public')
         {

@@ -47,7 +47,9 @@
       <dd><%= @view.contributor_users.length %></dd>
       <%- if @view.user_granted?(current_user) || CurrentDomain.user_can?(current_user, :edit_others_datasets) -%>
         <dt class='widenedItem'>
-          <%= link_to 'View Statistics', "#{@view.href}/stats" %>
+          <%# TODO/v4 / balboa: Revert this to just /stats once balboa is stable %>
+          <%= link_to 'View Statistics', CurrentDomain.feature?(:balboa_stats) ?
+                       "#{@view.href}/balboa_stats" : "#{@view.href}/stats" %>
         </dt>
         <dd>&nbsp;</dd>
       <%- end -%>

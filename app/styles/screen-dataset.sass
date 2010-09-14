@@ -195,16 +195,16 @@ html, body
         width: 75em
 
     #sidebarOptions
+      background-image: url(/stylesheets/images/interface/dataset_sidebar_fade.png)
       background-image: -moz-linear-gradient(0 0 270deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.7)), -moz-linear-gradient(0 0 0deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0))
-      background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 1)), to(rgba(255, 255, 255, 0.7))), -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 1)), to(rgba(255, 255, 255, 0)))
+      // Chrome builds below 7 don't support multiple background-images >(
+      // background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 1)), to(rgba(255, 255, 255, 0.7))), -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 1)), to(rgba(255, 255, 255, 0)))
       background-repeat: no-repeat
       clear: right
       float: right
       padding: 0.2em 0.6em 0.4em 10em
       @transition-property(background-color)
       @transition-duration(0.3s)
-      .noLinearGradient &
-        background-image: url(/stylesheets/images/interface/dataset_sidebar_fade.png)
 
       li
         float: left
@@ -260,6 +260,8 @@ html, body
             left: 0.4em
           a
             border: 2px solid #fff
+            // Chrome can't handle the larger border
+            border-radius: 0.1em
 
     a
       @include sprite-menu-icons

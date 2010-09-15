@@ -31,6 +31,7 @@
                             name: row[chartObj._fixedColumns[0].id],
                             data: {
                                 $area: area,
+                                $color: (row.meta && row.meta.color) || '#444',
                                 amount:
                                     row[chartObj._valueColumns[0].column.id] || 0
                             },

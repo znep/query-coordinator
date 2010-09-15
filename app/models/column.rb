@@ -395,6 +395,10 @@ class Column < Model
     !self.format.nil? && !self.format.grouping_aggregate.nil?
   end
 
+  def is_linked?
+    !(self.format.nil? || self.format.linkedKey.nil?)
+  end
+
   private
 
   @@filter_conditions = {

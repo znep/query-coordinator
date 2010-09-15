@@ -114,15 +114,6 @@ $(function()
     // Page render type
     datasetPageNS.$pageRenderType = $('#pageRenderType');
     datasetPageNS.$pageRenderType.pageRenderType({ view: blist.dataset });
-    var isPageRT = !$.isBlank(blist.initialRowId);
-    if (!isPageRT) { datasetPageNS.hidePageRenderType(); }
-    else
-    {
-        datasetPageNS.showPageRenderType();
-        datasetPageNS.$pageRenderType.pageRenderType()
-            .displayRowByID(blist.initialRowId);
-    }
-
 
     // Render types
     $('#renderTypeOptions').pillButtons();
@@ -136,6 +127,17 @@ $(function()
     });
     $(document).bind(blist.events.DISPLAY_ROW, function()
             { datasetPageNS.showPageRenderType(); });
+
+    var isPageRT = !$.isBlank(blist.initialRowId);
+    if (!isPageRT) { datasetPageNS.hidePageRenderType(); }
+    else
+    {
+        // Cheat by making sure the div is hidden initially
+        datasetPageNS.$pageRenderType.addClass('hide');
+        datasetPageNS.showPageRenderType();
+        datasetPageNS.$pageRenderType.pageRenderType()
+            .displayRowByID(blist.initialRowId);
+    }
 
 
     // grid

@@ -252,7 +252,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect ':category/:view_name/:id/:row_id', :controller => 'datasets',
     :action => 'show',
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
-      :category => /(\w|-)+/},
+      :category => /(\w|-)+/, :row_id => /\d+/},
     :conditions => {:method => :get, :has_v4_dataset => true}
 
   map.connect ':category/:view_name/:id/widget_preview', :controller => 'datasets',

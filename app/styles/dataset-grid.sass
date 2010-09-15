@@ -427,6 +427,8 @@ div.blist-tr.blist-hot-row
   line-height: 1.4545em
   padding: 0.3636em
   text-align: right
+  a
+    color: $color_links_normal
 
 .blist-tr .blist-table-row-handle
   border-left-width: 0
@@ -848,7 +850,7 @@ ul.menu.rowMenu li
       &.active a
         background-position: 5px 30px
 
-.columnHeaderMenu, .facetFilterRow
+.columnHeaderMenu, .facetFilterRow, .pageLine
   .blist-checkbox,
   .blist-picklist-wrapper,
   .blist-flag,
@@ -931,30 +933,6 @@ ul.menu.rowMenu li
 
   li.delete a
     background-position: 5px -57px
-
-.blist-table
-  .blist-hot-row .blist-td.blist-table-row-numbers,
-  .blist-select-row .blist-td.blist-table-row-numbers
-    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png)
-    background-repeat: no-repeat
-    text-align: left
-    text-indent: -9999px
-
-  .blist-hot-row
-    .blist-td.blist-table-row-numbers
-      background-position: right -897px
-
-    &.blist-tr-sub .blist-td.blist-table-row-numbers
-      background-image: none
-
-  .blist-select-row .blist-td.blist-table-row-numbers
-    background-position: right -506px
-
-  .blist-hot-row.blist-tr-blank .blist-td.blist-table-row-numbers,
-  .blist-select-row.blist-tr-blank .blist-td.blist-table-row-numbers
-    background-image: none
-    text-align: right
-    text-indent: 0
 
 .blist-table-edit-container
   &.mode-edit .blist-table-editor.type-stars,

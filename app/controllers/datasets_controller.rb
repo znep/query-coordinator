@@ -16,18 +16,29 @@ class DatasetsController < ApplicationController
     @view = get_view(params[:id])
     return if @view.nil?
 
+    if !params[:row_id].nil?
+      @row = @view.get_row(params[:row_id])
+      if @row.nil?
+        flash.now[:error] = 'This row cannot be found, or has been deleted.'
+        render 'shared/error', :status => :not_found
+        return nil
+      end
+    end
+
     if !current_user
       @user_session = UserSession.new
     end
 
+    href = @view.href
+    href += '/' + params[:row_id] if !params[:row_id].nil?
     # See if it matches the authoritative URL; if not, redirect (but only if we
     # aren't cheating and showing them the new datasets page)
-    if request.path != @view.href && CurrentDomain.module_available?('new_datasets_page')
+    if request.path != href && CurrentDomain.module_available?('new_datasets_page')
       # Log redirects in development
       if Rails.env.production? && request.path =~ /^\/dataset\/\w{4}-\w{4}/
         logger.info("Doing a dataset redirect from #{request.referrer}")
       end
-      redirect_to(@view.href + '?' + request.query_string)
+      redirect_to(href + '?' + request.query_string)
     end
 
     # If we're displaying a single dataset, set the meta tags as appropriate.

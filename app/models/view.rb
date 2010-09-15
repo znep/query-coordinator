@@ -120,6 +120,24 @@ class View < Model
     end
   end
 
+  def get_row(row_id)
+    result = JSON.parse(CoreServer::Base.connection.get_request(
+      "/#{self.class.name.pluralize.downcase}/#{id}/" +
+      "rows.json?ids=#{row_id}&meta=true"))
+    r = result['data']['data'][0]
+    return nil if r.nil?
+
+    row = Hash.new
+    result['meta']['view']['columns'].each_with_index do |c, i|
+      if c['dataTypeName'] == 'meta_data'
+        row[c['name']] = r[i]
+      else
+        row[c['id']] = r[i]
+      end
+    end
+    return row
+  end
+
   def json(params)
     url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json"
     if !params.nil?

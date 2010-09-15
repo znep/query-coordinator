@@ -58,9 +58,17 @@ String.prototype.clean = function()
     return this.replace(/\xa0/g, ' ');
 };
 
+
 // jQuery defs
 
 (function($) {
+
+$.hashHref = function(href)
+{
+    // IE sticks the entire page URL on, so we can't just strip off the hash;
+    // instead we need to index into it and take everything after
+    return href.slice(href.indexOf('#') + 1);
+};
 
 $.urlParam = function(url, name, value)
 {

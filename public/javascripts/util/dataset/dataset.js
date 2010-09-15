@@ -81,6 +81,20 @@ this.Dataset = Model.extend({
         return this._rows[index];
     },
 
+    rowIndex: function(id, successCallback)
+    {
+        var ds = this;
+        if (!$.isBlank(ds.rowForID(id)))
+        { successCallback(ds.rowForID(id).index); }
+        else
+        {
+            var gotID = function(data) { successCallback(data[id]); };
+            ds._makeRequest({url: '/views/' + ds.id + '/rows.json',
+                params: {method: 'getByIds', indexesOnly: true, ids: id},
+                success: gotID});
+        }
+    },
+
     _childRowForID: function(id, parRow, parCol)
     {
         // Someday an actual lookup for child rows might be good; but these
@@ -827,6 +841,104 @@ this.Dataset = Model.extend({
             success: successCallback, error: errorCallback});
     },
 
+    _cachedLinkedColumnOptions: {},
+
+    getLinkedColumnOptions: function(keyCol, notUsed, $field, curVal)
+    {
+        var ds = blist.dataset;
+        var localKeyColumnId = keyCol && keyCol["format.linkedKey"] ?
+            keyCol["format.linkedKey"] : keyCol;
+
+        if ($.isBlank(localKeyColumnId) || isNaN(localKeyColumnId))
+        {
+            return [];
+        }
+
+        var viewUid = ds.columnForID(localKeyColumnId).format.linkedDataset;
+
+        if (ds._cachedLinkedColumnOptions[viewUid] == null)
+        {
+            ds._makeRequest({url: '/api/views/{0}.json'.format(viewUid),
+                pageCache: true, type: 'GET',
+                error: function(req)
+                {
+                    alert('Fail to get columns from dataset {0}.'.format(viewUid));
+                },
+                success: function(linkedDataset)
+                {
+                    var lds = new Dataset(linkedDataset);
+                    ds._cachedLinkedColumnOptions[viewUid] = [];
+                    var cldo = ds._cachedLinkedColumnOptions[viewUid];
+                    var opt;
+
+                    _.each(lds.columns || [], function(c)
+                    {
+                        if (c.canBeLinkSource())
+                        {
+                            opt = {value: String(c.id), text: c.name,
+                                dataType: c.dataTypeName};
+                            cldo.push(opt);
+                        }
+                    });
+                    if (ds._cachedLinkedColumnOptions[viewUid].length <= 0)
+                    {
+                        alert('Dataset {0} does not have any column.'
+                            .format(viewUid));
+                    }
+                    else
+                    {
+                        $field.data('linkedFieldValues', '_reset');
+                        _.each($field.data('linkedGroup'), function(f) {
+                            $(f).trigger('change');
+                        });
+                        _.defer(function() { $field.val(curVal); });
+                    }
+                }});
+             return [];
+        }
+
+        // set up another key to get the remote columns.  used by add new
+        // column dialog.
+        ds._cachedLinkedColumnOptions[localKeyColumnId] =
+            ds._cachedLinkedColumnOptions[viewUid];
+
+        return ds._cachedLinkedColumnOptions[viewUid];
+    },
+
+    getLinkSourceDataType: function(col, linkSrcColId, keyColId)
+    {
+        var localKeyColId = col && col.format ? col.format['linkedKey'] : keyColId;
+        var ds = blist.dataset;
+        var keyCol = ds.columnForID(localKeyColId);
+        if (keyCol == undefined) { return null; }
+        var viewUid = keyCol.format.linkedDataset;
+        var remoteColumns = ds._cachedLinkedColumnOptions[viewUid];
+        if (remoteColumns == null) { return null; }
+
+        for (var n = remoteColumns.length - 1; n >= 0; n--)
+        {
+            if (remoteColumns[n].value == linkSrcColId)
+            {
+                var dt = remoteColumns[n].dataType;
+                return { value: dt, text: blist.data.types[dt].title };
+            }
+        }
+
+        return null;
+    },
+
+    hasDatasetLinkColumn: function()
+    {
+        // no link column in bnb
+        var ds = this;
+        if (ds && ds.parentId) { return false; }
+        return _.any(ds.columns,
+            function(c)
+            {
+                return (c.dataTypeName == 'dataset_link');
+            });
+    },
+
 
     // Private methods
 
@@ -964,8 +1076,8 @@ this.Dataset = Model.extend({
             $.isBlank(oldGroupings)) { return; }
 
         // Save off original column order to restore later
-        if ($.isBlank(oldGroupings))
-        { ds._origColOrder = _.pluck(ds.visibleColumns, 'id'); }
+        var isNewOrder = $.isBlank(oldGroupings);
+        if (isNewOrder) { ds._origColOrder = _.pluck(ds.visibleColumns, 'id'); }
 
         var curGrouped = {};
         _.each(ds.realColumns, function(c)
@@ -1021,8 +1133,11 @@ this.Dataset = Model.extend({
                     f.push('hidden');
                     c.update({flags: f});
                 }
-                if (i < 0) { i = c.position + newColOrder.length; }
-                c.position = i + 1;
+                if (isNewOrder)
+                {
+                    if (i < 0) { i = c.position + newColOrder.length; }
+                    c.position = i + 1;
+                }
             });
 
             ds.updateColumns();
@@ -1352,7 +1467,9 @@ this.Dataset = Model.extend({
 
             _.each(r.columnsSaving, function(cId)
             {
-                var col = ds.columnForID(cId);
+                var col = !$.isBlank(r.parentColumn) ?
+                    r.parentColumn.childColumnForID(cId) :
+                    ds.columnForID(cId);
                 ds._updateLinkedColumns(col, r.row, newRow);
             });
 
@@ -1480,100 +1597,6 @@ this.Dataset = Model.extend({
         this._makeRequest({url: '/views.json', pageCache: true, type: 'GET',
                 data: { method: 'getByTableId', tableId: this.tableId },
                 success: processDS});
-    },
-
-    cachedLinkedColumnOptions: {},
-
-    getLinkedColumnOptions: function(keyCol, notUsed, $field, curVal)
-    {
-        var ds = blist.dataset;
-        var localKeyColumnId = keyCol && keyCol["format.linkedKey"] ?
-            keyCol["format.linkedKey"] : keyCol;
-
-        if ($.isBlank(localKeyColumnId) || isNaN(localKeyColumnId))
-        {
-            return [];
-        }
-
-        var viewUid = ds.columnForID(localKeyColumnId).format.linkedDataset;
-
-        if (ds.cachedLinkedColumnOptions[viewUid] == null)
-        {
-            ds._makeRequest({url: '/api/views/{0}.json'.format(viewUid),
-                pageCache: true, type: 'GET',
-                error: function(req)
-                {
-                    alert('Fail to get columns from dataset {0}.'.format(viewUid));
-                },
-                success: function(linkedDataset)
-                {
-                    var lds = new Dataset(linkedDataset);
-                    ds.cachedLinkedColumnOptions[viewUid] = [];
-                    var cldo = ds.cachedLinkedColumnOptions[viewUid];
-                    var opt;
-
-                    _.each(lds.columns || [], function(c)
-                    {
-                        if (c.canBeLinkSource())
-                        {
-                            opt = {value: String(c.id), text: c.name, dataType: c.dataTypeName};
-                            cldo.push(opt);
-                        }
-                    });
-                    if (ds.cachedLinkedColumnOptions[viewUid].length <= 0)
-                    {
-                        alert('Dataset {0} does not have any column.'.format(viewUid));
-                    }
-                    else
-                    {
-                        $field.data('linkedFieldValues', '_reset');
-                        _.each($field.data('linkedGroup'), function(f) {
-                            $(f).trigger('change');
-                        });
-                        _.defer(function() { $field.val(curVal); });
-                    }
-                }});
-             return [];
-        }
-
-        // set up another key to get the remote columns.  used by add new column dialog.
-        ds.cachedLinkedColumnOptions[localKeyColumnId] = ds.cachedLinkedColumnOptions[viewUid];
-
-        return ds.cachedLinkedColumnOptions[viewUid];
-    },
-
-    getLinkSourceDataType: function(col, linkSrcColId, keyColId)
-    {
-        var localKeyColId = col && col.format ? col.format['linkedKey'] : keyColId;
-        var ds = blist.dataset;
-        var keyCol = ds.columnForID(localKeyColId);
-        if (keyCol == undefined) { return null; }
-        var viewUid = keyCol.format.linkedDataset;
-        var remoteColumns = ds.cachedLinkedColumnOptions[viewUid];
-        if (remoteColumns == null) { return null; }
-
-        for (var n = remoteColumns.length - 1; n >= 0; n--)
-        {
-            if (remoteColumns[n].value == linkSrcColId)
-            {
-                var dt = remoteColumns[n].dataType;
-                return { value: dt, text: blist.data.types[dt].title };
-            }
-        }
-
-        return null;
-    },
-
-    hasDatasetLinkColumn: function()
-    {
-        // no link column in bnb
-        var ds = this;
-        if (ds && ds.parentId) { return false; }
-        return _.any(ds.columns,
-            function(c)
-            {
-                return (c.dataTypeName == 'dataset_link');
-            });
     },
 
     _validKeys: {

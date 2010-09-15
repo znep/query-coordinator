@@ -101,6 +101,17 @@
   <div id='actionBox' class='clearfix'>
     <ul id="toolbarOptions" class='clearfix'>
       <li>
+        <ul id='renderTypeOptions' class="pillButtons">
+          <li><a href='#main' class='main <%= @view.display.type %>'
+            title='View as <%= @view.display.name.downcase %>'>
+            <span class='icon'></span>
+          </a></li>
+          <li><a href='#page' class='page' title='View a single row'>
+            <span class='icon'></span>
+          </a></li>
+        </ul>
+      </li>
+      <li>
         <div id='shareMenu' class='share menu'></div>
       </li>
       <%- unless @view.is_alt_view? -%>
@@ -126,7 +137,7 @@
           data-paneName='visualize'><span class="icon"></span>Visualize</a></li>
         <li><a href='#Export' title='Export' class="export"
           data-paneName='export'><span class="icon"></span>Export</a></li>
-        <li><a href='#Feed' title='Feed' class="feed"
+        <li><a href='#Discuss' title='Discuss' class="feed"
           data-paneName='feed'><span class="icon"></span>Discuss</a></li>
         <li><a href='#Embed' title='Embed' class="embed"
           data-paneName='embed'><span class="icon"></span>Embed</a></li>
@@ -143,6 +154,9 @@
 
 <div class='outerContainer'>
   <div class='innerContainer'>
+    <div class='mainSpinner loadingSpinnerContainer hide'>
+      <div class='loadingSpinner'></div>
+    </div>
     <div class='viewErrorContainer'>
       <%- if @view.has_rights?('update_view') -%>
       <div class='viewError'><%= @view.display.invalid_message %></div>
@@ -164,6 +178,27 @@
     <div id='mainGrid' class='fullHeight'>
       <%= raw @view.display.render_body(self) %>
       <%= render(:partial => @view.display.render_partial) %>
+    </div>
+
+    <div id='pageRenderType' class='fullHeight hide'>
+      <div class='content'></div>
+      <ul class='navigation'>
+        <li><a href='#start' title='View first row' class='start button'>
+          <span class='icon'></span>
+        </a></li>
+        <li><a href='#previous' title='View previous row' class='previous button'>
+          <span class='icon'></span>
+        </a></li>
+        <li class='info'>
+        Viewing row <span class='curRow'></span> of <span class='totalRows'></span>
+        </li>
+        <li><a href='#next' title='View next row' class='next button'>
+          <span class='icon'></span>
+        </a></li>
+        <li><a href='#end' title='View last row' class='end button'>
+          <span class='icon'></span>
+        </a></li>
+      </ul>
     </div>
   </div>
 
@@ -328,6 +363,10 @@
 
     <%- if !current_user.nil? -%>
       blist.currentUserId = '<%= current_user.id %>';
+    <%- end -%>
+
+    <%- if !@row.nil? -%>
+    blist.initialRowId = "<%= @row['sid'] %>";
     <%- end -%>
 
     <%# Namespace to keep track of disabled sidebar sections %>

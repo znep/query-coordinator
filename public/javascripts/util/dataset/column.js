@@ -413,18 +413,11 @@ this.Column = Model.extend({
 
     canBeLinkSource: function()
     {
-        switch (this.dataTypeName)
-        {
-            case 'dataset_link':
-            case 'nested_table':
-            case 'drop_down_list':
-            case 'tag':
-                return false;
-            default:
-                if (this.hidden) { return false; }
-                if (this.dataTypeName.indexOf('obsolete') >= 0) { return false; }
-                return true;
-        }
+        if (_.include(['dataset_link', 'nested_table', 'drop_down_list', 'tag'],
+            this.dataTypeName)) { return false; }
+        if (this.hidden) { return false; }
+        if (this.dataTypeName.indexOf('obsolete') >= 0) { return false; }
+        return true;
     },
 
     _validKeys: {

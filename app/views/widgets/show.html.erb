@@ -41,6 +41,10 @@
         </div>
       <%- end -%>
       <div class="gridContainer">
+          <div class='mainSpinner loadingSpinnerContainer hide'>
+            <div class='loadingSpinner'></div>
+          </div>
+
           <div id="data-grid" class='fullHeight'>
             <%- if @view.is_tabular? && @view.display.valid? -%>
               <noscript>
@@ -61,6 +65,7 @@
               <%= render(:partial => @display.render_partial) %>
             <%- end -%>
           </div>
+
           <div class='viewErrorContainer content'>
             <%- if current_user && (current_user.id == @view.owner.id) -%>
             <div class='viewError'><%= @view.display.invalid_message %></div>
@@ -73,6 +78,30 @@
             <%- end -%>
           </div>
       </div>
+    </div>
+
+    <div id='pageRenderType'
+      class='widgetContentSection widgetContent_pageRenderType'>
+      <div class='content'></div>
+      <ul class='navigation'>
+        <li><a href='#start' title='View first row' class='start button'>
+          <span class='icon'></span>
+        </a></li>
+        <li><a href='#previous' title='View previous row'
+          class='previous button'>
+          <span class='icon'></span>
+        </a></li>
+        <li class='info'>
+        Viewing row <span class='curRow'></span> of <span
+          class='totalRows'></span>
+        </li>
+        <li><a href='#next' title='View next row' class='next button'>
+          <span class='icon'></span>
+        </a></li>
+        <li><a href='#end' title='View last row' class='end button'>
+          <span class='icon'></span>
+        </a></li>
+      </ul>
     </div>
 
     <div class="widgetContentSection widgetContent_views"></div>

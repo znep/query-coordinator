@@ -94,6 +94,8 @@ html, body
 
   #actionBox
     height: 100%
+    // IE7 doesn't make this box tall enough initially
+    min-height: 5.7em
     position: absolute
     right: 0
     top: 0
@@ -186,6 +188,10 @@ html, body
               line-height: 1em
               min-width: 6em
 
+        #renderTypeOptions
+          li a
+            @include renderType-toggle-icons
+
     .sidebarOptionsContainer
       bottom: 0
       position: absolute
@@ -262,10 +268,6 @@ html, body
             border: 2px solid #fff
             // Chrome can't handle the larger border
             border-radius: 0.1em
-
-    a
-      @include sprite-menu-icons
-      font-size: 1.1em
 
   .fullscreenButton
     @include button
@@ -430,6 +432,10 @@ html, body
 
 .invalidView
   #mainGrid, #toolbarOptions, #editBar
+    display: none
+
+.pageRenderType
+  #mainGrid, #editBar
     display: none
 
 // Dataset page-specific grid styles

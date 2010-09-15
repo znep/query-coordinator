@@ -2814,7 +2814,9 @@
                 lockedColumns.push(rowNumberColumn = {id: 'rowNumberCol',
                     cls: 'blist-table-row-numbers',
                     measureText: Math.max(model.length(), 100),
-                    renderer: '(row.type == "blank" ? "new" : renderIndex + 1)',
+                    renderer: '(row.type == "blank" ? "new" : ' +
+                        '"<a href=\'' + model.view.url + '/" + row.id + "\' ' +
+                        'title=\'View row\'>" + (renderIndex + 1) + "</a>")',
                     footerText: 'Totals'});
             }
             if (options.showRowHandle)
@@ -3874,7 +3876,7 @@
                         if (rowLockedRenderFn != null)
                         {
                             rowLockedRenderFn(lockedHtml,
-                                rowIndex - start, rowIndex, row);
+                                rowIndex - start, row.index, row);
                         }
                         rowIndices[rowID] = rowIndex;
                     }
@@ -4036,10 +4038,6 @@
         $this.bind('dataset_ready', function(event, newModel)
         {
             model = newModel;
-            model.view.bind('start_request', function()
-                    { $outside.addClass('blist-loading'); })
-                .bind('finish_request', function()
-                    { $outside.removeClass('blist-loading'); });
 
             var isReady = function()
             {
@@ -4075,6 +4073,13 @@
                             begin("selectionChange");
                             updateRowSelection(rows);
                             end("selectionChange");
+                        })
+                    .bind('refresh', function()
+                        {
+                            initMeta();
+                            renderHeader();
+                            renderFooter();
+                            initRows();
                         });
 
             };

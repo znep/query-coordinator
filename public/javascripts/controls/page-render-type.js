@@ -119,10 +119,10 @@
 
             switch ($.hashHref($a.attr('href')))
             {
-                case 'first':
+                case 'start':
                     prtObj.displayRowByIndex(0);
                     break;
-                case 'last':
+                case 'end':
                     prtObj.displayRowByIndex(-1);
                     break;
                 case 'previous':
@@ -142,9 +142,9 @@
         var rowCount = prtObj.settings.view.totalRows;
         $info.find('.totalRows').text(rowCount);
 
-        prtObj.$nav().find('.first, .previous')
+        prtObj.$nav().find('.start, .previous')
             .toggleClass('disabled', prtObj._curRowIndex <= 0);
-        prtObj.$nav().find('.last, .next')
+        prtObj.$nav().find('.end, .next')
             .toggleClass('disabled', prtObj._curRowIndex >= rowCount - 1);
     };
 

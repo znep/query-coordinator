@@ -2816,7 +2816,8 @@
                     measureText: Math.max(model.length(), 100),
                     renderer: '(row.type == "blank" ? "new" : ' +
                         '"<a href=\'' + model.view.url + '/" + row.id + "\' ' +
-                        'title=\'View row\'>" + (renderIndex + 1) + "</a>")',
+                        'title=\'View row\' class=\'noInterstitial\'>" + ' +
+                        '(renderIndex + 1) + "</a>")',
                     footerText: 'Totals'});
             }
             if (options.showRowHandle)

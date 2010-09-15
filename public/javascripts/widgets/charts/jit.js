@@ -31,7 +31,7 @@
                             name: row[chartObj._fixedColumns[0].id],
                             data: {
                                 $area: area,
-                                $color: (row.meta && row.meta.color) || '#444',
+                                $color: (row.meta && row.meta.color) || '#444444',
                                 amount:
                                     row[chartObj._valueColumns[0].column.id] || 0
                             },
@@ -72,8 +72,12 @@
               enable: true,
               onMouseEnter: function(node, eventInfo) {
                 if(node) {
+                  node.setData('mouseoutColor', node.getData('color'));
+                  var hsv = $.rgbToHsv($.hexToRgb(node.getData('color')));
+                  if (hsv.s > 50) { hsv.s /= 2; }
+                  if (hsv.v < 51) { hsv.v *= 2; }
+                  node.setData('color', '#' + $.rgbToHex($.hsvToRgb(hsv)));
                   node.setCanvasStyle('shadowBlur', 7);
-                  node.setData('color', '#888');
                   chartObj._jit.fx.plotNode(node, chartObj._jit.canvas);
                   //chartObj._jit.labels.plotLabel(chartObj._jit.canvas, node);
                     // No controller is being passed and this seems to cause JS errors.
@@ -81,7 +85,7 @@
               },
               onMouseLeave: function(node) {
                 if(node) {
-                  node.removeData('color');
+                  node.setData('color', node.getData('mouseoutColor'));
                   node.removeCanvasStyle('shadowBlur');
                   chartObj._jit.plot();
                 }

@@ -2815,9 +2815,11 @@
                     cls: 'blist-table-row-numbers',
                     measureText: Math.max(model.length(), 100),
                     renderer: '(row.type == "blank" ? "new" : ' +
+                        '(row.noMatch ? "<span title=\'This row does ' +
+                        'not match the current filter\'>X</span>" : ' +
                         '"<a href=\'' + model.view.url + '/" + row.id + "\' ' +
                         'title=\'View row\' class=\'noInterstitial\'>" + ' +
-                        '(renderIndex + 1) + "</a>")',
+                        '(renderIndex + 1) + "</a>"))',
                     footerText: 'Totals'});
             }
             if (options.showRowHandle)
@@ -2940,6 +2942,7 @@
             var rowDivContents =
                 'class=\'blist-tr", ' +
                 '(renderIndex % 2 ? " blist-tr-even" : ""), ' +
+                '(row.noMatch ? " blist-tr-noMatch" : ""), ' +
                 '(row.level !== undefined ? " blist-tr-level" + row.level : ""), ' +
                 '(row.level > 0 ? " blist-tr-sub" : ""), ' +
                 '(row.type ? " blist-tr-" + row.type : ""), ' +

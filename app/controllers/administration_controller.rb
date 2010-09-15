@@ -58,7 +58,7 @@ class AdministrationController < ApplicationController
       configuration.raw_properties["sdp_template"].nil?
     end
 
-    CurrentDomain.flag_preferences_out_of_date!
+    CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
     respond_to do |format|
       format.data { render :json => { :success => true } }
       format.html { redirect_to :action => :sdp_templates }
@@ -81,7 +81,6 @@ class AdministrationController < ApplicationController
     customization.hidden = true
     customization.save!
 
-    CurrentDomain.flag_preferences_out_of_date!
     respond_to do |format|
       format.data { render :json => { :success => true } }
       format.html { redirect_to :action => :sdp_templates }

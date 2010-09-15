@@ -4,7 +4,8 @@ module BrowseController
 
 protected
   def process_browse!
-    @browse_hello = 'hello universe!'
+    opts = {:limit => 10, :page => 1}
+    @views = View.find(opts, true)
   end
 
 end

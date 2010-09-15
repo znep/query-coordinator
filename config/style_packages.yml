@@ -56,3 +56,5 @@ administration-sdp-templates:
 administration-federation:
 - screen-admin
 - screen-administration-federation
+screen-browse:
+- screen-browse

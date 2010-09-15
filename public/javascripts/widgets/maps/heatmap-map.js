@@ -215,7 +215,6 @@
         }
 
         mapObj.clearFeatures();
-        var extents = [];
         _.each(featureSet.features, function(feature)
         {
             if (!feature.attributes.quantity) { return; }
@@ -230,7 +229,6 @@
             }
 
             mapObj.renderFeature(feature, segmentIndex);
-            extents.push(feature.geometry.getExtent());
         });
 
         mapObj.adjustBounds();

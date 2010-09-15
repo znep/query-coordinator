@@ -183,7 +183,6 @@
                         wizard: 'Select a map type'
                     },
                     {text: 'Plot Style', name: 'displayFormat.plotStyle', type: 'select',
-                        onlyIf: {field: 'displayFormat.type', value: 'bing', negate: true},
                         required: true, prompt: 'Select a plot style',
                         options: plotStyles,
                         wizard: 'Select a plotting style'

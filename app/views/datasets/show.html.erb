@@ -101,6 +101,7 @@
   <div id='actionBox' class='clearfix'>
     <ul id="toolbarOptions" class='clearfix'>
       <li>
+        <%- if @view.is_tabular? -%>
         <ul id='renderTypeOptions' class="pillButtons">
           <li><a href='#main' class='main <%= @view.display.type %>'
             title='View as <%= @view.display.name.downcase %>'>
@@ -110,6 +111,7 @@
             <span class='icon'></span>
           </a></li>
         </ul>
+        <%- end -%>
       </li>
       <li>
         <div id='shareMenu' class='share menu'></div>

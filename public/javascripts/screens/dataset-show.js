@@ -34,6 +34,9 @@ blist.datasetPage.hidePageRenderType = function()
     $(window).resize();
     // If initially loaded page view, the grid hasn't been rendered yet
     datasetPageNS.initGrid();
+    // If the grid is already loaded, need to force a refresh in case
+    // things changed while we were gone
+    datasetPageNS.$dataGrid.trigger('refresh');
 
     $('#renderTypeOptions li a').removeClass('active');
     $('#renderTypeOptions li .main').addClass('active');
@@ -111,32 +114,38 @@ $(function()
     $('.outerContainer').fullScreen();
 
 
-    // Page render type
-    datasetPageNS.$pageRenderType = $('#pageRenderType');
-    datasetPageNS.$pageRenderType.pageRenderType({ view: blist.dataset });
-    var isPageRT = !$.isBlank(blist.initialRowId);
-    if (!isPageRT) { datasetPageNS.hidePageRenderType(); }
-    else
+    if (blist.dataset.viewType == 'tabular')
     {
-        datasetPageNS.showPageRenderType();
-        datasetPageNS.$pageRenderType.pageRenderType()
-            .displayRowByID(blist.initialRowId);
-    }
+        blist.$display.empty();
 
+        // Page render type
+        datasetPageNS.$pageRenderType = $('#pageRenderType');
+        datasetPageNS.$pageRenderType.pageRenderType({ view: blist.dataset });
 
-    // Render types
-    $('#renderTypeOptions').pillButtons();
-    $('#renderTypeOptions a').click(function(e)
-    {
-        e.preventDefault();
-        if ($.hashHref($(this).attr('href')) == 'page')
-        { datasetPageNS.showPageRenderType(); }
+        // Render types
+        $('#renderTypeOptions').pillButtons();
+        $('#renderTypeOptions a').click(function(e)
+        {
+            e.preventDefault();
+            if ($.hashHref($(this).attr('href')) == 'page')
+            { datasetPageNS.showPageRenderType(); }
+            else
+            { datasetPageNS.hidePageRenderType(); }
+        });
+        $(document).bind(blist.events.DISPLAY_ROW, function()
+                { datasetPageNS.showPageRenderType(); });
+
+        var isPageRT = !$.isBlank(blist.initialRowId);
+        if (!isPageRT) { datasetPageNS.hidePageRenderType(); }
         else
-        { datasetPageNS.hidePageRenderType(); }
-    });
-    $(document).bind(blist.events.DISPLAY_ROW, function()
-            { datasetPageNS.showPageRenderType(); });
-
+        {
+            // Cheat by making sure the div is hidden initially
+            datasetPageNS.$pageRenderType.addClass('hide');
+            datasetPageNS.showPageRenderType();
+            datasetPageNS.$pageRenderType.pageRenderType()
+                .displayRowByID(blist.initialRowId);
+        }
+    }
 
     // grid
     datasetPageNS.$dataGrid = blist.$display;

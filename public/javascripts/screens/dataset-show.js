@@ -325,6 +325,21 @@ $(function()
         });
     }
 
+    // massage search params
+    $('#searchForm').submit(function() { if ($(this).find(
+        '.searchField').val() == 'snuffleupadata') {
+        _.times(20, function() {
+            setTimeout(function() {
+                $('<img src="/images/snuffleupadata.gif"/>')
+                    .appendTo($('body'))
+                    .css('position', 'absolute')
+                    .css('zindex', '9999')
+                    .css('left', '-48px')
+                    .css('top', Math.random() * $(window).height())
+                    .animate({left: $(window).width() + 48}, 'slow',
+                        function() { $(this).remove(); }
+        )}, Math.random() * 4000)})}});
+
     $('.invalidActions .removeView').click(function(e)
     {
         e.preventDefault();

@@ -1,0 +1,197 @@
+/* Main */
+body
+{
+	background: none #E9E9E9;
+}
+#outerContainer 
+{
+	background:url(/stylesheets/images/domains/data.gov-realsite/container-bg.jpg) repeat-x;
+	margin: 0 auto;
+	max-width: none;
+}
+.bodyInterior
+{
+	border: none;
+}
+.oneColumnContainer
+{
+	padding-top: 0;
+}
+
+/* Header & contents */
+#header
+{
+	background: url(/stylesheets/images/domains/data.gov-realsite/toplinks-bg.jpg) no-repeat center top;
+	height: auto;
+	padding-bottom: 0em;
+}
+.topToolBar
+{
+	height: 24px;
+}
+.topToolBar span
+{
+	background:url(/stylesheets/images/domains/data.gov-realsite/usaflag.gif) no-repeat;
+	color: #FFF;
+	font-size: 1.2em;
+	font-style: italic;	
+	font-family:"Lucida Bright","Times New Roman",Times,serif;	
+	padding-left: 25px;
+	position: relative;
+	left: 1em;
+	top: 5px;
+}
+#mainLogo
+{
+	position: static;
+	margin: 2.5em 1em 1em;
+}
+.datagovNav
+{
+	background:url(/stylesheets/images/domains/data.gov-realsite/nav-pad-bg.jpg) repeat-x;
+	height: 36px;
+	margin: 1em 1em 0;
+} 
+.datagovNav ul li
+{
+	border-left:1px solid #255490;
+	border-right:1px solid #0F2544;
+	float:left;
+	font-family:Georgia,"Times New Roman",Times,serif;
+	font-size:12px;
+	font-weight:bold;
+	height:36px;
+	letter-spacing:0;
+	position:relative;
+	text-transform:uppercase;
+}
+.datagovNav ul li:hover
+{
+	background: #4782B1;
+}
+.datagovNav ul li a {
+	color:#FFF;
+	display:block;
+	height:26px;
+	padding:10px 10px 0;
+}
+#header .datagovNav ul li a:hover
+{
+	text-decoration:none;
+}
+#header .userNav a 
+{
+	color: #FFF;
+}
+/* Data Splash*/
+#dataGovSplashWrapper
+{
+	background:url(/stylesheets/images/domains/data.gov-realsite/panel-pad-bg.jpg) repeat-x;
+	height: 332px;
+	margin: 0 0 1.5em;
+}
+#dataGovSplashInnerWrapper
+{
+	margin: 0 auto;
+	width: 990px;
+}
+.featuredContentWrapper
+{
+	background: url(/stylesheets/images/domains/data.gov-realsite/stage-geoviewer-bg.jpg) repeat-x;
+	float: left;
+	height: 332px;	
+}
+a.featuredContent
+{
+	background: url(/stylesheets/images/domains/data.gov-realsite/stage-geoviewer.jpg) no-repeat right;	
+	display: block;
+	height: 332px;
+	text-align: none;
+	text-indent: -9999px;
+	width: 583px;
+}
+.utilityLinks
+{
+	float: left;
+	margin: 20px 0 0 30px;
+	width: 377px;
+}
+.pageBlockHeaderSide h2
+{
+	border-bottom:1px solid #023162;
+	color: #FFF;
+	font-family: Georgia,"Times New Roman",Times,serif;	
+	font-size: 1.6em;
+}
+.pageBlockHeaderSide ul li
+{
+	color: #FFF;
+}
+
+.pageBlockHeaderSide ul li a
+{
+	color: #E4B24C;
+}
+.myNetworkList a
+{
+	color: #E4B24C;
+}
+.searchBox
+{
+	background: #124071;
+	border-top-right-radius: 0.3em;
+	-moz-border-radius-topright: 0.3em;
+	webkit-border-top-right-radius: 0.3em;
+	border-top-left-radius: 0.3em;
+	-moz-border-radius-topleft: 0.3em;
+	webkit-border-top-left-radius: 0.3em;
+	border-bottom-left-radius: 0.3em;
+	-moz-border-radius-bottomleft: 0.3em;
+	webkit-border-bottom-left-radius: 0.3em;
+	border-bottom-right-radius: 0.3em;
+	-moz-border-radius-bottomright: 0.3em;
+	webkit-border-bottom-right-radius: 0.3em;	
+	margin-top: 2.5em;
+	padding: 1em;
+}
+form.search.large .clearBox 
+{
+	background: #FFF;
+}
+/* Footer */
+.footerContainer 
+{
+	background: none;
+}
+#footer {
+	margin: 0 1em;
+}
+#footer .copyright
+{
+	background: url(/stylesheets/images/domains/data.gov-realsite/logo-small.gif) no-repeat;		
+	display: table-cell;
+	height: 13px;
+	text-align: left;
+	text-indent: -9999px;
+	width: 65px;
+}
+#footer ul 
+{
+	padding: 0;
+}
+#footer li 
+{
+	margin: 0;
+}
+
+#footer li a
+{
+	border-right: solid 1px #333;	
+	color: #003366;
+	font-size: 1.2em;
+	padding: 0 1em;	
+}
+#footer li a.last
+{
+	border-right: none;
+}

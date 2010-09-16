@@ -46,10 +46,17 @@ body.home #mainNav li.home, body.home #mainNav li.home a span, body.discover #ma
   z-index: 1000;
   padding-left: 3px;
 }
-
+#mainNav li
+{
+	width: auto;
+}
 #mainNav a {
   color: #fff;
   cursor: pointer;
+	font-family:Georgia,Times New Roman,Times,serif;
+	font-weight: bold;
+	padding:0em 1em;
+	text-transform: uppercase
 }
 
 #mainNav ul.subNav {
@@ -73,12 +80,35 @@ body.home #mainNav li.home .subNav li:hover a span {
 }
 
 #header form.search {
-  top: 46px;
+  top: 82px;
 }
 
+#header .userNav
+{
+padding: 1.2em;	
+}
+/* Splash */
+#fecSplashContainer
+{
+	background: url(/stylesheets/images/domains/data.fec.gov/hp_flag_bg.jpg) no-repeat left bottom #FFF;
+	border: solid 1px #00416D;
+	display: block;	
+	min-height:0;
+	padding: 1.5em 37em 1.5em 1.5em;	
+}
+.pageBlockIntro p
+{
+	color: #BB0F00;
+	font-size:2.2em;
+}
+.pageBlockHeaderContent .pageBlockHeaderSide
+{
+	margin-top: 0em;
+}
+/* Footer */
 .footerContainer {
   background: #fff;
-  border-top: #666 solid 1px;
+  border-top: #00416D solid 1px;
 }
 
 .dialogBox .header {

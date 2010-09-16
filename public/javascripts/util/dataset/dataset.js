@@ -1374,6 +1374,11 @@ this.Dataset = Model.extend({
                         else { req.row[adjName] = v; }
                     }
                 });
+            if (req.row.underlying)
+            {
+                req.row.noMatch = true;
+                delete req.row.underlying;
+            }
 
             if ($.isBlank(req.parentRow))
             {
@@ -1472,6 +1477,8 @@ this.Dataset = Model.extend({
                     ds.columnForID(cId);
                 ds._updateLinkedColumns(col, r.row, newRow);
             });
+
+            if (!newRow._underlying) { delete r.row.noMatch; }
 
             ds.trigger('row_change', [r.parentRow || r.row]);
             ds.aggregatesChanged();

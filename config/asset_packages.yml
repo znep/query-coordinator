@@ -99,6 +99,7 @@ javascripts:
 - shared-chart:
   - plugins/highcharts.src
   - plugins/jit
+  - util/color
   - widgets/base-visualization
   - widgets/charts/base-chart
   - widgets/charts/highcharts

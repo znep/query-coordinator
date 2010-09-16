@@ -15,10 +15,13 @@
     @view.id %>/rows.html?method=createForm&successRedirect=<%= CGI.escape(success_redirect)
     %>&errorRedirect=<%= CGI.escape(error_redirect) %>'>
   <%- form_columns.each do |c| -%>
-  <div class='line clearfix <%= c.client_type %>'>
-    <label for='form_field_<%= c.id %>'><%= c.name %></label>
-    <%= render(:partial => 'displays/form_field', :locals => {:column => c}) %>
-  </div>
+    <%- if (!c.is_linked?) -%>
+      <div class='line clearfix <%= c.client_type %>'>
+        <label for='form_field_<%= c.id %>'><%= c.name %></label>
+        <%= render(:partial => 'displays/form_field', :locals => {:column => c}) %>
+      </div>
+    <%- end -%>
+
   <%- end -%>
   <div class='submitLine'>
     <input type='submit' value='Submit' />

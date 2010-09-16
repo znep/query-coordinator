@@ -151,8 +151,6 @@ $(function()
     datasetPageNS.$dataGrid = blist.$display;
     if (datasetPageNS.$dataGrid.length > 0)
     {
-        if (!isPageRT) { datasetPageNS.initGrid(); }
-
         if (blist.dataset.isGrid())
         {
             // Fire up guided filter if available
@@ -160,9 +158,13 @@ $(function()
                 !_.isUndefined(blist.dataset.metadata.facets))
             {
                 blist.$display.bind('dataset_ready', function()
-                { datasetPageNS.sidebar.show('filter.guidedFilter'); });
+                { _.defer(function() {
+                    datasetPageNS.sidebar.show('filter.guidedFilter');
+                }); });
             }
         }
+
+        if (!isPageRT) { datasetPageNS.initGrid(); }
     }
 
     // sidebar and sidebar tabs

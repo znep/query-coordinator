@@ -178,12 +178,59 @@
     </div>
 
     <div id='mainGrid' class='fullHeight'>
+      <%# SEO links for individual rows %>
+      <%- next_index = 0 -%>
+      <%- if !@row.nil? -%>
+      <%- next_index = @view.get_row_index(@row['sid']) + 1 -%>
+      <%- end -%>
+      <%- next_row = @view.get_row_by_index(next_index) -%>
+      <%- if !next_row.nil? -%>
+      <a href='<%= @view.href %>/<%= next_row['sid'] %>'>
+        <%= @row.nil? ? 'First' : 'Next' %> row
+      </a>
+      <%- end -%>
       <%= raw @view.display.render_body(self) %>
       <%= render(:partial => @view.display.render_partial) %>
     </div>
 
-    <div id='pageRenderType' class='fullHeight hide'>
-      <div class='content'></div>
+    <div id='pageRenderType' class='fullHeight <%= @row.nil? ? 'hide' : '' %>'>
+      <div class='content'>
+        <%- if !@row.nil? -%>
+        <div class='pageColumn'>
+          <%- @view.visible_columns.each do |c| -%>
+          <div class='pageLine <%= c.renderTypeName %>'>
+            <span class='pageLabel'><%= c.name %></span>
+
+            <div class='pageItem'>
+              <%- cell = @row[c.id] -%>
+              <%- if c.renderTypeName == 'nested_table' -%>
+              <table>
+                <thead>
+                  <tr>
+                    <%- c.viewable_children.each do |cc| -%>
+                    <th><%= cc.name %></th>
+                    <%- end -%>
+                  </tr>
+                </thead>
+                <tbody>
+                  <%- (cell || []).each do |cr| -%>
+                  <tr>
+                    <%- c.viewable_children.each do |cc| -%>
+                    <td><%= seo_render(cr[cc.id], cc) %></td>
+                    <%- end -%>
+                  </tr>
+                  <%- end -%>
+                </tbody>
+              </table>
+              <%- else -%>
+              <%= seo_render(cell, c) %>
+              <%- end -%>
+            </div>
+          </div>
+          <%- end -%>
+        </div>
+        <%- end -%>
+      </div>
       <ul class='navigation'>
         <li><a href='#start' title='View first row' class='start button'>
           <span class='icon'></span>

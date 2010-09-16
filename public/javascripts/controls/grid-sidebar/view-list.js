@@ -41,8 +41,8 @@
                 '.authorLine .date': function(a)
                 {
                     return blist.util.humaneDate.getFromDate(
-                        Math.max(a.context.viewLastModified,
-                            a.context.createdAt) * 1000,
+                        Math.max(a.context.viewLastModified || 0,
+                            a.context.createdAt || 0) * 1000,
                         blist.util.humaneDate.DAY).capitalize();
                 },
                 '.authorLine .author': 'owner.displayName',

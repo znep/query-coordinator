@@ -263,7 +263,7 @@ this.Dataset = Model.extend({
         {
             ds.grants = _.reject(ds.grants,
                 function(g) { return _.include(g.flags || [], 'public') &&
-                    g.inherited === false; });
+                    g.inherited !== true; });
 
             ds._makeRequest({url: '/views/' + ds.id + '.json', type: 'GET',
                     data: {method: 'setPermission', value: 'private'},

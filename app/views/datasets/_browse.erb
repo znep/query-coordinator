@@ -7,6 +7,41 @@
   </div>
 
   <div class='browseList'>
-    <%= @views.map {|v| v.name} %>
+    <div class='sortOptions'>
+      <%- sort_opts = [
+        {:value => 'relevance', :name => 'Most Relevant'},
+        {:value => 'most_accessed', :name => 'Most Accessed',
+          :is_time_period => true},
+        {:value => 'newest', :name => 'Newest'},
+        {:value => 'oldest', :name => 'Oldest'},
+        {:value => 'rating', :name => 'Highest Rated'},
+        {:value => 'comments', :name => 'Most Comments'},
+      ] -%>
+      <%- show_time_period = false -%>
+      <select class='sortType' name='sortType'>
+        <%- sort_opts.each do |so| -%>
+        <option value='<%= so[:value] %>' class='<%= so[:is_time_period] ?
+          'timePeriod' : '' %>' <%= so[:value] == @opts[:sortBy] ?
+          "selected='selected'" : '' %>><%= so[:name] %></option>
+        <%- show_time_period = true if so[:value] == @opts[:sortBy] &&
+          so[:is_time_period] -%>
+        <%- end -%>
+      </select>
+      <select class='sortPeriod <%= !show_time_period ? 'hide' : '' %>'
+        name='sortPeriod'>
+        <option value='week'>This week</option>
+        <option value='month'>This month</option>
+        <option value='year'>This year</option>
+      </select>
+    </div>
+
+    <div class='results'>
+      <%= @view_results.results.map {|v| v.name} %>
+      Total: <%= @view_results.count %>
+    </div>
   </div>
 </div>
+
+<% content_for :js_footer do %>
+  <%= javascript_include_merged 'screen-browse' %>
+<% end %>

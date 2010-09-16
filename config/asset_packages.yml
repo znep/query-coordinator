@@ -252,6 +252,9 @@ javascripts:
   - data/legacy-model
   - data/legacy-table
   - screens/stats-screen
+- screen-browse:
+  - plugins/jquery.uniform
+  - screens/browse
 - widgets-show:
   - plugins/ui.effects.custom.min
   - plugins/jquery.uniform

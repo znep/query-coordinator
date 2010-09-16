@@ -39,6 +39,10 @@
       <%= @view_results.results.map {|v| v.name} %>
       Total: <%= @view_results.count %>
     </div>
+
+    <%= create_pagination(@view_results.count, @opts[:limit],
+      @opts[:page], @base_url + '?' + @params.map { |pair| pair.map{ |item|
+        CGI::escape(item.to_s) }.join("=") }.join('&')) %>
   </div>
 </div>
 

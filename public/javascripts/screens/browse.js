@@ -36,7 +36,7 @@ $(function()
     {
         _.defer(function()
         {
-            opts.sort = $sortType.val();
+            opts.sortBy = $sortType.val();
             if ($sortPeriod.is(':visible'))
             { opts.sortPeriod = $sortPeriod.val(); }
             else

@@ -4,11 +4,14 @@ module BrowseController
 
 protected
   def process_browse!
-    @opts = {:limit => 10, :page => 1}
+    @opts = {:limit => 10, :page => params['page'].to_i || 1}
+    @params = params.reject {|k, v| k == 'controller' || k == 'action'}
+    @base_url = request.env['REQUEST_PATH']
 
-    if !params[:sort].nil?
-      @opts[:sortBy] = params[:sort]
+    if !params[:sortBy].nil?
+      @opts[:sortBy] = params[:sortBy]
     end
+
 
     # Terrible hack; but search service needs _something_ non-null; so we'll
     # search for everything!

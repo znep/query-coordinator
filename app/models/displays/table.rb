@@ -6,6 +6,16 @@ class Displays::Table < Displays::Base
     super
   end
 
+  def name
+    if @view.is_blist?
+      'table'
+    elsif @view.is_grouped?
+      'grouped view'
+    else
+      'filtered view'
+    end
+  end
+
   def type
     if @view.is_blist?
       'blist'

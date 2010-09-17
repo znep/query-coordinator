@@ -11,7 +11,6 @@
   .browseList
     background-color: #ffffff
     border: 1px solid #e9e9e9
-    height: 20em
     margin-left: 20em
     padding: 1.5em
 
@@ -26,6 +25,45 @@
     .results
       clear: right
       margin-bottom: 2em
+
+      .gridList
+        th
+          font-weight: bold
+        tbody
+          tr
+            border-top: none
+            border-bottom: 1px solid $color_table_header_inactive
+            td
+              vertical-align: top
+
+        .index
+          text-align: right
+          width: 3em
+          .value
+            color: #999999
+
+        .nameDesc
+          .name
+            font-weight: bold
+            margin-bottom: 0.2em
+          .description
+            line-height: 1.2em
+            height: 1.2em
+            overflow: hidden
+
+        .popularity
+          text-align: right
+          width: 10em
+          .visits
+            color: #aaaaaa
+            font-size: 0.9167em
+
+        .type
+          @include sprite-menu-icons
+          text-align: right
+          width: 3em
+          .icon
+            float: right
 
     .pagination
       font-size: 1.2em

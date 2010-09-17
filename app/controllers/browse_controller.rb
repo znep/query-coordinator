@@ -4,7 +4,7 @@ module BrowseController
 
 protected
   def process_browse!
-    @opts = {:limit => 10, :page => params['page'].to_i || 1}
+    @opts = {:limit => 10, :page => (params['page'] || 1).to_i}
     @params = params.reject {|k, v| k == 'controller' || k == 'action'}
     @base_url = request.env['REQUEST_PATH']
 

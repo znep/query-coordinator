@@ -36,8 +36,44 @@
     </div>
 
     <div class='results'>
-      <%= @view_results.results.map {|v| v.name} %>
-      Total: <%= @view_results.count %>
+      <table class='gridList'>
+        <colgroup>
+          <col class='index' />
+          <col class='nameDesc' />
+          <col class='popularity' />
+          <col class='type' />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class='index'></th>
+            <th class='nameDesc'>Name</th>
+            <th class='popularity'>Popularity</th>
+            <th class='type'>Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%- start_index = (@opts[:page] - 1) * @opts[:limit] + 1 -%>
+          <%- @view_results.results.each_with_index do |v, i| -%>
+          <tr class='item'>
+            <td class='index'>
+              <span class='value'><%= start_index + i %>.</span>
+            </td>
+            <td class='nameDesc'>
+              <a href='<%= v.href %>' class='name'><%= v.name %></a>
+              <div class='description'><%= v.description %></div>
+            </td>
+            <td class='popularity'>
+              <span class='visits'><%= pluralize(number_with_delimiter(v.viewCount,
+                {:locale => 'en'}), 'view') %></span>
+            </td>
+            <td class='type type<%= v.display.type.capitalize %>'
+              title='<%= v.display.name.capitalize %>'>
+              <div class='icon'></div>
+            </td>
+          </tr>
+          <%- end -%>
+        </tbody>
+      </table>
     </div>
 
     <%= create_pagination(@view_results.count, @opts[:limit],

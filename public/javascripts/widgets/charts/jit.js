@@ -20,8 +20,7 @@
             {
                 var chartObj = this;
 
-                chartObj._jitData = { id: 'root', name: '', data: {},
-                    children: _.compact(_.map(rows, function(row)
+                var processRows = function(row)
                     {
                         var area = parseFloat(row[chartObj.
                             _valueColumns[0].column.id]);
@@ -37,7 +36,14 @@
                             },
                             children: []
                         };
-                    })) };
+                    }
+
+                if (!chartObj._jitData)
+                { chartObj._jitData = { id: 'root', name: '', data: {},
+                        children: _.compact(_.map(rows, processRows)) }; }
+                else
+                { chartObj._jitData.children = chartObj._jitData.children.concat(
+                    _.compact(_.map(rows, processRows))); }
 
                 if (!chartObj._jit)
                 { initializeJITObject(chartObj); }

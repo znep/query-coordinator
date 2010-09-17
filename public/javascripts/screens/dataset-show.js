@@ -116,7 +116,7 @@ $(function()
 
     if (blist.dataset.viewType == 'tabular')
     {
-        blist.$display.empty();
+        blist.$display.find('.rowLink').remove();
 
         // Page render type
         datasetPageNS.$pageRenderType = $('#pageRenderType');

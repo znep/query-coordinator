@@ -8,7 +8,7 @@ module AdminHelper
     roles.each do |role|
       out += "<option"
       out += ' selected="selected"' if currentRole && role == currentRole
-      out += ">" + role + "</option>"
+      out += ">" + role.titleize + "</option>"
     end
     out += "</select>"
   end

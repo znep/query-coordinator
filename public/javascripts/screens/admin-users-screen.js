@@ -30,10 +30,13 @@ $(function()
             type: "POST",
             success: function(responseData)
             {
-                $select.closest('form').find('.statusMessage')
-                    .show()
-                    .text('Saved')
-                    .fadeOut(3000);
+                $select.closest('tr').attr('data-userrole', $select.val().toLowerCase());
+
+                $('.userNotice')
+                  .text('User saved')
+                  .slideDown(300, function()
+                      { setTimeout(function()
+                            { $('.userNotice').slideUp(); }, 5000) });
             },
             error: function(request, status, error)
             {
@@ -43,5 +46,54 @@ $(function()
         
     });
 
-    $('#adminContent.contentBox select').uniform();
+    var $userTable = $('#adminContent .adminUserTable');
+
+    $userTable.find('.delete .button').adminButton({
+        callback: function(response, $row)
+        { $row.slideUp().remove(); },
+        workingSelector: '.delete'
+    });
+
+    $userTable.combinationList({
+        headerContainerSelector: '.gridListWrapper',
+        initialSort: [[0, 0]],
+        scrollableBody: false,
+        selectable: false,
+        sortGrouping: false,e: false,
+        sortTextExtraction: function(node) {
+            return $(node).find('.cellInner').text();
+        }
+    });
+
+    $('#userRoleFilterDropdown').change(function()
+    {
+        var filterVal = $(this).val();
+
+        if (filterVal == 'all')
+        {
+            $userTable.find('tbody tr').show();
+            $('.noResultsMessage').hide();
+            return;
+        }
+        else
+        {
+            $userTable.find('tbody tr').hide()
+                .filter('[data-userrole=' + filterVal + ']').show();
+
+            if ($userTable.find('tbody tr:visible').length === 0)
+            {
+                $('.noResultsMessage').fadeIn();
+            }
+            else
+            {
+                $('.noResultsMessage').hide();
+            }
+        }
+    });
+
+    // Hackity hack hack
+    if (!$('html').hasClass('ie7'))
+    {
+        $('#adminContent select, .adminUserTable :checkbox').uniform();
+    }
 });

@@ -172,10 +172,16 @@ $(function()
         dataGrid: datasetPageNS.$dataGrid[0],
         onSidebarShown: function(primaryPane)
         {
-            var $activeLink = $('#sidebarOptions a[data-paneName=' + primaryPane + ']');
-            $('#sidebarOptions').css('background-color', $activeLink.css('background-color'))
-                .find('li').removeClass('active');
-            $activeLink.closest('li').addClass('active');
+            var $opts = $('#sidebarOptions');
+            $opts.find('li').removeClass('active');
+
+            var $activeLink = $('#sidebarOptions a[data-paneName=' +
+                primaryPane + ']');
+            if ($activeLink.length > 0)
+            {
+                $opts.css('background-color', $activeLink.css('background-color'))
+                $activeLink.closest('li').addClass('active');
+            }
         },
         onSidebarClosed: function()
         {

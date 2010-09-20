@@ -87,7 +87,7 @@
 
     <%= create_pagination(@view_results.count, @opts[:limit],
       @opts[:page], @base_url + '?' + @params.map { |pair| pair.map{ |item|
-        CGI::escape(item.to_s) }.join("=") }.join('&')) %>
+        CGI::escape(item.to_s) }.join("=") }.join('&'), 'button') %>
   </div>
 </div>
 

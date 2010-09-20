@@ -170,17 +170,15 @@
       text-align: center
 
       .pageLink
-        border: 1px solid #b4b4b4
-        @include border-radius(2px)
-        display: inline-block
         margin: 0 0.25em
-        padding: 0.25em 0
-        @include vertical-gradient(#fefefe, #f4f4f4)
-        width: 1.8em
         &.active
-          border-color: #666666
           color: #333333
+          cursor: auto
 
+      .button
+        @include sprite-menu-icons
+        font-size: 1em
+        padding: 0.3em
       .prevLink
         margin-right: 1em
       .nextLink

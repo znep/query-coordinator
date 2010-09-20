@@ -196,10 +196,12 @@ HREF
     I18n.locale == 'gov'
   end
 
-  def create_pagination(total_count, page_count, current_page, base_href)
+  def create_pagination(total_count, page_count, current_page, base_href,
+                        navigation_link_class = '')
     num_pages = (total_count.to_f / page_count).ceil
     base_href.sub!(/([?&])page=[0-9]*/, '\1')
-    base_href = (base_href.include?("?") || base_href.include?("#")) ? "#{base_href}&page=" : "#{base_href}?page="
+    base_href = (base_href.include?("?") || base_href.include?("#")) ?
+      "#{base_href}&page=" : "#{base_href}?page="
     base_href.sub!(/&&+/, '&')
 
     # bail if we only have 1 page
@@ -218,20 +220,35 @@ HREF
 
     out = "<div class='pagination'>"
     if (current_page > 1)
-      out += link_to("Prev", base_href + (current_page - 1).to_s, :class => "prevLink", :title => "Previous")
+      out += link_to("<span class='icon'>First</span>".html_safe,
+                     base_href + (1).to_s,
+                     :class => "start firstLink " + navigation_link_class,
+                     :title => "First Page")
+      out += link_to("<span class='icon'>Prev</span>".html_safe,
+                     base_href + (current_page - 1).to_s,
+                     :class => "previous prevLink " + navigation_link_class,
+                     :title => "Previous Page")
     end
     if (start_page > 1)
       out += "<span class='ellipses'>...</span>"
     end
     (start_page..end_page).each do |i|
       page_link_class = i == current_page ? "pageLink active" : "pageLink"
-      out += link_to(i, base_href + i.to_s, :class => page_link_class, :title => "Page #{i}")
+      out += link_to(i, base_href + i.to_s, :class => page_link_class,
+                     :title => "Page #{i}")
     end
     if (end_page < num_pages)
       out += "<span class='ellipses'>...</span>"
     end
     if (current_page < num_pages)
-      out += link_to("Next", base_href + (current_page + 1).to_s, :class => "nextLink", :title => "Next")
+      out += link_to("<span class='icon'>Next</span>".html_safe,
+                     base_href + (current_page + 1).to_s,
+                     :class => "next nextLink " + navigation_link_class,
+                     :title => "Next Page")
+      out += link_to("<span class='icon'>Last</span>".html_safe,
+                     base_href + (num_pages).to_s,
+                     :class => "end lastLink " + navigation_link_class,
+                     :title => "Last Page")
     end
 
     out += "</div>"

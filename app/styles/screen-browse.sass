@@ -32,24 +32,123 @@
         tbody
           tr
             border-top: none
-            border-bottom: 1px solid $color_table_header_inactive
+            &.collapsed
+              border-bottom: 1px solid $color_table_header_inactive
             td
               vertical-align: top
 
         .index
-          text-align: right
-          width: 3em
+          padding-right: 0.1em
+          width: 5.5em
+          .expander
+            @include sprite-menu-icons
+            float: left
+            margin-right: 0.5em
           .value
             color: #999999
+            line-height: 1.2em
 
         .nameDesc
+          padding-bottom: 0
+          padding-left: 0.1em
           .name
             font-weight: bold
             margin-bottom: 0.2em
+
           .description
             line-height: 1.2em
-            height: 1.2em
+            margin-bottom: 0.6em
+            min-height: 1.2em
             overflow: hidden
+
+          .extraInfo
+            background-color: #fafafa
+            border: 1px solid $color_table_header_inactive
+            @include border-radius(5px)
+            margin-left: -6.7em
+            padding-right: 24.5em
+            position: relative
+            width: 100%
+            .close
+              @include sprite-menu-icons
+              position: absolute
+              right: 5px
+              top: 5px
+
+            .infoContent
+              min-height: 1em
+              margin-right: -24.5em
+              padding: 0.5em 1em
+
+              .actions
+                display: inline-block
+                margin-right: 2em
+              .menu.share
+                @include sprite-menu-icons('.menuButton .shareIcon')
+                font-size: 0.9167em
+                margin-right: 0.25em
+                .menuButton
+                  @include button
+                  margin-top: 0
+                  .ie7 &
+                    padding-right: 1.7em
+
+                  .shareIcon, .icon
+                    display: inline-block
+                    .ie7 &
+                      display: block
+                      float: left
+
+                  .shareText
+                    bottom: 0.2em
+                    margin:
+                      left: 0.5em
+                      right: 0.2em
+                    position: relative
+                    .ie7 &
+                      bottom: 0
+
+                  .ie7 & .icon
+                    position: absolute
+                    right: 0.3em
+                    top: 0.3em
+
+                .menuDropdown ul li ul li
+                  @include sprite-menu-icons
+                  a
+                    font-size: 1em
+                    line-height: 1em
+                    min-width: 6em
+
+              .comments
+                @include admin-icons
+                color: #aaaaaa
+                display: inline-block
+                font-size: 0.9167em
+                margin-right: 1em
+                .icon
+                  display: inline-block
+                  margin-right: 0.4em
+                .value
+                  display: inline-block
+                  margin-top: 0.2em
+                  vertical-align: top
+
+              .starsControl
+                display: inline-block
+
+            .ie7 &
+              margin-left: -5.5em
+              padding-right: 20.5em
+              position: relative
+              .infoContent
+                margin-right: -20.5em
+
+          .expandBlock.collapsed
+            .description
+              height: 1.2em
+            .extraInfo
+              display: none
 
         .popularity
           text-align: right
@@ -64,6 +163,7 @@
           width: 3em
           .icon
             float: right
+
 
     .pagination
       font-size: 1.2em

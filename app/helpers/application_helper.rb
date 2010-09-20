@@ -563,8 +563,12 @@ HREF
     render :partial => 'datasets/browse'
   end
 
+  def safe_json(obj)
+    'JSON.parse($.htmlUnescape("' + h(obj.to_json.gsub(/\\/, '\\\\\\')) + '"))'
+  end
+
   safe_helper :menu_tag, :meta_tags, :jquery_include, :javascript_error_helper_tag,
     :create_pagination, :sidebar_filter_link, :flash_clipboard_button, :summary_tab,
     :render_domain_template, :rendered_stylesheet_tag, :get_publish_embed_code_for_view,
-    :render_browse
+    :render_browse, :safe_json
 end

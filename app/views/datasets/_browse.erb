@@ -54,13 +54,22 @@
         <tbody>
           <%- start_index = (@opts[:page] - 1) * @opts[:limit] + 1 -%>
           <%- @view_results.results.each_with_index do |v, i| -%>
-          <tr class='item'>
+          <tr class='item collapsed'>
             <td class='index'>
+              <a class='expander' title='Click to expand' href='#Expand'>
+                <span class='icon'></span>
+              </a>
               <span class='value'><%= start_index + i %>.</span>
             </td>
             <td class='nameDesc'>
               <a href='<%= v.href %>' class='name'><%= v.name %></a>
-              <div class='description'><%= v.description %></div>
+              <div class='expandBlock clearfix collapsed'>
+                <div class='description'><%= v.description %></div>
+                <div class='extraInfo'>
+                  <div class='infoContent'></div>
+                  <a class='close' href='#Close'><span class='icon'></span></a>
+                </div>
+              </div>
             </td>
             <td class='popularity'>
               <span class='visits'><%= pluralize(number_with_delimiter(v.viewCount,
@@ -82,6 +91,27 @@
   </div>
 </div>
 
+<% content_for :templates do %>
+<div class='expandedInfo'>
+  <div class='actions'>
+    <div class='share menu'></div>
+  </div>
+  <div class='comments' title='Number of comments'>
+    <span class='icon'></span><span class='value'></span>
+  </div>
+  <div class='starsControl datasetAverageRating'></div>
+</div>
+<% end %>
+
 <% content_for :js_footer do %>
+  <script type='text/javascript'>
+    blist.namespace.fetch('blist.browse');
+    blist.browse.datasets = [
+      <%- @view_results.results.each do |v| -%>
+      <%= safe_json(v) %>,
+      <%- end -%>
+      null // Because IE hates trailing commas
+    ];
+  </script>
   <%= javascript_include_merged 'screen-browse' %>
 <% end %>

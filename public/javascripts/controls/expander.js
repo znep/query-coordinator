@@ -21,8 +21,11 @@
             var fullHeight = $content.height();
             $content.addClass('collapsed');
 
-            if ($.isBlank($content.text()) || (fullHeight == $content.height()))
+            if (!config.forceExpander &&
+                ($.isBlank($content.text()) || (fullHeight == $content.height())))
             { $expand.hide(); }
+
+            $expand.addClass(config.expanderCollapsedClass);
 
             $expand.click(function(event)
             {
@@ -30,13 +33,16 @@
 
                 if ($expand.hasClass(config.expanderCollapsedClass))
                 {
+                    config.preExpandCallback($expander);
                     // need to expand; measure how tall
+                    var baseHeight = $content.css('height');
                     $content
                         .removeClass('collapsed')
                         .css('height', null);
                     var targetHeight = $content.height();
+                    $expander.removeClass('collapsed');
                     $content
-                        .addClass('collapsed')
+                        .css('height', baseHeight)
                         .animate({
                             height: targetHeight
                         },
@@ -48,14 +54,19 @@
                 else
                 {
                     // need to collapse
+                    $content.addClass('collapsed').css('height', null);
+                    var baseHeight = $content.height();
+                    $content.removeClass('collapsed');
                     $content
                         .animate({
-                            height: $content.css('line-height')
+                            height: baseHeight
                         },
                         function()
                         {
                             // Un-set display so natural CSS styling can take effect
                             $content.css('display', '');
+                            $content.addClass('collapsed');
+                            $expander.addClass('collapsed');
                             config.resizeFinishCallback();
                         });
                     $expand.removeClass(config.expanderExpandedClass)
@@ -75,7 +86,9 @@
         expanderCollapsedClass: 'downArrow',
         expanderExpandedClass: 'upArrow',
         expandSelector: '.expand',
+        forceExpander: true,
         moveExpandTrigger: false,
+        preExpandCallback: function($expander) {},
         resizeFinishCallback: function() {}
     };
 

@@ -48,4 +48,44 @@ $(function()
         });
     };
     $sortType.add($sortPeriod).change(doSort);
+
+    var doExpansion = function($row)
+    {
+        var $content = $row.find('.nameDesc .extraInfo .infoContent:empty');
+        if ($content.length < 1) { return; }
+
+        var i = $row.closest('tbody').find('tr').index($row);
+        if (!(blist.browse.datasets[i] instanceof Dataset))
+        { blist.browse.datasets[i] = new Dataset(blist.browse.datasets[i]); }
+        var ds = blist.browse.datasets[i];
+        $content.append($.renderTemplate('expandedInfo', ds,
+            {
+                '.comments .value': 'numberOfComments'
+            }));
+
+        blist.datasetControls.hookUpShareMenu(ds, $content.find('.share.menu'),
+                {
+                    menuButtonContents: $.tag([
+                        {tagName: 'span', 'class': 'shareIcon'},
+                        {tagName: 'span', 'class': 'shareText', contents: 'Share'}
+                    ], true),
+                    onOpen: function()
+                    {
+                        $.analytics.trackEvent('browse ' + window.location.pathname,
+                            'share menu opened', ds.id);
+                    }
+                });
+
+        $content.find('.datasetAverageRating')
+            .stars({value: ds.averageRating, enabled: false});
+    };
+
+    $browse.find('table tbody tr').expander({
+        contentSelector: '.nameDesc .expandBlock',
+        expandSelector: '.index .expander, .nameDesc .extraInfo .close',
+        expanderCollapsedClass: 'collapsed',
+        expanderExpandedClass: 'expanded',
+        forceExpander: true,
+        preExpandCallback: doExpansion
+    });
 });

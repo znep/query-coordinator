@@ -254,6 +254,10 @@ javascripts:
   - screens/stats-screen
 - screen-browse:
   - plugins/jquery.uniform
+  - controls/menu
+  - controls/dataset-controls
+  - controls/expander
+  - controls/stars
   - screens/browse
 - widgets-show:
   - plugins/ui.effects.custom.min

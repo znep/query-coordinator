@@ -4,6 +4,11 @@
 
 <div class='browseSection'>
   <div class='browseFacets'>
+    <form class='searchSection'>
+      <span class='icon'></span>
+      <input type='text' name='browseSearch' title='Search'
+        class='textPrompt searchBox' value='<%= @params[:q] %>' />
+    </form>
   </div>
 
   <div class='browseList'>
@@ -20,6 +25,7 @@
       <%- show_time_period = false -%>
       <select class='sortType' name='sortType'>
         <%- sort_opts.each do |so| -%>
+        <%- next if !so[:requires].nil? && @params[so[:requires]].nil? -%>
         <option value='<%= so[:value] %>' class='<%= so[:is_time_period] ?
           'timePeriod' : '' %>' <%= so[:value] == @opts[:sortBy] ?
           "selected='selected'" : '' %>><%= so[:name] %></option>
@@ -36,6 +42,10 @@
     </div>
 
     <div class='results'>
+      <%- if @view_results.count == 0 -%>
+      <div class='noResults'>No Results</div>
+
+      <%- else -%>
       <table class='gridList'>
         <colgroup>
           <col class='index' />
@@ -88,6 +98,7 @@
     <%= create_pagination(@view_results.count, @opts[:limit],
       @opts[:page], @base_url + '?' + @params.map { |pair| pair.map{ |item|
         CGI::escape(item.to_s) }.join("=") }.join('&'), 'button') %>
+    <%- end -%>
   </div>
 </div>
 

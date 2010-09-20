@@ -13,9 +13,13 @@ protected
     end
 
 
-    # Terrible hack; but search service needs _something_ non-null; so we'll
-    # search for everything!
-    @opts[:q] = "''"
+    if !params[:q].nil?
+      @opts[:q] = params[:q]
+    else
+      # Terrible hack; but search service needs _something_ non-null; so we'll
+      # search for everything!
+      @opts[:q] = "''"
+    end
 
     @view_results = SearchResult.search('views', @opts)[0]
   end

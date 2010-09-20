@@ -10,6 +10,14 @@ $(function()
         });
     }
 
+    var doBrowse = function(newOpts)
+    {
+        // Reset page
+        delete newOpts.page;
+        window.location = window.location.pathname + '?' +
+            _.map(newOpts, function(v, k) { return k + '=' + v; }).join('&');
+    };
+
     var $browse = $('.browseSection');
     $browse.find('select').uniform();
     $browse.find('select.hide').each(function()
@@ -36,15 +44,13 @@ $(function()
     {
         _.defer(function()
         {
-            opts.sortBy = $sortType.val();
+            var newOpts = $.extend({}, opts);
+            newOpts.sortBy = $sortType.val();
             if ($sortPeriod.is(':visible'))
-            { opts.sortPeriod = $sortPeriod.val(); }
+            { newOpts.sortPeriod = $sortPeriod.val(); }
             else
-            { delete opts.sortPeriod; }
-            // Reset page
-            delete opts.page;
-            window.location = window.location.pathname + '?' +
-                _.map(opts, function(v, k) { return k + '=' + v; }).join('&');
+            { delete newOpts.sortPeriod; }
+            doBrowse(newOpts);
         });
     };
     $sortType.add($sortPeriod).change(doSort);
@@ -88,4 +94,24 @@ $(function()
         forceExpander: true,
         preExpandCallback: doExpansion
     });
+
+
+    // Handle sidebar facets
+    var $searchSect = $browse.find('.searchSection');
+    if ($searchSect.length > 0)
+    {
+        var $search = $searchSect.find('.searchBox');
+        var hookSearch = function(e)
+        {
+            e.preventDefault();
+            _.defer(function()
+            {
+                var newOpts = $.extend({}, opts, {q: $search.val()});
+                if ($.isBlank(newOpts.q)) { delete newOpts.q; }
+                doBrowse(newOpts);
+            });
+        };
+
+        $searchSect.submit(hookSearch).find('.icon').click(hookSearch);
+    }
 });

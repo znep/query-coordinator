@@ -155,6 +155,8 @@ ActionController::Routing::Routes.draw do |map|
     data.suggest            'data/suggest',     :action => 'suggest'
   end
 
+  map.resource :search
+
   map.resource :community, :member => { :filter => :get, :activities => :get, :tags => :get }
   map.resource :home
   map.resource :account

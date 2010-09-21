@@ -1,0 +1,83 @@
+<div class="editBasicInfoForm editForm">
+  <h1>Basic Information</h1>
+
+  <%= display_standard_flashes %>
+
+  <div class="editArea">
+    <div class="editSection clearfix">
+      <div class="line clearfix">
+        <label for="user_firstName">First Name</label>
+        <%= text_field_tag("user[firstName]", current_user.firstName, :class => "textPrompt") %>
+      </div>
+      <div class="line clearfix">
+        <label for="user_lastName">Last Name</label>
+        <%= text_field_tag("user[lastName]", current_user.lastName, :class => "textPrompt") %>
+      </div>
+    </div>
+
+    <div class="editSection clearfix">
+      <div class="line clearfix">
+        <label for="user_title">Organization</label>
+        <%= text_field_tag("user[company]", current_user.company, :class => "textPrompt") %>
+      </div>
+
+      <div class="line clearfix">
+        <label for="user_title">Title</label>
+        <%= text_field_tag("user[title]", current_user.title, :class => "textPrompt") %>
+      </div>
+
+    </div>
+    <div class="editSection clearfix">
+      <div class="line clearfix">
+        <label for="user_city">City</label>
+        <%= text_field_tag("user[city]", current_user.city, :class => "textPrompt") %>
+      </div>
+
+      <div class="line fullLine clearfix stateLine">
+        <label for="user_state">State</label>
+        <%= select_tag("user[state]", raw(us_state_select_options((current_user.state || '').upcase))) %>
+      </div>
+
+      <div class="line fullLine clearfix">
+        <label for="user_country">Country</label>
+        <%= select_tag("user[country]", raw(country_select_options(current_user.country))) %>
+      </div>
+    </div>
+
+    <div class="editSection clearfix">
+      <%- [{:name => 'description', :value => current_user.description,
+          :hint => 'Enter any information you would like to share'},
+         {:name => 'interests', :value => current_user.interests,
+          :hint => 'Enter your interests'}].each do |text_prompt| -%>
+        <div class="line clearfix">
+          <label><%= text_prompt[:name].titleize %></label>
+          <%= text_area_tag("user[#{text_prompt[:name]}]", text_prompt[:value],
+            :class => 'textPrompt', :title => text_prompt[:hint]) %>
+        </div>
+     <%- end -%>
+   </div>
+
+    <div class="editSection clearfix">
+      <h3>External Links</h3>
+      <%- link_count = 0 -%>
+      <%- UserLink.new_link_types.each do |link_type| -%>
+        <%- existing_link = @user_links.detect {|u| u.linkType.upcase == link_type.first } 
+            if existing_link.nil?
+              existing_link = Hashie::Mash.new({:id => "new#{link_count}"})
+              link_count += 1
+            end
+        -%>
+        <div class="line clearfix">
+          <%= hidden_field_tag "links[#{existing_link.id}][linkType]", link_type.first.downcase %>
+          <label for="links_<%= existing_link.id %>_url"><%= link_type.last %></label>
+          <%= text_field_tag "links[#{existing_link.id}][url]", existing_link.url, :class => 'textPrompt url', :title => 'Enter URL' %>
+        </div>
+      <%- end -%>
+    </div>
+  </div>
+  <div class="submitLine">
+    <%= submit_tag 'Save Changes', :class => 'button default' %>
+    <%= link_to 'Cancel', current_user.href, :class => 'button' %>
+  </div>
+</div>
+

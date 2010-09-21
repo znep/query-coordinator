@@ -361,6 +361,16 @@ javascripts:
   - plugins/jquery.uniform
   - screens/login-shared
   - screens/signup-screen
+- screen-profile:
+  - util/humane-date
+  - util/urls
+  - util/user
+  - controls/feed-list
+  - screens/profile-screen-v4
+- screen-profile-edit:
+  - plugins/jquery.uniform
+  - plugins/ajaxupload.3.0
+  - screens/profile-screen-edit-v4
 
 
 

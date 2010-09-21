@@ -1,12 +1,17 @@
 class ProfileController < ApplicationController
-  skip_before_filter :require_user, :only => [:show]
+# TODO/v4: remove v4_show
+  skip_before_filter :require_user, :only => [:show, :v4_show]
   
   helper :user
+
+# TODO/v4: remove me
+  layout :choose_v4_layout
+  include NewChromeMethodProxy
 
   def index
     redirect_to current_user.href
   end
-  
+
   def show
     @port = request.port
     user_id = params[:id]
@@ -19,7 +24,7 @@ class ProfileController < ApplicationController
     end
 
     ### @createdOnDomain = Domain.findById(@user.data['createdOnDomainId'])
-    
+
     # See if it matches the authoritative URL; if not, redirect
     if request.path != @user.href
       # Log redirects in development
@@ -29,29 +34,68 @@ class ProfileController < ApplicationController
       end
       redirect_to(@user.href + '?' + request.query_string, :status => 301)
     end
-    
-    @friends = @user.friends.sort_by{ rand }.first(8)
-    @followers = @user.followers.sort_by{ rand }.first(8)
-    
+
+    @current_state = {'user' => @user.id, 'domain' => CurrentDomain.cname}
+
+    # Don't make a core server request for friends and followers every time
+    # TODO/v4: Remove the module check, this is just for backwards compat
+    unless !CurrentDomain.module_available?(:new_datasets_page) || \
+        @friends_rendered = read_fragment( \
+          app_helper.cache_key('profile-friends-list', @current_state))
+      @followers = @user.followers
+      @friends = @user.friends
+    end
+
+    # TODO/v4: Remove this stuff
     @body_id = 'profileBody'
     if @is_user_current
       @body_class = 'home'
     else
       @body_class = 'community'
     end
-    
-    @public_views = @user.public_blists.sort {|a,b| b.viewCount <=> a.viewCount}
-    @shared_views = @public_views.find_all {|v| v.is_shared? }
-    
-    if (@is_user_current)
-      @all_owned_views = View.find().reject {|v| v.owner.id != current_user.id}
-      @private_blists = @all_owned_views.find_all {|v|
-        !v.is_public? && v.flag?('default')}
-      @private_filters = @all_owned_views.find_all {|v|
-        !v.is_public? && !v.flag?('default')}
+
+    # TODO/v4: Remove the module check, this is just for backwards compat
+    # Also, we can probably make these _views vars local, not @ accessible
+    unless !CurrentDomain.module_available?(:new_datasets_page) || \
+        @view_summary_cached = read_fragment( \
+          app_helper.cache_key('profile-view-summary', @current_state))
+      @public_views = @user.public_blists.sort {|a,b| b.viewCount <=> a.viewCount}
+      # Note: Core server only returns shares if you own the view,
+      # so the public profile view won't show anything here
+      @shared_views = @public_views.find_all {|v| v.is_shared? }
+      @filtered_views = @public_views.select { |v| !v.flag?('default') && v.is_tabular? }
+
+      if (@is_user_current)
+        @all_owned_views = View.find_for_user(user_id).reject {|v| v.owner.id != user_id}
+        @private_blists = @all_owned_views.find_all {|v|
+          !v.is_public? && v.flag?('default')}
+        @private_filters = @all_owned_views.find_all {|v|
+          !v.is_public? && !v.flag?('default')}
+      end
+
+      @viewable_datasets = @is_current_user ? @all_owned_views : @public_views
+
+      # Sort the views into buckets based on human readable display name
+      stat_groups = @viewable_datasets.inject(Hash.new(0)) {|h, d| h[d.display_name.pluralize] += 1; h}
+      # Then move datasets to the front
+      @stat_displays = []
+      if stat_groups['Datasets'] && stat_groups['Datasets'] > 0
+        @stat_displays << ['Datasets', stat_groups['Datasets']]
+        stat_groups.delete('Datasets')
+      end
+
+      # Then add in shares
+      [[@shared_views, 'Shared'], [@filtered_views, 'Filters']].each do |stat_group|
+        if stat_group.first.size > 0
+          @stat_displays << [stat_group.last, stat_group.first.size]
+        end
+      end
+      # Add in the rest
+      stat_groups.each { |k,v| @stat_displays << [k, v] }
     end
-    
+
     @user_links = UserLink.find(@user.id)
+    # TODO/v4: Do we still want this?
     @welcome = params[:welcome] == 'true'
   end
 
@@ -69,27 +113,30 @@ class ProfileController < ApplicationController
       params[:user][:tags] = current_user.tag_display_string
     end
 
-    # HACK/TODO: If we get some links back, send requests to update them.
-    # Rewrite this when we have batch requests! -cxlt
     unless params[:links].nil?
       user_links = UserLink.find(current_user.id)
 
-      user_links.each do |link|
-        updated_link = params[:links][link.id.to_s.to_sym]
-        continue if updated_link.nil?
+      begin
+        user_links.each do |link|
+          updated_link = params[:links][link.id.to_s.to_sym]
+          next if updated_link.nil?
 
-        if (updated_link[:linkType].blank? && updated_link[:url].blank?)
-          UserLink.delete(current_user.id, link.id)
-        else
-          UserLink.update(current_user.id, link.id, updated_link)
+          if (updated_link[:linkType].blank? || updated_link[:url].blank?)
+            UserLink.delete(current_user.id, link.id)
+          else
+            UserLink.update(current_user.id, link.id, updated_link)
+          end
+
+          params[:links].delete(link.id.to_s.to_sym)
         end
 
-        params[:links].delete(link.id.to_s.to_sym)
-      end
-
-      params[:links].each do |id, new_link|
-        UserLink.create(current_user.id, new_link) unless (new_link.nil? ||
-          new_link[:linkType].blank? || new_link[:url].blank?)
+        params[:links].each do |id, new_link|
+          UserLink.create(current_user.id, new_link) unless (new_link.nil? || \
+            new_link[:linkType].blank? || new_link[:url].blank?)
+        end
+      rescue CoreServer::CoreServerError => e
+        is_error = true
+        error_msg = "There was a problem updating your links. #{e.error_message}"
       end
     end
 
@@ -106,6 +153,7 @@ class ProfileController < ApplicationController
           flash.now[:error] = error_msg
           return (render 'shared/error', :status => :forbidden)
         else
+          flash[:notice] = "Your profile has been successfully updated."
           redirect_to(current_user.href)
         end
       end
@@ -113,38 +161,105 @@ class ProfileController < ApplicationController
         :user => current_user} }
     end
   end
-  
+
   def edit
     @user_links = UserLink.find(current_user.id)
   end
-  
+
+  # Note: was AccountsController#edit
+  def edit_account
+    @user_links = UserLink.find(current_user.id)
+
+    # TODO/v4: Remove me when this becomes default
+    render :layout => 'dataset_v2'
+  end
+
+  def update_account
+    if params[:user].present? || params[:openid_delete].present?
+      error_msg = nil
+      begin
+        if params[:openid_delete].present?
+          if current_user.flag?('nopassword') &&
+            params[:openid_delete].size >= current_user.openid_identifiers
+            error_msg = "You cannot remove all your OperID identifiers before you set a password"
+          else
+            CoreServer::Base.connection.batch_request do
+              params[:openid_delete].each do |k, v|
+                delete_path = params[:openid_delete_paths][k]
+                if delete_path.nil?
+                  Rails.logger.warn("Got request to delete OpenID identifier for user #{current_user.id}, identifier: #{k}")
+                else
+                  CoreServer::Base.connection.delete_request(delete_path)
+                end
+              end
+            end
+          end
+        end
+        if params[:user][:email].present?
+          if params[:user][:email] != params[:user][:email_confirm]
+            error_msg = "New emails do not match"
+          else
+            current_user.update_attributes!(
+                {:email => params[:user][:email],
+                  :password => params[:user][:email_password]})
+          end
+        if params[:user][:password_new].present?
+          if params[:user][:password_new] != params[:user][:password_confirm]
+            error_msg = "New passwords do not match"
+          else
+            current_user.update_password(
+                {:newPassword => params[:user][:password_new],
+                  :password => params[:user][:password_old]})
+          end
+        end
+      end
+      rescue CoreServer::CoreServerError => e
+        error_msg = e.error_message
+      end
+      if !error_msg.nil?
+        flash[:error] = error_msg
+      else
+        flash[:notice] = "Your profile has been successfully updated."
+      end
+    end
+    redirect_to "#{current_user.href}/account"
+  end
+
+  def edit_image
+    @user_links = UserLink.find(current_user.id)
+    #TODO/v4: Remove me when this becomes default
+    render :layout => 'dataset_v2'
+  end
+
+  # TODO/v4: remove these three _link functions
   def create_link
     @user_link = UserLink.create(params[:id], params[:link])
-    
+
     respond_to do |format|
       format.html { redirect_to(current_user.href) }
       format.data { render }
     end
   end
-  
+
   def delete_link
     UserLink.delete(params[:id], params[:link_id])
-    
+
     respond_to do |format|
       format.html { redirect_to(current_user.href) }
       format.data { render :json => {:link_id => params[:link_id]} }
     end
   end
-  
+
   def update_link
     @user_link = UserLink.update(params[:id], params[:link_id], params[:link])
-    
+
     respond_to do |format|
       format.html { redirect_to(current_user.href) }
       format.data { render :action => "create_link" }
     end
   end
-  
+
+  # We still need these for v4 accessible version
   def create_friend
     user_id = params[:id]
     if user_id != current_user.id
@@ -157,14 +272,25 @@ class ProfileController < ApplicationController
       format.data { render :text => "created" }
     end
   end
-  
+
   def delete_friend
     user_id = params[:id]
     Contact.delete(user_id)
-    
+
     respond_to do |format|
       format.html { redirect_to(current_user.href) }
       format.data { render :text => "deleted" }
     end
   end
+
+private
+  # Need an instance for using cache_key()
+  def app_helper
+    AppHelper.instance
+  end
+end
+
+class AppHelper
+  include Singleton
+  include ApplicationHelper
 end

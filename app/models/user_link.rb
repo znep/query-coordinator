@@ -1,5 +1,5 @@
 class UserLink < Model
-  cattr_accessor :link_types
+  cattr_accessor :link_types, :new_link_types
   
   def self.find(user_id)
     path = "/users/#{user_id}/links.json"
@@ -21,6 +21,7 @@ class UserLink < Model
     return parse(CoreServer::Base.connection.delete_request(path))
   end
   
+# TODO/v4: Remove this crap. BTW who forgot friendster?
   @@link_types = [
     ["MY_COMPANY", "My Company / Organization"],
     ["BLOG", "My Blog"],
@@ -36,6 +37,15 @@ class UserLink < Model
     ["YOUTUBE", "YouTube"],
     ["SCRIBD", "Scribd"],
     ["GOVLOOP", "GovLoop"]
+  ]
+
+  @@new_link_types = [
+    ["MY_SITE", "My Site"],
+    ["BLOG", "My Blog"],
+    ["TWITTER", "Twitter"],
+    ["FACEBOOK", "Facebook"],
+    ["FLICKR", "Flickr"],
+    ["OTHER", "Other"]
   ]
   
 end

@@ -166,7 +166,8 @@ ActionController::Routing::Routes.draw do |map|
     :delete_link => :delete,
     :update_link => :put,
     :create_friend => :get,
-    :delete_friend => :get
+    :delete_friend => :get,
+    :update_account => :put
   }
 
   # New dataset page
@@ -224,6 +225,16 @@ ActionController::Routing::Routes.draw do |map|
   # TODO/v4: no longer necessary
   map.connect 'datasets_alt', :controller => 'blists', :action => 'alt_index'
 
+  # TODO/v4: remove me
+  map.with_options :conditions => {:has_v4_dataset => true} do |v4_profile|
+    v4_profile.connect 'profile/:profile_name/:id', :controller => 'profile',
+         :action => 'v4_show', :conditions => { :method => :get },
+         :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+    v4_profile.connect 'profile/:profile_name/:id/edit', :controller => 'profile',
+         :action => 'v4_edit', :conditions => { :method => :get },
+         :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+  end
+
   map.connect 'profile/:profile_name/:id', :controller => 'profile',
      :action => 'show', :conditions => { :method => :get },
      :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
@@ -233,6 +244,13 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'profile/:profile_name/:id/edit', :controller => 'profile',
      :action => 'edit', :conditions => { :method => :get },
      :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+  map.connect 'profile/:profile_name/:id/image', :controller => 'profile',
+     :action => 'edit_image', :conditions => { :method => :get },
+     :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+  map.connect 'profile/:profile_name/:id/account', :controller => 'profile',
+     :action => 'edit_account', :conditions => { :method => :get },
+     :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+
 
   # This needs to be more specific than the dataset routes, which will all
   # accept anything/anything/4-4, which matches our widget customization

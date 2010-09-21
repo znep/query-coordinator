@@ -2,7 +2,9 @@
   <%= rendered_stylesheet_tag 'screen-browse' %>
 <% end %>
 
-<div class='browseSection'>
+<div class='browseSection <%= @no_browse_facets ? 'noFacets' : '' %>
+  <%= @browse_in_container ? 'inContainer' : '' %>'>
+  <%- if !@no_browse_facets -%>
   <div class='browseFacets'>
     <form class='searchSection'>
       <span class='icon'></span>
@@ -65,6 +67,7 @@
     </div>
     <%- end -%>
   </div>
+  <%- end -%>
 
   <div class='browseList'>
     <div class='sortOptions'>

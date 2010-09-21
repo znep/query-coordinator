@@ -73,8 +73,9 @@
         width: 9em
 
     .results
-      clear: right
-      margin-bottom: 2em
+      margin:
+        bottom: 2em
+        top: 3em
 
       .noResults
         color: #666666
@@ -251,6 +252,17 @@
         margin-right: 1em
       .nextLink
         margin-left: 1em
+
+  &.noFacets .browseList
+    margin-left: 0
+
+  &.inContainer
+    padding: 0
+    .browseList
+      // The border needs to exist but be invisible, otherwise the margin that
+      // clears the sort option gets collapsed
+      border-color: #ffffff
+      padding: 0
 
 .browseOptionsDialog
   .optionsContent

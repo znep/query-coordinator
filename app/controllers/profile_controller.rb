@@ -1,4 +1,5 @@
 class ProfileController < ApplicationController
+  include BrowseController
 # TODO/v4: remove v4_show
   skip_before_filter :require_user, :only => [:show, :v4_show]
   
@@ -92,6 +93,10 @@ class ProfileController < ApplicationController
       end
       # Add in the rest
       stat_groups.each { |k,v| @stat_displays << [k, v] }
+
+      @no_browse_facets = true
+      @browse_in_container = true
+      process_browse!
     end
 
     @user_links = UserLink.find(@user.id)

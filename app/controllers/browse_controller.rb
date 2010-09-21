@@ -15,6 +15,19 @@ protected
       end
     end
 
+    if !params[:sortPeriod].nil?
+      t = Date.today
+      @opts[:endDate] = t.to_s
+      @opts[:startDate] = case params[:sortPeriod]
+                          when 'week'
+                            Date.commercial(t.cwyear, t.cweek, 1)
+                          when 'month'
+                            Date.civil(t.year, t.month, 1)
+                          when 'year'
+                            Date.civil(t.year, 1, 1)
+                          end.to_s
+    end
+
     if !params[:q].nil?
       @opts[:q] = params[:q]
     else

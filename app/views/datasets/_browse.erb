@@ -88,11 +88,17 @@
           so[:is_time_period] -%>
         <%- end -%>
       </select>
+      <%- time_opts = [
+        {:value => 'week', :name => 'This week'},
+        {:value => 'month', :name => 'This month'},
+        {:value => 'year', :name => 'This year'}
+      ] -%>
       <select class='sortPeriod <%= !show_time_period ? 'hide' : '' %>'
         name='sortPeriod'>
-        <option value='week'>This week</option>
-        <option value='month'>This month</option>
-        <option value='year'>This year</option>
+        <%- time_opts.each do |to| -%>
+        <option value='<%= to[:value] %>' <%= to[:value] == @params[:sortPeriod] ?
+          "selected='selected'" : '' %>><%= to[:name] %></option>
+        <%- end -%>
       </select>
     </div>
 

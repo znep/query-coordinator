@@ -54,6 +54,10 @@ body
 		position: static;
 		width: auto;
 }
+#header .userNav li.dataHomeLink
+{
+	border-right: solid 1px #FFF;
+}
 #header .userNav li.signUpLink
 {
 	margin-right: 0px;

@@ -15,14 +15,20 @@
 
             var $content = $expander.find(config.contentSelector);
             var $expand = $expander.find(config.expandSelector);
-            if ($.isBlank($content.text()))
+
+            // don't show if there's no text, or it's only one line
+            $content.removeClass('collapsed');
+            var fullHeight = $content.height();
+            $content.addClass('collapsed');
+
+            if ($.isBlank($content.text()) || (fullHeight == $content.height()))
             { $expand.hide(); }
 
             $expand.click(function(event)
             {
                 event.preventDefault();
 
-                if ($expand.hasClass('downArrow'))
+                if ($expand.hasClass(config.expanderCollapsedClass))
                 {
                     // need to expand; measure how tall
                     $content
@@ -35,8 +41,8 @@
                             height: targetHeight
                         },
                         config.resizeFinishCallback);
-                    $expand.removeClass('downArrow')
-                           .addClass('upArrow')
+                    $expand.removeClass(config.expanderCollapsedClass)
+                           .addClass(config.expanderExpandedClass)
                            .attr('title', 'Click to collapse');
                 }
                 else
@@ -52,8 +58,8 @@
                             $content.css('display', '');
                             config.resizeFinishCallback();
                         });
-                    $expand.removeClass('upArrow')
-                           .addClass('downArrow')
+                    $expand.removeClass(config.expanderExpandedClass)
+                           .addClass(config.expanderCollapsedClass)
                            .attr('title', 'Click to expand');
                 }
             });
@@ -66,7 +72,10 @@
     //
     $.fn.expander.defaults = {
         contentSelector: '.content',
+        expanderCollapsedClass: 'downArrow',
+        expanderExpandedClass: 'upArrow',
         expandSelector: '.expand',
+        moveExpandTrigger: false,
         resizeFinishCallback: function() {}
     };
 

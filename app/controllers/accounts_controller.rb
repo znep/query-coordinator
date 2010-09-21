@@ -140,7 +140,7 @@ class AccountsController < ApplicationController
 
         # Awesome; let's log them in.
         user = User.parse(result.body)
-        @user_session = UserSession.new('login' => user.login, 'password' => params[:password])
+        @user_session = UserSession.new('login' => user.id, 'password' => params[:password])
         if @user_session.save
           return redirect_to(root_path)
         else

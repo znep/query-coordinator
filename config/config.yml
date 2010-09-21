@@ -6,8 +6,6 @@ default: &default
   rpx_windowslive_url: https://socrata-test.rpxnow.com/liveid/start
   rpx_twitter_url: https://socrata-test.rpxnow.com/twitter/start
   rpx_openid_url: https://socrata-test.rpxnow.com/openid/start
-  recaptcha_private_key: 6LdYQAkAAAAAANXMIbBwYDC5OHQj6j6N5Mqs1Kfd
-  recaptcha_public_key: 6LdYQAkAAAAAAFDLJhrXAu8afiNeqTSPCXP18fBd
 
 # Local development
 development:

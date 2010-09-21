@@ -19,12 +19,7 @@
 <% end %>
 
 <div id='datasetBar' class='clearfix'>
-  <div id='viewsMenu' class='menu'></div>
-
-  <div id='titleBox'>
-    <a href="#expand" class="descriptionExpander downArrow" title="Click to expand">
-      <span class="icon"></span>
-    </a>
+  <div id='infoBox'>
     <div id='datasetIcon' class='type<%= @view.display.type.capitalize %>'>
       <span class='icon currentViewName'><%= @view.display.name %></span>
       <span class='alertIcon'></span>
@@ -41,71 +36,21 @@
         class='revert toolbarButton'>Revert</a>
     </div>
     <h2 id='datasetName' class="clipText currentViewName"><%= @view.name %></h2>
-    <div class='basedOn clipText'>
-    (based on <span class='parentName currentViewName'><%= @view.name %></span>)
+    <div class="basedOnParent">
+      Based on <a class="parentName"></a>
     </div>
-    <div id='description' class="collapsed"><%= @view.description %></div>
-  </div>
-
-  <div id='actionBox' class='clearfix'>
-    <ul id="toolbarOptions">
-      <%- unless @view.is_alt_view? -%>
-      <li>
-        <form id="searchForm" action="#">
-          <span class="icon"></span>
-          <input type="text" class="searchField textPrompt" title="Find in this Dataset" />
-          <a href="#clear" class="clearSearch close"><span class="icon"></span></a>
-        </form>
-      </li>
-      <%- end -%>
-      <li>
-        <div id='shareMenu' class='share menu'></div>
-      </li>
-    </ul>
-    <ul id='sidebarOptions' class="clearfix">
-      <li class="tabEdit"><a href='#Edit' title='Edit'
-        data-paneName='edit'>Edit</a></li>
-      <li class="tabFilter"><a href='#Filter' title='Filter' class='none'
-        data-paneName='filter'>Filter<span class='alertIcon'></span></a></li>
-      <li class="tabVisualize"><a href='#Visualize' title='Visualize'
-        data-paneName='visualize'>Visualize</a></li>
-      <li class="tabExport"><a href='#Export' title='Export'
-        data-paneName='export'>Export</a></li>
-      <li class="tabFeed"><a href='#Feed' title='Feed'
-        data-paneName='feed'>Feed</a></li>
-      <li class="tabEmbed"><a href='#Embed' title='Embed'
-        data-paneName='embed'>Embed</a></li>
-      <li class="tabAbout"><a href='#About' title='About'
-        data-paneName='about'>About</a></li>
-    </ul>
-  </div>
-
-  <a href="#toggleFullScreen" class="fullscreenButton maximize" title="Toggle full screen">
-    <span class="icon">Toggle full screen</span>
-  </a>
-</div>
-
-<div class='outerContainer'>
-  <div class='innerContainer'>
-    <div class='viewErrorContainer'>
-      <%- if @view.has_rights?('update_view') -%>
-      <div class='viewError'><%= @view.display.invalid_message %></div>
-      <ul class='invalidActions'>
-        <li>
-          <a href='#Edit' class='editView button'>Edit View</a>
-        </li>
-        <%- if @view.has_rights?('delete_view') -%>
-        <li>
-          <a href='#Remove' class='removeView button'>Delete View</a>
-        </li>
-        <%- end -%>
-      </ul>
-      <%- else -%>
-      <div class='viewError'>This view cannot be displayed</div>
-      <%- end -%>
+    <div class='basedOnTemp'>
+      Based on <a class='revertLink currentViewName' href="#revert"><%= @view.name %></a>
     </div>
 
-    <%- if @view.can_edit? && !@view.is_alt_view? -%>
+    <%- unless @view.can_edit? && !@view.is_alt_view? -%>
+    <div id='description'>
+      <p class="collapsed"><%= @view.description || '(No description provided)'%></p>
+      <a href="#expand" class="descriptionExpander rightArrow" title="Click to expand">
+        <span class="icon"></span>
+      </a>
+    </div>
+    <%- else -%>
     <div id='editBar' class='clearfix'>
       <ul id='editOptions'>
         <li><a href='#Undo' class='button undo' title='Undo'>
@@ -151,9 +96,158 @@
     </div>
     <%- end -%>
 
+  </div>
+
+  <div id='actionBox' class='clearfix'>
+    <ul id="toolbarOptions" class='clearfix'>
+      <li>
+        <%- if @view.is_tabular? -%>
+        <ul id='renderTypeOptions' class="pillButtons">
+          <li><a href='#main' class='main <%= @view.display.type %>'
+            title='View as <%= @view.display.name.downcase %>'>
+            <span class='icon'></span>
+          </a></li>
+          <li><a href='#page' class='page' title='View a single row'>
+            <span class='icon'></span>
+          </a></li>
+        </ul>
+        <%- end -%>
+      </li>
+      <li>
+        <div id='shareMenu' class='share menu'></div>
+      </li>
+      <%- unless @view.is_alt_view? -%>
+      <li>
+        <form id="searchForm" action="#">
+          <span class="icon"></span>
+          <input type="text" class="searchField textPrompt" title="Find in this Dataset" />
+          <a href="#clear" class="clearSearch close"><span class="icon"></span></a>
+        </form>
+      </li>
+      <%- end -%>
+    </ul>
+    <div class="sidebarOptionsContainer clearfix">
+      <ul id='sidebarOptions' class="clearfix">
+        <li><a href='#Edit' title='Edit' class="edit"
+          data-paneName='edit'><span class="icon"></span>Edit</a></li>
+        <li><a href='#More Views' title='More Views' class="moreViews"
+          data-paneName='moreViews'><span class="icon"></span>More Views</a></li>
+        <li><a href='#Filter' title='Filter' class='filter'
+          data-paneName='filter'><span class="icon"></span>Filter
+          <span class='alertIcon'></span></a></li>
+        <li><a href='#Visualize' title='Visualize' class="visualize"
+          data-paneName='visualize'><span class="icon"></span>Visualize</a></li>
+        <li><a href='#Export' title='Export' class="export"
+          data-paneName='export'><span class="icon"></span>Export</a></li>
+        <li><a href='#Discuss' title='Discuss' class="feed"
+          data-paneName='feed'><span class="icon"></span>Discuss</a></li>
+        <li><a href='#Embed' title='Embed' class="embed"
+          data-paneName='embed'><span class="icon"></span>Embed</a></li>
+        <li><a href='#About' title='About' class="about"
+          data-paneName='about'><span class="icon"></span>About</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <a href="#toggleFullScreen" class="fullscreenButton maximize" title="Toggle full screen">
+    <span class="icon">Toggle full screen</span>
+  </a>
+</div>
+
+<div class='outerContainer'>
+  <div class='innerContainer'>
+    <div class='mainSpinner loadingSpinnerContainer hide'>
+      <div class='loadingSpinner'></div>
+    </div>
+    <div class='viewErrorContainer'>
+      <%- if @view.has_rights?('update_view') -%>
+      <div class='viewError'><%= @view.display.invalid_message %></div>
+      <ul class='invalidActions'>
+        <li>
+          <a href='#Edit' class='editView button'>Edit View</a>
+        </li>
+        <%- if @view.has_rights?('delete_view') -%>
+        <li>
+          <a href='#Remove' class='removeView button'>Delete View</a>
+        </li>
+        <%- end -%>
+      </ul>
+      <%- else -%>
+      <div class='viewError'>This view cannot be displayed</div>
+      <%- end -%>
+    </div>
+
     <div id='mainGrid' class='fullHeight'>
+      <%# SEO links for individual rows %>
+      <%- next_index = 0 -%>
+      <%- if !@row.nil? -%>
+      <%- next_index = @view.get_row_index(@row['sid']) + 1 -%>
+      <%- end -%>
+      <%- next_row = @view.get_row_by_index(next_index) -%>
+      <%- if !next_row.nil? -%>
+      <a href='<%= @view.href %>/<%= next_row['sid'] %>' class='rowLink'>
+        <%= @row.nil? ? 'First' : 'Next' %> row
+      </a>
+      <%- end -%>
       <%= raw @view.display.render_body(self) %>
       <%= render(:partial => @view.display.render_partial) %>
+    </div>
+
+    <div id='pageRenderType' class='fullHeight <%= @row.nil? ? 'hide' : '' %>'>
+      <div class='content'>
+        <%- if !@row.nil? -%>
+        <div class='pageColumn'>
+          <%- @view.visible_columns.each do |c| -%>
+          <div class='pageLine <%= c.renderTypeName %>'>
+            <span class='pageLabel'><%= c.name %></span>
+
+            <div class='pageItem'>
+              <%- cell = @row[c.id] -%>
+              <%- if c.renderTypeName == 'nested_table' -%>
+              <table>
+                <thead>
+                  <tr>
+                    <%- c.viewable_children.each do |cc| -%>
+                    <th><%= cc.name %></th>
+                    <%- end -%>
+                  </tr>
+                </thead>
+                <tbody>
+                  <%- (cell || []).each do |cr| -%>
+                  <tr>
+                    <%- c.viewable_children.each do |cc| -%>
+                    <td><%= seo_render(cr[cc.id], cc) %></td>
+                    <%- end -%>
+                  </tr>
+                  <%- end -%>
+                </tbody>
+              </table>
+              <%- else -%>
+              <%= seo_render(cell, c) %>
+              <%- end -%>
+            </div>
+          </div>
+          <%- end -%>
+        </div>
+        <%- end -%>
+      </div>
+      <ul class='navigation'>
+        <li><a href='#start' title='View first row' class='start button'>
+          <span class='icon'></span>
+        </a></li>
+        <li><a href='#previous' title='View previous row' class='previous button'>
+          <span class='icon'></span>
+        </a></li>
+        <li class='info'>
+        Viewing row <span class='curRow'></span> of <span class='totalRows'></span>
+        </li>
+        <li><a href='#next' title='View next row' class='next button'>
+          <span class='icon'></span>
+        </a></li>
+        <li><a href='#end' title='View last row' class='end button'>
+          <span class='icon'></span>
+        </a></li>
+      </ul>
     </div>
   </div>
 
@@ -313,13 +407,15 @@
 <%- end -%>
 
 <% content_for :js_footer do %>
-
-  <script type="text/javascript" src="http://api.recaptcha.net/js/recaptcha_ajax.js"></script>
   <script type="text/javascript">
     <%= raw @view.display.render_inline_setup_js('mainGrid', self) %>
 
     <%- if !current_user.nil? -%>
       blist.currentUserId = '<%= current_user.id %>';
+    <%- end -%>
+
+    <%- if !@row.nil? -%>
+    blist.initialRowId = "<%= @row['sid'] %>";
     <%- end -%>
 
     <%# Namespace to keep track of disabled sidebar sections %>
@@ -380,7 +476,8 @@
     blist.sidebarHidden.exportSection.api = <%= !@view.is_tabular? %>;
 
     <%# Sharing pane %>
-    blist.sidebarHidden.sharing = <%= !@view.user_granted?(current_user) %>;
+    blist.sidebarHidden.sharing = <%= !@view.user_granted?(current_user) &&
+      !CurrentDomain.user_can?(current_user, :edit_others_datasets) %>;
 
     <%# Please see admin_controller#add_custom_layer for explanation %>
     <%# custom_layer_config = Configuration.find_by_type('custom_layers', true).first
@@ -392,8 +489,6 @@
         end if custom_layer_config
     -%>
     <%#blist.custom_layers = JSON.parse($.htmlUnescape("<%= h custom_layers.to_json.gsub(/\\/, '\\\\\\') % >")); -%>
-
-    blist.recaptchaPublicKey = '<%= APP_CONFIG['recaptcha_public_key'] %>';
   </script>
 
   <%- if @view.is_tabular? -%>

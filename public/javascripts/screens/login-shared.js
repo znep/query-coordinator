@@ -8,7 +8,7 @@ $(function() {
         $('.signupForm').slideDown();
         $('.authAction').text('join');
         $('.hintSwap .actionText').text('Sign up');
-        $('.modalHeader').toggle();
+        $('.modalContentBox').removeClass('loginModal').addClass('signupModal');
     });
     $('.signInLink').click(function(event)
     {
@@ -17,6 +17,6 @@ $(function() {
         $('.loginForm').slideDown();
         $('.authAction').text('log in');
         $('.hintSwap .actionText').text('Sign in');
-        $('.modalHeader').toggle();
+        $('.modalContentBox').removeClass('signupModal').addClass('loginModal');
     });
 });

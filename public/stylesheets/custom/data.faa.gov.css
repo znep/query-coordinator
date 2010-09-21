@@ -5,12 +5,17 @@ body {
 .bodyInterior {
 	border:none;
 }
-#outerContainer {
- background:;
+.oneColumnContainer
+{
+	padding-top: 0;
+}
+.tabContainer
+{
+	padding-top: 1em;
 }
 /* HEADER */
 #header {
-	height:140px;
+	height:115px;
 	padding:0;
 	background:none;
 }
@@ -19,11 +24,10 @@ body {
 	top:80px;
 	right:40px;
 }
-/* lofo */
+/* logo */
 #header h1 {
 	background:#fcfdfe url(/stylesheets/images/domains/data.faa.gov/logo-bg.png) repeat-x;
 	border:#fff solid 10px;
-	height:100px;
 }
 #mainLogo {
 	right:10px;
@@ -73,6 +77,7 @@ body.home #mainNav li.home a span {
 }
 #mainNav ul.subNav li {
 	background-position: 100% -30px;
+	border-top: solid 1px #CCC;
 }
 #mainNav li.home a span {
 	margin-right:14px;
@@ -100,18 +105,80 @@ body.home #mainNav li.home .subNav li.last, body #mainNav li.home .subNav li.las
 body.home #mainNav li.loggedInNav:hover, body #mainNav li.loggedInNav:hover {
 	background:#fff;
 }
+#mainNav li.home .subNav li.last:hover
+{
+	background: none #FFF;
+}
 #mainNav .subNav a span {
 	padding-left:4px;
 }
 /* DISCOVERY */
-.pageBlockHeaderCarousel.carouselWrapper, .pageBlockHeaderCarousel .carouselOuter, .pageBlockHeaderCarousel .carouselInner {
-	background-image:url(/stylesheets/images/domains/data.faa.gov/box.png);
+#faaSplashContainer
+{
+	background: #FFF;	
+	margin: 0 0 1.5em;		
+	padding: 10px;
 }
-.pageBlockIntro p {
-	color:#000;
+#faaSplashInnerContainer
+{
+	background: url(/stylesheets/images/domains/data.faa.gov/splash-bg.jpg) repeat-x bottom;	
+	padding: 1.5em 37em 1.5em 1.5em;		
 }
-.pageBlockHeaderCarousel h2 {
-	color:#036;
+.pageBlockIntro p
+{
+	color: #333;
+	margin-bottom: 0.5em;
+}
+#faaSplashInnerContainer .pageBlockHeaderSide
+{
+	background: #F2F2F2;
+	border: solid 1px #BBB;
+	border-top-right-radius: 0.5em;
+	-moz-border-radius-topright: 0.5em;
+	webkit-border-top-right-radius: 0.5em;
+	border-top-left-radius: 0.5em;
+	-moz-border-radius-topleft: 0.5em;
+	webkit-border-top-left-radius: 0.5em;
+	border-bottom-left-radius: 0.5em;
+	-moz-border-radius-bottomleft: 0.5em;
+	webkit-border-bottom-left-radius: 0.5em;
+	border-bottom-right-radius: 0.5em;
+	-moz-border-radius-bottomright: 0.5em;
+	webkit-border-bottom-right-radius: 0.5em;	
+	display: table;	
+	margin-left: 2.7em;
+	padding-bottom: 0.5em;
+	padding-left: 0;
+}
+#faaSplashInnerContainer .pageBlockHeaderSide h2
+{
+	background: #ED5800;
+	border-top-right-radius: 0.4em;
+	-moz-border-radius-topright: 0.4em;
+	webkit-border-top-right-radius: 0.4em;
+	border-top-left-radius: 0.4em;
+	-moz-border-radius-topleft: 0.4em;
+	webkit-border-top-left-radius: 0.4em;	
+	color: #FFF;
+	font-weight: bold;
+	margin: -1px;
+	padding: 0.3em;
+}
+#faaSplashInnerContainer .activityList
+{
+	margin: 0.5em;
+}
+.pageBlockHeaderContent .pageBlockHeaderSide
+{
+	margin-top: 0em;
+}
+.pageBlockHeaderSide ul li a
+{
+	color: #D94800;
+}
+.myNetworkList a
+{
+	color: #D94800;
 }
 /* FOOTER */
 .footerContainer {

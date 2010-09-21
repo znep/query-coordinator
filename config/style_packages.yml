@@ -16,6 +16,7 @@ base-sdp:
 - old-controls
 - controls
 - tables
+- screen-page-render-type
 - screen-map
 grid:
 - table-core
@@ -31,6 +32,7 @@ dataset-new:
 dataset-show:
 - grid-sidebar
 - grid-sidebar-custom
+- screen-page-render-type
 - screen-dataset
 - control-feed
 - splash
@@ -53,3 +55,9 @@ profile-edit:
 administration-moderation:
 - screen-admin
 - screen-administration-moderation
+administration-sdp-templates:
+- screen-admin
+- screen-admin-sdp-templates
+administration-federation:
+- screen-admin
+- screen-administration-federation

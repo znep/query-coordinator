@@ -171,9 +171,9 @@ blist.namespace.fetch('blist.data');
 
             // Adjust max & min account for special rows, so we get real
             // offsets to the server
-            var specToStop = countSpecialTo(stop);
+            var specToStop = countSpecialTo(stop, true);
             var adjStop = stop - specToStop;
-            var specToStart = countSpecialTo(start);
+            var specToStart = countSpecialTo(start, true);
             var adjStart = start - specToStart;
 
             var gotRows = function(modelRows)
@@ -462,6 +462,8 @@ blist.namespace.fetch('blist.data');
             {
                 undeleteChildRow(cr.row, row, cr.parentColumn);
             });
+
+            return row;
         };
 
         var undeleteChildRow = function(row, parentRow, parentColumn)
@@ -510,10 +512,11 @@ blist.namespace.fetch('blist.data');
                     break;
 
                 case 'delete':
-                    oppItem = {type: 'create', rows: item.rows.slice()};
+                    oppItem = {type: 'create', rows: []};
 
                     item.rows.reverse();
-                    _.each(item.rows, function(r) { undeleteRow(r); });
+                    _.each(item.rows, function(r)
+                        { oppItem.rows.push(undeleteRow(r)); });
                     break;
 
                 case 'childDelete':
@@ -610,7 +613,7 @@ blist.namespace.fetch('blist.data');
         {
             if ($.isBlank(this.view)) { return undefined; }
             return specialRows[index] ||
-                this.view.rowForIndex(index - countSpecialTo(index));
+                this.view.rowForIndex(index - countSpecialTo(index, true));
         };
 
         /**
@@ -917,7 +920,7 @@ blist.namespace.fetch('blist.data');
             $(listeners).trigger('rows_changed');
         };
 
-        var countSpecialTo = function(max)
+        var countSpecialTo = function(max, isAbsolute)
         {
             var count = 0;
             if ($.isBlank(max)) { max = self.dataLength(); }
@@ -931,7 +934,7 @@ blist.namespace.fetch('blist.data');
             {
                 _.each(specialRows, function(r, i) { if (i < max) { count++; } });
                 i = max;
-                max += count;
+                if (!isAbsolute) { max += count; }
             }
 
             while (i < max)
@@ -939,7 +942,7 @@ blist.namespace.fetch('blist.data');
                 if (!$.isBlank(specialRows[i]))
                 {
                     count++;
-                    max++;
+                    if (!isAbsolute) { max++; }
                 }
                 i++;
             }

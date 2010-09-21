@@ -26,13 +26,6 @@
 .fc-content td, .fc-content th
 { font-size: 1.2em; }
 
-.fc .loadingSpinner
-{
-    left: 50%;
-    margin: -24px 0 0 -24px;
-    top: 50%;
-}
-
 /* Header
 ------------------------------------------------------------------------*/
 	

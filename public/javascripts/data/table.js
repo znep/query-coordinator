@@ -2814,7 +2814,12 @@
                 lockedColumns.push(rowNumberColumn = {id: 'rowNumberCol',
                     cls: 'blist-table-row-numbers',
                     measureText: Math.max(model.length(), 100),
-                    renderer: '(row.type == "blank" ? "new" : renderIndex + 1)',
+                    renderer: '(row.type == "blank" ? "new" : ' +
+                        '(row.noMatch ? "<span title=\'This row does ' +
+                        'not match the current filter\'>X</span>" : ' +
+                        '"<a href=\'' + model.view.url + '/" + row.id + "\' ' +
+                        'title=\'View row\' class=\'noInterstitial\'>" + ' +
+                        '(renderIndex + 1) + "</a>"))',
                     footerText: 'Totals'});
             }
             if (options.showRowHandle)
@@ -2937,6 +2942,7 @@
             var rowDivContents =
                 'class=\'blist-tr", ' +
                 '(renderIndex % 2 ? " blist-tr-even" : ""), ' +
+                '(row.noMatch ? " blist-tr-noMatch" : ""), ' +
                 '(row.level !== undefined ? " blist-tr-level" + row.level : ""), ' +
                 '(row.level > 0 ? " blist-tr-sub" : ""), ' +
                 '(row.type ? " blist-tr-" + row.type : ""), ' +
@@ -3874,7 +3880,7 @@
                         if (rowLockedRenderFn != null)
                         {
                             rowLockedRenderFn(lockedHtml,
-                                rowIndex - start, rowIndex, row);
+                                rowIndex - start, row.index, row);
                         }
                         rowIndices[rowID] = rowIndex;
                     }
@@ -4036,10 +4042,6 @@
         $this.bind('dataset_ready', function(event, newModel)
         {
             model = newModel;
-            model.view.bind('start_request', function()
-                    { $outside.addClass('blist-loading'); })
-                .bind('finish_request', function()
-                    { $outside.removeClass('blist-loading'); });
 
             var isReady = function()
             {
@@ -4075,6 +4077,13 @@
                             begin("selectionChange");
                             updateRowSelection(rows);
                             end("selectionChange");
+                        })
+                    .bind('refresh', function()
+                        {
+                            initMeta();
+                            renderHeader();
+                            renderFooter();
+                            initRows();
                         });
 
             };

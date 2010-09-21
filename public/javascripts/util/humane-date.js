@@ -68,8 +68,8 @@ blist.util.humaneDate.getFromDate = function (date_obj, granularity)
             {
                 return Math.floor(seconds / format[2]) + ' ' + format[1] + ' ' + token;
             }
-	    }
-    	format = humaneUtilNS.timeFormats[i++];
+        }
+        format = humaneUtilNS.timeFormats[i++];
     }
     // overflow for centuries
     if (seconds > 5806080000)
@@ -77,7 +77,7 @@ blist.util.humaneDate.getFromDate = function (date_obj, granularity)
         return Math.floor(seconds / 2903040000) + ' centuries ' + token;
     }
 
-    return date_str;
+    return 'some time ago';
 };
 
 blist.util.humaneDate.getFromISO = function (date_str)

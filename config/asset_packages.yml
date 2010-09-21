@@ -33,6 +33,7 @@ javascripts:
   - util/dataset/chart
   - util/dataset/form
   - util/dataset/map
+  - util/styles
   - util/templates
   - util/socrata-server
   - data/types
@@ -98,6 +99,7 @@ javascripts:
 - shared-chart:
   - plugins/highcharts.src
   - plugins/jit
+  - util/color
   - widgets/base-visualization
   - widgets/charts/base-chart
   - widgets/charts/highcharts
@@ -111,7 +113,10 @@ javascripts:
 - admin-sdp-index:
   - screens/admin-sdp-index-screen
 - admin-users:
+  - controls/admin-buttons
   - plugins/jquery.uniform
+  - plugins/jquery.tablesorter
+  - widgets/combination-list
   - screens/admin-users-screen
 - admin-federations:
   - screens/admin-federations-screen
@@ -121,6 +126,16 @@ javascripts:
   - widgets/combination-list
   - util/user
   - screens/admin-moderation
+- admin-sdp-templates:
+  - controls/admin-buttons
+  - plugins/jquery.tablesorter
+  - widgets/combination-list
+  - screens/admin-sdp-templates
+- admin-federation:
+  - controls/admin-buttons
+  - plugins/jquery.tablesorter
+  - widgets/combination-list
+  - screens/admin-federation-screen
 - blists-about:
   - util/urls
   - plugins/ajaxupload.3.0
@@ -252,6 +267,7 @@ javascripts:
   - controls/dataset-controls
   - controls/stars
   - controls/menu
+  - controls/page-render-type
   - widgets/scrollTabs
   - widgets/inline-edit
   - widgets/form-inliner
@@ -311,6 +327,8 @@ javascripts:
   - controls/embed-form
   - controls/full-screen
   - controls/format-options
+  - controls/page-render-type
+  - controls/pill-buttons
   - screens/dataset-show
 - screen-dataset-edit-metadata:
   - plugins/jquery.uniform

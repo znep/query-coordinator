@@ -24,11 +24,23 @@
                 // App-specific credentials.  See www.bingmapsportal.com
                 mapObj.map.SetCredentials('AnhhVZN-sNvmtzrcM7JpQ_vfUeVN9AJNb-5v6dtt-LzCg7WEVOEdgm25BY_QaSiO');
                 mapObj.map.LoadMap();
+                mapObj.map.EnableShapeDisplayThreshold(false);
 
                 mapObj.resizeHandle();
 
                 mapObj._shapeLayer = new VEShapeLayer();
                 mapObj.map.AddShapeLayer(mapObj._shapeLayer);
+
+                // Known Bug: This event is attached every time the Plot Style is
+                // modified. This bug should be reasonably rare.
+                mapObj.map.AttachEvent('onchangeview', function()
+                {
+                    if (mapObj._hideBingTiles)
+                    {
+                        $("img.MSVE_ImageTile", blist.$display)
+                            .css('visibility', 'hidden');
+                    }
+                });
             },
 
             renderPoint: function(latVal, longVal, rowId, details)
@@ -122,8 +134,10 @@
             hideLayers: function()
             {
                 var mapObj = this;
-                mapObj.map.HideBaseTileLayer();
+                //mapObj.map.HideBaseTileLayer();
                 mapObj.map.HideDashboard();
+                mapObj._hideBingTiles = true;
+                blist.$display.css('height', '100%');
             },
 
             resetData: function()
@@ -133,6 +147,7 @@
                 mapObj.map.DeleteAllShapeLayers();
                 mapObj._shapeLayer = new VEShapeLayer();
                 mapObj.map.AddShapeLayer(mapObj._shapeLayer);
+                mapObj._hideBingTiles = false;
             },
 
             resizeHandle: function()
@@ -147,7 +162,11 @@
 
             clearFeatures: function()
             {
-                this.resetData();
+                var mapObj = this;
+
+                mapObj.map.DeleteAllShapeLayers();
+                mapObj._shapeLayer = new VEShapeLayer();
+                mapObj.map.AddShapeLayer(mapObj._shapeLayer);
             }
         }
     }));

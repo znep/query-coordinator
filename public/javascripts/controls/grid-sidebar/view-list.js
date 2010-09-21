@@ -41,8 +41,8 @@
                 '.authorLine .date': function(a)
                 {
                     return blist.util.humaneDate.getFromDate(
-                        Math.max(a.context.viewLastModified,
-                            a.context.createdAt) * 1000,
+                        Math.max(a.context.viewLastModified || 0,
+                            a.context.createdAt || 0) * 1000,
                         blist.util.humaneDate.DAY).capitalize();
                 },
                 '.authorLine .author': 'owner.displayName',
@@ -158,12 +158,12 @@
 
 
 
-    var filterConfig =
+    var allConfig =
     {
-        name: 'filter.savedFilters',
-        priority: 10,
-        title: 'Saved Views',
-        subtitle: 'See existing public filters and grouped views on this dataset',
+        name: 'moreViews',
+        priority: 1,
+        title: 'More Views',
+        subtitle: 'See existing filters, maps, charts and other views on this dataset',
         sections: [{
             customContent: {
                 template: 'itemsListBlock',
@@ -175,71 +175,15 @@
                 },
                 callback: function($s)
                 {
-                    $sections['filter'] = $s;
-                    if (!$.isBlank(views['filter']))
-                    { setupSection(views['filter'], $sections['filter']); }
+                    $sections['all'] = $s;
+                    if (!$.isBlank(views['all']))
+                    { setupSection(views['all'], $sections['all']); }
                 }
             }
         }]
     };
 
-    $.gridSidebar.registerConfig(filterConfig);
-
-
-    var vizConfig =
-    {
-        name: 'visualize.savedVisualizations',
-        priority: 10,
-        title: 'Saved Views',
-        subtitle: 'See existing public maps, charts and calendars on this dataset',
-        sections: [{
-            customContent: {
-                template: 'itemsListBlock',
-                directive: {
-                    '.emptyResult .type': '#{resultType}s'
-                },
-                data: {
-                    resultType: 'view'
-                },
-                callback: function($s)
-                {
-                    $sections['viz'] = $s;
-                    if (!$.isBlank(views['viz']))
-                    { setupSection(views['viz'], $sections['viz']); }
-                }
-            }
-        }]
-    };
-
-    $.gridSidebar.registerConfig(vizConfig);
-
-
-    var formConfig =
-    {
-        name: 'embed.savedForms',
-        priority: 10,
-        title: 'Saved Views',
-        subtitle: 'See existing forms on this dataset',
-        sections: [{
-            customContent: {
-                template: 'itemsListBlock',
-                directive: {
-                    '.emptyResult .type': '#{resultType}s'
-                },
-                data: {
-                    resultType: 'view'
-                },
-                callback: function($s)
-                {
-                    $sections['form'] = $s;
-                    if (!$.isBlank(views['form']))
-                    { setupSection(views['form'], $sections['form']); }
-                }
-            }
-        }]
-    };
-
-    $.gridSidebar.registerConfig(formConfig);
+    $.gridSidebar.registerConfig(allConfig);
 
     // Document ready; load data
     $(function()
@@ -273,6 +217,11 @@
 
                     if (!$.isBlank($sections['form']))
                     { setupSection(views['form'], $sections['form']); }
+
+                    views['all'] = v;
+
+                    if (!$.isBlank($sections['all']))
+                    { setupSection(views['all'], $sections['all']); }
                 });
         });
     });

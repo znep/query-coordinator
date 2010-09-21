@@ -183,7 +183,6 @@
                         wizard: 'Select a map type'
                     },
                     {text: 'Plot Style', name: 'displayFormat.plotStyle', type: 'select',
-                        onlyIf: {field: 'displayFormat.type', value: 'bing', negate: true},
                         required: true, prompt: 'Select a plot style',
                         options: plotStyles,
                         wizard: 'Select a plotting style'
@@ -209,34 +208,33 @@
                         wizard: 'Choose a column that contains ' +
                             'descriptions for each point'
                     },
-                    {text: 'Icon', name: 'displayFormat.plot.iconId',
-                        type: 'columnSelect', isTableColumn: true,
-                        columns: {type: ['photo', 'photo_obsolete', 'url'],
-                            hidden: isEdit},
-                        wizard: 'Choose a column that contains ' +
-                            'an icon for each point'
-                    },
                     {text: 'Group Pins?', type: 'checkbox',
                         onlyIf: {field: 'displayFormat.type', value: 'google'},
                         name: 'displayFormat.clusterMarkers'},
-                    {text: 'Value (size)', name: 'displayFormat.plot.sizeValueId',
+                    {text: 'Base Color', name: 'displayFormat.color', type: 'color',
+                        onlyIf: {field: 'displayFormat.type', value: 'esri'},
+                        defaultValue: "#0000ff"},
+                    {text: 'Point Size', name: 'displayFormat.plot.sizeValueId',
                         onlyIf: {field: 'displayFormat.type', value: 'esri'},
                         type: 'columnSelect', isTableColumn: true,
                         columns: {type: ['number', 'money', 'percent'], hidden: isEdit},
                         wizard: 'Choose a column that contains ' +
                             'quantities specifying the size of each point'
                     },
-                    {type: 'group', options: [
-                        {name: 'displayFormat.color', type: 'color', lineClass: 'colorCollapse',
-                            onlyIf: {field: 'displayFormat.type', value: 'esri'},
-                            defaultValue: "#0000ff"},
-                        {text: 'Value (color)', name: 'displayFormat.plot.colorValueId',
-                            onlyIf: {field: 'displayFormat.type', value: 'esri'},
-                            type: 'columnSelect', isTableColumn: true,
-                            columns: {type: ['number', 'money', 'percent'], hidden: isEdit}
-                        }
-                    ], lineClass: 'colorValueGroup', wizard: 'Choose a column that contains ' +
-                            'quantities specifying the color of each point'}
+                    {text: 'Point Color', name: 'displayFormat.plot.colorValueId',
+                        onlyIf: {field: 'displayFormat.type', value: 'esri'},
+                        type: 'columnSelect', isTableColumn: true,
+                        columns: {type: ['number', 'money', 'percent'], hidden: isEdit},
+                        wizard: 'Choose a column that contains ' +
+                                'quantities specifying the color of each point'
+                    },
+                    {text: 'Icon', name: 'displayFormat.plot.iconId',
+                        type: 'columnSelect', isTableColumn: true,
+                        columns: {type: ['photo', 'photo_obsolete', 'url'],
+                            hidden: isEdit},
+                        wizard: 'Choose a column that contains ' +
+                            'an icon for each point'
+                    }
                 ],
                 wizard: 'Do you have titles or descriptions for your points?'
             },

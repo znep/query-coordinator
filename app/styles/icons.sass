@@ -3,6 +3,12 @@
   .ie6 &
     overflow: hidden
 
+@mixin icon-include-active($className, $subselector, $top, $left)
+  &.#{$className} #{$subselector}
+    background-position: 0 $top
+  &.#{$className}.active #{$subselector}
+    background-position: $left $top
+
 // icons/button_icons.png
 @mixin sprite-button-icons($subselector: '.icon')
   #{$subselector}
@@ -35,11 +41,11 @@
   #{$subselector}
     @include text-hiding
     @include ie6-fix
-    background-image: url(/stylesheets/images/icons/menu_icons.png)
+    background-image: url(/stylesheets/images/icons/menu_icons.png?1)
     height: 13px
     width: 13px
     .ie6 &
-      background-image: url(/stylesheets/images/icons/menu_icons.gif)
+      background-image: url(/stylesheets/images/icons/menu_icons.gif?1)
 
   &.none #{$subselector}
     background-position: 0 13px
@@ -58,13 +64,15 @@
   &.upArrowHighlight #{$subselector},
   &.expanded #{$subselector}
     background-position: 0 -39px
-  &.rightArrow #{$subselector}
+  &.rightArrow #{$subselector},
+  &.next #{$subselector}
     background-position: 0 -52px
   &.rightArrow:hover #{$subselector},
   &.rightArrowHighlight #{$subselector}
     background-position: 0 -65px
   &.leftArrow #{$subselector},
-  &.leftArrowNoHover #{$subselector}
+  &.leftArrowNoHover #{$subselector},
+  &.previous #{$subselector}
     background-position: 0 -78px
   &.leftArrow:hover #{$subselector},
   &.leftArrowHighlight #{$subselector}
@@ -137,6 +145,10 @@
     background-position: 0 -520px
   &.subscribe #{$subselector}
     background-position: 0 -533px
+  &.start #{$subselector}
+    background-position: 0 -546px
+  &.end #{$subselector}
+    background-position: 0 -559px
 
 // icons/type_icons_30.png
 @mixin sprite-type-icons-30($subselector: '.icon')
@@ -217,6 +229,18 @@
   @include dataset-toolbar-icon-base
   background-position: 0 -39px
 
+// icons/dataset_edit_icons.png
+@mixin dataset-edit-icons($subselector: '.icon')
+  #{$subselector}
+    @include text-hiding
+    background-image: url(/stylesheets/images/icons/dataset_edit_icons.png)
+    height: 16px
+    width: 16px
+  &.undo #{$subselector}
+    background-position: 0 0
+  &.redo #{$subselector}
+    background-position: 0 -16px
+
 // icons/repeater_icons.png
 @mixin sprite-repeater-icons($subselector: '.icon')
   #{$subselector}
@@ -231,28 +255,47 @@
   &.add #{$subselector}
     background-position: 0 -14px
 
-// interface/dataset_tabs.png
-@mixin sprite-dataset-tabs($subselector: '.icon')
+// icons/dataset_button_icons.png
+@mixin dataset-sidebar-icons($subselector: '.icon')
   #{$subselector}
     @include text-hiding
-    background-image: url(/stylesheets/images/interface/dataset_tabs.png)
-    height: 29px
-    width: 40px
-
-  &.tabFilter #{$subselector}
+    background-image: url(/stylesheets/images/icons/dataset_sidebar_icons.png)
+    height: 13px
+    width: 15px
+  &.filter #{$subselector}
     background-position: 0 0
-  &.tabVisualize #{$subselector}
-    background-position: 0 -29px
-  &.tabExport #{$subselector}
-    background-position: 0 -58px
-  &.tabFeed #{$subselector}
-    background-position: 0 -87px
-  &.tabEmbed #{$subselector}
-    background-position: 0 -116px
-  &.tabAbout #{$subselector}
-    background-position: 0 -145px
-  &.tabEdit #{$subselector}
-    background-position: 0 -174px
+  &.visualize #{$subselector}
+    background-position: 0 -13px
+  &.export #{$subselector}
+    background-position: 0 -26px
+  &.feed #{$subselector}
+    background-position: 0 -39px
+  &.embed #{$subselector}
+    background-position: 0 -52px
+  &.about #{$subselector}
+    background-position: 0 -65px
+  &.edit #{$subselector}
+    background-position: 0 -78px
+  &.moreViews #{$subselector}
+    background-position: 0 -91px
+  &.alert #{$subselector}
+    background-position: 0 -104px
+
+// icons/renderType_toggle_icons.png
+@mixin renderType-toggle-icons($subselector: '.icon')
+  #{$subselector}
+    @include text-hiding
+    background-image: url(/stylesheets/images/icons/renderType_toggle_icons.png)
+    height: 13px
+    width: 13px
+  @include icon-include-active(blist, $subselector, 0, -13px)
+  @include icon-include-active(filter, $subselector, 0, -13px)
+  @include icon-include-active(grouped, $subselector, 0, -13px)
+  @include icon-include-active(visualization, $subselector, -13px, -13px)
+  @include icon-include-active(calendar, $subselector, -26px, -13px)
+  @include icon-include-active(map, $subselector, -39px, -13px)
+  @include icon-include-active(page, $subselector, -52px, -13px)
+  @include icon-include-active(fatrow, $subselector, -65px, -13px)
 
 // common/close.png
 @mixin close-button

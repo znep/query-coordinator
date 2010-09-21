@@ -124,6 +124,7 @@
                 if (!_.isUndefined(chartObj._xCategories))
                 {
                     var xCat = basePt.x;
+                    xCat = row[chartObj._xColumn.id];
                     xCat = renderXValue(xCat, chartObj._xColumn);
                     chartObj._xCategories.push(xCat);
                 }

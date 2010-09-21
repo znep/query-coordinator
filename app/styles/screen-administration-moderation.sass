@@ -9,6 +9,10 @@
     font-size: 1.3em
     padding-right: 0.3em
     position: relative
+    .ie7 &
+      bottom: -0.5em
+      float: left
+
   #commentStatusDropdown
     width: 9em
 
@@ -19,9 +23,11 @@
     tbody
       tr
         .button
-          visibility: hidden
+          opacity: 0.15
+          @include transition-duration(0.5s)
+          @include transition-property(opacity)
         &:hover .button
-          visibility: visible
+          opacity: 1
       td.author .cellInner
         display: inline-block
         line-height: 24px
@@ -39,6 +45,10 @@
         text-transform: capitalize
         margin-right: 0.5em
         width: 5em
+        .ie7 &
+          display: inline
+          padding-bottom: 0.7em
+          zoom: 1
 
         .loading
           @include throbber-icon

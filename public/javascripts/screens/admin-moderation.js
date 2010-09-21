@@ -57,7 +57,7 @@
     var updateCommentStatus = function(commentId, status)
     {
         var comment = comments[commentId];
-        var $rows = $('[data-commentId=' + commentId + '] .status');
+        var $rows = $('[data-commentid=' + commentId + '] .status');
 
         $rows.find('.cellInner').html('<span class="loading"></span>');
         $.ajax({
@@ -71,6 +71,7 @@
                     'rejected': 'rejectComment'
                 };
                 $rows
+                    .closest('tr').attr('data-commentstatus', status).end()
                     .find('.cellInner').text(status).end()
                     .find('.button').removeClass('disabled')
                         .filter('.' + buttonMap[status]).addClass('disabled');
@@ -98,6 +99,7 @@
             if (value == 'all')
             {
                 $('.commentModerationList tbody tr').show();
+                $('.noResultsMessage').hide();
                 return;
             }
             else

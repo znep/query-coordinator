@@ -69,7 +69,7 @@
             {
                 var curVal = this.urlValue();
                 return curVal === null ||
-                    curVal.match(/^(mailto\:|(news|(ht|f)tp(s?))\:\/\/)?[a-zA-Z0-9\-\.]+\.([a-zA-Z]{2,}|[0-9]+)(\/\S*)?$/i);
+                    curVal.match(/^(mailto\:|(news|(ht|f)tp(s?))\:\/\/)?[a-zA-Z0-9\-\.]+\.([a-zA-Z]{2,}|[0-9]+)(\:\d+)?(\/\S*)?$/i);
             },
 
             urlValue: function()

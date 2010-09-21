@@ -44,6 +44,10 @@ class View < Model
     self.columns.find{ |c| c.id == column_id }
   end
 
+  def visible_columns
+    self.columns.reject {|c| c.flag?('hidden')}.sort_by {|c| c.position}
+  end
+
   def html
     if is_tabular?
       CoreServer::Base.connection.get_request("/#{self.class.name.pluralize.downcase}/#{id}/" +
@@ -118,6 +122,33 @@ class View < Model
       url = "/#{self.class.name.pluralize.downcase}/INLINE/rows.json?accessType=WEBSITE#{id_params}"
       return JSON.parse(CoreServer::Base.connection.create_request(url, req_body))['data']
     end
+  end
+
+  def get_row(row_id)
+    result = JSON.parse(CoreServer::Base.connection.get_request(
+      "/#{self.class.name.pluralize.downcase}/#{id}/" +
+      "rows.json?ids=#{row_id}&meta=true&method=getByIds"))
+    r = result['data']['data'][0]
+    return nil if r.nil?
+
+    return transform_row(r, result['meta']['view']['columns'])
+  end
+
+  def get_row_by_index(row_index)
+    result = JSON.parse(CoreServer::Base.connection.get_request(
+      "/#{self.class.name.pluralize.downcase}/#{id}/" +
+      "rows.json?start=#{row_index}&length=1&meta=true&method=getByIds"))
+    r = result['data']['data'][0]
+    return nil if r.nil?
+
+    return transform_row(r, result['meta']['view']['columns'])
+  end
+
+  def get_row_index(row_id)
+    result = JSON.parse(CoreServer::Base.connection.get_request(
+      "/#{self.class.name.pluralize.downcase}/#{id}/" +
+      "rows.json?ids=#{row_id}&indexesOnly=true&method=getByIds"))
+    return result[row_id.to_s]
   end
 
   def json(params)
@@ -764,6 +795,23 @@ class View < Model
     'Href' => 'Linked Dataset',
     'Table' => 'Dataset'
   }
+
+  private
+  def transform_row(r, columns)
+    row = Hash.new
+    columns.each_with_index do |c, i|
+      if c['dataTypeName'] == 'meta_data'
+        row[c['name']] = r[i]
+      else
+        if c['dataTypeName'] == 'nested_table'
+          row[c['id']] = r[i].map {|cr| transform_row(cr, c['childColumns'])}
+        else
+          row[c['id']] = r[i]
+        end
+      end
+    end
+    return row
+  end
 
   memoize :href
 end

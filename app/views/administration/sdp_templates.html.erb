@@ -1,0 +1,83 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-sdp-templates' %>
+  <title>Social Data Player Templates | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<% content_for :skip_links do %>
+  <a href="?no_js=true">Disable Javascript on this page</a>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<div class="contentBox withLeftNavigation">
+  <h1>Social Data Player Templates</h1>
+
+  <%= display_standard_flashes %>
+
+  <div class="gridListWrapper">
+    <table class="gridList templatesList" cellspacing="0">
+      <colgroup>
+        <col class='name' />
+        <col class='preview' />
+        <col class='actions' />
+      </colgroup>
+      <thead>
+        <tr>
+          <th class="name"><div>Name</div><span class="icon"></span></th>
+          <th class="preview"><div>Preview</div></th>
+          <th class="actions"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <%- @templates.sort{ |a, b| a.name.downcase <=> b.name.downcase }.each do |template| -%>
+          <tr data-templateid="<%= template.uid %>">
+            <td class="name"><span class="cellInner"><%= template.name %></span></td>
+            <td class="preview">
+              <div class="previewOuter">
+                <div class="previewLogo"></div>
+                <div class="previewSubheader"></div>
+                <div class="previewGrid">
+                  <div class="previewGridZebra"></div>
+                </div>
+                <div class="previewNotAvailable">
+                  <p>This template is outdated and cannot be displayed.</p>
+                </div>
+              </div>
+            </td>
+            <td class="actions<%= ' isDefault' if (template.uid == @default_template_id) %>">
+              <span class="defaultText">Current Default</span>
+              <span class="loading"></span>
+              <a href="sdp_templates/<%= template.uid %>/set_default"
+                 class="makeDefaultButton button">
+                <span class="icon"></span>Make Default
+              </a>
+              <a href="sdp_templates/<%= template.uid %>/delete"
+                class="deleteTemplateButton button<%= ' disabled' if (template.uid == @default_template_id) %>">
+                <span class="icon"></span>Delete
+              </a>
+              <a href="sdp_templates/<%= template.uid %>" class="button">
+                <span class="icon"></span>Edit
+              </a>
+            </td>
+          </tr>
+        <%- end -%>
+      </tbody>
+    </table>
+  </div>
+
+  <%- if @templates.empty? -%>
+    <p class="noResultsMessage">You don't appear to have any templates yet.</p>
+  <%- end -%>
+</div>
+
+<% content_for :js_footer do %>
+  <%- unless params[:no_js].present? -%>
+    <script type="text/javascript">
+      blist.namespace.fetch('blist.sdpTemplates');
+
+      blist.sdpTemplates.templates = <%= @templates.to_json.html_safe! %>;
+    </script>
+
+    <%= javascript_include_merged 'admin-sdp-templates' %>
+  <%- end -%>
+<% end %>

@@ -119,7 +119,19 @@ ActionController::Routing::Routes.draw do |map|
   map.with_options :controller => 'administration' do |admin|
     admin.connect '/admin_new/analytics',         :action => 'analytics'
     admin.connect '/admin_new/users',             :action => 'users'
+    admin.connect '/admin_new/users/:userid/:role', :action => 'set_user_role'
+    admin.connect '/admin_new/users/update', :action => 'set_user_role',
+      :conditions => { :method => :post }
     admin.connect '/admin_new/moderation',        :action => 'moderation'
+    admin.connect '/admin_new/sdp_templates',     :action => 'sdp_templates'
+    admin.connect '/admin_new/sdp_templates/:id/set_default', :action => 'sdp_set_default_template'
+    admin.connect '/admin_new/sdp_templates/:id/delete', :action => 'sdp_delete_template'
+    admin.connect '/admin_new/federations',       :action => 'federations'
+    admin.connect '/admin_new/federations/:id/delete',       :action => 'delete_federation'
+    admin.connect '/admin_new/federations/:id/accept',       :action => 'accept_federation'
+    admin.connect '/admin_new/federations/:id/reject',       :action => 'reject_federation'
+    admin.connect '/admin_new/federations/create',           :action => 'create_federation',
+      :conditions => { :method => :post }
   end
 
   map.resources :contacts,
@@ -131,7 +143,7 @@ ActionController::Routing::Routes.draw do |map|
       :contact_detail => :get,
       :group_detail => :get,
     }
-  
+
   map.data 'data/', :controller => 'data', :action => 'redirect_to_root'
   map.with_options :controller => 'data' do |data|
     data.data_filter        'data/filter',      :action => 'filter'
@@ -142,13 +154,13 @@ ActionController::Routing::Routes.draw do |map|
     data.nominations        'data/nominations', :action => 'nominations'
     data.suggest            'data/suggest',     :action => 'suggest'
   end
-  
+
   map.resource :community, :member => { :filter => :get, :activities => :get, :tags => :get }
   map.resource :home
   map.resource :account
   map.resources :suggestions
-  map.resources :profile, :member => { 
-    :create_link => :post, 
+  map.resources :profile, :member => {
+    :create_link => :post,
     :delete_link => :delete,
     :update_link => :put,
     :create_friend => :get,
@@ -168,7 +180,7 @@ ActionController::Routing::Routes.draw do |map|
     :member => {
       :widget_preview => :get,
       :edit_metadata => [:get, :post],
-      :captcha_validate => :post,
+      :math_validate => :post,
       :alt => [:get, :post]
     },
     :only => [ :show ] # you see, we actually abandoned RESTful routes, I guess
@@ -256,6 +268,12 @@ ActionController::Routing::Routes.draw do |map|
     :action => 'show',
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
       :category => /(\w|-)+/},
+    :conditions => {:method => :get, :has_v4_dataset => true}
+
+  map.connect ':category/:view_name/:id/:row_id', :controller => 'datasets',
+    :action => 'show',
+    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
+      :category => /(\w|-)+/, :row_id => /\d+/},
     :conditions => {:method => :get, :has_v4_dataset => true}
 
   map.connect ':category/:view_name/:id/widget_preview', :controller => 'datasets',

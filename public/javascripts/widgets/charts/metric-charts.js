@@ -69,6 +69,8 @@ metricsNS.renderMetricsChart = function(data, $chart, sliceType, series, options
     if (!$.isBlank($chart.data('highchart')))
     { $chart.data('highchart').destroy(); }
 
+    $chart.show();
+
     // Attributes specific to this chart
     var chartAttributes = $.extend(true, {}, metricsNS.chartDefaults, {
         chart: {
@@ -91,7 +93,9 @@ metricsNS.renderMetricsChart = function(data, $chart, sliceType, series, options
     { chartAttributes.legend.enabled = true; }
 
     // Keep track of the chart object to properly destroy it on refresh
-    $chart.data('highchart', new Highcharts.Chart($.extend(true, chartAttributes, options || {})));
+    $chart
+        .data('highchart',
+            new Highcharts.Chart($.extend(true, chartAttributes, options || {})));
 };
 
 // How to format the tooltips, based on how deep they slice

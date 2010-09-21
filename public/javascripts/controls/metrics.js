@@ -139,7 +139,7 @@
         });
 
         // Workaround for IE7 SVG overlay issues
-        if($('body').hasClass('ie7'))
+        if($('html').hasClass('ie7'))
         {
             $screen.find('.chartMenu .menuButton').click(function(event)
             {
@@ -160,7 +160,7 @@
             .find('table').tablesorter(
             {
                 textExtraction: function(node) {
-                    return $(node).find('.primary').text();
+                    return $(node).find('.primaryValue').text();
                 }
             }
         );

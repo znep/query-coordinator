@@ -1,0 +1,99 @@
+#pageRenderType
+  .content
+    margin-bottom: 4em
+    overflow: auto
+    padding: 2em 3em 0
+
+    .pageColumn
+      float: left
+      width: 48%
+
+      .pageLine
+        margin-bottom: 1em
+        overflow: hidden
+
+        .pageLabel
+          display: inline-block
+          font-size: 1.2em
+          font-weight: bold
+          line-height: 1.2em
+          max-width: 10em
+          overflow: hidden
+          padding: 0.2em 1em 0.2em 0.2em
+          vertical-align: top
+          width: 33%
+          .ie7 &
+            display: inline
+
+        .pageItem
+          display: inline-block
+          font-size: 1.2em
+          line-height: 1.2em
+          padding: 0.2em
+          .invalid
+            color: #888888
+            font-style: italic
+          .ie7 &
+            display: inline
+
+        &:nth-child(odd)
+          .pageLabel
+            background-color: #eeeeee
+
+        // Renderer-specific styles
+        &.photo, &.photo_obsolete
+          .pageItem img
+            max-height: 15em
+            max-width: 30em
+
+        &.percent .pageItem .blist-percent
+          min-width: 10em
+
+        &.nested_table .pageItem table
+          th
+            background-color: #d8d8d8
+
+          td, th
+            border-left: 1px solid #cccccc
+            padding: 0.2em 0.5em
+            &:first-child
+              border-left: none
+
+          tr
+            &:nth-child(even)
+              background-color: #eeeeee
+            td
+              &.number,
+              &.money,
+              &.percent,
+              &.calendar_date,
+              &.date
+                text-align: right
+              &.align-left
+                text-align: left
+              &.align-center
+                text-align: center
+              &.align-right
+                text-align: right
+
+              &.noResults
+                text-align: center
+
+  .navigation
+    bottom: 0
+    height: 3em
+    position: absolute
+    text-align: center
+    width: 100%
+    li
+      display: inline-block
+      vertical-align: middle
+      &.info
+        font-size: 1.2em
+        line-height: 1.2em
+        margin: 0 0.5em
+      .button
+        @include sprite-menu-icons
+        padding: 0.3em
+      .ie7 &
+        display: inline

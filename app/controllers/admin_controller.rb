@@ -293,7 +293,7 @@ class AdminController < ApplicationController
 
     if (!params[:domain].nil?)
       @search_domain = params[:domain]
-      @domains = Domain.findAvailableFederationTargets(params[:domain])
+      @domains = Domain.find(:method => 'findAvailableFederationTargets', :domain => params[:domain])
     end
   end
 

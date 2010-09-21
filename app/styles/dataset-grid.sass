@@ -421,12 +421,14 @@ div.blist-tr.blist-hot-row
 
 .blist-table .blist-tr .blist-table-row-numbers
   border-left-width: 0
-  color: #a9cef2
+  color: #999999
   font-size: 1.1em
   height: 1.4545em
   line-height: 1.4545em
   padding: 0.3636em
   text-align: right
+  a
+    color: $color_links_normal
 
 .blist-tr .blist-table-row-handle
   border-left-width: 0
@@ -464,6 +466,7 @@ div.blist-table-edit-container.mode-expand
   border-bottom: solid 1px $cell_hborder_color
   border-left: solid 1px $cell_vborder_color
   border-right: solid 1px $cell_vborder_color
+  @include box-shadow(0, 0, 0.3em, rgba(0, 0, 0, 0.6))
 
 .blist-td.invalid,
 .invalid .blist-table-editor input
@@ -539,6 +542,9 @@ div.blist-table .blist-tr-open .blist-td.blist-tdh.blist-cell-selected,
 .blist-table .blist-select-row .blist-td.blist-table-row-handle,
 .blist-table .blist-select-row .blist-td.blist-table-ghost
   background-color: #ddeaf0
+
+div.blist-table .blist-tr.blist-tr-noMatch
+  background-color: #eeeeee
 
 div.blist-table-active-container .blist-td
   border-bottom: none
@@ -848,7 +854,7 @@ ul.menu.rowMenu li
       &.active a
         background-position: 5px 30px
 
-.columnHeaderMenu, .facetFilterRow
+.columnHeaderMenu, .facetFilterRow, .pageLine
   .blist-checkbox,
   .blist-picklist-wrapper,
   .blist-flag,
@@ -931,30 +937,6 @@ ul.menu.rowMenu li
 
   li.delete a
     background-position: 5px -57px
-
-.blist-table
-  .blist-hot-row .blist-td.blist-table-row-numbers,
-  .blist-select-row .blist-td.blist-table-row-numbers
-    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png)
-    background-repeat: no-repeat
-    text-align: left
-    text-indent: -9999px
-
-  .blist-hot-row
-    .blist-td.blist-table-row-numbers
-      background-position: right -897px
-
-    &.blist-tr-sub .blist-td.blist-table-row-numbers
-      background-image: none
-
-  .blist-select-row .blist-td.blist-table-row-numbers
-    background-position: right -506px
-
-  .blist-hot-row.blist-tr-blank .blist-td.blist-table-row-numbers,
-  .blist-select-row.blist-tr-blank .blist-td.blist-table-row-numbers
-    background-image: none
-    text-align: right
-    text-indent: 0
 
 .blist-table-edit-container
   &.mode-edit .blist-table-editor.type-stars,

@@ -1,6 +1,6 @@
 /* HEADER */
 body {
-	background: #ececec url(/stylesheets/images/domains/data.gov/sitebg.jpg) no-repeat top center;
+	background: none #E8E8E8;
 }
 .bodyExterior {
 	min-height:inherit;
@@ -11,58 +11,21 @@ body {
 #header {
 	background:none;
 	padding:0;
-	height:auto;
+	height:100px;
 	margin-bottom:1em;
 }
-#header form.search {
-	top:12px;
+/* Main Logo*/
+#mainLogo
+{
+	position: static;
+	margin: 1em;
 }
-/* User Nav */
-#header .userNav {
-	top:106px;
-	padding:0;
-	margin-right:20px;
-}
-#header .userNav a {
-	font-family:Georgia, "Times New Roman", Times, serif;
-	font-weight:bold;
-	font-size:1.1em;
-	text-transform:uppercase;
-	border-left:#b3b3b3 solid 1px;
-	color:#fff;
-	padding:8px 10px 8px 10px;
-	margin:0;
-}
-#header .userNav a:hover {
-	background:#195a9c url(/stylesheets/images/domains/data.gov/tab-hover.png) top repeat-x;
-	text-decoration:none;
-}
-#header .userNav li {
-	margin:0;
-	padding:0;
-	border:none;
-}
-/* Logo */
-h1#mainLogo {
-	text-align:center;
-	left:auto;
-	top:auto;
-	position:relative;
-	text-align:center;
-	background:url(/stylesheets/images/domains/data.gov/logo-bg.png) bottom center no-repeat;
-	margin-left:10px;
-	margin-right:10px;
-}
-#mainLogo a {
-	margin:auto;
-}
+
 /* Main Nav */
 #mainNav {
 	width:auto;
-	border:#fff solid 9px;
 	margin-left:10px;
 	margin-right:10px;
-	background:#041c3f url(/stylesheets/images/domains/data.gov/mainNav-bg.png) top repeat-x;
 	padding:3px 0 0 5px;
 }
 #mainNav li {
@@ -71,12 +34,24 @@ h1#mainLogo {
 	margin:0;
 }
 #mainNav li a {
+	background:#041c3f url(/stylesheets/images/domains/data.gov/mainNav-bg.png) top repeat-x;	
+	border-top-right-radius: 0.3em;
+	-moz-border-radius-topright: 0.3em;
+	webkit-border-top-right-radius: 0.3em;
+	border-top-left-radius: 0.3em;
+	-moz-border-radius-topleft: 0.3em;
+	webkit-border-top-left-radius: 0.3em;
+	border-bottom-left-radius: 0.3em;
+	-moz-border-radius-bottomleft: 0.3em;
+	webkit-border-bottom-left-radius: 0.3em;
+	border-bottom-right-radius: 0.3em;
+	-moz-border-radius-bottomright: 0.3em;
+	webkit-border-bottom-right-radius: 0.3em;	
 	font-family:Georgia, "Times New Roman", Times, serif;
-	font-size:1.1em;
-	text-transform:uppercase;
+	font-size:1.5em;
 	border-right:#b3b3b3 solid 1px;
-	padding:2px 10px;
-	margin:0
+	padding: 0.4em 1.2em;
+	margin:0 0.2em 0;
 }
 #mainNav li a:hover {
 	background:#195a9c url(/stylesheets/images/domains/data.gov/tab-hover.png) top repeat-x;
@@ -88,6 +63,7 @@ h1#mainLogo {
 	margin:0;
 }
 #mainNav li.home a span, body.home #mainNav li.home a span, #mainNav li.discover a span {
+	font-weight: normal;
 	margin:0;
 	text-indent:0;
 }
@@ -101,61 +77,103 @@ body.home #mainNav li.home, body.home #mainNav li.home a span, body.discover #ma
 #mainNav li.home .subNav li, #mainNav li.home .subNav li a span, body.home #mainNav li.home .subNav li, body.home #mainNav li.home .subNav li a span {
 	background:none;
 }
+#mainNav ul.subNav, body.discover #mainNav ul.subNav, body.home #mainNav ul.subNav, #mainNav li.home.loggedInNav:hover ul.subNav
+{
+	display: none;
+	height: 0;
+}
 /* Login Box */
 .dialogBox .header {
 }
 .dialogBox .header h1 {
 }
+
+/*Data Splash*/
+.datagovSplashWrapper
+{
+	background: url(/stylesheets/images/domains/data.gov/splash-bg.png) no-repeat #FFF;	
+	background-position: 3px center;
+	border: solid 2px #EEE;
+	height: 282px;
+	margin-bottom: 1.5em;
+}
+.datagovSplashInnerWrapper
+{
+	background: url(/stylesheets/images/domains/data.gov/splash-asset.png) no-repeat center bottom;
+	height: 277px;
+	margin: auto;
+	width: 919px;
+}
+
+.leftColumn, .rightColumn
+{
+display:none;
+}
 /* FOOTER */
+#footer
+{
+	height: 45px;
+}
 .footerContainer {
 	background:none;
+	
 }
-#footer {
-	text-align:center;
+.footerLogoContainer
+{
+	float:left;		
+	margin: 1em;	
+	width: 90px;	
 }
-#footer span.copyright {
-	display:none;
+#footer .copyright
+{
+	font-weight: normal;
+	padding: 0em;
 }
-#footer li {
-	margin:0
+.footerLogoContainer .footerLogo
+{
+	background:url(/stylesheets/images/domains/data.gov/datagov-footer-logo.png) no-repeat;
+	display: block;
+	height: 15px;
+	text-align: left;
+	text-indent:-9999px;
+	width: 90px;		
 }
-#footer a.small-logo {
-	width:85px;
-	height:12px;
-	background:url(/stylesheets/images/domains/data.gov/logo-small.gif) no-repeat;
-	display:inline-block;
-	border:none;
+.footerLogoContainer .footerLogo:hover
+{
+	background-position: 0px -15px;
 }
-#footer a {
+.footerImageLink
+{
+	display:block;
+	float:left;
+	margin: 1em;
+	text-align:left;
+	text-indent:-9999px;
+}
+.whiteHouseLink
+{
+	background:url(/stylesheets/images/domains/data.gov/datagov-whitehouse.png) no-repeat;
+	height:23px;
+	width:35px;
+}
+.whiteHouseLink:hover
+{
+	background-position: 0px -23px;
+}
+.usaLink
+{
+	background:url(/stylesheets/images/domains/data.gov/datagov-usa.png) no-repeat;
+	height:25px;
+	width:81px;
+}
+.usaLink:hover
+{
+	background-position: 0px -25px;
+}
+.siteFooterNav a {
 	color:#333;
 	font-weight:bold;
 	font-size:1em;
 	font-family:Verdana, Arial, Helvetica, sans-serif;
 	padding:0 5px;
-	border-left:#94b1e8 solid 1px;
-}
-#footer a.first {
-	border:none;
-}
-#footer a:hover {
-	text-decoration:none;
-}
-#footer a.whitehouse {
-	width:47px;
-	height:30px;
-	background:url(/stylesheets/images/domains/data.gov/footerwhitehouse.gif) no-repeat;
-	display:inline-block;
-	border:none;
-}
-#footer a.usa {
-	width:80px;
-	height:24px;
-	background:url(/stylesheets/images/domains/data.gov/footerusa.gov.gif) no-repeat;
-	display:inline-block;
-	border:none;
-}
-/* Login Dialog Box */
-.dialogBox .header {
-	background:#fff;
-	padding:15px 10px;
 }

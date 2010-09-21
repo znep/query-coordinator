@@ -1,17 +1,5 @@
 var datasetPageNS = blist.namespace.fetch('blist.datasetPage');
 
-blist.datasetPage.expandSearch = function()
-{
-    $('#searchForm .searchField:not(.expanded)')
-        .animate({ width: '11em' })
-        .addClass('expanded');
-};
-blist.datasetPage.collapseSearch = function()
-{
-    $('#searchForm .searchField')
-        .animate({ width: '2em' })
-        .removeClass('expanded');
-};
 blist.datasetPage.adjustSize = function()
 {
     $('.outerContainer').fullScreen().adjustSize();
@@ -20,13 +8,13 @@ blist.datasetPage.adjustSize = function()
 blist.datasetPage.clearTempView = function()
 {
     $('#sidebarOptions a.alert').removeClass('alert');
-    $('body, #titleBox').removeClass('unsavedView');
+    $('body, #datasetBar').removeClass('unsavedView');
     datasetPageNS.sidebar.updateEnabledSubPanes();
 };
 
 blist.datasetPage.setTempView = function()
 {
-    $('body, #titleBox').addClass('unsavedView');
+    $('body, #datasetBar').addClass('unsavedView');
     // For now unsaved view means something has changed in filter tab
     $('#sidebarOptions .tabFilter a').addClass('alert');
     datasetPageNS.sidebar.updateEnabledSubPanes();
@@ -38,9 +26,76 @@ blist.datasetPage.updateValidView = function()
     datasetPageNS.sidebar.updateEnabledSubPanes();
 };
 
+blist.datasetPage.hidePageRenderType = function()
+{
+    if (!datasetPageNS.$pageRenderType.is(':visible')) { return; }
+    datasetPageNS.$pageRenderType.addClass('hide');
+    $('body').removeClass('pageRenderType');
+    $(window).resize();
+    // If initially loaded page view, the grid hasn't been rendered yet
+    datasetPageNS.initGrid();
+    // If the grid is already loaded, need to force a refresh in case
+    // things changed while we were gone
+    datasetPageNS.$dataGrid.trigger('refresh');
+
+    $('#renderTypeOptions li a').removeClass('active');
+    $('#renderTypeOptions li .main').addClass('active');
+};
+
+blist.datasetPage.showPageRenderType = function()
+{
+    if (datasetPageNS.$pageRenderType.is(':visible')) { return; }
+    datasetPageNS.$pageRenderType.removeClass('hide');
+    $('body').addClass('pageRenderType');
+    $(window).resize();
+
+    $('#renderTypeOptions li a').removeClass('active');
+    $('#renderTypeOptions li .page').addClass('active');
+};
+
+blist.datasetPage.initGrid = function()
+{
+    if (datasetPageNS.gridInitialized || !blist.dataset.isGrid()) { return; }
+
+    datasetPageNS.$dataGrid
+        .datasetGrid({view: blist.dataset,
+            columnDeleteEnabled: blist.dataset.type == 'blist' &&
+                blist.dataset.hasRight('remove_column'),
+            columnPropertiesEnabled: true,
+            columnNameEdit: blist.dataset.hasRight('update_view'),
+            showAddColumns: blist.dataset.type == 'blist' &&
+                blist.dataset.hasRight('add_column'),
+            accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
+            clearTempViewCallback: datasetPageNS.clearTempView,
+            setTempViewCallback: datasetPageNS.setTempView,
+            filterForm: '#searchForm', clearFilterItem: '#searchForm .clearSearch',
+            isInvalid: !blist.dataset.valid,
+            validViewCallback: datasetPageNS.updateValidView,
+            addColumnCallback: function(parId)
+            {
+                datasetPageNS.sidebar.addPane('edit.addColumn', {parentId: parId});
+                datasetPageNS.sidebar.show('edit.addColumn');
+            },
+            editColumnCallback: function(colId, parId)
+            {
+                var col = blist.dataset.columnForID(colId) ||
+                    blist.dataset.columnForID(parId);
+                if (col.id != colId) { col = col.childColumnForID(colId); }
+
+                datasetPageNS.sidebar.hide();
+                datasetPageNS.sidebar.addPane('columnProperties', col);
+                datasetPageNS.sidebar.show('columnProperties');
+            }
+        });
+    datasetPageNS.gridInitialized = true;
+};
+
+
+
 (function($)
 {
     if (!blist.dataset.valid) { $('body').addClass('invalidView'); }
+
 })(jQuery);
 
 $(function()
@@ -58,67 +113,81 @@ $(function()
 
     $('.outerContainer').fullScreen();
 
+
+    if (blist.dataset.viewType == 'tabular')
+    {
+        blist.$display.find('.rowLink').remove();
+
+        // Page render type
+        datasetPageNS.$pageRenderType = $('#pageRenderType');
+        datasetPageNS.$pageRenderType.pageRenderType({ view: blist.dataset });
+
+        // Render types
+        $('#renderTypeOptions').pillButtons();
+        $('#renderTypeOptions a').click(function(e)
+        {
+            e.preventDefault();
+            if ($.hashHref($(this).attr('href')) == 'page')
+            { datasetPageNS.showPageRenderType(); }
+            else
+            { datasetPageNS.hidePageRenderType(); }
+        });
+        $(document).bind(blist.events.DISPLAY_ROW, function()
+                { datasetPageNS.showPageRenderType(); });
+
+        var isPageRT = !$.isBlank(blist.initialRowId);
+        if (!isPageRT) { datasetPageNS.hidePageRenderType(); }
+        else
+        {
+            // Cheat by making sure the div is hidden initially
+            datasetPageNS.$pageRenderType.addClass('hide');
+            datasetPageNS.showPageRenderType();
+            datasetPageNS.$pageRenderType.pageRenderType()
+                .displayRowByID(blist.initialRowId);
+        }
+    }
+
+
     // grid
-    var $dataGrid = blist.$display;
-    if ($dataGrid.length > 0)
+    datasetPageNS.$dataGrid = blist.$display;
+    if (datasetPageNS.$dataGrid.length > 0)
     {
         if (blist.dataset.isGrid())
         {
-            $dataGrid
-                .datasetGrid({view: blist.dataset,
-                    columnDeleteEnabled: blist.dataset.type == 'blist' &&
-                        blist.dataset.hasRight('remove_column'),
-                    columnPropertiesEnabled: true,
-                    columnNameEdit: blist.dataset.hasRight('update_view'),
-                    showAddColumns: blist.dataset.type == 'blist' &&
-                        blist.dataset.hasRight('add_column'),
-                    accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
-                    clearTempViewCallback: datasetPageNS.clearTempView,
-                    setTempViewCallback: datasetPageNS.setTempView,
-                    filterForm: '#searchForm',
-                    clearFilterItem: '#searchForm .clearSearch',
-                    isInvalid: !blist.dataset.valid,
-                    validViewCallback: datasetPageNS.updateValidView,
-                    addColumnCallback: function(parId)
-                    {
-                        datasetPageNS.sidebar
-                            .addPane('edit.addColumn', {parentId: parId});
-                        datasetPageNS.sidebar.show('edit.addColumn');
-                    },
-                    editColumnCallback: function(colId, parId)
-                    {
-                        var col = blist.dataset.columnForID(colId) ||
-                            blist.dataset.columnForID(parId);
-                        if (col.id != colId) { col = col.childColumnForID(colId); }
-
-                        datasetPageNS.sidebar.hide();
-                        datasetPageNS.sidebar.addPane('columnProperties', col);
-                        datasetPageNS.sidebar.show('columnProperties');
-                    }
-                });
-
             // Fire up guided filter if available
             if (!_.isUndefined(blist.dataset.metadata) &&
                 !_.isUndefined(blist.dataset.metadata.facets))
             {
                 blist.$display.bind('dataset_ready', function()
-                { datasetPageNS.sidebar.show('filter.guidedFilter'); });
+                { _.defer(function() {
+                    datasetPageNS.sidebar.show('filter.guidedFilter');
+                }); });
             }
         }
+
+        if (!isPageRT) { datasetPageNS.initGrid(); }
     }
 
     // sidebar and sidebar tabs
     datasetPageNS.sidebar = $('#gridSidebar').gridSidebar({
-        dataGrid: $dataGrid[0],
+        dataGrid: datasetPageNS.$dataGrid[0],
         onSidebarShown: function(primaryPane)
         {
-            $('#sidebarOptions li').removeClass('active');
-            $('#sidebarOptions a[data-paneName=' + primaryPane + ']')
-                .closest('li').addClass('active');
+            var $opts = $('#sidebarOptions');
+            $opts.find('li').removeClass('active');
+
+            var $activeLink = $('#sidebarOptions a[data-paneName=' +
+                primaryPane + ']');
+            if ($activeLink.length > 0)
+            {
+                $opts.css('background-color', $activeLink.css('background-color'))
+                $activeLink.closest('li').addClass('active');
+            }
         },
         onSidebarClosed: function()
         {
-            $('#sidebarOptions li').removeClass('active');
+            $('#sidebarOptions').css('background-color', 'transparent')
+                .find('li').removeClass('active');
         },
         setSidebarTop: false
     });
@@ -146,73 +215,24 @@ $(function()
     blist.dataset.bind('clear_temporary', datasetPageNS.clearTempView);
 
     // toolbar area
-    $('#viewsMenu').menu({
-        additionalDataKeys: [ 'targetPane' ],
-        menuButtonContents: '',
-        menuButtonTitle: 'More Views',
-        contents: [
-            { text: 'Parent Dataset', className: 'typeBlist', href: '#parent',
-              onlyIf: !_.include(['blist', 'blob'], blist.dataset.type) },
-            { divider: true },
-            { text: 'Saved Filters', className: 'typeFilter', href: '#savedFilters',
-              targetPane: 'filter.savedFilters',
-              onlyIf: !_.include(['href', 'blob'], blist.dataset.type) },
-            { text: 'Saved Visualizations', className: 'typeVisualization',
-              href: '#savedVisualizations', targetPane: 'visualize.savedVisualizations',
-              onlyIf: !_.include(['href', 'blob'], blist.dataset.type) },
-            { divider: true },
-            { text: 'About This Dataset', className: 'about', href: '#about',
-              targetPane: 'about' }
-        ],
-        onOpen: function()
-        {
-            $.analytics.trackEvent('dataset page (v4-chrome)', 'views menu opened',
-                blist.dataset.id);
-        }
-    });
-
-    $('#viewsMenu a[data-targetPane]').click(function(e)
-    {
-        e.preventDefault();
-        $('#gridSidebar').gridSidebar().show($(this).attr('data-targetPane'));
-    });
-
-    $('#titleBox').expander({
-        contentSelector: '#description',
+    $('#description').expander({
+        contentSelector: 'p',
+        expanderCollapsedClass: 'rightArrow',
+        expanderExpandedClass: 'leftArrow',
         expandSelector: '.descriptionExpander',
+        moveExpandTrigger: true,
         resizeFinishCallback: datasetPageNS.adjustSize
     });
 
     var $dsIcon = $('#datasetIcon');
     $dsIcon.socrataTip($dsIcon.text());
 
-    var hideTimeout;
-    var hideCheck = function()
-    {
-        clearTimeout(hideTimeout);
-        _.defer(function()
-        {
-            if ($('#searchForm .searchField').hasClass('prompt'))
-            { hideTimeout = setTimeout(datasetPageNS.collapseSearch, 1500); }
-        });
-    };
-    $('#searchForm')
-        .hover(function()
-        {
-            clearTimeout(hideTimeout);
-            datasetPageNS.expandSearch();
-        }, hideCheck)
-        .find('.searchField').blur(hideCheck).end()
-        .find('.icon').click(function()
-        {
-            $(this).closest('form').submit();
-        });
-
 
     blist.datasetControls.hookUpShareMenu(blist.dataset,
         $('#shareMenu'),
         {
-            menuButtonContents: $.tag({tagName: 'span', 'class': 'shareIcon'}, true),
+            menuButtonContents: $.tag([{tagName: 'span', 'class': 'shareIcon'},
+                                       {tagName: 'span', 'class': 'shareText', contents: 'Share'}], true),
             onOpen: function()
             {
                 $.analytics.trackEvent('dataset page (v4-chrome)', 'share menu opened',
@@ -246,23 +266,23 @@ $(function()
     {
         event.preventDefault();
         if (!$(event.target).is('.disabled'))
-        { $dataGrid.blistModel().undo(); }
+        { datasetPageNS.$dataGrid.blistModel().undo(); }
     });
     $('#editOptions .redo').click(function (event)
     {
         event.preventDefault();
         if (!$(event.target).is('.disabled'))
-        { $dataGrid.blistModel().redo(); }
+        { datasetPageNS.$dataGrid.blistModel().redo(); }
     });
-    $dataGrid.bind('undo_redo_change', function(e)
+    datasetPageNS.$dataGrid.bind('undo_redo_change', function(e)
     {
-        var model = $dataGrid.blistModel();
+        var model = datasetPageNS.$dataGrid.blistModel();
         $('#editOptions .undo').toggleClass('disabled', !model.canUndo());
         $('#editOptions .redo').toggleClass('disabled', !model.canRedo());
     });
-    if (!$.isBlank($dataGrid.blistModel))
+    if (!$.isBlank(datasetPageNS.$dataGrid.blistModel))
     {
-        var model = $dataGrid.blistModel();
+        var model = datasetPageNS.$dataGrid.blistModel();
         $('#editOptions .undo').toggleClass('disabled', !model.canUndo());
         $('#editOptions .redo').toggleClass('disabled', !model.canRedo());
     }
@@ -271,7 +291,7 @@ $(function()
     // Format toolbar
     $('#formatOptions select').uniform();
 
-    $('#formatOptions').formatOptions({gridSelector: $dataGrid});
+    $('#formatOptions').formatOptions({gridSelector: datasetPageNS.$dataGrid});
 
 
     // Unsaved view stuff
@@ -302,12 +322,11 @@ $(function()
         blist.datasetControls.showSaveViewDialog();
     });
 
-    $('.unsavedLine a.revert').click(function(e)
+    $('.unsavedLine a.revert, .basedOnTemp .revertLink').click(function(e)
     {
         e.preventDefault();
         blist.dataset.reload();
     });
-
 
     // Invalid views
 
@@ -323,6 +342,21 @@ $(function()
             datasetPageNS.sidebar.show(viewEditPane);
         });
     }
+
+    // massage search params
+    $('#searchForm').submit(function() { if ($(this).find(
+        '.searchField').val() == 'snuffleupadata') {
+        _.times(20, function() {
+            setTimeout(function() {
+                $('<img src="/images/snuffleupadata.gif"/>')
+                    .appendTo($('body'))
+                    .css('position', 'absolute')
+                    .css('zindex', '9999')
+                    .css('left', '-48px')
+                    .css('top', Math.random() * $(window).height())
+                    .animate({left: $(window).width() + 48}, 'slow',
+                        function() { $(this).remove(); }
+        )}, Math.random() * 4000)})}});
 
     $('.invalidActions .removeView').click(function(e)
     {
@@ -362,11 +396,11 @@ $(function()
         {
             if (!$.isBlank(parDS))
             {
-                $('#viewsMenu .typeBlist a').attr('href', parDS.url);
-            }
-            else
-            {
-                $('#viewsMenu .typeBlist').hide().next().removeClass('divider');
+                $('.basedOnParent')
+                    .addClass('hasParent')
+                    .find('.parentName')
+                        .attr('href', parDS.url)
+                        .text(parDS.name);
             }
         });
 

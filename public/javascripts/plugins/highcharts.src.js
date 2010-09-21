@@ -2,7 +2,7 @@
 // @compilation_level SIMPLE_OPTIMIZATIONS
 
 /** 
- * @license Highcharts JS v2.0.4 (2010-09-07)
+ * @license Highcharts JS v2.0.5 (2010-09-17)
  * 
  * (c) 2009-2010 Torstein Hønsi
  * 
@@ -738,6 +738,7 @@ defaultOptions = {
 			color: '#3E576F'
 		},
 		itemHoverStyle: {
+			cursor: 'pointer',
 			color: '#000000'
 		},
 		itemHiddenStyle: {
@@ -1298,10 +1299,10 @@ SVGElement.prototype = {
 				
 				// paths
 				if (key == 'd') {
-					if (typeof value != 'string') { // join path
+					if (value && value.join) { // join path
 						value = value.join(' ');
 					}
-					if (/(NaN|  )/.test(value)) {
+					if (/(NaN|  |^$)/.test(value)) {
 						value = 'M 0 0';
 					}
 					
@@ -1569,6 +1570,7 @@ SVGElement.prototype = {
 		// mark the container as having z indexed children
 		if (zIndex) {
 			parentWrapper.handleZ = true;
+			zIndex = parseInt(zIndex, 10);
 		}
 
 		// insert according to this and other elements' zIndex
@@ -1578,7 +1580,7 @@ SVGElement.prototype = {
 				otherZIndex = attr(otherElement, 'zIndex');
 				if (otherElement != element && (
 						// insert before the first element with a higher zIndex
-						otherZIndex > zIndex || 
+						parseInt(otherZIndex, 10) > zIndex || 
 						// if no zIndex given, insert before the first element with a zIndex
 						(!defined(zIndex) && defined(otherZIndex))  
 						
@@ -1711,7 +1713,7 @@ SVGRenderer.prototype = {
 		// object properties
 		this.Element = SVGElement;
 		this.box = box;
-		this.url = loc.href.replace(/#.*?$/, ''); // page url used for internal references
+		this.url = isIE ? '' : loc.href.replace(/#.*?$/, ''); // page url used for internal references
 		this.defs = this.createElement('defs').add();
 	},
 	
@@ -1744,11 +1746,10 @@ SVGRenderer.prototype = {
 			styleRegex = /style="([^"]+)"/,
 			hrefRegex = /href="([^"]+)"/,
 			parentX = attr(textNode, 'x'),
-			i;
-			
+			i = childNodes.length;
 			
 		// remove old text
-		for (i = childNodes.length - 1; i >= 0; i--) {
+		while (i--) {
 			textNode.removeChild(childNodes[i]);
 		}
 		
@@ -1761,6 +1762,7 @@ SVGRenderer.prototype = {
 			
 			each (spans, function (span) {
 				if (span !== '' || spans.length == 1) {
+					
 					var attributes = {},
 						tspan = doc.createElementNS('http://www.w3.org/2000/svg', 'tspan');
 					
@@ -1777,7 +1779,7 @@ SVGRenderer.prototype = {
 					}
 					
 					span = span.replace(/<(.|\n)*?>/g, '');
-					tspan.appendChild(doc.createTextNode(span));
+					tspan.appendChild(doc.createTextNode(span || ' ')); // WebKit needs a string
 					//console.log('"'+tspan.textContent+'"');
 					if (!spanNo) { // first span in a line, align it to the left
 						attributes.x = parentX;
@@ -2896,7 +2898,15 @@ VMLRenderer.prototype = merge( SVGRenderer.prototype, { // inherit SVGRenderer
 			vmlStyle = 'display:inline-block;behavior:url(#default#VML);',
 			isIE8 = this.isIE8;
 	
-		markup = markup.join('');
+		try { // bug in IE9 Beta 1, quirks mode - check this again with later upgrades
+			markup = markup.join('');
+		} catch (e) {
+			var s = '', i = 0;
+			for (i; i < markup.length; i++) {
+				s += markup[i];
+			}
+			markup = s;
+		}
 		
 		if (isIE8) { // add xmlns and style inline
 			markup = markup.replace('/>', ' xmlns="urn:schemas-microsoft-com:vml" />');
@@ -3299,8 +3309,9 @@ var Renderer = hasSVG ?	SVGRenderer : VMLRenderer;
 /**
  * The chart class
  * @param {Object} options
+ * @param {Function} callback Function to run when the chart has loaded
  */
-function Chart (options) {
+function Chart (options, callback) {
 
 	defaultXAxisOptions = merge(defaultXAxisOptions, defaultOptions.xAxis);
 	defaultYAxisOptions = merge(defaultYAxisOptions, defaultOptions.yAxis);
@@ -4690,7 +4701,7 @@ function Chart (options) {
 			zoomVert = zoomY && !inverted || zoomX && inverted;
 			
 		/**
-		 * Add IE support for pageX and pageY
+		 * Add crossbrowser support for chartX and chartY
 		 * @param {Object} e The event object in standard browsers
 		 */
 		function normalizeMouseEvent(e) {
@@ -4706,14 +4717,17 @@ function Chart (options) {
 				position = getPosition(container);
 			}
 
-			// layerX and layerY
-			if (e.layerX === UNDEFINED) { // Firefox and WebKit have layerX
-				if (isIE) { // IE
-					e.layerX = e.x;
-					e.layerY = e.y;
-				} else { // Opera has no equivalent of layerX, see above
-					e.layerX = e.pageX - position.x;
-					e.layerY = e.pageY - position.y;
+			// chartX and chartY
+			if (isIE) { // IE including IE9 that has chartX but in a different meaning
+				e.chartX = e.x;
+				e.chartY = e.y;
+			} else {
+				if (e.layerX === UNDEFINED) { // Opera
+					e.chartX = e.pageX - position.x;
+					e.chartY = e.pageY - position.y;
+				} else {
+					e.chartX = e.layerX;
+					e.chartY = e.layerY;
 				}
 			}
 			
@@ -4739,8 +4753,8 @@ function Chart (options) {
 					axis: axis,
 					value: translate(
 						isHorizontal ? 
-							e.layerX - plotLeft  : 
-							plotHeight - e.layerY + plotTop ,
+							e.chartX - plotLeft  : 
+							plotHeight - e.chartY + plotTop ,
 						true
 					)								
 				});
@@ -4761,8 +4775,8 @@ function Chart (options) {
 				// get the point
 				point = hoverSeries.tooltipPoints[
 					inverted ? 
-						e.layerY : 
-						e.layerX - plotLeft // wtf?
+						e.chartY : 
+						e.chartX - plotLeft // wtf?
 				];
 				
 				// a new point is hovered, refresh the tooltip
@@ -4862,8 +4876,8 @@ function Chart (options) {
 					e.preventDefault();
 				}
 				chart.mouseIsDown = mouseIsDown = true;
-				mouseDownX = e.layerX;
-				mouseDownY = e.layerY;
+				mouseDownX = e.chartX;
+				mouseDownY = e.chartY;
 					
 				
 				// make a selection
@@ -4892,22 +4906,22 @@ function Chart (options) {
 				e = normalizeMouseEvent(e);
 				e.returnValue = false;
 				
-				var layerX = e.layerX,
-					layerY = e.layerY,
-					isOutsidePlot = !isInsidePlot(layerX - plotLeft, layerY - plotTop);
+				var chartX = e.chartX,
+					chartY = e.chartY,
+					isOutsidePlot = !isInsidePlot(chartX - plotLeft, chartY - plotTop);
 				
 				if (mouseIsDown) { // make selection
 					
 					// determine if the mouse has moved more than 10px
 					hasDragged = Math.sqrt(
-						Math.pow(mouseDownX - layerX, 2) + 
-						Math.pow(mouseDownY - layerY, 2)
+						Math.pow(mouseDownX - chartX, 2) + 
+						Math.pow(mouseDownY - chartY, 2)
 					) > 10;
 					
 					
 					// adjust the width of the selection marker
 					if (zoomHor) {
-						var xSize = layerX - mouseDownX;
+						var xSize = chartX - mouseDownX;
 						selectionMarker.attr({
 							width: mathAbs(xSize),
 							x: (xSize > 0 ? 0 : xSize) + mouseDownX
@@ -4915,7 +4929,7 @@ function Chart (options) {
 					}
 					// adjust the height of the selection marker
 					if (zoomVert) {
-						var ySize = layerY - mouseDownY;
+						var ySize = chartY - mouseDownY;
 						selectionMarker.attr({
 							height: mathAbs(ySize),
 							y: (ySize > 0 ? 0 : ySize) + mouseDownY
@@ -4971,7 +4985,7 @@ function Chart (options) {
 						});
 						
 						// the series click event
-						fireEvent(chart.hoverSeries, 'click', extend(e, {
+						fireEvent(chart.hoverSeries || hoverPoint.series, 'click', extend(e, {
 							point: hoverPoint
 						}));
 						
@@ -4982,7 +4996,7 @@ function Chart (options) {
 						extend (e, getMouseCoordinates(e));
 						
 						// fire a click event in the chart
-						if (isInsidePlot(e.layerX - plotLeft, e.layerY - plotTop)) {
+						if (isInsidePlot(e.chartX - plotLeft, e.chartY - plotTop)) {
 							fireEvent(chart, 'click', e);
 						}
 					}
@@ -5615,8 +5629,10 @@ function Chart (options) {
 	
 	/**
 	 * Dim the chart and show a loading text or symbol
+	 * 
+	 * @param {String} str An optional text to show in the loading label instead of the default one
 	 */
-	function showLoading() {
+	function showLoading(str) {
 		var loadingOptions = options.loading;
 
 		// create the layer at the first call
@@ -5632,15 +5648,14 @@ function Chart (options) {
 				display: NONE
 			}), container);
 			
-			createElement('span', {
-				innerHTML: options.lang.loading
-			}, loadingOptions.labelStyle, loadingLayer);
+			createElement('span', null, loadingOptions.labelStyle, loadingLayer);
 		}
 		
 		
 		// show it
 		if (!loadingShown) {
 			css(loadingLayer, { opacity: 0, display: '' });
+			loadingLayer.getElementsByTagName('span')[0].innerHTML = str || options.lang.loading;
 			animate(loadingLayer, {
 				opacity: loadingOptions.style.opacity
 			}, {
@@ -6128,7 +6143,7 @@ function Chart (options) {
 		// VML namespaces can't be added until after complete. Listening
 		// for Perini's doScroll hack is not enough.
 		var onreadystatechange = 'onreadystatechange';
-		if (isIE && doc.readyState != 'complete') {
+		if (!hasSVG && doc.readyState != 'complete') {
 			doc.attachEvent(onreadystatechange, function() {
 				doc.detachEvent(onreadystatechange, arguments.callee);
 				firstRender();
@@ -6166,6 +6181,7 @@ function Chart (options) {
 		
 		render();
 		fireEvent(chart, 'load');
+		callback && callback(chart);
 	}
 	
 	
@@ -6342,8 +6358,7 @@ Point.prototype = {
 		
 		//series.isDirty = true;
 		point.firePointEvent(selected ? 'select' : 'unselect');
-		
-		point.setState(SELECT_STATE);
+		point.setState(selected && SELECT_STATE);
 		
 		// unselect all other points unless Ctrl or Cmd + click
 		if (!accumulate) {
@@ -6477,7 +6492,7 @@ Point.prototype = {
 				point.select(null, event.ctrlKey || event.metaKey || event.shiftKey);
 			};
 		}
-			
+		
 		fireEvent(this, eventType, eventArgs, defaultFunction);
 	},
 	/**
@@ -7489,18 +7504,6 @@ Series.prototype = {
 		series.graphPath = graphPath;
 		series.singlePoints = singlePoints; 
 
-		// draw the graph
-		if (graph) {
-			graph.attr({ d: graphPath });
-		} else {
-			if (lineWidth) {
-				series.graph = renderer.path(graphPath).
-					attr({
-						'stroke': color,
-						'stroke-width': lineWidth + PX
-					}).add(group).shadow(options.shadow);
-			}
-		}
 		
 			
 		// draw the area if area series or areaspline
@@ -7520,6 +7523,20 @@ Series.prototype = {
 					}).add(series.group);
 			}
 		}
+
+		// draw the graph
+		if (graph) {
+			graph.attr({ d: graphPath });
+		} else {
+			if (lineWidth) {
+				series.graph = renderer.path(graphPath).
+					attr({
+						'stroke': color,
+						'stroke-width': lineWidth + PX
+					}).add(group).shadow(options.shadow);
+			}
+		}
+		
 	},
 	
 	

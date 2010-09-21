@@ -3,7 +3,7 @@
     <%- if module_available? :advanced_metrics -%>
       <li class="analytics">
         <%= link_to_unless_current \
-            raw('<span class="icon"></span>Analytics'),
+            raw('<span class="icon"></span>Site Analytics'),
             {:action => 'analytics'} %>
       </li>
     <%- end -%>
@@ -12,11 +12,25 @@
           raw('<span class="icon"></span>Users'),
           {:action => 'users'} %>
     </li>
+    <%- if module_available? :federations -%>
+      <li class="datasets">
+        <%= link_to_unless_current \
+            raw('<span class="icon"></span>Federation'),
+            {:action => 'federations'} %>
+      </li>
+    <%- end -%>
     <%- if module_available? :publisher_comment_moderation -%>
       <li class="comments">
         <%= link_to_unless_current \
             raw('<span class="icon"></span>Moderation'),
             {:action => 'moderation'} %>
+      </li>
+    <%- end -%>
+    <%- if module_available? :sdp_customizer -%>
+      <li class="appearance">
+        <%= link_to_unless_current \
+            raw('<span class="icon"></span>SDP Templates'),
+            {:action => 'sdp_templates'} %>
       </li>
     <%- end -%>
     <%- if current_user && current_user.is_admin? -%>

@@ -113,7 +113,10 @@ javascripts:
 - admin-sdp-index:
   - screens/admin-sdp-index-screen
 - admin-users:
+  - controls/admin-buttons
   - plugins/jquery.uniform
+  - plugins/jquery.tablesorter
+  - widgets/combination-list
   - screens/admin-users-screen
 - admin-federations:
   - screens/admin-federations-screen

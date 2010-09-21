@@ -414,6 +414,11 @@
                         { details.size  = 10+(6*i); break; }
                     }
                 }
+                if (mapObj.settings.view.displayFormat.color)
+                {
+                    var rgb = $.hexToRgb(mapObj.settings.view.displayFormat.color);
+                    details.color = [ rgb.r, rgb.g, rgb.b ];
+                }
                 if (mapObj._colorValueCol)
                 {
                     for (var i = 0; i < mapObj._numSegments; i++)
@@ -549,7 +554,7 @@
                         '</div></div>');
                 }
                 if (!mapObj._legend.$dom)
-                { mapObj._legend.$dom = $('#mapLegend'); }
+                { mapObj._legend.$dom = $('#mapLegend').hide(); }
 
                 if (options.name)
                 { mapObj._legend.$dom.find('h3').text(options.name); }
@@ -581,7 +586,8 @@
                     { mapObj._legend.$dom.find('span:last').text(options.maximum); }
                 }
 
-                mapObj._legend.$dom.show();
+                if (mapObj._gradient)
+                { mapObj._legend.$dom.show(); }
             },
 
             getText: function(row, col, plain)

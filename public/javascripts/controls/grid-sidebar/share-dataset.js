@@ -211,7 +211,8 @@
                                 { $formElem.find('.shareNoticeSent').fadeIn(); });
                         });
 
-                        // If the publicness is inherited from the parent dataset, they can't make it private
+                        // If the publicness is inherited from the parent dataset,
+                        // they can't make it private
                         var publicGrant = _.detect(blist.dataset.grants || [], function(grant)
                             {
                                 return _.include(grant.flags || [], 'public');
@@ -221,7 +222,7 @@
                         var isPublicStr = blist.dataset.isPublic() ? 'Public' : 'Private';
                         // Only owned, parent-public datasets can be toggled
                         if (blist.dataset.hasRight('update_view') &&
-                            ($.isBlank(publicGrant) || publicGrant.inherited == false))
+                            ($.isBlank(publicGrant) || (publicGrant.inherited || false) == false))
                         {
                             $toggleLink.click(togglePermissions)
                                 .text(isPublicStr);

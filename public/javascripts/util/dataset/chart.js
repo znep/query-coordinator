@@ -39,7 +39,8 @@ Dataset.chart.types = {
         requiredColumns: [Dataset.chart.dateTypes, Dataset.chart.numericTypes],
         displayLimit: 300},
     treemap: {value: 'treemap', text: 'Tree Map',
-        requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes]}
+        requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes],
+        displayLimit: 100, renderOther: true}
 };
 
 Dataset.chart.hasRequiredColumns = function(cols, reqCols, includeHidden)

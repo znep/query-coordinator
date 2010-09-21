@@ -385,23 +385,20 @@
 
             rowHandleRenderer: function(col)
             {
-                var colAdjust = '';
-                var subRowLookup = '';
-                if (!$.isBlank((col || {}).childColumns))
-                {
-                    colAdjust = '_' + col.lookup;
-                    subRowLookup = col.dataLookupExpr;
-                }
+                var isSubRow = !$.isBlank((col || {}).childColumns);
+                var colAdjust = isSubRow ? ('_' + col.lookup) : '';
+
                 return '"<a class=\'menuLink\' href=\'#row-menu_" + ' +
                        'row.id + "' + colAdjust + '\'></a>' +
                        '<ul class=\'menu rowMenu\' id=\'row-menu_" + row.id + "' +
                        colAdjust + '\'>" + ' +
-                       '"<li class=\'pageView\'>' +
-                       '<a href=\'' + this.settings.view.url +
-                       '/" + row.id + "\' class=\'noInterstitial\'>' +
-                       'View Row</a></li>' +
+                       (!isSubRow ?
+                           '"<li class=\'pageView\'>' +
+                           '<a href=\'' + this.settings.view.url +
+                           '/" + row.id + "\' class=\'noInterstitial\'>' +
+                           'View Row</a></li>" + ' : '') +
                        (this.settings.editEnabled ?
-                           ('" + (permissions.canEdit && !(row.level > 0) ? ' +
+                           ('(permissions.canEdit && !(row.level > 0) ? ' +
                            '"<li class=\'tags\'>' +
                            '<a href=\'#row-tag_" + row.id + "' + colAdjust +
                            '\' class=\'noClose\'>Tag Row</a>' +
@@ -415,8 +412,8 @@
                            '</li>" : "") + ' +
                            '(permissions.canDelete ? "<li class=\'delete\'>' +
                            '<a href=\'#row-delete_" + row.id + "' + colAdjust +
-                           '\'>Delete Row</a></li>" : "") + "') : '') +
-                       '<li class=\'footer\'><div class=\'outerWrapper\'>' +
+                           '\'>Delete Row</a></li>" : "") + ') : '') +
+                       '"<li class=\'footer\'><div class=\'outerWrapper\'>' +
                        '<div class=\'innerWrapper\'>' +
                        '<span class=\'colorWrapper\'>' +
                        '</span></div>' +

@@ -12,10 +12,28 @@
     {
         defaults:
         {
+            nodeColor: '#444444'
         },
 
         prototype:
         {
+            initializeChart: function()
+            {
+                var chartObj = this;
+                chartObj._chartType = chartObj.settings
+                    .view.displayFormat.chartType;
+
+                if (Dataset.chart.types[chartObj._chartType].displayLimit)
+                { chartObj._maxRows = Dataset.chart.types[chartObj._chartType]
+                    .displayLimit; }
+            },
+
+            columnsLoaded: function()
+            {
+                var chartObj = this;
+                chartObj._remainder = chartObj._valueColumns[0].column.aggregates.sum;
+            },
+
             renderData: function(rows)
             {
                 var chartObj = this;
@@ -25,12 +43,14 @@
                         var area = parseFloat(row[chartObj.
                             _valueColumns[0].column.id]);
                         if (_.isNaN(area)) { return null; }
+                        chartObj._remainder -= area;
                         return {
                             id: row.id,
                             name: row[chartObj._fixedColumns[0].id],
                             data: {
                                 $area: area,
-                                $color: (row.meta && row.meta.color) || '#444444',
+                                $color: (row.meta && row.meta.color) ||
+                                    chartObj.settings.nodeColor,
                                 amount:
                                     row[chartObj._valueColumns[0].column.id] || 0
                             },
@@ -42,8 +62,30 @@
                 { chartObj._jitData = { id: 'root', name: '', data: {},
                         children: _.compact(_.map(rows, processRows)) }; }
                 else
-                { chartObj._jitData.children = chartObj._jitData.children.concat(
-                    _.compact(_.map(rows, processRows))); }
+                {
+                    if (chartObj._otherAdded)
+                    {
+                        chartObj._jitData.children.pop();
+                        chartObj._otherAdded = false;
+                    }
+                    chartObj._jitData.children = chartObj._jitData.children.concat(
+                        _.compact(_.map(rows, processRows)));
+                }
+
+                if (chartObj._remainder > 0)
+                {
+                    chartObj._jitData.children.push( {
+                        id: -1,
+                        name: 'Other',
+                        data: {
+                            amount: chartObj._remainder,
+                            $area: chartObj._remainder,
+                            $color: chartObj.settings.nodeColor
+                        },
+                        children: []
+                    });
+                    chartObj._otherAdded = true;
+                }
 
                 if (!chartObj._jit)
                 { initializeJITObject(chartObj); }

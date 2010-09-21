@@ -22,18 +22,30 @@ class AdministrationController < ApplicationController
     else
       @admins = find_privileged_users.sort{|x,y| x.displayName <=> y.displayName}
     end
-
-    if params[:userid].present? && params[:role].present?
-      success = false
-      begin
-        updated_user = User.set_role(params[:userid], params[:role])
-      rescue CoreServer::CoreServerError => ex
-        error_message = ex.error_message
+  end
+  def set_user_role
+    error_message = nil
+    begin
+      updated_user = User.set_role(params[:userid], params[:role])
+    rescue CoreServer::CoreServerError => ex
+      error_message = ex.error_message
+    end
+    Rails.logger.info("Updated: #{updated_user.inspect}")
+    respond_to do |format|
+      format.data do
+        if updated_user
+          render :json => {:success => true}
+        else
+          render :json => {:error => true, :message => error_message}
+        end
       end
-      if updated_user
-        flash[:notice] = "User '#{updated_user.displayName}' successfully saved"
-      else
-        flash[:error] = "Error saving user. #{error_message}"
+      format.html do
+        if error_message
+          flash[:error] = error_message
+        else
+          flash[:notice] = "User successfully updated" 
+        end
+        redirect_to :action => :users
       end
     end
   end

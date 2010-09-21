@@ -21,3 +21,7 @@ config.cache_store = :mem_cache_store, 'localhost', { :namespace => 'webapp' }
 # Disable the rails asset cache buster.  This greatly improves the experience with firebug, and development servers
 # should have caching disabled anyway.
 ENV['RAILS_ASSET_ID'] = ''
+
+# Static asset hosting example: (you'll probably want to redir these to 127.0.0.1 ...)
+#config.action_controller.asset_host = StaticAssetBalancer.new("dev1.socratas.com",
+#    "dev2.socratas.com", "dev3.socratas.com", "dev4.socratas.com")

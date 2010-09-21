@@ -4,14 +4,27 @@ module BrowseController
 
 protected
   def process_browse!
-    @opts = {:limit => 10, :page => (params['page'] || 1).to_i}
+    @opts = {:limit => 10, :page => (params[:page] || 1).to_i}
     @params = params.reject {|k, v| k == 'controller' || k == 'action'}
     @base_url = request.env['REQUEST_PATH']
 
     # Simple params; these are copied directly to opts
-    [:sortBy, :limitTo, :category, :tags].each do |p|
+    [:sortBy, :category, :tags].each do |p|
       if !params[p].nil?
         @opts[p] = params[p]
+      end
+    end
+
+    if !params[:limitTo].nil?
+      case params[:limitTo]
+      when 'datasets'
+        @opts[:limitTo] = 'tables'
+        @opts[:datasetView] = 'dataset'
+      when 'filters'
+        @opts[:limitTo] = 'tables'
+        @opts[:datasetView] = 'view'
+      else
+        @opts[:limitTo] = params[:limitTo]
       end
     end
 
@@ -53,8 +66,8 @@ protected
         :param => :limitTo,
         :use_icon => true,
         :options => [
-          {:text => 'Datasets', :value => 'tables', :class => 'typeBlist'},
-          {:text => 'Filtered Views', :value => 'tables', :class => 'typeFilter'},
+          {:text => 'Datasets', :value => 'datasets', :class => 'typeBlist'},
+          {:text => 'Filtered Views', :value => 'filters', :class => 'typeFilter'},
           {:text => 'Charts', :value => 'charts', :class => 'typeVisualization'},
           {:text => 'Maps', :value => 'maps', :class => 'typeMap'},
           {:text => 'Calendars', :value => 'calendars', :class => 'typeCalendar'},

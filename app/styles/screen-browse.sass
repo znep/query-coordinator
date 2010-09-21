@@ -23,6 +23,7 @@
         top: 0.3em
       .searchBox
         border: none
+        -webkit-appearance: none // otherwise iOS renders inset shadow
         width: 100%
 
     .facetSection
@@ -64,6 +65,8 @@
     .sortOptions
       float: right
       margin-bottom: 1em
+      .ie7 & .uniform
+        display: inline
       .sortType
         width: 11em
       .sortPeriod
@@ -136,10 +139,16 @@
               .actions
                 display: inline-block
                 margin-right: 2em
+                .ie7 &
+                  display: inline
+
               .menu.share
                 @include sprite-menu-icons('.menuButton .shareIcon')
                 font-size: 0.9167em
                 margin-right: 0.25em
+                .ie7 &
+                  display: inline
+
                 .menuButton
                   @include button
                   margin-top: 0
@@ -179,9 +188,14 @@
                 display: inline-block
                 font-size: 0.9167em
                 margin-right: 1em
+                .ie7 &
+                  display: inline
                 .icon
                   display: inline-block
                   margin-right: 0.4em
+                  .ie7 &
+                    display: block
+                    float: left
                 .value
                   display: inline-block
                   margin-top: 0.2em
@@ -189,11 +203,12 @@
 
               .starsControl
                 display: inline-block
+                .ie7 &
+                  display: inline
 
             .ie7 &
               margin-left: -5.5em
               padding-right: 20.5em
-              position: relative
               .infoContent
                 margin-right: -20.5em
 
@@ -225,7 +240,7 @@
       .pageLink
         margin: 0 0.25em
         &.active
-          color: #333333
+          color: #999999
           cursor: auto
 
       .button

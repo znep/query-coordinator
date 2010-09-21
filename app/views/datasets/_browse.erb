@@ -9,6 +9,61 @@
       <input type='text' name='browseSearch' title='Search'
         class='textPrompt searchBox' value='<%= @params[:q] %>' />
     </form>
+
+    <%- if !@params[:q].nil? || @facets.any? {|f| !@params[f[:param]].nil? } -%>
+    <div class='facetSection clearAllSection'>
+      <ul>
+        <li>
+        <%- cp = @params.reject {|p| p == 'page' || p == 'q'} -%>
+        <%- @facets.each do |f| -%>
+        <%- cp.delete(f[:param]) -%>
+        <%- end -%>
+        <a href='<%= @base_url + '?' + cp.to_param %>'>Clear All Options</a>
+        </li>
+      </ul>
+    </div>
+    <%- end -%>
+
+    <%- @facets.each do |facet| -%>
+    <div class='facetSection clearfix'>
+      <h4 class='title'><%= facet[:title] %></h4>
+      <ul>
+        <%- if !@params[facet[:param]].nil? -%>
+        <%- cp = @params.reject {|p| p == 'page'} -%>
+        <%- cp.delete(facet[:param]) -%>
+        <li><a href='<%= @base_url + '?' + cp.to_param %>' class='clearValues'>
+          <%- if facet[:use_icon] -%>
+          <span class='icon'></span>
+          <%- end -%>
+          (All)
+        </a></li>
+        <%- end -%>
+        <%- facet[:options].each do |f| -%>
+        <%- cp = @params.reject {|p| p == 'page'} -%>
+        <%- cp[facet[:param]] = f[:value] -%>
+        <li><a href='<%= @base_url + '?' + cp.to_param %>'
+          class='<%= f[:class] %> <%= @params[facet[:param]] == f[:value] ?
+            'active' : '' %>'>
+          <%- if facet[:use_icon] -%>
+          <span class='icon'></span>
+          <%- end -%>
+          <%= f[:text] %>
+        </a></li>
+        <%- end -%>
+      </ul>
+      <%- if !facet[:extra_options].nil? -%>
+      <a class='moreLink' href='#More <%= facet[:title] %>'>View more</a>
+      <div class='moreOptions hide'>
+        <%- facet[:extra_options].each do |f| -%>
+        <%- cp = @params.reject {|p| p == 'page'} -%>
+        <%- cp[facet[:param]] = f[:value] -%>
+        <a href='<%= @base_url + '?' + cp.to_param %>'
+          rel='<%= f[:count] %>'><%= f[:text] %></a>
+        <%- end -%>
+      </div>
+      <%- end -%>
+    </div>
+    <%- end -%>
   </div>
 
   <div class='browseList'>
@@ -101,6 +156,13 @@
     <%- end -%>
   </div>
 </div>
+
+<%- content_for :modals do -%>
+  <div class="browseOptionsDialog modalDialog">
+    <a href="#close" class="jqmClose modalDialogClose">Close</a>
+    <div class='optionsContent'></div>
+  </div>
+<%- end -%>
 
 <% content_for :templates do %>
 <div class='expandedInfo'>

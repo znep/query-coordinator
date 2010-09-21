@@ -254,10 +254,13 @@ javascripts:
   - screens/stats-screen
 - screen-browse:
   - plugins/jquery.uniform
+  - plugins/jquery.tagcloud
+  - util/events
   - controls/menu
   - controls/dataset-controls
   - controls/expander
   - controls/stars
+  - controls/modal-dialogs
   - screens/browse
 - widgets-show:
   - plugins/ui.effects.custom.min

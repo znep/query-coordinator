@@ -8,10 +8,12 @@ protected
     @params = params.reject {|k, v| k == 'controller' || k == 'action'}
     @base_url = request.env['REQUEST_PATH']
 
-    if !params[:sortBy].nil?
-      @opts[:sortBy] = params[:sortBy]
+    # Simple params; these are copied directly to opts
+    [:sortBy, :limitTo, :category, :tags].each do |p|
+      if !params[p].nil?
+        @opts[p] = params[p]
+      end
     end
-
 
     if !params[:q].nil?
       @opts[:q] = params[:q]
@@ -20,6 +22,42 @@ protected
       # search for everything!
       @opts[:q] = "''"
     end
+
+    all_tags = Tag.find({:method => "viewsTags"})
+    top_tags = all_tags.slice(0, 5).map {|t| t.name}
+    if !params[:tags].nil? && !top_tags.include?(params[:tags])
+      top_tags.push(params[:tags])
+    end
+    top_tags = top_tags.sort.map {|t| {:text => t, :value => t}}
+    tag_cloud = nil
+    if all_tags.length > 5
+      tag_cloud = all_tags.sort_by {|t| t.name}.
+        map {|t| {:text => t.name, :value => t.name, :count => t.frequency}}
+    end
+
+    @facets = [
+      { :title => 'View Types',
+        :param => :limitTo,
+        :use_icon => true,
+        :options => [
+          {:text => 'Datasets', :value => 'tables', :class => 'typeBlist'},
+          {:text => 'Filtered Views', :value => 'tables', :class => 'typeFilter'},
+          {:text => 'Charts', :value => 'charts', :class => 'typeVisualization'},
+          {:text => 'Maps', :value => 'maps', :class => 'typeMap'},
+          {:text => 'Calendars', :value => 'calendars', :class => 'typeCalendar'},
+          {:text => 'Forms', :value => 'forms', :class => 'typeForm'}]
+      },
+      { :title => 'Categories',
+        :param => :category,
+        :options => View.categories.keys.reject {|c| c.blank?}.sort.
+          map { |c| {:text => c, :value => c} }
+      },
+      { :title => 'Topics',
+        :param => :tags,
+        :options => top_tags,
+        :extra_options => tag_cloud
+      }
+    ]
 
     @view_results = SearchResult.search('views', @opts)[0]
   end

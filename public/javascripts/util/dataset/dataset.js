@@ -37,6 +37,7 @@ this.Dataset = Model.extend({
         Dataset.addProperties(this, ColumnContainer('column',
                 selfUrl + '.json', selfUrl + '/columns'), Dataset.prototype);
 
+
         this.type = getType(this);
         this.styleClass = this.type.capitalize();
         this.displayName = getDisplayName(this);
@@ -69,6 +70,30 @@ this.Dataset = Model.extend({
 
         this._origQuery = $.extend(true, {}, this.query);
         this._origSearchString = this.searchString;
+        
+
+        if (!$.isBlank(blist.snapshot) && blist.snapshot.takeSnapshot)
+        {
+            this.snapshotting = true;
+
+            if (!$.isBlank(blist.snapshot.forcedTimeout))
+            {
+                $.debug("Forcing timeout of " + blist.snapshot.forcedTimeout);
+                this._setupDefaultSnapshotting(blist.snapshot.forcedTimeout * 1000);
+            }
+            else if (_.isFunction(this.supportsSnapshotting) && this.supportsSnapshotting())
+            {
+                $.debug("Snapshot supported, calling setup");
+                if (_.isFunction(this._setupSnapshotting))
+                {
+                    this._setupSnapshotting();
+                }
+            }
+            else
+            {
+                this._setupDefaultSnapshotting(5000);
+            }
+        }
     },
 
     rowForID: function(id)
@@ -939,6 +964,25 @@ this.Dataset = Model.extend({
             });
     },
 
+    supportsSnapshotting: function()
+    {
+        // if you don't override me, you don't know how to be snapshotted
+        return false;
+    },
+
+    takeSnapshot: function()
+    {
+        $.debug("Snapshot!");
+            if (_.isUndefined(socrataScreenshot))
+            {
+                $.debug("Attempting to take screenshot from outside of snapper. Ignoring");
+                return;
+            }
+        // use the current viewport
+        socrataScreenshot.defineRegion("page", 0, 0, window.innerWidth, window.innerHeight);
+        socrataScreenshot.snap("page");
+        socrataScreenshot.done();
+    },
 
     // Private methods
 
@@ -1604,6 +1648,22 @@ this.Dataset = Model.extend({
         this._makeRequest({url: '/views.json', pageCache: true, type: 'GET',
                 data: { method: 'getByTableId', tableId: this.tableId },
                 success: processDS});
+    },
+
+    _setupDefaultSnapshotting: function(delay)
+    {
+        // by default, just wait til the rows are loaded
+        this.bind('finish_request', function()
+        {
+            var ds = this;
+            // if there was already a return call, e.g. aggregates
+            if (!$.isBlank(ds._snapshotTimer))
+            { clearTimeout(ds._snapshotTimer); $.debug("clear timer"); }
+
+            $.debug("Request finished, firing in " + delay);
+            ds._snapshotTimer = setTimeout(function()
+                { _.defer(ds.takeSnapshot); }, (delay  || 1000));
+        });
     },
 
     _validKeys: {

@@ -1,0 +1,31 @@
+(function(){
+
+// NOTE: This functionality is for snapshotting ONLY
+// If you add something here that should be specific to grouped/non-grouped
+// datasets, we should separate these into separate files
+Dataset.modules['grouped'] =
+Dataset.modules['blist'] =
+{
+    supportsSnapshotting: function()
+    {
+        return true;
+    },
+
+    _setupSnapshotting: function()
+    {
+        var ds = this,
+            timeout = 50;
+
+        // Give more time for the browser to render images
+        if (_.any(ds.columns, function(col)
+            {
+                return _.include(['checkbox', 'percent', 'stars', 'flag', 'photo'],
+                    col.dataTypeName);
+            }))
+        { timeout = 1000; }
+
+        this._setupDefaultSnapshotting(timeout);
+    },
+};
+
+})();

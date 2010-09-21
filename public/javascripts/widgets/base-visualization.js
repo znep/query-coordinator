@@ -232,6 +232,11 @@
             {
                 // Implement me to get the specific columns you need for
                 // this view
+            },
+
+            supportsSnapshotting: function()
+            {
+                return false;
             }
         }
     });

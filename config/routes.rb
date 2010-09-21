@@ -294,6 +294,12 @@ ActionController::Routing::Routes.draw do |map|
     :requirements => {:id => UID_REGEXP},
     :conditions => {:method => :get, :has_v4_dataset => true}
 
+  # For screenshotting only
+  map.connect 'bare/:id', :controller => 'datasets',
+    :action => 'bare',
+    :requirements => {:id => UID_REGEXP},
+    :conditions => {:method => :get}
+
 
   # Old SEO URLs
   map.connect ':category/:view_name/:id', :controller => 'blists',

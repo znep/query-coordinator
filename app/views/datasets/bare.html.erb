@@ -1,0 +1,42 @@
+<html>
+  <head>
+    <title><%= @view.name %></title>
+    <%= rendered_stylesheet_tag 'base' %>
+    <%= jquery_include %>
+    <%= raw @view.display.render_stylesheet_includes %>
+    <%= stylesheet_link_merged 'dataset-show' %>
+    <%= rendered_stylesheet_tag 'dataset-show' %>
+  </head>
+  <body>
+    <div class="outerContainer">
+      <div id="mainGrid">
+        <%= raw @view.display.render_body(self) %>
+        <%= render :partial => @view.display.render_partial %>
+      </div>
+    </div>
+
+    <%= javascript_include_merged 'base' %>
+
+    <%- if Rails.env != 'production' -%>
+        <%= javascript_include_tag "util/debug" %>
+    <%- end -%>
+
+    <script type="text/javascript">
+      blist.namespace.fetch('blist.snapshot');
+
+      blist.snapshot.takeSnapshot = true;
+      <%- if @snapshot_timeout -%>
+      blist.snapshot.forcedTimeout = <%= @snapshot_timeout.to_i %>;
+      <%- end -%>
+
+      <%= raw @view.display.render_inline_setup_js('mainGrid', self) %>
+    </script>
+
+    <%= raw @view.display.render_javascript_includes(self) %>
+    <%- if @view.display.is_a? (Displays::Chart) -%>
+      <%= javascript_include_tag 'plugins/highcharts.exporting.src' %>
+    <%- end -%>
+
+    <%= javascript_include_merged 'screen-bare-dataset' %>
+  </body>
+</html>

@@ -30,6 +30,40 @@
 
                 mapObj._bounds = new google.maps.LatLngBounds();
                 mapObj._boundsCounts = 0;
+
+                // For snapshotting
+                if (mapObj.settings.view.snapshotting)
+                {
+                    mapObj.settings.view.bind('finish_request', function()
+                    {
+                        if (!$.isBlank(mapObj._snapshot_event_bounds))
+                        { return; }
+
+                        var clearSnapTimeout = function()
+                        {
+                            if (!$.isBlank(mapObj._snapshot_timeout))
+                            {
+                                clearTimeout(mapObj._snapshot_timeout);
+                                mapObj._snapshot_timeout = null;
+                            }
+                        };
+
+                        mapObj._snapshot_event_bounds = true;
+
+                        google.maps.event.addListener(mapObj.map, 'tilesloaded', function(a){
+                            clearSnapTimeout();
+                            mapObj._snapshot_timeout = setTimeout(function()
+                                { mapObj.settings.view.takeSnapshot();  },
+                            2000);
+                        });
+
+                        google.maps.event.addListener(mapObj.map, 'zoom_changed', function(a){
+                            // Points were rendered which caused a redraw, clear timer
+                            // and wait for tiles again
+                            clearSnapTimeout();
+                        });
+                    });
+                }
             },
 
             renderPoint: function(latVal, longVal, rowId, details)

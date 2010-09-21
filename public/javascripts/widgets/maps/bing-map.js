@@ -41,6 +41,36 @@
                             .css('visibility', 'hidden');
                     }
                 });
+
+                if (mapObj.settings.view.snapshotting)
+                {
+                    var resetSnapTimer = function()
+                    {
+                        if (!$.isBlank(mapObj.settings.view._snapshot_timeout))
+                        {
+                            clearTimeout(mapObj.settings.view._snapshot_timeout);
+                            mapObj.settings.view._snapshot_timeout = null;
+                        }
+                    };
+
+                    // Once the rows are loaded, look for the last 'onchangeview' event
+                    mapObj.settings.view.bind('finish_request', function()
+                    {
+                        // Clear any existing requests
+                        resetSnapTimer();
+                        if (!$.isBlank(mapObj._snapshot_bound))
+                        { return; }
+
+                        // Don't care about this event until rows loaded
+                        mapObj.map.AttachEvent('onchangeview', function(event)
+                        {
+                            resetSnapTimer();
+                            mapObj.settings.view._snapshot_timeout = setTimeout(
+                                 mapObj.settings.view.takeSnapshot, 5000);
+                        });
+                        mapObj._snapshot_bound = true;
+                    });
+                }
             },
 
             renderPoint: function(latVal, longVal, rowId, details)

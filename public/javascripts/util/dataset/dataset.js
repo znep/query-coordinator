@@ -78,12 +78,10 @@ this.Dataset = Model.extend({
 
             if (!$.isBlank(blist.snapshot.forcedTimeout))
             {
-                $.debug("Forcing timeout of " + blist.snapshot.forcedTimeout);
                 this._setupDefaultSnapshotting(blist.snapshot.forcedTimeout * 1000);
             }
             else if (_.isFunction(this.supportsSnapshotting) && this.supportsSnapshotting())
             {
-                $.debug("Snapshot supported, calling setup");
                 if (_.isFunction(this._setupSnapshotting))
                 {
                     this._setupSnapshotting();
@@ -972,17 +970,60 @@ this.Dataset = Model.extend({
 
     takeSnapshot: function()
     {
-        $.debug("Snapshot!");
-            if (_.isUndefined(socrataScreenshot))
-            {
-                $.debug("Attempting to take screenshot from outside of snapper. Ignoring");
-                return;
-            }
+        // $.debug("Snapshot!");
+
+        var name = blist.snapshot.name;
         // use the current viewport
-        socrataScreenshot.defineRegion("page", 0, 0, window.innerWidth, window.innerHeight);
-        socrataScreenshot.snap("page");
+        socrataScreenshot.defineRegion(name, 0, 0, window.innerWidth, window.innerHeight);
+        socrataScreenshot.snap(name);
         socrataScreenshot.done();
     },
+
+
+    getFullSnapshotUrl: function(name)
+    {
+        name = this._getThumbNameOrDefault(name);
+
+        if ($.isBlank(this._getCroppedThumbnailMeta(name)))
+        { return null; }
+
+        return this.getSnapshotNamed(name + '.png');
+    },
+
+    getSnapshotNamed: function(name)
+    {
+        var uidParts = this.id.split('-');
+        if (uidParts.length < 2)
+        { return null; }
+
+        // TODO: Where do we want to put this on prod?
+        return '/images/snapshots/' + uidParts.join('/') + '/' + name;
+    },
+
+    getCroppedSnapshotUrl: function(name)
+    {
+        name = this._getThumbNameOrDefault(name);
+        // make sure the crop has been created
+        var meta = this._getCroppedThumbnailMeta(name);
+        if ($.isBlank(meta))
+        {
+            return null;
+        }
+
+        return this.getSnapshotNamed(meta.filename);
+    },
+
+    // ask the core server to take a new picture
+    requestSnapshot: function(name, callback)
+    {
+        this._updateSnapshot('snapshot', name, callback);
+    },
+
+    cropSnapshot: function(name, callback)
+    {
+        this._updateSnapshot('cropExisting', name, callback);
+    },
+
 
     // Private methods
 
@@ -1658,12 +1699,44 @@ this.Dataset = Model.extend({
             var ds = this;
             // if there was already a return call, e.g. aggregates
             if (!$.isBlank(ds._snapshotTimer))
-            { clearTimeout(ds._snapshotTimer); $.debug("clear timer"); }
+            { clearTimeout(ds._snapshotTimer); }
 
-            $.debug("Request finished, firing in " + delay);
             ds._snapshotTimer = setTimeout(function()
                 { _.defer(ds.takeSnapshot); }, (delay  || 1000));
         });
+    },
+
+    _getThumbNameOrDefault: function(name)
+    {
+        return name || "page";
+    },
+
+    _getCroppedThumbnailMeta: function(name)
+    {
+        return ((this.metadata || {}).thumbnail || {})[name];
+    },
+
+    _updateSnapshot: function(method, name, callback)
+    {
+        var ds = this;
+        ds._makeRequest({
+            success: function(response) {
+                ds._updateThumbnailCallback(response, callback);
+            },
+            error: callback,
+            type: 'POST',
+            url: '/views/' + ds.id + '/snapshots?method=' + method + '&name=' +
+                ds._getThumbNameOrDefault(name)
+        });
+    },
+
+    _updateThumbnailCallback: function(response, callback)
+    {
+        if ((response.metadata || {}).thumbnail)
+        {
+            this.metadata.thumbnail = response.metadata.thumbnail;
+        }
+        callback(response);
     },
 
     _validKeys: {

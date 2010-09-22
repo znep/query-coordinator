@@ -1,10 +1,5 @@
 var datasetPageNS = blist.namespace.fetch('blist.datasetPage');
 
-blist.datasetPage.adjustSize = function()
-{
-    $('.outerContainer').fullScreen().adjustSize();
-};
-
 blist.datasetPage.initGrid = function()
 {
     if (datasetPageNS.gridInitialized || !blist.dataset.isGrid()) { return; }
@@ -18,7 +13,6 @@ blist.datasetPage.initGrid = function()
             accessType: 'WEBSITE', manualResize: false, showRowHandle: false,
             clearTempViewCallback: function(){},
             setTempViewCallback: function(){},
-            filterForm: '#searchForm', clearFilterItem: '#searchForm .clearSearch',
             isInvalid: false,
             validViewCallback: function(){},
             addColumnCallback: function(){},
@@ -38,6 +32,4 @@ $(function()
     {
         datasetPageNS.initGrid();
     }
-    // TODO: Adjust size: datasetPageNS.adjustSize()
-
 });

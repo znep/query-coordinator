@@ -47,6 +47,8 @@ profile-show:
 - control-feed
 profile-edit:
 - screen-profile-edit
+dataset-thumbnail:
+- screen-dataset-thumbnail
 administration-screen:
 - screen-admin
 administration-index-screen:

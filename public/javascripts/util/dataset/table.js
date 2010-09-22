@@ -4,6 +4,7 @@
 // If you add something here that should be specific to grouped/non-grouped
 // datasets, we should separate these into separate files
 Dataset.modules['grouped'] =
+Dataset.modules['filter'] =
 Dataset.modules['blist'] =
 {
     supportsSnapshotting: function()

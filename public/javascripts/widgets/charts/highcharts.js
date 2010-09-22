@@ -285,11 +285,6 @@
                     chartObj.secondChart.destroy();
                     delete chartObj.secondChart;
                 }
-            },
-
-            supportsSnapshotting: function()
-            {
-                return true;
             }
         }
     }));

@@ -1,0 +1,83 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'dataset-thumbnail' %>
+  <title>Thumbnail Dataset | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<div class="contentBox fixedWidth" id="datasetThumbnail">
+  <div class="thumbnailEditContainer clearfix">
+    <h1>Edit Thumbnail for <%= @view.name %></h1>
+    <a href="<%= @view.href %>" class="returnLink">Return to Dataset</a>
+
+    <%= display_standard_flashes %>
+
+    <%- if @view.is_public? -%>
+      <div id="fullThumbnail" class="loading">
+
+        <div class="refreshThumbnail">
+          <a href="#refresh" class="button refresh">Refresh Thumbnail</a>
+          <span class="throbber"></span>
+        </div>
+
+        <div class="flash error mainError">
+          There was an error processing your thumbnail request. Please try again later
+        </div>
+
+        <div class="thumbnailPresent">
+          <div id="previewContainer">
+
+            <h2>Preview</h2>
+            <div id="previewThumbnailWrapper">
+              <div id="previewThumbnail">
+              </div>
+              <div class="datasetDescription">
+                <h4><%= @view.name %></h4>
+              </div>
+            </div>
+
+            <div class="flash warning unsavedWarning">Unsaved</div>
+
+          </div>
+
+          <h2>Full Image</h2>
+          <div class="fullThumbContainer">
+            <div class="loading"></div>
+            <div class="image"></div>
+          </div>
+
+          <form class="commonForm actionsForm">
+            <div class="line">
+              <%= link_to 'Save Thumbnail', '#save', {:class => 'button default disabled savePreviewButton'} %>
+              <%= link_to 'Discard Changes', @view.href, {:class => 'button'} %>
+              <div class="saveStatus">
+                <span class="saving"></span>
+                <span class="flash saveMessage"></span>
+              </div>
+            </div>
+          </form>
+
+        </div>
+
+        <div class="noThumbnail">
+          <div class="flash warning pleaseWait">
+            There are no thumbnails available for this dataset yet.
+            Please wait while we create one for you.
+          </div>
+        </div>
+      </div>
+    <%- else -%>
+      <div class="flash error">
+        For your privacy, only public datasets may be thumbnailed.
+        If you wish to have a preview image, please make this dataset
+        public from the Sharing pane of the edit menu
+      </div>
+    <%- end -%>
+  </div>
+</div>
+
+<% content_for :js_footer do %>
+  <script type="text/javascript">
+    <%# So we have the blist.dataset object %>
+    <%= raw @view.display.render_inline_setup_js('mainGrid', self) %>
+  </script>
+  <%= javascript_include_merged 'screen-dataset-thumbnail' %>
+<% end %>

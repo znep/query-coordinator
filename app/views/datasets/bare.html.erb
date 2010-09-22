@@ -25,6 +25,7 @@
       blist.namespace.fetch('blist.snapshot');
 
       blist.snapshot.takeSnapshot = true;
+      blist.snapshot.name = '<%= @snapshot_name %>';
       <%- if @snapshot_timeout -%>
       blist.snapshot.forcedTimeout = <%= @snapshot_timeout.to_i %>;
       <%- end -%>

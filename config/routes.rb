@@ -168,6 +168,7 @@ ActionController::Routing::Routes.draw do |map|
     :member => {
       :widget_preview => :get,
       :edit_metadata => [:get, :post],
+      :thumbnail => :get,
       :math_validate => :post,
       :alt => [:get, :post]
     },
@@ -282,6 +283,11 @@ ActionController::Routing::Routes.draw do |map|
       :category => /(\w|-)+/},
     :conditions => {:method => [:get, :post], :has_v4_dataset => true}
 
+  map.connect ':category/:view_name/:id/thumbnail', :controller => 'datasets',
+    :action => 'thumbnail',
+    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
+      :category => /(\w|-)+/},
+    :conditions => {:method => :get}
 
   # New short URLs
   map.connect 'dataset/:id', :controller => 'datasets',
@@ -295,7 +301,7 @@ ActionController::Routing::Routes.draw do |map|
     :conditions => {:method => :get, :has_v4_dataset => true}
 
   # For screenshotting only
-  map.connect 'bare/:id', :controller => 'datasets',
+  map.connect 'r/:id/:name', :controller => 'datasets',
     :action => 'bare',
     :requirements => {:id => UID_REGEXP},
     :conditions => {:method => :get}

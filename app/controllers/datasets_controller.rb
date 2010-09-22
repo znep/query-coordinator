@@ -65,6 +65,8 @@ class DatasetsController < ApplicationController
       end
     end
 
+    @snapshot_name = params[:name]
+
     if !current_user
       @user_session = UserSession.new
     end
@@ -177,6 +179,16 @@ class DatasetsController < ApplicationController
         end
       end
     end
+  end
+
+  def thumbnail
+    @view = get_view(params[:id])
+    return if @view.nil?
+
+    unless @view.has_rights?('update_view')
+      return render_forbidden
+    end
+
   end
 
   def stats

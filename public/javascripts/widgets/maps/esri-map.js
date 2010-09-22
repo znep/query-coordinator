@@ -96,7 +96,7 @@
                                 mapObj.populateLayers();
                                 if (mapObj.settings.view.snapshotting)
                                 {
-                                    setTimeout(mapObj.settings.view.takeSnapshot, 10000);
+                                    setTimeout(mapObj.settings.view.takeSnapshot, 2000);
                                 }
                             }
                         });

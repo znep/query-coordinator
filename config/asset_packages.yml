@@ -29,7 +29,7 @@ javascripts:
   - util/dataset/column-container
   - util/dataset/column
   - util/dataset/dataset
-  - util/dataset/blist
+  - util/dataset/table
   - util/dataset/calendar
   - util/dataset/chart
   - util/dataset/form
@@ -364,6 +364,9 @@ javascripts:
   - plugins/ajaxupload.3.0
   - controls/attachments-editor
   - screens/dataset-edit-metadata
+- screen-dataset-thumbnail:
+  - plugins/jquery.imgareaselect
+  - screens/dataset-thumbnail
 - screen-bare-dataset:
   - util/events
   - util/humane-date

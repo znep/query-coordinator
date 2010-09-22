@@ -2,7 +2,7 @@
   <%= rendered_stylesheet_tag 'screen-browse' %>
 <% end %>
 
-<div class='browseSection <%= @facets.length < 1 ? 'noFacets' : '' %>
+<div class='browseSection clearfix <%= @facets.length < 1 ? 'noFacets' : '' %>
   <%= @browse_in_container ? 'inContainer' : '' %>'>
   <%- if @facets.length > 0 -%>
   <div class='browseFacets'>
@@ -119,7 +119,7 @@
           </tr>
         </thead>
         <tbody>
-          <%- start_index = (@opts[:page] - 1) * @opts[:limit] + 1 -%>
+          <%- start_index = (@opts[:page] - 1) * @limit + 1 -%>
           <%- @view_results.each_with_index do |v, i| -%>
           <tr class='item collapsed'>
             <td class='index'>
@@ -154,7 +154,7 @@
     </div>
 
     <%- if @view_count > 0 -%>
-    <%= create_pagination(@view_count, @opts[:limit],
+    <%= create_pagination(@view_count, @limit,
       @opts[:page], @base_url + '?' + @params.to_param, 'button') %>
     <%- end -%>
   </div>

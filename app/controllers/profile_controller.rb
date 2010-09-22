@@ -60,48 +60,48 @@ class ProfileController < ApplicationController
     unless !CurrentDomain.module_available?(:new_datasets_page) || \
         @view_summary_cached = read_fragment( \
           app_helper.cache_key('profile-view-summary', @current_state))
-      @public_views = @user.public_blists.sort {|a,b| b.viewCount <=> a.viewCount}
-      # Note: Core server only returns shares if you own the view,
-      # so the public profile view won't show anything here
-      @shared_views = @public_views.find_all {|v| v.is_shared? }
-      @filtered_views = @public_views.select { |v| !v.flag?('default') && v.is_tabular? }
 
-      if (@is_user_current)
-        @all_owned_views = View.find_for_user(user_id).reject {|v| v.owner.id != user_id}
-        @private_blists = @all_owned_views.find_all {|v|
-          !v.is_public? && v.flag?('default')}
-        @private_filters = @all_owned_views.find_all {|v|
-          !v.is_public? && !v.flag?('default')}
-      end
-
-      @viewable_datasets = @is_current_user ? @all_owned_views : @public_views
-
-      # Sort the views into buckets based on human readable display name
-      stat_groups = @viewable_datasets.inject(Hash.new(0)) {|h, d| h[d.display_name.pluralize] += 1; h}
-      # Then move datasets to the front
+      base_req = {:limit => 1, :for_user => @user.id}
+      stats = [
+        {:params => {:datasetView => 'dataset'}, :name => 'Datasets'},
+        {:params => {:limitTo => 'tables', :datasetView => 'view'},
+          :name => 'Filtered Views'},
+        {:params => {:limitTo => 'charts'}, :name => 'Charts'},
+        {:params => {:limitTo => 'maps'}, :name => 'Maps'},
+        {:params => {:limitTo => 'calendars'}, :name => 'Calendars'},
+        {:params => {:limitTo => 'forms'}, :name => 'Forms'}
+      ]
       @stat_displays = []
-      if stat_groups['Datasets'] && stat_groups['Datasets'] > 0
-        @stat_displays << ['Datasets', stat_groups['Datasets']]
-        stat_groups.delete('Datasets')
-      end
-
-      # Then add in shares
-      [[@shared_views, 'Shared'], [@filtered_views, 'Filters']].each do |stat_group|
-        if stat_group.first.size > 0
-          @stat_displays << [stat_group.last, stat_group.first.size]
+      CoreServer::Base.connection.batch_request do
+        stats.each do |s|
+          SearchResult.search('views', base_req.merge(s[:params]), true)
         end
+      end.each_with_index do |r, i|
+        p = JSON.parse(r['response'])
+        @stat_displays << [stats[i][:name], p[0]['count']]
       end
-      # Add in the rest
-      stat_groups.each { |k,v| @stat_displays << [k, v] }
+    end
 
+    unless !CurrentDomain.module_available?(:new_datasets_page)
       @browse_in_container = true
       @opts = {:for_user => @user.id}
       @default_params = {:sortBy => 'newest', :limitTo => 'datasets'}
-      if params[:ownership] == 'sharedToMe'
+      # Special param to use the /users/4-4/views.json call instead of the
+      # search service.  For users with lots of views, this will be slow, and
+      # it doesn't allow sort/filter/search; but it doesn't require
+      # the Cassandra search service
+      if params[:_oldViews] == 'true'
+        @facets = []
+        @sort_opts = []
+        @view_results = View.find_for_user(@user.id)
+        @view_count = @view_results.length
+        @limit = @view_count
+      elsif params[:ownership] == 'sharedToMe'
         @facets = []
         @sort_opts = []
         @view_results = View.find_shared_to_user(@user.id)
         @view_count = @view_results.length
+        @limit = @view_count
       else
         @facets = [view_types_facet, categories_facet]
       end

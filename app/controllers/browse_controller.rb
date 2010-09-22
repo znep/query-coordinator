@@ -46,8 +46,9 @@ protected
   end
 
   def process_browse!
+    @limit ||= 10
     @opts ||= {}
-    @opts.merge!({:limit => 10, :page => (params[:page] || 1).to_i})
+    @opts.merge!({:limit => @limit, :page => (params[:page] || 1).to_i})
     (@default_params || {}).each { |k, v| params[k] = v if params[k].nil? }
     @params = params.reject {|k, v| k == 'controller' || k == 'action'}
     @base_url ||= request.env['REQUEST_PATH']

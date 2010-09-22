@@ -23,6 +23,23 @@
       </a>
       domain.</p>
 
+      <h2>Domain/Aliases:</h2>
+      <% form_tag '/internal/orgs/' + @domain.organizationId.to_s +
+        '/domains/' + @domain.cname + '/aliases' do %>
+        <div class='line'>
+          <label>Primary CName</label>
+          <input type='text' name='new_cname' value="<%= @domain.cname %>" />
+        </div>
+        <div class='line'>
+          <label>Aliases</label>
+          <input type='text' name='aliases' value="<%= @domain.aliases %>"
+                 title="separated by comma"
+            />
+        </div>
+        <input type='submit' value='Update' />
+      <% end %>
+
+
       <%- sorted_configs = @domain.configurations('site_theme').
         sort {|a,b| a.default == b.default ?
           a.name.downcase <=> b.name.downcase :

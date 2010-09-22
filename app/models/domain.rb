@@ -26,6 +26,13 @@ class Domain < Model
     CoreServer::Base.connection.update_request(path, headers)
   end
 
+  def self.update_aliases(cname, new_cname, aliases)
+    headers = { "X-Socrata-Host" => cname }
+    path = "/domains/#{cname}.json?method=updateAliases&cname=#{new_cname}&aliases=#{aliases}"
+    CoreServer::Base.connection.update_request(path, headers)
+  end
+
+
   def configurations(type)
     if @configs.nil?
       @configs = Hash.new

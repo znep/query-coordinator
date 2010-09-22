@@ -3821,7 +3821,7 @@
             end("renderRows.destroy");
 
             pendingTop = renderTop;
-            prevTop = parseInt($render.css('top'));
+            prevTop = Math.round(parseFloat($render.css('top')));
 
             // Render the rows that are newly visible
             var rowsLoaded = function(rows)
@@ -3838,7 +3838,7 @@
 
                     setTop = pendingTop;
                     pendingTop = undefined;
-                    prevTop = parseInt($render.css('top'));
+                    prevTop = Math.round(parseFloat($render.css('top')));
                 }
 
                 // If it moved while we were loading, then skip rendering

@@ -48,9 +48,6 @@
       line-height: inherit
       margin-bottom: 1em
 
-    &.datasetsList h2
-      float: left
-
     h3
       font-size: 1.3em
       line-height: inherit
@@ -66,6 +63,28 @@
         .ie7 &
           display: inline
           zoom: 1
+
+    &.datasetsList
+      h2
+        float: left
+        margin-right: 1em
+      .ownershipLinks
+        float: left
+        li
+          border-right: 1px solid #cacaca
+          display: inline-block
+          padding: 0 0.5em
+          &:last-child
+            border: none
+          a
+            font-size: 1.2em
+            &.active
+              color: #333333
+              font-weight: bold
+
+    &.newsFeed
+      min-height: 7em
+      position: relative
 
   .headerBar
 

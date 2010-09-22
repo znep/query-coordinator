@@ -33,6 +33,11 @@ class View < Model
     parse(CoreServer::Base.connection.get_request(path))
   end
 
+  def self.find_shared_to_user(id)
+    path = "/users/#{id}/views.json?method=getShared"
+    parse(CoreServer::Base.connection.get_request(path))
+  end
+
   def self.categories
     categories = CurrentDomain.configuration('view_categories').properties
     map = @@default_categories.clone

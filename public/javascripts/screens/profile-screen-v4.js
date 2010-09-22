@@ -7,6 +7,7 @@
 
     var renderFeed = function(views)
     {
+        $feedContainer.find('.loadingSpinner').remove();
         $feedContainer.feedList({
             allowComments: false,
             pageSize: 5,
@@ -20,6 +21,8 @@
             // No commenting from the profile page
             .find('.feedNewCommentButton').remove()
             .end());
+
+    $feedContainer.append('<div class="loadingSpinner"></div>');
 
     // Get the user's views for the news feed
     // TODO: Get activity on child views of their datasets?

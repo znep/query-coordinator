@@ -94,8 +94,17 @@ class ProfileController < ApplicationController
       # Add in the rest
       stat_groups.each { |k,v| @stat_displays << [k, v] }
 
-      @no_browse_facets = true
       @browse_in_container = true
+      @opts = {:for_user => @user.id}
+      @default_params = {:sortBy => 'newest', :limitTo => 'datasets'}
+      if params[:ownership] == 'sharedToMe'
+        @facets = []
+        @sort_opts = []
+        @view_results = View.find_shared_to_user(@user.id)
+        @view_count = @view_results.length
+      else
+        @facets = [view_types_facet, categories_facet]
+      end
       process_browse!
     end
 

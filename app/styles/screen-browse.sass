@@ -253,16 +253,25 @@
       .nextLink
         margin-left: 1em
 
-  &.noFacets .browseList
-    margin-left: 0
-
   &.inContainer
     padding: 0
+      top: 3em
+    .browseFacets
+      border: none
+      padding: 0
     .browseList
       // The border needs to exist but be invisible, otherwise the margin that
       // clears the sort option gets collapsed
       border-color: #ffffff
+      margin-left: 21em
       padding: 0
+      .sortOptions
+        margin-top: -3em
+      .results
+        margin-top: 0
+
+  &.noFacets .browseList
+    margin-left: 0
 
 .browseOptionsDialog
   .optionsContent

@@ -2,9 +2,9 @@
   <%= rendered_stylesheet_tag 'screen-browse' %>
 <% end %>
 
-<div class='browseSection <%= @no_browse_facets ? 'noFacets' : '' %>
+<div class='browseSection <%= @facets.length < 1 ? 'noFacets' : '' %>
   <%= @browse_in_container ? 'inContainer' : '' %>'>
-  <%- if !@no_browse_facets -%>
+  <%- if @facets.length > 0 -%>
   <div class='browseFacets'>
     <form class='searchSection'>
       <span class='icon'></span>
@@ -70,19 +70,11 @@
   <%- end -%>
 
   <div class='browseList'>
+    <%- if @view_count > 0 && @sort_opts.length > 0 -%>
     <div class='sortOptions'>
-      <%- sort_opts = [
-        {:value => 'relevance', :name => 'Most Relevant'},
-        {:value => 'most_accessed', :name => 'Most Accessed',
-          :is_time_period => true},
-        {:value => 'newest', :name => 'Newest'},
-        {:value => 'oldest', :name => 'Oldest'},
-        {:value => 'rating', :name => 'Highest Rated'},
-        {:value => 'comments', :name => 'Most Comments'},
-      ] -%>
       <%- show_time_period = false -%>
       <select class='sortType' name='sortType'>
-        <%- sort_opts.each do |so| -%>
+        <%- @sort_opts.each do |so| -%>
         <%- next if !so[:requires].nil? && @params[so[:requires]].nil? -%>
         <option value='<%= so[:value] %>' class='<%= so[:is_time_period] ?
           'timePeriod' : '' %>' <%= so[:value] == @opts[:sortBy] ?
@@ -104,9 +96,10 @@
         <%- end -%>
       </select>
     </div>
+    <%- end -%>
 
     <div class='results'>
-      <%- if @view_results.count == 0 -%>
+      <%- if @view_count == 0 -%>
       <div class='noResults'>No Results</div>
 
       <%- else -%>
@@ -127,7 +120,7 @@
         </thead>
         <tbody>
           <%- start_index = (@opts[:page] - 1) * @opts[:limit] + 1 -%>
-          <%- @view_results.results.each_with_index do |v, i| -%>
+          <%- @view_results.each_with_index do |v, i| -%>
           <tr class='item collapsed'>
             <td class='index'>
               <a class='expander' title='Click to expand' href='#Expand'>
@@ -157,9 +150,11 @@
           <%- end -%>
         </tbody>
       </table>
+      <%- end -%>
     </div>
 
-    <%= create_pagination(@view_results.count, @opts[:limit],
+    <%- if @view_count > 0 -%>
+    <%= create_pagination(@view_count, @opts[:limit],
       @opts[:page], @base_url + '?' + @params.to_param, 'button') %>
     <%- end -%>
   </div>
@@ -188,7 +183,7 @@
   <script type='text/javascript'>
     blist.namespace.fetch('blist.browse');
     blist.browse.datasets = [
-      <%- @view_results.results.each do |v| -%>
+      <%- @view_results.each do |v| -%>
       <%= safe_json(v) %>,
       <%- end -%>
       null // Because IE hates trailing commas

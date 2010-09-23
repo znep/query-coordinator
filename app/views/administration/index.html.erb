@@ -1,0 +1,64 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+  <%= rendered_stylesheet_tag 'administration-index-screen' %>
+  <title>Administration | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<div class="contentBox withLeftNavigation">
+  <ul class="adminList">
+    <%- if module_available? :advanced_metrics -%>
+      <li class="analytics">
+        <%= link_to raw('<span class="icon"></span>Site Analytics'),
+            {:action => 'analytics'} %>
+        <span class='description'>
+          View sitewide statistics for datasets, views, visitors and more
+        </span>
+      </li>
+    <%- end -%>
+    <li class="users">
+      <%= link_to raw('<span class="icon"></span>Users'), {:action => 'users'} %>
+      <span class='description'>
+        Manage users on your site and what permissions and abilities they have
+      </span>
+    </li>
+    <%- if module_available? :federations -%>
+      <li class="datasets">
+        <%= link_to raw('<span class="icon"></span>Federation'),
+            {:action => 'federations'} %>
+        <span class='description'>
+          Manage connections and data sharing with other sites via Open Data
+          Federation Services
+        </span>
+      </li>
+    <%- end -%>
+    <%- if module_available? :publisher_comment_moderation -%>
+      <li class="comments">
+        <%= link_to raw('<span class="icon"></span>Moderation'),
+            {:action => 'moderation'} %>
+        <span class='description'>
+          Review and moderate comments for datasets on your site
+        </span>
+      </li>
+    <%- end -%>
+    <%- if module_available? :sdp_customizer -%>
+      <li class="appearance">
+        <%= link_to raw('<span class="icon"></span>SDP Templates'),
+            {:action => 'sdp_templates'} %>
+        <span class='description'>
+          Manage and customize the templates used for publishing your data via Socrata Data Players
+        </span>
+      </li>
+    <%- end -%>
+    <%- if current_user && current_user.is_admin? -%>
+      <li class="internal">
+        <%= link_to raw('<span class="icon"></span>Internal'),
+            {:controller => 'internal', :action => 'index'} %>
+        <span class='description'>
+          Change and add modules, sites, and more
+        </span>
+      </li>
+    <%- end -%>
+  </ul>
+</div>

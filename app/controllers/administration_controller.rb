@@ -11,6 +11,9 @@ class AdministrationController < ApplicationController
 
   layout 'dataset_v2'
 
+  def index
+  end
+
   def analytics
   end
 

@@ -86,57 +86,34 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/internal/modules', :controller => 'internal',
     :action => 'index_modules'
 
-  map.with_options :controller => 'admin' do |admin|
-    admin.connect '/admin',                       :action => 'index'
-    admin.connect '/admin/users',                 :action => 'users'
-    admin.connect '/admin/users/:id',             :action => 'users'
-    admin.connect '/admin/save_user/:id',         :action => 'save_user_role'
-    admin.connect '/admin/reload',                :action => 'reload'
-    admin.connect '/admin/configuration',         :action => 'config'
-    admin.connect '/admin/configuration/update',  :action => 'update_config'
-    admin.connect '/admin/sdp',                   :action => 'sdp_index'
-    admin.connect '/admin/sdp/:id/:customization_id', :action => 'sdp',
-      :requirements => {:id => UID_REGEXP, :customization_id => UID_REGEXP}
-    admin.connect '/admin/sdp/:id/:customization_id/choose', :action => 'sdp',
-      :choose => true, :requirements =>
-        {:id => UID_REGEXP, :customization_id => UID_REGEXP}
-    admin.connect '/admin/sdp/new',               :action => 'new_customization',
-      :conditions => { :method => :get }, :format => 'data'
-    admin.connect '/admin/sdp/:id/delete',        :action => 'hide_template',
-      :requirements => {:id => UID_REGEXP}
-    admin.connect '/admin/sdp/:id/default',       :action => 'set_default_template',
-      :requirements => {:id => UID_REGEXP}
-    admin.connect '/admin/sdp/create_blank_view', :action => 'create_blank_dataset'
-    admin.connect '/admin/theme',                 :action => 'theme'
-    admin.connect '/admin/verify_layer_url',      :action => 'verify_layer_url'
+  ['administration', 'admin'].each do |as_route|
+    map.resources :administration, :as => as_route,
+      :collection => {
+        :analytics => :get,
+        :federations => :get,
+        :users => :get,
+        :moderation => :get,
+        :sdp_templates => :get
+      }
 
-    admin.connect '/admin/federations',           :action => 'federations'
-    admin.connect '/admin/federations/:id/delete',:action => 'delete_federation'
-    admin.connect '/admin/federations/:id/accept',:action => 'accept_federation'
-    admin.connect '/admin/federations/:id/reject',:action => 'reject_federation'
-    admin.connect '/admin/federations/new',       :action => 'new_federation',
-      :conditions => { :method => :get }, :format => 'data'
-    admin.connect '/admin/federations/create', :action => 'create_federation',
-      :conditions => { :method => :put }, :format => 'data'
-  end
-
-  map.with_options :controller => 'administration' do |admin|
-    admin.connect '/admin_new/analytics',         :action => 'analytics'
-    admin.connect '/admin_new/users',             :action => 'users'
-    admin.connect '/admin_new/users/:userid/:role', :action => 'set_user_role'
-    admin.connect '/admin_new/users/update', :action => 'set_user_role',
-      :conditions => { :method => :post }
-    admin.connect '/admin_new/moderation',        :action => 'moderation'
-    admin.connect '/admin_new/sdp_templates',     :action => 'sdp_templates'
-    admin.connect '/admin_new/sdp_templates/:id', :action => 'sdp_template'
-    admin.connect '/admin_new/sdp_templates/:id/set_default', :action => 'sdp_set_default_template'
-    admin.connect '/admin_new/sdp_templates/:id/delete', :action => 'sdp_delete_template'
-    admin.connect '/admin_new/federations',       :action => 'federations'
-    admin.connect '/admin_new/federations/:id/delete',       :action => 'delete_federation'
-    admin.connect '/admin_new/federations/:id/accept',       :action => 'accept_federation'
-    admin.connect '/admin_new/federations/:id/reject',       :action => 'reject_federation'
-    admin.connect '/admin_new/federations/create',           :action => 'create_federation',
-      :conditions => { :method => :post }
+    map.with_options :controller => 'administration' do |admin|
+      admin.connect as_route + '/users/:userid/:role', :action => 'set_user_role'
+      admin.connect as_route + '/users/update', :action => 'set_user_role',
+        :conditions => { :method => :post }
+      admin.connect as_route + '/sdp_templates/:id', :action => 'sdp_template'
+      admin.connect as_route + '/sdp_templates/:id/set_default',
+        :action => 'sdp_set_default_template'
+      admin.connect as_route + '/sdp_templates/:id/delete',
+        :action => 'sdp_delete_template'
+      admin.connect as_route + '/federations/:id/delete',
+        :action => 'delete_federation'
+      admin.connect as_route + '/federations/:id/accept',
+        :action => 'accept_federation'
+      admin.connect as_route + '/federations/:id/reject',
+        :action => 'reject_federation'
+      admin.connect as_route + '/federations/create',
+        :action => 'create_federation', :conditions => { :method => :post }
+    end
   end
 
   map.resources :contacts,

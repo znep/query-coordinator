@@ -1,0 +1,114 @@
+/* Main */
+body
+{
+	background: none #E6EFF6;
+}
+.bodyInterior
+{
+	border-top: none;	
+}
+#outerContainer
+{
+	max-width: none;
+}
+
+/* Header */
+#header
+{
+	background: url(/stylesheets/images/domains/data.census.com/bg-gradient.png) no-repeat right top #003366;
+	border-bottom:3px solid #0099CC;	
+	margin: 5px 1em 1.5em;
+	padding-bottom: 0;
+}
+#mainLogo
+{
+	top: 0px;
+	left: 0px;
+}
+#header .userNav ul, #header form.search
+{
+	display: inline;
+	float: left;
+}
+#header .userNav ul
+{
+	position: relative;
+	top: 10px;
+}
+#header .userNav li
+{
+	margin: 0;
+	padding: 0.4em 1em;
+}
+#header .userNav a
+{
+	color: #FFF;
+	font-size: 1.2em;
+	font-weight: bold;
+}
+#header form.search
+{
+	position: relative;
+	left: 0;
+	top: 5px;
+}
+
+/* Splash */
+.censusSplashContainer
+{
+	background: url(/stylesheets/images/domains/data.census.com/census-accent.jpg) no-repeat right top #003366;	
+	padding: 1.5em 37em 1.5em 1.5em;	
+}
+.pageBlockHeaderCarousel.carouselWrapper, .pageBlockHeaderCarousel .carouselOuter, .pageBlockHeaderCarousel .carouselInner
+{
+	background-image: none;
+}
+.pageBlockHeaderCarousel.carouselWrapper
+{
+	background-color: #2C6FA6;
+}
+.pageBlockHeaderContent .pageBlockHeaderSide
+{
+	margin-top: 0;
+}
+.pageBlockIntro p
+{
+	color: #FFF;
+	padding: 0.5em 0;
+}
+
+.pageBlockHeaderSide, .pageBlockHeaderSide h2
+{
+	color: #FFF;	
+}
+.pageBlockHeaderSide ul li a, .myNetworkList a
+{
+	color: #0099CC;
+	font-size: 1.1em;
+	text-decoration: underline;
+}
+
+/* Footer */
+.footerContainer 
+{
+	background: none #003366;
+	border-top:3px solid #0099CC;
+}
+#footer
+{
+	max-width: none;
+}
+#footer .copyright 
+{
+	background: url(/stylesheets/images/domains/data.census.com/footer-logo.gif) no-repeat;	
+	height: 30px;
+	position: relative;
+	top: 10px;
+	text-align: left;
+	text-indent: -9999px;
+	width: 210px;
+}
+#footer li a
+{
+	color: #FFF;
+}

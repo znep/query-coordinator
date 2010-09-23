@@ -7,16 +7,18 @@
 <%= render :partial => 'left_nav' %>
 
 <div class="contentBox withLeftNavigation">
-  <h2>Moderate Comments</h2>
-
-  <div class="commentStatusContainer">
-    <label for="commentStatusDropdown">Show</label>
-    <select id="commentStatusDropdown">
-      <option value="all">All</option>
-      <option value="pending">Pending</option>
-      <option value="approved">Approved</option>
-      <option value="rejected">Rejected</option>
-    </select>
+  <div class="adminHeader comments">
+    <span class="icon"></span>
+    <h1>Moderate Comments</h1>
+    <div class="commentStatusContainer">
+      <label for="commentStatusDropdown">Show</label>
+      <select id="commentStatusDropdown">
+        <option value="all">All</option>
+        <option value="pending">Pending</option>
+        <option value="approved">Approved</option>
+        <option value="rejected">Rejected</option>
+      </select>
+    </div>
   </div>
 
   <div class="tableContainer"></div>

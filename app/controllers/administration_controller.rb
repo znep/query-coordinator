@@ -25,6 +25,17 @@ class AdministrationController < ApplicationController
     else
       @admins = find_privileged_users.sort{|x,y| x.displayName <=> y.displayName}
     end
+
+    if @user_search_results.nil?
+      @users_list = @admins
+      @existing_user_actions = true
+    elsif @user_search_results.empty?
+      @table_title = 'No users found.'
+    else
+      @table_title = "Search Results for '#{@search}'"
+      @users_list = @user_search_results
+      @existing_user_actions = false
+    end
   end
   def set_user_role
     error_message = nil

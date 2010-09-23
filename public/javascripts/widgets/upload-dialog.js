@@ -148,15 +148,6 @@
 
                 $domObj.jqmShow();
 
-                if (!uploadURL.endsWith('.txt'))
-                {
-                    // Stick a .txt on the end so the server returns the right
-                    // thing...
-                    if (uploadURL.endsWith('/'))
-                    { uploadURL = uploadURL.slice(0, uploadURL.length - 1); }
-                    uploadURL += '.txt';
-                }
-
                 $domObj.find('input[name="file_upload"]').val('');
                 $domObj.find('.submitPending, .loadingSpinner, .loadingOverlay')
                     .addClass('hide');
@@ -171,7 +162,7 @@
                 var $uploadButton = $domObj.find('.fileBrowseButton');
                 currentObj._$uploader = new AjaxUpload($uploadButton,
                 {
-                    action: uploadURL,
+                    action: '',
                     autoSubmit: false,
                     name: 'uploadFileInput',
                     responseType: 'json',
@@ -193,8 +184,21 @@
                         }
                     },
                     onSubmit: function (file, ext)
-                    { $domObj.find('.submitPending, .loadingSpinner, ' +
-                        '.loadingOverlay').removeClass('hide'); },
+                    {
+                        var uploadInstanceURL =  _.isFunction(uploadURL) ?
+                            uploadURL(file) : uploadURL;
+                        if (!uploadInstanceURL.match(/\.txt$|\.txt\?/))
+                        {
+                            // Stick a .txt on the end so the server returns the right
+                            // thing...
+                            if (uploadInstanceURL.endsWith('/'))
+                            { uploadInstanceURL = uploadInstanceURL.slice(0, uploadInstanceURL.length - 1); }
+                            uploadInstanceURL += '.txt';
+                        }
+                        currentObj._$uploader._settings.action = uploadInstanceURL;
+                        $domObj.find('.submitPending, .loadingSpinner, ' +
+                            '.loadingOverlay').removeClass('hide');
+                    },
                     onComplete: function (file, response)
                     {
                         $domObj.find('.submitPending, .loadingSpinner, ' +
@@ -213,7 +217,7 @@
                         }
 
                         if (fileCallback instanceof Function)
-                        { fileCallback(response.file, file); }
+                        { fileCallback(response.file, file, response); }
                         $domObj.jqmHide();
                     }
                 });

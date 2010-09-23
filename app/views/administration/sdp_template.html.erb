@@ -1,0 +1,106 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-sdp-template' %>
+  <%= stylesheet_link_merged 'admin-sdp-template' %>
+  <title>Editing <%= @widget_customization.name %> | Social Data Player Templates | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<div class="contentBox withLeftNavigation">
+  <div class="publisherHeader clearfix">
+    <h1>Editing <%= @widget_customization.name %></h1>
+
+    <div class="publisherActions">
+      <a href="#save" class="saveButton button">Save</a>
+      <!-- <a href="#save" class="saveAsButton button">Save As...</a> -->
+      <a href="#save" class="revertButton button">Revert Changes</a>
+      <span class="loadingIcon">Working...</span>
+    </div>
+
+    <div class="sidebarOptionsContainer clearfix">
+      <ul id="sidebarOptions" class="clearfix">
+        <li><a href="#metadata" class="metadata" data-panename="metadata">
+          <span class="icon"></span>Metadata</a></li>
+        <li><a href="#appearance" class="appearance" data-panename="appearance">
+          <span class="icon"></span>Appearance</a></li>
+        <li><a href="#behavior" class="behavior" data-panename="behavior">
+          <span class="icon"></span>Behavior</a></li>
+        <li><a href="#advanced" class="advanced" data-panename="advanced">
+          <span class="icon"></span>Advanced</a></li>
+        <%- if params[:view_id].present? -%>
+          <li><a href="#embed" class="embed" data-panename="embed">
+            <span class="icon"></span>Embed</a></li>
+        <%- end -%>
+      </ul>
+    </div>
+  </div>
+
+  <div class="publisherMain">
+    <div class="publisherWorkspace">
+      <%- if @view.is_public? -%>
+        <div class="previewScrollContainer">
+          <div class="previewPane" style="width:<%= @customization[:publish][:dimensions][:width] %>px">
+            <%= get_publish_embed_code_for_view(@view, {}, 'default') %>
+          </div>
+        </div>
+        <div class="infoMessage loadingMessage">
+          <h2>Loading your Data Player Customization...</h2>
+        </div>
+      <%- else -%>
+        <div class="errorMessage privateDatasetMessage">
+          <h2>Warning</h2>
+          <p>The dataset you are trying to publish is currently marked as private.
+             You will need to make it public before you can publish it. This will
+             mean that anyone can view the data.</p>
+          <a href="#public" class="makePublicButton button">Make it public</a>
+        </div>
+      <%- end -%>
+      <div class="errorMessage versionMessage">
+        <h2>Warning</h2>
+        <p>The customization you are trying to edit is our old design, which is no
+           longer supported. If you want to make changes to it, you'll have to
+           convert it over to our new design first. You can preview how it will
+           look before committing to using it.</p>
+        <a href="#convert" class="convertButton button">Convert it now</a>
+      </div>
+    </div>
+    <div id="gridSidebar">
+    </div>
+  </div>
+</div>
+
+<% content_for :templates do %>
+<%= render(:partial => 'shared/grid_sidebar_templates') %>
+<div class="logoEdit">
+  <div class="line clearfix logoEdit">
+    <label for="gridSidebar_appearance_logo:_logoSelect">Choose logo</label>
+    <select id="gridSidebar_appearance_logo:_logoSelect" data-origname="_logoSelect"
+          name="gridSidebar_appearance_logo:_logoSelect">
+      <option value="none">(none)</option>
+      <option value="socrata">Default Socrata Logo</option>
+      <option disabled="disabled">&nbsp;</option>
+      <%= options_for_select Asset.find(:type => "WIDGET_CUSTOMIZATION_LOGO").
+                                        map{ |image| [image.nameForOutput, image.id] } %>
+    </select>
+  </div>
+  <div class="line clearfix">
+    <label>&nbsp;</label>
+    <a href="#upload" class="uploadNewLogoButton button">Upload New</a>
+  </div>
+</div>
+<% end %>
+
+<% content_for :js_footer do %>
+  <%= hidden_field_tag('codeTemplate', get_publish_embed_code_for_view(@view,
+        { :dimensions => { :width => '%width%', :height => '%height%' } }, '%variation%')) %>
+  <script type="text/javascript">
+    blist.namespace.fetch('blist.publish');
+    blist.publish.currentThemeMeta = { 'name': '<%= @widget_customization.name %>',
+                                       'id': '<%= @widget_customization.uid %>' };
+    blist.publish.currentTheme = <%= raw @customization.to_json %>;
+    blist.publish.v2Theme = <%= raw WidgetCustomization.default_theme(1).to_json %>;
+    blist.publish.viewId = '<%= @view.id %>';
+  </script>
+
+  <%= javascript_include_merged 'admin-sdp-template' %>
+<% end %>

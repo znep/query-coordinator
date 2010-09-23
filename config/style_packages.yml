@@ -33,9 +33,9 @@ dataset-show:
 - grid-sidebar
 - grid-sidebar-custom
 - screen-page-render-type
-- screen-dataset
 - control-feed
 - splash
+- screen-dataset
 dataset-alt:
 - screen-dataset-alt
 dataset-edit-metadata:
@@ -53,6 +53,10 @@ administration-moderation:
 administration-sdp-templates:
 - screen-admin
 - screen-admin-sdp-templates
+administration-sdp-template:
+- screen-admin
+- grid-sidebar
+- screen-admin-sdp-template
 administration-federation:
 - screen-admin
 - screen-administration-federation

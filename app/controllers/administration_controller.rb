@@ -57,6 +57,29 @@ class AdministrationController < ApplicationController
     @templates = WidgetCustomization.find.reject{ |t| t.hidden }
     @default_template_id = CurrentDomain.default_widget_customization_id
   end
+  def sdp_template
+    if params[:view_id].present?
+      begin
+        @view = View.find(params[:id])
+      rescue CoreServer::ResourceNotFound
+          flash.now[:error] = 'This ' + I18n.t(:blist_name).downcase +
+            ' cannot be found, or has been deleted.'
+          return (render 'shared/error', :status => :not_found)
+        return
+      end
+    else
+      views = View.find(:public_only => true, :limit => 1)
+      @view = views.first unless views.nil?
+    end
+
+    begin
+      @widget_customization = WidgetCustomization.find(params[:id])
+      @customization = WidgetCustomization.merge_theme_with_default(@widget_customization.customization)
+    rescue CoreServer::ResourceNotFound
+      flash.now[:error] = 'This template customization cannot be found'
+      return (render 'shared/error', :status => :not_found)
+    end
+  end
   def sdp_set_default_template
     configuration = Configuration.find_by_type('site_theme',  true, request.host, false)[0]
     begin

@@ -151,6 +151,20 @@
         background-color: #ffc3d1
         border-color: #f8a0a8
 
+    // publisher tabs
+    &#gridSidebar_outer_metadata
+      .mainTitleBlock
+        @include vertical-gradient($sidebar_metadata_tab_color_top, #848484)
+    &#gridSidebar_outer_appearance
+      .mainTitleBlock
+        @include vertical-gradient($sidebar_appearance_tab_color_top, #0f906d)
+    &#gridSidebar_outer_behavior
+      .mainTitleBlock
+        @include vertical-gradient($sidebar_behavior_tab_color_top, #609109)
+    &#gridSidebar_outer_advanced
+      .mainTitleBlock
+        @include vertical-gradient($sidebar_advanced_tab_color_top, #671099)
+
   .sidebarPane
     @include disabled-overlay(8em)
     position: relative
@@ -319,6 +333,9 @@
         &.columnSelect select.hasTable
           font-size: 1em
           width: 10.85em
+
+        &.color .colorControlLabel
+          margin-left: 1em
 
         &.static > span
           font-size: 1.2em
@@ -511,3 +528,50 @@
       &.disabled
         color: #999999
         cursor: default
+
+// sidebar button styles
+#sidebarOptions
+  background-image: url(/stylesheets/images/interface/dataset_sidebar_fade.png)
+  background-image: -moz-linear-gradient(0 0 270deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.7)), -moz-linear-gradient(0 0 0deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0))
+  // Chrome builds below 7 don't support multiple background-images >(
+  // background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 1)), to(rgba(255, 255, 255, 0.7))), -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 1)), to(rgba(255, 255, 255, 0)))
+  background-repeat: no-repeat
+  float: right
+  padding: 0.2em 0.6em 0.4em 10em
+
+  li
+    float: left
+    margin-left: 0.6em
+    position: relative
+
+    a
+      @include dataset-sidebar-icons
+      @include border-radius(0.35em)
+      color: #fff
+      display: block
+      font-size: 0.9em
+      height: 13px
+      line-height: 13px
+      padding: 0.4em 0.7em 0.5em
+
+      .icon
+        display: inline-block
+        margin-right: 0.4em
+        vertical-align: bottom
+        .ie7 &
+          display: inline
+          zoom: 1
+
+      .ie7 &
+        overflow: hidden // ghetto clearfix
+        .icon
+          float: left
+
+    &.active
+      margin: -2px
+        left: 0.4em
+      a
+        border: 2px solid #fff
+        // Chrome can't handle the larger border
+        border-radius: 0.1em
+

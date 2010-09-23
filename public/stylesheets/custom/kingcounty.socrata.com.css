@@ -54,6 +54,24 @@ body
 		position: static;
 		width: auto;
 }
+#header .userNav li.dataHomeLink
+{
+	border-right: solid 1px #FFF;
+}
+#header .userNav li.signUpLink
+{
+	margin-right: 0px;
+}
+#header .userNav li.signUpLink a
+{
+	padding-right: 5px;
+}
+#header .userNav li.whyLink a
+{
+	color: #CCC;
+	padding: 0;	
+	text-transform: none;
+}
 #header form.search .searchField
 {
         background-position: 8px 3px;
@@ -115,8 +133,6 @@ form.search.large .clearBox
 {
     background-color: #ffffff;
 }
-
-
 .pageBlockHeaderContainer
 {
     background: transparent;

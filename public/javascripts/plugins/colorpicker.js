@@ -220,10 +220,10 @@
 				if (top + 176 > viewPort.t + viewPort.h) {
 					top -= this.offsetHeight + 176;
 				}
-				if (left + 356 > viewPort.l + viewPort.w) {
-					left -= 356;
+				if (left + 305 > viewPort.l + viewPort.w) {
+					left -= 275;
 				}
-				cal.css({left: left + 'px', top: top + 'px'});
+				cal.css('left', left).css('top', top);
 				if (cal.data('colorpicker').onShow.apply(this, [cal.get(0)]) != false) {
 					cal.show();
 				}
@@ -390,8 +390,9 @@
 				opt = $.extend({}, defaults, opt||{});
 				if (typeof opt.color == 'string') {
 				    // clint.tseng@socrata.com 2009/08/06: accept rgb string values
+				    // clint.tseng@socrata.com 2010/09/17: make # optional in rgb values
 				    var rgb;
-				    if (opt.color.match(/#([\dABCDEF]{3}){1,2}/ig)) {
+				    if (opt.color.match(/#?([\dABCDEF]{3}){1,2}/ig)) {
 					    opt.color = HexToHSB(opt.color);
 				    } else if (rgb = opt.color.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/)) {
 				        opt.color = RGBToHSB({r: parseInt(rgb[1]), g: parseInt(rgb[2]), b: parseInt(rgb[3])});
@@ -413,7 +414,7 @@
 						if (options.flat) {
 							cal.appendTo(this).show();
 						} else {
-							cal.appendTo(document.body);
+							cal.appendTo(document.body).hide();
 						}
 						options.fields = cal
 											.find('input')
@@ -425,7 +426,7 @@
 							.find('span').bind('mousedown', downIncrement);
 						cal.find('.colorpicker_close_link').click(function(e) {
 						    e.preventDefault();
-						   $(this).parent().parent().hide();
+						    cal.hide();
 						});
 						options.selector = cal.find('div.colorpicker_color').bind('mousedown', downSelector);
 						options.selectorIndic = options.selector.find('div div');

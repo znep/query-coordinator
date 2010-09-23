@@ -1,4 +1,105 @@
+body
+{
+	background: none #cccc99;
+}
+#outerContainer 
+{
+	max-width:none;
+}
+/* Main */
+.bodyInterior
+{
+	border: none;
+}
+/* Header */
+#header
+{
+	background: url(/stylesheets/images/domains/redmond.socrata.com/header-bg.jpg) repeat-x;
+	height: 96px;
+}
+
 #header #mainLogo
 {
-    top: 0px;
+	left: 0px;
+    top: 20px;
+}
+#header .userNav
+{
+	padding: 0.5em;
+}
+#header .userNav li
+{
+	border-color: #CCC;
+	margin: 0;
+}
+#header .userNav a
+{
+	color: #FFF;
+	font-size: 1em;
+	font-weight: bold;	
+	padding: 0 1.5em;
+	text-transform: uppercase;
+}
+
+/* Data Splash */
+.redmondSplashContainer
+{
+	background: #FFF;
+	border: solid 1px #030;
+	border-top-right-radius: 0.5em;
+	-moz-border-radius-topright: 0.5em;
+	webkit-border-top-right-radius: 0.5em;
+	border-top-left-radius: 0.5em;
+	-moz-border-radius-topleft: 0.5em;
+	webkit-border-top-left-radius: 0.5em;
+	border-bottom-left-radius: 0.5em;
+	-moz-border-radius-bottomleft: 0.5em;
+	webkit-border-bottom-left-radius: 0.5em;
+	border-bottom-right-radius: 0.5em;
+	-moz-border-radius-bottomright: 0.5em;
+	webkit-border-bottom-right-radius: 0.5em;	
+	display: block;	
+	font-family: Georgia,Times New Roman,Times,serif;
+	margin: 1em 0;
+	min-height:0;
+	padding: 1.5em 37em 1.5em 1.5em;		
+}
+.pageBlockIntro p
+{
+	color: #363;
+	font-weight: bold;
+	font-size: 1.5em;
+	margin-top: 1em;
+}
+.pageBlockHeaderCarousel.carouselWrapper, .pageBlockHeaderCarousel .carouselOuter, .pageBlockHeaderCarousel .carouselInner 
+{
+	background: url(/stylesheets/images/domains/redmond.socrata.com/spacer_ln.gif) repeat;
+	border-top-right-radius: 0.5em;
+	-moz-border-radius-topright: 0.5em;
+	webkit-border-top-right-radius: 0.5em;
+	border-top-left-radius: 0.5em;
+	-moz-border-radius-topleft: 0.5em;
+	webkit-border-top-left-radius: 0.5em;
+	border-bottom-left-radius: 0.5em;
+	-moz-border-radius-bottomleft: 0.5em;
+	webkit-border-bottom-left-radius: 0.5em;
+	border-bottom-right-radius: 0.5em;
+	-moz-border-radius-bottomright: 0.5em;
+	webkit-border-bottom-right-radius: 0.5em;		
+}
+.pageBlockHeaderCarousel .carouselInner
+{
+	background: url(/stylesheets/images/domains/redmond.socrata.com/redmondlogo_ln.gif) right no-repeat;	
+}
+
+/* Footer */
+
+.footerContainer
+{
+	background: none;
+}
+
+#footer  a
+{
+	color: #00E;
 }

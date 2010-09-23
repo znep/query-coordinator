@@ -257,7 +257,7 @@
 
 // icons/dataset_button_icons.png
 @mixin dataset-sidebar-icons($subselector: '.icon')
-  #{$subselector}
+  #{$subselector}, .alertIcon
     @include text-hiding
     background-image: url(/stylesheets/images/icons/dataset_sidebar_icons.png)
     height: 13px
@@ -272,14 +272,21 @@
     background-position: 0 -39px
   &.embed #{$subselector}
     background-position: 0 -52px
-  &.about #{$subselector}
+  &.about #{$subselector},
+  &.metadata #{$subselector}
     background-position: 0 -65px
-  &.edit #{$subselector}
+  &.edit #{$subselector},
+  &.appearance #{$subselector}
     background-position: 0 -78px
   &.moreViews #{$subselector}
     background-position: 0 -91px
+  .alertIcon,
   &.alert #{$subselector}
     background-position: 0 -104px
+  &.advanced #{$subselector}
+    background-position: 0 -117px
+  &.behavior #{$subselector}
+    background-position: 0 -130px
 
 // icons/renderType_toggle_icons.png
 @mixin renderType-toggle-icons($subselector: '.icon')

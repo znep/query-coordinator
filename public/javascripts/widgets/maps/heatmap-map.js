@@ -99,17 +99,17 @@
             mapObj.startLoading();
             // Queries only need to be run once.
             // renderData actions happening during a query can be ignored,
-            // because addFeatureSetToMap uses mapObj._rows for processing.
+            // because processRows uses mapObj._rows for initial processing.
             if (mapObj._runningQuery) { return; }
 
             if (_.isUndefined(mapObj._featureSet))
-            { doQueries(mapObj, config); }
+            { fetchFeatureSet(mapObj, config); }
             else
-            { addFeatureSetToMap(mapObj, null, config); }
+            { processRows(mapObj, config, rows); }
         }
     });
 
-    var doQueries = function(mapObj, config)
+    var fetchFeatureSet = function(mapObj, config)
     {
         var query = new esri.tasks.Query();
         query.outFields = MAP_TYPE[config.type].fieldsReturned;
@@ -121,7 +121,10 @@
                 "http://server.arcgisonline.com/ArcGIS/rest/services/" +
                 MAP_TYPE[config.type].layerPath)
             .execute(query, function(featureSet)
-                { addFeatureSetToMap(mapObj, featureSet, config); });
+                {
+                    mapObj._featureSet = featureSet;
+                    processRows(mapObj, config);
+                });
         mapObj._runningQuery = true;
 
         setTimeout(function()
@@ -137,18 +140,15 @@
         }, 60000);
     };
 
-    var addFeatureSetToMap = function(mapObj, featureSet, config)
+    var processRows = function(mapObj, config, rows)
     {
-        if (featureSet)
-        { mapObj._featureSet = featureSet; }
-        else
-        { featureSet = mapObj._featureSet; }
+        if (!rows) { rows = mapObj._rows; }
 
         mapObj._runningQuery = false;
 
-        _.each(mapObj._rows, function(row)
+        _.each(rows, function(row, i)
         {
-            var feature = findFeatureWithPoint(mapObj, row, featureSet);
+            var feature = findFeatureWithPoint(mapObj, row);
             if ($.isBlank(feature)) { return; }
             feature.attributes.description =
                 $.makeArray(feature.attributes.description);
@@ -201,8 +201,8 @@
             return parseFloat(e.attributes.quantity);
         };
 
-        var max = _.max(_.map(featureSet.features, getValue));
-        var min = _.min(_.map(featureSet.features, getValue));
+        var max = _.max(_.map(mapObj._featureSet.features, getValue));
+        var min = _.min(_.map(mapObj._featureSet.features, getValue));
         mapObj.$legend({ minimum: min, maximum: max });
         var segments = [];
         for (i = 0; i < mapObj._numSegments; i++)
@@ -210,12 +210,12 @@
 
         if (!mapObj._featuresTransformed)
         {
-            transformFeatures(featureSet.features, config);
+            transformFeatures(mapObj._featureSet.features, config);
             mapObj._featuresTransformed = true;
         }
 
         mapObj.clearFeatures();
-        _.each(featureSet.features, function(feature)
+        _.each(mapObj._featureSet.features, function(feature)
         {
             if (!feature.attributes.quantity) { return; }
             feature.attributes.description = _.compact(
@@ -241,7 +241,7 @@
         mapObj.finishLoading();
     };
 
-    var findFeatureWithPoint = function(mapObj, datum, featureSet)
+    var findFeatureWithPoint = function(mapObj, datum)
     {
         var point;
 
@@ -278,7 +278,7 @@
             { point = point.substr(3, 2); }
         }
 
-        return _.detect(featureSet.features, function(feature)
+        return _.detect(mapObj._featureSet.features, function(feature)
         {
             if (point instanceof esri.geometry.Point)
             { return feature.geometry.contains(point); }

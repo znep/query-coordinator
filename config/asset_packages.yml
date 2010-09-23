@@ -131,6 +131,17 @@ javascripts:
   - plugins/jquery.tablesorter
   - widgets/combination-list
   - screens/admin-sdp-templates
+- admin-sdp-template:
+  - plugins/jquery.colorPicker
+  - plugins/jquery.uniform
+  - plugins/colorpicker
+  - plugins/ajaxupload.3.0
+  - controls/expander
+  - widgets/upload-dialog
+  - util/color
+  - util/events
+  - controls/grid-sidebar/base-sidebar
+  - screens/admin-sdp-template
 - admin-federation:
   - controls/admin-buttons
   - plugins/jquery.tablesorter
@@ -398,6 +409,8 @@ stylesheets:
 - accounts-new:
   - signup-screen
   - form-common
+- admin-sdp-template:
+  - colorpicker
 - blists-index:
   - table-core
   - table-blist-list

@@ -33,33 +33,34 @@ dataset-show:
 - grid-sidebar
 - grid-sidebar-custom
 - screen-page-render-type
-- screen-dataset
 - control-feed
 - splash
+- screen-dataset
 dataset-alt:
 - screen-dataset-alt
 dataset-edit-metadata:
 - screen-dataset-edit-metadata
 dataset-analytics:
 - screen-metrics
-administration-analytics-screen:
-- screen-admin
-- screen-metrics
-administration-users-screen:
-- screen-admin
 profile-show:
 - screen-profile
 - control-feed
 profile-edit:
 - screen-profile-edit
-administration-moderation:
+administration-screen:
 - screen-admin
+administration-index-screen:
+- screen-admin-index
+administration-analytics-screen:
+- screen-metrics
+administration-moderation:
 - screen-administration-moderation
 administration-sdp-templates:
-- screen-admin
 - screen-admin-sdp-templates
+administration-sdp-template:
+- grid-sidebar
+- screen-admin-sdp-template
 administration-federation:
-- screen-admin
 - screen-administration-federation
 screen-browse:
 - screen-browse

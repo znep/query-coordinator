@@ -1,0 +1,107 @@
+/* Main */
+body
+{
+	background: url(/stylesheets/images/domains/texas.socrata.com/background_bg.png) repeat-x 0 30px #EDEDED;	
+}
+#outerContainer 
+{
+	max-width:none;
+}
+.bodyInterior
+{
+	border: none;
+}
+/* Header */
+#header
+{
+	background: url(/stylesheets/images/domains/texas.socrata.com/top_bottom_bg.png) repeat-x top;
+	height: 60px;
+	margin-bottom: 1em;
+}
+#header .userNav
+{
+	padding: 0.9em 1em 0.5em;
+}
+#header .userNav li
+{
+	border: none;
+}
+#header .userNav a
+{
+	color: #002868;
+	text-transform: uppercase;
+}
+#header .userNav a:hover
+{
+	color: #BF0A30;
+}
+#header .userNav li.signUpLink a
+{
+	font-weight: normal;
+}
+#mainLogo
+{
+	background: #FFF;
+	border-bottom-left-radius: 5px;
+	-moz-border-radius-bottomleft: 5px;
+	webkit-border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	-moz-border-radius-bottomright: 5px;
+	webkit-border-bottom-right-radius: 5px;	
+    -moz-box-shadow:#777 0px 0px 5px;
+    -webkit-box-shadow:#777 0px 0px 5px;
+    -o-box-shadow:#777 0px 0px 5px;
+    box-shadow:#777 0px 0px 5px;	
+	position: relative;
+	top: 0px;
+	left: 1em;
+	padding: 10px;
+	width: 140px;
+}
+
+/* Splash */
+.texasSplashContainer
+{
+	background: #FFF;
+	border-top-right-radius: 0.5em;
+	-moz-border-radius-topright: 0.5em;
+	webkit-border-top-right-radius: 0.5em;
+	border-top-left-radius: 0.5em;
+	-moz-border-radius-topleft: 0.5em;
+	webkit-border-top-left-radius: 0.5em;
+	border-bottom-left-radius: 0.5em;
+	-moz-border-radius-bottomleft: 0.5em;
+	webkit-border-bottom-left-radius: 0.5em;
+	border-bottom-right-radius: 0.5em;
+	-moz-border-radius-bottomright: 0.5em;
+	webkit-border-bottom-right-radius: 0.5em;	
+    -moz-box-shadow:#777 0px 0px 5px;
+    -webkit-box-shadow:#777 0px 0px 5px;
+    -o-box-shadow:#777 0px 0px 5px;
+    box-shadow:#777 0px 0px 5px;
+	display: block;	
+	margin: 1em 0;
+	min-height:0;
+	padding: 1.5em 37em 1.5em 1.5em;
+}
+.pageBlockIntro
+{
+	padding: 0em 0em 1em;	
+}
+.pageBlockIntro p
+{
+	color: #333;
+	font-family:"Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif;	
+	font-size: 1.3em;
+	text-transform: uppercase;
+}
+/* Footer */
+.footerContainer
+{
+	background: none #FFF;
+	border-top:1px solid #CCCCCC;
+}
+#footer a
+{
+	color: #002868;
+}

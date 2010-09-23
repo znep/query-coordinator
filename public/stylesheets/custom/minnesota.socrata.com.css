@@ -1,6 +1,10 @@
 body {
 	background: #ececec url(/stylesheets/images/domains/minnesota.socrata.com/background.png) repeat-x;
 }
+#outerContainer 
+{
+	max-width:none;
+}
 #mainLogo {
 	top:0;
 }
@@ -12,6 +16,7 @@ body {
 #header {
 	background-image:none;
 	height:80px;
+	margin-bottom: 1em;
 }
 .bodyInterior {
 	border:none;
@@ -21,6 +26,10 @@ body.home #mainNav li.home, body.home #mainNav li.home a span, body.discover #ma
 }
 #mainNav li, #mainNav li a span {
 	background:none;
+}
+#header .userNav li
+{
+	border-right: none;
 }
 #mainNav li.home .subNav li, #mainNav li.home .subNav li a span, body.home #mainNav li.home .subNav li, body.home #mainNav li.home .subNav li a span {
 	background-image:none;
@@ -47,9 +56,56 @@ body.home #mainNav li.home, body.home #mainNav li.home a span, body.discover #ma
 	padding-top:2px;
 	padding-bottom:4px;
 }
+#mainNav ul.subNav, body.discover #mainNav ul.subNav, body.home #mainNav ul.subNav, #mainNav li.home.loggedInNav:hover ul.subNav
+{
+	display: none;
+	height: 0;
+}
 #header form.search {
 	top:46px;
 }
+form.search.large .clearBox
+{
+	background: #FFF;
+}
+/* Data Splash */
+#minnesotaSplashContainer
+{
+	background: url(/stylesheets/images/domains/minnesota.socrata.com/banner.jpg) no-repeat #E1DFEA right bottom;	
+}
+#minnesotaSplashInnterContainer
+{
+	border: solid 1px #D9D9D9;
+	border-bottom: solid 5px #767AB3;
+	padding: 1.5em 37em 1.5em 1.5em;
+}
+.pageBlockHeaderContent .pageBlockHeaderSide
+{
+	margin-top: 0em;
+}
+.pageBlockIntro p
+{
+	color: #333366;
+	padding: 0.5em 0.1em;
+}
+.pageBlockHeaderCarousel h2
+{
+	color: #333366;
+}
+.pageBlockHeaderContent .pageBlockHeaderSide
+{
+	margin-top: 0em;
+}
+.pageBlockHeaderSide ul li
+{
+	font-size: 1.1em;
+}
+.pageBlockHeaderSide ul li a, .myNetworkList a
+{
+	color: #996600;
+}
+
+/*Footer*/
 .footerContainer {
 	background:#fff;
 	border-top:#666 solid 1px;

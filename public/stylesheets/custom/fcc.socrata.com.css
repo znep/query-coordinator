@@ -1,10 +1,151 @@
-body {
-background-color:#002042;
-background-image:none;
+body
+{
+	background: none #DDD;
 }
-.footerContainer, #header {
-background:none repeat scroll 0 0 #002042;
+.bodyInterior
+{
+	border-top: none;
 }
-#header .userNav a, #footer li a, #footer .copyright {
-color:#FFFFFF;
+#outerContainer
+{
+	max-width: none;
+}
+/* Header */
+#header
+{
+	background: url(/stylesheets/images/domains/fcc.socrata.com/header.png) repeat-x;	
+	height: 176px;
+}
+
+#header .userNav a
+{
+	color: #FFFFFF;
+}
+#mainLogo
+{
+	top: 0px;
+}
+.dataLogo
+{
+	background: url(/stylesheets/images/domains/fcc.socrata.com/dataLogo.png) repeat-x;
+	display: block;
+	height: 25px;
+	position: relative;
+	left: 1em;
+	top: 55px;
+	text-indent: -9999px;	
+	width: 227px;
+}
+#header form.search
+{
+	top: 5em;
+}
+#mainNav
+{
+	background: url(/stylesheets/images/domains/fcc.socrata.com/topNav.jpg) repeat-x;	
+	height: 38px;
+	position: relative;
+	top: 85px;
+	width: auto;
+}
+#mainNav li
+{
+	width: auto;
+}
+#mainNav a
+{
+	color: #002157;
+	font: bold 1.3em Georgia,"Times New Roman",Times,serif;
+	padding: 0.8em 1em;
+	text-transform: uppercase;
+}
+#mainNav ul.subNav, body.discover #mainNav ul.subNav, body.home #mainNav ul.subNav, #mainNav li.home.loggedInNav:hover ul.subNav
+{
+	display: none;
+	height: 0;
+}
+body.home #mainNav li.home, body.home #mainNav li.home a span, body.discover #mainNav li.discover a span, body.community #mainNav li.community a span, body.discover #mainNav li.discover, #mainNav ul.subNav li: hover, #mainNav ul.subNav li:hover a span, body.home #mainNav li.home .subNav li:hover, body.home #mainNav li.home .subNav li:hover a span {
+  background: none;
+}
+
+#mainNav li, #mainNav li a span {
+  background: none;
+}
+
+#mainNav li.home .subNav li, #mainNav li.home .subNav li a span, body.home #mainNav li.home .subNav li, body.home #mainNav li.home .subNav li a span {
+  background-image: none;
+  background-color: #FFF;
+}
+body.home #mainNav li.home,
+body.home #mainNav li.home a span,
+body.discover #mainNav li.discover a span,
+body.community #mainNav li.community a span,
+body.discover #mainNav li.discover,
+#mainNav ul.subNav li:hover,
+#mainNav ul.subNav li:hover a span,
+body.home #mainNav li.home .subNav li:hover,
+body.home #mainNav li.home .subNav li:hover a span {
+	background: none;
+	color: #0066CC;
+}
+#header .userNav li
+{
+	border-right: none;
+}
+/* Splash */
+.pageBlockHeaderCarousel.carouselWrapper
+{
+	background: url(/stylesheets/images/domains/fcc.socrata.com/image_gallery_dev.jpg) no-repeat right -70px;	
+	border-top:1px solid #005B9E;
+}
+.pageBlockHeaderCarousel .carouselOuter, .pageBlockHeaderCarousel .carouselInner
+{
+	background-image: none;	
+}
+#fccSplashContainer
+{
+	background: url(/stylesheets/images/domains/fcc.socrata.com/featuredbox.jpg) bottom repeat-x #015294;
+	font-family: Georgia,"Times New Roman",Times,serif;		
+	padding: 1.5em 37em 1.5em 1.5em;	
+}
+.pageBlockHeaderContent .pageBlockHeaderSide
+{
+	margin-top: 0em;
+}
+.pageBlockIntro p
+{
+	color: #CCC;
+	padding: 0.5em;
+}
+.pageBlockHeaderSide h2
+{
+	border-bottom:1px solid #005B9E;
+	color: #FFF;
+	font-size: 1.6em;
+}
+.pageBlockHeaderSide ul li
+{
+	color: #FFF;
+	font-size: 1.1em;
+}
+.pageBlockHeaderSide ul li a
+{
+	color: #7CE3FF;
+}
+.myNetworkList a
+{
+	color: #7CE3FF;
+}
+/* Footer */
+.footerContainer 
+{
+	background: url(/stylesheets/images/domains/fcc.socrata.com/footer.png) top repeat-x;
+}
+#footer .copyright
+{
+	color: #FFFFFF;
+}
+#footer li a
+{
+	color: #0099CC;
 }

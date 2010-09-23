@@ -299,6 +299,9 @@
 
         var view = $.extend({displayType: 'map'}, sidebarObj.getFormValues($pane));
 
+        if (view.displayFormat.type == blist.dataset.displayFormat.type)
+        { view.displayFormat.viewport = blist.dataset.displayFormat.viewport; }
+
         blist.dataset.update(view);
 
         if (!isEdit)

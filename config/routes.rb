@@ -61,6 +61,10 @@ ActionController::Routing::Routes.draw do |map|
     :controller => 'internal', :action => 'set_features',
     :requirements => {:domain_id => /(\w|-|\.)+/},
     :conditions => { :method => :post }
+  map.connect '/internal/orgs/:org_id/domains/:domain_id/aliases',
+    :controller => 'internal', :action => 'update_aliases',
+    :requirements => {:domain_id => /(\w|-|\.)+/},
+    :conditions => { :method => :post }
   map.connect '/internal/orgs/:org_id/domains/:domain_id/account_modules',
     :controller => 'internal', :action => 'add_module_to_domain',
     :requirements => {:domain_id => /(\w|-|\.)+/},
@@ -124,6 +128,7 @@ ActionController::Routing::Routes.draw do |map|
       :conditions => { :method => :post }
     admin.connect '/admin_new/moderation',        :action => 'moderation'
     admin.connect '/admin_new/sdp_templates',     :action => 'sdp_templates'
+    admin.connect '/admin_new/sdp_templates/:id', :action => 'sdp_template'
     admin.connect '/admin_new/sdp_templates/:id/set_default', :action => 'sdp_set_default_template'
     admin.connect '/admin_new/sdp_templates/:id/delete', :action => 'sdp_delete_template'
     admin.connect '/admin_new/federations',       :action => 'federations'

@@ -166,6 +166,8 @@
                       - 'color' is a color picker.  If you add lineClass
                           'colorCollapse', this will display on the right end
                           of the following line
+                          + advanced: enables a more precise color picker
+                          + showLabel: show the hex value of the color adjacently
                       - 'file' is a file picker.  It will return an object
                           of type AjaxUpload instead of a normal value -- you
                           must then manually call submit on it, as appropriate.
@@ -473,8 +475,11 @@
                     { sidebarObj._$currentWizard.socrataTip().quickShow(); }
                 });
 
-                blist.dataset.bind('columns_changed', function()
-                { updateColumnSelects(sidebarObj); });
+                if (!_.isUndefined(blist.dataset))
+                {
+                    blist.dataset.bind('columns_changed', function()
+                    { updateColumnSelects(sidebarObj); });
+                }
             },
 
             $dom: function()
@@ -942,13 +947,13 @@
 
                 var getInputValue = function($input)
                 {
-                    if ($input.is('.prompt')) { return null; }
+                    if ($input.hasClass('prompt')) { return null; }
 
-                    if ($input.is('.colorControl'))
-                    { $input = $input.next(':input'); }
+                    if ($input.hasClass('colorControl'))
+                    { $input = $input.siblings(':input'); }
 
                     var value = $input.value();
-                    if ($input.is(':checkbox'))
+                    if ($input.isInputType('checkbox'))
                     {
                         var t = $input.attr('data-trueValue');
                         var f = $input.attr('data-falseValue');
@@ -957,18 +962,18 @@
                         else if (!$.isBlank(f) && value === false)
                         { value = f; }
                     }
-                    else if ($input.is('.sliderInput'))
+                    else if ($input.hasClass('sliderInput'))
                     {
                         value /= parseFloat($input.attr('data-scale'));
                     }
-                    else if ($input.is('select'))
+                    else if ($input.hasClass('select'))
                     {
                         // Convert select box values to real booleans if
                         // appropriate
                         if (value == 'true') { value = true; }
                         if (value == 'false') { value = false; }
                     }
-                    else if ($input.is('.customWrapper'))
+                    else if ($input.hasClass('customWrapper'))
                     {
                         var customValue = sidebarObj._customCallbacks[$input
                             .attr('data-customId')];
@@ -978,7 +983,8 @@
                         if (_.isFunction(customValue))
                         { value = customValue(sidebarObj, $input); }
                     }
-                    else if ($input.is('.fileChooser :input'))
+                    else if (($input.tagName() == 'input') &&
+                              $input.parents().hasClass('fileChooser'))
                     {
                         value = $input.closest('.fileChooser').data('ajaxupload');
                     }
@@ -998,10 +1004,11 @@
                     .each(function()
                 {
                     var $input = $(this);
+                    var $parents = $input.parents();
 
                     // If this is a radio input, then either skip it if not
                     // selected; or find the input associated with it
-                    if ($input.is('.radioLine :radio'))
+                    if ($input.isInputType('radio') && $parents.hasClass('radioLine'))
                     {
                         if (!$input.is(':checked')) { return; }
                         $input = $input.closest('.radioLine')
@@ -1015,7 +1022,7 @@
 
                     // If this is in a group, then figure out if any required
                     // fields failed
-                    if ($input.is('.group *'))
+                    if ($parents.hasClass('group'))
                     {
                         var failed = false;
                         $input.closest('.inputBlock')
@@ -1032,7 +1039,7 @@
                     var parObj = results;
                     var parArray;
                     var parIndex;
-                    if ($input.is('.line.repeater *'))
+                    if ($parents.hasClass('repeater')) // CR: was .line.repeater, necessary?
                     {
                         // If this is in a repeater, then it is name-spaced
                         // under the repeater.  Grab that name, and set up
@@ -1060,16 +1067,18 @@
 
                     // If this is a column select, then parse the value as a num,
                     // since it is a column ID
-                    value = !$.isBlank(value) &&
-                        $input.is('.columnSelect select') ?
-                            parseInt(value) : value;
+                    if (!$.isBlank(value) && ($input.tagName() == 'select') &&
+                         $parents.hasClass('columnSelect'))
+                    {
+                        value = parseInt(value);
+                    }
 
                     // Now add the value
                     addValue(inputName, value, parObj);
 
                     // If this is a select, check for extra data on the actual
                     // option element
-                    if ($input.is('select'))
+                    if ($input.tagName() == 'select')
                     {
                         var $sel = $input.find('option:selected');
                         var ckeys = $sel.attr('data-customKeys');
@@ -1675,8 +1684,12 @@
                     item.defaultValue[0];
                 contents.push({tagName: 'a', href: '#Color', title: 'Choose color',
                     name: args.item.name,
-                    'class': 'colorControl', contents: 'Choose color',
-                    style: {'background-color': defColor}});
+                    'class': ['colorControl', {value: 'advanced', onlyIf: args.item.advanced}],
+                    contents: 'Choose color', style: {'background-color': defColor}});
+                if (args.item.showLabel === true)
+                {
+                    contents.push({tagName: 'span', 'class': 'colorControlLabel'});
+                }
                 contents.push($.extend(commonAttrs(item),
                     {tagName: 'input', type: 'hidden', value: defColor}));
                 break;
@@ -1705,7 +1718,9 @@
                 break;
 
             case 'group':
-                contents = [];
+                if (args.item.includeLabel !== true)
+                { contents = []; }
+
                 var items = _.map(args.item.options, function(opt, i)
                 {
                     return renderLine(sidebarObj,
@@ -1739,7 +1754,7 @@
 
                     if ((curValue || defValue) == opt.name)
                     { defChecked = radioItem; }
-                    if (_.any(subLine, function(sl)
+                    if (_.any(subLine || [], function(sl)
                             { return (sl['data-dataValue'] || {}).onlyIf; }))
                     { valChecked = radioItem; }
 
@@ -2347,6 +2362,10 @@
                 {
                     handler($field, event);
                 };
+                var deferredHandlerProxy = function(event)
+                {
+                    _.defer(function() { handlerProxy(event); });
+                };
 
                 // deal with each field type manually
                 if ($field.is('input[type=text],select,input[type=file]'))
@@ -2360,9 +2379,9 @@
                     }
                 }
                 else if ($field.hasClass('sliderInput'))
-                    $field.bind('slide', handlerProxy);
+                    $field.bind('slide', deferredHandlerProxy);
                 else if ($field.hasClass('colorControl'))
-                    $field.bind('color_change', handlerProxy);
+                    $field.bind('color_change', deferredHandlerProxy);
             });
 
             $container.find('.sliderControl').each(function()
@@ -2375,17 +2394,36 @@
             .bind('slide', function(event, ui)
             { $(this).next(':input').val(ui.value); });
 
-            $container.find('.colorControl').colorPicker().bind('color_change',
+            $container.find('.colorControl:not(.advanced)').colorPicker().bind('color_change',
                 function(e, newColor)
                 {
                     $(this).css('background-color', newColor)
-                        .next(':input').val(newColor);
+                        .next(':input').val(newColor)
+                        .next('.colorControlLabel').text('#' + newColor);
                 })
                 .mousedown(function(e)
                 {
                     var $t = $(this);
                     $t.data('colorpicker-color', $t.next(':input').val());
                 });
+            $container.find('.colorControl.advanced').each(function()
+            {
+                var $picker = $(this);
+                var currentColor = '#' + ($picker.siblings(':input').val() || 'ffffff');
+                $picker.ColorPicker({
+                    color: currentColor,
+                    onChange: function(hsb, hex, rgb) {
+                        $picker.css('background-color', '#' + hex)
+                            .siblings('.colorControlLabel').text('#' + hex)
+                            .siblings(':input').val(hex.replace(/^#/, ''));
+                    },
+                    onHide: function() {
+                        $picker.trigger('color_change'); // mimic other picker's event
+                    }
+                });
+                $picker.css('background-color', currentColor)
+                    .siblings('.colorControlLabel').text(currentColor);
+            });
 
             $container.find('.fileChooser').each(function()
             {

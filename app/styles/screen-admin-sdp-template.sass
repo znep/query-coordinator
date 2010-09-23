@@ -1,0 +1,172 @@
+.siteInnerWrapper
+  padding-bottom: 4em
+
+.contentBox
+  overflow: hidden
+  padding: 0
+
+  .publisherHeader
+    padding: 0.7em
+    position: relative
+
+    h1
+      float: left
+      margin: 0.3em 0
+        left: 0.3em
+
+    .publisherActions
+      display: none
+      float: left
+      margin-left: 3em
+
+      .loadingIcon
+        @include throbber-icon
+        display: none
+        margin-left: 1.5em
+
+    .sidebarOptionsContainer
+      bottom: 0
+      position: absolute
+      right: 0
+      width: 50em
+
+      .ie7 &
+        width: 55em
+
+      #sidebarOptions li a
+        &.metadata
+          background-color: $sidebar_metadata_tab_color_top
+        &.appearance
+          background-color: $sidebar_appearance_tab_color_top
+        &.behavior
+          background-color: $sidebar_behavior_tab_color_top
+        &.advanced
+          background-color: $sidebar_advanced_tab_color_top
+        &.embed
+          background-color: $sidebar_embed_tab_color_top
+
+    &.unsaved
+      background: #fff url(/stylesheets/images/interface/dataset_unsaved_fade.png) repeat-y
+      .publisherActions
+        display: block
+
+    &.unsaved.noRevert .publisherActions .revertButton
+      display: none
+
+  .publisherMain
+    position: relative
+
+    .publisherWorkspace
+      background-color: #bbb
+      @include box-shadow(0, 0, 5em, rgba(0, 0, 0, 0.3), true)
+      height: 100%
+      overflow: hidden
+      position: relative
+
+      .previewScrollContainer
+        height: 2px
+        overflow: auto
+        width: 150%
+
+        .previewPane
+          margin: 10em auto
+
+          iframe
+            @include box-shadow(0, 1em, 2em, rgba(0, 0, 0, 0.25))
+
+      .errorMessage, .infoMessage
+        background: #fff url(/stylesheets/images/icons/warning_icon.png) no-repeat 1.5em 2em
+        border: 1px solid #999
+        @include border-radius(0.4em)
+        @include box-shadow(0, 0, 0.4em, rgba(0, 0, 0, 0.5))
+        left: 50%
+        margin-left: -21em
+        padding: 2em
+        position: absolute
+        top: 20em
+        width: 40em
+
+        h2
+          color: $color_text_error
+          font-size: 1.9em
+          font-weight: normal
+          margin-top: 0
+          padding-left: 2em
+
+        p
+          color: #444
+          margin: 1em
+
+      .versionMessage
+        display: none
+
+// Sidebar custom styling
+#gridSidebar
+  #gridSidebar_outer_metadata .line
+    label
+      width: 7em
+    input[type=text]
+      width: 12.1em
+
+  #gridSidebar_outer_behavior .line
+    label
+      width: 12em
+
+  .sidebarPane .formSection .line
+    > label
+      width: 9em
+
+    input[type=text]
+      width: 10em
+
+    &.dimensions
+      padding-left: 0
+
+      .inputBlock
+        clear: none
+        margin: 0
+        width: 12.5em
+
+        label
+          display: none // for some reason inputOnly doesnt work here
+
+        .line
+          clear: none
+          float: left
+          margin: 0
+          padding: 0
+            right: 0.3em
+        .text input
+          width: 3em
+        .select select
+          width: 6.1em
+
+    &.radioGroup
+      padding-left: 0
+
+      .radioBlock
+        width: 12em
+        .radioLine label
+          text-transform: capitalize
+          width: 8em
+
+    &.logoEdit
+      select
+        width: 10.5em
+
+    &.static
+      span
+        color: #666
+        font-size: 1em
+        line-height: 1em
+        margin: -0.8em 2em 0
+        text-align: center
+
+        .ie7 &
+          margin-top: 0
+
+      .ie7 & label
+        display: none
+
+    &.disabled
+      display: none

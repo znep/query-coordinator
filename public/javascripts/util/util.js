@@ -415,6 +415,17 @@ $.mixin = function(obj, mixin)
     return clone;
 };
 
+$.fn.tagName = function()
+{
+    return this.get(0).tagName.toLowerCase();
+};
+
+// fast checker for input type
+$.fn.isInputType = function(inputType)
+{
+    return (this.tagName() == 'input') && (this.attr('type') == inputType);
+};
+
 // Wrapper around inlineLogin.verifyUser; simply does nothing
 // if auth fails
 blist.util.doAuthedAction = function(actionText, callback)

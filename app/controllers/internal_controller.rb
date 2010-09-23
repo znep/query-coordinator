@@ -163,6 +163,18 @@ class InternalController < ApplicationController
       params[:domain_id]
   end
 
+  def update_aliases
+    begin
+      Domain.update_aliases(params[:domain_id], params[:new_cname], params[:aliases])
+    rescue CoreServer::CoreServerError => e
+      flash.now[:error] = e.error_message
+      return (render 'shared/error', :status => :internal_server_error)
+    end
+    CurrentDomain.flag_out_of_date!(params[:domain_id])
+    redirect_to '/internal/orgs/' + params[:org_id] + '/domains/' + params[:new_cname]
+  end
+
+
   def set_property
     config = Configuration.find(params[:id])
 

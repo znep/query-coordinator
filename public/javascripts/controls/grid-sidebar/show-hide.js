@@ -80,6 +80,17 @@
             .flatten()
             .value();
 
+        if (blist.dataset.isGrouped())
+        {
+            // Filter out columns that can't be displayed
+            cols = _.reject(cols, function(c)
+            {
+                return $.isBlank(c.format.grouping_aggregate) &&
+                    !_.any(blist.dataset.query.groupBys, function(g)
+                        { return g.columnId == c.id; });
+            });
+        }
+
         config.sections[0].customContent.data = cols;
     };
     updateColumns();

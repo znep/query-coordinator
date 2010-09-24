@@ -80,7 +80,8 @@
                     && mapObj._rowsLeft == 0)
                 {
                     if (!mapObj._markerClusterer)
-                    { mapObj._markerClusterer = new MarkerClusterer(mapObj.map, _.values(mapObj._markers)); }
+                    { mapObj._markerClusterer =
+                        new MarkerClusterer(mapObj.map, _.values(mapObj._markers)); }
                     else
                     { mapObj._markerClusterer.addMarkers(_.values(mapObj._markers)); }
                 }
@@ -136,13 +137,54 @@
             adjustBounds: function()
             {
                 var mapObj = this;
-                if (mapObj._boundsCounts > 1)
+                if (mapObj._viewportListener)
+                { google.maps.event.removeListener(mapObj._viewportListener); }
+
+                if (mapObj.settings.view.displayFormat.viewport)
+                { mapObj.setViewport(mapObj.settings.view.displayFormat.viewport); }
+                else if (mapObj._boundsCounts > 1)
                 { mapObj.map.fitBounds(mapObj._bounds); }
                 else
                 {
                     mapObj.map.setCenter(mapObj._bounds.getCenter());
                     mapObj.map.setZoom(mapObj.settings.defaultZoom);
                 }
+
+                var l = google.maps.event.addListener(mapObj.map, 'idle', function()
+                {
+                    google.maps.event.removeListener(l);
+                    mapObj._viewportListener = google.maps.event.addListener(
+                        mapObj.map, 'bounds_changed', function()
+                        {
+                            mapObj.settings.view.update({
+                                displayFormat: $.extend({},
+                                    mapObj.settings.view.displayFormat,
+                                    { viewport: mapObj.getViewport() })
+                            });
+                        });
+                });
+            },
+
+            getViewport: function()
+            {
+                var mapObj = this;
+                var viewport = {
+                    center: mapObj.map.getCenter(),
+                    zoom: mapObj.map.getZoom()
+                };
+                viewport.center = {
+                    lat: viewport.center.lat(),
+                    lng: viewport.center.lng()
+                };
+                return viewport;
+            },
+
+            setViewport: function(viewport)
+            {
+                var mapObj = this;
+                mapObj.map.setCenter(new google.maps.LatLng(
+                    viewport.center.lat, viewport.center.lng));
+                mapObj.map.setZoom(viewport.zoom);
             },
 
             resetData: function()

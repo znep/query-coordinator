@@ -470,6 +470,16 @@
                 // Implement if desired to adjust map bounds after data is rendered
             },
 
+            getViewport: function()
+            {
+                // Implement me
+            },
+
+            setViewport: function(viewport)
+            {
+                // Implement me
+            },
+
             resizeHandle: function(event)
             {
                 // Implement if you need to do anything on resize

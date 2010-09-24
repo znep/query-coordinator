@@ -43,14 +43,14 @@
       Based on <a class='revertLink currentViewName' href="#revert"><%= @view.name %></a>
     </div>
 
-    <%- unless @view.can_edit? && !@view.is_alt_view? -%>
     <div id='description'>
       <p class="collapsed"><%= @view.description || '(No description provided)'%></p>
       <a href="#expand" class="descriptionExpander rightArrow" title="Click to expand">
         <span class="icon"></span>
       </a>
     </div>
-    <%- else -%>
+
+    <%- if @view.can_edit? && !@view.is_alt_view? -%>
     <div id='editBar' class='clearfix'>
       <ul id='editOptions'>
         <li><a href='#Undo' class='button undo' title='Undo'>

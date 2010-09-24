@@ -240,15 +240,12 @@ html, body
       @include dataset-toolbar-icon-minimize
 
 #editBar
-  margin-left: 3.5em
 
   #editOptions
     float: left
-    margin:
-      left: 0.5em
-      top: 0.15em
     li
       display: inline-block
+      margin: 0 -0.1em
       .ie7 &
         display: inline
       .button
@@ -264,10 +261,9 @@ html, body
     @include disabled-overlay(0.75em, 80, #fff)
     float: left
     margin:
-      bottom: 0
+      bottom: -0.2em
       left: 0.5em
       top: 0
-    padding: 0.1em 0.5em
 
     .disabledOverlay
       opacity: 0
@@ -285,6 +281,7 @@ html, body
 
     li
       display: inline-block
+      margin: 0 -0.1em
       .ie7 &
         margin:
           left: 0.2em

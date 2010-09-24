@@ -1,4 +1,5 @@
 <% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-sdp-template' %>
   <%= stylesheet_link_merged 'admin-sdp-template' %>
   <title>Editing <%= @widget_customization.name %> | Social Data Player Templates | <%= CurrentDomain.strings.site_title %></title>

@@ -276,6 +276,8 @@ javascripts:
 - screen-nominations:
   - plugins/ajaxupload.3.0
   - util/events
+  - util/humane-date
+  - util/user
   - controls/modal-dialogs
   - screens/nominations
 - widgets-show:

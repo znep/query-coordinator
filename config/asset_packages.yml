@@ -136,7 +136,6 @@ javascripts:
   - plugins/jquery.uniform
   - plugins/colorpicker
   - plugins/ajaxupload.3.0
-  - controls/expander
   - widgets/upload-dialog
   - util/color
   - util/events

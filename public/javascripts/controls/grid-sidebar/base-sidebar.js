@@ -2172,7 +2172,7 @@
                     o.$field.change(showHideSection).keypress(showHideSection)
                         .click(showHideSection).attr('data-onlyIfInput', true);
                 }
-                else if (isFunc)
+                else if (isFunc && !_.isUndefined(blist.dataset))
                 {
                     blist.dataset.bind('columns_changed', showHideSection);
                 }

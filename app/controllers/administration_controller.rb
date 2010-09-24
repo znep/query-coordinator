@@ -74,7 +74,7 @@ class AdministrationController < ApplicationController
   def sdp_template
     if params[:view_id].present?
       begin
-        @view = View.find(params[:id])
+        @view = View.find(params[:view_id])
       rescue CoreServer::ResourceNotFound
           flash.now[:error] = 'This ' + I18n.t(:blist_name).downcase +
             ' cannot be found, or has been deleted.'
@@ -82,8 +82,8 @@ class AdministrationController < ApplicationController
         return
       end
     else
-      views = View.find(:public_only => true, :limit => 1)
-      @view = views.first unless views.nil?
+      views = View.find(:public_only => true, :limit => 10) # hopefully 10 will be enough?
+      @view = views.find{ |view| !view.is_alt_view? } || view.first unless views.nil?
     end
 
     begin

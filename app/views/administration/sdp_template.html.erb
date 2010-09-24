@@ -88,6 +88,11 @@
     <label>&nbsp;</label>
     <a href="#upload" class="uploadNewLogoButton button">Upload New</a>
   </div>
+  <div class="line clearfix text">
+    <label for="gridSidebar_appearance_logo:logo.href">Logo Link URL</label>
+    <input id="gridSidebar_appearance_logo:logo.href" name="gridSidebar_appearance_logo:logo.href" type="text"
+      data-origname="logo.href" />
+  </div>
 </div>
 <% end %>
 
@@ -100,7 +105,9 @@
                                        'id': '<%= @widget_customization.uid %>' };
     blist.publish.currentTheme = <%= raw @customization.to_json %>;
     blist.publish.v2Theme = <%= raw WidgetCustomization.default_theme(1).to_json %>;
+
     blist.publish.viewId = '<%= @view.id %>';
+    blist.publish.viewIsGrid = <%= !@view.is_alt_view? %>;
   </script>
 
   <%= javascript_include_merged 'admin-sdp-template' %>

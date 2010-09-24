@@ -64,3 +64,5 @@ administration-federation:
 - screen-administration-federation
 screen-browse:
 - screen-browse
+screen-nominations:
+- screen-nominations

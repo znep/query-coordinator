@@ -1,0 +1,124 @@
+.nominationsContainer
+  padding: 1em
+
+  .facets
+    background-color: #ffffff
+    border: 1px solid #e9e9e9
+    float: left
+    padding: 1.5em
+    width: 18em
+
+    .title
+      font-size: 1.3em
+      font-weight: bold
+    ul
+      margin-top: 0.5em
+    li
+      padding: 0.25em 0
+      a
+        color: $color_links_normal
+        font-size: 1.1em
+        &.active
+          color: #333333
+          cursor: auto
+          font-weight: bold
+
+  .nominationsList
+    background-color: #ffffff
+    border: 1px solid #e9e9e9
+    margin-left: 23em
+    padding: 1.5em
+
+    .results
+      margin:
+        bottom: 2em
+
+      .noResults
+        color: #666666
+        font-size: 1.4em
+        font-weight: bold
+        text-align: center
+
+      .gridList
+        th
+          font-weight: bold
+        td
+          vertical-align: top
+
+        .user
+          width: 13em
+        .attachments
+          width: 10em
+        .rating
+          text-align: right
+          width: 4em
+        .status
+          text-align: center
+          width: 5em
+
+        td.user
+          line-height: 24px
+          img
+            margin-right: 0.5em
+          .userName
+            @include clip-text
+            display: inline-block
+            vertical-align: top
+            width: 10em
+
+        td.details
+          .title
+            font-size: 1.0833em
+            font-weight: bold
+          .submitTime
+            color: #999999
+            font-size: 0.9167em
+            margin-top: 0.2em
+          .description
+            background-color: #fafafa
+            border: 1px solid $color_table_header_inactive
+            @include border-radius(5px)
+            margin-top: 0.5em
+            padding: 0.3em
+
+        td.attachments
+          li
+            @include clip-text
+            width: 10em
+
+        td.rating
+          font-size: 1.1667em
+          font-weight: bold
+          &.positive
+            color: #33aa33
+          &.negative
+            color: #aa3333
+
+        td.status
+          &.new
+            color: #0073e6
+            font-weight: bold
+          &.open
+          &.approved
+            color: #33aa33
+          &.rejected
+            color: #aa3333
+
+    .pagination
+      font-size: 1.2em
+      text-align: center
+
+      .pageLink
+        margin: 0 0.25em
+        &.active
+          color: #999999
+          cursor: auto
+
+      .button
+        @include sprite-menu-icons
+        font-size: 1em
+        padding: 0.3em
+      .prevLink
+        margin-right: 1em
+      .nextLink
+        margin-left: 1em

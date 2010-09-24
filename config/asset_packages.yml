@@ -246,7 +246,7 @@ javascripts:
   - widgets/inline-edit
   - screens/discover-screen
   - util/urls
-  - screens/nominations-screen
+  - screens/nominations-old
   - plugins/ajaxupload.3.0
 - homes-show:
   - screens/home-screen
@@ -273,6 +273,8 @@ javascripts:
   - controls/stars
   - controls/modal-dialogs
   - screens/browse
+- screen-nominations:
+  - screens/nominations
 - widgets-show:
   - plugins/ui.effects.custom.min
   - plugins/jquery.uniform

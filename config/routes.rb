@@ -139,6 +139,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resource :search
 
+  map.resource :nominations, :as => 'nominate'
+
   map.resource :community, :member => { :filter => :get, :activities => :get, :tags => :get }
   map.resource :home
   map.resource :account

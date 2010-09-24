@@ -2,7 +2,7 @@ module DataHelper
 
   def friendly_status(nomination)
     if (nomination.status == "pending" &&
-        Time.parse((nomination.createdAt*1000).to_s) > (Time.now() - 7.days))
+        Time.at(nomination.createdAt) > (Time.now() - 7.days))
       "new"
     elsif (nomination.status == "pending")
       "open"

@@ -20,6 +20,10 @@
   </div>
 
   <div class='nominationsList'>
+    <%- if !current_user.nil? -%>
+    <a href='#Submit dataset' class='button nominateLink'>Suggest a Dataset</a>
+    <%- end -%>
+
     <div class='results'>
       <%- if @nominations_count == 0 -%>
       <div class='noResults'>No Results</div>
@@ -66,7 +70,7 @@
             </td>
             <td class='attachments'>
               <ul>
-                <% n.attachments.each do |a| %>
+                <% (n.attachments || []).each do |a| %>
                 <li>
                 <%= link_to(a.filename,
                   "/api/nominations/#{n.id}/attachments/#{a.id}",
@@ -100,7 +104,33 @@
 <%- content_for :modals do -%>
   <div class="nominateDialog modalDialog">
     <a href="#close" class="jqmClose modalDialogClose">Close</a>
-    <div class='nominateContent'></div>
+    <h2>Suggest a Dataset</h2>
+    <div class="loadingOverlay hide"></div>
+    <div class="loadingSpinner hide"></div>
+    <form class='nominateContent commonForm'>
+      <div class='line'>
+        <label for='nominateTitle' class='required'>Title</label>
+        <input id='nominateTitle' name='nominate_title' type='text'
+          class='required textPrompt' title='Enter a title' />
+      </div>
+      <div class='line'>
+        <label for='nominateDescription'>Description</label>
+        <textarea id='nominateDescription' name='nominate_description'
+          class='textPrompt' title='Enter details about your suggestion'></textarea>
+      </div>
+      <div class='line'>
+        <label for='nominateFile'>Attachment</label>
+        <input type='text' readonly='readonly' disabled='disabled'
+          class='fileReadout' name='file_upload' />
+        <a href='#Browse' class='button fileBrowseButton'>Browse</a>
+      </div>
+      <span class='required'>Required</span>
+    </form>
+    <div class='mainError'></div>
+    <ul class='actions'>
+      <li><a href='#Cancel' class='jqmClose button'>Cancel</a></li>
+      <li><a href='#Submit' class='submitAction button'>Submit</a></li>
+    </ul>
   </div>
 <%- end -%>
 

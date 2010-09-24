@@ -29,9 +29,14 @@
     margin-left: 23em
     padding: 1.5em
 
+    .nominateLink
+      float: right
+      margin: 0
+
     .results
       margin:
         bottom: 2em
+        top: 4em
 
       .noResults
         color: #666666
@@ -122,3 +127,27 @@
         margin-right: 1em
       .nextLink
         margin-left: 1em
+
+.nominateDialog
+  label
+    line-height: 1.7em
+    vertical-align: top
+    width: 5em
+  input[type='text'], textarea
+    width: 20em
+    &.fileReadout
+      width: 14em
+  .fileBrowseButton
+    margin: 0
+    padding:
+      bottom: 0.2em
+      top: 0.2em
+  span.error
+    color: #ff0000
+    margin-left: 8.5em
+  span.required
+    bottom: 3em
+    left: 2em
+    position: absolute
+  .mainError
+    margin-top: 0.5em

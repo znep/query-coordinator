@@ -274,6 +274,9 @@ javascripts:
   - controls/modal-dialogs
   - screens/browse
 - screen-nominations:
+  - plugins/ajaxupload.3.0
+  - util/events
+  - controls/modal-dialogs
   - screens/nominations
 - widgets-show:
   - plugins/ui.effects.custom.min

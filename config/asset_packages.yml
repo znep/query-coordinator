@@ -127,6 +127,7 @@ javascripts:
   - util/user
   - screens/admin-moderation
 - admin-sdp-templates:
+  - controls/modal-dialogs
   - controls/admin-buttons
   - plugins/jquery.tablesorter
   - widgets/combination-list

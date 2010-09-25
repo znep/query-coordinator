@@ -12,6 +12,7 @@
 
 <div class="contentBox withLeftNavigation">
   <div class="adminHeader appearance">
+    <a href="#new" class="newTemplateButton button">Create a New Template</a>
     <span class="icon"></span>
     <h1>Social Data Player Templates</h1>
   </div>
@@ -73,6 +74,24 @@
     <p class="noResultsMessage">You don't appear to have any templates yet.</p>
   <%- end -%>
 </div>
+
+<% content_for :modals do %>
+  <div class="modalDialog newTemplateModal">
+    <a href="#close" class="jqmClose modalDialogClose">Close</a>
+    <h2>Create a new Template</h2>
+
+    <% form_tag '/admin/sdp_templates', :method => 'post', :class => 'newTemplateForm commonForm' do %>
+      <div class="line clearfix">
+        <label for="newTemplateName">New Template Name</label>
+        <input type="text" id="newTemplateName" name="new_template_name"/>
+      </div>
+      <ul class="submitActions clearfix">
+        <li><a href="#cancel" class="jqmClose button">Cancel</a></li>
+        <li><a href="#submit" class="submitButton default button">Submit</a></li>
+      </ul>
+    <% end %>
+  </div>
+<% end %>
 
 <% content_for :js_footer do %>
   <%- unless params[:no_js].present? -%>

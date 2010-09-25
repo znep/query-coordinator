@@ -251,7 +251,7 @@ blist.publish.wireLogoEditor = function($section)
             },
             function(responseFile, file, response)
             {
-                var $logoSelect = $('#gridSidebar_appearance #gridSidebar_appearance_logo\\:_logoSelect');
+                var $logoSelect = $('#gridSidebar_appearance_logo\\:_logoSelect');
                 $logoSelect.append('<option value="' + response['id'] + '">'+
                                     response['nameForOutput'] + '</option>');
                 $logoSelect.val(response['id']);
@@ -283,6 +283,9 @@ blist.publish.updateCustomUI = function()
 
     // hide/show changes warning on embed pane
     $('#gridSidebar_embed .changesWarning').toggleClass('hide', !$('.publisherHeader').hasClass('unsaved'));
+
+    // show validation messages
+    publishNS.sidebar.$currentPane().find('form').valid();
 };
 
 blist.publish.generateEmbedCode = function(hash)
@@ -330,9 +333,9 @@ _.each([
         title: 'Exterior', name: 'exterior',
         fields: [
         {   text: 'Width', name: 'publish.dimensions.width',
-            type: 'text', required: true },
+            type: 'text', required: true, validateMin: 500 },
         {   text: 'Height', name: 'publish.dimensions.height',
-            type: 'text', required: true },
+            type: 'text', required: true, validateMin: 425 },
         {   text: 'Powered By Text', name: 'publish.show_powered_by',
             type: 'checkbox' }]
     },
@@ -427,7 +430,7 @@ _.each([
         {   text: 'API', name: 'menu.options.api',
             type: 'checkbox' },
         {   text: 'Print', name: 'menu.options.print',
-            type: 'checkbox' },
+            type: 'checkbox', onlyIf: publishNS.viewIsGrid },
         {   text: 'About the SDP', name: 'menu.options.about_sdp',
             type: 'checkbox' }]
     },
@@ -878,7 +881,7 @@ blist.publish.deferredHandleValueChanged = function()
     _.defer(function() { publishNS.handleValueChanged(); });
 };
 
-blist.publish.saveCustomization = function()
+blist.publish.saveCustomization = function(callback)
 {
     $.ajax({
         url: '/api/widget_customization/' + publishNS.currentThemeMeta.id,
@@ -895,6 +898,8 @@ blist.publish.saveCustomization = function()
             publishNS.currentThemeMeta.name = response.name;
 
             publishNS.initCustomization();
+
+            callback();
         },
         error: function(request, status, error)
         {
@@ -1028,11 +1033,13 @@ blist.publish.convertCustomization = function(customization)
         event.preventDefault();
 
         $('.publisherActions .loadingIcon').show().css('display', 'inline-block');
-        publishNS.saveCustomization();
-        publishNS.applyCustomizationToPreview(publishNS.workingTheme);
+        publishNS.saveCustomization(function()
+        {
+            publishNS.applyCustomizationToPreview(publishNS.workingTheme);
 
-        $('.headerBar').removeClass('unsaved noRevert');
-        $('.publisherActions .loadingIcon').hide();
+            $('.headerBar').removeClass('unsaved noRevert');
+            $('.publisherActions .loadingIcon').hide();
+        });
     });
     $('.revertButton').click(function(event)
     {

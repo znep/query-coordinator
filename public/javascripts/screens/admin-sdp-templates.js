@@ -68,5 +68,19 @@
                 $row.find('.actions').addClass('isDefault');
             }
         });
+
+        $('.newTemplateButton').click(function(event)
+        {
+            event.preventDefault();
+
+            $('#newTemplateName').val('');
+            $('.newTemplateModal').jqmShow();
+        });
+        $('.newTemplateModal .submitButton').click(function(event)
+        {
+            event.preventDefault();
+            $(this).closest('form').submit();
+        });
+        $('.newTemplateModal form').validate({ new_template_name: 'required' });
     });
 })(jQuery);

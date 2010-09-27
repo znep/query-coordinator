@@ -117,8 +117,12 @@
             adjustBounds: function()
             {
                 var mapObj = this;
+                if (mapObj._viewportListener)
+                { mapObj.map.DetachEvent('onchangeview', mapObj._viewportListener); }
 
-                if (mapObj._shapeLayer.GetShapeCount() > 1)
+                if (mapObj.settings.view.displayFormat.viewport)
+                { mapObj.setViewport(mapObj.settings.view.displayFormat.viewport); }
+                else if (mapObj._shapeLayer.GetShapeCount() > 1)
                 {
                     mapObj.map.SetMapView
                         (mapObj._shapeLayer.GetBoundingRectangle());
@@ -129,6 +133,41 @@
                             (mapObj._shapeLayer.GetShapeByIndex(0).GetPoints()[0],
                             mapObj.settings.defaultZoom);
                 }
+
+                if (!mapObj._viewportListener)
+                {
+                    mapObj._viewportListener = function()
+                    {
+                        mapObj.settings.view.update({
+                            displayFormat: $.extend({},
+                                mapObj.settings.view.displayFormat,
+                                { viewport: mapObj.getViewport() })
+                        });
+                    };
+                }
+                mapObj.map.AttachEvent('onchangeview', mapObj._viewportListener);
+            },
+
+            getViewport: function()
+            {
+                var mapObj = this;
+                var viewport = {
+                    center: mapObj.map.GetCenter(),
+                    zoom: mapObj.map.GetZoomLevel()
+                };
+                viewport.center = {
+                    Latitude: viewport.center.Latitude,
+                    Longitude: viewport.center.Longitude
+                };
+                return viewport;
+            },
+
+            setViewport: function(viewport)
+            {
+                var mapObj = this;
+                mapObj.map.SetCenterAndZoom(new VELatLong(
+                    viewport.center.Latitude, viewport.center.Longitude),
+                    viewport.zoom);
             },
 
             hideLayers: function()

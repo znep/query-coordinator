@@ -258,21 +258,14 @@ html, body
           opacity: 0.3
 
   #formatOptions
-    @include disabled-overlay(0.75em, 80, #fff)
     float: left
     margin:
       bottom: -0.2em
       left: 0.5em
       top: 0
 
-    .disabledOverlay
-      opacity: 0
-    &.disabled .disabledMessage
+    &.disabled
       display: none
-    &.disabled:hover .disabledMessage
-      display: block
-    &.disabled ul
-      opacity: 0.45
 
     .ie7 &
       z-index: 1

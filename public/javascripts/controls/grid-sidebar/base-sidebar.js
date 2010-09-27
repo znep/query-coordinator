@@ -94,6 +94,37 @@
                 : 'This URL is not valid';
     });
 
+    $.validator.addMethod('data-validateMin', function(value, element, param)
+    {
+        value = parseInt(value);
+        if (!_.isNumber(value))
+        { return false; }
+
+        return value >= parseFloat(param);
+    },
+    function (value, element)
+    {
+        return _.isNumber(parseInt(value)) ?
+            ('Value must be at least ' + $(element).attr('data-validateMin')) :
+            'Value must be a number';
+    });
+
+    $.validator.addMethod('data-validateMax', function(value, element, param)
+    {
+        value = parseInt(value);
+        if (!_.isNumber(value))
+        { return false; }
+
+        return value <= parseFloat(param);
+    },
+    function (value, element)
+    {
+        return _.isNumber(parseInt(value)) ?
+            ('Value must be no greater than ' + $(element).attr('data-validateMax')) :
+            'Value must be a number';
+    });
+
+
 
     /* Config hash:
     {
@@ -239,7 +270,7 @@
                       should be a single string, could have multiple
                       space-separated classes
                   + onlyIf: only display the field if these criteria are true.
-                    Currently accepts an object:
+                    Currently accepts a boolean, or an object:
                     {
                       + field: Name of input field to check the value of
                           (will find the closest field with that name)
@@ -1391,6 +1422,10 @@
     /* Render a single input field */
     var renderLine = function(sidebarObj, args)
     {
+        // bail if we don't want to render this.
+        if (args.item.onlyIf === false)
+        { return null; }
+
         // Add optional modifier to name; also adjust to make it unique
         args.item = $.extend({}, args.item, {origName : args.item.name,
             name: args.context.paneId + ($.isBlank(args.context.sectionName) ?
@@ -1425,6 +1460,10 @@
                 'data-notequalto': {value: '.' + (item.notequalto || '')
                         .split(' ').join(', .'),
                     onlyIf: !$.isBlank(item.notequalto)},
+                'data-validateMin': {value: item.validateMin,
+                    onlyIf: !$.isBlank(item.validateMin)},
+                'data-validateMax': {value: item.validateMax,
+                    onlyIf: !$.isBlank(item.validateMax)},
                 'data-defaultValue': $.htmlEscape(
                         JSON.stringify(item.defaultValue || '')),
                 'data-dataValue': {value: $.htmlEscape(
@@ -2172,7 +2211,7 @@
                     o.$field.change(showHideSection).keypress(showHideSection)
                         .click(showHideSection).attr('data-onlyIfInput', true);
                 }
-                else if (isFunc)
+                else if (isFunc && !_.isUndefined(blist.dataset))
                 {
                     blist.dataset.bind('columns_changed', showHideSection);
                 }

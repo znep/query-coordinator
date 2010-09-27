@@ -62,6 +62,8 @@ administration-sdp-template:
 - screen-admin-sdp-template
 administration-federation:
 - screen-administration-federation
+administration-users:
+- screen-admin-users
 screen-browse:
 - screen-browse
 screen-nominations:

@@ -112,12 +112,28 @@
     label
       width: 12em
 
+  #gridSidebar_embed
+    .line.textarea
+      label
+        display: none
+      textarea
+        font-size: 1em
+        height: 12em
+        margin: 0 1em
+        width: 25.5em
+    .line.changesWarning
+      span
+        color: $color_text_error
+
   .sidebarPane .formSection .line
     > label
       width: 9em
 
     input[type=text]
       width: 10em
+
+    span.error
+      margin-left: 12em
 
     &.dimensions
       padding-left: 0

@@ -100,6 +100,8 @@ ActionController::Routing::Routes.draw do |map|
       admin.connect as_route + '/users/:userid/:role', :action => 'set_user_role'
       admin.connect as_route + '/users/update', :action => 'set_user_role',
         :conditions => { :method => :post }
+      admin.connect as_route + '/sdp_templates', :action => 'sdp_template_create',
+        :conditions => { :method => :post }
       admin.connect as_route + '/sdp_templates/:id', :action => 'sdp_template'
       admin.connect as_route + '/sdp_templates/:id/set_default',
         :action => 'sdp_set_default_template'

@@ -25,6 +25,17 @@ class AdministrationController < ApplicationController
     else
       @admins = find_privileged_users.sort{|x,y| x.displayName <=> y.displayName}
     end
+
+    if @user_search_results.nil?
+      @users_list = @admins
+      @existing_user_actions = true
+    elsif @user_search_results.empty?
+      @table_title = 'No users found.'
+    else
+      @table_title = "Search Results for '#{@search}'"
+      @users_list = @user_search_results
+      @existing_user_actions = false
+    end
   end
   def set_user_role
     error_message = nil
@@ -60,10 +71,20 @@ class AdministrationController < ApplicationController
     @templates = WidgetCustomization.find.reject{ |t| t.hidden }
     @default_template_id = CurrentDomain.default_widget_customization_id
   end
+  def sdp_template_create
+    unless params[:new_template_name].present?
+      flash.now[:error] = 'Template name is required'
+      return (render 'shared/error', :status => :bad_request)
+    end
+
+    widget_customization = WidgetCustomization.create({ :name => params[:new_template_name],
+                                                        :customization => WidgetCustomization.default_theme(1).to_json })
+    redirect_to :action => :sdp_template, :id => widget_customization.uid
+  end
   def sdp_template
     if params[:view_id].present?
       begin
-        @view = View.find(params[:id])
+        @view = View.find(params[:view_id])
       rescue CoreServer::ResourceNotFound
           flash.now[:error] = 'This ' + I18n.t(:blist_name).downcase +
             ' cannot be found, or has been deleted.'
@@ -71,8 +92,8 @@ class AdministrationController < ApplicationController
         return
       end
     else
-      views = View.find(:public_only => true, :limit => 1)
-      @view = views.first unless views.nil?
+      views = View.find(:public_only => true, :limit => 10) # hopefully 10 will be enough?
+      @view = views.find{ |view| !view.is_alt_view? } || view.first unless views.nil?
     end
 
     begin

@@ -103,8 +103,9 @@ $(function()
         var $newItem = $.renderTemplate('nominationItem', n,
         {
             '.item@data-nominationId': 'id',
-            '.user a@href': function(n) { return n.context.user.getProfileUrl(); },
-            '.user a@title': 'user.displayName!',
+            '.user a.userLink@href': function(n)
+                { return n.context.user.getProfileUrl(); },
+            '.user a.userLink@title': 'user.displayName!',
             '.user img@src': function(n)
                 { return n.context.user.getProfileImageUrl('small'); },
             '.user img@alt': 'user.displayName!',
@@ -139,7 +140,7 @@ $(function()
             '.status@class+': function(n)
                 { return friendlyStatus(n.context).toLowerCase(); },
             '.item@class+': 'status'
-        }).find('tr.item')
+        }).find('tr.item');
 
         if (beginning) { $tbody.prepend($newItem); }
         else { $tbody.append($newItem); }
@@ -222,9 +223,6 @@ $(function()
             if (response.error == true)
             {
                 $dialog.find('.loadingSpinner, .loadingOverlay').addClass('hide');
-                // New input created; re-hook mousedown
-                $($uploader._input)
-                    .mousedown(function(e) { e.stopPropagation(); });
                 $dialog.find('.mainError').text(response.message);
                 return false;
             }
@@ -232,8 +230,6 @@ $(function()
             saveNomination(response.id);
         }
     });
-
-    $($uploader._input).mousedown(function(e) { e.stopPropagation(); });
 
     // Form Submit
     $dialog.find('.submitAction').click(function(event)

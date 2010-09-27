@@ -1,5 +1,6 @@
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'screen-nominations' %>
+  <title>Dataset Suggestions | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <div class='nominationsContainer'>
@@ -20,6 +21,7 @@
   </div>
 
   <div class='nominationsList'>
+    <h2>Dataset Suggestions</h2>
     <%- if !current_user.nil? -%>
     <a href='#Submit dataset' class='button nominateLink'>Suggest a Dataset</a>
     <%- end -%>
@@ -97,12 +99,12 @@
   <tbody>
     <tr class='item'>
       <td class='user'>
-        <a><img /><span class='userName'></span></a>
-      </td>
-      <td class='details'>
         <%- if !current_user.nil? && current_user.roleName == 'administrator' -%>
         <a href='#Remove' title='Delete this suggstion' class='delete'></a>
         <%- end -%>
+        <a class='userLink'><img /><span class='userName'></span></a>
+      </td>
+      <td class='details'>
         <span class='title'></span>
         <%- if !current_user.nil? && current_user.roleName == 'administrator' -%>
         <a href='#Edit' title='Edit this suggstion' class='edit'>(Edit)</a>
@@ -149,10 +151,7 @@
 <% content_for :js_footer do %>
   <script type='text/javascript'>
     blist.namespace.fetch('blist.nominations');
-    blist.nominations.items = [];
-    <%- @nominations.each do |n| -%>
-    blist.nominations.items.push(<%= safe_json(n) %>);
-    <%- end -%>
+    blist.nominations.items = <%= safe_json(@nominations); %>;
   </script>
   <%= javascript_include_merged 'screen-nominations' %>
 <% end %>

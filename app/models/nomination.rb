@@ -12,14 +12,4 @@ class Nomination < Model
     path = "/nominations" + "?#{opts.to_param}"
     parse(CoreServer::Base.connection.get_request(path)).count
   end
-
-  def friendly_status()
-    if (status == "pending" && Time.at(createdAt) > (Time.now() - 7.days))
-      "new"
-    elsif (status == "pending")
-      "open"
-    else
-      status
-    end
-  end
 end

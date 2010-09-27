@@ -1,13 +1,8 @@
 class ProfileController < ApplicationController
   include BrowseController
-# TODO/v4: remove v4_show
-  skip_before_filter :require_user, :only => [:show, :v4_show]
-  
-  helper :user
+  skip_before_filter :require_user, :only => [:show]
 
-# TODO/v4: remove me
-  layout :choose_v4_layout
-  include NewChromeMethodProxy
+  helper :user
 
   def index
     redirect_to current_user.href
@@ -39,27 +34,13 @@ class ProfileController < ApplicationController
     @current_state = {'user' => @user.id, 'domain' => CurrentDomain.cname}
 
     # Don't make a core server request for friends and followers every time
-    # TODO/v4: Remove the module check, this is just for backwards compat
-    unless !CurrentDomain.module_available?(:new_datasets_page) || \
-        @friends_rendered = read_fragment( \
-          app_helper.cache_key('profile-friends-list', @current_state))
+    unless @friends_rendered = read_fragment(app_helper.cache_key('profile-friends-list', @current_state))
       @followers = @user.followers
       @friends = @user.friends
     end
 
-    # TODO/v4: Remove this stuff
-    @body_id = 'profileBody'
-    if @is_user_current
-      @body_class = 'home'
-    else
-      @body_class = 'community'
-    end
-
-    # TODO/v4: Remove the module check, this is just for backwards compat
     # Also, we can probably make these _views vars local, not @ accessible
-    unless !CurrentDomain.module_available?(:new_datasets_page) || \
-        @view_summary_cached = read_fragment( \
-          app_helper.cache_key('profile-view-summary', @current_state))
+    unless @view_summary_cached = read_fragment(app_helper.cache_key('profile-view-summary', @current_state))
 
       base_req = {:limit => 1, :for_user => @user.id}
       stats = [
@@ -109,8 +90,6 @@ class ProfileController < ApplicationController
     end
 
     @user_links = UserLink.find(@user.id)
-    # TODO/v4: Do we still want this?
-    @welcome = params[:welcome] == 'true'
   end
 
   def update
@@ -183,9 +162,6 @@ class ProfileController < ApplicationController
   # Note: was AccountsController#edit
   def edit_account
     @user_links = UserLink.find(current_user.id)
-
-    # TODO/v4: Remove me when this becomes default
-    render :layout => 'dataset_v2'
   end
 
   def update_account
@@ -241,39 +217,8 @@ class ProfileController < ApplicationController
 
   def edit_image
     @user_links = UserLink.find(current_user.id)
-    #TODO/v4: Remove me when this becomes default
-    render :layout => 'dataset_v2'
   end
 
-  # TODO/v4: remove these three _link functions
-  def create_link
-    @user_link = UserLink.create(params[:id], params[:link])
-
-    respond_to do |format|
-      format.html { redirect_to(current_user.href) }
-      format.data { render }
-    end
-  end
-
-  def delete_link
-    UserLink.delete(params[:id], params[:link_id])
-
-    respond_to do |format|
-      format.html { redirect_to(current_user.href) }
-      format.data { render :json => {:link_id => params[:link_id]} }
-    end
-  end
-
-  def update_link
-    @user_link = UserLink.update(params[:id], params[:link_id], params[:link])
-
-    respond_to do |format|
-      format.html { redirect_to(current_user.href) }
-      format.data { render :action => "create_link" }
-    end
-  end
-
-  # We still need these for v4 accessible version
   def create_friend
     user_id = params[:id]
     if user_id != current_user.id

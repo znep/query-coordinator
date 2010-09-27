@@ -1,14 +1,8 @@
 class AccountsController < ApplicationController
-  ssl_required :new, :update, :create, :add_rpx_token, :v4_new
-  ssl_allowed :show
-  skip_before_filter :require_user, :only => [:new, :create, :forgot_password, :reset_password,
-    :v4_new, :v4_forgot_password, :v4_reset_password]
+  ssl_required :new, :update, :create, :add_rpx_token
+  skip_before_filter :require_user, :only => [:new, :create, :forgot_password, :reset_password]
   skip_before_filter :adjust_format, :only => [:update]
   protect_from_forgery :except => [:add_rpx_token]
-
-# TODO: Remove me in v3 deprecation pass
-  layout :choose_v4_layout
-  include NewChromeMethodProxy
 
   def new
     @signup = SignupPresenter.new({}, params[:token])
@@ -29,10 +23,7 @@ class AccountsController < ApplicationController
       else
         flash.now[:error] = @signup.errors.join(", ")
         @user_session = UserSession.new
-        # TODO: Deprecated: just action => :new when we deprecate v3
-        layout_string, action = (CurrentDomain.module_available?(:new_datasets_page)) ?
-          ['dataset_v2', :v4_new] : ['main', :new]
-        format.html { render :action => action, :layout => layout_string }
+        format.html { render :action => :new }
         format.json { render :json => {:error => flash[:error], :promptLogin => false}, :callback => params[:callback] }
       end
     end

@@ -1,506 +1,174 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "form-common" %>
-  <%= stylesheet_link_tag "profile-screen" %>
+  <%= rendered_stylesheet_tag 'profile-show' %>
   <title><%= @user.displayName %> | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
-<% content_for :skip_links do %>
-  <%= link_to 'Edit this page accessibly', "#{@user.href}/edit", :accesskey => 'e' %>
-<% end %>
-
-<div class="twoColumnContainer <%= @is_user_current ? "tabContainer" : " " %> clearfix">
-  <div id="mainColumnContent" class="column mainContent">
-    <div id='profile'>
-
-      <%- if (@is_user_current) -%>
-        <%= render(:partial => "shared/tabs") %>
-      <%- end -%>
-
-      <div class='outerContent'>
-        <div class="contentTR"><div class="contentTL"></div></div>
-        <div class='content'>
-
-          <% if @welcome %>
-          <div id="welcome">
-            <div class="welcomeTL">
-              <div class="welcomeTR">
-                <div class="welcome-titlebar">
-                  <h1>Welcome to <%= CurrentDomain.strings.company %>!</h1>
-                  <a href="#close"><span class="close">Close</span></a>
-                </div>
-              </div>
-            </div>
-            <div class="welcomeBL">
-              <div class="welcomeBR">
-                <div class="welcome-content">
-                  <p>This is your personal profile page. Please take a moment to tell
-                  the <%= CurrentDomain.strings.company %> community a little more about yourself.</p>
-                </div>
-              </div>
-            </div>
+<div id="profile" class="profileContent clearfix">
+  <%= display_standard_flashes %>
+  <div class="content clearfix headerBar">
+    <% prerendered_cache cache_key('profile-view-summary', @current_state),
+      @view_summary_cached, :expires_in => 5.minutes do %>
+      <div class="summaryStatsContainer">
+        <%- @stat_displays.each do |stat| -%>
+          <div class="summaryBox">
+            <p class="statHeader"><%= stat.first %></p>
+            <p class="number"><%= stat.last %></p>
           </div>
-          <% end %>
-
-          <div class='userInfo clearfix'>
-
-            <div class='profilePicture'>
-              <div id="profileImageContent">
-                <%= image_tag(@user.profile_image_path("medium"),
-                  :size => "80x80", :alt => h(@user.displayName)) %>
-              </div>
-              <%- if (@is_user_current) -%>
-                <a id='changeProfileImage' class='action' href='<%= @user.
-                  profile_image_path("replace").gsub("/replace", "") %>'>Change</a>
-                <p class='errorMessage'></p>
-              <%- end -%>
-            </div>
-
-            <div class="profileContent sectionContainer">
-              <div class="sectionShow">
-                <div class='userName'>
-                  <h1>
-                    <%= @user.displayName %>
-                  </h1>
-                </div>
-                <%= profile_item 'userLocation', h(@user.displayLocation), 'Add your City and Country', @is_user_current %>
-                <%= profile_item 'userCompany', h(@user.company), 'Add your company or agency name here', @is_user_current %>
-                <%= profile_item 'userTitle', h(@user.title), 'Add your title here', @is_user_current %>
-                <%= profile_item 'userTags', h(@user.tag_display_string), 'Add some tags here so others in the community can find you', @is_user_current %>
-                <%- if (@is_user_current) -%>
-                  <p class="editContainer editProfileContentActions">
-                    <a class='action showListBoxLink' href="<%= @user.href %>/edit">Edit</a>
-                    <!-- a
-                    id='switchUsernameLink' class='action'
-                      href='#show_<%= @user.privacyControl == "login" ?
-                        'fullName' : 'login' %>'>
-                      Display <%= current_user.privacyControl == "login" ?
-                        'Full Name' : 'Username' %>
-                    </a -->
-                  </p>
-                <%- elsif module_enabled? :community_module -%>
-                  <div class="publicProfileContentActions">
-                    <%- if (!@current_user.nil? &&
-                      @current_user.privacyControl != 'anonymousPerson') -%>
-                      <ul class="actionButtons clearfix">
-                        <li>
-                          <%- if (@user.my_friend?) -%>
-                            <%= link_to("Remove as Friend",
-                                        delete_friend_profile_path,
-                                          :class => "arrowButton inline",
-                                          :title => "Remove as Friend") %>
-                          <%- else -%>
-                            <%= link_to("Add as Friend",
-                                        create_friend_profile_path,
-                                          :class => "arrowButton inline",
-                                          :title => "Add as Friend") %>
-                          <%- end -%>
-                        </li>
-                      </ul>
-                    <%- elsif @current_user.nil? -%>
-                      <ul class="actionButtons clearfix">
-                        <li>
-                        <a href='<%= create_friend_profile_path %>'
-                          class='arrowButton'
-                          title='Sign In &amp; Add as Friend'>
-                          Sign In &amp; Add as Friend
-                        </a>
-                        </li>
-                      </ul>
-                    <%- end -%>
-                    <p><%= link_to("Go to #{CurrentDomain.strings.company} community",
-                      community_path, :class => "action") %></p>
-                  </div>
-                <%- end -%>
-
-
-              </div>
-              <%- if (@is_user_current) -%>
-                <div class="sectionEdit formListBox">
-                  <div class="formListBoxTL"><div class="formListBoxTR">
-                  <div class="formListBoxBL"><div class="formListBoxBR">
-                    <% form_tag(@user.href, :class => "clearfix") do %>
-                      <dl class="clearfix">
-                        <!--
-                        <dt>Name Display</dt>
-                        <dd>
-                          <%= radio_button_tag("user[privacyControl]",
-                          "fullName", @user.privacyControl == "fullName") %>
-                          <label class="radioLabel"
-                            for='user_privacyControl_fullname'>
-                            Display Full Name
-                          </label>
-                          <%= radio_button_tag("user[privacyControl]",
-                            "login", @user.privacyControl == "login") %>
-                          <label class="radioLabel" for='user_privacyControl_login'>
-                            Display Username
-                          </label>
-                        </dd>
-                            -->
-
-                        <dt><label for="user_firstName">First Name</label></dt>
-                        <dd>
-                          <%= text_field_tag("user[firstName]",
-                            h(@user.firstName)) %>
-                        </dd>
-                        <dt><label for="user_lastName">Last Name</label></dt>
-                        <dd>
-                          <%= text_field_tag("user[lastName]",
-                            h(@user.lastName)) %>
-                        </dd>
-                        <dt><label class="required" for="user_screenName">Display Name</label></dt>
-                        <dd>
-                          <%= text_field_tag("user[screenName]", h(@user.screenName)) %>
-                        </dd>
-                        <dt><label for="user_company">Company</label></dt>
-                        <dd>
-                          <%= text_field_tag("user[company]", h(@user.company)) %>
-                        </dd>
-                        <dt class='sectionEnd'>
-                          <label for="user_title">Title</label>
-                        </dt>
-                        <dd class='sectionEnd'>
-                          <%= text_field_tag("user[title]", h(@user.title)) %>
-                        </dd>
-                        <dt><label for="user_city">City</label></dt>
-                        <dd>
-                          <%= text_field_tag("user[city]", h(@user.city)) %>
-                        </dd>
-                        <dt><label for="user_state">State</label></dt>
-                        <dd>
-                          <%= select_tag("user[state]", raw(us_state_select_options(@user.state))) %>
-                        </dd>
-                        <dt class='sectionEnd'>
-                          <label for="user_country">Country</label>
-                        </dt>
-                        <dd class='sectionEnd'>
-                          <%= select_tag("user[country]", raw(country_select_options(@user.country))) %>
-                        </dd>
-                        <dt><label for="user_tags">Tags</label></dt>
-                        <dd>
-                          <%= text_field_tag("user[tags]",
-                            @user.tag_display_string) %>
-                          <span class="fieldNote">(Separate tags with commas)</span>
-                        </dd>
-                      </dl>
-                      <p class="formListBoxSubmit">
-                        <%= image_submit_tag("button_save.png") %>
-                      </p>
-                      <p class='errorMessage'></p>
-                    <% end %>
-                    <p class="formListBoxClose"><a href="#close">Close</a></p>
-                  </div></div>
-                  </div></div>
-                </div>
-              <%- end -%>
-            </div>
-          </div>
-
-          <h3>About Me</h3>
-          <div class="descriptionContent sectionContainer">
-            <div class="sectionShow">
-              <p class="descriptionText"><%= raw auto_link(@user.htmlDescription, :html => { :rel => 'nofollow' }) %></p>
-              <%- if (@is_user_current) -%>
-                <p class="editContainer">
-                  <a class='action showListBoxLink' href="<%= @user.href %>/edit">Edit</a>
-                </p>
-                <p id="descriptionEmpty" class="<%= @user.htmlDescription.blank? ? '' : 'initialHide' %>">
-                  <a class="showListBoxLink" href="<%= @user.href %>/edit">
-                    Tell us about yourself
-                  </a>
-                </p>
-              <%- end -%>
-            </div>
-            <%- if (@is_user_current) -%>
-              <div class="sectionEdit formListBox">
-                <div class="formListBoxTL"><div class="formListBoxTR">
-                <div class="formListBoxBL"><div class="formListBoxBR">
-                  <% form_tag(@user.href, :class => "clearfix") do %>
-                    <dl class="clearfix">
-                      <dt><label for="user_description">Description</label></dt>
-                      <dd>
-                        <%= text_area_tag("user[description]",
-                          h(@user.description), :class => "text_wide") %>
-                      </dd>
-                    </dl>
-                    <p class="formListBoxSubmit">
-                      <%= image_submit_tag("button_save.png") %>
-                    </p>
-                    <p class='errorMessage'></p>
-                  <% end %>
-                   <p class="formListBoxClose"><a href="#close">Close</a></p>
-                </div></div>
-                </div></div>
-              </div>
-            <%- end -%>
-          </div>
-
-          <h3>Interests</h3>
-          <div class="interestsContent sectionContainer">
-            <div class="sectionShow">
-              <p class="interestsText"><%= raw auto_link(h(@user.interests), :html => { :rel => 'nofollow' }) %></p>
-              <%- if (@is_user_current) -%>
-                <p class="editContainer">
-                  <a class='action showListBoxLink' href="<%= @user.href %>/edit">Edit</a>
-                </p>
-                <p id="interestsEmpty" class="<%= @user.interests.blank? ? '' : 'initialHide' %>">
-                  <a class="showListBoxLink" href="<%= @user.href %>/edit">
-                    Add some interests here
-                  </a>
-                </p>
-              <%- end -%>
-            </div>
-            <%- if (@is_user_current) -%>
-              <div class="sectionEdit formListBox">
-                <div class="formListBoxTL"><div class="formListBoxTR">
-                <div class="formListBoxBL"><div class="formListBoxBR">
-                  <% form_tag(@user.href, :class => "clearfix") do %>
-                    <dl class="clearfix">
-                      <dt><label for="user_interests">Interests</label></dt>
-                      <dd>
-                        <%= text_area_tag("user[interests]",
-                          h(@user.interests), :class => "text_wide") %>
-                      </dd>
-                    </dl>
-                    <p class="formListBoxSubmit">
-                      <%= image_submit_tag("button_save.png") %>
-                    </p>
-                    <p class='errorMessage'></p>
-                  <% end %>
-                   <p class="formListBoxClose"><a href="#close">Close</a></p>
-                </div></div>
-                </div></div>
-              </div>
-            <%- end -%>
-          </div>
-          
-          <h3>External Links</h3>
-          <div class="linksContent sectionContainer">
-            <div class="sectionShow">
-              <ul class="userLinkActions clearfix">
-                <%= render(:partial => "user_link_item", :collection => @user_links) %>
-              </ul>
-              <%- if (@is_user_current) -%>
-                <p class="editContainer">
-                  <a class='action showListBoxLink' href="<%= @user.href %>/edit">Edit</a>
-                </p>
-                <p id="linksEmpty" class="<%= (@user_links.nil? || @user_links.length < 1) ? "" : "initialHide" %>">
-                  <a class="showListBoxLink" href="<%= @user.href %>/edit">
-                    Add links to your other online profiles, interests, personal blog or website
-                  </a>
-                </p>
-              <%- end -%>
-            </div>
-            <%- if (@is_user_current) -%>
-              <div class="sectionEdit formListBox solid">
-                <div class="formListBoxTL"><div class="formListBoxTR">
-                <div class="formListBoxBL"><div class="formListBoxBR">
-                  <div class="updateLinksContainer int">
-                    <p>Share your personal or organizational website, blog, twitter or favorite social network profiles.</p>
-                    <div class="linksTableContainer<%= (@user_links.nil? || @user_links.length < 1) ? " initialHide" : "" %>">
-                      <table cellspacing="0" class="gridList">
-                        <colgroup>
-                          <col class="edit_handle first" />
-                          <col class="edit_name" />
-                          <col class="edit_label" />
-                          <col class="edit_url" />
-                          <col class="edit_action last" />
-                        </colgroup>
-                        <thead>
-                          <tr>
-                            <th class="edit_handle"><span>remove</span></th>
-                            <th class="edit_name">Type / Name</th>
-                            <th class="edit_label">Label</th>
-                            <th class="edit_url">URL</th>
-                            <th class="edit_action">&nbsp;</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <%= render(:partial => "user_link_row", :collection => @user_links) %>
-                        </tbody>
-                      </table>
-                    </div>
-                    <div class="editLinksContainer">
-                      <% form_tag(create_link_profile_path(@user.id), :method => :post, :class => "clearfix") do %>
-                        <table cellspacing="0">
-                          <colgroup>
-                            <col class="edit_handle" />
-                            <col class="edit_name" />
-                            <col class="edit_label" />
-                            <col class="edit_url" />
-                            <col class="edit_action" />
-                          </colgroup>
-                          <tr>
-                            <td class="edit_handle"><span>Add</span></td>
-                            <td class="edit_name">
-                              <%= select_tag("link[linkType]",
-                                links_select_options) %>
-                            </td>
-                            <td class="edit_label">
-                              <%= text_field_tag("link[label]", "", 
-                                    :class => "textPrompt prompt", :title => "Add a personal label") %>
-                            </td>
-                            <td class="edit_url">
-                              <%= text_field_tag("link[url]", "",
-                                    :class => "textPrompt prompt", :title => "Paste the full URL") %>
-                            </td>
-                            <td class="edit_action">
-                              <%= image_submit_tag("button_add.png") %>
-                            </td>
-                          </tr>
-                        </table>
-                      <% end %>
-                    </div>
-                    <p class="formListBoxClose"><a href="#close">Close</a></p>
-                   </div>
-                </div></div>
-                </div></div>
-              </div>
-            <%- end -%>
-          </div>
-
-          <% if( module_enabled?(:community_creation) || CurrentDomain.member?(@user)) %>
-            <div class='publicBlists'>
-              <h3>My public <%= t(:blists_name) %> &amp; filtered views</h3>
-              <div class='infoContentOuter active'>
-                <div class="infoContentTR"><div class="infoContentTL"></div></div>
-                <div class='infoContentHeader'>
-                  <div class='infoContentHeaderInner clearfix'>
-                    <h2 class='panelHeader'>
-                      <%= pluralize(@public_views.length, 'item') %> total
-                    </h2>
-                  </div>
-                </div>
-                <div class="infoContentInner">
-                  <div class='infoContent'>
-                    <div class="gridListContainer">
-                      <table class="gridList" cellspacing="0">
-                        <colgroup>
-                          <col class='type' />
-                          <col class='name' />
-                          <col class='views' />
-                          <col class='comments' />
-                          <col class='averageRating' />
-                          <col class='actionContainer' />
-                        </colgroup>
-                        <thead>
-                          <tr>
-                            <th class="type first" title="Type"><div>Type</div></th>
-                            <th class="name"><div>Name</div></th>
-                            <th class="views"><div>Visits</div></th>
-                            <th class="comments"><div>Comments</div></th>
-                            <th class="averageRating"><div>Rating</div></th>
-                            <th class="actionContainer last"></th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <%= render( :partial => "public_blist_row", 
-                                      :collection => @public_views,
-                                      :locals => { :port => @port } ) %>
-                        </tbody>
-                      </table>
-                    </div>
-
-                  </div>
-                </div>
-                <div class="infoContentBR"><div class="infoContentBL"></div></div>
-              </div>
-            </div>
-          <% end %>
-
-        </div>
+        <%- end -%>
       </div>
+    <% end %>
+    <div class="profileImage">
+      <img src="<%= @user.profile_image_path %>" alt="<%= @user.displayName %>" />
+    </div>
+    <div class="profileHeaderText">
+      <h1><%= @user.displayName %></h1>
+      <%- if @is_user_current -%>
+        <a href="<%= @user.href %>/account" class="editProfileLink iconLink view">
+          <span class="icon"></span>
+          <span class="editLinkText">Edit Account Settings</span>
+        </a>
+      <%- elsif !current_user.nil? -%>
+        <%- if !(@user.my_friend?) -%>
+          <a href="<%= create_friend_profile_path %>" class="followButton button smallButton add">
+            <span class="icon"></span>
+            <span class="linkText">Follow</span>
+          </a>
+        <%- else -%>
+          <a href="<%= delete_friend_profile_path %>" class="followButton button smallButton remove">
+            <span class="icon"></span>
+            <span class="linkText">Unfollow</span>
+          </a>
+        <%- end -%>
+      <%- end -%>
+      <p class="secondary">
+        <%- if @user.displayTitleAndOrg.present? %>
+          <span class="titleAndOrg"><%= @user.displayTitleAndOrg %></span>
+        <%- end -%>
+        <%= @user.displayLocation %>
+      </p>
+      <p class="secondary">
+        <%- [{:text => "Joined on", :date => @user.createdAt},
+             {:text => "Last Logged In", :date => @user.lastLogin}].each do |login| -%>
+           <em><%= login[:text] %></em>
+           <span class="accountDate"><%= blist_long_date(login[:date]) %></span>
+        <%- end -%>
+      </p>
     </div>
   </div>
 
-  <div id="sidebar" class="column scrollContentColumn<%= @is_user_current ? "" : " notabs" %>">
-    <% render(:layout => "shared/sidebar_box",
-      :locals => { :id => 'blistStats' } ) do %>
-        <h4><%= @is_user_current ? "My" : "#{h(@user.displayName)}'s" %> Stats</h4>
-        <p><strong>Joined on:</strong> <%= blist_date(@user.createdAt) %></p>
-        <p><strong>Last login:</strong> <%= blist_date(@user.lastLogin) %></p>
+  <div class="profileSideBar content">
+    <div class="profileImageContainer clearfix innerItem">
+      <div class="profileImage">
+        <img src="<%= @user.profile_image_path('large') %>" alt="<%= @user.displayName %>" />
+      </div>
+      <%= edit_link(@user, 'editProfileImageLink', 'Edit Image', 'image') %>
+    </div>
+    <% prerendered_cache cache_key('profile-friends-list', @current_state),
+      @friends_rendered, :expires_in => 5.minutes do %>
 
-
-        <%- if( module_enabled?(:community_creation) || CurrentDomain.member?(@user)) -%>
-          <dl>
-            <%- if (@is_user_current &&  @private_blists && @private_views) -%>
-              <dt><strong>Private <%= t(:blists_name).titleize %>:</strong> <%= @private_blists.length %></dt>
-              <dd><%= pluralize(@private_views.length, 'View') %></dd>
-            <%- end -%>
-            <dt><strong>Public <%= t(:blists_name).titleize %> &amp; Filtered Views:</strong> <%= @public_views.size %></dt>
-            <dd><%= pluralize(@public_views.size, 'Filtered View') %></dd>
-            <dd><%= @shared_views.length %> Shared</dd>
-          </dl>
+      <%- [{:name => 'Followers', :list => @followers},
+           {:name => 'Following', :list => @friends}].each do |user_list| -%>
+        <%- unless user_list.blank? -%>
+          <div class="innerItem userList <%= user_list[:name].downcase %>List">
+            <h2><%= user_list[:name] %> (<%= user_list[:list].size %>)</h2>
+              <%- viewable = user_list[:list].slice(0..39)
+                  hidden   = user_list[:list].slice(40..-1)
+                  viewable.each do |user| -%>
+                <a href="<%= user.href %>">
+                  <img src="<%= user.profile_image_path('small') %>" alt="<%= user.displayName %>" title="<%= user.displayName %>" />
+                </a>
+              <%- end -%>
+              <%- unless hidden.blank? -%>
+                <div class="hiddenContacts">
+                  <%- hidden.each do |user| -%>
+                    <a href="<%= user.href %>">
+                      <img src="<%= user.profile_image_path('small') %>" alt="<%= user.displayName %>" title="<%= user.displayName %>" />
+                    </a>
+                  <%- end -%>
+                </div>
+                <p class="showMoreLinkContainer">
+                  <a href="#More" class="showMoreContacts">View All</a>
+                </p>
+              <%- end -%>
+          </div>
         <%- end -%>
+      <%- end -%>
+    <%- end -%>
+  </div>
 
-        <%- if (@is_user_current && module_enabled?(:community_creation)) -%>
-          <ul class="actionButtons blockList clearfix">
-            <li>
-              <%= link_to("Design a #{t(:blist_name).titleize}", {:controller => "blists", :action => "new"},
-                          :title => "Design a new #{t(:blist_name)}.") %>
-            </li>
-          </ul>
-        <%- end -%>
-
-        <%- if module_enabled? :community_module %>
-          <dl>
-            <dt><strong>Friends:</strong> <%= @user.numberOfFriends %></dt>
-            <%- if (@user.numberOfFriends > 0) -%>
-            <dd class="userList">
-              <ul class="userIconList clearfix">
-                <%= render(:partial => "user_icon_item", :collection => @friends) %>
-              </ul>
-            </dd>
-            <%- end -%>
-            <dt><strong>Followers:</strong> <%= @user.numberOfFollowers %></dt>
-            <%- if (@user.numberOfFollowers > 0) -%>
-            <dd class="userList">
-              <ul class="userIconList clearfix">
-                <%= render(:partial => "user_icon_item", :collection => @followers) %>
-              </ul>
-            </dd>
-            <%- end -%>
-          </dl>
-        <%- end -%>
-
-        <%- if @is_user_current -%>
-          <%- if module_enabled? :community_module %>
-            <ul class="actionButtons blockList clearfix">
-              <li>
-                <%= link_to("Find Friends", community_path,
-                          :title => "Search for other users") %>
-              </li>
-            </ul>
+  <div class="profileMainContent">
+    <%- if @is_user_current || @user.description || @user.interests || @user.userLinks  -%>
+      <div class="basicInfo content">
+        <div class="innerItem">
+          <%= edit_link(@user, 'editBasicInfoLink') %>
+          <h2>Basic Info</h2>
+          <%- if @user.description -%>
+            <p class="innerItem textItem"><%= @user.description %></p>
           <%- end -%>
+        </div>
 
-          <div>
-            <p><strong>Invite others</strong> to use <%= CurrentDomain.strings.company %> and share your <%= t(:blist_name).pluralize %> with them</p>
-            <ul class="actionButtons blockList clearfix">
-                <li>
-                <%= link_to("Invite Others", invite_path, :title => "Invite others to try #{CurrentDomain.strings.company}", :rel => "modal") %>
-              </li>
-            </ul>
+        <%- if @user.interests -%>
+          <div class="innerItem">
+            <h3>Interests</h3>
+            <div class="innerContent">
+              <p class="textItem"><%= @user.interests %></p>
+            </div>
           </div>
         <%- end -%>
 
+        <%- if @user.userLinks -%>
+          <div class="innerItem userLinksItem">
+            <h3>External Links</h3>
+            <div class="innerContent">
+              <%- @user.userLinks.each do |user_link| -%>
+                <%- link_type = UserLink.link_types.find { |link_item| link_item[0] == user_link['linkType'].upcase} -%>
+                <p>
+                  <span class="subHeader textDisplay"><%= link_type[1] %></span>
+                  <%= link_to user_link['label'] || user_link['url'], user_link['url'], :class => 'textDisplay' %>
+                </p>
+              <%- end -%>
+            </div>
+          </div>
+        <%- end -%>
+      </div>
+    <%- end -%>
 
-    <% end %>
-
-    <% if @is_user_current %>
-      <% render(:layout => "shared/sidebar_box", :locals => {:box_class => "jumpToActions"}) do %>
-        <h4>Jump To</h4>
-        <ul class="actionButtons blockList clearfix">
-          <li><%= link_to("Manage Account", account_path) %></li>
+    <%- if (module_enabled?(:community_creation) || CurrentDomain.user_can?(@user, :create_datasets)) -%>
+      <div class="datasetsList content">
+        <h2><%= @user.displayName %>'s Datasets</h2>
+        <%- if @is_user_current -%>
+        <ul class='ownershipLinks'>
+          <%# @base_url comes from browse_controller %>
+          <li><a href='<%= @base_url %>'
+            class='<%= params[:ownership] != 'sharedToMe' ?
+              'active' : '' %>'>Owned By Me</a></li>
+          <li><a href='<%= @base_url %>?ownership=sharedToMe'
+            class='<%= params[:ownership] == 'sharedToMe' ?
+              'active' : '' %>'>Shared To Me</a></li>
         </ul>
-      <% end %>
-    <% end %>
+        <%- end -%>
+        <%= render_browse %>
+      </div>
+    <%- end -%>
 
+    <div class="newsFeed content">
+      <h2>News Feed</h2>
+      <div class="feed"></div>
+    </div>
   </div>
 </div>
 
+<% content_for :templates do %>
+  <%= render :partial => 'datasets/feed_template' %>
+<% end %>
+
 <% content_for :js_footer do %>
-  <%= javascript_include_merged 'shared-common-all' %>
-  <%= javascript_include_merged 'profiles-show' %>
-  <% if @is_user_current %>
-    <%= javascript_include_tag "screens/profile-screen-edit" %>
-  <% end %>
+  <script type="text/javascript">
+    <%- if !current_user.nil? -%>
+      blist.currentUserId = '<%= current_user.id %>';
+    <%- end -%>
+    blist.namespace.fetch('blist.profile');
+    blist.profile.profileUserId = '<%= @user.id %>';
+  </script>
+  <%= javascript_include_merged 'screen-profile' %>
 <% end %>

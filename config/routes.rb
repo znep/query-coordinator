@@ -121,9 +121,6 @@ ActionController::Routing::Routes.draw do |map|
   map.resource :account
   map.resources :suggestions
   map.resources :profile, :member => {
-    :create_link => :post,
-    :delete_link => :delete,
-    :update_link => :put,
     :create_friend => :get,
     :delete_friend => :get,
     :update_account => :put
@@ -131,13 +128,10 @@ ActionController::Routing::Routes.draw do |map|
 
   # New dataset page
   # Temporary hack for datasets/new so it doesn't get routed to show:
-  map.connect '/datasets/new', :controller => :datasets, :action => 'new',
-    :conditions => {:has_v4_dataset => true} # unless they have the new grid
-  map.connect '/datasets/new', :controller => :blists, :action => 'new'
+  map.connect '/datasets/new', :controller => :datasets, :action => 'new'
   map.connect '/datasets/detail', :controller => :blists, :action => 'detail'
 
   map.resources :datasets,
-    :conditions => {:has_v4_dataset => true},
     :member => {
       :widget_preview => :get,
       :edit_metadata => [:get, :post],
@@ -149,10 +143,10 @@ ActionController::Routing::Routes.draw do |map|
   map.resource :approval
 
   map.connect 'profile/:profile_name/:id', :controller => 'profile',
-       :action => 'v4_show', :conditions => { :method => :get },
+       :action => 'show', :conditions => { :method => :get },
        :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
   map.connect 'profile/:profile_name/:id/edit', :controller => 'profile',
-       :action => 'v4_edit', :conditions => { :method => :get },
+       :action => 'edit', :conditions => { :method => :get },
        :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
 
 
@@ -174,43 +168,43 @@ ActionController::Routing::Routes.draw do |map|
     :action => 'show',
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
       :category => /(\w|-)+/},
-    :conditions => {:method => :get, :has_v4_dataset => true}
+    :conditions => {:method => :get}
 
   map.connect ':category/:view_name/:id/:row_id', :controller => 'datasets',
     :action => 'show',
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
       :category => /(\w|-)+/, :row_id => /\d+/},
-    :conditions => {:method => :get, :has_v4_dataset => true}
+    :conditions => {:method => :get}
 
   map.connect ':category/:view_name/:id/widget_preview', :controller => 'datasets',
     :action => 'widget_preview',
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
       :category => /(\w|-)+/},
-    :conditions => {:method => :get, :has_v4_dataset => true}
+    :conditions => {:method => :get}
 
   map.connect ':category/:view_name/:id/edit_metadata', :controller => 'datasets',
     :action => 'edit_metadata',
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
       :category => /(\w|-)+/},
-    :conditions => {:method => [:get, :post], :has_v4_dataset => true}
+    :conditions => {:method => [:get, :post]}
 
   map.connect ':category/:view_name/:id/alt', :controller => 'datasets',
     :action => 'alt',
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
       :category => /(\w|-)+/},
-    :conditions => {:method => [:get, :post], :has_v4_dataset => true}
+    :conditions => {:method => [:get, :post]}
 
 
   # New short URLs
   map.connect 'dataset/:id', :controller => 'datasets',
     :action => 'show',
     :requirements => {:id => UID_REGEXP},
-    :conditions => {:method => :get, :has_v4_dataset => true}
+    :conditions => {:method => :get}
 
   map.connect 'd/:id', :controller => 'datasets',
     :action => 'show',
     :requirements => {:id => UID_REGEXP},
-    :conditions => {:method => :get, :has_v4_dataset => true}
+    :conditions => {:method => :get}
 
 
   # TEMPORARY: Until balboa is stable on production
@@ -239,27 +233,17 @@ ActionController::Routing::Routes.draw do |map|
 
   map.import '/upload_alt', :controller => 'blists', :action => 'upload_alt'
   map.import_redirect '/upload/redirect', :controller => 'imports', :action => 'redirect'
-  map.forgot_password '/forgot_password', :controller => 'accounts', :action => 'v4_forgot_password',
-    :conditions => {:has_v4_dataset => true}
   map.forgot_password '/forgot_password', :controller => 'accounts', :action => 'forgot_password'
-  map.reset_password '/reset_password/:uid/:reset_code', :controller => 'accounts', :action => 'v4_reset_password',
-    :conditions => {:uid => UID_REGEXP, :has_v4_dataset => true}
   map.reset_password '/reset_password/:uid/:reset_code', :controller => 'accounts', :action => 'reset_password',
     :conditions => {:uid => UID_REGEXP}
 
   map.with_options :protocol => "https", :port => SslRequirement.port_for_protocol('https') do |https|
-    https.login '/login', :controller => 'user_sessions', :action => 'v4_new',
-      :conditions => {:has_v4_dataset => true}
     https.login '/login', :controller => 'user_sessions', :action => 'new'
     https.login_json '/login.json', :controller => 'user_sessions', :action => 'create', :format => 'json'
     https.logout '/logout', :controller => 'user_sessions', :action => 'destroy'
-    https.signup '/signup', :controller => 'accounts', :action => 'v4_new',
-      :conditions => {:has_v4_dataset => true}
     https.signup '/signup', :controller => 'accounts', :action => 'new'
     https.signup_json '/signup.json', :controller => 'accounts', :action => 'create', :format => 'json'
     https.accounts_json '/accounts.json', :controller => 'accounts', :action => 'update', :format => 'json'
-    https.rpx_return_login '/login/rpx_return_login', :controller => 'rpx', :action => 'v4_return_login',
-      :conditions => {:has_v4_dataset => true}
     https.rpx_return_login '/login/rpx_return_login', :controller => 'rpx', :action => 'return_login'
     https.rpx_return_signup '/login/rpx_return_signup', :controller => 'rpx', :action => 'return_signup'
     https.rpx_login '/login/rpx_login', :controller => 'rpx', :action => 'login'

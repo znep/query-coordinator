@@ -9,8 +9,6 @@ class AdministrationController < ApplicationController
       controller.check_module('federations')
   end
 
-  layout 'dataset_v2'
-
   def index
   end
 

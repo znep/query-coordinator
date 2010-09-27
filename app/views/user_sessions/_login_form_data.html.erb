@@ -1,25 +1,31 @@
-  <%= f.error_messages %>
-  <p>
-    <%= f.label :login, 'Email' %>
-    <%= f.text_field :login %>
-    <span class="helpie"
-      title="<%= "Legacy users can still sign in using their old usernames, although they have been deprecated and cannot be changed." +
-        (CurrentDomain.strings.login_disclaimer.nil? ? "" : "\n\n#{CurrentDomain.strings.login_disclaimer}") %>">?</span>
-  </p>
-  <p>
-    <%= f.label :password %>
-    <%= f.password_field :password %>
-  </p>
+<%= f.error_messages %>
+<div class="line">
+  <div class="labelLine">
+    <%= f.label :login, 'Email', :class => 'main' %>
+  </div>
+  <%= f.text_field :login, :tabindex => '1' %>
+</div>
 
-  <%- if feature? "remember_me" -%>
-    <p class='rememberMe clearfix'>
-      <%= f.label :remember_me %>
-      <%= f.check_box :remember_me %>
-    </p>
-  <%- end -%>
+<div class="line">
+  <div class="labelLine">
+    <%= f.label :password, 'Password', :class => 'passwordLabel main' %>
+    <%= link_to 'Forgot?', forgot_password_path, :tabindex => '6' %>
+  </div>
+  <%= f.password_field :password, :tabindex => '2' %>
+</div>
 
-  <ul class='actionButtons clearfix'>
-    <li id="close_login"><a href='#close_login' class='close'>Cancel</a></li>
-    <li class='bare'><input type='image' name='submit'
-    src='<%= image_path("button_signin.png") %>' alt="sign in" /></li>
-  </ul>
+<%- if feature? :remember_me -%>
+  <div class="line">
+    <%= f.check_box :remember_me, :tabindex => '3' %>
+    <%= f.label :remember_me, 'Remember me', :class => 'pushUp' %>
+  </div>
+<%- end -%>
+
+<div class="formActionButtons">
+  <%= submit_tag 'Sign In', :class => 'button default', :tabindex => '4' %>
+  <span class="accountSignupHint loginSignupHint">
+    <span class="noAccountYet">Don't have an account?</span>
+    <%= link_to 'Sign up now', signup_path, :class => 'signUpLink', :tabindex => '5' %>.
+  </span>
+</div>
+

@@ -1,12 +1,8 @@
 class UserSessionsController < ApplicationController
-  ssl_required :new, :create, :rpx, :v4_new
+  ssl_required :new, :create, :rpx
   ssl_allowed :destroy
   skip_before_filter :require_user
   protect_from_forgery :except => [:rpx]
-
-#TODO: Remove me in v3 deprecation pass
-  layout :choose_v4_layout
-  include NewChromeMethodProxy
 
   def index
     HoptoadNotifier.notify(

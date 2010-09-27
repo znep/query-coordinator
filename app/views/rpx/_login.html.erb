@@ -1,8 +1,16 @@
-
+<div class="authProvider socrata">
+  <span class="iconContainer">
+    <span class="icon"></span>
+  </span>
+  <span class="description">
+    Sign in with your
+    <strong><%= MASTER_DOMAIN_PREFS['strings.company'] %> ID</strong>
+  </span>
+</div>
 <% if flash[:notice_login]  %>
   <div class="flash notice"><%= flash[:notice_login] %></div>
 <% else %>
-  <p class="chooseMessage">After signing in, your 3rd-party credentials will be associated with this
+  <p class="chooseMessage loginTips">After signing in, your 3rd-party credentials will be associated with this
   account.</p>
 <% end %>
 
@@ -19,3 +27,4 @@
   <% end %>
   <%= render :partial => 'user_sessions/login_form_data', :locals => { :f => f } %>
 <% end %>
+

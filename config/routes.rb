@@ -116,31 +116,8 @@ ActionController::Routing::Routes.draw do |map|
     end
   end
 
-  map.resources :contacts,
-    :collection => {
-      :detail => :get,
-      :multi_detail => :get
-    },
-    :member => {
-      :contact_detail => :get,
-      :group_detail => :get,
-    }
-
-  map.data 'data/', :controller => 'data', :action => 'redirect_to_root'
-  map.with_options :controller => 'data' do |data|
-    data.data_filter        'data/filter',      :action => 'filter'
-    data.data_tags          'data/tags',        :action => 'tags'
-    data.data_splash        'data/splash',      :action => 'splash'
-    data.data_noie          'data/noie',        :action => 'noie'
-    data.data_redirected    'data/redirected',  :action => 'redirected'
-    data.nominations        'data/nominations', :action => 'nominations'
-    data.suggest            'data/suggest',     :action => 'suggest'
-  end
-
   map.resource :search
 
-  map.resource :community, :member => { :filter => :get, :activities => :get, :tags => :get }
-  map.resource :home
   map.resource :account
   map.resources :suggestions
   map.resources :profile, :member => {
@@ -171,67 +148,12 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resource :approval
 
-  # Old dataset page
-  ['datasets', 'datasets_old'].each do |as_route|
-    map.resources :blists, :as => as_route,
-      :collection => { :detail => :get },
-      :member => {
-        :detail => :get,
-        :post_comment => :post,
-        :update_comment => [:put, :get],
-        :create_favorite => :get,
-        :delete_favorite => :get,
-        :notify_all_of_changes => :post,
-        :modify_permission => :post,
-        :alt => :get,
-        :save_filter => :post,
-        :help_me => :get,
-        :embed_code => :get
-      } do |blist|
-        blist.connect 'stats', :controller => 'stats', :action => 'index'
-        blist.resources :columns
-        blist.resources :sort_bys
-        blist.resources :groupings
-        blist.resources :show_hides
-        blist.resources :filters
-      end
-  end
-
-  map.resources :datasets,
-    :as => "datasets_new",
-    :member => {
-      :widget_preview => :get,
-      :edit_metadata => [:get, :post]
-    }
-
-  # TODO/v4: no longer necessary
-  map.connect 'datasets_alt', :controller => 'blists', :action => 'alt_index'
-
-  # TODO/v4: remove me
-  map.with_options :conditions => {:has_v4_dataset => true} do |v4_profile|
-    v4_profile.connect 'profile/:profile_name/:id', :controller => 'profile',
-         :action => 'v4_show', :conditions => { :method => :get },
-         :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
-    v4_profile.connect 'profile/:profile_name/:id/edit', :controller => 'profile',
-         :action => 'v4_edit', :conditions => { :method => :get },
-         :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
-  end
-
   map.connect 'profile/:profile_name/:id', :controller => 'profile',
-     :action => 'show', :conditions => { :method => :get },
-     :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
-  map.connect 'profile/:profile_name/:id', :controller => 'profile',
-     :action => 'update', :conditions => { :method => :put },
-     :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+       :action => 'v4_show', :conditions => { :method => :get },
+       :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
   map.connect 'profile/:profile_name/:id/edit', :controller => 'profile',
-     :action => 'edit', :conditions => { :method => :get },
-     :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
-  map.connect 'profile/:profile_name/:id/image', :controller => 'profile',
-     :action => 'edit_image', :conditions => { :method => :get },
-     :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
-  map.connect 'profile/:profile_name/:id/account', :controller => 'profile',
-     :action => 'edit_account', :conditions => { :method => :get },
-     :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+       :action => 'v4_edit', :conditions => { :method => :get },
+       :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
 
 
   # This needs to be more specific than the dataset routes, which will all
@@ -291,22 +213,6 @@ ActionController::Routing::Routes.draw do |map|
     :conditions => {:method => :get, :has_v4_dataset => true}
 
 
-  # Old SEO URLs
-  map.connect ':category/:view_name/:id', :controller => 'blists',
-    :action => 'show', :conditions => { :method => :get },
-    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
-      :category => /(\w|-)+/}
-  map.connect ':category/:view_name/:id', :controller => 'blists',
-    :action => 'update', :conditions => { :method => :put },
-    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
-      :category => /(\w|-)+/}
-
-  # TODO: Deprecated
-  map.connect ':category/:view_name/:id/stats', :controller => 'stats',
-    :action => 'index', :conditions => { :method => :get },
-    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
-      :category => /(\w|-)+/}
-
   # TEMPORARY: Until balboa is stable on production
   map.connect ':category/:view_name/:id/balboa_stats', :controller => 'datasets',
     :action => 'stats', :conditions => { :method => :get },
@@ -325,62 +231,12 @@ ActionController::Routing::Routes.draw do |map|
     :conditions => { :method => :get }, :requirements => {:id => UID_REGEXP,
       :view_name => /(\w|-)+/, :type => /(\w|-)+/, :category => /(\w|-)+/}
 
-  map.connect ':category/:view_name/:id/create_share', :controller => 'blists',
-  :action => 'create_share', :conditions => { :method => :post },
-  :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
-    :category => /(\w|-)+/}
-
-  map.connect ':category/:view_name/:id/create_calendar', :controller => 'blists',
-  :action => 'create_calendar', :conditions => { :method => :post },
-  :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
-    :category => /(\w|-)+/}
-
-  map.connect ':category/:view_name/:id/create_visualization',
-    :controller => 'blists', :action => 'create_visualization',
-    :conditions => { :method => :post },
-    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
-      :type => /(\w|-)+/, :category => /(\w|-)+/}
-
-  map.connect ':category/:view_name/:id/create_form', :controller => 'blists',
-  :action => 'create_form', :conditions => { :method => :post },
-  :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
-    :category => /(\w|-)+/}
-
-  # Support /dataset and /d short URLs for old page
-  map.connect 'dataset/:id', :controller => 'blists',
-    :action => 'show', :conditions => { :method => :get },
-    :requirements => {:id => UID_REGEXP}
-
-  map.connect 'd/:id', :controller => 'blists',
-    :action => 'show', :conditions => { :method => :get },
-    :requirements => {:id => UID_REGEXP}
-
-  map.connect 'dataset/:id/meta_tab_header', :controller => 'blists', :action => 'meta_tab_header'
-  map.connect 'dataset/:id/meta_tab', :controller => 'blists', :action => 'meta_tab'
-
-  map.connect 'customization/new', :controller => 'blists', :action => 'new_customization',
-    :conditions => { :method => :get }, :format => 'data'
-  map.connect 'customization/create', :controller => 'blists', :action => 'create_customization',
-    :conditions => { :method => :put }, :format => 'data'
-
-  map.connect 'widgets_preview/:id', :controller => 'widgets_preview', :action => 'show'
-
-  map.connect 'new_image', :controller => 'themes', :action => 'new_image'
-
-  map.connect 'stylesheets/theme/:id.css', :controller => 'themes', :action => 'theme'
-
   # Seattle Data-Policy hack
   map.connect '/data-policy', :controller => "data_policy", :action => "index"
 
   # The /version page
   map.connect '/version', :controller => "version", :action => "index"
-  
-  # Popups
-  map.connect '/popup/:action', :controller => 'popup'
-  
-  map.root :controller => "data", :action => "show"
 
-  map.import '/upload', :controller => 'blists', :action => 'upload' 
   map.import '/upload_alt', :controller => 'blists', :action => 'upload_alt'
   map.import_redirect '/upload/redirect', :controller => 'imports', :action => 'redirect'
   map.forgot_password '/forgot_password', :controller => 'accounts', :action => 'v4_forgot_password',
@@ -431,18 +287,13 @@ ActionController::Routing::Routes.draw do |map|
     map.connect "/#{static_toplevel}", :controller => 'static', :action => 'show', :page => static_toplevel
   end
   map.about '/about', :controller => 'about'
-  
-  map.with_options :controller => 'invitation' do |invitation|
-    invitation.invite             'invite',                 :action => 'invite'
-    invitation.create_invitation  'invitation/create',      :action => 'create'
-    invitation.show_invitation    'invitation/show/:id',    :action => 'show'
-    invitation.accept_invitation  'invitation/accept/:id',  :action => 'accept'
-  end
 
   # Non-production environments get a special controller for test actions
   unless Rails.env.production?
     map.connect '/test_page/:action', :controller => 'test_pages'
   end
-  
+
+  map.root :controller => "homepage", :action => "show"
+
   # See how all your routes lay out with "rake routes"
 end

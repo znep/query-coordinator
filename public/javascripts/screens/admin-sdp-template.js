@@ -333,7 +333,7 @@ _.each([
         title: 'Exterior', name: 'exterior',
         fields: [
         {   text: 'Width', name: 'publish.dimensions.width',
-            type: 'text', required: true, validateMin: 500 },
+            type: 'text', required: true, validateMin: 425 },
         {   text: 'Height', name: 'publish.dimensions.height',
             type: 'text', required: true, validateMin: 425 },
         {   text: 'Powered By Text', name: 'publish.show_powered_by',

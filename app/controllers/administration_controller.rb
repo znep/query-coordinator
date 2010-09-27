@@ -74,6 +74,7 @@ class AdministrationController < ApplicationController
   def sdp_template_create
     unless params[:new_template_name].present?
       flash.now[:error] = 'Template name is required'
+      return (render 'shared/error', :status => :bad_request)
     end
 
     widget_customization = WidgetCustomization.create({ :name => params[:new_template_name],

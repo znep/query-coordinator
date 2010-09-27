@@ -81,6 +81,6 @@
             event.preventDefault();
             $(this).closest('form').submit();
         });
-        $('.newTemplateModal form').validate({ new_template_name: 'required' });
+        $('.newTemplateModal form').validate();
     });
 })(jQuery);

@@ -1,20 +1,33 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
-<!--[if lte IE 7]><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" class="ie ie7 noBorderRadius noLinearGradient noCss3"><![endif]-->
-<!--[if IE 8]><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" class="ie ie8 noBorderRadius noLinearGradient noCss3"><![endif]-->
-<!--[if gte IE 9]><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" class="ie"><![endif]-->
-<!--[if !IE]>--><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><!--<![endif]-->
+<!--[if lte IE 7]>
+  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+        xmlns:og="http://opengraphprotocol.org/schema/" class="ie ie7 noBorderRadius noLinearGradient noCss3"><![endif]-->
+<!--[if IE 8]>
+  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+        xmlns:og="http://opengraphprotocol.org/schema/" class="ie ie8 noBorderRadius noLinearGradient noCss3"><![endif]-->
+<!--[if gte IE 9]>
+  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+        xmlns:og="http://opengraphprotocol.org/schema/" lang="en" class="ie"><![endif]-->
+<!--[if !IE]>-->
+  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+        xmlns:og="http://opengraphprotocol.org/schema/"><!--<![endif]-->
 
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <%= meta_tags @meta unless @meta.blank? %>
+  <%- unless @link_image_src.blank? -%>
+    <link rel="image_src" href="<%= @link_image_src %>" />
+  <%- end -%>
 
   <link rel="apple-touch-icon-precomposed" media="screen" href="/stylesheets/images/icons/retina_display_icon.png"/>
 
   <%= rendered_stylesheet_tag 'base' %>
 
   <%= jquery_include %>
+  <%= javascript_error_helper_tag %>
 
   <%= yield :head %>
 
@@ -119,10 +132,17 @@
 
   <%= yield :js_footer %>
 
+  <%- unless CurrentDomain.theme.js.nil? -%>
+    <%- if CurrentDomain.theme.js[:type].to_s == 'static' -%>
+      <script type="text/javascript" src="<%= CurrentDomain.theme.js.source %>"></script>
+    <%- elsif CurrentDomain.theme.js[:type].to_s == 'hosted' -%>
+      <script type="text/javascript" src="/assets/<%= CurrentDomain.theme.js.source %>"></script>
+    <%- end -%>
+  <%- end -%>
+
   <%# we don't trust custom tracking code to be nonblocking like the async
       GA, so put it down here. %>
   <% unless CurrentDomain.custom_tracking_code.blank? %>
-    <!-- Custom Tracking Code -->
     <%= raw CurrentDomain.custom_tracking_code %>
   <% end %>
 </body>

@@ -48,7 +48,7 @@
             <%= form_tag("/api/views/#{view.id}") %>
               <%= text_field_tag 'textValue', '', :class => 'textValue', :id => nil %>
               <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
-              <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_path, :title => "Cancel", :class => "formCancelLink") %>
+              <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), profile_path, :title => "Cancel", :class => "formCancelLink") %>
             </form>
           </div>
         </dd>

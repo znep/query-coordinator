@@ -33,7 +33,7 @@ class UserSessionsController < ApplicationController
     @user_session = UserSession.new(params[:user_session])
     if @user_session.save
       respond_to do |format|
-        format.html { redirect_back_or_default(home_path) }
+        format.html { redirect_back_or_default(profile_path) }
         format.json { render :json => {:user_id => current_user.id}, :callback => params[:callback] }
       end
     else

@@ -34,15 +34,24 @@ module ApplicationHelper
     CurrentDomain.upsell?
   end
 
-# CACHE HELPERS
-def cache_key(prefix, state)
-  prefix + '_' + state.sort.map {|v| CGI.escape(v[0]) + '=' +
-    CGI.escape(v[1].to_s)}.join('&')
-end
+# PATH HELPERS
 
-def prerendered_cache(name = {}, prerendered_content = nil, options = nil, &block)
-  @controller.prerendered_fragment_for(output_buffer, name, prerendered_content, options, &block)
-end
+  def profile_path(id = nil)
+    return '/profile' if id.blank?
+    return "/profile/#{id}"
+  end
+
+
+# CACHE HELPERS
+
+  def cache_key(prefix, state)
+    prefix + '_' + state.sort.map {|v| CGI.escape(v[0]) + '=' +
+      CGI.escape(v[1].to_s)}.join('&')
+  end
+
+  def prerendered_cache(name = {}, prerendered_content = nil, options = nil, &block)
+    @controller.prerendered_fragment_for(output_buffer, name, prerendered_content, options, &block)
+  end
 
 # PAGE-HEADER
 

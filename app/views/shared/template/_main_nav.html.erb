@@ -7,13 +7,6 @@
     </li>
     <% end %>
 
-    <%# Community Module %>
-    <% module_enabled :community_module do %>
-    <li class='community'>
-      <%= link_to(raw("<span>Community</span>"), community_path) %>
-    </li>
-    <% end %>
-
     <% if !CurrentDomain.theme.urls.tabs.nil? %>
       <% CurrentDomain.theme.urls.tabs.each do |url| %>
         <li class="custom">
@@ -26,7 +19,7 @@
     <% module_enabled [:discovery_module, :community_module] do %>
       <li class='home last'>
         <%= link_to(raw("<span>My #{CurrentDomain.strings.company}</span>"),
-          home_path) %>
+          '/profile') %>
 
         <%= render :partial => 'shared/template/user_menu',
           :locals => { :menu_class => 'subNav' } %>

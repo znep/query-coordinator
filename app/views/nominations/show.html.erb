@@ -99,6 +99,9 @@
         <a><img /><span class='userName'></span></a>
       </td>
       <td class='details'>
+        <%- if !current_user.nil? && current_user.roleName == 'administrator' -%>
+        <a href='#Remove' title='Delete this suggstion' class='delete'></a>
+        <%- end -%>
         <span class='title'></span>
         <div class='submitTime'>
           <span class='fullTime'></span>
@@ -107,10 +110,33 @@
         <div class='description'></div>
       </td>
       <td class='attachments'>
-        <ul><li><a rel='external'></a></li></ul>
+        <ul><li>
+          <%- if !current_user.nil? && current_user.roleName == 'administrator' -%>
+          <a href='#Remove' title='Delete this attachment' class='delete'></a>
+          <%- end -%>
+          <a class='fileLink' rel='external'></a>
+        </li></ul>
       </td>
-      <td class='rating'></td>
-      <td class='status'></td>
+      <td class='rating'>
+        <span class='value'></span>
+        <%- if !current_user.nil? -%>
+        <a class='rateLink rateDown' title="I don't like it" href='#Rate down'>
+          <span class='icon'></span>
+        </a>
+        <a class='rateLink rateUp' title='I like it' href='#Rate up'>
+          <span class='icon'></span>
+        </a>
+        <%- end -%>
+      </td>
+      <td class='status'>
+        <span class='currentStatus'></span>
+        <%- if !current_user.nil? && current_user.roleName == 'administrator' -%>
+        <a href='#Approve' title='Approve this suggestion' data-status='approved'
+          class='approve moderateLink'>(Approve)</a>
+        <a href='#Reject' title='Reject this suggestion' data-status='rejected'
+          class='reject moderateLink'>(Reject)</a>
+        <%- end -%>
+      </td>
     </tr>
   </tbody>
 </table>

@@ -56,10 +56,15 @@
           width: 10em
         .rating
           text-align: right
-          width: 4em
+          width: 4.5em
         .status
           text-align: center
           width: 5em
+
+        .delete
+          @include close-button
+          float: left
+          margin-right: 0.5em
 
         td.user
           line-height: 24px
@@ -89,7 +94,7 @@
         td.attachments
           li
             @include clip-text
-            width: 10em
+            width: 8.5em
 
         td.rating
           font-size: 1.1667em
@@ -98,16 +103,32 @@
             color: #33aa33
           &.negative
             color: #aa3333
+          .rateLink
+            @include sprite-menu-icons
+            float: right
+            margin-left: 0.2em
 
         td.status
           &.new
-            color: #0073e6
-            font-weight: bold
-          &.open
+            .currentStatus
+              color: #0073e6
+              font-weight: bold
           &.approved
-            color: #33aa33
+            .currentStatus
+              color: #33aa33
+            a.approve
+              display: none
           &.rejected
-            color: #aa3333
+            .currentStatus
+              color: #aa3333
+            a.reject
+              display: none
+          a.moderateLink
+            font-size: 0.9167em
+
+        .item.approved, .item.rejected
+          .rateLink
+            display: none
 
     .pagination
       font-size: 1.2em

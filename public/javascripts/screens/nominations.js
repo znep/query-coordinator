@@ -10,12 +10,99 @@ $(function()
         return nom.status;
     };
 
+    var ratedNom = {};
+    $.live('.nominationsList .gridList .rating .rateLink', 'click', function(e)
+    {
+        e.preventDefault();
+        var $t = $(this);
+        var id = $t.closest('tr.item').attr('data-nominationId');
+        var isUp = $t.hasClass('rateUp');
+        if (ratedNom[id] === isUp) { return; }
+
+        $t.addClass(isUp ? 'ratedUp' : 'ratedDown');
+        $t.siblings('.rateLink').removeClass('ratedUp ratedDown');
+        $.ajax({url: '/api/nominations/' + id + '/ratings.json' +
+            '?thumbsUp=' + isUp,
+            type: 'POST', contentType: 'application/json', dataType: 'json',
+            error: function(xhr)
+            {
+                alert('Error rating suggestion: ' +
+                    JSON.parse(xhr.responseText).message);
+            },
+            success: function()
+            {
+                var $td = $t.closest('td');
+                var $value = $td.find('.value');
+                var adj = (isUp ? 1 : -1);
+                if (!$.isBlank(ratedNom[id])) { adj *= 2; }
+                var newVal = parseInt($value.text()) + adj;
+                $value.text(newVal);
+                $td.removeClass('positive negative');
+                if (newVal > 0) { $td.addClass('positive'); }
+                else if (newVal < 0) { $td.addClass('negative'); }
+                ratedNom[id] = isUp;
+            }});
+    });
+
+    $.live('.nominationsList .gridList a.delete', 'click', function(e)
+    {
+        e.preventDefault();
+        var $t = $(this);
+        var isFile = $t.closest('.attachments').length > 0;
+        var type = isFile ? 'attachment' : 'suggestion';
+        if (confirm('Are you sure you want to delete this ' + type + '?'))
+        {
+            var $item = $t.closest('tr.item');
+            var id = $item.attr('data-nominationId');
+            var url = '/api/nominations/' + id;
+            if (isFile)
+            { url += '/attachments/' + $t.closest('li').attr('data-attachmentId'); }
+            url += '.json';
+            $.ajax({url: url, type: 'DELETE',
+                error: function(xhr)
+                {
+                    alert('Error deleting ' + type + ': ' +
+                        JSON.parse(xhr.responseText).message);
+                },
+                success: function()
+                {
+                    if (isFile) { $t.closest('li').remove(); }
+                    else { $item.remove(); }
+                }});
+        }
+    });
+
+    $.live('.nominationsList .gridList .status .moderateLink', 'click', function(e)
+    {
+        e.preventDefault();
+        var $t = $(this);
+        var status = $t.attr('data-status');
+        $.ajax({url: '/api/nominations/' +
+            $t.closest('tr.item').attr('data-nominationId') + '.json',
+            data: JSON.stringify({status: status}),
+            type: 'PUT', dataType: 'json', contentType: 'application/json',
+            error: function(xhr)
+            {
+                alert('Error changing status: ' +
+                    JSON.parse(xhr.responseText).message);
+            },
+            success: function()
+            {
+                $t.closest('td').removeClass('open new rejected approved')
+                    .addClass(status).find('.currentStatus')
+                    .text(status.capitalize())
+                    .closest('tr.item').removeClass('pending rejected approved')
+                    .addClass(status);
+            }});
+    });
+
     var $tbody = $('.nominationsList .gridList tbody');
     var addNomination = function(n, beginning)
     {
         if (!(n.user instanceof User)) { n.user = new User(n.user); }
         var $newItem = $.renderTemplate('nominationItem', n,
         {
+            '.item@data-nominationId': 'id',
             '.user a@href': function(n) { return n.context.user.getProfileUrl(); },
             '.user a@title': 'user.displayName!',
             '.user img@src': function(n)
@@ -35,21 +122,23 @@ $(function()
             {
                 'a<-attachments':
                 {
-                    'a': 'a.filename!',
-                    'a@title': 'a.filename!',
-                    'a@href': '/api/nominations/#{id}/attachments/#{a.id}'
+                    '@data-attachmentId': 'a.id',
+                    '.fileLink': 'a.filename!',
+                    '.fileLink@title': 'a.filename!',
+                    '.fileLink@href': '/api/nominations/#{id}/attachments/#{a.id}'
                 }
             },
-            '.rating': 'netVotes',
+            '.rating .value': 'netVotes',
             '.rating@class+': function(n)
                 {
                     return n.context.netVotes > 0 ? 'positive' :
                         n.context.netVotes < 0 ? 'negative' : '';
                 },
-            '.status': function(n)
+            '.status .currentStatus': function(n)
                 { return friendlyStatus(n.context).capitalize(); },
             '.status@class+': function(n)
-                { return friendlyStatus(n.context).toLowerCase(); }
+                { return friendlyStatus(n.context).toLowerCase(); },
+            '.item@class+': 'status'
         }).find('tr.item')
 
         if (beginning) { $tbody.prepend($newItem); }
@@ -99,7 +188,7 @@ $(function()
     var $uploadButton = $dialog.find('.fileBrowseButton');
     var $uploader = new AjaxUpload($uploadButton,
     {
-        action: '/nominations/INLINE/attachments.txt',
+        action: '/api/nominations/INLINE/attachments.txt',
         autoSubmit: false,
         name: 'nominateFileInput',
         responseType: 'json',

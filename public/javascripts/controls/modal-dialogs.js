@@ -7,7 +7,8 @@ $(function()
         onShow: function(jqm)
         {
             $('.menu').trigger('menu-close');
-            $(document).trigger(blist.events.MODAL_SHOWN);
+            if (!_.isUndefined(blist.events))
+            { $(document).trigger(blist.events.MODAL_SHOWN); }
             jqm.w.fadeIn('slow');
             jqm.o.fadeIn('slow');
         },
@@ -15,7 +16,10 @@ $(function()
         {
             jqm.w.fadeOut('slow');
             jqm.o.fadeOut('slow', function()
-            { $(document).trigger(blist.events.MODAL_HIDDEN); });
+            {
+                if (!_.isUndefined(blist.events))
+                { $(document).trigger(blist.events.MODAL_HIDDEN); }
+            });
         }
     });
     $.live('a.jqmClose', 'click', function(event)

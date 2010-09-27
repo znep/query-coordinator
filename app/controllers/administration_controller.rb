@@ -71,6 +71,15 @@ class AdministrationController < ApplicationController
     @templates = WidgetCustomization.find.reject{ |t| t.hidden }
     @default_template_id = CurrentDomain.default_widget_customization_id
   end
+  def sdp_template_create
+    unless params[:new_template_name].present?
+      flash.now[:error] = 'Template name is required'
+    end
+
+    widget_customization = WidgetCustomization.create({ :name => params[:new_template_name],
+                                                        :customization => WidgetCustomization.default_theme(1).to_json })
+    redirect_to :action => :sdp_template, :id => widget_customization.uid
+  end
   def sdp_template
     if params[:view_id].present?
       begin

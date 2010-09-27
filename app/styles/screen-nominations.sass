@@ -80,6 +80,8 @@
           .title
             font-size: 1.0833em
             font-weight: bold
+          .edit
+            font-size: 0.9167em
           .submitTime
             color: #999999
             font-size: 0.9167em
@@ -172,3 +174,11 @@
     position: absolute
   .mainError
     margin-top: 0.5em
+  .edit
+    display: none
+
+  &.isEdit
+    .create
+      display: none
+    .edit
+      display: block

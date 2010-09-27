@@ -148,25 +148,34 @@ $(function()
     _.each(blist.nominations.items, function(n) { addNomination(n); });
 
     var $dialog = $('.nominateDialog');
-    $('.nominateLink').click(function(e)
+    var showNomDialog = function(nomId, title, desc)
     {
-        e.preventDefault();
-        $dialog.find('input, textarea').val('').blur();
+        $dialog.find('#nominateTitle').val(title || '')
+            .toggleClass('prompt', $.isBlank(title)).blur();
+        $dialog.find('#nominateDescription').val(desc || '')
+            .toggleClass('prompt', $.isBlank(desc)).blur();
+        $dialog.toggleClass('isEdit', !$.isBlank(nomId))
+            .attr('data-editId', nomId || '');
         $dialog.find('.mainError').text('');
-        $dialog.jqmShow();
-    });
 
-    var createNomination = function(attachmentId)
+        $dialog.jqmShow();
+    };
+
+    var saveNomination = function(attachmentId)
     {
         var nomination = {
             title: $dialog.find('#nominateTitle').val(),
             description: $dialog.find('#nominateDescription').val()
         };
+        var editId = $dialog.attr('data-editId');
 
-        var url = '/api/nominations.json';
+        var url = '/api/nominations';
+        if (!$.isBlank(editId)) { url += '/' + editId; }
+        url += '.json';
         if (!$.isBlank(attachmentId))
         { url += '?attachmentIds=' + attachmentId; }
-        $.ajax({url: url, type: 'POST',
+
+        $.ajax({url: url, type: !$.isBlank(editId) ? 'PUT' : 'POST',
             dataType: 'json', contentType: 'application/json',
             data: JSON.stringify(nomination),
             error: function(xhr)
@@ -180,7 +189,18 @@ $(function()
             {
                 $dialog.find('.loadingSpinner, .loadingOverlay').addClass('hide');
                 $dialog.jqmHide();
-                addNomination(resp, true);
+                if ($.isBlank(editId))
+                { addNomination(resp, true); }
+                else
+                {
+                    var $item =
+                        $('.nominationsList .gridList .item[data-nominationid=' +
+                        editId + ']');
+                    $item.find('.details .title').text(nomination.title);
+                    $item.find('.details .description')
+                        .text(nomination.description)
+                        .toggleClass('hide', $.isBlank(nomination.description));
+                }
             }});
     };
 
@@ -209,7 +229,7 @@ $(function()
                 return false;
             }
 
-            createNomination(response.id);
+            saveNomination(response.id);
         }
     });
 
@@ -233,7 +253,23 @@ $(function()
             }
             else
             {
-                createNomination();
+                saveNomination();
             }
         });
+
+    $('.nominateLink').click(function(e)
+    {
+        e.preventDefault();
+        showNomDialog();
+    });
+
+    $.live('.nominationsList .gridList .details .edit', 'click', function(e)
+    {
+        e.preventDefault();
+        var $item = $(this).closest('tr.item');
+        showNomDialog($item.attr('data-nominationId'),
+            $item.find('.details .title').text(),
+            $item.find('.details .description').text());
+    });
+
 });

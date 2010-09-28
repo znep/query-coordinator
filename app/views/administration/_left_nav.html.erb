@@ -13,7 +13,7 @@
           {:action => 'users'} %>
     </li>
     <%- if module_available? :federations -%>
-      <li class="datasets">
+      <li class="federation">
         <%= link_to_unless_current \
             raw('<span class="icon"></span>Federation'),
             {:action => 'federations'} %>

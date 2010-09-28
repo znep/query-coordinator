@@ -39,7 +39,11 @@
     });
 
     var feedDirectiveBase = {
-        '.@class+': function(a) { return a.item.user.id == blist.dataset.owner.id ? a.item.itemType + ' ownerFeedItem': a.item.itemType; },
+        '.@class+': function(a)
+            {
+                return a.item.user.id == ((blist.dataset || {}).owner || {}).id ?
+                    a.item.itemType + ' ownerFeedItem': a.item.itemType;
+            },
         '.@data-itemId': 'feedItem.itemId',
         '.feedCommon@class+': 'feedItem.itemType',
         '.feedActor': 'feedItem.user.displayName!',

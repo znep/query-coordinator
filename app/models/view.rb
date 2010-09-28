@@ -33,6 +33,11 @@ class View < Model
     parse(CoreServer::Base.connection.get_request(path))
   end
 
+  def self.find_shared_to_user(id)
+    path = "/users/#{id}/views.json?method=getShared"
+    parse(CoreServer::Base.connection.get_request(path))
+  end
+
   def self.categories
     categories = CurrentDomain.configuration('view_categories').properties
     map = @@default_categories.clone
@@ -228,13 +233,13 @@ class View < Model
                      "?method=setPermission&value=#{perm_value}")
   end
 
-  def to_json
+  def to_json(opts = nil)
     dhash = data_hash
     dhash["numberOfComments"] = numberOfComments
     dhash["averageRating"] = averageRating
     dhash["totalTimesRated"] = totalTimesRated
 
-    dhash.to_json
+    dhash.to_json(opts)
   end
 
 
@@ -564,6 +569,12 @@ class View < Model
     @display = display_class.new(self)
   end
 
+  # A human readable form of what the view type is, e.g. 'Dataset' rather than 'Table'
+  def display_name
+    d = display
+    return @@display_names[d.name] || d.name
+  end
+
   def can_add_visualization?
     Displays::Config.each_public do |k, v|
       return true if can_create_visualization_type?(k)
@@ -783,6 +794,12 @@ class View < Model
       :name => "Calendars"
     }
   ]
+
+  @@display_names = {
+    'Blob' => 'File',
+    'Href' => 'Linked Dataset',
+    'Table' => 'Dataset'
+  }
 
   private
   def transform_row(r, columns)

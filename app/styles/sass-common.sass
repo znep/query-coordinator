@@ -16,6 +16,8 @@ $sidebar_appearance_tab_color_top: #1dad86
 $sidebar_behavior_tab_color_top: #79ad1d
 $sidebar_advanced_tab_color_top: #791dad
 
+$light_bg_color: #fafafa
+
 // Compat functions
 
 @mixin border-radius($a, $b: true, $c: true, $d: true)
@@ -175,7 +177,7 @@ $sidebar_advanced_tab_color_top: #791dad
     width: $labelWidth
   .additionalHelp
     margin-left: $labelWidth + 3.5em
-  label.error
+  label.error, span.error
     margin-left: $labelWidth + 3em
   @if $controlWidth != true
     input[type=text], input[type=password], textarea, label.error

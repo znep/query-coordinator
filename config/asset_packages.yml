@@ -246,7 +246,7 @@ javascripts:
   - widgets/inline-edit
   - screens/discover-screen
   - util/urls
-  - screens/nominations-screen
+  - screens/nominations-old
   - plugins/ajaxupload.3.0
 - homes-show:
   - screens/home-screen
@@ -263,6 +263,23 @@ javascripts:
   - data/legacy-model
   - data/legacy-table
   - screens/stats-screen
+- screen-browse:
+  - plugins/jquery.uniform
+  - plugins/jquery.tagcloud
+  - util/events
+  - controls/menu
+  - controls/dataset-controls
+  - controls/expander
+  - controls/stars
+  - controls/modal-dialogs
+  - screens/browse
+- screen-nominations:
+  - plugins/ajaxupload.3.0
+  - util/events
+  - util/humane-date
+  - util/user
+  - controls/modal-dialogs
+  - screens/nominations
 - widgets-show:
   - plugins/ui.effects.custom.min
   - plugins/jquery.uniform
@@ -362,6 +379,16 @@ javascripts:
   - plugins/jquery.uniform
   - screens/login-shared
   - screens/signup-screen
+- screen-profile:
+  - util/humane-date
+  - util/urls
+  - util/user
+  - controls/feed-list
+  - screens/profile-screen-v4
+- screen-profile-edit:
+  - plugins/jquery.uniform
+  - plugins/ajaxupload.3.0
+  - screens/profile-screen-edit-v4
 
 
 

@@ -42,6 +42,11 @@ dataset-edit-metadata:
 - screen-dataset-edit-metadata
 dataset-analytics:
 - screen-metrics
+profile-show:
+- screen-profile
+- control-feed
+profile-edit:
+- screen-profile-edit
 administration-screen:
 - screen-admin
 administration-index-screen:
@@ -59,3 +64,7 @@ administration-federation:
 - screen-administration-federation
 administration-users:
 - screen-admin-users
+screen-browse:
+- screen-browse
+screen-nominations:
+- screen-nominations

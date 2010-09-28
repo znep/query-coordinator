@@ -80,7 +80,7 @@ class Displays::Base
     def render_inline_setup_js(target_dom_id, context)
       # Set common base variables communicating display configuration to JS
       js = <<END
-blist.dataset = new Dataset(JSON.parse($.htmlUnescape("#{h(@view.to_json.gsub(/\\/, '\\\\\\'))}")));
+blist.dataset = new Dataset(#{@@app_helper.safe_json(@view)});
 $(function()
 {
     blist.$display = $('##{target_dom_id}');

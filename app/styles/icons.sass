@@ -71,6 +71,7 @@
   &.rightArrowHighlight #{$subselector}
     background-position: 0 -65px
   &.leftArrow #{$subselector},
+  &.leftArrowNoHover #{$subselector},
   &.previous #{$subselector}
     background-position: 0 -78px
   &.leftArrow:hover #{$subselector},
@@ -396,6 +397,8 @@
     background-position: 0 -78px
   &.internal #{$subselector}
     background-position: 0 -91px
+  &.federation #{$subselector}
+    background-position: 0 -104px
 
 // internface/admin_header_icons.png
 @mixin admin-header-icons($subselector: '.icon')
@@ -416,6 +419,8 @@
     background-position: 0 -96px
   &.internal #{$subselector}
     background-position: 0 -128px
+  &.federation #{$subselector}
+    background-position: 0 -160px
 
 // icons/new_dataset_icons.png
 @mixin new-dataset-icons($subselector: '.icon')
@@ -517,3 +522,22 @@
     background-position: 0 -75px
   &.openid #{$subselector}
     background-position: 0 -100px
+
+// Profile edit icons
+@mixin profile-icons($subselector: '.icon')
+  #{$subselector}
+    @include text-hiding
+    @include ie6-fix
+    background-image: url(/stylesheets/images/interface/profile_icons.png?1)
+    height: 13px
+    width: 15px 
+
+  &.basicInfo #{$subselector}
+    background-position: 0 0
+  &.profileImage #{$subselector}
+    background-position: 0 -13px
+  &.community #{$subselector}
+    background-position: 0 -26px
+  &.accountSettings #{$subselector}
+    background-position: 0 -39px
+

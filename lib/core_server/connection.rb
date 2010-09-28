@@ -22,15 +22,22 @@ module CoreServer
       {:runtime => reset_runtime, :requests => reset_request_count}
     end
 
-    def get_request(path, custom_headers = {})
-      result_body = cache.read("#{CurrentDomain.cname}:#{path}")
-      if result_body.nil?
-        result_body = generic_request(Net::HTTP::Get.new(path),
-                                      nil, custom_headers).body
-        cache.write("#{CurrentDomain.cname}:#{path}", result_body)
-      end
+    # Require the caller to tell us to use batching, since we won't
+    # return anything when we do
+    def get_request(path, custom_headers = {}, use_batching = false)
+      if @batching && use_batching
+        @batch_queue << {:url => path, :requestType => 'GET'}
+        nil
+      else
+        result_body = cache.read("#{CurrentDomain.cname}:#{path}")
+        if result_body.nil?
+          result_body = generic_request(Net::HTTP::Get.new(path),
+                                        nil, custom_headers).body
+          cache.write("#{CurrentDomain.cname}:#{path}", result_body)
+        end
 
-      result_body
+        result_body
+      end
     end
 
     def create_request(path, payload = "{}", custom_headers = {})

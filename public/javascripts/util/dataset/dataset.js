@@ -744,7 +744,7 @@ this.Dataset = Model.extend({
     remove: function(successCallback, errorCallback)
     {
         this._makeRequest({url: '/datasets/' + this.id + '.json',
-            type: 'DELETE',
+            type: 'DELETE', dataType: 'text',
             success: successCallback, error: errorCallback});
     },
 

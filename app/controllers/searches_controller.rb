@@ -1,4 +1,5 @@
 class SearchesController < ApplicationController
+  skip_before_filter :require_user
   include BrowseController
 
   def show

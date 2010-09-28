@@ -103,8 +103,8 @@ this.Model = Class.extend({
 
         if (model._reqCount < 1) { this.trigger('start_request'); }
         model._reqCount++;
-        $.extend(req, {contentType: 'application/json', dataType: 'json',
-                error: finishCallback(req.error),
+        req = $.extend({contentType: 'application/json', dataType: 'json'}, req,
+                {error: finishCallback(req.error),
                 success: finishCallback(req.success)});
 
         if (!$.isBlank(req.params))

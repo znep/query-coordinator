@@ -66,6 +66,12 @@ $(function()
         var ds = blist.browse.datasets[i];
         $content.append($.renderTemplate('expandedInfo', ds,
             {
+                '.permissions .permType': function(v)
+                    { return v.context.isPublic() ? 'Private' : 'Public'; },
+                '.permissions.button@class+': function(v)
+                    { return v.context.hasRight('update_view') ? '' : 'hide'; },
+                '.delete.button@class+': function(v)
+                    { return v.context.hasRight('delete_view') ? '' : 'hide'; },
                 '.comments .value': 'numberOfComments'
             }));
 
@@ -84,6 +90,26 @@ $(function()
 
         $content.find('.datasetAverageRating')
             .stars({value: ds.averageRating, enabled: false});
+
+        $content.find('.button.permissions:not(.hide)').click(function(e)
+        {
+            e.preventDefault();
+            var $t = $(this);
+            var isPublic = ds.isPublic();
+            if (isPublic) { ds.makePrivate(); }
+            else { ds.makePublic(); }
+            $t.find('.permType').text(isPublic ? 'Public' : 'Private');
+        });
+
+        $content.find('.button.delete:not(.hide)').click(function(e)
+        {
+            e.preventDefault();
+            var $t = $(this);
+            if (confirm('Are you sure you want to delete ' + ds.name + '?'))
+            {
+                ds.remove(function() { $t.closest('tr.item').remove(); });
+            }
+        });
     };
 
     $browse.find('table tbody tr').expander({

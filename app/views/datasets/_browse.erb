@@ -69,6 +69,15 @@
   </div>
   <%- end -%>
 
+  <%- if !@browse_in_container &&
+        (CurrentDomain.user_can?(current_user, :create_datasets) ||
+          CurrentDomain.module_enabled?(:community_creation)) -%>
+  <div class='createDatasetBox infoBox'>
+    <h3>Create or upload your own dataset</h3>
+    <a class='button next' href='/datasets/new'><span class='icon'></span>Create</a>
+  </div>
+  <%- end -%>
+
   <div class='browseList'>
     <%- if @view_count > 0 && @sort_opts.length > 0 -%>
     <div class='sortOptions'>
@@ -100,7 +109,16 @@
 
     <div class='results'>
       <%- if @view_count == 0 -%>
-      <div class='noResults'>No Results</div>
+      <div class='noResults'>
+        <span class='message'>No Results</span>
+        <%- if (CurrentDomain.user_can?(current_user, :create_datasets) ||
+              CurrentDomain.module_enabled?(:community_creation)) -%>
+        <a class='button createLink' href='/datasets/new'>Create New Dataset</a>
+        <%- end -%>
+        <%- if CurrentDomain.module_enabled?(:dataset_nomination) -%>
+        <a class='button suggestLink' href='/nominate'>Suggest a Dataset</a>
+        <%- end -%>
+      </div>
 
       <%- else -%>
       <table class='gridList'>
@@ -158,6 +176,14 @@
       @opts[:page], @base_url + '?' + @params.to_param, 'button') %>
     <%- end -%>
   </div>
+
+  <%- if !@browse_in_container &&
+          CurrentDomain.module_enabled?(:dataset_nomination) -%>
+  <div class='suggestBox infoBox'>
+    <h3>Didn't find what you're looking for? Suggest a dataset</h3>
+    <a class='button next' href='/nominate'><span class='icon'></span>Suggest</a>
+  </div>
+  <%- end -%>
 </div>
 
 <%- content_for :modals do -%>

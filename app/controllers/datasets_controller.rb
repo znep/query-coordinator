@@ -5,6 +5,12 @@ class DatasetsController < ApplicationController
 
 # collection actions
   def new
+    if (!CurrentDomain.user_can?(current_user, :create_datasets) &&
+        !CurrentDomain.module_enabled?(:community_creation))
+      # User doesn't have access to create new datasets
+      render 'shared/error', :status => :not_found
+      return nil
+    end
   end
 
 # member actions

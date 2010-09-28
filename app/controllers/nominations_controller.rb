@@ -5,7 +5,7 @@ class NominationsController < ApplicationController
   layout 'dataset_v2'
 
   def show
-    @base_url = request.env['REQUEST_PATH']
+    @base_url = request.path
     @page_size = 10
     params[:page] ||= 1
     @status = params[:status] || nil

@@ -116,7 +116,7 @@ ActionController::Routing::Routes.draw do |map|
     end
   end
 
-  map.resource :search
+  map.resource :browse, :controller => 'browse'
 
   map.resource :account
   map.resources :suggestions

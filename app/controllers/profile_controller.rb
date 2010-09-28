@@ -1,5 +1,5 @@
 class ProfileController < ApplicationController
-  include BrowseController
+  include BrowseActions
   skip_before_filter :require_user, :only => [:show]
 
   helper :user

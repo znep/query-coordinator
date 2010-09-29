@@ -372,7 +372,7 @@
     background-position: 4px -163px
     width: 20px
 
-// icons/menu_icons.png
+// interface/admin_icons.png
 @mixin admin-icons($subselector: '.icon')
   #{$subselector}
     @include text-hiding
@@ -397,6 +397,30 @@
     background-position: 0 -78px
   &.internal #{$subselector}
     background-position: 0 -91px
+  &.federation #{$subselector}
+    background-position: 0 -104px
+
+// internface/admin_header_icons.png
+@mixin admin-header-icons($subselector: '.icon')
+  #{$subselector}
+    @include text-hiding
+    @include ie6-fix
+    background-image: url(/stylesheets/images/interface/admin_header_icons.png?1)
+    height: 32px
+    width: 34px
+
+  &.analytics #{$subselector}
+    background-position: 0 0
+  &.users #{$subselector}
+    background-position: 0 -32px
+  &.comments #{$subselector}
+    background-position: 0 -64px
+  &.appearance #{$subselector}
+    background-position: 0 -96px
+  &.internal #{$subselector}
+    background-position: 0 -128px
+  &.federation #{$subselector}
+    background-position: 0 -160px
 
 // icons/new_dataset_icons.png
 @mixin new-dataset-icons($subselector: '.icon')

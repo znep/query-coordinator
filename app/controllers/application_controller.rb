@@ -55,8 +55,7 @@ class ApplicationController < ActionController::Base
   end
 
   def require_module!(name)
-    render_404 unless CurrentDomain.feature?(name.to_s) &&
-                      CurrentDomain.module_available?(name.to_s)
+    render_404 unless CurrentDomain.module_enabled?(name.to_s)
   end
 
   def require_that(enabled)

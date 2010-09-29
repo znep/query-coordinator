@@ -209,6 +209,11 @@
                     chartObj.chart.xAxis[0].setCategories(
                             chartObj._xCategories, false);
                     chartObj.chart.redraw();
+
+                    if (chartObj.settings.view.snapshotting)
+                    {
+                        prepareToSnapshot(chartObj); 
+                    }
                 }
                 if (!_.isUndefined(chartObj.secondChart))
                 {
@@ -231,6 +236,8 @@
                 }
 
                 chartObj.$dom().show();
+                if (chartObj.settings.view.snapshotting)
+                { return; }
 
                 // Since we have to re-create the whole chart, set up a timer to
                 // wait until they've paused/finished dragging
@@ -430,7 +437,8 @@
         { typeConfig.marker = {enabled: false}; }
 
         // If we already loaded and are just re-rendering, don't animate
-        if (chartObj._loadedOnce) { typeConfig.animation = false; }
+        if (chartObj._loadedOnce || chartObj.settings.view.snapshotting)
+        { typeConfig.animation = false; }
 
         // Make sure lineSize is defined, so we don't hide the line by default
         if (!_.isUndefined(chartObj.settings.view.displayFormat.lineSize))
@@ -439,6 +447,11 @@
 
         // Type config goes under the type name
         chartConfig.plotOptions[seriesType] = typeConfig;
+
+        // We don't actually enable exporting
+        chartConfig.exporting = {
+            enabled: false
+        };
 
         // Create the chart
         chartObj.startLoading();
@@ -458,9 +471,56 @@
             if (isDateTime(chartObj)) { createDateTimeOverview(chartObj); }
 
             chartObj._loadedOnce = true;
+
+            if (chartObj.settings.view.snapshotting)
+            {
+                prepareToSnapshot(chartObj); 
+            }
+     
         });
     };
 
+    // Once the chart's ready to draw, let' take a picture
+    var prepareToSnapshot = function(chartObj)
+    {
+        if (!$.isBlank(chartObj._snapshot_timer))
+        {
+            clearTimeout(chartObj._snapshot_timer);
+            chartObj._snapshot_timer = null;
+        }
+
+        if (_.include(['timeline', 'line'], chartObj.settings.view.displayFormat.chartType))
+        {
+            prepareSnapshotHack(chartObj);
+        }
+        else
+        {
+            chartObj._snapshot_timer = setTimeout(chartObj.settings.view.takeSnapshot, 1000);
+        }
+    };
+
+    var prepareSnapshotHack = function(chartObj)
+    {
+        chartObj._snapshot_timer = setTimeout(function()
+        {
+              // well, this is quite the hack
+              var uri = "data:image/svg+xml;base64," + Base64.encode(chartObj.chart.getSVG());
+              _.defer(function()
+              {
+                  $('body').empty().append(
+                      $('<embed>')
+                        .attr('src', uri)
+                        .attr('width', window.innerWidth)
+                        .attr('height', window.innerHeight)
+                        .attr('type', 'image/svg+xml')
+                  );
+
+                  // now that the svg/embed is clean, let's take the damn picture
+                  setTimeout(chartObj.settings.view.takeSnapshot, 100);
+              });
+
+        }, 1000);
+    };
     var xPoint = function(chartObj, row, value)
     {
         var pt = {x: value};

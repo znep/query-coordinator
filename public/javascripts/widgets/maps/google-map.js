@@ -30,6 +30,40 @@
 
                 mapObj._bounds = new google.maps.LatLngBounds();
                 mapObj._boundsCounts = 0;
+
+                // For snapshotting
+                if (mapObj.settings.view.snapshotting)
+                {
+                    mapObj.settings.view.bind('finish_request', function()
+                    {
+                        if (!$.isBlank(mapObj._snapshot_event_bounds))
+                        { return; }
+
+                        var clearSnapTimeout = function()
+                        {
+                            if (!$.isBlank(mapObj._snapshot_timeout))
+                            {
+                                clearTimeout(mapObj._snapshot_timeout);
+                                mapObj._snapshot_timeout = null;
+                            }
+                        };
+
+                        mapObj._snapshot_event_bounds = true;
+
+                        google.maps.event.addListener(mapObj.map, 'tilesloaded', function(a){
+                            clearSnapTimeout();
+                            mapObj._snapshot_timeout = setTimeout(function()
+                                { mapObj.settings.view.takeSnapshot();  },
+                            2000);
+                        });
+
+                        google.maps.event.addListener(mapObj.map, 'zoom_changed', function(a){
+                            // Points were rendered which caused a redraw, clear timer
+                            // and wait for tiles again
+                            clearSnapTimeout();
+                        });
+                    });
+                }
             },
 
             renderPoint: function(latVal, longVal, rowId, details)
@@ -80,7 +114,8 @@
                     && mapObj._rowsLeft == 0)
                 {
                     if (!mapObj._markerClusterer)
-                    { mapObj._markerClusterer = new MarkerClusterer(mapObj.map, _.values(mapObj._markers)); }
+                    { mapObj._markerClusterer =
+                        new MarkerClusterer(mapObj.map, _.values(mapObj._markers)); }
                     else
                     { mapObj._markerClusterer.addMarkers(_.values(mapObj._markers)); }
                 }
@@ -136,13 +171,54 @@
             adjustBounds: function()
             {
                 var mapObj = this;
-                if (mapObj._boundsCounts > 1)
+                if (mapObj._viewportListener)
+                { google.maps.event.removeListener(mapObj._viewportListener); }
+
+                if (mapObj.settings.view.displayFormat.viewport)
+                { mapObj.setViewport(mapObj.settings.view.displayFormat.viewport); }
+                else if (mapObj._boundsCounts > 1)
                 { mapObj.map.fitBounds(mapObj._bounds); }
                 else
                 {
                     mapObj.map.setCenter(mapObj._bounds.getCenter());
                     mapObj.map.setZoom(mapObj.settings.defaultZoom);
                 }
+
+                var l = google.maps.event.addListener(mapObj.map, 'idle', function()
+                {
+                    google.maps.event.removeListener(l);
+                    mapObj._viewportListener = google.maps.event.addListener(
+                        mapObj.map, 'bounds_changed', function()
+                        {
+                            mapObj.settings.view.update({
+                                displayFormat: $.extend({},
+                                    mapObj.settings.view.displayFormat,
+                                    { viewport: mapObj.getViewport() })
+                            });
+                        });
+                });
+            },
+
+            getViewport: function()
+            {
+                var mapObj = this;
+                var viewport = {
+                    center: mapObj.map.getCenter(),
+                    zoom: mapObj.map.getZoom()
+                };
+                viewport.center = {
+                    lat: viewport.center.lat(),
+                    lng: viewport.center.lng()
+                };
+                return viewport;
+            },
+
+            setViewport: function(viewport)
+            {
+                var mapObj = this;
+                mapObj.map.setCenter(new google.maps.LatLng(
+                    viewport.center.lat, viewport.center.lng));
+                mapObj.map.setZoom(viewport.zoom);
             },
 
             resetData: function()

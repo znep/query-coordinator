@@ -179,7 +179,8 @@ blist.publish.customizationApplication = {
                       show_title:                           [ { selector: '.subHeaderBar .datasetName', hideShow: true } ],
                       padding:                              [ { selector: '.subHeaderBar, .toolbar', css: 'margin-left, margin-right', hasUnit: true },
                                                               { selector: '.widgetContent', callback: publishNS.applyContentMargin } ] },
-    toolbar:        { color:                                [ { selector: '.subHeaderBar, .toolbar', css: 'background-color' } ] },
+    toolbar:        { color:                                [ { selector: '.subHeaderBar, .toolbar', css: 'background-color' } ],
+                      input_color:                          [ { selector: '.toolbar .toolbarTextboxWrapper .toolbarTextbox', css: 'background-color' } ] },
     logo:           { image:                                [ { selector: '.headerBar .logo', callback: publishNS.applyLogo } ],
                       href:                                 [ { selector: '.headerBar .logoLink', attr: 'href' } ] },
     menu:           { button:        { background:          [ { callback: function(value) { publishNS.applyGradient('.headerBar .mainMenu .mainMenuButton', false, value); } } ],
@@ -250,7 +251,7 @@ blist.publish.wireLogoEditor = function($section)
             },
             function(responseFile, file, response)
             {
-                var $logoSelect = $('#gridSidebar_appearance #gridSidebar_appearance_logo\\:_logoSelect');
+                var $logoSelect = $('#gridSidebar_appearance_logo\\:_logoSelect');
                 $logoSelect.append('<option value="' + response['id'] + '">'+
                                     response['nameForOutput'] + '</option>');
                 $logoSelect.val(response['id']);
@@ -264,16 +265,37 @@ blist.publish.wireLogoEditor = function($section)
 blist.publish.updateCustomUI = function()
 {
     // hide zebra color if not zebraing
-    $('#gridSidebar_appearance_rows\\:grid\\.zebra').closest('.line').toggleClass('disabled',
-        !$('#gridSidebar_appearance_rows\\:_zebraStriping').is(':checked'));
+    $('#gridSidebar_appearance_rows\\:grid\\.zebra')
+        .closest('.line').toggleClass('disabled', !publishNS.workingTheme._zebraStriping);
 
     // update page title
     $('.publisherHeader h1').text('Editing ' + publishNS.workingThemeMeta.name);
 
     // update logoSelect to appropriate value
-    var logoHref = publishNS.workingTheme._logoSelect;
-    var $select = $('#gridSidebar_appearance #gridSidebar_appearance_logo\\:_logoSelect').val(logoHref);
+    var $select = $('#gridSidebar_appearance #gridSidebar_appearance_logo\\:_logoSelect')
+                      .val(publishNS.workingTheme._logoSelect);
     if (!_.isUndefined($.uniform.update)) { $.uniform.update($select); }
+
+    // hide url field if no logo, update value
+    $('#gridSidebar_appearance_logo\\:logo\\.href')
+        .val(publishNS.workingTheme.logo.href)
+        .closest('.line').toggleClass('disabled', (publishNS.workingTheme._logoSelect == 'none'));
+
+    // hide/show changes warning on embed pane
+    $('#gridSidebar_embed .changesWarning').toggleClass('hide', !$('.publisherHeader').hasClass('unsaved'));
+
+    // show validation messages
+    publishNS.sidebar.$currentPane().find('form').valid();
+};
+
+blist.publish.generateEmbedCode = function(hash)
+{
+    if (_.isUndefined(hash)) { var hash = publishNS.workingTheme; }
+    return $('#codeTemplate').val()
+        .replace('%variation%', publishNS.currentThemeMeta.id)
+        .replace('%width%', hash.publish.dimensions.width)
+        .replace('%height%', hash.publish.dimensions.height)
+        .replace((hash.publish.show_powered_by ? /<\/div>$/ : /<p>.*<\/p><\/div>$/), '</div>');
 };
 
 // Register the SDP sidebars !
@@ -311,9 +333,9 @@ _.each([
         title: 'Exterior', name: 'exterior',
         fields: [
         {   text: 'Width', name: 'publish.dimensions.width',
-            type: 'text', required: true },
+            type: 'text', required: true, validateMin: 425 },
         {   text: 'Height', name: 'publish.dimensions.height',
-            type: 'text', required: true },
+            type: 'text', required: true, validateMin: 425 },
         {   text: 'Powered By Text', name: 'publish.show_powered_by',
             type: 'checkbox' }]
     },
@@ -346,6 +368,7 @@ _.each([
     },
     {
         title: 'Column Headers', name: 'columns',
+        onlyIf: { func: function() { return publishNS.viewIsGrid; } },
         fields: [
         {   text: 'Wrap Column Titles', name: 'grid.wrap_header_text',
             type: 'checkbox' },
@@ -359,6 +382,7 @@ _.each([
     },
     {
         title: 'Rows', name: 'rows',
+        onlyIf: { func: function() { return publishNS.viewIsGrid; } },
         fields: [
         {   text: 'Row Numbers', name: 'grid.row_numbers',
             type: 'checkbox' },
@@ -406,7 +430,7 @@ _.each([
         {   text: 'API', name: 'menu.options.api',
             type: 'checkbox' },
         {   text: 'Print', name: 'menu.options.print',
-            type: 'checkbox' },
+            type: 'checkbox', onlyIf: publishNS.viewIsGrid },
         {   text: 'About the SDP', name: 'menu.options.about_sdp',
             type: 'checkbox' }]
     },
@@ -440,6 +464,25 @@ _.each([
             type: 'text' },
         {   value: 'If you use Google Analytics you can embed your tracking ' +
                    'code into your Social Data Player', type: 'static' }]
+    }]
+},
+{
+    name: 'embed',
+    priority: 4,
+    title: 'Embed',
+    subtitle: 'Publish this Social Data Player on the web',
+    noReset: true,
+    dataSource: function() { return { code: publishNS.generateEmbedCode() }; },
+    showCallback: publishNS.updateCustomUI,
+    sections: [
+    {
+        title: 'Embed Code', name: 'embedCode',
+        fields: [
+        {   text: 'Embed Code', name: 'code',
+            type: 'textarea' },
+        {   value: 'You have made changes to this template that have ' +
+                   'not yet been saved. They will not reflect in published ' +
+                   'until you save the template.', type: 'static', lineClass: 'changesWarning' }]
     }]
 }], $.gridSidebar.registerConfig);
 
@@ -604,20 +647,11 @@ blist.publish.applyCustomizationToPreview = function(hash)
         // publishNS.clearStyles(); // DANGEROUS: no idea how well it works without this
         recurse(publishNS.customizationApplication, hash);
 
+        // update embed codes
+        publishNS.findFrameElem('#embed_code').text(publishNS.generateEmbedCode(hash));
+
         // this is slow; let's let the UI refresh before running it.
         _.defer(function() { widgetNS.$resizeContainer.fullScreen().adjustSize(); });
-
-        if (publishNS.showEmbed === true)
-        {
-            // Update copy code
-            blist.publish.publishCode =
-                $('#codeTemplate').val()
-                    .replace('%variation%', $('#template_name').val())
-                    .replace('%width%', hash['publish']['dimensions']['width'])
-                    .replace('%height%', hash['publish']['dimensions']['height'])
-                    .replace((hash['publish']['show_title'] ? /^<div>/ : /^<div><p.*?<\/p>/), '<div>')
-                    .replace((hash['publish']['show_powered_by'] ? /<\/div>$/ : /<p>.*<\/p><\/div>$/), '</div>');
-        }
 
         // first-load operations
         if (publishNS.customizationApplied === false)
@@ -847,7 +881,7 @@ blist.publish.deferredHandleValueChanged = function()
     _.defer(function() { publishNS.handleValueChanged(); });
 };
 
-blist.publish.saveCustomization = function()
+blist.publish.saveCustomization = function(callback)
 {
     $.ajax({
         url: '/api/widget_customization/' + publishNS.currentThemeMeta.id,
@@ -864,6 +898,8 @@ blist.publish.saveCustomization = function()
             publishNS.currentThemeMeta.name = response.name;
 
             publishNS.initCustomization();
+
+            callback();
         },
         error: function(request, status, error)
         {
@@ -997,11 +1033,13 @@ blist.publish.convertCustomization = function(customization)
         event.preventDefault();
 
         $('.publisherActions .loadingIcon').show().css('display', 'inline-block');
-        publishNS.saveCustomization();
-        publishNS.applyCustomizationToPreview(publishNS.workingTheme);
+        publishNS.saveCustomization(function()
+        {
+            publishNS.applyCustomizationToPreview(publishNS.workingTheme);
 
-        $('.headerBar').removeClass('unsaved noRevert');
-        $('.publisherActions .loadingIcon').hide();
+            $('.headerBar').removeClass('unsaved noRevert');
+            $('.publisherActions .loadingIcon').hide();
+        });
     });
     $('.revertButton').click(function(event)
     {
@@ -1009,6 +1047,9 @@ blist.publish.convertCustomization = function(customization)
         publishNS.initCustomization();
         publishNS.applyCustomizationToPreview(publishNS.workingTheme);
     });
+
+    // Embed code highlight
+    $.live('#gridSidebar_embed textarea', 'click', function() { $(this).select(); });
 
     // Warn on leaving
     window.onbeforeunload = function()

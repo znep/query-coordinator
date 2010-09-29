@@ -39,9 +39,11 @@ class ProfileController < ApplicationController
       @friends = @user.friends
     end
 
-    # Also, we can probably make these _views vars local, not @ accessible
-    unless @view_summary_cached = read_fragment(app_helper.cache_key('profile-view-summary', @current_state))
+    @stat_displays = []
 
+    # Also, we can probably make these _views vars local, not @ accessible
+    unless (@view_summary_cached = read_fragment(app_helper.cache_key('profile-view-summary', @current_state))) ||
+           (params[:_oldViews] == 'true')
       base_req = {:limit => 1, :for_user => @user.id}
       stats = [
         {:params => {:datasetView => 'dataset'}, :name => 'Datasets'},
@@ -52,7 +54,6 @@ class ProfileController < ApplicationController
         {:params => {:limitTo => 'calendars'}, :name => 'Calendars'},
         {:params => {:limitTo => 'forms'}, :name => 'Forms'}
       ]
-      @stat_displays = []
       CoreServer::Base.connection.batch_request do
         stats.each do |s|
           SearchResult.search('views', base_req.merge(s[:params]), true)

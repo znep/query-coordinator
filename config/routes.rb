@@ -100,6 +100,8 @@ ActionController::Routing::Routes.draw do |map|
       admin.connect as_route + '/users/:userid/:role', :action => 'set_user_role'
       admin.connect as_route + '/users/update', :action => 'set_user_role',
         :conditions => { :method => :post }
+      admin.connect as_route + '/sdp_templates', :action => 'sdp_template_create',
+        :conditions => { :method => :post }
       admin.connect as_route + '/sdp_templates/:id', :action => 'sdp_template'
       admin.connect as_route + '/sdp_templates/:id/set_default',
         :action => 'sdp_set_default_template'
@@ -117,6 +119,10 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   map.resource :browse, :controller => 'browse'
+
+  map.resource :search
+
+  map.resource :nominations, :as => 'nominate'
 
   map.resource :account
   map.resources :suggestions
@@ -136,6 +142,7 @@ ActionController::Routing::Routes.draw do |map|
     :member => {
       :widget_preview => :get,
       :edit_metadata => [:get, :post],
+      :thumbnail => :get,
       :math_validate => :post,
       :alt => [:get, :post]
     },
@@ -195,6 +202,11 @@ ActionController::Routing::Routes.draw do |map|
       :category => /(\w|-)+/},
     :conditions => {:method => [:get, :post]}
 
+  map.connect ':category/:view_name/:id/thumbnail', :controller => 'datasets',
+    :action => 'thumbnail',
+    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
+      :category => /(\w|-)+/},
+    :conditions => {:method => :get}
 
   # New short URLs
   map.connect 'dataset/:id', :controller => 'datasets',
@@ -204,6 +216,12 @@ ActionController::Routing::Routes.draw do |map|
 
   map.connect 'd/:id', :controller => 'datasets',
     :action => 'show',
+    :requirements => {:id => UID_REGEXP},
+    :conditions => {:method => :get}
+
+  # For screenshotting only
+  map.connect 'r/:id/:name', :controller => 'datasets',
+    :action => 'bare',
     :requirements => {:id => UID_REGEXP},
     :conditions => {:method => :get}
 

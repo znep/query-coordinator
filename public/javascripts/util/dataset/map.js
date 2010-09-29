@@ -62,6 +62,10 @@ Dataset.map.toBing = {
 
 Dataset.modules['map'] =
 {
+    supportsSnapshotting: function()
+    {
+        return _.include(['bing', 'google', 'esri'], this.displayFormat.type);
+    },
 
     _checkValidity: function()
     {

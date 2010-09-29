@@ -55,10 +55,12 @@ dataset-show:
 - screen-dataset
 dataset-alt:
 - screen-dataset-alt
-dataset-edit-metadata:
-- screen-dataset-edit-metadata
 dataset-analytics:
 - screen-metrics
+dataset-edit-metadata:
+- screen-dataset-edit-metadata
+dataset-thumbnail:
+- screen-dataset-thumbnail
 homepage-show:
 - screen-homepage-show
 profile-show:
@@ -66,3 +68,5 @@ profile-show:
 - control-feed
 profile-edit:
 - screen-profile-edit
+screen-nominations:
+- screen-nominations

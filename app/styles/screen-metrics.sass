@@ -103,11 +103,15 @@
           col.description
             width: 80%
 
+  .summaryDisplay
+    display: inline-block
+
   .summaryDisplay, .detailDisplay
-    margin: 2em 0
+    margin: 1em 0
     width: 100%
     .ie7 &
       display: inline
+      zoom: 1
 
     .summaryContainer
       background-color: $light_bg_color
@@ -166,7 +170,11 @@
     display: block
 
   .metricsError
-    .loadingSpinner, .chartContainer
+    &.chartsDisplay
+      .flash.errorMessage
+        clear: none
+        margin: 2em
+    .loadingSpinner, .chartContainer, &.topDisplay, &.summaryDisplay
       display: none
     .flash.errorMessage
       display: block

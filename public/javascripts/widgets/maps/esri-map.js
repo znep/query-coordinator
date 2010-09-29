@@ -92,7 +92,13 @@
                             if (this.loaded) { layersLoaded++; }
                             mapObj.map.addLayer(this);
                             if (layersLoaded >= layers.length)
-                            { mapObj.populateLayers(); }
+                            {
+                                mapObj.populateLayers();
+                                if (mapObj.settings.view.snapshotting)
+                                {
+                                    setTimeout(mapObj.settings.view.takeSnapshot, 2000);
+                                }
+                            }
                         });
                     }
 
@@ -260,6 +266,9 @@
                 if (!mapObj._bounds && mapObj._multipoint.points.length == 0)
                 { return; }
 
+                if (mapObj._viewportListener)
+                { dojo.disconnect(mapObj._viewportListener); }
+
                 var extent = mapObj._bounds || mapObj._multipoint.getExtent();
                 // Adjust x & y by about 10% so points aren't on the very edge
                 // Use max & min diff since lat/long may be negative, and we
@@ -268,7 +277,9 @@
                 var xadj = (extent.xmax - extent.xmin) * 0.05;
                 var yadj = (extent.ymax - extent.ymin) * 0.05;
 
-                if (xadj == 0 || yadj == 0)
+                if (mapObj.settings.view.displayFormat.viewport)
+                { mapObj.setViewport(mapObj.settings.view.displayFormat.viewport); }
+                else if (xadj == 0 || yadj == 0)
                 {
                     mapObj.map.centerAndZoom(extent.getCenter(),
                         mapObj.settings.defaultZoom);
@@ -281,6 +292,42 @@
                     extent.ymin -= yadj;
                     mapObj.map.setExtent(extent);
                 }
+
+                mapObj._extentChanging = true;
+                mapObj._viewportListener = dojo.connect(mapObj.map, 'onExtentChange',
+                    function()
+                    {
+                        if (mapObj._extentChanging)
+                        { mapObj._extentChanging = false; return; }
+                        mapObj.settings.view.update({
+                            displayFormat: $.extend({},
+                                mapObj.settings.view.displayFormat,
+                                { viewport: mapObj.getViewport() })
+                        });
+                    });
+            },
+
+            getViewport: function()
+            {
+                var mapObj = this;
+                var viewport = mapObj.map.extent;
+                viewport = {
+                    xmin: viewport.xmin,
+                    xmax: viewport.xmax,
+                    ymin: viewport.ymin,
+                    ymax: viewport.ymax,
+                    sr: viewport.spatialReference.wkid
+                        || mapObj.map.spatialReference.wkid
+                };
+                return viewport;
+            },
+
+            setViewport: function(viewport)
+            {
+                var mapObj = this;
+                mapObj.map.setExtent(new esri.geometry.Extent(
+                    viewport.xmin, viewport.ymin, viewport.xmax, viewport.ymax,
+                    new esri.SpatialReference({ wkid: viewport.sr })));
             },
 
             resizeHandle: function(event)
@@ -296,6 +343,7 @@
                 mapObj._multipoint = new esri.geometry.Multipoint
                     (mapObj.map.spatialReference);
                 delete mapObj._segmentSymbols;
+                delete mapObj._bounds;
                 mapObj.map.graphics.clear();
                 mapObj.map.infoWindow.hide();
             },

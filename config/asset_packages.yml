@@ -280,11 +280,11 @@ javascripts:
   - util/urls
   - util/user
   - controls/feed-list
-  - screens/profile-screen-v4
+  - screens/profile-screen
 - profile-edit:
   - plugins/jquery.uniform
   - plugins/ajaxupload.3.0
-  - screens/profile-screen-edit-v4
+  - screens/profile-screen-edit
 
 
 

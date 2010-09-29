@@ -1,260 +1,69 @@
-
-$(function ()
+;$(function()
 {
-    $(".sectionContainer").showEdit();
-    $(".showListBoxLink, .profileEdit").click(function(event)
+    var $basicPane   = $('.editBasicInfoForm'),
+        $imagePane   = $('.editImageForm'),
+        $accountPane = $('.editAccountForm'),
+        $currentPane = $('.editProfile .editForm').first(),
+        $form        = $('#editProfileForm'),
+        $accountForm = $('#editAccountForm');
+
+    // Dynamic pane switching
+
+    $('.editProfileNav li a').click(function(event)
     {
         event.preventDefault();
-        $(this).closest(".sectionContainer").showEdit("displayEditSection");
-    });
+        var $link = $(event.target).closest('li'),
+            $newPane;
 
-    // Profile form.
-    $(".profileContent form").validate({
-        rules: {
-            'user[screenName]': "required"
-        },
-        submitHandler: function(form)
+        if ($link.is('.basicInfo'))
+        { $newPane = $basicPane; }
+        else if ($link.is('.profileImage'))
+        { $newPane = $imagePane; }
+        else if ($link.is('.accountSettings'))
+        { $newPane = $accountPane; }
+        else
+        { $newPane = null; }
+
+        if (!_.isNull($newPane) && $newPane[0] != $currentPane[0])
         {
-            var $form = $(form);
-
-            var requestData = $.param(
-                $form.find(":input:not(:radio), :radio[checked=true]"));
-            $.ajax({
-                url: $form.attr("action"),
-                type: "PUT",
-                dataType: "json",
-                data: requestData,
-                success: function(responseData)
-                {
-                    profileNS.updateInfo(responseData, $form);
-                }
+            $currentPane.animate({opacity: 0}, function()
+            {
+                $currentPane.hide();
+                $newPane
+                    .css('opacity', 0)
+                    .show()
+                    .animate({opacity: 1});
+                $currentPane = $newPane;
             });
         }
     });
-    $("#user_firstName, #user_lastName").keyup(function() {
-       if($("#user_firstName").val() === '' &&
-          $("#user_lastName").val() === '')
-       {
-           $('#user_privacyControl_login').attr('checked', 'checked');
-       }
-       else
-       {
-           $("#user_privacyControl_fullname").attr('checked', 'checked');
-       }
-    });
 
-    $("#user_country").change(function() { profileNS.updateStateCombo($(this)); });
-    profileNS.updateStateCombo($('#user_country'));
-
-    $(".descriptionContent form").submit(function(event)
-    {
-        event.preventDefault();
-        var $form = $(this);
-        var requestData = $.param($form.find(":input"));
-        $.ajax({
-            url: $form.attr("action"),
-            type: "PUT",
-            dataType: "json",
-            data: requestData,
-            success: function(responseData)
-            {
-                if (responseData.error)
-                {
-                    $form.find('.errorMessage').text(responseData.error);
-                }
+    var $profileImage  = $form.find('#profileImage'),
+        $throbber      = $form.find('.uploadIndicator'),
+        $errorMessage  = $form.find('.imageErrorLine'),
+        validationHash = {
+            ignoreTitle: true,
+            showErrors: function(errorMap, errorList) {
+                var $submit = $(this.currentForm).find('input[type="submit"]');
+                if (errorList.length === 0)
+                { $submit.removeClass('disabled'); }
                 else
-                {
-                    var text = responseData.user.htmlDescription;
-                    $(".descriptionText").html(text || "");
-                    $("#descriptionEmpty").toggleClass('initialHide', text !== undefined && text.length > 0);
-
-                    $form.find('.errorMessage').text('');
-                    $form.closest(".sectionContainer").showEdit("displayShowSection");
-                }
+                { $submit.addClass('disabled'); }
+                this.defaultShowErrors();
             }
-        });
-    });
+        };
 
-    $(".interestsContent form").submit(function(event)
+
+    $form.validate(validationHash);
+
+    // Upload new profile image
+    var $imageChange = $('.uploadNewImage').click(function(event)
+    { event.preventDefault(); });
+
+    // Don't create the ajax uploader unless the button is present
+    if ($imageChange.length > 0)
     {
-        event.preventDefault();
-        var $form = $(this);
-        var requestData = $.param($form.find(":input"));
-        $.ajax({
-            url: $form.attr("action"),
-            type: "PUT",
-            dataType: "json",
-            data: requestData,
-            success: function(responseData)
-            {
-                if (responseData.error)
-                {
-                    $form.find('.errorMessage').text(responseData.error);
-                }
-                else
-                {
-                    var text = responseData.user.interests;
-                    $(".interestsText").html($.htmlEscape(text || ""));
-                    $("#interestsEmpty").toggleClass('initialHide', text !== undefined && text.length > 0);
-
-                    $form.find('.errorMessage').text('');
-                    $form.closest(".sectionContainer").showEdit("displayShowSection");
-                }
-            }
-        });
-    });
-
-    // ADD
-    $(".editLinksContainer form").validate(
-    {
-        rules: {
-            'link[linkType]': "required",
-            'link[url]': {
-                required: true,
-                url: true
-            }
-        },
-        messages: {
-            'link[url]': {
-                required: "Please enter a full URL.",
-                url: "Please enter a full URL (including 'http://')."
-            }
-        },
-        submitHandler: function(form)
-        {
-            var $form = $(form);
-
-            var requestData = $.param($form.find(":input"));
-            $.ajax({
-                url: $form.attr("action"),
-                type: "POST",
-                data: requestData,
-                success: function(data) { profileNS.updateLinkSuccess(data, 0); }
-            });
-        }
-    });
-
-
-    // DELETE
-    $.live(".linksTableContainer td.edit_handle a", "click", function(event)
-    {
-        event.preventDefault();
-        if (confirm("Are you sure you want to delete this link?"))
-        {
-            var $link = $(this);
-            $.ajax({
-                url: $link.attr("href"),
-                type: "DELETE",
-                dataType: "json",
-                data: " ",
-                contentType: "application/json",
-                success: function(data) {
-                    $("#link_row_" + data.link_id).remove();
-                    $("#link_list_item_" + data.link_id).remove();
-                    $('#linksEmpty').toggleClass('initialHide', $(".linksContent .userLinkActions").children().length > 0);
-                }
-            });
-        }
-    });
-
-    // EDIT
-    $.live(".linksTableContainer td.edit_action a", "click", function(event)
-    {
-        event.preventDefault();
-        var $link = $(this);
-        var $row = $link.closest("tr");
-        var $cell = $("<td colspan='5' class='linkFormContainer'>");
-
-        var $formTable = $(".editLinksContainer form table").clone();
-        var $formAuth = $(".editLinksContainer form input[type='hidden']").clone();
-
-        var $form = $("<form action=\"" + $link.attr("href") + "\" method=\"post\" class=\"clearfix\"></form>");
-        $form.append($formAuth);
-
-        $formTable
-            .find("label.error").html("").end()
-            .find("select").val($row.find("td.edit_type p span").text()).end()
-            .find(".edit_label input").val($row.find("td.edit_label p").text())
-                .removeClass("textPrompt prompt").end()
-            .find(".edit_url input").val($row.find("td.edit_url p").text())
-                .removeClass("textPrompt prompt error").end()
-            .find(".edit_action input").attr("src", "/images/button_update.png");
-        $form.append($formTable);
-
-        $form.validate({
-            rules: {
-                'link[linkType]': "required",
-                'link[url]': {
-                    required: true,
-                    url: true
-                }
-            },
-            messages: {
-                'link[url]': {
-                    required: "Please enter a full URL.",
-                    url: "Please enter a full URL (including 'http://')."
-                }
-            },
-            submitHandler: function(form)
-            {
-                var $form = $(form);
-                var requestData = $.param($form.find(":input"));
-                var link_id = $.urlParam($form.attr("action"), "link_id");
-                $.ajax({
-                    url: $form.attr("action"),
-                    type: "PUT",
-                    data: requestData,
-                    success: function(data) { profileNS.updateLinkSuccess(data, link_id); }
-                });
-            }
-        });
-
-        $row.empty().append($cell);
-        $cell.append($form);
-    });
-
-    $('.sectionEdit form input').keypress(function (e)
-    {
-        $(e.currentTarget).closest('form').find('.errorMessage').text('');
-    });
-
-    $('#switchUsernameLink').click(function (e)
-    {
-        e.preventDefault();
-        e.stopPropagation();
-        var requestData = {"user[privacyControl]":
-            $(e.currentTarget).attr('href').split('_')[1]};
-        var $form = $('.userInfo .sectionEdit form');
-
-        if($form.find('#user_firstName').val() === "" &&
-           $form.find('#user_lastName').val() === "")
-        {
-            $(this).closest(".sectionContainer").showEdit("displayEditSection");
-            return;
-        }
-
-        var $authInput = $form.find(':input[name=authenticity_token]');
-        requestData[$authInput.attr('name')] = $authInput.val();
-
-        $.ajax({
-            url: $form.attr("action"),
-            type: "PUT",
-            dataType: "json",
-            data: requestData,
-            success: function(responseData)
-            {
-                profileNS.updateInfo(responseData, $form);
-            }
-        });
-    });
-
-    var $imageChange = $("#changeProfileImage")
-        .click(function (e) { e.preventDefault(); });
-
-    if ($("#changeProfileImage").length > 0)
-    {
-        var uploader =
-        new AjaxUpload($imageChange, {
+        var uploader = new AjaxUpload($imageChange, {
             action: $imageChange.attr('href'),
             autoSubmit: true,
             name: 'profileImageInput',
@@ -263,24 +72,99 @@ $(function ()
             {
                 if (!(ext && /^(jpg|png|jpeg|gif|tif|tiff)$/.test(ext)))
                 {
-                    $('.profilePicture .errorMessage')
-                        .text('Please choose an image file (jpg, gif, png or tiff)');
+                    $errorMessage
+                        .show();
                     return false;
                 }
-                $('.profilePicture .errorMessage').text('');
-                $('.profilePicture #profileImageContent').animate({ opacity: 0 });
+                $errorMessage
+                    .hide();
+                $throbber.show();
             },
             onComplete: function (file, response)
             {
-                $('<img/>')
-                    .attr('src', response.medium + '?rand=' + new Date().getTime())
-                    .load(function(){
-                        $('.profilePicture #profileImageContent')
-                            .empty()
-                            .append($(this))
-                            .animate({ opacity: 1 });
-                    });
+                $throbber.hide();
+                $profileImage.animate({opacity: 0}, {complete: function()
+                    {
+                        $('<img/>')
+                            .attr('src', response.large + '?_=' + new Date().getTime())
+                            .load(function() {
+                                $profileImage
+                                    .empty()
+                                    .append($(this))
+                                    .animate({opacity: 1});
+                            });
+                    }
+                });
             }
         });
+
     }
+
+    // Only show the State selection if they're in the US
+    var $countrySelect = $('#user_country'),
+        $stateLine     = $('.stateLine'),
+    showHideStateSelect = function(event)
+    {
+        if ($countrySelect.val() == 'US')
+        { $stateLine.slideDown(); }
+        else
+        { $stateLine.slideUp(); }
+    };
+
+    $('#user_country, #user_state').uniform();
+    $countrySelect.change(showHideStateSelect);
+    // Only hide it via JS so accessible version can always see it
+    showHideStateSelect();
+
+    var isPresent = function(selector){
+            return !$.isBlank($(selector).val());
+        },
+        hasOpenId = $accountForm.hasClass('hasOpenId');
+
+
+
+    // Account modifications. Who doesn't love complicated validation rules ??
+    $accountForm.validate($.extend({}, validationHash, {
+        rules: {
+            "user[email]": "email",
+            "user[email_confirm]": {
+                email: true,
+                equalTo: '#user_email'
+            },
+            "user[email_password]": {
+                required: {
+                    depends: function(element) {
+                        return isPresent('#user_email');
+                    }
+                }
+            },
+            "user[password_old]": {
+                required: {
+                    depends: function(element) {
+                        // Password is required if the email us there
+                        if (isPresent('#user_password_new')) {
+                            return !($(element).hasClass('.noPassword'));
+                        }
+                        return false;
+                    }
+                }
+            },
+            "user[password_new]": {
+                minlength: 6,
+                required: {
+                    depends: function(element) {
+                        // They can't set a blank password
+                        return isPresent('#user_password_old');
+                    }
+                }
+            },
+            "user[password_confirm]": {
+                equalTo: '#user_password_new'
+            }
+        }
+    }));
+
+    // Time for the checbox to put on its sexy uniform
+    $accountForm.find('input:checkbox').uniform();
 });
+

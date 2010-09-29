@@ -147,7 +147,6 @@ $(function()
         }
     }
 
-
     // grid
     datasetPageNS.$dataGrid = blist.$display;
     if (datasetPageNS.$dataGrid.length > 0)

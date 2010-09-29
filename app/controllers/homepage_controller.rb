@@ -1,4 +1,5 @@
 class HomepageController < ApplicationController
+  skip_before_filter :require_user
   include BrowseActions
 
   def show

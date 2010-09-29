@@ -240,11 +240,4 @@ private
   # the usual development call stacks:
   # alias_method :rescue_action_locally, :rescue_action_in_public
 
-  def choose_v4_layout
-    if action_name =~ /^v4/
-      'dataset_v2'
-    else
-      'main'
-    end
-  end
 end

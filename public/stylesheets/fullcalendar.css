@@ -73,37 +73,8 @@ table.fc-header {
 	direction: rtl;
 	}
 
-/* Buttons
+/* Buttons are styled by the site
 -----------------------------------*/
-
-.fc-header .fc-state-default
-{
-    background-color: #656565;
-    background-image: url(/stylesheets/images/widgets/background_buttons_summary_sprites.png);
-    background-position: 0 -63px;
-    background-repeat: no-repeat;
-    height: 21px;
-    margin-left: 1px;
-    overflow: hidden;
-}
-
-.fc-header .fc-state-default a
-{
-    background-image: url(/stylesheets/images/widgets/background_buttons_summary_sprites.png);
-    background-position: right -84px;
-    background-repeat: no-repeat;
-    color: #fff;
-    cursor: pointer;
-    display: block;
-    font-size: 1.2em;
-    height: 21px;
-    line-height: 21px;
-    padding-left: 10px;
-    padding-right: 10px;
-    text-decoration: none;
-    text-transform: capitalize;
-}
-
 
 /* Content Area & Global Cell Styles
 ------------------------------------------------------------------------*/

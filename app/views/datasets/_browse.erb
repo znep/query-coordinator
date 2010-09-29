@@ -1,5 +1,5 @@
 <% content_for :head do %>
-  <%= rendered_stylesheet_tag 'screen-browse' %>
+  <%= rendered_stylesheet_tag 'browse-control' %>
 <% end %>
 
 <div class='browseSection clearfix <%= @facets.length < 1 ? 'noFacets' : '' %>
@@ -69,6 +69,15 @@
   </div>
   <%- end -%>
 
+  <%- if !@browse_in_container &&
+        (CurrentDomain.user_can?(current_user, :create_datasets) ||
+          CurrentDomain.module_enabled?(:community_creation)) -%>
+  <div class='createDatasetBox infoBox'>
+    <h3>Create or upload your own dataset</h3>
+    <a class='button next' href='/datasets/new'><span class='icon'></span>Create</a>
+  </div>
+  <%- end -%>
+
   <div class='browseList'>
     <%- if @view_count > 0 && @sort_opts.length > 0 -%>
     <div class='sortOptions'>
@@ -100,7 +109,16 @@
 
     <div class='results'>
       <%- if @view_count == 0 -%>
-      <div class='noResults'>No Results</div>
+      <div class='noResults'>
+        <span class='message'><%= @no_results_text %></span>
+        <%- if (CurrentDomain.user_can?(current_user, :create_datasets) ||
+              CurrentDomain.module_enabled?(:community_creation)) -%>
+        <a class='button createLink' href='/datasets/new'>Create New Dataset</a>
+        <%- end -%>
+        <%- if CurrentDomain.module_enabled?(:dataset_nomination) -%>
+        <a class='button suggestLink' href='/nominate'>Suggest a Dataset</a>
+        <%- end -%>
+      </div>
 
       <%- else -%>
       <table class='gridList'>
@@ -158,6 +176,14 @@
       @opts[:page], @base_url + '?' + @params.to_param, 'button') %>
     <%- end -%>
   </div>
+
+  <%- if !@browse_in_container &&
+          CurrentDomain.module_enabled?(:dataset_nomination) -%>
+  <div class='suggestBox infoBox'>
+    <h3>Didn't find what you're looking for? Suggest a dataset</h3>
+    <a class='button next' href='/nominate'><span class='icon'></span>Suggest</a>
+  </div>
+  <%- end -%>
 </div>
 
 <%- content_for :modals do -%>
@@ -170,6 +196,9 @@
 <% content_for :templates do %>
 <div class='expandedInfo'>
   <div class='actions'>
+    <a class='permissions button' href='#Permissions'
+      title='Change the public visibility'>Make <span class='permType'></span></a>
+    <a class='delete button' href='#Delete' title='Delete this item'>Delete</a>
     <div class='share menu'></div>
   </div>
   <div class='comments' title='Number of comments'>
@@ -182,12 +211,7 @@
 <% content_for :js_footer do %>
   <script type='text/javascript'>
     blist.namespace.fetch('blist.browse');
-    blist.browse.datasets = [
-      <%- @view_results.each do |v| -%>
-      <%= safe_json(v) %>,
-      <%- end -%>
-      null // Because IE hates trailing commas
-    ];
+    blist.browse.datasets = <%= safe_json(@view_results) %>;
   </script>
-  <%= javascript_include_merged 'screen-browse' %>
+  <%= javascript_include_merged 'browse-control' %>
 <% end %>

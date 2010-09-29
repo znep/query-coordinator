@@ -1,98 +1,37 @@
 <% content_for :head do %>
-  <%= stylesheet_link_merged 'profile-edit-screen' %>
+  <%= rendered_stylesheet_tag 'profile-edit' %>
   <title>Edit Profile Details | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
-<div class="twoColumnContainer clearfix">
-  <div id="mainColumnContent" class="column mainContent scrollContentColumn">
-    <div class="outerContent">
-      <div class="contentTR"><div class="contentTL"></div></div>
-      <div class="content profileEditContent">
-        <% form_tag(current_user.href, :id => "editProfileForm", :method => :put) do %>
-          <h1>Edit Profile Details</h1>
+<% content_for :skip_links do %>
+  <%- unless params[:no_js].present? -%>
+    <%= link_to 'Disable Javascript on this page', '?no_js=true' %>
+  <%- end -%>
+<% end %>
 
-          <div class="errorMessage validationError">
-            <%= display_standard_flashes %>
-          </div>
+<%= render :partial => 'edit_nav' %>
 
-          <h3>General Information</h3>
-
-          <label for="user_firstName">First Name:</label>
-          <%= text_field_tag("user[firstName]", current_user.firstName, :class => "textPrompt") %>
-
-          <label for="user_lastName">Last Name:</label>
-          <%= text_field_tag("user[lastName]", current_user.lastName, :class => "textPrompt") %>
-
-          <label for="user_screenName" class="required">Display Name:</label>
-          <%= text_field_tag("user[screenName]", current_user.screenName, :class => "textPrompt") %>
-
-          <label for="user_company">Company:</label>
-          <%= text_field_tag("user[company]", current_user.company, :class => "textPrompt") %>
-
-          <label for="user_title">Title:</label>
-          <%= text_field_tag("user[title]", current_user.title, :class => "textPrompt") %>
-
-          <label for="user_city">City:</label>
-          <%= text_field_tag("user[city]", current_user.city, :class => "textPrompt") %>
-
-          <label for="user_country">Country:</label>
-          <%= select_tag("user[country]", raw(country_select_options(current_user.country))) %>
-
-          <label for="user_tags">Tags:</label>
-          <%= text_field_tag("user[tags]", current_user.tags.nil? ? '' : current_user.tags.join(', '), :class => "textPrompt") %>
-
-          <label for="user_description">Description:</label>
-          <%= text_area_tag("user[description]", current_user.description, :class => "textPrompt") %>
-
-          <label for="user_interests">Interests:</label>
-          <%= text_area_tag("user[interests]", current_user.interests, :class => "textPrompt") %>
-
-          <h3>Links</h3>
-
-          <%- @user_links.each_with_index do |link, i| -%>
-            <h4>Link <%= i + 1 %></h4>
-
-            <label for="links_<%= link.id %>_linkType">Link Type:</label>
-            <%= select_tag("links[#{link.id}][linkType]", links_select_options(link.linkType.upcase)) %>
-
-            <label for="links_<%= link.id %>_label">Link Label:</label>
-            <%= text_field_tag("links[#{link.id}][label]", link.label) %>
-            
-            <label for="links_<%= link.id %>_url">Link URL:</label>
-            <%= text_field_tag("links[#{link.id}][url]", link.url) %>
-          <%- end -%>
-
-          <%- (@user_links.size...5).each do |i| -%>
-            <h4>Link <%= i + 1 %></h4>
-            
-            <label for="links_new<%= i %>_linkType">Link Type:</label>
-            <%= select_tag("links[new#{i}][linkType]", links_select_options) %>
-
-            <label for="links_new<%= i %>_label">Link Label:</label>
-            <%= text_field_tag("links[new#{i}][label]") %>
-            
-            <label for="links_new<%= i %>_url">Link URL:</label>
-            <%= text_field_tag("links[new#{i}][url]") %>
-          <%- end -%>
-
-          <hr />
-          <div class="requiredEntryText">Required Entry</div>
-          <div class="clearfix submitActions">
-            <input type="image" src="/images/button_finish.png" title="Submit"/>
-            <a class="cancelButton" href="<%= current_user.href %>">Cancel</a>
-          </div>
-        <%- end -%>
-      </div>
-    </div>
-  </div>
-
-  <div id="sidebar" class="column scrollContentColumn">
-  <% render(:layout => "shared/sidebar_box") do %>
-    <%= render(:partial => "shared/current_user_tile", :locals => { :user => current_user }) %>
+<div class="contentBox withLeftNavigation editProfile editBasicInfo">
+  <% link_to current_user.href, :class => 'button backButton leftArrowNoHover' do %>
+    <span class="icon"></span>
+    Back to My Profile
   <% end %>
+  <div class="content">
+    <% form_tag(current_user.href, :id => "editProfileForm", :class => 'commonForm', :method => :put) do %>
+      <%= render :partial => 'edit_form' %>
+      <%- unless params[:no_js].present? -%>
+        <%= render :partial => 'edit_image_form' %>
+      <%- end -%>
+    <%- end -%>
+    <%- unless params[:no_js].present? -%>
+      <%= render :partial => 'edit_account_form' %>
+    <%- end -%>
+
   </div>
 </div>
 
 <% content_for :js_footer do %>
-  <%= javascript_include_merged 'shared-common-all' %>
+  <%- unless params[:no_js].present? -%>
+    <%= javascript_include_merged 'screen-profile-edit' %>
+  <%- end -%>
 <% end %>

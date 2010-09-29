@@ -1,12 +1,8 @@
 class UserSessionsController < ApplicationController
-  ssl_required :new, :create, :rpx, :v4_new
+  ssl_required :new, :create, :rpx
   ssl_allowed :destroy
   skip_before_filter :require_user
   protect_from_forgery :except => [:rpx]
-
-#TODO: Remove me in v3 deprecation pass
-  layout :choose_v4_layout
-  include NewChromeMethodProxy
 
   def index
     HoptoadNotifier.notify(
@@ -33,7 +29,7 @@ class UserSessionsController < ApplicationController
     @user_session = UserSession.new(params[:user_session])
     if @user_session.save
       respond_to do |format|
-        format.html { redirect_back_or_default(home_path) }
+        format.html { redirect_back_or_default(profile_path) }
         format.json { render :json => {:user_id => current_user.id}, :callback => params[:callback] }
       end
     else

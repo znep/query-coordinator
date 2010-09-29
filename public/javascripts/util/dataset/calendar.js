@@ -2,6 +2,16 @@
 
 Dataset.modules['calendar'] =
 {
+    supportsSnapshotting: function()
+    {
+        return true;
+    },
+
+    _setupSnapshotting: function()
+    {
+        this._setupDefaultSnapshotting(0);
+    },
+
     _checkValidity: function()
     {
         if ($.isBlank(this.displayFormat.startDateTableId) ||

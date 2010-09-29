@@ -37,6 +37,7 @@ this.Dataset = Model.extend({
         Dataset.addProperties(this, ColumnContainer('column',
                 selfUrl + '.json', selfUrl + '/columns'), Dataset.prototype);
 
+
         this.type = getType(this);
         this.styleClass = this.type.capitalize();
         this.displayName = getDisplayName(this);
@@ -69,6 +70,28 @@ this.Dataset = Model.extend({
 
         this._origQuery = $.extend(true, {}, this.query);
         this._origSearchString = this.searchString;
+        
+
+        if (!$.isBlank(blist.snapshot) && blist.snapshot.takeSnapshot)
+        {
+            this.snapshotting = true;
+
+            if (!$.isBlank(blist.snapshot.forcedTimeout))
+            {
+                this._setupDefaultSnapshotting(blist.snapshot.forcedTimeout * 1000);
+            }
+            else if (_.isFunction(this.supportsSnapshotting) && this.supportsSnapshotting())
+            {
+                if (_.isFunction(this._setupSnapshotting))
+                {
+                    this._setupSnapshotting();
+                }
+            }
+            else
+            {
+                this._setupDefaultSnapshotting(5000);
+            }
+        }
     },
 
     rowForID: function(id)
@@ -721,7 +744,7 @@ this.Dataset = Model.extend({
     remove: function(successCallback, errorCallback)
     {
         this._makeRequest({url: '/datasets/' + this.id + '.json',
-            type: 'DELETE',
+            type: 'DELETE', dataType: 'text',
             success: successCallback, error: errorCallback});
     },
 
@@ -937,6 +960,68 @@ this.Dataset = Model.extend({
             {
                 return (c.dataTypeName == 'dataset_link');
             });
+    },
+
+    supportsSnapshotting: function()
+    {
+        // if you don't override me, you don't know how to be snapshotted
+        return false;
+    },
+
+    takeSnapshot: function()
+    {
+        // $.debug("Snapshot!");
+
+        var name = blist.snapshot.name;
+        // use the current viewport
+        socrataScreenshot.defineRegion(name, 0, 0, window.innerWidth, window.innerHeight);
+        socrataScreenshot.snap(name);
+        socrataScreenshot.done();
+    },
+
+
+    getFullSnapshotUrl: function(name)
+    {
+        name = this._getThumbNameOrDefault(name);
+
+        if ($.isBlank(this._getCroppedThumbnailMeta(name)))
+        { return null; }
+
+        return this.getSnapshotNamed(name + '.png');
+    },
+
+    getSnapshotNamed: function(name)
+    {
+        var uidParts = this.id.split('-');
+        if (uidParts.length < 2)
+        { return null; }
+
+        // TODO: Where do we want to put this on prod?
+        return '/images/snapshots/' + uidParts.join('/') + '/' + name;
+    },
+
+    getCroppedSnapshotUrl: function(name)
+    {
+        name = this._getThumbNameOrDefault(name);
+        // make sure the crop has been created
+        var meta = this._getCroppedThumbnailMeta(name);
+        if ($.isBlank(meta))
+        {
+            return null;
+        }
+
+        return this.getSnapshotNamed(meta.filename);
+    },
+
+    // ask the core server to take a new picture
+    requestSnapshot: function(name, callback)
+    {
+        this._updateSnapshot('snapshot', name, callback);
+    },
+
+    cropSnapshot: function(name, callback)
+    {
+        this._updateSnapshot('cropExisting', name, callback);
     },
 
 
@@ -1604,6 +1689,54 @@ this.Dataset = Model.extend({
         this._makeRequest({url: '/views.json', pageCache: true, type: 'GET',
                 data: { method: 'getByTableId', tableId: this.tableId },
                 success: processDS});
+    },
+
+    _setupDefaultSnapshotting: function(delay)
+    {
+        // by default, just wait til the rows are loaded
+        this.bind('finish_request', function()
+        {
+            var ds = this;
+            // if there was already a return call, e.g. aggregates
+            if (!$.isBlank(ds._snapshotTimer))
+            { clearTimeout(ds._snapshotTimer); }
+
+            ds._snapshotTimer = setTimeout(function()
+                { _.defer(ds.takeSnapshot); }, (delay  || 1000));
+        });
+    },
+
+    _getThumbNameOrDefault: function(name)
+    {
+        return name || "page";
+    },
+
+    _getCroppedThumbnailMeta: function(name)
+    {
+        return ((this.metadata || {}).thumbnail || {})[name];
+    },
+
+    _updateSnapshot: function(method, name, callback)
+    {
+        var ds = this;
+        ds._makeRequest({
+            success: function(response) {
+                ds._updateThumbnailCallback(response, callback);
+            },
+            error: callback,
+            type: 'POST',
+            url: '/views/' + ds.id + '/snapshots?method=' + method + '&name=' +
+                ds._getThumbNameOrDefault(name)
+        });
+    },
+
+    _updateThumbnailCallback: function(response, callback)
+    {
+        if ((response.metadata || {}).thumbnail)
+        {
+            this.metadata.thumbnail = response.metadata.thumbnail;
+        }
+        callback(response);
     },
 
     _validKeys: {

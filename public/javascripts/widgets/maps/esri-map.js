@@ -92,7 +92,13 @@
                             if (this.loaded) { layersLoaded++; }
                             mapObj.map.addLayer(this);
                             if (layersLoaded >= layers.length)
-                            { mapObj.populateLayers(); }
+                            {
+                                mapObj.populateLayers();
+                                if (mapObj.settings.view.snapshotting)
+                                {
+                                    setTimeout(mapObj.settings.view.takeSnapshot, 2000);
+                                }
+                            }
                         });
                     }
 

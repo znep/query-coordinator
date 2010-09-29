@@ -1,13 +1,9 @@
 class RpxController < ApplicationController
-  ssl_required :return_login, :return_signup, :login, :signup, :v4_return_login
+  ssl_required :return_login, :return_signup, :login, :signup
   skip_before_filter :require_user
-  protect_from_forgery :except => [:return_login, :return_signup, :v4_return_login]
+  protect_from_forgery :except => [:return_login, :return_signup]
   before_filter :set_empty_user_session
   cattr_accessor :auth_providers
-
-  #TODO: Remove me in v3 deprecation pass
-  layout :choose_v4_layout
-  include NewChromeMethodProxy
 
   # Create a new user, automatically associating the OpenID credentials they
   # already provided to sign them up.
@@ -18,7 +14,7 @@ class RpxController < ApplicationController
     else
       flash.now[:error] = @signup.errors.join(", ")
       @body_id = 'signup'
-      render_login_template
+      render :template => 'rpx/return_login'
     end
   end
 
@@ -40,7 +36,7 @@ class RpxController < ApplicationController
     else
       flash.now[:notice_login] = "Unable to login with that username and password; please try again"
       @body_id = 'signup'
-      render_login_template 
+      render :template => 'rpx/return_login'
     end
   end
 
@@ -71,18 +67,9 @@ private
       @signup.emailConfirm = @signup.email
       # TODO: Deprecated: Remove in v3 deprecation pass
       render_login_template
+      render :template => 'rpx/return_login'
     end
   end
-
-  
-  private
-# TODO: Deprecated: Remove me in v3 deprecation pass
-  def render_login_template 
-    v4 = CurrentDomain.module_available?(:new_datasets_page) 
-    return render(:template => (v4 ? 'rpx/v4_return_login' : 'rpx/return_login'), 
-      :layout => (v4 ? 'dataset_v2' : 'main'))
-  end
-
 
   @@auth_providers = [
     {:name => 'Facebook', :hint => 'Connect', :rpx_url => APP_CONFIG['rpx_facebook_url']},

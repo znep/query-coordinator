@@ -27,26 +27,6 @@ screen-map:
 - screen-map
 screen-calendar:
 - screen-calendar
-dataset-new:
-- screen-dataset-new
-dataset-show:
-- grid-sidebar
-- grid-sidebar-custom
-- screen-page-render-type
-- control-feed
-- splash
-- screen-dataset
-dataset-alt:
-- screen-dataset-alt
-dataset-edit-metadata:
-- screen-dataset-edit-metadata
-dataset-analytics:
-- screen-metrics
-profile-show:
-- screen-profile
-- control-feed
-profile-edit:
-- screen-profile-edit
 administration-screen:
 - screen-admin
 administration-index-screen:
@@ -62,9 +42,31 @@ administration-sdp-template:
 - screen-admin-sdp-template
 administration-federation:
 - screen-administration-federation
-administration-users:
-- screen-admin-users
-screen-browse:
+browse-control:
 - screen-browse
+dataset-new:
+- screen-dataset-new
+dataset-show:
+- grid-sidebar
+- grid-sidebar-custom
+- screen-page-render-type
+- control-feed
+- splash
+- screen-dataset
+dataset-alt:
+- screen-dataset-alt
+dataset-analytics:
+- screen-metrics
+dataset-edit-metadata:
+- screen-dataset-edit-metadata
+dataset-thumbnail:
+- screen-dataset-thumbnail
+homepage-show:
+- screen-homepage-show
+profile-show:
+- screen-profile
+- control-feed
+profile-edit:
+- screen-profile-edit
 screen-nominations:
 - screen-nominations

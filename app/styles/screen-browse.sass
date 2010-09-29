@@ -56,10 +56,31 @@
       &.clearAllSection a
         font-weight: bold
 
+  .infoBox
+    background-color: #ffffff
+    border: 1px solid #e9e9e9
+    margin:
+      bottom: 0.5em
+      left: 23em
+    padding: 1.5em
+    h3
+      color: #999999
+      display: inline
+    .button
+      @include sprite-menu-icons
+      float: right
+      margin: 0
+        top: -0.4em
+      .icon
+        float: right
+        margin-left: 0.3em
+
   .browseList
     background-color: #ffffff
     border: 1px solid #e9e9e9
-    margin-left: 23em
+    margin:
+      bottom: 0.5em
+      left: 23em
     padding: 1.5em
 
     .sortOptions
@@ -78,10 +99,13 @@
         top: 3em
 
       .noResults
-        color: #666666
-        font-size: 1.4em
-        font-weight: bold
         text-align: center
+        .message
+          color: #666666
+          display: block
+          font-size: 1.4em
+          font-weight: bold
+          margin-bottom: 0.5em
 
       .gridList
         th
@@ -139,20 +163,25 @@
 
               .actions
                 display: inline-block
+                font-size: 0.8333em
                 margin-right: 2em
                 .ie7 &
                   display: inline
+                .button, .menuButton
+                  @include button
+                  font-size: 1.1em
+                .button
+                  margin: 0
+                    right: 0.3em
+                  vertical-align: top
 
               .menu.share
                 @include sprite-menu-icons('.menuButton .shareIcon')
-                font-size: 0.9167em
                 margin-right: 0.25em
                 .ie7 &
                   display: inline
 
                 .menuButton
-                  @include button
-                  margin-top: 0
                   .ie7 &
                     padding-right: 1.7em
 
@@ -179,8 +208,7 @@
                 .menuDropdown ul li ul li
                   @include sprite-menu-icons
                   a
-                    font-size: 1em
-                    line-height: 1em
+                    font-size: 1.1em
                     min-width: 6em
 
               .comments

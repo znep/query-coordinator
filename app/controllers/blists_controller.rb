@@ -489,7 +489,7 @@ class BlistsController < ApplicationController
       blist_id = params[:id]
       result = View.delete(blist_id)
 
-      redirect_path = params[:redirect_to] || blists_path
+      redirect_path = params[:redirect_to]#  || profile_path
       redirect_path = View.find(params[:redirect_id]).href unless params[:redirect_id].nil?
 
       respond_to do |format|

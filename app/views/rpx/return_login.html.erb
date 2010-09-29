@@ -1,63 +1,58 @@
 <% content_for :head do %>
-  <%= stylesheet_link_merged 'rpx-return-login' %>
+  <%= rendered_stylesheet_tag 'screen-login' %>
   <title>Create or Link Account | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
-<% dialog_content('rpx-choose', "signupBox") do %>
-  <div class='header'>
-    <h1><%= CurrentDomain.strings.company %></h1>
-  </div>
 
-  <div class="mainContent">
+<div class="modalContentBox narrow rpxReturnMod siteContent">
+  <div class="contentHeader">
     <h1>Almost Ready</h1>
-    <p class="chooseMessage">
-    Before using these credentials, you must create a <%= CurrentDomain.strings.company %> account
-    or link it to an existing <%= CurrentDomain.strings.company %> ID. </p>
-
-    <div id="accordion">
-      <% content_tag :h2, :class => (flash[:notice_login] ? 'ui-state-default' : 'ui-state-active')  do %>
-        <a href="#signup">Sign up for a New <%= CurrentDomain.strings.company %> Account</a>
-      <% end %>
-
-      <% if flash[:notice_login] %>
-        <div style="display: none;">
-      <% else %>
-        <div>
-      <% end %>
-
-        <% form_for :signup, @signup, :url => rpx_signup_path, :html => {:id => 'signupForm', :multipart => true} do |f| %>
-          <%= render :partial => "accounts/signup_form_data", :locals => { :f => f, :hide_password => true } %>
-        <% end %>
+  </div>
+  <div class="contentBoxInner rpxReturnLogin clearfix">
+    <div class="loginSignupForm firstColumn column">
+      <%= display_standard_flashes %>
+      <div class="flash notice">
+        Before using these credentials, you must
+        <%= link_to "create a #{MASTER_DOMAIN_PREFS['strings.company']} account", '#create', :class => 'signUpLink' %>
+          or
+        <%= link_to "link it to an existing #{MASTER_DOMAIN_PREFS['strings.company']} ID", '#login', :class => 'signInLink'%>.
       </div>
+      
+      <div id="accordion">
+        <div class="signupForm"<%= raw('style="display: none;"') if flash[:notice_login]%>>
+          <div class="authProvider socrata">
+            <span class="iconContainer">
+              <span class="icon"></span>
+            </span>
+            <span class="description">
+              Sign up for a new
+              <strong><%= MASTER_DOMAIN_PREFS['strings.company'] %> ID</strong>
+            </span>
+            <p class="loginTips">
+              <%= raw MASTER_DOMAIN_PREFS['strings.login_tips'] %>
+            </p>
+          </div>
 
-      <h3>&mdash;OR&mdash;</h3>
+          <% form_for :signup, @signup, :url => rpx_signup_path, :html => {:id => 'signupForm', :multipart => true} do |f| %>
+            <%= render :partial => 'accounts/signup_form_data',
+              :locals => { :f => f, :hide_password => true } %>
+          <% end %>
+        </div>
 
-      <% content_tag :h2, :class => (flash[:notice_login] ? 'ui-state-active' : 'ui-state-default')  do %>
-        <a href="#login">Link to an Existing <%= CurrentDomain.strings.company %> ID</a>
-      <% end %>
-
-      <% if flash[:notice_login] %>
-        <div>
-      <% else %>
-        <div style="display: none;">
-      <% end %>
-
-        <%= render(:partial => 'login') %>
+        <div class="loginForm"<%= raw('style="display: none;"') unless flash[:notice_login]%>>
+          <%= render(:partial => 'login') %>
+        </div>
       </div>
     </div>
   </div>
-<% end %>
+</div>
+
 
 
 <% content_for :js_footer do %>
   <%= javascript_include_merged 'shared-common-all' %>
+  <%= javascript_include_merged 'screen-login-signup' %>
   <%= javascript_include_merged 'rpx-return' %>
-  <script>
-    $(document).ready(function() {
-      $('#accordion h2').click(function() {
-        $('#accordion > div').slideToggle('normal');
-        $('#accordion h2').toggleClass('ui-state-active').toggleClass('ui-state-default');
-      });
-    });
-  </script>
+  
 <% end %>
+

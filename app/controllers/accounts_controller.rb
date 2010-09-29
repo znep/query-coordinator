@@ -1,65 +1,8 @@
 class AccountsController < ApplicationController
-  ssl_required :new, :update, :create, :add_rpx_token, :v4_new
-  ssl_allowed :show
-  skip_before_filter :require_user, :only => [:new, :create, :forgot_password, :reset_password,
-    :v4_new, :v4_forgot_password, :v4_reset_password]
+  ssl_required :new, :update, :create, :add_rpx_token
+  skip_before_filter :require_user, :only => [:new, :create, :forgot_password, :reset_password]
   skip_before_filter :adjust_format, :only => [:update]
   protect_from_forgery :except => [:add_rpx_token]
-
-# TODO: Remove me in v3 deprecation pass
-  layout :choose_v4_layout
-  include NewChromeMethodProxy
-
-# TODO/v4: Deprecated. See ProfileController#edit_account
-  def show
-    @openid_identifiers = current_user.openid_identifiers
-##    @createdOnDomain = Domain.findById(current_user.data['createdOnDomainId'])
-
-    @accountEditClasses = ['content']
-    if @openid_identifiers.length > 0
-      @accountEditClasses << 'has_openid'
-    else
-      @accountEditClasses << 'no_openid'
-    end
-    if current_user.flag?('nopassword')
-      @accountEditClasses << 'no_password'
-    else
-      @accountEditClasses << 'has_password'
-    end
-  end
-
-# TODO/v4: Remove me. Now in profile_controller
-  def update
-    error_msg = nil
-    begin
-      if params[:user][:email]
-        if params[:user][:email] != params[:user][:email_confirm]
-          error_msg = "New emails do not match"
-        else
-          current_user.update_attributes!(
-              {:email => params[:user][:email],
-                :password => params[:user][:email_password]})
-        end
-      elsif params[:user][:password_new]
-        if params[:user][:password_new] != params[:user][:password_confirm]
-          error_msg = "New passwords do not match"
-        else
-          current_user.update_password(
-              {:newPassword => params[:user][:password_new],
-                :password => params[:user][:password_old]})
-        end
-      end
-    rescue CoreServer::CoreServerError => e
-      error_msg = e.error_message
-    end
-
-    respond_to do |format|
-      format.html { redirect_to(account_path) }
-      format.json { render :json => {:error => error_msg,
-                                     :user => current_user},
-                           :callback => params[:callback] }
-    end
-  end
 
   def new
     @signup = SignupPresenter.new({}, params[:token])
@@ -80,10 +23,7 @@ class AccountsController < ApplicationController
       else
         flash.now[:error] = @signup.errors.join(", ")
         @user_session = UserSession.new
-        # TODO: Deprecated: just action => :new when we deprecate v3
-        layout_string, action = (CurrentDomain.module_available?(:new_datasets_page)) ?
-          ['dataset_v2', :v4_new] : ['main', :new]
-        format.html { render :action => action, :layout => layout_string }
+        format.html { render :action => :new }
         format.json { render :json => {:error => flash[:error], :promptLogin => false}, :callback => params[:callback] }
       end
     end

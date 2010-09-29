@@ -22,7 +22,7 @@
     <ul class='tabList'>
       <%- if (module_enabled?(:community_creation) || CurrentDomain.member?(current_user)) -%>
         <li class='backLink'><a title='Back to <%= t :blists_name %>'
-          href='<%= blists_path() %>'>Back to <%= t :blists_name %></a></li>
+          href='<%= profile_path() %>'>Back to <%= t :blists_name %></a></li>
       <%- end -%>
       <li class='main even <%= @is_child_view ? '' : 'active' %>'>
         <div class='wrapper'>
@@ -47,7 +47,7 @@
       <li class='tempViewTab filter inlineEdit'><div class='wrapper'>
         <div class='innerWrapper'>
           <span title='Click to name and save your filtered view'>[Unsaved Filter]</span>
-          <%- form_tag(blists_path, :class => 'tempView') do -%>
+          <%- form_tag(profile_path, :class => 'tempView') do -%>
           <label for='view_name'>View Name:</label>
           <%= text_field_tag("view[name]", '') %>
           <%- end -%>
@@ -404,12 +404,12 @@
                 <span title='Click to name and save your filtered view'>
                   Unsaved Filter
                 </span>
-                <%- form_tag(blists_path, :class => 'tempView') do -%>
+                <%- form_tag(profile_path, :class => 'tempView') do -%>
                 <label for='view_name'>View Name:</label>
                 <%= text_field_tag("view[name]", '') %>
                 <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
                 <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"),
-                blists_path, :title => "Cancel", :class => "formCancelLink") %>
+                profile_path, :title => "Cancel", :class => "formCancelLink") %>
                 <%- end -%>
               </div>
               <div class="itemActions">

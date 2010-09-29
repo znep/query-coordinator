@@ -8,15 +8,8 @@
   org has :community_creation %>
   <% if (module_enabled?(:community_creation) || CurrentDomain.member?(current_user)) %>
     <li class='blists'>
-      <div class='wrapper'><%= link_to t(:blists_name).titleize, blists_path %></div>
+      <div class='wrapper'><%= link_to t(:blists_name).titleize, profile_path %></div>
     </li>
-  <% end %>
-
-  <%# Only show "Friends" if they have community or are a member of the org %>
-  <% if (module_enabled?(:community_module) || CurrentDomain.member?(current_user)) %>
-    <li class='contacts even'><div class='wrapper'>
-      <%= link_to 'Friends', contacts_path %>
-    </div></li>
   <% end %>
 
   <%# "Profile" is always displayed %>

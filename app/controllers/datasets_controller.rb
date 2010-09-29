@@ -1,10 +1,15 @@
 class DatasetsController < ApplicationController
   include DatasetsHelper
   skip_before_filter :require_user, :only => [:show, :alt, :widget_preview, :math_validate]
-  layout 'dataset_v2'
 
 # collection actions
   def new
+    if (!CurrentDomain.user_can?(current_user, :create_datasets) &&
+        !CurrentDomain.module_enabled?(:community_creation))
+      # User doesn't have access to create new datasets
+      render 'shared/error', :status => :not_found
+      return nil
+    end
   end
 
 # member actions
@@ -49,6 +54,29 @@ class DatasetsController < ApplicationController
 
     # Shuffle the default tags into the keywords list
     @meta[:keywords] = @view.meta_keywords
+  end
+
+# bare version of the page, w/o chrome, for screenshotting
+  def bare
+    @view = get_view(params[:id])
+    return if @view.nil?
+    # if the core server requests a specific timeout, rather than
+    # letting the js decide when it's rendered
+    if params[:timeout].present?
+      if params[:timeout].to_i < 60
+        @snapshot_timeout = params[:timeout]
+      else
+        Rails.logger.info("Ignoring snapshot request, over 60 second limit (#{params[:timeout]})")
+      end
+    end
+
+    @snapshot_name = params[:name]
+
+    if !current_user
+      @user_session = UserSession.new
+    end
+
+    render :layout => false
   end
 
   def alt
@@ -156,6 +184,16 @@ class DatasetsController < ApplicationController
         end
       end
     end
+  end
+
+  def thumbnail
+    @view = get_view(params[:id])
+    return if @view.nil?
+
+    unless @view.has_rights?('update_view')
+      return render_forbidden
+    end
+
   end
 
   def stats

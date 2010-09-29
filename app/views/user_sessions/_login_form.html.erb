@@ -1,0 +1,21 @@
+<div class="loginForm">
+  <%- unless defined? @flashes_displayed -%>
+    <%= display_standard_flashes %>
+    <%- @flashes_displayed = true -%>
+  <%- end -%>
+  <div class="authProvider socrata">
+    <span class="iconContainer">
+      <span class="icon"></span>
+    </span>
+    <span class="description">
+      Sign in with your
+      <strong><%= MASTER_DOMAIN_PREFS['strings.company'] %> ID</strong>
+    </span>
+    <p class="loginTips">
+      <%= raw MASTER_DOMAIN_PREFS['strings.login_tips'] %>
+    </p>
+  </div>
+  <%- form_for @user_session do |f| -%>
+    <%= render :partial => 'user_sessions/login_form_data.html.erb', :locals => {:f => f} %>
+  <%- end -%>
+</div>

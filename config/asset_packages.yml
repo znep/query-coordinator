@@ -208,6 +208,7 @@ javascripts:
   - util/urls
   - util/navigation
   - util/inline-login
+  - util/konami
   - controls/menu
   - widgets/wizard-prompt
   - widgets/form-inliner

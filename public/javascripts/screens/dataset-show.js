@@ -383,6 +383,17 @@ $(function()
         });
     }
 
+    // up up down down left right left right b a start
+    var konami = new Konami();
+    konami.code = function()
+    {
+        var elem = document.createElement('script');
+        elem.type = 'text/javascript';
+        document.body.appendChild(elem);
+        elem.src = 'http://erkie.github.com/asteroids.min.js';
+    };
+    konami.load();
+
     // Data calls
     _.defer(function()
     {

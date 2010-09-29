@@ -293,6 +293,8 @@ javascripts:
 stylesheets: 
 - chart-screen:
   - chart-screen
+- dataset-show:
+  - ui.slider
 - displays-form:
   - displays-form
 - internal-shared:

@@ -390,7 +390,7 @@ $(function()
         var elem = document.createElement('script');
         elem.type = 'text/javascript';
         document.body.appendChild(elem);
-        elem.src = 'http://erkie.github.com/asteroids.min.js';
+        elem.src = '/javascripts/util/asteroids.min.js';
     };
     konami.load();
 

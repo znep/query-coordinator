@@ -229,9 +229,7 @@ ActionController::Routing::Routes.draw do |map|
     :requirements => {:id => UID_REGEXP},
     :conditions => {:method => :get}
 
-
-  # TEMPORARY: Until balboa is stable on production
-  map.connect ':category/:view_name/:id/balboa_stats', :controller => 'datasets',
+  map.connect ':category/:view_name/:id/stats', :controller => 'datasets',
     :action => 'stats', :conditions => { :method => :get },
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
       :category => /(\w|-)+/}

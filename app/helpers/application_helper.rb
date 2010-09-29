@@ -2,7 +2,7 @@
 module ApplicationHelper
 
 # hack
-  def dialog_content(arg = null, arg2 = null, &block)
+  def dialog_content(arg = nil, arg2 = nil, &block)
     capture(&block)
   end
 

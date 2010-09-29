@@ -295,8 +295,6 @@ stylesheets:
 - displays-form:
   - displays-form
 - internal-shared:
-  - internal-screen
-  - form-common
   - BespinEmbedded
 - analytics-shared:
   - jquery-ui-1.8.4.custom

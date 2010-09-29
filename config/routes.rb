@@ -120,6 +120,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resource :account
   map.resources :suggestions
+
   map.resources :profile, :member => {
     :create_friend => :get,
     :delete_friend => :get,

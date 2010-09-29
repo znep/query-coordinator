@@ -34,14 +34,6 @@ module ApplicationHelper
     CurrentDomain.upsell?
   end
 
-# PATH HELPERS
-
-  def profile_path(id = nil)
-    return '/profile' if id.blank?
-    return "/profile/#{id}"
-  end
-
-
 # CACHE HELPERS
 
   def cache_key(prefix, state)

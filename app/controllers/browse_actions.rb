@@ -49,7 +49,8 @@ protected
     @opts.merge!({:limit => @limit, :page => (params[:page] || 1).to_i})
     (@default_params || {}).each { |k, v| params[k] = v if params[k].nil? }
     @params = params.reject {|k, v| k == 'controller' || k == 'action'}
-    @base_url ||= request.env['REQUEST_PATH']
+    @no_results_text ||= 'No Results'
+    @base_url ||= request.path
 
     # Simple params; these are copied directly to opts
     [:sortBy, :category, :tags].each do |p|

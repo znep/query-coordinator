@@ -1,4 +1,4 @@
-<%- if !@current_user.nil? -%>
+<%- if !@current_user.nil? && !@network_views.nil? -%>
   <div class="pageBlockHeaderSide">
     <h2>In My Network</h2>
     <ul class="myNetworkList">
@@ -14,7 +14,7 @@
 <%- else -%>
   <%- if feature? :revolutionize -%>
     <%= render :partial => 'static/revolutionize_box' %>
-  <%- else -%>
+  <%- elsif !@community_activity.nil? -%>
   <div class="pageBlockHeaderSide">
     <h2>Recent Activity</h2>
     <ul class="activityList">

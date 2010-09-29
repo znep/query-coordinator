@@ -1,5 +1,5 @@
 <% content_for :head do %>
-  <%= rendered_stylesheet_tag 'screen-browse' %>
+  <%= rendered_stylesheet_tag 'browse-control' %>
 <% end %>
 
 <div class='browseSection clearfix <%= @facets.length < 1 ? 'noFacets' : '' %>
@@ -100,7 +100,7 @@
 
     <div class='results'>
       <%- if @view_count == 0 -%>
-      <div class='noResults'>No Results</div>
+      <div class='noResults'><%= @no_results_text %></div>
 
       <%- else -%>
       <table class='gridList'>
@@ -189,5 +189,5 @@
       null // Because IE hates trailing commas
     ];
   </script>
-  <%= javascript_include_merged 'screen-browse' %>
+  <%= javascript_include_merged 'browse-control' %>
 <% end %>

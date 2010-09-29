@@ -1,0 +1,19 @@
+<%- if !CurrentDomain.templates['data_splash'].nil? -%>
+  <%= render_domain_template('data_splash') %>
+<%- elsif !CurrentDomain.current_theme.featured_datasets.nil? -%>
+  render the new carousel
+<%- else -%>
+  <div class="contentBox">
+    <h2>It looks like your domain is not configured yet.</h2>
+    <p>Please visit the <a href="/admin">administration panel</a>
+       and choose some content to be featured right here.</p>
+  </div>
+<%- end -%>
+
+<%= render_browse %>
+
+<%# this is at the end in this file or else the styles get included in the wrong order %>
+<% content_for :head do %>
+  <title><%= CurrentDomain.strings.site_title %></title>
+  <%= rendered_stylesheet_tag 'homepage-show' %>
+<% end %>

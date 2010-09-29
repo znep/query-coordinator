@@ -11,19 +11,15 @@
       <%- end -%>
     </ul>
   </div>
-<%- else -%>
-  <%- if feature? :revolutionize -%>
-    <%= render :partial => 'static/revolutionize_box' %>
-  <%- elsif !@community_activity.nil? -%>
-  <div class="pageBlockHeaderSide">
-    <h2>Recent Activity</h2>
-    <ul class="activityList">
-      <%- @community_activity.each do |activity| -%>
-        <li>
-          <%= get_html_for_activity(activity, "full") %>
-        </li>
-      <%- end -%>
-    </ul>
-  </div>
-  <%- end -%>
+<%- elsif !@community_activity.nil? -%>
+<div class="pageBlockHeaderSide">
+  <h2>Recent Activity</h2>
+  <ul class="activityList">
+    <%- @community_activity.each do |activity| -%>
+      <li>
+        <%= get_html_for_activity(activity, "full") %>
+      </li>
+    <%- end -%>
+  </ul>
+</div>
 <%- end -%>

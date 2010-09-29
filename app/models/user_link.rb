@@ -1,5 +1,5 @@
 class UserLink < Model
-  cattr_accessor :link_types, :new_link_types
+  cattr_accessor :link_types
 
   def self.find(user_id)
     path = "/users/#{user_id}/links.json"
@@ -21,7 +21,7 @@ class UserLink < Model
     return parse(CoreServer::Base.connection.delete_request(path))
   end
 
-  @@new_link_types = [
+  @@link_types = [
     ["MY_SITE", "My Site"],
     ["BLOG", "My Blog"],
     ["TWITTER", "Twitter"],

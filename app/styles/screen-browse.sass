@@ -284,9 +284,18 @@
   &.inContainer
     padding: 0
       top: 3em
+    .infoBox
+      border: none
+      margin-left: 21em
+      padding: 0
+      h3
+        display: none
+      .button
+        margin-top: -3em
     .browseFacets
       border: none
       padding: 0
+        top: 4em
     .browseList
       // The border needs to exist but be invisible, otherwise the margin that
       // clears the sort option gets collapsed
@@ -294,7 +303,10 @@
       margin-left: 21em
       padding: 0
       .sortOptions
-        margin-top: -3em
+        float: left
+        margin-left: -21em
+        .sortType
+          width: 15em
       .results
         margin-top: 0
 

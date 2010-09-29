@@ -99,14 +99,16 @@
   <tbody>
     <tr class='item'>
       <td class='user'>
-        <%- if !current_user.nil? && current_user.roleName == 'administrator' -%>
+        <%- if !current_user.nil? &&
+                current_user.has_right?('edit_nominations') -%>
         <a href='#Remove' title='Delete this suggstion' class='delete'></a>
         <%- end -%>
         <a class='userLink'><img /><span class='userName'></span></a>
       </td>
       <td class='details'>
         <span class='title'></span>
-        <%- if !current_user.nil? && current_user.roleName == 'administrator' -%>
+        <%- if !current_user.nil? &&
+                current_user.has_right?('edit_nominations') -%>
         <a href='#Edit' title='Edit this suggstion' class='edit'>(Edit)</a>
         <%- end -%>
         <div class='submitTime'>
@@ -117,7 +119,8 @@
       </td>
       <td class='attachments'>
         <ul><li>
-          <%- if !current_user.nil? && current_user.roleName == 'administrator' -%>
+          <%- if !current_user.nil? &&
+                  current_user.has_right?('edit_nominations') -%>
           <a href='#Remove' title='Delete this attachment' class='delete'></a>
           <%- end -%>
           <a class='fileLink' rel='external'></a>
@@ -136,7 +139,8 @@
       </td>
       <td class='status'>
         <span class='currentStatus'></span>
-        <%- if !current_user.nil? && current_user.roleName == 'administrator' -%>
+        <%- if !current_user.nil? &&
+                current_user.has_right?('approve_nominations') -%>
         <a href='#Approve' title='Approve this suggestion' data-status='approved'
           class='approve moderateLink'>(Approve)</a>
         <a href='#Reject' title='Reject this suggestion' data-status='rejected'

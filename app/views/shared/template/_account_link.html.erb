@@ -1,1 +1,3 @@
-<li class='accountLink'><%= link_to "My Account", account_path %></li>
+<%- if !current_user.nil? -%>
+<li class='accountLink'><a href='<%= profile_path %>'>Hello, <%= current_user.displayName %></a></li>
+<%- end -%>

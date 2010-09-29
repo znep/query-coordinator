@@ -69,12 +69,13 @@
   </div>
   <%- end -%>
 
-  <%- if !@browse_in_container &&
-        (CurrentDomain.user_can?(current_user, :create_datasets) ||
+  <%- if (CurrentDomain.user_can?(current_user, :create_datasets) ||
           CurrentDomain.module_enabled?(:community_creation)) -%>
   <div class='createDatasetBox infoBox'>
     <h3>Create or upload your own dataset</h3>
-    <a class='button next' href='/datasets/new'><span class='icon'></span>Create</a>
+    <a class='button next' href='/datasets/new' title='Create a new dataset'>
+      <span class='icon'></span>Create
+    </a>
   </div>
   <%- end -%>
 

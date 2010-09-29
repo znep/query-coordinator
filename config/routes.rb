@@ -86,36 +86,35 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/internal/modules', :controller => 'internal',
     :action => 'index_modules'
 
-  ['administration', 'admin'].each do |as_route|
-    map.resources :administration, :as => as_route,
-      :collection => {
-        :analytics => :get,
-        :federations => :get,
-        :users => :get,
-        :moderation => :get,
-        :sdp_templates => :get
-      }
+  admin_route = 'admin'
+  map.resources :administration, :as => admin_route,
+    :collection => {
+      :analytics => :get,
+      :federations => :get,
+      :users => :get,
+      :moderation => :get,
+      :sdp_templates => :get
+    }
 
-    map.with_options :controller => 'administration' do |admin|
-      admin.connect as_route + '/users/:userid/:role', :action => 'set_user_role'
-      admin.connect as_route + '/users/update', :action => 'set_user_role',
-        :conditions => { :method => :post }
-      admin.connect as_route + '/sdp_templates', :action => 'sdp_template_create',
-        :conditions => { :method => :post }
-      admin.connect as_route + '/sdp_templates/:id', :action => 'sdp_template'
-      admin.connect as_route + '/sdp_templates/:id/set_default',
-        :action => 'sdp_set_default_template'
-      admin.connect as_route + '/sdp_templates/:id/delete',
-        :action => 'sdp_delete_template'
-      admin.connect as_route + '/federations/:id/delete',
-        :action => 'delete_federation'
-      admin.connect as_route + '/federations/:id/accept',
-        :action => 'accept_federation'
-      admin.connect as_route + '/federations/:id/reject',
-        :action => 'reject_federation'
-      admin.connect as_route + '/federations/create',
-        :action => 'create_federation', :conditions => { :method => :post }
-    end
+  map.with_options :controller => 'administration' do |admin|
+    admin.connect admin_route + '/users/:userid/:role', :action => 'set_user_role'
+    admin.connect admin_route + '/users/update', :action => 'set_user_role',
+      :conditions => { :method => :post }
+    admin.connect admin_route + '/sdp_templates', :action => 'sdp_template_create',
+      :conditions => { :method => :post }
+    admin.connect admin_route + '/sdp_templates/:id', :action => 'sdp_template'
+    admin.connect admin_route + '/sdp_templates/:id/set_default',
+      :action => 'sdp_set_default_template'
+    admin.connect admin_route + '/sdp_templates/:id/delete',
+      :action => 'sdp_delete_template'
+    admin.connect admin_route + '/federations/:id/delete',
+      :action => 'delete_federation'
+    admin.connect admin_route + '/federations/:id/accept',
+      :action => 'accept_federation'
+    admin.connect admin_route + '/federations/:id/reject',
+      :action => 'reject_federation'
+    admin.connect admin_route + '/federations/create',
+      :action => 'create_federation', :conditions => { :method => :post }
   end
 
   map.resource :browse, :controller => 'browse'
@@ -126,6 +125,9 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resource :account
   map.resources :suggestions
+
+  # For legacy support reasons, make /home go somewhere reasonable
+  map.connect '/home', :controller => :profile, :action => 'index'
 
   map.profile '/profile', :controller => :profile, :action => 'index'
 

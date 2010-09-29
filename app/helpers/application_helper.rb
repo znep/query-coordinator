@@ -1,6 +1,11 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
 
+# hack
+  def dialog_content(arg = null, arg2 = null, &block)
+    capture(&block)
+  end
+
 # MODULES/FEATURES
   def module_available(name_or_set, &block)
     concat(capture(&block)) if CurrentDomain.module_available?(name_or_set)

@@ -59,7 +59,7 @@ private
     rpx_authentication = RpxAuthentication.new(params[:token])
     if (rpx_authentication.existing_account?)
       user_session = UserSession.rpx(rpx_authentication)
-      redirect_back_or_default(home_path)
+      redirect_back_or_default(profile_path)
     else
       @body_id = 'signup'
       @signup = SignupPresenter.new

@@ -6,6 +6,10 @@ module ApplicationHelper
     concat(capture(&block))
   end
 
+  def fullpage_content(id = nil, &block)
+    concat(capture(&block))
+  end
+
 # MODULES/FEATURES
   def module_available(name_or_set, &block)
     concat(capture(&block)) if CurrentDomain.module_available?(name_or_set)

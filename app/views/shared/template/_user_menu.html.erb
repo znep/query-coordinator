@@ -5,11 +5,6 @@
     <li><%= link_to raw("<span>#{t(:blists_name).titleize}</span>"), profile_path %></li>
   <% end %>
 
-  <%# Only show "Friends" if they have community or are a member of the org %>
-  <% if (module_enabled?(:community_module) || CurrentDomain.member?(current_user)) %>
-    <li><%= link_to raw("<span>Friends</span>"), contacts_path %></li>
-  <% end %>
-
   <%# "Profile" is always displayed %>
   <li class="<%= 'last' unless (upsell? || 
         (module_enabled?(:publisher_comment_moderation) && CurrentDomain.member?(current_user))) %>">

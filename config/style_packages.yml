@@ -29,6 +29,8 @@ screen-calendar:
 - screen-calendar
 administration-screen:
 - screen-admin
+administration-federation:
+- screen-administration-federation
 administration-index-screen:
 - screen-admin-index
 administration-analytics-screen:
@@ -40,8 +42,8 @@ administration-sdp-templates:
 administration-sdp-template:
 - grid-sidebar
 - screen-admin-sdp-template
-administration-federation:
-- screen-administration-federation
+administration-users:
+- screen-admin-users
 browse-control:
 - screen-browse
 dataset-new:

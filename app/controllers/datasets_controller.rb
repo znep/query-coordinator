@@ -14,6 +14,10 @@ class DatasetsController < ApplicationController
 
 # member actions
   def show
+    # adjust layout to thin versions (rather than '_full')
+    @page_custom_header = 'header'
+    @page_custom_footer = 'footer'
+
     if is_mobile? && (params[:no_mobile] != 'true')
       redirect_to :controller => 'widgets', :action => 'show', :id => params[:id]
     end

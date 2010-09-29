@@ -63,7 +63,7 @@
     <div class="siteInnerWrapper">
 
       <div id="siteHeader" class="clearfix">
-        <%= render_domain_template('header', '2b') %>
+        <%= render_domain_template(@page_custom_header || 'header_full', '2b') %>
       </div>
 
       <%= display_maintenance_notification %>
@@ -76,7 +76,7 @@
 
   <div id="siteFooter">
     <a name="footerLinks"></a>
-    <%= render_domain_template('footer', '2b') %>
+    <%= render_domain_template(@page_custom_footer || 'footer_full', '2b') %>
   </div>
 
   <%#

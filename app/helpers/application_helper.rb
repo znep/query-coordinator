@@ -3,7 +3,7 @@ module ApplicationHelper
 
 # hack
   def dialog_content(arg = nil, arg2 = nil, &block)
-    capture(&block)
+    concat(capture(&block))
   end
 
 # MODULES/FEATURES

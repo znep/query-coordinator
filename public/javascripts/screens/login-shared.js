@@ -1,7 +1,7 @@
 $(function() {
     $(':checkbox').uniform();
     $('#user_session_login').focus();
-    $('.signUpLink').click(function(event)
+    $('.signUpLink:not(.whyLink)').click(function(event)
     {
         event.preventDefault();
         $('.loginForm').slideUp();

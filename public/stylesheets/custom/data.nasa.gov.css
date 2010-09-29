@@ -1,0 +1,234 @@
+/* Main */
+html
+{
+	background: url(/stylesheets/images/domains/data.nasa.gov/body_bg.jpg) repeat;
+}
+body
+{
+	background: url(/stylesheets/images/domains/data.nasa.gov/bg_image.jpg) no-repeat center top;
+}
+.bodyInterior
+{
+	border-top: none;	
+}
+#outerContainer
+{
+	max-width: 110em;
+}
+
+/* Border Radius */
+.footerContainer, .nasaSplashContainer, #header
+{
+	border-top-right-radius: 0.5em;
+	-moz-border-radius-topright: 0.5em;
+	webkit-border-top-right-radius: 0.5em;
+	border-top-left-radius: 0.5em;
+	-moz-border-radius-topleft: 0.5em;
+	webkit-border-top-left-radius: 0.5em;
+	border-bottom-left-radius: 0.5em;
+	-moz-border-radius-bottomleft: 0.5em;
+	webkit-border-bottom-left-radius: 0.5em;
+	border-bottom-right-radius: 0.5em;
+	-moz-border-radius-bottomright: 0.5em;
+	webkit-border-bottom-right-radius: 0.5em;
+}
+
+/* Header */
+#header
+{
+	background: url(/stylesheets/images/domains/data.nasa.gov/header_bg.png) repeat-x;
+	height: 98px;
+	margin-bottom: 1.5em;	
+	position: relative;
+	top: 1em;
+}
+#mainLogo
+{
+	position: static;
+}
+#header .userNav
+{
+	position: absolute;
+	left: 140px;
+	top: 0px;
+	padding: 0;
+}
+#header .userNav li 
+{
+	border-right: none;	
+	float: left;
+	margin: 0;
+	padding: 0;
+}
+#header .userNav a
+{
+	background: url(/stylesheets/images/domains/data.nasa.gov/header_divider.png) no-repeat right;	
+	color: #FFF;
+	display: table-cell;
+	font-family:"Trebuchet MS", Arial;
+	font-size: 1.7em;
+	height: 68px;
+	line-height: 68px;
+	padding: 0px 30px 0px;
+	text-transform: uppercase;
+}
+#header .userNav li.signInLink a, #header .loggedInNav li.signOutLink a
+{
+	background-image: none;
+}
+#header .userNav li.signUpLink a
+{
+	font-weight: normal;
+}
+/* Search Box */
+#header form.search
+{
+	top: 72px;
+	width: 31em;
+}
+form.search input.textPrompt
+{
+	height: 17px;
+}
+form.search p
+{
+	background: none;
+	padding-right: 82px;	
+}
+form.search input.submit
+{
+	background: url(/stylesheets/images/domains/data.nasa.gov/search_btn.gif) no-repeat left top;
+	height: 22px;
+	margin-right: -80px;
+	width: 80px;
+}
+form.search input.submit:hover
+{
+	background-position: left -22px;
+}
+
+/* Discover */
+body #discover, .mainContent .outerContent
+{
+	margin: 0em;
+}
+/* Splash */
+.pageBlockIntro
+{
+	background: #1E1E1E;
+	display: block;
+	float: none;
+	margin-bottom: 1.5em;
+}
+.pageBlockIntro p
+{
+	color: #CCC;
+	font-size: 1.4em;
+	font-weight: bold;
+	padding: 0.5em;	
+}
+.nasaSplashContainer
+{
+	background: url(/stylesheets/images/domains/data.nasa.gov/splash_bg.gif) repeat-x #2E2E2E;
+	padding: 1em 37em 0.5em 1em;	
+	margin-bottom: 1.5em;	
+}
+.pageBlockHeaderCarousel h2
+{
+	background: #545454;
+	font-size: 1.5em;
+	padding-left: 0.3em;
+}
+.pageBlockHeaderCarousel.carouselWrapper, .pageBlockHeaderCarousel .carouselOuter, .pageBlockHeaderCarousel .carouselInner
+{
+	background-image: none;
+}
+.pageBlockHeaderCarousel .carouselInner
+{
+	padding: 0;
+}
+.jcarousel-skin-discover
+{
+
+	border: solid 1px #404040;
+}
+.pageBlockHeaderContent .pageBlockHeaderSide
+{
+	color: #FFF;
+	background: #222;
+    -moz-box-shadow:#151515 0px 0px 5px inset;
+    -webkit-box-shadow:#151515 0px 0px 5px inset;
+    -o-box-shadow:#151515 0px 0px 5px inset;
+    box-shadow: inset #151515 0px 0px 5px inset;	
+	font-size: 1.1em;		
+	margin-top: 0;
+	padding: 1em;
+}
+.pageBlockHeaderSide h2
+{
+	border-bottom: solid 1px #111;
+	color: #FFF;	
+}
+.pageBlockHeaderSide ul li a, .myNetworkList a
+{
+	color: #99CCFF;
+}
+.activityList li
+{
+	border-bottom: solid 1px #191919;
+	padding: 0.5em 0;
+}
+.activityList li a img
+{
+	vertical-align: middle;
+}
+
+/* Footer */
+.footerContainer 
+{
+	background: url(/stylesheets/images/domains/data.nasa.gov/footer_bg.png) repeat-x;
+	height: 98px;
+	margin: 0 auto;	
+	max-width: 110em;
+}
+#footer
+{
+	max-width: none;
+	text-align: left;
+}
+#footer .copyright 
+{
+	background: url(/stylesheets/images/domains/data.nasa.gov/footer_logo.gif) no-repeat;	
+	height: 98px;
+	padding: 0em;
+	text-align: left;
+	text-indent: -9999px;
+	width: 140px;
+}
+#footer ul
+{
+	background: url(/stylesheets/images/domains/data.nasa.gov/footer_divider.png) no-repeat left;	
+	float: right;
+	height: 98px;
+	padding: 0;	
+}
+#footer ul li
+{
+	display: block;
+	background:url(/stylesheets/images/domains/data.nasa.gov/footer_bullet.gif) no-repeat 0 5px;
+	margin: 1em 1em 0.5em;
+	padding: 0 0 0 1em;
+}
+#footer li a
+{
+	color:#B2B2B2;
+}
+#footer li a:hover
+{
+	color:#FFF;
+}
+.powered-by {
+background:url(/stylesheets/images/common/small_logo.png) no-repeat scroll right center transparent;
+padding:5px 20px 5px 0;
+}
+

@@ -12,7 +12,7 @@
         <%= hidden_field_tag("fieldType", "description") %>
         <%= text_field_tag("view[description]", h(view.description)) %>
         <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
-        <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), profile_path, :title => "Cancel", :class => "formCancelLink") %>
+        <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), profile_index_path, :title => "Cancel", :class => "formCancelLink") %>
       <%- end -%>
       <%- end -%>
     </div>
@@ -37,7 +37,7 @@
           <%= hidden_field_tag("fieldType", "tags") %>
           <%= text_field_tag("view[tags]", h(view.tag_display_string)) %>
           <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
-          <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), profile_path, :title => "Cancel", :class => "formCancelLink") %>
+          <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), profile_index_path, :title => "Cancel", :class => "formCancelLink") %>
         <%- end -%>
         <%- end -%>
       </div>
@@ -65,7 +65,7 @@
             category_select_options(h(view.category.nil? ?
             '' : view.category.capitalize))) %>
           <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
-          <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), profile_path, :title => "Cancel", :class => "formCancelLink") %>
+          <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), profile_index_path, :title => "Cancel", :class => "formCancelLink") %>
         <%- end -%>
         <%- end -%>
       </div>
@@ -277,7 +277,7 @@
             <ul class="comboToggle actionButtons"><li><a>Custom</a></li></ul>
 
             <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
-            <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel", :class => 'cancel'), profile_path, :title => "Cancel", :class => "formCancelLink cancel") %>
+            <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel", :class => 'cancel'), profile_index_path, :title => "Cancel", :class => "formCancelLink cancel") %>
 
           <%- end -%>
           <%- end -%>
@@ -315,7 +315,7 @@
             <%= select_tag("view[metadata[rdfSubject]]",
               rdf_subject_select_options(view.columns,  h(view.metadata.nil? || view.metadata.rdfSubject.nil? ? '' : view.metadata.rdfSubject))) %>
             <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
-            <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), profile_path, :title => "Cancel", :class => "formCancelLink") %>
+            <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), profile_index_path, :title => "Cancel", :class => "formCancelLink") %>
           <%- end -%>
           <%- end -%>
         </div>
@@ -429,7 +429,7 @@
           <%= form_tag("/api/views/#{view.id}") %>
             <%= text_field_tag 'textValue', h(field[1]), :class => 'textValue', :id => nil %>
             <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
-            <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), profile_path, :title => "Cancel", :class => "formCancelLink") %>
+            <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), profile_index_path, :title => "Cancel", :class => "formCancelLink") %>
           </form>
         </div>
       </dd>

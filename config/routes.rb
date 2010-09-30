@@ -129,8 +129,6 @@ ActionController::Routing::Routes.draw do |map|
   # For legacy support reasons, make /home go somewhere reasonable
   map.connect '/home', :controller => :profile, :action => 'index'
 
-  map.profile '/profile', :controller => :profile, :action => 'index'
-
   map.resources :profile, :member => {
     :create_friend => :get,
     :delete_friend => :get,

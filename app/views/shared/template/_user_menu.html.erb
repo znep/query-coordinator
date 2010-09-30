@@ -2,7 +2,7 @@
   <%# Only show the datasets subtab if they're a member of the org or if the
       org has :community_creation %>
   <% if (module_enabled?(:community_creation) || CurrentDomain.member?(current_user)) %>
-    <li><%= link_to raw("<span>#{t(:blists_name).titleize}</span>"), profile_path %></li>
+    <li><%= link_to raw("<span>#{t(:blists_name).titleize}</span>"), profile_index_path %></li>
   <% end %>
 
   <%# "Profile" is always displayed %>

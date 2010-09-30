@@ -8,7 +8,7 @@
   org has :community_creation %>
   <% if (module_enabled?(:community_creation) || CurrentDomain.member?(current_user)) %>
     <li class='blists'>
-      <div class='wrapper'><%= link_to t(:blists_name).titleize, profile_path %></div>
+      <div class='wrapper'><%= link_to t(:blists_name).titleize, profile_index_path %></div>
     </li>
   <% end %>
 

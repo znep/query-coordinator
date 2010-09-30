@@ -1,6 +1,6 @@
 datasetControlsNS = blist.namespace.fetch('blist.datasetControls');
 
-blist.datasetControls.hookUpShareMenu = function(view, $menu, overrides)
+blist.datasetControls.hookUpShareMenu = function(view, $menu, overrides, hideEmail)
 {
     var tweet = escape('Check out the ' + $.htmlEscape(view.name) +
         ' dataset on ' + blist.configuration.strings.company + ': ');
@@ -21,7 +21,7 @@ blist.datasetControls.hookUpShareMenu = function(view, $menu, overrides)
             { text: 'Twitter', className: 'twitter', rel: 'external',
               href: 'http://www.twitter.com/home?status=' + tweet + shortPath },
             { text: 'Email', className: 'email', href: '#email',
-                onlyIf: view.viewType != 'blobby'}
+                onlyIf: view.viewType != 'blobby' && !hideEmail}
         ]
     };
 

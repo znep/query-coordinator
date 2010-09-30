@@ -26,7 +26,7 @@ Dataset.modules['blist'] =
         { timeout = 1000; }
 
         this._setupDefaultSnapshotting(timeout);
-    },
+    }
 };
 
 })();

@@ -86,7 +86,7 @@ $(function()
                         $.analytics.trackEvent('browse ' + window.location.pathname,
                             'share menu opened', ds.id);
                     }
-                });
+                }, true);
 
         $content.find('.datasetAverageRating')
             .stars({value: ds.averageRating, enabled: false});

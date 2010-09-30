@@ -54,7 +54,7 @@
     </div>
 
     <%- if @nominations_count > 0 -%>
-    <%- create_pagination(@nominations_count, @page_size,
+    <%= create_pagination(@nominations_count, @page_size,
       params[:page], @base_url, 'button') %>
     <%- end -%>
   </div>
@@ -101,7 +101,7 @@
       <td class='user'>
         <%- if !current_user.nil? &&
                 current_user.has_right?('edit_nominations') -%>
-        <a href='#Remove' title='Delete this suggstion' class='delete'></a>
+        <a href='#Remove' title='Delete this suggestion' class='delete'></a>
         <%- end -%>
         <a class='userLink'><img /><span class='userName'></span></a>
       </td>
@@ -109,7 +109,7 @@
         <span class='title'></span>
         <%- if !current_user.nil? &&
                 current_user.has_right?('edit_nominations') -%>
-        <a href='#Edit' title='Edit this suggstion' class='edit'>(Edit)</a>
+        <a href='#Edit' title='Edit this suggestion' class='edit'>(Edit)</a>
         <%- end -%>
         <div class='submitTime'>
           <span class='fullTime'></span>

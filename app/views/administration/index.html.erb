@@ -51,6 +51,16 @@
         </span>
       </li>
     <%- end -%>
+    <%- if current_user &&
+           (current_user.is_admin? || current_user.roleName == 'publisher') -%>
+      <li class="datasets">
+        <%= link_to raw('<span class="icon"></span>Datasets'),
+            {:action => 'datasets'} %>
+        <span class='description'>
+          List datasets of this site
+        </span>
+      </li>
+    <%- end -%>
     <%- if current_user && current_user.is_admin? -%>
       <li class="internal">
         <%= link_to raw('<span class="icon"></span>Internal'),

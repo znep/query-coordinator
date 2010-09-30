@@ -73,8 +73,9 @@
   </div>
   <%- end -%>
 
-  <%- if (CurrentDomain.user_can?(current_user, :create_datasets) ||
-          CurrentDomain.module_enabled?(:community_creation)) -%>
+  <%- if (@opts[:admin].nil? &&
+          (CurrentDomain.user_can?(current_user, :create_datasets) ||
+           CurrentDomain.module_enabled?(:community_creation))) -%>
   <div class='createDatasetBox infoBox'>
     <h3>Create or upload your own dataset</h3>
     <a class='button next' href='/datasets/new' title='Create a new dataset'>

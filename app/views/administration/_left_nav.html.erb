@@ -33,6 +33,14 @@
             {:action => 'sdp_templates'} %>
       </li>
     <%- end -%>
+    <%- if current_user &&
+           (current_user.is_admin? || current_user.roleName == 'publisher') -%>
+      <li class="datasets">
+        <%= link_to_unless_current \
+            raw('<span class="icon"></span>Datasets'),
+            {:action => 'datasets'} %>
+      </li>
+    <%- end -%>
     <%- if current_user && current_user.is_admin? -%>
       <li class="internal">
         <%= link_to_unless_current \

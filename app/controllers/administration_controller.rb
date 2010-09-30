@@ -1,4 +1,5 @@
 class AdministrationController < ApplicationController
+  include BrowseActions
   before_filter :check_auth_level, :except => [:analytics]
   before_filter :check_member,     :only => [:analytics]
   before_filter :check_module,     :only => [:analytics]
@@ -10,6 +11,25 @@ class AdministrationController < ApplicationController
   end
 
   def index
+  end
+
+  def datasets
+    @port = request.port
+    user_id = current_user.id
+    if (!current_user || user_id != current_user.id)
+      @is_user_current = false
+      @user = User.find_profile(user_id)
+    else
+      @is_user_current = true
+      @user = current_user
+    end
+
+    @current_state = {'user' => @user.id, 'domain' => CurrentDomain.cname}
+    @browse_in_container = true
+    @opts = {:admin => true}
+    @default_params = {:sortBy => 'newest', :limitTo => 'datasets'}
+    @facets = [view_types_facet, categories_facet]
+    process_browse!
   end
 
   def analytics

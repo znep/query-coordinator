@@ -53,7 +53,7 @@
     var fullThumbnailChanged = function(url)
     {
         var $img = $('<img/>')
-            .attr('src', url + '?_=' + new Date().getTime())
+            .attr('src', url)
             .load(function(response, status, xhr){
                 if ("error" == status)
                 {

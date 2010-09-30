@@ -987,7 +987,7 @@ this.Dataset = Model.extend({
         if ($.isBlank(this._getCroppedThumbnailMeta(name)))
         { return null; }
 
-        return this.getSnapshotNamed(name + '.png');
+        return this.getSnapshotNamed(name);
     },
 
     getSnapshotNamed: function(name)
@@ -997,7 +997,7 @@ this.Dataset = Model.extend({
         { return null; }
 
         // TODO: Where do we want to put this on prod?
-        return '/images/snapshots/' + uidParts.join('/') + '/' + name;
+        return '/api/views/' + this.id + '/snapshots?method=get&name=' + escape(name);
     },
 
     getCroppedSnapshotUrl: function(name)

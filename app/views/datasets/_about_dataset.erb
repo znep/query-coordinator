@@ -47,9 +47,7 @@
       <dd><%= @view.contributor_users.length %></dd>
       <%- if @view.user_granted?(current_user) || CurrentDomain.user_can?(current_user, :edit_others_datasets) -%>
         <dt class='widenedItem'>
-          <%# TODO/v4 / balboa: Revert this to just /stats once balboa is stable %>
-          <%= link_to 'View Statistics', CurrentDomain.feature?(:balboa_stats) ?
-                       "#{@view.href}/balboa_stats" : "#{@view.href}/stats" %>
+          <%= link_to 'View Statistics', "#{@view.href}/stats" %>
         </dt>
         <dd>&nbsp;</dd>
       <%- end -%>
@@ -145,7 +143,7 @@
     </a>
     <dl class="sectionContent">
       <dt>Semantic Class</dt>
-      <dd><span class="hardWrap"><%= rdf_class_display_name(@view.rdf_class) %></span></dd>
+      <dd><span class="hardWrap"><%= @view.rdf_class_display_name %></span></dd>
       <dt>Subject Column</dt>
       <dd><%= @view.rdf_subject %></dd>
     </dl>

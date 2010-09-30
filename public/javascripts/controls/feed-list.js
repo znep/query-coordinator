@@ -47,7 +47,7 @@
         '.@data-itemId': 'feedItem.itemId',
         '.feedCommon@class+': 'feedItem.itemType',
         '.feedActor': 'feedItem.user.displayName!',
-        '.feedActor@href': function(a) { return $.generateProfileUrl(a.item.user); },
+        '.feedActor@href': function(a) { return new User(a.item.user).getProfileUrl(); },
         '.feedBody': 'feedItem.body!',
         '.feedTimestamp': function(a) { return blist.util.humaneDate.getFromDate(a.item.timestamp * 1000); },
         '.feedCustom': function(a)

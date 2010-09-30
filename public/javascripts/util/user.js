@@ -7,8 +7,6 @@ this.User = Model.extend({
         this._super();
 
         $.extend(this, v);
-
-        var selfUrl = '/users/' + this.id;
     },
 
     isCurrentUser: function()

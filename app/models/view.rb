@@ -664,6 +664,81 @@ class View < Model
     '(none)'
   end
 
+  # include only url and text column types.
+  # In the future, we may allow people to have
+  # a namespace attached to a view and the subject column
+  # content does not have to contain full uri.
+  def rdf_subject_select_options(cols, selected_rdf_subject)
+    options = []
+    sel = nil
+    options.push(['--None--', 0])
+    cols.each do |m|
+      if (m.renderTypeName == 'text' || m.renderTypeName == 'url')
+        options.push([m.name, m.id])
+        if (m.id.to_s() == selected_rdf_subject)
+          sel = m.id
+        end
+      end
+    end
+    options_for_select(options, sel)
+  end
+
+  def rdf_class_display_name
+    if (rdf_class.nil? || rdf_class == '')
+      return rdf_class
+    end
+
+    rdf_classes = RdfTerm.all_classes
+
+    rdf_classes.each do |m|
+      if (m.CName == rdf_class)
+        return m.namespace + ': ' + (m.displayName.empty? ? m.name : m.displayName)
+      end
+    end
+    return rdf_class
+  end
+
+  def options_for_limit_to(column, current = nil)
+    options = [['No Filter', '']]
+    options += column.possible_filter_conditions.
+      collect{|c_hash| [c_hash[:label], c_hash[:operator]]}
+    options_for_select(options, current)
+  end
+
+  def options_for_sort_by(columns, current = nil)
+    options = [['No Sort', '']]
+    options += columns.select{|c| c.is_sortable?}.
+      collect{|column| [column.name, column.id]}
+    options_for_select(options, current)
+  end
+
+  def socialize_menu_options
+    [{'text' => 'Delicious',
+      'href' => "http://del.icio.us/post?url=#{seo_path}&title=#{h(view.name)}"},
+
+    {'text' => 'Digg',
+      'href' => "http://digg.com/submit?phase=2&url=#{seo_path}&title=#{h(view.name)}"},
+
+    {'text' => 'Facebook',
+      'href' => "http://www.facebook.com/share.php?u=#{h(seo_path)}"},
+
+    {'text' => 'Twitter',
+      'href' => "http://www.twitter.com/home?status=#{tweet + short_path}"}]
+  end
+
+  def get_rating_class(rating)
+    ['zero', 'one', 'two', 'three', 'four', 'five'][
+      ((rating * 2.0).round / 2.0).floor] +
+      ((rating * 2.0).round % 2 == 1 ? '_half' : '')
+  end
+
+  def get_rating_html
+    rating = averageRating
+    "<div class='rating " +
+      "#{get_rating_class(rating)}' " +
+      "title='#{rating}'><span>#{rating}</span></div>"
+  end
+
   # Looks for property with _name_, or asks Configurations service
   def property_or_default(path)
     unless path.is_a?(Array)

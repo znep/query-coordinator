@@ -17,7 +17,7 @@
                 <div class="itemMetaData">
                   <ul class="metaList">
                     <li class="ratingContainer">
-                      <%= get_blist_rating_html(view) %>
+                      <%= view.get_rating_html %>
                     </li>
                     <li>Visited <%= pluralize(view.viewCount, "time") %></li>
                     <li><%= pluralize(view.numberOfComments, "Comment") %></li>

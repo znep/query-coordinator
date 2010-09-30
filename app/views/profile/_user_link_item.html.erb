@@ -1,9 +1,0 @@
-<%- 
-  user_link = user_link_item
-  link_type = UserLink.link_types.find { |link_item| link_item[0] == user_link.linkType.upcase} 
--%>
-
-<li id="link_list_item_<%= user_link.id %>"><%= link_to(image_tag("user_link_icons/#{user_link.linkType}.png", 
-                  :size => "32x32", :alt => link_type[1]), 
-        h(user_link.url),
-        :title => h(user_link.label), :rel => "external nofollow", :target => "_blank") %></li>

@@ -26,20 +26,6 @@
 
   <div class="widgetContent">
     <div class="widgetContentSection widgetContentGrid">
-      <%- if @theme[:behavior][:save_public_views] -%>
-        <div id='viewHeader' class='clearfix'>
-          <a class='datasetLink breadcrumbItem' href='#view_<%= @view.id %>'><%= @view.name %></a>
-          <div class='viewName inlineEdit' href='#new_view'>
-            <span title='Click to name and save your filtered view'>
-              [Unsaved Filter]
-            </span>
-            <%- form_tag(profile_index_path) do -%>
-            <label for='view_name'>View Name:</label>
-            <%= text_field_tag("view[name]", '') %>
-            <%- end -%>
-          </div>
-        </div>
-      <%- end -%>
       <div class="gridContainer">
           <div class='mainSpinner loadingSpinnerContainer hide'>
             <div class='loadingSpinner'></div>

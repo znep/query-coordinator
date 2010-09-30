@@ -26,6 +26,7 @@ javascripts:
   - util/markup
   - util/alert-override
   - util/google-analytics
+  - util/user
   - util/dataset/column-container
   - util/dataset/column
   - util/dataset/dataset
@@ -117,7 +118,6 @@ javascripts:
   - plugins/jquery.uniform
   - plugins/jquery.tablesorter
   - widgets/combination-list
-  - util/user
   - screens/admin-moderation
 - admin-sdp-templates:
   - controls/modal-dialogs
@@ -140,13 +140,6 @@ javascripts:
   - plugins/jquery.tablesorter
   - widgets/combination-list
   - screens/admin-federation-screen
-- profiles-show:
-  - plugins/jquery.tablesorter
-  - plugins/ajaxupload.3.0
-  - widgets/selectable-list
-  - widgets/combination-list
-  - plugins/ui.showedit
-  - screens/profile-screen
 - rpx-return:
   - screens/signup-screen
 - browse-control:
@@ -163,7 +156,6 @@ javascripts:
   - plugins/ajaxupload.3.0
   - util/events
   - util/humane-date
-  - util/user
   - controls/modal-dialogs
   - screens/nominations
 - widgets-show:
@@ -174,8 +166,6 @@ javascripts:
   - widgets/combination-list
   - controls/embed-form
   - util/humane-date
-  - util/navigation
-  - util/urls
   - util/events
   - controls/modal-dialogs
   - controls/dataset-controls
@@ -183,7 +173,6 @@ javascripts:
   - controls/menu
   - controls/page-render-type
   - widgets/scrollTabs
-  - widgets/inline-edit
   - widgets/form-inliner
   - screens/widget
 - widgets-show-form:
@@ -205,8 +194,6 @@ javascripts:
   - widgets/combination-list
   - util/events
   - util/humane-date
-  - util/urls
-  - util/navigation
   - util/inline-login
   - util/konami
   - controls/menu
@@ -256,7 +243,6 @@ javascripts:
 - screen-bare-dataset:
   - util/events
   - util/humane-date
-  - util/urls
   - controls/full-screen
   - util/base64
   - screens/dataset-bare
@@ -267,7 +253,6 @@ javascripts:
   - plugins/jquery.tablesorter
   - plugins/highcharts.src
   - widgets/charts/metric-charts
-  - util/urls
   - controls/equiwidth
   - controls/menu
   - controls/metrics-shared
@@ -278,8 +263,6 @@ javascripts:
   - screens/signup-screen
 - screen-profile:
   - util/humane-date
-  - util/urls
-  - util/user
   - controls/feed-list
   - screens/profile-screen
 - screen-profile-edit:
@@ -290,7 +273,7 @@ javascripts:
 
 
 
-stylesheets: 
+stylesheets:
 - chart-screen:
   - chart-screen
 - dataset-show:

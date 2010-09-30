@@ -1,5 +1,0 @@
-<%- is_owner = (current_user && current_user.is_owner?(@view)) -%>
-
-<%= render(:partial => "blists/info_#{@tabKey}_header", 
-            :locals => {:view => @view, :page_single => false, 
-                        :allow_edit => is_owner, :in_widget => false }) %>

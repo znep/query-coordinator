@@ -73,7 +73,7 @@ metricsNS.topDatasetsCallback = function($context)
                     results.push({linkText: responseData.name,
                         value: value,
                         textValue: Highcharts.numberFormat(value, 0),
-                        href: $.generateViewUrl(responseData)
+                        href: new Dataset(responseData).url
                     });
                 }
             });

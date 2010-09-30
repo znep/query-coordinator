@@ -40,9 +40,8 @@ class DatasetsController < ApplicationController
 
     href = @view.href
     href += '/' + params[:row_id] if !params[:row_id].nil?
-    # See if it matches the authoritative URL; if not, redirect (but only if we
-    # aren't cheating and showing them the new datasets page)
-    if request.path != href && CurrentDomain.module_available?('new_datasets_page')
+    # See if it matches the authoritative URL; if not, redirect
+    if request.path != href
       # Log redirects in development
       if Rails.env.production? && request.path =~ /^\/dataset\/\w{4}-\w{4}/
         logger.info("Doing a dataset redirect from #{request.referrer}")
@@ -205,6 +204,26 @@ class DatasetsController < ApplicationController
     if !(@view.user_granted?(current_user) || \
         CurrentDomain.user_can?(current_user, :edit_others_datasets))
       return render_forbidden
+    end
+  end
+
+  def form_success
+    begin
+      @view = View.find(params[:id])
+    rescue
+      # Do nothing; if there is no view, render a generic message
+    end
+
+    respond_to do |format|
+      format.html { render(:layout => "plain") }
+    end
+  end
+
+  def form_error
+    @view = View.find(params[:id])
+    @error_message = params[:errorMessage]
+    respond_to do |format|
+      format.html { render(:layout => "plain") }
     end
   end
 

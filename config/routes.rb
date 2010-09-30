@@ -139,7 +139,6 @@ ActionController::Routing::Routes.draw do |map|
   # New dataset page
   # Temporary hack for datasets/new so it doesn't get routed to show:
   map.connect '/datasets/new', :controller => :datasets, :action => 'new'
-  map.connect '/datasets/detail', :controller => :blists, :action => 'detail'
 
   map.resources :datasets,
     :member => {
@@ -220,6 +219,21 @@ ActionController::Routing::Routes.draw do |map|
       :category => /(\w|-)+/},
     :conditions => {:method => :get}
 
+  map.connect ':category/:view_name/:id/stats', :controller => 'datasets',
+    :action => 'stats', :conditions => { :method => :get },
+    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
+      :category => /(\w|-)+/}
+
+  map.connect ':category/:view_name/:id/form_success', :controller => 'datasets',
+    :action => 'form_success', :conditions => { :method => :get },
+    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
+      :category => /(\w|-)+/}
+
+  map.connect ':category/:view_name/:id/form_error', :controller => 'datasets',
+    :action => 'form_error', :conditions => { :method => :get },
+    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
+      :category => /(\w|-)+/}
+
   # New short URLs
   map.connect 'dataset/:id', :controller => 'datasets',
     :action => 'show',
@@ -237,30 +251,12 @@ ActionController::Routing::Routes.draw do |map|
     :requirements => {:id => UID_REGEXP},
     :conditions => {:method => :get}
 
-  map.connect ':category/:view_name/:id/stats', :controller => 'datasets',
-    :action => 'stats', :conditions => { :method => :get },
-    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
-      :category => /(\w|-)+/}
-
-  map.connect ':category/:view_name/:id/:action', :controller => 'blists',
-    :conditions => { :method => :get }, :requirements => {:id => UID_REGEXP,
-      :view_name => /(\w|-)+/, :category => /(\w|-)+/}
-
-  map.connect ':category/:view_name/:id/email', :controller => 'blists',
-    :action => 'email', :conditions => { :method => :post }, 
-    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :category => /(\w|-)+/}
-
-  map.connect ':category/:view_name/:id/:action/:type', :controller => 'blists',
-    :conditions => { :method => :get }, :requirements => {:id => UID_REGEXP,
-      :view_name => /(\w|-)+/, :type => /(\w|-)+/, :category => /(\w|-)+/}
-
   # Seattle Data-Policy hack
   map.connect '/data-policy', :controller => "data_policy", :action => "index"
 
   # The /version page
   map.connect '/version', :controller => "version", :action => "index"
 
-  map.import '/upload_alt', :controller => 'blists', :action => 'upload_alt'
   map.import_redirect '/upload/redirect', :controller => 'imports', :action => 'redirect'
   map.forgot_password '/forgot_password', :controller => 'accounts', :action => 'forgot_password'
   map.reset_password '/reset_password/:uid/:reset_code', :controller => 'accounts', :action => 'reset_password',

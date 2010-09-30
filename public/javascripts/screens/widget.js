@@ -494,7 +494,7 @@ $(function()
 
                                 '.viewed .cellInner': 'filter.viewCount',
 
-                                '.picture a@href': function(filter) { return $.generateProfileUrl(filter.item.owner); },
+                                '.picture a@href': function(filter) { return new User(filter.item.owner).getProfileUrl(); },
                                 '.picture img@src': function(filter) { return filter.item.owner.profileImageUrlMedium ||
                                                                               '/images/small-profile.png'; },
                                 '.picture img@alt': 'filter.owner.displayName!',
@@ -546,11 +546,11 @@ $(function()
                                        '/images/large-profile.png'; },
         '.replyAuthor img@alt': 'reply.user.displayName!',
         '.replyAuthor a@href':
-            function(reply) { return $.generateProfileUrl(reply.item.user); },
+            function(reply) { return new User(reply.item.user).getProfileUrl(); },
 
         '.replyContainer .replyBody .replyAuthorName': 'reply.user.displayName!',
         '.replyContainer .replyBody .replyAuthorName@href':
-            function(reply) { return $.generateProfileUrl(reply.item.user); },
+            function(reply) { return new User(reply.item.user).getProfileUrl(); },
         '.replyContainer .replyBody .replyTitle': 'reply.title!',
         '.replyContainer .replyBody+': 'reply.body!',
 
@@ -577,11 +577,11 @@ $(function()
                                                '/images/large-profile.png'; },
                 '.commentAuthor img@alt': 'comment.user.displayName!',
                 '.commentAuthor a@href':
-                    function(comment) { return $.generateProfileUrl(comment.item.user); },
+                    function(comment) { return new User(comment.item.user).getProfileUrl(); },
 
                 '.commentContainer .commentBody .commentAuthorName': 'comment.user.displayName!',
                 '.commentContainer .commentBody .commentAuthorName@href':
-                    function(comment) { return $.generateProfileUrl(comment.item.user); },
+                    function(comment) { return new User(comment.item.user).getProfileUrl(); },
                 '.commentContainer .commentBody .commentTitle': 'comment.title!',
                 '.commentContainer .commentBody+': 'comment.body!',
 

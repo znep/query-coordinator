@@ -1,4 +1,28 @@
 module DatasetsHelper
+ 
+  def category_select_options(selected_category = nil)
+    options_for_select(View.categories.invert.sort { |a, b| a.first <=> b.first },
+                       selected_category)
+  end
+
+  def license_select_options(selected_license = nil)
+    if selected_license.include?("CC")
+      selected_license = "CC"
+    end
+    options_for_select(View.licenses.invert.sort { |a, b| a.first <=> b.first },
+                       selected_license)
+  end
+
+  def creative_commons_select_options(selected_option = nil)
+    options_for_select(View.creative_commons.invert.sort { |a, b|
+      a.first <=> b.first }, selected_option)
+  end
+
+  def merged_license_select_options(selected_license = nil)
+    options_for_select(View.merged_licenses.invert.sort { |a, b|
+      a.first <=> b.first }, selected_license)
+  end
+
   # Create a drop down menu of formatting fonts
   # Pass a font name to select it by default.
   # TODO: This sucks keeping it in sync with our text editor; better place to

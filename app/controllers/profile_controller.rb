@@ -64,33 +64,29 @@ class ProfileController < ApplicationController
       end
     end
 
-    unless !CurrentDomain.module_available?(:new_datasets_page)
-      @browse_in_container = true
-      @opts = {:for_user => @user.id}
-      @default_params = {:sortBy => 'newest', :limitTo => 'datasets'}
-      # Special param to use the /users/4-4/views.json call instead of the
-      # search service.  For users with lots of views, this will be slow, and
-      # it doesn't allow sort/filter/search; but it doesn't require
-      # the Cassandra search service
-      if params[:_oldViews] == 'true'
-        @facets = []
-        @sort_opts = []
-        @view_results = View.find_for_user(@user.id)
-        @view_count = @view_results.length
-        @limit = @view_count
-      elsif params[:ownership] == 'sharedToMe'
-        @facets = []
-        @sort_opts = []
-        @view_results = View.find_shared_to_user(@user.id)
-        @view_count = @view_results.length
-        @limit = @view_count
-      else
-        @facets = [view_types_facet, categories_facet]
-      end
-      process_browse!
+    @browse_in_container = true
+    @opts = {:for_user => @user.id}
+    @default_params = {:sortBy => 'newest', :limitTo => 'datasets'}
+    # Special param to use the /users/4-4/views.json call instead of the
+    # search service.  For users with lots of views, this will be slow, and
+    # it doesn't allow sort/filter/search; but it doesn't require
+    # the Cassandra search service
+    if params[:_oldViews] == 'true'
+      @facets = []
+      @sort_opts = []
+      @view_results = View.find_for_user(@user.id)
+      @view_count = @view_results.length
+      @limit = @view_count
+    elsif params[:ownership] == 'sharedToMe'
+      @facets = []
+      @sort_opts = []
+      @view_results = View.find_shared_to_user(@user.id)
+      @view_count = @view_results.length
+      @limit = @view_count
+    else
+      @facets = [view_types_facet, categories_facet]
     end
-
-    @user_links = UserLink.find(@user.id)
+    process_browse!
   end
 
   def update

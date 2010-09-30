@@ -1,7 +1,7 @@
 <ul class='tabList'>
   <%# Everybody gets /home %>
   <li class='home even'>
-    <div class='wrapper'><%= link_to 'Home', home_path %></div>
+    <div class='wrapper'><%= link_to 'Home', profile_path %></div>
   </li>
 
   <%# Only show the datasets subtab if they're a member of the org or if the
@@ -16,15 +16,4 @@
   <li class='profile'>
     <div class='wrapper'><%= link_to "Profile", current_user.href %></div>
   </li>
-
-  <%# Only showed to org members when the module is enabled %>
-  <%- if (CurrentDomain.member?(current_user) && module_enabled?(:publisher_comment_moderation)) -%>
-    <li class='approval even'>
-      <div class='wrapper'><%= link_to 'Approvals', approval_path %></div>
-    </li>
-  <%- elsif upsell?-%>
-    <li class='approval even'>
-      <div class='wrapper'><%= link_to 'Approvals', '/popup/premium', :rel => "modal" %></div>
-    </li>
-  <%- end -%>
 </ul>

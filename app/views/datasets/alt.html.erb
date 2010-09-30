@@ -17,7 +17,6 @@
   <%- if @view.display.can_publish? -%>
   <a href="#publishing" accesskey="p">Skip to publishing</a>
   <%- end -%>
-  <a href="#activities" accesskey="a">Skip to activities</a>
 <% end %>
 
 <%- is_owner = current_user && @view.owner.id == current_user.id -%>
@@ -134,7 +133,7 @@
 <%- if !@conditions.empty? || !params[:search_string].blank? -%>
   <h2>Save this view</h2>
   <%- if current_user -%>
-    <%- form_tag (save_filter_blist_path(@view.id) + '?' + @state_param) do -%>
+    <%- form_tag (save_filter_dataset_path(@view.id) + '?' + @state_param) do -%>
       <%= hidden_field_tag 'query_json', @query_json %>
       <%= label_tag "Name" %>
       <%= text_field_tag "name" %>
@@ -161,7 +160,7 @@
   <% if module_enabled? :allow_comments %>
     <a name="comments"></a>
     <h2>Post a Comment</h2>
-    <%- form_tag(post_comment_blist_path(@view.id)) do -%>
+    <%- form_tag(post_comment_dataset_path(@view.id)) do -%>
     <%= hidden_field_tag 'redirect_to', '/alt#comments' %>
       <% field_set_tag do %>
         <%= label_tag "comment[viewRating]", "My Rating" %>
@@ -217,7 +216,7 @@
         @view.is_shared? %>
     </h4>
     <%- if can_share -%>
-    <% form_tag(url_for(:controller => :blists,
+    <% form_tag(url_for(:controller => :datasets,
       :action => :modify_permission)) do %>
     <%= hidden_field_tag 'permission_type', @view.is_public? ?
       'private' : 'public.' + @view.display.public_perm_type %>
@@ -278,29 +277,5 @@
     <%- end -%>
   </div>
   <%- end -%>
-
-  <a name='activities'></a>
-  <div id='activitiesBlock'>
-    <h2>Activities</h2>
-
-    <%- if @view_activities && @view_activities.length > 0 -%>
-      <ul class='metaDataList'>
-        <%- @view_activities.each do |activity| -%>
-        <li>
-          <a href="<%= activity.actor.href %>"
-            title='<%= activity.actor.displayName %>'>
-            <%= activity.actor.displayName %>
-          </a>
-          <%= get_verb_for_activity_action(activity.action) %>
-          <%= get_html_for_action_object(activity) %>
-
-          <%= humane_date(activity.createdAt) %>
-        </li>
-        <%- end -%>
-      </ul>
-      <%- else -%>
-      <p>There is no activity for this <%= @view.is_blist? ?
-        t(:blist_name).downcase : 'view' %>.</p>
-      <%- end -%>
-  </div>
 </div>
+

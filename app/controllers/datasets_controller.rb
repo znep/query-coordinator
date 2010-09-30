@@ -82,6 +82,7 @@ class DatasetsController < ApplicationController
     render :layout => false
   end
 
+# alt actions
   def alt
     @view = get_view(params[:id])
     return if @view.nil?
@@ -106,6 +107,61 @@ class DatasetsController < ApplicationController
     @view.register_opening(request.referrer)
     @view_activities = Activity.find({:viewId => @view.id})
   end
+
+  def save_filter
+    begin
+      @view = View.find(params[:id])
+    rescue
+      flash.now[:error] = 'An error occurred processing your request. Please try again in a few minutes.'
+      return (render 'shared/error')
+    end
+
+    conditions = parse_alt_conditions(params)
+
+    begin
+      @result = @view.save_filter(params[:name], conditions)
+    rescue CoreServer::CoreServerError => e
+      if e.error_code == 'invalid_request'
+        flash.now[:error] = 'A view with that name already exists. Please use the back button on your browser and pick a different name.'
+      else
+        flash.now[:error] = 'An error occurred processing your request. Please try again in a few minutes.'
+      end
+      return (render 'shared/error')
+    end
+    redirect_to @result.alt_href
+  end
+
+  def modify_permission
+    view = View.find(params[:id])
+    view.set_permission(params[:permission_type])
+    respond_to do |format|
+      format.html { redirect_to view.alt_href + '#sharing' }
+    end
+  end
+
+  def post_comment
+    @is_child = !params[:comment][:parent].nil?
+
+    if params[:comment][:viewRating].present?
+      begin
+        # Note: No type is specified, use default
+        @rating = Rating.create(params[:id], {:rating => params[:comment][:viewRating]})
+      rescue
+        # They already posted a rating for this category, ignore...
+      end
+      params[:comment].delete(:viewRating)
+    end
+    @comment = Comment.create(params[:id], params[:comment])
+    @view = View.find(params[:id])
+
+    redirect_path = params[:redirect_to]
+
+    respond_to do |format|
+      format.html { redirect_to(@view.href + redirect_path) }
+    end
+  end
+
+# end alt actions
 
   def math_validate
     @view = get_view(params[:id])

@@ -10,15 +10,5 @@
         (module_enabled?(:publisher_comment_moderation) && CurrentDomain.member?(current_user))) %>">
     <%= link_to raw("<span>Profile</span>"), '/profile' %>
   </li>
-
-  <%# Only showed to org members when the module is enabled %>
-  <%- if (CurrentDomain.member?(current_user) && module_enabled?(:publisher_comment_moderation)) -%>
-    <li class="last">
-    <%= link_to raw('<span>Approvals</span>'), approval_path %>
-    </li>
-  <%- elsif upsell?-%>
-    <li class="last">
-    <%= link_to raw('<span>Approvals</span>'), '/popup/premium', :rel => "modal" %>
-    </li>
-  <%- end -%>
 </ul>
+

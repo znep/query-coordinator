@@ -63,6 +63,8 @@ dataset-edit-metadata:
 - screen-dataset-edit-metadata
 dataset-thumbnail:
 - screen-dataset-thumbnail
+dataset-upload:
+- screen-dataset-upload
 homepage-show:
 - screen-homepage-show
 profile-show:

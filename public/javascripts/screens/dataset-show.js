@@ -217,7 +217,6 @@ $(function()
     $('#description').expander({
         contentSelector: 'p',
         expanderCollapsedClass: 'rightArrow',
-        expanderExpandedClass: 'leftArrow',
         expandSelector: '.descriptionExpander',
         moveExpandTrigger: true,
         resizeFinishCallback: datasetPageNS.adjustSize

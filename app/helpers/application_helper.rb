@@ -235,6 +235,8 @@ module ApplicationHelper
     link_to name, "#{APP_CONFIG['rpx_signin_url']}?token_url=#{return_url}", options
   end
 
+# THEME HELPERS
+
   # Simple technique to do nested layouts. If you want to include one layout
   # inside of another, in the inner layout, put the following at the bottom
   # of your layouts/foo.html.erb:
@@ -243,6 +245,24 @@ module ApplicationHelper
   def parent_layout(layout)
     @content_for_layout = self.output_buffer
     self.output_buffer = render(:file => "layouts/#{layout}")
+  end
+
+  def link_from_theme(options)
+    return unless options[:ifModuleEnabled].blank? ||
+                  CurrentDomain.module_enabled?(options[:ifModuleEnabled])
+
+    text = options[:text]
+    options.delete(:text)
+    options.delete(:ifModuleEnabled)
+    return content_tag('a', text, options)
+  end
+
+  def theme_image_url(options)
+    if options[:type].to_s == "static"
+      return "#{options[:source]}"
+    elsif options[:type].to_s == "hosted"
+      return "/assets/#{options[:source]}"
+    end
   end
 
   def render_domain_template(template_name, version = 0)
@@ -265,6 +285,8 @@ module ApplicationHelper
 
     return tmpl
   end
+
+# MISC 
 
   def get_publish_embed_code_for_view(view, options = {}, variation = "", from_tracking_id = nil)
     # merge publish options with theme options if extant

@@ -26,8 +26,9 @@
 
     // Get the user's views for the news feed
     // TODO: Get activity on child views of their datasets?
+/*  TEMP: disable the feed until it's more interesting
     user.getDatasets(function(views)
-    { renderFeed(views); });
+    { renderFeed(views); }); */
 
     // Follow/unfollow a user
     $('.followButton').click(function(event)

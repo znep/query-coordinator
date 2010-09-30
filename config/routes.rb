@@ -17,7 +17,7 @@ ActionController::Routing::Routes.draw do |map|
 
   # Sample resource route with sub-resources:
   #   map.resources :products, :has_many => [ :comments, :sales ], :has_one => :seller
-  
+
   # Sample resource route with more complex sub-resources
   #   map.resources :products do |products|
   #     products.resources :comments
@@ -86,8 +86,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/internal/modules', :controller => 'internal',
     :action => 'index_modules'
 
-  admin_route = 'admin'
-  map.resources :administration, :as => admin_route,
+  map.resources :administration, :as => 'admin',
     :collection => {
       :analytics => :get,
       :federations => :get,
@@ -98,37 +97,29 @@ ActionController::Routing::Routes.draw do |map|
     }
 
   map.with_options :controller => 'administration' do |admin|
-    admin.connect admin_route + '/users/:userid/:role', :action => 'set_user_role'
-    admin.connect admin_route + '/users/update', :action => 'set_user_role',
+    admin.connect '/admin/users/:user_id/:role', :action => 'set_user_role'
+    admin.connect '/admin/users/update', :action => 'set_user_role',
       :conditions => { :method => :post }
-    admin.connect admin_route + '/sdp_templates', :action => 'sdp_template_create',
+    admin.connect '/admin/sdp_templates', :action => 'sdp_template_create',
       :conditions => { :method => :post }
-    admin.connect admin_route + '/sdp_templates/:id', :action => 'sdp_template'
-    admin.connect admin_route + '/sdp_templates/:id/set_default',
-      :action => 'sdp_set_default_template'
-    admin.connect admin_route + '/sdp_templates/:id/delete',
-      :action => 'sdp_delete_template'
-    admin.connect admin_route + '/federations/:id/delete',
-      :action => 'delete_federation'
-    admin.connect admin_route + '/federations/:id/accept',
-      :action => 'accept_federation'
-    admin.connect admin_route + '/federations/:id/reject',
-      :action => 'reject_federation'
-    admin.connect admin_route + '/federations/create',
-      :action => 'create_federation', :conditions => { :method => :post }
+    admin.connect '/admin/sdp_templates/:id', :action => 'sdp_template'
+    admin.connect '/admin/sdp_templates/:id/set_default', :action => 'sdp_set_default_template'
+    admin.connect '/admin/sdp_templates/:id/delete', :action => 'sdp_delete_template'
+    admin.connect '/admin/federations/:id/delete', :action => 'delete_federation'
+    admin.connect '/admin/federations/:id/accept', :action => 'accept_federation'
+    admin.connect '/admin/federations/:id/reject', :action => 'reject_federation'
+    admin.connect '/admin/federations/create', :action => 'create_federation',
+      :conditions => { :method => :post }
   end
 
   map.resource :browse, :controller => 'browse'
-
   map.resource :search
-
   map.resource :nominations, :as => 'nominate'
 
-  map.resource :account
-  map.resources :suggestions
-
-  # For legacy support reasons, make /home go somewhere reasonable
-  map.connect '/home', :controller => :profile, :action => 'index'
+  # For legacy support reasons, make /home and /datasets go somewhere reasonable
+  map.connect '/home',     :controller => :profile, :action => 'index'
+  map.connect '/datasets', :controller => :profile, :action => 'index'
+  map.profile '/profile',  :controller => :profile, :action => 'index'
 
   map.resources :profile, :member => {
     :create_friend => :get,
@@ -136,22 +127,8 @@ ActionController::Routing::Routes.draw do |map|
     :update_account => :put
   }
 
-  # New dataset page
-  # Temporary hack for datasets/new so it doesn't get routed to show:
-  map.connect '/datasets/new', :controller => :datasets, :action => 'new'
-
-  map.resources :datasets,
-    :member => {
-      :widget_preview => :get,
-      :edit_metadata => [:get, :post],
-      :thumbnail => :get,
-      :math_validate => :post,
-      :alt => [:get, :post]
-    },
-    :only => [ :show ] # you see, we actually abandoned RESTful routes, I guess
-
-  map.resource :approval
-
+  # Profile SEO urls (only add here if the action has a view with it;
+  # otherwise just add to the :member key in the profile resource above.)
   map.connect 'profile/:profile_name/:id', :controller => 'profile',
        :action => 'show', :conditions => { :method => :get },
        :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
@@ -168,11 +145,6 @@ ActionController::Routing::Routes.draw do |map|
      :action => 'edit_account', :conditions => { :method => :get },
      :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
 
-
-  # This needs to be more specific than the dataset routes, which will all
-  # accept anything/anything/4-4, which matches our widget customization
-  # path of widgets/4-4/4-4
-
   map.connect 'widgets/:id/:customization_id', :controller => 'widgets',
     :action => 'show', :requirements => {:id => UID_REGEXP}
   map.connect 'widgets/:id', :controller => 'widgets',
@@ -182,7 +154,20 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'w/:id', :controller => 'widgets',
     :action => 'show', :requirements => {:id => UID_REGEXP}
 
-  # New SEO URL
+  map.resources :datasets,
+    :collection => {
+      :upload => :get
+    },
+    :member => {
+      :math_validate => :post,
+      :save_filter => :post,
+      :modify_permission => :post,
+      :post_comment => :post
+    },
+    :only => [ :show, :new ]
+
+  # Dataset SEO URLs (only add here if the action has a view with it;
+  # otherwise just add to the :member key in the datasets resource above.)
   map.connect ':category/:view_name/:id', :controller => 'datasets',
     :action => 'show',
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
@@ -234,7 +219,7 @@ ActionController::Routing::Routes.draw do |map|
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
       :category => /(\w|-)+/}
 
-  # New short URLs
+  # Short URLs
   map.connect 'dataset/:id', :controller => 'datasets',
     :action => 'show',
     :requirements => {:id => UID_REGEXP},
@@ -251,13 +236,15 @@ ActionController::Routing::Routes.draw do |map|
     :requirements => {:id => UID_REGEXP},
     :conditions => {:method => :get}
 
-  # Seattle Data-Policy hack
-  map.connect '/data-policy', :controller => "data_policy", :action => "index"
+  map.connect ':category/:view_name/:id/stats', :controller => 'datasets',
+    :action => 'stats', :conditions => { :method => :get },
+    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
+      :category => /(\w|-)+/}
 
   # The /version page
   map.connect '/version', :controller => "version", :action => "index"
 
-  map.import_redirect '/upload/redirect', :controller => 'imports', :action => 'redirect'
+  # Auth/login/register paths
   map.forgot_password '/forgot_password', :controller => 'accounts', :action => 'forgot_password'
   map.reset_password '/reset_password/:uid/:reset_code', :controller => 'accounts', :action => 'reset_password',
     :conditions => {:uid => UID_REGEXP}
@@ -276,6 +263,7 @@ ActionController::Routing::Routes.draw do |map|
     https.add_rpx_token '/account/add_rpx_token', :controller => 'accounts', :action => 'add_rpx_token'
   end
 
+  map.resource :account
   map.resources :user_sessions
   map.connect '/site_config/:config_id',
     :controller => 'user_sessions', :action => 'site_config'
@@ -284,6 +272,9 @@ ActionController::Routing::Routes.draw do |map|
 
   map.connect '/robots.txt',
     :controller => 'robots_txt', :action => 'show'
+
+  # Seattle Data-Policy hack
+  map.connect '/data-policy', :controller => "data_policy", :action => "index"
 
   # Static content
   ['about', 'solution', 'company-info', 'press', 'developers', 'benchmark-study'].each do |static_section|

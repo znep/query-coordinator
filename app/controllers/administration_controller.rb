@@ -58,7 +58,7 @@ class AdministrationController < ApplicationController
   def set_user_role
     error_message = nil
     begin
-      updated_user = User.set_role(params[:userid], params[:role])
+      updated_user = User.set_role(params[:user_id], params[:role])
     rescue CoreServer::CoreServerError => ex
       error_message = ex.error_message
     end

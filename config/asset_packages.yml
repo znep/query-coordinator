@@ -282,7 +282,7 @@ javascripts:
   - util/user
   - controls/feed-list
   - screens/profile-screen
-- profile-edit:
+- screen-profile-edit:
   - plugins/jquery.uniform
   - plugins/ajaxupload.3.0
   - screens/profile-screen-edit

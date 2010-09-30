@@ -81,11 +81,20 @@ $(function()
                         {tagName: 'span', 'class': 'shareIcon'},
                         {tagName: 'span', 'class': 'shareText', contents: 'Share'}
                     ], true),
-                    onOpen: function()
+                    onOpen: function($menu)
                     {
+                        // Grr, IE7
+                        if (($.browser.msie) && ($.browser.majorVersion < 8))
+                        { $menu.closest('.extraInfo').css('z-index', 1); }
                         $.analytics.trackEvent('browse ' + window.location.pathname,
                             'share menu opened', ds.id);
-                    }
+                    },
+                    onClose: function($menu)
+                    {
+                        if (($.browser.msie) && ($.browser.majorVersion < 8))
+                        { $menu.closest('.extraInfo').css('z-index', 0); }
+                    },
+                    parentContainer: $row.closest('.results')
                 }, true);
 
         $content.find('.datasetAverageRating')

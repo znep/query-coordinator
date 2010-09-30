@@ -110,13 +110,15 @@
     var openMenu = function(opts, $menuContainer, $menuButton, $menuDropdown)
     {
         if (_.isFunction(opts.onOpen))
-            opts.onOpen();
+            opts.onOpen($menuContainer);
 
         // close any menu that might already be open
         $(document).trigger('click.menu');
 
         // cache the original height before we bump things out to measure
-        var origDocumentHeight = $(document).height();
+        var $par = $(opts.parentContainer);
+        var origContainerBottom = $par.height() + $par.offset().top;
+        var origContainerRight = $par.width() + $par.offset().left;
 
         $menuContainer.addClass('open');
 
@@ -129,7 +131,8 @@
             .css('top', null)
             .show();
 
-        // HACK/TODO: IE7 breaks because it can't see the width of the floated children.
+        // HACK/TODO: IE7 breaks because it can't see the width of the floated
+        // children.
         // So, forcibly set the width manually on the first ul, then the container.
         if (($.browser.msie) && ($.browser.majorVersion < 8))
         {
@@ -143,13 +146,15 @@
             $menuDropdown.width($topLevelList.outerWidth(true));
         }
 
-        if ($menuDropdown.offset().left + $menuDropdown.outerWidth(true) > $(window).width())
+        if ($menuDropdown.offset().left + $menuDropdown.outerWidth(true) >
+            origContainerRight)
         {
             // if the menu can be flipped left, do so; otherwise, crop it
             if ($menuContainer.offset().left + $menuButton.outerWidth(true) -
                     $menuDropdown.outerWidth(true) < 0)
             {
-                $menuDropdown.css('width', $(window).width() - $menuDropdown.offset().left - 10);
+                $menuDropdown.css('width', $(window).width() -
+                    $menuDropdown.offset().left - 10);
             }
             else
             {
@@ -157,7 +162,8 @@
             }
         }
 
-        if ($menuDropdown.offset().top + $menuDropdown.outerHeight(true) > origDocumentHeight)
+        if ($menuDropdown.offset().top + $menuDropdown.outerHeight(true) >
+            origContainerBottom)
         {
             // if the menu can be flipped up, do so; otherwise, leave it alone
             if ($menuContainer.offset().top - $menuDropdown.outerHeight(true) > 0)
@@ -180,7 +186,8 @@
         $(document).unbind('click.menu'); // just to be sure
         $(document).bind('click.menu', function(event)
         {
-            // close if user clicked out || if user clicked in link || if user clicked on link
+            // close if user clicked out || if user clicked in link || if user
+            // clicked on link
             if (($menuContainer.has(event.target).length === 0) ||
                 ($menuDropdown.find('a').has(event.target).length > 0) ||
                 $(event.target).is('.menuDropdown a'))
@@ -193,7 +200,7 @@
     var closeMenu = function(opts, $menuContainer, $menuButton, $menuDropdown)
     {
         if (_.isFunction(opts.onClose))
-            opts.onClose();
+            opts.onClose($menuContainer);
 
         $(document).unbind('click.menu');
         $menuContainer.removeClass('open');
@@ -207,7 +214,8 @@
         menuButtonClass: 'menuButton',
         menuButtonContents: 'Menu',
         menuButtonTitle: 'Menu',
-        onOpen: function() {},
-        onClose: function() {}
+        onOpen: function($menuContainer) {},
+        onClose: function($menuContainer) {},
+        parentContainer: document
     };
 })(jQuery);

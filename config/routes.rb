@@ -157,9 +157,18 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'profile/:profile_name/:id', :controller => 'profile',
        :action => 'show', :conditions => { :method => :get },
        :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+  map.connect 'profile/:profile_name/:id', :controller => 'profile',
+     :action => 'update', :conditions => { :method => :put },
+     :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
   map.connect 'profile/:profile_name/:id/edit', :controller => 'profile',
        :action => 'edit', :conditions => { :method => :get },
        :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+  map.connect 'profile/:profile_name/:id/image', :controller => 'profile',
+     :action => 'edit_image', :conditions => { :method => :get },
+     :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+  map.connect 'profile/:profile_name/:id/account', :controller => 'profile',
+     :action => 'edit_account', :conditions => { :method => :get },
+     :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
 
 
   # This needs to be more specific than the dataset routes, which will all

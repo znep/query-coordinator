@@ -55,7 +55,7 @@
 
     <%- if @nominations_count > 0 -%>
     <%= create_pagination(@nominations_count, @page_size,
-      params[:page], @base_url, 'button') %>
+      params[:page].to_i, @base_url, 'button') %>
     <%- end -%>
   </div>
 </div>

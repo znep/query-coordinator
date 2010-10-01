@@ -33,7 +33,8 @@
             </p>
           </div>
 
-          <% form_for :signup, @signup, :url => rpx_signup_path, :html => {:id => 'signupForm', :multipart => true} do |f| %>
+          <% form_for :signup, @signup, :url => rpx_signup_path,
+            :html => {:id => 'signupForm', :multipart => true} do |f| %>
             <%= render :partial => 'accounts/signup_form_data',
               :locals => { :f => f, :hide_password => true } %>
           <% end %>
@@ -52,7 +53,6 @@
 <% content_for :js_footer do %>
   <%= javascript_include_merged 'shared-common-all' %>
   <%= javascript_include_merged 'screen-login-signup' %>
-  <%= javascript_include_merged 'rpx-return' %>
-  
+
 <% end %>
 

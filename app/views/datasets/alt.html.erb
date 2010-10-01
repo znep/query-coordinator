@@ -42,7 +42,7 @@
       <%- end -%>
     <%- end -%>
     <li><a href="/views/<%= @view.id %>/rows.rss">Subscribe via RSS</a></li>
-  <%- @view.socialize_menu_options.each do |item| -%>
+  <%- socialize_menu_options(@view).each do |item| -%>
     <li><a href="<%= item['href'] %>">Share via <%= item['text'] %></a></li>
   <%- end -%>
     <li><a href=""></a></li>

@@ -117,8 +117,9 @@
 
         // cache the original height before we bump things out to measure
         var $par = $(opts.parentContainer);
-        var origContainerBottom = $par.height() + $par.offset().top;
-        var origContainerRight = $par.width() + $par.offset().left;
+        var parOffset = $par.offset() || {top: 0, left: 0};
+        var origContainerBottom = $par.height() + parOffset.top;
+        var origContainerRight = $par.width() + parOffset.left;
 
         $menuContainer.addClass('open');
 

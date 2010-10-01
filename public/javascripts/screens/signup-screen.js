@@ -5,14 +5,6 @@ $(function ()
         $("#signup #signup_email").focus();
     }
 
-    $.validator.addMethod("loginRegex", function(value, element) {
-        return this.optional(element) || /^[a-z0-9\-]+$/i.test(value);
-    }, "Username must contain only letters, numbers, or dashes.");
-
-    $.validator.addMethod("login4x4", function(value, element) {
-        return this.optional(element) || !/^[a-z0-9]{4}-[a-z0-9]{4}$/i.test(value);
-    }, "Username cannot be in the form nnnn-nnnn.");
-
     $("#signup_submit").click(function() {
         $("#signup #signupForm").submit();
     });

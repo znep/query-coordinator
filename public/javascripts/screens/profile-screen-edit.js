@@ -146,7 +146,7 @@
                     depends: function(element) {
                         // Password is required if the email us there
                         if (isPresent('#user_password_new')) {
-                            return !($(element).hasClass('.noPassword'));
+                            return !($(element).hasClass('noPassword'));
                         }
                         return false;
                     }

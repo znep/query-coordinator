@@ -140,8 +140,6 @@ javascripts:
   - plugins/jquery.tablesorter
   - widgets/combination-list
   - screens/admin-federation-screen
-- rpx-return:
-  - screens/signup-screen
 - browse-control:
   - plugins/jquery.uniform
   - plugins/jquery.tagcloud

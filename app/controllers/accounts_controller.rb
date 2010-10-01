@@ -18,7 +18,7 @@ class AccountsController < ApplicationController
     @signup = SignupPresenter.new(params[:signup])
     respond_to do |format|
       if @signup.create
-        format.html { redirect_to(profile_path(@signup.user.id, :welcome => true)) }
+        format.html { redirect_to(profile_path(@signup.user.id)) }
         format.json { render :json => {:user_id => current_user.id}, :callback => params[:callback]}
       else
         flash.now[:error] = @signup.errors.join(", ")
@@ -82,7 +82,7 @@ class AccountsController < ApplicationController
         user = User.parse(result.body)
         @user_session = UserSession.new('login' => user.id, 'password' => params[:password])
         if @user_session.save
-          return redirect_to(root_path)
+          return redirect_to(profile_index_path)
         else
           # Hmmm. They successfully reset their password, but we couldn't log them in?
           # Something's very wrong. Let's just put them at the login page and have them

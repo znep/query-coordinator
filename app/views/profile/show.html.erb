@@ -103,7 +103,8 @@
           <%= edit_link(@user, 'editBasicInfoLink') %>
           <h2>Basic Info</h2>
           <%- if @user.description -%>
-            <p class="innerItem textItem"><%= @user.description %></p>
+          <p class="innerItem textItem"><%= auto_link(h(@user.description),
+            :html => {:rel => 'nofollow external'}) %></p>
           <%- else -%>
           <p class="innerItem emptyItem">No description provided</p>
           <%- end -%>

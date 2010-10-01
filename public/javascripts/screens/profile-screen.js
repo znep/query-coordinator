@@ -11,7 +11,7 @@
         $feedContainer.feedList({
             allowComments: false,
             pageSize: 5,
-            views: views,
+            views: views
         });
     };
 

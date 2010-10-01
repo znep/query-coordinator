@@ -712,20 +712,6 @@ class View < Model
     options_for_select(options, current)
   end
 
-  def socialize_menu_options
-    [{'text' => 'Delicious',
-      'href' => "http://del.icio.us/post?url=#{seo_path}&title=#{h(view.name)}"},
-
-    {'text' => 'Digg',
-      'href' => "http://digg.com/submit?phase=2&url=#{seo_path}&title=#{h(view.name)}"},
-
-    {'text' => 'Facebook',
-      'href' => "http://www.facebook.com/share.php?u=#{h(seo_path)}"},
-
-    {'text' => 'Twitter',
-      'href' => "http://www.twitter.com/home?status=#{tweet + short_path}"}]
-  end
-
   def get_rating_class(rating)
     ['zero', 'one', 'two', 'three', 'four', 'five'][
       ((rating * 2.0).round / 2.0).floor] +

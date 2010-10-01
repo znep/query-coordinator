@@ -35,7 +35,7 @@
         <h3>Password</h3>
         <div class="line clearfix">
           <label for="user_password_old">Old Password</label>
-          <%= password_field_tag('user[password_old]', '', :class => 'currentPassword' + 
+          <%= password_field_tag('user[password_old]', '', :class => 'currentPassword' +
               (current_user.flag?('nopassword') ? ' noPassword' : '')) %>
         </div>
         <div class="line clearfix">
@@ -54,8 +54,7 @@
           <label>&nbsp;</label>
           <span class="field textItem">
             Log in with your Facebook, Twitter, Google, or other 3rd-party credentials.
-            <%= link_to "Learn about OpenID", openid_explained_url(account_url),
-                :rel => 'external' %>
+            <%= link_to "Learn about OpenID", openid_explained_url(profile_account_url) %>
           </span>
         </div>
 

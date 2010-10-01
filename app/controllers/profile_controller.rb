@@ -167,7 +167,7 @@ class ProfileController < ApplicationController
       begin
         if params[:openid_delete].present?
           if current_user.flag?('nopassword') &&
-            params[:openid_delete].size >= current_user.openid_identifiers
+            params[:openid_delete].size >= current_user.openid_identifiers.size
             error_msg = "You cannot remove all your OperID identifiers before you set a password"
           else
             CoreServer::Base.connection.batch_request do

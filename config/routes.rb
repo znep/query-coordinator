@@ -119,7 +119,6 @@ ActionController::Routing::Routes.draw do |map|
   # For legacy support reasons, make /home and /datasets go somewhere reasonable
   map.connect '/home',     :controller => :profile, :action => 'index'
   map.connect '/datasets', :controller => :profile, :action => 'index'
-  map.profile '/profile',  :controller => :profile, :action => 'index'
 
   map.resources :profile, :member => {
     :create_friend => :get,
@@ -141,7 +140,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'profile/:profile_name/:id/image', :controller => 'profile',
      :action => 'edit_image', :conditions => { :method => :get },
      :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
-  map.connect 'profile/:profile_name/:id/account', :controller => 'profile',
+  map.profile_account 'profile/:profile_name/:id/account', :controller => 'profile',
      :action => 'edit_account', :conditions => { :method => :get },
      :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
 

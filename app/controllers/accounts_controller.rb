@@ -101,7 +101,7 @@ class AccountsController < ApplicationController
   rescue CoreServer::CoreServerError => e
     flash[:openid_error] = e.error_message
   ensure
-    # TODO/v4: This should be profile/user/id//account
-    redirect_to account_url(:anchor => params[:section])
+    flash[:notice] = "Your external account has been linked."
+    redirect_to profile_account_path(:id => current_user.id, :profile_name => current_user.displayName.convert_to_url)
   end
 end

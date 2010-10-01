@@ -98,10 +98,10 @@ class AccountsController < ApplicationController
 
   def add_rpx_token
     OpenIdIdentifier.create(User.current_user.id, params[:token]) if params[:token]
-  rescue CoreServer::CoreServerError => e
-    flash[:openid_error] = e.error_message
-  ensure
     flash[:notice] = "Your external account has been linked."
+  rescue CoreServer::CoreServerError => e
+    flash[:error] = e.error_message
+  ensure
     redirect_to profile_account_path(:id => current_user.id, :profile_name => current_user.displayName.convert_to_url)
   end
 end

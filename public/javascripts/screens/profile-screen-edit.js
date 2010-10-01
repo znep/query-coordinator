@@ -12,6 +12,9 @@
     $('.editProfileNav li a').click(function(event)
     {
         event.preventDefault();
+        // Hide all Flashes, since it only applied to the first page
+        $('.flash').hide();
+
         var $link = $(event.target).closest('li'),
             $newPane;
 

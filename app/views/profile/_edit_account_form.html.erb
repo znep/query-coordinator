@@ -54,12 +54,16 @@
           <label>&nbsp;</label>
           <span class="field textItem">
             Log in with your Facebook, Twitter, Google, or other 3rd-party credentials.
-            <%= link_to "Learn about OpenID", openid_explained_url(account_url) %>
+            <%= link_to "Learn about OpenID", openid_explained_url(account_url),
+                :rel => 'external' %>
           </span>
         </div>
 
         <%- if openid_identifiers.empty? -%>
-          <p class="textItem">You have no OpenID identifiers associated with this account yet.<p>
+        <div class='line clearfix'>
+          <label>&nbsp;</label>
+          <span class="field emptyItem">You have no OpenID identifiers associated with this account yet.</span>
+        </div>
         <%- else -%>
           <%- openid_identifiers.each do |ident| -%>
             <div class="line clearfix">

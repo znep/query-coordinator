@@ -743,9 +743,8 @@ this.Dataset = Model.extend({
 
     remove: function(successCallback, errorCallback)
     {
-        this._makeRequest({url: '/datasets/' + this.id + '.json',
-            type: 'DELETE', dataType: 'text',
-            success: successCallback, error: errorCallback});
+        this._makeRequest({url: '/views/' + this.id + '.json',
+            type: 'DELETE', success: successCallback, error: errorCallback});
     },
 
     registerOpening: function(accessType, referrer)

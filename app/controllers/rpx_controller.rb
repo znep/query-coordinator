@@ -65,8 +65,6 @@ private
       @signup = SignupPresenter.new
       @signup.user = rpx_authentication.user if rpx_authentication.user
       @signup.emailConfirm = @signup.email
-      # TODO: Deprecated: Remove in v3 deprecation pass
-      render_login_template
       render :template => 'rpx/return_login'
     end
   end

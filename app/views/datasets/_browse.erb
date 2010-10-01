@@ -1,6 +1,4 @@
-<% content_for :head do %>
-  <%= rendered_stylesheet_tag 'browse-control' %>
-<% end %>
+<%= render_browse_includes unless supress_includes %>
 
 <div class='browseSection clearfix <%= @facets.length < 1 ? 'noFacets' : '' %>
   <%= @browse_in_container ? 'inContainer' : '' %>'>
@@ -79,7 +77,7 @@
   <div class='createDatasetBox infoBox'>
     <h3>Create or upload your own dataset</h3>
     <a class='button next' href='/datasets/new' title='Create a new dataset'>
-      <span class='icon'></span>Create
+      <span class='icon'></span><%= @browse_in_container ? 'Create a new Dataset' : 'Create' %>
     </a>
   </div>
   <%- end -%>
@@ -201,32 +199,3 @@
   <%- end -%>
 </div>
 
-<%- content_for :modals do -%>
-  <div class="browseOptionsDialog modalDialog">
-    <a href="#close" class="jqmClose modalDialogClose">Close</a>
-    <div class='optionsContent'></div>
-  </div>
-<%- end -%>
-
-<% content_for :templates do %>
-<div class='expandedInfo'>
-  <div class='actions'>
-    <a class='permissions button' href='#Permissions'
-      title='Change the public visibility'>Make <span class='permType'></span></a>
-    <a class='delete button' href='#Delete' title='Delete this item'>Delete</a>
-    <div class='share menu'></div>
-  </div>
-  <div class='comments' title='Number of comments'>
-    <span class='icon'></span><span class='value'></span>
-  </div>
-  <div class='starsControl datasetAverageRating'></div>
-</div>
-<% end %>
-
-<% content_for :js_footer do %>
-  <script type='text/javascript'>
-    blist.namespace.fetch('blist.browse');
-    blist.browse.datasets = <%= safe_json(@view_results) %>;
-  </script>
-  <%= javascript_include_merged 'browse-control' %>
-<% end %>

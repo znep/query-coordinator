@@ -267,7 +267,8 @@ javascripts:
   - plugins/jquery.uniform
   - plugins/ajaxupload.3.0
   - screens/profile-screen-edit
-
+- homepage-show:
+  - screens/homepage-show
 
 
 

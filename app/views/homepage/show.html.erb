@@ -1,8 +1,15 @@
+<%= render_browse_includes %>
+
+<% content_for :head do %>
+  <title><%= CurrentDomain.strings.site_title %></title>
+  <%= rendered_stylesheet_tag 'homepage-show' %>
+<% end %>
+
 <%- if !CurrentDomain.templates['data_splash'].nil? -%>
   <%= render_domain_template('data_splash') %>
 <%- elsif !CurrentDomain.current_theme.featured_datasets.nil? -%>
   render the new carousel
-<%- else -%>
+<%- elsif !current_user.nil? && current_user.has_right?('manage_users') -%>
   <div class="contentBox">
     <h2>It looks like your domain is not configured yet.</h2>
     <p>Please visit the <a href="/admin">administration panel</a>
@@ -10,10 +17,31 @@
   </div>
 <%- end -%>
 
-<%= render_browse %>
+<%- unless CurrentDomain.featured_views.nil? -%>
+  <% prerendered_cache cache_key('homepage-featured', { 'domain' => CurrentDomain.cname }),
+      @featured_cached, :expires_in => 10.minutes do %>
+    <ul class="featuredViews clearfix">
+      <%- CurrentDomain.featured_views.each do |view| -%>
+        <li class="featuredViewContainer" style="width:<%= 100.0 / CurrentDomain.featured_views.size %>%">
+          <div class="featuredView">
+            <a href="<%= @view_urls[view.viewId] %>">
+              <img src="/api/views/<%= view.viewId %>/snapshots?method=get&amp;name=page&amp;size=thumb" alt="<%= view.title %>" />
+            </a>
 
-<%# this is at the end in this file or else the styles get included in the wrong order %>
-<% content_for :head do %>
-  <title><%= CurrentDomain.strings.site_title %></title>
-  <%= rendered_stylesheet_tag 'homepage-show' %>
+            <a href="<%= @view_urls[view.viewId] %>" class="viewTitle"><%= view.title %></a>
+            <p class="viewDescription"><%= view.description %></p>
+          </div>
+        </li>
+      <%- end -%>
+    </ul>
+  <%- end -%>
+<%- end -%>
+
+<% prerendered_cache cache_key('homepage-browse', { 'domain' => CurrentDomain.cname }),
+    @browse_cached, :expires_in => 10.minutes do %>
+  <%= render_browse(true) %>
+<% end %>
+
+<% content_for :js_footer do %>
+  <%= javascript_include_merged 'homepage-show' %>
 <% end %>

@@ -57,7 +57,11 @@
         };
 
 
-    $form.validate(validationHash);
+    $form.validate($.extend({}, validationHash, {
+        rules: {
+            "user[screenName]": { required: true }
+        }
+    }));
 
     // Upload new profile image
     var $imageChange = $('.uploadNewImage').click(function(event)

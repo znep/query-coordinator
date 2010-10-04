@@ -103,6 +103,12 @@ class ProfileController < ApplicationController
       params[:user][:tags] = current_user.tag_display_string
     end
 
+    if (params[:user][:screenName].empty?)
+      flash.now[:error] = "Error: 'Display Name' is required"
+      @user_links = UserLink.find(current_user.id)
+      return (render 'profile/edit')
+    end
+
     unless params[:links].nil?
       user_links = UserLink.find(current_user.id)
 

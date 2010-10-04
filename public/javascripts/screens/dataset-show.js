@@ -401,17 +401,20 @@ $(function()
 
 
         // set up the main menu
-        blist.dataset.getParentDataset(function(parDS)
+        if (blist.dataset.type != 'blist')
         {
-            if (!$.isBlank(parDS))
+            blist.dataset.getParentDataset(function(parDS)
             {
-                $('.basedOnParent')
-                    .addClass('hasParent')
-                    .find('.parentName')
-                        .attr('href', parDS.url)
-                        .text(parDS.name);
-            }
-        });
+                if (!$.isBlank(parDS))
+                {
+                    $('.basedOnParent')
+                        .addClass('hasParent')
+                        .find('.parentName')
+                            .attr('href', parDS.url)
+                            .text(parDS.name);
+                }
+            });
+        }
 
         // report to events analytics for easier aggregation
         $.analytics.trackEvent('dataset page (v4-chrome)',

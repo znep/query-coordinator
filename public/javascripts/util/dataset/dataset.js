@@ -1675,7 +1675,7 @@ this.Dataset = Model.extend({
 
             var parDS = _.detect(views, function(v)
                     { return v.type == 'blist'; });
-            if (!$.isBlank(parDS) && parDS.id != ds.id)
+            if (!$.isBlank(parDS))
             {
                 ds._parent = parDS;
                 views = _.without(views, parDS);

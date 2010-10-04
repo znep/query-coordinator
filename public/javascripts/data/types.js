@@ -546,8 +546,8 @@ blist.namespace.fetch('blist.data.types');
     {
         if (typeof value == 'string')
         {
-            return valueLookupVariable[value.toLowerCase()]
-                [plain ? 'text' : 'html'] ||
+            var v = valueLookupVariable[value.toLowerCase()];
+            return (v && v[plain ? 'text' : 'html']) ||
                 '<div class="blist-dataset-link-dangling">{0}</div>'.format(value);
         }
 

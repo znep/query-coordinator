@@ -62,7 +62,6 @@
    </div>
 
     <div class="editSection clearfix">
-      <h3>External Links</h3>
       <%- link_count = 0 -%>
       <%- UserLink.link_types.each do |link_type| -%>
         <%- existing_link = @user_links.detect {|u| u.linkType.upcase == link_type.first } 

@@ -11,7 +11,7 @@
         <div class="editSection clearfix">
           <div class="line clearfix">
             <label>Current Email</label>
-            <span class="field textItem"><%= current_user.email %></p>
+            <span class="field textItem"><%= current_user.email %></span>
           </div>
           <div class="line clearfix">
             <label for="user_email">New Email</label>
@@ -32,7 +32,6 @@
       <%- end -%>
 
       <div class="editSection clearfix">
-        <h3>Password</h3>
         <div class="line clearfix">
           <label for="user_password_old">Old Password</label>
           <%= password_field_tag('user[password_old]', '', :class => 'currentPassword' +
@@ -49,7 +48,6 @@
       </div>
 
       <div class="editSection clearfix">
-        <h3>External Accounts</h3>
         <div class="line clearfix">
           <label>&nbsp;</label>
           <span class="field textItem">
@@ -75,7 +73,7 @@
             </div>
           <%- end -%>
         <%- end -%>
-        <div class="line">
+        <div class="line clearfix fullLine">
           <label>&nbsp;</label>
           <%= link_to_rpx raw('<span class="icon"></span>Add an OpenID or External Account'),
                 add_rpx_token_url(:section => 'openid'), :class => 'rpxnow button add addOpenIdButton' %>

@@ -32,7 +32,7 @@ class RpxController < ApplicationController
     if @user_session.save
       current_user.openIdIdentifierId = @signup.openIdIdentifierId
       current_user.save!
-      redirect_to(profile_account_path(current_user))
+      redirect_to profile_account_path(:id => current_user.id, :profile_name => current_user.displayName.convert_to_url)
     else
       flash.now[:notice_login] = "Unable to login with that username and password; please try again"
       @body_id = 'signup'

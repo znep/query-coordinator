@@ -11,11 +11,12 @@
         onlyIf: function()
         {
             return blist.dataset.isPublic() && blist.dataset.valid &&
-                !blist.dataset.temporary;
+                (!blist.dataset.temporary || blist.dataset.minorChange);
         },
         disabledSubtitle: function()
         {
-            return !blist.dataset.valid || blist.dataset.temporary ?
+            return !blist.dataset.valid ||
+                (blist.dataset.temporary && !blist.dataset.minorChange) ?
                 'This view must be valid and saved' :
                 'This view must be public before it can be published';
         },

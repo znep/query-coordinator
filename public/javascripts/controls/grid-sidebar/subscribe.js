@@ -12,11 +12,13 @@
         onlyIf: function()
         {
             return blist.dataset.isPublic() && blist.dataset.valid &&
-                !blist.dataset.temporary && blist.dataset.isGrid();
+                (!blist.dataset.temporary || blist.dataset.minorChange) &&
+                blist.dataset.isGrid();
         },
         disabledSubtitle: function()
         {
-            return !blist.dataset.valid || blist.dataset.temporary ?
+            return !blist.dataset.valid ||
+                (blist.dataset.temporary && !blist.dataset.minorChange) ?
                 'This view must be valid and saved' :
                 blist.dataset.isGrid() ?
                     'This view must be public before it can be subscribed to' :

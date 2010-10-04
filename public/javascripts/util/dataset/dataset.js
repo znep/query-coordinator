@@ -17,6 +17,10 @@
         UI to indicate this item.  For example, it can be 'dataset',
         'filtered view', 'grouped view', etc.
 
+    + temporary: True if the dataset has been modified and not saved
+    + minorChange: Only valid when temporary is set.  If this is true, it is a
+        minor update (such as a map viewport being changed) and doesn't
+        really invalidate most actions like sharing, embedding, etc.
 */
 
 this.Dataset = Model.extend({
@@ -54,6 +58,7 @@ this.Dataset = Model.extend({
         if (_.isFunction(this._convertLegacy)) { this._convertLegacy(); }
 
         this.temporary = false;
+        this.minorChange = true;
         this.valid = this._checkValidity();
         this.url = this._generateUrl();
         this.apiUrl = this._generateApiUrl();
@@ -70,7 +75,7 @@ this.Dataset = Model.extend({
 
         this._origQuery = $.extend(true, {}, this.query);
         this._origSearchString = this.searchString;
-        
+
 
         if (!$.isBlank(blist.snapshot) && blist.snapshot.takeSnapshot)
         {
@@ -193,10 +198,10 @@ this.Dataset = Model.extend({
         });
     },
 
-    update: function(newDS, fullUpdate)
+    update: function(newDS, fullUpdate, minorUpdate)
     {
         this._update(newDS, fullUpdate, fullUpdate);
-        this._markTemporary();
+        this._markTemporary(minorUpdate);
     },
 
     reload: function()
@@ -1026,8 +1031,9 @@ this.Dataset = Model.extend({
         return $.isBlank(this.message);
     },
 
-    _markTemporary: function()
+    _markTemporary: function(minorChange)
     {
+        this.minorChange = this.minorChange && (minorChange || false);
         if (!this.temporary)
         {
             this.temporary = true;
@@ -1040,6 +1046,7 @@ this.Dataset = Model.extend({
         if (this.temporary)
         {
             this.temporary = false;
+            this.minorChange = true;
             this.trigger('clear_temporary');
         }
     },

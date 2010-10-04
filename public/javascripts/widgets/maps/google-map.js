@@ -194,7 +194,7 @@
                                 displayFormat: $.extend({},
                                     mapObj.settings.view.displayFormat,
                                     { viewport: mapObj.getViewport() })
-                            });
+                            }, false, true);
                         });
                 });
             },

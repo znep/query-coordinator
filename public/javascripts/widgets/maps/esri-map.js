@@ -293,17 +293,27 @@
                     mapObj.map.setExtent(extent);
                 }
 
+                var curVP;
                 mapObj._extentChanging = true;
                 mapObj._viewportListener = dojo.connect(mapObj.map, 'onExtentChange',
                     function()
                     {
                         if (mapObj._extentChanging)
-                        { mapObj._extentChanging = false; return; }
+                        {
+                            mapObj._extentChanging = false;
+                            curVP = mapObj.getViewport();
+                            return;
+                        }
+                        var vp = mapObj.getViewport();
+                        if (vp.xmin == curVP.xmin && vp.ymin == curVP.ymin)
+                        { return; }
+
                         mapObj.settings.view.update({
                             displayFormat: $.extend({},
                                 mapObj.settings.view.displayFormat,
-                                { viewport: mapObj.getViewport() })
-                        });
+                                { viewport: vp })
+                        }, false, true);
+                        curVP = vp;
                     });
             },
 

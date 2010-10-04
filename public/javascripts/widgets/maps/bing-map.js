@@ -172,7 +172,7 @@
                             displayFormat: $.extend({},
                                 mapObj.settings.view.displayFormat,
                                 { viewport: mapObj.getViewport() })
-                        });
+                        }, false, true);
                     };
                 }
                 mapObj.map.AttachEvent('onchangeview', mapObj._viewportListener);

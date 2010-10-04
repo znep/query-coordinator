@@ -34,7 +34,7 @@ blist.datasetControls.unsavedViewPrompt = function()
     $.live('a', 'click', function(e)
     {
         // We only care about temp views
-        if (!blist.dataset.temporary) { return; }
+        if (!blist.dataset.temporary || blist.dataset.minorChange) { return; }
 
         var a = e.currentTarget;
         // Skip links that open a new window

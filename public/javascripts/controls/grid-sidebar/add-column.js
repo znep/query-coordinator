@@ -33,7 +33,8 @@
         subtitle: 'Add a new column to your dataset',
         onlyIf: function()
         {
-            return blist.dataset.valid && !blist.dataset.temporary &&
+            return blist.dataset.valid &&
+                (!blist.dataset.temporary || blist.dataset.minorChange) &&
                 blist.dataset.type == 'blist';
         },
         disabledSubtitle: function()

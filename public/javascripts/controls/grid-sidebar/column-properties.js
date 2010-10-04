@@ -125,7 +125,7 @@
         subtitle: 'Update various properites on this column',
         onlyIf: function()
         {
-            return !blist.dataset.temporary;
+            return !blist.dataset.temporary || blist.dataset.minorChange;
         },
         disabledSubtitle: 'You cannot edit column properties for an unsaved view',
         sections: [

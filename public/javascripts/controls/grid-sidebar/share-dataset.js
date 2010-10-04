@@ -182,7 +182,8 @@
         noReset: true,
         onlyIf: function()
         {
-            return blist.dataset.valid && !blist.dataset.temporary;
+            return blist.dataset.valid &&
+                (!blist.dataset.temporary || blist.dataset.minorChange);
         },
         disabledSubtitle: function()
         {

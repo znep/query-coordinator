@@ -111,7 +111,7 @@
         if ($countrySelect.val() == 'US')
         { $stateLine.slideDown(); }
         else
-        { $stateLine.slideUp(); }
+        { $stateLine.hide(); }
     };
 
     $('#user_country, #user_state').uniform();

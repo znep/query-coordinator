@@ -1,5 +1,19 @@
 module DatasetsHelper
- 
+
+  def options_for_limit_to(column, current = nil)
+    options = [['No Filter', '']]
+    options += column.possible_filter_conditions.
+      collect{|c_hash| [c_hash[:label], c_hash[:operator]]}
+    options_for_select(options, current)
+  end
+
+  def options_for_sort_by(columns, current = nil)
+    options = [['No Sort', '']]
+    options += columns.select{|c| c.is_sortable?}.
+      collect{|column| [column.name, column.id]}
+    options_for_select(options, current)
+  end
+
   def category_select_options(selected_category = nil)
     options_for_select(View.categories.invert.sort { |a, b| a.first <=> b.first },
                        selected_category)

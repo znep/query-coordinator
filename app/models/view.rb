@@ -698,20 +698,6 @@ class View < Model
     return rdf_class
   end
 
-  def options_for_limit_to(column, current = nil)
-    options = [['No Filter', '']]
-    options += column.possible_filter_conditions.
-      collect{|c_hash| [c_hash[:label], c_hash[:operator]]}
-    options_for_select(options, current)
-  end
-
-  def options_for_sort_by(columns, current = nil)
-    options = [['No Sort', '']]
-    options += columns.select{|c| c.is_sortable?}.
-      collect{|column| [column.name, column.id]}
-    options_for_select(options, current)
-  end
-
   def get_rating_class(rating)
     ['zero', 'one', 'two', 'three', 'four', 'five'][
       ((rating * 2.0).round / 2.0).floor] +

@@ -161,6 +161,37 @@ class DatasetsController < ApplicationController
     end
   end
 
+  def email
+    @view = View.find(params[:id])
+
+    emails = params[:emails]
+    if !emails.nil?
+      # Send our emails
+      if emails.is_a?(String)
+        # Single field, comma separated
+        emails = emails.split(/,/).collect {|e| e.strip}
+      elsif emails.is_a?(Array)
+        emails.collect!{|e| e.strip}
+      end
+
+      @bad_addresses = {}
+      emails.each do |email|
+        begin
+          @view.email(email)
+        rescue Exception => e
+          @bad_addresses[email] = e
+        end
+      end
+    end
+  end
+
+  def append
+    @view = View.find(params[:id])
+    @error_type = @view.columns.any?{ |column| !column.flag?('hidden') && column.client_type.match(
+      /(document|photo|document_obsolete|photo_obsolete|location|nested_table)/) }
+    @type = params[:type] == 'replace' ? 'replace' : 'append'
+  end
+
 # end alt actions
 
   def math_validate

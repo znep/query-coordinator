@@ -161,7 +161,9 @@ ActionController::Routing::Routes.draw do |map|
       :math_validate => :post,
       :save_filter => :post,
       :modify_permission => :post,
-      :post_comment => :post
+      :post_comment => :post,
+      :email => [:get, :post],
+      :append => :get
     },
     :only => [ :show, :new ]
 

@@ -24,9 +24,18 @@
       <%- CurrentDomain.featured_views.each do |view| -%>
         <li class="featuredViewContainer" style="width:<%= 100.0 / CurrentDomain.featured_views.size %>%">
           <div class="featuredView">
-            <a href="<%= @view_urls[view.viewId] %>">
-              <img src="/api/views/<%= view.viewId %>/snapshots?method=get&amp;name=page&amp;size=thumb" alt="<%= view.title %>" />
-            </a>
+            <%- if view['display'] == 'thumbnail' -%>
+              <a href="<%= @view_urls[view.viewId] %>">
+                <img src="/api/views/<%= view.viewId %>/snapshots?method=get&amp;name=page&amp;size=thumb" alt="<%= view.title %>" />
+              </a>
+            <%- else -%>
+              <div class="statContainer">
+                <a href="<%= @view_urls[view.viewId] %>">
+                  <p class="statTitle"><%= view['display'].title %></p>
+                  <p class="statDescription"><%= view['display'].description %></p>
+                </a>
+              </div>
+            <%- end -%>
 
             <a href="<%= @view_urls[view.viewId] %>" class="viewTitle"><%= view.title %></a>
             <p class="viewDescription"><%= view.description %></p>

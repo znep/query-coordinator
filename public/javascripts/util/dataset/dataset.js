@@ -991,11 +991,6 @@ this.Dataset = Model.extend({
 
     getSnapshotNamed: function(name)
     {
-        var uidParts = this.id.split('-');
-        if (uidParts.length < 2)
-        { return null; }
-
-        // TODO: Where do we want to put this on prod?
         return '/api/views/' + this.id + '/snapshots?method=get&name=' + escape(name);
     },
 

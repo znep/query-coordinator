@@ -1,104 +1,97 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html lang="en" xml:lang="en"
-      xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:og="http://opengraphprotocol.org/schema/">
+
+<!--[if lte IE 7]>
+  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+        xmlns:og="http://opengraphprotocol.org/schema/" class="ie ie7 noBorderRadius noLinearGradient noCss3"><![endif]-->
+<!--[if IE 8]>
+  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+        xmlns:og="http://opengraphprotocol.org/schema/" class="ie ie8 noBorderRadius noLinearGradient noCss3"><![endif]-->
+<!--[if gte IE 9]>
+  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+        xmlns:og="http://opengraphprotocol.org/schema/" lang="en" class="ie"><![endif]-->
+<!--[if !IE]>-->
+  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+        xmlns:og="http://opengraphprotocol.org/schema/"><!--<![endif]-->
 
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <%= meta_tags @meta unless @meta.blank? %>
-  <%- unless @link_image_src.blank? -%>
-    <link rel="image_src" href="<%= @link_image_src %>" />
-  <%- end -%>
-  <%= stylesheet_link_merged 'base' %>
 
-  <!--[if IE 7]>
-    <link href="/stylesheets/core-ie7.css" rel="stylesheet" type="text/css"/>
-  <![endif]-->
+  <link rel="apple-touch-icon-precomposed" media="screen" href="/stylesheets/images/icons/retina_display_icon.png"/>
+
+  <%= rendered_stylesheet_tag 'base' %>
 
   <%= jquery_include %>
   <%= javascript_error_helper_tag %>
 
   <%= yield :head %>
+
 </head>
 
-<body id='<%= @body_id %>' class='<%= @body_class %>'>
-
-<div id="skipLinks">
-  <a href="#content" accesskey="c">Skip to main content</a>
-  <a href="#footerLinks" accesskey="f">Skip to footer links</a>
-  <%= yield :skip_links %>
-</div>
-
-<div class="bodyExterior">
-<div class="bodyInterior">
-  <div id='outerContainer'>
-    <div id='header'>
-    </div>
-
-    <a name="content"></a>
-    <%= yield :layout %>
-
+<body>
+  <div id="skipLinks">
+    <a href="#content" accesskey="c">Skip to main content</a>
+    <a href="#footerLinks" accesskey="f">Skip to footer links</a>
+    <%= yield :skip_links %>
   </div>
-</div>
-</div>
 
-<a name="footerLinks"></a>
+  <div class="siteOuterWrapper">
+    <div class="siteInnerWrapper">
 
-  <% dialog_content("jqmAlert") do %>
-    <div class='header'>
-      <h1>Alert</h1>
+      <div id="siteHeader" class="clearfix">
+      </div>
+
+      <a name="content"></a>
+      <%= yield :layout %>
+
     </div>
+  </div>
 
-    <div class='mainContent clearfix'>
-      <p class='alertMessage'></p>
-
-      <ul class='actionButtons'>
-        <li><a href='#close' class='arrowButton jqmClose'>Close</a></li>
-      </ul>
-    </div>
-  <% end %>
+  <div id="siteFooter">
+    <a name="footerLinks"></a>
+  </div>
 
   <%#
   Better to load JS at the bottom:
   http://developer.yahoo.com/performance/rules.html#js_bottom
   %>
 
-  <%# Libraries for use with BeautyTip %>
-  <!--[if IE]>
-  <script type="text/javascript" src="/javascripts/plugins/excanvas.compiled.js"></script>
-  <![endif]-->
-  <!--[if lt IE 7]>
-  <script type="text/javascript" src="/javascripts/plugins/jquery.bgiframe.min.js"></script>
-  <![endif]-->
+  <div id="templates">
+    <%= render :partial => 'shared/control_templates' %>
+    <%= yield :templates %>
+  </div>
 
   <%= javascript_include_merged 'base' %>
 
-  <% if Rails.env != 'production' %>
-    <%= javascript_include_tag "util/debug" %>
-  <% end %>
-
-  <%# This should be included on all pages, including the marketing site.
-  It will update the header appropriately based on your logged-in state %>
   <script type="text/javascript">
+    blist.namespace.fetch('blist.configuration');
+    
     (function ($)
     {
         var loggedInCookie = $.cookies.get('logged_in');
         if (loggedInCookie && loggedInCookie == "true")
         {
-            $('#header .userNav, #mainNav .home').addClass('loggedInNav');
+            $('#siteHeader .siteUserNav').addClass('loggedInNav');
         }
     })(jQuery);
   </script>
 
-  <div id="templates">
-    <%= yield :templates %>
+  <div id="modals">
+    <%= yield :modals %>
+
+    <div class="modalDialog" id="jqmAlert">
+      <a href="#close" class="jqmClose modalDialogClose">Close</a>
+      <h2>Alert</h2>
+      <p class="alertMessage"></p>
+      <div class="finishButtons">
+        <a href="#close" class="button jqmClose">Close</a>
+      </div>
+    </div>
   </div>
 
   <%= yield :js_footer %>
-
-  <div class="jqmWindow" id="modal"></div>
 
 </body>
 </html>

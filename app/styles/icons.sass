@@ -442,6 +442,21 @@
   &.blobby #{$subselector}
     background-position: 0 -128px
 
+// icons/error_icons.png
+@mixin error-icons($subselector: '.icon')
+  #{$subselector}
+    @include text-hiding
+    background-image: url(/stylesheets/images/icons/error_icons.png)
+    height: 64px
+    width: 54px
+
+  &.notFound #{$subselector}
+    background-position: 0 0
+  &.internalError #{$subselector}
+    background-position: 0 -64px
+  &.unauthorized #{$subselector}
+    background-position: 0 -128px
+
 // icons/analytic_icons.png
 @mixin analytic-icons($subselector: '.icon')
   #{$subselector}

@@ -1,18 +1,22 @@
 <% content_for :head do %>
-  <title><%= CurrentDomain.strings.site_title %></title>  
+  <title><%= CurrentDomain.strings.site_title %></title>
+  <%= rendered_stylesheet_tag 'error-pages' %>
 <% end %>
 
-<% dialog_content do %>
-  <div class='header'>
-    <h1><%= CurrentDomain.strings.company %></h1>
+<div class="modalContentBox siteContent">
+  <div class="contentHeader">
+    <h1>Something&rsquo;s wrong!</h1>
   </div>
+  <div class="contentBoxInner clearfix internalError">
+    <div class="icon errorIcon"></div>
 
-  <div class="mainContent">
-    <div class="title clearfix">
-      <h1>Something&#39;s wrong!</h1>
+    <p class="subheadline">We&rsquo;re sorry, but there was a problem processing your request.</p>
+    <p class="body">Please try again in a few moments, or <a href="/contact-us">report
+      this error</a> with the details of what you were trying to do.</p>
+
+    <div class="goSomewhere">
+      <a href="javascript:history.back(1)" class="button default">Back</a>
+      <span class="labelText">to where you came from.</span>
     </div>
-
-    <p style="font-size: 1.5em">We're sorry, but there was a problem processing your request.
-    Please try again in a few moments, or <a href="/contact-us">report this error</a> with the details of what you were trying to do.</p>
   </div>
-<% end %>
+</div>

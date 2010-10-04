@@ -1,20 +1,22 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "error-screen" %>
   <title><%= CurrentDomain.strings.site_title %></title>
+  <%= rendered_stylesheet_tag 'error-pages' %>
 <% end %>
 
-<% dialog_content("errorBox") do %>
-  <div class='header'>
-    <h1><%=CurrentDomain.strings.company%></h1>
+
+<div class="modalContentBox siteContent">
+  <div class="contentHeader">
+    <h1>Error</h1>
   </div>
+  <div class="contentBoxInner clearfix internalError">
+    <div class="icon errorIcon"></div>
 
-  <div class='mainContent'>
-    <div class='title clearfix'><h2>Error</h2></div>
+    <p class="body"><%= flash[:error] || flash[:warning] || flash[:notice] ||
+      'We&rsquo;re sorry, but something appears to have gone wrong. Please try again in a moment.' %></p>
 
-    <%= display_standard_flashes %>
+    <div class="goSomewhere">
+      <a href="javascript:history.back(1)" class="button default">Back</a>
+      <span class="labelText">to where you came from.</span>
+    </div>
   </div>
-<% end %>
-
-<% content_for :js_footer do %>
-  <%= javascript_include_merged 'shared-common-all' %>
-<% end %>
+</div>

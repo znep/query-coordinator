@@ -1,18 +1,24 @@
 <% content_for :head do %>
   <title><%= CurrentDomain.strings.site_title %></title>
+  <%= rendered_stylesheet_tag 'error-pages' %>
 <% end %>
 
-<% dialog_content do %>
-  <div class='header'>
-    <h1><%=CurrentDomain.strings.company%></h1>
+<div class="modalContentBox siteContent">
+  <div class="contentHeader">
+    <h1>Page not found.</h1>
   </div>
+  <div class="contentBoxInner clearfix notFound">
+    <div class="icon errorIcon"></div>
 
-  <div class="mainContent">
-    <div class="title clearfix">
-      <h1>Page not found</h1>
+    <p class="subheadline">We&rsquo;re really sorry, but the page you requested cannot be found.</p>
+    <p class="body">The page either does not exist or has moved. We think the
+       best thing to do is start again from the <%= link_to 'home page', root_path %>.
+       Feel free to contact us if the problem persists or if you
+       definitely can&rsquo;t find what you are looking for. Thank
+       you.</p>
+
+    <div class="goSomewhere">
+      <span class="labelText">Back to</span> <a href="/" class="button default"><%= CurrentDomain.cname %></a>
     </div>
-
-    <p style="font-size: 1.5em">We're sorry, but it appears the page you're looking for doesn't exist.
-    Try checking your spelling or visit our <%= link_to "homepage", root_path%>.</p>
   </div>
-<% end %>
+</div>

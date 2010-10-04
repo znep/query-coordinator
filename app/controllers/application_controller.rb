@@ -15,8 +15,6 @@ class ApplicationController < ActionController::Base
 
   rescue_from('CoreServer::ResourceNotFound') { |exception| render_404 }
 
-  require 'pp'
-
   # See ActionController::RequestForgeryProtection for details
   # Uncomment the :secret if you're not using the cookie session store
   protect_from_forgery # :secret => 'e231a1e478cd7112967644be164e057e'

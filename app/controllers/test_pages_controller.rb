@@ -10,4 +10,15 @@ class TestPagesController < ApplicationController
   def kaboom
     throw Exception.new
   end
+
+  def i_dont_think_so
+    render_403
+  end
+
+  def manual_kaboom
+    flash.now[:error] = 'This ' + I18n.t(:blist_name).downcase +
+          ' or view cannot be found, or has been deleted.'
+    render 'shared/error', :status => :not_found
+  end
+
 end

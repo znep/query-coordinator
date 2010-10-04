@@ -65,6 +65,8 @@ dataset-thumbnail:
 - screen-dataset-thumbnail
 dataset-upload:
 - screen-dataset-upload
+error-pages:
+- screen-error-pages
 homepage-show:
 - screen-homepage-show
 profile-show:

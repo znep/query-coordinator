@@ -67,6 +67,8 @@ dataset-upload:
 - screen-dataset-upload
 error-pages:
 - screen-error-pages
+internal:
+- screen-internal
 homepage-show:
 - screen-homepage-show
 profile-show:

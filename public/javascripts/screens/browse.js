@@ -14,7 +14,8 @@ $(function()
     {
         // Reset page
         delete newOpts.page;
-        window.location = window.location.pathname + '?' +
+        // Pull real URL from JS
+        window.location = blist.browse.baseURL + '?' +
             _.map(newOpts, function(v, k) { return k + '=' + v; }).join('&');
     };
 
@@ -147,7 +148,7 @@ $(function()
             });
         };
 
-        $searchSect.submit(hookSearch).find('.icon').click(hookSearch);
+        $searchSect.submit(hookSearch).children('.icon').click(hookSearch);
     }
 
     $browse.find('.facetSection .moreLink').click(function(e)

@@ -267,7 +267,7 @@ javascripts:
   - plugins/ui.core
   - plugins/ui.widget.min
   - plugins/ui.mouse.min
-  - plugins/ui.tabs
+  - plugins/ui.tabs.min
   - screens/about-interactive
 - screen-profile-edit:
   - plugins/jquery.uniform

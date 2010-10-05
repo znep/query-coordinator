@@ -192,6 +192,10 @@ class DatasetsController < ApplicationController
     @type = params[:type] == 'replace' ? 'replace' : 'append'
   end
 
+  def contact
+    @view = View.find(params[:id])
+  end
+
 # end alt actions
 
   def math_validate
@@ -221,15 +225,28 @@ class DatasetsController < ApplicationController
       answer = num1 - num2
     end
 
+    success = false
     if answer==str_to_num[params['user_answer'].strip.downcase]
       flag_params = {}
       keys = [:id, :type, :subject, :message, :from_address]
-      keys.each { |key| flag_params[key] = params[key] }
+      keys.each do |key|
+        flag_params[key] = params[key]
+        success = false if params[key].nil?
+      end
 
       @view.flag(flag_params)
-      render :json => { :success => true }
-    else
-      render :json => { :success => false }
+      success = true
+    end
+
+    respond_to do |format|
+      if success
+        flash[:notice] = 'Your message has been sent'
+      else
+        flash[:error] = 'Please fill in all fields'
+      end
+      format.html { redirect_to success ?
+        @view.alt_href : contact_dataset_path(@view.id) }
+      format.data { render :json => { :success => success } }
     end
   end
 

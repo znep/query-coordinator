@@ -176,11 +176,14 @@
     <div class="flash"></div>
     <dl class="sectionContent contactOwnerLinks">
       <dt class="widenedItem">
-        <%= link_to 'Flag Dataset', '#flag', :class => 'contactButton', 'data-select' => '' %>
+      <%= link_to 'Flag Dataset', local_assigns[:static_links] ?
+        contact_dataset_path(@view.id) : '#flag',
+        :class => 'contactButton', 'data-select' => '' %>
       </dt>
       <dd>&nbsp;</dd>
       <dt class="widenedItem">
-        <%= link_to 'Contact Dataset Owner', '#contact',
+      <%= link_to 'Contact Dataset Owner', local_assigns[:static_links] ?
+        contact_dataset_path(@view.id) : '#contact',
             {:class => 'contactButton', 'data-select' => 'other'} %>
       </dt>
       <dd>&nbsp;</dd>

@@ -163,7 +163,8 @@ ActionController::Routing::Routes.draw do |map|
       :modify_permission => :post,
       :post_comment => :post,
       :email => [:get, :post],
-      :append => :get
+      :append => :get,
+      :contact => :get
     },
     :only => [ :show, :new ]
 

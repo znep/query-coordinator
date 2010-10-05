@@ -164,7 +164,7 @@
                                         $.ajax({
                                             url: $form.attr('action'),
                                             data: $form.serialize(),
-                                            type: 'post',
+                                            type: 'POST', dataType: 'json',
                                             error: function(request, textStatus, errorThrown) {
                                                 $sect.find('.flash:not(.math_message)')
                                                   .removeClass('notice').addClass('error')

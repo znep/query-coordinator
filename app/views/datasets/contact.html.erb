@@ -1,0 +1,13 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'dataset-upload' %>
+  <title>Contact Owner for <%= h(@view.name) %> | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<div class="contentBox">
+  <h2>Contact Owner</h2>
+
+  <%= display_standard_flashes %>
+  <div class="mainContent">
+    <%= render :partial => 'flag_message', :locals => {:static_links => true} %>
+  </div>
+</div>

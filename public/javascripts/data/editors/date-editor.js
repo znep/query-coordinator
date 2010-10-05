@@ -19,6 +19,7 @@
 
             originalTextValue: function()
             {
+                this.flattenValue();
                 var formatName = (this.column.format || {}).view || 'date_time';
                 this._format = this.type().formats[formatName] ||
                     this.type().formats['date_time'];

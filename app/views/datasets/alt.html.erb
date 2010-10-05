@@ -25,6 +25,8 @@
 <%- is_tabular = @view.is_tabular? -%>
 
 <div class="contentBox">
+  <%= display_standard_flashes %>
+
   <ul id="datasetMenu">
     <%- if @view.can_print? -%>
       <li><a href="/api/views/<%= @view.id %>/rows.pdf">Print</a></li>
@@ -86,7 +88,8 @@
 
   <h2>About</h2>
   <div class='altMeta'>
-    <%= render :partial => 'about_dataset' %>
+    <%= render(:partial => 'about_dataset',
+               :locals => {:static_links => true}) %>
   </div>
 
 <%- if is_tabular -%>

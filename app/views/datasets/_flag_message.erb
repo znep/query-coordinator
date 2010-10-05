@@ -53,8 +53,13 @@
       <input type="text" class="encrypted" name="equation_token" style="display:none;" value="<%= encoded %>"/>
       <div class="math_message flash"></div>
 
+      <%- if local_assigns[:static_links] -%>
+      <%= submit_tag('Send', :class => 'button default') %>
+      <%- else -%>
       <a href="#submit" class="button sendContactButton">Send</a>
-      <a href="#cancel" class="button cancelContactButton contactButton">Cancel</a>
+      <%- end -%>
+      <a href="<%= local_assigns[:static_links] ? @view.alt_href : '#cancel' %>"
+        class="button cancelContactButton contactButton">Cancel</a>
     <% end %>
   </div>
 </div>

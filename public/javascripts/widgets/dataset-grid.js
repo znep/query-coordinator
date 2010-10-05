@@ -499,7 +499,7 @@
 
     var rowMenuOpenCallback = function(datasetObj, $menu)
     {
-        $menu.find('li.tags')
+        $menu.find('li.tags, li.pageView')
             .toggle(!datasetObj.settings._model.hasSelectedRows());
         hideRowTagsMenu($menu);
     };

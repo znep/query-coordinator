@@ -200,3 +200,10 @@
   <%- end -%>
 </div>
 
+<script type='text/javascript'>
+  $(function()
+  {
+     blist.namespace.fetch('blist.browse');
+     blist.browse.datasets = <%= safe_json(@view_results) %>;
+  });
+</script>

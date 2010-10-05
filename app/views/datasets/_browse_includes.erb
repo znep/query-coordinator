@@ -25,9 +25,5 @@
 <% end %>
 
 <% content_for :js_footer do %>
-  <script type='text/javascript'>
-    blist.namespace.fetch('blist.browse');
-    blist.browse.datasets = <%= safe_json(@view_results) %>;
-  </script>
   <%= javascript_include_merged 'browse-control' %>
 <% end %>

@@ -44,6 +44,7 @@ protected
   end
 
   def process_browse!
+    @port = request.port
     @limit ||= 10
     @opts ||= {}
     @opts.merge!({:limit => @limit, :page => (params[:page] || 1).to_i})

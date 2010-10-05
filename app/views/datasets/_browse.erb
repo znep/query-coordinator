@@ -154,7 +154,8 @@
               <span class='value'><%= start_index + i %>.</span>
             </td>
             <td class='nameDesc'>
-              <a href='<%= v.href %>' class='name'><%= v.name %></a>
+              <a href='<%= v.href(@port) %>' class='name'
+                <%= v.federated? ? "rel='external'" : '' %>><%= v.name %></a>
               <%- if !v.category.blank? -%>
               <span class='category infoItem'><%= v.category %></span>
               <%- end -%>

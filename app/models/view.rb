@@ -330,11 +330,6 @@ class View < Model
     !domainCName.blank?
   end
 
-  def browserOpenTarget
-    #federated? ? "_blank" : "_self"
-    federated? ? "external" : ""
-  end
-
   def href(port = 80)
     url_port = (port == 80) ? '' : ':' + port.to_s
     protocol = federated? ? "http://#{domainCName}#{url_port}" : ''

@@ -11,6 +11,10 @@
 
     $('.editProfileNav li a').click(function(event)
     {
+        if ($('html').hasClass('ie'))
+        {
+            return;
+        }
         event.preventDefault();
         // Hide all Flashes, since it only applied to the first page
         $('.flash').hide();
@@ -29,13 +33,9 @@
 
         if (!_.isNull($newPane) && $newPane[0] != $currentPane[0])
         {
-            $currentPane.animate({opacity: 0}, function()
+            $currentPane.fadeOut(300, function()
             {
-                $currentPane.hide();
-                $newPane
-                    .css('opacity', 0)
-                    .show()
-                    .animate({opacity: 1});
+                $newPane.fadeIn();
                 $currentPane = $newPane;
             });
         }

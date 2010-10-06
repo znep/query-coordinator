@@ -1,7 +1,7 @@
 class Displays::Form < Displays::Base
   def valid?
-    @view.columns.any? {|c| return !c.flag?('hidden') &&
-      c.dataTypeame != 'tag' && c.dataTypeName != 'nested_table'}
+    @view.columns.any? {|c| !c.flag?('hidden') &&
+      c.dataTypeName != 'tag' && c.dataTypeName != 'nested_table'}
   end
 
   def invalid_message
@@ -26,10 +26,6 @@ class Displays::Form < Displays::Base
 
   def render_partial
     return 'displays/form_view'
-  end
-
-  def render_publishing_partial
-    return 'displays/form_tab_publishing'
   end
 
   def is_public?

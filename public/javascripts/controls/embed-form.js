@@ -31,7 +31,8 @@
                     }
                 });
 
-            $embedForm.find(config.textareaSelector).click(function() { $(this).select(); });
+            $embedForm.find(config.codeSelector)
+                .click(function() { $(this).select(); });
 
             $embedForm.find(config.sizesSelector).click(function(event)
             {
@@ -81,7 +82,8 @@
         widthSelector: "#embed_width",
         heightSelector: "#embed_height",
         errorMessageSelector: ".sizeInformation",
-        sizesSelector: ".sizes li"
+        sizesSelector: ".sizes li",
+        codeSelector: '.htmlCode'
     };
 
 })(jQuery);

@@ -134,11 +134,6 @@ END
       return ''
     end
 
-    # Partial for the publishing tab content
-    def render_publishing_partial
-      return 'displays/base_tab_publishing'
-    end
-
     protected
 
     # Retrieve a list of stylesheet asset bundles that must be included for this display

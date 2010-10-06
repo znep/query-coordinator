@@ -11,7 +11,7 @@
   <%- end -%>
 <% end %>
 
-<%- if !@view.is_invalid? -%>
+<%- if @view.display.valid? -%>
   <%- if @display.can_publish? -%>
     <%= raw @display.render_body(self) %>
     <%= render(:partial => @display.render_partial) %>

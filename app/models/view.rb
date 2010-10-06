@@ -314,10 +314,6 @@ class View < Model
     !self.query.nil? && !self.query.groupBys.nil? && self.query.groupBys.length > 0
   end
 
-  def is_invalid?
-    !display.valid?
-  end
-
   def last_updated_user
     begin
       return rowsUpdatedBy.blank? ? nil : User.find(rowsUpdatedBy)

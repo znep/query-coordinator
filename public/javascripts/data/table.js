@@ -3979,6 +3979,8 @@
                 }
             }
             updateLayout();
+            if (model.dataLength() < 0)
+            { model.loadRows(0, 50); }
         };
 
         var setUpColumnChoose = function(types, callback)
@@ -4090,7 +4092,7 @@
 
             // Need to get first batch of rows so that the total count is
             // available
-            if (model.length() < 0)
+            if (model.dataLength() < 0)
             {
                 model.loadRows(0, 50, function()
                 { isReady(); });

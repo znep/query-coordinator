@@ -1256,6 +1256,7 @@ this.Dataset = Model.extend({
         this._rowsLoading = {};
         this._pendingRowReqs = [];
         this._rowIDLookup = {};
+        delete this.totalRows;
         _.each(this.columns || [], function(c) { c.invalidateData(); });
         this.trigger('row_change', [invRows]);
     },

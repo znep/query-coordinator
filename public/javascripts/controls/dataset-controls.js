@@ -21,7 +21,7 @@ blist.datasetControls.hookUpShareMenu = function(view, $menu, overrides, hideEma
             { text: 'Twitter', className: 'twitter', rel: 'external',
               href: 'http://www.twitter.com/home?status=' + tweet + shortPath },
             { text: 'Email', className: 'email', href: '#email',
-                onlyIf: view.viewType != 'blobby' && !hideEmail}
+                onlyIf: !hideEmail}
         ]
     };
 

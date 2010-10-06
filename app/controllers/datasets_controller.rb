@@ -1,6 +1,6 @@
 class DatasetsController < ApplicationController
   include DatasetsHelper
-  skip_before_filter :require_user, :only => [:show, :alt, :widget_preview, :math_validate]
+  skip_before_filter :require_user, :only => [:show, :alt, :widget_preview, :contact, :math_validate]
 
 # collection actions
   def new

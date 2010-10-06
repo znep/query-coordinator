@@ -388,7 +388,8 @@
                 var isSubRow = !$.isBlank((col || {}).childColumns);
                 var colAdjust = isSubRow ? ('_' + col.lookup) : '';
 
-                return '"<a class=\'menuLink\' href=\'#row-menu_" + ' +
+                return '(row.type == "blank" ? "" :' +
+                       '"<a class=\'menuLink\' href=\'#row-menu_" + ' +
                        'row.id + "' + colAdjust + '\'></a>' +
                        '<ul class=\'menu rowMenu\' id=\'row-menu_" + row.id + "' +
                        colAdjust + '\'>" + ' +
@@ -418,7 +419,7 @@
                        '<span class=\'colorWrapper\'>' +
                        '</span></div>' +
                        '</div></li>' +
-                       '</ul>"';
+                       '</ul>")';
             }
         }
     });

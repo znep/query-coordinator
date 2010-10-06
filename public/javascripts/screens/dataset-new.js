@@ -149,7 +149,7 @@ $(function()
         responseType: 'json',
         onChange: function (file, ext)
         {
-            if (!(isBlobby || (ext && /^(tsv|csv|xml|xls|xlsx)$/.test(ext))))
+            if (!(isBlobby || (ext && /^(tsv|csv|xml|xls|xlsx)$/i.test(ext))))
             {
                 $('.uploadFileName')
                     .val('Please choose a CSV, TSV, XML, XLS, or XLSX file.')

@@ -187,12 +187,25 @@
         {
             // Move fields over until the second column is bigger or equal
             while ($cols.eq(1).outerHeight() < $cols.eq(0).outerHeight())
-            { $cols.eq(1).prepend($cols.eq(0).find('.pageLine:last')); }
+            {
+                var $lastItem = $cols.eq(0).find('.pageLine:last');
+                // IE7 won't properly measure the adjusted heights of the columns
+                // unless we measure the height of the item we're moving
+                // (Because we can't have our work be too easy, right?)
+                if ($.browser.msie && $.browser.majorVersion <= 7)
+                { $lastItem.height(); }
+                $cols.eq(1).prepend($lastItem);
+            }
 
             // Then if the second column is bigger, move fields back,
             // so that the first column is just longer than the second
             while ($cols.eq(1).outerHeight() > $cols.eq(0).outerHeight())
-            { $cols.eq(0).append($cols.eq(1).find('.pageLine:first')); }
+            {
+                var $firstItem = $cols.eq(1).find('.pageLine:first');
+                if ($.browser.msie && $.browser.majorVersion <= 7)
+                { $firstItem.height(); }
+                $cols.eq(0).append($firstItem);
+            }
         }
     };
 

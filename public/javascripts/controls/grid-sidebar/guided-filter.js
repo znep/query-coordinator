@@ -214,7 +214,7 @@
                         { columns:
                             _.map(columnsToPush, function(column)
                             {
-                                return $.extend({}, column, { format: { aggregate: aggregateType } });
+                                return $.extend({}, column.cleanCopy(), { format: { aggregate: aggregateType } });
                             })})),
                     success: function(result)
                     {

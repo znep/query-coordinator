@@ -7,8 +7,8 @@
 
 <%- if !CurrentDomain.templates['data_splash'].nil? -%>
   <%= render_domain_template('data_splash') %>
-<%- elsif !CurrentDomain.current_theme.featured_datasets.nil? -%>
-  render the new carousel
+<%- elsif false # check for stories -%>
+  render the stories pane
 <%- elsif !current_user.nil? && current_user.has_right?('manage_users') -%>
   <div class="contentBox">
     <h2>It looks like your domain is not configured yet.</h2>

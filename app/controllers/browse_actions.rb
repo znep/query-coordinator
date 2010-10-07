@@ -49,7 +49,7 @@ protected
     @opts ||= {}
     @opts.merge!({:limit => @limit, :page => (params[:page] || 1).to_i})
     (@default_params || {}).each { |k, v| params[k] = v if params[k].nil? }
-    @params = params.reject {|k, v| k == 'controller' || k == 'action'}
+    @params = params.reject {|k, v| k.to_s == 'controller' || k.to_s == 'action'}
     @no_results_text ||= 'No Results'
     @base_url ||= request.path
 

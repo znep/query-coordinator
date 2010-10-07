@@ -248,7 +248,10 @@
         var view = blist.dataset.cleanCopy();
 
         view.query = view.query || {};
-        view.query.filterCondition = view.query.filterCondition || {};
+        // Pull filterCondition from blist.dataset, so we don't get any
+        // named filters
+        view.query.filterCondition = $.extend(true, {},
+            blist.dataset.query.filterCondition);
         view.query.filterCondition.children =
             view.query.filterCondition.children || [];
 

@@ -1023,6 +1023,47 @@ this.Dataset = Model.extend({
         this._updateSnapshot('cropExisting', name, callback);
     },
 
+    cleanFilters: function(excludeTemporary)
+    {
+        var ds = this;
+        var filters;
+        if (!$.isBlank((ds.query || {}).filterCondition))
+        { filters = $.extend(true, {}, ds.query.filterCondition); }
+        if (!$.isBlank((ds.query || {}).namedFilters))
+        {
+            var newFilters = [];
+            _.each(ds.query.namedFilters, function(nf)
+            {
+                if (excludeTemporary && nf.temporary) { return; }
+                nf = $.extend(true, {}, nf);
+                delete nf.temporary;
+                newFilters.push(nf);
+            });
+            if (newFilters.length > 0)
+            {
+                if ($.isBlank(filters))
+                { filters = {children: [], type: 'operator', value: 'AND'}; }
+                else if (filters.type != 'operator' || filters.value != 'AND')
+                {
+                    filters = {type: 'operator', value: 'AND',
+                        children: [filters]};
+                }
+                filters.children = filters.children.concat(newFilters);
+            }
+        }
+        return filters;
+    },
+
+    cleanCopy: function()
+    {
+        var dsCopy = this._super();
+        if (!$.isBlank(dsCopy.query))
+        {
+            dsCopy.query.filterCondition = this.cleanFilters();
+            delete dsCopy.query.namedFilters;
+        }
+        return dsCopy;
+    },
 
     // Private methods
 
@@ -1125,6 +1166,10 @@ this.Dataset = Model.extend({
         ds.query = ds.query || {};
 
         ds._updateGroupings(oldGroupings, oldGroupAggs);
+
+        // Clean out any empty keys in the query
+        _.each(['namedFilters', 'filterCondition', 'sortBys', 'groupBys'],
+            function(k) { if (_.isEmpty(ds.query[k])) { delete ds.query[k]; } });
 
         if (!_.isEqual(oldQuery, ds.query) || (oldSearch !== ds.searchString))
         {
@@ -1282,6 +1327,17 @@ this.Dataset = Model.extend({
                 ds.totalRows = result.meta.totalRows;
                 delete ds._rowCountInvalid;
                 delete ds._columnsInvalid;
+                if (!fullLoad &&
+                    !$.isBlank(result.meta.view.query.filterCondition))
+                {
+                    result.meta.view.query.filterCondition =
+                        ds.query.filterCondition;
+                    if (!$.isBlank(ds.query.namedFilters))
+                    {
+                        result.meta.view.query.namedFilters =
+                            ds.query.namedFilters;
+                    }
+                }
                 ds._update(result.meta.view, true, true, fullLoad);
             }
 
@@ -1898,12 +1954,15 @@ function getDisplayName(ds)
 
 function cleanViewForSave(ds)
 {
-    ds = ds.cleanCopy();
+    var dsCopy = ds.cleanCopy();
 
-    if (!_.isUndefined(ds.metadata))
-    { delete ds.metadata.facets; }
+    if (!_.isUndefined(dsCopy.metadata))
+    { delete dsCopy.metadata.facets; }
 
-    return ds;
+    if (!$.isBlank(dsCopy.query))
+    { dsCopy.query.filterCondition = ds.cleanFilters(true); }
+
+    return dsCopy;
 };
 
 })();

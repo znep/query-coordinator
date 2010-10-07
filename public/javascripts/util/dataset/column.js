@@ -199,29 +199,8 @@ this.Column = Model.extend({
                 value: subColumnType.toUpperCase() },
             { type: 'literal', value: value } ] };
 
-        if ($.isBlank(query.filterCondition))
-        {
-            // Make it the top-level filter, wrapped in an AND section
-            query.filterCondition = { type: 'operator', value: 'AND',
-                children: [filterItem] };
-        }
-        else if (query.filterCondition.type == 'operator' &&
-                query.filterCondition.value == 'AND')
-        {
-            // Add it to the top-level filter
-            if (!query.filterCondition.children)
-            { query.filterCondition.children = []; }
-            query.filterCondition.children.push(filterItem);
-        }
-        else
-        {
-            // Else push the top-level filter down one level, and
-            //  add this to the new top-level filter
-            var topF = { type: 'operator', value: 'AND', children: [
-                col.view.query.filterCondition, filterItem
-                    ] };
-            query.filterCondition = topF;
-        }
+        query.namedFilters = query.namedFilters || {};
+        query.namedFilters['col' + col.id] = filterItem;
 
         // Store the filter in an easier format to deal with elsewhere;
         //  also keep a pointer back to the viewFilter
@@ -330,9 +309,8 @@ this.Column = Model.extend({
         }
 
         if (!$.isBlank(this.currentFilter) &&
-                !_.any(((this.view.query || {}).filterCondition || {})
-                    .children || [], function(fc)
-                    { return _.isEqual(fc, col.currentFilter.viewFilter); }))
+            $.isBlank(((this.view.query || {}).namedFilters ||
+                {})['col' + this.id]))
         { delete this.currentFilter; }
     },
 
@@ -384,22 +362,7 @@ this.Column = Model.extend({
     {
         var col = this;
         if ($.isBlank(col.currentFilter)) { return; }
-
-        // First check if this is the only viewFilter; if so, clear it
-        if (query.filterCondition == col.currentFilter.viewFilter)
-        { query.filterCondition = null; }
-
-        else
-        {
-            // Else it is a child of the top-level filter; splice it out
-            query.filterCondition.children =
-                _.reject(query.filterCondition.children, function(fc)
-                        { return _.isEqual(fc, col.currentFilter.viewFilter); });
-            // If the top-level filter is empty, get rid of it
-            if (query.filterCondition.children.length < 1)
-            { delete query.filterCondition; }
-        }
-
+        delete query.namedFilters['col' + col.id];
         delete col.currentFilter;
     },
 

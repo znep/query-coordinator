@@ -53,19 +53,19 @@
         return sectionConfig;
     });
 
-    var originalFilter = (blist.dataset.query || {}).filterCondition,
-        facetedFilters = {};
+    var facetedFilters = {};
     var mergeAndPostFilter = function(dsGrid)
     {
         if (_.isEmpty(facetedFilters))
         {
-            var origQuery = $.extend({}, blist.dataset.query,
-                {filterCondition: originalFilter});
+            var origQuery = $.extend({}, blist.dataset.query);
+            if (!$.isBlank(origQuery.namedFilters))
+            { delete origQuery.namedFilters.guided; }
             blist.dataset.update({query: origQuery});
         }
         else
         {
-            var topLevelChildren = [];
+            var guidedFilter = {type: 'operator', value: 'AND', children: []};
             _.each(_.values(facetedFilters), function(filterCondition)
             {
                 // intermediate format: arrays indicate OR groups
@@ -73,11 +73,11 @@
                 {
                     if (filterCondition.length == 1)
                     {
-                        topLevelChildren.push(filterCondition[0]);
+                        guidedFilter.children.push(filterCondition[0]);
                     }
                     else if (filterCondition.length > 1)
                     {
-                        topLevelChildren.push({
+                        guidedFilter.children.push({
                             type: 'operator',
                             value: 'OR',
                             children: filterCondition
@@ -86,18 +86,15 @@
                 }
                 else
                 {
-                    topLevelChildren.push(filterCondition);
+                    guidedFilter.children.push(filterCondition);
                 }
             });
+            if (guidedFilter.children.length == 1)
+            { guidedFilter = guidedFilter.children[0]; }
 
-            var mergedFilter = {
-                type: 'operator',
-                value: 'AND',
-                children: _.compact(topLevelChildren.concat(originalFilter))
-            };
-
-            var mergedQuery = $.extend({}, blist.dataset.query,
-                {filterCondition: mergedFilter});
+            var mergedQuery = $.extend({}, blist.dataset.query);
+            mergedQuery.namedFilters = mergedQuery.namedFilters || {};
+            mergedQuery.namedFilters.guided = guidedFilter;
             blist.dataset.update({query: mergedQuery});
         }
     };

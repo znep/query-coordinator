@@ -104,6 +104,9 @@
             title='View as <%= @view.display.name.downcase %>'>
             <span class='icon'></span>
           </a></li>
+          <li><a href='#fatrow' class='fatrow' title='View as a rich list'>
+            <span class='icon'></span>
+          </a></li>
           <li><a href='#page' class='page' title='View a single row'>
             <span class='icon'></span>
           </a></li>
@@ -190,6 +193,9 @@
       <%- end -%>
       <%= raw @view.display.render_body(self) %>
       <%= render(:partial => @view.display.render_partial) %>
+    </div>
+
+    <div id='fatRowRenderType' class='fullHeight hide'>
     </div>
 
     <div id='pageRenderType' class='fullHeight <%= @row.nil? ? 'hide' : '' %>'>

@@ -27,11 +27,13 @@ blist.datasetPage.updateValidView = function()
     datasetPageNS.initGrid();
 };
 
-blist.datasetPage.hidePageRenderType = function()
+blist.datasetPage.showDefaultRenderType = function()
 {
-    if (!datasetPageNS.$pageRenderType.is(':visible')) { return; }
-    datasetPageNS.$pageRenderType.addClass('hide');
-    $('body').removeClass('pageRenderType');
+    if (!_.any(datasetPageNS.$renderTypes, function($rt)
+        { return $rt.is(':visible'); })) { return; }
+
+    _.each(datasetPageNS.$renderTypes, function($rt) { $rt.addClass('hide'); });
+    $('body').removeClass('nonDefaultRenderType');
     $(window).resize();
     // If initially loaded page view, the grid hasn't been rendered yet
     datasetPageNS.initGrid();
@@ -43,15 +45,16 @@ blist.datasetPage.hidePageRenderType = function()
     $('#renderTypeOptions li .main').addClass('active');
 };
 
-blist.datasetPage.showPageRenderType = function()
+blist.datasetPage.showRenderType = function(renderType)
 {
-    if (datasetPageNS.$pageRenderType.is(':visible')) { return; }
-    datasetPageNS.$pageRenderType.removeClass('hide');
-    $('body').addClass('pageRenderType');
+    if (datasetPageNS.$renderTypes[renderType].is(':visible')) { return; }
+    _.each(datasetPageNS.$renderTypes, function($rt) { $rt.addClass('hide'); });
+    datasetPageNS.$renderTypes[renderType].removeClass('hide');
+    $('body').addClass('nonDefaultRenderType');
     $(window).resize();
 
     $('#renderTypeOptions li a').removeClass('active');
-    $('#renderTypeOptions li .page').addClass('active');
+    $('#renderTypeOptions li .' + renderType).addClass('active');
 };
 
 blist.datasetPage.initGrid = function()
@@ -118,30 +121,41 @@ $(function()
         blist.$display.find('.rowLink').remove();
 
         // Page render type
-        datasetPageNS.$pageRenderType = $('#pageRenderType');
-        datasetPageNS.$pageRenderType.pageRenderType({ view: blist.dataset });
+        datasetPageNS.$renderTypes = {};
+        datasetPageNS.$renderTypes.page = $('#pageRenderType');
+        datasetPageNS.$renderTypes.page.pageRenderType({ view: blist.dataset });
+        datasetPageNS.$renderTypes.fatrow = $('#fatRowRenderType');
+        datasetPageNS.$renderTypes.fatrow.fatrowRenderType({ view: blist.dataset });
 
         // Render types
         $('#renderTypeOptions').pillButtons();
         $('#renderTypeOptions a').click(function(e)
         {
             e.preventDefault();
-            if ($.hashHref($(this).attr('href')) == 'page')
-            { datasetPageNS.showPageRenderType(); }
-            else
-            { datasetPageNS.hidePageRenderType(); }
+            var rt = $.hashHref($(this).attr('href'));
+            switch (rt)
+            {
+                case 'page':
+                case 'fatrow':
+                    datasetPageNS.showRenderType(rt);
+                    break;
+                default:
+                    datasetPageNS.showDefaultRenderType();
+                    break;
+            }
         });
+
         $(document).bind(blist.events.DISPLAY_ROW, function()
-                { datasetPageNS.showPageRenderType(); });
+                { datasetPageNS.showRenderType('page'); });
 
         var isPageRT = !$.isBlank(blist.initialRowId);
-        if (!isPageRT) { datasetPageNS.hidePageRenderType(); }
+        if (!isPageRT) { datasetPageNS.showDefaultRenderType(); }
         else
         {
             // Cheat by making sure the div is hidden initially
-            datasetPageNS.$pageRenderType.addClass('hide');
-            datasetPageNS.showPageRenderType();
-            datasetPageNS.$pageRenderType.pageRenderType()
+            datasetPageNS.$renderTypes.page.addClass('hide');
+            datasetPageNS.showRenderType('page');
+            datasetPageNS.$renderTypes.page.pageRenderType()
                 .displayRowByID(blist.initialRowId);
         }
     }

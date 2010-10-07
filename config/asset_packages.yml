@@ -231,6 +231,7 @@ javascripts:
   - controls/embed-form
   - controls/full-screen
   - controls/format-options
+  - controls/fatrow-render-type
   - controls/page-render-type
   - controls/pill-buttons
   - screens/dataset-show

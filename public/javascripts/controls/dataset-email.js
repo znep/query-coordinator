@@ -50,6 +50,7 @@
 
         $('.emailDatasetDialog .emailLine:not(:first)').remove();
         $('.emailDatasetDialog .emailRecipient').val('');
+        $('.emailDatasetDialog .recipientUid').val('');
         $('.emailDatasetDialog .recipientRole').val(
             $('.emailDatasetDialog .recipientRole option:first').val());
         $.uniform.update('.emailDatasetDialog .recipientRole');
@@ -143,7 +144,7 @@
 
         $emailField.rules('add', {
             email: true
-        }); 
+        });
 
         if (friends && friends.length > 0)
         { autoCompleteForFriends($emailField); }
@@ -204,20 +205,23 @@
                 }
             });
 
-            $.socrataServer.runRequests({success: function()
-                {
-                    $form.closest('.emailDatasetContent').slideToggle();
-                    $('.emailSuccess').slideToggle();
+            var refreshCallback = function()
+            {
+                $form.closest('.emailDatasetContent').slideToggle();
+                $('.emailSuccess').slideToggle();
 
                     // Update the sharing pane to reflect
-                    if ($form.closest('.emailDatasetDialog').hasClass('ownerDialog'))
-                    { $('#gridSidebar').gridSidebar().refresh('edit.shareDataset'); }
-                },
-                error: function()
-                {
-                    $flash.addClass('error').text('There was an error sending your email. Please try again later.');
-                }
-            });
+                if ($form.closest('.emailDatasetDialog').hasClass('ownerDialog'))
+                { $('#gridSidebar').gridSidebar().refresh('edit.shareDataset'); }
+            };
+
+            if (!$.socrataServer.runRequests({success: refreshCallback,
+                    error: function() {
+                        $flash.addClass('error').text('There was an error sending your email. Please try again later.');
+                    }}))
+            {
+                refreshCallback();
+            }
         }
     });
 

@@ -240,10 +240,10 @@ this.Dataset = Model.extend({
     {
         var ds = this;
 
-        var grantCreated = function()
+        var grantCreated = function(response)
         {
             ds.grants = ds.grants || [];
-            ds.grants.push(grant);
+            ds.grants.push(response);
             if (_.isFunction(successCallback)) { successCallback(); }
         };
 

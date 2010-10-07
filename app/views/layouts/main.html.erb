@@ -97,6 +97,10 @@
   <script type="text/javascript" src="/javascripts/plugins/jquery.bgiframe.min.js"></script>
   <![endif]-->
 
+  <!--[if lt IE 7]>
+    <script type="text/javascript" src="javascripts/screens/oldie.js"></script>
+  <![endif]-->
+
   <%= javascript_include_merged 'base' %>
 
   <% if Rails.env != 'production' %>

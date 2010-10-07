@@ -151,10 +151,12 @@ $light_bg_color: #fafafa
       border-color: $color_buttons_active_border - #222
   .noLinearGradient &.tall
     @include box-gradient-buttons-active-background(3, 46, $box_gradient_alias_fix)
+
   &.active
     @include gradient-buttons-active-background_reverse
     border-color: $color_buttons_active_border - #444
     @include box-shadow(0, 0, 0.1em, $color_buttons_active_shadow)
+
   &.default
     @include gradient-buttons-default-background
     border-color: $color_buttons_default_border
@@ -164,12 +166,8 @@ $light_bg_color: #fafafa
       @include gradient-buttons-default_disabled-background
       border: 1px solid $color_buttons_default_disabled_border
       color: $color_buttons_default_disabled_text
-    .noLinearGradient.noBorderRadius &
-      @include box-gradient-buttons-default-background(3, 30, $box_gradient_alias_fix)
-    .ie7.noLinearGradient.noBorderRadius &
-      @include box-gradient-buttons-default-background(3, 42, $box_gradient_alias_fix)
-    .noLinearGradient &, .ie7.noLinearGradint.noBorderRadius & 
-      @include box-gradient-buttons-default-background(3, 35, $box_gradient_alias_fix)
+    .noLinearGradient &, .ie6 &
+      @include box-gradient-buttons-default-background(3, 21, $box_gradient_alias_fix)
 
 // mix this into a commonForm to give it the appropriate width styling
 @mixin common-form($labelWidth, $controlWidth: true)

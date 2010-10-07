@@ -10,7 +10,17 @@
 
     <%= display_standard_flashes %>
 
-    <%- if @view.is_public? -%>
+    <%- if !@view.is_public? -%>
+      <div class="flash error">
+        For your privacy, only public datasets may be thumbnailed.
+        If you wish to have a preview image, please make this dataset
+        public from the Sharing pane of the edit menu
+      </div>
+    <%- elsif @view.is_blobby? -%>
+      <div class="flash warning">
+        This embedded file cannot be thumbnailed as it cannot be displayed in the browser
+      </div>
+    <%- else -%>
       <div id="fullThumbnail" class="loading">
 
         <div class="refreshThumbnail">
@@ -63,12 +73,6 @@
             Please wait while we create one for you.
           </div>
         </div>
-      </div>
-    <%- else -%>
-      <div class="flash error">
-        For your privacy, only public datasets may be thumbnailed.
-        If you wish to have a preview image, please make this dataset
-        public from the Sharing pane of the edit menu
       </div>
     <%- end -%>
   </div>

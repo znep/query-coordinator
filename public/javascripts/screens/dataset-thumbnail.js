@@ -14,7 +14,7 @@
         $saveMessage      = $('.actionsForm .saveMessage'),
         $saveThrobber     = $('.actionsForm .saving');
 
-    if (!blist.dataset.isPublic())
+    if (!blist.dataset.isPublic() || blist.dataset.type == 'blob')
     {
         return;
     }

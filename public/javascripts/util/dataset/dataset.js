@@ -1175,6 +1175,7 @@ this.Dataset = Model.extend({
         {
             if (oldSearch !== ds.searchString ||
                 !_.isEqual(oldQuery.filterCondition, ds.query.filterCondition) ||
+                !_.isEqual(oldQuery.namedFilters, ds.query.namedFilters) ||
                 !_.isEqual(oldQuery.groupBys, ds.query.groupBys))
             { ds._rowCountInvalid = true; }
             ds.trigger('query_change');

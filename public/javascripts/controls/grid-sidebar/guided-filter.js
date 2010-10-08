@@ -92,7 +92,7 @@
             if (guidedFilter.children.length == 1)
             { guidedFilter = guidedFilter.children[0]; }
 
-            var mergedQuery = $.extend({}, blist.dataset.query);
+            var mergedQuery = $.extend(true, {}, blist.dataset.query);
             mergedQuery.namedFilters = mergedQuery.namedFilters || {};
             mergedQuery.namedFilters.guided = guidedFilter;
             blist.dataset.update({query: mergedQuery});

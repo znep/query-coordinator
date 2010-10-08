@@ -196,6 +196,7 @@ class ProfileController < ApplicationController
                 {:email => params[:user][:email],
                   :password => params[:user][:email_password]})
           end
+        end
         if params[:user][:password_new].present?
           if params[:user][:password_new] != params[:user][:password_confirm]
             error_msg = "New passwords do not match"
@@ -205,7 +206,6 @@ class ProfileController < ApplicationController
                   :password => params[:user][:password_old]})
           end
         end
-      end
       rescue CoreServer::CoreServerError => e
         error_msg = e.error_message
       end

@@ -127,6 +127,7 @@
                 });
 
                 mapObj._origData = {valid: mapObj.settings.view.valid,
+                    displayFormat: mapObj.settings.view.displayFormat,
                     mapType: mapObj.settings.view.displayFormat.type,
                     plotStyle: mapObj.settings.view.displayFormat.plotStyle,
                     layers: mapObj.settings.view.displayFormat.layers};
@@ -152,6 +153,16 @@
                               function(c) { return "#"+$.rgbToHex(c); }
                     )});
                 }
+            },
+
+            noReload: function()
+            {
+                var mapObj = this;
+                var oldDF = $.extend({}, mapObj._origData.displayFormat);
+                var newDF = $.extend({}, mapObj.settings.view.displayFormat);
+                _.each(['viewport'], function(property)
+                { delete oldDF[property]; delete newDF[property]; });
+                return _.isEqual(oldDF, newDF);
             },
 
             reset: function()

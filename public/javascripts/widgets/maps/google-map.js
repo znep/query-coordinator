@@ -184,17 +184,32 @@
                     mapObj.map.setZoom(mapObj.settings.defaultZoom);
                 }
 
+                // Don't attach viewportListener unless all rows are loaded.
+                if (mapObj.settings.view.totalRows > mapObj._rows.length &&
+                    mapObj._maxRows > mapObj._rows.length)
+                { return; }
+
+                // Begin Rabbit Hole.
                 var l = google.maps.event.addListener(mapObj.map, 'idle', function()
                 {
                     google.maps.event.removeListener(l);
                     mapObj._viewportListener = google.maps.event.addListener(
                         mapObj.map, 'bounds_changed', function()
                         {
-                            mapObj.settings.view.update({
-                                displayFormat: $.extend({},
-                                    mapObj.settings.view.displayFormat,
-                                    { viewport: mapObj.getViewport() })
-                            }, false, true);
+                            if (mapObj._extentChanging) { return; }
+                            mapObj._extentChanging = google.maps.event.addListener(
+                                mapObj.map, 'idle', function()
+                                {
+                                    google.maps.event.removeListener(
+                                        mapObj._extentChanging);
+                                    mapObj._extentChanging = false;
+                                    mapObj.settings.view.update({
+                                        displayFormat: $.extend({},
+                                            mapObj.settings.view.displayFormat,
+                                            { viewport: mapObj.getViewport() })
+                                    }, false, true);
+                                }
+                            );
                         });
                 });
             },

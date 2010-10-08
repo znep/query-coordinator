@@ -137,6 +137,7 @@
                     return;
                 }
 
+                if (vizObj.noReload()) { return; }
                 vizObj.reloadVisualization();
 
                 vizObj.settings.view.getRows(0, vizObj._maxRows,
@@ -158,6 +159,12 @@
             reset: function()
             {
                 // Implement how to do a full reset
+            },
+
+            noReload: function()
+            {
+                // Override if you need to whitelist against reloading
+                return false;
             },
 
             needsFullReset: function()

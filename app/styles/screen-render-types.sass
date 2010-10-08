@@ -79,6 +79,7 @@
               &.noResults
                 text-align: center
 
+.navRenderType
   .navigation
     bottom: 0
     height: 3em
@@ -88,10 +89,14 @@
     li
       display: inline-block
       vertical-align: middle
-      &.info
+      &.info, &.page
         font-size: 1.2em
         line-height: 1.2em
         margin: 0 0.5em
+      &.active a
+        color: #333333
+        cursor: auto
+        font-weight: bold
       .button
         @include sprite-menu-icons
         padding: 0.3em

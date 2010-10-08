@@ -151,7 +151,7 @@ class CurrentDomain
     return @@current_domain[:site_properties_raw]
   end
 
-  def self.templates(version = 0)
+  def self.templates(version = '2b')
     if version == 0
       return self.properties.templates || Hashie::Mash.new
     else
@@ -159,7 +159,7 @@ class CurrentDomain
     end
   end
 
-  def self.theme(version = 0)
+  def self.theme(version = '2b')
     if version == 0
       return self.properties.theme || Hashie::Mash.new
     else

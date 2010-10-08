@@ -169,14 +169,13 @@ private
       'og:url' => request.request_uri
     }
 
-    # HACK/TODO: resolve this when v4-chrome gets merged into master.
     logo_square = CurrentDomain.theme[:images][:logo_square]
     if logo_square.nil?
       return
     elsif logo_square[:type].to_s == "static"
-      @meta['og:image'] = @link_image_src = logo_square[:source]
+      @meta['og:image'] = @link_image_src = logo_square[:href]
     elsif logo_square[:type].to_s == "hosted"
-      @meta['og:image'] = @link_image_src = "/assets/#{logo_square[:source]}"
+      @meta['og:image'] = @link_image_src = "/assets/#{logo_square[:href]}"
     end
   end
 

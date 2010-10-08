@@ -265,7 +265,7 @@ module ApplicationHelper
     end
   end
 
-  def render_domain_template(template_name, version = 0)
+  def render_domain_template(template_name, version = '2b')
     tmpl = CurrentDomain.templates(version)[template_name] || ''
     tmpl = tmpl.clone # make a copy so we don't override and we don't leave a mess for the GC
 

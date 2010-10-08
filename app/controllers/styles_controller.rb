@@ -101,7 +101,7 @@ class StylesController < ApplicationController
 protected
   def get_includes
     result = STYLE_PACKAGES['includes'].map{ |incl| "@import \"#{incl}.sass\"\n" }.join +
-             get_includes_recurse(CurrentDomain.theme('2b'), @@site_theme_parse)
+             get_includes_recurse(CurrentDomain.theme, @@site_theme_parse)
 
     return result
   end

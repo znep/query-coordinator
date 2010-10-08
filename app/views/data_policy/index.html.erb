@@ -3,8 +3,6 @@
   <%= stylesheet_link_tag "static-content" %>
   <!--[if IE 7]><style type="text/css">@import "/stylesheets/ie7.css";</style><![endif]-->
   <%= stylesheet_link_tag "theme/#{CurrentDomain.cname.gsub(/\./, '_')}.css" %>
-  <%# TODO: assets service here instead of pathed %>
-  <%= stylesheet_link_tag "custom/#{CurrentDomain.theme.stylesheet}" unless CurrentDomain.theme.stylesheet.nil? %>
 <% end %>
 
 <div id="contact" class="fixed-width">

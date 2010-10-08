@@ -16,10 +16,11 @@ protected
   end
 
   def categories_facet
-    { :title => 'Categories',
+    cats = View.categories.keys.reject {|c| c.blank?}
+    return nil if cats.length < 1
+    return { :title => 'Categories',
       :param => :category,
-      :options => View.categories.keys.reject {|c| c.blank?}.sort.
-        map { |c| {:text => c, :value => c} }
+      :options => cats.sort.map { |c| {:text => c, :value => c} }
     }
   end
 
@@ -99,6 +100,7 @@ protected
       categories_facet,
       topics_facet
     ]
+    @facets.compact!
 
     @sort_opts ||= [
       {:value => 'relevance', :name => 'Most Relevant'},

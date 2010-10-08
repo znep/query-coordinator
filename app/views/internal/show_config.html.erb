@@ -22,6 +22,12 @@
           <%= @domain.name %> (<%= @domain.cname %>)
       </a></h1>
 
+      <a href="#export" class="exportLink">Export mode</a>
+      <a href="#import" class="importLink">Import mode</a>
+
+      <input type="text" class="importExportBox" />
+      <a href="#doImport" class="doImportLink">Import this</a>
+
       <%- props = @config.data['properties'] -%>
       <%- cur_props = Hash.new -%>
       <h2>Properties:</h2>
@@ -31,7 +37,7 @@
       <%- else -%>
       <% form_tag('/internal/orgs/' + @domain.organizationId.to_s +
         '/domains/' + @domain.cname + '/site_config/' + @config.id.to_s +
-        '/property', {:class => 'wide'}) do %>
+        '/property', {:class => 'wide configProperties'}) do %>
         <%- @config.data['properties'].sort{ |a, b| a['name'] <=> b['name'] }.each do |prop| -%>
         <div class='line'>
           <%- cur_props[prop['name']] = true -%>
@@ -56,8 +62,8 @@
         @parent_domain.organizationId %>/domains/<%= @parent_domain.cname
         %>/site_config/<%= @parent_config.id %>"><%= @parent_config.name
         %></a>):</h2>
-    <form class='wide'>
-      <%- @parent_config.data['properties'].each do |prop| -%>
+    <form class='wide inheritedProperties'>
+      <%- @parent_config.data['properties'].sort{ |a, b| a['name'] <=> b['name'] }.each do |prop| -%>
       <%- next if cur_props[prop['name']] -%>
 
       <div class='line'>
@@ -71,7 +77,7 @@
     <h2>Add Property</h2>
     <% form_tag('/internal/orgs/' + @domain.organizationId.to_s +
       '/domains/' + @domain.cname + '/site_config/' + @config.id.to_s +
-      '/property', {:class => 'wide'}) do %>
+      '/property', {:class => 'wide newProperty'}) do %>
       <div class='line'>
         <%= text_field_tag 'new-property_name' %>
         <%= text_area_tag 'new-property_value' %>
@@ -82,3 +88,80 @@
 
   </div>
 </div>
+
+<% content_for :js_footer do %>
+  <script type="text/javascript">
+    $(function()
+    {
+      $('.exportLink').click(function(event)
+      {
+        event.preventDefault();
+        $('.configProperties .line').find('input, span, a').remove();
+        $('.configProperties .line textarea').after($.tag([{
+          tagName: 'input', type: 'checkbox', 'class': 'exportCheck'
+        }, {
+          tagName: 'span', contents: 'Export this'
+        }], true));
+        $('.importExportBox').val('').show();
+
+        $.live('.exportCheck', 'click', function(event)
+        {
+          var aggrData = {};
+          $('.exportCheck:checked').each(function()
+          {
+            var $this = $(this);
+            aggrData[$this.siblings('label').text()] = $this.siblings('textarea').text();
+          });
+          $('.importExportBox').val(JSON.stringify(aggrData));
+        });
+      });
+
+      $('.importLink').click(function(event)
+      {
+        event.preventDefault();
+        $('.importExportBox, .doImportLink').val('').show();
+      });
+
+      $('.doImportLink').click(function(event)
+      {
+        event.preventDefault();
+
+        var refcount = 0;
+
+        var aggrData = JSON.parse($('.importExportBox').val());
+        _.each(aggrData, function(v, k)
+        {
+          var $textarea = $('#properties_' + k.replace(/\./, '\\.'));
+          if ($textarea.length === 0)
+          {
+            refcount++;
+            $.ajax({
+              type: 'POST', url: $('.newProperty').attr('action'),
+              data: { 'new-property_name': k, 'new-property_value': v },
+              success: function()
+              {
+                if (--refcount === 0)
+                {
+                  $('.configProperties').submit();
+                }
+              },
+              error: function()
+              {
+                alert('warning: ' + k + ' didn\'t submit right.');
+              }
+            });
+          }
+          else
+          {
+            $textarea.text(v);
+          }
+        });
+
+        if (refcount === 0)
+        {
+          $('.configProperties').submit();
+        }
+      });
+    });
+  </script>
+<% end %>

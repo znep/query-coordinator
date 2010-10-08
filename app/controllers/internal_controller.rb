@@ -177,14 +177,12 @@ class InternalController < ApplicationController
   def set_property
     config = Configuration.find(params[:id])
 
-    CoreServer::Base.connection.batch_request do
-      if !params['new-property_name'].blank?
-        # Wrap incoming value in [] to get around the fact the JSON parser
-        # doesn't handle plain string tokens
-        config.create_property(params['new-property_name'],
-                             get_json_or_string(params['new-property_value']))
+    if !params['new-property_name'].blank?
+      config.create_property(params['new-property_name'],
+                           get_json_or_string(params['new-property_value']))
 
-      else
+    else
+      CoreServer::Base.connection.batch_request do
         if !params[:delete_properties].nil?
           params[:delete_properties].each do |name, value|
             if value == 'delete'
@@ -201,8 +199,12 @@ class InternalController < ApplicationController
     end
 
     CurrentDomain.flag_out_of_date!(params[:domain_id])
-    redirect_to '/internal/orgs/' + params[:org_id] + '/domains/' +
-      params[:domain_id] + '/site_config/' + params[:id]
+
+    respond_to do |format|
+      format.html { redirect_to '/internal/orgs/' + params[:org_id] + '/domains/' +
+        params[:domain_id] + '/site_config/' + params[:id] }
+      format.data { render :json => { :success => true } }
+    end
   end
 
 private

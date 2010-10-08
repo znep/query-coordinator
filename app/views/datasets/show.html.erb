@@ -175,6 +175,7 @@
     </div>
 
     <div id='mainGrid' class='fullHeight'>
+      <%- if @view.is_tabular? && !@view.is_form? -%>
       <%# SEO links for individual rows %>
       <%- next_index = 0 -%>
       <%- if !@row.nil? -%>
@@ -185,6 +186,7 @@
       <a href='<%= @view.href %>/<%= next_row['sid'] %>' class='rowLink'>
         <%= @row.nil? ? 'First' : 'Next' %> row
       </a>
+      <%- end -%>
       <%- end -%>
       <%= raw @view.display.render_body(self) %>
       <%= render(:partial => @view.display.render_partial) %>

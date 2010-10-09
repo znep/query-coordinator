@@ -232,6 +232,10 @@ ActionController::Routing::Routes.draw do |map|
     :requirements => {:id => UID_REGEXP},
     :conditions => {:method => :get}
 
+  map.connect 'd/:id/:row_id', :controller => 'datasets', :action => 'show',
+    :requirements => {:id => UID_REGEXP, :row_id => /\d+/},
+    :conditions => {:method => :get}
+
   # For screenshotting only
   map.connect 'r/:id/:name', :controller => 'datasets',
     :action => 'bare',

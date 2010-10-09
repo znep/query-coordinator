@@ -44,25 +44,27 @@ protected
     }
   end
 
-  def process_browse!
+  def process_browse!(options = {})
+    browse_params = (options[:force_default]) ? {} : params
+
     @port = request.port
     @limit ||= 10
     @opts ||= {}
-    @opts.merge!({:limit => @limit, :page => (params[:page] || 1).to_i})
-    (@default_params || {}).each { |k, v| params[k] = v if params[k].nil? }
-    @params = params.reject {|k, v| k.to_s == 'controller' || k.to_s == 'action'}
+    @opts.merge!({:limit => @limit, :page => (browse_params[:page] || 1).to_i})
+    (@default_params || {}).each { |k, v| browse_params[k] = v if browse_params[k].nil? }
+    @params = browse_params.reject {|k, v| k.to_s == 'controller' || k.to_s == 'action'}
     @no_results_text ||= 'No Results'
     @base_url ||= request.path
 
     # Simple params; these are copied directly to opts
     [:sortBy, :category, :tags].each do |p|
-      if !params[p].nil?
-        @opts[p] = params[p]
+      if !browse_params[p].nil?
+        @opts[p] = browse_params[p]
       end
     end
 
-    if !params[:limitTo].nil?
-      case params[:limitTo]
+    if !browse_params[:limitTo].nil?
+      case browse_params[:limitTo]
       when 'datasets'
         @opts[:limitTo] = 'tables'
         @opts[:datasetView] = 'dataset'
@@ -70,14 +72,14 @@ protected
         @opts[:limitTo] = 'tables'
         @opts[:datasetView] = 'view'
       else
-        @opts[:limitTo] = params[:limitTo]
+        @opts[:limitTo] = browse_params[:limitTo]
       end
     end
 
-    if !params[:sortPeriod].nil?
+    if !browse_params[:sortPeriod].nil?
       t = Date.today
       @opts[:endDate] = t.to_s
-      @opts[:startDate] = case params[:sortPeriod]
+      @opts[:startDate] = case browse_params[:sortPeriod]
                           when 'week'
                             Date.commercial(t.cwyear, t.cweek, 1)
                           when 'month'
@@ -87,8 +89,8 @@ protected
                           end.to_s
     end
 
-    if !params[:q].nil?
-      @opts[:q] = params[:q]
+    if !browse_params[:q].nil?
+      @opts[:q] = browse_params[:q]
     else
       # Terrible hack; but search service needs _something_ non-null; so we'll
       # search for everything!

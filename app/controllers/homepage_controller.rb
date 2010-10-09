@@ -20,7 +20,7 @@ class HomepageController < ApplicationController
       @base_url = browse_path
 
       @no_results_text = 'No Datasets Yet'
-      process_browse!
+      process_browse!(:force_default => true)
     end
   end
 

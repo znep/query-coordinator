@@ -40,12 +40,27 @@
                         .Extent(mapObj.settings.view.displayFormat.extent); }
                     mapObj.map = new esri.Map(mapObj.$dom().attr('id'), options);
 
-                    dojo.connect(mapObj.map, 'onLoad', function()
-                    {
+                    var finalize = function() {
                         mapObj._mapLoaded = true;
                         if (mapObj._dataLoaded)
                         { mapObj.renderData(mapObj._rows); }
-                    });
+                    };
+
+                    if(!window.socrataScreenshot)
+                    {
+                        dojo.connect(mapObj.map, 'onLoad', finalize);
+                    }
+                    else
+                    {
+                        // For some reason, the onLoad event isn't
+                        // being fired properly in QtWebKit, so we'll
+                        // just (ugh) poll for loadedness instead
+                        var pollForFinalize = function() {
+                            if(mapObj.map.loaded) finalize();
+                            else setTimeout(arguments.callee, 100);
+                        };
+                        pollForFinalize();
+                    }
 
                     var layers = mapObj.settings.view.displayFormat.layers ||
                         mapObj.settings.defaultLayers;

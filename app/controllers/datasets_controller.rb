@@ -99,9 +99,16 @@ class DatasetsController < ApplicationController
     @state_param = @state_param.to_param
 
     if @view.is_tabular?
-      # get rows
-      @per_page = 50
-      @data, @viewable_columns, @aggregates, @row_count = @view.find_data(@per_page, @page, @conditions)
+      begin
+        # get rows
+        @per_page = 50
+        @data, @viewable_columns, @aggregates, @row_count = @view.find_data(@per_page, @page, @conditions)
+      rescue CoreServer::CoreServerError => e
+        if e.error_code == 'invalid_request'
+          flash.now[:error] = e.error_message
+          return (render 'shared/error', :status => :invalid_request)
+        end
+      end
     end
 
     @view.register_opening(request.referrer)

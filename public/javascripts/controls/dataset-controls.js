@@ -113,14 +113,18 @@ blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
                 // Success
                 function(view)
                 {
-                    cleanDialog();
-                    $dialog.jqmHide();
-
                     var preventRedirect = false;
                     if (_.isFunction(dialogObj._saveCallback))
                     { preventRedirect = dialogObj._saveCallback(view); }
 
+                    // If we're immediately doing a redirect, don't hide the
+                    // dialog; because it is just confusing
                     if (!preventRedirect) { view.redirectTo(); }
+                    else
+                    {
+                        cleanDialog();
+                        $dialog.jqmHide();
+                    }
                 },
                 // Error
                 function(xhr)

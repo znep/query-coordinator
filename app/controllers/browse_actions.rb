@@ -78,15 +78,14 @@ protected
 
     if !browse_params[:sortPeriod].nil?
       t = Date.today
-      @opts[:endDate] = t.to_s
-      @opts[:startDate] = case browse_params[:sortPeriod]
+      @opts[:sortPeriod] = case browse_params[:sortPeriod]
                           when 'week'
-                            Date.commercial(t.cwyear, t.cweek, 1)
+                            "WEEKLY"
                           when 'month'
-                            Date.civil(t.year, t.month, 1)
+                            "MONTHLY"
                           when 'year'
-                            Date.civil(t.year, 1, 1)
-                          end.to_s
+                            "YEARLY"
+                          end
     end
 
     if !browse_params[:q].nil?

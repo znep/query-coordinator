@@ -1222,6 +1222,7 @@ this.Dataset = Model.extend({
         _.each(ds.query.groupBys || [], function(g)
         {
             var col = ds.columnForID(g.columnId);
+            if ($.isBlank(col)) { return; }
 
             if ($.isBlank(col.format.grouping_aggregate))
             {

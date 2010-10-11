@@ -338,6 +338,14 @@
                                 parentColumns = parDS.realColumns;
                                 revealDrillDownCallBack();
                             }
+                            else
+                            {
+                                // We can't get to the parent, so we're stuck with
+                                // what we've got...
+                                parentColumns =
+                                    datasetObj.settings.view.realColumns;
+                                revealDrillDownCallBack();
+                            }
                         });
                     }
                 }

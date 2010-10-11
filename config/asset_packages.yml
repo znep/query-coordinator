@@ -39,30 +39,30 @@ javascripts:
   - util/templates
   - util/socrata-server
   - data/types
-  - widgets/socrata-messaging
-  - widgets/text-prompt
-  - widgets/values
-  - widgets/dropdown-menu
+  - controls/socrata-messaging
+  - controls/text-prompt
+  - controls/values
+  - controls/dropdown-menu
   - screens/all-screens
 - shared-common-all:
   - util/events
   - util/sizing
-  - widgets/clipped-text
+  - controls/clipped-text
   - screens/common-layout
-  - widgets/scrollable
+  - controls/scrollable
 - shared-calendar:
   - plugins/ui.draggable
   - plugins/fullcalendar
-  - widgets/base-visualization
-  - widgets/calendars/default-calendar
+  - controls/base-visualization
+  - controls/calendars/default-calendar
 - shared-table-render:
   - plugins/ui.draggable
   - util/humane-number
   - data/model
   - data/table
   - data/table_nav
-  - widgets/scrollable
-  - widgets/dataset-grid
+  - controls/scrollable
+  - controls/dataset-grid
 - shared-table-editor:
   - util/humane-number
   - data/editors/editor-base
@@ -77,7 +77,7 @@ javascripts:
   - data/editors/url-editor
   - data/editors/phone-editor
   - data/editors/location-editor
-  - widgets/combo
+  - controls/combo
   - data/editors/flag-editor
   - data/editors/picklist-editor
   - data/editors/checkbox-editor
@@ -85,52 +85,52 @@ javascripts:
   - tiny_mce/tiny_mce_jquery_src
   - data/editors/html-editor
   - plugins/ajaxupload.3.0
-  - widgets/upload-dialog
+  - controls/upload-dialog
   - data/editors/document-editor
   - data/editors/photo-editor
 - shared-map:
   - plugins/ui.sortable
   - plugins/markerclusterer
-  - widgets/base-visualization
+  - controls/base-visualization
   - util/color
-  - widgets/maps/base-map
-  - widgets/maps/esri-map
-  - widgets/maps/google-map
-  - widgets/maps/bing-map
-  - widgets/maps/heatmap-map
+  - controls/maps/base-map
+  - controls/maps/esri-map
+  - controls/maps/google-map
+  - controls/maps/bing-map
+  - controls/maps/heatmap-map
 - shared-chart:
   - plugins/highcharts.src
   - plugins/jit
   - util/color
-  - widgets/base-visualization
-  - widgets/charts/base-chart
-  - widgets/charts/highcharts
-  - widgets/charts/jit
+  - controls/base-visualization
+  - controls/charts/base-chart
+  - controls/charts/highcharts
+  - controls/charts/jit
 - admin-users:
   - controls/admin-buttons
   - plugins/jquery.uniform
   - plugins/jquery.tablesorter
-  - widgets/combination-list
+  - controls/combination-list
   - screens/admin-users-screen
 - admin-federations:
   - screens/admin-federations-screen
 - admin-moderation:
   - plugins/jquery.uniform
   - plugins/jquery.tablesorter
-  - widgets/combination-list
+  - controls/combination-list
   - screens/admin-moderation
 - admin-sdp-templates:
   - controls/modal-dialogs
   - controls/admin-buttons
   - plugins/jquery.tablesorter
-  - widgets/combination-list
+  - controls/combination-list
   - screens/admin-sdp-templates
 - admin-sdp-template:
   - plugins/jquery.colorPicker
   - plugins/jquery.uniform
   - plugins/colorpicker
   - plugins/ajaxupload.3.0
-  - widgets/upload-dialog
+  - controls/upload-dialog
   - util/color
   - util/events
   - controls/grid-sidebar/base-sidebar
@@ -138,7 +138,7 @@ javascripts:
 - admin-federation:
   - controls/admin-buttons
   - plugins/jquery.tablesorter
-  - widgets/combination-list
+  - controls/combination-list
   - screens/admin-federation-screen
 - browse-control:
   - plugins/jquery.uniform
@@ -161,7 +161,7 @@ javascripts:
   - plugins/jquery.uniform
   - plugins/jquery.tablesorter
   - controls/full-screen
-  - widgets/combination-list
+  - controls/combination-list
   - controls/embed-form
   - util/humane-date
   - util/events
@@ -170,8 +170,8 @@ javascripts:
   - controls/stars
   - controls/menu
   - controls/page-render-type
-  - widgets/scrollTabs
-  - widgets/form-inliner
+  - controls/scrollTabs
+  - controls/form-inliner
   - screens/widget
 - widgets-show-form:
   - plugins/jquery.uniform
@@ -189,14 +189,14 @@ javascripts:
   - plugins/ui.slider
   - plugins/jquery.tablesorter
   - plugins/iscroll
-  - widgets/combination-list
+  - controls/combination-list
   - util/events
   - util/humane-date
   - util/inline-login
   - util/konami
   - controls/menu
-  - widgets/wizard-prompt
-  - widgets/form-inliner
+  - controls/wizard-prompt
+  - controls/form-inliner
   - controls/modal-dialogs
   - controls/expander
   - controls/feed-list
@@ -250,7 +250,7 @@ javascripts:
   - plugins/daterangepicker.jquery
   - plugins/jquery.tablesorter
   - plugins/highcharts.src
-  - widgets/charts/metric-charts
+  - controls/charts/metric-charts
   - controls/equiwidth
   - controls/menu
   - controls/metrics-shared

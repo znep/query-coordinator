@@ -33,7 +33,7 @@ class Displays::Chart < Displays::Base
   end
 
   def render_javascript_links
-    # This is being used for /javascripts/widgets/chart/jit.js
+    # This is being used for /javascripts/controls/chart/jit.js
     js = <<-END
     <!--[if IE]>
       <script type="text/javascript" src="/javascripts/plugins/excanvas.compiled.js"></script>

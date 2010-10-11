@@ -293,9 +293,7 @@ class DatasetsController < ApplicationController
         @view = View.update_attributes!(params[:id], params[:view])
         flash.now[:notice] = "The metadata has been updated."
       rescue CoreServer::CoreServerError => e
-        return respond_to do |format|
-          flash.now[:error] = "An error occurred during your request: #{e.error_message}"
-        end
+        flash.now[:error] = "An error occurred during your request: #{e.error_message}"
       end
     end
   end

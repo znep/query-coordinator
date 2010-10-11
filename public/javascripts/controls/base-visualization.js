@@ -105,7 +105,7 @@
             ready: function()
             {
                 var vizObj = this;
-                var handleChange = function()
+                var handleChange = function(queryChanged)
                 {
                     if (!vizObj._pendingReload && !vizObj._initialLoad)
                     {

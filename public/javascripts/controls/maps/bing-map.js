@@ -173,12 +173,13 @@
                                 mapObj.settings.view.displayFormat,
                                 { viewport: mapObj.getViewport() })
                         }, false, true);
+                        mapObj.updateRowsByViewport();
                     };
                 }
                 mapObj.map.AttachEvent('onchangeview', mapObj._viewportListener);
             },
 
-            getViewport: function()
+            getViewport: function(with_bounds)
             {
                 var mapObj = this;
                 var viewport = {
@@ -189,6 +190,18 @@
                     Latitude: viewport.center.Latitude,
                     Longitude: viewport.center.Longitude
                 };
+                if (with_bounds)
+                {
+                    var bounds = mapObj.map.GetMapView();
+                    // The variable names look wonky, but VELatLongRectangle seems
+                    // to be buggy and inverts the sign for Latitudes.
+                    var sw = bounds.TopLeftLatLong;
+                    var ne = bounds.BottomRightLatLong;
+                    $.extend(viewport, {
+                        xmin: sw.Longitude, xmax: ne.Longitude,
+                        ymin: ne.Latitude, ymax: sw.Latitude
+                    });
+                }
                 return viewport;
             },
 

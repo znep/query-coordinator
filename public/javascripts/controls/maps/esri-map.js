@@ -195,6 +195,9 @@
 
                 if (mapObj._rows === undefined) { mapObj._rows = []; }
                 mapObj._rows = mapObj._rows.concat(rows);
+                if (mapObj.settings.view.totalRows > mapObj._maxRows)
+                { mapObj.showError('This dataset has more than ' + mapObj._maxRows +
+                                   ' rows. Some points will be not be displayed.'); }
 
                 if (mapObj._mapLoaded)
                 { mapObj.renderData(rows); }
@@ -329,21 +332,26 @@
                                 { viewport: vp })
                         }, false, true);
                         curVP = vp;
+                        mapObj.updateRowsByViewport();
                     });
             },
 
-            getViewport: function()
+            getViewport: function(with_bounds)
             {
                 var mapObj = this;
                 var viewport = mapObj.map.extent;
+                var sr = viewport.spatialReference.wkid
+                        || mapObj.map.spatialReference.wkid;
+                if (with_bounds && (sr == null || sr == 102100))
+                { viewport = esri.geometry.webMercatorToGeographic(viewport); }
                 viewport = {
                     xmin: viewport.xmin,
                     xmax: viewport.xmax,
                     ymin: viewport.ymin,
                     ymax: viewport.ymax,
-                    sr: viewport.spatialReference.wkid
-                        || mapObj.map.spatialReference.wkid
+                    sr: sr
                 };
+
                 return viewport;
             },
 

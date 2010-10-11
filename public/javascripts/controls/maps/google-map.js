@@ -208,13 +208,14 @@
                                             mapObj.settings.view.displayFormat,
                                             { viewport: mapObj.getViewport() })
                                     }, false, true);
+                                    mapObj.updateRowsByViewport(null, true);
                                 }
                             );
                         });
                 });
             },
 
-            getViewport: function()
+            getViewport: function(with_bounds)
             {
                 var mapObj = this;
                 var viewport = {
@@ -225,6 +226,16 @@
                     lat: viewport.center.lat(),
                     lng: viewport.center.lng()
                 };
+                if (with_bounds)
+                {
+                    var bounds = mapObj.map.getBounds();
+                    var ne = bounds.getNorthEast();
+                    var sw = bounds.getSouthWest();
+                    $.extend(viewport, {
+                        xmin: sw.lng(), xmax: ne.lng(),
+                        ymin: sw.lat(), ymax: ne.lat()
+                    });
+                }
                 return viewport;
             },
 

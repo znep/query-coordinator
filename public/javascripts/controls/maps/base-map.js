@@ -301,6 +301,10 @@
 
                 if (mapObj._rows === undefined) { mapObj._rows = []; }
                 mapObj._rows = mapObj._rows.concat(rows);
+                if (mapObj.settings.view.totalRows > mapObj._maxRows)
+                { mapObj.showError('This dataset has more than ' + mapObj._maxRows +
+                                   ' rows visible. Some points will be not be' +
+                                   ' displayed.'); }
 
                 mapObj.renderData(rows);
             },
@@ -483,7 +487,7 @@
                 // Implement if desired to adjust map bounds after data is rendered
             },
 
-            getViewport: function()
+            getViewport: function(with_bounds)
             {
                 // Implement me
             },
@@ -491,6 +495,65 @@
             setViewport: function(viewport)
             {
                 // Implement me
+            },
+
+            updateRowsByViewport: function(viewport, wrapIDL)
+            {
+                var mapObj = this;
+                if (!viewport) { viewport = mapObj.getViewport(true); }
+
+                var buildFilterCondition = function(viewport)
+                {
+                    return { type: 'operator', value: 'AND',
+                        children: _.flatten(_.map(['x', 'y'], function(axis)
+                        {
+                            return _.map(['min', 'max'], function(bound)
+                            {
+                                var condition = { type: 'operator' };
+                                condition.value = (bound == 'min')
+                                                        ? 'GREATER_THAN'
+                                                        : 'LESS_THAN';
+                                condition.children = [
+                                    {
+                                        type: 'column',
+                                        value: (axis == 'x') ? 'LONGITUDE' : 'LATITUDE',
+                                        columnId: mapObj._locCol.id
+                                    },
+                                    {
+                                        type: 'literal',
+                                        value: Math[bound].apply(null,
+                                            [viewport[axis+'min'],
+                                             viewport[axis+'max']])
+                                    }
+                                ];
+                                return condition;
+                            });
+                        }))
+                    };
+                };
+
+                var query = $.extend(true, {}, mapObj.settings.view.query);
+                var filterCondition;
+                if (!wrapIDL || viewport.xmin < viewport.xmax)
+                {
+                    filterCondition = $.extend(true, {},
+                        buildFilterCondition(viewport), { temporary: true });
+                }
+                else
+                {
+                    var rightHemi, leftHemi;
+                    rightHemi = $.extend({}, viewport, { xmin: -180 });
+                    leftHemi  = $.extend({}, viewport, { xmax:  180 });
+                    filterCondition = {
+                        type: 'operator', value: 'OR', temporary: true,
+                        children: _.map([leftHemi, rightHemi], function(hemi)
+                            { return buildFilterCondition(hemi); })
+                    };
+                }
+
+                query.namedFilters = $.extend(true, query.namedFilters || {},
+                    { viewport: filterCondition });
+                mapObj.settings.view.update({ query: query}, false, true);
             },
 
             resizeHandle: function(event)

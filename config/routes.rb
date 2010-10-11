@@ -113,7 +113,6 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   map.resource :browse, :controller => 'browse'
-  map.resource :search
   map.resource :nominations, :as => 'nominate'
 
   # For legacy support reasons, make /home and /datasets go somewhere reasonable

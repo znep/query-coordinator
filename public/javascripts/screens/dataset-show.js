@@ -50,6 +50,7 @@ blist.datasetPage.showRenderType = function(renderType)
     if (datasetPageNS.$renderTypes[renderType].is(':visible')) { return; }
     _.each(datasetPageNS.$renderTypes, function($rt) { $rt.addClass('hide'); });
     datasetPageNS.$renderTypes[renderType].removeClass('hide');
+    datasetPageNS.$renderTypes[renderType].trigger('show');
     $('body').addClass('nonDefaultRenderType');
     $(window).resize();
 

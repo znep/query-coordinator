@@ -44,6 +44,16 @@
                         frObj._curPageIndex = 0;
                         renderCurrentPage(frObj);
                     });
+
+                $domObj.bind('resize', function(e) { resizeHandle(frObj); });
+
+                var mainUpdate = function()
+                {
+                    renderLayout(frObj);
+                    renderCurrentPage(frObj);
+                };
+                frObj.settings.view.bind('columns_changed', mainUpdate);
+                frObj.$dom().bind('show', mainUpdate);
             },
 
             $dom: function()
@@ -67,6 +77,13 @@
                 return this._$nav;
             },
 
+            $template: function()
+            {
+                if (!this._$template)
+                { this._$template = this.$dom().find('.templateRow'); }
+                return this._$template;
+            },
+
             displayPage: function(index)
             {
                 var frObj = this;
@@ -85,9 +102,34 @@
         }
     });
 
+    var resizeHandle = function(frObj)
+    {
+        frObj.$list().height(frObj.$dom().height() -
+            (frObj.$list().outerHeight(true) - frObj.$list().height()));
+    };
+
+    var renderLayout = function(frObj)
+    {
+         frObj.$template().empty();
+    };
+
     var renderCurrentPage = function(frObj)
     {
-        $.debug('rendering page ' + frObj._curPageIndex);
+        if ($.isBlank(frObj._curPageIndex)) { return; }
+
+        frObj.$list().empty();
+
+        var rowsLoaded = function(rows)
+        {
+            _.each(rows, function(r)
+            {
+                frObj.$list().append(frObj.$template()
+                    .clone().removeClass('templateRow'));
+            });
+        };
+
+        frObj.settings.view.getRows(frObj._curPageIndex * frObj.settings.pageSize,
+            frObj.settings.pageSize, rowsLoaded);
     };
 
     var hookUpNavigation = function(frObj)

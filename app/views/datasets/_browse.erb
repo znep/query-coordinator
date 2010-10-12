@@ -87,7 +87,9 @@
 
   <div class='browseList'>
     <%- if !@browse_in_container -%>
-    <h2>Search & Browse Datasets and Views</h2>
+    <div class='titleContainer'>
+      <h2 title='<%= @title %>'><%= @title %></h2>
+    </div>
     <%- end -%>
     <%- if @view_count > 0 && @sort_opts.length > 0 -%>
     <div class='sortOptions'>

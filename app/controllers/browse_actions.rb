@@ -3,6 +3,7 @@ module BrowseActions
 protected
   def view_types_facet
     { :title => 'View Types',
+      :singular_description => 'type',
       :param => :limitTo,
       :use_icon => true,
       :options => [
@@ -19,6 +20,7 @@ protected
     cats = View.categories.keys.reject {|c| c.blank?}
     return nil if cats.length < 1
     return { :title => 'Categories',
+      :singular_description => 'category',
       :param => :category,
       :options => cats.sort.map { |c| {:text => c, :value => c} }
     }
@@ -38,6 +40,7 @@ protected
     end
 
     { :title => 'Topics',
+      :singular_description => 'topic',
       :param => :tags,
       :options => top_tags,
       :extra_options => tag_cloud
@@ -122,6 +125,32 @@ protected
     # Whether or not we need to display icons for other domains
     @has_federations = DataFederation.find.
       select {|f| f.acceptedUserId.present? }.length > 0
+
+    @title = get_title(@params, @facets)
+  end
+
+private
+  def get_title(params, facets)
+    t = ''
+
+    t = 'for "' + params[:q] + '"' if !params[:q].blank?
+    parts = []
+    facets.each do |f|
+      if !params[f[:param]].blank?
+        parts << f[:singular_description] + ' of ' +
+          f[:options].detect {|o| o[:value] == params[f[:param]]}[:text]
+      end
+    end
+    if parts.length > 0
+      p = [parts.slice(0, parts.length - 1).join(', '), parts[-1]].
+        reject {|a| a.empty?}.join(' and ')
+      if !p.blank?
+        t += ', ' if !t.blank?
+        t += 'matching ' + p
+      end
+    end
+
+    t.blank? ? 'Search & Browse Datasets and Views' : 'Results ' + t
   end
 
 end

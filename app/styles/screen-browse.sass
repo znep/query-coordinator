@@ -90,12 +90,20 @@
       bottom: 0.5em
       left: 23em
     padding: 1.5em
+    position: relative
 
-    h2
+    .titleContainer
       float: left
-      font-size: 1.7em
+      width: 100%
+      h2
+        @include clip-text
+        font-size: 1.7em
+        margin-right: 15em
+
     .sortOptions
-      float: right
+      position: absolute
+      right: 1.5em
+      top: 1.5em
       .ie7 & .uniform
         display: inline
       .sortType

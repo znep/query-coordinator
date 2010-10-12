@@ -993,6 +993,11 @@
                         else if (!$.isBlank(f) && value === false)
                         { value = f; }
                     }
+                    if ($input.isInputType('radio'))
+                    {
+                        // only going to fire for radioSelects, not radioBlocks
+                        value = $input.attr('data-dataValue');
+                    }
                     else if ($input.hasClass('sliderInput'))
                     {
                         value /= parseFloat($input.attr('data-scale'));
@@ -1042,9 +1047,16 @@
                     if ($input.isInputType('radio') && $parents.hasClass('radioLine'))
                     {
                         if (!$input.is(':checked')) { return; }
-                        $input = $input.closest('.radioLine')
-                            .find('label :input:not(.prompt)');
-                        if ($input.length < 1) { return; }
+
+                        // if this is a radioBlock, we're actually interested
+                        // in the values of the contained controls. otherwise,
+                        // it's a radioSelect and we want the radio itself
+                        if ($parents.hasClass('radioBlock'))
+                        {
+                            $input = $input.closest('.radioLine')
+                                .find('label :input:not(.prompt)');
+                            if ($input.length < 1) { return; }
+                        }
                     }
 
                     var value = getInputValue($input);
@@ -1070,7 +1082,7 @@
                     var parObj = results;
                     var parArray;
                     var parIndex;
-                    if ($parents.hasClass('repeater')) // CR: was .line.repeater, necessary?
+                    if ($parents.hasClass('repeater'))
                     {
                         // If this is in a repeater, then it is name-spaced
                         // under the repeater.  Grab that name, and set up
@@ -1810,6 +1822,27 @@
                 { defChecked.checked = true; }
 
                 contents.push({tagName: 'div', 'class': 'radioBlock',
+                    contents: items});
+                break;
+
+            case 'radioSelect':
+                var v = curValue;
+                if ($.isBlank(v)) { v = defValue; }
+                var itemAttrs = commonAttrs(args.item);
+
+                var items = _.map(args.item.options, function(opt, i)
+                {
+                    var id = itemAttrs.id + '-' + opt;
+
+                    return {tagName: 'div', 'class': 'radioLine',
+                        contents: [$.extend({}, itemAttrs,
+                            {tagName: 'input', type: 'radio', id: id,
+                                'data-dataValue': opt, checked: opt === v }),
+                            {tagName: 'label', 'for': id, contents: opt}
+                        ]};
+                });
+
+                contents.push({tagName: 'div', 'class': 'radioSelectBlock',
                     contents: items});
                 break;
 

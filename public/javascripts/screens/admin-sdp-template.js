@@ -402,9 +402,7 @@ _.each([
         {   text: 'Dataset Title', name: 'frame.show_title',
             type: 'checkbox' },
         {   text: 'Orientation', name: 'frame.orientation',
-            type: 'radioGroup', options: [
-            {   value: 'downwards', type: 'static', isInput: true },
-            {   value: 'upwards', type: 'static', isInput: true } ] } ]
+            type: 'radioSelect', options: [ 'downwards', 'upwards' ] } ]
     }]
 },
 {

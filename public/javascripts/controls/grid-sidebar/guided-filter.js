@@ -58,7 +58,7 @@
     {
         if (_.isEmpty(facetedFilters))
         {
-            var origQuery = $.extend({}, blist.dataset.query);
+            var origQuery = $.extend(true, {}, blist.dataset.query);
             if (!$.isBlank(origQuery.namedFilters))
             { delete origQuery.namedFilters.guided; }
             blist.dataset.update({query: origQuery});
@@ -80,7 +80,7 @@
                         guidedFilter.children.push({
                             type: 'operator',
                             value: 'OR',
-                            children: filterCondition
+                            children: filterCondition.slice()
                         });
                     }
                 }

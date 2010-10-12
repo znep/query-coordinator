@@ -118,6 +118,10 @@ protected
       @view_count = @view_results.count
       @view_results = @view_results.results
     end
+
+    # Whether or not we need to display icons for other domains
+    @has_federations = DataFederation.find.
+      select {|f| f.acceptedUserId.present? }.length > 0
   end
 
 end

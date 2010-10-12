@@ -344,10 +344,10 @@ class View < Model
   def about_href
     self.href + "/about"
   end
-  
+
   def blob_href
     if is_blobby?
-      return "/api/file_data/#{blobId}?filename=" + URI.escape(blobFilename) 
+      return "/api/file_data/#{blobId}?filename=" + URI.escape(blobFilename)
     end
   end
 
@@ -359,6 +359,11 @@ class View < Model
     elsif is_blobby?
       return blob_href
     end
+  end
+
+  def domain_icon_href
+    cname = federated? ? domainCName : CurrentDomain.cname
+    "/api/domains/#{cname}/icons/smallIcon"
   end
 
   def user_role(user_id)

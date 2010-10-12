@@ -134,6 +134,9 @@
       <table class='gridList'>
         <colgroup>
           <col class='index' />
+          <%- if @has_federations -%>
+          <col class='domainIcon' />
+          <%- end -%>
           <col class='nameDesc' />
           <col class='popularity' />
           <col class='type' />
@@ -141,6 +144,9 @@
         <thead>
           <tr>
             <th class='index'></th>
+            <%- if @has_federations -%>
+            <th class='domainIcon'></th>
+            <%- end -%>
             <th class='nameDesc'>Name</th>
             <th class='popularity'>Popularity</th>
             <th class='type'>Type</th>
@@ -156,6 +162,15 @@
               </a>
               <span class='value'><%= start_index + i %>.</span>
             </td>
+            <%- if @has_federations -%>
+            <td class='domainIcon'>
+              <a href='<%= v.href(@port) %>'
+                <%= v.federated? ? "rel='external'" : '' %>>
+                <img src='<%= v.domain_icon_href %>' alt='<%= v.federated? ?
+                  'Federated from ' + v.domainCName : CurrentDomain.cname %>' />
+              </a>
+            </td>
+            <%- end -%>
             <td class='nameDesc'>
               <a href='<%= v.href(@port) %>' class='name'
                 <%= v.federated? ? "rel='external'" : '' %>><%= v.name %></a>

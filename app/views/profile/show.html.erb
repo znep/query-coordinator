@@ -129,7 +129,7 @@
                 <p>
                   <span class="subHeader textDisplay"><%= link_type.nil? ? 'Other' :
                     link_type[1] %></span>
-                  <%= link_to user_link['label'] || user_link['url'],
+                  <%= link_to user_link['label'].present? ? user_link['label'] : user_link['url'],
                     user_link['url'], :class => 'textDisplay', :rel => 'external' %>
                 </p>
               <%- end -%>

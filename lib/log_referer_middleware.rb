@@ -97,14 +97,22 @@ private
   def flush_requests(synchronous = false)
     return if @@requests.empty?
 
-    get_client # init connection in main thread
+    begin
+      get_client # init connection in main thread
+    rescue Stomp::Error::MaxReconnectAttempts => e
+      logger.warn "Unable to initialize the stomp producer. This probably means that JMS is down."
+    end
 
     current_requests = @@requests
     @@requests = []
 
     if Rails.env.development?
       do_flush_requests(current_requests)
-      get_client.close
+      begin
+        get_client.close
+      rescue Stomp::Error::MaxReconnectAttempts => e
+        logger.warn "Unable to initialize the stomp producer. This probably means that JMS is down."
+      end
     elsif synchronous
       do_flush_requests(current_requests)
     else
@@ -125,6 +133,8 @@ private
         get_client.publish(request[:uri], request[:data], request[:params])
       end
       logger.debug "Done firing off requests."
+    rescue Stomp::Error::MaxReconnectAttempts => e
+      logger.error "There was a problem connecting to the JMS server. This is a really urgent problem. Fix stat."
     rescue
       logger.error "There was a serious problem logging the referrer. This should probably be looked at ASAP."
       logger.error $!, $!.inspect

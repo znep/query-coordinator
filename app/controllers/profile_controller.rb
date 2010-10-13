@@ -44,7 +44,7 @@ class ProfileController < ApplicationController
     # Also, we can probably make these _views vars local, not @ accessible
     unless (@view_summary_cached = read_fragment(app_helper.cache_key('profile-view-summary', @current_state))) ||
            (params[:_oldViews] == 'true')
-      base_req = {:limit => 1, :for_user => @user.id}
+      base_req = {:limit => 1, :for_user => @user.id, :nofederate => true}
       stats = [
         {:params => {:datasetView => 'dataset'}, :name => 'Datasets'},
         {:params => {:limitTo => 'tables', :datasetView => 'view'},
@@ -65,8 +65,9 @@ class ProfileController < ApplicationController
     end
 
     @browse_in_container = true
-    @opts = {:for_user => @user.id}
+    @opts = {:for_user => @user.id, :nofederate => true}
     @default_params = {:sortBy => 'newest', :limitTo => 'datasets'}
+    @use_federations = false
     # Special param to use the /users/4-4/views.json call instead of the
     # search service.  For users with lots of views, this will be slow, and
     # it doesn't allow sort/filter/search; but it doesn't require

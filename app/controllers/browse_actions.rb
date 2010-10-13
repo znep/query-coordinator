@@ -123,8 +123,8 @@ protected
     end
 
     # Whether or not we need to display icons for other domains
-    @has_federations = DataFederation.find.
-      select {|f| f.acceptedUserId.present? }.length > 0
+    @use_federations = DataFederation.find.
+      select {|f| f.acceptedUserId.present? }.length > 0 if @use_federations.nil?
 
     @title = get_title(@params, @facets)
   end

@@ -136,7 +136,7 @@
       <table class='gridList'>
         <colgroup>
           <col class='index' />
-          <%- if @has_federations -%>
+          <%- if @use_federations -%>
           <col class='domainIcon' />
           <%- end -%>
           <col class='nameDesc' />
@@ -146,7 +146,7 @@
         <thead>
           <tr>
             <th class='index'></th>
-            <%- if @has_federations -%>
+            <%- if @use_federations -%>
             <th class='domainIcon'></th>
             <%- end -%>
             <th class='nameDesc'>Name</th>
@@ -164,7 +164,7 @@
               </a>
               <span class='value'><%= start_index + i %>.</span>
             </td>
-            <%- if @has_federations -%>
+            <%- if @use_federations -%>
             <td class='domainIcon'>
               <a href='<%= v.href(@port) %>'
                 <%= v.federated? ? "rel='external'" : '' %>>

@@ -34,6 +34,10 @@
                 var $domObj = frObj.$dom();
                 $domObj.data("fatrowRenderType", frObj);
 
+                frObj.richRenderer = frObj.$template().richRenderer(
+                    {balanceFully: true, columnCount: 3,
+                        view: frObj.settings.view});
+
                 frObj._curPageIndex = 0;
                 frObj._totalPages = null;
                 hookUpNavigation(frObj);
@@ -49,7 +53,7 @@
 
                 var mainUpdate = function()
                 {
-                    renderLayout(frObj);
+                    frObj.richRenderer.renderLayout();
                     renderCurrentPage(frObj);
                 };
                 frObj.settings.view.bind('columns_changed', mainUpdate);
@@ -106,11 +110,7 @@
     {
         frObj.$list().height(frObj.$dom().height() -
             (frObj.$list().outerHeight(true) - frObj.$list().height()));
-    };
-
-    var renderLayout = function(frObj)
-    {
-         frObj.$template().empty();
+        frObj.richRenderer.adjustLayout();
     };
 
     var renderCurrentPage = function(frObj)
@@ -123,8 +123,9 @@
         {
             _.each(rows, function(r)
             {
-                frObj.$list().append(frObj.$template()
-                    .clone().removeClass('templateRow'));
+                var $item = frObj.$template().clone().removeClass('templateRow');
+                frObj.richRenderer.renderRow($item, r);
+                frObj.$list().append($item);
             });
         };
 

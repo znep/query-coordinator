@@ -173,6 +173,7 @@ javascripts:
   - controls/dataset-controls
   - controls/stars
   - controls/menu
+  - controls/rich-render-library
   - controls/page-render-type
   - controls/scrollTabs
   - controls/form-inliner
@@ -231,6 +232,7 @@ javascripts:
   - controls/embed-form
   - controls/full-screen
   - controls/format-options
+  - controls/rich-render-library
   - controls/fatrow-render-type
   - controls/page-render-type
   - controls/pill-buttons

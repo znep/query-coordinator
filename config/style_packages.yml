@@ -16,7 +16,7 @@ base-sdp:
 - old-controls
 - controls
 - tables
-- screen-render-types
+- screen-rich-render-types
 - screen-map
 grid:
 - table-core
@@ -53,7 +53,7 @@ dataset-new:
 dataset-show:
 - grid-sidebar
 - grid-sidebar-custom
-- screen-render-types
+- screen-rich-render-types
 - control-feed
 - splash
 - screen-dataset

@@ -55,7 +55,7 @@
     </div>
   </div>
 
-  <%- if current_user.has_right?('edit_sdp') -%>
+  <%- if current_user && current_user.has_right?('edit_sdp') -%>
     <div class="templateSection">
       <label class="formHeader">Social Data Player Template</label>
       <div class="sectionContent template">

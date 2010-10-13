@@ -993,7 +993,7 @@
                         else if (!$.isBlank(f) && value === false)
                         { value = f; }
                     }
-                    if ($input.isInputType('radio'))
+                    else if ($input.isInputType('radio'))
                     {
                         // only going to fire for radioSelects, not radioBlocks
                         value = $input.attr('data-dataValue');

@@ -76,21 +76,7 @@
 </div>
 
 <% content_for :modals do %>
-  <div class="modalDialog newTemplateModal">
-    <a href="#close" class="jqmClose modalDialogClose">Close</a>
-    <h2>Create a new Template</h2>
-
-    <% form_tag '/admin/sdp_templates', :method => 'post', :class => 'newTemplateForm commonForm' do %>
-      <div class="line clearfix">
-        <label for="newTemplateName">New Template Name</label>
-        <input type="text" id="newTemplateName" name="new_template_name" class="required"/>
-      </div>
-      <ul class="submitActions clearfix">
-        <li><a href="#cancel" class="jqmClose button">Cancel</a></li>
-        <li><a href="#submit" class="submitButton default button">Submit</a></li>
-      </ul>
-    <% end %>
-  </div>
+  <%= render :partial => 'widgets/new_sdp_template' %>
 <% end %>
 
 <% content_for :js_footer do %>

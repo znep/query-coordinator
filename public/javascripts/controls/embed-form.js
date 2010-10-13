@@ -46,6 +46,25 @@
                 updatePublishCode($embedForm, config, template);
             });
 
+            $embedForm.find(config.templateSelector).change(function(event)
+            {
+                updatePublishCode($embedForm, config, template);
+            });
+
+            $embedForm.find(config.createTemplateButtonSelector).click(function(event)
+            {
+                event.preventDefault();
+
+                $('.newTemplateModal #newTemplateName').val('');
+                $('.newTemplateModal').jqmShow();
+            });
+            $('.newTemplateModal .submitButton').click(function(event)
+            {
+                event.preventDefault();
+                $(this).closest('form').submit();
+            });
+            $('.newTemplateModal form').validate();
+
             updatePublishCode($embedForm, config, template);
         });
 
@@ -54,9 +73,11 @@
         {
             var width = $embedForm.find(config.widthSelector).val();
             var height = $embedForm.find(config.heightSelector).val();
+            var variation = $embedForm.find(config.templateSelector).val();
             $embedForm.find(config.textareaSelector)
                 .text(template.replace('#width#', width)
-                              .replace('#height#', height));
+                              .replace('#height#', height)
+                              .replace('#variation#', variation));
 
             // Restrict size to >= 425x425 px
             if (parseInt(width,10) < 425 || parseInt(height,10) < 425 ||
@@ -81,9 +102,11 @@
         textareaSelector: "#embed_code",
         widthSelector: "#embed_width",
         heightSelector: "#embed_height",
+        templateSelector: "#embed_template",
         errorMessageSelector: ".sizeInformation",
         sizesSelector: ".sizes li",
-        codeSelector: '.htmlCode'
+        codeSelector: '.htmlCode',
+        createTemplateButtonSelector: '.createTemplateButton'
     };
 
 })(jQuery);

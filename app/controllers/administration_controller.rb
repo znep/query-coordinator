@@ -84,7 +84,10 @@ class AdministrationController < ApplicationController
 
     widget_customization = WidgetCustomization.create({ :name => params[:new_template_name],
                                                         :customization => WidgetCustomization.default_theme(1).to_json })
-    redirect_to :action => :sdp_template, :id => widget_customization.uid
+
+    redirect_options = {:action => :sdp_template, :id => widget_customization.uid}
+    redirect_options[:view_id] = params[:view_id] if params[:view_id].present?
+    redirect_to redirect_options
   end
   def sdp_template
     if params[:view_id].present?

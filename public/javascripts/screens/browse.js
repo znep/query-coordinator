@@ -70,9 +70,11 @@ $(function()
                 '.permissions .permType': function(v)
                     { return v.context.isPublic() ? 'Private' : 'Public'; },
                 '.permissions.button@class+': function(v)
-                    { return v.context.hasRight('update_view') ? '' : 'hide'; },
+                    { return v.context.hasRight('update_view') &&
+                        !v.context.isFederated() ? '' : 'hide'; },
                 '.delete.button@class+': function(v)
-                    { return v.context.hasRight('delete_view') ? '' : 'hide'; },
+                    { return v.context.hasRight('delete_view') &&
+                        !v.context.isFederated() ? '' : 'hide'; },
                 '.comments .value': 'numberOfComments'
             }));
 

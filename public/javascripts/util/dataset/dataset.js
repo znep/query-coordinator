@@ -61,6 +61,8 @@ this.Dataset = Model.extend({
         this.minorChange = true;
         this.valid = this._checkValidity();
         this.url = this._generateUrl();
+        this.fullUrl = this._generateUrl(true);
+        this.shortUrl = this._generateShortUrl(true);
         this.apiUrl = this._generateApiUrl();
 
         this._pendingRowEdits = {};
@@ -152,6 +154,11 @@ this.Dataset = Model.extend({
     isGrouped: function()
     {
         return ((this.query || {}).groupBys || []).length > 0;
+    },
+
+    isFederated: function()
+    {
+        return !$.isBlank(this.domainCName);
     },
 
     save: function(successCallback, errorCallback)
@@ -1144,6 +1151,8 @@ this.Dataset = Model.extend({
 
         if (_.isFunction(ds._convertLegacy)) { ds._convertLegacy(); }
         ds.url = ds._generateUrl();
+        ds.fullUrl = ds._generateUrl(true);
+        ds.shortUrl = ds._generateShortUrl(true);
         ds.apiUrl = ds._generateApiUrl();
 
         var oldValid = ds.valid;
@@ -1706,18 +1715,30 @@ this.Dataset = Model.extend({
         }
     },
 
-    _generateUrl: function()
+    _generateUrl: function(includeDomain)
     {
         var ds = this;
         var base = '';
 
         // federated dataset has nonblank domain cname
-        if (!$.isBlank(ds.domainCName))
+        if (includeDomain || !$.isBlank(ds.domainCName))
         { base = ds._generateBaseUrl(ds.domainCName); }
 
         return base + "/" + $.urlSafe(ds.category || "dataset") +
                "/" + $.urlSafe(ds.name) +
                "/" + ds.id;
+    },
+
+    _generateShortUrl: function(includeDomain)
+    {
+        var ds = this;
+        var base = '';
+
+        // federated dataset has nonblank domain cname
+        if (includeDomain || !$.isBlank(ds.domainCName))
+        { base = ds._generateBaseUrl(ds.domainCName, true); }
+
+        return base + '/d/' + ds.id;
     },
 
     _generateApiUrl: function()

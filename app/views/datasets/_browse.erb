@@ -1,9 +1,12 @@
 <%= render_browse_includes unless supress_includes %>
 
+<%- cur_sort = @sort_opts.detect {|s| s[:value] == @opts[:sortBy]} -%>
+<%- show_time_period = cur_sort.nil? ? false : cur_sort[:is_time_period] -%>
+
 <div class='browseSection clearfix <%= @facets.length < 1 ? 'noFacets' : '' %>
   <%= @browse_in_container ? 'inContainer' : '' %>'>
   <%- if @facets.length > 0 -%>
-  <div class='browseFacets'>
+  <div class='browseFacets <%= show_time_period ? 'hasTimePeriod' : '' %>'>
     <form class='searchSection'>
       <span class='icon'></span>
       <input type='text' name='browseSearch' title='Search'
@@ -93,15 +96,12 @@
     <%- end -%>
     <%- if @view_count > 0 && @sort_opts.length > 0 -%>
     <div class='sortOptions'>
-      <%- show_time_period = false -%>
       <select class='sortType' name='sortType'>
         <%- @sort_opts.each do |so| -%>
         <%- next if !so[:requires].nil? && @params[so[:requires]].nil? -%>
         <option value='<%= so[:value] %>' class='<%= so[:is_time_period] ?
           'timePeriod' : '' %>' <%= so[:value] == @opts[:sortBy] ?
           "selected='selected'" : '' %>><%= so[:name] %></option>
-        <%- show_time_period = true if so[:value] == @opts[:sortBy] &&
-          so[:is_time_period] -%>
         <%- end -%>
       </select>
       <%- time_opts = [
@@ -184,7 +184,7 @@
               <%- end -%>
               <div class='expandBlock clearfix collapsed'>
                 <div class='description'><%= v.description %></div>
-                <div class='extraInfo'>
+                <div class='extraInfo <%= @use_federations ? 'federated' : '' %>'>
                   <div class='infoContent'></div>
                   <a class='close' href='#Close'><span class='icon'></span></a>
                 </div>

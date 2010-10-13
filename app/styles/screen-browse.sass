@@ -280,6 +280,17 @@
               .infoContent
                 margin-right: -20.5em
 
+            &.federated
+              margin-left: -8.95em
+              padding-right: 26.75em
+              .infoContent
+                margin-right: -26.75em
+              .ie7 &
+                margin-left: -7.75em
+                padding-right: 22.75em
+                .infoContent
+                  margin-right: -22.75em
+
           .expandBlock.collapsed
             .description
               height: 1.2em
@@ -335,6 +346,8 @@
       border: none
       padding: 0
         top: 5.5em
+      &.hasTimePeriod
+        padding-top: 8em
     .browseList
       // The border needs to exist but be invisible, otherwise the margin that
       // clears the sort option gets collapsed
@@ -347,7 +360,9 @@
         padding-bottom: 1em
         right: auto
         top: 0
-        .sortType
+        .uniform
+          display: block
+        .sortType, .sortPeriod
           width: 15em
       .results
         margin-top: 0

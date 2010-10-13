@@ -106,7 +106,7 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                 {
                     event.preventDefault();
                     var $form = $(this);
-                    if ($form.valid() && $form.find(".flash").text().length == 0)
+                    if ($form.valid())
                     {
                         var data = {};
                         $form.find(':input').each(function()

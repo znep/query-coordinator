@@ -4,8 +4,8 @@ blist.datasetControls.hookUpShareMenu = function(view, $menu, overrides, hideEma
 {
     var tweet = escape('Check out the ' + $.htmlEscape(view.name) +
         ' dataset on ' + blist.configuration.strings.company + ': ');
-    var seoPath = window.location.hostname + view.url;
-    var shortPath = window.location.hostname.replace(/www\./, '') + '/d/' + view.id;
+    var seoPath = view.fullUrl;
+    var shortPath = view.shortUrl;
     var opts = {
         menuButtonContents: 'Socialize',
         menuButtonTitle: 'Share this Dataset',

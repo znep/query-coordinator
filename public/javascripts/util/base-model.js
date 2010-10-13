@@ -146,11 +146,12 @@ this.Model = Class.extend({
         $.socrataServer.runRequests({success: successCallback});
     },
 
-    _generateBaseUrl: function(domain)
+    _generateBaseUrl: function(domain, isShort)
     {
-        var loc = document.location,
-        base = loc.protocol + '//' +
-            ($.isBlank(domain) ? loc.hostname : domain);
+        var loc = document.location;
+        var domain = $.isBlank(domain) ? loc.hostname : domain;
+        if (isShort) { domaim = domain.replace(/www\./, ''); }
+        var base = (isShort ? '' : (loc.protocol + '//')) + domain;
 
         if (loc.port && loc.port != 80)
         { base += ':' + loc.port; }

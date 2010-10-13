@@ -117,15 +117,6 @@ class User < Model
     }
   end
 
-  def self.login(login,password)
-    parse(CoreServer::Base.connection.get_request("/authenticate/#{login}.json?password=#{password}"))
-  end
-
-  def is_established?
-    # An established user is based on age
-    Time.at(self.createdAt) < Time.now - 2.week
-  end
-
   # size can be "medium", or "small"
   def profile_image_path(size = "medium")
     if size == 'large'
@@ -146,34 +137,17 @@ class User < Model
   def public_blists
     View.find_for_user(self.id).reject {|v| !v.is_public? || v.owner.id != id}
   end
-  
+
   def is_owner?(view)
     view.owner.id == self.id
   end
-  
+
   def is_admin?
     self.flag?("admin")
-  end
-  
-  def is_premium?
-    self.accountCategory == "premium_sdp" || self.accountCategory == "premium_sdn"
-  end
-  
-  def can_access_premium_on?(view)
-    (self.is_premium? && self.is_owner?(view)) || self.is_admin?
-  end
-
-  # !!!HACK
-  def are_comments_moderated?
-    self.accountCategory == "premium_sdn"
   end
 
   def has_right?(right)
     self.rights && self.rights.include?(right)
-  end
-
-  def User.fetch_state_list
-    @@states
   end
 
   @@states = {

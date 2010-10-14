@@ -112,16 +112,27 @@
               </div>
             </div>
 
-            <%- if CurrentDomain.custom_dataset_metadata -%>
-              <h2>Additional Information</h2>
+            <%- (CurrentDomain.custom_dataset_metadata || []).each do |fieldset| -%>
+              <div class="customFieldsetWrapper">
+                <h2>
+                  <a href="#Toggle" class="toggleFieldsetLink expander expanded">
+                    <span class="icon"></span>
+                    <%= fieldset.name %>
+                  </a>
+                </h2>
 
-              <%- CurrentDomain.custom_dataset_metadata.each do |field| -%>
-                <div class="line clearfix">
-                  <label for="view_metadata_custom_fields_<%= field %>">
-                    <%= field %></label>
-                  <%= text_field_tag("view[metadata][custom_fields][#{field}]", '') %>
+                <div class="customFieldset">
+                  <%- (fieldset.fields || []).each do |field| -%>
+                    <%- required   = field['required'].present? -%>
+                    <div class="line clearfix<%= ' customRequired' if required %>">
+                      <label for="view_metadata_custom_fields_<%= fieldset.name + "_" + field.name %>"
+                        <%= " class='required'" if required %>>
+                        <%= field.name %></label>
+                      <%= text_field_tag("view[metadata][custom_fields][#{fieldset.name}][#{field.name}]", '') %>
+                    </div>
+                  <%- end -%>
                 </div>
-              <%- end -%>
+              </div>
             <%- end -%>
 
             <h2>Privacy &amp; Security</h2>

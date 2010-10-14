@@ -94,8 +94,10 @@ ActionController::Routing::Routes.draw do |map|
       :moderation => :get,
       :sdp_templates => :get,
       :datasets => :get,
-      :verify_layer_url => :get
-    }
+      :verify_layer_url => :get,
+      :home => :get,
+      :metadata => :get
+  }
 
   map.with_options :controller => 'administration' do |admin|
     admin.connect '/admin/users/:user_id/:role', :action => 'set_user_role'
@@ -111,6 +113,12 @@ ActionController::Routing::Routes.draw do |map|
     admin.connect '/admin/federations/:id/reject', :action => 'reject_federation'
     admin.connect '/admin/federations/create', :action => 'create_federation',
       :conditions => { :method => :post }
+    admin.connect '/admin/metadata/:fieldset/create', :action => 'create_metadata_field'
+    admin.connect '/admin/metadata/:fieldset/delete', :action => 'delete_metadata_fieldset'
+    admin.connect '/admin/metadata/create_fieldset', :action => 'create_metadata_fieldset'
+    admin.connect '/admin/metadata/:fieldset/:index/delete', :action => 'delete_metadata_field'
+    admin.connect '/admin/metadata/:fieldset/:index/toggle_required', :action => 'toggle_metadata_required'
+    admin.connect '/admin/metadata/:fieldset/:field/move/:direction', :action => 'move_metadata_field'
   end
 
   map.resource :browse, :controller => 'browse'

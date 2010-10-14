@@ -34,6 +34,17 @@
   .comboToggle
     cursor: pointer
 
+  .customFieldsetWrapper
+    a.expander
+      @include sprite-menu-icons
+      color: #444
+      font-size: 1em
+      .icon
+        float: left
+        margin:
+          right: 0.5em
+          top: 0.2em
+
   // IE8 work around
   // The uniform <select> (combo) adjusts its width to the widest option in FF & IE7.
   // But its width (the non-dropdown portion) is the current selected option in IE8.

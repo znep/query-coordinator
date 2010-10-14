@@ -1,0 +1,19 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+  <%#= rendered_stylesheet_tag 'administration-home' %>
+  <title>Manage Home Page | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<% content_for :skip_links do %>
+  <a href="?no_js=true">Disable Javascript on this page</a>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<div class="contentBox withLeftNavigation homeManagement">
+   <div class="adminHeader homemgmt">
+    <span class="icon"></span>
+    <h1>Manage Home Page</h1>
+  </div>
+
+</div>

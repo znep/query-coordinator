@@ -35,6 +35,8 @@ administration-index-screen:
 - screen-admin-index
 administration-analytics-screen:
 - screen-metrics
+administration-metadata:
+- screen-administration-metadata
 administration-moderation:
 - screen-administration-moderation
 administration-sdp-templates:

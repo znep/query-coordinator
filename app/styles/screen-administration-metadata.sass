@@ -1,0 +1,87 @@
+.metadataScreen
+
+  .noData
+    font-size: 1.4em
+    margin: 1em 0
+
+  .customFields
+    .fieldsetTitle
+      float: left
+      margin:
+        bottom: 1em
+        right: 1em
+        top: 2em
+
+    .removeFieldsetButton
+      @include sprite-repeater-icons
+      float: right
+      position: relative
+      top: 1.5em
+      .icon
+        float: left
+        padding-right: 0.5em
+      
+
+    .gridListWrapper
+      margin-top: 1.5em
+    .metadataFieldTable
+
+      .required
+        width: 1em
+        &.requiredEnabled
+          .requiredField
+            background: url(/stylesheets/images/common/required.png) no-repeat left top
+            display: block
+            height: 10px
+            margin-left: 6px
+            width: 10px
+
+      .actions
+        width: 42em
+
+        .button
+          &.removeField
+            @include sprite-repeater-icons
+          &.moveButton
+            @include sprite-menu-icons
+          opacity: 0.3
+          @include transition-duration(0.5s)
+          @include transition-property(opacity)
+          .icon
+            float: left
+            padding-right: 0.5em
+
+        &:hover .button
+          opacity: 1
+
+        .loading
+          @include throbber-icon
+          display: none
+        &.isWorking
+          .loading
+            display: inline-block
+
+      tbody
+        td.name
+          font-size: 1.2em
+        tr td
+          padding: 0.2em 1em
+        td.required
+          padding-right: 0
+
+        .toggleRequired
+          width: 7.5em
+          text-align: center
+
+  .newFieldsetArea
+    padding-top: 1em
+
+    label
+      font-weight: bold
+
+    .newFieldsetName, label
+      font-size: 1.4em
+      margin-right: 1em
+
+    .newFieldsetButton
+      font-size: 1.2em

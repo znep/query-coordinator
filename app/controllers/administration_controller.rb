@@ -259,6 +259,109 @@ class AdministrationController < ApplicationController
     respond_to do |format| format.data { render :json => response.to_json } end
   end
 
+  # Dataset-level metadata (custom fields, categories)
+  def metadata
+    check_auth_level('edit_site_theme')
+  end
+  def create_metadata_fieldset
+    check_auth_level('edit_site_theme')
+    metadata = CurrentDomain.custom_dataset_metadata || []
+    field = params[:newFieldsetName]
+
+    if field.nil? || field.strip().blank?
+      flash[:error] = "Cannot create fieldset without a name"
+      return redirect_to :action => 'metadata'
+    end
+
+    if metadata.any? { |f| f['name'].downcase == field.downcase }
+      flash[:error] = "Cannot create duplicate fieldset named '#{field}'"
+      return redirect_to :action => 'metadata'
+    end
+
+    metadata << { 'name' => field, 'fields' => [] }
+
+    save_metadata(get_configuration(), metadata, "Fieldset Successfully Created")
+  end
+  def delete_metadata_fieldset
+    check_auth_level('edit_site_theme')
+    metadata = CurrentDomain.custom_dataset_metadata
+    metadata.delete_at(params[:fieldset].to_i)
+
+    save_metadata(get_configuration(), metadata, "Fieldset Successfully Removed")
+  end
+  def create_metadata_field
+    check_auth_level('edit_site_theme')
+
+    field_name = params[:newFieldName]
+    if (field_name.nil? || field_name.strip().empty?)
+      flash[:error] = "Cannot create a field with no name"
+      return redirect_to :action => 'metadata'
+    end
+
+    metadata = CurrentDomain.custom_dataset_metadata
+    fieldset = metadata[params[:fieldset].to_i]
+
+    fieldset['fields'] ||= []
+
+    # No dups
+    if fieldset.fields.any? { |f| f['name'].downcase == field_name.downcase }
+      flash[:error] = "You cannot create a duplicate field named '#{field_name}'"
+      return redirect_to :action => 'metadata'
+    end
+
+    fieldset.fields << { 'name' => field_name,
+      'required' => false }
+
+    save_metadata(get_configuration(), metadata, "Field Successfully Created")
+  end
+  def delete_metadata_field
+    check_auth_level('edit_site_theme')
+    metadata = CurrentDomain.custom_dataset_metadata
+    metadata[params[:fieldset].to_i].fields.delete_at(params[:index].to_i)
+
+    save_metadata(get_configuration(), metadata, "Field Successfully Removed")
+  end
+  def toggle_metadata_required
+    check_auth_level('edit_site_theme')
+    metadata = CurrentDomain.custom_dataset_metadata
+    config = get_configuration()
+    fieldset = metadata[params[:fieldset].to_i].fields
+
+    field = fieldset[params[:index].to_i]
+    field['required'] = field['required'].blank? ? true : false
+
+    update_or_create_property(config, 'custom_dataset_metadata', metadata) do
+      !config.raw_properties.key?('custom_dataset_metadata')
+    end
+
+    respond_to do |format|
+      format.data { render :json => {:success => true} }
+      format.html { redirect_to :action => 'metadata' }
+    end
+  end
+  def move_metadata_field
+    check_auth_level('edit_site_theme')
+    config = get_configuration()
+    metadata = CurrentDomain.custom_dataset_metadata
+    fieldset = metadata[params[:fieldset].to_i].fields
+
+    field = fieldset.detect { |f| f['name'] == params[:field] }
+
+    index = fieldset.index(field)
+    swap_index = params[:direction] == 'up' ? index-1 : index+1
+
+    fieldset[index], fieldset[swap_index] = fieldset[swap_index], fieldset[index]
+
+    update_or_create_property(config, 'custom_dataset_metadata', metadata) do
+      !config.raw_properties.key?('custom_dataset_metadata')
+    end
+
+    respond_to do |format|
+      format.data { render :json => {:success => true, :direction => params[:direction]} }
+      format.html { redirect_to :action => 'metadata' }
+    end
+  end
+
 private
   def check_auth_level(level = 'manage_users')
     render_forbidden unless CurrentDomain.user_can?(current_user, level)
@@ -315,4 +418,16 @@ private
     end
   end
 
+  def get_configuration
+    Configuration.find_by_type('site_theme', true, CurrentDomain.cname, false).first
+  end
+
+  def save_metadata(config, metadata, successMessage)
+    update_or_create_property(config, 'custom_dataset_metadata', metadata) do
+      !config.raw_properties.key?('custom_dataset_metadata')
+    end
+
+    flash[:notice] = successMessage
+    redirect_to :action => 'metadata'
+  end
 end

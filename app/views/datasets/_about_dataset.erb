@@ -151,20 +151,27 @@
 <%- end -%>
 
 <%- if @view.metadata && @view.metadata.custom_fields -%>
-  <div class="formSection">
-    <a class="expander expanded formHeader" href="#expand">
-      <span class="icon"></span>
-      Additional Information
-    </a>
-    <dl class="sectionContent">
-      <%- @view.metadata.custom_fields.each do |field| -%>
-        <dt><%= h(field.first) %></dt>
-        <dd><span class="wrap">
-          <%= raw auto_link(h(field.last), :html => { :rel => 'nofollow external' }) %>
-        </span></dd>
-      <%- end -%>
-    </dl>
-  </div>
+  <%- (CurrentDomain.custom_dataset_metadata || []).each do |fieldset| -%>
+    <div class="formSection">
+      <a class="expander expanded formHeader" href="#expand">
+        <span class="icon"></span>
+        <%= fieldset.name %>
+      </a>
+      <%- existing_fields = (@view.metadata && @view.metadata.custom_fields &&
+          @view.metadata.custom_fields.assoc(fieldset.name)) ?
+          @view.metadata.custom_fields.assoc(fieldset.name)[1] : {} -%>
+
+      <dl class="sectionContent">
+        <%- (fieldset.fields || []).each do |field| -%>
+          <dt><%= field.name %></dt>
+          <dd><span class="wrap">
+            <%= auto_link(existing_fields[field.name] || '',
+                :html => { :rel => 'nofollow external' }) %>
+          </span></dd>
+        <%- end -%>
+      </dl>
+    </div>
+  <%- end -%>
 <%- end -%>
 
 <%- if !CurrentDomain.feature?("disable_owner_contact") && (current_user.nil? || (current_user.id != @view.owner.id)) -%>

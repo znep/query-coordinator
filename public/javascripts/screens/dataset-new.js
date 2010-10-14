@@ -216,6 +216,30 @@ $(function()
         }
     });
 
+    // custom metadata validation
+    $(".newDatasetForm .customRequired").each(function()
+    {
+        $(this)
+            .find('input[type="text"]')
+                .rules('add', {
+                    required: {
+                        depends: function(element) {
+                            return $(element).is(':visible');
+                        }
+                    }
+                });
+    });
+
+    $('.toggleFieldsetLink').click(function(event)
+    {
+        event.preventDefault();
+        $(event.target)
+            .toggleClass('expanded collapsed')
+            .closest('.customFieldsetWrapper')
+            .find('.customFieldset')
+                .slideToggle();
+    });
+
     // cc cascade
     $('#view_licenseId').change(function(event)
     {

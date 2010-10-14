@@ -114,6 +114,10 @@ javascripts:
   - screens/admin-users-screen
 - admin-federations:
   - screens/admin-federations-screen
+- admin-metadata:
+  - controls/admin-buttons
+  - plugins/jquery.uniform
+  - screens/admin-metadata-screen
 - admin-moderation:
   - plugins/jquery.uniform
   - plugins/jquery.tablesorter

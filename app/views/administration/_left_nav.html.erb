@@ -42,6 +42,18 @@
             {:action => 'datasets'} %>
       </li>
     <%- end -%>
+    <%- if false && CurrentDomain.user_can?(current_user, :manage_stories) -%>
+      <li class="homemgmt">
+        <%= link_to raw('<span class="icon"></span>Home Page'),
+            {:action => 'home'} %>
+      </li>
+    <%- end -%>
+    <%- if CurrentDomain.user_can?(current_user, :edit_site_theme) -%>
+      <li class="metadata">
+        <%= link_to raw('<span class="icon"></span>Metadata'),
+            {:action => 'metadata'} %>
+      </li>
+    <%- end -%>
     <%- if current_user && current_user.is_admin? -%>
       <li class="internal">
         <%= link_to_unless_current \

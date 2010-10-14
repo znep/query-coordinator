@@ -30,6 +30,30 @@
             }
     });
 
+    // custom metadata validation
+    $form.find(".customRequired").each(function()
+    {
+        $(this)
+            .find('input[type="text"]')
+                .rules('add', {
+                    required: {
+                        depends: function(element) {
+                            return $(element).is(':visible');
+                        }
+                    }
+                });
+    });
+
+    $('.toggleFieldsetLink').click(function(event)
+    {
+        event.preventDefault();
+        $(event.target)
+            .toggleClass('expanded collapsed')
+            .closest('.customFieldsetWrapper')
+            .find('.customFieldset')
+                .slideToggle();
+    });
+
     // Make licensing dropdowns cascading instead.
     //  generate the new dropdown
     var $newLine = $.tag({

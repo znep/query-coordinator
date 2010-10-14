@@ -7,6 +7,31 @@
     <a href="#close" class="jqmClose modalDialogClose">Close</a>
     <div class='optionsContent'></div>
   </div>
+
+  <div class="externalDomainNotice modalDialog">
+    <a href="#close" class="jqmClose modalDialogClose">Close</a>
+    <h2>
+      You are leaving <span class="serverName"><%= CurrentDomain.cname %></span>
+    </h2>
+    <p>This <span class='datasetType'>dataset</span> is hosted by
+    <a href='#' rel='external' class='externalDomain'>another domain</a>.
+    View it at</p>
+    <div class="leavingLinkWrapper">
+      <a class="leavingLink noInterstitial" href="#" rel="external"></a>
+    </div>
+    <ul class="actions clearfix">
+      <li>
+        <a class="jqmClose button cancel"
+          href="#cancel"><span class="icon"></span>Cancel</a>
+      </li>
+      <li>
+        <a class="noInterstitial button accept" href="#" rel="external">
+          <span class="icon"></span>
+          Go now
+        </a>
+      </li>
+    </ul>
+  </div>
 <%- end -%>
 
 <% content_for :templates do %>

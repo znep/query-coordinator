@@ -64,6 +64,7 @@ this.Dataset = Model.extend({
         this.fullUrl = this._generateUrl(true);
         this.shortUrl = this._generateShortUrl(true);
         this.apiUrl = this._generateApiUrl();
+        this.domainUrl = this._generateBaseUrl(this.domainCName);
 
         this._pendingRowEdits = {};
         this._pendingRowDeletes = {};
@@ -1154,6 +1155,7 @@ this.Dataset = Model.extend({
         ds.fullUrl = ds._generateUrl(true);
         ds.shortUrl = ds._generateShortUrl(true);
         ds.apiUrl = ds._generateApiUrl();
+        ds.domainUrl = ds._generateBaseUrl(ds.domainCName);
 
         var oldValid = ds.valid;
         ds.valid = ds._checkValidity();

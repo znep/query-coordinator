@@ -157,7 +157,7 @@
         <tbody>
           <%- start_index = (@opts[:page] - 1) * @limit + 1 -%>
           <%- @view_results.each_with_index do |v, i| -%>
-          <tr class='item collapsed'>
+          <tr class='item collapsed' data-viewId='<%= v.id %>'>
             <td class='index'>
               <a class='expander' title='Click to expand' href='#Expand'>
                 <span class='icon'></span>
@@ -167,7 +167,7 @@
             <%- if @use_federations -%>
             <td class='domainIcon'>
               <a href='<%= v.href(@port) %>'
-                <%= v.federated? ? "rel='external'" : '' %>>
+                <%= v.federated? ? "rel='externalDomain'" : '' %>>
                 <img src='<%= v.domain_icon_href %>' alt='<%= v.federated? ?
                   'Federated from ' + v.domainCName : CurrentDomain.cname %>' />
               </a>
@@ -175,7 +175,7 @@
             <%- end -%>
             <td class='nameDesc'>
               <a href='<%= v.href(@port) %>' class='name'
-                <%= v.federated? ? "rel='external'" : '' %>><%= v.name %></a>
+                <%= v.federated? ? "rel='externalDomain'" : '' %>><%= v.name %></a>
               <%- if !v.category.blank? -%>
               <span class='category infoItem'><%= v.category %></span>
               <%- end -%>
@@ -224,7 +224,10 @@
   $(function()
   {
      blist.namespace.fetch('blist.browse');
-     blist.browse.datasets = <%= safe_json(@view_results) %>;
+     blist.browse.datasets = {};
+     <%- @view_results.each do |v| -%>
+     blist.browse.datasets['<%= v.id %>'] = <%= safe_json(v) %>;
+     <%- end -%>
      blist.browse.baseURL = '<%= @base_url %>';
   });
 </script>

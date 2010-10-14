@@ -1,5 +1,13 @@
 $(function()
 {
+    var getDS = function($item)
+    {
+        var id = $item.closest('tr').attr('data-viewId');
+        if (!(blist.browse.datasets[id] instanceof Dataset))
+        { blist.browse.datasets[id] = new Dataset(blist.browse.datasets[id]); }
+        return blist.browse.datasets[id];
+    };
+
     var opts = {};
     if (!$.isBlank(window.location.search))
     {
@@ -61,10 +69,7 @@ $(function()
         var $content = $row.find('.nameDesc .extraInfo .infoContent:empty');
         if ($content.length < 1) { return; }
 
-        var i = $row.closest('tbody').find('tr').index($row);
-        if (!(blist.browse.datasets[i] instanceof Dataset))
-        { blist.browse.datasets[i] = new Dataset(blist.browse.datasets[i]); }
-        var ds = blist.browse.datasets[i];
+        var ds = getDS($row);
         $content.append($.renderTemplate('expandedInfo', ds,
             {
                 '.permissions .permType': function(v)
@@ -163,5 +168,22 @@ $(function()
         if ($c.find('[rel]').length > 0)
         { $c.find('a').tagcloud({ size: { start: 1.2, end: 2.8, unit: "em" } }); }
         $dialog.jqmShow();
+    });
+
+    $.live('a[rel*=externalDomain]', 'click', function(e)
+    {
+        e.preventDefault();
+
+        var $a = $(this);
+        var ds = getDS($a);
+        var href = $a.attr('href');
+
+        var $modal = $('.externalDomainNotice');
+        $modal.find('.leavingLink').attr('href', href).text(href);
+        $modal.find('.accept.button').attr('href', href);
+        $modal.find('.datasetType').text(ds.displayName);
+        $modal.find('.externalDomain').attr('href', ds.domainUrl)
+            .text(ds.domainCName);
+        $modal.jqmShow();
     });
 });

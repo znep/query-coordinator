@@ -328,6 +328,12 @@
                     columns: {type: Dataset.chart.numericTypes, hidden: isEdit},
                     wizard: 'Select a column that contains the values'
                 }
+            ] },
+            { title: 'Details', name: 'treemapDetails', selectable: true,
+            onlyIf: onlyIfForChart(Dataset.chart.types.treemap, true),
+            fields: [
+                {text: 'Color', name: 'displayFormat.baseColor',
+                    type: 'color', defaultValue: '#042656' }
             ] }
 
         ],

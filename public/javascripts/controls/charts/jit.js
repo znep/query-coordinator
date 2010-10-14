@@ -12,7 +12,7 @@
     {
         defaults:
         {
-            nodeColor: '#444444'
+            nodeColor: '#042656'
         },
 
         prototype:
@@ -50,6 +50,7 @@
                             data: {
                                 $area: area,
                                 $color: (row.meta && row.meta.color) ||
+                                    chartObj.settings.view.displayFormat.baseColor ||
                                     chartObj.settings.nodeColor,
                                 amount:
                                     row[chartObj._valueColumns[0].column.id] || 0
@@ -80,7 +81,8 @@
                         data: {
                             amount: chartObj._remainder,
                             $area: chartObj._remainder,
-                            $color: chartObj.settings.nodeColor
+                            $color: chartObj.settings.view.displayFormat.baseColor ||
+                                chartObj.settings.nodeColor
                         },
                         children: []
                     });

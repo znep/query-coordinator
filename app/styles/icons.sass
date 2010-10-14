@@ -379,7 +379,7 @@
     @include ie6-fix
     background-image: url(/stylesheets/images/interface/admin_icons.png?1)
     height: 13px
-    width: 13px
+    width: 16px
 
   &.home #{$subselector}
     background-position: 0 0
@@ -399,9 +399,14 @@
     background-position: 0 -91px
   &.federation #{$subselector}
     background-position: 0 -104px
+  &.contentmgmt #{$subselector}
+    background-position: 0 -117px
+  &.homemgmt #{$subselector}
+    background-position: 0 -130px
+  &.metadata #{$subselector}
+    background-position: 0 -143px
   &.datasets #{$subselector}
-    background-position: 0 -52px //using appearence image until artwork is made
-
+    background-position: 0 -156px
 
 // internface/admin_header_icons.png
 @mixin admin-header-icons($subselector: '.icon')
@@ -410,7 +415,7 @@
     @include ie6-fix
     background-image: url(/stylesheets/images/interface/admin_header_icons.png?1)
     height: 32px
-    width: 34px
+    width: 38px
 
   &.analytics #{$subselector}
     background-position: 0 0
@@ -424,8 +429,14 @@
     background-position: 0 -128px
   &.federation #{$subselector}
     background-position: 0 -160px
+  &.contentmgmt #{$subselector}
+    background-position: 0 -192px
+  &.homemgmt #{$subselector}
+    background-position: 0 -224px
+  &.metadata #{$subselector}
+    background-position: 0 -256px
   &.datasets #{$subselector}
-    background-position: 0 -96px //using appearence image until artwork is made
+    background-position: 0 -288px
 
 // icons/new_dataset_icons.png
 @mixin new-dataset-icons($subselector: '.icon')

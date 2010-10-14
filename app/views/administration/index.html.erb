@@ -51,8 +51,7 @@
         </span>
       </li>
     <%- end -%>
-    <%- if current_user &&
-           (current_user.is_admin? || current_user.roleName == 'publisher') -%>
+    <%- if CurrentDomain.user_can?(current_user, :edit_others_datasets) -%>
       <li class="datasets">
         <%= link_to raw('<span class="icon"></span>Datasets'),
             {:action => 'datasets'} %>

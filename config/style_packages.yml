@@ -65,6 +65,8 @@ dataset-thumbnail:
 - screen-dataset-thumbnail
 dataset-upload:
 - screen-dataset-upload
+dataset-bare:
+- screen-dataset-bare
 error-pages:
 - screen-error-pages
 internal:

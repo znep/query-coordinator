@@ -49,9 +49,15 @@ class LogRefererMiddleware
       if ref.blank?
         logger.debug "Blank referrer, not logging."
       else
-        uri = URI::parse(ref)
+        begin
+          uri = URI::parse(ref)
+        rescue URI::InvalidURIError
+          logger.debug "Invalid referrer url format; not logging."
+        end
 
-        if uri.host == domain
+        if uri.nil?
+          # noop
+        elsif uri.host == domain
           logger.debug "Not logging same domain referal (#{domain})."
         else
           # If the referrer and the domain aren't the same thing, we should 

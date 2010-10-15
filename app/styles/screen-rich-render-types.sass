@@ -25,44 +25,45 @@
         .ie7 &
           display: inline
 
-      // Renderer-specific styles
-      &.photo, &.photo_obsolete
-        .richItem img
-          max-height: 15em
-          max-width: 30em
+        // Renderer-specific styles
+        &.photo, &.photo_obsolete
+          img
+            max-height: 15em
+            max-width: 30em
 
-      &.percent .richItem .blist-percent
-        min-width: 5em
+        &.percent .blist-percent
+          min-width: 5em
 
-      &.nested_table .richItem table
-        th
-          background-color: #d8d8d8
+        &.nested_table table
+          th
+            background-color: #d8d8d8
 
-        td, th
-          border-left: 1px solid #cccccc
-          padding: 0.2em 0.5em
-          &:first-child
-            border-left: none
+          td, th
+            border-left: 1px solid #cccccc
+            padding: 0.2em 0.5em
+            &:first-child
+              border-left: none
 
-        tr
-          &:nth-child(even)
-            background-color: #eeeeee
-          td
-            &.number,
-            &.money,
-            &.percent,
-            &.calendar_date,
-            &.date
-              text-align: right
-            &.align-left
-              text-align: left
-            &.align-center
-              text-align: center
-            &.align-right
-              text-align: right
+          tr
+            &:nth-child(even)
+              background-color: #eeeeee
+            td
+              height: 1.25em
+              &.number,
+              &.money,
+              &.percent,
+              &.calendar_date,
+              &.date
+                text-align: right
+              &.align-left
+                text-align: left
+              &.align-center
+                text-align: center
+              &.align-right
+                text-align: right
 
-            &.noResults
-              text-align: center
+              &.noResults
+                text-align: center
 
 
 #pageRenderType
@@ -72,27 +73,24 @@
     padding: 2em 3em 0
 
     .richColumn
-      width: 48%
 
       .richLine
         margin-bottom: 1em
 
         .richLabel
-          max-width: 10em
           padding: 0.2em
             right: 1em
-          width: 33%
 
         .richItem
           padding: 0.2em
 
+          // Renderer-specific styles
+          &.percent .blist-percent
+            min-width: 10em
+
         &:nth-child(odd)
           .richLabel
             background-color: #eeeeee
-
-        // Renderer-specific styles
-        &.percent .richItem .blist-percent
-          min-width: 10em
 
 #fatRowRenderType
   padding-bottom: 4em
@@ -109,24 +107,21 @@
       border-top: none
 
     .richColumn
-      width: 32%
 
       .richLine
         margin-bottom: 0.25em
 
         .richLabel
-          max-width: 10em
           padding: 0.1em
             right: 0.5em
-          width: 33%
 
         .richItem
           padding: 0.1em
 
-        &.photo, &.photo_obsolete
-          .richItem img
-            max-height: 5em
-            max-width: 10em
+          &.photo, &.photo_obsolete
+            img
+              max-height: 5em
+              max-width: 10em
 
     &:nth-child(even)
       background-color: #f6f6f6

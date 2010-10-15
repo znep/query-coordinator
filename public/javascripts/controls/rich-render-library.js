@@ -24,6 +24,7 @@
         {
             balanceFully: false,
             columnCount: 1,
+            config: null,
             view: null
         },
 
@@ -62,6 +63,9 @@
             adjustLayout: function()
             {
                 var rrObj = this;
+                // If we have a config, it's not going to dynamically move around
+                if (!$.isBlank(rrObj.settings.config)) { return; }
+
                 var $cols = rrObj.$dom().find('.richColumn');
                 var numCols = $cols.length;
 
@@ -101,34 +105,114 @@
                 var rrObj = this;
                 rrObj.$dom().empty();
 
-                var $cols = [];
-                for (var i = 0; i < rrObj.settings.columnCount; i++)
+                if ($.isBlank(rrObj.settings.config))
                 {
-                    var $newCol = $('<div class="richColumn" data-richColumn="' +
-                        i + '"></div>');
-                    $cols.push($newCol);
-                    rrObj.$dom().append($newCol);
+                    renderDefaultLayout(rrObj);
+                    return;
                 }
 
-                _.each(rrObj.settings.view.visibleColumns, function(c)
+                var conf = rrObj.settings.config;
+                _.each(conf.columns || [], function(c)
                 {
-                    var $line = $('<div class="richLine ' +
-                            c.renderTypeName + '">' +
-                        '<span class="richLabel">' + $.htmlEscape(c.name) +
-                            '</span>' +
-                        '<div class="richItem" data-columnId="' + c.id +
-                            '"></div>' +
-                        '</div>');
-                    $cols[0].append($line);
-                    $line.bind('image_resize',
-                        function() { rrObj.adjustLayout(); });
+                    var $col = addColumn(rrObj, c);
+                    _.each(c.rows || [], function(r)
+                    {
+                        var $row = addRow(rrObj, $col);
+                        _.each(r.fields || [], function(f)
+                        {
+                            addField(rrObj, f, $row);
+                        });
+                    });
                 });
-                rrObj.adjustLayout();
             }
 
         }
     });
 
+
+    var getWidth = function(conf)
+    {
+        if (!$.isBlank(conf.width) &&
+            !$.isBlank(conf.width.match(/^\d+(\.\d+)?(%|em|px)$/)))
+        { return {style: {width: conf.width}}; }
+        return {};
+    };
+
+    var addColumn = function(rrObj, col)
+    {
+        var w = getWidth(col);
+        var t = $.extend(w,
+            {tagName: 'div', 'class': 'richColumn'});
+        var $newCol = $.tag(t);
+        rrObj.$dom().append($newCol);
+        return $newCol;
+    };
+
+    var addRow = function(rrObj, $parent)
+    {
+        var $newRow = $.tag({tagName: 'div', 'class': 'richLine'});
+        $parent.append($newRow);
+        return $newRow;
+    };
+
+    var addField = function(rrObj, field, $parent)
+    {
+        if ($.isBlank(field.column) && !$.isBlank(field.tableColumnId))
+        { field.column = rrObj.settings.view.columnForTCID(field.tableColumnId); }
+        var col = field.column;
+
+        var commonAttrs = getWidth(field);
+
+        var $field;
+        switch (field.type)
+        {
+            case 'columnLabel':
+                $field = $.tag($.extend(commonAttrs,
+                    {tagName: 'span', 'class': 'richLabel',
+                        contents: $.htmlEscape(col.name)}));
+                break;
+
+            case 'columnData':
+                var attrs = {};
+                if (col.renderType.inlineType)
+                { attrs.style = {display: 'inline'}; }
+                $field = $.tag($.extend(commonAttrs, {tagName: 'div',
+                    'class': ['richItem', col.renderTypeName],
+                    'data-columnId': col.id}, attrs));
+                break;
+
+            case 'label':
+                $field = $.tag($.extend(commonAttrs,
+                    {tagName: 'span', 'class': 'richLabel',
+                        contents: $.htmlEscape(field.text)}));
+                break;
+
+            default:
+                $.debug('field type ' + field.type + ' not supported', field);
+                break;
+        }
+
+        $parent.append($field);
+        return $field;
+    };
+
+    var renderDefaultLayout = function(rrObj)
+    {
+        var $cols = [];
+        var colWidth = Math.floor(100/rrObj.settings.columnCount);
+        for (var i = 0; i < rrObj.settings.columnCount; i++)
+        { $cols.push(addColumn(rrObj, {width: colWidth + '%'})); }
+
+        _.each(rrObj.settings.view.visibleColumns, function(c)
+        {
+            var $line = addRow(rrObj, $cols[0]);
+            addField(rrObj, {type: 'columnLabel', column: c, width: '10em'}, $line);
+            addField(rrObj, {type: 'columnData', column: c}, $line);
+            $line.bind('image_resize',
+                function() { rrObj.adjustLayout(); });
+        });
+        rrObj.adjustLayout();
+    };
 
     var renderItem = function($container, row, column)
     {

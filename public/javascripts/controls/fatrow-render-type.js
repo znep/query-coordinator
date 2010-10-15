@@ -34,9 +34,12 @@
                 var $domObj = frObj.$dom();
                 $domObj.data("fatrowRenderType", frObj);
 
-                frObj.richRenderer = frObj.$template().richRenderer(
-                    {balanceFully: true, columnCount: 3,
-                        view: frObj.settings.view});
+                frObj.richRenderer = frObj.$template().richRenderer({
+                    balanceFully: true, columnCount: 3,
+                    config: ((frObj.settings.view.metadata || {})
+                        .richRendererConfigs || {}).fatRow,
+                    view: frObj.settings.view
+                });
 
                 frObj._curPageIndex = 0;
                 frObj._totalPages = null;

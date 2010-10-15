@@ -33,8 +33,12 @@
                 var $domObj = prtObj.$dom();
                 $domObj.data("pageRenderType", prtObj);
 
-                prtObj.richRenderer = prtObj.$content().richRenderer(
-                    {columnCount: 2, view: prtObj.settings.view});
+                prtObj.richRenderer = prtObj.$content().richRenderer({
+                    columnCount: 2,
+                    config: ((prtObj.settings.view.metadata || {})
+                        .richRendererConfigs || {}).page,
+                    view: prtObj.settings.view
+                });
 
                 $domObj.bind('resize', function(e)
                     { resizeHandle(prtObj); });

@@ -17,12 +17,14 @@
         </span>
       </li>
     <%- end -%>
-    <li class="users">
-      <%= link_to raw('<span class="icon"></span>Users'), {:action => 'users'} %>
-      <span class='description'>
-        Manage users on your site and what permissions and abilities they have
-      </span>
-    </li>
+    <%- if CurrentDomain.user_can?(current_user, :manage_users) -%>
+      <li class="users">
+        <%= link_to raw('<span class="icon"></span>Users'), {:action => 'users'} %>
+        <span class='description'>
+          Manage users on your site and what permissions and abilities they have
+        </span>
+      </li>
+    <%- end -%>
     <%- if module_available? :federations -%>
       <li class="federation">
         <%= link_to raw('<span class="icon"></span>Federation'),
@@ -42,7 +44,7 @@
         </span>
       </li>
     <%- end -%>
-    <%- if module_available? :sdp_customizer -%>
+    <%- if module_available? :sdp_customizer && CurrentDomain.user_can?(current_user, :edit_sdp) -%>
       <li class="appearance">
         <%= link_to raw('<span class="icon"></span>SDP Templates'),
             {:action => 'sdp_templates'} %>
@@ -56,7 +58,7 @@
         <%= link_to raw('<span class="icon"></span>Datasets'),
             {:action => 'datasets'} %>
         <span class='description'>
-          List datasets of this site
+          List the datasets on this domain
         </span>
       </li>
     <%- end -%>

@@ -1,6 +1,4 @@
-<%# manage_users is currently what the admin index page checks; but I'm not sure
-    that it is entirely accurate -%>
-<%- if !current_user.nil? && current_user.has_right?('manage_users') -%>
+<%- if CurrentDomain.member?(current_user) -%>
 <li class='adminLink'>
   <a href='<%= administration_index_path %>'>Administration</a>
 </li>

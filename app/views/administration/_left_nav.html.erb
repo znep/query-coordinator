@@ -7,11 +7,13 @@
             {:action => 'analytics'} %>
       </li>
     <%- end -%>
-    <li class="users">
-      <%= link_to_unless_current \
-          raw('<span class="icon"></span>Users'),
-          {:action => 'users'} %>
-    </li>
+    <%- if CurrentDomain.user_can?(current_user, :manage_users) -%>
+      <li class="users">
+        <%= link_to_unless_current \
+            raw('<span class="icon"></span>Users'),
+            {:action => 'users'} %>
+      </li>
+    <%- end -%>
     <%- if module_available? :federations -%>
       <li class="federation">
         <%= link_to_unless_current \
@@ -26,7 +28,7 @@
             {:action => 'moderation'} %>
       </li>
     <%- end -%>
-    <%- if module_available? :sdp_customizer -%>
+    <%- if module_available? :sdp_customizer && CurrentDomain.user_can?(current_user, :edit_sdp) -%>
       <li class="appearance">
         <%= link_to_unless_current \
             raw('<span class="icon"></span>SDP Templates'),

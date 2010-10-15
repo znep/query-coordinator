@@ -1,13 +1,20 @@
 class AdministrationController < ApplicationController
   include BrowseActions
-  before_filter :check_auth_level, :except => [:analytics]
-  before_filter :check_member,     :only => [:analytics]
+  before_filter :check_auth_level, :except => [:analytics, :federations, :index,
+    :sdp_templates, :sdp_template]
+  before_filter :check_member,     :only => [:analytics, :index]
   before_filter :check_module,     :only => [:analytics]
 
   # Federation permission/module checking
   before_filter :only => [:federations] do |controller|
       controller.check_auth_level('federations')
       controller.check_module('federations')
+  end
+
+  # SDP template permission checking
+  before_filter :only => [:sdp_template, :sdp_templates] do |controller|
+    controller.check_auth_level('edit_sdp')
+    controller.check_module('sdp_customizer')
   end
 
   def index

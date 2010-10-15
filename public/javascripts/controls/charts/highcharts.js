@@ -489,38 +489,9 @@
             chartObj._snapshot_timer = null;
         }
 
-        if (_.include(['timeline', 'line'], chartObj.settings.view.displayFormat.chartType))
-        {
-            prepareSnapshotHack(chartObj);
-        }
-        else
-        {
-            chartObj._snapshot_timer = setTimeout(chartObj.settings.view.takeSnapshot, 1000);
-        }
+        chartObj._snapshot_timer = setTimeout(chartObj.settings.view.takeSnapshot, 1000);
     };
 
-    var prepareSnapshotHack = function(chartObj)
-    {
-        chartObj._snapshot_timer = setTimeout(function()
-        {
-              // well, this is quite the hack
-              var uri = "data:image/svg+xml;base64," + Base64.encode(chartObj.chart.getSVG());
-              _.defer(function()
-              {
-                  $('body').empty().append(
-                      $('<embed>')
-                        .attr('src', uri)
-                        .attr('width', window.innerWidth)
-                        .attr('height', window.innerHeight)
-                        .attr('type', 'image/svg+xml')
-                  );
-
-                  // now that the svg/embed is clean, let's take the damn picture
-                  setTimeout(chartObj.settings.view.takeSnapshot, 100);
-              });
-
-        }, 1000);
-    };
     var xPoint = function(chartObj, row, value)
     {
         var pt = {x: value};

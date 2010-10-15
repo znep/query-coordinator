@@ -149,7 +149,7 @@ $(function()
             e.preventDefault();
             _.defer(function()
             {
-                var newOpts = $.extend({}, opts, {q: $search.val()});
+                var newOpts = $.extend({}, opts, {q: escape($search.val())});
                 if ($.isBlank(newOpts.q)) { delete newOpts.q; }
                 doBrowse(newOpts);
             });

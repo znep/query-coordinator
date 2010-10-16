@@ -9,7 +9,7 @@
   <%= render_domain_template('data_splash') %>
 <%- elsif false # check for stories -%>
   render the stories pane
-<%- elsif CurrentDomain.user_can?(:manage_stories) -%>
+<%- elsif CurrentDomain.user_can?(current_user, :manage_stories) -%>
   <div class="contentBox">
     <h2>It looks like your domain is not configured yet.</h2>
     <p>Please visit the <a href="/admin">administration panel</a>

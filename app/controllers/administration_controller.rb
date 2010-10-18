@@ -1,35 +1,26 @@
 class AdministrationController < ApplicationController
   include BrowseActions
-  before_filter :check_auth_level, :except => [:analytics, :federations, :index,
-    :sdp_templates, :sdp_template]
-  before_filter :check_member,     :only => [:analytics, :index]
-  before_filter :check_module,     :only => [:analytics]
-
-  # Federation permission/module checking
-  before_filter :only => [:federations] do |controller|
-      controller.check_auth_level('federations')
-      controller.check_module('federations')
-  end
-
-  # SDP template permission checking
-  before_filter :only => [:sdp_template, :sdp_templates] do |controller|
-    controller.check_auth_level('edit_sdp')
-    controller.check_module('sdp_customizer')
-  end
 
   def index
+    check_member()
   end
 
   def datasets
+    check_auth_level('edit_others_datasets')
+
     @browse_in_container = true
     @opts = {:admin => true}
     process_browse!
   end
 
   def analytics
+    check_member()
+    check_module('advanced_metrics')
   end
 
   def users
+    check_auth_level('manage_users')
+
     @roles_list = User.roles_list
     if !params[:username].blank?
       @search = params[:username]
@@ -50,6 +41,8 @@ class AdministrationController < ApplicationController
     end
   end
   def set_user_role
+    check_auth_level('manage_users')
+
     error_message = nil
     begin
       updated_user = User.set_role(params[:user_id], params[:role])
@@ -69,7 +62,7 @@ class AdministrationController < ApplicationController
         if error_message
           flash[:error] = error_message
         else
-          flash[:notice] = "User successfully updated" 
+          flash[:notice] = "User successfully updated"
         end
         redirect_to :action => :users
       end
@@ -77,13 +70,21 @@ class AdministrationController < ApplicationController
   end
 
   def moderation
+    check_auth_level('moderate_comments')
+    check_module('publisher_comment_moderation')
   end
 
   def sdp_templates
+    check_auth_level('edit_sdp')
+    check_module('sdp_customizer')
+
     @templates = WidgetCustomization.find.reject{ |t| t.hidden }
     @default_template_id = CurrentDomain.default_widget_customization_id
   end
   def sdp_template_create
+    check_auth_level('edit_sdp')
+    check_module('sdp_customizer')
+
     unless params[:new_template_name].present?
       flash.now[:error] = 'Template name is required'
       return (render 'shared/error', :status => :bad_request)
@@ -97,6 +98,9 @@ class AdministrationController < ApplicationController
     redirect_to redirect_options
   end
   def sdp_template
+    check_auth_level('edit_sdp')
+    check_module('sdp_customizer')
+
     if params[:view_id].present?
       begin
         @view = View.find(params[:view_id])
@@ -120,6 +124,9 @@ class AdministrationController < ApplicationController
     end
   end
   def sdp_set_default_template
+    check_auth_level('edit_sdp')
+    check_module('sdp_customizer')
+
     configuration = Configuration.find_by_type('site_theme',  true, request.host, false)[0]
     begin
       customization = WidgetCustomization.find(params[:id])
@@ -139,6 +146,9 @@ class AdministrationController < ApplicationController
     end
   end
   def sdp_delete_template
+    check_auth_level('edit_sdp')
+    check_module('sdp_customizer')
+
     begin
       customization = WidgetCustomization.find(params[:id])
     rescue CoreServer::ResourceNotFound
@@ -163,6 +173,9 @@ class AdministrationController < ApplicationController
 
   ## open data federation
   def federations
+    check_auth_level('federations')
+    check_module('federations')
+
     if (params[:dataset].nil?)
       @federations = DataFederation.find
     else
@@ -176,6 +189,9 @@ class AdministrationController < ApplicationController
     end
   end
   def delete_federation
+    check_auth_level('federations')
+    check_module('federations')
+
     DataFederation.delete(params[:id])
     respond_to do |format|
       format.data { render :json => { :success => true } }
@@ -183,6 +199,9 @@ class AdministrationController < ApplicationController
     end
   end
   def accept_federation
+    check_auth_level('federations')
+    check_module('federations')
+
     DataFederation.accept(params[:id])
     respond_to do |format|
       format.data { render :json => { :success => true, :message => 'Accepted' } }
@@ -190,6 +209,9 @@ class AdministrationController < ApplicationController
     end
   end
   def reject_federation
+    check_auth_level('federations')
+    check_module('federations')
+
     DataFederation.reject(params[:id])
     respond_to do |format|
       format.data { render :json => { :success => true, :message => 'Rejected' } }
@@ -197,6 +219,9 @@ class AdministrationController < ApplicationController
     end
   end
   def create_federation
+    check_auth_level('federations')
+    check_module('federations')
+
     begin
       data = DataFederation.new
       target_domain = Domain.find(params[:new_federation][:target_domain])
@@ -229,15 +254,13 @@ class AdministrationController < ApplicationController
     end
   end
 
+private
   def check_auth_level(level = 'manage_users')
     render_forbidden unless CurrentDomain.user_can?(current_user, level)
   end
-
   def check_module(mod = 'advanced_metrics')
     render_forbidden unless CurrentDomain.module_available?(mod)
   end
-
-private
   def check_member
     render_forbidden unless CurrentDomain.member?(current_user)
   end

@@ -28,7 +28,7 @@
             {:action => 'moderation'} %>
       </li>
     <%- end -%>
-    <%- if module_available? :sdp_customizer && CurrentDomain.user_can?(current_user, :edit_sdp) -%>
+    <%- if CurrentDomain.user_can?(current_user, :edit_sdp) && module_available?(:sdp_customizer) -%>
       <li class="appearance">
         <%= link_to_unless_current \
             raw('<span class="icon"></span>SDP Templates'),

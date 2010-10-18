@@ -44,7 +44,7 @@
         </span>
       </li>
     <%- end -%>
-    <%- if module_available? :sdp_customizer && CurrentDomain.user_can?(current_user, :edit_sdp) -%>
+    <%- if CurrentDomain.user_can?(current_user, :edit_sdp) && module_available?(:sdp_customizer) -%>
       <li class="appearance">
         <%= link_to raw('<span class="icon"></span>SDP Templates'),
             {:action => 'sdp_templates'} %>

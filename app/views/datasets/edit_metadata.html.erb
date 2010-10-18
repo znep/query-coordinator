@@ -76,7 +76,7 @@
     <div class="line clearfix">
       <label for="view_metadata_rdfSubject">Subject Column</label>
       <%= select_tag("view[metadata[rdfSubject]]",
-        @view.rdf_subject_select_options(
+          rdf_subject_select_options(
           @view.columns,
           h(@view.metadata.nil? || @view.metadata.rdfSubject.nil? ? '' : @view.metadata.rdfSubject)))
       %>

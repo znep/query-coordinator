@@ -164,5 +164,24 @@ module DatasetsHelper
     ret
   end
 
+  # include only url and text column types.
+  # In the future, we may allow people to have
+  # a namespace attached to a view and the subject column
+  # content does not have to contain full uri.
+  def rdf_subject_select_options(cols, selected_rdf_subject)
+    options = []
+    sel = nil
+    options.push(['--None--', 0])
+    cols.each do |m|
+      if (m.renderTypeName == 'text' || m.renderTypeName == 'url')
+        options.push([m.name, m.id])
+        if (m.id.to_s() == selected_rdf_subject)
+          sel = m.id
+        end
+      end
+    end
+    options_for_select(options, sel)
+  end
+
   safe_helper :font_select_options, :font_size_select_options, :seo_render
 end

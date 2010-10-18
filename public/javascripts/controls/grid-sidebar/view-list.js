@@ -2,19 +2,47 @@
 {
     if (blist.sidebarHidden.savedViews) { return; }
 
-    var $sections = {};
-    var views = {};
+    var $section;
+    var viewList;
 
-    var renderViews = function(views, $section, sort)
+    $.live('#gridSidebar_moreViews .deleteViewLink', 'click', function(e)
     {
-        if (views.length < 1)
+        e.preventDefault();
+
+        var $li = $(this).closest('li');
+        var v = $li.data('view');
+        if (confirm('Are you sure you want to delete ' +
+            $.htmlEscape(v.name) + '?'))
+        {
+            var deletedCallback = function()
+            {
+                $li.remove();
+                viewList.splice(_.indexOf(viewList, v), 1);
+                if (blist.dataset.id == v.id)
+                {
+                    blist.dataset.getParentDataset(function(parDS)
+                    {
+                        if (!$.isBlank(parDS)) { parDS.redirectTo(); }
+                    });
+                }
+            };
+
+            $.ajax({url: '/views/' + v.id + '.json',
+                type: 'DELETE',
+                success: deletedCallback});
+        }
+    });
+
+    var renderViews = function(sort)
+    {
+        if (viewList.length < 1)
         {
             $section.addClass('noResults');
             return;
         }
 
         sort = sort || 'dateDescending';
-        var sorted = _.sortBy(views, function(v)
+        var sorted = _.sortBy(viewList, function(v)
             {
                 if (sort.startsWith('date'))
                 {
@@ -51,6 +79,9 @@
                     return _.include(a.context.rights, 'delete_view') ? '' : 'hide';
                 }
             });
+
+            $li.data('view', v);
+
             if (v.id == blist.dataset.id)
             { $li.addClass('current'); }
             $li.attr('data-search',
@@ -58,36 +89,11 @@
 
             $li.expander({ contentSelector: '.description' });
 
-            $li.find('.deleteViewLink:not(.hide)').click(function(e)
-            {
-                e.preventDefault();
-                if (confirm('Are you sure you want to delete ' +
-                    $.htmlEscape(v.name) + '?'))
-                {
-                    var deletedCallback = function()
-                    {
-                        $li.remove();
-                        views.splice(_.indexOf(views, v), 1);
-                        if (blist.dataset.id == v.id)
-                        {
-                            blist.dataset.getParentDataset(function(parDS)
-                            {
-                                if (!$.isBlank(parDS)) { parDS.redirectTo(); }
-                            });
-                        }
-                    };
-
-                    $.ajax({url: '/views/' + v.id + '.json',
-                        type: 'DELETE',
-                        success: deletedCallback});
-                }
-            });
-
             $ul.append($li);
         });
     };
 
-    var setupSection = function(views, $section)
+    var setupSection = function()
     {
         var $menu = $section.find('.sortMenu');
         $menu.menu({
@@ -112,7 +118,7 @@
             $a.closest('li').addClass('checked');
 
             var href = $a.attr('href');
-            renderViews(views, $section, href.slice(href.indexOf('#') + 1));
+            renderViews(href.slice(href.indexOf('#') + 1));
         });
 
         $section.find('.textPrompt')
@@ -152,7 +158,7 @@
                 _.defer(doSearch);
             });
 
-        renderViews(views, $section);
+        renderViews();
     };
 
 
@@ -175,41 +181,16 @@
                 callback: function($s, sidebarObj)
                 {
                     sidebarObj.startProcessing();
-                    $sections['all'] = $s;
+                    $section = $s;
 
                     blist.dataset.getRelatedViews(
                         function(v)
                         {
                             sidebarObj.finishProcessing();
 
-                            views['filter'] = _.select(v, function(v)
-                            {
-                                return _.include(['filter', 'grouped'], v.type);
-                            });
+                            viewList = v;
 
-                            if (!$.isBlank($sections['filter']))
-                            { setupSection(views['filter'], $sections['filter']); }
-
-
-                            views['viz'] = _.select(v, function(v)
-                            {
-                                return _.include(['visualization', 'calendar',
-                                    'map'], v.type);
-                            });
-
-                            if (!$.isBlank($sections['viz']))
-                            { setupSection(views['viz'], $sections['viz']); }
-
-
-                            views['form'] = _.select(v, function(v)
-                            { return 'form' == v.type; });
-
-                            if (!$.isBlank($sections['form']))
-                            { setupSection(views['form'], $sections['form']); }
-
-                            views['all'] = v;
-
-                            setupSection(views['all'], $sections['all']);
+                            setupSection();
                         });
                 }
             }

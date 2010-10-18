@@ -268,7 +268,8 @@ javascripts:
   - screens/profile-screen-edit
 - homepage-show:
   - screens/homepage-show
-
+- screen-about-interactive:
+  - screens/about-interactive
 
 
 stylesheets:

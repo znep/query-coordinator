@@ -2768,7 +2768,7 @@
                     cs.data || {}, cs.directive));
 
             if (_.isFunction(cs.callback))
-            { cs.callback($sc); }
+            { cs.callback($sc, sidebarObj); }
         });
 
         $pane.find('form').validate({ignore: ':hidden', errorElement: 'span',

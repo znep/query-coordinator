@@ -2,8 +2,8 @@
 
 this.ColumnContainer = function(colName, selfUrl, urlBase)
 {
-    var _columnIDLookup;
-    var _columnTCIDLookup;
+    var _columnIDLookup = {};
+    var _columnTCIDLookup = {};
 
     var capName = colName.capitalize();
     var colSet = colName + 's';

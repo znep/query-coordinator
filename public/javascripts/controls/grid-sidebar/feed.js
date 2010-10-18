@@ -2,9 +2,9 @@
 {
     var $feed, feedData, comments, views;
 
-    var renderFeed = function()
+    var renderFeed = function(sidebarObj)
     {
-        $feed.removeClass('loading');
+        sidebarObj.finishProcessing();
 
         $feed.find('.feed').feedList({
             comments: comments,
@@ -13,7 +13,7 @@
         });
     };
 
-    var pendingRequests = 3;
+    var pendingRequests = 2;
 
     var config =
     {
@@ -26,12 +26,23 @@
                     template: 'feedList',
                     directive: {},
                     data: {},
-                    callback: function($elem)
+                    callback: function($elem, sidebarObj)
                     {
-                        $elem.addClass('loading');
+                        sidebarObj.startProcessing();
                         $feed = $elem;
-                        if (--pendingRequests === 0)
-                            renderFeed();
+                        blist.dataset.getComments(function(responseData)
+                            {
+                                comments = responseData;
+                                if (--pendingRequests === 0)
+                                { renderFeed(sidebarObj); }
+                            });
+
+                        blist.dataset.getRelatedViews(function(relatedViews)
+                            {
+                                views = relatedViews.concat(blist.dataset);
+                                if (--pendingRequests === 0)
+                                { renderFeed(sidebarObj); }
+                            });
                     }
                 }
             }
@@ -39,25 +50,5 @@
     };
 
     $.gridSidebar.registerConfig(config);
-
-    // Document ready, load data
-    $(function()
-    {
-        _.defer(function()
-        {
-            blist.dataset.getComments(function(responseData)
-                {
-                    comments = responseData;
-                    if (--pendingRequests === 0)
-                        renderFeed();
-                });
-
-            blist.dataset.getRelatedViews(function(relatedViews)
-                {
-                    views = relatedViews.concat(blist.dataset);
-                    if (--pendingRequests === 0) { renderFeed(); }
-                });
-        });
-    });
 
 })(jQuery);

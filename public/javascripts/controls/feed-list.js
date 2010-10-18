@@ -158,7 +158,7 @@
             var $feedList = $this.find('.feedList');
             var $moreItemsButton = $this.find('.feedMoreItemsLink');
 
-            var showMoreItems = function()
+            var showMoreItems = function(skipAnimation)
             {
                 var itemsShown = $feedList.children().length;
                 $feedList.append(
@@ -174,15 +174,18 @@
                     $moreItemsButton.text('View next ' +
                         Math.min(remainingItems, opts.pageSize) + ' items');
 
-                $scrollContainer.animate({
-                    scrollTop: Math.min(
-                        // either the height of the appended elements,
-                        $this.outerHeight(true) - $scrollContainer.height(),
-                        // or the height of the scroll container.
-                        $scrollContainer.scrollTop() + $scrollContainer.height())
-                }, 'slow');
+                if (!skipAnimation)
+                {
+                    $scrollContainer.animate({
+                        scrollTop: Math.min(
+                            // either the height of the appended elements,
+                            $this.outerHeight(true) - $scrollContainer.height(),
+                            // or the height of the scroll container.
+                            $scrollContainer.scrollTop() + $scrollContainer.height())
+                    }, 'slow');
+                }
             };
-            showMoreItems();
+            showMoreItems(true);
             $moreItemsButton.click(function(event)
             {
                 event.preventDefault();

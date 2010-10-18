@@ -7,7 +7,6 @@
 
     var renderViews = function(views, $section, sort)
     {
-        $section.removeClass('loading');
         if (views.length < 1)
         {
             $section.addClass('noResults');
@@ -173,57 +172,50 @@
                 data: {
                     resultType: 'view'
                 },
-                callback: function($s)
+                callback: function($s, sidebarObj)
                 {
+                    sidebarObj.startProcessing();
                     $sections['all'] = $s;
-                    if (!$.isBlank(views['all']))
-                    { setupSection(views['all'], $sections['all']); }
+
+                    blist.dataset.getRelatedViews(
+                        function(v)
+                        {
+                            sidebarObj.finishProcessing();
+
+                            views['filter'] = _.select(v, function(v)
+                            {
+                                return _.include(['filter', 'grouped'], v.type);
+                            });
+
+                            if (!$.isBlank($sections['filter']))
+                            { setupSection(views['filter'], $sections['filter']); }
+
+
+                            views['viz'] = _.select(v, function(v)
+                            {
+                                return _.include(['visualization', 'calendar',
+                                    'map'], v.type);
+                            });
+
+                            if (!$.isBlank($sections['viz']))
+                            { setupSection(views['viz'], $sections['viz']); }
+
+
+                            views['form'] = _.select(v, function(v)
+                            { return 'form' == v.type; });
+
+                            if (!$.isBlank($sections['form']))
+                            { setupSection(views['form'], $sections['form']); }
+
+                            views['all'] = v;
+
+                            setupSection(views['all'], $sections['all']);
+                        });
                 }
             }
         }]
     };
 
     $.gridSidebar.registerConfig(allConfig);
-
-    // Document ready; load data
-    $(function()
-    {
-        _.defer(function()
-        {
-            blist.dataset.getRelatedViews(
-                function(v)
-                {
-                    views['filter'] = _.select(v, function(v)
-                    {
-                        return _.include(['filter', 'grouped'], v.type);
-                    });
-
-                    if (!$.isBlank($sections['filter']))
-                    { setupSection(views['filter'], $sections['filter']); }
-
-
-                    views['viz'] = _.select(v, function(v)
-                    {
-                        return _.include(['visualization', 'calendar', 'map'],
-                            v.type);
-                    });
-
-                    if (!$.isBlank($sections['viz']))
-                    { setupSection(views['viz'], $sections['viz']); }
-
-
-                    views['form'] = _.select(v, function(v)
-                    { return 'form' == v.type; });
-
-                    if (!$.isBlank($sections['form']))
-                    { setupSection(views['form'], $sections['form']); }
-
-                    views['all'] = v;
-
-                    if (!$.isBlank($sections['all']))
-                    { setupSection(views['all'], $sections['all']); }
-                });
-        });
-    });
 
 })(jQuery);

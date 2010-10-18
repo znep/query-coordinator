@@ -843,11 +843,21 @@ this.Dataset = Model.extend({
     getParentDataset: function(callback)
     {
         var ds = this;
-        // Check related views, because this may not have a parent
-        if ($.isBlank(ds._relatedViews))
+        if ($.isBlank(ds._parent) && $.isBlank(ds.noParentAvailable))
         {
-            ds._loadRelatedViews(function()
-            { callback(ds._parent); });
+            ds._makeRequest({url: '/views/' + this.id + '.json',
+                params: {method: 'getDefaultView'},
+                success: function(parDS)
+                {
+                    ds._parent = new Dataset(parDS);
+                    callback(ds._parent);
+                },
+                error: function(xhr)
+                {
+                    if (JSON.parse(xhr.responseText).code == 'permission_denied')
+                    { ds.noParentAvailable = true; }
+                    callback();
+                }});
         }
         else { callback(ds._parent); }
     },

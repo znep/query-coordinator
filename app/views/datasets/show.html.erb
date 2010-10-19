@@ -259,7 +259,8 @@
 <%= render(:partial => 'shared/grid_sidebar_templates') %>
 <%= render(:partial => 'show_hide_template') %>
 <div class="embedForm">
-  <%= render :partial => 'embed_form', :locals => { :view => @view, :cur => 'root', :customization_id => nil } %>
+  <%= render :partial => 'embed_form', :locals => { :view => @view, :cur => 'root',
+             :customization_id => (CurrentDomain.user_can?(current_user, :edit_sdp) ? nil : CurrentDomain.default_widget_customization_id) } %>
 </div>
 <div class="printForm">
   <%= render :partial => 'print_form', :locals => { :view => @view } %>

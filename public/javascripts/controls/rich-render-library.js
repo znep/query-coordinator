@@ -111,18 +111,34 @@
                     return;
                 }
 
+                var recurseColumn;
+                recurseColumn = function(col, $parent)
+                {
+                    var $col = addColumn(rrObj, col, $parent);
+                    _.each(col.rows || [], function(r)
+                    {
+                        var $row = addRow(rrObj, $col);
+                        if (!$.isBlank(r.columns))
+                        {
+                            _.each(r.columns, function(cc)
+                            {
+                                recurseColumn(cc, $row);
+                            });
+                        }
+                        else if (!$.isBlank(r.fields))
+                        {
+                            _.each(r.fields, function(f)
+                            {
+                                addField(rrObj, f, $row);
+                            });
+                        }
+                    });
+                };
+
                 var conf = rrObj.settings.config;
                 _.each(conf.columns || [], function(c)
                 {
-                    var $col = addColumn(rrObj, c);
-                    _.each(c.rows || [], function(r)
-                    {
-                        var $row = addRow(rrObj, $col);
-                        _.each(r.fields || [], function(f)
-                        {
-                            addField(rrObj, f, $row);
-                        });
-                    });
+                    recurseColumn(c, rrObj.$dom());
                 });
             }
 
@@ -138,13 +154,13 @@
         return {};
     };
 
-    var addColumn = function(rrObj, col)
+    var addColumn = function(rrObj, col, $parent)
     {
         var w = getWidth(col);
         var t = $.extend(w,
             {tagName: 'div', 'class': 'richColumn'});
         var $newCol = $.tag(t);
-        rrObj.$dom().append($newCol);
+        $parent.append($newCol);
         return $newCol;
     };
 
@@ -201,7 +217,7 @@
         var $cols = [];
         var colWidth = Math.floor(100/rrObj.settings.columnCount);
         for (var i = 0; i < rrObj.settings.columnCount; i++)
-        { $cols.push(addColumn(rrObj, {width: colWidth + '%'})); }
+        { $cols.push(addColumn(rrObj, {width: colWidth + '%'}, rrObj.$dom())); }
 
         _.each(rrObj.settings.view.visibleColumns, function(c)
         {

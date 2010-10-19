@@ -30,9 +30,17 @@
           img
             max-height: 15em
             max-width: 30em
+            width: 100%
 
         &.percent .blist-percent
           min-width: 5em
+
+        &.stars
+          margin-bottom: -0.35em
+          // This is set to -16.5px normally; but when we pull it down, apparently
+          // we need to adjust this back to just -16px
+          .blist-tstar-off
+            background-position: 0 -16px
 
         &.nested_table table
           th

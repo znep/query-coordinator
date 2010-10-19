@@ -78,7 +78,7 @@ module ApplicationHelper
 # js
   def jquery_include
     if Rails.env != 'production'
-      return '<script src="/javascripts/jquery-1.4.2.js" type="text/javascript" ' +
+      return '<script src="/javascripts/jquery-1.4.3.js" type="text/javascript" ' +
         'charset="utf-8"></script>'
     else
       return <<-EOS
@@ -86,7 +86,7 @@ module ApplicationHelper
           document.write([
             "\\<script src='",
             ("https:" == document.location.protocol) ? "https://" : "http://",
-            "ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js'",
+            "ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js'",
             " type='text/javascript'>\\<\\/script>"
           ].join(''));
         </script>

@@ -69,7 +69,8 @@ Dataset.modules['map'] =
 
     _checkValidity: function()
     {
-        if (($.isBlank(this.displayFormat.plot.latitudeId) ||
+        if ($.isBlank(this.displayFormat.noLocations) &&
+            ($.isBlank(this.displayFormat.plot.latitudeId) ||
             $.isBlank(this.displayFormat.plot.longitudeId)) &&
             $.isBlank(this.displayFormat.plot.locationId)) { return false; }
 

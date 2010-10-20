@@ -8,7 +8,7 @@ class Displays::Map < Displays::Base
   end
 
   def required_javascript_links
-    [ 'http://serverapi.arcgisonline.com/jsapi/arcgis/?v=1.6' ]
+    [ 'http://serverapi.arcgisonline.com/jsapi/arcgis/?v=2.1' ]
   end
 
   def required_edit_javascripts

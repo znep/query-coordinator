@@ -111,10 +111,11 @@
 
     var fetchFeatureSet = function(mapObj, config)
     {
+        dojo.require('esri.tasks.query');
         var query = new esri.tasks.Query();
         query.outFields = MAP_TYPE[config.type].fieldsReturned;
         query.returnGeometry = true;
-        query.outSpatialReference = mapObj.map.spatialReference || 4326;
+        query.outSpatialReference = { wkid: mapObj.map.spatialReference || 102100 };
 
         query.where = MAP_TYPE[config.type].where(mapObj, config);
         new esri.tasks.QueryTask(

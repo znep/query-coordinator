@@ -38,8 +38,11 @@
             value: arcgisBaseService + 'World_Physical_Map/MapServer',
             data: {type: 'tile'}}
     ];
-    var newMapLayer = {text: 'Custom Layer', value: 'custom', data: {type: null}};
-    mapLayers = mapLayers.concat(newMapLayer);
+    var newMapLayers = [
+        {text: 'WebApp Layer Set', value: 'webapp', data: {type: null}},
+        {text: 'Custom Layer', value: 'custom', data: {type: null}}
+    ];
+    mapLayers = mapLayers.concat(newMapLayers);
 
     var normalizeLayerUrl = function($control, event)
     {
@@ -126,6 +129,9 @@
                             repeaterValue: '',
                             required: true, prompt: 'Select a layer',
                             options: mapLayers},
+                        {text: 'Webapp ID', type: 'text',
+                            name: 'webappid', onlyIf: {field: 'url', value: 'webapp'},
+                            required: true },
                         {text: 'Layer URL', type: 'text',
                             name: 'custom_url', onlyIf: {field: 'url', value: 'custom'},
                             defaultValue: 'http://', required: true,

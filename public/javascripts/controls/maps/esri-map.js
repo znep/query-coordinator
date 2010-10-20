@@ -23,6 +23,7 @@
                 var mapObj = this;
                 mapObj.$dom().addClass('tundra');
 
+                dojo.require("esri.arcgis.utils");
                 dojo.require("esri.map");
                 // Apparently dojo is not loaded at the same time jQuery is; so
                 // while this plugin isn't called until jQuery onLoad, we still need
@@ -54,6 +55,12 @@
                         mapObj.showError("No layers defined");
                         return;
                     }
+
+                    processWebappLayers(mapObj, _.select(layers, function(layer, index)
+                    {
+                        layer.position = index;
+                        return layer.url == 'webapp';
+                    }));
 
                     var layersLoaded = 0;
                     for (var i = 0; i < layers.length; i++)
@@ -343,9 +350,11 @@
             setViewport: function(viewport)
             {
                 var mapObj = this;
-                mapObj.map.setExtent(new esri.geometry.Extent(
-                    viewport.xmin, viewport.ymin, viewport.xmax, viewport.ymax,
-                    new esri.SpatialReference({ wkid: viewport.sr })));
+                mapObj.map.setExtent(viewport instanceof esri.geometry.Extent
+                    ? viewport
+                    : new esri.geometry.Extent(
+                        viewport.xmin, viewport.ymin, viewport.xmax, viewport.ymax,
+                        new esri.SpatialReference({ wkid: viewport.sr })));
             },
 
             resizeHandle: function(event)
@@ -488,6 +497,95 @@
         mapObj.map.infoWindow.setContent(info)
             .setTitle(feature.attributes[idResult.displayFieldName])
             .show(evt.screenPoint, mapObj.map.getInfoWindowAnchor(evt.screenPoint));
+    };
+
+    var processWebappLayers = function(mapObj, layers)
+    {
+        _.each(layers, function(webapp, index)
+        {
+            // Tired of AJAXing in for tests.
+            //webapp.webappid = "f2c91ddb284a4edfbf7b6df176c67e1d";
+            //webapp.webappid = "foo";
+
+            // oh god it's legacy code in a prototype
+            if (webapp.id) { webapp.webappid = webapp.id; }
+
+            mapObj._addedWebapps = $.makeArray(mapObj._addedWebapps);
+            if (_.include(mapObj._addedWebapps, webapp.webappid))
+            { return; }
+            mapObj._addedWebapps.push(webapp.webappid);
+
+            webapp.layers = { base: [], operational: [] };
+            var callbacksPending;
+            var itemDeferred = esri.arcgis.utils.getItem(webapp.webappid);
+            itemDeferred.addCallback(function(itemInfo)
+            {
+                webapp.viewport = new esri.geometry.Extent(
+                    itemInfo.item.extent[0][0], itemInfo.item.extent[0][1],
+                    itemInfo.item.extent[1][0], itemInfo.item.extent[1][1],
+                    new esri.SpatialReference({wkid:4326})
+                );
+
+                callbacksPending = itemInfo.itemData.baseMap.baseMapLayers.length +
+                    itemInfo.itemData.operationalLayers.length;
+                webapp.layerCount = callbacksPending;
+                var processLayer = function(layer, type)
+                {
+                    esri.arcgis.utils._getServiceInfo(layer.url).addCallback(
+                        function(layerInfo)
+                        {
+                            webapp.layers[type].push(
+                                new layerType(layerInfo)(layer.url));
+                            _.last(webapp.layers[type]).resourceInfo = layerInfo;
+
+                            callbacksPending--;
+                            if (callbacksPending == 0)
+                            { integrateLayersIntoMap(mapObj, webapp); }
+                        });
+                };
+                _.each(itemInfo.itemData.baseMap.baseMapLayers, function(layer)
+                { processLayer(layer, 'base'); });
+                _.each(itemInfo.itemData.operationalLayers, function(layer)
+                { processLayer(layer, 'operational'); });
+            });
+        });
+    };
+
+    var integrateLayersIntoMap = function(mapObj, webapp)
+    {
+        // Untested: Shifting position appropriately to correctly insert layers.
+        _.each(mapObj.settings.view.displayFormat.layers, function(layer, index)
+        {
+            if (layer.position && index > webapp.position)
+            { layer.position += webmapp.layerCount-1; }
+        });
+
+        var position = webapp.position;
+        _.each(webapp.layers.base, function(layer)
+        { mapObj.map.addLayer(layer, position++); });
+        _.each(webapp.layers.operational, function(layer)
+        { mapObj.map.addLayer(layer, position++); });
+
+        dojo.connect(mapObj.map, 'onLoad', function()
+        {
+            mapObj.populateLayers();
+
+            if(mapObj.map.spatialReference &&
+                _.include([102100,102113,3857], mapObj.map.spatialReference.wkid))
+            { webapp.viewport =
+                esri.geometry.geographicToWebMercator(webapp.viewport); }
+            mapObj.setViewport(webapp.viewport);
+        });
+    };
+
+    var layerType = function(layerInfo)
+    {
+        // This is an extreme simplification of the process used in ESRI's
+        // utils.xd.js#_initLayer.
+        if (layerInfo.singleFusedMapCache === true)
+        { return esri.layers.ArcGISTiledMapServiceLayer; }
+        else
+        { return esri.layers.ArcGISDynamicMapServiceLayer; }
     };
 
 })(jQuery);

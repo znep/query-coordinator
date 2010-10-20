@@ -64,4 +64,34 @@ div#directory .dir-row-align3 {
     padding-top: 60px;
 }
 
-
+/*Marketing About Interactive Page*/
+#about-interactive
+{
+	text-align: left;
+}
+#interactive-tabs .main-link, .publishers-link, .consumers-link
+{
+	display: inline;
+	width: 95px;
+}
+#interactive-tabs .mainTabs li a
+{
+	display: table;
+}
+#interactive-tabs .mainTabs li .selected
+{
+	border: solid 1px #CECECE;
+}
+#interactive-tabs .main-tab #options-panel li:hover
+{
+	border: solid 1px #CECECE;
+}
+#interactive-tabs .pager-control
+{
+	position: relative;
+	left: 750px;
+}
+/*#interactive-tabs .publishers-panel ul li
+{
+	float: left;
+}*/

@@ -117,7 +117,7 @@
                     var $col = addColumn(rrObj, col, $parent);
                     _.each(col.rows || [], function(r)
                     {
-                        var $row = addRow(rrObj, $col);
+                        var $row = addRow(rrObj, r, $col);
                         if (!$.isBlank(r.columns))
                         {
                             _.each(r.columns, function(cc)
@@ -146,27 +146,23 @@
     });
 
 
-    var getWidth = function(conf)
+    var getStyles = function(conf)
     {
-        if (!$.isBlank(conf.width) &&
-            !$.isBlank(conf.width.match(/^\d+(\.\d+)?(%|em|px)$/)))
-        { return {style: {width: conf.width}}; }
-        return {};
+        return $.isBlank(conf.styles) ? {} : {style: conf.styles};
     };
 
     var addColumn = function(rrObj, col, $parent)
     {
-        var w = getWidth(col);
-        var t = $.extend(w,
-            {tagName: 'div', 'class': 'richColumn'});
-        var $newCol = $.tag(t);
+        var s = getStyles(col);
+        var $newCol = $.tag($.extend(s, {tagName: 'div', 'class': 'richColumn'}));
         $parent.append($newCol);
         return $newCol;
     };
 
-    var addRow = function(rrObj, $parent)
+    var addRow = function(rrObj, row, $parent)
     {
-        var $newRow = $.tag({tagName: 'div', 'class': 'richLine'});
+        var s = getStyles(row);
+        var $newRow = $.tag($.extend(s, {tagName: 'div', 'class': 'richLine'}));
         $parent.append($newRow);
         return $newRow;
     };
@@ -177,7 +173,7 @@
         { field.column = rrObj.settings.view.columnForTCID(field.tableColumnId); }
         var col = field.column;
 
-        var commonAttrs = getWidth(field);
+        var commonAttrs = getStyles(field);
 
         var $field;
         switch (field.type)
@@ -189,12 +185,14 @@
                 break;
 
             case 'columnData':
-                var attrs = {};
                 if (col.renderType.inlineType)
-                { attrs.style = {display: 'inline'}; }
+                {
+                    commonAttrs.style =
+                        $.extend({display: 'inline'}, commonAttrs.style);
+                }
                 $field = $.tag($.extend(commonAttrs, {tagName: 'div',
                     'class': ['richItem', col.renderTypeName],
-                    'data-columnId': col.id}, attrs));
+                    'data-columnId': col.id}));
                 break;
 
             case 'label':
@@ -217,12 +215,16 @@
         var $cols = [];
         var colWidth = Math.floor(100/rrObj.settings.columnCount);
         for (var i = 0; i < rrObj.settings.columnCount; i++)
-        { $cols.push(addColumn(rrObj, {width: colWidth + '%'}, rrObj.$dom())); }
+        {
+            $cols.push(addColumn(rrObj, {styles: {width: colWidth + '%'}},
+                rrObj.$dom()));
+        }
 
         _.each(rrObj.settings.view.visibleColumns, function(c)
         {
-            var $line = addRow(rrObj, $cols[0]);
-            addField(rrObj, {type: 'columnLabel', column: c, width: '10em'}, $line);
+            var $line = addRow(rrObj, {}, $cols[0]);
+            addField(rrObj, {type: 'columnLabel', column: c,
+                styles: { width: '10em' }}, $line);
             addField(rrObj, {type: 'columnData', column: c}, $line);
             $line.bind('image_resize',
                 function() { rrObj.adjustLayout(); });

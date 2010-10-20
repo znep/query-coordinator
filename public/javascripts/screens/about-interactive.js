@@ -32,6 +32,9 @@ $(function()
     $('#interactive-tabs .gallery').each(function()
     {
         var $container = $(this).find('.slideInner');
+        var pageCount = $container.children('.gallery-item').length;
+
+        if (pageCount == 1) return;
 
         // create the pager left, right, and container
         var $pager = $('<div class="pager-control"><div class="control leftControl">Move left</div><div class="pagebuttonContainer"></div><div class="control rightControl">Move right</div></div><a class="close-button">Close</a>');
@@ -39,7 +42,7 @@ $(function()
         $(this).append($pager);
 
         // create the page buttons
-        for (var i = 0; i < $container.children('.gallery-item').length; i++)
+        for (var i = 0; i < pageCount; i++)
         {
             $pagebuttonContainer.append('<a class="pagebutton" href="#' + i + '"></a>');
         }

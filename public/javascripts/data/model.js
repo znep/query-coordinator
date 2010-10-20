@@ -969,14 +969,24 @@ blist.namespace.fetch('blist.data');
         // Expand rows that the user has opened
         var doExpansion = function()
         {
+            var missingRows = [];
             _.each(expandedRows, function(v, rId)
             {
                 var r = self.getByID(rId);
+                if ($.isBlank(r))
+                {
+                    missingRows.push(rId);
+                    return;
+                }
+
                 var childRows = getChildRows(r);
                 $.addItemsToObject(specialRows, childRows, self.index(r) + 1);
                 _.each(childRows, function(cr) { specialLookup[cr.id] = cr; });
                 specialCount += childRows.length;
+                r.expanded = true;
             });
+
+            _.each(missingRows, function(rId) { delete expandedRows[rId]; });
 
             return !_.isEmpty(expandedRows);
         };

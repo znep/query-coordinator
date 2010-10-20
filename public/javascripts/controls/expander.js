@@ -38,7 +38,7 @@
                     var baseHeight = $content.css('height');
                     $content
                         .removeClass('collapsed')
-                        .css('height', null);
+                        .css('height', '');
                     var targetHeight = $content.height();
                     $expander.removeClass('collapsed');
                     $content
@@ -54,7 +54,7 @@
                 else
                 {
                     // need to collapse
-                    $content.addClass('collapsed').css('height', null);
+                    $content.addClass('collapsed').css('height', '');
                     var baseHeight = $content.height();
                     $content.removeClass('collapsed');
                     $content

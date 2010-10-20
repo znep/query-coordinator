@@ -114,9 +114,15 @@
                     }
                 };
 
-                vizObj.settings.view
-                    .bind('query_change', handleChange)
-                    .bind('displayformat_change', handleChange);
+                if (!vizObj._boundViewEvents)
+                {
+                    vizObj.settings.view
+                        .bind('query_change', handleChange)
+                        .bind('displayformat_change', handleChange);
+                    vizObj._boundViewEvents = true;
+                }
+
+                delete vizObj._pendingReload;
             },
 
             reload: function()
@@ -151,9 +157,10 @@
                     });
 
                 if (vizObj.getColumns())
-                { vizObj.columnsLoaded(); }
-
-                delete vizObj._pendingReload;
+                {
+                    vizObj.columnsLoaded();
+                    vizObj.ready();
+                }
             },
 
             reset: function()

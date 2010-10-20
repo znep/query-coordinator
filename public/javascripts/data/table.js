@@ -2164,7 +2164,8 @@
             insideHeight /= scalingFactor;
             inside.height(insideHeight + footerHeight);
             // Account for slight rounding errors/adjustments in height
-            while (inside.height() < insideHeight + footerHeight - 2)
+            while (inside.height() > 10 &&
+                inside.height() < insideHeight + footerHeight - 2)
             {
                 // Div didn't make it to the full height; we need to adjust
                 // our scaling factor
@@ -2835,8 +2836,8 @@
             // Measure width of a default cell and height and width of the cell
             measureUtilDOM.innerHTML = '<div class="blist-td">x</div>';
             var $measureDiv = $(measureUtilDOM.firstChild);
-            var measuredInnerDims = { width: $measureDiv.width(),
-                height: $measureDiv.height() };
+            var measuredInnerDims = { width: Math.max(0, $measureDiv.width()),
+                height: Math.max(0, $measureDiv.height()) };
             var measuredOuterDims = { width: $measureDiv.outerWidth(),
                 height: $measureDiv.outerHeight() };
 
@@ -2878,7 +2879,8 @@
                 }
                 else
                 {
-                    colStyle.width = $measureCol.width() + 'px';
+                    var w = $measureCol.width();
+                    if (w >= 0) { colStyle.width = w + 'px'; }
                 }
                 lockedWidth += $measureCol.outerWidth();
                 if (options.generateHeights)

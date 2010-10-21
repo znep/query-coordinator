@@ -164,10 +164,12 @@
               </a>
               <span class='value'><%= start_index + i %>.</span>
             </td>
+            <%- rel_type = v.federated? ?
+                  CurrentDomain.feature?(:federated_interstitial) ?
+                    'externalDomain' : 'external' : '' -%>
             <%- if @use_federations -%>
             <td class='domainIcon'>
-              <a href='<%= v.href(@port) %>'
-                <%= v.federated? ? "rel='externalDomain'" : '' %>>
+              <a href='<%= v.href(@port) %>' rel='<%= rel_type %>'>
                 <img src='<%= v.domain_icon_href %>' alt='<%= v.federated? ?
                   'Federated from ' + v.domainCName : CurrentDomain.cname %>' />
               </a>
@@ -175,7 +177,7 @@
             <%- end -%>
             <td class='nameDesc'>
               <a href='<%= v.href(@port) %>' class='name'
-                <%= v.federated? ? "rel='externalDomain'" : '' %>><%= v.name %></a>
+                rel='<%= rel_type %>'><%= v.name %></a>
               <%- if !v.category.blank? -%>
               <span class='category infoItem'><%= v.category %></span>
               <%- end -%>

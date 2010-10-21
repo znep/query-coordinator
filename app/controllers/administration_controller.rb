@@ -214,7 +214,7 @@ class AdministrationController < ApplicationController
 
     DataFederation.reject(params[:id])
     respond_to do |format|
-      format.data { render :json => { :success => true, :message => 'Rejected' } }
+      format.data { render :json => { :success => true, :message => 'Pending' } }
       format.html { redirect_federation("Federation successfully rejected") }
     end
   end

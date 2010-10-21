@@ -94,7 +94,7 @@
               <td class="status">
                 <span class="loading"></span>
                 <%- accepted = f.acceptedUserId.present? -%>
-                <span class="cellInner"><%= accepted ? 'Accepted' : 'Rejected' %></span>
+                <span class="cellInner"><%= accepted ? 'Accepted' : 'Pending' %></span>
                 <%- if f.targetDomainCName == CurrentDomain.cname %>
                   <%= link_to 'Accept', {:action => :accept_federation, :id => f.id},
                       :class => 'button' + (accepted ? ' disabled' : '') %>

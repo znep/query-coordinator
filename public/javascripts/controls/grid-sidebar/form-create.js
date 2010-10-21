@@ -78,7 +78,8 @@
     {
         if (!sidebarObj.baseFormHandler($pane, value)) { return; }
 
-        var view = $.extend({displayType: 'form'}, sidebarObj.getFormValues($pane));
+        var view = $.extend({displayType: 'form', displayFormat: null},
+                sidebarObj.getFormValues($pane));
 
         var wasPublic = blist.dataset.isPublic();
         var isPublic = isPublicForm(view);

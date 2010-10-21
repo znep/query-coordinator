@@ -118,7 +118,8 @@
                 {
                     vizObj.settings.view
                         .bind('query_change', handleChange)
-                        .bind('displayformat_change', handleChange);
+                        .bind('displayformat_change', handleChange)
+                        .bind('valid', handleChange);
                     vizObj._boundViewEvents = true;
                 }
 

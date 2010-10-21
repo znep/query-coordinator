@@ -474,9 +474,9 @@
 
             if (chartObj.settings.view.snapshotting)
             {
-                prepareToSnapshot(chartObj); 
+                prepareToSnapshot(chartObj);
             }
-     
+
         });
     };
 

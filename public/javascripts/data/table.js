@@ -45,7 +45,20 @@
 
     // Determine whether we should be in tracing mode
     var trace = false; // Set this to enable/disable
-    trace = trace && window.console && window.console.time && window.console.timeEnd;
+    trace = trace && window.console;
+
+    if (window.console && !window.console.time)
+    {
+        var traceTimes = {};
+        window.console.time = function(what)
+        { traceTimes[what] = new Date().getTime(); };
+        window.console.timeEnd = function(what)
+        {
+            var diff = new Date().getTime() - traceTimes[what];
+            if (diff > 500) { $.debug('[Time] ' + what + ': ' + diff); }
+            delete traceTimes[what];
+        };
+    }
 
     // Note entry into a block
     var begin = trace ? function(what) { console.time(what); } : function() {};
@@ -2130,18 +2143,22 @@
         // Window sizing
         var updateLayout = function()
         {
-            if (!dsReady) { return; }
+            if (!dsReady || rowOffset < 1) { return; }
 
-            begin("updateLayout.size");
+            begin("updateLayout.size.header");
             $headerScrolls.height($header.outerHeight());
+            end("updateLayout.size.header");
 
+            begin("updateLayout.size.scrolls");
             // Size the scrolling area.  TODO - change to absolute positioning
-            // when IE6 is officially dead (June 2010?)
+            // when IE6 is officially dead (2015?)
             $scrolls.height($outside.height() - $top.outerHeight() -
                 ($scrolls.outerHeight() - $scrolls.height()) - 1);
             $scrolls.width($outside.width() -
                 ($scrolls.outerWidth() - $scrolls.width()));
+            end("updateLayout.size.scrolls");
 
+            begin("updateLayout.size.calculate");
             // Figure out how much space we have to display rows
             var scrollHeight = $scrolls[0].clientHeight;
             // Count the scrolling page size
@@ -2150,14 +2167,18 @@
             // Size the inside row container
             var rowCount = model !== undefined ? model.length() : 0;
             var insideHeight = rowOffset * rowCount;
+            end("updateLayout.size.calculate");
 
+            begin("updateLayout.size.footer");
             // Calculate the height of the footer, to use for display
             var footerHeight = 0;
             if ($footerScrolls.is(':visible'))
             { footerHeight += $footerScrolls.outerHeight() - 1; }
             if (insideHeight + footerHeight < scrollHeight)
             { footerHeight += scrollHeight - footerHeight - insideHeight; }
+            end("updateLayout.size.footer");
 
+            begin("updateLayout.size.scale");
             var origHeight = insideHeight;
             // Adjust by existing scaling factor so we don't have to keep
             // refiguring the size after it has been done once
@@ -2194,15 +2215,20 @@
                 $render.css('top', adjTop);
                 $lockedRender.css('top', adjTop);
             }
+            end("updateLayout.size.scale");
+
+            begin("updateLayout.size.scrollUpdate");
             // Force a scroll update since IE won't fire it if the div changed
             // size (shortened), which would cause locked to misalign
             $scrolls.scroll();
-            end("updateLayout.size");
+            end("updateLayout.size.scrollUpdate");
 
-            begin("updateLayout.render");
+            begin("updateLayout.renderRows");
             renderRows();
+            end("updateLayout.renderRows");
+            begin("updateLayout.configWidths");
             configureWidths();
-            end("updateLayout.render");
+            end("updateLayout.configWidths");
 
             begin("updateLayout.footer");
             // Move footer up to bottom, or just above the scrollbar
@@ -3906,17 +3932,19 @@
                 if (options.rowMods !== null) { options.rowMods(renderedRows); }
                 end("renderRows.rowMods");
 
-                begin("renderRows.finalize");
-
+                begin("renderRows.cellNav");
                 if (cellNav)
                 {
                     // Cell selection and navigation
                     updateCellNavCues();
                     expandActiveCell();
                 }
+                end("renderRows.cellNav");
+
+                begin("renderRows.selection");
                 // Row selection
                 updateRowSelection();
-                end("renderRows.finalize");
+                end("renderRows.selection");
             };
 
             if (start != stop)
@@ -3927,14 +3955,22 @@
 
         var updateRowSelection = function()
         {
+            begin('rowSelection.removeSelect.inside');
             inside.find('.blist-select-row').removeClass('blist-select-row');
+            end('rowSelection.removeSelect.inside');
+            begin('rowSelection.removeSelect.locked');
             $locked.find('.blist-select-row').removeClass('blist-select-row');
+            end('rowSelection.removeSelect.locked');
+            begin('rowSelection.addSelect');
             $.each(model.selectedRows, function (k, v)
             {
                 $('#' + id + '-r' + k).addClass('blist-select-row');
                 $('#' + id + '-l' + k).addClass('blist-select-row');
             });
+            end('rowSelection.addSelect');
+            begin('rowSelection.cellNav');
             updateCellNavCues();
+            end('rowSelection.cellNav');
         };
 
         /**

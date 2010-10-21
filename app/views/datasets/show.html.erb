@@ -175,7 +175,7 @@
     </div>
 
     <div id='mainGrid' class='fullHeight'>
-      <%- if @view.is_tabular? && !@view.is_form? -%>
+      <%- if @view.is_tabular? && !@view.is_form? && @view.display.valid? -%>
       <%# SEO links for individual rows %>
       <%- next_index = 0 -%>
       <%- if !@row.nil? -%>

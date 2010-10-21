@@ -143,7 +143,9 @@ this.Model = Class.extend({
 
     _sendBatch: function(successCallback)
     {
-        $.socrataServer.runRequests({success: successCallback});
+        if (!$.socrataServer.runRequests({success: successCallback}) &&
+            _.isFunction(successCallback))
+        { successCallback(); }
     },
 
     _generateBaseUrl: function(domain, isShort)

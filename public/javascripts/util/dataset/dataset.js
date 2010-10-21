@@ -191,7 +191,7 @@ this.Dataset = Model.extend({
             if (_.isFunction(successCallback)) { successCallback(newDS); }
         };
 
-        var ds = cleanViewForSave(this);
+        var ds = cleanViewForCreate(this);
         // Can't handle saving a new view with tags
         if (!$.isBlank(ds.columns))
         {
@@ -1988,6 +1988,16 @@ function getDisplayName(ds)
 };
 
 function cleanViewForSave(ds)
+{
+    var dsCopy = ds.cleanCopy();
+
+    if (!$.isBlank(dsCopy.query))
+    { dsCopy.query.filterCondition = ds.cleanFilters(true); }
+
+    return dsCopy;
+};
+
+function cleanViewForCreate(ds)
 {
     var dsCopy = ds.cleanCopy();
 

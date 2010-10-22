@@ -23,6 +23,12 @@ $(function()
         // find the appropriate mainTab and proxy to it
         $('.mainTabs .' + $(this).attr('class') + '-link a').click();
     });
+    // handle close button clicks
+    $.live('.gallery .close-button', 'click', function(event)
+    {
+        event.preventDefault();
+        $('.mainTabs .main-link a').click();
+    });
 
 	// to start, show main
     $('.mainTabs .main-link a').click();

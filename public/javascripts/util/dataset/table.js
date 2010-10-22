@@ -15,7 +15,7 @@ Dataset.modules['blist'] =
     _setupSnapshotting: function()
     {
         var ds = this,
-            timeout = 50;
+            timeout = 500;
 
         // Give more time for the browser to render images
         if (_.any(ds.columns, function(col)
@@ -23,7 +23,7 @@ Dataset.modules['blist'] =
                 return _.include(['checkbox', 'percent', 'stars', 'flag', 'photo'],
                     col.dataTypeName);
             }))
-        { timeout = 1000; }
+        { timeout = 1500; }
 
         this._setupDefaultSnapshotting(timeout);
     }

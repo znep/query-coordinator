@@ -2138,7 +2138,8 @@
                     var isHidden = false;
                     var isDisabled = false;
                     var needsWarning = false;
-                    var msg = '';
+                    var disabledMessage = "";
+                    var warningMessage = "";
 
                     $section.removeClass('error');
 
@@ -2168,7 +2169,7 @@
                             isDisabled = isDisabled || failed;
                             if (failed && !$.isBlank(o.disabledMessage))
                             {
-                                msg += _.isFunction(o.disabledMessage) ?
+                                disabledMessage += _.isFunction(o.disabledMessage) ?
                                     o.disabledMessage() : o.disabledMessage;
                             }
                         }
@@ -2178,7 +2179,7 @@
                             needsWarning = needsWarning || failed;
                             if (!$.isBlank(o.warningMessage))
                             {
-                                msg += _.isFunction(o.warningMessage) ?
+                                warningMessage += _.isFunction(o.warningMessage) ?
                                     o.warningMessage() : o.warningMessage;
                             }
                         }
@@ -2217,10 +2218,10 @@
                     $section.toggleClass('disabled', isDisabled);
                     $section.toggleClass('warned', needsWarning);
 
-                    if (needsWarning)
-                    { $section.find('.sectionWarningMessage').text(msg); }
                     if (isDisabled)
-                    { $section.find('.sectionDisabledMessage').text(msg); }
+                    { $section.find('.sectionDisabledMessage').text(disabledMessage); }
+                    else if (needsWarning)
+                    { $section.find('.sectionWarningMessage').text(warningMessage); }
 
                     updateWizardVisibility(sidebarObj);
                 });

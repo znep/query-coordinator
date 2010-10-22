@@ -56,7 +56,12 @@ metricsNS.updateTopListWrapper = function($context, data, mapFunction, postProce
 // This one's pretty easy
 metricsNS.updateTopSearchesCallback = function($context, key)
 {
-    metricsNS.updateTopListWrapper($context, $context.data(metricsNS.DATA_KEY)[key]);
+    // HACK HACK HACK
+    var data = $context.data(metricsNS.DATA_KEY)[key];
+    delete data["''"];
+    delete data["null"];
+
+    metricsNS.updateTopListWrapper($context, data);
 };
 
 // Need to do some extra work here because only UIDs are returned from balboa

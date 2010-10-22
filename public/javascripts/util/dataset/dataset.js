@@ -996,9 +996,12 @@ this.Dataset = Model.extend({
 
         var name = blist.snapshot.name;
         // use the current viewport
-        socrataScreenshot.defineRegion(name, 0, 0, window.innerWidth, window.innerHeight);
-        socrataScreenshot.snap(name);
-        socrataScreenshot.done();
+        setTimeout(function()
+                   {
+                       socrataScreenshot.defineRegion(name, 0, 0, window.innerWidth, window.innerHeight);
+                       socrataScreenshot.snap(name);
+                       socrataScreenshot.done();
+                   }, 100);
     },
 
 

@@ -47,6 +47,11 @@
         type: 'checkbox', trueValue: '3', falseValue: '0', defaultValue: '3',
         wizard: 'Choose whether or not you want points drawn for each data point'};
 
+    var pieJoinAngle = {text: 'Min. Angle', name: 'displayFormat.pieJoinAngle',
+        type: 'slider', minimum: 0, maximum: 10, defaultValue: 1,
+        wizard: 'Slices below this angle in degrees will be ' +
+            'combined into an "Other" slice'};
+
 
     /*** Helpers ***/
 
@@ -283,6 +288,7 @@
 
             // Donut chart
             configDonut,
+            basicAdv(Dataset.chart.types.donut, [legendPos, pieJoinAngle]),
 
 
             // Line chart
@@ -300,12 +306,7 @@
 
             // Pie chart
             configPie,
-            basicAdv(Dataset.chart.types.pie, [legendPos,
-                {text: 'Min. Angle', name: 'displayFormat.pieJoinAngle',
-                type: 'slider', minimum: 0, maximum: 10, defaultValue: 1,
-                wizard: 'Slices below this angle in degrees will be ' +
-                    'combined into an "Other" slice'}
-            ]),
+            basicAdv(Dataset.chart.types.pie, [legendPos, pieJoinAngle]),
 
 
             // Time line
@@ -330,7 +331,7 @@
                 }
             ] },
             { title: 'Details', name: 'treemapDetails', selectable: true,
-            onlyIf: onlyIfForChart(Dataset.chart.types.treemap, true),
+            onlyIf: onlyIfForChart(Dataset.chart.types.treemap, false),
             fields: [
                 {text: 'Color', name: 'displayFormat.baseColor',
                     type: 'color', defaultValue: '#042656' }

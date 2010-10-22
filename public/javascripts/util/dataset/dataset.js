@@ -1001,7 +1001,7 @@ this.Dataset = Model.extend({
                        socrataScreenshot.defineRegion(name, 0, 0, window.innerWidth, window.innerHeight);
                        socrataScreenshot.snap(name);
                        socrataScreenshot.done();
-                   }, 100);
+                   }, 1000);
     },
 
 

@@ -93,7 +93,8 @@ ActionController::Routing::Routes.draw do |map|
       :users => :get,
       :moderation => :get,
       :sdp_templates => :get,
-      :datasets => :get
+      :datasets => :get,
+      :verify_layer_url => :get
     }
 
   map.with_options :controller => 'administration' do |admin|

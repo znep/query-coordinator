@@ -254,6 +254,11 @@ class AdministrationController < ApplicationController
     end
   end
 
+  def verify_layer_url
+    response = fetch_layer_info(params[:url])
+    respond_to do |format| format.data { render :json => response.to_json } end
+  end
+
 private
   def check_auth_level(level = 'manage_users')
     render_forbidden unless CurrentDomain.user_can?(current_user, level)
@@ -283,4 +288,31 @@ private
       end
     end
   end
+
+  def fetch_layer_info(layer_url)
+    begin
+      uri = URI.parse(URI.extract(layer_url).first)
+      uri.query = "f=json"
+      layer_info = JSON.parse(Net::HTTP.get(uri))
+    rescue SocketError, URI::InvalidURIError, JSON::ParserError
+      error = "url invalid"
+    end
+    error = 'url invalid' if layer_info && (layer_info['error'] \
+                                          || !layer_info['spatialReference'])
+
+    if error
+      return { 'error' => error }
+    else
+      title = layer_info['documentInfo']['Title'] if layer_info['documentInfo']
+      title = uri.path.slice(uri.path.index('services')+8..-1) if title.blank?
+
+      layer = {}
+      layer['text']  = "#{title} (#{uri.host})"
+      layer['value'] = uri.to_s.sub /\?.*$/, ''
+      layer['data']  = { 'type' => layer_info['tileInfo'] ? 'tile' : 'dynamic' }
+
+      return layer
+    end
+  end
+
 end

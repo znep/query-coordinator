@@ -503,12 +503,7 @@
     {
         _.each(layers, function(webapp, index)
         {
-            // Tired of AJAXing in for tests.
-            //webapp.webappid = "f2c91ddb284a4edfbf7b6df176c67e1d";
-            //webapp.webappid = "foo";
-
-            // oh god it's legacy code in a prototype
-            if (webapp.id) { webapp.webappid = webapp.id; }
+            if (!webapp.options) { webapp.options = {}; }
 
             mapObj._addedWebapps = $.makeArray(mapObj._addedWebapps);
             if (_.include(mapObj._addedWebapps, webapp.webappid))
@@ -531,12 +526,19 @@
                 webapp.layerCount = callbacksPending;
                 var processLayer = function(layer, type)
                 {
+                    var options = {
+                        opacity: layer.opacity * (webapp.options.opacity || 1),
+                        visible: layer.visibility
+                    };
                     esri.arcgis.utils._getServiceInfo(layer.url).addCallback(
                         function(layerInfo)
                         {
                             webapp.layers[type].push(
-                                new layerType(layerInfo)(layer.url));
-                            _.last(webapp.layers[type]).resourceInfo = layerInfo;
+                                new layerType(layerInfo)(layer.url, options));
+                            var newLayer = _.last(webapp.layers[type]);
+                            newLayer.resourceInfo = layerInfo;
+                            if (newLayer.setVisibleLayers)
+                            { newLayer.setVisibleLayers(layer.visibleLayers); }
 
                             callbacksPending--;
                             if (callbacksPending == 0)
@@ -547,6 +549,10 @@
                 { processLayer(layer, 'base'); });
                 _.each(itemInfo.itemData.operationalLayers, function(layer)
                 { processLayer(layer, 'operational'); });
+            }).addErrback(function(itemInfo)
+            {
+                mapObj.showError('Webapp ID "' + webapp.webappid +
+                                 '" is not a valid ID.');
             });
         });
     };
@@ -560,14 +566,12 @@
             { layer.position += webmapp.layerCount-1; }
         });
 
+        var layersToLoad = webapp.layerCount;
         var position = webapp.position;
-        _.each(webapp.layers.base, function(layer)
-        { mapObj.map.addLayer(layer, position++); });
-        _.each(webapp.layers.operational, function(layer)
-        { mapObj.map.addLayer(layer, position++); });
-
-        dojo.connect(mapObj.map, 'onLoad', function()
+        var layerReady = function()
         {
+            layersToLoad--;
+            if (layersToLoad > 0) { return; }
             mapObj.populateLayers();
 
             if(mapObj.map.spatialReference &&
@@ -575,7 +579,15 @@
             { webapp.viewport =
                 esri.geometry.geographicToWebMercator(webapp.viewport); }
             mapObj.setViewport(webapp.viewport);
-        });
+        };
+        var addLayer = function(layer)
+        {
+            dojo.connect(layer, 'onLoad', layerReady);
+            mapObj.map.addLayer(layer, position++);
+        };
+
+        _.each(webapp.layers.base, addLayer);
+        _.each(webapp.layers.operational, addLayer);
     };
 
     var layerType = function(layerInfo)

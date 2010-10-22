@@ -39,10 +39,15 @@
                 hookUpNavigation(prtObj);
                 renderLayout(prtObj);
                 prtObj.settings.view.bind('row_count_change', function()
-                    { updateNavigation(prtObj); });
-                prtObj.settings.view.bind('columns_changed', function()
+                    { updateNavigation(prtObj); })
+                    .bind('columns_changed', function()
                     {
                         renderLayout(prtObj);
+                        renderCurrentRow(prtObj);
+                    })
+                    .bind('query_change', function()
+                    {
+                        prtObj._curRowIndex = 0;
                         renderCurrentRow(prtObj);
                     });
 

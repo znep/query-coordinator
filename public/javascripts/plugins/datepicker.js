@@ -675,7 +675,7 @@ l : window.pageXOffset || (m ? document.documentElement.scrollLeft : document.bo
                 }
                 cal.css({
                     visibility: 'visible',
-                    display: 'block',
+                    display: 'none',
                     top: top + 'px',
                     left: left + 'px'
                 });

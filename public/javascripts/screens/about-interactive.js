@@ -33,6 +33,8 @@ $(function()
 	// to start, show main
     $('.mainTabs .main-link a').click();
 
+	//append close-button
+	$('.slideInner').append('<a class="close-button">Close</a>');
 
     // add slideshow pagers
     $('#interactive-tabs .gallery').each(function()
@@ -43,7 +45,7 @@ $(function()
         if (pageCount == 1) return;
 
         // create the pager left, right, and container
-        var $pager = $('<div class="pager-control"><div class="control leftControl">Move left</div><div class="pagebuttonContainer"></div><div class="control rightControl">Move right</div></div><a class="close-button">Close</a>');
+        var $pager = $('<div class="pager-control"><div class="control leftControl">Move left</div><div class="pagebuttonContainer"></div><div class="control rightControl">Move right</div></div>');
         var $pagebuttonContainer = $pager.find('.pagebuttonContainer');
         $(this).append($pager);
 

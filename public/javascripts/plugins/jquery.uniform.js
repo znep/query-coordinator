@@ -48,6 +48,10 @@ Enjoy!
 // clint.tseng@socrata.com 19/05/10:
 // setting filename not happening if form input was preserved
 
+// jeff.scherpelz@socrata.com 21/10/10:
+// add another div in select to do dynamic sizing, since jq1.4.3 broke getting the
+// styled width of a hidden element
+
 (function($) {
     $.uniform = {
         options: {
@@ -96,10 +100,12 @@ Enjoy!
         function doSelect(elem){
 
             var divTag = $('<div />'),
+                containerTag = $('<div />'),
                 innerDivTag = $('<div />'),
                 spanTag = $('<span />');
 
             divTag.addClass(options.selectClass).addClass(options.globalClass);
+            containerTag.addClass('container');
 
             if(options.useID){
                 divTag.attr("id", options.idPrefix+"-"+elem.attr("id"));
@@ -112,12 +118,14 @@ Enjoy!
 
             elem.css('opacity', 0);
             elem.wrap(divTag);
+            containerTag.append(innerDivTag);
             innerDivTag.append(spanTag);
-            elem.before(innerDivTag);
+            elem.before(containerTag);
 
             //redefine variables
             divTag = elem.parent("div");
-            innerDivTag = elem.siblings('div');
+            containerTag = elem.siblings('div');
+            innerDivTag = containerTag.children('div');
             spanTag = innerDivTag.find("span");
 
             elem.change(function() {
@@ -148,16 +156,6 @@ Enjoy!
             if($(elem).attr("disabled")){
                 //box is checked by default, check our box
                 divTag.addClass(options.disabledClass);
-            }
-
-            // clint.tseng@socrata.com 19/05/10:
-            // set width of select to match that of its target
-            // - 10 for padding; use css('width') to minimize cross-browser issues
-            var targetWidth = parseInt(elem.css('width'), 10);
-            if (!isNaN(targetWidth))
-            {
-                divTag.css('width', targetWidth - 10);
-                spanTag.width(targetWidth - 37);
             }
 
             storeElement(elem);

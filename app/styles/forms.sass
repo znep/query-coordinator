@@ -231,65 +231,69 @@ div.uniform.selector,
   line-height: 26px
   height: 26px
   position: relative
-  padding-left: 10px
   vertical-align: bottom
 
   div
     background-position: right 0px
     cursor: pointer
-    float: left
+    margin-left: 10px
     padding: 0px 25px 0px 2px
 
     span
       @include clip-text
       color: #666
       display: block
-      float: left
       height: 26px
       line-height: 26px
       text-shadow: 0 1px 0 #fff
 
+  div.container
+    background-image: none
+    margin: 0
+    position: absolute
+    padding: 0
+    width: 100%
+
   select
     border: solid 1px #fff
-    bottom: 3px
     font-size: 1em
-    left: 3px
     opacity: 0
-    position: absolute
-    right: 0px
-    top: 3px
+    position: relative
 
   &:active, &.active
     background-position: -483px -156px
 
-    div
+    .container div
       background-position: right -26px
 
   &.focus, &.hover, &:hover
     background-position: -483px -182px
 
-    div
+    .container div
       background-position: right -52px
 
   &.focus:active, &.focus.active
     background-position: -483px -208px
 
-    div
+    .container div
       background-position: right -78px
 
   &:hover:active, &.active:hover
     background-position: -483px -208px
 
-    div
+    .container div
       background-position: right -78px
 
   &.disabled
     background-position: -483px -234px
 
-    div
+    .container div
       background-position: right -104px
       span
         color: #bbb
+
+.blist-combo div span
+  float: left
 
 .blist-combo-focused
   background-position: -483px -182px

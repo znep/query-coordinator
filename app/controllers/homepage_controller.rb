@@ -3,6 +3,13 @@ class HomepageController < ApplicationController
   include BrowseActions
 
   def show
+    # process stories only if not already rendered
+    unless !CurrentDomain.templates['data_splash'].nil? ||
+        (@stories_cached = read_fragment(app_helper.cache_key(
+          'homepage-stories', { 'domain' => CurrentDomain.cname })))
+      @stories = Story.find
+    end
+
     # process featured views only if not already rendered
     unless CurrentDomain.featured_views.nil? ||
         (@featured_cached = read_fragment(app_helper.cache_key(

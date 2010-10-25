@@ -8,6 +8,132 @@
     margin: 0
       bottom: 0.5em
 
+.storiesContainer
+  height: 25em
+  overflow: hidden
+  padding: 0
+  position: relative
+
+  .storyTexts
+    height: 100%
+    position: absolute
+    width: 100%
+    z-index: 3
+
+    li
+      display: none
+      margin: $stories_box_margin
+      padding: 1.5em
+      position: absolute
+      @if $stories_orientation == 'right'
+        right: 0
+      width: $stories_box_width
+
+      h2
+        color: $color_stories_box_headline_color
+        font-family: $stories_box_headline_font_family
+        font-size: $stories_box_headline_font_size
+        margin-top: 0.5em
+        @if $stories_box_headline_shadow_alpha > 0 and $stories_box_headline_shadow_radius > 0
+          text-shadow: 0 0 $stories_box_headline_shadow_radius rgba(0, 0, 0, $stories_box_headline_shadow_alpha)
+
+      p
+        color: $color_stories_box_body_color
+        font-family: $stories_box_body_font_family
+        font-size: $stories_box_body_font_size
+        text-align: justify
+
+  .storyTextbox
+    @if $stories_box_margin == 0
+      @include border-radius-corner(top, left, 0.2em)
+      @include border-radius-corner(bottom, left, 0.2em)
+    @else
+      @include border-radius(0.4em)
+    background: $color_stories_box_color
+    height: 22em - ($stories_box_margin * 2)
+    @include opacity($stories_box_alpha)
+    padding: 1.5em
+    position: absolute
+    @if $stories_orientation == 'right'
+      right: 0
+    margin: $stories_box_margin
+    width: $stories_box_width
+    z-index: 2
+
+  .storyPager
+    opacity: 0.9
+    position: absolute
+    text-align: center
+    z-index: 4
+
+    @if $stories_pager_type == 'bullets'
+      @include story-pager-glyphs(a, $stories_pager_disposition)
+
+    @if $stories_pager_position == 'box'
+      bottom: 1.3em
+      float: $stories_orientation
+      padding: 0 1.5em
+      width: $stories_box_width
+    @else if $stories_pager_position == 'center'
+      bottom: 1em
+      height: 0.7em
+      width: 100%
+
+    a
+      @if $stories_pager_disposition == 'light'
+        color: #ddd
+      @else if $stories_pager_disposition == 'dark'
+        color: #222
+      display: inline-block
+      font-weight: bold
+      margin-left: 0.3em
+
+      &.selected
+        @if $stories_pager_disposition == 'light'
+          color: #fff
+        @else if $stories_pager_disposition == 'dark'
+          color: #000
+
+      .ie7 &
+        display: inline
+        // text-indent is moving the background image (???)
+        line-height: 9999px
+        overflow: hidden
+        text-indent: 0
+        zoom: 1
+
+  @if $stories_pager_position == 'center'
+    .storyPagerBackground
+      @if $stories_pager_disposition == 'light'
+        background-color: #000
+      @else if $stories_pager_disposition == 'dark'
+        background-color: #fff
+      @include border-radius-corner(bottom, left, 0.2em)
+      @include border-radius-corner(bottom, right, 0.2em)
+      bottom: 0
+      height: 2.7em
+      @include opacity(0.25)
+      position: absolute
+      width: 100%
+      z-index: 3
+
+  .storyImages
+    position: absolute
+    width: 100%
+
+    li
+      @include border-radius(0.2em)
+      display: none
+      height: 25em
+      position: absolute
+      width: 100%
+
+      img
+        @include border-radius(0.2em)
+        display: inline
+        @if $stories_orientation == 'left'
+          float: right
+
 .featuredViews
   margin: 1em
     top: 0

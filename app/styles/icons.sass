@@ -540,7 +540,6 @@
 @mixin authentication-icons($subselector: '.icon')
   #{$subselector}
     @include text-hiding
-    @include ie6-fix
     background-image: url(/stylesheets/images/icons/authentication_icons.png?1)
     height: 25px
     width: 25px 
@@ -560,8 +559,12 @@
 @mixin profile-icons($subselector: '.icon')
   #{$subselector}
     @include text-hiding
+<<<<<<< HEAD
     @include ie6-fix
     background-image: url(/stylesheets/images/icons/profile_icons.png?1)
+=======
+    background-image: url(/stylesheets/images/interface/profile_icons.png?1)
+>>>>>>> FEATURE: Stories on home page.
     height: 13px
     width: 15px 
 
@@ -574,3 +577,20 @@
   &.accountSettings #{$subselector}
     background-position: 0 -39px
 
+// Story pager icons
+@mixin story-pager-glyphs($subselector: '.icon', $disposition: 'light')
+  #{$subselector}
+    @include text-hiding
+    background-image: url(/stylesheets/images/interface/story_pager.png)
+    height: 7px
+    width: 7px
+
+  // default: $disposition is light
+  $yoffset: 0
+  @if $disposition == 'dark'
+    $yoffset: -7px
+
+  & #{$subselector}
+    background-position: 0 $yoffset
+  & #{$subselector}.selected
+    background-position: -7px $yoffset

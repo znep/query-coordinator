@@ -88,6 +88,13 @@ $light_bg_color: #fafafa
   white-space: -o-pre-wrap
   word-wrap: break-word
 
+@mixin opacity($o)
+  opacity: $o
+  .ie7 &
+    filter: alpha(opacity=#{$o * 100})
+  .ie8 &
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=#{$o * 100})"
+
 // Convenience methods
 
 @mixin center($width, $height: $width)

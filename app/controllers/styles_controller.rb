@@ -161,6 +161,8 @@ protected
       hash.each do |key, value|
         if definition[key.to_sym] == 'string'
           result += "$#{path}#{key}: \"#{value}\"\n"
+        elsif definition[key.to_sym] == 'number'
+          result += "$#{path}#{key}: #{value}\n"
         elsif definition[key.to_sym] == 'boolean'
           result += "$#{path}#{key}: #{value.to_s}\n"
         elsif definition[key.to_sym] == 'dimensions'
@@ -232,17 +234,36 @@ protected
                                     { :background  => 'color',
                                       :border      => 'color',
                                       :text        => 'color' } },
-    :table     => { :header      => { :inactive => 'color',
-                                      :active => 'color' } },
+    :table     => { :header      => { :inactive    => 'color',
+                                      :active      => 'color' } },
     :text      => { :error       => 'color' },
     :images    => { :logo_header => 'image',
                     :logo_footer => 'image' },
     :chrome    => { :background  => 'color',
                     :box_border  => 'color',
-                    :sidebar     => { :background => 'color',
-                                      :text => 'color' },
-                    :nav_buttons => { :background => 'color',
-                                      :border => 'color' } } }
+                    :sidebar     => { :background  => 'color',
+                                      :text        => 'color' },
+                    :nav_buttons => { :background  => 'color',
+                                      :border      => 'color' } },
+    :stories   => { :orientation => 'string',
+                    :pager       => { :type        => 'string',
+                                      :position    => 'string',
+                                      :disposition => 'string' },
+                    :box         => { :alpha       => 'number',
+                                      :color       => 'color',
+                                      :margin      => 'dimensions',
+                                      :shadow      => 'string',
+                                      :width       => 'dimensions',
+                                      :headline    => { :color => 'color',
+                                                        :font_family => 'string',
+                                                        :font_size   => 'dimensions',
+                                                        :shadow      => { :radius => 'dimensions',
+                                                                          :alpha => 'number' } },
+                                      :body        => { :color => 'color',
+                                                        :font_family => 'string',
+                                                        :font_size   => 'dimensions',
+                                                        :shadow      => { :radius => 'dimensions',
+                                                                          :alpha => 'number' } } } } }
 
   @@widget_theme_parse = {
     :frame     => { :border     => { :color => 'color',

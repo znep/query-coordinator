@@ -24,6 +24,7 @@ blist.datasetPage.updateValidView = function()
 {
     $('.invalidView').removeClass('invalidView');
     datasetPageNS.sidebar.updateEnabledSubPanes();
+    datasetPageNS.initGrid();
 };
 
 blist.datasetPage.hidePageRenderType = function()
@@ -55,22 +56,20 @@ blist.datasetPage.showPageRenderType = function()
 
 blist.datasetPage.initGrid = function()
 {
-    if (datasetPageNS.gridInitialized || !blist.dataset.isGrid()) { return; }
+    if (datasetPageNS.gridInitialized || !blist.dataset.isGrid() ||
+        !blist.dataset.valid) { return; }
 
     datasetPageNS.$dataGrid
         .datasetGrid({view: blist.dataset,
             columnDeleteEnabled: blist.dataset.type == 'blist' &&
                 blist.dataset.hasRight('remove_column'),
             columnPropertiesEnabled: true,
-            columnNameEdit: blist.dataset.hasRight('update_view'),
+            columnNameEdit: blist.dataset.type == 'blist' &&
+                blist.dataset.hasRight('update_view'),
             showAddColumns: blist.dataset.type == 'blist' &&
                 blist.dataset.hasRight('add_column'),
             accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
-            clearTempViewCallback: datasetPageNS.clearTempView,
-            setTempViewCallback: datasetPageNS.setTempView,
             filterForm: '#searchForm', clearFilterItem: '#searchForm .clearSearch',
-            isInvalid: !blist.dataset.valid,
-            validViewCallback: datasetPageNS.updateValidView,
             addColumnCallback: function(parId)
             {
                 datasetPageNS.sidebar.addPane('edit.addColumn', {parentId: parId});

@@ -167,10 +167,13 @@ this.Dataset = Model.extend({
         var ds = this;
         if (!ds.hasRight('update_view')) { return false; }
 
+        var vizIds = _.pluck(ds.visibleColumns, 'id');
         var dsSaved = function(newDS)
         {
             ds._update(newDS, true, false, true);
             ds._clearTemporary();
+            if (!_.isEqual(vizIds, _.pluck(ds.visibleColumns, 'id')))
+            { ds.setVisibleColumns(vizIds); }
             if (_.isFunction(successCallback)) { successCallback(ds); }
         };
 
@@ -1170,10 +1173,6 @@ this.Dataset = Model.extend({
         ds.apiUrl = ds._generateApiUrl();
         ds.domainUrl = ds._generateBaseUrl(ds.domainCName);
 
-        var oldValid = ds.valid;
-        ds.valid = ds._checkValidity();
-        if (!oldValid && ds.valid) { ds.trigger('valid'); }
-
         if (!$.isBlank(newDS.columns))
         { ds.updateColumns(newDS.columns, forceFull, updateColOrder); }
 
@@ -1221,6 +1220,10 @@ this.Dataset = Model.extend({
         else if (ds._origSearchString == ds.searchString &&
             _.isEqual(ds._origQuery, ds.query))
         { ds._clearTemporary(); }
+
+        var oldValid = ds.valid;
+        ds.valid = ds._checkValidity();
+        if (!oldValid && ds.valid) { ds.trigger('valid'); }
     },
 
     _updateGroupings: function(oldGroupings, oldGroupAggs)
@@ -1254,7 +1257,7 @@ this.Dataset = Model.extend({
                 col.format.drill_down = true;
             }
 
-            if (col.hidden && !_.any(oldGroupings, function(og)
+            if (col.hidden && !_.any(oldGroupings || [], function(og)
                 { return og.columnId == col.id; }))
             { col.update({flags: _.without(col.flags, 'hidden')}); }
 
@@ -1847,6 +1850,7 @@ this.Dataset = Model.extend({
         iconUrl: true,
         id: true,
         licenseId: true,
+        message: true,
         metadata: true,
         name: true,
         originalViewId: true,

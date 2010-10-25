@@ -137,8 +137,9 @@
         defaults = {
             flat: false,
             starts: 1,
-            prev: '&#9664;',
-            next: '&#9654;',
+            // These don't seem to work in IE...
+            prev: '&laquo;',//'&#9664;',
+            next: '&raquo;',//'&#9654;',
             lastSel: false,
             mode: 'single',
             view: 'days',

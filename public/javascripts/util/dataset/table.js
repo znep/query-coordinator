@@ -15,7 +15,7 @@ Dataset.modules['blist'] =
     _setupSnapshotting: function()
     {
         var ds = this,
-            timeout = 300;
+            timeout = 500;
 
         // Give more time for the browser to render images
         if (_.any(ds.columns, function(col)

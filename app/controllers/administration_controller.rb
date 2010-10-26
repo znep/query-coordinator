@@ -278,7 +278,7 @@ class AdministrationController < ApplicationController
       return redirect_to :action => 'metadata'
     end
 
-    metadata << { 'name' => field, 'fields' => [] }
+    metadata << Hashie::Mash.new({ 'name' => field, 'fields' => [] })
 
     save_metadata(get_configuration(), metadata, "Fieldset Successfully Created")
   end
@@ -309,8 +309,8 @@ class AdministrationController < ApplicationController
       return redirect_to :action => 'metadata'
     end
 
-    fieldset.fields << { 'name' => field_name,
-      'required' => false }
+    fieldset.fields << Hashie::Mash.new({ 'name' => field_name,
+      'required' => false })
 
     save_metadata(get_configuration(), metadata, "Field Successfully Created")
   end

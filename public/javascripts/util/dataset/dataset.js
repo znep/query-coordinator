@@ -167,12 +167,14 @@ this.Dataset = Model.extend({
         var ds = this;
         if (!ds.hasRight('update_view')) { return false; }
 
-        var vizIds = _.pluck(ds.visibleColumns, 'id');
+        var vizIds = $.isBlank(ds.visibleColumns) ? null :
+            _.pluck(ds.visibleColumns, 'id');
         var dsSaved = function(newDS)
         {
             ds._update(newDS, true, false, true);
             ds._clearTemporary();
-            if (!_.isEqual(vizIds, _.pluck(ds.visibleColumns, 'id')))
+            if (!$.isBlank(vizIds) &&
+                !_.isEqual(vizIds, _.pluck(ds.visibleColumns, 'id')))
             { ds.setVisibleColumns(vizIds); }
             if (_.isFunction(successCallback)) { successCallback(ds); }
         };

@@ -334,6 +334,8 @@ class AdministrationController < ApplicationController
       !config.raw_properties.key?('custom_dataset_metadata')
     end
 
+    CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
+
     respond_to do |format|
       format.data { render :json => {:success => true} }
       format.html { redirect_to :action => 'metadata' }
@@ -355,6 +357,8 @@ class AdministrationController < ApplicationController
     update_or_create_property(config, 'custom_dataset_metadata', metadata) do
       !config.raw_properties.key?('custom_dataset_metadata')
     end
+
+    CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
 
     respond_to do |format|
       format.data { render :json => {:success => true, :direction => params[:direction]} }
@@ -426,6 +430,8 @@ private
     update_or_create_property(config, 'custom_dataset_metadata', metadata) do
       !config.raw_properties.key?('custom_dataset_metadata')
     end
+
+    CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
 
     flash[:notice] = successMessage
     redirect_to :action => 'metadata'

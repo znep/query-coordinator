@@ -7,10 +7,10 @@
 
 <%- if !CurrentDomain.templates['data_splash'].nil? -%>
   <%= render_domain_template('data_splash') %>
-<%- elsif (defined? @stories_cached) || (defined? @stories) -%>
+<%- elsif !@stories_cached.nil? || ((defined? @stories) && !@stories.empty?) -%>
   <%- prerendered_cache cache_key('homepage-stories', { 'domain' => CurrentDomain.cname }),
       @stories_cached, :expires_in => 16.minutes do -%>
-    <div class="contentBox storiesContainer">
+    <div class="contentBox storiesContainer" data-orientation="<%= CurrentDomain.theme.stories.orientation %>">
       <div class="storyPagerBackground"></div>
       <div class="storyPager"></div>
       <ul class="storyTexts">

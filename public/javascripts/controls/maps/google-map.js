@@ -176,7 +176,8 @@
 
                 if (mapObj.settings.view.displayFormat.viewport)
                 { mapObj.setViewport(mapObj.settings.view.displayFormat.viewport); }
-                else if (mapObj._boundsCounts > 1)
+                else if (mapObj._boundsCounts > 1 ||
+                    mapObj.settings.view.displayFormat.heatmap)
                 { mapObj.map.fitBounds(mapObj._bounds); }
                 else
                 {

@@ -115,8 +115,8 @@
         var query = new esri.tasks.Query();
         query.outFields = MAP_TYPE[config.type].fieldsReturned;
         query.returnGeometry = true;
-        query.outSpatialReference = new esri.SpatialReference(
-            { wkid: mapObj.map.spatialReference.wkid || 102100 });
+        query.outSpatialReference = mapObj.map.spatialReference ||
+            new esri.SpatialReference({ wkid: 102100 });
 
         query.where = MAP_TYPE[config.type].where(mapObj, config);
         new esri.tasks.QueryTask(

@@ -42,6 +42,8 @@
         font-family: $stories_box_body_font_family
         font-size: $stories_box_body_font_size
         text-align: justify
+        @if $stories_box_body_shadow_alpha > 0 and $stories_box_body_shadow_radius > 0
+          text-shadow: 0 0 $stories_box_body_shadow_radius rgba(0, 0, 0, $stories_box_body_shadow_alpha)
 
   .storyTextbox
     @if $stories_box_margin == 0
@@ -61,7 +63,6 @@
     z-index: 2
 
   .storyPager
-    opacity: 0.9
     position: absolute
     text-align: center
     z-index: 4
@@ -71,8 +72,9 @@
 
     @if $stories_pager_position == 'box'
       bottom: 1.3em
-      float: $stories_orientation
       padding: 0 1.5em
+      @if $stories_orientation == 'right'
+        right: 0
       width: $stories_box_width
     @else if $stories_pager_position == 'center'
       bottom: 1em

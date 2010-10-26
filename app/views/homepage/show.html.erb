@@ -7,7 +7,7 @@
 
 <%- if !CurrentDomain.templates['data_splash'].nil? -%>
   <%= render_domain_template('data_splash') %>
-<%- elsif (defined? @featured_cached) || (defined? @stories) -%>
+<%- elsif (defined? @stories_cached) || (defined? @stories) -%>
   <%- prerendered_cache cache_key('homepage-stories', { 'domain' => CurrentDomain.cname }),
       @stories_cached, :expires_in => 16.minutes do -%>
     <div class="contentBox storiesContainer">

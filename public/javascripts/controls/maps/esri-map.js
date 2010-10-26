@@ -46,6 +46,11 @@
                         mapObj._mapLoaded = true;
                         if (mapObj._dataLoaded)
                         { mapObj.renderData(mapObj._rows); }
+
+                        // Hack for ESRI JSAPI 2.1, bug #2835.
+                        // Refer: esri._CoreMap#_addLayerHandler
+                        dojo.connect(mapObj.map.graphics._div.rawNode, 'click',
+                            mapObj.map, '_gClickHandler');
                     });
 
                     var layers = mapObj.settings.view.displayFormat.layers ||

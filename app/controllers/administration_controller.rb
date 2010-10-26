@@ -270,18 +270,18 @@ class AdministrationController < ApplicationController
     field = params[:newFieldsetName]
 
     if field.nil? || field.strip().blank?
-      flash[:error] = "Cannot create fieldset without a name"
+      flash[:error] = "Cannot create field set without a name"
       return redirect_to :action => 'metadata'
     end
 
     if metadata.any? { |f| f['name'].downcase == field.downcase }
-      flash[:error] = "Cannot create duplicate fieldset named '#{field}'"
+      flash[:error] = "Cannot create duplicate field set named '#{field}'"
       return redirect_to :action => 'metadata'
     end
 
     metadata << Hashie::Mash.new({ 'name' => field, 'fields' => [] })
 
-    save_metadata(config, metadata, "Fieldset Successfully Created")
+    save_metadata(config, metadata, "Field set Successfully Created")
   end
   def delete_metadata_fieldset
     check_auth_level('edit_site_theme')
@@ -289,7 +289,7 @@ class AdministrationController < ApplicationController
     metadata = config.properties.custom_dataset_metadata
     metadata.delete_at(params[:fieldset].to_i)
 
-    save_metadata(config, metadata, "Fieldset Successfully Removed")
+    save_metadata(config, metadata, "Field set Successfully Removed")
   end
   def create_metadata_field
     check_auth_level('edit_site_theme')

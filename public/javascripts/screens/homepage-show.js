@@ -65,7 +65,7 @@
             $slices.css('background-color', $nextImage.css('background-color'))
                    .css('background-image', 'url(' + $nextImage.children('img').attr('src') + ')')
                    .css('opacity', 0);
-            $slices.width(storiesContainerWidth / 30);
+            $slices.width(Math.ceil(storiesContainerWidth / 30));
             $slices.height($storiesContainer.height());
             $slices.each(function(i)
             {

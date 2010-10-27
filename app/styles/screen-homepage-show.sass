@@ -9,7 +9,7 @@
       bottom: 0.5em
 
 .storiesContainer
-  height: 25em
+  height: $stories_height
   overflow: hidden
   padding: 0
   position: relative
@@ -52,7 +52,7 @@
     @else
       @include border-radius(0.4em)
     background: $color_stories_box_color
-    height: 22em - ($stories_box_margin * 2)
+    height: $stories_height - 3em - ($stories_box_margin * 2)
     @include opacity($stories_box_alpha)
     padding: 1.5em
     position: absolute

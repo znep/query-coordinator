@@ -246,6 +246,7 @@ protected
                     :nav_buttons => { :background  => 'color',
                                       :border      => 'color' } },
     :stories   => { :orientation => 'string',
+                    :height      => 'dimensions',
                     :pager       => { :type        => 'string',
                                       :position    => 'string',
                                       :disposition => 'string' },

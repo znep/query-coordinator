@@ -139,19 +139,6 @@
                 return this._$dom;
             },
 
-            // TODO: this goes away with dataset-menu (old DS page)
-            setColumnAggregate: function(columnId, aggregate)
-            {
-                var datasetObj = this;
-                var col = datasetObj.settings.view.columnForID(columnId);
-                if (col)
-                {
-                    col.update({format: $.extend({}, col.format,
-                        {'aggregate': aggregate})});
-                    col.save();
-                }
-            },
-
             showHideTags: function(hide)
             {
                 var datasetObj = this;
@@ -646,74 +633,7 @@
 
         if (tipsRef)
         {
-            if (tipsRef[col.id] && tipsRef[col.id].isSocrataTip())
-            {
-                tipsRef[col.id].socrataTip().hide();
-                tipsRef[col.id].socrataTip().disable();
-            }
-            tipsRef[col.id] = $col;
-
-            var typeName = col.renderType.title ||
-                col.renderTypeName.displayable();
-            var tooltipContent = '<div class="blist-th-tooltip ' +
-                col.renderTypeName + '">'
-                + '<p class="name">' +
-                $.htmlEscape(col.name).replace(/ /, '&nbsp;') + '</p>' +
-                (col.description !== undefined ?
-                    '<p class="description">' + $.htmlEscape(col.description) +
-                    '</p>' : '') +
-                '<p class="columnType">' +
-                '<span class="blist-th-icon"></span>' +
-                typeName +
-                (col.format.grouping_aggregate !== undefined ?
-                    ' (' + $.capitalize(col.format.grouping_aggregate) + ' on ' +
-                    col.dataTypeName.displayable() + ')' : '') +
-                '</p>' +
-                '</div>';
-            var contentIsMain = true;
-
-            var showTimer = null;
-            var clearShowTimer = function()
-            {
-                clearTimeout(showTimer);
-                showTimer = null;
-            };
-            var showTip = function()
-            {
-                showTimer = setTimeout(function()
-                {
-                    showTimer = null;
-                    $col.socrataTip().show();
-                }, 300);
-            };
-            // Use mouseover for showing tip to catch when it moves onto
-            // the menuLink.
-            // Use mouseleave for hiding to catch when it leaves the entire header
-            $col
-                .mouseover(function(e)
-                {
-                    if (!$(e.target).is('.menuLink'))
-                    {
-                        clearShowTimer();
-                        showTip();
-                    }
-                    else
-                    {
-                        clearShowTimer();
-                        $col.socrataTip().hide();
-                    }
-                })
-                .mouseleave(function(e)
-                {
-                    clearShowTimer();
-                    $col.socrataTip().hide();
-                });
-
-
-            $col.socrataTip({content: tooltipContent, trigger: 'none',
-                    parent: 'body'});
-            showTip();
-
+            blist.datasetControls.columnTip(col, $col, tipsRef, true);
             $col.find('.menuLink').socrataTip({message: 'Click for Menu',
                     parent: 'body'});
         }

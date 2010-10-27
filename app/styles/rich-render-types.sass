@@ -101,7 +101,34 @@
             background-color: #eeeeee
 
 #fatRowRenderType
-  padding-bottom: 4em
+
+  .columnHeaders
+    border-bottom: 1px solid #cacaca
+    padding: 0.25em
+    .column
+      @include datatype-icons('.dataTypeIcon')
+      background-color: #e8e8e8
+      float: left
+      margin: 0.1em 0.25em
+      padding: 0.5em
+      .info
+        float: left
+        margin-right: 0.5em
+      .dataTypeIcon
+        float: left
+        margin-right: 0.25em
+      .name
+        font-size: 1.2em
+        font-weight: bold
+        line-height: 20px
+      .sort
+        @include grid-header-icons
+        display: inline-block
+        margin-top: 4px
+      .clearSort
+        @include sprite-menu-icons
+        display: inline-block
+
   .rowList
     border-bottom: 1px solid #cacaca
     margin-bottom: 4em

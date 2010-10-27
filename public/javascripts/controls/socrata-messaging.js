@@ -2,7 +2,7 @@
 {
     $.fn.isSocrataTip = function()
     {
-        return !_.isUndefined($(this[0]).data("socrataTip"));
+        return !$.isBlank($(this[0]).data("socrataTip"));
     };
 
     $.fn.socrataTip = function(options)

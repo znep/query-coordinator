@@ -121,27 +121,55 @@
                         if (!$.isBlank(r.columns))
                         {
                             _.each(r.columns, function(cc)
-                            {
-                                recurseColumn(cc, $row);
-                            });
+                                { recurseColumn(cc, $row); });
+                        }
+                        else if (!$.isBlank(r.fields))
+                        {
+                            _.each(r.fields, function(f)
+                                { addField(rrObj, f, $row); });
+                        }
+                    });
+                };
+
+                _.each(rrObj.settings.config.columns || [], function(c)
+                {
+                    recurseColumn(c, rrObj.$dom());
+                });
+            },
+
+            visibleColumns: function()
+            {
+                var rrObj = this;
+
+                if ($.isBlank(rrObj.settings.config))
+                { return rrObj.settings.view.visibleColumns; }
+
+                var cols = [];
+                var recurseColumn;
+                recurseColumn = function(col)
+                {
+                    _.each(col.rows || [], function(r)
+                    {
+                        if (!$.isBlank(r.columns))
+                        {
+                            _.each(r.columns, function(cc)
+                                { recurseColumn(cc); });
                         }
                         else if (!$.isBlank(r.fields))
                         {
                             _.each(r.fields, function(f)
                             {
-                                addField(rrObj, f, $row);
+                                cols.push(rrObj.settings.view.columnForTCID(
+                                    f.tableColumnId));
                             });
                         }
                     });
                 };
+                _.each(rrObj.settings.config.columns || [], function(c)
+                { recurseColumn(c); });
 
-                var conf = rrObj.settings.config;
-                _.each(conf.columns || [], function(c)
-                {
-                    recurseColumn(c, rrObj.$dom());
-                });
+                return cols;
             }
-
         }
     });
 

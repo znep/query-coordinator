@@ -196,6 +196,7 @@
     </div>
 
     <div id='fatRowRenderType' class='navRenderType fullHeight hide'>
+      <div class='columnHeaders clearfix'></div>
       <div class='rowList'></div>
       <ul class='navigation'>
         <li><a href='#start' title='View first row' class='start button'>
@@ -297,6 +298,18 @@
 <%= render :partial => 'api_access' %>
 <%= render :partial => 'signed_dataset' %>
 <%= render :partial => 'subscribe' %>
+<div class='fatRowColumn'>
+  <div class='column'>
+    <div class='info'>
+      <span class='dataTypeIcon'></span>
+      <span class='name'></span>
+    </div>
+    <a href='#Sort' class='sort'><span class='icon'></span></a>
+    <a href='#Clear-Sort' title='Clear sort' class='clearSort close'>
+      <span class='icon'></span>
+    </a>
+  </div>
+</div>
 <% end %>
 
 <div class="aboutLoad">

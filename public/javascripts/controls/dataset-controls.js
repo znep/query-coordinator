@@ -176,3 +176,75 @@ blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
         dialogObj._hookedEvents = true;
     }
 };
+
+blist.datasetControls.columnTip = function(col, $col, tipsRef, initialShow)
+{
+    var clearShowTimer = function(item)
+    {
+        clearTimeout(item.timer);
+        delete item.timer;
+    };
+
+    if (!$.isBlank(tipsRef[col.id]))
+    {
+        if (tipsRef[col.id].$dom.isSocrataTip())
+        {
+            tipsRef[col.id].$dom.socrataTip().hide();
+            tipsRef[col.id].$dom.socrataTip().disable();
+        }
+        clearShowTimer(tipsRef[col.id]);
+    }
+    tipsRef[col.id] = {$dom: $col};
+
+    var tooltipContent = '<div class="blist-th-tooltip ' +
+        col.renderTypeName + '">' +
+        '<p class="name">' +
+        $.htmlEscape(col.name).replace(/ /, '&nbsp;') + '</p>' +
+        (col.description !== undefined ?
+            '<p class="description">' + $.htmlEscape(col.description) +
+            '</p>' : '') +
+        '<p class="columnType">' +
+        '<span class="blist-th-icon"></span>' +
+        col.renderType.title +
+        (col.format.grouping_aggregate !== undefined ?
+            ' (' + $.capitalize(col.format.grouping_aggregate) + ' on ' +
+            col.dataTypeName.displayable() + ')' : '') +
+        '</p>' +
+        '</div>';
+    var contentIsMain = true;
+
+    var showTip = function()
+    {
+        tipsRef[col.id].timer = setTimeout(function()
+        {
+            delete tipsRef[col.id].timer;
+            $col.socrataTip().show();
+        }, 300);
+    };
+    // Use mouseover for showing tip to catch when it moves onto
+    // the menuLink.
+    // Use mouseleave for hiding to catch when it leaves the entire header
+    $col
+        .mouseover(function(e)
+        {
+            if (!$(e.target).hasClass('menuLink'))
+            {
+                clearShowTimer(tipsRef[col.id]);
+                showTip();
+            }
+            else
+            {
+                clearShowTimer(tipsRef[col.id]);
+                $col.socrataTip().hide();
+            }
+        })
+        .mouseleave(function(e)
+        {
+            clearShowTimer(tipsRef[col.id]);
+            $col.socrataTip().hide();
+        });
+
+
+    $col.socrataTip({content: tooltipContent, trigger: 'none', parent: 'body'});
+    if (initialShow) { showTip(); }
+};

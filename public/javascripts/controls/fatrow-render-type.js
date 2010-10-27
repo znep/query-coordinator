@@ -44,6 +44,7 @@
                 frObj._curPageIndex = 0;
                 frObj._totalPages = null;
                 hookUpNavigation(frObj);
+                hookUpHeaders(frObj);
                 frObj.settings.view.bind('row_count_change', function()
                     { updateNavigation(frObj); })
                     .bind('query_change', function()
@@ -56,6 +57,7 @@
 
                 var mainUpdate = function()
                 {
+                    renderHeaders(frObj);
                     frObj.richRenderer.renderLayout();
                     renderCurrentPage(frObj);
                 };
@@ -112,8 +114,83 @@
     var resizeHandle = function(frObj)
     {
         frObj.$list().height(frObj.$dom().height() -
-            (frObj.$list().outerHeight(true) - frObj.$list().height()));
+            (frObj.$list().outerHeight(true) - frObj.$list().height()) -
+            frObj.$dom().find('.columnHeaders').outerHeight(true));
         frObj.richRenderer.adjustLayout();
+    };
+
+    var hookUpHeaders = function(frObj)
+    {
+        var sortHandle = function(e)
+        {
+            e.preventDefault();
+            var $this = $(this);
+            if ($this.isSocrataTip()) { $this.socrataTip().hide(); }
+
+            var c = $this.closest('.column').data('column');
+            var asc = !c.sortAscending;
+
+            var isTemp = frObj.settings.view.temporary;
+            var query = $.extend(true, {}, frObj.settings.view.query);
+            if ($this.hasClass('clearSort'))
+            {
+                query.orderBys = _.reject(query.orderBys || [], function(ob)
+                    { return ob.expression.columnId == c.id; });
+                if (query.orderBys.length == 0) { delete query.orderBys; }
+            }
+            else
+            {
+                query.orderBys = [{expression: {columnId: c.id, type: 'column'},
+                    ascending: asc}];
+            }
+
+            frObj.settings.view.update({query: query});
+
+            if ((query.orderBys || []).length < 2 &&
+                    frObj.settings.view.hasRight('update_view') && !isTemp)
+            { frObj.settings.view.save(); }
+        };
+
+        frObj.$dom().find('.columnHeaders .column .info').live('click', sortHandle);
+        frObj.$dom().find('.columnHeaders .column .sort').live('click', sortHandle);
+        frObj.$dom().find('.columnHeaders .column .clearSort')
+            .live('click', sortHandle);
+    };
+
+    var renderHeaders = function(frObj)
+    {
+        var $headerList = frObj.$dom().find('.columnHeaders');
+        if ($.isBlank(frObj._colTips)) { frObj._colTips = {}; }
+
+        // If we remove the children here, then the socrataTip data gets
+        // blown away, and calling columnTip below won't properly detach
+        // the old tip
+        var $oldChildren = $headerList.find('.column').detach();
+
+        _.each(frObj.richRenderer.visibleColumns(), function(c)
+        {
+            var $col = $.renderTemplate('fatRowColumn', c, {
+                '.column@class+': 'renderTypeName',
+                '.name': 'name',
+                '.sort@title': function(a)
+                    { return 'Sort ' + (a.context.sortAscending ?
+                        'descending' : 'ascending'); },
+                '.sort@class+': function(a)
+                    { return 'sort' + (a.context.sortAscending ?
+                        'Asc' : !$.isBlank(a.context.sortAscending) ?
+                            'Desc' : 'AscLight'); },
+                '.clearSort@class+': function(a)
+                    { return $.isBlank(a.context.sortAscending) ? 'hide' : ''; }
+            });
+            blist.datasetControls.columnTip(c, $col.find('.info'), frObj._colTips);
+            $col.data('column', c);
+            $headerList.append($col);
+        });
+        frObj.$dom().trigger('resize');
+
+        // Even though the children are not in the DOM, we call remove() to kill
+        // off data & event handlers
+        $oldChildren.remove();
     };
 
     var renderCurrentPage = function(frObj)

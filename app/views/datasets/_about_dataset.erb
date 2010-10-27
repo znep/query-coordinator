@@ -9,7 +9,7 @@
     <p><em>updated</em> <span class="aboutUpdateDate"><%= blist_date(@view.last_activity) %></span></p>
   </div>
 
-  <%- if @view.can_edit? -%>
+  <%- if @view.has_rights?('update_view') -%>
     <a href="<%= @view.href %>/edit_metadata" class="fullButton editMetadataButton">Edit Metadata</a>
   <%- end -%>
 

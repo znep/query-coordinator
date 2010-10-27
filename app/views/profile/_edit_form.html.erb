@@ -7,15 +7,18 @@
     <div class="editSection clearfix">
       <div class="line clearfix">
         <label for="user_screenName">Display Name</label>
-        <%= text_field_tag("user[screenName]", current_user.screenName, :class => "textPrompt") %>
+        <%= text_field_tag("user[screenName]", current_user.screenName,
+        {:class => "textPrompt", :maxlength => 200}) %>
       </div>
       <div class="line clearfix">
         <label for="user_firstName">First Name</label>
-        <%= text_field_tag("user[firstName]", current_user.firstName, :class => "textPrompt") %>
+        <%= text_field_tag("user[firstName]", current_user.firstName,
+        {:class => "textPrompt", :maxlength => 200}) %>
       </div>
       <div class="line clearfix">
         <label for="user_lastName">Last Name</label>
-        <%= text_field_tag("user[lastName]", current_user.lastName, :class => "textPrompt") %>
+        <%= text_field_tag("user[lastName]", current_user.lastName,
+        {:class => "textPrompt", :maxlength => 200}) %>
       </div>
     </div>
 

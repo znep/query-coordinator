@@ -26,7 +26,7 @@
         Enter a name below and click 'Create' to begin.
       </div>
     <%- else -%>
-      <%- CurrentDomain.custom_dataset_metadata.each_with_index do |fieldset, fs_index| -%>
+      <%- @metadata.each_with_index do |fieldset, fs_index| -%>
         <h3 class="fieldsetTitle"><%= fieldset['name'] %></h3>
         <a href="<%= url_for :action => 'delete_metadata_fieldset',
           :fieldset => fs_index %>" class="button remove removeFieldsetButton">

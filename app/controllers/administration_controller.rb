@@ -49,7 +49,6 @@ class AdministrationController < ApplicationController
     rescue CoreServer::CoreServerError => ex
       error_message = ex.error_message
     end
-    Rails.logger.info("Updated: #{updated_user.inspect}")
     respond_to do |format|
       format.data do
         if updated_user
@@ -262,6 +261,7 @@ class AdministrationController < ApplicationController
   # Dataset-level metadata (custom fields, categories)
   def metadata
     check_auth_level('edit_site_theme')
+    @metadata = get_configuration().properties.custom_dataset_metadata
   end
   def create_metadata_fieldset
     check_auth_level('edit_site_theme')
@@ -353,6 +353,14 @@ class AdministrationController < ApplicationController
     fieldset = metadata[params[:fieldset].to_i].fields
 
     field = fieldset.detect { |f| f['name'] == params[:field] }
+
+    if field.nil?
+      flash[:error] = "Cannot move field named '#{params[:field]}': not found"
+      respond_to do |format|
+        format.data { return render :json => {:error => true, :error_message => flash[:error]} }
+        format.html { return redirect_to :action => 'metadata' }
+      end
+    end
 
     index = fieldset.index(field)
     swap_index = params[:direction] == 'up' ? index-1 : index+1

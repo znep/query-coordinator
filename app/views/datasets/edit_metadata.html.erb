@@ -132,6 +132,7 @@
 
         <div class="customFieldset">
           <%- (fieldset.fields || []).each do |field| -%>
+            <%- next if field.nil? # HACK! Aiden, honey, what's wrong? -%>
             <%- required       = field['required'].present? -%>
             <%- existing_value = existing_fields[field.name] || '' -%>
 

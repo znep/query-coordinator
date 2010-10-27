@@ -9,5 +9,6 @@ gem "hashie", "0.3.1"
 gem "haml", "3.0.17"
 gem "stomp", "1.1.6"
 gem "hoptoad_notifier", "2.3.7"
+gem "money", ">= 3.1.5"
 
 gem "thin", :group => :development

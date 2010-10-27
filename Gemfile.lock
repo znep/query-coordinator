@@ -21,6 +21,7 @@ GEM
     hoptoad_notifier (2.3.7)
       activesupport
     json (1.4.6)
+    money (3.1.5)
     multipart-post (1.0.1)
     rack (1.1.0)
     rails (2.3.8)
@@ -46,6 +47,7 @@ DEPENDENCIES
   hashie (= 0.3.1)
   hoptoad_notifier (= 2.3.7)
   json (= 1.4.6)
+  money (>= 3.1.5)
   multipart-post (= 1.0.1)
   rack (= 1.1.0)
   rails (= 2.3.8)

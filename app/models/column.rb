@@ -341,38 +341,11 @@ class Column < Model
   end
 
   def currency_symbol
+    require 'money'
     currency = (self.format.nil? || self.format.currency.nil?) ?
-      'dollar' : self.format.currency
-    return {
-      'dollar' => "$",
-      'pound' => "&pound;",
-      'euro' => "&euro;",
-      'yen' => "&#165;",
-      'forint' => "Ft",
-      'hk_dollar' => "HK$",
-      'kuna' => "Kn",
-      'koruna' => "K&#269;",
-      'lats' => "Ls",
-      'litas' => "Lt",
-      'nt_dollar' => "NT$",
-      'peso' => "PhP",
-      'real' => "R$",
-      'rupiah' => "Rp",
-      'rupee' => "Rs.",
-      'koruna' => "Sk",
-      'lira' => "TL",
-      'new_lira' => "YTL",
-      'krone' => "kr",
-      'lei_noi' => "lei",
-      'zloty' => "z&#322;",
-      'baht' => "&#3647;",
-      'dong' => "&#8363;",
-      'won' => "&#8361;",
-      'ruble' => "&#1088;.",
-      'lev' => "&#1083;&#1074;.",
-      'dinar' => "&#1044;&#1080;&#1085;.",
-      'hryvnia' => "&#1075;&#1088;&#1085;."
-    }[currency]
+      'USD' : self.format.currency
+
+    return Money::Currency::TABLE[currency.downcase.to_sym][:symbol]
   end
 
   def is_nested_table

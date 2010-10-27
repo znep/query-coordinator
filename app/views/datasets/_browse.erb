@@ -12,17 +12,20 @@
       <input type='text' name='browseSearch' title='Search'
         class='textPrompt searchBox' value='<%= @params[:q] %>' />
       <%- if !@params[:q].nil? -%>
-      <%- cp = @params.reject {|p, v| p.to_s == 'page' || p.to_s == 'q'} -%>
+      <%- cp = @params.reject {|p, v| p.to_s == 'page' || p.to_s == 'q' ||
+            p.to_s == 'no_default'} -%>
       <a href='<%= @base_url + '?' + cp.to_param %>'
         class='clearSearch close'><span class='icon'></span></a>
       <%- end -%>
     </form>
 
-    <%- if !@params[:q].nil? || @facets.any? {|f| !@params[f[:param]].nil? } -%>
+    <%- if !@params[:q].nil? || @facets.any? {|f| !@params[f[:param]].nil? } ||
+          !@params[:no_default].nil? -%>
     <div class='facetSection clearAllSection'>
       <ul>
         <li>
-        <%- cp = @params.reject {|p, v| p.to_s == 'page' || p.to_s == 'q'} -%>
+        <%- cp = @params.reject {|p, v| p.to_s == 'page' || p.to_s == 'q' ||
+              p.to_s == 'no_default'} -%>
         <%- @facets.each do |f| -%>
         <%- cp.delete(f[:param]) -%>
         <%- end -%>
@@ -33,12 +36,15 @@
     <%- end -%>
 
     <%- @facets.each do |facet| -%>
+    <%- next if facet[:options].nil? || facet[:options].length < 1 -%>
     <div class='facetSection clearfix'>
       <h4 class='title'><%= facet[:title] %></h4>
       <ul>
-        <%- if !@params[facet[:param]].nil? -%>
+        <%- if !@params[facet[:param]].nil? ||
+              !@default_params[facet[:param]].nil? -%>
         <%- cp = @params.reject {|p, v| p.to_s == 'page'} -%>
         <%- cp.delete(facet[:param]) -%>
+        <%- cp[:no_default] = facet[:param] if !@default_params[facet[:param]].nil? -%>
         <li><a href='<%= @base_url + '?' + cp.to_param %>' class='clearValues'>
           <%- if facet[:use_icon] -%>
           <span class='icon'></span>
@@ -47,10 +53,12 @@
         </a></li>
         <%- end -%>
         <%- facet[:options].each do |f| -%>
-        <%- cp = @params.reject {|p, v| p.to_s == 'page'} -%>
+        <%- cp = @params.reject {|p, v| p.to_s == 'page' ||
+              p.to_s == 'no_default'} -%>
         <%- cp[facet[:param]] = f[:value] -%>
         <li><a href='<%= @base_url + '?' + cp.to_param %>'
-          class='<%= f[:class] %> <%= @params[facet[:param]] == f[:value] ?
+          class='<%= f[:class] %> <%= @params[facet[:param]] == f[:value] ||
+            @default_params[facet[:param]] == f[:value] ?
             'active' : '' %>'>
           <%- if facet[:use_icon] -%>
           <span class='icon'></span>
@@ -63,7 +71,8 @@
       <a class='moreLink' href='#More <%= facet[:title] %>'>View more</a>
       <div class='moreOptions hide'>
         <%- facet[:extra_options].each do |f| -%>
-        <%- cp = @params.reject {|p, v| p.to_s == 'page'} -%>
+        <%- cp = @params.reject {|p, v| p.to_s == 'page' ||
+              p.to_s == 'no_default'} -%>
         <%- cp[facet[:param]] = f[:value] -%>
         <a href='<%= @base_url + '?' + cp.to_param %>'
           rel='<%= f[:count] %>'>

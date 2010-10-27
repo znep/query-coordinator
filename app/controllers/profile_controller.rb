@@ -86,7 +86,32 @@ class ProfileController < ApplicationController
       @limit = @view_count
     else
       @facets = [view_types_facet, categories_facet]
+
+      user_tags = Tag.find({:method => 'ownedTags', :user_uid => @user.id}).data
+      top_tags = user_tags.sort {|a,b| b[1] <=> a[1]}.slice(0, 5).map {|t| t[0]}
+      if !params[:tags].nil? && !top_tags.include?(params[:tags])
+        top_tags.push(params[:tags])
+      end
+      top_tags = top_tags.sort.map {|t| {:text => t, :value => t}}
+      tag_cloud = nil
+      if user_tags.length > 5
+        tag_cloud = user_tags.sort {|a,b| a[0] <=> b[0]}.
+          map {|t| {:text => t[0], :value => t[0], :count => t[1]}}
+      end
+
+      @facets << { :title => 'Topics',
+        :singular_description => 'topic',
+        :param => :tags,
+        :options => top_tags,
+        :extra_options => tag_cloud
+      }
+
+      if !params[:tags].nil? || !params[:category].nil? || !params[:q].nil?
+        @default_params.delete(:limitTo)
+      end
     end
+    params.delete(:id)
+    params.delete(:profile_name)
     process_browse!
   end
 

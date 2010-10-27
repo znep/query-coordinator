@@ -163,6 +163,7 @@
 
       <dl class="sectionContent">
         <%- (fieldset.fields || []).each do |field| -%>
+          <%- next if field.nil? # HACK! Aiden, wtf? -%>
           <dt><%= field.name %></dt>
           <dd><span class="wrap">
             <%= auto_link(existing_fields[field.name] || '',

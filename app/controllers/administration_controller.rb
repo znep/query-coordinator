@@ -281,7 +281,7 @@ class AdministrationController < ApplicationController
 
     metadata << Hashie::Mash.new({ 'name' => field, 'fields' => [] })
 
-    save_metadata(config, metadata, "Field set Successfully Created")
+    save_metadata(config, metadata, "Field Set Successfully Created")
   end
   def delete_metadata_fieldset
     check_auth_level('edit_site_theme')
@@ -289,7 +289,7 @@ class AdministrationController < ApplicationController
     metadata = config.properties.custom_dataset_metadata
     metadata.delete_at(params[:fieldset].to_i)
 
-    save_metadata(config, metadata, "Field set Successfully Removed")
+    save_metadata(config, metadata, "Field Set Successfully Removed")
   end
   def create_metadata_field
     check_auth_level('edit_site_theme')

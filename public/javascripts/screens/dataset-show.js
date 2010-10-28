@@ -117,6 +117,10 @@ $(function()
     $('.outerContainer').fullScreen();
 
 
+    var defRen = $.urlParam(window.location.href, 'defaultRender');
+    var isPageRT = !$.isBlank(blist.initialRowId) || defRen == 'page';
+    var isFatRowRT = defRen == 'richList';
+    var isAltRT = isPageRT || isFatRowRT;
     if (blist.dataset.viewType == 'tabular')
     {
         blist.$display.find('.rowLink').remove();
@@ -133,7 +137,8 @@ $(function()
         $('#renderTypeOptions a').click(function(e)
         {
             e.preventDefault();
-            var rt = $.hashHref($(this).attr('href'));
+            var rt = $.urlParam($(this).attr('href'), 'defaultRender');
+            if (rt == 'richList') { rt = 'fatrow'; }
             switch (rt)
             {
                 case 'page':
@@ -149,9 +154,10 @@ $(function()
         $(document).bind(blist.events.DISPLAY_ROW, function()
                 { datasetPageNS.showRenderType('page'); });
 
-        var isPageRT = !$.isBlank(blist.initialRowId);
-        if (!isPageRT) { datasetPageNS.showDefaultRenderType(); }
-        else
+        if (!isAltRT) { datasetPageNS.showDefaultRenderType(); }
+        else if (isFatRowRT)
+        { datasetPageNS.showRenderType('fatrow'); }
+        else if (isPageRT)
         {
             // Cheat by making sure the div is hidden initially
             datasetPageNS.$renderTypes.page.addClass('hide');
@@ -178,7 +184,7 @@ $(function()
             }
         }
 
-        if (!isPageRT) { datasetPageNS.initGrid(); }
+        if (!isAltRT) { datasetPageNS.initGrid(); }
     }
 
     // sidebar and sidebar tabs

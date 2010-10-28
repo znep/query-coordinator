@@ -100,14 +100,16 @@
       <li>
         <%- if @view.is_tabular? -%>
         <ul id='renderTypeOptions' class="pillButtons">
-          <li><a href='#main' class='main <%= @view.display.type %>'
+          <li><a href='<%= @view.href %>' class='main <%= @view.display.type %>'
             title='View as <%= @view.display.name.downcase %>'>
             <span class='icon'></span>
           </a></li>
-          <li><a href='#fatrow' class='fatrow' title='View as a rich list'>
+          <li><a href='<%= @view.href %>?defaultRender=richList'
+            class='fatrow' title='View as a rich list'>
             <span class='icon'></span>
           </a></li>
-          <li><a href='#page' class='page' title='View a single row'>
+          <li><a href='<%= @view.href %>?defaultRender=page'
+            class='page' title='View a single row'>
             <span class='icon'></span>
           </a></li>
         </ul>

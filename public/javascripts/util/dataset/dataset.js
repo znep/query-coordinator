@@ -139,7 +139,8 @@ this.Dataset = Model.extend({
         var ds = this;
         return _.any(this.grants || [], function(grant)
         { return _.include(grant.flags || [], 'public') &&
-            grant.type == (ds.type == 'form' ? 'contributor' : 'viewer'); });
+            ((ds.type == 'form' && grant.type == 'contributor') ||
+                ds.type != 'form'); });
     },
 
     hasRight: function(right)
@@ -848,7 +849,8 @@ this.Dataset = Model.extend({
     getParentDataset: function(callback)
     {
         var ds = this;
-        if ($.isBlank(ds._parent) && $.isBlank(ds.noParentAvailable))
+        if (($.isBlank(ds._parent) || $.isBlank(ds._parent.columns)) &&
+            $.isBlank(ds.noParentAvailable))
         {
             ds._makeRequest({url: '/views/' + this.id + '.json',
                 params: {method: 'getDefaultView'},

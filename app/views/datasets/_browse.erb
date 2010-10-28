@@ -58,7 +58,8 @@
         <%- cp[facet[:param]] = f[:value] -%>
         <li><a href='<%= @base_url + '?' + cp.to_param %>'
           class='<%= f[:class] %> <%= @params[facet[:param]] == f[:value] ||
-            @default_params[facet[:param]] == f[:value] ?
+            (@params[facet[:param]].nil? &&
+              @default_params[facet[:param]] == f[:value]) ?
             'active' : '' %>'>
           <%- if facet[:use_icon] -%>
           <span class='icon'></span>

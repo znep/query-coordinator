@@ -320,7 +320,11 @@
                             return;
                         }
                         var vp = mapObj.getViewport();
-                        if (vp.xmin == curVP.xmin && vp.ymin == curVP.ymin)
+                        // Theory: All of these will be different if user-initiated
+                        // panning or zooming occurs. But one will hold constant if
+                        // it's just automatic.
+                        if (_.any(['xmin', 'ymin', 'ymax'], function(p)
+                            { return vp[p] == curVP[p]; }))
                         { return; }
 
                         mapObj.settings.view.update({
@@ -593,6 +597,7 @@
 
         _.each(webapp.layers.base, addLayer);
         _.each(webapp.layers.operational, addLayer);
+        delete webapp.position;
     };
 
     var layerType = function(layerInfo)

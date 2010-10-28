@@ -163,8 +163,18 @@
                 var newDF = $.extend({}, mapObj.settings.view.displayFormat);
                 _.each(['viewport'], function(property)
                 { delete oldDF[property]; delete newDF[property]; });
+                var newQuery = $.extend(true, {}, mapObj.settings.view.query);
+
                 return _.isEqual(oldDF, newDF)
-                    && _.isEqual(mapObj._origData.query, mapObj.settings.view.query);
+                    && _.isEqual(mapObj._origData.query, newQuery);
+            },
+
+            reloadSpecialCases: function()
+            {
+                var mapObj = this;
+                if (!_.isEqual(mapObj._origData.displayFormat.viewport,
+                               mapObj.settings.view.displayFormat.viewport))
+                { mapObj.setViewport(mapObj.settings.view.displayFormat.viewport); }
             },
 
             reset: function()
@@ -302,9 +312,13 @@
                 if (mapObj._rows === undefined) { mapObj._rows = []; }
                 mapObj._rows = mapObj._rows.concat(rows);
                 if (mapObj.settings.view.totalRows > mapObj._maxRows)
-                { mapObj.showError('This dataset has more than ' + mapObj._maxRows +
-                                   ' rows visible. Some points will be not be' +
-                                   ' displayed.'); }
+                {
+                    mapObj.showError('This dataset has more than ' + mapObj._maxRows +
+                                     ' rows visible. Some points will be not be' +
+                                     ' displayed.');
+                    // TODO: This may need to be deleted on reset. Investigate.
+                    mapObj._maxRowsExceeded = true;
+                }
 
                 mapObj.renderData(rows);
             },
@@ -500,6 +514,7 @@
             updateRowsByViewport: function(viewport, wrapIDL)
             {
                 var mapObj = this;
+                if (!mapObj._maxRowsExceeded) { return; }
                 if (!viewport) { viewport = mapObj.getViewport(true); }
 
                 var buildFilterCondition = function(viewport)

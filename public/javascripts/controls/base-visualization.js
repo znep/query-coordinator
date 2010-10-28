@@ -144,7 +144,12 @@
                     return;
                 }
 
-                if (vizObj.noReload()) { return; }
+                if (vizObj.noReload())
+                {
+                    vizObj.reloadSpecialCases();
+                    delete vizObj._pendingReload;
+                    return;
+                }
                 vizObj.reloadVisualization();
 
                 vizObj.settings.view.getRows(0, vizObj._maxRows,
@@ -173,6 +178,11 @@
             {
                 // Override if you need to whitelist against reloading
                 return false;
+            },
+
+            reloadSpecialCases: function()
+            {
+                // Implement if noReload will be true, but things still need to happen
             },
 
             needsFullReset: function()

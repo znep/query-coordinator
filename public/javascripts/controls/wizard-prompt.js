@@ -41,6 +41,7 @@
                 wizObj._uid = _.uniqueId();
 
                 var $msg = $('<div class="wizardPrompt">' +
+                    '<a href="#close" title="Dismiss" class="wizardDismiss"></a>' +
                     '<span class="prompt">' + wizObj.settings.prompt + '</span>' +
                     '</div>');
                 if (!_.isEmpty(wizObj.settings.buttons))
@@ -63,6 +64,14 @@
 
                     // Make sure button callback happens first
                     _.defer(function() { wizObj.close(); });
+                });
+
+                $msg.children('.wizardDismiss').click(function(e)
+                {
+                    e.preventDefault();
+                    if (_.isFunction(wizObj.settings.dismissCallback))
+                    { wizObj.settings.dismissCallback(); }
+                    wizObj.close();
                 });
 
                 $domObj.socrataTip({content: $msg, closeOnClick: false,

@@ -208,7 +208,14 @@ ul.wizardButtons
           display: inline-block
 
   .wizardPrompt
+    padding-right: 1em
     text-align: left
+
+    .wizardDismiss
+      @include close-button
+      position: absolute
+      right: 3px
+      top: 3px
 
     .prompt
       font-size: 1.2em

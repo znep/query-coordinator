@@ -487,6 +487,8 @@
 
                 sidebarObj._changeHandlers = {};
 
+                sidebarObj._wizDisabled = {};
+
                 $(window).resize(function() { handleResize(sidebarObj); });
                 $domObj.resize(function() { handleResize(sidebarObj); });
 
@@ -2932,6 +2934,11 @@
             };
         }
 
+        wizConfig.dismissCallback = function()
+        {
+            sidebarObj._wizDisabled[sidebarObj._currentPane] = true;
+        };
+
         /* Adjust scroll position to make sure wizard component is in view */
         var $pane = sidebarObj.$currentPane().find('.scrollContent');
         var paneTop = $pane.offset().top;
@@ -2946,6 +2953,8 @@
 
         var doShow = function ()
         {
+            if (sidebarObj._wizDisabled[sidebarObj._currentPane]) { return; }
+
             var $mainItem = $item;
             /* Adjust actual item wizard is attached to */
             if (!$.isBlank(wiz.selector))
@@ -2973,6 +2982,8 @@
 
     var wizardAction = function(sidebarObj, $item, action)
     {
+        if (sidebarObj._wizDisabled[sidebarObj._currentPane]) { return; }
+
         // If the pane is gone, no action to do
         if ($.isBlank(sidebarObj.$currentPane())) { return; }
         // Bail out if we're trying to advance an old wizard

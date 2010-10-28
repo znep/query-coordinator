@@ -6,11 +6,17 @@ $(function()
         event.preventDefault();
         var $this = $(this);
 
-        $('#interactive-tabs > .tabContainer')
-            .filter(':visible')
-                .fadeOut().end()
-            .filter($this.attr('href').replace('tab', 'tabContainer'))
-                .fadeIn();
+        var $lastShown = $('#interactive-tabs > .tabContainer').filter(':visible');
+        $('#interactive-tabs > .tabContainer' + $this.attr('href').replace('tab', 'tabContainer'))
+            .css('z-index', 1)
+            .fadeIn(function()
+            {
+                var $nowShown = $(this);
+                $lastShown.fadeOut(function()
+                {
+                    $nowShown.css('z-index', 0);
+                });
+            });
 
         $('.mainTabs li a').removeClass('selected');
         $this.addClass('selected');
@@ -73,7 +79,7 @@ $(function()
         $gallery.find('.pager-control .leftControl')
                 .toggleClass('disabled', (currentIndex === 0));
         $gallery.find('.pager-control .rightControl')
-                .toggleClass('disabled', (currentIndex === $activePage.siblings().length));
+                .toggleClass('disabled', (currentIndex === ($activePage.siblings().length - 1)));
     };
 
     // helper to update the state of the slider

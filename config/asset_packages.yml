@@ -16,7 +16,7 @@ javascripts:
   - plugins/jquery.tache
   - plugins/jquery.validate
   - plugins/pure
-  - plugins/ui.core
+  - plugins/jquery-ui-1.8.5.custom.min
   - plugins/underscore
   - plugins/inheritance
   - util/namespace
@@ -51,12 +51,10 @@ javascripts:
   - screens/common-layout
   - controls/scrollable
 - shared-calendar:
-  - plugins/ui.draggable
   - plugins/fullcalendar
   - controls/base-visualization
   - controls/calendars/default-calendar
 - shared-table-render:
-  - plugins/ui.draggable
   - util/humane-number
   - data/model
   - data/table
@@ -89,7 +87,6 @@ javascripts:
   - data/editors/document-editor
   - data/editors/photo-editor
 - shared-map:
-  - plugins/ui.sortable
   - plugins/markerclusterer
   - controls/base-visualization
   - util/color
@@ -161,7 +158,6 @@ javascripts:
   - controls/modal-dialogs
   - screens/nominations
 - widgets-show:
-  - plugins/ui.effects.custom.min
   - plugins/jquery.uniform
   - plugins/jquery.tablesorter
   - controls/full-screen
@@ -191,7 +187,6 @@ javascripts:
   - plugins/jquery.colorPicker
   - plugins/jquery.awesomecomplete
   - plugins/jquery.uniform
-  - plugins/ui.slider
   - plugins/jquery.tablesorter
   - plugins/iscroll
   - controls/combination-list
@@ -252,7 +247,6 @@ javascripts:
   - screens/dataset-bare
 - shared-metrics:
   - plugins/jquery.uniform
-  - plugins/ui.datepicker
   - plugins/daterangepicker.jquery
   - plugins/jquery.tablesorter
   - plugins/highcharts.src
@@ -283,6 +277,7 @@ stylesheets:
 - chart-screen:
   - chart-screen
 - dataset-show:
+  - jquery.ui.resizable
   - ui.slider
 - displays-form:
   - displays-form

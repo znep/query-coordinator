@@ -63,8 +63,12 @@
 
                     processWebappLayers(mapObj, _.select(layers, function(layer, index)
                     {
-                        layer.position = index;
-                        return layer.url == 'webapp';
+                        if (layer.url == 'webpap')
+                        {
+                            layer.position = index;
+                            return true;
+                        }
+                        return false;
                     }));
 
                     var layersLoaded = 0;

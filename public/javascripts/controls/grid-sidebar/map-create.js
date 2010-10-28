@@ -45,8 +45,8 @@
 
     mapLayers = mapLayers.concat(newMapLayers);
 
-    // keep inital map layers length so we only get domain additional layers once.
-    var commonMapLayersLength = mapLayers.length;
+    // keep track that we only get domain map layers once.
+    var domainMapLayersCalled = false;
 
     var normalizeLayerUrl = function($control, event)
     {
@@ -121,11 +121,12 @@
 
     var getDomainMapLayers = function(triggerFieldVal, notUsed, $field, curVal) {
 
-        if (mapLayers.length > commonMapLayersLength)
+        if (domainMapLayersCalled)
         {
             return mapLayers;
         }
 
+        domainMapLayersCalled = true;
         $.Tache.Get({url: '/api/domains?method=findMapLayers',
             success: function(dmls)
             {

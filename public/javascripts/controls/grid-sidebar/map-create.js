@@ -42,7 +42,11 @@
         {text: 'WebApp Layer Set', value: 'webapp', data: {type: null}},
         {text: 'Custom Layer', value: 'custom', data: {type: null}}
     ];
+
     mapLayers = mapLayers.concat(newMapLayers);
+
+    // keep inital map layers length so we only get domain additional layers once.
+    var commonMapLayersLength = mapLayers.length;
 
     var normalizeLayerUrl = function($control, event)
     {
@@ -115,11 +119,39 @@
             ]
         };
 
+    var getDomainMapLayers = function(triggerFieldVal, notUsed, $field, curVal) {
+
+        if (mapLayers.length > commonMapLayersLength)
+        {
+            return mapLayers;
+        }
+
+        $.Tache.Get({url: '/api/domains?method=findMapLayers',
+            success: function(dmls)
+            {
+                _.each(dmls, function(ml)
+                {
+                    mapLayers.push({text: ml.name, value: ml.url, data: {type: 'dynamic'}});
+                });
+
+                $field.data('linkedFieldValues', '_reset');
+                _.each($field.data('linkedGroup'), function(f) {
+                    $(f).trigger('change');
+                });
+
+                _.defer(function() { $field.val(curVal); });
+            }});
+
+        return mapLayers;
+    };
+
     var configLayers = {
             title: 'Layers',
             onlyIf: [{field: 'displayFormat.type', value: 'esri'},
                      {field: 'displayFormat.plotStyle', value: 'point'}],
             fields: [
+                {type: 'text', name: 'triggerMapLayer', lineClass: 'hide'},
+
                 {type: 'repeater', minimum: 1, addText: 'Add Layer',
                     name: 'displayFormat.layers',
                     field: {type: 'group', options: [
@@ -128,7 +160,9 @@
                             defaultValue: mapLayers[0].value,
                             repeaterValue: '',
                             required: true, prompt: 'Select a layer',
-                            options: mapLayers},
+                            linkedField: 'triggerMapLayer',
+                            options: getDomainMapLayers
+                        },
                         {text: 'Webapp ID', type: 'text',
                             name: 'webappid', onlyIf: {field: 'url', value: 'webapp'},
                             required: true },
@@ -353,5 +387,4 @@
     };
 
     $.gridSidebar.registerConfig(config, 'map');
-
 })(jQuery);

@@ -149,6 +149,14 @@
                 var mapObj = this;
                 if (mapObj._viewportListener)
                 { mapObj.map.DetachEvent('onchangeview', mapObj._viewportListener); }
+                if (!mapObj._boundsAdjusting)
+                {
+                    mapObj._boundsAdjusting = function()
+                    {
+                        mapObj.map.DetachEvent('onchangeview', mapObj._boundsAdjusting);
+                        mapObj.map.AttachEvent('onchangeview', mapObj._viewportListener);
+                    };
+                }
 
                 if (mapObj.settings.view.displayFormat.viewport)
                 { mapObj.setViewport(mapObj.settings.view.displayFormat.viewport); }
@@ -163,6 +171,7 @@
                             (mapObj._shapeLayer.GetShapeByIndex(0).GetPoints()[0],
                             mapObj.settings.defaultZoom);
                 }
+                mapObj.map.AttachEvent('onchangeview', mapObj._boundsAdjusting);
 
                 if (!mapObj._viewportListener)
                 {
@@ -176,7 +185,6 @@
                         mapObj.updateRowsByViewport();
                     };
                 }
-                mapObj.map.AttachEvent('onchangeview', mapObj._viewportListener);
             },
 
             getViewport: function(with_bounds)

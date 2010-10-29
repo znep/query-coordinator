@@ -123,7 +123,6 @@
 
                 <div class="customFieldset">
                   <%- (fieldset.fields || []).each do |field| -%>
-                    <%- next if field.nil? # HACK! yup -%>
                     <%- required   = field['required'].present? -%>
                     <div class="line clearfix<%= ' customRequired' if required %>">
                       <label for="view_metadata_custom_fields_<%= fieldset.name + "_" + field.name %>"

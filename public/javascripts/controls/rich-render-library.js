@@ -55,7 +55,7 @@
                 var rrObj = this;
                 _.each(rrObj.settings.view.visibleColumns, function(c)
                 {
-                    $content.find('[data-columnId=' + c.id + ']').each(function()
+                    $content.find('.columnId' + c.id).each(function()
                         { renderItem($(this), row, c); });
                 });
             },
@@ -219,8 +219,8 @@
                         $.extend({display: 'inline'}, commonAttrs.style);
                 }
                 $field = $.tag($.extend(commonAttrs, {tagName: 'div',
-                    'class': ['richItem', col.renderTypeName],
-                    'data-columnId': col.id}));
+                    'class': ['richItem', col.renderTypeName, 'columnId' + col.id]
+                    }));
                 break;
 
             case 'label':

@@ -104,6 +104,8 @@
 
   .columnHeaders
     border-bottom: 1px solid #cacaca
+    max-height: 9.5em
+    overflow: auto
     padding: 0.25em
     .column
       @include datatype-icons('.dataTypeIcon')
@@ -174,7 +176,7 @@
     li
       display: inline-block
       vertical-align: middle
-      &.info, &.page
+      &.info, &.page, &.remainder
         font-size: 1.2em
         line-height: 1.2em
         margin: 0 0.5em

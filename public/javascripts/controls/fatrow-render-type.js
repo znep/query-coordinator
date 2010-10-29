@@ -125,10 +125,12 @@
         {
             e.preventDefault();
             var $this = $(this);
-            if ($this.isSocrataTip()) { $this.socrataTip().hide(); }
 
             var c = $this.closest('.column').data('column');
+            if (!c.renderType.sortable) { return; }
             var asc = !c.sortAscending;
+
+            if ($this.isSocrataTip()) { $this.socrataTip().hide(); }
 
             var isTemp = frObj.settings.view.temporary;
             var query = $.extend(true, {}, frObj.settings.view.query);
@@ -162,11 +164,7 @@
         var $headerList = frObj.$dom().find('.columnHeaders');
         if ($.isBlank(frObj._colTips)) { frObj._colTips = {}; }
 
-        // If we remove the children here, then the socrataTip data gets
-        // blown away, and calling columnTip below won't properly detach
-        // the old tip
-        var $oldChildren = $headerList.find('.column').detach();
-
+        var newItems = [];
         _.each(frObj.richRenderer.visibleColumns(), function(c)
         {
             var $col = $.renderTemplate('fatRowColumn', c, {
@@ -176,21 +174,27 @@
                     { return 'Sort ' + (a.context.sortAscending ?
                         'descending' : 'ascending'); },
                 '.sort@class+': function(a)
-                    { return 'sort' + (a.context.sortAscending ?
-                        'Asc' : !$.isBlank(a.context.sortAscending) ?
-                            'Desc' : 'AscLight'); },
+                    {
+                        if (!a.context.renderType.sortable) { return 'hide'; }
+                        if ($.isBlank(a.context.sortAscending))
+                        { return 'sortAscLight'; }
+                        return 'sort' + (a.context.sortAscending ? 'Asc' : 'Desc');
+                    },
                 '.clearSort@class+': function(a)
                     { return $.isBlank(a.context.sortAscending) ? 'hide' : ''; }
             });
             blist.datasetControls.columnTip(c, $col.find('.info'), frObj._colTips);
             $col.data('column', c);
-            $headerList.append($col);
+            newItems.push($col);
         });
-        frObj.$dom().trigger('resize');
 
-        // Even though the children are not in the DOM, we call remove() to kill
-        // off data & event handlers
-        $oldChildren.remove();
+        // Wait until the end to empty out the old items; or else they lose their
+        // data (meaning socrataTip-ness) and can't be cleaned out by columnTip,
+        // resulting in stuck tips
+        $headerList.empty();
+        _.each(newItems, function(i) { $headerList.append(i); });
+
+        frObj.$dom().trigger('resize');
     };
 
     var renderCurrentPage = function(frObj)
@@ -243,12 +247,13 @@
             e.preventDefault();
             var $a = $(this);
             if ($a.parent().hasClass('active')) { return; }
-            frObj.displayPage($a.data('pageNum'));
+            frObj.displayPage($a.parent().data('pageNum'));
         });
     };
 
     var updateNavigation = function(frObj)
     {
+        if ($.isBlank(frObj.settings.view.totalRows)) { return; }
         var pageCount = Math.ceil(frObj.settings.view.totalRows /
             frObj.settings.pageSize);
 
@@ -257,23 +262,43 @@
         frObj.$nav().find('.end, .next')
             .toggleClass('disabled', frObj._curPageIndex >= pageCount - 1);
 
-        if (pageCount != frObj._totalPages)
+        if (pageCount != frObj._totalPages || frObj._incompletePager)
         {
             var $templLink = frObj.$nav().find('.page:first');
-            frObj.$nav().find('.page:not(:first)').remove();
-            var $newSet = $();
-            for (var i = 0; i < pageCount; i++)
+            frObj.$nav().find('.page + .page').remove();
+            frObj.$nav().find('.remainder').remove();
+            var $nextLink = frObj.$nav().find('.next').parent();
+
+            var start = Math.max(0, frObj._curPageIndex - 4);
+            var end = Math.min(pageCount - 1, frObj._curPageIndex + 4);
+            for (var i = start; i <= end; i++)
             {
                 var $newL = $templLink.clone(true).removeClass('active');
-                $newL.find('a').text(i + 1).data('pageNum', i);
-                $newSet = $newSet.add($newL);
+                $newL.attr('data-pageNum', i).find('a').text(i + 1);
+                $nextLink.before($newL);
             }
-            $templLink.replaceWith($newSet);
+            $templLink.remove();
+
+            frObj._incompletePager = false;
+            if (start > 0)
+            {
+                frObj.$nav().find('.page:first')
+                    .before('<li class="remainder">...</li>');
+                frObj._incompletePager = true;
+            }
+            if (end < pageCount - 1)
+            {
+                frObj.$nav().find('.page:last')
+                    .after('<li class="remainder">...</li>');
+                frObj._incompletePager = true;
+            }
+
             frObj._totalPages = pageCount;
         }
 
         frObj.$nav().find('.page').removeClass('active');
-        frObj.$nav().find('.page').eq(frObj._curPageIndex).addClass('active');
+        frObj.$nav().find('.page[data-pageNum=' + frObj._curPageIndex + ']')
+            .addClass('active');
     };
 
 })(jQuery);

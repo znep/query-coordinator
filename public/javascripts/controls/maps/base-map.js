@@ -349,8 +349,8 @@
                 }
                 else
                 {
-                    lat = row[mapObj._latCol.id];
-                    longVal = row[mapObj._longCol.id];
+                    lat = parseFloat(row[mapObj._latCol.id]);
+                    longVal = parseFloat(row[mapObj._longCol.id]);
                 }
 
                 // Incomplete points will be safely ignored

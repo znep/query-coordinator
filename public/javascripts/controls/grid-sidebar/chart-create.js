@@ -409,17 +409,8 @@
                     sidebarObj.addPane(configName);
                 };
 
-                var tcIds = (newView.displayFormat.fixedColumns || []).slice();
-                tcIds = tcIds.concat(_(newView.displayFormat.valueColumns || [])
-                    .chain()
-                    .map(function(vc)
-                    {
-                        return $.makeArray(vc.tableColumnId).concat(
-                            vc.supplementalColumns || []);
-                    }).flatten().value());
+                var colIds = _.pluck(newView.realColumns, 'id');
 
-                var colIds = _.map(tcIds, function(tcId)
-                    { return newView.columnForTCID(tcId).id; });
                 if (colIds.length > 0)
                 { newView.setVisibleColumns(colIds, finishUpdate); }
                 else { finishUpdate(); }

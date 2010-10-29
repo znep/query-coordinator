@@ -373,13 +373,8 @@
                     _.defer(function() { $(window).resize(); });
                 };
 
-                var p = newView.displayFormat.plot;
-                var colIds = _([p.locationId, p.titleId, p.descriptionId,
-                    p.quantityId, p.colorValueId, p.sizeValueId]).chain()
-                    .compact()
-                    .map(function(tcId)
-                    { return newView.columnForTCID(tcId).id; })
-                    .value();
+                var colIds = _.pluck(newView.realColumns, 'id');
+
                 if (colIds.length > 0)
                 { newView.setVisibleColumns(colIds, finishUpdate); }
                 else { finishUpdate(); }

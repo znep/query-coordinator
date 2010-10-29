@@ -125,13 +125,8 @@
                     sidebarObj.addPane(configName);
                 };
 
-                var p = newView.displayFormat;
-                var colIds = _([p.startDateTableId, p.endDateTableId,
-                    p.titleTableId, p.descriptionTableId]).chain()
-                    .compact()
-                    .map(function(tcId)
-                    { return newView.columnForTCID(tcId).id; })
-                    .value();
+                var colIds = _.pluck(newView.realColumns, 'id');
+
                 if (colIds.length > 0)
                 { newView.setVisibleColumns(colIds, finishUpdate); }
                 else { finishUpdate(); }

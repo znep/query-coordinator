@@ -456,7 +456,6 @@
         {
             dataGrid: null,
             defaultLoginMessage: 'You must be signed in',
-            modalHiddenSelector: null,
             onSidebarClosed: function() {},
             onSidebarShown: function(primaryPane, secondaryPane) {},
             setSidebarTop: true
@@ -513,6 +512,10 @@
                     blist.dataset.bind('columns_changed', function()
                     { updateColumnSelects(sidebarObj); });
                 }
+
+                $domObj.resizable({disabled: true, handles: 'w',
+                    maxWidth: $(window).width() * 0.8, minWidth: 300,
+                    stop: function() { resizeDone(sidebarObj); }});
             },
 
             $dom: function()
@@ -607,7 +610,7 @@
 
             /* Show the sidebar and a specific pane in it.  If it is modal,
              * then hide/disable other parts of the UI */
-            show: function(paneName, isModal)
+            show: function(paneName)
             {
                 var sidebarObj = this;
 
@@ -662,45 +665,25 @@
                 }
 
 
+                // Set to current saved width, depending on whether or not it
+                // is resizable
+                if (config.resizable && !$.isBlank(sidebarObj._resizedWidth))
+                { sidebarObj.$dom().width(sidebarObj._resizedWidth); }
+                else if (!config.resizable && !$.isBlank(sidebarObj._defaultWidth))
+                { sidebarObj.$dom().width(sidebarObj._defaultWidth); }
+
                 // Adjust positions for the sidebar
                 setPosition(sidebarObj);
 
                 sidebarObj.updateEnabledSubPanes();
 
+                if (config.resizable) { sidebarObj.$dom().resizable('enable'); }
+
                 // The big reveal
                 sidebarObj.$dom().show();
 
-                if (isModal)
-                {
-                    sidebarObj._isModal = true;
-                    if (!_.isNull(sidebarObj.settings.modalHiddenSelector))
-                    { $(sidebarObj.settings.modalHiddenSelector).hide(); }
-                    sidebarObj._bodyOverflow = $('body').css('overflow');
-                    $('body').css('overflow', 'hidden');
-
-                    var $overlay = modalOverlay(sidebarObj);
-                    sidebarObj._origZIndex = sidebarObj.$dom().css('z-index');
-                    sidebarObj._origGridZIndex = sidebarObj.$neighbor()
-                        .css('z-index');
-                    sidebarObj._origParent = sidebarObj.$dom().offsetParent();
-                    sidebarObj._origParentZIndex = sidebarObj.$dom()
-                        .offsetParent().css('z-index');
-                    var zIndex = parseInt($overlay.css('z-index')) + 1;
-                    sidebarObj.$dom().css('z-index', zIndex);
-                    sidebarObj.$neighbor().css('z-index', zIndex);
-                    sidebarObj.$dom().offsetParent().css('z-index', zIndex - 1);
-
-                    // IE7 apparently isn't terribly happy the second time you
-                    // open this pane if there is a fadeIn, but no fadeOut
-                    // (because IE7 really has problems with that one)
-                    if ($.browser.msie && $.browser.majorVersion <= 7)
-                    { $overlay.show(); }
-                    else { $overlay.fadeIn(500); }
-
-                    if (isTable(sidebarObj))
-                    { sidebarObj.$grid().datasetGrid().disable(); }
-                }
-                else { sidebarObj._isModal = false; }
+                if ($.isBlank(sidebarObj._defaultWidth))
+                { sidebarObj._defaultWidth = sidebarObj.$dom().width(); }
 
                 $(window).resize();
 
@@ -711,7 +694,8 @@
 
                     if ($.device.ipad)
                     {
-                        var scroller = new iScroll(sidebarObj.$currentPane().find('.scrollContentInner').get(0));
+                        var scroller = new iScroll(sidebarObj.$currentPane()
+                            .find('.scrollContentInner').get(0));
                     }
                 }
                 else
@@ -736,28 +720,6 @@
                 sidebarObj.$neighbor().css('width', '');
 
                 hideCurrentPane(sidebarObj);
-
-                if (sidebarObj._isModal)
-                {
-                    sidebarObj._isModal = false;
-                    if (!_.isNull(sidebarObj.settings.modalHiddenSelector))
-                    { $(sidebarObj.settings.modalHiddenSelector).show(); }
-                    $('body').css('overflow', sidebarObj._bodyOverflow);
-
-                    // IE7 doesn't like this fade out
-                    if ($.browser.msie && $.browser.majorVersion <= 7)
-                    { modalOverlay(sidebarObj).hide(); }
-                    else { modalOverlay(sidebarObj).fadeOut(500); }
-
-                    sidebarObj.$dom().css('z-index', sidebarObj._origZIndex);
-                    sidebarObj.$neighbor().css('z-index',
-                        sidebarObj._origGridZIndex);
-                    sidebarObj._origParent.css('z-index',
-                        sidebarObj._origParentZIndex);
-
-                    if (isTable(sidebarObj))
-                    { sidebarObj.$grid().datasetGrid().enable(); }
-                }
 
                 // In non-IE we need to trigger a resize so the grid restores
                 // properly.  In IE7, this will crash; IE8 works either way
@@ -1288,6 +1250,11 @@
         if (!$.isBlank(sidebarObj.$currentPane()))
         { sidebarObj.resetForm(sidebarObj.$currentPane()); }
 
+        if (!$.isBlank(sidebarObj._defaultWidth) &&
+            sidebarObj.$dom().width() != sidebarObj._defaultWidth)
+        { sidebarObj._resizedWidth = sidebarObj.$dom().width(); }
+
+        sidebarObj.$dom().resizable('disable');
         sidebarObj.$dom().find('.outerPane').hide()
             .find('.paneSelect a.selected').removeClass('selected');
         sidebarObj.$dom().find('.sidebarPane').hide()
@@ -1338,6 +1305,15 @@
             setPosition(sidebarObj);
             updateWizardVisibility(sidebarObj);
         });
+    };
+
+    /* When user resize is finished */
+    var resizeDone = function(sidebarObj)
+    {
+        // Unset left, b/c the resizable plugin sets it; but we are
+        // right-positioned
+        sidebarObj.$dom().css('left', '');
+        $(window).resize();
     };
 
     var updateWizardVisibility = function(sidebarObj)

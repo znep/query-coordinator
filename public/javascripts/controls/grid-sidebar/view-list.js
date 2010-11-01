@@ -225,6 +225,7 @@
         priority: 1,
         title: 'More Views',
         subtitle: 'See existing filters, maps, charts and other views on this dataset',
+        resizable: true,
         sections: [{
             customContent: {
                 template: 'itemsListBlock',

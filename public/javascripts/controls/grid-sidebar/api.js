@@ -8,6 +8,7 @@
         priority: 10,
         title: 'API',
         subtitle: 'Access this ' + blist.dataset.displayName + ' via SODA',
+        resizable: true,
         sections: [
             {
                 customContent: {

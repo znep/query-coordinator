@@ -20,6 +20,7 @@
         name: 'feed',
         title: 'Discuss',
         subtitle: 'The discussion feed shows you the conversation and activity around a dataset',
+        resizable: true,
         sections: [
             {
                 customContent: {

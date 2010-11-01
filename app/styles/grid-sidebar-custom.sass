@@ -144,7 +144,9 @@
       .ie7 &
         z-index: 1
       .menu
-        float: left
+        left: 0
+        position: absolute
+        top: 0
         .menuButton
           background-color: transparent
           border: none
@@ -157,19 +159,21 @@
             a
               @include clip-text
 
-      .viewSearch
+      .searchWrapper
         margin:
-          left: 3.42em
-          top: 0.5em
-        width: 12em
+          left: 10em
+          right: 0.5em
 
-      .clearViewSearch
-        @include sprite-menu-icons
-        display: none
-        position: absolute
-        left: 24em
-        right: auto
-        top: 0.9em
+        .viewSearch
+          margin-top: 0.3em
+          width: 100%
+
+        .clearViewSearch
+          @include sprite-menu-icons
+          display: none
+          position: absolute
+          right: 0.5em
+          top: 0.8em
 
     .itemsList
 
@@ -364,11 +368,9 @@
 
         .wrap
           display: inline-block
-          max-width: 17em
 
         .hardWrap
           display: inline-block
-          max-width: 17em
           @include white-space-pre-wrap
 
         .starsControl
@@ -478,11 +480,7 @@
         &.inherited
           .selector
             display: none
-          .name
-            width: 16em
         &.inherited, &.noGrant
-          .name
-            width: 10em
           .selector.uniform
             display: none
           .removeShareLink
@@ -497,7 +495,6 @@
           float: left
           font-size: 1.2em
           margin-right: 0.5em
-          width: 8em
 
         span.type
           font-size: 1.2em
@@ -516,9 +513,6 @@
         .selector.uniform
           float: right
           margin: -0.5em 0.5em 0 0
-
-          .ie8 &
-            margin-top: -1.5em
 
         select.type
           width: 10em

@@ -5,6 +5,7 @@
         name: 'about',
         priority: 6,
         title: 'About This Dataset',
+        resizable: true,
         sections: [
             {
                 customContent: {

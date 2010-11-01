@@ -9,6 +9,7 @@
         priority: 1,
         title: 'Download',
         subtitle: 'Download a copy of this dataset in a static format',
+        resizable: true,
         onlyIf: function()
         {
             return blist.dataset.isGrid() && blist.dataset.valid;

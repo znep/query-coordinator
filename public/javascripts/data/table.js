@@ -2158,6 +2158,10 @@
                 ($scrolls.outerWidth() - $scrolls.width()));
             end("updateLayout.size.scrolls");
 
+            // If we ended up with too small a scrolls height, then this
+            // is actually hidden; and we should bail
+            if ($scrolls.height() < 5) { return; }
+
             begin("updateLayout.size.calculate");
             // Figure out how much space we have to display rows
             var scrollHeight = $scrolls[0].clientHeight;
@@ -2185,8 +2189,7 @@
             insideHeight /= scalingFactor;
             inside.height(insideHeight + footerHeight);
             // Account for slight rounding errors/adjustments in height
-            while (inside.height() > 10 &&
-                inside.height() < insideHeight + footerHeight - 2)
+            while (inside.height() < insideHeight + footerHeight - 2)
             {
                 // Div didn't make it to the full height; we need to adjust
                 // our scaling factor

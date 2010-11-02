@@ -448,6 +448,10 @@
         // Type config goes under the type name
         chartConfig.plotOptions[seriesType] = typeConfig;
 
+        if (chartObj.settings.view.displayFormat.stacking)
+        { chartConfig.plotOptions.series = $.extend(chartConfig.plotOptions.series,
+                                                    { stacking: 'normal' }); }
+
         // We don't actually enable exporting
         chartConfig.exporting = {
             enabled: false

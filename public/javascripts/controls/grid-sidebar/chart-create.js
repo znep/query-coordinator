@@ -32,6 +32,10 @@
             'want a legend'
     };
 
+    var stacking = function(type)
+        { return {text: 'Stacking', type: 'checkbox', defaultValue: false,
+        name: 'displayFormat.stacking', wizard: 'Stack values into a single ' + type + '?' } };
+
     var renderOther = {text: 'Use Other', type: 'checkbox', defaultValue: false,
         name: 'displayFormat.renderOther', wizard: 'Collect extra' +
         'values into Other category?'};
@@ -275,7 +279,8 @@
                 Dataset.chart.textualTypes, 'Groups'),
             basicData(Dataset.chart.types.bar,
                 Dataset.chart.numericTypes, 'Values'),
-            basicAdv(Dataset.chart.types.bar, [legendPos, renderOther]),
+            basicAdv(Dataset.chart.types.bar,
+                [legendPos, stacking('bar'), renderOther]),
 
 
             // Column chart
@@ -283,7 +288,8 @@
                 Dataset.chart.textualTypes, 'Groups'),
             basicData(Dataset.chart.types.column,
                 Dataset.chart.numericTypes, 'Values'),
-            basicAdv(Dataset.chart.types.column, [legendPos, renderOther]),
+            basicAdv(Dataset.chart.types.column,
+                [legendPos, stacking('column'), renderOther]),
 
 
             // Donut chart

@@ -169,7 +169,7 @@
         {
             var $col = $.renderTemplate('fatRowColumn', c, {
                 '.column@class+': 'renderTypeName',
-                '.name': 'name',
+                '.name': 'name!',
                 '.sort@title': function(a)
                     { return 'Sort ' + (a.context.sortAscending ?
                         'descending' : 'ascending'); },
@@ -256,6 +256,13 @@
         if ($.isBlank(frObj.settings.view.totalRows)) { return; }
         var pageCount = Math.ceil(frObj.settings.view.totalRows /
             frObj.settings.pageSize);
+
+        if (pageCount < 1)
+        {
+            frObj.$nav().addClass('hide');
+            return;
+        }
+        frObj.$nav().removeClass('hide');
 
         frObj.$nav().find('.start, .previous')
             .toggleClass('disabled', frObj._curPageIndex <= 0);

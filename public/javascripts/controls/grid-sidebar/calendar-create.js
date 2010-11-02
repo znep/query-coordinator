@@ -16,12 +16,12 @@
         {
             var dateCols = _.select(blist.dataset.realColumns, function(c)
                 {
-                    return _.include(['date', 'calendar_date'], c.dataTypeName) &&
+                    return _.include(['date', 'calendar_date'], c.renderTypeName) &&
                         (isEdit || !c.hidden);
                 });
             var textCols = _.select(blist.dataset.realColumns, function(c)
                 {
-                    return c.dataTypeName == 'text' && (isEdit || !c.hidden);
+                    return c.renderTypeName == 'text' && (isEdit || !c.hidden);
                 });
             return dateCols.length > 0 && textCols.length > 0 &&
                 (blist.dataset.valid || isEdit);

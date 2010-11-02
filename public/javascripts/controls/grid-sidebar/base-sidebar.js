@@ -1250,8 +1250,7 @@
         if (!$.isBlank(sidebarObj.$currentPane()))
         { sidebarObj.resetForm(sidebarObj.$currentPane()); }
 
-        if (!$.isBlank(sidebarObj._defaultWidth) &&
-            sidebarObj.$dom().width() != sidebarObj._defaultWidth)
+        if (!sidebarObj.$dom().resizable('option', 'disabled'))
         { sidebarObj._resizedWidth = sidebarObj.$dom().width(); }
 
         sidebarObj.$dom().resizable('disable');

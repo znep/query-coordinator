@@ -5,7 +5,7 @@ class User < Model
   non_serializable :displayName
 
   def self.find_profile(id)
-    path = "/users/#{id}.json"
+    path = "/users/#{id}.json?method=getProfile"
     parse(CoreServer::Base.connection.get_request(path))
   end
 

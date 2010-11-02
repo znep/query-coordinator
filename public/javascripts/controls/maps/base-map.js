@@ -190,6 +190,13 @@
                 mapObj.$dom().socrataMap(mapObj.settings);
             },
 
+            needsPageRefresh: function()
+            {
+                var od = this._origData || {};
+                var view = this.settings.view;
+                return od.mapType == 'bing' || view.displayFormat.type == 'bing';
+            },
+
             needsFullReset: function()
             {
                 var od = this._origData || {};

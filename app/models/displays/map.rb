@@ -18,11 +18,14 @@ class Displays::Map < Displays::Base
   def render_javascript_links
     result = super
 
+    js_url = @options.data['type'] == 'bing' \
+        ? "http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.2" \
+        : "http://maps.google.com/maps/api/js?sensor=false"
+
     # Must insert js here rather than via required_javascriptsion because POS
     # asset packager will add ".js" extension
     result << <<-END
-      <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-      <script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.2"></script>
+      <script type="text/javascript" src="#{js_url}"></script>
     END
 
     result

@@ -129,6 +129,12 @@
             reload: function()
             {
                 var vizObj = this;
+                if (vizObj.needsPageRefresh())
+                {
+                    window.location.reload();
+                    return;
+                }
+
                 if (vizObj.needsFullReset())
                 {
                     delete vizObj._pendingReload;
@@ -172,6 +178,12 @@
             reset: function()
             {
                 // Implement how to do a full reset
+            },
+
+            needsPageRefresh: function()
+            {
+                // Override if you need to whitelist against reloading
+                return false;
             },
 
             noReload: function()

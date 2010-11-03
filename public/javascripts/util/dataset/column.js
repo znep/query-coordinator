@@ -182,7 +182,13 @@ this.Column = Model.extend({
         this._setUpColumn();
 
         if (oldWidth !== col.width) { col.view.trigger('column_resized', [col]); }
-        if (oldAgg !== col.format.aggregate) { col.view.aggregatesChanged(); }
+        if (!$.isBlank(newCol.updatedAggregate))
+        {
+            col.aggregates[newCol.updatedAggregate.name] =
+                parseFloat(newCol.updatedAggregate.value);
+            col.view.aggregatesChanged(true);
+        }
+        else if (oldAgg !== col.format.aggregate) { col.view.aggregatesChanged(); }
     },
 
     filter: function(value, subColumnType)

@@ -415,6 +415,14 @@
         var column = sidebarObj.getFormValues($pane);
         var col = data.origColumn;
 
+        // Need to maintain drill_down and grouping_aggregate if present
+        if (!$.isBlank(col.format))
+        {
+            column.format = column.format || {};
+            column.format.drill_down = col.format.drill_down;
+            column.format.grouping_aggregate = col.format.grouping_aggregate;
+        }
+
         if (!$.isBlank(column.format))
         {
             column.format.rdf = column.format.rdf || column.format.customRdf;
@@ -425,7 +433,8 @@
         {
             var keyColId = column.format.linkedKey;
             var srcColId = column.format.linkedSource;
-            column.dataTypeName = blist.dataset.getLinkSourceDataType(null, srcColId, keyColId).value;
+            column.dataTypeName = blist.dataset.getLinkSourceDataType(null,
+                srcColId, keyColId).value;
         }
 
         var newType = column.dataTypeName;

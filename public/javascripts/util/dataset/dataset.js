@@ -747,9 +747,9 @@ this.Dataset = Model.extend({
         { callback(); }
     },
 
-    aggregatesChanged: function()
+    aggregatesChanged: function(skipStale)
     {
-        this._aggregatesStale = true;
+        if (!skipStale) { this._aggregatesStale = true; }
         this.trigger('column_totals_changed');
     },
 

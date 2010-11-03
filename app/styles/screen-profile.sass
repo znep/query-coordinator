@@ -78,6 +78,8 @@
           border-right: 1px solid #cacaca
           display: inline-block
           padding: 0 0.5em
+          .ie7 &
+            display: inline
           &:last-child
             border: none
           a
@@ -88,6 +90,8 @@
       // IE8 wants this, or bad wrapping
       .browseFacets
         clear: left
+      .ie7 & .browseSection
+        margin-top: 3.7em
 
 
     &.newsFeed

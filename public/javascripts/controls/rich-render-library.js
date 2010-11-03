@@ -159,8 +159,9 @@
                         {
                             _.each(r.fields, function(f)
                             {
-                                cols.push(rrObj.settings.view.columnForTCID(
-                                    f.tableColumnId));
+                                var c = rrObj.settings.view.columnForTCID(
+                                    f.tableColumnId)
+                                if (!$.isBlank(c)) { cols.push(c); }
                             });
                         }
                     });

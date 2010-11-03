@@ -12,7 +12,9 @@
         // update visual things
         _.each(sdpTemplatesNS.templates, function(template)
         {
-            var customization = template.customization = JSON.parse(template.customization);
+            if (_.isString(template.customization))
+            { template.customization = JSON.parse(template.customization); }
+            var customization = template.customization;
             var $row = $('.templatesList tbody tr[data-templateid=' + template.uid + ']');
 
             // check version
@@ -24,20 +26,41 @@
             else
             {
                 // sub in styles
-                $row.find('.previewOuter')
-                    .css('background-color', parseColor(customization.frame.color))
-                    .css('border-width', customization.frame.border.width.value +
-                                         customization.frame.border.width.unit)
-                    .css('border-color', parseColor(customization.frame.border.color));
-                $row.find('.previewLogo')
-                    .css('background-image', 'url(' +
-                                             (customization.logo.image.type == 'static' ?
-                                             customization.logo.image.href :
-                                             '/assets/' + customization.logo.image.href) + ')');
-                $row.find('.previewSubheader')
-                    .css('background-color', parseColor(customization.toolbar.color));
-                $row.find('.previewGridZebra')
-                    .css('background-color', parseColor(customization.grid.zebra));
+                if (!$.isBlank(customization.frame))
+                {
+                    $row.find('.previewOuter')
+                        .css('background-color',
+                            parseColor(customization.frame.color))
+                        .css('border-width',
+                            customization.frame.border.width.value +
+                            customization.frame.border.width.unit)
+                        .css('border-color',
+                            parseColor(customization.frame.border.color));
+                }
+
+                if (!$.isBlank(customization.logo))
+                {
+                    $row.find('.previewLogo')
+                        .css('background-image', 'url(' +
+                                    (customization.logo.image.type == 'static' ?
+                                     customization.logo.image.href :
+                                     '/assets/' + customization.logo.image.href) +
+                                    ')');
+                }
+
+                if (!$.isBlank(customization.toolbar))
+                {
+                    $row.find('.previewSubheader')
+                        .css('background-color',
+                            parseColor(customization.toolbar.color));
+                }
+
+                if (!$.isBlank(customization.grid))
+                {
+                    $row.find('.previewGridZebra')
+                        .css('background-color',
+                            parseColor(customization.grid.zebra));
+                }
             }
         });
 

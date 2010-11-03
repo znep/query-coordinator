@@ -12,7 +12,7 @@
       <li><a href="#submit" class="submitButton default button">Submit</a></li>
     </ul>
 
-    <%- if defined? view_id && !view_id.nil? -%>
+    <%- if !local_assigns[:view_id].nil? -%>
       <input type="hidden" name="view_id" value="<%= view_id %>"/>
     <%- end -%>
   <% end %>

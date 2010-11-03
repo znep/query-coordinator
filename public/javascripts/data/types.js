@@ -144,7 +144,7 @@ blist.namespace.fetch('blist.data.types');
         if ($.isBlank(value)) { return ''; }
         // Add an extra wrapper so we can tweak the display to something
         // reasoanble
-        return '<div class="blist-html">' + value + '</div>';
+        return '<span class="blist-html">' + value + '</span>';
     };
 
     var renderGenHtml = function(value, plain)
@@ -275,16 +275,16 @@ blist.namespace.fetch('blist.data.types');
                 renderText = renderBar = true;
                 break;
         }
-        var rv = '<div class="blist-percent">';
+        var rv = '<span class="blist-percent">';
         if (renderBar)
         { rv += renderPercentBar(value); }
         if (renderText)
         {
-            rv += '<div class="blist-cell blist-percent-num">' +
+            rv += '<span class="blist-cell blist-percent-num">' +
                 numberHelper(value, precision, precisionStyle, null, '%') +
-                '</div>';
+                '</span>';
         }
-        rv += '</div>';
+        rv += '</span>';
         return rv;
     };
 
@@ -373,8 +373,8 @@ blist.namespace.fetch('blist.data.types');
         }
 
         label = (skipBlankType && !type ? '' :
-            "<div class='blist-phone-icon blist-phone-icon-" +
-            typeStr + "'>" + typeStr + "</div>&nbsp;") + htmlEscape(label);
+            "<span class='blist-phone-icon blist-phone-icon-" +
+            typeStr + "'>" + typeStr + "</span>&nbsp;") + htmlEscape(label);
 
         return skipURL ? label :
             urlHelper([ "callto://" + num.replace(/[\-()\s]/g, ''), label ], true);
@@ -402,10 +402,10 @@ blist.namespace.fetch('blist.data.types');
 
     var checkboxHelper = function(value, includeTitle)
     {
-        return "<div class='blist-cell blist-checkbox blist-checkbox-" +
+        return "<span class='blist-cell blist-checkbox blist-checkbox-" +
                 (value ? 'on' : 'off') + "'" + (includeTitle ? " title='" +
                 (value ? 'True' : 'False') : '') + "'>" +
-                (value ? 'True' : 'False') + "</div>";
+                (value ? 'True' : 'False') + "</span>";
     };
 
     var renderGenCheckbox = function(value, plain, column)
@@ -436,8 +436,8 @@ blist.namespace.fetch('blist.data.types');
 
     var renderFlag = function(value, column)
     {
-        return value && "<div class='blist-flag blist-flag-" + value +
-            "'>" + value + "</div>";
+        return value && "<span class='blist-flag blist-flag-" + value +
+            "'>" + value + "</span>";
     };
 
 
@@ -559,9 +559,9 @@ blist.namespace.fetch('blist.data.types');
         if (column.dropDownList)
         {
             var valueLookup = generateDropDownLookup(column);
-            return "<div class='blist-picklist-wrapper'>" +
+            return "<span class='blist-picklist-wrapper'>" +
                 ( (valueLookup[(value || '').toLowerCase()] || {})['html'] ||
-                    value || '') + "</div>";
+                    value || '') + "</span>";
         }
         return '?';
     };
@@ -662,14 +662,14 @@ blist.namespace.fetch('blist.data.types');
         if (on <= 0) { return ''; }
         else if (on > range) { on = range; }
         var off = range - on;
-        return "<div class='blist-tstars-render-wrapper' style='width:" +
+        return "<span class='blist-tstars-render-wrapper' style='width:" +
             range + "px'>" +
-            (canEdit ?  "<div class='blist-star-0'></div>" : "") +
-            "<div class='blist-tstars' style='width: " + range +
-            "px'><div class='blist-cell blist-tstar-on' style='width: " + on +
-            "px'></div><div class='blist-cell blist-tstar-off' style='width: " +
+            (canEdit ?  "<span class='blist-star-0'></span>" : "") +
+            "<span class='blist-tstars' style='width: " + range +
+            "px'><span class='blist-cell blist-tstar-on' style='width: " + on +
+            "px'></span><span class='blist-cell blist-tstar-off' style='width: " +
             off + "px; background-position-x: " + -(on % STAR_WIDTH) +
-            "px'></div></div></div>";
+            "px'></span></span></span>";
     };
 
     var renderTextStars = function(value, range)

@@ -243,6 +243,7 @@
         priority: 1,
         title: 'Chart',
         subtitle: 'View data can be displayed with a variety of charts',
+        resizable: true,
         onlyIf: function()
         { return blist.dataset.valid || isEdit; },
         disabledSubtitle: 'This view must be valid',

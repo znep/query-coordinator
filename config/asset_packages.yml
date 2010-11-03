@@ -276,7 +276,7 @@ javascripts:
 stylesheets:
 - chart-screen:
   - chart-screen
-- dataset-show:
+- grid-sidebar:
   - jquery.ui.resizable
   - ui.slider
 - displays-form:

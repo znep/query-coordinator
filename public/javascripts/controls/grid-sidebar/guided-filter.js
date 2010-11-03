@@ -10,6 +10,7 @@
         subtitle: 'If you want to explore this dataset, but aren\'t entirely ' +
             'certain what you\'re looking for, you can use the Guided ' +
             'Filter to help find interesting trends',
+        resizable: true,
         onlyIf: function()
         {
             // disallow groupbys

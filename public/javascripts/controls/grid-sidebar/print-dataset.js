@@ -9,6 +9,7 @@
         priority: 5,
         title: 'Print',
         subtitle: 'Export this dataset to a printable PDF format',
+        resizable: true,
         noReset: true,
         onlyIf: function()
         {

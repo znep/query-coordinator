@@ -2,6 +2,7 @@
 {
     var baseConfig =
     {
+        resizable: true,
         priority: 5,
         onlyIf: function()
         {

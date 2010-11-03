@@ -8,6 +8,7 @@
         priority: 1,
         title: 'Social Data Player',
         subtitle: 'The Social Data Player enables you to publish this dataset on the Internet at large',
+        resizable: true,
         onlyIf: function()
         {
             return blist.dataset.isPublic() && blist.dataset.valid &&

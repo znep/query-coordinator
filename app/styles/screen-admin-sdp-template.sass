@@ -105,22 +105,25 @@
   #gridSidebar_outer_metadata .line
     label
       width: 7em
-    input[type=text]
-      width: 12.1em
+    .inputWrapper
+      padding-left: 12.5em
 
   #gridSidebar_outer_behavior .line
     label
       width: 12em
+    .inputWrapper
+      padding-left: 17.5em
 
   #gridSidebar_embed
     .line.textarea
       label
         display: none
+      .inputWrapper
+        padding-left: 0
       textarea
         font-size: 1em
         height: 12em
         margin: 0 1em
-        width: 25.5em
     .line.changesWarning
       span
         color: $color_text_error
@@ -129,8 +132,8 @@
     > label
       width: 9em
 
-    input[type=text]
-      width: 10em
+    .inputWrapper
+      padding-left: 14.5em
 
     span.error
       margin-left: 12em
@@ -141,25 +144,23 @@
       .inputBlock
         clear: none
         margin: 0
-        width: 12.5em
 
         label
           display: none // for some reason inputOnly doesnt work here
 
         .line
           clear: none
-          float: left
           margin: 0
           padding: 0
             right: 0.3em
-        .text input
-          width: 3em
-        .select select
-          width: 6.1em
-
-    &.logoEdit
-      select
-        width: 10.5em
+          &.text .inputWrapper
+            margin-right: 7.3em
+          &.select
+            position: absolute
+            right: 0
+            top: 0
+            select
+              width: 6.1em
 
     &.static
       span

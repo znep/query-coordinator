@@ -1,7 +1,7 @@
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-sdp-template' %>
-  <%= stylesheet_link_merged 'admin-sdp-template' %>
+  <%= stylesheet_link_merged 'grid-sidebar' %>
   <title>Editing <%= @widget_customization.name %> | Social Data Player Templates | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
@@ -75,14 +75,16 @@
 <div class="logoEdit">
   <div class="line clearfix logoEdit">
     <label for="gridSidebar_appearance_logo:_logoSelect">Choose logo</label>
-    <select id="gridSidebar_appearance_logo:_logoSelect" data-origname="_logoSelect"
-          name="gridSidebar_appearance_logo:_logoSelect">
-      <option value="none">(none)</option>
-      <option value="socrata">Default Socrata Logo</option>
-      <option disabled="disabled">&nbsp;</option>
-      <%= options_for_select Asset.find(:type => "WIDGET_CUSTOMIZATION_LOGO").
-                                        map{ |image| [image.nameForOutput, image.id] } %>
-    </select>
+    <div class='inputWrapper'>
+      <select id="gridSidebar_appearance_logo:_logoSelect" data-origname="_logoSelect"
+            name="gridSidebar_appearance_logo:_logoSelect">
+        <option value="none">(none)</option>
+        <option value="socrata">Default Socrata Logo</option>
+        <option disabled="disabled">&nbsp;</option>
+        <%= options_for_select Asset.find(:type => "WIDGET_CUSTOMIZATION_LOGO").
+                                          map{ |image| [image.nameForOutput, image.id] } %>
+      </select>
+    </div>
   </div>
   <div class="line clearfix">
     <label>&nbsp;</label>
@@ -90,8 +92,10 @@
   </div>
   <div class="line clearfix text">
     <label for="gridSidebar_appearance_logo:logo.href">Logo Link URL</label>
-    <input id="gridSidebar_appearance_logo:logo.href" name="gridSidebar_appearance_logo:logo.href" type="text"
-      data-origname="logo.href" />
+    <div class='inputWrapper textWrapper'>
+      <input id="gridSidebar_appearance_logo:logo.href" name="gridSidebar_appearance_logo:logo.href" type="text"
+        data-origname="logo.href" />
+    </div>
   </div>
 </div>
 <% end %>

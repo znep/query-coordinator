@@ -1,16 +1,20 @@
   <input type="hidden" id="print" name="print" value="true" />
   <div class="formSection">
-    <label for="page_size" class="formHeader pageSizeHeader">Paper Size:</label>
-    <select id="page_size" name="page_size">
-      <option value="letter">Letter (8.5 x 11 inches)</option>
-      <option value="legal">Legal (8.5 x 14 inches)</option>
-      <option value="tabloid">Tabloid (11 x 17 inches)</option>
-      <option value="a4">A4 (210 x 297mm)</option>
-      <option value="a3">A3 (297 x 420mm)</option>
-      <option value="a2">A2 (420 x 594mm)</option>
-      <option value="a1">A1 (594 x 841mm)</option>
-      <option value="a0">A0 (841 x 1189mm)</option>
-    </select>
+    <div class='line clearfix'>
+      <label for="page_size" class="formHeader pageSizeHeader">Paper Size:</label>
+      <div class='inputWrapper'>
+        <select id="page_size" name="page_size">
+          <option value="letter">Letter (8.5 x 11 inches)</option>
+          <option value="legal">Legal (8.5 x 14 inches)</option>
+          <option value="tabloid">Tabloid (11 x 17 inches)</option>
+          <option value="a4">A4 (210 x 297mm)</option>
+          <option value="a3">A3 (297 x 420mm)</option>
+          <option value="a2">A2 (420 x 594mm)</option>
+          <option value="a1">A1 (594 x 841mm)</option>
+          <option value="a0">A0 (841 x 1189mm)</option>
+        </select>
+      </div>
+    </div>
   </div>
 
   <div class="formSection margins">
@@ -18,19 +22,27 @@
     <div class="sectionContent">
       <div class="line clearfix">
         <label for="margin_top">Top:</label>
-        <input type="text" id="margin_top" name="margin_top" value="1.0" />
+        <div class='inputWrapper textWrapper'>
+          <input type="text" id="margin_top" name="margin_top" value="1.0" />
+        </div>
       </div>
       <div class="line clearfix">
         <label for="margin_left">Left:</label>
-        <input type="text" id="margin_left" name="margin_left" value="1.0" />
+        <div class='inputWrapper textWrapper'>
+          <input type="text" id="margin_left" name="margin_left" value="1.0" />
+        </div>
       </div>
       <div class="line clearfix">
         <label for="margin_bottom">Bottom:</label>
-        <input type="text" id="margin_bottom" name="margin_bottom" value="1.0" />
+        <div class='inputWrapper textWrapper'>
+          <input type="text" id="margin_bottom" name="margin_bottom" value="1.0" />
+        </div>
       </div>
       <div class="line clearfix">
         <label for="margin_right">Right:</label>
-        <input type="text" id="margin_right" name="margin_right" value="1.0" />
+        <div class='inputWrapper textWrapper'>
+          <input type="text" id="margin_right" name="margin_right" value="1.0" />
+        </div>
       </div>
     </div>
   </div>
@@ -39,12 +51,16 @@
     <label class="formHeader">Orientation:</label>
     <div class="sectionContent optionsBlock">
       <fieldset>
-        <div class="line">
-          <input type="radio" id="landscape" name="portrait" value="false" checked="checked" />
+        <div class="line inputFirst">
+          <div class='inputWrapper'>
+            <input type="radio" id="landscape" name="portrait" value="false" checked="checked" />
+          </div>
           <label for="landscape">Landscape</label>
         </div>
-        <div class="line">
-          <input type="radio" id="portrait" name="portrait" value="true" />
+        <div class="line inputFirst">
+          <div class='inputWrapper'>
+            <input type="radio" id="portrait" name="portrait" value="true" />
+          </div>
           <label for="portrait">Portrait</label>
         </div>
       </fieldset>
@@ -54,16 +70,22 @@
   <div class="formSection">
     <label class="formHeader">Options:</label>
     <div class="sectionContent optionsBlock">
-      <div class="line">
-        <input type="checkbox" id="fit" name="fit" value="true" checked="checked" />
+      <div class="line inputFirst">
+        <div class='inputWrapper'>
+          <input type="checkbox" id="fit" name="fit" value="true" checked="checked" />
+        </div>
         <label for="fit">Shrink to fit dataset on one page</label>
       </div>
-      <div class="line">
-        <input type="checkbox" id="headers_on_every_page" name="headers_on_every_page" value="true" checked="checked" />
+      <div class="line inputFirst">
+        <div class='inputWrapper'>
+          <input type="checkbox" id="headers_on_every_page" name="headers_on_every_page" value="true" checked="checked" />
+        </div>
         <label for="headers_on_every_page">Print column titles on each page</label>
       </div>
-      <div class="line">
-        <input type="checkbox" id="header_icons" name="header_icons" value="true" />
+      <div class="line inputFirst">
+        <div class='inputWrapper'>
+          <input type="checkbox" id="header_icons" name="header_icons" value="true" />
+        </div>
         <label for="header_icons">Display icons in column header</label>
       </div>
     </div>

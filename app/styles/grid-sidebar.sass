@@ -260,45 +260,54 @@
 
       .line
         margin: 0.5em 0
+        position: relative
 
         label
           background-position: left 5px
           color: $color_chrome_sidebar_text
           font-size: 1.1em
           font-weight: bold
-          margin:
-            left: 0.7em
-            right: 1em
-          padding-top: 0.2em
-          width: 6.4em
+          left: 0.7em
+          position: absolute
+          top: 0.5em
+          width: 6.7em
+
+        .inputWrapper
+          display: block
+          float: none
+          padding-left: 10.2em
+          &.textWrapper
+            padding-right: 1em
 
         textarea, input[type="text"]
-          width: 12.6em
+          width: 100%
 
-        select
-          width: 13.5em
+        .uniform.selector
+          width: 100%
+          select
+            width: 100%
 
-        input[type="radio"], .uniform.radio
+        input[type="radio"], .uniform.radio,
+        input[type="checkbox"], .uniform.checker
           margin-right: 0.5em
           .ie7 &
             display: inline
 
-        .ui-slider
-          margin-left: 0.5em
-          width: 11.1em
+        &.custom input[type="text"]
+          width: 95%
 
         .blist-combo
           margin:
             left: -2px
             top: -3px
-          width: 12.9em
+          width: 100%
 
         .uploader
-          width: 16.06em
+          width: auto
           .filename
-            width: 7.5em
-            .ie8 &
-              width: 7.48em
+            float: none
+            margin-right: 5em
+            width: auto
             input
               @include box-shadow-none
               background-color: transparent
@@ -307,36 +316,35 @@
               font-size: 1em
               width: 100%
           .action
+            right: 0
+            position: absolute
+            top: 0
             width: 5em
 
         span.error
           color: #ff0000
           display: block
           line-height: 1.7em
-          margin-left: 8.5em
+          margin-left: 9.1em
           padding-left: 12px
 
         .columnSelector
           @include text-hiding
           background-image: url(/stylesheets/images/controls/column_select_sprite.png)
-          display: inline-block
+          display: block
           height: 20px
-          margin-bottom: 3px
-          margin-right: 0.5em
-          position: relative
-          vertical-align: bottom
+          left: 10.1em
+          position: absolute
+          top: 0.5em
           width: 20px
-          .ie7 &
-            display: block
-            float: left
 
           &.inProcess
             background-position: 0 -20px
             z-index: 70
 
-        &.columnSelect select.hasTable
+        &.columnSelect .inputWrapper.hasTable
           font-size: 1em
-          width: 11.4em
+          padding-left: 12.2em
 
         &.color .colorControlLabel
           margin-left: 1em
@@ -346,15 +354,17 @@
           padding-top: 0.2em
 
         .ui-slider
-          display: inline-block
-          margin-right: 0.7em
-          vertical-align: bottom
-          width: 8.6em
+          display: block
+          margin:
+            left: 0.5em
+            right: 3em
 
         input.sliderInput
           background-color: transparent
           border: none
           @include box-shadow-none
+          float: right
+          margin-top: -0.2em
           text-align: right
           width: 1.8em
 
@@ -369,84 +379,99 @@
         &.colorCollapse + div.line
           margin-right: 24px
 
-          textarea, input[type="text"]
-            width: 10.1em
-
-          select
-            width: 11.1em
-
-          .ui-slider
-            width: 9.1em
-
-          &.columnSelect select.hasTable
-            width: 9em
-
         &.radioSelect
           padding-left: 0
 
           .radioSelectBlock
-            width: 12em
-            .radioLine label
-              font-weight: normal
-              margin-left: 0.3em
-              padding-left: 0
-              text-transform: capitalize
-              width: 8em
+            .radioLine
+              position: relative
+              label
+                font-weight: normal
+                margin-right: 0
+                padding-left: 0
+                position: static
+                text-transform: capitalize
+                vertical-align: bottom
+                width: auto
 
         &.radioGroup, &.group
           padding-left: 0.65em
 
         &.group
           padding-top: 0
+          .inputBlock
+            display: block
+            float: none
 
         .radioBlock
-          width: 15.41em
+          display: block
+          float: none
+          padding-left: 10.2em
+
+          .radioLine
+            position: relative
+          .uniform.radio
+            left: 0
+            position: absolute
+            top: 0
+
           label
-            display: inline-block
+            display: block
             font-size: 1.2em
             font-weight: normal
             margin:
-              left: 0
+              left: 2.2em
               right: 0
             padding-left: 0
+            position: static
             vertical-align: bottom
-            width: 10.9em
+            width: auto
+
+            .inputWrapper
+              padding-left: 0
 
             .uniform.selector
               font-size: 1em
 
             select, input
               font-size: 1em
-              width: 10.15em
-            select
-              width: 11em
-
-            .ui-slider
-              width: 5em
 
             input.sliderInput
               width: 1.8em
 
-          .columnSelect .uniform.radio
-            margin-bottom: 3px
-
-          .columnSelect label select.hasTable
-            width: 8.7333em
+          .columnSelect
+            .inputWrapper.hasTable
+              margin-left: 2em
+            .columnSelector
+              left: 2.2em
+              top: 0
+            .uniform.radio
+              margin-bottom: 3px
 
           label span.error
             font-size: 0.8333em
             margin-left: 0
             padding-left: 0
 
+        &.inputFirst
+          margin: 0
+          .inputWrapper
+            display: inline-block
+            padding-left: 0
+          label
+            display: inline-block
+            float: none
+            font-size: 1.2em
+            font-weight: normal
+            padding-left: 0
+            position: static
+            width: auto
+
         &.noLabel
           > label
             display: none
-
-          .radioBlock
-            width: 25em
-
-          label
-            width: 18em
+          .inputWrapper, .radioBlock
+            padding-left: 0
 
         &.repeater
           .addValue
@@ -480,15 +505,6 @@
               left: 0.1em
               top: 0.5em
 
-            textarea, input[type="text"]
-              width: 12.2em
-
-            select
-              width: 12.9em
-
-            &.columnSelect select.hasTable
-              width: 10.8em
-
           > .line
             border: 1px dashed transparent
             padding: 0.1em 0 0.3em 0.3em
@@ -508,6 +524,8 @@
             margin: 0 1px
             padding: 0
             position: static
+            & + .line.color .inputWrapper
+              padding-left: 0
 
       &.collapsed
         .formHeader

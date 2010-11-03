@@ -62,12 +62,6 @@
       font-style: italic
       padding-bottom: 0.4em
 
-    .dimensions
-      label
-        width: 4em
-      input
-        width: 8em
-
     .templateSection
       margin-top: 1em
 
@@ -80,10 +74,6 @@
       padding: 0
     .pageSizeHeader + .uniform.selector
       margin-left: 1em
-      select
-        width: 15em
-    .formSection .margins .line input[type=text]
-      width: 10em
     .formSection .line .uniform.checker,
     .formSection .line .uniform.radio
       margin-left: 1em
@@ -91,7 +81,6 @@
     .optionsBlock label
       font-weight: normal
       margin-left: 0.5em
-      width: 18em
     .submitLine
       display: none
 
@@ -236,12 +225,15 @@
         .joiner
           float: left
           font-size: 1.2em
-          margin-right: 0.2em
+          margin:
+            left: 0.5em
+            right: 0.2em
           &.stars
             margin-left: -2em
 
         .editorWrapper
           float: left
+          width: 42%
 
           textarea, input[type="text"]
             margin-right: 0.2em
@@ -251,7 +243,6 @@
             margin:
               left: 0
               right: 0.2em
-            width: 5em
 
           &:first-child .blist-combo
             margin-left: -2px
@@ -271,9 +262,10 @@
             padding: 0.2em
 
         &.type-url
+          margin-left: 5.2em
           .labels
             font-size: 1.1em
-            left: 0
+            left: -5.2em
             position: absolute
             text-align: right
             width: 5em
@@ -284,9 +276,7 @@
 
           input
             display: block
-            margin-left: 5em
             margin-top: 0.1em
-            width: 7.1em
 
         &.type-location
           .lat_long
@@ -574,7 +564,7 @@
       border-top: 1px solid $color_chrome_box_border
       padding: 0.6em
       text-align: center
-      
+
       &:first-child,
       &.onlyChild
         border-top: none

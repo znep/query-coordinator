@@ -198,6 +198,7 @@
         priority: 2,
         title: 'Map',
         subtitle: 'Views with locations can be displayed as points on a map',
+        resizable: true,
         onlyIf: function()
         {
             return _.select(blist.dataset.realColumns, function(c)

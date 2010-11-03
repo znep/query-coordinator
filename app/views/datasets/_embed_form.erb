@@ -45,11 +45,15 @@
       <div class="sectionContent dimensions">
         <div class="line clearfix">
           <label for="embed_width">Width</label>
-          <input type="text" id="embed_width" name="embed_width" value="500"/>
+          <div class='inputWrapper textWrapper'>
+            <input type="text" id="embed_width" name="embed_width" value="500"/>
+          </div>
         </div>
         <div class="line clearfix">
           <label for="embed_height">Height</label>
-          <input type="text" id="embed_height" name="embed_height" value="425"/>
+          <div class='inputWrapper textWrapper'>
+            <input type="text" id="embed_height" name="embed_height" value="425"/>
+          </div>
         </div>
       </div>
     </div>
@@ -61,11 +65,13 @@
       <div class="sectionContent template">
         <div class="line clearfix">
           <label for="embed_template">Template</label>
-          <select id="embed_template" name="embed_template">
-            <%= options_from_collection_for_select(
-                  WidgetCustomization.find, 'uid', 'name',
-                  CurrentDomain.default_widget_customization_id) %>
-          </select>
+          <div class='inputWrapper'>
+            <select id="embed_template" name="embed_template">
+              <%= options_from_collection_for_select(
+                    WidgetCustomization.find, 'uid', 'name',
+                    CurrentDomain.default_widget_customization_id) %>
+            </select>
+          </div>
         </div>
         <div class="line clearfix">
           <label></label>

@@ -187,6 +187,7 @@
         name: configName,
         title: 'Column Properties',
         subtitle: 'Update various properites on this column',
+        resizable: true,
         onlyIf: function()
         {
             return !blist.dataset.temporary || blist.dataset.minorChange;

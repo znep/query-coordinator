@@ -1184,7 +1184,7 @@
                 $pane.find('.line .sliderControl').each(function()
                 {
                     var $slider = $(this);
-                    var $input = $slider.next(':input');
+                    var $input = $slider.siblings(':input');
                     $slider.slider('value',
                         parseInt(JSON.parse(
                                 $input.attr('data-dataValue') || '""') ||
@@ -1565,6 +1565,8 @@
         };
 
 
+        var wrapper = {tagName: 'span', 'class': ['inputWrapper']};
+        contents.push(wrapper);
         switch (args.item.type)
         {
             case 'static':
@@ -1575,14 +1577,15 @@
                 {
                     if (args.item.isInput)
                     {
-                        contents.push({tagName: 'span', contents: val});
-                        contents.push($.extend(commonAttrs(args.item),
+                        wrapper.contents = [];
+                        wrapper.contents.push({tagName: 'span', contents: val});
+                        wrapper.contents.push($.extend(commonAttrs(args.item),
                             {tagName: 'input', type: 'hidden', value: val}));
                     }
                     else
                     {
-                        contents.push($.extend(commonAttrs(args.item),
-                            {tagName: 'span', contents: val}));
+                        wrapper.contents = $.extend(commonAttrs(args.item),
+                            {tagName: 'span', contents: val});
                     }
                 }
                 else
@@ -1590,28 +1593,30 @@
                 break;
 
             case 'text':
-                contents.push($.extend(commonAttrs(args.item),
-                    {tagName: 'input', type: 'text', value:
-                        $.htmlEscape(curValue || defValue)}));
+                wrapper['class'].push('textWrapper');
+                wrapper.contents = $.extend(commonAttrs(args.item),
+                        {tagName: 'input', type: 'text', value:
+                            $.htmlEscape(curValue || defValue)});
                 break;
 
             case 'textarea':
-                contents.push($.extend(commonAttrs(args.item),
+                wrapper['class'].push('textWrapper');
+                wrapper.contents = $.extend(commonAttrs(args.item),
                     {tagName: 'textarea', contents:
-                        $.htmlEscape(curValue || defValue)}));
+                        $.htmlEscape(curValue || defValue)});
                 break;
 
             case 'checkbox':
                 var v = curValue;
                 if ($.isBlank(v)) { v = defValue; }
-                contents.push($.extend(commonAttrs(args.item),
+                wrapper.contents = $.extend(commonAttrs(args.item),
                     {tagName: 'input', type: 'checkbox',
                         'data-trueValue': args.item.trueValue,
                         'data-falseValue': args.item.falseValue,
                         checked: (!$.isBlank(args.item.trueValue) &&
                             v === args.item.trueValue) ||
                             _.include([true, 'true', 1, '1', 'yes', 'checked'],
-                                v)}));
+                                v)});
 
                 if (args.item.inputFirst === true)
                 {
@@ -1653,8 +1658,8 @@
                 { tag['data-linkedField'] =
                     $.arrayify(args.item.linkedField).join(','); }
 
-                contents.push($.extend(commonAttrs($.extend({}, args.item,
-                        {dataValue: curValue})), tag));
+                wrapper.contents = $.extend(commonAttrs($.extend({}, args.item,
+                        {dataValue: curValue})), tag);
                 break;
 
             case 'columnSelect':
@@ -1672,14 +1677,12 @@
                 var options = renderColumnSelectOptions(args.item.columns,
                     args.item.isTableColumn, curValue || defValue);
 
-                contents.push($.extend(commonAttrs($.extend({}, args.item,
-                        {extraClass: ['columnSelectControl', {value: 'hasTable',
-                            onlyIf: isTable(sidebarObj)}]})),
+                if (isTable(sidebarObj)) { wrapper['class'].push('hasTable'); }
+                wrapper.contents = $.extend(commonAttrs(args.item),
                     {tagName: 'select', contents: options,
                     'data-isTableColumn': args.item.isTableColumn,
                     'data-columnOptions': $.htmlEscape(JSON.stringify(
-                        args.item.columns || ''))}
-                    ));
+                        args.item.columns || ''))});
                 break;
 
             case 'slider':
@@ -1694,14 +1697,16 @@
                     defValue *= scale;
                     if (!$.isBlank(curValue)) { curValue *= scale; }
                 }
-                contents.push({tagName: 'span', 'class': 'sliderControl',
-                        'data-min': min, 'data-max': max});
 
-                contents.push($.extend(commonAttrs($.extend({}, args.item,
+                wrapper.contents = [];
+                wrapper.contents.push($.extend(commonAttrs($.extend({}, args.item,
                         {defaultValue: defValue, dataValue: curValue,
                             extraClass: 'sliderInput'})),
                     {tagName: 'input', type: 'text', value: (curValue || defValue),
                     'data-scale': scale, readonly: true}));
+
+                wrapper.contents.push({tagName: 'span', 'class': 'sliderControl',
+                        'data-min': min, 'data-max': max});
                 break;
 
             case 'color':
@@ -1710,21 +1715,25 @@
                 var defColor = curValue ||
                     item.defaultValue[args.context.repeaterIndex] ||
                     item.defaultValue[0];
-                contents.push({tagName: 'a', href: '#Color', title: 'Choose color',
-                    name: args.item.name,
-                    'class': ['colorControl', {value: 'advanced', onlyIf: args.item.advanced}],
-                    contents: 'Choose color', style: {'background-color': defColor}});
+                wrapper.contents = [];
+                wrapper.contents.push({tagName: 'a', href: '#Color',
+                    title: 'Choose color', name: args.item.name,
+                    'class': ['colorControl',
+                        {value: 'advanced', onlyIf: args.item.advanced}],
+                    contents: 'Choose color',
+                    style: {'background-color': defColor}});
                 if (args.item.showLabel === true)
                 {
-                    contents.push({tagName: 'span', 'class': 'colorControlLabel'});
+                    wrapper.contents.push({tagName: 'span',
+                        'class': 'colorControlLabel'});
                 }
-                contents.push($.extend(commonAttrs(item),
+                wrapper.contents.push($.extend(commonAttrs(item),
                     {tagName: 'input', type: 'hidden', value: defColor}));
                 break;
 
             case 'file':
-                contents.push({tagName: 'div', 'class': ['uploader', 'uniform',
-                        'fileChooser'],
+                wrapper.contents = {tagName: 'div',
+                    'class': ['uploader', 'uniform', 'fileChooser'],
                     'data-fileTypes': $.htmlEscape(JSON.stringify(
                         $.makeArray(args.item.fileTypes))),
                     'data-action': args.item.fileAction,
@@ -1732,16 +1741,16 @@
                         contents: $.extend(commonAttrs(args.item),
                             {tagName: 'input', type: 'text', readonly: true})},
                         {tagName: 'span', 'class': 'action',
-                            contents: 'Choose'}]});
+                            contents: 'Choose'}]};
                 break;
 
             case 'custom':
                 var u = _.uniqueId();
-                contents.push($.extend(commonAttrs($.extend({}, args.item,
+                wrapper.contents = $.extend(commonAttrs($.extend({}, args.item,
                     {extraClass: 'customWrapper'})),
                     {tagName: 'div', 'data-customId': u,
                     'data-linkedField':
-                        $.arrayify(args.item.linkedField).join(',')}));
+                        $.arrayify(args.item.linkedField).join(',')});
                 sidebarObj._customCallbacks[u] = args.item.editorCallbacks;
                 break;
 
@@ -1819,8 +1828,8 @@
                         ]};
                 });
 
-                contents.push({tagName: 'div', 'class': 'radioSelectBlock',
-                    contents: items});
+                wrapper.contents = {tagName: 'div', 'class': 'radioSelectBlock',
+                    contents: items};
                 break;
 
             case 'repeater':
@@ -1914,7 +1923,8 @@
         else
         {
             var line = {tagName: 'div',
-                'class': ['line', 'clearfix', args.item.type, args.item.lineClass],
+                'class': ['line', 'clearfix', args.item.type, args.item.lineClass,
+                {value: 'inputFirst', onlyIf: args.item.inputFirst}],
                 contents: contents};
             return args.context.noTag ? line : $.tag(line, true);
         }
@@ -2385,12 +2395,8 @@
                         function(c)
                         {
                             cancelSelect();
-                            var $sel = $link.siblings('select');
-                            if ($sel.length < 1)
-                            {
-                                $sel = $link.siblings('.uniform.selector')
-                                    .find('select');
-                            }
+                            var $sel = $link.siblings('.inputWrapper')
+                                .find('select');
                             $sel.val($link.is('.tableColumn') ?
                                 c.tableColumnId : c.id).change();
                             uniformUpdate($sel);
@@ -2439,10 +2445,10 @@
                 var $slider = $(this);
                 $slider.slider({min: parseInt($slider.attr('data-min')),
                     max: parseInt($slider.attr('data-max')),
-                    value: parseInt($slider.next(':input').val())});
+                    value: parseInt($slider.siblings(':input').val())});
             })
             .bind('slide', function(event, ui)
-            { $(this).next(':input').val(ui.value); });
+            { $(this).siblings(':input').val(ui.value); });
 
             $container.find('.colorControl:not(.advanced)').colorPicker().bind('color_change',
                 function(e, newColor)

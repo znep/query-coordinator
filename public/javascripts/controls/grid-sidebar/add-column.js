@@ -31,6 +31,7 @@
         priority: 1,
         title: 'Add Column',
         subtitle: 'Add a new column to your dataset',
+        resizable: true,
         onlyIf: function()
         {
             return blist.dataset.valid &&

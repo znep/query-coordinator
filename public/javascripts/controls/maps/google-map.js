@@ -22,10 +22,9 @@
                 var mapObj = this;
                 var mapOptions = {
                     zoom: 3,
-                    center: new google.maps.LatLng(40.000, -100.000)
+                    center: new google.maps.LatLng(40.000, -100.000),
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
                 };
-                if (mapObj.settings.view.displayFormat.plotStyle != 'heatmap')
-                { $.extend(mapOptions, { mapTypeId: google.maps.MapTypeId.ROADMAP }); }
                 mapObj.map = new google.maps.Map(mapObj.$dom()[0], mapOptions);
 
                 mapObj._bounds = new google.maps.LatLngBounds();
@@ -256,6 +255,12 @@
 
                 mapObj._bounds = new google.maps.LatLngBounds();
                 mapObj._boundsCounts = 0;
+            },
+
+            hideLayers: function()
+            {
+                $('> div > div:first > div:last', blist.$display)
+                    .css('visibility', 'hidden');
             },
 
             clearFeatures: function()

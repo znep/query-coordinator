@@ -152,7 +152,7 @@ this.Model = Class.extend({
     {
         var loc = document.location;
         var domain = $.isBlank(domain) ? loc.hostname : domain;
-        if (isShort) { domaim = domain.replace(/www\./, ''); }
+        if (isShort) { domain = domain.replace(/www\./, ''); }
         var base = (isShort ? '' : (loc.protocol + '//')) + domain;
 
         if (loc.port && loc.port != 80)

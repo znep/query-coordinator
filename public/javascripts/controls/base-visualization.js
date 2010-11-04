@@ -39,16 +39,16 @@
 
                 currentObj._maxRows = 500;
 
-                currentObj.initializeVisualization();
-
                 $domObj.resize(function(e) { doResize(currentObj, e); });
-
 
                 if (!currentObj.settings.view.valid)
                 {
+                    currentObj._invalid = true;
                     currentObj.ready();
                     return;
                 }
+
+                currentObj.initializeVisualization();
 
                 currentObj._initialLoad = true;
 
@@ -156,7 +156,14 @@
                     delete vizObj._pendingReload;
                     return;
                 }
-                vizObj.reloadVisualization();
+
+                if (vizObj._invalid)
+                {
+                    delete vizObj._invalid;
+                    vizObj.initializeVisualization();
+                }
+                else
+                { vizObj.reloadVisualization(); }
 
                 vizObj.settings.view.getRows(0, vizObj._maxRows,
                     function()

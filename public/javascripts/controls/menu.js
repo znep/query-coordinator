@@ -189,7 +189,10 @@
         {
             // close if user clicked out || if user clicked in link || if user
             // clicked on link
-            if (($menuContainer.has(event.target).length === 0) ||
+            // Short-circuit test for event.target is document, since IE
+            // throws errors when checking .has(document)
+            if (event.target == document ||
+                ($menuContainer.has(event.target).length === 0) ||
                 ($menuDropdown.find('a').has(event.target).length > 0) ||
                 $(event.target).is('.menuDropdown a'))
             {

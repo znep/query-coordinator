@@ -105,19 +105,21 @@
             ready: function()
             {
                 var vizObj = this;
-                var handleChange = function()
+                var handleChange = function(forceRowReload)
                 {
+                    if (forceRowReload) { vizObj._requireRowReload = true; }
                     if (!vizObj._pendingReload && !vizObj._initialLoad)
                     {
                         vizObj._pendingReload = true;
                         _.defer(function() { vizObj.reload(); });
                     }
                 };
+                var handleQueryChange = function() { handleChange(true); };
 
                 if (!vizObj._boundViewEvents)
                 {
                     vizObj.settings.view
-                        .bind('query_change', handleChange)
+                        .bind('query_change', handleQueryChange)
                         .bind('displayformat_change', handleChange)
                         .bind('valid', handleChange);
                     vizObj._boundViewEvents = true;
@@ -150,12 +152,14 @@
                     return;
                 }
 
-                if (vizObj.noReload())
+                if (!vizObj._requireRowReload && vizObj.noReload())
                 {
                     vizObj.reloadSpecialCases();
                     delete vizObj._pendingReload;
                     return;
                 }
+                if (vizObj._requireRowReload)
+                { delete vizObj._requireRowReload; }
 
                 if (vizObj._invalid)
                 {

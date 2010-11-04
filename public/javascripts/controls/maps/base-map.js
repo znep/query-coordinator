@@ -128,7 +128,6 @@
 
                 mapObj._origData = {valid: mapObj.settings.view.valid,
                     displayFormat: mapObj.settings.view.displayFormat,
-                    query: mapObj.settings.view.query,
                     mapType: mapObj.settings.view.displayFormat.type,
                     plotStyle: mapObj.settings.view.displayFormat.plotStyle,
                     layers: mapObj.settings.view.displayFormat.layers};
@@ -163,10 +162,8 @@
                 var newDF = $.extend({}, mapObj.settings.view.displayFormat);
                 _.each(['viewport'], function(property)
                 { delete oldDF[property]; delete newDF[property]; });
-                var newQuery = $.extend(true, {}, mapObj.settings.view.query);
 
-                return _.isEqual(oldDF, newDF)
-                    && _.isEqual(mapObj._origData.query, newQuery);
+                return _.isEqual(oldDF, newDF);
             },
 
             reloadSpecialCases: function()

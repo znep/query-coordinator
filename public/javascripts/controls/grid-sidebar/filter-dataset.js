@@ -120,7 +120,6 @@
         subtitle: 'You can filter a view down to certain rows; ' +
             'group rows together and summarize data with a roll-up; ' +
             'and sort one or more columns',
-        resizable: true,
         onlyIf: function()
         {
             return isEdit ? blist.dataset.realColumns.length > 0 :

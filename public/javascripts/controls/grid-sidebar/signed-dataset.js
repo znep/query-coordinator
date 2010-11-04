@@ -9,7 +9,6 @@
         priority: 3,
         title: 'Digital Signing',
         subtitle: 'Export a version of this data whose integrity may later be verified.',
-        resizable: true,
         onlyIf: function()
         { return blist.dataset.isGrid() && blist.dataset.valid; },
         disabledSubtitle: function()

@@ -12,7 +12,6 @@
         priority: 5,
         title: 'Calendar',
         subtitle: 'Views with dates can be displayed in a monthly calendar format',
-        resizable: true,
         onlyIf: function()
         {
             var dateCols = _.select(blist.dataset.realColumns, function(c)

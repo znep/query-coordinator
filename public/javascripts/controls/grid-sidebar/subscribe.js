@@ -9,7 +9,6 @@
         priority: 6,
         title: 'Subscribe',
         subtitle: 'Subscribe to this dataset to stay up to date',
-        resizable: true,
         onlyIf: function()
         {
             return blist.dataset.isPublic() && blist.dataset.valid &&

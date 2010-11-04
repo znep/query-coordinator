@@ -10,7 +10,6 @@
         priority: 5,
         title: 'Show &amp; Hide Columns',
         subtitle: 'Adjust which columns are visible in this view',
-        resizable: true,
         onlyIf: function()
         { return blist.dataset.valid; },
         disabledSubtitle: 'This view must be valid',

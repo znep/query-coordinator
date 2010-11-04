@@ -179,7 +179,6 @@
         priority: 8,
         title: 'Sharing',
         subtitle: 'Manage sharing and permissions of this ' + displayName,
-        resizable: true,
         noReset: true,
         onlyIf: function()
         {

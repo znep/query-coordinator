@@ -513,7 +513,7 @@
                     { updateColumnSelects(sidebarObj); });
                 }
 
-                $domObj.resizable({disabled: true, handles: 'w',
+                $domObj.resizable({handles: 'w',
                     maxWidth: $(window).width() * 0.8, minWidth: 300,
                     stop: function() { resizeDone(sidebarObj); }});
             },
@@ -665,25 +665,13 @@
                 }
 
 
-                // Set to current saved width, depending on whether or not it
-                // is resizable
-                if (config.resizable && !$.isBlank(sidebarObj._resizedWidth))
-                { sidebarObj.$dom().width(sidebarObj._resizedWidth); }
-                else if (!config.resizable && !$.isBlank(sidebarObj._defaultWidth))
-                { sidebarObj.$dom().width(sidebarObj._defaultWidth); }
-
                 // Adjust positions for the sidebar
                 setPosition(sidebarObj);
 
                 sidebarObj.updateEnabledSubPanes();
 
-                if (config.resizable) { sidebarObj.$dom().resizable('enable'); }
-
                 // The big reveal
                 sidebarObj.$dom().show();
-
-                if ($.isBlank(sidebarObj._defaultWidth))
-                { sidebarObj._defaultWidth = sidebarObj.$dom().width(); }
 
                 $(window).resize();
 
@@ -1250,10 +1238,6 @@
         if (!$.isBlank(sidebarObj.$currentPane()))
         { sidebarObj.resetForm(sidebarObj.$currentPane()); }
 
-        if (!sidebarObj.$dom().resizable('option', 'disabled'))
-        { sidebarObj._resizedWidth = sidebarObj.$dom().width(); }
-
-        sidebarObj.$dom().resizable('disable');
         sidebarObj.$dom().find('.outerPane').hide()
             .find('.paneSelect a.selected').removeClass('selected');
         sidebarObj.$dom().find('.sidebarPane').hide()

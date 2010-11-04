@@ -242,6 +242,11 @@ javascripts:
     - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/controls/attachments-editor.js
     - public/javascripts/screens/dataset-edit-metadata.js
+  dataset-edit-rr:
+    - plugins/jquery.colorPicker
+    - plugins/jquery.uniform
+    - controls/grid-sidebar/base-sidebar
+    - screens/dataset-edit-rr
   screen-dataset-thumbnail:
     - public/javascripts/plugins/jquery.imgareaselect.js
     - public/javascripts/screens/dataset-thumbnail.js

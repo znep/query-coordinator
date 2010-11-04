@@ -206,6 +206,10 @@
       <div class='columnHeaders'></div>
       <div class='rowList'></div>
       <ul class='navigation'>
+        <%- if @view.has_rights?('update_view') -%>
+        <li class='edit'><a class='button'
+          href='<%= @view.href %>/edit_rr'>Edit Layout</a></li>
+        <%- end -%>
         <li><a href='#start' title='View first row' class='start button'>
           <span class='icon'></span>
         </a></li>
@@ -264,6 +268,10 @@
         <%- end -%>
       </div>
       <ul class='navigation'>
+        <%- if @view.has_rights?('update_view') -%>
+        <li class='edit'><a class='button'
+          href='<%= @view.href %>/edit_rr'>Edit Layout</a></li>
+        <%- end -%>
         <li><a href='#start' title='View first row' class='start button'>
           <span class='icon'></span>
         </a></li>

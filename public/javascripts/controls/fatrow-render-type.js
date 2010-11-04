@@ -221,8 +221,10 @@
     {
         frObj.$nav().find('.button').click(function(e)
         {
-            e.preventDefault();
             var $a = $(this);
+            if ($a.parent().hasClass('edit')) { return; }
+
+            e.preventDefault();
             if ($a.hasClass('disabled')) { return; }
 
             switch ($.hashHref($a.attr('href')))

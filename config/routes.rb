@@ -215,6 +215,11 @@ ActionController::Routing::Routes.draw do |map|
       :category => /(\w|-)+/},
     :conditions => {:method => [:get, :post]}
 
+  map.connect ':category/:view_name/:id/edit_rr', :controller => 'datasets',
+    :action => 'edit_rr', :conditions => { :method => :get },
+    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
+      :category => /(\w|-)+/}
+
   map.connect ':category/:view_name/:id/alt', :controller => 'datasets',
     :action => 'alt',
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,

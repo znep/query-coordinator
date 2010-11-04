@@ -70,6 +70,8 @@ dataset-analytics:
 - screen-metrics
 dataset-edit-metadata:
 - screen-dataset-edit-metadata
+dataset-edit-rr:
+- screen-dataset-edit-rr
 dataset-thumbnail:
 - screen-dataset-thumbnail
 dataset-upload:

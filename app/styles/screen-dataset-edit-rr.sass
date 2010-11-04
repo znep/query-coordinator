@@ -1,0 +1,31 @@
+.contentBox
+  .header
+    padding: 0.7em
+    position: relative
+
+    h1
+      float: left
+      margin: 0.3em 0
+        left: 0.3em
+
+    .returnLink
+      font-size: 1.2em
+      font-weight: bold
+      position: absolute
+      right: 1em
+      top: 1em
+
+    .actions
+      display: none
+      float: left
+      margin-left: 3em
+
+      .loadingIcon
+        @include throbber-icon
+        display: none
+        margin-left: 1.5em
+
+    &.unsaved
+      background: #fff url(/stylesheets/images/interface/dataset_unsaved_fade.png) repeat-y
+      .actions
+        display: block

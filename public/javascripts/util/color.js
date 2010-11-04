@@ -197,4 +197,25 @@ $.complementaryGradient = function(stops, color)
     return gradient.concat($.gradient(highStops, color));
 };
 
+// FIXME: 'brighten' is so utterly wrong...
+// This is a replacement for Highcharts' brighten function.
+// amount is defined as steps along a 100 point scale.
+$.brighten = function(color, amount)
+{
+    if (!amount) { amount = 10; }
+    if (!color.r) { color = $.hexToRgb(color); }
+    color = $.rgbToHsv(color);
+    if (color.v < 50)
+    {
+        color.v += amount;
+        if (color.v > 100) { color.v = 100; }
+    }
+    else
+    {
+        color.v -= amount;
+        if (color.v < 0) { color.v = 0; }
+    }
+    return $.hsvToRgb(color);
+};
+
 })(jQuery);

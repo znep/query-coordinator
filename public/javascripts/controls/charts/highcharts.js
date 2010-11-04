@@ -31,6 +31,14 @@
             {
                 var chartObj = this;
 
+                if (chartObj.settings.view.displayFormat.pointColor
+                    && chartObj._valueColumns.length > 0
+                    && !chartObj._gradient)
+                {
+                    chartObj._gradient = $.gradient(chartObj._numSegments,
+                        chartObj.settings.view.displayFormat.color || '#042656');
+                }
+
                 // Set up x-axis
                 if (_.isArray(chartObj._fixedColumns) &&
                     chartObj._fixedColumns.length == 1)
@@ -346,6 +354,7 @@
         { seriesType = 'spline'; }
         if (seriesType == 'timeline') { seriesType = 'line'; }
         if (seriesType == 'donut') { seriesType = 'pie'; }
+        if (seriesType == 'bubble') { seriesType = 'scatter'; }
 
         // Main config
         var chartConfig =
@@ -391,6 +400,32 @@
             {
                 return '<b>'+ this.series.name +'</b><br/>'+
                     this.point.name +': '+ this.y;
+            } }});
+        }
+        else if (chartObj._chartType == 'bubble')
+        {
+            var colNames = {};
+            _.each(['pointColor', 'pointSize'], function(prop)
+            {
+                var tcID = blist.dataset.displayFormat[prop];
+                if (tcID)
+                { colNames[prop] = blist.dataset.columnForTCID(tcID).name; }
+            });
+            $.extend(chartConfig, { tooltip: { formatter: function()
+            {
+                var yName = this.point.name || this.series.name;
+
+                var tooltip = '';
+                if (this.x) { tooltip += '<b>' + this.x + '</b>'; }
+                if (this.y)
+                { tooltip += '<br/>' + yName + ' (Y value): '+ this.y; }
+                if (this.point.pointColor)
+                { tooltip += '<br/>' + colNames.pointColor + ' (color): ' +
+                             this.point.pointColor; }
+                if (this.point.pointSize)
+                { tooltip += '<br/>' + colNames.pointSize + ' (size): '+
+                             this.point.pointSize; }
+                return tooltip;
             } }});
         }
 
@@ -547,6 +582,41 @@
                 .colors[chartObj._seriesCache[seriesIndex].data.length %
                 chartObj.settings.view.displayFormat.colors.length];
         }
+        else if (chartObj._chartType == 'bubble')
+        {
+            if (!point.states) { point.states = {}; }
+            if (chartObj._pointColor)
+            {
+                for (var i = 0; i < chartObj._numSegments; i++)
+                { if (parseFloat(row[chartObj._pointColor.id]) <=
+                        chartObj._segments[chartObj._pointColor.id][i])
+                    {
+                        point.fillColor = "#"+$.rgbToHex(chartObj._gradient[i]);
+                        point.pointColor = parseFloat(row[chartObj._pointColor.id]);
+                        point.states.hover = $.extend(point.states.hover,
+                            { fillColor: '#'+$.rgbToHex($.brighten(point.fillColor)) });
+                        break;
+                    }
+                }
+
+            }
+            if (chartObj._pointSize)
+            {
+                for (var i = 0; i < chartObj._numSegments; i++)
+                { if (parseFloat(row[chartObj._pointSize.id]) <=
+                        chartObj._segments[chartObj._pointSize.id][i])
+                    {
+                        point.radius = 4+(4*i);
+                        point.pointSize = parseFloat(row[chartObj._pointSize.id]);
+                        point.states.hover = $.extend(point.states.hover,
+                            { radius: point.radius + 2 });
+                        break;
+                    }
+                }
+
+            }
+        }
+
         return point;
     };
 

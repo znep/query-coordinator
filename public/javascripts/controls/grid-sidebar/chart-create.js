@@ -56,6 +56,21 @@
         wizard: 'Slices below this angle in degrees will be ' +
             'combined into an "Other" slice'};
 
+    var pointSize = {text: 'Point Size', name: 'displayFormat.pointSize',
+        type: 'columnSelect', isTableColumn: true,
+        columns: {type: ['number', 'money', 'percent'], hidden: isEdit},
+        wizard: 'Choose a column that contains ' +
+            'quantities specifying the size of each point' };
+
+    var pointColor = {text: 'Point Color', name: 'displayFormat.pointColor',
+        type: 'columnSelect', isTableColumn: true,
+        columns: {type: ['number', 'money', 'percent'], hidden: isEdit},
+        wizard: 'Choose a column that contains ' +
+                'quantities specifying the color of each point' };
+
+    var baseColor = {text: 'Base Color', name: 'displayFormat.color', type: 'color',
+        defaultValue: "#042656"};
+
 
     /*** Helpers ***/
 
@@ -183,6 +198,22 @@
 
 
     /*** Specific configs that need small overrides ***/
+    var configBubble = basicConfig(Dataset.chart.types.bubble,
+        Dataset.chart.textualTypes, 'Categories');
+    configBubble.fields[0].required = false;
+
+    var dataBubble = {
+            title: 'Data Columns', name: 'bubbleData',
+            onlyIf: onlyIfForChart(Dataset.chart.types.bubble, false),
+            fields: [ {text: 'Value', required: true, type: 'columnSelect',
+                       isTableColumn: true,
+                        name: 'displayFormat.valueColumns.0.tableColumnId',
+                        columns: {type: Dataset.chart.numericTypes, hidden: isEdit},
+                        wizard: 'Select a column that contains values for the chart'
+                    }, pointSize, pointColor, baseColor ]
+        };
+
+
     var configLine = basicConfig(Dataset.chart.types.line,
         Dataset.chart.textualTypes, 'Categories');
     configLine.fields[0].required = false;
@@ -282,6 +313,11 @@
             basicAdv(Dataset.chart.types.bar,
                 [legendPos, stacking('bar'), renderOther]),
 
+
+            // Bubble chart
+            configBubble,
+            dataBubble,
+            basicAdv(Dataset.chart.types.bubble, [legendPos]),
 
             // Column chart
             basicConfig(Dataset.chart.types.column,

@@ -16,6 +16,7 @@
         chartMapping: {
             'area': 'highcharts',
             'bar': 'highcharts',
+            'bubble': 'highcharts',
             'column': 'highcharts',
             'donut': 'highcharts',
             'line': 'highcharts',
@@ -60,6 +61,7 @@
             initializeVisualization: function ()
             {
                 var chartObj = this;
+                chartObj._numSegments = 10;
                 chartObj.initializeChart();
             },
 
@@ -98,8 +100,20 @@
                         function(tcId) { return view.columnForTCID(tcId); });
                 chartObj._fixedColumns = _.compact(chartObj._fixedColumns);
 
+                _.each(['pointColor', 'pointSize'], function(colName)
+                {
+                    var c = view.columnForTCID(view.displayFormat[colName]);
+                    if (!$.isBlank(c))
+                    {
+                        chartObj['_' + colName] = c;
+                        customAggs[c.id] = $.makeArray(customAggs[c.id])
+                            .concat(['maximum', 'minimum']);
+                    }
+                });
+
                 chartObj.settings.view.getAggregates(function()
                 {
+                    calculateSegmentSizes(chartObj, customAggs);
                     chartObj.columnsLoaded();
                     chartObj.ready();
                 }, customAggs);
@@ -115,6 +129,9 @@
 
                 delete chartObj._fixedColumns;
                 delete chartObj._valueColumns;
+                delete chartObj._pointSize;
+                delete chartObj._pointColor;
+                delete chartObj._gradient;
 
                 chartObj.initializeChart();
             },
@@ -125,5 +142,26 @@
             }
         }
     }));
+
+    var calculateSegmentSizes = function(chartObj, aggs)
+    {
+        chartObj._segments = {};
+        _.each(aggs, function(a, cId)
+        {
+            if (_.intersect(['maximum', 'minimum'], a).length != 2)
+            { return; }
+
+            var column = chartObj.settings.view.columnForID(cId);
+            var difference = column.aggregates.maximum - column.aggregates.minimum;
+            var granularity = difference / chartObj._numSegments;
+
+            chartObj._segments[column.id] = [];
+            for (i = 0; i < chartObj._numSegments; i++)
+            {
+                chartObj._segments[column.id][i] =
+                    ((i+1)*granularity) + column.aggregates.minimum;
+            }
+        });
+    };
 
 })(jQuery);

@@ -1,74 +1,24 @@
 <% content_for :head do %>
   <title>Terms of Service | <%= CurrentDomain.strings.site_title %></title>
-  <%= stylesheet_link_tag "static-content" %>
-  <!--[if IE 7]><style type="text/css">@import "/stylesheets/ie7.css";</style><![endif]-->
-  <%= stylesheet_link_tag "theme/#{CurrentDomain.cname.gsub(/\./, '_')}.css" %>
 <% end %>
 
-<div id="contact" class="fixed-width">
-  <% fullpage_content do %>
-    <div id="content" class="clearfix" style="text-align: left;">
+<div class="contentBox">
 
-      <%- if CurrentDomain.cname.match /seattle/ -%>
-        <h1>Data Policy</h1>
+  <%- if CurrentDomain.cname.match /seattle/ -%>
+    <h1>Data Policy</h1>
 
-        <p>By using data made available through this site the user agrees to all the conditions stated in the following paragraphs as well as the terms and conditions described under the <a href="http://seattle.gov">City of Seattle homepage</a>.</p>
+    <p>By using data made available through this site the user agrees to all the conditions stated in the following paragraphs as well as the terms and conditions described under the <a href="http://seattle.gov">City of Seattle homepage</a>.</p>
 
-        <p>The City of Seattle Government makes no claims as to the completeness, accuracy, timeliness, or content of any data contained in this application; makes any representation of any kind, including, but not limited to, warranty of the accuracy or fitness for a particular use; nor are any such warranties to be implied or inferred with respect to the information or data furnished herein. The data is subject to change as modifications and updates are complete. It is understood that the information contained in the site is being used at one's own risk.</p>
+    <p>The City of Seattle Government makes no claims as to the completeness, accuracy, timeliness, or content of any data contained in this application; makes any representation of any kind, including, but not limited to, warranty of the accuracy or fitness for a particular use; nor are any such warranties to be implied or inferred with respect to the information or data furnished herein. The data is subject to change as modifications and updates are complete. It is understood that the information contained in the site is being used at one's own risk.</p>
 
-        <h2>Source Data</h2>
+    <h2>Source Data</h2>
 
-        <p>Applications using data supplied by this site must include the following disclaimers on their sites:</p>
-        <p>"The data made available here has been modified for use from its original source, which is the City of Seattle. Neither the City of Seattle nor the Office of the Chief Technology Officer (OCTO) makes any claims as to the completeness, timeliness, accuracy or content of any data contained in this application; makes any representation of any kind, including, but not limited to, warranty of the accuracy or fitness for a particular use; nor are any such warranties to be implied or inferred with respect to the information or data furnished herein. The data is subject to change as modifications and updates are complete. It is understood that the information contained in the web feed is being used at one's own risk."</li>
+    <p>Applications using data supplied by this site must include the following disclaimers on their sites:</p>
+    <p>"The data made available here has been modified for use from its original source, which is the City of Seattle. Neither the City of Seattle nor the Office of the Chief Technology Officer (OCTO) makes any claims as to the completeness, timeliness, accuracy or content of any data contained in this application; makes any representation of any kind, including, but not limited to, warranty of the accuracy or fitness for a particular use; nor are any such warranties to be implied or inferred with respect to the information or data furnished herein. The data is subject to change as modifications and updates are complete. It is understood that the information contained in the web feed is being used at one's own risk."</li>
 
-        <h2>Right to Discontinue Feeds</h2>
+    <h2>Right to Discontinue Feeds</h2>
 
-        <p>The City of Seattle reserves the right to discontinue providing any or all of the data feeds at any time and to require the termination of any and all displaying, distributing or otherwise using any or all of the data for any reason including, without limitation, your violation of any provision of these Terms of Use.</p>
-      </div>
-    <%- elsif CurrentDomain.cname.match /chicago/ -%>
-      <h1>Data Policy</h1>
-
-      <p>The City of Chicago is providing information on this web site to assist persons in accessing public records.  The information provided on this web site may not be complete or accurate.  The City makes no representations, warranties, or guarantees as to the accuracy or completeness of the information provided.   Persons who rely on the information do so at their own risk and assume sole responsibility for their use of the information.</p>
-
-      <h1>Privacy Policy</h1>
-
-      <h2>Introduction</h2>
-
-      <p>The City of Chicago is committed to maintaining your online privacy. The City of Chicago On-Line Privacy Policy applies to data collected from the City of Chicago website, including all City departments. This Policy does not apply to the City's sister agencies, including the Chicago Park District, the Chicago Public Schools, the Chicago Transit Authority (CTA), the City Colleges of Chicago, the Chicago Housing Authority and the Metropolitan Exposition and Pier Authority.</p>
-
-      <p>We do not collect personal information without your permission. Any information that you volunteer or that we send to you in response is transferred using industry standard encryption technologies.</p>
-
-      <p>The following explains the City's privacy policy for all visitors to the cityofchicago.org domain.</p>
-
-      <h2>Information Gathering and Cookies</h2>
-
-      <p>If you visit our website to read or download information, such as events schedules, parking forms or building permits, we capture and store only the domain name of your computer (for example, aol.com) and other related information to speed up the performance of web page delivery. All information is deleted from your cache memory when you close the session and leave our site. We collect no other personal information.</p>
-
-      <p>We do not use or set cookies on our website to store any information on your personal computer hard drive.</p>
-
-      <p>A cookie is a very small text file inserted onto your computer by a website that you visit. When you return to the website, the cookie is then read by the site's web server. Cookies are used for many things, from making web sites more personal to tracking your web browsing habits.</p>
-
-      <h2>On-line Transactions</h2>
-
-      <p>The City of Chicago currently allows job applicants for vacant City positions to apply for jobs on-line. The City also allows on-line payment of parking fines for your convenience. Any information submitted online for these activities is subject to the same safeguards as if you had engaged in these activities in person rather than over the Internet.</p>
-
-      <h2>Sending the City of Chicago Email</h2>
-
-      <p>We value your feedback. If you send the City an email with questions or comments about our programs or services, we do collect your email address and any other information that you volunteer. We do this to improve the content of our website, and occasionally, to customize its content for the individual user. We occasionally will share this information with other nonprofit organizations such as Cook County governmental entities or the Illinois Secretary of State.</p>
-
-      <h2>Sale of Data</h2>
-
-      <p>We do not sell data for direct mail or advertising purposes.</p>
-
-      <h2>Other Web Sites</h2>
-
-      <p>This site contains links to other sites. The City of Chicago is not responsible for the privacy practices or the content of such sites, which include the Chicago Park District, the Chicago Public Schools, the Chicago Transit Authority (CTA), the City Colleges of Chicago, the Chicago Housing Authority (CHA), the Chicago Store and the Metropolitan Exposition and Pier Authority.</p>
-
-
-    <%- end -%>
-  <% end %>
+    <p>The City of Seattle reserves the right to discontinue providing any or all of the data feeds at any time and to require the termination of any and all displaying, distributing or otherwise using any or all of the data for any reason including, without limitation, your violation of any provision of these Terms of Use.</p>
+  <%- end -%>
 </div>
 
-<% content_for :js_footer do %>
-  <%= render :partial => 'static/static_js' %>
-<% end %>

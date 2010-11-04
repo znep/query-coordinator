@@ -290,18 +290,6 @@ ActionController::Routing::Routes.draw do |map|
   # Seattle Data-Policy hack
   map.connect '/data-policy', :controller => "data_policy", :action => "index"
 
-  # Static content
-  ['about', 'solution', 'company-info', 'press', 'developers', 'benchmark-study'].each do |static_section|
-    controller_name = static_section.underscore.camelize
-    map.connect "/#{static_section}", :controller => controller_name
-    map.connect "/#{static_section}/:page", :controller => controller_name, :action => 'show'
-  end
-  ['terms-of-service', 'privacy', 'contact-us', 'try-it-free', 'sales',
-   'accessibility', 'pdf', 'turnkey', 'turnkey-video', 'turnkey-confirmation'].each do |static_toplevel|
-    map.connect "/#{static_toplevel}", :controller => 'static', :action => 'show', :page => static_toplevel
-  end
-  map.about '/about', :controller => 'about'
-
   # Non-production environments get a special controller for test actions
   unless Rails.env.production?
     map.connect '/test_page/:action', :controller => 'test_pages'

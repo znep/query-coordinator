@@ -1,12 +1,8 @@
-# TODO: Remove me, I'm a hack!
-
 class DataPolicyController < ApplicationController
-  include StaticContent
-
-  skip_before_filter :block_marketing
+  skip_before_filter :require_user
 
   def index
-    if !CurrentDomain.cname.match /(seattle|chicago)/
+    if !CurrentDomain.cname.match /seattle/
       render_404
     end
   end

@@ -1,3 +1,0 @@
-[submodule "static-content"]
-	path = static-content
-	url = git@git.socrata.com:socrata-static-content

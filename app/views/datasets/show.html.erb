@@ -44,7 +44,7 @@
     </div>
 
     <div id='description'>
-      <p class="collapsed"><%= @view.description || '(No description provided)'%></p>
+      <p class="collapsed"><%= raw(auto_link(h(@view.description), :html => { :rel => 'nofollow' })) || '(No description provided)'%></p>
       <a href="#expand" class="descriptionExpander rightArrow" title="Click to expand">
         <span class="icon"></span>
       </a>

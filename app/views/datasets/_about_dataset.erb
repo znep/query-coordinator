@@ -19,7 +19,7 @@
       Description
     </a>
     <div class="sectionContent">
-      <p><%= @view.description || "(none)" %></p>
+      <p><%= raw(auto_link(h(@view.description), :html => { :rel => 'nofollow' })) || "(none)" %></p>
     </div>
   </div>
 

@@ -71,6 +71,8 @@ dataset-analytics:
 dataset-edit-metadata:
 - screen-dataset-edit-metadata
 dataset-edit-rr:
+- grid-sidebar
+- rich-render-types
 - screen-dataset-edit-rr
 dataset-thumbnail:
 - screen-dataset-thumbnail

@@ -1,6 +1,8 @@
 .contentBox
+  padding: 0
+
   .header
-    padding: 0.7em
+    padding: 1em
     position: relative
 
     h1
@@ -29,3 +31,37 @@
       background: #fff url(/stylesheets/images/interface/dataset_unsaved_fade.png) repeat-y
       .actions
         display: block
+
+  .mainContainer
+    position: relative
+
+  #layoutContainer
+    border-top: 1px solid $color_chrome_box_border
+
+  #gridSidebar
+    position: absolute
+
+    .fieldPalette .sectionContent
+      padding: 0.75em
+      .columnFields
+        border-bottom: 1px solid $color_chrome_box_border
+        margin-bottom: 1em
+        padding-bottom: 0.5em
+      .columnItem
+        margin-bottom: 0.5em
+      .columnName
+        margin-right: 1em
+
+.fieldItem
+  background-color: #dddddd
+  @include border-radius(0.3em)
+  cursor: pointer
+  display: inline-block
+  padding: 0.2em
+  &.columnName
+    font-size: 1.2em
+    font-weight: bold
+  &.columnData.noRender
+    font-size: 1.2em
+  &.staticLabel
+    font-size: 1.2em

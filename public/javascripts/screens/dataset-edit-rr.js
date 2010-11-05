@@ -48,6 +48,13 @@ var editRRNS = blist.namespace.fetch('blist.editRR');
                 data: cols,
                 callback: function($sect)
                 {
+                    $sect.find('.fieldItem').draggable({
+                        appendTo: $('.mainContainer'),
+                        containment: $('.mainContainer'),
+                        helper: 'clone',
+                        opacity: 0.8,
+                        revert: 'invalid'
+                    });
                 }
             }
         }]
@@ -61,5 +68,13 @@ var editRRNS = blist.namespace.fetch('blist.editRR');
     });
 
     editRRNS.sidebar.show('palette');
+
+    $('#layoutContainer').droppable({accept: '.fieldItem',
+        drop: function(event, ui)
+        {
+            var $cont = $(this);
+            $cont.find('.richColumn .richLine')
+                .append(ui.draggable.clone().removeClass('ui-draggable'));
+        }});
 
 })(jQuery);

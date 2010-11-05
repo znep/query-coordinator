@@ -17,7 +17,10 @@
   </div>
 
   <div class='mainContainer'>
-    <div id='layoutContainer'>
+    <div id='layoutContainer' class='richRendererContainer fatRowRenderType'>
+      <div class='richColumn'>
+        <div class='richLine'></div>
+      </div>
     </div>
 
     <div id='gridSidebar'></div>
@@ -30,11 +33,11 @@
   <div class='sectionContent'>
     <ul class='columnFields'>
       <li class='columnItem'>
-        <div class='columnName fieldItem'></div>
-        <div class='columnData fieldItem noRender'></div>
+        <div class='columnName richLabel fieldItem'></div>
+        <div class='columnData richItem fieldItem noRender'></div>
       </li>
     </ul>
-    <div class='fieldItem staticLabel'>(Static text)</div>
+    <div class='fieldItem richLabel staticLabel'>(Static text)</div>
   </div>
 </div>
 <% end %>

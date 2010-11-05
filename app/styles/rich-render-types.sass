@@ -76,7 +76,7 @@
                 text-align: center
 
 
-#pageRenderType
+.pageRenderType
   .content
     margin-bottom: 4em
     overflow: auto
@@ -84,28 +84,28 @@
     .ie7 &
       position: relative
 
-    .richColumn
+  .richColumn
 
-      .richLine
-        margin-bottom: 1em
+    .richLine
+      margin-bottom: 1em
 
+      .richLabel
+        padding: 0.2em
+          right: 1em
+
+      .richItem
+        padding: 0.2em
+
+        // Renderer-specific styles
+        &.percent .blist-percent
+          min-width: 10em
+
+      &:nth-child(odd)
         .richLabel
-          padding: 0.2em
-            right: 1em
+          background-color: #eeeeee
 
-        .richItem
-          padding: 0.2em
 
-          // Renderer-specific styles
-          &.percent .blist-percent
-            min-width: 10em
-
-        &:nth-child(odd)
-          .richLabel
-            background-color: #eeeeee
-
-#fatRowRenderType
-
+.fatRowRenderType
   .columnHeaders
     border-bottom: 1px solid #cacaca
     max-height: 9.5em
@@ -149,25 +149,25 @@
     &:first-child
       border-top: none
 
-    .richColumn
-
-      .richLine
-        margin-bottom: 0.25em
-
-        .richLabel
-          padding: 0.1em
-            right: 0.5em
-
-        .richItem
-          padding: 0.1em
-
-          &.photo, &.photo_obsolete
-            img
-              max-height: 5em
-              max-width: 10em
-
     &:nth-child(even)
       background-color: #f6f6f6
+
+  .richColumn
+
+    .richLine
+      margin-bottom: 0.25em
+
+      .richLabel
+        padding: 0.1em
+          right: 0.5em
+
+      .richItem
+        padding: 0.1em
+
+        &.photo, &.photo_obsolete
+          img
+            max-height: 5em
+            max-width: 10em
 
   .templateRow
     display: none

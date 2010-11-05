@@ -37,6 +37,7 @@
 
   #layoutContainer
     border-top: 1px solid $color_chrome_box_border
+    padding: 1em
 
   #gridSidebar
     position: absolute
@@ -52,16 +53,24 @@
       .columnName
         margin-right: 1em
 
+    .fieldItem
+      background-color: #dddddd
+      @include border-radius(0.3em)
+      display: inline-block
+      padding: 0.2em
+      &.columnName
+        font-size: 1.2em
+        font-weight: bold
+      &.columnData.noRender
+        font-size: 1.2em
+      &.staticLabel
+        font-size: 1.2em
+        font-weight: bold
+
+.richRendererContainer
+  .fieldItem:hover
+    background-color: #dddddd
+    @include border-radius(0.3em)
+
 .fieldItem
-  background-color: #dddddd
-  @include border-radius(0.3em)
   cursor: pointer
-  display: inline-block
-  padding: 0.2em
-  &.columnName
-    font-size: 1.2em
-    font-weight: bold
-  &.columnData.noRender
-    font-size: 1.2em
-  &.staticLabel
-    font-size: 1.2em

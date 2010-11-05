@@ -202,7 +202,8 @@
     </div>
 
     <%- if @view.is_tabular? && !@view.is_form? -%>
-    <div id='fatRowRenderType' class='navRenderType fullHeight hide'>
+    <div id='fatRowRenderType'
+      class='fatRowRenderType navRenderType fullHeight hide'>
       <div class='columnHeaders'></div>
       <div class='rowList'></div>
       <ul class='navigation'>
@@ -228,7 +229,7 @@
       </div>
     </div>
 
-    <div id='pageRenderType' class='navRenderType fullHeight
+    <div id='pageRenderType' class='pageRenderType navRenderType fullHeight
       <%= @row.nil? ? 'hide' : '' %>'>
       <div class='content'>
         <%- if !@row.nil? -%>

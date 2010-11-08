@@ -17,10 +17,30 @@
   </div>
 
   <div class='mainContainer'>
-    <div id='layoutContainer' class='richRendererContainer fatRowRenderType'>
+    <div id='layoutContainer'
+      class='richRendererContainer navRenderType fatRowRenderType'>
       <div class='richColumn'>
         <div class='richLine'></div>
       </div>
+
+      <ul class='navigation'>
+        <li><a href='#start' title='View first row' class='start button'>
+          <span class='icon'></span>
+        </a></li>
+        <li><a href='#previous' title='View previous row' class='previous button'>
+          <span class='icon'></span>
+        </a></li>
+        <li class='info'>
+        Viewing row <span class='curPage'></span> of <span
+          class='totalPages'></span>
+        </li>
+        <li><a href='#next' title='View next row' class='next button'>
+          <span class='icon'></span>
+        </a></li>
+        <li><a href='#end' title='View last row' class='end button'>
+          <span class='icon'></span>
+        </a></li>
+      </ul>
     </div>
 
     <div id='gridSidebar'></div>
@@ -37,7 +57,8 @@
         <div class='columnData richItem fieldItem noRender'></div>
       </li>
     </ul>
-    <div class='fieldItem richLabel staticLabel'>(Static text)</div>
+    <div class='fieldItem richLabel staticLabel'
+      title='Lable with fixed text'>(Static text)</div>
   </div>
 </div>
 <% end %>

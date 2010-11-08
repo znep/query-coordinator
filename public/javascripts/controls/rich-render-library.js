@@ -25,6 +25,7 @@
             balanceFully: false,
             columnCount: 1,
             config: null,
+            defaultItem: '',
             view: null
         },
 
@@ -53,10 +54,10 @@
             renderRow: function($content, row)
             {
                 var rrObj = this;
-                _.each(rrObj.settings.view.visibleColumns, function(c)
+                _.each(rrObj.settings.view.realColumns, function(c)
                 {
                     $content.find('.columnId' + c.id).each(function()
-                        { renderItem($(this), row, c); });
+                        { renderItem(rrObj, $(this), row, c); });
                 });
             },
 
@@ -261,15 +262,20 @@
         rrObj.adjustLayout();
     };
 
-    var renderItem = function($container, row, column)
+    var renderItem = function(rrObj, $container, row, column)
     {
         $container.empty();
 
-        if (_.isNull(row[column.lookup])) { return; }
+        if (_.isNull(row[column.lookup]) || _.isEmpty(row[column.lookup]))
+        {
+            $container.append(rrObj.settings.defaultItem.replace('#{column.name}',
+                $.htmlEscape(column.name)));
+            return;
+        }
 
         if (column.dataTypeName == 'nested_table')
         {
-            $container.append(renderNestedTable(row, column));
+            $container.append(renderNestedTable(rrObj, row, column));
             setUpNestedTableWidths($container, column);
             return;
         }
@@ -295,7 +301,7 @@
         $container.append($item);
     };
 
-    var renderNestedTable = function(row, column)
+    var renderNestedTable = function(rrObj, row, column)
     {
         var $table = $('<table><colgroup></colgroup><thead><tr></tr></thead>' +
             '<tbody></tbody></table>');
@@ -324,7 +330,7 @@
                 var $cell = $.tag({tagName: 'td', 'class': ['col' + cc.id,
                     cc.renderTypeName,
                     (cc.format.align ? 'align-' + cc.format.align : null)]});
-                renderItem($cell, subRow, cc);
+                renderItem(rrObj, $cell, subRow, cc);
                 $row.append($cell);
             });
             $tbody.append($row);

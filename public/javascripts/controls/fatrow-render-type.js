@@ -41,17 +41,13 @@
                     view: frObj.settings.view
                 });
 
-                frObj._curPageIndex = 0;
-                frObj._totalPages = null;
-                hookUpNavigation(frObj);
+                frObj.navigation = frObj.$dom().find('.navigation')
+                    .bind('page_changed', function()
+                        { renderCurrentPage(frObj); })
+                    .navigation({pageSize: frObj.settings.pageSize,
+                        view: frObj.settings.view});
+
                 hookUpHeaders(frObj);
-                frObj.settings.view.bind('row_count_change', function()
-                    { updateNavigation(frObj); })
-                    .bind('query_change', function()
-                    {
-                        frObj._curPageIndex = 0;
-                        renderCurrentPage(frObj);
-                    });
 
                 $domObj.bind('resize', function(e) { resizeHandle(frObj); });
 
@@ -79,34 +75,11 @@
                 return this._$list;
             },
 
-            $nav: function()
-            {
-                if (!this._$nav)
-                { this._$nav = this.$dom().find('.navigation'); }
-                return this._$nav;
-            },
-
             $template: function()
             {
                 if (!this._$template)
                 { this._$template = this.$dom().find('.templateRow'); }
                 return this._$template;
-            },
-
-            displayPage: function(index)
-            {
-                var frObj = this;
-
-                var pageCount = Math.ceil(frObj.settings.view.totalRows /
-                        frObj.settings.pageSize);
-                if (index < 0)
-                { index = pageCount + index + 1; }
-                if (index >= pageCount)
-                { index = pageCount - 1; }
-
-                frObj._curPageIndex = index;
-                renderCurrentPage(frObj);
-                updateNavigation(frObj);
             }
         }
     });
@@ -199,7 +172,7 @@
 
     var renderCurrentPage = function(frObj)
     {
-        if ($.isBlank(frObj._curPageIndex)) { return; }
+        if ($.isBlank(frObj.navigation.currentPage())) { return; }
 
         frObj.$list().empty();
 
@@ -213,101 +186,8 @@
             });
         };
 
-        frObj.settings.view.getRows(frObj._curPageIndex * frObj.settings.pageSize,
-            frObj.settings.pageSize, rowsLoaded);
-    };
-
-    var hookUpNavigation = function(frObj)
-    {
-        frObj.$nav().find('.button').click(function(e)
-        {
-            var $a = $(this);
-            if ($a.parent().hasClass('edit')) { return; }
-
-            e.preventDefault();
-            if ($a.hasClass('disabled')) { return; }
-
-            switch ($.hashHref($a.attr('href')))
-            {
-                case 'start':
-                    frObj.displayPage(0);
-                    break;
-                case 'end':
-                    frObj.displayPage(-1);
-                    break;
-                case 'previous':
-                    frObj.displayPage(frObj._curPageIndex - 1);
-                    break;
-                case 'next':
-                    frObj.displayPage(frObj._curPageIndex + 1);
-                    break;
-            }
-        });
-
-        frObj.$nav().find('.page a').click(function(e)
-        {
-            e.preventDefault();
-            var $a = $(this);
-            if ($a.parent().hasClass('active')) { return; }
-            frObj.displayPage($a.parent().data('pageNum'));
-        });
-    };
-
-    var updateNavigation = function(frObj)
-    {
-        if ($.isBlank(frObj.settings.view.totalRows)) { return; }
-        var pageCount = Math.ceil(frObj.settings.view.totalRows /
-            frObj.settings.pageSize);
-
-        if (pageCount < 1)
-        {
-            frObj.$nav().addClass('hide');
-            return;
-        }
-        frObj.$nav().removeClass('hide');
-
-        frObj.$nav().find('.start, .previous')
-            .toggleClass('disabled', frObj._curPageIndex <= 0);
-        frObj.$nav().find('.end, .next')
-            .toggleClass('disabled', frObj._curPageIndex >= pageCount - 1);
-
-        if (pageCount != frObj._totalPages || frObj._incompletePager)
-        {
-            var $templLink = frObj.$nav().find('.page:first');
-            frObj.$nav().find('.page + .page').remove();
-            frObj.$nav().find('.remainder').remove();
-            var $nextLink = frObj.$nav().find('.next').parent();
-
-            var start = Math.max(0, frObj._curPageIndex - 4);
-            var end = Math.min(pageCount - 1, frObj._curPageIndex + 4);
-            for (var i = start; i <= end; i++)
-            {
-                var $newL = $templLink.clone(true).removeClass('active');
-                $newL.attr('data-pageNum', i).find('a').text(i + 1);
-                $nextLink.before($newL);
-            }
-            $templLink.remove();
-
-            frObj._incompletePager = false;
-            if (start > 0)
-            {
-                frObj.$nav().find('.page:first')
-                    .before('<li class="remainder">...</li>');
-                frObj._incompletePager = true;
-            }
-            if (end < pageCount - 1)
-            {
-                frObj.$nav().find('.page:last')
-                    .after('<li class="remainder">...</li>');
-                frObj._incompletePager = true;
-            }
-
-            frObj._totalPages = pageCount;
-        }
-
-        frObj.$nav().find('.page').removeClass('active');
-        frObj.$nav().find('.page[data-pageNum=' + frObj._curPageIndex + ']')
-            .addClass('active');
+        frObj.settings.view.getRows(frObj.navigation.currentPage() *
+            frObj.settings.pageSize, frObj.settings.pageSize, rowsLoaded);
     };
 
 })(jQuery);

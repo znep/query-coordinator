@@ -11,7 +11,8 @@ var editRRNS = blist.namespace.fetch('blist.editRR');
             $('#siteHeader').outerHeight(false) -
             ($innerWrapper.outerHeight(true) - $innerWrapper.height()) -
             $('.contentBox .header').outerHeight(true) -
-            ($contentBox.outerHeight(true) - $contentBox.height()));
+            ($contentBox.outerHeight(true) - $contentBox.height()) -
+            ($content.outerHeight(true) - $content.height()));
     };
     adjustSizes();
     $(window).resize(adjustSizes);
@@ -41,7 +42,12 @@ var editRRNS = blist.namespace.fetch('blist.editRR');
                     'li.columnItem': {
                         'column<-': {
                             '.columnName': 'column.name!',
-                            '.columnData': '(Data for #{column.name!})'
+                            '.columnName@title':
+                                'Title for the #{column.name!} column',
+                            '.columnData': '(Data for #{column.name!})',
+                            '.columnData@title':
+                                'Data for the #{column.name!} column',
+                            '.columnData@class+': 'columnId#{column.id}'
                         }
                     }
                 },
@@ -61,20 +67,42 @@ var editRRNS = blist.namespace.fetch('blist.editRR');
     };
     $.gridSidebar.registerConfig(paletteConfig);
 
+    editRRNS.$container = $('#layoutContainer');
+
     // Init and wire sidebar
     editRRNS.sidebar = $('#gridSidebar').gridSidebar({
-        dataGrid: $('#layoutContainer'),
+        dataGrid: editRRNS.$container,
         setSidebarTop: false
     });
 
     editRRNS.sidebar.show('palette');
 
-    $('#layoutContainer').droppable({accept: '.fieldItem',
+    var renderCurrentRow = function()
+    {
+        blist.dataset.getRows(editRRNS.navigation.currentPage(), 1, function(rows)
+        {
+            if (rows.length == 1)
+            { editRRNS.richRenderer.renderRow(
+                editRRNS.$container.find('.richColumn'), rows[0]); }
+        });
+    };
+
+    editRRNS.$container.droppable({accept: '.fieldItem',
         drop: function(event, ui)
         {
             var $cont = $(this);
-            $cont.find('.richColumn .richLine')
+            var $line = $cont.find('.richColumn .richLine')
                 .append(ui.draggable.clone().removeClass('ui-draggable'));
+            renderCurrentRow();
         }});
+
+    editRRNS.richRenderer = editRRNS.$container.richRenderer({
+        defaultItem: '(Data for #{column.name})',
+        view: blist.dataset });
+
+    editRRNS.navigation = editRRNS.$container.find('.navigation')
+        .bind('page_changed', renderCurrentRow)
+        .navigation({pageSize: 1, view: blist.dataset});
+    renderCurrentRow();
 
 })(jQuery);

@@ -1262,14 +1262,16 @@
     /* Adjust the position/size of the sidebar to fit next to the grid */
     var setPosition = function(sidebarObj)
     {
-        var gridHeight = sidebarObj.$neighbor().height();
+        var gridHeight = sidebarObj.$neighbor().outerHeight();
         var adjH = sidebarObj.$dom().outerHeight() - sidebarObj.$dom().height();
         sidebarObj.$dom().height(gridHeight - adjH);
         if (sidebarObj.settings.setSidebarTop)
         { sidebarObj.$dom().css('top', -gridHeight + 'px') }
 
         var parW = sidebarObj.$dom().parent().innerWidth();
-        sidebarObj.$neighbor().width(parW - sidebarObj.$dom().outerWidth(true));
+        sidebarObj.$neighbor().width(parW - sidebarObj.$dom().outerWidth(true) -
+            (sidebarObj.$neighbor().outerWidth() -
+                sidebarObj.$neighbor().width()));
 
         // Adjust current pane to correct height, since it is what scrolls
         var $pane = sidebarObj.$dom().find('.outerPane:visible');

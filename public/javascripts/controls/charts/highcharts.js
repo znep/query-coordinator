@@ -341,6 +341,8 @@
         var colors;
         if (!_.isUndefined(chartObj.settings.view.displayFormat.colors))
         { colors = chartObj.settings.view.displayFormat.colors.slice(); }
+        else if (!_.isUndefined(chartObj.settings.view.displayFormat.color))
+        { colors = [ chartObj.settings.view.displayFormat.color ]; }
         else
         {
             colors = _.map(chartObj._valueColumns, function(vc)

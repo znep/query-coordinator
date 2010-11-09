@@ -126,10 +126,10 @@
         // reset then realign the menu if necessary; set styles as appropriate
         // show it so we can measure it
         $menuDropdown
-            .css('width', null)
-            .css('right', null)
-            .css('bottom', null)
-            .css('top', null)
+            .css('width', '')
+            .css('right', '')
+            .css('bottom', '')
+            .css('top', '')
             .show();
 
         // HACK/TODO: IE7 breaks because it can't see the width of the floated

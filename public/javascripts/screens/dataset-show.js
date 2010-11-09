@@ -72,7 +72,7 @@ blist.datasetPage.initGrid = function()
                 blist.dataset.hasRight('update_view'),
             showAddColumns: blist.dataset.type == 'blist' &&
                 blist.dataset.hasRight('add_column'),
-            accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
+            manualResize: true, showRowHandle: true,
             filterForm: '#searchForm', clearFilterItem: '#searchForm .clearSearch',
             addColumnCallback: function(parId)
             {
@@ -103,6 +103,8 @@ blist.datasetPage.initGrid = function()
 
 $(function()
 {
+    blist.dataset.setAccessType('WEBSITE');
+
     // Before we do anything else, clear away the about metadata.
     $('.aboutDataset').appendTo('#templates');
     $('.aboutLoad').remove();
@@ -417,7 +419,7 @@ $(function()
     _.defer(function()
     {
         // register opening
-        blist.dataset.registerOpening(null, document.referrer);
+        blist.dataset.registerOpening(document.referrer);
 
 
         // set up the main menu

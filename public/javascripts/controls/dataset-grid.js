@@ -29,7 +29,6 @@
     {
         defaults:
         {
-            accessType: 'DEFAULT',
             addColumnCallback: function(parentId) {},
             autoHideClearFilterItem: true,
             clearFilterItem: null,

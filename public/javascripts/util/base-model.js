@@ -88,6 +88,11 @@ this.Model = Class.extend({
         return obj;
     },
 
+    setAccessType: function(accessType)
+    {
+        this.accessType = accessType;
+    },
+
     _makeRequest: function(req)
     {
         var model = this;
@@ -106,6 +111,10 @@ this.Model = Class.extend({
         req = $.extend({contentType: 'application/json', dataType: 'json'}, req,
                 {error: finishCallback(req.error),
                 success: finishCallback(req.success)});
+
+        if (!$.isBlank(model.accessType))
+        { req.params = $.extend({accessType: model.accessType}, req.params); }
+        else { $.debug('making call without accessType!', req); }
 
         if (!$.isBlank(req.params))
         {

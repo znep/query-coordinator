@@ -179,6 +179,13 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
         return item;
     };
 
+    props.setAccessType = function(accessType)
+    {
+        this._super(accessType);
+        _.each(this[colSet] || [], function(c)
+        { c.setAccessType(accessType); });
+    };
+
     props['update' + capSet] = function(newCols, forceFull, updateOrder)
     {
         if ($.isBlank(this[colSet]) && $.isBlank(newCols)) { return; }
@@ -238,6 +245,8 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
                 if (c.lookup != c.id)
                 { _columnIDLookup[c.lookup] = c; }
                 _columnTCIDLookup[c.tableColumnId] = c;
+                if (!$.isBlank(cont.accessType))
+                { c.setAccessType(cont.accessType); }
                 return c;
             });
         this['real' + capSet] = _.reject(this[colSet], function(c)

@@ -191,9 +191,12 @@ this.Dataset = Model.extend({
 
     saveNew: function(successCallback, errorCallback)
     {
+        var dsOrig = this;
         var dsCreated = function(newDS)
         {
             newDS = new Dataset(newDS);
+            if (!$.isBlank(dsOrig.accessType))
+            { newDS.setAccessType(dsOrig.accessType); }
             if (_.isFunction(successCallback)) { successCallback(newDS); }
         };
 
@@ -766,10 +769,9 @@ this.Dataset = Model.extend({
             type: 'DELETE', success: successCallback, error: errorCallback});
     },
 
-    registerOpening: function(accessType, referrer)
+    registerOpening: function(referrer)
     {
         var params = {method: 'opening'};
-        if (!$.isBlank(accessType)) { params.accessType = accessType; }
         if (!$.isBlank(referrer)) { params.referrer = referrer; }
         this._makeRequest({url: '/views/' + this.id + '.json', params: params});
     },
@@ -857,6 +859,8 @@ this.Dataset = Model.extend({
                 success: function(parDS)
                 {
                     ds._parent = new Dataset(parDS);
+                    if (!$.isBlank(ds.accessType))
+                    { ds._parent.setAccessType(ds.accessType); }
                     callback(ds._parent);
                 },
                 error: function(xhr)
@@ -897,7 +901,7 @@ this.Dataset = Model.extend({
 
     getLinkedColumnOptions: function(keyCol, notUsed, $field, curVal)
     {
-        var ds = blist.dataset;
+        var ds = this;
         var localKeyColumnId = keyCol && keyCol["format.linkedKey"] ?
             keyCol["format.linkedKey"] : keyCol;
 
@@ -919,6 +923,8 @@ this.Dataset = Model.extend({
                 success: function(linkedDataset)
                 {
                     var lds = new Dataset(linkedDataset);
+                    if (!$.isBlank(ds.accessType))
+                    { lds.setAccessType(ds.accessType); }
                     ds._cachedLinkedColumnOptions[viewUid] = [];
                     var cldo = ds._cachedLinkedColumnOptions[viewUid];
                     var opt;
@@ -1773,7 +1779,12 @@ this.Dataset = Model.extend({
         var ds = this;
         var processDS = function(views)
         {
-            views = _.map(views, function(v) { return new Dataset(v); });
+            views = _.map(views, function(v)
+            {
+                var nv = new Dataset(v);
+                if (!$.isBlank(ds.accessType)) { nv.setAccessType(ds.accessType); }
+                return nv;
+            });
 
             var parDS = _.detect(views, function(v)
                     { return v.type == 'blist'; });

@@ -199,6 +199,8 @@ blist.widget.showDataView = function()
 
 $(function()
 {
+    blist.dataset.setAccessType('WIDGET');
+
     if (!$.isBlank($.uploadDialog)) { $.uploadDialog.version = 2; }
 
     // keep track of some stuff for easy access
@@ -446,7 +448,6 @@ $(function()
         {
             $dataGrid
                 .datasetGrid({view: blist.dataset,
-                    accessType: 'WIDGET',
                     showRowNumbers: widgetNS.theme['grid']['row_numbers'],
                     showRowHandle: widgetNS.theme['grid']['row_numbers'],
                     editEnabled: false,
@@ -821,7 +822,7 @@ $(function()
     _.defer(function()
     {
         // Report we've opened for metrics
-        blist.dataset.registerOpening('WIDGET', document.referrer);
+        blist.dataset.registerOpening(document.referrer);
 
         // report to events analytics for easier aggregation
         $.analytics.trackEvent('widget (v2)', 'page loaded', document.referrer);

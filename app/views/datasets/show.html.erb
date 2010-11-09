@@ -391,38 +391,7 @@
     </div>
   </div>
 
-  <div class="saveViewDialog modalDialog">
-    <a href="#close" class="jqmClose modalDialogClose">Close</a>
-    <div class='loadingSpinner hide'></div>
-    <div class='loadingOverlay hide'></div>
-    <h2 class='normalSave'>Save view</h2>
-    <h2 class='leavingSave'>Do you want to save your view?</h2>
-    <p class='leavingSave info'>You have unsaved data that will be lost if
-      you leave this page. Please choose whether or not you wish to save this view
-      before you leave; or choose Cancel to return to the page.</p>
-    <p>Enter a name for your new view:</p>
-    <form class='commonForm' action='#save'>
-      <input type='text' class='viewName' />
-    </form>
-    <div class='mainError'></div>
-    <ul class="actions clearfix">
-      <li>
-        <a class="jqmClose button cancel" href="#cancel">
-          <span class="icon"></span>Cancel
-        </a>
-      </li>
-      <li>
-        <a class="button dontSave jqmClose leavingSave" href="#dontSave">
-          <span class="icon"></span>Don't Save
-        </a>
-      </li>
-      <li>
-        <a class="button save submit" href="#save">
-          <span class="icon"></span>Save
-        </a>
-      </li>
-    </ul>
-  </div>
+  <%= render :partial => 'save_view_dialog' %>
 
   <%- unless current_user -%>
     <div id="login" class="modalDialog">

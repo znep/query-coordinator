@@ -9,10 +9,10 @@
     <h1>Editing Rich Display for <%= @view.name %></h1>
     <a href="<%= @view.href %>" class="returnLink">Return to Dataset</a>
 
-    <div class="actions">
-      <a href="#save" class="saveButton button">Save</a>
-      <a href="#save" class="revertButton button">Revert Changes</a>
-      <span class="loadingIcon">Working...</span>
+    <div class="unsavedLine">
+      <a href="#save" class="save button">Save</a>
+      <a href="#revert" class="revert button">Revert Changes</a>
+      <span class="loadingIcon hide">Working...</span>
     </div>
   </div>
 
@@ -57,10 +57,14 @@
         <div class='columnData richItem fieldItem noRender'></div>
       </li>
     </ul>
-    <div class='fieldItem richLabel staticLabel'
+    <div class='fieldItem richLabel staticLabel defaultData'
       title='Lable with fixed text'>(Static text)</div>
   </div>
 </div>
+<% end %>
+
+<% content_for :modals do %>
+<%= render :partial => 'save_view_dialog' %>
 <% end %>
 
 <% content_for :js_footer do %>

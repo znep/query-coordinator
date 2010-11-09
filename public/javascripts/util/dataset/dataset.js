@@ -226,11 +226,15 @@ this.Dataset = Model.extend({
         this._markTemporary(minorUpdate);
     },
 
-    reload: function()
+    reload: function(successCallback)
     {
         var ds = this;
         ds._aggregatesStale = true;
-        ds._loadRows(0, 1, function() { ds._invalidateRows(); }, true, true);
+        ds._loadRows(0, 1, function()
+            {
+                ds._invalidateRows();
+                if (_.isFunction(successCallback)) { successCallback(); }
+            }, true, true);
     },
 
     userGrants: function()

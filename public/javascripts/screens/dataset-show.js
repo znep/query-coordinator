@@ -231,8 +231,6 @@ $(function()
 
     blist.dataset.bind('columns_changed',
         function() { datasetPageNS.sidebar.updateEnabledSubPanes(); });
-    blist.dataset.bind('set_temporary', datasetPageNS.setTempView);
-    blist.dataset.bind('clear_temporary', datasetPageNS.clearTempView);
 
     // toolbar area
     $('#description').expander({
@@ -314,7 +312,8 @@ $(function()
 
 
     // Unsaved view stuff
-    blist.dataset.bind('valid', function() { datasetPageNS.updateValidView(); });
+    blist.dataset.bind('set_temporary', datasetPageNS.setTempView);
+    blist.dataset.bind('clear_temporary', datasetPageNS.clearTempView);
 
     blist.datasetControls.unsavedViewPrompt();
 
@@ -348,6 +347,8 @@ $(function()
     });
 
     // Invalid views
+
+    blist.dataset.bind('valid', function() { datasetPageNS.updateValidView(); });
 
     var viewEditPane = $.gridSidebar.paneForDisplayType[blist.dataset.type];
     if ($.isBlank(viewEditPane) ||

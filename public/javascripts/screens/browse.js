@@ -4,10 +4,7 @@ $(function()
     {
         var id = $item.closest('tr').attr('data-viewId');
         if (!(blist.browse.datasets[id] instanceof Dataset))
-        {
-            blist.browse.datasets[id] = new Dataset(blist.browse.datasets[id]);
-            blist.browse.datasets[id].setAccessType('WEBSITE');
-        }
+        { blist.browse.datasets[id] = new Dataset(blist.browse.datasets[id]); }
         return blist.browse.datasets[id];
     };
 

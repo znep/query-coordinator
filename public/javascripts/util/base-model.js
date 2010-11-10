@@ -53,6 +53,9 @@ this.Model = Class.extend({
 
         this.registerEvent(['start_request', 'finish_request']);
         this._reqCount = 0;
+
+        // Assume WEBSITE unless set otherwise
+        this.accessType = 'WEBSITE';
     },
 
     // Return a cleaned copy that has no functions, private keys, or anything

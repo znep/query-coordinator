@@ -103,8 +103,6 @@ blist.datasetPage.initGrid = function()
 
 $(function()
 {
-    blist.dataset.setAccessType('WEBSITE');
-
     // Before we do anything else, clear away the about metadata.
     $('.aboutDataset').appendTo('#templates');
     $('.aboutLoad').remove();

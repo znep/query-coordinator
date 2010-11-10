@@ -159,6 +159,24 @@
 
 <div class='outerContainer'>
   <div class='innerContainer'>
+    <div class="aboutLoad">
+      <%= render :partial => 'about_dataset' %>
+      <%- if @view.is_tabular? && !@view.is_form? && @view.display.valid? -%>
+      <%# SEO links for individual rows %>
+      <%- next_index = 0 -%>
+      <%- if !@row.nil? -%>
+      <%- next_index = @view.get_row_index(@row['sid']) + 1 -%>
+      <%- end -%>
+      <%- next_row = @view.get_row_by_index(next_index) -%>
+      <%- if !next_row.nil? -%>
+      <a href='<%= @view.href %>/<%= next_row['sid'] %>' class='rowLink'>
+        <%= @row.nil? ? 'First' : 'Next' %> row
+      </a>
+      <%- end -%>
+      <%- end -%>
+      <%= raw @view.display.render_body(self) %>
+      <%= render(:partial => @view.display.render_partial) %>
+    </div>
     <div class='mainSpinner loadingSpinnerContainer hide'>
       <div class='loadingSpinner'></div>
     </div>
@@ -180,23 +198,7 @@
       <%- end -%>
     </div>
 
-    <div id='mainGrid' class='fullHeight'>
-      <%- if @view.is_tabular? && !@view.is_form? && @view.display.valid? -%>
-      <%# SEO links for individual rows %>
-      <%- next_index = 0 -%>
-      <%- if !@row.nil? -%>
-      <%- next_index = @view.get_row_index(@row['sid']) + 1 -%>
-      <%- end -%>
-      <%- next_row = @view.get_row_by_index(next_index) -%>
-      <%- if !next_row.nil? -%>
-      <a href='<%= @view.href %>/<%= next_row['sid'] %>' class='rowLink'>
-        <%= @row.nil? ? 'First' : 'Next' %> row
-      </a>
-      <%- end -%>
-      <%- end -%>
-      <%= raw @view.display.render_body(self) %>
-      <%= render(:partial => @view.display.render_partial) %>
-    </div>
+    <div id='mainGrid' class='fullHeight'></div>
 
     <div id='fatRowRenderType' class='navRenderType fullHeight hide'>
       <div class='columnHeaders'></div>
@@ -314,10 +316,6 @@
   </div>
 </div>
 <% end %>
-
-<div class="aboutLoad">
-  <%= render :partial => 'about_dataset' %>
-</div>
 
 <%- content_for :modals do -%>
   <div class="emailDatasetDialog modalDialog<%= ' ownerDialog' if

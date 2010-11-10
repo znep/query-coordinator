@@ -53,6 +53,8 @@
       <li><a href="/views/<%= @view.id %>/rows.xlsx?accessType=DOWNLOAD">Export To XLSX</a></li>
     <%- end -%>
   </ul>
+
+  <a class="interactiveBackButton" href="<%= @view.href %>">Go back to the interactive dataset</a><!-- Back to the future -->
   <a name="dataGrid"></a>
 
   <h1><%= @view.name %></h1>

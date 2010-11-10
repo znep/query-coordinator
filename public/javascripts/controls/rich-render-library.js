@@ -61,6 +61,11 @@
                 });
             },
 
+            setConfig: function(newConfig)
+            {
+                this.settings.config = newConfig;
+            },
+
             adjustLayout: function()
             {
                 var rrObj = this;
@@ -199,9 +204,8 @@
 
     var addField = function(rrObj, field, $parent)
     {
-        if ($.isBlank(field.column) && !$.isBlank(field.tableColumnId))
-        { field.column = rrObj.settings.view.columnForTCID(field.tableColumnId); }
-        var col = field.column;
+        var col = field.column ||
+            rrObj.settings.view.columnForTCID(field.tableColumnId);
 
         var commonAttrs = getStyles(field);
 

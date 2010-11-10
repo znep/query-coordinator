@@ -7,14 +7,26 @@
 
 <div class='contentBox' id='datasetEditRR'>
   <div class='header clearfix'>
-    <h1>Editing Rich Display for <%= @view.name %></h1>
     <a href="<%= @view.href %>" class="returnLink">Return to Dataset</a>
+
+    <h1>Editing Rich Display for <%= @view.name %></h1>
 
     <div class="unsavedLine">
       <a href="#save" class="save button">Save</a>
       <a href="#revert" class="revert button">Revert Changes</a>
       <span class="loadingIcon hide">Working...</span>
     </div>
+
+    <ul id='renderTypeOptions' class="pillButtons">
+      <li><a href='<%= @view.href %>/edit_rr?defaultRender=richList'
+        class='fatrow noRedirPrompt' title='Edit rich list layout'>
+        <span class='icon'></span>
+      </a></li>
+      <li><a href='<%= @view.href %>/edit_rr?defaultRender=page'
+        class='page noRedirPrompt' title='Edit single row layout'>
+        <span class='icon'></span>
+      </a></li>
+    </ul>
   </div>
 
   <div class='mainContainer'>

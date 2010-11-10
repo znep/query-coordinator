@@ -253,6 +253,7 @@ javascripts:
     - public/javascripts/controls/rich-render-library.js
     - public/javascripts/controls/grid-sidebar/base-sidebar.js
     - public/javascripts/controls/dataset-controls.js
+    - public/javascripts/controls/pill-buttons.js
     - public/javascripts/screens/dataset-edit-rr.js
   screen-dataset-thumbnail:
     - public/javascripts/plugins/jquery.imgareaselect.js

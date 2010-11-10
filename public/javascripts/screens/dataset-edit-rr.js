@@ -146,7 +146,7 @@ var editRRNS = blist.namespace.fetch('blist.editRR');
         { processColumn($(this), conf); });
 
         var md = $.extend(true, {richRendererConfigs: {}}, blist.dataset.metadata);
-        md.richRendererConfigs.fatRow = conf;
+        md.richRendererConfigs[editRRNS.renderType] = conf;
         blist.dataset.update({metadata: md});
     };
 
@@ -164,11 +164,7 @@ var editRRNS = blist.namespace.fetch('blist.editRR');
 
 
     // Hook up rendering
-    var config = ((blist.dataset.metadata || {}).richRendererConfigs ||
-        {}).fatRow || {columns: [{rows: [{}]}]};
-    editRRNS.richRenderer = editRRNS.$renderArea.richRenderer({
-        config: config, defaultItem: '(Data for #{column.name})',
-        view: blist.dataset });
+    editRRNS.renderType = 'fatRow';
 
     var renderCurrentLayout = function()
     {
@@ -177,7 +173,19 @@ var editRRNS = blist.namespace.fetch('blist.editRR');
         editRRNS.$renderArea.find('.staticLabel:empty').addClass('defaultData')
             .text('(Static text)');
     };
-    renderCurrentLayout();
+
+    editRRNS.richRenderer = editRRNS.$renderArea.richRenderer({
+        defaultItem: '(Data for #{column.name})',
+        view: blist.dataset });
+
+    var resetConfig = function()
+    {
+        var config = ((blist.dataset.metadata || {}).richRendererConfigs ||
+            {})[editRRNS.renderType] || {columns: [{rows: [{}]}]};
+        editRRNS.richRenderer.setConfig(config);
+        renderCurrentLayout();
+    };
+    resetConfig();
 
 
     // Hook up navigation
@@ -219,6 +227,26 @@ var editRRNS = blist.namespace.fetch('blist.editRR');
             renderCurrentLayout();
             renderCurrentRow();
         });
+    });
+
+
+    // Handle switching types
+    $('#renderTypeOptions').pillButtons();
+    $('#renderTypeOptions a').click(function(e)
+    {
+        e.preventDefault();
+        var rt = $.urlParam($(this).attr('href'), 'defaultRender');
+        if (rt == 'richList') { rt = 'fatRow'; }
+
+        $('#renderTypeOptions li a').removeClass('active');
+        $('#renderTypeOptions li .' + rt.toLowerCase()).addClass('active');
+
+        editRRNS.$container.removeClass('fatRowRenderType pageRenderType')
+            .addClass(rt + 'RenderType');
+
+        editRRNS.renderType = rt;
+        resetConfig();
+        renderCurrentRow();
     });
 
 })(jQuery);

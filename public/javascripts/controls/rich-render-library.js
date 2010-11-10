@@ -210,7 +210,8 @@
         {
             case 'columnLabel':
                 $field = $.tag($.extend(commonAttrs,
-                    {tagName: 'span', 'class': 'richLabel',
+                    {tagName: 'span', 'class': ['richLabel', 'columnLabel'],
+                        'data-tcId': col.tableColumnId,
                         contents: $.htmlEscape(col.name)}));
                 break;
 
@@ -221,13 +222,15 @@
                         $.extend({display: 'inline'}, commonAttrs.style);
                 }
                 $field = $.tag($.extend(commonAttrs, {tagName: 'div',
-                    'class': ['richItem', col.renderTypeName, 'columnId' + col.id]
+                    'data-tcId': col.tableColumnId,
+                    'class': ['richItem', 'columnData',
+                        col.renderTypeName, 'columnId' + col.id]
                     }));
                 break;
 
             case 'label':
                 $field = $.tag($.extend(commonAttrs,
-                    {tagName: 'span', 'class': 'richLabel',
+                    {tagName: 'span', 'class': ['richLabel', 'staticLabel'],
                         contents: $.htmlEscape(field.text)}));
                 break;
 
@@ -266,7 +269,8 @@
     {
         $container.empty();
 
-        if (_.isNull(row[column.lookup]) || _.isEmpty(row[column.lookup]))
+        if (_.isNull(row[column.lookup]) ||
+            (_.isArray(row[column.lookup]) && _.isEmpty(row[column.lookup])))
         {
             $container.append(rrObj.settings.defaultItem.replace('#{column.name}',
                 $.htmlEscape(column.name)));

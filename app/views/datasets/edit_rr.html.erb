@@ -1,4 +1,5 @@
 <% content_for :head do %>
+  <%= rendered_stylesheet_tag 'grid' %>
   <%= rendered_stylesheet_tag 'dataset-edit-rr' %>
   <%= include_stylesheets 'grid-sidebar' %>
   <title>Editing Rich Display for <%= @view.name %> | <%= CurrentDomain.strings.site_title %></title>
@@ -19,8 +20,7 @@
   <div class='mainContainer'>
     <div id='layoutContainer'
       class='richRendererContainer navRenderType fatRowRenderType'>
-      <div class='richColumn'>
-        <div class='richLine'></div>
+      <div class='renderArea'>
       </div>
 
       <ul class='navigation'>
@@ -53,7 +53,7 @@
   <div class='sectionContent'>
     <ul class='columnFields'>
       <li class='columnItem'>
-        <div class='columnName richLabel fieldItem'></div>
+        <div class='columnLabel richLabel fieldItem'></div>
         <div class='columnData richItem fieldItem noRender'></div>
       </li>
     </ul>

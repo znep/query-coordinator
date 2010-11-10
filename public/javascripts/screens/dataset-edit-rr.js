@@ -19,6 +19,7 @@ var editRRNS = blist.namespace.fetch('blist.editRR');
     $(window).resize(adjustSizes);
 
     editRRNS.$container = $('#layoutContainer');
+    editRRNS.$renderArea = editRRNS.$container.find('.renderArea');
 
 
     // Sidebar
@@ -45,9 +46,9 @@ var editRRNS = blist.namespace.fetch('blist.editRR');
                 directive: {
                     'li.columnItem': {
                         'column<-': {
-                            '.columnName': 'column.name!',
-                            '.columnName@data-tcId': 'column.tableColumnId',
-                            '.columnName@title':
+                            '.columnLabel': 'column.name!',
+                            '.columnLabel@data-tcId': 'column.tableColumnId',
+                            '.columnLabel@title':
                                 'Title for the #{column.name!} column',
                             '.columnData': '(Data for #{column.name!})',
                             '.columnData@data-tcId': 'column.tableColumnId',
@@ -88,8 +89,7 @@ var editRRNS = blist.namespace.fetch('blist.editRR');
         blist.dataset.getRows(editRRNS.navigation.currentPage(), 1, function(rows)
         {
             if (rows.length == 1)
-            { editRRNS.richRenderer.renderRow(
-                editRRNS.$container.find('.richColumn'), rows[0]); }
+            { editRRNS.richRenderer.renderRow(editRRNS.$renderArea, rows[0]); }
         });
     };
 
@@ -123,7 +123,7 @@ var editRRNS = blist.namespace.fetch('blist.editRR');
                             f.type = 'columnData';
                             f.tableColumnId = $f.data('tcId');
                         }
-                        else if ($f.hasClass('columnName'))
+                        else if ($f.hasClass('columnLabel'))
                         {
                             f.type = 'columnLabel';
                             f.tableColumnId = $f.data('tcId');
@@ -142,7 +142,7 @@ var editRRNS = blist.namespace.fetch('blist.editRR');
             parConf.columns.push(c);
         };
 
-        editRRNS.$container.children('.richColumn').each(function()
+        editRRNS.$renderArea.children('.richColumn').each(function()
         { processColumn($(this), conf); });
 
         var md = $.extend(true, {richRendererConfigs: {}}, blist.dataset.metadata);
@@ -152,7 +152,7 @@ var editRRNS = blist.namespace.fetch('blist.editRR');
 
 
     // Hook up drop acceptance
-    editRRNS.$container.droppable({accept: '.fieldItem',
+    editRRNS.$renderArea.droppable({accept: '.fieldItem',
         drop: function(event, ui)
         {
             var $cont = $(this);
@@ -164,13 +164,18 @@ var editRRNS = blist.namespace.fetch('blist.editRR');
 
 
     // Hook up rendering
-    editRRNS.richRenderer = editRRNS.$container.richRenderer({
-        defaultItem: '(Data for #{column.name})',
+    var config = ((blist.dataset.metadata || {}).richRendererConfigs ||
+        {}).fatRow || {columns: [{rows: [{}]}]};
+    editRRNS.richRenderer = editRRNS.$renderArea.richRenderer({
+        config: config, defaultItem: '(Data for #{column.name})',
         view: blist.dataset });
 
     var renderCurrentLayout = function()
     {
-        editRRNS.$container.find('.richColumn .richLine').empty();
+        editRRNS.richRenderer.renderLayout();
+        editRRNS.$renderArea.find('.richItem, .richLabel').addClass('fieldItem');
+        editRRNS.$renderArea.find('.staticLabel:empty').addClass('defaultData')
+            .text('(Static text)');
     };
     renderCurrentLayout();
 

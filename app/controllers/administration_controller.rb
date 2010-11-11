@@ -407,8 +407,7 @@ class AdministrationController < ApplicationController
     parse_story_params(story, params[:story])
     story.customization = story.customization.to_json unless story.customization.nil?
     story.merge!(params[:story].stringify_keys)
-    puts 'AOEUAOEUAOEU'
-    puts story.inspect
+
     begin
       Story.create(story)
     rescue CoreServer::CoreServerError => e

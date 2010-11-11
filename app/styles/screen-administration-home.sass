@@ -1,0 +1,101 @@
+// home admin page
+.contentBox
+  .adminHeader
+    border-bottom: none
+    margin-bottom: 0
+
+  .newButton
+    @include sprite-menu-icons
+    float: right
+
+    .icon
+      display: inline-block
+      left: 0.1em
+      margin-left: 0.3em
+      position: relative
+      top: 0.2em
+
+  h2
+    margin-bottom: 0.5em
+    margin-top: 0.5em
+
+.storiesList
+  clear: right
+
+  tbody
+    tr
+      .button
+        opacity: 0.3
+        @include transition-duration(0.2s)
+        @include transition-property(opacity)
+      &:hover .button
+        opacity: 1
+
+      td
+        vertical-align: top
+
+      td.image .imagePreview
+        height: 10em
+        overflow: hidden
+        width: 10em
+
+        .imagePreviewWrapper
+          margin:
+            left: -150em
+            top: -1em
+          text-align: center
+          width: 300em
+
+          img
+            height: 12em
+
+      td.contents
+        .storyTitle
+          border-bottom: 1px solid #ddd
+          font-size: 1.2em
+          font-weight: bold
+          margin:
+            bottom: 0.4em
+            top: 0.2em
+          padding-bottom: 0.2em
+
+        .storyBody
+          text-align: justify
+
+      td.date .cellInner
+        position: relative
+        top: 0.3em
+
+// edit story page
+.editStory
+  .commonForm
+    @include common-form(9em, 40em)
+
+    #story_headline
+      font-size: 1.8em
+      width: 26.5em
+
+    textarea
+      height: 6em
+
+    .storyImagePreviewWrapper
+      margin:
+        left: 13.2em
+        top: 1em
+
+      p
+        font-weight: bold
+        margin-bottom: 0.2em
+
+      .storyImagePreview
+        overflow: hidden
+        overflow-x: auto
+        width: 100%
+
+    .colorLine
+      input
+        width: 5em
+
+      p
+        font-size: 1.2em
+        padding: 0.4em

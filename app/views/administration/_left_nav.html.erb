@@ -42,7 +42,7 @@
             {:action => 'datasets'} %>
       </li>
     <%- end -%>
-    <%- if false && CurrentDomain.user_can?(current_user, :manage_stories) -%>
+    <%- if CurrentDomain.user_can?(current_user, :manage_stories) -%>
       <li class="homemgmt">
         <%= link_to raw('<span class="icon"></span>Home Page'),
             {:action => 'home'} %>

@@ -31,6 +31,8 @@ administration-screen:
 - screen-admin
 administration-federation:
 - screen-administration-federation
+administration-home:
+- screen-administration-home
 administration-index-screen:
 - screen-admin-index
 administration-analytics-screen:

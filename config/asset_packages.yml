@@ -111,6 +111,9 @@ javascripts:
   - screens/admin-users-screen
 - admin-federations:
   - screens/admin-federations-screen
+- admin-home:
+  - controls/admin-buttons
+  - screens/admin-home
 - admin-metadata:
   - controls/admin-buttons
   - plugins/jquery.uniform
@@ -136,6 +139,9 @@ javascripts:
   - util/events
   - controls/grid-sidebar/base-sidebar
   - screens/admin-sdp-template
+- admin-story:
+  - plugins/colorpicker
+  - screens/admin-story
 - admin-federation:
   - controls/admin-buttons
   - plugins/jquery.tablesorter
@@ -284,3 +290,5 @@ stylesheets:
 - analytics-shared:
   - jquery-ui-1.8.4.custom
   - ui.daterangepicker
+- colorpicker:
+  - colorpicker

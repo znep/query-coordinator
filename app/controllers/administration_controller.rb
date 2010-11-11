@@ -379,6 +379,55 @@ class AdministrationController < ApplicationController
     end
   end
 
+  def home
+    @stories = Story.find
+  end
+  def delete_story
+    begin
+      Story.find(params[:id]).delete
+    rescue CoreServer::ResourceNotFound
+      flash.now[:error] = 'The story you attempted to delete does not exist.'
+      return render 'shared/error', :status => :not_found
+    end
+
+    respond_to do |format|
+      format.data { render :json => {:success => true} }
+      format.html { redirect_to home_administration_path }
+    end
+  end
+  def new_story
+  end
+  def create_story
+    story = Hashie::Mash.new
+    parse_story_params(story, params[:story])
+    story.customization = story.customization.to_json unless story.customization.nil?
+    story.merge!(params[:story].stringify_keys)
+    puts 'AOEUAOEUAOEU'
+    puts story.inspect
+    begin
+      Story.create(story)
+    rescue CoreServer::CoreServerError => e
+      flash.now[:error] = "An error occurred during your request: #{e.error_message}"
+      return render 'shared/error', :status => :bad_request
+    end
+
+    redirect_to :home_administration
+  end
+  def edit_story
+    begin
+      @story = Story.find(params[:id])
+    rescue CoreServer::ResourceNotFound
+      flash.now[:error] = 'The story you attempted to edit does not exist.'
+      return render 'shared/error', :status => :not_found
+    end
+
+    if params[:story].present?
+      parse_story_params(@story, params[:story])
+      @story.update_attributes(params[:story].stringify_keys)
+      @story.save!
+    end
+  end
+
 private
   def check_auth_level(level = 'manage_users')
     render_forbidden unless CurrentDomain.user_can?(current_user, level)
@@ -388,6 +437,22 @@ private
   end
   def check_member
     render_forbidden unless CurrentDomain.member?(current_user)
+  end
+
+  def parse_story_params(story, story_params)
+    if story_params[:image].present?
+      story.imageId = Asset.create(story_params[:image]).id
+      story_params.delete(:image)
+    end
+
+    customization = story.customization || {}
+    [:backgroundColor].each do |key|
+      unless story_params[key].nil?
+        customization[key.to_s] = story_params[key]
+        story_params.delete(key)
+      end
+    end
+    story.customization = customization
   end
 
   def find_privileged_users(level=1)

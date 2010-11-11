@@ -1,0 +1,30 @@
+<div class="line">
+  <label for="story_headline">Headline</label>
+  <input type="text" name="story[headline]" id="story_headline"
+    value="<%= @story.headline unless @story.nil? %>"/>
+</div>
+<div class="line">
+  <label for="story_story">Contents</label>
+  <textarea name="story[story]" id="story_story"><%= @story.story unless @story.nil? %></textarea>
+</div>
+<div class="line">
+  <label for="story_image">Background Image</label>
+  <input type="file" name="story[image]" id="story_image"/>
+</div>
+<%- unless @story.nil? || @story.imageId.nil? -%>
+  <div class="storyImagePreviewWrapper">
+    <p>Existing image:</p>
+    <div class="storyImagePreview">
+      <img src="/assets/<%= @story.imageId %>" alt="Image Preview"/>
+    </div>
+  </div>
+<%- end -%>
+<div class="line colorLine">
+  <label for="story_background_color">Background Color</label>
+  <input type="text" name="story[backgroundColor]" id="story_backgroundColor"
+    value="<%= @story.customization['backgroundColor'] unless @story.nil? %>"/>
+  <p>6-character hex; eg #036adf</p>
+</div>
+<div class="line">
+  <input type="submit" value="Save"/>
+</div>

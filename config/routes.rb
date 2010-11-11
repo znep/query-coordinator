@@ -119,6 +119,12 @@ ActionController::Routing::Routes.draw do |map|
     admin.connect '/admin/metadata/:fieldset/:index/delete', :action => 'delete_metadata_field'
     admin.connect '/admin/metadata/:fieldset/:index/toggle_required', :action => 'toggle_metadata_required'
     admin.connect '/admin/metadata/:fieldset/:field/move/:direction', :action => 'move_metadata_field'
+    admin.connect '/admin/home/stories', :action => 'create_story',
+      :conditions => { :method => :post }
+    admin.connect '/admin/home/story/appearance', :action => 'story_appearance'
+    admin.connect '/admin/home/story/new', :action => 'new_story'
+    admin.connect '/admin/home/story/:id', :action => 'edit_story'
+    admin.connect '/admin/home/story/:id/delete', :action => 'delete_story'
   end
 
   map.resource :browse, :controller => 'browse'

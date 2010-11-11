@@ -10,8 +10,8 @@
             var $this = $(this);
 
             $this.show();
-            $this.find('p').css('margin-top', (targetHeight - $this.find('p').outerHeight(false)) / 2 -
-                $this.find('h2').outerHeight(true));
+            $this.find('p').css('margin-top', Math.max(0, (targetHeight - $this.find('p').outerHeight(false)) / 2 -
+                $this.find('h2').outerHeight(true)));
             $this.hide();
         });
 

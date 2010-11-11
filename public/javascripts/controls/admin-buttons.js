@@ -20,6 +20,9 @@
                 if ($this.hasClass('disabled'))
                 { return; }
 
+                if (!$.isBlank(opts.confirmationText) && !confirm(opts.confirmationText))
+                { return; }
+
                 var $container = $this.closest(opts.containerSelector),
                     $loadingSpinner = $container.find(opts.loadingSelector);
 
@@ -53,6 +56,7 @@
     };
 
     $.fn.adminButton.defaults = {
+        confirmationText: null,
         containerSelector: 'tr',
         loadingSelector: '.loading',
         workingClass: 'isWorking',

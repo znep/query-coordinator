@@ -205,6 +205,12 @@ class Model
     end
   end
 
+  def update_attributes(attributes)
+    # todo: handle tags
+
+    update_data.merge!(attributes)
+  end
+
   def update_attributes!(attributes)
     new_model = self.class.update_attributes!(self.id, attributes)
     self.data = new_model.data

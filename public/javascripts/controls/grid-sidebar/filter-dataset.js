@@ -106,7 +106,11 @@
     var filterEditorCleanup = function(sidebarObj, $field)
     {
         var $editor = $field.find('.editorWrapper');
-        $editor.each(function() { $(this).blistEditor().finishEdit(); });
+        $editor.each(function()
+        {
+            var $t = $(this);
+            if ($t.isBlistEditor()) { $t.blistEditor().finishEdit(); }
+        });
     };
 
     var isEdit = _.include(['filter', 'grouped'], blist.dataset.type) &&
@@ -349,7 +353,10 @@
         var filterView = sidebarObj.getFormValues($pane);
         filterView.query = filterView.query || {};
         _.each(filterView.query.orderBys || [], function(ob)
-        { ob.expression.type = 'column'; });
+        {
+            ob.ascending = (ob.ascending == 'true' || ob.ascending === true);
+            ob.expression.type = 'column';
+        });
         _.each(filterView.query.groupBys || [], function(gb)
         { gb.type = 'column'; });
 

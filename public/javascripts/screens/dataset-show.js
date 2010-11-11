@@ -121,7 +121,7 @@ $(function()
     var isPageRT = !$.isBlank(blist.initialRowId) || defRen == 'page';
     var isFatRowRT = defRen == 'richList';
     var isAltRT = isPageRT || isFatRowRT;
-    if (blist.dataset.viewType == 'tabular')
+    if ($('#pageRenderType').length > 0)
     {
         blist.$display.find('.rowLink').remove();
 
@@ -162,8 +162,11 @@ $(function()
             // Cheat by making sure the div is hidden initially
             datasetPageNS.$renderTypes.page.addClass('hide');
             datasetPageNS.showRenderType('page');
-            datasetPageNS.$renderTypes.page.pageRenderType()
-                .displayRowByID(blist.initialRowId);
+            if (!$.isBlank(blist.initialRowId))
+            {
+                datasetPageNS.$renderTypes.page.pageRenderType()
+                    .displayRowByID(blist.initialRowId);
+            }
         }
     }
 
@@ -421,7 +424,7 @@ $(function()
 
 
         // set up the main menu
-        if (blist.dataset.type != 'blist')
+        if (!_.include(['blist', 'blob', 'href'], blist.dataset.type))
         {
             blist.dataset.getParentDataset(function(parDS)
             {

@@ -98,7 +98,7 @@
   <div id='actionBox' class='clearfix'>
     <ul id="toolbarOptions" class='clearfix'>
       <li>
-        <%- if @view.is_tabular? -%>
+        <%- if @view.is_tabular? && !@view.is_form? -%>
         <ul id='renderTypeOptions' class="pillButtons">
           <li><a href='<%= @view.href %>'
             class='main <%= @view.display.type %> noRedirPrompt'
@@ -174,8 +174,6 @@
       </a>
       <%- end -%>
       <%- end -%>
-      <%= raw @view.display.render_body(self) %>
-      <%= render(:partial => @view.display.render_partial) %>
     </div>
     <div class='mainSpinner loadingSpinnerContainer hide'>
       <div class='loadingSpinner'></div>
@@ -198,8 +196,12 @@
       <%- end -%>
     </div>
 
-    <div id='mainGrid' class='fullHeight'></div>
+    <div id='mainGrid' class='fullHeight'>
+      <%= raw @view.display.render_body(self) %>
+      <%= render(:partial => @view.display.render_partial) %>
+    </div>
 
+    <%- if @view.is_tabular? && !@view.is_form? -%>
     <div id='fatRowRenderType' class='navRenderType fullHeight hide'>
       <div class='columnHeaders'></div>
       <div class='rowList'></div>
@@ -279,6 +281,7 @@
         </a></li>
       </ul>
     </div>
+    <%- end -%>
   </div>
 
   <div id='gridSidebar'>

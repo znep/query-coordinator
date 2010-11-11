@@ -23,6 +23,11 @@
         }
     };
 
+    $.fn.isBlistEditor = function()
+    {
+        return !$.isBlank($(this[0]).data("blistEditor"));
+    };
+
     $.fn.blistEditor = function(options)
     {
         // Check if object was already created

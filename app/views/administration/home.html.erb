@@ -39,7 +39,7 @@
         </tr>
       </thead>
       <tbody>
-        <%- @stories.sort{ |a, b| a.createdAt <=> b.createdAt }.each do |story| -%>
+        <%- @stories.sort{ |a, b| b.createdAt <=> a.createdAt }.each do |story| -%>
           <tr>
             <td class="image">
               <div class="imagePreview"><div class="imagePreviewWrapper">
@@ -50,7 +50,10 @@
               <div class="storyTitle"><span class="cellInner"><%= raw story.headline %></span></div>
               <p class="storyBody"><%= raw story.story %></p>
             </td>
-            <td class="date"><span class="cellInner"><%= Time.at(story.createdAt).strftime('%Y/%m/%d %I:%M%p') %></span></td>
+            <td class="date">
+              <span class="cellDisplay"><%= Time.at(story.createdAt).strftime('%Y/%m/%d %I:%M%p') %></span>
+              <span class="cellInner"><%= story.createdAt %></span>
+            </td>
             <td class="actions">
               <span class="loading"></span>
               <a href="home/story/<%= story.id %>" class="editStoryButton button">

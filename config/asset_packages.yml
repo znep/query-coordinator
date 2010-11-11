@@ -113,6 +113,8 @@ javascripts:
   - screens/admin-federations-screen
 - admin-home:
   - controls/admin-buttons
+  - plugins/jquery.tablesorter
+  - controls/combination-list
   - screens/admin-home
 - admin-metadata:
   - controls/admin-buttons

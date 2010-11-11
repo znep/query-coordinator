@@ -17,6 +17,7 @@
   </div>
 </div>
 
+<%- if CurrentDomain.user_can?(current_user, 'manage_stories') -%>
 <div class="contentBox withLeftNavigation">
   <a href="home/story/new" class="button newButton newStoryButton rightArrow">Create a New Story<span class="icon"></span></a>
   <h2>Manage Story Content</h2>
@@ -70,8 +71,11 @@
   <a href="home/stories/appearance" class="button newButton storyAppearanceButton rightArrow">Customize Now<span class="icon"></span></a>
   <h2>Customize Story Appearance</h2>
 </div>
+<%- end -%>
 
+<%- if CurrentDomain.user_can?(current_user, 'feature_items') -%>
   <!-- <h2>Manage Featured Datasets</h2> -->
+<%- end -%>
 
 <%- content_for :js_footer do -%>
   <%- unless params[:no_js].present? -%>

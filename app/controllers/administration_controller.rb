@@ -380,9 +380,12 @@ class AdministrationController < ApplicationController
   end
 
   def home
+    render_forbidden unless CurrentDomain.user_can?(current_user, 'manage_stories') ||
+                            CurrentDomain.user_can?(current_user, 'feature_items')
     @stories = Story.find
   end
   def delete_story
+    check_auth_level('manage_stories')
     begin
       Story.find(params[:id]).delete
     rescue CoreServer::ResourceNotFound
@@ -396,8 +399,10 @@ class AdministrationController < ApplicationController
     end
   end
   def new_story
+    check_auth_level('manage_stories')
   end
   def create_story
+    check_auth_level('manage_stories')
     story = Hashie::Mash.new
     parse_story_params(story, params[:story])
     story.customization = story.customization.to_json unless story.customization.nil?
@@ -414,6 +419,7 @@ class AdministrationController < ApplicationController
     redirect_to :home_administration
   end
   def edit_story
+    check_auth_level('manage_stories')
     begin
       @story = Story.find(params[:id])
     rescue CoreServer::ResourceNotFound

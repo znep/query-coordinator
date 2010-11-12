@@ -27,12 +27,12 @@
       </div>
     <%- else -%>
       <%- @metadata.each_with_index do |fieldset, fs_index| -%>
-        <h3 class="fieldsetTitle"><%= fieldset['name'] %></h3>
         <a href="<%= url_for :action => 'delete_metadata_fieldset',
           :fieldset => fs_index %>" class="button remove removeFieldsetButton">
           <span class="icon"></span>
           Remove
         </a>
+        <h3 class="fieldsetTitle"><%= fieldset['name'] %></h3>
         <div class="gridListWrapper">
           <%= form_tag({:action => 'create_metadata_field', :fieldset => fs_index},
             {:class => 'createMetadataFieldForm'}) %>

@@ -963,7 +963,7 @@ blist.publish.convertCustomization = function(customization)
 };
 
 
-(function($) {
+$(function() {
     var adjustSizes = function()
     {
         // match page height
@@ -1089,4 +1089,4 @@ blist.publish.convertCustomization = function(customization)
         publishNS.sidebar.show('appearance');
         $('.headerBar').addClass('unsaved noRevert');
     });
-})(jQuery);
+});

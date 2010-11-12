@@ -131,13 +131,15 @@
             .find('.removeLink').removeClass('hiddenLink').end();
 
         var $select = $copy.find('.recipientRole');
-        $select[0].selectedIndex = 0;
-
-        $copy.find('.selector.uniform').replaceWith($select);
+        // Non-admins won't have sharing dropdown
+        if ( $select.length > 0 )
+        {
+            $select.get(0).selectedIndex = 0;
+            $copy.find('.selector.uniform').replaceWith($select);
+            $select.uniform();
+        }
 
         $copy.insertAfter($form.find('.emailLine:last'));
-
-        $select.uniform();
 
         var $emailField = $copy.find('.emailRecipient')
             .attr('name', 'emailRecipient' + emailCount);

@@ -22,9 +22,9 @@
                 chartObj._chartType = chartObj.settings
                     .view.displayFormat.chartType;
 
-                if (Dataset.chart.types[chartObj._chartType].displayLimit)
-                { chartObj._maxRows = Dataset.chart.types[chartObj._chartType]
-                    .displayLimit; }
+                var limit = Dataset.chart.types[chartObj._chartType].displayLimit;
+                if (limit.points)
+                { chartObj._maxRows = limit.points; }
             },
 
             columnsLoaded: function()
@@ -71,6 +71,8 @@
                 chartObj._seriesRemainders = _.map(chartObj._yColumns, function(col)
                     { return col.data.aggregates.sum; });
 
+                var colCount = chartObj._yColumns.length;
+
                 // Set up y-axes
                 if (chartObj._reverseOrder) { chartObj._yColumns.reverse(); }
                 _.each(chartObj._yColumns, function(cs, colIndex)
@@ -83,7 +85,8 @@
                         $.extend(series, {
                             innerSize:    Math.round(segment * (colIndex+1)) + '%',
                             size:         Math.round(segment * (colIndex+2)) + '%',
-                            showInLegend: colIndex == 0
+                            showInLegend: colIndex == 0,
+                            dataLabels:   { enabled: colIndex == colCount - 1 }
                         });
                     }
                     if (!_.isUndefined(chartObj.chart))
@@ -302,34 +305,7 @@
         var xTitle = chartObj.settings.view.displayFormat.titleX;
         var yTitle = chartObj.settings.view.displayFormat.titleY;
 
-        // Configure legend position -- it is absolutely positioned, and
-        // chart margins need to be adjusted to accommodate it
         var legendPos = chartObj.settings.view.displayFormat.legend;
-        var legendStyle = {};
-        var chartMargin = [10, 50, 60, 80];
-        switch (legendPos)
-        {
-            case 'top':
-                chartMargin[0] = 40;
-                legendStyle.top = '5px';
-                legendStyle.bottom = '';
-                break;
-            case 'left':
-                legendStyle.left = '10px';
-                legendStyle.top = '30%';
-                legendStyle.bottom = '';
-                chartMargin[3] = 200;
-                break;
-            case 'right':
-                legendStyle.left = '';
-                legendStyle.right = '10px';
-                legendStyle.top = '30%';
-                legendStyle.bottom = '';
-                chartMargin[1] = 180;
-                break;
-        }
-
-        if (isDateTime(chartObj)) { chartMargin[2] = 120; }
 
         // For some reason, bar charts are rendered with the data in the reverse
         // order; while the legend is correct (perhaps due to the inverted axis?).
@@ -365,8 +341,7 @@
                 renderTo: chartObj.$dom()[0],
                 defaultSeriesType: seriesType,
                 events: { load: function() { chartObj.finishLoading(); } },
-                inverted: chartObj._chartType == 'bar',
-                margin: chartMargin
+                inverted: chartObj._chartType == 'bar'
             },
             credits: { enabled: false },
             legend: { enabled: legendPos != 'none',
@@ -374,8 +349,7 @@
                     'vertical' : 'horizontal',
                 reversed: chartObj._reverseOrder,
                 backgroundColor: '#ffffff',
-                borderWidth: 1,
-                style: legendStyle },
+                borderWidth: 1 },
             plotOptions: {},
             title: { text: null },
             xAxis: { title:
@@ -395,6 +369,17 @@
                     style: { backgroundColor: '#ffffff',
                         border: '1px solid #909090', padding: '3px' } } }
         };
+        if (_.include(['top', 'bottom'], legendPos))
+        { chartConfig.legend.verticalAlign = legendPos; }
+        if (_.include(['left', 'right'], legendPos))
+        {
+            chartConfig.legend.align = legendPos;
+            chartConfig.legend.verticalAlign = 'top';
+        }
+        if (_.include(['donut'], chartObj._chartType))
+        { chartConfig.chart.spacingTop = 35; } // Fix data labels on donut charts
+        if (_.include(['line', 'area', 'timeline', 'bubble'], chartObj._chartType))
+        { chartConfig.chart.marginBottom = legendPos == 'bottom' ? 120 : 90; }
 
         if (chartObj._chartType == 'donut')
         {
@@ -462,6 +447,10 @@
             { chartConfig.xAxis.labels = { rotation: 320, align: 'right' }; }
             else
             { chartConfig.xAxis.labels = { rotation: 340 }; }
+            if (Dataset.chart.types[chartObj._chartType].displayLimit.labels)
+            { chartConfig.xAxis.labels.step = Math.ceil(
+                chartObj.settings.view.totalRows /
+                Dataset.chart.types[chartObj._chartType].displayLimit.labels); }
         }
 
 
@@ -653,16 +642,13 @@
             $secondChart = chartObj.$dom().find('.secondaryChart');
         }
 
-        var margins = chartObj.chart.options.chart.margin;
-        margins[0] = 10;
-        margins[2] = 60;
-
         var config = {
             chart: {
                 renderTo: $secondChart[0],
                 defaultSeriesType: 'line',
-                margin: margins,
                 zoomType: 'x',
+                marginTop: 10,
+                marginBottom: 20,
                 events: {
                     selection: function(event)
                     { return secondChartSelect(chartObj, event); }
@@ -683,7 +669,7 @@
                 minPadding: 0.03, maxPadding: 0.03,
                 dateTimeLabelFormats:
                     chartObj.chart.options.xAxis.dateTimeLabelFormats },
-            yAxis: { labels: { enabled: false }, title: { enabled: false } }
+            yAxis: { labels: { enabled: false }, title: { text: null } }
         };
 
         // If we already have data loaded, use it
@@ -693,6 +679,10 @@
         // If we already have categories loaded, use it
         if (!_.isEmpty(chartObj._xCategories))
         { config.xAxis.categories = chartObj._xCategories; }
+
+        config.chart.marginLeft = chartObj.chart.plotLeft;
+        config.chart.marginRight = chartObj.chart.chartWidth
+            - chartObj.chart.plotLeft - chartObj.chart.plotWidth;
 
         chartObj.secondChart = new Highcharts.Chart(config);
 

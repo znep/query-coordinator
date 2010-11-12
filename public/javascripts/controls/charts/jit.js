@@ -23,9 +23,9 @@
                 chartObj._chartType = chartObj.settings
                     .view.displayFormat.chartType;
 
-                if (Dataset.chart.types[chartObj._chartType].displayLimit)
-                { chartObj._maxRows = Dataset.chart.types[chartObj._chartType]
-                    .displayLimit; }
+                var limit = Dataset.chart.types[chartObj._chartType].displayLimit;
+                if (limit.points)
+                { chartObj._maxRows = limit.points; }
             },
 
             columnsLoaded: function()

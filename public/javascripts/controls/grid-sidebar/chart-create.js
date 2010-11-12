@@ -105,7 +105,8 @@
         return function()
         {
             var chartName = chartConfig.text.toLowerCase();
-            var rowLimit = chartConfig.displayLimit || 100;
+            // This is the same as _maxRows in base-visualization.js
+            var rowLimit = (chartConfig.displayLimit || {}).points || 500;
             if (chartConfig.renderOther)
             { return 'Warning: ' + chartName.capitalize() + ' will aggregate ' +
                 ' distinct values (rows) past the ' + rowLimit + 'th into an ' +
@@ -133,7 +134,7 @@
     {
         // Limit number of rows
         if (!$.isBlank(blist.dataset.totalRows) &&
-            blist.dataset.totalRows > (chartConfig.displayLimit || 100))
+            blist.dataset.totalRows > (chartConfig.displayLimit || {}).points || 500)
         { return false; }
         return true;
     };

@@ -22,6 +22,102 @@ var editRRNS = blist.namespace.fetch('blist.editRR');
     editRRNS.$renderArea = editRRNS.$container.find('.renderArea');
 
 
+    editRRNS.$dropIndicator = $.tag({tagName: 'span', 'class': 'dropIndicator'});
+
+    // Handle placing an item during dragging
+    var itemDragging = function(event, ui)
+    {
+        if ($.isBlank(editRRNS.$dropItem)) { return; }
+
+        var contOffset = editRRNS.$dropItem.offset();
+        var curX = ui.offset.left;
+        var curY = ui.offset.top;
+
+        editRRNS.$dropBeforeItem = null;
+        var $fields = editRRNS.$dropItem.children('.fieldItem').each(function()
+        {
+            var $t = $(this);
+            if (curX < $t.offset().left + $t.width() / 2)
+            {
+                editRRNS.$dropBeforeItem = $t;
+                return false;
+            }
+        });
+
+        editRRNS.$dropItem.append(editRRNS.$dropIndicator);
+
+        if (!$.isBlank(editRRNS.$dropBeforeItem))
+        {
+            editRRNS.$dropIndicator.css('left',
+                editRRNS.$dropBeforeItem.offset().left - contOffset.left - 1);
+        }
+        else
+        {
+            if ($fields.length < 1) { editRRNS.$dropIndicator.css('left', 0); }
+            else
+            {
+                var $lastField = $fields.eq($fields.length - 1);
+                editRRNS.$dropIndicator.css('left',
+                    $lastField.offset().left - contOffset.left +
+                        $lastField.outerWidth(true) - 1);
+            }
+        }
+    };
+
+
+    // Hook up actions for an item in the layout area
+    var enableFieldItem = function($item)
+    {
+        $item.draggable({
+            appendTo: $('.mainContainer'),
+            containment: $('.mainContainer'),
+            helper: 'clone',
+            opacity: 0.8,
+            revert: 'invalid',
+            start: function() { $(this).addClass('itemDragging'); },
+            stop: function() { $(this).removeClass('itemDragging'); },
+            drag: itemDragging
+        });
+    };
+
+
+    // Hook up drop acceptance
+    var makeDroppable = function($row)
+    {
+        $row.droppable({accept: '.fieldItem',
+            activeClass: 'inDrag',
+            hoverClass: 'dragOver',
+            over: function() { editRRNS.$dropItem = $(this); },
+            out: function()
+            {
+                editRRNS.$dropItem = null;
+                editRRNS.$dropIndicator.remove();
+            },
+            drop: function(event, ui)
+            {
+                editRRNS.$dropItem = null;
+                editRRNS.$dropIndicator.remove();
+
+                var $cont = $(this);
+                var $item = ui.draggable;
+                if ($item.closest('.renderArea').length < 1)
+                { $item = $item.clone().removeClass('ui-draggable itemDragging'); }
+
+                if ($.isBlank(editRRNS.$dropBeforeItem))
+                { $cont.append($item); }
+                else
+                {
+                    editRRNS.$dropBeforeItem.before($item);
+                    editRRNS.$dropBeforeItem = null;
+                }
+
+                enableFieldItem($item);
+                renderCurrentRow();
+                updateConfig();
+            }});
+    };
+
+
     // Sidebar
     var sortFunc = function(c)
     {
@@ -61,13 +157,8 @@ var editRRNS = blist.namespace.fetch('blist.editRR');
                 data: cols,
                 callback: function($sect)
                 {
-                    $sect.find('.fieldItem').draggable({
-                        appendTo: $('.mainContainer'),
-                        containment: $('.mainContainer'),
-                        helper: 'clone',
-                        opacity: 0.8,
-                        revert: 'invalid'
-                    });
+                    $sect.find('.fieldItem').each(function()
+                        { enableFieldItem($(this)); });
                 }
             }
         }]
@@ -151,18 +242,6 @@ var editRRNS = blist.namespace.fetch('blist.editRR');
     };
 
 
-    // Hook up drop acceptance
-    editRRNS.$renderArea.droppable({accept: '.fieldItem',
-        drop: function(event, ui)
-        {
-            var $cont = $(this);
-            var $line = $cont.find('.richColumn .richLine')
-                .append(ui.draggable.clone().removeClass('ui-draggable'));
-            renderCurrentRow();
-            updateConfig();
-        }});
-
-
     // Hook up rendering
     editRRNS.renderType = 'fatRow';
 
@@ -172,6 +251,10 @@ var editRRNS = blist.namespace.fetch('blist.editRR');
         editRRNS.$renderArea.find('.richItem, .richLabel').addClass('fieldItem');
         editRRNS.$renderArea.find('.staticLabel:empty').addClass('defaultData')
             .text('(Static text)');
+        editRRNS.$renderArea.find('.fieldItem').each(function()
+            { enableFieldItem($(this)); });
+        editRRNS.$renderArea.find('.richLine').each(function()
+            { makeDroppable($(this)); });
     };
 
     editRRNS.richRenderer = editRRNS.$renderArea.richRenderer({

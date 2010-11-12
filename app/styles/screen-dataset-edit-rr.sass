@@ -49,6 +49,36 @@
     .renderArea
       height: 100%
 
+      .richColumn
+        border: 1px solid #999999
+        @include border-radius(0.3em)
+        padding: 0.2em
+        // Temporary...
+        width: 100%
+
+        .richLine
+          border: 1px dashed #999999
+          @include border-radius(0.3em)
+          min-height: 1.5em
+          padding: 0.1em
+          position: relative
+
+          .dropIndicator
+            background-color: #333333
+            display: inline-block
+            height: 2em
+            position: absolute
+            top: 0
+            width: 2px
+
+      .itemDragging
+        @include opacity(0.5)
+
+      .ui-droppable.inDrag
+        background-color: #ddffcc
+        &.dragOver
+          background-color: #88ff77
+
   #gridSidebar
     position: absolute
 
@@ -63,6 +93,7 @@
       .columnLabel
         margin-right: 1em
 
+  #gridSidebar, .mainContainer >
     .fieldItem
       background-color: #dddddd
       @include border-radius(0.3em)
@@ -71,7 +102,7 @@
       &.columnLabel
         font-size: 1.2em
         font-weight: bold
-      &.columnData.noRender
+      &.columnData
         font-size: 1.2em
       &.staticLabel
         font-size: 1.2em

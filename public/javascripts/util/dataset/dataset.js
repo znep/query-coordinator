@@ -76,8 +76,7 @@ this.Dataset = Model.extend({
 
         this._aggregatesStale = true;
 
-        this._origQuery = $.extend(true, {}, this.query);
-        this._origSearchString = this.searchString;
+        this._origObj = this.cleanCopy();
 
 
         if (!$.isBlank(blist.snapshot) && blist.snapshot.takeSnapshot)
@@ -1223,12 +1222,8 @@ this.Dataset = Model.extend({
         }
 
         if (masterUpdate)
-        {
-            ds._origQuery = $.extend(true, {}, ds.query);
-            ds._origSearchString = ds.searchString;
-        }
-        else if (ds._origSearchString == ds.searchString &&
-            _.isEqual(ds._origQuery, ds.query))
+        { ds._origObj = ds.cleanCopy(); }
+        else if (_.isEqual(ds._origObj, ds.cleanCopy()))
         { ds._clearTemporary(); }
 
         var oldValid = ds.valid;
@@ -1264,7 +1259,7 @@ this.Dataset = Model.extend({
             if ($.isBlank(col.format.grouping_aggregate))
             {
                 if (!curGrouped[col.id]) { col.width += 30; }
-                col.format.drill_down = true;
+                col.format.drill_down = 'true';
             }
 
             if (col.hidden && !_.any(oldGroupings || [], function(og)

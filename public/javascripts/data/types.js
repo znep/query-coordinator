@@ -251,8 +251,8 @@ blist.namespace.fetch('blist.data.types');
             value *= -1;
         }
         if (value > 100) { value = 100; }
-        return "<div class='blist-cell " + cls + "' style='width: " +
-            value + "%'></div>";
+        return "<span class='blist-cell " + cls + "' style='width: " +
+            value + "%'></span>";
     };
 
     var percentHelper = function(value, view, precision, precisionStyle)

@@ -49,12 +49,8 @@ editRRNS.initSidebar = function()
                         'column<-': {
                             '.columnLabel': 'column.name!',
                             '.columnLabel@data-tcId': 'column.tableColumnId',
-                            '.columnLabel@title':
-                                'Title for the #{column.name!} column',
                             '.columnData': '(Data for #{column.name!})',
                             '.columnData@data-tcId': 'column.tableColumnId',
-                            '.columnData@title':
-                                'Data for the #{column.name!} column',
                             '.columnData@class+': 'columnId#{column.id}'
                         }
                     }
@@ -92,44 +88,89 @@ editRRNS.itemDragging = function(event, ui)
     var curX = ui.offset.left;
     var curY = ui.offset.top;
 
-    editRRNS.$dropBeforeItem = null;
+    // We need to find the best drop position across multiple lines, so use a
+    // DOM node between each item to figure out possible positions, and group
+    // them into lines based on the top position.
+    var lines = [];
+    var addDropSpot = function($item)
+    {
+        var dropOff = editRRNS.$dropFinder.offset();
+        if (lines.length < 1 || lines[lines.length - 1].top < dropOff.top)
+        { lines.push({top: dropOff.top, items: []}); }
+        lines[lines.length - 1].items.push({left: dropOff.left, beforeItem: $item});
+    };
+
     var $fields = editRRNS.$dropItem.children('.fieldItem').each(function()
     {
         var $t = $(this);
-        if (curX < $t.offset().left + $t.width() / 2)
+        $t.before(editRRNS.$dropFinder);
+        addDropSpot($t);
+    });
+
+    // Then find the last position
+    editRRNS.$dropItem.append(editRRNS.$dropFinder);
+    addDropSpot();
+
+    // Now look for the first line from the bottom where the top of the line
+    // is above the drop item.  That is the line we are in.
+    var foundLine = lines[0];
+    for (var i = lines.length - 1; i >= 0; i--)
+    {
+        if (lines[i].top < curY)
         {
-            editRRNS.$dropBeforeItem = $t;
-            return false;
+            foundLine = lines[i];
+            break;
+        }
+    }
+
+    // Now that we have the line, check each drop spot in the line, and just
+    // find the closest.  That is now our position for the cursor, and the
+    // item we want to insert before.
+    var minDist = $(window).width();
+    var foundLeft;
+    editRRNS.$dropBeforeItem = null;
+    _.each(foundLine.items, function(o)
+    {
+        var d = Math.abs(curX - o.left);
+        if (d < minDist)
+        {
+            minDist = d;
+            editRRNS.$dropBeforeItem = o.beforeItem;
+            foundLeft = o.left;
         }
     });
 
     editRRNS.$dropItem.append(editRRNS.$dropIndicator);
-
-    if (!$.isBlank(editRRNS.$dropBeforeItem))
-    {
-        editRRNS.$dropIndicator.css('left',
-            editRRNS.$dropBeforeItem.offset().left - contOffset.left - 1);
-    }
-    else
-    {
-        if ($fields.length < 1) { editRRNS.$dropIndicator.css('left', 0); }
-        else
-        {
-            var $lastField = $fields.eq($fields.length - 1);
-            editRRNS.$dropIndicator.css('left',
-                $lastField.offset().left - contOffset.left +
-                    $lastField.outerWidth(true) - 1);
-        }
-    }
+    var rowOff = editRRNS.$dropItem.offset();
+    editRRNS.$dropIndicator.css('top', foundLine.top - rowOff.top);
+    editRRNS.$dropIndicator.css('left', foundLeft - rowOff.left - 1);
 };
 
 
 // Hook up actions for an item in the layout area
 editRRNS.enableFieldItem = function($item)
 {
+    if ($item.hasClass('staticLabel'))
+    { $item.attr('title', 'Label with fixed text'); }
+    else
+    {
+        var col = blist.dataset.columnForTCID($item.data('tcId'));
+        if ($item.hasClass('columnLabel'))
+        {
+            $item.attr('title', 'Title for the ' + $.htmlEscape(col.name) +
+                    ' column');
+        }
+        else if ($item.hasClass('columnData'))
+        {
+            $item.attr('title', 'Data for the ' + $.htmlEscape(col.name) +
+                    ' column');
+        }
+    }
+
     $item.draggable({
         appendTo: $('.mainContainer'),
         containment: $('.mainContainer'),
+        cursorAt: {top: 5, left: 5},
         helper: 'clone',
         opacity: 0.8,
         revert: 'invalid',
@@ -146,16 +187,19 @@ editRRNS.makeDroppable = function($row)
     $row.droppable({accept: '.fieldItem',
         activeClass: 'inDrag',
         hoverClass: 'dragOver',
+        tolerance: 'pointer',
         over: function() { editRRNS.$dropItem = $(this); },
         out: function()
         {
             editRRNS.$dropItem = null;
             editRRNS.$dropIndicator.remove();
+            editRRNS.$dropFinder.remove();
         },
         drop: function(event, ui)
         {
             editRRNS.$dropItem = null;
             editRRNS.$dropIndicator.remove();
+            editRRNS.$dropFinder.remove();
 
             var $cont = $(this);
             var $item = ui.draggable;
@@ -349,6 +393,7 @@ editRRNS.initSaving = function()
     editRRNS.$renderArea = editRRNS.$container.find('.renderArea');
 
     editRRNS.$dropIndicator = $.tag({tagName: 'span', 'class': 'dropIndicator'});
+    editRRNS.$dropFinder = $.tag({tagName: 'span', 'class': 'dropFinder'});
 
     editRRNS.initResizing();
 

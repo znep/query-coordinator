@@ -45,7 +45,11 @@ administration-sdp-templates:
 - screen-admin-sdp-templates
 administration-sdp-template:
 - grid-sidebar
-- screen-admin-sdp-template
+- screen-admin-customizer
+administration-stories-appearance:
+- grid-sidebar
+- screen-homepage-show
+- screen-admin-customizer
 administration-users:
 - screen-admin-users
 browse-control:

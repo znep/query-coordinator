@@ -10,28 +10,7 @@
 <%- elsif !@stories_cached.nil? || ((defined? @stories) && !@stories.empty?) -%>
   <%- prerendered_cache cache_key('homepage-stories', { 'domain' => CurrentDomain.cname }),
       @stories_cached, :expires_in => 16.minutes do -%>
-    <div class="contentBox storiesContainer" data-orientation="<%= CurrentDomain.theme.stories.orientation %>" data-autoadvance="<%= CurrentDomain.theme.stories.autoAdvance %>">
-      <div class="storyPagerBackground"></div>
-      <div class="storyPager"></div>
-      <ul class="storyTexts">
-        <%- @stories.each do |story| -%>
-          <li data-storyid="<%= story.id %>" data-storycustomization="<%= story.raw_customization %>">
-            <div class="storyBox">
-              <h2><%= raw story.headline %></h2>
-              <p><%= raw story.story %></p>
-            </div>
-          </li>
-        <%- end -%>
-      </ul>
-      <div class="storyTextbox"></div>
-      <ul class="storyImages">
-        <%- @stories.each do |story| -%>
-          <li style="background-color:<%= story.customization['backgroundColor'] %>">
-            <img src="/assets/<%= story.imageId %>" alt="<%= story.headline %>" class="storyImage"/>
-          </li>
-        <%- end -%>
-      </ul>
-    </div>
+    <%= render :partial => 'stories' %>
   <%- end -%>
 <%- elsif CurrentDomain.user_can?(current_user, :manage_stories) -%>
   <div class="contentBox">

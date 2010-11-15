@@ -45,6 +45,13 @@
         &.embed
           background-color: $sidebar_embed_tab_color_top
 
+        &.textbox
+          background-color: $sidebar_textbox_tab_color_top
+        &.pager
+          background-color: $sidebar_pager_tab_color_top
+        &.other
+          background-color: $sidebar_other_tab_color_top
+
     &.unsaved
       background: #fff url(/stylesheets/images/interface/dataset_unsaved_fade.png) repeat-y
       .publisherActions
@@ -71,7 +78,7 @@
         .previewPane
           margin: 10em auto
 
-          iframe
+          iframe, .contentBox
             @include box-shadow(0, 1em, 2em, rgba(0, 0, 0, 0.25))
 
       .errorMessage, .infoMessage
@@ -178,3 +185,11 @@
 
     &.disabled
       display: none
+
+.colorpicker
+  z-index: 50
+
+// stories
+.previewPane .storiesContainer .storyImages li img
+  float: none
+  position: absolute

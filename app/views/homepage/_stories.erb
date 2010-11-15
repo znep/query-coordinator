@@ -1,0 +1,26 @@
+<div class="contentBox storiesContainer" data-orientation="<%= CurrentDomain.theme.stories.orientation %>"
+    data-autoadvance="<%= CurrentDomain.theme.stories.autoAdvance %>">
+  <div class="storyPagerBackground"></div>
+  <div class="storyPager"></div>
+  <ul class="storyTexts">
+    <%- @stories.each do |story| -%>
+      <li data-storyid="<%= story.id %>" data-storycustomization="<%= story.raw_customization %>">
+        <div class="storyBox">
+          <h2><%= raw story.headline %></h2>
+          <p><%= raw story.story %></p>
+        </div>
+      </li>
+    <%- end -%>
+  </ul>
+  <div class="storyTextbox"></div>
+  <ul class="storyImages">
+    <%- @stories.each do |story| -%>
+      <li style="background-color:<%= story.customization['backgroundColor'] %>">
+        <img src="/assets/<%= story.imageId %>" alt="<%= story.headline %>" class="storyImage"/>
+      </li>
+    <%- end -%>
+  </ul>
+</div>
+
+<%# ¡¡if you edit this file, remember to edit the fake copy in
+      app/views/administration/stories_appearance.html.erb as well!! %>

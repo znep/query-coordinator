@@ -253,7 +253,7 @@ protected
                     :box         => { :alpha       => 'number',
                                       :color       => 'color',
                                       :margin      => 'dimensions',
-                                      :shadow      => 'string',
+                                      :shadow      => 'number',
                                       :width       => 'dimensions',
                                       :headline    => { :color => 'color',
                                                         :font_family => 'string',

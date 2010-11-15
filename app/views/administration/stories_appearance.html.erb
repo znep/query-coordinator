@@ -1,0 +1,93 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+  <%= rendered_stylesheet_tag 'administration-stories-appearance' %>
+  <%= stylesheet_link_merged 'colorpicker' %>
+  <%= stylesheet_link_merged 'grid-sidebar' %>
+  <title>Story Appearance | Social Data Player Templates | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<div class="contentBox withLeftNavigation">
+  <div class="publisherHeader clearfix">
+    <h1>Story Appearance</h1>
+
+    <div class="publisherActions">
+      <a href="#save" class="saveButton button">Save</a>
+      <a href="#save" class="revertButton button">Revert Changes</a>
+      <span class="loadingIcon">Working...</span>
+    </div>
+
+    <div class="sidebarOptionsContainer clearfix">
+      <ul id="sidebarOptions" class="clearfix">
+        <li><a href="#textbox" class="textbox" data-panename="textbox">
+          <span class="icon"></span>Text Box</a></li>
+        <li><a href="#pager" class="pager" data-panename="pager">
+          <span class="icon"></span>Pager</a></li>
+        <li><a href="#other" class="other" data-panename="other">
+          <span class="icon"></span>Other</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="publisherMain">
+    <div class="publisherWorkspace">
+      <div class="previewScrollContainer">
+        <div class="previewPane">
+          <%- if @stories.nil? || @stories.empty? -%>
+            <div class="contentBox storiesContainer" data-orientation="<%= CurrentDomain.theme.stories.orientation %>">
+              <div class="storyPagerBackground"></div>
+              <div class="storyPager"></div>
+              <ul class="storyTexts">
+                <li data-storyid="1" data-storycustomization="{'backgroundColor':'#000000'}">
+                  <div class="storyBox">
+                    <h2>This is a Test Story</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt
+                       ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                       laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
+                       voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                  </div>
+                </li>
+                <li data-storyid="2" data-storycustomization="{'backgroundColor':'#000000'}">
+                  <div class="storyBox">
+                    <h2>Test Story Number Two</h2>
+                    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+                       pariatur. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
+                       ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed dolga
+                       eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                  </div>
+                </li>
+              </ul>
+              <div class="storyTextbox"></div>
+              <ul class="storyImages">
+                <li style="background-color:#000000">
+                  <img src="/stylesheets/images/content/sample_story_2.jpg" alt="This is a Test Story" class="storyImage"/>
+                </li>
+                <li style="background-color:#000000">
+                  <img src="/stylesheets/images/content/sample_story_1.jpg" alt="Test Story Number Two" class="storyImage"/>
+                </li>
+              </ul>
+            </div>
+          <%- else -%>
+            <%= render :partial => 'homepage/stories' %>
+          <%- end -%>
+        </div>
+      </div>
+    </div>
+    <div id="gridSidebar">
+    </div>
+  </div>
+</div>
+
+<% content_for :templates do %>
+  <%= render(:partial => 'shared/grid_sidebar_templates') %>
+<% end %>
+
+<% content_for :js_footer do %>
+  <script type="text/javascript">
+    blist.namespace.fetch('blist.publish');
+    blist.publish.currentTheme = <%= raw CurrentDomain.theme.stories.to_json %>;
+  </script>
+
+  <%= javascript_include_merged 'admin-stories-appearance' %>
+<% end %>

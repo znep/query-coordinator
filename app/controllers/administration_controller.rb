@@ -432,6 +432,27 @@ class AdministrationController < ApplicationController
       @story.save!
     end
   end
+  def stories_appearance
+    check_auth_level('manage_stories')
+    @stories = Story.find
+  end
+  def update_stories_appearance
+    check_auth_level('manage_stories')
+
+    config = get_configuration
+
+    update_or_create_property(config, 'theme_v2b', config.properties.theme_v2b.merge(
+        { 'stories' => params[:stories] })) do
+      !config.raw_properties.key?('theme_v2b')
+    end
+
+    CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
+
+    respond_to do |format|
+      format.data { render :json => params[:stories] } # could be problematic?
+      format.html { redirect_to home_administration_path }
+    end
+  end
 
 private
   def check_auth_level(level = 'manage_users')

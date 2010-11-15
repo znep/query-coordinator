@@ -140,10 +140,21 @@ javascripts:
   - util/color
   - util/events
   - controls/grid-sidebar/base-sidebar
+  - screens/admin-customizer
   - screens/admin-sdp-template
 - admin-story:
   - plugins/colorpicker
   - screens/admin-story
+- admin-stories-appearance:
+  - plugins/jquery.colorPicker
+  - plugins/jquery.uniform
+  - plugins/colorpicker
+  - util/color
+  - util/events
+  - controls/grid-sidebar/base-sidebar
+  - screens/homepage-show
+  - screens/admin-customizer
+  - screens/admin-stories-appearance
 - admin-federation:
   - controls/admin-buttons
   - plugins/jquery.tablesorter

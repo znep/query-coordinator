@@ -1,5 +1,7 @@
 ;(function($)
 {
+    var homepageNS = blist.namespace.fetch('blist.homepage');
+
     var animateSlices = function($storiesContainer, storiesContainerWidth, $lastImage, $nextImage, $slices)
     {
         // measure next image's width since we'll need it
@@ -103,11 +105,16 @@
 
             $targetLink.click();
         };
-        var autoadvanceInit = function()
+        homepageNS.autoadvanceInit = function(timeoutValue)
         {
-            if (!isNaN(autoadvanceTimeout))
+            if (!_.isUndefined(timeoutValue))
             {
-                clearTimeout(autoadvancePtr);
+                autoadvanceTimeout = timeoutValue;
+            }
+
+            clearTimeout(autoadvancePtr);
+            if (!isNaN(autoadvanceTimeout) && (autoadvanceTimeout > 0))
+            {
                 autoadvancePtr = setTimeout(autoadvancer, autoadvanceTimeout * 1000);
             }
         };
@@ -137,12 +144,12 @@
             $this.addClass('selected');
 
             // reset autorotator
-            autoadvanceInit();
+            homepageNS.autoadvanceInit();
         });
 
         // show first story
         $storyTexts.filter(':first-child').fadeIn();
-        $storyImages.filter(':first-child').fadeIn(autoadvanceInit);
+        $storyImages.filter(':first-child').fadeIn(homepageNS.autoadvanceInit);
 
     // featured views
         var resizeFeaturedViews = function()

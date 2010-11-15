@@ -480,11 +480,12 @@
             width: 8em
             float: right
 
-        .name
-          @include clip-text
-          float: left
-          font-size: 1.2em
-          margin-right: 0.5em
+        .nameWrapper
+          margin-right: 13em
+          overflow: hidden
+          .name
+            @include clip-text
+            font-size: 1.2em
 
         span.type
           font-size: 1.2em
@@ -501,8 +502,9 @@
 
 
         .selector.uniform
-          float: right
-          margin: -0.5em 0.5em 0 0
+          position: absolute
+          right: 0
+          top: -0.5em
           width: auto
 
         select.type

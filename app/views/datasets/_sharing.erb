@@ -44,7 +44,7 @@
       <span class="icon"></span>
     </a>
     <span class="profileImage"></span>
-    <span class="name"></span>
+    <div class='nameWrapper'><span class="name"></span></div>
     <%- if grantable -%>
       <%= select_tag 'type', options_for_select(Share.types), :class => 'type' %>
     <%- end -%>

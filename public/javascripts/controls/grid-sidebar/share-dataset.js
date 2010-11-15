@@ -95,7 +95,8 @@
         _.each(data, function(share)
         {
             var $li = $.renderTemplate('sharesList', share, {
-                    '.name': 'displayName',
+                    '.name': 'displayName!',
+                    '.name@title': 'displayName!',
                     'li@data-uid': 'id',
                     'li@data-currtype': 'shareType',
                     'li@data-email': 'userEmail',

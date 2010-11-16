@@ -235,43 +235,6 @@
                 }
             },
 
-            resizeHandle: function(event)
-            {
-                var chartObj = this;
-
-                // Hide the chart if trying to resize to 0
-                if (chartObj.$dom().height() < 1)
-                {
-                    chartObj.$dom().hide();
-                    return;
-                }
-
-                chartObj.$dom().show();
-                if (chartObj.settings.view.snapshotting)
-                { return; }
-
-                // Since we have to re-create the whole chart, set up a timer to
-                // wait until they've paused/finished dragging
-                if (!_.isUndefined(chartObj._resizeTimer))
-                { clearTimeout(chartObj._resizeTimer); }
-
-                chartObj._resizeTimer = setTimeout(function()
-                {
-                    delete chartObj._resizeTimer;
-                    if (!_.isUndefined(chartObj.chart))
-                    {
-                        chartObj.chart.destroy();
-                        delete chartObj.chart;
-                        if (!_.isUndefined(chartObj.secondChart))
-                        {
-                            chartObj.secondChart.destroy();
-                            delete chartObj.secondChart;
-                        }
-                        createChart(chartObj);
-                    }
-                }, 500);
-            },
-
             resetData: function()
             {
                 var chartObj = this;

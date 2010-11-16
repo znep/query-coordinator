@@ -48,6 +48,7 @@ administration-sdp-template:
 - screen-admin-customizer
 administration-stories-appearance:
 - grid-sidebar
+- screen-homepage-show-reset
 - screen-homepage-show
 - screen-admin-customizer
 administration-users:

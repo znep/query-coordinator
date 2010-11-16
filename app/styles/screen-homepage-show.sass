@@ -96,13 +96,14 @@
         @else if $stories_pager_disposition == 'dark'
           color: #000
 
-      .ie7 &
-        display: inline
-        // text-indent is moving the background image (???)
-        line-height: 9999px
-        overflow: hidden
-        text-indent: 0
-        zoom: 1
+      @if $stories_pager_type == 'bullets'
+        .ie7 &
+          display: inline
+          // text-indent is moving the background image (???)
+          line-height: 9999px
+          overflow: hidden
+          text-indent: 0
+          zoom: 1
 
   @if $stories_pager_position == 'center'
     .storyPagerBackground

@@ -122,6 +122,20 @@
 .fieldItem
   cursor: pointer
 
+.navRenderType .navigation
+  .removeField
+    background-color: #ffbbbb
+    @include border-radius(0.3em)
+    float: left
+    font-size: 1.2em
+    padding: 0.5em
+    visibility: hidden
+    &.inDrag
+      visibility: visible
+    &.dragOver
+      background-color: #ff7777
+      font-weight: bold
+
 // Save view dialog
 .saveViewDialog
   margin-left: -14em

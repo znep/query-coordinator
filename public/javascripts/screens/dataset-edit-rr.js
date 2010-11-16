@@ -182,13 +182,16 @@ editRRNS.enableFieldItem = function($item)
 
 
 // Hook up drop acceptance
-editRRNS.makeDroppable = function($row)
+editRRNS.makeDroppable = function($row, isTrash)
 {
-    $row.droppable({accept: '.fieldItem',
+    $row.droppable({accept: isTrash ? '.fieldItem.inLayout' : '.fieldItem',
         activeClass: 'inDrag',
         hoverClass: 'dragOver',
         tolerance: 'pointer',
-        over: function() { editRRNS.$dropItem = $(this); },
+        over: function()
+        {
+            if (!isTrash) { editRRNS.$dropItem = $(this); }
+        },
         out: function()
         {
             editRRNS.$dropItem = null;
@@ -203,20 +206,36 @@ editRRNS.makeDroppable = function($row)
 
             var $cont = $(this);
             var $item = ui.draggable;
-            if ($item.closest('.renderArea').length < 1)
-            { $item = $item.clone().removeClass('ui-draggable itemDragging'); }
 
-            if ($.isBlank(editRRNS.$dropBeforeItem))
-            { $cont.append($item); }
-            else
+            if (isTrash)
             {
-                editRRNS.$dropBeforeItem.before($item);
+                _.defer(function()
+                {
+                    $item.remove();
+                    editRRNS.updateConfig();
+                });
                 editRRNS.$dropBeforeItem = null;
             }
+            else
+            {
+                if ($item.closest('.renderArea').length < 1)
+                {
+                    $item = $item.clone().removeClass('ui-draggable itemDragging')
+                        .addClass('inLayout');
+                }
 
-            editRRNS.enableFieldItem($item);
-            editRRNS.renderCurrentRow();
-            editRRNS.updateConfig();
+                if ($.isBlank(editRRNS.$dropBeforeItem))
+                { $cont.append($item); }
+                else
+                {
+                    editRRNS.$dropBeforeItem.before($item);
+                    editRRNS.$dropBeforeItem = null;
+                }
+
+                editRRNS.enableFieldItem($item);
+                editRRNS.renderCurrentRow();
+                editRRNS.updateConfig();
+            }
         }});
 };
 
@@ -293,7 +312,8 @@ editRRNS.updateConfig = function()
 editRRNS.renderCurrentLayout = function()
 {
     editRRNS.richRenderer.renderLayout();
-    editRRNS.$renderArea.find('.richItem, .richLabel').addClass('fieldItem');
+    editRRNS.$renderArea.find('.richItem, .richLabel')
+        .addClass('fieldItem inLayout');
     editRRNS.$renderArea.find('.staticLabel:empty').addClass('defaultData')
         .text('(Static text)');
     editRRNS.$renderArea.find('.fieldItem').each(function()
@@ -326,6 +346,8 @@ editRRNS.initLayout = function()
     editRRNS.navigation = editRRNS.$container.find('.navigation')
         .bind('page_changed', editRRNS.renderCurrentRow)
         .navigation({pageSize: 1, view: blist.dataset});
+    editRRNS.makeDroppable(
+        editRRNS.$container.find('.navigation .removeField'), true);
     editRRNS.renderCurrentRow();
 
     // Handle switching types

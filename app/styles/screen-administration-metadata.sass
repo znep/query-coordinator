@@ -34,42 +34,43 @@
             margin-left: 6px
             width: 10px
 
-      .actions
-        width: 42em
+  .metadataFieldTable, .categoriesTable
+    .actions
+      width: 42em
 
-        .button
-          &.removeField
-            @include sprite-repeater-icons
-          &.moveButton
-            @include sprite-menu-icons
-          opacity: 0.3
-          @include transition-duration(0.5s)
-          @include transition-property(opacity)
-          .icon
-            float: left
-            padding-right: 0.5em
+      .button
+        &.removeField
+          @include sprite-repeater-icons
+        &.moveButton
+          @include sprite-menu-icons
+        opacity: 0.3
+        @include transition-duration(0.5s)
+        @include transition-property(opacity)
+        .icon
+          float: left
+          padding-right: 0.5em
 
-        &:hover .button
-          opacity: 1
+      &:hover .button
+        opacity: 1
 
+      .loading
+        @include throbber-icon
+        display: none
+      &.isWorking
         .loading
-          @include throbber-icon
-          display: none
-        &.isWorking
-          .loading
-            display: inline-block
+          display: inline-block
 
-      tbody
-        td.name
-          font-size: 1.2em
-        tr td
-          padding: 0.2em 1em
-        td.required
-          padding-right: 0
+    tbody
+      td.name
+        font-size: 1.2em
+      tr td
+        padding: 0.2em 1em
+      td.required
+        padding-right: 0
 
-        .toggleRequired
-          width: 7.5em
-          text-align: center
+      .toggleRequired
+        width: 7.5em
+        text-align: center
 
   .newFieldsetArea
     padding-top: 1em
@@ -83,3 +84,11 @@
 
     .newFieldsetButton
       font-size: 1.2em
+
+  .categories
+    border-top: 1px solid $color_chrome_box_border
+    margin-top: 2em
+
+    h2
+      margin-bottom: 1em
+

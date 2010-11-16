@@ -122,6 +122,52 @@
     </div>
   </div>
 
+  <div class="categories">
+    <h2>Define Dataset Categories</h2>
+
+    <div class="gridListWrapper">
+      <%= form_tag({:action => 'create_category'},
+        {:class => 'createCategoryForm'}) %>
+        <table class="gridList categoriesTable" cellspacing="0">
+          <colgroup>
+            <col class="name" />
+            <col class="actions" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="name"><div>Category Name</div><span class="icon"></span></th>
+              <th class="actions"><div>&nbsp;</div><span class="icon"></span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <%- @categories.each do |category, value| -%>
+              <tr class="item">
+                <td class="name">
+                  <span class="cellInner">
+                    <%= category.titleize %>
+                  </span>
+                </td>
+                <td class="actions">
+                  <%= link_to raw('<span class="icon"></span>Remove'),
+                      { :action => 'delete_category',
+                        :category => category },
+                        {:class => 'button removeField remove'} %>
+                </td>
+              </tr>
+            <%- end -%>
+            <tr>
+              <td class="name">
+                <input type="text" class="newCategory" name="new_category" />
+              </td>
+              <td class="actions">
+                <input class="button newCategoryButton" type="submit" value="Add New Category" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </form>
+  </div>
+
 </div>
 
 <% content_for :js_footer do %>

@@ -262,6 +262,8 @@ class AdministrationController < ApplicationController
   def metadata
     check_auth_level('edit_site_theme')
     @metadata = get_configuration().properties.custom_dataset_metadata
+    @categories = get_configuration('view_categories', true)
+      .properties.sort { |a, b| a[0].downcase <=> b[0].downcase }
   end
   def create_metadata_fieldset
     check_auth_level('edit_site_theme')
@@ -378,6 +380,59 @@ class AdministrationController < ApplicationController
       format.html { redirect_to :action => 'metadata' }
     end
   end
+  def create_category
+    check_auth_level('edit_site_theme')
+    new_category = params[:new_category]
+
+    if new_category.blank?
+      flash[:error] = "Please enter a name to create a new category"
+      return redirect_to metadata_administration_path
+    end
+
+    config = get_configuration('view_categories')
+    # Copy over default config
+    if config.nil?
+      config = create_config_copy('View categories', 'view_categories')
+    end
+
+    if config.raw_properties.any? {|k,v| k.downcase == new_category.downcase }
+      flash[:error] = "Cannot create duplicate category named '#{new_category}'"
+      return redirect_to metadata_administration_path
+    end
+
+    # Create a property with name: category, value: true
+    config.create_property(new_category, true)
+
+    CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
+
+    flash[:notice] = "Category successfully created"
+    redirect_to metadata_administration_path
+  end
+  def delete_category
+    check_auth_level('edit_site_theme')
+    category = params[:category]
+
+    if category.blank?
+      flash[:error] = "Please select a category to delete from the list"
+      return redirect_to metadata_administration_path
+    end
+
+    config = get_configuration('view_categories')
+    if config.nil?
+      config = create_config_copy('View categories', 'view_categories')
+    end
+
+    if config.raw_properties.any? { |k,v| k == category }
+      config.delete_property(category)
+    else
+      flash[:error] = "Could not remove category named '#{category}'"
+    end
+
+    CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
+
+    flash[:notice] = "Category successfully removed"
+    redirect_to metadata_administration_path
+  end
 
   def home
     render_forbidden unless CurrentDomain.user_can?(current_user, 'manage_stories') ||
@@ -490,6 +545,25 @@ private
     redirect_to :action => :federations
   end
 
+  def create_config_copy(name, type, parentId = nil)
+    original_config = get_configuration(type, true).raw_properties
+
+    opts = { 'name' => name, 'default' => true, 'type' => type,
+      'domainCName' => CurrentDomain.cname }
+
+    unless parentId.nil?
+      opts['parentId'] = parentId
+    end
+
+    config = Configuration.create(opts)
+
+    # Copy over the original, merged values
+    CoreServer::Base.connection.batch_request do
+      original_config.each {|k,v| config.create_property(k, v) }
+    end
+    return config
+  end
+
   def update_or_create_property(configuration, name, value)
     unless value.nil?
       if (yield)
@@ -526,8 +600,8 @@ private
     end
   end
 
-  def get_configuration
-    Configuration.find_by_type('site_theme', true, CurrentDomain.cname, false).first
+  def get_configuration(type='site_theme', merge=false)
+    Configuration.find_by_type(type, true, CurrentDomain.cname, merge).first
   end
 
   def save_metadata(config, metadata, successMessage)

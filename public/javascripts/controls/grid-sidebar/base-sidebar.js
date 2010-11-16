@@ -1775,8 +1775,22 @@
 
                     if ((curValue || defValue) == opt.name)
                     { defChecked = radioItem; }
-                    if (_.any(subLine || [], function(sl)
-                            { return (sl['data-dataValue'] || {}).onlyIf; }))
+
+                    var checkSubData;
+                    checkSubData = function(item)
+                    {
+                        if ($.isPlainObject(item))
+                        {
+                            return (item['data-dataValue'] || {}).onlyIf ||
+                                checkSubData(item.contents);
+                        }
+
+                        if (!_.isArray(item)) { return false; }
+
+                        return _.any(item, function(i)
+                            { return checkSubData(i); });
+                    };
+                    if (checkSubData(subLine))
                     { valChecked = radioItem; }
 
                     return {tagName: 'div', 'class': ['radioLine', opt.type],

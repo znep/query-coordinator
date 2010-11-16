@@ -443,6 +443,10 @@
             }
         });
 
+        var wasInvalid = !blist.dataset.valid;
+
+        blist.dataset.update(filterView);
+
         // Show hidden columns if we are grouped
         _.each(config.sections, function(s)
         {
@@ -464,10 +468,6 @@
                 });
             }
         });
-
-        var wasInvalid = !blist.dataset.valid;
-
-        blist.dataset.update(filterView);
 
         var finishCallback = function()
         {

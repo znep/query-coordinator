@@ -5,6 +5,7 @@ class NominationsController < ApplicationController
   def show
     @base_url = request.path
     @page_size = 10
+    @params = params.reject {|k, v| k.to_s == 'controller' || k.to_s == 'action'}
     params[:page] ||= 1
     @status = params[:status] || nil
     @nominations = Nomination.find_page(params[:page], @page_size, @status)

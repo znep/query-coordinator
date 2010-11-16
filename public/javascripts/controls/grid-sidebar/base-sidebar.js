@@ -1897,6 +1897,9 @@
                 break;
         }
 
+        if (_.isUndefined(wrapper.contents))
+        { contents = _.without(contents, wrapper); }
+
         if (contents.length < 1) { return null; }
 
         if (args.context.inputOnly)

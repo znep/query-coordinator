@@ -201,6 +201,11 @@ blist.publish.applyCustomizationToPreview = function(hash)
         // then pager is in box mode.
         $pager.width($storyTextbox.width());
     }
+    else
+    {
+        // the pager is in centered mode; unset explicit width
+        $pager.css('width', '');
+    }
 };
 
 blist.publish.generateStyleNode = function()

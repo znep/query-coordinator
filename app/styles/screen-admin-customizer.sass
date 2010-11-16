@@ -2,6 +2,7 @@
   padding-bottom: 4em
 
 .contentBox
+  margin: 1em
   overflow: hidden
   padding: 0
 
@@ -80,6 +81,9 @@
 
           iframe, .contentBox
             @include box-shadow(0, 1em, 2em, rgba(0, 0, 0, 0.25))
+
+          .contentBox
+            margin: 0 2em 1em
 
       .errorMessage, .infoMessage
         background: #fff url(/stylesheets/images/icons/warning_icon.png) no-repeat 1.5em 2em
@@ -168,6 +172,8 @@
             top: 0
             .inputWrapper
               padding-left: 0
+              .ie7 & .container
+                width: auto
             select
               width: 6.1em
 
@@ -194,6 +200,9 @@
   z-index: 50
 
 // stories
+#siteHeader
+  margin-bottom: 0
+
 .previewPane .storiesContainer .storyImages li img
   float: none
   position: absolute

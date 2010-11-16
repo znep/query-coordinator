@@ -2,7 +2,7 @@
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-home' %>
   <%= stylesheet_link_merged 'colorpicker' %>
-  <title>Manage Home Page | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= @story.title %> | Edit Home Page Story | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <% content_for :skip_links do %>

@@ -387,7 +387,7 @@ class AdministrationController < ApplicationController
   def delete_story
     check_auth_level('manage_stories')
     begin
-      Story.find(params[:id]).delete
+      Story.delete(params[:id])
     rescue CoreServer::ResourceNotFound
       flash.now[:error] = 'The story you attempted to delete does not exist.'
       return render 'shared/error', :status => :not_found

@@ -197,8 +197,11 @@
                 if (mapObj._rows === undefined) { mapObj._rows = []; }
                 mapObj._rows = mapObj._rows.concat(rows);
                 if (mapObj.settings.view.totalRows > mapObj._maxRows)
-                { mapObj.showError('This dataset has more than ' + mapObj._maxRows +
-                                   ' rows. Some points will be not be displayed.'); }
+                {
+                    mapObj.showError('This dataset has more than ' + mapObj._maxRows +
+                               ' rows visible. Some points will be not be displayed.');
+                    mapObj._maxRowsExceeded = true;
+                }
 
                 if (mapObj._mapLoaded)
                 { mapObj.renderData(rows); }

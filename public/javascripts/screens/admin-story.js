@@ -10,6 +10,10 @@ $(function()
             $bgField.val('#' + hex)
         }
     });
+
+    $('input').uniform();
+
+    $('form').validate();
 });
 
 })(jQuery);

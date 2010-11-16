@@ -143,6 +143,7 @@ javascripts:
   - screens/admin-customizer
   - screens/admin-sdp-template
 - admin-story:
+  - plugins/jquery.uniform
   - plugins/colorpicker
   - screens/admin-story
 - admin-stories-appearance:

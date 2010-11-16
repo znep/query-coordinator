@@ -1,11 +1,11 @@
 <div class="line">
-  <label for="story_headline">Headline</label>
+  <label for="story_headline" class="required">Headline</label>
   <input type="text" name="story[headline]" id="story_headline"
-    value="<%= @story.headline unless @story.nil? %>"/>
+    value="<%= @story.headline unless @story.nil? %>" class="required"/>
 </div>
 <div class="line">
-  <label for="story_story">Contents</label>
-  <textarea name="story[story]" id="story_story"><%= @story.story unless @story.nil? %></textarea>
+  <label for="story_story" class="required">Contents</label>
+  <textarea name="story[story]" id="story_story" class="required"><%= @story.story unless @story.nil? %></textarea>
 </div>
 <div class="line">
   <label for="story_image">Background Image</label>
@@ -20,9 +20,9 @@
   </div>
 <%- end -%>
 <div class="line colorLine">
-  <label for="story_background_color">Background Color</label>
+  <label for="story_background_color" class="required">Background Color</label>
   <input type="text" name="story[backgroundColor]" id="story_backgroundColor"
-    value="<%= @story.customization['backgroundColor'] unless @story.nil? %>"/>
+    value="<%= @story.customization['backgroundColor'] unless @story.nil? %>" class="required"/>
   <p>6-character hex; eg #036adf</p>
 </div>
 <div class="line">

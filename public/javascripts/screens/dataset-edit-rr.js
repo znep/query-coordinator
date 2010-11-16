@@ -79,14 +79,10 @@ editRRNS.initSidebar = function()
 
 // ---------- Drag / Drop -------------
 
-// Handle placing an item during dragging
-editRRNS.itemDragging = function(event, ui)
+// Handle placing a field during dragging
+editRRNS.itemDragging = function(ui, $container, $indicator, primaryPos, linePos)
 {
-    if ($.isBlank(editRRNS.$dropItem)) { return; }
-
-    var contOffset = editRRNS.$dropItem.offset();
-    var curX = ui.offset.left;
-    var curY = ui.offset.top;
+    if ($.isBlank($container)) { return; }
 
     // We need to find the best drop position across multiple lines, so use a
     // DOM node between each item to figure out possible positions, and group
@@ -95,12 +91,13 @@ editRRNS.itemDragging = function(event, ui)
     var addDropSpot = function($item)
     {
         var dropOff = editRRNS.$dropFinder.offset();
-        if (lines.length < 1 || lines[lines.length - 1].top < dropOff.top)
-        { lines.push({top: dropOff.top, items: []}); }
-        lines[lines.length - 1].items.push({left: dropOff.left, beforeItem: $item});
+        if (lines.length < 1 || lines[lines.length - 1].pos < dropOff[linePos])
+        { lines.push({pos: dropOff[linePos], items: []}); }
+        lines[lines.length - 1].items.push({pos: dropOff[primaryPos],
+            beforeItem: $item});
     };
 
-    var $fields = editRRNS.$dropItem.children('.fieldItem').each(function()
+    var $fields = $container.children('.ui-draggable').each(function()
     {
         var $t = $(this);
         $t.before(editRRNS.$dropFinder);
@@ -108,7 +105,7 @@ editRRNS.itemDragging = function(event, ui)
     });
 
     // Then find the last position
-    editRRNS.$dropItem.append(editRRNS.$dropFinder);
+    $container.append(editRRNS.$dropFinder);
     addDropSpot();
     editRRNS.$dropFinder.remove();
 
@@ -117,7 +114,7 @@ editRRNS.itemDragging = function(event, ui)
     var foundLine = lines[0];
     for (var i = lines.length - 1; i >= 0; i--)
     {
-        if (lines[i].top < curY)
+        if (lines[i].pos < ui.offset[linePos])
         {
             foundLine = lines[i];
             break;
@@ -127,24 +124,26 @@ editRRNS.itemDragging = function(event, ui)
     // Now that we have the line, check each drop spot in the line, and just
     // find the closest.  That is now our position for the cursor, and the
     // item we want to insert before.
-    var minDist = $(window).width();
-    var foundLeft;
-    editRRNS.$dropBeforeItem = null;
+    var minDist = 100000; // Hopefully they won't be more than this many pixels away
+    var foundPos;
+    var $dropBefore;
     _.each(foundLine.items, function(o)
     {
-        var d = Math.abs(curX - o.left);
+        var d = Math.abs(ui.offset[primaryPos] - o.pos);
         if (d < minDist)
         {
             minDist = d;
-            editRRNS.$dropBeforeItem = o.beforeItem;
-            foundLeft = o.left;
+            $dropBefore = o.beforeItem;
+            foundPos = o.pos;
         }
     });
 
-    editRRNS.$dropItem.append(editRRNS.$dropIndicator);
-    var rowOff = editRRNS.$dropItem.offset();
-    editRRNS.$dropIndicator.css('top', foundLine.top - rowOff.top);
-    editRRNS.$dropIndicator.css('left', foundLeft - rowOff.left - 1);
+    $container.append($indicator);
+    var contOffset = $container.offset();
+    $indicator.css(linePos, foundLine.pos - contOffset[linePos]);
+    $indicator.css(primaryPos, foundPos - contOffset[primaryPos] - 1);
+
+    return $dropBefore;
 };
 
 
@@ -168,19 +167,29 @@ editRRNS.enableFieldItem = function($item)
         }
     }
 
-    $item.draggable({
-        appendTo: $('.mainContainer'),
-        containment: $('.mainContainer'),
-        cursorAt: {top: 5, left: 5},
-        helper: 'clone',
-        opacity: 0.8,
-        revert: 'invalid',
-        start: function() { $(this).addClass('itemDragging'); },
-        stop: function() { $(this).removeClass('itemDragging'); },
-        drag: editRRNS.itemDragging
+    editRRNS.makeDraggable($item, function(e, ui)
+    {
+        editRRNS.$dropBeforeField = editRRNS.itemDragging(ui,
+            editRRNS.$dropRow, editRRNS.$dropFieldIndicator, 'left', 'top');
     });
 };
 
+
+editRRNS.makeDraggable = function($item, dragHandler)
+{
+    $item.draggable({
+        appendTo: $('.mainContainer'),
+        containment: $('.mainContainer'),
+        cursorAt: {top: 5, left: 15},
+        helper: 'clone',
+        opacity: 0.8,
+        revert: 'invalid',
+        start: function(e, ui)
+            { ui.helper.width($(this).addClass('itemDragging').width()); },
+        stop: function() { $(this).removeClass('itemDragging'); },
+        drag: dragHandler
+    });
+};
 
 // Hook up drop acceptance
 editRRNS.makeDroppable = function($row, isTrash)
@@ -191,17 +200,17 @@ editRRNS.makeDroppable = function($row, isTrash)
         tolerance: 'pointer',
         over: function()
         {
-            if (!isTrash) { editRRNS.$dropItem = $(this); }
+            if (!isTrash) { editRRNS.$dropRow = $(this); }
         },
         out: function()
         {
-            editRRNS.$dropItem = null;
-            editRRNS.$dropIndicator.remove();
+            editRRNS.$dropRow = null;
+            editRRNS.$dropFieldIndicator.remove();
         },
         drop: function(event, ui)
         {
-            editRRNS.$dropItem = null;
-            editRRNS.$dropIndicator.remove();
+            editRRNS.$dropRow = null;
+            editRRNS.$dropFieldIndicator.remove();
 
             var $cont = $(this);
             var $item = ui.draggable;
@@ -213,7 +222,7 @@ editRRNS.makeDroppable = function($row, isTrash)
                     $item.remove();
                     editRRNS.updateConfig();
                 });
-                editRRNS.$dropBeforeItem = null;
+                editRRNS.$dropBeforeField = null;
             }
             else
             {
@@ -223,12 +232,12 @@ editRRNS.makeDroppable = function($row, isTrash)
                         .addClass('inLayout');
                 }
 
-                if ($.isBlank(editRRNS.$dropBeforeItem))
+                if ($.isBlank(editRRNS.$dropBeforeField))
                 { $cont.append($item); }
                 else
                 {
-                    editRRNS.$dropBeforeItem.before($item);
-                    editRRNS.$dropBeforeItem = null;
+                    editRRNS.$dropBeforeField.before($item);
+                    editRRNS.$dropBeforeField = null;
                 }
 
                 editRRNS.enableFieldItem($item);
@@ -322,7 +331,18 @@ editRRNS.renderCurrentLayout = function()
 
     // Set up rows
     editRRNS.$renderArea.find('.richLine').each(function()
-        { editRRNS.makeDroppable($(this)); });
+        {
+            var $row = $(this);
+            editRRNS.makeDroppable($row);
+            $row.prepend($.tag({tagName: 'a', href: '#Drag', title: 'Move row',
+                'class': 'dragHandle'}));
+            editRRNS.makeDraggable($row, function(e, ui)
+            {
+                editRRNS.$dropBeforeRow = editRRNS.itemDragging(ui,
+                    editRRNS.$dropCol, editRRNS.$dropRowIndicator,
+                    'top', 'left');
+            });
+        });
 
     // Set up columns
     editRRNS.$renderArea.find('.richColumn').each(function()
@@ -331,6 +351,35 @@ editRRNS.renderCurrentLayout = function()
         $col.prepend($.tag({tagName: 'a', href: '#Add_Row',
             'class': ['add', 'addRow'], title: 'Add row to this column',
             contents: {tagName: 'span', 'class': 'icon'}}));
+
+        $col.droppable({accept: '.richLine',
+            activeClass: 'inDrag',
+            hoverClass: 'dragOver',
+            tolerance: 'pointer',
+            over: function() { editRRNS.$dropCol = $(this); },
+            out: function()
+            {
+                editRRNS.$dropCol = null;
+                editRRNS.$dropRowIndicator.remove();
+            },
+            drop: function(event, ui)
+            {
+                editRRNS.$dropCol = null;
+                editRRNS.$dropRowIndicator.remove();
+
+                var $col = $(this);
+                var $row = ui.draggable;
+
+                if ($.isBlank(editRRNS.$dropBeforeRow))
+                { $col.append($row); }
+                else
+                {
+                    editRRNS.$dropBeforeRow.before($row);
+                    editRRNS.$dropBeforeRow = null;
+                }
+
+                editRRNS.updateConfig();
+            }});
     });
 };
 
@@ -435,7 +484,9 @@ editRRNS.initSaving = function()
     editRRNS.$container = $('#layoutContainer');
     editRRNS.$renderArea = editRRNS.$container.find('.renderArea');
 
-    editRRNS.$dropIndicator = $.tag({tagName: 'span', 'class': 'dropIndicator'});
+    editRRNS.$dropFieldIndicator = $.tag({tagName: 'span',
+        'class': 'dropIndicator'});
+    editRRNS.$dropRowIndicator = $.tag({tagName: 'span', 'class': 'dropIndicator'});
     editRRNS.$dropFinder = $.tag({tagName: 'span', 'class': 'dropFinder',
         contents: '.'});
 

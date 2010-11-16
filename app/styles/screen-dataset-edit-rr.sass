@@ -49,53 +49,82 @@
     .renderArea
       height: 100%
 
-      .richColumn
-        border: 1px solid #999999
-        @include border-radius(0.3em)
-        padding: 0.2em
-        position: relative
-        // Temporary...
-        width: 100%
-        &:hover
-          border-color: #333333
-          @include box-shadow(0, 0, 3px, rgba(0, 0, 0, 0.5))
+  .dropIndicator
+    background-color: #666666
+    display: inline-block
+    position: absolute
 
-        .richLine
-          border: 1px dashed #999999
-          @include border-radius(0.3em)
-          min-height: 1.5em
-          padding: 0.1em
-          position: relative
+  .itemDragging
+    @include opacity(0.5)
 
-          .dropFinder
-            position: relative
-            top: -6px
+  .ui-droppable.inDrag
+    background-color: #ddffcc
+    &.dragOver
+      background-color: #88ff77
 
-          .dropIndicator
-            background-color: #666666
-            display: inline-block
-            height: 2em
-            position: absolute
-            top: 0
-            width: 2px
+  .richColumn
+    border: 1px solid #999999
+    @include border-radius(0.3em)
+    padding: 0.2em
+    position: relative
+    // Temporary...
+    width: 100%
+    &:hover
+      border-color: #333333
+      @include box-shadow(0, 0, 3px, rgba(0, 0, 0, 0.5))
 
-        .addRow
-          @include sprite-repeater-icons
-          @include opacity(0.6)
-          bottom: -7px
-          left: 50%
-          margin-left: -7px
-          position: absolute
-          &:hover
-            @include opacity(1)
+    .addRow
+      @include sprite-repeater-icons
+      @include opacity(0.6)
+      bottom: -7px
+      left: 50%
+      margin-left: -7px
+      position: absolute
+      &:hover
+        @include opacity(1)
 
-      .itemDragging
-        @include opacity(0.5)
+    .dropIndicator
+      height: 2px
+      left: 0
+      width: 100%
 
-      .ui-droppable.inDrag
-        background-color: #ddffcc
-        &.dragOver
-          background-color: #88ff77
+    .dropFinder
+      position: relative
+      left: -3px
+
+  .richLine
+    border: 1px dashed #999999
+    @include border-radius(0.3em)
+    min-height: 1.5em
+    padding: 0.1em
+    position: relative
+
+    &:hover, &.ui-draggable-dragging
+      border-color: #333333
+      @include box-shadow(0, 0, 3px, rgba(0, 0, 0, 0.5))
+      .dragHandle
+        visibility: visible
+
+    .dropFinder
+      position: relative
+      top: -6px
+
+    .dropIndicator
+      height: 2em
+      width: 2px
+
+    .dragHandle
+      background-image: url(/stylesheets/images/content/table/column_drag_handle.png)
+      background-position: top left
+      background-repeat: repeat-y
+      cursor: move
+      height: 100%
+      left: 0
+      position: absolute
+      top: 0
+      visibility: hidden
+      width: 7px
+      z-index: 1
 
   #gridSidebar
     position: absolute

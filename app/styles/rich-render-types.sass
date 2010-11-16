@@ -2,78 +2,78 @@
   .richColumn
     float: left
 
-    .richLine
-      overflow: hidden
+  .richLine
+    overflow: hidden
 
-      .richLabel
-        display: inline-block
-        font-size: 1.2em
-        font-weight: bold
-        line-height: 1.2em
-        overflow: hidden
-        vertical-align: top
-        .ie7 &
-          display: inline
+  .richLabel
+    display: inline-block
+    font-size: 1.2em
+    font-weight: bold
+    line-height: 1.2em
+    overflow: hidden
+    vertical-align: top
+    .ie7 &
+      display: inline
 
-      .richItem
-        display: inline-block
-        font-size: 1.2em
-        line-height: 1.2em
-        .invalid
-          color: #888888
-          font-style: italic
-        .ie7 &
-          display: inline
+  .richItem
+    display: inline-block
+    font-size: 1.2em
+    line-height: 1.2em
+    .invalid
+      color: #888888
+      font-style: italic
+    .ie7 &
+      display: inline
 
-        // Renderer-specific styles
-        &.photo, &.photo_obsolete
-          img
-            max-height: 15em
-            max-width: 30em
-            width: 100%
+    // Renderer-specific styles
+    &.photo, &.photo_obsolete
+      img
+        max-height: 15em
+        max-width: 30em
+        width: 100%
 
-        &.percent
-          height: 1.2em
-          .blist-percent
-            min-width: 5em
+    &.percent
+      height: 1.2em
+      .blist-percent
+        min-width: 5em
 
-        &.stars
-          margin-bottom: -0.35em
-          // This is set to -16.5px normally; but when we pull it down, apparently
-          // we need to adjust this back to just -16px
-          .blist-tstar-off
-            background-position: 0 -16px
+    &.stars
+      margin-bottom: -0.35em
+      // This is set to -16.5px normally; but when we pull it down, apparently
+      // we need to adjust this back to just -16px
+      .blist-tstar-off
+        background-position: 0 -16px
 
-        &.nested_table table
-          th
-            background-color: #d8d8d8
+    &.nested_table table
+      th
+        background-color: #d8d8d8
 
-          td, th
-            border-left: 1px solid #cccccc
-            padding: 0.2em 0.5em
-            &:first-child
-              border-left: none
+      td, th
+        border-left: 1px solid #cccccc
+        padding: 0.2em 0.5em
+        &:first-child
+          border-left: none
 
-          tr
-            &:nth-child(even)
-              background-color: #eeeeee
-            td
-              height: 1.25em
-              &.number,
-              &.money,
-              &.percent,
-              &.calendar_date,
-              &.date
-                text-align: right
-              &.align-left
-                text-align: left
-              &.align-center
-                text-align: center
-              &.align-right
-                text-align: right
+      tr
+        &:nth-child(even)
+          background-color: #eeeeee
+        td
+          height: 1.25em
+          &.number,
+          &.money,
+          &.percent,
+          &.calendar_date,
+          &.date
+            text-align: right
+          &.align-left
+            text-align: left
+          &.align-center
+            text-align: center
+          &.align-right
+            text-align: right
 
-              &.noResults
-                text-align: center
+          &.noResults
+            text-align: center
 
 
 .pageRenderType
@@ -86,25 +86,25 @@
 
   .richColumn
 
-    .richLine
-      margin-bottom: 1em
-      &:last-child
-        margin-bottom: 0
+  .richLine
+    margin-bottom: 1em
+    &:last-child
+      margin-bottom: 0
 
+    &:nth-child(odd)
       .richLabel
-        padding: 0.2em
-          right: 1em
+        background-color: #eeeeee
 
-      .richItem
-        padding: 0.2em
+  .richLabel
+    padding: 0.2em
+      right: 1em
 
-        // Renderer-specific styles
-        &.percent .blist-percent
-          min-width: 10em
+  .richItem
+    padding: 0.2em
 
-      &:nth-child(odd)
-        .richLabel
-          background-color: #eeeeee
+    // Renderer-specific styles
+    &.percent .blist-percent
+      min-width: 10em
 
 
 .fatRowRenderType
@@ -154,24 +154,22 @@
     &:nth-child(even)
       background-color: #f6f6f6
 
-  .richColumn
+  .richLine
+    margin-bottom: 0.25em
+    &:last-child
+      margin-bottom: 0
 
-    .richLine
-      margin-bottom: 0.25em
-      &:last-child
-        margin-bottom: 0
+  .richLabel
+    padding: 0.1em
+      right: 0.5em
 
-      .richLabel
-        padding: 0.1em
-          right: 0.5em
+  .richItem
+    padding: 0.1em
 
-      .richItem
-        padding: 0.1em
-
-        &.photo, &.photo_obsolete
-          img
-            max-height: 5em
-            max-width: 10em
+    &.photo, &.photo_obsolete
+      img
+        max-height: 5em
+        max-width: 10em
 
   .templateRow
     display: none

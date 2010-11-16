@@ -110,6 +110,7 @@ editRRNS.itemDragging = function(event, ui)
     // Then find the last position
     editRRNS.$dropItem.append(editRRNS.$dropFinder);
     addDropSpot();
+    editRRNS.$dropFinder.remove();
 
     // Now look for the first line from the bottom where the top of the line
     // is above the drop item.  That is the line we are in.
@@ -196,13 +197,11 @@ editRRNS.makeDroppable = function($row, isTrash)
         {
             editRRNS.$dropItem = null;
             editRRNS.$dropIndicator.remove();
-            editRRNS.$dropFinder.remove();
         },
         drop: function(event, ui)
         {
             editRRNS.$dropItem = null;
             editRRNS.$dropIndicator.remove();
-            editRRNS.$dropFinder.remove();
 
             var $cont = $(this);
             var $item = ui.draggable;
@@ -312,14 +311,27 @@ editRRNS.updateConfig = function()
 editRRNS.renderCurrentLayout = function()
 {
     editRRNS.richRenderer.renderLayout();
+
+    // Set up fields
     editRRNS.$renderArea.find('.richItem, .richLabel')
         .addClass('fieldItem inLayout');
     editRRNS.$renderArea.find('.staticLabel:empty').addClass('defaultData')
         .text('(Static text)');
     editRRNS.$renderArea.find('.fieldItem').each(function()
         { editRRNS.enableFieldItem($(this)); });
+
+    // Set up rows
     editRRNS.$renderArea.find('.richLine').each(function()
         { editRRNS.makeDroppable($(this)); });
+
+    // Set up columns
+    editRRNS.$renderArea.find('.richColumn').each(function()
+    {
+        var $col = $(this);
+        $col.prepend($.tag({tagName: 'a', href: '#Add_Row',
+            'class': ['add', 'addRow'], title: 'Add row to this column',
+            contents: {tagName: 'span', 'class': 'icon'}}));
+    });
 };
 
 editRRNS.resetConfig = function()
@@ -368,6 +380,15 @@ editRRNS.initLayout = function()
         editRRNS.resetConfig();
         editRRNS.renderCurrentRow();
     });
+
+    // Hook up rows & columns
+    $.live('.renderArea .addRow', 'click ', function(e)
+    {
+        e.preventDefault();
+        $(this).closest('.richColumn').append(
+            $.tag({tagName: 'div', 'class': 'richLine'}));
+        editRRNS.updateConfig();
+    });
 };
 
 
@@ -415,7 +436,8 @@ editRRNS.initSaving = function()
     editRRNS.$renderArea = editRRNS.$container.find('.renderArea');
 
     editRRNS.$dropIndicator = $.tag({tagName: 'span', 'class': 'dropIndicator'});
-    editRRNS.$dropFinder = $.tag({tagName: 'span', 'class': 'dropFinder'});
+    editRRNS.$dropFinder = $.tag({tagName: 'span', 'class': 'dropFinder',
+        contents: '.'});
 
     editRRNS.initResizing();
 

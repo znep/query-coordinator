@@ -80,9 +80,9 @@ editRRNS.initSidebar = function()
 // ---------- Drag / Drop -------------
 
 // Handle placing a field during dragging
-editRRNS.itemDragging = function(ui, $container, $indicator, primaryPos, linePos)
+editRRNS.itemDragging = function(ui, primaryPos, linePos)
 {
-    if ($.isBlank($container)) { return; }
+    if ($.isBlank(editRRNS.$dropCont)) { return; }
 
     // We need to find the best drop position across multiple lines, so use a
     // DOM node between each item to figure out possible positions, and group
@@ -97,7 +97,7 @@ editRRNS.itemDragging = function(ui, $container, $indicator, primaryPos, linePos
             beforeItem: $item});
     };
 
-    var $fields = $container.children('.ui-draggable').each(function()
+    var $fields = editRRNS.$dropCont.children('.ui-draggable').each(function()
     {
         var $t = $(this);
         $t.before(editRRNS.$dropFinder);
@@ -105,7 +105,7 @@ editRRNS.itemDragging = function(ui, $container, $indicator, primaryPos, linePos
     });
 
     // Then find the last position
-    $container.append(editRRNS.$dropFinder);
+    editRRNS.$dropCont.append(editRRNS.$dropFinder);
     addDropSpot();
     editRRNS.$dropFinder.remove();
 
@@ -126,24 +126,22 @@ editRRNS.itemDragging = function(ui, $container, $indicator, primaryPos, linePos
     // item we want to insert before.
     var minDist = 100000; // Hopefully they won't be more than this many pixels away
     var foundPos;
-    var $dropBefore;
+    editRRNS.$dropBefore = null;
     _.each(foundLine.items, function(o)
     {
         var d = Math.abs(ui.offset[primaryPos] - o.pos);
         if (d < minDist)
         {
             minDist = d;
-            $dropBefore = o.beforeItem;
+            editRRNS.$dropBefore = o.beforeItem;
             foundPos = o.pos;
         }
     });
 
-    $container.append($indicator);
-    var contOffset = $container.offset();
-    $indicator.css(linePos, foundLine.pos - contOffset[linePos]);
-    $indicator.css(primaryPos, foundPos - contOffset[primaryPos] - 1);
-
-    return $dropBefore;
+    editRRNS.$dropCont.append(editRRNS.$dropIndicator);
+    var contOffset = editRRNS.$dropCont.offset();
+    editRRNS.$dropIndicator.css(linePos, foundLine.pos - contOffset[linePos]);
+    editRRNS.$dropIndicator.css(primaryPos, foundPos - contOffset[primaryPos]);
 };
 
 
@@ -167,15 +165,14 @@ editRRNS.enableFieldItem = function($item)
         }
     }
 
-    editRRNS.makeDraggable($item, function(e, ui)
+    editRRNS.makeDraggable($item, 'field', function(e, ui)
     {
-        editRRNS.$dropBeforeField = editRRNS.itemDragging(ui,
-            editRRNS.$dropRow, editRRNS.$dropFieldIndicator, 'left', 'top');
+        editRRNS.itemDragging(ui, 'left', 'top');
     });
 };
 
 
-editRRNS.makeDraggable = function($item, dragHandler)
+editRRNS.makeDraggable = function($item, itemType, dragHandler, setWidth)
 {
     $item.draggable({
         appendTo: $('.mainContainer'),
@@ -185,32 +182,41 @@ editRRNS.makeDraggable = function($item, dragHandler)
         opacity: 0.8,
         revert: 'invalid',
         start: function(e, ui)
-            { ui.helper.width($(this).addClass('itemDragging').width()); },
+        {
+            var $t = $(this);
+            if (setWidth) { ui.helper.width($t.width()); }
+            $t.addClass('itemDragging');
+            editRRNS.$trashButton.find('.itemType').text(itemType.capitalize());
+        },
         stop: function() { $(this).removeClass('itemDragging'); },
         drag: dragHandler
     });
 };
 
 // Hook up drop acceptance
-editRRNS.makeDroppable = function($row, isTrash)
+editRRNS.makeDroppable = function($item, selector, dropped, isTrash)
 {
-    $row.droppable({accept: isTrash ? '.fieldItem.inLayout' : '.fieldItem',
+    $item.droppable({accept: selector,
         activeClass: 'inDrag',
         hoverClass: 'dragOver',
         tolerance: 'pointer',
         over: function()
         {
-            if (!isTrash) { editRRNS.$dropRow = $(this); }
+            var $t = $(this);
+            // Defer this, since when dragging from one item to another, this
+            // over may fire just before the out of the previous, in which
+            // case the dropCont is cleared
+            if (!isTrash) { _.defer(function() { editRRNS.$dropCont = $t; }); }
         },
         out: function()
         {
-            editRRNS.$dropRow = null;
-            editRRNS.$dropFieldIndicator.remove();
+            editRRNS.$dropCont = null;
+            editRRNS.$dropIndicator.remove();
         },
         drop: function(event, ui)
         {
-            editRRNS.$dropRow = null;
-            editRRNS.$dropFieldIndicator.remove();
+            editRRNS.$dropCont = null;
+            editRRNS.$dropIndicator.remove();
 
             var $cont = $(this);
             var $item = ui.draggable;
@@ -222,7 +228,6 @@ editRRNS.makeDroppable = function($row, isTrash)
                     $item.remove();
                     editRRNS.updateConfig();
                 });
-                editRRNS.$dropBeforeField = null;
             }
             else
             {
@@ -232,18 +237,18 @@ editRRNS.makeDroppable = function($row, isTrash)
                         .addClass('inLayout');
                 }
 
-                if ($.isBlank(editRRNS.$dropBeforeField))
+                if ($.isBlank(editRRNS.$dropBefore))
                 { $cont.append($item); }
                 else
                 {
-                    editRRNS.$dropBeforeField.before($item);
-                    editRRNS.$dropBeforeField = null;
+                    editRRNS.$dropBefore.before($item);
                 }
 
-                editRRNS.enableFieldItem($item);
+                if (_.isFunction(dropped)) { dropped($item); }
                 editRRNS.renderCurrentRow();
                 editRRNS.updateConfig();
             }
+            editRRNS.$dropBefore = null;
         }});
 };
 
@@ -333,15 +338,14 @@ editRRNS.renderCurrentLayout = function()
     editRRNS.$renderArea.find('.richLine').each(function()
         {
             var $row = $(this);
-            editRRNS.makeDroppable($row);
+            editRRNS.makeDroppable($row, '.fieldItem',
+                function($item) { editRRNS.enableFieldItem($item); });
             $row.prepend($.tag({tagName: 'a', href: '#Drag', title: 'Move row',
                 'class': 'dragHandle'}));
-            editRRNS.makeDraggable($row, function(e, ui)
+            editRRNS.makeDraggable($row, 'row', function(e, ui)
             {
-                editRRNS.$dropBeforeRow = editRRNS.itemDragging(ui,
-                    editRRNS.$dropCol, editRRNS.$dropRowIndicator,
-                    'top', 'left');
-            });
+                editRRNS.itemDragging(ui, 'top', 'left');
+            }, true);
         });
 
     // Set up columns
@@ -352,34 +356,7 @@ editRRNS.renderCurrentLayout = function()
             'class': ['add', 'addRow'], title: 'Add row to this column',
             contents: {tagName: 'span', 'class': 'icon'}}));
 
-        $col.droppable({accept: '.richLine',
-            activeClass: 'inDrag',
-            hoverClass: 'dragOver',
-            tolerance: 'pointer',
-            over: function() { editRRNS.$dropCol = $(this); },
-            out: function()
-            {
-                editRRNS.$dropCol = null;
-                editRRNS.$dropRowIndicator.remove();
-            },
-            drop: function(event, ui)
-            {
-                editRRNS.$dropCol = null;
-                editRRNS.$dropRowIndicator.remove();
-
-                var $col = $(this);
-                var $row = ui.draggable;
-
-                if ($.isBlank(editRRNS.$dropBeforeRow))
-                { $col.append($row); }
-                else
-                {
-                    editRRNS.$dropBeforeRow.before($row);
-                    editRRNS.$dropBeforeRow = null;
-                }
-
-                editRRNS.updateConfig();
-            }});
+        editRRNS.makeDroppable($col, '.richLine');
     });
 };
 
@@ -407,8 +384,9 @@ editRRNS.initLayout = function()
     editRRNS.navigation = editRRNS.$container.find('.navigation')
         .bind('page_changed', editRRNS.renderCurrentRow)
         .navigation({pageSize: 1, view: blist.dataset});
-    editRRNS.makeDroppable(
-        editRRNS.$container.find('.navigation .removeField'), true);
+    editRRNS.$trashButton = editRRNS.$container.find('.navigation .removeItem');
+    editRRNS.makeDroppable(editRRNS.$trashButton,
+        '.fieldItem.inLayout, .richLine', null, true);
     editRRNS.renderCurrentRow();
 
     // Handle switching types
@@ -484,9 +462,7 @@ editRRNS.initSaving = function()
     editRRNS.$container = $('#layoutContainer');
     editRRNS.$renderArea = editRRNS.$container.find('.renderArea');
 
-    editRRNS.$dropFieldIndicator = $.tag({tagName: 'span',
-        'class': 'dropIndicator'});
-    editRRNS.$dropRowIndicator = $.tag({tagName: 'span', 'class': 'dropIndicator'});
+    editRRNS.$dropIndicator = $.tag({tagName: 'span', 'class': 'dropIndicator'});
     editRRNS.$dropFinder = $.tag({tagName: 'span', 'class': 'dropFinder',
         contents: '.'});
 

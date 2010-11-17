@@ -495,8 +495,9 @@ class AdministrationController < ApplicationController
 
     config = get_configuration
 
-    update_or_create_property(config, 'theme_v2b', config.properties.theme_v2b.merge(
-        { 'stories' => params[:stories] })) do
+    theme = config.properties.theme_v2b || {}
+
+    update_or_create_property(config, 'theme_v2b', theme.merge({ 'stories' => params[:stories] })) do
       !config.raw_properties.key?('theme_v2b')
     end
 

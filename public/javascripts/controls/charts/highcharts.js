@@ -453,6 +453,9 @@
         // add a delay and it seems to work.  Do I know why (for either part)? No
         _.defer(function() {
             chartObj.chart = new Highcharts.Chart(chartConfig);
+            if (chartObj._chartType == 'bar')
+            { chartObj.chart.setSize(chartObj.chart.chartWidth,
+                                     chartObj.chart.chartHeight, false); }
 
             if (!_.isUndefined(colors))
             {

@@ -262,8 +262,7 @@ class AdministrationController < ApplicationController
   def metadata
     check_auth_level('edit_site_theme')
     @metadata = get_configuration().properties.custom_dataset_metadata
-    @categories = get_configuration('view_categories', true)
-      .properties.sort { |a, b| a[0].downcase <=> b[0].downcase }
+    @categories = get_configuration('view_categories', true).properties.sort { |a, b| a[0].downcase <=> b[0].downcase }
   end
   def create_metadata_fieldset
     check_auth_level('edit_site_theme')

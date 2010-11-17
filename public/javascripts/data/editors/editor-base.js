@@ -366,7 +366,7 @@
             default:
                 return;
         }
-        
+
         event.stopPropagation();
         editObj.$dom().trigger('edit_end', [save, event]);
     };
@@ -374,13 +374,18 @@
     // Detect mouse events that terminate editing
     var docMouseDown = function(editObj, event)
     {
-        if ($(event.target).parents().andSelf().index(editObj.$dom()) < 0)
+        // We have to detect if they chose to upload a file in here, because
+        // it seems to be impossible to catch and prevent the event from
+        // the upload dialog itself
+        if ($(event.target).parents().andSelf().index(editObj.$dom()) < 0 &&
+            $(event.target).attr('name') != 'uploadFileInput')
         {
             editObj.$dom().trigger('edit_end', [true, event]);
         }
     };
 
-    // Set the cursor position within a text input (default position is the end of the text)
+    // Set the cursor position within a text input (default position is the end
+    // of the text)
     var setCursorPosition = function(text, pos)
     {
         if (pos == null)

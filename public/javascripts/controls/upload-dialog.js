@@ -5,14 +5,11 @@
         var $u = $('#jqmUpload');
         if ($u.length < 1)
         {
-            $('body').append('<div id="jqmUpload" class="' +
-                ($.uploadDialog.version == 2 ? 'modalDialog' : 'jqmWindow') +
-                '"></div>');
+            $('body').append('<div id="jqmUpload" class="modalDialog"></div>');
             $u = $('#jqmUpload');
         }
         return $u.uploadDialog(options);
     };
-    $.uploadDialog.version = 1;
 
     $.fn.uploadDialog = function(options)
     {
@@ -48,72 +45,31 @@
 
                 if ($domObj.contents().length < 1)
                 {
-                    var isV2 = $.uploadDialog.version == 2;
-                    var content = '';
-                    if (!isV2)
-                    {
-                        content +=
-                            '<div class="dialogWrapper modalDialog">' +
-                            '<div class="dialogTL">' +
-                            '<div class="dialogBR"><div class="dialogBL">' +
-                            '<div class="dialogOuter"><div class="dialogBox">';
-                    }
-                    content +=
-                        (isV2 ? '<h2>' : '<div class="header"><h1>') +
+                    var content = '<h2>' +
                         'Upload a <span class="fileType">File</span>' +
-                        (isV2 ? '</h2>' : '</h1>') +
-                        '<a href="#close_dialog" class="' +
-                        (isV2 ? 'modalDialogClose' : 'close') + ' jqmClose" ' +
+                        '</h2>' +
+                        '<a href="#close_dialog" ' +
+                        'class="modalDialogClose jqmClose" ' +
                         'title="Close">Close</a>' +
-                        (isV2 ? '<div class="loadingOverlay hide"></div>' +
-                        '<div class="loadingSpinner hide"></div>' :
-                        '</div><div class="modalContentWrapper">') +
+                        '<div class="loadingOverlay hide"></div>' +
+                        '<div class="loadingSpinner hide"></div>' +
                         '<form class="commonForm">' +
-                        (isV2 ? '' :
-                        '<div class="fileBrowseButtonListContainer">' +
-                        '<ul class="actionButtons">' +
-                        '<li>' +
-                        '<a class="fileBrowseButton">Browse For ' +
-                        '<span class="fileType">File</span></a>' +
-                        '</li>' +
-                        '</ul>' +
-                        '</div>') +
                         '<label for="file_upload">' +
                         '<span class="fileType">File</span> to Upload:</label>' +
                         '<input type="text" readonly="readonly" ' +
                         'disabled="disabled" name="file_upload" />' +
-                        (isV2 ? $.button({text: 'Browse',
-                            className: 'fileBrowseButton'}, true) : '') +
+                        $.button({text: 'Browse',
+                            className: 'fileBrowseButton'}, true) +
                         '</form>' +
-                        (isV2 ? '<div class="mainError"></div>' :
-                        '<div class="submitLine clearfix">' +
-                        '<div class="error"></div>' +
-                        '<div class="submitPending hide">Uploading...</div>') +
-                        '<ul class="' + (isV2 ? 'actions' : 'submitActions') +
-                        '">' +
+                        '<div class="mainError"></div>' +
+                        '<ul class="actions">' +
                         '<li>' +
-                        (isV2 ? $.button({text: 'Upload',
-                            className: 'submitAction'}, true) :
-                        '<input type="image" name="submit" class="hide" ' +
-                        'src="/images/button_ok.png" alt="upload" />') +
+                        $.button({text: 'Upload',
+                            className: 'submitAction'}, true) +
                         '</li>' +
-                        (isV2 ? '<li>' + $.button({text: 'Cancel',
-                        className: 'jqmClose'}, true) + '</li>' :
-                        '<li class="cancelButton">' +
-                        '<a class="jqmClose" href="#cancel">' +
-                        '<span>Cancel</span>' +
-                        '</a>' +
-                        '</li>') +
-                        '</ul>' +
-                        (isV2 ? '' : '</div></div>');
-                    if (!isV2)
-                    {
-                        content +=
-                            '</div></div>' +
-                            '</div></div>' +
-                            '</div>' +
-                            '</div>';
-                    }
+                        '<li>' + $.button({text: 'Cancel',
+                        className: 'jqmClose'}, true) + '</li>' +
+                        '</ul>';
 
                     $domObj.append(content);
                     $domObj.jqm({trigger: false, modal: true,
@@ -221,8 +177,6 @@
                         $domObj.jqmHide();
                     }
                 });
-                $(currentObj._$uploader._input)
-                    .mousedown(function(e) { e.stopPropagation(); });
 
                 // Form Submit
                 $domObj.find('.submitActions input[name="submit"], .submitAction')

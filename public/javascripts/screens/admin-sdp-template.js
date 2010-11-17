@@ -170,7 +170,6 @@ blist.publish.wireLogoEditor = function($section)
     {
         event.preventDefault();
 
-        $.uploadDialog.version = 2;
         $.uploadDialog().show(
             function(fileName)
             {

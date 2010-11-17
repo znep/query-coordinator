@@ -107,8 +107,6 @@ $(function()
     $('.aboutDataset').appendTo('#templates');
     $('.aboutLoad').remove();
 
-    if (!$.isBlank($.uploadDialog)) { $.uploadDialog.version = 2; }
-
     // Before we fullscreen, move the footer inside the sizing container.
     $('#siteFooter')
         .addClass('clearfix')

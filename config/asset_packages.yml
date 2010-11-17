@@ -83,7 +83,7 @@ javascripts:
   - data/editors/stars-editor
   - tiny_mce/tiny_mce_jquery_src
   - data/editors/html-editor
-  - plugins/ajaxupload.3.0
+  - plugins/ajaxupload
   - controls/upload-dialog
   - data/editors/document-editor
   - data/editors/photo-editor
@@ -132,7 +132,7 @@ javascripts:
 - admin-sdp-template:
   - plugins/jquery.colorPicker
   - plugins/colorpicker
-  - plugins/ajaxupload.3.0
+  - plugins/ajaxupload
   - controls/upload-dialog
   - util/color
   - util/events
@@ -166,7 +166,7 @@ javascripts:
   - controls/modal-dialogs
   - screens/browse
 - screen-nominations:
-  - plugins/ajaxupload.3.0
+  - plugins/ajaxupload
   - util/events
   - util/humane-date
   - controls/modal-dialogs
@@ -189,7 +189,7 @@ javascripts:
   - screens/widget
 - dataset-new:
   - util/serialize
-  - plugins/ajaxupload.3.0
+  - plugins/ajaxupload
   - controls/attachments-editor
   - controls/wizard
   - screens/dataset-new
@@ -198,6 +198,7 @@ javascripts:
   - plugins/jquery.awesomecomplete
   - plugins/jquery.tablesorter
   - plugins/iscroll
+  - plugins/ajaxupload
   - controls/combination-list
   - util/events
   - util/humane-date
@@ -242,7 +243,7 @@ javascripts:
   - controls/pill-buttons
   - screens/dataset-show
 - dataset-edit-metadata:
-  - plugins/ajaxupload.3.0
+  - plugins/ajaxupload
   - controls/attachments-editor
   - screens/dataset-edit-metadata
 - screen-dataset-thumbnail:
@@ -270,7 +271,7 @@ javascripts:
   - controls/feed-list
   - screens/profile-screen
 - screen-profile-edit:
-  - plugins/ajaxupload.3.0
+  - plugins/ajaxupload
   - screens/profile-screen-edit
 - homepage-show:
   - screens/homepage-show

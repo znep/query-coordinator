@@ -201,8 +201,6 @@ $(function()
 {
     blist.dataset.setAccessType('WIDGET');
 
-    if (!$.isBlank($.uploadDialog)) { $.uploadDialog.version = 2; }
-
     // keep track of some stuff for easy access
     widgetNS.orientation = widgetNS.theme['frame']['orientation'];
     widgetNS.isNonTabular = (blist.dataset.viewType !== 'tabular');

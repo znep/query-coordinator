@@ -3,6 +3,15 @@
  * Copyright (c) Andrew Valums
  * Licensed under the MIT license 
  */
+
+/**
+ * Socrata changes:
+ *   + Strip pre tags off of responses
+ *   + Changed eval() to use the much safer JSON.parse function
+ *     instead (was throwing exceptions on invalid input).
+ *   + Added destroy method (copied from old version)
+ */
+
 (function () {
     /**
      * Attaches event to a dom element.
@@ -332,6 +341,15 @@
             this._disabled = false;
             
         },
+        // removes ajaxupload
+        destroy : function(){
+            if(this._input){
+                if(this._input.parentNode){
+                    this._input.parentNode.removeChild(this._input);
+                }
+                this._input = null;
+            }
+        },
         /**
          * Creates invisible file input 
          * that will hover above the button
@@ -600,7 +618,10 @@
                     response = doc.XMLDocument;
                 } else if (doc.body){
                     // response is html document or plain text
-                    response = doc.body.innerHTML;
+                    if (doc.body.firstChild.tagName == 'PRE')
+                    { response = doc.body.firstChild.innerHTML; }
+                    else
+                    { response = doc.body.innerHTML; }
                     
                     if (settings.responseType && settings.responseType.toLowerCase() == 'json') {
                         // If the document was sent as 'application/javascript' or
@@ -615,7 +636,10 @@
                         }
                         
                         if (response) {
-                            response = eval("(" + response + ")");
+                            try
+                            { response = JSON.parse(response); }
+                            catch (ex)
+                            { response = {error: true, message: response}; }
                         } else {
                             response = {};
                         }

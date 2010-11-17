@@ -2493,7 +2493,7 @@
                 $f.data('ajaxupload', new AjaxUpload($f, {
                     action: $f.attr('data-fileAction'),
                     autoSubmit: false,
-                    name: $f.attr('id') + '_ajaxupload',
+                    name: $input.attr('id') + '_ajaxupload',
                     responseType: 'json',
                     onChange: function(filename, ext)
                     {

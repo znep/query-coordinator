@@ -14,6 +14,7 @@ javascripts:
   - plugins/json2
   - plugins/jquery.sizes.min
   - plugins/jquery.tache
+  - plugins/jquery.uniform
   - plugins/jquery.validate
   - plugins/pure
   - plugins/jquery-ui-1.8.5.custom.min
@@ -105,7 +106,6 @@ javascripts:
   - controls/charts/jit
 - admin-users:
   - controls/admin-buttons
-  - plugins/jquery.uniform
   - plugins/jquery.tablesorter
   - controls/combination-list
   - screens/admin-users-screen
@@ -118,10 +118,8 @@ javascripts:
   - screens/admin-home
 - admin-metadata:
   - controls/admin-buttons
-  - plugins/jquery.uniform
   - screens/admin-metadata-screen
 - admin-moderation:
-  - plugins/jquery.uniform
   - plugins/jquery.tablesorter
   - controls/combination-list
   - screens/admin-moderation
@@ -133,7 +131,6 @@ javascripts:
   - screens/admin-sdp-templates
 - admin-sdp-template:
   - plugins/jquery.colorPicker
-  - plugins/jquery.uniform
   - plugins/colorpicker
   - plugins/ajaxupload.3.0
   - controls/upload-dialog
@@ -143,12 +140,10 @@ javascripts:
   - screens/admin-customizer
   - screens/admin-sdp-template
 - admin-story:
-  - plugins/jquery.uniform
   - plugins/colorpicker
   - screens/admin-story
 - admin-stories-appearance:
   - plugins/jquery.colorPicker
-  - plugins/jquery.uniform
   - plugins/colorpicker
   - util/color
   - util/events
@@ -162,7 +157,6 @@ javascripts:
   - controls/combination-list
   - screens/admin-federation-screen
 - browse-control:
-  - plugins/jquery.uniform
   - plugins/jquery.tagcloud
   - util/events
   - controls/menu
@@ -178,7 +172,6 @@ javascripts:
   - controls/modal-dialogs
   - screens/nominations
 - widgets-show:
-  - plugins/jquery.uniform
   - plugins/jquery.tablesorter
   - controls/full-screen
   - controls/combination-list
@@ -194,11 +187,8 @@ javascripts:
   - controls/scrollTabs
   - controls/form-inliner
   - screens/widget
-- widgets-show-form:
-  - plugins/jquery.uniform
 - dataset-new:
   - util/serialize
-  - plugins/jquery.uniform
   - plugins/ajaxupload.3.0
   - controls/attachments-editor
   - controls/wizard
@@ -206,7 +196,6 @@ javascripts:
 - dataset-show:
   - plugins/jquery.colorPicker
   - plugins/jquery.awesomecomplete
-  - plugins/jquery.uniform
   - plugins/jquery.tablesorter
   - plugins/iscroll
   - controls/combination-list
@@ -253,7 +242,6 @@ javascripts:
   - controls/pill-buttons
   - screens/dataset-show
 - dataset-edit-metadata:
-  - plugins/jquery.uniform
   - plugins/ajaxupload.3.0
   - controls/attachments-editor
   - screens/dataset-edit-metadata
@@ -266,7 +254,6 @@ javascripts:
   - controls/full-screen
   - screens/dataset-bare
 - shared-metrics:
-  - plugins/jquery.uniform
   - plugins/daterangepicker.jquery
   - plugins/jquery.tablesorter
   - plugins/highcharts.src
@@ -276,7 +263,6 @@ javascripts:
   - controls/metrics-shared
   - controls/metrics
 - screen-login-signup:
-  - plugins/jquery.uniform
   - screens/login-shared
   - screens/signup-screen
 - screen-profile:
@@ -284,7 +270,6 @@ javascripts:
   - controls/feed-list
   - screens/profile-screen
 - screen-profile-edit:
-  - plugins/jquery.uniform
   - plugins/ajaxupload.3.0
   - screens/profile-screen-edit
 - homepage-show:

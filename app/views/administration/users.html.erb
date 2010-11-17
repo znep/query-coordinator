@@ -36,7 +36,7 @@
   </p>
   <form class='search usersFind' action='<%= url_for :action => 'users' %>' method='get'>
     <label for='username'>Search for Users to Add</label>
-    <input type='text' class='textPrompt searchField prompt' name='username' id='username'
+    <input type='text' class='textPrompt searchField<%= ' prompt' if @search.nil? %>' name='username' id='username'
      title='Search for users to add' <%= " value='#{@search}'" unless @search.nil? %> />
     <input type="submit" class="submit" alt="search" value="Search" />
   </form>
@@ -98,7 +98,7 @@
               </td>
               <td class="role">
                 <%- if user.id == current_user.id -%>
-                  <span class="cellInner"><%= user.roleName.titleize %></span>
+                  <span class="cellInner"><%= current_user.roleName.titleize %></span>
                 <%- else -%>
                   <span class="cellInner hide"><%= (user.roleName || '').titleize %></span>
                   <%= form_tag({:action => 'set_user_role'}, {:method => 'post'}) %>

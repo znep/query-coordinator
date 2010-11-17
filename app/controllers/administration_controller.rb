@@ -24,7 +24,7 @@ class AdministrationController < ApplicationController
     @roles_list = User.roles_list
     if !params[:username].blank?
       @search = params[:username]
-      @user_search_results= User.find :name => params[:username]
+      @user_search_results = SearchResult.search('users', :q => params[:username]).first.results
     else
       @admins = find_privileged_users.sort{|x,y| x.displayName <=> y.displayName}
     end

@@ -16,7 +16,9 @@
   <ul class="storyImages">
     <%- @stories.each do |story| -%>
       <li style="background-color:<%= story.customization['backgroundColor'] %>">
-        <img src="/assets/<%= story.imageId %>" alt="<%= story.headline %>" class="storyImage"/>
+        <%- unless story.imageId.blank? -%>
+          <img src="/assets/<%= story.imageId %>" alt="<%= story.headline %>" class="storyImage"/>
+        <%- end -%>
       </li>
     <%- end -%>
   </ul>

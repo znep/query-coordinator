@@ -97,6 +97,7 @@ class CurrentDomain
     if refresh_mtime.nil?
       refresh_time = Time.now
       self.flag_out_of_date!(cname)
+      return
     end
 
     # If the key is present, and the value is larger (newer)

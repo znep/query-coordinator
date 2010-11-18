@@ -6,12 +6,7 @@
     </a>
     <a class="aboutAuthorName" href="<%= @view.owner.href %>"><%= @view.owner.displayName %></a>
     <p><em>created</em> <span class="aboutCreateDate"><%= blist_date(@view.createdAt) %></span></p>
-    <p><em>updated</em> <span class="aboutUpdateDate"><%= blist_date(@view.last_activity) %></span>
-      <%- if !@view.rowsUpdatedBy.nil? -%>
-        <%- userUpdated = User.find(@view.rowsUpdatedBy) -%>
-        <em>by</em> <a href="<%= userUpdated.href %>"><%= userUpdated.displayName %></a>
-      <%- end -%>
-    </p>
+    <p><em>updated</em> <span class="aboutUpdateDate"><%= blist_date(@view.last_activity) %></span></p>
   </div>
 
   <%- if @view.has_rights?('update_view') -%>

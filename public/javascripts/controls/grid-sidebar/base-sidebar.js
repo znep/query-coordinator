@@ -2499,7 +2499,7 @@
                     {
                         $input.val(filename);
                         if (ft.length > 0 && ($.isBlank(ext) ||
-                            !_.include(ft, ext[0].toLowerCase())))
+                            !_.include(ft, ext.toLowerCase())))
                         {
                             $input.attr('data-requiredTypes',
                                 $.arrayToSentence(ftOrig, 'or', ',', true));

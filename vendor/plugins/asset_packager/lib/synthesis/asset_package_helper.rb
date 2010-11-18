@@ -1,6 +1,9 @@
 module Synthesis
   module AssetPackageHelper
 
+    # clint.tseng@socrata.com, 2010/11/17:
+    # Force html_safe in rails 2.3.8 (seems like they should be doing this anyway.)
+
     def should_merge?
       AssetPackage.merge_environments.include?(Rails.env)
     end
@@ -20,8 +23,11 @@ module Synthesis
       sources = (should_merge? ? 
         AssetPackage.targets_from_sources("javascripts", sources) : 
         AssetPackage.sources_from_targets("javascripts", sources))
-        
-      sources.collect {|source| javascript_include_tag(source, options) }.join("\n")
+
+      sources = sources.collect {|source| javascript_include_tag(source, options) }.join("\n")
+
+      sources = sources.html_safe if sources.respond_to? :html_safe
+      return sources
     end
 
     def stylesheet_link_merged(*sources)
@@ -32,7 +38,10 @@ module Synthesis
         AssetPackage.targets_from_sources("stylesheets", sources) : 
         AssetPackage.sources_from_targets("stylesheets", sources))
 
-      sources.collect { |source| stylesheet_link_tag(source, options) }.join("\n")    
+      sources = sources.collect { |source| stylesheet_link_tag(source, options) }.join("\n")
+
+      sources = sources.html_safe if sources.respond_to? :html_safe
+      return sources
     end
 
   end

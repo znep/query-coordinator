@@ -214,13 +214,7 @@
 
                 if (!_.isUndefined(chartObj.chart))
                 {
-                    // Make sure data is cleaned, or sometimes setCategories
-                    // will throw an error
-                    _.each(chartObj.chart.series, function(s)
-                            { s.cleanData(); });
-                    chartObj.chart.xAxis[0].setCategories(
-                            chartObj._xCategories, false);
-                    chartObj.chart.redraw();
+                    setCategories(chartObj);
 
                     if (chartObj.settings.view.snapshotting)
                     {
@@ -421,6 +415,9 @@
         // add a delay and it seems to work.  Do I know why (for either part)? No
         _.defer(function() {
             chartObj.chart = new Highcharts.Chart(chartConfig);
+
+            if (!chartObj._categoriesLoaded)
+            { setCategories(chartObj); }
             if (chartObj._chartType == 'bar')
             { chartObj.chart.setSize(chartObj.chart.chartWidth,
                                      chartObj.chart.chartHeight, false); }
@@ -726,6 +723,15 @@
         }));
 
         return _.compact(tooltip).join('<br/>');
+    };
+
+    var setCategories = function(chartObj)
+    {
+        // Make sure data is cleaned, or sometimes setCategories will throw an error
+        _.each(chartObj.chart.series, function(s) { s.cleanData(); });
+        chartObj.chart.xAxis[0].setCategories(chartObj._xCategories, false);
+        chartObj.chart.redraw();
+        chartObj._categoriesLoaded = true;
     };
 
 })(jQuery);

@@ -499,7 +499,13 @@ class AdministrationController < ApplicationController
   def stories_appearance
     check_auth_level('manage_stories')
     @stories = Story.find
-    @story_theme = get_configuration.properties.theme_v2b.stories
+
+    config_properties = get_configuration.properties
+    if config_properties.theme_v2b.nil? || config_properties.theme_v2b.stories.nil?
+      @story_theme = CurrentDomain.theme.stories
+    else
+      @story_theme = config_properties.theme_v2b.stories
+    end
   end
   def update_stories_appearance
     check_auth_level('manage_stories')

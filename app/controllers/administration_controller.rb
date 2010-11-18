@@ -89,8 +89,18 @@ class AdministrationController < ApplicationController
       return (render 'shared/error', :status => :bad_request)
     end
 
-    widget_customization = WidgetCustomization.create({ :name => params[:new_template_name],
-                                                        :customization => WidgetCustomization.default_theme(1).to_json })
+    begin
+      widget_customization = WidgetCustomization.create({ :name => params[:new_template_name],
+                                                          :customization => WidgetCustomization.default_theme(1).to_json })
+    rescue CoreServer::CoreServerError => e
+      if e.error_message == 'This domain has reached its template limit'
+        flash.now[:error] = "You have created your allotted number of templates. Please delete one or contact support to purchase more."
+        return render 'shared/error', :status => :bad_request
+      else
+        flash.now[:error] = "An error occurred during your request: #{e.error_message}"
+        return render 'shared/error'
+      end
+    end
 
     redirect_options = {:action => :sdp_template, :id => widget_customization.uid}
     redirect_options[:view_id] = params[:view_id] if params[:view_id].present?

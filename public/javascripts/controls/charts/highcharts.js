@@ -156,7 +156,7 @@
                             chartObj.settings.view.displayFormat.pieJoinAngle;
 
                     // Render point and cache it
-                    var point = yPoint(chartObj, row, value, i, basePt);
+                    var point = yPoint(chartObj, row, value, i, basePt, cs.data);
                     if (_.isNull(point)) { return; }
 
                     if ($.isBlank(point.y))
@@ -200,7 +200,8 @@
                     {
                         if (sr > 0)
                         {
-                            var point = yPoint(chartObj, null, sr, i, otherPt);
+                            var col = chartObj._yColumns[i].data;
+                            var point = yPoint(chartObj, null, sr, i, otherPt, col);
                             if (!_.isUndefined(chartObj.chart))
                             { chartObj.chart.series[i].addPoint(point, false); }
                             if (!_.isUndefined(chartObj.secondChart))
@@ -344,41 +345,6 @@
         if (_.include(['line', 'area', 'timeline', 'bubble'], chartObj._chartType))
         { chartConfig.chart.marginBottom = legendPos == 'bottom' ? 120 : 90; }
 
-        if (chartObj._chartType == 'donut')
-        {
-            $.extend(chartConfig, { tooltip: { formatter: function()
-            {
-                return '<b>'+ this.series.name +'</b><br/>'+
-                    this.point.name +': '+ this.y;
-            } }});
-        }
-        else if (chartObj._chartType == 'bubble')
-        {
-            var colNames = {};
-            _.each(['pointColor', 'pointSize'], function(prop)
-            {
-                var tcID = blist.dataset.displayFormat[prop];
-                if (tcID)
-                { colNames[prop] = blist.dataset.columnForTCID(tcID).name; }
-            });
-            $.extend(chartConfig, { tooltip: { formatter: function()
-            {
-                var yName = this.point.name || this.series.name;
-
-                var tooltip = '';
-                if (this.x) { tooltip += '<b>' + this.x + '</b>'; }
-                if (this.y)
-                { tooltip += '<br/>' + yName + ' (Y value): '+ this.y; }
-                if (this.point.pointColor)
-                { tooltip += '<br/>' + colNames.pointColor + ' (color): ' +
-                             this.point.pointColor; }
-                if (this.point.pointSize)
-                { tooltip += '<br/>' + colNames.pointSize + ' (size): '+
-                             this.point.pointSize; }
-                return tooltip;
-            } }});
-        }
-
         if (!_.isUndefined(colors)) { chartConfig.colors = colors; }
 
         // If we already have data loaded, use it
@@ -388,6 +354,8 @@
         // If we already have categories loaded, use it
         if (!_.isEmpty(chartObj._xCategories))
         { chartConfig.xAxis.categories = chartObj._xCategories; }
+
+        $.extend(chartConfig, { tooltip: { formatter: customTooltip }});
 
         if (isDateTime(chartObj))
         {
@@ -506,13 +474,14 @@
         return pt;
     };
 
-    var yPoint = function(chartObj, row, value, seriesIndex, basePt)
+    var yPoint = function(chartObj, row, value, seriesIndex, basePt, col)
     {
         var isPieTypeChart = _.include(['pie', 'donut'], chartObj._chartType);
         if (_.isNull(value) && isPieTypeChart)
         { return null; }
 
-        var point = {y: value || 0};
+        var point = {y: value || 0, pretty: {}, label: {} };
+        point.pretty.y = col.renderType.filterRender(value, col, true);
         if (!_.isNull(basePt) && !_.isUndefined(basePt))
         { _.extend(point, basePt); }
 
@@ -544,27 +513,30 @@
             if (!point.states) { point.states = {}; }
             if (chartObj._pointColor)
             {
+                var pCol = chartObj._pointColor;
+                point.label.color = pCol.name;
                 for (var i = 0; i < chartObj._numSegments; i++)
-                { if (parseFloat(row[chartObj._pointColor.id]) <=
-                        chartObj._segments[chartObj._pointColor.id][i])
+                { if (parseFloat(row[pCol.id]) <= chartObj._segments[pCol.id][i])
                     {
+                        point.pretty.color = pCol.renderType
+                            .filterRender(row[pCol.id], pCol, true);
                         point.fillColor = "#"+$.rgbToHex(chartObj._gradient[i]);
-                        point.pointColor = parseFloat(row[chartObj._pointColor.id]);
                         point.states.hover = $.extend(point.states.hover,
                             { fillColor: '#'+$.rgbToHex($.brighten(point.fillColor)) });
                         break;
                     }
                 }
-
             }
             if (chartObj._pointSize)
             {
+                var pCol = chartObj._pointSize;
+                point.label.size = pCol.name;
                 for (var i = 0; i < chartObj._numSegments; i++)
-                { if (parseFloat(row[chartObj._pointSize.id]) <=
-                        chartObj._segments[chartObj._pointSize.id][i])
+                { if (parseFloat(row[pCol.id]) <= chartObj._segments[pCol.id][i])
                     {
+                        point.pretty.size = pCol.renderType
+                            .filterRender(row[pCol.id], pCol, true);
                         point.radius = 4+(4*i);
-                        point.pointSize = parseFloat(row[chartObj._pointSize.id]);
                         point.states.hover = $.extend(point.states.hover,
                             { radius: point.radius + 2 });
                         break;
@@ -735,6 +707,25 @@
             chartObj._seriesCache[seriesIndex].data.push(point);
             chartObj._seriesRemainders[seriesIndex] -= point.y;
         }
+    };
+
+    var customTooltip = function()
+    {
+        if (!this.point.label.y)
+        { this.point.label.y = this.point.name || this.series.name; }
+
+        var tooltip = [];
+        var header = this.x || this.series.name;
+        if (header) { tooltip.push('<b>' + header + '</b>'); }
+
+        var self = this;
+        tooltip = tooltip.concat(_.map(['y', 'color', 'size'], function(prop)
+        {
+            if (!self.point.pretty[prop]) { return null; }
+            return self.point.label[prop] + ': ' + self.point.pretty[prop];
+        }));
+
+        return _.compact(tooltip).join('<br/>');
     };
 
 })(jQuery);

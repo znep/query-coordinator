@@ -396,9 +396,8 @@
             // Make sure that element opacity exists.
             // Otherwise use IE filter
             if ( div.style.opacity !== "0") {
-                if (typeof(div.filters) == 'undefined'){
-                    throw new Error('Opacity not supported by the browser');
-                }
+                // clint.tseng@socrata.com 2010/11/18:
+                // removed check for filter; we're only IE7+ anyway.
                 div.style.filter = "alpha(opacity=0)";
             }
 
@@ -631,7 +630,10 @@
                         // nodeValue property to retrieve the unmangled content.
                         // Note that IE6 only understands text/html
                         if (doc.body.firstChild && doc.body.firstChild.nodeName.toUpperCase() == 'PRE') {
-                            doc.normalize();
+                            // clint.tseng@socrata.com 2010/11/18:
+                            // only call normalize if the browser supports it, I guess
+                            if ((typeof doc.normalize) !== 'undefined')
+                            { doc.normalize(); }
                             response = doc.body.firstChild.firstChild.nodeValue;
                         }
 

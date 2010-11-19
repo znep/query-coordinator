@@ -9,7 +9,6 @@
  *   + Strip pre tags off of responses
  *   + Changed eval() to use the much safer JSON.parse function
  *     instead (was throwing exceptions on invalid input).
- *   + Added destroy method (copied from old version)
  */
 
 (function () {
@@ -340,15 +339,6 @@
             this._button.removeAttribute('disabled');
             this._disabled = false;
 
-        },
-        // removes ajaxupload
-        destroy : function(){
-            if(this._input){
-                if(this._input.parentNode){
-                    this._input.parentNode.removeChild(this._input);
-                }
-                this._input = null;
-            }
         },
         /**
          * Creates invisible file input

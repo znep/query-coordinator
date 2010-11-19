@@ -72,7 +72,12 @@
             $dom: function()
             {
                 if (!this._$dom)
-                { this._$dom = $(this.currentDom); }
+                {
+                    var $d = $(this.currentDom);
+                    this._$dom = $.tag({tagName: 'div', 'class': 'fullHeight',
+                        id: 'visualizationArea'});
+                    $d.append(this._$dom);
+                }
                 return this._$dom;
             },
 

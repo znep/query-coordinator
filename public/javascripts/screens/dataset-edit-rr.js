@@ -178,7 +178,6 @@ editRRNS.makeDraggable = function($item, itemType, dragHandler, setWidth)
 {
     $item.draggable({
         appendTo: $('.mainContainer'),
-        containment: $('.mainContainer'),
         cursorAt: {top: 5, left: 15},
         helper: 'clone',
         opacity: 0.8,
@@ -228,6 +227,7 @@ editRRNS.makeDroppable = function($item, selector, dropped, isTrash)
                 _.defer(function()
                 {
                     $item.remove();
+                    editRRNS.setColSizes();
                     editRRNS.updateConfig();
                 });
             }
@@ -380,10 +380,14 @@ editRRNS.setUpColumns = function($col)
     $col.find('.richLine').each(function()
         {
             var $row = $(this);
+            $row.prepend($.tag({tagName: 'a', href: '#Drag', title: 'Move row',
+                'class': ['dragHandle', 'rowDrag']}));
+
+            $row.hover(function() { $(this).parent().removeClass('hover'); },
+                function() { $(this).parent().addClass('hover'); });
+
             editRRNS.makeDroppable($row, '.fieldItem',
                 function($item) { editRRNS.enableFieldItem($item); });
-            $row.prepend($.tag({tagName: 'a', href: '#Drag', title: 'Move row',
-                'class': 'dragHandle'}));
             editRRNS.makeDraggable($row, 'row', function(e, ui)
             {
                 editRRNS.itemDragging(ui, 'top', 'left');
@@ -394,11 +398,18 @@ editRRNS.setUpColumns = function($col)
     $col.find('.richColumn').andSelf().each(function()
     {
         var $c = $(this);
+        $c.prepend($.tag({tagName: 'a', href: '#Drag', title: 'Move column',
+            'class': ['dragHandle', 'columnDrag']}));
         $c.prepend($.tag({tagName: 'a', href: '#Add_Row',
             'class': ['add', 'addRow'], title: 'Add a row to this column',
             contents: {tagName: 'span', 'class': 'icon'}}));
 
+        $c.hover(function() { $(this).addClass('hover'); },
+            function() { $(this).removeClass('hover'); });
+
         editRRNS.makeDroppable($c, '.richLine');
+        editRRNS.makeDraggable($c, 'column', function(e, ui)
+            { editRRNS.itemDragging(ui, 'left', 'top'); });
     });
 };
 
@@ -416,25 +427,31 @@ editRRNS.setColSizes = function()
         { $fixedCols = $fixedCols.add($c); }
     });
 
-    var totalW = $('.renderArea').width();
-    // Need to tweak columns with specified widths for borders & padding
-    $fixedCols.each(function()
-    {
-        var $c = $(this);
-        if ($c.data('rr-width').endsWith('%'))
-        {
-            $c.css('width', $c.data('rr-width'));
-            // Equivalent to ($c.width - ($c.outerWidth - $c.width))
-            $c.width($c.width() * 2 - $c.outerWidth(true));
-        }
-        totalW -= $c.outerWidth(true);
-    });
-
-    var perW = Math.floor(1 / $freeCols.length * totalW) - 1;
+    // First calculate what the percents currently add up to, and give a
+    // reasonable default to any column without a percent
+    var newPercent = Math.floor(100 / $freeCols.length);
+    var totalPercent = 0;
     $freeCols.each(function()
     {
         var $c = $(this);
-        $c.width(perW - ($c.outerWidth(true) - $c.width()));
+        if ($.isBlank($c.data('rr-width')))
+        { $c.data('rr-width', newPercent + '%'); }
+        totalPercent += parseInt($c.data('rr-width'));
+    });
+
+    var totalW = $('.renderArea').width();
+    // Need to tweak columns with specified widths for borders & padding
+    $fixedCols.each(function() { totalW -= $(this).outerWidth(true); });
+
+    // Now that we know how much remaining space we have, set each of the
+    // variable columns; and adjust their percent width so they all add
+    // up to 100
+    $freeCols.each(function()
+    {
+        var $c = $(this);
+        var np = Math.floor(parseInt($c.data('rr-width')) / totalPercent * 100);
+        $c.data('rr-width', np + '%');
+        $c.width(np / 100 * totalW - ($c.outerWidth(true) - $c.width()));
     });
 };
 
@@ -464,8 +481,10 @@ editRRNS.initLayout = function()
         .navigation({pageSize: 1, view: blist.dataset});
     editRRNS.$trashButton = editRRNS.$container.find('.navigation .removeItem');
     editRRNS.makeDroppable(editRRNS.$trashButton,
-        '.fieldItem.inLayout, .richLine', null, true);
+        '.fieldItem.inLayout, .richLine, .richColumn', null, true);
     editRRNS.renderCurrentRow();
+
+    editRRNS.makeDroppable($('.renderArea'), '.richColumn');
 
     // Handle switching types
     $('#renderTypeOptions').pillButtons();

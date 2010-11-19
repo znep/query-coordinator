@@ -46,8 +46,19 @@
     padding: 1em
       bottom: 4em
 
-    .renderArea
+  .renderArea
+    height: 100%
+    position: relative
+
+    .dropIndicator
       height: 100%
+      top: 0
+      width: 2px
+
+    .dropFinder
+      left: 0
+      position: relative
+      top: 0
 
     .addColumn
       @include sprite-repeater-icons
@@ -70,14 +81,27 @@
     &.dragOver
       background-color: #88ff77
 
+  .dragHandle
+    background-image: url(/stylesheets/images/content/table/column_drag_handle.png)
+    background-position: top left
+    background-repeat: repeat
+    cursor: move
+    position: absolute
+    visibility: hidden
+    z-index: 1
+
   .richColumn
     border: 1px solid #999999
     @include border-radius(0.3em)
     padding: 0.2em
     position: relative
-    &:hover
+    &:hover, &.ui-draggable-dragging
       border-color: #333333
       @include box-shadow(0, 0, 3px, rgba(0, 0, 0, 0.5))
+
+    &.hover, &.ui-draggable-dragging
+      .columnDrag
+        visibility: visible
 
     .addRow
       @include sprite-repeater-icons
@@ -99,6 +123,12 @@
       position: relative
       top: -1px
 
+    .dragHandle
+      bottom: 0
+      height: 7px
+      left: 0
+      width: 100%
+
   .richLine
     border: 1px dashed #999999
     @include border-radius(0.3em)
@@ -109,7 +139,7 @@
     &:hover, &.ui-draggable-dragging
       border-color: #333333
       @include box-shadow(0, 0, 3px, rgba(0, 0, 0, 0.5))
-      .dragHandle
+      .rowDrag
         visibility: visible
 
     .dropFinder
@@ -122,17 +152,10 @@
       width: 2px
 
     .dragHandle
-      background-image: url(/stylesheets/images/content/table/column_drag_handle.png)
-      background-position: top left
-      background-repeat: repeat-y
-      cursor: move
       height: 100%
       left: 0
-      position: absolute
       top: 0
-      visibility: hidden
       width: 7px
-      z-index: 1
 
   #gridSidebar
     position: absolute

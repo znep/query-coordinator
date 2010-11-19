@@ -200,10 +200,11 @@
         subtitle: 'Views with locations can be displayed as points on a map',
         onlyIf: function()
         {
-            return _.select(blist.dataset.realColumns, function(c)
+            return (_.select(blist.dataset.realColumns, function(c)
                 {
                     return c.dataTypeName == 'location' && (isEdit || !c.hidden);
-                }).length > 0 && (blist.dataset.valid || isEdit);
+                }).length > 0 || blist.dataset.isArcGISDataset())
+                && (blist.dataset.valid || isEdit);
         },
         disabledSubtitle: function()
         {

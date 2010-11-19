@@ -46,6 +46,8 @@
                         mapObj._mapLoaded = true;
                         if (mapObj._dataLoaded)
                         { mapObj.renderData(mapObj._rows); }
+                        if (mapObj._featuresLoaded)
+                        { mapObj.renderFeatureData(); }
 
                         // Hack for ESRI JSAPI 2.1, bug #2835.
                         // Refer: esri._CoreMap#_addLayerHandler
@@ -125,7 +127,10 @@
 
                     blist.$display.find('.infowindow .hide').removeClass('hide')
                         .addClass('hide_infowindow');
+
                 });
+                if (blist.dataset.isArcGISDataset())
+                { fetchExternalFeatureSet(mapObj); }
             },
 
             buildIdentifyTask: function()
@@ -395,6 +400,53 @@
             {
                 var mapObj = this;
                 if (mapObj.map.graphics) { mapObj.map.graphics.clear(); }
+            },
+
+            renderFeatureData: function()
+            {
+                var mapObj = this;
+
+                var attributes = _.map(mapObj._featureSet.fieldAliases,
+                    function(alias, key)
+                    {
+                        return alias + ": ${" + key + "}";
+                    }).join("<br />");
+                mapObj._infoTemplate = new esri.InfoTemplate(
+                    "${" + mapObj._featureSet.displayFieldName + "}", attributes);
+
+                var symbol;
+                switch(mapObj._featureSet.features[0].geometry.type)
+                {
+                    case 'polyline':
+                        symbol = new esri.symbol.SimpleLineSymbol();
+                        break;
+                    case 'polygon':
+                        symbol = new esri.symbol.SimpleFillSymbol();
+                        break;
+                    case 'point':
+                        symbol = new esri.symbol.SimpleMarkerSymbol();
+                        symbol.setSize(10);
+                        break;
+                }
+                symbol.setColor(new dojo.Color([255, 0, 255]));
+
+                _.each(mapObj._featureSet.features, function(feature)
+                {
+                    feature.setInfoTemplate(mapObj._infoTemplate);
+                    mapObj.map.graphics.add(feature.setSymbol(symbol));
+
+                    if (feature.geometry instanceof esri.geometry.Point)
+                    { mapObj._multipoint.addPoint(feature.geometry); }
+                    else
+                    {
+                        if (!mapObj._bounds)
+                        { mapObj._bounds = feature.geometry.getExtent(); }
+                        else
+                        { mapObj._bounds = mapObj._bounds
+                                .union(feature.geometry.getExtent()); }
+                    }
+                });
+                mapObj.rowsRendered();
             }
         }
     }));
@@ -615,6 +667,41 @@
         { return esri.layers.ArcGISTiledMapServiceLayer; }
         else
         { return esri.layers.ArcGISDynamicMapServiceLayer; }
+    };
+
+    var fetchExternalFeatureSet = function(mapObj)
+    {
+        mapObj._maxRows = 0; // Don't bother loading from the core server.
+
+        dojo.require('esri.tasks.query');
+        var query = new esri.tasks.Query();
+        query.outFields = ['*'];
+        query.returnGeometry = true;
+        query.outSpatialReference = new esri.SpatialReference({ wkid: 102100 });
+        query.where = '1=1';
+
+        new esri.tasks.QueryTask(blist.dataset.description)
+            .execute(query, function(featureSet)
+                {
+                    mapObj._featureSet = featureSet;
+                    mapObj._runningQuery = false;
+                    mapObj._featuresLoaded = true;
+                    if (mapObj._mapLoaded) { mapObj.renderFeatureData(); }
+                });
+        mapObj._runningQuery = true;
+
+        mapObj.startLoading();
+        setTimeout(function()
+        {
+            // query took too long and probably timed out
+            // so we're just going to kill the spinner and error it
+            // if the query does finish, it will load behind the alert
+            if (mapObj._runningQuery)
+            {
+                mapObj.finishLoading();
+                alert('A data request has taken too long and timed out.');
+            }
+        }, 60000);
     };
 
 })(jQuery);

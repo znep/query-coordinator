@@ -162,6 +162,12 @@ this.Dataset = Model.extend({
         return !$.isBlank(this.domainCName);
     },
 
+    isArcGISDataset: function()
+    {   // FIXME: This is evil, but also the only way of figuring out if the dataset
+        // is sourced externally.
+        return this.description.match(/^http:\/\/navigator.state.or.us/);
+    },
+
     save: function(successCallback, errorCallback)
     {
         var ds = this;

@@ -15,7 +15,7 @@ class Displays::Calendar < Displays::Base
     ['shared-table-editor']
   end
 
-  def required_stylesheets
+  def required_style_links
     [ 'fullcalendar' ]
   end
 

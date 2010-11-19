@@ -8,7 +8,7 @@ class Displays::Href < Displays::Base
     'displays/href'
   end
 
-  def required_stylesheets
-    ['blists-blob-screen.css']
+  def required_style_links
+    ['blists-blob-screen']
   end
 end

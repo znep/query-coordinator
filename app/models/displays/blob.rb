@@ -22,8 +22,8 @@ class Displays::Blob < Displays::Base
         end
     end
     
-    def required_stylesheets
-      ['blists-blob-screen.css']
+    def required_style_links
+      ['blists-blob-screen']
     end
     
     def scrolls_inline?

@@ -73,5 +73,5 @@
     blist.moderation.servicePath = '/api/users/<%= @current_user.id %>/comments/';
   </script>
 
-  <%= javascript_include_merged 'admin-moderation' %>
+  <%= include_javascripts 'admin-moderation' %>
 <%- end -%>

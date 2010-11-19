@@ -1,5 +1,7 @@
 source :gemcutter
 
+gem "jammit", "0.5.4"
+
 gem "rails", "2.3.8", :require => nil
 gem "rack", "1.1.0"
 gem "json", "1.4.6"

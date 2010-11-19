@@ -100,9 +100,9 @@ END
 
     # Retrieve rendered CSS links to include in the page.  Called by view logic
     def render_stylesheet_includes
-      return required_stylesheets.map { |css| @@asset_helper.stylesheet_link_merged css }.join +
-        required_style_packages.map { |sass| @@app_helper.rendered_stylesheet_tag sass }.join +
-        required_style_links.map { |link| @@app_helper.stylesheet_link_tag link }.join
+      return @@asset_helper.include_stylesheets(*required_stylesheets).html_safe +
+        required_style_packages.map { |sass| @@app_helper.rendered_stylesheet_tag(sass) }.join.html_safe +
+        required_style_links.map { |link| @@app_helper.stylesheet_link_tag(link) }.join.html_safe
     end
 
     # Retrieve rendered JavaScript to include in the page.  Called by view logic
@@ -169,13 +169,13 @@ END
 
     # Render links to javascript files
     def render_javascript_links
-      required_javascript_links.map { |link| @@app_helper.javascript_include_tag link }.join +
-        required_javascripts.map { |js| @@asset_helper.javascript_include_merged js }.join
+      required_javascript_links.map { |link| @@app_helper.javascript_include_tag(link).html_safe }.join +
+        @@asset_helper.include_javascripts(*required_javascripts).html_safe
     end
 
     # Render links to javascript files for editing
     def render_edit_javascript_links
-      required_edit_javascripts.map { |js| @@asset_helper.javascript_include_merged js }.join
+      @@asset_helper.include_javascripts(*required_edit_javascripts).html_safe
     end
 
     # Render inline javascript to be included *after* the bulk of javascript initializes.
@@ -191,7 +191,7 @@ END
     private
 
     @@asset_helper = Class.new do
-      include Synthesis::AssetPackageHelper
+      include Jammit::Helper
       include ActionView::Helpers
     end.new
 

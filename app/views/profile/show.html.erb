@@ -179,5 +179,5 @@
     blist.namespace.fetch('blist.profile');
     blist.profile.profileUserId = '<%= @user.id %>';
   </script>
-  <%= javascript_include_merged 'screen-profile' %>
+  <%= include_javascripts 'screen-profile' %>
 <% end %>

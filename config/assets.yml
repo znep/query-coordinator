@@ -1,0 +1,290 @@
+package_path: packages
+
+javascripts:
+  base:
+    - public/javascripts/plugins/date.js
+    - public/javascripts/plugins/jqModal.js
+    - public/javascripts/plugins/jquery.bt.js
+    - public/javascripts/plugins/jquery.cookies.2.1.0.min.js
+    - public/javascripts/plugins/jquery.example.min.js
+    - public/javascripts/plugins/json2.js
+    - public/javascripts/plugins/jquery.sizes.min.js
+    - public/javascripts/plugins/jquery.tache.js
+    - public/javascripts/plugins/jquery.uniform.js
+    - public/javascripts/plugins/jquery.validate.js
+    - public/javascripts/plugins/pure.js
+    - public/javascripts/plugins/jquery-ui-1.8.5.custom.min.js
+    - public/javascripts/plugins/underscore.js
+    - public/javascripts/plugins/inheritance.js
+    - public/javascripts/util/namespace.js
+    - public/javascripts/util/util.js
+    - public/javascripts/util/base-model.js
+    - public/javascripts/util/compat.js
+    - public/javascripts/util/markup.js
+    - public/javascripts/util/alert-override.js
+    - public/javascripts/util/google-analytics.js
+    - public/javascripts/util/user.js
+    - public/javascripts/util/dataset/column-container.js
+    - public/javascripts/util/dataset/column.js
+    - public/javascripts/util/dataset/dataset.js
+    - public/javascripts/util/dataset/table.js
+    - public/javascripts/util/dataset/calendar.js
+    - public/javascripts/util/dataset/chart.js
+    - public/javascripts/util/dataset/form.js
+    - public/javascripts/util/dataset/map.js
+    - public/javascripts/util/styles.js
+    - public/javascripts/util/templates.js
+    - public/javascripts/util/socrata-server.js
+    - public/javascripts/data/types.js
+    - public/javascripts/controls/socrata-messaging.js
+    - public/javascripts/controls/text-prompt.js
+    - public/javascripts/controls/values.js
+    - public/javascripts/controls/dropdown-menu.js
+    - public/javascripts/screens/all-screens.js
+  shared-common-all:
+    - public/javascripts/util/events.js
+    - public/javascripts/util/sizing.js
+    - public/javascripts/controls/clipped-text.js
+    - public/javascripts/screens/common-layout.js
+    - public/javascripts/controls/scrollable.js
+  shared-calendar:
+    - public/javascripts/plugins/fullcalendar.js
+    - public/javascripts/controls/base-visualization.js
+    - public/javascripts/controls/calendars/default-calendar.js
+  shared-table-render:
+    - public/javascripts/util/humane-number.js
+    - public/javascripts/data/model.js
+    - public/javascripts/data/table.js
+    - public/javascripts/data/table_nav.js
+    - public/javascripts/controls/scrollable.js
+    - public/javascripts/controls/dataset-grid.js
+  shared-table-editor:
+    - public/javascripts/util/humane-number.js
+    - public/javascripts/data/editors/editor-base.js
+    - public/javascripts/data/editors/text-editor.js
+    - public/javascripts/plugins/datepicker.js
+    - public/javascripts/data/editors/date-editor.js
+    - public/javascripts/data/editors/number-editor.js
+    - public/javascripts/data/editors/percent-editor.js
+    - public/javascripts/data/editors/money-editor.js
+    - public/javascripts/data/editors/email-editor.js
+    - public/javascripts/data/editors/tag-editor.js
+    - public/javascripts/data/editors/url-editor.js
+    - public/javascripts/data/editors/phone-editor.js
+    - public/javascripts/data/editors/location-editor.js
+    - public/javascripts/controls/combo.js
+    - public/javascripts/data/editors/flag-editor.js
+    - public/javascripts/data/editors/picklist-editor.js
+    - public/javascripts/data/editors/checkbox-editor.js
+    - public/javascripts/data/editors/stars-editor.js
+    - public/javascripts/tiny_mce/tiny_mce_jquery_src.js
+    - public/javascripts/data/editors/html-editor.js
+    - public/javascripts/plugins/ajaxupload.js
+    - public/javascripts/controls/upload-dialog.js
+    - public/javascripts/data/editors/document-editor.js
+    - public/javascripts/data/editors/photo-editor.js
+  shared-map:
+    - public/javascripts/plugins/markerclusterer.js
+    - public/javascripts/controls/base-visualization.js
+    - public/javascripts/util/color.js
+    - public/javascripts/controls/maps/base-map.js
+    - public/javascripts/controls/maps/esri-map.js
+    - public/javascripts/controls/maps/google-map.js
+    - public/javascripts/controls/maps/bing-map.js
+    - public/javascripts/controls/maps/heatmap-map.js
+  shared-chart:
+    - public/javascripts/plugins/highcharts.src.js
+    - public/javascripts/plugins/jit.js
+    - public/javascripts/util/color.js
+    - public/javascripts/controls/base-visualization.js
+    - public/javascripts/controls/charts/base-chart.js
+    - public/javascripts/controls/charts/highcharts.js
+    - public/javascripts/controls/charts/jit.js
+  admin-users:
+    - public/javascripts/controls/admin-buttons.js
+    - public/javascripts/plugins/jquery.tablesorter.js
+    - public/javascripts/controls/combination-list.js
+    - public/javascripts/screens/admin-users-screen.js
+  admin-federations:
+    - public/javascripts/screens/admin-federations-screen.js
+  admin-home:
+    - public/javascripts/controls/admin-buttons.js
+    - public/javascripts/plugins/jquery.tablesorter.js
+    - public/javascripts/controls/combination-list.js
+    - public/javascripts/screens/admin-home.js
+  admin-metadata:
+    - public/javascripts/controls/admin-buttons.js
+    - public/javascripts/screens/admin-metadata-screen.js
+  admin-moderation:
+    - public/javascripts/plugins/jquery.tablesorter.js
+    - public/javascripts/controls/combination-list.js
+    - public/javascripts/screens/admin-moderation.js
+  admin-sdp-templates:
+    - public/javascripts/controls/modal-dialogs.js
+    - public/javascripts/controls/admin-buttons.js
+    - public/javascripts/plugins/jquery.tablesorter.js
+    - public/javascripts/controls/combination-list.js
+    - public/javascripts/screens/admin-sdp-templates.js
+  admin-sdp-template:
+    - public/javascripts/plugins/jquery.colorPicker.js
+    - public/javascripts/plugins/colorpicker.js
+    - public/javascripts/plugins/ajaxupload.js
+    - public/javascripts/controls/upload-dialog.js
+    - public/javascripts/util/color.js
+    - public/javascripts/util/events.js
+    - public/javascripts/controls/grid-sidebar/base-sidebar.js
+    - public/javascripts/screens/admin-customizer.js
+    - public/javascripts/screens/admin-sdp-template.js
+  admin-story:
+    - public/javascripts/plugins/colorpicker.js
+    - public/javascripts/screens/admin-story.js
+  admin-stories-appearance:
+    - public/javascripts/plugins/jquery.colorPicker.js
+    - public/javascripts/plugins/colorpicker.js
+    - public/javascripts/util/color.js
+    - public/javascripts/util/events.js
+    - public/javascripts/controls/grid-sidebar/base-sidebar.js
+    - public/javascripts/screens/homepage-show.js
+    - public/javascripts/screens/admin-customizer.js
+    - public/javascripts/screens/admin-stories-appearance.js
+  admin-federation:
+    - public/javascripts/controls/admin-buttons.js
+    - public/javascripts/plugins/jquery.tablesorter.js
+    - public/javascripts/controls/combination-list.js
+    - public/javascripts/screens/admin-federation-screen.js
+  browse-control:
+    - public/javascripts/plugins/jquery.tagcloud.js
+    - public/javascripts/util/events.js
+    - public/javascripts/controls/menu.js
+    - public/javascripts/controls/dataset-controls.js
+    - public/javascripts/controls/expander.js
+    - public/javascripts/controls/stars.js
+    - public/javascripts/controls/modal-dialogs.js
+    - public/javascripts/screens/browse.js
+  screen-nominations:
+    - public/javascripts/plugins/ajaxupload.js
+    - public/javascripts/util/events.js
+    - public/javascripts/util/humane-date.js
+    - public/javascripts/controls/modal-dialogs.js
+    - public/javascripts/screens/nominations.js
+  widgets-show:
+    - public/javascripts/plugins/jquery.tablesorter.js
+    - public/javascripts/controls/full-screen.js
+    - public/javascripts/controls/combination-list.js
+    - public/javascripts/controls/embed-form.js
+    - public/javascripts/util/humane-date.js
+    - public/javascripts/util/events.js
+    - public/javascripts/controls/modal-dialogs.js
+    - public/javascripts/controls/dataset-controls.js
+    - public/javascripts/controls/stars.js
+    - public/javascripts/controls/menu.js
+    - public/javascripts/controls/rich-render-library.js
+    - public/javascripts/controls/page-render-type.js
+    - public/javascripts/controls/scrollTabs.js
+    - public/javascripts/controls/form-inliner.js
+    - public/javascripts/screens/widget.js
+  dataset-new:
+    - public/javascripts/util/serialize.js
+    - public/javascripts/plugins/ajaxupload.js
+    - public/javascripts/controls/attachments-editor.js
+    - public/javascripts/controls/wizard.js
+    - public/javascripts/screens/dataset-new.js
+  dataset-show:
+    - public/javascripts/plugins/jquery.colorPicker.js
+    - public/javascripts/plugins/jquery.awesomecomplete.js
+    - public/javascripts/plugins/jquery.tablesorter.js
+    - public/javascripts/plugins/iscroll.js
+    - public/javascripts/plugins/ajaxupload.js
+    - public/javascripts/controls/combination-list.js
+    - public/javascripts/util/events.js
+    - public/javascripts/util/humane-date.js
+    - public/javascripts/util/inline-login.js
+    - public/javascripts/util/konami.js
+    - public/javascripts/controls/menu.js
+    - public/javascripts/controls/wizard-prompt.js
+    - public/javascripts/controls/form-inliner.js
+    - public/javascripts/controls/modal-dialogs.js
+    - public/javascripts/controls/expander.js
+    - public/javascripts/controls/feed-list.js
+    - public/javascripts/controls/stars.js
+    - public/javascripts/controls/grid-sidebar/base-sidebar.js
+    - public/javascripts/controls/grid-sidebar/about-dataset.js
+    - public/javascripts/controls/grid-sidebar/add-column.js
+    - public/javascripts/controls/grid-sidebar/api.js
+    - public/javascripts/controls/grid-sidebar/append-replace.js
+    - public/javascripts/controls/grid-sidebar/calendar-create.js
+    - public/javascripts/controls/grid-sidebar/chart-create.js
+    - public/javascripts/controls/grid-sidebar/column-properties.js
+    - public/javascripts/controls/grid-sidebar/download-dataset.js
+    - public/javascripts/controls/grid-sidebar/embed-sdp.js
+    - public/javascripts/controls/grid-sidebar/feed.js
+    - public/javascripts/controls/grid-sidebar/filter-dataset.js
+    - public/javascripts/controls/grid-sidebar/form-create.js
+    - public/javascripts/controls/grid-sidebar/guided-filter.js
+    - public/javascripts/controls/grid-sidebar/map-create.js
+    - public/javascripts/controls/grid-sidebar/print-dataset.js
+    - public/javascripts/controls/grid-sidebar/share-dataset.js
+    - public/javascripts/controls/grid-sidebar/show-hide.js
+    - public/javascripts/controls/grid-sidebar/subscribe.js
+    - public/javascripts/controls/grid-sidebar/signed-dataset.js
+    - public/javascripts/controls/grid-sidebar/view-list.js
+    - public/javascripts/controls/dataset-controls.js
+    - public/javascripts/controls/dataset-email.js
+    - public/javascripts/controls/embed-form.js
+    - public/javascripts/controls/full-screen.js
+    - public/javascripts/controls/format-options.js
+    - public/javascripts/controls/rich-render-library.js
+    - public/javascripts/controls/fatrow-render-type.js
+    - public/javascripts/controls/page-render-type.js
+    - public/javascripts/controls/pill-buttons.js
+    - public/javascripts/screens/dataset-show.js
+  dataset-edit-metadata:
+    - public/javascripts/plugins/ajaxupload.js
+    - public/javascripts/controls/attachments-editor.js
+    - public/javascripts/screens/dataset-edit-metadata.js
+  screen-dataset-thumbnail:
+    - public/javascripts/plugins/jquery.imgareaselect.js
+    - public/javascripts/screens/dataset-thumbnail.js
+  screen-bare-dataset:
+    - public/javascripts/util/events.js
+    - public/javascripts/util/humane-date.js
+    - public/javascripts/controls/full-screen.js
+    - public/javascripts/screens/dataset-bare.js
+  shared-metrics:
+    - public/javascripts/plugins/daterangepicker.jquery.js
+    - public/javascripts/plugins/jquery.tablesorter.js
+    - public/javascripts/plugins/highcharts.src.js
+    - public/javascripts/controls/charts/metric-charts.js
+    - public/javascripts/controls/equiwidth.js
+    - public/javascripts/controls/menu.js
+    - public/javascripts/controls/metrics-shared.js
+    - public/javascripts/controls/metrics.js
+  screen-login-signup:
+    - public/javascripts/screens/login-shared.js
+    - public/javascripts/screens/signup-screen.js
+  screen-profile:
+    - public/javascripts/util/humane-date.js
+    - public/javascripts/controls/feed-list.js
+    - public/javascripts/screens/profile-screen.js
+  screen-profile-edit:
+    - public/javascripts/plugins/ajaxupload.js
+    - public/javascripts/screens/profile-screen-edit.js
+  homepage-show:
+    - public/javascripts/screens/homepage-show.js
+
+
+stylesheets:
+  chart-screen:
+    - public/stylesheets/chart-screen.css
+  grid-sidebar:
+    - public/stylesheets/jquery.ui.resizable.css
+    - public/stylesheets/ui.slider.css
+  displays-form:
+    - public/stylesheets/displays-form.css
+  internal-shared:
+    - public/stylesheets/BespinEmbedded.css
+  analytics-shared:
+    - public/stylesheets/jquery-ui-1.8.4.custom.css
+    - public/stylesheets/ui.daterangepicker.css
+  colorpicker:
+    - public/stylesheets/colorpicker.css

@@ -1,8 +1,7 @@
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-sdp-template' %>
-  <%= stylesheet_link_merged 'colorpicker' %>
-  <%= stylesheet_link_merged 'grid-sidebar' %>
+  <%= include_stylesheets 'colorpicker', 'grid-sidebar' %>
   <title>Editing <%= @widget_customization.name %> | Social Data Player Templates | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
@@ -115,5 +114,5 @@
     blist.publish.viewIsGrid = <%= !@view.is_alt_view? %>;
   </script>
 
-  <%= javascript_include_merged 'admin-sdp-template' %>
+  <%= include_javascripts 'admin-sdp-template' %>
 <% end %>

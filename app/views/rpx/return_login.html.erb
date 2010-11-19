@@ -51,8 +51,7 @@
 
 
 <% content_for :js_footer do %>
-  <%= javascript_include_merged 'shared-common-all' %>
-  <%= javascript_include_merged 'screen-login-signup' %>
+  <%= include_javascripts 'shared-common-all', 'screen-login-signup' %>
 
 <% end %>
 

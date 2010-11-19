@@ -1,5 +1,4 @@
-public/javascripts/cache
-public/stylesheets/cache
+public/packages
 vendor/bundler_gems
 vendor/bundle
 .bundle

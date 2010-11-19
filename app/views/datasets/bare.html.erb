@@ -4,7 +4,7 @@
     <%= rendered_stylesheet_tag 'base' %>
     <%= jquery_include %>
     <%= raw @view.display.render_stylesheet_includes %>
-    <%= stylesheet_link_merged 'dataset-show' %>
+    <%= include_stylesheets 'dataset-show' %>
     <%= rendered_stylesheet_tag 'dataset-show' %>
     <%= rendered_stylesheet_tag 'dataset-bare' %>
   </head>
@@ -16,7 +16,7 @@
       </div>
     </div>
 
-    <%= javascript_include_merged 'base' %>
+    <%= include_javascripts 'base' %>
 
     <%- if Rails.env != 'production' -%>
         <%= javascript_include_tag "util/debug" %>
@@ -39,6 +39,6 @@
       <%= javascript_include_tag 'plugins/highcharts.exporting.src' %>
     <%- end -%>
 
-    <%= javascript_include_merged 'screen-bare-dataset' %>
+    <%= include_javascripts 'screen-bare-dataset' %>
   </body>
 </html>

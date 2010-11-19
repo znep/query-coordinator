@@ -63,7 +63,7 @@
     <%= yield :templates %>
   </div>
 
-  <%= javascript_include_merged 'base' %>
+  <%= include_javascripts 'base' %>
 
   <script type="text/javascript">
     blist.namespace.fetch('blist.configuration');

@@ -1,8 +1,7 @@
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-stories-appearance' %>
-  <%= stylesheet_link_merged 'colorpicker' %>
-  <%= stylesheet_link_merged 'grid-sidebar' %>
+  <%= include_stylesheets 'colorpicker', 'grid-sidebar' %>
   <title>Story Appearance | Social Data Player Templates | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
@@ -89,5 +88,5 @@
     blist.publish.currentTheme = <%= raw @story_theme.to_json %>;
   </script>
 
-  <%= javascript_include_merged 'admin-stories-appearance' %>
+  <%= include_javascripts 'admin-stories-appearance' %>
 <% end %>

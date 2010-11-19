@@ -83,5 +83,5 @@
     <%# So we have the blist.dataset object %>
     <%= raw @view.display.render_inline_setup_js('mainGrid', self) %>
   </script>
-  <%= javascript_include_merged 'screen-dataset-thumbnail' %>
+  <%= include_javascripts 'screen-dataset-thumbnail' %>
 <% end %>

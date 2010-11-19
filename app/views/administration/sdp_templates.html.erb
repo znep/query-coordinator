@@ -87,6 +87,6 @@
       blist.sdpTemplates.templates = <%= @templates.to_json.html_safe! %>;
     </script>
 
-    <%= javascript_include_merged 'admin-sdp-templates' %>
+    <%= include_javascripts 'admin-sdp-templates' %>
   <%- end -%>
 <% end %>

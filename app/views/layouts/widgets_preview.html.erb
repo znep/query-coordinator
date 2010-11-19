@@ -6,7 +6,7 @@
   <meta http-equiv="content-type" content="text/html;charset=utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=8" />
 
-  <%= stylesheet_link_merged 'base-widgets-preview' %>
+  <%= include_stylesheets 'base-widgets-preview' %>
 
   <%= jquery_include %>
 
@@ -22,7 +22,7 @@
   Better to load JS at the bottom:
   http://developer.yahoo.com/performance/rules.html#js_bottom
   %>
-  <%= javascript_include_merged 'base' %>
+  <%= include_javascripts 'base' %>
 
   <% if Rails.env != 'production' %>
     <%= javascript_include_tag "util/debug" %>

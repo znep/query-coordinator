@@ -12,6 +12,7 @@ GEM
     activeresource (2.3.8)
       activesupport (= 2.3.8)
     activesupport (2.3.8)
+    closure-compiler (0.3.3)
     daemons (1.1.0)
     erubis (2.6.6)
       abstract (>= 1.0.0)
@@ -20,6 +21,9 @@ GEM
     hashie (0.3.1)
     hoptoad_notifier (2.3.7)
       activesupport
+    jammit (0.5.4)
+      closure-compiler (>= 0.1.0)
+      yui-compressor (>= 0.9.1)
     json (1.4.6)
     money (3.1.5)
     multipart-post (1.0.1)
@@ -37,6 +41,7 @@ GEM
       daemons (>= 1.0.9)
       eventmachine (>= 0.12.6)
       rack (>= 1.0.0)
+    yui-compressor (0.9.1)
 
 PLATFORMS
   ruby
@@ -46,6 +51,7 @@ DEPENDENCIES
   haml (= 3.0.17)
   hashie (= 0.3.1)
   hoptoad_notifier (= 2.3.7)
+  jammit (= 0.5.4)
   json (= 1.4.6)
   money (>= 3.1.5)
   multipart-post (= 1.0.1)

@@ -15,6 +15,8 @@ editRRNS.initResizing = function()
             $('.contentBox .header').outerHeight(true) -
             ($contentBox.outerHeight(true) - $contentBox.height()) -
             ($content.outerHeight(true) - $content.height()));
+
+        editRRNS.setColSizes();
     };
     adjustSizes();
     $(window).resize(adjustSizes);
@@ -268,15 +270,46 @@ editRRNS.renderCurrentRow = function()
 // Pull and update the new config
 editRRNS.updateConfig = function()
 {
+    var getStyles = function($item)
+    {
+        var s = {};
+        _.each(['width', 'height'], function(p)
+        {
+            if (!$.isBlank($item.data('rr-' + p)))
+            { s[p] = $item.data('rr-' + p); }
+        });
+
+        return _.isEmpty(s) ? null : s;
+    };
+
+    var setColWidths = function($cols)
+    {
+        // Assume they are all siblings, so just grab the parent from the first
+        var parW = $cols.parent().width();
+        $cols.each(function()
+        {
+            var $c = $(this);
+            if ($.isBlank($c.data('rr-width')) || $c.data('rr-width').endsWith('%'))
+            {
+                $c.data('rr-width',
+                    Math.floor(100 * $c.outerWidth(true) / parW) + '%');
+            }
+        });
+    };
+
     var conf = {columns: []};
     var processColumn;
     processColumn = function($col, parConf)
     {
         var c = {rows: []};
+        var s = getStyles($col);
+        if (!$.isBlank(s)) { c.styles = s; }
         $col.children('.richLine').each(function()
         {
             var r = {};
             var $r = $(this);
+            s = getStyles($r);
+            if (!$.isBlank(s)) { r.styles = s; }
             if ($r.children('.richColumn').length > 0)
             {
                 r.columns = [];
@@ -290,6 +323,8 @@ editRRNS.updateConfig = function()
                 {
                     var $f = $(this);
                     var f = {};
+                    s = getStyles($f);
+                    if (!$.isBlank(s)) { f.styles = s; }
                     if ($f.hasClass('columnData'))
                     {
                         f.type = 'columnData';
@@ -314,8 +349,9 @@ editRRNS.updateConfig = function()
         parConf.columns.push(c);
     };
 
-    editRRNS.$renderArea.children('.richColumn').each(function()
-    { processColumn($(this), conf); });
+    var $topCols = editRRNS.$renderArea.children('.richColumn');
+    setColWidths($topCols);
+    $topCols.each(function() { processColumn($(this), conf); });
 
     var md = $.extend(true, {richRendererConfigs: {}}, blist.dataset.metadata);
     md.richRendererConfigs[editRRNS.renderType] = conf;
@@ -325,17 +361,23 @@ editRRNS.updateConfig = function()
 editRRNS.renderCurrentLayout = function()
 {
     editRRNS.richRenderer.renderLayout();
+    editRRNS.setColSizes();
 
+    editRRNS.setUpColumns(editRRNS.$renderArea.children('.richColumn'));
+};
+
+editRRNS.setUpColumns = function($col)
+{
     // Set up fields
-    editRRNS.$renderArea.find('.richItem, .richLabel')
+    $col.find('.richItem, .richLabel')
         .addClass('fieldItem inLayout');
-    editRRNS.$renderArea.find('.staticLabel:empty').addClass('defaultData')
+    $col.find('.staticLabel:empty').addClass('defaultData')
         .text('(Static text)');
-    editRRNS.$renderArea.find('.fieldItem').each(function()
+    $col.find('.fieldItem').each(function()
         { editRRNS.enableFieldItem($(this)); });
 
     // Set up rows
-    editRRNS.$renderArea.find('.richLine').each(function()
+    $col.find('.richLine').each(function()
         {
             var $row = $(this);
             editRRNS.makeDroppable($row, '.fieldItem',
@@ -349,14 +391,50 @@ editRRNS.renderCurrentLayout = function()
         });
 
     // Set up columns
-    editRRNS.$renderArea.find('.richColumn').each(function()
+    $col.find('.richColumn').andSelf().each(function()
     {
-        var $col = $(this);
-        $col.prepend($.tag({tagName: 'a', href: '#Add_Row',
-            'class': ['add', 'addRow'], title: 'Add row to this column',
+        var $c = $(this);
+        $c.prepend($.tag({tagName: 'a', href: '#Add_Row',
+            'class': ['add', 'addRow'], title: 'Add a row to this column',
             contents: {tagName: 'span', 'class': 'icon'}}));
 
-        editRRNS.makeDroppable($col, '.richLine');
+        editRRNS.makeDroppable($c, '.richLine');
+    });
+};
+
+editRRNS.setColSizes = function()
+{
+    // Need to adjust sizes for all columns to make them fit
+    var $fixedCols = $();
+    var $freeCols = $();
+    $('.renderArea > .richColumn').each(function()
+    {
+        var $c = $(this);
+        if ($.isBlank($c.data('rr-width')) || $c.data('rr-width').endsWith('%'))
+        { $freeCols = $freeCols.add($c); }
+        else
+        { $fixedCols = $fixedCols.add($c); }
+    });
+
+    var totalW = $('.renderArea').width();
+    // Need to tweak columns with specified widths for borders & padding
+    $fixedCols.each(function()
+    {
+        var $c = $(this);
+        if ($c.data('rr-width').endsWith('%'))
+        {
+            $c.css('width', $c.data('rr-width'));
+            // Equivalent to ($c.width - ($c.outerWidth - $c.width))
+            $c.width($c.width() * 2 - $c.outerWidth(true));
+        }
+        totalW -= $c.outerWidth(true);
+    });
+
+    var perW = Math.floor(1 / $freeCols.length * totalW) - 1;
+    $freeCols.each(function()
+    {
+        var $c = $(this);
+        $c.width(perW - ($c.outerWidth(true) - $c.width()));
     });
 };
 
@@ -416,6 +494,19 @@ editRRNS.initLayout = function()
             $.tag({tagName: 'div', 'class': 'richLine'}));
         editRRNS.updateConfig();
     });
+
+    $('#layoutContainer .addColumn').click(function(e)
+    {
+        e.preventDefault();
+        var $newCol = $.tag({tagName: 'div', 'class': 'richColumn',
+                contents: {tagName: 'div', 'class': 'richLine'}})
+        $('.renderArea').append($newCol);
+
+        editRRNS.setColSizes();
+
+        editRRNS.updateConfig();
+        editRRNS.setUpColumns($newCol);
+    });
 };
 
 
@@ -450,6 +541,7 @@ editRRNS.initSaving = function()
         e.preventDefault();
         blist.dataset.reload(function()
         {
+            editRRNS.resetConfig();
             editRRNS.renderCurrentLayout();
             editRRNS.renderCurrentRow();
         });

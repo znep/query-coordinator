@@ -49,6 +49,14 @@
     .renderArea
       height: 100%
 
+    .addColumn
+      @include sprite-repeater-icons
+      position: absolute
+      right: -7px
+      top: 30%
+      // One above resize handle for sidebar
+      z-index: 100000
+
   .dropIndicator
     background-color: #666666
     display: inline-block
@@ -67,8 +75,6 @@
     @include border-radius(0.3em)
     padding: 0.2em
     position: relative
-    // Temporary...
-    width: 100%
     &:hover
       border-color: #333333
       @include box-shadow(0, 0, 3px, rgba(0, 0, 0, 0.5))

@@ -183,7 +183,14 @@
 
     var getStyles = function(conf)
     {
-        return $.isBlank(conf.styles) ? {} : {style: conf.styles};
+        var styles = {};
+        if (!$.isBlank(conf.styles))
+        {
+            styles.style = conf.styles;
+            styles['data-rr-width'] = conf.styles.width;
+            styles['data-rr-height'] = conf.styles.height;
+        }
+        return styles;
     };
 
     var addColumn = function(rrObj, col, $parent)

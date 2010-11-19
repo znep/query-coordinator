@@ -23,6 +23,10 @@
             {
                 $paneContainer.animate({ marginLeft: $wizard.outerWidth(false) * currentPaneIndex * -1 });
                 $wizard.animate({ height: $currentPane.outerHeight(true) });
+
+                // prevent people from tabbing to the next page
+                $wizard.find(':input,a').attr('tabindex', -1);
+                $currentPane.find(':input,a').attr('tabindex', '');
             };
 
             var updateButtonState = function()

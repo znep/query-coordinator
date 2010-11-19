@@ -57,8 +57,7 @@ $(function()
         };
         if (submittedView === null)
         {
-            submittedView = new Dataset(viewData);
-            submittedView.saveNew(successCallback, errorCallback);
+            new Dataset(viewData).saveNew(successCallback, errorCallback);
         }
         else
         {
@@ -69,7 +68,7 @@ $(function()
 
 // WIZARD
     $wizard.wizard({
-        cancelPath: '/home',
+        cancelPath: '/profile',
         finishCallback: function()
         {
             submittedView.redirectTo();

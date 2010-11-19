@@ -327,13 +327,12 @@ $(function() { _.defer(function()
     });
 
     // Wire up all possible elements in the sidebars to refresh the preview
-    $.live('#gridSidebar input[type=text], #gridSidebar select, #gridSidebar input[type=file]',
+    $.live('#gridSidebar input[type=text], #gridSidebar textarea, #gridSidebar select, #gridSidebar input[type=file], ' +
+           '#gridSidebar input[type=checkbox], #gridSidebar input[type=radio]',
            'change', publishNS.handleValueChanged);
     if ($.browser.msie)
     { $.live('#gridSidebar input[type=checkbox], #gridSidebar input[type=radio]',
              'click', publishNS.handleValueChanged); }
-    $.live('#gridSidebar input[type=checkbox], #gridSidebar input[type=radio]',
-           'change', publishNS.handleValueChanged);
     $.live('#gridSidebar .slider', 'slide', publishNS.deferredHandleValueChanged);
     $.live('#gridSidebar .colorControl', 'color_change', publishNS.deferredHandleValueChanged);
 

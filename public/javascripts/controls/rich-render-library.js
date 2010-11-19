@@ -189,6 +189,7 @@
             styles.style = conf.styles;
             styles['data-rr-width'] = conf.styles.width;
             styles['data-rr-height'] = conf.styles.height;
+            styles['data-rr-styles'] = $.htmlEscape(JSON.stringify(conf.styles));
         }
         return styles;
     };

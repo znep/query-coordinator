@@ -272,7 +272,7 @@ editRRNS.updateConfig = function()
 {
     var getStyles = function($item)
     {
-        var s = {};
+        var s = $item.data('rr-styles') || {};
         _.each(['width', 'height'], function(p)
         {
             if (!$.isBlank($item.data('rr-' + p)))
@@ -429,7 +429,7 @@ editRRNS.setColSizes = function()
 
     // First calculate what the percents currently add up to, and give a
     // reasonable default to any column without a percent
-    var newPercent = Math.floor(100 / $freeCols.length);
+    var newPercent = Math.floor(100 / ($freeCols.length - 1));
     var totalPercent = 0;
     $freeCols.each(function()
     {

@@ -30,16 +30,17 @@
             init: function ()
             {
                 var currentObj = this;
-                var $domObj = currentObj.$dom();
-                $domObj.data("socrataVisualization", currentObj);
+                var $mainDom = $(currentObj.currentDom);
+                $mainDom.data("socrataVisualization", currentObj);
 
+                $mainDom.resize(function(e) { doResize(currentObj, e); });
+
+                var $domObj = currentObj.$dom();
                 if ($domObj.siblings('#vizError').length < 1)
                 { $domObj.before('<div id="vizError" class="mainError"></div>'); }
                 $domObj.siblings('#vizError').hide();
 
                 currentObj._maxRows = 500;
-
-                $domObj.resize(function(e) { doResize(currentObj, e); });
 
                 if (!currentObj.settings.view.valid)
                 {
@@ -75,7 +76,7 @@
                 {
                     var $d = $(this.currentDom);
                     this._$dom = $.tag({tagName: 'div', 'class': 'fullHeight',
-                        id: 'visualizationArea'});
+                        id: $d.attr('id') + '_visualizationArea'});
                     $d.append(this._$dom);
                 }
                 return this._$dom;

@@ -178,13 +178,13 @@
             {
                 var mapObj = this;
                 mapObj._hideBingTiles = false;
-                mapObj.$dom().removeData('socrataVisualization');
+                $(mapObj.currentDom).removeData('socrataVisualization');
                 mapObj.$dom().empty();
                 if (mapObj._legend) { mapObj._legend.$dom.hide(); }
                 // We need to change the ID so that maps (such as ESRI) recognize
                 // something has changed, and reload properly
                 mapObj.$dom().attr('id', mapObj.$dom().attr('id') + 'n');
-                mapObj.$dom().socrataMap(mapObj.settings);
+                $(mapObj.currentDom).socrataMap(mapObj.settings);
             },
 
             needsPageRefresh: function()

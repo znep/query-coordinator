@@ -51,14 +51,17 @@
       width: 2px
 
     .dropFinder
+      display: inline-block
       left: 0
       position: relative
       top: 0
+      vertical-align: top
 
   #layoutContainer
     border-top: 1px solid $color_chrome_box_border
     padding: 1em
       bottom: 4em
+    z-index: 1
 
     .addColumn
       @include sprite-repeater-icons
@@ -67,6 +70,9 @@
       top: 30%
       // One above resize handle for sidebar
       z-index: 100000
+
+  .ui-draggable-dragging
+    z-index: 100001
 
   .dropIndicator
     background-color: #666666
@@ -110,6 +116,7 @@
       left: 50%
       margin-left: -7px
       position: absolute
+      z-index: 2
       &:hover
         @include opacity(1)
 
@@ -159,6 +166,7 @@
 
   #gridSidebar
     position: absolute
+    z-index: 0
 
     .fieldPalette .sectionContent
       padding: 0.75em
@@ -179,6 +187,8 @@
       @include border-radius(0.3em)
       display: inline-block
       padding: 0.2em
+      .ie7 &
+        display: inline
       &.columnLabel
         font-size: 1.2em
         font-weight: bold

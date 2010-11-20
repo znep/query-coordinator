@@ -167,18 +167,19 @@ editRRNS.enableFieldItem = function($item)
         }
     }
 
-    editRRNS.makeDraggable($item, 'field', function(e, ui)
+    editRRNS.makeDraggable($item, 'field', false, function(e, ui)
     {
         editRRNS.itemDragging(ui, 'left', 'top');
     });
 };
 
 
-editRRNS.makeDraggable = function($item, itemType, dragHandler, setWidth)
+editRRNS.makeDraggable = function($item, itemType, handle, dragHandler, setWidth)
 {
     $item.draggable({
         appendTo: $('.mainContainer'),
         cursorAt: {top: 5, left: 15},
+        handle: handle,
         helper: 'clone',
         opacity: 0.8,
         revert: 'invalid',
@@ -189,7 +190,12 @@ editRRNS.makeDraggable = function($item, itemType, dragHandler, setWidth)
             $t.addClass('itemDragging');
             editRRNS.$trashButton.find('.itemType').text(itemType.capitalize());
         },
-        stop: function() { $(this).removeClass('itemDragging'); },
+        stop: function()
+        {
+            $(this).removeClass('itemDragging');
+            editRRNS.$dropCont = null;
+            editRRNS.$dropIndicator.remove();
+        },
         drag: dragHandler
     });
 };
@@ -243,6 +249,7 @@ editRRNS.makeDroppable = function($item, selector, dropped, isTrash)
                 { $cont.append($item); }
                 else
                 {
+                    if ($item.index(editRRNS.$dropBefore) >= 0) { return; }
                     editRRNS.$dropBefore.before($item);
                 }
 
@@ -366,6 +373,26 @@ editRRNS.renderCurrentLayout = function()
     editRRNS.setUpColumns(editRRNS.$renderArea.children('.richColumn'));
 };
 
+editRRNS.setUpRows = function($rows)
+{
+    $rows.each(function()
+        {
+            var $row = $(this);
+            $row.prepend($.tag({tagName: 'a', href: '#Drag', title: 'Move row',
+                'class': ['dragHandle', 'rowDrag']}));
+
+            $row.hover(function() { $(this).parent().removeClass('hover'); },
+                function() { $(this).parent().addClass('hover'); });
+
+            editRRNS.makeDroppable($row, '.fieldItem',
+                function($item) { editRRNS.enableFieldItem($item); });
+            editRRNS.makeDraggable($row, 'row', '.rowDrag', function(e, ui)
+            {
+                editRRNS.itemDragging(ui, 'top', 'left');
+            }, true);
+        });
+};
+
 editRRNS.setUpColumns = function($col)
 {
     // Set up fields
@@ -377,22 +404,7 @@ editRRNS.setUpColumns = function($col)
         { editRRNS.enableFieldItem($(this)); });
 
     // Set up rows
-    $col.find('.richLine').each(function()
-        {
-            var $row = $(this);
-            $row.prepend($.tag({tagName: 'a', href: '#Drag', title: 'Move row',
-                'class': ['dragHandle', 'rowDrag']}));
-
-            $row.hover(function() { $(this).parent().removeClass('hover'); },
-                function() { $(this).parent().addClass('hover'); });
-
-            editRRNS.makeDroppable($row, '.fieldItem',
-                function($item) { editRRNS.enableFieldItem($item); });
-            editRRNS.makeDraggable($row, 'row', function(e, ui)
-            {
-                editRRNS.itemDragging(ui, 'top', 'left');
-            }, true);
-        });
+    editRRNS.setUpRows($col.find('.richLine'))
 
     // Set up columns
     $col.find('.richColumn').andSelf().each(function()
@@ -408,7 +420,7 @@ editRRNS.setUpColumns = function($col)
             function() { $(this).removeClass('hover'); });
 
         editRRNS.makeDroppable($c, '.richLine');
-        editRRNS.makeDraggable($c, 'column', function(e, ui)
+        editRRNS.makeDraggable($c, 'column', '.columnDrag', function(e, ui)
             { editRRNS.itemDragging(ui, 'left', 'top'); });
     });
 };
@@ -509,8 +521,9 @@ editRRNS.initLayout = function()
     $.live('.renderArea .addRow', 'click ', function(e)
     {
         e.preventDefault();
-        $(this).closest('.richColumn').append(
-            $.tag({tagName: 'div', 'class': 'richLine'}));
+        var $newRow = $.tag({tagName: 'div', 'class': 'richLine'});
+        $(this).closest('.richColumn').append($newRow);
+        editRRNS.setUpRows($newRow);
         editRRNS.updateConfig();
     });
 

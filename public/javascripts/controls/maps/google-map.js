@@ -203,10 +203,15 @@
                                     google.maps.event.removeListener(
                                         mapObj._extentChanging);
                                     mapObj._extentChanging = false;
+                                    var newViewport = mapObj.getViewport();
+                                    if (_.isEqual(
+                                        mapObj.settings.view.displayFormat.viewport,
+                                        newViewport))
+                                    { return; }
                                     mapObj.settings.view.update({
                                         displayFormat: $.extend({},
                                             mapObj.settings.view.displayFormat,
-                                            { viewport: mapObj.getViewport() })
+                                            { viewport: newViewport })
                                     }, false, true);
                                     mapObj.updateRowsByViewport(null, true);
                                 }

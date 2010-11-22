@@ -151,7 +151,7 @@ editRRNS.itemDragging = function(ui, primaryPos, linePos)
 editRRNS.enableFieldItem = function($item)
 {
     if ($item.hasClass('staticLabel'))
-    { $item.attr('title', 'Label with fixed text'); }
+    { $item.attr('title', 'Label with fixed text (double-click to edit)'); }
     else
     {
         var col = blist.dataset.columnForTCID($item.data('tcId'));
@@ -167,14 +167,15 @@ editRRNS.enableFieldItem = function($item)
         }
     }
 
-    editRRNS.makeDraggable($item, 'field', false, function(e, ui)
+    editRRNS.makeDraggable($item, 'field', false, null, null, function(e, ui)
     {
         editRRNS.itemDragging(ui, 'left', 'top');
     });
 };
 
 
-editRRNS.makeDraggable = function($item, itemType, handle, dragHandler, setWidth)
+editRRNS.makeDraggable = function($item, itemType, handle,
+    startHandler, stopHandler, dragHandler, setWidth)
 {
     $item.draggable({
         appendTo: $('.mainContainer'),
@@ -189,12 +190,14 @@ editRRNS.makeDraggable = function($item, itemType, handle, dragHandler, setWidth
             if (setWidth) { ui.helper.width($t.width()); }
             $t.addClass('itemDragging');
             editRRNS.$trashButton.find('.itemType').text(itemType.capitalize());
+            if (_.isFunction(startHandler)) { startHandler(e, ui); }
         },
-        stop: function()
+        stop: function(e, ui)
         {
             $(this).removeClass('itemDragging');
             editRRNS.$dropCont = null;
             editRRNS.$dropIndicator.remove();
+            if (_.isFunction(stopHandler)) { stopHandler(e, ui); }
         },
         drag: dragHandler
     });
@@ -386,10 +389,11 @@ editRRNS.setUpRows = function($rows)
 
             editRRNS.makeDroppable($row, '.fieldItem',
                 function($item) { editRRNS.enableFieldItem($item); });
-            editRRNS.makeDraggable($row, 'row', '.rowDrag', function(e, ui)
-            {
-                editRRNS.itemDragging(ui, 'top', 'left');
-            }, true);
+            editRRNS.makeDraggable($row, 'row', '.rowDrag', null, null,
+                function(e, ui)
+                {
+                    editRRNS.itemDragging(ui, 'top', 'left');
+                }, true);
         });
 };
 
@@ -420,8 +424,14 @@ editRRNS.setUpColumns = function($col)
             function() { $(this).removeClass('hover'); });
 
         editRRNS.makeDroppable($c, '.richLine');
-        editRRNS.makeDraggable($c, 'column', '.columnDrag', function(e, ui)
-            { editRRNS.itemDragging(ui, 'left', 'top'); });
+        // When dragging a column, enlarge the main area just a bit, since
+        // columns are forced-width, and might not allow room for the dropfinder
+        // at the right edge
+        editRRNS.makeDraggable($c, 'column', '.columnDrag',
+            function()
+            { editRRNS.$renderArea.width(editRRNS.$renderArea.width() + 5); },
+            function() { editRRNS.$renderArea.css('width', 'auto'); },
+            function(e, ui) { editRRNS.itemDragging(ui, 'left', 'top'); });
     });
 };
 
@@ -515,6 +525,62 @@ editRRNS.initLayout = function()
         editRRNS.renderType = rt;
         editRRNS.resetConfig();
         editRRNS.renderCurrentRow();
+    });
+
+    // Edit static text
+    var finishEdit = function($input, doSave)
+    {
+        editRRNS.$staticEditor = null;
+
+        var $label = $input.closest('.staticLabel');
+        var t = $label.data('origText');
+        var newText;
+        if (doSave) { newText = t = $input.value(); }
+
+        if ($.isBlank(t))
+        {
+            $label.addClass('defaultData');
+            t = '(Static text)';
+        }
+        else { $label.removeClass('defaultData'); }
+        $label.removeClass('inEdit');
+        $label.empty().text(t);
+        $label.draggable('enable');
+
+        if (doSave && newText != $label.data('origText'))
+        { editRRNS.updateConfig(); }
+    };
+
+    $.live('.renderArea .staticLabel', 'dblclick', function(e)
+    {
+        var $t = $(this);
+        if ($t.hasClass('inEdit')) { return; }
+
+        var t = '';
+        if (!$t.hasClass('defaultData')) { t = $t.text(); }
+        $t.data('origText', t);
+        $t.draggable('disable');
+        $t.addClass('inEdit');
+
+        $t.empty().append($.tag({tagName: 'input', type: 'text',
+            'class': 'staticEditor'}));
+        var $i = $t.find('input');
+        $i.value(t);
+        $i.focus().select();
+
+        editRRNS.$staticEditor = $i;
+    });
+    $.live('.renderArea .staticLabel input', 'keypress', function(e)
+    {
+        if (e.keyCode == 27) { finishEdit($(this)); }
+        else if (e.keyCode == 13) { finishEdit($(this), true); }
+    });
+
+    $(document).mousedown(function(e)
+    {
+        if (!$.isBlank(editRRNS.$staticEditor) &&
+            editRRNS.$staticEditor.index(e.target) < 0)
+        { finishEdit(editRRNS.$staticEditor, true); }
     });
 
     // Hook up rows & columns

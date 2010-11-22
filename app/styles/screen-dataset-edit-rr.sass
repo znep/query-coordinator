@@ -1,3 +1,8 @@
+body
+  overflow: hidden
+  .siteInnerWrapper
+    padding-bottom: 4.1em
+
 .contentBox
   padding: 0
 
@@ -66,8 +71,8 @@
     .addColumn
       @include sprite-repeater-icons
       position: absolute
-      right: -7px
-      top: 30%
+      right: 0
+      top: 3em
       // One above resize handle for sidebar
       z-index: 100000
 
@@ -100,7 +105,9 @@
     border: 1px solid #999999
     @include border-radius(0.3em)
     padding: 0.2em
+      top: 1em
     position: relative
+    width: 100%
     &:hover, &.ui-draggable-dragging
       border-color: #333333
       @include box-shadow(0, 0, 3px, rgba(0, 0, 0, 0.5))
@@ -131,9 +138,9 @@
       top: -1px
 
     .dragHandle
-      bottom: 0
-      height: 7px
+      height: 10px
       left: 0
+      top: 0
       width: 100%
 
   .richLine
@@ -141,6 +148,7 @@
     @include border-radius(0.3em)
     min-height: 1.5em
     padding: 0.1em
+      left: 0.8em
     position: relative
 
     &:hover, &.ui-draggable-dragging
@@ -162,7 +170,7 @@
       height: 100%
       left: 0
       top: 0
-      width: 7px
+      width: 10px
 
   #gridSidebar
     position: absolute
@@ -205,6 +213,12 @@
 
 .fieldItem
   cursor: pointer
+  &.staticLabel
+    input
+      font-size: 1em
+      padding:
+        bottom: 0
+        top: 0
 
 .navRenderType .navigation
   .removeItem

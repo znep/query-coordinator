@@ -65,6 +65,8 @@
             });
             $('.newTemplateModal form').validate();
 
+            $.uniform.update($embedForm.find(config.templateSelector).val($('#embed_default').val()));
+
             updatePublishCode($embedForm, config, template);
         });
 

@@ -290,7 +290,13 @@
         { seriesType = 'spline'; }
         if (seriesType == 'timeline') { seriesType = 'line'; }
         if (seriesType == 'donut') { seriesType = 'pie'; }
-        if (seriesType == 'bubble') { seriesType = 'scatter'; }
+        if (seriesType == 'bubble')
+        {
+            if (chartObj.settings.view.displayFormat.showLine)
+            { seriesType = 'line'; }
+            else
+            { seriesType = 'scatter'; }
+        }
 
         // Main config
         var chartConfig =

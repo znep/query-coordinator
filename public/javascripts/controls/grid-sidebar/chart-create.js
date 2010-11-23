@@ -71,6 +71,9 @@
     var baseColor = {text: 'Base Color', name: 'displayFormat.color', type: 'color',
         defaultValue: "#042656"};
 
+    var showLine = {text: 'showLine', name: 'displayFormat.showLine',
+        type: 'checkbox' };
+
 
     /*** Helpers ***/
 
@@ -318,7 +321,7 @@
             // Bubble chart
             configBubble,
             dataBubble,
-            basicAdv(Dataset.chart.types.bubble, [legendPos]),
+            basicAdv(Dataset.chart.types.bubble, [legendPos, showLine]),
 
             // Column chart
             basicConfig(Dataset.chart.types.column,

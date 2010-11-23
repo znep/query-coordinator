@@ -209,7 +209,9 @@
       <ul class='navigation'>
         <%- if @view.has_rights?('update_view') -%>
         <li class='edit'><a class='button'
-          href='<%= @view.href %>/edit_rr'>Edit Layout</a></li>
+          href='<%= @view.href %>/edit_rr?defaultRender=richList'>
+          Edit Layout
+        </a></li>
         <%- end -%>
         <li><a href='#start' title='View first page' class='start button'>
           <span class='icon'></span>
@@ -271,7 +273,7 @@
       <ul class='navigation'>
         <%- if @view.has_rights?('update_view') -%>
         <li class='edit'><a class='button'
-          href='<%= @view.href %>/edit_rr'>Edit Layout</a></li>
+          href='<%= @view.href %>/edit_rr?defaultRender=page'>Edit Layout</a></li>
         <%- end -%>
         <li><a href='#start' title='View first row' class='start button'>
           <span class='icon'></span>

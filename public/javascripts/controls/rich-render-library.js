@@ -165,6 +165,7 @@
                         {
                             _.each(r.fields, function(f)
                             {
+                                if (f.type != 'columnData') { return; }
                                 var c = rrObj.settings.view.columnForTCID(
                                     f.tableColumnId)
                                 if (!$.isBlank(c)) { cols.push(c); }
@@ -214,6 +215,7 @@
     {
         var col = field.column ||
             rrObj.settings.view.columnForTCID(field.tableColumnId);
+        if (field.type.startsWith('column') && $.isBlank(col)) { return; }
 
         var commonAttrs = getStyles(field);
 

@@ -53,7 +53,8 @@ editRRNS.initSidebar = function()
                             '.columnLabel@data-tcId': 'column.tableColumnId',
                             '.columnData': '(Data for #{column.name!})',
                             '.columnData@data-tcId': 'column.tableColumnId',
-                            '.columnData@class+': 'columnId#{column.id}'
+                            '.columnData@class+':
+                                'columnId#{column.id} #{column.renderTypeName}'
                         }
                     }
                 },
@@ -363,8 +364,23 @@ editRRNS.updateConfig = function()
     setColWidths($topCols);
     $topCols.each(function() { processColumn($(this), conf); });
 
+    // Check if there are actually any fields
+    var hasFields;
+    hasFields = function(cols)
+    { return _.any(cols || [], function(c)
+            { return _.any(c.rows || [], function(r)
+                {
+                    return hasFields(r.columns) ||
+                        (r.fields || []).length > 0;
+                });
+            });
+    };
+
     var md = $.extend(true, {richRendererConfigs: {}}, blist.dataset.metadata);
-    md.richRendererConfigs[editRRNS.renderType] = conf;
+    if (hasFields(conf.columns))
+    { md.richRendererConfigs[editRRNS.renderType] = conf; }
+    else
+    { delete md.richRendererConfigs[editRRNS.renderType]; }
     blist.dataset.update({metadata: md});
 };
 
@@ -451,7 +467,7 @@ editRRNS.setColSizes = function()
 
     // First calculate what the percents currently add up to, and give a
     // reasonable default to any column without a percent
-    var newPercent = Math.floor(100 / ($freeCols.length - 1));
+    var newPercent = Math.floor(100 / Math.max(1, $freeCols.length - 1));
     var totalPercent = 0;
     $freeCols.each(function()
     {
@@ -477,6 +493,18 @@ editRRNS.setColSizes = function()
     });
 };
 
+editRRNS.addTopLevelColumn = function()
+{
+    var $newCol = $.tag({tagName: 'div', 'class': 'richColumn',
+            contents: {tagName: 'div', 'class': 'richLine'}});
+    editRRNS.$renderArea.append($newCol);
+
+    editRRNS.setColSizes();
+
+    editRRNS.updateConfig();
+    editRRNS.setUpColumns($newCol);
+};
+
 editRRNS.resetConfig = function()
 {
     var config = ((blist.dataset.metadata || {}).richRendererConfigs ||
@@ -488,7 +516,9 @@ editRRNS.resetConfig = function()
 editRRNS.initLayout = function()
 {
     // Hook up rendering
-    editRRNS.renderType = 'fatRow';
+    editRRNS.renderType = $.urlParam(window.location.href,
+            'defaultRender') || 'fatRow';
+    if (editRRNS.renderType == 'richList') { editRRNS.renderType = 'fatRow'; }
 
     editRRNS.richRenderer = editRRNS.$renderArea.richRenderer({
         defaultItem: '(Data for #{column.name})',
@@ -504,12 +534,24 @@ editRRNS.initLayout = function()
     editRRNS.$trashButton = editRRNS.$container.find('.navigation .removeItem');
     editRRNS.makeDroppable(editRRNS.$trashButton,
         '.fieldItem.inLayout, .richLine, .richColumn', null, true);
+
+    editRRNS.$container.find('a.clearLayout').click(function(e)
+    {
+        e.preventDefault();
+        editRRNS.$renderArea.empty();
+        editRRNS.addTopLevelColumn();
+    });
+
+
     editRRNS.renderCurrentRow();
 
     editRRNS.makeDroppable($('.renderArea'), '.richColumn');
 
     // Handle switching types
     $('#renderTypeOptions').pillButtons();
+    $('#renderTypeOptions li a').removeClass('active');
+    $('#renderTypeOptions li .' + editRRNS.renderType.toLowerCase())
+        .addClass('active');
     $('#renderTypeOptions a').click(function(e)
     {
         e.preventDefault();
@@ -596,14 +638,7 @@ editRRNS.initLayout = function()
     $('#layoutContainer .addColumn').click(function(e)
     {
         e.preventDefault();
-        var $newCol = $.tag({tagName: 'div', 'class': 'richColumn',
-                contents: {tagName: 'div', 'class': 'richLine'}})
-        $('.renderArea').append($newCol);
-
-        editRRNS.setColSizes();
-
-        editRRNS.updateConfig();
-        editRRNS.setUpColumns($newCol);
+        editRRNS.addTopLevelColumn();
     });
 };
 

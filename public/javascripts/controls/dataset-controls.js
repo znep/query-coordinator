@@ -49,8 +49,12 @@ blist.datasetControls.unsavedViewPrompt = function()
         if ($.isBlank(origHref)) { return; }
 
         var href = origHref;
-        if (origHref.startsWith(window.location.href))
-        { href = origHref.slice(window.location.href.length); }
+        // Need to tweak window.location.href, since it may have a hash
+        var adjLoc = window.location.href;
+        if (window.location.hash.length > 0)
+        { adjLoc = adjLoc.slice(0, -window.location.hash.length); }
+        if (origHref.startsWith(adjLoc))
+        { href = origHref.slice(adjLoc.length); }
 
         // Skip local URLs
         if (href.charAt(0) == '#') { return; }

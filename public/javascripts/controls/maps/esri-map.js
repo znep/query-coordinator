@@ -130,7 +130,7 @@
 
                 });
                 if (blist.dataset.isArcGISDataset())
-                { fetchExternalFeatureSet(mapObj); }
+                { mapObj.fetchExternalFeatureSet(); }
             },
 
             buildIdentifyTask: function()
@@ -402,9 +402,15 @@
                 if (mapObj.map.graphics) { mapObj.map.graphics.clear(); }
             },
 
+            fetchExternalFeatureSet: function()
+            {
+                fetchExternalFeatureSet(this);
+            },
+
             renderFeatureData: function()
             {
                 var mapObj = this;
+                if (mapObj._initialLoad) { delete mapObj._initialLoad; }
 
                 var attributes = _.map(mapObj._featureSet.fieldAliases,
                     function(alias, key)
@@ -673,21 +679,106 @@
     {
         mapObj._maxRows = 0; // Don't bother loading from the core server.
 
+        var applyFilters = function()
+        {
+            var filterCond = mapObj.settings.view.query.filterCondition;
+            if (_.isEmpty(filterCond)) { return '1=1'; }
+
+            var template = {
+                'EQUALS':                 '<%= field %> = <%= val1 %>',
+                'NOT_EQUALS':             '<%= field %> != <%= val1 %>',
+                'STARTS_WITH':            '<%= field %> LIKE \'<%= val1 %>%\'',
+                'CONTAINS':               '<%= field %> LIKE \'%<%= val1 %>%\'',
+                'IS_NOT_BLANK':           '<%= field %> IS NOT NULL',
+                'IS_BLANK':               '<%= field %> IS NULL',
+                'LESS_THAN':              '<%= field %> < <%= val1 %>',
+                'LESS_THAN_OR_EQUALS':    '<%= field %> <= <%= val1 %>',
+                'GREATER_THAN':           '<%= field %> > <%= val1 %>',
+                'GREATER_THAN_OR_EQUALS': '<%= field %> >= <%= val1 %>',
+                'BETWEEN':
+                    '<%= field %> BETWEEN <%= val1 %> AND <%= val2 %>'
+            };
+            var transformFilterToSQL = function (filter)
+            {
+                var fieldName = processFilter(filter.children[0]);
+                var field = _.detect(mapObj._featureLayer.fields,
+                    function(field) { return field.name == fieldName });
+
+                var value = [];
+                value.push(processFilter(filter.children[1]));
+                value.push(processFilter(filter.children[2]));
+
+                // From http://help.arcgis.com/EN/webapi/javascript/arcgis/help/jsapi/field.htm#type
+                // Can be one of the following:
+                // "esriFieldTypeSmallInteger", "esriFieldTypeInteger",
+                // "esriFieldTypeSingle",       "esriFieldTypeDouble",
+                // "esriFieldTypeString",       "esriFieldTypeDate",
+                // "esriFieldTypeOID",          "esriFieldTypeGeometry",
+                // "esriFieldTypeBlob",         "esriFieldTypeRaster",
+                // "esriFieldTypeGUID",         "esriFieldTypeGlobalID",
+                // "esriFieldTypeXML"
+
+                // TODO: Need to figure out which types are PostgreSQL strings.
+                if (_.include(["String"], field.type.substr(13))
+                    && !_.include(['STARTS_WITH', 'CONTAINS'], filter.value))
+                { value = _.map(value, function(v)
+                    { return "'" + v.replace(/'/g, "\\'") + "'"; }); }
+                else
+                { value = _.map(value, function(v) { return v.replace(/;.*$/, ''); }) }
+
+                return _.template(template[filter.value],
+                    {field: fieldName, val1: value[0], val2: value[1] });
+            };
+            var processFilter = function(filter)
+            {
+                if (!filter) { return ''; }
+                switch (filter.type)
+                {
+                    case 'operator':
+                        switch(filter.value)
+                        {
+                            case 'AND':
+                                return _.map(filter.children, function(filter)
+                                    { return processFilter(filter); }).join(' AND ');
+                            case 'OR':
+                                return _.map(filter.children, function(filter)
+                                    { return processFilter(filter); }).join(' OR ');
+                            default:
+                                return transformFilterToSQL(filter);
+                        }
+                        break;
+                    case 'column':
+                        return blist.dataset.columnForID(filter.columnId).name;
+                    case 'literal':
+                        return filter.value;
+                }
+            };
+            return processFilter(filterCond);
+        };
+
+        dojo.require('esri.layers.FeatureLayer');
         dojo.require('esri.tasks.query');
+        dojo.addOnLoad(function()
+        {
+
+        mapObj._featureLayer = new esri.layers.FeatureLayer(blist.dataset.description);
+
+        dojo.connect(mapObj._featureLayer, 'onLoad', function()
+        {
         var query = new esri.tasks.Query();
         query.outFields = ['*'];
         query.returnGeometry = true;
         query.outSpatialReference = new esri.SpatialReference({ wkid: 102100 });
-        query.where = '1=1';
+        query.where = applyFilters();
 
-        new esri.tasks.QueryTask(blist.dataset.description)
-            .execute(query, function(featureSet)
-                {
-                    mapObj._featureSet = featureSet;
-                    mapObj._runningQuery = false;
-                    mapObj._featuresLoaded = true;
-                    if (mapObj._mapLoaded) { mapObj.renderFeatureData(); }
-                });
+        mapObj._featureLayer._task.execute(query, function(featureSet)
+            {
+                mapObj._featureSet = featureSet;
+                mapObj._runningQuery = false;
+                mapObj._featuresLoaded = true;
+                mapObj.finishLoading();
+                if (mapObj._mapLoaded) { mapObj.renderFeatureData(); }
+            });
         mapObj._runningQuery = true;
 
         mapObj.startLoading();
@@ -702,6 +793,8 @@
                 alert('A data request has taken too long and timed out.');
             }
         }, 60000);
+        });
+        });
     };
 
 })(jQuery);

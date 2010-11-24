@@ -175,6 +175,9 @@
                 else
                 { vizObj.reloadVisualization(); }
 
+                if (blist.dataset.isArcGISDataset())
+                { vizObj.fetchExternalFeatureSet(); }
+
                 vizObj.settings.view.getRows(0, vizObj._maxRows,
                     function()
                     {

@@ -207,7 +207,8 @@
       <div class='columnHeaders'></div>
       <div class='rowList'></div>
       <ul class='navigation'>
-        <%- if @view.has_rights?('update_view') -%>
+      <%- if @current_user.has_right?('create_datasets') &&
+          @view.has_rights?('update_view') -%>
         <li class='edit'><a class='button'
           href='<%= @view.href %>/edit_rr?defaultRender=richList'>
           Edit Layout
@@ -271,7 +272,8 @@
         <%- end -%>
       </div>
       <ul class='navigation'>
-        <%- if @view.has_rights?('update_view') -%>
+        <%- if @current_user.has_right?('create_datasets') &&
+            @view.has_rights?('update_view') -%>
         <li class='edit'><a class='button'
           href='<%= @view.href %>/edit_rr?defaultRender=page'>Edit Layout</a></li>
         <%- end -%>

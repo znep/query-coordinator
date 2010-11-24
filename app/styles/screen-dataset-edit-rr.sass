@@ -47,7 +47,7 @@ body
     position: relative
 
   .renderArea
-    height: 100%
+    overflow: hidden
     position: relative
 
     .dropIndicator
@@ -61,6 +61,30 @@ body
       position: relative
       top: 0
       vertical-align: top
+
+  .previewContainer
+    background-color: #ffffff
+    border-top: 1px solid $color_chrome_box_border
+    height: 50%
+    margin: 0 -1em
+    overflow: hidden
+    h2
+      background-color: #eeeeee
+      border-bottom: 1px solid $color_chrome_box_border
+      font-size: 1.3em
+      font-weight: bold
+      line-height: 1.3em
+      margin: 0
+        bottom: 0.5em
+      padding: 0.3em 1em
+    .previewArea
+      height: 100%
+      overflow: auto
+      .row
+        padding: 1em 1em 0.5em
+    .ui-resizable-handle
+      height: 26px
+      top: 0
 
   #layoutContainer
     border-top: 1px solid $color_chrome_box_border
@@ -101,7 +125,7 @@ body
     visibility: hidden
     z-index: 1
 
-  .richColumn
+  .ui-draggable.richColumn
     border: 1px solid #999999
     @include border-radius(0.3em)
     padding: 0.2em
@@ -143,7 +167,7 @@ body
       top: 0
       width: 100%
 
-  .richLine
+  .ui-draggable.richLine
     border: 1px dashed #999999
     @include border-radius(0.3em)
     min-height: 1.5em
@@ -221,6 +245,8 @@ body
         top: 0
 
 .navRenderType .navigation
+  border-top: 1px solid $color_chrome_box_border
+  padding-top: 0.5em
   .removeItem
     background-color: #ffbbbb
     @include border-radius(0.3em)

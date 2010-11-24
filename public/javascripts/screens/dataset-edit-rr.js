@@ -1,25 +1,36 @@
 var editRRNS = blist.namespace.fetch('blist.editRR');
 
 // ------------ Resizing -------------
+editRRNS.adjustSizes = function()
+{
+    // match page height
+    var $content = editRRNS.$container;
+    var $contentBox = $('.contentBox');
+    var $innerWrapper = $('.siteInnerWrapper');
+    $content.height($(window).height() -
+        $('#siteHeader').outerHeight(false) -
+        ($innerWrapper.outerHeight(true) - $innerWrapper.height()) -
+        $('.contentBox .header').outerHeight(true) -
+        ($contentBox.outerHeight(true) - $contentBox.height()) -
+        ($content.outerHeight(true) - $content.height()));
+
+    editRRNS.$renderArea.height($content.height() -
+            editRRNS.$previewContainer.outerHeight(true));
+    editRRNS.$previewContainer.find('.previewArea').height(Math.max(0,
+                editRRNS.$previewContainer.height() -
+                editRRNS.$previewContainer
+                    .children('h2').outerHeight(true)));
+
+    _.defer(function() { editRRNS.setColSizes(); });
+};
+
 editRRNS.initResizing = function()
 {
-    var adjustSizes = function()
-    {
-        // match page height
-        var $content = $('#layoutContainer');
-        var $contentBox = $('.contentBox');
-        var $innerWrapper = $('.siteInnerWrapper');
-        $content.height($(window).height() -
-            $('#siteHeader').outerHeight(false) -
-            ($innerWrapper.outerHeight(true) - $innerWrapper.height()) -
-            $('.contentBox .header').outerHeight(true) -
-            ($contentBox.outerHeight(true) - $contentBox.height()) -
-            ($content.outerHeight(true) - $content.height()));
-
-        editRRNS.setColSizes();
-    };
-    adjustSizes();
-    $(window).resize(adjustSizes);
+    editRRNS.adjustSizes();
+    // Need defer here and above for setColSizes because sidebar defers
+    // adjusting the width of the main area; so we need to defer beyond that
+    $(window).resize(function()
+            { _.defer(function() { editRRNS.adjustSizes(); }); });
 };
 
 
@@ -271,11 +282,29 @@ editRRNS.makeDroppable = function($item, selector, dropped, isTrash)
 // Do row load and render
 editRRNS.renderCurrentRow = function()
 {
-    blist.dataset.getRows(editRRNS.navigation.currentPage(), 1, function(rows)
-    {
-        if (rows.length == 1)
-        { editRRNS.richRenderer.renderRow(editRRNS.$renderArea, rows[0]); }
-    });
+    editRRNS.$secondPreview.hide();
+    var pageSize = editRRNS.renderType == 'fatRow' ? 2 : 1;
+    blist.dataset.getRows(editRRNS.navigation.currentPage(), pageSize,
+        function(rows)
+        {
+            _.each(rows, function(r)
+            {
+                if (r.index == editRRNS.navigation.currentPage())
+                {
+                    editRRNS.richRenderer.renderRow(editRRNS.$renderArea, r);
+                    editRRNS.previewRenderer.renderRow(
+                        editRRNS.$previewArea, r);
+                }
+                else
+                {
+                    editRRNS.$secondPreview.empty().append(
+                        editRRNS.$previewArea.children().clone());
+                    editRRNS.previewRenderer.renderRow(
+                        editRRNS.$secondPreview, r);
+                    editRRNS.$secondPreview.show();
+                }
+            });
+        });
 };
 
 // Pull and update the new config
@@ -382,14 +411,19 @@ editRRNS.updateConfig = function()
     else
     { delete md.richRendererConfigs[editRRNS.renderType]; }
     blist.dataset.update({metadata: md});
+
+    editRRNS.resetConfig();
+    editRRNS.renderCurrentRow();
 };
 
 editRRNS.renderCurrentLayout = function()
 {
     editRRNS.richRenderer.renderLayout();
-    editRRNS.setColSizes();
+    editRRNS.previewRenderer.renderLayout();
 
     editRRNS.setUpColumns(editRRNS.$renderArea.children('.richColumn'));
+
+    editRRNS.setColSizes();
 };
 
 editRRNS.setUpRows = function($rows)
@@ -456,7 +490,7 @@ editRRNS.setColSizes = function()
     // Need to adjust sizes for all columns to make them fit
     var $fixedCols = $();
     var $freeCols = $();
-    $('.renderArea > .richColumn').each(function()
+    editRRNS.$renderArea.children('.richColumn').each(function()
     {
         var $c = $(this);
         if ($.isBlank($c.data('rr-width')) || $c.data('rr-width').endsWith('%'))
@@ -477,7 +511,7 @@ editRRNS.setColSizes = function()
         totalPercent += parseInt($c.data('rr-width'));
     });
 
-    var totalW = $('.renderArea').width();
+    var totalW = editRRNS.$renderArea.width();
     // Need to tweak columns with specified widths for borders & padding
     $fixedCols.each(function() { totalW -= $(this).outerWidth(true); });
 
@@ -510,6 +544,7 @@ editRRNS.resetConfig = function()
     var config = ((blist.dataset.metadata || {}).richRendererConfigs ||
         {})[editRRNS.renderType] || {columns: [{rows: [{}]}]};
     editRRNS.richRenderer.setConfig(config);
+    editRRNS.previewRenderer.setConfig(config);
     editRRNS.renderCurrentLayout();
 };
 
@@ -523,6 +558,15 @@ editRRNS.initLayout = function()
     editRRNS.richRenderer = editRRNS.$renderArea.richRenderer({
         defaultItem: '(Data for #{column.name})',
         view: blist.dataset });
+    editRRNS.$previewContainer.resizable({handles: 'n',
+            maxHeight: editRRNS.$container.height() * 0.8, minHeight: 30,
+            stop: function()
+            {
+                editRRNS.$previewContainer.css('top', 0).css('width', 'auto');
+                editRRNS.adjustSizes();
+            }});
+    editRRNS.previewRenderer = editRRNS.$previewArea
+        .richRenderer({ view: blist.dataset });
 
     editRRNS.resetConfig();
 
@@ -545,7 +589,7 @@ editRRNS.initLayout = function()
 
     editRRNS.renderCurrentRow();
 
-    editRRNS.makeDroppable($('.renderArea'), '.richColumn');
+    editRRNS.makeDroppable(editRRNS.$renderArea, '.richColumn');
 
     // Handle switching types
     $('#renderTypeOptions').pillButtons();
@@ -675,7 +719,6 @@ editRRNS.initSaving = function()
         blist.dataset.reload(function()
         {
             editRRNS.resetConfig();
-            editRRNS.renderCurrentLayout();
             editRRNS.renderCurrentRow();
         });
     });
@@ -686,6 +729,11 @@ editRRNS.initSaving = function()
 (function($) {
     editRRNS.$container = $('#layoutContainer');
     editRRNS.$renderArea = editRRNS.$container.find('.renderArea');
+    editRRNS.$previewContainer = editRRNS.$container.find('.previewContainer');
+    editRRNS.$previewArea = editRRNS.$previewContainer
+        .find('.previewArea .row:first');
+    editRRNS.$secondPreview = editRRNS.$previewContainer
+        .find('.previewArea .row:last');
 
     editRRNS.$dropIndicator = $.tag({tagName: 'span', 'class': 'dropIndicator'});
     editRRNS.$dropFinder = $.tag({tagName: 'span', 'class': 'dropFinder',

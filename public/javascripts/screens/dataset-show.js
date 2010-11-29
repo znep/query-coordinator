@@ -170,23 +170,8 @@ $(function()
 
     // grid
     datasetPageNS.$dataGrid = blist.$display;
-    if (datasetPageNS.$dataGrid.length > 0)
-    {
-        if (blist.dataset.isGrid())
-        {
-            // Fire up guided filter if available
-            if (!_.isUndefined(blist.dataset.metadata) &&
-                !_.isUndefined(blist.dataset.metadata.facets))
-            {
-                blist.$display.bind('dataset_ready', function()
-                { _.defer(function() {
-                    datasetPageNS.sidebar.show('filter.guidedFilter');
-                }); });
-            }
-        }
-
-        if (!isAltRT) { datasetPageNS.initGrid(); }
-    }
+    if (datasetPageNS.$dataGrid.length > 0 && !isAltRT)
+    { datasetPageNS.initGrid(); }
 
     // sidebar and sidebar tabs
     datasetPageNS.sidebar = $('#gridSidebar').gridSidebar({
@@ -228,6 +213,24 @@ $(function()
         else
         { $a.closest('li').hide(); }
     });
+
+    // Hook up faceted browsing if available
+    if (!$.isBlank((blist.dataset.metadata || {}).facets))
+    {
+        var initLoad = false;
+        // Listen for when we get a row count -- this signifies the first batch
+        // of rows is loaded, so we should be all ready to go
+        blist.dataset.bind('row_count_change', function()
+        {
+            if (!initLoad)
+            {
+                _.defer(function() {
+                    datasetPageNS.sidebar.show('filter.guidedFilter');
+                });
+                initLoad = true;
+            }
+        });
+    }
 
     blist.dataset.bind('columns_changed',
         function() { datasetPageNS.sidebar.updateEnabledSubPanes(); });

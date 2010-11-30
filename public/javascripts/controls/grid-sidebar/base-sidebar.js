@@ -1149,8 +1149,9 @@
                     $input.value(defValue);
                     if ($input.is('.fileChooser :input'))
                     {
-                        $input.closest('.fileChooser')
-                            .data('ajaxupload')._input.value = '';
+                        var i = $input.closest('.fileChooser')
+                            .data('ajaxupload')._input;
+                        if (!$.isBlank(i)) { i.value = ''; }
                     }
                     // Fire events to make sure uniform controls are updated,
                     // and text prompts are reset

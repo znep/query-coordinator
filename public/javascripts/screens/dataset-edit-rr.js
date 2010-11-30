@@ -412,13 +412,13 @@ editRRNS.updateConfig = function()
     { delete md.richRendererConfigs[editRRNS.renderType]; }
     blist.dataset.update({metadata: md});
 
-    editRRNS.resetConfig();
+    editRRNS.resetConfig(true);
     editRRNS.renderCurrentRow();
 };
 
-editRRNS.renderCurrentLayout = function()
+editRRNS.renderCurrentLayout = function(previewOnly)
 {
-    editRRNS.richRenderer.renderLayout();
+    if (!previewOnly) { editRRNS.richRenderer.renderLayout(); }
     editRRNS.previewRenderer.renderLayout();
 
     editRRNS.setUpColumns(editRRNS.$renderArea.children('.richColumn'));
@@ -511,7 +511,8 @@ editRRNS.setColSizes = function()
         totalPercent += parseInt($c.data('rr-width'));
     });
 
-    var totalW = editRRNS.$renderArea.width();
+    // clientWidth to account for scrollbar, -3 to account for drop shadow on hover
+    var totalW = editRRNS.$renderArea[0].clientWidth - 3;
     // Need to tweak columns with specified widths for borders & padding
     $fixedCols.each(function() { totalW -= $(this).outerWidth(true); });
 
@@ -539,13 +540,13 @@ editRRNS.addTopLevelColumn = function()
     editRRNS.setUpColumns($newCol);
 };
 
-editRRNS.resetConfig = function()
+editRRNS.resetConfig = function(previewOnly)
 {
     var config = ((blist.dataset.metadata || {}).richRendererConfigs ||
         {})[editRRNS.renderType] || {columns: [{rows: [{}]}]};
-    editRRNS.richRenderer.setConfig(config);
+    if (!previewOnly) { editRRNS.richRenderer.setConfig(config); }
     editRRNS.previewRenderer.setConfig(config);
-    editRRNS.renderCurrentLayout();
+    editRRNS.renderCurrentLayout(previewOnly);
 };
 
 editRRNS.initLayout = function()

@@ -100,8 +100,10 @@ blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
 
     var saveView = function()
     {
-        var name = $dialog.find('.viewName').val();
-        if ($.isBlank(name))
+        var $name = $dialog.find('.viewName');
+        var isNew = $name.is(':visible');
+        var name = $name.val();
+        if (isNew && $.isBlank(name))
         {
             $dialog.find('.mainError').text('A view name is required');
             return;
@@ -112,8 +114,8 @@ blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
         var doSave = function()
         {
             $dialog.find('.loadingOverlay, .loadingSpinner').removeClass('hide');
-            blist.dataset.name = name;
-            blist.dataset.saveNew(
+            if (isNew) { blist.dataset.name = name; }
+            blist.dataset['save' + (isNew ? 'New' : '')](
                 // Success
                 function(view)
                 {

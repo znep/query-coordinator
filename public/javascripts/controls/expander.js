@@ -86,7 +86,7 @@
         expanderCollapsedClass: 'downArrow',
         expanderExpandedClass: 'upArrow',
         expandSelector: '.expand',
-        forceExpander: true,
+        forceExpander: false,
         moveExpandTrigger: false,
         preExpandCallback: function($expander) {},
         resizeFinishCallback: function() {}

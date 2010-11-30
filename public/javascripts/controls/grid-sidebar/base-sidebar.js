@@ -2744,7 +2744,8 @@
             { doCallback(); }
         });
 
-        addWizards(sidebarObj, $pane, config);
+        // Disable for now
+        //addWizards(sidebarObj, $pane, config);
 
         // Once we've hooked up everything standard, render any custom content.
         _.each(customSections, function(cs, uid)

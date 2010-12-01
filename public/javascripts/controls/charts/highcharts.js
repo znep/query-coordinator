@@ -722,11 +722,11 @@
         if (header) { tooltip.push('<b>' + header + '</b>'); }
 
         var self = this;
-        tooltip = tooltip.concat(_.map(['y', 'color', 'size'], function(prop)
+        tooltip = _.uniq(tooltip.concat(_.map(['y', 'color', 'size'], function(prop)
         {
             if (!self.point.pretty[prop]) { return null; }
             return self.point.label[prop] + ': ' + self.point.pretty[prop];
-        }));
+        })));
 
         return _.compact(tooltip).join('<br/>');
     };

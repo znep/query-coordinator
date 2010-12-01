@@ -137,7 +137,7 @@
     {
         // Limit number of rows
         if (!$.isBlank(blist.dataset.totalRows) &&
-            blist.dataset.totalRows > (chartConfig.displayLimit || {}).points || 500)
+            blist.dataset.totalRows > ((chartConfig.displayLimit || {}).points || 500))
         { return false; }
         return true;
     };

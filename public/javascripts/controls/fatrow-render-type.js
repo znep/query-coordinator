@@ -51,14 +51,21 @@
 
                 $domObj.bind('resize', function(e) { resizeHandle(frObj); });
 
+                frObj._shown = false;
                 var mainUpdate = function()
                 {
+                    if (!frObj._shown) { return; }
                     renderHeaders(frObj);
                     frObj.richRenderer.renderLayout();
                     renderCurrentPage(frObj);
                 };
                 frObj.settings.view.bind('columns_changed', mainUpdate);
-                frObj.$dom().bind('show', mainUpdate);
+                frObj.$dom().bind('show', function()
+                {
+                    frObj._shown = true;
+                    mainUpdate();
+                });
+                frObj.$dom().bind('hide', function() { frObj._shown = false; });
             },
 
             $dom: function()

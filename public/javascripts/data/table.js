@@ -55,7 +55,8 @@
         window.console.timeEnd = function(what)
         {
             var diff = new Date().getTime() - traceTimes[what];
-            if (diff > 500) { $.debug('[Time] ' + what + ': ' + diff); }
+            //if (diff > 500)
+            { $.debug('[Time] ' + what + ': ' + diff); }
             delete traceTimes[what];
         };
     }
@@ -2227,7 +2228,8 @@
             end("updateLayout.size.scrollUpdate");
 
             begin("updateLayout.renderRows");
-            renderRows();
+            // This is already covered by the scroll event above
+            //renderRows();
             end("updateLayout.renderRows");
             begin("updateLayout.configWidths");
             configureWidths();
@@ -2273,6 +2275,7 @@
         var rowsScrolledTo = 0;
         var onScroll = function()
         {
+            begin('onScroll');
             var scrollHoriz = $scrolls[0].scrollLeft;
             var horizontalChange = false;
             if (scrollHoriz != headerScrolledTo)
@@ -2322,6 +2325,7 @@
             {
                 doVertScroll();
             }
+            end('onScroll');
         };
 
 
@@ -3991,14 +3995,14 @@
             }
             end("initRows.handle");
 
-            begin("initRows.layout");
-            $lockedRender.empty();
-            $render.empty();
+            begin("initRows.cleaning");
+            $lockedRender[0].innerHTML = '';
+            $render[0].innerHTML = '';
             renderedRows = {};
             dirtyRows = {};
+            end("initRows.cleaning");
 
             updateLayout();
-            end("initRows.layout");
             //inside.css("display", "block");
         };
 

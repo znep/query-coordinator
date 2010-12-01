@@ -1051,6 +1051,9 @@ blist.namespace.fetch('blist.data.types');
             deleteable: true,
             group: groupDate,
             formats: dateTimeFormats,
+            // Giving an exact format to parse is quite a bit faster
+            // than a general parse (at least in FF; not as much for IE)
+            stringParse: 'yyyy-MM-ddTHH:mm:ss',
             stringFormat: 'yyyy-MM-ddTHH:mm:ss'
         },
 

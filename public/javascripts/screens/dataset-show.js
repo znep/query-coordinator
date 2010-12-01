@@ -32,7 +32,11 @@ blist.datasetPage.showDefaultRenderType = function()
     if (!_.any(datasetPageNS.$renderTypes, function($rt)
         { return $rt.is(':visible'); })) { return; }
 
-    _.each(datasetPageNS.$renderTypes, function($rt) { $rt.addClass('hide'); });
+    _.each(datasetPageNS.$renderTypes, function($rt)
+    {
+        $rt.addClass('hide');
+        $rt.trigger('hide');
+    });
     $('body').removeClass('richRenderType');
     $(window).resize();
     // If initially loaded page view, the grid hasn't been rendered yet

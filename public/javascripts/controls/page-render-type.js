@@ -48,13 +48,20 @@
                         { renderCurrentRow(prtObj); })
                     .navigation({pageSize: 1, view: prtObj.settings.view});
 
+                prtObj._shown = false;
                 var mainUpdate = function()
                 {
+                    if (!prtObj._shown) { return; }
                     prtObj.richRenderer.renderLayout();
                     renderCurrentRow(prtObj);
                 };
                 prtObj.settings.view.bind('columns_changed', mainUpdate);
-                prtObj.$dom().bind('show', mainUpdate);
+                prtObj.$dom().bind('show', function()
+                {
+                    prtObj._shown = true;
+                    mainUpdate();
+                });
+                prtObj.$dom().bind('hide', function() { prtObj._shown = false; });
 
                 $(document).bind(blist.events.DISPLAY_ROW, function(e, rowIndex)
                         { prtObj.navigation.displayPage(rowIndex); });

@@ -71,7 +71,7 @@
     var baseColor = {text: 'Base Color', name: 'displayFormat.color', type: 'color',
         defaultValue: "#042656"};
 
-    var showLine = {text: 'showLine', name: 'displayFormat.showLine',
+    var showLine = {text: 'Draw a Line', name: 'displayFormat.showLine',
         type: 'checkbox' };
 
 

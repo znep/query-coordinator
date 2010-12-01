@@ -1665,7 +1665,8 @@
                     args.item.isTableColumn, curValue || defValue);
 
                 if (isTable(sidebarObj)) { wrapper['class'].push('hasTable'); }
-                wrapper.contents = $.extend(commonAttrs(args.item),
+                wrapper.contents = $.extend(commonAttrs($.extend({}, args.item,
+                    {extraClass: 'columnSelectControl'})),
                     {tagName: 'select', contents: options,
                     'data-isTableColumn': args.item.isTableColumn,
                     'data-columnOptions': $.htmlEscape(JSON.stringify(

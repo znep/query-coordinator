@@ -603,8 +603,16 @@
                 var $pane = renderPane(sidebarObj, config, data);
                 sidebarObj._dirtyPanes[config.name] = false;
                 sidebarObj._$panes[config.name] = $pane;
-                sidebarObj._$outerPanes[outerConfig.name]
-                    .find('.panes').append($pane);
+
+                var $header = sidebarObj._$outerPanes[outerConfig.name]
+                    .find('.headerLink[data-paneName=' + config.name + ']');
+                if ($header.length > 0) { $header.after($pane); }
+                else
+                {
+                    sidebarObj._$outerPanes[outerConfig.name]
+                        .find('.panes').append($pane);
+                }
+
                 $pane.hide();
             },
 
@@ -641,25 +649,28 @@
                 {
                     sidebarObj._currentPane = nameParts.secondary;
                     sidebarObj.$currentOuterPane()
-                        .find('.paneSelect a[data-paneName=' +
+                        .find('.headerLink[data-paneName=' +
                             nameParts.secondary + ']').addClass('selected');
                     if (!$.isBlank(config.wizard))
                     { sidebarObj.$currentPane().addClass('initialLoad'); }
 
-                    // IE7 leaves weird debris when closing if we use an
-                    // animation
-                    if ($.browser.msie && $.browser.majorVersion <= 7)
+                    _.defer(function()
                     {
-                        sidebarObj.$currentPane().show();
-                        _.defer(function() { checkForm(sidebarObj); });
-                    }
-                    else
-                    {
-                        sidebarObj.$currentPane()
-                            .fadeIn(function() { checkForm(sidebarObj); });
-                    }
+                        // IE7 leaves weird debris when closing if we use an
+                        // animation
+                        if ($.browser.msie && $.browser.majorVersion <= 7)
+                        {
+                            sidebarObj.$currentPane().show();
+                            _.defer(function() { checkForm(sidebarObj); });
+                        }
+                        else
+                        {
+                            sidebarObj.$currentPane()
+                                .slideDown(function() { checkForm(sidebarObj); });
+                        }
+                    });
 
-                    sidebarObj.$currentPane().find('.scrollContent')
+                    sidebarObj.$currentOuterPane().find('.panes')
                         .scroll(function(e)
                         { updateWizardVisibility(sidebarObj); });
                 }
@@ -682,13 +693,15 @@
 
                     if ($.device.ipad)
                     {
-                        var scroller = new iScroll(sidebarObj.$currentPane()
-                            .find('.scrollContentInner').get(0));
+                        var scroller = new iScroll(sidebarObj.$currentOuterPane()
+                            .find('.panes').get(0));
                     }
                 }
                 else
                 {
-                    showPaneSelectWizard(sidebarObj, outerConfig);
+                    // Open the last pane by default
+                    sidebarObj.$currentOuterPane()
+                        .find('.headerLink:not(.disabled):last').click();
                 }
 
                 sidebarObj.settings.onSidebarShown(nameParts.primary,
@@ -754,21 +767,18 @@
 
                 if ($.isBlank(sidebarObj.$currentOuterPane())) { return; }
 
-                var updatedLinks = false;
-                var $paneSelect = sidebarObj.$currentOuterPane()
-                    .find('.paneSelect');
                 var updateEnabled = function(sp, isEnabled)
                 {
                     var disSub = sp.disabledSubtitle;
                     if (_.isFunction(disSub))
                     { disSub = disSub(); }
 
-                    var $a = $paneSelect.find('[data-panename="' + sp.name + '"]');
+                    var $a = sidebarObj.$currentOuterPane()
+                        .find('.headerLink[data-panename="' + sp.name + '"]');
                     if ($a.hasClass('disabled') != !isEnabled)
                     {
-                        updatedLinks = true;
                         $a.toggleClass('disabled', !isEnabled)
-                            .attr('title', isEnabled ?  sp.subtitle : disSub);
+                            .data('title', isEnabled ?  sp.subtitle : disSub);
                     }
 
                     if (sp.name == sidebarObj._currentPane)
@@ -806,10 +816,6 @@
                     else
                     { updateEnabled(sp, sp.onlyIf === true); }
                 });
-
-                if (updatedLinks && $.isBlank(sidebarObj._currentPane) &&
-                    sidebarObj.$dom().is(':visible'))
-                { showPaneSelectWizard(sidebarObj, outerConfig); }
             },
 
             isPaneEnabled: function(paneName)
@@ -1239,10 +1245,32 @@
         if (!$.isBlank(sidebarObj.$currentPane()))
         { sidebarObj.resetForm(sidebarObj.$currentPane()); }
 
-        sidebarObj.$dom().find('.outerPane').hide()
-            .find('.paneSelect a.selected').removeClass('selected');
-        sidebarObj.$dom().find('.sidebarPane').hide()
-            .find('.scrollContent').unbind('scroll');
+        if (!$.isBlank(sidebarObj.$currentOuterPane()))
+        {
+            sidebarObj.$currentOuterPane().hide()
+                .find('.panes').unbind('scroll')
+                .find('.headerLink.selected').removeClass('selected');
+        }
+
+        if (!$.isBlank(sidebarObj.$currentPane()))
+        {
+            // We only want to close the current pane; but it gets a bit complex...
+            // We'd like to animate it closed; but animations only work if it is
+            // truly visible to begin with.  Since we just hid the outerPane,
+            // it might not be visible, so just hide it in that case.  But
+            // if another pane is being shown next, then the outerPane will be
+            // re-shown, and we can safely animate this.  We need to defer to
+            // give time for that re-show to happen.
+            var $curPane = sidebarObj.$currentPane();
+            _.defer(function()
+            {
+                // IE7 still doesn't animate properly, so skip it
+                if ((!$.browser.msie || $.browser.majorVersion > 7) &&
+                    $curPane.is(':visible')) { $curPane.slideUp(); }
+                else { $curPane.hide(); }
+            });
+        }
+
         sidebarObj._currentOuterPane = null;
         sidebarObj._currentPane = null;
         clearWizard(sidebarObj);
@@ -1274,9 +1302,9 @@
             (sidebarObj.$neighbor().outerWidth() -
                 sidebarObj.$neighbor().width()));
 
-        // Adjust current pane to correct height, since it is what scrolls
-        var $pane = sidebarObj.$dom().find('.outerPane:visible');
-        var $scrollContent = $pane.find('.sidebarPane:visible .scrollContent');
+        // Adjust panes section to correct height, since it is what scrolls
+        var $pane = sidebarObj.$currentOuterPane();
+        var $scrollContent = $pane.find('.panes');
         adjH += $pane.outerHeight() - $scrollContent.height();
         $scrollContent.height(gridHeight - adjH);
     };
@@ -1321,7 +1349,7 @@
 
         if ($.isBlank(sidebarObj.$currentPane())) { return; }
 
-        var $pane = sidebarObj.$currentPane().find('.scrollContent');
+        var $pane = sidebarObj.$currentPane();
         var paneTop = $pane.offset().top;
         var paneBottom = paneTop + $pane.height();
         var itemBottom = itemTop + $item.outerHeight();
@@ -1983,30 +2011,35 @@
             'class': 'outerPane'});
         var rData = {title: config.title,
             subPanes: _.sortBy(config.subPanes || {}, function(sp)
-                { return sp.priority || sp.title; })};
+                { return sp.priority || sp.title; }).reverse()};
         var directive = {
             '.title': 'title',
-            '.paneSelect li':
+            '.headerLink':
             {
                 'pane<-subPanes':
                 {
-                    'a': 'pane.title',
-                    'a@href+': 'pane.title',
-                    'a@title': 'pane.subtitle',
-                    'a@data-paneName': 'pane.name',
-                    '@class+': ' #{pane.name}'
+                    '.title': 'pane.title',
+                    '@href+': 'pane.title',
+                    '@data-title': 'pane.subtitle',
+                    '@data-paneName': 'pane.name',
+                    '@class+': '#{pane.name}'
                 }
-            },
-            '.paneSelect@class+': function(a)
-            { return _.isEmpty(a.context.subPanes) ? ' hide' : ''; }
+            }
         };
 
         $outerPane.append($.renderTemplate('outerPane', rData, directive));
 
-        $outerPane.find('.paneSelect a').click(function(e)
+        $outerPane.find('.headerLink').click(function(e)
         {
             e.preventDefault();
             selectPane(sidebarObj, $(this), config.name);
+        })
+        .each(function()
+        {
+            var $this = $(this);
+            $this.socrataTip({ content: function()
+                    { return '<p>' + $(this).data('title').clean() + '</p>'; },
+                killTitle: true, positions: 'left' });
         });
 
         sidebarObj.$dom().append($outerPane);
@@ -2927,7 +2960,7 @@
         };
 
         /* Adjust scroll position to make sure wizard component is in view */
-        var $pane = sidebarObj.$currentPane().find('.scrollContent');
+        var $pane = sidebarObj.$currentPane();
         var paneTop = $pane.offset().top;
         var top = $item.offset().top;
         var paneBottom = paneTop + $pane.height();
@@ -3002,8 +3035,8 @@
                 if ($item.closest('.formSection').length > 0)
                 { $item = $item.closest('.formSection'); }
 
-                if ($item.nextAll('.scrollContent').length > 0)
-                { $item = $item.nextAll('.scrollContent')
+                if ($item.nextAll('.paneContent').length > 0)
+                { $item = $item.nextAll('.paneContent')
                     .find('.formSection:visible, .finishButtons:visible'); }
                 else
                 { $item = $item
@@ -3067,56 +3100,6 @@
                 $.debug('no handler for "' + action + '"', $item);
                 break;
         }
-    };
-
-    var showPaneSelectWizard = function(sidebarObj, config)
-    {
-        var $paneSel = sidebarObj.$currentOuterPane()
-            .find('.paneSelect');
-        if ($paneSel.isSocrataTip()) { $paneSel.socrataTip().destroy(); }
-
-        var paneOptions = [];
-        $paneSel.find('a').each(function()
-        {
-            var $a = $(this);
-            var name = $a.attr('data-paneName');
-            paneOptions.push({tagName: 'li',
-                contents: [
-                    {tagName: 'a', href: '#' + name, 'data-paneName': name,
-                    'class': $a.attr('class'), contents: $a.text()},
-                    {tagName: 'span',
-                        // This is returning with &nbsp;, so replace them all
-                        // with normal spaces
-                        contents: $a.attr('title').clean()}
-                ]});
-        });
-
-        var $content = $.tag({tagName: 'div', 'class': 'paneSelectWizard',
-            contents: [
-                {tagName: 'h3', 'class': 'title',
-                contents: [config.subtitle || config.title + ' this ' +
-                    blist.dataset.displayName]},
-                {tagName: 'p',
-                contents:
-                    'Start by making one of the following selections above:'},
-                {tagName: 'ul', 'class': 'paneOptions', contents: paneOptions}
-            ]});
-
-        $content.find('ul a').click(function(e)
-        {
-            e.preventDefault();
-            selectPane(sidebarObj, $(this), config.name);
-        });
-
-        sidebarObj._$currentWizard = sidebarObj._$mainWizardItem = $paneSel;
-        sidebarObj._currentWizardLeft = $paneSel.offset().left;
-        sidebarObj._currentWizardTop = $paneSel.offset().top;
-
-        // Defer this call because if we just destroyed the tip, we need
-        // to wait for it to fully go away
-        _.defer(function()
-        { $paneSel.socrataTip({content: $content, trigger: 'now',
-                closeOnClick: false, shrinkToFit: false}); });
     };
 
     var selectPane = function(sidebarObj, $a, baseName)

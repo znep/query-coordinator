@@ -152,6 +152,21 @@
   &.end #{$subselector}
     background-position: 0 -559px
 
+// icons/accordion_icons.png
+@mixin sprite-accordion-icons($subselector: '.icon')
+  #{$subselector}
+    @include text-hiding
+    background-image: url(/stylesheets/images/icons/accordion_icons.png)
+    height: 13px
+    width: 13px
+
+  &.expanded #{$subselector},
+  &.selected #{$subselector}
+    background-position: 0 0
+  #{$subselector},
+  &.collapsed #{$subselector}
+    background-position: 0 -13px
+
 // icons/type_icons_30.png
 @mixin sprite-type-icons-30($subselector: '.icon')
   #{$subselector},

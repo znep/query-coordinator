@@ -73,87 +73,105 @@
         font-size: 1.3em
         text-transform: none
 
-    .paneSelect
+    .headerLink
+      @include sprite-accordion-icons
       background-color: #eeeeee
-      border-bottom: 1px solid #cccccc
-      margin-bottom: 0.5em
-      padding: 0.25em 0.75em
-
-      li
-        float: left
-        margin: 0 0.5em
-
-        a
-          display: inline-block
-          font-size: 1.1em
-          font-weight: bold
-          padding: 4px 5px
-
-          &.selected
-            background-color: #ffffff
-            border: 1px solid #cccccc
-            color: #333333
-            cursor: default
-            padding: 3px 4px
-          &.disabled
-            color: #999999
-            cursor: default
+      border: 1px solid #cccccc
+        left: 0
+        right: 0
+      color: #333333
+      display: block
+      font-size: 1.1em
+      font-weight: bold
+      margin-bottom: 0.25em
+      padding: 0.5em 0.75em
+      &.selected
+        background-color: #989898
+        border: none
+        color: #ffffff
+        cursor: default
+        margin-bottom: 0
+      &.disabled
+        color: #999999
+        cursor: default
+        .icon
+          display: none
+      .ie7 &
+        position: relative
+      .icon
+        float: right
 
     &#gridSidebar_outer_edit
       .mainTitleBlock
-        @include vertical-gradient($sidebar_edit_tab_color_top, #e3b000)
-      .paneSelect
+        @include vertical-gradient($sidebar_edit_tab_color_top, #d3a000)
+      .headerLink
         background-color: #fff0a0
         border-color: #f0d060
+        &.selected
+          background-color: $sidebar_edit_tab_color_top
 
     &#gridSidebar_outer_moreViews
       .mainTitleBlock
         @include vertical-gradient($sidebar_more_views_tab_color_top, #a22f9b)
-      .paneSelect
+      .headerLink
         background-color: #edb6ea
         border-color: #d984d4
+        &.selected
+          background-color: $sidebar_more_views_tab_color_top
 
     &#gridSidebar_outer_filter
       .mainTitleBlock
         @include vertical-gradient($sidebar_filter_tab_color_top, #004478)
-      .paneSelect
+      .headerLink
         background-color: #e1f4fd
         border-color: #afe5ff
+        &.selected
+          background-color: $sidebar_filter_tab_color_top
 
     &#gridSidebar_outer_visualize
       .mainTitleBlock
         @include vertical-gradient($sidebar_visualize_tab_color_top, #005030)
-      .paneSelect
+      .headerLink
         background-color: #e0ffe8
         border-color: #a0ffb0
+        &.selected
+          background-color: $sidebar_visualize_tab_color_top
 
     &#gridSidebar_outer_export
       .mainTitleBlock
         @include vertical-gradient($sidebar_export_tab_color_top, #4ca9d0)
-      .paneSelect
+      .headerLink
         background-color: #b1dfed
         border-color: #7db5bf
+        &.selected
+          background-color: $sidebar_export_tab_color_top
 
     &#gridSidebar_outer_feed
       .mainTitleBlock
         @include vertical-gradient($sidebar_feed_tab_color_top, #d06000)
-      .paneSelect
+      .headerLink
         background-color: #ffe3b0
         border-color: #ffc060
+        &.selected
+          background-color: $sidebar_feed_tab_color_top
 
     &#gridSidebar_outer_embed
       .mainTitleBlock
         @include vertical-gradient($sidebar_embed_tab_color_top, #d0383b)
-      .paneSelect
+      .headerLink
         background-color: #fde1e1
         border-color: #ffa0a0
+        &.selected
+          background-color: $sidebar_embed_tab_color_top
 
     &#gridSidebar_outer_about
       .mainTitleBlock
         @include vertical-gradient($sidebar_about_tab_color_top, #78202a)
-      .paneSelect
+      .headerLink
         background-color: #ffc3d1
         border-color: #f8a0a8
+        &.selected
+          background-color: $sidebar_about_tab_color_top
 
     // publisher tabs
     &#gridSidebar_outer_metadata
@@ -180,9 +198,13 @@
       .mainTitleBlock
         @include vertical-gradient($sidebar_other_tab_color_top, #ce3078)
 
+    .panes
+      overflow: auto
+      position: relative
+
   .sidebarPane
     @include disabled-overlay(8em)
-    position: relative
+    padding-top: 0.5em
 
     &.initialLoad .formSection
       filter: alpha(opacity = 30)
@@ -195,8 +217,7 @@
         color: #999999
         font-size: 1.1em
 
-    .scrollContent
-      overflow: auto
+    .paneContent
       padding: 0.75em
       position: relative
 
@@ -211,7 +232,9 @@
         .ie7 &
           position: absolute
           + .formHeader
-            margin-left: 2.3em
+            left: 2.3em
+            margin-left: 0
+            position: relative
 
       &.selectable > .uniform.checker, &.selectable .sectionSelect
         display: inline-block
@@ -566,23 +589,6 @@
         float: left
         .noCss3 &
           padding-left: 10px
-
-.paneSelectWizard
-  .title
-    margin-bottom: 1em
-    text-transform: none
-
-  ul li
-    font-size: 1.1em
-    line-height: 1.1em
-    margin-top: 1em
-    a
-      display: block
-      font-weight: bold
-
-      &.disabled
-        color: #999999
-        cursor: default
 
 // sidebar button styles
 #sidebarOptions

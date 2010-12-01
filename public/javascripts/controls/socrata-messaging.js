@@ -83,7 +83,8 @@
                 }
 
                 $domObj.bt({
-                        content: content,
+                        content: _.isFunction(content) ? null : content,
+                        contentSelector: _.isFunction(content) ? content : null,
 
                         fill: '#fefbef',
                         strokeStyle: '#999999',

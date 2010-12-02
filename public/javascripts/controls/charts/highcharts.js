@@ -387,7 +387,7 @@
 
 
         // Set up config for this particular chart type
-        var typeConfig = {allowPointSelect: true};
+        var typeConfig = {allowPointSelect: true, showInLegend: true};
 
         // Disable marker if no point size set
         if (chartObj.settings.view.displayFormat.pointSize == '0')

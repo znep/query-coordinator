@@ -128,7 +128,7 @@
                 $dataTarget = $fieldLine.children('label');
                 if ($fieldLine.is('.static'))
                 {
-                    $dataTarget = $dataTarget.children('span');
+                    $dataTarget = $dataTarget.children('.inputWrapper').children('span');
                 }
                 else if ($fieldLine.is('.text'))
                 {
@@ -136,7 +136,7 @@
                 }
             }
 
-            if (!$.isBlank($fieldLine.find('> label > span').attr('data-custom-facetClear')))
+            if (!$.isBlank($fieldLine.find('.inputWrapper > span').attr('data-custom-facetClear')))
             {
                 delete facetedFilters[column.tableColumnId];
             }
@@ -149,7 +149,16 @@
     };
 
     var dataGotten = false,
-        aggregatedData = {};
+        aggregatedData = {},
+        facetValues = {};
+
+    var generateFacetValue = function(value)
+    {
+        var facetValueIdx = 'value' + _.uniqueId();
+        facetValues[facetValueIdx] = value;
+        return facetValueIdx;
+    };
+
     config.showCallback = function(sidebarObj, $pane)
     {
         if (!dataGotten)
@@ -250,7 +259,7 @@
                                 {
                                     fieldTarget.push({
                                         value: value, type: fieldType, text: value,
-                                        data: { facetValue: value }, inputFirst: true
+                                        data: { facetValue: generateFacetValue(value) }, inputFirst: true
                                     });
                                 });
                             }
@@ -261,7 +270,7 @@
                                     var labelText = formatForColumn(freq.value, column) +
                                         ' <em>(' + freq.count + ')</em>';
                                     fieldTarget.push({ value: labelText, text: labelText,
-                                        type: fieldType, data: { facetValue: freq.value },
+                                        type: fieldType, data: { facetValue: generateFacetValue(freq.value) },
                                         inputFirst: true });
                                 });
                             }
@@ -276,7 +285,7 @@
                                 }
                                 else
                                 {
-                                    selectedValue = $dataTarget.attr('data-custom-facetValue');
+                                    selectedValue = facetValues[$dataTarget.attr('data-custom-facetValue')];
                                 }
 
                                 var filterCondition = {
@@ -431,16 +440,16 @@
                                 var labelText = formatForColumn(renderedRanges[0], column) +
                                     ' &mdash; ' + formatForColumn(renderedRanges[1], column);
                                 fieldTarget.push({ value: labelText, text: labelText,
-                                    type: fieldType, data: { facetRangeMin: renderedRanges[0],
-                                    facetRangeMax: renderedRanges[1] }, inputFirst: true });
+                                    type: fieldType, data: { facetRangeMin: generateFacetValue(renderedRanges[0]),
+                                    facetRangeMax: generateFacetValue(renderedRanges[1]) }, inputFirst: true });
                                 renderedRanges.shift();
                             }
 
                             // events
                             var changeHandler = changeProxy(sidebarObj, column, function($dataTarget, event)
                             {
-                                var selectedMinValue = $dataTarget.attr('data-custom-facetRangeMin');
-                                var selectedMaxValue = $dataTarget.attr('data-custom-facetRangeMax');
+                                var selectedMinValue = facetValues[$dataTarget.attr('data-custom-facetRangeMin')];
+                                var selectedMaxValue = facetValues[$dataTarget.attr('data-custom-facetRangeMax')];
 
                                 var filterCondition =
                                     { type: 'operator',
@@ -451,7 +460,7 @@
                                           children: [
                                             { columnId: column.id,
                                               type: 'column' },
-                                            { value: selectedMinValue,
+                                            { value: selectedMinValue.toString(), // after all that work.
                                               type: 'literal' } ]
                                         },
                                         { type: 'operator',
@@ -459,7 +468,7 @@
                                           children: [
                                             { columnId: column.id,
                                               type: 'column' },
-                                            { value: selectedMaxValue,
+                                            { value: selectedMaxValue.toString(),
                                               type: 'literal' } ]
                                         }
                                       ] };

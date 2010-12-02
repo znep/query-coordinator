@@ -183,5 +183,27 @@ module DatasetsHelper
     options_for_select(options, sel)
   end
 
+  # used to require meta custom data predefined at domain level.
+  # now, display meta custom data as long as they have the keys in lenses.metadata
+  # This is done by merging the fields
+  def merge_custom_metadata(view)
+    domain_metadata = CurrentDomain.custom_dataset_metadata || []
+    domain_metadata = domain_metadata.clone
+    view_metadata = view.metadata.custom_fields
+    view_metadata.each do |field|
+      name = field[0]
+      name_in_domain = domain_metadata.find { |e| e.name == name}
+      if (name_in_domain.nil?)
+        h = {:name => name, :fields => []}
+        field[1].keys.each do |sub_field_name|
+          h[:fields].push({:name => sub_field_name})
+        end
+        m = Hashie::Mash.new(h)
+        domain_metadata.push(m)
+      end
+    end
+    domain_metadata
+  end
+
   safe_helper :font_select_options, :font_size_select_options, :seo_render
 end

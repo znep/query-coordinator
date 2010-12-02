@@ -117,7 +117,7 @@
       </div>
     </div>
 
-    <%- (CurrentDomain.custom_dataset_metadata || []).each do |fieldset| -%>
+    <%- (merge_custom_metadata(@view)).each do |fieldset| -%>
       <div class="customFieldsetWrapper">
         <h2>
           <a href="#Toggle" class="toggleFieldsetLink expander expanded">

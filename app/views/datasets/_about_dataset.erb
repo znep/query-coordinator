@@ -151,7 +151,7 @@
 <%- end -%>
 
 <%- if @view.metadata && @view.metadata.custom_fields -%>
-  <%- (CurrentDomain.custom_dataset_metadata || []).each do |fieldset| -%>
+  <%- merge_custom_metadata(@view).each do |fieldset| -%>
     <div class="formSection">
       <a class="expander expanded formHeader" href="#expand">
         <span class="icon"></span>
@@ -165,7 +165,7 @@
         <%- (fieldset.fields || []).each do |field| -%>
           <dt><%= field.name %></dt>
           <dd><span class="wrap">
-            <%= auto_link(existing_fields[field.name] || '',
+          <%= auto_link(existing_fields[field.name] || '',
                 :html => { :rel => 'nofollow external' }) %>
           </span></dd>
         <%- end -%>

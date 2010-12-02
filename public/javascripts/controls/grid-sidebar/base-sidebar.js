@@ -507,10 +507,27 @@
                     { sidebarObj._$currentWizard.socrataTip().quickShow(); }
                 });
 
+                sidebarObj._ready = true;
                 if (!_.isUndefined(blist.dataset))
                 {
                     blist.dataset.bind('columns_changed', function()
                     { updateColumnSelects(sidebarObj); });
+
+                    sidebarObj._ready = false;
+                    // We need to make sure the view is available
+                    // before launching the sidebar
+                    blist.dataset.bind('row_count_change', function()
+                    {
+                        if (sidebarObj._ready) { return; }
+                        _.defer(function() {
+                            if (!$.isBlank(sidebarObj._paneToShow))
+                            {
+                                sidebarObj.show(sidebarObj._paneToShow);
+                                delete sidebarObj._paneToShow;
+                            }
+                        });
+                        sidebarObj._ready = true;
+                    });
                 }
 
                 $domObj.resizable({handles: 'w',
@@ -558,6 +575,15 @@
                 if ($.isBlank(this._currentPane)) { return null; }
 
                 return this._$panes[this._currentPane];
+            },
+
+            setDefault: function(configName)
+            {
+                var sidebarObj = this;
+                sidebarObj._defaultPane = configName;
+                if ($.isBlank(sidebarObj._currentPane) &&
+                    sidebarObj.hasPane(sidebarObj._defaultPane))
+                { sidebarObj.show(sidebarObj._defaultPane); }
             },
 
             hasPane: function(configName)
@@ -621,6 +647,12 @@
             show: function(paneName)
             {
                 var sidebarObj = this;
+
+                if (!sidebarObj._ready)
+                {
+                    sidebarObj._paneToShow = paneName;
+                    return;
+                }
 
                 // Hide any other open panes
                 hideCurrentPane(sidebarObj);
@@ -712,11 +744,22 @@
                 }
             },
 
-            /* Hide the sidebar and all panes.  If it was modal, then undo the
-             * modal changes */
+            /* Hide the sidebar and all panes */
             hide: function()
             {
                 var sidebarObj = this;
+                if (!$.isBlank(sidebarObj._defaultPane) &&
+                    sidebarObj.hasPane(sidebarObj._defaultPane))
+                {
+                    var np = getConfigNames(sidebarObj._defaultPane);
+                    if (sidebarObj._currentOuterPane != np.primary ||
+                        sidebarObj._currentPane != np.secondary)
+                    {
+                        sidebarObj.show(sidebarObj._defaultPane);
+                        return;
+                    }
+                }
+
                 sidebarObj.$dom().hide();
                 sidebarObj.$neighbor().css('width', '');
 

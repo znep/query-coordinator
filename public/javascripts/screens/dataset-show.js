@@ -218,23 +218,8 @@ $(function()
         { $a.closest('li').hide(); }
     });
 
-    // Hook up faceted browsing if available
-    if (!$.isBlank((blist.dataset.metadata || {}).facets))
-    {
-        var initLoad = false;
-        // Listen for when we get a row count -- this signifies the first batch
-        // of rows is loaded, so we should be all ready to go
-        blist.dataset.bind('row_count_change', function()
-        {
-            if (!initLoad)
-            {
-                _.defer(function() {
-                    datasetPageNS.sidebar.show('filter.guidedFilter');
-                });
-                initLoad = true;
-            }
-        });
-    }
+    // Show guided filter by default
+    datasetPageNS.sidebar.setDefault('filter.guidedFilter');
 
     blist.dataset.bind('columns_changed',
         function() { datasetPageNS.sidebar.updateEnabledSubPanes(); });

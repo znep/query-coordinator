@@ -1,6 +1,7 @@
 $(function()
 {
-    var getDS = function($item)
+    // alias this method so external scripts can get at it
+    var getDS = blist.browse.getDS = function($item)
     {
         var id = $item.closest('tr').attr('data-viewId');
         if (!(blist.browse.datasets[id] instanceof Dataset))

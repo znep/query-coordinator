@@ -171,30 +171,39 @@
         $saveThrobber.fadeIn();
 
         blist.dataset.save(function()
+        {
+            blist.dataset.cropSnapshot(snapshotName, function()
             {
-                blist.dataset.cropSnapshot(snapshotName, function()
-                {
-                  $saveThrobber.hide();
-                  $fullContainer.removeClass('unsaved');
-                  $saveMessage
-                      .removeClass('error')
-                      .addClass('notice')
-                      .text('Thumbnail saved')
-                      .fadeIn(300, function()
-                         { setTimeout(function() {$saveMessage.fadeOut(1000);}, 5000); });
-
-                  $saveButton.addClass('disabled');
-                });
-            },
-            function()
-            {
-                $saveThrobber.fadeOut();
+                $saveThrobber.hide();
+                $fullContainer.removeClass('unsaved');
                 $saveMessage
-                  .removeClass('notice')
-                  .addClass('error')
-                  .text('There was a problem saving your thumbnail. Please try again later')
-                  .fadeIn();
+                    .removeClass('error')
+                    .addClass('notice')
+                    .text('Thumbnail saved')
+                    .fadeIn(300, function()
+                       { setTimeout(function() {$saveMessage.fadeOut(1000);}, 5000); });
+                
+                $saveButton.addClass('disabled');
+                
+                // in case we're in a container that's expecting it, notify the parent
+                // that we've done something useful
+                if (!_.isUndefined(window.parent))
+                {
+                    var commonNS = window.parent.blist.namespace.fetch('blist.common');
+                    if (_.isFunction(commonNS.setThumbnail))
+                    { commonNS.setThumbnail(); }
+                }
             });
+        },
+        function()
+        {
+            $saveThrobber.fadeOut();
+            $saveMessage
+              .removeClass('notice')
+              .addClass('error')
+              .text('There was a problem saving your thumbnail. Please try again later')
+              .fadeIn();
+        });
     });
 
     // TODO: named snapshots?

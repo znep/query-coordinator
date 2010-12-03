@@ -100,6 +100,8 @@ javascripts:
     - public/javascripts/controls/charts/base-chart.js
     - public/javascripts/controls/charts/highcharts.js
     - public/javascripts/controls/charts/jit.js
+  admin-select-dataset:
+    - public/javascripts/screens/admin-select-dataset.js
   admin-users:
     - public/javascripts/controls/admin-buttons.js
     - public/javascripts/plugins/jquery.tablesorter.js
@@ -108,6 +110,7 @@ javascripts:
   admin-federations:
     - public/javascripts/screens/admin-federations-screen.js
   admin-home:
+    - public/javascripts/controls/modal-dialogs.js
     - public/javascripts/controls/admin-buttons.js
     - public/javascripts/plugins/jquery.tablesorter.js
     - public/javascripts/controls/combination-list.js

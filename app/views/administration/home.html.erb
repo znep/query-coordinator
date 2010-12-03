@@ -77,7 +77,71 @@
 <%- end -%>
 
 <%- if CurrentDomain.user_can?(current_user, 'feature_items') -%>
-  <!-- <h2>Manage Featured Datasets</h2> -->
+  <div class="contentBox withLeftNavigation">
+    <a href="#saveFeatures" class="button newButton saveFeaturesButton rightArrow">Save Now<span class="icon"></span></a>
+    <a href="#newFeature" class="button newButton newFeatureButton add">Add a New Featured Dataset<span class="icon"></span></a>
+    <span class="newFeatureMessage">Only four datasets may be featured at a time.</span>
+    <h2>Manage Featured Datasets</h2>
+    <div class="featuresWorkspace clearfix"></div>
+  </div>
+
+  <%- content_for :js_footer do -%>
+    <script type="text/javascript">
+      blist.namespace.fetch('blist.home');
+      blist.home.features = <%= raw @features.to_json %>;
+    </script>
+  <%- end -%>
+
+<%- end -%>
+
+<%- content_for :templates do -%>
+  <div class="feature">
+    <div class="featureWrapper">
+      <a href="#left" class="featureSwapButton leftArrow" title="Move Left"><span class="icon">Left</span></a>
+      <a href="#right" class="featureSwapButton rightArrow" title="Move Right"><span class="icon">Right</span></a>
+      <div class="featureBox">
+        <a href="#remove" class="featureRemoveButton close" title="Remove"><span class="icon">Remove</span></a>
+        <div class="featureInnerWrapper">
+          <input type="text" class="featureHeadline"/>
+
+          <div class="featureContentSection">
+            <div class="line">
+              <input type="radio" name="featureContent" class="featureContentRadio" value="thumbnail" />
+              <label for="featureContentThumbnail">Thumbnail</label>
+            </div>
+            <div class="featureContentThumbnailSection">
+              <img src="" alt="feature image"/>
+              <a class="editThumbnailButton" href="#editThumbnail">Edit</a>
+            </div>
+
+            <div class="line">
+              <input type="radio" name="featureContent" class="featureContentRadio" value="text" />
+              <label for="featureContentText">Text</label>
+            </div>
+            <div class="featureContentTextSection">
+              <input type="text" class="featureContentTextHeadline"/>
+              <input type="text" class="featureContentTextSubtitle"/>
+            </div>
+          </div>
+
+          <textarea class="featureDescription"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+<%- end -%>
+
+<%- content_for :modals do -%>
+  <div id="selectDataset" class="modalDialog">
+    <a href="#close" class="jqmClose modalDialogClose">Close</a>
+    <h2>Choose a Dataset to feature</h2>
+    <iframe src="select_dataset" frameBorder="0"></iframe>
+  </div>
+  <div id="setThumbnail" class="modalDialog">
+    <a href="#close" class="jqmClose modalDialogClose">Close</a>
+    <h2>Set a Thumbnail</h2>
+    <iframe frameBorder="0"></iframe>
+  </div>
 <%- end -%>
 
 <%- content_for :js_footer do -%>

@@ -96,9 +96,11 @@ ActionController::Routing::Routes.draw do |map|
       :moderation => :get,
       :sdp_templates => :get,
       :datasets => :get,
+      :select_dataset => :get,
       :verify_layer_url => :get,
       :home => :get,
-      :metadata => :get
+      :metadata => :get,
+      :save_featured_views => :put
   }
 
   map.with_options :controller => 'administration' do |admin|
@@ -185,7 +187,8 @@ ActionController::Routing::Routes.draw do |map|
       :post_comment => :post,
       :email => [:get, :post],
       :append => :get,
-      :contact => :get
+      :contact => :get,
+      :thumbnail => :get
     },
     :only => [ :show, :new ]
 

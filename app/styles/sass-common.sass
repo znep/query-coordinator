@@ -222,7 +222,11 @@ $light_bg_color: #fafafa
   &.disabled .disabledOverlay, &.disabled .disabledMessage
     display: block
 
-@mixin image-area-select()
+@mixin workspace
+  background-color: #bbb
+  @include box-shadow(0, 0, 5em, rgba(0, 0, 0, 0.3), true)
+
+@mixin image-area-select
   .imgareaselect-border1
     background: url(/stylesheets/images/jqueryui/imgareaselect/border-v.gif) repeat-y left top
 

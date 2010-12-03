@@ -21,6 +21,8 @@ base-sdp:
 grid:
 - table-core
 - dataset-grid
+strip-chrome:
+- strip-chrome
 screen-login:
 - screen-login
 screen-map:
@@ -29,6 +31,8 @@ screen-calendar:
 - screen-calendar
 administration-screen:
 - screen-admin
+administration-select-dataset:
+- screen-administration-select-dataset
 administration-federation:
 - screen-administration-federation
 administration-home:

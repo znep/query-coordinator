@@ -1,12 +1,17 @@
 <% content_for :head do %>
+  <%- if params[:strip_chrome].present? -%>
+    <%= rendered_stylesheet_tag 'strip-chrome' %>
+  <%- end -%>
   <%= rendered_stylesheet_tag 'dataset-thumbnail' %>
   <title>Thumbnail Dataset | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <div class="contentBox fixedWidth" id="datasetThumbnail">
   <div class="thumbnailEditContainer clearfix">
-    <h1>Edit Thumbnail for <%= @view.name %></h1>
-    <a href="<%= @view.href %>" class="returnLink">Return to Dataset</a>
+    <%- unless params[:strip_chrome].present? -%>
+      <h1>Edit Thumbnail for <%= @view.name %></h1>
+      <a href="<%= @view.href %>" class="returnLink">Return to Dataset</a>
+    <%- end -%>
 
     <%= display_standard_flashes %>
 

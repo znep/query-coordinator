@@ -12,6 +12,10 @@ class AdministrationController < ApplicationController
     @opts = {:admin => true}
     process_browse!
   end
+  def select_dataset
+    @browse_in_container = true
+    process_browse!
+  end
 
   def analytics
     check_member()
@@ -447,7 +451,26 @@ class AdministrationController < ApplicationController
     render_forbidden unless CurrentDomain.user_can?(current_user, 'manage_stories') ||
                             CurrentDomain.user_can?(current_user, 'feature_items')
     @stories = Story.find
+    @features = CurrentDomain.featured_views
   end
+
+  def save_featured_views
+    check_auth_level('feature_items')
+
+    config = get_configuration
+
+    update_or_create_property(config, 'featured_views', params[:features]) do
+      !config.raw_properties.key?('featured_views')
+    end
+
+    CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
+
+    respond_to do |format|
+      format.data { render :json => params[:features] }
+      format.html { redirect_to home_administration_path }
+    end
+  end
+
   def delete_story
     check_auth_level('manage_stories')
     begin

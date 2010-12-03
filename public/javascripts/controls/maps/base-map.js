@@ -35,6 +35,8 @@
             {
                 if (plotStyle && $.socrataMap.mixin[plotStyle])
                 { mapClass = $.mixin(mapClass, $.socrataMap.mixin[plotStyle]); }
+                if (blist.dataset.isArcGISDataset())
+                { mapClass = $.mixin(mapClass, $.socrataMap.mixin.arcGISmap); }
                 socrataMap = new mapClass(options, this[0]);
             }
         }
@@ -332,10 +334,12 @@
             {
                 var mapObj = this;
 
-                if (mapObj.settings.view.displayFormat.noLocations)
+                if (mapObj.settings.view.displayFormat.noLocations &&
+                    _.isUndefined(row.feature))
                 { return true; }
 
-                if (_.isUndefined(mapObj._locCol) &&
+                if (_.isUndefined(row.feature) &&
+                    _.isUndefined(mapObj._locCol) &&
                     (_.isUndefined(mapObj._latCol) ||
                      _.isUndefined(mapObj._longCol)))
                 {
@@ -345,7 +349,15 @@
 
                 var lat;
                 var longVal;
-                if (!_.isUndefined(mapObj._locCol))
+                if (!_.isUndefined(row.feature))
+                {
+                    var loc = row.feature.geometry;
+                    if (_.include([102100,102113,3857], loc.spatialReference.wkid))
+                    { loc = esri.geometry.webMercatorToGeographic(loc); }
+                    lat = loc.y;
+                    longVal = loc.x;
+                }
+                else if (!_.isUndefined(mapObj._locCol))
                 {
                     var loc = row[mapObj._locCol.id];
                     if (_.isNull(loc)) { return true; }
@@ -518,6 +530,9 @@
 
             updateRowsByViewport: function(viewport, wrapIDL)
             {
+                if (blist.dataset.isArcGISDataset())
+                { return; }
+
                 var mapObj = this;
                 if (!mapObj._maxRowsExceeded) { return; }
                 if (!viewport) { viewport = mapObj.getViewport(true); }
@@ -611,7 +626,10 @@
                 mapObj._redirectCol =
                     view.columnForTCID(view.displayFormat.plot.redirectId);
 
-               mapObj._iconCol = view.columnForTCID(view.displayFormat.plot.iconId);
+                mapObj._iconCol = view.columnForTCID(view.displayFormat.plot.iconId);
+
+                mapObj._objectIdCol = _.detect(view.realColumns, function(col)
+                    { return col.name == 'OBJECTID'; });
 
                 var aggs = {};
                 _.each(['colorValue', 'sizeValue', 'quantity'], function(colName)

@@ -89,6 +89,7 @@ javascripts:
     - public/javascripts/util/color.js
     - public/javascripts/controls/maps/base-map.js
     - public/javascripts/controls/maps/esri-map.js
+    - public/javascripts/controls/maps/external-esri-map.js
     - public/javascripts/controls/maps/google-map.js
     - public/javascripts/controls/maps/bing-map.js
     - public/javascripts/controls/maps/heatmap-map.js

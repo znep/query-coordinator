@@ -24,6 +24,7 @@
                 mapObj.$dom().addClass('tundra');
 
                 dojo.require("esri.arcgis.utils");
+                dojo.require("esri.layers.FeatureLayer");
                 dojo.require("esri.map");
                 // Apparently dojo is not loaded at the same time jQuery is; so
                 // while this plugin isn't called until jQuery onLoad, we still need
@@ -129,8 +130,6 @@
                         .addClass('hide_infowindow');
 
                 });
-                if (blist.dataset.isArcGISDataset())
-                { mapObj.fetchExternalFeatureSet(); }
             },
 
             buildIdentifyTask: function()
@@ -218,7 +217,6 @@
                 // Create the map symbol
                 var symbol = getESRIMapSymbol(mapObj, details);
 
-                mapObj._toProject = mapObj._toProject || [];
                 var point = new esri.geometry.Point(longVal, latVal,
                         new esri.SpatialReference({wkid: 4326}));
                 if (mapObj.map.spatialReference.wkid == 102100)
@@ -675,6 +673,7 @@
         { return esri.layers.ArcGISDynamicMapServiceLayer; }
     };
 
+    // This function is deprecated for now.
     var fetchExternalFeatureSet = function(mapObj)
     {
         mapObj._maxRows = 0; // Don't bother loading from the core server.

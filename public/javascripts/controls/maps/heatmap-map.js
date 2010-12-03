@@ -57,7 +57,8 @@
             if (config.hideZoomSlider)
             { mapObj.map.hideZoomSlider(); }
 
-            if (_.isUndefined(mapObj._locCol) || _.isUndefined(mapObj._quantityCol))
+            if ((_.isUndefined(mapObj._locCol) && !blist.dataset.isArcGISDataset())
+                || _.isUndefined(mapObj._quantityCol))
             {
                 mapObj.errorMessage = 'Required columns missing';
                 return false;

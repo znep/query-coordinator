@@ -1,5 +1,7 @@
 (function($)
 {
+    if (blist.sidebarHidden.exportSection.subscribe) { return; }
+
     // Full path for RSS feed
     var rssPath = blist.dataset.apiUrl + '/rows.rss';
 

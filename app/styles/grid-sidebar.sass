@@ -95,7 +95,8 @@
         color: #999999
         cursor: default
         .icon
-          display: none
+          // IE7 hides the title if this is display: none
+          visibility: hidden
       .ie7 &
         position: relative
       .icon

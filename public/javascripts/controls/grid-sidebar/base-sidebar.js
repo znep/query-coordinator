@@ -508,7 +508,8 @@
                 });
 
                 sidebarObj._ready = true;
-                if (!_.isUndefined(blist.dataset))
+                if (!_.isUndefined(blist.dataset) &&
+                    blist.dataset.viewType == 'tabular')
                 {
                     blist.dataset.bind('columns_changed', function()
                     { updateColumnSelects(sidebarObj); });

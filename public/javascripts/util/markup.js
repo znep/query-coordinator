@@ -39,6 +39,12 @@
             return (keepAsString === true) ? markup : $(markup);
         }
 
+        // deal with toplevel string case
+        if (_.isString(attrs))
+        {
+            return attrs;
+        }
+
         // normal case
         attrs = tag_parseConditionalElement(attrs);
         if (attrs === false) { return null; }

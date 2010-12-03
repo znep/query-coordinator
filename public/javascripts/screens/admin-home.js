@@ -51,6 +51,10 @@ $(function()
             });
             $('.newFeatureButton').toggleClass('disabled', ($features.length == 4));
             $('.newFeatureMessage').toggle($features.length == 4);
+
+            $('.featureSwapButton').show();
+            $('.featureWrapper:first-child .featureSwapButton.leftArrow').hide();
+            $('.featureWrapper:last-child .featureSwapButton.rightArrow').hide();
         };
 
         var featureDirective = {
@@ -117,6 +121,8 @@ $(function()
 
             $left.animate({ 'right': 0 });
             $right.animate({ 'left': 0 });
+
+            updateFeatureState();
         });
 
         $.live('.editThumbnailButton', 'click', function(event)
@@ -166,6 +172,7 @@ $(function()
         $('.saveFeaturesButton').click(function(event)
         {
             event.preventDefault();
+            var $button = $(this);
 
             var features = [];
             $('.featuresWorkspace .featureBox').each(function()
@@ -176,7 +183,7 @@ $(function()
                 feature.viewId = $this.attr('data-viewid');
                 feature.title = $this.find('.featureHeadline').val();
                 feature.description = $this.find('.featureDescription').val();
-                if ($this.find('.featureContentRadio').val() == 'thumbnail')
+                if ($this.hasClass('thumbnail'))
                 {
                     feature.display = 'thumbnail';
                 }
@@ -190,7 +197,7 @@ $(function()
                 features.push(feature);
             });
 
-            $(this).addClass('disabled').text('Saving...');
+            $button.addClass('disabled').text('Saving...');
 
             $.ajax({
                 type: 'put',
@@ -200,7 +207,16 @@ $(function()
                 data: JSON.stringify({ features: features || [] }),
                 success: function()
                 {
-                    window.location.reload();
+                    $button.text('Saved.');
+                    setTimeout(function()
+                    {
+                        $button
+                            .removeClass('disabled')
+                            .empty()
+                            .html($.tag([
+                                'Save Now',
+                                { tagName: 'span', 'class': 'icon' }], true));
+                    }, 2000);
                 }
             })
         });

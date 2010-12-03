@@ -211,6 +211,7 @@ javascripts:
     - public/javascripts/controls/expander.js
     - public/javascripts/controls/feed-list.js
     - public/javascripts/controls/stars.js
+    - public/javascripts/controls/content-indicator.js
     - public/javascripts/controls/grid-sidebar/base-sidebar.js
     - public/javascripts/controls/grid-sidebar/about-dataset.js
     - public/javascripts/controls/grid-sidebar/add-column.js

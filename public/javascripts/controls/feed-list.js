@@ -382,9 +382,15 @@
                                                 .prepend(compiledFeedDirectiveNest([newCommentData]));
                                     }
 
-                                    $('#gridSidebar_about .numberOfComments').text(
-                                        parseInt($.trim($('#gridSidebar_about .numberOfComments').text())) + 1);
+                                    $('#gridSidebar_about .numberOfComments')
+                                        .text(view.numberOfComments);
                                     $this.closest('.newCommentForm').remove();
+                                    if (!$.isBlank(blist.datasetPage))
+                                    {
+                                        blist.datasetPage.$feedTab
+                                            .contentIndicator()
+                                            .setText(view.numberOfComments);
+                                    }
                                 }
                             );
                         });

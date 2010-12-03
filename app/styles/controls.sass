@@ -185,6 +185,23 @@ ul.wizardButtons
       @include border-radius-corner(bottom, right, 0.2em)
 
 
+.contentIndicatorContainer
+  position: relative
+  .contentIndicator
+    @include rounded-ends
+    @include box-shadow(1px, 1px, 1px, rgba(0, 0, 0, 0.5))
+    border: 2px solid #ffffff
+    background-color: #ff0000
+    font:
+      size: 1.1em
+      weight: bold
+    padding: 0.2em 0.6em 0
+    position: absolute
+    .ie &
+      margin-left: 2px
+      padding: 0.1em 0.3em
+
+
 //*** START: Tooltip styles ***//
 .bt-wrapper
   .bt-content

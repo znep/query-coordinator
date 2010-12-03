@@ -809,6 +809,7 @@ this.Dataset = Model.extend({
 
         var addedComment = function(newCom)
         {
+            ds.numberOfComments++;
             if (!$.isBlank(ds._comments)) { ds._comments.unshift(newCom); }
             if (_.isFunction(successCallback)) { successCallback(newCom); }
         };
@@ -858,6 +859,17 @@ this.Dataset = Model.extend({
         ds._makeRequest({url: '/views/' + ds.id + '/comments/' +
                 commentId + '/ratings.json', params: {thumbsUp: thumbsUp},
                 type: 'POST', success: successCallback, error: errorCallback});
+    },
+
+    getRelatedViewCount: function(callback)
+    {
+        var ds = this;
+        if ($.isBlank(ds._relatedViews) && $.isBlank(ds._relViewCount))
+        { ds._loadRelatedViews(function(c) { callback(c); }, true); }
+        else if (!$.isBlank(ds._relViewCount))
+        { callback(ds._relViewCount); }
+        else
+        { callback(ds._relatedViews.length); }
     },
 
     getParentDataset: function(callback)
@@ -1782,7 +1794,7 @@ this.Dataset = Model.extend({
         return this._generateBaseUrl() + '/api/views/' + this.id;
     },
 
-    _loadRelatedViews: function(callback)
+    _loadRelatedViews: function(callback, justCount)
     {
         var ds = this;
         var processDS = function(views)
@@ -1802,15 +1814,22 @@ this.Dataset = Model.extend({
                 views = _.without(views, parDS);
             }
 
-            ds._relatedViews = _.reject(views,
-                function(v) { return v.id == ds.id; });
+            ds._relatedViews = views;
 
             if (_.isFunction(callback)) { callback(); }
         };
 
+        var processCount = function(count)
+        {
+            // Subtract one for dataset
+            ds._relViewCount = count - 1;
+            if (_.isFunction(callback)) { callback(ds._relViewCount); }
+        };
+
         this._makeRequest({url: '/views.json', pageCache: true, type: 'GET',
-                data: { method: 'getByTableId', tableId: this.tableId },
-                success: processDS});
+                data: { method: justCount ? 'getCountForTableId' : 'getByTableId',
+                tableId: this.tableId },
+                success: justCount ? processCount : processDS});
     },
 
     _setupDefaultSnapshotting: function(delay)

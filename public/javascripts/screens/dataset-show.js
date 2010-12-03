@@ -218,6 +218,26 @@ $(function()
         { $a.closest('li').hide(); }
     });
 
+    datasetPageNS.$moreViewsTab = $('#sidebarOptions a.moreViews');
+    if (datasetPageNS.$moreViewsTab.is(':visible'))
+    {
+        // Wait until other requests have been fired first
+        _.defer(function ()
+        {
+            blist.dataset.getRelatedViewCount(function(viewCount)
+            {
+                datasetPageNS.$moreViewsTab
+                    .contentIndicator({text: viewCount || ''});
+            });
+        });
+    }
+    datasetPageNS.$feedTab = $('#sidebarOptions a.feed');
+    if (datasetPageNS.$feedTab.is(':visible'))
+    {
+        datasetPageNS.$feedTab
+            .contentIndicator({text: blist.dataset.numberOfComments || ''});
+    }
+
     // Show guided filter by default
     datasetPageNS.sidebar.setDefault('filter.guidedFilter');
 

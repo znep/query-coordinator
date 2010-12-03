@@ -39,7 +39,7 @@
 
                         blist.dataset.getRelatedViews(function(relatedViews)
                             {
-                                views = relatedViews.concat(blist.dataset);
+                                views = relatedViews;
                                 if (--pendingRequests === 0)
                                 { renderFeed(sidebarObj); }
                             });

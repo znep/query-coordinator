@@ -20,6 +20,12 @@
             {
                 $li.remove();
                 viewList.splice(_.indexOf(viewList, v), 1);
+                if (!$.isBlank(blist.datasetPage))
+                {
+                    blist.datasetPage.$moreViewsTab.contentIndicator()
+                        .setText(viewList.length);
+                }
+
                 if (blist.dataset.id == v.id)
                 {
                     blist.dataset.getParentDataset(function(parDS)
@@ -29,9 +35,7 @@
                 }
             };
 
-            $.ajax({url: '/views/' + v.id + '.json',
-                type: 'DELETE',
-                success: deletedCallback});
+            v.remove(deletedCallback);
         }
     });
 

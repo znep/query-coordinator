@@ -180,6 +180,7 @@ $(function()
     // sidebar and sidebar tabs
     datasetPageNS.sidebar = $('#gridSidebar').gridSidebar({
         dataGrid: datasetPageNS.$dataGrid[0],
+        waitOnDataset: blist.dataset.type != 'form',
         onSidebarShown: function(primaryPane)
         {
             var $opts = $('#sidebarOptions');

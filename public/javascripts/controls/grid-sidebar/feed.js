@@ -1,6 +1,6 @@
 (function($)
 {
-    var $feed, feedData, comments, views;
+    var $feed, feedData, comments, views = [];
 
     var renderFeed = function(sidebarObj)
     {
@@ -13,7 +13,7 @@
         });
     };
 
-    var pendingRequests = 2;
+    var pendingRequests = 3;
 
     var config =
     {
@@ -39,7 +39,15 @@
 
                         blist.dataset.getRelatedViews(function(relatedViews)
                             {
-                                views = relatedViews;
+                                views = views.concat(relatedViews);
+                                if (--pendingRequests === 0)
+                                { renderFeed(sidebarObj); }
+                            });
+
+                        blist.dataset.getParentDataset(function(parDS)
+                            {
+                                if (!$.isBlank(parDS))
+                                { views = views.concat(parDS); }
                                 if (--pendingRequests === 0)
                                 { renderFeed(sidebarObj); }
                             });

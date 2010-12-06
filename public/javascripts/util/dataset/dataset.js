@@ -31,7 +31,7 @@ this.Dataset = Model.extend({
         this.registerEvent(['columns_changed', 'valid', 'query_change',
             'set_temporary', 'clear_temporary', 'row_change',
             'row_count_change', 'column_resized', 'displayformat_change',
-            'column_totals_changed']);
+            'column_totals_changed', 'removed']);
 
         $.extend(this, v);
 
@@ -777,8 +777,15 @@ this.Dataset = Model.extend({
 
     remove: function(successCallback, errorCallback)
     {
-        this._makeRequest({url: '/views/' + this.id + '.json',
-            type: 'DELETE', success: successCallback, error: errorCallback});
+        var ds = this;
+        var dsRemoved = function()
+        {
+            ds.trigger('removed');
+            if (_.isFunction(successCallback)) { successCallback(); }
+        };
+
+        ds._makeRequest({url: '/views/' + ds.id + '.json',
+            type: 'DELETE', success: dsRemoved, error: errorCallback});
     },
 
     registerOpening: function(referrer)
@@ -882,9 +889,14 @@ this.Dataset = Model.extend({
                 params: {method: 'getDefaultView'},
                 success: function(parDS)
                 {
-                    ds._parent = new Dataset(parDS);
-                    if (!$.isBlank(ds.accessType))
-                    { ds._parent.setAccessType(ds.accessType); }
+                    if (parDS.id == ds.id)
+                    { ds._parent = ds; }
+                    else
+                    {
+                        ds._parent = new Dataset(parDS);
+                        if (!$.isBlank(ds.accessType))
+                        { ds._parent.setAccessType(ds.accessType); }
+                    }
                     callback(ds._parent);
                 },
                 error: function(xhr)
@@ -1794,14 +1806,30 @@ this.Dataset = Model.extend({
         return this._generateBaseUrl() + '/api/views/' + this.id;
     },
 
+    _viewRemoved: function(view)
+    {
+        var ds = this;
+        if (!$.isBlank(ds._relatedViews))
+        { ds._relatedViews = _.without(ds._relatedViews, view); }
+        if (!$.isBlank(ds._relViewCount)) { ds._relViewCount--; }
+        if (!$.isBlank(ds._parent) && ds._parent.id == view.id)
+        { delete ds._parent; }
+    },
+
     _loadRelatedViews: function(callback, justCount)
     {
         var ds = this;
         var processDS = function(views)
         {
+            var selfIndex = _.indexOf(views, ds);
+            if (selfIndex > -1) { views.splice(selfIndex, 1, ds); }
+
             views = _.map(views, function(v)
             {
+                if (v instanceof Dataset) { return v; }
+
                 var nv = new Dataset(v);
+                nv.bind('removed', function() { ds._viewRemoved(this); });
                 if (!$.isBlank(ds.accessType)) { nv.setAccessType(ds.accessType); }
                 return nv;
             });

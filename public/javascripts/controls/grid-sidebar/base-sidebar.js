@@ -458,7 +458,8 @@
             defaultLoginMessage: 'You must be signed in',
             onSidebarClosed: function() {},
             onSidebarShown: function(primaryPane, secondaryPane) {},
-            setSidebarTop: true
+            setSidebarTop: true,
+            waitOnDataset: false
         },
 
         prototype:
@@ -508,7 +509,8 @@
                 });
 
                 sidebarObj._ready = true;
-                if (!_.isUndefined(blist.dataset) &&
+                if (sidebarObj.settings.waitOnDataset &&
+                    !_.isUndefined(blist.dataset) &&
                     blist.dataset.viewType == 'tabular')
                 {
                     blist.dataset.bind('columns_changed', function()

@@ -179,6 +179,8 @@
             </table>
             <%- end -%>
 
+            <%- when 'tag' -%>
+            <%= cell.join(', ') %>
             <%- else -%>
               <%= cell.to_s %>
             <%- end -%>

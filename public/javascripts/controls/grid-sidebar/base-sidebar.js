@@ -458,6 +458,7 @@
             defaultLoginMessage: 'You must be signed in',
             onSidebarClosed: function() {},
             onSidebarShown: function(primaryPane, secondaryPane) {},
+            position: 'right',
             setSidebarTop: true,
             waitOnDataset: false
         },
@@ -488,6 +489,8 @@
                 sidebarObj._changeHandlers = {};
 
                 sidebarObj._wizDisabled = {};
+
+                $domObj.addClass('position-' + sidebarObj.settings.position);
 
                 $(window).resize(function() { handleResize(sidebarObj); });
                 $domObj.resize(function() { handleResize(sidebarObj); });
@@ -533,7 +536,8 @@
                     });
                 }
 
-                $domObj.resizable({handles: 'w',
+                $domObj.resizable({
+                    handles: sidebarObj.settings.position == 'left' ? 'e' : 'w',
                     maxWidth: $(window).width() * 0.8, minWidth: 300,
                     stop: function() { resizeDone(sidebarObj); }});
             },
@@ -764,7 +768,7 @@
                 }
 
                 sidebarObj.$dom().hide();
-                sidebarObj.$neighbor().css('width', '');
+                sidebarObj.$neighbor().css('width', '').css('left', '');
 
                 hideCurrentPane(sidebarObj);
 
@@ -1322,18 +1326,6 @@
         clearWizard(sidebarObj);
     };
 
-    /* Helper to get/create the modal overlay */
-    var modalOverlay = function(sidebarObj)
-    {
-        if (!sidebarObj._$overlay)
-        {
-            sidebarObj.$dom().parent()
-                .append('<div id="gridSidebarOverlay"></div>');
-            sidebarObj._$overlay = $('#gridSidebarOverlay');
-        }
-        return sidebarObj._$overlay;
-    };
-
     /* Adjust the position/size of the sidebar to fit next to the grid */
     var setPosition = function(sidebarObj)
     {
@@ -1342,6 +1334,14 @@
         sidebarObj.$dom().height(gridHeight - adjH);
         if (sidebarObj.settings.setSidebarTop)
         { sidebarObj.$dom().css('top', -gridHeight + 'px') }
+
+        if (sidebarObj.settings.position == 'left')
+        {
+            sidebarObj.$dom().css('left', 0);
+            sidebarObj.$neighbor().css('left', sidebarObj.$dom().outerWidth(true));
+        }
+        else
+        { sidebarObj.$dom().css('right', 0); }
 
         var parW = sidebarObj.$dom().parent().innerWidth();
         sidebarObj.$neighbor().width(parW - sidebarObj.$dom().outerWidth(true) -

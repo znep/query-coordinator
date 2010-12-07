@@ -1,24 +1,15 @@
-#gridSidebarOverlay
-  background-color: #000000
-  filter: alpha(opacity = 50)
-  opacity: 0.5
-  height: 100%
-  left: 0
-  position: fixed
-  top: 0
-  width: 100%
-  z-index: 50
-
-
 #gridSidebar
   background-color: $color_chrome_sidebar_background
-  border-left: 1px solid $color_chrome_box_border
+  border: 0 solid $color_chrome_box_border
   display: none
   overflow: hidden
   position: absolute
-  right: 0
   top: 0
   width: 30em
+  &.position-left
+    border-right-width: 1px
+  &.position-right
+    border-left-width: 1px
 
   .close
     @include sprite-button-icons
@@ -601,8 +592,7 @@
 #sidebarOptions
   background-image: url(/stylesheets/images/interface/dataset_sidebar_fade.png)
   background-image: -moz-linear-gradient(0 0 270deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.7)), -moz-linear-gradient(0 0 0deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0))
-  // Chrome builds below 7 don't support multiple background-images >(
-  // background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 1)), to(rgba(255, 255, 255, 0.7))), -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 1)), to(rgba(255, 255, 255, 0)))
+  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 1)), to(rgba(255, 255, 255, 0.7))), -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 1)), to(rgba(255, 255, 255, 0)))
   background-repeat: no-repeat
   float: right
   padding: 0.2em 0.6em 0.4em 10em
@@ -641,3 +631,17 @@
         // Chrome can't handle the larger border
         border-radius: 0.1em
 
+.position-left
+  #sidebarOptions
+    background-image: url(/stylesheets/images/interface/dataset_sidebar_fade_left.png?1)
+    background-image: -moz-linear-gradient(0 0 270deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.7)), -moz-linear-gradient(right 0 180deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0))
+    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 1)), to(rgba(255, 255, 255, 0.7))), -webkit-gradient(linear, right top, left top, from(rgba(255, 255, 255, 1)), to(rgba(255, 255, 255, 0)))
+    background-position: right top
+    float: left
+    padding:
+      left: 0.6em
+      right: 10em
+    li
+      margin:
+        left: 0
+        right: 0.6em

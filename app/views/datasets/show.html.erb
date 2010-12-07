@@ -50,6 +50,52 @@
       </a>
     </div>
 
+  </div>
+
+  <div id='actionBox' class='clearfix'>
+    <ul id="toolbarOptions" class='clearfix'>
+      <li>
+        <%- if @view.is_tabular? && !@view.is_form? -%>
+        <ul id='renderTypeOptions' class="pillButtons">
+          <li><a href='<%= @view.href %>'
+            class='main <%= @view.display.type %> noRedirPrompt'
+            title='View as <%= @view.display.name.downcase %>'>
+            <span class='icon'></span>
+          </a></li>
+          <li><a href='<%= @view.href %>?defaultRender=richList'
+            class='fatrow noRedirPrompt' title='View as a rich list'>
+            <span class='icon'></span>
+          </a></li>
+          <li><a href='<%= @view.href %>?defaultRender=page'
+            class='page noRedirPrompt' title='View a single row'>
+            <span class='icon'></span>
+          </a></li>
+        </ul>
+        <%- end -%>
+      </li>
+      <li>
+        <div id='shareMenu' class='share menu'></div>
+      </li>
+      <%- unless @view.is_alt_view? -%>
+      <li>
+        <form id="searchForm" action="#">
+          <span class="icon"></span>
+          <input type="text" class="searchField textPrompt" title="Find in this Dataset" />
+          <a href="#clear" class="clearSearch close"><span class="icon"></span></a>
+        </form>
+      </li>
+      <%- end -%>
+    </ul>
+  </div>
+
+  <a href="#toggleFullScreen" class="fullscreenButton maximize" title="Toggle full screen">
+    <span class="icon">Toggle full screen</span>
+  </a>
+
+  <%- sidebar_config = CurrentDomain.configuration('sidebar') -%>
+  <%- sidebar_position = (!sidebar_config.nil? ?
+    sidebar_config.properties.position : nil) || 'right' -%>
+  <div id='actionBar' class='clearfix position-<%= sidebar_position %>'>
     <%- if @view.can_edit? && !@view.is_alt_view? -%>
     <div id='editBar' class='clearfix'>
       <ul id='editOptions'>
@@ -93,42 +139,6 @@
     </div>
     <%- end -%>
 
-  </div>
-
-  <div id='actionBox' class='clearfix'>
-    <ul id="toolbarOptions" class='clearfix'>
-      <li>
-        <%- if @view.is_tabular? && !@view.is_form? -%>
-        <ul id='renderTypeOptions' class="pillButtons">
-          <li><a href='<%= @view.href %>'
-            class='main <%= @view.display.type %> noRedirPrompt'
-            title='View as <%= @view.display.name.downcase %>'>
-            <span class='icon'></span>
-          </a></li>
-          <li><a href='<%= @view.href %>?defaultRender=richList'
-            class='fatrow noRedirPrompt' title='View as a rich list'>
-            <span class='icon'></span>
-          </a></li>
-          <li><a href='<%= @view.href %>?defaultRender=page'
-            class='page noRedirPrompt' title='View a single row'>
-            <span class='icon'></span>
-          </a></li>
-        </ul>
-        <%- end -%>
-      </li>
-      <li>
-        <div id='shareMenu' class='share menu'></div>
-      </li>
-      <%- unless @view.is_alt_view? -%>
-      <li>
-        <form id="searchForm" action="#">
-          <span class="icon"></span>
-          <input type="text" class="searchField textPrompt" title="Find in this Dataset" />
-          <a href="#clear" class="clearSearch close"><span class="icon"></span></a>
-        </form>
-      </li>
-      <%- end -%>
-    </ul>
     <div class="sidebarOptionsContainer clearfix">
       <ul id='sidebarOptions' class="clearfix">
         <li><a href='#Edit' title='Edit' class="edit"
@@ -152,9 +162,6 @@
     </div>
   </div>
 
-  <a href="#toggleFullScreen" class="fullscreenButton maximize" title="Toggle full screen">
-    <span class="icon">Toggle full screen</span>
-  </a>
 </div>
 
 <div class='outerContainer'>
@@ -441,6 +448,8 @@
     <%- if !@row.nil? -%>
     blist.initialRowId = "<%= @row['sid'] %>";
     <%- end -%>
+
+    blist.sidebarPosition = '<%= sidebar_position %>';
 
     <%# Namespace to keep track of disabled sidebar sections %>
     blist.namespace.fetch('blist.sidebarHidden');

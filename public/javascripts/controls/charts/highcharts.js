@@ -405,7 +405,8 @@
         // Type config goes under the type name
         chartConfig.plotOptions[seriesType] = typeConfig;
 
-        if (chartObj.settings.view.displayFormat.stacking)
+        if (chartObj.settings.view.displayFormat.stacking
+            && chartObj._yColumns.length > 1)
         { chartConfig.plotOptions.series = $.extend(chartConfig.plotOptions.series,
                                                     { stacking: 'normal' }); }
 

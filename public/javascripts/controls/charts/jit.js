@@ -94,6 +94,22 @@
 
                 chartObj._jit.loadJSON(chartObj._jitData);
                 chartObj._jit.refresh();
+            },
+
+            resetData: function()
+            {
+                var chartObj = this;
+                $(chartObj._jit.canvas.getElement()).parent().empty();
+                delete chartObj._jit;
+                delete chartObj._jitData;
+            },
+
+            resizeHandle: function()
+            {
+                var chartObj = this;
+                if (!chartObj._jit || !chartObj._jit.canvas) { return; }
+                chartObj._jit.canvas.resize(blist.$display.width(),
+                                            blist.$display.height());
             }
         }
     }));

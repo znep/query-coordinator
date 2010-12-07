@@ -89,34 +89,34 @@
                     chartObj._otherAdded = true;
                 }
 
-                if (!chartObj._jit)
+                if (!chartObj.chart)
                 { initializeJITObject(chartObj); }
 
-                chartObj._jit.loadJSON(chartObj._jitData);
-                chartObj._jit.refresh();
+                chartObj.chart.loadJSON(chartObj._jitData);
+                chartObj.chart.refresh();
             },
 
             resetData: function()
             {
                 var chartObj = this;
-                $(chartObj._jit.canvas.getElement()).parent().empty();
-                delete chartObj._jit;
+                $(chartObj.chart.canvas.getElement()).parent().empty();
+                delete chartObj.chart;
                 delete chartObj._jitData;
             },
 
             resizeHandle: function()
             {
                 var chartObj = this;
-                if (!chartObj._jit || !chartObj._jit.canvas) { return; }
-                chartObj._jit.canvas.resize(blist.$display.width(),
-                                            blist.$display.height());
+                if (!chartObj.chart || !chartObj.chart.canvas) { return; }
+                chartObj.chart.canvas.resize(blist.$display.width(),
+                                             blist.$display.height());
             }
         }
     }));
 
     var initializeJITObject = function(chartObj)
     {
-        chartObj._jit = new $jit.TM.Squarified({
+        chartObj.chart = new $jit.TM.Squarified({
             injectInto: chartObj.$dom().attr('id'),
             levelsToShow: 1,
             titleHeight: 0,
@@ -144,8 +144,8 @@
                   if (hsv.v < 51) { hsv.v *= 2; }
                   node.setData('color', '#' + $.rgbToHex($.hsvToRgb(hsv)));
                   node.setCanvasStyle('shadowBlur', 7);
-                  chartObj._jit.fx.plotNode(node, chartObj._jit.canvas);
-                  //chartObj._jit.labels.plotLabel(chartObj._jit.canvas, node);
+                  chartObj.chart.fx.plotNode(node, chartObj.chart.canvas);
+                  //chartObj.chart.labels.plotLabel(chartObj.chart.canvas, node);
                     // No controller is being passed and this seems to cause JS errors.
                 }
               },
@@ -153,7 +153,7 @@
                 if(node) {
                   node.setData('color', node.getData('mouseoutColor'));
                   node.removeCanvasStyle('shadowBlur');
-                  chartObj._jit.plot();
+                  chartObj.chart.plot();
                 }
               }
             },

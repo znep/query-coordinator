@@ -218,14 +218,13 @@
 
                     if (chartObj.settings.view.snapshotting)
                     {
-                        prepareToSnapshot(chartObj); 
+                        prepareToSnapshot(chartObj);
                     }
                 }
                 if (!_.isUndefined(chartObj.secondChart))
                 {
                     chartObj.secondChart.xAxis[0].setCategories(
-                            chartObj._xCategories, false);
-                    chartObj.secondChart.redraw();
+                            chartObj._xCategories, true);
                     setInitialDetailBounds(chartObj);
                 }
             },
@@ -736,8 +735,7 @@
     {
         // Make sure data is cleaned, or sometimes setCategories will throw an error
         _.each(chartObj.chart.series, function(s) { s.cleanData(); });
-        chartObj.chart.xAxis[0].setCategories(chartObj._xCategories, false);
-        chartObj.chart.redraw();
+        chartObj.chart.xAxis[0].setCategories(chartObj._xCategories, true);
         chartObj._categoriesLoaded = true;
     };
 

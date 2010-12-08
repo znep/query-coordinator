@@ -2453,7 +2453,8 @@
                 var cancelSelect = function()
                 {
                     $overlay.css('cursor', 'auto').addClass('hide');
-                    sidebarObj._$currentWizard.socrataTip().quickShow();
+                    if (!$.isBlank(sidebarObj._$currentWizard))
+                    { sidebarObj._$currentWizard.socrataTip().quickShow(); }
                     $(document).unbind('.pane_' + sidebarObj._currentPane);
                     $link.removeClass('inProcess');
                     sidebarObj.$grid().blistTableAccessor().exitColumnChoose();
@@ -2464,8 +2465,11 @@
                 else
                 {
                     $overlay.css('cursor', 'crosshair').removeClass('hide');
-                    _.defer(function()
-                    { sidebarObj._$currentWizard.socrataTip().quickHide(); });
+                    if (!$.isBlank(sidebarObj._$currentWizard))
+                    {
+                        _.defer(function()
+                        { sidebarObj._$currentWizard.socrataTip().quickHide(); });
+                    }
 
                     // Cancel on ESC
                     $(document).bind('keypress.pane_' + sidebarObj._currentPane,

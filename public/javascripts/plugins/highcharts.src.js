@@ -7268,7 +7268,10 @@ function Chart (options, callback) {
 			fireEvent(chart, 'endResize', null, function() {
 				isResizing -= 1;
 			});
-		}, globalAnimation && globalAnimation.duration || 500);
+		}, animation ? (globalAnimation && globalAnimation.duration || 500) : 0);
+                 // jeff.scherpelz@socrata.com: Above is patched: if animation
+                 // is not enabled for this call, we will be done resizing
+                 // much more quickly than the flag indicates
 	};
 	
 	/**

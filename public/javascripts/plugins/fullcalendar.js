@@ -1268,9 +1268,10 @@ function Grid(element, options, methods, viewName) {
 	function setWidth(width) {
 		viewWidth = width;
 		dayContentPositions.clear();
+		colWidth = Math.floor(viewWidth / colCnt);
 		setOuterWidth(
 			thead.find('th').slice(0, -1),
-			colWidth = Math.floor(viewWidth / colCnt)
+			($.browser.msie && ($.browser.majorVersion == 7)) ? colWidth : (viewWidth / colCnt)
 		);
 	}
 
@@ -3717,7 +3718,8 @@ var dateFormatters = {
 
 function setOuterWidth(element, width, includeMargins) {
 	element.each(function(i, _element) {
-		_element.style.width = width - hsides(_element, includeMargins) + 'px';
+	    var $element = $(element);
+	    $element.width(width - ($element.outerWidth(includeMargins) - $element.width()));
 	});
 }
 

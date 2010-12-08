@@ -317,10 +317,7 @@
             title: { text: null },
             xAxis: { title:
                 { enabled: xTitle !== '' && !_.isUndefined(xTitle), text: xTitle,
-                    // Add rotation to title so it is rendered using vector
-                    // graphics in IE; if not, X-axis labels will disappear
-                    // Unfortunately, this loses the styling in IE.
-                    rotation: 1, style: { backgroundColor: '#ffffff',
+                    style: { backgroundColor: '#ffffff',
                         border: '1px solid #909090', padding: '3px' } },
                 dateTimeLabelFormats: {
                     day: '%e %b',

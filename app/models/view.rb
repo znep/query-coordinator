@@ -833,7 +833,7 @@ class View < Model
         row[c['name']] = r[i]
       else
         if c['dataTypeName'] == 'nested_table'
-          row[c['id']] = r[i].map {|cr| transform_row(cr, c['childColumns'])}
+          row[c['id']] = r[i].nil? ? nil : r[i].map {|cr| transform_row(cr, c['childColumns'])}
         else
           row[c['id']] = r[i]
         end

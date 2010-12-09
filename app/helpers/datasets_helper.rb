@@ -196,14 +196,17 @@ module DatasetsHelper
         name_in_domain = domain_metadata.find { |e| e.name == name}
         if (name_in_domain.nil?)
           h = {:name => name, :fields => []}
-          field[1].keys.each do |sub_field_name|
-            h[:fields].push({:name => sub_field_name})
+          if (field[1].kind_of? Hash) # protect against top key w/o subkey
+            field[1].keys.each do |sub_field_name|
+              h[:fields].push({:name => sub_field_name})
+            end
           end
           m = Hashie::Mash.new(h)
           domain_metadata.push(m)
         end
       end
     end
+
     domain_metadata
   end
 

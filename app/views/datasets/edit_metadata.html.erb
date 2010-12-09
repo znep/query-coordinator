@@ -56,6 +56,24 @@
     </div>
 
 
+   <h2>Spatial Extent</h2>
+    <div class="line clearfix">
+      <label for="view_northWest_lat">Northwest Latitude</label>
+      <%= text_field_tag 'view[northWest[lat]]', @view.data['northWest']['lat'], :disabled => true, :title => 'Northwest Latitude', :name=> 'textPrompt'%>
+    </div>
+    <div class="line clearfix">
+      <label for="view_northWest_long">Northwest Longitude</label>
+      <%= text_field_tag 'view[northWest[long]]', @view.data['northWest']['long'], :disabled => true, :title => 'Northwest Longitude', :name=> 'textPrompt'%>
+    </div>
+    <div class="line clearfix">
+      <label for="view_southEast_lat">Southeast Latitude</label>
+      <%= text_field_tag 'view[southEast[lat]]', @view.data['southEast']['lat'], :disabled => true, :title => 'Southeast Latitude', :name=> 'textPrompt'%>
+    </div>
+    <div class="line clearfix">
+      <label for="view_southEast_long">Southeast Longitude</label>
+      <%= text_field_tag 'view[southEast[long]]', @view.data['southEast']['long'], :disabled => true, :title => 'Southeast Longitude', :name=> 'textPrompt'%>
+    </div>
+
    <%- if @view.is_tabular? -%>
    <h2>Advanced</h2>
 

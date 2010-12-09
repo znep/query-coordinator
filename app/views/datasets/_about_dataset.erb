@@ -135,6 +135,25 @@
     </dl>
   </div>
 
+<%- if !@view.data['northWest'].nil? -%>
+  <div class="formSection">
+    <a class="expander expanded formHeader" href="#expand">
+      <span class="icon"></span>
+      Spatial Extent
+    </a>
+    <dl class="sectionContent">
+      <dt>Northwest Latitude</dt>
+      <dd><span class="hardWrap"><%= @view.data['northWest']['lat'] %></span></dd>
+      <dt>Northwest Longitude</dt>
+      <dd><span class="hardWrap"><%= @view.data['northWest']['long'] %></span></dd>
+      <dt>Southeast Latitude</dt>
+      <dd><span class="hardWrap"><%= @view.data['southEast']['lat'] %></span></dd>
+      <dt>Southeast Longitude</dt>
+      <dd><span class="hardWrap"><%= @view.data['southEast']['long'] %></span></dd>
+    </dl>
+  </div>
+<%- end -%>
+
 <%- if @view.is_tabular? -%>
   <div class="formSection">
     <a class="expander expanded formHeader" href="#expand">

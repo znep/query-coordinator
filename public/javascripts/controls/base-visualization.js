@@ -75,8 +75,10 @@
                 if (!this._$dom)
                 {
                     var $d = $(this.currentDom);
-                    this._$dom = $.tag({tagName: 'div', 'class': 'fullHeight',
-                        id: $d.attr('id') + '_visualizationArea'});
+                    this._$dom = $d.find('.fullHeight');
+                    if (this._$dom.length == 0)
+                    { this._$dom = $.tag({tagName: 'div', 'class': 'fullHeight',
+                                        id: $d.attr('id') + '_visualizationArea'}); }
                     $d.append(this._$dom);
                 }
                 return this._$dom;

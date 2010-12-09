@@ -103,7 +103,7 @@
                 _.each(['pointColor', 'pointSize'], function(colName)
                 {
                     var c = view.columnForTCID(view.displayFormat[colName]);
-                    if (!$.isBlank(c))
+                    if (!$.isBlank(c) && !c.isMeta)
                     {
                         chartObj['_' + colName] = c;
                         customAggs[c.id] = $.makeArray(customAggs[c.id])

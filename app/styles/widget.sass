@@ -1,6 +1,8 @@
 html, body
   height: 100%
   overflow: hidden
+  noscript
+    position: absolute
 
 .textPrompt.prompt
   color: #999999
@@ -9,6 +11,7 @@ html, body
 .widgetWrapper
   background-color: $color_frame_color
   border: $frame_border_width solid $color_frame_border_color
+  height: 100%
 
 .headerBar
   height: 4em
@@ -268,6 +271,7 @@ html, body
 
 .widgetContent
   clear: both
+  height: 100%
   margin: $frame_padding
   @if $frame_orientation == "downwards"
     margin-top: 0
@@ -277,6 +281,7 @@ html, body
   .widgetContentSection
     background-color: #fcfcfc
     display: none
+    height: 100%
     overflow-y: auto
     overflow-x: hidden
 

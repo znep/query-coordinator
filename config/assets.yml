@@ -103,6 +103,8 @@ javascripts:
     - public/javascripts/controls/charts/jit.js
   admin-select-dataset:
     - public/javascripts/screens/admin-select-dataset.js
+  admin-datasets:
+    - public/javascripts/screens/admin-datasets.js
   admin-users:
     - public/javascripts/controls/admin-buttons.js
     - public/javascripts/plugins/jquery.tablesorter.js

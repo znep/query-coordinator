@@ -40,12 +40,15 @@ class Configuration < Model
   end
 
   def create_property(name, value)
+    data['properties'] = [] if data['properties'].nil?
+    data['properties'].push({'name' => name, 'value' => value})
     url = "/#{self.class.name.pluralize.downcase}/#{id}/properties.json"
     CoreServer::Base.connection.
       create_request(url, {'name' => name, 'value' => value}.to_json)
   end
 
   def update_property(name, value)
+    data['properties'].detect {|p| p['name'] == name}['value'] = value
     url = "/#{self.class.name.pluralize.downcase}/#{id}/properties/#{name}.json"
     CoreServer::Base.connection.
       update_request(url, {'name' => name, 'value' => value}.to_json)

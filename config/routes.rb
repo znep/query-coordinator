@@ -134,6 +134,8 @@ ActionController::Routing::Routes.draw do |map|
     admin.connect '/admin/home/story/new', :action => 'new_story'
     admin.connect '/admin/home/story/:id', :action => 'edit_story'
     admin.connect '/admin/home/story/:id/delete', :action => 'delete_story'
+    admin.connect '/admin/datasets/sidebar_config',
+      :action => 'modify_sidebar_config', :conditions => { :method => :post }
   end
 
   map.resource :browse, :controller => 'browse'

@@ -6,12 +6,36 @@ class AdministrationController < ApplicationController
   end
 
   def datasets
-    check_auth_level('edit_others_datasets')
+    render_forbidden unless CurrentDomain.user_can?(current_user,
+                                                    'edit_others_datasets') ||
+                            CurrentDomain.user_can?(current_user,
+                                                    'edit_site_theme')
 
     @browse_in_container = true
-    @opts = {:admin => true}
+    @opts = {:admin => CurrentDomain.user_can?(current_user, 'edit_others_datasets')}
     process_browse!
   end
+  def modify_sidebar_config
+    check_auth_level('edit_site_theme')
+
+    config = get_configuration('sidebar')
+    if config.nil?
+      opts = { 'name' => 'Sidebar Configuration', 'default' => true,
+        'type' => 'sidebar', 'domainCName' => CurrentDomain.cname }
+      config = Configuration.create(opts)
+    end
+
+    params[:sidebar].each do |k, v|
+      update_or_create_property(config, k.to_s, v)
+    end
+
+    CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
+    respond_to do |format|
+      format.data { render :json => config.to_json }
+      format.html { redirect_to datasets_administration_path }
+    end
+  end
+
   def select_dataset
     @browse_in_container = true
     process_browse!
@@ -148,9 +172,7 @@ class AdministrationController < ApplicationController
       return (render 'shared/error', :status => :not_found)
     end
 
-    update_or_create_property(configuration, "sdp_template", params[:id]) do 
-      configuration.raw_properties["sdp_template"].nil?
-    end
+    update_or_create_property(configuration, "sdp_template", params[:id])
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
     respond_to do |format|
@@ -350,9 +372,7 @@ class AdministrationController < ApplicationController
     field = fieldset[params[:index].to_i]
     field['required'] = field['required'].blank? ? true : false
 
-    update_or_create_property(config, 'custom_dataset_metadata', metadata) do
-      !config.raw_properties.key?('custom_dataset_metadata')
-    end
+    update_or_create_property(config, 'custom_dataset_metadata', metadata)
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
 
@@ -382,9 +402,7 @@ class AdministrationController < ApplicationController
 
     fieldset[index], fieldset[swap_index] = fieldset[swap_index], fieldset[index]
 
-    update_or_create_property(config, 'custom_dataset_metadata', metadata) do
-      !config.raw_properties.key?('custom_dataset_metadata')
-    end
+    update_or_create_property(config, 'custom_dataset_metadata', metadata)
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
 
@@ -459,9 +477,7 @@ class AdministrationController < ApplicationController
 
     config = get_configuration
 
-    update_or_create_property(config, 'featured_views', params[:features]) do
-      !config.raw_properties.key?('featured_views')
-    end
+    update_or_create_property(config, 'featured_views', params[:features])
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
 
@@ -537,9 +553,7 @@ class AdministrationController < ApplicationController
 
     theme = config.properties.theme_v2b || {}
 
-    update_or_create_property(config, 'theme_v2b', theme.merge({ 'stories' => params[:stories] })) do
-      !config.raw_properties.key?('theme_v2b')
-    end
+    update_or_create_property(config, 'theme_v2b', theme.merge({ 'stories' => params[:stories] }))
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
 
@@ -606,7 +620,7 @@ private
 
   def update_or_create_property(configuration, name, value)
     unless value.nil?
-      if (yield)
+      if (!configuration.raw_properties.key?(name))
         configuration.create_property(name,value)
       else
         configuration.update_property(name,value)
@@ -645,9 +659,7 @@ private
   end
 
   def save_metadata(config, metadata, successMessage)
-    update_or_create_property(config, 'custom_dataset_metadata', metadata) do
-      !config.raw_properties.key?('custom_dataset_metadata')
-    end
+    update_or_create_property(config, 'custom_dataset_metadata', metadata)
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
 

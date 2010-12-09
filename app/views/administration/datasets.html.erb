@@ -1,6 +1,11 @@
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'administration-screen' %>
+  <%= rendered_stylesheet_tag 'administration-datasets' %>
   <title>Datasets | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<% content_for :skip_links do %>
+  <a href="?no_js=true">Disable Javascript on this page</a>
 <% end %>
 
 <%= render :partial => 'left_nav' %>
@@ -13,9 +18,46 @@
 
   <%= display_standard_flashes %>
 
-    <div class="datasetsList content">
-      <h2>Datasets</h2>
-      <%= render_browse %>
-    </div>
+  <%- if CurrentDomain.user_can?(current_user, 'edit_others_datasets') -%>
+  <div class="datasetsList content">
+    <h2>Datasets</h2>
+    <%= render_browse %>
+  </div>
+  <%- end -%>
 
+  <%- if CurrentDomain.user_can?(current_user, 'edit_site_theme') -%>
+  <%- sidebar_config = CurrentDomain.configuration('sidebar') -%>
+  <%- sidebar_position = (!sidebar_config.nil? ?
+    sidebar_config.properties.position : nil) || 'right' -%>
+  <div class='layoutConfig'>
+    <h2>Layout Configuration</h2>
+    <%= form_tag({:action => 'modify_sidebar_config'}, {:method => 'post',
+      :class => 'commonForm'}) %>
+      <div class='line'>
+        <span class='mainLabel'>Sidebar Position</span>
+        <div class='valueBox'>
+          <input type='radio' id='sidebarPosition_right'
+            name='sidebar[position]' value='right'
+            <%= sidebar_position == 'right' ? "checked='checked'" : '' %> />
+          <label for='sidebarPosition_right'>Right</label>
+        </div>
+        <div class='valueBox'>
+          <input type='radio' id='sidebarPosition_left'
+            name='sidebar[position]' value='left'
+            <%= sidebar_position == 'left' ? "checked='checked'" : '' %> />
+          <label for='sidebarPosition_left'>Left</label>
+        </div>
+        <span class='saving statusText'>Saving</span>
+        <span class='saved statusText'>Saved</span>
+      </div>
+      <input type='submit' value='Save' />
+    </form>
+  </div>
+  <%- end -%>
 </div>
+
+<%- content_for :js_footer do -%>
+  <%- unless params[:no_js] == 'true' -%>
+    <%= include_javascripts 'admin-datasets' %>
+  <%- end -%>
+<%- end -%>

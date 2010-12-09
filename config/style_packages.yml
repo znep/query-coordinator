@@ -31,6 +31,8 @@ screen-calendar:
 - screen-calendar
 administration-screen:
 - screen-admin
+administration-datasets:
+- screen-administration-datasets
 administration-select-dataset:
 - screen-administration-select-dataset
 administration-federation:

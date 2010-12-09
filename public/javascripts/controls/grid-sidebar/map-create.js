@@ -86,6 +86,25 @@
         ];
     };
 
+    var isArcGISDataset    = function() { return  blist.dataset.isArcGISDataset(); };
+    var isNotArcGISDataset = function() { return !blist.dataset.isArcGISDataset(); };
+
+    var mapTypeSelector = {
+        text: 'Map Type', name: 'displayFormat.type', type: 'select',
+        required: true, prompt: 'Select a map type',
+        options: mapTypes,
+        wizard: 'Select a map type'
+    };
+    if (isArcGISDataset())
+    {
+        mapTypeSelector = {
+            text: 'Map Type', name: 'displayFormat.type', type: 'select',
+            required: true, prompt: null,
+            options: _.select(mapTypes, function(t) { return t.value == 'esri'; }),
+            defaultValue: 'esri'
+        };
+    }
+
     var configLocation = {
             title: 'Location',
             onlyIf: {field: 'displayFormat.type', value: 'esri', negate: true},
@@ -100,7 +119,8 @@
         };
     var configLocationESRI = {
             title: 'Location',
-            onlyIf: {field: 'displayFormat.type', value: 'esri'},
+            onlyIf: [{field: 'displayFormat.type', value: 'esri'},
+                     {func: isNotArcGISDataset}],
             fields: [
                 {text: 'Location', type: 'radioGroup',
                     name: 'locationSection',
@@ -219,11 +239,7 @@
                         prompt: 'Enter a name',
                         wizard: 'Enter a name for your map'
                     },
-                    {text: 'Map Type', name: 'displayFormat.type', type: 'select',
-                        required: true, prompt: 'Select a map type',
-                        options: mapTypes,
-                        wizard: 'Select a map type'
-                    },
+                    mapTypeSelector,
                     {text: 'Plot Style', name: 'displayFormat.plotStyle', type: 'select',
                         required: true, prompt: 'Select a plot style',
                         options: plotStyles,

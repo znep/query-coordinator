@@ -347,6 +347,8 @@
                     return false;
                 }
 
+                var isPoint = true;
+
                 var lat;
                 var longVal;
                 if (!_.isUndefined(row.feature))
@@ -354,8 +356,14 @@
                     var loc = row.feature.geometry;
                     if (_.include([102100,102113,3857], loc.spatialReference.wkid))
                     { loc = esri.geometry.webMercatorToGeographic(loc); }
-                    lat = loc.y;
-                    longVal = loc.x;
+
+                    if (loc.type != 'point')
+                    { isPoint = false; }
+                    else
+                    {
+                        lat = loc.y;
+                        longVal = loc.x;
+                    }
                 }
                 else if (!_.isUndefined(mapObj._locCol))
                 {
@@ -371,7 +379,8 @@
                 }
 
                 // Incomplete points will be safely ignored
-                if (_.isNull(lat) || _.isNaN(lat) ||
+                if (isPoint &&
+                    _.isNull(lat) || _.isNaN(lat) ||
                     _.isNull(longVal) || _.isNaN(longVal)) { return true; }
                 if (lat <= -90 || lat >= 90 || longVal <= -180 || longVal >= 180)
                 {
@@ -381,9 +390,15 @@
                 }
 
                 if (!mapObj._llKeys) mapObj._llKeys = {};
-                var rowKey = lat.toString();
-                rowKey    += ',';
-                rowKey    += longVal.toString();
+                if (isPoint)
+                {
+                    var rowKey = lat.toString();
+                    rowKey    += ',';
+                    rowKey    += longVal.toString();
+                }
+                else
+                { rowKey = row.feature.attributes['OBJECTID']; }
+
                 if (!mapObj._llKeys[rowKey])
                 {
                     mapObj._llKeys[rowKey] = { title: [], info: [] };
@@ -492,8 +507,11 @@
                     });
                 }
 
-                return mapObj.renderPoint(
-                    lat, longVal, mapObj._llKeys[rowKey].id, details);
+                if (!isPoint)
+                { return mapObj.renderNonPoint(row, details); }
+                else
+                { return mapObj.renderPoint(
+                    lat, longVal, mapObj._llKeys[rowKey].id, details); }
             },
 
             renderPoint: function(latVal, longVal, rowId, details)

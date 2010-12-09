@@ -22,10 +22,6 @@
             var objectIDs = _.map(rows, function(row)
             { return row.objectID = row[mapObj._objectIdCol.id]; });
 
-            // TODO: This isn't ready yet. Need to slice renderRow into two parts.
-            //if (mapObj._featureLayer.geometryType != 'esriGeometryPoint')
-            //{ mapObj.renderPoint = renderPoint; }
-
             var query = new esri.tasks.Query();
             query.objectIds = objectIDs;
             query.returnGeometry = true;
@@ -37,6 +33,41 @@
                 populateRowsWithFeatureSet(rows, featureSet);
                 mapObj.renderData(rows);
             });
+        },
+
+        renderNonPoint: function(row, details)
+        {
+            var mapObj = this;
+            var size = details.size || 2;
+            var color = details.color || [ 0, 0, 255 ];
+
+            if (mapObj.map.spatialReference.wkid == 102100
+                && row.feature.geometry.spatialReference.wkid == 4326)
+            { row.feature.geometry = esri.geometry.geographicToWebMercator(
+                                        row.feature.geometry); }
+
+            var symbol;
+            if (row.feature.geometry instanceof esri.geometry.Polygon)
+            {
+                symbol = new esri.symbol.SimpleFillSymbol();
+                symbol.setOutline(new esri.symbol.SimpleLineSymbol().setWidth(size));
+            }
+            else if (row.feature.geometry instanceof esri.geometry.Polyline)
+            {
+                symbol = new esri.symbol.SimpleLineSymbol();
+                symbol.setWidth(size);
+            }
+
+            symbol.setColor(new dojo.Color(color));
+
+            mapObj.map.graphics.add(row.feature.setSymbol(symbol));
+
+            if (!mapObj._bounds)
+            { mapObj._bounds = row.feature.geometry.getExtent(); }
+            else
+            { mapObj._bounds = mapObj._bounds.union(row.feature.geometry.getExtent()); }
+
+            return true;
         }
     });
 
@@ -48,33 +79,6 @@
             { return row.objectID == feature.attributes.OBJECTID; });
             row.feature = feature;
         });
-    };
-
-    // TODO: This isn't ready yet.
-    var renderPoint = function(row)
-    {
-        var mapObj = this;
-
-        var symbol;
-        if (row.feature.geometry.type instanceof esri.geometry.Polygon)
-        {
-            symbol = new esri.symbol.SimpleFillSymbol();
-            symbol.setOutline(new esri.symbol.SimpleLineSymbol().setWidth(size));
-        }
-        else if (row.feature.geometry.type instanceof esri.geometry.Polyline)
-        {
-            symbol = new esri.symbol.SimpleLineSymbol();
-            symbol.setWidth(size);
-        }
-
-        symbol.setColor(new dojo.Color(color || [ 0, 0, 255 ]));
-
-        mapObj.map.graphics.add(row.feature.setSymbol(symbol));
-
-        if (!mapObj._bounds)
-        { mapObj._bounds = row.feature.geometry.getExtent(); }
-        else
-        { mapObj._bounds = mapObj._bounds.union(row.feature.geometry.getExtent()); }
     };
 
 })(jQuery);

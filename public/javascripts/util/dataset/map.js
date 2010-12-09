@@ -69,6 +69,7 @@ Dataset.modules['map'] =
 
     _checkValidity: function()
     {
+        if (this.isArcGISDataset()) { return true; }
         if ($.isBlank(this.displayFormat.noLocations) &&
             ($.isBlank(this.displayFormat.plot.latitudeId) ||
             $.isBlank(this.displayFormat.plot.longitudeId)) &&

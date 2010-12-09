@@ -41,10 +41,16 @@
             var size = details.size || 2;
             var color = details.color || [ 0, 0, 255 ];
 
+            if (!mapObj._infoTemplate)
+            { mapObj._infoTemplate = new esri.InfoTemplate("${title}", "${body}"); }
+
             if (mapObj.map.spatialReference.wkid == 102100
                 && row.feature.geometry.spatialReference.wkid == 4326)
             { row.feature.geometry = esri.geometry.geographicToWebMercator(
                                         row.feature.geometry); }
+
+            row.feature.attributes.title = details.title;
+            row.feature.attributes.body  = details.info;
 
             var symbol;
             if (row.feature.geometry instanceof esri.geometry.Polygon)
@@ -60,7 +66,8 @@
 
             symbol.setColor(new dojo.Color(color));
 
-            mapObj.map.graphics.add(row.feature.setSymbol(symbol));
+            mapObj.map.graphics.add(row.feature.setSymbol(symbol)
+                                               .setInfoTemplate(mapObj._infoTemplate));
 
             if (!mapObj._bounds)
             { mapObj._bounds = row.feature.geometry.getExtent(); }

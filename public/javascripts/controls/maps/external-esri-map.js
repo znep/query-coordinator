@@ -20,12 +20,13 @@
             }
 
             var objectIDs = _.map(rows, function(row)
-            { return row.objectID = row[mapObj._objectIdCol.id]; });
+            { return row.objectID = parseInt(row[mapObj._objectIdCol.id]); });
 
             var query = new esri.tasks.Query();
             query.objectIds = objectIDs;
             query.returnGeometry = true;
             query.outFields = ['*'];
+            query.outSpatialReference = new esri.SpatialReference({ wkid: 4326 });
 
             new esri.tasks.QueryTask(blist.dataset.description)
                 .execute(query, function(featureSet)
@@ -80,10 +81,13 @@
 
     var populateRowsWithFeatureSet = function(rows, featureSet)
     {
+        // TODO: Find a better way to pull out the object ID key.
+        var objectIdKey = _.detect(_.keys(featureSet.features[0].attributes),
+                function(a) { return a.toUpperCase() == 'OBJECTID'; });
         _.each(featureSet.features, function(feature)
         {
             var row = _.detect(rows, function(row)
-            { return row.objectID == feature.attributes.OBJECTID; });
+            { return row.objectID == feature.attributes[objectIdKey]; });
             row.feature = feature;
         });
     };

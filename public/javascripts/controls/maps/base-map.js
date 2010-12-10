@@ -647,7 +647,7 @@
                 mapObj._iconCol = view.columnForTCID(view.displayFormat.plot.iconId);
 
                 mapObj._objectIdCol = _.detect(view.realColumns, function(col)
-                    { return col.name == 'OBJECTID'; });
+                    { return col.name.toUpperCase() == 'OBJECTID'; });
 
                 var aggs = {};
                 _.each(['colorValue', 'sizeValue', 'quantity'], function(colName)

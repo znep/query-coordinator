@@ -264,7 +264,8 @@
 
             hideLayers: function()
             {
-                $('> div > div:first > div:last', blist.$display)
+                var mapObj = this;
+                $('> div > div:first > div:last', mapObj.$dom())
                     .css('visibility', 'hidden');
             },
 

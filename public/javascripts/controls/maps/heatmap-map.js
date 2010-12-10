@@ -2,17 +2,19 @@
 {
     var MAP_TYPE = {
         'countries': {
-            'layerPath': "World_Topo_Map/MapServer/6",
+            'layerPath': "http://server.arcgisonline.com/ArcGIS/rest/services/" +
+                         "World_Topo_Map/MapServer/6",
             'fieldsReturned': ["NAME"],
             'where': function (mapObj, config)
                 { return "TYPE = 'Country'"; },
             'zoom' : 1
         },
         'state': {
-            'layerPath': "Demographics/USA_Tapestry/MapServer/4",
-            'fieldsReturned': ["NAME", "ST_ABBREV"],
+            'layerPath': "http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/" +
+                         "Demographics/ESRI_Census_USA/MapServer/5",
+            'fieldsReturned': ["STATE_NAME", "STATE_ABBR"],
             'where': function (mapObj, config)
-                { return "ST_ABBREV LIKE '%'" },
+                { return "1=1" },
             'center': esri.geometry.geographicToWebMercator(
                 new esri.geometry.Point(-104.98, 39.74,
                     new esri.SpatialReference({ wkid: 4326 }))),
@@ -24,7 +26,8 @@
                 }
         },
         'counties': {
-            'layerPath': "Demographics/USA_Tapestry/MapServer/3",
+            'layerPath': "http://server.arcgisonline.com/ArcGIS/rest/services/" +
+                         "Demographics/USA_Tapestry/MapServer/3",
             'fieldsReturned': ["NAME", "ST_ABBREV"],
             'where': function (mapObj, config)
                 { return "ST_ABBREV = '"+config.region.toUpperCase()+"'"; }
@@ -120,9 +123,7 @@
             new esri.SpatialReference({ wkid: 102100 });
 
         query.where = MAP_TYPE[config.type].where(mapObj, config);
-        new esri.tasks.QueryTask(
-                "http://server.arcgisonline.com/ArcGIS/rest/services/" +
-                MAP_TYPE[config.type].layerPath)
+        new esri.tasks.QueryTask(MAP_TYPE[config.type].layerPath)
             .execute(query, function(featureSet)
                 {
                     mapObj._featureSet = featureSet;
@@ -287,9 +288,10 @@
             { return feature.geometry.contains(point); }
             else
             {
-                var featureName = feature.attributes['NAME'];
+                var featureName = feature.attributes['NAME']
+                                  || feature.attributes['STATE_NAME'];
                 if (point.length == 2)
-                { featureName = feature.attributes['ST_ABBREV']; }
+                { featureName = feature.attributes['STATE_ABBR']; }
 
                 return point == featureName;
             }
@@ -304,11 +306,12 @@
 
         _.each(features, function(feature)
         {
+            var key = feature.attributes['NAME'] || feature.attributes['STATE_NAME'];
             var transform;
             if (config.transformFeatures)
-            { transform = config.transformFeatures[feature.attributes['NAME']]; }
+            { transform = config.transformFeatures[key]; }
             transform = transform ||
-                MAP_TYPE[config.type].transformFeatures[feature.attributes['NAME']];
+                MAP_TYPE[config.type].transformFeatures[key];
 
             if (!transform) { return; }
 

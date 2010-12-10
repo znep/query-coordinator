@@ -28,7 +28,7 @@
             query.outFields = ['*'];
             query.outSpatialReference = new esri.SpatialReference({ wkid: 4326 });
 
-            new esri.tasks.QueryTask(blist.dataset.description)
+            new esri.tasks.QueryTask(blist.dataset.metadata.custom_fields.Basic.Source)
                 .execute(query, function(featureSet)
             {
                 populateRowsWithFeatureSet(rows, featureSet);

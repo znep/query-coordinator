@@ -760,7 +760,8 @@
         dojo.addOnLoad(function()
         {
 
-        mapObj._featureLayer = new esri.layers.FeatureLayer(blist.dataset.description);
+        mapObj._featureLayer = new esri.layers.FeatureLayer(
+            blist.dataset.metadata.custom_fields.Basic.Source);
 
         dojo.connect(mapObj._featureLayer, 'onLoad', function()
         {

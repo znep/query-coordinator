@@ -268,10 +268,9 @@ class DatasetsController < ApplicationController
   end
 
   def edit_metadata
-    if params[:view].nil?
-      @view = get_view(params[:id])
-      return if @view.nil?
-    else
+    @view = get_view(params[:id])
+    return if @view.nil?
+    if !params[:view].nil?
       if params[:view][:metadata] && params[:view][:metadata][:attachments]
         params[:view][:metadata][:attachments].delete_if { |a| a[:delete].present? }
       end
@@ -289,6 +288,10 @@ class DatasetsController < ApplicationController
           params[:view][:metadata][:attachments] << {:blobId => attachment['id'],
             :filename => attachment['nameForOutput'],
             :name => attachment['nameForOutput']}
+        end
+        if !@view.metadata.nil?
+          params[:view][:metadata] = @view.data['metadata'].
+            deep_merge(params[:view][:metadata])
         end
         @view = View.update_attributes!(params[:id], params[:view])
         flash.now[:notice] = "The metadata has been updated."

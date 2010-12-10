@@ -82,8 +82,9 @@
                         if ($.isBlank(col)) { return null; }
                         vc = $.extend({}, vc);
                         vc.column = col;
-                        vc.supplementalColumns = _.map(vc.supplementalColumns || [],
-                            function(sc) { return view.columnForTCID(sc); });
+                        vc.supplementalColumns = _.compact(
+                            _.map(vc.supplementalColumns || [],
+                                function(sc) { return view.columnForTCID(sc); }));
                         return vc;
                     });
                 chartObj._valueColumns = _.compact(chartObj._valueColumns);

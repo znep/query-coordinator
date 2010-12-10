@@ -489,8 +489,9 @@
       @view.is_grouped? ||
       !CurrentDomain.user_can?(current_user, :create_datasets) ||
       !module_available?(:form_publish) ||
-      !@view.owned_by?(current_user) ||
-      !@view.parent_dataset.owned_by?(current_user) %>;
+      ((!@view.owned_by?(current_user) ||
+        !@view.parent_dataset.owned_by?(current_user)) &&
+       !CurrentDomain.user_can?(current_user, :edit_others_datasets)) %>;
 
     <%# Export pane %>
     blist.sidebarHidden.exportSection = blist.sidebarHidden.exportSection || {};

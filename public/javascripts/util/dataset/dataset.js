@@ -1354,6 +1354,23 @@ this.Dataset = Model.extend({
         }
     },
 
+    _adjustVisibleColumns: function(visColIds)
+    {
+        var ds = this;
+        if (ds.isGrouped())
+        {
+            // Hide columns not grouped or rolled-up
+            visColIds = _.select(visColIds, function(cId)
+            {
+                var c = ds.columnForID(cId);
+                return !$.isBlank(c.format.grouping_aggregate) ||
+                    _.any(ds.query.groupBys, function(g)
+                        { return g.columnId == c.id; });
+            });
+        }
+        return visColIds;
+    },
+
     _makeRequest: function(req)
     {
         if (req.inline)

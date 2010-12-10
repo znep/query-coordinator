@@ -102,6 +102,10 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
     {
         var cont = this;
 
+        // If we need a validation/pre-processing on the columns, do it here
+        if (!$.isBlank(cont['_adjustVisible' + capSet]))
+        { visColIds = cont['_adjustVisible' + capSet](visColIds); }
+
         // First figure out if we need to update positions.  If the newly-visible
         // columns are in the same order as their existing position says, then
         // we just need to hide/show each column

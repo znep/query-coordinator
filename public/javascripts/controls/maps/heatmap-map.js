@@ -12,6 +12,7 @@
         'state': {
             'layerPath': "http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/" +
                          "Demographics/ESRI_Census_USA/MapServer/5",
+            'jsonCache': function(config) { return "/geodata/esri_state_data.json"; },
             'fieldsReturned': ["STATE_NAME", "STATE_ABBR"],
             'where': function (mapObj, config)
                 { return "1=1" },
@@ -115,20 +116,32 @@
 
     var fetchFeatureSet = function(mapObj, config)
     {
-        dojo.require('esri.tasks.query');
-        var query = new esri.tasks.Query();
-        query.outFields = MAP_TYPE[config.type].fieldsReturned;
-        query.returnGeometry = true;
-        query.outSpatialReference = mapObj.map.spatialReference ||
-            new esri.SpatialReference({ wkid: 102100 });
+        if (MAP_TYPE[config.type].jsonCache)
+        {
+            $.getJSON(MAP_TYPE[config.type].jsonCache(config), function(featureSet)
+            {
+                mapObj._featureSet = featureSet;
+                reClassifyFeatures(mapObj);
+                processRows(mapObj, config);
+            });
+        }
+        else
+        {
+            dojo.require('esri.tasks.query');
+            var query = new esri.tasks.Query();
+            query.outFields = MAP_TYPE[config.type].fieldsReturned;
+            query.returnGeometry = true;
+            query.outSpatialReference = mapObj.map.spatialReference ||
+                new esri.SpatialReference({ wkid: 102100 });
 
-        query.where = MAP_TYPE[config.type].where(mapObj, config);
-        new esri.tasks.QueryTask(MAP_TYPE[config.type].layerPath)
-            .execute(query, function(featureSet)
-                {
-                    mapObj._featureSet = featureSet;
-                    processRows(mapObj, config);
-                });
+            query.where = MAP_TYPE[config.type].where(mapObj, config);
+            new esri.tasks.QueryTask(MAP_TYPE[config.type].layerPath)
+                .execute(query, function(featureSet)
+                    {
+                        mapObj._featureSet = featureSet;
+                        processRows(mapObj, config);
+                    });
+        }
         mapObj._runningQuery = true;
 
         setTimeout(function()
@@ -338,6 +351,16 @@
                 }
             }
         });
+    };
+
+    var reClassifyFeatures = function(mapObj)
+    {
+        mapObj._featureSet.features = _.map(mapObj._featureSet.features,
+            function(feature)
+            {
+                feature.geometry.spatialReference = { wkid: 102100 };
+                return new esri.Graphic(feature);
+            });
     };
 
 })(jQuery);

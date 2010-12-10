@@ -55,9 +55,9 @@
                                 .toggleClass('expanded')
                                 .toggleClass('collapsed')
                                 .siblings('.sectionContent')
-                                // IE8 can't handle the slideToggle.
+                                // IE7/8 can't handle the slideToggle.
                                 // It also gets confused about the current state.
-                                    [($.browser.msie && ($.browser.majorVersion == 8)) ?
+                                    [($.browser.msie && ($.browser.majorVersion <= 8)) ?
                                         'toggle' : 'slideToggle']($this.hasClass('expanded'));
                         });
 

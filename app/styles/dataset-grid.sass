@@ -269,6 +269,9 @@ div.blist-th-first
   position: absolute
   top: 0
   z-index: 2
+  // See doVertScroll in data/table.js
+  .ie &
+    height: 5000px
 
 .blist-table .disabled-overlay
   background-color: #cccccc
@@ -277,8 +280,7 @@ div.blist-th-first
 
 .blist-table .select-overlay
   background-color: #ffffff
-  filter: alpha(opacity=20)
-  opacity: 0.2
+  @include opacity(0.2)
 
 .blist-table .select-overlay.overlay-hover
   background-color: #4d8ab0

@@ -2310,6 +2310,15 @@
                         $scrolls[0].scrollTop = scrollVert;
                     }
                     $locked.css('top', $header.outerHeight() - scrollVert);
+
+                    // IE can't handle opacity on divs over ~30000px; so
+                    // for large datasets, we have to scroll the overlays
+                    // with the content
+                    if ($.browser.msie)
+                    {
+                        inside.find('.select-overlay, .disabled-overlay')
+                            .css('top', scrollVert);
+                    }
                     rowsScrolledTo = scrollVert;
                 }
             };

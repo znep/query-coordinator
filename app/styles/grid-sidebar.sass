@@ -25,6 +25,7 @@
     position: absolute
     right: 0.5em
     top: 0.7em
+    z-index: 1
     .ie7 & .icon
       display: block
 
@@ -64,6 +65,11 @@
     display: block
 
   .outerPane
+    // IE7 had a weird issue where the scrollbar from a hidden pane would still
+    // show up on top of a visible pane, thereby disallowing the user from
+    // scrolling the real pane.  Apparently position: relative fixes it
+    .ie7 &
+      position: relative
     .mainTitleBlock
       @include vertical-gradient(#989898, #848484)
       padding: 0.5em 1em

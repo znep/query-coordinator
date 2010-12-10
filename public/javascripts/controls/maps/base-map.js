@@ -397,7 +397,7 @@
                     rowKey    += longVal.toString();
                 }
                 else
-                { rowKey = row.feature.attributes['OBJECTID']; }
+                { rowKey = row.feature.attributes[mapObj._objectIdKey]; }
 
                 if (!mapObj._llKeys[rowKey])
                 {
@@ -648,6 +648,7 @@
 
                 mapObj._objectIdCol = _.detect(view.realColumns, function(col)
                     { return col.name.toUpperCase() == 'OBJECTID'; });
+                mapObj._objectIdKey = (mapObj._objectIdCol || {}).name;
 
                 var aggs = {};
                 _.each(['colorValue', 'sizeValue', 'quantity'], function(colName)

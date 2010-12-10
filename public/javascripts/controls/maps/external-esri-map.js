@@ -31,7 +31,7 @@
             new esri.tasks.QueryTask(blist.dataset.metadata.custom_fields.Basic.Source)
                 .execute(query, function(featureSet)
             {
-                populateRowsWithFeatureSet(rows, featureSet);
+                populateRowsWithFeatureSet(mapObj, rows, featureSet);
                 mapObj.renderData(rows);
             });
         },
@@ -79,15 +79,12 @@
         }
     });
 
-    var populateRowsWithFeatureSet = function(rows, featureSet)
+    var populateRowsWithFeatureSet = function(mapObj, rows, featureSet)
     {
-        // TODO: Find a better way to pull out the object ID key.
-        var objectIdKey = _.detect(_.keys(featureSet.features[0].attributes),
-                function(a) { return a.toUpperCase() == 'OBJECTID'; });
         _.each(featureSet.features, function(feature)
         {
             var row = _.detect(rows, function(row)
-            { return row.objectID == feature.attributes[objectIdKey]; });
+            { return row.objectID == feature.attributes[mapObj._objectIdKey]; });
             row.feature = feature;
         });
     };

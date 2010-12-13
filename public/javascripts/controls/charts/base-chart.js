@@ -63,6 +63,9 @@
                 var chartObj = this;
                 chartObj._numSegments = 10;
                 chartObj.initializeChart();
+
+                chartObj._origData = {
+                    chartService: $.socrataChart.chartMapping[chartObj._chartType]};
             },
 
             initializeChart: function()
@@ -135,6 +138,22 @@
                 delete chartObj._gradient;
 
                 chartObj.initializeChart();
+            },
+
+            reset: function()
+            {
+                var chartObj = this;
+                $(chartObj.currentDom).removeData('socrataVisualization');
+                chartObj.$dom().empty();
+                $(chartObj.currentDom).socrataChart(chartObj.settings);
+            },
+
+            needsFullReset: function()
+            {
+                var chartObj = this;
+                var view = chartObj.settings.view;
+                return chartObj._origData.chartService !=
+                           $.socrataChart.chartMapping[view.displayFormat.chartType];
             },
 
             resetData: function()

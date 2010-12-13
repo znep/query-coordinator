@@ -13,6 +13,12 @@
                     data: {},
                     callback: function($sect)
                     {
+                        // IE7/8 can't handle the slideToggle.  It also gets
+                        // confused about the current state.
+                        var toggleAction = ($.browser.msie &&
+                            ($.browser.majorVersion <= 8)) ?
+                            'toggle' : 'slideToggle';
+
                         $sect.find('.datasetAverageRating').each(function()
                         {
                             var $star = $(this);
@@ -54,11 +60,8 @@
                             $this
                                 .toggleClass('expanded')
                                 .toggleClass('collapsed')
-                                .siblings('.sectionContent')
-                                // IE7/8 can't handle the slideToggle.
-                                // It also gets confused about the current state.
-                                    [($.browser.msie && ($.browser.majorVersion <= 8)) ?
-                                        'toggle' : 'slideToggle']($this.hasClass('expanded'));
+                                .siblings('.sectionContent')[toggleAction]
+                                    ($this.hasClass('expanded'));
                         });
 
                         $sect.find('.showStatisticsLink').click(function(event)
@@ -109,11 +112,11 @@
                         // Swap out links for form and back, show 'required' hint
                         var toggleContactActions = function()
                         {
-                            $sect.find('.contactOwnerForm').slideToggle()
+                            $sect.find('.contactOwnerForm')[toggleAction]()
                                 .find('#contactBody')
                                     .focus().end().end()
                                 .find('.contactOwnerLinks')
-                                    .slideToggle().end();
+                                    [toggleAction]().end();
                         };
 
                         $.live('#gridSidebar_about .contactButton',

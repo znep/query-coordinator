@@ -2446,6 +2446,7 @@
             $container.find('.columnSelector').click(function(e)
             {
                 e.preventDefault();
+                e.stopPropagation();
 
                 var $link = $(this);
                 var $overlay = $pane.closest('.outerPane').find('.paneOverlay');
@@ -2473,7 +2474,13 @@
 
                     // Cancel on ESC
                     $(document).bind('keypress.pane_' + sidebarObj._currentPane,
-                        function(e) { if (e.keyCode == 27) { cancelSelect(); } });
+                        function(e) { if (e.keyCode == 27) { cancelSelect(); } })
+                        .bind('click.pane_' + sidebarObj._currentPane,
+                        function(e)
+                        {
+                            if (!$.contains(sidebarObj.$neighbor()[0], e.target))
+                            { cancelSelect(); }
+                        });
                     $link.addClass('inProcess');
 
                     var href = $link.attr('href');

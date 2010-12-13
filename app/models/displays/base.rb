@@ -37,6 +37,8 @@ class Displays::Base
 
     # Does the display scroll inline?  Return false to disable default management of the display container's size
     def scrolls_inline?
+      # !! DEPRECATED !! This is only used in the embed code now. The rest is handled
+      # in JS, see $.fn.socrataView
       true
     end
 
@@ -81,6 +83,7 @@ class Displays::Base
       # Set common base variables communicating display configuration to JS
       js = <<END
 blist.dataset = new Dataset(#{@@app_helper.safe_json(@view)});
+blist.assets = #{ASSET_MAP.javascripts};
 $(function()
 {
     blist.$display = $('##{target_dom_id}');
@@ -89,12 +92,11 @@ $(function()
         { $('.mainSpinner.loadingSpinnerContainer').removeClass('hide'); })
     .bind('finish_request', function()
         { $('.mainSpinner.loadingSpinnerContainer').addClass('hide'); });
+
+    blist.$display.socrataView({view: blist.dataset});
 });
+blist.configuration.development = #{Rails.env.development?};
 END
-
-      # Disable scrolling if the display shouldn't scroll
-      js << "$(function() { blist.$display.removeClass('scrollContent'); });" unless scrolls_inline?
-
       js
     end
 
@@ -103,18 +105,6 @@ END
       return @@asset_helper.include_stylesheets(*required_stylesheets).html_safe +
         required_style_packages.map { |sass| @@app_helper.rendered_stylesheet_tag(sass) }.join.html_safe +
         required_style_links.map { |link| @@app_helper.stylesheet_link_tag(link) }.join.html_safe
-    end
-
-    # Retrieve rendered JavaScript to include in the page.  Called by view logic
-    def render_javascript_includes(context)
-        includes = <<END
-#{render_javascript_links}
-<script type="text/javascript">
-$(function() {
-    #{render_inline_runtime_js context}
-});
-</script>
-END
     end
 
     # Retrieve JavaScript for edit functionality to include in the page.
@@ -176,11 +166,6 @@ END
     # Render links to javascript files for editing
     def render_edit_javascript_links
       @@asset_helper.include_javascripts(*required_edit_javascripts).html_safe
-    end
-
-    # Render inline javascript to be included *after* the bulk of javascript initializes.
-    def render_inline_runtime_js(context)
-      ''
     end
 
     # Utility for escaping HTML

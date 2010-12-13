@@ -22,6 +22,13 @@ rescue
   DOWNTIME = Downtime.new(nil, nil, nil)
 end
 
+begin
+  assets = YAML.load_file(File.join(Rails.root, "config/assets.yml"))
+  ASSET_MAP = AssetMapper.new(assets, assets['dump'])
+rescue
+  ASSET_MAP = AssetMapper.new(nil, nil)
+end
+
 DOMAIN_TEMPLATES = Dir.glob('app/views/shared/template/_*.html.erb').map do |f|
   f.match(/\/_(\w+)\.html\.erb$/)[1]
 end

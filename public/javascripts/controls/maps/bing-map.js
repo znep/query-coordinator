@@ -257,6 +257,20 @@
                 mapObj.map.DeleteAllShapeLayers();
                 mapObj._shapeLayer = new VEShapeLayer();
                 mapObj.map.AddShapeLayer(mapObj._shapeLayer);
+            },
+
+            getRequiredJavascripts: function()
+            {
+                // Workaround for crappy JS coding, see:
+                // http://code.davidjanes.com/blog/2008/11/08/how-to-dynamically-load-map-apis/
+                var scripts = [];
+                if (!window.attachEvent)
+                {
+                    scripts.push("http://dev.virtualearth.net/mapcontrol/v6.2/js/atlascompat.js");
+                    scripts.push(false); // Wait for that to load
+                }
+                scripts.push("http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.2");
+                return scripts;
             }
         }
     }));

@@ -110,6 +110,16 @@
                 if (!chartObj.chart || !chartObj.chart.canvas) { return; }
                 chartObj.chart.canvas.resize(blist.$display.width(),
                                              blist.$display.height());
+            },
+
+            getRequiredJavascripts: function()
+            {
+                var scripts = [this.javascriptBase + 'plugins/jit.js'];
+                if ($.browser.msie)
+                {
+                    scripts.push(this.javascriptBase + 'plugins/excanvas.compiled.js');
+                }
+                return scripts;
             }
         }
     }));

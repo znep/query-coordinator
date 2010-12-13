@@ -531,7 +531,6 @@
   <%- if @view.is_tabular? -%>
   <%= raw @view.display.render_edit_javascript_includes(self) %>
   <%- end -%>
-  <%= raw @view.display.render_javascript_includes(self) %>
 
   <%= include_javascripts 'dataset-show' %>
 <% end %>

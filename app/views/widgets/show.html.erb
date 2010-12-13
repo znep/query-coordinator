@@ -186,7 +186,6 @@
     blist.widget.customizationId = '<%= params[:customization_id] || '' %>';
   </script>
 
-  <%= raw @display.render_javascript_includes(self) %>
   <%- if @view.can_edit? && !@view.is_blobby? -%>
   <%= raw @display.render_edit_javascript_includes(self) %>
   <%- end -%>

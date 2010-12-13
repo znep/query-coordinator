@@ -49,25 +49,45 @@
                     return;
                 }
 
-                currentObj.initializeVisualization();
+                // Set up the final callback, which is called once ALL
+                // required javascript model/plugin code is loaded and evaluated.
+                // Only here do we initializeVisualization(), which almost certainly
+                // needs some of the code we just loaded
+                currentObj._librariesLoaded = function()
+                {
+                    currentObj.initializeVisualization();
 
-                currentObj._initialLoad = true;
+                    currentObj._initialLoad = true;
 
-                currentObj.settings.view.getRows(0, currentObj._maxRows,
-                    function()
-                    {
-                        // Use a defer so that if the rows are already loaded,
-                        // getColumns has a chance to run first
-                        var args = arguments;
-                        _.defer(function()
+                    currentObj.settings.view.getRows(0, currentObj._maxRows,
+                        function()
                         {
-                            currentObj.handleRowsLoaded.apply(currentObj, args);
-                            delete currentObj._initialLoad;
+                            // Use a defer so that if the rows are already loaded,
+                            // getColumns has a chance to run first
+                            var args = arguments;
+                            _.defer(function()
+                            {
+                                currentObj.handleRowsLoaded.apply(currentObj, args);
+                                delete currentObj._initialLoad;
+                            });
                         });
-                    });
 
-                if (currentObj.getColumns())
-                { currentObj.columnsLoaded(); }
+                    if (currentObj.getColumns())
+                    { currentObj.columnsLoaded(); }
+
+                    $(window).resize();
+                };
+
+                // If _setupLibraries is defined, we're assuming that the
+                // function will be called by an external source.
+                // This is used, for example, in google maps, where the
+                // google loader itself async loads other files, and only *it*
+                // knows when it's ready, not LABjs
+
+                var loadCallback = _.isFunction(currentObj._setupLibraries) ?
+                    function() {} : currentObj._librariesLoaded;
+
+                currentObj.loadLibraries(loadCallback);
             },
 
             $dom: function()
@@ -288,7 +308,38 @@
             {
                 // Implement me to get the specific columns you need for
                 // this view
+            },
+
+            javascriptBase: "/javascripts/",
+
+            getRequiredJavascripts: function()
+            {
+                // Implement me if you need libraries to function
+            },
+
+            loadLibraries: function(callback)
+            {
+                var vizObj = this;
+                if (vizObj._dynamicLibrariesLoaded )
+                {
+                    callback();
+                    return;
+                }
+
+                var scripts = vizObj.getRequiredJavascripts();
+                if (!$.isBlank(scripts))
+                {
+                    $.loadLibraries(scripts, function() {
+                        vizObj._dynamicLibrariesLoaded = true;
+                        callback();
+                    });
+                }
+                else
+                {
+                    callback();
+                }
             }
+
         }
     });
 

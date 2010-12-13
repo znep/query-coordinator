@@ -415,6 +415,64 @@ $.mixin = function(obj, mixin)
     return clone;
 };
 
+// Keep a hash of which files have already been processed
+blist.util.lazyLoadedAssets = {};
+
+// Lazy-load JS libraries
+$.loadLibraries = function(scriptQueue, callback)
+{
+      var $L = $LAB,
+          queue = _.reject($.arrayify(scriptQueue), function(item)
+          { return item && blist.util.lazyLoadedAssets[item]; });
+
+      _.each(queue, function(item)
+      {
+          if (item)
+          {
+              if (blist.configuration.development)
+              {
+                  _.each($.arrayify(item), function(subitem)
+                  { $L = $L.script(subitem).wait(); });
+              }
+              else
+              {
+                  $L = $L.script(item);
+              }
+              blist.util.lazyLoadedAssets[item] = true;
+          }
+          else
+          { $L = $L.wait(); }
+      });
+      $L = $L.wait(callback);
+};
+
+$.loadStylesheets = function(sheetQueue)
+{
+    var sheets = _.reject($.arrayify(sheetQueue), function(item)
+    { return blist.util.lazyLoadedAssets[item]; });
+
+    _.each(sheets, function(sheet)
+    {
+        // Internet explorer is wonky
+        if (document.createStyleSheet)
+        {
+            document.createStyleSheet(sheet);
+        }
+        else
+        {
+            var link = $('<link>')
+                .attr({
+                    type: 'text/css',
+                    rel: 'stylesheet',
+                    href: sheet
+                });
+
+            $('head').append(link);
+        }
+        blist.util.lazyLoadedAssets[sheet] = true;
+    });
+};
+
 $.fn.tagName = function()
 {
     return this.get(0).tagName.toLowerCase();

@@ -30,18 +30,6 @@ class Displays::Table < Displays::Base
     true
   end
 
-  def render_inline_setup_js(target_dom_id, context)
-    js = super
-    # When our JS is bundled, tinymce can't figure out where to load components
-    # from; so we have to tell it before it loads up
-    js << "window.tinyMCEPreInit = {base: '/javascripts/tiny_mce', suffix: '', query: ''};"
-    js
-  end
-
-  def required_javascripts
-    ['shared-table-render']
-  end
-
   def required_edit_javascripts
     ['shared-table-editor']
   end

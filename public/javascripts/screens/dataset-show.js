@@ -174,8 +174,11 @@ $(function()
 
     // grid
     datasetPageNS.$dataGrid = blist.$display;
+
+    // .initGrid() isn't loaded yet, let the lazy-loader
+    // handle the call
     if (datasetPageNS.$dataGrid.length > 0 && !isAltRT)
-    { datasetPageNS.initGrid(); }
+    { datasetPageNS._needsInitGrid = true; }
 
     // sidebar and sidebar tabs
     datasetPageNS.sidebar = $('#gridSidebar').gridSidebar({

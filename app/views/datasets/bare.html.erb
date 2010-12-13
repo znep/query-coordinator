@@ -33,7 +33,6 @@
       <%= raw @view.display.render_inline_setup_js('mainGrid', self) %>
     </script>
 
-    <%= raw @view.display.render_javascript_includes(self) %>
     <%- if @view.display.is_a? (Displays::Chart) -%>
       <%= javascript_include_tag 'plugins/highcharts.exporting.src' %>
     <%- end -%>

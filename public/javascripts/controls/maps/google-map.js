@@ -274,6 +274,21 @@
                 var mapObj = this;
                 _.each(mapObj._markers, function(m) { m.setMap(null); });
                 mapObj._markers = {};
+            },
+
+            getRequiredJavascripts: function()
+            {
+                blist.util.googleCallback = this._setupLibraries;
+                blist.util.googleCallbackMap = this;
+                return "http://maps.google.com/maps/api/js?sensor=false&callback=blist.util.googleCallback";
+
+            },
+
+            _setupLibraries: function()
+            {
+                // Grab a reference to the current object (this) from a global
+                var mapObj = blist.util.googleCallbackMap;
+                mapObj._librariesLoaded();
             }
         }
     }));

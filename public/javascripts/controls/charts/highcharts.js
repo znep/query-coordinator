@@ -253,6 +253,11 @@
                     chartObj.secondChart.destroy();
                     delete chartObj.secondChart;
                 }
+            },
+
+            getRequiredJavascripts: function()
+            {
+                return this.javascriptBase + "plugins/highcharts.src.js";
             }
         }
     }));

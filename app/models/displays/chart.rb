@@ -20,34 +20,8 @@ class Displays::Chart < Displays::Base
     CHART_TYPES[t] || t
   end
 
-  def required_javascripts
-    [ 'shared-chart' ]
-  end
-
   def required_edit_javascripts
-    ['shared-table-editor']
-  end
-
-  def required_stylesheets
-    [ 'chart-screen' ]
-  end
-
-  def render_javascript_links
-    # This is being used for /javascripts/controls/chart/jit.js
-    js = <<-END
-    <!--[if IE]>
-      <script type="text/javascript" src="/javascripts/plugins/excanvas.compiled.js"></script>
-    <![endif]-->
-    END
-
-    super << js
-  end
-
-  def render_inline_runtime_js(context)
-    js = <<-END
-      blist.$display.socrataChart({view: blist.dataset});
-    END
-    super << js
+    [ 'shared-table-editor' ]
   end
 
   CHART_TYPES = { 'imagesparkline' => 'line',

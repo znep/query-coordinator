@@ -94,8 +94,6 @@ javascripts:
     - public/javascripts/controls/maps/bing-map.js
     - public/javascripts/controls/maps/heatmap-map.js
   shared-chart:
-    - public/javascripts/plugins/highcharts.src.js
-    - public/javascripts/plugins/jit.js
     - public/javascripts/util/color.js
     - public/javascripts/controls/base-visualization.js
     - public/javascripts/controls/charts/base-chart.js
@@ -180,6 +178,7 @@ javascripts:
     - public/javascripts/controls/embed-form.js
     - public/javascripts/util/humane-date.js
     - public/javascripts/util/events.js
+    - public/javascripts/plugins/lab.js
     - public/javascripts/controls/modal-dialogs.js
     - public/javascripts/controls/dataset-controls.js
     - public/javascripts/controls/stars.js
@@ -189,6 +188,7 @@ javascripts:
     - public/javascripts/controls/page-render-type.js
     - public/javascripts/controls/scrollTabs.js
     - public/javascripts/controls/form-inliner.js
+    - public/javascripts/controls/view-loader.js
     - public/javascripts/screens/widget.js
   dataset-new:
     - public/javascripts/util/serialize.js
@@ -202,6 +202,7 @@ javascripts:
     - public/javascripts/plugins/jquery.tablesorter.js
     - public/javascripts/plugins/iscroll.js
     - public/javascripts/plugins/ajaxupload.js
+    - public/javascripts/plugins/lab.js
     - public/javascripts/controls/combination-list.js
     - public/javascripts/util/events.js
     - public/javascripts/util/humane-date.js
@@ -246,6 +247,7 @@ javascripts:
     - public/javascripts/controls/fatrow-render-type.js
     - public/javascripts/controls/page-render-type.js
     - public/javascripts/controls/pill-buttons.js
+    - public/javascripts/controls/view-loader.js
     - public/javascripts/screens/dataset-show.js
   dataset-edit-metadata:
     - public/javascripts/plugins/ajaxupload.js
@@ -269,6 +271,8 @@ javascripts:
     - public/javascripts/util/events.js
     - public/javascripts/util/humane-date.js
     - public/javascripts/controls/full-screen.js
+    - public/javascripts/plugins/lab.js
+    - public/javascripts/controls/view-loader.js
     - public/javascripts/screens/dataset-bare.js
   shared-metrics:
     - public/javascripts/plugins/daterangepicker.jquery.js
@@ -292,10 +296,14 @@ javascripts:
   homepage-show:
     - public/javascripts/screens/homepage-show.js
 
+dump:
+  javascripts:
+    - shared-calendar
+    - shared-chart
+    - shared-map
+    - shared-table-render
 
 stylesheets:
-  chart-screen:
-    - public/stylesheets/chart-screen.css
   grid-sidebar:
     - public/stylesheets/jquery.ui.resizable.css
     - public/stylesheets/ui.slider.css

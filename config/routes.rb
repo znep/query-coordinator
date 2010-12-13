@@ -106,7 +106,7 @@ ActionController::Routing::Routes.draw do |map|
   map.with_options :controller => 'administration' do |admin|
     admin.connect '/admin/users/:user_id/:role', :action => 'set_user_role'
     admin.connect '/admin/users/update', :action => 'set_user_role',
-      :conditions => { :method => :post }
+      :conditions => { :method => [:get, :post] }
     admin.connect '/admin/sdp_templates', :action => 'sdp_template_create',
       :conditions => { :method => :post }
     admin.connect '/admin/sdp_templates/:id', :action => 'sdp_template'

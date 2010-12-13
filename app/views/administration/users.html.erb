@@ -102,7 +102,7 @@
                 <%- else -%>
                   <span class="cellInner hide"><%= (user.roleName || '').titleize %></span>
                   <%= form_tag({:action => 'set_user_role'}, {:method => 'post'}) %>
-                    <input type="hidden" name="userid" class="hiddenID" value="<%= user.id %>" />
+                    <input type="hidden" name="user_id" class="hiddenID" value="<%= user.id %>" />
                     <%= raw(select_for_role("userSelect-#{user.id}", 'role', user.roleName, 'roleSelect')) %>
                     <input type='submit' class='userSaveButton' value='Save' />
                   </form>
@@ -112,7 +112,7 @@
                 <td class="delete">
                   <%- unless user.id == current_user.id -%>
                     <span class="loading"></span>
-                    <%= link_to 'Remove', { :action => 'set_user_role', :userid => user.id, :role => 0 }, 
+                    <%= link_to 'Remove', { :action => 'set_user_role', :user_id => user.id, :role => 0 },
                       {:class => 'button'} %>
                   <%- end -%>
                 </td>

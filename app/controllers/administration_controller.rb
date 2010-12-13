@@ -436,7 +436,7 @@ class AdministrationController < ApplicationController
     end
 
     if config.raw_properties.any? { |k,v| k == category }
-      config.delete_property(category)
+      config.delete_property(URI.escape(category))
     else
       flash[:error] = "Could not remove category named '#{category}'"
     end

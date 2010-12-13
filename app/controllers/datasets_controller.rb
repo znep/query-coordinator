@@ -290,6 +290,19 @@ class DatasetsController < ApplicationController
             :name => attachment['nameForOutput']}
         end
         if !@view.metadata.nil?
+          # Make sure required fields are filled in
+          unless CurrentDomain.custom_dataset_metadata.empty?
+            CurrentDomain.custom_dataset_metadata.each do |fieldset|
+              fieldset.fields.each do |field|
+                if field.required.present?
+                  if params[:view][:metadata][:custom_fields][fieldset.name][field.name].blank?
+                    flash.now[:error] = "The field '#{field.name}' is required."
+                    return
+                  end
+                end
+              end
+            end
+          end
           params[:view][:metadata] = @view.data['metadata'].
             deep_merge(params[:view][:metadata])
         end

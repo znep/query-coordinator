@@ -21,7 +21,7 @@ editRRNS.adjustSizes = function()
                 editRRNS.$previewContainer
                     .children('h2').outerHeight(true)));
 
-    _.defer(function() { editRRNS.setColSizes(); });
+    _.defer(function() { editRRNS.setColSizes(editRRNS.$renderArea); });
 };
 
 editRRNS.initResizing = function()
@@ -207,6 +207,8 @@ editRRNS.makeDraggable = function($item, itemType, handle,
         stop: function(e, ui)
         {
             $(this).removeClass('itemDragging');
+            if (!$.isBlank(editRRNS.$dropCont))
+            { editRRNS.$dropCont.removeClass('dragOver'); }
             editRRNS.$dropCont = null;
             editRRNS.$dropIndicator.remove();
             if (_.isFunction(stopHandler)) { stopHandler(e, ui); }
@@ -220,7 +222,6 @@ editRRNS.makeDroppable = function($item, selector, dropped, isTrash)
 {
     $item.droppable({accept: selector,
         activeClass: 'inDrag',
-        hoverClass: 'dragOver',
         tolerance: 'pointer',
         over: function()
         {
@@ -228,15 +229,27 @@ editRRNS.makeDroppable = function($item, selector, dropped, isTrash)
             // Defer this, since when dragging from one item to another, this
             // over may fire just before the out of the previous, in which
             // case the dropCont is cleared
-            if (!isTrash) { _.defer(function() { editRRNS.$dropCont = $t; }); }
+            if (!isTrash)
+            {
+                _.defer(function()
+                {
+                    if (!$.isBlank(editRRNS.$dropCont))
+                    { editRRNS.$dropCont.removeClass('dragOver'); }
+                    editRRNS.$dropCont = $t.addClass('dragOver');
+                });
+            }
         },
         out: function()
         {
+            if (!$.isBlank(editRRNS.$dropCont))
+            { editRRNS.$dropCont.removeClass('dragOver'); }
             editRRNS.$dropCont = null;
             editRRNS.$dropIndicator.remove();
         },
         drop: function(event, ui)
         {
+            if (!$.isBlank(editRRNS.$dropCont))
+            { editRRNS.$dropCont.removeClass('dragOver'); }
             editRRNS.$dropCont = null;
             editRRNS.$dropIndicator.remove();
 
@@ -247,8 +260,9 @@ editRRNS.makeDroppable = function($item, selector, dropped, isTrash)
             {
                 _.defer(function()
                 {
+                    var $par = $item.parent();
                     $item.remove();
-                    editRRNS.setColSizes();
+                    editRRNS.setColSizes($par);
                     editRRNS.updateConfig();
                 });
             }
@@ -423,7 +437,7 @@ editRRNS.renderCurrentLayout = function(previewOnly)
 
     editRRNS.setUpColumns(editRRNS.$renderArea.children('.richColumn'));
 
-    editRRNS.setColSizes();
+    editRRNS.setColSizes(editRRNS.$renderArea);
 };
 
 editRRNS.setUpRows = function($rows)
@@ -431,14 +445,43 @@ editRRNS.setUpRows = function($rows)
     $rows.each(function()
         {
             var $row = $(this);
-            $row.prepend($.tag({tagName: 'a', href: '#Drag', title: 'Move row',
-                'class': ['dragHandle', 'rowDrag']}));
+            if ($row.hasClass('ui-draggable')) { return; }
 
-            $row.hover(function() { $(this).parent().removeClass('hover'); },
-                function() { $(this).parent().addClass('hover'); });
+            $row.addClass('clearfix')
+                .prepend($.tag({tagName: 'a', href: '#Drag', title: 'Move row',
+                    'class': ['dragHandle', 'rowDrag']}));
+            if ($row.children('.fieldItem').length < 1)
+            {
+                $row.prepend($.tag({tagName: 'a', href: '#Add_Column',
+                    'class': ['add', 'addColumn'],
+                    title: 'Add a column to this row',
+                    contents: {tagName: 'span', 'class': 'icon'}}));
+            }
 
-            editRRNS.makeDroppable($row, '.fieldItem',
-                function($item) { editRRNS.enableFieldItem($item); });
+            $row.hover(function()
+                {
+                    $(this).addClass('directHover hover')
+                        .parent().removeClass('directHover')
+                        .closest('.richLine, #layoutContainer')
+                            .removeClass('hover');
+                },
+                function()
+                {
+                    $(this).removeClass('directHover hover')
+                        .parent().addClass('directHover')
+                        .closest('.richLine, #layoutContainer').addClass('hover');
+                });
+
+            var hasCols = $row.children('.richColumn').length > 0;
+            editRRNS.makeDroppable($row, hasCols ? '.richColumn' : '.fieldItem',
+                function($item)
+                {
+                    if (!hasCols)
+                    {
+                        $row.find('.addColumn').remove();
+                        editRRNS.enableFieldItem($item);
+                    }
+                });
             editRRNS.makeDraggable($row, 'row', '.rowDrag', null, null,
                 function(e, ui)
                 {
@@ -464,14 +507,27 @@ editRRNS.setUpColumns = function($col)
     $col.find('.richColumn').andSelf().each(function()
     {
         var $c = $(this);
+        if ($c.hasClass('ui-draggable')) { return; }
+
         $c.prepend($.tag({tagName: 'a', href: '#Drag', title: 'Move column',
             'class': ['dragHandle', 'columnDrag']}));
         $c.prepend($.tag({tagName: 'a', href: '#Add_Row',
             'class': ['add', 'addRow'], title: 'Add a row to this column',
             contents: {tagName: 'span', 'class': 'icon'}}));
 
-        $c.hover(function() { $(this).addClass('hover'); },
-            function() { $(this).removeClass('hover'); });
+        $c.hover(function()
+            {
+                $(this).addClass('directHover hover')
+                    .closest('.richLine, #layoutContainer')
+                        .removeClass('directHover')
+                    .closest('.richColumn').removeClass('hover');
+            },
+            function()
+            {
+                $(this).removeClass('directHover hover')
+                    .closest('.richLine, #layoutContainer').addClass('directHover')
+                    .closest('.richColumn').addClass('hover');
+            });
 
         editRRNS.makeDroppable($c, '.richLine');
         // When dragging a column, enlarge the main area just a bit, since
@@ -485,12 +541,12 @@ editRRNS.setUpColumns = function($col)
     });
 };
 
-editRRNS.setColSizes = function()
+editRRNS.setColSizes = function($parent)
 {
     // Need to adjust sizes for all columns to make them fit
     var $fixedCols = $();
     var $freeCols = $();
-    editRRNS.$renderArea.children('.richColumn').each(function()
+    $parent.children('.richColumn').each(function()
     {
         var $c = $(this);
         if ($.isBlank($c.data('rr-width')) || $c.data('rr-width').endsWith('%'))
@@ -512,7 +568,7 @@ editRRNS.setColSizes = function()
     });
 
     // clientWidth to account for scrollbar, -3 to account for drop shadow on hover
-    var totalW = editRRNS.$renderArea[0].clientWidth - 3;
+    var totalW = Math.min($parent.width(), $parent[0].clientWidth) - 3;
     // Need to tweak columns with specified widths for borders & padding
     $fixedCols.each(function() { totalW -= $(this).outerWidth(true); });
 
@@ -526,18 +582,25 @@ editRRNS.setColSizes = function()
         $c.data('rr-width', np + '%');
         $c.width(np / 100 * totalW - ($c.outerWidth(true) - $c.width()));
     });
+
+    // Now recurse on all the lines to find ones that have columns
+    $fixedCols.add($freeCols).children('.richLine').each(function()
+    {
+        var $l = $(this);
+        if ($l.children('.richColumn').length > 0) { editRRNS.setColSizes($l); }
+    });
 };
 
-editRRNS.addTopLevelColumn = function()
+editRRNS.addColumn = function($parent)
 {
     var $newCol = $.tag({tagName: 'div', 'class': 'richColumn',
             contents: {tagName: 'div', 'class': 'richLine'}});
-    editRRNS.$renderArea.append($newCol);
-
-    editRRNS.setColSizes();
+    $parent.append($newCol);
 
     editRRNS.updateConfig();
     editRRNS.setUpColumns($newCol);
+
+    editRRNS.setColSizes($parent);
 };
 
 editRRNS.resetConfig = function(previewOnly)
@@ -584,7 +647,7 @@ editRRNS.initLayout = function()
     {
         e.preventDefault();
         editRRNS.$renderArea.empty();
-        editRRNS.addTopLevelColumn();
+        editRRNS.addColumn(editRRNS.$renderArea);
     });
 
 
@@ -680,11 +743,23 @@ editRRNS.initLayout = function()
         editRRNS.updateConfig();
     });
 
-    $('#layoutContainer .addColumn').click(function(e)
+    editRRNS.$container.children('.addColumn').click(function(e)
     {
         e.preventDefault();
-        editRRNS.addTopLevelColumn();
+        editRRNS.addColumn(editRRNS.$renderArea);
     });
+
+    $.live('.renderArea .richLine .addColumn', 'click', function(e)
+    {
+        e.preventDefault();
+        editRRNS.addColumn($(this).closest('.richLine'));
+    });
+
+    editRRNS.$container.hover(function()
+        { $(this).addClass('directHover hover'); },
+        function()
+        { $(this).removeClass('directHover hover'); });
+
 };
 
 

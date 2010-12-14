@@ -306,7 +306,7 @@
                 if (point.length == 2)
                 { featureName = feature.attributes['STATE_ABBR']; }
 
-                return point == featureName;
+                return point.toUpperCase() == featureName.toUpperCase();
             }
         });
     };

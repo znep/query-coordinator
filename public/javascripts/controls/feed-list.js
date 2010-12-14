@@ -391,6 +391,11 @@
                                             .contentIndicator()
                                             .setText(view.numberOfComments);
                                     }
+                                },
+                                function(resp)
+                                {
+                                    $this.siblings('.error').slideDown()
+                                        .text(JSON.parse(resp.responseText).message);
                                 }
                             );
                         });

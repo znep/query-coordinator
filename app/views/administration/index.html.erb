@@ -53,7 +53,8 @@
         </span>
       </li>
     <%- end -%>
-    <%- if CurrentDomain.user_can?(current_user, :edit_others_datasets) -%>
+    <%- if CurrentDomain.user_can?(current_user, :edit_others_datasets) ||
+            CurrentDomain.user_can?(current_user, :edit_site_theme) -%>
       <li class="datasets">
         <%= link_to raw('<span class="icon"></span>Datasets'),
             {:action => 'datasets'} %>

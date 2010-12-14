@@ -267,6 +267,26 @@ ActionController::Routing::Routes.draw do |map|
     :requirements => {:id => UID_REGEXP, :row_id => /\d+/},
     :conditions => {:method => :get}
 
+
+  # Semantic web cannoical URLs
+  map.connect 'resource/:name', :controller => 'resources',
+    :action => 'show',
+    :conditions => {:method => :get}
+
+  map.connect 'resource/:name.:format', :controller => 'resources',
+    :action => 'show',
+    :conditions => {:method => :get}
+
+  map.connect 'resource/:name/:row_id', :controller => 'resources',
+    :action => 'show',
+    :conditions => {:method => :get}
+
+  map.connect 'resource/:name/:row_id.:format', :controller => 'resources',
+    :action => 'show',
+    :conditions => {:method => :get}
+  # end Semantic web cannoical URLs
+
+
   # For screenshotting only
   map.connect 'r/:id/:name', :controller => 'datasets',
     :action => 'bare',

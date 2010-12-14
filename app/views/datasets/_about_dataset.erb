@@ -158,7 +158,7 @@
   <div class="formSection">
     <a class="expander expanded formHeader" href="#expand">
       <span class="icon"></span>
-      Advanced
+      Semantics and RDF
     </a>
     <dl class="sectionContent">
       <dt>Semantic Class</dt>
@@ -167,6 +167,20 @@
       <dd><%= @view.rdf_subject %></dd>
     </dl>
   </div>
+
+  <div class="formSection">
+    <a class="expander expanded formHeader" href="#expand">
+      <span class="icon"></span>
+      Permanent Links
+    </a>
+    <dl class="sectionContent">
+      <dt>Resource Name</dt>
+      <dd><span class="hardWrap"><%= @view.resourceName %></span></dd>
+      <dt>Row Identifier</dt>
+      <dd><%= @view.row_identifier %></dd>
+    </dl>
+  </div>
+
 <%- end -%>
 
 <%- if @view.metadata && @view.metadata.custom_fields -%>

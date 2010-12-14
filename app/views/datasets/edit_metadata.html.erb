@@ -78,8 +78,7 @@
    <%- end -%>
 
    <%- if @view.is_tabular? -%>
-   <h2>Advanced</h2>
-
+   <h2>Semantics &amp; RDF</h2>
     <div class="line clearfix">
       <label for="view_metadata_rdfClass">Semantic Class</label>
         <%= select_tag("view[metadata[rdfClass]]",
@@ -102,7 +101,23 @@
           h(@view.metadata.nil? || @view.metadata.rdfSubject.nil? ? '' : @view.metadata.rdfSubject)))
       %>
     </div>
-    <%- end -%>
+
+   <h2>Permanent Links</h2>
+    <div class="line clearfix">
+      <label for="view_resourceName">Resource Name</label>
+      <%= text_field_tag("view[resourceName]", @view.resourceName, :title => "Enter a resource name", :class => "textPrompt") %>
+    </div>
+
+    <div class="line clearfix">
+      <label for="view_metadata_rowIdentifier">Row Identifier</label>
+      <%= select_tag("view[metadata[rowIdentifier]]",
+          rdf_subject_select_options(
+          @view.columns,
+          h(@view.metadata.nil? || @view.metadata.rowIdentifier.nil? ? '' : @view.metadata.rowIdentifier)))
+      %>
+    </div>
+
+   <%- end -%>
 
     <h2>Attachments</h2>
 

@@ -156,6 +156,14 @@ class View < Model
     return result[row_id.to_s]
   end
 
+  def get_sid_by_row_identifier(row_identifier)
+    result = CoreServer::Base.connection.get_request(
+      "/#{self.class.name.pluralize.downcase}/#{id}/" +
+      "rows?method=getSidByRowIdentifier&id=#{row_identifier}")
+    return result
+  end
+
+
   def json(params)
     url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json"
     if !params.nil?
@@ -674,6 +682,17 @@ class View < Model
     end
     return rdf_class
   end
+
+  def row_identifier
+    if (!metadata.nil? && !metadata.rowIdentifier.nil?)
+      rdf_row_ident_col = column_by_id(metadata.rowIdentifier.to_i)
+      if !rdf_row_ident_col.nil?
+        return rdf_row_ident_col.name
+      end
+    end
+    '(none)'
+  end
+
 
   def get_rating_class(rating)
     ['zero', 'one', 'two', 'three', 'four', 'five'][

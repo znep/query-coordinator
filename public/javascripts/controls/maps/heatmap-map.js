@@ -4,6 +4,7 @@
         'countries': {
             'layerPath': "http://server.arcgisonline.com/ArcGIS/rest/services/" +
                          "World_Topo_Map/MapServer/6",
+            'jsonCache': function(config) { return "/geodata/esri_country_data.json"; },
             'fieldsReturned': ["NAME"],
             'where': function (mapObj, config)
                 { return "TYPE = 'Country'"; },
@@ -29,6 +30,8 @@
         'counties': {
             'layerPath': "http://server.arcgisonline.com/ArcGIS/rest/services/" +
                          "Demographics/USA_Tapestry/MapServer/3",
+            'jsonCache': function(config)
+                { return "/geodata/esri_county_"+config.region+".json"; },
             'fieldsReturned': ["NAME", "ST_ABBREV"],
             'where': function (mapObj, config)
                 { return "ST_ABBREV = '"+config.region.toUpperCase()+"'"; }
@@ -118,11 +121,18 @@
     {
         if (MAP_TYPE[config.type].jsonCache)
         {
-            $.getJSON(MAP_TYPE[config.type].jsonCache(config), function(featureSet)
-            {
-                mapObj._featureSet = featureSet;
-                reClassifyFeatures(mapObj);
-                processRows(mapObj, config);
+            // jQuery's AJAX methods aren't functioning and the clearest root cause
+            // is that the JSON parser is running into a performance problem.
+            // We're using Dojo here because ESRI does and its parser seems to
+            // handle the demanded load fine.
+            dojo.xhrGet({
+                url: MAP_TYPE[config.type].jsonCache(config),
+                handleAs: 'json',
+                load: function(data, ioArgs) {
+                    mapObj._featureSet = data;
+                    reClassifyFeatures(mapObj);
+                    processRows(mapObj, config);
+                }
             });
         }
         else

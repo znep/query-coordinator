@@ -246,13 +246,15 @@ class DatasetsController < ApplicationController
     end
 
     respond_to do |format|
-      if success
-        flash[:notice] = 'Your message has been sent'
-      else
-        flash[:error] = 'Please fill in all fields'
+      format.html do
+        if success
+          flash[:notice] = 'Your message has been sent'
+          return (redirect_to @view.alt_href)
+        else
+          flash[:error] = 'Please fill in all fields'
+          return (redirect_to contact_dataset_path(@view.id))
+        end
       end
-      format.html { redirect_to success ?
-        @view.alt_href : contact_dataset_path(@view.id) }
       format.data { render :json => { :success => success } }
     end
   end

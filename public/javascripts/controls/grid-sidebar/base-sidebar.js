@@ -2126,7 +2126,8 @@
                     { return _.compact([arg.item.type, arg.item.name,
                         (!$.isBlank(arg.item.onlyIf) ||
                             arg.item.type == 'hidden' ? 'hide' : ''),
-                        (!$.isBlank(arg.item.customContent)) ? 'custom' : '' ])
+                        (!$.isBlank(arg.item.customContent)) ? 'custom' : '' ].concat(
+                            $.arrayify(arg.item.customClasses)))
                         .join(' '); },
                     '@data-onlyIf': function(arg)
                     {

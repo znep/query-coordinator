@@ -44,10 +44,22 @@
                 defaultValue: '',
                 type: 'radioGroup',
                 lineClass: 'noLabel facetFilterRow facet' + facet.type.capitalize(),
-                options: [
-                    { value: 'No Filter', name: '', type: 'static', data: { facetClear: 'true' } }
-                ]
+                options: []
             }];
+
+            if (facet.required !== true)
+            {
+                sectionConfig.fields[0].options.push({
+                    value: 'No Filter',
+                    name: '',
+                    type: 'static',
+                    data: { facetClear: 'true' }
+                });
+            }
+            else
+            {
+                sectionConfig.customClasses = 'requiredFacet';
+            }
         }
 
         return sectionConfig;
@@ -520,6 +532,14 @@
 
                     sidebarObj.finishProcessing();
                     sidebarObj.refresh(configName);
+
+                    $pane.find('.requiredFacet').each(function()
+                    {
+                        _.defer(function()
+                        {
+                            $(this).find(':radio:first').click().trigger('change');
+                        });
+                    });
                 }
             });
         }

@@ -154,8 +154,17 @@ editRRNS.itemDragging = function(ui, primaryPos, linePos)
 
     editRRNS.$dropCont.append(editRRNS.$dropIndicator);
     var contOffset = editRRNS.$dropCont.offset();
-    editRRNS.$dropIndicator.css(linePos, foundLine.pos - contOffset[linePos]);
-    editRRNS.$dropIndicator.css(primaryPos, foundPos - contOffset[primaryPos]);
+    editRRNS.$dropIndicator.css(linePos, foundLine.pos - contOffset[linePos])
+        .css(primaryPos, foundPos - contOffset[primaryPos]);
+
+    // Size the drop indicator to fit the most appropriate item
+    var $refItem = editRRNS.$dropBefore ||
+        editRRNS.$dropCont.children('.ui-droppable:last');
+    var dim = primaryPos == 'left' ? 'height' : 'width';
+    var refSize = $refItem.length > 0 ?
+        $refItem['outer' + dim.capitalize()](true) : editRRNS.$dropCont[dim]();
+    editRRNS.$dropIndicator[dim](refSize)
+        .css(primaryPos == 'left' ? 'width' : 'height', '');
 };
 
 
@@ -198,6 +207,7 @@ editRRNS.makeDraggable = function($item, itemType, handle,
         revert: 'invalid',
         start: function(e, ui)
         {
+            editRRNS.inDrag = true;
             var $t = $(this);
             if (setWidth) { ui.helper.width($t.width()); }
             $t.addClass('itemDragging');
@@ -206,9 +216,8 @@ editRRNS.makeDraggable = function($item, itemType, handle,
         },
         stop: function(e, ui)
         {
+            editRRNS.inDrag = false;
             $(this).removeClass('itemDragging');
-            if (!$.isBlank(editRRNS.$dropCont))
-            { editRRNS.$dropCont.removeClass('dragOver'); }
             editRRNS.$dropCont = null;
             editRRNS.$dropIndicator.remove();
             if (_.isFunction(stopHandler)) { stopHandler(e, ui); }
@@ -218,10 +227,18 @@ editRRNS.makeDraggable = function($item, itemType, handle,
 };
 
 // Hook up drop acceptance
-editRRNS.makeDroppable = function($item, selector, dropped, isTrash)
+editRRNS.makeDroppable = function($item, selector, restrictToChildren,
+    dropped, isTrash)
 {
-    $item.droppable({accept: selector,
+    $item.droppable({accept: restrictToChildren ? function($draggable)
+        {
+            // Only accept items that are at the same level as the item
+            // being dragged
+            return $draggable.is(selector) &&
+                $item.siblings().andSelf().children().index($draggable) >= 0;
+        } : selector,
         activeClass: 'inDrag',
+        hoverClass: 'dragOver',
         tolerance: 'pointer',
         over: function()
         {
@@ -231,25 +248,16 @@ editRRNS.makeDroppable = function($item, selector, dropped, isTrash)
             // case the dropCont is cleared
             if (!isTrash)
             {
-                _.defer(function()
-                {
-                    if (!$.isBlank(editRRNS.$dropCont))
-                    { editRRNS.$dropCont.removeClass('dragOver'); }
-                    editRRNS.$dropCont = $t.addClass('dragOver');
-                });
+                _.defer(function() { editRRNS.$dropCont = $t; });
             }
         },
         out: function()
         {
-            if (!$.isBlank(editRRNS.$dropCont))
-            { editRRNS.$dropCont.removeClass('dragOver'); }
             editRRNS.$dropCont = null;
             editRRNS.$dropIndicator.remove();
         },
         drop: function(event, ui)
         {
-            if (!$.isBlank(editRRNS.$dropCont))
-            { editRRNS.$dropCont.removeClass('dragOver'); }
             editRRNS.$dropCont = null;
             editRRNS.$dropIndicator.remove();
 
@@ -263,6 +271,11 @@ editRRNS.makeDroppable = function($item, selector, dropped, isTrash)
                     var $par = $item.parent();
                     $item.remove();
                     editRRNS.setColSizes($par);
+                    if ($par.hasClass('richLine'))
+                    {
+                        $par.toggleClass('acceptsColumns',
+                            $par.children('.fieldItem').length < 1);
+                    }
                     editRRNS.updateConfig();
                 });
             }
@@ -435,9 +448,59 @@ editRRNS.renderCurrentLayout = function(previewOnly)
     if (!previewOnly) { editRRNS.richRenderer.renderLayout(); }
     editRRNS.previewRenderer.renderLayout();
 
+    editRRNS.$renderArea.prepend($.tag({tagName: 'a', href: '#Add_Column',
+        'class': ['add', 'addColumn'], title: 'Add a column',
+        contents: {tagName: 'span', 'class': 'icon'}}));
+
     editRRNS.setUpColumns(editRRNS.$renderArea.children('.richColumn'));
 
     editRRNS.setColSizes(editRRNS.$renderArea);
+};
+
+editRRNS.isDirectTarget = function(par, target, childContClass)
+{
+    // Figure out if something is considered a direct hover -- basically,
+    // when you are in a row in a column or column in a row, then it is no longer
+    // directly hovering in the item
+    var $closest = $(target).closest('.' + childContClass);
+    return !$.isBlank(target) && (target == par ||
+        ($.contains(par, target) &&
+            ($closest.length < 1 || !$.contains(par, $closest[0]))));
+};
+
+editRRNS.addHoverStates = function($item, selfClass, childContClass)
+{
+    $item.mouseover(function(e)
+        {
+            if (editRRNS.inDrag || $.isBlank(e.target))
+            {
+                $(this).removeClass('directHover hover');
+                return;
+            }
+
+            // hovering is controlled by whether or not you have moused into
+            // a sub-item of the same type you are in (column inside a column,
+            // row in a row)
+            var $closestSelf = $(e.target).closest('.' + selfClass);
+            $(this).toggleClass('hover', $closestSelf.length < 1 ||
+                    $closestSelf[0] == this)
+                .toggleClass('directHover',
+                    editRRNS.isDirectTarget(this, e.target, childContClass));
+        })
+    .mouseout(function(e)
+        {
+            if (editRRNS.inDrag || $.isBlank(e.relatedTarget))
+            {
+                $(this).removeClass('directHover hover');
+                return;
+            }
+
+            var $closestSelf = $(e.relatedTarget).closest('.' + selfClass);
+            $(this).toggleClass('directHover',
+                editRRNS.isDirectTarget(this, e.relatedTarget, childContClass))
+                .toggleClass('hover', $.contains(this, e.relatedTarget) &&
+                    ($closestSelf.length < 1 || $closestSelf[0] == this));
+        });
 };
 
 editRRNS.setUpRows = function($rows)
@@ -449,40 +512,38 @@ editRRNS.setUpRows = function($rows)
 
             $row.addClass('clearfix')
                 .prepend($.tag({tagName: 'a', href: '#Drag', title: 'Move row',
-                    'class': ['dragHandle', 'rowDrag']}));
-            if ($row.children('.fieldItem').length < 1)
-            {
-                $row.prepend($.tag({tagName: 'a', href: '#Add_Column',
+                    'class': ['dragHandle', 'rowDrag']}))
+                .prepend($.tag({tagName: 'a', href: '#Add_Column',
                     'class': ['add', 'addColumn'],
                     title: 'Add a column to this row',
                     contents: {tagName: 'span', 'class': 'icon'}}));
-            }
+            $row.toggleClass('acceptsColumns',
+                $row.children('.fieldItem').length < 1);
 
-            $row.hover(function()
-                {
-                    $(this).addClass('directHover hover')
-                        .parent().removeClass('directHover')
-                        .closest('.richLine, #layoutContainer')
-                            .removeClass('hover');
-                },
-                function()
-                {
-                    $(this).removeClass('directHover hover')
-                        .parent().addClass('directHover')
-                        .closest('.richLine, #layoutContainer').addClass('hover');
-                });
+            editRRNS.addHoverStates($row, 'richLine', 'richColumn');
 
-            var hasCols = $row.children('.richColumn').length > 0;
-            editRRNS.makeDroppable($row, hasCols ? '.richColumn' : '.fieldItem',
+            editRRNS.makeDroppable($row, function($draggable)
+                {
+                    // Rows are special: they accept fields if there are
+                    // already fields; and columns if there are columns;
+                    // or both if the row is empty.  But rows only accept
+                    // columns from the same level
+                    return ($draggable.hasClass('fieldItem') &&
+                            $row.children('.richColumn').length < 1) ||
+                        ($draggable.hasClass('richColumn') &&
+                            $row.children('.fieldItem').length < 1 &&
+                            $row.siblings().andSelf().children()
+                                .index($draggable) >= 0);
+                }, false, // Pass false so it uses our custom function
                 function($item)
                 {
-                    if (!hasCols)
+                    if ($item.hasClass('fieldItem'))
                     {
-                        $row.find('.addColumn').remove();
+                        $row.removeClass('acceptsColumns');
                         editRRNS.enableFieldItem($item);
                     }
                 });
-            editRRNS.makeDraggable($row, 'row', '.rowDrag', null, null,
+            editRRNS.makeDraggable($row, 'row', '> .rowDrag', null, null,
                 function(e, ui)
                 {
                     editRRNS.itemDragging(ui, 'top', 'left');
@@ -515,25 +576,13 @@ editRRNS.setUpColumns = function($col)
             'class': ['add', 'addRow'], title: 'Add a row to this column',
             contents: {tagName: 'span', 'class': 'icon'}}));
 
-        $c.hover(function()
-            {
-                $(this).addClass('directHover hover')
-                    .closest('.richLine, #layoutContainer')
-                        .removeClass('directHover')
-                    .closest('.richColumn').removeClass('hover');
-            },
-            function()
-            {
-                $(this).removeClass('directHover hover')
-                    .closest('.richLine, #layoutContainer').addClass('directHover')
-                    .closest('.richColumn').addClass('hover');
-            });
+        editRRNS.addHoverStates($c, 'richColumn', 'richLine');
 
-        editRRNS.makeDroppable($c, '.richLine');
+        editRRNS.makeDroppable($c, '.richLine', true);
         // When dragging a column, enlarge the main area just a bit, since
         // columns are forced-width, and might not allow room for the dropfinder
         // at the right edge
-        editRRNS.makeDraggable($c, 'column', '.columnDrag',
+        editRRNS.makeDraggable($c, 'column', '> .columnDrag',
             function()
             { editRRNS.$renderArea.width(editRRNS.$renderArea.width() + 5); },
             function() { editRRNS.$renderArea.css('width', 'auto'); },
@@ -567,8 +616,10 @@ editRRNS.setColSizes = function($parent)
         totalPercent += parseInt($c.data('rr-width'));
     });
 
-    // clientWidth to account for scrollbar, -3 to account for drop shadow on hover
-    var totalW = Math.min($parent.width(), $parent[0].clientWidth) - 3;
+    // clientWidth to account for scrollbar, minus padding,
+    // -3 to account for drop shadow on hover
+    var totalW = $parent[0].clientWidth -
+        ($parent.innerWidth() - $parent.width()) - 3;
     // Need to tweak columns with specified widths for borders & padding
     $fixedCols.each(function() { totalW -= $(this).outerWidth(true); });
 
@@ -597,10 +648,10 @@ editRRNS.addColumn = function($parent)
             contents: {tagName: 'div', 'class': 'richLine'}});
     $parent.append($newCol);
 
+    editRRNS.setColSizes($parent);
+
     editRRNS.updateConfig();
     editRRNS.setUpColumns($newCol);
-
-    editRRNS.setColSizes($parent);
 };
 
 editRRNS.resetConfig = function(previewOnly)
@@ -641,7 +692,7 @@ editRRNS.initLayout = function()
         .navigation({pageSize: 1, view: blist.dataset});
     editRRNS.$trashButton = editRRNS.$container.find('.navigation .removeItem');
     editRRNS.makeDroppable(editRRNS.$trashButton,
-        '.fieldItem.inLayout, .richLine, .richColumn', null, true);
+        '.fieldItem.inLayout, .richLine, .richColumn', false, null, true);
 
     editRRNS.$container.find('a.clearLayout').click(function(e)
     {
@@ -653,7 +704,7 @@ editRRNS.initLayout = function()
 
     editRRNS.renderCurrentRow();
 
-    editRRNS.makeDroppable(editRRNS.$renderArea, '.richColumn');
+    editRRNS.makeDroppable(editRRNS.$renderArea, '.richColumn', true);
 
     // Handle switching types
     $('#renderTypeOptions').pillButtons();
@@ -734,7 +785,7 @@ editRRNS.initLayout = function()
     });
 
     // Hook up rows & columns
-    $.live('.renderArea .addRow', 'click ', function(e)
+    editRRNS.$renderArea.find('.addRow').live('click ', function(e)
     {
         e.preventDefault();
         var $newRow = $.tag({tagName: 'div', 'class': 'richLine'});
@@ -743,23 +794,14 @@ editRRNS.initLayout = function()
         editRRNS.updateConfig();
     });
 
-    editRRNS.$container.children('.addColumn').click(function(e)
+    editRRNS.$renderArea.find('.addColumn').live('click', function(e)
     {
         e.preventDefault();
-        editRRNS.addColumn(editRRNS.$renderArea);
+        var $rl = $(this).closest('.richLine');
+        editRRNS.addColumn($rl.length > 0 ? $rl : editRRNS.$renderArea);
     });
 
-    $.live('.renderArea .richLine .addColumn', 'click', function(e)
-    {
-        e.preventDefault();
-        editRRNS.addColumn($(this).closest('.richLine'));
-    });
-
-    editRRNS.$container.hover(function()
-        { $(this).addClass('directHover hover'); },
-        function()
-        { $(this).removeClass('directHover hover'); });
-
+    editRRNS.addHoverStates(editRRNS.$renderArea, 'richLine', 'richColumn');
 };
 
 

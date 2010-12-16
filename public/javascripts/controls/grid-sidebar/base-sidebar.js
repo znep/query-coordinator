@@ -2852,9 +2852,11 @@
             { cs.callback($sc, sidebarObj); }
         });
 
-        $pane.find('form').validate({ignore: ':hidden', errorElement: 'span',
-            errorPlacement: function($error, $element)
-            { $error.appendTo($element.closest('.line')); }});
+        $pane.find('form').submit(function(e)
+                { e.preventDefault(); })
+            .validate({ignore: ':hidden', errorElement: 'span',
+                errorPlacement: function($error, $element)
+                { $error.appendTo($element.closest('.line')); }});
 
         return $pane;
     };

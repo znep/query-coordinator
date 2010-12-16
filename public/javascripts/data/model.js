@@ -645,10 +645,7 @@ blist.namespace.fetch('blist.data');
             if ($.isBlank(col))
             {
                 _.each(this.view.columnsForType('nested_table'), function(c)
-                {
-                    col = c.childColumnForID(id);
-                    if (!$.isBlank(col)) { _.breakLoop(); }
-                });
+                { col = col || c.childColumnForID(id); });
             }
             return col;
         };

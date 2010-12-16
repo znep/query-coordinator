@@ -216,14 +216,14 @@
 
             var quantityPrecision = 0;
             e.attributes.quantity = _.reduce(
-                e.attributes.quantity, 0.0, function(m, v)
+                e.attributes.quantity, function(m, v)
                 {
                     var precision = v.indexOf('.') > -1
                                     ? v.length-v.lastIndexOf('.')-1 : 0;
                     quantityPrecision = quantityPrecision > precision
                                     ? quantityPrecision : precision;
                     return m + parseFloat(v);
-                }).toFixed(quantityPrecision);
+                }, 0.0).toFixed(quantityPrecision);
 
             return parseFloat(e.attributes.quantity);
         };

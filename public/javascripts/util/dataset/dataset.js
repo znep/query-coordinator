@@ -706,11 +706,10 @@ this.Dataset = Model.extend({
                 // Might be a child column...
                 if ($.isBlank(c))
                 {
+                    // Look through each nested table, and find if it has a child
+                    // column -- find the first real one
                     _.each(ds.columnsForType('nested_table', true), function(pc)
-                    {
-                        c = pc.childColumnForID(a.columnId);
-                        if (!$.isBlank(c)) { _.breakLoop(); }
-                    });
+                    { c = c || pc.childColumnForID(a.columnId); });
                 }
                 if (!$.isBlank(c)) { c.aggregates[a.name] = parseFloat(a.value); }
             });

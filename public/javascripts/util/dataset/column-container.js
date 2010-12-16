@@ -110,16 +110,13 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
         // columns are in the same order as their existing position says, then
         // we just need to hide/show each column
         var prevPos = -1;
-        var needsReorder = false;
-        _.each(visColIds, function(colId)
+        var needsReorder = _.any(visColIds, function(colId)
         {
             var col = forID(cont, colId);
             if (col.position <= prevPos)
-            {
-                needsReorder = true;
-                _.breakLoop();
-            }
+            { return true; }
             prevPos = col.position;
+            return false;
         });
 
         var vizCols = [];

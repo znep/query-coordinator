@@ -714,6 +714,7 @@
                                 );
                         }
                     );
+                    mapObj._legend.gradientSet = true;
                 }
 
                 if (options.minimum)
@@ -729,7 +730,7 @@
                     { mapObj._legend.$dom.find('span:last').text(options.maximum); }
                 }
 
-                if (mapObj._gradient)
+                if (mapObj._legend.gradientSet)
                 { mapObj._legend.$dom.show(); }
             },
 

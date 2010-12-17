@@ -66,8 +66,6 @@
         <%= render_domain_template(@page_custom_header || 'header_full') %>
       </div>
 
-      <%= display_maintenance_notification %>
-
       <a name="content"></a>
       <%= yield :layout %>
 
@@ -114,15 +112,10 @@
   <script type="text/javascript">
     blist.namespace.fetch('blist.configuration');
     blist.configuration.strings = <%= raw CurrentDomain.strings.to_json %>;
-    
-    (function ($)
-    {
-        var loggedInCookie = $.cookies.get('logged_in');
-        if (loggedInCookie && loggedInCookie == "true")
-        {
-            $('#siteHeader .siteUserNav').addClass('loggedInNav');
-        }
-    })(jQuery);
+    <% if DOWNTIME.should_display(DateTime.now) %>
+    blist.configuration.maintenance_hash = '<%= raw DOWNTIME.hash %>';
+    blist.configuration.maintenance_message = '<%= escape_javascript DOWNTIME.html %>';
+    <% end %>
   </script>
 
   <div id="modals">

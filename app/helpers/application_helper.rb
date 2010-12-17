@@ -116,15 +116,6 @@ module ApplicationHelper
 
 # TOP OF PAGE
 
-  def display_maintenance_notification
-    if DOWNTIME_MESSAGE.present? &&
-      (DOWNTIME_START.nil? || DOWNTIME_START < DateTime.now) &&
-      (DOWNTIME_END.nil?   || DOWNTIME_END   > DateTime.now)
-        return content_tag 'div', simple_format(DOWNTIME_MESSAGE),
-          :class => 'flash notice', :id => 'maintenanceNotice'
-    end
-  end
-
   # Display a standardized flash error message.
   # To use this, simply set flash[:notice], flash[:warning], or flash[:error]
   # in your controller, then add <%= display_standard_flashes %> in your view

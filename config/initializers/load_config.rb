@@ -17,11 +17,9 @@ end
 
 begin
   downtime = YAML.load_file(File.join(Rails.root, "config/downtime.yml"))
-  DOWNTIME_MESSAGE = downtime['message']
-  DOWNTIME_START   = downtime['start'].present? ? DateTime.parse(downtime['start'].to_s) : nil
-  DOWNTIME_END     = downtime['end'].present?   ? DateTime.parse(downtime['end'].to_s) : nil
+  DOWNTIME = Downtime.new(downtime['start'], downtime['end'], downtime['message'])
 rescue
-  DOWNTIME_MESSAGE = DOWNTIME_START = DOWNTIME_END = nil
+  DOWNTIME = Downtime.new(nil, nil, nil)
 end
 
 DOMAIN_TEMPLATES = Dir.glob('app/views/shared/template/_*.html.erb').map do |f|

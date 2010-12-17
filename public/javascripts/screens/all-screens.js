@@ -36,8 +36,28 @@
         return false;
     });
 
-    setTimeout(
-        function() { $('#maintenanceNotice').fadeOut(); },
-        5000
-    );
+    var loggedInCookie = $.cookies.get('logged_in');
+    if (loggedInCookie && loggedInCookie == "true")
+    {
+        $('#siteHeader .siteUserNav').addClass('loggedInNav');
+    }
+
+    blist.namespace.fetch('blist.configuration');
+    if (blist.configuration.maintenance_message &&
+        $.cookies.get('maintenance_ack') != blist.configuration.maintenance_hash) {
+      var dismissMaintenance = function() {
+        $('#maintenanceNotice').fadeOut();
+      };
+
+      $('#siteHeader').after(blist.configuration.maintenance_message);
+      setTimeout(
+          dismissMaintenance,
+          15000
+        );
+
+      $('#maintenanceNotice a.close').click(function() {
+        dismissMaintenance();
+        $.cookies.set('maintenance_ack', blist.configuration.maintenance_hash); 
+      });
+    }
 });

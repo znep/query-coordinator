@@ -80,7 +80,7 @@
    <%- if @view.is_tabular? -%>
    <h2>Semantics &amp; RDF</h2>
     <div class="line clearfix">
-      <label for="view_metadata_rdfClass">Semantic Class</label>
+      <label for="view_metadata_rdfClass">Row Class</label>
         <%= select_tag("view[metadata[rdfClass]]",
               options_for_select(
                 RdfTerm.all_class_options,

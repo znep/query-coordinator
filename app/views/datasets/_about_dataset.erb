@@ -161,7 +161,7 @@
       Semantics and RDF
     </a>
     <dl class="sectionContent">
-      <dt>Semantic Class</dt>
+      <dt>Row Class</dt>
       <dd><span class="hardWrap"><%= @view.rdf_class_display_name %></span></dd>
       <dt>Subject Column</dt>
       <dd><%= @view.rdf_subject %></dd>
@@ -198,8 +198,8 @@
         <%- (fieldset.fields || []).each do |field| -%>
           <dt><%= field.name %></dt>
           <dd><span class="wrap">
-          <%= auto_link(existing_fields[field.name] || '',
-                :html => { :rel => 'nofollow external' }) %>
+              <%= raw(auto_link(h(existing_fields[field.name])|| '',
+                  :html => { :rel => 'nofollow external' })) %>
           </span></dd>
         <%- end -%>
       </dl>

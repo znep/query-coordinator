@@ -56,7 +56,8 @@
           15000
         );
 
-      $('#maintenanceNotice a.close').click(function() {
+      $('#maintenanceNotice a.close').click(function(event) {
+        event.preventDefault();
         dismissMaintenance();
         $.cookies.set('maintenance_ack', blist.configuration.maintenance_hash); 
       });

@@ -44,6 +44,7 @@
 
     blist.namespace.fetch('blist.configuration');
     if (blist.configuration.maintenance_message &&
+        window == window.top &&
         $.cookies.get('maintenance_ack') != blist.configuration.maintenance_hash) {
       var dismissMaintenance = function() {
         $('#maintenanceNotice').fadeOut();

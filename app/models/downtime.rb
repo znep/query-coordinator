@@ -24,7 +24,7 @@ class Downtime
   def should_display(current_time)
     @message.present? &&
       (@start.nil? || @start < current_time) &&
-      (@end.nil?  || @end > current_time)
+      (@finish.nil?  || @finish > current_time)
   end
 
   def html

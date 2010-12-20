@@ -46,10 +46,6 @@ class Displays::Table < Displays::Base
     ['shared-table-editor']
   end
 
-  def required_style_packages
-    ['grid']
-  end
-
   def invalid_message
     (@view.message || '') + '.'
   end

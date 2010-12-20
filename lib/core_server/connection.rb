@@ -100,7 +100,7 @@ module CoreServer
       if !@batch_queue.empty?
         result = generic_request(Net::HTTP::Post.new('/batches'), {:requests => @batch_queue}.to_json)
         Rails.logger.info("Batch request sent: " + @batch_queue.map{|b| b[:url]}.join(", "))
-        results_parsed = JSON.parse(result.body)
+        results_parsed = JSON.parse(result.body, {:max_nesting => 25})
         if results_parsed.is_a? Array
           results_parsed.each_with_index do |result, i|
             if result['error']
@@ -157,7 +157,7 @@ module CoreServer
 
       raise CoreServer::ResourceNotFound.new(result) if result.is_a?(Net::HTTPNotFound)
       if !result.is_a?(Net::HTTPSuccess)
-        parsed_body = JSON.parse(result.body)
+        parsed_body = JSON.parse(result.body, {:max_nesting => 25})
         Rails.logger.info("Error: " +
                       "#{request.method} #{CORESERVICE_URI.to_s}#{request.path}: " +
                       (parsed_body.nil? ? 'No response' :

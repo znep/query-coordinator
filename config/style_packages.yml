@@ -16,11 +16,10 @@ base-sdp:
 - old-controls
 - controls
 - tables
-- rich-render-types
-- screen-map
-grid:
 - table-core
 - dataset-grid
+- rich-render-types
+- screen-map
 strip-chrome:
 - strip-chrome
 screen-login:
@@ -66,6 +65,8 @@ dataset-new:
 dataset-show:
 - grid-sidebar
 - grid-sidebar-custom
+- table-core
+- dataset-grid
 - rich-render-types
 - control-feed
 - splash
@@ -78,6 +79,8 @@ dataset-edit-metadata:
 - screen-dataset-edit-metadata
 dataset-edit-rr:
 - grid-sidebar
+- table-core
+- dataset-grid
 - rich-render-types
 - screen-dataset-edit-rr
 dataset-thumbnail:

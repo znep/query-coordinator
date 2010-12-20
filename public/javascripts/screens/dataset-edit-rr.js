@@ -517,8 +517,12 @@ editRRNS.setUpRows = function($rows)
                     'class': ['add', 'addColumn'],
                     title: 'Add a column to this row',
                     contents: {tagName: 'span', 'class': 'icon'}}));
+            // We only accept columns in a row if there are no field items,
+            // and we are less than four columns deep -- more than that,
+            // and Rails has problems with the nesting level
             $row.toggleClass('acceptsColumns',
-                $row.children('.fieldItem').length < 1);
+                $row.children('.fieldItem').length < 1 &&
+                $row.parents('.richColumn').length < 4);
 
             editRRNS.addHoverStates($row, 'richLine', 'richColumn');
 

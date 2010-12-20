@@ -80,7 +80,7 @@ class View < Model
 
     if conditions.empty?
       url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
-      meta_and_data = JSON.parse(CoreServer::Base.connection.get_request(url))
+      meta_and_data = JSON.parse(CoreServer::Base.connection.get_request(url), {:max_nesting => 25})
 
       url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?method=getAggregates"
       aggregates = JSON.parse(CoreServer::Base.connection.get_request(url))
@@ -94,7 +94,7 @@ class View < Model
       }.to_json
 
       url = "/#{self.class.name.pluralize.downcase}/INLINE/rows.json?#{params.to_param}"
-      meta_and_data = JSON.parse(CoreServer::Base.connection.create_request(url, request_body))
+      meta_and_data = JSON.parse(CoreServer::Base.connection.create_request(url, request_body), {:max_nesting => 25})
 
       url = "/#{self.class.name.pluralize.downcase}/INLINE/rows.json?method=getAggregates"
       aggregates = JSON.parse(CoreServer::Base.connection.create_request(url, request_body))
@@ -132,7 +132,7 @@ class View < Model
   def get_row(row_id)
     result = JSON.parse(CoreServer::Base.connection.get_request(
       "/#{self.class.name.pluralize.downcase}/#{id}/" +
-      "rows.json?ids=#{row_id}&meta=true&method=getByIds"))
+      "rows.json?ids=#{row_id}&meta=true&method=getByIds"), {:max_nesting => 25})
     r = result['data']['data'][0]
     return nil if r.nil?
 
@@ -142,7 +142,8 @@ class View < Model
   def get_row_by_index(row_index)
     result = JSON.parse(CoreServer::Base.connection.get_request(
       "/#{self.class.name.pluralize.downcase}/#{id}/" +
-      "rows.json?start=#{row_index}&length=1&meta=true&method=getByIds"))
+      "rows.json?start=#{row_index}&length=1&meta=true&method=getByIds"),
+        {:max_nesting => 25})
     r = result['data']['data'][0]
     return nil if r.nil?
 
@@ -169,7 +170,7 @@ class View < Model
     if !params.nil?
       url += '?' + params.to_param
     end
-    escape_object(JSON.parse(CoreServer::Base.connection.get_request(url))).
+    escape_object(JSON.parse(CoreServer::Base.connection.get_request(url), {:max_nesting => 25})).
       to_json.html_safe!
   end
 

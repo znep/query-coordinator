@@ -257,7 +257,7 @@ class Model
       return nil
     end
 
-    return self.set_up_model(JSON.parse(data))
+    return self.set_up_model(JSON.parse(data, {:max_nesting => 25}))
   end
 
   def parse(*args)

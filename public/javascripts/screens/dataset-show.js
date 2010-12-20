@@ -73,7 +73,7 @@ blist.datasetPage.initGrid = function()
                 blist.dataset.hasRight('remove_column'),
             columnPropertiesEnabled: true,
             columnNameEdit: blist.dataset.type == 'blist' &&
-                blist.dataset.hasRight('update_view'),
+                blist.dataset.hasRight('update_column'),
             showAddColumns: blist.dataset.type == 'blist' &&
                 blist.dataset.hasRight('add_column'),
             manualResize: true, showRowHandle: true,

@@ -84,7 +84,7 @@ this.Column = Model.extend({
             if (_.isFunction(successCallback)) { successCallback(col); }
         };
 
-        if (col.view.hasRight('update_view'))
+        if (col.view.hasRight('update_column'))
         {
             this._makeRequest({url: '/views/' + this.view.id +
                     '/columns/' + this.id + '.json', type: 'PUT',
@@ -133,7 +133,7 @@ this.Column = Model.extend({
             else { col.view.updateColumns(); }
         }
 
-        if (col.view.hasRight('update_view'))
+        if (col.view.hasRight('update_column'))
         {
             this._makeRequest({url: '/views/' + this.view.id + '/columns/' +
                 this.id + '.json', type: 'PUT',

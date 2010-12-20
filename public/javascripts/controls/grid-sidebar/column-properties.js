@@ -6,7 +6,7 @@
 
     var canConvert = function(col)
     {
-        if ($.isBlank(col) || !blist.dataset.hasRight('update_view'))
+        if ($.isBlank(col) || !blist.dataset.hasRight('update_column'))
         { return false; }
 
         var convT = col.dataType.convertableTypes;

@@ -1,6 +1,17 @@
 class HomepageController < ApplicationController
+  before_filter :check_lockdown, :only => [:show]
   skip_before_filter :require_user
   include BrowseActions
+
+  def check_lockdown
+    if CurrentDomain.feature? :staging_lockdown
+      if current_user.nil?
+        return require_user(true)
+      elsif !CurrentDomain.member?(current_user)
+        return render_forbidden
+      end
+    end
+  end
 
   def show
     # process stories only if not already rendered

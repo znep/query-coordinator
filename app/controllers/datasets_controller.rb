@@ -293,7 +293,7 @@ class DatasetsController < ApplicationController
         end
         if !@view.metadata.nil?
           # Make sure required fields are filled in
-          unless CurrentDomain.custom_dataset_metadata.empty?
+          unless CurrentDomain.custom_dataset_metadata.blank?
             CurrentDomain.custom_dataset_metadata.each do |fieldset|
               unless fieldset.fields.blank?
                 fieldset.fields.each do |field|

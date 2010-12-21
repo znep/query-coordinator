@@ -147,7 +147,7 @@
         }
 
         domainMapLayersCalled = true;
-        $.Tache.Get({url: '/api/domains?method=findMapLayers',
+        $.Tache.Get({url: '/api/layers',
             success: function(dmls)
             {
                 _.each(dmls, function(ml)

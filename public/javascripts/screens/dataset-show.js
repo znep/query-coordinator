@@ -241,7 +241,7 @@ $(function()
     }
 
     // Show guided filter by default
-    datasetPageNS.sidebar.setDefault('filter.guidedFilter');
+    datasetPageNS.sidebar.setDefault('filter.unifiedFilter');
 
     blist.dataset.bind('columns_changed',
         function() { datasetPageNS.sidebar.updateEnabledSubPanes(); });

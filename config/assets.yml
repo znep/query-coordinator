@@ -228,13 +228,13 @@ javascripts:
     - public/javascripts/controls/grid-sidebar/feed.js
     - public/javascripts/controls/grid-sidebar/filter-dataset.js
     - public/javascripts/controls/grid-sidebar/form-create.js
-    - public/javascripts/controls/grid-sidebar/guided-filter.js
     - public/javascripts/controls/grid-sidebar/map-create.js
     - public/javascripts/controls/grid-sidebar/print-dataset.js
     - public/javascripts/controls/grid-sidebar/share-dataset.js
     - public/javascripts/controls/grid-sidebar/show-hide.js
     - public/javascripts/controls/grid-sidebar/subscribe.js
     - public/javascripts/controls/grid-sidebar/signed-dataset.js
+    - public/javascripts/controls/grid-sidebar/unified-filter.js
     - public/javascripts/controls/grid-sidebar/view-list.js
     - public/javascripts/controls/dataset-controls.js
     - public/javascripts/controls/dataset-email.js

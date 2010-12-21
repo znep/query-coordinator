@@ -18,16 +18,19 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
 
     var props = {};
 
+    // defines: columnForID, childColumnForID
     props[colName + 'ForID'] = function(id)
     {
         return _columnIDLookup[parseInt(id) || id];
     };
 
+    // defines: columnForTCID, childColumnForTCID
     props[colName + 'ForTCID'] = function(tcId)
     {
         return _columnTCIDLookup[parseInt(tcId)];
     };
 
+    // defines: clearColumn, clearChildColumn
     // Removes a column from the model without doing anything on the server;
     // use removeColumns or Column.remove for that
     props['clear' + capName] = function(col)
@@ -41,6 +44,7 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
         update(this);
     };
 
+    // defines: columnsForType, childColumnsForType
     props[colSet + 'ForType'] = function(type, includeHidden)
     {
         var cols = includeHidden ? realSet(this) : visibleSet(this);
@@ -52,6 +56,7 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
         return cols;
     };
 
+    // defines: addColumn, addChildColumn
     props['add' + capName] = function(column, successCallback, errorCallback,
         customParams)
     {
@@ -80,6 +85,7 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
         this._makeRequest(req);
     };
 
+    // defines: removeColumns, removeChildColumns
     props['remove' + capSet] = function(columnIds, successCallback, errorCallback)
     {
         var cont = this;
@@ -98,6 +104,7 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
         cont._sendBatch(columnsRemoved);
     };
 
+    // defines: setVisibleColumns, setVisibleChildColumns
     props['setVisible' + capSet] = function(visColIds, callback, skipRequest)
     {
         var cont = this;
@@ -187,6 +194,7 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
         { c.setAccessType(accessType); });
     };
 
+    // defines: updateColumns, updateChildColumns
     props['update' + capSet] = function(newCols, forceFull, updateOrder)
     {
         if ($.isBlank(this[colSet]) && $.isBlank(newCols)) { return; }

@@ -607,3 +607,71 @@
             padding-right: 0.5em
         &.separated
           padding-top: 1.2em
+
+  #gridSidebar_unifiedFilter
+    .advancedLine
+      font-size: 1.2em
+      margin: 0 0.3em 0.5em
+
+      .advancedLabel
+        font-weight: bold
+
+    .advancedOffLink,
+    .advanced .advancedOnLink
+      color: #000
+      cursor: default
+      font-weight: bold
+
+    .advanced .advancedOffLink
+      color: $color_links_normal
+      cursor: pointer
+      font-weight: normal
+
+    .noFilterConditionsText
+      color: #888
+      font-size: 1.3em
+      font-weight: bold
+      margin: 2em 0.2em
+      text-align: center
+      text-shadow: 1px 1px 0 #fff
+
+    .filterConditions
+      margin-bottom: 0.5em
+
+      .filterCondition
+        margin-top: 0.5em
+        padding: 0.7em
+        position: relative
+
+        .filterRemoveButton
+          @include sprite-menu-icons
+          position: absolute
+          right: 0.3em
+          top: 0.3em
+
+        .filterLink
+          border-bottom: 1px dotted $color_links_normal
+          font-size: 1.2em
+          margin-right: 0.2em
+          &:hover
+            border-bottom-style: solid
+
+          &.operator
+            text-transform: lowercase
+
+        .lineValue
+          font-size: 1.3em
+          font-weight: normal
+          padding-left: 0.2em
+          position: static
+          width: auto
+
+        .blist-table-editor
+          border: none
+          font-size: 1em
+
+    .addFilterConditionButton
+      @include sprite-menu-icons
+      .icon
+        float: left
+        margin-right: 0.2em

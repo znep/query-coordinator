@@ -102,3 +102,6 @@ profile-edit:
 - screen-profile-edit
 screen-nominations:
 - screen-nominations
+html-styles:
+- table-core
+- dataset-grid

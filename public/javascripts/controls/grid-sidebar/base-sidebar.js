@@ -2853,7 +2853,10 @@
         });
 
         $pane.find('form').submit(function(e)
-                { e.preventDefault(); })
+                {
+                    if ($.isBlank($(this).attr('action')))
+                    { e.preventDefault(); }
+                })
             .validate({ignore: ':hidden', errorElement: 'span',
                 errorPlacement: function($error, $element)
                 { $error.appendTo($element.closest('.line')); }});

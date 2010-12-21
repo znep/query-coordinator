@@ -599,6 +599,18 @@ $.fn.isInputType = function(inputType)
     return (this.tagName() == 'input') && (this.attr('type') == inputType);
 };
 
+// Calculate widths/heights without scrollbars to give actual renderable area
+// clientWidth to account for scrollbar, minus padding
+$.fn.renderWidth = function()
+{
+    return this[0].clientWidth - (this.innerWidth() - this.width());
+};
+
+$.fn.renderHeight = function()
+{
+    return this[0].clientHeight - (this.innerHeight() - this.height());
+};
+
 // hooray, fake green-threading!
 $.batchProcess = function(array, batchSize, eachItem, eachBatch, onComplete)
 {

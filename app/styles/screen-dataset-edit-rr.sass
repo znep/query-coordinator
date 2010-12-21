@@ -155,6 +155,16 @@ body
       > .columnDrag
         visibility: visible
 
+    &.ui-resizable-resizing
+      border-color: transparent
+      @include box-shadow-none
+      > .addRow
+        display: none
+      > .ui-draggable.richLine
+        border-color: transparent
+      > .columnDrag
+        visibility: hidden
+
     .addRow
       @include sprite-repeater-icons
       bottom: 1px
@@ -246,7 +256,7 @@ body
 
   #gridSidebar, .mainContainer >
     .fieldItem
-      background-color: #dddddd
+      cursor: pointer
       @include border-radius(0.3em)
       display: inline-block
       float: none
@@ -262,13 +272,27 @@ body
         font-size: 1.2em
         font-weight: bold
 
-.richRendererContainer
-  .fieldItem:hover
+  #gridSidebar .fieldItem
     background-color: #dddddd
+
+.richResizable
+  border-color: #333333
+  @include border-radius(0.3em)
+  border-width: 1px
+  @include box-shadow(0, 0, 3px, rgba(0, 0, 0, 0.5))
+  &.richColumn
+    border-style: solid
+
+.renderArea, .mainContainer >
+  .fieldItem
     @include border-radius(0.3em)
+    border: 1px solid transparent
+    float: left
+    &.hover
+      border-color: #999999
+      cursor: pointer
 
 .fieldItem
-  cursor: pointer
   &.staticLabel
     input
       font-size: 1em

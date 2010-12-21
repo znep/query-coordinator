@@ -21,13 +21,13 @@ editRRNS.adjustSizes = function()
                 editRRNS.$previewContainer
                     .children('h2').outerHeight(true)));
 
-    _.defer(function() { editRRNS.setColSizes(editRRNS.$renderArea); });
+    _.defer(function() { editRRNS.adjustColDisplay(editRRNS.$renderArea); });
 };
 
 editRRNS.initResizing = function()
 {
     editRRNS.adjustSizes();
-    // Need defer here and above for setColSizes because sidebar defers
+    // Need defer here and above for adjustColDisplay because sidebar defers
     // adjusting the width of the main area; so we need to defer beyond that
     $(window).resize(function()
             { _.defer(function() { editRRNS.adjustSizes(); }); });
@@ -73,7 +73,7 @@ editRRNS.initSidebar = function()
                 callback: function($sect)
                 {
                     $sect.find('.fieldItem').each(function()
-                        { editRRNS.enableFieldItem($(this)); });
+                        { editRRNS.enableFieldItem($(this), true); });
                 }
             }
         }]
@@ -169,8 +169,17 @@ editRRNS.itemDragging = function(ui, primaryPos, linePos)
 
 
 // Hook up actions for an item in the layout area
-editRRNS.enableFieldItem = function($item)
+editRRNS.enableFieldItem = function($item, dragOnly)
 {
+    if ($item.hasClass('ui-draggable')) { return; }
+
+    if (!dragOnly)
+    {
+        $item.removeClass('fieldItem')
+            .wrap($.tag({tagName: 'div', 'class': ['fieldItem', 'clearfix']}));
+    }
+
+    var $fieldItem = $item.closest('.fieldItem');
     if ($item.hasClass('staticLabel'))
     { $item.attr('title', 'Label with fixed text (double-click to edit)'); }
     else
@@ -188,10 +197,26 @@ editRRNS.enableFieldItem = function($item)
         }
     }
 
-    editRRNS.makeDraggable($item, 'field', false, null, null, function(e, ui)
+    editRRNS.makeDraggable($fieldItem, 'field', false, null, null, function(e, ui)
     {
         editRRNS.itemDragging(ui, 'left', 'top');
     });
+
+    if (!dragOnly)
+    {
+        // http://bugs.jqueryui.com/ticket/5025  We can't hook up resizable
+        // on children before parents, so defer this until the column
+        // has finished hooking up the same thing
+        _.defer(function() { editRRNS.makeResizable($fieldItem); });
+    }
+
+    $fieldItem.hover(function()
+        {
+            var $t = $(this);
+            if ($t.parents('.ui-resizable-resizing').length < 1)
+            { $t.addClass('hover'); }
+        },
+        function() { $(this).removeClass('hover'); });
 };
 
 
@@ -303,6 +328,63 @@ editRRNS.makeDroppable = function($item, selector, restrictToChildren,
         }});
 };
 
+editRRNS.makeResizable = function($item, handles)
+{
+    $item.resizable({
+        handles: handles || 'e, s, se',
+        minHeight: 15, minWidth: 15,
+        helper: 'richResizable ' + ($item.hasClass('richColumn') ?
+            'richColumn' : 'fieldItem'),
+        start: function(event, ui)
+        {
+            var $t = $(this).css('position', '').css('top', '').css('left', '');
+            var $cont = $t.parent().closest('.richColumn, .renderArea');
+            var offT = $t.offset();
+            var offCont = $cont.offset();
+            $t.resizable('option', 'maxWidth', $cont.renderWidth() -
+                (offT.left - offCont.left) - ($t.outerWidth(true) - $t.width()));
+            editRRNS.inResize = true;
+        },
+        stop: function(event, ui)
+        {
+            editRRNS.inResize = false;
+            var $t = $(this).css('position', '').css('top', '').css('left', '');
+            if ($t.hasClass('fieldItem'))
+            {
+                var $par = $t;
+                $t = $t.children('.richItem, .richLabel');
+                $t.height($par.height()).width($par.width());
+                $par.css('height', '').css('width', '');
+            }
+
+            if ((ui.size.height - ui.originalSize.height) != 0)
+            {
+                $t.data('rr-height', parseFloat((ui.size.height /
+                    parseInt($t.css('font-size'))).toFixed(3)) + 'em');
+            }
+            if ((ui.size.width - ui.originalSize.width) != 0)
+            {
+                if ($t.hasClass('richColumn'))
+                {
+                    var $par = $t.parent();
+                    var parW = $par.renderWidth() - 3;
+                    $t.data('rr-width', Math.floor(100 * $t.outerWidth(true) /
+                        parW) + '%');
+                    $t.data('rr-width-locked', true);
+                    editRRNS.setColSizes($t.parent());
+                }
+                else
+                {
+                    $t.data('rr-width', parseFloat(((ui.size.width -
+                            ($t.outerWidth(true) - $t.width())) /
+                        parseInt($t.css('font-size'))).toFixed(3)) + 'em');
+                }
+            }
+            editRRNS.updateConfig();
+        }
+    });
+};
+
 
 // ------------- Layout -----------------
 
@@ -349,21 +431,6 @@ editRRNS.updateConfig = function()
         return _.isEmpty(s) ? null : s;
     };
 
-    var setColWidths = function($cols)
-    {
-        // Assume they are all siblings, so just grab the parent from the first
-        var parW = $cols.parent().width();
-        $cols.each(function()
-        {
-            var $c = $(this);
-            if ($.isBlank($c.data('rr-width')) || $c.data('rr-width').endsWith('%'))
-            {
-                $c.data('rr-width',
-                    Math.floor(100 * $c.outerWidth(true) / parW) + '%');
-            }
-        });
-    };
-
     var conf = {columns: []};
     var processColumn;
     processColumn = function($col, parConf)
@@ -388,7 +455,7 @@ editRRNS.updateConfig = function()
                 r.fields = [];
                 $r.children('.fieldItem').each(function()
                 {
-                    var $f = $(this);
+                    var $f = $(this).children('.richItem, .richLabel');
                     var f = {};
                     s = getStyles($f);
                     if (!$.isBlank(s)) { f.styles = s; }
@@ -417,7 +484,6 @@ editRRNS.updateConfig = function()
     };
 
     var $topCols = editRRNS.$renderArea.children('.richColumn');
-    setColWidths($topCols);
     $topCols.each(function() { processColumn($(this), conf); });
 
     // Check if there are actually any fields
@@ -448,13 +514,16 @@ editRRNS.renderCurrentLayout = function(previewOnly)
     if (!previewOnly) { editRRNS.richRenderer.renderLayout(); }
     editRRNS.previewRenderer.renderLayout();
 
-    editRRNS.$renderArea.prepend($.tag({tagName: 'a', href: '#Add_Column',
-        'class': ['add', 'addColumn'], title: 'Add a column',
-        contents: {tagName: 'span', 'class': 'icon'}}));
+    if (editRRNS.$renderArea.children('.addColumn').length < 1)
+    {
+        editRRNS.$renderArea.prepend($.tag({tagName: 'a', href: '#Add_Column',
+            'class': ['add', 'addColumn'], title: 'Add a column',
+            contents: {tagName: 'span', 'class': 'icon'}}));
+    }
 
     editRRNS.setUpColumns(editRRNS.$renderArea.children('.richColumn'));
 
-    editRRNS.setColSizes(editRRNS.$renderArea);
+    editRRNS.adjustColDisplay(editRRNS.$renderArea);
 };
 
 editRRNS.isDirectTarget = function(par, target, childContClass)
@@ -465,42 +534,38 @@ editRRNS.isDirectTarget = function(par, target, childContClass)
     var $closest = $(target).closest('.' + childContClass);
     return !$.isBlank(target) && (target == par ||
         ($.contains(par, target) &&
-            ($closest.length < 1 || !$.contains(par, $closest[0]))));
+            ($closest.length < 1 || !$.contains(par, $closest[0]) ||
+             $(par).hasClass('ui-resizable-resizing'))));
 };
 
 editRRNS.addHoverStates = function($item, selfClass, childContClass)
 {
-    $item.mouseover(function(e)
+    var hoverHandle = function(item, target)
+    {
+        var $item = $(item);
+        if (editRRNS.inDrag || $.isBlank(target))
         {
-            if (editRRNS.inDrag || $.isBlank(e.target))
-            {
-                $(this).removeClass('directHover hover');
-                return;
-            }
+            $item.removeClass('directHover hover');
+            return;
+        }
 
-            // hovering is controlled by whether or not you have moused into
-            // a sub-item of the same type you are in (column inside a column,
-            // row in a row)
-            var $closestSelf = $(e.target).closest('.' + selfClass);
-            $(this).toggleClass('hover', $closestSelf.length < 1 ||
-                    $closestSelf[0] == this)
-                .toggleClass('directHover',
-                    editRRNS.isDirectTarget(this, e.target, childContClass));
-        })
-    .mouseout(function(e)
-        {
-            if (editRRNS.inDrag || $.isBlank(e.relatedTarget))
-            {
-                $(this).removeClass('directHover hover');
-                return;
-            }
+        // hovering is controlled by whether or not you have moused into
+        // a sub-item of the same type you are in (column inside a column,
+        // row in a row)
+        var $closestSelf = $(target).closest('.' + selfClass);
+        var isSelfResizing = $item.hasClass('ui-resizable-resizing');
+        var isOtherResizing = editRRNS.inResize && !isSelfResizing;
+        $item
+            .toggleClass('hover', (item == target || ($.contains(item, target) &&
+                ($closestSelf.length < 1 || $closestSelf[0] == item ||
+                    isSelfResizing))) && !isOtherResizing)
+            .toggleClass('directHover',
+                editRRNS.isDirectTarget(item, target, childContClass) &&
+                !isOtherResizing);
+    };
 
-            var $closestSelf = $(e.relatedTarget).closest('.' + selfClass);
-            $(this).toggleClass('directHover',
-                editRRNS.isDirectTarget(this, e.relatedTarget, childContClass))
-                .toggleClass('hover', $.contains(this, e.relatedTarget) &&
-                    ($closestSelf.length < 1 || $closestSelf[0] == this));
-        });
+    $item.mouseover(function(e) { hoverHandle(this, e.target); })
+        .mouseout(function(e) { hoverHandle(this, e.relatedTarget); });
 };
 
 editRRNS.setUpRows = function($rows)
@@ -558,7 +623,7 @@ editRRNS.setUpRows = function($rows)
 editRRNS.setUpColumns = function($col)
 {
     // Set up fields
-    $col.find('.richItem, .richLabel')
+    $col.find('.richLine > .richItem, .richLine > .richLabel')
         .addClass('fieldItem inLayout');
     $col.find('.staticLabel:empty').addClass('defaultData')
         .text('(Static text)');
@@ -591,6 +656,29 @@ editRRNS.setUpColumns = function($col)
             { editRRNS.$renderArea.width(editRRNS.$renderArea.width() + 5); },
             function() { editRRNS.$renderArea.css('width', 'auto'); },
             function(e, ui) { editRRNS.itemDragging(ui, 'left', 'top'); });
+
+        editRRNS.makeResizable($c, 'e');
+    });
+};
+
+editRRNS.adjustColDisplay = function($parent)
+{
+    var totalW = $parent.renderWidth() - 3;
+    $parent.children('.richColumn').each(function()
+    {
+        var $c = $(this);
+        if ($.isBlank($c.data('rr-width')) || $c.data('rr-width').endsWith('%'))
+        {
+            $c.width(parseInt($c.data('rr-width')) / 100 * totalW -
+                ($c.outerWidth(true) - $c.width()));
+        }
+    })
+    // Now recurse on all the lines to find ones that have columns
+    .children('.richLine').each(function()
+    {
+        var $l = $(this);
+        if ($l.children('.richColumn').length > 0)
+        { editRRNS.adjustColDisplay($l); }
     });
 };
 
@@ -602,10 +690,14 @@ editRRNS.setColSizes = function($parent)
     $parent.children('.richColumn').each(function()
     {
         var $c = $(this);
-        if ($.isBlank($c.data('rr-width')) || $c.data('rr-width').endsWith('%'))
+        if ($.isBlank($c.data('rr-width')) ||
+            ($c.data('rr-width').endsWith('%') && !$c.data('rr-width-locked')))
         { $freeCols = $freeCols.add($c); }
         else
-        { $fixedCols = $fixedCols.add($c); }
+        {
+            $fixedCols = $fixedCols.add($c);
+            $c.removeData('rr-width-locked');
+        }
     });
 
     // First calculate what the percents currently add up to, and give a
@@ -620,22 +712,21 @@ editRRNS.setColSizes = function($parent)
         totalPercent += parseInt($c.data('rr-width'));
     });
 
-    // clientWidth to account for scrollbar, minus padding,
     // -3 to account for drop shadow on hover
-    var totalW = $parent[0].clientWidth -
-        ($parent.innerWidth() - $parent.width()) - 3;
+    var totalW = $parent.renderWidth() - 3;
+    var availW = totalW;
     // Need to tweak columns with specified widths for borders & padding
-    $fixedCols.each(function() { totalW -= $(this).outerWidth(true); });
+    $fixedCols.each(function() { availW -= $(this).outerWidth(true); });
 
     // Now that we know how much remaining space we have, set each of the
-    // variable columns; and adjust their percent width so they all add
-    // up to 100
+    // variable columns; and then set their width to the real portion of
+    // the div
     $freeCols.each(function()
     {
         var $c = $(this);
         var np = Math.floor(parseInt($c.data('rr-width')) / totalPercent * 100);
-        $c.data('rr-width', np + '%');
-        $c.width(np / 100 * totalW - ($c.outerWidth(true) - $c.width()));
+        $c.width(np / 100 * availW - ($c.outerWidth(true) - $c.width()));
+        $c.data('rr-width', Math.floor(np * availW / totalW) + '%');
     });
 
     // Now recurse on all the lines to find ones that have columns

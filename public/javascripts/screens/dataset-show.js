@@ -180,7 +180,7 @@ $(function()
     if (datasetPageNS.$dataGrid.length > 0 && !isAltRT)
     {
         blist.common.initGrid = datasetPageNS.initGrid;
-        datasetPageNS._needsInitGrid = true;
+        blist.configuration._needsInitGrid = true;
     }
 
     // sidebar and sidebar tabs

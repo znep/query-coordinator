@@ -2,6 +2,7 @@
 
 metricsNS.SERIES_KEY = 'data-series';
 metricsNS.DATA_KEY   = 'data-metrics';
+metricsNS.SHOW_COUNT = 5;
 
 /*
  * Publicly accessible callback functions for shared analytics
@@ -12,8 +13,11 @@ metricsNS.DATA_KEY   = 'data-metrics';
 // Common render function to take a list of data and make table
 metricsNS.renderTopList = function(data, $target)
 {
-    var table = $target.find('.metricsList')
-        .find('tbody').remove().end();
+    var table = $target.find('.metricsList');
+
+    // Clear out the table if we're loading the first set of rows
+    if ($target.data('count') <= metricsNS.SHOW_COUNT)
+    { table.find('tbody').remove().end(); }
 
     if (data.length > 0)
     {
@@ -33,19 +37,32 @@ metricsNS.renderTopList = function(data, $target)
 // appropriate transformation then rendering function
 metricsNS.updateTopListWrapper = function($context, data, mapFunction, postProcess)
 {
-    var mapped   = [];
-
-    for (var key in data)
+    var mapped   = [],
+        sorted   = $context.data('sorted-data');
+    if ($.isBlank(sorted))
     {
-        if (!key.startsWith('__') && data.hasOwnProperty(key))
-        {
-            if (_.isFunction(mapFunction))
-            { mapFunction(key, data[key], mapped); }
-            else
-            { mapped.push({name: key, value: data[key],
-                           textValue: Highcharts.numberFormat(data[key], 0)}); }
-        }
+        // Cache a sorted, arrayified version of the data
+        // so we don't generate it every time they click 'Show More'
+        sorted = metricsNS.sortData(data);
+        $context.data('sorted-data', sorted);
     }
+
+    var count    = $context.data('count'),
+        newCount = count + metricsNS.SHOW_COUNT,
+        dataPart = sorted.slice(count, newCount);
+
+    $context.data('count', newCount);
+
+    _.each(dataPart, function(entry)
+    {
+        if (_.isFunction(mapFunction))
+        { mapFunction(entry.item, entry.count, mapped); }
+        else
+        { mapped.push({name: entry.item, value: entry.count,
+               textValue: Highcharts.numberFormat(entry.count, 0)}); }
+    });
+
+    $context.toggleClass('moreDataAvailable', newCount < sorted.length);
 
     if (_.isFunction(postProcess))
     { postProcess(mapped, $context); }
@@ -53,13 +70,41 @@ metricsNS.updateTopListWrapper = function($context, data, mapFunction, postProce
     { metricsNS.renderTopList(mapped, $context); }
 };
 
+metricsNS.showMoreClicked = function(section)
+{
+    var $context = $('#' + section.id);
+    section.callback($context);
+};
+
+metricsNS.sortData = function(data)
+{
+    var array = [];
+    // Turn associative array (hash) into key/value pair (item, count) array
+    for (var key in data)
+    {
+        if (!key.startsWith('__') && data.hasOwnProperty(key))
+        {
+            array.push({item: key, count: data[key]});
+        }
+    }
+    // Sort descending
+    array.sort(function(a, b) {
+        return b.count - a.count;
+    });
+    return array;
+};
+
 // This one's pretty easy
 metricsNS.updateTopSearchesCallback = function($context, key)
 {
-    // HACK HACK HACK
     var data = $context.data(metricsNS.DATA_KEY)[key];
-    delete data["''"];
-    delete data["null"];
+
+    // HACK HACK HACK
+    if(data)
+    {
+        delete data["''"];
+        delete data["null"];
+    }
 
     metricsNS.updateTopListWrapper($context, data);
 };
@@ -84,13 +129,17 @@ metricsNS.topDatasetsCallback = function($context)
             });
         },
         function(data, $context) {
+            var render = function() {
+                metricsNS.renderTopList(data, $context);
+            };
             // Success won't be called if data is empty
             if (!$.socrataServer.runRequests({
-                    success: function() {
-                        metricsNS.renderTopList(data, $context);
-                    }
+                    success: render,
+                    // Some of the batch may have resulted in error, just
+                    // process what we have
+                    error: render
                 }))
-            { metricsNS.renderTopList(data, $context); }
+            { render(); }
         }
     );
 };

@@ -82,7 +82,7 @@
           &:last-child
             border-bottom: 2px solid #eee
 
-          .primaryValue
+          .value .primaryValue
             display: none
 
           .subLinksContainer, .subValuesContainer
@@ -95,6 +95,17 @@
 
           .subItemBox
             padding-top: 0.3em
+
+        .showMore
+          display: none
+          margin: 0.8em auto
+          text-align: center
+          a
+            font-size: 1.2em
+
+        &.moreDataAvailable
+          .showMore
+            display: block
 
         &.expanding
           col.description

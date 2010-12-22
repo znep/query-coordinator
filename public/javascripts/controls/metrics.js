@@ -15,7 +15,12 @@
         if (!$.isBlank(series))
         { url = url + '&method=series&slice=' + slice; }
         else if (!$.isBlank(section.top))
-        { url = url + '&method=top&top=' + section.top; }
+        {
+            url = url + '&method=top&top=' + section.top;
+            $section
+                .data('count', 0)
+                .data('sorted-data', null);
+        }
 
         $.Tache.Get({
             cache: false,
@@ -168,6 +173,10 @@
         _.each(opts.topListSections, function(section)
         {
             $screen.find('#' + section.id)
+                .find('.showMoreLink').click(function(event) {
+                    event.preventDefault();
+                    metricsNS.showMoreClicked(section);
+                }).end()
                 .appendTo($screen.find('.' + section.renderTo));
         });
 

@@ -9,108 +9,10 @@
     var groupableTypes = _.compact(_.map(blist.data.types, function(t, n)
     { return !$.isBlank(t.rollUpAggregates) ? n : null; }));
 
-    var filterableTypes = _.compact(_.map(blist.data.types, function(t, n)
-    { return !$.isBlank(t.filterConditions) ? n : null; }));
-
     var rollUpFunctions = function(colId)
     {
         if ($.isBlank(colId)) { return null; }
         return blist.dataset.columnForID(colId).dataType.rollUpAggregates;
-    };
-
-    var filterOperators = function(colId)
-    {
-        if ($.isBlank(colId)) { return null; }
-        return blist.dataset.columnForID(colId).renderType.filterConditions;
-    };
-
-    var filterEditor = function(sidebarObj, $field, vals, curValue)
-    {
-        var colId = vals['children.0.columnId'];
-        var op = vals.value;
-        if ($.isBlank(colId) || $.isBlank(op)) { return false; }
-
-        if (_.include(['IS_BLANK', 'IS_NOT_BLANK'], op)) { return false; }
-
-        var col = blist.dataset.columnForID(colId);
-        var typeName = col.renderTypeName;
-
-        // Some types want different editors for filtering
-        if (_.include(['tag', 'email', 'html'], typeName)) { typeName = 'text'; }
-
-        var firstVal = curValue;
-        if (_.isArray(curValue)) { firstVal = curValue[0]; }
-
-        var $editor = $.tag({tagName: 'div',
-            'class': ['editorWrapper', typeName]});
-        $editor.blistEditor({row: null, column: col, value: firstVal,
-            typeName: typeName});
-        $field.append($editor);
-
-        if (op == 'BETWEEN')
-        {
-            $field.addClass('twoEditors');
-            $field.append($.tag({tagName: 'span',
-                'class': ['joiner', typeName], contents: '&amp;'}));
-
-            var secondVal;
-            if (_.isArray(curValue)) { secondVal = curValue[1]; }
-            $editor = $.tag({tagName: 'div',
-                'class': ['editorWrapper', typeName]});
-            $editor.blistEditor({row: null, column: col, value: secondVal,
-                typeName: typeName});
-            $field.append($editor);
-        }
-        else { $field.removeClass('twoEditors'); }
-
-        if (!$.isBlank($.uniform))
-        { $field.find('select, :checkbox, :radio, :file').uniform(); }
-
-        return true;
-    };
-
-    var filterEditorRequired = function(sidebarObj, vals)
-    {
-        var colId = vals['children.0.columnId'];
-        var op = vals.value;
-        if ($.isBlank(colId) || $.isBlank(op)) { return false; }
-
-        if (_.include(['IS_BLANK', 'IS_NOT_BLANK'], op)) { return false; }
-
-        return true;
-    };
-
-    var filterEditorValue = function(sidebarObj, $field)
-    {
-        var $editor = $field.find('.editorWrapper');
-        if ($editor.length < 1) { return null; }
-
-        var vals = [];
-        $editor.each(function()
-        {
-            var $t = $(this);
-            var v = $t.blistEditor().currentValue();
-            if (_.isNull(v) &&
-                $t.blistEditor().column.renderTypeName == 'checkbox')
-            { v = '0'; }
-
-            if (!$.isBlank(v)) { vals.push(v); }
-        });
-
-        if (vals.length < $editor.length) { return null; }
-        if (vals.length == 1) { vals = vals[0]; }
-
-        return vals;
-    };
-
-    var filterEditorCleanup = function(sidebarObj, $field)
-    {
-        var $editor = $field.find('.editorWrapper');
-        $editor.each(function()
-        {
-            var $t = $(this);
-            if ($t.isBlistEditor()) { $t.blistEditor().finishEdit(); }
-        });
     };
 
     var isEdit = _.include(['filter', 'grouped'], blist.dataset.type) &&
@@ -120,9 +22,8 @@
     var config = {
         name: configName,
         priority: 3,
-        title: 'Filter, Sort, Roll-Up',
-        subtitle: 'You can filter a view down to certain rows; ' +
-            'group rows together and summarize data with a roll-up; ' +
+        title: 'Sort &amp; Roll-Up',
+        subtitle: 'You can group rows together and summarize data with a roll-up; ' +
             'and sort one or more columns',
         onlyIf: function()
         {
@@ -131,49 +32,8 @@
         },
         disabledSubtitle: function()
         { return !blist.dataset.valid && !isEdit ? 'This view must be valid' :
-            'This view has no columns to filter, roll-up or sort'; },
+            'This view has no columns to roll-up or sort'; },
         sections: [
-            // Filter section
-            {
-                title: 'Filter', name: 'filterFilter', type: 'selectable',
-                fields: [
-                    {type: 'select', text: 'Match', prompt: null,
-                        name: 'query.filterCondition.value',
-                        options: [
-                            {text: 'all conditions', value: 'AND'},
-                            {text: 'any conditions', value: 'OR'}
-                        ],
-                        wizard: 'Choose whether you want rows that match all ' +
-                            'the conditions you choose, or any one of them'
-                    },
-                    {type: 'repeater', addText: 'Add Condition', minimum: 0,
-                        name: 'query.filterCondition.children',
-                        field: {type: 'group', options: [
-                            {type: 'columnSelect', text: 'Column',
-                                name: 'children.0.columnId', required: true,
-                                columns: {type: filterableTypes,
-                                    hidden: isEdit || blist.dataset.isGrouped()}},
-                            {type: 'select', text: 'Operator', name: 'value',
-                                required: true, prompt: 'Select an operator',
-                                linkedField: 'children.0.columnId',
-                                options: filterOperators},
-                            {type: 'custom', text: 'Value', required: true,
-                                name: 'children.1.value',
-                                linkedField: ['children.0.columnId', 'value'],
-                                editorCallbacks: {create: filterEditor,
-                                    required: filterEditorRequired,
-                                    value: filterEditorValue,
-                                    cleanup: filterEditorCleanup}}
-                        ]},
-                        wizard: 'Choose a column to filter on, what type of ' +
-                            'comparison to do, and enter a value to compare ' +
-                            'against.  You may enter as many conditions as you ' +
-                            'want'
-                    }
-                ],
-                wizard: 'Do you wish to filter this data down to certain values?'
-            },
-
             // Group section
             {
                 title: 'Roll-Ups & Drill-Downs', name: 'filterGroup',
@@ -252,85 +112,6 @@
         var view = blist.dataset.cleanCopy();
 
         view.query = view.query || {};
-        // Pull filterCondition from blist.dataset, so we don't get any
-        // named filters
-        view.query.filterCondition = $.extend(true, {},
-            blist.dataset.query.filterCondition);
-        view.query.filterCondition.children =
-            view.query.filterCondition.children || [];
-
-        // We may have multi-part column conditions that are split apart
-        // in the filterCondition.  Assume these are adjacent in the children
-        // array, and attempt to put them back together
-        var i = 0;
-        while (i < view.query.filterCondition.children.length - 1)
-        {
-            var curItem = view.query.filterCondition.children[i];
-            var nextItem = view.query.filterCondition.children[i+1];
-            if (curItem.type != nextItem.type ||
-                    curItem.value != nextItem.value)
-            { i++; continue; }
-
-            var curCol = _.detect(curItem.children, function(c)
-                    { return c.type == 'column' && !$.isBlank(c.value); });
-            var nextCol = _.detect(nextItem.children, function(c)
-                    { return c.type == 'column' && !$.isBlank(c.value); });
-            if ($.isBlank(curCol) || $.isBlank(nextCol) ||
-                    curCol.columnId != nextCol.columnId ||
-                    curCol.value == nextCol.value)
-            { i++; continue; }
-
-            // We (probably) found a match!
-            var curVal = _.detect(curItem.children, function(c)
-                    { return c.type == 'literal'; });
-            var nextVal = _.detect(nextItem.children, function(c)
-                    { return c.type == 'literal'; });
-            if ($.isBlank(curVal) || $.isBlank(nextVal))
-            { i++; continue; }
-
-            if (!$.isPlainObject(curVal.value))
-            {
-                var o = {};
-                o[curCol.value.toLowerCase()] = curVal.value;
-                curVal.value = o;
-            }
-
-            if (_.any(curVal.value, function(v, k)
-                        { return k == nextCol.value; }))
-            { i++; continue; }
-
-            // Now we found a match for real, and we have the object set up
-            curVal.value[nextCol.value.toLowerCase()] = nextVal.value;
-            view.query.filterCondition.children.splice(i+1, 1);
-        }
-
-        _.each(view.query.filterCondition.children, function(c)
-        {
-            if (!_.isArray(c.children)) { return; }
-
-            var colObj = _.detect(c.children, function(cc)
-            { return cc.type == 'column'; });
-            var valObjs = _.select(c.children, function(cc)
-            { return cc.type == 'literal'; });
-
-            _.each(valObjs, function(v)
-            {
-                if (!$.isBlank(colObj.value) && !$.isBlank(v) &&
-                    !$.isPlainObject(v.value))
-                {
-                    var o = {};
-                    o[colObj.value.toLowerCase()] = v.value;
-                    v.value = o;
-                }
-            });
-
-            if (valObjs.length > 1)
-            {
-                valObjs = _.map(valObjs, function(v)
-                { return v.value; });
-                c.children = [colObj, {type: 'literal', value: valObjs}];
-            }
-        });
 
         return view;
     };
@@ -359,49 +140,6 @@
         });
         _.each(filterView.query.groupBys || [], function(gb)
         { gb.type = 'column'; });
-
-        if (!$.isBlank(filterView.query.filterCondition))
-        {
-            filterView.query.filterCondition.type = 'operator';
-            var newChildren = [];
-            _.each(filterView.query.filterCondition.children || [], function(c)
-            {
-                c.type = 'operator';
-                var splitVal;
-                var colObj;
-                var extraLiterals = [];
-                _.each(c.children || [], function(cc)
-                {
-                    cc.type = !$.isBlank(cc.columnId) ? 'column' : 'literal';
-                    if (cc.type == 'column')
-                    { colObj = cc; }
-                    else if ($.isPlainObject(cc.value))
-                    { splitVal = cc.value; }
-                    else if (_.isArray(cc.value))
-                    {
-                        for (var i = 1; i < cc.value.length; i++)
-                        {
-                            extraLiterals.push({type: 'literal',
-                                value: cc.value[i]});
-                        }
-                        cc.value = cc.value[0];
-                    }
-                });
-                c.children = c.children.concat(extraLiterals);
-
-                if ($.isBlank(splitVal)) { newChildren.push(c); }
-                else
-                {
-                    _.each(splitVal, function(v, k)
-                    {
-                        newChildren.push({type: 'operator', value: c.value,
-                            children: [$.extend({value: k.toUpperCase()}, colObj),
-                                {type: 'literal', value: v}]});
-                    });
-                }
-            });
-            filterView.query.filterCondition.children = newChildren;
-        }
 
         filterView.columns = filterView.columns || [];
 
@@ -450,7 +188,7 @@
         // Show hidden columns if we are grouped
         _.each(config.sections, function(s)
         {
-            if (_.include(['filterFilter', 'filterGroup'], s.name))
+            if (s.name == 'filterGroup')
             {
                 _.each(s.fields, function(f)
                 {

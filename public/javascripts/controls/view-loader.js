@@ -45,9 +45,8 @@
                 window.tinyMCEPreInit = {base: '/javascripts/tiny_mce',
                   suffix: '', query: ''};
 
-                blist.namespace.fetch('blist.datasetPage');
-                if (blist.datasetPage._needsInitGrid)
-                { blist.datasetPage.initGrid(); }
+                if (blist.configuration._needsInitGrid)
+                { blist.common.initGrid(); }
             },
             scrollsInline: true
         }

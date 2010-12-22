@@ -440,10 +440,10 @@ $(function()
 
     // grid
     var $dataGrid = $('#data-grid');
-    if (blist.dataset.isGrid())
+    if (blist.dataset.isGrid() && $dataGrid.length > 0)
     {
-        if ($dataGrid.length > 0)
-        {
+        blist.configuration._needsInitGrid = true;
+        blist.common.initGrid = function() {
             $dataGrid
                 .datasetGrid({view: blist.dataset,
                     showRowNumbers: widgetNS.theme['grid']['row_numbers'],
@@ -454,7 +454,7 @@ $(function()
                     filterForm: '.toolbar .toolbarSearchForm',
                     autoHideClearFilterItem: false
                 });
-        }
+        };
     }
 
     // Page render type

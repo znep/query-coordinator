@@ -79,10 +79,14 @@ class Displays::Base
 
     # Render inline javascript to be included in the body *before* the bulk of javascript initializes.  Called by view
     # logic
+    def render_dataset_setup_js
+      "blist.dataset = new Dataset(#{@@app_helper.safe_json(@view)});"
+    end
+
     def render_inline_setup_js(target_dom_id, context)
       # Set common base variables communicating display configuration to JS
       js = <<END
-blist.dataset = new Dataset(#{@@app_helper.safe_json(@view)});
+#{render_dataset_setup_js}
 blist.assets = #{ASSET_MAP.javascripts};
 $(function()
 {

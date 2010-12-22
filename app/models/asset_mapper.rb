@@ -10,8 +10,7 @@ class AssetMapper
             @asset_map[type][package_name] = config[type][package_name]
               .map {|item| item.sub(STRIP_PREFIX, '') }
           else
-            @asset_map[type][package_name] = config['package_path'] + '/' +
-              package_name + '.js?' + Time.now().to_i.to_s
+            @asset_map[type][package_name] = "/#{config['package_path']}/#{package_name}.js?#{Time.now().to_i.to_s}"
           end
         end
       end

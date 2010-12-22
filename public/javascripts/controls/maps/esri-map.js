@@ -343,7 +343,13 @@
                                 { viewport: vp })
                         }, false, true);
                         curVP = vp;
-                        mapObj.updateRowsByViewport();
+                        if (blist.dataset.isArcGISDataset())
+                        {
+                            blist.dataset._invalidateRows();
+                            mapObj._requireRowReload = true;
+                        }
+                        else
+                        { mapObj.updateRowsByViewport(); }
                     });
             },
 

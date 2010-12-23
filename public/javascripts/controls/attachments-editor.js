@@ -11,7 +11,7 @@
         {
             var $editor = $(this);
             $editor.find('.existingAttachments .deleteLinks').each(function(link){
-                $(this).replaceWith(
+                $(this).hide().after(
                     $.tag(deleteLinkOptions));
             });
 
@@ -22,7 +22,11 @@
 
                     if (confirm('Are you sure you want to delete this attachment?'))
                     {
-                        $(this).closest('li').remove();
+                        $(this).closest('li')
+                            .find('.deleteLinks input[type=checkbox]')
+                                .attr('checked', true)
+                                .end()
+                            .fadeOut();
                     }
                 });
                 eventsWired = true;

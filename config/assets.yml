@@ -209,6 +209,7 @@ javascripts:
     - public/javascripts/util/konami.js
     - public/javascripts/controls/menu.js
     - public/javascripts/controls/wizard-prompt.js
+    - public/javascripts/controls/popup-select.js
     - public/javascripts/controls/form-inliner.js
     - public/javascripts/controls/modal-dialogs.js
     - public/javascripts/controls/expander.js

@@ -528,3 +528,42 @@ form.search
       padding: 0.4em 0.6em 0.45em
       position: relative
 //*** END: Search form styles ***/
+
+//*** START: popup-select.js ***//
+
+.popupSelectPrompt
+  color: #fff
+  font-size: 1.2em
+  margin: 0.3em
+    bottom: 0.8em
+
+.popupSelectList
+  background-color: #fff
+  @include box-shadow(0, 2px, 5px, rgba(0, 0, 0, 0.35), true)
+  max-width: 40em
+  min-width: 20em
+  overflow-x: hidden
+  overflow-y: auto
+
+  li
+    border-top: 1px solid #999
+    font-size: 1.3em
+    padding: 0.7em 1em
+    &:first-child
+      border-top: none
+
+    &:hover
+      background-color: $color_links_normal
+      color: #fff
+      cursor: pointer
+
+    .selectedIcon
+      @include sprite-menu-icons
+      position: absolute
+
+    .contentWrapper
+      line-height: 1.3em
+      min-height: 1.3em
+      padding: 0 1.6em
+
+//*** END: popup-select.js ***//

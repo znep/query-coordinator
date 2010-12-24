@@ -5,6 +5,7 @@ $(function()
     // grid
     if (blist.$display.length > 0 && blist.dataset.isGrid())
     {
+        blist.namespace.fetch('blist.common');
         blist.configuration._needsInitGrid = true;
         blist.common.initGrid = function() {
             blist.$display

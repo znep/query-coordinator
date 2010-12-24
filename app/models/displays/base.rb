@@ -99,6 +99,7 @@ $(function()
 
     blist.$display.socrataView({view: blist.dataset});
 });
+blist.namespace.fetch('blist.configuration');
 blist.configuration.development = #{Rails.env.development?};
 END
       js

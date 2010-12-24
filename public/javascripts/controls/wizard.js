@@ -63,8 +63,11 @@
             };
             var prevPane = function()
             {
-                $currentPane = $currentPane.prev();
-                currentPaneIndex--;
+                do
+                {
+                    $currentPane = $currentPane.prev();
+                    currentPaneIndex--;
+                } while ($currentPane.is('.skip'));
                 currentPaneConfig = opts.paneConfig[$currentPane.attr('data-wizardPaneName')] || {};
 
                 animateState();
@@ -72,8 +75,11 @@
             };
             var nextPane = function()
             {
-                $currentPane = $currentPane.next();
-                currentPaneIndex++;
+                do
+                {
+                    $currentPane = $currentPane.next();
+                    currentPaneIndex++;
+                } while ($currentPane.is('.skip'));
                 currentPaneConfig = opts.paneConfig[$currentPane.attr('data-wizardPaneName')] || {};
 
                 animateState();

@@ -6,39 +6,51 @@ $(function()
 
     // keep a reference so we don't lose it when we remove from DOM
     var $uploadFilePane = $('.uploadFilePane');
-
+    var $mapLayerUrlPane = $('.mapLayerUrlPane');
+    var $metadataPane = $('.metadataPane');
     var $wizard = $('.newDatasetWizard');
+
+    var _isMapLayer = function()
+    {
+        return $metadataPane.is('.skip');
+    };
 
 // DATA OPS
     var submitMetadata = function()
     {
         var formData = $('.newDatasetForm').serializeObject();
         var viewData = formData.view;
-        _.each(viewData, function(value, key)
-        {
-            if ($.isBlank(value))
-            {
-                delete viewData[key];
-            }
-        });
 
-        // manually update some things in JSON
-        if (!_.isUndefined(viewData.tags))
+        // only map layer does not need metadata.
+        if (!_isMapLayer())
         {
-            viewData.tags = viewData.tags.split(/\s*,\s*/);
-        }
-        if (formData.privacy == 'public')
-        {
-            viewData.flags = ['dataPublicRead'];
+           _.each(viewData, function(value, key)
+            {
+                if ($.isBlank(value))
+                {
+                    delete viewData[key];
+                }
+            });
+
+            // manually update some things in JSON
+            if (!_.isUndefined(viewData.tags))
+            {
+                viewData.tags = viewData.tags.split(/\s*,\s*/);
+            }
+            if (formData.privacy == 'public')
+            {
+                viewData.flags = ['dataPublicRead'];
+            }
         }
 
         // submit things
         var successCallback = function(newDS)
         {
-            submittedView = newDS;
+            submittedView = _isMapLayer() ? new Dataset(newDS) : newDS;
             $('.wizardButtons .next').fadeIn();
             $wizard.trigger('wizard-next');
         };
+
         var errorCallback = function(request)
         {
             // it's a bit bewildering if it happens too fast.
@@ -55,7 +67,15 @@ $(function()
                     .addClass('error');
             }, 2000);
         };
-        if (submittedView === null)
+
+        if (_isMapLayer())
+        {
+            Dataset.createFromMapLayerUrl(
+                $('#mapLayerUrl').val(),
+                successCallback,
+                errorCallback);
+        }
+        else if (submittedView === null)
         {
             new Dataset(viewData).saveNew(successCallback, errorCallback);
         }
@@ -92,6 +112,9 @@ $(function()
     {
         // reset everything, we've gone back to the first page
         $uploadFilePane.insertAfter($('.selectTypePane'));
+        $mapLayerUrlPane.insertAfter($uploadFilePane);
+        $metadataPane.removeClass('skip');
+        $metadataPane.show();
         $('.metadataPane .flash').removeClass('warning notice error');
         $('.metadataPane .headline').text('Please describe your data.');
 
@@ -106,8 +129,8 @@ $(function()
     $('.newKindList > li > a').each(function()
     {
         var $this = $(this);
-        $this.socrataTip({ message: $this.attr('title').clean(),
-            shrinkToFit: false, killTitle: true });
+        $this.socrataTip({message: $this.attr('title').clean(),
+            shrinkToFit: false, killTitle: true});
     });
 
     // actions
@@ -115,12 +138,13 @@ $(function()
     {
         event.preventDefault();
         $uploadFilePane.remove();
-
+        $mapLayerUrlPane.remove();
         $wizard.trigger('wizard-next');
     });
     $('.newKindList a.upload').click(function(event)
     {
         event.preventDefault();
+        $mapLayerUrlPane.remove();
         $('.uploadFilePane .headline').text('Please choose a file to import.');
         $('.uploadFilePane .uploadFileFormats').show();
         isBlobby = false;
@@ -130,12 +154,28 @@ $(function()
     $('.newKindList a.blobby').click(function(event)
     {
         event.preventDefault();
+        $mapLayerUrlPane.remove();
         $('.uploadFilePane .headline').text('Please choose a file to upload.');
         $('.uploadFilePane .uploadFileFormats').hide();
         isBlobby = true;
 
         $wizard.trigger('wizard-next');
     });
+
+    $('.newKindList a.mapLayer').click(function(event)
+    {
+        event.preventDefault();
+        $('.uploadFilePane .uploadFileFormats').hide();
+        $('.mapLayerUrlPane .headline').text('Please enter a map layer url for the dataset.');
+        $uploadFilePane.remove();
+        $metadataPane.hide();
+        $metadataPane.addClass('skip');
+        $('.mapLayerUrlPane').show();
+        isBlobby = false;
+
+        $wizard.trigger('wizard-next');
+    });
+
 
 // PAGE ONE: UPLOAD FILE
     // upload button
@@ -207,11 +247,13 @@ $(function()
     $(".newDatasetForm").validate({
         rules: {
             "view[name]": "required",
-            "view[attributionLink]": "customUrl"
+            "view[attributionLink]": "customUrl",
+            "mapLayerUrl": "required customUrl"
         },
         messages: {
             "view[name]": "Dataset name is required.",
-            "view[attributionLink]": "That does not appear to be a valid URL."
+            "view[attributionLink]": "That does not appear to be a valid URL.",
+            "mapLayerUrl":  "That does not appear to be a valid URL."
         }
     });
 
@@ -252,7 +294,7 @@ $(function()
                 .prev('label').addClass('required').end()
                 .rules('add', {
                     required: true,
-                    messages: { required: 'You must specify the data provider (attribution) in a Creative Commons license.' }
+                    messages: {required: 'You must specify the data provider (attribution) in a Creative Commons license.'}
                 });
         }
         else

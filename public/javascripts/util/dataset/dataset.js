@@ -2028,6 +2028,15 @@ Dataset.getLinkedDatasetOptionsNoDefault = function(linkedDatasetUid, col, $fiel
         false);
 };
 
+Dataset.createFromMapLayerUrl = function(url, successCallback, errorCallback)
+{
+    var encodedUrl = '/api/layers.json?method=createMapLayerDataset&url=' + escape(url);
+    $.Tache.Get({
+        url: encodedUrl,
+        success: _.isFunction(successCallback) ? successCallback : null,
+        error: _.isFunction(errorCallback) ? errorCallback : null});
+};
+
 var VIZ_TYPES = ['chart', 'annotatedtimeline', 'imagesparkline',
     'areachart', 'barchart', 'columnchart', 'linechart', 'piechart'];
 var MAP_TYPES = ['geomap', 'intensitymap'];

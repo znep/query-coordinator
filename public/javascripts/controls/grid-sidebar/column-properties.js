@@ -352,13 +352,17 @@
             {
                 title: 'Advanced', type: 'selectable', name: 'advanced',
                 fields: [
-                    {type: 'radioGroup', text: 'Semantics', name: 'rdfGroup',
-                    options: [
-                        {type: 'select', name: 'format.rdf',
-                        options: rdfOptions},
-                        {type: 'text', name: 'format.customRdf',
-                        prompt: 'Enter custom URL', extraClass: 'url'}
-                    ]}
+                    {type: 'repeater', addText: 'Add RDF Properties',
+                    name: 'format.rdf',  minimum: 0,
+                    field:
+                        {type: 'radioGroup', text: 'Semantics', name: 'rdfGroup',
+                        options: [
+                            {type: 'select', name: 'stock',
+                            options: rdfOptions},
+                            {type: 'text', name: 'custom',
+                            prompt: 'Enter custom URL', extraClass: 'url'}
+                        ]}
+                    }
                 ]
             }
         ],
@@ -398,11 +402,25 @@
                         function(dd) { return dd.deleted; })};
         }
 
-        if (!$.isBlank(cleanCol.format.rdf) && !_.any(rdfOptions, function(r)
-                { return r.value == cleanCol.format.rdf; }))
+        if (!$.isBlank(col.format) && !$.isBlank(col.format.rdf))
         {
-            cleanCol.format.customRdf = cleanCol.format.rdf;
-            delete cleanCol.format.rdf;
+            cleanCol.format.rdf = [];
+            var rdfProps = col.format.rdf.split(',');
+            _.forEach(
+                rdfProps,
+                function(r)
+                {
+                    if (_.any(
+                        rdfOptions,
+                        function(stockR) { return stockR.value == r; }))
+                    {
+                        cleanCol.format.rdf.push({ stock: r });
+                    }
+                    else
+                    {
+                        cleanCol.format.rdf.push({ custom: r });
+                    }
+                });
         }
 
         return cleanCol;
@@ -423,10 +441,16 @@
             column.format.grouping_aggregate = col.format.grouping_aggregate;
         }
 
-        if (!$.isBlank(column.format))
+        if (!$.isBlank(column.format) && !$.isBlank(column.format.rdf))
         {
-            column.format.rdf = column.format.rdf || column.format.customRdf;
-            delete column.format.customRdf;
+            var rdfProps = _.map(
+                column.format.rdf,
+                function(rdf)
+                {
+                    return $.isBlank(rdf.stock) ? rdf.custom : rdf.stock;
+                });
+
+            column.format.rdf = rdfProps.join(',');
         }
 
         if (col.isLinked())

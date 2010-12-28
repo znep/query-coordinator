@@ -275,7 +275,7 @@ $(function()
                 $.analytics.trackEvent('dataset page (v4-chrome)', 'share menu opened',
                     blist.dataset.id);
             }
-        });
+        }, !blist.dataset.isPublic() && !blist.dataset.hasRight('grant'));
 
     // hook up menu items for events analytics
     $('#shareMenu .menuDropdown a, #viewsMenu .menuDropdown a').click(function()

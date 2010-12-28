@@ -73,7 +73,15 @@
                         required: true,
                         onlyIf: {field: 'dataTypeName', value: 'link'},
                         linkedField: 'format.linkedKey',
-                        options: blist.dataset.getLinkedColumnOptions,
+                        options:
+                            // wrap in function to set up the "this" var
+                            // so that it points to blist.dataset when
+                            // getLinkedColumnOptions is called.
+                            function(keyCol, notUsed, $field, curVal)
+                            {
+                                return blist.dataset.getLinkedColumnOptions.call(
+                                    blist.dataset, keyCol, notUsed, $field, curVal);
+                            },
                         wizard: 'Select a remote source column'
                     }
 

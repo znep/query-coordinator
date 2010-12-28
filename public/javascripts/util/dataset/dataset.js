@@ -949,7 +949,7 @@ this.Dataset = Model.extend({
 
         var viewUid = ds.columnForID(localKeyColumnId).format.linkedDataset;
 
-        if (ds._cachedLinkedColumnOptions[viewUid] == null)
+        if ($.isBlank(ds._cachedLinkedColumnOptions[viewUid]))
         {
             ds._makeRequest({url: '/api/views/{0}.json'.format(viewUid),
                 pageCache: true, type: 'GET',

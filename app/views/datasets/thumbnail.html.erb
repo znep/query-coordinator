@@ -15,71 +15,61 @@
 
     <%= display_standard_flashes %>
 
-    <%- if !@view.is_public? -%>
-      <div class="flash error">
-        For your privacy, only public datasets may be thumbnailed.
-        If you wish to have a preview image, please make this dataset
-        public from the Sharing pane of the edit menu
+    <div class="invalidMessage flash">
+    </div>
+    <div id="fullThumbnail" class="loading">
+
+      <div class="refreshThumbnail">
+        <a href="#refresh" class="button refresh">Refresh Thumbnail</a>
+        <span class="throbber"></span>
       </div>
-    <%- elsif @view.is_blobby? -%>
-      <div class="flash warning">
-        This embedded file cannot be thumbnailed as it cannot be displayed in the browser
+
+      <div class="flash error mainError">
+        There was an error processing your thumbnail request. Please try again later
       </div>
-    <%- else -%>
-      <div id="fullThumbnail" class="loading">
 
-        <div class="refreshThumbnail">
-          <a href="#refresh" class="button refresh">Refresh Thumbnail</a>
-          <span class="throbber"></span>
-        </div>
+      <div class="thumbnailPresent">
+        <div id="previewContainer">
 
-        <div class="flash error mainError">
-          There was an error processing your thumbnail request. Please try again later
-        </div>
-
-        <div class="thumbnailPresent">
-          <div id="previewContainer">
-
-            <h2>Preview</h2>
-            <div id="previewThumbnailWrapper">
-              <div id="previewThumbnail">
-              </div>
-              <div class="datasetDescription">
-                <h4><%= @view.name %></h4>
-              </div>
+          <h2>Preview</h2>
+          <div id="previewThumbnailWrapper">
+            <div id="previewThumbnail">
             </div>
-
-            <div class="flash warning unsavedWarning">Unsaved</div>
-
-          </div>
-
-          <h2>Full Image</h2>
-          <div class="fullThumbContainer">
-            <div class="loading"></div>
-            <div class="image"></div>
-          </div>
-
-          <form class="commonForm actionsForm">
-            <div class="line">
-              <%= link_to 'Save Thumbnail', '#save', {:class => 'button default disabled savePreviewButton'} %>
-              <%= link_to 'Discard Changes', @view.href, {:class => 'button'} %>
-              <div class="saveStatus">
-                <span class="saving"></span>
-                <span class="flash saveMessage"></span>
-              </div>
+            <div class="datasetDescription">
+              <h4><%= @view.name %></h4>
             </div>
-          </form>
+          </div>
+
+          <div class="flash warning unsavedWarning">Unsaved</div>
 
         </div>
 
-        <div class="noThumbnail">
-          <div class="flash warning pleaseWait">
-            There are no thumbnails available for this dataset yet.
-            Please wait while we create one for you.
+        <h2>Full Image</h2>
+        <div class="fullThumbContainer">
+          <div class="loading"></div>
+          <div class="image"></div>
+        </div>
+
+        <form class="commonForm actionsForm">
+          <div class="line">
+            <%= link_to 'Save Thumbnail', '#save', {:class => 'button default disabled savePreviewButton'} %>
+            <%= link_to 'Discard Changes', @view.href, {:class => 'button'} %>
+            <div class="saveStatus">
+              <span class="saving"></span>
+              <span class="flash saveMessage"></span>
+            </div>
           </div>
+        </form>
+
+      </div>
+
+      <div class="noThumbnail">
+        <div class="flash warning pleaseWait">
+          There are no thumbnails available for this dataset yet.
+          Please wait while we create one for you.
         </div>
       </div>
-    <%- end -%>
+    </div>
   </div>
 </div>
 

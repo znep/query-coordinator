@@ -4,6 +4,7 @@
         $imgContainer     = $('#fullThumbnail .fullThumbContainer'),
         $previewWrapper   = $('#previewThumbnailWrapper'),
         $previewContainer = $('#previewThumbnail'),
+        $invalidMessage   = $('.invalidMessage'),
         imgSelectObj      = null,
         snapshotName      = 'page',
         snapshotImg       = blist.dataset.getFullSnapshotUrl(),
@@ -14,9 +15,32 @@
         $saveMessage      = $('.actionsForm .saveMessage'),
         $saveThrobber     = $('.actionsForm .saving');
 
-    if (!blist.dataset.isPublic() || blist.dataset.type == 'blob')
+    if (!blist.dataset.isPublic())
     {
+        $invalidMessage
+            .addClass('error')
+            .text('For your privacy, only public datasets may be thumbnailed.' +
+                  'If you wish to have a preview image, please make this dataset ' +
+                  'public from the Sharing pane of the edit menu');
         return;
+    }
+    else if (blist.dataset.type == 'blob')
+    {
+        $invalidMessage
+            .addClass('warning')
+            .text('This embedded file cannot be thumbnailed as it cannot be displayed in the browser');
+        return;
+    }
+    else if (!blist.dataset.valid)
+    {
+        $invalidMessage
+            .addClass('warning')
+            .text('This view is invalid and cannot be thumbnailed in its current state');
+        return;
+    }
+    else
+    {
+        $fullContainer.fadeIn();
     }
 
     // Make sure there are js objects to modify later

@@ -147,10 +147,17 @@
         $refreshContainer.addClass('working')
             .find('.refresh').addClass('disabled');
 
+        $fullContainer
+            .find('.loading').show().end()
+            .find('.image').hide();
+
         var selection = tn.selection;
         blist.dataset.requestSnapshot(snapshotName, function(response)
         {
-            $fullContainer.removeClass('loading');
+            $fullContainer.removeClass('loading')
+                .find('.loading').hide().end()
+                .find('.image').show();
+
             if ($.isBlank(response) || response.error)
             {
                 $refreshContainer.removeClass('working');
@@ -163,7 +170,8 @@
 
             tn = blist.dataset.metadata.thumbnail[snapshotName];
             tn.selection = selection;
-            fullThumbnailChanged(blist.dataset.getFullSnapshotUrl());
+            fullThumbnailChanged(blist.dataset.getFullSnapshotUrl() +
+                '&noop=' + (new Date().getTime()));
         });
     };
 

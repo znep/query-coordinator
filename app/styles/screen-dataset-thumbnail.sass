@@ -52,6 +52,7 @@ $cropped_height: 80
           display: none
         .noThumbnail
           display: block
+
       .noThumbnail
         @include transition-duration(0.5s)
         @include transition-property(opacity)
@@ -86,10 +87,6 @@ $cropped_height: 80
         .mainError
           display: block
 
-      //&.loading
-        .thumbnailPresent
-          display: none
-
       &.unsaved
         #previewContainer #previewThumbnailWrapper
           background: #ffd
@@ -112,8 +109,6 @@ $cropped_height: 80
       @include border-radius(0.2em)
       position: relative
       width: #{$cropped_width + 20}px
-
-
 
       #previewThumbnail
         overflow: hidden

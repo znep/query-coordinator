@@ -225,26 +225,6 @@
 
         $.live('.expandTopSection', 'click', expandTopSubSection);
 
-        if (opts.redrawOnResize)
-        {
-            $(window).bind('resize', function(event)
-            {
-                _.each(chartSections, function(chart)
-                {
-                    // Redraw without animation
-                    if (!$.isBlank(chart.redrawTimer))
-                    { clearTimeout(chart.redrawTimer); }
-                    chart.redrawTimer = setTimeout(
-                        function()
-                        {
-                            redrawChart($screen.find('#' + chart.id),
-                                currentSlice, false);
-                            chart.redrawTimer = null;
-                        }, opts.redrawTimeout);
-                });
-            });
-        }
-
         $(window).bind('load', function(){
             $summaryDisplay.trigger('resize');
             $detailDisplay.trigger('resize');
@@ -364,7 +344,6 @@
         detailSections: [],
         initialSliceDepth: 'Daily',
         redrawTimeout: 50,
-        redrawOnResize: true,
         summarySections: [],
         summaryDefaults: {
             callback: metricsNS.summarySectionCallback,

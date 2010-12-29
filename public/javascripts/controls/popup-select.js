@@ -19,7 +19,7 @@
             var $popup = $.tag({
                 tagName: 'div',
                 'class': 'popupSelectContainer',
-                'data-listid': popupId,
+                'data-popupid': popupId,
                 contents: [{
                     tagName: 'p',
                     'class': 'popupSelectPrompt',
@@ -29,6 +29,7 @@
                     'class': [ 'popupSelectList' ].concat($.arrayify(opts.listContainerClass))
                 }]
             });
+            $this.data('popupSelect-$popup', $popup);
 
             $list = $popup.find('.popupSelectList');
             _.each(opts.choices, function(choice)
@@ -39,7 +40,7 @@
                 var $item = $.tag({
                     tagName: 'li',
                     'class': [ 'none', // so icons default to blank
-                               { value: 'checked', onlyIf: _.include($.arrayify(opts.selectedItem), choice) } ],
+                               { value: 'checked', onlyIf: _.include($.arrayify(opts.selectedItems), choice) } ],
                     'data-itemid': itemId,
                     contents: [{
                         tagName: 'span',
@@ -72,11 +73,11 @@
                     var $item = $(this);
                     var $popup = $item.closest('.popupSelectContainer');
 
-                    var data = popups[$popup.attr('data-listid')];
+                    var data = popups[$popup.attr('data-popupid')];
                     var opts = data.opts;
                     var tip = data.tip;
 
-                    if (opts.selectCallback(items[$item.attr('itemid')],
+                    if (opts.selectCallback(items[$item.attr('data-itemid')],
                                                  !$item.hasClass('checked')))
                     {
                         if (opts.multiselect)
@@ -100,6 +101,31 @@
         });
     };
 
+    $.fn.popupSelect_update = function(choices)
+    {
+        return this.each(function()
+        {
+            var $this = $(this);
+            var $popup = $this.data('popupSelect-$popup');
+            var $list = $popup.find('.popupSelectList');
+
+            var opts = popups[$popup.attr('data-popupid')].opts;
+
+            var selectedItems = _.compact($.makeArray($list.children().map(function()
+            {
+                var $item = $(this);
+                return $item.hasClass('checked') ? items[$item.attr('data-itemid')] : null;
+            })));
+
+            // now completely destroy and recreate the tip because BT is dumb
+            popups[$popup.data('data-popupid')].tip.destroy();
+            $this.popupSelect($.extend({}, opts, {
+                choices: choices,
+                selectedItems: selectedItems
+            }));
+        });
+    };
+
     $.fn.popupSelect.defaults = {
         choices: [],
         dismissOnClick: true,
@@ -111,6 +137,6 @@
             return choice;
         },
         selectCallback: function(choice, newState) { return true; },
-        selectedItem: null
+        selectedItems: null
     };
 })(jQuery);

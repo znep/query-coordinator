@@ -546,6 +546,7 @@ form.search
   overflow-y: auto
 
   li
+    @include sprite-menu-icons
     border-top: 1px solid #999
     font-size: 1.3em
     padding: 0.7em 1em
@@ -558,7 +559,6 @@ form.search
       cursor: pointer
 
     .selectedIcon
-      @include sprite-menu-icons
       position: absolute
 
     .contentWrapper

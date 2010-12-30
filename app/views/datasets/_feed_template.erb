@@ -1,6 +1,6 @@
 <div class="feedList">
   <div class="feed">
-    <%- if CurrentDomain.module_enabled? :allow_comments -%>
+    <%- if allow_comments -%>
       <a href="#post" class="button feedNewCommentButton">Add Comment</a>
     <%- end -%>
     <ul class="feedList"></ul>

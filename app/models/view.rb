@@ -1,5 +1,6 @@
 class View < Model
-  cattr_accessor :licenses, :creative_commons, :merged_licenses, :filter_type1s
+  cattr_accessor :licenses, :creative_commons, :merged_licenses,
+    :filter_type1s, :overridable_features
 
   def self.find(options = nil, get_all=false)
     if get_all || options.is_a?(String)
@@ -43,6 +44,25 @@ class View < Model
     map = @@default_categories.clone
     categories.each {|c| map[c[0].titleize] = c[0].titleize}
     return map
+  end
+
+  def module_enabled?(name)
+    if self.disabledFeatureFlags && self.disabledFeatureFlags.member?(name.to_s)
+      return false
+    end
+    return CurrentDomain.module_enabled?(name)
+  end
+
+  def disabled_features
+    features = @@overridable_features.select do |flag|
+      CurrentDomain.module_enabled?(flag[:key].downcase.to_sym)
+    end
+    unless self.disabledFeatureFlags.blank?
+      self.disabledFeatureFlags.each do |flag|
+        features.detect {|f| f[:key] == flag.upcase}[:disabled] = true
+      end
+    end
+    features
   end
 
   def column_by_id(column_id)
@@ -844,6 +864,13 @@ class View < Model
     'Href' => 'Linked Dataset',
     'Table' => 'Dataset'
   }
+
+
+  @@overridable_features = [
+    { :key => 'ALLOW_COMMENTS',
+      :name => 'Commenting'
+    }
+  ]
 
   private
   def transform_row(r, columns)

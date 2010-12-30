@@ -1,0 +1,32 @@
+<div class="datasetPermissions commonForm">
+  <div class="formSection">
+    <p class="formHeader">This <span class="datasetTypeName">dataset</span> is currently
+      <%= link_to 'Public', '#togglePermissions', :class => 'toggleDatasetPermissions',
+            'data-public-perm' => "public.#{@view.display.public_perm_type}" %>
+    </p>
+  </div>
+  <%- disabled_features = @view.disabled_features -%>
+  <%- unless disabled_features.blank? -%>
+    <div class="formSection disabledFeatureFlags">
+      <p class="formHeader">Additional <span class="datasetTypeName">dataset</span> features</p>
+      <div class="sectionContent">
+        <%- disabled_features.each do |feature| -%>
+          <div class="line clearfix">
+            <label for="<%= feature[:key] %>">
+              <%= feature[:name] %></label>
+            <span class="inputWrapper">
+              <span>
+                <input type="checkbox"
+                  <%= feature[:disabled].present? ? '' :'checked="checked"' %>
+                  name="<%= feature[:key] %>"
+                  id="<%= feature[:key] %>"
+                  value="<%= feature[:key] %>">
+              </span>
+            </span>
+          </div>
+        <%- end -%>
+      </div>
+    </div>
+  <%- end -%>
+  <div class="flash sharingFlash"></div>
+</div>

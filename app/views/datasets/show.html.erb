@@ -321,9 +321,10 @@
   <%= render :partial => 'print_form', :locals => { :view => @view } %>
 </div>
 <%= render :partial => 'downloads_table_template' %>
-<%= render :partial => 'feed_template' %>
+<%= render :partial => 'feed_template', :locals => { :allow_comments => @view.module_enabled?(:allow_comments) } %>
 <%= render :partial => 'flag_message' %>
 <%= render :partial => 'sharing' %>
+<%= render :partial => 'permissions' %>
 <%= render :partial => 'api_access' %>
 <%= render :partial => 'signed_dataset' %>
 <%= render :partial => 'subscribe' %>
@@ -514,7 +515,8 @@
 
     <%# Sharing pane %>
     blist.sidebarHidden.sharing = <%= !@view.user_granted?(current_user) &&
-      !CurrentDomain.user_can?(current_user, :edit_others_datasets) %>;
+      !CurrentDomain.user_can?(current_user, :edit_others_datasets)  %>;
+    blist.sidebarHidden.permissions = <%= !@view.has_rights?('update_view') %>;
 
     <%# Please see admin_controller#add_custom_layer for explanation %>
     <%# custom_layer_config = Configuration.find_by_type('custom_layers', true).first

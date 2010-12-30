@@ -168,7 +168,7 @@
 </div>
 
 <% content_for :templates do %>
-  <%= render :partial => 'datasets/feed_template' %>
+  <%= render :partial => 'datasets/feed_template', :locals => {:allow_comments => false} %>
 <% end %>
 
 <% content_for :js_footer do %>

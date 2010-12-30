@@ -1932,6 +1932,7 @@ this.Dataset = Model.extend({
         category: true,
         columns: true,
         description: true,
+        disabledFeatureFlags: true,
         displayFormat: true,
         displayType: true,
         flags: true,

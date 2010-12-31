@@ -91,15 +91,6 @@ protected
     return render('shared/error', :status => :forbidden)
   end
 
-  # Render a 404 error, or redirect to '/solution' if upsell is enabled
-  def upsell_or_404
-    if CurrentDomain.upsell?
-      redirect_to '/solution'
-    else
-      render_404
-    end
-  end
-
   def is_mobile?
     return request.env['HTTP_USER_AGENT'] && request.env['HTTP_USER_AGENT'][/(iPhone|iPod|Android)/i]
   end

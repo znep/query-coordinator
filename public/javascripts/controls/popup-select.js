@@ -63,6 +63,7 @@
 
             popups[popupId] = {
                 opts: opts,
+                selectedItems: _.compact($.arrayify(opts.selectedItems)),
                 tip: tip
             };
 
@@ -74,13 +75,11 @@
                     var $popup = $item.closest('.popupSelectContainer');
 
                     var data = popups[$popup.attr('data-popupid')];
-                    var opts = data.opts;
-                    var tip = data.tip;
 
-                    if (opts.selectCallback(items[$item.attr('data-itemid')],
-                                                 !$item.hasClass('checked')))
+                    if (data.opts.selectCallback(items[$item.attr('data-itemid')],
+                                                      !$item.hasClass('checked')))
                     {
-                        if (opts.multiselect)
+                        if (data.opts.multiselect)
                         {
                             $item.toggleClass('checked');
                         }
@@ -91,9 +90,15 @@
                         }
                     }
 
-                    if (opts.dismissOnClick)
+                    // maintain an internal representation of what's selected for _selectedItems
+                    data.selectedItems = $.makeArray($item.siblings().andSelf().filter('.checked').map(function()
                     {
-                        tip.hide();
+                        return items[$(this).attr('data-itemid')];
+                    }));
+
+                    if (data.opts.dismissOnClick)
+                    {
+                        data.tip.hide();
                     }
                 });
                 eventsBound = true;
@@ -118,12 +123,17 @@
             })));
 
             // now completely destroy and recreate the tip because BT is dumb
-            popups[$popup.data('data-popupid')].tip.destroy();
+            popups[$popup.attr('data-popupid')].tip.destroy();
             $this.popupSelect($.extend({}, opts, {
                 choices: choices,
                 selectedItems: selectedItems
             }));
         });
+    };
+
+    $.fn.popupSelect_selectedItems = function()
+    {
+        return popups[this.data('popupSelect-$popup').attr('data-popupid')].selectedItems;
     };
 
     $.fn.popupSelect.defaults = {

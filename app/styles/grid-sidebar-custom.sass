@@ -662,6 +662,7 @@
         .lineValue
           font-size: 1.3em
           font-weight: normal
+          margin-right: 0.3em
           padding-left: 0.2em
           position: static
           width: auto
@@ -670,8 +671,57 @@
           border: none
           font-size: 1em
 
+        .conjunction
+          font-size: 1.1em
+          padding:
+            left: 0.3em
+            right: 0.3em
+
+        // editor styling
+        .blist-table-editor.type-location
+          .labels.street, .labels.city_state_zip
+            font-size: 1.2em
+
+        .blist-table-editor.type-phone .blist-combo
+          margin: 0 // default styling clips
+
+        // composite editors
+        &.phone_number .blist-table-editor.type-phone .blist-combo-wrapper
+          display: none
+        &.phone_type .blist-table-editor.type-phone input.phoneNumber
+          display: none
+
+        &.url, &.description
+          .blist-table-editor.type-url .labels
+            display: none
+        &.url .blist-table-editor.type-url input.description
+          display: none
+        &.description .blist-table-editor.type-url input.href
+          display: none
+
+        &.human_address .blist-table-editor.type-location .lat_long
+          display: none
+        &.latitude .blist-table-editor.type-location
+          .labels.lat_long, .longitude, .street, .city_state_zip
+            display: none
+        &.longitude .blist-table-editor.type-location
+          .labels.lat_long, .latitude, .street, .city_state_zip
+            display: none
+
     .addFilterConditionButton
       @include sprite-menu-icons
       .icon
         float: left
         margin-right: 0.2em
+
+    .invalid .blist-table-editor input
+      color: $color_text_error
+      font-style: normal
+
+.popupColumnSelect
+  .iconWrapper
+    margin-top: -0.2em
+    position: absolute
+
+  .columnName
+    padding-left: 2.1em

@@ -30,11 +30,78 @@
         drop_down_list: 'EQUALS',
         dataset_link: 'EQUALS' // ??
     };
+    var operatorNames = {
+        EQUALS: 'is',
+        NOT_EQUALS: 'is not',
+        LESS_THAN: 'is less than',
+        LESS_THAN_OR_EQUALS: 'is less than or equal to',
+        GREATER_THAN: 'is greater than',
+        GREATER_THAN_OR_EQUALS: 'is greater than or equal to',
+        STARTS_WITH: 'starts with',
+        CONTAINS: 'contains',
+        BETWEEN: 'is between',
+        'blank?': 'is'
+    };
+    var subcolumnNames = {
+        phone_number: 'number',
+        phone_type: 'type',
+        url: 'url',
+        description: 'description',
+        human_address: 'address',
+        latitude: 'latitude',
+        longitude: 'longitude'
+    };
     var defaultSubcolumn = {
         phone: 'phone_type',
         'location': 'human_address',
         url: 'description'
     };
+    var filterableTypes = _.compact(_.map(blist.data.types, function(t, n)
+    {
+        return !$.isBlank(t.filterConditions) ? n : null;
+    }));
+
+    var filterableColumns = blist.dataset.columnsForType(filterableTypes);
+    blist.dataset.bind('columns_changed', function()
+    {
+        filterableColumns = blist.dataset.columnsForType(filterableTypes);
+
+        if ($.isBlank($pane))
+        {
+            // we don't exist yet.
+            return;
+        }
+
+        // update filters and remove ones that no longer apply
+        var needsParse = false;
+        $pane.find('.filterLink.columnName').each(function()
+        {
+            var $this = $(this);
+            if (!_.include(filterableColumns, $this.popupSelect_selectedItems()[0]))
+            {
+                var $filter = $this.closest('.filterCondition');
+
+                var rootCondition = $pane.data('unifiedFilter-root');
+                rootCondition.children = _.without(rootCondition.children,
+                    $filter.data('unifiedFilter-condition').condition);
+
+                if ($filter.siblings().length === 1)
+                {
+                    // this is the last filter.
+                    $pane.find('.noFilterConditionsText').show();
+                }
+
+                $filter.remove();
+                needsParse = true;
+            }
+            else
+            {
+                $this.popupSelect_update(filterableColumns);
+            }
+        });
+
+        if (needsParse) { parseFilters(); }
+    });
 
 /////////////////////////////////////
 // UTIL
@@ -151,7 +218,7 @@
                  (condition.children[1].value == 'GREATER_THAN_OR_EQUALS')))
             {
                 return {
-                    type: 'operaton',
+                    type: 'operator',
                     value: 'BETWEEN',
                     children: [
                         { columnId: findConditionComponent(condition, 'columnId'),
@@ -225,13 +292,28 @@
 
     var getEditorComponentValue = function($editor)
     {
-        var value = $editor.data('unifiedFilter-editor').currentValue();
+        var editor = $editor.data('unifiedFilter-editor');
+        if (!editor.isValid())
+        {
+            return null;
+        }
+
+        var value = editor.currentValue();
         if (_.isArray(value))
         {
             // theoretically they've only filled one subcolumn, so just compact it
             value = _.compact(value)[0];
         }
         return value;
+    };
+
+    var scrubFilterOperators = function(operators)
+    {
+        // we handle blank/notblank separately
+        return _.reject(operators, function(operator)
+        {
+            return (operator.value == 'IS_NOT_BLANK') || (operator.value == 'IS_BLANK');
+        }).concat({ value: 'blank?', text: 'is blank?' });
     };
 
 /////////////////////////////////////
@@ -292,11 +374,11 @@
         var column = blist.dataset.columnForTCID(metadata.tableColumnId);
         // render the main bits
         var $filter = $.renderTemplate('filterCondition', { metadata: metadata, column: column }, {
-            '.@class+': function() { return (metadata.expanded === false) ? 'collapsed' : 'expanded'; },
+            '.filterCondition@class+': function() { return (metadata.expanded === false) ? 'collapsed' : 'expanded'; },
             '.columnName': 'column.name!',
-            '.subcolumnName': 'metadata.subcolumn',
-            '.operator': 'metadata.operator',
-            '.@class+': 'metadata.subcolumn'
+            '.subcolumnName': function() { return subcolumnNames[metadata.subcolumn] || ''; },
+            '.operator': function() { return operatorNames[metadata.operator]; },
+            '.filterCondition@class+': 'metadata.subcolumn'
         });
 
         // hook up events
@@ -332,6 +414,151 @@
                 $filter.removeClass('collapsed').addClass('expanded');
             }
         });
+        $filter.find('.filterLink').click(function(event)
+        {
+            event.preventDefault();
+        });
+
+        // hook up popup menus
+        $filter.find('.columnName').popupSelect({
+            choices: filterableColumns,
+            listContainerClass: 'popupColumnSelect',
+            prompt: 'Select a column to filter by:',
+            renderer: function(col)
+            {
+                return [{
+                    tagName: 'span',
+                    'class': [ 'iconWrapper', col.renderTypeName ],
+                    contents: {
+                        tagName: 'span',
+                        'class': 'blist-th-icon'
+                    }
+                }, {
+                    tagName: 'span',
+                    'class': 'columnName',
+                    contents: col.name
+                }];
+            },
+            selectCallback: function(newColumn)
+            {
+                if (!_.include(_.pluck(blist.data.types[newColumn.renderTypeName].filterConditions, 'value'), metadata.operator))
+                {
+                    // the column they'd like to select doesn't support the operator they've selected
+                    if (!confirm('Doing this will remove all values from your filter! Are you sure you wish to do this?'))
+                    {
+                        return false;
+                    }
+                    condition.children = [];
+                    metadata.operator = defaultOperator[newColumn.renderTypeName];
+                    metadata.customValues = [];
+                }
+
+                // make sure we deal with subcolumn in case we've set one
+                if (_.isArray(newColumn.subColumnTypes))
+                {
+                    metadata.subcolumn = defaultSubcolumn[newColumn.renderTypeName];
+                }
+                else
+                {
+                    delete metadata.subcolumn;
+                }
+
+                metadata.tableColumnId = newColumn.tableColumnId;
+                _.defer(function()
+                {
+                    // column select tip fails to close if the parent is removed first
+                    $filter.replaceWith(renderCondition(condition));
+                    parseFilters();
+                });
+
+                return true;
+            },
+            selectedItems: column
+        });
+
+        var validOperators = scrubFilterOperators(column.renderType.filterConditions);
+        $filter.find('.operator').popupSelect({
+            choices: validOperators,
+            listContainerClass: 'popupOperatorSelect',
+            prompt: 'Select an operation to filter by:',
+            renderer: function(operator)
+            {
+                return operator.text;
+            },
+            selectCallback: function(newOperator)
+            {
+                if (newOperator == metadata.operator)
+                {
+                    return true;
+                }
+
+                if ((newOperator.value == 'BETWEEN') ||
+                    (newOperator.value == 'blank?') ||
+                    (metadata.operator == 'BETWEEN') ||
+                    (metadata.operator == 'blank?'))
+                {
+                    // when going to/from these types, we must blank the values (sorry)
+                    if (!confirm('Doing this will remove all values from your filter! Are you sure you wish to do this?'))
+                    {
+                        return false;
+                    }
+                    condition.children = [];
+                    metadata.customValues = [];
+                    metadata.operator = newOperator.value;
+
+                    _.defer(function()
+                    {
+                        // column select tip fails to close if the parent is removed first
+                        $filter.replaceWith(renderCondition(condition));
+                        parseFilters();
+                    });
+
+                    return true;
+                }
+                else
+                {
+                    metadata.operator = newOperator.value;
+                    $filter.find('.operator').text(operatorNames[metadata.operator]);
+                    parseFilters();
+
+                    return true;
+                }
+            },
+            selectedItems: _.detect(validOperators, function(operator)
+            {
+                return operator.value == metadata.operator;
+            })
+        });
+
+        if (!_.isUndefined(column.subColumnTypes))
+        {
+            $filter.find('.subcolumnName').popupSelect({
+                choices: column.subColumnTypes,
+                listContainerClass: 'popupSubcolumnSelect',
+                prompt: 'Select the part of ' + $.htmlStrip(column.name) + ' to filter by:',
+                renderer: function(subcolumn)
+                {
+                    return subcolumnNames[subcolumn];
+                },
+                selectCallback: function(newSubcolumn)
+                {
+                    if (newSubcolumn == metadata.subcolumn)
+                    {
+                        // nothing's changed here. ignore...
+                        return true;
+                    }
+
+                    $filter.removeClass(metadata.subcolumn);
+                    metadata.subcolumn = newSubcolumn;
+                    $filter.addClass(metadata.subcolumn);
+                    $filter.find('.subcolumnName').text(subcolumnNames[metadata.subcolumn]);
+
+                    parseFilters();
+                    return true;
+                },
+                selectedItems: metadata.subcolumn
+            });
+        }
 
         // dump in values
         if (metadata.multiSelect === false)
@@ -343,17 +570,21 @@
         if (metadata.operator == 'blank?')
         {
             // special case these since they have no actual values
-            addFilterLine({ item: 'is blank', count: column.cachedContents.null }, column, condition, $filter, false, true);
-            addFilterLine({ item: 'is not blank', count: column.cachedContents.not_null }, column, condition, $filter, false, true);
+            addFilterLine({ item: 'blank', count: column.cachedContents['null'] }, column,
+                          condition, $filter, { selected: false, textOnly: true });
+            addFilterLine({ item: 'not blank', count: column.cachedContents.non_null }, column,
+                          condition, $filter, { selected: false, textOnly: true });
         }
         else
         {
             // autogen values
             var usedValues = [];
-            _.each(condition.children, function(child, i)
+            _.each(condition.children || [], function(child, i)
             {
                 var value = findConditionComponent(condition, 'value', i);
-                addFilterLine({ item: value }, column, condition, $filter, true);
+                var childMetadata = child.metadata || {};
+                addFilterLine({ item: value }, column, condition, $filter,
+                              { selected: true, freeform: !!childMetadata.freeform });
                 usedValues.push(value);
             });
             if (!_.isUndefined(column.cachedContents) && !_.isUndefined(column.cachedContents.top))
@@ -388,7 +619,7 @@
                 });
             }
             // freeform line
-            addFilterLine('freeform', column, condition, $filter);
+            addFilterLine('', column, condition, $filter, { freeform: true });
         }
 
         // data
@@ -404,31 +635,34 @@
         $filter.slideDown();
 
         // updateFilter($filter); // do we need?
+
+        return $filter;
     };
 
     // add a single filter item to a condition
-    var addFilterLine = function(valueObj, column, condition, $filter, selected, textOnly)
+    var addFilterLine = function(valueObj, column, condition, $filter, options)
     {
         var metadata = condition.metadata || {};
+        if (_.isUndefined(options)) { options = {}; }
 
         // add elems
         var $line = $.tag({
             tagName: 'div',
-            'class': 'line'
+            'class': 'line clearfix'
         });
 
         var inputId = 'unifiedFilterInput_' + _.uniqueId();
         $line.append($.tag({
                 tagName: 'input',
                 type: (metadata.multiSelect === false) ? 'radio' : 'checkbox',
-                checked: selected,
+                checked: !!options.selected,
                 id: inputId,
                 name: 'true',
                 'class': 'filterLineToggle'
         }));
         $line.find(':radio, :checkbox').uniform();
 
-        if (valueObj == 'freeform')
+        if (options.freeform)
         {
             // dump in the appropriate number of editors
             _((metadata.operator == 'BETWEEN') ? 2 : 1).times(function(i)
@@ -436,8 +670,9 @@
                 if (i > 0)
                 {
                     $line.find('.filterValueEditor:first').after($.tag({
-                            tagName: 'span',
-                            contents: 'and'
+                        tagName: 'span',
+                        contents: 'and',
+                        'class': 'conjunction'
                     }));
                 }
 
@@ -450,7 +685,7 @@
             {
                 var $this = $(this);
                 $this.data('unifiedFilter-editor',
-                    $this.blistEditor({ row: null, column: column }));
+                    $this.blistEditor({ row: null, column: column, value: valueObj }));
             });
 
             // events
@@ -464,7 +699,7 @@
                 if ($line.nextAll().length === 0)
                 {
                     // this is the last freeform line and the user just selected it; spawn new
-                    addFilterLine('freeform', column, condition, $filter);
+                    addFilterLine('', column, condition, $filter, { freeform: true });
                 }
             });
             $line.find('.filterValueEditor').bind('edit_end', function()
@@ -517,7 +752,7 @@
                 'for': inputId,
                 contents: _.map($.arrayify(valueObj.item), function(valueObjPart)
                 {
-                    return (textOnly === false) ? valueobjPart : column.renderType.renderer(valueObjPart, column);
+                    return (options.textOnly === false) ? valueobjPart : column.renderType.renderer(valueObjPart, column);
                 })
             }));
             if (!_.isUndefined(valueObj.count))
@@ -668,6 +903,11 @@
                 columnId: column.id
             };
 
+            if (!_.isUndefined(metadata.subcolumn))
+            {
+                columnDefiniton.value = metadata.subcolumn;
+            }
+
             var $lineToggles = $filterCondition.find('.filterLineToggle');
 
             $lineToggles.filter(':checked').each(function()
@@ -685,7 +925,7 @@
                     // is_blank and is_not_blank are special
                     children.push({
                         type: 'operator',
-                        value: value.replace(' ', '_').toUpperCase(),
+                        value: 'IS_' + value.replace(' ', '_').toUpperCase(),
                         children: columnDefiniton
                     });
                     return;
@@ -709,14 +949,14 @@
                 children.push({
                     type: 'operator',
                     value: metadata.operator,
+                    metadata: {
+                        freeform: ($line.find('.filterValueEditor').length > 0)
+                    },
                     children: [columnDefiniton].concat(_.map($.arrayify(value), function(v)
                     {
-                        if (!_.isUndefined(column.subColumnTypes))
+                        if (!_.isUndefined(metadata.subcolumn))
                         {
-                            var vOld = v;
-                            v = new Array();
-                            _(column.subColumnTypes.length).times(function() { v.push(null); });
-                            vTemp[_.indexOf(column.subColumnTypes, metadata.subcolumn)] = vOld;
+                            v = v[metadata.subcolumn];
                         }
 
                         return {

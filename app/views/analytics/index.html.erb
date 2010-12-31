@@ -1,0 +1,40 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-analytics-screen' %>
+  <%= include_stylesheets 'analytics-shared' %>
+  <title>Site Analytics | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<div class="contentBox">
+  <div id="analyticsDataContainer" class="overviewMetrics">
+    <div class="adminHeader analytics">
+      <%= render :partial => 'shared/metrics_timing' %>
+      <span class="icon"></span>
+      <h1>Site Analytics</h1>
+    </div>
+
+    <div class="summaryDisplay clearfix container"></div>
+
+    <div class="chartsDisplay container">
+      <div class="flash error message errorMessage">
+        <h3>An error occurred loading the metrics data. Please try again later</h3>
+      </div>
+    </div>
+
+    <div class="topDisplay clearfix container">
+      <div class="leftColumn"></div>
+      <div class="rightColumn"></div>
+    </div>
+  </div>
+</div>
+
+<div class="clearfix"></div>
+
+<% content_for :templates do %>
+  <%= render :partial => 'shared/metrics_sections' %>
+  <%= render :partial => 'shared/control_templates' %>
+<%- end -%>
+
+<% content_for :js_footer do %>
+  <%= include_javascripts 'shared-metrics' %>
+  <%= javascript_include_tag 'screens/admin-metrics' %>
+<% end %>

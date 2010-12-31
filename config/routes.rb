@@ -145,6 +145,8 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/home',     :controller => :profile, :action => 'index'
   map.connect '/datasets', :controller => :profile, :action => 'index'
 
+  map.connect '/analytics', :controller => :analytics, :action => 'index'
+
   map.resources :profile, :member => {
     :create_friend => :get,
     :delete_friend => :get,

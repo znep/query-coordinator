@@ -316,6 +316,16 @@
         }).concat({ value: 'blank?', text: 'is blank?' });
     };
 
+    // see if a condition is basically blank
+    var hasNoValues = function(condition)
+    {
+        return (condition.metadata.operator == 'blank?') ||
+               (((!_.isArray(condition.children)) ||
+                 (condition.children.length === 0)) &&
+                (!_.isArray(condition.metadata.customValues) ||
+                 (condition.metadata.customValues.length === 0)));
+    };
+
 /////////////////////////////////////
 // RENDER+EVENTS
 
@@ -498,7 +508,8 @@
                     (metadata.operator == 'blank?'))
                 {
                     // when going to/from these types, we must blank the values (sorry)
-                    if (!confirm('Doing this will remove all values from your filter! Are you sure you wish to do this?'))
+                    if (!hasNoValues(condition) &&
+                        !confirm('Doing this will remove all values from your filter! Are you sure you wish to do this?'))
                     {
                         return false;
                     }
@@ -752,7 +763,7 @@
                 'for': inputId,
                 contents: _.map($.arrayify(valueObj.item), function(valueObjPart)
                 {
-                    return (options.textOnly === false) ? valueobjPart : column.renderType.renderer(valueObjPart, column);
+                    return (options.textOnly === true) ? valueObjPart : column.renderType.renderer(valueObjPart, column);
                 })
             }));
             if (!_.isUndefined(valueObj.count))

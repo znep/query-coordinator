@@ -360,6 +360,7 @@
 
         // are we advanced?
         $pane.toggleClass('advanced', !!rootCondition.metadata.advanced);
+        $pane.toggleClass('notAdvanced', !rootCondition.metadata.advanced);
 
         // wire events
         $pane.find('.advancedLine a').click(function(event)
@@ -367,6 +368,7 @@
             event.preventDefault();
             var isAdvanced = $(this).hasClass('advancedOnLink');
             $pane.toggleClass('advanced', isAdvanced);
+            $pane.toggleClass('notAdvanced', !isAdvanced);
             rootCondition.metadata.advanced = isAdvanced;
         });
 

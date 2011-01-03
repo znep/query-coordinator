@@ -152,8 +152,9 @@
             {
                 var chartObj = this;
                 var view = chartObj.settings.view;
-                return chartObj._origData.chartService !=
-                           $.socrataChart.chartMapping[view.displayFormat.chartType];
+                return !$.isBlank(chartObj._origData) &&
+                    chartObj._origData.chartService !=
+                        $.socrataChart.chartMapping[view.displayFormat.chartType];
             },
 
             resetData: function()

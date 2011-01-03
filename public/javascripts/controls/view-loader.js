@@ -42,9 +42,6 @@
             name: 'table',
             javascripts: [{ assets: 'shared-table-render' }],
             initFunction: function() {
-                window.tinyMCEPreInit = {base: '/javascripts/tiny_mce',
-                  suffix: '', query: ''};
-
                 if (blist.configuration._needsInitGrid)
                 { blist.common.initGrid(); }
             },

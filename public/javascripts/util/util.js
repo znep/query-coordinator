@@ -421,29 +421,35 @@ blist.util.lazyLoadedAssets = {};
 // Lazy-load JS libraries
 $.loadLibraries = function(scriptQueue, callback)
 {
-      var $L = $LAB,
-          queue = _.reject($.arrayify(scriptQueue), function(item)
-          { return item && blist.util.lazyLoadedAssets[item]; });
+    var $L = $LAB,
+        queue = _.reject($.arrayify(scriptQueue), function(item)
+                { return item && blist.util.lazyLoadedAssets[item]; });
 
-      _.each(queue, function(item)
-      {
-          if (item)
-          {
-              if (blist.configuration.development)
-              {
-                  _.each($.arrayify(item), function(subitem)
-                  { $L = $L.script(subitem).wait(); });
-              }
-              else
-              {
-                  $L = $L.script(item);
-              }
-              blist.util.lazyLoadedAssets[item] = true;
-          }
-          else
-          { $L = $L.wait(); }
-      });
-      $L = $L.wait(callback);
+    _.each(queue, function(item)
+    {
+        if (item)
+        {
+            if (blist.configuration.development)
+            {
+                _.each($.arrayify(item), function(subitem)
+                {
+                    // In dev, make the URL unique so we always reload to pick
+                    // up changes
+                    var url = subitem + (subitem.indexOf('?') >= 0 ? '&' : '?') +
+                        $.param({'_': (new Date()).valueOf()});
+                    $L = $L.script(url).wait();
+                });
+            }
+            else
+            {
+                $L = $L.script(item);
+            }
+            blist.util.lazyLoadedAssets[item] = true;
+        }
+        else
+        { $L = $L.wait(); }
+    });
+    $L = $L.wait(callback);
 };
 
 $.loadStylesheets = function(sheetQueue)
@@ -453,10 +459,18 @@ $.loadStylesheets = function(sheetQueue)
 
     _.each(sheets, function(sheet)
     {
+        var url = sheet;
+        // In dev, make the URL unique so we always reload to pick up changes
+        if (blist.configuration.development)
+        {
+            url += (sheet.indexOf('?') >= 0 ? '&' : '?') +
+                $.param({'_': (new Date()).valueOf()});
+        }
+
         // Internet explorer is wonky
         if (document.createStyleSheet)
         {
-            document.createStyleSheet(sheet);
+            document.createStyleSheet(url);
         }
         else
         {
@@ -464,7 +478,7 @@ $.loadStylesheets = function(sheetQueue)
                 .attr({
                     type: 'text/css',
                     rel: 'stylesheet',
-                    href: sheet
+                    href: url
                 });
 
             $('head').append(link);

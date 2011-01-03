@@ -182,7 +182,7 @@ blist.widget.showDataView = function()
     if ($('.widgetContentGrid').is(':visible'))
     { return; }
 
-    $('.widgetContent > :visible:first').fadeOut(200,
+    $('.widgetContent > :visible:first').trigger('hide').fadeOut(200,
         function()
         {
             $('.widgetContentGrid').fadeIn(200);
@@ -460,7 +460,10 @@ $(function()
     // Page render type
     $('#pageRenderType').pageRenderType({ view: blist.dataset });
     $(document).bind(blist.events.DISPLAY_ROW, function()
-            { widgetNS.showPane('pageRenderType', 'Row View'); });
+        {
+            $('#pageRenderType').trigger('show');
+            widgetNS.showPane('pageRenderType', 'Row View');
+        });
 
 
     // more views

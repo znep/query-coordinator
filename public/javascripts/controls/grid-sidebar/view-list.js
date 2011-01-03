@@ -16,6 +16,7 @@
         if (confirm('Are you sure you want to delete ' +
             $.htmlEscape(v.name) + '?'))
         {
+            var redirDS;
             var deletedCallback = function()
             {
                 $li.remove();
@@ -26,15 +27,14 @@
                         .setText(viewList.length);
                 }
 
-                if (blist.dataset.id == v.id)
-                {
-                    blist.dataset.getParentDataset(function(parDS)
-                    {
-                        if (!$.isBlank(parDS)) { parDS.redirectTo(); }
-                    });
-                }
+                if (!$.isBlank(redirDS)) { redirDS.redirectTo(); }
             };
 
+            if (blist.dataset.id == v.id)
+            {
+                blist.dataset.getParentDataset(function(parDS)
+                { if (!$.isBlank(parDS)) { redirDS = parDS; } });
+            }
             v.remove(deletedCallback);
         }
     });

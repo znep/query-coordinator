@@ -102,6 +102,9 @@ $(function()
 blist.namespace.fetch('blist.configuration');
 blist.configuration.development = #{Rails.env.development?};
 END
+      # When our JS is bundled, tinymce can't figure out where to load components
+      # from; so we have to tell it before it loads up
+      js << "window.tinyMCEPreInit = {base: '/javascripts/tiny_mce', suffix: '', query: ''};"
       js
     end
 

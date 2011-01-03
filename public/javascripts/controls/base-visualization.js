@@ -49,45 +49,7 @@
                     return;
                 }
 
-                // Set up the final callback, which is called once ALL
-                // required javascript model/plugin code is loaded and evaluated.
-                // Only here do we initializeVisualization(), which almost certainly
-                // needs some of the code we just loaded
-                currentObj._librariesLoaded = function()
-                {
-                    currentObj.initializeVisualization();
-
-                    currentObj._initialLoad = true;
-
-                    currentObj.settings.view.getRows(0, currentObj._maxRows,
-                        function()
-                        {
-                            // Use a defer so that if the rows are already loaded,
-                            // getColumns has a chance to run first
-                            var args = arguments;
-                            _.defer(function()
-                            {
-                                currentObj.handleRowsLoaded.apply(currentObj, args);
-                                delete currentObj._initialLoad;
-                            });
-                        });
-
-                    if (currentObj.getColumns())
-                    { currentObj.columnsLoaded(); }
-
-                    $(window).resize();
-                };
-
-                // If _setupLibraries is defined, we're assuming that the
-                // function will be called by an external source.
-                // This is used, for example, in google maps, where the
-                // google loader itself async loads other files, and only *it*
-                // knows when it's ready, not LABjs
-
-                var loadCallback = _.isFunction(currentObj._setupLibraries) ?
-                    function() {} : currentObj._librariesLoaded;
-
-                currentObj.loadLibraries(loadCallback);
+                currentObj.loadLibraries();
             },
 
             $dom: function()
@@ -192,25 +154,27 @@
                 if (vizObj._invalid)
                 {
                     delete vizObj._invalid;
-                    vizObj.initializeVisualization();
+                    vizObj.loadLibraries();
                 }
                 else
-                { vizObj.reloadVisualization(); }
-
-                vizObj.settings.view.getRows(0, vizObj._maxRows,
-                    function()
-                    {
-                        // Use a defer so that if the rows are already loaded,
-                        // getColumns has a chance to run first
-                        var args = arguments;
-                        _.defer(function()
-                        { vizObj.handleRowsLoaded.apply(vizObj, args); });
-                    });
-
-                if (vizObj.getColumns())
                 {
-                    vizObj.columnsLoaded();
-                    vizObj.ready();
+                    vizObj.reloadVisualization();
+
+                    vizObj.settings.view.getRows(0, vizObj._maxRows,
+                        function()
+                        {
+                            // Use a defer so that if the rows are already loaded,
+                            // getColumns has a chance to run first
+                            var args = arguments;
+                            _.defer(function()
+                            { vizObj.handleRowsLoaded.apply(vizObj, args); });
+                        });
+
+                    if (vizObj.getColumns())
+                    {
+                        vizObj.columnsLoaded();
+                        vizObj.ready();
+                    }
                 }
             },
 
@@ -317,10 +281,48 @@
                 // Implement me if you need libraries to function
             },
 
-            loadLibraries: function(callback)
+            loadLibraries: function()
             {
                 var vizObj = this;
-                if (vizObj._dynamicLibrariesLoaded )
+
+                // Set up the final callback, which is called once ALL
+                // required javascript model/plugin code is loaded and evaluated.
+                // Only here do we initializeVisualization(), which almost certainly
+                // needs some of the code we just loaded
+                var libsLoaded = function()
+                {
+                    vizObj.initializeVisualization();
+
+                    vizObj._initialLoad = true;
+
+                    vizObj.settings.view.getRows(0, vizObj._maxRows,
+                        function()
+                        {
+                            // Use a defer so that if the rows are already loaded,
+                            // getColumns has a chance to run first
+                            var args = arguments;
+                            _.defer(function()
+                            {
+                                vizObj.handleRowsLoaded.apply(vizObj, args);
+                                delete vizObj._initialLoad;
+                            });
+                        });
+
+                    if (vizObj.getColumns())
+                    { vizObj.columnsLoaded(); }
+
+                    $(window).resize();
+                };
+
+                // If _setupLibraries is defined, we're assuming that the
+                // function will be called by an external source.
+                // This is used, for example, in google maps, where the
+                // google loader itself async loads other files, and only *it*
+                // knows when it's ready, not LABjs
+                var callback = _.isFunction(vizObj._setupLibraries) ?
+                    function() {} : libsLoaded;
+
+                if (vizObj._dynamicLibrariesLoaded)
                 {
                     callback();
                     return;

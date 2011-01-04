@@ -132,6 +132,63 @@ body
     visibility: hidden
     z-index: 1
 
+  .resizeIndicators
+    display: none
+    height: 100%
+    left: 0
+    overflow: hidden
+    position: absolute
+    top: 0
+    width: 100%
+    .resizeIndicator
+      background-color: #eeeeee
+      border: 1px solid #aaaaaa
+      @include rounded-ends
+      display: block
+      height: 7px
+      position: absolute
+      width: 7px
+      // One below resize handle
+      z-index: 99998
+      &.enabled
+        background-color: #bbbbbb
+        border: 1px solid #333333
+    .resizeSize
+      background-color: #dddddd
+      color: #000000
+      font-size: 1.1em
+      left: 50%
+      margin:
+        left: -2.6em
+        top: -0.7em
+      @include opacity(0.75)
+      padding: 0.25em
+      position: absolute
+      text-align: center
+      top: 50%
+      width: 5.2em
+
+    .resizeNW, .resizeW, .resizeSW
+      left: -4px
+    .resizeN, .resizeS
+      margin-left: -4px
+      left: 50%
+    .resizeNE, .resizeE, .resizeSE
+      right: -4px
+
+    .resizeNW, .resizeN, .resizeNE
+      top: -4px
+    .resizeE, .resizeW
+      margin-top: -4px
+      top: 50%
+    .resizeSW, .resizeS, .resizeSE
+      bottom: -4px
+
+  .ui-resizable-n, .ui-resizable-s
+    height: 9px
+  .ui-resizable-e, .ui-resizable-w
+    width: 9px
+
   .ui-draggable.richColumn
     border: 1px solid transparent
     @include border-radius(0.3em)
@@ -154,6 +211,10 @@ body
     &.directHover, &.ui-draggable-dragging
       > .columnDrag
         visibility: visible
+
+    &.directHover, &.ui-resizable-resizing
+      > .resizeIndicators
+        display: block
 
     &.ui-resizable-resizing
       border-color: transparent
@@ -299,6 +360,10 @@ body
       padding:
         bottom: 0
         top: 0
+  &.hover, &.ui-resizable-resizing
+    > .resizeIndicators
+      display: block
+
 
 .navRenderType .navigation
   border-top: 1px solid $color_chrome_box_border

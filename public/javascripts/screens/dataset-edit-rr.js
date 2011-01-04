@@ -330,11 +330,36 @@ editRRNS.makeDroppable = function($item, selector, restrictToChildren,
 
 editRRNS.makeResizable = function($item, handles)
 {
-    $item.resizable({
-        handles: handles || 'e, s, se',
+    handles = handles || 'e, s, se';
+    var handlesArr = handles.split(', ');
+    // Put indicators at the front so that all child content is underneath
+    // so that hovering over children works properly
+    $item.prepend($.tag({tagName: 'div', 'class': 'resizeIndicators',
+        contents: [
+            {tagName: 'span', 'class': ['resizeIndicator', 'resizeNW',
+                {value: 'enabled', onlyIf: _.include(handlesArr, 'nw')}]},
+            {tagName: 'span', 'class': ['resizeIndicator', 'resizeN',
+                {value: 'enabled', onlyIf: _.include(handlesArr, 'n')}]},
+            {tagName: 'span', 'class': ['resizeIndicator', 'resizeNE',
+                {value: 'enabled', onlyIf: _.include(handlesArr, 'ne')}]},
+            {tagName: 'span', 'class': ['resizeIndicator', 'resizeE',
+                {value: 'enabled', onlyIf: _.include(handlesArr, 'e')}]},
+            {tagName: 'span', 'class': ['resizeIndicator', 'resizeSE',
+                {value: 'enabled', onlyIf: _.include(handlesArr, 'se')}]},
+            {tagName: 'span', 'class': ['resizeIndicator', 'resizeS',
+                {value: 'enabled', onlyIf: _.include(handlesArr, 's')}]},
+            {tagName: 'span', 'class': ['resizeIndicator', 'resizeSW',
+                {value: 'enabled', onlyIf: _.include(handlesArr, 'sw')}]},
+            {tagName: 'span', 'class': ['resizeIndicator', 'resizeW',
+                {value: 'enabled', onlyIf: _.include(handlesArr, 'w')}]},
+            {tagName: 'span', 'class': ['resizeSize', 'hide']}
+        ]}))
+    .resizable({
+        handles: handles,
         minHeight: 15, minWidth: 15,
         helper: 'richResizable ' + ($item.hasClass('richColumn') ?
             'richColumn' : 'fieldItem'),
+        alsoResize: $item.children('.resizeIndicators'),
         start: function(event, ui)
         {
             var $t = $(this).css('position', '').css('top', '').css('left', '');
@@ -343,12 +368,15 @@ editRRNS.makeResizable = function($item, handles)
             var offCont = $cont.offset();
             $t.resizable('option', 'maxWidth', $cont.renderWidth() -
                 (offT.left - offCont.left) - ($t.outerWidth(true) - $t.width()));
+            $t.find('.resizeIndicators .resizeSize').removeClass('hide');
             editRRNS.inResize = true;
         },
         stop: function(event, ui)
         {
             editRRNS.inResize = false;
             var $t = $(this).css('position', '').css('top', '').css('left', '');
+            $t.children('.resizeIndicators').css('height', '').css('width', '');
+            $t.find('.resizeIndicators .resizeSize').addClass('hide');
             if ($t.hasClass('fieldItem'))
             {
                 var $par = $t;
@@ -381,6 +409,11 @@ editRRNS.makeResizable = function($item, handles)
                 }
             }
             editRRNS.updateConfig();
+        },
+        resize: function(event, ui)
+        {
+            $(this).find('.resizeIndicators .resizeSize')
+                .text(ui.size.width + 'x' + ui.size.height);
         }
     });
 };

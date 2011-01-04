@@ -289,7 +289,7 @@
                 // required javascript model/plugin code is loaded and evaluated.
                 // Only here do we initializeVisualization(), which almost certainly
                 // needs some of the code we just loaded
-                var libsLoaded = function()
+                vizObj._librariesLoaded = function()
                 {
                     vizObj.initializeVisualization();
 
@@ -320,7 +320,7 @@
                 // google loader itself async loads other files, and only *it*
                 // knows when it's ready, not LABjs
                 var callback = _.isFunction(vizObj._setupLibraries) ?
-                    function() {} : libsLoaded;
+                    function() {} : vizObj._librariesLoaded;
 
                 if (vizObj._dynamicLibrariesLoaded)
                 {

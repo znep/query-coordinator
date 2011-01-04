@@ -89,7 +89,7 @@ metricsNS.sortData = function(data)
     }
     // Sort descending
     array.sort(function(a, b) {
-        return b.count - a.count;
+        return (b.count || 0) - (a.count || 0);
     });
     return array;
 };

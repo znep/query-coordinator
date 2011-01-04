@@ -664,6 +664,7 @@
 
         .line
           line-height: 2.3em
+          margin: 0.2em 0
           min-height: 2.3em
 
         .lineValue
@@ -717,6 +718,18 @@
         &.longitude .blist-table-editor.type-location
           .labels.lat_long, .latitude, .street, .city_state_zip
             display: none
+
+      .filterOptionsMenu
+        bottom: 0.4em
+        position: absolute
+        right: 0.4em
+
+        .filterOptionsMenuButton
+          @include sprite-menu-icons
+
+        .menuDropdown .menuEntry
+          @include sprite-menu-icons('.icon', false)
+          min-width: 17em
 
     .addFilterConditionButton
       @include sprite-menu-icons

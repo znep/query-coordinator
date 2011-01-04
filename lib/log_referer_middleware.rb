@@ -40,7 +40,16 @@ class LogRefererMiddleware
         logger.info "Attempting to log a page view to the #{domain} domain."
         push_request(
           "/queue/Metrics",
-          {"timestamp" => Time.now.to_i * 1000, "entityId" => domain, "page-views" => 1}.to_json,
+          {
+            "timestamp" => Time.now.to_i * 1000, 
+            "entityId" => domain, 
+            "metrics" => {
+              "page-views" => {
+                "value" => 1,
+                "type" => "aggregate"
+              }
+            }
+          }.to_json,
           :persistent => true,
           :suppress_content_length => true
         )
@@ -72,14 +81,32 @@ class LogRefererMiddleware
 
           push_request(
             "/queue/Metrics",
-            {"timestamp" => Time.now.to_i * 1000, "entityId" => "referrer-hosts-#{domain}", "referrer-#{host}" => 1}.to_json,
+            {
+              "timestamp" => Time.now.to_i * 1000, 
+              "entityId" => "referrer-hosts-#{domain}", 
+              "metrics" => {
+                "referrer-#{host}" => {
+                  "value" => 1,
+                  "type" => "aggregate"
+                }
+              }
+            }.to_json,
             :persistent => true,
             :suppress_content_length => true
           )
 
           push_request(
             "/queue/Metrics",
-            {"timestamp" => Time.now.to_i * 1000, "entityId" => "referrer-paths-#{domain}-#{host}", "path-#{path}" => 1}.to_json,
+            {
+              "timestamp" => Time.now.to_i * 1000, 
+              "entityId" => "referrer-paths-#{domain}-#{host}", 
+              "metrics" => {
+                "path-#{path}" => {
+                  "value" => 1,
+                  "type" => "aggregate"
+                }
+              }
+            }.to_json,
             :persistent => true,
             :suppress_content_length => true
           )

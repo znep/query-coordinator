@@ -375,6 +375,32 @@
         // data
         $pane.data('unifiedFilter-root', rootCondition);
 
+        // wire up main menu
+        $pane.find('.mainFilterOptionsMenu').menu({
+            additionalDataKeys: ['actionTarget'],
+            contents: [
+                { text: 'Match any condition', href: '#matchAny', actionTarget: 'OR',
+                  className: 'matchAnyOrAll' + (rootCondition.value == 'OR' ? ' checked' : '') },
+                { text: 'Match all conditions', href: '#matchAll', actionTarget: 'AND',
+                  className: 'matchAnyOrAll' + (rootCondition.value == 'AND' ? ' checked' : '') }
+            ],
+            menuButtonClass: 'filterOptionsMenuButton options',
+            menuButtonContents: ''
+        })
+            .find('.menuEntry a').click(function(event)
+            {
+                event.preventDefault();
+                var $this = $(this);
+                var $entry = $this.closest('.menuEntry');
+
+                rootCondition.value = $this.attr('data-actionTarget');
+
+                $entry.siblings('.matchAnyOrAll').removeClass('checked');
+                $entry.addClass('checked');
+
+                parseFilters();
+            });
+
         // now render each filter
         _.each(rootCondition.children || [], renderCondition);
     };
@@ -593,7 +619,7 @@
             menuButtonClass: 'filterOptionsMenuButton options',
             menuButtonContents: ''
         })
-            .find('a').click(function(event)
+            .find('.menuEntry a').click(function(event)
             {
                 event.preventDefault();
                 var $this = $(this);

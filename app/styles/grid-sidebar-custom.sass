@@ -719,17 +719,25 @@
           .labels.lat_long, .latitude, .street, .city_state_zip
             display: none
 
-      .filterOptionsMenu
-        bottom: 0.4em
-        position: absolute
-        right: 0.4em
+    .filterOptionsMenu
+      bottom: 0.4em
+      position: absolute
+      right: 0.4em
 
-        .filterOptionsMenuButton
-          @include sprite-menu-icons
+      .filterOptionsMenuButton
+        @include sprite-menu-icons
 
-        .menuDropdown .menuEntry
-          @include sprite-menu-icons('.icon', false)
-          min-width: 17em
+      .menuDropdown .menuEntry
+        @include sprite-menu-icons('.icon', false)
+        min-width: 17em
+
+    .mainFilterOptionsMenu
+      float: right
+      margin-right: 0.4em
+      position: static
+
+      .menuDropdown .menuEntry
+        min-width: 15em
 
     .addFilterConditionButton
       @include sprite-menu-icons

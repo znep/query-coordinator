@@ -717,13 +717,13 @@
                     mapObj._legend.gradientSet = true;
                 }
 
-                if (options.minimum)
+                if (!$.isBlank(options.minimum))
                 {
                     mapObj._legend.minimum = options.minimum;
                     if (mapObj._legend.$dom)
                     { mapObj._legend.$dom.find('span:first').text(options.minimum); }
                 }
-                if (options.maximum)
+                if (!$.isBlank(options.maximum))
                 {
                     mapObj._legend.maximum = options.maximum;
                     if (mapObj._legend.$dom)

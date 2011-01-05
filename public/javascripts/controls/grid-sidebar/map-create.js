@@ -105,9 +105,16 @@
         };
     }
 
+    var sectionOnlyIf = {func: function()
+        {
+            return blist.dataset.columnsForType('location', isEdit).length > 0
+                || blist.dataset.isArcGISDataset();
+        }};
+
     var configLocation = {
             title: 'Location',
-            onlyIf: {field: 'displayFormat.type', value: 'esri', negate: true},
+            onlyIf: [{field: 'displayFormat.type', value: 'esri', negate: true},
+                sectionOnlyIf],
             fields: [
                 {text: 'Location', name: 'displayFormat.plot.locationId',
                     required: true, type: 'columnSelect', isTableColumn: true,
@@ -120,7 +127,7 @@
     var configLocationESRI = {
             title: 'Location',
             onlyIf: [{field: 'displayFormat.type', value: 'esri'},
-                     {func: isNotArcGISDataset}],
+                     {func: isNotArcGISDataset}, sectionOnlyIf],
             fields: [
                 {text: 'Location', type: 'radioGroup',
                     name: 'locationSection',
@@ -169,7 +176,8 @@
     var configLayers = {
             title: 'Layers',
             onlyIf: [{field: 'displayFormat.type', value: 'esri'},
-                     {field: 'displayFormat.plotStyle', value: 'point'}],
+                     {field: 'displayFormat.plotStyle', value: 'point'},
+                     sectionOnlyIf],
             fields: [
                 {type: 'text', name: 'triggerMapLayer', lineClass: 'hide'},
 
@@ -205,35 +213,109 @@
     var configLayersHeatmap = $.extend(true, {}, configLayers);
     configLayersHeatmap.onlyIf = [
         { field: 'displayFormat.plotStyle', value: 'heatmap' },
-        { field: 'displayFormat.type', value: 'esri' }];
+        { field: 'displayFormat.type', value: 'esri' }, sectionOnlyIf];
     configLayersHeatmap.type = 'selectable';
     configLayersHeatmap.name = 'heatmapLayers';
     configLayersHeatmap.fields[0].minimum = 0;
     configLayersHeatmap.wizard = 'Do you want to add a layer?';
 
     var configName = 'visualize.mapCreate';
+
+    var sidebar;
+    // Hook up clicks on the disabled message
+    // I don't really like hard-coding this ID into the selector; but
+    // $section.siblings('.sectionDisabledMessage').find('a').live
+    // doesn't seem to work...
+    $.live('#gridSidebar_mapCreate .sectionDisabledMessage a',
+        'click', function(e)
+        {
+            e.preventDefault();
+            var col = {dataTypeName: 'location', convert: {}};
+            var doShow = false;
+            switch ($.hashHref($(this).attr('href')))
+            {
+                case 'convertLatLong':
+                    // Makes the 'Use Existing' sections show expanded by
+                    // default
+                    col.convert.latitudeColumn = true;
+                case 'convertLoc':
+                    col.convert.addressColumn = true;
+                    break;
+                case 'showLoc':
+                    doShow = true;
+                    break;
+            }
+
+            // Listen for when they add a column, and then re-show this pane
+            blist.dataset.once('columns_changed',
+                function()
+                {
+                    // If they hit Cancel from 'Create column' then this
+                    // function might trigger some time later.  Make sure that
+                    // it is valid before we re-show it, at least
+                    if (sectionOnlyIf.func())
+                    { _.defer(function() { sidebar.show(configName); }); }
+                });
+
+            if (doShow)
+            {
+                sidebar.show('filter.showHide');
+            }
+            else
+            {
+                sidebar.addPane('edit.addColumn', col);
+                sidebar.show('edit.addColumn');
+            }
+        });
+
+    // Change disabled message based on whether or not the add column dialog is
+    // avaialble
+    var disabledMessage = function()
+    {
+        var msg = 'A location column is required to create a map.';
+        var hasHiddenLoc = _.any(blist.dataset.realColumns, function(c)
+            { return c.dataTypeName == 'location' && c.hidden; });
+        if (!hasHiddenLoc &&
+            (!blist.sidebarHidden.edit || !blist.sidebarHidden.edit.addColumn))
+        {
+            msg += ' You can <a href="#convertLatLong" ' +
+                'title="Convert latitude and longitude to a location">' +
+                'convert latitude and longitude data to a location column</a>, ' +
+                'you can <a href="#convertLoc" title="Convert to a location">' +
+                'convert addresses into a location column</a>, or you can ' +
+                '<a href="#createLoc" title="Create a location column">' +
+                'create a new location column</a> and add data.';
+        }
+        else if (hasHiddenLoc && (!blist.sidebarHidden.filter ||
+            !blist.sidebarHidden.filter.showHide))
+        {
+            msg += ' You can <a href="#showLoc" title="Show a location column">' +
+                'show a hidden location column</a>';
+            if (!blist.sidebarHidden.edit || !blist.sidebarHidden.edit.addColumn)
+            {
+                msg += ', or <a href="#createLoc" ' +
+                    'title="Create a location column">' +
+                    'create a new location column</a>';
+            }
+            msg += '.';
+        }
+        return msg;
+    };
+
     var config =
     {
         name: configName,
         priority: 2,
         title: 'Map',
         subtitle: 'Views with locations can be displayed as points on a map',
-        onlyIf: function()
-        {
-            return (_.select(blist.dataset.realColumns, function(c)
-                {
-                    return c.dataTypeName == 'location' && (isEdit || !c.hidden);
-                }).length > 0 || blist.dataset.isArcGISDataset())
-                && (blist.dataset.valid || isEdit);
-        },
-        disabledSubtitle: function()
-        {
-            return !blist.dataset.valid && !isEdit ? 'This view must be valid' :
-                'This view must have a location column';
-        },
+        onlyIf: function() { return blist.dataset.valid || isEdit; },
+        disabledSubtitle: 'This view must be valid',
+        showCallback: function(sidebarObj) { sidebar = sidebarObj; },
         sections: [
             {
                 title: 'Map Setup',
+                onlyIf: $.extend({disable: true, disabledMessage: disabledMessage},
+                    sectionOnlyIf),
                 fields: [
                     {text: 'Name', name: 'name', type: 'text', required: true,
                         prompt: 'Enter a name',
@@ -251,7 +333,8 @@
             configLocationESRI,
             { // General Details section.
                 title: 'Details', type: 'selectable', name: 'detailsSection',
-                onlyIf: {field: 'displayFormat.plotStyle', value: 'heatmap', negate: true},
+                onlyIf: [{field: 'displayFormat.plotStyle',
+                    value: 'heatmap', negate: true}, sectionOnlyIf],
                 fields: [
                     {text: 'Title', name: 'displayFormat.plot.titleId',
                         type: 'columnSelect', isTableColumn: true,
@@ -298,7 +381,8 @@
             },
             { // Heatmap Details section.
                 title: 'Details', name: 'hmDetailsSection',
-                onlyIf: {field: 'displayFormat.plotStyle', value: 'heatmap'},
+                onlyIf: [{field: 'displayFormat.plotStyle', value: 'heatmap'},
+                    sectionOnlyIf],
                 fields: [
                     {text: 'Description', name: 'displayFormat.plot.descriptionId',
                         type: 'columnSelect', isTableColumn: true,

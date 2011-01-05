@@ -2291,7 +2291,10 @@
                     $section.toggleClass('warned', needsWarning);
 
                     if (isDisabled)
-                    { $section.find('.sectionDisabledMessage').text(disabledMessage); }
+                    {
+                        $section.find('.sectionDisabledMessage')
+                            .html(disabledMessage);
+                    }
                     else if (needsWarning)
                     { $section.find('.sectionWarningMessage').text(warningMessage); }
 
@@ -2845,8 +2848,11 @@
         {
             var $section = $pane.find('[data-customContent=' + uid + ']');
             var $sc = $section.find('.sectionContent');
-            $sc.addClass(cs.template).append($.renderTemplate(cs.template,
-                    cs.data || {}, cs.directive));
+            if (!$.isBlank(cs.template))
+            {
+                $sc.addClass(cs.template).append($.renderTemplate(cs.template,
+                        cs.data || {}, cs.directive));
+            }
 
             if (_.isFunction(cs.callback))
             { cs.callback($sc, sidebarObj); }
@@ -2869,7 +2875,11 @@
         var $pane = sidebarObj.$currentPane();
         if ($.isBlank($pane)) { return; }
 
-        $pane.find('.finishButtons .submit').toggleClass('disabled',
+        // Hide finish buttons if no visible & enabled sections
+        $pane.find('.finishButtons').toggleClass('hide',
+                $pane.find('.formSection:visible:not(.disabled)').length < 1)
+            // Disable submit button if not all visible & required fields filled in
+            .find('.submit').toggleClass('disabled',
             $pane.find(':input.required:visible:not(:disabled)')
              .filter(':blank, .prompt, :checkbox:unchecked').length > 0 ||
             $pane.find('.formSection:visible.disabled').length > 0);

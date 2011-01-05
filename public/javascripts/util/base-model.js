@@ -19,6 +19,16 @@ this.Model = Class.extend({
             return that;
         };
 
+        this.once = function(evName, func)
+        {
+            var wrapper = function()
+            {
+                this.unbind(evName, wrapper);
+                func.apply(this, arguments);
+            };
+            this.bind(evName, wrapper);
+        };
+
         this.unbind = function (evName, func)
         {
             verifyEvent(evName);

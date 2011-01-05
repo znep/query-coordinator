@@ -110,33 +110,15 @@
     var fsckLegacy = function(rootCondition)
     {
         var compatible = true;
-        var nestTypes = ['AND', 'OR'];
 
         // we can handle anything at the top level (AND or OR)
         _.each(rootCondition.children, function(condition, i)
         {
-            // we can handle a nested OR only...
-            if (condition.type == 'AND')
+            if (_.include(['AND', 'OR'], condition.type))
             {
-                // ...unless it's a guidedFilter-generated between, in which case fix it
-                var checkBetween = fsckLegacy_checkBetween(condition);
-                if (_.isObject(checkBetween))
-                {
-                    rootCondition[i] = {
-                        type: 'operator',
-                        value: 'OR',
-                        children: [ checkBetween ] };
-                }
-                else
-                {
-                    return compatible = (compatible && checkBetween);
-                }
-            }
-            else if (condition.type == 'OR')
-            {
-                // we can't handle a double-nest...
+                // we can't handle 3 levels deep....
                 if (_.any(condition.children, function(subcondition)
-                        { return _.include(nestTypes, subcondition.value); }))
+                        { return _.include(['AND', 'OR'], subcondition.value); /* BWWWWAAAAAAAAAAAAHHHHHHHHHHHHH */ }))
                 {
                     var childCompatible = true;
 
@@ -195,7 +177,7 @@
             if (_.isUndefined(child.metadata))
             {
                 child.metadata = {
-                    columnId: findConditionComponent(condition, 'columnId'),
+                    columnId: blist.dataset.columnForID(findConditionComponent(condition, 'columnId')).tableColumnId,
                     operator: child.children[0].value
                 };
                 var subcolumn = findConditionComponent(condition, 'subcolumn');
@@ -250,43 +232,33 @@
         var child = condition.children[subindex || 0];
         if ($.isBlank(child)) { return false; }
 
-        if (component == 'columnId')
+        var lookingFor = {
+            columnId: 'column',
+            subcolumn: 'column',
+            value: 'literal'
+        };
+        var returning = {
+            columnId: 'columnId',
+            subcolumn: 'value',
+            value: 'value'
+        };
+
+        var result = [];
+        _.each(child.children, function(subchild)
         {
-            _.each(child.children, function(subchild)
+            if (subchild.type == lookingFor[component])
             {
-                if (!_.isUndefined(subchild.columnId))
-                {
-                    return subchild.columnId;
-                }
-            });
-            return false; // well, we didn't find anything.
-        }
-        else if (component == 'subcolumn')
+                result.push(subchild[returning[component]]);
+            }
+        });
+
+        if (result.length === 1)
         {
-            _.each(child.children, function(subchild)
-            {
-                if (subchild.type == 'column')
-                {
-                    return subchild.value; // for some reason value is subcolumn name
-                }
-            });
-            return false;
-        }
-        else if (component == 'value')
-        {
-            var value;
-            _.each(child.children, function(subchild)
-            {
-                if (subchild.type == 'literal')
-                {
-                    value = subchild.value;
-                }
-            });
-            return value;
+            return result[0];
         }
         else
         {
-            throw 'unrecognized component type requested.';
+            return result;
         }
     };
 
@@ -298,13 +270,7 @@
             return null;
         }
 
-        var value = editor.currentValue();
-        if (_.isArray(value))
-        {
-            // theoretically they've only filled one subcolumn, so just compact it
-            value = _.compact(value)[0];
-        }
-        return value;
+        return editor.currentValue();;
     };
 
     var scrubFilterOperators = function(operators)
@@ -474,12 +440,18 @@
                 }, {
                     tagName: 'span',
                     'class': 'columnName',
-                    contents: col.name
+                    contents: $.htmlStrip(col.name)
                 }];
             },
             selectCallback: function(newColumn)
             {
-                if (!_.include(_.pluck(blist.data.types[newColumn.renderTypeName].filterConditions, 'value'), metadata.operator))
+                if (newColumn == column)
+                {
+                    // if the column hasn't changed don't do anything
+                    return true;
+                }
+
+                if (!_.include(_.pluck(newColumn.renderType.filterConditions, 'value'), metadata.operator))
                 {
                     // the column they'd like to select doesn't support the operator they've selected
                     if (!confirm('Doing this will remove all values from your filter! Are you sure you wish to do this?'))
@@ -682,18 +654,18 @@
                 
                 var topCount = Math.min(metadata.includeAuto || 0, column.cachedContents.length);
 
-                // save off the item values to compare with later
-                usedValues = usedValues.concat(_.pluck(column.cachedContents.top.slice(0, topCount), 'item'));
-
                 // iter through originals with count
                 _(topCount).times(function(i)
                 {
                     if (!_.contains(usedValues, column.cachedContents.top[i].item))
                     {
-                        addFilterLine($.extend({}, column.cachedContents.top[i], { autogenerated: true }),
-                                      column, condition, $filter, filterUniqueId);
+                        addFilterLine(column.cachedContents.top[i], column, condition, $filter,
+                                      filterUniqueId, { autogenerated: true });
                     }
                 });
+
+                // save off the item values to compare with later
+                usedValues = usedValues.concat(_.pluck(column.cachedContents.top.slice(0, topCount), 'item'));
             }
             // custom values
             if (_.isArray(metadata.customValues))
@@ -770,19 +742,15 @@
                         'class': 'filterValueEditor'
                 }));
             });
-            $line.find('.filterValueEditor').each(function()
+            $line.find('.filterValueEditor').each(function(i)
             {
                 var $this = $(this);
                 $this.data('unifiedFilter-editor',
-                    $this.blistEditor({ row: null, column: column, value: valueObj }));
+                    $this.blistEditor({ row: null, column: column,
+                                        value: $.isBlank(valueObj) ? '' : valueObj.item[i] }));
             });
 
             // events
-            $line.find(':checkbox, :radio').bind('change click', _.throttle(function(event)
-            {
-                parseFilters();
-                event.stopPropagation(); // if we don't stop, editor steals focus back
-            }, 0));
             $line.find('.filterValueEditor input').bind('focus', function()
             {
                 if ($line.nextAll().length === 0)
@@ -810,16 +778,13 @@
                         $nextLine.remove();
                     }
                     $lineToggle.removeAttr('checked');
-                    $.uniform.update($lineToggle);
                 }
                 else
                 {
                     $lineToggle.attr('checked', true);
-                    $.uniform.update($lineToggle);
-                    parseFilters();
                 }
-
-                $this.blur();
+                $.uniform.update($lineToggle);
+                parseFilters();
             });
         }
         else if (valueObj == noFilterValue)
@@ -839,9 +804,11 @@
                 tagName: 'label',
                 'class': 'lineValue',
                 'for': inputId,
-                contents: _.map($.arrayify(valueObj.item), function(valueObjPart)
+                contents: _.map($.arrayify(valueObj.item), function(valueObjPart, i)
                 {
-                    return (options.textOnly === true) ? valueObjPart : column.renderType.renderer(valueObjPart, column);
+                    return ((i > 0) ? ' and ' : '') +
+                           ((options.textOnly === true) ? valueObjPart :
+                               column.renderType.renderer(valueObjPart, column));
                 })
             }));
             if (!_.isUndefined(valueObj.count))
@@ -852,7 +819,7 @@
                 contents: [ '(', valueObj.count, ')' ]
                 }));
             }
-            if (valueObj.autogenerated === true)
+            if (options.autogenerated === true)
             {
                 $line.addClass('autogenerated');
             }
@@ -862,7 +829,7 @@
         }
 
         // events
-        $line.find(':checkbox, :radio').bind('change click', _.throttle(parseFilters, 0));
+        $line.find('.filterLineToggle').bind('change click', _.throttle(parseFilters, 0));
 
         // dom
         $filter.find('.filterValues').append($line);
@@ -882,7 +849,7 @@
         {
             // we weren't given a column to start with; pick one that's filterable--
             // ideally one that's not been filtered yet
-            var columns = blist.dataset.columnsForType();
+            var columns = blist.dataset.columnsForType(filterableTypes);
             if (columns.length === 0)
             {
                 // nothing to filter!
@@ -909,15 +876,16 @@
         }
 
         // okay, we have a column. now figure out what to filter it on.
-        newCondition.metadata.operator = defaultOperator[column.renderTypeName] || 'EQUALS';
+        newCondition.metadata.operator = defaultOperator[column.renderTypeName] || 'blank?';
 
         if (newCondition.metadata.operator == 'between?')
         {
             // if we got a 'between?' value back on the filter, run some heuristics to determine
             // if equals is appropriate (eg low-cardinality); use between otherwise.
             // 5 is a somewhat arbitrary heuristic constant here
-            if ((column.cachedContents.top.length < 20) ||
-                (_.select(column.cachedContents.top, function(v) { return v.count > 1; }).length > 5))
+            if (!_.isUndefined(column.cachedContents.top) &&
+                ((column.cachedContents.top.length < 20) ||
+                 (_.select(column.cachedContents.top, function(v) { return v.count > 1; }).length > 5)))
             {
                 newCondition.metadata.operator = 'EQUALS';
             }

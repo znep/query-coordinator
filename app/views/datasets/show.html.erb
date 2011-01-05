@@ -340,6 +340,38 @@
     </a>
   </div>
 </div>
+<div class="filterPane">
+  <div class="menu advanced filterOptionsMenu mainFilterOptionsMenu"></div>
+
+  <div class="advancedLine">
+    <span class="advancedLabel">Advanced mode:</span>
+    <a class="advancedOffLink" href="#noAdvanced">off</a> |
+    <a class="advancedOnLink" href="#advanced">on</a>
+  </div>
+
+  <div class="filterConditions">
+    <div class="noFilterConditionsText">No conditions defined yet.</div>
+  </div>
+
+  <a class="button add advanced addFilterConditionButton">
+    <span class="icon"></span>
+    Add a New Filter Condition
+  </a>
+</div>
+<div class="filterCondition">
+  <div class="filterCondition sectionContent">
+    <a class="filterRemoveButton advanced close" href="#close"><span class="icon">Remove filter</span></a>
+    <div class="filterHeadline">
+      <a class="filterExpander downArrow"><span class="icon"></span></a>
+      <a class="filterLink columnName" href="#change"></a>
+      <a class="filterLink subcolumnName" href="#change"></a>
+      <a class="filterLink operator" href="#change"></a>
+      <a class="filterLink value" href="#change"></a>
+    </div>
+    <div class="filterValues"></div>
+    <div class="menu advanced filterOptionsMenu"></div>
+  </div>
+</div>
 <% end %>
 
 <%- content_for :modals do -%>

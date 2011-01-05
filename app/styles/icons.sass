@@ -37,7 +37,7 @@
     background-position: 0 -50px
 
 // icons/menu_icons.png
-@mixin sprite-menu-icons($subselector: '.icon')
+@mixin sprite-menu-icons($subselector: '.icon', $defaultDown: true)
   #{$subselector}
     @include text-hiding
     @include ie6-fix
@@ -47,9 +47,15 @@
     .ie6 &
       background-image: url(/stylesheets/images/icons/menu_icons.gif?1)
 
+  @if $defaultDown == true
+    #{$subselector}
+      background-position: 0 0
+  @else
+    #{$subselector}
+      background-position: 0 13px
+
   &.none #{$subselector}
     background-position: 0 13px
-  #{$subselector},
   &.downArrow #{$subselector},
   &.downArrowNoHover #{$subselector},
   &.headerSortUp #{$subselector}
@@ -151,6 +157,8 @@
     background-position: 0 -546px
   &.end #{$subselector}
     background-position: 0 -559px
+  &.options #{$subselector}
+    background-position: 0 -572px
 
 // icons/accordion_icons.png
 @mixin sprite-accordion-icons($subselector: '.icon')

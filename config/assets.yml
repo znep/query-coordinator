@@ -210,6 +210,7 @@ javascripts:
     - public/javascripts/util/konami.js
     - public/javascripts/controls/menu.js
     - public/javascripts/controls/wizard-prompt.js
+    - public/javascripts/controls/popup-select.js
     - public/javascripts/controls/form-inliner.js
     - public/javascripts/controls/modal-dialogs.js
     - public/javascripts/controls/expander.js
@@ -229,7 +230,6 @@ javascripts:
     - public/javascripts/controls/grid-sidebar/feed.js
     - public/javascripts/controls/grid-sidebar/filter-dataset.js
     - public/javascripts/controls/grid-sidebar/form-create.js
-    - public/javascripts/controls/grid-sidebar/guided-filter.js
     - public/javascripts/controls/grid-sidebar/map-create.js
     - public/javascripts/controls/grid-sidebar/permissions.js
     - public/javascripts/controls/grid-sidebar/print-dataset.js
@@ -237,6 +237,7 @@ javascripts:
     - public/javascripts/controls/grid-sidebar/show-hide.js
     - public/javascripts/controls/grid-sidebar/subscribe.js
     - public/javascripts/controls/grid-sidebar/signed-dataset.js
+    - public/javascripts/controls/grid-sidebar/unified-filter.js
     - public/javascripts/controls/grid-sidebar/view-list.js
     - public/javascripts/controls/dataset-controls.js
     - public/javascripts/controls/dataset-email.js

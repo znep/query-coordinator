@@ -52,6 +52,9 @@ Enjoy!
 // add another div in select to do dynamic sizing, since jq1.4.3 broke getting the
 // styled width of a hidden element
 
+// clint.tseng@socrata.com 03/01/11
+// forbid double-uniforming
+
 (function($) {
     $.uniform = {
         options: {
@@ -515,6 +518,9 @@ Enjoy!
             if($.selectOpacity){
                 var elem = $(this);
 
+                if (elem.data('jquery.uniformed') === true)
+                { return; }
+
                 if(elem.is("select")){
                     //element is a select
                     if(elem.attr("multiple") != true){
@@ -531,6 +537,8 @@ Enjoy!
                   //element is a file upload
                   doFile(elem);
                 }
+
+                elem.data('jquery.uniformed', true);
             }
         });
     };

@@ -50,6 +50,7 @@
             closeOnClick: true,
             content: null,
             killTitle: false,
+            fill: '#fefbef',
             isSolo: false,
             message: null,
             overlap: 0,
@@ -57,6 +58,7 @@
             positions: null,
             showSpike: true,
             shrinkToFit: true,
+            stroke: '#999999',
             trigger: 'hover'
         },
 
@@ -86,8 +88,8 @@
                         content: _.isFunction(content) ? null : content,
                         contentSelector: _.isFunction(content) ? content : null,
 
-                        fill: '#fefbef',
-                        strokeStyle: '#999999',
+                        fill: sTipObj.settings.fill,
+                        strokeStyle: sTipObj.settings.stroke,
                         cornerRadius: 3,
                         spikeGirth: 15,
                         spikeLength: sTipObj.settings.showSpike ? 12 : 0,

@@ -176,7 +176,7 @@
                 _.each(rrObj.settings.config.columns || [], function(c)
                 { recurseColumn(c); });
 
-                return cols;
+                return _.uniq(cols);
             }
         }
     });

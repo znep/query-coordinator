@@ -1216,6 +1216,10 @@
                             .data('ajaxupload')._input;
                         if (!$.isBlank(i)) { i.value = ''; }
                     }
+                    if ($input.hasClass('columnSelectControl'))
+                    {
+                        updateColumnSelects(sidebarObj, $input)
+                    }
                     // Fire events to make sure uniform controls are updated,
                     // and text prompts are reset
                     _.defer(function()
@@ -2057,9 +2061,9 @@
         });
     };
 
-    var updateColumnSelects = function(sidebarObj)
+    var updateColumnSelects = function(sidebarObj, $colSelects)
     {
-        _.each(sidebarObj._columnSelects, function(csItem)
+        _.each($colSelects || sidebarObj._columnSelects, function(csItem)
         {
             var $sel = $(csItem);
             var newOpts = renderColumnSelectOptions(

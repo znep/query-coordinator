@@ -278,13 +278,23 @@
         if (!hasHiddenLoc &&
             (!blist.sidebarHidden.edit || !blist.sidebarHidden.edit.addColumn))
         {
-            msg += ' You can <a href="#convertLatLong" ' +
-                'title="Convert latitude and longitude to a location">' +
-                'convert latitude and longitude data to a location column</a>, ' +
-                'you can <a href="#convertLoc" title="Convert to a location">' +
-                'convert addresses into a location column</a>, or you can ' +
-                '<a href="#createLoc" title="Create a location column">' +
-                'create a new location column</a> and add data.';
+            var opts = [];
+            if (blist.dataset.columnsForType('number').length > 1)
+            {
+                opts.push('you can <a href="#convertLatLong" ' +
+                    'title="Convert latitude and longitude to a location">' +
+                    'convert latitude and longitude data to a location column</a>');
+            }
+            if (blist.dataset.columnsForType('text').length > 0)
+            {
+                opts.push('you can <a href="#convertLoc" ' +
+                    'title="Convert to a location">' +
+                    'convert addresses into a location column</a>');
+            }
+            opts.push('you can <a href="#createLoc" ' +
+                'title="Create a location column">' +
+                'create a new location column</a> and add data.');
+            msg += ' ' + $.arrayToSentence(opts, 'or', ',', true).capitalize();
         }
         else if (hasHiddenLoc && (!blist.sidebarHidden.filter ||
             !blist.sidebarHidden.filter.showHide))

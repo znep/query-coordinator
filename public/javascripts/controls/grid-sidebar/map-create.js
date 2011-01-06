@@ -338,14 +338,16 @@
                 fields: [
                     {text: 'Title', name: 'displayFormat.plot.titleId',
                         type: 'columnSelect', isTableColumn: true,
-                        columns: {type: ['text', 'location'], hidden: isEdit},
+                        columns: {type: ['text', 'location'], hidden: isEdit,
+                            defaultNames: ['title']},
                         wizard: 'Choose a column that contains ' +
                             'titles for each point'
                     },
                     {text: 'Description', name: 'displayFormat.plot.descriptionId',
                         type: 'columnSelect', isTableColumn: true,
-                        columns: {type: ['text', 'html', 'number', 'percent', 'money', 'location'],
-                            hidden: isEdit},
+                        columns: {type: ['text', 'html', 'number',
+                            'percent', 'money', 'location'], hidden: isEdit,
+                            defaultNames: ['description', 'details']},
                         wizard: 'Choose a column that contains ' +
                             'descriptions for each point'
                     },
@@ -387,7 +389,8 @@
                     {text: 'Description', name: 'displayFormat.plot.descriptionId',
                         type: 'columnSelect', isTableColumn: true,
                         columns: {type: ['text', 'html', 'location'],
-                            hidden: isEdit},
+                            hidden: isEdit,
+                            defaultNames: ['description', 'details']},
                         wizard: 'Choose a column that contains ' +
                             'descriptions for each point'
                     },

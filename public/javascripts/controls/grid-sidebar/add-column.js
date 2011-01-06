@@ -136,14 +136,16 @@
                     {text: 'Latitude', type: 'columnSelect',
                         name: 'convert.latitudeColumn',
                         required: true, notequalto: 'convertNumber',
-                        columns: {type: 'number', hidden: false},
+                        columns: {type: 'number', hidden: false,
+                            defaultNames: ['latitude', 'lat', 'y']},
                         wizard: {prompt: 'Choose the column that contains ' +
                             'latitude data'}
                     },
                     {text: 'Longitude', type: 'columnSelect',
                         name: 'convert.longitudeColumn',
                         required: true, notequalto: 'convertNumber',
-                        columns: {type: 'number', hidden: false},
+                        columns: {type: 'number', hidden: false,
+                            defaultNames: ['longitude', 'long', 'x']},
                         wizard: {prompt: 'Choose the column that contains ' +
                             'longitude data'}
                     }
@@ -164,7 +166,9 @@
                             {value: 'None', name: 'streetNone', type: 'static'},
                             {type: 'columnSelect', name: 'convert.addressColumn',
                                 notequalto: 'convertText',
-                                columns: {type: 'text', hidden: false} }
+                                columns: {type: 'text', hidden: false,
+                                    defaultNames: ['street address',
+                                        'street', 'address']} }
                         ],
                         wizard: {prompt: 'Choose the column that contains ' +
                             'street address data'}
@@ -175,7 +179,8 @@
                             {value: 'None', type: 'static', name: 'cityNone'},
                             {type: 'columnSelect', name: 'convert.cityColumn',
                                 notequalto: 'convertText',
-                                columns: {type: 'text', hidden: false} },
+                                columns: {type: 'text', hidden: false,
+                                    defaultNames: ['city']} },
                             {type: 'text', name: 'convert.cityValue',
                                 prompt: 'Enter a city'}
                         ],
@@ -188,7 +193,8 @@
                             {value: 'None', type: 'static', name: 'stateNone'},
                             {type: 'columnSelect', name: 'convert.stateColumn',
                                 notequalto: 'convertText',
-                                columns: {type: 'text', hidden: false} },
+                                columns: {type: 'text', hidden: false,
+                                    defaultNames: ['state']} },
                             {type: 'text', name: 'convert.stateValue',
                                 prompt: 'Enter a state'}
                         ],
@@ -202,7 +208,9 @@
                             {type: 'columnSelect', name: 'convert.zipColumn',
                                 notequalto: 'convertText convertNumber',
                                 columns: {type: ['text', 'number'],
-                                    hidden: false} },
+                                    hidden: false,
+                                    defaultNames: ['zip code', 'postal code',
+                                        'zip']} },
                             {type: 'text', name: 'convert.zipValue',
                                 prompt: 'Enter a zip code'}
                         ],

@@ -47,13 +47,15 @@
                     {text: 'Starting Date', name: 'displayFormat.startDateTableId',
                         type: 'columnSelect', required: true, notequalto: 'dateCol',
                         isTableColumn: true,
-                        columns: {type: ['calendar_date', 'date'], hidden: isEdit},
+                        columns: {type: ['calendar_date', 'date'], hidden: isEdit,
+                            defaultNames: ['start date', 'start']},
                         wizard: 'Select the column with the initial date of events'
                     },
                     {text: 'Ending Date', name: 'displayFormat.endDateTableId',
                         type: 'columnSelect', notequalto: 'dateCol',
                         isTableColumn: true,
-                        columns: {type: ['calendar_date', 'date'], hidden: isEdit},
+                        columns: {type: ['calendar_date', 'date'], hidden: isEdit,
+                            defaultNames: ['end date', 'end']},
                         wizard: 'Select the column with the ending date of events'
                     }
                 ]
@@ -63,13 +65,15 @@
                 fields: [
                     {text: 'Event Title', name: 'displayFormat.titleTableId',
                         type: 'columnSelect', required: true, isTableColumn: true,
-                        columns: {type: 'text', hidden: isEdit},
+                        columns: {type: 'text', hidden: isEdit,
+                            defaultNames: ['title']},
                         wizard: 'Select the column with the primary ' +
                             'text that should display in each event'
                     },
                     {text: 'Description', name: 'displayFormat.descriptionTableId',
                         type: 'columnSelect', isTableColumn: true,
-                        columns: {type: 'text', hidden: isEdit},
+                        columns: {type: 'text', hidden: isEdit,
+                            defaultNames: ['description', 'details']},
                         wizard: 'Select the column with the ' +
                             'descriptive text that will appear on mousing ' +
                             'over the event'

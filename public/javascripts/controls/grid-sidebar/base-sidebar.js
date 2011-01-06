@@ -287,6 +287,13 @@
                   {
                     + type: array or single datatype names; empty for all
                     + hidden: boolean, whether or not to include hidden columns
+                    + defaultNames: array of strings in priority order that
+                       should be used to guess a default selection for the box.
+                       If any columns match one of these names, and there is no
+                       current value or default value, then the first column
+                       (that matches the earliest name) will be used as the default
+                       value. Matches are case-insensitive for both the provided
+                       names and column names.
                   }
                   + inputFirst: for checkbox, you can opt to move the checkboxes
                       ahead of the labels with this boolean.
@@ -1457,13 +1464,29 @@
         var cols = blist.dataset.columnsForType((columnsObj || {}).type,
             (columnsObj || {}).hidden);
 
+        if ($.isBlank(curVal) && _.isArray((columnsObj || {}).defaultNames))
+        {
+            // If we have a set of names to check for, look through them in
+            // priority order to see if any columns match
+            var foundCol;
+            _.any(columnsObj.defaultNames, function(n)
+            {
+                foundCol = _.detect(cols, function(c)
+                    { return n.toLowerCase() == c.name.toLowerCase(); });
+                return !$.isBlank(foundCol);
+            });
+            if (!$.isBlank(foundCol))
+            { curVal = isTableColumn ? foundCol.tableColumnId : foundCol.id; }
+        }
+
         var options = [{tagName: 'option', value: '',
             contents: 'Select a column'}];
         _.each(cols, function(c)
         {
             var cId = isTableColumn ? c.tableColumnId : c.id;
             options.push({tagName: 'option', value: cId,
-                selected: curVal == cId, contents: $.htmlEscape(c.name)});
+                selected: curVal == cId || cols.length == 1,
+                contents: $.htmlEscape(c.name)});
         });
 
         return options;

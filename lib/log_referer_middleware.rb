@@ -39,7 +39,7 @@ class LogRefererMiddleware
         # If the request is for an html page, then log a pageview event.
         logger.info "Attempting to log a page view to the #{domain} domain."
         push_request(
-          "/queue/Metrics",
+          "/queue/Metrics2",
           {
             "timestamp" => Time.now.to_i * 1000, 
             "entityId" => domain, 
@@ -80,7 +80,7 @@ class LogRefererMiddleware
           end
 
           push_request(
-            "/queue/Metrics",
+            "/queue/Metrics2",
             {
               "timestamp" => Time.now.to_i * 1000, 
               "entityId" => "referrer-hosts-#{domain}", 
@@ -96,7 +96,7 @@ class LogRefererMiddleware
           )
 
           push_request(
-            "/queue/Metrics",
+            "/queue/Metrics2",
             {
               "timestamp" => Time.now.to_i * 1000, 
               "entityId" => "referrer-paths-#{domain}-#{host}", 

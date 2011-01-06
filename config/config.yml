@@ -12,7 +12,6 @@ development:
   ssl_port: 9443
   http_port: 9292
   max_core_server_requests: 15
-  activemq_hosts: stomp://localhost:61513
   <<: *default
 
 # Running unit tests; NOT test.socrata.com

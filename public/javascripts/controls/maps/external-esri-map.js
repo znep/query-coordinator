@@ -11,6 +11,8 @@
             mapObj._dataLoaded = true;
 
             // Heatmaps require a location column to work; this acts as a stand-in.
+            // mapObj._locCol should default to a GeometryType column when said column
+            // type is implemented. In which case most of this file will disappear.
             if (!mapObj._locCol)
             { createFakeLocationColumn(mapObj); }
 

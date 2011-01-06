@@ -141,6 +141,7 @@
         dismissOnClick: true,
         listContainerClass: [],
         multiselect: false,
+        positions: ['bottom', 'top'],
         prompt: 'Choose one:',
         renderer: function(choice)
         {

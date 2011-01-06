@@ -659,9 +659,6 @@
           &:hover
             border-bottom-style: solid
 
-          &.operator
-            text-transform: lowercase
-
         .line
           line-height: 2.3em
           margin: 0.2em 0
@@ -749,10 +746,13 @@
       color: $color_text_error
       font-style: normal
 
+.popupSelectList
+  max-height: 20em // otherwise they might run off the screen
+
 .popupColumnSelect
   .iconWrapper
+    float: left
     margin-top: -0.2em
-    position: absolute
 
   .columnName
-    padding-left: 2.1em
+    padding-left: 0.3em

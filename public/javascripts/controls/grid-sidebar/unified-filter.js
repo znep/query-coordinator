@@ -177,7 +177,7 @@
             if (_.isUndefined(child.metadata))
             {
                 child.metadata = {
-                    columnId: blist.dataset.columnForID(findConditionComponent(condition, 'columnId')).tableColumnId,
+                    columnId: blist.dataset.columnForID(findConditionComponent(child, 'columnId')).tableColumnId,
                     operator: child.children[0].value
                 };
                 var subcolumn = findConditionComponent(condition, 'subcolumn');
@@ -270,7 +270,7 @@
             return null;
         }
 
-        return editor.currentValue();;
+        return editor.currentValue();
     };
 
     var scrubFilterOperators = function(operators)
@@ -381,8 +381,7 @@
             '.filterCondition@class+': function() { return (metadata.expanded === false) ? 'collapsed' : 'expanded'; },
             '.columnName': 'column.name!',
             '.subcolumnName': function() { return subcolumnNames[metadata.subcolumn] || ''; },
-            '.operator': function() { return operatorNames[metadata.operator]; },
-            '.filterCondition@class+': 'metadata.subcolumn'
+            '.operator': function() { return operatorNames[metadata.operator]; }
         });
 
         // hook up events
@@ -569,6 +568,9 @@
                 },
                 selectedItems: metadata.subcolumn
             });
+
+            // also set the class initially
+            $filter.addClass(metadata.subcolumn);
         }
 
         // wire up options menu
@@ -629,9 +631,10 @@
         if (metadata.operator == 'blank?')
         {
             // special case these since they have no actual values
-            addFilterLine({ item: 'blank', count: column.cachedContents['null'] }, column,
+            var cachedContents = column.cachedContents || {};
+            addFilterLine({ item: 'blank', count: cachedContents['null'] }, column,
                           condition, $filter, filterUniqueId, { selected: false, textOnly: true });
-            addFilterLine({ item: 'not blank', count: column.cachedContents.non_null }, column,
+            addFilterLine({ item: 'not blank', count: cachedContents['non_null'] }, column,
                           condition, $filter, filterUniqueId, { selected: false, textOnly: true });
         }
         else
@@ -725,6 +728,13 @@
 
         if (options.freeform)
         {
+            var renderTypeName = column.renderTypeName;
+            if (_.include(['tag', 'html', 'email'], renderTypeName))
+            {
+                // flatten these down to text instead
+                renderTypeName = 'text';
+            }
+
             // dump in the appropriate number of editors
             _((metadata.operator == 'BETWEEN') ? 2 : 1).times(function(i)
             {
@@ -746,8 +756,8 @@
             {
                 var $this = $(this);
                 $this.data('unifiedFilter-editor',
-                    $this.blistEditor({ row: null, column: column,
-                                        value: $.isBlank(valueObj) ? '' : valueObj.item[i] }));
+                    $this.blistEditor({ row: null, column: column, typeName: renderTypeName,
+                                        value: _.isArray(valueObj) ? valueObj.item[i] : valueObj.item }));
             });
 
             // events
@@ -770,6 +780,7 @@
                     return;
                 }
 
+                var $allLineToggles = $filter.find('.filterLineToggle');
                 if ($.isBlank(getEditorComponentValue($this)))
                 {
                     var $nextLine = $this.closest('.line').next('.line');
@@ -777,13 +788,28 @@
                     {
                         $nextLine.remove();
                     }
-                    $lineToggle.removeAttr('checked');
+
+                    if ($lineToggle.is(':checked'))
+                    {
+                        if (metadata.multiSelect === false)
+                        {
+                            $allLineToggles.filter(':first').attr('checked', true);
+                        }
+                        $lineToggle.removeAttr('checked');
+                    }
                 }
                 else
                 {
-                    $lineToggle.attr('checked', true);
+                    if (!$lineToggle.is(':checked'))
+                    {
+                        if (metadata.multiSelect === false)
+                        {
+                            $allLineToggles.removeAttr('checked');
+                        }
+                        $lineToggle.attr('checked', true);
+                    }
                 }
-                $.uniform.update($lineToggle);
+                $.uniform.update($allLineToggles);
                 parseFilters();
             });
         }
@@ -983,7 +1009,7 @@
                     children.push({
                         type: 'operator',
                         value: 'IS_' + value.replace(' ', '_').toUpperCase(),
-                        children: columnDefiniton
+                        children: [ columnDefiniton ]
                     });
                     return;
                 }
@@ -1033,6 +1059,12 @@
                 {
                     // if this is a custom value the user specified, add it to the metadata
                     var value = $line.data('unifiedFilter-value');
+                    if (value == noFilterValue)
+                    {
+                        // ignore this line
+                        return;
+                    }
+
                     if ($.isBlank(value))
                     {
                         // must be a custom value line

@@ -407,7 +407,7 @@
                 name="emailRecipient0" />
             </div>
             <%- if @view.has_rights?('grant') -%>
-              <%= select_tag 'role', options_for_select(Share.types),
+              <%= select_tag 'role', options_for_select(@view.share_types),
                     :class => 'recipientRole', :id => nil %>
             <%- end -%>
           </div>

@@ -10,6 +10,10 @@
             var mapObj = this;
             mapObj._dataLoaded = true;
 
+            // Heatmaps require a location column to work; this acts as a stand-in.
+            if (!mapObj._locCol)
+            { createFakeLocationColumn(mapObj); }
+
             if (mapObj._rows === undefined) { mapObj._rows = []; }
             mapObj._rows = mapObj._rows.concat(rows);
             if (mapObj.settings.view.totalRows > mapObj._maxRows)
@@ -86,7 +90,20 @@
             var row = _.detect(rows, function(row)
             { return row.objectID == feature.attributes[mapObj._objectIdKey]; });
             row.feature = feature;
+
+            var point;
+            if (feature.geometry instanceof esri.geometry.Point)
+            { point = feature.geometry; }
+            else
+            { point = feature.geometry.getExtent().getCenter(); }
+
+            row[mapObj._locCol.id] = { latitude: point.y, longitude: point.x };
         });
+    };
+
+    var createFakeLocationColumn = function(mapObj)
+    {
+        mapObj._locCol = { id: 'fake_location', renderTypeName: 'location' };
     };
 
 })(jQuery);

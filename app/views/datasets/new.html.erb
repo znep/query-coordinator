@@ -36,15 +36,6 @@
                 <p>Upload a Non-Data File</p>
               </a>
             </li>
-            <%- if CurrentDomain.module_enabled?(:esri_integration) &&
-                   current_user.is_admin? -%>
-            <li>
-              <a href="#mapLayer" class="mapLayer" title="Choose this if it is an ESRI map layer">
-                <span class="icon"></span>
-                <p>Create a Map Layer Dataset</p>
-              </a>
-            </li>
-            <%- end -%>
           </ul>
         </li>
         <li class="uploadFilePane" data-wizardPaneName="uploadFile">
@@ -56,14 +47,6 @@
             <p class="uploadFileFormats">Supported formats are .csv, .tsv, .xml, .xls, and .xlsx.</p>
           </div>
         </li>
-
-        <li class="mapLayerUrlPane" data-wizardPaneName="mapLayerUrl">
-          <p class="headline"></p>
-          <div class="mapLayerUrlContainer">
-               <%= text_field_tag("mapLayerUrl", '', :title => "Enter an ESRI map layer url", :class => "mapLayerUrl textPrompt") %>
-          </div>
-        </li>
-
         <li class="metadataPane" data-wizardPaneName="metadata">
           <div class="flash"></div>
           <p class="headline">Please describe your data.</p>

@@ -19,6 +19,16 @@
     </div>
     <div id="fullThumbnail" class="loading">
 
+      <form class="commonForm actionsForm">
+        <div class="line">
+          <div class="saveStatus">
+            <span class="saving"></span>
+            <span class="flash saveMessage"></span>
+          </div>
+          <%= link_to 'Save Thumbnail', '#save', {:class => 'button default disabled savePreviewButton'} %>
+          <%= link_to 'Discard Changes', @view.href, {:class => 'button'} %>
+        </div>
+      </form>
       <div class="refreshThumbnail">
         <a href="#refresh" class="button refresh">Refresh Thumbnail</a>
         <span class="throbber"></span>
@@ -50,16 +60,6 @@
           <div class="image"></div>
         </div>
 
-        <form class="commonForm actionsForm">
-          <div class="line">
-            <%= link_to 'Save Thumbnail', '#save', {:class => 'button default disabled savePreviewButton'} %>
-            <%= link_to 'Discard Changes', @view.href, {:class => 'button'} %>
-            <div class="saveStatus">
-              <span class="saving"></span>
-              <span class="flash saveMessage"></span>
-            </div>
-          </div>
-        </form>
 
       </div>
 

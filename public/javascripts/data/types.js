@@ -1380,6 +1380,21 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterLocation
         },
 
+        geospatial: {
+            title: 'Geospatial',
+            priority: 20,
+            createable: false,
+            renderGen: renderGenLocation,
+            renderer: renderLocation,
+            deleteable: false,
+            isObject: true,
+            alignment: alignment,
+            renderAddress: renderLocationAddress,
+            filterable: true,
+            filterConditions: filterConditions.comparable,
+            filterRender: renderFilterLocation
+        },
+
         tag: {
             title: 'Row Tag',
             priority: 19,

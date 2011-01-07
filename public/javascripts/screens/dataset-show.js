@@ -80,8 +80,7 @@ blist.datasetPage.initGrid = function()
             filterForm: '#searchForm', clearFilterItem: '#searchForm .clearSearch',
             addColumnCallback: function(parId)
             {
-                datasetPageNS.sidebar.addPane('edit.addColumn', {parentId: parId});
-                datasetPageNS.sidebar.show('edit.addColumn');
+                datasetPageNS.sidebar.show('edit.addColumn', {parentId: parId});
             },
             editColumnCallback: function(colId, parId)
             {
@@ -90,8 +89,7 @@ blist.datasetPage.initGrid = function()
                 if (col.id != colId) { col = col.childColumnForID(colId); }
 
                 datasetPageNS.sidebar.hide();
-                datasetPageNS.sidebar.addPane('columnProperties', col);
-                datasetPageNS.sidebar.show('columnProperties');
+                datasetPageNS.sidebar.show('columnProperties', col);
             }
         });
     datasetPageNS.gridInitialized = true;

@@ -258,14 +258,9 @@
                 });
 
             if (doShow)
-            {
-                sidebar.show('filter.showHide');
-            }
+            { sidebar.show('filter.showHide'); }
             else
-            {
-                sidebar.addPane('edit.addColumn', col);
-                sidebar.show('edit.addColumn');
-            }
+            { sidebar.show('edit.addColumn', col); }
         });
 
     // Change disabled message based on whether or not the add column dialog is

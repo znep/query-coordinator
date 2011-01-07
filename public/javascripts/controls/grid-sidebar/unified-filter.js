@@ -1,5 +1,8 @@
 ;(function($)
 {
+    if (blist.sidebarHidden.filter &&
+        blist.sidebarHidden.filter.filterDataset) { return; }
+
     var $pane;
     var noFilterValue = { noFilter: true }; // sentinel value for blank filters
 

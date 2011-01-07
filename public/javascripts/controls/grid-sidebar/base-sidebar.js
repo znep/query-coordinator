@@ -487,6 +487,7 @@
                 sidebarObj._$outerPanes = {};
                 sidebarObj._$panes = {};
                 sidebarObj._paneData = {};
+                sidebarObj._savedPaneData = {};
                 sidebarObj._dirtyPanes = {};
 
                 sidebarObj._selectOptions = {};
@@ -613,7 +614,7 @@
             },
 
             /* Create a new pane in the sidebar */
-            addPane: function(configName, data)
+            addPane: function(configName, data, isTempData)
             {
                 var sidebarObj = this;
                 var nameParts = getConfigNames(configName);
@@ -640,6 +641,7 @@
                 if (config.isParent) { return; }
 
                 sidebarObj._paneData[config.name] = data;
+                if (!isTempData) { sidebarObj._savedPaneData[config.name] = data; }
                 var $pane = renderPane(sidebarObj, config, data);
                 sidebarObj._dirtyPanes[config.name] = false;
                 sidebarObj._$panes[config.name] = $pane;
@@ -658,9 +660,11 @@
 
             /* Show the sidebar and a specific pane in it.  If it is modal,
              * then hide/disable other parts of the UI */
-            show: function(paneName)
+            show: function(paneName, data)
             {
                 var sidebarObj = this;
+
+                if (!$.isBlank(data)) { sidebarObj.addPane(paneName, data, true); }
 
                 if (!sidebarObj._ready)
                 {
@@ -794,12 +798,8 @@
 
                 if ($.isBlank(pane))
                 {
-                    pane = sidebarObj._currentOuterPane;
-                    if (sidebarObj._currentOuterPane != sidebarObj._currentPane)
-                    {
-                        pane = _.compact([sidebarObj._currentOuterPane,
-                            sidebarObj._currentPane]).join('.');
-                    }
+                    pane = getFullConfigName(sidebarObj._currentOuterPane,
+                            sidebarObj._currentPane);
                 }
                 if ($.isBlank(pane)) { return; }
 
@@ -1282,6 +1282,14 @@
         { $.uniform.update(items); }
     };
 
+    var getFullConfigName = function(outerName, innerName)
+    {
+        var name = outerName;
+        if (outerName != innerName)
+        { name = _.compact([outerName, innerName]).join('.'); }
+        return name;
+    };
+
     var getConfigNames = function(configName)
     {
         var p = configName.split('.');
@@ -1330,6 +1338,15 @@
                     $curPane.is(':visible')) { $curPane.slideUp(); }
                 else { $curPane.hide(); }
             });
+        }
+
+        // Reset pane on closing
+        if (sidebarObj._paneData[sidebarObj._currentPane] !=
+            sidebarObj._savedPaneData[sidebarObj._currentPane])
+        {
+            sidebarObj.addPane(getFullConfigName(sidebarObj._currentOuterPane,
+                        sidebarObj._currentPane),
+                sidebarObj._savedPaneData[sidebarObj._currentPane]);
         }
 
         sidebarObj._currentOuterPane = null;
@@ -1468,7 +1485,7 @@
         var cols = blist.dataset.columnsForType((columnsObj || {}).type,
             (columnsObj || {}).hidden);
 
-        if ($.isBlank(curVal) && _.isArray((columnsObj || {}).defaultNames))
+        if (!_.isNumber(curVal) && _.isArray((columnsObj || {}).defaultNames))
         {
             // If we have a set of names to check for, look through them in
             // priority order to see if any columns match

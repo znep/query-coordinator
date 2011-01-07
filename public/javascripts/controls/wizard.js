@@ -109,7 +109,7 @@
                 if ($nextButton.is('.disabled')) { return; }
 
                 if ((currentPaneConfig.skipValidation !== true) &&
-                    !$currentPane.find(':input').valid())
+                    !$currentPane.find(':input:visible').valid())
                 {
                     return;
                 }

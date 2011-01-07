@@ -3,6 +3,7 @@ $(function()
     // state representing whether we have uploaded a file
     var submittedView = null;
     var isBlobby = false;
+    var datasetType = 'native';
 
     // keep a reference so we don't lose it when we remove from DOM
     var $uploadFilePane = $('.uploadFilePane');
@@ -39,6 +40,12 @@ $(function()
             $('.wizardButtons .next').fadeIn();
             $wizard.trigger('wizard-next');
         };
+        var mapLayerSuccessCallback = function(newDS)
+        {
+            submittedView = new Dataset(newDS);
+            submittedView.update(viewData);
+            submittedView.save(successCallback, errorCallback);
+        };
         var errorCallback = function(request)
         {
             // it's a bit bewildering if it happens too fast.
@@ -57,7 +64,14 @@ $(function()
         };
         if (submittedView === null)
         {
-            new Dataset(viewData).saveNew(successCallback, errorCallback);
+            if (datasetType == 'native')
+            {
+                new Dataset(viewData).saveNew(successCallback, errorCallback);
+            }
+            else if (datasetType == 'esri')
+            {
+                Dataset.createFromMapLayerUrl(viewData.esri_src, mapLayerSuccessCallback, errorCallback);
+            }
         }
         else
         {
@@ -95,6 +109,9 @@ $(function()
         $('.metadataPane .flash').removeClass('warning notice error');
         $('.metadataPane .headline').text('Please describe your data.');
 
+        datasetType = 'native';
+        $('.metadataForm > div').show();
+
         if (submittedView !== null)
         {
             // delete whatever temporary cruft we created
@@ -116,6 +133,8 @@ $(function()
         event.preventDefault();
         $uploadFilePane.remove();
 
+        $('.metadataForm .mapLayerMetadata').hide();
+
         $wizard.trigger('wizard-next');
     });
     $('.newKindList a.upload').click(function(event)
@@ -124,6 +143,16 @@ $(function()
         $('.uploadFilePane .headline').text('Please choose a file to import.');
         $('.uploadFilePane .uploadFileFormats').show();
         isBlobby = false;
+
+        $wizard.trigger('wizard-next');
+    });
+    $('.newKindList a.mapLayer').click(function(event)
+    {
+        event.preventDefault();
+        $uploadFilePane.remove();
+
+        datasetType = 'esri';
+        $('.metadataForm > div:not(.mapLayerMetadata, .attachmentsMetadata, .privacyMetadata)').hide();
 
         $wizard.trigger('wizard-next');
     });
@@ -136,6 +165,12 @@ $(function()
 
         $wizard.trigger('wizard-next');
     });
+
+    // size the select list by how many items it contains (or it won't center)
+    $newKindList = $('.newKindList');
+    $newKindListItems = $newKindList.children();
+    $newKindList.width($newKindListItems.filter(':last').outerWidth(true) * $newKindListItems.length -
+        ($newKindListItems.filter(':last').outerWidth(true) - $newKindListItems.filter(':first').outerWidth(true)));
 
 // PAGE ONE: UPLOAD FILE
     // upload button
@@ -203,15 +238,23 @@ $(function()
     });
 
 // PAGE TWO: DATASET METADATA
+    $('.metadataPane').bind('wizard-paneActivated', function()
+    {
+        // sometimes uniform gets confused
+        $.uniform.update($(this).find('input'));
+    });
+
     // validation
     $(".newDatasetForm").validate({
         rules: {
             "view[name]": "required",
-            "view[attributionLink]": "customUrl"
+            "view[attributionLink]": "customUrl",
+            "view[esri_url]": 'required customUrl'
         },
         messages: {
             "view[name]": "Dataset name is required.",
-            "view[attributionLink]": "That does not appear to be a valid URL."
+            "view[attributionLink]": "That does not appear to be a valid URL.",
+            'view[esri_url]': 'A valid ESRI map layer URL is required.'
         }
     });
 

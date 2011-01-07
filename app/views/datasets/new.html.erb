@@ -30,6 +30,15 @@
                 <p>Import a Data File</p>
               </a>
             </li>
+            <%- if CurrentDomain.module_enabled?(:esri_integration) &&
+                   current_user && current_user.is_admin? -%>
+            <li>
+              <a href="#mapLayer" class="mapLayer" title="Choose this if you have an ESRI map layer which you would like to import into the catalog. You will need to provide a URL to the API point where the ESRI layer is stored.">
+                <span class="icon"></span>
+                <p>Import a Map Layer Dataset</p>
+              </a>
+            </li>
+            <%- end -%>
             <li>
               <a href="#blobby" class="blobby" title="Choose this if you have a file that has data in it but which cannot be imported, such as a PDF, or an image file. It will be imported into the data catalog, but will not be as interactive as real data.">
                 <span class="icon"></span>
@@ -51,106 +60,123 @@
           <div class="flash"></div>
           <p class="headline">Please describe your data.</p>
           <div class="commonForm metadataForm">
-            <div class="line clearfix">
-              <label for="view_name" class="required">Dataset Title</label>
-              <%= text_field_tag("view[name]", '', :title => "Enter a title", :class => "textPrompt") %>
-            </div>
-
-            <div class="line clearfix">
-              <label for="view_description">Brief Description</label>
-              <%= text_area_tag("view[description]", '', :title => "Enter a description", :class => "textPrompt") %>
-            </div>
-
-            <div class="line clearfix">
-              <label for="view_category">Category</label>
-              <%= select_tag("view[category]", category_select_options) %>
-            </div>
-
-            <div class="line clearfix">
-              <label for="view_tags">Tags / Keywords</label>
-              <%= text_field_tag("view[tags]", '', :title => "Enter keywords", :class => "textPrompt") %>
-              <div class="additionalHelp">Enter one or more keywords separated by commas</div>
-            </div>
-
-            <h2>Licensing &amp; Attribution</h2>
-
-            <div class="line clearfix">
-              <label for="view_licenseId">Licensing</label>
-              <%= select_tag("view[licenseId]", license_select_options('')) %>
-              <div class="additionalHelp">Choose licensing terms for people who wish to use this dataset.</div>
-            </div>
-
-            <div class="line creativeCommonsLine clearfix">
-              <label for="view_ccLicenseId" class="required">Creative Commons Type</label>
-              <%= select_tag("view_ccLicenseId", creative_commons_select_options) %>
-            </div>
-
-            <div class="line clearfix">
-              <label for="view_attribution">Data Provided By</label>
-              <%= text_field_tag("view[attribution]", '', :title => "Individual or Organization", :class => "textPrompt") %>
-            </div>
-
-            <div class="line clearfix">
-              <label for="view_attributionLink">Source Link</label>
-              <%= text_field_tag("view[attributionLink]", '', :title => "Enter Web Address", :class => "textPrompt") %>
-            </div>
-
-            <h2>Attachments</h2>
-
-            <div class="attachments">
-              <div class="line existingAttachmentsContainer clearfix">
-                <label>Existing Attachments</label>
-                <div class="existingAttachments">
-                  <ul></ul>
-                </div>
+            <div class="generalMetadata">
+              <div class="line clearfix">
+                <label for="view_name" class="required">Dataset Title</label>
+                <%= text_field_tag("view[name]", '', :title => "Enter a title", :class => "textPrompt") %>
               </div>
 
-              <div class="line newAttachmentsContainer clearfix">
-                <label for="attachment_new" class="newAttachmentLabel">&nbsp;</label>
-                <a class="button uploadLink" href="#upload_attachment">Upload New Attachment</a>
-                <span class="uploadAttachmentThrobber"></span>
+              <div class="line clearfix">
+                <label for="view_description">Brief Description</label>
+                <%= text_area_tag("view[description]", '', :title => "Enter a description", :class => "textPrompt") %>
+              </div>
+
+              <div class="line clearfix">
+                <label for="view_category">Category</label>
+                <%= select_tag("view[category]", category_select_options) %>
+              </div>
+
+              <div class="line clearfix">
+                <label for="view_tags">Tags / Keywords</label>
+                <%= text_field_tag("view[tags]", '', :title => "Enter keywords", :class => "textPrompt") %>
+                <div class="additionalHelp">Enter one or more keywords separated by commas</div>
               </div>
             </div>
 
-            <%- (CurrentDomain.custom_dataset_metadata || []).each do |fieldset| -%>
-              <div class="customFieldsetWrapper">
-                <h2>
-                  <a href="#Toggle" class="toggleFieldsetLink expander expanded">
-                    <span class="icon"></span>
-                    <%= fieldset.name %>
-                  </a>
-                </h2>
+            <div class="mapLayerMetadata">
+              <div class="line clearfix">
+                <label for="view_esri_src" class="required">ESRI Map Layer URL</label>
+                <%= text_field_tag('view[esri_src]', '', :title => 'Enter the source URL', :class => 'textPrompt') %>
+              </div>
+            </div>
 
-                <div class="customFieldset">
-                  <%- (fieldset.fields || []).each do |field| -%>
-                    <%- required   = field['required'].present? -%>
-                    <div class="line clearfix<%= ' customRequired' if required %>">
-                      <label for="view_metadata_custom_fields_<%= fieldset.name + "_" + field.name %>"
-                        <%= " class='required'" if required %>>
-                        <%= field.name %></label>
-                      <%= text_field_tag("view[metadata][custom_fields][#{fieldset.name}][#{field.name}]", '') %>
-                    </div>
-                  <%- end -%>
+            <div class="licensingMetadata">
+              <h2>Licensing &amp; Attribution</h2>
+
+              <div class="line clearfix">
+                <label for="view_licenseId">Licensing</label>
+                <%= select_tag("view[licenseId]", license_select_options('')) %>
+                <div class="additionalHelp">Choose licensing terms for people who wish to use this dataset.</div>
+              </div>
+
+              <div class="line creativeCommonsLine clearfix">
+                <label for="view_ccLicenseId" class="required">Creative Commons Type</label>
+                <%= select_tag("view_ccLicenseId", creative_commons_select_options) %>
+              </div>
+
+              <div class="line clearfix">
+                <label for="view_attribution">Data Provided By</label>
+                <%= text_field_tag("view[attribution]", '', :title => "Individual or Organization", :class => "textPrompt") %>
+              </div>
+
+              <div class="line clearfix">
+                <label for="view_attributionLink">Source Link</label>
+                <%= text_field_tag("view[attributionLink]", '', :title => "Enter Web Address", :class => "textPrompt") %>
+              </div>
+            </div>
+
+            <div class="attachmentsMetadata">
+              <h2>Attachments</h2>
+
+              <div class="attachments">
+                <div class="line existingAttachmentsContainer clearfix">
+                  <label>Existing Attachments</label>
+                  <div class="existingAttachments">
+                    <ul></ul>
+                  </div>
+                </div>
+
+                <div class="line newAttachmentsContainer clearfix">
+                  <label for="attachment_new" class="newAttachmentLabel">&nbsp;</label>
+                  <a class="button uploadLink" href="#upload_attachment">Upload New Attachment</a>
+                  <span class="uploadAttachmentThrobber"></span>
                 </div>
               </div>
-            <%- end -%>
+            </div>
 
-            <h2>Privacy &amp; Security</h2>
+            <div class="customMetadata">
+              <%- (CurrentDomain.custom_dataset_metadata || []).each do |fieldset| -%>
+                <div class="customFieldsetWrapper">
+                  <h2>
+                    <a href="#Toggle" class="toggleFieldsetLink expander expanded">
+                      <span class="icon"></span>
+                      <%= fieldset.name %>
+                    </a>
+                  </h2>
 
-            <div class="line clearfix">
-              <label>Privacy Settings</label>
-              <div class="radioblock">
-                <div>
-                  <%= radio_button_tag("privacy", "public", true) %>
-                  <label for="privacy_public_view">
-                    My data is <strong>public</strong>: it can only be modified by me, but everyone can view it.
-                  </label>
+                  <div class="customFieldset">
+                    <%- (fieldset.fields || []).each do |field| -%>
+                      <%- required   = field['required'].present? -%>
+                      <div class="line clearfix<%= ' customRequired' if required %>">
+                        <label for="view_metadata_custom_fields_<%= fieldset.name + "_" + field.name %>"
+                          <%= " class='required'" if required %>>
+                          <%= field.name %></label>
+                        <%= text_field_tag("view[metadata][custom_fields][#{fieldset.name}][#{field.name}]", '') %>
+                      </div>
+                    <%- end -%>
+                  </div>
                 </div>
-                <div>
-                  <%= radio_button_tag("privacy", "private") %>
-                  <label for="privacy_private">
-                    My data is <strong>private</strong>.
-                  </label>
+              <%- end -%>
+            </div>
+
+            <div class="privacyMetadata">
+              <h2>Privacy &amp; Security</h2>
+
+              <div class="line clearfix">
+                <label>Privacy Settings</label>
+                <div class="radioblock">
+                  <div>
+                    <%= radio_button_tag("privacy", "public") %>
+                    <label for="privacy_public_view">
+                      My data is <strong>public</strong>: it can only be modified by me, but everyone can view it.
+                    </label>
+                  </div>
+                  <div>
+                    <%= radio_button_tag("privacy", "private", :checked => true) %>
+                    <label for="privacy_private">
+                      My data is <strong>private</strong>.
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>

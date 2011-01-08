@@ -162,7 +162,7 @@
                 rootCondition.children[i] = {
                     type: 'operator',
                     value: 'OR',
-                    children: condition
+                    children: [ condition ]
                 };
             }
         });
@@ -722,11 +722,14 @@
         $line.append($.tag({
                 tagName: 'input',
                 type: (metadata.multiSelect === false) ? 'radio' : 'checkbox',
-                checked: !!options.selected,
                 id: inputId,
                 name: filterUniqueId,
                 'class': 'filterLineToggle'
         }));
+        if (options.selected === true)
+        {
+            $line.find('.filterLineToggle').attr('checked', true);
+        }
         $line.find(':radio, :checkbox').uniform();
 
         if (options.freeform)
@@ -758,9 +761,17 @@
             $line.find('.filterValueEditor').each(function(i)
             {
                 var $this = $(this);
+                var editorValue = _.isArray(valueObj) ? valueObj.item[i] : valueObj.item;
+                if (!_.isUndefined(metadata.subcolumn))
+                {
+                    var newValue = {};
+                    newValue[metadata.subcolumn] = editorValue;
+                    editorValue = newValue;
+                }
+
                 $this.data('unifiedFilter-editor',
                     $this.blistEditor({ row: null, column: column, typeName: renderTypeName,
-                                        value: _.isArray(valueObj) ? valueObj.item[i] : valueObj.item }));
+                                        value: editorValue }));
             });
 
             // events

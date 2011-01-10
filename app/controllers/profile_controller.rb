@@ -65,6 +65,8 @@ class ProfileController < ApplicationController
       end
     end
 
+    @app_tokens = AppToken.find(@user.id)
+
     @browse_in_container = true
     @opts = {:for_user => @user.id, :nofederate => true}
     @default_params = {:sortBy => 'newest', :limitTo => 'datasets'}
@@ -187,11 +189,13 @@ class ProfileController < ApplicationController
 
   def edit
     @user_links = UserLink.find(current_user.id)
+    @app_tokens = AppToken.find(current_user.id)
   end
 
   # Note: was AccountsController#edit
   def edit_account
     @user_links = UserLink.find(current_user.id)
+    @app_tokens = AppToken.find(current_user.id)
   end
 
   def update_account
@@ -247,6 +251,36 @@ class ProfileController < ApplicationController
 
   def edit_image
     @user_links = UserLink.find(current_user.id)
+    @app_tokens = AppToken.find(current_user.id)
+  end
+
+  def edit_app_tokens
+    @user_links = UserLink.find(current_user.id)
+    @app_tokens = AppToken.find(current_user.id)
+  end
+
+  def create_app_token
+    begin
+      new_token = params[:new_app_token]
+      new_token[:public] = true if new_token[:public] == 'on'
+      token = AppToken.create(params[:id], new_token)
+    rescue CoreServer::CoreServerError => e
+      flash[:error] = "An error occured creating your application: #{e.error_message}"
+      return(redirect_to(:action => :edit_app_tokens))
+    end
+    flash[:notice] = "Your application was successfully created"
+    redirect_to :action => :edit_app_tokens
+  end
+
+  def delete_app_token
+    begin
+      AppToken.delete(params[:id], params[:token_id])
+    rescue CoreServer::CoreServerError => e
+      flash[:error] = "An error occured deleting your application: #{e.error_message}"
+      return(redirect_to(:action => :edit_app_tokens))
+    end
+    flash[:notice] = "Your application has been deleted"
+    redirect_to :action => :edit_app_tokens
   end
 
   def create_friend

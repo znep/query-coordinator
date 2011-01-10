@@ -139,6 +139,27 @@
       </div>
     <%- end -%>
 
+    <%- if !@app_tokens.blank? || @user == current_user -%>
+      <div class="appTokens content">
+        <div class="innerItem">
+          <%= edit_link(@user, 'editAppTokensLink', 'Manage', 'app_tokens') %>
+          <h2><%= @user.displayName %>'s Applications</h2>
+          <%# TODO: Add link to SODA docs or something %>
+        </div>
+        <%- if @app_tokens.blank? -%>
+          <p>You do not have any applications registered yet. Click 'Manage' above to get started</p>
+        <%- else -%>
+          <%- @app_tokens.each do |token| -%>
+            <div class="innerItem">
+              <%= render :partial => 'app_token_display', :locals => {
+                  :edit => false, :token => token
+              } %>
+            </div>
+          <%- end -%>
+        <%- end -%>
+      </div>
+    <%- end -%>
+
     <%- if (module_enabled?(:community_creation) || CurrentDomain.user_can?(@user, :create_datasets)) -%>
       <div class="datasetsList content">
         <h2><%= @user.displayName %>'s Datasets</h2>

@@ -13,10 +13,13 @@
       padding-right: 0.5em
 
   .editArea
-    @include border-radius(0.2em)
     padding: 0.5em 1.5em 1.5em
 
     .editSection
+      &.noBorder
+        border: none
+        margin-top: 0
+        padding-top: 0
       border-top: 1px solid $color_chrome_box_border
       margin-top: 1em
       padding-top: 1em
@@ -25,13 +28,13 @@
         margin-top: 0
 
       .line
-        clear: none
+        clear: both
         &.fullLine
           clear: both
           width: 90%
         float: left
         line-height: 2.4em
-        padding: 0.5em 0 0.5em 8em
+        padding: 0.5em 0 0.5em 3em
         textarea, input, .field
           min-width: 38em
         select
@@ -69,15 +72,17 @@
         font-size: 1.2em
 
   .submitLine
+    clear: both
     margin-top: 1em
 
-  &.editBasicInfo .editImageForm,
-  &.editBasicInfo .editAccountForm,
-  &.editProfileImage .editBasicInfoForm,
-  &.editProfileImage .editAccountForm,
-  &.editAccountInfo .editBasicInfoForm,
-  &.editAccountInfo .editImageForm
+  .editForm
     display: none
+  &.editBasicInfo .editForm.editBasicInfoForm,
+  &.editProfileImage .editForm.editProfileImageForm,
+  &.editAccountInfo .editForm.editAccountInfoForm,
+  &.editAppTokens .editForm.editAppTokensForm
+    display: block
+
 
   .editImageForm
     .imageErrorLine
@@ -99,3 +104,39 @@
         padding-right: 0.5em
       .ie7 &
         width: 19em
+
+  .editAppTokensForm
+    .appTokenDisplay
+      .appTokenLine
+        padding: 0.5em 0
+      .uploadIndicator
+        @include throbber-icon
+        display: none
+        position: relative
+        top: 0.3em
+      &.working .uploadIndicator
+        display: inline-block
+        .ie7 &
+          display: inline
+          zoom: 1
+
+
+  .editAppTokensForm
+    .existingTokens
+      padding-top: 1em
+
+      .tokenFieldsDisplay
+        border-top: 1px solid $color_chrome_box_border
+        &:first-child
+          border-top: 0
+        padding-top: 1em
+
+        .actionsLine
+          .uploadAppTokenImage
+            text-align: center
+            width: 110px
+
+    .showCreateTokenButton
+    .createNewToken
+      h2
+        margin-top: 0

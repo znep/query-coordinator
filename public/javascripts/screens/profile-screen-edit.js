@@ -1,8 +1,9 @@
 ;$(function()
 {
     var $basicPane   = $('.editBasicInfoForm'),
-        $imagePane   = $('.editImageForm'),
-        $accountPane = $('.editAccountForm'),
+        $imagePane   = $('.editProfileImageForm'),
+        $accountPane = $('.editAccountInfoForm'),
+        $tokensPane  = $('.editAppTokensForm'),
         $currentPane = $('.editProfile .editForm').first(),
         $form        = $('#editProfileForm'),
         $accountForm = $('#editAccountForm');
@@ -28,6 +29,8 @@
         { $newPane = $imagePane; }
         else if ($link.is('.accountSettings'))
         { $newPane = $accountPane; }
+        else if ($link.is('.appTokens'))
+        { $newPane = $tokensPane; }
         else
         { $newPane = null; }
 
@@ -67,35 +70,37 @@
     var $imageChange = $('.uploadNewImage').click(function(event)
     { event.preventDefault(); });
 
-    // Don't create the ajax uploader unless the button is present
-    if ($imageChange.length > 0)
+
+    var createImageUploader = function($link, $imageDiv, $errorDiv,
+        uploaderName, urlFunction, loading, success)
     {
-        var uploader = new AjaxUpload($imageChange, {
-            action: $imageChange.attr('href'),
+        new AjaxUpload($link, {
+            action: $link.attr('href'),
             autoSubmit: true,
-            name: 'profileImageInput',
+            name: uploaderName,
             responseType: 'json',
             onSubmit: function (file, ext)
             {
                 if (!(ext && /^(jpg|png|jpeg|gif|tif|tiff)$/.test(ext)))
                 {
-                    $errorMessage
+                    $errorDiv
                         .show();
                     return false;
                 }
-                $errorMessage
+                $errorDiv
                     .hide();
-                $throbber.show();
+                loading();
             },
             onComplete: function (file, response)
             {
-                $throbber.hide();
-                $profileImage.animate({opacity: 0}, {complete: function()
+                success();
+
+                $imageDiv.animate({opacity: 0}, {complete: function()
                     {
                         $('<img/>')
-                            .attr('src', response.large + '?_=' + new Date().getTime())
+                            .attr('src', urlFunction(response))
                             .load(function() {
-                                $profileImage
+                                $imageDiv
                                     .empty()
                                     .append($(this))
                                     .animate({opacity: 1});
@@ -104,7 +109,15 @@
                 });
             }
         });
+    };
 
+    // Don't create the ajax uploader unless the button is present
+    if ($imageChange.length > 0)
+    {
+        createImageUploader($imageChange, $profileImage, $errorMessage,
+            'profileImageInput', function(response) {
+                return response.large + '?_=' + new Date().getTime();
+        }, function() { $throbber.show(); }, function() { $throbber.hide(); });
     }
 
     // Only show the State selection if they're in the US
@@ -173,5 +186,73 @@
 
     // Time for the checbox to put on its sexy uniform
     $accountForm.find('input:checkbox').uniform();
+
+
+    // App tokens
+    var $newTokenArea = $('.createNewToken'),
+        $newTokenForm = $('.createNewTokenForm');
+
+    $newTokenForm
+        .find('input:checkbox').uniform()
+            .end()
+        .validate(validationHash);
+
+    var $showFormButton = $.tag({
+        tagName: 'a',
+        'class': 'button add showCreateTokenButton',
+        contents: 'Create New Application'
+    });
+
+    $showFormButton.click(function(){
+        $newTokenArea.hide()
+            .removeClass('hide')
+            .slideDown();
+        $showFormButton.addClass('disabled');
+    });
+
+    if ($('.existingTokens').hasClass('noTokensYet'))
+    {
+        $newTokenArea.removeClass('hide');
+    }
+    else
+    {
+        $newTokenArea
+            .before($showFormButton);
+    }
+
+    $('.deleteTokenButton').click(function(event)
+    {
+        if (!confirm('Are you sure you want to delete this application? ' +
+                     'The corresponding app_token will no longer be valid'))
+        {
+            event.preventDefault();
+        }
+    });
+
+    var $appTokenImages = $('.uploadAppTokenImage').click(function(event)
+    {
+        event.preventDefault();
+    });
+
+    $appTokenImages.each(function(index, element)
+    {
+        var $link      = $(element),
+            $line      = $link.closest('.appTokenDisplay'),
+            $indicator = $line.find('.uploadIndicator'),
+            $thumbArea = $line.find('.thumbnailArea'),
+            $error     = $line.find('.error'),
+            name       = 'appTokenAjax' + index;
+
+        createImageUploader($link, $thumbArea, $error, name, function(response) {
+            return "/api/file_data/" + response.thumbnailSha + "?size=thumb&_=" + new Date().getTime();
+        }, function() {
+            $line.addClass('working');
+        }, function() {
+            $line.removeClass('working');
+            $thumbArea
+                .removeClass('noThumbnail')
+                .addClass('thumbnail');
+        });
+    });
 });
 

@@ -167,6 +167,15 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'profile/:profile_name/:id/image', :controller => 'profile',
      :action => 'edit_image', :conditions => { :method => :get },
      :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+  map.connect 'profile/:profile_name/:id/app_tokens', :controller => 'profile',
+     :action => 'edit_app_tokens', :conditions => { :method => :get },
+     :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+  map.connect 'profile/:profile_name/:id/app_token/new', :controller => 'profile',
+     :action => 'create_app_token', :conditions => { :method => :post },
+     :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+  map.connect 'profile/:profile_name/:id/app_token/:token_id/delete', :controller => 'profile',
+     :action => 'delete_app_token', :conditions => { :method => :post },
+     :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
   map.profile_account 'profile/:profile_name/:id/account', :controller => 'profile',
      :action => 'edit_account', :conditions => { :method => :get },
      :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}

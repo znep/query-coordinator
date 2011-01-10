@@ -1,0 +1,54 @@
+<div class="editAppTokensForm editForm">
+  <h1>Your Applications</h1>
+
+  <%= display_standard_flashes %>
+
+  <div class="createNewToken editArea<%= ' hide' unless params[:no_js].present? %>">
+    <%= form_tag({:action => 'create_app_token'},
+                 {:class => 'commonForm createNewTokenForm'}) %>
+      <div class="editSection noBorder">
+        <div class="line clearfix">
+          <label for="new_app_token_name" class="required">Application Name</label>
+          <input id="new_app_token_name" type="text"
+                 title="Enter a name for your application"
+                 name="new_app_token[name]" class="textPrompt required"/>
+        </div>
+        <div class="line clearfix">
+          <label for="new_app_token_description" class="required">Description</label>
+          <%= text_area_tag("new_app_token[description]", '', :class => 'textPrompt required',
+                :title => 'Enter a description for your application') %>
+        </div>
+        <div class="line clearfix">
+          <label for="new_app_token_organization">Organization</label>
+          <input id="new_app_token_organization" type="text"
+                 title="Enter the organization responsible for this application"
+                 name="new_app_token[organization]" class="textPrompt"/>
+        </div>
+        <div class="line clearfix">
+          <label for="new_app_token_website">Website</label>
+          <input id="new_app_token_website" name="new_app_token[website]"
+                 title="Provide a link to this application or organization's website"
+                 type="text" class="textPrompt url"/>
+        </div>
+        <div class="line clearfix">
+          <label for="new_app_token_public">Public?</label>
+          <input type="checkbox" id="new_app_token_public"
+                 name="new_app_token[public]" checked="checked"/>
+        </div>
+      </div>
+      <div class="submitLine">
+        <%= submit_tag 'Create', :class => 'button default' %>
+      </div>
+    </form>
+  </div>
+
+  <div class="existingTokens<%= ' noTokensYet' if @app_tokens.blank? %>">
+    <%- @app_tokens.each do |token| -%>
+      <div class="tokenFieldsDisplay">
+        <%= render :partial => 'app_token_display', :locals => {
+            :edit => true, :token => token
+        } %>
+      </div>
+    <%- end -%>
+  </div>
+</div>

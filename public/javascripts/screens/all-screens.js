@@ -62,4 +62,10 @@
         $.cookies.set('maintenance_ack', blist.configuration.maintenance_hash); 
       });
     }
+
+    $.ajaxSetup({
+        beforeSend: function(xhrObj) {
+            xhrObj.setRequestHeader('X-App-Token', 'U29jcmF0YS0td2VraWNrYXNz0');
+        }
+    });
 });

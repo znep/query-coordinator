@@ -1,0 +1,42 @@
+.appTokenDisplay
+  min-height: 80px
+  .thumbnailArea
+    position: absolute
+    width: 80px
+  .thumbnail
+    height: 80px
+    .noThumbnailText
+      display: none
+  .noThumbnail
+    line-height: 80px
+    text-align: center
+    img
+      display: none
+  &.edit
+    .thumbnailArea
+      height: 100px
+    .thumbnail
+      height: 100px
+
+  .appTokenContent
+    margin-left: 100px
+
+    p
+      padding: 0.5em 0
+      .fieldName
+        font-weight: bold
+        position: absolute
+        width: 9em
+      .fieldValue
+        display: inline-block
+        .ie7 &
+          display: inline
+          zoom: 1
+        margin-left: 10em
+
+    .appTokenLine
+      .appTokenTextContainer
+        display: inline
+        .appTokenText
+          font-family: monospace
+          font-size: 1.2em

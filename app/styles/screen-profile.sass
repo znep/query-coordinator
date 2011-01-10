@@ -68,6 +68,12 @@
           display: inline
           zoom: 1
 
+    &.appTokens
+      .fieldName
+        font-size: 1.2em
+      .fieldValue
+        font-size: 1.1em
+
     &.datasetsList
       h2
         float: left
@@ -178,20 +184,18 @@
     .textDisplay
       font-size: 1.2em
 
-    .basicInfo
+    .basicInfo, .appTokens
+      .innerContent
+        margin-left: 15em
       .subHeader
         color: #666
         display: block
         float: left
         width: 12em
-
-      .innerContent
-        margin-left: 15em
-
-        p
-          padding-top: 0.5em
-          &:first-child
-            padding-top: 0
+      p
+        padding-top: 0.5em
+        &:first-child
+          padding-top: 0
 
     .subscribeLink
       @include sprite-menu-icons

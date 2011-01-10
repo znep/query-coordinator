@@ -1,0 +1,51 @@
+<div class="appTokenDisplay<%= ' edit' if edit %>">
+  <%- if token.data['thumbnailSha'] -%>
+    <div class="thumbnail thumbnailArea">
+      <img src="<%= token.thumbnail_url %>" alt="thumbnail" />
+    </div>
+  <%- else -%>
+    <div class="noThumbnail thumbnailArea">
+      <%- if edit -%>
+        <img alt="thumbnail" />
+      <%- end -%>
+      <span class="noThumbnailText">
+        <em>No Thumbnail</em>
+      </span>
+    </div>
+  <%- end -%>
+  <%- if edit -%>
+  <%- end -%>
+  <div class="appTokenContent">
+    <%- ['name', 'description', 'organization', 'website'].each do |field| -%>
+      <%- if token.data[field].present? -%>
+        <p>
+          <span class="fieldName"><%= field.capitalize %></span>
+          <span class="fieldValue">
+            <%= raw(auto_link(h(token.data[field]))) %>
+          </span>
+        </p>
+      <%- end -%>
+    <%- end -%>
+    <%- if edit -%>
+      <p class="appTokenLine">
+        <span class="fieldName">App Token</span>
+        <span class="appTokenTextContainer fieldValue">
+          <span class="appTokenText"><%= token.app_token %></span>
+        </span>
+      </p>
+    <%- end -%>
+    <%- if edit -%>
+      <%= form_tag({:action => :delete_app_token, :token_id => token.id}) %>
+        <p class="actionsLine">
+          <%- unless params[:no_js].present? -%>
+            <%= link_to (token.thumbnail_url.present? ? 'Change' : 'Add') + ' Thumbnail',
+                token.set_thumbnail_url(current_user.id),
+                :class => 'button uploadAppTokenImage' %>
+          <%- end -%>
+          <%= submit_tag 'Delete', :class => 'button deleteTokenButton' %>
+          <span class="uploadIndicator"></span>
+        </p>
+      </form>
+    <%- end -%>
+  </div>
+</div>

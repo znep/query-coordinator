@@ -96,9 +96,11 @@ homepage-show:
 - screen-homepage-show
 profile-show:
 - screen-profile
+- screen-profile-shared
 - control-feed
 profile-edit:
 - screen-profile-edit
+- screen-profile-shared
 screen-nominations:
 - screen-nominations
 html-styles:

@@ -59,7 +59,7 @@ class ProfileController < ApplicationController
           SearchResult.search('views', base_req.merge(s[:params]), true)
         end
       end.each_with_index do |r, i|
-        p = JSON.parse(r['response'])
+        p = JSON.parse(r['response'], {:max_nesting => 25})
         @stat_displays << [stats[i][:name], p[0]['count']]
       end
     end

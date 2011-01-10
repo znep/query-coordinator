@@ -6,24 +6,14 @@ $(function()
         urlBase: '/api/views/' + blist.metrics.viewID +  '/balboa_metrics.json',
         chartSections:  [
             {id: 'performanceChart',
-                displayName: 'Performance',
                 loading: blist.metrics.chartLoading,
                 children: [
-                    {text: 'Bytes Out', series: [{method: 'bytes-out'}]},
-                    {text: 'Views Loaded', series: [{method: 'view-loaded'}]}
-                ]
-            },
-            {id: 'rowsChart',
-                displayName: 'Row Requests',
-                loading: blist.metrics.chartLoading,
-                children: [
+                    {text: 'Bytes Out',    series: [{method: 'bytes-out'}]},
+                    {text: 'Views Loaded', series: [{method: 'view-loaded'}]},
                     {text: 'Rows Loaded',
                      series: [{method: 'rows-loaded-api',     label: 'API'},
                               {method: 'rows-loaded-website', label: 'Website'},
-                              {method: 'rows-loaded-widget',  label: 'SDP'}]},
-                    {text: 'Rows Accessed',
-                     series: [{method: 'rows-accessed-website', label: 'Website'},
-                              {method: 'rows-accessed-widget',  label: 'SDP'}]}
+                              {method: 'rows-loaded-widget',  label: 'SDP'}]}
                 ]
             }
         ],
@@ -65,7 +55,7 @@ $(function()
             },
             {
                 id: 'topReferrers', displayName: 'Top Referrers',
-                heading: 'Hits', className: 'expanding', renderTo: 'rightColumn',
+                heading: 'Referrals', className: 'expanding', renderTo: 'rightColumn',
                 callback: blist.metrics.urlMapCallback, top: 'REFERRERS'
             }
         ]

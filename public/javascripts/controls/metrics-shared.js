@@ -2,6 +2,8 @@
 
 metricsNS.SERIES_KEY = 'data-series';
 metricsNS.DATA_KEY   = 'data-metrics';
+metricsNS.DATE_START = 'data-date-start';
+metricsNS.DATE_END   = 'data-date-end';
 metricsNS.SHOW_COUNT = 5;
 
 /*
@@ -123,7 +125,7 @@ metricsNS.topDatasetsCallback = function($context)
                     results.push({linkText: responseData.name,
                         value: value,
                         textValue: Highcharts.numberFormat(value, 0),
-                        href: new Dataset(responseData).url
+                        href: new Dataset(responseData).url + '/stats'
                     });
                 }
             });
@@ -203,10 +205,6 @@ metricsNS.summarySectionCallback = function($context)
     summaryCalculator('total', '-total');
     summaryCalculator('delta');
 
-    // Semi-hack: balboa returns _before_ this time period as 'total',
-    // but that really doesn't make much sense, so calculate the actual total
-    mappedData.total += mappedData.delta;
-
     summaryToolTip('total', 'through');
     summaryToolTip('delta', 'during');
 
@@ -248,15 +246,18 @@ metricsNS.renderSummarySection = function($context, data, directive, templateNam
 
 metricsNS.updateChartCallback = function($chart, sliceType, options)
 {
-    var data = $chart.data(metricsNS.DATA_KEY),
-        series = $chart.data(metricsNS.SERIES_KEY);
+    var data   = $chart.data(metricsNS.DATA_KEY),
+        series = $chart.data(metricsNS.SERIES_KEY),
+        start  = $chart.data(metricsNS.DATE_START),
+        end    = $chart.data(metricsNS.DATE_END);
 
     $chart.siblings('.loadingSpinner').hide();
 
     if (!$.isBlank(data) && data.length > 0)
     {
         $chart.parent().removeClass('noDataAvailable');
-        metricsNS.renderMetricsChart(data, $chart, sliceType, series, options);
+        metricsNS.renderMetricsChart(data, $chart,
+            start.getTime(), end.getTime(), sliceType, series, options);
     }
     else
     {

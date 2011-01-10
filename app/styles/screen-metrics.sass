@@ -9,26 +9,25 @@
       &:hover
         cursor: pointer
 
+  .chartContainer
     .sliceDepth
       width: 8em
-    div.selector.uniform
-      position: relative
-      top: 0.1em
-      .ie7 &
-        display: inline
-        top: -0.2em
+    .selector.uniform
+      float: right
 
   .chartArea
     clear: both
-    height: 25em
+    height: 35em
+    &.noDataAvailable
+      height: 7em
 
   .chartMenu
     cursor: pointer
-    float: right
     a.menuButton
       @include button
-      font-size: 1.2em
-      padding: 0.2em 0 0.4em 0.4em
+      font-size: 1.4em
+      font-weight: bold
+      padding: 0.4em 0 0.6em 0.7em
 
       .icon
         float: left
@@ -57,10 +56,11 @@
 
       .metricsTopContainer
         display: none
-        min-height: 22em
+        min-height: 10em
         &:last-child
           min-height: 0
         &.noDataAvailable
+          height: 8em
           .metricsList
             display: none
         .flash.message

@@ -2,11 +2,12 @@
 
 (function($)
 {
-    var fireSectionUpdate = function(section, $screen, urlBase, dateStr, type, slice)
+    var fireSectionUpdate = function(section, $screen, urlBase, startDate, endDate, interval, slice)
     {
         var $section = $screen.find('#' + section.id),
             series = $section.data(metricsNS.SERIES_KEY),
-            url = urlBase + '?date=' + dateStr + '&type=' + type;
+  // TODO: Change this when endDate is supported by core server
+            url = urlBase + '?date=' + startDate.format('m/d/Y') + '&type=' + interval;
 
         if (_.isFunction(section.loading))
         { section.loading($section); }
@@ -28,7 +29,10 @@
             url: url,
             success: function(data)
             {
-                $section.data(metricsNS.DATA_KEY, data)
+                $section
+                    .data(metricsNS.DATE_START, startDate)
+                    .data(metricsNS.DATE_END,   endDate)
+                    .data(metricsNS.DATA_KEY,   data)
                     .closest('.container').removeClass('metricsError');
                 if (_.isFunction(section.callback))
                 { section.callback($section, slice); }
@@ -66,11 +70,11 @@
     };
 
     var refreshData = function($screen, sections, opts,
-            currentDate, currentInterval, currentSlice)
+            currentStartDate, currentEndDate, currentInterval, currentSlice)
     {
         _.each(sections, function(section)
         { fireSectionUpdate(section, $screen, opts.urlBase,
-              currentDate, currentInterval, currentSlice); });
+              currentStartDate, currentEndDate, currentInterval, currentSlice); });
     };
 
     var expandTopSubSection = function(event)
@@ -93,7 +97,8 @@
             $screen         = $(this),
             currentInterval = null,
             currentSlice    = opts.initialSliceDepth,
-            currentStart    = null,
+            startDate       = null,
+            endDate         = null,
             chartSections   = mergeItems(opts.chartSections, opts.chartDefaults),
             detailSections  = mergeItems(opts.detailSections, opts.detailDefaults),
             summarySections = mergeItems(opts.summarySections, opts.summaryDefaults),
@@ -181,20 +186,25 @@
         });
 
         // Listen for a custom event to trigger data refresh
-        $screen.bind('metricsTimeChanged', function(event, newStart, newInterval, newSlice)
+        $screen.bind('metricsTimeChanged', function(event, newStartDate, newEndDate,
+              newInterval, newSlice)
         {
-            if (newStart != currentStart || newInterval != currentInterval)
-            {
-                refreshData($screen, sections, opts,
-                    newStart, newInterval, newSlice);
-            }
+            var sectionsToUpdate = null;
+            if (newStartDate != startDate || newEndDate != endDate ||
+                newInterval  != currentInterval)
+            { sectionsToUpdate = sections; }
             else if (newSlice != currentSlice)
+            { sectionsToUpdate = chartSections; }
+
+            if (sectionsToUpdate)
             {
-                refreshData($screen, chartSections, opts,
-                    newStart, newInterval, newSlice);
+                refreshData($screen, sectionsToUpdate, opts,
+                    newStartDate, newEndDate, newInterval, newSlice);
             }
+
             currentInterval = newInterval;
-            currentStart    = newStart;
+            startDate       = newStartDate;
+            endDate         = newEndDate;
             currentSlice    = newSlice;
         });
 
@@ -204,7 +214,7 @@
             if (newSlice != currentSlice)
             {
                 refreshData($screen, chartSections, opts,
-                    currentStart, currentInterval, newSlice);
+                    startDate, endDate, currentInterval, newSlice);
             }
             currentSlice = newSlice;
         });
@@ -242,7 +252,7 @@
             monthEnd   = today.toString(opts.parseDateFormat),
             $this      = $(this),
             $timeslice = $this.find('.currentTimeSlice'),
-            $slicer    = $this.find('.sliceDepth');
+            $slicer    = $('.sliceDepth');
 
         // We can't slice on weekly, but it's still a valid interval
         var sliceOptionForInterval = function(interval, start, end)
@@ -258,6 +268,7 @@
         {
             var parts     = value.split(opts.separator),
                 startDate = Date.parse(parts[0]),
+                endDate   = Date.parse(parts[1]),
                 interval  = 'Daily',
                 $sliceDepth = null;
 
@@ -270,8 +281,7 @@
             else
             {
                 // Now we get to revers engineer what kind of interval they selected
-                var starting = startDate.clone(),
-                    endDate = Date.parse(parts[1]);
+                var starting = startDate.clone();
 
                 if (starting.add({weeks: 1}).compareTo(endDate) > -1)
                 { interval = 'Weekly'; }
@@ -296,10 +306,8 @@
                 $.uniform.update($slicer);
             }
 
-            var newDate = startDate.format(opts.serverDateFormat);
-
             opts.metricsScreen.trigger('metricsTimeChanged',
-                [newDate, interval, $slicer.val().toUpperCase()]);
+                [startDate, endDate, interval, $slicer.val().toUpperCase()]);
         };
 
 
@@ -309,9 +317,13 @@
             doneButtonText: 'Apply',
             earliestDate: opts.minimumDate,
             latestDate: today,
-            onClose: function()
-            { updateDateParams($timeslice.val(), $slicer); },
-            rightAlign: $(window).width() - $timeslice.offset().left - $timeslice.outerWidth() - opts.xOffset,
+            onClose: function() {
+                _.defer(function() {
+                    updateDateParams($timeslice.val(), $slicer);
+                });
+            },
+            rightAlign: $(window).width() - $timeslice.offset().left -
+                $timeslice.outerWidth() - opts.xOffset,
             posY: $timeslice.offset().top + $timeslice.outerHeight() + opts.yOffset,
             rangeSplitter: opts.separator
         });
@@ -333,7 +345,6 @@
             '.chartContainer' : {
                 'chart <-' : {
                     '.chartContent@id' : 'chart.id',
-                    '.chartTitle' : 'chart.displayName'
                 }
             }
         },

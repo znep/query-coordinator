@@ -6,43 +6,33 @@ $(function()
         urlBase: '/api/site_metrics.json',
         chartSections:  [
             {id: 'performanceChart',
-                displayName: 'Performance',
                 loading: blist.metrics.chartLoading,
                 children: [
-                    {text: 'Bytes Out', series: [{method: 'bytes-out'}]},
+                    {text: 'Page Views',   series: [{method: 'page-views'}]},
+                    {text: 'Bytes Out',    series: [{method: 'bytes-out'}]},
                     {text: 'Views Loaded', series: [{method: 'view-loaded'}]},
-                    {text: 'Page Views', series: [{method: 'page-views'}]}
-                ]
-            },
-            {id: 'rowsChart',
-                displayName: 'Row Requests',
-                loading: blist.metrics.chartLoading,
-                children: [
                     {text: 'Rows Loaded',
                      series: [{method: 'rows-loaded-api',     label: 'API'},
                               {method: 'rows-loaded-website', label: 'Website'},
-                              {method: 'rows-loaded-widget',  label: 'SDP'}]},
-                    {text: 'Rows Accessed',
-                     series: [{method: 'rows-accessed-website', label: 'Website'},
-                              {method: 'rows-accessed-widget',  label: 'SDP'}]}
+                              {method: 'rows-loaded-widget',  label: 'SDP'}]}
                 ]
             }
         ],
         summarySections: [
             {
-                id: 'summaryDatasets',    displayName: 'Datasets',
+                id: 'summaryDatasets',    displayName: 'Total Datasets',
                 summary: {plus: 'datasets-created', minus: 'datasets-deleted',
                     verbPhrase: 'datasets created', verbPhraseSingular: 'dataset created'
                 }
             },
             {
-                id: 'summaryRows',        displayName: 'Rows',
+                id: 'summaryRows',        displayName: 'Total Rows',
                 summary: {plus: 'rows-created',     minus: 'rows-deleted',
                     verbPhrase: 'rows created', verbPhraseSingular: 'row created'
                 }
             },
             {
-                id: 'summaryVisits',      displayName: 'Visits',
+                id: 'summaryVisits',      displayName: 'Page Views',
                 summary: {plus: 'page-views', verbPhrase: 'pages viewed',
                     verbPhraseSingular: 'page viewed'
                 }
@@ -57,17 +47,17 @@ $(function()
         topListSections: [
             {
                 id: 'topDatasets', displayName: 'Top Datasets',
-                heading: 'Hits', renderTo: 'leftColumn',
+                heading: '', renderTo: 'leftColumn',
                 callback: blist.metrics.topDatasetsCallback,  top: 'DATASETS'
             },
             {
                 id: 'topReferrers', displayName: 'Top Referrers',
-                heading: 'Hits', className: 'expanding', renderTo: 'rightColumn',
+                heading: 'Referrals', className: 'expanding', renderTo: 'rightColumn',
                 callback: blist.metrics.urlMapCallback, top: 'REFERRERS'
             },
             {
                 id: 'topSearches', displayName: 'Top Search Terms',
-                heading: 'Searches', renderTo: 'leftColumn',
+                heading: 'Count', renderTo: 'leftColumn',
                 callback: function($context) {
                     blist.metrics.updateTopSearchesCallback($context, 'top-dataset-searches');
                 },  top: 'SEARCHES'

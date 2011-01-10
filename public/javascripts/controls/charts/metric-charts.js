@@ -6,13 +6,13 @@
  * @param series: a comma-separated list of series to plot
  */
 
-metricsNS.renderMetricsChart = function(data, $chart, sliceType, series, options)
+metricsNS.renderMetricsChart = function(data, $chart, startDate, endDate,
+    sliceType, series, options)
 {
     if (data.length < 1)
     { return; }
 
-    var startDate = data[0]['__start__'],
-        pointInterval = data[0]['__end__'] - data[0]['__start__'] + 1,
+    var pointInterval = data[0]['__end__'] - data[0]['__start__'] + 1,
         seriesDefaults = {
             lineWidth: 4,
             pointInterval: pointInterval,
@@ -35,6 +35,11 @@ metricsNS.renderMetricsChart = function(data, $chart, sliceType, series, options
             var ungappedData = [];
             var intervalEnd = 0;
 
+            for(var k = startDate; k < data[0]['__start__']; k += pointInterval)
+            {
+                ungappedData.push(0);
+            }
+
              _.each(data, function(row)
             {
                 if (intervalEnd > 0 &&
@@ -46,6 +51,11 @@ metricsNS.renderMetricsChart = function(data, $chart, sliceType, series, options
                 intervalEnd = row['__end__'];
                 ungappedData.push((row.metrics || {})[s.method] || 0);
             });
+
+            for(var k = intervalEnd; k < endDate; k += pointInterval)
+            {
+                ungappedData.push(0);
+            }
 
             var plot = $.extend({}, seriesDefaults, {
                 data: ungappedData,
@@ -66,8 +76,11 @@ metricsNS.renderMetricsChart = function(data, $chart, sliceType, series, options
     });
 
     // Kill off an existing chart if re-drawing to avoid leaks
-    if (!$.isBlank($chart.data('highchart')))
-    { $chart.data('highchart').destroy(); }
+    if (!$.isBlank($chart.data('highchart')) &&
+        _.isFunction($chart.data('highchart').destroy))
+    {
+        $chart.data('highchart').destroy();
+    }
 
     $chart.show();
 
@@ -111,7 +124,7 @@ metricsNS.tooltipFormats = {
 metricsNS.chartDefaults = {
     chart: {
         defaultSeriesType: 'area',
-        height: 250,
+        height: 350,
         margin: [20, 0, 30, 0],
         zoomType: 'x'
     },

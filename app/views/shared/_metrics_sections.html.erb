@@ -20,8 +20,10 @@
 
 <div class="metricsCharts">
   <div class="chartContainer">
+    <select class="sliceDepth" id="sliceDepth">
+      <%= options_for_select ['Hourly', 'Daily', 'Monthly', 'Yearly'] %>
+    </select>
     <div class="chartMenu menu"></div>
-    <h2 class="chartTitle"></h2>
     <div class="chartArea">
       <div class="chartContent"></div>
       <div class="loadingSpinner"></div>

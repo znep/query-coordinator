@@ -144,6 +144,8 @@ $(function()
         $('.uploadFilePane .uploadFileFormats').show();
         isBlobby = false;
 
+        $('.metadataForm .mapLayerMetadata').hide();
+
         $wizard.trigger('wizard-next');
     });
     $('.newKindList a.mapLayer').click(function(event)
@@ -162,6 +164,8 @@ $(function()
         $('.uploadFilePane .headline').text('Please choose a file to upload.');
         $('.uploadFilePane .uploadFileFormats').hide();
         isBlobby = true;
+
+        $('.metadataForm .mapLayerMetadata').hide();
 
         $wizard.trigger('wizard-next');
     });
@@ -249,12 +253,12 @@ $(function()
         rules: {
             "view[name]": "required",
             "view[attributionLink]": "customUrl",
-            "view[esri_url]": 'required customUrl'
+            "view[esri_src]": 'required customUrl'
         },
         messages: {
             "view[name]": "Dataset name is required.",
             "view[attributionLink]": "That does not appear to be a valid URL.",
-            'view[esri_url]': 'A valid ESRI map layer URL is required.'
+            'view[esri_src]': 'A valid ESRI map layer URL is required.'
         }
     });
 

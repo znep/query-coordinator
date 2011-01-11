@@ -192,7 +192,7 @@
             {
                 var column = blist.dataset.columnForID(findConditionComponent(child, 'columnId'));
                 child.metadata = {
-                    columnId: column.tableColumnId,
+                    tableColumnId: column.tableColumnId,
                     operator: child.children[0].value
                 };
                 var subcolumn = findConditionComponent(child, 'subcolumn');
@@ -991,6 +991,9 @@
         renderQueryFilters();
     };
 
+    var isEdit = _.include(['filter', 'grouped'], blist.dataset.type) &&
+        blist.dataset.hasRight('update_view');
+
     var configName = 'filter.unifiedFilter';
     var config = {
         name: configName,
@@ -998,6 +1001,16 @@
         title: 'Filter',
         subtitle: 'Filter the rows of this dataset based on their contents.',
         noReset: true,
+        onlyIf: function()
+        {
+            return isEdit ? blist.dataset.realColumns.length > 0 :
+                blist.dataset.visibleColumns.length > 0 && blist.dataset.valid;
+        },
+        disabledSubtitle: function()
+        {
+            return !blist.dataset.valid && !isEdit ? 'This view must be valid' :
+                'This view has no columns to filter';
+        },
         sections: [{
             customContent: {
                 template: 'filterPane',

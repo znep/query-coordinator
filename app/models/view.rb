@@ -439,7 +439,8 @@ class View < Model
 
 
   def users_with_grant(grant_type)
-    (grants || []).select {|g| !g.flag?('public') && g.type.downcase == grant_type}.
+    (grants || []).select {|g| !g.flag?('public') &&
+      (g.type || '').downcase == grant_type}.
       collect do |g|
         if !g.userId.nil?
           g.userId

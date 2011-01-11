@@ -148,8 +148,13 @@ class AdministrationController < ApplicationController
         return
       end
     else
-      views = View.find(:public_only => true, :limit => 10) # hopefully 10 will be enough?
-      @view = views.find{ |view| !view.is_alt_view? } || view.first unless views.nil?
+      views = View.find({ :public_only => true, :limit => 10 }, true) # hopefully 10 will be enough?
+      @view = views.find{ |view| !view.is_alt_view? } || views.first unless views.nil?
+    end
+
+    if @view.nil?
+      flash.now[:error] = 'Please create a dataset you can publish first'
+      return (render 'shared/error', :status => :invalid_request)
     end
 
     begin

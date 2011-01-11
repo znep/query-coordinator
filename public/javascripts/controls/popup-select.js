@@ -61,6 +61,7 @@
                 trigger: 'click'
             });
 
+            $this.data('popupSelect-tip', tip);
             popups[popupId] = {
                 opts: opts,
                 selectedItems: _.compact($.arrayify(opts.selectedItems)),

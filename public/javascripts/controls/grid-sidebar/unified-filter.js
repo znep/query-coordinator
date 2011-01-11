@@ -64,6 +64,9 @@
         return !$.isBlank(t.filterConditions) ? n : null;
     }));
 
+/////////////////////////////////////
+// BINDINGS
+
     var filterableColumns = blist.dataset.columnsForType(filterableTypes);
     blist.dataset.bind('columns_changed', function()
     {
@@ -104,6 +107,14 @@
         });
 
         if (needsParse) { parseFilters(); }
+    });
+
+    blist.dataset.bind('clear_temporary', function()
+    {
+        $pane
+            .find('.noFilterConditionsText').show()
+            .siblings().remove();
+        renderQueryFilters();
     });
 
 /////////////////////////////////////
@@ -179,14 +190,15 @@
         {
             if (_.isUndefined(child.metadata))
             {
+                var column = blist.dataset.columnForID(findConditionComponent(child, 'columnId'));
                 child.metadata = {
-                    columnId: blist.dataset.columnForID(findConditionComponent(child, 'columnId')).tableColumnId,
+                    columnId: column.tableColumnId,
                     operator: child.children[0].value
                 };
-                var subcolumn = findConditionComponent(condition, 'subcolumn');
-                if (subcolumn)
+                var subcolumn = findConditionComponent(child, 'subcolumn');
+                if (subcolumn && _.include(column.subColumnTypes || [], subcolumn)) // sanity check
                 {
-                    children.metadata.subcolumn = subcolumn;
+                    child.metadata.subcolumn = subcolumn;
                 }
             }
         });
@@ -273,7 +285,13 @@
             return null;
         }
 
-        return editor.currentValue();
+        var value = editor.currentValue();
+        if (_.isEmpty(value))
+        {
+            return null;
+        }
+
+        return value;
     };
 
     var scrubFilterOperators = function(operators)
@@ -331,44 +349,12 @@
         $pane.toggleClass('advanced', !!rootCondition.metadata.advanced);
         $pane.toggleClass('notAdvanced', !rootCondition.metadata.advanced);
 
-        // wire events
-        $pane.find('.advancedLine a').click(function(event)
-        {
-            event.preventDefault();
-            var isAdvanced = $(this).hasClass('advancedOnLink');
-            $pane.toggleClass('advanced', isAdvanced);
-            $pane.toggleClass('notAdvanced', !isAdvanced);
-            rootCondition.metadata.advanced = isAdvanced;
-        });
+        // set menu to current state
+        $('.mainFilterOptionsMenu .matchAnyOrAll').removeClass('checked')
+            .filter('[data-actionTarget=' + rootCondition.value + ']').addClass('checked');
 
         // data
         $pane.data('unifiedFilter-root', rootCondition);
-
-        // wire up main menu
-        $pane.find('.mainFilterOptionsMenu').menu({
-            additionalDataKeys: ['actionTarget'],
-            contents: [
-                { text: 'Match any condition', href: '#matchAny', actionTarget: 'OR',
-                  className: 'matchAnyOrAll' + (rootCondition.value == 'OR' ? ' checked' : '') },
-                { text: 'Match all conditions', href: '#matchAll', actionTarget: 'AND',
-                  className: 'matchAnyOrAll' + (rootCondition.value == 'AND' ? ' checked' : '') }
-            ],
-            menuButtonClass: 'filterOptionsMenuButton options',
-            menuButtonContents: ''
-        })
-            .find('.menuEntry a').click(function(event)
-            {
-                event.preventDefault();
-                var $this = $(this);
-                var $entry = $this.closest('.menuEntry');
-
-                rootCondition.value = $this.attr('data-actionTarget');
-
-                $entry.siblings('.matchAnyOrAll').removeClass('checked');
-                $entry.addClass('checked');
-
-                parseFilters();
-            });
 
         // now render each filter
         _.each(rootCondition.children || [], renderCondition);
@@ -402,6 +388,16 @@
                 $pane.find('.noFilterConditionsText').show();
             }
 
+            // before we can remove we have to destroy all bt's
+            $filter.find('.filterLink').each(function()
+            {
+                var tip = $(this).data('popupSelect-tip');
+                if (!_.isUndefined(tip))
+                {
+                    tip.destroy();
+                }
+            });
+
             $filter.remove();
             parseFilters();
         });
@@ -423,6 +419,7 @@
         $filter.find('.filterLink').click(function(event)
         {
             event.preventDefault();
+            event.stopPropagation();
         });
 
         // hook up popup menus
@@ -456,7 +453,8 @@
                 if (!_.include(_.pluck(newColumn.renderType.filterConditions, 'value'), metadata.operator))
                 {
                     // the column they'd like to select doesn't support the operator they've selected
-                    if (!confirm('Doing this will remove all values from your filter! Are you sure you wish to do this?'))
+                    if (!hasNoValues(condition) &&
+                        !confirm('Doing this will remove all values from your filter! Are you sure you wish to do this?'))
                     {
                         return false;
                     }
@@ -923,7 +921,8 @@
             // if we got a 'between?' value back on the filter, run some heuristics to determine
             // if equals is appropriate (eg low-cardinality); use between otherwise.
             // 5 is a somewhat arbitrary heuristic constant here
-            if (!_.isUndefined(column.cachedContents.top) &&
+            if (!_.isUndefined(column.cachedContents) &&
+                !_.isUndefined(column.cachedContents.top) &&
                 ((column.cachedContents.top.length < 20) ||
                  (_.select(column.cachedContents.top, function(v) { return v.count > 1; }).length > 5)))
             {
@@ -942,6 +941,41 @@
 
     var hookUpSidebarActions = function()
     {
+        // advanced toggle
+        $pane.find('.advancedLine a').click(function(event)
+        {
+            event.preventDefault();
+            var isAdvanced = $(this).hasClass('advancedOnLink');
+            $pane.toggleClass('advanced', isAdvanced);
+            $pane.toggleClass('notAdvanced', !isAdvanced);
+            $pane.data('unifiedFilter-root').metadata.advanced = isAdvanced;
+        });
+
+        // main menu
+        $pane.find('.mainFilterOptionsMenu').menu({
+            additionalDataKeys: ['actionTarget'],
+            contents: [
+                { text: 'Match any condition', href: '#matchAny', actionTarget: 'OR', className: 'matchAnyOrAll' },
+                { text: 'Match all conditions', href: '#matchAll', actionTarget: 'AND', className: 'matchAnyOrAll' }
+            ],
+            menuButtonClass: 'filterOptionsMenuButton options',
+            menuButtonContents: ''
+        })
+            .find('.menuEntry a').click(function(event)
+            {
+                event.preventDefault();
+                var $this = $(this);
+                var $entry = $this.closest('.menuEntry');
+
+                $pane.data('unifiedFilter-root').value = $this.attr('data-actionTarget');
+
+                $entry.siblings('.matchAnyOrAll').removeClass('checked');
+                $entry.addClass('checked');
+
+                parseFilters();
+            });
+
+        // add condition button
         $pane.find('.addFilterConditionButton').click(function(event)
         {
             event.preventDefault();
@@ -953,8 +987,8 @@
     var renderCallback = function($elem)
     {
         $pane = $elem;
-        renderQueryFilters();
         hookUpSidebarActions();
+        renderQueryFilters();
     };
 
     var configName = 'filter.unifiedFilter';

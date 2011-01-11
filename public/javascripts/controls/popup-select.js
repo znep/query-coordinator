@@ -115,17 +115,12 @@
             var $popup = $this.data('popupSelect-$popup');
             var $list = $popup.find('.popupSelectList');
 
-            var opts = popups[$popup.attr('data-popupid')].opts;
+            var data = popups[$popup.attr('data-popupid')];
 
-            var selectedItems = _.compact($.makeArray($list.children().map(function()
-            {
-                var $item = $(this);
-                return $item.hasClass('checked') ? items[$item.attr('data-itemid')] : null;
-            })));
+            var selectedItems = _.intersect(data.selectedItems, choices);
 
-            // now completely destroy and recreate the tip because BT is dumb
-            popups[$popup.attr('data-popupid')].tip.destroy();
-            $this.popupSelect($.extend({}, opts, {
+            // now completely recreate the tip because BT is dumb
+            $this.popupSelect($.extend({}, data.opts, {
                 choices: choices,
                 selectedItems: selectedItems
             }));

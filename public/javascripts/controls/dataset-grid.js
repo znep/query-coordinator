@@ -30,14 +30,11 @@
         defaults:
         {
             addColumnCallback: function(parentId) {},
-            autoHideClearFilterItem: true,
-            clearFilterItem: null,
             columnDeleteEnabled: false,
             columnNameEdit: false,
             columnPropertiesEnabled: false,
             editColumnCallback: function(columnId, parentId) {},
             editEnabled: true,
-            filterForm: null,
             manualResize: false,
             showRowHandle: false,
             showRowNumbers: true,
@@ -109,26 +106,6 @@
                     function(e) { rowMenuHandler(datasetObj, e); });
 
                 datasetObj.settings._model = $datasetGrid.blistModel();
-
-                if (datasetObj.settings.filterForm)
-                {
-                    datasetObj.settings.filterForm =
-                        $(datasetObj.settings.filterForm);
-                    datasetObj.settings.filterForm
-                        .submit(function (e) { filterFormSubmit(datasetObj, e); });
-                }
-                if (datasetObj.settings.clearFilterItem)
-                {
-                    datasetObj.settings.clearFilterItem =
-                        $(datasetObj.settings.clearFilterItem);
-                    datasetObj.settings.clearFilterItem
-                        .click(function (e)
-                            { datasetObj.clearFilterInput(e, true); });
-                    datasetObj.settings.view.bind('clear_temporary', function()
-                        { datasetObj.clearFilterInput(); });
-                    if (datasetObj.settings.autoHideClearFilterItem)
-                    { datasetObj.settings.clearFilterItem.hide(); }
-                }
             },
 
             $dom: function()
@@ -332,24 +309,6 @@
                 }
             },
 
-            clearFilterInput: function(e, clearView)
-            {
-                var datasetObj = this;
-                if ($(datasetObj.currentGrid).closest('body').length < 1)
-                {
-                    return;
-                }
-
-                if (!$.isBlank(e)) { e.preventDefault(); }
-                if (datasetObj.settings.filterForm)
-                { datasetObj.settings.filterForm.find(':input').val('').blur(); }
-                if (datasetObj.settings.autoHideClearFilterItem)
-                { datasetObj.settings.clearFilterItem.hide(); }
-
-                if (clearView)
-                { datasetObj.settings.view.update({searchString: null}); }
-            },
-
             /* Disables all normal interactions other than scrolling and hover
              * (view-only for data) */
             disable: function()
@@ -549,8 +508,7 @@
                 break;
 
             case 'view-row':
-                $(document).trigger(blist.events.DISPLAY_ROW,
-                    [datasetObj.settings.view.rowForID(rowId).index]);
+                $(document).trigger(blist.events.DISPLAY_ROW, [rowId]);
                 break;
         }
     };
@@ -575,29 +533,6 @@
             event.preventDefault();
             // Display the add column dialog.
             datasetObj.settings.addColumnCallback(column.id);
-        }
-    };
-
-    var filterFormSubmit = function (datasetObj, e)
-    {
-        e.preventDefault();
-
-        if ($(datasetObj.currentGrid).closest('body').length < 1)
-        {
-            return;
-        }
-
-        var searchText = $(e.currentTarget).find(':input').val();
-        datasetObj.settings.view.update({searchString: searchText});
-        if (!searchText || searchText === '')
-        {
-            if (datasetObj.settings.autoHideClearFilterItem)
-            { datasetObj.settings.clearFilterItem.hide(); }
-        }
-        else
-        {
-            if (datasetObj.settings.autoHideClearFilterItem)
-            { datasetObj.settings.clearFilterItem.show(); }
         }
     };
 

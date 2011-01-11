@@ -63,8 +63,8 @@
                 });
                 prtObj.$dom().bind('hide', function() { prtObj._shown = false; });
 
-                $(document).bind(blist.events.DISPLAY_ROW, function(e, rowIndex)
-                        { prtObj.navigation.displayPage(rowIndex); });
+                $(document).bind(blist.events.DISPLAY_ROW, function(e, rowId)
+                        { prtObj.displayRowByID(rowId); });
             },
 
             $dom: function()

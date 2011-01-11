@@ -1,5 +1,3 @@
-# This defines the default tabular display.  The actual code for the display is spread throughout the view layer
-# because tables require deeper integration than other displays.
 class Displays::Blob < Displays::Base
     def initialize(view)
         super
@@ -21,11 +19,11 @@ class Displays::Blob < Displays::Base
           'displays/download_file'
         end
     end
-    
+
     def required_style_links
       ['blists-blob-screen']
     end
-    
+
     def scrolls_inline?
       @display_type == 'google_viewer'
     end

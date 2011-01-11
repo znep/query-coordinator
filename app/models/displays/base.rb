@@ -38,7 +38,7 @@ class Displays::Base
     # Does the display scroll inline?  Return false to disable default management of the display container's size
     def scrolls_inline?
       # !! DEPRECATED !! This is only used in the embed code now. The rest is handled
-      # in JS, see $.fn.socrataView
+      # in JS, see $.fn.renderTypeManager
       true
     end
 
@@ -90,14 +90,12 @@ class Displays::Base
 blist.assets = #{ASSET_MAP.javascripts};
 $(function()
 {
-    blist.$display = $('##{target_dom_id}');
+    blist.$container = $('##{target_dom_id}');
 
     blist.dataset.bind('start_request', function()
         { $('.mainSpinner.loadingSpinnerContainer').removeClass('hide'); })
     .bind('finish_request', function()
         { $('.mainSpinner.loadingSpinnerContainer').addClass('hide'); });
-
-    blist.$display.socrataView({view: blist.dataset});
 });
 blist.namespace.fetch('blist.configuration');
 blist.configuration.development = #{Rails.env.development?};
@@ -124,12 +122,6 @@ END
     # Name of partial to render if you don't want to write all your HTML in strings
     def render_partial
       return nil
-    end
-
-    # Render the body of the view as HTML.  Context is the "self" for the view in which the display is embedded.  You
-    # can use this to render partials if so desired.
-    def render_body(context)
-      return ''
     end
 
     protected

@@ -182,7 +182,7 @@ blist.widget.showDataView = function()
     if ($('.widgetContentGrid').is(':visible'))
     { return; }
 
-    $('.widgetContent > :visible:first').trigger('hide').fadeOut(200,
+    $('.widgetContent > :visible:first').fadeOut(200,
         function()
         {
             $('.widgetContentGrid').fadeIn(200);
@@ -286,18 +286,25 @@ $(function()
             }
         });
 
+    // Hook up search form
+    var $searchForm = $('.toolbar .toolbarSearchForm');
+
+    $searchForm.submit(function (e)
+    {
+        e.preventDefault();
+        var searchText = $(e.currentTarget).find(':input').val();
+        blist.dataset.update({searchString: searchText});
+    });
+
     // toolbar
     var $toolbar = $('.toolbar');
     $('.toolbar .close').click(function(event)
     {
+        event.preventDefault();
         if ($toolbar.hasClass('search'))
         {
-            $dataGrid.datasetGrid().clearFilterInput(event);
-        }
-        else
-        {
-            // default has already been prevented for search
-            event.preventDefault();
+            $searchForm.find(':input').val('').blur();
+            blist.dataset.update({searchString: null});
         }
 
         if ($toolbar.hasClass('closePane'))
@@ -438,32 +445,30 @@ $(function()
         value: blist.dataset.averageRating || 0
     });
 
-    // grid
-    var $dataGrid = $('#data-grid');
-    if (blist.dataset.isGrid() && $dataGrid.length > 0)
-    {
-        blist.configuration._needsInitGrid = true;
-        blist.common.initGrid = function() {
-            $dataGrid
-                .datasetGrid({view: blist.dataset,
-                    showRowNumbers: widgetNS.theme['grid']['row_numbers'],
-                    showRowHandle: widgetNS.theme['grid']['row_numbers'],
-                    editEnabled: false,
-                    manualResize: true,
-                    columnNameEdit: false,
-                    filterForm: '.toolbar .toolbarSearchForm',
-                    autoHideClearFilterItem: false
-                });
-        };
-    }
+    // Initialize all data rendering (but page is handled separately)
+    blist.$container.renderTypeManager({view: blist.dataset,
+        editEnabled: false,
+        table: {
+            showRowNumbers: widgetNS.theme['grid']['row_numbers'],
+            showRowHandle: widgetNS.theme['grid']['row_numbers'],
+            manualResize: true
+        }
+    });
+    var $dataGrid = blist.$container.renderTypeManager().$domForType('table');
 
     // Page render type
-    $('#pageRenderType').pageRenderType({ view: blist.dataset });
+    var prevType;
+    $('#pageRenderType > .fullView').click(function(e)
+    {
+        e.preventDefault();
+        blist.$container.renderTypeManager().show(prevType);
+    });
+
     $(document).bind(blist.events.DISPLAY_ROW, function()
-        {
-            $('#pageRenderType').trigger('show');
-            widgetNS.showPane('pageRenderType', 'Row View');
-        });
+    {
+        prevType = blist.$container.renderTypeManager().currentType;
+        blist.$container.renderTypeManager().show('page');
+    });
 
 
     // more views

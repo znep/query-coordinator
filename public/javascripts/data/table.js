@@ -4134,7 +4134,7 @@
                             updateRowSelection(rows);
                             end("selectionChange");
                         })
-                    .bind('refresh', function()
+                    .bind('show', function()
                         {
                             initMeta();
                             renderHeader();

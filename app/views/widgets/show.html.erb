@@ -26,12 +26,12 @@
 
   <div class="widgetContent">
     <div class="widgetContentSection widgetContentGrid">
-      <div class="gridContainer">
+      <div id='renderTypeContainer' class="gridContainer">
           <div class='mainSpinner loadingSpinnerContainer hide'>
             <div class='loadingSpinner'></div>
           </div>
 
-          <div id="data-grid" class='fullHeight'>
+          <div id='gridRenderType' class='fullHeight renderTypeNode hide'>
             <%- if @view.is_tabular? && @view.display.valid? -%>
               <noscript>
                 <h3><a href="<%= @view.href %>"><%= @view.name %></a></h3>
@@ -45,11 +45,37 @@
                 <%- end -%>
               </noscript>
             <%- end -%>
+          </div>
 
+          <div id='staticRenderType' class='fullHeight renderTypeNode hide'>
             <%- if @display.can_publish? -%>
-              <%= raw @display.render_body(self) %>
               <%= render(:partial => @display.render_partial) %>
             <%- end -%>
+          </div>
+
+          <div id='pageRenderType'
+            class='pageRenderType navRenderType fullHeight renderTypeNode hide'>
+            <a href='#ShowFullView' class='fullView'>View all the data</a>
+            <div class='content'></div>
+            <ul class='navigation'>
+              <li><a href='#start' title='View first row' class='start button'>
+                <span class='icon'></span>
+              </a></li>
+              <li><a href='#previous' title='View previous row'
+                class='previous button'>
+                <span class='icon'></span>
+              </a></li>
+              <li class='info'>
+              Viewing row <span class='curPage'></span> of <span
+                class='totalPages'></span>
+              </li>
+              <li><a href='#next' title='View next row' class='next button'>
+                <span class='icon'></span>
+              </a></li>
+              <li><a href='#end' title='View last row' class='end button'>
+                <span class='icon'></span>
+              </a></li>
+            </ul>
           </div>
 
           <div class='viewErrorContainer content'>
@@ -64,30 +90,6 @@
             <%- end -%>
           </div>
       </div>
-    </div>
-
-    <div id='pageRenderType'
-      class='pageRenderType navRenderType widgetContentSection widgetContent_pageRenderType'>
-      <div class='content'></div>
-      <ul class='navigation'>
-        <li><a href='#start' title='View first row' class='start button'>
-          <span class='icon'></span>
-        </a></li>
-        <li><a href='#previous' title='View previous row'
-          class='previous button'>
-          <span class='icon'></span>
-        </a></li>
-        <li class='info'>
-        Viewing row <span class='curPage'></span> of <span
-          class='totalPages'></span>
-        </li>
-        <li><a href='#next' title='View next row' class='next button'>
-          <span class='icon'></span>
-        </a></li>
-        <li><a href='#end' title='View last row' class='end button'>
-          <span class='icon'></span>
-        </a></li>
-      </ul>
     </div>
 
     <div class="widgetContentSection widgetContent_views"></div>
@@ -176,7 +178,7 @@
 
 <% content_for :js_footer do %>
   <script type="text/javascript">
-    <%= raw @display.render_inline_setup_js('data-grid', self) %>
+    <%= raw @display.render_inline_setup_js('renderTypeContainer', self) %>
     blist.namespace.fetch('blist.widget');
     <%- if !current_user.nil? -%>
       blist.currentUserId = "<%= current_user.id %>";

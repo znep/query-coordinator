@@ -108,8 +108,8 @@
             {
                 var chartObj = this;
                 if (!chartObj.chart || !chartObj.chart.canvas) { return; }
-                chartObj.chart.canvas.resize(blist.$display.width(),
-                                             blist.$display.height());
+                chartObj.chart.canvas.resize(chartObj.$dom().width(),
+                                             chartObj.$dom().height());
             },
 
             getRequiredJavascripts: function()

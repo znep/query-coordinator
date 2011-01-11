@@ -6,21 +6,7 @@
 <script type="text/javascript">
     $(function()
     {
-        var embedHTML;
-        if ('<%= @view.blobMimeType %>'.indexOf('application/pdf') !== -1 && $.browser.msie)
-        {
-            embedHTML = '<object data="<%= blob_location %>" type="application/pdf" ' +
-                'classid="clsid:CA8A9780-280D-11CF-A24D-444553540000" ' +
-                'width="100%" height="99%"></object>';
-        }
-        else
-        {
-            embedHTML = '<iframe id="blobIFrame" src="http://docs.google.com/gview?url=<%= blob_location %>' +
-                '&embedded=true" width="100%" height="99%" frameborder="0" scrolling="no"></iframe>';
-        }
-
-        _.defer(function(){
-            blist.$display.html(embedHTML);
-        });
+        blist.renderTypes = blist.renderTypes || {};
+        blist.renderTypes.blob = { href: '<%= blob_location %>' };
     });
 </script>

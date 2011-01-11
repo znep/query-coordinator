@@ -128,7 +128,7 @@
                     }
                 });
 
-                mapObj._origData = {valid: mapObj.settings.view.valid,
+                mapObj._origData = {
                     displayFormat: mapObj.settings.view.displayFormat,
                     mapType: mapObj.settings.view.displayFormat.type,
                     plotStyle: mapObj.settings.view.displayFormat.plotStyle,
@@ -201,8 +201,7 @@
             {
                 var od = this._origData || {};
                 var view = this.settings.view;
-                return view.valid !== od.valid ||
-                    view.displayFormat.type != od.mapType ||
+                return view.displayFormat.type != od.mapType ||
                     view.displayFormat.plotStyle != od.plotStyle ||
                     !_.isEqual(view.displayFormat.layers,
                             od.layers);
@@ -365,10 +364,10 @@
                         longVal = loc.x;
                     }
                 }
-                else if (!_.isUndefined(mapObj._locCol))
+                else if (!$.isBlank(mapObj._locCol))
                 {
                     var loc = row[mapObj._locCol.id];
-                    if (_.isNull(loc)) { return true; }
+                    if ($.isBlank(loc)) { return true; }
                     lat = parseFloat(loc.latitude);
                     longVal = parseFloat(loc.longitude);
                 }

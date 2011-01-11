@@ -57,9 +57,16 @@
       <li>
         <%- if @view.is_tabular? && !@view.is_form? -%>
         <ul id='renderTypeOptions' class="pillButtons">
+          <%- if @view.is_alt_view? -%>
           <li><a href='<%= @view.href %>'
             class='main <%= @view.display.type %> noRedirPrompt'
-            title='View as <%= @view.display.name.downcase %>'>
+            title='View as a <%= @view.display.name.downcase %>'>
+            <span class='icon'></span>
+          </a></li>
+          <%- end -%>
+          <li><a href='<%= @view.href %>?defaultRender=table'
+            class='<%= @view.is_alt_view? ?
+              '' : 'main' %> filter table noRedirPrompt' title='View as a grid'>
             <span class='icon'></span>
           </a></li>
           <li><a href='<%= @view.href %>?defaultRender=richList'
@@ -76,7 +83,7 @@
       <li>
         <div id='shareMenu' class='share menu'></div>
       </li>
-      <%- unless @view.is_alt_view? -%>
+      <%- if @view.is_tabular? -%>
       <li>
         <form id="searchForm" action="#">
           <span class="icon"></span>
@@ -96,7 +103,7 @@
   <%- sidebar_position = (!sidebar_config.nil? ?
     sidebar_config.properties.position : nil) || 'right' -%>
   <div id='actionBar' class='clearfix position-<%= sidebar_position %>'>
-    <%- if @view.can_edit? && !@view.is_alt_view? -%>
+    <%- if @view.can_edit? -%>
     <div id='editBar' class='clearfix'>
       <ul id='editOptions'>
         <li><a href='#Undo' class='button undo' title='Undo'>
@@ -165,7 +172,7 @@
 </div>
 
 <div class='outerContainer'>
-  <div class='innerContainer'>
+  <div id='renderTypeContainer' class='innerContainer'>
     <div class="aboutLoad">
       <%= render :partial => 'about_dataset' %>
       <%- if @view.is_tabular? && !@view.is_form? && @view.display.valid? -%>
@@ -203,14 +210,13 @@
       <%- end -%>
     </div>
 
-    <div id='mainGrid' class='fullHeight'>
-      <%= raw @view.display.render_body(self) %>
+    <div id='staticRenderType' class='fullHeight renderTypeNode hide'>
       <%= render(:partial => @view.display.render_partial) %>
     </div>
 
     <%- if @view.is_tabular? && !@view.is_form? -%>
     <div id='fatRowRenderType'
-      class='fatRowRenderType navRenderType fullHeight hide'>
+      class='fatRowRenderType navRenderType renderTypeNode fullHeight hide'>
       <div class='columnHeaders'></div>
       <div class='rowList'></div>
       <ul class='navigation'>
@@ -239,8 +245,8 @@
       </div>
     </div>
 
-    <div id='pageRenderType' class='pageRenderType navRenderType fullHeight
-      <%= @row.nil? ? 'hide' : '' %>'>
+    <div id='pageRenderType' class='pageRenderType navRenderType renderTypeNode
+      fullHeight hide'>
       <div class='content'>
         <%- if !@row.nil? -%>
         <div class='pageColumn'>
@@ -472,7 +478,7 @@
 
 <% content_for :js_footer do %>
   <script type="text/javascript">
-    <%= raw @view.display.render_inline_setup_js('mainGrid', self) %>
+    <%= raw @view.display.render_inline_setup_js('renderTypeContainer', self) %>
 
     <%- if !current_user.nil? -%>
       blist.currentUserId = '<%= current_user.id %>';

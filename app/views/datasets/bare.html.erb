@@ -9,9 +9,10 @@
   </head>
   <body>
     <div class="outerContainer">
-      <div id="mainGrid">
-        <%= raw @view.display.render_body(self) %>
-        <%= render :partial => @view.display.render_partial %>
+      <div id="renderTypeContainer">
+        <div id='staticRenderType' class='fullHeight renderTypeNode hide'>
+          <%= render :partial => @view.display.render_partial %>
+        </div>
       </div>
     </div>
 
@@ -30,12 +31,8 @@
       blist.snapshot.forcedTimeout = <%= @snapshot_timeout.to_i %>;
       <%- end -%>
 
-      <%= raw @view.display.render_inline_setup_js('mainGrid', self) %>
+      <%= raw @view.display.render_inline_setup_js('renderTypeContainer', self) %>
     </script>
-
-    <%- if @view.display.is_a? (Displays::Chart) -%>
-      <%= javascript_include_tag 'plugins/highcharts.exporting.src' %>
-    <%- end -%>
 
     <%= include_javascripts 'screen-bare-dataset' %>
   </body>

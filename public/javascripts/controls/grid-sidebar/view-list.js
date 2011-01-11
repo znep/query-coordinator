@@ -121,7 +121,10 @@
                 if (v.id == blist.dataset.id)
                 { $li.addClass('current'); }
 
-                $li.expander({ contentSelector: '.description' });
+                // Need to wait until this is visible so the height measures
+                // correctly
+                _.defer(function()
+                    { $li.expander({ contentSelector: '.description' }); });
 
                 $ul.append($li);
             });

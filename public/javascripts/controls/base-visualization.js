@@ -33,7 +33,14 @@
                 var $mainDom = $(currentObj.currentDom);
                 $mainDom.data("socrataVisualization", currentObj);
 
-                $mainDom.resize(function(e) { doResize(currentObj, e); });
+                $mainDom.resize(function(e) { doResize(currentObj, e); })
+                    .bind('hide', function() { currentObj._hidden = true; })
+                    .bind('show', function()
+                    {
+                        delete currentObj._hidden;
+                        if (currentObj._needsReload)
+                        { currentObj.reload(); }
+                    });
 
                 var $domObj = currentObj.$dom();
                 if ($domObj.siblings('#vizError').length < 1)
@@ -41,13 +48,6 @@
                 $domObj.siblings('#vizError').hide();
 
                 currentObj._maxRows = 500;
-
-                if (!currentObj.settings.view.valid)
-                {
-                    currentObj._invalid = true;
-                    currentObj.ready();
-                    return;
-                }
 
                 currentObj.loadLibraries();
             },
@@ -110,8 +110,9 @@
                 {
                     vizObj.settings.view
                         .bind('query_change', handleQueryChange)
-                        .bind('displayformat_change', handleChange)
-                        .bind('valid', handleChange);
+                        .bind('row_change', handleChange)
+                        .bind('displayformat_change', handleChange);
+
                     vizObj._boundViewEvents = true;
                 }
 
@@ -121,6 +122,13 @@
             reload: function()
             {
                 var vizObj = this;
+                if (vizObj._hidden)
+                {
+                    vizObj._needsReload = true;
+                    return;
+                }
+                delete vizObj._needsReload;
+
                 if (vizObj.needsPageRefresh())
                 {
                     window.location.reload();
@@ -136,12 +144,6 @@
 
                 vizObj.$dom().siblings('#vizError').hide().text('');
 
-                if (!vizObj.settings.view.valid)
-                {
-                    delete vizObj._pendingReload;
-                    return;
-                }
-
                 if (!vizObj._requireRowReload && vizObj.noReload())
                 {
                     vizObj.reloadSpecialCases();
@@ -151,30 +153,22 @@
                 if (vizObj._requireRowReload)
                 { delete vizObj._requireRowReload; }
 
-                if (vizObj._invalid)
-                {
-                    delete vizObj._invalid;
-                    vizObj.loadLibraries();
-                }
-                else
-                {
-                    vizObj.reloadVisualization();
+                vizObj.reloadVisualization();
 
-                    vizObj.settings.view.getRows(0, vizObj._maxRows,
-                        function()
-                        {
-                            // Use a defer so that if the rows are already loaded,
-                            // getColumns has a chance to run first
-                            var args = arguments;
-                            _.defer(function()
-                            { vizObj.handleRowsLoaded.apply(vizObj, args); });
-                        });
-
-                    if (vizObj.getColumns())
+                vizObj.settings.view.getRows(0, vizObj._maxRows,
+                    function()
                     {
-                        vizObj.columnsLoaded();
-                        vizObj.ready();
-                    }
+                        // Use a defer so that if the rows are already loaded,
+                        // getColumns has a chance to run first
+                        var args = arguments;
+                        _.defer(function()
+                        { vizObj.handleRowsLoaded.apply(vizObj, args); });
+                    });
+
+                if (vizObj.getColumns())
+                {
+                    vizObj.columnsLoaded();
+                    vizObj.ready();
                 }
             },
 

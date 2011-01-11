@@ -19,9 +19,11 @@ blistCommonNS.formInliner = function(event)
 {
     $.fn.downloadToFormCatcher = function()
     {
-        if (! _.isUndefined(blist.$display.datasetGrid))
+        if (! _.isUndefined(blist.$container.renderTypeManager()
+            .$domForType('table').datasetGrid))
         {
-            var dsGrid = blist.$display.datasetGrid();
+            var dsGrid = blist.$container.renderTypeManager()
+                .$domForType('table').datasetGrid();
 
             return this.each(function()
             {
@@ -39,7 +41,8 @@ blistCommonNS.formInliner = function(event)
                         .attr('ACTION', href)
                         .attr('method', 'post');
 
-                    blist.$display.append($form);
+                    blist.$container.renderTypeManager()
+                        .$domForType('table').append($form);
                     $form.bind('submit', blistCommonNS.formInliner);
                     $form.submit();
                 });

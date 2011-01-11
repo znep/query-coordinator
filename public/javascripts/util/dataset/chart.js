@@ -106,6 +106,7 @@ Dataset.modules['visualization'] =
 
         var ct = view.displayFormat.chartType || view.displayType;
         view.displayFormat.chartType = legacyTypes[ct] || ct;
+        view.displayType = 'chart';
 
         if ($.isBlank(view.displayFormat.dataColumns) &&
             $.isBlank(view.displayFormat.fixedColumns) &&

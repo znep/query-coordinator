@@ -156,9 +156,9 @@
                     google.maps.event.addListener(polygon, 'click', function()
                     { window.open(feature.attributes.redirect_to); });
                     google.maps.event.addListener(polygon, 'mouseover', function()
-                    { blist.$display.find('div .container').css('cursor', 'pointer'); });
+                    { mapObj.$dom().find('div .container').css('cursor', 'pointer'); });
                     google.maps.event.addListener(polygon, 'mouseout', function()
-                    { blist.$display.find('div .container').css('cursor', 'default'); });
+                    { mapObj.$dom().find('div .container').css('cursor', 'default'); });
                 }
                 polygon.setMap(mapObj.map);
                 mapObj._markers[feature.attributes['NAME']] = polygon;

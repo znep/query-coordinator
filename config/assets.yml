@@ -99,6 +99,11 @@ javascripts:
     - public/javascripts/controls/charts/base-chart.js
     - public/javascripts/controls/charts/highcharts.js
     - public/javascripts/controls/charts/jit.js
+  shared-richRenderers:
+    - public/javascripts/controls/navigation.js
+    - public/javascripts/controls/rich-render-library.js
+    - public/javascripts/controls/fatrow-render-type.js
+    - public/javascripts/controls/page-render-type.js
   admin-select-dataset:
     - public/javascripts/screens/admin-select-dataset.js
   admin-datasets:
@@ -183,12 +188,9 @@ javascripts:
     - public/javascripts/controls/dataset-controls.js
     - public/javascripts/controls/stars.js
     - public/javascripts/controls/menu.js
-    - public/javascripts/controls/navigation.js
-    - public/javascripts/controls/rich-render-library.js
-    - public/javascripts/controls/page-render-type.js
     - public/javascripts/controls/scrollTabs.js
     - public/javascripts/controls/form-inliner.js
-    - public/javascripts/controls/view-loader.js
+    - public/javascripts/controls/render-type-manager.js
     - public/javascripts/screens/widget.js
   dataset-new:
     - public/javascripts/util/serialize.js
@@ -244,12 +246,8 @@ javascripts:
     - public/javascripts/controls/embed-form.js
     - public/javascripts/controls/full-screen.js
     - public/javascripts/controls/format-options.js
-    - public/javascripts/controls/navigation.js
-    - public/javascripts/controls/rich-render-library.js
-    - public/javascripts/controls/fatrow-render-type.js
-    - public/javascripts/controls/page-render-type.js
     - public/javascripts/controls/pill-buttons.js
-    - public/javascripts/controls/view-loader.js
+    - public/javascripts/controls/render-type-manager.js
     - public/javascripts/screens/dataset-show.js
   dataset-edit-metadata:
     - public/javascripts/plugins/ajaxupload.js
@@ -274,7 +272,7 @@ javascripts:
     - public/javascripts/util/humane-date.js
     - public/javascripts/controls/full-screen.js
     - public/javascripts/plugins/lab.js
-    - public/javascripts/controls/view-loader.js
+    - public/javascripts/controls/render-type-manager.js
     - public/javascripts/screens/dataset-bare.js
   shared-metrics:
     - public/javascripts/plugins/daterangepicker.jquery.js
@@ -304,6 +302,7 @@ dump:
     - shared-chart
     - shared-map
     - shared-table-render
+    - shared-richRenderers
 
 stylesheets:
   grid-sidebar:

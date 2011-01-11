@@ -24,77 +24,7 @@ blist.datasetPage.updateValidView = function()
 {
     $('.invalidView').removeClass('invalidView');
     datasetPageNS.sidebar.updateEnabledSubPanes();
-    datasetPageNS.initGrid();
 };
-
-blist.datasetPage.showDefaultRenderType = function()
-{
-    if (!_.any(datasetPageNS.$renderTypes, function($rt)
-        { return $rt.is(':visible'); })) { return; }
-
-    _.each(datasetPageNS.$renderTypes, function($rt)
-    {
-        $rt.addClass('hide');
-        $rt.trigger('hide');
-    });
-    $('body').removeClass('richRenderType');
-    $(window).resize();
-    // If initially loaded page view, the grid hasn't been rendered yet
-    datasetPageNS.initGrid();
-    // If the grid is already loaded, need to force a refresh in case
-    // things changed while we were gone
-    datasetPageNS.$dataGrid.trigger('refresh');
-
-    $('#renderTypeOptions li a').removeClass('active');
-    $('#renderTypeOptions li .main').addClass('active');
-};
-
-blist.datasetPage.showRenderType = function(renderType)
-{
-    if (datasetPageNS.$renderTypes[renderType].is(':visible')) { return; }
-    _.each(datasetPageNS.$renderTypes, function($rt) { $rt.addClass('hide'); });
-    datasetPageNS.$renderTypes[renderType].removeClass('hide');
-    datasetPageNS.$renderTypes[renderType].trigger('show');
-    $('body').addClass('richRenderType');
-    $(window).resize();
-
-    $('#renderTypeOptions li a').removeClass('active');
-    $('#renderTypeOptions li .' + renderType).addClass('active');
-};
-
-blist.datasetPage.initGrid = function()
-{
-    if (datasetPageNS.gridInitialized || !blist.dataset.isGrid() ||
-        !blist.dataset.valid) { return; }
-
-    datasetPageNS.$dataGrid
-        .datasetGrid({view: blist.dataset,
-            columnDeleteEnabled: blist.dataset.type == 'blist' &&
-                blist.dataset.hasRight('remove_column'),
-            columnPropertiesEnabled: true,
-            columnNameEdit: blist.dataset.type == 'blist' &&
-                blist.dataset.hasRight('update_column'),
-            showAddColumns: blist.dataset.type == 'blist' &&
-                blist.dataset.hasRight('add_column'),
-            manualResize: true, showRowHandle: true,
-            filterForm: '#searchForm', clearFilterItem: '#searchForm .clearSearch',
-            addColumnCallback: function(parId)
-            {
-                datasetPageNS.sidebar.show('edit.addColumn', {parentId: parId});
-            },
-            editColumnCallback: function(colId, parId)
-            {
-                var col = blist.dataset.columnForID(colId) ||
-                    blist.dataset.columnForID(parId);
-                if (col.id != colId) { col = col.childColumnForID(colId); }
-
-                datasetPageNS.sidebar.hide();
-                datasetPageNS.sidebar.show('columnProperties', col);
-            }
-        });
-    datasetPageNS.gridInitialized = true;
-};
-
 
 
 (function($)
@@ -116,74 +46,72 @@ $(function()
 
     $('.outerContainer').fullScreen();
 
-
-    var defRen = $.urlParam(window.location.href, 'defaultRender');
-    var isPageRT = !$.isBlank(blist.initialRowId) || defRen == 'page';
-    var isFatRowRT = defRen == 'richList';
-    var isAltRT = isPageRT || isFatRowRT;
-    if ($('#pageRenderType').length > 0)
+    // Set up pill buttons to change render types
+    if ($('#renderTypeOptions').length > 0)
     {
-        blist.$display.find('.rowLink').remove();
-
-        // Page render type
-        datasetPageNS.$renderTypes = {};
-        datasetPageNS.$renderTypes.page = $('#pageRenderType');
-        datasetPageNS.$renderTypes.page.pageRenderType({ view: blist.dataset });
-        datasetPageNS.$renderTypes.fatrow = $('#fatRowRenderType');
-        datasetPageNS.$renderTypes.fatrow.fatrowRenderType({ view: blist.dataset });
-
         // Render types
         $('#renderTypeOptions').pillButtons();
         $('#renderTypeOptions a').click(function(e)
         {
             e.preventDefault();
-            var rt = $.urlParam($(this).attr('href'), 'defaultRender');
+            var rt = $.urlParam($(this).attr('href'), 'defaultRender') ||
+                blist.dataset.displayType || 'table';
             if (rt == 'richList') { rt = 'fatrow'; }
-            switch (rt)
-            {
-                case 'page':
-                case 'fatrow':
-                    datasetPageNS.showRenderType(rt);
-                    break;
-                default:
-                    datasetPageNS.showDefaultRenderType();
-                    break;
-            }
+            datasetPageNS.rtManager.show(rt);
         });
-
-        $(document).bind(blist.events.DISPLAY_ROW, function()
-                { datasetPageNS.showRenderType('page'); });
-
-        if (!isAltRT) { datasetPageNS.showDefaultRenderType(); }
-        else if (isFatRowRT)
-        { datasetPageNS.showRenderType('fatrow'); }
-        else if (isPageRT)
-        {
-            // Cheat by making sure the div is hidden initially
-            datasetPageNS.$renderTypes.page.addClass('hide');
-            datasetPageNS.showRenderType('page');
-            if (!$.isBlank(blist.initialRowId))
-            {
-                datasetPageNS.$renderTypes.page.pageRenderType()
-                    .displayRowByID(blist.initialRowId);
-            }
-        }
     }
 
-    // grid
-    datasetPageNS.$dataGrid = blist.$display;
-
-    // .initGrid() isn't loaded yet, let the lazy-loader
-    // handle the call
-    if (datasetPageNS.$dataGrid.length > 0 && !isAltRT)
+    var prevType;
+    blist.$container.bind('render_type_changed', function(e, newType)
     {
-        blist.common.initGrid = datasetPageNS.initGrid;
-        blist.configuration._needsInitGrid = true;
-    }
+        $('body').removeClass(prevType + '-renderType')
+            .addClass(newType + '-renderType');
+        prevType = newType;
+
+        // chart = visualization for legacy reasons
+        if (newType == 'chart') { newType = 'visualization'; }
+        $('#renderTypeOptions li a').removeClass('active');
+        $('#renderTypeOptions li .' + newType).addClass('active');
+    });
+
+    // Initialize all data rendering
+    var defRen = $.urlParam(window.location.href, 'defaultRender');
+    if (defRen == 'richList') { defRen = 'fatrow'; }
+    datasetPageNS.rtManager = blist.$container.renderTypeManager({
+        view: blist.dataset,
+        defaultType: defRen,
+        editEnabled: true,
+        table: {
+            addColumnCallback: function(parId)
+            {
+                datasetPageNS.sidebar.show('edit.addColumn', {parentId: parId});
+            },
+            editColumnCallback: function(colId, parId)
+            {
+                var col = blist.dataset.columnForID(colId) ||
+                    blist.dataset.columnForID(parId);
+                if (col.id != colId) { col = col.childColumnForID(colId); }
+
+                datasetPageNS.sidebar.hide();
+                datasetPageNS.sidebar.show('columnProperties', col);
+            },
+            showRowHandle: true,
+            manualResize: true
+        }
+    });
+
+    var $dataGrid = datasetPageNS.rtManager.$domForType('table');
+
+
+    $(document).bind(blist.events.DISPLAY_ROW, function()
+            { datasetPageNS.rtManager.show('page'); });
+
+    if (!$.isBlank(blist.initialRowId))
+    { $(document).trigger(blist.events.DISPLAY_ROW, [blist.initialRowId]); }
 
     // sidebar and sidebar tabs
     datasetPageNS.sidebar = $('#gridSidebar').gridSidebar({
-        dataGrid: datasetPageNS.$dataGrid[0],
+        dataGrid: $dataGrid[0],
         position: blist.sidebarPosition || 'right',
         waitOnDataset: blist.dataset.type != 'form' && blist.dataset.valid,
         onSidebarShown: function(primaryPane)
@@ -250,6 +178,35 @@ $(function()
     blist.dataset.bind('columns_changed',
         function() { datasetPageNS.sidebar.updateEnabledSubPanes(); });
 
+    // Hook up search form
+    var $clearSearch = $('#searchForm .clearSearch');
+    var $searchForm = $('#searchForm');
+
+    $searchForm.submit(function (e)
+    {
+        e.preventDefault();
+        var searchText = $(e.currentTarget).find(':input').val();
+        blist.dataset.update({searchString: searchText});
+        if (!searchText || searchText === '')
+        { $clearSearch.hide(); }
+        else
+        { $clearSearch.show(); }
+    });
+
+    var clearSearchForm = function()
+    {
+        $searchForm.find(':input').val('').blur();
+        $clearSearch.hide();
+    };
+
+    $clearSearch.click(function (e)
+    {
+        e.preventDefault();
+        clearSearchForm();
+        blist.dataset.update({searchString: null});
+    }).hide();
+    blist.dataset.bind('clear_temporary', function() { clearSearchForm(); });
+
     // toolbar area
     $('#description').expander({
         contentSelector: 'p',
@@ -301,23 +258,23 @@ $(function()
     {
         event.preventDefault();
         if (!$(event.target).is('.disabled'))
-        { datasetPageNS.$dataGrid.blistModel().undo(); }
+        { $dataGrid.blistModel().undo(); }
     });
     $('#editOptions .redo').click(function (event)
     {
         event.preventDefault();
         if (!$(event.target).is('.disabled'))
-        { datasetPageNS.$dataGrid.blistModel().redo(); }
+        { $dataGrid.blistModel().redo(); }
     });
-    datasetPageNS.$dataGrid.bind('undo_redo_change', function(e)
+    $dataGrid.bind('undo_redo_change', function(e)
     {
-        var model = datasetPageNS.$dataGrid.blistModel();
+        var model = $dataGrid.blistModel();
         $('#editOptions .undo').toggleClass('disabled', !model.canUndo());
         $('#editOptions .redo').toggleClass('disabled', !model.canRedo());
     });
-    if (!$.isBlank(datasetPageNS.$dataGrid.blistModel))
+    if (!$.isBlank($dataGrid.blistModel))
     {
-        var model = datasetPageNS.$dataGrid.blistModel();
+        var model = $dataGrid.blistModel();
         $('#editOptions .undo').toggleClass('disabled', !model.canUndo());
         $('#editOptions .redo').toggleClass('disabled', !model.canRedo());
     }
@@ -326,7 +283,7 @@ $(function()
     // Format toolbar
     $('#formatOptions select').uniform();
 
-    $('#formatOptions').formatOptions({gridSelector: datasetPageNS.$dataGrid});
+    $('#formatOptions').formatOptions({gridSelector: $dataGrid});
 
 
     // Unsaved view stuff

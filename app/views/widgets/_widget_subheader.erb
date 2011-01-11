@@ -1,5 +1,5 @@
 <ul class="subHeaderBar clearfix">
-  <%- unless @view.is_alt_view? -%>
+  <%- if @view.is_tabular? -%>
     <li class="subHeaderAction search">
       <a href="#search" class="icon" title="Search within this Dataset">Search</a>
     </li>

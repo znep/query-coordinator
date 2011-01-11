@@ -296,10 +296,11 @@ html, body
       // make layers box position properly
       position: relative
 
-      #data-grid
+      #mapRenderType
         // make bing maps position properly
         position: relative
 
+      #calendarRenderType
         // make IE7 display and scroll the calendar properly
         .ie7 &.fc
           height: auto !important
@@ -307,6 +308,17 @@ html, body
           position: relative
           .fc-header, .fc-content
             position: relative
+
+      #pageRenderType
+        > a.fullView
+          font-size: 1.1em
+          font-weight: bold
+          padding-left: 1em
+          position: relative
+          text-transform: uppercase
+          top: 1em
+        .content
+          padding-top: 3em
 
     .viewErrorContainer
       display: none
@@ -543,10 +555,6 @@ html, body
       .submitActions li
         display: block
         float: left
-
-.invalidView
-  #data-grid
-    display: none
 
 .mobileNotice
   background-color: rgba(0, 0, 0, 0.6)

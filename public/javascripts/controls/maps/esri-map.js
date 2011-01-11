@@ -126,7 +126,7 @@
 
                     mapObj.buildIdentifyTask();
 
-                    blist.$display.find('.infowindow .hide').removeClass('hide')
+                    mapObj.$dom().find('.infowindow .hide').removeClass('hide')
                         .addClass('hide_infowindow');
 
                 });
@@ -264,9 +264,9 @@
                         .click(function(event)
                             { window.open(feature.attributes.redirect_to); })
                         .hover(
-                            function(event) { blist.$display
+                            function(event) { mapObj.$dom()
                                 .find('div .container').css('cursor', 'pointer'); },
-                            function(event) { blist.$display
+                            function(event) { mapObj.$dom()
                                 .find('div .container').css('cursor', 'default'); });
                 }
 

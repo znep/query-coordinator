@@ -2,20 +2,12 @@ $(function()
 {
     $('.outerContainer').fullScreen();
 
-    // grid
-    if (blist.$display.length > 0 && blist.dataset.isGrid())
-    {
-        blist.namespace.fetch('blist.common');
-        blist.configuration._needsInitGrid = true;
-        blist.common.initGrid = function() {
-            blist.$display
-                .datasetGrid({view: blist.dataset,
-                    columnDeleteEnabled: false,
-                    columnPropertiesEnabled: false,
-                    columnNameEdit: false,
-                    showAddColumns: false,
-                    manualResize: false, showRowHandle: false
-                });
-        };
-    }
+    // Initialize all data rendering
+    blist.$container.renderTypeManager({view: blist.dataset,
+        editEnabled: false,
+        table: {
+            showRowHandle: false,
+            manualResize: false
+        }
+    });
 });

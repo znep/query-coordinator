@@ -37,7 +37,7 @@
                 {
                     if (mapObj._hideBingTiles)
                     {
-                        $("img.MSVE_ImageTile", blist.$display)
+                        $("img.MSVE_ImageTile", mapObj.$dom())
                             .css('visibility', 'hidden');
                     }
                 });
@@ -227,7 +227,7 @@
                 //mapObj.map.HideBaseTileLayer();
                 mapObj.map.HideDashboard();
                 mapObj._hideBingTiles = true;
-                blist.$display.css('height', '100%');
+                mapObj.$dom().css('height', '100%');
             },
 
             resetData: function()
@@ -247,7 +247,8 @@
                 var sibH = 0;
                 mapObj.$dom().siblings(':visible').each(function()
                 { sibH += $(this).height(); });
-                mapObj.map.Resize($par.width(), $par.height() - sibH);
+                if (!$.isBlank(mapObj.map))
+                { mapObj.map.Resize($par.width(), $par.height() - sibH); }
             },
 
             clearFeatures: function()

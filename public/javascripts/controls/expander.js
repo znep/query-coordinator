@@ -23,7 +23,11 @@
 
             if (!config.forceExpander &&
                 ($.isBlank($content.text()) || (fullHeight == $content.height())))
-            { $expand.hide(); }
+            {
+                $expand.hide();
+                $content.removeClass('collapsed');
+                return;
+            }
 
             $expand.addClass(config.expanderCollapsedClass);
 

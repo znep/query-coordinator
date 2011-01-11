@@ -28,8 +28,6 @@
         {
             initializeVisualization: function ()
             {
-                if (!this.settings.view.valid) { return; }
-
                 setUpCalendar(this);
             },
 

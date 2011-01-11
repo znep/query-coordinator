@@ -13,7 +13,7 @@
     font-size: 1.8em;
 }
 
-#data-grid.image
+#gridRenderType.image
 {
     overflow:scroll;
 }

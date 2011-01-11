@@ -67,7 +67,6 @@ dataset-show:
 - grid-sidebar-custom
 - table-core
 - dataset-grid
-- rich-render-types
 - control-feed
 - splash
 - screen-dataset

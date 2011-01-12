@@ -18,20 +18,9 @@ class Displays::Base
       @view = view
     end
 
-    # This CSS class is applied to HTML anchors that reference views of this display type
-    def link_css_class
-      type
-    end
-
     # Is this display type publishable as a widget?  Theoretically all display types should be publishable but
     # this isn't currently the case
     def can_publish?
-      true
-    end
-
-    # Whether or not the display type has an advanced option that loads a
-    # separate UI for configuration
-    def can_advanced_publish?
       true
     end
 
@@ -42,24 +31,14 @@ class Displays::Base
       true
     end
 
-    # Controls for displaying the widget
-    def render_widget_chrome?
-      true
-    end
-
-    def render_widget_tabs?
-      true
-    end
-
     # Is the view properly configured to work with the underlying dataset?
     def valid?
       true
     end
 
-    # If the invalid view can be edited; not permissions-related, but if it
-    # is valid to show an edit button to fix a view
-    def can_be_edited?
-      true
+    # If the data can be read
+    def data_valid?
+      @view.message.blank?
     end
 
     # Message to display if the view is invalid
@@ -106,19 +85,6 @@ END
       js
     end
 
-    # Retrieve rendered CSS links to include in the page.  Called by view logic
-    def render_stylesheet_includes
-      return @@asset_helper.include_stylesheets(*required_stylesheets).html_safe +
-        required_style_packages.map { |sass| @@app_helper.rendered_stylesheet_tag(sass) }.join.html_safe +
-        required_style_links.map { |link| @@app_helper.stylesheet_link_tag(link) }.join.html_safe
-    end
-
-    # Retrieve JavaScript for edit functionality to include in the page.
-    # Called by view logic
-    def render_edit_javascript_includes(context)
-      render_edit_javascript_links
-    end
-
     # Name of partial to render if you don't want to write all your HTML in strings
     def render_partial
       return nil
@@ -126,59 +92,12 @@ END
 
     protected
 
-    # Retrieve a list of stylesheet asset bundles that must be included for this display
-    def required_stylesheets
-      []
-    end
-
-    # List of style packages (sass bundles)
-    def required_style_packages
-      []
-    end
-
-    # List of stylesheets to be directly included via link tags, e.g. externally hosted
-    def required_style_links
-      []
-    end
-
-    # Retrieve a list of javascript asset bundles that must be included for this display
-    def required_javascripts
-      []
-    end
-
-    # A list of javascript source files to be directly translated to tags, e.g. externally hosted
-    def required_javascript_links
-      []
-    end
-
-    # Retrieve a list of javascript asset bundles that must be included for
-    # editing this display
-    def required_edit_javascripts
-      []
-    end
-
-    # Render links to javascript files
-    def render_javascript_links
-      required_javascript_links.map { |link| @@app_helper.javascript_include_tag(link).html_safe }.join +
-        @@asset_helper.include_javascripts(*required_javascripts).html_safe
-    end
-
-    # Render links to javascript files for editing
-    def render_edit_javascript_links
-      @@asset_helper.include_javascripts(*required_edit_javascripts).html_safe
-    end
-
     # Utility for escaping HTML
     def h(text)
       CGI.escapeHTML text
     end
 
     private
-
-    @@asset_helper = Class.new do
-      include Jammit::Helper
-      include ActionView::Helpers
-    end.new
 
     @@app_helper = Class.new do
       include ApplicationHelper

@@ -567,8 +567,19 @@ class View < Model
     # Map legacy types to the proper implementing class
     # TODO - migrate legacy views and remove this code
     if dt
-      config = Displays::Config[dt]
-      dt = config['display'] if config && config['display']
+      config = {
+          'annotatedtimeline' => 'chart',
+          'imagesparkline' => 'chart',
+          'areachart' => 'chart',
+          'barchart' => 'chart',
+          'columnchart' => 'chart',
+          'linechart' => 'chart',
+          'piechart' => 'chart',
+
+          'intensitymap' => 'map',
+          'geomap' => 'map'
+      }[dt]
+      dt = config if !config.nil?
     end
 
     # If we have a display attempt to load the implementing class
@@ -599,44 +610,6 @@ class View < Model
   def display_name
     d = display
     return @@display_names[d.name] || d.name
-  end
-
-  def can_add_visualization?
-    Displays::Config.each_public do |k, v|
-      return true if can_create_visualization_type?(k)
-    end
-    return false
-  end
-
-  def can_create_visualization_type?(viz_type, include_hidden = false)
-    config = Displays::Config[viz_type]
-    return false if config.nil? || (!include_hidden && config['hidden'])
-
-    return has_columns_for_visualization_type?(viz_type, include_hidden)
-  end
-
-  def has_columns_for_visualization_type?(viz_type, include_hidden = false)
-    config = Displays::Config[viz_type]
-
-    # If there's no configuration defined then treat as invalid
-    return false if config.nil?
-
-    to_check = []
-    if config.has_key?('fixedColumns')
-      to_check.concat(config['fixedColumns'])
-    end
-    if config.has_key?('dataColumns')
-      to_check.concat(config['dataColumns'])
-    end
-
-    to_check.each do |tc|
-      next if tc['optional']
-
-      if columns_for_datatypes(tc['dataType'], include_hidden).length < 1
-        return false
-      end
-    end
-    return true
   end
 
   def owned_by?(user)

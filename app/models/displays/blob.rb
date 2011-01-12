@@ -20,10 +20,6 @@ class Displays::Blob < Displays::Base
         end
     end
 
-    def required_style_links
-      ['blists-blob-screen']
-    end
-
     def scrolls_inline?
       @display_type == 'google_viewer'
     end

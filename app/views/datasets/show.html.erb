@@ -1,6 +1,5 @@
 <% content_for :head do %>
   <%= auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss") %>
-  <%= raw @view.display.render_stylesheet_includes %>
   <%= include_stylesheets 'grid-sidebar' %>
   <%= rendered_stylesheet_tag 'dataset-show' %>
 
@@ -175,7 +174,7 @@
   <div id='renderTypeContainer' class='innerContainer'>
     <div class="aboutLoad">
       <%= render :partial => 'about_dataset' %>
-      <%- if @view.is_tabular? && !@view.is_form? && @view.display.valid? -%>
+      <%- if @view.is_tabular? && !@view.is_form? && @view.display.data_valid? -%>
       <%# SEO links for individual rows %>
       <%- next_index = 0 -%>
       <%- if !@row.nil? -%>
@@ -569,7 +568,7 @@
   </script>
 
   <%- if @view.is_tabular? -%>
-  <%= raw @view.display.render_edit_javascript_includes(self) %>
+  <%= include_javascripts 'shared-table-editor' %>
   <%- end -%>
 
   <%= include_javascripts 'dataset-show' %>

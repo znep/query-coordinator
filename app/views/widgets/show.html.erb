@@ -10,10 +10,6 @@
 
   <title><%= @view.name %> | <%= CurrentDomain.strings.site_title %></title>
 
-  <%- if @display.can_publish? -%>
-  <%= raw @display.render_stylesheet_includes %>
-  <%- end -%>
-
   <link type="text/css" rel="stylesheet" href="/styles/widget/<%= @theme_id %>.css" />
 <% end %>
 
@@ -32,7 +28,7 @@
           </div>
 
           <div id='gridRenderType' class='fullHeight renderTypeNode hide'>
-            <%- if @view.is_tabular? && @view.display.valid? -%>
+            <%- if @view.is_tabular? && @view.display.data_valid? -%>
               <noscript>
                 <h3><a href="<%= @view.href %>"><%= @view.name %></a></h3>
 
@@ -188,9 +184,6 @@
     blist.widget.customizationId = '<%= params[:customization_id] || '' %>';
   </script>
 
-  <%- if @view.can_edit? && !@view.is_blobby? -%>
-  <%= raw @display.render_edit_javascript_includes(self) %>
-  <%- end -%>
   <%= include_javascripts 'widgets-show' %>
 
   <%- unless @theme[:behavior][:ga_code].empty? -%>

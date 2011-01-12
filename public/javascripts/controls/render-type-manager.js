@@ -7,7 +7,8 @@
             domId: 'calendarRenderType',
             initFunction: 'socrataCalendar',
             javascripts: [{ assets: 'shared-calendar' }],
-            stylesheets: ['fullcalendar.css'],
+            stylesheets: ['/styles/merged/screen-calendar.css',
+              'fullcalendar.css'],
             scrollsInline: false
         },
 
@@ -85,12 +86,14 @@
         href: {
             name: 'href',
             domId: 'staticRenderType',
+            stylesheets: ['blists-blob-screen.css'],
             scrollsInline: false
         },
 
         blob: {
             name: 'blob',
             domId: 'staticRenderType',
+            stylesheets: ['blists-blob-screen.css'],
             scrollsInline: false,
             initFunction: function($dom, opts)
             {

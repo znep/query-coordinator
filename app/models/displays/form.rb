@@ -12,18 +12,6 @@ class Displays::Form < Displays::Base
     false
   end
 
-  def render_widget_chrome?
-    false
-  end
-
-  def render_widget_tabs?
-    false
-  end
-
-  def required_stylesheets
-    [ 'displays-form' ]
-  end
-
   def render_partial
     return 'displays/form_view'
   end
@@ -35,9 +23,5 @@ class Displays::Form < Displays::Base
 
   def public_perm_type
     'add'
-  end
-
-  def can_advanced_publish?
-      false
   end
 end

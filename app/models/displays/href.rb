@@ -7,8 +7,4 @@ class Displays::Href < Displays::Base
   def render_partial
     'displays/href'
   end
-
-  def required_style_links
-    ['blists-blob-screen']
-  end
 end

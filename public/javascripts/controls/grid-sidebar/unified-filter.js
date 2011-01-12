@@ -852,9 +852,17 @@
                 'for': inputId,
                 contents: _.map($.arrayify(valueObj.item), function(valueObjPart, i)
                 {
-                    return ((i > 0) ? ' and ' : '') +
-                           ((options.textOnly === true) ? valueObjPart :
-                               column.renderType.renderer(valueObjPart, column));
+                    try
+                    {
+                        return ((i > 0) ? ' and ' : '') +
+                               ((options.textOnly === true) ? valueObjPart :
+                                   column.renderType.renderer(valueObjPart, column));
+                    }
+                    catch (ex)
+                    {
+                        // fall back to default renderer if all else fails
+                        return valueObjPart.toString();
+                    }
                 })
             }));
             if (!_.isUndefined(valueObj.count))

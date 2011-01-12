@@ -286,7 +286,8 @@
         }
 
         var value = editor.currentValue();
-        if (_.isEmpty(value))
+        if (!$.isBlank(value) && !_.isNumber(value) && !_.isString(value) &&
+            _.all(_.values(value), function(v) { return $.isBlank(v); }))
         {
             return null;
         }
@@ -419,7 +420,6 @@
         $filter.find('.filterLink').click(function(event)
         {
             event.preventDefault();
-            event.stopPropagation();
         });
 
         // hook up popup menus
@@ -634,9 +634,11 @@
             // special case these since they have no actual values
             var cachedContents = column.cachedContents || {};
             addFilterLine({ item: 'blank', count: cachedContents['null'] }, column,
-                          condition, $filter, filterUniqueId, { selected: false, textOnly: true });
+                          condition, $filter, filterUniqueId, { textOnly: true,
+                          selected: _.any(condition.children, function(child) { return child.value == 'IS_BLANK'; }) });
             addFilterLine({ item: 'not blank', count: cachedContents['non_null'] }, column,
-                          condition, $filter, filterUniqueId, { selected: false, textOnly: true });
+                          condition, $filter, filterUniqueId, { textOnly: true,
+                          selected: _.any(condition.children, function(child) { return child.value == 'IS_NOT_BLANK'; }) });
         }
         else
         {
@@ -733,7 +735,7 @@
         if (options.freeform)
         {
             var renderTypeName = column.renderTypeName;
-            if (_.include(['tag', 'html', 'email'], renderTypeName))
+            if (_.include(['tag', 'html', 'email', 'dataset_link'], renderTypeName))
             {
                 // flatten these down to text instead
                 renderTypeName = 'text';
@@ -781,12 +783,18 @@
                     addFilterLine('', column, condition, $filter, filterUniqueId, { freeform: true });
                 }
             });
-            $line.find('.filterValueEditor').bind('edit_end', function()
+
+            var eventName = 'edit_end';
+            if (_.include(['checkbox', 'stars'], column.renderTypeName))
+            {
+                eventName = 'editor-change';
+            }
+            $line.find('.filterValueEditor').bind(eventName, function()
             {
                 var $this = $(this);
                 var $lineToggle = $line.find(':checkbox, :radio');
 
-                if ($(document.activeElement).parents().index($this) < 0)
+                if ((eventName == 'edit_end') && ($(document.activeElement).parents().index($this) < 0))
                 {
                     // edit_end was called but we're actually elsewhere.
                     return;

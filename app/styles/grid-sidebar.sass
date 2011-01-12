@@ -363,18 +363,20 @@
         .columnSelector
           @include text-hiding
           background-image: url(/stylesheets/images/controls/column_select_sprite.png)
-          display: block
+          display: none
           height: 20px
           left: 10.1em
           position: absolute
           top: 0.5em
           width: 20px
+          .table-renderType &
+            display: block
 
           &.inProcess
             background-position: 0 -20px
             z-index: 70
 
-        &.columnSelect .inputWrapper.hasTable
+        .table-renderType &.columnSelect .inputWrapper
           font-size: 1em
           padding-left: 12.2em
 
@@ -472,7 +474,7 @@
               width: 1.8em
 
           .columnSelect
-            .inputWrapper.hasTable
+            .table-renderType & .inputWrapper
               margin-left: 2em
             .columnSelector
               left: 2.2em

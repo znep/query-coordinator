@@ -157,6 +157,8 @@
                 var $domObj = rtmObj.$dom();
                 $domObj.data("renderTypeManager", rtmObj);
 
+                $domObj.find('.renderTypeNode').addClass('hide');
+
                 rtmObj._loadedAssets = {};
                 rtmObj.settings.view.bind('valid', function()
                 {

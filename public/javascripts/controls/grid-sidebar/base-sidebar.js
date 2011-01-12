@@ -1272,8 +1272,8 @@
 
     var isTable = function(sidebarObj)
     {
-        return !$.isBlank(sidebarObj.$grid().isDatasetGrid) &&
-            sidebarObj.$grid().isDatasetGrid();
+        return !$.isBlank(blist.$container) &&
+            blist.$container.renderTypeManager().currentType == 'table';
     };
 
     var uniformUpdate = function(items)
@@ -1768,21 +1768,17 @@
                 break;
 
             case 'columnSelect':
-                if (isTable(sidebarObj))
-                {
-                    contents.push({tagName: 'a',
-                        href: '#Select:' + $.makeArray(args.item.columns.type)
-                            .join('-'),
-                        title: 'Select a column from the grid',
-                        'class': ['columnSelector', {value: 'tableColumn',
-                                onlyIf: args.item.isTableColumn}],
-                        contents: 'Select a column from the grid'});
-                }
+                contents.push({tagName: 'a',
+                    href: '#Select:' + $.makeArray(args.item.columns.type)
+                        .join('-'),
+                    title: 'Select a column from the grid',
+                    'class': ['columnSelector', {value: 'tableColumn',
+                            onlyIf: args.item.isTableColumn}],
+                    contents: 'Select a column from the grid'});
 
                 var options = renderColumnSelectOptions(args.item.columns,
                     args.item.isTableColumn, curValue || defValue);
 
-                if (isTable(sidebarObj)) { wrapper['class'].push('hasTable'); }
                 wrapper.contents = $.extend(commonAttrs($.extend({}, args.item,
                     {extraClass: 'columnSelectControl'})),
                     {tagName: 'select', contents: options,

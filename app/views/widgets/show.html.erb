@@ -27,8 +27,9 @@
             <div class='loadingSpinner'></div>
           </div>
 
-          <div id='gridRenderType' class='fullHeight renderTypeNode hide'>
-            <%- if @view.is_tabular? && @view.display.data_valid? -%>
+          <%- if @view.is_tabular? -%>
+          <div id='gridRenderType' class='fullHeight renderTypeNode'>
+            <%- if @view.display.data_valid? -%>
               <noscript>
                 <h3><a href="<%= @view.href %>"><%= @view.name %></a></h3>
 
@@ -42,8 +43,9 @@
               </noscript>
             <%- end -%>
           </div>
+          <%- end -%>
 
-          <div id='staticRenderType' class='fullHeight renderTypeNode hide'>
+          <div id='staticRenderType' class='fullHeight renderTypeNode'>
             <%- if @display.can_publish? -%>
               <%= render(:partial => @display.render_partial) %>
             <%- end -%>

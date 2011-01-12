@@ -209,7 +209,7 @@
       <%- end -%>
     </div>
 
-    <div id='staticRenderType' class='fullHeight renderTypeNode hide'>
+    <div id='staticRenderType' class='fullHeight renderTypeNode'>
       <%= render(:partial => @view.display.render_partial) %>
     </div>
 
@@ -508,13 +508,13 @@
       !@view.has_rights?('add_column') %>;
 
     <%# Columm properties %>
-    blist.sidebarHidden.columnProperties = <%= @view.is_alt_view? %>;
+    blist.sidebarHidden.columnProperties = <%= !@view.is_tabular? %>;
 
     <%# Filter pane %>
     blist.sidebarHidden.filter = blist.sidebarHidden.filter || {};
     blist.sidebarHidden.filter.filterDataset = <%= !@view.is_tabular? ||
       @view.is_form? %>;
-    blist.sidebarHidden.filter.showHide = <%= @view.is_alt_view? ||
+    blist.sidebarHidden.filter.showHide = <%= !@view.is_tabular? ||
       !@view.has_rights?('update_view') %>;
 
     <%# Visualize pane %>
@@ -531,7 +531,7 @@
 
     <%# Embed pane %>
     blist.sidebarHidden.embed = blist.sidebarHidden.embed || {};
-    blist.sidebarHidden.embed.formCreate = <%= (@view.is_alt_view? &&
+    blist.sidebarHidden.embed.formCreate = <%= (!@view.is_tabular? &&
       !@view.is_form?) ||
       @view.is_grouped? ||
       !CurrentDomain.user_can?(current_user, :create_datasets) ||

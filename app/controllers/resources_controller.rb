@@ -10,41 +10,40 @@ class ResourcesController < DatasetsController
 # curl http://orgd.com:9292/resource/addressa/d1.xml
 # -L = follow link, -v = verbose
   def show
-    #@view = get_view(params[:name])
     @view = get_view_by_resource_name(params[:name])
     if (@view.nil?)
       return
     end
     
-    href = @view.href    
-    path = request.path    
+    row_id = params[:row_id]
+    unless row_id.nil?
+      row_id = CGI::escape(row_id)
+      # find row sid by row identifier
+      row_id = @view.get_sid_by_row_identifier(row_id)
+      unless (row_id.nil?)
+        row_id = row_id.strip
+      end
+      unless (!row_id.nil? && row_id.to_i.to_s == row_id)
+        render_404
+        return
+      end
+    end
+
     respond_to do |format|
       format.html {
         path = @view.href
-        row_id = params[:row_id]
         unless row_id.nil?
-          # find row sid by row identifier
-          unless (row_id.to_i.to_s == row_id)
-            row_id = @view.get_sid_by_row_identifier(row_id)
-            unless (row_id.nil?)
-              row_id = row_id.strip
-            end
-            unless (row_id.to_i.to_s == row_id)
-              render_404
-              return
-            end
-          end
           path += "/#{row_id}"
         end
         redirect_to(path, :status => 303)
       }
-      format.xml { redirect_view_row(@view, params[:row_id], 'xml') }
-      format.rdf { redirect_view_row(@view, params[:row_id], 'rdf') }
-      format.json { redirect_view_row(@view, params[:row_id], 'json') }
-      format.csv { redirect_view_row(@view, params[:row_id], 'csv') }
-      format.xls { redirect_view_row(@view, params[:row_id], 'xls') }
-      format.pdf { redirect_view_row(@view, params[:row_id], 'pdf') }
-      format.rss { redirect_view_row(@view, params[:row_id], 'rss') }
+      format.xml { redirect_view_row(@view, row_id, 'xml') }
+      format.rdf { redirect_view_row(@view, row_id, 'rdf') }
+      format.json { redirect_view_row(@view, row_id, 'json') }
+      format.csv { redirect_view_row(@view, row_id, 'csv') }
+      format.xls { redirect_view_row(@view, row_id, 'xls') }
+      format.pdf { redirect_view_row(@view, row_id, 'pdf') }
+      format.rss { redirect_view_row(@view, row_id, 'rss') }
     end
   end
 

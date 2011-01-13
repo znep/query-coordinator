@@ -197,16 +197,15 @@ metricsNS.summarySectionCallback = function($context)
             mappedData[key + 'Text'] =
                 (mappedData[key] == 0 ? 'No' : Highcharts.numberFormat(mappedData[key], 0)) +
                    ' ' + (mappedData[key] == 1 ? summaries.verbPhraseSingular :
-                      summaries.verbPhrase) + ' ' +
-                region + ' this time period';
+                      summaries.verbPhrase) + ' ' + region;
         }
     };
 
     summaryCalculator('total', '-total');
     summaryCalculator('delta');
 
-    summaryToolTip('total', 'through');
-    summaryToolTip('delta', 'during');
+    summaryToolTip('total', 'total');
+    summaryToolTip('delta', 'during this time period');
 
     if (mappedData.delta < 0)
     {

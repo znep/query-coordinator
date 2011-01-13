@@ -20,6 +20,12 @@ $(function()
         ],
         summarySections: [
             {
+                id: 'summaryVisits',      displayName: 'Page Views',
+                summary: {plus: 'page-views', verbPhrase: 'pages viewed',
+                    verbPhraseSingular: 'page viewed'
+                }
+            },
+            {
                 id: 'summaryDatasets',    displayName: 'Total Datasets',
                 summary: {plus: 'datasets-created', minus: 'datasets-deleted',
                     verbPhrase: 'datasets created', verbPhraseSingular: 'dataset created'
@@ -29,12 +35,6 @@ $(function()
                 id: 'summaryRows',        displayName: 'Total Rows',
                 summary: {plus: 'rows-created',     minus: 'rows-deleted',
                     verbPhrase: 'rows created', verbPhraseSingular: 'row created'
-                }
-            },
-            {
-                id: 'summaryVisits',      displayName: 'Page Views',
-                summary: {plus: 'page-views', verbPhrase: 'pages viewed',
-                    verbPhraseSingular: 'page viewed'
                 }
             },
             {

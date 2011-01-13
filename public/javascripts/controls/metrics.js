@@ -2,12 +2,12 @@
 
 (function($)
 {
-    var fireSectionUpdate = function(section, $screen, urlBase, startDate, endDate, interval, slice)
+    var fireSectionUpdate = function(section, $screen, urlBase, startDate, endDate, slice)
     {
         var $section = $screen.find('#' + section.id),
             series = $section.data(metricsNS.SERIES_KEY),
-  // TODO: Change this when endDate is supported by core server
-            url = urlBase + '?date=' + startDate.format('m/d/Y') + '&type=' + interval;
+            url = urlBase + '?start=' + startDate.getTime() +
+                            '&end='   + endDate.getTime();
 
         if (_.isFunction(section.loading))
         { section.loading($section); }
@@ -70,11 +70,11 @@
     };
 
     var refreshData = function($screen, sections, opts,
-            currentStartDate, currentEndDate, currentInterval, currentSlice)
+            currentStartDate, currentEndDate, currentSlice)
     {
         _.each(sections, function(section)
         { fireSectionUpdate(section, $screen, opts.urlBase,
-              currentStartDate, currentEndDate, currentInterval, currentSlice); });
+              currentStartDate, currentEndDate, currentSlice); });
     };
 
     var expandTopSubSection = function(event)
@@ -95,7 +95,6 @@
     {
         var opts = $.extend({}, $.fn.metricsScreen.defaults, options),
             $screen         = $(this),
-            currentInterval = null,
             currentSlice    = opts.initialSliceDepth,
             startDate       = null,
             endDate         = null,
@@ -186,12 +185,10 @@
         });
 
         // Listen for a custom event to trigger data refresh
-        $screen.bind('metricsTimeChanged', function(event, newStartDate, newEndDate,
-              newInterval, newSlice)
+        $screen.bind('metricsTimeChanged', function(event, newStartDate, newEndDate, newSlice)
         {
             var sectionsToUpdate = null;
-            if (newStartDate != startDate || newEndDate != endDate ||
-                newInterval  != currentInterval)
+            if (newStartDate != startDate || newEndDate != endDate)
             { sectionsToUpdate = sections; }
             else if (newSlice != currentSlice)
             { sectionsToUpdate = chartSections; }
@@ -199,10 +196,9 @@
             if (sectionsToUpdate)
             {
                 refreshData($screen, sectionsToUpdate, opts,
-                    newStartDate, newEndDate, newInterval, newSlice);
+                    newStartDate, newEndDate, newSlice);
             }
 
-            currentInterval = newInterval;
             startDate       = newStartDate;
             endDate         = newEndDate;
             currentSlice    = newSlice;
@@ -214,7 +210,7 @@
             if (newSlice != currentSlice)
             {
                 refreshData($screen, chartSections, opts,
-                    startDate, endDate, currentInterval, newSlice);
+                    startDate, endDate, newSlice);
             }
             currentSlice = newSlice;
         });
@@ -255,43 +251,26 @@
             $slicer    = $('.sliceDepth');
 
         // We can't slice on weekly, but it's still a valid interval
-        var sliceOptionForInterval = function(interval, start, end)
+        var sliceOptionForInterval = function(start, end)
         {
             if (start.clone().addDays(opts.maxDaysToSliceHourly) > end)
-            { return $slicer.find('option:first'); }
-            else if ('Weekly' == interval )
-            { return $slicer.find('[value="Daily"]'); }
-            return $slicer.find('[value="' + interval + '"]').prev();
+            {
+                return $slicer.find('option:first');
+            }
+            else if (start.clone().addMonths(1) > end)
+            {
+                return $slicer.find('[value="Daily"]');
+            }
+            return $slicer.find('[value="Monthly"]')
         }
 
         var updateDateParams = function(value, $slicer)
         {
-            var parts     = value.split(opts.separator),
-                startDate = Date.parse(parts[0]),
-                endDate   = Date.parse(parts[1]),
-                interval  = 'Daily',
-                $sliceDepth = null;
-
-            // If they picked a single day, zoom into the highest
-            // level of detail
-            if (parts.length < 2)
-            {
-                $sliceDepth = $slicer.find('option:first');
-            }
-            else
-            {
-                // Now we get to revers engineer what kind of interval they selected
-                var starting = startDate.clone();
-
-                if (starting.add({weeks: 1}).compareTo(endDate) > -1)
-                { interval = 'Weekly'; }
-                else if (starting.add({months: 1}).compareTo(endDate) > -1)
-                { interval = 'Monthly'; }
-                else
-                { interval = 'Yearly'; }
-
-                $sliceDepth = sliceOptionForInterval(interval, startDate, endDate);
-            }
+            var parts       = value.split(opts.separator),
+                startDate   = Date.parse(parts[0]).setTimezoneOffset(0),
+                endDate     = (parts.length > 1) ?
+                    Date.parse(parts[1]).setTimezoneOffset(0) : startDate,
+                $sliceDepth = sliceOptionForInterval(startDate, endDate);
 
             // Disable slices shallower than the current range,
             // enable all others
@@ -307,7 +286,8 @@
             }
 
             opts.metricsScreen.trigger('metricsTimeChanged',
-                [startDate, endDate, interval, $slicer.val().toUpperCase()]);
+                [startDate, endDate.addDays(1).addMilliseconds(-1),
+                 $slicer.val().toUpperCase()]);
         };
 
 
@@ -392,15 +372,14 @@
         minimumDate: Date.parse('2008-01-01'),
         parseDateFormat: 'MMM d, yyyy',
         separator: '-',
-        serverDateFormat: 'm/d/Y',
         xOffset: 10,
         yOffset: 5
     };
 
-    // Use local timezone
+    // Don't use local timezone
     Highcharts.setOptions({
         global: {
-            useUTC: false
+            useUTC: true
         }
     });
 })(jQuery);

@@ -46,6 +46,8 @@
                         updateNavigation(navObj);
                         navObj.pageChanged();
                     });
+
+                updateNavigation(navObj);
             },
 
             $dom: function()

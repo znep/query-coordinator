@@ -22,6 +22,7 @@
     {
         defaults:
         {
+            defaultRowId: null,
             view: null
         },
 
@@ -65,6 +66,9 @@
 
                 $(document).bind(blist.events.DISPLAY_ROW, function(e, rowId)
                         { prtObj.displayRowByID(rowId); });
+
+                if (!$.isBlank(prtObj.settings.defaultRowId))
+                { prtObj.displayRowByID(prtObj.settings.defaultRowId); }
             },
 
             $dom: function()

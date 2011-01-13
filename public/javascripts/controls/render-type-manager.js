@@ -254,7 +254,8 @@
 
             if (_.isFunction($.fn[typeInfo.initFunction]))
             {
-                $dom[typeInfo.initFunction](rtmObj.settings);
+                $dom[typeInfo.initFunction]($.extend({view: rtmObj.settings.view},
+                    rtmObj.settings[typeInfo.name]));
             }
             else if (_.isFunction(typeInfo.initFunction))
             {

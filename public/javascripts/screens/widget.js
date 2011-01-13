@@ -17,7 +17,7 @@ blist.widget.resizeViewport = function()
 };
 
 blist.widget.searchToolbarShown = false;
-blist.widget.showToolbar = function(sectionName)
+blist.widget.showToolbar = function(sectionName, callback)
 {
     var sectionClassLookup = {
         search: 'toolbarSearchForm',
@@ -37,6 +37,12 @@ blist.widget.showToolbar = function(sectionName)
 
     var maxAboutBoxHeight = $('.widgetContent').innerHeight() * 0.5;
     $('.toolbarAboutBox').css('max-height', maxAboutBoxHeight);
+
+    var animateFinished = function()
+    {
+        widgetNS.resizeViewport();
+        if (_.isFunction(callback)) { callback(); }
+    };
 
     if (!$toolbar.is(':visible'))
     {
@@ -58,7 +64,7 @@ blist.widget.showToolbar = function(sectionName)
 
         $toolbar.show('slide',
             { direction: ((widgetNS.orientation == 'downwards') ? 'up' : 'down') },
-            500, widgetNS.resizeViewport);
+            500, animateFinished);
         $toolbar
             .children(':not(.close)').hide()
             .filter('.' + sectionClass).show();
@@ -78,12 +84,12 @@ blist.widget.showToolbar = function(sectionName)
 
             $aboutBox.show();
             $toolbar.animate({ height: Math.min($aboutBox.outerHeight(true), maxAboutBoxHeight) },
-                500, widgetNS.resizeViewport);
+                500, animateFinished);
             $aboutBox.hide();
         }
         else
         {
-            $toolbar.animate({ height: 20 }, 500, widgetNS.resizeViewport);
+            $toolbar.animate({ height: 20 }, 500, animateFinished);
         }
         $toolbar
             .children(':not(.close):visible').fadeOut('fast', function()
@@ -295,6 +301,13 @@ $(function()
         var searchText = $(e.currentTarget).find(':input').val();
         blist.dataset.update({searchString: searchText});
     });
+
+    if (!$.isBlank(blist.dataset.searchString))
+    {
+        widgetNS.showToolbar('search', function()
+            { $searchForm.find(':input').focus()
+                .val(blist.dataset.searchString).blur(); });
+    }
 
     // toolbar
     var $toolbar = $('.toolbar');

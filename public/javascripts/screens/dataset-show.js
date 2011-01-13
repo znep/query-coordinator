@@ -77,6 +77,8 @@ $(function()
     // Initialize all data rendering
     var defRen = $.urlParam(window.location.href, 'defaultRender');
     if (defRen == 'richList') { defRen = 'fatrow'; }
+    if (!$.isBlank(blist.initialRowId)) { defRen = 'page'; }
+
     datasetPageNS.rtManager = blist.$container.renderTypeManager({
         view: blist.dataset,
         defaultType: defRen,
@@ -97,7 +99,8 @@ $(function()
             },
             showRowHandle: true,
             manualResize: true
-        }
+        },
+        page: { defaultRowId: blist.initialRowId }
     });
 
     var $dataGrid = datasetPageNS.rtManager.$domForType('table');
@@ -105,9 +108,6 @@ $(function()
 
     $(document).bind(blist.events.DISPLAY_ROW, function()
             { datasetPageNS.rtManager.show('page'); });
-
-    if (!$.isBlank(blist.initialRowId))
-    { $(document).trigger(blist.events.DISPLAY_ROW, [blist.initialRowId]); }
 
     // sidebar and sidebar tabs
     datasetPageNS.sidebar = $('#gridSidebar').gridSidebar({
@@ -206,6 +206,12 @@ $(function()
         blist.dataset.update({searchString: null});
     }).hide();
     blist.dataset.bind('clear_temporary', function() { clearSearchForm(); });
+
+    if (!$.isBlank(blist.dataset.searchString))
+    {
+        $searchForm.find(':input').focus().val(blist.dataset.searchString).blur();
+        $clearSearch.show();
+    }
 
     // toolbar area
     $('#description').expander({

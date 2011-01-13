@@ -286,7 +286,7 @@
         }
 
         var value = editor.currentValue();
-        if (!$.isBlank(value) && !_.isNumber(value) && !_.isString(value) &&
+        if (!$.isBlank(value) && !_.isNumber(value) && !_.isString(value) && !_.isBoolean(value) &&
             _.all(_.values(value), function(v) { return $.isBlank(v); }))
         {
             return null;
@@ -792,7 +792,7 @@
             $line.find('.filterValueEditor').bind(eventName, function()
             {
                 var $this = $(this);
-                var $lineToggle = $line.find(':checkbox, :radio');
+                var $lineToggle = $line.find('.filterLineToggle');
 
                 if ((eventName == 'edit_end') && ($(document.activeElement).parents().index($this) < 0))
                 {
@@ -852,17 +852,23 @@
                 'for': inputId,
                 contents: _.map($.arrayify(valueObj.item), function(valueObjPart, i)
                 {
-                    try
+                    var response = (i > 0) ? ' and ' : '';
+                    if (options.textOnly === true)
                     {
-                        return ((i > 0) ? ' and ' : '') +
-                               ((options.textOnly === true) ? valueObjPart :
-                                   column.renderType.renderer(valueObjPart, column));
+                        response += valueObjPart.toString();
                     }
-                    catch (ex)
+                    else
                     {
-                        // fall back to default renderer if all else fails
-                        return valueObjPart.toString();
+                        try
+                        {
+                            response += column.renderType.renderer(valueObjPart, column);
+                        }
+                        catch (ex)
+                        {
+                            response += valueObjPart.toString();
+                        }
                     }
+                    return response;
                 })
             }));
             if (!_.isUndefined(valueObj.count))

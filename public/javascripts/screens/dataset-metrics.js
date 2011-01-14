@@ -3,7 +3,7 @@
 $(function()
 {
     var screen = $('#analyticsDataContainer').metricsScreen($.extend({
-        urlBase: '/api/views/' + blist.metrics.viewID +  '/balboa_metrics.json',
+        urlBase: '/api/views/' + blist.metrics.viewID +  '/metrics.json',
         chartSections:  [
             {id: 'performanceChart',
                 loading: blist.metrics.chartLoading,

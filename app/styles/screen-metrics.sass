@@ -2,12 +2,17 @@
 
 #analyticsDataContainer
   #analyticsTimeControl
-    float: right
-
+    float: left
+    padding-left: 2em
     .currentTimeSlice
       width: 13em
       &:hover
         cursor: pointer
+  &.overviewMetrics #analyticsTimeControl
+    padding-top: 0.5em
+  &.datasetMetrics h1, &.publicSiteMetrics h1
+    float: left
+
 
   .chartContainer
     .sliceDepth

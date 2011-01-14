@@ -250,44 +250,40 @@
             $timeslice = $this.find('.currentTimeSlice'),
             $slicer    = $('.sliceDepth');
 
-        // We can't slice on weekly, but it's still a valid interval
-        var sliceOptionForInterval = function(start, end)
-        {
-            if (start.clone().addDays(opts.maxDaysToSliceHourly) > end)
-            {
-                return $slicer.find('option:first');
-            }
-            else if (start.clone().addMonths(1) > end)
-            {
-                return $slicer.find('[value="Daily"]');
-            }
-            return $slicer.find('[value="Monthly"]')
-        }
-
         var updateDateParams = function(value, $slicer)
         {
             var parts       = value.split(opts.separator),
                 startDate   = Date.parse(parts[0]).setTimezoneOffset(0),
                 endDate     = (parts.length > 1) ?
                     Date.parse(parts[1]).setTimezoneOffset(0) : startDate,
-                $sliceDepth = sliceOptionForInterval(startDate, endDate);
+                sliceDepth  = 'Monthly';
 
-            // Disable slices shallower than the current range,
-            // enable all others
-            if (!_.isNull($sliceDepth))
+            if (startDate.clone().addDays(opts.maxDaysToSliceHourly) > endDate)
             {
-                $sliceDepth.attr('disabled', '')
-                    .prevAll().attr('disabled', '')
-                        .end()
-                    .nextAll().attr('disabled', 'disabled');
-
-                $slicer.val($sliceDepth.val());
-                $.uniform.update($slicer);
+                sliceDepth = 'Hourly';
             }
+            else if (startDate.clone().addMonths(1) > endDate)
+            {
+                sliceDepth = 'Daily';
+            }
+            var $sliceDepth = $slicer.find('[value="' + sliceDepth + '"]');
+
+            $sliceDepth.attr('disabled', '')
+                .prevAll().attr('disabled', '')
+                    .end()
+                .nextAll().attr('disabled', 'disabled');
+
+            if (startDate.clone().addMonths(1) < endDate)
+            {
+                $slicer.find('[value="Hourly"]').attr('disabled', 'disabled');
+            }
+
+            $slicer.val(sliceDepth);
+            $.uniform.update($slicer);
 
             opts.metricsScreen.trigger('metricsTimeChanged',
                 [startDate, endDate.addDays(1).addMilliseconds(-1),
-                 $slicer.val().toUpperCase()]);
+                 sliceDepth.toUpperCase()]);
         };
 
 
@@ -302,8 +298,6 @@
                     updateDateParams($timeslice.val(), $slicer);
                 });
             },
-            rightAlign: $(window).width() - $timeslice.offset().left -
-                $timeslice.outerWidth() - opts.xOffset,
             posY: $timeslice.offset().top + $timeslice.outerHeight() + opts.yOffset,
             rangeSplitter: opts.separator
         });

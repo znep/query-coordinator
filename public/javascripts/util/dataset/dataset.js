@@ -31,7 +31,7 @@ this.Dataset = Model.extend({
         this.registerEvent(['columns_changed', 'valid', 'query_change',
             'set_temporary', 'clear_temporary', 'row_change',
             'row_count_change', 'column_resized', 'displayformat_change',
-            'column_totals_changed', 'removed']);
+            'displaytype_change', 'column_totals_changed', 'removed']);
 
         $.extend(this, v);
 
@@ -44,6 +44,7 @@ this.Dataset = Model.extend({
 
         this.type = getType(this);
         this.styleClass = this.type.capitalize();
+        this.displayType = this.displayType || 'table';
         this.displayName = getDisplayName(this);
 
         this.displayFormat = this.displayFormat || {};
@@ -227,8 +228,8 @@ this.Dataset = Model.extend({
 
     update: function(newDS, fullUpdate, minorUpdate)
     {
-        this._update(newDS, fullUpdate, fullUpdate);
         this._markTemporary(minorUpdate);
+        this._update(newDS, fullUpdate, fullUpdate);
     },
 
     reload: function(successCallback)
@@ -1208,6 +1209,7 @@ this.Dataset = Model.extend({
         var oldQuery = ds.query || {};
         var oldSearch = ds.searchString;
         var oldDispFmt = ds.displayFormat;
+        var oldDispType = ds.displayType;
 
         if (forceFull)
         {
@@ -1224,6 +1226,7 @@ this.Dataset = Model.extend({
 
         ds.type = getType(ds);
         ds.styleClass = ds.type.capitalize();
+        ds.displayType = ds.displayType || 'table';
         ds.displayName = getDisplayName(ds);
 
         ds.displayFormat = ds.displayFormat || {};
@@ -1269,10 +1272,11 @@ this.Dataset = Model.extend({
             ds._invalidateRows();
         }
 
+        if (!_.isEqual(oldDispType, ds.displayType))
+        { ds.trigger('displaytype_change'); }
+
         if (!_.isEqual(oldDispFmt, ds.displayFormat))
-        {
-            ds.trigger('displayformat_change');
-        }
+        { ds.trigger('displayformat_change'); }
 
         if (masterUpdate)
         { ds._origObj = ds.cleanCopy(); }
@@ -2114,6 +2118,7 @@ function getType(ds)
 
     if (ds.viewType == 'blobby') { type = 'blob'; }
     else if (ds.viewType == 'href') { type = 'href'; }
+    else if (_.include(ds.flags || [], 'default')) { type = 'blist'; }
 
     else if (_.include(VIZ_TYPES, type)) { type = 'visualization'; }
     else if (_.include(MAP_TYPES, type)) { type = 'map'; }

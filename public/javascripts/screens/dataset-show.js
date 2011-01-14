@@ -8,13 +8,17 @@ blist.datasetPage.adjustSize = function()
 blist.datasetPage.clearTempView = function()
 {
     $('#sidebarOptions a.alert').removeClass('alert');
-    $('body, #datasetBar').removeClass('unsavedView');
+    $('body, #datasetBar').removeClass('unsavedView minorChange');
     datasetPageNS.sidebar.updateEnabledSubPanes();
 };
 
 blist.datasetPage.setTempView = function()
 {
-    $('body, #datasetBar').addClass('unsavedView');
+    if (blist.dataset.minorChange && !blist.dataset.hasRight('update_view'))
+    { return; }
+
+    $('body, #datasetBar').addClass('unsavedView')
+        .toggleClass('minorChange', blist.dataset.minorChange);
     // For now unsaved view means something has changed in filter tab
     $('#sidebarOptions .tabFilter a').addClass('alert');
     datasetPageNS.sidebar.updateEnabledSubPanes();
@@ -57,7 +61,10 @@ $(function()
             var rt = $.urlParam($(this).attr('href'), 'defaultRender') ||
                 blist.dataset.displayType || 'table';
             if (rt == 'richList') { rt = 'fatrow'; }
-            datasetPageNS.rtManager.show(rt);
+            if (rt == 'visualization') { rt = 'chart'; }
+            // Would call show on renderTypeManager; but updating the
+            // dataset fires an event that RTM listens to
+            blist.dataset.update({displayType: rt}, false, true);
         });
     }
 

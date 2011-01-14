@@ -17,7 +17,7 @@
   <%- end -%>
 <% end %>
 
-<div id='datasetBar' class='clearfix'>
+<div id='datasetBar' class='clearfix <%= @view.is_blist? ? 'dataset' : '' %>'>
   <div id='infoBox'>
     <div id='datasetIcon' class='type<%= @view.display.type.capitalize %>'>
       <span class='icon currentViewName'><%= @view.display.name %></span>
@@ -25,7 +25,7 @@
     </div>
     <div class='unsavedLine'>
       <h2 id='unsavedTitle'>Unsaved View</h2>
-      <%- if !@view.is_blist? && @view.has_rights?('update_view') -%>
+      <%- if @view.has_rights?('update_view') -%>
       <a href='#Save' title='Save current view' data-savingText='Saving...'
         class='save toolbarButton'>Save</a>
       <%- end -%>
@@ -69,7 +69,7 @@
         <%- if @view.is_tabular? && !@view.is_form? -%>
         <ul id='renderTypeOptions' class="pillButtons">
           <%- if @view.is_alt_view? -%>
-          <li><a href='<%= @view.href %>'
+          <li><a href='<%= @view.href %>?defaultRender=<%= @view.display.type %>'
             class='main <%= @view.display.type %> noRedirPrompt'
             title='View as a <%= @view.display.name.downcase %>'>
             <span class='icon'></span>

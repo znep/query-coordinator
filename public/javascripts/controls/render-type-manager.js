@@ -165,18 +165,13 @@
                 {
                     if (!$.isBlank(rtmObj.currentType))
                     { rtmObj.show(rtmObj.currentType); }
+                })
+                .bind('displaytype_change', function()
+                {
+                    rtmObj.show(getType(rtmObj));
                 });
 
-                var defType = rtmObj.settings.defaultType ||
-                    rtmObj.settings.view.displayType;
-                if ($.isBlank(defType))
-                {
-                    defType = {
-                        'tabular': 'table',
-                        'blobby': 'blob',
-                        'href': 'href'
-                    }[rtmObj.settings.view.viewType];
-                }
+                var defType = getType(rtmObj, rtmObj.settings.defaultType);
 
                 rtmObj.show(defType);
             },
@@ -215,6 +210,20 @@
             }
         }
     });
+
+    var getType = function(rtmObj, defaultType)
+    {
+        var defType = defaultType || rtmObj.settings.view.displayType;
+        if ($.isBlank(defType))
+        {
+            defType = {
+                'tabular': 'table',
+                'blobby': 'blob',
+                'href': 'href'
+            }[rtmObj.settings.view.viewType];
+        }
+        return defType;
+    };
 
     var getConfig = function(type)
     {

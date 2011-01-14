@@ -93,6 +93,11 @@ html, body
       #datasetName, #description.collapsed, .basedOnParent
         display: none
 
+    &.dataset .save
+      display: none
+    &.dataset.minorChange .save
+      display: inline
+
   #actionBox
     height: 100%
     // IE7 doesn't make this box tall enough initially
@@ -154,6 +159,11 @@ html, body
         #shareOptions
           padding-right: 0.5em
           padding-top: 0.3em
+
+          .unsavedView &
+            display: none
+          .minorChange &
+            display: block
 
           li
             display: inline-block

@@ -3,7 +3,7 @@
     if (blist.sidebarHidden.visualize &&
         blist.sidebarHidden.visualize.chartCreate) { return; }
 
-    var isEdit = blist.dataset.type == 'visualization';
+    var isEdit = blist.dataset.type == 'chart';
 
     /*** Common configuration options ***/
 
@@ -465,6 +465,6 @@
         }
     };
 
-    $.gridSidebar.registerConfig(config, 'visualization');
+    $.gridSidebar.registerConfig(config, 'chart');
 
 })(jQuery);

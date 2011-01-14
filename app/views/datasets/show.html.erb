@@ -573,7 +573,7 @@
     blist.sidebarHidden.visualize.calendarCreate = <%= @view.is_alt_view? &&
       (@view.display.type != 'calendar' || !@view.has_rights?('update_view')) %>;
     blist.sidebarHidden.visualize.chartCreate = <%= @view.is_alt_view? &&
-      (@view.display.type != 'visualization' ||
+      (@view.display.type != 'chart' ||
        !@view.has_rights?('update_view')) %>;
     blist.sidebarHidden.visualize.mapCreate = <%= @view.is_alt_view? &&
       (@view.display.type != 'map' || !@view.has_rights?('update_view')) ||

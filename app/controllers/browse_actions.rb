@@ -9,7 +9,7 @@ protected
       :options => [
         {:text => 'Datasets', :value => 'datasets', :class => 'typeBlist'},
         {:text => 'Filtered Views', :value => 'filters', :class => 'typeFilter'},
-        {:text => 'Charts', :value => 'charts', :class => 'typeVisualization'},
+        {:text => 'Charts', :value => 'charts', :class => 'typeChart'},
         {:text => 'Maps', :value => 'maps', :class => 'typeMap'},
         {:text => 'Calendars', :value => 'calendars', :class => 'typeCalendar'},
         {:text => 'Forms', :value => 'forms', :class => 'typeForm'}]

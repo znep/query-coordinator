@@ -63,7 +63,7 @@ Dataset.chart.hasRequiredColumns = function(cols, reqCols, includeHidden)
     });
 };
 
-Dataset.modules['visualization'] =
+Dataset.modules['chart'] =
 {
     supportsSnapshotting: function()
     {

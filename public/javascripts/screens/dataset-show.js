@@ -61,7 +61,6 @@ $(function()
             var rt = $.urlParam($(this).attr('href'), 'defaultRender') ||
                 blist.dataset.displayType || 'table';
             if (rt == 'richList') { rt = 'fatrow'; }
-            if (rt == 'visualization') { rt = 'chart'; }
             // Would call show on renderTypeManager; but updating the
             // dataset fires an event that RTM listens to
             blist.dataset.update({displayType: rt}, false, true);
@@ -75,8 +74,6 @@ $(function()
             .addClass(newType + '-renderType');
         prevType = newType;
 
-        // chart = visualization for legacy reasons
-        if (newType == 'chart') { newType = 'visualization'; }
         $('#renderTypeOptions li a').removeClass('active');
         $('#renderTypeOptions li .' + newType).addClass('active');
     });

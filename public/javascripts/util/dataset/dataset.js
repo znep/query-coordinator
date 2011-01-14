@@ -9,7 +9,7 @@
         blobby data, or an href.  Possible values: 'tabular', 'blobby', 'href'
     + type: set by this Model, it rolls up several pieces of data to give a simple
         type for the Dataset that code can check against.  Possible values:
-        'blist', 'filter', 'grouped', 'visualization', 'map', 'form', 'calendar',
+        'blist', 'filter', 'grouped', 'chart', 'map', 'form', 'calendar',
         'blob', 'href'
     + styleClass: set by this Model, this can be set as a class on an HTML element
         to pick up styling for this type of Dataset
@@ -2120,7 +2120,7 @@ function getType(ds)
     else if (ds.viewType == 'href') { type = 'href'; }
     else if (_.include(ds.flags || [], 'default')) { type = 'blist'; }
 
-    else if (_.include(VIZ_TYPES, type)) { type = 'visualization'; }
+    else if (_.include(VIZ_TYPES, type)) { type = 'chart'; }
     else if (_.include(MAP_TYPES, type)) { type = 'map'; }
 
     else if (!$.isBlank(ds.query) && !$.isBlank(ds.query.groupBys) &&
@@ -2146,9 +2146,6 @@ function getDisplayName(ds)
             break;
         case 'grouped':
             retType = 'grouped view';
-            break;
-        case 'visualization':
-            retType = 'chart';
             break;
         case 'blob':
             retType = 'embedded file';

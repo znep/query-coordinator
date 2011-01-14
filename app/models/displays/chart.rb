@@ -4,6 +4,6 @@ class Displays::Chart < Displays::Base
   end
 
   def type
-    'visualization'
+    'chart'
   end
 end

@@ -628,7 +628,7 @@
       font-weight: normal
 
     .filterPane.notAdvanced .advanced
-      display: none
+      display: none !important // yeah, yeah. it is not really a style anyway.
 
     .noFilterConditionsText
       color: #888
@@ -646,8 +646,13 @@
         padding: 0.7em
         position: relative
 
+        &:hover
+          .filterRemoveButton, .filterOptionsMenu
+            display: block
+
         .filterRemoveButton
           @include sprite-menu-icons
+          display: none
           position: absolute
           right: 0.3em
           top: 0.3em
@@ -716,8 +721,12 @@
           .labels.lat_long, .latitude, .street, .city_state_zip
             display: none
 
+        .noAutoValuesMessage
+          font-weight: bold
+
     .filterOptionsMenu
       bottom: 0.4em
+      display: none
       position: absolute
       right: 0.4em
 

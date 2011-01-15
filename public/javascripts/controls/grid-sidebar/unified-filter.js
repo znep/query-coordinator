@@ -712,6 +712,8 @@
                                 $line.remove();
                             }
                         });
+
+                        delete metadata.includeAuto;
                         parseFilters();
                     }
                     else

@@ -974,8 +974,8 @@
         var positionCellOverlay = function($container, $refCell, animate, curSize)
         {
             // Locate a position for the expansion.  We prefer the expansion to
-            // align top-left with the cell but do our best to ensure the
-            // expansion remains within the viewport
+            // align top-left with the cell, but can lock to one of the other
+            // edges if it fits better there
             //
             // Note that -1 on top but not left assumes top border is on cell
             // above (and is 1px) but left border is on this cell.  More flexible
@@ -992,36 +992,55 @@
             var top = $refCell.offset().top - $parent.offset().top -
                 1 + $parent.scrollTop();
             var origOffset = { top: top, left: left };
+            var maxWidth;
+            var maxHeight;
 
             // Ensure viewport is in the window horizontally
             var contWidth = curSize ? curSize.width : $container.outerWidth();
             var viewportWidth = $scrolls.width();
-            if ($scrolls[0].scrollHeight > $scrolls[0].clientHeight) {
+            if ($scrolls[0].scrollHeight > $scrolls[0].clientHeight)
+            {
                 viewportWidth -= scrollbarWidth;
             }
             var scrollLeft = $scrolls.scrollLeft();
-            if (left + contWidth > scrollLeft + viewportWidth) {
-                left = scrollLeft + viewportWidth - contWidth;
+            var refWidth = $refCell.outerWidth();
+            // If the left end falls off the edge, then check if we can get
+            // more space by expanding from the right
+            if (left + contWidth > scrollLeft + viewportWidth &&
+                left + refWidth - scrollLeft > scrollLeft + viewportWidth - left)
+            {
+                maxWidth = left + refWidth - scrollLeft;
+                left -= Math.min(maxWidth, contWidth) - refWidth;
             }
-            if (left < scrollLeft) {
-                left = scrollLeft;
-            }
+            else { maxWidth = scrollLeft + viewportWidth - left; }
 
             // Ensure viewport is in the window vertically
             var contHeight = curSize ? curSize.height : $container.outerHeight();
             var viewportHeight = $scrolls.height();
-            if ($scrolls[0].scrollWidth > $scrolls[0].clientWidth) {
+            if ($scrolls[0].scrollWidth > $scrolls[0].clientWidth)
+            {
                 viewportHeight -= scrollbarWidth;
             }
+
             // Figure out how much the parent is scrolled by, plus the offset
             // of the parent from the viewport
             var scrollTop = $parent.scrollTop() +
                 ($scrolls.offset().top - $parent.offset().top);
-            if (top + contHeight > scrollTop + viewportHeight) {
-                top = scrollTop + viewportHeight - contHeight;
+            var refHeight = $refCell.outerHeight();
+
+            // If the bottom falls off the edge, see if aligning it to the
+            // bottom will help
+            if (top + contHeight > scrollTop + viewportHeight &&
+                top + refHeight - scrollTop > scrollTop + viewportHeight - top)
+            {
+                maxHeight = top + refHeight - scrollTop;
+                top -= Math.min(maxHeight, contHeight) - refHeight;
             }
-            if (top < scrollTop - 1) {
-                top = scrollTop - 1;
+            else
+            {
+                maxHeight = scrollTop + viewportHeight - top;
+                if ($footerScrolls.is(':visible'))
+                { maxHeight -= $footerScrolls.outerHeight() - 1; }
             }
 
             if (!animate)
@@ -1030,6 +1049,8 @@
             }
             $container.css('top', origOffset.top + 'px');
             $container.css('left', origOffset.left + 'px');
+            $container.css('max-width', maxWidth + 'px');
+            $container.css('max-height', maxHeight + 'px');
 
             return ({left: left, top: top});
         };
@@ -1040,6 +1061,7 @@
             $expandCells.eq(0).addClass('blist-first');
             $expandCells.eq($expandCells.length - 1).addClass('blist-last');
 
+            $container.css('max-width', '').css('max-height', '');
             // Determine the cell's "natural" size
             var rc = { width: $container.outerWidth(),
                 height: $container.outerHeight() };

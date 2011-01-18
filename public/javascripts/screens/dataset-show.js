@@ -106,8 +106,8 @@ $(function()
     var $dataGrid = datasetPageNS.rtManager.$domForType('table');
 
 
-    $(document).bind(blist.events.DISPLAY_ROW, function()
-            { datasetPageNS.rtManager.show('page'); });
+    $(document).bind(blist.events.DISPLAY_ROW, function(e, rowId)
+            { datasetPageNS.rtManager.show('page', {defaultRowId: rowId}); });
 
     // sidebar and sidebar tabs
     datasetPageNS.sidebar = $('#gridSidebar').gridSidebar({

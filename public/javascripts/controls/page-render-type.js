@@ -69,6 +69,8 @@
 
                 if (!$.isBlank(prtObj.settings.defaultRowId))
                 { prtObj.displayRowByID(prtObj.settings.defaultRowId); }
+
+                resizeHandle(prtObj);
             },
 
             $dom: function()

@@ -1,3 +1,7 @@
+<% content_for :head do %>
+  <link type="text/css" rel="stylesheet" href="/stylesheets/displays-form.css" />
+<% end %>
+
 <form class='formView socrataForm commonForm' method='POST'
   <%- form_columns = @view.columns.select {|c| c.form_enabled?} -%>
   <%- if form_columns.any? {|c| c.client_type == 'document_obsolete' ||

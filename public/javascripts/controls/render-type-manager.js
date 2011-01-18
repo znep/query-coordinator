@@ -187,7 +187,7 @@
                 return this._$dom;
             },
 
-            show: function(type)
+            show: function(type, defArgs)
             {
                 var rtmObj = this;
                 var typeInfo = getConfig(type);
@@ -195,7 +195,7 @@
                 rtmObj.currentType = type;
                 if (!rtmObj.settings.view.valid) { return; }
 
-                initType(rtmObj, type);
+                initType(rtmObj, type, defArgs);
 
                 if (typeInfo.$dom.is(':visible')) { return; }
 
@@ -240,7 +240,7 @@
         }
     };
 
-    var initType = function(rtmObj, type)
+    var initType = function(rtmObj, type, defArgs)
     {
         var typeInfo = getConfig(type);
         if (typeInfo._initialized) { return; }
@@ -255,7 +255,7 @@
             if (_.isFunction($.fn[typeInfo.initFunction]))
             {
                 $dom[typeInfo.initFunction]($.extend({view: rtmObj.settings.view},
-                    rtmObj.settings[typeInfo.name]));
+                    rtmObj.settings[typeInfo.name], defArgs));
             }
             else if (_.isFunction(typeInfo.initFunction))
             {

@@ -278,7 +278,6 @@ html, body
       display: none
 
     .ie7 &
-      z-index: 1
       > ul > li
         display: inline
 
@@ -353,6 +352,10 @@ html, body
       right: 0
     .sidebarOptionsContainer
       position: static
+  #editBar
+    .ie7 &
+      position: relative
+      z-index: 10
 
 .aboutLoad
   height: 100px

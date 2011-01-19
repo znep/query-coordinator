@@ -69,7 +69,9 @@
                     var $t = $(this);
                     if (!$t.is(':visible')) { return; }
 
-                    $t.find(fsObj.settings.fullHeightSelector + ':visible')
+                    // IE7 would hang/take a long time switching render types
+                    // if the selector + :visible was run in one shot
+                    $t.find(fsObj.settings.fullHeightSelector).filter(':visible')
                         .each(function()
                         {
                             var $f = $(this);

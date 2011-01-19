@@ -66,6 +66,8 @@
                     mainUpdate();
                 });
                 frObj.$dom().bind('hide', function() { frObj._shown = false; });
+
+                resizeHandle(frObj);
             },
 
             $dom: function()

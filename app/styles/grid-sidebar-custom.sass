@@ -731,14 +731,16 @@
         .noAutoValuesMessage
           font-weight: bold
 
+      .filterOptionsMenu
+        display: none
+
+        &.open
+          display: block !important
+
     .filterOptionsMenu
       bottom: 0.4em
-      display: none
       position: absolute
       right: 0.4em
-
-      &.open
-        display: block !important
 
       .filterOptionsMenuButton
         @include sprite-menu-icons

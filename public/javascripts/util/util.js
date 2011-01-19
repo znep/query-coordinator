@@ -383,6 +383,34 @@ $.removeItemsFromObject = function(obj, index, numItems)
     $.extend(obj, tmp);
 };
 
+$.keyValueToObject = function(key, value)
+{
+    var temp = {};
+    temp[key] = value;
+    return temp;
+};
+
+$.subKeyDefined = function(obj, keystring)
+{
+    if (_.isUndefined(obj) || !_.isString(keystring))
+    {
+        return false;
+    }
+
+    var objIter = obj;
+    var keys = keystring.split('.');
+    while (keys.length > 0)
+    {
+        objIter = objIter[keys[0]];
+        if (_.isUndefined(objIter))
+        {
+            return false;
+        }
+        keys.shift();
+    }
+    return true;
+};
+
 $.safeId = function(id)
 { return id.replace(/(\.|\:)/g, '\\$1'); };
 

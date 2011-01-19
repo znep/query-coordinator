@@ -29,6 +29,8 @@
                 mapService = 'esri';
                 plotStyle  = 'heatmap';
             }
+            if (blist.dataset.isArcGISDataset())
+            { mapService = 'esri'; }
 
             var mapClass = $.socrataMap[mapService];
             if (!$.isBlank(mapClass))

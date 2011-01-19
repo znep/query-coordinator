@@ -33,6 +33,9 @@
         drop_down_list: 'EQUALS',
         dataset_link: 'EQUALS' // ??
     };
+    var forceTextRender = [
+        'percent', 'url'
+    ];
     var operatorNames = {
         EQUALS: 'is',
         NOT_EQUALS: 'is not',
@@ -85,19 +88,7 @@
             var $this = $(this);
             if (!_.include(filterableColumns, $this.popupSelect_selectedItems()[0]))
             {
-                var $filter = $this.closest('.filterCondition');
-
-                var rootCondition = $pane.data('unifiedFilter-root');
-                rootCondition.children = _.without(rootCondition.children,
-                    $filter.data('unifiedFilter-condition').condition);
-
-                if ($filter.siblings().length === 1)
-                {
-                    // this is the last filter.
-                    $pane.find('.noFilterConditionsText').show();
-                }
-
-                $filter.remove();
+                removeFilter($this.closest('.filterCondition'));
                 needsParse = true;
             }
             else
@@ -412,6 +403,14 @@
         return result;
     };
 
+    // not terribly complex, but annoying to do over and over
+    var keyValueToObject = function(key, value)
+    {
+        var temp = {};
+        temp[key] = value;
+        return temp;
+    };
+
 /////////////////////////////////////
 // RENDER+EVENTS
 
@@ -478,27 +477,7 @@
         {
             event.preventDefault();
 
-            var rootCondition = $pane.data('unifiedFilter-root');
-            rootCondition.children = _.without(rootCondition.children,
-                $filter.data('unifiedFilter-condition').condition);
-
-            if ($filter.siblings().length === 1)
-            {
-                // this is the last filter.
-                $pane.find('.noFilterConditionsText').show();
-            }
-
-            // before we can remove we have to destroy all bt's
-            $filter.find('.filterLink').each(function()
-            {
-                var tip = $(this).data('popupSelect-tip');
-                if (!_.isUndefined(tip))
-                {
-                    tip.destroy();
-                }
-            });
-
-            $filter.remove();
+            removeFilter($filter);
             parseFilters();
         });
         $filter.find('.filterExpander').click(function(event)
@@ -573,12 +552,7 @@
                 }
 
                 metadata.tableColumnId = newColumn.tableColumnId;
-                _.defer(function()
-                {
-                    // column select tip fails to close if the parent is removed first
-                    $filter.replaceWith(renderCondition(condition));
-                    parseFilters();
-                });
+                replaceFilter($filter, condition);
 
                 return true;
             },
@@ -616,12 +590,7 @@
                     metadata.customValues = [];
                     metadata.operator = newOperator.value;
 
-                    _.defer(function()
-                    {
-                        // column select tip fails to close if the parent is removed first
-                        $filter.replaceWith(renderCondition(condition));
-                        parseFilters();
-                    });
+                    replaceFilter($filter, condition);
 
                     return true;
                 }
@@ -748,8 +717,7 @@
                 {
                     metadata.multiSelect = ($this.attr('data-actionTarget') === 'many');
 
-                    $filter.replaceWith(renderCondition(condition));
-                    parseFilters();
+                    replaceFilter($filter, condition);
                 }
                 else if ($entry.hasClass('matchAnyOrAll'))
                 {
@@ -789,11 +757,16 @@
             _.each(condition.children || [], function(child, i)
             {
                 var value = findConditionComponent(condition, 'value', i);
+                if (!_.isUndefined(metadata.subcolumn))
+                {
+                    value = keyValueToObject(metadata.subcolumn, value);
+                }
+
                 var childMetadata = child.metadata || {};
                 addFilterLine({ item: value }, column, condition, $filter, filterUniqueId,
                               { selected: ((metadata.multiSelect !== false) || (i === 0)),
                                 freeform: !!childMetadata.freeform });
-                usedValues.push(value);
+                usedValues.push(_.isUndefined(metadata.subcolumn) ? value : value[metadata.subcolumn]);
             });
 
             // autogen values
@@ -831,9 +804,54 @@
             .append($filter);
         $filter.slideDown();
 
-        // updateFilter($filter); // do we need?
-
         return $filter;
+    };
+
+    // remove a filter entirely
+    var removeFilter = function($filter)
+    {
+        prepFilterRemoval($filter, function()
+        {
+            var rootCondition = $pane.data('unifiedFilter-root');
+            rootCondition.children = _.without(rootCondition.children,
+                $filter.data('unifiedFilter-condition').condition);
+
+            if ($filter.siblings().length === 1)
+            {
+                // this is the last filter.
+                $pane.find('.noFilterConditionsText').show();
+            }
+
+            $filter.remove();
+        });
+    };
+
+    // replace a filter box with a new one to reflect changes
+    var replaceFilter = function($filter, condition)
+    {
+        prepFilterRemoval($filter, function()
+        {
+            $filter.replaceWith(renderCondition(condition));
+            parseFilters();
+        });
+    };
+
+    // core of both remove and replaceFilter
+    var prepFilterRemoval = function($filter, callback)
+    {
+        _.defer(function()
+        {
+            $filter.find('.filterLink').each(function()
+            {
+                var tip = $(this).data('popupSelect-tip');
+                if (!_.isUndefined(tip))
+                {
+                    tip.destroy();
+                }
+            });
+
+            _.defer(callback);
+        });
     };
 
     // add a single filter item to a condition
@@ -894,9 +912,7 @@
                 var editorValue = _.isArray(valueObj) ? valueObj.item[i] : valueObj.item;
                 if (!_.isUndefined(metadata.subcolumn))
                 {
-                    var newValue = {};
-                    newValue[metadata.subcolumn] = editorValue;
-                    editorValue = newValue;
+                    editorValue = keyValueToObject(metadata.subcolumn, editorValue);
                 }
 
                 $this.data('unifiedFilter-editor',
@@ -983,9 +999,10 @@
                 contents: _.map($.arrayify(valueObj.item), function(valueObjPart, i)
                 {
                     var response = (i > 0) ? ' and ' : '';
-                    if (options.textOnly === true)
+                    if ((options.textOnly === true) || _.include(forceTextRender, column.renderTypeName))
                     {
-                        response += valueObjPart.toString();
+                        response += _.isUndefined(metadata.subcolumn) ? valueObjPart.toString() :
+                                                                        valueObjPart[metadata.subcolumn].toString();
                     }
                     else
                     {
@@ -1088,15 +1105,21 @@
             // iter through originals with count
             _(topCount).times(function(i)
             {
-                if (!_.contains(usedValues, column.cachedContents.top[i].item))
+                var top = column.cachedContents.top[i];
+                var topValue = _.isUndefined(metadata.subcolumn) ? top.item : top.item[metadata.subcolumn];
+
+                if (_.isUndefined(topValue))
                 {
-                    addFilterLine(column.cachedContents.top[i], column, condition, $filter,
+                    return;
+                }
+                if (!_.contains(usedValues, topValue))
+                {
+                    addFilterLine(top, column, condition, $filter,
                                   filterUniqueId, { autogenerated: true });
+
+                    internallyUsedValues.push(top.item);
                 }
             });
-
-            // save off the item values to compare with later
-            internallyUsedValues = usedValues.concat(_.pluck(column.cachedContents.top.slice(0, topCount), 'item'));
         }
         else if (_.include(['BETWEEN', 'LESS_THAN', 'LESS_THAN_OR_EQUALS',
                             'GREATER_THAN', 'GREATER_THAN_OR_EQUALS'], metadata.operator) &&

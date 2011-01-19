@@ -208,7 +208,14 @@
 
         $(document).unbind('click.menu');
         $menuContainer.removeClass('open');
-        $menuDropdown.fadeOut(200);
+        if ($menuContainer.is(':visible'))
+        {
+            $menuDropdown.fadeOut(200);
+        }
+        else
+        {
+            $menuDropdown.hide();
+        }
     };
 
     $.fn.menu.defaults = {

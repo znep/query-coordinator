@@ -690,6 +690,13 @@
             left: 0.3em
             right: 0.3em
 
+        .blist-checkbox
+          width: 14px
+
+        .blist-phone-icon
+          display: inline-block
+          position: static
+
         // editor styling
         .blist-table-editor.type-location
           .labels.street, .labels.city_state_zip
@@ -729,6 +736,9 @@
       display: none
       position: absolute
       right: 0.4em
+
+      &.open
+        display: block !important
 
       .filterOptionsMenuButton
         @include sprite-menu-icons

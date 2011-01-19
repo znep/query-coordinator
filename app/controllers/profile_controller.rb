@@ -1,4 +1,5 @@
 class ProfileController < ApplicationController
+  ssl_required :update_account
   include BrowseActions
   skip_before_filter :require_user, :only => [:show]
 

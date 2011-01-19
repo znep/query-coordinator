@@ -149,8 +149,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :profile, :member => {
     :create_friend => :get,
-    :delete_friend => :get,
-    :update_account => :put
+    :delete_friend => :get
+    # :update_account => :put has been moved to the https block below, because it sends a password in cleartext.
   }, :except => [:show]
 
   # Profile SEO urls (only add here if the action has a view with it;
@@ -320,6 +320,8 @@ ActionController::Routing::Routes.draw do |map|
     https.rpx_login '/login/rpx_login', :controller => 'rpx', :action => 'login'
     https.rpx_signup '/login/rpx_signup', :controller => 'rpx', :action => 'signup'
     https.add_rpx_token '/account/add_rpx_token', :controller => 'accounts', :action => 'add_rpx_token'
+    https.update_account_profile '/profile/:id/update_account', :controller => 'profile', :action => 'update_account',
+      :conditions => { :method => [:post, :put] }, :requirements => { :id => UID_REGEXP }
   end
 
   map.resource :account

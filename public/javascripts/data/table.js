@@ -3013,6 +3013,7 @@
                 '(row.level > 0 ? " blist-tr-sub" : ""), ' +
                 '(row.type ? " blist-tr-" + row.type : ""), ' +
                 '(row.expanded ? " blist-tr-open" : ""), ' +
+                '(row.pending ? " blist-tr-pending" : ""), ' +
                 '(row.groupLast ? " last" : ""), ' +
                 '"\' style=\'top: ", ' +
                 '(index * ' + rowOffset + '), "px\'';

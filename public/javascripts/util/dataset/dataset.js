@@ -384,6 +384,8 @@ this.Dataset = Model.extend({
         var pendReq;
         var finish = start + len - 1;
         var loaded = [];
+        var pendingRemoved = [];
+        var now = new Date().getTime();
 
         var doLoaded = function()
         {
@@ -398,6 +400,16 @@ this.Dataset = Model.extend({
             ($.isBlank(ds.totalRows) || start < ds.totalRows))
         {
             var r = ds._rows[start];
+            // If this is an expired pending orw, clean it out and mark
+            // it null so it gets reloaded
+            if (!$.isBlank(r) && r.pending && now > r.expires)
+            {
+                delete ds._rows[r.index];
+                delete ds._rowIDLookup[r.id];
+                pendingRemoved.push(r);
+                r = null;
+            }
+
             if ($.isBlank(r))
             {
                 doLoaded();
@@ -456,6 +468,9 @@ this.Dataset = Model.extend({
         }
 
         doLoaded();
+
+        if (pendingRemoved.length > 0)
+        { ds.trigger('row_change', [pendingRemoved, true]); }
 
         if (!$.isBlank(curReq))
         {
@@ -1432,7 +1447,40 @@ this.Dataset = Model.extend({
 
             if (fullLoad) { ds._clearTemporary(); }
 
-            var rows = ds._addRows(result.data.data || result.data, start, cols);
+            var rows;
+            // If this result is marked pending, then we got no data, and we need
+            // placeholder rows
+            if (result.pending)
+            {
+                rows = [];
+                var oldRows = [];
+                // Make them expire after a short time, which will force a reload
+                // the next time something wants to render them
+                var expires = new Date().getTime() + 30000;
+                for (var i = 0; i < len; i++)
+                {
+                    var newRow = {invalid: {}, error: {}, changed: {},
+                        index: i + start, pending: true, expires: expires,
+                        id: 'pending_' + _.uniqueId()};
+
+                    // If an existing row, clean it out
+                    if (!$.isBlank(ds._rows[newRow.index]))
+                    {
+                        var oldRow = ds._rows[newRow.index];
+                        oldRows.push(oldRow);
+                        delete ds._rowIDLookup[oldRow.id];
+                    }
+
+                    ds._rows[newRow.index] = newRow;
+                    ds._rowIDLookup[newRow.id] = newRow;
+                    rows.push(newRow);
+                }
+                if (oldRows.length > 0)
+                { ds.trigger('row_change', [oldRows, true]); }
+            }
+            // Normal load
+            else
+            { rows = ds._addRows(result.data.data || result.data, start, cols); }
 
             // Mark all rows as loaded
             for (var i = 0; i < len; i++)
@@ -1529,14 +1577,27 @@ this.Dataset = Model.extend({
         };
 
         var adjRows = [];
+        var oldRows = [];
         _.each(newRows, function(nr, i)
         {
             var r = translateRow(nr, columns || ds.columns);
             r.index = start + i;
+
+            // If a row already exists at this index, clean it out
+            if (!$.isBlank(ds._rows[r.index]))
+            {
+                var oldRow = ds._rows[r.index];
+                oldRows.push(oldRow);
+                delete ds._rowIDLookup[oldRow.id];
+            }
+
             ds._rows[r.index] = r;
             ds._rowIDLookup[r.id] = r;
             adjRows.push(r);
         });
+
+        if (oldRows.length > 0)
+        { ds.trigger('row_change', [oldRows, true]); }
 
         return adjRows;
     },

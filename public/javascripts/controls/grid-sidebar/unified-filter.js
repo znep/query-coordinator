@@ -1563,7 +1563,9 @@
                        cleanFilter($.extend(true, {}, rootCondition))))
         {
             // fire it off
-            blist.dataset.update({query: { filterCondition: $.extend(true, {}, rootCondition) }});
+            blist.dataset.update(
+                {query: $.extend({}, blist.dataset.query,
+                    { filterCondition: $.extend(true, {}, rootCondition) })});
 
             isDirty = true;
         }

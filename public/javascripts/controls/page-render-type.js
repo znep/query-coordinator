@@ -60,6 +60,7 @@
                 prtObj.$dom().bind('show', function()
                 {
                     prtObj._shown = true;
+                    resizeHandle(prtObj);
                     mainUpdate();
                 });
                 prtObj.$dom().bind('hide', function() { prtObj._shown = false; });
@@ -69,8 +70,6 @@
 
                 if (!$.isBlank(prtObj.settings.defaultRowId))
                 { prtObj.displayRowByID(prtObj.settings.defaultRowId); }
-
-                resizeHandle(prtObj);
             },
 
             $dom: function()

@@ -63,11 +63,10 @@
                 frObj.$dom().bind('show', function()
                 {
                     frObj._shown = true;
+                    resizeHandle(frObj);
                     mainUpdate();
                 });
                 frObj.$dom().bind('hide', function() { frObj._shown = false; });
-
-                resizeHandle(frObj);
             },
 
             $dom: function()

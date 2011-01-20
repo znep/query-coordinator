@@ -37,8 +37,9 @@
                 'http://serverapi.arcgisonline.com/jsapi/arcgis/?v=2.1', false,
                 { assets: 'shared-map' }
             ],
-            stylesheets: ['/styles/merged/screen-map.css',
-                'http://serverapi.arcgisonline.com/jsapi/arcgis/1.5/js/dojo/dijit/themes/tundra/tundra.css'],
+            stylesheets: ['http://serverapi.arcgisonline.com/jsapi/arcgis' +
+                '/1.5/js/dojo/dijit/themes/tundra/tundra.css',
+                '/styles/merged/screen-map.css'],
             scrollsInline: true
         },
 

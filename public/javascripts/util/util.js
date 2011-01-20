@@ -480,11 +480,14 @@ $.loadLibraries = function(scriptQueue, callback)
     $L = $L.wait(callback);
 };
 
-$.loadStylesheets = function(sheetQueue)
+$.loadStylesheets = function(sheetQueue, callback)
 {
     var sheets = _.reject($.arrayify(sheetQueue), function(item)
     { return blist.util.lazyLoadedAssets[item]; });
 
+    var loadedCount = 0;
+    var reqCount = sheets.length;
+    var sheetPieces = '';
     _.each(sheets, function(sheet)
     {
         var url = sheet;
@@ -495,22 +498,46 @@ $.loadStylesheets = function(sheetQueue)
                 $.param({'_': (new Date()).valueOf()});
         }
 
-        // Internet explorer is wonky
-        if (document.createStyleSheet)
+        if (url.startsWith('http://') || url.startsWith('https://'))
         {
-            document.createStyleSheet(url);
+            // If the stylesheet is external, then just insert a style tag
+            // and hope you don't need to know when it is fully loaded...
+            reqCount--;
+            // Internet explorer is wonky
+            if (document.createStyleSheet)
+            {
+                document.createStyleSheet(url);
+            }
+            else
+            {
+                var link = $('<link>')
+                    .attr({
+                        type: 'text/css',
+                        rel: 'stylesheet',
+                        href: url
+                    });
+
+                $('head').append(link);
+            }
         }
         else
         {
-            var link = $('<link>')
-                .attr({
-                    type: 'text/css',
-                    rel: 'stylesheet',
-                    href: url
-                });
-
-            $('head').append(link);
+            // Otherwise, we can load it via Ajax and insert them all once they're
+            // ready
+            $.ajax({url: url, type: 'GET', contentType: 'text/css',
+                dataType: 'text', success: function(resp)
+                {
+                    sheetPieces += resp;
+                    loadedCount++;
+                    if (loadedCount == reqCount)
+                    {
+                        $('head').append('<style type="text/css">' +
+                            sheetPieces + '</style>\n');
+                        if (_.isFunction(callback)) { callback(); }
+                    }
+                }});
         }
+
         blist.util.lazyLoadedAssets[sheet] = true;
     });
 };

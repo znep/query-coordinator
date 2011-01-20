@@ -21,7 +21,7 @@
         <p>
           <span class="fieldName"><%= field.capitalize %></span>
           <span class="fieldValue">
-            <%= raw(auto_link(h(token.data[field]))) %>
+            <%= raw(auto_link(h(token.data[field]), :html => { :rel=> 'external' })) %>
           </span>
         </p>
       <%- end -%>

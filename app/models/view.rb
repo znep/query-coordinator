@@ -242,6 +242,16 @@ class View < Model
     parse(CoreServer::Base.connection.delete_request(path))
   end
 
+  def self.thumbnail_for(viewId, params = {})
+    params.merge!({
+      :app_token => APP_CONFIG['app_token'],
+      :method => 'get',
+      :name => 'page',
+      :size => 'thumb'
+    })
+    "/api/views/#{viewId}/snapshots?#{params.to_param}"
+  end
+
   def delete_favorite
     self.data['flags'].delete("favorite")
     self.class.delete_favorite(self.id)
@@ -376,7 +386,11 @@ class View < Model
 
   def blob_href
     if is_blobby?
-      return "/api/file_data/#{blobId}?filename=" + URI.escape(blobFilename)
+      opts = {
+        :filename => URI.escape(blobFilename),
+        :app_token => APP_CONFIG['app_token']
+      }
+      return "/api/file_data/#{blobId}?#{opts.to_param}"
     end
   end
 

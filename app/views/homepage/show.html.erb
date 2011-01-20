@@ -29,7 +29,7 @@
           <div class="featuredView">
             <%- if view['display'] == 'thumbnail' -%>
               <a href="<%= @view_urls[view.viewId] %>">
-                <img src="/api/views/<%= view.viewId %>/snapshots?method=get&amp;name=page&amp;size=thumb" alt="<%= view.title %>" />
+                <img src="<%= View.thumbnail_for(view.viewId)%>" alt="<%= view.title %>" />
               </a>
             <%- else -%>
               <div class="statContainer">

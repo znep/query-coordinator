@@ -486,8 +486,8 @@
         $pane.toggleClass('notAdvanced', !rootCondition.metadata.advanced);
 
         // set menu to current state
-        $('.mainFilterOptionsMenu .matchAnyOrAll').removeClass('checked')
-            .filter('[data-actionTarget=' + rootCondition.value + ']').addClass('checked');
+        $pane.find('.mainFilterOptionsMenu .matchAnyOrAll').removeClass('checked')
+            .filter(':has(>a[data-actionTarget=' + rootCondition.value + '])').addClass('checked');
 
         // data
         $pane.data('unifiedFilter-root', rootCondition);
@@ -1036,11 +1036,17 @@
                 'for': inputId,
                 contents: _.map($.arrayify(valueObj.item), function(valueObjPart, i)
                 {
+                    var valueObjSubpart = valueObjPart;
+                    if (!_.isUndefined(metadata.subcolumn))
+                    {
+                        valueObjSubpart = valueObjPart[metadata.subcolumn];
+                        valueObjPart = $.keyValueToObject(metadata.subcolumn, valueObjSubpart);
+                    }
+
                     var response = (i > 0) ? ' and ' : '';
                     if ((options.textOnly === true) || _.include(forceTextRender, column.renderTypeName))
                     {
-                        response += _.isUndefined(metadata.subcolumn) ? valueObjPart.toString() :
-                                                                        valueObjPart[metadata.subcolumn].toString();
+                        response += valueObjSubpart.toString();
                     }
                     else
                     {
@@ -1050,13 +1056,15 @@
                         }
                         catch (ex)
                         {
-                            response += valueObjPart.toString();
+                            response += valueObjSubpart.toString();
                         }
                     }
                     return response;
                 })
             }));
-            if (!_.isUndefined(valueObj.count))
+
+            // if subcolumn, count is invalid since server is counting entire value, not subvalue
+            if (!_.isUndefined(valueObj.count) && _.isUndefined(metadata.subcolumn))
             {
                 $line.append($.tag({
                 tagName: 'span',

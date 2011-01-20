@@ -24,7 +24,7 @@ class AppToken < Model
       return
     end
     # Nil size means no geometry, get full image
-    opts = { :size => size }
+    opts = { :size => size, :app_token => APP_CONFIG['app_token'] }
     "/api/file_data/#{data['thumbnailSha']}?#{opts.to_param}"
   end
 

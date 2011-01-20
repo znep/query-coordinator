@@ -6,6 +6,7 @@ default: &default
   rpx_windowslive_url: https://socrata-test.rpxnow.com/liveid/start
   rpx_twitter_url: https://socrata-test.rpxnow.com/twitter/start
   rpx_openid_url: https://socrata-test.rpxnow.com/openid/start
+  app_token: U29jcmF0YS0td2VraWNrYXNz0
 
 # Local development
 development:

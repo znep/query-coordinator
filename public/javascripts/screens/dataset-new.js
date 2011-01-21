@@ -43,6 +43,15 @@ $(function()
         var mapLayerSuccessCallback = function(newDS)
         {
             submittedView = new Dataset(newDS);
+
+            if (!_.isUndefined(viewData.metadata))
+            {
+                viewData.metadata = submittedView.metadata;
+            }
+            else
+            {
+                viewData.metadata = $.extend(true, viewData.metadata, submittedView.metadata);
+            }
             submittedView.update(viewData);
             submittedView.save(successCallback, errorCallback);
         };

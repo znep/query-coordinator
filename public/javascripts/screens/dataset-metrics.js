@@ -21,7 +21,6 @@ $(function()
             {id: 'detailFilters',   displayName: 'Filters',  detail: 'filters-created'},
             {id: 'detailCharts',    displayName: 'Charts',   detail: 'charts-created'},
             {id: 'detailMaps',      displayName: 'Maps',     detail: 'maps-created'},
-            {id: 'detailRatings',   displayName: 'Ratings',  detail: 'ratings-count'},
             {id: 'detailComments',  displayName: 'Comments', detail: 'comments-created'}
         ],
         summarySections: [

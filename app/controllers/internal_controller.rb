@@ -4,6 +4,9 @@ class InternalController < ApplicationController
   def index
   end
 
+  def analytics
+  end
+
   def index_orgs
     @orgs = Organization.find()
   end

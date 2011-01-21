@@ -2,6 +2,9 @@
 
 (function($)
 {
+    /*
+     * Helper Functions
+     */
     var fireSectionUpdate = function(section, $screen, urlBase, startDate, endDate, slice)
     {
         var $section = $screen.find('#' + section.id),
@@ -14,7 +17,11 @@
 
         // Either a custom method, top method, or index
         if (!$.isBlank(series))
-        { url = url + '&method=series&slice=' + slice; }
+        {
+            url = url + '&method=series&slice=' + slice;
+            if (section.type)
+                url = url + '&type=' + section.type;
+        }
         else if (!$.isBlank(section.top))
         {
             url = url + '&method=top&top=' + section.top;
@@ -35,7 +42,7 @@
                     .data(metricsNS.DATA_KEY,   data)
                     .closest('.container').removeClass('metricsError');
                 if (_.isFunction(section.callback))
-                { section.callback($section, slice); }
+                { section.callback($section, slice, section); }
             },
             error: function(request, textStatus, error)
             {
@@ -44,9 +51,9 @@
                 { section.error($section, request, textStatus, error); }
             }
         });
-    };
+    },
 
-    var subChartTypeChanged = function($link, sliceDepth)
+    subChartTypeChanged = function($link, sliceDepth)
     {
         // Swap out the menu's text for the current selection
         var chartName = $.trim($link.text()),
@@ -61,34 +68,61 @@
             JSON.parse($link.attr(metricsNS.SERIES_KEY)));
         // Re-draw chart via callback
         redrawChart(chart, sliceDepth);
-    };
+    },
 
-    var redrawChart = function(chart, sliceDepth, animate)
+    redrawChart = function(chart, sliceDepth, animate)
     {
         chart.data('data-callback')(chart, sliceDepth,
-            {plotOptions: {area: {animation: animate}}} );
-    };
+            $.extend({}, {plotOptions: {area: {animation: animate}}},
+                chart.data('options')
+            ));
+    },
 
-    var refreshData = function($screen, sections, opts,
+    refreshData = function($screen, sections, opts,
             currentStartDate, currentEndDate, currentSlice)
     {
         _.each(sections, function(section)
         { fireSectionUpdate(section, $screen, opts.urlBase,
               currentStartDate, currentEndDate, currentSlice); });
-    };
+    },
 
-    var expandTopSubSection = function(event)
+    expandTopSubSection = function(event)
     {
         event.preventDefault();
         $(event.target).closest('.item').find('.subContainer')
             .slideToggle();
-    };
+    },
 
     // Merge defaults into each of the list's items
-    var mergeItems = function(list, defaults)
+    mergeItems = function(list, defaults)
     {
         return _.map(list, function(item)
             { return $.extend({}, defaults, item); });
+    },
+
+    generateChartMenu = function($chart, section)
+    {
+          $chart
+              .data(metricsNS.SERIES_KEY, section.children[0].series)
+              .parent().siblings('.menu').empty().menu({
+                  additionalJsonKeys: ['series'],
+                  menuButtonContents: '<span class="contents">' +
+                      section.children[0].text + '</span>',
+                  menuButtonTitle: section.children[0].text,
+                  contents: section.children
+          });
+    };
+
+    /*
+     * End helper functions
+     */
+
+    $.fn.metricsChartUpdate = function(options)
+    {
+        var $chart = $(this),
+            mergedOptions = $.extend(true, $chart.data('options'), options);
+        $chart.data('options', mergedOptions);
+        generateChartMenu($chart, mergedOptions);
     };
 
     $.fn.metricsScreen = function(options)
@@ -124,22 +158,13 @@
 
         _.each(chartSections, function(section)
         {
-            var currentChart = chartDisplay.find('#' + section.id);
-
-            currentChart.parent().siblings('.menu').menu({
-                additionalJsonKeys: ['series'],
-                menuButtonContents: '<span class="contents">' +
-                    section.children[0].text + '</span>',
-                menuButtonTitle: section.children[0].text,
-                contents: section.children
-            });
-
-            currentChart.data(metricsNS.SERIES_KEY, section.children[0].series);
+            var $chart= chartDisplay.find('#' + section.id);
+            generateChartMenu($chart, section);
         });
 
         $screen.find('.chartsDisplay').append(chartDisplay);
 
-        $screen.find('.chartContainer .menu ul > li > a').click(function(event)
+        $screen.find('.chartContainer .menu ul > li > a').live('click', function(event)
         {
             event.preventDefault();
             subChartTypeChanged($(event.target).closest('a')
@@ -215,11 +240,19 @@
             currentSlice = newSlice;
         });
 
+        $screen.bind('metricsChartRedraw', function(event)
+        {
+            refreshData($screen, chartSections, options,
+                  startDate, endDate, currentSlice);
+        });
+
         // Store a copy of the necessary information
         _.each(sections, function(section)
         {
             var $section = $screen.find('#' + section.id);
-            $section.data('data-callback', section.callback);
+            $section
+                .data('data-callback', section.callback)
+                .data('options', section);
             if (!$.isBlank(section.dataKeys))
             {
                 _.each(section.dataKeys, function(key)
@@ -313,7 +346,9 @@
     $.fn.metricsScreen.defaults = {
         chartSections: [],
         chartDefaults: {
-            callback: metricsNS.updateChartCallback
+            callback: metricsNS.updateChartCallback,
+            chartType: 'area',
+            stacking: 'normal',
         },
         chartDirective: {
             '.chartContainer' : {

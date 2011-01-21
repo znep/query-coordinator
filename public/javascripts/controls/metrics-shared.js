@@ -146,6 +146,47 @@ metricsNS.topDatasetsCallback = function($context)
     );
 };
 
+// Grab the name and info for an app_token, including thumbnail URL (if present)
+metricsNS.topAppTokensCallback = function($context)
+{
+    metricsNS.updateTopListWrapper($context,
+        $context.data(metricsNS.DATA_KEY),
+        function(key, value, results) {
+            $.socrataServer.addRequest({
+                cache: false,
+                url: '/app_tokens/' + key + '.json',
+                type: 'GET',
+                success: function(response) {
+                    var thumbed = response.thumbnailSha,
+                        klass = thumbed ? 'showThumbnail' : '',
+                        thumbnail = thumbed ? ('/api/file_data/' + response.thumbnailSha +
+                            '?size=tiny&app_token=' + blist.configuration.appToken) : '';
+
+                    results.push({name: response.name || '(deleted)',
+                        extraClass: klass,
+                        value: value,
+                        textValue: Highcharts.numberFormat(value, 0),
+                        thumbnail: thumbnail
+                    });
+                }
+            });
+        },
+        function(data, $context) {
+            var render = function() {
+                metricsNS.renderTopList(data, $context);
+            };
+            // Success won't be called if data is empty
+            if (!$.socrataServer.runRequests({
+                    success: render,
+                    // Some of the batch may have resulted in error, just
+                    // process what we have
+                    error: render
+                }))
+            { render(); }
+        }
+    );
+};
+
 // Take the url maps and transform them into usable links with sublinks
 metricsNS.urlMapCallback = function($context)
 {
@@ -277,6 +318,8 @@ metricsNS.chartLoading = function($chart)
 metricsNS.topListItemDirective = {
   '.item' : {
       'topItem <- ': {
+          '@class+'          : 'topItem.extraClass',
+          '.thumbnail@src'   : 'topItem.thumbnail',
           '.titleText'       : 'topItem.name',
           '.titleLink'       : 'topItem.linkText',
           '.titleLink@href'  : 'topItem.href',

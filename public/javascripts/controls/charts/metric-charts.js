@@ -17,7 +17,7 @@ metricsNS.renderMetricsChart = function(data, $chart, startDate, endDate,
             lineWidth: 4,
             pointInterval: pointInterval,
             pointStart: startDate,
-            stacking: 'normal'
+            stacking: options.stacking
         },
         seriesToPlot = [],
         showLabels = false,
@@ -25,7 +25,9 @@ metricsNS.renderMetricsChart = function(data, $chart, startDate, endDate,
         lineColors = [
             '#0071bc',
             '#990503',
-            '#0A8C24'
+            '#0A8C24',
+            '#E05D0B',
+            '#920BE0'
         ];
 
     // Make highchart series object for each item
@@ -49,7 +51,16 @@ metricsNS.renderMetricsChart = function(data, $chart, startDate, endDate,
                     { ungappedData.push(0); }
                 }
                 intervalEnd = row['__end__'];
-                ungappedData.push((row.metrics || {})[s.method] || 0);
+                var pointData = (row.metrics || {});
+                if (s.numerator)
+                {
+                    ungappedData.push((pointData[s.numerator] /
+                        (pointData[s.denominator] || 1) || 0));
+                }
+                else
+                {
+                    ungappedData.push(pointData[s.method] || 0);
+                }
             });
 
             for(var k = intervalEnd; k < endDate; k += pointInterval)
@@ -87,7 +98,8 @@ metricsNS.renderMetricsChart = function(data, $chart, startDate, endDate,
     // Attributes specific to this chart
     var chartAttributes = $.extend(true, {}, metricsNS.chartDefaults, {
         chart: {
-            renderTo: $chart.attr('id')
+            renderTo: $chart.attr('id'),
+            type: options.chartType
         },
         xAxis: {
             maxZoom: pointInterval
@@ -123,9 +135,9 @@ metricsNS.tooltipFormats = {
 
 metricsNS.chartDefaults = {
     chart: {
-        defaultSeriesType: 'area',
         height: 350,
         margin: [20, 0, 30, 0],
+        type: 'area',
         zoomType: 'x'
     },
     credits: {
@@ -179,7 +191,10 @@ metricsNS.chartDefaults = {
     },
     colors: [
         '#bee6f6',
-        '#ee3c39'
+        '#ee3c39',
+        '#0A8C24',
+        '#E05D0B',
+        '#920BE0'
     ],
     legend: {
         backgroundColor: '#fff',

@@ -38,55 +38,49 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/styles/current_site.css', :controller => 'styles', :action => 'current_site'
   Jammit::Routes.draw(map)
 
-  map.connect '/internal', :controller => 'internal', :action => 'index'
-  map.connect '/internal/orgs', :controller => 'internal', :action => 'create_org',
-    :conditions => { :method => :post }
-  map.connect '/internal/orgs', :controller => 'internal', :action => 'index_orgs'
-  map.connect '/internal/orgs/:id', :controller => 'internal',
-    :action => 'show_org'
-  map.connect '/internal/orgs/:id/domains', :controller => 'internal',
-    :action => 'create_domain', :conditions => { :method => :post }
-  map.connect '/internal/orgs/:org_id/domains/:id', :controller => 'internal',
-    :action => 'show_domain', :requirements => {:id => /(\w|-|\.)+/}
-  map.connect '/internal/orgs/:org_id/domains/:domain_id/preview_site_config',
-    :controller => 'internal', :action => 'preview_site_config',
-    :requirements => {:domain_id => /(\w|-|\.)+/}
-  map.connect '/internal/orgs/:org_id/domains/:domain_id/site_config',
-    :controller => 'internal', :action => 'create_site_config',
-    :requirements => {:domain_id => /(\w|-|\.)+/},
-    :conditions => { :method => :post }
-  map.connect '/internal/orgs/:org_id/domains/:domain_id/default_site_config',
-    :controller => 'internal', :action => 'set_default_site_config',
-    :requirements => {:domain_id => /(\w|-|\.)+/},
-    :conditions => { :method => :post }
-  map.connect '/internal/orgs/:org_id/domains/:domain_id/feature',
-    :controller => 'internal', :action => 'set_features',
-    :requirements => {:domain_id => /(\w|-|\.)+/},
-    :conditions => { :method => :post }
-  map.connect '/internal/orgs/:org_id/domains/:domain_id/aliases',
-    :controller => 'internal', :action => 'update_aliases',
-    :requirements => {:domain_id => /(\w|-|\.)+/},
-    :conditions => { :method => :post }
-  map.connect '/internal/orgs/:org_id/domains/:domain_id/account_modules',
-    :controller => 'internal', :action => 'add_module_to_domain',
-    :requirements => {:domain_id => /(\w|-|\.)+/},
-    :conditions => { :method => :post }
-  map.connect '/internal/orgs/:org_id/domains/:domain_id/site_config/:id',
-    :controller => 'internal', :action => 'show_config',
-    :requirements => {:domain_id => /(\w|-|\.)+/}
-  map.connect '/internal/orgs/:org_id/domains/:domain_id/site_config/:id/property',
-    :controller => 'internal', :action => 'set_property',
-    :requirements => {:domain_id => /(\w|-|\.)+/},
-    :conditions => { :method => :post }
-  map.connect '/internal/orgs/:org_id/domains/:domain_id/site_config/:config_id/edit_property',
-    :controller => 'internal', :action => 'show_property',
-    :requirements => {:domain_id => /(\w|-|\.)+/}
-  map.connect '/internal/tiers', :controller => 'internal',
-    :action => 'index_tiers'
-  map.connect '/internal/tiers/:name', :controller => 'internal',
-    :action => 'show_tier'
-  map.connect '/internal/modules', :controller => 'internal',
-    :action => 'index_modules'
+  map.with_options :controller => 'internal' do |internal|
+    internal.connect '/internal', :action => 'index'
+    internal.connect '/internal/analytics', :action => 'analytics'
+    internal.connect '/internal/orgs', :action => 'create_org',
+      :conditions => { :method => :post }
+    internal.connect '/internal/orgs', :action => 'index_orgs'
+    internal.connect '/internal/orgs/:id', :controller => 'internal',
+      :action => 'show_org'
+    internal.connect '/internal/orgs/:id/domains', :controller => 'internal',
+      :action => 'create_domain', :conditions => { :method => :post }
+    internal.connect '/internal/orgs/:org_id/domains/:id', :controller => 'internal',
+      :action => 'show_domain', :requirements => {:id => /(\w|-|\.)+/}
+    internal.connect '/internal/orgs/:org_id/domains/:domain_id/preview_site_config',
+      :action => 'preview_site_config', :requirements => {:domain_id => /(\w|-|\.)+/}
+    internal.connect '/internal/orgs/:org_id/domains/:domain_id/site_config',
+      :action => 'create_site_config', :requirements => {:domain_id => /(\w|-|\.)+/},
+      :conditions => { :method => :post }
+    internal.connect '/internal/orgs/:org_id/domains/:domain_id/default_site_config',
+      :action => 'set_default_site_config', :requirements => {:domain_id => /(\w|-|\.)+/},
+      :conditions => { :method => :post }
+    internal.connect '/internal/orgs/:org_id/domains/:domain_id/feature',
+      :action => 'set_features', :requirements => {:domain_id => /(\w|-|\.)+/},
+      :conditions => { :method => :post }
+    internal.connect '/internal/orgs/:org_id/domains/:domain_id/aliases',
+      :action => 'update_aliases', :requirements => {:domain_id => /(\w|-|\.)+/},
+      :conditions => { :method => :post }
+    internal.connect '/internal/orgs/:org_id/domains/:domain_id/account_modules',
+      :action => 'add_module_to_domain', :requirements => {:domain_id => /(\w|-|\.)+/},
+      :conditions => { :method => :post }
+    internal.connect '/internal/orgs/:org_id/domains/:domain_id/site_config/:id',
+      :action => 'show_config', :requirements => {:domain_id => /(\w|-|\.)+/}
+    internal.connect '/internal/orgs/:org_id/domains/:domain_id/site_config/:id/property',
+      :action => 'set_property', :requirements => {:domain_id => /(\w|-|\.)+/},
+      :conditions => { :method => :post }
+    internal.connect '/internal/orgs/:org_id/domains/:domain_id/site_config/:config_id/edit_property',
+      :action => 'show_property', :requirements => {:domain_id => /(\w|-|\.)+/}
+    internal.connect '/internal/tiers', :controller => 'internal',
+      :action => 'index_tiers'
+    internal.connect '/internal/tiers/:name', :controller => 'internal',
+      :action => 'show_tier'
+    internal.connect '/internal/modules', :controller => 'internal',
+      :action => 'index_modules'
+  end
 
   map.resources :administration, :as => 'admin',
     :collection => {
@@ -157,30 +151,32 @@ ActionController::Routing::Routes.draw do |map|
 
   # Profile SEO urls (only add here if the action has a view with it;
   # otherwise just add to the :member key in the profile resource above.)
-  map.connect 'profile/:profile_name/:id', :controller => 'profile',
-       :action => 'show', :conditions => { :method => :get },
+  map.with_options :controller => 'profile' do |profile|
+    profile.connect 'profile/:profile_name/:id',
+         :action => 'show', :conditions => { :method => :get },
+         :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+    profile.connect 'profile/:profile_name/:id',
+       :action => 'update', :conditions => { :method => :put },
        :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
-  map.connect 'profile/:profile_name/:id', :controller => 'profile',
-     :action => 'update', :conditions => { :method => :put },
-     :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
-  map.connect 'profile/:profile_name/:id/edit', :controller => 'profile',
-       :action => 'edit', :conditions => { :method => :get },
+    profile.connect 'profile/:profile_name/:id/edit',
+         :action => 'edit', :conditions => { :method => :get },
+         :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+    profile.connect 'profile/:profile_name/:id/image',
+       :action => 'edit_image', :conditions => { :method => :get },
        :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
-  map.connect 'profile/:profile_name/:id/image', :controller => 'profile',
-     :action => 'edit_image', :conditions => { :method => :get },
-     :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
-  map.connect 'profile/:profile_name/:id/app_tokens', :controller => 'profile',
-     :action => 'edit_app_tokens', :conditions => { :method => :get },
-     :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
-  map.connect 'profile/:profile_name/:id/app_token/new', :controller => 'profile',
-     :action => 'create_app_token', :conditions => { :method => :post },
-     :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
-  map.connect 'profile/:profile_name/:id/app_token/:token_id/delete', :controller => 'profile',
-     :action => 'delete_app_token', :conditions => { :method => :post },
-     :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
-  map.profile_account 'profile/:profile_name/:id/account', :controller => 'profile',
-     :action => 'edit_account', :conditions => { :method => :get },
-     :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+    profile.connect 'profile/:profile_name/:id/app_tokens',
+       :action => 'edit_app_tokens', :conditions => { :method => :get },
+       :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+    profile.connect 'profile/:profile_name/:id/app_token/new',
+       :action => 'create_app_token', :conditions => { :method => :post },
+       :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+    profile.connect 'profile/:profile_name/:id/app_token/:token_id/delete',
+       :action => 'delete_app_token', :conditions => { :method => :post },
+       :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+    profile.profile_account 'profile/:profile_name/:id/account',
+       :action => 'edit_account', :conditions => { :method => :get },
+       :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+  end
 
   map.connect 'widgets/:id/:customization_id', :controller => 'widgets',
     :action => 'show', :requirements => {:id => UID_REGEXP}

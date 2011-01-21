@@ -92,6 +92,8 @@ error-pages:
 - screen-error-pages
 internal:
 - screen-internal
+internal-metrics:
+- screen-metrics
 homepage-show:
 - screen-homepage-show
 profile-show:

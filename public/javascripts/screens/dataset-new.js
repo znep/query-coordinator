@@ -217,7 +217,7 @@ $(function()
             var action = $uploadFileButton.attr('href');
             if (isBlobby)
             {
-                action += '&type=blobby';
+                action += '?type=blobby';
             }
             uploader._settings.action = action;
 

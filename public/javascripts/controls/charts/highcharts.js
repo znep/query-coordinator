@@ -467,7 +467,7 @@
 
         if (isDateTime(chartObj))
         {
-            if (!$.isBlank(row))
+            if (!$.isBlank(row) && !row.invalid[chartObj._xColumn.lookup])
             { pt.x = row[chartObj._xColumn.id]; }
             else { pt.x = ''; }
             if (_.isNumber(pt.x)) { pt.x *= 1000; }

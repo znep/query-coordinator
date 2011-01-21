@@ -1122,8 +1122,11 @@ this.Dataset = Model.extend({
             _.each(ds.query.namedFilters, function(nf)
             {
                 if (excludeTemporary && nf.temporary) { return; }
+                if (!$.isBlank(nf.displayTypes) &&
+                    !_.include(nf.displayTypes, ds.displayType)) { return; }
                 nf = $.extend(true, {}, nf);
                 delete nf.temporary;
+                delete nf.displayTypes;
                 newFilters.push(nf);
             });
             if (newFilters.length > 0)
@@ -1259,9 +1262,15 @@ this.Dataset = Model.extend({
         _.each(['namedFilters', 'filterCondition', 'sortBys', 'groupBys'],
             function(k) { if (_.isEmpty(ds.query[k])) { delete ds.query[k]; } });
 
-        if (!_.isEqual(oldQuery, ds.query) || (oldSearch !== ds.searchString))
+        var needQueryChange = oldDispType != ds.displayType &&
+                _.any(ds.query.namedFilters || [], function(nf)
+                    { return _.any(nf.displayTypes || [], function(nd)
+                        { return nd == oldDispType || nd == ds.displayType; }); });
+
+        if (needQueryChange || (oldSearch !== ds.searchString) ||
+                !_.isEqual(oldQuery, ds.query))
         {
-            if (oldSearch !== ds.searchString ||
+            if (needQueryChange || oldSearch !== ds.searchString ||
                 !_.isEqual(oldQuery.filterCondition, ds.query.filterCondition) ||
                 !_.isEqual(oldQuery.namedFilters, ds.query.namedFilters) ||
                 !_.isEqual(oldQuery.groupBys, ds.query.groupBys))
@@ -1272,7 +1281,7 @@ this.Dataset = Model.extend({
             ds._invalidateRows();
         }
 
-        if (!_.isEqual(oldDispType, ds.displayType))
+        if (oldDispType != ds.displayType)
         { ds.trigger('displaytype_change'); }
 
         if (!_.isEqual(oldDispFmt, ds.displayFormat))
@@ -1435,8 +1444,7 @@ this.Dataset = Model.extend({
                 ds.totalRows = result.meta.totalRows;
                 delete ds._rowCountInvalid;
                 delete ds._columnsInvalid;
-                if (!fullLoad &&
-                    !$.isBlank(result.meta.view.query.filterCondition))
+                if (!fullLoad)
                 {
                     result.meta.view.query.filterCondition =
                         ds.query.filterCondition;

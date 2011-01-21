@@ -586,22 +586,21 @@
                 };
 
                 var query = $.extend(true, {}, mapObj.settings.view.query);
-                var filterCondition;
+                var filterCondition = {temporary: true, displayTypes: ['map']};
                 if (!wrapIDL || viewport.xmin < viewport.xmax)
                 {
-                    filterCondition = $.extend(true, {},
-                        buildFilterCondition(viewport), { temporary: true });
+                    filterCondition = $.extend(filterCondition,
+                        buildFilterCondition(viewport));
                 }
                 else
                 {
                     var rightHemi, leftHemi;
                     rightHemi = $.extend({}, viewport, { xmin: -180 });
                     leftHemi  = $.extend({}, viewport, { xmax:  180 });
-                    filterCondition = {
-                        type: 'operator', value: 'OR', temporary: true,
+                    filterCondition = $.extend(filterCondition,
+                        { type: 'operator', value: 'OR',
                         children: _.map([leftHemi, rightHemi], function(hemi)
-                            { return buildFilterCondition(hemi); })
-                    };
+                            { return buildFilterCondition(hemi); }) });
                 }
 
                 query.namedFilters = $.extend(true, query.namedFilters || {},

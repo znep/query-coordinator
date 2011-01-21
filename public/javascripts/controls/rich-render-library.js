@@ -332,11 +332,8 @@
                 contents: $.htmlEscape(cc.name)}));
             // First set up styles; do these all before using them
             // so they get created in the same style block for efficiency
-            if ($.isBlank(blist.styles.getStyle('pageNestedColumn' + cc.id)))
-            {
-                blist.styles.addStyle('pageNestedColumn' + cc.id,
-                    '.richColumn .nested_table table .col' + cc.id);
-            }
+            blist.styles.addStyle('richRender', 'pageNestedColumn' + cc.id,
+                '.richColumn .nested_table table .col' + cc.id);
         });
 
         var $tbody = $table.find('tbody');
@@ -373,8 +370,8 @@
         var padding = $cell.outerWidth() - $cell.width();
         _.each(column.visibleChildColumns, function(cc)
         {
-            blist.styles.getStyle('pageNestedColumn' + cc.id).width =
-                (cc.width - padding) + 'px';
+            blist.styles.getStyle('richRender',
+                'pageNestedColumn' + cc.id).width = (cc.width - padding) + 'px';
         });
     };
 

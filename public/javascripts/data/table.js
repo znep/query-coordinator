@@ -691,7 +691,7 @@
             var row = getRow(cell);
             var col = getColumn(cell);
             if (!col || col.id == 'rowHandleCol' ||
-                col.id == 'rowNumberCol' || 
+                col.id == 'rowNumberCol' ||
                 col.isLinked() ||
                 !row) { return false; }
             var value = model.getRowValue(row, col);
@@ -2362,103 +2362,55 @@
 
         /*** CSS STYLE MANIPULATION ***/
 
+        var sheetName = id + '_blistTable';
         var css;
-        var rowStyle;
-        var unlockedRowStyle;
-        var ghostStyle;
-        var openerStyle;
-        var cellStyle;
-        var groupHeaderStyle;
         var ghostClass;
         var openerClass;
 
-        // Create CSS rules.  Expects an array of rules.  One rule is created
-        // for each entry in the array.  The entry can either be selector text
-        // or an array containing (selector text, variable) to assign a scoped
-        // variable.
-        var cssSheetID = 0;
-        var createCssRules = function(config)
-        {
-            // Create the stylesheet source
-            var cssID = id + '-styles-' + (++cssSheetID);
-            var cssText = [ '<style type="text/css" id="', cssID, '">\n' ];
-            for (var i = 0; i < config.length; i++) {
-                var rule = config[i];
-                if (!$.isArray(rule))
-                    rule = [ rule ];
-                cssText.push(rule[0]);
-                cssText.push(" {}\n")
-            }
-            cssText.push('</style>');
+        // shortcuts for styles
+        var addStyle = function(name, selector)
+        { blist.styles.addStyle(sheetName, name, selector); };
 
-            // Render the rules and retrieve the new Stylesheet object
-            $('head').append(cssText.join(''));
-            var cssElement = $("#" + cssID)[0];
-            for (var i = 0; i < document.styleSheets.length; i++) {
-                var css = document.styleSheets[i];
-                if ((css.ownerNode || css.owningElement) == cssElement)
-                    break;
-                css = null;
-            }
-            if (!css)
-                throw "Unable to locate stylesheet";
-
-            // Collect the rules and/or execute callback
-            var result = [];
-            var rules = css.cssRules || css.rules;
-            for (var i = 0; i < rules.length; i++) {
-                rule = rules[i].style;
-                result.push(rule);
-                if (config[i][1])
-                    eval(config[i][1] + " = rule");
-            }
-
-            return result;
-        }
+        var style = function(name)
+        { return blist.styles.getStyle(sheetName, name); };
 
         // Obtain a CSS class for a column
-        var getColumnClass = function(column) {
-            return id + '-c' + column.id;
-        };
+        var getColumnClass = function(column)
+        { return id + '-c' + column.id; };
 
         // Obtain a CSS style for a column
-        var colStyles = {};
-        var getColumnStyle = function(column) {
-            var result = colStyles[column.id];
+        var getColumnStyle = function(column)
+        {
+            var result = style('column-' + column.id);
             if (!result)
-            {
-                throw "Uninitialized column style access for " + column.id;
-            }
+            { throw "Uninitialized column style access for " + column.id; }
             return result;
         };
+
+        var addColumnStyle = function(column)
+        { addStyle('column-' + column.id, '.' + getColumnClass(column)); };
 
         // Initialize my stylesheet
         (function() {
-            var ruleConfig = [];
             ghostClass = id + "-ghost";
             openerClass = id + "-opener";
 
             // Dynamic style applied to the ghost column
-            ruleConfig.push(["." + ghostClass, "ghostStyle" ]);
+            addStyle('ghostStyle', '.' + ghostClass);
 
             // Dynamic style applied to nested table openers
-            ruleConfig.push(["div." + openerClass, "openerStyle" ]);
+            addStyle('openerStyle', 'div.' + openerClass);
 
             // Dynamic style applied to rows
-            ruleConfig.push([ "#" + id + " .blist-tr", "rowStyle" ]);
-            ruleConfig.push([ "#" + id + " .blist-table-inside .blist-tr", "unlockedRowStyle" ]);
+            addStyle('rowStyle', '#' + id + ' .blist-tr');
+            addStyle('unlockedRowStyle',
+                '#' + id + ' .blist-table-inside .blist-tr');
 
             // Dynamic style available to cell renderers to fill height properly
-            ruleConfig.push([ "#" + id + " .blist-cell", "cellStyle" ]);
+            addStyle('cellStyle', '#' + id + ' .blist-cell');
 
             // Dynamic style applied to "special" row cells
-            ruleConfig.push([ "#" + id + " .blist-td-header", "groupHeaderStyle" ]);
-
-            // Special column styles
-            ruleConfig.push([ "." + id + "-crowNumberCol", "colStyles.rowNumberCol" ]);
-            ruleConfig.push([ "." + id + "-crowHandleCol", "colStyles.rowHandleCol" ]);
-
-            createCssRules(ruleConfig);
+            addStyle('groupHeaderStyle', '#' + id + ' .blist-td-header');
         })();
 
 
@@ -2804,8 +2756,6 @@
             variableColumns = [];
             varMinWidth = [];
             varDenom = [];
-            var cssColumnConfig = [];
-            var pendingStyles = {};
 
             // Set up variable columns at each level
             for (var j = 0; j < model.columns().length; j++)
@@ -2833,32 +2783,15 @@
                         columns.push(col);
                     }
 
-                    if (!colStyles[col.id] && !pendingStyles[col.id])
-                    {
-                        cssColumnConfig.push([ "." + getColumnClass(col),
-                            'colStyles' + (_.isString(col.id) ? ('.' + col.id) :
-                                ('[' + col.id + ']')) ]);
-                        pendingStyles[col.id] = true;
-                    }
+                    addColumnStyle(col);
 
                     if (!$.isBlank(col.visibleChildColumns))
                     {
                         _.each(col.visibleChildColumns, function(c)
-                        {
-                            if (!colStyles[c.id] && !pendingStyles[c.id])
-                            {
-                                cssColumnConfig.push([ "." + getColumnClass(c),
-                                    'colStyles' + (_.isString(c.id) ?
-                                        ('.' + c.id) : ('[' + c.id + ']')) ]);
-                                pendingStyles[c.id] = true;
-                            }
-                        });
+                        { addColumnStyle(c); });
                     }
                 }
             }
-
-            if (cssColumnConfig.length > 0)
-            { createCssRules(cssColumnConfig); }
 
             if (variableColumns[0].length < 1 && options.showGhostColumn)
             {
@@ -2886,6 +2819,7 @@
                         'title=\'View row\' class=\'noInterstitial\'>" + ' +
                         '(renderIndex + 1) + "</a>"))',
                     footerText: 'Totals'});
+                addColumnStyle(rowNumberColumn);
             }
             if (options.showRowHandle)
             {
@@ -2893,6 +2827,7 @@
                     cls: 'blist-table-row-handle',
                     width: options.rowHandleWidth,
                     renderer: options.rowHandleRenderer()});
+                addColumnStyle(rowHandleColumn);
             }
 
             handleDigits = calculateHandleDigits();
@@ -2911,7 +2846,7 @@
             // Row positioning information
             rowHeight = measuredInnerDims.height;
             rowOffset = measuredOuterDims.height;
-            rowStyle.height = rowOffset + 'px';
+            style('rowStyle').height = rowOffset + 'px';
 
             // Reset scaling factor, since many things may have changed
             scalingFactor = 1;
@@ -2919,11 +2854,11 @@
             // Set row heights
             if (options.generateHeights && options.showGhostColumn)
             {
-                ghostStyle.height = rowHeight + 'px';
+                style('ghostStyle').height = rowHeight + 'px';
             }
             if (options.generateHeights)
             {
-                cellStyle.height = rowHeight + 'px';
+                style('cellStyle').height = rowHeight + 'px';
             }
 
             // Update the locked column styles with proper dimensions
@@ -2967,8 +2902,9 @@
                 handleWidth =
                     parseFloat(getColumnStyle(rowHandleColumn).width) + paddingX;
             }
-            openerStyle.width = openerWidth + 'px';
-            if (options.generateHeights) { openerStyle.height = rowHeight + 'px'; }
+            style('openerStyle').width = openerWidth + 'px';
+            if (options.generateHeights)
+            { style('openerStyle').height = rowHeight + 'px'; }
 
             // These variables are available to the rendering function
             var contextVariables = {
@@ -3069,8 +3005,8 @@
                     renderLockedFnSource, contextVariables);
 
             // Configure the left position of grid rows
-            groupHeaderStyle.left = lockedWidth + 'px';
-            unlockedRowStyle.left = lockedWidth + 'px';
+            style('groupHeaderStyle').left = lockedWidth + 'px';
+            style('unlockedRowStyle').left = lockedWidth + 'px';
 
             $headerScrolls.css('margin-left', lockedWidth);
             $footerScrolls.css('margin-left', lockedWidth);
@@ -3098,7 +3034,7 @@
             end("configureWidths.levels");
 
             // Configure grouping header column widths
-            groupHeaderStyle.width = Math.max(0,
+            style('groupHeaderStyle').width = Math.max(0,
                 (insideWidth - lockedWidth - paddingX)) + 'px';
 
             // Set the scrolling area width
@@ -3227,7 +3163,7 @@
                     var c = variableColumns[level][i];
                     if (c.ghostColumn)
                     {
-                        ghostStyle.width = (c.minWidth + varSize)  + "px";
+                        style('ghostStyle').width = (c.minWidth + varSize)  + "px";
                     }
                     else
                     {

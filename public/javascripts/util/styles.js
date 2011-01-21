@@ -4,53 +4,87 @@ $(function ()
 
     var pendingRules = {};
     var styleRules = {};
-    var createCssRules = function()
+    var cssSheets = {};
+    var createCssSheet = function(sheetName)
     {
         // Create the stylesheet source
-        var cssID = 'customStyles_' + _.uniqueId();
-        var cssText = [ '<style type="text/css" id="', cssID, '">\n' ];
-        var ids = [];
-        _.each(pendingRules, function(rule, id)
+        var cssID = 'customStyles_' + sheetName;
+        var cssText = ['<style type="text/css" id="', cssID, '">'];
+        _.each(pendingRules[sheetName] || [], function(item)
         {
-            cssText.push(rule);
+            cssText.push(item.rule);
             cssText.push(" {}\n");
-            ids.push(id);
         });
-        cssText.push('</style>');
+        cssText.push('</style>\n');
 
         // Render the rules and retrieve the new Stylesheet object
         $('head').append(cssText.join(''));
         var cssElement = $("#" + cssID)[0];
-        var cssSheet;
         for (var i = 0; i < document.styleSheets.length; i++)
         {
-            cssSheet = document.styleSheets[i];
-            if ((cssSheet.ownerNode || cssSheet.owningElement) == cssElement)
+            cssSheets[sheetName] = document.styleSheets[i];
+            if ((cssSheets[sheetName].ownerNode ||
+                cssSheets[sheetName].owningElement) == cssElement)
             { break; }
-            cssSheet = null;
+            cssSheets[sheetName] = null;
         }
-        if ($.isBlank(cssSheet)) { throw "Unable to locate stylesheet"; }
-
-        // Give IDs to the rules
-        var rules = cssSheet.cssRules || cssSheet.rules;
-        _.each(rules, function(r, i)
-        {
-            var rule = r.style;
-            styleRules[ids[i]] = rule;
-        });
-
-        pendingRules = {};
-    }
-
-    blist.styles.getStyle = function(id)
-    {
-        if ($.isBlank(styleRules[id]) && !$.isBlank(pendingRules[id]))
-        { createCssRules(); }
-        return styleRules[id];
+        if ($.isBlank(cssSheets[sheetName]))
+        { throw "Unable to locate stylesheet"; }
+        styleRules[sheetName] = {};
     };
 
-    blist.styles.addStyle = function(id, rule)
+    var createCssRules = function(sheetName)
     {
-        pendingRules[id] = rule;
+        if ($.isBlank(cssSheets[sheetName])) { createCssSheet(sheetName); }
+
+        // Give IDs to the rules
+        var rules = cssSheets[sheetName].cssRules || cssSheets[sheetName].rules;
+        _.each(rules, function(r, i)
+        { styleRules[sheetName][pendingRules[sheetName][i].id] = r.style; });
+
+        pendingRules[sheetName] = {};
+    };
+
+    blist.styles.getStyle = function(sheetName, id)
+    {
+        if ($.isBlank(styleRules[sheetName]) && !$.isBlank(pendingRules[sheetName]))
+        { createCssRules(sheetName); }
+
+        return styleRules[sheetName][id];
+    };
+
+    blist.styles.addStyle = function(sheetName, id, rule)
+    {
+        if ($.isBlank(cssSheets[sheetName]))
+        {
+            pendingRules[sheetName] = pendingRules[sheetName] || [];
+            // A bit inefficient, but I'm guessing this pending shouldn't get too
+            // large...
+            if (_.any(pendingRules[sheetName], function(r) { return r.id == id; }))
+            { return; }
+            pendingRules[sheetName].push({id: id, rule: rule});
+            return;
+        }
+
+        if (!$.isBlank(styleRules[sheetName][id])) { return; }
+
+        var rules = cssSheets[sheetName].cssRules || cssSheets[sheetName].rules
+        if ($.browser.msie)
+        { cssSheets[sheetName].addRule(rule, ' '); }
+        else
+        { cssSheets[sheetName].insertRule(rule + '{}', rules.length); }
+        styleRules[sheetName][id] = rules[rules.length - 1].style;
+    };
+
+    // This will probably mainly be used for perf -- using addRule is really
+    // slow in IE, so doing large batches of addStyle to an existing sheet
+    // could be painful; but if you can regenerate the whole sheet in one shot,
+    // that will be much faster
+    blist.styles.resetSheet = function(sheetName)
+    {
+        if ($.isBlank(cssSheets[sheetName])) { return; }
+        $('#customStyles_' + sheetName).remove();
+        cssSheets[sheetName] = null;
+        styleRules[sheetName] = null;
     };
 });

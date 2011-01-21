@@ -2168,7 +2168,10 @@ function cleanViewForCreate(ds)
     var dsCopy = ds.cleanCopy();
 
     if (!_.isUndefined(dsCopy.metadata))
-    { delete dsCopy.metadata.facets; }
+    {
+        delete dsCopy.metadata.facets;
+        delete dsCopy.metadata.filterCondition;
+    }
 
     if (!$.isBlank(dsCopy.query))
     { dsCopy.query.filterCondition = ds.cleanFilters(true); }

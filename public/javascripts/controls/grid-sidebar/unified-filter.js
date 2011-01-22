@@ -121,6 +121,9 @@
     {
         var compatible = true;
 
+        // make sure we have children before _.each'ing it
+        rootCondition.children = rootCondition.children || [];
+
         // we can handle anything at the top level (AND or OR)
         _.each(rootCondition.children, function(condition, i)
         {
@@ -490,6 +493,9 @@
             };
         }
 
+        // the core server has a nasty habit of stripping empty []'s.
+        rootCondition.children = rootCondition.children || [];
+
         // are we advanced?
         $pane.toggleClass('advanced', !!rootCondition.metadata.advanced);
         $pane.toggleClass('notAdvanced', !rootCondition.metadata.advanced);
@@ -662,7 +668,8 @@
                 {
                     metadata.operator = newOperator.value;
                     $filter.find('.operator').text(operatorNames[metadata.operator]);
-                    parseFilters();
+
+                    replaceFilter($filter, condition);
 
                     return true;
                 }
@@ -691,12 +698,9 @@
                         return true;
                     }
 
-                    $filter.removeClass(metadata.subcolumn);
                     metadata.subcolumn = newSubcolumn;
-                    $filter.addClass(metadata.subcolumn);
-                    $filter.find('.subcolumnName').text(subcolumnNames[metadata.subcolumn]);
+                    replaceFilter($filter, condition);
 
-                    parseFilters();
                     return true;
                 },
                 selectedItems: metadata.subcolumn
@@ -1483,12 +1487,25 @@
             $this.addClass('disabled');
             $pane.find('.savingEditedFilterSpinner').fadeIn();
 
+            parseFilters(); // be absolutely sure we got everything
+            var rootCondition = $pane.data('unifiedFilter-root');
+
             // if we're a default view, move off the filterCondition from query to metadata
             if (blist.dataset.type == 'blist')
             {
                 blist.dataset.metadata = blist.dataset.metadata || {};
-                blist.dataset.metadata.filterCondition = blist.dataset.query.filterCondition;
-                delete blist.dataset.query.filterCondition;
+                blist.dataset.update({ metadata:
+                    $.extend({}, blist.dataset.metadata, { filterCondition: rootCondition }) });
+
+                // just to be sure:
+                var query = blist.dataset.query;
+                delete query.filterCondition;
+                blist.dataset.update({ query: query });
+            }
+            else
+            {
+                blist.dataset.update({ query:
+                    $.extend({}, blist.dataset.metadata, { filterCondition: rootCondition }) });
             }
 
             blist.dataset.save(function()
@@ -1508,6 +1525,7 @@
             $pane.removeClass('editMode');
             isEdit = false;
 
+            blist.dataset.update({}); // hack to force temporary
             blist.dataset.reload();
         });
     };
@@ -1520,7 +1538,7 @@
         renderQueryFilters();
     };
 
-    var isEdit = _.include(['filter', 'grouped'], blist.dataset.type) &&
+    var isEditable = _.include(['filter', 'grouped'], blist.dataset.type) &&
         blist.dataset.hasRight('update_view');
 
     var configName = 'filter.unifiedFilter';
@@ -1532,12 +1550,12 @@
         noReset: true,
         onlyIf: function()
         {
-            return isEdit ? blist.dataset.realColumns.length > 0 :
+            return isEditable ? blist.dataset.realColumns.length > 0 :
                 blist.dataset.visibleColumns.length > 0 && blist.dataset.valid;
         },
         disabledSubtitle: function()
         {
-            return !blist.dataset.valid && !isEdit ? 'This view must be valid' :
+            return !blist.dataset.valid && !isEditable ? 'This view must be valid' :
                 'This view has no columns to filter';
         },
         sections: [{
@@ -1684,7 +1702,7 @@
         });
 
         // now let's see how clean we are. if we're clean, no need to update the dataset.
-        if (isDirty || isEdit ||
+        if (isDirty ||
             !_.isEqual(cleanFilter($.extend(true, {}, blist.dataset.query.filterCondition)),
                        cleanFilter($.extend(true, {}, rootCondition))))
         {

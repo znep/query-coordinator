@@ -556,6 +556,8 @@
                 if (!mapObj._maxRowsExceeded) { return; }
                 if (!viewport) { viewport = mapObj.getViewport(true); }
 
+                var filterColumn = mapObj._geoCol || mapObj._locCol;
+
                 var buildFilterCondition = function(viewport)
                 {
                     return { type: 'operator', value: 'AND',
@@ -571,7 +573,7 @@
                                     {
                                         type: 'column',
                                         value: (axis == 'x') ? 'LONGITUDE' : 'LATITUDE',
-                                        columnId: mapObj._locCol.id
+                                        columnId: filterColumn.id
                                     },
                                     {
                                         type: 'literal',
@@ -625,6 +627,10 @@
                 if (!$.isBlank(view.displayFormat.plot.locationId))
                 { mapObj._locCol =
                     view.columnForTCID(view.displayFormat.plot.locationId); }
+
+                // For updateColumnsByViewport to filter on geometries.
+                mapObj._geoCol = _.detect(view.realColumns, function(col)
+                    { return col.renderTypeName == 'geospatial'; });
 
                 // Older separate lat/long
                 if (!$.isBlank(view.displayFormat.plot.latitudeId))

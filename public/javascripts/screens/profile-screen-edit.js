@@ -190,7 +190,8 @@
 
     // App tokens
     var $newTokenArea = $('.createNewToken'),
-        $newTokenForm = $('.createNewTokenForm');
+        $newTokenForm = $('.createNewTokenForm'),
+        $cancelButton = $('.cancelButton');
 
     $newTokenForm
         .find('input:checkbox').uniform()
@@ -203,11 +204,19 @@
         contents: 'Create New Application'
     });
 
+    var openFunction = $('html').hasClass('ie7') ? 'toggle' : 'slideToggle';
+
     $showFormButton.click(function(){
         $newTokenArea.hide()
             .removeClass('hide')
-            .slideDown();
+            [openFunction]();
         $showFormButton.addClass('disabled');
+    });
+
+    $cancelButton.click(function(event){
+        event.preventDefault();
+        $newTokenArea[openFunction]();
+        $showFormButton.removeClass('disabled');
     });
 
     if ($('.existingTokens').hasClass('noTokensYet'))

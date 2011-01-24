@@ -1483,9 +1483,8 @@
             event.preventDefault();
             var $this = $(this);
 
-            parseFilters();
             $this.addClass('disabled');
-            $pane.find('.savingEditedFilterSpinner').fadeIn();
+            $pane.find('.savingEditedFilterSpinner').css('display', 'inline-block');
 
             parseFilters(); // be absolutely sure we got everything
             var rootCondition = $pane.data('unifiedFilter-root');
@@ -1493,7 +1492,6 @@
             // if we're a default view, move off the filterCondition from query to metadata
             if (blist.dataset.type == 'blist')
             {
-                blist.dataset.metadata = blist.dataset.metadata || {};
                 blist.dataset.update({ metadata:
                     $.extend({}, blist.dataset.metadata, { filterCondition: rootCondition }) });
 
@@ -1659,12 +1657,7 @@
             });
 
             condition.metadata.customValues = [];
-            var $customValueLineToggles = $lineToggles;
-            if (!isEdit)
-            {
-                $customValueLineToggles = $customValueLineToggles.filter(':not(:checked)');
-            }
-            $customValueLineToggles.each(function()
+            $lineToggles.filter(':not(:checked)').each(function()
             {
                 var $line = $(this).closest('.line');
 

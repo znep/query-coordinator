@@ -63,9 +63,10 @@
       });
     }
 
+    blist.configuration.appToken = 'U29jcmF0YS0td2VraWNrYXNz0'
     $.ajaxSetup({
         beforeSend: function(xhrObj) {
-            xhrObj.setRequestHeader('X-App-Token', 'U29jcmF0YS0td2VraWNrYXNz0');
+            xhrObj.setRequestHeader('X-App-Token', blist.configuration.appToken);
         }
     });
 });

@@ -1575,10 +1575,13 @@
     var parseFilters = function()
     {
         var filters = [];
-
         var rootCondition = $pane.data('unifiedFilter-root');
 
-        $pane.find('.filterCondition').each(function()
+        var $filterConditions = $pane.find('.filterCondition');
+
+        $filterConditions.removeClass('countInvalid');
+
+        $filterConditions.each(function()
         {
             var $filterCondition = $(this);
             var data = $filterCondition.data('unifiedFilter-condition');
@@ -1692,6 +1695,10 @@
             });
 
             condition.children = children;
+            if (condition.children.length > 0)
+            {
+                $filterCondition.siblings().addClass('countInvalid');
+            }
         });
 
         // now let's see how clean we are. if we're clean, no need to update the dataset.

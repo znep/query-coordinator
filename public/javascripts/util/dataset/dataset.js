@@ -1584,7 +1584,7 @@ this.Dataset = Model.extend({
             r.index = start + i;
 
             // If a row already exists at this index, clean it out
-            if (!$.isBlank(ds._rows[r.index]))
+            if (!$.isBlank(ds._rows[r.index]) && r.id != ds._rows[r.index].id)
             {
                 var oldRow = ds._rows[r.index];
                 oldRows.push(oldRow);

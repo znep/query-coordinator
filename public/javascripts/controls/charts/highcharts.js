@@ -214,6 +214,8 @@
 
                 if (!_.isUndefined(chartObj.chart))
                 {
+                    // Now that we have data, make sure the axes are updated
+                    chartObj.chart.redraw(false);
                     setCategories(chartObj);
 
                     if (chartObj.settings.view.snapshotting)

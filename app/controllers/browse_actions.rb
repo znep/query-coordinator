@@ -112,10 +112,11 @@ protected
       {:value => 'relevance', :name => 'Most Relevant'},
       {:value => 'most_accessed', :name => 'Most Accessed',
         :is_time_period => true},
+      {:value => 'alpha', :name => 'Alphabetical'},
       {:value => 'newest', :name => 'Newest'},
       {:value => 'oldest', :name => 'Oldest'},
       {:value => 'rating', :name => 'Highest Rated'},
-      {:value => 'comments', :name => 'Most Comments'},
+      {:value => 'comments', :name => 'Most Comments'}
     ]
 
     if @view_results.nil?

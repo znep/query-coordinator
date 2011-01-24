@@ -109,6 +109,12 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
     {
         var cont = this;
 
+        if (_.isEqual(visColIds, _.pluck(visibleSet(cont), 'id')))
+        {
+            if (_.isFunction(callback)) { callback(); }
+            return;
+        }
+
         // If we need a validation/pre-processing on the columns, do it here
         if (!$.isBlank(cont['_adjustVisible' + capSet]))
         { visColIds = cont['_adjustVisible' + capSet](visColIds); }

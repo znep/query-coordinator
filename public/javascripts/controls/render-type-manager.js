@@ -277,7 +277,7 @@
             if (!$.isBlank(typeInfo.stylesheets))
             {
                 $.loadStylesheets(translateUrls('/stylesheets/',
-                    typeInfo.stylesheets));
+                    typeInfo.stylesheets), function() { $dom.trigger('resize'); });
             }
 
             // Lazy-load javascripts

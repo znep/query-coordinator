@@ -827,6 +827,53 @@ blist.namespace.fetch('blist.data.types');
         return renderFilterText(value);
     };
 
+    // Geospatial
+
+    var geospatialRendererInterval;
+    var geospatialHelper = function(value, base_url, columnId)
+    {
+        if ($.isBlank(value)) { return ''; }
+
+        var rv = '';
+        if (!$.isBlank(value.geometry))
+        {
+            var width  = '60';
+            var height = '150';
+            var image_url = base_url+value.row_id+'?column='+columnId+
+                '&width='+width+'&height='+height;
+            if ($.browser.msie)
+            {
+                rv += '<object classid="image/svg+xml" src="' + image_url +
+                    '" width="'+width+'" height="'+height+
+                    '" data-path="javascripts/plugins"></object>';
+                if (!geospatialRendererInterval)
+                {
+                    geospatialRendererInterval = setInterval(function()
+                    {
+                        svgweb._onDOMContentLoaded.done = false;
+                        svgweb._onDOMContentLoaded();
+                    }, 2000);
+                }
+            }
+            else
+            { rv += '<embed src="' + image_url + '" width="' + width +
+                '" height="' + height + '"></embed>'; }
+        }
+
+        return rv;
+    };
+
+    var renderGenGeospatial = function(value, plain, column)
+    {
+        return 'geospatialHelper(' + value + ', "' + column.baseUrl() + '", ' +
+            column.id + ')';
+    };
+
+    var renderGeospatial = function(value, column)
+    {
+        return geospatialHelper(value, column.baseUrl(), column.id);
+    };
+
     /** FILTER FUNCTIONS ***/
     var valueFilterCheckbox = function(value)
     {
@@ -1384,15 +1431,12 @@ blist.namespace.fetch('blist.data.types');
             title: 'Geospatial',
             priority: 20,
             createable: false,
-            renderGen: renderGenLocation,
-            renderer: renderLocation,
+            renderGen: renderGenGeospatial,
+            renderer: renderGeospatial,
             deleteable: false,
             isObject: true,
             alignment: alignment,
-            renderAddress: renderLocationAddress,
-            filterable: true,
-            filterConditions: filterConditions.comparable,
-            filterRender: renderFilterLocation
+            filterable: false
         },
 
         tag: {

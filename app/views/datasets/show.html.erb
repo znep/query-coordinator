@@ -502,6 +502,9 @@
 <%- end -%>
 
 <% content_for :js_footer do %>
+  <!--[if IE]>
+  <script type="text/javascript" src="/javascripts/plugins/svg.js"></script>
+  <![endif]-->
   <script type="text/javascript">
     <%= raw @view.display.render_inline_setup_js('renderTypeContainer', self) %>
 

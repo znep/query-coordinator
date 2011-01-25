@@ -33,9 +33,16 @@ this.Column = Model.extend({
 
     baseUrl: function()
     {
-        return '/views/' + this.view.id + '/' +
-            (this.renderTypeName.endsWith('_obsolete') ?
-                'obsolete_' : '') + 'files/';
+        if (this.renderTypeName == 'geospatial')
+        {
+            return '/api/views/' + this.view.id + '/geometry/';
+        }
+        else
+        {
+            return '/views/' + this.view.id + '/' +
+                (this.renderTypeName.endsWith('_obsolete') ?
+                    'obsolete_' : '') + 'files/';
+        }
     },
 
     getSummary: function(successCallback)

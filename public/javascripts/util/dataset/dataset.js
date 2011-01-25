@@ -1547,6 +1547,9 @@ this.Dataset = Model.extend({
                         c.renderTypeName == 'stars' && val === 0)
                 { val = null; }
 
+                if (c.renderTypeName == 'geospatial' && tr.id)
+                { val.row_id = tr.id; }
+
                 if (c.dataTypeName == 'nested_table' && _.isArray(val))
                 {
                     val = _.map(val, function(cr)

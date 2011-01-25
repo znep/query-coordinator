@@ -21,6 +21,20 @@ class User < Model
     return parse(CoreServer::Base.connection.update_request("/users.json?method=promote&name=#{username}&role=#{role}"))
   end
 
+  def self.reset_password(login)
+    req = Net::HTTP::Post.new('/users')
+    req.set_form_data({'method' => 'forgotPassword', 'login' => login})
+
+    # pass/spoof in the current domain cname
+    req['X-Socrata-Host'] = CurrentDomain.cname
+
+    result = Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port) do |http|
+      http.request(req)
+    end
+
+    return result.is_a? Net::HTTPSuccess
+  end
+
   def create(inviteToken = nil)
     User.create(data_hash, inviteToken)
   end

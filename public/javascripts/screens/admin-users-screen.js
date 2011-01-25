@@ -18,6 +18,15 @@ $(function()
 {
     $('#adminContent .adminUsersTable .userSaveButton').hide();
 
+    var fadeMessage = function(textValue)
+    {
+        $('.userNotice')
+            .text(textValue)
+            .slideDown(300, function()
+                { setTimeout(function()
+                    { $('.userNotice').slideUp(); }, 5000) });
+    };
+
     $('#adminContent .adminUsersTable .roleSelect').change(function()
     {
         var id = $(this).closest('form').find('input.hiddenID').val();
@@ -31,12 +40,7 @@ $(function()
             success: function(responseData)
             {
                 $select.closest('tr').attr('data-userrole', $select.val().toLowerCase());
-
-                $('.userNotice')
-                  .text('User saved')
-                  .slideDown(300, function()
-                      { setTimeout(function()
-                            { $('.userNotice').slideUp(); }, 5000) });
+                fadeMessage('User saved');
             },
             error: function(request, status, error)
             {
@@ -48,10 +52,16 @@ $(function()
 
     var $userTable = $('#adminContent .adminUserTable');
 
-    $userTable.find('.delete .button').adminButton({
+    $userTable.find('.actions .deleteButton').adminButton({
         callback: function(response, $row)
         { $row.slideUp().remove(); },
-        workingSelector: '.delete'
+        workingSelector: '.actions'
+    });
+
+    $userTable.find('.actions .resetPasswordButton').adminButton({
+        callback: function(response, $row)
+        { fadeMessage(response.message); },
+        workingSelector: '.actions'
     });
 
     $userTable.combinationList({

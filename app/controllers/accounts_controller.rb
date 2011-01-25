@@ -32,17 +32,7 @@ class AccountsController < ApplicationController
   def forgot_password
     @body_id = 'resetPassword'
     if request.post?
-      req = Net::HTTP::Post.new('/users')
-      req.set_form_data({'method' => 'forgotPassword', 'login' => params[:login]})
-
-      # pass/spoof in the current domain cname
-      req['X-Socrata-Host'] = CurrentDomain.cname
-
-      result = Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port) do |http|
-        http.request(req)
-      end
-
-      if result.is_a? Net::HTTPSuccess
+      if User.reset_password(params[:login])
         flash[:notice] = "Thank you. An email has been sent to the account on file with further information."
         return redirect_to(login_path)
       else

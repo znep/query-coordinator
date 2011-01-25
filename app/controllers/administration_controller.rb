@@ -77,23 +77,17 @@ class AdministrationController < ApplicationController
     rescue CoreServer::CoreServerError => ex
       error_message = ex.error_message
     end
-    respond_to do |format|
-      format.data do
-        if updated_user
-          render :json => {:success => true}
-        else
-          render :json => {:error => true, :message => error_message}
-        end
-      end
-      format.html do
-        if error_message
-          flash[:error] = error_message
-        else
-          flash[:notice] = "User successfully updated"
-        end
-        redirect_to :action => :users
-      end
+    handle_button_response(updated_user, error_message, "User successfully updated", :users)
+  end
+  def reset_user_password
+    check_auth_level('manage_users')
+
+    if User.reset_password(params[:user_id])
+      success = true
+    else
+      error_message = "There was an error sending the password reset email."
     end
+    handle_button_response(success, error_message, "Password reset email sent", :users)
   end
 
   def moderation
@@ -670,5 +664,25 @@ private
 
     flash[:notice] = successMessage
     redirect_to :action => 'metadata'
+  end
+
+  def handle_button_response(success, error_message, success_message, redirect_action)
+    respond_to do |format|
+      format.data do
+        if success
+          render :json => {:success => true, :message => success_message}
+        else
+          render :json => {:error => true, :message => error_message}
+        end
+      end
+      format.html do
+        if error_message
+          flash[:error] = error_message
+        else
+          flash[:notice] = success_message
+        end
+        redirect_to :action => redirect_action
+      end
+    end
   end
 end

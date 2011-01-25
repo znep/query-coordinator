@@ -12,8 +12,12 @@
       <a href="<%= @view.href %>" title="Go to this Dataset" rel="external"><%= @view.name %></a>
     </li>
   <%- end -%>
+  <%- if @theme[:menu][:fullscreen] -%>
   <li class="subHeaderAction fullscreen right">
     <a href="<%= @view.href %>" class="icon" title="View this Dataset full screen" rel="external">Full screen</a>
   </li>
+  <%- end -%>
+  <%- if @theme[:menu][:share] -%>
   <li class="subHeaderAction share right"><div class="menu shareMenu"></div></li>
+  <%- end -%>
 </ul>

@@ -549,9 +549,6 @@
 
             updateRowsByViewport: function(viewport, wrapIDL)
             {
-                if (blist.dataset.isArcGISDataset())
-                { return; }
-
                 var mapObj = this;
                 if (!mapObj._maxRowsExceeded) { return; }
                 if (!viewport) { viewport = mapObj.getViewport(true); }
@@ -630,7 +627,7 @@
 
                 // For updateColumnsByViewport to filter on geometries.
                 mapObj._geoCol = _.detect(view.realColumns, function(col)
-                    { return col.renderTypeName == 'geospatial'; });
+                    { return _.include(['geospatial', 'location'], col.renderTypeName); });
 
                 // Older separate lat/long
                 if (!$.isBlank(view.displayFormat.plot.latitudeId))

@@ -544,6 +544,10 @@
                     });
                 }
 
+                if (!$.isBlank(blist.dataset) &&
+                    $.subKeyDefined(blist.dataset, 'metadata.sidebar.width'))
+                { $domObj.width(blist.dataset.metadata.sidebar.width); }
+
                 $domObj.resizable({
                     handles: sidebarObj.settings.position == 'left' ? 'e' : 'w',
                     maxWidth: $(window).width() * 0.8, minWidth: 300,
@@ -1402,6 +1406,19 @@
         // right-positioned
         sidebarObj.$dom().css('left', '');
         $(window).resize();
+
+        if (!$.isBlank(blist.dataset))
+        {
+            var md = $.extend(true, {}, blist.dataset.metadata);
+            md.sidebar = md.sidebar || {};
+            md.sidebar.width = sidebarObj.$dom().width();
+            if (blist.dataset.hasRight('update_view'))
+            {
+                var isTemp = blist.dataset.temporary;
+                blist.dataset.update({metadata: md}, false, true);
+                if (!isTemp) { blist.dataset.save(); }
+            }
+        }
     };
 
     var updateWizardVisibility = function(sidebarObj)

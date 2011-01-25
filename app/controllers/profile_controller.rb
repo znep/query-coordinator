@@ -202,6 +202,15 @@ class ProfileController < ApplicationController
     if params[:user].present? || params[:openid_delete].present?
       error_msg = nil
       begin
+        if params[:user][:password_new].present?
+          if params[:user][:password_new] != params[:user][:password_confirm]
+            error_msg = "New passwords do not match"
+          else
+            current_user.update_password(
+                {:newPassword => params[:user][:password_new],
+                  :password => params[:user][:password_old]})
+          end
+        end
         if params[:openid_delete].present?
           if current_user.flag?('nopassword') &&
             params[:openid_delete].size >= current_user.openid_identifiers.size
@@ -226,15 +235,6 @@ class ProfileController < ApplicationController
             current_user.update_attributes!(
                 {:email => params[:user][:email],
                   :password => params[:user][:email_password]})
-          end
-        end
-        if params[:user][:password_new].present?
-          if params[:user][:password_new] != params[:user][:password_confirm]
-            error_msg = "New passwords do not match"
-          else
-            current_user.update_password(
-                {:newPassword => params[:user][:password_new],
-                  :password => params[:user][:password_old]})
           end
         end
       rescue CoreServer::CoreServerError => e

@@ -295,6 +295,10 @@ javascripts:
     - public/javascripts/screens/profile-screen-edit.js
   homepage-show:
     - public/javascripts/screens/homepage-show.js
+  highcharts:
+    - public/javascripts/plugins/highcharts.src.js
+  jit:
+    - public/javascripts/plugins/jit.js
 
 dump:
   javascripts:
@@ -303,6 +307,8 @@ dump:
     - shared-map
     - shared-table-render
     - shared-richRenderers
+    - highcharts
+    - jit
 
 stylesheets:
   grid-sidebar:

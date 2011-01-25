@@ -259,7 +259,7 @@
 
             getRequiredJavascripts: function()
             {
-                return this.javascriptBase + "plugins/highcharts.src.js";
+                return blist.assets.highcharts;
             }
         }
     }));

@@ -53,6 +53,7 @@
             fill: '#fefbef',
             isSolo: false,
             message: null,
+            onShowCallback: null,
             overlap: 0,
             parent: 'body',
             positions: null,
@@ -102,6 +103,7 @@
 
                         clickAnywhereToClose: sTipObj.settings.closeOnClick,
                         closeWhenOthersOpen: sTipObj.settings.isSolo,
+                        onShowCallback: sTipObj.settings.onShowCallback,
                         shrinkToFit: sTipObj.settings.shrinkToFit,
                         trigger: sTipObj.settings.trigger,
                         positions: pos,

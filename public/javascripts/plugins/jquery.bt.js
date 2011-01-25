@@ -114,6 +114,12 @@ jQuery.bt = {version: '0.9.5-rc1'};
        *  Any element that has been initiated
        */
       this.btOn = function () {
+        if (_.isFunction(opts.onShowCallback) && !opts.onShowCallback())
+        {
+            // provide a way to ditch out of showing the thing
+            return;
+        }
+
         if (typeof $(this).data('bt-box') == 'object') {
           // if there's already a popup, remove it before creating a new one.
           this.btOff();

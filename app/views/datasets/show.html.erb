@@ -348,10 +348,23 @@
 <div class="filterPane">
   <div class="menu advanced filterOptionsMenu mainFilterOptionsMenu"></div>
 
-  <div class="advancedLine">
-    <span class="advancedLabel">Advanced mode:</span>
-    <a class="advancedOffLink" href="#noAdvanced">off</a> |
-    <a class="advancedOnLink" href="#advanced">on</a>
+  <div class="advancedStateLine notAdvancedLine">
+    <span class="advancedStateText">You are in simplified mode.</span>
+    <a class="advancedStateLink advancedOnLink" href="#advanced">Go advanced now?</a>
+  </div>
+  <div class="advancedStateLine editModeAdvancedOffLine">
+    <span class="advancedStateText">Users will start in simplified mode.</span>
+    This means that they will be unable to add new conditions,
+    change the columns or operators of filters, or access the
+    advanced menus on filters.
+    <a class="advancedStateLink advancedOnLink" href="#advanced">Change the default back to advanced.</a>
+  </div>
+  <div class="advancedStateLine editModeAdvancedOnLine">
+    <span class="advancedStateText">Users will start in advanced mode.</span>
+    This means that they will have full access to the options
+    available on the filter. For a more curated experience, you
+    can try the simplified mode.
+    <a class="advancedStateLink advancedOffLink" href="#notAdvanced">Change the default to simplified.</a>
   </div>
 
   <div class="filterConditions">

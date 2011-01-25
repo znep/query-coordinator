@@ -499,8 +499,9 @@
         // are we advanced?
         $pane.toggleClass('advanced', !!rootCondition.metadata.advanced);
         $pane.toggleClass('notAdvanced', !rootCondition.metadata.advanced);
-        $pane.find('.advanced' + (!!rootCondition.metadata.advanced ? 'On' : 'Off') + 'Link').addClass('selected')
-             .siblings('a').removeClass('selected');
+        $pane.find('.advancedStateLine').removeClass('hide')
+             .filter(!!rootCondition.metadata.advanced ?
+                       '.editModeAdvancedOffLine' : '.editModeAdvancedOnLine').addClass('hide');
 
         // set menu to current state
         $pane.find('.mainFilterOptionsMenu .matchAnyOrAll').removeClass('checked')
@@ -574,6 +575,7 @@
         $filter.find('.columnName').popupSelect({
             choices: filterableColumns,
             listContainerClass: 'popupColumnSelect',
+            onShowCallback: function() { return $pane.hasClass('advanced'); },
             prompt: 'Select a column to filter by:',
             renderer: function(col)
             {
@@ -633,6 +635,7 @@
         $filter.find('.operator').popupSelect({
             choices: validOperators,
             listContainerClass: 'popupOperatorSelect',
+            onShowCallback: function() { return $pane.hasClass('advanced'); },
             prompt: 'Select an operation to filter by:',
             renderer: function(operator)
             {
@@ -685,6 +688,7 @@
             $filter.find('.subcolumnName').popupSelect({
                 choices: column.subColumnTypes,
                 listContainerClass: 'popupSubcolumnSelect',
+                onShowCallback: function() { return $pane.hasClass('advanced'); },
                 prompt: 'Select the part of ' + $.htmlStrip(column.name) + ' to filter by:',
                 renderer: function(subcolumn)
                 {
@@ -1405,20 +1409,19 @@
     var hookUpSidebarActions = function()
     {
         // advanced toggle
-        $pane.find('.advancedLine a').click(function(event)
+        $pane.find('.advancedStateLink').click(function(event)
         {
             event.preventDefault();
-            var $this = $(this);
-            var isAdvanced = $this.hasClass('advancedOnLink');
+            var isAdvanced = $(this).hasClass('advancedOnLink');
 
             // update pane state
             $pane.toggleClass('advanced', isAdvanced || isEdit);
             $pane.toggleClass('notAdvanced', !isAdvanced && !isEdit);
             $pane.data('unifiedFilter-root').metadata.advanced = isAdvanced;
 
-            // update link states
-            $this.addClass('selected')
-                 .siblings('a').removeClass('selected');
+            // update edit mode messages
+            $pane.find('.advancedStateLine').removeClass('hide')
+                 .filter(isAdvanced ? '.editModeAdvancedOffLine' : '.editModeAdvancedOnLine').addClass('hide');
 
             parseFilters();
         });
@@ -1475,6 +1478,7 @@
             }
 
             $pane.removeClass('notAdvanced').addClass('editMode advanced');
+            $pane.find('.editModeMessage').effect('highlight', {}, 3000);
             isEdit = true;
         });
 

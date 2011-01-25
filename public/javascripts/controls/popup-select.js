@@ -57,6 +57,8 @@
             var tip = $this.socrataTip({
                 content: $popup,
                 fill: '#444444',
+                isSolo: true,
+                onShowCallback: opts.onShowCallback,
                 stroke: '#444444',
                 trigger: 'click'
             });
@@ -137,6 +139,7 @@
         dismissOnClick: true,
         listContainerClass: [],
         multiselect: false,
+        onShowCallback: null,
         positions: ['bottom', 'top'],
         prompt: 'Choose one:',
         renderer: function(choice)

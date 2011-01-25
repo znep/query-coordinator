@@ -147,7 +147,9 @@
           <%# TODO: Add link to SODA docs or something %>
         </div>
         <%- if @app_tokens.blank? -%>
-          <p>You do not have any applications registered yet. Click 'Manage' above to get started</p>
+        <p class="emptyItem">
+          You have not created any applications yet. Click 'Manage' above to get started
+        </p>
         <%- else -%>
           <%- @app_tokens.each do |token| -%>
             <div class="innerItem">

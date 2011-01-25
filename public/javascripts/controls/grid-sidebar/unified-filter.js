@@ -1507,7 +1507,7 @@
             else
             {
                 blist.dataset.update({ query:
-                    $.extend({}, blist.dataset.metadata, { filterCondition: rootCondition }) });
+                    $.extend({}, blist.dataset.query, { filterCondition: rootCondition }) });
             }
 
             blist.dataset.save(function()

@@ -206,7 +206,7 @@ class ProfileController < ApplicationController
           if params[:user][:password_new] != params[:user][:password_confirm]
             error_msg = "New passwords do not match"
           else
-            current_user.update_password(
+            current_user = current_user.update_password(
                 {:newPassword => params[:user][:password_new],
                   :password => params[:user][:password_old]})
           end

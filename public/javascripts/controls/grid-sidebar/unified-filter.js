@@ -1086,7 +1086,7 @@
                 contents: _.map($.arrayify(valueObj.item), function(valueObjPart, i)
                 {
                     var valueObjSubpart = valueObjPart;
-                    if (!_.isUndefined(metadata.subcolumn))
+                    if (!_.isUndefined(metadata.subcolumn) && (metadata.operator != 'blank?'))
                     {
                         valueObjSubpart = valueObjPart[metadata.subcolumn];
                         valueObjPart = $.keyValueToObject(metadata.subcolumn, valueObjSubpart);
@@ -1235,6 +1235,12 @@
                             'GREATER_THAN', 'GREATER_THAN_OR_EQUALS'], metadata.operator) &&
                  $.subKeyDefined(column, 'cachedContents.largest')) // assume smallest exists
         {
+            if (column.cachedContents.smallest == column.cachedContents.largest)
+            {
+                // really nothing to be between.
+                return;
+            }
+
             // whatever we decide to do, it'll come down to some range boundaries
             var rangeBoundaries = [];
 

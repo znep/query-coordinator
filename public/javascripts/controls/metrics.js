@@ -318,7 +318,7 @@
         chartDirective: {
             '.chartContainer' : {
                 'chart <-' : {
-                    '.chartContent@id' : 'chart.id',
+                    '.chartContent@id' : 'chart.id'
                 }
             }
         },

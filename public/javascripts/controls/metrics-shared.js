@@ -64,7 +64,9 @@ metricsNS.updateTopListWrapper = function($context, data, mapFunction, postProce
                textValue: Highcharts.numberFormat(entry.count, 0)}); }
     });
 
-    $context.toggleClass('moreDataAvailable', newCount < sorted.length);
+    $context
+        .toggleClass('moreDataAvailable', newCount < sorted.length)
+        .removeClass('loadingMore');
 
     if (_.isFunction(postProcess))
     { postProcess(mapped, $context); }
@@ -75,6 +77,7 @@ metricsNS.updateTopListWrapper = function($context, data, mapFunction, postProce
 metricsNS.showMoreClicked = function(section)
 {
     var $context = $('#' + section.id);
+    $context.addClass('loadingMore');
     section.callback($context);
 };
 

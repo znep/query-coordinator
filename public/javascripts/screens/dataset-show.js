@@ -225,26 +225,6 @@ $(function()
     var $dsIcon = $('#datasetIcon');
     $dsIcon.socrataTip($dsIcon.text());
 
-
-    blist.datasetControls.hookUpShareMenu(blist.dataset,
-        $('#shareMenu'),
-        {
-            menuButtonContents: $.tag([{tagName: 'span', 'class': 'shareIcon'},
-                                       {tagName: 'span', 'class': 'shareText', contents: 'Share'}], true),
-            onOpen: function()
-            {
-                $.analytics.trackEvent('dataset page (v4-chrome)', 'share menu opened',
-                    blist.dataset.id);
-            }
-        }, !blist.dataset.isPublic() && !blist.dataset.hasRight('grant'));
-
-    // hook up menu items for events analytics
-    $('#shareMenu .menuDropdown a, #viewsMenu .menuDropdown a').click(function()
-    {
-        $.analytics.trackEvent('dataset page (v4-chrome)', 'menu item clicked: ' +
-            $(this).attr('href'), blist.dataset.id);
-    });
-
     $('.fullscreenButton').click(function(event)
     {
         event.preventDefault();
@@ -258,6 +238,12 @@ $(function()
             .toggleClass('minimize');
     });
 
+    $('#shareOptions .email').click(function(event)
+    {
+        event.preventDefault();
+        if(_.isFunction(blist.dialog.sharing))
+        { blist.dialog.sharing(event); }
+    });
 
     // Edit toolbar
     $('#editOptions .undo').click(function (event)

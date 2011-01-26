@@ -54,6 +54,18 @@
   <div id='actionBox' class='clearfix'>
     <ul id="toolbarOptions" class='clearfix'>
       <li>
+        <ul id="shareOptions">
+          <li><a class="facebook" href="http://www.facebook.com/share.php?u=<%= CGI::escape("http://#{CurrentDomain.cname}#{@view.href}") %>">
+            <span class="icon">Share on Facebook</span></a></li>
+          <li><a class="twitter" href="http://www.twitter.com/home?status=<%= @view.tweet %>">
+            <span class="icon">Share on Twitter</span></a></li>
+          <%- if @view.has_right?('grant') || @view.is_public? -%>
+            <li><a class="email" href="#email">
+              <span class="icon">Share via Email</span></a></li>
+          <%- end -%>
+        </ul>
+      </li>
+      <li>
         <%- if @view.is_tabular? && !@view.is_form? -%>
         <ul id='renderTypeOptions' class="pillButtons">
           <%- if @view.is_alt_view? -%>
@@ -78,9 +90,6 @@
           </a></li>
         </ul>
         <%- end -%>
-      </li>
-      <li>
-        <div id='shareMenu' class='share menu'></div>
       </li>
       <%- if @view.is_tabular? -%>
       <li>

@@ -147,53 +147,25 @@ html, body
             right: 2em
             top: 0
 
-        #shareMenu
-          .ie7 &
-            z-index: 10 /* needs to be higher than tabs */
-
-          .unsavedView &
-            display: none
-
-          .menuButton
-            @include button
-            margin-top: 0
-            .ie7 &
-              padding-right: 1.7em
-
-            .shareIcon
-              @include dataset-toolbar-icon-share
-            .shareIcon, .icon
-              display: inline-block
-
-              .ie7 &
-                display: block
-                float: left
-
-            .shareText
-              bottom: 0.2em
-              font-size: 1.2em
-              margin:
-                left: 0.5em
-                right: 0.2em
-              position: relative
-              .ie7 &
-                bottom: 0
-
-            .ie7 & .icon
-              position: absolute
-              right: 0.3em
-              top: 0.3em
-
-          .menuDropdown ul li ul li
-            @include sprite-menu-icons
-            a
-              font-size: 1.2em
-              line-height: 1em
-              min-width: 6em
-
         #renderTypeOptions
           li a
             @include renderType-toggle-icons
+
+        #shareOptions
+          padding-right: 0.5em
+          padding-top: 0.3em
+
+          li
+            display: inline-block
+            margin-right: 0.5em
+
+            .ie7 &
+              display: block
+              float: left
+              margin-right: 0.9em
+
+            a
+              @include sprite-social-media-icons
 
   .sidebarOptionsContainer
     bottom: 0

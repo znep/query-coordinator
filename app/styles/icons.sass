@@ -281,6 +281,26 @@
   &.add #{$subselector}
     background-position: 0 -14px
 
+// icons/social_media_icons.png
+@mixin sprite-social-media-icons($subselector: '.icon')
+  #{$subselector}
+    @include text-hiding
+    background-image: url(/stylesheets/images/icons/social_media_icons.png)
+    height: 16px
+    width: 16px
+  &.facebook #{$subselector}
+    background-position: 0 0
+    &:hover
+      background-position: -16px 0
+  &.twitter #{$subselector}
+    background-position: 0 -16px
+    &:hover
+      background-position: -16px -16px
+  &.email #{$subselector}
+    background-position: 0 -32px
+    &:hover
+      background-position: -16px -32px
+
 // icons/dataset_button_icons.png
 @mixin dataset-sidebar-icons($subselector: '.icon')
   #{$subselector}, .alertIcon
@@ -540,7 +560,6 @@
     background-position: 0 0
   &.minus #{$subselector}
     background-position: 0 -9px
-
 
 // Datatype icons
 @mixin datatype-icons($subselector: '.icon')

@@ -384,6 +384,10 @@ class View < Model
     self.href + "/about"
   end
 
+  def tweet
+    return "Check out the #{name} dataset on #{CurrentDomain.strings.company}: #{CurrentDomain.cname}#{short_href}"
+  end
+
   def blob_href
     if is_blobby?
       opts = {

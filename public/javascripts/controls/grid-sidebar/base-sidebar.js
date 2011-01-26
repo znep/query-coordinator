@@ -1412,12 +1412,7 @@
             var md = $.extend(true, {}, blist.dataset.metadata);
             md.sidebar = md.sidebar || {};
             md.sidebar.width = sidebarObj.$dom().width();
-            if (blist.dataset.hasRight('update_view'))
-            {
-                var isTemp = blist.dataset.temporary;
-                blist.dataset.update({metadata: md}, false, true);
-                if (!isTemp) { blist.dataset.save(); }
-            }
+            blist.dataset.update({metadata: md}, false, true);
         }
     };
 

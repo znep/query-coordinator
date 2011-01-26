@@ -3,7 +3,7 @@
     if (blist.sidebarHidden.visualize &&
         blist.sidebarHidden.visualize.chartCreate) { return; }
 
-    var isEdit = blist.dataset.type == 'chart';
+    var isEdit = _.include(blist.dataset.metadata.availableDisplayTypes, 'chart');
 
     /*** Common configuration options ***/
 

@@ -15,7 +15,7 @@
         return blist.dataset.columnForID(colId).dataType.rollUpAggregates;
     };
 
-    var isEdit = _.include(['filter', 'grouped'], blist.dataset.type) &&
+    var isEdit = 'grouped' == blist.dataset.type &&
         blist.dataset.hasRight('update_view');
 
     var configName = 'filter.filterDataset';
@@ -227,6 +227,6 @@
         { finishCallback(); }
     };
 
-    $.gridSidebar.registerConfig(config, ['filter', 'grouped']);
+    $.gridSidebar.registerConfig(config, 'grouped');
 
 })(jQuery);

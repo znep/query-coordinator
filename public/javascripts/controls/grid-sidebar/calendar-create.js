@@ -3,7 +3,7 @@
     if (blist.sidebarHidden.visualize &&
         blist.sidebarHidden.visualize.calendarCreate) { return; }
 
-    var isEdit = blist.dataset.type == 'calendar';
+    var isEdit = _.include(blist.dataset.metadata.availableDisplayTypes, 'calendar');
 
     var configName = 'visualize.calendarCreate';
     var config =

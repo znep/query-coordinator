@@ -533,7 +533,7 @@ class View < Model
   end
 
   def is_alt_view?
-    !display.is_a?(Displays::Table)
+    !available_display_types.eql?(['table', 'fatrow', 'page'])
   end
 
   def is_form?
@@ -622,6 +622,24 @@ class View < Model
 
     # Create the display
     @display = display_class.new(self)
+  end
+
+  def available_display_types
+    adt = metadata.nil? ? nil : metadata.availableDisplayTypes
+    if adt.nil?
+      if display.is_a?(Displays::Href)
+        adt = ['href']
+      elsif display.is_a?(Displays::Blob)
+        adt = ['blob']
+      elsif display.is_a?(Displays::Form)
+        adt = ['form']
+      elsif display.is_a?(Displays::Table)
+        adt = ['table', 'fatrow', 'page']
+      else
+        adt = [displayType, 'table', 'fatrow', 'page']
+      end
+    end
+    return adt
   end
 
   # A human readable form of what the view type is, e.g. 'Dataset' rather than 'Table'

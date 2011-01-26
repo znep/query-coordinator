@@ -42,17 +42,7 @@ this.Dataset = Model.extend({
                 selfUrl + '.json', selfUrl + '/columns'), Dataset.prototype);
 
 
-        this.type = getType(this);
-        this.styleClass = this.type.capitalize();
-        this.displayType = this.displayType || 'table';
-        this.displayName = getDisplayName(this);
-
-        this.displayFormat = this.displayFormat || {};
-
-        this.originalViewId = this.id;
-
-        Dataset.addProperties(this, Dataset.modules[this.type] || {},
-            Dataset.prototype);
+        this._adjustProperties();
 
         this.updateColumns();
 
@@ -61,11 +51,6 @@ this.Dataset = Model.extend({
         this.temporary = false;
         this.minorChange = true;
         this.valid = this._checkValidity();
-        this.url = this._generateUrl();
-        this.fullUrl = this._generateUrl(true);
-        this.shortUrl = this._generateShortUrl(true);
-        this.apiUrl = this._generateApiUrl();
-        this.domainUrl = this._generateBaseUrl(this.domainCName);
 
         this._pendingRowEdits = {};
         this._pendingRowDeletes = {};
@@ -172,6 +157,11 @@ this.Dataset = Model.extend({
             return true;
         }
         return false;
+    },
+
+    invalidMessage: function()
+    {
+        return this.message || 'Columns required for this view are missing';
     },
 
     save: function(successCallback, errorCallback)
@@ -1182,6 +1172,66 @@ this.Dataset = Model.extend({
         }
     },
 
+    _adjustProperties: function()
+    {
+        var ds = this;
+        ds.originalViewId = ds.id;
+
+        ds.type = getType(ds);
+        ds.styleClass = ds.type.capitalize();
+        ds.displayType = ds.displayType || 'table';
+        ds.displayName = getDisplayName(ds);
+
+        // If we are an invalid filter, we're not really that invalid, because
+        // the core server has already removed the offending clause. So just
+        // ignore the message, and the view will load fine without the clause
+        // on the non-existant column
+        if (!$.isBlank(ds.message) && ds.type == 'filter')
+        { delete ds.message; }
+
+        if (!ds._addedProperties)
+        {
+            var types = [ds.type];
+            if ($.subKeyDefined(ds, 'metadata.availableDisplayTypes'))
+            {
+                // Make sure main type is last so that those functions get
+                // priority. Yes, this is a hack; we should probably redo
+                // the module system sometime soon...
+                types = _.without(ds.metadata.availableDisplayTypes, ds.type);
+                types.push(ds.type);
+            }
+            _.each(types, function(t)
+            {
+                Dataset.addProperties(ds, Dataset.modules[t] || {},
+                    Dataset.prototype);
+            });
+            ds._addedProperties = true;
+        }
+
+        if (!$.subKeyDefined(ds, 'metadata.availableDisplayTypes'))
+        {
+            ds.metadata = ds.metadata || {};
+            var adt;
+            if (_.include(['blob', 'href', 'form'], ds.type))
+            { adt = [ds.type]; }
+            else
+            {
+                adt = ['table', 'fatrow', 'page'];
+                if (!_.include(['blist', 'filter', 'grouped'], ds.type))
+                { adt.unshift(ds.displayType); }
+            }
+            ds.metadata.availableDisplayTypes = adt;
+        }
+
+        ds.displayFormat = ds.displayFormat || {};
+
+        ds.url = ds._generateUrl();
+        ds.fullUrl = ds._generateUrl(true);
+        ds.shortUrl = ds._generateShortUrl(true);
+        ds.apiUrl = ds._generateApiUrl();
+        ds.domainUrl = ds._generateBaseUrl(ds.domainCName);
+    },
+
     _update: function(newDS, forceFull, updateColOrder, masterUpdate)
     {
         var ds = this;
@@ -1225,21 +1275,9 @@ this.Dataset = Model.extend({
         _.each(newDS, function(v, k)
         { if (k != 'columns' && ds._validKeys[k]) { ds[k] = v; } });
 
-        ds.originalViewId = ds.id;
-
-        ds.type = getType(ds);
-        ds.styleClass = ds.type.capitalize();
-        ds.displayType = ds.displayType || 'table';
-        ds.displayName = getDisplayName(ds);
-
-        ds.displayFormat = ds.displayFormat || {};
+        ds._adjustProperties();
 
         if (_.isFunction(ds._convertLegacy)) { ds._convertLegacy(); }
-        ds.url = ds._generateUrl();
-        ds.fullUrl = ds._generateUrl(true);
-        ds.shortUrl = ds._generateShortUrl(true);
-        ds.apiUrl = ds._generateApiUrl();
-        ds.domainUrl = ds._generateBaseUrl(ds.domainCName);
 
         if (!$.isBlank(newDS.columns))
         { ds.updateColumns(newDS.columns, forceFull, updateColOrder); }
@@ -1282,7 +1320,12 @@ this.Dataset = Model.extend({
         }
 
         if (oldDispType != ds.displayType)
-        { ds.trigger('displaytype_change'); }
+        {
+            // If we're given a displayType not in our list, then add it
+            if (!_.include(ds.metadata.availableDisplayTypes, ds.displayType))
+            { ds.metadata.availableDisplayTypes.unshift(ds.displayType); }
+            ds.trigger('displaytype_change');
+        }
 
         if (!_.isEqual(oldDispFmt, ds.displayFormat))
         { ds.trigger('displayformat_change'); }
@@ -2122,7 +2165,7 @@ var MAP_TYPES = ['geomap', 'intensitymap'];
  * goes on in Rails; we roughly duplicate it here */
 function getType(ds)
 {
-    var type = ds.displayType || 'blist';
+    var type = ds.displayType || 'table';
 
     if (ds.viewType == 'blobby') { type = 'blob'; }
     else if (ds.viewType == 'href') { type = 'href'; }
@@ -2131,10 +2174,12 @@ function getType(ds)
     else if (_.include(VIZ_TYPES, type)) { type = 'chart'; }
     else if (_.include(MAP_TYPES, type)) { type = 'map'; }
 
+    // We have to inspect the message because if it is invalid, the groupBy is gone
     else if (!$.isBlank(ds.query) && !$.isBlank(ds.query.groupBys) &&
-        ds.query.groupBys.length > 0)
+        ds.query.groupBys.length > 0 || (ds.message || '').indexOf('roll up') >= 0)
     { type = 'grouped'; }
-    else if (type == 'blist' && !_.include(ds.flags || [], 'default'))
+    else if (_.include(['table', 'fatrow', 'page'], type) &&
+        !_.include(ds.flags || [], 'default'))
     { type = 'filter'; }
 
     return type;

@@ -1003,7 +1003,6 @@
 
     var columnSorted = function(datasetObj, column, ascending)
     {
-        var isTemp = datasetObj.settings.view.temporary;
         var query = $.extend(true, {}, datasetObj.settings.view.query);
         if ($.isBlank(ascending))
         {
@@ -1017,11 +1016,8 @@
                         ascending: ascending}];
         }
 
-        datasetObj.settings.view.update({query: query});
-
-        if ((query.orderBys || []).length < 2 &&
-            datasetObj.settings.view.hasRight('update_view') && !isTemp)
-        { datasetObj.settings.view.save(); }
+        datasetObj.settings.view.update({query: query}, false,
+                (query.orderBys || []).length < 2);
     };
 
     var clearColumnFilter = function(datasetObj, col)

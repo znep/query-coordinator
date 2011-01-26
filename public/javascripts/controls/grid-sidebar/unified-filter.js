@@ -1546,9 +1546,6 @@
         renderQueryFilters();
     };
 
-    var isEditable = _.include(['filter', 'grouped'], blist.dataset.type) &&
-        blist.dataset.hasRight('update_view');
-
     var configName = 'filter.unifiedFilter';
     var config = {
         name: configName,
@@ -1558,12 +1555,11 @@
         noReset: true,
         onlyIf: function()
         {
-            return isEditable ? blist.dataset.realColumns.length > 0 :
-                blist.dataset.visibleColumns.length > 0 && blist.dataset.valid;
+            return blist.dataset.visibleColumns.length > 0 && blist.dataset.valid;
         },
         disabledSubtitle: function()
         {
-            return !blist.dataset.valid && !isEditable ? 'This view must be valid' :
+            return !blist.dataset.valid ? 'This view must be valid' :
                 'This view has no columns to filter';
         },
         sections: [{
@@ -1576,7 +1572,7 @@
         }]
     };
 
-    $.gridSidebar.registerConfig(config);
+    $.gridSidebar.registerConfig(config, 'filter');
 
 /////////////////////////////////////
 // PARSING + DATASET

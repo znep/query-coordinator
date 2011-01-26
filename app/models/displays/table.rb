@@ -22,8 +22,4 @@ class Displays::Table < Displays::Base
       'filter'
     end
   end
-
-  def invalid_message
-    (@view.message || '') + '.'
-  end
 end

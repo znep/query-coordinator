@@ -321,7 +321,11 @@ $(function()
 
     blist.dataset.bind('valid', function() { datasetPageNS.updateValidView(); });
 
-    var viewEditPane = $.gridSidebar.paneForDisplayType[blist.dataset.type];
+    $('.viewError').text(blist.dataset.invalidMessage());
+
+    var viewEditPane = $.gridSidebar
+        .paneForDisplayType[blist.dataset.metadata.availableDisplayTypes[0]] ||
+        $.gridSidebar.paneForDisplayType[blist.dataset.type];
     if ($.isBlank(viewEditPane) ||
         !datasetPageNS.sidebar.isPaneEnabled(viewEditPane))
     { $('.invalidActions .editView').hide(); }

@@ -6,6 +6,7 @@
 Dataset.modules['grouped'] =
 Dataset.modules['filter'] =
 Dataset.modules['blist'] =
+Dataset.modules['table'] =
 {
     supportsSnapshotting: function()
     {

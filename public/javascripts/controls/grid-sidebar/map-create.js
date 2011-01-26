@@ -18,7 +18,7 @@
         {text: 'Heat Map', value: 'heatmap'}
     ];
 
-    var isEdit = blist.dataset.type == 'map';
+    var isEdit = _.include(blist.dataset.metadata.availableDisplayTypes, 'map');
 
     var arcgisBaseService = 'http://server.arcgisonline.com/ArcGIS/rest/services/';
     var mapLayers = [
@@ -264,7 +264,7 @@
         });
 
     // Change disabled message based on whether or not the add column dialog is
-    // avaialble
+    // available
     var disabledMessage = function()
     {
         var msg = 'A location column is required to create a map.';

@@ -66,28 +66,19 @@
         </ul>
       </li>
       <li>
-        <%- if @view.is_tabular? && !@view.is_form? -%>
+        <%- if @view.available_display_types.length > 1 -%>
         <ul id='renderTypeOptions' class="pillButtons">
-          <%- if @view.is_alt_view? -%>
-          <li><a href='<%= @view.href %>?defaultRender=<%= @view.display.type %>'
-            class='main <%= @view.display.type %> noRedirPrompt'
-            title='View as a <%= @view.display.name.downcase %>'>
+
+          <%- title_types = {'page' => 'single row', 'fatrow' => 'rich list'} -%>
+          <%- url_types = {'fatrow' => 'richList'} -%>
+          <%- @view.available_display_types.each do |type| -%>
+          <li><a href='<%= @view.href %>?defaultRender=<%= url_types[type] || type %>'
+            class='<%= type %> noRedirPrompt'
+            title='View as a <%= title_types[type] || type %>'>
             <span class='icon'></span>
           </a></li>
           <%- end -%>
-          <li><a href='<%= @view.href %>?defaultRender=table'
-            class='<%= @view.is_alt_view? ?
-              '' : 'main' %> filter table noRedirPrompt' title='View as a grid'>
-            <span class='icon'></span>
-          </a></li>
-          <li><a href='<%= @view.href %>?defaultRender=richList'
-            class='fatrow noRedirPrompt' title='View as a rich list'>
-            <span class='icon'></span>
-          </a></li>
-          <li><a href='<%= @view.href %>?defaultRender=page'
-            class='page noRedirPrompt' title='View a single row'>
-            <span class='icon'></span>
-          </a></li>
+
         </ul>
         <%- end -%>
       </li>
@@ -571,14 +562,15 @@
     <%# Visualize pane %>
     blist.sidebarHidden.visualize = blist.sidebarHidden.visualize || {};
     blist.sidebarHidden.visualize.calendarCreate = <%= @view.is_alt_view? &&
-      (@view.display.type != 'calendar' || !@view.has_rights?('update_view')) %>;
+      (!@view.available_display_types.include?('calendar') ||
+       !@view.has_rights?('update_view')) %>;
     blist.sidebarHidden.visualize.chartCreate = <%= @view.is_alt_view? &&
-      (@view.display.type != 'chart' ||
+      (!@view.available_display_types.include?('chart') ||
        !@view.has_rights?('update_view')) %>;
     blist.sidebarHidden.visualize.mapCreate = <%= @view.is_alt_view? &&
-      (@view.display.type != 'map' || !@view.has_rights?('update_view')) ||
-      @view.is_grouped? ||
-      !module_available?(:map_publish) %>;
+      (!@view.available_display_types.include?('map') ||
+       !@view.has_rights?('update_view')) ||
+      @view.is_grouped? || !module_available?(:map_publish) %>;
 
     <%# Embed pane %>
     blist.sidebarHidden.embed = blist.sidebarHidden.embed || {};
@@ -596,7 +588,7 @@
     blist.sidebarHidden.exportSection.signedDataset = <%=
       !@view.owned_by?(current_user) || !module_available?(:digital_signatures) ||
       !@view.is_tabular? %>;
-    blist.sidebarHidden.exportSection.print = <%= @view.is_alt_view? %>;
+    blist.sidebarHidden.exportSection.print = <%= !@view.can_print? %>;
     blist.sidebarHidden.exportSection.download = <%= !@view.is_tabular? %>;
     blist.sidebarHidden.exportSection.api = <%= !@view.is_tabular? %>;
     blist.sidebarHidden.exportSection.subscribe = <%= !@view.is_tabular? %>;

@@ -458,6 +458,8 @@ $(function()
         value: blist.dataset.averageRating || 0
     });
 
+    $('.viewError').text(blist.dataset.invalidMessage());
+
     // Initialize all data rendering (but page is handled separately)
     blist.$container.renderTypeManager({view: blist.dataset,
         editEnabled: false,

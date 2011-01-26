@@ -3,12 +3,15 @@
 
 <!--[if lte IE 7]>
   <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+        xmlns:v="urn:schemas-microsoft-com:vml"
         xmlns:og="http://opengraphprotocol.org/schema/" class="ie ie7 noBorderRadius noLinearGradient noCss3"><![endif]-->
 <!--[if IE 8]>
   <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+        xmlns:v="urn:schemas-microsoft-com:vml"
         xmlns:og="http://opengraphprotocol.org/schema/" class="ie ie8 noBorderRadius noLinearGradient noCss3"><![endif]-->
 <!--[if gte IE 9]>
   <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+        xmlns:v="urn:schemas-microsoft-com:vml"
         xmlns:og="http://opengraphprotocol.org/schema/" lang="en" class="ie"><![endif]-->
 <!--[if !IE]>-->
   <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
@@ -24,6 +27,11 @@
 
   <link rel="apple-touch-icon-precomposed" media="screen" href="/stylesheets/images/icons/retina_display_icon.png"/>
 
+  <!--[if IE]>
+  <style type="text/css">
+    v\:vmlframe{behavior:url(#default#VML);display:inline-block;}
+  </style>
+  <![endif]-->
   <%= rendered_stylesheet_tag 'base' %>
 
   <%= jquery_include %>

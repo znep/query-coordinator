@@ -842,19 +842,8 @@ blist.namespace.fetch('blist.data.types');
             var image_url = base_url+value.row_id+'?column='+columnId+
                 '&width='+width+'&height='+height;
             if ($.browser.msie)
-            {
-                rv += '<object classid="image/svg+xml" src="' + image_url +
-                    '" width="'+width+'" height="'+height+
-                    '" data-path="javascripts/plugins"></object>';
-                if (!geospatialRendererInterval)
-                {
-                    geospatialRendererInterval = setInterval(function()
-                    {
-                        svgweb._onDOMContentLoaded.done = false;
-                        svgweb._onDOMContentLoaded();
-                    }, 2000);
-                }
-            }
+            { rv += '<v:vmlframe src="' + image_url + '&type=vml#shape01" ' +
+                'style="width:' + width + 'px; height:' + height + 'px;"/>'; }
             else
             { rv += '<embed src="' + image_url + '" width="' + width +
                 '" height="' + height + '"></embed>'; }

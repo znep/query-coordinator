@@ -168,10 +168,11 @@
                 })
                 .bind('displaytype_change', function()
                 {
-                    rtmObj.show(getType(rtmObj));
+                    rtmObj.show(rtmObj.settings.view.displayType);
                 });
 
-                var defType = getType(rtmObj, rtmObj.settings.defaultType);
+                var defType = rtmObj.settings.defaultType ||
+                    rtmObj.settings.view.displayType;
 
                 rtmObj.show(defType);
             },
@@ -210,20 +211,6 @@
             }
         }
     });
-
-    var getType = function(rtmObj, defaultType)
-    {
-        var defType = defaultType || rtmObj.settings.view.displayType;
-        if ($.isBlank(defType))
-        {
-            defType = {
-                'tabular': 'table',
-                'blobby': 'blob',
-                'href': 'href'
-            }[rtmObj.settings.view.viewType];
-        }
-        return defType;
-    };
 
     var getConfig = function(type)
     {

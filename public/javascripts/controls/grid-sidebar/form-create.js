@@ -84,6 +84,8 @@
         var wasPublic = blist.dataset.isPublic();
         var isPublic = isPublicForm(view);
 
+        view.metadata = $.extend(true, {}, blist.dataset.metadata);
+        view.metadata.availableDisplayTypes = ['form'];
         blist.dataset.update(view);
 
         if (!isEdit)

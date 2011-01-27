@@ -576,16 +576,8 @@ class View < Model
     !is_alt_view?
   end
 
-  # Retrieve the display.  The display model represents the view's display and controls how the view is rendered.
-  def display
-    return @display if @display
-
-    dt = self.displayType
-
-    # Map legacy types to the proper implementing class
-    # TODO - migrate legacy views and remove this code
-    if dt
-      config = {
+  def modern_display_type
+    return {
           'annotatedtimeline' => 'chart',
           'imagesparkline' => 'chart',
           'areachart' => 'chart',
@@ -596,9 +588,14 @@ class View < Model
 
           'intensitymap' => 'map',
           'geomap' => 'map'
-      }[dt]
-      dt = config if !config.nil?
-    end
+    }[displayType] || displayType
+  end
+
+  # Retrieve the display.  The display model represents the view's display and controls how the view is rendered.
+  def display
+    return @display if @display
+
+    dt = modern_display_type
 
     # If we have a display attempt to load the implementing class
     if dt
@@ -636,7 +633,7 @@ class View < Model
       elsif display.is_a?(Displays::Table)
         adt = ['table', 'fatrow', 'page']
       else
-        adt = [displayType, 'table', 'fatrow', 'page']
+        adt = [modern_display_type, 'table', 'fatrow', 'page']
       end
     end
     return adt

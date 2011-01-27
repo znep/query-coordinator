@@ -214,8 +214,6 @@
 
                 if (!_.isUndefined(chartObj.chart))
                 {
-                    // Now that we have data, make sure the axes are updated
-                    chartObj.chart.redraw(false);
                     setCategories(chartObj);
 
                     if (chartObj.settings.view.snapshotting)
@@ -739,6 +737,8 @@
     {
         // Make sure data is cleaned, or sometimes setCategories will throw an error
         _.each(chartObj.chart.series, function(s) { s.cleanData(); });
+        // Now that we have data, make sure the axes are updated
+        chartObj.chart.redraw(false);
         chartObj.chart.xAxis[0].setCategories(chartObj._xCategories, true);
         chartObj._categoriesLoaded = true;
     };

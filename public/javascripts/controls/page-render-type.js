@@ -56,7 +56,11 @@
                     prtObj.richRenderer.renderLayout();
                     renderCurrentRow(prtObj);
                 };
-                prtObj.settings.view.bind('columns_changed', mainUpdate);
+                prtObj.settings.view
+                    .bind('columns_changed', mainUpdate)
+                    .bind('query_change', mainUpdate)
+                    .bind('row_change', mainUpdate);
+
                 prtObj.$dom().bind('show', function()
                 {
                     prtObj._shown = true;

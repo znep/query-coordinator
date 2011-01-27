@@ -42,11 +42,9 @@ this.Dataset = Model.extend({
                 selfUrl + '.json', selfUrl + '/columns'), Dataset.prototype);
 
 
-        this._adjustProperties();
-
         this.updateColumns();
 
-        if (_.isFunction(this._convertLegacy)) { this._convertLegacy(); }
+        this._adjustProperties();
 
         this.temporary = false;
         this.minorChange = true;
@@ -1179,7 +1177,14 @@ this.Dataset = Model.extend({
 
         ds.type = getType(ds);
         ds.styleClass = ds.type.capitalize();
-        ds.displayType = ds.displayType || 'table';
+        if ($.isBlank(ds.displayType))
+        {
+            ds.displayType = {
+                'tabular': 'table',
+                'blobby': 'blob',
+                'href': 'href'
+            }[ds.viewType];
+        }
         ds.displayName = getDisplayName(ds);
 
         // If we are an invalid filter, we're not really that invalid, because
@@ -1208,6 +1213,10 @@ this.Dataset = Model.extend({
             ds._addedProperties = true;
         }
 
+        ds.displayFormat = ds.displayFormat || {};
+
+        if (_.isFunction(ds._convertLegacy)) { ds._convertLegacy(); }
+
         if (!$.subKeyDefined(ds, 'metadata.availableDisplayTypes'))
         {
             ds.metadata = ds.metadata || {};
@@ -1222,8 +1231,6 @@ this.Dataset = Model.extend({
             }
             ds.metadata.availableDisplayTypes = adt;
         }
-
-        ds.displayFormat = ds.displayFormat || {};
 
         ds.url = ds._generateUrl();
         ds.fullUrl = ds._generateUrl(true);
@@ -1276,8 +1283,6 @@ this.Dataset = Model.extend({
         { if (k != 'columns' && ds._validKeys[k]) { ds[k] = v; } });
 
         ds._adjustProperties();
-
-        if (_.isFunction(ds._convertLegacy)) { ds._convertLegacy(); }
 
         if (!$.isBlank(newDS.columns))
         { ds.updateColumns(newDS.columns, forceFull, updateColOrder); }

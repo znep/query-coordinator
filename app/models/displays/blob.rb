@@ -8,6 +8,14 @@ class Displays::Blob < Displays::Base
         end
     end
 
+    def type
+      'blob'
+    end
+
+    def name
+      'Non-tabular file or document'
+    end
+
     # Choose a viewer based on MIME type, default to download link
     def render_partial
       return case @display_type

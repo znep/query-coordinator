@@ -59,7 +59,11 @@
                     frObj.richRenderer.renderLayout();
                     renderCurrentPage(frObj);
                 };
-                frObj.settings.view.bind('columns_changed', mainUpdate);
+                frObj.settings.view
+                    .bind('columns_changed', mainUpdate)
+                    .bind('query_change', mainUpdate)
+                    .bind('row_change', mainUpdate);
+
                 frObj.$dom().bind('show', function()
                 {
                     frObj._shown = true;

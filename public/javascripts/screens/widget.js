@@ -472,7 +472,7 @@ $(function()
     var $dataGrid = blist.$container.renderTypeManager().$domForType('table');
 
     // Page render type
-    var prevType;
+    var prevType = 'table';
     $('#pageRenderType > .fullView').click(function(e)
     {
         e.preventDefault();

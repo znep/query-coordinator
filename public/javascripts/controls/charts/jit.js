@@ -114,7 +114,7 @@
 
             getRequiredJavascripts: function()
             {
-                var scripts = blist.assets.jit;
+                var scripts = $.makeArray(blist.assets.jit);
                 if ($.browser.msie)
                 {
                     scripts.push(this.javascriptBase + 'plugins/excanvas.compiled.js');

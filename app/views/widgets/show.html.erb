@@ -51,6 +51,30 @@
             <%- end -%>
           </div>
 
+          <div id='fatRowRenderType'
+            class='fatRowRenderType navRenderType renderTypeNode fullHeight hide'>
+            <div class='columnHeaders'></div>
+            <div class='rowList'></div>
+            <ul class='navigation'>
+              <li><a href='#start' title='View first page' class='start button'>
+                <span class='icon'></span>
+              </a></li>
+              <li><a href='#previous' title='View previous page'
+                class='previous button'>
+                <span class='icon'></span>
+              </a></li>
+              <li class='page'><a href='#page'>0</a></li>
+              <li><a href='#next' title='View next page' class='next button'>
+                <span class='icon'></span>
+              </a></li>
+              <li><a href='#end' title='View last page' class='end button'>
+                <span class='icon'></span>
+              </a></li>
+            </ul>
+            <div class='templateRow row clearfix'>
+            </div>
+          </div>
+
           <div id='pageRenderType'
             class='pageRenderType navRenderType fullHeight renderTypeNode hide'>
             <a href='#ShowFullView' class='fullView'>View all the data</a>
@@ -172,6 +196,7 @@
   <%= render :partial => 'filters_table_template' %>
   <%= render :partial => 'datasets/downloads_table_template' %>
   <%= render :partial => 'datasets/comments_template' %>
+  <%= render :partial => 'datasets/fatrow_header_template' %>
 <% end %>
 
 <% content_for :js_footer do %>

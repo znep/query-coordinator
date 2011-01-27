@@ -581,7 +581,7 @@ blist.namespace.fetch('blist.data.types');
 
     // URL
 
-    var urlHelper = function(value, captionIsHTML, plain)
+    var urlHelper = function(value, captionIsHTML, plain, baseUrl)
     {
         if (!value) { return ''; }
         var url;
@@ -598,9 +598,13 @@ blist.namespace.fetch('blist.data.types');
         }
         else { caption = url = value + ''; }
 
-        if (url && url != '' && !url.match(/^([a-z]+):/i) &&
-                url.indexOf('/') != 0)
-        { url = 'http://' + url; }
+        if (url && url != '' && !url.match(/^([a-z]+):/i))
+        {
+            if (!$.isBlank(baseUrl))
+            { url = baseUrl + url; }
+            else if (url.indexOf('/') != 0)
+            { url = 'http://' + url; }
+        }
 
         if (plain) { return url || ''; }
 
@@ -609,14 +613,15 @@ blist.namespace.fetch('blist.data.types');
             htmlEscape(url) + "'>" + caption + "</a>";
     };
 
-    var renderGenURL = function(value, plain)
+    var renderGenURL = function(value, plain, column)
     {
-        return "urlHelper(" + value + ", false, " + plain + ")";
+        return "urlHelper(" + value + ", false, " + plain + ", '" +
+            (column.format || {}).baseUrl + "')";
     };
 
-    var renderURL = function(value)
+    var renderURL = function(value, column)
     {
-        return urlHelper(value);
+        return urlHelper(value, false, false, (column.format || {}).baseUrl);
     };
 
     var renderFilterURL = function(value)

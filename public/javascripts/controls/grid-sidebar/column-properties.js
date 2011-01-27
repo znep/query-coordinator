@@ -302,6 +302,20 @@
                 ]
             },
 
+            // URL
+            {
+                title: 'URL Options',
+                onlyIf: {func: function(c)
+                {
+                    if ($.isBlank(c)) { return false; }
+                    return c.origColumn.renderTypeName == 'url';
+                }},
+                fields: [
+                        {text: 'Base URL', type: 'text', name: 'format.baseUrl',
+                        prompt: 'Enter the common URL prefix', extraClass: 'url'}
+                ]
+            },
+
             // Multiple choice value chooser
             {
                 title: 'Multiple Choice Options',

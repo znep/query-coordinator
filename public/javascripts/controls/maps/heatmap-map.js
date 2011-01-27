@@ -56,6 +56,14 @@
             var mapObj = this;
             var config = mapObj.settings.view.displayFormat.heatmap;
 
+            if (config.type == 'custom')
+            {
+                MAP_TYPE['custom'] = {
+                    'jsonCache': function(config)
+                    { return '/geodata/' + config.cache_url; }
+                };
+            }
+
             config.hideLayers = config.hideLayers ||
                 !mapObj.settings.view.displayFormat.layers
                 || mapObj.settings.view.displayFormat.layers.length == 0;
@@ -172,6 +180,7 @@
         if (!rows) { rows = mapObj._rows; }
 
         mapObj._runningQuery = false;
+        mapObj._featureDisplayName = mapObj._featureSet.displayFieldName;
 
         _.each(rows, function(row, i)
         {
@@ -244,6 +253,8 @@
         mapObj.clearFeatures();
         _.each(mapObj._featureSet.features, function(feature)
         {
+            if (!feature.attributes.NAME)
+            {feature.attributes.NAME = feature.attributes[mapObj._featureDisplayName];}
             if (!feature.attributes.quantity) { return; }
             feature.attributes.description = _.compact(
                 $.makeArray(feature.attributes.description)).join(', ');

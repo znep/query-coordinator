@@ -10,12 +10,6 @@ blist.datasetControls.hookUpShareMenu = function(view, $menu, overrides, hideEma
         menuButtonContents: 'Socialize',
         menuButtonTitle: 'Share this Dataset',
         contents: [
-            { text: 'Delicious', className: 'delicious', rel: 'external',
-              href: 'http://del.icio.us/post?url=' + seoPath + '&title=' +
-                $.htmlEscape(view.name) },
-            { text: 'Digg', className: 'digg', rel: 'external',
-              href: 'http://digg.com/submit?phase=2&url=' + seoPath +
-                '&title=' + $.htmlEscape(view.name) },
             { text: 'Facebook', className: 'facebook', rel: 'external',
               href: 'http://www.facebook.com/share.php?u=' + seoPath },
             { text: 'Twitter', className: 'twitter', rel: 'external',

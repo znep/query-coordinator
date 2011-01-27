@@ -38,22 +38,13 @@ module DatasetsHelper
   end
 
   def socialize_menu_options(view)
-    tweet = CGI::escape("Check out the #{h(view.name)} dataset on #{CurrentDomain.strings.company} - ")
     seo_path = "#{request.protocol + request.host_with_port + view.href}"
-    short_path = "#{request.protocol + request.host_with_port.gsub(/www\./, '') +
-      view.short_href}"
 
-    [{'text' => 'Delicious',
-      'href' => "http://del.icio.us/post?url=#{seo_path}&title=#{h(view.name)}"},
-
-    {'text' => 'Digg',
-      'href' => "http://digg.com/submit?phase=2&url=#{seo_path}&title=#{h(view.name)}"},
-
-    {'text' => 'Facebook',
+    [{'text' => 'Facebook',
       'href' => "http://www.facebook.com/share.php?u=#{h(seo_path)}"},
 
     {'text' => 'Twitter',
-      'href' => "http://www.twitter.com/home?status=#{tweet + short_path}"}]
+      'href' => "http://www.twitter.com/home?status=#{view.tweet}"}]
   end
 
   # Create a drop down menu of formatting fonts

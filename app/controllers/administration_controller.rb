@@ -512,6 +512,7 @@ class AdministrationController < ApplicationController
 
     begin
       Story.create(story)
+      clear_stories_cache
     rescue CoreServer::CoreServerError => e
       flash.now[:error] = "An error occurred during your request: #{e.error_message}"
       return render 'shared/error', :status => :bad_request
@@ -532,6 +533,7 @@ class AdministrationController < ApplicationController
       parse_story_params(@story, params[:story])
       @story.update_attributes(params[:story].stringify_keys)
       @story.save!
+      clear_stories_cache
     end
   end
   def stories_appearance
@@ -627,6 +629,13 @@ private
     end
   end
 
+  def clear_stories_cache
+    # clear the cache of stories since assumedly something about them updated
+    stories_cache_key = app_helper.cache_key('homepage-stories', { 'domain' => CurrentDomain.cname })
+    clear_success = Rails.cache.delete(stories_cache_key)
+    Rails.logger.info(">>> attempted to clear stories cache at #{stories_cache_key}, with result #{clear_success}")
+  end
+
   def fetch_layer_info(layer_url)
     begin
       uri = URI.parse(URI.extract(layer_url).first)
@@ -685,4 +694,15 @@ private
       end
     end
   end
+
+private
+  # Need an instance for using cache_key()
+  def app_helper
+    AppHelper.instance
+  end
+end
+
+class AppHelper
+  include Singleton
+  include ApplicationHelper
 end

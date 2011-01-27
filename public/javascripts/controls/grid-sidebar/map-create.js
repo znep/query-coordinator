@@ -89,6 +89,13 @@
     var isArcGISDataset    = function() { return  blist.dataset.isArcGISDataset(); };
     var isNotArcGISDataset = function() { return !blist.dataset.isArcGISDataset(); };
 
+    var customHeatmap = function()
+    {
+        return blist.dataset.displayFormat.heatmap &&
+               blist.dataset.displayFormat.heatmap.type == 'custom';
+    };
+    var notCustomHeatmap = function() { return !customHeatmap(); }
+
     var mapTypeSelector = {
         text: 'Map Type', name: 'displayFormat.type', type: 'select',
         required: true, prompt: 'Select a map type',
@@ -406,7 +413,7 @@
                             'quantities for each point'
                     },
                     {text: 'Region', name: 'displayFormat.heatmap.type', type: 'select',
-                        required: true, prompt: 'Select a region level',
+                        required: notCustomHeatmap(), prompt: 'Select a region level',
                         options: regionTypes,
                         wizard: 'Choose the type of regions the ' +
                             'heat map will display'
@@ -451,6 +458,12 @@
 
         if (view.displayFormat.type == blist.dataset.displayFormat.type)
         { view.displayFormat.viewport = blist.dataset.displayFormat.viewport; }
+        if (customHeatmap())
+        {
+            view.displayFormat.heatmap.type = 'custom';
+            view.displayFormat.heatmap.cache_url =
+                blist.dataset.displayFormat.heatmap.cache_url;
+        }
 
         blist.dataset.update(view);
 

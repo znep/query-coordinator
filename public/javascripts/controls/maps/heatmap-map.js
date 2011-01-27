@@ -72,8 +72,14 @@
             if (config.hideZoomSlider)
             { mapObj.map.hideZoomSlider(); }
 
-            if ((_.isUndefined(mapObj._locCol) && !blist.dataset.isArcGISDataset())
-                || _.isUndefined(mapObj._quantityCol))
+            config.aggregateMethod = _.isUndefined(mapObj._quantityCol) ?
+                'count' : 'sum';
+
+            // Fools everything depending on quantityCol into recognizing it as a Count
+            if (config.aggregateMethod == 'count')
+            { mapObj._quantityCol = { 'id': 'fake_quantity', 'name': 'Count' }; }
+
+            if (_.isUndefined(mapObj._locCol) && !blist.dataset.isArcGISDataset())
             {
                 mapObj.errorMessage = 'Required columns missing';
                 return false;
@@ -194,8 +200,10 @@
             if (mapObj._infoCol)
             { feature.attributes.description.push(
                 mapObj.getText(row, mapObj._infoCol)); }
-            if (!row.invalid[mapObj._quantityCol.id])
+            if (config.aggregateMethod == 'sum' && !row.invalid[mapObj._quantityCol.id])
             { feature.attributes.quantity.push(row[mapObj._quantityCol.id]); }
+            if (config.aggregateMethod == 'count')
+            { feature.attributes.quantity.push('1'); }
 
             var redirectTarget;
             if (mapObj._redirectCol)
@@ -223,6 +231,7 @@
             if (e.attributes.quantity.length == 0)
             { return null; }
 
+            // aggregateMethod count just sums up 1s.
             var quantityPrecision = 0;
             e.attributes.quantity = _.reduce(
                 e.attributes.quantity, function(m, v)

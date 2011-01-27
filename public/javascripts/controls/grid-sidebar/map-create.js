@@ -407,7 +407,7 @@
                             'descriptions for each point'
                     },
                     {text: 'Quantity', name: 'displayFormat.plot.quantityId',
-                        required: true, type: 'columnSelect', isTableColumn: true,
+                        type: 'columnSelect', isTableColumn: true,
                         columns: {type: ['number', 'money', 'percent'], hidden: isEdit},
                         wizard: 'Choose a column that contains ' +
                             'quantities for each point'

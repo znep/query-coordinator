@@ -33,7 +33,7 @@ $is_customizer: false !default
 
       h2
         color: $color_stories_box_headline_color
-        font-family: $stories_box_headline_font_family
+        font-family: #{$stories_box_headline_font_family} // interpolation to escape from quoted string
         font-size: $stories_box_headline_font_size
         margin-top: 0.5em
         @if $stories_box_headline_shadow_alpha > 0 and $stories_box_headline_shadow_radius > 0
@@ -41,7 +41,7 @@ $is_customizer: false !default
 
       p
         color: $color_stories_box_body_color
-        font-family: $stories_box_body_font_family
+        font-family: #{$stories_box_body_font_family}
         font-size: $stories_box_body_font_size
         text-align: justify
         @if $stories_box_body_shadow_alpha > 0 and $stories_box_body_shadow_radius > 0

@@ -632,7 +632,7 @@ private
   def clear_stories_cache
     # clear the cache of stories since assumedly something about them updated
     stories_cache_key = app_helper.cache_key('homepage-stories', { 'domain' => CurrentDomain.cname })
-    clear_success = Rails.cache.delete(stories_cache_key)
+    clear_success = expire_fragment(stories_cache_key)
     Rails.logger.info(">>> attempted to clear stories cache at #{stories_cache_key}, with result #{clear_success}")
   end
 

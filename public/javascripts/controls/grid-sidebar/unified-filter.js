@@ -261,6 +261,11 @@
     {
         delete condition.metadata;
 
+        if (!_.isArray(condition.children) || (condition.children.length === 0))
+        {
+            return false;
+        }
+
         if ((condition.type == 'operator') && _.include(['AND', 'OR'], condition.value))
         {
             var noopChildren = [];
@@ -271,11 +276,6 @@
                     condition.children = _.without(condition.children, child);
                 }
             });
-        }
-
-        if (!_.isArray(condition.children) || (condition.children.length === 0))
-        {
-            return false;
         }
 
         return true;

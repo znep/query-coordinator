@@ -293,8 +293,24 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'resource/:name/:row_id.:format', :controller => 'resources',
     :action => 'show',
     :conditions => {:method => :get}
-  # end Semantic web cannoical URLs
 
+  # Repeat semantic web.  Add id as alias to resource
+  map.connect 'id/:name', :controller => 'resources',
+    :action => 'show',
+    :conditions => {:method => :get}
+
+  map.connect 'id/:name.:format', :controller => 'resources',
+    :action => 'show',
+    :conditions => {:method => :get}
+
+  map.connect 'id/:name/:row_id', :controller => 'resources',
+    :action => 'show',
+    :conditions => {:method => :get}
+
+  map.connect 'id/:name/:row_id.:format', :controller => 'resources',
+    :action => 'show',
+    :conditions => {:method => :get}
+  # end Semantic web cannoical URLs
 
   # For screenshotting only
   map.connect 'r/:id/:name', :controller => 'datasets',

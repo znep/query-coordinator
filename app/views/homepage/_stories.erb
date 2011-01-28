@@ -7,7 +7,7 @@
       <li data-storyid="<%= story.id %>" data-storycustomization="<%= story.raw_customization %>">
         <div class="storyBox">
           <h2><%= raw story.headline %></h2>
-          <p><%= raw story.story %></p>
+          <div class="storyBody"><%= raw story.story %></div>
         </div>
       </li>
     <%- end -%>

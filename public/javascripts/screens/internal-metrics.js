@@ -1,6 +1,5 @@
 ;var metricsNS = blist.namespace.fetch('blist.metrics');
 
-
 $(function()
 {
     var kpiGen = function(svc, isAvg)
@@ -32,7 +31,6 @@ $(function()
         'DomainsService'
     ];
 
-
     var screen = $('#analyticsDataContainer').metricsScreen({
         urlBase: '/api/internal_metrics.json',
         chartSections:  [
@@ -56,7 +54,7 @@ $(function()
                 callback: function($context) {
                     metricsNS.updateTopListWrapper($context, $context.data(metricsNS.DATA_KEY));
                 }, top: 'CLIENTS'
-            },
+            }
         ]
     });
 

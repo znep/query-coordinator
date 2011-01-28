@@ -176,8 +176,12 @@ $(function()
             .contentIndicator({text: blist.dataset.numberOfComments || ''});
     }
 
-    // Show guided filter by default
-    datasetPageNS.sidebar.setDefault('filter.unifiedFilter');
+    // Show guided filter by default if there is a default filter
+    if ($.subKeyDefined(blist.dataset, 'query.filterCondition') ||
+        $.subKeyDefined(blist.dataset, 'metadata.filterCondition'))
+    {
+        datasetPageNS.sidebar.setDefault('filter.unifiedFilter');
+    }
 
     blist.dataset.bind('columns_changed',
         function() { datasetPageNS.sidebar.updateEnabledSubPanes(); });

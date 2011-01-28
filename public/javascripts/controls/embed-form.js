@@ -87,11 +87,13 @@
             {
                 $embedForm.find(config.errorMessageSelector).addClass('errorMessage');
                 $embedForm.find(config.textareaSelector).attr('disabled', true);
+                config.invalidCallback();
             }
             else
             {
                 $embedForm.find(config.errorMessageSelector).removeClass('errorMessage');
                 $embedForm.find(config.textareaSelector).removeAttr('disabled');
+                config.validCallback();
             }
 
             return { width: width, height: height };
@@ -108,7 +110,9 @@
         errorMessageSelector: ".sizeInformation",
         sizesSelector: ".sizes li",
         codeSelector: '.htmlCode',
-        createTemplateButtonSelector: '.createTemplateButton'
+        createTemplateButtonSelector: '.createTemplateButton',
+        invalidCallback: function() {},
+        validCallback: function() {}
     };
 
 })(jQuery);

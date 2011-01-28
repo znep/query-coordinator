@@ -30,7 +30,16 @@
                     callback: function($formElem)
                     {
                         $embedForm = $formElem;
-                        $formElem.embedForm();
+                        $formElem.embedForm({
+                            invalidCallback: function()
+                            {
+                                $formElem.closest('.paneContent').find('.button[data-value=preview]').addClass('disabled');
+                            },
+                            validCallback: function()
+                            {
+                                $formElem.closest('.paneContent').find('.button[data-value=preview]').removeClass('disabled');
+                            }
+                        });
                     }
                 }
             }
@@ -43,11 +52,11 @@
         {
             sidebarObj.finishProcessing();
 
-            if (value == 'preview')
+            if ((value == 'preview') && (!$pane.find('.button[data-value=preview]').hasClass('disabled')))
             {
                 var width = $embedForm.find('#embed_width').val();
                 var height = $embedForm.find('#embed_height').val();
-                var customizationId = $embedForm.find('#embed_customization').val() || '';
+                var customizationId = $embedForm.find('#embed_template').val() || '';
 
                 window.open(blist.dataset.url +
                     "/widget_preview?width=" + width + "&height=" + height +

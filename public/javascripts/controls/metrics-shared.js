@@ -23,7 +23,9 @@ metricsNS.renderTopList = function(data, $target)
 
     if (data.length > 0)
     {
-        table.parent().removeClass('noDataAvailable').end()
+        table.parent()
+            .removeClass('noDataAvailable loadingMore')
+                .end()
             .append(
                 $.renderTemplate('metricsTopItem', data,
                     metricsNS.topListItemDirective))
@@ -65,8 +67,7 @@ metricsNS.updateTopListWrapper = function($context, data, mapFunction, postProce
     });
 
     $context
-        .toggleClass('moreDataAvailable', newCount < sorted.length)
-        .removeClass('loadingMore');
+        .toggleClass('moreDataAvailable', newCount < sorted.length);
 
     if (_.isFunction(postProcess))
     { postProcess(mapped, $context); }

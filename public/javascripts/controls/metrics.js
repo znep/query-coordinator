@@ -348,7 +348,7 @@
         chartDefaults: {
             callback: metricsNS.updateChartCallback,
             chartType: 'area',
-            stacking: 'normal',
+            stacking: 'normal'
         },
         chartDirective: {
             '.chartContainer' : {

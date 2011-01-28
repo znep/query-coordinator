@@ -498,7 +498,15 @@ $.loadStylesheets = function(sheetQueue, callback)
                 $.param({'_': (new Date()).valueOf()});
         }
 
-        if (url.startsWith('http://') || url.startsWith('https://'))
+        // So... using the second method to grab stylesheets via Ajax and insert
+        // them into the head manually mostly works, and gives us a callback when
+        // things are done. It obviously doesn't work for external files;
+        // and it also has a slight problem in IE when in an iframe (like the
+        // SDP) -- images ref'ed in the stylesheet won't load.  So in either of
+        // these cases, load it via a link tag, and hope things look OK, since
+        // we don't get a callback.
+        if (($.browser.msie && window.parent != window) ||
+            url.startsWith('http://') || url.startsWith('https://'))
         {
             // If the stylesheet is external, then just insert a style tag
             // and hope you don't need to know when it is fully loaded...

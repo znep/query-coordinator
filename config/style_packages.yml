@@ -18,7 +18,6 @@ base-sdp:
 - tables
 - table-core
 - dataset-grid
-- rich-render-types
 - screen-map
 strip-chrome:
 - strip-chrome

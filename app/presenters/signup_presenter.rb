@@ -6,15 +6,18 @@ class SignupPresenter < Presenter
 
   attr_accessor :user
   attr_accessor :inviteToken
+  attr_accessor :authToken
   attr_accessor :profile_image
   attr_accessor :errors
   attr_accessor :accept_terms
 
   attr_accessor :emailConfirm, :passwordConfirm
 
-  def initialize(params = {}, inviteToken = nil)
+  def initialize(params = {}, inviteToken = nil, authToken = nil)
     @user = User.new
     @inviteToken = inviteToken
+    @authToken = authToken
+
     @errors = []
 
     super(params)
@@ -34,7 +37,7 @@ protected
 
   def create_user
     temp_password = user.password
-    @user = user.create(inviteToken)
+    @user = user.create(inviteToken, authToken)
     @user.password = temp_password
     true
   rescue CoreServer::CoreServerError => e

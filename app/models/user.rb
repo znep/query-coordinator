@@ -9,11 +9,16 @@ class User < Model
     parse(CoreServer::Base.connection.get_request(path))
   end
 
-  def self.create(attributes, inviteToken = nil)
-    path = "/#{self.name.pluralize.downcase}.json"
-    if (inviteToken && inviteToken != "")
-      path += "?inviteToken=#{inviteToken}"
+  def self.create(attributes, inviteToken = nil, authToken = nil)
+    opts = {}
+    if inviteToken.present?
+      opts[:inviteToken] = inviteToken
     end
+    if authToken.present?
+      opts[:authToken] = authToken
+    end
+
+    path = "/#{self.name.pluralize.downcase}.json?#{opts.to_param}"
     return parse(CoreServer::Base.connection.create_request(path, attributes.to_json))
   end
 
@@ -35,8 +40,8 @@ class User < Model
     return result.is_a? Net::HTTPSuccess
   end
 
-  def create(inviteToken = nil)
-    User.create(data_hash, inviteToken)
+  def create(inviteToken = nil, authToken = nil)
+    User.create(data_hash, inviteToken, authToken)
   end
 
   def update_password(params)

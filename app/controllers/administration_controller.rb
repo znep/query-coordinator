@@ -55,13 +55,14 @@ class AdministrationController < ApplicationController
       @user_search_results = SearchResult.search('users', :q => params[:username]).first.results
     else
       @admins = find_privileged_users.sort{|x,y| x.displayName <=> y.displayName}
+      @futures = FutureAccount.find
     end
 
     if @user_search_results.nil?
       @users_list = @admins
       @existing_user_actions = true
     elsif @user_search_results.empty?
-      @table_title = 'No users found.'
+      @table_title = 'No users found'
     else
       @table_title = "Search Results for '#{@search}'"
       @users_list = @user_search_results
@@ -88,6 +89,55 @@ class AdministrationController < ApplicationController
       error_message = "There was an error sending the password reset email."
     end
     handle_button_response(success, error_message, "Password reset email sent", :users)
+  end
+  def bulk_create_users
+    check_auth_level('manage_users')
+
+    role = params[:role]
+    if !User.roles_list.any? { |r| r.first == role.downcase }
+      flash[:error] = "Invalid role specified for user creation: #{role}"
+      return (redirect_to :action => :users)
+    end
+
+    emails = params[:users].split(/[, ]/).map{ |e| e.strip }.select { |e| !e.blank? }
+
+    begin
+      results = CoreServer::Base.connection.batch_request do
+        emails.each_with_index do |email, idx|
+          FutureAccount.create({
+            :email => email.strip,
+            :role => role
+          }, false)
+        end
+      end
+
+      errors = []
+      results.each do |result|
+        if result['error']
+          errors.push(result['error_message'])
+        end
+      end
+    rescue CoreServer::CoreServerError => ex
+      errors = [ex.error_message]
+    end
+
+    if errors.size > 0
+      flash[:error] = errors.join(', ')
+    else
+      flash[:notice] = "All accounts successfully created"
+    end
+
+    redirect_to :action => :users
+  end
+  def delete_future_user
+    check_auth_level('manage_users')
+
+    begin
+      success = FutureAccount.delete(params[:id])
+    rescue CoreServer::CoreServerError => ex
+      error_message = ex.error_message
+    end
+    handle_button_response(success, error_message, "Pending permissions removed", :users)
   end
 
   def moderation

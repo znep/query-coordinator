@@ -47,16 +47,30 @@ $(function()
                 adminUsersNS.onPromoteError(request, $select);
             }
         });
-        
     });
 
-    var $userTable = $('#adminContent .adminUserTable');
+    var $userTable    = $('#adminContent .adminUsersTable'),
+        $futuresTable = $('#adminContent .futureUsersTable'),
+        deleteActions = {
+            callback: function(response, $row) {
+                var $container = $row.closest('.tableContainer');
+                $row.slideUp().remove();
+                handleResultLength($container);
+            },
+            workingSelector: '.actions'
+        },
+        comboDefaults = {
+          headerContainerSelector: '.gridListWrapper',
+          initialSort: [[0, 0]],
+          scrollableBody: false,
+          selectable: false,
+          sortGrouping: false,
+          sortTextExtraction: function(node) {
+              return $(node).find('.cellInner').text();
+          }
+    }
 
-    $userTable.find('.actions .deleteButton').adminButton({
-        callback: function(response, $row)
-        { $row.slideUp().remove(); },
-        workingSelector: '.actions'
-    });
+    $userTable.find('.actions .deleteButton').adminButton(deleteActions);
 
     $userTable.find('.actions .resetPasswordButton').adminButton({
         callback: function(response, $row)
@@ -64,16 +78,18 @@ $(function()
         workingSelector: '.actions'
     });
 
-    $userTable.combinationList({
-        headerContainerSelector: '.gridListWrapper',
-        initialSort: [[0, 0]],
-        scrollableBody: false,
-        selectable: false,
-        sortGrouping: false,e: false,
-        sortTextExtraction: function(node) {
-            return $(node).find('.cellInner').text();
-        }
-    });
+    $userTable.combinationList(comboDefaults);
+
+    $futuresTable
+        .find('.actions .removeButton').adminButton(deleteActions)
+            .end()
+        .combinationList(comboDefaults);
+
+    var handleResultLength = function($table)
+    {
+        $table
+            .toggleClass('noResults', $table.find('tbody tr:visible').length === 0);
+    };
 
     $('#userRoleFilterDropdown').change(function()
     {
@@ -90,15 +106,15 @@ $(function()
             $userTable.find('tbody tr').hide()
                 .filter('[data-userrole=' + filterVal + ']').show();
 
-            if ($userTable.find('tbody tr:visible').length === 0)
-            {
-                $('.noResultsMessage').fadeIn();
-            }
-            else
-            {
-                $('.noResultsMessage').hide();
-            }
+            handleResultLength($userTable.closest('.tableContainer'));
         }
+    });
+
+    $('.showBulkCreateForm').click(function(event)
+    {
+        event.preventDefault();
+        $('.bulkUserCreateSection').hide().removeClass('hide').slideDown();
+        $(event.target).addClass('disabled');
     });
 
     // Hackity hack hack

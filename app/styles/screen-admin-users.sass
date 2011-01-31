@@ -23,12 +23,18 @@
     select
       width: 10em
 
-  .adminUsersTable
+  .adminUsersTable, .futureUsersTable
     .select
       text-align: center
       width: 1em
     tr
       font-size: 1.2em
+      .button
+        opacity: 0.3
+        @include transition-duration(0.2s)
+        @include transition-property(opacity)
+      &:hover .button
+        opacity: 1
     tbody
       td
         height: 2.5em
@@ -59,15 +65,41 @@
               display: inline
               zoom: 1
 
+  .tableContainer
     .noResultsMessage
       display: none
       font-size: 1.4em
       margin: 3em 0
       text-align: center
-      &.noHide
+    &.noResults
+      .noResultsMessage
         display: block
-
 
     .userNotice
       display: none
       width: 30em
+
+  .futureUsersContainer
+    padding-top: 2em
+    .unregisteredExplanation
+      font-size: 1.4em
+      padding: 1em 0
+
+    .futureUsersTable
+      td.email
+        padding-left: 1em
+
+  .bulkCreateButtonArea
+    float: right
+    .button
+      font-size: 1.2em
+
+  .bulkUserCreateSection
+    padding: 1em 0
+    textarea
+      width: 35em
+    .line
+      label
+        padding-right: 0.5em
+        text-align: right
+        width: 6em

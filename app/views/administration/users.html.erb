@@ -34,6 +34,13 @@
       <%= link_to 'Return to users overview', :action => 'users' %>
     <%- end -%>
   </p>
+
+  <%- unless params[:no_js].present? -%>
+  <div class="bulkCreateButtonArea">
+    <a href="#BulkCreate" class="button showBulkCreateForm">Bulk Create</a>
+  </div>
+  <%- end -%>
+
   <form class='search usersFind' action='<%= url_for :action => 'users' %>' method='get'>
     <label for='username'>Search for Users to Add</label>
     <input type='text' class='textPrompt searchField<%= ' prompt' if @search.nil? %>' name='username' id='username'
@@ -41,12 +48,30 @@
     <input type="submit" class="submit" alt="search" value="Search" />
   </form>
 
-  <div class='adminUsersTable'>
+  <div class="bulkUserCreateSection clearfix<%= ' hide' unless params[:no_js].present? %>">
+    <%= form_tag({:action => 'bulk_create_users'}, {:method => 'post', :class => 'commonForm'}) %>
+      <div class="line">
+        <label for="users">Emails</label>
+        <%= text_area_tag('users', nil,
+          :class => 'textPrompt', :title => 'Enter email addresses for the accounts you wish to create') %>
+      </div>
+      <div class="line">
+        <label for="role">Role</label>
+        <%= raw(select_for_role('role', 'role', nil, 'roleSelect', false)) %>
+      </div>
+      <div class="line">
+        <label>&nbsp;</label>
+        <input type='submit' class='bulkCreateButton button default' value='Create Accounts' />
+      </div>
+    </form>
+  </div>
+
+  <div class='adminUsersTableContainer tableContainer'>
   <h2><%= @table_title %></h2>
   <%- unless @users_list.nil? -%>
     <div class="flash notice userNotice"></div>
     <div class="gridListWrapper">
-      <table class="gridList adminUserTable" cellspacing="0">
+      <table class="gridList adminUsersTable" cellspacing="0">
         <colgroup>
           <%# Enable once we have bulk ops %>
           <%- if @existing_user_actions && false-%>
@@ -125,7 +150,62 @@
       </table>
     </div>
     <p class="noResultsMessage<%= ' noHide' if @users_list && @users_list.length == 0 %>">No users match your current filter.</p>
+  </div>
   <%- end -%>
+
+  <%- unless @futures.blank? -%>
+    <div class="futureUsersContainer tableContainer">
+      <p class="unregisteredExplanation">
+        The following users have accounts pending, but have not activated them yet
+      </p>
+      <div class="gridListWrapper">
+        <table class="gridList futureUsersTable" cellspacing="0">
+          <colgroup>
+            <col class="email" />
+            <col class="role" />
+            <col class="createdAt" />
+            <col class="actions" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="email"><div>Email</div><span class="icon"></span></th>
+              <th class="role"><div>Role</div><span class="icon"></span></th>
+              <th class="createdAt"><div>Invited</div><span class="icon"></span></th>
+              <th class="actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%- @futures.each do |user| -%>
+              <tr class="item">
+                <td class="email">
+                  <span class="cellInner">
+                    <%= user.email %>
+                  </span>
+                </td>
+                <td class="role">
+                  <span class="cellInner">
+                    <%= user.role.titleize %>
+                  </span>
+                </td>
+                <td class="createdAt">
+                  <span class="cellInner">
+                    <%= blist_long_date(user.createdAt) %>
+                  </span>
+                </td>
+                <td class="actions">
+                  <span class="loading"></span>
+                  <%= link_to 'Remove', { :action => 'delete_future_user', :id => user.id },
+                    {:class => 'button removeButton'} %>
+                </td>
+              </tr>
+            <%- end -%>
+          </tbody>
+        </table>
+      </div>
+      <p class="noResultsMessage">No pending users remain</p>
+    </div>
+  <%- end -%>
+
   </div>
 </div>
 

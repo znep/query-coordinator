@@ -103,6 +103,10 @@ ActionController::Routing::Routes.draw do |map|
       :conditions => { :method => [:get, :post] }
     admin.connect '/admin/users/:user_id/reset_password', :action => 'reset_user_password',
       :conditions => { :method => [:get, :post] }
+    admin.connect '/admin/users/future/:id/delete', :action => 'delete_future_user',
+      :conditions => { :method => :get }
+    admin.connect '/admin/users/bulk_create', :action => 'bulk_create_users',
+      :conditions => { :method => :post }
     admin.connect '/admin/sdp_templates', :action => 'sdp_template_create',
       :conditions => { :method => :post }
     admin.connect '/admin/sdp_templates/:id', :action => 'sdp_template'

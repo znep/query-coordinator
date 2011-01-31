@@ -5,8 +5,9 @@ class AccountsController < ApplicationController
   protect_from_forgery :except => [:add_rpx_token]
 
   def new
-    @signup = SignupPresenter.new({}, params[:token])
+    @signup = SignupPresenter.new({}, params[:token], params[:auth_token])
     @body_class = 'signup'
+    @signup.user.email = params[:email] if params[:email].present?
     # This is so we can display the login screen dynamically
     @user_session = UserSession.new unless params[:no_js].present?
   end

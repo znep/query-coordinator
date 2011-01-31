@@ -37,8 +37,6 @@
             {
                 if (plotStyle && $.socrataMap.mixin[plotStyle])
                 { mapClass = $.mixin(mapClass, $.socrataMap.mixin[plotStyle]); }
-                if (blist.dataset.isArcGISDataset())
-                { mapClass = $.mixin(mapClass, $.socrataMap.mixin.arcGISmap); }
                 socrataMap = new mapClass(options, this[0]);
             }
         }
@@ -339,8 +337,12 @@
                     _.isUndefined(row.feature))
                 { return true; }
 
+                // A configured Location column always takes precedence.
+                // _geoCol is and always will be a fallback.
+                var locCol = mapObj._locCol || mapObj._geoCol;
+
                 if (_.isUndefined(row.feature) &&
-                    _.isUndefined(mapObj._locCol) &&
+                    _.isUndefined(locCol) &&
                     (_.isUndefined(mapObj._latCol) ||
                      _.isUndefined(mapObj._longCol)))
                 {
@@ -366,12 +368,19 @@
                         longVal = loc.x;
                     }
                 }
-                else if (!$.isBlank(mapObj._locCol))
+                else if (!$.isBlank(locCol))
                 {
-                    var loc = row[mapObj._locCol.id];
+                    var loc = row[locCol.id];
                     if ($.isBlank(loc)) { return true; }
-                    lat = parseFloat(loc.latitude);
-                    longVal = parseFloat(loc.longitude);
+                    if (loc.geometry) { loc = loc.geometry; }
+
+                    if (loc.rings || loc.paths)
+                    { isPoint = false; }
+                    else
+                    {
+                        lat = parseFloat(loc.latitude);
+                        longVal = parseFloat(loc.longitude);
+                    }
                 }
                 else
                 {
@@ -397,8 +406,10 @@
                     rowKey    += ',';
                     rowKey    += longVal.toString();
                 }
-                else
+                else if (row.feature)
                 { rowKey = row.feature.attributes[mapObj._objectIdKey]; }
+                else
+                { rowKey = row.id; } // too difficult to identify duplicates
 
                 if (!mapObj._llKeys[rowKey])
                 {
@@ -508,19 +519,42 @@
                     });
                 }
 
-                if (!isPoint)
-                { return mapObj.renderNonPoint(row, details); }
-                else
-                { return mapObj.renderPoint(
-                    lat, longVal, mapObj._llKeys[rowKey].id, details); }
+                var geoType = (function() {
+                    if (row.feature)
+                    { return row.feature.geometry.type; }
+
+                    var geometry = row[locCol.id].geometry;
+                    if (geometry)
+                    {
+                        if (geometry.rings)
+                        { return 'polygon'; }
+                        else if (geometry.paths)
+                        { return 'polyline'; }
+                    }
+
+                    return 'point';
+                })();
+
+                var geometry;
+                switch (geoType)
+                {
+                    case 'point':
+                        geometry = { latitude: lat, longitude: longVal,
+                                     id: mapObj._llKeys[rowKey].id };
+                        break;
+                    case 'polygon':
+                        geometry = { rings: row[locCol.id].geometry.rings };
+                        break;
+                    case 'polyline':
+                        geometry = { paths: row[locCol.id].geometry.paths };
+                        break;
+                }
+
+                return mapObj.renderGeometry(geoType, geometry,
+                    mapObj._llKeys[rowKey].id, details);
             },
 
-            renderPoint: function(latVal, longVal, rowId, details)
-            {
-                // Implement me
-            },
-
-            renderFeature: function(feature)
+            renderGeometry: function(geoType, geometry, dupKey, details)
             {
                 // Implement me
             },

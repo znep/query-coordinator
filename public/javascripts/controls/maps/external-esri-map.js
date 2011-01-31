@@ -3,6 +3,7 @@
     if (!$.socrataMap.mixin) { $.socrataMap.mixin = function() { }; }
     $.socrataMap.mixin.arcGISmap = function() { };
 
+    // This entire file's purpose has been deprecated since we have GeometryType
     $.extend($.socrataMap.mixin.arcGISmap.prototype,
     {
         handleRowsLoaded: function(rows)

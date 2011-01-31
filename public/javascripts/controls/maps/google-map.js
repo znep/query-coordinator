@@ -65,41 +65,6 @@
                 }
             },
 
-            renderPoint: function(latVal, longVal, rowId, details)
-            {
-                var mapObj = this;
-
-                var hasInfo = !$.isBlank(details.info) || !$.isBlank(details.title);
-                var ll = new google.maps.LatLng(latVal, longVal);
-                var marker = new google.maps.Marker({position: ll,
-                    title: details.title, clickable: hasInfo,
-                    map: mapObj.map, icon: details.icon});
-                if (mapObj._markers[rowId]) mapObj._markers[rowId].setMap(null);
-                mapObj._markers[rowId] = marker;
-
-                if (hasInfo)
-                {
-                    marker.infoContent = '';
-                    if (!$.isBlank(details.title))
-                    {
-                        marker.infoContent += "<div class='mapTitle'>" +
-                            details.title + '</div>';
-                    }
-                    if (!$.isBlank(details.info))
-                    {
-                        marker.infoContent += "<div class='mapInfoContainer" +
-                            (mapObj._infoIsHtml ? ' html' : '') + "'>" +
-                            details.info + "</div>";
-                    }
-                    google.maps.event.addListener(marker, 'click',
-                        function() { markerClick(mapObj, marker); });
-                }
-                mapObj._bounds.extend(ll);
-                mapObj._boundsCounts++;
-
-                return true;
-            },
-
             rowsRendered: function()
             {
                 var mapObj = this;
@@ -121,50 +86,125 @@
                 mapObj.adjustBounds();
             },
 
-            renderFeature: function(feature, segmentIndex)
+            renderGeometry: function(geoType, geometry, dupKey, details)
             {
                 var mapObj = this;
-                var polygon = Dataset.map.toGoogle.feature(feature.geometry);
-                var center = esri.geometry.webMercatorToGeographic(
-                    feature.geometry.getExtent().getCenter());
-                center = new google.maps.LatLng(center.y, center.x);
-                mapObj._infoTemplate = _.template("<b><%= name %></b><br />" +
-                    "<%= col %>: <%= quantity %><br /><%= description %>");
 
-                polygon.setOptions({
-                    fillColor: mapObj._segmentSymbols[segmentIndex].color.toHex(),
-                    fillOpacity: 1.0,
-                    strokeColor: "#000000",
-                    strokeWeight: 1
-                });
-                google.maps.event.addListener(polygon, 'click', function()
-                {
-                    if (!mapObj.infoWindow)
-                    { mapObj.infoWindow = new google.maps.InfoWindow({maxWidth: 300}); }
-                    mapObj.infoWindow.setPosition(center);
-                    mapObj.infoWindow.setContent(mapObj._infoTemplate({
-                        name: feature.attributes['NAME'],
-                        col: mapObj._quantityCol.name,
-                        quantity: feature.attributes.quantity,
-                        description: feature.attributes.description
-                    }));
-                    mapObj.infoWindow.open(mapObj.map);
-                });
+                var hasInfo = !$.isBlank(details.info) || !$.isBlank(details.title);
+                var googlifyPoint = function(point)
+                    { return new google.maps.LatLng(point[0], point[1]); };
 
-                if (feature.attributes.redirect_to)
-                {
-                    google.maps.event.addListener(polygon, 'click', function()
-                    { window.open(feature.attributes.redirect_to); });
-                    google.maps.event.addListener(polygon, 'mouseover', function()
-                    { mapObj.$dom().find('div .container').css('cursor', 'pointer'); });
-                    google.maps.event.addListener(polygon, 'mouseout', function()
-                    { mapObj.$dom().find('div .container').css('cursor', 'default'); });
+                var extent;
+                if (geometry instanceof esri.geometry.Polygon)
+                { extent = Dataset.map.toGoogle.extent(geometry.getExtent()); }
+                if (geoType == 'polyline')
+                {   // sigh
+                    geometry.spatialReference = { wkid: 4326 };
+                    extent = Dataset.map.toGoogle.extent(
+                        new esri.geometry.Polyline(geometry).getExtent());
                 }
-                polygon.setMap(mapObj.map);
-                mapObj._markers[feature.attributes['NAME']] = polygon;
-                mapObj._bounds.union(Dataset.map.toGoogle.extent(
-                    feature.geometry.getExtent()));
+
+                switch(geoType)
+                {
+                    case 'point':
+                        geometry = new google.maps.Marker(
+                            {position: new google.maps.LatLng(geometry.latitude,
+                                                              geometry.longitude) });
+                        break;
+                    case 'polygon';
+                        if (geometry instanceof esri.geometry.Polygon)
+                        { geometry = Dataset.map.toGoogle.polygon(geometry); }
+                        else
+                        { geometry = new google.maps.Polygon({paths:
+                            _.map(geometry.rings,
+                            function(ring) { return _.map(ring, googlifyPoint); }) }); }
+                        break;
+                    case 'polyline':
+                        geometry = _.map(geometry.paths, function(path)
+                            { return new google.maps.Polyline(
+                                {path: _.map(path, googlifyPoint) }); });
+                        break;
+                }
+
+                if (details.color instanceof dojo.Color)
+                { details.color = details.color.toHex(); }
+
+                switch(geoType)
+                {
+                    case  'point':
+                        geometry.setOptions({
+                            title: details.title, clickable: hasInfo,
+                            map: mapObj.map, icon: details.icon});
+                        break;
+                    case 'polyline':
+                        geometry.each(function(g) {
+                            g.setOptions({
+                                strokeColor: details.color || "#FF00FF",
+                                strokeWeight: details.size
+                            });
+                            g.setMap(mapObj.map);
+                        });
+                        break;
+                    case 'polygon':
+                        geometry.setOptions({
+                            fillColor: details.color || "#FF00FF",
+                            fillOpacity: 1.0,
+                            strokeColor: "#000000",
+                            strokeWeight: 1
+                        });
+                        geometry.setMap(mapObj.map);
+                        break;
+                }
+
+                if (mapObj._markers[dupKey])
+                { mapObj._markers[dupKey].setMap(null); }
+                mapObj._markers[dupKey] = geometry;
+
+                if (hasInfo)
+                {
+                    var infoContent = '';
+                    if (!$.isBlank(details.title))
+                    {
+                        infoContent += "<div class='mapTitle'>" +
+                            details.title + '</div>';
+                    }
+                    if (!$.isBlank(details.info))
+                    {
+                        infoContent += "<div class='mapInfoContainer" +
+                            (mapObj._infoIsHtml ? ' html' : '') + "'>" +
+                            details.info + "</div>";
+                    }
+
+                    google.maps.event.addListener(geometry, 'click', function(evt)
+                    {
+                        if (!mapObj.infoWindow)
+                        { mapObj.infoWindow =
+                            new google.maps.InfoWindow({maxWidth: 300}); }
+                        mapObj.infoWindow.setPosition(evt.latLng);
+                        mapObj.infoWindow.setContent(infoContent);
+                        mapObj.infoWindow.open(mapObj.map);
+                    });
+                }
+
+                if (details.redirect_to)
+                {
+                    google.maps.event.addListener(geometry, 'click', function()
+                    { window.open(details.redirect_to); });
+                    google.maps.event.addListener(geometry, 'mouseover', function()
+                    { mapObj.$dom().find('div .container')
+                        .css('cursor', 'pointer'); });
+                    google.maps.event.addListener(geometry, 'mouseout', function()
+                    { mapObj.$dom().find('div .container')
+                        .css('cursor', 'default'); });
+                }
+
+                if (geoType == 'point')
+                { mapObj._bounds.extend(geometry.position); }
+                else
+                { mapObj._bounds.union(extent); }
                 mapObj._boundsCounts++;
+
+                return true;
             },
 
             adjustBounds: function()
@@ -295,13 +335,4 @@
             }
         }
     }));
-
-    var markerClick = function(mapObj, marker)
-    {
-        if (mapObj.infoWindow === undefined)
-        { mapObj.infoWindow = new google.maps.InfoWindow({maxWidth: 300}); }
-
-        mapObj.infoWindow.setContent(marker.infoContent);
-        mapObj.infoWindow.open(mapObj.map, marker);
-    };
 })(jQuery);

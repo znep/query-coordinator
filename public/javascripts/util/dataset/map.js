@@ -2,7 +2,7 @@
 
 Dataset.map = {};
 Dataset.map.toGoogle = {
-    feature: function(geometry)
+    polygon: function(geometry)
     {
         return new google.maps.Polygon({
             paths: _.map(geometry.rings, function(ring, r)
@@ -34,7 +34,7 @@ Dataset.map.toGoogle = {
     }
 };
 Dataset.map.toBing = {
-    feature: function(geometry)
+    polygon: function(geometry)
     {
         // Bing does not support multiple-ring Polygons. As a result, we're picking
         // the largest ring and using that as the polygon's definition.

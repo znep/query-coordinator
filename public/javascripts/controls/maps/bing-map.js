@@ -73,75 +73,90 @@
                 }
             },
 
-            renderPoint: function(latVal, longVal, rowId, details)
+            renderGeometry: function(geoType, geometry, dupKey, details)
             {
                 var mapObj = this;
 
-                var ll = new VELatLong(latVal, longVal);
-                var shape = new VEShape(VEShapeType.Pushpin, ll);
-                if (mapObj._markers[rowId])
-                {
-                    mapObj._shapeLayer.DeleteShape(mapObj._markers[rowId]);
-                }
-                mapObj._markers[rowId] = shape;
+                var bingifyPoint = function(point)
+                    { return new VELatLong(point[0], point[1]); };
 
-                if (!_.isNull(details.title))
+                var shapeType;
+                switch(geoType)
                 {
-                    shape.SetTitle(details.title);
+                    case 'point':
+                        shapeType = VEShapeType.Pushpin;
+                        geometry = new VELatLong(geometry.latitude, geometry.longitude);
+                        geometry = [geometry];
+                        break;
+                    case 'polygon':
+                        shapeType = VEShapeType.Polygon;
+                        if (geometry instanceof esri.geometry.Polygon)
+                        { geometry = Dataset.map.toBing.polygon(geometry); }
+                        else
+                        { geometry = _.map(geometry.rings, function(ring)
+                            { return _.map(ring, bingifyPoint); }); }
+                        break;
+                    case 'polyline':
+                        shapeType = VEShapeType.Polyline;
+                        geometry = _.map(geometry.paths, function(path)
+                            { return _.map(path, bingifyPoint); });
+                        break;
                 }
 
-                if (!_.isNull(details.info))
+                var shapes = (geometry[0] instanceof VEShape) ?
+                    geometry :
+                    _.map(geometry, function(g) { return new VEShape(shapeType, g); });
+
+                if (mapObj._markers[dupKey])
                 {
-                    shape.SetDescription("<div class='mapInfoContainer" +
+                    _.each(mapObj._markers[dupKey], function(shape)
+                        { mapObj._shapeLayer.DeleteShape(shape); });
+                }
+                mapObj._markers[dupKey] = shapes;
+
+                _.each(shapes, function(shape)
+                {
+                    if (!_.isNull(details.title))
+                    { shape.SetTitle(details.title); }
+
+                    if (!_.isNull(details.info))
+                    { shape.SetDescription("<div class='mapInfoContainer" +
                         (mapObj._infoIsHtml ? ' html' : '') + "'>" +
-                        details.info + "</div>");
-                }
-                if (details.icon)
-                {
-                    shape.SetCustomIcon(details.icon);
-                }
+                        details.info + "</div>"); }
+                    if (details.color && geoType != 'point')
+                    {
+                        var method;
+                        switch(geoType)
+                        {
+                            case 'polygon':  method = 'SetFillColor'; break;
+                            case 'polyline': method = 'SetLineColor'; break;
+                        }
+                        color = $.hexToRgb(details.color);
+                        shape[method](new VEColor(color.r, color.g,
+                                                  color.b, 1.0));
+                    }
 
-                mapObj._shapeLayer.AddShape(shape);
+                    if (geoType != 'point')
+                    { shape.HideIcon(); }
+                    else if (details.icon)
+                    { shape.SetCustomIcon(details.icon); }
 
-                return true;
-            },
-
-            renderFeature: function(feature, segmentIndex)
-            {
-                var mapObj = this;
-                var polygons = Dataset.map.toBing.feature(feature.geometry);
-
-                var dojoColor = mapObj._segmentSymbols[segmentIndex].color;
-                var color = new VEColor(dojoColor.r, dojoColor.g,
-                                        dojoColor.b, dojoColor.a);
-                _.each(polygons, function(polygon)
-                {
-                    polygon.SetFillColor(color);
-                    polygon.HideIcon();
-
-                    var info = mapObj._quantityCol.name;
-                    info    += ': ';
-                    info    += feature.attributes.quantity;
-                    info    += '<br />';
-                    info    += feature.attributes.description;
-
-                    polygon.SetTitle(feature.attributes['NAME']);
-                    polygon.SetDescription(info);
-
-                    mapObj._shapeLayer.AddShape(polygon);
+                    mapObj._shapeLayer.AddShape(shape);
                 });
 
                 if (!mapObj._customInfoBoxSet)
                 {
                     mapObj.map.AttachEvent('onclick', function(event)
                     {
-                        if (feature.attributes.redirect_to)
-                        { window.open(feature.attributes.redirect_to); }
+                        if (details.redirect_to)
+                        { window.open(details.redirect_to); }
                         mapObj.map.ShowInfoBox(
                             mapObj.map.GetShapeByID(event.elementID));
                     });
                     mapObj._customInfoBoxSet = true;
                 }
+
+                return true;
             },
 
             adjustBounds: function()

@@ -85,9 +85,9 @@
                 return false;
             }
 
-            if (_.isUndefined(mapObj._segmentSymbols))
+            if (_.isUndefined(mapObj._segmentColors))
             {
-                mapObj._segmentSymbols = [];
+                mapObj._segmentColors = [];
                 var lowColor  = config.colors && config.colors.low ?
                     $.hexToRgb(config.colors.low)
                     : { r: 209, g: 209, b: 209};
@@ -102,19 +102,17 @@
 
                 for (var i = 0; i < mapObj._numSegments; i++)
                 {
-                    mapObj._segmentSymbols[i] = new esri.symbol.SimpleFillSymbol();
-                    mapObj._segmentSymbols[i].setColor(
+                    mapObj._segmentColors[i] =
                         new dojo.Color([lowColor.r+(colorStep.r*i),
                                         lowColor.g+(colorStep.g*i),
                                         lowColor.b+(colorStep.b*i),
-                                        config.hideLayers ? 1.0 : 0.8])
-                    );
+                                        config.hideLayers ? 1.0 : 0.8]);
                 }
 
                 mapObj.$legend({
                     name: mapObj._quantityCol.name,
-                    gradient: _.map(mapObj._segmentSymbols, function(symbol)
-                        { return symbol.color.toCss(false); })
+                    gradient: _.map(mapObj._segmentColors, function(color)
+                        { return color.toCss(false); })
                 });
             }
 
@@ -275,7 +273,19 @@
                 { break; }
             }
 
-            mapObj.renderFeature(feature, segmentIndex);
+            var info  = mapObj._quantityCol.name;
+                info += ': ' + feature.attributes.quantity;
+                info += '<br />' + feature.attributes.description;
+
+            var details = {
+                title: feature.attributes.NAME,
+                info: info,
+                color: mapObj._segmentColors[segmentIndex].toHex(),
+                redirect_to: feature.attributes.redirect_to
+            };
+
+            mapObj.renderGeometry('polygon', feature.geometry,
+                feature.attributes.NAME, details);
         });
 
         mapObj.adjustBounds();

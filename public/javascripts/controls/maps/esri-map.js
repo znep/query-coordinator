@@ -211,58 +211,66 @@
                 { mapObj.renderData(rows); }
             },
 
-            renderPoint: function(latVal, longVal, rowId, details)
+            renderGeometry: function(geoType, geometry, dupKey, details)
             {
                 var mapObj = this;
-                // Create the map symbol
-                var symbol = getESRIMapSymbol(mapObj, details);
 
-                var point = new esri.geometry.Point(longVal, latVal,
-                        new esri.SpatialReference({wkid: 4326}));
-                if (mapObj.map.spatialReference.wkid == 102100)
-                { point = esri.geometry.geographicToWebMercator(point); }
-                else if (mapObj.map.spatialReference.wkid !=
-                    point.spatialReference.wkid)
+                var symbol = getESRIMapSymbol(mapObj, geoType, details);
+
+                if (!(geometry instanceof esri.geometry.Polygon))
+                {
+                    var constructor;
+                    switch (geoType)
+                    {
+                        case 'point':    constructor = esri.geometry.Point; break;
+                        case 'polygon':  constructor = esri.geometry.Polygon; break;
+                        case 'polyline': constructor = esri.geometry.Polyline; break;
+                    }
+
+                    if (geometry.latitude)  { geometry.y = geometry.latitude; }
+                    if (geometry.longitude) { geometry.x = geometry.longitude; }
+                    geometry.spatialReference = { wkid: 4326 };
+
+                    geometry = new constructor(geometry);
+                    if (isWebMercatorSpatialReference(mapObj.map))
+                    { geometry = esri.geometry.geographicToWebMercator(geometry); }
+                }
+
+                if (mapObj.map.spatialReference.wkid != geometry.spatialReference.wkid)
                 {
                     mapObj.errorMessage =
                         'Map does not have a supported spatial reference';
                     return false;
                 }
 
-                var g = new esri.Graphic(point, symbol,
-                    { title: details.title, body : details.info });
+                var g = new esri.Graphic(geometry, symbol,
+                    { title: details.title, body: details.info });
 
                 if (g.attributes.title !== null || g.attributes.body !== null)
                 { g.setInfoTemplate(new esri.InfoTemplate("${title}", "${body}")); }
 
-                if (mapObj._markers[rowId])
-                {
-                  mapObj.map.graphics.remove(mapObj._markers[rowId]);
-                }
-                mapObj._markers[rowId] = g;
+                if (mapObj._markers[dupKey])
+                { mapObj.map.graphics.remove(mapObj._markers[dupKey]); }
+                mapObj._markers[dupKey] = g;
+
                 mapObj.map.graphics.add(g);
-                if (!mapObj._extentSet)
+
+                if (!mapObj._extentSet && geoType == 'point')
                 { mapObj._multipoint.addPoint(g.geometry); }
 
-                return true;
-            },
-
-            renderFeature: function(feature, segmentIndex)
-            {
-                var mapObj = this;
-
-                var info = mapObj._quantityCol.name +
-                    ": ${quantity}<br />${description}";
-                mapObj._infoTemplate = new esri.InfoTemplate("${NAME}", info);
-
-                var symbol = mapObj._segmentSymbols[segmentIndex];
-                mapObj.map.graphics.add(feature.setSymbol(symbol)
-                                               .setInfoTemplate(mapObj._infoTemplate));
-                if (feature.attributes.redirect_to)
+                if (geoType != 'point')
                 {
-                    $(feature.getDojoShape().rawNode)
+                    if (!mapObj._bounds)
+                    { mapObj._bounds = g.geometry.getExtent(); }
+                    else
+                    { mapObj._bounds = mapObj._bounds.union(g.geometry.getExtent()); }
+                }
+
+                if (details.redirect_to && geoType == 'polygon')
+                {
+                    $(g.getDojoShape().rawNode)
                         .click(function(event)
-                            { window.open(feature.attributes.redirect_to); })
+                            { window.open(details.redirect_to); })
                         .hover(
                             function(event) { mapObj.$dom()
                                 .find('div .container').css('cursor', 'pointer'); },
@@ -270,10 +278,7 @@
                                 .find('div .container').css('cursor', 'default'); });
                 }
 
-                if (!mapObj._bounds)
-                { mapObj._bounds = feature.geometry.getExtent(); }
-                else
-                { mapObj._bounds = mapObj._bounds.union(feature.geometry.getExtent()); }
+                return true;
             },
 
             hideLayers: function()
@@ -455,7 +460,7 @@
         }
     }));
 
-    var getESRIMapSymbol = function(mapObj, details)
+    var getESRIMapSymbol = function(mapObj, geoType, details)
     {
         if (mapObj._esriSymbol === undefined) { mapObj._esriSymbol = {}; }
 
@@ -531,12 +536,35 @@
                     symbolBorderColor,
                     symbolConfig.borderWidth
             );
-            mapObj._esriSymbol[customization.key] = new esri.symbol.SimpleMarkerSymbol(
-                    symbolConfig.symbol,
-                    symbolConfig.size,
-                    symbolBorder,
-                    symbolBackgroundColor
-            );
+
+            var symbol;
+            switch (geoType)
+            {
+                case 'point':
+                    symbol = new esri.symbol.SimpleMarkerSymbol(
+                        symbolConfig.symbol,
+                        symbolConfig.size,
+                        symbolBorder,
+                        symbolBackgroundColor
+                    );
+                    break;
+                case 'polygon':
+                    symbol = new esri.symbol.SimpleFillSymbol(
+                        esri.symbol.SimpleFillSymbol.STYLE_SOLID,
+                        symbolBorder,
+                        symbolBackgroundColor
+                    );
+                    break;
+                case 'polyline':
+                    symbol = new esri.symbol.SimpleLineSymbol(
+                        esri.symbol.SimpleLineSymbol.STYLE_SOLID,
+                        symbolBackgroundColor,
+                        symbolBorder.width
+                    );
+                    break;
+            }
+
+            mapObj._esriSymbol[customization.key] = symbol;
 
             return mapObj._esriSymbol[customization.key];
         }
@@ -795,6 +823,11 @@
         }, 60000);
         });
         });
+    };
+
+    var isWebMercatorSpatialReference = function(thing)
+    {
+        return _.include([102100, 102113, 3857], thing.spatialReference.wkid);
     };
 
 })(jQuery);

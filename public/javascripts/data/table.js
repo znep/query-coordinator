@@ -1580,6 +1580,8 @@
             var $scrolls = $outside.find('.blist-table-scrolls');
 
             var deltaY = touchLastY - e.targetTouches[0].clientY;
+            // in reality scrolling exactly with detection runs ~2x speed
+            deltaY /= 2;
             $scrolls[0].scrollTop = $scrolls[0].scrollTop + deltaY;
 
             var deltaX = touchLastX - e.targetTouches[0].clientX;

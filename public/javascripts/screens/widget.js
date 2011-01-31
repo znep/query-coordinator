@@ -833,6 +833,10 @@ $(function()
             }, 10000);
         });
 
+        // if they choose fullscreen from the widget, make sure it doesn't redir back here
+        $('.subHeaderAction.fullscreen a').attr(
+            $('.subHeaderAction.fullscreen a').attr('href') + '?no_mobile=true');
+
         // essentially, disable scrolling of the main container
         $(document).bind('touchmove', function(event)
         {

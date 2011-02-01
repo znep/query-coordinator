@@ -519,6 +519,13 @@
     {
         var metadata = condition.metadata || {};
         var column = blist.dataset.columnForTCID(metadata.tableColumnId);
+
+        if (_.isUndefined(column))
+        {
+            // someone must have changed the type on this or something. abort mission.
+            return;
+        }
+
         // render the main bits
         var $filter = $.renderTemplate('filterCondition', { metadata: metadata, column: column }, {
             '.filterCondition@class+': function() { return (metadata.expanded === false) ? 'collapsed' : 'expanded'; },

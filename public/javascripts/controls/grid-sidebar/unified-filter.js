@@ -130,13 +130,13 @@
             if ((condition.type == 'operator') && _.include(['AND', 'OR'], condition.value))
             {
                 // we can't handle 3 levels deep....
-                if (_.any(condition.children, function(subcondition)
+                if (_.any(condition.children || [], function(subcondition)
                         { return _.include(['AND', 'OR'], subcondition.value); /* BWWWWAAAAAAAAAAAAHHHHHHHHHHHHH */ }))
                 {
                     var childCompatible = true;
 
                     // ...unless it's multiple guidedFilter-generated betweens, in which case fix it
-                    _.each(condition.children, function(subcondition, j)
+                    _.each(condition.children || [], function(subcondition, j)
                     {
                         var checkBetween = fsckLegacy_checkBetween(subcondition);
                         if (_.isObject(checkBetween))
@@ -154,7 +154,7 @@
 
                 // a nested OR can only contain the same operations on the same column
                 var op, col;
-                _.each(condition.children, function(subcondition)
+                _.each(condition.children || [], function(subcondition)
                 {
                     if ((subcondition.type !== (op || subcondition.type)) ||
                         (subcondition.columnId !== (col || subcondition.columnId)))

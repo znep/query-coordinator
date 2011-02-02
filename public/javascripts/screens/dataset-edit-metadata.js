@@ -44,6 +44,8 @@
                 });
     });
 
+    var toggleFunction = $('html').hasClass('ie7') ?
+        'toggle' : 'slideToggle';
     $('.toggleFieldsetLink').click(function(event)
     {
         event.preventDefault();
@@ -51,7 +53,7 @@
             .toggleClass('expanded collapsed')
             .closest('.customFieldsetWrapper')
             .find('.customFieldset')
-                .slideToggle();
+                [toggleFunction]();
     });
 
     // Make licensing dropdowns cascading instead.

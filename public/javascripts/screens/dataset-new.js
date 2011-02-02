@@ -285,6 +285,8 @@ $(function()
                 });
     });
 
+    var toggleFunction = $('html').hasClass('ie7') ?
+        'toggle' : 'slideToggle';
     $('.toggleFieldsetLink').click(function(event)
     {
         event.preventDefault();
@@ -292,7 +294,7 @@ $(function()
             .toggleClass('expanded collapsed')
             .closest('.customFieldsetWrapper')
             .find('.customFieldset')
-                .slideToggle();
+                [toggleFunction]();
     });
 
     // cc cascade

@@ -483,18 +483,18 @@ $.loadLibraries = function(scriptQueue, callback)
 $.loadStylesheets = function(sheetQueue, callback)
 {
     var sheets = _.reject($.arrayify(sheetQueue), function(item)
-    { return blist.util.lazyLoadedAssets[item]; });
+    { return blist.util.lazyLoadedAssets[item.sheet || item]; });
 
     var loadedCount = 0;
     var reqCount = sheets.length;
     var sheetPieces = '';
     _.each(sheets, function(sheet)
     {
-        var url = sheet;
+        var url = sheet.sheet || sheet;
         // In dev, make the URL unique so we always reload to pick up changes
         if (blist.configuration.development)
         {
-            url += (sheet.indexOf('?') >= 0 ? '&' : '?') +
+            url += (url.indexOf('?') >= 0 ? '&' : '?') +
                 $.param({'_': (new Date()).valueOf()});
         }
 
@@ -505,7 +505,7 @@ $.loadStylesheets = function(sheetQueue, callback)
         // SDP) -- images ref'ed in the stylesheet won't load.  So in either of
         // these cases, load it via a link tag, and hope things look OK, since
         // we don't get a callback.
-        if (($.browser.msie && window.parent != window) ||
+        if (($.browser.msie && window.parent != window && sheet.hasImages) ||
             url.startsWith('http://') || url.startsWith('https://'))
         {
             // If the stylesheet is external, then just insert a style tag

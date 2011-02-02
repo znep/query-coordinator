@@ -18,7 +18,6 @@ base-sdp:
 - tables
 - table-core
 - dataset-grid
-- screen-map
 strip-chrome:
 - strip-chrome
 screen-login:
@@ -79,6 +78,7 @@ dataset-edit-rr:
 - grid-sidebar
 - table-core
 - dataset-grid
+- render-type-images
 - rich-render-types
 - screen-dataset-edit-rr
 dataset-thumbnail:

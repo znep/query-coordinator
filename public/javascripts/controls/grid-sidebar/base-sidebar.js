@@ -1401,10 +1401,10 @@
     /* Handle window resizing */
     var handleResize = function(sidebarObj)
     {
-        if (sidebarObj.$dom().is(':hidden')) { return; }
-
         _.defer(function()
         {
+            if (sidebarObj.$dom().is(':hidden')) { return; }
+
             setPosition(sidebarObj);
             updateWizardVisibility(sidebarObj);
         });

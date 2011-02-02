@@ -207,6 +207,14 @@ this.Dataset = Model.extend({
                 function(c) { return c.dataTypeName == 'tag'; });
         }
 
+        // Munge permissions for forms, since those don't get carried over
+        // or inherited
+        if (dsOrig.isPublic() && dsOrig.type == 'form')
+        {
+            ds.flags = ds.flags || [];
+            ds.flags.push('dataPublicAdd');
+        }
+
         this._makeRequest({url: '/views.json', type: 'POST',
             data: JSON.stringify(ds),
             error: errorCallback,

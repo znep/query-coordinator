@@ -48,7 +48,8 @@
             domId: 'fatRowRenderType',
             initFunction: 'fatrowRenderType',
             javascripts: [{assets: 'shared-richRenderers'}],
-            stylesheets: ['/styles/individual/rich-render-types.css'],
+            stylesheets: [{sheet: '/styles/individual/render-type-images.css',
+                hasImages: true}, '/styles/individual/rich-render-types.css'],
             scrollsInline: false
         },
 
@@ -57,7 +58,8 @@
             domId: 'pageRenderType',
             initFunction: 'pageRenderType',
             javascripts: [{assets: 'shared-richRenderers'}],
-            stylesheets: ['/styles/individual/rich-render-types.css'],
+            stylesheets: [{sheet: '/styles/individual/render-type-images.css',
+                hasImages: true}, '/styles/individual/rich-render-types.css'],
             scrollsInline: false
         },
 
@@ -272,8 +274,14 @@
         {
             if (!$.isBlank(typeInfo.stylesheets))
             {
-                $.loadStylesheets(translateUrls('/stylesheets/',
-                    typeInfo.stylesheets), function() { $dom.trigger('resize'); });
+                var sheets = _.map(typeInfo.stylesheets, function(s)
+                {
+                    var sheet = translateUrls('/stylesheets/', [s.sheet || s]);
+                    if ($.isPlainObject(s)) { s.sheet = sheet[0]; }
+                    else { s = sheet[0]; }
+                    return s;
+                });
+                $.loadStylesheets(sheets, function() { $dom.trigger('resize'); });
             }
 
             // Lazy-load javascripts

@@ -1010,7 +1010,7 @@
             {
                 var $this = $(this);
                 var editorValue = _.isArray(valueObj) ? valueObj.item[i] : valueObj.item;
-                if (!_.isUndefined(metadata.subcolumn))
+                if (!_.isUndefined(metadata.subcolumn) && !$.isBlank(editorValue))
                 {
                     // if we want a subcolumn only give the editor that subcolumn.
                     editorValue = $.keyValueToObject(metadata.subcolumn, editorValue[metadata.subcolumn]);

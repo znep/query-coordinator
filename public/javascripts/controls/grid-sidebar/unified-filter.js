@@ -85,22 +85,18 @@
         }
 
         // update filters and remove ones that no longer apply
-        var needsParse = false;
         $pane.find('.filterLink.columnName').each(function()
         {
             var $this = $(this);
             if (!_.include(filterableColumns, $this.popupSelect_selectedItems()[0]))
             {
-                removeFilter($this.closest('.filterCondition'));
-                needsParse = true;
+                removeFilter($this.closest('.filterCondition'), true);
             }
             else
             {
                 $this.popupSelect_update(filterableColumns);
             }
         });
-
-        if (needsParse) { parseFilters(); }
     });
 
     blist.dataset.bind('clear_temporary', function()
@@ -893,7 +889,7 @@
     };
 
     // remove a filter entirely
-    var removeFilter = function($filter)
+    var removeFilter = function($filter, skipParseFilters)
     {
         prepFilterRemoval($filter, function()
         {
@@ -908,6 +904,11 @@
             }
 
             $filter.remove();
+
+            if (skipParseFilters !== true)
+            {
+                parseFilters();
+            }
         });
     };
 

@@ -64,15 +64,12 @@ $cropped_height: 80
 
       .fullThumbContainer
         position: relative
-        border: 1px solid $color_chrome_box_border
-        @include border-radius(0.2em)
-        height: #{$thumbnail_preview_height + 20}px
-        width: #{$thumbnail_preview_width + 20}px
+        height: #{$thumbnail_preview_height}px
+        width: #{$thumbnail_preview_width}px
         @include image-area-select
 
         .image
           img
-            margin: 10px
             height: #{$thumbnail_preview_height}px
             width: #{$thumbnail_preview_width}px
 

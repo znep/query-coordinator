@@ -1152,8 +1152,9 @@ this.Dataset = Model.extend({
 
     _markTemporary: function(minorChange)
     {
+        var oldMinor = this.minorChange;
         this.minorChange = this.minorChange && (minorChange || false);
-        if (!this.temporary)
+        if (!this.temporary || oldMinor !== this.minorChange)
         {
             this.temporary = true;
             this.trigger('set_temporary');
@@ -1226,7 +1227,8 @@ this.Dataset = Model.extend({
             else
             {
                 adt = ['table', 'fatrow', 'page'];
-                if (!_.include(['blist', 'filter', 'grouped'], ds.type))
+                if (!$.isBlank(ds.displayType) &&
+                    !_.include(['blist', 'filter', 'grouped'], ds.type))
                 { adt.unshift(ds.displayType); }
             }
             ds.metadata.availableDisplayTypes = adt;
@@ -1327,7 +1329,8 @@ this.Dataset = Model.extend({
         if (oldDispType != ds.displayType)
         {
             // If we're given a displayType not in our list, then add it
-            if (!_.include(ds.metadata.availableDisplayTypes, ds.displayType))
+            if (!$.isBlank(ds.displayType) &&
+                !_.include(ds.metadata.availableDisplayTypes, ds.displayType))
             { ds.metadata.availableDisplayTypes.unshift(ds.displayType); }
             ds.trigger('displaytype_change');
         }
@@ -2164,7 +2167,7 @@ Dataset.createFromMapLayerUrl = function(url, successCallback, errorCallback)
 
 var VIZ_TYPES = ['chart', 'annotatedtimeline', 'imagesparkline',
     'areachart', 'barchart', 'columnchart', 'linechart', 'piechart'];
-var MAP_TYPES = ['geomap', 'intensitymap'];
+var MAP_TYPES = ['map', 'geomap', 'intensitymap'];
 
 /* The type string is not always the simplest thing -- a lot of munging
  * goes on in Rails; we roughly duplicate it here */
@@ -2174,7 +2177,8 @@ function getType(ds)
 
     if (ds.viewType == 'blobby') { type = 'blob'; }
     else if (ds.viewType == 'href') { type = 'href'; }
-    else if (_.include(ds.flags || [], 'default')) { type = 'blist'; }
+    else if (_.include(['table', 'fatrow', 'page'], type) &&
+        _.include(ds.flags || [], 'default')) { type = 'blist'; }
 
     else if (_.include(VIZ_TYPES, type)) { type = 'chart'; }
     else if (_.include(MAP_TYPES, type)) { type = 'map'; }

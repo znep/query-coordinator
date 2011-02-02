@@ -7341,6 +7341,9 @@ function Chart (options, callback) {
 		addEvent(window, 'resize', reflow);
 		addEvent(chart, 'destroy', function() {
 			removeEvent(window, 'resize', reflow);
+                        // jeff.scherpelz@socrata.com: Need to clear the
+                        // timeout, or it might fire while the container is gone
+			clearTimeout(reflowTimeout);
 		});
 	}
 	
@@ -8541,7 +8544,8 @@ Series.prototype = {
 			point.plotX = series.xAxis.translate(xValue);
 			
 			// calculate the bottom y value for stacked series
-			if (stacking && series.visible && stack[xValue]) {
+                        // jeff.scherpelz@socrata.com: make sure stack exists
+			if (stacking && series.visible && stack && stack[xValue]) {
 				pointStack = stack[xValue];
 				pointStackTotal = pointStack.total;
 				pointStack.cum = yBottom = pointStack.cum - yValue; // start from top

@@ -544,9 +544,20 @@
                     });
                 }
 
-                if (!$.isBlank(blist.dataset) &&
-                    $.subKeyDefined(blist.dataset, 'metadata.sidebar.width'))
-                { $domObj.width(blist.dataset.metadata.sidebar.width); }
+                if (!$.isBlank(blist.dataset))
+                {
+                    var setCurSize = function()
+                    {
+                        if ($.subKeyDefined(blist.dataset,
+                            'metadata.sidebar.width'))
+                        { $domObj.width(blist.dataset.metadata.sidebar.width); }
+                        else
+                        { $domObj.css('width', ''); }
+                        $(window).resize();
+                    };
+                    blist.dataset.bind('clear_temporary', setCurSize);
+                    setCurSize();
+                }
 
                 $domObj.resizable({
                     handles: sidebarObj.settings.position == 'left' ? 'e' : 'w',

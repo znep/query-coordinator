@@ -479,10 +479,10 @@ $(function()
         blist.$container.renderTypeManager().show(prevType);
     });
 
-    $(document).bind(blist.events.DISPLAY_ROW, function()
+    $(document).bind(blist.events.DISPLAY_ROW, function(e, rowId)
     {
         prevType = blist.$container.renderTypeManager().currentType;
-        blist.$container.renderTypeManager().show('page');
+        blist.$container.renderTypeManager().show('page', {defaultRowId: rowId});
     });
 
 

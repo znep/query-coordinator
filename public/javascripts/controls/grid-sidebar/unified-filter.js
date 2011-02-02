@@ -107,6 +107,12 @@
     {
         isDirty = false;
 
+        if ($.isBlank($pane))
+        {
+            // we don't exist yet.
+            return;
+        }
+
         $pane
             .find('.noFilterConditionsText').show()
             .siblings().remove();

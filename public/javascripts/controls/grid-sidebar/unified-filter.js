@@ -284,7 +284,7 @@
             });
         }
 
-        return true;
+        return condition.children.length > 0;
     };
 
     // helper to be sure we're fetching the right subcondition given a subcondition.

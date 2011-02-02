@@ -141,11 +141,9 @@
                 .concat(opts.topListSections);
 
         var $summaryDisplay = $screen.find('.summaryDisplay').append(
-            $.renderTemplate('metricsSummaryItem', opts.summarySections,
+            $.renderTemplate('metricsSummaryItem', summarySections,
                     opts.summaryDirective)
-        );
-
-        $summaryDisplay.equiWidth();
+        ).equiWidth();
 
         var $detailDisplay = $screen.find('.detailDisplay').append(
             $.renderTemplate('metricsSummaryItem', detailSections,
@@ -263,11 +261,6 @@
         });
 
         $.live('.expandTopSection', 'click', expandTopSubSection);
-
-        $(window).bind('load', function(){
-            $summaryDisplay.trigger('resize');
-            $detailDisplay.trigger('resize');
-        });
 
         return this;
     };

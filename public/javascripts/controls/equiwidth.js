@@ -1,11 +1,4 @@
-/*
- * JQuery Equi-width plug-in: Takes a container and properly sizes children
- * to take up the full width. Uses existing padding and margins.
- *
- * @author aiden.scandella@socrata.com, 9 Aug. 2010
- */
-
-(function($)
+;(function($)
 {
     $.fn.equiWidth = function(options)
     {
@@ -15,43 +8,17 @@
         {
             var $container = $(this),
                 $children  = $container.find(opts.childSelector),
-                length     = $children.length;
+                length     = $children.length,
+                percentWidth = (99 - (opts.marginPercent  * (length - 1))
+                                   - (opts.paddingPercent * length)) / length;
 
-            var doResize = function($container)
-            {
-                var marginSelector = opts.firstChildIsUnique ? 1 : 0,
-                    margin         = $children.eq(marginSelector).outerWidth(true) -
-                                     $children.eq(marginSelector).outerWidth(),
-                    padding        = $children.first().outerWidth() -
-                                     $children.first().width(),
-                    totalMargins   = ((length - marginSelector) * margin);
-
-                $children.width(
-                    ($container.width() - 2 - totalMargins - (length * padding))
-                    / length
-                );
-            };
-
-            if (opts.bindResize)
-            {
-                $(window).bind('resize', function(event)
-                { doResize($container); });
-            }
-
-            if (opts.resizeNow)
-            { doResize($container); }
-
-            $(this).bind('resize', function(event)
-            { doResize($container); });
+            $children.css('width', percentWidth + '%');
         });
     };
 
     $.fn.equiWidth.defaults = {
-        bindResize: true,
         childSelector: '> div',
-        // If the first child has different padding
-        firstChildIsUnique: true,
-        // Whether or not to trigger an initial resize once plugin is up
-        resizeNow: false
+        marginPercent: 1,
+        paddingPercent: 2
     };
 })(jQuery);

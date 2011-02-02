@@ -313,7 +313,12 @@
         };
 
 
-        $timeslice.val(monthStart + ' ' + opts.separator + ' ' + monthEnd)
+        var initialSpan = monthStart;
+        if (monthStart != monthEnd)
+        {
+            initialSpan += ' ' + opts.separator + ' ' + monthEnd;
+        }
+        $timeslice.val(initialSpan)
         .daterangepicker({
             dateFormat: opts.displayDateFormat,
             doneButtonText: 'Apply',

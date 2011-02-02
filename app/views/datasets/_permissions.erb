@@ -1,9 +1,28 @@
 <div class="datasetPermissions commonForm">
   <div class="formSection">
     <p class="formHeader">This <span class="datasetTypeName">dataset</span> is currently
-      <%= link_to 'Public', '#togglePermissions', :class => 'toggleDatasetPermissions',
-            'data-public-perm' => "public.#{@view.display.public_perm_type}" %>
+      <span class="datasetPublicText">
+        <%= @view.is_public? ? 'Public' : 'Private' %>
+      </span>
     </p>
+    <div class="sectionContent togglePermissionsForm">
+      <div class="line inputFirst">
+        <div class="inputWrapper">
+          <input type="radio" id="public" name="dataset-public"
+                <%= 'checked="checked"' if @view.is_public? %>
+                 class="toggleDatasetPermissions" value="makePublic"/>
+        </div>
+        <label for="public">Public</label>
+      </div>
+      <div class="line inputFirst">
+        <div class="inputWrapper">
+          <input type="radio" id="private" name="dataset-public"
+                 <%= 'checked="checked"' unless @view.is_public? %>
+                 class="toggleDatasetPermissions" value="makePrivate" />
+        </div>
+        <label for="private">Private</label>
+      </div>
+    </div>
   </div>
   <%- disabled_features = @view.disabled_features -%>
   <%- unless disabled_features.blank? -%>

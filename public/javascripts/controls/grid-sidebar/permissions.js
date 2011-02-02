@@ -9,19 +9,12 @@
             .text('There was an error modifying your permissions. Please try again later');
     };
 
-    var togglePermissions = function(event)
+    var togglePermissions = function($radio, $title)
     {
-        event.preventDefault();
-
-        var $link = $(event.target);
-
-        var serverValue = blist.dataset.isPublic() ?
-            'private' : $link.attr('data-public-perm');
-
-        blist.dataset['make' + (blist.dataset.isPublic() ? 'Private' : 'Public')](
+        blist.dataset[$radio.val()](
             function()
             {
-                $link.text(blist.dataset.isPublic() ? 'Public' : 'Private');
+                $title.text(blist.dataset.isPublic() ? 'Public' : 'Private');
                 $('#gridSidebar').gridSidebar().updateEnabledSubPanes();
             },
             function(request, textStatus, errorThrown)
@@ -66,18 +59,27 @@
                             {
                                 return _.include(grant.flags || [], 'public');
                             }),
-                            $toggleLink = $formElem.find('.toggleDatasetPermissions');
+                            $publicText   = $formElem.find('.datasetPublicText'),
+                            $toggleForm   = $formElem.find('.togglePermissionsForm'),
+                            $toggleRadios = $toggleForm.find('.toggleDatasetPermissions');
 
-                        var isPublicStr = blist.dataset.isPublic() ? 'Public' : 'Private';
+                        $publicText.text( blist.dataset.isPublic() ? 'Public' : 'Private' );
+
                         // Only owned, parent-public datasets can be toggled
                         if (blist.dataset.hasRight('update_view') &&
                             ($.isBlank(publicGrant) || (publicGrant.inherited || false) == false))
                         {
-                            $toggleLink.click(togglePermissions)
-                                .text(isPublicStr);
+                            $toggleRadios
+                                .change(function(event) {
+                                    togglePermissions($(event.target), $publicText);
+                                });
+
+                            _.defer(function() {
+                                $toggleRadios.uniform();
+                            });
                         }
                         else
-                        { $toggleLink.replaceWith($('<span>' + isPublicStr + '</span>')); }
+                        { $toggleForm.hide(); }
 
                         $formElem.find('.datasetTypeName').text(displayName);
                         $formElem.find('.datasetTypeNameUpcase')

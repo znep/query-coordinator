@@ -1,27 +1,11 @@
-var adminUsersNS = blist.namespace.fetch('blist.admin.users');
-
-adminUsersNS.onPromoteError = function(request, context)
-{
-    var errorJSON = JSON.parse(request.responseText);
-    if(errorJSON.message)
-    {
-        errorText = errorJSON.message;
-    }
-    else
-    {
-        errorText = "There was an error processing your permission request.";
-    }
-    context.closest('form').find('.errorMessage').text(errorText);
-}
-
 $(function()
 {
-    $('#adminContent .adminUsersTable .userSaveButton').hide();
-
     var fadeMessage = function(textValue)
     {
         $('.userNotice')
             .text(textValue)
+            .addClass('notice')
+            .removeClass('error')
             .slideDown(300, function()
                 { setTimeout(function()
                     { $('.userNotice').slideUp(); }, 5000) });
@@ -31,7 +15,7 @@ $(function()
     {
         var id = $(this).closest('form').find('input.hiddenID').val();
         var $select = $(this);
-        
+
         $.ajax({
             url: '/api/users?method=promote&name=' + id + '&role=' + $select.val(),
             contentType: "application/json",
@@ -42,9 +26,13 @@ $(function()
                 $select.closest('tr').attr('data-userrole', $select.val().toLowerCase());
                 fadeMessage('User saved');
             },
-            error: function(request, status, error)
+            error: function(request)
             {
-                adminUsersNS.onPromoteError(request, $select);
+                $('.userNotice')
+                    .removeClass('notice')
+                    .addClass('error')
+                    .text('There was an error processing your permission request')
+                    .fadeIn(300);
             }
         });
     });
@@ -110,11 +98,23 @@ $(function()
         }
     });
 
-    $('.showBulkCreateForm').click(function(event)
+    var $bulkCreateForm = $('.bulkUserCreateSection'),
+        $bulkCreateButton = $('.showBulkCreateForm');
+
+    $bulkCreateButton.click(function(event)
     {
         event.preventDefault();
-        $('.bulkUserCreateSection').hide().removeClass('hide').slideDown();
-        $(event.target).addClass('disabled');
+        $bulkCreateForm
+            .hide()
+            .removeClass('hide').slideDown();
+        $bulkCreateButton.addClass('disabled');
+    });
+
+    $('.cancelBulkCreate').click(function(event)
+    {
+        $bulkCreateForm
+            .slideUp();
+        $bulkCreateButton.removeClass('disabled');
     });
 
     // Hackity hack hack

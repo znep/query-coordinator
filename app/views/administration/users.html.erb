@@ -9,6 +9,7 @@
 <% end %>
 
 <%= render :partial => 'left_nav' %>
+<%- no_js = params[:no_js].present? -%>
 
 <div class="contentBox withLeftNavigation usersScreen" id="adminContent">
    <div class="adminHeader users">
@@ -35,7 +36,7 @@
     <%- end -%>
   </p>
 
-  <%- unless params[:no_js].present? -%>
+  <%- unless no_js -%>
   <div class="bulkCreateButtonArea">
     <a href="#BulkCreate" class="button showBulkCreateForm">Bulk Create</a>
   </div>
@@ -48,7 +49,7 @@
     <input type="submit" class="submit" alt="search" value="Search" />
   </form>
 
-  <div class="bulkUserCreateSection clearfix<%= ' hide' unless params[:no_js].present? %>">
+  <div class="bulkUserCreateSection clearfix<%= ' hide' unless no_js %>">
     <%= form_tag({:action => 'bulk_create_users'}, {:method => 'post', :class => 'commonForm'}) %>
       <div class="line">
         <label for="users">Emails</label>
@@ -62,6 +63,9 @@
       <div class="line">
         <label>&nbsp;</label>
         <input type='submit' class='bulkCreateButton button default' value='Create Accounts' />
+        <%- unless no_js -%>
+          <a href="#Cancel" class='cancelBulkCreate button'>Cancel</a>
+        <%- end -%>
       </div>
     </form>
   </div>
@@ -129,7 +133,9 @@
                   <%= form_tag({:action => 'set_user_role'}, {:method => 'post'}) %>
                     <input type="hidden" name="user_id" class="hiddenID" value="<%= user.id %>" />
                     <%= raw(select_for_role("userSelect-#{user.id}", 'role', user.roleName, 'roleSelect')) %>
-                    <input type='submit' class='userSaveButton' value='Save' />
+                    <%- if no_js -%>
+                      <input type='submit' class='userSaveButton' value='Save' />
+                    <%- end -%>
                   </form>
                 <%- end -%>
               </td>
@@ -210,7 +216,7 @@
 </div>
 
 <% content_for :js_footer do %>
-  <%- unless params[:no_js] == 'true' -%>
+  <%- unless no_js -%>
     <%= include_javascripts 'admin-users' %>
   <%- end -%>
 <% end %>

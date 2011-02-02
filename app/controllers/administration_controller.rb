@@ -53,6 +53,7 @@ class AdministrationController < ApplicationController
     if !params[:username].blank?
       @search = params[:username]
       @user_search_results = SearchResult.search('users', :q => params[:username]).first.results
+      @futures = FutureAccount.find.select { |f| f.email.downcase.include? params[:username].downcase }
     else
       @admins = find_privileged_users.sort{|x,y| x.displayName <=> y.displayName}
       @futures = FutureAccount.find
@@ -62,7 +63,7 @@ class AdministrationController < ApplicationController
       @users_list = @admins
       @existing_user_actions = true
     elsif @user_search_results.empty?
-      @table_title = 'No users found'
+      @table_title = 'No existing users found'
     else
       @table_title = "Search Results for '#{@search}'"
       @users_list = @user_search_results
@@ -103,9 +104,9 @@ class AdministrationController < ApplicationController
 
     begin
       results = CoreServer::Base.connection.batch_request do
-        emails.each_with_index do |email, idx|
+        emails.each do |email|
           FutureAccount.create({
-            :email => email.strip,
+            :email => email,
             :role => role
           }, false)
         end

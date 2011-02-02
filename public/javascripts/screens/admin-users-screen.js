@@ -112,6 +112,7 @@ $(function()
 
     $('.cancelBulkCreate').click(function(event)
     {
+        event.preventDefault();
         $bulkCreateForm
             .slideUp();
         $bulkCreateButton.removeClass('disabled');

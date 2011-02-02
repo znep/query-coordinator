@@ -18,7 +18,7 @@ module ProfileHelper
     if user == current_user
       content_tag :div, :class => 'editLink' do
         content_tag :a, {:href => "#{user.href}/#{url}",
-          :class => "editProfileLink iconLink view" + (extraClass.nil? ? '' : " #{extraClass}")} do
+          :class => "editProfileLink iconLink" + (extraClass.nil? ? '' : " #{extraClass}")} do
           content_tag(:span, '', :class => 'icon') + text
         end
       end

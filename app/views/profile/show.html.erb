@@ -23,7 +23,7 @@
     <div class="profileHeaderText">
       <h1><%= @user.displayName %></h1>
       <%- if @is_user_current -%>
-        <a href="<%= @user.href %>/account" class="editProfileLink iconLink view">
+        <a href="<%= @user.href %>/account" class="editProfileLink iconLink accountSettings">
           <span class="icon"></span>
           <span class="editLinkText">Edit Account Settings</span>
         </a>
@@ -61,7 +61,7 @@
       <div class="profileImage">
         <img src="<%= @user.profile_image_path('large') %>" alt="<%= @user.displayName %>" />
       </div>
-      <%= edit_link(@user, 'editProfileImageLink', 'Edit Image', 'image') %>
+      <%= edit_link(@user, 'editProfileImageLink profileImage', 'Edit Image', 'image') %>
     </div>
     <% prerendered_cache cache_key('profile-friends-list', @current_state),
       @friends_rendered, :expires_in => 5.minutes do %>
@@ -100,7 +100,7 @@
     <%- if @is_user_current || @user.description || @user.interests || @user.userLinks  -%>
       <div class="basicInfo content">
         <div class="innerItem">
-          <%= edit_link(@user, 'editBasicInfoLink') %>
+          <%= edit_link(@user, 'editBasicInfoLink basicInfo') %>
           <h2>Basic Info</h2>
           <%- if @user.description -%>
           <p class="innerItem textItem"><%= auto_link(h(@user.description),
@@ -142,7 +142,7 @@
     <%- if !@app_tokens.blank? || @user == current_user -%>
       <div class="appTokens content">
         <div class="innerItem">
-          <%= edit_link(@user, 'editAppTokensLink', 'Manage', 'app_tokens') %>
+          <%= edit_link(@user, 'editAppTokensLink appTokens', 'Manage', 'app_tokens') %>
           <h2><%= @user.displayName %>'s Applications</h2>
           <%# TODO: Add link to SODA docs or something %>
         </div>

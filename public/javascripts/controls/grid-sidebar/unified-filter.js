@@ -1012,7 +1012,8 @@
                 var editorValue = _.isArray(valueObj) ? valueObj.item[i] : valueObj.item;
                 if (!_.isUndefined(metadata.subcolumn))
                 {
-                    editorValue = $.keyValueToObject(metadata.subcolumn, editorValue);
+                    // if we want a subcolumn only give the editor that subcolumn.
+                    editorValue = $.keyValueToObject(metadata.subcolumn, editorValue[metadata.subcolumn]);
                 }
 
                 $this.data('unifiedFilter-editor',

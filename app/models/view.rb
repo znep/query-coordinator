@@ -53,13 +53,20 @@ class View < Model
     return CurrentDomain.module_enabled?(name)
   end
 
+  def enabled_modules
+    self.overridable_features.map do |feature|
+      { feature[:key] => module_enabled?(feature[:key]) }
+    end
+  end
+
   def disabled_features
     features = @@overridable_features.select do |flag|
       CurrentDomain.module_enabled?(flag[:key].downcase.to_sym)
     end
     unless self.disabledFeatureFlags.blank?
       self.disabledFeatureFlags.each do |flag|
-        features.detect {|f| f[:key] == flag.upcase}[:disabled] = true
+        feature_index = features.find_index {|f| f[:key] == flag.upcase}
+        features[feature_index][:disabled] = true if feature_index
       end
     end
     features

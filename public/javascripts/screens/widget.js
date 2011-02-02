@@ -221,7 +221,8 @@ $(function()
     $('select, input:checkbox, input:radio, input:file').uniform();
 
     // menus
-    var menuOptions = widgetNS.theme['menu']['options'];
+    var menuOptions     = widgetNS.theme['menu']['options'],
+        enabledModules  = widgetNS.enabledModules;
     if (_.any(menuOptions))
     {
         $('.mainMenu').menu({
@@ -237,7 +238,7 @@ $(function()
                     iconColor: '#959595', onlyIf: !widgetNS.isNonTabular && menuOptions['downloads'] },
                 { text: 'Comments', className: 'comments', targetPane: 'comments',
                     subtext: 'Read comments on this dataset', href: '#comments',
-                    iconColor: '#bed62b', onlyIf: menuOptions['comments'] },
+                    iconColor: '#bed62b', onlyIf: menuOptions['comments'] && enabledModules['ALLOW_COMMENTS'] == true },
                 { text: 'Embed', className: 'embed', targetPane: 'embed',
                     subtext: 'Embed this player on your site', href: '#embed',
                     iconColor: '#e44044', onlyIf: menuOptions['embed'] },

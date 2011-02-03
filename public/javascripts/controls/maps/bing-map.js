@@ -20,26 +20,30 @@
             initializeMap: function()
             {
                 var mapObj = this;
-                mapObj.map = new VEMap(mapObj.$dom().attr('id'));
                 // App-specific credentials.  See www.bingmapsportal.com
-                mapObj.map.SetCredentials('AnhhVZN-sNvmtzrcM7JpQ_vfUeVN9AJNb-5v6dtt-LzCg7WEVOEdgm25BY_QaSiO');
-                mapObj.map.LoadMap();
-                mapObj.map.EnableShapeDisplayThreshold(false);
+                mapObj.map = new Microsoft.Maps.Map(mapObj.$dom()[0],
+                    {credentials: 'AnhhVZN-sNvmtzrcM7JpQ_vfUeVN9AJNb-5v6dtt-LzCg7WEVOEdgm25BY_QaSiO',
+                     enableClickableLogo: false,
+                     enableSearchLogo: false});
 
                 mapObj.resizeHandle();
 
-                mapObj._shapeLayer = new VEShapeLayer();
-                mapObj.map.AddShapeLayer(mapObj._shapeLayer);
-
-                // Known Bug: This event is attached every time the Plot Style is
-                // modified. This bug should be reasonably rare.
-                mapObj.map.AttachEvent('onchangeview', function()
+                var event_debugger = function()
                 {
-                    if (mapObj._hideBingTiles)
-                    {
-                        $("img.MSVE_ImageTile", mapObj.$dom())
-                            .css('visibility', 'hidden');
-                    }
+                    _.each(['targetviewchanged', 'viewchange', 'viewchangestart', 'viewchangeend', 'mouseup', 'mousedown'], function(event) {
+                    Microsoft.Maps.Events.addHandler(mapObj.map, event, function()
+                    { console.log(event); }); });
+                };
+                event_debugger();
+
+                Microsoft.Maps.Events.addHandler(mapObj.map, 'mousedown', function()
+                { mapObj._mouseActive = true; });
+                Microsoft.Maps.Events.addHandler(mapObj.map, 'mouseup', function()
+                {
+                    mapObj._mouseActive = false;
+                    if (mapObj._mousePanning)
+                    { mapObj._viewportHandler(); }
+                    mapObj._mousePanning = false;
                 });
 
                 if (mapObj.settings.view.snapshotting)
@@ -62,12 +66,14 @@
                         { return; }
 
                         // Don't care about this event until rows loaded
-                        mapObj.map.AttachEvent('onchangeview', function(event)
-                        {
-                            resetSnapTimer();
-                            mapObj.settings.view._snapshot_timeout = setTimeout(
-                                 mapObj.settings.view.takeSnapshot, 5000);
-                        });
+                        // TODO: Can probably use addThrottledHandler instead.
+                        Microsoft.Maps.Events.addHandler(mapObj.map, 'viewchangeend',
+                            function(event)
+                            {
+                                resetSnapTimer();
+                                mapObj.settings.view._snapshot_timeout = setTimeout(
+                                     mapObj.settings.view.takeSnapshot, 5000);
+                            });
                         mapObj._snapshot_bound = true;
                     });
                 }
@@ -78,83 +84,105 @@
                 var mapObj = this;
 
                 var bingifyPoint = function(point)
-                    { return new VELatLong(point[0], point[1]); };
+                    { return new Microsoft.Maps.Location(point[0], point[1]); };
 
                 var shapeType;
                 switch(geoType)
                 {
                     case 'point':
-                        shapeType = VEShapeType.Pushpin;
-                        geometry = new VELatLong(geometry.latitude, geometry.longitude);
+                        shapeType = Microsoft.Maps.Pushpin;
+                        geometry = new Microsoft.Maps.Location(geometry.latitude,
+                                                               geometry.longitude);
                         geometry = [geometry];
                         break;
                     case 'polygon':
-                        shapeType = VEShapeType.Polygon;
+                        shapeType = Microsoft.Maps.Polygon;
                         if (geometry instanceof esri.geometry.Polygon)
-                        { geometry = Dataset.map.toBing.polygon(geometry); }
+                        { shapes = Dataset.map.toBing.polygon(geometry); }
                         else
                         { geometry = _.map(geometry.rings, function(ring)
                             { return _.map(ring, bingifyPoint); }); }
                         break;
                     case 'polyline':
-                        shapeType = VEShapeType.Polyline;
+                        shapeType = Microsoft.Maps.Polyline;
                         geometry = _.map(geometry.paths, function(path)
                             { return _.map(path, bingifyPoint); });
                         break;
                 }
 
-                var shapes = (geometry[0] instanceof VEShape) ?
-                    geometry :
-                    _.map(geometry, function(g) { return new VEShape(shapeType, g); });
+                var shapes = shapes || _.map(geometry, function(g)
+                    { return new shapeType(g); });
 
                 if (mapObj._markers[dupKey])
                 {
                     _.each(mapObj._markers[dupKey], function(shape)
-                        { mapObj._shapeLayer.DeleteShape(shape); });
+                        { mapObj.map.entities.remove(shape); });
                 }
                 mapObj._markers[dupKey] = shapes;
 
+                var infoContent = '';
+                if (!$.isBlank(details.title))
+                {
+                    infoContent += "<div class='mapTitle'>" +
+                        details.title + '</div>';
+                }
+                if (!$.isBlank(details.info))
+                {
+                    infoContent += "<div class='mapInfoContainer" +
+                        (mapObj._infoIsHtml ? ' html' : '') + "'>" +
+                        details.info + "</div>";
+                }
+
                 _.each(shapes, function(shape)
                 {
-                    if (!_.isNull(details.title))
-                    { shape.SetTitle(details.title); }
-
-                    if (!_.isNull(details.info))
-                    { shape.SetDescription("<div class='mapInfoContainer" +
-                        (mapObj._infoIsHtml ? ' html' : '') + "'>" +
-                        details.info + "</div>"); }
-                    if (details.color && geoType != 'point')
+                    if (details.icon)
                     {
-                        var method;
-                        switch(geoType)
-                        {
-                            case 'polygon':  method = 'SetFillColor'; break;
-                            case 'polyline': method = 'SetLineColor'; break;
-                        }
-                        color = $.hexToRgb(details.color);
-                        shape[method](new VEColor(color.r, color.g,
-                                                  color.b, 1.0));
+                        shape.setOptions({ icon: details.icon });
+                        shape.custom_icon = true;
+                    }
+                    shape.infoContent = infoContent;
+                    if (!shape.getLocations) // is Pushpin
+                    {
+                        shape.getLocations = function()
+                            { return [this.getLocation()]; };
+                    }
+                    if (!shape.getLocation) // is Polygon or Polyline
+                    {
+                        shape.getLocation = function()
+                            { return Microsoft.Maps.LocationRect.fromLocations(
+                                this.getLocations()).center; };
                     }
 
                     if (geoType != 'point')
-                    { shape.HideIcon(); }
-                    else if (details.icon)
-                    { shape.SetCustomIcon(details.icon); }
-
-                    mapObj._shapeLayer.AddShape(shape);
-                });
-
-                if (!mapObj._customInfoBoxSet)
-                {
-                    mapObj.map.AttachEvent('onclick', function(event)
                     {
-                        if (details.redirect_to)
-                        { window.open(details.redirect_to); }
-                        mapObj.map.ShowInfoBox(
-                            mapObj.map.GetShapeByID(event.elementID));
-                    });
-                    mapObj._customInfoBoxSet = true;
-                }
+                        if (details.color)
+                        {
+                            var key;
+                            switch(geoType)
+                            {
+                                case 'polygon':  key = 'fillColor'; break;
+                                case 'polyline': key = 'strokeColor'; break;
+                            }
+                            var options = {};
+                            options[key] = Microsoft.Maps.Color.fromHex(details.color);
+                            shape.setOptions(options);
+                        }
+                        shape.setOptions({ 'strokeThickness': 1 });
+                    }
+
+                    mapObj.map.entities.push(shape);
+
+                    $((shape['cm1001_er_etr'] || {}).dom).css('cursor', 'pointer');
+
+                    Microsoft.Maps.Events.addHandler(shape, 'click',
+                        function(event)
+                        {
+                            if (details.redirect_to)
+                            { window.open(details.redirect_to); }
+
+                            buildInfoWindow(mapObj, event);
+                        });
+                });
 
                 return true;
             },
@@ -163,66 +191,75 @@
             {
                 var mapObj = this;
                 if (mapObj._viewportListener)
-                { mapObj.map.DetachEvent('onchangeview', mapObj._viewportListener); }
-                if (!mapObj._boundsAdjusting)
                 {
-                    mapObj._boundsAdjusting = function()
-                    {
-                        mapObj.map.DetachEvent('onchangeview', mapObj._boundsAdjusting);
-                        mapObj.map.AttachEvent('onchangeview', mapObj._viewportListener);
-                    };
+                    Microsoft.Maps.Events.removeHandler(mapObj._viewportListener);
+                    delete mapObj._viewportListener;
                 }
 
                 if (mapObj.settings.view.displayFormat.viewport)
                 { mapObj.setViewport(mapObj.settings.view.displayFormat.viewport); }
-                else if (mapObj._shapeLayer.GetShapeCount() > 1)
+                else if (mapObj.map.entities.getLength() > 1)
                 {
-                    mapObj.map.SetMapView
-                        (mapObj._shapeLayer.GetBoundingRectangle());
+                    var locations = _.flatten(_.map(
+                        arrayifyEntityCollection(mapObj.map.entities), function(entity)
+                        { return $.makeArray(entity.getLocations()); }));
+                    mapObj.map.setView({ bounds:
+                        Microsoft.Maps.LocationRect.fromLocations(locations) });
                 }
-                else if (mapObj._shapeLayer.GetShapeCount() == 1)
+                else if (mapObj.map.entities.getLength() == 1)
                 {
-                    mapObj.map.SetCenterAndZoom
-                            (mapObj._shapeLayer.GetShapeByIndex(0).GetPoints()[0],
-                            mapObj.settings.defaultZoom);
+                    mapObj.map.setView({
+                            center: mapObj.map.entities.get(0).getLocation(),
+                            zoom: mapObj.settings.defaultZoom });
                 }
-                mapObj.map.AttachEvent('onchangeview', mapObj._boundsAdjusting);
+                mapObj._boundsChanging = true;
 
                 if (!mapObj._viewportListener)
                 {
-                    mapObj._viewportListener = function()
-                    {
+                    mapObj._viewportListener = Microsoft.Maps.Events.addHandler(
+                        mapObj.map,
+                        'viewchangeend',
+                        function()
+                        {
+                            if (mapObj._boundsChanging)
+                            { mapObj._boundsChanging = false; return; }
+                            if (mapObj._mouseActive)
+                            { mapObj._mousePanning = true; return; }
+                            mapObj._viewportHandler();
+                        });
+                }
+
+                if (!mapObj._viewportHandler)
+                {
+                    mapObj._viewportHandler = function() {
                         mapObj.settings.view.update({
                             displayFormat: $.extend({},
                                 mapObj.settings.view.displayFormat,
                                 { viewport: mapObj.getViewport() })
                         }, false, true);
-                        mapObj.updateRowsByViewport();
+                        mapObj.updateRowsByViewport(null, true);
                     };
                 }
+
+                if (mapObj._hideLayerInterval)
+                { mapObj.hideLayers(); }
             },
 
             getViewport: function(with_bounds)
             {
                 var mapObj = this;
                 var viewport = {
-                    center: mapObj.map.GetCenter(),
-                    zoom: mapObj.map.GetZoomLevel()
-                };
-                viewport.center = {
-                    Latitude: viewport.center.Latitude,
-                    Longitude: viewport.center.Longitude
+                    center: mapObj.map.getCenter(),
+                    zoom: mapObj.map.getZoom()
                 };
                 if (with_bounds)
                 {
-                    var bounds = mapObj.map.GetMapView();
-                    // The variable names look wonky, but VELatLongRectangle seems
-                    // to be buggy and inverts the sign for Latitudes.
-                    var sw = bounds.TopLeftLatLong;
-                    var ne = bounds.BottomRightLatLong;
+                    var bounds = mapObj.map.getBounds();
+                    var nw = bounds.getNorthwest();
+                    var se = bounds.getSoutheast();
                     $.extend(viewport, {
-                        xmin: sw.Longitude, xmax: ne.Longitude,
-                        ymin: ne.Latitude, ymax: sw.Latitude
+                        xmin: nw.longitude, xmax: se.longitude,
+                        ymin: se.latitude, ymax: nw.latitude
                     });
                 }
                 return viewport;
@@ -231,27 +268,35 @@
             setViewport: function(viewport)
             {
                 var mapObj = this;
-                mapObj.map.SetCenterAndZoom(new VELatLong(
-                    viewport.center.Latitude, viewport.center.Longitude),
-                    viewport.zoom);
+                mapObj.map.setView({ center: viewport.center, zoom: viewport.zoom});
             },
 
             hideLayers: function()
             {
                 var mapObj = this;
-                //mapObj.map.HideBaseTileLayer();
-                mapObj.map.HideDashboard();
-                mapObj._hideBingTiles = true;
-                mapObj.$dom().css('height', '100%');
+                //mapObj.$dom().css('height', '100%');
+                var $tiles = $(".MicrosoftMap > div:first > div:first img",
+                    mapObj.$dom());
+                $tiles.css('visibility', 'hidden');
+                if (!mapObj._hideLayerInterval)
+                {
+                    mapObj._hideLayerInterval = setInterval(function()
+                        { mapObj.hideLayers(); }, 500);
+                    setTimeout(function()
+                    {
+                        clearInterval(mapObj._hideLayerInterval);
+                        Microsoft.Maps.Events.addHandler(mapObj.map, 'viewchangeend',
+                            function() { mapObj.hideLayers(); });
+                        mapObj._hideLayerInterval = true;
+                    }, 5000);
+                }
             },
 
             resetData: function()
             {
                 var mapObj = this;
 
-                mapObj.map.DeleteAllShapeLayers();
-                mapObj._shapeLayer = new VEShapeLayer();
-                mapObj.map.AddShapeLayer(mapObj._shapeLayer);
+                mapObj.map.entities.clear();
                 mapObj._hideBingTiles = false;
             },
 
@@ -263,16 +308,15 @@
                 mapObj.$dom().siblings(':visible').each(function()
                 { sibH += $(this).height(); });
                 if (!$.isBlank(mapObj.map))
-                { mapObj.map.Resize($par.width(), $par.height() - sibH); }
+                { mapObj.map.setOptions({ width: $par.width(),
+                                          height: $par.height() - sibH }); }
             },
 
             clearFeatures: function()
             {
                 var mapObj = this;
 
-                mapObj.map.DeleteAllShapeLayers();
-                mapObj._shapeLayer = new VEShapeLayer();
-                mapObj.map.AddShapeLayer(mapObj._shapeLayer);
+                mapObj.map.entities.clear();
             },
 
             getRequiredJavascripts: function()
@@ -280,14 +324,89 @@
                 // Workaround for crappy JS coding, see:
                 // http://code.davidjanes.com/blog/2008/11/08/how-to-dynamically-load-map-apis/
                 var scripts = [];
-                if (!window.attachEvent)
-                {
-                    scripts.push("http://dev.virtualearth.net/mapcontrol/v6.2/js/atlascompat.js");
-                    scripts.push(false); // Wait for that to load
-                }
-                scripts.push("http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.2");
+                scripts.push("http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0");
+                scripts.push("http://ecn.dev.virtualearth.net/mapcontrol/v7.0/js/bin/7.0.20101212190847.13/en-us/veapicore.js");
+                scripts.push(false);
                 return scripts;
             }
         }
     }));
+
+    // It's Javascript. Why do they bother blackboxing this?
+    var arrayifyEntityCollection = function(entities)
+    {
+        var length = entities.getLength();
+        var collection =[];
+        for (i=0; i<length; i++){
+            collection.push(entities.get(i));
+        }
+        return collection;
+    };
+
+    var buildInfoWindow = function(mapObj, event)
+    {
+        var shape = event.target;
+
+        var pixel = mapObj.map.tryLocationToPixel(
+            shape.getLocation(),
+            Microsoft.Maps.PixelReference.control);
+
+        var $box = mapObj.$dom().siblings('#bing_infoWindow');
+        if ($box.length < 1)
+        {
+            mapObj.$dom().after('<div id="bing_infoWindow">' +
+                '<div id="bing_infoBeak"> </div><div id="bing_infoContent"</div>');
+            $box = mapObj.$dom().siblings('#bing_infoWindow')
+                .css({  zIndex: '1000', position: 'absolute' });
+            $box.find('#bing_infoBeak').css({
+                background:"url('/images/bing-beaks.gif')",
+                width: '18px', height: '35px', marginTop: '3px', 'float': 'left' });
+            $box.find('#bing_infoContent')
+                .css({ backgroundColor: 'white', padding: '10px',
+                border: 'solid 1px #888888', marginLeft: '16px' });
+        }
+
+        $box.show().find("#bing_infoContent").html(shape.infoContent)
+            .prepend('<img src="http://maps.gstatic.com/intl/' +
+                     'en_us/mapfiles/iw_close.gif"/>');
+
+        var x = pixel.x;
+        var y = pixel.y;
+        if (shape instanceof Microsoft.Maps.Pushpin) { y -= shape.getHeight(); }
+        else { y -= 17; } // Magic Number: aim for "actual" center of polygon/polyline
+        // Magic Number: aim for the middle of the bing dot.
+        if (!shape.custom_icon) { y -= 7; }
+
+
+        if (x + $box.width() > blist.$container.width())
+        {
+            $box.find("#bing_infoBeak")
+                .css({ 'float': 'right', backgroundPosition: '0 34px'});
+            $box.find("#bing_infoContent")
+                .css({ marginLeft: '0', marginRight: '17px' })
+                    .find('img').css({ float: 'right', cursor: 'pointer' })
+                    .click(function() { closeInfoWindow(); });
+            x -= $box.width();
+        }
+        else
+        {
+            $box.find("#bing_infoBeak")
+                .css({ 'float': 'left', backgroundPosition: '0 0'});
+            $box.find("#bing_infoContent")
+                .css({ marginLeft: '16px', marginRight: '0' })
+                    .find('img').css({ float: 'right', cursor: 'pointer' })
+                    .click(function() { closeInfoWindow(); });
+        }
+
+        $box.css({ left: x, top: y });
+
+        var l = Microsoft.Maps.Events.addHandler(mapObj.map, 'viewchange',
+            function() { closeInfoWindow(); Microsoft.Maps.Events.removeHandler(l); });
+    };
+
+    var closeInfoWindow = function()
+    {
+        $("#bing_infoWindow").hide();
+    };
+
 })(jQuery);

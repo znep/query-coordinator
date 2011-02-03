@@ -49,12 +49,12 @@ Dataset.map.toBing = {
         {
             if (ring[ring.length - 1] != ring[0])
             { ring.push(ring[0]); }
-            return new VEShape(VEShapeType.Polygon, _.map(ring, function(point, p)
+            return new Microsoft.Maps.Polygon(_.map(ring, function(point, p)
             {
                 var point = geometry.getPoint(r, p);
                 if (point.spatialReference.wkid == 102100)
                 { point = esri.geometry.webMercatorToGeographic(point); }
-                return new VELatLong(point.y, point.x);
+                return new Microsoft.Maps.Location(point.y, point.x);
             }))
         });
     }

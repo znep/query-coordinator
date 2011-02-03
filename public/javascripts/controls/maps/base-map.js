@@ -179,7 +179,6 @@
             reset: function()
             {
                 var mapObj = this;
-                mapObj._hideBingTiles = false;
                 $(mapObj.currentDom).removeData('socrataVisualization');
                 mapObj.$dom().empty();
                 if (mapObj._legend) { mapObj._legend.$dom.hide(); }

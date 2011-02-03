@@ -5,6 +5,7 @@
 
     var isEdit = _.include(blist.dataset.metadata.availableDisplayTypes, 'calendar');
 
+    var sidebar;
     var configName = 'visualize.calendarCreate';
     var config =
     {
@@ -12,6 +13,8 @@
         priority: 5,
         title: 'Calendar',
         subtitle: 'Views with dates can be displayed in a monthly calendar format',
+        dataSource: blist.dataset,
+        showCallback: function(sidebarObj) { sidebar = sidebarObj; },
         onlyIf: function()
         {
             var dateCols = _.select(blist.dataset.realColumns, function(c)
@@ -24,23 +27,19 @@
                     return c.renderTypeName == 'text' && (isEdit || !c.hidden);
                 });
             return dateCols.length > 0 && textCols.length > 0 &&
-                (blist.dataset.valid || isEdit);
+                (blist.dataset.valid || isEdit) &&
+                (_.include(blist.dataset.metadata.availableDisplayTypes,
+                    'calendar') || !blist.dataset.isAltView());
         },
         disabledSubtitle: function()
         {
-            return !blist.dataset.valid && !isEdit ? 'This view must be valid' :
-                'This view must have a date column and a text column';
+            return (!blist.dataset.valid && !isEdit) ? 'This view must be valid' :
+                ((!_.include(blist.dataset.metadata.availableDisplayTypes,
+                    'calendar') && blist.dataset.isAltView()) ?
+                'A view may only have one visualization on it' :
+                'This view must have a date column and a text column');
         },
         sections: [
-            {
-                title: 'Calendar Name',
-                fields: [
-                    {text: 'Name', name: 'name', type: 'text', required: true,
-                        prompt: 'Enter a name',
-                        wizard: 'Enter a name for your calendar'
-                    }
-                ]
-            },
             {
                 title: 'Dates',
                 fields: [
@@ -82,16 +81,10 @@
             }
         ],
         finishBlock: {
-            buttons: [isEdit ? $.gridSidebar.buttons.update :
-                $.gridSidebar.buttons.create, $.gridSidebar.buttons.cancel],
+            buttons: [$.gridSidebar.buttons.apply, $.gridSidebar.buttons.cancel],
             wizard: "Now you're ready to " +
                 (isEdit ? 'update your' : 'create a new') + ' calendar'
         }
-    };
-
-    config.dataSource = function()
-    {
-        return isEdit ? blist.dataset : null;
     };
 
     config.finishCallback = function(sidebarObj, data, $pane, value)
@@ -102,42 +95,21 @@
             sidebarObj.getFormValues($pane));
         blist.dataset.update(view);
 
-        if (!isEdit)
+        if (isEdit)
         {
-            blist.dataset.saveNew(function(newView)
-            {
-                sidebarObj.finishProcessing();
-                newView.redirectTo();
-            },
-            function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); });
+            // We need to show all columns when editing a view so that
+            // any filters/facets work properly
+            var colIds = _.pluck(blist.dataset.realColumns, 'id');
+            if (colIds.length > 0)
+            { blist.dataset.setVisibleColumns(colIds, null, true); }
         }
-        else
-        {
-            blist.dataset.save(function(newView)
-            {
-                sidebarObj.finishProcessing();
 
-                $('.currentViewName').text(newView.name);
-
-                var finishUpdate = function()
-                {
-                    sidebarObj.$dom().socrataAlert(
-                        {message: 'Your calendar has been updated',
-                            overlay: true});
-
-                    sidebarObj.hide();
-                    sidebarObj.addPane(configName);
-                };
-
-                var colIds = _.pluck(newView.realColumns, 'id');
-
-                if (colIds.length > 0)
-                { newView.setVisibleColumns(colIds, finishUpdate); }
-                else { finishUpdate(); }
-            },
-            function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); });
-        }
+        sidebarObj.finishProcessing();
+        sidebarObj.refresh(configName);
     };
+
+    blist.dataset.bind('clear_temporary', function()
+        { if (!$.isBlank(sidebar)) { sidebar.refresh(configName); } });
 
     $.gridSidebar.registerConfig(config, 'calendar');
 

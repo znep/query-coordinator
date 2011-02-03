@@ -74,9 +74,12 @@
 
           <%- title_types = {'page' => 'single row', 'fatrow' => 'rich list'} -%>
           <%- url_types = {'fatrow' => 'richList'} -%>
-          <%- @view.available_display_types.each do |type| -%>
-          <li><a href='<%= @view.href %>?defaultRender=<%= url_types[type] || type %>'
-            class='<%= type %> noRedirPrompt'
+          <%- @view.available_display_types.clone.
+            push('template').each do |type| -%>
+          <li><a
+            href='<%= @view.href %>?defaultRender=<%= url_types[type] || type %>'
+            class='<%= type %> noRedirPrompt
+              <%= type == 'template' ? 'hide' : '' %>'
             title='View as a <%= title_types[type] || type %>'>
             <span class='icon'></span>
           </a></li>
@@ -551,14 +554,11 @@
     <%# Visualize pane %>
     blist.sidebarHidden.visualize = blist.sidebarHidden.visualize || {};
     blist.sidebarHidden.visualize.calendarCreate = <%= @view.is_alt_view? &&
-      (!@view.available_display_types.include?('calendar') ||
-       !@view.has_rights?('update_view')) %>;
+      !@view.available_display_types.include?('calendar') %>;
     blist.sidebarHidden.visualize.chartCreate = <%= @view.is_alt_view? &&
-      (!@view.available_display_types.include?('chart') ||
-       !@view.has_rights?('update_view')) %>;
+      !@view.available_display_types.include?('chart') %>;
     blist.sidebarHidden.visualize.mapCreate = <%= @view.is_alt_view? &&
-      (!@view.available_display_types.include?('map') ||
-       !@view.has_rights?('update_view')) ||
+      !@view.available_display_types.include?('map') ||
       @view.is_grouped? || !module_available?(:map_publish) %>;
 
     <%# Embed pane %>

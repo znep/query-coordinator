@@ -10,6 +10,16 @@ blist.datasetPage.clearTempView = function()
     $('#sidebarOptions a.alert').removeClass('alert');
     $('body, #datasetBar').removeClass('unsavedView minorChange');
     datasetPageNS.sidebar.updateEnabledSubPanes();
+
+    // If pill buttons don't match ADT, then hide them
+    $('#renderTypeOptions li a:visible').each(function()
+    {
+        var $a = $(this);
+        var type = $.urlParam($a.attr('href'), 'defaultRender');
+        if (type == 'richList') { type = 'fatrow'; }
+        if (!_.include(blist.dataset.metadata.availableDisplayTypes, type))
+        { $a.addClass('hide'); }
+    });
 };
 
 blist.datasetPage.setTempView = function()
@@ -55,7 +65,7 @@ $(function()
     {
         // Render types
         $('#renderTypeOptions').pillButtons();
-        $('#renderTypeOptions a').click(function(e)
+        $.live('#renderTypeOptions a', 'click', function(e)
         {
             e.preventDefault();
             var rt = $.urlParam($(this).attr('href'), 'defaultRender') ||
@@ -75,7 +85,17 @@ $(function()
         prevType = newType;
 
         $('#renderTypeOptions li a').removeClass('active');
-        $('#renderTypeOptions li .' + newType).addClass('active');
+        var $pb = $('#renderTypeOptions li .' + newType);
+        if ($pb.length < 1)
+        {
+            var $li = $('#renderTypeOptions li .template').parent().clone();
+            $pb = $li.find('a').removeClass('template hide').addClass(newType);
+            $pb.attr('title', $pb.attr('title').replace('template', newType));
+            $pb.attr('href', $.urlParam($pb.attr('href'),
+                'defaultRender', newType));
+            $('#renderTypeOptions').prepend($li);
+        }
+        $pb.addClass('active').removeClass('hide');
     });
 
     // Initialize all data rendering
@@ -183,8 +203,11 @@ $(function()
         datasetPageNS.sidebar.setDefault('filter.unifiedFilter');
     }
 
-    blist.dataset.bind('columns_changed',
-        function() { datasetPageNS.sidebar.updateEnabledSubPanes(); });
+    var sidebarUpdate = function()
+        { datasetPageNS.sidebar.updateEnabledSubPanes(); };
+    blist.dataset
+        .bind('columns_changed', sidebarUpdate)
+        .bind('displaytype_change', sidebarUpdate);
 
     // Hook up search form
     var $clearSearch = $('#searchForm .clearSearch');

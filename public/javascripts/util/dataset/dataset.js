@@ -136,6 +136,12 @@ this.Dataset = Model.extend({
         return _.include(['blist', 'filter', 'grouped'], this.type);
     },
 
+    isAltView: function()
+    {
+        return !_.isEqual(['table', 'fatrow', 'page'],
+            this.metadata.availableDisplayTypes);
+    },
+
     isGrouped: function()
     {
         return ((this.query || {}).groupBys || []).length > 0;

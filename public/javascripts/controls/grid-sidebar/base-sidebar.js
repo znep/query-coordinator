@@ -422,6 +422,7 @@
                 requiresLogin: true},
             update: {text: 'Update', value: true, isDefault: true,
                 requiresLogin: true},
+            apply: {text: 'Apply', value: true, isDefault: true},
             done: {text: 'Done', value: true, isDefault: true},
             cancel: {text: 'Cancel', value: false, isCancel: true}
         },

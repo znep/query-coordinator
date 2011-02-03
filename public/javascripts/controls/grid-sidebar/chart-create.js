@@ -271,6 +271,7 @@
 
     /*** Main config ***/
 
+    var sidebar;
     var configName = 'visualize.chartCreate';
     var config =
     {
@@ -278,17 +279,24 @@
         priority: 1,
         title: 'Chart',
         subtitle: 'View data can be displayed with a variety of charts',
+        dataSource: blist.dataset,
+        showCallback: function(sidebarObj) { sidebar = sidebarObj; },
         onlyIf: function()
-        { return blist.dataset.valid || isEdit; },
-        disabledSubtitle: 'This view must be valid',
+        {
+            return (blist.dataset.valid || isEdit) &&
+                (_.include(blist.dataset.metadata.availableDisplayTypes,
+                    'chart') || !blist.dataset.isAltView());
+        },
+        disabledSubtitle: function()
+        {
+            return !blist.dataset.valid && !isEdit ?
+                'This view must be valid' :
+                'A view may only have one visualization on it';
+        },
         sections: [
             {
                 title: 'Chart Setup',
                 fields: [
-                    {text: 'Name', name: 'name', type: 'text', required: true,
-                        prompt: 'Enter a name',
-                        wizard: 'Enter a name for your chart'
-                    },
                     {text: 'Chart Type', name: 'displayFormat.chartType',
                         type: 'select', required: true,
                         prompt: 'Select a chart type',
@@ -385,18 +393,11 @@
 
         ],
         finishBlock: {
-            buttons: [isEdit ? $.gridSidebar.buttons.update :
-                $.gridSidebar.buttons.create, $.gridSidebar.buttons.cancel],
+            buttons: [$.gridSidebar.buttons.apply, $.gridSidebar.buttons.cancel],
             wizard: "Now you're ready to " +
                 (isEdit ? 'update your' : 'create a new') + ' chart'
         }
     };
-
-    config.dataSource = function()
-    {
-        return isEdit ? blist.dataset : null;
-    };
-
 
     config.finishCallback = function(sidebarObj, data, $pane, value)
     {
@@ -428,42 +429,21 @@
         ); }
         blist.dataset.update(view);
 
-        if (!isEdit)
+        if (isEdit)
         {
-            blist.dataset.saveNew(function(newView)
-            {
-                sidebarObj.finishProcessing();
-                newView.redirectTo();
-            },
-            function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); });
+            // We need to show all columns when editing a view so that
+            // any filters/facets work properly
+            var colIds = _.pluck(blist.dataset.realColumns, 'id');
+            if (colIds.length > 0)
+            { blist.dataset.setVisibleColumns(colIds, null, true); }
         }
-        else
-        {
-            blist.dataset.save(function(newView)
-            {
-                sidebarObj.finishProcessing();
 
-                $('.currentViewName').text(newView.name);
-
-                var finishUpdate = function()
-                {
-                    sidebarObj.$dom().socrataAlert(
-                        {message: 'Your chart has been updated', overlay: true});
-
-                    sidebarObj.hide();
-
-                    sidebarObj.addPane(configName);
-                };
-
-                var colIds = _.pluck(newView.realColumns, 'id');
-
-                if (colIds.length > 0)
-                { newView.setVisibleColumns(colIds, finishUpdate); }
-                else { finishUpdate(); }
-            },
-            function(xhr) { sidebarObj.genericErrorHandler($pane, xhr); });
-        }
+        sidebarObj.finishProcessing();
+        sidebarObj.refresh(configName);
     };
+
+    blist.dataset.bind('clear_temporary', function()
+        { if (!$.isBlank(sidebar)) { sidebar.refresh(configName); } });
 
     $.gridSidebar.registerConfig(config, 'chart');
 

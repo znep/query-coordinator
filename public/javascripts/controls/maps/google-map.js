@@ -111,7 +111,7 @@
                             {position: new google.maps.LatLng(geometry.latitude,
                                                               geometry.longitude) });
                         break;
-                    case 'polygon';
+                    case 'polygon':
                         if (geometry instanceof esri.geometry.Polygon)
                         { geometry = Dataset.map.toGoogle.polygon(geometry); }
                         else

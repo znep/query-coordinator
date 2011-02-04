@@ -549,7 +549,7 @@
     blist.sidebarHidden.filter.filterDataset = <%= !@view.is_tabular? ||
       @view.is_form? %>;
     blist.sidebarHidden.filter.showHide = <%= !@view.is_tabular? ||
-      @view.is_form? || !@view.has_rights?('update_view') %>;
+      @view.is_form? %>;
 
     <%# Visualize pane %>
     blist.sidebarHidden.visualize = blist.sidebarHidden.visualize || {};

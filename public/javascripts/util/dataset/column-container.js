@@ -176,7 +176,10 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
             });
         }
         else
-        { (cont.view || cont)._markTemporary(); }
+        {
+            (cont.view || cont)._markTemporary();
+            if (_.isFunction(callback)) { callback(); }
+        }
     };
 
     props.cleanCopy = function()

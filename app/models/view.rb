@@ -47,16 +47,16 @@ class View < Model
   end
 
   def module_enabled?(name)
-    if self.disabledFeatureFlags && self.disabledFeatureFlags.member?(name.to_s)
-      return false
-    end
-    return CurrentDomain.module_enabled?(name)
+    return false if self.disabledFeatureFlags && self.disabledFeatureFlags.member?(name.to_s)
+    return CurrentDomain.module_enabled?(name.downcase.to_sym)
   end
 
   def enabled_modules
-    self.overridable_features.map do |feature|
-      { feature[:key] => module_enabled?(feature[:key]) }
+    result = {}
+    self.overridable_features.each do |feature|
+      result[feature[:key]] = module_enabled?(feature[:key])
     end
+    return result
   end
 
   def disabled_features

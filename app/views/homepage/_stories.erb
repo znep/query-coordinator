@@ -1,7 +1,9 @@
 <div class="contentBox storiesContainer" data-orientation="<%= CurrentDomain.theme.stories.orientation %>"
     data-autoadvance="<%= CurrentDomain.theme.stories.autoAdvance %>">
-  <div class="storyPagerBackground"></div>
-  <div class="storyPager"></div>
+  <%- if @stories.size > 1 -%>
+    <div class="storyPagerBackground"></div>
+    <div class="storyPager"></div>
+  <%- end -%>
   <ul class="storyTexts">
     <%- @stories.each do |story| -%>
       <li data-storyid="<%= story.id %>" data-storycustomization="<%= story.raw_customization %>">

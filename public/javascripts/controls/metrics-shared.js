@@ -158,7 +158,7 @@ metricsNS.topAppTokensCallback = function($context)
         function(key, value, results) {
             $.socrataServer.addRequest({
                 cache: false,
-                url: '/app_tokens/' + key + '.json',
+                url: '/api/app_tokens/' + key + '.json',
                 type: 'GET',
                 success: function(response) {
                     var thumbed = response.thumbnailSha,

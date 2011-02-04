@@ -151,7 +151,7 @@ ActionController::Routing::Routes.draw do |map|
     :create_friend => :get,
     :delete_friend => :get
     # :update_account => :put has been moved to the https block below, because it sends a password in cleartext.
-  }, :except => [:show]
+  }
 
   # Profile SEO urls (only add here if the action has a view with it;
   # otherwise just add to the :member key in the profile resource above.)

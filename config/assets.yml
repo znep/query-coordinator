@@ -41,11 +41,6 @@ javascripts:
     - public/javascripts/controls/values.js
     - public/javascripts/controls/dropdown-menu.js
     - public/javascripts/screens/all-screens.js
-  shared-common-all:
-    - public/javascripts/util/events.js
-    - public/javascripts/util/sizing.js
-    - public/javascripts/controls/clipped-text.js
-    - public/javascripts/controls/scrollable.js
   shared-calendar:
     - public/javascripts/plugins/fullcalendar.js
     - public/javascripts/controls/base-visualization.js

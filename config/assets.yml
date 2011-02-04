@@ -45,7 +45,6 @@ javascripts:
     - public/javascripts/util/events.js
     - public/javascripts/util/sizing.js
     - public/javascripts/controls/clipped-text.js
-    - public/javascripts/screens/common-layout.js
     - public/javascripts/controls/scrollable.js
   shared-calendar:
     - public/javascripts/plugins/fullcalendar.js

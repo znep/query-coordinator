@@ -180,8 +180,9 @@
                         if (!mapObj.infoWindow)
                         { mapObj.infoWindow =
                             new google.maps.InfoWindow({maxWidth: 300}); }
-                        mapObj.infoWindow.setPosition(evt.latLng);
                         mapObj.infoWindow.setContent(infoContent);
+                        // evt.latLng if it's not a point; pull .position for points
+                        mapObj.infoWindow.setPosition(evt.latLng || geometry.position);
                         mapObj.infoWindow.open(mapObj.map);
                     });
                 }

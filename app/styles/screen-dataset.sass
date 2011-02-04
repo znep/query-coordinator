@@ -420,9 +420,25 @@ html, body
 
   .leavingSave
     display: none
+  .reloadSave
+    display: none
+  .reloadUpdate
+    display: none
 
   &.leavingSaveDialog
     .leavingSave
+      display: block
+    .normalSave
+      display: none
+
+  &.reloadSaveDialog
+    .reloadSave
+      display: block
+    .normalSave
+      display: none
+
+  &.reloadUpdateDialog
+    .reloadUpdate
       display: block
     .normalSave
       display: none

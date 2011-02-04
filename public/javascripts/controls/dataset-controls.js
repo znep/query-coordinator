@@ -66,7 +66,7 @@ blist.datasetControls.unsavedViewPrompt = function()
 };
 
 blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
-    dontSaveCallback)
+    dontSaveCallback, cancelCallback, newViewData)
 {
     var dialogObj = datasetControlsNS.showSaveViewDialog;
 
@@ -91,11 +91,11 @@ blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
 
     dialogObj._saveCallback = saveCallback;
     dialogObj._dontSaveCallback = dontSaveCallback;
+    dialogObj._cancelCallback = cancelCallback;
 
-    var saveView = function()
+    var saveView = function(isNew)
     {
         var $name = $dialog.find('.viewName');
-        var isNew = $name.is(':visible');
         var name = $name.val();
         if (isNew && $.isBlank(name))
         {
@@ -108,6 +108,7 @@ blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
         var doSave = function()
         {
             $dialog.find('.loadingOverlay, .loadingSpinner').removeClass('hide');
+            if (!$.isBlank(newViewData)) { blist.dataset.update(newViewData); }
             if (isNew) { blist.dataset.name = name; }
             blist.dataset['save' + (isNew ? 'New' : '')](
                 // Success
@@ -155,17 +156,27 @@ blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
         $dialog.find('form').submit(function(e)
         {
             e.preventDefault();
-            saveView();
+            saveView(true);
         });
 
         $dialog.find('a.save').click(function(e)
         {
             e.preventDefault();
-            saveView();
+            saveView($dialog.find('.viewName').is(':visible'));
+        });
+
+        $dialog.find('a.update').click(function(e)
+        {
+            e.preventDefault();
+            saveView(false);
         });
 
         $dialog.find('.jqmClose').click(function()
-        { cleanDialog() });
+        {
+            cleanDialog()
+            if (_.isFunction(dialogObj._cancelCallback))
+            { dialogObj._cancelCallback(); }
+        });
 
         $dialog.find('.dontSave').click(function()
         {

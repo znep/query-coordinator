@@ -194,7 +194,7 @@
                 var od = this._origData || {};
                 var view = this.settings.view;
                 return od.mapType != view.displayFormat.type &&
-                    (od.mapType == 'bing' || view.displayFormat.type == 'bing');
+                    od.mapType == 'bing';
             },
 
             needsFullReset: function()

@@ -457,13 +457,25 @@
 
         var view = $.extend({displayType: 'map'}, sidebarObj.getFormValues($pane));
 
-        if (view.displayFormat.type == blist.dataset.displayFormat.type)
-        { view.displayFormat.viewport = blist.dataset.displayFormat.viewport; }
         if (customHeatmap())
         {
             view.displayFormat.heatmap.type = 'custom';
             view.displayFormat.heatmap.cache_url =
                 blist.dataset.displayFormat.heatmap.cache_url;
+        }
+
+        if (view.displayFormat.type == blist.dataset.displayFormat.type)
+        { view.displayFormat.viewport = blist.dataset.displayFormat.viewport; }
+        else if (blist.dataset.displayFormat.type == 'bing')
+        {
+            blist.datasetControls.showSaveViewDialog(isEdit ?
+                'reloadUpdateDialog' : 'reloadSaveDialog', null, null,
+                function()
+                {
+                    sidebarObj.finishProcessing();
+                    sidebarObj.refresh(configName);
+                }, view);
+            return;
         }
 
         blist.dataset.update(view);

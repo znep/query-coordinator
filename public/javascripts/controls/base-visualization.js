@@ -131,7 +131,11 @@
 
                 if (vizObj.needsPageRefresh())
                 {
-                    window.location.reload();
+                    // Now that visualizations are being done inline, reloading
+                    // the page is not going to work. The sidebar (or similar)
+                    // should handle prompting the user and doing a reload if
+                    // appropriate. Here, we just bail because there is no point
+                    // to refreshing
                     return;
                 }
 

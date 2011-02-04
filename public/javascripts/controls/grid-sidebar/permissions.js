@@ -15,7 +15,12 @@
             function()
             {
                 $title.text(blist.dataset.isPublic() ? 'Public' : 'Private');
-                $('#gridSidebar').gridSidebar().updateEnabledSubPanes();
+                sidebar
+                    .updateEnabledSubPanes();
+                $radio
+                    .socrataAlert({
+                        message: 'Your permissions have been saved', overlay: true
+                    });
             },
             function(request, textStatus, errorThrown)
             {
@@ -29,6 +34,7 @@
     var displayName     = blist.dataset.displayName,
         $permissionForm = $('#gridSidebar_datasetPermissions .disabledFeatureFlags');
 
+    var sidebar;
     var config =
     {
         name: 'edit.datasetPermissions',
@@ -90,6 +96,7 @@
         ],
         showCallback: function(sidebarObj, $currentPane)
         {
+            sidebar = sidebarObj;
             $currentPane
                 .find('.flash')
                     .removeClass('error')

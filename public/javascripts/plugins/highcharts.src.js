@@ -7354,6 +7354,10 @@ function Chart (options, callback) {
 	 * @param {Object|Boolean} animation
 	 */
 	resize = function(width, height, animation) {
+            // jeff.scherpelz@socrata.com: Sometimes getting an error where
+            // container is null because of destroy
+            if (!container) { return; }
+
 		var chartTitle = chart.title,
 			chartSubtitle = chart.subtitle;
 		

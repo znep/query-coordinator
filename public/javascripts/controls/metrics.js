@@ -288,7 +288,7 @@
             {
                 sliceDepth = 'Hourly';
             }
-            else if (startDate.clone().addMonths(1) > endDate)
+            else if (startDate.clone().addMonths(opts.minMonthsToSliceMonthly) > endDate)
             {
                 sliceDepth = 'Daily';
             }
@@ -395,6 +395,7 @@
     $.fn.metricsTimeControl.defaults = {
         displayDateFormat: 'M d, yy',
         maxDaysToSliceHourly: 4,
+        minMonthsToSliceMonthly: 3,
         metricsScreen: null,
         minimumDate: Date.parse('2008-01-01'),
         parseDateFormat: 'MMM d, yyyy',

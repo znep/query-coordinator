@@ -34,7 +34,7 @@
                     Microsoft.Maps.Events.addHandler(mapObj.map, event, function()
                     { console.log(event); }); });
                 };
-                event_debugger();
+                //event_debugger();
 
                 Microsoft.Maps.Events.addHandler(mapObj.map, 'mousedown', function()
                 { mapObj._mouseActive = true; });

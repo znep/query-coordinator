@@ -180,6 +180,7 @@ javascripts:
     - public/javascripts/plugins/lab.js
     - public/javascripts/controls/modal-dialogs.js
     - public/javascripts/controls/dataset-controls.js
+    - public/javascripts/controls/feed-list.js
     - public/javascripts/controls/stars.js
     - public/javascripts/controls/menu.js
     - public/javascripts/controls/scrollTabs.js

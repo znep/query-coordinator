@@ -18,6 +18,7 @@ base-sdp:
 - tables
 - table-core
 - dataset-grid
+- control-feed
 strip-chrome:
 - strip-chrome
 screen-login:

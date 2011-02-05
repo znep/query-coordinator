@@ -346,99 +346,20 @@ html, body
       .type
         @include sprite-menu-icons
 
-  .widgetContent_comments
+  .widgetContent_feed
 
-    .commentTopLevelActions
-      margin: 1em 2em 0
+    .feed
+      margin: 2em
 
-    .emptyDataText
-      font-size: 1.2em
+      .feedFilterLine
+        display: none
 
-    .commentsViewMoreLink
+    .fullButton
       display: block
       font-size: 1.2em
       font-weight: bold
       padding: 2em
       text-align: center
-
-    .commentsWrapper
-      margin-right: 4em
-      padding: 1em
-
-      .commentList
-        padding: 0.5em
-        position: relative
-
-        .commentAuthor
-          position: absolute
-          &, img
-            height: 35px
-            width: 35px
-        .commentContainer
-          background-color: #fff
-          border: 1px solid #999
-          margin-left: 55px
-          padding: 1em
-          position: relative
-
-          .commentTip
-            background: transparent url(/stylesheets/images/interface/comment_tip.gif) no-repeat
-            height: 10px
-            left: -10px
-            position: absolute
-            top: 1em
-            width: 10px
-            .ie6 &
-              left: -20px
-
-          .commentBody, .replyBody
-            font-size: 1.1em
-            padding-bottom: 1em
-
-            .commentAuthorName, .commentTitle,
-            .replyAuthorName, .replyTitle
-              font-weight: bold
-
-          .commentActions, .replyActions
-            .timestamp, .positiveRatings, .negativeRatings
-              color: #888
-
-            .rateUp, .rateDown
-              @include sprite-menu-icons
-
-            .timestamp, .actionReply, .actionInappropriate
-              float: left
-              margin-right: 1em
-
-            .positiveRatings, .negativeRatings, .rateUp, .rateDown
-              float: right
-              margin-left: 1em
-
-          .replyWrapper
-            margin-top: 1em
-
-            .replyList
-              border-top: 1px solid #ddd
-
-              .replyAuthor
-                margin-top: 0.5em
-                position: absolute
-                &, img
-                  height: 25px
-                  width: 25px
-
-              .replyContainer
-                margin:
-                  left: 35px
-                padding:
-                  bottom: 0.5em
-                  top: 0.5em
-
-            .replyViewAllLink
-              font-size: 1.1em
-              padding:
-                bottom: 0.5em
-                top: 0.5em
 
   .widgetContent_embed
     .embedForm

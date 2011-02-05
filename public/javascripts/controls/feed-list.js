@@ -130,8 +130,8 @@
         });
 
         // combine and sort
-        var feedData = comments.concat(views);
-        feedData.sort(function(a, b) { return b.timestamp - a.timestamp; });
+        var allFeedData = comments.concat(views);
+        allFeedData.sort(function(a, b) { return b.timestamp - a.timestamp; });
 
         var feedMap = {};
 
@@ -149,14 +149,56 @@
             feedMap[item.serialId] = item;
             return item;
         };
-        feedData = _.map(feedData, feedDataMap);
+        allFeedData = _.map(allFeedData, feedDataMap);
 
         this.each(function()
         {
             var $this = $(this);
             var $scrollContainer = opts.$scrollContainer || $this.closest(opts.scrollContainerSelector);
+            var $feedFilter = $this.find('.feedFilter');
             var $feedList = $this.find('.feedList');
             var $moreItemsButton = $this.find('.feedMoreItemsLink');
+
+            // set up the filter dropdown
+            if (!_.isArray(opts.filterCategories) || (opts.filterCategories.length === 0))
+            {
+                $this.find('.feedFilterLine').hide();
+            }
+            else
+            {
+                $feedFilter
+                    .empty()
+                    .append($.tag(_.map(opts.filterCategories, function(category)
+                        {
+                            return {
+                                tagName: 'option',
+                                value: category,
+                                contents: category
+                            };
+                        }), true))
+                    .val(opts.defaultFilter || _.first(opts.filterCategories));
+                $.uniform.update($feedFilter);
+            }
+
+            var filterItems = function(allow)
+            {
+                if (allow == 'all items')
+                {
+                    return allFeedData;
+                }
+                else
+                {
+                    var filterMap = {
+                        'view': 'views',
+                        'comment': 'comments',
+                        'replies': 'comments'
+                    };
+                    return _.select(allFeedData, function(item)
+                    {
+                        return filterMap[item.itemType] == allow;
+                    });
+                }
+            };
 
             var showMoreItems = function(skipAnimation)
             {
@@ -166,8 +208,9 @@
                         itemsShown, itemsShown + opts.pageSize), feedDirective));
 
                 var remainingItems = feedData.length - itemsShown - opts.pageSize;
+                $moreItemsButton.show();
                 if (remainingItems <= 0)
-                    $moreItemsButton.remove();
+                    $moreItemsButton.hide();
                 else if (remainingItems == 1)
                     $moreItemsButton.text('View last item');
                 else
@@ -185,12 +228,28 @@
                     }, 'slow');
                 }
             };
-            showMoreItems(true);
+
+            // local events
             $moreItemsButton.click(function(event)
             {
                 event.preventDefault();
                 showMoreItems();
             });
+
+            $feedFilter.change(function(event)
+            {
+                // they're refiltering; remove all current items,
+                // refilter, and show the first page.
+
+                feedData = filterItems($(this).val());
+                $feedList.empty();
+                showMoreItems(true);
+            });
+
+            // kick things off
+            feedData = filterItems(opts.defaultFilter);
+            showMoreItems(true);
+
 
             // Store off what we need to hook up events later.
             $this.data('feedList-data', {
@@ -216,211 +275,214 @@
 
                     $this.siblings('.feedChildren').empty().append(
                         compiledFeedDirectiveNest(data.feedMap[
-                        getSerialId($this)].allChildren));
+                            getSerialId($this)].allChildren));
 
                     $this.remove();
                 });
 
-                // Any actions on the comment actions line goes here
-                $.live('.feed .commentActions a', 'click', function(event)
+                if (opts.bindCommentEvents === true)
                 {
-                    event.preventDefault();
-                    var $this = $(this);
-                    var data = getData($this);
-
-                    // Get the actual comment in question
-                    // TODO: This code won't work if we someday allow commenting
-                    // on arbitrary feed items, eg comment on a view or trackback
-                    var targetCommentData = data.feedMap[getSerialId($this, '.comment')];
-
-                    // If this is a reply to a comment, subindex into it
-                    var $reply = $this.closest('.feedItem.reply');
-                    if ($reply.length > 0)
+                    // Any actions on the comment actions line goes here
+                    $.live('.feed .commentActions a', 'click', function(event)
                     {
-                        var targetCommentId = parseInt($reply.attr('data-itemId'));
-                        targetCommentData = _.detect(targetCommentData.allChildren, function(reply)
+                        event.preventDefault();
+                        var $this = $(this);
+                        var data = getData($this);
+
+                        // Get the actual comment in question
+                        // TODO: This code won't work if we someday allow commenting
+                        // on arbitrary feed items, eg comment on a view or trackback
+                        var targetCommentData = data.feedMap[getSerialId($this, '.comment')];
+
+                        // If this is a reply to a comment, subindex into it
+                        var $reply = $this.closest('.feedItem.reply');
+                        if ($reply.length > 0)
                         {
-                            return reply.itemId == targetCommentId;
-                        });
-                    }
-
-                    // Take action
-                    if ($this.is('.commentInappropriateLink:not(.disabled)'))
-                    {
-                        blist.util.doAuthedAction('flag a comment', function()
-                        {
-                            getView(targetCommentData.viewId).flagComment(
-                                targetCommentData.itemId,
-                                function()
-                                {
-                                    targetCommentData.commentFlagged = true;
-                                    $this.fadeOut(function()
-                                    {
-                                        $this.addClass('disabled')
-                                            .text('Flagged!').fadeIn();
-                                    });
-                                }
-                            );
-                        });
-                    }
-                    else if ($this.is('.commentRateUpLink:not(.ratedUp)') ||
-                             $this.is('.commentRateDownLink:not(.ratedDown)'))
-                    {
-                        var thumbsUp = $this.hasClass('commentRateUpLink');
-                        blist.util.doAuthedAction('rate a comment', function()
-                        {
-                            getView(targetCommentData.viewId).rateComment(
-                                targetCommentData.itemId, thumbsUp,
-                                function()
-                                {
-                                    var direction = thumbsUp ? 'up' : 'down';
-
-                                    // Update data structures in case we rerender
-                                    if (!_.isUndefined(targetCommentData.currentUserRating))
-                                    {
-                                        // The user has previously rated in the other direction
-                                        targetCommentData[(thumbsUp ? 'down' : 'up') + 'Ratings']--;
-                                        $this.closest('li').siblings().removeClass('ratedUp ratedDown');
-                                    }
-                                    targetCommentData.currentUserRating = { thumbUp: thumbsUp };
-                                    targetCommentData[direction + 'Ratings']++;
-
-                                    // Update UI
-                                    $this.closest('li').addClass('rated' + direction.capitalize());
-                                    _.each({'up': '+', 'down': '-'}, function(symbol, direction)
-                                    {
-                                        var text = symbol + targetCommentData[direction + 'Ratings'];
-                                        if (targetCommentData[direction + 'Ratings'] === 0)
-                                        {
-                                            text = '';
-                                        }
-
-                                        $this.closest('li').siblings('.' + direction + 'Ratings').text(text);
-                                    });
-                                }
-                            );
-                        });
-                    }
-                    else if ($this.is('.commentReplyLink') &&
-                        ($this.closest('.feedItem').children('.newCommentForm').length === 0))
-                    {
-                        var $newCom = $.renderTemplate('feedItem_newComment');
-                        $newCom.find('.postNewCommentButton')
-                            .data('view', getView(targetCommentData.viewId));
-                        $this.closest('.feedItem').children('.feedChildren')
-                            .before($newCom);
-                        $this.closest('.feedItem').find('#newCommentBody').focus();
-                    }
-                });
-
-                $.live('.newCommentForm .cancelNewCommentButton', 'click', function(event)
-                {
-                    event.preventDefault();
-                    var $this = $(this);
-
-                    // either the field is already blank, or we confirm it's okay.
-                    if ($.isBlank($this.siblings('#newCommentBody').val()) ||
-                        confirm('Are you sure? Your comment will be lost.'))
-                    {
-                        $this.closest('.newCommentForm').remove();
-                    }
-                });
-
-                $.live('.newCommentForm .postNewCommentButton', 'click', function(event)
-                {
-                    event.preventDefault();
-                    var $this = $(this);
-
-                    var view = $this.data('view');
-
-                    var commentBody = $this.siblings('#newCommentBody').val();
-                    if (!$.isBlank(commentBody))
-                    {
-                        $this.siblings('.error').slideUp();
-
-                        var commentData = { body: commentBody };
-
-                        // See if this is a reply
-                        var parentCommentId = parseInt($this.closest('.feedItem').attr('data-itemId'));
-                        if (_.isNumber(parentCommentId) && !isNaN(parentCommentId))
-                        {
-                            commentData.parent = { id: parentCommentId };
+                            var targetCommentId = parseInt($reply.attr('data-itemId'));
+                            targetCommentData = _.detect(targetCommentData.allChildren, function(reply)
+                            {
+                                return reply.itemId == targetCommentId;
+                            });
                         }
 
-                        blist.util.doAuthedAction('post a comment', function()
+                        // Take action
+                        if ($this.is('.commentInappropriateLink:not(.disabled)'))
                         {
-                            view.addComment(commentData,
-                                function(response)
-                                {
-                                    var data = getData($this);
-
-                                    var newCommentData = feedDataMap(commentMap(response));
-
-                                    var $parentComment = $this.closest('.feedItem');
-                                    if ($parentComment.length === 0)
+                            blist.util.doAuthedAction('flag a comment', function()
+                            {
+                                getView(targetCommentData.viewId).flagComment(
+                                    targetCommentData.itemId,
+                                    function()
                                     {
-                                        // root comment; add the new comment to the front
-
-                                        data.feedData.unshift(newCommentData);
-
-                                        $this.closest('.feed').children('.feedList').prepend(
-                                            $.renderTemplate('feedItem', [newCommentData], feedDirective));
+                                        targetCommentData.commentFlagged = true;
+                                        $this.fadeOut(function()
+                                        {
+                                            $this.addClass('disabled')
+                                                .text('Flagged!').fadeIn();
+                                        });
                                     }
-                                    else
+                                );
+                            });
+                        }
+                        else if ($this.is('.commentRateUpLink:not(.ratedUp)') ||
+                                 $this.is('.commentRateDownLink:not(.ratedDown)'))
+                        {
+                            var thumbsUp = $this.hasClass('commentRateUpLink');
+                            blist.util.doAuthedAction('rate a comment', function()
+                            {
+                                getView(targetCommentData.viewId).rateComment(
+                                    targetCommentData.itemId, thumbsUp,
+                                    function()
                                     {
-                                        // reply; add the new comment to the reply
-                                        newCommentData.itemType = 'reply';
+                                        var direction = thumbsUp ? 'up' : 'down';
 
-                                        var parentCommentData = data.feedMap[getSerialId($parentComment)];
-                                        parentCommentData.allChildren.unshift(newCommentData);
-                                        parentCommentData.children.unshift(newCommentData);
-                                        parentCommentData.children.splice(opts.replyPageLimit, 1);
+                                        // Update data structures in case we rerender
+                                        if (!_.isUndefined(targetCommentData.currentUserRating))
+                                        {
+                                            // The user has previously rated in the other direction
+                                            targetCommentData[(thumbsUp ? 'down' : 'up') + 'Ratings']--;
+                                            $this.closest('li').siblings().removeClass('ratedUp ratedDown');
+                                        }
+                                        targetCommentData.currentUserRating = { thumbUp: thumbsUp };
+                                        targetCommentData[direction + 'Ratings']++;
 
-                                        $this.closest('.newCommentForm')
-                                            .siblings('.feedChildren')
-                                                .removeClass('hide')
-                                                .prepend(compiledFeedDirectiveNest([newCommentData]));
+                                        // Update UI
+                                        $this.closest('li').addClass('rated' + direction.capitalize());
+                                        _.each({'up': '+', 'down': '-'}, function(symbol, direction)
+                                        {
+                                            var text = symbol + targetCommentData[direction + 'Ratings'];
+                                            if (targetCommentData[direction + 'Ratings'] === 0)
+                                            {
+                                                text = '';
+                                            }
+
+                                            $this.closest('li').siblings('.' + direction + 'Ratings').text(text);
+                                        });
                                     }
+                                );
+                            });
+                        }
+                        else if ($this.is('.commentReplyLink') &&
+                            ($this.closest('.feedItem').children('.newCommentForm').length === 0))
+                        {
+                            var $newCom = $.renderTemplate('feedItem_newComment');
+                            $newCom.find('.postNewCommentButton')
+                                .data('view', getView(targetCommentData.viewId));
+                            $this.closest('.feedItem').children('.feedChildren')
+                                .before($newCom);
+                            $this.closest('.feedItem').find('#newCommentBody').focus();
+                        }
+                    });
 
-                                    $('#gridSidebar_about .numberOfComments')
-                                        .text(view.numberOfComments);
-                                    $this.closest('.newCommentForm').remove();
-                                    if (!$.isBlank(blist.datasetPage))
-                                    {
-                                        blist.datasetPage.$feedTab
-                                            .contentIndicator()
-                                            .setText(view.numberOfComments);
-                                    }
-                                },
-                                function(resp)
-                                {
-                                    $this.siblings('.error').slideDown()
-                                        .text(JSON.parse(resp.responseText).message);
-                                }
-                            );
-                        });
-                    }
-                    else
+                    $.live('.newCommentForm .cancelNewCommentButton', 'click', function(event)
                     {
-                        $this.siblings('.error')
-                            .text('The comment body cannot be empty.').slideDown();
-                    }
-                });
+                        event.preventDefault();
+                        var $this = $(this);
 
-                $.live('.feedNewCommentButton', 'click', function(event)
-                {
-                    event.preventDefault();
-                    var $this = $(this);
+                        // either the field is already blank, or we confirm it's okay.
+                        if ($.isBlank($this.siblings('#newCommentBody').val()) ||
+                            confirm('Are you sure? Your comment will be lost.'))
+                        {
+                            $this.closest('.newCommentForm').remove();
+                        }
+                    });
 
-                    if ($this.siblings('.newCommentForm').length === 0)
+                    $.live('.newCommentForm .postNewCommentButton', 'click', function(event)
                     {
-                        var $newCom = $.renderTemplate('feedItem_newComment');
-                        $newCom.find('.postNewCommentButton')
-                            .data('view', getData($this).opts.mainView);
-                        $this.after($newCom);
-                        $this.siblings('.newCommentForm').find('#newCommentBody').focus();
-                    }
-                });
+                        event.preventDefault();
+                        var $this = $(this);
+
+                        var view = $this.data('view');
+
+                        var commentBody = $this.siblings('#newCommentBody').val();
+                        if (!$.isBlank(commentBody))
+                        {
+                            $this.siblings('.error').slideUp();
+
+                            var commentData = { body: commentBody };
+
+                            // See if this is a reply
+                            var parentCommentId = parseInt($this.closest('.feedItem').attr('data-itemId'));
+                            if (_.isNumber(parentCommentId) && !isNaN(parentCommentId))
+                            {
+                                commentData.parent = { id: parentCommentId };
+                            }
+
+                            blist.util.doAuthedAction('post a comment', function()
+                            {
+                                view.addComment(commentData,
+                                    function(response)
+                                    {
+                                        var data = getData($this);
+
+                                        var newCommentData = feedDataMap(commentMap(response));
+
+                                        var $parentComment = $this.closest('.feedItem');
+                                        if ($parentComment.length === 0)
+                                        {
+                                            // root comment; add the new comment to the front
+
+                                            data.feedData.unshift(newCommentData);
+
+                                            $this.closest('.feed').children('.feedList').prepend(
+                                                $.renderTemplate('feedItem', [newCommentData], feedDirective));
+                                        }
+                                        else
+                                        {
+                                            // reply; add the new comment to the reply
+                                            newCommentData.itemType = 'reply';
+
+                                            var parentCommentData = data.feedMap[getSerialId($parentComment)];
+                                            parentCommentData.allChildren.unshift(newCommentData);
+                                            parentCommentData.children.unshift(newCommentData);
+                                            parentCommentData.children.splice(opts.replyPageLimit, 1);
+
+                                            $this.closest('.newCommentForm')
+                                                .siblings('.feedChildren')
+                                                    .removeClass('hide')
+                                                    .prepend(compiledFeedDirectiveNest([newCommentData]));
+                                        }
+
+                                        $('#gridSidebar_about .numberOfComments')
+                                            .text(view.numberOfComments);
+                                        $this.closest('.newCommentForm').remove();
+                                        if (!$.isBlank(blist.datasetPage))
+                                        {
+                                            blist.datasetPage.$feedTab
+                                                .contentIndicator()
+                                                .setText(view.numberOfComments);
+                                        }
+                                    },
+                                    function(resp)
+                                    {
+                                        $this.siblings('.error').slideDown()
+                                            .text(JSON.parse(resp.responseText).message);
+                                    }
+                                );
+                            });
+                        }
+                        else
+                        {
+                            $this.siblings('.error')
+                                .text('The comment body cannot be empty.').slideDown();
+                        }
+                    });
+
+                    $.live('.feedNewCommentButton', 'click', function(event)
+                    {
+                        event.preventDefault();
+                        var $this = $(this);
+
+                        if ($this.siblings('.newCommentForm').length === 0)
+                        {
+                            var $newCom = $.renderTemplate('feedItem_newComment');
+                            $newCom.find('.postNewCommentButton')
+                                .data('view', getData($this).opts.mainView);
+                            $this.after($newCom);
+                            $this.siblings('.newCommentForm').find('#newCommentBody').focus();
+                        }
+                    });
+                }
             }
         });
     };
@@ -436,7 +498,10 @@
     };
 
     $.fn.feedList.defaults = {
+        bindCommentEvents: true,
         comments: [],
+        defaultFilter: 'all items',
+        filterCategories: ['all items', 'comments', 'views'],
         mainView: null,
         pageSize: 20,
         replyPageLimit: 2,

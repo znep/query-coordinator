@@ -236,8 +236,8 @@ $(function()
                 { text: 'Download', className: 'downloads', targetPane: 'downloads',
                     subtext: 'Download in various formats', href: '#downloads',
                     iconColor: '#959595', onlyIf: !widgetNS.isNonTabular && menuOptions['downloads'] },
-                { text: 'Comments', className: 'comments', targetPane: 'comments',
-                    subtext: 'Read comments on this dataset', href: '#comments',
+                { text: 'Discuss', className: 'comments', targetPane: 'feed',
+                    subtext: 'Discuss this Dataset', href: '#comments',
                     iconColor: '#bed62b', onlyIf: menuOptions['comments'] && enabledModules['ALLOW_COMMENTS'] == true },
                 { text: 'Embed', className: 'embed', targetPane: 'embed',
                     subtext: 'Embed this player on your site', href: '#embed',
@@ -558,196 +558,40 @@ $(function()
             $.templates.downloadsTable.directive));
     $.templates.downloadsTable.postRender($('.widgetContent_downloads'));
 
-    // comments
-
-    // TODO: maybe refactor these into one?
-    var repliesDirective = {
-        '.@data-commentid': 'reply.id',
-
-        '.replyAuthor img@src':
-            function(reply) { return reply.item.user.profileImageUrlMedium ||
-                                       '/images/large-profile.png'; },
-        '.replyAuthor img@alt': 'reply.user.displayName!',
-        '.replyAuthor a@href':
-            function(reply) { return new User(reply.item.user).getProfileUrl(); },
-
-        '.replyContainer .replyBody .replyAuthorName': 'reply.user.displayName!',
-        '.replyContainer .replyBody .replyAuthorName@href':
-            function(reply) { return new User(reply.item.user).getProfileUrl(); },
-        '.replyContainer .replyBody .replyTitle': 'reply.title!',
-        '.replyContainer .replyBody+': 'reply.body!',
-
-        '.replyContainer .replyActions .timestamp':
-            function(reply) { return blist.util.humaneDate.getFromDate(new Date(reply.item.createdAt * 1000)); },
-        '.replyContainer .replyActions .positiveRatings':
-            function(reply) { return (reply.item.upRatings > 0) ? ('+' + reply.item.upRatings) : ''; },
-        '.replyContainer .replyActions .negativeRatings':
-            function(reply) { return (reply.item.downRatings > 0) ? ('-' + reply.item.downRatings) : ''; },
-        '.replyContainer .replyActions .rateUp@class+':
-            function(reply) { return (!_.isUndefined(reply.item.currentUserRating) &&
-                                       reply.item.currentUserRating.thumbUp === true) ? ' ratedUp' : ''; },
-        '.replyContainer .replyActions .rateDown@class+':
-            function(reply) { return (!_.isUndefined(reply.item.currentUserRating) &&
-                                       reply.item.currentUserRating.thumbUp === false) ? ' ratedDown' : ''; }
-    };
-    var commentsDirective = {
-        '.commentList': {
-            'comment<-': {
-                '.@data-commentid': 'comment.id',
-
-                '.commentAuthor img@src':
-                    function(comment) { return comment.item.user.profileImageUrlMedium ||
-                                               '/images/large-profile.png'; },
-                '.commentAuthor img@alt': 'comment.user.displayName!',
-                '.commentAuthor a@href':
-                    function(comment) { return new User(comment.item.user).getProfileUrl(); },
-
-                '.commentContainer .commentBody .commentAuthorName': 'comment.user.displayName!',
-                '.commentContainer .commentBody .commentAuthorName@href':
-                    function(comment) { return new User(comment.item.user).getProfileUrl(); },
-                '.commentContainer .commentBody .commentTitle': 'comment.title!',
-                '.commentContainer .commentBody+': 'comment.body!',
-
-                '.commentContainer .commentActions .timestamp':
-                    function(comment) { return blist.util.humaneDate.getFromDate(new Date(comment.item.createdAt * 1000)); },
-                '.commentContainer .commentActions .positiveRatings':
-                    function(comment) { return (comment.item.upRatings > 0) ? ('+' + comment.item.upRatings) : ''; },
-                '.commentContainer .commentActions .negativeRatings':
-                    function(comment) { return (comment.item.downRatings > 0) ? ('-' + comment.item.downRatings) : ''; },
-                '.commentContainer .commentActions .rateUp@class+':
-                    function(comment) { return (!_.isUndefined(comment.item.currentUserRating) &&
-                                               comment.item.currentUserRating.thumbUp === true) ? ' ratedUp' : ''; },
-               '.commentContainer .commentActions .rateDown@class+':
-                   function(comment) { return (!_.isUndefined(comment.item.currentUserRating) &&
-                                              comment.item.currentUserRating.thumbUp === false) ? ' ratedDown' : ''; },
-
-                '.commentContainer .replyViewAllLink':
-                    'View all #{comment.item.childCount} replies',
-                '.commentContainer .replyViewAllLink@class+':
-                    function(comment) { return (comment.item.childCount < 4) ? ' hide' : ''; },
-
-                '.commentContainer .replyWrapper .replyList': {
-                    'reply<-comment.children': repliesDirective
-                },
-
-                '.commentContainer .replyWrapper@class+':
-                    function(comment) { return (comment.item.childCount === 0) ? ' hide' : ''; }
-            }
-        }
-    };
-
-    var allComments = [];
-    var allCommentsCount = 0;
-    var shownCommentCount = 0;
-    var trimmedComments = [];
-
-    var showMoreComments = function()
+    // feed
+    blist.dataset.getComments(function(comments)
     {
-        $('.widgetContent_comments .commentsWrapper').append(
-            $.renderTemplate(
-                'comments',
-                trimmedComments.slice(shownCommentCount, shownCommentCount + 10),
-                commentsDirective));
-
-        shownCommentCount += 10;
-        if (shownCommentCount >= allCommentsCount)
-        {
-            $('.commentsViewMoreLink').hide();
-        }
-        else if ((allCommentsCount - shownCommentCount) == 1)
-        {
-            $('.commentsViewMoreLink').text('Show last comment');
-        }
-        else
-        {
-            $('.commentsViewMoreLink').text('Next ' +
-                Math.min(10, allCommentsCount - shownCommentCount) + ' comments');
-        }
-    };
-
-    blist.dataset.getComments(function (responseData)
-        {
-            allComments = _.reject(responseData, function(comment)
-            {
-                return $.isBlank(comment.title) && $.isBlank(comment.body);
-            });
-            allCommentsCount = allComments.length;
-
-            if (allCommentsCount === 0)
-            {
-                $('.widgetContent_comments .commentsWrapper').append(
-                    $.tag({ tagName: 'p', 'class': 'emptyDataText',
-                        contents: 'No one has posted any comments yet.' }));
-            }
-            else
-            {
-                trimmedComments = _.map(allComments, function(comment)
-                {
-                    var trimmedComment = $.extend({}, comment);
-                    if (!_.isUndefined(comment.children) && (comment.children.length > 3))
-                    {
-                        trimmedComment.children = comment.children.slice(0, 3);
-                    }
-                    trimmedComment.childCount = (_.isUndefined(comment.children) ? 0 : comment.children.length);
-                    return trimmedComment;
-                });
-
-                showMoreComments();                
-            }
+        $('.widgetContent_feed').append($.renderTemplate('feedList'));
+        $('.widgetContent_feed .feed').feedList({
+            bindCommentEvents: false,
+            comments: comments
         });
-    $('.commentsViewMoreLink').click(function(event)
-    {
-        event.preventDefault();
-        showMoreComments();
     });
-    $.live('.widgetContent_comments .replyViewAllLink', 'click', function(event)
-    {
-        event.preventDefault();
 
+    $.live('.feed .commentActions a, .feedNewCommentButton', 'click', function(event)
+    {
+        // display an appropriate interstitial for each action
+        var message = 'do that';
         var $this = $(this);
-        var $commentList = $this.closest('.commentList');
 
-        var commentId = parseInt($commentList.attr('data-commentid'));
-        var commentObj = _.detect(allComments, function(comment)
-        {
-            return comment.id === commentId;
-        });
+        if ($this.is('.commentInappropriateLink:not(.disabled)'))
+            message = 'report a comment';
+        else if ($this.is('.commentRateUpLink:not(.ratedUp), .commentRateDownLink:not(.ratedDown)'))
+            message = 'rate a comment';
+        else if ($this.is('.commentReplyLink'))
+            message = 'reply to a comment';
+        else if ($this.is('.feedNewCommentButton'))
+            message = 'add a comment';
 
-        $commentList.find('.replyWrapper').append(
-            $.renderTemplate(
-                'comments .replyWrapper', // TODO: This is kind of a hack. Rethink with rest of refactor.
-                commentObj.children.slice(3),
-                {
-                    '.replyList': {
-                        'reply<-': repliesDirective
-                    }
-                }));
-
-        $this.remove();
+        $('.actionInterstitial').jqmShow()
+            .find('.actionPhrase').text(message);
     });
-    $.live('.widgetContent_comments .commentActions a,' +
-           '.widgetContent_comments .replyActions a', 'click',
-        function (event)
-        {
-            event.preventDefault();
-            var message = 'do that';
-            var $listItem = $(this).closest('li');
-            if ($listItem.hasClass('actionReply'))
-                message = 'reply to this comment';
-            else if ($listItem.hasClass('actionInappropriate'))
-                message = 'flag this comment';
-            else if ($listItem.hasClass('rateUp') || $listItem.hasClass('rateDown'))
-                message = 'rate this comment';
-            $('.actionInterstitial').jqmShow()
-                .find('.actionPhrase').text(message);
-        });
-    $.live('.widgetContent_comments .addCommentButton', 'click',
-        function(event)
-        {
-            event.preventDefault();
-            $('.actionInterstitial').jqmShow()
-                .find('.actionPhrase').text('leave a comment');
-        });
+
+    $.live('a.feedActor', 'focus mouseover', function()
+    {
+        // pretend these are rel="external"
+        $(this).attr('target', '_blank');
+    });
 
     // embed
     $('.widgetContent_embed .embedForm').embedForm();

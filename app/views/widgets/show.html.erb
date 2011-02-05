@@ -116,13 +116,7 @@
 
     <div class="widgetContentSection widgetContent_views"></div>
     <div class="widgetContentSection widgetContent_downloads"></div>
-    <div class="widgetContentSection widgetContent_comments">
-      <div class="commentTopLevelActions clearfix">
-        <a href="#comment" class="button addCommentButton" title="Leave a comment">Comment</a>
-      </div>
-      <div class="commentsWrapper"></div>
-      <a href="#more" class="commentsViewMoreLink"></a>
-    </div>
+    <div class="widgetContentSection widgetContent_feed"></div>
     <div class="widgetContentSection widgetContent_embed">
       <%= render :partial => 'datasets/embed_form',
                  :locals => { :view => @view, :cur => params[:cur], :customization_id => @theme_id } %>
@@ -195,8 +189,8 @@
 <% content_for :templates do %>
   <%= render :partial => 'filters_table_template' %>
   <%= render :partial => 'datasets/downloads_table_template' %>
-  <%= render :partial => 'datasets/comments_template' %>
   <%= render :partial => 'datasets/fatrow_header_template' %>
+  <%= render :partial => 'datasets/feed_template', :locals => { :allow_comments => true } %>
 <% end %>
 
 <% content_for :js_footer do %>

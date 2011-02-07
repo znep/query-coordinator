@@ -111,6 +111,16 @@
                   menuButtonTitle: section.children[0].text,
                   contents: section.children
           });
+    },
+
+    equiWidth = function($container)
+    {
+        var $children = $container.find('> div');
+        $children
+            .filter(':not(:last-child)')
+            .width((100 / $children.length) + '%')
+                .end()
+            .last().addClass('last');
     };
 
     /*
@@ -142,13 +152,14 @@
 
         var $summaryDisplay = $screen.find('.summaryDisplay').append(
             $.renderTemplate('metricsSummaryItem', summarySections,
-                    opts.summaryDirective)
-        ).equiWidth();
+                    opts.summaryDirective));
+        equiWidth($summaryDisplay);
+
 
         var $detailDisplay = $screen.find('.detailDisplay').append(
             $.renderTemplate('metricsSummaryItem', detailSections,
-                  opts.summaryDirective)
-        ).equiWidth();
+                  opts.summaryDirective));
+        equiWidth($detailDisplay);
 
         // Load each of the charts and create their menus
         var chartDisplay =  $.renderTemplate('metricsCharts',

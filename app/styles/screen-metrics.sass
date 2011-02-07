@@ -152,51 +152,53 @@
       zoom: 1
 
     .summaryContainer
-      background-color: $light_bg_color
-      @include border-radius(0.3em)
-      border: 1px solid #dedede
-      display: none
       float: left
-      margin-left: 1%
-      &:first-child
-        margin-left: 0
-      padding: 0.5em 1%
+      display: none
+      &.last
+        float: none
+        overflow: hidden
 
-      .summaryTitle
-        font-size: 1.2em
-        padding-bottom: 0.5em
+      .summaryInnerContent
+        background-color: $light_bg_color
+        @include border-radius(0.3em)
+        border: 1px solid #dedede
+        margin: 0.5em
+        padding: 1em
 
-      .totalValue
-        cursor: default
-        font-size: 1.7em
-        font-weight: bold
-        line-height: 1.4em
-
-      .deltaBox
-        @include analytic-icons
-        @include border-radius(0.4em)
-        color: #fff
-        float: right
-        height: 13px
-        padding: 0.5em
-        &.plus
-          background-color: #05c25a
-          border-color: #05c25a
-        &.minus
-          background-color: #b01e2d
-          border-color: #b01e2d
-
-        .icon
-          float: left
-          margin-top: 2px
-
-        .deltaValue
-          cursor: default
+        .summaryTitle
           font-size: 1.2em
-          font-weight: bold
-          line-height: 1.2em
-          padding-left: 0.5em
+          padding-bottom: 0.5em
 
+        .totalValue
+          cursor: default
+          font-size: 1.7em
+          font-weight: bold
+          line-height: 1.4em
+
+        .deltaBox
+          @include analytic-icons
+          @include border-radius(0.4em)
+          color: #fff
+          float: right
+          height: 13px
+          padding: 0.5em
+          &.plus
+            background-color: #05c25a
+            border-color: #05c25a
+          &.minus
+            background-color: #b01e2d
+            border-color: #b01e2d
+
+          .icon
+            float: left
+            margin-top: 2px
+
+          .deltaValue
+            cursor: default
+            font-size: 1.2em
+            font-weight: bold
+            line-height: 1.2em
+            padding-left: 0.5em
 
   .flash.message
     clear: both

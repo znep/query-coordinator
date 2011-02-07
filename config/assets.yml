@@ -274,7 +274,6 @@ javascripts:
     - public/javascripts/plugins/jquery.tablesorter.js
     - public/javascripts/plugins/highcharts.src.js
     - public/javascripts/controls/charts/metric-charts.js
-    - public/javascripts/controls/equiwidth.js
     - public/javascripts/controls/menu.js
     - public/javascripts/controls/metrics-shared.js
     - public/javascripts/controls/metrics.js

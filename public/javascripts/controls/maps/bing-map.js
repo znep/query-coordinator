@@ -384,7 +384,7 @@
                 .css({ 'float': 'right', backgroundPosition: '0 34px'});
             $box.find("#bing_infoContent")
                 .css({ marginLeft: '0', marginRight: '17px' })
-                    .find('img').css({ float: 'right', cursor: 'pointer' })
+                    .find('img').css({ 'float': 'right', cursor: 'pointer' })
                     .click(function() { closeInfoWindow(); });
             x -= $box.width();
         }
@@ -394,7 +394,7 @@
                 .css({ 'float': 'left', backgroundPosition: '0 0'});
             $box.find("#bing_infoContent")
                 .css({ marginLeft: '16px', marginRight: '0' })
-                    .find('img').css({ float: 'right', cursor: 'pointer' })
+                    .find('img').css({ 'float': 'right', cursor: 'pointer' })
                     .click(function() { closeInfoWindow(); });
         }
 

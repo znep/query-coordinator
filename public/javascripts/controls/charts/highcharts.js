@@ -516,7 +516,7 @@
         else if (chartObj._chartType == 'bubble')
         {
             if (!point.states) { point.states = {}; }
-            if (chartObj._pointColor)
+            if (chartObj._pointColor && chartObj._segments[chartObj._pointColor.id])
             {
                 var pCol = chartObj._pointColor;
                 point.label.color = pCol.name;
@@ -532,7 +532,7 @@
                     }
                 }
             }
-            if (chartObj._pointSize)
+            if (chartObj._pointSize && chartObj._segments[chartObj._pointSize.id])
             {
                 var pCol = chartObj._pointSize;
                 point.label.size = pCol.name;

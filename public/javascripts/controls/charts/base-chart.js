@@ -176,12 +176,17 @@
             var difference = column.aggregates.maximum - column.aggregates.minimum;
             var granularity = difference / chartObj._numSegments;
 
-            chartObj._segments[column.id] = [];
-            for (i = 0; i < chartObj._numSegments; i++)
+            if (granularity > 0)
             {
-                chartObj._segments[column.id][i] =
-                    ((i+1)*granularity) + column.aggregates.minimum;
+                chartObj._segments[column.id] = [];
+                for (i = 0; i < chartObj._numSegments; i++)
+                {
+                    chartObj._segments[column.id][i] =
+                        ((i+1)*granularity) + column.aggregates.minimum;
+                }
             }
+            else
+            { chartObj._segments[column.id] = null; }
         });
     };
 

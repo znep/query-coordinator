@@ -479,7 +479,7 @@
                     }
                     if (icon) { details.icon = icon; }
                 }
-                if (mapObj._sizeValueCol)
+                if (mapObj._sizeValueCol && mapObj._segments[mapObj._sizeValueCol.id])
                 {
                     for (var i = 0; i < mapObj._numSegments; i++)
                     {
@@ -493,7 +493,7 @@
                     var rgb = $.hexToRgb(mapObj.settings.view.displayFormat.color);
                     details.color = [ rgb.r, rgb.g, rgb.b ];
                 }
-                if (mapObj._colorValueCol)
+                if (mapObj._colorValueCol && mapObj._segments[mapObj._colorValueCol.id])
                 {
                     for (var i = 0; i < mapObj._numSegments; i++)
                     {

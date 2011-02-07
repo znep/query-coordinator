@@ -10,7 +10,7 @@
       </p>
     <%- end -%>
     <p class="formHeader">This <span class="datasetTypeName">dataset</span> is
-      <%= @view.is_public? ? 'Public' : 'Private' %>
+      <span class='publicOrPrivate'><%= @view.is_public? ? 'Public' : 'Private' %></span>
       <span class='andSharedHint<%= ' hide' unless @view.is_shared? -%>'>
         and shared with the following <span class='friendsHint'></span>
       </span>

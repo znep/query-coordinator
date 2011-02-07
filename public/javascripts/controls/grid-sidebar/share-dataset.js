@@ -189,10 +189,13 @@
                                 { $formElem.find('.shareNoticeSent').fadeIn(); });
                         });
 
-
-                        $formElem.find('.datasetTypeName').text(displayName);
-                        $formElem.find('.datasetTypeNameUpcase')
-                            .text(displayName.capitalize());
+                        $formElem.find('.publicOrPrivate')
+                              .text(blist.dataset.isPublic() ? 'Public' : 'Private')
+                                  .end()
+                              .find('.datasetTypeName').text(displayName)
+                                  .end()
+                              .find('.datasetTypeNameUpcase')
+                                  .text(displayName.capitalize());
 
                         // When this pane gets refreshed, update to reflect who it's shared with
                         updateShareText($formElem);

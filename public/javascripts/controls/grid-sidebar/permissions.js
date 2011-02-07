@@ -17,6 +17,7 @@
                 $title.text(blist.dataset.isPublic() ? 'Public' : 'Private');
                 sidebar
                     .updateEnabledSubPanes();
+                sidebar.refresh('shareDataset');
                 $radio
                     .socrataAlert({
                         message: 'Your permissions have been saved', overlay: true

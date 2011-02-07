@@ -78,25 +78,28 @@ $(function()
     }
 
     var prevType;
-    blist.$container.bind('render_type_changed', function(e, newType)
+    if ($('#renderTypeOptions').length > 0)
     {
-        $('body').removeClass(prevType + '-renderType')
-            .addClass(newType + '-renderType');
-        prevType = newType;
-
-        $('#renderTypeOptions li a').removeClass('active');
-        var $pb = $('#renderTypeOptions li .' + newType);
-        if ($pb.length < 1)
+        blist.$container.bind('render_type_changed', function(e, newType)
         {
-            var $li = $('#renderTypeOptions li .template').parent().clone();
-            $pb = $li.find('a').removeClass('template hide').addClass(newType);
-            $pb.attr('title', $pb.attr('title').replace('template', newType));
-            $pb.attr('href', $.urlParam($pb.attr('href'),
-                'defaultRender', newType));
-            $('#renderTypeOptions').prepend($li);
-        }
-        $pb.addClass('active').removeClass('hide');
-    });
+            $('body').removeClass(prevType + '-renderType')
+                .addClass(newType + '-renderType');
+            prevType = newType;
+
+            $('#renderTypeOptions li a').removeClass('active');
+            var $pb = $('#renderTypeOptions li .' + newType);
+            if ($pb.length < 1)
+            {
+                var $li = $('#renderTypeOptions li .template').parent().clone();
+                $pb = $li.find('a').removeClass('template hide').addClass(newType);
+                $pb.attr('title', $pb.attr('title').replace('template', newType));
+                $pb.attr('href', $.urlParam($pb.attr('href'),
+                    'defaultRender', newType));
+                $('#renderTypeOptions').prepend($li);
+            }
+            $pb.addClass('active').removeClass('hide');
+        });
+    }
 
     // Initialize all data rendering
     var defRen = $.urlParam(window.location.href, 'defaultRender');

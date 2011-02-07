@@ -26,7 +26,8 @@
       <div class="bespin" data-bespinoptions='{"stealFocus":true, "syntax":"<%= is_json ? 'js' : 'html' %>"}'
         style="height: 60em"><%= raw(@property) if (@property && !is_json) %></div>
       <%= text_area_tag 'properties[' + @property_key + ']', '', :style => 'display: none' %>
-      <input type="submit" value="Save"/>
+      <input type="submit" value="Save" id="saveButton"/>
+      <div class="flash notice hide saveMessage">Configuration Saved</div>
     <%- end -%>
   </div>
 </div>
@@ -43,14 +44,34 @@
         <%= raw( "JSON.stringify(#{@property.to_json}, null, 4)") %>
       );
       <%- end -%>
-      $('form').submit(function(event)
+      var $form = $('form');
+      var updateJsonVal = function()
       {
-        var bespinVal = $('.bespin').get(0).bespin.editor.value;
+          var bespinVal = $('.bespin').get(0).bespin.editor.value;
 
-        if (!$.isBlank($.trim(bespinVal)) || confirm('Do you want to clear this field?'))
-        {
-          $(this).find('textarea').val(isJson ? bespinVal : JSON.stringify(bespinVal));
-        }
+          if (!$.isBlank($.trim(bespinVal)) || confirm('Do you want to clear this field?'))
+          {
+              $form.find('textarea').val(isJson ? bespinVal : JSON.stringify(bespinVal));
+          }
+      };
+
+      $('#saveButton').click(function(event)
+      {
+          updateJsonVal();
+          event.preventDefault();
+          $.ajax({
+              type: 'POST',
+              url: $form.attr('action'),
+              data: $form.serialize(),
+              success: function() {
+                  $('.saveMessage').removeClass('hide');
+              }
+          })
+      });
+
+      $form.submit(function(event)
+      {
+          updateJsonVal();
       });
   });
   </script>

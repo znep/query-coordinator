@@ -23,6 +23,9 @@
                 var mapObj = this;
                 mapObj.$dom().addClass('tundra');
 
+                if (mapObj.settings.view.renderWithArcGISServer())
+                { mapObj._maxRows = 0; }
+
                 dojo.require("esri.arcgis.utils");
                 dojo.require("esri.layers.FeatureLayer");
                 dojo.require("esri.map");
@@ -112,6 +115,9 @@
                             mapObj.map.addLayer(this);
                             if (layersLoaded >= layers.length)
                             {
+                                if (mapObj.settings.view.renderWithArcGISServer())
+                                { mapObj._attachMapServer(); }
+
                                 mapObj.populateLayers();
                                 if (mapObj.settings.view.snapshotting)
                                 {

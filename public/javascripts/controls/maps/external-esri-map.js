@@ -6,107 +6,162 @@
     // This entire file's purpose has been deprecated since we have GeometryType
     $.extend($.socrataMap.mixin.arcGISmap.prototype,
     {
-        handleRowsLoaded: function(rows)
+        _attachMapServer: function()
         {
             var mapObj = this;
-            mapObj._dataLoaded = true;
 
-            // Heatmaps require a location column to work; this acts as a stand-in.
-            // mapObj._locCol should default to a GeometryType column when said column
-            // type is implemented. In which case most of this file will disappear.
-            if (!mapObj._locCol)
-            { createFakeLocationColumn(mapObj); }
+            var tmp = mapObj.settings.view.metadata
+                .custom_fields.Basic.Source.split('/');
+            var layer_id = tmp.pop();
+            var url = tmp.join('/');
 
-            if (mapObj._rows === undefined) { mapObj._rows = []; }
-            mapObj._rows = mapObj._rows.concat(rows);
-            if (mapObj.settings.view.totalRows > mapObj._maxRows)
+            mapObj.mapServer = new esri.layers.
+                ArcGISDynamicMapServiceLayer(url + '?srs=EPSG:102100');
+            dojo.connect(mapObj.mapServer, 'onLoad', function()
+            { completeInitialization(mapObj, this, layer_id); });
+
+            if (mapObj.$dom().siblings('#mapLayers').length > 0)
             {
-                mapObj.showError('This dataset has more than ' + mapObj._maxRows +
-                           ' rows visible. Some points will be not be displayed.');
-                mapObj._maxRowsExceeded = true;
+                mapObj.$dom().parent().find('.toggleLayers, .contentBlock h3')
+                    .text('Data Layers');
             }
-
-            var objectIDs = _.map(rows, function(row)
-            { return row.objectID = parseInt(row[mapObj._objectIdCol.id]); });
-
-            var query = new esri.tasks.Query();
-            query.objectIds = objectIDs;
-            query.returnGeometry = true;
-            query.outFields = ['*'];
-            query.outSpatialReference = new esri.SpatialReference({ wkid: 4326 });
-
-            new esri.tasks.QueryTask(blist.dataset.metadata.custom_fields.Basic.Source)
-                .execute(query, function(featureSet)
-            {
-                populateRowsWithFeatureSet(mapObj, rows, featureSet);
-                mapObj.renderData(rows);
-            });
         },
 
-        renderNonPoint: function(row, details)
+        populateDataLayers: function()
         {
             var mapObj = this;
-            var size = details.size || 2;
-            var color = details.color || [ 0, 0, 255 ];
+            var layers = mapObj.mapServer.layerInfos;
+            if (layers.length < 2) { return; }
 
-            if (!mapObj._infoTemplate)
-            { mapObj._infoTemplate = new esri.InfoTemplate("${title}", "${body}"); }
+            var $layers = mapObj.$dom().siblings('#mapLayers');
+            var $layersList = $layers.find('ul');
+            $layersList.empty();
 
-            if (mapObj.map.spatialReference.wkid == 102100
-                && row.feature.geometry.spatialReference.wkid == 4326)
-            { row.feature.geometry = esri.geometry.geographicToWebMercator(
-                                        row.feature.geometry); }
-
-            row.feature.attributes.title = details.title;
-            row.feature.attributes.body  = details.info;
-
-            var symbol;
-            if (row.feature.geometry instanceof esri.geometry.Polygon)
+            var isVisible = function(layerId)
+            { return _.include(mapObj.mapServer.visibleLayers, layerId.toString()); };
+            _.each(layers, function(l)
             {
-                symbol = new esri.symbol.SimpleFillSymbol();
-                symbol.setOutline(new esri.symbol.SimpleLineSymbol().setWidth(size));
-            }
-            else if (row.feature.geometry instanceof esri.geometry.Polyline)
+                var lId = 'mapLayer_' + l.id;
+                $layersList.append('<li data-layerid="' + l.id + '"' +
+                    '><input type="checkbox" id="' + lId +
+                    '"' + (isVisible(l.id) ? ' checked="checked"' : '') +
+                    ' /><label for="' + lId + '">' + l.name + '</label><br />' +
+                    '</li>');
+            });
+
+            $layers.find(':checkbox').click(function(e)
             {
-                symbol = new esri.symbol.SimpleLineSymbol();
-                symbol.setWidth(size);
-            }
+                var $check = $(e.currentTarget);
+                var id = $check.attr('id').replace(/^mapLayer_/, '');
+                if ($check.value())
+                { mapObj.mapServer.setVisibleLayers(
+                    mapObj.mapServer.visibleLayers.concat(id)); }
+                else
+                { mapObj.mapServer.setVisibleLayers(
+                    _.without(mapObj.mapServer.visibleLayers, id)); }
+            });
 
-            symbol.setColor(new dojo.Color(color));
-
-            mapObj.map.graphics.add(row.feature.setSymbol(symbol)
-                                               .setInfoTemplate(mapObj._infoTemplate));
-
-            if (!mapObj._bounds)
-            { mapObj._bounds = row.feature.geometry.getExtent(); }
-            else
-            { mapObj._bounds = mapObj._bounds.union(row.feature.geometry.getExtent()); }
-
-            return true;
+            $layers.removeClass('hide');
         }
+
     });
 
-    var populateRowsWithFeatureSet = function(mapObj, rows, featureSet)
+    var completeInitialization = function(mapObj, layer, layer_id)
     {
-        _.each(featureSet.features, function(feature)
-        {
-            var row = _.detect(rows, function(row)
-            { return row.objectID == feature.attributes[mapObj._objectIdKey]; });
-            row.feature = feature;
+        layer.setVisibleLayers([layer_id]);
+        mapObj.map.addLayer(layer);
+    
+        mapObj.mapServer.featureLayers = _.map(mapObj.mapServer.layerInfos,
+            function(layerInfo)
+            { return new esri.layers.FeatureLayer(
+                mapObj.mapServer._url.path + '/' + layerInfo.id); });
 
-            var point;
-            if (feature.geometry instanceof esri.geometry.Point)
-            { point = feature.geometry; }
-            else
-            { point = feature.geometry.getExtent().getCenter(); }
+        var encodeExtentToPoints = function(extent)
+        { return [
+            new esri.geometry.Point(extent.xmin, extent.ymin, extent.spatialReference),
+            new esri.geometry.Point(extent.xmax, extent.ymax, extent.spatialReference)
+            ];
+        };
+        var decodeExtentFromPoints = function(points)
+        { return new esri.geometry.Extent(points[0].x, points[0].y,
+                                          points[1].x, points[1].y,
+                                          points[0].spatialReference);
+        };
+        new esri.tasks.GeometryService('http://sampleserver1.arcgisonline.com/' +
+            'ArcGIS/rest/services/Geometry/GeometryServer')
+            .project(encodeExtentToPoints(mapObj.mapServer.initialExtent),
+                     mapObj.map.spatialReference,
+                     function(points)
+                     { mapObj.map.setExtent(decodeExtentFromPoints(points)); }
+            );
 
-            row[mapObj._locCol.id] = { latitude: point.y, longitude: point.x };
-        });
+        mapObj.populateDataLayers();
+
+        mapObj._identifyConfig = {
+            url: mapObj.mapServer._url.path,
+            attributes: []
+        };
+
+        var featureLayersLoaded = 0;
+        _.each(mapObj.mapServer.featureLayers, function(featureLayer, index)
+            {
+                dojo.connect(featureLayer, 'onLoad', function()
+                {
+                    mapObj._identifyConfig.attributes[index] = _.map(
+                        featureLayer.fields, function(field)
+                        { return {key:field.name, text:field.alias}; });
+                    featureLayersLoaded++;
+
+                    if (featureLayersLoaded >= mapObj.mapServer.featureLayers.length)
+                    {
+                        dojo.connect(mapObj.map, 'onClick', function(evt)
+                            { identifyFeature(mapObj, evt) });
+                    }
+                });
+            });
+
+        mapObj._identifyParameters = new esri.tasks.IdentifyParameters();
+        mapObj._identifyParameters.tolerance = 3;
+        mapObj._identifyParameters.returnGeometry = false;
+        mapObj._identifyParameters.layerOption =
+            esri.tasks.IdentifyParameters.LAYER_OPTION_ALL;
+        mapObj._identifyParameters.width  = mapObj.map.width;
+        mapObj._identifyParameters.height = mapObj.map.height;
     };
 
-    var createFakeLocationColumn = function(mapObj)
+    var identifyFeature = function(mapObj, evt)
     {
-        mapObj._locCol = { id: 'fake_location', renderTypeName: 'location' };
+        if (!mapObj._identifyParameters) { return; }
+        mapObj._identifyParameters.geometry = evt.mapPoint;
+        mapObj._identifyParameters.mapExtent = mapObj.map.extent;
+        mapObj._identifyParameters.layerIds = mapObj.mapServer.visibleLayers;
+
+        mapObj.map.infoWindow.setContent("Loading...").setTitle('')
+            .show(evt.screenPoint, mapObj.map.getInfoWindowAnchor(evt.screenPoint));
+
+        new esri.tasks.IdentifyTask(mapObj._identifyConfig.url)
+            .execute(mapObj._identifyParameters,
+            function(idResults) { displayIdResult(mapObj, evt, idResults[0]); });
+    };
+
+    // Multiple results may have returned, but we only view the first one.
+    var displayIdResult = function(mapObj, evt, idResult)
+    {
+        if (!idResult)
+        {
+            mapObj.map.infoWindow.hide();
+            return;
+        }
+
+        var feature = idResult.feature;
+        var info = _.map(mapObj._identifyConfig.attributes[idResult.layerId],
+            function(attribute)
+            { return attribute.text + ': ' +
+                feature.attributes[attribute.key]; }).join('<br />');
+
+        mapObj.map.infoWindow.setContent(info)
+            .setTitle(feature.attributes[idResult.displayFieldName])
+            .show(evt.screenPoint, mapObj.map.getInfoWindowAnchor(evt.screenPoint));
     };
 
 })(jQuery);

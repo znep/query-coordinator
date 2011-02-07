@@ -29,7 +29,7 @@
                 mapService = 'esri';
                 plotStyle  = 'heatmap';
             }
-            if (blist.dataset.isArcGISDataset())
+            if (options.view.isArcGISDataset())
             { mapService = 'esri'; }
 
             var mapClass = $.socrataMap[mapService];
@@ -37,6 +37,8 @@
             {
                 if (plotStyle && $.socrataMap.mixin[plotStyle])
                 { mapClass = $.mixin(mapClass, $.socrataMap.mixin[plotStyle]); }
+                if (options.view.renderWithArcGISServer())
+                { mapClass = $.mixin(mapClass, $.socrataMap.mixin.arcGISmap); }
                 socrataMap = new mapClass(options, this[0]);
             }
         }

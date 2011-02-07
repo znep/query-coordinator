@@ -163,6 +163,12 @@ this.Dataset = Model.extend({
         return false;
     },
 
+    renderWithArcGISServer: function()
+    {
+        return this.isArcGISDataset()
+               && window.location.href.match('serverRender=true');
+    },
+
     invalidMessage: function()
     {
         return this.message || 'Columns required for this view are missing';

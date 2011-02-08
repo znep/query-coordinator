@@ -70,17 +70,28 @@
       bottom: 0.5em
       left: 23em
     padding: 1.5em
+
     h3
       color: #999999
       display: inline
-    .button
-      @include sprite-menu-icons
+      float: left
+
+    .buttonContainer
       float: right
-      margin: 0
-        top: -0.4em
-      .icon
-        float: right
-        margin-left: 0.3em
+      .button
+        @include sprite-menu-icons
+        margin: 0
+          top: -0.4em
+        .icon
+          display: inline-block
+          margin-left: 0.3em
+          position: relative
+          top: 0.2em
+
+          .ie7 &
+            display: inline
+            top: -0.2em
+            zoom: 1
 
   .browseList
     background-color: #ffffff

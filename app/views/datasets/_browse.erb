@@ -90,11 +90,13 @@
   <%- end -%>
 
   <%- if ((CurrentDomain.user_can?(current_user, :create_datasets) || CurrentDomain.module_enabled?(:community_creation))) -%>
-  <div class='createDatasetBox infoBox'>
+  <div class='createDatasetBox infoBox clearfix'>
     <h3>Create or upload your own dataset</h3>
-    <a class='button next' href='/datasets/new' title='Create a new dataset'>
-      <span class='icon'></span><%= @browse_in_container ? 'Create a new Dataset' : 'Create' %>
-    </a>
+    <div class="buttonContainer">
+      <a class='button next' href='/datasets/new' title='Create a new dataset'>
+        <%= @browse_in_container ? 'Create a new Dataset' : 'Create' %><span class='icon'></span>
+      </a>
+    </div>
   </div>
   <%- end -%>
 
@@ -225,9 +227,11 @@
 
   <%- if !@browse_in_container &&
           CurrentDomain.module_enabled?(:dataset_nomination) -%>
-  <div class='suggestBox infoBox'>
+  <div class='suggestBox infoBox clearfix'>
     <h3>Didn't find what you're looking for? Suggest a dataset</h3>
-    <a class='button next' href='/nominate'><span class='icon'></span>Suggest</a>
+    <div class="buttonContainer">
+      <a class='button next' href='/nominate'>Suggest<span class='icon'></span></a>
+    </div>
   </div>
   <%- end -%>
 </div>

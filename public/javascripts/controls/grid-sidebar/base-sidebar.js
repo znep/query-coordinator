@@ -1530,7 +1530,7 @@
         {
             var cId = isTableColumn ? c.tableColumnId : c.id;
             options.push({tagName: 'option', value: cId,
-                selected: curVal == cId || cols.length == 1,
+                selected: curVal == cId || (cols.length == 1 && !columnsObj.noDefault),
                 contents: $.htmlEscape(c.name)});
         });
 

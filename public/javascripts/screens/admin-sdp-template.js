@@ -345,7 +345,7 @@ _.each([
         fields: [
         {   text: 'More Views', name: 'menu.options.more_views',
             type: 'checkbox' },
-        {   text: 'Comments', name: 'menu.options.comments',
+        {   text: 'Discuss', name: 'menu.options.comments',
             type: 'checkbox' },
         {   text: 'Downloads', name: 'menu.options.downloads',
             type: 'checkbox' },

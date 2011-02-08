@@ -274,7 +274,8 @@
                         name: 'format.precision'}]},
                     {text: 'Display', type: 'select',
                     name: 'format.precisionStyle', prompt: null,
-                    options: precisionStyle}
+                    options: precisionStyle},
+                    {text: 'No Commas', type: 'checkbox', name: 'format.noCommas'}
                 ]
             },
 

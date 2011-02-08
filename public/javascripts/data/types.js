@@ -180,7 +180,7 @@ blist.namespace.fetch('blist.data.types');
     };
 
     var numberHelper = function(value, decimalPlaces, precisionStyle,
-        prefix, suffix, humane)
+        prefix, suffix, humane, noCommas)
     {
         if (value == null) { return ''; }
 
@@ -207,7 +207,7 @@ blist.namespace.fetch('blist.data.types');
         // HACK HACK HACK
         // Temporary HACK: Don't put commas if a number is less than 10,000.
         // This should help with the display of dates
-        else if (value > 9999)
+        else if (value > 9999 && !noCommas)
         {
             value = value + '';
             var pos = value.indexOf('.');
@@ -231,13 +231,15 @@ blist.namespace.fetch('blist.data.types');
     var renderGenNumber = function(value, plain, column) {
         return "numberHelper(" + value + ", " +
             (column.format || {}).precision + ", '" +
-            (column.format || {}).precisionStyle + "')";
+            (column.format || {}).precisionStyle + "', null, null, false, " +
+            column.format.noCommas + ")";
     };
 
     var renderNumber = function(value, column)
     {
         return numberHelper(value, column.format.precision,
-            column.format.precisionStyle);
+            column.format.precisionStyle, null, null, false,
+            column.format.noCommas);
     };
 
     var renderPercentBar = function(value)
@@ -255,7 +257,7 @@ blist.namespace.fetch('blist.data.types');
             value + "%'></span>";
     };
 
-    var percentHelper = function(value, view, precision, precisionStyle)
+    var percentHelper = function(value, view, precision, precisionStyle, noCommas)
     {
         var renderText;
         var renderBar;
@@ -281,7 +283,8 @@ blist.namespace.fetch('blist.data.types');
         if (renderText)
         {
             rv += '<span class="blist-cell blist-percent-num">' +
-                numberHelper(value, precision, precisionStyle, null, '%') +
+                numberHelper(value, precision, precisionStyle, null, '%', false,
+                    noCommas) +
                 '</span>';
         }
         rv += '</span>';
@@ -293,23 +296,25 @@ blist.namespace.fetch('blist.data.types');
         if (plain)
         {
             return "numberHelper(" + value + ", " + column.format.precision +
-                ", '" + column.format.precisionStyle + "', null, '%')";
+                ", '" + column.format.precisionStyle + "', null, '%', false, " +
+                column.format.noCommas + ")";
         }
         return "percentHelper(" + value + ", '" + column.format.view + "', " +
             column.format.precision + ", '" +
-            column.format.precisionStyle + "')";
+            column.format.precisionStyle + "', " + column.format.noCommas + ")";
     };
 
     var renderPercent = function(value, column)
     {
         return percentHelper(value, column.format.view, column.format.precision,
-            column.format.precisionStyle);
+            column.format.precisionStyle, column.format.noCommas);
     };
 
     var renderFilterPercent = function(value, column)
     {
         return numberHelper(value, column.format.precision,
-            column.format.precisionStyle, null, '%');
+            column.format.precisionStyle, null, '%', false,
+            column.format.noCommas);
     };
 
     var renderGenMoney = function(value, plain, column) {

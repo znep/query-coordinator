@@ -246,8 +246,8 @@
 
             if (config.overlay)
             {
-                config.positions = 'left';
                 config.overlap = $socrataAlert.width() / 2;
+                config.positions = ['left', 'right'];
                 config.showSpike = false;
                 delete config.overlay;
             }

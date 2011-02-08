@@ -48,7 +48,7 @@ class View < Model
 
   def module_enabled?(name)
     return false if self.disabledFeatureFlags && self.disabledFeatureFlags.member?(name.to_s)
-    return CurrentDomain.module_enabled?(name.to_sym)
+    return CurrentDomain.module_enabled?(name.to_s.downcase.to_sym)
   end
 
   def enabled_modules
@@ -61,7 +61,7 @@ class View < Model
 
   def disabled_features
     features = @@overridable_features.select do |flag|
-      CurrentDomain.module_enabled?(flag[:key].to_sym)
+      CurrentDomain.module_enabled?(flag[:key].to_s.downcase.to_sym)
     end
     unless self.disabledFeatureFlags.blank?
       self.disabledFeatureFlags.each do |flag|

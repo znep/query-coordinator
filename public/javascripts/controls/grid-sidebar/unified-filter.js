@@ -48,6 +48,7 @@
         GREATER_THAN_OR_EQUALS: 'is greater than or equal to',
         STARTS_WITH: 'starts with',
         CONTAINS: 'contains',
+        NOT_CONTAINS: 'does not contain',
         BETWEEN: 'is between',
         'blank?': 'is'
     };

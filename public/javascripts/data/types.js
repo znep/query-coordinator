@@ -923,6 +923,7 @@ blist.namespace.fetch('blist.data.types');
                       { value: "NOT_EQUALS", text: "does not equal" },
                       { value: "STARTS_WITH", text: "starts with" },
                       { value: "CONTAINS", text: "contains" },
+                      { value: "NOT_CONTAINS", text: "does not contain" },
                       { value: "IS_NOT_BLANK", text: "is not blank" },
                       { value: "IS_BLANK", text: "is blank" }
                     ],

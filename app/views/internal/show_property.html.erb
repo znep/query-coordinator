@@ -24,8 +24,8 @@
       '/domains/' + @domain.cname + '/site_config/' + @config.id.to_s +
       '/property', {:class => 'wide'}) do %>
       <div class="bespin" data-bespinoptions='{"stealFocus":true, "syntax":"<%= is_json ? 'js' : 'html' %>"}'
-        style="height: 60em"><%= raw(@property) if (@property && !is_json) %></div>
-      <%= text_area_tag 'properties[' + @property_key + ']', '', :style => 'display: none' %>
+        style="height: 60em"></div>
+      <%= text_area_tag 'properties[' + @property_key + ']', raw(@property), :style => 'display: none', :id => 'preText' %>
       <input type="submit" value="Save" id="saveButton"/>
       <div class="flash notice hide saveMessage">Configuration Saved</div>
     <%- end -%>
@@ -39,11 +39,16 @@
   var isJson = <%= is_json == true %>;
   $(function()
   {
-      <%- if (is_json && @property)-%>
-      $('div.bespin').text(
-        <%= raw( "JSON.stringify(#{@property.to_json}, null, 4)") %>
-      );
-      <%- end -%>
+      $('div.bespin')
+        <%- if (is_json && @property)-%>
+          .text(
+            <%= raw( "JSON.stringify(#{@property.to_json}, null, 4)") %>
+          )
+        <%- else -%>
+          .get(0).innerHTML =
+            $('#preText').val()
+        <%- end -%>
+      ;
       var $form = $('form');
       var updateJsonVal = function()
       {

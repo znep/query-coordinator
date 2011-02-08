@@ -9,7 +9,7 @@
       <div class="line inputFirst">
         <div class="inputWrapper">
           <input type="radio" id="public" name="dataset-public"
-                <%= 'checked="checked"' if @view.is_public? %>
+                <%= raw('checked="checked"') if @view.is_public? %>
                  class="toggleDatasetPermissions" value="makePublic"/>
         </div>
         <label for="public">Public</label>
@@ -17,7 +17,7 @@
       <div class="line inputFirst">
         <div class="inputWrapper">
           <input type="radio" id="private" name="dataset-public"
-                 <%= 'checked="checked"' unless @view.is_public? %>
+                 <%= raw('checked="checked"') unless @view.is_public? %>
                  class="toggleDatasetPermissions" value="makePrivate" />
         </div>
         <label for="private">Private</label>
@@ -36,7 +36,7 @@
             <span class="inputWrapper">
               <span>
                 <input type="checkbox"
-                  <%= feature[:disabled].present? ? '' :'checked="checked"' %>
+                  <%= feature[:disabled].present? ? '' : raw('checked="checked"') %>
                   name="<%= feature[:key] %>"
                   id="<%= feature[:key] %>"
                   value="<%= feature[:key] %>">

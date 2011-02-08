@@ -356,14 +356,7 @@
         {
             mapObj.$dom().after('<div id="bing_infoWindow">' +
                 '<div id="bing_infoBeak"> </div><div id="bing_infoContent"</div>');
-            $box = mapObj.$dom().siblings('#bing_infoWindow')
-                .css({  zIndex: '1000', position: 'absolute' });
-            $box.find('#bing_infoBeak').css({
-                background:"url('/images/bing-beaks.gif')",
-                width: '18px', height: '35px', marginTop: '3px', 'float': 'left' });
-            $box.find('#bing_infoContent')
-                .css({ backgroundColor: 'white', padding: '10px',
-                border: 'solid 1px #888888', marginLeft: '16px' });
+            $box = mapObj.$dom().siblings('#bing_infoWindow');
         }
 
         $box.show().find("#bing_infoContent").html(shape.infoContent)
@@ -380,23 +373,15 @@
 
         if (x + $box.width() > blist.$container.width())
         {
-            $box.find("#bing_infoBeak")
-                .css({ 'float': 'right', backgroundPosition: '0 34px'});
-            $box.find("#bing_infoContent")
-                .css({ marginLeft: '0', marginRight: '17px' })
-                    .find('img').css({ 'float': 'right', cursor: 'pointer' })
-                    .click(function() { closeInfoWindow(); });
+            $box.addClass('right');
             x -= $box.width();
         }
         else
         {
-            $box.find("#bing_infoBeak")
-                .css({ 'float': 'left', backgroundPosition: '0 0'});
-            $box.find("#bing_infoContent")
-                .css({ marginLeft: '16px', marginRight: '0' })
-                    .find('img').css({ 'float': 'right', cursor: 'pointer' })
-                    .click(function() { closeInfoWindow(); });
+            $box.removeClass('right');
         }
+
+        $box.find('#bing_infoContent img').click(function() { closeInfoWindow(); });
 
         $box.css({ left: x, top: y });
 

@@ -105,3 +105,34 @@
 .pageRenderType
   #mapLegend, #mapLayers
     display: none
+
+#bing_infoWindow
+  z-index: 1000
+  position: absolute
+
+  #bing_infoBeak
+    background: url('/images/bing-beaks.gif')
+    width: 18px
+    height: 35px
+    margin-top: 3px
+    float: left
+
+  #bing_infoContent
+    background-color: white
+    padding: 10px
+    border: solid 1px #888888
+    margin-left: 16px
+
+    img
+      float: right
+      cursor: pointer
+
+#bing_infoWindow.right
+
+  #bing_infoBeak
+    float: right
+    background-position: 0 34px
+
+  #bing_infoContent
+    margin-left: 0
+    margin-right: 17px

@@ -107,8 +107,6 @@ javascripts:
     - public/javascripts/plugins/jquery.tablesorter.js
     - public/javascripts/controls/combination-list.js
     - public/javascripts/screens/admin-users-screen.js
-  admin-federations:
-    - public/javascripts/screens/admin-federations-screen.js
   admin-home:
     - public/javascripts/controls/modal-dialogs.js
     - public/javascripts/controls/admin-buttons.js

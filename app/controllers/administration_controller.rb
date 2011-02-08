@@ -313,29 +313,16 @@ class AdministrationController < ApplicationController
       data.targetDomainId = target_domain.id
       DataFederation.create(data)
     rescue CoreServer::ResourceNotFound => e
-      return respond_to do |format|
-        format.data { render :json => {'error' => 'Target domain is invalid'}.to_json }
-        format.html do
-          flash[:error] = "Could not create data federation: target domain is invalid"
-          redirect_to :action => :federations
-        end
-      end
+      flash[:error] = "Could not create data federation: target domain is invalid"
+      return(redirect_to :action => :federations)
     rescue CoreServer::CoreServerError => e
-      return respond_to do |format|
-        format.data { render :json => {'error' => e.error_message}.to_json }
-        format.html do
-          flash[:error] = e.error_message
-          redirect_to :action => :federations
-        end
-      end
+      flash[:error] = e.error_message
+      return(redirect_to :action => :federations)
     end
 
     respond_to do |format|
-      format.data { render :json => data.to_json() }
-      format.html do
-        flash[:notice] = "Federation successfully created"
-        redirect_to :action => :federations
-      end
+      flash[:notice] = "Federation successfully created"
+      return(redirect_to :action => :federations)
     end
   end
 

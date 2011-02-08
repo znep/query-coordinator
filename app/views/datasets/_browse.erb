@@ -3,7 +3,7 @@
 <%- cur_sort = @sort_opts.detect {|s| s[:value] == @opts[:sortBy]} -%>
 <%- show_time_period = cur_sort.nil? ? false : cur_sort[:is_time_period] -%>
 
-<div class='browseSection clearfix <%= @facets.length < 1 ? 'noFacets' : '' %>
+<div class='browseSection <%= @facets.length < 1 ? 'noFacets' : '' %>
   <%= @browse_in_container ? 'inContainer' : '' %>'>
   <%- if @facets.length > 0 -%>
   <div class='browseFacets <%= show_time_period ? 'hasTimePeriod' : '' %>'>
@@ -90,7 +90,7 @@
   <%- end -%>
 
   <%- if ((CurrentDomain.user_can?(current_user, :create_datasets) || CurrentDomain.module_enabled?(:community_creation))) -%>
-  <div class='createDatasetBox infoBox clearfix'>
+  <div class='createDatasetBox infoBox'>
     <h3>Create or upload your own dataset</h3>
     <div class="buttonContainer">
       <a class='button next' href='/datasets/new' title='Create a new dataset'>
@@ -227,13 +227,15 @@
 
   <%- if !@browse_in_container &&
           CurrentDomain.module_enabled?(:dataset_nomination) -%>
-  <div class='suggestBox infoBox clearfix'>
+  <div class='suggestBox infoBox'>
     <h3>Didn't find what you're looking for? Suggest a dataset</h3>
     <div class="buttonContainer">
       <a class='button next' href='/nominate'>Suggest<span class='icon'></span></a>
     </div>
   </div>
   <%- end -%>
+
+  <div class="clearBoth"></div>
 </div>
 
 <script type='text/javascript'>

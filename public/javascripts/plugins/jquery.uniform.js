@@ -167,8 +167,7 @@ Enjoy!
 
         function doCheckbox(elem){
 
-            var divTag = $('<div />'),
-                spanTag = $('<span />');
+            var divTag = $('<div><span /></div>');
 
             divTag.addClass(options.checkboxClass).addClass(options.globalClass);
 
@@ -179,10 +178,9 @@ Enjoy!
 
             //wrap with the proper elements
             $(elem).wrap(divTag);
-            $(elem).wrap(spanTag);
 
             //redefine variables
-            spanTag = elem.parent();
+            var spanTag = elem.parent();
             divTag = spanTag.parent();
 
             //hide normal input and add focus classes
@@ -239,8 +237,7 @@ Enjoy!
 
         function doRadio(elem){
 
-            var divTag = $('<div />'),
-                spanTag = $('<span />');
+            var divTag = $('<div><span /></div>');
 
             divTag.addClass(options.radioClass).addClass(options.globalClass);
 
@@ -250,10 +247,9 @@ Enjoy!
 
             //wrap with the proper elements
             $(elem).wrap(divTag);
-            $(elem).wrap(spanTag);
 
             //redefine variables
-            spanTag = elem.parent();
+            var spanTag = elem.parent();
             divTag = spanTag.parent();
 
             //hide normal input and add focus classes
@@ -434,7 +430,7 @@ Enjoy!
             //do to each item in the selector
             //function to reset all classes
             var $e = $(this);
-            if ($e.closest('body').length < 1) { return; }
+            if ($e.parents('body').length < 1) { return; }
 
             var spanTag;
             var divTag;

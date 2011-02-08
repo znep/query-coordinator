@@ -1,5 +1,7 @@
 (function($)
 {
+    var uniformEnabled = true;
+
     $.validator.addMethod('data-notEqualTo', function(value, element, param)
     {
         if (this.optional(element)) { return true; }
@@ -754,8 +756,9 @@
 
                 if (!config.isParent)
                 {
-                    showWizard(sidebarObj, sidebarObj.$currentPane()
-                        .find('.hasWizard:visible:first'));
+                    // Wizards are disabled
+//                    showWizard(sidebarObj, sidebarObj.$currentPane()
+//                        .find('.hasWizard:visible:first'));
 
                     if ($.device.ipad)
                     {
@@ -1191,89 +1194,15 @@
                 this.$dom().removeClass('processing');
             },
 
-            resetForm: function($pane)
+            resetForm: function($pane, paneName)
             {
                 var sidebarObj = this;
                 if ($pane.is('.noReset')) { return; }
 
-                $pane.find('.formSection.selectable:not(.collapsed)')
-                    .each(function()
-                {
-                    var $s = $(this);
-                    if ($s.find('[data-dataValue]').length < 1)
-                    { $s.find('.sectionSelect').click(); }
-                });
-
-                $pane.find('.formSection.hidden').addClass('hide');
-
-                $pane.find('.line.repeater .line.repeaterAdded').each(function()
-                {
-                    var $line = $(this);
-                    cleanLine(sidebarObj, $line);
-                }).remove();
-                $pane.find('.line.repeater > .line.hide').removeClass('hide');
-
-                $pane.find('.ranWizard').removeClass('ranWizard');
-
-                // Remove errors
-                $pane.find('form').validate().resetForm();
-                $pane.find('.mainError').text('');
-
-                var resetInput = function($input)
-                {
-                    var defValue =
-                        JSON.parse($input.attr('data-dataValue') || '""') ||
-                        JSON.parse($input.attr('data-defaultValue') || '""') ||
-                        null;
-                    $input.value(defValue);
-                    if ($input.is('.fileChooser :input'))
-                    {
-                        var i = $input.closest('.fileChooser')
-                            .data('ajaxupload')._input;
-                        if (!$.isBlank(i)) { i.value = ''; }
-                    }
-                    if ($input.hasClass('columnSelectControl'))
-                    {
-                        updateColumnSelects(sidebarObj, $input)
-                    }
-                    // Fire events to make sure uniform controls are updated,
-                    // and text prompts are reset
-                    _.defer(function()
-                    {
-                        $input.change();
-                        if ($input.is('.textPrompt')) { $input.focus().blur(); }
-                    });
-                };
-
-                // First reset everything but radio buttons, because in a
-                // radio group firing a change, focus or blur on an input in
-                // a radio group selects the radio button for it, which ends up
-                // always selecting the last radio button.  So first reset
-                // everything besides radio buttons; then go back and reset those
-                $pane.find('.line :input:not(:radio)').each(function()
-                { resetInput($(this)); });
-
-                $pane.find('.line .sliderControl').each(function()
-                {
-                    var $slider = $(this);
-                    var $input = $slider.siblings(':input');
-                    $slider.slider('value',
-                        parseInt(JSON.parse(
-                                $input.attr('data-dataValue') || '""') ||
-                            JSON.parse($input.attr('data-defaultValue') || '""') ||
-                            0));
-                });
-
-                $pane.find('.line .customWrapper').each(function()
-                {
-                    var $cust = $(this);
-                    _.defer(function() { $cust.trigger('resetToDefault'); });
-                });
-
-                $pane.find('.line :radio').each(function()
-                { resetInput($(this)); });
-
-                uniformUpdate($pane.find('.uniform :input'));
+                // Re-rendering the pane is not really much worse than trying
+                // to reset it; and we don't have to worry about reset and then
+                // rendering a pane immediately
+                sidebarObj._dirtyPanes[paneName] = true;
             },
 
             genericErrorHandler: function($pane, xhr)
@@ -1294,6 +1223,7 @@
 
     var uniformUpdate = function(items)
     {
+        if (!uniformEnabled) { return; }
         if (!$.isBlank($.uniform) && !$.isBlank($.uniform.update))
         { $.uniform.update(items); }
     };
@@ -1328,7 +1258,8 @@
     var hideCurrentPane = function(sidebarObj)
     {
         if (!$.isBlank(sidebarObj.$currentPane()))
-        { sidebarObj.resetForm(sidebarObj.$currentPane()); }
+        { sidebarObj.resetForm(sidebarObj.$currentPane(),
+            sidebarObj._currentPane); }
 
         if (!$.isBlank(sidebarObj.$currentOuterPane()))
         {
@@ -2362,7 +2293,7 @@
                     else if (needsWarning)
                     { $section.find('.sectionWarningMessage').text(warningMessage); }
 
-                    updateWizardVisibility(sidebarObj);
+                    //updateWizardVisibility(sidebarObj);
                 });
             };
 
@@ -2379,8 +2310,8 @@
                 if (isField)
                 {
                     // This isn't going to work if there is a section name...
-                    o.$field = $pane.find(':input[name=' +
-                        paneId + ':' + o.field + ']');
+                    o.$field = $pane.find('input, select, textarea')
+                        .filter('[name=' + paneId + ':' + o.field + ']');
                     o.$field.change(showHideSection).keypress(showHideSection)
                         .click(showHideSection).attr('data-onlyIfInput', true);
                 }
@@ -2401,7 +2332,8 @@
             $s.find('.sectionSelect').value(hasData);
         });
 
-        $pane.find('.formSection.selectable .sectionSelect').click(function(e)
+        $pane.delegate('.formSection.selectable .sectionSelect', 'click',
+        function(e)
         {
             var $c = $(this);
             _.defer(function()
@@ -2511,7 +2443,7 @@
             $container.find('.textPrompt')
                 .example(function () { return $(this).attr('title'); });
 
-            $container.find('.columnSelector').click(function(e)
+            $container.delegate('.columnSelector', 'click', function(e)
             {
                 e.preventDefault();
                 e.stopPropagation();
@@ -2647,7 +2579,7 @@
             $container.find('.fileChooser').each(function()
             {
                 var $f = $(this);
-                var $input = $f.find('.filename :input');
+                var $input = $f.find('.filename input');
 
                 var ftOrig = JSON.parse($f.attr('data-fileTypes') || '[]');
                 var ft = _.map(ftOrig, function(t) { return t.toLowerCase(); });
@@ -2675,7 +2607,7 @@
             $container.find('.line.repeater').each(function()
             { checkRepeaterMaxMin($(this)); });
 
-            $container.find('.removeLink').click(function(e)
+            $container.delegate('.removeLink', 'click', function(e)
             {
                 e.preventDefault();
                 var $t = $(this);
@@ -2739,7 +2671,7 @@
                     var vals = {};
                     $linkedItems.each(function()
                     { vals[$(this).attr('data-origName')] = $(this).val(); });
-                    if (_.size(vals) == 1) { vals = _.values(vals)[0]; }
+                    if (_.size(vals) == 1) { vals = _.values(vals)[0] || ''; }
 
                     var curVals = $field.data('linkedFieldValues');
                     if (!force && _.isEqual(curVals, vals)) { return; }
@@ -2819,11 +2751,8 @@
                 uniformUpdate($field);
             });
 
-            $container.find(':input')
-                .change(function()
-                { _.defer(function() { checkForm(sidebarObj); }); })
-                .blur(function()
-                { _.defer(function() { checkForm(sidebarObj); }); });
+            $container.delegate('input, select, textarea', 'change blur',
+                function() { _.defer(function() { checkForm(sidebarObj); }); });
 
             var checkRadio = function(e)
             {
@@ -2837,33 +2766,41 @@
             // and isn't stolen by the radio button; then we need to manually
             // trigger the selection of the radio button.  We use mouseup
             // because textPrompt interferes with click events
-            $container.find('label :input, label a')
-                .click(function(e)
+            $container.delegate(
+                'label input, label select, label textarea, label a', 'click',
+                function(e)
                 {
                     e.preventDefault();
                 })
-                .mouseup(checkRadio).change(checkRadio).focus(checkRadio);
+            .delegate(
+                'label input, label select, label textarea, label a', 
+                'mouseup change focus', checkRadio);
 
-            if (!$.isBlank($.uniform))
+            if (uniformEnabled && !$.isBlank($.uniform))
             {
                 // Defer uniform hookup so the pane can be added first and all
                 // the styles applied before swapping them for uniform controls
                 _.defer(function()
-                        { $container.find('select, :checkbox, :radio, :file')
-                            .uniform(); });
+                    {
+                        // Doing this as one selector is surprisingly slow
+                        $container.find('select').uniform();
+                        $container.find(':checkbox').uniform();
+                        $container.find(':radio').uniform();
+                        $container.find(':file').uniform();
+                    });
             }
         };
 
         hookUpFields($pane);
 
-        $pane.find('.button.addValue').click(function(e)
+        $pane.delegate('.button.addValue', 'click', function(e)
         {
             e.preventDefault();
             addValue($(this));
         });
 
 
-        $pane.find('.finishButtons a').click(function(e)
+        $pane.delegate('.finishButtons a', 'click', function(e)
         {
             e.preventDefault();
             var $button = $(this);
@@ -2939,14 +2876,17 @@
         var $pane = sidebarObj.$currentPane();
         if ($.isBlank($pane)) { return; }
 
+        var $fsVis = $pane.find('.formSection').filter(':visible');
+        var $fsVisDis = $fsVis.filter('.disabled');
         // Hide finish buttons if no visible & enabled sections
         $pane.find('.finishButtons').toggleClass('hide',
-                $pane.find('.formSection:visible:not(.disabled)').length < 1)
+                $fsVis.length == $fsVisDis.length)
             // Disable submit button if not all visible & required fields filled in
             .find('.submit').toggleClass('disabled',
-            $pane.find(':input.required:visible:not(:disabled)')
-             .filter(':blank, .prompt, :checkbox:unchecked').length > 0 ||
-            $pane.find('.formSection:visible.disabled').length > 0);
+            $pane.find('input, select, textarea')
+                .filter('.required:visible:not(:disabled)')
+                .filter(':blank, .prompt, :checkbox:unchecked').length > 0 ||
+                $fsVisDis.length > 0);
     };
 
     /*** Functions for handling wizard step-through ***/

@@ -248,7 +248,6 @@ javascripts:
     - public/javascripts/screens/dataset-edit-metadata.js
   dataset-edit-rr:
     - public/javascripts/plugins/jquery.colorPicker.js
-    - public/javascripts/plugins/jquery.uniform.js
     - public/javascripts/util/events.js
     - public/javascripts/controls/modal-dialogs.js
     - public/javascripts/controls/navigation.js

@@ -53,11 +53,15 @@
 
         _.each(attrs, function(value, key)
         {
+            // _.include is more concise but slower
+            var k = key.toLowerCase();
             if (key == 'tagName' || key == 'contents')
             { return; }
-            else if ((value === true) && _.include(['checked', 'selected',
-                'disabled', 'readonly', 'multiple', 'ismap', 'defer',
-                'declare', 'noresize', 'nowrap', 'noshade', 'compact'], key.toLowerCase()))
+            else if ((value === true) && (k == 'checked' ||
+                    k == 'selected' || k == 'disabled' || k == 'readonly' ||
+                    k == 'multiple' || k == 'ismap' || k == 'defer' ||
+                    k == 'declare' || k == 'noresize' || k == 'nowrap' ||
+                    k == 'noshade' || k == 'compact'))
             { result += tag_append(key, key); }
             else if (value === false)
             { return; }
@@ -98,7 +102,8 @@
             }
         });
 
-        if (_.include(['input', 'img', 'link', 'meta'], attrs.tagName))
+        if (attrs.tagName == 'input' || attrs.tagName == 'img' ||
+            attrs.tagName == 'link' || attrs.tagName == 'meta')
         {
             result += '/>';
         }

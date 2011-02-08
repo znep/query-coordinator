@@ -844,8 +844,8 @@ blist.namespace.fetch('blist.data.types');
         {
             var width  = '60';
             var height = '150';
-            var image_url = base_url+value.row_id+'?column='+columnId+
-                '&width='+width+'&height='+height;
+            var image_url = $.addAppToken(base_url+value.row_id+'?column='+columnId+
+                '&width='+width+'&height='+height);
             if ($.browser.msie)
             { rv += '<v:vmlframe src="' + image_url + '&type=vml#shape01" ' +
                 'style="width:' + width + 'px; height:' + height + 'px;"/>'; }

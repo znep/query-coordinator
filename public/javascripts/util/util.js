@@ -550,6 +550,12 @@ $.loadStylesheets = function(sheetQueue, callback)
     });
 };
 
+$.addAppToken = function(url)
+{
+    return url + ((url.indexOf('?') == -1) ? '?' : '&') +
+        'app_token=' + blist.configuration.appToken;
+}
+
 $.fn.tagName = function()
 {
     return this.get(0).tagName.toLowerCase();

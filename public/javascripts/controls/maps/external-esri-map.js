@@ -68,6 +68,8 @@
 
     var completeInitialization = function(mapObj, layer, layer_id)
     {
+        mapObj.settings.view.trigger('row_count_change');
+
         layer.setVisibleLayers([layer_id]);
         mapObj.map.addLayer(layer);
     

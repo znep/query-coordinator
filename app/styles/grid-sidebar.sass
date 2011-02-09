@@ -618,9 +618,7 @@
         display: inline-block
         margin-right: 0.4em
         vertical-align: bottom
-        .ie7 &
-          display: inline
-          zoom: 1
+        @include ie7-inline-block
 
       .ie7 & .icon
         float: left

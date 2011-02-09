@@ -57,9 +57,7 @@
         .uniform.checker
           position: relative
           top: -0.2em
-          .ie7 &
-            display: inline
-            zoom: 1
+          @include ie7-inline-block
 
       h4
         font-size: 1.2em
@@ -117,10 +115,7 @@
         top: 0.3em
       &.working .uploadIndicator
         display: inline-block
-        .ie7 &
-          display: inline
-          zoom: 1
-
+        @include ie7-inline-block
 
   .editAppTokensForm
     .existingTokens

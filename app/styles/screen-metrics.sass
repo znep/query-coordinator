@@ -33,6 +33,7 @@
       font-size: 1.4em
       font-weight: bold
       padding: 0.4em 0 0.6em 0.7em
+      @include ie7-inline-block
 
       .icon
         float: left
@@ -42,10 +43,6 @@
       .contents
         float: left
         margin: 0.1em 0
-
-    .ie7 &
-      display: inline
-      zoom: 1
 
     .menuDropdown ul.menuColumns li.menuColumn ul.menuEntries li.menuEntry a
       padding: 0.3em 0.8em
@@ -126,9 +123,7 @@
             position: relative
             top: 0.3em
             visibility: hidden
-            .ie7 &
-              display: inline
-              zoom: 1
+            @include ie7-inline-block
 
         &.loadingMore .showMore .icon
           visibility: visible
@@ -147,9 +142,7 @@
   .summaryDisplay, .detailDisplay
     margin: 1em 0
     width: 100%
-    .ie7 &
-      display: inline
-      zoom: 1
+    @include ie7-inline-block
 
     .summaryContainer
       float: left

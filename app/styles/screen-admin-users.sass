@@ -61,9 +61,7 @@
         &.isWorking
           .loading
             display: inline-block
-            .ie7 &
-              display: inline
-              zoom: 1
+            @include ie7-inline-block
 
   .tableContainer
     .noResultsMessage

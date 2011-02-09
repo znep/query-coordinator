@@ -254,3 +254,8 @@ $light_bg_color: #fafafa
     background-color: #000
     opacity: 0.5
     filter: alpha(opacity=50)
+
+@mixin ie7-inline-block
+  .ie7 &
+    display: inline
+    zoom: 1

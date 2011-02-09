@@ -65,9 +65,7 @@
       font-size: 1.2em
       .icon
         display: inline-block
-        .ie7 &
-          display: inline
-          zoom: 1
+        @include ie7-inline-block
       .ie7 &.accountSettings
         .icon
           position: relative
@@ -129,9 +127,7 @@
         line-height: 1.2em
         margin-bottom: 0
         padding-right: 0.2em
-        .ie7 &
-          display: inline
-          zoom: 1
+        @include ie7-inline-block
 
       .editLinkText
         position: relative

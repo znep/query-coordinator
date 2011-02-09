@@ -45,10 +45,9 @@
         text-transform: capitalize
         margin-right: 0.5em
         width: 5em
+        @include ie7-inline-block
         .ie7 &
-          display: inline
           padding-bottom: 0.7em
-          zoom: 1
 
         .loading
           @include throbber-icon

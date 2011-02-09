@@ -116,9 +116,8 @@
       margin: 1em 0 0 1em
 
     .radioblock
-      .ie7 & .uniform.radio
-        display: inline
-        zoom: 1
+      .uniform.radio
+        @include ie7-inline-block
       label
         padding-left: 0
 

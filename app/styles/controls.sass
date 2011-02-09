@@ -197,6 +197,7 @@ ul.wizardButtons
     padding: 0.2em 0.5em 0
     position: absolute
     .ie &
+      border: 1px solid #fff
       margin-left: 2px
       padding: 0.1em 0.3em
 
@@ -216,9 +217,7 @@ ul.wizardButtons
       li
         display: inline-block
         float: none
-        .ie7 &
-          display: inline
-          zoom: 1
+        @include ie7-inline-block
 
         a
           display: inline-block

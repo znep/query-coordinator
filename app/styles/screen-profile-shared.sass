@@ -29,10 +29,8 @@
         width: 9em
       .fieldValue
         display: inline-block
-        .ie7 &
-          display: inline
-          zoom: 1
         margin-left: 10em
+        @include ie7-inline-block
 
     .appTokenLine
       .appTokenTextContainer

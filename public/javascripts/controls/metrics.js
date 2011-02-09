@@ -278,8 +278,8 @@
 
     $.fn.metricsTimeControl = function(options)
     {
-        var opts       = $.extend({}, $.fn.metricsTimeControl.defaults, options)
-            today      = Date.parse('today')
+        var opts       = $.extend({}, $.fn.metricsTimeControl.defaults, options),
+            today      = Date.parse('today'),
             monthStart = today.clone().moveToFirstDayOfMonth()
                               .toString(opts.parseDateFormat),
             monthEnd   = today.toString(opts.parseDateFormat),

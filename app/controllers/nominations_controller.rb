@@ -11,4 +11,9 @@ class NominationsController < ApplicationController
     @nominations = Nomination.find_page(params[:page], @page_size, @status)
     @nominations_count = Nomination.count(@status)
   end
+
+  def new
+    # really just an auth bounce; send them back to show and let them do it via js once they're auth'd
+    redirect_to :show
+  end
 end

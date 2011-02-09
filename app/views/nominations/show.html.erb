@@ -23,7 +23,9 @@
   <div class='nominationsList'>
     <h2>Dataset Suggestions</h2>
     <%- if !current_user.nil? -%>
-    <a href='#Submit dataset' class='button nominateLink'>Suggest a Dataset</a>
+      <a href='#Submit dataset' class='button nominateLink hasUser'>Suggest a Dataset</a>
+    <%- else -%>
+      <a href='/nominate/new' class='button nominateLink'>Suggest a Dataset</a>
     <%- end -%>
 
     <div class='results'>

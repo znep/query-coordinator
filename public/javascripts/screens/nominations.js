@@ -253,7 +253,7 @@ $(function()
             }
         });
 
-    $('.nominateLink').click(function(e)
+    $('.nominateLink.hasUser').click(function(e)
     {
         e.preventDefault();
         showNomDialog();

@@ -19,12 +19,6 @@
                 ArcGISDynamicMapServiceLayer(url + '?srs=EPSG:102100');
             dojo.connect(mapObj.mapServer, 'onLoad', function()
             { completeInitialization(mapObj, this, layer_id); });
-
-            if (mapObj.$dom().siblings('#mapLayers').length > 0)
-            {
-                mapObj.$dom().parent().find('.toggleLayers, .contentBlock h3')
-                    .text('Data Layers');
-            }
         },
 
         populateDataLayers: function()
@@ -32,6 +26,12 @@
             var mapObj = this;
             var layers = mapObj.mapServer.layerInfos;
             if (layers.length < 2) { return; }
+
+            if (mapObj.$dom().siblings('#mapLayers').length > 0)
+            {
+                mapObj.$dom().parent().find('.toggleLayers, .contentBlock h3')
+                    .text('Data Layers');
+            }
 
             var $layers = mapObj.$dom().siblings('#mapLayers');
             var $layersList = $layers.find('ul');
@@ -69,6 +69,10 @@
     var completeInitialization = function(mapObj, layer, layer_id)
     {
         mapObj.settings.view.trigger('row_count_change');
+
+        transformFilterToLayerDefinition(mapObj, layer, layer_id);
+        mapObj.settings.view.bind('query_change', function()
+        { transformFilterToLayerDefinition(mapObj, layer, layer_id); });
 
         layer.setVisibleLayers([layer_id]);
         mapObj.map.addLayer(layer);
@@ -137,6 +141,7 @@
         mapObj._identifyParameters.geometry = evt.mapPoint;
         mapObj._identifyParameters.mapExtent = mapObj.map.extent;
         mapObj._identifyParameters.layerIds = mapObj.mapServer.visibleLayers;
+        mapObj._identifyParameters.layerDefinitions = mapObj.mapServer.layerDefinitions;
 
         mapObj.map.infoWindow.setContent("Loading...").setTitle('')
             .show(evt.screenPoint, mapObj.map.getInfoWindowAnchor(evt.screenPoint));
@@ -164,6 +169,90 @@
         mapObj.map.infoWindow.setContent(info)
             .setTitle(feature.attributes[idResult.displayFieldName])
             .show(evt.screenPoint, mapObj.map.getInfoWindowAnchor(evt.screenPoint));
+    };
+
+    var transformFilterToLayerDefinition = function(mapObj, layer, layer_id)
+    {
+        var applyFilters = function()
+        {
+            var filterCond = mapObj.settings.view.query.filterCondition;
+            if (_.isEmpty(filterCond)) { return '1=1'; }
+
+            var template = {
+                'EQUALS':                 '<%= field %> = <%= val1 %>',
+                'NOT_EQUALS':             '<%= field %> != <%= val1 %>',
+                'STARTS_WITH':            '<%= field %> LIKE \'<%= val1 %>%\'',
+                'CONTAINS':               '<%= field %> LIKE \'%<%= val1 %>%\'',
+                'IS_NOT_BLANK':           '<%= field %> IS NOT NULL',
+                'IS_BLANK':               '<%= field %> IS NULL',
+                'LESS_THAN':              '<%= field %> < <%= val1 %>',
+                'LESS_THAN_OR_EQUALS':    '<%= field %> <= <%= val1 %>',
+                'GREATER_THAN':           '<%= field %> > <%= val1 %>',
+                'GREATER_THAN_OR_EQUALS': '<%= field %> >= <%= val1 %>',
+                'BETWEEN':
+                    '<%= field %> BETWEEN <%= val1 %> AND <%= val2 %>'
+            };
+            var transformFilterToSQL = function (filter)
+            {
+                var fieldName = processFilter(filter.children[0]);
+                var field = _.detect(layer.featureLayers[layer_id].fields,
+                    function(field) { return field.name == fieldName });
+
+                var value = [];
+                value.push(processFilter(filter.children[1]));
+                value.push(processFilter(filter.children[2]));
+
+                // From http://help.arcgis.com/EN/webapi/javascript/arcgis/help/jsapi/field.htm#type
+                // Can be one of the following:
+                // "esriFieldTypeSmallInteger", "esriFieldTypeInteger",
+                // "esriFieldTypeSingle",       "esriFieldTypeDouble",
+                // "esriFieldTypeString",       "esriFieldTypeDate",
+                // "esriFieldTypeOID",          "esriFieldTypeGeometry",
+                // "esriFieldTypeBlob",         "esriFieldTypeRaster",
+                // "esriFieldTypeGUID",         "esriFieldTypeGlobalID",
+                // "esriFieldTypeXML"
+
+                // TODO: Need to figure out which types are PostgreSQL strings.
+                if (_.include(["String"], field.type.substr(13))
+                    && !_.include(['STARTS_WITH', 'CONTAINS'], filter.value))
+                { value = _.map(value, function(v)
+                    { return "'" + v.replace(/'/g, "\\'") + "'"; }); }
+                else
+                { value = _.map(value, function(v) { return v.replace(/;.*$/, ''); }) }
+
+                return _.template(template[filter.value],
+                    {field: fieldName, val1: value[0], val2: value[1] });
+            };
+            var processFilter = function(filter)
+            {
+                if (!filter) { return ''; }
+                switch (filter.type)
+                {
+                    case 'operator':
+                        switch(filter.value)
+                        {
+                            case 'AND':
+                                return _.map(filter.children, function(filter)
+                                    { return processFilter(filter); }).join(' AND ');
+                            case 'OR':
+                                return _.map(filter.children, function(filter)
+                                    { return processFilter(filter); }).join(' OR ');
+                            default:
+                                return transformFilterToSQL(filter);
+                        }
+                        break;
+                    case 'column':
+                        return blist.dataset.columnForID(filter.columnId).name;
+                    case 'literal':
+                        return filter.value;
+                }
+            };
+            return processFilter(filterCond);
+        };
+
+        var ld = [];
+        ld[layer_id] = applyFilters();
+        layer.setLayerDefinitions(ld);
     };
 
 })(jQuery);

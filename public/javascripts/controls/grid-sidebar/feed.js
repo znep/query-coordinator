@@ -13,13 +13,14 @@
         });
     };
 
-    var pendingRequests = 3;
+    var pendingRequests;
 
     var config =
     {
         name: 'feed',
         title: 'Discuss',
         subtitle: 'The discussion feed shows you the conversation and activity around a dataset',
+        noReset: true,
         sections: [
             {
                 customContent: {
@@ -30,6 +31,7 @@
                     {
                         sidebarObj.startProcessing();
                         $feed = $elem;
+                        pendingRequests = 3;
                         blist.dataset.getComments(function(responseData)
                             {
                                 comments = responseData;

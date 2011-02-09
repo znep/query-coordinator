@@ -2310,8 +2310,8 @@
                 if (isField)
                 {
                     // This isn't going to work if there is a section name...
-                    o.$field = $pane.find('input, select, textarea')
-                        .filter('[name=' + paneId + ':' + o.field + ']');
+                    o.$field = $pane.find(':input[name=' + paneId +
+                        ':' + o.field + ']');
                     o.$field.change(showHideSection).keypress(showHideSection)
                         .click(showHideSection).attr('data-onlyIfInput', true);
                 }

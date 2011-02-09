@@ -8,4 +8,12 @@ class String
     end
     output.slice(0, 50)
   end
+
+  def titleize_if_necessary
+    if self[0].downcase == self[0]
+      self.titleize
+    else
+      self
+    end
+  end
 end

@@ -164,7 +164,7 @@ metricsNS.topAppTokensCallback = function($context)
                     var thumbed = response.thumbnailSha,
                         klass = thumbed ? 'showThumbnail' : '',
                         thumbnail = thumbed ? ('/api/file_data/' + response.thumbnailSha +
-                            '?size=tiny&app_token=' + blist.configuration.appToken) : '';
+                            '?size=tiny') : '';
 
                     results.push({name: response.name || '(deleted)',
                         extraClass: klass,

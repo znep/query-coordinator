@@ -1,6 +1,6 @@
 class Attachment < Model
   def href
-    return "/api/assets/#{blobId}?app_token=" + APP_CONFIG['app_token']
+    return "/api/assets/#{blobId}"
   end
   
   def displayName

@@ -251,7 +251,6 @@ class View < Model
 
   def self.thumbnail_for(viewId, params = {})
     params.merge!({
-      :app_token => APP_CONFIG['app_token'],
       :method => 'get',
       :name => 'page',
       :size => 'thumb'
@@ -397,10 +396,7 @@ class View < Model
 
   def blob_href
     if is_blobby?
-      opts = {
-        :filename => URI.escape(blobFilename),
-        :app_token => APP_CONFIG['app_token']
-      }
+      opts = { :filename => URI.escape(blobFilename) }
       return "/api/file_data/#{blobId}?#{opts.to_param}"
     end
   end

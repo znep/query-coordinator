@@ -14,6 +14,6 @@ class NominationsController < ApplicationController
 
   def new
     # really just an auth bounce; send them back to show and let them do it via js once they're auth'd
-    redirect_to :show
+    redirect_to :action => :show
   end
 end

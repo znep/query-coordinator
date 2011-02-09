@@ -181,8 +181,9 @@ $(function()
                 var feature = {};
 
                 feature.viewId = $this.attr('data-viewid');
-                feature.title = $this.find('.featureHeadline').val();
-                feature.description = $this.find('.featureDescription').val();
+                feature.title = $this.find('.featureHeadline').val().clean();
+                feature.description = $this.find('.featureDescription')
+                    .val().clean();
                 if ($this.hasClass('thumbnail'))
                 {
                     feature.display = 'thumbnail';
@@ -190,8 +191,10 @@ $(function()
                 else
                 {
                     feature.display = {
-                        title: $this.find('.featureContentTextHeadline').val(),
-                        description: $this.find('.featureContentTextSubtitle').val()
+                        title: $this.find('.featureContentTextHeadline')
+                            .val().clean(),
+                        description: $this.find('.featureContentTextSubtitle')
+                            .val().clean()
                     }
                 }
                 features.push(feature);

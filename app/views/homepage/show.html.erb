@@ -41,7 +41,8 @@
               </div>
             <%- end -%>
 
-            <a href="<%= @view_urls[view.viewId] %>" class="viewTitle"><%= view.title %></a>
+            <a href="<%= @view_urls[view.viewId] %>"
+              class="viewTitle"><%= view.title.gsub("\u00a0", ' ') %></a>
             <p class="viewDescription"><%= view.description %></p>
           </div>
         </li>

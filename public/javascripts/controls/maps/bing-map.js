@@ -172,16 +172,19 @@
 
                     mapObj.map.entities.push(shape);
 
-                    $((shape['cm1001_er_etr'] || {}).dom).css('cursor', 'pointer');
+                    if (shape.infoContent.length > 0)
+                    {
+                        $((shape['cm1001_er_etr'] || {}).dom).css('cursor', 'pointer');
 
-                    Microsoft.Maps.Events.addHandler(shape, 'click',
-                        function(event)
-                        {
-                            if (details.redirect_to)
-                            { window.open(details.redirect_to); }
+                        Microsoft.Maps.Events.addHandler(shape, 'click',
+                            function(event)
+                            {
+                                if (details.redirect_to)
+                                { window.open(details.redirect_to); }
 
-                            buildInfoWindow(mapObj, event);
-                        });
+                                buildInfoWindow(mapObj, event);
+                            });
+                    }
                 });
 
                 return true;

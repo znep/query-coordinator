@@ -133,9 +133,7 @@
       .ie7 &
         z-index: 1
       .menu
-        left: 0
-        position: absolute
-        top: 0
+        float: left
         .menuButton
           background-color: transparent
           border: none
@@ -150,7 +148,6 @@
 
       .searchWrapper
         margin:
-          left: 10em
           right: 0.5em
 
         .viewSearch
@@ -161,8 +158,9 @@
           @include sprite-menu-icons
           display: none
           position: absolute
+          bottom: 0.5em
           right: 0.5em
-          top: 0.8em
+          top: auto
 
     .itemsList
 
@@ -172,13 +170,16 @@
         padding: 0.5em
         position: relative
         &.current
+          background-color: #ffffff
+          border-width: 2px
+          font-weight: bold
+        &.ownerItem
           background: url("/stylesheets/images/interface/owner_background.png") repeat-x
 
         .viewIcon
           @include sprite-type-icons-30
           float: left
           margin-right: 0.75em
-          padding: 0.5em 0
 
         .name
           @include clip-text

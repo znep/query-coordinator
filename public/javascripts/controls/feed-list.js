@@ -41,7 +41,7 @@
     var feedDirectiveBase = {
         '.@class+': function(a)
             {
-                return a.item.user.id == ((blist.dataset || {}).owner || {}).id ?
+                return a.item.user.id == blist.dataset.tableAuthor.id ?
                     a.item.itemType + ' ownerFeedItem': a.item.itemType;
             },
         '.@data-itemId': 'feedItem.itemId',

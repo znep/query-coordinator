@@ -43,7 +43,8 @@
     var $moreLink;
     var $scrollContainer;
 
-    var currentSort = 'dateDescending';
+    var currentSort = 'popularity';
+    var currentShow = 'all';
     var currentSearch;
 
     var renderViews = function()
@@ -55,6 +56,11 @@
         }
 
         var items = viewList;
+        if (!$.isBlank(currentShow) && currentShow != 'all')
+        {
+            items = _.select(items, function(v) { return v.type == currentShow; });
+        }
+
         if (!$.isBlank(currentSearch))
         {
             items = _.select(items, function(v)
@@ -83,6 +89,14 @@
                 }
                 else if (currentSort == 'alphaAscending')
                 { return v.name.toLowerCase(); }
+                else if (currentSort = 'popularity')
+                {
+                    var vc = v.viewCount || 0;
+                    var len = 10;
+                    while (vc.length < len) { vc = '0' + vc; }
+                    return (v.owner.id == v.tableAuthor.id ? 'a' : 'z') +
+                        vc + v.name.toLowerCase();
+                }
             });
 
         var rendered = 0;
@@ -120,6 +134,9 @@
 
                 if (v.id == blist.dataset.id)
                 { $li.addClass('current'); }
+
+                if (v.owner.id == v.tableAuthor.id)
+                { $li.addClass('ownerItem'); }
 
                 // Need to wait until this is visible so the height measures
                 // correctly
@@ -163,12 +180,14 @@
 
     var setupSection = function()
     {
-        var $menu = $section.find('.sortMenu');
-        $menu.menu({
+        var $sortMenu = $section.find('.sortMenu');
+        $sortMenu.menu({
             menuButtonContents: 'Sort by',
             menuButtonTitle: 'Sort by',
             contents: [
-                { text: 'Most Recent', className: 'none checked',
+                { text: 'Popularity', className: 'none checked',
+                    href: '#popularity' },
+                { text: 'Most Recent', className: 'none',
                     href: '#dateDescending' },
                 { text: 'Oldest to Newest', className: 'none',
                     href: '#dateAscending' },
@@ -176,7 +195,7 @@
             ]
         });
 
-        $menu.find('.menuDropdown a').click(function(e)
+        $sortMenu.find('.menuDropdown a').click(function(e)
         {
             e.preventDefault();
             var $a = $(this);
@@ -185,8 +204,52 @@
             $a.closest('.menuDropdown').find('.checked').removeClass('checked');
             $a.closest('li').addClass('checked');
 
-            var href = $a.attr('href');
-            currentSort = href.slice(href.indexOf('#') + 1)
+            currentSort = $.hashHref($a.attr('href'));
+            renderViews();
+        });
+
+        var $showMenu = $section.find('.showMenu');
+        $showMenu.menu({
+            menuButtonContents: 'Show only',
+            menuButtonTitle: 'Show only',
+            contents: [
+                { text: 'All Views', className: 'none checked', href: '#all' },
+                { text: 'Charts', className: 'typeChart', href: '#chart',
+                    onlyIf: _.any(viewList,
+                        function(v) { return v.type == 'chart'; })},
+                { text: 'Maps', className: 'typeMap', href: '#map',
+                    onlyIf: _.any(viewList,
+                        function(v) { return v.type == 'map'; })},
+                { text: 'Calendars', className: 'typeCalendar', href: '#calendar',
+                    onlyIf: _.any(viewList,
+                        function(v) { return v.type == 'calendar'; })},
+                { text: 'Filtered Views', className: 'typeFilter', href: '#filter',
+                    onlyIf: _.any(viewList,
+                        function(v) { return v.type == 'filter'; })},
+                { text: 'Grouped Views', className: 'typeGrouped', href: '#grouped',
+                    onlyIf: _.any(viewList,
+                        function(v) { return v.type == 'grouped'; })},
+                { text: 'Forms', className: 'typeForm', href: '#form',
+                    onlyIf: _.any(viewList,
+                        function(v) { return v.type == 'form'; })}
+            ]
+        });
+
+        $showMenu.find('.menuDropdown a').click(function(e)
+        {
+            e.preventDefault();
+            var $a = $(this);
+            if ($a.closest('li').is('.checked')) { return; }
+
+            currentShow = $.hashHref($a.attr('href'));
+
+            var $old = $a.closest('.menuDropdown').find('.checked');
+            $old.removeClass('checked')
+                .addClass('type' + $.hashHref($old.children('a').attr('href'))
+                    .capitalize());
+            $a.closest('li').addClass('checked')
+                .removeClass('type' + currentShow.capitalize());
+
             renderViews();
         });
 

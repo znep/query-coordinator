@@ -391,9 +391,9 @@
                                 'quantities specifying the color of each point'
                     },
                     {text: 'Icon', name: 'displayFormat.plot.iconId',
-                        type: 'columnSelect', isTableColumn: true, noDefault: true,
+                        type: 'columnSelect', isTableColumn: true,
                         columns: {type: ['photo', 'photo_obsolete', 'url'],
-                            hidden: isEdit},
+                            noDefault: true, hidden: isEdit},
                         wizard: 'Choose a column that contains ' +
                             'an icon for each point'
                     }

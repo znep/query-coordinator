@@ -469,7 +469,7 @@ class AdministrationController < ApplicationController
     end
 
     # Create a property with name: category, value: true
-    config.create_property(new_category, true)
+    config.create_property(new_category.titleize_if_necessary, true)
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
 

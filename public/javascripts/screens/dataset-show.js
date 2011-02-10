@@ -215,8 +215,14 @@ $(function()
     }
 
     // Show guided filter by default if there is a default filter
-    if ($.subKeyDefined(blist.dataset, 'query.filterCondition') ||
-        $.subKeyDefined(blist.dataset, 'metadata.filterCondition'))
+    var hasConditions = function(filterCondition)
+    {
+        return (filterCondition.children || []).length > 0;
+    };
+    if (($.subKeyDefined(blist.dataset, 'query.filterCondition') &&
+             hasConditions(blist.dataset.query.filterCondition)) ||
+        ($.subKeyDefined(blist.dataset, 'metadata.filterCondition') &&
+             hasConditions(blist.dataset.metadata.filterCondition)))
     {
         datasetPageNS.sidebar.setDefault('filter.unifiedFilter');
     }

@@ -48,13 +48,13 @@ class View < Model
 
   def module_enabled?(name)
     return false if self.disabledFeatureFlags && self.disabledFeatureFlags.member?(name.to_s)
-    return CurrentDomain.module_enabled?(name.downcase.to_sym)
+    return CurrentDomain.module_enabled?(name.to_sym)
   end
 
   def enabled_modules
     result = {}
     self.overridable_features.each do |feature|
-      result[feature[:key]] = module_enabled?(feature[:key])
+      result[feature[:key]] = self.module_enabled?(feature[:key])
     end
     return result
   end
@@ -65,7 +65,7 @@ class View < Model
     end
     unless self.disabledFeatureFlags.blank?
       self.disabledFeatureFlags.each do |flag|
-        feature_index = features.find_index {|f| f[:key] == flag.upcase}
+        feature_index = features.find_index {|f| f[:key] == flag}
         features[feature_index][:disabled] = true if feature_index
       end
     end
@@ -884,7 +884,7 @@ class View < Model
 
 
   @@overridable_features = [
-    { :key => 'ALLOW_COMMENTS',
+    { :key => 'allow_comments',
       :name => 'Commenting'
     }
   ]

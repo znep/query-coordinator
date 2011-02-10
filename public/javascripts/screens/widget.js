@@ -238,7 +238,7 @@ $(function()
                     iconColor: '#959595', onlyIf: !widgetNS.isNonTabular && menuOptions['downloads'] },
                 { text: 'Discuss', className: 'comments', targetPane: 'feed',
                     subtext: 'Discuss this Dataset', href: '#comments',
-                    iconColor: '#bed62b', onlyIf: menuOptions['comments'] && enabledModules['ALLOW_COMMENTS'] == true },
+                    iconColor: '#bed62b', onlyIf: menuOptions['comments'] && enabledModules['allow_comments'] == true },
                 { text: 'Embed', className: 'embed', targetPane: 'embed',
                     subtext: 'Embed this player on your site', href: '#embed',
                     iconColor: '#e44044', onlyIf: menuOptions['embed'] },

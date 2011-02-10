@@ -638,6 +638,8 @@
                             { return buildFilterCondition(hemi); }) });
                 }
 
+                if ((query.namedFilters || {}).viewport)
+                { delete query.namedFilters.viewport; }
                 query.namedFilters = $.extend(true, query.namedFilters || {},
                     { viewport: filterCondition });
                 mapObj.settings.view.update({ query: query}, false, true);

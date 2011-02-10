@@ -1986,9 +1986,6 @@ this.Dataset = Model.extend({
         var ds = this;
         var processDS = function(views)
         {
-            var selfIndex = _.indexOf(views, ds);
-            if (selfIndex > -1) { views.splice(selfIndex, 1, ds); }
-
             views = _.map(views, function(v)
             {
                 if (v instanceof Dataset) { return v; }
@@ -2000,7 +1997,7 @@ this.Dataset = Model.extend({
             });
 
             var parDS = _.detect(views, function(v)
-                    { return v.type == 'blist'; });
+                    { return _.include(v.flags || [], 'default'); });
             if (!$.isBlank(parDS))
             {
                 ds._parent = parDS;

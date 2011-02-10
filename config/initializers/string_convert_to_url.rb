@@ -10,7 +10,7 @@ class String
   end
 
   def titleize_if_necessary
-    if self[0].downcase == self[0]
+    if self.downcase[0] == self[0]
       self.titleize
     else
       self

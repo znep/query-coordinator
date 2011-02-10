@@ -86,13 +86,15 @@ $(function()
                 alert('Error changing status: ' +
                     JSON.parse(xhr.responseText).message);
             },
-            success: function()
+            success: function(nom)
             {
-                $t.closest('td').removeClass('open new rejected approved')
-                    .addClass(status).find('.currentStatus')
-                    .text(status.capitalize())
+                var fStat = friendlyStatus(nom).toLowerCase();
+                $t.closest('td')
+                    .removeClass('open new rejected approved unmoderated')
+                    .addClass(fStat).find('.currentStatus')
+                    .text(fStat.capitalize())
                     .closest('tr.item').removeClass('pending rejected approved')
-                    .addClass(status);
+                    .addClass(nom.status);
             }});
     });
 

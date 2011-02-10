@@ -64,11 +64,6 @@
           text-align: center
           width: 5em
 
-        .delete
-          @include close-button
-          float: left
-          margin-right: 0.5em
-
         td.user
           line-height: 24px
           img
@@ -78,6 +73,10 @@
             display: inline-block
             vertical-align: top
             width: 8.5em
+          .delete
+            @include close-button
+            float: left
+            margin-right: 0.5em
 
         td.details
           .title
@@ -116,6 +115,8 @@
             margin-left: 0.2em
 
         td.status
+          a
+            font-size: 0.9167em
           &.new
             .currentStatus
               color: #0073e6
@@ -130,8 +131,13 @@
               color: #aa3333
             a.reject
               display: none
-          a.moderateLink
-            font-size: 0.9167em
+          .unmoderatedLink
+            display: none
+          &.unmoderated
+            .unmoderatedLink
+              display: inline
+            .moderatedLink
+              display: none
 
     .pagination
       font-size: 1.2em

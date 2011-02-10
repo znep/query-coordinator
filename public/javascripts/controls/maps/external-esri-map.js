@@ -101,7 +101,7 @@
                      { mapObj.map.setExtent(decodeExtentFromPoints(points)); }
             );
 
-        mapObj.populateDataLayers();
+        //mapObj.populateDataLayers();
 
         mapObj._identifyConfig = {
             url: mapObj.mapServer._url.path,

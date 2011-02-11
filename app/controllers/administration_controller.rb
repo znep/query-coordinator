@@ -517,6 +517,7 @@ class AdministrationController < ApplicationController
     update_or_create_property(config, 'featured_views', params[:features])
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
+    clear_featured_datasets_cache
 
     respond_to do |format|
       format.data { render :json => params[:features] }
@@ -528,6 +529,7 @@ class AdministrationController < ApplicationController
     check_auth_level('manage_stories')
     begin
       Story.delete(params[:id])
+      clear_stories_cache
     rescue CoreServer::ResourceNotFound
       flash.now[:error] = 'The story you attempted to delete does not exist.'
       return render 'shared/error', :status => :not_found
@@ -671,7 +673,12 @@ private
     # clear the cache of stories since assumedly something about them updated
     stories_cache_key = app_helper.cache_key('homepage-stories', { 'domain' => CurrentDomain.cname })
     clear_success = expire_fragment(stories_cache_key)
-    Rails.logger.info(">>> attempted to clear stories cache at #{stories_cache_key}, with result #{clear_success}")
+  end
+
+  def clear_featured_datasets_cache
+    # clear the cache of stories since assumedly something about them updated
+    stories_cache_key = app_helper.cache_key('homepage-featured', { 'domain' => CurrentDomain.cname })
+    clear_success = expire_fragment(stories_cache_key)
   end
 
   def fetch_layer_info(layer_url)

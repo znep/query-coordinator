@@ -344,35 +344,46 @@
 <%= render :partial => 'subscribe' %>
 <%= render :partial => 'fatrow_header_template' %>
 <div class="filterPane">
-  <div class="menu advanced filterOptionsMenu mainFilterOptionsMenu"></div>
+  <div class="initialFilterMode">
+    <p>Never created a filter before? Watch a short tutorial video
+       <a href="/videos#basic-filtering" rel="external">here</a>.</p>
+    <p>Or,</p>
+    <a href="#newCondition" class="button add addFilterConditionButton">
+      <span class="icon"></span>
+      Add Your First Filter Condition Now
+    </a>
+  </div>
+  <div class="normalFilterMode">
+    <div class="menu advanced filterOptionsMenu mainFilterOptionsMenu"></div>
 
-  <div class="advancedStateLine notAdvancedLine">
-    <span class="advancedStateText">You are in simplified mode.</span>
-    <a class="advancedStateLink advancedOnLink" href="#advanced">Go advanced now?</a>
-  </div>
-  <div class="advancedStateLine editModeAdvancedOffLine">
-    <span class="advancedStateText">Users will start in simplified mode.</span>
-    This means that they will be unable to add new conditions,
-    change the columns or operators of filters, or access the
-    advanced menus on filters.
-    <a class="advancedStateLink advancedOnLink" href="#advanced">Change the default back to advanced.</a>
-  </div>
-  <div class="advancedStateLine editModeAdvancedOnLine">
-    <span class="advancedStateText">Users will start in advanced mode.</span>
-    This means that they will have full access to the options
-    available on the filter. For a more curated experience, you
-    can try the simplified mode.
-    <a class="advancedStateLink advancedOffLink" href="#notAdvanced">Change the default to simplified.</a>
-  </div>
+    <div class="advancedStateLine notAdvancedLine">
+      <span class="advancedStateText">You are in simplified mode.</span>
+      <a class="advancedStateLink advancedOnLink" href="#advanced">Go advanced now?</a>
+    </div>
+    <div class="advancedStateLine editModeAdvancedOffLine">
+      <span class="advancedStateText">Users will start in simplified mode.</span>
+      This means that they will be unable to add new conditions,
+      change the columns or operators of filters, or access the
+      advanced menus on filters.
+      <a class="advancedStateLink advancedOnLink" href="#advanced">Change the default back to advanced.</a>
+    </div>
+    <div class="advancedStateLine editModeAdvancedOnLine">
+      <span class="advancedStateText">Users will start in advanced mode.</span>
+      This means that they will have full access to the options
+      available on the filter. For a more curated experience, you
+      can try the simplified mode.
+      <a class="advancedStateLink advancedOffLink" href="#notAdvanced">Change the default to simplified.</a>
+    </div>
 
-  <div class="filterConditions">
-    <div class="noFilterConditionsText">No conditions defined yet.</div>
-  </div>
+    <div class="filterConditions">
+      <div class="noFilterConditionsText">No conditions defined yet.</div>
+    </div>
 
-  <a class="button add advanced addFilterConditionButton">
-    <span class="icon"></span>
-    Add a New Filter Condition
-  </a>
+    <a class="button add advanced addFilterConditionButton">
+      <span class="icon"></span>
+      Add a New Filter Condition
+    </a>
+  </div>
 
   <%- if @view.has_rights?('update_view') -%>
     <div class="editFilterBlock">

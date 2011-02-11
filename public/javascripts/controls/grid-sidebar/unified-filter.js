@@ -514,7 +514,18 @@
         $pane.data('unifiedFilter-root', rootCondition);
 
         // now render each filter
-        _.each(rootCondition.children || [], renderCondition);
+        _.each(rootCondition.children, renderCondition);
+
+        // if we have nothing, show the beginner's message
+        if (rootCondition.children.length == 0)
+        {
+            _.defer(function()
+            {
+                // hide and show don't work on this loop because the pane itself is hidden
+                $pane.find('.initialFilterMode').show();
+                $pane.find('.normalFilterMode').hide();
+            });
+        }
     };
 
     // initial render and setup of filter condition
@@ -1477,6 +1488,8 @@
         {
             event.preventDefault();
             addNewCondition($pane.data('unifiedFilter-root'));
+            $pane.find('.initialFilterMode').hide();
+            $pane.find('.normalFilterMode').show();
         });
 
         // publisher edit mode
@@ -1499,6 +1512,8 @@
                 }
             }
 
+            $pane.find('.initialFilterMode').hide();
+            $pane.find('.normalFilterMode').show();
             $pane.removeClass('notAdvanced').addClass('editMode advanced');
             $pane.find('.editModeMessage').effect('highlight', {}, 3000);
             isEdit = true;

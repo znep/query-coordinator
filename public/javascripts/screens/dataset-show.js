@@ -82,6 +82,9 @@ $(function()
     {
         blist.$container.bind('render_type_changed', function(e, newType)
         {
+            // Special case for hiding button in page RT
+            if (prevType == 'page') { $fullViewButton.addClass('hide'); }
+
             $('body').removeClass(prevType + '-renderType')
                 .addClass(newType + '-renderType');
             prevType = newType;
@@ -133,8 +136,20 @@ $(function()
     var $dataGrid = datasetPageNS.rtManager.$domForType('table');
 
 
+    // Page render type
+    var pagePriorType = 'table';
+    var $fullViewButton = $('#pageRenderType > .fullView').click(function(e)
+    {
+        e.preventDefault();
+        datasetPageNS.rtManager.show(pagePriorType);
+    });
+
     $(document).bind(blist.events.DISPLAY_ROW, function(e, rowId)
-            { datasetPageNS.rtManager.show('page', {defaultRowId: rowId}); });
+    {
+        pagePriorType = datasetPageNS.rtManager.currentType;
+        $fullViewButton.removeClass('hide');
+        datasetPageNS.rtManager.show('page', {defaultRowId: rowId});
+    });
 
     // sidebar and sidebar tabs
     datasetPageNS.sidebar = $('#gridSidebar').gridSidebar({

@@ -34,6 +34,8 @@
 #
 # Note that changing digest or secret invalidates all existing sessions!
 class BlistCookieStore
+  include ActionController::Session::AbstractStore::SessionUtils
+
   # Cookies can typically store 4096 bytes.
   MAX = 4096
   SECRET_MIN_LENGTH = 30 # characters
@@ -49,7 +51,6 @@ class BlistCookieStore
   CORE_SESSION_KEY = "blist.core-session".freeze
   ENV_SESSION_KEY = "rack.session".freeze
   ENV_SESSION_OPTIONS_KEY = "rack.session.options".freeze
-  HTTP_SET_COOKIE = "Set-Cookie".freeze
 
   # Raised when storing more than 4K of session data.
   class CookieOverflow < StandardError; end
@@ -86,20 +87,21 @@ class BlistCookieStore
   end
 
   def call(env)
-    env[ENV_SESSION_KEY] = ActionController::Session::AbstractStore::SessionHash.new(self, env)
-    env[ENV_SESSION_OPTIONS_KEY] = @default_options.dup
-    env[CORE_SESSION_KEY] = ::CoreSession.new(self, env)
+    prepare!(env)
 
     status, headers, body = @app.call(env)
 
     core_data = env[CORE_SESSION_KEY]
     session_data = env[ENV_SESSION_KEY]
     options = env[ENV_SESSION_OPTIONS_KEY]
+    request = ActionController::Request.new(env)
 
     save_cookie = false
 
-    if !session_data.is_a?(ActionController::Session::AbstractStore::SessionHash) || session_data.send(:loaded?) || options[:expire_after]
-      session_data.send(:load!) if session_data.is_a?(ActionController::Session::AbstractStore::SessionHash) && !session_data.send(:loaded?)
+    #CR: secure?
+    if !(options[:secure] && !request.ssl?) && (!session_data.is_a?(ActionController::Session::AbstractStore::SessionHash) || session_data.send(:loaded?) || options[:expire_after])
+      session_data.send(:load!) if session_data.is_a?(ActionController::Session::AbstractStore::SessionHash) && !session_data.loaded?
+      persistent_session_id!(session_data)
       session_data = marshal(session_data.to_hash)
       save_cookie = true
     end
@@ -115,65 +117,28 @@ class BlistCookieStore
 
       cookie = Hash.new
       cookie[:value] = session_data
+      cookie[:value] = core_data.to_s + '||' + cookie[:value] unless core_data.nil?
       unless options[:expire_after].nil?
         cookie[:expires] = Time.now + options[:expire_after]
       end
 
-      cookie = build_cookie(@key, core_data, cookie.merge(options))
-      unless headers[HTTP_SET_COOKIE].blank?
-        headers[HTTP_SET_COOKIE] << "\n#{cookie}"
-      else
-        headers[HTTP_SET_COOKIE] = cookie
-      end
+      Rack::Utils.set_cookie_header!(headers, @key, cookie.merge(options))
     end
 
     [status, headers, body]
   end
 
   private
-    # Should be in Rack::Utils soon
-    def build_cookie(key, core_cookie, value)
-      case value
-      when Hash
-        domain  = "; domain="  + value[:domain] if value[:domain]
-        path    = "; path="    + value[:path]   if value[:path]
-        # According to RFC 2109, we need dashes here.
-        # N.B.: cgi.rb uses spaces...
-        expires = "; expires=" + value[:expires].clone.gmtime.
-          strftime("%a, %d-%b-%Y %H:%M:%S GMT") if value[:expires]
-        secure = "; secure" if value[:secure]
-        httponly = "; HttpOnly" if value[:httponly]
-        value = value[:value]
-      end
-      value = [value] unless Array === value
-      cookie = Rack::Utils.escape(key) + "=" +
-        core_cookie.to_s + "||" +
-        value.map { |v| Rack::Utils.escape(v) }.join("&") +
-        "#{domain}#{path}#{expires}#{secure}#{httponly}"
+    # who knows where in the labyrinth this could be called?
+    def prepare!(env)
+      env[ENV_SESSION_KEY] = ActionController::Session::AbstractStore::SessionHash.new(self, env)
+      env[ENV_SESSION_OPTIONS_KEY] = @default_options.dup
+      env[CORE_SESSION_KEY] = ::CoreSession.new(self, env)
     end
 
     def load_session(env)
-      request = Rack::Request.new(env)
-      cookie_data = request.cookies[@key]
-
-      # The wonderful thing about Base64 standards is that there are so
-      # many to choose from: http://en.wikipedia.org/wiki/Base64
-      # 
-      # It turns out that the core server, when writing out the
-      # _blist_session_id cookie, uses a "MIME" form of URL encoding where the
-      # 63rd and 64th characters in the encoding are '+' and '/', respectively.
-      # Rails, in its infinite wisdom, prefers a URL-encoding-safe variant of
-      # Base64, which translates the '+' to it's URL-safe "%2B" and '/' into
-      # "%2F". Trying to decode a string with a + or / fails, and when we CGI
-      # unescape the +, it became a space character instead, failing the digest
-      # check.
-      #
-      # This is a total hack - we should figure out a better solution.
-      cookie_data = cookie_data.gsub('+', '%2B') if cookie_data
-      cookie_data = cookie_data.gsub('/', '%2F') if cookie_data
-
-      core_data, session_data = CGI.unescape(cookie_data).gsub('"', '').split('||') if cookie_data
-      data = unmarshal(session_data) || persistent_session_id!({})
+      data = unpacked_cookie_data(env)
+      data = persistent_session_id!(data)
       [data[:session_id], data]
     end
 
@@ -193,16 +158,65 @@ class BlistCookieStore
       end
     end
 
+    def extract_session_id(env)
+      if data = unpacked_cookie_data(env)
+        persistent_session_id!(data) unless data.empty?
+        return data[:session_id]
+      else
+        return nil
+      end
+    end
+
+    def current_session_id(env)
+      env[ENV_SESSION_OPTIONS_KEY][:id]
+    end
+
+    def exists?(env)
+      current_session_id(env).present?
+    end
+
+    def unpacked_cookie_data(env)
+      env["action_dispatch.request.unsigned_session_cookie"] ||= begin
+        stale_session_check! do
+          request = Rack::Request.new(env)
+          cookie_data = request.cookies[@key]
+
+          # The wonderful thing about Base64 standards is that there are so
+          # many to choose from: http://en.wikipedia.org/wiki/Base64
+          # 
+          # It turns out that the core server, when writing out the
+          # _blist_session_id cookie, uses a "MIME" form of URL encoding where the
+          # 63rd and 64th characters in the encoding are '+' and '/', respectively.
+          # Rails, in its infinite wisdom, prefers a URL-encoding-safe variant of
+          # Base64, which translates the '+' to it's URL-safe "%2B" and '/' into
+          # "%2F". Trying to decode a string with a + or / fails, and when we CGI
+          # unescape the +, it became a space character instead, failing the digest
+          # check.
+          #
+          # This is a total hack - we should figure out a better solution.
+          cookie_data = cookie_data.gsub('+', '%2B') if cookie_data
+          cookie_data = cookie_data.gsub('/', '%2F') if cookie_data
+
+          core_data, session_data = CGI.unescape(cookie_data).gsub('"', '').split('||') if cookie_data
+          unmarshal(session_data) || {}
+        end
+      end
+    end
+
     # Marshal a session hash into safe cookie data. Include an integrity hash.
     def marshal(session)
-      @verifier.generate(persistent_session_id!(session))
+      @verifier.generate(session)
     end
 
     # Unmarshal cookie data to a hash and verify its integrity.
     def unmarshal(cookie)
-      persistent_session_id!(@verifier.verify(cookie)) if cookie
+      @verifier.verify(cookie) if cookie
     rescue ActiveSupport::MessageVerifier::InvalidSignature
       nil
+    end
+
+    def destroy
+      # to comply with base class or some stupid shit
     end
 
     def ensure_session_key(key)

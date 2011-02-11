@@ -14,3 +14,5 @@ gem "hoptoad_notifier", "2.3.7"
 gem "money", ">= 3.1.5"
 
 gem "thin", :group => :development
+gem "ruby-debug19", :group => :development
+

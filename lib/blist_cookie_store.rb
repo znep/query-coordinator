@@ -98,7 +98,6 @@ class BlistCookieStore
 
     save_cookie = false
 
-    #CR: secure?
     if !(options[:secure] && !request.ssl?) && (!session_data.is_a?(ActionController::Session::AbstractStore::SessionHash) || session_data.send(:loaded?) || options[:expire_after])
       session_data.send(:load!) if session_data.is_a?(ActionController::Session::AbstractStore::SessionHash) && !session_data.loaded?
       persistent_session_id!(session_data)

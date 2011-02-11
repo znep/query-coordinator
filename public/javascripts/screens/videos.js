@@ -57,15 +57,11 @@
                 return new Date($item.attr('data-added'));
             };
         }
-        var data = $data.get();
-        data.sort(function(a, b)
-        {
-            return (sortValueFunction($(a)) > sortValueFunction($(b))) ? 1 : -1;
-        });
+        var data = _.sortBy($data.get(), function(a) { return sortValueFunction($(a)); });
 
         // magic
         $('.videoList').quicksand($(data), {
-            adjustHeight: 'dynamic', // having this on causes problems with the floats
+            adjustHeight: 'dynamic',
             attribute: 'data-id',
             duration: 600,
             easing: 'easeInOutQuad',

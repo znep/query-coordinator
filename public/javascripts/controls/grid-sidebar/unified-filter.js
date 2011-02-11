@@ -1588,7 +1588,7 @@
         name: configName,
         priority: 1,
         title: 'Filter',
-        subtitle: 'Filter the rows of this dataset based on their contents.',
+        subtitle: 'Filter this dataset based on contents.',
         noReset: true,
         onlyIf: function()
         {

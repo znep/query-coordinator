@@ -140,6 +140,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resource :browse, :controller => 'browse'
   map.resource :nominations, :as => 'nominate'
+  map.resources :videos, :only => [ :index ]
 
   # For legacy support reasons, make /home and /datasets go somewhere reasonable
   map.connect '/home',     :controller => :profile, :action => 'index'

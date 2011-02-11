@@ -105,6 +105,8 @@ profile-edit:
 - screen-profile-shared
 screen-nominations:
 - screen-nominations
+screen-videos:
+- screen-videos
 html-styles:
 - table-core
 - dataset-grid

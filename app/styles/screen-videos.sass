@@ -1,0 +1,69 @@
+.filterBox
+  left: 0 // ie7
+  position: absolute
+  width: 14em
+
+  h3
+    border-top: 1px solid #eee
+    font-size: 1.3em
+    padding-top: 1em
+
+    &:first-child
+      border-top: none
+      padding-top: 0
+
+  ul
+    margin-bottom: 1em
+    position: relative
+
+    li
+      margin: 0.5em
+        left: 0
+
+      a
+        font-size: 1.1em
+
+        &.selected
+          color: #000
+          cursor: default
+          font-weight: bold
+
+.intro
+  font-size: 1.4em
+  margin-bottom: 2em
+  padding: 0.4em
+
+.videoList
+  li
+    float: left
+    margin: 1em
+    width: 15em
+
+    img
+      display: block
+      height: 80px
+      width: 150px
+
+    h2
+      font-size: 1.3em
+      font-weight: bold
+      margin-top: 0.3em
+
+    .length
+      color: #555
+
+.videoPopupModal
+  margin-left: -32em
+  width: 64em
+
+  .close
+    @include sprite-menu-icons
+    float: right
+    margin-bottom: 0.5em
+    margin-top: -0.8em
+
+  .videoContainer
+    clear: both
+
+#embedTemplate
+  display: none

@@ -168,6 +168,10 @@ javascripts:
     - public/javascripts/util/humane-date.js
     - public/javascripts/controls/modal-dialogs.js
     - public/javascripts/screens/nominations.js
+  screen-videos:
+    - public/javascripts/plugins/jquery.quicksand.js
+    - public/javascripts/controls/modal-dialogs.js
+    - public/javascripts/screens/videos.js
   widgets-show:
     - public/javascripts/plugins/jquery.tablesorter.js
     - public/javascripts/controls/full-screen.js

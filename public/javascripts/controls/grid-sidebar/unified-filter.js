@@ -499,6 +499,12 @@
         // the core server has a nasty habit of stripping empty []'s.
         rootCondition.children = rootCondition.children || [];
 
+        // if there are no conditions at all, force to advanced
+        if (rootCondition.children.length == 0)
+        {
+            rootCondition.metadata.advanced = true;
+        }
+
         // are we advanced?
         $pane.toggleClass('advanced', !!rootCondition.metadata.advanced);
         $pane.toggleClass('notAdvanced', !rootCondition.metadata.advanced);
@@ -838,10 +844,10 @@
             var cachedContents = column.cachedContents || {};
             addFilterLine({ item: 'blank', count: cachedContents['null'] }, column,
                           condition, $filter, filterUniqueId, { textOnly: true,
-                          selected: _.any(condition.children, function(child) { return child.value == 'IS_BLANK'; }) });
+                          selected: _.any(condition.children || [], function(child) { return child.value == 'IS_BLANK'; }) });
             addFilterLine({ item: 'not blank', count: cachedContents['non_null'] }, column,
                           condition, $filter, filterUniqueId, { textOnly: true,
-                          selected: _.any(condition.children, function(child) { return child.value == 'IS_NOT_BLANK'; }) });
+                          selected: _.any(condition.children || [], function(child) { return child.value == 'IS_NOT_BLANK'; }) });
         }
         else
         {

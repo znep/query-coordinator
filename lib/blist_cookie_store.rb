@@ -214,7 +214,7 @@ class BlistCookieStore
       nil
     end
 
-    def destroy(env)
+    def destroy(env = nil)
       # to comply with base class or some stupid shit
     end
 

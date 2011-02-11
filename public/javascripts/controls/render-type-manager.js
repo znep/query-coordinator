@@ -186,6 +186,13 @@
                 return this._$dom;
             },
 
+            setTypeConfig: function(type, newConfig)
+            {
+                var rtmObj = this;
+                var typeInfo = getConfig(type);
+                $.extend(rtmObj.settings[typeInfo.name], newConfig);
+            },
+
             show: function(type, defArgs)
             {
                 var rtmObj = this;

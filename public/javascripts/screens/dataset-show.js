@@ -141,14 +141,15 @@ $(function()
     var $fullViewButton = $('#pageRenderType > .fullView').click(function(e)
     {
         e.preventDefault();
-        datasetPageNS.rtManager.show(pagePriorType);
+        blist.dataset.update({displayType: pagePriorType}, false, true);
     });
 
     $(document).bind(blist.events.DISPLAY_ROW, function(e, rowId)
     {
         pagePriorType = datasetPageNS.rtManager.currentType;
         $fullViewButton.removeClass('hide');
-        datasetPageNS.rtManager.show('page', {defaultRowId: rowId});
+        datasetPageNS.rtManager.setTypeConfig('page', {defaultRowId: rowId});
+        blist.dataset.update({displayType: 'page'}, false, true);
     });
 
     // sidebar and sidebar tabs

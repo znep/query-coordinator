@@ -73,10 +73,6 @@
             display: inline-block
             vertical-align: top
             width: 8.5em
-          .delete
-            @include close-button
-            float: left
-            margin-right: 0.5em
 
         td.details
           .title
@@ -99,6 +95,12 @@
           li
             @include clip-text
             width: 8.5em
+
+        td.user, td.attachments
+          .delete
+            @include close-button
+            float: left
+            margin-right: 0.5em
 
         td.rating
           font-size: 1.1667em

@@ -13,6 +13,13 @@
     <li><a href="#sharing" data-filter="sharing">Sharing</a></li>
   </ul>
 
+  <h3>I am a data</h3>
+  <ul class="audienceCriteria">
+    <li><a href="#consumer" data-audience="consumer" class="selected">Consumer</a></li>
+    <li><a href="#publisher" data-audience="publisher">Publisher</a></li>
+    <li><a href="#all" data-audience="all">Everything</a></li>
+  </ul>
+
   <h3>Sort on</h3>
   <ul class="sortCriteria">
     <li><a href="#basics" data-sort="basics" class="selected">Basics First</a></li>
@@ -21,7 +28,7 @@
   </ul>
 </div>
 
-<div class="contentBox withLeftNavigation">
+<div class="contentBox withLeftNavigation videoListBox">
   <h1>Video Guides</h1>
 
   <p class="intro">Welcome to <%= CurrentDomain.strings.company %>! We're glad that
@@ -30,10 +37,13 @@
     with this data site. If you have any further questions, feel free to visit our
     <a href="http://support.socrata.com" rel="external">support page</a>.</p>
 
+  <p class="noResultsText">There are no videos in this category just yet. We're working
+    on adding more, so check back often.</p>
+
   <%# Hey kids. The ordering here determines the ordering for the 'basics first' sort,
       so try to preserve that order when inserting new videos. %>
   <ul class="videoList clearfix">
-    <li data-id="sorting-datasets" data-type="analyzing" data-added="2011-02-10"
+    <li data-id="sorting-datasets" data-type="analyzing" data-audience="consumer" data-added="2011-02-10"
         data-wistiaflashvideoid="6c6fc4df23872334d9e58b0f6119c0142108f2cb"
         data-wistiahtml5videoid="018325cec6383ead681c79e8fd0f049260465952"
         data-wistiastillid="e2ed9f4b4126852476eb71552182d64735a291e4"
@@ -44,7 +54,7 @@
         <p class="length">1:43 mins</p>
       </a>
     </li>
-    <li data-id="find-in-dataset" data-type="analyzing" data-added="2011-02-11"
+    <li data-id="find-in-dataset" data-type="analyzing" data-audience="consumer" data-added="2011-02-11"
         data-wistiaflashvideoid="e2285cddde3017a0a60e1ea809c3c5d4de771782"
         data-wistiahtml5videoid="c0b59376a415ee6fd628057e0943b444d1193ed1"
         data-wistiastillid="2b179f29c4af87cab6b7d7d33c01df49b06f3b0a"
@@ -55,7 +65,7 @@
         <p class="length">1:00 min</p>
       </a>
     </li>
-    <li data-id="filter-dataset" data-type="analyzing" data-added="2011-02-11">
+    <li data-id="filter-dataset" data-type="analyzing" data-audience="consumer" data-added="2011-02-11">
       <a href="#filter-dataset">
         <img src="/stylesheets/images/video_thumbnails/filter-dataset.png" alt="Filtering a Dataset" />
         <h2>Filtering a Dataset</h2>

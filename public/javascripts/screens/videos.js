@@ -33,6 +33,13 @@
             $data = $data.filter('[data-type=' + filterCriteria + ']');
         }
 
+        // audience
+        var audienceCriteria = $('.audienceCriteria').find('a.selected').attr('data-audience');
+        if (audienceCriteria != 'all')
+        {
+            $data = $data.filter('[data-audience=' + audienceCriteria + ']');
+        }
+
         // sort
         var sortValueFunction;
         var sortCriteria = $('.sortCriteria').find('a.selected').attr('data-sort');
@@ -67,6 +74,14 @@
             easing: 'easeInOutQuad',
             useScaling: false // I think the fade is cooler anyway.
         });
+        if (data.length == 0)
+        {
+            $('.noResultsText').fadeIn();
+        }
+        else
+        {
+            $('.noResultsText').fadeOut();
+        }
     });
 
     $.live('.videoList a', 'click', function(event)

@@ -148,12 +148,6 @@ ActionController::Routing::Routes.draw do |map|
 
   map.connect '/analytics', :controller => :analytics, :action => 'index'
 
-  map.resources :profile, :member => {
-    :create_friend => :get,
-    :delete_friend => :get
-    # :update_account => :put has been moved to the https block below, because it sends a password in cleartext.
-  }
-
   # Profile SEO urls (only add here if the action has a view with it;
   # otherwise just add to the :member key in the profile resource above.)
   map.with_options :controller => 'profile' do |profile|
@@ -172,6 +166,8 @@ ActionController::Routing::Routes.draw do |map|
     profile.connect 'profile/:profile_name/:id/app_tokens',
        :action => 'edit_app_tokens', :conditions => { :method => :get },
        :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+    profile.connect 'profile/app_tokens',
+       :action => 'edit_app_tokens', :conditions => { :method => :get }
     profile.connect 'profile/:profile_name/:id/app_token/new',
        :action => 'create_app_token', :conditions => { :method => :post },
        :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
@@ -182,6 +178,12 @@ ActionController::Routing::Routes.draw do |map|
        :action => 'edit_account', :conditions => { :method => :get },
        :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
   end
+
+  map.resources :profile, :member => {
+    :create_friend => :get,
+    :delete_friend => :get
+    # :update_account => :put has been moved to the https block below, because it sends a password in cleartext.
+  }
 
   map.connect 'widgets/:id/:customization_id', :controller => 'widgets',
     :action => 'show', :requirements => {:id => UID_REGEXP}

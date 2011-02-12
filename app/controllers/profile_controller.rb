@@ -255,6 +255,13 @@ class ProfileController < ApplicationController
   end
 
   def edit_app_tokens
+    # redirect from generic to fully-qualified url
+    # (for /profile/app_tokens support from dev.socrata.com)
+    expected_path = "#{current_user.href}/app_tokens"
+    if request.path != expected_path
+      redirect_to(expected_path, :status => 301)
+    end
+
     @user_links = UserLink.find(current_user.id)
     @app_tokens = AppToken.find(current_user.id)
   end

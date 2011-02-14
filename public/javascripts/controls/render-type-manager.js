@@ -89,8 +89,16 @@
         href: {
             name: 'href',
             domId: 'staticRenderType',
-            stylesheets: ['blists-blob-screen.css'],
-            scrollsInline: false
+            stylesheets: ['blists-blob-screen.css',
+                '/styles/individual/about-dataset.css',
+                '/styles/individual/screen-href.css'],
+            javascripts: [{ assets: 'shared-href' }],
+            scrollsInline: false,
+            initFunction: function($dom, settings)
+            {
+                $dom.hrefDataset($.extend({view: settings.view,
+                    editEnabled: settings.editEnabled}, settings.href));
+            }
         },
 
         blob: {

@@ -1,0 +1,83 @@
+#staticRenderType
+  overflow: auto
+  position: relative
+
+.externalLinkDisplay
+  background-color: #ffffff
+  border: 1px solid $color_chrome_box_border
+  @include border-radius(0.3em)
+  float: right
+  margin: 1em
+    right: 2em
+    top: 5em
+  padding: 0.5em
+  text-align: center
+  width: 26.5em
+  p, a
+    font-size: 1.3em
+    font-weight: bold
+    margin: 0.25em
+
+#aboutSection
+  background-color: $color_chrome_sidebar_background
+  .aboutDataset
+    padding: 1em
+    position: relative
+
+    .sectionContent, .aboutHeader, .editMetadataButton
+      background-color: #ffffff
+      border: 1px solid $color_chrome_box_border
+      @include border-radius(0.3em)
+
+    .aboutHeader
+      clear: right
+      float: right
+      margin: 1em 1em 0
+      min-width: 17em
+      padding: 1em
+      width: 25.5em
+      p
+        white-space: nowrap
+
+    .editMetadataButton
+      clear: right
+      float: right
+      font-size: 1.2em
+      font-weight: bold
+      margin:
+        right: 0.8333em
+        top: 0.5em
+      padding: 0.5em 0
+      text-align: center
+      width: 22.9167em
+
+    .formSection
+      margin-right: 30em
+
+    .expander
+      color: #333333
+      cursor: auto
+      .icon
+        display: none
+
+    .formHeader
+      color: $color_chrome_sidebar_text
+      display: inline-block
+      font-size: 1.5em
+      font-weight: bold
+      margin-left: 1em
+
+    .sectionContent
+      margin: 1em
+        top: 0.5em
+      padding: 1px 1px 0.3em
+
+    .contactOwnerFormWrapper
+      margin-top: 0
+
+    .contactOwnerForm
+      padding: 1em
+        right: 2em
+
+      .ie7 & #uniform-contactPurpose
+        width: 13em

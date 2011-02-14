@@ -70,6 +70,7 @@ dataset-show:
 - dataset-grid
 - control-feed
 - splash
+- about-dataset
 - screen-dataset
 dataset-alt:
 - screen-dataset-alt

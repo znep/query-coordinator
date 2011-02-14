@@ -50,7 +50,7 @@ blist.datasetPage.updateValidView = function()
 $(function()
 {
     // Before we do anything else, clear away the about metadata.
-    $('.aboutDataset').appendTo('#templates');
+    $('.aboutLoad .aboutDataset').appendTo('#templates');
     $('.aboutLoad').remove();
 
     // Before we fullscreen, move the footer inside the sizing container.

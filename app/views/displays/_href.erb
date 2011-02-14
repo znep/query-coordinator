@@ -1,4 +1,7 @@
 <div class="externalLinkDisplay">
-  <h4>This dataset is hosted on an external site.</h4>
-  <a href="<%= h(@view.dataset_href) %>" target="_blank">Click to view '<%= @view.name %>'</a>.
+  <p>This dataset is hosted on an external site.</p>
+  <a href="<%= h(@view.dataset_href) %>" target="_blank">View '<%= @view.name %>'</a>
+</div>
+<div id='aboutSection'>
+  <%= render :partial => 'datasets/about_dataset' %>
 </div>

@@ -1,5 +1,9 @@
 # This defines how to display an HREF-dataset, e.g.g a link to another page
 class Displays::Href < Displays::Base
+  def type
+    'href'
+  end
+
   def scrolls_inline?
     false
   end

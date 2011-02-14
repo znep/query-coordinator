@@ -1,0 +1,110 @@
+.aboutDataset
+  .aboutHeader
+    margin-bottom: 1em
+
+    .aboutAuthorImageLink
+      float: left
+      margin-right: 1em
+
+      .aboutAuthorImage
+        height: 5em
+        width: 5em
+
+    .aboutAuthorName
+      font-size: 1.2em
+      font-weight: bold
+      padding-top: 1em
+
+    p
+      font-size: 1.1em
+
+  .unsavedView & .editMetadataButton
+    display: none
+
+  .formSection
+    margin-top: 2em
+
+    a.expander
+      @include sprite-menu-icons
+      .icon
+        float: left
+        margin-right: 0.5em
+
+  .sectionContent
+    padding: 0
+
+    > p
+      font-size: 1.2em
+      line-height: 1.1em
+      padding: 1em
+
+    > dt
+      color: $color_chrome_sidebar_text
+      font-size: 1.1em
+      font-weight: bold
+      height: 2em
+      margin-bottom: -4em
+      overflow: hidden
+      padding: 1em
+      &:first-child + dd
+        border-top: none
+
+      &.widenedItem
+        text-align: center
+
+    > dd
+      border-top: 1px solid $color_chrome_box_border
+      color: $color_chrome_sidebar_text
+      font-size: 1.1em
+      overflow: hidden
+      padding: 1em
+        left: 10em
+      text-align: right
+
+      .wrap
+        display: inline-block
+
+      .hardWrap
+        display: inline-block
+        @include white-space-pre-wrap
+
+      .starsControl
+        float: right
+
+    > li
+      border-top: 1px solid $color_chrome_box_border
+      color: $color_chrome_sidebar_text
+      font-size: 1.1em
+      padding: 1em
+      &:first-child
+        border-top: none
+
+  label
+    display: block
+    font-size: 1.1em
+    font-weight: bold
+    padding-bottom: 0.2em
+
+  div.selector.uniform
+    label.error
+      font-size: 0.9em
+      line-height: 1em
+
+  .contactOwnerForm
+    display: none
+    margin: 0 0.5em 1em
+
+    textarea, input
+      display: block
+      margin: 0.5em 0
+      overflow: auto
+      width: 100%
+      .ie7 &
+        width: 93%
+
+    #uniform-contactPurpose
+      margin-bottom: 1em
+
+    #contactSubject
+      height: 3em
+

@@ -1,6 +1,7 @@
 <div class="aboutDataset_contact">
   <div class="contactOwnerFormWrapper">
-    <% form_tag(url_for({:action => "math_validate"}), :class => 'contactOwnerForm') do %>
+    <% form_tag(url_for({:controller => 'datasets', :action => "math_validate"}),
+      :class => 'contactOwnerForm') do %>
       <%= hidden_field_tag 'method', 'flag' %>
       <div class="lined">
         <div><label for="contactPurpose" class="required">Purpose:</label></div>

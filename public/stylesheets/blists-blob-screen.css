@@ -1,19 +1,5 @@
-.externalLinkDisplay
-{
-   padding: 2em 0 2em 2em;
-}
-
-.externalLinkDisplay h4
-{
-    font-size: 2em;
-}
-
-.externalLinkDisplay a
-{
-    font-size: 1.8em;
-}
-
 #gridRenderType.image
 {
     overflow:scroll;
 }
+

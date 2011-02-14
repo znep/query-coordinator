@@ -57,6 +57,8 @@ administration-stories-appearance:
 - screen-admin-customizer
 administration-users:
 - screen-admin-users
+administration-view-moderation:
+- screen-administration-views
 browse-control:
 - screen-browse
 dataset-new:

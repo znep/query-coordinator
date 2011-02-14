@@ -1,0 +1,24 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+  <%= rendered_stylesheet_tag 'administration-view-moderation' %>
+  <title>View Moderation | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<% content_for :skip_links do %>
+  <a href="?no_js=true">Disable Javascript on this page</a>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<div id="viewsContent" class="contentBox withLeftNavigation">
+  <div class="adminHeader datasets"><%# changeme %>
+    <span class="icon"></span>
+    <h1>View Moderation</h1>
+  </div>
+
+  <%= display_standard_flashes %>
+
+  <div class="datasetsList content">
+    <%= render_browse %>
+  </div>
+</div>

@@ -141,9 +141,49 @@ class AdministrationController < ApplicationController
     handle_button_response(success, error_message, "Pending permissions removed", :users)
   end
 
-  def moderation
+  def comment_moderation
     check_auth_level('moderate_comments')
     check_module('publisher_comment_moderation')
+  end
+
+  def views
+    check_auth_level('approve_nominations')
+    check_feature(:view_moderation)
+
+    @default_params = { :moderation => 'pending' }
+    @browse_in_container = true
+    @dataset_actions = 'Moderation Status'
+    view_facet = view_types_facet()
+    view_facet[:options].delete_if { |item| item[:value] == 'datasets' }
+
+    @facets = [
+      moderation_facet,
+      view_facet,
+      categories_facet,
+      topics_facet
+    ]
+    @suppress_dataset_creation = true
+    @opts = {
+      :datasetView => 'view',
+      :moderation => 'any'
+    }
+    process_browse!
+  end
+  def set_view_moderation_status
+    check_auth_level('approve_nominations')
+    begin
+      v = View.find(params[:id])
+    rescue CoreServer::ResourceNotFound
+      flash[:error] = "Could not find view to modify moderation status"
+      return(redirect_to :action => 'views')
+    end
+
+    v.moderationStatus = (params[:approved] == 'yes')
+    v.save!
+    flash[:notice] = "The view '#{v.name}' has been #{v.moderation_status.downcase}. " +
+        'Please allow a few minutes for the changes to be reflected on your home page'
+
+    return(redirect_to (request.referer || {:action => 'views'}))
   end
 
   def sdp_templates
@@ -614,6 +654,9 @@ private
   def check_member
     render_forbidden unless CurrentDomain.member?(current_user)
   end
+  def check_feature(feature)
+    render_forbidden unless CurrentDomain.feature?(feature)
+  end
 
   def parse_story_params(story, story_params)
     if story_params[:image].present?
@@ -740,7 +783,6 @@ private
     end
   end
 
-private
   # Need an instance for using cache_key()
   def app_helper
     AppHelper.instance

@@ -757,6 +757,14 @@ class View < Model
     end
   end
 
+  def moderation_status
+    case moderationStatus
+      when true then 'Approved'
+      when false then 'Rejected'
+      else 'Pending'
+    end
+  end
+
   @@default_categories = {
     "" => "-- No category --"
   }

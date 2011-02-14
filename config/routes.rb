@@ -87,13 +87,14 @@ ActionController::Routing::Routes.draw do |map|
       :analytics => :get,
       :federations => :get,
       :users => :get,
-      :moderation => :get,
+      :comment_moderation => :get,
       :sdp_templates => :get,
       :datasets => :get,
       :select_dataset => :get,
       :verify_layer_url => :get,
       :home => :get,
       :metadata => :get,
+      :views => :get,
       :save_featured_views => :put
   }
 
@@ -136,6 +137,9 @@ ActionController::Routing::Routes.draw do |map|
     admin.connect '/admin/home/story/:id/delete', :action => 'delete_story'
     admin.connect '/admin/datasets/sidebar_config',
       :action => 'modify_sidebar_config', :conditions => { :method => :post }
+    admin.connect '/admin/views/:id/set/:approved',
+      :action => 'set_view_moderation_status', :conditions => { :method => :post },
+      :requirements => {:id => UID_REGEXP}
   end
 
   map.resource :browse, :controller => 'browse'

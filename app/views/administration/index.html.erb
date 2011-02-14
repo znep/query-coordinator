@@ -37,11 +37,21 @@
     <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, :moderate_comments) && module_available?(:publisher_comment_moderation) -%>
       <li class="comments">
-        <%= link_to raw('<span class="icon"></span>Moderation'),
-            {:action => 'moderation'} %>
+        <%= link_to raw('<span class="icon"></span>Comment Moderation'),
+            {:action => 'comment_moderation'} %>
         <span class='description'>
           Review and moderate comments for datasets on your site
         </span>
+      </li>
+    <%- end -%>
+    <%- if CurrentDomain.user_can?(current_user, :approve_nominations) && feature?(:view_moderation) -%>
+      <li class="datasets"><%# changeme %>
+        <%= link_to \
+            raw('<span class="icon"></span>View Moderation'),
+            {:action => 'views'} %>
+          <span class='description'>
+            View and manage user-created views, including filters, charts, and maps. Approve a view to have it show up in your data catalog.
+          </span>
       </li>
     <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, :edit_sdp) && module_available?(:sdp_customizer) -%>

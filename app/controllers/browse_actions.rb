@@ -47,6 +47,18 @@ protected
     }
   end
 
+  def moderation_facet
+    { :title => 'Moderation Status',
+      :singular_description => 'moderation',
+      :param => :moderation,
+      :options => [
+        {:text => 'Pending', :value => 'pending'},
+        {:text => 'Approved', :value => 'accepted'},
+        {:text => 'Rejected', :value => 'rejected'}
+      ]
+    }
+  end
+
   def process_browse!(options = {})
     browse_params = (options[:force_default]) ? {} : params
 
@@ -62,7 +74,7 @@ protected
     @base_url ||= request.path
 
     # Simple params; these are copied directly to opts
-    [:sortBy, :category, :tags].each do |p|
+    [:sortBy, :category, :tags, :moderation].each do |p|
       if !browse_params[p].nil?
         @opts[p] = browse_params[p]
       end
@@ -95,10 +107,6 @@ protected
 
     if !browse_params[:q].nil?
       @opts[:q] = browse_params[:q]
-    else
-      # Terrible hack; but search service needs _something_ non-null; so we'll
-      # search for everything!
-      @opts[:q] = "''"
     end
 
     @facets ||= [

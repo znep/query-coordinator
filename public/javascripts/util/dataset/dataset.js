@@ -2012,7 +2012,7 @@ this.Dataset = Model.extend({
         var processCount = function(count)
         {
             // Subtract one for dataset
-            ds._relViewCount = count - 1;
+            ds._relViewCount = Math.max(0, count - 1);
             if (_.isFunction(callback)) { callback(ds._relViewCount); }
         };
 
@@ -2085,6 +2085,7 @@ this.Dataset = Model.extend({
         licenseId: true,
         message: true,
         metadata: true,
+        moderationStatus: true,
         name: true,
         originalViewId: true,
         query: true,

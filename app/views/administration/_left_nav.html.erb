@@ -24,8 +24,15 @@
     <%- if CurrentDomain.user_can?(current_user, :moderate_comments) && module_available?(:publisher_comment_moderation) -%>
       <li class="comments">
         <%= link_to_unless_current \
-            raw('<span class="icon"></span>Moderation'),
-            {:action => 'moderation'} %>
+            raw('<span class="icon"></span>Comments'),
+            {:action => 'comment_moderation'} %>
+      </li>
+    <%- end -%>
+    <%- if CurrentDomain.user_can?(current_user, :approve_nominations) && feature?(:view_moderation) -%>
+      <li class="datasets"><%# changeme %>
+        <%= link_to_unless_current \
+            raw('<span class="icon"></span>Views'),
+            {:action => 'views'} %>
       </li>
     <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, :edit_sdp) && module_available?(:sdp_customizer) -%>

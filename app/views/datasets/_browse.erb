@@ -89,7 +89,7 @@
   </div>
   <%- end -%>
 
-  <%- if ((CurrentDomain.user_can?(current_user, :create_datasets) || CurrentDomain.module_enabled?(:community_creation))) -%>
+  <%- if ((CurrentDomain.user_can?(current_user, :create_datasets) || CurrentDomain.module_enabled?(:community_creation))) && !@suppress_dataset_creation -%>
   <div class='createDatasetBox infoBox'>
     <h3>Create or upload your own dataset</h3>
     <div class="buttonContainer">
@@ -136,10 +136,10 @@
       <div class='noResults'>
         <span class='message'><%= @no_results_text %></span>
         <%- if (CurrentDomain.user_can?(current_user, :create_datasets) ||
-              CurrentDomain.module_enabled?(:community_creation)) -%>
+              CurrentDomain.module_enabled?(:community_creation)) && !@suppress_dataset_creation -%>
         <a class='button createLink' href='/datasets/new'>Create New Dataset</a>
         <%- end -%>
-        <%- if CurrentDomain.module_enabled?(:dataset_nomination) -%>
+        <%- if CurrentDomain.module_enabled?(:dataset_nomination) && !@suppress_dataset_creation -%>
         <a class='button suggestLink' href='/nominate'>Suggest a Dataset</a>
         <%- end -%>
       </div>
@@ -152,6 +152,9 @@
           <col class='domainIcon' />
           <%- end -%>
           <col class='nameDesc' />
+          <%- if @dataset_actions -%>
+          <col class='datasetActions' />
+          <%- end -%>
           <col class='popularity' />
           <col class='type' />
         </colgroup>
@@ -162,6 +165,9 @@
             <th class='domainIcon'></th>
             <%- end -%>
             <th class='nameDesc'>Name</th>
+            <%- if @dataset_actions -%>
+            <th class='datasetActions'><%= @dataset_actions %></th>
+            <%- end -%>
             <th class='popularity'>Popularity</th>
             <th class='type'>Type</th>
           </tr>
@@ -204,6 +210,19 @@
                 </div>
               </div>
             </td>
+            <%- if @dataset_actions -%>
+            <td class='datasetActions'>
+              <div class='moderateActions'>
+                <span class='textStatus'><%= v.moderation_status %></span>
+                <%- if v.moderationStatus.nil? || !v.moderationStatus -%>
+                  <% form_button({:action => 'set_view_moderation_status', :id => v.id, :approved => 'yes'}, 'Approve') %>
+                <%- end -%>
+                <%- if v.moderationStatus.nil? || v.moderationStatus -%>
+                  <% form_button({:action => 'set_view_moderation_status', :id => v.id, :approved => 'no'}, 'Reject') %>
+                <%- end -%>
+              </div>
+            </td>
+            <%- end -%>
             <td class='popularity'>
               <span class='visits'><%= pluralize(number_with_delimiter(v.viewCount,
                 {:locale => 'en'}), 'view') %></span>

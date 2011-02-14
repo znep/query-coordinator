@@ -1,24 +1,24 @@
 (function($)
 {
-    $.fn.hrefDataset = function(options)
+    $.fn.blobDataset = function(options)
     {
         // Check if object was already created
-        var hrefDataset = $(this[0]).data("hrefDataset");
-        if (!hrefDataset)
+        var blobDataset = $(this[0]).data("blobDataset");
+        if (!blobDataset)
         {
-            hrefDataset = new hrefDatasetObj(options, this[0]);
+            blobDataset = new blobDatasetObj(options, this[0]);
         }
-        return hrefDataset;
+        return blobDataset;
     };
 
-    var hrefDatasetObj = function(options, dom)
+    var blobDatasetObj = function(options, dom)
     {
-        this.settings = $.extend({}, hrefDatasetObj.defaults, options);
+        this.settings = $.extend({}, blobDatasetObj.defaults, options);
         this.currentDom = dom;
         this.init();
     };
 
-    $.extend(hrefDatasetObj,
+    $.extend(blobDatasetObj,
     {
         defaults:
         {
@@ -29,9 +29,9 @@
         {
             init: function ()
             {
-                var hrefObj = this;
-                var $domObj = hrefObj.$dom();
-                $domObj.data("hrefDataset", hrefObj);
+                var blobObj = this;
+                var $domObj = blobObj.$dom();
+                $domObj.data("blobDataset", blobObj);
 
                 $domObj.find('a.expander').click(function(e)
                 { e.preventDefault(); });
@@ -39,7 +39,7 @@
                 $domObj.find('.datasetAverageRating').each(function()
                 {
                     blist.datasetControls.datasetRating($(this), $domObj,
-                        hrefObj.settings.editEnabled);
+                        blobObj.settings.editEnabled);
                 });
 
                 blist.datasetControls.datasetContact($domObj);

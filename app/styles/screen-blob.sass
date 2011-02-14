@@ -1,4 +1,5 @@
 #staticRenderType
+  background-color: $color_chrome_sidebar_background
   overflow: auto
   position: relative
 
@@ -6,21 +7,20 @@
   background-color: #ffffff
   border: 1px solid $color_chrome_box_border
   @include border-radius(0.3em)
-  float: right
-  margin: 1em
-    right: 2em
-    top: 5em
-  padding: 0.5em
+  margin: 1em 2em 1em
+  padding: 1em 0.5em
+  position: relative
   text-align: center
-  width: 26.5em
+  z-index: 1
+
   p, a
     font-size: 1.3em
     font-weight: bold
     margin: 0.25em
 
 #aboutSection
-  background-color: $color_chrome_sidebar_background
   .aboutDataset
+    margin-top: -2em
     padding: 1em
     position: relative
 
@@ -32,8 +32,7 @@
     .aboutHeader
       clear: right
       float: right
-      margin: 1em 1em 0
-      min-width: 17em
+      margin: 4em 1em 0
       padding: 1em
       width: 25.5em
       p
@@ -55,7 +54,6 @@
       margin-right: 30em
 
     .expander
-      color: #333333
       cursor: auto
       .icon
         display: none
@@ -71,6 +69,8 @@
       margin: 1em
         top: 0.5em
       padding: 1px 1px 0.3em
+      > dt, > dd
+        font-size: 1.2em
 
     .contactOwnerFormWrapper
       margin-top: 0

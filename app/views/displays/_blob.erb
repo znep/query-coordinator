@@ -1,0 +1,33 @@
+<div class='externalLinkDisplay <%= @view.display.display_type %>'>
+  <a href="<%= @view.blob_href %>" target="_blank">
+    Download '<%= @view.blobFilename %>'
+    (<%= @view.blob_type %>, <%= number_to_human_size(@view.blobFileSize,
+        :locale => :en) %>)</a>
+</div>
+
+<%- if @view.display.display_type == 'image' -%>
+<div class='displayArea image fullHeight'>
+<img src="<%= @view.blob_href %>" alt="<%= @view.name %>" />
+</div>
+
+<%- elsif @view.display.display_type == 'google_viewer' -%>
+<%- blob_location = URI.escape(request.protocol + request.host_with_port + @view.blob_href) -%>
+<div class='displayArea fullHeight'>
+<noscript>
+    <p>Javascript is required to run the document viewer inside your browser.</p>
+    <p>To download this file instead, <%= link_to 'click here', blob_location, :target => '_blank' %>.</p>
+</noscript>
+<script type="text/javascript">
+    $(function()
+    {
+        blist.renderTypes = blist.renderTypes || {};
+        blist.renderTypes.blob = { href: '<%= blob_location %>' };
+    });
+</script>
+</div>
+
+<%- else -%>
+<div id='aboutSection'>
+  <%= render :partial => 'datasets/about_dataset' %>
+</div>
+<%- end -%>

@@ -5,6 +5,8 @@ class Displays::Blob < Displays::Base
           @display_type = 'google_viewer'
         elsif @@IMAGE_VIEWERS.any? { |v| @view.blobMimeType.match(v) }
           @display_type = 'image'
+        else
+          @display_type = 'link'
         end
     end
 
@@ -16,16 +18,13 @@ class Displays::Blob < Displays::Base
       'Non-tabular file or document'
     end
 
+    def display_type
+      @display_type
+    end
+
     # Choose a viewer based on MIME type, default to download link
     def render_partial
-      return case @display_type
-        when 'image'
-          'displays/image'
-        when 'google_viewer'
-          'displays/google_viewer'
-        else
-          'displays/download_file'
-        end
+      'displays/blob'
     end
 
     def scrolls_inline?

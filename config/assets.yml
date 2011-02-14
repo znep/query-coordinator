@@ -98,8 +98,8 @@ javascripts:
     - public/javascripts/controls/rich-render-library.js
     - public/javascripts/controls/fatrow-render-type.js
     - public/javascripts/controls/page-render-type.js
-  shared-href:
-    - public/javascripts/controls/href-dataset.js
+  shared-blob:
+    - public/javascripts/controls/blob-dataset.js
   admin-select-dataset:
     - public/javascripts/screens/admin-select-dataset.js
   admin-datasets:
@@ -305,7 +305,7 @@ dump:
     - shared-map
     - shared-table-render
     - shared-richRenderers
-    - shared-href
+    - shared-blob
     - highcharts
     - jit
 

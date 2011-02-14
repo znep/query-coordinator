@@ -401,6 +401,10 @@ class View < Model
     end
   end
 
+  def blob_type
+    blobMimeType.gsub(/;.*/, '')
+  end
+
   def dataset_href
     if is_href?
       unless metadata.nil? || metadata.href.blank?

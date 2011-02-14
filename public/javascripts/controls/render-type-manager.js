@@ -89,14 +89,13 @@
         href: {
             name: 'href',
             domId: 'staticRenderType',
-            stylesheets: ['blists-blob-screen.css',
-                '/styles/individual/about-dataset.css',
-                '/styles/individual/screen-href.css'],
-            javascripts: [{ assets: 'shared-href' }],
+            stylesheets: ['/styles/individual/about-dataset.css',
+                '/styles/individual/screen-blob.css'],
+            javascripts: [{ assets: 'shared-blob' }],
             scrollsInline: false,
             initFunction: function($dom, settings)
             {
-                $dom.hrefDataset($.extend({view: settings.view,
+                $dom.blobDataset($.extend({view: settings.view,
                     editEnabled: settings.editEnabled}, settings.href));
             }
         },
@@ -104,14 +103,16 @@
         blob: {
             name: 'blob',
             domId: 'staticRenderType',
-            stylesheets: ['blists-blob-screen.css'],
+            stylesheets: ['/styles/individual/about-dataset.css',
+                '/styles/individual/screen-blob.css'],
+            javascripts: [{ assets: 'shared-blob' }],
             scrollsInline: false,
-            initFunction: function($dom, opts)
+            initFunction: function($dom, settings)
             {
                 if (!$.isBlank(((blist.renderTypes || {}).blob || {}).href))
                 {
                     var embedHtml;
-                    if (opts.view.blobMimeType.indexOf('application/pdf')
+                    if (settings.view.blobMimeType.indexOf('application/pdf')
                         !== -1 && $.browser.msie)
                     {
                         embedHtml = '<object data="' +
@@ -128,7 +129,12 @@
                             '&embedded=true" width="100%" height="99%" ' +
                             'frameborder="0" scrolling="no"></iframe>';
                     }
-                    $dom.addClass('scrollContent').html(embedHtml);
+                    $dom.find('.displayArea').html(embedHtml);
+                }
+                else
+                {
+                    $dom.blobDataset($.extend({view: settings.view,
+                        editEnabled: settings.editEnabled}, settings.blob));
                 }
             }
         }

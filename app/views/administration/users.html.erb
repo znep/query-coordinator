@@ -130,7 +130,7 @@
                   <span class="cellInner"><%= current_user.roleName.titleize %></span>
                 <%- else -%>
                   <span class="cellInner hide"><%= (user.roleName || '').titleize %></span>
-                  <%= form_tag({:action => 'set_user_role'}, {:method => 'post'}) %>
+                  <%= form_tag({:action => 'set_user_role'}, {:method => 'put'}) %>
                     <input type="hidden" name="user_id" class="hiddenID" value="<%= user.id %>" />
                     <%= raw(select_for_role("userSelect-#{user.id}", 'role', user.roleName, 'roleSelect')) %>
                     <%- if no_js -%>
@@ -143,10 +143,10 @@
                 <td class="actions">
                   <%- unless user.id == current_user.id -%>
                     <span class="loading"></span>
-                    <%= link_to 'Remove', { :action => 'set_user_role', :user_id => user.id, :role => 0 },
-                      {:class => 'button removeButton'} %>
-                    <%= link_to 'Reset Password', { :action => 'reset_user_password', :user_id => user.id },
-                      {:class => 'button resetPasswordButton'} %>
+                    <% form_button({ :action => 'set_user_role', :user_id => user.id, :role => 0 },
+                                    'Remove', {:method => :put}, {:class => 'button removeButton'}) %>
+                    <% form_button({ :action => 'reset_user_password', :user_id => user.id },
+                                    'Reset Password', {}, {:class => 'button resetPasswordButton'}) %>
                   <%- end -%>
                 </td>
               <%- end -%>
@@ -200,8 +200,8 @@
                 </td>
                 <td class="actions">
                   <span class="loading"></span>
-                  <%= link_to 'Remove', { :action => 'delete_future_user', :id => user.id },
-                    {:class => 'button removeButton'} %>
+                  <% form_button({ :action => 'delete_future_user', :id => user.id }, 'Remove', 
+                       {:method => :delete}, {:class => 'button removeButton'}) %>
                 </td>
               </tr>
             <%- end -%>

@@ -27,15 +27,10 @@
       </div>
     <%- else -%>
       <%- @metadata.each_with_index do |fieldset, fs_index| -%>
-        <a href="<%= url_for :action => 'delete_metadata_fieldset',
-          :fieldset => fs_index %>" class="button remove removeFieldsetButton">
-          <span class="icon"></span>
-          Remove
-        </a>
+        <% form_button({ :action => 'delete_metadata_fieldset', :fieldset => fs_index }, 'Remove', 
+             {:method => :delete}, {:class => 'button removeFieldsetButton remove'}) %>
         <h3 class="fieldsetTitle"><%= fieldset['name'] %></h3>
         <div class="gridListWrapper">
-          <%= form_tag({:action => 'create_metadata_field', :fieldset => fs_index},
-            {:class => 'createMetadataFieldForm'}) %>
             <table class="gridList metadataFieldTable" cellspacing="0">
               <colgroup>
                 <col class="required" />
@@ -64,26 +59,22 @@
                       </td>
                       <td class="actions">
                         <span class="loading"></span>
-                        <%= link_to raw('<span class="icon"></span>Remove'),
-                            { :action => 'delete_metadata_field',
-                              :fieldset => fs_index, :index => index },
-                              {:class => 'button removeField remove'} %>
-                        <%= link_to 'Make ' + (required ? 'Optional' : 'Required'),
-                              { :action => 'toggle_metadata_required',
-                                :fieldset => fs_index, :index => index },
-                              {:class => 'button toggleRequired'} %>
-                        <%= link_to raw('<span class="icon"></span>Up'),
-                              { :action => 'move_metadata_field',
-                                :fieldset => fs_index, :field => field.name,
-                                :direction => 'up' },
-                              { :class => 'button moveButton upButton upArrowNoHover' +
-                                ((index == 0) ? ' disabled' : '') } %>
-                        <%= link_to raw('<span class="icon"></span>Down'),
-                              { :action => 'move_metadata_field',
-                                :fieldset => fs_index, :field => field.name,
-                                :direction => 'down' },
-                              { :class => 'button moveButton downButton downArrowNoHover' +
-                                ((index == fieldset['fields'].length-1) ? ' disabled' : '') } %>
+                        <% form_button({ :action => 'delete_metadata_field', :fieldset => fs_index,
+                                         :index => index}, 'Remove', {:method => :delete},
+                                       {:class => 'button removeField remove'}) %>
+                        <% form_button({ :action => 'toggle_metadata_required', :fieldset => fs_index,
+                                         :index => index}, 'Make ' + (required ? 'Optional' : 'Required'), 
+                                       {:method => :put}, {:class => 'button toggleRequired'}) %>
+                        <% form_button({ :action => 'move_metadata_field', :fieldset => fs_index,
+                                         :index => index, :field => field.name, :direction => 'up'},
+                                         'Up', {:method => :put},
+                                         {:class => 'button moveButton upButton' +
+                                          ((index == 0) ? ' disabled' : '') }) %>
+                        <% form_button({ :action => 'move_metadata_field', :fieldset => fs_index,
+                                         :index => index, :field => field.name, :direction => 'down'},
+                                         'Down', {:method => :put},
+                                         {:class => 'button moveButton downButton' +
+                                          ((index == fieldset['fields'].length-1) ? ' disabled' : '')}) %>
                       </td>
                     </tr>
                   <%- end -%>
@@ -97,18 +88,20 @@
                   </tr>
                 <%- end -%>
                 <tr>
-                  <td class="required">
-                  </td>
-                  <td class="name">
-                    <input type="text" class="newFieldName" name="newFieldName" />
-                  </td>
-                  <td class="actions">
-                    <input class="button newFieldButton" type="submit" value="Add New Field" />
-                  </td>
+                  <%= form_tag({:action => 'create_metadata_field', :fieldset => fs_index},
+                    {:class => 'createMetadataFieldForm'}) %>
+                    <td class="required">
+                    </td>
+                    <td class="name">
+                      <input type="text" class="newFieldName" name="newFieldName" />
+                    </td>
+                    <td class="actions">
+                      <input class="button newFieldButton" type="submit" value="Add New Field" />
+                    </td>
+                  </form>
                 </tr>
               </tbody>
             </table>
-          </form>
         </div>
       <%- end -%>
     <%- end -%>
@@ -148,10 +141,8 @@
                   </span>
                 </td>
                 <td class="actions">
-                  <%= link_to raw('<span class="icon"></span>Remove'),
-                      { :action => 'delete_category',
-                        :category => category },
-                        {:class => 'button removeField remove'} %>
+                  <% form_button({ :action => 'delete_category', :category => category }, 'Remove', 
+                       {:method => :delete}, {:class => 'button removeField remove'}) %>
                 </td>
               </tr>
             <%- end -%>
@@ -167,7 +158,6 @@
         </table>
       </form>
   </div>
-
 </div>
 
 <% content_for :js_footer do %>

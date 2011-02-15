@@ -99,42 +99,60 @@ ActionController::Routing::Routes.draw do |map|
   }
 
   map.with_options :controller => 'administration' do |admin|
-    admin.connect '/admin/users/:user_id/promote/:role', :action => 'set_user_role'
+    admin.connect '/admin/users/:user_id/promote/:role', :action => 'set_user_role',
+      :conditions => { :method => :put }
     admin.connect '/admin/users/update', :action => 'set_user_role',
-      :conditions => { :method => [:get, :post] }
+      :conditions => { :method => :put }
     admin.connect '/admin/users/:user_id/reset_password', :action => 'reset_user_password',
-      :conditions => { :method => [:get, :post] }
+      :conditions => { :method => :post }
     admin.connect '/admin/users/future/:id/delete', :action => 'delete_future_user',
-      :conditions => { :method => :get }
+      :conditions => { :method => :delete }
     admin.connect '/admin/users/bulk_create', :action => 'bulk_create_users',
       :conditions => { :method => :post }
     admin.connect '/admin/sdp_templates', :action => 'sdp_template_create',
       :conditions => { :method => :post }
-    admin.connect '/admin/sdp_templates/:id', :action => 'sdp_template'
-    admin.connect '/admin/sdp_templates/:id/set_default', :action => 'sdp_set_default_template'
-    admin.connect '/admin/sdp_templates/:id/delete', :action => 'sdp_delete_template'
-    admin.connect '/admin/federations/:id/delete', :action => 'delete_federation'
-    admin.connect '/admin/federations/:id/accept', :action => 'accept_federation'
-    admin.connect '/admin/federations/:id/reject', :action => 'reject_federation'
+    admin.connect '/admin/sdp_templates/:id', :action => 'sdp_template',
+      :conditions => { :method => :get }
+    admin.connect '/admin/sdp_templates/:id/set_default', :action => 'sdp_set_default_template',
+      :conditions => { :method => :put }
+    admin.connect '/admin/sdp_templates/:id/delete', :action => 'sdp_delete_template',
+      :conditions => { :method => :delete }
+    admin.connect '/admin/federations/:id/delete', :action => 'delete_federation',
+      :conditions => { :method => :delete }
+    admin.connect '/admin/federations/:id/accept', :action => 'accept_federation',
+      :conditions => { :method => :post }
+    admin.connect '/admin/federations/:id/reject', :action => 'reject_federation',
+      :conditions => { :method => :post }
     admin.connect '/admin/federations/create', :action => 'create_federation',
       :conditions => { :method => :post }
-    admin.connect '/admin/metadata/:fieldset/create', :action => 'create_metadata_field'
-    admin.connect '/admin/metadata/:fieldset/delete', :action => 'delete_metadata_fieldset'
-    admin.connect '/admin/metadata/create_fieldset', :action => 'create_metadata_fieldset'
-    admin.connect '/admin/metadata/:fieldset/:index/delete', :action => 'delete_metadata_field'
-    admin.connect '/admin/metadata/:fieldset/:index/toggle_required', :action => 'toggle_metadata_required'
-    admin.connect '/admin/metadata/:fieldset/:field/move/:direction', :action => 'move_metadata_field'
+    admin.connect '/admin/metadata/:fieldset/create', :action => 'create_metadata_field',
+      :conditions => { :method => :post }
+    admin.connect '/admin/metadata/:fieldset/delete', :action => 'delete_metadata_fieldset',
+      :conditions => { :method => :delete }
+    admin.connect '/admin/metadata/create_fieldset', :action => 'create_metadata_fieldset',
+      :conditions => { :method => :post }
+    admin.connect '/admin/metadata/:fieldset/:index/delete', :action => 'delete_metadata_field',
+      :conditions => { :method => :delete }
+    admin.connect '/admin/metadata/:fieldset/:index/toggle_required', :action => 'toggle_metadata_required',
+      :conditions => { :method => :put }
+    admin.connect '/admin/metadata/:fieldset/:field/move/:direction', :action => 'move_metadata_field',
+      :conditions => { :method => :put }
     admin.connect '/admin/metadata/create_category', :action => 'create_category',
       :conditions => { :method => :post }
-    admin.connect '/admin/metadata/delete_category', :action => 'delete_category'
+    admin.connect '/admin/metadata/delete_category', :action => 'delete_category',
+      :conditions => { :method => :delete }
     admin.connect '/admin/home/stories', :action => 'create_story',
       :conditions => { :method => :post }
     admin.connect '/admin/home/stories/appearance', :action => 'update_stories_appearance',
       :conditions => { :method => :put }
-    admin.connect '/admin/home/stories/appearance', :action => 'stories_appearance'
-    admin.connect '/admin/home/story/new', :action => 'new_story'
-    admin.connect '/admin/home/story/:id', :action => 'edit_story'
-    admin.connect '/admin/home/story/:id/delete', :action => 'delete_story'
+    admin.connect '/admin/home/stories/appearance', :action => 'stories_appearance',
+      :conditions => { :method => :get }
+    admin.connect '/admin/home/story/new', :action => 'new_story',
+      :conditions => { :method => :get }
+    admin.connect '/admin/home/story/:id', :action => 'edit_story',
+      :conditions => { :method => [:get, :post] }
+    admin.connect '/admin/home/story/:id/delete', :action => 'delete_story',
+      :conditions => { :method => :delete }
     admin.connect '/admin/datasets/sidebar_config',
       :action => 'modify_sidebar_config', :conditions => { :method => :post }
     admin.connect '/admin/views/:id/set/:approved',

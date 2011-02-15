@@ -20,7 +20,7 @@ $(function()
             url: '/api/users?method=promote&name=' + id + '&role=' + $select.val(),
             contentType: "application/json",
             dataType: "json",
-            type: "POST",
+            type: "PUT",
             success: function(responseData)
             {
                 $select.closest('tr').attr('data-userrole', $select.val().toLowerCase());

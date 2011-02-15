@@ -97,14 +97,15 @@
                 <%- accepted = f.acceptedUserId.present? -%>
                 <span class="cellInner"><%= accepted ? 'Accepted' : 'Pending' %></span>
                 <%- if f.targetDomainCName == CurrentDomain.cname %>
-                  <%= link_to 'Accept', {:action => :accept_federation, :id => f.id},
-                      :class => 'button' + (accepted ? ' disabled' : '') %>
-                  <%= link_to 'Reject', {:action => :reject_federation, :id => f.id},
-                      :class => 'button' + (accepted ? '' : ' disabled') %>
+                  <% form_button({:action => :accept_federation, :id => f.id}, 'Accept',
+                       {}, {:class => 'button' + (accepted ? ' disabled' : '')}) %>
+                  <% form_button({:action => :reject_federation, :id => f.id}, 'Reject',
+                       {:method => :delete}, {:class => 'button' + (accepted ? '' : ' disabled')}) %>
                 <%- end -%>
               </td>
               <td class="delete">
-                <%= link_to 'Terminate', {:action => :delete_federation, :id => f.id}, :class => 'button' %>
+                <% form_button({:action => :delete_federation, :id => f.id}, 'Terminate',
+                     {:method => :delete}) %>
               </td>
             </tr>
           <%- end -%>

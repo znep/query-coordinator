@@ -11,7 +11,8 @@
 
         return this.each(function()
         {
-            var $this = $(this);
+            var $this = $(this),
+                $form = $this.closest('form');
 
             $this.click(function(event)
             {
@@ -38,8 +39,9 @@
                 $this.addClass('hide');
 
                 $.ajax({
-                    url: $this.attr('href'),
-                    method: 'get',
+                    url: $form.attr('action'),
+                    type: 'post',
+                    data: $form.serialize(),
                     dataType: 'json',
                     success: function(response)
                     {

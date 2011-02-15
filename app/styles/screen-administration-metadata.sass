@@ -12,13 +12,9 @@
         top: 2em
 
     .removeFieldsetButton
-      @include sprite-repeater-icons
       float: right
       position: relative
       top: 1.5em
-      .icon
-        float: left
-        padding-right: 0.5em
 
     .gridListWrapper
       margin-top: 1.5em
@@ -38,17 +34,11 @@
     .actions
       width: 42em
 
-      .button
-        &.removeField
-          @include sprite-repeater-icons
-        &.moveButton
-          @include sprite-menu-icons
+      input.button
+        font-size: 1em
         opacity: 0.3
         @include transition-duration(0.5s)
         @include transition-property(opacity)
-        .icon
-          float: left
-          padding-right: 0.5em
 
       &:hover .button
         opacity: 1
@@ -69,8 +59,7 @@
         padding-right: 0
 
       .toggleRequired
-        width: 7.5em
-        text-align: center
+        width: 10em
 
   .newFieldsetArea
     padding-top: 1em

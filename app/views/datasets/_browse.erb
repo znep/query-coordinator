@@ -199,8 +199,19 @@
               <%- if !v.category.blank? -%>
               <span class='category infoItem'><%= v.category %></span>
               <%- end -%>
-              <%- if !v.tags.nil? -%>
-              <span class='tags infoItem'><%= v.tags.join(', ') %></span>
+              <%- if !v.tags.nil? && v.tags.length > 0 -%>
+              <%- tag_limit = 50 -%>
+              <%- t = v.tags.join(', ') -%>
+              <%- if t.length > tag_limit
+                    i = t.rindex(',', tag_limit)
+                    if i.nil?
+                      t = v.tags[0].to_s.slice(0, tag_limit)
+                    else
+                      t = t.slice(0, i + 2)
+                    end
+                    t += '...'
+                  end -%>
+              <span class='tags infoItem'><%= t %></span>
               <%- end -%>
               <div class='expandBlock clearfix collapsed'>
                 <div class='description'><%= v.description %></div>

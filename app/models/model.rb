@@ -222,7 +222,7 @@ class Model
     attributes.reject! {|key,v| non_serializable_attributes.include?(key)}
     attributes.each do |key, value|
       if value.nil? || value == '""' ||
-        (value.respond_to?(:empty) && value.empty?) ||
+        (value.respond_to?(:empty?) && value.empty?) ||
         value == "''" || value == "null"
         attributes[key] = nil
       end

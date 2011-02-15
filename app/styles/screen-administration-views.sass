@@ -4,13 +4,21 @@
 
     .datasetActions
       width: 20em
+      .ie7 &
+        width: 22em
       .moderateActions
         position: relative
         top: -0.6em
         .textStatus
           display: inline-block
           font-weight: bold
-          width: 7em
-        > form
+          width: 5em
+          .ie7 &
+            bottom: 1em
+            position: relative
+        form
           font-size: 0.8em
           display: inline
+          .ie7 &
+            .button
+              padding: 0.5em

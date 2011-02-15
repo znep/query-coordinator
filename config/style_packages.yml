@@ -109,6 +109,9 @@ screen-nominations:
 - screen-nominations
 screen-videos:
 - screen-videos
+screen-videos-popup:
+- strip-chrome
+- screen-videos-popup
 html-styles:
 - table-core
 - dataset-grid

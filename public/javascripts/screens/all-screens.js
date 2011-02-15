@@ -10,6 +10,12 @@
         this.target = '_blank';
     });
 
+    $.live('a[rel$=video]', 'click', function(event)
+    {
+        event.preventDefault();
+
+        window.open($(this).attr('href'), '', 'width=650,height=550,location=no,menubar=no,scrollbars=no,status=no,toolbar=no');
+    });
 
     // custom validation
     $.validator.addMethod("customUrl", function(value, element)

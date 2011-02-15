@@ -1,5 +1,38 @@
 ;$(function()
 {
+    blist.namespace.fetch('blist.videos');
+
+    // util function
+    var showVideo = function($item, destination)
+    {
+        // do we even have anything?
+        if ($item.length === 0)
+        {
+            return;
+        }
+
+        // process the templates
+        var embedCode = $('#embedTemplate').text()
+            .replace(/%flashvideoid%/g, $item.attr('data-wistiaflashvideoid'))
+            .replace(/%html5videoid%/g, $item.attr('data-wistiahtml5videoid'))
+            .replace(/%stillid%/g, $item.attr('data-wistiastillid'))
+            .replace(/%productionid%/g, $item.attr('data-wistiaproductionid'));
+
+        if (destination === 'topLevel')
+        {
+            $('.topLevelVideoContainer').html(embedCode);
+        }
+        else
+        {
+            // apply the code and pop the window
+            $('.videoPopupModal')
+                .find('.videoContainer')
+                    .html(embedCode)
+                    .end()
+                .jqmShow();
+        }
+    };
+
     // set basics ordering #
     $('.videoList li').each(function(i)
     {
@@ -9,32 +42,18 @@
     // save off a copy of the original list
     var $videoListClone = $('.videoList').clone();
 
-    // wire up sorts and filters
-    $.live('.filterBox ul a', 'click', function(event)
+    // sort and filter data
+    var processData = function(filterCriteria, audienceCriteria, sortCriteria)
     {
-        event.preventDefault();
-
-        var $this = $(this);
-        if ($this.hasClass('selected'))
-        {
-            return;
-        }
-
-        // mark as selected
-        $this.closest('ul').find('a').removeClass('selected');
-        $this.addClass('selected');
-
         var $data = $videoListClone.find('li');
 
         // filter
-        var filterCriteria = $('.filterCriteria').find('a.selected').attr('data-filter');
         if (filterCriteria != 'all')
         {
             $data = $data.filter('[data-type=' + filterCriteria + ']');
         }
 
         // audience
-        var audienceCriteria = $('.audienceCriteria').find('a.selected').attr('data-audience');
         if (audienceCriteria != 'all')
         {
             $data = $data.filter('[data-audience=' + audienceCriteria + ']');
@@ -42,7 +61,6 @@
 
         // sort
         var sortValueFunction;
-        var sortCriteria = $('.sortCriteria').find('a.selected').attr('data-sort');
         if (sortCriteria == 'basics')
         {
             sortValueFunction = function($item)
@@ -64,7 +82,28 @@
                 return new Date($item.attr('data-added'));
             };
         }
-        var data = _.sortBy($data.get(), function(a) { return sortValueFunction($(a)); });
+        return _.sortBy($data.get(), function(a) { return sortValueFunction($(a)); });
+    };
+
+    // wire up sorts and filters
+    $.live('.filterBox ul a', 'click', function(event)
+    {
+        event.preventDefault();
+
+        var $this = $(this);
+        if ($this.hasClass('selected'))
+        {
+            return;
+        }
+
+        // mark as selected
+        $this.closest('ul').find('a').removeClass('selected');
+        $this.addClass('selected');
+
+        // process data
+        var data = processData($('.filterCriteria').find('a.selected').attr('data-filter'),
+                               $('.sortCriteria').find('a.selected').attr('data-sort'),
+                               $('.audienceCriteria').find('a.selected').attr('data-audience'));
 
         // magic
         $('.videoList').quicksand($(data), {
@@ -87,21 +126,7 @@
     $.live('.videoList a', 'click', function(event)
     {
         // do NOT prevent default!
-        var $item = $(this).closest('li');
-
-        // process the templates
-        var embedCode = $('#embedTemplate').text()
-            .replace(/%flashvideoid%/g, $item.attr('data-wistiaflashvideoid'))
-            .replace(/%html5videoid%/g, $item.attr('data-wistiahtml5videoid'))
-            .replace(/%stillid%/g, $item.attr('data-wistiastillid'))
-            .replace(/%productionid%/g, $item.attr('data-wistiaproductionid'));
-
-        // apply the code and pop the window
-        $('.videoPopupModal')
-            .find('.videoContainer')
-                .html(embedCode)
-                .end()
-            .jqmShow();
+        showVideo($(this).closest('li'));
     });
 
     $('.videoPopupModal .close').click(function(event)
@@ -119,10 +144,36 @@
 
     // detect if we have a hash at the end of the url; if
     // so locate and load that video straight away
-    var hash = window.location.hash;
+    var hash = window.location.hash || '';
+    hash = hash.replace('#', '');
     if (!$.isBlank(hash))
     {
-        hash = hash.replace('#', '');
-        $('.videoList li[data-id=' + hash + '] a').click();
+        var $item = $('.videoList li[data-id=' + hash + ']');
+
+        if ($item.length > 0)
+        {
+            showVideo($item, (blist.videos.popupMode === true) ? 'topLevel' : 'lightbox');
+
+            // detect if we're in a popup; if so, only show top 3 related videos
+            if (blist.videos.popupMode === true)
+            {
+                var data = $(processData($item.attr('data-type'), $item.attr('data-audience'), 'basics'));
+                var newItem = $(data).filter('[data-id=' + hash + ']').get(0);
+
+                // we've sorted and filtered and got the actual video, now get the excerpt
+                var excerptStart = _.indexOf(data, newItem) - 1;
+                if ((data.length - excerptStart) <= 4)
+                {
+                    // we're too close to the end! move back by appropriate amount
+                    excerptStart -= (4 - (data.length - excerptStart));
+                }
+                var dataExcerpt = data.splice(Math.max(excerptStart, 0), 4);
+                dataExcerpt = _.without(dataExcerpt, newItem);
+
+                $('.videoList')
+                    .empty()
+                    .append($(dataExcerpt));
+            }
+        }
     }
 });

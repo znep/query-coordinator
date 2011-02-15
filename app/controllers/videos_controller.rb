@@ -4,4 +4,10 @@ class VideosController < ApplicationController
   def index
     # most. pointless. controller. ever.
   end
+
+  def popup
+    # gasp! something not pointless!
+    @popup = true
+    render :action => :index
+  end
 end

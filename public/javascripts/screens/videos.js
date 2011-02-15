@@ -102,8 +102,8 @@
 
         // process data
         var data = processData($('.filterCriteria').find('a.selected').attr('data-filter'),
-                               $('.sortCriteria').find('a.selected').attr('data-sort'),
-                               $('.audienceCriteria').find('a.selected').attr('data-audience'));
+                               $('.audienceCriteria').find('a.selected').attr('data-audience'),
+                               $('.sortCriteria').find('a.selected').attr('data-sort'));
 
         // magic
         $('.videoList').quicksand($(data), {

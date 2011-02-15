@@ -1,9 +1,9 @@
 class Displays::Blob < Displays::Base
     def initialize(view)
         super
-        if @@GOOGLE_VIEWERS.any? { |v| @view.blobMimeType.match(v) }
+        if @@GOOGLE_VIEWERS.any? { |v| @view.blobs[0]['type'].match(v) }
           @display_type = 'google_viewer'
-        elsif @@IMAGE_VIEWERS.any? { |v| @view.blobMimeType.match(v) }
+        elsif @@IMAGE_VIEWERS.any? { |v| @view.blobs[0]['type'].match(v) }
           @display_type = 'image'
         else
           @display_type = 'link'

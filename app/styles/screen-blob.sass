@@ -13,10 +13,29 @@
   text-align: center
   z-index: 1
 
-  p, a
-    font-size: 1.3em
+  p
+    display: inline-block
+    font-size: 1.4em
     font-weight: bold
     margin: 0.25em
+    .ie7 &
+      display: inline
+  ul
+    display: inline-block
+    .ie7 &
+      display: inline
+    li
+      display: inline-block
+      border-left: 2px solid $color_chrome_box_border
+      padding:
+        left: 0.5em
+        right: 0.2em
+      &:first-child
+        border-left: none
+      a
+        font-size: 1.3em
+      .ie7 &
+        display: inline
 
 #aboutSection
   .aboutDataset
@@ -30,16 +49,20 @@
       @include border-radius(0.3em)
 
     .aboutHeader
-      clear: right
       float: right
       margin: 4em 1em 0
       padding: 1em
       width: 25.5em
       p
         white-space: nowrap
+      .widgetContent &
+        float: none
+        margin-top: 1em
+        width: auto
 
     .editMetadataButton
       clear: right
+      display: block
       float: right
       font-size: 1.2em
       font-weight: bold
@@ -49,9 +72,15 @@
       padding: 0.5em 0
       text-align: center
       width: 22.9167em
+      .widgetContent &
+        float: none
+        margin-left: 1em
+        width: auto
 
     .formSection
       margin-right: 30em
+      .widgetContent &
+        margin-right: 0
 
     .expander
       cursor: auto

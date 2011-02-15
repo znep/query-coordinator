@@ -1,21 +1,33 @@
 <div class='externalLinkDisplay <%= @view.display.display_type %>'>
-  <a href="<%= @view.blob_href %>" target="_blank">
-    Download '<%= @view.blobFilename %>'
-    (<%= @view.blob_type %>, <%= number_to_human_size(@view.blobFileSize,
-        :locale => :en) %>)</a>
+  <p>Download:</p>
+  <ul>
+    <%- @view.blobs.each do |b| -%>
+    <li><a href="<%= b['href'] %>" target="_blank">
+      <%- s = b['size'].is_a?(Numeric) ?
+        number_to_human_size(b['size'], :locale => :en) : b['size'] -%>
+      <%- if !b['name'].blank? -%>
+      <%= b['name'] %> (<%= b['type'] %>, <%= s %>)
+      <%- else -%>
+      <%= b['type'] %>, <%= s %>
+      <%- end -%>
+    </a></li>
+    <%- end -%>
+  </ul>
 </div>
 
 <%- if @view.display.display_type == 'image' -%>
 <div class='displayArea image fullHeight'>
-<img src="<%= @view.blob_href %>" alt="<%= @view.name %>" />
+<img src="<%= @view.blobs[0]['href'] %>" alt="<%= @view.name %>" />
 </div>
 
 <%- elsif @view.display.display_type == 'google_viewer' -%>
-<%- blob_location = URI.escape(request.protocol + request.host_with_port + @view.blob_href) -%>
+<%- blob_location = URI.escape(request.protocol + request.host_with_port +
+  @view.blobs[0]['href']) -%>
 <div class='displayArea fullHeight'>
 <noscript>
     <p>Javascript is required to run the document viewer inside your browser.</p>
-    <p>To download this file instead, <%= link_to 'click here', blob_location, :target => '_blank' %>.</p>
+    <p>To download this file instead, <%= link_to 'click here', blob_location,
+      :target => '_blank' %>.</p>
 </noscript>
 <script type="text/javascript">
     $(function()

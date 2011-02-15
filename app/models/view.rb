@@ -394,25 +394,33 @@ class View < Model
     return "Check out the #{name} dataset on #{CurrentDomain.strings.company}: #{CurrentDomain.cname}#{short_href}"
   end
 
-  def blob_href
+  def blobs
+    return @blobs if !@blobs.nil?
+
     if is_blobby?
       opts = { :filename => URI.escape(blobFilename) }
-      return "/api/file_data/#{blobId}?#{opts.to_param}"
-    end
-  end
-
-  def blob_type
-    blobMimeType.gsub(/;.*/, '')
-  end
-
-  def dataset_href
-    if is_href?
-      unless metadata.nil? || metadata.href.blank?
-        return metadata.href
+      b = {'href' => "/api/file_data/#{blobId}?#{opts.to_param}",
+        'type' => blobMimeType.gsub(/;.*/, ''), 'size' => blobFileSize}
+      b['name'] =  blobFilename if blobFilename != name
+      @blobs = [b]
+    elsif is_href?
+      b = []
+      if !metadata.nil?
+        if !metadata.data['accessPoints'].blank?
+          metadata.data['accessPoints'].each do |k, v|
+            if !k.end_with?('Size')
+              b << {'href' => v, 'type' => k.upcase,
+                'size' => metadata.data['accessPoints'][k + 'Size']}
+            end
+          end
+          b.sort_by! {|a| a['type']}
+        elsif !metadata.href.blank?
+          b << {'href' => metadata.href, 'type' => 'Link', 'size' => 'Unknown'}
+        end
       end
-    elsif is_blobby?
-      return blob_href
+      @blobs = b
     end
+    return @blobs
   end
 
   def domain_icon_href

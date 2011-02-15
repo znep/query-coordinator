@@ -9,6 +9,10 @@ class Displays::Href < Displays::Base
   end
 
   def render_partial
-    'displays/href'
+    'displays/blob'
+  end
+
+  def display_type
+    'link'
   end
 end

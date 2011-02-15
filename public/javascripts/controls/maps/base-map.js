@@ -373,9 +373,8 @@
                 {
                     var loc = row[locCol.id];
                     if ($.isBlank(loc)) { return true; }
-                    if (loc.geometry) { loc = loc.geometry; }
 
-                    if (loc.rings || loc.paths)
+                    if (loc.geometry && (loc.geometry.rings || loc.geometry.paths))
                     { isPoint = false; }
                     else
                     {

@@ -63,6 +63,7 @@
         $.ajax({
             url: '/views/' + comment.view.id + '/comments?method=moderate' +
                  '&id=' + comment.id + '&status=' + status.toUpperCase(),
+            type: 'POST',
             dataType: 'json',
             success: function(response)
             {

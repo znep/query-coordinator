@@ -315,7 +315,7 @@ this.Dataset = Model.extend({
             ds.grants.push({type: (ds.type == 'form' ? 'contributor' : 'viewer'),
                 flags: ['public']});
 
-            ds._makeRequest({url: '/views/' + ds.id + '.json', type: 'GET',
+            ds._makeRequest({url: '/views/' + ds.id + '.json', type: 'POST',
                     data: {method: 'setPermission',
                     value: ds.type == 'form' ? 'public.add' : 'public.read'},
                     success: successCallback, error: errorCallback});
@@ -817,7 +817,7 @@ this.Dataset = Model.extend({
     {
         var params = {method: 'opening'};
         if (!$.isBlank(referrer)) { params.referrer = referrer; }
-        this._makeRequest({url: '/views/' + this.id + '.json', params: params});
+        this._makeRequest({url: '/views/' + this.id + '.json', params: params, type: 'POST'});
     },
 
     getComments: function(callback)

@@ -210,7 +210,7 @@ class View < Model
   def set_permission(permission_type)
     path = "/#{self.class.name.pluralize.downcase}/#{self.id}.json?" +
         {"method" => "setPermission", 'value' => permission_type}.to_param
-    self.class.parse(CoreServer::Base.connection.get_request(path))
+    self.class.parse(CoreServer::Base.connection.create_request(path))
   end
 
   def self.create_favorite(id)
@@ -680,7 +680,7 @@ class View < Model
   end
 
   def flag(params = {})
-    CoreServer::Base.connection.get_request("/#{self.class.name.pluralize.downcase}/#{id}.json" +
+    CoreServer::Base.connection.create_request("/#{self.class.name.pluralize.downcase}/#{id}.json" +
       "?method=flag&" + params.to_param)
   end
 

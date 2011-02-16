@@ -34,8 +34,16 @@ Dataset.modules['calendar'] =
                 var c = view.columnForID(view.displayFormat[n + 'Id']);
                 if (!$.isBlank(c))
                 { view.displayFormat[n + 'TableId'] = c.tableColumnId; }
+                delete view.displayFormat[n + 'Id'];
             }
         });
+
+        if (!$.isBlank(view.displayFormat.descriptionTableId))
+        {
+            view.displayFormat.descriptionColumns =
+                [{tableColumnId: view.displayFormat.descriptionTableId}];
+            delete view.displayFormat.descriptionTableId;
+        }
     }
 };
 

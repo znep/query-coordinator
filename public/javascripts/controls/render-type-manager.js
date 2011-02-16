@@ -7,8 +7,9 @@
             domId: 'calendarRenderType',
             initFunction: 'socrataCalendar',
             javascripts: [{ assets: 'shared-calendar' }],
-            stylesheets: ['/styles/merged/screen-calendar.css',
-              'fullcalendar.css'],
+            stylesheets: ['/styles/individual/screen-calendar.css',
+              'fullcalendar.css',
+              '/styles/individual/rich-render-types.css'],
             scrollsInline: false
         },
 

@@ -69,13 +69,11 @@
                         wizard: 'Select the column with the primary ' +
                             'text that should display in each event'
                     },
-                    {text: 'Description', name: 'displayFormat.descriptionTableId',
-                        type: 'columnSelect', isTableColumn: true,
-                        columns: {type: 'text', hidden: isEdit,
-                            defaultNames: ['description', 'details']},
-                        wizard: 'Select the column with the ' +
-                            'descriptive text that will appear on mousing ' +
-                            'over the event'
+                    {type: 'repeater', name: 'displayFormat.descriptionColumns',
+                        field: {text: 'Details', name: 'tableColumnId',
+                               type: 'columnSelect', isTableColumn: true,
+                               columns: {hidden: isEdit}},
+                        minimum: 1, addText: 'Add Details'
                     }
                 ]
             }

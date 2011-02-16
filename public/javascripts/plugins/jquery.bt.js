@@ -641,7 +641,7 @@ jQuery.bt = {version: '0.9.5-rc1'};
         // stick this element into the clickAnywhereToClose stack
         if (opts.clickAnywhereToClose) {
           jQuery.bt.vars.clickAnywhereStack.push(this);
-          $(document).click(jQuery.bt.docClick);
+          $(document).mousedown(jQuery.bt.docClick);
         }
         
         // stick this element into the closeWhenOthersOpen stack
@@ -651,7 +651,8 @@ jQuery.bt = {version: '0.9.5-rc1'};
   
         // trigger postShow function
         // function receives the box element (the balloon wrapper div) as an argument
-        opts.postShow.apply(this, [$box[0]]);
+        if (_.isFunction(opts.postShow))
+        { opts.postShow.apply(this, [$box[0]]); }
   
   
       }; // </ turnOn() >

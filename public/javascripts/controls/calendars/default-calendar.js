@@ -26,6 +26,20 @@
 
         prototype:
         {
+            $descTemplate: function()
+            {
+                if (!this._$descTemplate)
+                {
+                    this.$dom().after($.tag({tagName: 'div',
+                        'class': ['descTemplate', 'row', 'clearfix',
+                            'richRendererContainer', 'flyoutRenderer']}));
+                    this._$descTemplate = this.$dom().siblings('.descTemplate');
+                    this.richRenderer = this._$descTemplate.richRenderer({
+                        columnCount: 1, view: this.settings.view});
+                }
+                return this._$descTemplate;
+            },
+
             initializeVisualization: function ()
             {
                 setUpCalendar(this);
@@ -38,7 +52,7 @@
                 delete calObj._startCol;
                 delete calObj._endCol;
                 delete calObj._titleCol;
-                delete calObj._descriptionCol;
+                delete calObj._descriptionLayout;
 
                 delete calObj._events;
 
@@ -60,8 +74,6 @@
                     ce.end = row[calObj._endCol.id];
                     if ($.isBlank(ce.start)) { ce.start = ce.end; }
                 }
-                if (!$.isBlank(calObj._descriptionCol))
-                { ce.description = row[calObj._descriptionCol.id]; }
                 calObj._events.push(ce);
 
                 return true;
@@ -82,8 +94,6 @@
                     calObj.settings.view.displayFormat.endDateTableId);
                 calObj._titleCol = calObj.settings.view.columnForTCID(
                     calObj.settings.view.displayFormat.titleTableId);
-                calObj._descriptionCol = calObj.settings.view.columnForTCID(
-                    calObj.settings.view.displayFormat.descriptionTableId);
             }
         }
     }));
@@ -116,20 +126,49 @@
                     { eventChange(calObj, ce, dd, md, rf, e, ui, v); }
                 });
 
+        calObj._descriptionLayout = generateDescLayout(calObj);
+        // Getting the template initializes RR
+        if ($.isBlank(calObj.richRenderer)) { calObj.$descTemplate(); }
+        calObj.richRenderer.setConfig(calObj._descriptionLayout);
+        calObj.richRenderer.renderLayout();
+
+        if (!calObj._eventsHooked)
+        {
+            // Tooltips are wonky, so we just live this for all of them,
+            // and use stored data to figure out how to close the tip on click
+            $.live('.flyoutRenderer .viewRow', 'click', function(e)
+            {
+                e.preventDefault();
+                var $a = $(this);
+                $a.parents('.bt-wrapper').data('socrataTip-$element')
+                    .socrataTip().hide();
+                var href = $a.attr('href');
+                $(document).trigger(blist.events.DISPLAY_ROW,
+                    [href.slice(href.lastIndexOf('/') + 1)]);
+            });
+            calObj._eventsHooked = true;
+        }
+
         calObj.ready();
     };
 
     var eventRender = function(calObj, calEvent, element, view)
     {
-        if (calEvent.description)
+        if (!$.isBlank(calObj._descriptionLayout))
         {
-            $(element).socrataTip(calEvent.description);
+            var $item = calObj.$descTemplate().clone().removeClass('descTemplate');
+            calObj.richRenderer.renderRow($item, calEvent.row);
+
+            $item.append($.tag({tagName: 'a',
+                href: calObj.settings.view.url + '/' + calEvent.row.id,
+                'class': 'viewRow', contents: 'View details for this row'}));
+            $(element).socrataTip({content: $item, trigger: 'click', isSolo: true});
         }
     };
 
     var eventActionStart = function(calObj, calEvent, event, ui, view)
     {
-        if (calEvent.description)
+        if (calObj._descriptionLayout)
         {
             $(this).socrataTip().hide();
             $(this).socrataTip().disable();
@@ -138,7 +177,8 @@
 
     var eventActionStop = function(calObj, calEvent, event, ui, view)
     {
-        if (calEvent.description) { $(this).socrataTip().enable(); }
+        if (!$.isBlank(calObj._descriptionLayout))
+        { $(this).socrataTip().enable(); }
     };
 
     var eventChange = function(calObj, calEvent, dayDelta, minuteDelta,
@@ -172,5 +212,22 @@
         }
 
         view.saveRow(calEvent.row.id, null, null, null, revertFunc);
+    };
+
+    var generateDescLayout = function(calObj)
+    {
+        if (_.isEmpty(calObj.settings.view.displayFormat.descriptionColumns))
+        { return null; }
+
+        var col = {rows: []};
+        _.each(calObj.settings.view.displayFormat.descriptionColumns, function(dc)
+        {
+            var row = {fields: [
+                {type: 'columnLabel', tableColumnId: dc.tableColumnId},
+                {type: 'columnData', tableColumnId: dc.tableColumnId}
+            ]};
+            col.rows.push(row);
+        });
+        return {columns: [col]};
     };
 })(jQuery);

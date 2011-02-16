@@ -170,6 +170,27 @@
   .templateRow
     display: none
 
+.flyoutRenderer
+  .richLine
+    margin-top: 0.2em
+    &:first-child
+      margin-top: 0
+
+  .richLabel
+    font-size: 1.1em
+    line-height: 1.1em
+    padding:
+      right: 0.5em
+
+  .richItem
+    float: none
+    font-size: 1.1em
+    line-height: 1.1em
+
+    // Renderer-specific styles
+    &.percent .blist-percent
+      min-width: 3em
+
 .navRenderType
   position: relative
   .navigation

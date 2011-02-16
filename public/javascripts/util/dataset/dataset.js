@@ -2203,6 +2203,7 @@ function getType(ds)
 
     else if (_.include(VIZ_TYPES, type)) { type = 'chart'; }
     else if (_.include(MAP_TYPES, type)) { type = 'map'; }
+    else if (type == 'calendar') {} // Do nothing; but avoid the else cases
 
     // We have to inspect the message because if it is invalid, the groupBy is gone
     else if (!$.isBlank(ds.query) && !$.isBlank(ds.query.groupBys) &&

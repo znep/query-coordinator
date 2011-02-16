@@ -85,6 +85,12 @@
                         contents: sTipObj.settings.message}, true);
                 }
 
+                var shownCallback = function(box)
+                {
+                    sTipObj._tipBox = box;
+                    $(box).data('socrataTip-$element', $domObj);
+                };
+
                 $domObj.bt({
                         content: _.isFunction(content) ? null : content,
                         contentSelector: _.isFunction(content) ? content : null,
@@ -104,6 +110,7 @@
                         clickAnywhereToClose: sTipObj.settings.closeOnClick,
                         closeWhenOthersOpen: sTipObj.settings.isSolo,
                         onShowCallback: sTipObj.settings.onShowCallback,
+                        postShow: shownCallback,
                         shrinkToFit: sTipObj.settings.shrinkToFit,
                         trigger: sTipObj.settings.trigger,
                         positions: pos,
@@ -222,10 +229,7 @@
 
     var $getTipBox = function(sTipObj)
     {
-        // This is kind of a hack, since it relies on the internals
-        //  of BT.  However, this is the most robust way to get the
-        //  tip associated with this item
-        return $(sTipObj.$dom().data('bt-box'));
+        return $(sTipObj._tipBox);
     };
 
     $.fn.socrataAlert = function(options)

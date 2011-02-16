@@ -43,6 +43,7 @@ javascripts:
     - public/javascripts/screens/all-screens.js
   shared-calendar:
     - public/javascripts/plugins/fullcalendar.js
+    - public/javascripts/controls/rich-render-library.js
     - public/javascripts/controls/base-visualization.js
     - public/javascripts/controls/calendars/default-calendar.js
   shared-table-render:

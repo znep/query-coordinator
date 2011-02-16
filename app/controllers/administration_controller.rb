@@ -617,6 +617,7 @@ class AdministrationController < ApplicationController
       parse_story_params(@story, params[:story])
       @story.update_attributes(params[:story].stringify_keys)
       @story.save!
+      flash.now[:notice] = "Your story has been saved"
       clear_stories_cache
     end
   end

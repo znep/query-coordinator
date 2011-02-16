@@ -107,10 +107,10 @@ class View < Model
 
     if conditions.empty?
       url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
-      meta_and_data = JSON.parse(CoreServer::Base.connection.get_request(url), {:max_nesting => 25})
+      meta_and_data = JSON.parse(CoreServer::Base.connection.create_request(url), {:max_nesting => 25})
 
       url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?method=getAggregates"
-      aggregates = JSON.parse(CoreServer::Base.connection.get_request(url))
+      aggregates = JSON.parse(CoreServer::Base.connection.create_request(url))
     else
       merged_conditions = self.query.data.deep_merge(conditions)
       request_body = {
@@ -157,7 +157,7 @@ class View < Model
   end
 
   def get_row(row_id)
-    result = JSON.parse(CoreServer::Base.connection.get_request(
+    result = JSON.parse(CoreServer::Base.connection.create_request(
       "/#{self.class.name.pluralize.downcase}/#{id}/" +
       "rows.json?ids=#{row_id}&meta=true&method=getByIds"), {:max_nesting => 25})
     r = result['data']['data'][0]
@@ -167,7 +167,7 @@ class View < Model
   end
 
   def get_row_by_index(row_index)
-    result = JSON.parse(CoreServer::Base.connection.get_request(
+    result = JSON.parse(CoreServer::Base.connection.create_request(
       "/#{self.class.name.pluralize.downcase}/#{id}/" +
       "rows.json?start=#{row_index}&length=1&meta=true&method=getByIds"),
         {:max_nesting => 25})
@@ -178,7 +178,7 @@ class View < Model
   end
 
   def get_row_index(row_id)
-    result = JSON.parse(CoreServer::Base.connection.get_request(
+    result = JSON.parse(CoreServer::Base.connection.create_request(
       "/#{self.class.name.pluralize.downcase}/#{id}/" +
       "rows.json?ids=#{row_id}&indexesOnly=true&method=getByIds"))
     return result[row_id.to_s]
@@ -210,7 +210,7 @@ class View < Model
   def set_permission(permission_type)
     path = "/#{self.class.name.pluralize.downcase}/#{self.id}.json?" +
         {"method" => "setPermission", 'value' => permission_type}.to_param
-    self.class.parse(CoreServer::Base.connection.create_request(path))
+    self.class.parse(CoreServer::Base.connection.update_request(path))
   end
 
   def self.create_favorite(id)

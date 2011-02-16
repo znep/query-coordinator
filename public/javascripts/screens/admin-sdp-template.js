@@ -695,8 +695,8 @@ $(function() {
     {
         event.preventDefault();
 
-        $.ajax({url: '/views/' + publishNS.viewId,
-            data: {'method': 'setPermission', 'value': 'public.read'},
+        $.ajax({url: '/views/' + publishNS.viewId +
+                '.json?method=setPermission&value=public.read', type: 'PUT',
             error: function()
             { alert('There was a problem changing the permissions'); },
             success: function()

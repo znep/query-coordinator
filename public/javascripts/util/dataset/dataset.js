@@ -105,7 +105,7 @@ this.Dataset = Model.extend({
             var gotID = function(data) { successCallback(data[id]); };
             ds._makeRequest({url: '/views/' + ds.id + '/rows.json',
                 params: {method: 'getByIds', indexesOnly: true, ids: id},
-                success: gotID});
+                success: gotID, type: 'POST'});
         }
     },
 
@@ -315,9 +315,10 @@ this.Dataset = Model.extend({
             ds.grants.push({type: (ds.type == 'form' ? 'contributor' : 'viewer'),
                 flags: ['public']});
 
-            ds._makeRequest({url: '/views/' + ds.id + '.json', type: 'POST',
-                    data: {method: 'setPermission',
-                    value: ds.type == 'form' ? 'public.add' : 'public.read'},
+            ds._makeRequest({url: '/views/' + ds.id,
+                      params: {method: 'setPermission', value:
+                         (ds.type == 'form' ? 'public.add' : 'public.read')},
+                    type: 'PUT',
                     success: successCallback, error: errorCallback});
         }
         else if (_.isFunction(successCallback)) { successCallback(); }
@@ -333,8 +334,8 @@ this.Dataset = Model.extend({
                 function(g) { return _.include(g.flags || [], 'public') &&
                     g.inherited !== true; });
 
-            ds._makeRequest({url: '/views/' + ds.id + '.json', type: 'GET',
-                    data: {method: 'setPermission', value: 'private'},
+            ds._makeRequest({url: '/views/' + ds.id + '.json', type: 'PUT',
+                    params: {method: 'setPermission', value: 'private'},
                     success: successCallback, error: errorCallback});
         }
         else if (_.isFunction(successCallback)) { successCallback(); }
@@ -1584,7 +1585,7 @@ this.Dataset = Model.extend({
         for (var i = 0; i < len; i++)
         { ds._rowsLoading[i + start] = true; }
 
-        var req = {success: rowsLoaded, params: params, inline: !fullLoad};
+        var req = {success: rowsLoaded, params: params, inline: !fullLoad, type: 'POST'};
         if (fullLoad)
         {
             req.url = '/views/' + ds.id + '/rows.json';

@@ -101,6 +101,10 @@ class AdministrationController < ApplicationController
     end
 
     emails = params[:users].split(/[, ]/).map{ |e| e.strip }.select { |e| !e.blank? }
+    if emails.blank?
+      flash[:error] = 'No user accounts specified to create'
+      return (redirect_to :action => :users)
+    end
 
     begin
       results = CoreServer::Base.connection.batch_request do

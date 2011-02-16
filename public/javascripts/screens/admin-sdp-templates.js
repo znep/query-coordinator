@@ -87,8 +87,10 @@
         $('.makeDefaultButton').adminButton({
             callback: function(response, $row)
             {
-                $('.actions').removeClass('isDefault');
-                $row.find('.actions').addClass('isDefault');
+                $('.actions').removeClass('isDefault')
+                    .find('.deleteTemplateButton').removeClass('disabled');
+                $row.find('.actions').addClass('isDefault')
+                    .find('.deleteTemplateButton').addClass('disabled');
             }
         });
 

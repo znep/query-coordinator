@@ -500,7 +500,7 @@
     $.fn.feedList.defaults = {
         bindCommentEvents: true,
         comments: [],
-        defaultFilter: 'all items',
+        defaultFilter: 'comments',
         filterCategories: ['all items', 'comments', 'views'],
         mainView: null,
         pageSize: 20,

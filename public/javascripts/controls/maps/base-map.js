@@ -220,6 +220,7 @@
                 mapObj._llKeys = {};
                 mapObj._rows = [];
                 mapObj._gradient = undefined;
+                mapObj._segmentColors = undefined;
 
                 mapObj._locCol = undefined;
                 mapObj._latCol = undefined;

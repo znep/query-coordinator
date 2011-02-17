@@ -386,6 +386,9 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/robots.txt',
     :controller => 'robots_txt', :action => 'show'
 
+  map.connect '/opensearch.xml',
+    :controller => 'open_search', :action => 'show'
+
   # Seattle Data-Policy hack
   map.connect '/data-policy', :controller => "data_policy", :action => "index"
 

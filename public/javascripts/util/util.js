@@ -457,7 +457,9 @@ $.loadLibraries = function(scriptQueue, callback)
     {
         if (item)
         {
-            if (blist.configuration.development)
+            // Microsoft seems to hate adding ?_=123 to veapicore.js,
+            // so don't add it since we don't need it.
+            if (blist.configuration.development && item.indexOf('veapicore') < 0)
             {
                 _.each($.arrayify(item), function(subitem)
                 {

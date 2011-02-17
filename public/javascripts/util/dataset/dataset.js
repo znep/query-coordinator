@@ -1587,10 +1587,7 @@ this.Dataset = Model.extend({
 
         var req = {success: rowsLoaded, params: params, inline: !fullLoad, type: 'POST'};
         if (fullLoad)
-        {
-            req.url = '/views/' + ds.id + '/rows.json';
-            req.type = 'GET';
-        }
+        { req.url = '/views/' + ds.id + '/rows.json'; }
         ds._makeRequest(req);
     },
 

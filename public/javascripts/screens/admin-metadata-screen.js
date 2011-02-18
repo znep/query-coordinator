@@ -13,7 +13,7 @@
         {
             var $link = $line.find('.actions .toggleRequired');
             $link
-            .text($link.text() == 'Make Required' ? 'Make Optional' : 'Make Required')
+            .val($link.val() == 'Make Required' ? 'Make Optional' : 'Make Required')
             .closest('.item')
                 .find('.required')
                 .toggleClass('requiredEnabled');

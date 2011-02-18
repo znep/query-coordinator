@@ -61,9 +61,8 @@
               <a href="home/story/<%= story.id %>" class="editStoryButton button">
                 <span class="icon"></span>Edit
               </a>
-              <a href="home/story/<%= story.id %>/delete" class="deleteStoryButton button">
-                <span class="icon"></span>Delete
-              </a>
+              <% form_button({:action => 'delete_story', :id => story.id}, 'Delete',
+                             {:method => :delete}, {:class => 'deleteStoryButton button'}) %>
             </td>
           </tr>
         <%- end -%>

@@ -6,6 +6,8 @@ blistCommonNS.formInliner = function(event)
 {
     var $form = $(event.target);
     var view  = blist.dataset.cleanCopy();
+    if ($form.find('input[name=view]').size() > 0)
+    { return; }
 
     $form.append(
             $('<input type="hidden" name="view"/>')

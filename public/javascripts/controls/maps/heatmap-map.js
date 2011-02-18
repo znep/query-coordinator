@@ -284,7 +284,7 @@
 
             var details = {
                 title: feature.attributes.NAME,
-                info: info,
+                info: $.tag({tagName: 'div', contents: info}),
                 color: mapObj._segmentColors[segmentIndex].toHex(),
                 redirect_to: feature.attributes.redirect_to
             };

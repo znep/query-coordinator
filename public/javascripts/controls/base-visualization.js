@@ -312,21 +312,21 @@
                     $(window).resize();
                 };
 
+                var scripts = vizObj.getRequiredJavascripts();
+
                 // If _setupLibraries is defined, we're assuming that the
                 // function will be called by an external source.
                 // This is used, for example, in google maps, where the
                 // google loader itself async loads other files, and only *it*
                 // knows when it's ready, not LABjs
-                var callback = _.isFunction(vizObj._setupLibraries) ?
-                    function() {} : vizObj._librariesLoaded;
+                var callback = _.isFunction(vizObj._setupLibraries) &&
+                    !$.isBlank(scripts) ? function() {} : vizObj._librariesLoaded;
 
                 if (vizObj._dynamicLibrariesLoaded)
                 {
                     callback();
                     return;
                 }
-
-                var scripts = vizObj.getRequiredJavascripts();
 
                 // Monkeypatch Javascript, whoooooo.
                 // http://code.google.com/p/extsrcjs/source/browse/trunk/extsrc.js

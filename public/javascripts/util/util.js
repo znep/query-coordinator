@@ -454,6 +454,12 @@ $.loadLibraries = function(scriptQueue, callback)
                 { return item && blist.util.lazyLoadedAssets[item]; }),
         loadingLibrary = false;
 
+    if (queue.length < 1)
+    {
+        callback();
+        return;
+    }
+
     _.each(queue, function(item)
     {
         if (item)

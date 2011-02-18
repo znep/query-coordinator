@@ -108,6 +108,10 @@
                             mapObj.map.addLayer(this);
                             if (layersLoaded >= layers.length)
                             {
+                                dojo.connect(mapObj.map.graphics, 'onClick',
+                                    function(evt)
+                                    { handleGraphicClick(mapObj, evt); });
+
                                 if (mapObj.settings.view.renderWithArcGISServer())
                                 { mapObj._attachMapServer(); }
 
@@ -141,14 +145,11 @@
 //     layerId: 2,
 //     attributes: [{key:'March2010',text:'Unemployment Rate in March 2010'}]
 // };
-                if (!mapObj._identifyConfig || !mapObj._identifyConfig.url ||
-                    !mapObj._identifyConfig.layerId
-                    || !mapObj._identifyConfig.attributes ||
-                    mapObj._identifyConfig.attributes.length == 0)
-                { return; }
+                if (!isIdentifyTask(mapObj)) { return; }
 
                 dojo.connect(mapObj.map, 'onClick',
                     function(evt) { identifyFeature(mapObj, evt); });
+
                 mapObj._identifyParameters = new esri.tasks.IdentifyParameters();
                 mapObj._identifyParameters.tolerance = 3;
                 mapObj._identifyParameters.returnGeometry = false;
@@ -244,9 +245,6 @@
 
                 var g = new esri.Graphic(geometry, symbol,
                     { title: details.title, body: details.info });
-
-                if (g.attributes.title !== null || g.attributes.body !== null)
-                { g.setInfoTemplate(new esri.InfoTemplate("${title}", "${body}")); }
 
                 if (mapObj._markers[dupKey])
                 { mapObj.map.graphics.remove(mapObj._markers[dupKey]); }
@@ -402,59 +400,6 @@
             {
                 var mapObj = this;
                 if (mapObj.map.graphics) { mapObj.map.graphics.clear(); }
-            },
-
-            fetchExternalFeatureSet: function()
-            {
-                fetchExternalFeatureSet(this);
-            },
-
-            renderFeatureData: function()
-            {
-                var mapObj = this;
-                if (mapObj._initialLoad) { delete mapObj._initialLoad; }
-
-                var attributes = _.map(mapObj._featureSet.fieldAliases,
-                    function(alias, key)
-                    {
-                        return alias + ": ${" + key + "}";
-                    }).join("<br />");
-                mapObj._infoTemplate = new esri.InfoTemplate(
-                    "${" + mapObj._featureSet.displayFieldName + "}", attributes);
-
-                var symbol;
-                switch(mapObj._featureSet.features[0].geometry.type)
-                {
-                    case 'polyline':
-                        symbol = new esri.symbol.SimpleLineSymbol();
-                        break;
-                    case 'polygon':
-                        symbol = new esri.symbol.SimpleFillSymbol();
-                        break;
-                    case 'point':
-                        symbol = new esri.symbol.SimpleMarkerSymbol();
-                        symbol.setSize(10);
-                        break;
-                }
-                symbol.setColor(new dojo.Color([255, 0, 255]));
-
-                _.each(mapObj._featureSet.features, function(feature)
-                {
-                    feature.setInfoTemplate(mapObj._infoTemplate);
-                    mapObj.map.graphics.add(feature.setSymbol(symbol));
-
-                    if (feature.geometry instanceof esri.geometry.Point)
-                    { mapObj._multipoint.addPoint(feature.geometry); }
-                    else
-                    {
-                        if (!mapObj._bounds)
-                        { mapObj._bounds = feature.geometry.getExtent(); }
-                        else
-                        { mapObj._bounds = mapObj._bounds
-                                .union(feature.geometry.getExtent()); }
-                    }
-                });
-                mapObj.rowsRendered();
             }
         }
     }));
@@ -568,6 +513,28 @@
             return mapObj._esriSymbol[customization.key];
         }
         return renderers[customization.type](customization);
+    };
+
+    var isIdentifyTask = function(mapObj)
+    {
+        return $.subKeyDefined(mapObj._identifyConfig, 'url') &&
+            $.subKeyDefined(mapObj._identifyConfig, 'layerId') &&
+            $.subKeyDefined(mapObj._identifyConfig, 'attributes') &&
+            mapObj._identifyConfig.attributes.length > 0;
+    };
+
+    var handleGraphicClick = function(mapObj, evt)
+    {
+        if (isIdentifyTask(mapObj)) { return; }
+
+        var $content = evt.graphic.attributes.body;
+        if (!$.isBlank($content))
+        {
+            mapObj.map.infoWindow.setContent($content[0])
+                .setTitle(evt.graphic.attributes.title)
+                .show(evt.screenPoint,
+                    mapObj.map.getInfoWindowAnchor(evt.screenPoint));
+        }
     };
 
     var identifyFeature = function(mapObj, evt)
@@ -698,130 +665,6 @@
         { return esri.layers.ArcGISTiledMapServiceLayer; }
         else
         { return esri.layers.ArcGISDynamicMapServiceLayer; }
-    };
-
-    // This function is deprecated for now.
-    var fetchExternalFeatureSet = function(mapObj)
-    {
-        mapObj._maxRows = 0; // Don't bother loading from the core server.
-
-        var applyFilters = function()
-        {
-            var filterCond = mapObj.settings.view.query.filterCondition;
-            if (_.isEmpty(filterCond)) { return '1=1'; }
-
-            var template = {
-                'EQUALS':                 '<%= field %> = <%= val1 %>',
-                'NOT_EQUALS':             '<%= field %> != <%= val1 %>',
-                'STARTS_WITH':            '<%= field %> LIKE \'<%= val1 %>%\'',
-                'CONTAINS':               '<%= field %> LIKE \'%<%= val1 %>%\'',
-                'IS_NOT_BLANK':           '<%= field %> IS NOT NULL',
-                'IS_BLANK':               '<%= field %> IS NULL',
-                'LESS_THAN':              '<%= field %> < <%= val1 %>',
-                'LESS_THAN_OR_EQUALS':    '<%= field %> <= <%= val1 %>',
-                'GREATER_THAN':           '<%= field %> > <%= val1 %>',
-                'GREATER_THAN_OR_EQUALS': '<%= field %> >= <%= val1 %>',
-                'BETWEEN':
-                    '<%= field %> BETWEEN <%= val1 %> AND <%= val2 %>'
-            };
-            var transformFilterToSQL = function (filter)
-            {
-                var fieldName = processFilter(filter.children[0]);
-                var field = _.detect(mapObj._featureLayer.fields,
-                    function(field) { return field.name == fieldName });
-
-                var value = [];
-                value.push(processFilter(filter.children[1]));
-                value.push(processFilter(filter.children[2]));
-
-                // From http://help.arcgis.com/EN/webapi/javascript/arcgis/help/jsapi/field.htm#type
-                // Can be one of the following:
-                // "esriFieldTypeSmallInteger", "esriFieldTypeInteger",
-                // "esriFieldTypeSingle",       "esriFieldTypeDouble",
-                // "esriFieldTypeString",       "esriFieldTypeDate",
-                // "esriFieldTypeOID",          "esriFieldTypeGeometry",
-                // "esriFieldTypeBlob",         "esriFieldTypeRaster",
-                // "esriFieldTypeGUID",         "esriFieldTypeGlobalID",
-                // "esriFieldTypeXML"
-
-                // TODO: Need to figure out which types are PostgreSQL strings.
-                if (_.include(["String"], field.type.substr(13))
-                    && !_.include(['STARTS_WITH', 'CONTAINS'], filter.value))
-                { value = _.map(value, function(v)
-                    { return "'" + v.replace(/'/g, "\\'") + "'"; }); }
-                else
-                { value = _.map(value, function(v) { return v.replace(/;.*$/, ''); }) }
-
-                return _.template(template[filter.value],
-                    {field: fieldName, val1: value[0], val2: value[1] });
-            };
-            var processFilter = function(filter)
-            {
-                if (!filter) { return ''; }
-                switch (filter.type)
-                {
-                    case 'operator':
-                        switch(filter.value)
-                        {
-                            case 'AND':
-                                return _.map(filter.children, function(filter)
-                                    { return processFilter(filter); }).join(' AND ');
-                            case 'OR':
-                                return _.map(filter.children, function(filter)
-                                    { return processFilter(filter); }).join(' OR ');
-                            default:
-                                return transformFilterToSQL(filter);
-                        }
-                        break;
-                    case 'column':
-                        return blist.dataset.columnForID(filter.columnId).name;
-                    case 'literal':
-                        return filter.value;
-                }
-            };
-            return processFilter(filterCond);
-        };
-
-        dojo.require('esri.layers.FeatureLayer');
-        dojo.require('esri.tasks.query');
-        dojo.addOnLoad(function()
-        {
-
-        mapObj._featureLayer = new esri.layers.FeatureLayer(
-            blist.dataset.metadata.custom_fields.Basic.Source);
-
-        dojo.connect(mapObj._featureLayer, 'onLoad', function()
-        {
-        var query = new esri.tasks.Query();
-        query.outFields = ['*'];
-        query.returnGeometry = true;
-        query.outSpatialReference = new esri.SpatialReference({ wkid: 102100 });
-        query.where = applyFilters();
-
-        mapObj._featureLayer._task.execute(query, function(featureSet)
-            {
-                mapObj._featureSet = featureSet;
-                mapObj._runningQuery = false;
-                mapObj._featuresLoaded = true;
-                mapObj.finishLoading();
-                if (mapObj._mapLoaded) { mapObj.renderFeatureData(); }
-            });
-        mapObj._runningQuery = true;
-
-        mapObj.startLoading();
-        setTimeout(function()
-        {
-            // query took too long and probably timed out
-            // so we're just going to kill the spinner and error it
-            // if the query does finish, it will load behind the alert
-            if (mapObj._runningQuery)
-            {
-                mapObj.finishLoading();
-                alert('A data request has taken too long and timed out.');
-            }
-        }, 60000);
-        });
-        });
     };
 
     var isWebMercatorSpatialReference = function(thing)

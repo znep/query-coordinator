@@ -162,17 +162,15 @@
 
                 if (hasInfo)
                 {
-                    var infoContent = '';
+                    var $infoContent = $.tag({tagName: 'div'});
                     if (!$.isBlank(details.title))
                     {
-                        infoContent += "<div class='mapTitle'>" +
-                            details.title + '</div>';
+                        $infoContent.append($.tag({tagName: 'div',
+                            'class': 'mapTitle', contents: details.title}));
                     }
                     if (!$.isBlank(details.info))
                     {
-                        infoContent += "<div class='mapInfoContainer" +
-                            (mapObj._infoIsHtml ? ' html' : '') + "'>" +
-                            details.info + "</div>";
+                        $infoContent.append(details.info);
                     }
 
                     google.maps.event.addListener(geometry, 'click', function(evt)
@@ -180,7 +178,7 @@
                         if (!mapObj.infoWindow)
                         { mapObj.infoWindow =
                             new google.maps.InfoWindow({maxWidth: 300}); }
-                        mapObj.infoWindow.setContent(infoContent);
+                        mapObj.infoWindow.setContent($infoContent[0]);
                         // evt.latLng if it's not a point; pull .position for points
                         mapObj.infoWindow.setPosition(evt.latLng || geometry.position);
                         mapObj.infoWindow.open(mapObj.map);
@@ -322,6 +320,12 @@
 
             getRequiredJavascripts: function()
             {
+                // This is a terrible hack; but we need to know if Google
+                // has already been loaded, since it has a special callback.
+                // We can't store a normal object var, because the whole
+                // library is being recreated
+                if (blist.util.googleCallbackMap) { return null; }
+
                 blist.util.googleCallback = this._setupLibraries;
                 blist.util.googleCallbackMap = this;
                 return "http://maps.google.com/maps/api/js?sensor=false&callback=blist.util.googleCallback";

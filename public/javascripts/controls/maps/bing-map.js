@@ -120,17 +120,18 @@
                 }
                 mapObj._markers[dupKey] = shapes;
 
-                var infoContent = '';
+                var $infoContent = $.tag({tagName: 'div'});
+                var hasInfoContent = false;
                 if (!$.isBlank(details.title))
                 {
-                    infoContent += "<div class='mapTitle'>" +
-                        details.title + '</div>';
+                    $infoContent.append($.tag({tagName: 'div',
+                                'class': 'mapTitle', contents: details.title}));
+                    hasInfoContent = true;
                 }
                 if (!$.isBlank(details.info))
                 {
-                    infoContent += "<div class='mapInfoContainer" +
-                        (mapObj._infoIsHtml ? ' html' : '') + "'>" +
-                        details.info + "</div>";
+                    $infoContent.append(details.info);
+                    hasInfoContent = true;
                 }
 
                 _.each(shapes, function(shape)
@@ -140,7 +141,7 @@
                         shape.setOptions({ icon: details.icon });
                         shape.custom_icon = true;
                     }
-                    shape.infoContent = infoContent;
+                    shape.$infoContent = $infoContent;
                     if (!shape.getLocations) // is Pushpin
                     {
                         shape.getLocations = function()
@@ -172,7 +173,7 @@
 
                     mapObj.map.entities.push(shape);
 
-                    if (shape.infoContent.length > 0)
+                    if (hasInfoContent)
                     {
                         $((shape['cm1001_er_etr'] || {}).dom).css('cursor', 'pointer');
 
@@ -362,7 +363,7 @@
             $box = mapObj.$dom().siblings('#bing_infoWindow');
         }
 
-        $box.show().find("#bing_infoContent").html(shape.infoContent)
+        $box.show().find("#bing_infoContent").empty().append(shape.$infoContent)
             .prepend('<img src="http://maps.gstatic.com/intl/' +
                      'en_us/mapfiles/iw_close.gif"/>');
 

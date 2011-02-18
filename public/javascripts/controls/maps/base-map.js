@@ -227,8 +227,13 @@
                 mapObj._longCol = undefined;
                 mapObj._titleCol = undefined;
                 mapObj._infoCol = undefined;
-                mapObj._infoIsHtml = false;
                 mapObj._quantityCol = undefined;
+
+                mapObj._origData = {
+                    displayFormat: mapObj.settings.view.displayFormat,
+                    mapType: mapObj.settings.view.displayFormat.type,
+                    plotStyle: mapObj.settings.view.displayFormat.plotStyle,
+                    layers: mapObj.settings.view.displayFormat.layers};
             },
 
             populateLayers: function()
@@ -462,10 +467,17 @@
                         info += '" href="#" style="float: right;">Next &gt;</a>';
                         info += '</div>';
                     }
+                    // TODO: might not be correct
+                    info = $(info);
                 }
                 else
                 {
-                    info = _.compact(mapObj._llKeys[rowKey].info).join();
+                    var details = _.compact(mapObj._llKeys[rowKey].info).join();
+                    if (!$.isBlank(details))
+                    {
+                        info = $.tag({tagName: 'div', 'class': 'mapInfoContainer',
+                            contents: details});
+                    }
                 }
 
                 var details = {title: title, info: info};
@@ -655,7 +667,6 @@
             {
                 var mapObj = this;
                 var view = mapObj.settings.view;
-                mapObj._infoIsHtml = false;
 
                 // Preferred location column
                 if (!$.isBlank(view.displayFormat.plot.locationId))
@@ -679,8 +690,6 @@
 
                 mapObj._infoCol =
                     view.columnForTCID(view.displayFormat.plot.descriptionId);
-                mapObj._infoIsHtml =
-                    (mapObj._infoCol || {}).renderTypeName == 'html';
 
                 mapObj._redirectCol =
                     view.columnForTCID(view.displayFormat.plot.redirectId);

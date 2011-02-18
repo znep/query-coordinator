@@ -457,16 +457,20 @@ $.loadLibraries = function(scriptQueue, callback)
     {
         if (item)
         {
-            // Microsoft seems to hate adding ?_=123 to veapicore.js,
-            // so don't add it since we don't need it.
-            if (blist.configuration.development && item.indexOf('veapicore') < 0)
+            if (blist.configuration.development)
             {
                 _.each($.arrayify(item), function(subitem)
                 {
-                    // In dev, make the URL unique so we always reload to pick
-                    // up changes
-                    var url = subitem + (subitem.indexOf('?') >= 0 ? '&' : '?') +
-                        $.param({'_': (new Date()).valueOf()});
+                    // Microsoft seems to hate adding ?_=123 to veapicore.js,
+                    // so don't add it since we don't need it.
+                    var url = subitem;
+                    if (subitem.indexOf('veapicore') < 0)
+                    {
+                        // In dev, make the URL unique so we always reload to pick
+                        // up changes
+                        url += (subitem.indexOf('?') >= 0 ? '&' : '?') +
+                            $.param({'_': (new Date()).valueOf()});
+                    }
                     $L = $L.script(url).wait();
                 });
             }
@@ -504,10 +508,13 @@ $.loadStylesheets = function(sheetQueue, callback)
         // them into the head manually mostly works, and gives us a callback when
         // things are done. It obviously doesn't work for external files;
         // and it also has a slight problem in IE when in an iframe (like the
-        // SDP) -- images ref'ed in the stylesheet won't load.  So in either of
-        // these cases, load it via a link tag, and hope things look OK, since
-        // we don't get a callback.
-        if (($.browser.msie && window.parent != window && sheet.hasImages) ||
+        // SDP) -- images ref'ed in the stylesheet won't load.  *Also*, IE7
+        // won't handle things like direct-child selectors for manually inserted
+        // stylesheets. So in any of these cases, load it via a link tag, and
+        // hope things look OK, since we don't get a callback.
+        if (($.browser.msie && $.browser.majorVersion == 7 &&
+                sheet.hasSpecialSelectors) ||
+            ($.browser.msie && window.parent != window && sheet.hasImages) ||
             url.startsWith('http://') || url.startsWith('https://'))
         {
             // If the stylesheet is external, then just insert a style tag

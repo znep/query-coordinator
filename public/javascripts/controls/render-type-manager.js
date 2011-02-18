@@ -89,7 +89,8 @@
         href: {
             name: 'href',
             domId: 'staticRenderType',
-            stylesheets: ['/styles/individual/about-dataset.css',
+            stylesheets: [{sheet: '/styles/individual/about-dataset.css',
+                    hasSpecialSelectors: true},
                 '/styles/individual/screen-blob.css'],
             javascripts: [{ assets: 'shared-blob' }],
             scrollsInline: false,
@@ -103,7 +104,8 @@
         blob: {
             name: 'blob',
             domId: 'staticRenderType',
-            stylesheets: ['/styles/individual/about-dataset.css',
+            stylesheets: [{sheet: '/styles/individual/about-dataset.css',
+                    hasSpecialSelectors: true},
                 '/styles/individual/screen-blob.css'],
             javascripts: [{ assets: 'shared-blob' }],
             scrollsInline: false,
@@ -301,7 +303,7 @@
                     else { s = sheet[0]; }
                     return s;
                 });
-                $.loadStylesheets(sheets, function() { $dom.trigger('resize'); });
+                $.loadStylesheets(sheets, function() { $(window).resize(); });
             }
 
             // Lazy-load javascripts

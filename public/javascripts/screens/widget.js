@@ -210,7 +210,6 @@ $(function()
     // keep track of some stuff for easy access
     widgetNS.orientation = widgetNS.theme['frame']['orientation'];
     widgetNS.isNonTabular = (blist.dataset.viewType !== 'tabular');
-    widgetNS.isBlobby = (blist.dataset.viewType == 'blobby');
     widgetNS.interstitial = widgetNS.theme['behavior']['interstitial'];
 
     // sizing
@@ -232,7 +231,7 @@ $(function()
             contents: [
                 { text: 'More Views', className: 'views', targetPane: 'views',
                     subtext: 'Filters, Charts, and Maps', href: '#views',
-                    iconColor: '#57b6dd', onlyIf: !widgetNS.isBlobby && menuOptions['more_views'] },
+                    iconColor: '#57b6dd', onlyIf: !widgetNS.isNonTabular && menuOptions['more_views'] },
                 { text: 'Download', className: 'downloads', targetPane: 'downloads',
                     subtext: 'Download in various formats', href: '#downloads',
                     iconColor: '#959595', onlyIf: !widgetNS.isNonTabular && menuOptions['downloads'] },
@@ -244,7 +243,7 @@ $(function()
                     iconColor: '#e44044', onlyIf: menuOptions['embed'] },
                 { text: 'API', className: 'api', targetPane: 'api',
                     subtext: 'Access this Dataset via SODA', href: '#api',
-                    iconColor: '#f93f06', onlyIf: !widgetNS.isBlobby && menuOptions['api'] },
+                    iconColor: '#f93f06', onlyIf: !widgetNS.isNonTabular && menuOptions['api'] },
                 { text: 'Print', className: 'print', targetPane: 'print',
                     subtext: 'Print this dataset', href: '#print',
                     iconColor: '#a460c4', onlyIf: blist.dataset.isGrid() && menuOptions['print'] },
@@ -586,7 +585,7 @@ $(function()
             .find('.actionPhrase').text(message);
     });
 
-    $.live('a.feedActor', 'focus mouseover', function()
+    $.live('a.feedActor, #aboutSection a', 'focus mouseover', function()
     {
         // pretend these are rel="external"
         $(this).attr('target', '_blank');

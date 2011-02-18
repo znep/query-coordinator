@@ -119,44 +119,45 @@
     <h2>Define Dataset Categories</h2>
 
     <div class="gridListWrapper">
-      <%= form_tag({:action => 'create_category'},
-        {:class => 'createCategoryForm'}) %>
-        <table class="gridList categoriesTable" cellspacing="0">
-          <colgroup>
-            <col class="name" />
-            <col class="actions" />
-          </colgroup>
-          <thead>
-            <tr>
-              <th class="name"><div>Category Name</div><span class="icon"></span></th>
-              <th class="actions"><div>&nbsp;</div><span class="icon"></span></th>
+      <table class="gridList categoriesTable" cellspacing="0">
+        <colgroup>
+          <col class="name" />
+          <col class="actions" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="name"><div>Category Name</div><span class="icon"></span></th>
+            <th class="actions"><div>&nbsp;</div><span class="icon"></span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <%- @categories.each do |category, value| -%>
+            <tr class="item">
+              <td class="name">
+                <span class="cellInner">
+                  <%= category.titleize_if_necessary %>
+                </span>
+              </td>
+              <td class="actions">
+                <% form_button({ :action => 'delete_category', :category => category }, 'Remove', 
+                     {:method => :delete}, {:class => 'button removeField remove'}) %>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            <%- @categories.each do |category, value| -%>
-              <tr class="item">
-                <td class="name">
-                  <span class="cellInner">
-                    <%= category.titleize_if_necessary %>
-                  </span>
-                </td>
-                <td class="actions">
-                  <% form_button({ :action => 'delete_category', :category => category }, 'Remove', 
-                       {:method => :delete}, {:class => 'button removeField remove'}) %>
-                </td>
-              </tr>
-            <%- end -%>
-            <tr>
+          <%- end -%>
+          <tr>
+            <%= form_tag({:action => 'create_category'},
+              {:class => 'createCategoryForm'}) %>
               <td class="name">
                 <input type="text" class="newCategory" name="new_category" />
               </td>
               <td class="actions">
                 <input class="button newCategoryButton" type="submit" value="Add New Category" />
               </td>
-            </tr>
-          </tbody>
-        </table>
-      </form>
+            </form>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 

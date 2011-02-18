@@ -182,7 +182,7 @@
           </thead>
           <tbody>
             <%- @futures.each do |user| -%>
-              <tr class="item">
+              <tr class="item" data-userrole="<%= user.role %>">
                 <td class="email">
                   <span class="cellInner">
                     <%= user.email %>
@@ -200,7 +200,7 @@
                 </td>
                 <td class="actions">
                   <span class="loading"></span>
-                  <% form_button({ :action => 'delete_future_user', :id => user.id }, 'Remove', 
+                  <% form_button({ :action => 'delete_future_user', :id => user.id }, 'Remove',
                        {:method => :delete}, {:class => 'button removeButton'}) %>
                 </td>
               </tr>
@@ -208,7 +208,7 @@
           </tbody>
         </table>
       </div>
-      <p class="noResultsMessage">No pending users remain</p>
+      <p class="noResultsMessage">No pending users match your current filter</p>
     </div>
   <%- end -%>
 

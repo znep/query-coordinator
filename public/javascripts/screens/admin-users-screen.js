@@ -39,6 +39,7 @@ $(function()
 
     var $userTable    = $('#adminContent .adminUsersTable'),
         $futuresTable = $('#adminContent .futureUsersTable'),
+        $bothTables   = $('#adminContent .gridList'),
         deleteActions = {
             callback: function(response, $row) {
                 var $container = $row.closest('.tableContainer');
@@ -85,16 +86,18 @@ $(function()
 
         if (filterVal == 'all')
         {
-            $userTable.find('tbody tr').show();
+            $bothTables.find('tbody tr').show();
             $('.noResultsMessage').hide();
             return;
         }
         else
         {
-            $userTable.find('tbody tr').hide()
+            $bothTables.find('tbody tr').hide()
                 .filter('[data-userrole=' + filterVal + ']').show();
 
-            handleResultLength($userTable.closest('.tableContainer'));
+            $bothTables.each(function(index, table){
+                handleResultLength($(table).closest('.tableContainer'));
+            });
         }
     });
 

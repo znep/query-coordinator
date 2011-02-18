@@ -68,6 +68,8 @@ class LogRefererMiddleware
           # noop
         elsif uri.host == domain
           logger.debug "Not logging same domain referal (#{domain})."
+        elsif uri.host =~ /rpxnow.com$/
+          logger.debug "Not logging RPX return logins."
         else
           # If the referrer and the domain aren't the same thing, we should 
           # really tell someone about this by squawking at them over STOMP.

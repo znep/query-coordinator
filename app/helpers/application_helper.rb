@@ -250,9 +250,9 @@ module ApplicationHelper
 
   def theme_image_url(options)
     if options[:type].to_s == "static"
-      return "#{options[:source]}"
+      return "#{options[:href]}"
     elsif options[:type].to_s == "hosted"
-      return "/assets/#{options[:source]}"
+      return "/assets/#{options[:href]}"
     end
   end
 

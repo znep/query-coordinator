@@ -115,11 +115,10 @@
                     if (settings.view.blobMimeType.indexOf('application/pdf')
                         !== -1 && $.browser.msie)
                     {
-                        embedHtml = '<object data="' +
+                        embedHtml = '<embed src="' +
                             blist.renderTypes.blob.href +
-                            '" type="application/pdf" classid="clsid:' +
-                            'CA8A9780-280D-11CF-A24D-444553540000" ' +
-                            'width="100%" height="99%"></object>';
+                            '" type="application/pdf" ' +
+                            'width="100%" height="99%"></embed>';
                     }
                     else
                     {

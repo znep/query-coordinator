@@ -60,10 +60,10 @@ metricsNS.updateTopListWrapper = function($context, data, mapFunction, postProce
     _.each(dataPart, function(entry)
     {
         if (_.isFunction(mapFunction))
-        { mapFunction(entry.item, entry.count, mapped); }
+        { mapFunction(entry.item, entry.data, mapped); }
         else
-        { mapped.push({name: entry.item, value: entry.count,
-               textValue: Highcharts.numberFormat(entry.count, 0)}); }
+        { mapped.push({name: entry.item, value: entry.data,
+               textValue: Highcharts.numberFormat(entry.data, 0)}); }
     });
 
     $context
@@ -90,7 +90,13 @@ metricsNS.sortData = function(data)
     {
         if (!key.startsWith('__') && data.hasOwnProperty(key))
         {
-            array.push({item: key, count: data[key]});
+            var dataPoint = data[key],
+                count     = dataPoint;
+            if (typeof(dataPoint) !== 'number')
+            {
+                count = _.reduce(dataPoint, function(memo, num) { return memo + num; }, 0);
+            }
+            array.push({item: key, count: count, data: dataPoint});
         }
     }
     // Sort descending

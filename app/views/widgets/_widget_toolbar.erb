@@ -7,7 +7,7 @@
         title="Type in your search term and press enter." />
     </div>
   </form>
-  <form class="toolbarEmailForm" action="/views/<%= @view.id %>/rows.html">
+  <form class="toolbarEmailForm" action="/views/<%= @view.id %>.json?method=sendAsEmail" method="post">
     <div class="toolbarMessage"></div>
     <div class="toolbarTextboxWrapper">
       <input type="text" class="toolbarTextbox textPrompt"

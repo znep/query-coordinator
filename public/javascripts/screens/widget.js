@@ -418,13 +418,12 @@ $(function()
             $.ajax({
                 url: $form.attr('action'),
                 cache: false,
-                data: {
-                    'method': 'email',
-                    'email': email
-                },
+                type: 'POST',
+                dataType: 'json', contentType: 'application/json',
+                data: JSON.stringify({recipient: email}),
                 success: function (responseData)
                 {
-                    if (responseData['error'] === undefined)
+                    if ($.isBlank(responseData) || responseData['error'] === undefined)
                     {
                         emails = _.without(emails, email);
                     }

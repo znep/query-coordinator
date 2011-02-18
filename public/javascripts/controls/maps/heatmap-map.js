@@ -69,10 +69,17 @@
                 || mapObj.settings.view.displayFormat.layers.length == 0;
             if (config.hideLayers && mapObj.hideLayers) { mapObj.hideLayers(); }
 
+            // Currently just making sure a config update to region is caught.
+            if (mapObj._origHeatmapConfig
+                && mapObj._origHeatmapConfig.type != config.type)
+            { mapObj._featureSet = undefined; }
+            mapObj._origHeatmapConfig = config;
+
             if (config.hideZoomSlider)
             { mapObj.map.hideZoomSlider(); }
 
-            config.aggregateMethod = _.isUndefined(mapObj._quantityCol) ?
+            config.aggregateMethod = (_.isUndefined(mapObj._quantityCol)
+                || mapObj._quantityCol.id == 'fake_quantity') ?
                 'count' : 'sum';
 
             // Fools everything depending on quantityCol into recognizing it as a Count
@@ -226,8 +233,6 @@
             { return parseFloat(e.attributes.quantity); }
 
             e.attributes.quantity = _.compact(e.attributes.quantity);
-            if (e.attributes.quantity.length == 0)
-            { return null; }
 
             // aggregateMethod count just sums up 1s.
             var quantityPrecision = 0;

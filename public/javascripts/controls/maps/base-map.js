@@ -228,6 +228,7 @@
                 mapObj._titleCol = undefined;
                 mapObj._infoCol = undefined;
                 mapObj._infoIsHtml = false;
+                mapObj._quantityCol = undefined;
             },
 
             populateLayers: function()

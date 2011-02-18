@@ -100,7 +100,7 @@
                   <% form_button({:action => :accept_federation, :id => f.id}, 'Accept',
                        {}, {:class => 'button' + (accepted ? ' disabled' : '')}) %>
                   <% form_button({:action => :reject_federation, :id => f.id}, 'Reject',
-                       {:method => :delete}, {:class => 'button' + (accepted ? '' : ' disabled')}) %>
+                       {}, {:class => 'button' + (accepted ? '' : ' disabled')}) %>
                 <%- end -%>
               </td>
               <td class="delete">

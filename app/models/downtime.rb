@@ -18,7 +18,7 @@ class Downtime
   end
 
   def hash
-    (@start.to_s + @finish.to_s + @message).hash
+    (@start || @finish).to_i
   end
 
   def should_display(current_time)

@@ -21,4 +21,11 @@ class TestPagesController < ApplicationController
     render 'shared/error', :status => :not_found
   end
 
+  def put_kaboom
+    respond_to do |format|
+      format.data { render :json => { :failed => true } }
+      format.html { render }
+    end
+  end
+
 end

@@ -51,28 +51,37 @@
     blist.namespace.fetch('blist.configuration');
     if (blist.configuration.maintenance_message &&
         window == window.top &&
-        $.cookies.get('maintenance_ack') != blist.configuration.maintenance_hash) {
-      var dismissMaintenance = function() {
-        $('#maintenanceNotice').fadeOut();
-      };
-
-      $('#siteHeader').after(blist.configuration.maintenance_message);
-      setTimeout(
-          dismissMaintenance,
-          15000
-        );
-
-      $('#maintenanceNotice a.close').click(function(event) {
-        event.preventDefault();
-        dismissMaintenance();
-        $.cookies.set('maintenance_ack', blist.configuration.maintenance_hash); 
-      });
+        $.cookies.get('maintenance_ack') != blist.configuration.maintenance_hash)
+    {
+        var dismissMaintenance = function()
+        {
+            $('#maintenanceNotice').fadeOut();
+        };
+  
+        $('#siteHeader').after(blist.configuration.maintenance_message);
+        setTimeout(dismissMaintenance, 15000);
+  
+        $('#maintenanceNotice a.close').click(function(event)
+        {
+            event.preventDefault();
+            dismissMaintenance();
+            $.cookies.set('maintenance_ack', blist.configuration.maintenance_hash); 
+        });
     }
 
-    blist.configuration.appToken = 'U29jcmF0YS0td2VraWNrYXNz0'
+    var csrfToken = $('meta[name="csrf-token"]').attr('content');
+    if (!$.isBlank(csrfToken))
+    {
+        // for core server support
+        $.cookies.set('socrata-csrf-token', csrfToken);
+    }
+
+    blist.configuration.appToken = 'U29jcmF0YS0td2VraWNrYXNz0';
     $.ajaxSetup({
-        beforeSend: function(xhrObj) {
+        beforeSend: function(xhrObj)
+        {
             xhrObj.setRequestHeader('X-App-Token', blist.configuration.appToken);
+            xhrObj.setRequestHeader('X-CSRF-Token', csrfToken);
         }
     });
 });

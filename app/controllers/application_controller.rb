@@ -19,15 +19,40 @@ class ApplicationController < ActionController::Base
   # Uncomment the :secret if you're not using the cookie session store
   protect_from_forgery # :secret => 'e231a1e478cd7112967644be164e057e'
 
+  def handle_unverified_request
+    # As of Rails 2.3.11 (and in 3.0.4), the CSRF protection behavior
+    # has changed. No longer will it balk and refuse to service your
+    # request -- instead, they'll clear your user session and continue
+    # on their merry, and so the request will be serviced as if you had
+    # been logged out. This would be fantastic! if we used Rails
+    # sessions to keep track of user auth. But we don't. So we have to
+    # monkey patch in some shenanigans.
+    super
+
+    # Log the user out a dozen different ways
+    if current_user_session
+      current_user_session.destroy
+    end
+    cookies.delete :remember_token
+    @current_user = nil
+    @current_user_session = nil
+
+    error = 'A request was made without the appropriate Authenticity Token. ' +
+      'This usually means that someone is attempting to do something malicious with your account. ' +
+      'For your protection, you have been logged out. Please contact support if the problem persists.'
+    respond_to do |format|
+      format.data { render :json => { :error => error } }
+      format.html do
+        flash.now[:error] = error
+        render 'shared/error', :status => :unauthorized
+      end
+    end
+  end
+
   # See ActionController::Base for details 
   # Uncomment this to filter the contents of submitted sensitive data parameters
   # from your application log (in this case, all fields with names like "password").
   # filter_parameter_logging :password
-
-  def initialize
-    @show_search_form = true
-    @is_marketing_page = false
-  end
 
   hide_action :current_user, :current_user_session, :prerendered_fragment_for, :require_module!, :require_that
   def current_user

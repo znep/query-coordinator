@@ -10,32 +10,35 @@
   margin: 1em 2em 1em
   padding: 1em 0.5em
   position: relative
-  text-align: center
   z-index: 1
 
-  p
-    display: inline-block
-    font-size: 1.4em
-    font-weight: bold
-    margin: 0.25em
-    .ie7 &
-      display: inline
-  ul
-    display: inline-block
-    .ie7 &
-      display: inline
-    li
-      display: inline-block
-      border-left: 2px solid $color_chrome_box_border
-      padding:
-        left: 0.5em
-        right: 0.2em
-      &:first-child
-        border-left: none
-      a
-        font-size: 1.3em
-      .ie7 &
-        display: inline
+  p.info
+    float: left
+    font-size: 1.3em
+    margin:
+      left: 1em
+      top: 0.8em
+    width: 30em
+    .widgetContent &
+      float: none
+      margin-left: 0
+      text-align: center
+      width: auto
+  .downloadBox
+    float: right
+    text-align: center
+    .widgetContent &
+      float: none
+      margin-top: 1em
+    h5
+      font-size: 1.4em
+      font-weight: bold
+      margin: 0.25em
+    ul
+      li
+        display: inline-block
+        .ie7 &
+          display: inline
 
 #aboutSection
   .aboutDataset

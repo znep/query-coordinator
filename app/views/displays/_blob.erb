@@ -1,18 +1,29 @@
-<div class='externalLinkDisplay <%= @view.display.display_type %>'>
-  <p>Download:</p>
-  <ul>
-    <%- @view.blobs.each do |b| -%>
-    <li><a href="<%= b['href'] %>" target="_blank">
-      <%- s = b['size'].is_a?(Numeric) ?
+<div class='externalLinkDisplay clearfix <%= @view.display.display_type %>'>
+  <p class='info'>
+  <%- if @view.display.type == 'href' -%>
+  This dataset has not been imported into the catalog yet, so it cannot be explored interactively, but it is available for download
+  <%- elsif @view.display.display_type == 'link' -%>
+  This dataset cannot be displayed in the browser, but it is available for download
+  <%- else -%>
+  This dataset is not tabular data, and may have limited interactivity, but it is available for download
+  <%- end -%>
+  </p>
+  <div class='downloadBox'>
+    <h5>Download</h5>
+    <ul>
+      <%- @view.blobs.each do |b| -%>
+      <li><a class='button' href="<%= b['href'] %>" target="_blank">
+        <%- s = b['size'].is_a?(Numeric) ?
         number_to_human_size(b['size'], :locale => :en) : b['size'] -%>
-      <%- if !b['name'].blank? -%>
-      <%= b['name'] %> (<%= b['type'] %>, <%= s %>)
-      <%- else -%>
-      <%= b['type'] %>, <%= s %>
+        <%- if !b['name'].blank? -%>
+        <%= b['name'] %> (<%= b['type'] %> <%= s %>)
+        <%- else -%>
+        <%= b['type'] %> <%= s %>
+        <%- end -%>
+      </a></li>
       <%- end -%>
-    </a></li>
-    <%- end -%>
-  </ul>
+    </ul>
+  </div>
 </div>
 
 <%- if @view.display.display_type == 'image' -%>

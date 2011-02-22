@@ -96,7 +96,7 @@
               <div class="line clearfix">
                 <label for="view_licenseId">Licensing</label>
                 <%= select_tag("view[licenseId]", license_select_options('')) %>
-                <div class="additionalHelp">Choose licensing terms for people who wish to use this dataset.</div>
+                <div class="additionalHelp">Choose licensing terms for people who wish to use this dataset</div>
               </div>
 
               <div class="line creativeCommonsLine clearfix">
@@ -146,12 +146,16 @@
 
                   <div class="customFieldset">
                     <%- (fieldset.fields || []).each do |field| -%>
-                      <%- required   = field['required'].present? -%>
+                      <%- required   = field['required'].present?
+                          md_field   = field['private'].present? ? 'privateMetadata' : 'metadata' -%>
                       <div class="line clearfix<%= ' customRequired' if required %>">
-                        <label for="view_metadata_custom_fields_<%= fieldset.name + "_" + field.name %>"
+                        <label for="view_<%= md_field %>_custom_fields_<%= fieldset.name + "_" + field.name %>"
                           <%= " class='required'" if required %>>
                           <%= field.name %></label>
-                        <%= text_field_tag("view[metadata][custom_fields][#{fieldset.name}][#{field.name}]", '') %>
+                        <%= text_field_tag("view[#{md_field}][custom_fields][#{fieldset.name}][#{field.name}]", '') %>
+                        <%- if field['private'].present? -%>
+                          <div class="additionalHelp">This field has been marked private by your organization and is not publicly viewable</div>
+                        <%- end -%>
                       </div>
                     <%- end -%>
                   </div>
@@ -168,16 +172,23 @@
                   <div>
                     <%= radio_button_tag("privacy", "public") %>
                     <label for="privacy_public">
-                      My data is <strong>public</strong>: it can only be modified by me, but everyone can view it.
+                      My data is <strong>public</strong>: it can only be modified by me, but everyone can view it
                     </label>
                   </div>
                   <div>
                     <%= radio_button_tag("privacy", "private", :checked => true) %>
                     <label for="privacy_private">
-                      My data is <strong>private</strong>.
+                      My data is <strong>private</strong>
                     </label>
                   </div>
                 </div>
+              </div>
+
+              <div class="line clearfix">
+                <label>Contact Email</label>
+                <%= text_field_tag('view[privateMetadata][contactEmail]', '',
+                      :title => 'Email Address', :class => 'textPrompt email') %>
+                <div class="additionalHelp">This address will not be displayed publicly. If left blank, it will default to your address</div>
               </div>
             </div>
 

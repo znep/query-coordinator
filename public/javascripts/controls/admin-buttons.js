@@ -49,7 +49,7 @@
                         $container.find(opts.workingSelector).removeClass(opts.workingClass);
 
                         if (_.isFunction(opts.callback))
-                        { opts.callback(response, $container); }
+                        { opts.callback(response, $container, $this); }
                     }
                 });
             });

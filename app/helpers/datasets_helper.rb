@@ -179,13 +179,12 @@ module DatasetsHelper
   # This is done by merging the fields
   def merge_custom_metadata(view)
     domain_metadata = CurrentDomain.custom_dataset_metadata || []
-    if (!view.metadata.nil? && !view.metadata.custom_fields.nil?)
+    if !view.merged_metadata['custom_fields'].nil?
       domain_metadata = domain_metadata.clone
-      view_metadata = view.metadata.custom_fields
+      view_metadata = view.merged_metadata['custom_fields']
       view_metadata.each do |field|
         name = field[0]
-        name_in_domain = domain_metadata.find { |e| e.name == name}
-        if (name_in_domain.nil?)
+        if domain_metadata.none? { |e| e.name == name }
           h = {:name => name, :fields => []}
           if (field[1].kind_of? Hash) # protect against top key w/o subkey
             field[1].keys.each do |sub_field_name|

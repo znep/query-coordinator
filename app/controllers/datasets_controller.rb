@@ -298,7 +298,10 @@ class DatasetsController < ApplicationController
               unless fieldset.fields.blank?
                 fieldset.fields.each do |field|
                   if field.required.present?
-                    if params[:view][:metadata][:custom_fields][fieldset.name][field.name].blank?
+                    if (field.private.present? &&
+                        params[:view][:privateMetadata][:custom_fields][fieldset.name][field.name].blank?) ||
+                      (field.private.blank? &&
+                        params[:view][:metadata][:custom_fields][fieldset.name][field.name].blank?)
                       flash.now[:error] = "The field '#{field.name}' is required."
                       return
                     end
@@ -307,8 +310,10 @@ class DatasetsController < ApplicationController
               end
             end
           end
-          params[:view][:metadata] = @view.data['metadata'].
+          params[:view][:metadata] = (@view.data['metadata'] || {}).
             deep_merge(params[:view][:metadata])
+          params[:view][:privateMetadata] = (@view.data['privateMetadata'] || {}).
+            deep_merge(params[:view][:privateMetadata])
         end
         @view = View.update_attributes!(params[:id], params[:view])
         flash.now[:notice] = "The metadata has been updated."

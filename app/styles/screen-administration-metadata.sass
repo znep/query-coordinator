@@ -20,15 +20,18 @@
       margin-top: 1.5em
     .metadataFieldTable
 
-      .required
+      td.required
         width: 1em
-        &.requiredEnabled
+      tr.required
+        td.required
           .requiredField
             background: url(/stylesheets/images/common/required.png) no-repeat left top
             display: block
             height: 10px
             margin-left: 6px
             width: 10px
+      tr.private
+        font-style: italic
 
   .metadataFieldTable, .categoriesTable
     .actions
@@ -58,7 +61,7 @@
       td.required
         padding-right: 0
 
-      .toggleRequired
+      .toggleButton
         width: 10em
 
   .newFieldsetArea

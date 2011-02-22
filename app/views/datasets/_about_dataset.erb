@@ -183,27 +183,32 @@
 
 <%- end -%>
 
-<%- if @view.metadata && @view.metadata.custom_fields -%>
+<%- view_meta = @view.merged_metadata['custom_fields'] -%>
+<%- if !view_meta.blank? -%>
   <%- merge_custom_metadata(@view).each do |fieldset| -%>
-    <div class="formSection">
-      <a class="expander expanded formHeader" href="#expand">
-        <span class="icon"></span>
-        <%= fieldset.name %>
-      </a>
-      <%- existing_fields = (@view.metadata && @view.metadata.custom_fields &&
-          @view.metadata.custom_fields.assoc(fieldset.name)) ?
-          @view.metadata.custom_fields.assoc(fieldset.name)[1] : {} -%>
+    <%- if (fieldset.fields || []).any? { |field| (view_meta[fieldset.name] || {})[field.name].present? } %>
+      <div class="formSection">
+        <a class="expander expanded formHeader" href="#expand">
+          <span class="icon"></span>
+          <%= fieldset.name %>
+        </a>
+        <%- existing_fields = (view_meta &&
+            view_meta.assoc(fieldset.name)) ?
+            view_meta.assoc(fieldset.name)[1] : {} -%>
 
-      <dl class="sectionContent">
-        <%- (fieldset.fields || []).each do |field| -%>
-          <dt><%= field.name %></dt>
-          <dd><span class="wrap">
-              <%= raw(auto_link(h(existing_fields[field.name])|| '',
-                  :html => { :rel => 'nofollow external' })) %>
-          </span></dd>
-        <%- end -%>
-      </dl>
-    </div>
+        <dl class="sectionContent">
+          <%- (fieldset.fields || []).each do |field| -%>
+            <%- unless existing_fields[field.name].blank? -%>
+              <dt><%= field.name %></dt>
+              <dd><span class="wrap">
+                  <%= raw(auto_link(h(existing_fields[field.name])|| '',
+                      :html => { :rel => 'nofollow external' })) %>
+              </span></dd>
+            <%- end -%>
+          <%- end -%>
+        </dl>
+      </div>
+    <%- end -%>
   <%- end -%>
 <%- end -%>
 

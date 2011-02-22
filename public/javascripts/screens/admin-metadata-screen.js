@@ -8,15 +8,24 @@
         }
     });
 
-    $('.toggleRequired').adminButton({
-        callback: function(response, $line)
+    var buttonMap = {
+        'required': {
+            'on': 'Required',
+            'off': 'Optional'
+        },
+        'private': {
+            'on': 'Private',
+            'off': 'Public'
+        }
+    };
+
+    $('.toggleButton').adminButton({
+        callback: function(response, $line, $link)
         {
-            var $link = $line.find('.actions .toggleRequired');
             $link
-            .val($link.val() == 'Make Required' ? 'Make Optional' : 'Make Required')
+            .val('Make ' + buttonMap[response.option][response.value ? 'off' : 'on'])
             .closest('.item')
-                .find('.required')
-                .toggleClass('requiredEnabled');
+                .toggleClass(response.option);
         }
     });
 

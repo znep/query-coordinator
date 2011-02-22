@@ -444,21 +444,22 @@ class AdministrationController < ApplicationController
 
     save_metadata(config, metadata, "Field Successfully Removed")
   end
-  def toggle_metadata_required
+  def toggle_metadata_option
     check_auth_level('edit_site_theme')
-    config = get_configuration()
+    config   = get_configuration()
     metadata = config.properties.custom_dataset_metadata
     fieldset = metadata[params[:fieldset].to_i].fields
+    option   = params[:option]
 
     field = fieldset[params[:index].to_i]
-    field['required'] = field['required'].blank? ? true : false
+    field[option] = field[option].blank? ? true : false
 
     update_or_create_property(config, 'custom_dataset_metadata', metadata)
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
 
     respond_to do |format|
-      format.data { render :json => {:success => true} }
+      format.data { render :json => {:success => true, :option => option, :value => field[option]} }
       format.html { redirect_to :action => 'metadata' }
     end
   end

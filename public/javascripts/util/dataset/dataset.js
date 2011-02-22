@@ -2086,6 +2086,7 @@ this.Dataset = Model.extend({
         moderationStatus: true,
         name: true,
         originalViewId: true,
+        privateMetadata: true,
         query: true,
         queryString: true,
         searchString: true,

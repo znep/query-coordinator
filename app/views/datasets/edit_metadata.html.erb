@@ -153,6 +153,7 @@
       </div>
     </div>
 
+    <%- meta_fields = @view.merged_metadata['custom_fields'] -%>
     <%- (merge_custom_metadata(@view)).each do |fieldset| -%>
       <div class="customFieldsetWrapper">
         <h2>
@@ -160,27 +161,38 @@
             <span class="icon"></span>
             <%= fieldset.name %>
           </a>
-
         </h2>
-        <%- existing_fields = (@view.metadata && @view.metadata.custom_fields &&
-              @view.metadata.custom_fields.assoc(fieldset.name)) ?
-              @view.metadata.custom_fields.assoc(fieldset.name)[1] : {} -%>
+        <%- existing_fields = (meta_fields &&
+              meta_fields.assoc(fieldset.name)) ?
+              meta_fields.assoc(fieldset.name)[1] : {} -%>
 
         <div class="customFieldset">
           <%- (fieldset.fields || []).each do |field| -%>
-            <%- required       = field['required'].present? -%>
-            <%- existing_value = existing_fields[field.name] || '' -%>
+            <%- required       = field['required'].present?
+                md_field       = field['private'].present? ? 'privateMetadata' : 'metadata'
+                existing_value = existing_fields[field.name] || '' -%>
 
             <div class="line clearfix<%= ' customRequired' if required %>">
-              <label for="view_metadata_custom_fields_<%= fieldset.name + "_" + field.name %>"
+              <label for="view_<%= md_field %>_custom_fields_<%= fieldset.name + "_" + field.name %>"
                 <%= " class='required'" if required %>>
                 <%= field.name %></label>
-              <%= text_field_tag("view[metadata][custom_fields][#{fieldset.name}][#{field.name}]", existing_value) %>
+              <%= text_field_tag("view[#{md_field}][custom_fields][#{fieldset.name}][#{field.name}]", existing_value) %>
+              <%- if field['private'].present? -%>
+                <div class="additionalHelp">This field has been marked private by your organization and is not publicly viewable</div>
+              <%- end -%>
             </div>
           <%- end -%>
         </div>
       </div>
     <%- end -%>
+
+    <h2>Contact Information</h2>
+    <div class="line clearfix">
+      <label>Contact Email</label>
+      <%= text_field_tag('view[privateMetadata][contactEmail]', (@view.data['privateMetadata'] || {})['contactEmail'],
+            :title => 'Email Address', :class => 'textPrompt email') %>
+      <div class="additionalHelp">This address will not be displayed publicly. If left blank, it will default to your address</div>
+    </div>
 
     <div class="required">Required Field</div>
     <div class="clearfix submitActions">

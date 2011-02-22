@@ -777,6 +777,10 @@ class View < Model
     end
   end
 
+  def merged_metadata
+    (data['metadata']|| {}).deep_merge(data['privateMetadata'] || {})
+  end
+
   @@default_categories = {
     "" => "-- No category --"
   }

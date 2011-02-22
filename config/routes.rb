@@ -133,7 +133,7 @@ ActionController::Routing::Routes.draw do |map|
       :conditions => { :method => :post }
     admin.connect '/admin/metadata/:fieldset/:index/delete', :action => 'delete_metadata_field',
       :conditions => { :method => :delete }
-    admin.connect '/admin/metadata/:fieldset/:index/toggle_required', :action => 'toggle_metadata_required',
+    admin.connect '/admin/metadata/:fieldset/:index/toggle/:option', :action => 'toggle_metadata_option',
       :conditions => { :method => :put }
     admin.connect '/admin/metadata/:fieldset/:field/move/:direction', :action => 'move_metadata_field',
       :conditions => { :method => :put }

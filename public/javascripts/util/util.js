@@ -451,7 +451,8 @@ $.loadLibraries = function(scriptQueue, callback)
 {
     var $L = $LAB,
         queue = _.reject($.arrayify(scriptQueue), function(item)
-                { return item && blist.util.lazyLoadedAssets[item]; });
+                { return item && blist.util.lazyLoadedAssets[item]; }),
+        loadingLibrary = false;
 
     _.each(queue, function(item)
     {
@@ -472,6 +473,7 @@ $.loadLibraries = function(scriptQueue, callback)
                             $.param({'_': (new Date()).valueOf()});
                     }
                     $L = $L.script(url).wait();
+                    loadingLibrary = true;
                 });
             }
             else
@@ -480,7 +482,7 @@ $.loadLibraries = function(scriptQueue, callback)
             }
             blist.util.lazyLoadedAssets[item] = true;
         }
-        else
+        else if (loadingLibrary)
         { $L = $L.wait(); }
     });
     $L = $L.wait(callback);

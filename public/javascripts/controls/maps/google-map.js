@@ -306,7 +306,7 @@
             hideLayers: function()
             {
                 var mapObj = this;
-                $('> div > div:first > div:last', mapObj.$dom())
+                $('> div > div:first > div > div:last', mapObj.$dom())
                     .css('visibility', 'hidden');
                 if (!mapObj._hideTiles)
                 { mapObj._hideTiles = google.maps.event.addListener(mapObj.map,

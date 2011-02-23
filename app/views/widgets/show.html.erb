@@ -13,6 +13,10 @@
   <link type="text/css" rel="stylesheet" href="/styles/widget/<%= @theme_id %>.css" />
 <% end %>
 
+<% content_for :skip_links do %>
+  <%= link_to 'Go to an accessible version of this page', @view.alt_href %>
+<% end %>
+
 <div class="widgetWrapper">
   <%- if @theme[:frame][:orientation] == 'downwards' -%>
     <%= render :partial => 'widget_header' %>

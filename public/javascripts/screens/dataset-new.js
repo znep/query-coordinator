@@ -260,9 +260,8 @@ $(function()
     // validation
     $(".newDatasetForm").validate({
         rules: {
-            "view[name]": "required",
             "view[attributionLink]": "customUrl",
-            "view[esri_src]": 'required customUrl'
+            "view[esri_src]": 'customUrl'
         },
         messages: {
             "view[name]": "Dataset name is required.",

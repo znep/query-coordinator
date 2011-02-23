@@ -108,8 +108,15 @@
                 event.preventDefault();
                 if ($nextButton.is('.disabled')) { return; }
 
+                // I think this is a filed bug:
+                // http://plugins.jquery.com/content/valid-and-single-optional-elements
+                // but the issue is that the Contact Email field is failing
+                // validation even when not filled in. So we need to manually select
+                // everything that is non-empty or required
+                var $vizItems = $currentPane.find(':input:visible');
                 if ((currentPaneConfig.skipValidation !== true) &&
-                    !$currentPane.find(':input:visible').valid())
+                    !$vizItems.filter(':not(.prompt)')
+                        .add($vizItems.filter('.required')).valid())
                 {
                     return;
                 }

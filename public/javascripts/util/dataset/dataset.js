@@ -1747,8 +1747,12 @@ this.Dataset = Model.extend({
                         var c = !$.isBlank(req.parentColumn) ?
                             req.parentColumn.childColumnForID(adjName) :
                             ds.columnForID(adjName);
-                        if (!$.isBlank(c)) { req.row[c.lookup] = v; }
-                        else { req.row[adjName] = v; }
+                        var l = $.isBlank(c) ? adjName : c.lookup;
+                        // If this value is changed, then don't overwrite it
+                        // with what comes back from the server. This probably
+                        // only applies to creating a row via tags
+                        if (!req.row.changed[l])
+                        { req.row[l] = v; }
                     }
                 });
             if (req.row.underlying)

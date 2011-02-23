@@ -233,6 +233,7 @@
             {
                 var chartObj = this;
                 delete chartObj._xCategories;
+                delete chartObj._categoriesLoaded;
                 delete chartObj._xColumn;
                 delete chartObj._yColumns;
                 delete chartObj._columnsLoaded;

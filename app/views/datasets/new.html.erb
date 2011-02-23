@@ -63,7 +63,7 @@
             <div class="generalMetadata">
               <div class="line clearfix">
                 <label for="view_name" class="required">Dataset Title</label>
-                <%= text_field_tag("view[name]", '', :title => "Enter a title", :class => "textPrompt") %>
+                <%= text_field_tag("view[name]", '', :title => "Enter a title", :class => "textPrompt required") %>
               </div>
 
               <div class="line clearfix">
@@ -86,7 +86,7 @@
             <div class="mapLayerMetadata">
               <div class="line clearfix">
                 <label for="view_esri_src" class="required">ESRI Map Layer URL</label>
-                <%= text_field_tag('view[esri_src]', '', :title => 'Enter the source URL', :class => 'textPrompt') %>
+                <%= text_field_tag('view[esri_src]', '', :title => 'Enter the source URL', :class => 'textPrompt required') %>
               </div>
             </div>
 

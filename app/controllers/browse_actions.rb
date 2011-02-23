@@ -8,6 +8,8 @@ protected
       :use_icon => true,
       :options => [
         {:text => 'Datasets', :value => 'datasets', :class => 'typeBlist'},
+        {:text => 'External Datasets', :value => 'href', :class => 'typeHref'},
+        {:text => 'Files and Documents', :value => 'blob', :class => 'typeBlob'},
         {:text => 'Filtered Views', :value => 'filters', :class => 'typeFilter'},
         {:text => 'Charts', :value => 'charts', :class => 'typeChart'},
         {:text => 'Maps', :value => 'maps', :class => 'typeMap'},

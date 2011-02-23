@@ -4,6 +4,10 @@ class Displays::Href < Displays::Base
     'href'
   end
 
+  def name
+    'External dataset'
+  end
+
   def scrolls_inline?
     false
   end

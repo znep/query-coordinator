@@ -112,7 +112,6 @@ class DatasetsController < ApplicationController
     end
 
     @view.register_opening(request.referrer)
-    @view_activities = Activity.find({:viewId => @view.id})
   end
 
   def save_filter

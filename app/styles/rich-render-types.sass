@@ -171,6 +171,12 @@
     display: none
 
 .flyoutRenderer
+  &.template
+    display: none
+
+  .richColumn
+    float: none
+
   .richLine
     margin-top: 0.2em
     &:first-child
@@ -190,6 +196,16 @@
     // Renderer-specific styles
     &.percent .blist-percent
       min-width: 3em
+
+  .viewRow
+    display: block
+    font-size: 1.1em
+    font-weight: bold
+    margin:
+      // This makes the scrollbar go away in FF...
+      bottom: 0.1em
+      top: 0.5em
+    text-align: center
 
 .navRenderType
   position: relative

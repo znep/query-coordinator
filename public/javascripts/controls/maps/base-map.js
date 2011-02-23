@@ -1,7 +1,5 @@
 (function($)
 {
-    var rowsPerPage = 3;
-
     // Set up namespace for particular plugins to class themselves under
     $.socrataMap =
     {
@@ -89,45 +87,38 @@
                 }
                 else { mapObj.$dom().siblings('#mapLayers').addClass('hide'); }
 
+                mapObj.initializeFlyouts(mapObj.settings.view.displayFormat
+                    .plot.descriptionColumns);
+
                 mapObj.initializeMap();
 
                 mapObj.populateLayers();
 
-                $(".infoPaging").live('click', function(event)
+                $.live('.mapInfoContainer .infoPaging a', 'click', function(event)
                 {
-                    var params = event.currentTarget.id.split('_');
-                    var cmd = params[0];
-                    var id = params[1];
+                    event.preventDefault();
 
-                    var rows = $('#info_'+id+' tr:gt(0)');
-                    var index = parseInt(rows.filter(':visible:first')
-                                             .attr('id').split('_')[2]);
+                    var $a = $(this);
+                    if ($a.hasClass('disabled')) { return; }
 
-                    var new_index = cmd == 'next' ? index+rowsPerPage
-                                                  : index-rowsPerPage;
-                    new_index--; // :gt needs one less.
-                    if (new_index < -1) return;
-                    if (new_index >= rows.length-1) return;
+                    var $paging = $a.parent();
+                    var action = $.hashHref($a.attr('href')).toLowerCase();
 
-                    rows.filter(':visible').css('display', 'none');
-                    var filter = '';
-                    if (new_index > -1) { filter += ':gt('+new_index+')'; }
-                    filter += ':lt('+rowsPerPage+')';
-                    rows.filter(filter).css('display', 'table-row');
+                    var $rows = $paging.siblings('.row');
+                    var $curRow = $rows.filter(':visible');
 
-                    new_index++; // no longer need to worry about :gt
-                    if (new_index-rowsPerPage < -1)
-                    {
-                        $("#prev_"+id).hide();
-                    }
-                    else if (new_index+rowsPerPage >= rows.length-1)
-                    {
-                        $("#next_"+id).hide();
-                    }
-                    else
-                    {
-                        $("#prev_"+id+", #next_"+id).show();
-                    }
+                    var newIndex = $curRow.index() + (action == 'next' ? 1 : -1);
+                    if (newIndex < 0) { return; }
+                    if (newIndex >= $rows.length) { return; }
+
+                    $curRow.addClass('hide');
+                    $rows.eq(newIndex).removeClass('hide');
+
+                    $paging.find('a').removeClass('disabled');
+                    if (newIndex <= 0)
+                    { $paging.find('.previous').addClass('disabled'); }
+                    if (newIndex >= $rows.length - 1)
+                    { $paging.find('.next').addClass('disabled'); }
                 });
 
                 mapObj._origData = {
@@ -225,8 +216,6 @@
                 mapObj._locCol = undefined;
                 mapObj._latCol = undefined;
                 mapObj._longCol = undefined;
-                mapObj._titleCol = undefined;
-                mapObj._infoCol = undefined;
                 mapObj._quantityCol = undefined;
 
                 mapObj._origData = {
@@ -234,6 +223,9 @@
                     mapType: mapObj.settings.view.displayFormat.type,
                     plotStyle: mapObj.settings.view.displayFormat.plotStyle,
                     layers: mapObj.settings.view.displayFormat.layers};
+
+                mapObj.initializeFlyouts(mapObj.settings.view.displayFormat
+                    .plot.descriptionColumns);
             },
 
             populateLayers: function()
@@ -337,6 +329,37 @@
                 mapObj.renderData(rows);
             },
 
+            generateFlyoutLayout: function(columns)
+            {
+                var mapObj = this;
+                if (_.isEmpty(columns) &&
+                        $.isBlank(mapObj.settings.view.displayFormat.plot.titleId))
+                { return null; }
+
+                var col = {rows: []};
+
+                // Title row
+                if (!$.isBlank(mapObj.settings.view.displayFormat.plot.titleId))
+                {
+                    col.rows.push({fields: [{type: 'columnData',
+                        tableColumnId: mapObj.settings.view
+                            .displayFormat.plot.titleId}
+                    ], styles: {'border-bottom': '1px solid #666666',
+                        'font-size': '1.2em', 'font-weight': 'bold',
+                        'margin-bottom': '0.75em', 'padding-bottom': '0.2em'}});
+                }
+
+                _.each(columns, function(dc)
+                {
+                    var row = {fields: [
+                        {type: 'columnLabel', tableColumnId: dc.tableColumnId},
+                        {type: 'columnData', tableColumnId: dc.tableColumnId}
+                    ]};
+                    col.rows.push(row);
+                });
+                return {columns: [col]};
+            },
+
             renderRow: function(row)
             {
                 var mapObj = this;
@@ -419,68 +442,31 @@
                 { rowKey = row.id; } // too difficult to identify duplicates
 
                 if (!mapObj._llKeys[rowKey])
-                {
-                    mapObj._llKeys[rowKey] = { title: [], info: [] };
-                    mapObj._llKeys[rowKey].id = row.id;
-                }
-                mapObj._llKeys[rowKey].title.push(mapObj.getText(row,
-                    mapObj._titleCol, true));
-                mapObj._llKeys[rowKey].info.push(mapObj.getText(row,
-                    mapObj._infoCol, false));
+                { mapObj._llKeys[rowKey] = { info: $(), id: row.id }; }
 
-                var title = _.compact(mapObj._llKeys[rowKey].title).join(', ');
-                if (title.length > 50) { title = title.slice(0, 50) + "..."; }
+                mapObj._llKeys[rowKey].info =
+                    mapObj._llKeys[rowKey].info.add(mapObj.renderFlyout(row));
 
-                var totalRows = mapObj._llKeys[rowKey].title.length;
+                var totalRows = mapObj._llKeys[rowKey].info.length;
 
-                var info;
-                if (totalRows > 1 && (mapObj._titleCol || mapObj._infoCol))
+                var $info = $.tag({tagName: 'div', 'class': 'mapInfoContainer'});
+                $info.append(mapObj._llKeys[rowKey].info);
+                if (totalRows > 1)
                 {
-                    info  = '<table id="info_'
-                    info += mapObj._llKeys[rowKey].id;
-                    info += '"><tr><th>';
-                    info += (mapObj._titleCol || {}).name || '';
-                    info += '</th><th>';
-                    info += (mapObj._infoCol || {}).name || '';
-                    info += '</th></tr>';
-                    for (var i = 0; i < totalRows; i++)
-                    {
-                        info += '<tr id="infoRow_';
-                        info += mapObj._llKeys[rowKey].id;
-                        info += '_'+i+'" ';
-                        if (i > rowsPerPage-1) { info += 'style="display: none;"'; }
-                        info += '><td>';
-                        info += mapObj._llKeys[rowKey].title[i] || '';
-                        info += '</td><td>';
-                        info += mapObj._llKeys[rowKey].info[i] || '';
-                        info += '</td></tr>';
-                    }
-                    info += '</table>';
-                    if (totalRows > rowsPerPage)
-                    {
-                        info += '<div style="width: 100%;">';
-                        info += '<a class="infoPaging" id="prev_';
-                        info += mapObj._llKeys[rowKey].id;
-                        info += '" href="#" style="display: none;">&lt; Prev</a> ';
-                        info += '<a class="infoPaging" id="next_';
-                        info += mapObj._llKeys[rowKey].id;
-                        info += '" href="#" style="float: right;">Next &gt;</a>';
-                        info += '</div>';
-                    }
-                    // TODO: might not be correct
-                    info = $(info);
-                }
-                else
-                {
-                    var details = _.compact(mapObj._llKeys[rowKey].info).join();
-                    if (!$.isBlank(details))
-                    {
-                        info = $.tag({tagName: 'div', 'class': 'mapInfoContainer',
-                            contents: details});
-                    }
+                    $info.children('.row').addClass('hide')
+                        .first().removeClass('hide');
+                    $info.append($.tag({tagName: 'div', 'class': 'infoPaging',
+                        contents: [
+                            {tagName: 'a', 'class': ['previous', 'disabled'],
+                                href: '#Previous', title: 'Previous row',
+                                contents: '&lt; Previous'},
+                            {tagName: 'a', 'class': 'next', href: '#Next',
+                                title: 'Next row', contents: 'Next &gt;'}
+                        ]
+                    }));
                 }
 
-                var details = {title: title, info: info};
+                var details = {info: $info};
                 if (mapObj._iconCol && row[mapObj._iconCol.id])
                 {
                     var icon;
@@ -685,12 +671,6 @@
                 { mapObj._longCol =
                     view.columnForTCID(view.displayFormat.plot.longitudeId); }
 
-                mapObj._titleCol =
-                    view.columnForTCID(view.displayFormat.plot.titleId);
-
-                mapObj._infoCol =
-                    view.columnForTCID(view.displayFormat.plot.descriptionId);
-
                 mapObj._redirectCol =
                     view.columnForTCID(view.displayFormat.plot.redirectId);
 
@@ -782,28 +762,6 @@
 
                 if (mapObj._legend.gradientSet)
                 { mapObj._legend.$dom.show(); }
-            },
-
-            getText: function(row, col, plain)
-            {
-                var t = !_.isUndefined(col) ? row[col.id] : null;
-
-                if (_.isNull(t)) { return t; }
-                if (col.renderTypeName == 'location')
-                {
-                    var a = t.human_address;
-                    if (_.isNull(a) || _.isUndefined(a)) { t = null; }
-                    else
-                    {
-                        t = blist.data.types.location
-                            .renderAddress({human_address: a}, plain);
-                    }
-                }
-                else if (_.include(['number', 'money', 'percent'], col.renderTypeName))
-                {
-                    t = blist.data.types[col.renderTypeName].filterRender(t, col, plain);
-                }
-                return t;
             }
         }
     }));

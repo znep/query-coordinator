@@ -23,8 +23,6 @@ strip-chrome:
 - strip-chrome
 screen-login:
 - screen-login
-screen-map:
-- screen-map
 administration-screen:
 - screen-admin
 administration-datasets:

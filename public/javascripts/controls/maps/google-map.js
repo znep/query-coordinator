@@ -90,7 +90,6 @@
             {
                 var mapObj = this;
 
-                var hasInfo = !$.isBlank(details.info) || !$.isBlank(details.title);
                 var googlifyPoint = function(point)
                     { return new google.maps.LatLng(point[0], point[1]); };
 
@@ -132,8 +131,7 @@
                 switch(geoType)
                 {
                     case  'point':
-                        geometry.setOptions({
-                            title: details.title, clickable: hasInfo,
+                        geometry.setOptions({clickable: true,
                             map: mapObj.map, icon: details.icon});
                         break;
                     case 'polyline':
@@ -160,30 +158,22 @@
                 { mapObj._markers[dupKey].setMap(null); }
                 mapObj._markers[dupKey] = geometry;
 
-                if (hasInfo)
+                var $infoContent = $.tag({tagName: 'div'});
+                if (!$.isBlank(details.info))
                 {
-                    var $infoContent = $.tag({tagName: 'div'});
-                    if (!$.isBlank(details.title))
-                    {
-                        $infoContent.append($.tag({tagName: 'div',
-                            'class': 'mapTitle', contents: details.title}));
-                    }
-                    if (!$.isBlank(details.info))
-                    {
-                        $infoContent.append(details.info);
-                    }
-
-                    google.maps.event.addListener(geometry, 'click', function(evt)
-                    {
-                        if (!mapObj.infoWindow)
-                        { mapObj.infoWindow =
-                            new google.maps.InfoWindow({maxWidth: 300}); }
-                        mapObj.infoWindow.setContent($infoContent[0]);
-                        // evt.latLng if it's not a point; pull .position for points
-                        mapObj.infoWindow.setPosition(evt.latLng || geometry.position);
-                        mapObj.infoWindow.open(mapObj.map);
-                    });
+                    $infoContent.append(details.info);
                 }
+
+                google.maps.event.addListener(geometry, 'click', function(evt)
+                {
+                    if (!mapObj.infoWindow)
+                    { mapObj.infoWindow =
+                        new google.maps.InfoWindow({maxWidth: 300}); }
+                    mapObj.infoWindow.setContent($infoContent[0]);
+                    // evt.latLng if it's not a point; pull .position for points
+                    mapObj.infoWindow.setPosition(evt.latLng || geometry.position);
+                    mapObj.infoWindow.open(mapObj.map);
+                });
 
                 if (details.redirect_to)
                 {

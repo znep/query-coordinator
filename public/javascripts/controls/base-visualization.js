@@ -66,6 +66,94 @@
                 return this._$dom;
             },
 
+            $flyoutTemplate: function()
+            {
+                if (!this._$flyoutTemplate)
+                {
+                    this.$dom().after($.tag({tagName: 'div',
+                        'class': ['template', 'row',
+                            'richRendererContainer', 'flyoutRenderer']}));
+                    this._$flyoutTemplate = this.$dom()
+                        .siblings('.flyoutRenderer.template');
+                    this.richRenderer = this._$flyoutTemplate.richRenderer({
+                        columnCount: 1, view: this.settings.view});
+                }
+                return this._$flyoutTemplate;
+            },
+
+            initializeFlyouts: function(columns)
+            {
+                var vizObj = this;
+                vizObj._flyoutLayout = vizObj.generateFlyoutLayout(columns);
+                // Getting the template initializes RR
+                if ($.isBlank(vizObj.richRenderer)) { vizObj.$flyoutTemplate(); }
+                vizObj.richRenderer.setConfig(vizObj._flyoutLayout);
+                if (vizObj.hasFlyout())
+                { vizObj.richRenderer.renderLayout(); }
+                else
+                { var $item = vizObj.$flyoutTemplate().empty(); }
+
+                if (!vizObj._eventsHooked)
+                {
+                    // Tooltips are wonky, so we just live this for all of them,
+                    // and use stored data to figure out how to close the tip
+                    // on click
+                    $.live('.flyoutRenderer .viewRow', 'click', function(e)
+                    {
+                        e.preventDefault();
+                        var $a = $(this);
+                        vizObj.closeFlyout($a);
+                        var href = $a.attr('href');
+                        $(document).trigger(blist.events.DISPLAY_ROW,
+                            [href.slice(href.lastIndexOf('/') + 1)]);
+                    });
+                    vizObj._eventsHooked = true;
+                }
+            },
+
+            hasFlyout: function()
+            {
+                return !$.isBlank(this._flyoutLayout);
+            },
+
+            generateFlyoutLayout: function(columns)
+            {
+                // Override if you want a different layout
+                if (_.isEmpty(columns)) { return null; }
+
+                var col = {rows: []};
+                _.each(columns, function(dc)
+                {
+                    var row = {fields: [
+                        {type: 'columnLabel', tableColumnId: dc.tableColumnId},
+                        {type: 'columnData', tableColumnId: dc.tableColumnId}
+                    ]};
+                    col.rows.push(row);
+                });
+                return {columns: [col]};
+            },
+
+            renderFlyout: function(row)
+            {
+                var vizObj = this;
+
+                var $item = vizObj.$flyoutTemplate().clone()
+                        .removeClass('template');
+                if (vizObj.hasFlyout())
+                { vizObj.richRenderer.renderRow($item, row); }
+
+                $item.append($.tag({tagName: 'a',
+                    href: vizObj.settings.view.url + '/' + row.id,
+                    'class': 'viewRow', contents: 'View details for this row'}));
+                return $item;
+            },
+
+            closeFlyout: function($link)
+            {
+                // Implement me to close the flyout, because a view row link has
+                // been clicked
+            },
+
             showError: function(errorMessage)
             {
                 this.$dom().siblings('#vizError').show().text(errorMessage);
@@ -156,6 +244,8 @@
                 }
                 if (vizObj._requireRowReload)
                 { delete vizObj._requireRowReload; }
+
+                delete vizObj._flyoutLayout;
 
                 vizObj.reloadVisualization();
 

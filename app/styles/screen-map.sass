@@ -62,23 +62,29 @@
   margin-bottom: 0.5em
   margin-right: 15px
 
+.infowindow .window .top .right .user .border
+  border: none
+
 .mapInfoContainer
-  font-size: 1.2em
-  max-height: 10em
+  max-height: 20em
   max-width: 25em
+  overflow: auto
+  .infowindow &
+    font-size: 0.8333em
 
-  &.html
-    font-size: 1em
-
-.mapInfoContainer table,
-#dataGrid_infowindow table
-  margin-bottom: 10px
-
-.mapInfoContainer table th + th,
-.mapInfoContainer table td + td,
-#dataGrid_infowindow table th + th,
-#dataGrid_infowindow table td + td
-  padding-left: 10px
+  .infoPaging
+    text-align: center
+    margin:
+      // This makes the scrollbar go away in FF...
+      bottom: 0.1em
+      top: 0.75em
+    a
+      font-size: 1.1em
+      &.previous
+        margin-right: 7em
+      &.disabled
+        color: #999999
+        cursor: auto
 
 .firstChild
   .VE_Pushpin_Popup_Title

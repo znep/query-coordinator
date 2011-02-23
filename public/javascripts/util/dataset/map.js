@@ -151,7 +151,10 @@ Dataset.modules['map'] =
             function(n)
             {
                 if ($.isBlank(view.displayFormat.plot[n]) && !$.isBlank(colObj[n]))
-                { view.displayFormat.plot[n] = colObj[n]; }
+                {
+                    view.displayFormat.plot[n] = colObj[n];
+                    delete colObj[n];
+                }
             });
 
 
@@ -162,8 +165,16 @@ Dataset.modules['map'] =
             {
                 view.displayFormat.plot[n] =
                     view.columnForID(colObj[o]).tableColumnId;
+                delete colObj[o];
             }
         });
+
+        if (!$.isBlank(view.displayFormat.plot.descriptionId))
+        {
+            view.displayFormat.plot.descriptionColumns =
+                [{tableColumnId: view.displayFormat.plot.descriptionId}];
+            delete view.displayFormat.plot.descriptionId;
+        }
     }
 };
 

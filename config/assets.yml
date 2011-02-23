@@ -80,6 +80,7 @@ javascripts:
     - public/javascripts/data/editors/photo-editor.js
   shared-map:
     - public/javascripts/plugins/markerclusterer.js
+    - public/javascripts/controls/rich-render-library.js
     - public/javascripts/controls/base-visualization.js
     - public/javascripts/util/color.js
     - public/javascripts/controls/maps/base-map.js

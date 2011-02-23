@@ -121,17 +121,9 @@
                 mapObj._markers[dupKey] = shapes;
 
                 var $infoContent = $.tag({tagName: 'div'});
-                var hasInfoContent = false;
-                if (!$.isBlank(details.title))
-                {
-                    $infoContent.append($.tag({tagName: 'div',
-                                'class': 'mapTitle', contents: details.title}));
-                    hasInfoContent = true;
-                }
                 if (!$.isBlank(details.info))
                 {
                     $infoContent.append(details.info);
-                    hasInfoContent = true;
                 }
 
                 _.each(shapes, function(shape)
@@ -173,19 +165,16 @@
 
                     mapObj.map.entities.push(shape);
 
-                    if (hasInfoContent)
-                    {
-                        $((shape['cm1001_er_etr'] || {}).dom).css('cursor', 'pointer');
+                    $((shape['cm1001_er_etr'] || {}).dom).css('cursor', 'pointer');
 
-                        Microsoft.Maps.Events.addHandler(shape, 'click',
-                            function(event)
-                            {
-                                if (details.redirect_to)
-                                { window.open(details.redirect_to); }
+                    Microsoft.Maps.Events.addHandler(shape, 'click',
+                        function(event)
+                        {
+                            if (details.redirect_to)
+                            { window.open(details.redirect_to); }
 
-                                buildInfoWindow(mapObj, event);
-                            });
-                    }
+                            buildInfoWindow(mapObj, event);
+                        });
                 });
 
                 return true;

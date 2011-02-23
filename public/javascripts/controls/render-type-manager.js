@@ -40,7 +40,8 @@
             ],
             stylesheets: ['http://serverapi.arcgisonline.com/jsapi/arcgis' +
                 '/1.5/js/dojo/dijit/themes/tundra/tundra.css',
-                '/styles/merged/screen-map.css'],
+                '/styles/individual/screen-map.css',
+                '/styles/individual/rich-render-types.css'],
             scrollsInline: true
         },
 

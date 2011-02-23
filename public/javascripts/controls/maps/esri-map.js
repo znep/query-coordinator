@@ -243,8 +243,7 @@
                     return false;
                 }
 
-                var g = new esri.Graphic(geometry, symbol,
-                    { title: details.title, body: details.info });
+                var g = new esri.Graphic(geometry, symbol, { body: details.info });
 
                 if (mapObj._markers[dupKey])
                 { mapObj.map.graphics.remove(mapObj._markers[dupKey]); }
@@ -531,7 +530,6 @@
         if (!$.isBlank($content))
         {
             mapObj.map.infoWindow.setContent($content[0])
-                .setTitle(evt.graphic.attributes.title)
                 .show(evt.screenPoint,
                     mapObj.map.getInfoWindowAnchor(evt.screenPoint));
         }

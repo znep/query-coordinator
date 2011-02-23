@@ -202,9 +202,10 @@
             feature.attributes.quantity =
                 $.makeArray(feature.attributes.quantity);
 
-            if (mapObj._infoCol)
-            { feature.attributes.description.push(
-                mapObj.getText(row, mapObj._infoCol)); }
+            // TODO
+//            if (mapObj._infoCol)
+//            { feature.attributes.description.push(
+//                mapObj.getElement(row, mapObj._infoCol)); }
             if (config.aggregateMethod == 'sum' && !row.invalid[mapObj._quantityCol.id])
             { feature.attributes.quantity.push(row[mapObj._quantityCol.id]); }
             if (config.aggregateMethod == 'count')
@@ -282,8 +283,8 @@
                 info += ': ' + feature.attributes.quantity;
                 info += '<br />' + feature.attributes.description;
 
+            // TODO
             var details = {
-                title: feature.attributes.NAME,
                 info: $.tag({tagName: 'div', contents: info}),
                 color: mapObj._segmentColors[segmentIndex].toHex(),
                 redirect_to: feature.attributes.redirect_to

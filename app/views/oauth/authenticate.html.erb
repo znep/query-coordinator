@@ -18,7 +18,7 @@
     <div class="textArea">
       <h2>
         <%- if @app_token.website.present? -%>
-          <strong><%= link_to @app_token.website, @app_token.name, :rel => 'external' %></strong>
+          <strong><%= link_to @app_token.name, @app_token.website, :rel => 'external' %></strong>
         <%- else -%>
           <strong><%= @app_token.name %></strong>
         <%- end -%>

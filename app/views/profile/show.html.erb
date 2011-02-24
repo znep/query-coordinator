@@ -125,12 +125,12 @@
             <div class="innerContent">
               <%- @user.userLinks.each do |user_link| -%>
                 <%- link_type = UserLink.link_types.find { |link_item|
-                  link_item[0] == user_link['linkType'].upcase} -%>
+                  link_item[0] == user_link.linkType.upcase} -%>
                 <p>
                   <span class="subHeader textDisplay"><%= link_type.nil? ? 'Other' :
                     link_type[1] %></span>
-                  <%= link_to user_link['label'].present? ? user_link['label'] : user_link['url'],
-                    user_link['url'], :class => 'textDisplay', :rel => 'external' %>
+                  <%= link_to user_link.label.present? ? user_link.label : user_link.url,
+                    user_link.url, :class => 'textDisplay', :rel => 'external' %>
                 </p>
               <%- end -%>
             </div>

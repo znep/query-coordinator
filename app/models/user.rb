@@ -129,6 +129,10 @@ class User < Model
     OpenIdIdentifier.parse(CoreServer::Base.connection.get_request(path))
   end
 
+  def app_tokens
+    AppToken.find_by_user_id(self.id)
+  end
+
   def my_friend?
     return false if current_user.nil?
     return current_user.friends.any? { |friend|

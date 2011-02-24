@@ -1,5 +1,5 @@
 class AppToken < Model
-  def self.find(user_id)
+  def self.find_by_user_id(user_id)
     path = "/users/#{user_id}/app_tokens.json"
     parse(CoreServer::Base.connection.get_request(path))
   end
@@ -17,6 +17,10 @@ class AppToken < Model
   def self.delete(user_id, id)
     path = "/users/#{user_id}/app_tokens/#{id}"
     return parse(CoreServer::Base.connection.delete_request(path))
+  end
+
+  def has_thumbnail?
+    return data['thumbnailSha'].present?
   end
 
   def thumbnail_url(size='thumb')

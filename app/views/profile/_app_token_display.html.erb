@@ -1,5 +1,5 @@
 <div class="appTokenDisplay<%= ' edit' if edit %>">
-  <%- if token.data['thumbnailSha'] -%>
+  <%- if token.has_thumbnail? -%>
     <div class="thumbnail thumbnailArea">
       <img src="<%= token.thumbnail_url %>" alt="thumbnail" />
     </div>
@@ -31,6 +31,13 @@
         <span class="fieldName">App Token</span>
         <span class="appTokenTextContainer fieldValue">
           <span class="appTokenText"><%= token.app_token %></span>
+        </span>
+      </p>
+      <p class="appTokenLine">
+        <span class="fieldName">Secret Token</span>
+        <span class="appTokenTextContainer fieldValue">
+          <span class="appTokenText"><%= token.oAuthSecret %></span>
+          <a class="newSecretLink" href="#newSecretToken">Request a New Secret</a>
         </span>
       </p>
     <%- end -%>

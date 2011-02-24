@@ -65,7 +65,7 @@ class ProfileController < ApplicationController
       end
     end
 
-    @app_tokens = AppToken.find(@user.id)
+    @app_tokens = @user.app_tokens
 
     @browse_in_container = true
     @opts = {:for_user => @user.id, :nofederate => true}
@@ -189,13 +189,13 @@ class ProfileController < ApplicationController
 
   def edit
     @user_links = UserLink.find(current_user.id)
-    @app_tokens = AppToken.find(current_user.id)
+    @app_tokens = current_user.app_tokens
   end
 
   # Note: was AccountsController#edit
   def edit_account
     @user_links = UserLink.find(current_user.id)
-    @app_tokens = AppToken.find(current_user.id)
+    @app_tokens = current_user.app_tokens
   end
 
   def update_account
@@ -251,7 +251,7 @@ class ProfileController < ApplicationController
 
   def edit_image
     @user_links = UserLink.find(current_user.id)
-    @app_tokens = AppToken.find(current_user.id)
+    @app_tokens = current_user.app_tokens
   end
 
   def edit_app_tokens
@@ -263,7 +263,7 @@ class ProfileController < ApplicationController
     end
 
     @user_links = UserLink.find(current_user.id)
-    @app_tokens = AppToken.find(current_user.id)
+    @app_tokens = current_user.app_tokens
   end
 
   def create_app_token

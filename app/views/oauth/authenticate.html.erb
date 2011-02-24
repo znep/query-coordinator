@@ -1,0 +1,43 @@
+<%- content_for :head do -%>
+  <title>An Application is Requesting Access | <%= CurrentDomain.strings.site_title %></title>
+  <%= rendered_stylesheet_tag 'oauth-authenticate' %>
+<%- end -%>
+
+<div class="modalContentBox wide">
+  <div class="contentHeader">
+    <h1><%= @app_token.name %> would like to access your information</h1>
+  </div>
+
+  <div class="dialogContents">
+    <%- if @app_token.has_thumbnail? -%>
+      <div class="thumbnail thumbnailArea">
+        <img src="<%= @app_token.thumbnail_url 'large' %>" alt="thumbnail" />
+      </div>
+    <%- end -%>
+
+    <div class="textArea">
+      <h2>
+        <%- if @app_token.website.present? -%>
+          <strong><%= link_to @app_token.website, @app_token.name, :rel => 'external' %></strong>
+        <%- else -%>
+          <strong><%= @app_token.name %></strong>
+        <%- end -%>
+        is requesting <strong>read and write</strong> access to your Socrata account.
+      </h2>
+      <p>
+        This means that they will be able to access and modify all of your account information
+        and Datasets on all Socrata-powered websites. This is a <strong>one-time grant</strong>,
+        meaning you have to grant your permission, as you are doing now, each time the
+        application wants to access your data.
+      </p>
+      <p>
+        Choose <strong>Allow</strong> only if you wish to allow the application access to your account.
+      </p>
+    </div>
+
+    <div class="buttonArea">
+      <a href="/oauth/doAuthentication?<%= @oauth_params.to_param %>" class="button default">Allow</a>
+      <a href="<%= @redirect_uri %>" class="button">Cancel</a>
+    </div>
+  </div>
+</div>

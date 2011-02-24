@@ -99,6 +99,8 @@ internal-metrics:
 - screen-metrics
 homepage-show:
 - screen-homepage-show
+oauth-authenticate:
+- screen-oauth-authenticate
 profile-show:
 - screen-profile
 - screen-profile-shared

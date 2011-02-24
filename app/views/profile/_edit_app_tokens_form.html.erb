@@ -31,6 +31,18 @@
                  type="text" class="textPrompt url"/>
         </div>
         <div class="line clearfix">
+          <label for="new_app_token_baseUri">Callback Prefix</label>
+          <input id="new_app_token_baseUri" name="new_app_token[baseUri]"
+                 title="Provide the prefix to the callback uri when using OAuth"
+                 type="text" class="textPrompt url"/>
+          <p>For instance, if your application will call back to
+             <span class="code">http://my-domain.com/socrata-app/oauth/validated</span> and
+             <span class="code">http://my-domain.com/socrata-app/profile</span>, you'll want to supply
+             <span class="code">http://my-domain.com/socrata-app</span> as your prefix. Note
+             that you must include at least the entire domain name. This field will become required when
+             the Socrata Open Data API moves towards OAuth starting on 1st March.</p>
+        </div>
+        <div class="line clearfix">
           <label for="new_app_token_public">Public?</label>
           <input type="checkbox" id="new_app_token_public"
                  name="new_app_token[public]" checked="checked"/>

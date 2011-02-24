@@ -28,14 +28,87 @@ $(function()
 
     if (!_.isUndefined(homeNS.features))
     {
-        var generateThumbnailUrl = function(viewId, timestamp)
+        var timeStampify = function(url, timestamp)
         {
-            var result = '/api/views/' + viewId + '/snapshots?method=get&name=page&size=thumb';
             if (timestamp === true)
             {
-                result += '&time=' + new Date().getTime();
+                url += '&time=' + new Date().getTime();
             }
-            return result;
+            return url;
+        };
+
+        var generateThumbnailUrl = function(viewId, timestamp)
+        {
+            return timeStampify('/api/views/' + viewId + '/snapshots/page?size=thumb', timestamp);
+        };
+
+        var generateFileDataUrl = function(fileSha, timestamp)
+        {
+            return timeStampify('/api/assets/' + fileSha + '?s=featured', timestamp);
+        };
+
+        var pureFileDataUrl = function(context)
+        {
+            var imageSha = context.item.assetId;
+            if (!$.isBlank(imageSha)) { return generateFileDataUrl(imageSha); }
+            return '';
+        };
+
+        var getFeatureType = function(feature)
+        {
+            if (feature.item.display == 'thumbnail') { return 'thumbnail'; }
+            if (feature.item.display == 'custom') { return 'custom'; }
+            return 'text';
+        };
+
+        var customUploadCount = 0;
+
+        var customUploadGen = function(features)
+        {
+            _.each(features, function(feature)
+            {
+                var $this     = $(feature),
+                    $section  = $this.find('.featureContentCustomSection'),
+                    $link     = $section.find('.editCustomImageButton'),
+                    $errorDiv = $section.find('.customImageError'),
+                    $hiddenId = $section.find('.featureContentImageSha'),
+                    $imageDiv = $section.find('.customImageContainer');
+
+                new AjaxUpload($link, {
+                    action: '/api/assets',
+                    autoSubmit: true,
+                    name: 'customUpload' + (customUploadCount++),
+                    responseType: 'json',
+                    onSubmit: function (file, ext)
+                    {
+                        if (!(ext && /^(jpg|png|jpeg|gif|tif|tiff)$/.test(ext)))
+                        {
+                            $errorDiv.show();
+                            return false;
+                        }
+                        $errorDiv
+                            .hide();
+                        $section.addClass('loading');
+                    },
+                    onComplete: function (file, response)
+                    {
+                        $section.removeClass('loading');
+                        $hiddenId.val(response.id);
+                        $imageDiv.animate({opacity: 0}, {complete: function()
+                            {
+                                $('<img/>')
+                                    .attr('src', generateFileDataUrl(response.id, true))
+                                    .load(function() {
+                                        $imageDiv
+                                            .find('img').remove().end()
+                                            .prepend($(this))
+                                            .animate({opacity: 1});
+                                    });
+                            }
+                        });
+                    }
+                });
+            });
         };
 
         var updateFeatureState = function()
@@ -47,7 +120,7 @@ $(function()
 
                 // update radio buttons; use array to check items
                 $this.find('.featureContentRadio').val([
-                    $this.find('.featureBox').hasClass('thumbnail') ? 'thumbnail' : 'text']);
+                    $this.find('.featureBox').attr('data-displayType')]);
             });
             $('.newFeatureButton').toggleClass('disabled', ($features.length == 4));
             $('.newFeatureMessage').toggle($features.length == 4);
@@ -61,23 +134,29 @@ $(function()
             '.featureWrapper': {
                 'feature<-': {
                     '.featureBox@data-viewid': 'feature.viewId',
+                    '.featureBox@data-displayType': getFeatureType,
                     '.featureHeadline@value': 'feature.title',
                     '.featureDescription': 'feature.description',
+                    '.featureContentImageSha': 'feature.assetId',
+                    '.featureContentCustomSection img@src': pureFileDataUrl,
+                    '.featureContentCustomSection img@alt': function() {return '';},
                     '.featureContentThumbnailSection img@src': generateThumbnailUrl('#{feature.viewId}'),
                     '.featureContentThumbnailSection img@alt': function() { return ''; }, // remove alt in case there is no image (so just an edit button)
-                    '.featureBox@class+': function(a) { return (a.item.display == 'thumbnail') ? 'thumbnail' : 'text'; },
+                    '.featureBox@class+': getFeatureType,
                     '.featureContentTextHeadline@value': 'feature.display.title',
                     '.featureContentTextSubtitle@value': 'feature.display.description',
                     '.featureContentRadio@name': 'featureContent_#{feature.viewId}'
         } } };
 
-        $('.featuresWorkspace').append($.renderTemplate('feature', homeNS.features, featureDirective));
+        var features = $.renderTemplate('feature', homeNS.features, featureDirective);
+        customUploadGen(features);
+        $('.featuresWorkspace').append(features);
 
         $.live('.featureContentRadio', 'click', function(event)
         {
             // use click rather than change for IE's sake
             var $this = $(this);
-            $this.closest('.featureBox').removeClass('thumbnail text').addClass($this.attr('value'));
+            $this.closest('.featureBox').removeClass('thumbnail custom text').addClass($this.attr('value'));
         });
 
         $.live('.featureRemoveButton', 'click', function(event)
@@ -148,11 +227,15 @@ $(function()
         {
             $('#selectDataset').jqmHide();
 
-            $('.featuresWorkspace').append($.renderTemplate('feature', [
-                {   title: ds.name,
+            var newFeature = $.renderTemplate('feature',
+                [ { title: ds.name,
                     description: ds.description || '',
                     display: 'thumbnail',
-                    viewId: ds.id } ], featureDirective));
+                    viewId: ds.id } ], featureDirective);
+
+            customUploadGen(newFeature);
+
+            $('.featuresWorkspace').append(newFeature);
 
             $('.featuresWorkspace .featureWrapper:last-child .featureBox').effect('highlight', 10000);
 
@@ -180,13 +263,18 @@ $(function()
                 var $this = $(this);
                 var feature = {};
 
-                feature.viewId = $this.attr('data-viewid');
-                feature.title = $this.find('.featureHeadline').val().clean();
+                feature.viewId      = $this.attr('data-viewid');
+                feature.title       = $this.find('.featureHeadline').val().clean();
                 feature.description = $this.find('.featureDescription')
-                    .val().clean();
+                                          .val().clean();
                 if ($this.hasClass('thumbnail'))
                 {
                     feature.display = 'thumbnail';
+                }
+                else if ($this.hasClass('custom'))
+                {
+                    feature.display = 'custom';
+                    feature.assetId = $this.find('.featureContentImageSha').val();
                 }
                 else
                 {

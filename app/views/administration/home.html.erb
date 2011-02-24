@@ -107,19 +107,36 @@
 
           <div class="featureContentSection">
             <div class="line">
-              <input type="radio" name="featureContent" class="featureContentRadio" value="thumbnail" />
+              <input type="radio" name="featureContent"
+                     class="featureContentRadio" value="thumbnail" />
               <label for="featureContentThumbnail">Thumbnail</label>
             </div>
-            <div class="featureContentThumbnailSection">
+            <div class="featureContentThumbnailSection featureContentType">
               <img src="" alt="feature image"/>
-              <a class="editThumbnailButton" href="#editThumbnail">Edit</a>
+              <a class="editThumbnailButton editImageButton" href="#editThumbnail">Edit</a>
             </div>
 
             <div class="line">
-              <input type="radio" name="featureContent" class="featureContentRadio" value="text" />
+              <input type="radio" name="featureContent"
+                     class="featureContentRadio" value="custom" />
+              <label for="featureContentCustom">Custom Image</label>
+            </div>
+            <div class="featureContentCustomSection featureContentType">
+              <span class="throbber"></span>
+              <input type="hidden" class="featureContentImageSha" />
+              <div class="customImageContainer">
+                <img src="" alt="custom image" />
+                <a class="editCustomImageButton editImageButton" href="#editCustomImage">Edit</a>
+              </div>
+              <div class="customImageError flash error">Invalid file type. Please choose an image file</div>
+            </div>
+
+            <div class="line">
+              <input type="radio" name="featureContent"
+                     class="featureContentRadio" value="text" />
               <label for="featureContentText">Text</label>
             </div>
-            <div class="featureContentTextSection">
+            <div class="featureContentTextSection featureContentType">
               <input type="text" class="featureContentTextHeadline"/>
               <input type="text" class="featureContentTextSubtitle"/>
             </div>

@@ -249,13 +249,13 @@ class View < Model
     parse(CoreServer::Base.connection.delete_request(path))
   end
 
-  def self.thumbnail_for(viewId, params = {})
-    params.merge!({
-      :method => 'get',
-      :name => 'page',
-      :size => 'thumb'
-    })
-    "/api/views/#{viewId}/snapshots?#{params.to_param}"
+  def self.featured_image(featured_view)
+    case featured_view['display']
+      when 'thumbnail' then
+        "/api/views/#{featured_view['viewId']}/snapshots/page?size=thumb"
+      when 'custom' then
+        "/api/assets/#{featured_view['assetId']}?s=featured"
+    end
   end
 
   def delete_favorite

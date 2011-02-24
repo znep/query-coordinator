@@ -113,6 +113,7 @@ javascripts:
     - public/javascripts/controls/modal-dialogs.js
     - public/javascripts/controls/admin-buttons.js
     - public/javascripts/plugins/jquery.tablesorter.js
+    - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/controls/combination-list.js
     - public/javascripts/screens/admin-home.js
   admin-metadata:

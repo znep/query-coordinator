@@ -28,9 +28,9 @@
         <li class="featuredViewContainer<%= ' last' if view == CurrentDomain.featured_views.last %>"
             <%= raw "style=\"width:#{100.0 / CurrentDomain.featured_views.size}%\"" unless view == CurrentDomain.featured_views.last %>>
           <div class="featuredView">
-            <%- if view['display'] == 'thumbnail' -%>
+            <%- if view['display'] == 'thumbnail' || view['display'] == 'custom' -%>
               <a href="<%= @view_urls[view.viewId] %>">
-                <img src="<%= View.thumbnail_for(view.viewId)%>" alt="<%= view.title %>" />
+                <img src="<%= View.featured_image(view)%>" alt="<%= view.title %>" />
               </a>
             <%- else -%>
               <div class="statContainer">

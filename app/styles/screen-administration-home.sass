@@ -137,9 +137,13 @@
       position: relative
       z-index: 1
 
-      &.text .featureContentThumbnailSection,
-      &.thumbnail .featureContentTextSection
+      .featureContentType
         display: none
+
+      &.text .featureContentTextSection,
+      &.custom .featureContentCustomSection,
+      &.thumbnail .featureContentThumbnailSection
+        display: block
 
       .featureRemoveButton
         @include sprite-menu-icons
@@ -171,10 +175,22 @@
       label
         font-size: 1.3em
 
-      .featureContentThumbnailSection
+      .featureContentCustomSection
+        &.loading
+          .throbber
+            display: block
+            margin: 0.5em auto
+        .throbber
+          @include throbber-icon
+          display: none
+
+        .customImageError
+          display: none
+
+      .featureContentThumbnailSection, .featureContentCustomSection
         text-align: center
 
-        .editThumbnailButton
+        .editImageButton
           background-color: #fff
           display: inline-block
           font-size: 1.2em

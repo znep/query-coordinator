@@ -243,7 +243,8 @@
                     return false;
                 }
 
-                var g = new esri.Graphic(geometry, symbol, { body: details.info });
+                var g = new esri.Graphic(geometry, symbol,
+                        {rows: details.rows, flyoutDetails: details.flyoutDetails});
 
                 if (mapObj._markers[dupKey])
                 { mapObj.map.graphics.remove(mapObj._markers[dupKey]); }
@@ -526,13 +527,11 @@
     {
         if (isIdentifyTask(mapObj)) { return; }
 
-        var $content = evt.graphic.attributes.body;
-        if (!$.isBlank($content))
-        {
-            mapObj.map.infoWindow.setContent($content[0])
-                .show(evt.screenPoint,
-                    mapObj.map.getInfoWindowAnchor(evt.screenPoint));
-        }
+        mapObj.map.infoWindow.setContent(
+            mapObj.getFlyout(evt.graphic.attributes.rows,
+                evt.graphic.attributes.flyoutDetails)[0])
+            .show(evt.screenPoint,
+                mapObj.map.getInfoWindowAnchor(evt.screenPoint));
     };
 
     var identifyFeature = function(mapObj, evt)

@@ -357,7 +357,10 @@
                 fields: [
                     {text: 'Title', name: 'displayFormat.plot.titleId',
                         type: 'columnSelect', isTableColumn: true,
-                        columns: {type: ['text', 'location'], hidden: isEdit,
+                        columns: {type: ['text', 'location', 'html', 'url',
+                            'drop_down_list', 'dataset_link', 'email', 'tag',
+                            'percent', 'stars', 'flag', 'phone', 'money',
+                            'data', 'calendar_date', 'number'], hidden: isEdit,
                             defaultNames: ['title']},
                         wizard: 'Choose a column that contains ' +
                             'titles for each point'
@@ -404,13 +407,12 @@
                 onlyIf: [{field: 'displayFormat.plotStyle', value: 'heatmap'},
                     sectionOnlyIf],
                 fields: [
-                    {text: 'Description', name: 'displayFormat.plot.descriptionId',
-                        type: 'columnSelect', isTableColumn: true,
-                        columns: {type: ['text', 'html', 'location'],
-                            hidden: isEdit,
-                            defaultNames: ['description', 'details']},
-                        wizard: 'Choose a column that contains ' +
-                            'descriptions for each point'
+                    {type: 'repeater',
+                        name: 'displayFormat.plot.descriptionColumns',
+                        field: {text: 'Flyout Details', name: 'tableColumnId',
+                               type: 'columnSelect', isTableColumn: true,
+                               columns: {hidden: isEdit}},
+                        minimum: 1, addText: 'Add Flyout Details'
                     },
                     {text: 'Quantity', name: 'displayFormat.plot.quantityId',
                         type: 'columnSelect', isTableColumn: true,

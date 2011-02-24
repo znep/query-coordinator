@@ -331,19 +331,24 @@
 
             generateFlyoutLayout: function(columns)
             {
-                var mapObj = this;
                 if (_.isEmpty(columns) &&
-                        $.isBlank(mapObj.settings.view.displayFormat.plot.titleId))
+                        $.isBlank(this.settings.view.displayFormat.plot.titleId))
                 { return null; }
+                return this.generateFlyoutLayoutDefault(columns,
+                        this.settings.view.displayFormat.plot.titleId);
+            },
+
+            generateFlyoutLayoutDefault: function(columns, titleId)
+            {
+                var mapObj = this;
 
                 var col = {rows: []};
 
                 // Title row
-                if (!$.isBlank(mapObj.settings.view.displayFormat.plot.titleId))
+                if (!$.isBlank(titleId))
                 {
                     col.rows.push({fields: [{type: 'columnData',
-                        tableColumnId: mapObj.settings.view
-                            .displayFormat.plot.titleId}
+                        tableColumnId: titleId}
                     ], styles: {'border-bottom': '1px solid #666666',
                         'font-size': '1.2em', 'font-weight': 'bold',
                         'margin-bottom': '0.75em', 'padding-bottom': '0.2em'}});
@@ -358,6 +363,35 @@
                     col.rows.push(row);
                 });
                 return {columns: [col]};
+            },
+
+            getFlyout: function(rows, details)
+            {
+                return this.getFlyoutDefault(rows);
+            },
+
+            getFlyoutDefault: function(rows)
+            {
+                var mapObj = this;
+                var $info = $.tag({tagName: 'div', 'class': 'mapInfoContainer'});
+                _.each(rows, function(r) { $info.append(mapObj.renderFlyout(r)); });
+
+                if (rows.length > 1)
+                {
+                    $info.children('.row').addClass('hide')
+                        .first().removeClass('hide');
+                    $info.append($.tag({tagName: 'div', 'class': 'infoPaging',
+                        contents: [
+                            {tagName: 'a', 'class': ['previous', 'disabled'],
+                                href: '#Previous', title: 'Previous row',
+                                contents: '&lt; Previous'},
+                            {tagName: 'a', 'class': 'next', href: '#Next',
+                                title: 'Next row', contents: 'Next &gt;'}
+                        ]
+                    }));
+                }
+
+                return $info;
             },
 
             renderRow: function(row)
@@ -442,31 +476,11 @@
                 { rowKey = row.id; } // too difficult to identify duplicates
 
                 if (!mapObj._llKeys[rowKey])
-                { mapObj._llKeys[rowKey] = { info: $(), id: row.id }; }
+                { mapObj._llKeys[rowKey] = { rows: [], id: row.id }; }
 
-                mapObj._llKeys[rowKey].info =
-                    mapObj._llKeys[rowKey].info.add(mapObj.renderFlyout(row));
+                mapObj._llKeys[rowKey].rows.push(row);
 
-                var totalRows = mapObj._llKeys[rowKey].info.length;
-
-                var $info = $.tag({tagName: 'div', 'class': 'mapInfoContainer'});
-                $info.append(mapObj._llKeys[rowKey].info);
-                if (totalRows > 1)
-                {
-                    $info.children('.row').addClass('hide')
-                        .first().removeClass('hide');
-                    $info.append($.tag({tagName: 'div', 'class': 'infoPaging',
-                        contents: [
-                            {tagName: 'a', 'class': ['previous', 'disabled'],
-                                href: '#Previous', title: 'Previous row',
-                                contents: '&lt; Previous'},
-                            {tagName: 'a', 'class': 'next', href: '#Next',
-                                title: 'Next row', contents: 'Next &gt;'}
-                        ]
-                    }));
-                }
-
-                var details = {info: $info};
+                var details = {rows: mapObj._llKeys[rowKey].rows};
                 if (mapObj._iconCol && row[mapObj._iconCol.id])
                 {
                     var icon;

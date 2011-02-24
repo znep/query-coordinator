@@ -133,6 +133,56 @@
             { fetchFeatureSet(mapObj, config); }
             else
             { processRows(mapObj, config, rows); }
+        },
+
+        generateFlyoutLayout: function(columns)
+        {
+            var mapObj = this;
+            var defLayout = mapObj.generateFlyoutLayoutDefault(columns, 'fake');
+
+            // Adjust title
+            var titleRow = defLayout.columns[0].rows[0];
+            titleRow.fields[0].type = 'label';
+            delete titleRow.fields[0].tableColumnId;
+            titleRow.fields[0].text = 'Fill in name';
+
+            // Add quantity
+            var quantityRow = {fields: [
+                {type: 'label', text: 'Fill in quantity name'},
+                {type: 'label', text: 'Fill in quantity',
+                    styles: {'font-weight': 'normal'}}
+            ], styles: $.extend({}, titleRow.styles,
+                {'font-size': '1.1em', 'font-weight': null})};
+            defLayout.columns[0].rows.splice(1, 0, quantityRow);
+
+            // Adjust title styles
+            _.each(['border-bottom', 'margin-bottom', 'padding-bottom'],
+                function(s) { delete titleRow.styles[s]; });
+
+            return defLayout;
+        },
+
+        getFlyout: function(rows, details)
+        {
+            var mapObj = this;
+            var $flyout = mapObj.getFlyoutDefault(rows);
+
+            $flyout.find('.richColumn').each(function()
+            {
+                var $col = $(this);
+                // Fill in name
+                $col.find('.richLine:first-child .staticLabel')
+                    .text(details.name);
+
+                // Fill in quantity
+                var $quantLine = $col.find('.richLine:nth-child(2)');
+                $quantLine.find('.staticLabel:first-child')
+                    .text(mapObj._quantityCol.name);
+                $quantLine.find('.staticLabel:last-child')
+                    .text(details.quantity);
+            });
+
+            return $flyout;
         }
     });
 
@@ -197,15 +247,12 @@
         {
             var feature = findFeatureWithPoint(mapObj, row);
             if ($.isBlank(feature)) { return; }
-            feature.attributes.description =
-                $.makeArray(feature.attributes.description);
+            feature.attributes.rows = feature.attributes.rows || [];
+            feature.attributes.rows.push(row);
+
             feature.attributes.quantity =
                 $.makeArray(feature.attributes.quantity);
 
-            // TODO
-//            if (mapObj._infoCol)
-//            { feature.attributes.description.push(
-//                mapObj.getElement(row, mapObj._infoCol)); }
             if (config.aggregateMethod == 'sum' && !row.invalid[mapObj._quantityCol.id])
             { feature.attributes.quantity.push(row[mapObj._quantityCol.id]); }
             if (config.aggregateMethod == 'count')
@@ -269,8 +316,6 @@
             if (!feature.attributes.NAME)
             {feature.attributes.NAME = feature.attributes[mapObj._featureDisplayName];}
             if (!feature.attributes.quantity) { return; }
-            feature.attributes.description = _.compact(
-                $.makeArray(feature.attributes.description)).join(', ');
 
             var segmentIndex;
             for (segmentIndex = 0; segmentIndex < mapObj._numSegments; segmentIndex++)
@@ -279,13 +324,10 @@
                 { break; }
             }
 
-            var info  = mapObj._quantityCol.name;
-                info += ': ' + feature.attributes.quantity;
-                info += '<br />' + feature.attributes.description;
-
-            // TODO
             var details = {
-                info: $.tag({tagName: 'div', contents: info}),
+                flyoutDetails: {name: feature.attributes.NAME,
+                    quantity: feature.attributes.quantity},
+                rows: feature.attributes.rows,
                 color: mapObj._segmentColors[segmentIndex].toHex(),
                 redirect_to: feature.attributes.redirect_to
             };

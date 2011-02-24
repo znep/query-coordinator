@@ -158,18 +158,13 @@
                 { mapObj._markers[dupKey].setMap(null); }
                 mapObj._markers[dupKey] = geometry;
 
-                var $infoContent = $.tag({tagName: 'div'});
-                if (!$.isBlank(details.info))
-                {
-                    $infoContent.append(details.info);
-                }
-
                 google.maps.event.addListener(geometry, 'click', function(evt)
                 {
                     if (!mapObj.infoWindow)
                     { mapObj.infoWindow =
                         new google.maps.InfoWindow({maxWidth: 300}); }
-                    mapObj.infoWindow.setContent($infoContent[0]);
+                    mapObj.infoWindow.setContent(mapObj.getFlyout(details.rows,
+                            details.flyoutDetails)[0]);
                     // evt.latLng if it's not a point; pull .position for points
                     mapObj.infoWindow.setPosition(evt.latLng || geometry.position);
                     mapObj.infoWindow.open(mapObj.map);

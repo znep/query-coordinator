@@ -120,12 +120,6 @@
                 }
                 mapObj._markers[dupKey] = shapes;
 
-                var $infoContent = $.tag({tagName: 'div'});
-                if (!$.isBlank(details.info))
-                {
-                    $infoContent.append(details.info);
-                }
-
                 _.each(shapes, function(shape)
                 {
                     if (details.icon)
@@ -133,7 +127,8 @@
                         shape.setOptions({ icon: details.icon });
                         shape.custom_icon = true;
                     }
-                    shape.$infoContent = $infoContent;
+                    shape.rows = details.rows;
+                    shape.flyoutDetails = details.flyoutDetails;
                     if (!shape.getLocations) // is Pushpin
                     {
                         shape.getLocations = function()
@@ -352,7 +347,8 @@
             $box = mapObj.$dom().siblings('#bing_infoWindow');
         }
 
-        $box.show().find("#bing_infoContent").empty().append(shape.$infoContent)
+        $box.show().find("#bing_infoContent").empty()
+            .append(mapObj.getFlyout(shape.rows, shape.flyoutDetails))
             .prepend('<img src="http://maps.gstatic.com/intl/' +
                      'en_us/mapfiles/iw_close.gif"/>');
 

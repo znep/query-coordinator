@@ -237,8 +237,9 @@ class AdministrationController < ApplicationController
         return
       end
     else
-      views = View.find({ :public_only => true, :limit => 10, :nofederate => true }, true) # hopefully 10 will be enough?
-      @view = views.find{ |view| !view.is_alt_view? } || views.first unless views.nil?
+      views = SearchResult.search('views', { :limit => 1, :nofederate => true,
+                                             :limitTo => 'tables', :datasetView => 'dataset' })[0].results
+      @view = views.first unless views.nil?
     end
 
     if @view.nil?

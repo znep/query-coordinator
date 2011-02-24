@@ -1,8 +1,4 @@
-class Accounttier < Model
-  def self.find
-    parse(CoreServer::Base.connection.get_request("/account_tiers.json"))
-  end
-
+class AccountTier < Model
   def has_module?(mod_name)
     if accountModules.nil?
       return false

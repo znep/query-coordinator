@@ -1,2 +1,0 @@
-class Tableauthor < User
-end

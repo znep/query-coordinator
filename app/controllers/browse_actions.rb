@@ -136,7 +136,7 @@ protected
     end
 
     # Whether or not we need to display icons for other domains
-    @use_federations = DataFederation.find.
+    @use_federations = Federation.find.
       select {|f| f.acceptedUserId.present? &&
         f.sourceDomainCName != CurrentDomain.cname }.
         length > 0 if @use_federations.nil?

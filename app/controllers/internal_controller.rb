@@ -13,7 +13,7 @@ class InternalController < ApplicationController
 
   def show_org
     @org = Organization.find(params[:id])
-    @tiers = Accounttier.find()
+    @tiers = AccountTier.find()
     @domains = Organization.find().collect {|o| o.domains}.flatten.compact
     default_domain = @domains.select {|d| d.shortName == 'default'}.first
     @domains.unshift(Hashie::Mash.new(
@@ -25,7 +25,7 @@ class InternalController < ApplicationController
 
   def show_domain
     @domain = Domain.find(params[:id])
-    @modules = Accountmodule.find().sort {|a,b| a.name <=> b.name}
+    @modules = AccountModule.find().sort {|a,b| a.name <=> b.name}
   end
 
   def show_config
@@ -45,16 +45,16 @@ class InternalController < ApplicationController
   end
 
   def index_modules
-    @modules = Accountmodule.find().sort {|a,b| a.name <=> b.name}
-    @tiers = Accounttier.find()
+    @modules = AccountModule.find().sort {|a,b| a.name <=> b.name}
+    @tiers = AccountTier.find()
   end
 
   def index_tiers
-    @tiers = Accounttier.find()
+    @tiers = AccountTier.find()
   end
 
   def show_tier
-    @tier = Accounttier.find().select {|at| at.name == params[:name]}[0]
+    @tier = AccountTier.find().select {|at| at.name == params[:name]}[0]
   end
 
 

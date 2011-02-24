@@ -1,0 +1,2 @@
+class DisplayFormat < Model
+end

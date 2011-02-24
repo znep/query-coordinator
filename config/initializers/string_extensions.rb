@@ -16,4 +16,8 @@ class String
       self
     end
   end
+
+  def capitalize_first
+    self.gsub(/^[a-z]/){ |c| c.upcase }
+  end
 end

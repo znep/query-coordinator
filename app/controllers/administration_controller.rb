@@ -306,10 +306,10 @@ class AdministrationController < ApplicationController
     check_module('federations')
 
     if (params[:dataset].nil?)
-      @federations = DataFederation.find
+      @federations = Federation.find
     else
       @search_dataset = params[:dataset]
-      @federations = DataFederation.find(:dataset => params[:dataset])
+      @federations = Federation.find(:dataset => params[:dataset])
     end
 
     if (!params[:domain].nil?)
@@ -321,7 +321,7 @@ class AdministrationController < ApplicationController
     check_auth_level('federations')
     check_module('federations')
 
-    DataFederation.delete(params[:id])
+    Federation.delete(params[:id])
     respond_to do |format|
       format.data { render :json => { :success => true } }
       format.html { redirect_federation("Federation successfully deleted") }
@@ -331,7 +331,7 @@ class AdministrationController < ApplicationController
     check_auth_level('federations')
     check_module('federations')
 
-    DataFederation.accept(params[:id])
+    Federation.accept(params[:id])
     respond_to do |format|
       format.data { render :json => { :success => true, :message => 'Accepted' } }
       format.html { redirect_federation("Federation successfully accepted") }
@@ -341,7 +341,7 @@ class AdministrationController < ApplicationController
     check_auth_level('federations')
     check_module('federations')
 
-    DataFederation.reject(params[:id])
+    Federation.reject(params[:id])
     respond_to do |format|
       format.data { render :json => { :success => true, :message => 'Pending' } }
       format.html { redirect_federation("Federation successfully rejected") }
@@ -352,10 +352,10 @@ class AdministrationController < ApplicationController
     check_module('federations')
 
     begin
-      data = DataFederation.new
+      data = Federation.new
       target_domain = Domain.find(params[:new_federation][:target_domain])
       data.targetDomainId = target_domain.id
-      DataFederation.create(data)
+      Federation.create(data)
     rescue CoreServer::ResourceNotFound => e
       flash[:error] = "Could not create data federation: target domain is invalid"
       return(redirect_to :action => :federations)

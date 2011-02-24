@@ -30,9 +30,9 @@ class Model
     end
     path = nil
     if options.is_a? String
-      path = "/#{self.name.pluralize.downcase}/#{options}.json"
+      path = "/#{self.service_name}/#{options}.json"
     elsif options.respond_to?(:to_param)
-      path = "/#{self.name.pluralize.downcase}.json"
+      path = "/#{self.service_name}.json"
       path += "?#{options.to_param}" unless options.to_param.blank?
     end
 
@@ -51,9 +51,9 @@ class Model
 
     path = nil
     if options.is_a? String
-      path = "/#{self.name.pluralize.downcase}/#{options}.json"
+      path = "/#{self.service_name}/#{options}.json"
     elsif options.respond_to?(:to_param)
-      path = "/users/#{user_id}/#{self.name.pluralize.downcase}.json"
+      path = "/users/#{user_id}/#{self.service_name}.json"
       path += "?#{options.to_param}" unless options.to_param.blank?
     end
 
@@ -85,12 +85,12 @@ class Model
       return nil if value.nil?
 
       if value.is_a?(Hash)
-        klass = Object.const_get(method_name.capitalize.to_sym)
+        klass = Object.const_get(method_name.capitalize_first.to_sym)
         define_hash_accessor(method_name, klass)
         return send(method_name)
       elsif value.is_a?(Array)
         begin
-          klass = Object.const_get(method_name.singularize.capitalize.to_sym)
+          klass = Object.const_get(method_name.singularize.capitalize_first.to_sym)
         rescue NameError
           return value
         end
@@ -231,7 +231,7 @@ class Model
     if !attributes['tags'].nil?
       attributes['tags'] = parse_tags(attributes['tags'])
     end
-    path = "/#{self.name.pluralize.downcase}/#{id}.json"
+    path = "/#{self.service_name}/#{id}.json"
     return parse(CoreServer::Base.connection.update_request(path, attributes.to_json))
   end
 
@@ -248,7 +248,7 @@ class Model
     if !attributes['tags'].nil?
       attributes['tags'] = parse_tags(attributes['tags'])
     end
-    path = "/#{self.name.pluralize.downcase}.json"
+    path = "/#{self.service_name}.json"
     return parse(CoreServer::Base.connection.
                  create_request(path, attributes.to_json, custom_headers))
   end
@@ -353,6 +353,12 @@ protected
       (!@deleted_flags.nil? && @deleted_flags.length > 0)
   end
 
+protected
+  # Turn class name into core server service name
+  def self.service_name
+    return self.name.gsub(/[A-Z]/){ |c| "_#{c.downcase}" }.gsub(/^_/, '').pluralize
+  end
+
 private
 
   # Mark one or more attributes as non-serializable -- that is, they shouldn't be
@@ -367,4 +373,5 @@ private
   def self.non_serializable_attributes
     read_inheritable_attribute("non_serializable") || Array.new
   end
+
 end

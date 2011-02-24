@@ -19,8 +19,9 @@ class CoreSession
     to_s.size
   end
 
-  def valid?
-    load! unless @loaded
+  def valid?(force_load = false)
+    load! if !@loaded && force_load
+    false unless @loaded
     valid_expiration? && valid_signature?
   end
 
@@ -62,7 +63,7 @@ class CoreSession
     @loaded = true # Needed so we save an empty core session back
   end
 
-  private
+private
   SECRET = "wm4NmtBisUd3XJ0JvQwJqTth8UdFvbYpy3LZ5IU3I3XCwG06XRa1TYXC3WySahssDzrt2cHFrbsRPT1o"
 
   def valid_expiration?

@@ -109,7 +109,7 @@ class UserSession
   # a token representing an authenticated session, and we need to validate it
   # and look up the user associated with that token.
   def find_token
-    if core_session.valid?
+    if core_session.valid?(true) # true to force load
       user = User.find(core_session.user_id, {'Cookie' => "_blist_session_id=#{core_session.to_s}"})
       UserSession.update_current_user(user, core_session)
     elsif !cookies['remember_token'].blank?

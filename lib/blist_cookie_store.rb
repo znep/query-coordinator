@@ -115,7 +115,7 @@ class BlistCookieStore
       raise CookieOverflow if (session_data.size + core_data.size) > MAX
 
       cookie = Hash.new
-      cookie[:value] = session_data
+      cookie[:value] = session_data.to_s || ''
       cookie[:value] = core_data.to_s + '||' + cookie[:value] unless core_data.nil?
       unless options[:expire_after].nil?
         cookie[:expires] = Time.now + options[:expire_after]

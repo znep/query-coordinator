@@ -14,7 +14,7 @@
       <p>No organizations found.</p>
     <% else %>
       <ul>
-        <% @orgs.each do |org| %>
+        <% @orgs.sort{ |a, b| a.name <=> b.name }.each do |org| %>
           <li><a href="/internal/orgs/<%= org.id %>"><%= org.name %></a></li>
         <% end %>
       </ul>

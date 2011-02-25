@@ -141,7 +141,7 @@
             });
 
     };
-    
+
     var requestNewSnapshot = function()
     {
         $refreshContainer.addClass('working')
@@ -171,7 +171,7 @@
             tn = blist.dataset.metadata.thumbnail[snapshotName];
             tn.selection = selection;
             fullThumbnailChanged(blist.dataset.getFullSnapshotUrl() +
-                '&noop=' + (new Date().getTime()));
+                '?noop=' + (new Date().getTime()));
         });
     };
 
@@ -214,9 +214,9 @@
                     .text('Thumbnail saved')
                     .fadeIn(300, function()
                        { setTimeout(function() {$saveMessage.fadeOut(1000);}, 5000); });
-                
+
                 $saveButton.addClass('disabled');
-                
+
                 // in case we're in a container that's expecting it, notify the parent
                 // that we've done something useful
                 if (!_.isUndefined(window.parent))

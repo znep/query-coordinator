@@ -1092,7 +1092,7 @@ this.Dataset = Model.extend({
 
     getSnapshotNamed: function(name)
     {
-        return '/api/views/' + this.id + '/snapshots?method=get&name=' + escape(name);
+        return '/api/views/' + this.id + '/snapshots/' + escape(name);
     },
 
     getCroppedSnapshotUrl: function(name)

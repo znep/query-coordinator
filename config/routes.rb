@@ -246,6 +246,12 @@ ActionController::Routing::Routes.draw do |map|
       :category => /(\w|-)+/, :row_id => /\d+/},
     :conditions => {:method => :get}
 
+  map.connect ':category/:view_name/:id/row_index/:row_index',
+    :controller => 'datasets', :action => 'show',
+    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
+      :category => /(\w|-)+/, :row_index => /\d+/},
+    :conditions => {:method => :get}
+
   map.connect ':category/:view_name/:id/widget_preview', :controller => 'datasets',
     :action => 'widget_preview',
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,

@@ -25,8 +25,9 @@ class DatasetsController < ApplicationController
     @view = get_view(params[:id])
     return if @view.nil?
 
-    if !params[:row_id].nil?
-      @row = @view.get_row(params[:row_id])
+    if !params[:row_id].nil? || !params[:row_index].nil?
+      @row = !params[:row_id].nil? ? @view.get_row(params[:row_id]) :
+        @view.get_row_by_index(params[:row_index])
       if @row.nil?
         flash.now[:error] = 'This row cannot be found, or has been deleted.'
         render 'shared/error', :status => :not_found
@@ -39,7 +40,7 @@ class DatasetsController < ApplicationController
     end
 
     href = @view.href
-    href += '/' + params[:row_id] if !params[:row_id].nil?
+    href += '/' + @row['sid'].to_s if !@row.nil?
     # See if it matches the authoritative URL; if not, redirect
     if request.path != href
       # Log redirects in development

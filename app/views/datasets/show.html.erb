@@ -185,12 +185,15 @@
       <%- next_index = 0 -%>
       <%- if !@row.nil? -%>
       <%- next_index = @view.get_row_index(@row['sid']) + 1 -%>
-      <%- end -%>
       <%- next_row = @view.get_row_by_index(next_index) -%>
+      <%- end -%>
       <%- if !next_row.nil? -%>
       <a href='<%= @view.href %>/<%= next_row['sid'] %>' class='rowLink'>
         <%= @row.nil? ? 'First' : 'Next' %> row
       </a>
+      <%- else -%>
+      <a href='<%= @view.href %>/row_index/<%= next_index %>' class='rowLink'>
+        <%= next_index == 0 ? 'First' : 'Next' %> row
       <%- end -%>
       <%- end -%>
     </div>

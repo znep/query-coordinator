@@ -104,13 +104,11 @@ Dataset.modules['chart'] =
     {
         var view = this;
 
-        if (view.displayType != 'chart')
+        if (!$.isBlank(legacyTypes[view.displayType]))
         {
             var dt = view.displayType;
             view.displayType = 'chart';
-            if (!$.isBlank(legacyTypes[dt]))
-            { view.displayFormat.chartType = legacyTypes[dt]; }
-            else { view.displayFormat.chartType = dt; }
+            view.displayFormat.chartType = legacyTypes[dt];
         }
         else if (!$.isBlank(legacyTypes[view.displayFormat.chartType]))
         {

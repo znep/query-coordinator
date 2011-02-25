@@ -73,18 +73,25 @@ this.Model = Class.extend({
     cleanCopy: function()
     {
         var that = this;
-        var cleanObj = function(val)
+        var cleanObj = function(val, key)
         {
             if (val instanceof Model)
             { return val.cleanCopy(); }
 
             else if (_.isArray(val))
-            { return _.map(val, function(v) { return cleanObj(v); }); }
+            {
+                // Flags are special, because they're not really an array in
+                // that order doesn't matter. To keep them consistent, sort them
+                if (key == 'flags')
+                { return val.slice().sort(); }
+                else
+                { return _.map(val, function(v) { return cleanObj(v); }); }
+            }
 
             else if ($.isPlainObject(val))
             {
                 var obj = {};
-                _.each(val, function(v, k) { obj[k] = cleanObj(v); });
+                _.each(val, function(v, k) { obj[k] = cleanObj(v, k); });
                 return obj;
             }
 
@@ -96,7 +103,7 @@ this.Model = Class.extend({
         _.each(this, function(v, k)
         {
             if (!_.isFunction(v) && !k.startsWith('_') && that._validKeys[k])
-            { obj[k] = cleanObj(v); }
+            { obj[k] = cleanObj(v, k); }
         });
         return obj;
     },

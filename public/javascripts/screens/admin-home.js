@@ -137,7 +137,7 @@ $(function()
                     '.featureBox@data-displayType': getFeatureType,
                     '.featureHeadline@value': 'feature.title',
                     '.featureDescription': 'feature.description',
-                    '.featureContentImageSha': 'feature.assetId',
+                    '.featureContentImageSha@value': 'feature.assetId',
                     '.featureContentCustomSection img@src': pureFileDataUrl,
                     '.featureContentCustomSection img@alt': function() {return '';},
                     '.featureContentThumbnailSection img@src': generateThumbnailUrl('#{feature.viewId}'),

@@ -552,7 +552,7 @@ class AdministrationController < ApplicationController
     render_forbidden unless CurrentDomain.user_can?(current_user, 'manage_stories') ||
                             CurrentDomain.user_can?(current_user, 'feature_items')
     @stories = Story.find
-    @features = CurrentDomain.featured_views
+    @features = get_configuration().properties.featured_views
   end
 
   def save_featured_views

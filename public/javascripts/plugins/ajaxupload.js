@@ -541,7 +541,7 @@
             var url = settings.action;
             url += ((url.indexOf('?') == -1) ? '?' : '&') +
                 'app_token=U29jcmF0YS0td2VraWNrYXNz0&' +
-                'authenticity_token=' + $('meta[name="csrf-token"]').attr('content');
+                'authenticity_token=' + escape($('meta[name="csrf-token"]').attr('content'));
             form.setAttribute('action', url);
             form.setAttribute('target', iframe.name);
             form.style.display = 'none';

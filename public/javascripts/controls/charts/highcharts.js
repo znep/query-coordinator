@@ -558,12 +558,7 @@
     // Handle rendering values for different column types here
     var renderXValue = function(val, col)
     {
-        if (!$.isBlank(col.dropDownList))
-        {
-            val = (_.detect(col.dropDownList.values, function(v)
-                { return v.id == val; }) || {description: val}).description;
-        }
-        return $.htmlEscape(val);
+        return col.renderType.renderer(val, col, true);
     };
 
     var isDateTime = function(chartObj)

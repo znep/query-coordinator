@@ -139,9 +139,10 @@ blist.namespace.fetch('blist.data.types');
         return htmlEscape((value || []).join(', '));
     };
 
-    var renderHtml = function(value)
+    var renderHtml = function(value, col, plain)
     {
         if ($.isBlank(value)) { return ''; }
+        if (plain) { return htmlStrip(value); }
         // Add an extra wrapper so we can tweak the display to something
         // reasoanble
         return '<span class="blist-html">' + value + '</span>';
@@ -149,8 +150,7 @@ blist.namespace.fetch('blist.data.types');
 
     var renderGenHtml = function(value, plain)
     {
-        return plain ? "htmlStrip(" + value + " || '')"
-            : "renderHtml(" + value + " || '')";
+        return "renderHtml(" + value + ", null, " + plain + ")";
     };
 
     var renderFilterText = function(value)
@@ -304,8 +304,14 @@ blist.namespace.fetch('blist.data.types');
             column.format.precisionStyle + "', " + column.format.noCommas + ")";
     };
 
-    var renderPercent = function(value, column)
+    var renderPercent = function(value, column, plain)
     {
+        if (plain)
+        {
+            return numberHelper(value, column.format.precision,
+                column.format.precisionStyle, null, '%', false,
+                column.format.noCommas);
+        }
         return percentHelper(value, column.format.view, column.format.precision,
             column.format.precisionStyle, column.format.noCommas);
     };
@@ -559,14 +565,15 @@ blist.namespace.fetch('blist.data.types');
         return '';
     };
 
-    var renderPicklist = function(value, column)
+    var renderPicklist = function(value, column, plain)
     {
         if (column.dropDownList)
         {
             var valueLookup = generateDropDownLookup(column);
-            return "<span class='blist-picklist-wrapper'>" +
-                ( (valueLookup[(value || '').toLowerCase()] || {})['html'] ||
-                    value || '') + "</span>";
+            var descVal = (valueLookup[(value || '').toLowerCase()] || {})
+                    [plain ? 'text' : 'html'] || value || '';
+            return plain ? descVal :
+                "<span class='blist-picklist-wrapper'>" + descVal + "</span>";
         }
         return '?';
     };
@@ -624,9 +631,9 @@ blist.namespace.fetch('blist.data.types');
             (column.format || {}).baseUrl + "')";
     };
 
-    var renderURL = function(value, column)
+    var renderURL = function(value, column, plain)
     {
-        return urlHelper(value, false, false, (column.format || {}).baseUrl);
+        return urlHelper(value, false, plain, (column.format || {}).baseUrl);
     };
 
     var renderFilterURL = function(value)
@@ -655,9 +662,9 @@ blist.namespace.fetch('blist.data.types');
         return "emailHelper(" + value + ")";
     };
 
-    var renderEmail = function(value)
+    var renderEmail = function(value, col, plain)
     {
-        return emailHelper(value);
+        return plain ? value : emailHelper(value);
     };
 
 

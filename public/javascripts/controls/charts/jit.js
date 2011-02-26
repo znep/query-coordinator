@@ -44,9 +44,10 @@
                             _valueColumns[0].column.id]);
                         if (_.isNaN(area)) { return null; }
                         chartObj._remainder -= area;
+                        var xCol = chartObj._fixedColumns[0];
                         return {
                             id: row.id,
-                            name: row[chartObj._fixedColumns[0].id],
+                            name: xCol.renderType.renderer(row[xCol.id], xCol, true),
                             data: {
                                 $area: area,
                                 $color: (row.meta && row.meta.color) ||

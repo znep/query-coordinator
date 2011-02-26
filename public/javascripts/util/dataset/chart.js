@@ -12,7 +12,8 @@ var legacyTypes =
 };
 
 Dataset.chart = {};
-Dataset.chart.textualTypes = ['text', 'drop_down_list'];
+Dataset.chart.textualTypes = ['text', 'html', 'tag', 'email', 'url',
+    'drop_down_list', 'number', 'percent', 'money'];
 Dataset.chart.numericTypes = ['number', 'percent', 'money'];
 Dataset.chart.dateTypes = ['calendar_date', 'date'];
 

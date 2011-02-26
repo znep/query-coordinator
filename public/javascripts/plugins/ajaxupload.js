@@ -536,10 +536,12 @@
             // Because in this case file won't be attached to request
             var form = toElement('<form method="post" enctype="multipart/form-data"></form>');
 
-            // added 2011-1-19 by aiden.scandella@socrata.com
+            // added 2011-1-19 by aiden.scandella@socrata.com;
+            // modified 2011-02-25 by clint.tseng@socrata.com
             var url = settings.action;
             url += ((url.indexOf('?') == -1) ? '?' : '&') +
-                'app_token=U29jcmF0YS0td2VraWNrYXNz0';
+                'app_token=U29jcmF0YS0td2VraWNrYXNz0&' +
+                'authenticity_token=' + $('meta[name="csrf-token"]').attr('content');
             form.setAttribute('action', url);
             form.setAttribute('target', iframe.name);
             form.style.display = 'none';

@@ -4000,6 +4000,7 @@
 
         var setUpColumnChoose = function(types, callback)
         {
+            var allTypes = _.isEmpty(types);
             $outside.css('cursor', 'crosshair');
 
             $lockedScrolls.append('<div class="disabled-overlay"></div>');
@@ -4009,7 +4010,7 @@
                 var $c = $(c.dom);
                 var left = $c.position().left;
                 var divClass = 'disabled-overlay';
-                if (_.include(types, c.renderTypeName))
+                if (allTypes || _.include(types, c.renderTypeName))
                 { divClass = 'select-overlay'; }
 
                 var $h = $('<div class="' + divClass + ' col-' + c.id + '"></div>')
@@ -4022,7 +4023,7 @@
                         { $h.add($f).add($m).removeClass('overlay-hover'); }
                     );
 
-                if (_.include(types, c.renderTypeName))
+                if (allTypes || _.include(types, c.renderTypeName))
                 {
                     $h.click(function()
                     { if (_.isFunction(callback)) { callback(c); } });
@@ -4144,7 +4145,7 @@
 
             this.enterColumnChoose = function(types, callback)
             {
-                if (!_.isArray(types)) { types = [types]; }
+                types = $.makeArray(types);
                 setUpColumnChoose(types, callback);
             };
 

@@ -1,4 +1,4 @@
-class Dropdown < Model
+class DropDown < Model
   def values
     return data_hash['values']
   end

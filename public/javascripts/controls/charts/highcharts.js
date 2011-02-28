@@ -135,7 +135,7 @@
                 if (!_.isUndefined(chartObj._xCategories))
                 {
                     var xCat = basePt.x;
-                    xCat = row[chartObj._xColumn.id];
+                    xCat = row[chartObj._xColumn.lookup];
                     xCat = renderXValue(xCat, chartObj._xColumn);
                     chartObj._xCategories.push(xCat);
                 }
@@ -303,6 +303,15 @@
             { seriesType = 'scatter'; }
         }
 
+        var clipFormatter = function()
+        {
+            var maxLen = 20;
+            var v = this.value;
+            if (v.length > maxLen)
+            { return v.slice(0, maxLen) + '...'; }
+            return v;
+        };
+
         // Main config
         var chartConfig =
         {
@@ -329,11 +338,12 @@
                     day: '%e %b',
                     week: '%e %b',
                     month: '%b %Y'
-                } },
+                }, labels: {formatter: clipFormatter} },
             yAxis: { title:
                 { enabled: yTitle !== '' && !_.isUndefined(yTitle), text: yTitle,
                     style: { backgroundColor: '#ffffff',
-                        border: '1px solid #909090', padding: '3px' } } }
+                        border: '1px solid #909090', padding: '3px' } },
+                labels: {formatter: clipFormatter} }
         };
         if (_.include(['top', 'bottom'], legendPos))
         { chartConfig.legend.verticalAlign = legendPos; }
@@ -377,9 +387,12 @@
         else
         {
             if (!chartConfig.chart.inverted)
-            { chartConfig.xAxis.labels = { rotation: 320, align: 'right' }; }
+            {
+                $.extend(chartConfig.xAxis.labels,
+                    { rotation: 320, align: 'right' });
+            }
             else
-            { chartConfig.xAxis.labels = { rotation: 340 }; }
+            { chartConfig.xAxis.labels.rotation = 340; }
             if (Dataset.chart.types[chartObj._chartType].displayLimit.labels)
             { chartConfig.xAxis.labels.step = Math.ceil(
                 (chartObj.settings.view.totalRows || chartObj._maxRows) /

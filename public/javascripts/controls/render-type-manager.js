@@ -252,12 +252,12 @@
         var $dom = typeInfo.$dom;
         if ($.isBlank($dom))
         {
-            $dom = rtmObj.$dom().children('#' + typeInfo.domId);
+            $dom = rtmObj.$dom().find('#' + typeInfo.domId);
             if ($dom.length < 1)
             {
                 rtmObj.$dom().append($.tag({tagName: 'div', id: typeInfo.domId,
                     'class': ['fullHeight', 'renderTypeNode', 'hide']}));
-                $dom = rtmObj.$dom().children('#' + typeInfo.domId);
+                $dom = rtmObj.$dom().find('#' + typeInfo.domId);
             }
             typeInfo.$dom = $dom;
         }

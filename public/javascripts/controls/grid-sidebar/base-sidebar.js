@@ -2485,8 +2485,11 @@
 
                     var href = $link.attr('href');
                     href = href.slice(href.indexOf('#') + 1);
+                    var types = href.split(':')[1];
+                    if ($.isBlank(types)) { types = null; }
+                    else { types = types.split('-'); }
                     sidebarObj.$grid().blistTableAccessor().enterColumnChoose
-                        (href.split(':')[1].split('-'),
+                        (types,
                         function(c)
                         {
                             cancelSelect();

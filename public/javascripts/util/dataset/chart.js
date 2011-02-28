@@ -55,7 +55,7 @@ Dataset.chart.hasRequiredColumns = function(cols, reqCols, includeHidden)
         var col = _.detect(cols, function(c)
         {
             return _.include(rc, c.renderTypeName) && (includeHidden ||
-                !c.hidden);
+                !c.hidden || c.renderTypeName == 'tag');
         });
 
         if ($.isBlank(col)) { return false; }

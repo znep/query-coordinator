@@ -265,6 +265,11 @@ class Model
     raise "You probably wanted the class method instead."
   end
 
+  def self.delete(id)
+    path = "/#{self.service_name}/#{id}"
+    return parse(CoreServer::Base.connection.delete_request(path))
+  end
+
   def self.set_up_model(json_data)
     if json_data.is_a?(Array)
       model = json_data.collect do | item |

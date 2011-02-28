@@ -1,6 +1,9 @@
 (function($)
 {
-    var MAP_TYPE = {
+    // Delaying this object from being created until after we're sure libraries
+    // have been loaded. First action in renderData should turn this back into an
+    // object.
+    var MAP_TYPE = function(){ return {
         'countries': {
             'layerPath': "http://server.arcgisonline.com/ArcGIS/rest/services/" +
                          "World_Topo_Map/MapServer/6",
@@ -36,7 +39,7 @@
             'where': function (mapObj, config)
                 { return "ST_ABBREV = '"+config.region.toUpperCase()+"'"; }
         }
-    };
+    };};
 
     if (!$.socrataMap.mixin) { $.socrataMap.mixin = function() { }; }
     $.socrataMap.mixin.heatmap = function() { };
@@ -53,6 +56,8 @@
     {
         renderData: function(rows)
         {
+            if (_.isFunction(MAP_TYPE)) { MAP_TYPE = MAP_TYPE(); }
+
             var mapObj = this;
             var config = mapObj.settings.view.displayFormat.heatmap;
 

@@ -53,7 +53,7 @@ class DatasetsController < ApplicationController
     # If we're displaying a single dataset, set the meta tags as appropriate.
     @meta[:title] = @meta['og:title'] = "#{@view.name} | #{CurrentDomain.strings.site_title}"
     @meta[:description] = @meta['og:description'] = @view.meta_description
-    @meta['og:url'] = @view.href
+    @meta['og:url'] = request.url.to_s
     # TODO: when we support a dataset image, allow that here if of appropriate size
 
     # Shuffle the default tags into the keywords list

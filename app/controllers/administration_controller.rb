@@ -551,7 +551,7 @@ class AdministrationController < ApplicationController
   def home
     render_forbidden unless CurrentDomain.user_can?(current_user, 'manage_stories') ||
                             CurrentDomain.user_can?(current_user, 'feature_items')
-    @stories = Story.find
+    @stories = Story.find.sort
     @features = get_configuration().properties.featured_views
   end
 
@@ -604,6 +604,23 @@ class AdministrationController < ApplicationController
       return render 'shared/error', :status => :bad_request
     end
 
+    redirect_to :home_administration
+  end
+  def move_story
+    check_auth_level('manage_stories')
+    begin
+      story_lo = Story.find(params[:id])
+      story_hi = Story.find(params[:other])
+    rescue CoreServer::ResourceNotFound
+      flash.now[:error] = 'The story you attempted to move does not exist.'
+      return render 'shared/error', :status => :not_found
+    end
+
+    story_lo.order, story_hi.order = story_hi.order, story_lo.order
+    story_lo.save!
+    story_hi.save!
+    flash.now[:notice] = "Your story has been saved"
+    clear_stories_cache
     redirect_to :home_administration
   end
   def edit_story

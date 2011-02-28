@@ -143,6 +143,8 @@ ActionController::Routing::Routes.draw do |map|
       :conditions => { :method => :delete }
     admin.connect '/admin/home/stories', :action => 'create_story',
       :conditions => { :method => :post }
+    admin.connect '/admin/home/stories/:id/:other', :action => 'move_story',
+      :conditions => { :method => :put }
     admin.connect '/admin/home/stories/appearance', :action => 'update_stories_appearance',
       :conditions => { :method => :put }
     admin.connect '/admin/home/stories/appearance', :action => 'stories_appearance',

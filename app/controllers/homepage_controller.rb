@@ -18,7 +18,7 @@ class HomepageController < ApplicationController
     unless !CurrentDomain.templates['data_splash'].nil? ||
         (@stories_cached = read_fragment(app_helper.cache_key(
           'homepage-stories', { 'domain' => CurrentDomain.cname })))
-      @stories = Story.find
+      @stories = Story.find.sort
     end
 
     # process featured views only if not already rendered

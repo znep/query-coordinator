@@ -16,4 +16,8 @@ class Story < Model
   def raw_customization
     data['customization']
   end
+
+  def <=>(other)
+    (self.order || 0) <=> (other.order || 0)
+  end
 end

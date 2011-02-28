@@ -132,13 +132,7 @@ module CoreServer
         end
       end
 
-      # HACK: Only use this if you really don't care about a page being slow
-      # Ex., for the internal console that only employees will be using
-      if custom_headers['Internal-Skip-Request-Count']
-        custom_headers.delete('Internal-Skip-Request-Count')
-      else
-        @request_count += 1
-      end
+      @request_count += 1
 
       # pass/spoof in the current domain cname
       request['X-Socrata-Host'] = CurrentDomain.cname

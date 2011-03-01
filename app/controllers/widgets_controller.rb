@@ -47,7 +47,7 @@ class WidgetsController < ApplicationController
         return (render 'shared/error', :status => :internal_server_error)
       end
     end
-    if !@view.is_public?
+    if !@view.is_public? && !is_mobile?
       flash.now[:error] = 'This dataset is currently private.'
       return (render 'shared/error', :status => :unauthorized)
     end

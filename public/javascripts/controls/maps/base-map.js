@@ -354,7 +354,7 @@
                         'margin-bottom': '0.75em', 'padding-bottom': '0.2em'}});
                 }
 
-                _.each(columns, function(dc)
+                _.each(columns || [], function(dc)
                 {
                     var row = {fields: [
                         {type: 'columnLabel', tableColumnId: dc.tableColumnId},

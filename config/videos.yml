@@ -1,0 +1,81 @@
+---
+# Hey kids. The ordering here determines the ordering for the 'basics first' sort,
+# so try to preserve that order when inserting new videos.
+
+- name: sorting-datasets
+  title: Sorting Datasets
+  type: analyzing
+  audience: consumer
+  added: 2011-02-10
+  length: 1:43 mins
+  wistia:
+    productionid: 283908
+    flashvideoid: 6c6fc4df23872334d9e58b0f6119c0142108f2cb
+    html5videoid: 018325cec6383ead681c79e8fd0f049260465952
+    stillid: e2ed9f4b4126852476eb71552182d64735a291e4
+- name: find-in-dataset
+  title: Find in Dataset
+  type: analyzing
+  audience: consumer
+  added: 2011-02-11
+  length: 1:00 min
+  wistia:
+    productionid: 284115
+    flashvideoid: e2285cddde3017a0a60e1ea809c3c5d4de771782
+    html5videoid: c0b59376a415ee6fd628057e0943b444d1193ed1
+    stillid: 2b179f29c4af87cab6b7d7d33c01df49b06f3b0a
+- name: comment
+  title: Commenting
+  type: sharing
+  audience: consumer
+  added: 2011-02-25
+  length: 0:24 mins
+  wistia:
+    productionid: 298344
+    flashvideoid: 3b9c5ffb37f903f4175c2e4f6a5c393473312a3e
+    html5videoid: 819aaf9388b07f6c17b05beb26f2dd03e32d3c64
+    stillid: f15985fde9cf31e274090fdc753b3878bcc21036
+- name: basic-filtering
+  title: Basic Filtering
+  type: analyzing
+  audience: consumer
+  added: 2011-02-11
+  length: 3:27 mins
+  wistia:
+    productionid: 285393
+    flashvideoid: a7a4121e16f8aa876989b28fefdb4499eea13ed7
+    html5videoid: edaceac55f6ad80cd15d1f3399f31bcfe76e0e69
+    stillid: ca840ffc432f37d318f78e63675c7d3cce103e7e
+- name: point-map
+  title: Creating a Point Map
+  type: maps
+  audience: consumer
+  added: 2011-02-24
+  length: 0:59 mins
+  wistia:
+    productionid: 298346
+    flashvideoid: 35d913b1047c7f87e0b6fcb36dd98efb48835fa8
+    html5videoid: 0f806acdacc31b934d22e397022b46380ff12188
+    stillid: 7ce72ed0a48bccc842b5269acaa73f34c3723d39
+- name: bar-chart
+  title: Creating a Bar Chart
+  type: charts
+  audience: consumer
+  added: 2011-02-24
+  length: 0:59 mins
+  wistia:
+    productionid: 298345
+    flashvideoid: 69f58b45a6c21bd75da74d942281e6a57ab9cb09
+    html5videoid: 92b5c58c3e39d23022cbadf7c8429b02d60f9e6b
+    stillid: 401cd3eb0462be9a3b70ba34f1b2eaf0dd3a33d7
+- name: import-dataset
+  title: Importing a Dataset
+  type: publishing
+  audience: publisher
+  added: 2011-02-23
+  length: 1:08 mins
+  wistia:
+    productionid: 298347
+    flashvideoid: 6af35b82554ee3e244a0ad5f71dca5922aa53175
+    html5videoid: 19b1ab957aca4051c4d6074cb7706fd5a6ae98df
+    stillid: 6af35b82554ee3e244a0ad5f71dca5922aa53175

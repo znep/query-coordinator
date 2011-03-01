@@ -17,13 +17,14 @@
     <li><a href="#charts" data-filter="charts">Charts</a></li>
     <li><a href="#analyzing" data-filter="analyzing">Analyzing</a></li>
     <li><a href="#sharing" data-filter="sharing">Sharing</a></li>
+    <li><a href="#publishing" data-filter="publishing">Publishing</a></li>
   </ul>
 
   <h3>I am a data</h3>
   <ul class="audienceCriteria">
-    <li><a href="#consumer" data-audience="consumer" class="selected">Consumer</a></li>
+    <li><a href="#consumer" data-audience="consumer">Consumer</a></li>
     <li><a href="#publisher" data-audience="publisher">Publisher</a></li>
-    <li><a href="#all" data-audience="all">Everything</a></li>
+    <li><a href="#all" data-audience="all" class="selected">Everything</a></li>
   </ul>
 
   <h3>Sort on</h3>
@@ -51,42 +52,21 @@
     <a href="/videos" rel="external" class="seeMoreLink rightArrow">see more<span class="icon"></span></a>
   </h2>
 
-  <%# Hey kids. The ordering here determines the ordering for the 'basics first' sort,
-      so try to preserve that order when inserting new videos. %>
   <ul class="videoList clearfix">
-    <li data-id="sorting-datasets" data-type="analyzing" data-audience="consumer" data-added="2011-02-10"
-        data-wistiaflashvideoid="6c6fc4df23872334d9e58b0f6119c0142108f2cb"
-        data-wistiahtml5videoid="018325cec6383ead681c79e8fd0f049260465952"
-        data-wistiastillid="e2ed9f4b4126852476eb71552182d64735a291e4"
-        data-wistiaproductionid="283908">
-      <a href="#sorting-datasets">
-        <img src="/stylesheets/images/video_thumbnails/sort-dataset.png" alt="Sorting Datasets" />
-        <h2>Sorting Datasets</h2>
-        <p class="length">1:43 mins</p>
-      </a>
-    </li>
-    <li data-id="find-in-dataset" data-type="analyzing" data-audience="consumer" data-added="2011-02-11"
-        data-wistiaflashvideoid="e2285cddde3017a0a60e1ea809c3c5d4de771782"
-        data-wistiahtml5videoid="c0b59376a415ee6fd628057e0943b444d1193ed1"
-        data-wistiastillid="2b179f29c4af87cab6b7d7d33c01df49b06f3b0a"
-        data-wistiaproductionid="284115">
-      <a href="#find-in-dataset">
-        <img src="/stylesheets/images/video_thumbnails/find-in-dataset.png" alt="Find in Dataset" />
-        <h2>Find in Dataset</h2>
-        <p class="length">1:00 min</p>
-      </a>
-    </li>
-    <li data-id="basic-filtering" data-type="analyzing" data-audience="consumer" data-added="2011-02-11"
-        data-wistiaflashvideoid="a7a4121e16f8aa876989b28fefdb4499eea13ed7"
-        data-wistiahtml5videoid="edaceac55f6ad80cd15d1f3399f31bcfe76e0e69"
-        data-wistiastillid="ca840ffc432f37d318f78e63675c7d3cce103e7e"
-        data-wistiaproductionid="285393">
-      <a href="#basic-filtering">
-        <img src="/stylesheets/images/video_thumbnails/filter-dataset.png" alt="Basic Filtering" />
-        <h2>Basic Filtering</h2>
-        <p class="length">3:27 mins</p>
-      </a>
-    </li>
+    <%- VIDEO_LIST.each do |video| -%>
+      <li data-id="<%= video['name'] %>" data-type="<%= video['type'] %>"
+          data-audience="<%= video['audience'] %>" data-added="<%= video['added'] %>"
+          data-wistiaflashvideoid="<%= video['wistia']['flashvideoid'] %>"
+          data-wistiahtml5videoid="<%= video['wistia']['html5videoid'] %>"
+          data-wistiastillid="<%= video['wistia']['stillid'] %>"
+          data-wistiaproductionid="<%= video['wistia']['productionid'] %>">
+        <a href="#<%= video['name'] %>">
+          <img src="/stylesheets/images/video_thumbnails/<%= video['name'] %>.png" alt="<%= video['title'] %>" />
+          <h2><%= video['title'] %></h2>
+          <p class="length"><%= video['length'] %></p>
+        </a>
+      </li>
+    <%- end -%>
   </ul>
 </div>
 

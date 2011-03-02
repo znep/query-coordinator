@@ -2818,8 +2818,8 @@
                         '(row.noMatch ? "<span title=\'This row does ' +
                         'not match the current filter\'>X</span>" : ' +
                         '"<a href=\'' + model.view.url + '/" + row.id + "\' ' +
-                        'title=\'View row\' class=\'noInterstitial\'>" + ' +
-                        '(renderIndex + 1) + "</a>"))',
+                        'title=\'View row\' class=\'noInterstitial ' +
+                        'noRedirPrompt\'>" + (renderIndex + 1) + "</a>"))',
                     footerText: 'Totals'});
                 addColumnStyle(rowNumberColumn);
             }

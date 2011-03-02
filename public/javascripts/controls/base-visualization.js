@@ -176,7 +176,8 @@
                 $item.append($.tag({tagName: 'a',
                     href: view.url + '/' + row.id,
                     target: isPrimaryView ? null : '_blank',
-                    'class': 'viewRow', contents: 'View details for this row'}));
+                    'class': ['viewRow', 'noInterstitial', 'noRedirPrompt'],
+                    contents: 'View details for this row'}));
                 return $item;
             },
 

@@ -344,8 +344,8 @@
                        (!isSubRow ?
                            '"<li class=\'pageView\'>' +
                            '<a href=\'' + this.settings.view.url +
-                           '/" + row.id + "\' class=\'noInterstitial\'>' +
-                           'View Row</a></li>" + ' : '') +
+                           '/" + row.id + "\' class=\'noInterstitial ' +
+                           'noRedirPrompt\'>View Row</a></li>" + ' : '') +
                        (this.settings.editEnabled ?
                            ('(permissions.canEdit && !(row.level > 0) ? ' +
                            '"<li class=\'tags\'>' +

@@ -82,7 +82,8 @@
             { return new esri.layers.FeatureLayer(
                 mapObj.mapServer._url.path + '/' + layerInfo.id); });
 
-        if (mapObj.map.layerIds.length == 1)
+        // 1 basemap, 1 dynamic layer -- This is a hack for now.
+        if (mapObj.map.layerIds.length == 2)
         { adjustBounds(mapObj); }
 
         //mapObj.populateDataLayers();

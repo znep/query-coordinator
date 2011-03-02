@@ -164,8 +164,9 @@ this.Dataset = Model.extend({
 
     renderWithArcGISServer: function()
     {
-        return this.isArcGISDataset()
-               && window.location.href.match('serverRender=true');
+        // Render everything using ArcGIS Server since we can't preemptively tell
+        // if something is more than 500 rows or not.
+        return this.isArcGISDataset();
     },
 
     invalidMessage: function()

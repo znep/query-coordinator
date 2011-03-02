@@ -52,6 +52,7 @@ javascripts:
     - public/javascripts/data/table.js
     - public/javascripts/data/table_nav.js
     - public/javascripts/controls/scrollable.js
+    - public/javascripts/controls/column-menu.js
     - public/javascripts/controls/dataset-grid.js
   shared-table-editor:
     - public/javascripts/util/humane-number.js
@@ -98,6 +99,8 @@ javascripts:
   shared-richRenderers:
     - public/javascripts/controls/navigation.js
     - public/javascripts/controls/rich-render-library.js
+    - public/javascripts/controls/scrollable.js
+    - public/javascripts/controls/column-menu.js
     - public/javascripts/controls/fatrow-render-type.js
     - public/javascripts/controls/page-render-type.js
   shared-blob:

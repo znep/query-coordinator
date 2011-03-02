@@ -118,22 +118,20 @@ $(function()
         view: blist.dataset,
         defaultType: defRen,
         editEnabled: true,
-        table: {
-            addColumnCallback: function(parId)
+        common: {
+            editColumnCallback: function(col)
             {
-                datasetPageNS.sidebar.show('edit.addColumn', {parentId: parId});
-            },
-            editColumnCallback: function(colId, parId)
-            {
-                var col = blist.dataset.columnForID(colId) ||
-                    blist.dataset.columnForID(parId);
-                if (col.id != colId) { col = col.childColumnForID(colId); }
-
                 datasetPageNS.sidebar.hide();
                 datasetPageNS.sidebar.show('columnProperties', col);
             },
             showRowHandle: true,
             manualResize: true
+        },
+        table: {
+            addColumnCallback: function(parId)
+            {
+                datasetPageNS.sidebar.show('edit.addColumn', {parentId: parId});
+            }
         },
         page: { defaultRowId: blist.initialRowId }
     });

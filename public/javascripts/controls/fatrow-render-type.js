@@ -106,42 +106,16 @@
 
     var hookUpHeaders = function(frObj)
     {
-        var sortHandle = function(e)
+        var $colHeaders = frObj.$dom().find('.columnHeaders');
+        $colHeaders.delegate('.scrollBox a', 'click',
+        function(e)
         {
             e.preventDefault();
-            var $this = $(this);
-
-            var c = $this.closest('.column').data('column');
-            if (!c.renderType.sortable) { return; }
-            var asc = !c.sortAscending;
-
-            if ($this.isSocrataTip()) { $this.socrataTip().hide(); }
-
-            var isTemp = frObj.settings.view.temporary;
-            var query = $.extend(true, {}, frObj.settings.view.query);
-            if ($this.hasClass('clearSort'))
-            {
-                query.orderBys = _.reject(query.orderBys || [], function(ob)
-                    { return ob.expression.columnId == c.id; });
-                if (query.orderBys.length == 0) { delete query.orderBys; }
-            }
-            else
-            {
-                query.orderBys = [{expression: {columnId: c.id, type: 'column'},
-                    ascending: asc}];
-            }
-
-            frObj.settings.view.update({query: query});
-
-            if ((query.orderBys || []).length < 2 &&
-                    frObj.settings.view.hasRight('update_view') && !isTemp)
-            { frObj.settings.view.save(); }
-        };
-
-        frObj.$dom().find('.columnHeaders .column .info').live('click', sortHandle);
-        frObj.$dom().find('.columnHeaders .column .sort').live('click', sortHandle);
-        frObj.$dom().find('.columnHeaders .column .clearSort')
-            .live('click', sortHandle);
+            var action = $.hashHref($(this).attr('href')).toLowerCase();
+            $colHeaders.animate({scrollTop: $colHeaders.scrollTop() +
+                $colHeaders.children('.column:first-child').outerHeight(true) *
+                    (action == 'up' ? -1 : 1)});
+        });
     };
 
     var renderHeaders = function(frObj)
@@ -154,22 +128,18 @@
         {
             var $col = $.renderTemplate('fatRowColumn', c, {
                 '.column@class+': 'renderTypeName',
-                '.name': 'name!',
-                '.sort@title': function(a)
-                    { return 'Sort ' + (a.context.sortAscending ?
-                        'descending' : 'ascending'); },
-                '.sort@class+': function(a)
-                    {
-                        if (!a.context.renderType.sortable) { return 'hide'; }
-                        if ($.isBlank(a.context.sortAscending))
-                        { return 'sortAscLight'; }
-                        return 'sort' + (a.context.sortAscending ? 'Asc' : 'Desc');
-                    },
-                '.clearSort@class+': function(a)
-                    { return $.isBlank(a.context.sortAscending) ? 'hide' : ''; }
+                '.name': 'name!'
             });
-            blist.datasetControls.columnTip(c, $col.find('.info'), frObj._colTips);
+            var $tipItem = $col.find('.info');
+            blist.datasetControls.columnTip(c, $tipItem, frObj._colTips);
             $col.data('column', c);
+
+            $col.columnMenu({column: c, $tipItem: $tipItem,
+                columnDeleteEnabled: frObj.settings.columnDeleteEnabled,
+                columnPropertiesEnabled: frObj.settings.columnPropertiesEnabled,
+                editColumnCallback: frObj.settings.editColumnCallback,
+                view: frObj.settings.view});
+
             newItems.push($col);
         });
 
@@ -177,7 +147,14 @@
         // data (meaning socrataTip-ness) and can't be cleaned out by columnTip,
         // resulting in stuck tips
         $headerList.empty();
-        _.each(newItems, function(i) { $headerList.append(i); });
+        _.each(newItems, function($c) { $headerList.append($c); });
+        $headerList.append($.tag({tagName: 'div', 'class': 'scrollBox',
+            contents: [
+                {tagName: 'a', 'class': ['scrollLink', 'upArrowDark'],
+                    'href': '#Up', contents: {tagName: 'span', 'class': 'icon'}},
+                {tagName: 'a', 'class': ['scrollLink', 'downArrowDark'],
+                    'href': '#Down', contents: {tagName: 'span', 'class': 'icon'}}
+            ]}));
 
         frObj.$dom().trigger('resize');
     };

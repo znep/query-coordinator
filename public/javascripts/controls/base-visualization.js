@@ -60,11 +60,10 @@
                 _.each(currentObj.settings.view.displayFormat.compositeMembers || [],
                 function(member_id, index)
                 {
-                    Dataset.createFromViewId(member_id, function(view)
+                    Dataset.createFromViewId(member_id, function(dataset)
                     {
-                        currentObj._dataViews[index + 1] = new Dataset(view);
-                        currentObj._byView[currentObj._dataViews[index + 1].id] =
-                            { view: currentObj._dataViews[index + 1] };
+                        currentObj._dataViews[index + 1] = dataset;
+                        currentObj._byView[dataset.id] = { view: dataset };
                         viewsFetched++;
                         if (viewsFetched >= viewsToLoad)
                         { currentObj.loadLibraries(); }

@@ -2179,19 +2179,24 @@ Dataset.getLinkedDatasetOptionsNoDefault = function(linkedDatasetUid, col, $fiel
 
 Dataset.createFromMapLayerUrl = function(url, successCallback, errorCallback)
 {
-    var encodedUrl = '/api/layers.json?method=createMapLayerDataset&url=' + escape(url);
-    $.Tache.Get({
-        url: encodedUrl,
-        success: _.isFunction(successCallback) ? successCallback : null,
-        error: _.isFunction(errorCallback) ? errorCallback : null});
+    Dataset._createFromUrl('/api/layers.json?method=createMapLayerDataset&url='
+        + escape(url), successCallback, errorCallback);
 };
 
 Dataset.createFromViewId = function(id, successCallback, errorCallback)
 {
-    var encodedUrl = '/api/views/' + id + '.json';
+    Dataset._createFromUrl('/api/views/' + id + '.json', successCallback, errorCallback);
+};
+
+Dataset._createFromUrl = function(encodedUrl, successCallback, errorCallback)
+{
     $.Tache.Get({
         url: encodedUrl,
-        success: _.isFunction(successCallback) ? successCallback : null,
+        success: function(view)
+            {
+                if(_.isFunction(successCallback))
+                { successCallback(new Dataset(view)) }
+            },
         error: _.isFunction(errorCallback) ? errorCallback : null});
 };
 

@@ -7,17 +7,19 @@
   <%= @browse_in_container ? 'inContainer' : '' %> <%= @disable[:sort] ? 'noSort' : '' %>'>
   <%- if @facets.length > 0 -%>
   <div class='browseFacets <%= show_time_period ? 'hasTimePeriod' : '' %>'>
+    <%- unless @disable[:search] -%>
     <form class='searchSection'>
       <span class='icon'></span>
       <input type='text' name='browseSearch' title='Search'
         class='textPrompt searchBox' value='<%= @params[:q] %>' />
-      <%- if !@params[:q].nil? && !@disable[:search] -%>
+      <%- if !@params[:q].nil? -%>
       <%- cp = @params.reject {|p, v| p.to_s == 'page' || p.to_s == 'q' ||
             p.to_s == 'no_default'} -%>
       <a href='<%= @base_url + '?' + cp.to_param %>'
         class='clearSearch close'><span class='icon'></span></a>
       <%- end -%>
     </form>
+    <%- end -%>
 
     <%- if !@params[:q].nil? || @facets.any? {|f| !@params[f[:param]].nil? } ||
           !@params[:no_default].nil? -%>

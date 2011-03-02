@@ -1,5 +1,5 @@
 class OauthController < ApplicationController
-  ssl_required :authenticate
+  ssl_required :authorize
 
   def authorize
     @oauth_params = {

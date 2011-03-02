@@ -1,6 +1,6 @@
 class DatasetsController < ApplicationController
   include DatasetsHelper
-  skip_before_filter :require_user, :only => [:show, :alt, :widget_preview, :contact, :math_validate, :form_success, :form_error]
+  skip_before_filter :require_user, :only => [:show, :alt, :widget_preview, :contact, :math_validate, :form_success, :form_error, :external]
 
 # collection actions
   def new
@@ -113,6 +113,16 @@ class DatasetsController < ApplicationController
     end
 
     @view.register_opening(request.referrer)
+  end
+
+  def external
+    view = View.find_external(params[:id])
+
+    if !view.nil? && !view.empty?
+      redirect_to view[0].href
+    else
+      render_404
+    end
   end
 
   def save_filter

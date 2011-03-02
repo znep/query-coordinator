@@ -382,7 +382,7 @@ ActionController::Routing::Routes.draw do |map|
     https.add_rpx_token '/account/add_rpx_token', :controller => 'accounts', :action => 'add_rpx_token'
     https.update_account_profile '/profile/:id/update_account', :controller => 'profile', :action => 'update_account',
       :conditions => { :method => [:post, :put] }, :requirements => { :id => UID_REGEXP }
-    https.oauth_authenticate '/oauth/authenticate', :controller => 'oauth', :action => 'authenticate'
+    https.oauth_authenticate '/oauth/authorize', :controller => 'oauth', :action => 'authorize'
   end
 
   map.resource :account

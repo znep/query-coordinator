@@ -7,7 +7,7 @@ $(function ()
         rules: {
             "password": {
                 required: true,
-                minlength: 6
+                minlength: 8
             },
             confirm_password: {
                 required: true,

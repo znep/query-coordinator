@@ -32,7 +32,7 @@ $(function ()
             },
             "signup[password]": {
                 required: true,
-                minlength: 6
+                minlength: 8
             },
             "signup[passwordConfirm]": {
                 required: true,

@@ -170,7 +170,7 @@
                 }
             },
             "user[password_new]": {
-                minlength: 6,
+                minlength: 8,
                 required: {
                     depends: function(element) {
                         // They can't set a blank password

@@ -162,7 +162,10 @@ ActionController::Routing::Routes.draw do |map|
       :requirements => {:id => UID_REGEXP}
   end
 
-  map.resource :browse, :controller => 'browse'
+  map.resource :browse, :controller => 'browse',
+    :collection => {
+      :embed => :get
+  }
   map.resource :nominations, :as => 'nominate'
   map.resources :videos, :only => [ :index ], :collection => { :popup => :get }
 

@@ -66,6 +66,7 @@ protected
 
     @port = request.port
     @limit ||= 10
+    @disable ||= {}
     @opts ||= {}
     @opts.merge!({:limit => @limit, :page => (browse_params[:page] || 1).to_i})
     @params = browse_params.reject {|k, v| k.to_s == 'controller' || k.to_s == 'action'}

@@ -141,16 +141,20 @@
       <span class="icon"></span>
       Spatial Extent
     </a>
-    <dl class="sectionContent">
-      <dt>Northwest Latitude</dt>
-      <dd><span class="hardWrap"><%= @view.data['northWest']['lat'] %></span></dd>
-      <dt>Northwest Longitude</dt>
-      <dd><span class="hardWrap"><%= @view.data['northWest']['long'] %></span></dd>
-      <dt>Southeast Latitude</dt>
-      <dd><span class="hardWrap"><%= @view.data['southEast']['lat'] %></span></dd>
-      <dt>Southeast Longitude</dt>
-      <dd><span class="hardWrap"><%= @view.data['southEast']['long'] %></span></dd>
-    </dl>
+    <div class="sectionContent">
+      <%
+        # Repeating the first point is intentional.
+        path_data = [
+            [@view.data['northWest']['lat'], @view.data['northWest']['long']].join(','),
+            [@view.data['northWest']['lat'], @view.data['southEast']['long']].join(','),
+            [@view.data['southEast']['lat'], @view.data['southEast']['long']].join(','),
+            [@view.data['southEast']['lat'], @view.data['northWest']['long']].join(','),
+            [@view.data['northWest']['lat'], @view.data['northWest']['long']].join(',')
+        ].join('%7C')
+        textual_extent = "Northwest: (#{ @view.data['northWest']['lat'] }, #{ @view.data['northWest']['long'] }); Southeast: (#{ @view.data['southEast']['lat'] }, #{ @view.data['southEast']['long'] })"
+      -%>
+      <img src="http://maps.google.com/maps/api/staticmap?path=color:black%7Cweight:3%7Cfillcolor:0xFFFF0033%7C<%= path_data %>&size=512x512&sensor=false" width="100%" title="<%= textual_extent %>" alt="<%= textual_extent %>" />
+    </div>
   </div>
 <%- end -%>
 

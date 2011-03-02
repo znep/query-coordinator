@@ -49,7 +49,30 @@
 
                 currentObj._maxRows = 500;
 
-                currentObj.loadLibraries();
+                currentObj._byView = {};
+                currentObj._byView[currentObj.settings.view.id]
+                    = { view: currentObj.settings.view };
+                currentObj._dataViews = [currentObj.settings.view];
+
+                var viewsFetched = 1;
+                var viewsToLoad = (currentObj.settings.view
+                                   .displayFormat.compositeMembers || []).length + 1;
+                _.each(currentObj.settings.view.displayFormat.compositeMembers || [],
+                function(member_id, index)
+                {
+                    Dataset.createFromViewId(member_id, function(view)
+                    {
+                        currentObj._dataViews[index + 1] = new Dataset(view);
+                        currentObj._byView[currentObj._dataViews[index + 1].id] =
+                            { view: currentObj._dataViews[index + 1] };
+                        viewsFetched++;
+                        if (viewsFetched >= viewsToLoad)
+                        { currentObj.loadLibraries(); }
+                    });
+                });
+                // No comopsite member views
+                if (viewsFetched >= viewsToLoad)
+                { currentObj.loadLibraries(); }
             },
 
             $dom: function()
@@ -100,8 +123,10 @@
                     // on click
                     $.live('.flyoutRenderer .viewRow', 'click', function(e)
                     {
-                        e.preventDefault();
                         var $a = $(this);
+                        // Open a new page if it's not the same view.
+                        if ($a.attr('target') == '_blank') { return; }
+                        e.preventDefault();
                         vizObj.closeFlyout($a);
                         var href = $a.attr('href');
                         $(document).trigger(blist.events.DISPLAY_ROW,
@@ -133,17 +158,24 @@
                 return {columns: [col]};
             },
 
-            renderFlyout: function(row)
+            renderFlyout: function(row, view)
             {
                 var vizObj = this;
 
+                var isPrimaryView = vizObj.settings.view == view;
                 var $item = vizObj.$flyoutTemplate().clone()
                         .removeClass('template');
+
+                // In composite views, we don't have a displayFormat, so there are no
+                // bits to show. Just point them at the row data in full.
+                if (!isPrimaryView)
+                { $item.empty(); }
                 if (vizObj.hasFlyout())
                 { vizObj.richRenderer.renderRow($item, row); }
 
                 $item.append($.tag({tagName: 'a',
-                    href: vizObj.settings.view.url + '/' + row.id,
+                    href: view.url + '/' + row.id,
+                    target: isPrimaryView ? null : '_blank',
                     'class': 'viewRow', contents: 'View details for this row'}));
                 return $item;
             },
@@ -203,8 +235,6 @@
 
                     vizObj._boundViewEvents = true;
                 }
-
-                delete vizObj._pendingReload;
             },
 
             reload: function()
@@ -249,7 +279,7 @@
 
                 vizObj.reloadVisualization();
 
-                vizObj.settings.view.getRows(0, vizObj._maxRows,
+                getRowsForAllViews(vizObj,
                     function()
                     {
                         // Use a defer so that if the rows are already loaded,
@@ -294,13 +324,13 @@
                 return false;
             },
 
-            handleRowsLoaded: function(rows)
+            handleRowsLoaded: function(rows, view)
             {
                 // Override if you need extra handling before rendering
-                this.renderData(rows);
+                this.renderData(rows, view);
             },
 
-            renderData: function(rows)
+            renderData: function(rows, view)
             {
                 var vizObj = this;
 
@@ -317,7 +347,7 @@
                 var badPoints = false;
                 _.each(rows, function(r)
                 {
-                    var result = vizObj.renderRow(r);
+                    var result = vizObj.renderRow(r, view);
                     addedRows = addedRows || result;
                     badPoints = badPoints || !result;
                 });
@@ -383,18 +413,17 @@
 
                     vizObj._initialLoad = true;
 
-                    vizObj.settings.view.getRows(0, vizObj._maxRows,
-                        function()
+                    getRowsForAllViews(vizObj, function()
+                    {
+                        // Use a defer so that if the rows are already loaded,
+                        // getColumns has a chance to run first
+                        var args = arguments;
+                        _.defer(function()
                         {
-                            // Use a defer so that if the rows are already loaded,
-                            // getColumns has a chance to run first
-                            var args = arguments;
-                            _.defer(function()
-                            {
-                                vizObj.handleRowsLoaded.apply(vizObj, args);
-                                delete vizObj._initialLoad;
-                            });
+                            vizObj.handleRowsLoaded.apply(vizObj, args);
+                            delete vizObj._initialLoad;
                         });
+                    });
 
                     if (vizObj.getColumns())
                     { vizObj.columnsLoaded(); }
@@ -440,8 +469,17 @@
                 {
                     callback();
                 }
-            }
+            },
 
+            // This function is not meant as an accessor.
+            totalRowsForAllViews: function()
+            {
+                var vizObj = this;
+                vizObj._totalRows = _.reduce(vizObj._dataViews,
+                    function(total, view)
+                    { return view.totalRows ? total + view.totalRows : total; }, 0);
+                return vizObj._totalRows;
+            }
         }
     });
 
@@ -454,6 +492,27 @@
         vizObj._prevHeight = vizObj.$dom().height();
         vizObj._prevWidth = vizObj.$dom().width();
         vizObj.resizeHandle(e);
+    };
+
+    var getRowsForAllViews = function(vizObj, callback)
+    {
+        var rowsToFetch = vizObj._maxRows;
+        var views = _.map(vizObj._dataViews, function(view, index)
+            {
+                return (function()
+                {
+                    view.getRows(0, rowsToFetch, function(data)
+                    {
+                        rowsToFetch -= view.totalRows ? view.totalRows : data.length;
+                        var executable = views.shift();
+                        if (executable) { executable(); }
+                        vizObj.totalRowsForAllViews();
+                        if (rowsToFetch <= 0) { delete vizObj._pendingReload; }
+                        callback.apply(vizObj, [data, view]);
+                    });
+                });
+            });
+        views.shift()();
     };
 
 })(jQuery);

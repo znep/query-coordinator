@@ -62,7 +62,6 @@ this.Dataset = Model.extend({
 
         this._origObj = this.cleanCopy();
 
-
         if (!$.isBlank(blist.snapshot) && blist.snapshot.takeSnapshot)
         {
             this.snapshotting = true;
@@ -2180,6 +2179,15 @@ Dataset.getLinkedDatasetOptionsNoDefault = function(linkedDatasetUid, col, $fiel
 Dataset.createFromMapLayerUrl = function(url, successCallback, errorCallback)
 {
     var encodedUrl = '/api/layers.json?method=createMapLayerDataset&url=' + escape(url);
+    $.Tache.Get({
+        url: encodedUrl,
+        success: _.isFunction(successCallback) ? successCallback : null,
+        error: _.isFunction(errorCallback) ? errorCallback : null});
+};
+
+Dataset.createFromViewId = function(id, successCallback, errorCallback)
+{
+    var encodedUrl = '/api/views/' + id + '.json';
     $.Tache.Get({
         url: encodedUrl,
         success: _.isFunction(successCallback) ? successCallback : null,

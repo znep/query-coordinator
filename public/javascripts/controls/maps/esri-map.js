@@ -48,8 +48,10 @@
                     dojo.connect(mapObj.map, 'onLoad', function()
                     {
                         mapObj._mapLoaded = true;
+                        mapObj._graphicsLayer = mapObj.map.graphics;
                         if (mapObj._dataLoaded)
-                        { mapObj.renderData(mapObj._rows); }
+                        { _.each(mapObj._dataViews, function(view)
+                            { mapObj.renderData(view._rows, view); }); }
                     });
 
                     var layers = mapObj.settings.view.displayFormat.layers ||
@@ -108,7 +110,7 @@
                             mapObj.map.addLayer(this);
                             if (layersLoaded >= layers.length)
                             {
-                                dojo.connect(mapObj.map.graphics, 'onClick',
+                                dojo.connect(mapObj._graphicsLayer, 'onClick',
                                     function(evt)
                                     { handleGraphicClick(mapObj, evt); });
 
@@ -193,14 +195,12 @@
                 }
             },
 
-            handleRowsLoaded: function(rows)
+            handleRowsLoaded: function(rows, view)
             {
                 var mapObj = this;
                 mapObj._dataLoaded = true;
 
-                if (mapObj._rows === undefined) { mapObj._rows = []; }
-                mapObj._rows = mapObj._rows.concat(rows);
-                if (mapObj.settings.view.totalRows > mapObj._maxRows)
+                if (mapObj._totalRows > mapObj._maxRows)
                 {
                     mapObj.showError('This dataset has more than ' + mapObj._maxRows +
                                ' rows visible. Some points will be not be displayed.');
@@ -208,7 +208,7 @@
                 }
 
                 if (mapObj._mapLoaded)
-                { mapObj.renderData(rows); }
+                { mapObj.renderData(rows, view); }
             },
 
             renderGeometry: function(geoType, geometry, dupKey, details)
@@ -244,13 +244,14 @@
                 }
 
                 var g = new esri.Graphic(geometry, symbol,
-                        {rows: details.rows, flyoutDetails: details.flyoutDetails});
+                        {rows: details.rows, flyoutDetails: details.flyoutDetails,
+                         dataView: details.dataView});
 
                 if (mapObj._markers[dupKey])
-                { mapObj.map.graphics.remove(mapObj._markers[dupKey]); }
+                { mapObj._graphicsLayer.remove(mapObj._markers[dupKey]); }
                 mapObj._markers[dupKey] = g;
 
-                mapObj.map.graphics.add(g);
+                mapObj._graphicsLayer.add(g);
 
                 if (!mapObj._extentSet && geoType == 'point')
                 { mapObj._multipoint.addPoint(g.geometry); }
@@ -392,14 +393,14 @@
                     (mapObj.map.spatialReference);
                 delete mapObj._segmentSymbols;
                 delete mapObj._bounds;
-                mapObj.map.graphics.clear();
+                mapObj._graphicsLayer.clear();
                 mapObj.map.infoWindow.hide();
             },
 
             clearFeatures: function()
             {
                 var mapObj = this;
-                if (mapObj.map.graphics) { mapObj.map.graphics.clear(); }
+                if (mapObj._graphicsLayer) { mapObj._graphicsLayer.clear(); }
             }
         }
     }));
@@ -529,7 +530,8 @@
 
         mapObj.map.infoWindow.setContent(
             mapObj.getFlyout(evt.graphic.attributes.rows,
-                evt.graphic.attributes.flyoutDetails)[0])
+                evt.graphic.attributes.flyoutDetails,
+                evt.graphic.attributes.dataView)[0])
             .show(evt.screenPoint,
                 mapObj.map.getInfoWindowAnchor(evt.screenPoint));
     };

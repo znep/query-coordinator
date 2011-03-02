@@ -64,6 +64,7 @@
                 var mapObj = this;
 
                 mapObj._markers = {};
+                mapObj._segments = {};
                 mapObj._numSegments = 6;
 
                 if (mapObj.$dom().siblings('#mapLayers').length < 1)
@@ -133,7 +134,7 @@
             columnsLoaded: function()
             {
                 var mapObj = this;
-                if (mapObj._colorValueCol)
+                if (mapObj._byView[mapObj.settings.view.id]._colorValueCol)
                 {
                     if (!mapObj._gradient)
                     {
@@ -143,7 +144,8 @@
                     }
 
                     mapObj.$legend({
-                        name: mapObj._colorValueCol.name,
+                        name: mapObj._byView[mapObj.settings.view.id]
+                            ._colorValueCol.name,
                         gradient: _.map(mapObj._gradient,
                               function(c) { return "#"+$.rgbToHex(c); }
                     )});
@@ -208,24 +210,26 @@
                 mapObj.populateLayers();
 
                 mapObj._markers = {};
-                mapObj._llKeys = {};
-                mapObj._rows = [];
                 mapObj._gradient = undefined;
                 mapObj._segmentColors = undefined;
 
-                mapObj._locCol = undefined;
-                mapObj._latCol = undefined;
-                mapObj._longCol = undefined;
-                mapObj._quantityCol = undefined;
+                _.each(mapObj._dataViews, function(view)
+                {
+                    view._llKeys = {};
+                    view._locCol = undefined;
+                    view._latCol = undefined;
+                    view._longCol = undefined;
+                    view._quantityCol = undefined;
+                });
+
+                mapObj.initializeFlyouts(mapObj.settings.view.displayFormat
+                    .plot.descriptionColumns);
 
                 mapObj._origData = {
                     displayFormat: mapObj.settings.view.displayFormat,
                     mapType: mapObj.settings.view.displayFormat.type,
                     plotStyle: mapObj.settings.view.displayFormat.plotStyle,
                     layers: mapObj.settings.view.displayFormat.layers};
-
-                mapObj.initializeFlyouts(mapObj.settings.view.displayFormat
-                    .plot.descriptionColumns);
             },
 
             populateLayers: function()
@@ -311,13 +315,13 @@
                 // Implement if you need to reset any data when the map is reset
             },
 
-            handleRowsLoaded: function(rows)
+            handleRowsLoaded: function(rows, view)
             {
                 var mapObj = this;
 
                 if (mapObj._rows === undefined) { mapObj._rows = []; }
                 mapObj._rows = mapObj._rows.concat(rows);
-                if (mapObj.settings.view.totalRows > mapObj._maxRows)
+                if (mapObj._totalRows > mapObj._maxRows)
                 {
                     mapObj.showError('This dataset has more than ' + mapObj._maxRows +
                                      ' rows visible. Some points will be not be' +
@@ -326,7 +330,7 @@
                     mapObj._maxRowsExceeded = true;
                 }
 
-                mapObj.renderData(rows);
+                mapObj.renderData(rows, view);
             },
 
             generateFlyoutLayout: function(columns)
@@ -365,16 +369,16 @@
                 return {columns: [col]};
             },
 
-            getFlyout: function(rows, details)
+            getFlyout: function(rows, details, dataView)
             {
-                return this.getFlyoutDefault(rows);
+                return this.getFlyoutDefault(rows, dataView);
             },
 
-            getFlyoutDefault: function(rows)
+            getFlyoutDefault: function(rows, v)
             {
                 var mapObj = this;
                 var $info = $.tag({tagName: 'div', 'class': 'mapInfoContainer'});
-                _.each(rows, function(r) { $info.append(mapObj.renderFlyout(r)); });
+                _.each(rows, function(r) { $info.append(mapObj.renderFlyout(r, v)); });
 
                 if (rows.length > 1)
                 {
@@ -394,9 +398,10 @@
                 return $info;
             },
 
-            renderRow: function(row)
+            renderRow: function(row, view)
             {
                 var mapObj = this;
+                var viewConfig = mapObj._byView[view.id];
 
                 if (mapObj.settings.view.displayFormat.noLocations &&
                     _.isUndefined(row.feature))
@@ -404,12 +409,12 @@
 
                 // A configured Location column always takes precedence.
                 // _geoCol is and always will be a fallback.
-                var locCol = mapObj._locCol || mapObj._geoCol;
+                var locCol = viewConfig._locCol || viewConfig._geoCol;
 
                 if (_.isUndefined(row.feature) &&
                     _.isUndefined(locCol) &&
-                    (_.isUndefined(mapObj._latCol) ||
-                     _.isUndefined(mapObj._longCol)))
+                    (_.isUndefined(viewConfig._latCol) ||
+                     _.isUndefined(viewConfig._longCol)))
                 {
                     mapObj.errorMessage = 'No columns defined';
                     return false;
@@ -448,8 +453,8 @@
                 }
                 else
                 {
-                    lat = parseFloat(row[mapObj._latCol.id]);
-                    longVal = parseFloat(row[mapObj._longCol.id]);
+                    lat = parseFloat(row[viewConfig._latCol.id]);
+                    longVal = parseFloat(row[viewConfig._longCol.id]);
                 }
 
                 // Incomplete points will be safely ignored
@@ -463,7 +468,7 @@
                     return false;
                 }
 
-                if (!mapObj._llKeys) mapObj._llKeys = {};
+                if (!viewConfig._llKeys) viewConfig._llKeys = {};
                 if (isPoint)
                 {
                     var rowKey = lat.toString();
@@ -471,35 +476,37 @@
                     rowKey    += longVal.toString();
                 }
                 else if (row.feature)
-                { rowKey = row.feature.attributes[mapObj._objectIdKey]; }
+                { rowKey = row.feature.attributes[viewConfig._objectIdKey]; }
                 else
-                { rowKey = row.id; } // too difficult to identify duplicates
+                { rowKey = view.id + row.id; } // too difficult to identify duplicates
 
-                if (!mapObj._llKeys[rowKey])
-                { mapObj._llKeys[rowKey] = { rows: [], id: row.id }; }
+                if (!viewConfig._llKeys[rowKey])
+                { viewConfig._llKeys[rowKey] = { rows: [] }; }
 
-                mapObj._llKeys[rowKey].rows.push(row);
+                viewConfig._llKeys[rowKey].rows.push(row);
 
-                var details = {rows: mapObj._llKeys[rowKey].rows};
-                if (mapObj._iconCol && row[mapObj._iconCol.id])
+                var details = {rows: viewConfig._llKeys[rowKey].rows};
+                if (viewConfig._iconCol && row[viewConfig._iconCol.id])
                 {
                     var icon;
-                    if (mapObj._iconCol.dataTypeName == 'url')
+                    if (viewConfig._iconCol.dataTypeName == 'url')
                     {
-                        icon = row[mapObj._iconCol.id].url;
+                        icon = row[viewConfig._iconCol.id].url;
                     }
                     else
                     {
-                        icon = mapObj._iconCol.baseUrl() + row[mapObj._iconCol.id];
+                        icon = viewConfig._iconCol.baseUrl()
+                            + row[viewConfig._iconCol.id];
                     }
                     if (icon) { details.icon = icon; }
                 }
-                if (mapObj._sizeValueCol && mapObj._segments[mapObj._sizeValueCol.id])
+                if (viewConfig._sizeValueCol
+                    && mapObj._segments[viewConfig._sizeValueCol.id])
                 {
                     for (var i = 0; i < mapObj._numSegments; i++)
                     {
-                        if (parseFloat(row[mapObj._sizeValueCol.id]) <=
-                            mapObj._segments[mapObj._sizeValueCol.id][i])
+                        if (parseFloat(row[viewConfig._sizeValueCol.id]) <=
+                            mapObj._segments[viewConfig._sizeValueCol.id][i])
                         { details.size  = 10+(6*i); break; }
                     }
                 }
@@ -508,12 +515,13 @@
                     var rgb = $.hexToRgb(mapObj.settings.view.displayFormat.color);
                     details.color = [ rgb.r, rgb.g, rgb.b ];
                 }
-                if (mapObj._colorValueCol && mapObj._segments[mapObj._colorValueCol.id])
+                if (viewConfig._colorValueCol
+                    && mapObj._segments[viewConfig._colorValueCol.id])
                 {
                     for (var i = 0; i < mapObj._numSegments; i++)
                     {
-                        if (parseFloat(row[mapObj._colorValueCol.id]) <=
-                            mapObj._segments[mapObj._colorValueCol.id][i])
+                        if (parseFloat(row[viewConfig._colorValueCol.id]) <=
+                            mapObj._segments[viewConfig._colorValueCol.id][i])
                         {
                             var rgb = mapObj._gradient[i];
                             details.color = [ rgb.r, rgb.g, rgb.b ];
@@ -553,8 +561,7 @@
                 switch (geoType)
                 {
                     case 'point':
-                        geometry = { latitude: lat, longitude: longVal,
-                                     id: mapObj._llKeys[rowKey].id };
+                        geometry = { latitude: lat, longitude: longVal };
                         break;
                     case 'polygon':
                         geometry = { rings: row[locCol.id].geometry.rings };
@@ -564,8 +571,9 @@
                         break;
                 }
 
-                return mapObj.renderGeometry(geoType, geometry,
-                    mapObj._llKeys[rowKey].id, details);
+                details.dataView = view;
+
+                return mapObj.renderGeometry(geoType, geometry, rowKey, details);
             },
 
             renderGeometry: function(geoType, geometry, dupKey, details)
@@ -601,61 +609,66 @@
                 if (!mapObj._maxRowsExceeded) { return; }
                 if (!viewport) { viewport = mapObj.getViewport(true); }
 
-                var filterColumn = mapObj._geoCol || mapObj._locCol;
-
-                var buildFilterCondition = function(viewport)
+                _.each(mapObj._dataViews, function(view)
                 {
-                    return { type: 'operator', value: 'AND',
-                        children: _.flatten(_.map(['x', 'y'], function(axis)
-                        {
-                            return _.map(['min', 'max'], function(bound)
+                    var viewConfig = mapObj._byView[view.id];
+                    var filterColumn = viewConfig._geoCol || viewConfig._locCol;
+
+                    var buildFilterCondition = function(viewport)
+                    {
+                        return { type: 'operator', value: 'AND',
+                            children: _.flatten(_.map(['x', 'y'], function(axis)
                             {
-                                var condition = { type: 'operator' };
-                                condition.value = (bound == 'min')
-                                                        ? 'GREATER_THAN'
-                                                        : 'LESS_THAN';
-                                condition.children = [
-                                    {
-                                        type: 'column',
-                                        value: (axis == 'x') ? 'LONGITUDE' : 'LATITUDE',
-                                        columnId: filterColumn.id
-                                    },
-                                    {
-                                        type: 'literal',
-                                        value: Math[bound].apply(null,
-                                            [viewport[axis+'min'],
-                                             viewport[axis+'max']])
-                                    }
-                                ];
-                                return condition;
-                            });
-                        }))
+                                return _.map(['min', 'max'], function(bound)
+                                {
+                                    var condition = { type: 'operator' };
+                                    condition.value = (bound == 'min')
+                                                            ? 'GREATER_THAN'
+                                                            : 'LESS_THAN';
+                                    condition.children = [
+                                        {
+                                            type: 'column',
+                                            value: (axis == 'x') ? 'LONGITUDE'
+                                                                 : 'LATITUDE',
+                                            columnId: filterColumn.id
+                                        },
+                                        {
+                                            type: 'literal',
+                                            value: Math[bound].apply(null,
+                                                [viewport[axis+'min'],
+                                                 viewport[axis+'max']])
+                                        }
+                                    ];
+                                    return condition;
+                                });
+                            }))
+                        };
                     };
-                };
 
-                var query = $.extend(true, {}, mapObj.settings.view.query);
-                var filterCondition = {temporary: true, displayTypes: ['map']};
-                if (!wrapIDL || viewport.xmin < viewport.xmax)
-                {
-                    filterCondition = $.extend(filterCondition,
-                        buildFilterCondition(viewport));
-                }
-                else
-                {
-                    var rightHemi, leftHemi;
-                    rightHemi = $.extend({}, viewport, { xmin: -180 });
-                    leftHemi  = $.extend({}, viewport, { xmax:  180 });
-                    filterCondition = $.extend(filterCondition,
-                        { type: 'operator', value: 'OR',
-                        children: _.map([leftHemi, rightHemi], function(hemi)
-                            { return buildFilterCondition(hemi); }) });
-                }
+                    var query = $.extend(true, {}, view.query);
+                    var filterCondition = {temporary: true, displayTypes: ['map']};
+                    if (!wrapIDL || viewport.xmin < viewport.xmax)
+                    {
+                        filterCondition = $.extend(filterCondition,
+                            buildFilterCondition(viewport));
+                    }
+                    else
+                    {
+                        var rightHemi, leftHemi;
+                        rightHemi = $.extend({}, viewport, { xmin: -180 });
+                        leftHemi  = $.extend({}, viewport, { xmax:  180 });
+                        filterCondition = $.extend(filterCondition,
+                            { type: 'operator', value: 'OR',
+                            children: _.map([leftHemi, rightHemi], function(hemi)
+                                { return buildFilterCondition(hemi); }) });
+                    }
 
-                if ((query.namedFilters || {}).viewport)
-                { delete query.namedFilters.viewport; }
-                query.namedFilters = $.extend(true, query.namedFilters || {},
-                    { viewport: filterCondition });
-                mapObj.settings.view.update({ query: query}, false, true);
+                    if ((query.namedFilters || {}).viewport)
+                    { delete query.namedFilters.viewport; }
+                    query.namedFilters = $.extend(true, query.namedFilters || {},
+                        { viewport: filterCondition });
+                    view.update({ query: query}, false, true);
+                });
             },
 
             resizeHandle: function(event)
@@ -668,52 +681,54 @@
                 var mapObj = this;
                 var view = mapObj.settings.view;
 
-                // Preferred location column
-                if (!$.isBlank(view.displayFormat.plot.locationId))
-                { mapObj._locCol =
-                    view.columnForTCID(view.displayFormat.plot.locationId); }
-
-                // For updateColumnsByViewport to filter on geometries.
-                mapObj._geoCol = _.detect(view.realColumns, function(col)
-                    { return _.include(['geospatial', 'location'], col.renderTypeName); });
-
-                // Older separate lat/long
-                if (!$.isBlank(view.displayFormat.plot.latitudeId))
-                { mapObj._latCol =
-                    view.columnForTCID(view.displayFormat.plot.latitudeId); }
-                if (!$.isBlank(view.displayFormat.plot.longitudeId))
-                { mapObj._longCol =
-                    view.columnForTCID(view.displayFormat.plot.longitudeId); }
-
-                mapObj._redirectCol =
-                    view.columnForTCID(view.displayFormat.plot.redirectId);
-
-                mapObj._iconCol = view.columnForTCID(view.displayFormat.plot.iconId);
-
-                mapObj._objectIdCol = _.detect(view.realColumns, function(col)
-                    { return col.name.toUpperCase() == 'OBJECTID'; });
-                mapObj._objectIdKey = (mapObj._objectIdCol || {}).name;
-
-                var aggs = {};
-                _.each(['colorValue', 'sizeValue', 'quantity'], function(colName)
+                _.each(mapObj._dataViews, function(view)
                 {
-                    var c = view.columnForTCID(
-                        view.displayFormat.plot[colName + 'Id']);
-                    if (!$.isBlank(c))
+                    var viewConfig = mapObj._byView[view.id];
+
+                    // For updateColumnsByViewport to filter on geometries.
+                    viewConfig._geoCol = _.detect(view.realColumns, function(col)
+                        { return _.include(['geospatial', 'location'],
+                                           col.renderTypeName); });
+
+                    viewConfig._objectIdCol = _.detect(view.realColumns, function(col)
+                        { return col.name.toUpperCase() == 'OBJECTID'; });
+                    viewConfig._objectIdKey = (viewConfig._objectIdCol || {}).name;
+
+                    if (!$.subKeyDefined(view.displayFormat, 'plot'))
+                    { return; }
+
+                    // Preferred location column
+                    if (!$.isBlank(view.displayFormat.plot.locationId))
+                    { viewConfig._locCol =
+                        view.columnForTCID(view.displayFormat.plot.locationId); }
+
+                    viewConfig._redirectCol =
+                        view.columnForTCID(view.displayFormat.plot.redirectId);
+
+                    viewConfig._iconCol =
+                        view.columnForTCID(view.displayFormat.plot.iconId);
+
+                    var aggs = {};
+                    _.each(['colorValue', 'sizeValue', 'quantity'], function(colName)
                     {
-                        mapObj['_' + colName + 'Col'] = c;
-                        aggs[c.id] = ['maximum', 'minimum'];
+                        var c = view.columnForTCID(
+                            view.displayFormat.plot[colName + 'Id']);
+                        if (!$.isBlank(c))
+                        {
+                            viewConfig['_' + colName + 'Col'] = c;
+                            aggs[c.id] = ['maximum', 'minimum'];
+                        }
+                    });
+
+                    if (!_.isEmpty(aggs))
+                    {
+                        if (!view._delayRenderData) { view._delayRenderData = 0; }
+                        view._delayRenderData++;
+
+                        view.getAggregates(function()
+                        { calculateSegmentSizes(mapObj, aggs); }, aggs);
                     }
                 });
-
-                if (!_.isEmpty(aggs))
-                {
-                    if (!mapObj._delayRenderData) { mapObj._delayRenderData = 0; }
-                    mapObj._delayRenderData++;
-
-                    view.getAggregates(function()
-                    { calculateSegmentSizes(mapObj, aggs) }, aggs);
-                }
 
                 return true;
             },
@@ -782,7 +797,6 @@
 
     var calculateSegmentSizes = function(mapObj, aggs)
     {
-        mapObj._segments = {};
         _.each(aggs, function(a, cId)
         {
             var column = mapObj.settings.view.columnForID(cId);

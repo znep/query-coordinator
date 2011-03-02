@@ -127,7 +127,8 @@
     {
         if (!$.isBlank(calObj.hasFlyout()))
         {
-            $(element).socrataTip({content: calObj.renderFlyout(calEvent.row),
+            $(element).socrataTip({content: calObj.renderFlyout(calEvent.row,
+                calObj.settings.view),
                 trigger: 'click', isSolo: true});
         }
     };

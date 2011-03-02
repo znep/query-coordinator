@@ -129,6 +129,7 @@
                     }
                     shape.rows = details.rows;
                     shape.flyoutDetails = details.flyoutDetails;
+                    shape.dataView = details.dataView;
                     if (!shape.getLocations) // is Pushpin
                     {
                         shape.getLocations = function()
@@ -348,7 +349,7 @@
         }
 
         $box.show().find("#bing_infoContent").empty()
-            .append(mapObj.getFlyout(shape.rows, shape.flyoutDetails))
+            .append(mapObj.getFlyout(shape.rows, shape.flyoutDetails, shape.dataView))
             .prepend('<img src="http://maps.gstatic.com/intl/' +
                      'en_us/mapfiles/iw_close.gif"/>');
 

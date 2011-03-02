@@ -82,24 +82,8 @@
             { return new esri.layers.FeatureLayer(
                 mapObj.mapServer._url.path + '/' + layerInfo.id); });
 
-        var encodeExtentToPoints = function(extent)
-        { return [
-            new esri.geometry.Point(extent.xmin, extent.ymin, extent.spatialReference),
-            new esri.geometry.Point(extent.xmax, extent.ymax, extent.spatialReference)
-            ];
-        };
-        var decodeExtentFromPoints = function(points)
-        { return new esri.geometry.Extent(points[0].x, points[0].y,
-                                          points[1].x, points[1].y,
-                                          points[0].spatialReference);
-        };
-        new esri.tasks.GeometryService('http://sampleserver1.arcgisonline.com/' +
-            'ArcGIS/rest/services/Geometry/GeometryServer')
-            .project(encodeExtentToPoints(mapObj.mapServer.initialExtent),
-                     mapObj.map.spatialReference,
-                     function(points)
-                     { mapObj.map.setExtent(decodeExtentFromPoints(points)); }
-            );
+        if (mapObj.map.layerIds.length == 1)
+        { adjustBounds(mapObj); }
 
         //mapObj.populateDataLayers();
 
@@ -133,6 +117,28 @@
             esri.tasks.IdentifyParameters.LAYER_OPTION_ALL;
         mapObj._identifyParameters.width  = mapObj.map.width;
         mapObj._identifyParameters.height = mapObj.map.height;
+    };
+
+    var adjustBounds = function(mapObj)
+    {
+        var encodeExtentToPoints = function(extent)
+        { return [
+            new esri.geometry.Point(extent.xmin, extent.ymin, extent.spatialReference),
+            new esri.geometry.Point(extent.xmax, extent.ymax, extent.spatialReference)
+            ];
+        };
+        var decodeExtentFromPoints = function(points)
+        { return new esri.geometry.Extent(points[0].x, points[0].y,
+                                          points[1].x, points[1].y,
+                                          points[0].spatialReference);
+        };
+        new esri.tasks.GeometryService('http://sampleserver1.arcgisonline.com/' +
+            'ArcGIS/rest/services/Geometry/GeometryServer')
+            .project(encodeExtentToPoints(mapObj.mapServer.initialExtent),
+                     mapObj.map.spatialReference,
+                     function(points)
+                     { mapObj.map.setExtent(decodeExtentFromPoints(points)); }
+            );
     };
 
     var identifyFeature = function(mapObj, evt)

@@ -28,4 +28,13 @@ class TestPagesController < ApplicationController
     end
   end
 
+  def iframe
+  end
+  def frameset
+    render :layout => false
+  end
+  def evil_frame
+    render :text => 'Oh no, evil code!'
+  end
+
 end

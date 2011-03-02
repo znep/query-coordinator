@@ -111,21 +111,24 @@
 
   <%= include_javascripts 'base' %>
 
-  <% if Rails.env != 'production' %>
+  <%- if Rails.env != 'production' -%>
     <%= javascript_include_tag "util/debug" %>
-  <% else %>
-  <script type='text/javascript'>
-    $.debug = function() {};
-  </script>
-  <% end %>
+  <%- else -%>
+    <script type='text/javascript'>
+      $.debug = function() {};
+    </script>
+  <%- end -%>
 
   <script type="text/javascript">
     blist.namespace.fetch('blist.configuration');
     blist.configuration.strings = <%= raw CurrentDomain.strings.to_json %>;
-    <% if DOWNTIME.should_display(DateTime.now) %>
-    blist.configuration.maintenance_hash = '<%= raw DOWNTIME.hash %>';
-    blist.configuration.maintenance_message = '<%= escape_javascript DOWNTIME.html %>';
-    <% end %>
+
+    <%- if DOWNTIME.should_display(DateTime.now) -%>
+      blist.configuration.maintenance_hash = '<%= raw DOWNTIME.hash %>';
+      blist.configuration.maintenance_message = '<%= escape_javascript DOWNTIME.html %>';
+    <%- end -%>
+
+    if (self !== top) top.location = self.document.location;
   </script>
 
   <div id="modals">

@@ -95,7 +95,8 @@ ActionController::Routing::Routes.draw do |map|
       :home => :get,
       :metadata => :get,
       :views => :get,
-      :save_featured_views => :put
+      :save_featured_views => :put,
+      :catalog_widget => :get
   }
 
   map.with_options :controller => 'administration' do |admin|

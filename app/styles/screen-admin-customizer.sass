@@ -53,6 +53,9 @@
         &.other
           background-color: $sidebar_other_tab_color_top
 
+        &.filter
+          background-color: $sidebar_filter_tab_color_top
+
     &.unsaved
       background: #fff url(/stylesheets/images/interface/dataset_unsaved_fade.png) repeat-y
       .publisherActions
@@ -77,6 +80,8 @@
 
         .previewPane
           margin: 10em auto
+          &.lessPadding
+            margin: 4em auto
 
           iframe, .contentBox
             @include box-shadow(0, 1em, 2em, rgba(0, 0, 0, 0.25))
@@ -93,6 +98,7 @@
         margin-left: -21em
         padding: 2em
         position: absolute
+        text-align: center
         top: 20em
         width: 40em
 

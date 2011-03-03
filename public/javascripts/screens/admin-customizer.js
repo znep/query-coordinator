@@ -358,13 +358,16 @@ $(function() { _.defer(function()
     });
 
     // Warn on leaving
-    window.onbeforeunload = function()
+    if ($.isBlank(publishNS.dontPromptOnLeaving))
     {
-        if ($('.headerBar').hasClass('unsaved'))
+        window.onbeforeunload = function()
         {
-            return 'You will lose your changes to the current theme.';
-        }
-    };
+            if ($('.headerBar').hasClass('unsaved'))
+            {
+                return 'You will lose your changes to the current theme.';
+            }
+        };
+    }
 
 }); });
 

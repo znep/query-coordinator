@@ -41,6 +41,32 @@ class AdministrationController < ApplicationController
     process_browse!
   end
 
+  def catalog_widget
+    check_member()
+
+    topics_all = Tag.find({:method => 'viewsTags'}).map { |t| {:text => t.name, :value => t.name} }
+    @widget_width  = 750
+    @widget_height = 550
+    @embed_base    = url_for(:controller => 'browse', :action => 'embed')
+    @embed_options = @@default_embed_options
+    @browse_select_options = {
+        :limitTo => view_types_facet,
+        :categories => categories_facet,
+        :topics => topics_all,
+        :sortBy => @@default_browse_sort_opts.map do |item|
+          { :value => item[:value], :text => item[:name],
+            :is_time_period => item[:is_time_period] }
+        end,
+        :timePeriods =>  [
+          {:value => 'week', :text => 'This week'},
+          {:value => 'month', :text => 'This month'},
+          {:value => 'year', :text => 'This year'}
+        ]
+    }
+
+  end
+
+
   def analytics
     check_member()
     check_module('advanced_metrics')
@@ -811,6 +837,18 @@ private
   def app_helper
     AppHelper.instance
   end
+
+  @@default_embed_options = {
+    :facets => {
+      :type => true,
+      :category => true,
+      :topic => true
+    },
+    :disable => { },
+    :defaults => { },
+    :limit => 10
+  }
+
 end
 
 class AppHelper

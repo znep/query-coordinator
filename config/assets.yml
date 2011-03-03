@@ -109,6 +109,15 @@ javascripts:
     - public/javascripts/screens/admin-select-dataset.js
   admin-datasets:
     - public/javascripts/screens/admin-datasets.js
+  admin-browse-widget:
+    - public/javascripts/plugins/jquery.colorPicker.js
+    - public/javascripts/plugins/colorpicker.js
+    - public/javascripts/util/color.js
+    - public/javascripts/util/events.js
+    - public/javascripts/controls/grid-sidebar/base-sidebar.js
+    - public/javascripts/screens/admin-customizer.js
+    - public/javascripts/screens/admin-collapse-nav.js
+    - public/javascripts/screens/admin-browse-widget-create.js
   admin-users:
     - public/javascripts/controls/admin-buttons.js
     - public/javascripts/plugins/jquery.tablesorter.js

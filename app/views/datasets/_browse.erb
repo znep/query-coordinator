@@ -201,7 +201,7 @@
             </td>
             <%- rel_type = v.federated? ?
                   CurrentDomain.feature?(:federated_interstitial) ?
-                    'externalDomain' : 'external' : '' -%>
+                    'externalDomain' : 'external' : (@rel_type || '') -%>
             <%- if @use_federations -%>
             <td class='domainIcon'>
               <a href='<%= v.href(@port) %>' rel='<%= rel_type %>'>

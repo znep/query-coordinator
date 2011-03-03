@@ -151,16 +151,7 @@ protected
     ]
     @facets.compact!
 
-    @sort_opts ||= [
-      {:value => 'relevance', :name => 'Most Relevant'},
-      {:value => 'most_accessed', :name => 'Most Accessed',
-        :is_time_period => true},
-      {:value => 'alpha', :name => 'Alphabetical'},
-      {:value => 'newest', :name => 'Newest'},
-      {:value => 'oldest', :name => 'Oldest'},
-      {:value => 'rating', :name => 'Highest Rated'},
-      {:value => 'comments', :name => 'Most Comments'}
-    ]
+    @sort_opts ||= @@default_browse_sort_opts
 
     if @view_results.nil?
       @view_results = SearchResult.search('views', @opts)[0]
@@ -176,6 +167,17 @@ protected
 
     @title = get_title(@params, @opts, @facets)
   end
+
+  @@default_browse_sort_opts = [
+    {:value => 'relevance', :name => 'Most Relevant'},
+    {:value => 'most_accessed', :name => 'Most Accessed',
+      :is_time_period => true},
+    {:value => 'alpha', :name => 'Alphabetical'},
+    {:value => 'newest', :name => 'Newest'},
+    {:value => 'oldest', :name => 'Oldest'},
+    {:value => 'rating', :name => 'Highest Rated'},
+    {:value => 'comments', :name => 'Most Comments'}
+  ]
 
 private
   def get_title(params, opts, facets)

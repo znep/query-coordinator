@@ -130,23 +130,6 @@
                     });
             },
 
-            deleteColumns: function(columns, parCol)
-            {
-                var datasetObj = this;
-
-                columns = $.makeArray(columns);
-                var multiCols = columns.length > 1;
-                if (confirm('Do you want to delete the ' +
-                    (multiCols ? columns.length + ' selected columns' :
-                        'selected column') + '? All data in ' +
-                    (multiCols ? 'these columns' : 'this column') +
-                    ' will be removed!'))
-                {
-                    if (!$.isBlank(parCol)) { parCol.removeChildColumns(columns); }
-                    else { datasetObj.settings.view.removeColumns(columns); }
-                }
-            },
-
             drillDown: function(drillLink)
             {
                 var datasetObj = this;
@@ -344,8 +327,8 @@
                        (!isSubRow ?
                            '"<li class=\'pageView\'>' +
                            '<a href=\'' + this.settings.view.url +
-                           '/" + row.id + "\' class=\'noInterstitial\'>' +
-                           'View Row</a></li>" + ' : '') +
+                           '/" + row.id + "\' class=\'noInterstitial ' +
+                           'noRedirPrompt\'>View Row</a></li>" + ' : '') +
                        (this.settings.editEnabled ?
                            ('(permissions.canEdit && !(row.level > 0) ? ' +
                            '"<li class=\'tags\'>' +
@@ -563,7 +546,20 @@
 
     var setupHeader = function(datasetObj, col, $col, tipsRef)
     {
-        createHeaderMenu(datasetObj, col, $col);
+        var $menuLink = $.tag({tagName: 'a', 'class': ['menuLink', 'action-item'],
+            'href': '#column-menu'});
+        $col.append($menuLink);
+
+        $col.columnMenu({column: col, $menuTrigger: $menuLink,
+            columnDeleteEnabled: datasetObj.settings.columnDeleteEnabled,
+            columnPropertiesEnabled: datasetObj.settings.columnPropertiesEnabled,
+            editColumnCallback: datasetObj.settings.editColumnCallback,
+            selectedColumns: function()
+            {
+                return $(datasetObj.currentGrid).blistTableAccessor()
+                    .getSelectedColumns();
+            },
+            view: datasetObj.settings.view});
 
         if (tipsRef)
         {
@@ -580,418 +576,6 @@
         setupHeader(datasetObj, col, $(col.dom), datasetObj.settings._colTips);
     };
 
-    var createHeaderMenu = function(datasetObj, col, $colDom)
-    {
-        var isNested = !$.isBlank(col.parentColumn);
-        // Create an object containing flags describing what should be present
-        // in the menu
-        var features = {};
-
-        if (!isNested && col.renderType.sortable) { features.sort = true; }
-
-
-        if (!isNested && col.renderType.filterable &&
-            !datasetObj.settings.view.isGrouped())
-        { features.filter = true; }
-
-
-        if (datasetObj.settings.columnDeleteEnabled &&
-            col.renderType.deleteable &&
-            (!datasetObj.settings.view.isGrouped() ||
-                !_.any(datasetObj.settings.view.query.groupBys, function(g)
-                    { return g.columnId == col.id; })))
-        { features.remove = true; }
-
-
-        if (datasetObj.settings.columnPropertiesEnabled)
-        { features.properties = true; }
-
-
-        // If we did not enable features, do not install the menu
-        var haveFeatures = false;
-        for (var x in features)
-        {
-            haveFeatures = true;
-            break;
-        }
-        if (!haveFeatures) { return; }
-
-        var hrefId = col.id;
-        if (isNested) { hrefId += '_' + col.parentColumn.id; }
-
-        // Install the menu indicator DOM elements
-        $colDom.append('<a class="menuLink action-item" href="#column-menu_' +
-            hrefId + '"></a>');
-
-        // Install an event handler that actually builds the menu on first
-        // mouse over
-        $colDom.one('mouseover', function()
-        {
-            if ($colDom.find('ul.menu').length > 0) { return; }
-            var htmlStr =
-                '<ul class="menu columnHeaderMenu action-item" id="column-menu_' +
-                hrefId + '">';
-
-            // Render sorting
-            if (features.sort)
-            {
-                htmlStr +=
-                    '<li class="sortAsc singleItem">' +
-                    '<a href="#column-sort-asc_' + hrefId + '">' +
-                    '<span class="highlight">Sort Ascending</span>' +
-                    '</a>' +
-                    '</li>' +
-                    '<li class="sortDesc singleItem">' +
-                    '<a href="#column-sort-desc_' + hrefId + '">' +
-                    '<span class="highlight">Sort Descending</span>' +
-                    '</a>' +
-                    '</li>' +
-                    '<li class="sortClear singleItem">' +
-                    '<a href="#column-sort-clear_' + hrefId + '">' +
-                    '<span class="highlight">Clear Sort</span>' +
-                    '</a>' +
-                    '</li>';
-            }
-
-            if (features.sort || features.filter)
-            {
-                // There are already display items in the list, so we need to add
-                // a separator.
-                htmlStr += '<li class="filterSeparator separator singleItem" />';
-            }
-            htmlStr += '<li class="hideCol" >' +
-                '<a href="#hide-column_' + hrefId + '">' +
-                '<span class="highlight">Hide Column</span>' +
-                '</a></li>';
-
-            if (features.remove)
-            {
-                htmlStr += '<li class="delete" >' +
-                    '<a href="#delete-column_' + hrefId + '">' +
-                    '<span class="highlight">Delete Column</span>' +
-                    '</a></li>';
-            }
-
-            if (features.properties)
-            {
-                // There are already display items in the list, so we need to add
-                // a separator.
-                htmlStr += '<li class="separator singleItem" />';
-                htmlStr += '<li class="properties singleItem">' +
-                    '<a href="#edit-column_' + hrefId + '">' +
-                    '<span class="highlight">Edit Column Properties</span>' +
-                    '</a>' +
-                    '</li>';
-            }
-
-            htmlStr +=
-                '<li class="footer"><div class="outerWrapper">' +
-                '<div class="innerWrapper"><span class="colorWrapper">' +
-                '</span></div>' +
-                '</div></li>' +
-                '</ul>';
-
-            $colDom.append(htmlStr);
-            var $menu = $colDom.find('ul.columnHeaderMenu');
-            hookUpHeaderMenu(datasetObj, col, $colDom, $menu);
-        });
-    };
-
-    /* Hook up JS behavior for menu.  This is safe to be applied multiple times */
-    var hookUpHeaderMenu = function(datasetObj, col, $colHeader, $menu)
-    {
-        $menu.dropdownMenu({triggerButton: $colHeader.find('a.menuLink'),
-                    openCallback: function ($menu)
-                        { columnMenuOpenCallback(datasetObj, col,
-                            $colHeader, $menu); },
-                    linkCallback: function (e)
-                        { columnHeaderMenuHandler(datasetObj, e); },
-                    forcePosition: true, pullToTop: true})
-            .find('.autofilter ul.menu').scrollable();
-    };
-
-    var columnMenuOpenCallback = function(datasetObj, col, $colHeader, $menu)
-    {
-        if ($colHeader.isSocrataTip()) { $colHeader.socrataTip().hide(); }
-
-        var selCols = $(datasetObj.currentGrid).blistTableAccessor()
-            .getSelectedColumns();
-        var numSel = _.size(selCols);
-
-        if (numSel < 1 || (numSel == 1 && !$.isBlank(selCols[col.id])))
-        {
-            $menu.find('.singleItem').show();
-            loadFilterMenu(datasetObj, col, $menu);
-
-            $menu.find('.sortAsc').toggle(!col.sortAscending);
-            $menu.find('.sortDesc').toggle($.isBlank(col.sortAscending) ||
-                col.sortAscending);
-            $menu.find('.sortClear').toggle(!$.isBlank(col.sortAscending));
-        }
-        else
-        {
-            $menu.find('.singleItem').hide();
-        }
-    };
-
-    var loadFilterMenu = function(datasetObj, col, $menu)
-    {
-        if (!$.isBlank(col.parentColumn) || !col.renderType.filterable ||
-            datasetObj.settings.view.isGrouped())
-        { return; }
-
-        // Remove the old filter menu if necessary
-        $menu.children('.autofilter').prev('.separator').andSelf().remove();
-
-        var spinnerStr = '<li class="autofilter loading"></li>';
-        // Find the correct spot to add it; either after sort descending, or
-        // the top
-        var $sortItem = $menu.find('li.filterSeparator');
-        if ($sortItem.length > 0) { $sortItem.before(spinnerStr); }
-        else { $menu.prepend(spinnerStr); }
-
-        _.defer(function()
-        {
-            col.getSummary(function (sum)
-                { addFilterMenu(datasetObj, col, $menu, sum); });
-        });
-    };
-
-    /* Add auto-filter sub-menu for a particular column that we get from the JS
-     * grid */
-    var addFilterMenu = function(datasetObj, col, $menu, summary)
-    {
-        // If this column doesn't have a dom, we don't support it yet...
-        if (!col.dom) { return; }
-
-        // Remove spinner
-        $menu.children('.autofilter.loading').remove();
-
-        // Remove the old filter menu if necessary
-        $menu.children('.autofilter').prev('.separator').andSelf().remove();
-
-        if ($.isBlank(col.currentFilter) && $.isBlank(summary)) { return; }
-
-        var filterStr =
-            '<li class="autofilter submenu singleItem">' +
-            '<a class="submenuLink" href="#">' +
-            '<span class="highlight">Filter This Column</span></a>' +
-            '<ul class="menu optionMenu">';
-        // If we already have a filter for this column, give them a clear link
-        if (!$.isBlank(col.currentFilter))
-        {
-            filterStr +=
-                '<li class="clearFilter">' +
-                '<a href="#clear-filter-column_' + col.id + '">' +
-                '<span class="highlight">Clear Column Filter</span>' +
-                '</a>' +
-                '</li>';
-            if ($.isBlank(summary))
-            {
-                summary = {curVal: { topFrequencies:
-                    [{value: col.currentFilter.value, count: 0}] } };
-            }
-        }
-        // Previous button for scrolling
-        filterStr +=
-            '<li class="button prev"><a href="#prev" title="Previous">' +
-            '<div class="outerWrapper"><div class="midWrapper">' +
-            '<span class="innerWrapper">Previous</span>' +
-            '</div></div>' +
-            '</a></li>';
-
-        // Sort type keys in a specific order for URL and phone
-        var typeKeys = _.keys(summary);
-        if (col.renderTypeName == 'url')
-        { typeKeys.sort(); }
-        else if (col.renderTypeName == 'phone')
-        { typeKeys.sort().reverse(); }
-
-        var sumSections = [];
-        _.each(typeKeys, function(k)
-        {
-            var cs = summary[k];
-            var section = '';
-
-            var searchMethod = function(a, b)
-            {
-                var av = a.titleValue.toUpperCase();
-                var bv = b.titleValue.toUpperCase();
-                return av > bv ? 1 : av < bv ? -1 : 0;
-            };
-            if (cs.subColumnType == "number" ||
-                    cs.subColumnType == "money" ||
-                    cs.subColumnType == "date" ||
-                    cs.subColumnType == "percent")
-            {
-                searchMethod = function(a, b) { return a.value - b.value; };
-            }
-
-            if (!$.isBlank(cs.topFrequencies))
-            {
-                // First loop through and set up variations on the value
-                // to use in the menu
-                _.each(cs.topFrequencies, function (f)
-                    {
-                        f.isMatching = !$.isBlank(col.currentFilter) &&
-                            col.currentFilter.value == f.value;
-                        var curType = col.renderType;
-                        f.escapedValue = escape(
-                            _.isFunction(curType.filterValue) ?
-                                curType.filterValue(f.value) :
-                                $.htmlStrip(f.value + ''));
-                        f.renderedValue =
-                            _.isFunction(curType.filterRender) ?
-                                curType.filterRender(f.value, col,
-                                    cs.subColumnType) :
-                                '';
-                        f.titleValue = $.htmlStrip(f.renderedValue + '');
-                    });
-
-                cs.topFrequencies.sort(searchMethod);
-
-                // Add an option for each filter item
-                _.each(cs.topFrequencies, function (f)
-                    {
-                        if (f.renderedValue === '') { return true; }
-                        // Add an extra | at the end of the URL in case there
-                        // are spaces at the end of the value, which IE7
-                        // automatically strips off, leading to a failure
-                        // of autofilter
-                        section +=
-                            '<li class="filterItem' +
-                            (f.isMatching ? ' active' : '') +
-                            ' scrollable">' +
-                                '<a href="' +
-                                (f.isMatching ? '#clear-filter-column_' :
-                                    '#filter-column_') +
-                                col.id + '_' + cs.subColumnType + ':' +
-                                f.escapedValue + '|" title="' +
-                                f.titleValue +
-                                (f.count > 1 ? ' (' + f.count + ')' : '') +
-                                '" class="clipText">' + f.renderedValue +
-                                (f.count > 1 ? ' (' + f.count + ')' : '') +
-                                '</a>' +
-                            '</li>';
-                    });
-            }
-            sumSections.push(section);
-        });
-
-        filterStr += sumSections.join('<li class="separator scrollable"></li>');
-
-        // Next button for scrolling & menu footer
-        filterStr +=
-            '<li class="button next"><a href="#next" title="Next">' +
-            '<div class="outerWrapper"><div class="midWrapper">' +
-            '<span class="innerWrapper">Next</span>' +
-            '</div></div>' +
-            '</a></li>' +
-            '<li class="footer"><div class="outerWrapper">' +
-            '<div class="innerWrapper"><span class="colorWrapper"></span></div>' +
-            '</div></li>' +
-            '</ul>' +
-            '</li>';
-
-        // Find the correct spot to add it; either after sort descending, or
-        // the top
-        var $sortItem = $menu.find('li.filterSeparator');
-        if ($sortItem.length > 0)
-        {
-            filterStr = '<li class="separator singleItem" />' + filterStr;
-            $sortItem.before(filterStr);
-        }
-        else { $menu.prepend(filterStr); }
-        hookUpHeaderMenu(datasetObj, col, $(col.dom), $menu);
-    };
-
-
-    /* Handle clicks in the column header menus */
-    var columnHeaderMenuHandler = function(datasetObj, event)
-    {
-        event.preventDefault();
-        // Href that we care about starts with # and parts are separated with _
-        // IE sticks the full thing, so slice everything up to #
-        var href = $(event.currentTarget).attr('href');
-        var s = href.slice(href.indexOf('#') + 1).split('_');
-        if (s.length < 2)
-        {
-            return;
-        }
-
-        var action = s[0];
-        var colIdIndex = s[1];
-        switch (action)
-        {
-            case 'column-sort-asc':
-                datasetObj.$dom().trigger('column_sort',
-                    [datasetObj.settings.view.columnForID(colIdIndex), true]);
-                break;
-            case 'column-sort-desc':
-                datasetObj.$dom().trigger('column_sort',
-                    [datasetObj.settings.view.columnForID(colIdIndex), false]);
-                break;
-            case 'column-sort-clear':
-                datasetObj.$dom().trigger('column_sort',
-                    [datasetObj.settings.view.columnForID(colIdIndex), null]);
-                break;
-            case 'filter-column':
-                // Rejoin remainder of parts in case the filter value had _
-                // The sub-column type is separated by a colon, so split on that,
-                // pull it off, then rejoin the remainder.  Finally, strip off
-                // the ending | in case there are spaces at the end of the value
-                var p = s.slice(2).join('_').split(':');
-                datasetObj.settings.view.columnForID(colIdIndex).filter(
-                    unescape(p.slice(1).join(':').slice(0, -1)), p[0]);
-                break;
-            case 'clear-filter-column':
-                datasetObj.$dom().trigger('clear_filter',
-                    [datasetObj.settings.view.columnForID(colIdIndex)]);
-                break;
-            case 'hide-column':
-                if (s.length > 2)
-                {
-                    var parCol = datasetObj.settings.view.columnForID(s[2]);
-                    parCol.childColumnForID(colIdIndex).hide();
-                }
-
-                else
-                {
-                    var selHideCols = $(datasetObj.currentGrid)
-                        .blistTableAccessor().getSelectedColumns();
-                    selHideCols[colIdIndex] = true;
-                    _.each(selHideCols, function(v, colId)
-                    {
-                        datasetObj.settings.view.columnForID(colId)
-                            .hide(null, null, true);
-                    });
-                    if (!$.socrataServer.runRequests({success: function()
-                                { datasetObj.settings.view.updateColumns(); }}))
-                    { datasetObj.settings.view.updateColumns(); }
-                }
-                break;
-            case 'delete-column':
-                if (s.length > 2)
-                {
-                    var parCol = datasetObj.settings.view.columnForID(s[2]);
-                    datasetObj.deleteColumns(colIdIndex, parCol);
-                }
-
-                else
-                {
-                    var selCols = $(datasetObj.currentGrid).blistTableAccessor()
-                        .getSelectedColumns();
-                    selCols[colIdIndex] = true;
-                    datasetObj.deleteColumns(_.keys(selCols));
-                }
-                break;
-            case 'edit-column':
-                datasetObj.settings.editColumnCallback(colIdIndex, s[2]);
-                break;
-        }
-    };
-
-
     var columnResized = function(datasetObj, col, isFinished)
     {
         if (isFinished)
@@ -1003,27 +587,12 @@
 
     var columnSorted = function(datasetObj, column, ascending)
     {
-        var query = $.extend(true, {}, datasetObj.settings.view.query);
-        if ($.isBlank(ascending))
-        {
-            query.orderBys = _.reject(query.orderBys || [], function(ob)
-                { return ob.expression.columnId == column.id; });
-            if (query.orderBys.length == 0) { delete query.orderBys; }
-        }
-        else
-        {
-            query.orderBys = [{expression: {columnId: column.id, type: 'column'},
-                        ascending: ascending}];
-        }
-
-        datasetObj.settings.view.update({query: query}, false,
-                (query.orderBys || []).length < 2);
+        $(column.dom).columnMenu().sort(ascending);
     };
 
     var clearColumnFilter = function(datasetObj, col)
     {
-        if ($(col.dom).isSocrataTip()) { $(col.dom).socrataTip().hide(); }
-        col.clearFilter();
+        $(col.dom).columnMenu().clearFilter();
     };
 
     var columnMove = function(datasetObj, col, newPos)

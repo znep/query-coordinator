@@ -59,6 +59,7 @@
             if (_.isFunction(MAP_TYPE)) { MAP_TYPE = MAP_TYPE(); }
 
             var mapObj = this;
+            var viewConfig = mapObj._byView[mapObj.settings.view.id];
             var config = mapObj.settings.view.displayFormat.heatmap;
 
             if (config.type == 'custom')
@@ -83,15 +84,15 @@
             if (config.hideZoomSlider)
             { mapObj.map.hideZoomSlider(); }
 
-            config.aggregateMethod = (_.isUndefined(mapObj._quantityCol)
-                || mapObj._quantityCol.id == 'fake_quantity') ?
+            config.aggregateMethod = (_.isUndefined(viewConfig._quantityCol)
+                || viewConfig._quantityCol.id == 'fake_quantity') ?
                 'count' : 'sum';
 
             // Fools everything depending on quantityCol into recognizing it as a Count
             if (config.aggregateMethod == 'count')
-            { mapObj._quantityCol = { 'id': 'fake_quantity', 'name': 'Count' }; }
+            { viewConfig._quantityCol = { 'id': 'fake_quantity', 'name': 'Count' }; }
 
-            if (_.isUndefined(mapObj._locCol) && !blist.dataset.isArcGISDataset())
+            if (_.isUndefined(viewConfig._locCol) && !blist.dataset.isArcGISDataset())
             {
                 mapObj.errorMessage = 'Required columns missing';
                 return false;
@@ -122,7 +123,7 @@
                 }
 
                 mapObj.$legend({
-                    name: mapObj._quantityCol.name,
+                    name: viewConfig._quantityCol.name,
                     gradient: _.map(mapObj._segmentColors, function(color)
                         { return color.toCss(false); })
                 });
@@ -170,7 +171,8 @@
         getFlyout: function(rows, details)
         {
             var mapObj = this;
-            var $flyout = mapObj.getFlyoutDefault(rows);
+            var $flyout = mapObj.getFlyoutDefault(rows, mapObj.settings.view);
+            var viewConfig = mapObj._byView[mapObj.settings.view.id];
 
             $flyout.find('.richColumn').each(function()
             {
@@ -182,7 +184,7 @@
                 // Fill in quantity
                 var $quantLine = $col.find('.richLine:nth-child(2)');
                 $quantLine.find('.staticLabel:first-child')
-                    .text(mapObj._quantityCol.name);
+                    .text(viewConfig._quantityCol.name);
                 $quantLine.find('.staticLabel:last-child')
                     .text(details.quantity);
             });
@@ -243,7 +245,8 @@
 
     var processRows = function(mapObj, config, rows)
     {
-        if (!rows) { rows = mapObj._rows; }
+        var viewConfig = mapObj._byView[mapObj.settings.view.id];
+        if (!rows) { rows = mapObj.settings.view._rows; }
 
         mapObj._runningQuery = false;
         mapObj._featureDisplayName = mapObj._featureSet.displayFieldName;
@@ -258,17 +261,17 @@
             feature.attributes.quantity =
                 $.makeArray(feature.attributes.quantity);
 
-            if (config.aggregateMethod == 'sum' && !row.invalid[mapObj._quantityCol.id])
-            { feature.attributes.quantity.push(row[mapObj._quantityCol.id]); }
+            if (config.aggregateMethod == 'sum' && !row.invalid[viewConfig._quantityCol.id])
+            { feature.attributes.quantity.push(row[viewConfig._quantityCol.id]); }
             if (config.aggregateMethod == 'count')
             { feature.attributes.quantity.push('1'); }
 
             var redirectTarget;
-            if (mapObj._redirectCol)
+            if (viewConfig._redirectCol)
             {
-                redirectTarget = mapObj._redirectCol.dataTypeName == 'url'
-                                ? row[mapObj._redirectCol.id].url
-                                : row[mapObj._redirectCol.id];
+                redirectTarget = viewConfig._redirectCol.dataTypeName == 'url'
+                                ? row[viewConfig._redirectCol.id].url
+                                : row[viewConfig._redirectCol.id];
             }
 
             // Last value used for simplicity.
@@ -354,14 +357,15 @@
     var findFeatureWithPoint = function(mapObj, datum)
     {
         var point;
+        var viewConfig = mapObj._byView[mapObj.settings.view.id];
 
-        if (!datum[mapObj._locCol.id]) { return null; }
-        if (mapObj._locCol.renderTypeName == 'location')
+        if (!datum[viewConfig._locCol.id]) { return null; }
+        if (viewConfig._locCol.renderTypeName == 'location')
         {
-            if ($.isBlank(datum[mapObj._locCol.id])) { return null; }
+            if ($.isBlank(datum[viewConfig._locCol.id])) { return null; }
 
-            var latVal  = datum[mapObj._locCol.id].latitude;
-            var longVal = datum[mapObj._locCol.id].longitude;
+            var latVal  = datum[viewConfig._locCol.id].latitude;
+            var longVal = datum[viewConfig._locCol.id].longitude;
             if (latVal && longVal)
             {
                 point = new esri.geometry.Point(longVal, latVal,
@@ -372,18 +376,18 @@
             }
             else
             {
-                if (!datum[mapObj._locCol.id].human_address) { return null; }
+                if (!datum[viewConfig._locCol.id].human_address) { return null; }
                 // State is the only salient region to search for in a location
                 // w/o lat/lng.  Well, there are ZIP codes, but we have no GIS
                 // data for those yet.
-                point = JSON.parse(datum[mapObj._locCol.id].human_address);
+                point = JSON.parse(datum[viewConfig._locCol.id].human_address);
                 if (point) { point = point.state; }
                 else { return null; }
             }
         }
-        else if (mapObj._locCol.renderTypeName == 'text')
+        else if (viewConfig._locCol.renderTypeName == 'text')
         {
-            point = datum[mapObj._locCol.id];
+            point = datum[viewConfig._locCol.id];
             if (point.substr(0, 3) == 'US-')
             { point = point.substr(3, 2); }
         }

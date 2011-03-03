@@ -72,8 +72,13 @@ $(function()
                 blist.dataset.displayType || 'table';
             if (rt == 'richList') { rt = 'fatrow'; }
             // Would call show on renderTypeManager; but updating the
-            // dataset fires an event that RTM listens to
-            blist.dataset.update({displayType: rt}, false, true);
+            // dataset fires an event that RTM listens to. Except that if
+            // we have a dt/rt mismatch, then just run a show
+            if (rt == blist.dataset.displayType &&
+                rt != datasetPageNS.rtManager.currentType)
+            { datasetPageNS.rtManager.show(rt); }
+            else
+            { blist.dataset.update({displayType: rt}, false, true); }
         });
     }
 
@@ -113,22 +118,20 @@ $(function()
         view: blist.dataset,
         defaultType: defRen,
         editEnabled: true,
-        table: {
-            addColumnCallback: function(parId)
+        common: {
+            editColumnCallback: function(col)
             {
-                datasetPageNS.sidebar.show('edit.addColumn', {parentId: parId});
-            },
-            editColumnCallback: function(colId, parId)
-            {
-                var col = blist.dataset.columnForID(colId) ||
-                    blist.dataset.columnForID(parId);
-                if (col.id != colId) { col = col.childColumnForID(colId); }
-
                 datasetPageNS.sidebar.hide();
                 datasetPageNS.sidebar.show('columnProperties', col);
             },
             showRowHandle: true,
             manualResize: true
+        },
+        table: {
+            addColumnCallback: function(parId)
+            {
+                datasetPageNS.sidebar.show('edit.addColumn', {parentId: parId});
+            }
         },
         page: { defaultRowId: blist.initialRowId }
     });

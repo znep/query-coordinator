@@ -162,7 +162,10 @@ ActionController::Routing::Routes.draw do |map|
       :requirements => {:id => UID_REGEXP}
   end
 
-  map.resource :browse, :controller => 'browse'
+  map.resource :browse, :controller => 'browse',
+    :collection => {
+      :embed => :get
+  }
   map.resource :nominations, :as => 'nominate'
   map.resources :videos, :only => [ :index ], :collection => { :popup => :get }
 
@@ -220,7 +223,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :datasets,
     :collection => {
-      :upload => :get
+      :upload => :get,
+      :external => :get
     },
     :member => {
       :math_validate => :post,
@@ -312,7 +316,6 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'd/:id/:row_id', :controller => 'datasets', :action => 'show',
     :requirements => {:id => UID_REGEXP, :row_id => /\d+/},
     :conditions => {:method => :get}
-
 
   # Semantic web cannoical URLs
   map.connect 'resource/:name', :controller => 'resources',

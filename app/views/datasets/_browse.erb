@@ -4,9 +4,10 @@
 <%- show_time_period = cur_sort.nil? ? false : cur_sort[:is_time_period] -%>
 
 <div class='browseSection <%= @facets.length < 1 ? 'noFacets' : '' %>
-  <%= @browse_in_container ? 'inContainer' : '' %>'>
+  <%= @browse_in_container ? 'inContainer' : '' %> <%= @disable[:sort] ? 'noSort' : '' %>'>
   <%- if @facets.length > 0 -%>
   <div class='browseFacets <%= show_time_period ? 'hasTimePeriod' : '' %>'>
+    <%- unless @disable[:search] -%>
     <form class='searchSection'>
       <span class='icon'></span>
       <input type='text' name='browseSearch' title='Search'
@@ -18,6 +19,7 @@
         class='clearSearch close'><span class='icon'></span></a>
       <%- end -%>
     </form>
+    <%- end -%>
 
     <%- if !@params[:q].nil? || @facets.any? {|f| !@params[f[:param]].nil? } ||
           !@params[:no_default].nil? -%>
@@ -106,7 +108,7 @@
       <h2 title='<%= @title %>'><%= @title %></h2>
     </div>
     <%- end -%>
-    <%- if @view_count > 0 && @sort_opts.length > 0 -%>
+    <%- if @view_count > 0 && @sort_opts.length > 0 && !@disable[:sort] -%>
     <div class='sortOptions'>
       <select class='sortType' name='sortType'>
         <%- @sort_opts.each do |so| -%>
@@ -249,7 +251,7 @@
       <%- end -%>
     </div>
 
-    <%- if @view_count > 0 -%>
+    <%- if @view_count > 0 && !@disable[:pagination] -%>
     <%= create_pagination(@view_count, @limit,
       @opts[:page], @base_url + '?' + @params.to_param, 'button') %>
     <%- end -%>

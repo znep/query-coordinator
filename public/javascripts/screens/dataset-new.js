@@ -42,15 +42,13 @@ $(function()
         };
         var mapLayerSuccessCallback = function(newDS)
         {
-            submittedView = new Dataset(newDS);
-
             if (!_.isUndefined(viewData.metadata))
             {
-                viewData.metadata = submittedView.metadata;
+                viewData.metadata = newDS.metadata;
             }
             else
             {
-                viewData.metadata = $.extend(true, viewData.metadata, submittedView.metadata);
+                viewData.metadata = $.extend(true, viewData.metadata, newDS.metadata);
             }
             submittedView.update(viewData);
             submittedView.save(successCallback, errorCallback);

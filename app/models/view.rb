@@ -10,6 +10,10 @@ class View < Model
     end
   end
 
+  def self.find_external(ext_id)
+    return self.find({'method' => 'getByExternalId', 'externalId' => ext_id}, true)
+  end
+
   def self.find_filtered(options)
     path = "/views.json?#{options.to_param}"
     parse(CoreServer::Base.connection.get_request(path))

@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<!--[if lte IE 7]>
+  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+        xmlns:v="urn:schemas-microsoft-com:vml"
+        xmlns:og="http://opengraphprotocol.org/schema/" class="ie ie7 noBorderRadius noLinearGradient noCss3"><![endif]-->
+<!--[if IE 8]>
+  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+        xmlns:v="urn:schemas-microsoft-com:vml"
+        xmlns:og="http://opengraphprotocol.org/schema/" class="ie ie8 noBorderRadius noLinearGradient noCss3"><![endif]-->
+<!--[if gte IE 9]>
+  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+        xmlns:v="urn:schemas-microsoft-com:vml"
+        xmlns:og="http://opengraphprotocol.org/schema/" lang="en" class="ie"><![endif]-->
+<!--[if !IE]>-->
+  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+        xmlns:og="http://opengraphprotocol.org/schema/"><!--<![endif]-->
+
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <%= meta_tags @meta unless @meta.blank? %>
+  <%= csrf_meta_tag %>
+  <%- unless @link_image_src.blank? -%>
+    <link rel="image_src" href="<%= @link_image_src %>" />
+  <%- end -%>
+
+  <link rel="apple-touch-icon-precomposed" media="screen" href="/stylesheets/images/icons/retina_display_icon.png"/>
+  <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="<%= CurrentDomain.strings.site_title %>" /> 
+
+  <!--[if IE]>
+  <style type="text/css">
+    v\:vmlframe{behavior:url(#default#VML);display:inline-block;}
+  </style>
+  <![endif]-->
+  <%= rendered_stylesheet_tag 'base' %>
+
+  <%= jquery_include %>
+  <%= javascript_error_helper_tag %>
+
+  <%= rendered_stylesheet_tag 'strip-chrome' %>
+  <%= yield :head %>
+
+  <%- unless CurrentDomain.properties.custom_css.blank? -%>
+    <link type="text/css" rel="stylesheet" href="/styles/current_site.css"/>
+  <%- end -%>
+
+  <link rel="shortcut icon" href="<%= theme_image_url(CurrentDomain.theme.images.favicon) %>" />
+
+  <% unless CurrentDomain.google_analytics_id.blank? %>
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', '<%= CurrentDomain.google_analytics_id %>'],
+                ['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  <% end %>
+</head>
+
+<body>
+  <%= yield :layout %>
+
+  <div id="templates">
+    <%= render :partial => 'shared/control_templates' %>
+    <%= yield :templates %>
+  </div>
+
+  <%# Libraries for use with BeautyTip %>
+  <!--[if IE]>
+  <script type="text/javascript" src="/javascripts/plugins/excanvas.compiled.js"></script>
+  <![endif]-->
+  <!--[if lt IE 7]>
+  <script type="text/javascript" src="/javascripts/plugins/jquery.bgiframe.min.js"></script>
+  <![endif]-->
+
+  <!--[if lt IE 7]>
+    <script type="text/javascript" src="javascripts/screens/oldie.js"></script>
+  <![endif]-->
+
+  <%= include_javascripts 'base' %>
+
+  <%- if Rails.env != 'production' -%>
+    <%= javascript_include_tag "util/debug" %>
+  <%- else -%>
+    <script type='text/javascript'>
+      $.debug = function() {};
+    </script>
+  <%- end -%>
+
+  <script type="text/javascript">
+    blist.namespace.fetch('blist.configuration');
+    blist.configuration.strings = <%= raw CurrentDomain.strings.to_json %>;
+  </script>
+  <%= yield :js_footer %>
+
+  <%- unless CurrentDomain.theme.js.nil? -%>
+    <%- if CurrentDomain.theme.js[:type].to_s == 'static' -%>
+      <script type="text/javascript" src="<%= CurrentDomain.theme.js.source %>"></script>
+    <%- elsif CurrentDomain.theme.js[:type].to_s == 'hosted' -%>
+      <script type="text/javascript" src="/assets/<%= CurrentDomain.theme.js.source %>"></script>
+    <%- end -%>
+  <%- end -%>
+
+  <% unless CurrentDomain.custom_tracking_code.blank? %>
+    <%= raw CurrentDomain.custom_tracking_code %>
+  <% end %>
+</body>
+</html>

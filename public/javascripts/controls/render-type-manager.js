@@ -48,7 +48,16 @@
         fatrow: {
             name: 'fatrow',
             domId: 'fatRowRenderType',
-            initFunction: 'fatrowRenderType',
+            initFunction: function($dom, settings)
+            {
+                $dom.fatrowRenderType($.extend({view: settings.view,
+                        columnDeleteEnabled: settings.editEnabled &&
+                            settings.view.type == 'blist' &&
+                            settings.view.hasRight('remove_column'),
+                        columnPropertiesEnabled: settings.editEnabled},
+                        settings.common,
+                        settings.fatrow));
+            },
             javascripts: [{assets: 'shared-richRenderers'}],
             stylesheets: [{sheet: '/styles/individual/render-type-images.css',
                 hasImages: true}, '/styles/individual/rich-render-types.css'],
@@ -73,16 +82,17 @@
             {
                 $dom.datasetGrid($.extend({view: settings.view,
                         columnDeleteEnabled: settings.editEnabled &&
-                            blist.dataset.type == 'blist' &&
-                            blist.dataset.hasRight('remove_column'),
+                            settings.view.type == 'blist' &&
+                            settings.view.hasRight('remove_column'),
                         columnPropertiesEnabled: settings.editEnabled,
                         columnNameEdit: settings.editEnabled &&
-                            blist.dataset.type == 'blist' &&
-                            blist.dataset.hasRight('update_column'),
+                            settings.view.type == 'blist' &&
+                            settings.view.hasRight('update_column'),
                         showAddColumns: settings.editEnabled &&
-                            blist.dataset.type == 'blist' &&
-                            blist.dataset.hasRight('add_column'),
+                            settings.view.type == 'blist' &&
+                            settings.view.hasRight('add_column'),
                         editEnabled: settings.editEnabled},
+                        settings.common,
                         settings.table));
             },
             scrollsInline: true
@@ -99,7 +109,8 @@
             initFunction: function($dom, settings)
             {
                 $dom.blobDataset($.extend({view: settings.view,
-                    editEnabled: settings.editEnabled}, settings.href));
+                    editEnabled: settings.editEnabled}, settings.common,
+                    settings.href));
             }
         },
 
@@ -137,7 +148,8 @@
                 else
                 {
                     $dom.blobDataset($.extend({view: settings.view,
-                        editEnabled: settings.editEnabled}, settings.blob));
+                        editEnabled: settings.editEnabled}, settings.common,
+                        settings.blob));
                 }
             }
         }
@@ -278,7 +290,8 @@
             if (_.isFunction($.fn[typeInfo.initFunction]))
             {
                 $dom[typeInfo.initFunction]($.extend({view: rtmObj.settings.view},
-                    rtmObj.settings[typeInfo.name], defArgs));
+                    rtmObj.settings.common, rtmObj.settings[typeInfo.name],
+                    defArgs));
             }
             else if (_.isFunction(typeInfo.initFunction))
             {

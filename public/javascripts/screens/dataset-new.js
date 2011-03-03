@@ -42,13 +42,15 @@ $(function()
         };
         var mapLayerSuccessCallback = function(newDS)
         {
+            submittedView = newDS;
             if (!_.isUndefined(viewData.metadata))
             {
-                viewData.metadata = newDS.metadata;
+                viewData.metadata = submittedView.metadata;
             }
             else
             {
-                viewData.metadata = $.extend(true, viewData.metadata, newDS.metadata);
+                viewData.metadata = $.extend(true, viewData.metadata,
+                    submittedView.metadata);
             }
             submittedView.update(viewData);
             submittedView.save(successCallback, errorCallback);
@@ -77,7 +79,8 @@ $(function()
             }
             else if (datasetType == 'esri')
             {
-                Dataset.createFromMapLayerUrl(viewData.esri_src, mapLayerSuccessCallback, errorCallback);
+                Dataset.createFromMapLayerUrl(viewData.esri_src,
+                    mapLayerSuccessCallback, errorCallback);
             }
         }
         else

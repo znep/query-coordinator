@@ -2179,25 +2179,25 @@ Dataset.getLinkedDatasetOptionsNoDefault = function(linkedDatasetUid, col, $fiel
 
 Dataset.createFromMapLayerUrl = function(url, successCallback, errorCallback)
 {
-    Dataset._createFromUrl('/api/layers.json?method=createMapLayerDataset&url='
-        + escape(url), successCallback, errorCallback);
+    $.ajax({url: '/api/layers.json?method=createMapLayerDataset&url='
+        + escape(url), type: 'POST', contentType: 'application/json',
+        dataType: 'json', success: function(view)
+        {
+            if(_.isFunction(successCallback))
+            { successCallback(new Dataset(view)) }
+        }, error: errorCallback});
 };
 
 Dataset.createFromViewId = function(id, successCallback, errorCallback)
 {
-    Dataset._createFromUrl('/api/views/' + id + '.json', successCallback, errorCallback);
-};
-
-Dataset._createFromUrl = function(encodedUrl, successCallback, errorCallback)
-{
     $.Tache.Get({
-        url: encodedUrl,
+        url: '/api/views/' + id + '.json',
         success: function(view)
             {
                 if(_.isFunction(successCallback))
                 { successCallback(new Dataset(view)) }
             },
-        error: _.isFunction(errorCallback) ? errorCallback : null});
+        error: errorCallback});
 };
 
 var VIZ_TYPES = ['chart', 'annotatedtimeline', 'imagesparkline',

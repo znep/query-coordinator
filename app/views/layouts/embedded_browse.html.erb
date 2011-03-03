@@ -39,13 +39,13 @@
   <%= jquery_include %>
   <%= javascript_error_helper_tag %>
 
-  <%= rendered_stylesheet_tag 'strip-chrome' %>
   <%= yield :head %>
 
   <%- unless CurrentDomain.properties.custom_css.blank? -%>
     <link type="text/css" rel="stylesheet" href="/styles/current_site.css"/>
   <%- end -%>
 
+  <%= rendered_stylesheet_tag 'strip-chrome' %>
   <link rel="shortcut icon" href="<%= theme_image_url(CurrentDomain.theme.images.favicon) %>" />
 
   <% unless CurrentDomain.google_analytics_id.blank? %>

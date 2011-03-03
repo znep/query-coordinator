@@ -95,8 +95,8 @@ internal-metrics:
 - screen-metrics
 homepage-show:
 - screen-homepage-show
-oauth-authenticate:
-- screen-oauth-authenticate
+oauth-authorize:
+- screen-oauth-authorize
 profile-show:
 - screen-profile
 - screen-profile-shared

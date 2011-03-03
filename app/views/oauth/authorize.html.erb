@@ -1,6 +1,6 @@
 <%- content_for :head do -%>
   <title>An Application is Requesting Access | <%= CurrentDomain.strings.site_title %></title>
-  <%= rendered_stylesheet_tag 'oauth-authenticate' %>
+  <%= rendered_stylesheet_tag 'oauth-authorize' %>
 <%- end -%>
 
 <div class="modalContentBox wide">
@@ -36,7 +36,9 @@
     </div>
 
     <div class="buttonArea">
-      <a href="/oauth/doAuthentication?<%= @oauth_params.to_param %>" class="button default">Allow</a>
+      <%- form_tag "/oauth/do_authorize?#{@oauth_params.to_param}" do -%>
+        <input type="submit" value="Allow" class="button default"/>
+      <%- end -%>
       <a href="<%= @redirect_uri %>" class="button">Cancel</a>
     </div>
   </div>

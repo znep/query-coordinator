@@ -145,6 +145,7 @@ javascripts:
     - public/javascripts/util/events.js
     - public/javascripts/controls/grid-sidebar/base-sidebar.js
     - public/javascripts/screens/admin-customizer.js
+    - public/javascripts/screens/admin-collapse-nav.js
     - public/javascripts/screens/admin-sdp-template.js
   admin-story:
     - public/javascripts/plugins/colorpicker.js
@@ -157,6 +158,7 @@ javascripts:
     - public/javascripts/controls/grid-sidebar/base-sidebar.js
     - public/javascripts/screens/homepage-show.js
     - public/javascripts/screens/admin-customizer.js
+    - public/javascripts/screens/admin-collapse-nav.js
     - public/javascripts/screens/admin-stories-appearance.js
   admin-federation:
     - public/javascripts/controls/admin-buttons.js

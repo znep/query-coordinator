@@ -2,9 +2,22 @@
   max-width: 100%
 
 .adminNavBox
+  .hideButtonBox
+    display: none
+    float: right
+    .hideButton
+      @include sprite-menu-icons
+
   .adminNav
     li
       @include admin-icons
+
+  &.collapsed
+    height: 1.3em
+    padding: 0.5em
+    width: 1.3em
+    .adminNav
+      display: none
 
 .contentBox
   .adminHeader

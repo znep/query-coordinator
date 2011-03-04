@@ -79,7 +79,7 @@ module ApplicationHelper
 
   def javascript_error_helper_tag
     return '<script type="text/javascript">blistEnv = "' + Rails.env +
-      '";</script>' + javascript_include_tag('util/errors')
+      '";</script>' + include_javascripts('errors')
   end
 
 # styles

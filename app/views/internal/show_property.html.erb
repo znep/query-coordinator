@@ -34,7 +34,7 @@
 
 <% content_for :js_footer do %>
   <link id="bespin_base" href="/javascripts/plugins/bespin/">
-  <%= javascript_include_tag 'plugins/bespin/BespinEmbedded.js' %>
+  <%= include_javascripts 'bespin' %>
   <script type="text/javascript">
   var isJson = <%= is_json == true %>;
   $(function()

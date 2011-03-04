@@ -99,20 +99,20 @@
 
   <%# Libraries for use with BeautyTip %>
   <!--[if IE]>
-  <script type="text/javascript" src="/javascripts/plugins/excanvas.compiled.js"></script>
+  <%= include_javascripts 'excanvas' %>
   <![endif]-->
   <!--[if lt IE 7]>
-  <script type="text/javascript" src="/javascripts/plugins/jquery.bgiframe.min.js"></script>
+  <%= include_javascripts 'bgiframe' %>
   <![endif]-->
 
   <!--[if lt IE 7]>
-    <script type="text/javascript" src="javascripts/screens/oldie.js"></script>
+    <%= include_javascripts 'oldie' %>
   <![endif]-->
 
   <%= include_javascripts 'base' %>
 
   <%- if Rails.env != 'production' -%>
-    <%= javascript_include_tag "util/debug" %>
+    <%= include_javascripts 'debug' %>
   <%- else -%>
     <script type='text/javascript'>
       $.debug = function() {};

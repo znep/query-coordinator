@@ -86,7 +86,7 @@
   <%= include_javascripts 'base' %>
 
   <%- if Rails.env != 'production' -%>
-    <%= javascript_include_tag "util/debug" %>
+    <%= include_javascripts "debug" %>
   <%- else -%>
     <script type='text/javascript'>
       $.debug = function() {};

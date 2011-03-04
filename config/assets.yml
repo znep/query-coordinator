@@ -128,6 +128,8 @@ javascripts:
     - public/javascripts/plugins/jquery.tablesorter.js
     - public/javascripts/controls/combination-list.js
     - public/javascripts/screens/admin-moderation.js
+  admin-metrics:
+    - public/javascripts/screens/admin-metrics.js
   admin-sdp-templates:
     - public/javascripts/controls/modal-dialogs.js
     - public/javascripts/controls/admin-buttons.js
@@ -203,6 +205,8 @@ javascripts:
     - public/javascripts/controls/attachments-editor.js
     - public/javascripts/controls/wizard.js
     - public/javascripts/screens/dataset-new.js
+  dataset-metrics:
+    - public/javascripts/screens/dataset-metrics.js
   dataset-show:
     - public/javascripts/plugins/jquery.colorPicker.js
     - public/javascripts/plugins/jquery.awesomecomplete.js
@@ -287,9 +291,15 @@ javascripts:
     - public/javascripts/controls/menu.js
     - public/javascripts/controls/metrics-shared.js
     - public/javascripts/controls/metrics.js
+  internal-metrics:
+    - public/javascripts/screens/internal-metrics.js
   screen-login-signup:
     - public/javascripts/screens/login-shared.js
     - public/javascripts/screens/signup-screen.js
+  screen-forgot-password:
+    - public/javascripts/screens/forgot-password-screen.js
+  screen-reset-password:
+    - public/javascripts/screens/reset-password-screen.js
   screen-profile:
     - public/javascripts/util/humane-date.js
     - public/javascripts/controls/feed-list.js
@@ -299,10 +309,22 @@ javascripts:
     - public/javascripts/screens/profile-screen-edit.js
   homepage-show:
     - public/javascripts/screens/homepage-show.js
+  debug:
+    - public/javascripts/util/debug.js
+  errors:
+    - public/javascripts/util/errors.js
   highcharts:
     - public/javascripts/plugins/highcharts.src.js
   jit:
     - public/javascripts/plugins/jit.js
+  excanvas:
+    - public/javascripts/plugins/excanvas.compiled.js
+  bgiframe:
+    - public/javascripts/plugins/jquery.bgiframe.min.js
+  oldie:
+    - public/javascripts/screens/oldie.js
+  bespin:
+    - public/javascripts/plugins/bespin/BespinEmbedded.js
 
 dump:
   javascripts:

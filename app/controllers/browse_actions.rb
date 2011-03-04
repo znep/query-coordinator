@@ -1,4 +1,5 @@
 module BrowseActions
+  include ApplicationHelper
 
 protected
   def view_types_facet
@@ -61,6 +62,26 @@ protected
     }
   end
 
+  def extents_facet
+    return nil if !CurrentDomain.module_enabled?(:esri_integration)
+    { :title => 'Within Geographical Area',
+      :param => :extents,
+      :custom_content => proc do |params, opts|
+        html = "<a href='#ChooseBounds' class='chooseBounds'>"
+        if !params[:extents].blank?
+          html += extent_html(opts[:ymax], opts[:xmin], opts[:ymin], opts[:xmax])
+        end
+        html += "Set geographical area</a>"
+        html
+      end,
+      :custom_description => proc do |params, opts|
+          return nil if params[:extents].nil?
+          "<a href='#' title='View geographical area' class='chooseBounds'>" +
+            "within an area</a>"
+      end
+    }
+  end
+
   def process_browse!(options = {})
     browse_params = (options[:force_default]) ? {} : params
 
@@ -112,10 +133,21 @@ protected
       @opts[:q] = browse_params[:q]
     end
 
+    if !browse_params[:extents].nil?
+      extents = browse_params[:extents].split(',')
+      if extents.length == 4
+        @opts[:xmin] = extents.shift
+        @opts[:xmax] = extents.shift
+        @opts[:ymin] = extents.shift
+        @opts[:ymax] = extents.shift
+      end
+    end
+
     @facets ||= [
       view_types_facet,
       categories_facet,
-      topics_facet
+      topics_facet,
+      extents_facet
     ]
     @facets.compact!
 
@@ -142,19 +174,23 @@ protected
         f.sourceDomainCName != CurrentDomain.cname }.
         length > 0 if @use_federations.nil?
 
-    @title = get_title(@params, @facets)
+    @title = get_title(@params, @opts, @facets)
   end
 
 private
-  def get_title(params, facets)
+  def get_title(params, opts, facets)
     t = ''
 
-    t = 'for "' + params[:q] + '"' if !params[:q].blank?
+    t = 'for "' + CGI.escapeHTML(params[:q]) + '"' if !params[:q].blank?
     parts = []
     facets.each do |f|
       if !params[f[:param]].blank?
-        parts << f[:singular_description] + ' of ' +
-          f[:options].detect {|o| o[:value] == params[f[:param]]}[:text]
+        if !f[:singular_description].blank?
+          parts << f[:singular_description] + ' of ' +
+            f[:options].detect {|o| o[:value] == params[f[:param]]}[:text]
+        elsif !f[:custom_description].blank?
+          parts << f[:custom_description].call(params, opts)
+        end
       end
     end
     if parts.length > 0

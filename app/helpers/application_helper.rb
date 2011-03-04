@@ -208,6 +208,25 @@ module ApplicationHelper
     link_to name, "#{APP_CONFIG['rpx_signin_url']}?token_url=#{return_url}", options
   end
 
+  def extent_html(nwLat, nwLong, seLat, seLong)
+    # Repeating the first point is intentional.
+    path_data = [
+        [nwLat, nwLong].join(','),
+        [nwLat, seLong].join(','),
+        [seLat, seLong].join(','),
+        [seLat, nwLong].join(','),
+        [nwLat, nwLong].join(',')
+    ].join('%7C')
+
+    textual_extent = "Northwest: (#{nwLat}, #{nwLong}); " +
+      "Southeast: (#{seLat}, #{seLong})"
+
+    "<img src='http://maps.google.com/maps/api/staticmap?path=" +
+      "color:black%7Cweight:3%7Cfillcolor:0xFFFF0033%7C#{path_data}" +
+      "&size=512x512&sensor=false' width='100%' title='#{textual_extent}' " +
+      "alt='#{textual_extent}' />"
+  end
+
 # THEME HELPERS
 
   # Simple technique to do nested layouts. If you want to include one layout

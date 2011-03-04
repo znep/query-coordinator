@@ -38,9 +38,11 @@
     <%- end -%>
 
     <%- @facets.each do |facet| -%>
-    <%- next if facet[:options].nil? || facet[:options].length < 1 -%>
+    <%- next if (facet[:options].nil? || facet[:options].length < 1) &&
+          facet[:custom_content].nil? -%>
     <div class='facetSection clearfix'>
       <h4 class='title'><%= facet[:title] %></h4>
+      <%- if facet[:custom_content].nil? -%>
       <ul>
         <%- if !@params[facet[:param]].nil? ||
               !@default_params[facet[:param]].nil? -%>
@@ -86,6 +88,19 @@
         <%- end -%>
       </div>
       <%- end -%>
+
+      <%- else -%>
+      <%- if !@params[facet[:param]].nil? ||
+            !@default_params[facet[:param]].nil? -%>
+      <%- cp = @params.reject {|p, v| p.to_s == 'page'} -%>
+      <%- cp.delete(facet[:param]) -%>
+      <%- cp[:no_default] = facet[:param] if !@default_params[facet[:param]].nil? -%>
+      <ul><li><a href='<%= @base_url + '?' + cp.to_param %>' class='clearValues'>
+        (Clear)
+      </a></li></ul>
+      <%- end -%>
+      <%= raw facet[:custom_content].call(@params, @opts) %>
+      <%- end -%>
     </div>
     <%- end -%>
   </div>
@@ -105,7 +120,7 @@
   <div class='browseList'>
     <%- if !@browse_in_container -%>
     <div class='titleContainer'>
-      <h2 title='<%= @title %>'><%= @title %></h2>
+      <h2 title='<%= strip_tags @title %>'><%= raw @title %></h2>
     </div>
     <%- end -%>
     <%- if @view_count > 0 && @sort_opts.length > 0 && !@disable[:sort] -%>
@@ -279,5 +294,9 @@
      blist.browse.datasets['<%= v.id %>'] = <%= safe_json(v) %>;
      <%- end -%>
      blist.browse.baseURL = '<%= @base_url %>';
+     <%- if !@opts[:xmin].nil? -%>
+     blist.browse.extents = {xmin: <%= @opts[:xmin] %>, xmax: <%= @opts[:xmax] %>,
+         ymin: <%= @opts[:ymin] %>, ymax: <%= @opts[:ymax] %>};
+     <%- end -%>
   });
 </script>

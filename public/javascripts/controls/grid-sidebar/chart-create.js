@@ -161,6 +161,7 @@
             fields: [
                 {text: axisName, name: 'displayFormat.fixedColumns.0',
                     type: 'columnSelect', required: true, isTableColumn: true,
+                    notequalto: 'valueCol',
                     columns: {type: colTypes, hidden: isEdit},
                     wizard: 'Select a column that contains the data for the x-axis'
                 }
@@ -179,7 +180,7 @@
                     field: {type: 'group', options: [
                         colorOption,
                         {text: axisName, required: true, type: 'columnSelect',
-                            isTableColumn: true,
+                            notequalto: 'valueCol', isTableColumn: true,
                             name: 'tableColumnId',
                             columns: {type: colTypes, hidden: isEdit}}
                     ]},
@@ -210,7 +211,7 @@
             title: 'Data Columns', name: 'bubbleData',
             onlyIf: onlyIfForChart(Dataset.chart.types.bubble, false),
             fields: [ {text: 'Value', required: true, type: 'columnSelect',
-                       isTableColumn: true,
+                        isTableColumn: true, notequalto: 'valueCol',
                         name: 'displayFormat.valueColumns.0.tableColumnId',
                         columns: {type: Dataset.chart.numericTypes, hidden: isEdit},
                         wizard: 'Select a column that contains values for the chart'
@@ -228,7 +229,7 @@
     configDonut.fields[0].wizard = 'Select a column that contains the categories ' +
         'for the donut slices';
     configDonut.fields.push({type: 'repeater', name: 'displayFormat.valueColumns',
-            field: {text: 'Values', name: 'tableColumnId',
+            field: {text: 'Values', name: 'tableColumnId', notequalto: 'valueCol',
             type: 'columnSelect', required: true, isTableColumn: true,
             columns: {type: Dataset.chart.numericTypes, hidden: isEdit},
             wizard: 'Select a column that contains the data for the donut slices'},
@@ -246,6 +247,7 @@
         'for the pie slices';
     configPie.fields.push({text: 'Values',
             name: 'displayFormat.valueColumns.0.tableColumnId',
+            notequalto: 'valueCol',
             type: 'columnSelect', required: true, isTableColumn: true,
             columns: {type: Dataset.chart.numericTypes, hidden: isEdit},
             wizard: 'Select a column that contains the data for the pie slices'});
@@ -374,11 +376,13 @@
             onlyIf: onlyIfForChart(Dataset.chart.types.treemap, true),
             fields: [
                 {text: 'Names', name: 'displayFormat.fixedColumns.0',
+                    notequalto: 'valueCol',
                     type: 'columnSelect', required: true, isTableColumn: true,
                     columns: {type: Dataset.chart.textualTypes, hidden: isEdit},
                     wizard: 'Select a column that contains the names'
                 },
                 {text: 'Values', name: 'displayFormat.valueColumns.0.tableColumnId',
+                    notequalto: 'valueCol',
                     type: 'columnSelect', required: true, isTableColumn: true,
                     columns: {type: Dataset.chart.numericTypes, hidden: isEdit},
                     wizard: 'Select a column that contains the values'

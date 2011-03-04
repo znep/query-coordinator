@@ -102,6 +102,9 @@
             (frObj.$list().outerHeight(true) - frObj.$list().height()) -
             frObj.$dom().find('.columnHeaders').outerHeight(true));
         frObj.richRenderer.adjustLayout();
+        var $headers = frObj.$dom().find('.columnHeaders');
+        $headers.find('.scrollBox').toggleClass('hide',
+            $headers[0].scrollHeight <= $headers.height());
     };
 
     var hookUpHeaders = function(frObj)

@@ -50,6 +50,9 @@ Dataset.chart.types = {
 Dataset.chart.hasRequiredColumns = function(cols, reqCols, includeHidden)
 {
     cols = cols.slice();
+    // We may have overlapping types in reqCols, so start with the most restrictive
+    // (smallest) grouping
+    reqCols = _.sortBy(reqCols, function(rc) { return rc.length; });
     return _.all(reqCols, function(rc)
     {
         var col = _.detect(cols, function(c)

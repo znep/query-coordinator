@@ -454,7 +454,7 @@
 
                 else
                 {
-                    var selCols;
+                    var selCols = {};
                     if (_.isFunction(cmObj.settings.selectedColumns))
                     { selCols = cmObj.settings.selectedColumns(); }
                     selCols[cmObj.settings.column.id] = true;

@@ -1,9 +1,13 @@
-.fatRowRenderType .columnHeaders .column
-  @include datatype-icons('.dataTypeIcon')
-  .sort
-    @include grid-header-icons
-  .clearSort
+.fatRowRenderType .columnHeaders
+  .column
+    @include datatype-icons('.dataTypeIcon')
     @include sprite-menu-icons
+    .sort
+      @include grid-header-icons
+    .clearSort
+      @include sprite-menu-icons
+  .scrollBox a
+    @include sprite-button-icons
 
 .navRenderType .navigation li .button
   @include sprite-menu-icons

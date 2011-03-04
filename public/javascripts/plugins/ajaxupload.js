@@ -538,16 +538,20 @@
 
             // added 2011-1-19 by aiden.scandella@socrata.com;
             // modified 2011-02-25 by clint.tseng@socrata.com
+            var authenticityToken = escape($('meta[name="csrf-token"]').attr('content'));
+
             var url = settings.action;
             url += ((url.indexOf('?') == -1) ? '?' : '&') +
                 'app_token=U29jcmF0YS0td2VraWNrYXNz0&' +
-                'authenticity_token=' + escape($('meta[name="csrf-token"]').attr('content'));
+                'authenticity_token=' + authenticityToken;
             form.setAttribute('action', url);
             form.setAttribute('target', iframe.name);
             form.style.display = 'none';
             document.body.appendChild(form);
 
             // Create hidden input element for each data key
+            settings.data = settings.data || {};
+            settings.data.authenticity_token = authenticityToken;
             for (var prop in settings.data) {
                 if (settings.data.hasOwnProperty(prop)){
                     var el = document.createElement("input");

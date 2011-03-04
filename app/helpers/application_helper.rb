@@ -60,7 +60,7 @@ module ApplicationHelper
 
 # js
   def jquery_include
-    if Rails.env != 'production'
+    if Rails.env == 'development'
       return '<script src="/javascripts/jquery-1.4.4.js" type="text/javascript" ' +
         'charset="utf-8"></script>'
     else

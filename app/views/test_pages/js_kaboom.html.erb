@@ -2,7 +2,7 @@
   <title>Javascript Error Tests | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
-<% fullpage_content do %>
+<div class="contentBox">
 
   <script type="text/javascript">
   throw new Error("inline error");
@@ -35,7 +35,7 @@
   <div id="badButtonDiv">
     <button id="badButton">click me to generate an error</button>
   </div>
-<% end %>
+</div>
 
 <% content_for :js_footer do %>
   <script type="text/javascript">

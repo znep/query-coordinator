@@ -2,16 +2,16 @@
   <title>Test Pages | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
-<% fullpage_content do %>
+<div class="contentBox">
   <h1>Test actions</h1>
 
   <p><strong>Warning! Here be dragons!</strong> The actions on this page are purely
     for testing purposes - if you don't know what you're doing, there's little
   reason to do any of these things.</p>
-  
+
   <ul>
     <% @actions.each do |action| %>
       <li><%= link_to action, "/test_page/#{action}" %></li>
     <% end %>
   </ul>
-<% end %>
+</div>

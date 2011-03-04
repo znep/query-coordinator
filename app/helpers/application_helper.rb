@@ -1,15 +1,6 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
 
-# hack
-  def dialog_content(arg = nil, arg2 = nil, &block)
-    concat(capture(&block))
-  end
-
-  def fullpage_content(id = nil, &block)
-    concat(capture(&block))
-  end
-
 # MODULES/FEATURES
   def module_available(name_or_set, &block)
     concat(capture(&block)) if CurrentDomain.module_available?(name_or_set)
@@ -33,14 +24,6 @@ module ApplicationHelper
 
   def feature?(name_or_set)
     CurrentDomain.feature?(name_or_set)
-  end
-
-  def upsell(&block)
-    concat(capture(&block)) if CurrentDomain.upsell?
-  end
-
-  def upsell?
-    CurrentDomain.upsell?
   end
 
 # CACHE HELPERS
@@ -112,7 +95,6 @@ module ApplicationHelper
              "#{REVISION_NUMBER}.#{CurrentDomain.default_config_id}\"/>"
     end
   end
-
 
 # TOP OF PAGE
 

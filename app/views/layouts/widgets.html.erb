@@ -60,7 +60,7 @@
   <%= include_javascripts 'base' %>
 
   <% if Rails.env != 'production' %>
-      <%= javascript_include_tag "debug" %>
+      <%= include_javascripts 'debug' %>
   <% end %>
 
   <script type="text/javascript">

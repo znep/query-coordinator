@@ -913,7 +913,7 @@
         {
             var rootCondition = $pane.data('unifiedFilter-root');
             rootCondition.children = _.without(rootCondition.children,
-                $filter.data('unifiedFilter-condition').condition);
+                ($filter.data('unifiedFilter-condition') || {}).condition);
 
             if ($filter.siblings().length === 1)
             {

@@ -72,7 +72,7 @@
 <% end %>
 
 <% content_for :js_footer do %>
-  <%- if @facets.any? {|f| f[:param] == :extents} -%>
+  <%- if(!@facets.nil? && @facets.any? {|f| f[:param] == :extents}) -%>
   <script type='text/javascript'
     src='http://maps.google.com/maps/api/js?sensor=false'></script>
   <%- end -%>

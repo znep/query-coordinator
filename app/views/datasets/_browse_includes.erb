@@ -8,7 +8,7 @@
     <div class='optionsContent'></div>
   </div>
 
-  <%- if @facets.any? {|f| f[:param] == :extents} -%>
+  <%- if(!@facets.nil? && @facets.any? {|f| f[:param] == :extents}) -%>
   <div class='extentChooser modalDialog'>
     <a href="#close" class="jqmClose modalDialogClose">Close</a>
     <p class='modalParagraph'>

@@ -2953,8 +2953,10 @@
                 '(row.expanded ? " blist-tr-open" : ""), ' +
                 '(row.pending ? " blist-tr-pending" : ""), ' +
                 '(row.groupLast ? " last" : ""), ' +
-                '"\' style=\'top: ", ' +
-                '(index * ' + rowOffset + '), "px\'';
+                '"\' style=\'top:", ' +
+                '(index * ' + rowOffset + '), "px", ' +
+                '(row.color ? ";background-color:" + row.color : ""), ' +
+                '";\'';
 
             // Create the rendering function.  We precompile this for speed so
             // we can avoid tight loops, function calls, etc.

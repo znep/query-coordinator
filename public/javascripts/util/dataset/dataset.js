@@ -620,6 +620,8 @@ this.Dataset = Model.extend({
 
         row.invalid[col.lookup] = isInvalid || false;
 
+        row.color = this._rowColor(row);
+
         this.trigger('row_change', [parRow || row]);
     },
 
@@ -1293,6 +1295,7 @@ this.Dataset = Model.extend({
         var oldSearch = ds.searchString;
         var oldDispFmt = ds.displayFormat;
         var oldDispType = ds.displayType;
+        var oldCondFmt = ds.metadata.conditionalFormatting;
 
         if (forceFull)
         {
@@ -1345,6 +1348,13 @@ this.Dataset = Model.extend({
             ds._aggregatesStale = true;
             // Clear out the rows, since the data is different now
             ds._invalidateRows();
+        }
+        else if (!_.isEqual(oldCondFmt, ds.metadata.conditionalFormatting))
+        {
+            // If we aren't invalidating all the rows, but conditional formatting
+            // changed, then redo all the colors and re-render
+            _.each(ds._rows, function(r) { r.color = ds._rowColor(r); });
+            ds.trigger('row_change', [_.values(ds._rows)]);
         }
 
         if (oldDispType != ds.displayType)
@@ -1657,6 +1667,8 @@ this.Dataset = Model.extend({
             });
             delete (tr.meta || {}).invalidCells;
 
+            tr.color = ds._rowColor(tr);
+
             return tr;
         };
 
@@ -1684,6 +1696,158 @@ this.Dataset = Model.extend({
         { ds.trigger('row_change', [oldRows, true]); }
 
         return adjRows;
+    },
+
+    _rowColor: function(row)
+    {
+        // This reads metadata.conditionalFormatting, which is an ordered
+        // array of conditions & colors. The row will get the color of the
+        // first condition that it matches, or no color if it matches none
+        // of them.
+        // metadata.conditionalFormatting is an array. Each entry is an object
+        // with two keys: color and condition.
+        // * color: String of CSS color, such as '#ffffff' or
+        //          'rgba(255, 255, 255, 1)'
+        // * condition: Can be true, in which case any row will match this
+        //          condition. This is a good way to make a default as the
+        //          last item in the list. Otherwise it is an object. In the basic
+        //          case, this has three keys:
+        //   * tableColumnId: Identifies a column to look up the cell value in this
+        //          row to use for comparision
+        //   * operator: How to do the comparison; operators available are the same
+        //          as for filter conditions
+        //   * value: Value to compare against
+        //   Alternately, you can have more complex expressions by providing
+        //   a key of children which has an array of condition objects.
+        //   In this case, operator is still required, but should be either
+        //   'and' or 'or' to control how the multiple conditions are combined
+        //
+        // Simple example to mark rows that have too high a measurement, too low,
+        // or within range:
+        // metadata.conditionalFormatting: [
+        //   {
+        //     color: '#ff9999',
+        //     condition: {
+        //       tableColumnId: 123,
+        //       operator: 'greater_than',
+        //       value: 100
+        //     }
+        //   },
+        //   {
+        //     color: '#9999ff',
+        //     condition: {
+        //       tableColumnId: 123,
+        //       operator: 'less_than',
+        //       value: 20
+        //     }
+        //   },
+        //   {
+        //     color: '#99ff99',
+        //     condition: true
+        //   }
+        // ]
+
+        var ds = this;
+        var cf = ds.metadata.conditionalFormatting;
+        if (!_.isArray(cf)) { return null; }
+
+        var matchesCondition;
+        matchesCondition = function(c)
+        {
+            if (c === true) { return true; }
+            if (!$.subKeyDefined(c, 'operator') ||
+                !($.subKeyDefined(c, 'tableColumnId') &&
+                $.subKeyDefined(c, 'value')) &&
+                !$.subKeyDefined(c, 'children')) { return false; }
+
+            // Handle array of sub-conditions
+            if (!$.isBlank(c.children))
+            {
+                var func = c.operator.toLowerCase() == 'or' ? 'any' : 'all';
+                return _[func](c.children, function(cc)
+                { return matchesCondition(cc); });
+            }
+
+            var col = ds.columnForTCID(c.tableColumnId);
+            // Make sure this type of condition is supported for this column
+            if (!_.any(col.renderType.filterConditions, function(fc)
+                { return c.operator.toUpperCase() == fc.value; }))
+            { return false; }
+
+            var rowVal = row[col.lookup];
+            if ($.isPlainObject(rowVal) && !$.isBlank(c.subColumn))
+            { rowVal = rowVal[c.subColumn]; }
+
+            var condVal = c.value;
+            // Need to translate some values in a more comparable format
+            if (col.renderTypeName == 'drop_down_list')
+            {
+                // This is a numeric comparison, so use indices
+                _.each(col.dropDownList.values, function(ddv, i)
+                {
+                    if (ddv.id == rowVal) { rowVal = i; }
+                    condVal = _.map($.makeArray(condVal), function(cv)
+                        { return ddv.id == cv ? i : cv; });
+                });
+                if (condVal.length == 1) { condVal = condVal[0]; }
+            }
+            if (col.renderTypeName == 'dataset_link')
+            {
+                // Assume condVal is already in the displayable version
+                _.each(col.dropDownList.values, function(ddv)
+                { if (ddv.id == rowVal) { rowVal = ddv.description; } });
+            }
+
+            var getResult = function(v)
+            {
+                switch (c.operator.toLowerCase())
+                {
+                    case 'equals':
+                        return v == condVal;
+                        break;
+                    case 'not_equals':
+                        return v != condVal;
+                        break;
+                    case 'greater_than':
+                        return v > condVal;
+                        break;
+                    case 'greater_than_or_equals':
+                        return v >= condVal;
+                        break;
+                    case 'less_than':
+                        return v < condVal;
+                        break;
+                    case 'less_than_or_equals':
+                        return v <= condVal;
+                        break;
+                    case 'starts_with':
+                        return (v || '').startsWith(condVal);
+                        break;
+                    case 'contains':
+                        return (v || '').indexOf(condVal) > -1;
+                        break;
+                    case 'not_contains':
+                        return (v || '').indexOf(condVal) < 0;
+                        break;
+                    case 'is_blank':
+                        return $.isBlank(v);
+                        break;
+                    case 'is_not_blank':
+                        return !$.isBlank(v);
+                        break;
+                    case 'between':
+                        if (!_.isArray(condVal)) { return false; }
+                        return condVal[0] < v && v < condVal[1];
+                        break;
+                }
+                return false;
+            };
+            return _.any($.makeArray(rowVal), function(v)
+                { return getResult(v); });
+        };
+
+        return (_.detect(cf, function(c)
+            { return matchesCondition(c.condition); }) || {}).color || null;
     },
 
     _rowData: function(row, savingIds, parCol)
@@ -1766,6 +1930,8 @@ this.Dataset = Model.extend({
                 ds._rowIDLookup[req.row.id] = req.row;
                 delete ds._rowIDLookup[oldID];
             }
+
+            req.row.color = ds._rowColor(req.row);
 
             var oldKey = oldID;
             var newKey = req.row.id;

@@ -1518,7 +1518,7 @@ blist.namespace.fetch('blist.data.types');
         },
         dataset_link: {
             title: 'Dataset Link',
-            priority: 19, // haven't check what priority does yet.
+            priority: 19,
             createable: true,
             renderGen: renderGenPicklist,
             renderer: renderPicklist,

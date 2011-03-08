@@ -56,6 +56,7 @@
                 var rrObj = this;
                 _.each(rrObj.settings.view.realColumns, function(c)
                 {
+                    $content.css('background-color', row.color || '');
                     $content.find('.columnId' + c.id).each(function()
                         { renderItem(rrObj, $(this), row, c); });
                 });

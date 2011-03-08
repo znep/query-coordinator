@@ -19,7 +19,7 @@
         {
             $navBox.toggleClass('collapsed');
             $contentBox.animate({
-                'margin-left': '4.5em',
+                'margin-left': '4.5em'
             }, 300, finished);
         }
         else

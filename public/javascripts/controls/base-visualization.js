@@ -497,7 +497,9 @@
     var getRowsForAllViews = function(vizObj, callback)
     {
         var rowsToFetch = vizObj._maxRows;
-        var views = _.map(vizObj._dataViews, function(view, index)
+        var views = _.map(_.reject(vizObj._dataViews, function(view)
+            { return view.renderWithArcGISServer(); }),
+            function(view, index)
             {
                 return (function()
                 {
@@ -512,7 +514,8 @@
                     });
                 });
             });
-        views.shift()();
+        var executable = views.shift();
+        if (executable) { executable(); }
     };
 
 })(jQuery);

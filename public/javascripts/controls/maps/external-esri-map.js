@@ -6,118 +6,128 @@
     // This entire file's purpose has been deprecated since we have GeometryType
     $.extend($.socrataMap.mixin.arcGISmap.prototype,
     {
-        _attachMapServer: function()
+        _attachMapServer: function(view)
         {
             var mapObj = this;
 
-            var tmp = mapObj.settings.view.metadata
-                .custom_fields.Basic.Source.split('/');
+            var tmp = view.metadata.custom_fields.Basic.Source.split('/');
             var layer_id = tmp.pop();
             var url = tmp.join('/');
 
-            mapObj.mapServer = new esri.layers.
+            var viewConfig = mapObj._byView[view.id];
+
+            viewConfig.mapServer = new esri.layers.
                 ArcGISDynamicMapServiceLayer(url + '?srs=EPSG:102100');
-            dojo.connect(mapObj.mapServer, 'onLoad', function()
-            { completeInitialization(mapObj, this, layer_id); });
+            dojo.connect(viewConfig.mapServer, 'onLoad', function()
+            { completeInitialization(mapObj, viewConfig, this, layer_id); });
         },
 
-        populateDataLayers: function()
-        {
-            var mapObj = this;
-            var layers = mapObj.mapServer.layerInfos;
-            if (layers.length < 2) { return; }
-
-            if (mapObj.$dom().siblings('#mapLayers').length > 0)
-            {
-                mapObj.$dom().parent().find('.toggleLayers, .contentBlock h3')
-                    .text('Data Layers');
-            }
-
-            var $layers = mapObj.$dom().siblings('#mapLayers');
-            var $layersList = $layers.find('ul');
-            $layersList.empty();
-
-            var isVisible = function(layerId)
-            { return _.include(mapObj.mapServer.visibleLayers, layerId.toString()); };
-            _.each(layers, function(l)
-            {
-                var lId = 'mapLayer_' + l.id;
-                $layersList.append('<li data-layerid="' + l.id + '"' +
-                    '><input type="checkbox" id="' + lId +
-                    '"' + (isVisible(l.id) ? ' checked="checked"' : '') +
-                    ' /><label for="' + lId + '">' + l.name + '</label><br />' +
-                    '</li>');
-            });
-
-            $layers.find(':checkbox').click(function(e)
-            {
-                var $check = $(e.currentTarget);
-                var id = $check.attr('id').replace(/^mapLayer_/, '');
-                if ($check.value())
-                { mapObj.mapServer.setVisibleLayers(
-                    mapObj.mapServer.visibleLayers.concat(id)); }
-                else
-                { mapObj.mapServer.setVisibleLayers(
-                    _.without(mapObj.mapServer.visibleLayers, id)); }
-            });
-
-            $layers.removeClass('hide');
-        }
+//        This is not worth supporting at the moment.
+//        populateDataLayers: function()
+//        {
+//            var mapObj = this;
+//            var layers = mapObj.mapServer.layerInfos;
+//            if (layers.length < 2) { return; }
+//
+//            if (mapObj.$dom().siblings('#mapLayers').length > 0)
+//            {
+//                mapObj.$dom().parent().find('.toggleLayers, .contentBlock h3')
+//                    .text('Data Layers');
+//            }
+//
+//            var $layers = mapObj.$dom().siblings('#mapLayers');
+//            var $layersList = $layers.find('ul');
+//            $layersList.empty();
+//
+//            var isVisible = function(layerId)
+//            { return _.include(mapObj.mapServer.visibleLayers, layerId.toString()); };
+//            _.each(layers, function(l)
+//            {
+//                var lId = 'mapLayer_' + l.id;
+//                $layersList.append('<li data-layerid="' + l.id + '"' +
+//                    '><input type="checkbox" id="' + lId +
+//                    '"' + (isVisible(l.id) ? ' checked="checked"' : '') +
+//                    ' /><label for="' + lId + '">' + l.name + '</label><br />' +
+//                    '</li>');
+//            });
+//
+//            $layers.find(':checkbox').click(function(e)
+//            {
+//                var $check = $(e.currentTarget);
+//                var id = $check.attr('id').replace(/^mapLayer_/, '');
+//                if ($check.value())
+//                { mapObj.mapServer.setVisibleLayers(
+//                    mapObj.mapServer.visibleLayers.concat(id)); }
+//                else
+//                { mapObj.mapServer.setVisibleLayers(
+//                    _.without(mapObj.mapServer.visibleLayers, id)); }
+//            });
+//
+//            $layers.removeClass('hide');
+//        }
 
     });
 
-    var completeInitialization = function(mapObj, layer, layer_id)
+    var completeInitialization = function(mapObj, viewConfig, layer, layer_id)
     {
-        mapObj.settings.view.trigger('row_count_change');
+        viewConfig.view.trigger('row_count_change');
 
-        transformFilterToLayerDefinition(mapObj, layer, layer_id);
-        mapObj.settings.view.bind('query_change', function()
-        { transformFilterToLayerDefinition(mapObj, layer, layer_id); });
+        transformFilterToLayerDefinition(viewConfig.view, layer, layer_id);
+        viewConfig.view.bind('query_change', function()
+        { transformFilterToLayerDefinition(viewConfig.view, layer, layer_id); });
+
+        // If the primary dataset (which controls viewport) is server-rendered,
+        // use the server rendered bounds.
+        if (mapObj.settings.view.renderWithArcGISServer()
+            && mapObj.settings.view.id == viewConfig.view.id)
+        { adjustBounds(mapObj); }
 
         layer.setVisibleLayers([layer_id]);
         mapObj.map.addLayer(layer);
-    
-        mapObj.mapServer.featureLayers = _.map(mapObj.mapServer.layerInfos,
-            function(layerInfo)
-            { return new esri.layers.FeatureLayer(
-                mapObj.mapServer._url.path + '/' + layerInfo.id); });
 
-        // 1 basemap, 1 dynamic layer -- This is a hack for now.
-        if (mapObj.map.layerIds.length == 2)
-        { adjustBounds(mapObj); }
+        if (mapObj.settings.view.id != viewConfig.view.id
+            && mapObj.settings.view.renderWithArcGISServer())
+        { mapObj.map.reorderLayer(layer, mapObj.map.layerIds.length - 2); }
 
         //mapObj.populateDataLayers();
 
-        mapObj._identifyConfig = {
-            url: mapObj.mapServer._url.path,
+        if (mapObj.settings.view.id != viewConfig.view.id)
+        { return; }
+
+        viewConfig.mapServer.featureLayers = [new esri.layers.FeatureLayer(
+            viewConfig.mapServer._url.path + '/' +
+            viewConfig.mapServer.layerInfos[layer_id].id)];
+
+        viewConfig._identifyConfig = {
+            url: viewConfig.mapServer._url.path,
             attributes: []
         };
 
         var featureLayersLoaded = 0;
-        _.each(mapObj.mapServer.featureLayers, function(featureLayer, index)
+        _.each(viewConfig.mapServer.featureLayers, function(featureLayer)
             {
                 dojo.connect(featureLayer, 'onLoad', function()
                 {
-                    mapObj._identifyConfig.attributes[index] = _.map(
+                    viewConfig._identifyConfig.attributes[featureLayer.layerId] = _.map(
                         featureLayer.fields, function(field)
                         { return {key:field.name, text:field.alias}; });
                     featureLayersLoaded++;
 
-                    if (featureLayersLoaded >= mapObj.mapServer.featureLayers.length)
+                    if (featureLayersLoaded >=viewConfig.mapServer.featureLayers.length)
                     {
                         dojo.connect(mapObj.map, 'onClick', function(evt)
-                            { identifyFeature(mapObj, evt) });
+                            { identifyFeature(mapObj, viewConfig, evt) });
                     }
                 });
             });
 
-        mapObj._identifyParameters = new esri.tasks.IdentifyParameters();
-        mapObj._identifyParameters.tolerance = 3;
-        mapObj._identifyParameters.returnGeometry = false;
-        mapObj._identifyParameters.layerOption =
+        viewConfig._identifyParameters = new esri.tasks.IdentifyParameters();
+        viewConfig._identifyParameters.tolerance = 3;
+        viewConfig._identifyParameters.returnGeometry = false;
+        viewConfig._identifyParameters.layerOption =
             esri.tasks.IdentifyParameters.LAYER_OPTION_ALL;
-        mapObj._identifyParameters.width  = mapObj.map.width;
-        mapObj._identifyParameters.height = mapObj.map.height;
+        viewConfig._identifyParameters.width  = mapObj.map.width;
+        viewConfig._identifyParameters.height = mapObj.map.height;
     };
 
     var adjustBounds = function(mapObj)
@@ -135,31 +145,33 @@
         };
         new esri.tasks.GeometryService('http://sampleserver1.arcgisonline.com/' +
             'ArcGIS/rest/services/Geometry/GeometryServer')
-            .project(encodeExtentToPoints(mapObj.mapServer.initialExtent),
+            .project(encodeExtentToPoints(
+                mapObj._byView[mapObj.settings.view.id].mapServer.initialExtent),
                      mapObj.map.spatialReference,
                      function(points)
                      { mapObj.map.setExtent(decodeExtentFromPoints(points)); }
             );
     };
 
-    var identifyFeature = function(mapObj, evt)
+    var identifyFeature = function(mapObj, viewConfig, evt)
     {
-        if (!mapObj._identifyParameters) { return; }
-        mapObj._identifyParameters.geometry = evt.mapPoint;
-        mapObj._identifyParameters.mapExtent = mapObj.map.extent;
-        mapObj._identifyParameters.layerIds = mapObj.mapServer.visibleLayers;
-        mapObj._identifyParameters.layerDefinitions = mapObj.mapServer.layerDefinitions;
+        if (!viewConfig._identifyParameters) { return; }
+        viewConfig._identifyParameters.geometry = evt.mapPoint;
+        viewConfig._identifyParameters.mapExtent = mapObj.map.extent;
+        viewConfig._identifyParameters.layerIds = viewConfig.mapServer.visibleLayers;
+        viewConfig._identifyParameters.layerDefinitions =
+            viewConfig.mapServer.layerDefinitions;
 
         mapObj.map.infoWindow.setContent("Loading...").setTitle('')
             .show(evt.screenPoint, mapObj.map.getInfoWindowAnchor(evt.screenPoint));
 
-        new esri.tasks.IdentifyTask(mapObj._identifyConfig.url)
-            .execute(mapObj._identifyParameters,
-            function(idResults) { displayIdResult(mapObj, evt, idResults[0]); });
+        new esri.tasks.IdentifyTask(viewConfig._identifyConfig.url)
+            .execute(viewConfig._identifyParameters, function(idResults)
+                { displayIdResult(mapObj, viewConfig, evt, idResults[0]); });
     };
 
     // Multiple results may have returned, but we only view the first one.
-    var displayIdResult = function(mapObj, evt, idResult)
+    var displayIdResult = function(mapObj, viewConfig, evt, idResult)
     {
         if (!idResult)
         {
@@ -168,7 +180,7 @@
         }
 
         var feature = idResult.feature;
-        var info = _.map(mapObj._identifyConfig.attributes[idResult.layerId],
+        var info = _.map(viewConfig._identifyConfig.attributes[idResult.layerId],
             function(attribute)
             { return attribute.text + ': ' +
                 feature.attributes[attribute.key]; }).join('<br />');
@@ -178,11 +190,11 @@
             .show(evt.screenPoint, mapObj.map.getInfoWindowAnchor(evt.screenPoint));
     };
 
-    var transformFilterToLayerDefinition = function(mapObj, layer, layer_id)
+    var transformFilterToLayerDefinition = function(view, layer, layer_id)
     {
         var applyFilters = function()
         {
-            var filterCond = mapObj.settings.view.query.filterCondition;
+            var filterCond = view.query.filterCondition;
             if (_.isEmpty(filterCond)) { return '1=1'; }
 
             var template = {

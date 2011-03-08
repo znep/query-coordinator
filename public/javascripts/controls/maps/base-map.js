@@ -35,7 +35,7 @@
             {
                 if (plotStyle && $.socrataMap.mixin[plotStyle])
                 { mapClass = $.mixin(mapClass, $.socrataMap.mixin[plotStyle]); }
-                if (options.view.renderWithArcGISServer())
+                if (mapService == 'esri')
                 { mapClass = $.mixin(mapClass, $.socrataMap.mixin.arcGISmap); }
                 socrataMap = new mapClass(options, this[0]);
             }
@@ -88,8 +88,8 @@
                 }
                 else { mapObj.$dom().siblings('#mapLayers').addClass('hide'); }
 
-                mapObj.initializeFlyouts(mapObj.settings.view.displayFormat
-                    .plot.descriptionColumns);
+                mapObj.initializeFlyouts((mapObj.settings.view.displayFormat
+                    .plot || {}).descriptionColumns);
 
                 mapObj.initializeMap();
 
@@ -222,8 +222,8 @@
                     view._quantityCol = undefined;
                 });
 
-                mapObj.initializeFlyouts(mapObj.settings.view.displayFormat
-                    .plot.descriptionColumns);
+                mapObj.initializeFlyouts((mapObj.settings.view.displayFormat
+                    .plot || {}).descriptionColumns);
 
                 mapObj._origData = {
                     displayFormat: mapObj.settings.view.displayFormat,
@@ -319,8 +319,6 @@
             {
                 var mapObj = this;
 
-                if (mapObj._rows === undefined) { mapObj._rows = []; }
-                mapObj._rows = mapObj._rows.concat(rows);
                 if (mapObj._totalRows > mapObj._maxRows)
                 {
                     mapObj.showError('This dataset has more than ' + mapObj._maxRows +
@@ -335,11 +333,10 @@
 
             generateFlyoutLayout: function(columns)
             {
-                if (_.isEmpty(columns) &&
-                        $.isBlank(this.settings.view.displayFormat.plot.titleId))
+                var titleId = (this.settings.view.displayFormat.plot || {}).titleId;
+                if (_.isEmpty(columns) && $.isBlank(titleId))
                 { return null; }
-                return this.generateFlyoutLayoutDefault(columns,
-                        this.settings.view.displayFormat.plot.titleId);
+                return this.generateFlyoutLayoutDefault(columns, titleId);
             },
 
             generateFlyoutLayoutDefault: function(columns, titleId)

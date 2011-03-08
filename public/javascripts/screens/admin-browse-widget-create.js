@@ -235,7 +235,7 @@ _.each([
             data: {},
             callback: function($formElem)
             {
-                updateMinSizes();
+                catalogNS.updateMinSizes();
                 publishNS.$embedForm = $formElem.find('.htmlCode');
                 publishNS.$embedForm.click(function() { $(this).select(); });
 

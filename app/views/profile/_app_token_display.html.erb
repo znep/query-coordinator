@@ -36,8 +36,10 @@
       <p class="appTokenLine">
         <span class="fieldName">Secret Token</span>
         <span class="appTokenTextContainer fieldValue">
-          <span class="appTokenText"><%= token.oAuthSecret %></span>
-          <a class="newSecretLink" href="#newSecretToken">Request a New Secret Token</a>
+          <span class="appTokenText"></span>
+          <a class="showSecretLink" href="#showSecretToken"
+            data-userId='<%= current_user.id %>'
+            data-appTokenId='<%= token.id %>'>Show Secret Token</a>
         </span>
       </p>
     <%- end -%>

@@ -1,5 +1,5 @@
 class ProfileController < ApplicationController
-  ssl_required :update_account
+  ssl_required :update_account, :edit_app_tokens, :create_app_token, :delete_app_token
   include BrowseActions
   skip_before_filter :require_user, :only => [:show]
 

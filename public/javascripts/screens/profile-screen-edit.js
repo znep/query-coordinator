@@ -12,11 +12,10 @@
 
     $('.editProfileNav li a').click(function(event)
     {
-        if ($('html').hasClass('ie'))
+        if ($('html').hasClass('ie') || $tokensPane.is(':visible'))
         {
             return;
         }
-        event.preventDefault();
         // Hide all Flashes, since it only applied to the first page
         $('.flash').hide();
 
@@ -30,9 +29,11 @@
         else if ($link.is('.accountSettings'))
         { $newPane = $accountPane; }
         else if ($link.is('.appTokens'))
-        { $newPane = $tokensPane; }
+        { return; }
         else
         { $newPane = null; }
+
+        event.preventDefault();
 
         if (!_.isNull($newPane) && $newPane[0] != $currentPane[0])
         {
@@ -261,6 +262,21 @@
             $thumbArea
                 .removeClass('noThumbnail')
                 .addClass('thumbnail');
+        });
+    });
+
+    $('.existingTokens .showSecretLink').click(function(e)
+    {
+        e.preventDefault();
+        var $a = $(this);
+        $.ajax({url: '/api/users/' + $a.data('userId') + '/app_tokens/' +
+            $a.data('appTokenId'), data: {method: 'getSecret'},
+            type: 'GET', dataType: 'json', contentType: 'application/json',
+            success: function(secretToken)
+            {
+                $a.siblings('.appTokenText').text(secretToken);
+                $a.hide();
+            }
         });
     });
 });

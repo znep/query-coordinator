@@ -278,6 +278,7 @@
                           (will find the closest field with that name)
                       + value: Value that the field should be set to for this
                           field to be shown
+                      + negate: If true, the result will be inverted
                     }
                   + notequalto: optional, string to use for validating notequalto;
                       all fields that are validated like this should have the
@@ -1118,20 +1119,35 @@
                     var parIndex;
                     if ($parents.hasClass('repeater'))
                     {
-                        // If this is in a repeater, then it is name-spaced
-                        // under the repeater.  Grab that name, and set up
-                        // an array for it
-                        parArray = addValue($input.closest('.line.repeater')
-                            .find('.button.addValue').attr('name'), [], parObj);
-                        // The name has a -num on the end that specifies order
-                        // in the array; grab that off to use as the index
-                        var p = inputName.split('-');
-                        parIndex = p[p.length - 1];
-                        inputName = p.slice(0, -1).join('-');
-                        // Set up the object for this array index, and use
-                        // that as the parent
-                        if (!$.isBlank(parArray))
-                        { parObj = parArray[parIndex] || {}; }
+                        var $repeaters = $parents.filter('.line.repeater');
+                        for (var i = $repeaters.length - 1; i >= 0; i--)
+                        {
+                            var $curRep = $repeaters.eq(i);
+                            // If this is in a repeater, then it is name-spaced
+                            // under the repeater.  Grab that name, and set up
+                            // an array for it
+                            var buttonName = $curRep
+                                .children('.button.addValue').attr('name');
+                            if (i != $repeaters.length - 1)
+                            {
+                                buttonName = buttonName.split('-')
+                                    .slice(0, -1).join('-');
+                            }
+                            parArray = addValue(buttonName, [], parObj);
+
+                            var curName = (i == 0 ? $input :
+                                $repeaters.eq(i - 1).children('.button.addValue'))
+                                .attr('name');
+                            // The name has a -num on the end that specifies order
+                            // in the array; grab that off to use as the index
+                            var p = curName.split('-');
+                            parIndex = p[p.length - 1];
+                            // Set up the object for this array index, and use
+                            // that as the parent
+                            if (!$.isBlank(parArray))
+                            { parObj = parArray[parIndex] || {}; }
+                        }
+                        inputName = inputName.split('-').slice(0, -1).join('-');
 
                         var $savedDataLine =
                             $input.closest('.line[data-savedData]');
@@ -1421,7 +1437,7 @@
         // this is done by setting default value to '_selected' and
         // adding _selected attrib = true in the desired option.
         var isSelected = (curVal === '_selected' && opt.selected === true) ||
-            opt.value === curVal;
+            (opt.value || '').toLowerCase() === (curVal || '').toLowerCase();
         var item = {tagName: 'option', value: opt.value,
             selected: isSelected, contents: opt.text};
         var dataKeys = [];

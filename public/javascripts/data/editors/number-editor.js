@@ -14,9 +14,12 @@
         {
             isValid: function()
             {
-                var curVal = this.currentValue();
+                var curVal = this.textValue();
                 return curVal === null || curVal == parseFloat(curVal);
-            }
+            },
+
+            currentValue: function()
+            { return this.isValid() ? parseFloat(this.textValue()) : null; },
         }
     }, $.blistEditor.text));
 

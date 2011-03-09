@@ -246,6 +246,7 @@ javascripts:
     - public/javascripts/controls/grid-sidebar/calendar-create.js
     - public/javascripts/controls/grid-sidebar/chart-create.js
     - public/javascripts/controls/grid-sidebar/column-properties.js
+    - public/javascripts/controls/grid-sidebar/conditional-formatting.js
     - public/javascripts/controls/grid-sidebar/download-dataset.js
     - public/javascripts/controls/grid-sidebar/embed-sdp.js
     - public/javascripts/controls/grid-sidebar/feed.js

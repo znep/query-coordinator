@@ -91,7 +91,7 @@ class BlistCookieStore
 
     status, headers, body = @app.call(env)
 
-    if status >= 200 && status < 300
+    if status >= 200 && status < 400
       core_data = env[CORE_SESSION_KEY]
       session_data = env[ENV_SESSION_KEY]
       options = env[ENV_SESSION_OPTIONS_KEY]

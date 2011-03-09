@@ -20,7 +20,7 @@
                 ArcGISDynamicMapServiceLayer(url + '?srs=EPSG:102100');
             dojo.connect(viewConfig.mapServer, 'onLoad', function()
             { completeInitialization(mapObj, viewConfig, this, layer_id); });
-        },
+        }
 
 //        This is not worth supporting at the moment.
 //        populateDataLayers: function()

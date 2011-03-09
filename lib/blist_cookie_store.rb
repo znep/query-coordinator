@@ -91,37 +91,39 @@ class BlistCookieStore
 
     status, headers, body = @app.call(env)
 
-    core_data = env[CORE_SESSION_KEY]
-    session_data = env[ENV_SESSION_KEY]
-    options = env[ENV_SESSION_OPTIONS_KEY]
-    request = ActionController::Request.new(env)
+    if status >= 200 && status < 300
+      core_data = env[CORE_SESSION_KEY]
+      session_data = env[ENV_SESSION_KEY]
+      options = env[ENV_SESSION_OPTIONS_KEY]
+      request = ActionController::Request.new(env)
 
-    save_cookie = false
+      save_cookie = false
 
-    if !(options[:secure] && !request.ssl?) && (!session_data.is_a?(ActionController::Session::AbstractStore::SessionHash) || session_data.send(:loaded?) || options[:expire_after])
-      session_data.send(:load!) if session_data.is_a?(ActionController::Session::AbstractStore::SessionHash) && !session_data.loaded?
-      persistent_session_id!(session_data)
-      session_data = marshal(session_data.to_hash)
-      save_cookie = true
-    end
-
-    if !core_data.is_a?(CoreSession) || core_data.send(:loaded?) || options[:expire_after]
-      core_data.send(:load!) if core_data.is_a?(CoreSession) && !core_data.send(:loaded?)
-      core_data = core_data.to_s
-      save_cookie = true
-    end
-
-    if save_cookie
-      raise CookieOverflow if (session_data.size + core_data.size) > MAX
-
-      cookie = Hash.new
-      cookie[:value] = session_data.to_s || ''
-      cookie[:value] = core_data.to_s + '||' + cookie[:value] unless core_data.nil?
-      unless options[:expire_after].nil?
-        cookie[:expires] = Time.now + options[:expire_after]
+      if !(options[:secure] && !request.ssl?) && (!session_data.is_a?(ActionController::Session::AbstractStore::SessionHash) || session_data.send(:loaded?) || options[:expire_after])
+        session_data.send(:load!) if session_data.is_a?(ActionController::Session::AbstractStore::SessionHash) && !session_data.loaded?
+        persistent_session_id!(session_data)
+        session_data = marshal(session_data.to_hash)
+        save_cookie = true
       end
 
-      Rack::Utils.set_cookie_header!(headers, @key, cookie.merge(options))
+      if !core_data.is_a?(CoreSession) || core_data.send(:loaded?) || options[:expire_after]
+        core_data.send(:load!) if core_data.is_a?(CoreSession) && !core_data.send(:loaded?)
+        core_data = core_data.to_s
+        save_cookie = true
+      end
+
+      if save_cookie
+        raise CookieOverflow if (session_data.size + core_data.size) > MAX
+
+        cookie = Hash.new
+        cookie[:value] = session_data.to_s || ''
+        cookie[:value] = core_data.to_s + '||' + cookie[:value] unless core_data.nil?
+        unless options[:expire_after].nil?
+          cookie[:expires] = Time.now + options[:expire_after]
+        end
+
+        Rack::Utils.set_cookie_header!(headers, @key, cookie.merge(options))
+      end
     end
 
     [status, headers, body]

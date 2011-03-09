@@ -209,8 +209,9 @@
                 }
 
                 // Don't attach viewportListener unless all rows are loaded.
-                if (mapObj.settings.view.totalRows > mapObj._rows.length &&
-                    mapObj._maxRows > mapObj._rows.length)
+                var rowsLoaded = _.reduce(mapObj._dataViews,
+                    function(total, view) { return total + view._rows.length; }, 0);
+                if (mapObj._totalRows > rowsLoaded && mapObj._maxRows > rowsLoaded)
                 { return; }
 
                 // Begin Rabbit Hole.

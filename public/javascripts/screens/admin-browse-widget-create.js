@@ -76,7 +76,7 @@ var catalogNS = {
     {
         var val      = parseInt($this.val()),
             attr     = $this.attr('data-valbind'),
-            minWidth = getMinWidth();
+            minWidth = catalogNS.getMinWidth();
 
         if ($.isNaN(val) || val < minSizes[attr])
         {

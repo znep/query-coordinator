@@ -78,7 +78,7 @@ var catalogNS = {
             attr     = $this.attr('data-valbind'),
             minWidth = catalogNS.getMinWidth();
 
-        if ($.isNaN(val) || val < minSizes[attr])
+        if ($.isNaN(val) || val < catalogNS.minSizes[attr])
         {
             $this.closest('.line').addClass('error');
             return;

@@ -8,6 +8,7 @@ zdFBWSettings.tabColor = "#7FBF5D";
 zdFBWSettings.textColor = "#fff";
 zdFBWSettings.fbURL = "http://discuss.baltimorecity.gov/fbw?fbwId=47048000000006055";
 zdFBWSettings.defaultDomain = "discussions.zoho.com";
+zdFBWSettings.jQuery = 'false';
 zdFBWSettings.display = "popout";
 
 $(function() {

@@ -149,7 +149,7 @@
                             editorCallbacks: {create: filterEditor,
                                 required: filterEditorRequired,
                                 value: filterEditorValue,
-                                cleanup: filterEditorCleanup}},
+                                cleanup: filterEditorCleanup}}
                     ]}}
                 ] } }
             ]

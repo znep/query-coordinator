@@ -898,6 +898,7 @@ blist.namespace.fetch('blist.data.types');
         'date_ymd': 'Y/m/d',
         'date_ymd_time': 'Y/m/d',
         'date_monthdy': 'F d, Y',
+        'date_monthdy_time': 'F d, Y',
         'date_dmonthy': 'd F Y',
         'date_ymonthd': 'Y F d'
     };
@@ -977,6 +978,7 @@ blist.namespace.fetch('blist.data.types');
         {value: 'date_ymd', text: 'year/month/day'},
         {value: 'date_ymd_time', text: 'year/month/day hour:minute'},
         {value: 'date_monthdy', text: 'month day, year'},
+        {value: 'date_monthdy_time', text: 'month day, year hour:minute'},
         {value: 'date_dmonthy', text: 'day month year'},
         {value: 'date_ymonthd', text: 'year month day'}
     ];

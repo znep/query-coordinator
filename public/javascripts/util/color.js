@@ -141,7 +141,7 @@ $.urlToImageBuilder = function(options, format, css)
 
 $.gradient = function(stops, colors, options)
 {
-    options = options || {};
+    options = options || { maxValue: 100 };
 
     if (!_.isArray(colors)) { colors = [colors]; }
     colors = _.map(colors, function(color)
@@ -158,7 +158,7 @@ $.gradient = function(stops, colors, options)
         : {
             h: toColor.h,
             s: toColor.s > 50 ? 0 : 100,
-            v: toColor.v > 50 ? 0 : 100
+            v: toColor.v > 50 ? 0 : options.maxValue
         };
 
     var colorStep = {

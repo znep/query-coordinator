@@ -36,7 +36,8 @@
                     && !chartObj._gradient)
                 {
                     chartObj._gradient = $.gradient(chartObj._numSegments,
-                        chartObj.settings.view.displayFormat.color || '#042656');
+                        chartObj.settings.view.displayFormat.color || '#042656',
+                        { maxValue: 80 });
                 }
 
                 // Set up x-axis

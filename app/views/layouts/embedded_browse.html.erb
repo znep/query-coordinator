@@ -97,6 +97,11 @@
     blist.namespace.fetch('blist.configuration');
     blist.configuration.strings = <%= raw CurrentDomain.strings.to_json %>;
   </script>
+
+  <div id="modals">
+    <%= yield :modals %>
+  </div>
+
   <%= yield :js_footer %>
 
   <%- unless CurrentDomain.theme.js.nil? -%>

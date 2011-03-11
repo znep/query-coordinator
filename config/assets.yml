@@ -116,7 +116,6 @@ javascripts:
     - public/javascripts/util/events.js
     - public/javascripts/controls/grid-sidebar/base-sidebar.js
     - public/javascripts/screens/admin-customizer.js
-    - public/javascripts/screens/admin-collapse-nav.js
     - public/javascripts/screens/admin-browse-widget-create.js
   admin-users:
     - public/javascripts/controls/admin-buttons.js
@@ -154,7 +153,6 @@ javascripts:
     - public/javascripts/util/events.js
     - public/javascripts/controls/grid-sidebar/base-sidebar.js
     - public/javascripts/screens/admin-customizer.js
-    - public/javascripts/screens/admin-collapse-nav.js
     - public/javascripts/screens/admin-sdp-template.js
   admin-story:
     - public/javascripts/plugins/colorpicker.js
@@ -167,13 +165,14 @@ javascripts:
     - public/javascripts/controls/grid-sidebar/base-sidebar.js
     - public/javascripts/screens/homepage-show.js
     - public/javascripts/screens/admin-customizer.js
-    - public/javascripts/screens/admin-collapse-nav.js
     - public/javascripts/screens/admin-stories-appearance.js
   admin-federation:
     - public/javascripts/controls/admin-buttons.js
     - public/javascripts/plugins/jquery.tablesorter.js
     - public/javascripts/controls/combination-list.js
     - public/javascripts/screens/admin-federation-screen.js
+  admin-collapse-nav:
+    - public/javascripts/screens/admin-collapse-nav.js
   browse-control:
     - public/javascripts/plugins/jquery.tagcloud.js
     - public/javascripts/util/events.js

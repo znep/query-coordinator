@@ -75,3 +75,6 @@
     <%- end -%>
   </ul>
 </div>
+<%- content_for :js_footer do -%>
+  <%= include_javascripts 'admin-collapse-nav' %>
+<%- end -%>

@@ -198,7 +198,7 @@ _.each([
         {   text: 'Sort By', name: 'defaults.sortBy',
             type: 'select', options: publishNS.selectOptions.sortBy },
         {   text: 'Time Period', name: 'sortPeriod',
-            type: 'select', linkedField: 'defaults.sortBy',
+            type: 'select', linkedField: 'defaults.sortBy', prompt: null,
             options: function(val) {
                 var sortOpt = _.detect(publishNS.selectOptions.sortBy, function(item) {
                     return item.value == val;

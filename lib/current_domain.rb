@@ -1,7 +1,7 @@
 require 'hashie'
 
 class CurrentDomain
-  REFRESH_CHECK_TIME = 300
+  REFRESH_CHECK_TIME = Rails.env.production? ? 300 : 10
 
   def self.load_all
     @@property_store = {}

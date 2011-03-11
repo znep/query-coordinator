@@ -19,7 +19,7 @@
             },
 
             currentValue: function()
-            { return this.isValid() ? parseFloat(this.textValue()) : null; },
+            { return this.isValid() ? parseFloat(this.textValue()) : null; }
         }
     }, $.blistEditor.text));
 

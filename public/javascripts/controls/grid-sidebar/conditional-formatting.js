@@ -158,7 +158,7 @@
             buttons: [
                 {text: 'Apply', isDefault: true, value: true},
                 $.gridSidebar.buttons.cancel
-            ],
+            ]
         }
     };
 

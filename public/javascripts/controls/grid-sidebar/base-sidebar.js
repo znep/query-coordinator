@@ -2697,6 +2697,7 @@
                             !!$field.attr('data-isDisabled'));
                         $field.closest('.line')
                             .toggleClass('hide', newOpts == 'hidden');
+                        if (!_.isArray(newOpts)) { newOpts = null; }
 
                         _.each(newOpts || [], function(o)
                         {

@@ -815,13 +815,6 @@ private
 
   def handle_button_response(success, error_message, success_message, redirect_action)
     respond_to do |format|
-      format.data do
-        if success
-          render :json => {:success => true, :message => success_message}
-        else
-          render :json => {:error => true, :message => error_message}
-        end
-      end
       format.html do
         if error_message
           flash[:error] = error_message
@@ -829,6 +822,13 @@ private
           flash[:notice] = success_message
         end
         redirect_to :action => redirect_action
+      end
+      format.js do
+        if success
+          render :json => {:success => true, :message => success_message}
+        else
+          render :json => {:error => true, :message => error_message}
+        end
       end
     end
   end

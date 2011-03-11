@@ -161,7 +161,7 @@ _.each([
         fields: [
         {   text: 'View Type', name: 'defaults.limitTo', prompt: null,
             type: 'select', options: catalogNS.anyValueHack(publishNS.selectOptions.limitTo.options) },
-        {   text: 'Show View Types', name: 'facets.type',
+        {   text: 'Show Types', name: 'facets.type',
             type: 'checkbox' }
         ]
     },

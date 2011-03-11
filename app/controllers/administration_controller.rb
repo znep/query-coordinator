@@ -44,7 +44,10 @@ class AdministrationController < ApplicationController
   def catalog_widget
     check_member()
 
-    topics_all = Tag.find({:method => 'viewsTags'}).map { |t| {:text => t.name, :value => t.name} }
+    topics_all = Tag.find({:method => 'viewsTags'}).map do |t|
+      escaped = CGI.escapeHTML(t.name)
+      { :text => escaped, :value => escaped }
+    end
     @widget_width  = 750
     @widget_height = 550
     @embed_base    = url_for(:controller => 'browse', :action => 'embed')

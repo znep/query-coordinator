@@ -1756,8 +1756,7 @@ this.Dataset = Model.extend({
         {
             if (c === true) { return true; }
             if (!$.subKeyDefined(c, 'operator') ||
-                !($.subKeyDefined(c, 'tableColumnId') &&
-                $.subKeyDefined(c, 'value')) &&
+                !$.subKeyDefined(c, 'tableColumnId') &&
                 !$.subKeyDefined(c, 'children')) { return false; }
 
             // Handle array of sub-conditions
@@ -1798,36 +1797,39 @@ this.Dataset = Model.extend({
                 { if (ddv.id == rowVal) { rowVal = ddv.description; } });
             }
 
-            var getResult = function(v)
+            var getResult = function(v, cv)
             {
+                if (_.isString(v)) { v = v.toLowerCase(); }
+                if (_.isString(cv)) { cv = cv.toLowerCase(); }
+
                 switch (c.operator.toLowerCase())
                 {
                     case 'equals':
-                        return v == condVal;
+                        return v == cv;
                         break;
                     case 'not_equals':
-                        return v != condVal;
+                        return v != cv;
                         break;
                     case 'greater_than':
-                        return v > condVal;
+                        return v > cv;
                         break;
                     case 'greater_than_or_equals':
-                        return v >= condVal;
+                        return v >= cv;
                         break;
                     case 'less_than':
-                        return v < condVal;
+                        return v < cv;
                         break;
                     case 'less_than_or_equals':
-                        return v <= condVal;
+                        return v <= cv;
                         break;
                     case 'starts_with':
-                        return (v || '').startsWith(condVal);
+                        return (v || '').startsWith(cv);
                         break;
                     case 'contains':
-                        return (v || '').indexOf(condVal) > -1;
+                        return (v || '').indexOf(cv) > -1;
                         break;
                     case 'not_contains':
-                        return (v || '').indexOf(condVal) < 0;
+                        return (v || '').indexOf(cv) < 0;
                         break;
                     case 'is_blank':
                         return $.isBlank(v);
@@ -1836,14 +1838,30 @@ this.Dataset = Model.extend({
                         return !$.isBlank(v);
                         break;
                     case 'between':
-                        if (!_.isArray(condVal)) { return false; }
-                        return condVal[0] < v && v < condVal[1];
+                        if (!_.isArray(cv)) { return false; }
+                        return cv[0] < v && v < cv[1];
                         break;
                 }
                 return false;
             };
-            return _.any($.makeArray(rowVal), function(v)
-                { return getResult(v); });
+
+            if (_.isArray(rowVal))
+            {
+                return _.any(rowVal, function(v)
+                    { return getResult(v, condVal); });
+            }
+            else if ($.isPlainObject(rowVal))
+            {
+                return _.all(rowVal, function(v, k)
+                    {
+                        var cv = $.isPlainObject(condVal) ? condVal[k] : condVal;
+                        if (!$.isBlank(cv) ||
+                            c.operator.toLowerCase().endsWith('_blank'))
+                        { return getResult(v, cv); }
+                        return true;
+                    });
+            }
+            else { return getResult(rowVal, condVal); }
         };
 
         return (_.detect(cf, function(c)

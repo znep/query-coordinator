@@ -19,7 +19,10 @@
             },
 
             currentValue: function()
-            { return this.isValid() ? parseFloat(this.textValue()) : null; }
+            {
+                var curVal = this.textValue();
+                return curVal == parseFloat(curVal) ? parseFloat(curVal) : curVal;
+            }
         }
     }, $.blistEditor.text));
 

@@ -1,5 +1,8 @@
 (function($)
 {
+    if (blist.sidebarHidden.visualize &&
+        blist.sidebarHidden.visualize.conditionalFormatting) { return; }
+
     var filterableTypes = _.compact(_.map(blist.data.types, function(t, n)
     { return !$.isBlank(t.filterConditions) ? n : null; }));
 
@@ -33,7 +36,7 @@
             typeName: typeName});
         $field.append($editor);
 
-        if (op == 'BETWEEN')
+        if (op == 'between')
         {
             $field.addClass('twoEditors');
             $field.append($.tag({tagName: 'span',
@@ -124,7 +127,7 @@
                 {type: 'repeater', minimum: 0, addText: 'Add New Rule',
                 name: 'metadata.conditionalFormatting',
                 field: {type: 'group', extraClass: 'conditionGroup', options: [
-                    {type: 'color', required: true, text: 'Use this color',
+                    {type: 'color', required: true, text: 'Use the color',
                         name: 'color', defaultValue: '#bbffbb'},
                     {type: 'select', text: 'When', prompt: null,
                         options: [{text: 'All Conditions', value: 'and'},
@@ -184,10 +187,12 @@
         if (!sidebarObj.baseFormHandler($pane, value)) { return; }
 
         var resultObj = sidebarObj.getFormValues($pane);
-        var newMd = $.extend(true, {}, blist.dataset.metadata, resultObj.metadata);
+        var newMd = $.extend(true, {}, blist.dataset.metadata);
+        newMd.conditionalFormatting =
+            (resultObj.metadata || {}).conditionalFormatting;
 
         // Clean up any conditionalFormatting items that only have one child
-        _.each(newMd.conditionalFormatting, function(cf)
+        _.each(newMd.conditionalFormatting || [], function(cf)
         {
             if (cf.condition.operator == 'always')
             { cf.condition = true; }

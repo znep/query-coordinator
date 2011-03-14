@@ -577,6 +577,8 @@
     blist.sidebarHidden.visualize.mapCreate = <%= @view.is_alt_view? &&
       !@view.available_display_types.include?('map') ||
       @view.is_grouped? || !module_available?(:map_publish) %>;
+    blist.sidebarHidden.visualize.conditionalFormatting = <%= !@view.is_tabular? ||
+      @view.is_form? %>;
 
     <%# Embed pane %>
     blist.sidebarHidden.embed = blist.sidebarHidden.embed || {};

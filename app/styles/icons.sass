@@ -495,6 +495,8 @@
     background-position: 0 -156px
   &.viewmoderation #{$subselector}
     background-position: 0 -169px
+  &.routingApproval #{$subselector}
+    background-position: 0 -182px
 
 // icons/admin_header_icons.png
 @mixin admin-header-icons($subselector: '.icon')
@@ -527,6 +529,8 @@
     background-position: 0 -288px
   &.viewmoderation #{$subselector}
     background-position: 0 -320px
+  &.routingApproval #{$subselector}
+    background-position: 0 -352px
 
 // icons/new_dataset_icons.png
 @mixin new-dataset-icons($subselector: '.icon')
@@ -684,3 +688,14 @@
     background-position: 0 $yoffset
   & #{$subselector}.selected
     background-position: -7px $yoffset
+
+
+// Approval button icons
+@mixin approval-button-icons
+  background-image: url(/stylesheets/images/icons/approval_button_icons.png)
+  background-repeat: no-repeat
+
+  &.approve
+    background-position: 0 -1px
+  &.reject
+    background-position: 0 -25px

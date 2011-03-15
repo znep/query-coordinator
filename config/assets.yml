@@ -139,6 +139,11 @@ javascripts:
     - public/javascripts/screens/admin-moderation.js
   admin-metrics:
     - public/javascripts/screens/admin-metrics.js
+  admin-routing-approval:
+    - public/javascripts/util/approval.js
+    - public/javascripts/util/dataset/approval-history.js
+    - public/javascripts/controls/expander.js
+    - public/javascripts/screens/admin-routing-approval.js
   admin-sdp-templates:
     - public/javascripts/controls/modal-dialogs.js
     - public/javascripts/controls/admin-buttons.js

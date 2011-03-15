@@ -1,0 +1,105 @@
+#routingApprovalContent
+  .adminHeader
+    position: relative
+
+    #sectionOptions
+      bottom: 1em
+      position: absolute
+      right: 10px
+      a
+        font-size: 1.2em
+
+  .browseSection
+    padding: 0
+    .browseList
+      border: none
+      margin: 0
+      padding: 0
+      .titleContainer
+        float: none
+        .searchSection
+          float: right
+
+      .results
+        margin: 0
+          top: 1em
+        .gridList
+          tr.item.stuck
+            background-color: #fffadb
+            .nameDesc .name
+              @include sprite-menu-icons
+              .icon
+                display: inline-block
+                margin-right: 0.2em
+                vertical-align: bottom
+          .index
+            width: 1.6em
+          .domainIcon
+            width: 30px
+            img
+              height: 30px
+              width: 30px
+
+          .nameDesc
+            padding-bottom: 0.5em
+            .description
+              height: 1.1em
+
+            .extraInfo
+              margin-left: -2.8em
+              padding-right: 19.6em
+              .infoContent
+                margin-right: -19.6em
+              &.federated
+                margin-left: -5.9em
+                padding-right: 22.7em
+                .infoContent
+                  margin-right: -22.7em
+
+              .line
+                margin: 0.5em
+              .title
+                display: inline-block
+                font-weight: bold
+                vertical-align: top
+                width: 10em
+              .value
+                display: inline-block
+              .leftColumn
+                display: inline-block
+                width: 66%
+              .rightColumn
+                display: inline-block
+                .title
+                  width: 12em
+
+              .stage .icon
+                display: inline-block
+                margin-right: 0.5em
+                span
+                  @include rounded-ends
+                  background-color: #dedede
+                  display: inline-block
+                  height: 8px
+                  width: 8px
+                  margin: 0 1px
+                  &.on
+                    background-color: #00972b
+                  &.rejected
+                    background-color: #972b00
+              .nextApprover ul
+                display: inline-block
+                li
+                  margin-bottom: 0.25em
+              .userLoad
+                @include throbber-icon
+                display: inline-block
+
+          .actions
+            width: 14em
+            .button
+              @include approval-button-icons
+              font-size: 1em
+              font-weight: normal
+              padding: 0.2em 0.5em
+                left: 1.75em

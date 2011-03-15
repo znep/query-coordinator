@@ -785,6 +785,57 @@ class View < Model
     (data['metadata']|| {}).deep_merge(data['privateMetadata'] || {})
   end
 
+  def approval_history_batch
+    CoreServer::Base.connection.get_request("/views/#{id}/approval.json", {}, true)
+  end
+
+  def set_approval_history(ah)
+    @app_hist = ah
+  end
+
+  def approval_history
+    if @app_hist.nil?
+      path = "/views/#{id}/approval.json"
+      @app_hist = JSON.parse(CoreServer::Base.connection.get_request(path))
+    end
+
+    return @app_hist
+  end
+
+  def is_stuck?(approval)
+    latest_date = if approval_history.empty?
+      viewLastModified
+    else
+      approval_history.last['approvalDate']
+    end
+    (Time.now - approval.maxInactivityInterval.day).to_i > latest_date
+  end
+
+  def last_approval
+    approval_history.select {|ah| !ah['approvalRejected']}.last
+  end
+
+  def next_approval_stage(approval)
+    cur_stage = last_approval
+    ns = if cur_stage.nil?
+      approval.stages[0]
+    else
+      i = approval.stages.index {|s| s['id'] == cur_stage['approvalStageId']}
+      approval.stages[i + 1]
+    end
+    return ns
+  end
+
+  def set_approval(approval, approved)
+    next_stage = next_approval_stage(approval)
+    return false if next_stage.nil?
+
+    path = "/#{self.class.name.pluralize.downcase}/#{id}/approval.json"
+    CoreServer::Base.connection.create_request(path,
+          {:approvalStageId => next_stage['id'],
+            :approvalRejected => !approved}.to_json)
+  end
+
   @@default_categories = {
     "" => "-- No category --"
   }

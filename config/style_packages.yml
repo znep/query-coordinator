@@ -45,6 +45,8 @@ administration-metadata:
 - screen-administration-metadata
 administration-moderation:
 - screen-administration-moderation
+administration-routing-approval:
+- screen-administration-routing-approval
 administration-sdp-templates:
 - screen-admin-sdp-templates
 administration-sdp-template:

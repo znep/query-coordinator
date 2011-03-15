@@ -96,7 +96,8 @@ ActionController::Routing::Routes.draw do |map|
       :metadata => :get,
       :views => :get,
       :save_featured_views => :put,
-      :catalog_widget => :get
+      :catalog_widget => :get,
+      :routing_approval => :get
   }
 
   map.with_options :controller => 'administration' do |admin|
@@ -160,6 +161,13 @@ ActionController::Routing::Routes.draw do |map|
       :action => 'modify_sidebar_config', :conditions => { :method => :post }
     admin.connect '/admin/views/:id/set/:approved',
       :action => 'set_view_moderation_status', :conditions => { :method => :post },
+      :requirements => {:id => UID_REGEXP}
+    admin.connect '/admin/routing_approval/queue',
+      :action => 'routing_approval_queue', :conditions => { :method => :get }
+    admin.connect '/admin/routing_approval/manage',
+      :action => 'routing_approval_manage', :conditions => { :method => :get }
+    admin.connect '/admin/routing_approval/view/:id/set/:approved',
+      :action => 'approve_view', :conditions => { :method => :post },
       :requirements => {:id => UID_REGEXP}
   end
 

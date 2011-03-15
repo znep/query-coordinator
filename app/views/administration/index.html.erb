@@ -91,6 +91,13 @@
         </span>
       </li>
     <%- end -%>
+      <li class="routingApproval">
+        <%= link_to raw('<span class="icon"></span>Dataset Routing &amp; Approval'),
+            {:action => 'routing_approval'} %>
+        <span class='description'>
+          Review datasets that are in the approval process, and manage the steps of the approval process
+        </span>
+      </li>
     <%- if current_user && current_user.is_admin? -%>
       <li class="internal">
         <%= link_to raw('<span class="icon"></span>Internal'),

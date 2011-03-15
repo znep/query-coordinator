@@ -63,4 +63,15 @@ this.User = Model.extend({
     }
 });
 
+User.createFromUserId = function(id, successCallback, errorCallback)
+{
+    $.Tache.Get({
+        url: '/api/users/' + id + '.json',
+        success: function(user)
+            {
+                if(_.isFunction(successCallback))
+                { successCallback(new User(user)) }
+            },
+        error: errorCallback});
+};
 })();

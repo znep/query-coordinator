@@ -683,6 +683,61 @@ class AdministrationController < ApplicationController
     end
   end
 
+  def routing_approval
+  end
+
+  def routing_approval_queue
+    @params = params.reject {|k, v| k.to_s == 'controller' || k.to_s == 'action'}
+    @limit = 10
+    @opts = {:for_approver => true, :limit => @limit,
+      :page => (params[:page] || 1).to_i, :sortBy => 'newest'}
+    @base_url = request.path
+
+    @opts[:q] = params[:q] if !params[:q].nil?
+
+    # Whether or not we need to display icons for other domains
+    @use_federations = Federation.find.select {|f| f.acceptedUserId.present? &&
+        f.sourceDomainCName != CurrentDomain.cname }.length > 0
+
+    @view_results = SearchResult.search('views', @opts)[0]
+    @view_count = @view_results.count
+    @view_results = @view_results.results
+
+    # Fetch all the approval history in a batch
+    CoreServer::Base.connection.batch_request do
+      @view_results.each do |v|
+        v.approval_history_batch
+      end
+    end.each_with_index do |r, i|
+      @view_results[i].set_approval_history(JSON.parse(r['response']))
+    end
+
+    # We only support one template for now, so assume it is the first one
+    @approval_template = Approval.find()[0]
+  end
+
+  def routing_approval_manage
+  end
+
+  def approve_view
+    begin
+      v = View.find(params[:id])
+    rescue CoreServer::ResourceNotFound
+      flash[:error] = "Could not find view to modify approval status"
+      return(redirect_to :action => 'routing_approval_queue')
+    end
+
+    # We only support one template for now, so assume it is the first one
+    approval_template = Approval.find()[0]
+    v.set_approval(approval_template, params[:approved] == 'yes')
+
+    flash[:notice] = "The view '#{v.name}' has been " +
+      "#{params[:approved] == 'yes' ? 'approved' : 'rejected'}. " +
+      'Please allow a few minutes for the changes to be reflected on your home page'
+
+    return(redirect_to (request.referer || {:action => 'routing_approval_queue'}))
+  end
+
   #
   # Access checks
   #

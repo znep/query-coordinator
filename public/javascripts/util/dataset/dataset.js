@@ -41,6 +41,11 @@ this.Dataset = Model.extend({
         Dataset.addProperties(this, ColumnContainer('column',
                 selfUrl + '.json', selfUrl + '/columns'), Dataset.prototype);
 
+        if (!$.isBlank(this.approvalHistory))
+        {
+            Dataset.addProperties(this, Dataset.modules.approvalHistory,
+                Dataset.prototype);
+        }
 
         this.updateColumns();
 

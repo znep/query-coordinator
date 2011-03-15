@@ -31,8 +31,11 @@ class HomepageController < ApplicationController
            each{ |view| @view_urls[view.id] = view.href }
     end
 
-    # process browse only if not already rendered
-    unless (@browse_cached = read_fragment(app_helper.cache_key(
+    # process browse only if not already rendered and enabled
+    unless !CurrentDomain.theme.homepage.nil? &&
+        !CurrentDomain.theme.homepage.show_catalog.nil? &&
+        CurrentDomain.theme.homepage.show_catalog != true &&
+        (@browse_cached = read_fragment(app_helper.cache_key(
         'homepage-browse', { 'domain' => CurrentDomain.cname })))
       # move to /browse on interaction
       @base_url = browse_path

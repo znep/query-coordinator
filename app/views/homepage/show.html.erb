@@ -1,4 +1,8 @@
+<%- unless !CurrentDomain.theme.homepage.nil? &&
+        !CurrentDomain.theme.homepage.show_catalog.nil? &&
+        CurrentDomain.theme.homepage.show_catalog != true -%>
 <%= render_browse_includes %>
+<%- end -%>
 
 <% content_for :head do %>
   <title><%= CurrentDomain.strings.site_title %></title>
@@ -51,10 +55,14 @@
   <%- end -%>
 <%- end -%>
 
+<%- unless !CurrentDomain.theme.homepage.nil? &&
+        !CurrentDomain.theme.homepage.show_catalog.nil? &&
+        CurrentDomain.theme.homepage.show_catalog != true -%>
 <% prerendered_cache cache_key('homepage-browse', { 'domain' => CurrentDomain.cname }),
     @browse_cached, :expires_in => 10.minutes do %>
   <%= render_browse(true) %>
 <% end %>
+<%- end -%>
 
 <% content_for :js_footer do %>
   <%= include_javascripts 'homepage-show' %>

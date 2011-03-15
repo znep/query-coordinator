@@ -132,7 +132,7 @@ body
     visibility: hidden
     z-index: 1
 
-  .resizeIndicators
+  .controlIndicators
     display: none
     height: 100%
     left: 0
@@ -140,6 +140,7 @@ body
     position: absolute
     top: 0
     width: 100%
+    z-index: 2
     .resizeIndicator
       background-color: #eeeeee
       border: 1px solid #aaaaaa
@@ -153,20 +154,6 @@ body
       &.enabled
         background-color: #bbbbbb
         border: 1px solid #333333
-    .resizeSize
-      background-color: #dddddd
-      color: #000000
-      font-size: 1.1em
-      left: 50%
-      margin:
-        left: -2.6em
-        top: -0.7em
-      @include opacity(0.75)
-      padding: 0.25em
-      position: absolute
-      text-align: center
-      top: 50%
-      width: 5.2em
 
     .resizeNW, .resizeW, .resizeSW
       left: -4px
@@ -183,6 +170,38 @@ body
       top: 50%
     .resizeSW, .resizeS, .resizeSE
       bottom: -4px
+
+    .resizeSize
+      background-color: #dddddd
+      color: #000000
+      font-size: 1.1em
+      left: 50%
+      margin:
+        left: -3.725em
+        top: -0.7em
+      @include opacity(0.75)
+      padding: 0.25em
+      position: absolute
+      text-align: center
+      top: 50%
+      width: 7.2em
+
+    .settings
+      background-color: #ffffff
+      border: 1px solid $color_chrome_box_border
+        top: 0
+      @include border-radius(0, 0.3em)
+      padding: 0 0.3em
+      position: absolute
+      right: 6px
+      top: 0
+      z-index: 100000
+      .settingsMenuButton
+        @include sprite-menu-icons
+      .menuDropdown .menuEntry
+        @include sprite-menu-icons('.icon', false)
+        a
+          white-space: nowrap
 
   .ui-resizable-n, .ui-resizable-s
     height: 9px
@@ -212,9 +231,12 @@ body
       > .columnDrag
         visibility: visible
 
-    &.directHover, &.ui-resizable-resizing
-      > .resizeIndicators
+    &.directHover, &.ui-resizable-resizing, &.directMenuOpen
+      > .controlIndicators
         display: block
+
+    &.menuOpen > .controlIndicators
+      overflow: visible
 
     &.ui-resizable-resizing
       border-color: transparent
@@ -263,6 +285,8 @@ body
 
     &.acceptsColumns
       padding-right: 12px
+      > .controlIndicators .settings
+        right: 16px
 
     &.inDrag
       border-color: #999999
@@ -272,6 +296,15 @@ body
       @include box-shadow(0, 0, 3px, rgba(0, 0, 0, 0.5))
       > .rowDrag
         visibility: visible
+
+    &.directHover, &.directMenuOpen
+      > .controlIndicators
+        display: block
+
+    &.menuOpen
+      overflow: visible
+      > .controlIndicators
+        overflow: visible
 
     > .dropFinder
       left: -2px
@@ -360,9 +393,12 @@ body
       padding:
         bottom: 0
         top: 0
-  &.hover, &.ui-resizable-resizing
-    > .resizeIndicators
+  &.hover, &.ui-resizable-resizing, &.directMenuOpen
+    > .controlIndicators
       display: block
+
+  &.menuOpen > .controlIndicators
+    overflow: visible
 
 
 .navRenderType .navigation

@@ -301,6 +301,7 @@ javascripts:
   dataset-edit-rr:
     - public/javascripts/plugins/jquery.colorPicker.js
     - public/javascripts/util/events.js
+    - public/javascripts/controls/menu.js
     - public/javascripts/controls/navigation.js
     - public/javascripts/controls/rich-render-library.js
     - public/javascripts/controls/grid-sidebar/base-sidebar.js

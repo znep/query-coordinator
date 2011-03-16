@@ -26,7 +26,7 @@
         else
         {
             $('#ethicsSearchSpinner').fadeIn();
-            $searchWidget.attr('src', 'http://ethicsdata-search.socrata.com/search?q=' + escape($searchField.val()));
+            $searchWidget.attr('src', 'http://216.227.229.153/search?q=' + escape($searchField.val()));
         }
     };
 

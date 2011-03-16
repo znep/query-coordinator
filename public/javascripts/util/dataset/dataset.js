@@ -1839,7 +1839,7 @@ this.Dataset = Model.extend({
                         break;
                     case 'between':
                         if (!_.isArray(cv)) { return false; }
-                        return cv[0] < v && v < cv[1];
+                        return cv[0] <= v && v <= cv[1];
                         break;
                 }
                 return false;

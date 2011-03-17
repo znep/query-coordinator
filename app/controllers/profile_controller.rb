@@ -69,7 +69,7 @@ class ProfileController < ApplicationController
 
     @browse_in_container = true
     @opts = {:for_user => @user.id, :nofederate => true}
-    @default_params = {:sortBy => 'newest', :limitTo => 'datasets'}
+    @default_params = {:sortBy => 'newest'}
     @use_federations = false
     # Special param to use the /users/4-4/views.json call instead of the
     # search service.  For users with lots of views, this will be slow, and

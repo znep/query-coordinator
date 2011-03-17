@@ -217,7 +217,8 @@
                 var vizObj = this;
                 var handleChange = function(forceRowReload)
                 {
-                    if (forceRowReload) { vizObj._requireRowReload = true; }
+                    if (forceRowReload === true)
+                    { vizObj._requireRowReload = true; }
                     if (!vizObj._pendingReload && !vizObj._initialLoad)
                     {
                         vizObj._pendingReload = true;
@@ -509,7 +510,8 @@
                         var executable = views.shift();
                         if (executable) { executable(); }
                         vizObj.totalRowsForAllViews();
-                        if (rowsToFetch <= 0) { delete vizObj._pendingReload; }
+                        if (rowsToFetch <= 0 || !executable)
+                        { delete vizObj._pendingReload; }
                         callback.apply(vizObj, [data, view]);
                     });
                 });

@@ -401,6 +401,11 @@ blist.datasetControls.columnTip = function(col, $col, tipsRef, initialShow)
         col.renderTypeName + '">' +
         '<p class="name">' +
         $.htmlEscape(col.name).replace(/ /, '&nbsp;') + '</p>' +
+        (!$.isBlank(col.metadata.originalName) ?
+            '<p class="originalName"><span class="title">Original Name:</span> ' +
+            '<span class="value">' +
+                $.htmlEscape(col.metadata.originalName).replace(/ /, '&nbsp;') +
+            '</span>' : '') +
         (col.description !== undefined ?
             '<p class="description">' + $.htmlEscape(col.description) +
             '</p>' : '') +

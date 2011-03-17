@@ -287,6 +287,7 @@ this.Column = Model.extend({
     {
         var col = this;
         this.format = this.format || {};
+        this.metadata = this.metadata || {};
         if (!$.isBlank(this.dropDown))
         { this.dropDownList = this.dropDown; }
         delete this.dropDown;
@@ -405,6 +406,7 @@ this.Column = Model.extend({
         flags: true,
         format: true,
         id: true,
+        metadata: true,
         name: true,
         position: true,
         width: true

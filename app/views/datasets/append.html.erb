@@ -8,8 +8,8 @@
 
   <div class="mainContent">
     <%- redirect = request.protocol + request.host_with_port + @view.alt_href -%>
-    <% form_tag("/views/#{@view.id}/rows.txt?redirect=" + CGI.escape(redirect) +
-    "&method=" + @type, :id => "appendForm",
+    <% form_tag("/views/#{@view.id}/rows.txt?redirect=#{CGI.escape(redirect)}" +
+    "&method=#{@type}&authenticity_token=#{CGI::escape(form_authenticity_token)}", :id => "appendForm",
     :multipart => true, :class => 'commonForm') do %>
       <div class="fieldContent clearfix">
         <%- if @error_type -%>

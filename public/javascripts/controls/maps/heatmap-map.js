@@ -190,6 +190,18 @@
             });
 
             return $flyout;
+        },
+
+        resetMixinData: function()
+        {
+            var mapObj = this;
+
+            _.each(mapObj._featureSet.features, function(feature)
+            {
+                delete feature.attributes.description;
+                delete feature.attributes.quantity;
+                delete feature.attributes.redirect_to;
+            });
         }
     });
 

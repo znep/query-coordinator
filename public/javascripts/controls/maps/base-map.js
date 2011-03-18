@@ -207,6 +207,7 @@
                 mapObj.$dom().siblings('#mapLayers').addClass('hide');
 
                 mapObj.resetData();
+                mapObj.resetMixinData();
                 mapObj.populateLayers();
 
                 mapObj._markers = {};
@@ -311,6 +312,11 @@
             },
 
             resetData: function()
+            {
+                // Implement if you need to reset any data when the map is reset
+            },
+
+            resetMixinData: function()
             {
                 // Implement if you need to reset any data when the map is reset
             },

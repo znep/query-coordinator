@@ -62,6 +62,9 @@
             {
                 var chartObj = this;
                 chartObj._numSegments = 10;
+
+                chartObj.initializeFlyouts(chartObj.settings.view.displayFormat
+                    .descriptionColumns);
                 chartObj.initializeChart();
 
                 chartObj._origData = {
@@ -136,6 +139,10 @@
                 delete chartObj._pointSize;
                 delete chartObj._pointColor;
                 delete chartObj._gradient;
+                delete chartObj._flyoutConfig;
+
+                chartObj.initializeFlyouts(chartObj.settings.view.displayFormat
+                    .descriptionColumns);
 
                 chartObj.initializeChart();
             },
@@ -160,6 +167,110 @@
             resetData: function()
             {
                 // Implement me to reset data on a reload
+            },
+
+            initializeFlyouts: function(columns)
+            {
+                var chartObj = this;
+                chartObj._flyoutConfig = {};
+                _.each(chartObj.settings.view.displayFormat.valueColumns,
+                    function(vc, index)
+                    {
+                        var id = vc.tableColumnId;
+                        var config = chartObj._flyoutConfig[id] = {};
+
+                        config.column = vc;
+                        config.layout = chartObj.generateFlyoutLayout(columns, vc);
+
+                        if ($.isBlank(config.richRenderer))
+                        { chartObj.$flyoutTemplate(id); }
+                        config.richRenderer.setConfig(config.layout);
+
+                        if (chartObj.hasFlyout(id))
+                        { config.richRenderer.renderLayout(); }
+                        else
+                        { var $item = chartObj.$flyoutTemplate(id).empty(); }
+                    });
+            },
+
+            $flyoutTemplate: function(id)
+            {
+                var chartObj = this;
+                if (!chartObj._flyoutConfig[id].$template)
+                {
+                    var config = chartObj._flyoutConfig[id];
+                    config.$template = chartObj.$dom().siblings('.flyout'+id);
+                    if (config.$template.length == 0)
+                    {
+                        chartObj.$dom().after($.tag({tagName: 'div',
+                            'class': ['template', 'row', 'flyout'+id,
+                                'richRendererContainer', 'flyoutRenderer']}));
+                        config.$template = chartObj.$dom()
+                            .siblings('.flyoutRenderer.template.flyout'+id);
+                    }
+                    config.richRenderer = config.$template.richRenderer({
+                        columnCount: 1, view: chartObj.settings.view});
+                }
+                return chartObj._flyoutConfig[id].$template;
+            },
+
+            hasFlyout: function(id)
+            {
+                return this._flyoutConfig[id]
+                    && $.subKeyDefined(this._flyoutConfig[id], 'layout');
+            },
+
+            generateFlyoutLayout: function(columns, valueColumn)
+            {
+                var titleId = this.settings.view.displayFormat.fixedColumns[0];
+                return this.generateFlyoutLayoutDefault(
+                    _.compact([valueColumn].concat(columns)), titleId);
+            },
+
+            generateFlyoutLayoutDefault: function(columns, titleId)
+            {
+                // Override if you want a different layout
+                if (_.isEmpty(columns)) { return null; }
+
+                var col = {rows: []};
+
+                // Title row
+                if (!$.isBlank(titleId))
+                {
+                    col.rows.push({fields: [{type: 'columnData',
+                        tableColumnId: titleId}
+                    ], styles: {'border-bottom': '1px solid #666666',
+                        'font-size': '1.2em', 'font-weight': 'bold',
+                        'margin-bottom': '0.75em', 'padding-bottom': '0.2em'}});
+                }
+
+                _.each(columns, function(dc)
+                {
+                    var row = {fields: [
+                        {type: 'columnLabel', tableColumnId: dc.tableColumnId},
+                        {type: 'columnData', tableColumnId: dc.tableColumnId}
+                    ]};
+                    col.rows.push(row);
+                });
+                return {columns: [col]};
+            },
+
+            renderFlyout: function(row, tcolId, view)
+            {
+                var chartObj = this;
+
+                //var isPrimaryView = chartObj.settings.view == view;
+                var $item = chartObj.$flyoutTemplate(tcolId).clone()
+                        .removeClass('template');
+
+                // In composite views, we don't have a displayFormat, so there are no
+                // bits to show. Just point them at the row data in full.
+                //if (!isPrimaryView)
+                //{ $item.empty(); }
+                if (chartObj.hasFlyout(tcolId))
+                { chartObj._flyoutConfig[tcolId].richRenderer.renderRow($item, row); }
+
+                return $item;
             }
         }
     }));

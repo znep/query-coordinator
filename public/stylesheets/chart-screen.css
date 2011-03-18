@@ -43,3 +43,20 @@
     overflow: hidden;
     text-align: center;
 }
+
+#highcharts_tooltip
+{
+    border: solid 2px #ff0000;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    opacity: 0.85;
+    filter:alpha(opacity=85);
+    background-color: white;
+    padding: 5px;
+    font-family: "Lucida Grande","Lucida Sans Unicode",Verdana,Arial,Helvetica,sans-serif;
+    color: rgb(51, 51, 51);
+    font-size: 12px;
+    white-space: nowrap;
+    position: absolute;
+    z-index: 10000;
+}

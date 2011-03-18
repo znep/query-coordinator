@@ -18,7 +18,8 @@
             domId: 'chartRenderType',
             initFunction: 'socrataChart',
             javascripts: [{ assets: 'shared-chart' }],
-            stylesheets: ['chart-screen.css'],
+            stylesheets: ['chart-screen.css',
+                          '/styles/individual/rich-render-types.css'],
             scrollsInline: true
         },
 

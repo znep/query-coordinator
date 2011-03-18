@@ -81,6 +81,15 @@
                 'id="clearConditionalFormatting">here</a> to clear any current ' +
                 'conditional formatting rules.' };
 
+    var flyoutControls = {type: 'repeater',
+        name: 'displayFormat.descriptionColumns',
+        field: {text: 'Flyout Details', name: 'tableColumnId',
+               type: 'columnSelect', isTableColumn: true,
+               columns: {hidden: isEdit}},
+        minimum: 1, addText: 'Add Flyout Details'
+    };
+
+
 
     /*** Helpers ***/
 
@@ -327,7 +336,7 @@
             basicData(Dataset.chart.types.area,
                 Dataset.chart.numericTypes, 'Value'),
             basicAdv(Dataset.chart.types.area,
-                [legendPos, showLines, showPoints]),
+                [legendPos, showLines, showPoints, flyoutControls]),
 
 
             // Bar chart
@@ -336,13 +345,13 @@
             basicData(Dataset.chart.types.bar,
                 Dataset.chart.numericTypes, 'Values'),
             basicAdv(Dataset.chart.types.bar,
-                [legendPos, stacking('bar'), renderOther]),
+                [legendPos, stacking('bar'), renderOther, flyoutControls]),
 
 
             // Bubble chart
             configBubble,
             dataBubble,
-            basicAdv(Dataset.chart.types.bubble, [legendPos, showLine]),
+            basicAdv(Dataset.chart.types.bubble, [legendPos, showLine, flyoutControls]),
 
             // Column chart
             basicConfig(Dataset.chart.types.column,
@@ -350,12 +359,13 @@
             basicData(Dataset.chart.types.column,
                 Dataset.chart.numericTypes, 'Values'),
             basicAdv(Dataset.chart.types.column,
-                [legendPos, stacking('column'), renderOther]),
+                [legendPos, stacking('column'), renderOther, flyoutControls]),
 
 
             // Donut chart
             configDonut,
-            basicAdv(Dataset.chart.types.donut, [legendPos, pieJoinAngle]),
+            basicAdv(Dataset.chart.types.donut,
+                [legendPos, pieJoinAngle, flyoutControls]),
 
 
             // Line chart
@@ -367,19 +377,21 @@
                     {text: 'Smooth Line', name: 'displayFormat.smoothLine',
                     type: 'checkbox', defaultValue: false,
                     wizard: 'Choose whether or not you want spline smoothing ' +
-                        'applied to the line'}
+                        'applied to the line'},
+                 flyoutControls
                 ]),
 
 
             // Pie chart
             configPie,
-            basicAdv(Dataset.chart.types.pie, [legendPos, pieJoinAngle]),
+            basicAdv(Dataset.chart.types.pie,
+                [legendPos, pieJoinAngle, flyoutControls]),
 
 
             // Time line
             configTimeline,
             dataTimeline,
-            basicAdv(Dataset.chart.types.timeline, [legendPos]),
+            basicAdv(Dataset.chart.types.timeline, [legendPos, flyoutControls]),
 
 
             // Tree Map
@@ -405,7 +417,8 @@
                 conditionalFormattingWarning,
                 {text: 'Color', name: 'displayFormat.baseColor',
                     type: 'color', defaultValue: '#042656' }
-            ] }
+            ] },
+            basicAdv(Dataset.chart.types.treemap, [flyoutControls])
 
         ],
         finishBlock: {

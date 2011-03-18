@@ -93,6 +93,7 @@ javascripts:
   shared-chart:
     - public/javascripts/util/color.js
     - public/javascripts/controls/base-visualization.js
+    - public/javascripts/controls/rich-render-library.js
     - public/javascripts/controls/charts/base-chart.js
     - public/javascripts/controls/charts/highcharts.js
     - public/javascripts/controls/charts/jit.js

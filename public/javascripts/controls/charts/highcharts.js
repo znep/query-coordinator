@@ -260,6 +260,20 @@
             getRequiredJavascripts: function()
             {
                 return blist.assets.highcharts;
+            },
+
+            generateFlyoutLayout: function(columns, valueColumn)
+            {
+                var titleId = this.settings.view.displayFormat.fixedColumns[0];
+                var reqFields = [valueColumn];
+                if (this.settings.view.displayFormat.pointColor)
+                { reqFields.push(this.settings.view.displayFormat.pointColor); }
+                if (this.settings.view.displayFormat.pointSize)
+                { reqFields.push(this.settings.view.displayFormat.pointSize); }
+                _.each(_.uniq(valueColumn.supplementalColumns || []), function(col)
+                { reqFields.push({ tableColumnId: col }); });
+                columns = _.compact(_.uniq(reqFields).concat(columns));
+                return this.generateFlyoutLayoutDefault(columns, titleId);
             }
         }
     }));
@@ -368,8 +382,6 @@
         if (!_.isEmpty(chartObj._xCategories))
         { chartConfig.xAxis.categories = chartObj._xCategories; }
 
-        $.extend(chartConfig, { tooltip: { formatter: customTooltip }});
-
         if (isDateTime(chartObj))
         {
             chartConfig.xAxis.type = 'datetime';
@@ -418,6 +430,15 @@
         { typeConfig.lineWidth = parseInt(chartObj.settings
             .view.displayFormat.lineSize); }
 
+        typeConfig.point = { events: {
+            mouseOver: function() {
+                customTooltip(chartObj, this);
+            },
+            mouseOut: function() {
+                $("#highcharts_tooltip").hide();
+            }
+        }};
+
         // Type config goes under the type name
         chartConfig.plotOptions[seriesType] = typeConfig;
 
@@ -425,6 +446,8 @@
             && chartObj._yColumns.length > 1)
         { chartConfig.plotOptions.series = $.extend(chartConfig.plotOptions.series,
                                                     { stacking: 'normal' }); }
+
+        $.extend(chartConfig, { tooltip: { enabled: false }});
 
         // We don't actually enable exporting
         chartConfig.exporting = {
@@ -562,7 +585,6 @@
                         break;
                     }
                 }
-
             }
         }
         if (row && row.color)
@@ -573,6 +595,18 @@
             { point.states.hover = $.extend(point.states.hover,
                 { fillColor: '#'+$.rgbToHex($.brighten(point.fillColor)) }); }
         }
+
+        // Construct a fake row for the Other point
+        if (!row)
+        {
+            row = { id: 'Other', invalid: {}, error: {}, changed: {} };
+            row[chartObj._fixedColumns[seriesIndex].id] = 'Other';
+            row[chartObj._valueColumns[seriesIndex].column.id] = point.y;
+        }
+
+        point.flyoutDetails = chartObj.renderFlyout(row,
+            chartObj._valueColumns[seriesIndex].column.tableColumnId,
+            chartObj.settings.view);
 
         return point;
     };
@@ -732,23 +766,42 @@
         }
     };
 
-    var customTooltip = function()
+    var customTooltip = function(chartObj, point)
     {
-        if (!this.point.label.y)
-        { this.point.label.y = this.point.name || this.series.name; }
-
-        var tooltip = [];
-        var header = this.x || this.series.name;
-        if (header) { tooltip.push('<b>' + header + '</b>'); }
-
-        var self = this;
-        tooltip = _.uniq(tooltip.concat(_.map(['y', 'color', 'size'], function(prop)
+        var $box = chartObj.$dom().siblings('#highcharts_tooltip');
+        if ($box.length < 1)
         {
-            if (!self.point.pretty[prop]) { return null; }
-            return self.point.label[prop] + ': ' + self.point.pretty[prop];
-        })));
+            chartObj.$dom().after('<div id="highcharts_tooltip"></div>');
+            $box = chartObj.$dom().siblings('#highcharts_tooltip');
+        }
 
-        return _.compact(tooltip).join('<br/>');
+        if (!point.flyoutDetails) { $box.hide(); return; }
+
+        var $point = $(point.graphic.element);
+        var radius = parseInt($point[0].getAttribute('r'));
+        var position = $point.offset();
+        if (radius)
+        {
+            position.top += radius;
+            position.left += radius;
+        }
+        var offset = blist.$container.offset();
+        position.top -= offset.top;
+        position.left -= offset.left;
+        position.top += 10;
+        position.left += 10;
+
+        $box.empty()
+            .append(point.flyoutDetails)
+            .css({ top: position.top + 'px', left: position.left + 'px' })
+            .show();
+
+        if (blist.$container.width() <= position.left + $box.width())
+        { $box.css({ left: (blist.$container.width() - $box.width() - 20) + 'px' }); }
+
+        var too_low = blist.$container.height() - (position.top + $box.height());
+        if (too_low < 0)
+        { $box.css({ top: (position.top + too_low - 20) + 'px' }); }
     };
 
     var setCategories = function(chartObj)

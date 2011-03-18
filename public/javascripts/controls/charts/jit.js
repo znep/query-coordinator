@@ -54,8 +54,9 @@
                                     row.color ||
                                     chartObj.settings.view.displayFormat.baseColor ||
                                     chartObj.settings.nodeColor,
-                                amount:
-                                    row[chartObj._valueColumns[0].column.id] || 0
+                                flyoutDetails: chartObj.renderFlyout(row,
+                                    chartObj._valueColumns[0].column.tableColumnId,
+                                    chartObj.settings.view)
                             },
                             children: []
                         };
@@ -77,14 +78,19 @@
 
                 if (chartObj._remainder > 0)
                 {
+                    var row = { id: 'Other', changed: {}, error: {}, invalid: {} };
+                    row[chartObj._fixedColumns[0].id] = 'Other';
+                    row[chartObj._valueColumns[0].column.id] = chartObj._remainder;
                     chartObj._jitData.children.push( {
                         id: -1,
                         name: 'Other',
                         data: {
-                            amount: chartObj._remainder,
                             $area: chartObj._remainder,
                             $color: chartObj.settings.view.displayFormat.baseColor ||
-                                chartObj.settings.nodeColor
+                                chartObj.settings.nodeColor,
+                            flyoutDetails: chartObj.renderFlyout(row,
+                                chartObj._valueColumns[0].column.tableColumnId,
+                                chartObj.settings.view)
                         },
                         children: []
                     });
@@ -175,13 +181,7 @@
               offsetX: -10,
               offsetY: 10,
               onShow: function(tip, node, isLeaf, domElement) {
-                var html = "<div class=\"tip-title\">" + node.name
-                  + "</div><div class=\"tip-text\">";
-                var data = node.data;
-                if(data.amount) {
-                  html += chartObj._valueColumns[0].column.name + ": " + data.amount;
-                }
-                tip.innerHTML =  html;
+                $(tip).empty().append(node.data.flyoutDetails);
               }
             },
             onCreateLabel: function(domElement, node){

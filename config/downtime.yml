@@ -10,9 +10,3 @@
 # Similarly, if you leave off a 'start' param, the message will be displayed
 # until it is removed from this file
 
- 
-start: 2011-03-15t10:00:00.00-08:00
-end: 2011-03-19t21:00:00.00-08:00
-message: This Socrata-powered site may be unavailable for routine maintenance Saturday, March 19th from 5:00pm-9:00pm PST.
-
-

@@ -67,10 +67,12 @@
             {:action => 'metadata'} %>
       </li>
     <%- end -%>
+    <%- if module_available? :routing_approval -%>
       <li class="routingApproval">
         <%= link_to raw('<span class="icon"></span>Dataset Routing &amp; Approval'),
             {:action => 'routing_approval'} %>
       </li>
+    <%- end -%>
     <%- if current_user && current_user.is_admin? -%>
       <li class="internal">
         <%= link_to_unless_current \

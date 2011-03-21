@@ -684,9 +684,12 @@ class AdministrationController < ApplicationController
   end
 
   def routing_approval
+    check_module('routing_approval')
   end
 
   def routing_approval_queue
+    check_module('routing_approval')
+
     @params = params.reject {|k, v| k.to_s == 'controller' || k.to_s == 'action'}
     @limit = 10
     @opts = {:for_approver => true, :limit => @limit,
@@ -717,9 +720,12 @@ class AdministrationController < ApplicationController
   end
 
   def routing_approval_manage
+    check_module('routing_approval')
   end
 
   def approve_view
+    check_module('routing_approval')
+
     begin
       v = View.find(params[:id])
     rescue CoreServer::ResourceNotFound

@@ -18,4 +18,10 @@ module AdminHelper
       submit_tag(button_text, {:class => 'button'}.merge(button_opts))
     end
   end
+
+  def notification_interval_select_options(selected_option = nil)
+    options_for_select(Approval.notification_intervals.invert.sort { |a, b|
+      a.last.to_i - b.last.to_i }, (selected_option || '').to_s)
+  end
+
 end

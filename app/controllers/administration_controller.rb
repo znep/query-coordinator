@@ -683,13 +683,16 @@ class AdministrationController < ApplicationController
     end
   end
 
+
+  #
+  # Dataset Routing & Approval
+  #
+  before_filter :only => [:routing_approval, :routing_approval_queue, :approve_view, :routing_approval_manage, :routing_approval_manage_save] {check_module('routing_approval')}
+
   def routing_approval
-    check_module('routing_approval')
   end
 
   def routing_approval_queue
-    check_module('routing_approval')
-
     @params = params.reject {|k, v| k.to_s == 'controller' || k.to_s == 'action'}
     @limit = 10
     @opts = {:for_approver => true, :limit => @limit,
@@ -707,11 +710,11 @@ class AdministrationController < ApplicationController
     @view_results = @view_results.results
 
     # Fetch all the approval history in a batch
-    CoreServer::Base.connection.batch_request do
+    (CoreServer::Base.connection.batch_request do
       @view_results.each do |v|
         v.approval_history_batch
       end
-    end.each_with_index do |r, i|
+    end || []).each_with_index do |r, i|
       @view_results[i].set_approval_history(JSON.parse(r['response']))
     end
 
@@ -719,13 +722,7 @@ class AdministrationController < ApplicationController
     @approval_template = Approval.find()[0]
   end
 
-  def routing_approval_manage
-    check_module('routing_approval')
-  end
-
   def approve_view
-    check_module('routing_approval')
-
     begin
       v = View.find(params[:id])
     rescue CoreServer::ResourceNotFound
@@ -742,6 +739,69 @@ class AdministrationController < ApplicationController
       'Please allow a few minutes for the changes to be reflected on your home page'
 
     return(redirect_to (request.referer || {:action => 'routing_approval_queue'}))
+  end
+
+  def routing_approval_manage
+    # We only support one template for now, so assume it is the first one
+    @approval_template = Approval.find()[0] || Approval.new
+
+    @users = {}
+    (CoreServer::Base.connection.batch_request do
+      (@approval_template.stages || []).each do |s|
+        (s['approverUids'] || []).each do |userId|
+          User.find(userId, {}, true)
+        end
+      end
+    end || []).each do |r|
+      u = User.parse(r['response'])
+      @users[u.id] = u
+    end
+  end
+
+  def routing_approval_manage_save
+    if params[:template][:name].empty?
+      flash[:error] = "Please fill in all required fields"
+      return(redirect_to :action => 'routing_approval_manage')
+    end
+
+    app = Approval.find()[0]
+    max_ii = params[:template][:maxInactivityInterval].to_i
+    max_ii = 5 if (max_ii < 1)
+    attrs = {:name => params[:template][:name],
+      :requireApproval => params[:template][:requireApproval] == 'true',
+      :maxInactivityInterval => max_ii,
+      :stages => []}
+    if !app.nil?
+      app.stages.each do |s|
+        sp = params[:template][:stages][s['id'].to_s]
+        next if sp[:name].empty?
+        sp[:approverUids].map! {|u| (u.match(/\w{4}-\w{4}$/) || [])[0]}.compact!
+        attrs[:stages] << s.merge(sp)
+      end
+    end
+
+    if !params[:template][:stages][:new][:name].empty?
+      ns = params[:template][:stages][:new]
+      attrs[:stages] << {'name' => ns[:name],
+        'notificationInterval' => ns[:notificationInterval],
+        'approverUids' => ns[:approverUids],
+        'visible' => true,
+        'stageOrder' => (attrs[:stages].last ||
+                         {'stageOrder' => 0})['stageOrder'] + 1,
+        'notificationMode' => 'S'}
+    end
+
+    attrs[:stages].each {|s| s['visible'] = false}.last['visible'] = true
+
+    if app.nil?
+      Approval.create(attrs)
+    else
+      app.update_attributes!(attrs)
+    end
+
+    flash[:notice] = "Your data has been saved!"
+
+    return(redirect_to (request.referer || {:action => 'routing_approval_manage'}))
   end
 
   #

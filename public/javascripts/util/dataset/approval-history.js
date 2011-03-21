@@ -4,7 +4,10 @@ Dataset.modules['approvalHistory'] =
 {
     setApprovalTemplate: function(approval)
     {
-        this._approval = approval;
+        var ds = this;
+        ds._approval = approval;
+        ds.approvalHistory = _.select(ds.approvalHistory, function(ah)
+            { return !$.isBlank(ds._approval.getStage(ah.approvalStageId)); });
     },
 
     lastApproval: function()

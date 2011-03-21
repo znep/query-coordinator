@@ -6,6 +6,7 @@ this.Approval = Model.extend({
         this._super();
         $.extend(this, a);
 
+        this.stages = this.stages || [];
         this.stages.unshift({name: 'Not Ready Yet', id: 0});
     },
 

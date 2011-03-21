@@ -16,6 +16,81 @@
 
   <%= display_standard_flashes %>
 
+  <div id='routingApprovalManagement'>
+    <h2>Manage Routing and Approval Process</h2>
+    <% form_tag({:action => 'routing_approval_manage_save'},
+      {:class => 'commonForm'}) do %>
+      <div class='line'>
+        <label for='template_name' class='required'>Name</label>
+        <input type='text' id='template_name' name='template[name]'
+          value='<%= @approval_template.name %>' />
+      </div>
+      <div class='line'>
+        <label for='template_maxInactivityInterval'>Maximum inactivity (days)</label>
+        <input type='text' id='template_maxInactivityInterval'
+          name='template[maxInactivityInterval]' class='number'
+          value='<%= @approval_template.maxInactivityInterval %>' />
+      </div>
+      <div class='line'>
+        <label for='template_requireApproval'>Enable process</label>
+        <input type='checkbox' id='template_requireApproval'
+          name='template[requireApproval]' value='true'
+          <%= @approval_template.requireApproval ? checked='checked' : '' %> />
+      </div>
+
+      <h3>Stages</h3>
+      <p class='info deleteInfo'>Clear a stage name to delete that stage</p>
+      <ul>
+        <%- (@approval_template.stages || []).clone.push({'id' => 'new'}).
+          each do |stage| -%>
+        <li class='stageItem clearfix'>
+          <div class='line'>
+            <label for='template_stages_<%= stage['id'] %>_name'
+              class='required'>Name</label>
+            <input type='text' id='template_stages_<%= stage['id'] %>_name'
+              name="template[stages][<%= stage['id'] %>][name]"
+              value='<%= stage['name'] %>' />
+          </div>
+          <div class='line'>
+            <label for='template_stages_<%= stage['id'] %>_notificationInterval'>
+              Notification Interval
+            </label>
+            <%= select_tag("template[stages][#{stage['id']}][notificationInterval]",
+            notification_interval_select_options(stage['notificationInterval'])) %>
+          </div>
+          <div class='line'>
+            <label class='required'>Approvers</label>
+            <ul class='userList'>
+              <%- (stage['approverUids'] || []).each do |userId| -%>
+              <%- user = @users[userId] -%>
+              <li class='userItem'>
+              <input type='text'
+                name='template[stages][<%= stage['id'] %>][approverUids][]'
+                value='<%= user.href %>' />
+              <a href='<%= user.href %>'><%= user.displayName %></a>
+              </li>
+              <%- end -%>
+              <li class='userItem'>
+              <input type='text'
+                name='template[stages][<%= stage['id'] %>][approverUids][]' />
+              <span>(Enter a user ID or URL of their profile page)</span>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <%- end -%>
+      </ul>
+
+      <ul class="finishButtons clearfix">
+        <li>
+          <input class="button templateSave" type="submit" value="Save" />
+        </li>
+        <li>
+          <input class="button close" type='reset' value='Cancel' />
+        </li>
+      </ul>
+    <% end %>
+  </div>
 </div>
 
 <%- content_for :js_footer do -%>

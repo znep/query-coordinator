@@ -24,7 +24,7 @@ class Model
 
   #options - the primary lookup of the model object.  Usually id except for users where it is login
   #options could also be a hash of parameters.  see: user_test.rb
-  def self.find( options = nil, custom_headers = {})
+  def self.find( options = nil, custom_headers = {}, batch = false)
     if options.nil?
       options = Hash.new
     end
@@ -36,7 +36,8 @@ class Model
       path += "?#{options.to_param}" unless options.to_param.blank?
     end
 
-    parse(CoreServer::Base.connection.get_request(path, custom_headers))
+    result = CoreServer::Base.connection.get_request(path, custom_headers, batch)
+    batch ? nil : parse(result)
   end
 
   def self.find_under_user(options = nil)
@@ -213,8 +214,12 @@ class Model
 
   def update_attributes!(attributes)
     new_model = self.class.update_attributes!(self.id, attributes)
-    self.data = new_model.data
-    update_data.reject! {|key,value| value == data[key]}
+    # Requests should return a copy of the object, but some don't. If they
+    # don't, don't break (and go complain to the author!)
+    if !new_model.nil?
+      self.data = new_model.data
+      update_data.reject! {|key,value| value == data[key]}
+    end
     return self
   end
 

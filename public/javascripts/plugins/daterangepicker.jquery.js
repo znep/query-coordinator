@@ -16,6 +16,8 @@
  *  01.04.09 updated markup to new jQuery UI CSS Framework
  *  01.19.2008 changed presets hash to support different text 
  * --------------------------------------------------------------------
+ * Socrata changelog:
+ *  03.21.2011 made it so that month of.. and year uf.. queries will autoaccept selection on accept
  */
 jQuery.fn.daterangepicker = function(settings){
 	var rangeInput = jQuery(this);
@@ -217,6 +219,8 @@ jQuery.fn.daterangepicker = function(settings){
 	//preset menu click events	
 	jQuery.fn.clickActions = function(rp, rpPickers, doneBtn){
 		
+		doneBtn.data('daterangepicker-autoacceptrange', false);
+		
 		if(jQuery(this).is('.ui-daterangepicker-specificDate')){
 			doneBtn.hide();
 			rpPickers.show();
@@ -240,7 +244,8 @@ jQuery.fn.daterangepicker = function(settings){
 			setTimeout(function(){doneBtn.fadeIn();}, 400);
 		}
 		else if(jQuery(this).is('.ui-daterangepicker-theMonthOf')){
-			doneBtn.hide();
+			doneBtn.hide()
+			       .data('daterangepicker-autoacceptrange', true);
 			rpPickers.show();
 			rp.find('.title-start').text( options.presets.theMonthOf );
 			rp.find('.range-start')
@@ -251,7 +256,8 @@ jQuery.fn.daterangepicker = function(settings){
 			setTimeout(function(){doneBtn.fadeIn();}, 400);
 		}
 		else if(jQuery(this).is('.ui-daterangepicker-theYearOf')){
-			doneBtn.hide();
+			doneBtn.hide()
+			       .data('daterangepicker-autoacceptrange', true);
 			rpPickers.show();
 			rp.find('.title-start').text( options.presets.theYearOf );
 			rp.find('.range-start')
@@ -293,7 +299,14 @@ jQuery.fn.daterangepicker = function(settings){
 	rpPickers.find('.range-end').datepicker('setDate', inputDateB);
 	var doneBtn = jQuery('<button class="btnDone ui-state-default ui-corner-all">'+ options.doneButtonText +'</button>')
 	.click(function(){
-		rp.find('.ui-datepicker-current-day').trigger('click');
+	  if ($(this).data('daterangepicker-autoacceptrange') === true)
+	  {
+	    rp.find('.ui-datepicker-calendar:visible td:not(.ui-datepicker-unselectable):first').trigger('click');
+	  }
+	  else
+	  {
+	    rp.find('.ui-datepicker-current-day').trigger('click');
+	  }
 		hideRP();
 	})
 	.hover(

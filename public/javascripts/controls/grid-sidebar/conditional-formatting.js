@@ -103,14 +103,16 @@
         });
     };
 
+    var sidebar;
     var configName = 'visualize.conditionalFormatting';
     var config = {
         name: configName,
         priority: 10,
         title: 'Conditional Formatting',
-        subtitle: 'Conditional Formatting allows you to change the color of rows ' +
-            'based on customized criteria. Each row will get the color of the ' +
-            'first condition it matches.',
+        subtitle: 'Conditional Formatting allows you to change the background ' +
+            'color of rows based on custom criteria. Each row will be assigned ' +
+            'the color of the first matching condition.',
+        showCallback: function(sidebarObj) { sidebar = sidebarObj; },
         onlyIf: function()
         {
             return blist.dataset.visibleColumns.length > 0 && blist.dataset.valid;
@@ -200,10 +202,13 @@
             { cf.condition = cf.condition.children[0]; }
         });
 
-        blist.dataset.update({metadata: newMd}, false, true);
+        blist.dataset.update({metadata: newMd});
 
         sidebarObj.finishProcessing();
     };
+
+    blist.dataset.bind('clear_temporary', function()
+        { if (!$.isBlank(sidebar)) { sidebar.refresh(configName); } });
 
     $.gridSidebar.registerConfig(config);
 

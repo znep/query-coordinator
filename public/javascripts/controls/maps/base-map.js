@@ -533,6 +533,9 @@
                     }
                 }
 
+                if (row.color)
+                { details.color = row.color; }
+
                 if (row.meta)
                 {
                     var mapping = { 'mapIcon': 'icon',

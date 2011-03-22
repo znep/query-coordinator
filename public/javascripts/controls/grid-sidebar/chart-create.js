@@ -74,6 +74,13 @@
     var showLine = {text: 'Draw a Line', name: 'displayFormat.showLine',
         type: 'checkbox' };
 
+    var conditionalFormattingWarning = {type: 'note',
+        value: 'Colors may be overridden using <a href="#Conditional Formatting" ' +
+               'id="showConditionalFormatting">Conditional Formatting</a>. Click ' +
+                '<a href="#Clear Conditional Formatting" ' +
+                'id="clearConditionalFormatting">here</a> to clear any current ' +
+                'conditional formatting rules.' };
+
 
     /*** Helpers ***/
 
@@ -175,6 +182,7 @@
             title: 'Data Columns', name: chart.value + 'Data',
             onlyIf: onlyIfForChart(chart, false),
             fields: [
+                conditionalFormattingWarning,
                 {type: 'repeater', minimum: 1, addText: 'Add Data Column',
                     name: 'displayFormat.valueColumns',
                     field: {type: 'group', options: [
@@ -210,7 +218,8 @@
     var dataBubble = {
             title: 'Data Columns', name: 'bubbleData',
             onlyIf: onlyIfForChart(Dataset.chart.types.bubble, false),
-            fields: [ {text: 'Value', required: true, type: 'columnSelect',
+            fields: [ conditionalFormattingWarning,
+                      {text: 'Value', required: true, type: 'columnSelect',
                         isTableColumn: true, notequalto: 'valueCol',
                         name: 'displayFormat.valueColumns.0.tableColumnId',
                         columns: {type: Dataset.chart.numericTypes, hidden: isEdit},
@@ -235,6 +244,7 @@
             wizard: 'Select a column that contains the data for the donut slices'},
             minimum: 1, addText: 'Add Data Column'
         });
+    configDonut.fields.push(conditionalFormattingWarning);
     configDonut.fields.push({type: 'repeater', text: 'Colors',
         field: $.extend({}, colorOption, {name: 'displayFormat.colors.0'}),
         minimum: 6, maximum: 6, lineClass: 'colorArray',
@@ -251,6 +261,7 @@
             type: 'columnSelect', required: true, isTableColumn: true,
             columns: {type: Dataset.chart.numericTypes, hidden: isEdit},
             wizard: 'Select a column that contains the data for the pie slices'});
+    configPie.fields.push(conditionalFormattingWarning);
     configPie.fields.push({type: 'repeater', text: 'Colors',
         field: $.extend({}, colorOption, {name: 'displayFormat.colors.0'}),
         minimum: 6, maximum: 6, lineClass: 'colorArray',
@@ -262,7 +273,7 @@
         function(f) { return f.name == 'displayFormat.titleX'; });
     var dataTimeline = basicData(Dataset.chart.types.timeline,
         Dataset.chart.numericTypes, 'Value');
-    dataTimeline.fields[0].field.options.push(
+    dataTimeline.fields[1].field.options.push(
         {text: 'Title', type: 'columnSelect', isTableColumn: true,
         name: 'supplementalColumns.0',
         columns: {type: 'text', hidden: isEdit}},
@@ -391,6 +402,7 @@
             { title: 'Details', name: 'treemapDetails', selectable: true,
             onlyIf: onlyIfForChart(Dataset.chart.types.treemap, false),
             fields: [
+                conditionalFormattingWarning,
                 {text: 'Color', name: 'displayFormat.baseColor',
                     type: 'color', defaultValue: '#042656' }
             ] }
@@ -445,6 +457,20 @@
         sidebarObj.finishProcessing();
         sidebarObj.refresh(configName);
     };
+
+    $.live('#gridSidebar_chartCreate #showConditionalFormatting', 'click', function(e)
+    {
+        e.preventDefault();
+        blist.datasetPage.sidebar.show('visualize.conditionalFormatting');
+    });
+
+    $.live('#gridSidebar_chartCreate #clearConditionalFormatting', 'click', function(e)
+    {
+        e.preventDefault();
+        var metadata = $.extend(true, {}, blist.dataset.metadata);
+        delete metadata.conditionalFormatting;
+        blist.dataset.update({ metadata: metadata });
+    });
 
     blist.dataset.bind('clear_temporary', function()
         { if (!$.isBlank(sidebar)) { sidebar.refresh(configName); } });

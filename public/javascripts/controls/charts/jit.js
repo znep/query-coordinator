@@ -51,6 +51,7 @@
                             data: {
                                 $area: area,
                                 $color: (row.meta && row.meta.color) ||
+                                    row.color ||
                                     chartObj.settings.view.displayFormat.baseColor ||
                                     chartObj.settings.nodeColor,
                                 amount:

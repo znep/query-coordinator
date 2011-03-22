@@ -375,6 +375,13 @@
                     {text: 'Group Pins?', type: 'checkbox',
                         onlyIf: {field: 'displayFormat.type', value: 'google'},
                         name: 'displayFormat.clusterMarkers'},
+                    {type: 'note', onlyIf: {field: 'displayFormat.type', value: 'esri'},
+                        value: 'Colors may be overridden using ' +
+                        '<a href="#Conditional Formatting" ' +
+                        'id="showConditionalFormatting">Conditional Formatting</a>. ' +
+                        'Click <a href="#Clear Conditional Formatting" ' +
+                        'id="clearConditionalFormatting">here</a> to clear any ' +
+                        'current conditional formatting rules.' },
                     {text: 'Base Color', name: 'displayFormat.color', type: 'color',
                         onlyIf: {field: 'displayFormat.type', value: 'esri'},
                         defaultValue: "#0000ff"},
@@ -493,6 +500,20 @@
         sidebarObj.finishProcessing();
         sidebarObj.refresh(configName);
     };
+
+    $.live('#gridSidebar_mapCreate #showConditionalFormatting', 'click', function(e)
+    {
+        e.preventDefault();
+        blist.datasetPage.sidebar.show('visualize.conditionalFormatting');
+    });
+
+    $.live('#gridSidebar_mapCreate #clearConditionalFormatting', 'click', function(e)
+    {
+        e.preventDefault();
+        var metadata = $.extend(true, {}, blist.dataset.metadata);
+        delete metadata.conditionalFormatting;
+        blist.dataset.update({ metadata: metadata });
+    });
 
     blist.dataset.bind('clear_temporary', function()
         { if (!$.isBlank(sidebar)) { sidebar.refresh(configName); } });

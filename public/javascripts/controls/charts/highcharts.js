@@ -565,6 +565,14 @@
 
             }
         }
+        if (row && row.color)
+        {
+            point.color = row.color;
+            point.fillColor = row.color;
+            if (point.states)
+            { point.states.hover = $.extend(point.states.hover,
+                { fillColor: '#'+$.rgbToHex($.brighten(point.fillColor)) }); }
+        }
 
         return point;
     };

@@ -1645,6 +1645,18 @@
         contents.push(wrapper);
         switch (args.item.type)
         {
+            case 'note':
+                var val = _.isFunction(args.item.value) ?
+                    args.item.value(_.isEmpty(args.context.data) ?
+                        null : args.context.data) : args.item.value;
+                if (!$.isBlank(val) && !args.item.isInput)
+                {
+                    wrapper.contents = $.extend(commonAttrs(args.item),
+                        {tagName: 'span', contents: val});
+                }
+                else
+                { contents = []; }
+                break;
             case 'static':
                 var val = _.isFunction(args.item.value) ?
                     args.item.value(_.isEmpty(args.context.data) ?

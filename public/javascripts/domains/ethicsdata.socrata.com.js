@@ -32,10 +32,11 @@
         {
             $('.browseSection')
                .after('<div id="ethicsSearchSpinner" style="display:none"></div>' +
-                      '<iframe id="ethicsSearchWidget" style="height:0"></iframe>')
+                      '<iframe id="ethicsSearchWidget" style="height:0" frameBorder="0"></iframe>')
                .slideUp(doSearch);
             $('#ethicsSearchWidget').load(function()
             {
+                $(this).stop().animate({ opacity: 1 });
                 $('#ethicsSearchSpinner').stop().fadeOut();
             });
         }
@@ -46,7 +47,8 @@
         else
         {
             $('#ethicsSearchSpinner').fadeIn();
-            $searchWidget[0].contentWindow.location.replace('http://216.227.229.153/search?q=' + escape($searchField.val()));
+            $searchWidget.animate({ opacity: 0.4 });
+            $searchWidget[0].contentWindow.location.replace('http://ethics-search.socrata.com/search?q=' + escape($searchField.val()));
         }
     };
 
@@ -71,7 +73,7 @@
         if (q)
         {
             // we have a search query; run it.
-            $searchField.val(q);
+            $searchField.val(q).blur();
             doSearch();
         }
         else

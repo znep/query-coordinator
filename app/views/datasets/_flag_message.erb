@@ -28,6 +28,7 @@
 
       <div class="lined">
         <div><label for="from_address" class="required">Your Email:</label></div>
+        <p>Your email address will be shared with the owner of this dataset so they can reply.</p>
         <input id="fromAddress" name="from_address" type="text" value="<%= current_user.email unless (current_user.nil? || current_user.email.nil?) %>"/>
       </div>
 

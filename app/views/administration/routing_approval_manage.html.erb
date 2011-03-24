@@ -40,15 +40,15 @@
 
       <h3>Stages</h3>
       <p class='info deleteInfo'>Clear a stage name to delete that stage</p>
-      <ul>
-        <%- (@approval_template.stages || []).clone.push({'id' => 'new'}).
+      <ul class='stageList'>
+        <%- (@approval_template.stages || []).clone.push({'id' => 'new-0'}).
           each do |stage| -%>
         <li class='stageItem clearfix'>
           <div class='line'>
             <label for='template_stages_<%= stage['id'] %>_name'
               class='required'>Name</label>
             <input type='text' id='template_stages_<%= stage['id'] %>_name'
-              name="template[stages][<%= stage['id'] %>][name]"
+              name="template[stages][<%= stage['id'] %>][name]" class='stageName'
               value='<%= stage['name'] %>' />
           </div>
           <div class='line'>
@@ -67,10 +67,11 @@
               <input type='text'
                 name='template[stages][<%= stage['id'] %>][approverUids][]'
                 value='<%= user.href %>' />
-              <a href='<%= user.href %>'><%= user.displayName %></a>
+              <a href='<%= user.href %>'
+                class='userLink'><%= user.displayName %></a>
               </li>
               <%- end -%>
-              <li class='userItem'>
+              <li class='userItem newItem'>
               <input type='text'
                 name='template[stages][<%= stage['id'] %>][approverUids][]' />
               <span>(Enter a user ID or URL of their profile page)</span>

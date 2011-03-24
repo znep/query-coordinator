@@ -143,6 +143,8 @@ javascripts:
     - public/javascripts/util/approval.js
     - public/javascripts/util/dataset/approval-history.js
     - public/javascripts/controls/expander.js
+    - public/javascripts/plugins/jquery.awesomecomplete.js
+    - public/javascripts/controls/user-picker.js
     - public/javascripts/screens/admin-routing-approval.js
   admin-sdp-templates:
     - public/javascripts/controls/modal-dialogs.js

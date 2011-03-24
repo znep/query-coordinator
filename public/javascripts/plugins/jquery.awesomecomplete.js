@@ -45,7 +45,7 @@
                 if (config.typingDelay > 0)
                 {
                     clearTimeout(typingDelayPointer);
-                    typingDelayPointer = setTimeout(function() { processInput($this); });
+                    typingDelayPointer = setTimeout(function() { processInput($this); }, config.typingDelay);
                 }
                 else
                 {
@@ -103,6 +103,17 @@
                 }
             });
 
+	    // opera wants keypress rather than keydown to prevent the form submit
+            $this.keypress(function(event)
+            {
+                var $active = $list.children('li.' + config.activeItemClass);
+
+		if ((event.which == 13) && ($list.children('li.' + config.activeItemClass).length > 0))
+		{
+		    event.preventDefault();
+		}
+	    });
+
             // stupid hack to get around loss of focus on mousedown
             var mouseDown = false;
             var blurWait = false;
@@ -152,25 +163,24 @@
     // Data callback.  If you're using callbacks to a server,
     // call this on the autocompleted text field to complete the
     // callback process after you have your matching items.
-    $.fn.awesomecomplete.onData = function(data, term)
+    var onDataProxy = function($this, term)
     {
-        return this.each(function()
+        return function(data)
         {
-            var $this = $(this);
-            processData($this, data, (term || $this.val()));
-        });
-    };
-
+            processData($this, data, term);
+        };
+    }
 
 // private helpers
     var processInput = function($this)
     {
-        if (typeof dataMethod === 'function')
-            dataMethod($this.val(), $this);
+        var term = $this.val();
+        if (typeof $this.data('awesomecomplete-config').dataMethod === 'function')
+            $this.data('awesomecomplete-config').dataMethod(term, $this, onDataProxy($this, term));
         else
-            processData($this, $this.data('awesomecomplete-config').staticData, $this.val());
+            processData($this, $this.data('awesomecomplete-config').staticData, term);
     };
-    
+
     var processData = function($this, data, term)
     {
         var $list = $this.data('awesomecomplete-list');
@@ -195,13 +205,11 @@
                 if ((typeof dataItem[field] === 'function') || (typeof dataItem[field] === 'object'))
                     continue;
 
-                var skipField = false;
-
+                var skippedField = false;
                 for (var j = 0; j < config.dontMatch.length; j++)
                     if (field == config.dontMatch[j])
-                        skipField = true;
-
-                if (skipField)
+                        skippedField = true;
+                if (skippedField)
                     continue;
 
                 var dataString = dataItem[field].toString();
@@ -255,17 +263,16 @@
 
         results.sort(function(a, b)
         {
-            return (a.matchedTermCount == b.matchedTermCount) ?
-                   (b.matchCount - a.matchCount) :
-                   (b.matchedTermCount - a.matchedTermCount);
+            return config.sortFunction(a, b, term);
         });
+
         results = results.slice(0, config.resultLimit);
 
         for (var i in results)
         {
-            $('<li>' + config.renderFunction(results[i].dataItem, results[i].topMatch, results[i].originalDataItem) + '</li>')
+            $('<li>' + config.renderFunction(results[i].dataItem, results[i].topMatch, results[i].originalDataItem, config) + '</li>')
 				.data('awesomecomplete-dataItem', results[i].originalDataItem)
-                .data('awesomecomplete-value', config.valueFunction(results[i].originalDataItem))
+                .data('awesomecomplete-value', config.valueFunction(results[i].originalDataItem, config))
                 .appendTo($list)
                 .click(function()
                 {
@@ -291,19 +298,26 @@
     };
 
 // default functions
-    var defaultRenderFunction = function(dataItem, topMatch)
+    var defaultRenderFunction = function(dataItem, topMatch, config)
     {
-        if (topMatch === 'name')
+        if ((topMatch === config.nameField) || (topMatch === null))
             return '<p class="title">' + dataItem['name'] + '</p>';
         else
             return '<p class="title">' + dataItem['name'] + '</p>' +
                    '<p class="matchRow"><span class="matchedField">' + topMatch + '</span>: ' +
                         dataItem[topMatch] + '</p>';
     };
-
-    var defaultValueFunction = function(dataItem)
+    
+    var defaultValueFunction = function(dataItem, config)
     {
         return dataItem[config.nameField];
+    };
+
+    var defaultSortFunction = function(a, b, term)
+    {
+        return (a.matchedTermCount == b.matchedTermCount) ?
+               (b.matchCount - a.matchCount) :
+               (b.matchedTermCount - a.matchedTermCount);
     };
 
     $.fn.awesomecomplete.defaults = {
@@ -320,6 +334,7 @@
         noResultsMessage: undefined,
         onComplete: function(dataItem, context) {},
         showFunction: function(list) {},
+        sortFunction: defaultSortFunction,
         splitTerm: true,
         staticData: [],
         suggestionListClass: "autocomplete",

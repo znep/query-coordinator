@@ -780,15 +780,18 @@ class AdministrationController < ApplicationController
       end
     end
 
-    if !params[:template][:stages][:new][:name].empty?
-      ns = params[:template][:stages][:new]
-      attrs[:stages] << {'name' => ns[:name],
-        'notificationInterval' => ns[:notificationInterval],
-        'approverUids' => ns[:approverUids],
-        'visible' => true,
-        'stageOrder' => (attrs[:stages].last ||
-                         {'stageOrder' => 0})['stageOrder'] + 1,
-        'notificationMode' => 'S'}
+    params[:template][:stages].sort.each do |s|
+      if s[0].start_with?('new-') && !s[1][:name].empty?
+        ns = s[1]
+        attrs[:stages] << {'name' => ns[:name],
+          'notificationInterval' => ns[:notificationInterval],
+          'approverUids' => ns[:approverUids].
+            map {|u| (u.match(/\w{4}-\w{4}$/) || [])[0]}.compact,
+          'visible' => true,
+          'stageOrder' => (attrs[:stages].last ||
+                           {'stageOrder' => 0})['stageOrder'] + 1,
+          'notificationMode' => 'S'}
+      end
     end
 
     attrs[:stages].each {|s| s['visible'] = false}.last['visible'] = true

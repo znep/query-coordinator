@@ -121,8 +121,28 @@
       border: 1px solid $color_chrome_box_border
       padding: 0.5em
       margin-top: 0.5em
+      position: relative
+
+      > .remove
+        @include sprite-repeater-icons
+        left: 0.2em
+        position: absolute
+        top: 1.2em
+      &.newStage > .remove
+        display: none
+
+      .line
+        margin-left: 1.5em
 
       .userList
         margin-top: 0.3em
-        a
+        .userLink
           font-size: 1.2em
+        .remove
+          @include sprite-menu-icons
+          display: inline-block
+          margin:
+            bottom: -0.2em
+            left: 0.25em
+        .userPicker
+          z-index: 1

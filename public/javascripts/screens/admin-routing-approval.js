@@ -1,6 +1,8 @@
+/******* Approval queue section ******/
 $(function()
 {
     var $browse = $('.browseSection');
+    if ($browse.length < 1) { return; }
 
     var getDS = function($item)
     {
@@ -108,5 +110,105 @@ $(function()
         expanderExpandedClass: 'expanded',
         forceExpander: true,
         preExpandCallback: doExpansion
+    });
+});
+
+
+/******* Approval management section ******/
+$(function()
+{
+    var $manage = $('#routingApprovalManagement');
+    if ($manage.length < 1) { return; }
+
+    var hookUpUserPicker = function($li)
+    {
+        $li.find('input').userPicker({chooseCallback: function(user)
+        {
+            // User ID has already been set in field
+            var $newLi = $li.clone().removeClass('newItem');
+            $newLi.find('ul.autocomplete').remove();
+            $newLi.append($.tag({tagName: 'a', 'class': 'userLink',
+                href: user.getProfileUrl(),
+                contents: $.htmlEscape(user.displayName)}));
+            hookUpUserItem($newLi);
+            $li.before($newLi);
+            $li.find('input').val('').trigger('keyup');
+        }});
+    };
+
+    // Set up adding multiple stages
+    $manage.find('.stageItem:last').addClass('newStage');
+
+    var newStages = 0;
+    $manage.delegate('.newStage input.stageName', 'blur', function()
+    {
+        var $name = $(this);
+        if (!$.isBlank($name.val()))
+        {
+            var $lastStage = $name.closest('.stageItem');
+            var $newStage = $lastStage.clone().removeClass('newStage');
+            newStages++;
+            $newStage.find(':input').each(function()
+            {
+                var $i = $(this);
+                $i.attr('name', $i.attr('name').replace('new-0',
+                    'new-' + newStages));
+                $i.attr('id', $i.attr('id').replace('new-0', 'new-' + newStages));
+            });
+            $newStage.find('label').each(function()
+            {
+                var $l = $(this);
+                $l.attr('for', $l.attr('for').replace('new-0', 'new-' + newStages));
+            });
+
+            $lastStage.before($newStage);
+            hookUpUserPicker($newStage.find('.userList .userItem:last'));
+            $lastStage.find('input.stageName').val('');
+        }
+    });
+
+    // Set up nice delete for stages
+    $manage.find('.deleteInfo').addClass('hide');
+
+    $manage.find('.stageItem').each(function()
+    {
+        var $stage = $(this);
+        $stage.prepend($.tag({tagName: 'a', href: '#Remove', title: 'Remove Stage',
+            'class': 'remove', contents: {tagName: 'span', 'class': 'icon'}}));
+    });
+
+    $manage.delegate('.stageItem > .remove', 'click', function(e)
+    {
+        e.preventDefault();
+        $(this).closest('.stageItem').addClass('hide')
+            .find('input.stageName').val('');
+    });
+
+    // Set up nice add & delete for approvers in a stage
+    var hookUpUserItem = function($li)
+    {
+        $li.find('input').addClass('hide');
+        $li.append($.tag({tagName: 'a', href: '#Remove', title: 'Remove Approver',
+            'class': 'remove', contents: {tagName: 'span', 'class': 'icon'}}));
+    };
+
+    $manage.find('.stageItem .userList .userItem').each(function()
+    {
+        var $li = $(this);
+        if (!$li.hasClass('newItem'))
+        {
+            hookUpUserItem($li);
+        }
+        else
+        {
+            $li.find('span').addClass('hide');
+            hookUpUserPicker($li);
+        }
+    });
+
+    $manage.delegate('.stageItem .userList .remove', 'click', function(e)
+    {
+        e.preventDefault();
+        $(this).closest('.userItem').addClass('hide').find('input').val('');
     });
 });

@@ -30,8 +30,7 @@
                 <p>Import a Data File</p>
               </a>
             </li>
-            <%- if CurrentDomain.module_enabled?(:esri_integration) &&
-                   current_user && current_user.is_admin? -%>
+            <%- if CurrentDomain.module_enabled?(:esri_integration) -%>
             <li>
               <a href="#mapLayer" class="mapLayer" title="Choose this if you have an ESRI map layer which you would like to import into the catalog. You will need to provide a URL to the API point where the ESRI layer is stored.">
                 <span class="icon"></span>

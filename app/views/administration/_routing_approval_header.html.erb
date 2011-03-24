@@ -11,9 +11,11 @@
         <%= active == 'queue' ? "class='active'" : '' %>>
         Approval Queue
       </a></li>
+      <%- if CurrentDomain.user_can?(current_user, 'manage_approval') -%>
       <li><a href='<%= routing_approval_administration_path %>/manage'
         <%= active == 'manage' ? "class='active'" : '' %>>
         Approval Management
       </a></li>
+      <%- end -%>
     </ul>
   </div>

@@ -22,7 +22,9 @@
     {
         defaults:
         {
-            chooseCallback: function(dataItem) {}
+            chooseCallback: function(dataItem) {},
+            filterCallback: function(user) { return true; },
+            limit: 10
         },
 
         prototype:
@@ -68,11 +70,14 @@
             return;
         }
 
-        $.Tache.Get({url: '/api/search/users.json', data: {limit: 10, q: value},
+        $.Tache.Get({url: '/api/search/users.json',
+            data: {limit: pickerObj.settings.limit, q: value},
             success: function(results)
             {
-                callback(_.map(results[0].results || [], function(u)
-                    { return new User(u); }));
+                callback(_(results[0].results || []).chain()
+                    .map(function(u) { return new User(u); })
+                    .select(pickerObj.settings.filterCallback)
+                    .value());
             }});
     };
 

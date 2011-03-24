@@ -133,7 +133,9 @@ $(function()
             hookUpUserItem($newLi);
             $li.before($newLi);
             $li.find('input').val('').trigger('keyup');
-        }});
+        },
+        filterCallback: function(user) { return user.isMember(); },
+        limit: 50});
     };
 
     // Set up adding multiple stages

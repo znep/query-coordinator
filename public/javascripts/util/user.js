@@ -14,6 +14,11 @@ this.User = Model.extend({
         return this.id == blist.currentUserId;
     },
 
+    isMember: function()
+    {
+        return (this.rights || []).length > 0;
+    },
+
     /* TODO: Not used yet
     addFriend: function(user, successCallback, errorCallback)
     {

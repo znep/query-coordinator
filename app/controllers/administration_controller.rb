@@ -688,6 +688,8 @@ class AdministrationController < ApplicationController
   # Dataset Routing & Approval
   #
   before_filter :only => [:routing_approval, :routing_approval_queue, :approve_view, :routing_approval_manage, :routing_approval_manage_save] {check_module('routing_approval')}
+  before_filter :check_member, :only => [:routing_approval, :routing_approval_queue, :approve_view]
+  before_filter :only => [:routing_approval_manage, :routing_approval_manage_save] {|c| c.check_auth_level('manage_approval')}
 
   def routing_approval
   end

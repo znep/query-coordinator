@@ -1,20 +1,9 @@
 $(function()
 {
-    // state representing whether we have uploaded a file
-    var submittedView = null;
-    var isBlobby = false;
-    var datasetType = 'native';
-
-    // keep a reference so we don't lose it when we remove from DOM
-    var $uploadFilePane = $('.uploadFilePane');
-
-    var $wizard = $('.newDatasetWizard');
-
-// DATA OPS
-    var submitMetadata = function()
+    // DATA OPS
+    var formToViewMetadata = function(metadataForm)
     {
-        var formData = $('.newDatasetForm').serializeObject();
-        var viewData = formData.view;
+        var viewData = metadataForm.view;
         _.each(viewData, function(value, key)
         {
             if ($.isBlank(value))
@@ -28,304 +17,341 @@ $(function()
         {
             viewData.tags = viewData.tags.split(/\s*,\s*/);
         }
-        if (formData.privacy == 'public')
+        if (metadataForm.privacy == 'public')
         {
             viewData.flags = ['dataPublicRead'];
         }
 
-        // submit things
-        var successCallback = function(newDS)
-        {
-            submittedView = newDS;
-            $('.wizardButtons .next').fadeIn();
-            $wizard.trigger('wizard-next');
-        };
-        var mapLayerSuccessCallback = function(newDS)
-        {
-            submittedView = newDS;
-            if (!_.isUndefined(viewData.metadata))
-            {
-                viewData.metadata = submittedView.metadata;
-            }
-            else
-            {
-                viewData.metadata = $.extend(true, viewData.metadata,
-                    submittedView.metadata);
-            }
-            submittedView.update(viewData);
-            submittedView.save(successCallback, errorCallback);
-        };
-        var errorCallback = function(request)
-        {
-            // it's a bit bewildering if it happens too fast.
-            setTimeout(function()
-            {
-                $wizard.trigger('wizard-prev');
-                $('.wizardButtons .cancel, .wizardButtons .prev, .wizardButtons .next').fadeIn();
+        return viewData;
+    }
 
-                var message = (request.status == 500) ? 'An unknown error has occurred. Please try again in a bit.' :
-                    JSON.parse(request.responseText).message;
-                $('.metadataPane .flash')
-                    .text(message)
-                    .removeClass('warning notice')
-                    .addClass('error');
-            }, 2000);
-        };
-        if (submittedView === null)
-        {
-            if (datasetType == 'native')
-            {
-                new Dataset(viewData).saveNew(successCallback, errorCallback);
-            }
-            else if (datasetType == 'esri')
-            {
-                Dataset.createFromMapLayerUrl(viewData.esri_src,
-                    mapLayerSuccessCallback, errorCallback);
-            }
-        }
-        else
-        {
-            submittedView.update(viewData);
-            submittedView.save(successCallback, errorCallback);
-        }
-    };
+// WIZARD (outdented for readability)
+var $wizard = $('.newDatasetWizard');
+$wizard.wizard({
+    cancelPath: '/profile',
+    paneConfig: {
 
-// WIZARD
-    $wizard.wizard({
-        cancelPath: '/profile',
-        finishCallback: function()
-        {
-            submittedView.redirectTo();
-        },
-        paneConfig: {
-            'selectType': {
-                disableButtons: [ 'next' ]
+        'selectType': {
+            disableButtons: [ 'next' ],
+            onInitialize: function($pane, config, state, command)
+            {
+                // tooltips
+                $pane.find('.newKindList > li > a').each(function()
+                {
+                    var $this = $(this);
+                    $this.socrataTip({ message: $this.attr('title').clean(),
+                        shrinkToFit: false, killTitle: true });
+                });
+
+                // actions
+                $pane.find('.newKindList a.create').click(function(event)
+                {
+                    event.preventDefault();
+
+                    state.type = 'blist';
+                    command.next('metadata');
+                });
+                $pane.find('.newKindList a.upload').click(function(event)
+                {
+                    event.preventDefault();
+
+                    state.type = 'blist';
+                    // $('.metadataForm .mapLayerMetadata').hide();
+                    command.next('uploadFile');
+                });
+                $pane.find('.newKindList a.mapLayer').click(function(event)
+                {
+                    event.preventDefault();
+
+                    state.type = 'esri';
+                    command.next('metadata');
+                    // $('.metadataForm > div:not(.mapLayerMetadata, .attachmentsMetadata, .privacyMetadata)').hide();
+                });
+                $pane.find('.newKindList a.blobby').click(function(event)
+                {
+                    event.preventDefault();
+
+                    state.type = 'blobby';
+                    // $('.metadataForm .mapLayerMetadata').hide();
+                    command.next('uploadFile');
+                });
             },
-            'uploadFile': {
-                disableButtons: [ 'next' ]
-            }
-        }
-    });
-
-    // uniform it all
-    $wizard.find(':radio, :checkbox, select').uniform();
-
-// PAGE ZERO: SELECT TYPE
-    // activate
-    $('.selectTypePane').bind('wizard-paneActivated', function()
-    {
-        // reset everything, we've gone back to the first page
-        $uploadFilePane.insertAfter($('.selectTypePane'));
-        $('.metadataPane .flash').removeClass('warning notice error');
-        $('.metadataPane .headline').text('Please describe your data.');
-
-        datasetType = 'native';
-        $('.metadataForm > div').show();
-
-        if (submittedView !== null)
-        {
-            // delete whatever temporary cruft we created
-            submittedView.remove();
-            submittedView = null;
-        }
-    });
-    // tooltips
-    $('.newKindList > li > a').each(function()
-    {
-        var $this = $(this);
-        $this.socrataTip({ message: $this.attr('title').clean(),
-            shrinkToFit: false, killTitle: true });
-    });
-
-    // actions
-    $('.newKindList a.create').click(function(event)
-    {
-        event.preventDefault();
-        $uploadFilePane.remove();
-
-        $('.metadataForm .mapLayerMetadata').hide();
-
-        $wizard.trigger('wizard-next');
-    });
-    $('.newKindList a.upload').click(function(event)
-    {
-        event.preventDefault();
-        $('.uploadFilePane .headline').text('Please choose a file to import.');
-        $('.uploadFilePane .uploadFileFormats').show();
-        isBlobby = false;
-
-        $('.metadataForm .mapLayerMetadata').hide();
-
-        $wizard.trigger('wizard-next');
-    });
-    $('.newKindList a.mapLayer').click(function(event)
-    {
-        event.preventDefault();
-        $uploadFilePane.remove();
-
-        datasetType = 'esri';
-        $('.metadataForm > div:not(.mapLayerMetadata, .attachmentsMetadata, .privacyMetadata)').hide();
-
-        $wizard.trigger('wizard-next');
-    });
-    $('.newKindList a.blobby').click(function(event)
-    {
-        event.preventDefault();
-        $('.uploadFilePane .headline').text('Please choose a file to upload.');
-        $('.uploadFilePane .uploadFileFormats').hide();
-        isBlobby = true;
-
-        $('.metadataForm .mapLayerMetadata').hide();
-
-        $wizard.trigger('wizard-next');
-    });
-
-    // size the select list by how many items it contains (or it won't center)
-    $newKindList = $('.newKindList');
-    $newKindListItems = $newKindList.children();
-    $newKindList.width($newKindListItems.filter(':last').outerWidth(true) * $newKindListItems.length -
-        ($newKindListItems.filter(':last').outerWidth(true) - $newKindListItems.filter(':first').outerWidth(true)));
-
-// PAGE ONE: UPLOAD FILE
-    // upload button
-    var $uploadFileButton = $('.uploadFileButton');
-    var fileName = '';
-    var uploader = new AjaxUpload($uploadFileButton, {
-        action: $uploadFileButton.attr('href'),
-        autoSubmit: true,
-        name: 'importFileInput',
-        responseType: 'json',
-        onChange: function (file, ext)
-        {
-            if (!(isBlobby || (ext && /^(tsv|csv|xml|xls|xlsx)$/i.test(ext))))
+            onActivate: function($pane, config)
             {
-                $('.uploadFileName')
-                    .val('Please choose a CSV, TSV, XML, XLS, or XLSX file.')
-                    .addClass('error');
-                return false;
-            }
-            else
-            {
-                $('.uploadFileName')
-                    .val(file)
-                    .removeClass('error');
-                    fileName = file;
+                // size the select list by how many items it contains (or it won't center)
+                var $newKindList = $pane.find('.newKindList');
+                var $newKindListItems = $newKindList.children();
+                $newKindList.width($newKindListItems.filter(':last').outerWidth(true) * $newKindListItems.length -
+                    ($newKindListItems.filter(':last').outerWidth(true) - $newKindListItems.filter(':first').outerWidth(true)));
             }
         },
-        onSubmit: function (file, ext)
-        {
-            // refresh action url
-            var action = $uploadFileButton.attr('href');
-            if (isBlobby)
+
+
+
+        'uploadFile': {
+            disableButtons: [ 'next' ],
+            onActivate: function($pane, config, state, command)
             {
-                action += '?type=blobby';
-            }
-            uploader._settings.action = action;
+                if (!_.isUndefined(state.ajaxUpload))
+                {
+                    // destroy the old ajaxupload as best we can if it's there.
+                    state.ajaxUpload.disable();
+                    $(state.ajaxUpload._button).remove();
+                    delete state.ajaxUpload;
+                }
 
-            $('.uploadThrobber').addClass('uploading');
-        },
-        onComplete: function (file, response)
-        {
-            $('.uploadThrobber').removeClass('uploading');
-            if (response.error == true)
-            {
-                $('.uploadFileName')
-                    .val('There was a problem ' + (isBlobby ? 'uploading' : 'importing') +
-                         ' that file. Please make sure it is valid.')
-                    .addClass('error');
-                return false;
-            }
+                // update text
+                var isBlist = state.type == 'blist';
+                $pane.find('.headline').text('Please choose a file to ' + (isBlist ? 'import' : 'upload'));
+                $pane.find('.uploadFileFormats').toggle(isBlist);
 
-            // if it happens too fast it's bewildering
-            setTimeout(function()
-            {
-                $wizard.trigger('wizard-next');
-                submittedView = new Dataset(response);
-                $('.metadataPane .headline').html('Please describe &ldquo;' +
-                    $.htmlEscape(fileName) + '.&rdquo;');
-                $('.metadataPane #view_name')
-                    .val(submittedView.name)
-                    .removeClass('prompt');
-                $('.uploadFileName').val('No file selected yet.');
-            }, 1000);
-        }
-    });
-
-// PAGE TWO: DATASET METADATA
-    $('.metadataPane').bind('wizard-paneActivated', function()
-    {
-        // sometimes uniform gets confused
-        $.uniform.update($(this).find('input'));
-    });
-
-    // validation
-    $(".newDatasetForm").validate({
-        rules: {
-            "view[attributionLink]": "customUrl",
-            "view[esri_src]": 'customUrl'
-        },
-        messages: {
-            "view[name]": "Dataset name is required.",
-            "view[attributionLink]": "That does not appear to be a valid URL.",
-            'view[esri_src]': 'A valid ESRI map layer URL is required.'
-        }
-    });
-
-    // custom metadata validation
-    $(".newDatasetForm .customRequired").each(function()
-    {
-        $(this)
-            .find('input[type="text"]')
-                .rules('add', {
-                    required: {
-                        depends: function(element) {
-                            return $(element).is(':visible');
+                // uploader
+                var $uploadFileButton = $pane.find('.uploadFileButton');
+                var fileName = '';
+                var uploader = new AjaxUpload($uploadFileButton, {
+                    action: $uploadFileButton.attr('href'),
+                    autoSubmit: true,
+                    name: 'importFileInput',
+                    responseType: 'json',
+                    onChange: function (file, ext)
+                    {
+                        if (!((state.type == 'blobby') || (ext && /^(tsv|csv|xml|xls|xlsx)$/i.test(ext))))
+                        {
+                            $pane.find('.uploadFileName')
+                                .val('Please choose a CSV, TSV, XML, XLS, or XLSX file.')
+                                .addClass('error');
+                            return false;
                         }
+                        else
+                        {
+                            $pane.find('.uploadFileName')
+                                .val(file)
+                                .removeClass('error');
+                                fileName = file;
+                        }
+                    },
+                    onSubmit: function (file, ext)
+                    {
+                        // refresh action url
+                        var action = $uploadFileButton.attr('href');
+                        if (state.type == 'blobby')
+                        {
+                            action += '?type=blobby';
+                        }
+                        uploader._settings.action = action;
+
+                        $pane.find('.uploadThrobber').addClass('uploading');
+                    },
+                    onComplete: function (file, response)
+                    {
+                        $pane.find('.uploadThrobber').removeClass('uploading');
+                        if (response.error == true)
+                        {
+                            $pane.find('.uploadFileName')
+                                .val('There was a problem ' + ((state.type == 'blobby') ? 'uploading' : 'importing') +
+                                     ' that file. Please make sure it is valid.')
+                                .addClass('error');
+                            return false;
+                        }
+
+                        // if it happens too fast it's bewildering
+                        setTimeout(function()
+                        {
+                            $pane.find('uploadFileName').val('No file selected yet.');
+                            state.submittedView = new Dataset(response);
+                            command.next('metadata');
+
+                            // $('.metadataPane .headline').html('Please describe &ldquo;' +
+                            //     $.htmlEscape(fileName) + '.&rdquo;');
+                            // $('.metadataPane #view_name')
+                            //     .val(submittedView.name)
+                            //     .removeClass('prompt');
+                        }, 1000);
                     }
                 });
-    });
+            }
+        },
 
-    var toggleFunction = $('html').hasClass('ie7') ?
-        'toggle' : 'slideToggle';
-    $('.toggleFieldsetLink').click(function(event)
-    {
-        event.preventDefault();
-        $(event.target)
-            .toggleClass('expanded collapsed')
-            .closest('.customFieldsetWrapper')
-            .find('.customFieldset')
-                [toggleFunction]();
-    });
 
-    // cc cascade
-    $('#view_licenseId').change(function(event)
-    {
-        var $this = $(this);
-        if ($(this).val() == 'CC')
-        {
-            $this.attr('name', '');
-            $('#view_ccLicenseId').attr('name', 'view[licenseId]');
-            $('.creativeCommonsLine').slideDown();
-            $('#view_attribution')
-                .prev('label').addClass('required').end()
-                .rules('add', {
-                    required: true,
-                    messages: { required: 'You must specify the data provider (attribution) in a Creative Commons license.' }
+
+        'metadata': {
+            uniform: true,
+            onInitialize: function($pane, paneConfig, state)
+            {
+                // general validation
+                $('.newDatasetForm').validate({
+                    rules: {
+                        "view[attributionLink]": "customUrl",
+                        "view[esri_src]": 'customUrl'
+                    },
+                    messages: {
+                        "view[name]": "Dataset name is required.",
+                        "view[attributionLink]": "That does not appear to be a valid URL.",
+                        'view[esri_src]': 'A valid ESRI map layer URL is required.'
+                    }
                 });
-        }
-        else
-        {
-            $this.attr('name', 'view[licenseId]');
-            $('#view_ccLicenseId').attr('name', '');
-            $('.creativeCommonsLine').slideUp();
-            $('#view_attribution')
-                .prev('label').removeClass('required').end()
-                .rules('remove');
-        }
-    });
 
-    // attachments
-    $('.attachments').attachmentsEditor();
+                // custom metadata validation
+                $pane.find(".metadataForm .customRequired").each(function()
+                {
+                    $(this).find('input[type="text"]').rules('add', {
+                        required: {
+                            depends: function(element) {
+                                return $(element).is(':visible');
+                            }
+                        }
+                    });
+                });
+
+                // hide/show sections based on new dataset type
+                if (state.type == 'esri')
+                    $pane.find('.metadataForm > div:not(.mapLayerMetadata, .attachmentsMetadata, .privacyMetadata)').hide();
+                else
+                    $pane.find('.mapLayerMetadata').hide();
+
+                // collapsible custom metadata sections
+                var toggleFunction = ($.browser.msie && ($.browser.majorVersion == 7)) ?
+                    'toggle' : 'slideToggle';
+                $pane.find('.toggleFieldsetLink').click(function(event)
+                {
+                    event.preventDefault();
+                    $(event.target)
+                        .toggleClass('expanded collapsed')
+                        .closest('.customFieldsetWrapper')
+                        .find('.customFieldset')[toggleFunction]();
+                });
+
+                // cc cascade
+                $pane.find('#view_licenseId').change(function(event)
+                {
+                    var $this = $(this);
+                    if ($(this).val() == 'CC')
+                    {
+                        $this.attr('name', '');
+                        $pane.find('#view_ccLicenseId').attr('name', 'view[licenseId]');
+                        $pane.find('.creativeCommonsLine').slideDown();
+                        $pane.find('#view_attribution')
+                            .prev('label').addClass('required').end()
+                            .rules('add', {
+                                required: true,
+                                messages: { required: 'You must specify the data provider (attribution) in a Creative Commons license.' }
+                            });
+                    }
+                    else
+                    {
+                        $this.attr('name', 'view[licenseId]');
+                        $pane.find('#view_ccLicenseId').attr('name', '');
+                        $pane.find('.creativeCommonsLine').slideUp();
+                        $pane.find('#view_attribution')
+                            .prev('label').removeClass('required').end()
+                            .rules('remove');
+                    }
+                });
+
+                // attachments
+                $pane.find('.attachments').attachmentsEditor();
+            },
+            onActivate: function($pane, config, state)
+            {
+                if ($.subKeyDefined($, 'uniform.update'))
+                    $.uniform.update($pane.find(':radio, :checkbox, select'));
+
+                // render an error message if we have one
+                if (!_.isUndefined(state.error))
+                {
+                    $pane.find('.flash').text(state.error)
+                                        .removeClass('warning notice')
+                                        .addClass('error');
+                }
+                else
+                {
+                    $pane.find('.flash').empty().removeClass('warning notice error');
+                }
+            },
+            onNext: function($pane, state)
+            {
+                delete state.error; // presumably errors have been resolved
+                state.metadataForm = $('.newDatasetForm').serializeObject();
+                return 'working';
+            }
+        },
+
+
+
+        'working': {
+            disabledButtons: [ 'cancel', 'prev', 'next' ],
+            onActivate: function($pane, config, state, command)
+            {
+                // fire things off
+                var viewData = formToViewMetadata(state.metadataForm);
+
+                var successCallback = function(createdView)
+                {
+                    setTimeout(function()
+                    {
+                        state.submittedView = createdView;
+                        command.next('finish');
+                    }, 2000);
+                };
+
+                var errorCallback = function(request)
+                {
+                    // it's a bit bewildering if it happens too fast.
+                    setTimeout(function()
+                    {
+                        state.error = (request.status == 500) ?
+                                        'An unknown error has occurred. Please try again in a bit.' :
+                                        JSON.parse(request.responseText).message;
+                        command.prev();
+                    }, 2000);
+                };
+
+                var saveFormMetadata = function()
+                {
+                    if (_.isUndefined(state.submittedView))
+                    {
+                        new Dataset(viewData).saveNew(successCallback, errorCallback);
+                    }
+                    else
+                    {
+                        state.submittedView.update(viewData);
+                        state.submittedView.save(successCallback, errorCallback);
+                    }
+                };
+
+                if ((state.type == 'blist') || (state.type  == 'blobby'))
+                {
+                    saveFormMetadata();
+                }
+                else if (state.type == 'esri')
+                {
+                    Dataset.createFromMapLayerUrl(viewData.esri_src, function(createdView)
+                    {
+                        state.submittedView = createdView;
+
+                        // preserve metadata
+                        if (!_.isUndefined(viewData.metadata))
+                            $.extend(true, viewData.metadata, createdView.metadata);
+
+                        saveFormMetadata();
+                    }, errorCallback);
+                }
+            }
+        },
+
+
+
+        'finish': {
+            disabledButtons: [ 'cancel', 'prev' ],
+            isFinish: true,
+            onNext: function($pane, state)
+            {
+                state.submittedView.redirectTo();
+                return false;
+            }
+        }
+    }
+});
 
 // PAGE THREE: WORKING
     // activate

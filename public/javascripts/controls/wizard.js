@@ -8,79 +8,18 @@
         {
             var $wizard = $(this);
             var $paneContainer = $wizard.children('ul');
-            var $panes = $paneContainer.children('li');
-            var numPanes = $panes.length;
+            var $panes = $paneContainer.children('li').detach();
 
             var $currentPane = $panes.first();
-            var currentPaneIndex = 0;
             var currentPaneConfig = opts.paneConfig[$currentPane.attr('data-wizardPaneName')] || {};
 
-            // reshow panes
-            $panes.show();
+            var currentState = opts.state || {};
 
-            // positioning
-            var animateState = function()
-            {
-                $paneContainer.animate({ marginLeft: $wizard.outerWidth(false) * currentPaneIndex * -1 });
-                $wizard.animate({ height: $currentPane.outerHeight(true) });
+        // states
+            var paneStack = [$currentPane];
+            var stateStack = [currentState];
 
-                // prevent people from tabbing to the next page
-                $wizard.find(':input,a').attr('tabindex', -1);
-                $currentPane.find(':input,a').attr('tabindex', '');
-            };
-
-            var updateButtonState = function()
-            {
-                $prevButton.removeClass('disabled');
-                $nextButton.removeClass('disabled');
-
-                if ($currentPane.is(':first-child'))
-                {
-                    $prevButton.addClass('disabled');
-                }
-
-                if ($currentPane.is(':last-child'))
-                {
-                    $nextButton
-                        .addClass('default')
-                        .text(opts.finishText);
-                }
-                else
-                {
-                    $nextButton
-                        .removeClass('default')
-                        .text(opts.nextText);
-                }
-
-                var buttonLookup = {
-                    'prev': $prevButton,
-                    'next': $nextButton
-                }
-                _.each(currentPaneConfig.disableButtons || [], function(disable)
-                {
-                    buttonLookup[disable].addClass('disabled');
-                });
-            };
-            var prevPane = function()
-            {
-                $currentPane = $currentPane.prev();
-                currentPaneIndex--;
-                currentPaneConfig = opts.paneConfig[$currentPane.attr('data-wizardPaneName')] || {};
-
-                animateState();
-                updateButtonState();
-            };
-            var nextPane = function()
-            {
-                $currentPane = $currentPane.next();
-                currentPaneIndex++;
-                currentPaneConfig = opts.paneConfig[$currentPane.attr('data-wizardPaneName')] || {};
-
-                animateState();
-                updateButtonState();
-            };
-
-            // append control row
+        // append control row
             var $wizardButtons = $.tag({ tagName: 'ul', 'class': 'wizardButtons clearfix', contents: [
                 { tagName: 'li', 'class': 'cancel', contents: { tagName: 'a', 'class': 'button cancelButton',
                     contents: opts.cancelText, href: opts.cancelPath } },
@@ -93,21 +32,67 @@
 
             var $prevButton = $wizardButtons.find('.prevButton');
             var $nextButton = $wizardButtons.find('.nextButton');
+            var $cancelButton = $wizardButtons.find('.cancelButton');
+            var buttonLookup = {
+                cancel: $cancelButton,
+                prev: $prevButton,
+                next: $nextButton
+            }
 
-            $prevButton.click(function(event)
+        // positioning
+            var animateHoriz = function()
             {
-                event.preventDefault();
-                if ($prevButton.is('.disabled')) { return; }
-
-                prevPane();
-                $currentPane.trigger('wizard-paneActivated');
-            });
-
-            $nextButton.click(function(event)
+                $paneContainer.animate({ marginLeft: -1 * $currentPane.position().left }, function()
+                {
+                    // animation is done; hide the gone-pane
+                    $currentPane.siblings().remove();
+                    $paneContainer.css('marginLeft', 0);
+                });
+                animateVert();
+            };
+            var animateVert = function()
             {
-                event.preventDefault();
-                if ($nextButton.is('.disabled')) { return; }
+                $wizard.animate({ height: $currentPane.outerHeight(true) });
+            };
 
+        // flow
+            // NOTE: prevPane and nextPane are also exposed as extern controller points
+            var prevPane = function(prevAttr)
+            {
+                // figure out where we're going
+                var $prevPane;
+
+                if (_.isFunction(prevAttr))
+                    prevAttr = prevAttr($currentPane, currentState);
+                if ($.isBlank(prevAttr))
+                    prevAttr = 1;
+                if (prevAttr == 'beginning')
+                    prevAttr = paneStack.length - 1;
+
+                if (_.isNumber(prevAttr))
+                {
+                    paneStack.splice(paneStack.length - prevAttr);
+                    stateStack.splice(stateStack.length - prevAttr);
+                }
+                else
+                {
+                    return; // not really sure what we were told to do.
+                }
+
+                // grab new currents
+                var $prevPane = paneStack[paneStack.length - 1];
+                var prevState = stateStack[stateStack.length - 1];
+
+                // go there
+                $currentPane.before($prevPane);
+                $prevPane.show();
+                $paneContainer.css('marginLeft', -1 * $prevPane.outerWidth());
+                activatePane($prevPane, prevState);
+                animateHoriz();
+            };
+
+            var nextPane = function(nextAttr)
+            {
                 // I think this is a filed bug:
                 // http://plugins.jquery.com/content/valid-and-single-optional-elements
                 // but the issue is that the Contact Email field is failing
@@ -121,18 +106,113 @@
                     return;
                 }
 
-                if ($currentPane.is(':last-child'))
+                // figure out where we're going
+                var $nextPane;
+
+                if (_.isString(nextAttr))
                 {
-                    opts.finishCallback();
-                    return;
+                    $nextPane = $panes.filter('[data-wizardPaneName="' + nextAttr + '"]:first');
+                }
+                else if (_.isFunction(nextAttr))
+                {
+                    var next = nextAttr($currentPane, currentState);
+                    if (_.isString(next))
+                        $nextPane = $panes.filter('[data-wizardPaneName="' + next + '"]:first');
+                    else
+                        $nextPane = next;
+                }
+                else if (_.isUndefined(nextAttr))
+                {
+                    $nextPane = $currentPane.next();
                 }
 
-                nextPane();
-                $currentPane.trigger('wizard-paneActivated');
+                if ($.isBlank($nextPane) || _.isUndefined($nextPane.jquery))
+                    return false; // whatever we ended up with, it's not a $pane
+
+                // clone fresh copies
+                var nextState = $.extend({}, currentState);
+                $nextPane = $nextPane.clone(true);
+
+                // update stacks
+                stateStack.push(nextState);
+                paneStack.push($nextPane);
+
+                // go there
+                $currentPane.after($nextPane);
+                $nextPane.show();
+                activatePane($nextPane, nextState);
+                animateHoriz();
+            };
+
+            // takes a pane and readies it for being shown, including all callbacks
+            // the plugin consumer expects, and readying the general UI state.
+            var activatePane = function($pane, state)
+            {
+                var paneConfig = opts.paneConfig[$pane.attr('data-wizardPaneName')] || {};
+
+                // init command obj for consumers to trigger pane actions
+                var commandObj = {
+                    prev: prevPane,
+                    next: nextPane
+                };
+
+                // fire events people are expecting
+                if (!$pane.data('wizard-initialized'))
+                {
+                    if (_.isFunction(paneConfig.onInitialize))
+                        paneConfig.onInitialize($pane, paneConfig, state, commandObj);
+
+                    if (paneConfig.uniform === true)
+                        $pane.find(':radio, :checkbox, select').uniform();
+
+                    $pane.data('wizard-initialized', true);
+                }
+
+                if (_.isFunction(paneConfig.onActivate))
+                    paneConfig.onActivate($pane, paneConfig, state, commandObj);
+
+                // blur all text inputs to set hint text to correct state
+                $pane.find('input[type=text], textarea').blur();
+
+                // reset and reevaluate button states
+                $nextButton.text(opts.nextText).removeClass('disabled default');
+                $prevButton.text(opts.prevText).removeClass('disabled');
+                $cancelButton.removeClass('disabled');
+
+                if (paneStack.length === 1)
+                    $prevButton.addClass('disabled');
+
+                if (paneConfig.isFinish === true)
+                    $nextButton.text(opts.finishText).addClass('default');
+
+                _.each(paneConfig.disableButtons || [], function(disable)
+                {
+                    var $button = buttonLookup[disable] || {}; // a bit of bulletproofing
+                    if ($button.jquery) $button.addClass('disabled');
+                });
+
+                // set currents
+                $currentPane = $pane;
+                currentPaneConfig = paneConfig;
+                currentState = state;
+            };
+
+        // events
+            $prevButton.click(function(event)
+            {
+                event.preventDefault();
+                if ($prevButton.is('.disabled')) { return; }
+
+                prevPane(currentPaneConfig.onPrev);
             });
 
-            $wizard.bind('wizard-prev', function() { prevPane(); });
-            $wizard.bind('wizard-next', function() { nextPane(); });
+            $nextButton.click(function(event)
+            {
+                event.preventDefault();
+                if ($nextButton.is('.disabled')) { return; }
+
+                nextPane(currentPaneConfig.onNext);
+            });
 
             // sizing
             var adjustSize = function()
@@ -140,18 +220,19 @@
                 var targetWidth = $wizard.outerWidth(false);
                 $panes.width(targetWidth);
 
-                $paneContainer.width(targetWidth * numPanes);
+                $paneContainer.width(targetWidth * 2);
 
-                animateState();
+                animateHoriz();
             };
             $(document).resize(adjustSize);
-            adjustSize();
 
             // track the height of the current pane
-            setInterval(animateState, 2000);
+            setInterval(animateVert, 2000);
 
-            // default state
-            updateButtonState();
+            // go.
+            $currentPane.appendTo($paneContainer).show();
+            activatePane($currentPane, currentState);
+            adjustSize();
         });
     };
 
@@ -164,7 +245,24 @@
         paneConfig: {},
         // keys are values of data-wizardPaneName elems that correlate; subkeys are:
         //   * disableButtons: [ 'prev', 'next' ]
+        //   * isFinish: true/false
         //   * noValidation: true/false
-        prevText: 'Previous'
+        //   * onActivate: function($paneObject, paneConfig, state, commandObject)
+        //     + fires every time a pane is activated
+        //     + pane config will be evaluated *after* onActivate fires
+        //   * onInitialize: function($paneObject, paneConfig, state, commandObject)
+        //     + fires before onActivate the very first time a pane is activated
+        //   * onNext: one of:
+        //             + string => wizardPaneName to go to
+        //             + function($paneObject, state) => return wizardPaneName or $pane to go to
+        //             + leave unconfigured => next pane in the original list
+        //   * onPrev: one of:
+        //             + int => go back some number of stack items
+        //             + 'beginning' => go back to the first pane
+        //             + function($paneObject, state) => return int
+        //             + leave unconfigured => go back one in the stack
+        //   * uniform: true/false (default false)
+        prevText: 'Previous',
+        state: {}
     };
 })(jQuery);

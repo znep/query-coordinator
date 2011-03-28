@@ -160,12 +160,6 @@ $wizard.wizard({
                             $pane.find('.uploadFileName').val('No file selected yet.');
                             state.submittedView = new Dataset(response);
                             command.next('metadata');
-
-                            // $('.metadataPane .headline').html('Please describe &ldquo;' +
-                            //     $.htmlEscape(fileName) + '.&rdquo;');
-                            // $('.metadataPane #view_name')
-                            //     .val(submittedView.name)
-                            //     .removeClass('prompt');
                         }, 1000);
                     }
                 });
@@ -255,6 +249,14 @@ $wizard.wizard({
             {
                 if ($.subKeyDefined($, 'uniform.update'))
                     $.uniform.update($pane.find(':radio, :checkbox, select'));
+
+                // update display for blobby upload if necessary
+                if (!_.isUndefined(state.submittedView))
+                {
+                    $pane.find('.headline').html('Please describe &ldquo;' +
+                        $.htmlEscape(state.submittedView.name) + '.&rdquo;');
+                    $pane.find('#view_name').val(state.submittedView.name).blur();
+                }
 
                 // render an error message if we have one
                 if (!_.isUndefined(state.error))

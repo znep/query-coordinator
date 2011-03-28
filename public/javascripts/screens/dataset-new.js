@@ -157,7 +157,7 @@ $wizard.wizard({
                         // if it happens too fast it's bewildering
                         setTimeout(function()
                         {
-                            $pane.find('uploadFileName').val('No file selected yet.');
+                            $pane.find('.uploadFileName').val('No file selected yet.');
                             state.submittedView = new Dataset(response);
                             command.next('metadata');
 
@@ -273,6 +273,12 @@ $wizard.wizard({
                 delete state.error; // presumably errors have been resolved
                 state.metadataForm = $('.newDatasetForm').serializeObject();
                 return 'working';
+            },
+            onPrev: function($pane, state)
+            {
+                if (!_.isUndefined(state.submittedView))
+                    state.submittedView.remove();
+                return;
             }
         },
 

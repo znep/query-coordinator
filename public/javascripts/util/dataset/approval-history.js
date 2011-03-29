@@ -10,15 +10,26 @@ Dataset.modules['approvalHistory'] =
             { return !$.isBlank(ds._approval.getStage(ah.approvalStageId)); });
     },
 
-    lastApproval: function()
+    approvalStream: function()
     {
-        return _.last(_.select(this.approvalHistory,
-            function(ah) { return !ah.approvalRejected; })) || {approvalStageId: 0}
+        var ds = this;
+        if ($.isBlank(ds._approvalStream))
+        {
+            var stageItems = {};
+            _.each(ds.approvalHistory, function(ah) { stageItems[ah.approvalStageId] = ah; });
+            ds._approvalStream = [];
+            _.each(ds._approval.stages, function(a)
+            {
+                if (!$.isBlank(stageItems[a.id])) { ds._approvalStream.push(stageItems[a.id]); }
+            });
+        }
+        return ds._approvalStream;
     },
 
-    lastApprovalAction: function()
+    lastApproval: function(includeRejected)
     {
-        return _.last(this.approvalHistory) || {approvalStageId: 0}
+        return _.last(_.select(this.approvalHistory,
+            function(ah) { return includeRejected || !ah.approvalRejected; })) || {approvalStageId: 0}
     },
 
     approvalStage: function()

@@ -38,22 +38,22 @@ $(function()
                     },
                 '.lastApproved .user .type': function(v)
                     {
-                        return v.context.dataset.lastApprovalAction()
+                        return v.context.dataset.lastApproval(true)
                             .approvalRejected ? 'Rejected' : 'Approved';
                     },
                 '.lastApproved .user .value@data-userId': function(v)
                     {
-                        return v.context.dataset.lastApprovalAction()
+                        return v.context.dataset.lastApproval(true)
                             .approverUserUid || '';
                     },
                 '.lastApproved .date .type': function(v)
                     {
-                        return v.context.dataset.lastApprovalAction()
+                        return v.context.dataset.lastApproval(true)
                             .approvalRejected ? 'Rejection' : 'Approval';
                     },
                 '.lastApproved .date .value': function(v)
                     {
-                        return new Date((v.context.dataset.lastApprovalAction()
+                        return new Date((v.context.dataset.lastApproval(true)
                             .approvalDate || 0) * 1000).toString('d MMMM yyyy');
                     },
                 '.lastApproved@class+': function(v)
@@ -87,8 +87,7 @@ $(function()
         });
 
         var $stageIcon = $content.find('.stage .icon');
-        var stagesPassed = ds.approvalHistory.length;
-        _.each(ds.approvalHistory, function(ah)
+        _.each(ds.approvalStream(), function(ah)
             {
                 $stageIcon.append($.tag({tagName: 'span',
                     title: (blist.routingApproval.approvalTemplate
@@ -96,7 +95,7 @@ $(function()
                     'class': ah.approvalRejected ? 'rejected' : 'on'}));
             });
         // Subtract an extra one because we add a dummy stage 0 into approval
-        _(blist.routingApproval.approvalTemplate.stages.length - stagesPassed - 1)
+        _(blist.routingApproval.approvalTemplate.stages.length - ds.approvalStream().length - 1)
             .times(function()
             { $stageIcon.append($.tag({tagName: 'span', 'class': 'off'})); });
     };

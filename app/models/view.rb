@@ -811,8 +811,8 @@ class View < Model
     (Time.now - approval.maxInactivityInterval.day).to_i > latest_date
   end
 
-  def last_approval
-    approval_history.select {|ah| !ah['approvalRejected']}.last
+  def last_approval(include_rejected = false)
+    approval_history.select {|ah| include_rejected || !ah['approvalRejected']}.last
   end
 
   def next_approval_stage(approval)

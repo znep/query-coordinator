@@ -96,15 +96,19 @@
                 </div>
               </td>
               <td class='actions'>
-                <%- if ((v.next_approval_stage(@approval_template) ||
-                  {})['approverUids'] || []).include?(current_user.id) -%>
+                <%- if CurrentDomain.user_can?(current_user, 'manage_approval') ||
+                  ((v.next_approval_stage(@approval_template) ||
+                    {})['approverUids'] || []).include?(current_user.id) -%>
                 <div>
                   <% form_button({:action => 'approve_view', :id => v.id,
                       :approved => 'yes'}, 'Approve', {},
                     {:class => 'button approve'}) %>
+                  <%- la = v.last_approval(true) -%>
+                  <%- if la.nil? || !la['approvalRejected'] -%>
                   <% form_button({:action => 'approve_view', :id => v.id,
                       :approved => 'no'}, 'Reject', {},
                     {:class => 'button reject'}) %>
+                  <%- end -%>
                 </div>
                 <%- end -%>
               </td>

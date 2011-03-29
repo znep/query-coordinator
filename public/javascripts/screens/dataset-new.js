@@ -104,15 +104,19 @@ $wizard.wizard({
                 $pane.find('.uploadFileFormats').toggle(isBlist);
 
                 // uploader
+                var uploadEndpoint = '/imports.txt';
+                if (state.type == 'blobby')
+                    uploadEndpoint += '?type=blobby';
+
                 var $uploadFileButton = $pane.find('.uploadFileButton');
-                var fileName = '';
-                var uploader = state.ajaxUpload = new AjaxUpload($uploadFileButton, {
-                    action: $uploadFileButton.attr('href'),
-                    autoSubmit: true,
-                    name: 'importFileInput',
-                    responseType: 'json',
-                    onChange: function (file, ext)
+                var $uploadThrobber = $pane.find('.uploadThrobber');
+                var uploader = blist.fileUploader({
+                    element: $uploadFileButton[0],
+                    action: uploadEndpoint,
+                    multiple: false,
+                    onSubmit: function(id, fileName)
                     {
+                        var ext = (fileName.indexOf('.') >= 0) ? fileName.replace(/.*\./, '') : '';
                         if (!((state.type == 'blobby') || (ext && /^(tsv|csv|xml|xls|xlsx)$/i.test(ext))))
                         {
                             $pane.find('.uploadFileName')
@@ -120,31 +124,28 @@ $wizard.wizard({
                                 .addClass('error');
                             return false;
                         }
-                        else
-                        {
-                            $pane.find('.uploadFileName')
-                                .val(file)
-                                .removeClass('error');
-                                fileName = file;
-                        }
-                    },
-                    onSubmit: function (file, ext)
-                    {
-                        // refresh action url
-                        var action = $uploadFileButton.attr('href');
-                        if (state.type == 'blobby')
-                        {
-                            action += '?type=blobby';
-                        }
-                        uploader._settings.action = action;
 
-                        $pane.find('.uploadThrobber').addClass('uploading');
+                        $pane.find('.uploadFileName')
+                            .val(fileName)
+                            .removeClass('error');
+
+                        $uploadThrobber.slideDown()
+                                       .find('.text').text('Uploading your file...');
                     },
-                    onComplete: function (file, response)
+                    onProgress: function(id, fileName, loaded, total)
                     {
-                        $pane.find('.uploadThrobber').removeClass('uploading');
+                        if (loaded < total)
+                            $uploadThrobber.find('.text').text('Uploading your file (' +
+                                                               (Math.round(loaded / total * 10) / 10) + '% of ' +
+                                                               uploader._formatSize(total) + ')...');
+                        else
+                            $uploadThrobber.find('.text').text('Analyzing your file...');
+                    },
+                    onComplete: function(id, fileName, response)
+                    {
                         if (response.error == true)
                         {
+                            $uploadThrobber.slideUp();
                             $pane.find('.uploadFileName')
                                 .val('There was a problem ' + ((state.type == 'blobby') ? 'uploading' : 'importing') +
                                      ' that file. Please make sure it is valid.')
@@ -155,6 +156,7 @@ $wizard.wizard({
                         // if it happens too fast it's bewildering
                         setTimeout(function()
                         {
+                            $uploadThrobber.slideUp();
                             $pane.find('.uploadFileName').val('No file selected yet.');
                             state.submittedView = new Dataset(response);
                             command.next('metadata');

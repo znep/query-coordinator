@@ -63,21 +63,42 @@
       width: 40em
       &.error
         color: #b33
+
     .uploadFileButton
+      @include button
+      display: inline-block
+      height: auto
+      line-height: auto
+      margin: 0 0.3em
+      padding: 0
+      position: relative
+      top: 0.8em
       .ie7 &
         bottom: 1.3em
-        position: relative
+
+      .fileUploader-upload-button
+        color: #333
+        font-size: 1.2em
+        font-weight: bold
+        padding: 0.5em 1em
+      .fileUploader-upload-list
+        display: none
+
     .uploadThrobber
-      @include throbber-icon
-      display: inline-block
+      display: none
+      font-size: 1.1em
       line-height: 16px
-      margin-left: 1em
-      margin-right: -12em
+      margin: 0 auto 2em
+      text-align: center
       text-indent: 2em
-      visibility: hidden
-      width: 12em
-      &.uploading
-        visibility: visible
+      width: 25em
+
+      .icon
+        @include throbber-icon
+        display: inline-block
+        margin-right: 0.4em
+        position: relative
+        top: 0.3em
 
     .uploadFileFormats
       color: #666

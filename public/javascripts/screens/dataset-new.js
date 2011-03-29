@@ -1,29 +1,30 @@
 $(function()
 {
-    // DATA OPS
-    var formToViewMetadata = function(metadataForm)
+
+// DATA OPS
+var formToViewMetadata = function(metadataForm)
+{
+    var viewData = metadataForm.view;
+    _.each(viewData, function(value, key)
     {
-        var viewData = metadataForm.view;
-        _.each(viewData, function(value, key)
+        if ($.isBlank(value))
         {
-            if ($.isBlank(value))
-            {
-                delete viewData[key];
-            }
-        });
-
-        // manually update some things in JSON
-        if (!_.isUndefined(viewData.tags))
-        {
-            viewData.tags = viewData.tags.split(/\s*,\s*/);
+            delete viewData[key];
         }
-        if (metadataForm.privacy == 'public')
-        {
-            viewData.flags = ['dataPublicRead'];
-        }
+    });
 
-        return viewData;
+    // manually update some things in JSON
+    if (!_.isUndefined(viewData.tags))
+    {
+        viewData.tags = viewData.tags.split(/\s*,\s*/);
     }
+    if (metadataForm.privacy == 'public')
+    {
+        viewData.flags = ['dataPublicRead'];
+    }
+
+    return viewData;
+}
 
 // WIZARD (outdented for readability)
 var $wizard = $('.newDatasetWizard');
@@ -56,7 +57,6 @@ $wizard.wizard({
                     event.preventDefault();
 
                     state.type = 'blist';
-                    // $('.metadataForm .mapLayerMetadata').hide();
                     command.next('uploadFile');
                 });
                 $pane.find('.newKindList a.mapLayer').click(function(event)
@@ -65,14 +65,12 @@ $wizard.wizard({
 
                     state.type = 'esri';
                     command.next('metadata');
-                    // $('.metadataForm > div:not(.mapLayerMetadata, .attachmentsMetadata, .privacyMetadata)').hide();
                 });
                 $pane.find('.newKindList a.blobby').click(function(event)
                 {
                     event.preventDefault();
 
                     state.type = 'blobby';
-                    // $('.metadataForm .mapLayerMetadata').hide();
                     command.next('uploadFile');
                 });
             },
@@ -108,7 +106,7 @@ $wizard.wizard({
                 // uploader
                 var $uploadFileButton = $pane.find('.uploadFileButton');
                 var fileName = '';
-                var uploader = new AjaxUpload($uploadFileButton, {
+                var uploader = state.ajaxUpload = new AjaxUpload($uploadFileButton, {
                     action: $uploadFileButton.attr('href'),
                     autoSubmit: true,
                     name: 'importFileInput',
@@ -250,7 +248,7 @@ $wizard.wizard({
                 if ($.subKeyDefined($, 'uniform.update'))
                     $.uniform.update($pane.find(':radio, :checkbox, select'));
 
-                // update display for blobby upload if necessary
+                // update display for upload/import if necessary
                 if (!_.isUndefined(state.submittedView))
                 {
                     $pane.find('.headline').html('Please describe &ldquo;' +

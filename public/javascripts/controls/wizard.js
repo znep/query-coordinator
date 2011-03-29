@@ -45,7 +45,7 @@
                 $paneContainer.animate({ marginLeft: -1 * $currentPane.position().left }, function()
                 {
                     // animation is done; hide the gone-pane
-                    $currentPane.siblings().remove();
+                    $currentPane.siblings().detach();
                     $paneContainer.css('marginLeft', 0);
                 });
                 animateVert();
@@ -80,8 +80,8 @@
                 }
 
                 // grab new currents
-                var $prevPane = paneStack[paneStack.length - 1];
-                var prevState = stateStack[stateStack.length - 1];
+                var $prevPane = _.last(paneStack);
+                var prevState = _.last(stateStack);
 
                 // go there
                 $currentPane.before($prevPane);
@@ -109,17 +109,13 @@
                 // figure out where we're going
                 var $nextPane;
 
+                if (_.isFunction(nextAttr))
+                {
+                    nextAttr = nextAttr($currentPane, currentState);
+                }
                 if (_.isString(nextAttr))
                 {
                     $nextPane = $panes.filter('[data-wizardPaneName="' + nextAttr + '"]:first');
-                }
-                else if (_.isFunction(nextAttr))
-                {
-                    var next = nextAttr($currentPane, currentState);
-                    if (_.isString(next))
-                        $nextPane = $panes.filter('[data-wizardPaneName="' + next + '"]:first');
-                    else
-                        $nextPane = next;
                 }
                 else if (_.isUndefined(nextAttr))
                 {
@@ -127,7 +123,7 @@
                 }
 
                 if ($.isBlank($nextPane) || _.isUndefined($nextPane.jquery))
-                    return false; // whatever we ended up with, it's not a $pane
+                    return; // whatever we ended up with, it's not a $pane
 
                 // clone fresh copies
                 var nextState = $.extend({}, currentState);
@@ -254,7 +250,7 @@
         //     + fires before onActivate the very first time a pane is activated
         //   * onNext: one of:
         //             + string => wizardPaneName to go to
-        //             + function($paneObject, state) => return wizardPaneName or $pane to go to
+        //             + function($paneObject, state) => return wizardPaneName to go to
         //             + leave unconfigured => next pane in the original list
         //   * onPrev: one of:
         //             + int => go back some number of stack items

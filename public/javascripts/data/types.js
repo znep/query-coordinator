@@ -926,6 +926,9 @@ blist.namespace.fetch('blist.data.types');
     var nonNumericAggs = _.select(aggs, function(a)
     { return 'count' == a.value; });
 
+    // NOTE: New filter types also need an analogue template in
+    // controls/maps/external-esri-map.js#transformFilterToLayerDefinition
+    // -- michael.chui@socrata.com
     var filterConditions = {
         textual:    [ { value: "EQUALS", text: "equals" },
                       { value: "NOT_EQUALS", text: "does not equal" },

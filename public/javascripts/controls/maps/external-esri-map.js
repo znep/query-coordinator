@@ -202,6 +202,7 @@
                 'NOT_EQUALS':             '<%= field %> != <%= val1 %>',
                 'STARTS_WITH':            '<%= field %> LIKE \'<%= val1 %>%\'',
                 'CONTAINS':               '<%= field %> LIKE \'%<%= val1 %>%\'',
+                'NOT_CONTAINS':           '<%= field %> NOT LIKE \'%<%= val1 %>%\'',
                 'IS_NOT_BLANK':           '<%= field %> IS NOT NULL',
                 'IS_BLANK':               '<%= field %> IS NULL',
                 'LESS_THAN':              '<%= field %> < <%= val1 %>',
@@ -214,7 +215,7 @@
             var transformFilterToSQL = function (filter)
             {
                 var fieldName = processFilter(filter.children[0]);
-                var field = _.detect(layer.featureLayers[layer_id].fields,
+                var field = _.detect(layer.featureLayers[0].fields,
                     function(field) { return field.name == fieldName });
 
                 var value = [];
@@ -233,7 +234,8 @@
 
                 // TODO: Need to figure out which types are PostgreSQL strings.
                 if (_.include(["String"], field.type.substr(13))
-                    && !_.include(['STARTS_WITH', 'CONTAINS'], filter.value))
+                    && !_.include(['STARTS_WITH', 'CONTAINS', 'NOT_CONTAINS'],
+                                  filter.value))
                 { value = _.map(value, function(v)
                     { return "'" + v.replace(/'/g, "\\'") + "'"; }); }
                 else

@@ -110,7 +110,7 @@ $wizard.wizard({
 
                 var $uploadFileButton = $pane.find('.uploadFileButton');
                 var $uploadThrobber = $pane.find('.uploadThrobber');
-                var uploader = blist.fileUploader({
+                var uploader = state.ajaxUpload = blist.fileUploader({
                     element: $uploadFileButton[0],
                     action: uploadEndpoint,
                     multiple: false,
@@ -136,7 +136,7 @@ $wizard.wizard({
                     {
                         if (loaded < total)
                             $uploadThrobber.find('.text').text('Uploading your file (' +
-                                                               (Math.round(loaded / total * 10) / 10) + '% of ' +
+                                                               (Math.round(loaded / total * 1000) / 10) + '% of ' +
                                                                uploader._formatSize(total) + ')...');
                         else
                             $uploadThrobber.find('.text').text('Analyzing your file...');

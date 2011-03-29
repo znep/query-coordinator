@@ -9,6 +9,21 @@
       a
         font-size: 1.2em
 
+  .stage .icon
+    display: inline-block
+    margin-right: 0.5em
+    span
+      @include rounded-ends
+      background-color: #dedede
+      display: inline-block
+      height: 8px
+      width: 8px
+      margin: 0 1px
+      &.on
+        background-color: #00972b
+      &.rejected
+        background-color: #972b00
+
   .browseSection
     padding: 0
     .browseList
@@ -73,20 +88,6 @@
                 .title
                   width: 12em
 
-              .stage .icon
-                display: inline-block
-                margin-right: 0.5em
-                span
-                  @include rounded-ends
-                  background-color: #dedede
-                  display: inline-block
-                  height: 8px
-                  width: 8px
-                  margin: 0 1px
-                  &.on
-                    background-color: #00972b
-                  &.rejected
-                    background-color: #972b00
               .nextApprover ul
                 display: inline-block
                 li
@@ -103,6 +104,73 @@
               font-weight: normal
               padding: 0.2em 0.5em
                 left: 1.75em
+
+#routingApprovalDashboard
+  .banner
+    background-color: #fffadb
+    border: 1px solid #ecd971
+    position: relative
+    p
+      color: #796706
+      font-size: 1.4em
+      margin: 0.5em 1em
+      strong
+        font-size: 1.5em
+    .button
+      float: right
+
+  .report
+    margin-top: 2em
+
+  .pipeline
+    ul
+      margin: 0.5em 0
+      border-top: 1px solid $color_chrome_box_border
+      li
+        border-bottom: 1px solid $color_chrome_box_border
+        .label
+          border-right: 1px solid $color_chrome_box_border
+          float: left
+          padding: 0.75em
+          span
+            @include clip-text
+            display: inline-block
+            font-size: 1.2em
+            text-align: right
+            vertical-align: bottom
+            width: 15em
+        .barContainer
+          margin-left: 19.6em
+          padding:
+            right: 6em
+            top: 0.75em
+          .bar
+            background-color: #1a84d7
+            display: inline-block
+            height: 1em
+        .count
+          display: inline-block
+          font-size: 1.2em
+          font-weight: bold
+          margin-right: -6em
+          padding-left: 0.3em
+        &.finalStage .label
+          font-weight: bold
+
+  .gridList
+    border-bottom: 1px solid $color_table_header_inactive
+    margin-top: 0.5em
+    th
+      font-weight: bold
+    .count
+      text-align: right
+      width: 5em
+    .average
+      text-align: right
+      width: 7em
+    .unitCount
+      text-align: right
+      width: 6em
 
 #routingApprovalManagement
   .commonForm

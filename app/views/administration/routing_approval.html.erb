@@ -16,6 +16,119 @@
 
   <%= display_standard_flashes %>
 
+  <div id='routingApprovalDashboard'>
+    <%- if @appr_count > 0 -%>
+    <div class='banner clearfix'>
+      <a href='/admin/routing_approval/queue' class='button'>Take Action</a>
+      <p>You have <strong><%= @appr_count %></strong> <%= @appr_count > 1 ?
+        'dataset'.pluralize : 'dataset' %> that require action.</p>
+    </div>
+    <%- end -%>
+
+    <div class='pipeline report'>
+      <h3>Pipeline Report</h3>
+      <ul>
+        <%- total_count = @approval_template.age_info.reduce(0) {|memo, ai|
+              memo + ai['count']} -%>
+        <%- @approval_template.age_info.each do |ai| -%>
+        <li class='clearfix'>
+        <%- sname = @approval_template.stage(ai['approval_stage_id'])['name'] -%>
+        <div class='label' title='<%= sname %>'><span><%= sname %></span></div>
+        <div class='barContainer'>
+          <span class='bar' style='width:<%=
+            99.0 * ai['count'] / total_count %>%'></span>
+          <span class='count'><%= number_with_delimiter(ai['count'], {:locale => :en}) %></span>
+        </div>
+        </li>
+        <%- end -%>
+        <li class='clearfix finalStage'>
+        <div class='label' title='Public Datasets'><span>Public Datasets</span></div>
+        <div class='barContainer'>
+          <span class='bar' style='width:<%=
+            [99.0 * @all_count / total_count, 100.0].min %>%'></span>
+          <span class='count'><%= number_with_delimiter(@all_count, {:locale => :en}) %></span>
+        </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class='ageReport report'>
+      <h3>Age by Stage Report</h3>
+      <table class='gridList'>
+        <colgroup>
+          <col class='stage' />
+          <col class='count' />
+          <col class='average' />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class='stage'>Stage</th>
+            <th class='count'>Count</th>
+            <th class='average'>Average Age</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%- @approval_template.age_info.each_with_index do |ai, i| -%>
+          <%- stage = @approval_template.stage(ai['approval_stage_id']) -%>
+          <tr>
+            <td class='stage'>
+              <div class='icon'>
+                <%- @approval_template.stages.length.times do |j| -%>
+                <span class='<%= j < i ? 'on' : 'off' %>'></span>
+                <%- end -%>
+              </div>
+              <span class='name'><%= stage['name'] %></span>
+            </td>
+            <td class='count'><%= number_with_delimiter(ai['count'],
+              {:locale => 'en'}) %></td>
+            <td class='average'><%= pluralize(number_with_delimiter(
+              ai['average_age'].round, {:locale => 'en'}), 'day') %></td>
+          </tr>
+          <%- end -%>
+        </tbody>
+      </table>
+    </div>
+
+    <div class='agingReport report'>
+      <h3>Stage Breakdown Report</h3>
+      <table class='gridList'>
+        <colgroup>
+          <col class='stage' />
+          <%- @aging_groups.times do |i| -%>
+          <col class='unitCount' />
+          <%- end -%>
+        </colgroup>
+        <thead>
+          <tr>
+            <th class='stage'>Stage</th>
+            <%- @aging_groups.times do |i| -%>
+            <th class='unitCount'><%= i == 0 ? 'Today' :
+              i == @aging_groups - 1 ? 'Older' : pluralize(i, 'day') + ' old' %></th>
+            <%- end -%>
+          </tr>
+        </thead>
+        <tbody>
+          <%- @approval_template.aging_info(@aging_groups - 1).each_with_index do |ai, i| -%>
+          <%- stage = @approval_template.stage(ai['approval_stage_id']) -%>
+          <tr>
+            <td class='stage'>
+              <div class='icon'>
+                <%- @approval_template.stages.length.times do |j| -%>
+                <span class='<%= j < i ? 'on' : 'off' %>'></span>
+                <%- end -%>
+              </div>
+              <span class='name'><%= stage['name'] %></span>
+            </td>
+            <%- @aging_groups.times do |i| -%>
+            <td class='unitCount'><%= number_with_delimiter(ai['counts'][i] || 0, {:locale => 'en'}) %></td>
+            <%- end -%>
+          </tr>
+          <%- end -%>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
 </div>
 
 <%- content_for :js_footer do -%>

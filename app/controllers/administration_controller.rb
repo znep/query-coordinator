@@ -692,6 +692,16 @@ class AdministrationController < ApplicationController
   before_filter :only => [:routing_approval_manage, :routing_approval_manage_save] {|c| c.check_auth_level('manage_approval')}
 
   def routing_approval
+    # We only support one template for now, so assume it is the first one
+    @approval_template = Approval.find()[0] || Approval.new
+
+    @appr_results = SearchResult.search('views', {:for_approver => true, :limit => 1})[0]
+    @appr_count = @appr_results.count
+
+    @all_results = SearchResult.search('views', {:limit => 1})[0]
+    @all_count = @all_results.count
+
+    @aging_groups = 5
   end
 
   def routing_approval_queue

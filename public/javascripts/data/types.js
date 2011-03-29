@@ -163,6 +163,13 @@ blist.namespace.fetch('blist.data.types');
         return htmlEscape(htmlStrip((value || '') + ''));
     };
 
+    var renderObject = function(value)
+    {
+        return htmlEscape(value ? JSON.stringify(value) : '');
+    };
+
+    var renderGenObject = function(value)
+    {return "htmlEscape(" + value + " ? JSON.stringify(" + value + ") : '')";};
 
     // Numeric
 
@@ -1534,6 +1541,18 @@ blist.namespace.fetch('blist.data.types');
             filterConditions: filterConditions.textual,
             convertableTypes: ['text'],
             deleteable: true
+        },
+
+        object: {
+            title: 'Object',
+            priority: 20,
+            createable: false,
+            renderGen: renderGenObject,
+            renderer: renderObject,
+            deleteable: false,
+            isObject: false,
+            alignment: alignment,
+            filterable: false
         }
     });
 

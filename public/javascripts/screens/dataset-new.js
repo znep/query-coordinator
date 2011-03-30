@@ -88,16 +88,8 @@ $wizard.wizard({
 
         'uploadFile': {
             disableButtons: [ 'next' ],
-            onActivate: function($pane, config, state, command)
+            onInitialize: function($pane, config, state, command)
             {
-                if (!_.isUndefined(state.ajaxUpload))
-                {
-                    // destroy the old ajaxupload as best we can if it's there.
-                    state.ajaxUpload.disable();
-                    $(state.ajaxUpload._button).remove();
-                    delete state.ajaxUpload;
-                }
-
                 // update text
                 var isBlist = state.type == 'blist';
                 $pane.find('.headline').text('Please choose a file to ' + (isBlist ? 'import' : 'upload'));
@@ -110,7 +102,7 @@ $wizard.wizard({
 
                 var $uploadFileButton = $pane.find('.uploadFileButton');
                 var $uploadThrobber = $pane.find('.uploadThrobber');
-                var uploader = state.ajaxUpload = blist.fileUploader({
+                var uploader = blist.fileUploader({
                     element: $uploadFileButton[0],
                     action: uploadEndpoint,
                     multiple: false,
@@ -255,7 +247,7 @@ $wizard.wizard({
                 {
                     $pane.find('.headline').html('Please describe &ldquo;' +
                         $.htmlEscape(state.submittedView.name) + '.&rdquo;');
-                    $pane.find('#view_name').val(state.submittedView.name).blur();
+                    $pane.find('#view_name').val(state.submittedView.name).removeClass('prompt');
                 }
 
                 // render an error message if we have one

@@ -39,7 +39,9 @@
                 $domObj.closest('form').attr('autocomplete', 'off');
 
                 $domObj.awesomecomplete({
+                    attachTo: $domObj.offsetParent(),
                     dontMatch: ['id'],
+                    forcePosition: true,
                     suggestionListClass: 'autocomplete userPicker',
                     typingDelay: 500,
                     dataMethod: function(value, $item, callback)

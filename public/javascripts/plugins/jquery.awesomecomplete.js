@@ -153,8 +153,7 @@
             {
                 if ($list.children(':not(.' + config.noResultsClass + ')').length > 0)
                 {
-                    config.showFunction($list);
-                    $list.show();
+                    doShow($this);
                 }
             });
         });
@@ -291,10 +290,26 @@
 
         if ((results.length > 0) || (config.noResultsMessage !== undefined))
         {
-            config.showFunction($list);
-            $list.show();
+            doShow($this);
         }
 
+    };
+
+    var doShow = function($this)
+    {
+        var $list = $this.data('awesomecomplete-list');
+        var config = $this.data('awesomecomplete-config');
+
+        config.showFunction($list);
+        $list.show();
+
+        if (config.forcePosition)
+        {
+            $list.css('left', $this.position().left +
+                ($this.offsetParent().offset().left - $list.offsetParent().offset().left));
+            $list.css('top', $this.position().top + $this.outerHeight(true) +
+                ($this.offsetParent().offset().top - $list.offsetParent().offset().top));
+        }
     };
 
 // default functions
@@ -326,6 +341,7 @@
         blurFunction: function(list) {},
         dataMethod: undefined,
         dontMatch: [],
+        forcePosition: false,
         highlightMatches: true,
         highlightClass: 'match',
         ignoreCase: true,

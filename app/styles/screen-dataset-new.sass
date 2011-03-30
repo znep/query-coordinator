@@ -53,34 +53,35 @@
 // PANE ONE: upload
 .uploadFilePane
   .uploadFileContainer
-    text-align: center
+    margin: 0 auto
+    padding-top: 2.8em
+    width: 68em
 
-    .uploadFileName
-      @include border-radius(0.2em)
-      font-size: 1.4em
-      margin: 2em 0
-      padding: 0.4em
-      width: 40em
-      &.error
-        color: #b33
-
-    .uploadFileButton
-      @include button
-      display: inline-block
-      height: auto
-      line-height: auto
-      margin: 0 0.3em
+    .uploadFileNameWrapper
+      float: left
       padding: 0
-      position: relative
-      top: 0.8em
-      .ie7 &
-        bottom: 1.3em
+        right: 0.5em
+
+      .uploadFileName
+        @include border-radius(0.2em)
+        display: inline-block
+        font-size: 1.4em
+        margin: 0
+        padding: 0.4em
+        width: 40em
+        &.error
+          color: #b33
+
+    .uploadFileButtonWrapper
+      overflow: hidden
 
       .fileUploader-upload-button
+        @include button
         color: #333
         font-size: 1.2em
         font-weight: bold
         padding: 0.5em 1em
+        text-align: center
       .fileUploader-upload-list
         display: none
 
@@ -88,7 +89,7 @@
       display: none
       font-size: 1.1em
       line-height: 16px
-      margin: 0 auto 2em
+      margin: 2em auto 0
       text-align: center
       text-indent: 2em
       width: 25em
@@ -104,6 +105,8 @@
       color: #666
       font-size: 1.3em
       margin-bottom: 2em
+      margin-top: 2.1em
+      text-align: center
 
 // PANE TWO: metadata
 .metadataPane

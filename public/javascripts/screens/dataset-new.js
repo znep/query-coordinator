@@ -36,12 +36,13 @@ $wizard.wizard({
             disableButtons: [ 'next' ],
             onInitialize: function($pane, config, state, command)
             {
+                state.selectTypeTips = [];
                 // tooltips
                 $pane.find('.newKindList > li > a').each(function()
                 {
                     var $this = $(this);
-                    $this.socrataTip({ message: $this.attr('title').clean(),
-                        shrinkToFit: false, killTitle: true });
+                    state.selectTypeTips.push($this.socrataTip({ message: $this.attr('title').clean(),
+                        shrinkToFit: false, killTitle: true }));
                 });
 
                 // actions
@@ -74,13 +75,29 @@ $wizard.wizard({
                     command.next('uploadFile');
                 });
             },
-            onActivate: function($pane, config)
+            onActivate: function($pane, config, state)
             {
                 // size the select list by how many items it contains (or it won't center)
                 var $newKindList = $pane.find('.newKindList');
                 var $newKindListItems = $newKindList.children();
+                var adjust = ($.browser.msie && ($.browser.majorVersion == 8)) ? 1 : 0;
                 $newKindList.width($newKindListItems.filter(':last').outerWidth(true) * $newKindListItems.length -
-                    ($newKindListItems.filter(':last').outerWidth(true) - $newKindListItems.filter(':first').outerWidth(true)));
+                    ($newKindListItems.filter(':last').outerWidth(true) - $newKindListItems.filter(':first').outerWidth(true)) + 
+                    adjust);
+
+                // reactivate tips if we have them
+                _.each(state.selectTypeTips || [], function(tip)
+                {
+                    tip.enable();
+                });
+            },
+            onLeave: function($pane, config, state)
+            {
+                _.each(state.selectTypeTips || [], function(tip)
+                {
+                    tip.hide();
+                    tip.disable();
+                });
             }
         },
 
@@ -100,10 +117,9 @@ $wizard.wizard({
                 if (state.type == 'blobby')
                     uploadEndpoint += '?type=blobby';
 
-                var $uploadFileButton = $pane.find('.uploadFileButton');
                 var $uploadThrobber = $pane.find('.uploadThrobber');
                 var uploader = blist.fileUploader({
-                    element: $uploadFileButton[0],
+                    element: $pane.find('.uploadFileButtonWrapper')[0],
                     action: uploadEndpoint,
                     multiple: false,
                     onSubmit: function(id, fileName)
@@ -342,7 +358,7 @@ $wizard.wizard({
 
 
         'finish': {
-            disabledButtons: [ 'cancel', 'prev' ],
+            disableButtons: [ 'cancel', 'prev' ],
             isFinish: true,
             onNext: function($pane, state)
             {

@@ -10,14 +10,11 @@
             var $paneContainer = $wizard.children('ul');
             var $panes = $paneContainer.children('li').detach();
 
-            var $currentPane = $panes.first();
-            var currentPaneConfig = opts.paneConfig[$currentPane.attr('data-wizardPaneName')] || {};
-
-            var currentState = opts.state || {};
+            var $currentPane, currentPaneConfig, currentState;
 
         // states
-            var paneStack = [$currentPane];
-            var stateStack = [currentState];
+            var paneStack = [];
+            var stateStack = [];
 
         // append control row
             var $wizardButtons = $.tag({ tagName: 'ul', 'class': 'wizardButtons clearfix', contents: [
@@ -71,8 +68,8 @@
 
                 if (_.isNumber(prevAttr))
                 {
-                    paneStack.splice(paneStack.length - prevAttr);
-                    stateStack.splice(stateStack.length - prevAttr);
+                    paneStack.splice(paneStack.length - prevAttr, prevAttr);
+                    stateStack.splice(stateStack.length - prevAttr, prevAttr);
                 }
                 else
                 {
@@ -187,6 +184,10 @@
                     if ($button.jquery) $button.addClass('disabled');
                 });
 
+                // fire events the old pane is expecting
+                if (!_.isUndefined(currentPaneConfig) && _.isFunction(currentPaneConfig.onLeave))
+                    currentPaneConfig.onLeave($currentPane, currentPaneConfig, currentState);
+
                 // set currents
                 $currentPane = $pane;
                 currentPaneConfig = paneConfig;
@@ -226,8 +227,12 @@
             setInterval(animateVert, 2000);
 
             // go.
-            $currentPane.appendTo($paneContainer).show();
-            activatePane($currentPane, currentState);
+            var $initialPane = $panes.first();
+            var initialState = opts.state || {};
+            paneStack.push($initialPane);
+            stateStack.push(initialState);
+            $initialPane.appendTo($paneContainer).show();
+            activatePane($initialPane, initialState);
             adjustSize();
         });
     };
@@ -257,6 +262,8 @@
         //             + 'beginning' => go back to the first pane
         //             + function($paneObject, state) => return int
         //             + leave unconfigured => go back one in the stack
+        //   * onLeave: function($paneObject, paneConfig, state)
+        //     + fires right before a pane is navigated away from in either direction
         //   * uniform: true/false (default false)
         prevText: 'Previous',
         state: {}

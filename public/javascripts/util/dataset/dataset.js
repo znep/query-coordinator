@@ -1797,6 +1797,24 @@ this.Dataset = Model.extend({
                 { if (ddv.id == rowVal) { rowVal = ddv.description; } });
             }
 
+            if (col.renderTypeName == 'location')
+            {
+                // human_address in a location column is a JSON string; but we really want to compare
+                // the objects, without any of the blank keys. So munge it
+                var mungeLoc = function(v)
+                {
+                    if (_.isString((v || {}).human_address))
+                    {
+                        v = $.extend({}, v, {human_address: $.deepCompact(JSON.parse(v.human_address))});
+                        _.each(_.keys(v.human_address), function(k)
+                            { v.human_address[k] = v.human_address[k].toLowerCase(); });
+                    }
+                    return v;
+                };
+                condVal = mungeLoc(condVal);
+                rowVal = mungeLoc(rowVal);
+            }
+
             var getResult = function(v, cv)
             {
                 if (_.isString(v)) { v = v.toLowerCase(); }
@@ -1805,10 +1823,10 @@ this.Dataset = Model.extend({
                 switch (c.operator.toLowerCase())
                 {
                     case 'equals':
-                        return v == cv;
+                        return _.isEqual(v, cv);
                         break;
                     case 'not_equals':
-                        return v != cv;
+                        return !_.isEqual(v, cv);
                         break;
                     case 'greater_than':
                         return v > cv;
@@ -1852,7 +1870,8 @@ this.Dataset = Model.extend({
             }
             else if ($.isPlainObject(rowVal))
             {
-                return _.all(rowVal, function(v, k)
+                var func = c.operator.toLowerCase() == 'is_not_blank' ? 'any' : 'all';
+                return _[func](rowVal, function(v, k)
                     {
                         var cv = $.isPlainObject(condVal) ? condVal[k] : condVal;
                         if (!$.isBlank(cv) ||

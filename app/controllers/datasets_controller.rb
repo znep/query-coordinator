@@ -337,7 +337,7 @@ class DatasetsController < ApplicationController
     @view = get_view(params[:id])
     return if @view.nil?
 
-    unless !@current_user.nil? || (@current_user.has_right?('create_datasets') &&
+    if @current_user.nil? || !(@current_user.has_right?('create_datasets') &&
       @view.has_rights?('update_view'))
       return render_forbidden
     end

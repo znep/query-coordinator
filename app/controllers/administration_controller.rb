@@ -71,7 +71,11 @@ class AdministrationController < ApplicationController
   def analytics
   end
 
-  before_filter :only => [:users] {|c| c.check_auth_level('manage_users')}
+  #
+  # Manage Users and User Roles
+  #
+
+  before_filter :only => [:users, :set_user_role, :reset_user_password, :bulk_create_users, :delete_future_user] {|c| c.check_auth_level('manage_users')}
   def users
     @roles_list = User.roles_list
     if !params[:username].blank?
@@ -95,7 +99,6 @@ class AdministrationController < ApplicationController
     end
   end
 
-  before_filter :only => [:set_user_role] {|c| c.check_auth_level('manage_users')}
   def set_user_role
     error_message = nil
     begin
@@ -106,7 +109,6 @@ class AdministrationController < ApplicationController
     handle_button_response(updated_user, error_message, "User successfully updated", :users)
   end
 
-  before_filter :only => [:reset_user_password] {|c| c.check_auth_level('manage_users')}
   def reset_user_password
     if User.reset_password(params[:user_id])
       success = true
@@ -116,7 +118,6 @@ class AdministrationController < ApplicationController
     handle_button_response(success, error_message, "Password reset email sent", :users)
   end
 
-  before_filter :only => [:bulk_create_users] {|c| c.check_auth_level('manage_users')}
   def bulk_create_users
     role = params[:role]
     if !User.roles_list.any? { |r| r.first == role.downcase }
@@ -159,7 +160,6 @@ class AdministrationController < ApplicationController
     redirect_to :action => :users
   end
 
-  before_filter :only => [:delete_future_user] {|c| c.check_auth_level('manage_users')}
   def delete_future_user
     begin
       success = FutureAccount.delete(params[:id])
@@ -215,15 +215,17 @@ class AdministrationController < ApplicationController
     return(redirect_to (request.referer || {:action => 'views'}))
   end
 
-  before_filter :only => [:sdp_templates] {|c| c.check_auth_level('edit_sdp')}
-  before_filter :only => [:sdp_templates] {check_module('sdp_customizer')}
+  #
+  # Social Data Player - theme customization
+  #
+
+  before_filter :only => [:sdp_templates, :sdp_template_create, :sdp_template, :sdp_set_default_template, :sdp_delete_template] {|c| c.check_auth_level('edit_sdp')}
+  before_filter :only => [:sdp_templates, :sdp_template_create, :sdp_template, :sdp_set_default_template, :sdp_delete_template] {check_module('sdp_customizer')}
   def sdp_templates
     @templates = WidgetCustomization.find.reject{ |t| t.hidden }
     @default_template_id = CurrentDomain.default_widget_customization_id
   end
 
-  before_filter :only => [:sdp_template_create] {|c| c.check_auth_level('edit_sdp')}
-  before_filter :only => [:sdp_template_create] {check_module('sdp_customizer')}
   def sdp_template_create
     unless params[:new_template_name].present?
       flash.now[:error] = 'Template name is required'
@@ -248,8 +250,6 @@ class AdministrationController < ApplicationController
     redirect_to redirect_options
   end
 
-  before_filter :only => [:sdp_template] {|c| c.check_auth_level('edit_sdp')}
-  before_filter :only => [:sdp_template] {check_module('sdp_customizer')}
   def sdp_template
     if params[:view_id].present?
       begin
@@ -280,8 +280,6 @@ class AdministrationController < ApplicationController
     end
   end
 
-  before_filter :only => [:sdp_set_default_template] {|c| c.check_auth_level('edit_sdp')}
-  before_filter :only => [:sdp_set_default_template] {check_module('sdp_customizer')}
   def sdp_set_default_template
     configuration = Configuration.find_by_type('site_theme',  true, request.host, false)[0]
     begin
@@ -300,8 +298,6 @@ class AdministrationController < ApplicationController
     end
   end
 
-  before_filter :only => [:sdp_delete_template] {|c| c.check_auth_level('edit_sdp')}
-  before_filter :only => [:sdp_delete_template] {check_module('sdp_customizer')}
   def sdp_delete_template
     begin
       customization = WidgetCustomization.find(params[:id])
@@ -330,8 +326,8 @@ class AdministrationController < ApplicationController
   # Open Data Federation
   #
 
-  before_filter :only => [:federations] {|c| c.check_auth_level('federations')}
-  before_filter :only => [:federations] {check_module('federations')}
+  before_filter :only => [:federations, :delete_federation, :accept_federation, :reject_federation, :create_federation] {|c| c.check_auth_level('federations')}
+  before_filter :only => [:federations, :delete_federation, :accept_federation, :reject_federation, :create_federation] {check_module('federations')}
   def federations
     if (params[:dataset].nil?)
       @federations = Federation.find
@@ -346,8 +342,6 @@ class AdministrationController < ApplicationController
     end
   end
 
-  before_filter :only => [:delete_federation] {|c| c.check_auth_level('federations')}
-  before_filter :only => [:delete_federation] {check_module('federations')}
   def delete_federation
     Federation.delete(params[:id])
     respond_to do |format|
@@ -356,8 +350,6 @@ class AdministrationController < ApplicationController
     end
   end
 
-  before_filter :only => [:accept_federation] {|c| c.check_auth_level('federations')}
-  before_filter :only => [:accept_federation] {check_module('federations')}
   def accept_federation
     Federation.accept(params[:id])
     respond_to do |format|
@@ -366,8 +358,6 @@ class AdministrationController < ApplicationController
     end
   end
 
-  before_filter :only => [:reject_federation] {|c| c.check_auth_level('federations')}
-  before_filter :only => [:reject_federation] {check_module('federations')}
   def reject_federation
     Federation.reject(params[:id])
     respond_to do |format|
@@ -376,8 +366,6 @@ class AdministrationController < ApplicationController
     end
   end
 
-  before_filter :only => [:create_federation] {|c| c.check_auth_level('federations')}
-  before_filter :only => [:create_federation] {check_module('federations')}
   def create_federation
     begin
       data = Federation.new
@@ -406,13 +394,12 @@ class AdministrationController < ApplicationController
   #
   # Dataset-level metadata (custom fields, categories)
   #
-  before_filter :only => [:metadata] {|c| c.check_auth_level('edit_site_theme')}
+  before_filter :only => [:metadata, :create_metadata_fieldset, :delete_metadata_fieldset, :create_metadata_field, :delete_metadata_field, :toggle_metadata_option, :move_metadata_field, :create_category, :delete_category] {|c| c.check_auth_level('edit_site_theme')}
   def metadata
     @metadata = get_configuration().properties.custom_dataset_metadata || []
     @categories = get_configuration('view_categories', true).properties.sort { |a, b| a[0].downcase <=> b[0].downcase }
   end
 
-  before_filter :only => [:create_metadata_fieldset] {|c| c.check_auth_level('edit_site_theme')}
   def create_metadata_fieldset
     config = get_configuration()
     metadata = config.properties.custom_dataset_metadata || []
@@ -433,7 +420,6 @@ class AdministrationController < ApplicationController
     save_metadata(config, metadata, "Field Set Successfully Created")
   end
 
-  before_filter :only => [:delete_metadata_fieldset] {|c| c.check_auth_level('edit_site_theme')}
   def delete_metadata_fieldset
     config = get_configuration()
     metadata = config.properties.custom_dataset_metadata
@@ -442,7 +428,6 @@ class AdministrationController < ApplicationController
     save_metadata(config, metadata, "Field Set Successfully Removed")
   end
 
-  before_filter :only => [:create_metadata_field] {|c| c.check_auth_level('edit_site_theme')}
   def create_metadata_field
     config = get_configuration()
 
@@ -469,7 +454,6 @@ class AdministrationController < ApplicationController
     save_metadata(config, metadata, "Field Successfully Created")
   end
 
-  before_filter :only => [:delete_metadata_field] {|c| c.check_auth_level('edit_site_theme')}
   def delete_metadata_field
     config = get_configuration()
     metadata = config.properties.custom_dataset_metadata
@@ -478,7 +462,6 @@ class AdministrationController < ApplicationController
     save_metadata(config, metadata, "Field Successfully Removed")
   end
 
-  before_filter :only => [:toggle_metadata_option] {|c| c.check_auth_level('edit_site_theme')}
   def toggle_metadata_option
     config   = get_configuration()
     metadata = config.properties.custom_dataset_metadata
@@ -498,7 +481,6 @@ class AdministrationController < ApplicationController
     end
   end
 
-  before_filter :only => [:move_metadata_field] {|c| c.check_auth_level('edit_site_theme')}
   def move_metadata_field
     config = get_configuration()
     metadata = config.properties.custom_dataset_metadata
@@ -529,7 +511,6 @@ class AdministrationController < ApplicationController
     end
   end
 
-  before_filter :only => [:create_category] {|c| c.check_auth_level('edit_site_theme')}
   def create_category
     new_category = params[:new_category]
 
@@ -558,7 +539,6 @@ class AdministrationController < ApplicationController
     redirect_to metadata_administration_path
   end
 
-  before_filter :only => [:delete_category] {|c| c.check_auth_level('edit_site_theme')}
   def delete_category
     category = params[:category]
 
@@ -584,14 +564,17 @@ class AdministrationController < ApplicationController
     redirect_to metadata_administration_path
   end
 
-  before_filter :only => [:home] {|c| c.check_auth_level('manage_stories')}
-  before_filter :only => [:home] {|c| c.check_auth_level('feature_items')}
+  #
+  # Homepage Customization
+  #
+
+  before_filter :only => [:home, :delete_story, :new_story, :create_story, :move_story, :edit_story, :stories_appearance, :update_stories_appearance] {|c| c.check_auth_level('manage_stories')}
+  before_filter :only => [:home, :save_featured_views] {|c| c.check_auth_level('feature_items')}
   def home
     @stories = Story.find.sort
     @features = get_configuration().properties.featured_views
   end
 
-  before_filter :only => [:save_featured_views] {|c| c.check_auth_level('feature_items')}
   def save_featured_views
     config = get_configuration
 
@@ -606,11 +589,6 @@ class AdministrationController < ApplicationController
     end
   end
 
-  #
-  # Stories
-  #
-
-  before_filter :only => [:delete_story] {|c| c.check_auth_level('manage_stories')}
   def delete_story
     begin
       Story.delete(params[:id])
@@ -626,11 +604,9 @@ class AdministrationController < ApplicationController
     end
   end
 
-  before_filter :only => [:new_story] {|c| c.check_auth_level('manage_stories')}
   def new_story
   end
 
-  before_filter :only => [:create_story] {|c| c.check_auth_level('manage_stories')}
   def create_story
     story = Hashie::Mash.new
     parse_story_params(story, params[:story])
@@ -648,7 +624,6 @@ class AdministrationController < ApplicationController
     redirect_to :home_administration
   end
 
-  before_filter :only => [:move_story] {|c| c.check_auth_level('manage_stories')}
   def move_story
     begin
       story_lo = Story.find(params[:id])
@@ -666,7 +641,6 @@ class AdministrationController < ApplicationController
     redirect_to :home_administration
   end
 
-  before_filter :only => [:edit_story] {|c| c.check_auth_level('manage_stories')}
   def edit_story
     begin
       @story = Story.find(params[:id])
@@ -684,7 +658,6 @@ class AdministrationController < ApplicationController
     end
   end
 
-  before_filter :only => [:stories_appearance] {|c| c.check_auth_level('manage_stories')}
   def stories_appearance
     @stories = Story.find
 
@@ -696,7 +669,6 @@ class AdministrationController < ApplicationController
     end
   end
 
-  before_filter :only => [:update_stories_appearance] {|c| c.check_auth_level('manage_stories')}
   def update_stories_appearance
     config = get_configuration
 
@@ -712,6 +684,19 @@ class AdministrationController < ApplicationController
     end
   end
 
+  #
+  # Access checks
+  #
+  # Most content on the admin site has access controlled by:
+  # * Whether you have a specific access level
+  # * Whether you are a member of the domain at all
+  # * Whether a module is enabled for the domain
+  # * Whether a feature is enabled for the domain
+  #
+  # Checks that require used of the current_user need to be instance methods and
+  # and public functions in order to be used in a before_filter; The other
+  # checks are easier to define as class methods and can remain private.
+  #
 public
   def check_auth_level(level = 'manage_users')
     return AdministrationController.run_access_check{CurrentDomain.user_can?(current_user, level)}

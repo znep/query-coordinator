@@ -35,6 +35,7 @@
                 var $domObj = pickerObj.$dom();
                 $domObj.data("userPicker", pickerObj);
 
+                // Turn of default browser autocomplete
                 $domObj.attr('autocomplete', 'off');
                 $domObj.closest('form').attr('autocomplete', 'off');
 
@@ -85,9 +86,9 @@
 
     var doRender = function(dataItem, topMatch)
     {
-        return '<p class="title">' + dataItem['displayName'] + '</p>' +
+        return '<p class="title">' + $.htmlEscape(dataItem['displayName']) + '</p>' +
                '<p class="matchRow"><span class="matchedField">Email:</span> ' +
-               dataItem['email'] + '</p>';
+               $.htmlEscape(dataItem['email']) + '</p>';
     };
 
     var handleComplete = function(pickerObj, dataItem)

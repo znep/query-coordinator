@@ -27,8 +27,8 @@ $(function()
             {dataset: ds, nextStage: ds.nextApprovalStage() || {}},
             {
                 '.stage .description': function(v)
-                    { return v.context.dataset.approvalStage().name; },
-                '.created .user .value': 'dataset.owner.displayName',
+                    { return $.htmlEscape(v.context.dataset.approvalStage().name); },
+                '.created .user .value': 'dataset.owner.displayName!',
                 '.created .user .value@href': function(v)
                     { return new User(v.context.dataset.owner).getProfileUrl(); },
                 '.created .date .value': function(v)

@@ -687,7 +687,7 @@ class AdministrationController < ApplicationController
   #
   # Dataset Routing & Approval
   #
-  before_filter :only => [:routing_approval, :routing_approval_queue, :approve_view, :routing_approval_manage, :routing_approval_manage_save] {check_module('routing_approval')}
+  before_filter :only => [:routing_approval, :routing_approval_queue, :approve_view, :routing_approval_manage, :routing_approval_manage_save] {|c| c.check_module('routing_approval')}
   before_filter :check_member, :only => [:routing_approval, :routing_approval_queue, :approve_view]
   before_filter :only => [:routing_approval_manage, :routing_approval_manage_save] {|c| c.check_auth_level('manage_approval')}
 
@@ -793,19 +793,20 @@ class AdministrationController < ApplicationController
     end
 
     params[:template][:stages].sort.each do |s|
-      if s[0].start_with?('new-') && !s[1][:name].empty?
+      if s[0].start_with?('new-') && !s[1][:name].blank?
         ns = s[1]
         attrs[:stages] << {'name' => ns[:name],
           'notificationInterval' => ns[:notificationInterval],
           'approverUids' => ns[:approverUids].
             map {|u| (u.match(/\w{4}-\w{4}$/) || [])[0]}.compact,
-          'visible' => true,
           'stageOrder' => (attrs[:stages].last ||
                            {'stageOrder' => 0})['stageOrder'] + 1,
           'notificationMode' => 'S'}
       end
     end
 
+    # The core server supports datasets being visible at any stage in the process, but that seems like
+    # it would be confusing. So we just always make the last stage visible, and the rest not
     attrs[:stages].each {|s| s['visible'] = false}.last['visible'] = true
 
     if app.nil?

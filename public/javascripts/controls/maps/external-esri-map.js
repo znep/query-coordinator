@@ -221,6 +221,7 @@
                 var value = [];
                 value.push(processFilter(filter.children[1]));
                 value.push(processFilter(filter.children[2]));
+                value = _.compact(value);
 
                 // From http://help.arcgis.com/EN/webapi/javascript/arcgis/help/jsapi/field.htm#type
                 // Can be one of the following:
@@ -237,27 +238,28 @@
                     && !_.include(['STARTS_WITH', 'CONTAINS', 'NOT_CONTAINS'],
                                   filter.value))
                 { value = _.map(value, function(v)
-                    { return "'" + v.replace(/'/g, "\\'") + "'"; }); }
+                    { return "'" + v.toString().replace(/'/g, "\\'") + "'"; }); }
                 else
-                { value = _.map(value, function(v) { return v.replace(/;.*$/, ''); }) }
+                { value = _.map(value, function(v)
+                    { return v.toString().replace(/;.*$/, ''); }); }
 
                 return _.template(template[filter.value],
                     {field: fieldName, val1: value[0], val2: value[1] });
             };
             var processFilter = function(filter)
             {
-                if (!filter) { return ''; }
+                if (!filter) { return null; }
                 switch (filter.type)
                 {
                     case 'operator':
                         switch(filter.value)
                         {
                             case 'AND':
-                                return _.map(filter.children, function(filter)
-                                    { return processFilter(filter); }).join(' AND ');
+                                return _.compact(_.map(filter.children, function(filter)
+                                    { return processFilter(filter); })).join(' AND ');
                             case 'OR':
-                                return _.map(filter.children, function(filter)
-                                    { return processFilter(filter); }).join(' OR ');
+                                return _.compact(_.map(filter.children, function(filter)
+                                    { return processFilter(filter); })).join(' OR ');
                             default:
                                 return transformFilterToSQL(filter);
                         }

@@ -96,12 +96,17 @@ private
       core_session = @by.send(:load_core_session, @env)
       unless core_session.blank?
         parts = core_session.split
-        raise ArgumentError if parts.length != 4
-
-        @user_id = parts[0]
-        @expiration = Time.at(parts[1].to_i)
-        @salt = parts[2]
-        @signature = parts[3]
+        if parts.length == 4
+          @user_id = parts[0]
+          @expiration = Time.at(parts[1].to_i)
+          @salt = parts[2]
+          @signature = parts[3]
+        else
+          @user_id = nil
+          @expiration = nil
+          @salt = nil
+          @signature = nil
+        end
         @loaded = true
       end
     end

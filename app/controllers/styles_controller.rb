@@ -6,16 +6,22 @@ class StylesController < ApplicationController
     includes = get_includes
 
     if params[:stylesheet].present? && params[:stylesheet].match(/^(\w|-)+$/)
-      headers['Content-Type'] = 'text/css'
-      stylesheet = File.read("#{Rails.root}/app/styles/#{params[:stylesheet]}.sass")
+      stylesheet_filename = File.join(Rails.root, "app/styles", "#{params[:stylesheet]}.sass")
+      if File.exist?(stylesheet_filename)
+        headers['Content-Type'] = 'text/css'
+        stylesheet = File.read(stylesheet_filename)
 
-      render :text => Sass::Engine.new(includes + stylesheet,
-                                       :style => :nested,
-                                       :cache => false,
-                                       :load_paths => ["#{Rails.root}/app/styles"]).render
+        render :text => Sass::Engine.new(includes + stylesheet,
+                                         :style => :nested,
+                                         :cache => false,
+                                         :load_paths => ["#{Rails.root}/app/styles"]).render
+      else
+        # Someone asked for a stylesheet that didn't exist.
+        render :nothing => true, :status => :not_found, :content_type => 'text/css'
+      end
     else
       # someone's up to no good.
-      render_404
+      render :nothing => true, :status => :not_found, :content_type => 'text/css'
     end
   end
 
@@ -47,7 +53,7 @@ class StylesController < ApplicationController
         render :text => cached
       end
     else
-      render_404
+      render :nothing => true, :status => :not_found, :content_type => 'text/css'
     end
   end
 
@@ -61,7 +67,7 @@ class StylesController < ApplicationController
         updated_at = customization.updatedAt
       end
     rescue CoreServer::CoreServerError => e
-      render_404
+      render :nothing => true, :status => :not_found, :content_type => 'text/css'
     end
     headers['Content-Type'] = 'text/css'
 

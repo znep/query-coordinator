@@ -1,23 +1,20 @@
 class AdministrationController < ApplicationController
   include BrowseActions
 
+  before_filter :check_member, :only => :index
   def index
-    check_member()
   end
 
+  before_filter :only => [:datasets] {|c| c.check_auth_level('edit_others_datasets')}
+  before_filter :only => [:datasets] {|c| c.check_auth_level('edit_site_theme')}
   def datasets
-    render_forbidden unless CurrentDomain.user_can?(current_user,
-                                                    'edit_others_datasets') ||
-                            CurrentDomain.user_can?(current_user,
-                                                    'edit_site_theme')
-
     @browse_in_container = true
-    @opts = {:admin => CurrentDomain.user_can?(current_user, 'edit_others_datasets')}
+    @opts = {:admin => true}
     process_browse!
   end
-  def modify_sidebar_config
-    check_auth_level('edit_site_theme')
 
+  before_filter :only => [:modify_sidebar_config] {|c| c.check_auth_level('edit_site_theme')}
+  def modify_sidebar_config
     config = get_configuration('sidebar')
     if config.nil?
       opts = { 'name' => 'Sidebar Configuration', 'default' => true,
@@ -41,9 +38,8 @@ class AdministrationController < ApplicationController
     process_browse!
   end
 
+  before_filter :check_member, :only => :catalog_widget
   def catalog_widget
-    check_member()
-
     topics_all = Tag.find({:method => 'viewsTags'}).map do |t|
       escaped = CGI.escapeHTML(t.name)
       { :text => escaped, :value => escaped }
@@ -70,14 +66,13 @@ class AdministrationController < ApplicationController
   end
 
 
+  before_filter :check_member, :only => :analytics
+  before_filter :only => [:analytics] {check_module('advanced_metrics')}
   def analytics
-    check_member()
-    check_module('advanced_metrics')
   end
 
+  before_filter :only => [:users] {|c| c.check_auth_level('manage_users')}
   def users
-    check_auth_level('manage_users')
-
     @roles_list = User.roles_list
     if !params[:username].blank?
       @search = params[:username]
@@ -99,9 +94,9 @@ class AdministrationController < ApplicationController
       @existing_user_actions = false
     end
   end
-  def set_user_role
-    check_auth_level('manage_users')
 
+  before_filter :only => [:set_user_role] {|c| c.check_auth_level('manage_users')}
+  def set_user_role
     error_message = nil
     begin
       updated_user = User.set_role(params[:user_id], params[:role])
@@ -110,9 +105,9 @@ class AdministrationController < ApplicationController
     end
     handle_button_response(updated_user, error_message, "User successfully updated", :users)
   end
-  def reset_user_password
-    check_auth_level('manage_users')
 
+  before_filter :only => [:reset_user_password] {|c| c.check_auth_level('manage_users')}
+  def reset_user_password
     if User.reset_password(params[:user_id])
       success = true
     else
@@ -120,9 +115,9 @@ class AdministrationController < ApplicationController
     end
     handle_button_response(success, error_message, "Password reset email sent", :users)
   end
-  def bulk_create_users
-    check_auth_level('manage_users')
 
+  before_filter :only => [:bulk_create_users] {|c| c.check_auth_level('manage_users')}
+  def bulk_create_users
     role = params[:role]
     if !User.roles_list.any? { |r| r.first == role.downcase }
       flash[:error] = "Invalid role specified for user creation: #{role}"
@@ -163,9 +158,9 @@ class AdministrationController < ApplicationController
 
     redirect_to :action => :users
   end
-  def delete_future_user
-    check_auth_level('manage_users')
 
+  before_filter :only => [:delete_future_user] {|c| c.check_auth_level('manage_users')}
+  def delete_future_user
     begin
       success = FutureAccount.delete(params[:id])
     rescue CoreServer::CoreServerError => ex
@@ -174,15 +169,14 @@ class AdministrationController < ApplicationController
     handle_button_response(success, error_message, "Pending permissions removed", :users)
   end
 
+  before_filter :only => [:comment_moderation] {|c| c.check_auth_level('moderate_comments')}
+  before_filter :only => [:comment_moderation] {check_module('publisher_comment_moderation')}
   def comment_moderation
-    check_auth_level('moderate_comments')
-    check_module('publisher_comment_moderation')
   end
 
+  before_filter :only => [:views] {|c| c.check_auth_level('approve_nominations')}
+  before_filter :only => [:views] {check_feature(:view_moderation)}
   def views
-    check_auth_level('approve_nominations')
-    check_feature(:view_moderation)
-
     @default_params = { :moderation => 'pending' }
     @browse_in_container = true
     @dataset_actions = 'Moderation Status'
@@ -202,8 +196,10 @@ class AdministrationController < ApplicationController
     }
     process_browse!
   end
+
+
+  before_filter :only => [:set_view_moderation_status] {|c| c.check_auth_level('approve_nominations')}
   def set_view_moderation_status
-    check_auth_level('approve_nominations')
     begin
       v = View.find(params[:id])
     rescue CoreServer::ResourceNotFound
@@ -219,17 +215,16 @@ class AdministrationController < ApplicationController
     return(redirect_to (request.referer || {:action => 'views'}))
   end
 
+  before_filter :only => [:sdp_templates] {|c| c.check_auth_level('edit_sdp')}
+  before_filter :only => [:sdp_templates] {check_module('sdp_customizer')}
   def sdp_templates
-    check_auth_level('edit_sdp')
-    check_module('sdp_customizer')
-
     @templates = WidgetCustomization.find.reject{ |t| t.hidden }
     @default_template_id = CurrentDomain.default_widget_customization_id
   end
-  def sdp_template_create
-    check_auth_level('edit_sdp')
-    check_module('sdp_customizer')
 
+  before_filter :only => [:sdp_template_create] {|c| c.check_auth_level('edit_sdp')}
+  before_filter :only => [:sdp_template_create] {check_module('sdp_customizer')}
+  def sdp_template_create
     unless params[:new_template_name].present?
       flash.now[:error] = 'Template name is required'
       return (render 'shared/error', :status => :bad_request)
@@ -252,10 +247,10 @@ class AdministrationController < ApplicationController
     redirect_options[:view_id] = params[:view_id] if params[:view_id].present?
     redirect_to redirect_options
   end
-  def sdp_template
-    check_auth_level('edit_sdp')
-    check_module('sdp_customizer')
 
+  before_filter :only => [:sdp_template] {|c| c.check_auth_level('edit_sdp')}
+  before_filter :only => [:sdp_template] {check_module('sdp_customizer')}
+  def sdp_template
     if params[:view_id].present?
       begin
         @view = View.find(params[:view_id])
@@ -284,10 +279,10 @@ class AdministrationController < ApplicationController
       return (render 'shared/error', :status => :not_found)
     end
   end
-  def sdp_set_default_template
-    check_auth_level('edit_sdp')
-    check_module('sdp_customizer')
 
+  before_filter :only => [:sdp_set_default_template] {|c| c.check_auth_level('edit_sdp')}
+  before_filter :only => [:sdp_set_default_template] {check_module('sdp_customizer')}
+  def sdp_set_default_template
     configuration = Configuration.find_by_type('site_theme',  true, request.host, false)[0]
     begin
       customization = WidgetCustomization.find(params[:id])
@@ -304,10 +299,10 @@ class AdministrationController < ApplicationController
       format.html { redirect_to :action => :sdp_templates }
     end
   end
-  def sdp_delete_template
-    check_auth_level('edit_sdp')
-    check_module('sdp_customizer')
 
+  before_filter :only => [:sdp_delete_template] {|c| c.check_auth_level('edit_sdp')}
+  before_filter :only => [:sdp_delete_template] {check_module('sdp_customizer')}
+  def sdp_delete_template
     begin
       customization = WidgetCustomization.find(params[:id])
     rescue CoreServer::ResourceNotFound
@@ -330,11 +325,14 @@ class AdministrationController < ApplicationController
     end
   end
 
-  ## open data federation
-  def federations
-    check_auth_level('federations')
-    check_module('federations')
 
+  #
+  # Open Data Federation
+  #
+
+  before_filter :only => [:federations] {|c| c.check_auth_level('federations')}
+  before_filter :only => [:federations] {check_module('federations')}
+  def federations
     if (params[:dataset].nil?)
       @federations = Federation.find
     else
@@ -347,40 +345,40 @@ class AdministrationController < ApplicationController
       @domains = Domain.find(:method => 'findAvailableFederationTargets', :domain => params[:domain])
     end
   end
-  def delete_federation
-    check_auth_level('federations')
-    check_module('federations')
 
+  before_filter :only => [:delete_federation] {|c| c.check_auth_level('federations')}
+  before_filter :only => [:delete_federation] {check_module('federations')}
+  def delete_federation
     Federation.delete(params[:id])
     respond_to do |format|
       format.data { render :json => { :success => true } }
       format.html { redirect_federation("Federation successfully deleted") }
     end
   end
-  def accept_federation
-    check_auth_level('federations')
-    check_module('federations')
 
+  before_filter :only => [:accept_federation] {|c| c.check_auth_level('federations')}
+  before_filter :only => [:accept_federation] {check_module('federations')}
+  def accept_federation
     Federation.accept(params[:id])
     respond_to do |format|
       format.data { render :json => { :success => true, :message => 'Accepted' } }
       format.html { redirect_federation("Federation successfully accepted") }
     end
   end
-  def reject_federation
-    check_auth_level('federations')
-    check_module('federations')
 
+  before_filter :only => [:reject_federation] {|c| c.check_auth_level('federations')}
+  before_filter :only => [:reject_federation] {check_module('federations')}
+  def reject_federation
     Federation.reject(params[:id])
     respond_to do |format|
       format.data { render :json => { :success => true, :message => 'Pending' } }
       format.html { redirect_federation("Federation successfully rejected") }
     end
   end
-  def create_federation
-    check_auth_level('federations')
-    check_module('federations')
 
+  before_filter :only => [:create_federation] {|c| c.check_auth_level('federations')}
+  before_filter :only => [:create_federation] {check_module('federations')}
+  def create_federation
     begin
       data = Federation.new
       target_domain = Domain.find(params[:new_federation][:target_domain])
@@ -405,14 +403,17 @@ class AdministrationController < ApplicationController
     respond_to do |format| format.data { render :json => response.to_json } end
   end
 
+  #
   # Dataset-level metadata (custom fields, categories)
+  #
+  before_filter :only => [:metadata] {|c| c.check_auth_level('edit_site_theme')}
   def metadata
-    check_auth_level('edit_site_theme')
     @metadata = get_configuration().properties.custom_dataset_metadata || []
     @categories = get_configuration('view_categories', true).properties.sort { |a, b| a[0].downcase <=> b[0].downcase }
   end
+
+  before_filter :only => [:create_metadata_fieldset] {|c| c.check_auth_level('edit_site_theme')}
   def create_metadata_fieldset
-    check_auth_level('edit_site_theme')
     config = get_configuration()
     metadata = config.properties.custom_dataset_metadata || []
     field = params[:newFieldsetName]
@@ -431,17 +432,18 @@ class AdministrationController < ApplicationController
 
     save_metadata(config, metadata, "Field Set Successfully Created")
   end
+
+  before_filter :only => [:delete_metadata_fieldset] {|c| c.check_auth_level('edit_site_theme')}
   def delete_metadata_fieldset
-    check_auth_level('edit_site_theme')
     config = get_configuration()
     metadata = config.properties.custom_dataset_metadata
     metadata.delete_at(params[:fieldset].to_i)
 
     save_metadata(config, metadata, "Field Set Successfully Removed")
   end
-  def create_metadata_field
-    check_auth_level('edit_site_theme')
 
+  before_filter :only => [:create_metadata_field] {|c| c.check_auth_level('edit_site_theme')}
+  def create_metadata_field
     config = get_configuration()
 
     field_name = params[:newFieldName]
@@ -466,16 +468,18 @@ class AdministrationController < ApplicationController
 
     save_metadata(config, metadata, "Field Successfully Created")
   end
+
+  before_filter :only => [:delete_metadata_field] {|c| c.check_auth_level('edit_site_theme')}
   def delete_metadata_field
-    check_auth_level('edit_site_theme')
     config = get_configuration()
     metadata = config.properties.custom_dataset_metadata
     metadata[params[:fieldset].to_i].fields.delete_at(params[:index].to_i)
 
     save_metadata(config, metadata, "Field Successfully Removed")
   end
+
+  before_filter :only => [:toggle_metadata_option] {|c| c.check_auth_level('edit_site_theme')}
   def toggle_metadata_option
-    check_auth_level('edit_site_theme')
     config   = get_configuration()
     metadata = config.properties.custom_dataset_metadata
     fieldset = metadata[params[:fieldset].to_i].fields
@@ -493,8 +497,9 @@ class AdministrationController < ApplicationController
       format.html { redirect_to :action => 'metadata' }
     end
   end
+
+  before_filter :only => [:move_metadata_field] {|c| c.check_auth_level('edit_site_theme')}
   def move_metadata_field
-    check_auth_level('edit_site_theme')
     config = get_configuration()
     metadata = config.properties.custom_dataset_metadata
     fieldset = metadata[params[:fieldset].to_i].fields
@@ -523,8 +528,9 @@ class AdministrationController < ApplicationController
       format.html { redirect_to :action => 'metadata' }
     end
   end
+
+  before_filter :only => [:create_category] {|c| c.check_auth_level('edit_site_theme')}
   def create_category
-    check_auth_level('edit_site_theme')
     new_category = params[:new_category]
 
     if new_category.blank?
@@ -551,8 +557,9 @@ class AdministrationController < ApplicationController
     flash[:notice] = "Category successfully created"
     redirect_to metadata_administration_path
   end
+
+  before_filter :only => [:delete_category] {|c| c.check_auth_level('edit_site_theme')}
   def delete_category
-    check_auth_level('edit_site_theme')
     category = params[:category]
 
     if category.blank?
@@ -577,16 +584,15 @@ class AdministrationController < ApplicationController
     redirect_to metadata_administration_path
   end
 
+  before_filter :only => [:home] {|c| c.check_auth_level('manage_stories')}
+  before_filter :only => [:home] {|c| c.check_auth_level('feature_items')}
   def home
-    render_forbidden unless CurrentDomain.user_can?(current_user, 'manage_stories') ||
-                            CurrentDomain.user_can?(current_user, 'feature_items')
     @stories = Story.find.sort
     @features = get_configuration().properties.featured_views
   end
 
+  before_filter :only => [:save_featured_views] {|c| c.check_auth_level('feature_items')}
   def save_featured_views
-    check_auth_level('feature_items')
-
     config = get_configuration
 
     update_or_create_property(config, 'featured_views', params[:features])
@@ -600,8 +606,12 @@ class AdministrationController < ApplicationController
     end
   end
 
+  #
+  # Stories
+  #
+
+  before_filter :only => [:delete_story] {|c| c.check_auth_level('manage_stories')}
   def delete_story
-    check_auth_level('manage_stories')
     begin
       Story.delete(params[:id])
       clear_stories_cache
@@ -615,11 +625,13 @@ class AdministrationController < ApplicationController
       format.html { redirect_to home_administration_path }
     end
   end
+
+  before_filter :only => [:new_story] {|c| c.check_auth_level('manage_stories')}
   def new_story
-    check_auth_level('manage_stories')
   end
+
+  before_filter :only => [:create_story] {|c| c.check_auth_level('manage_stories')}
   def create_story
-    check_auth_level('manage_stories')
     story = Hashie::Mash.new
     parse_story_params(story, params[:story])
     story.customization = story.customization.to_json unless story.customization.nil?
@@ -635,8 +647,9 @@ class AdministrationController < ApplicationController
 
     redirect_to :home_administration
   end
+
+  before_filter :only => [:move_story] {|c| c.check_auth_level('manage_stories')}
   def move_story
-    check_auth_level('manage_stories')
     begin
       story_lo = Story.find(params[:id])
       story_hi = Story.find(params[:other])
@@ -652,8 +665,9 @@ class AdministrationController < ApplicationController
     clear_stories_cache
     redirect_to :home_administration
   end
+
+  before_filter :only => [:edit_story] {|c| c.check_auth_level('manage_stories')}
   def edit_story
-    check_auth_level('manage_stories')
     begin
       @story = Story.find(params[:id])
     rescue CoreServer::ResourceNotFound
@@ -669,8 +683,9 @@ class AdministrationController < ApplicationController
       clear_stories_cache
     end
   end
+
+  before_filter :only => [:stories_appearance] {|c| c.check_auth_level('manage_stories')}
   def stories_appearance
-    check_auth_level('manage_stories')
     @stories = Story.find
 
     config_properties = get_configuration.properties
@@ -680,9 +695,9 @@ class AdministrationController < ApplicationController
       @story_theme = config_properties.theme_v2b.stories
     end
   end
-  def update_stories_appearance
-    check_auth_level('manage_stories')
 
+  before_filter :only => [:update_stories_appearance] {|c| c.check_auth_level('manage_stories')}
+  def update_stories_appearance
     config = get_configuration
 
     theme = config.properties.theme_v2b || {}
@@ -697,18 +712,28 @@ class AdministrationController < ApplicationController
     end
   end
 
-private
+public
   def check_auth_level(level = 'manage_users')
-    render_forbidden unless CurrentDomain.user_can?(current_user, level)
-  end
-  def check_module(mod = 'advanced_metrics')
-    render_forbidden unless CurrentDomain.module_available?(mod)
+    return AdministrationController.run_access_check{CurrentDomain.user_can?(current_user, level)}
   end
   def check_member
-    render_forbidden unless CurrentDomain.member?(current_user)
+    return AdministrationController.run_access_check{CurrentDomain.member?(current_user)}
   end
-  def check_feature(feature)
-    render_forbidden unless CurrentDomain.feature?(feature)
+private
+  def self.check_module(mod = 'advanced_metrics')
+    return run_access_check{CurrentDomain.module_available?(mod)}
+  end
+  def self.check_feature(feature)
+    return run_access_check{CurrentDomain.feature?(feature)}
+  end
+
+  def self.run_access_check(&block)
+    if yield
+      return true
+    else
+      render_forbidden
+      return false
+    end
   end
 
   def parse_story_params(story, story_params)

@@ -214,13 +214,13 @@
                 mapObj._gradient = undefined;
                 mapObj._segmentColors = undefined;
 
-                _.each(mapObj._dataViews, function(view)
+                _.each(mapObj._byView, function(viewConfig)
                 {
-                    view._llKeys = {};
-                    view._locCol = undefined;
-                    view._latCol = undefined;
-                    view._longCol = undefined;
-                    view._quantityCol = undefined;
+                    viewConfig._llKeys = {};
+                    viewConfig._locCol = undefined;
+                    viewConfig._latCol = undefined;
+                    viewConfig._longCol = undefined;
+                    viewConfig._quantityCol = undefined;
                 });
 
                 mapObj.initializeFlyouts((mapObj.settings.view.displayFormat
@@ -486,7 +486,9 @@
                 if (!viewConfig._llKeys[rowKey])
                 { viewConfig._llKeys[rowKey] = { rows: [] }; }
 
-                viewConfig._llKeys[rowKey].rows.push(row);
+                if (!_.any(viewConfig._llKeys[rowKey].rows, function(cachedRow)
+                    { return row.id == cachedRow.id; }))
+                { viewConfig._llKeys[rowKey].rows.push(row); }
 
                 var details = {rows: viewConfig._llKeys[rowKey].rows};
                 if (viewConfig._iconCol && row[viewConfig._iconCol.id])

@@ -5,8 +5,7 @@ class AdministrationController < ApplicationController
   def index
   end
 
-  before_filter :only => [:datasets] {|c| c.check_auth_level('edit_others_datasets')}
-  before_filter :only => [:datasets] {|c| c.check_auth_level('edit_site_theme')}
+  before_filter :only => [:datasets] {|c| c.check_auth_levels_any(['edit_others_datasets', 'edit_site_theme']) }
   def datasets
     @browse_in_container = true
     @opts = {:admin => true}
@@ -67,7 +66,7 @@ class AdministrationController < ApplicationController
 
 
   before_filter :check_member, :only => :analytics
-  before_filter :only => [:analytics] {check_module('advanced_metrics')}
+  before_filter :only => [:analytics] {|c| c.check_module('advanced_metrics')}
   def analytics
   end
 
@@ -170,12 +169,12 @@ class AdministrationController < ApplicationController
   end
 
   before_filter :only => [:comment_moderation] {|c| c.check_auth_level('moderate_comments')}
-  before_filter :only => [:comment_moderation] {check_module('publisher_comment_moderation')}
+  before_filter :only => [:comment_moderation] {|c| c.check_module('publisher_comment_moderation')}
   def comment_moderation
   end
 
   before_filter :only => [:views] {|c| c.check_auth_level('approve_nominations')}
-  before_filter :only => [:views] {check_feature(:view_moderation)}
+  before_filter :only => [:views] {|c| c.check_feature(:view_moderation)}
   def views
     @default_params = { :moderation => 'pending' }
     @browse_in_container = true
@@ -220,7 +219,7 @@ class AdministrationController < ApplicationController
   #
 
   before_filter :only => [:sdp_templates, :sdp_template_create, :sdp_template, :sdp_set_default_template, :sdp_delete_template] {|c| c.check_auth_level('edit_sdp')}
-  before_filter :only => [:sdp_templates, :sdp_template_create, :sdp_template, :sdp_set_default_template, :sdp_delete_template] {check_module('sdp_customizer')}
+  before_filter :only => [:sdp_templates, :sdp_template_create, :sdp_template, :sdp_set_default_template, :sdp_delete_template] {|c| c.check_module('sdp_customizer')}
   def sdp_templates
     @templates = WidgetCustomization.find.reject{ |t| t.hidden }
     @default_template_id = CurrentDomain.default_widget_customization_id
@@ -327,7 +326,7 @@ class AdministrationController < ApplicationController
   #
 
   before_filter :only => [:federations, :delete_federation, :accept_federation, :reject_federation, :create_federation] {|c| c.check_auth_level('federations')}
-  before_filter :only => [:federations, :delete_federation, :accept_federation, :reject_federation, :create_federation] {check_module('federations')}
+  before_filter :only => [:federations, :delete_federation, :accept_federation, :reject_federation, :create_federation] {|c| c.check_module('federations')}
   def federations
     if (params[:dataset].nil?)
       @federations = Federation.find
@@ -568,8 +567,7 @@ class AdministrationController < ApplicationController
   # Homepage Customization
   #
 
-  before_filter :only => [:home, :delete_story, :new_story, :create_story, :move_story, :edit_story, :stories_appearance, :update_stories_appearance] {|c| c.check_auth_level('manage_stories')}
-  before_filter :only => [:home, :save_featured_views] {|c| c.check_auth_level('feature_items')}
+  before_filter :only => [:home, :save_featured_views] {|c| c.check_auth_levels_any(['manage_stories', 'feature_items'])}
   def home
     @stories = Story.find.sort
     @features = get_configuration().properties.featured_views
@@ -589,6 +587,7 @@ class AdministrationController < ApplicationController
     end
   end
 
+  before_filter :only => [:delete_story, :new_story, :create_story, :move_story, :edit_story, :stories_appearance, :update_stories_appearance] {|c| c.check_auth_level('manage_stories')}
   def delete_story
     begin
       Story.delete(params[:id])
@@ -698,21 +697,26 @@ class AdministrationController < ApplicationController
   # checks are easier to define as class methods and can remain private.
   #
 public
-  def check_auth_level(level = 'manage_users')
-    return AdministrationController.run_access_check{CurrentDomain.user_can?(current_user, level)}
+  def check_auth_level(level)
+    return run_access_check{CurrentDomain.user_can?(current_user, level)}
+  end
+  def check_auth_levels_any(levels)
+    return run_access_check{levels.any?{|l| CurrentDomain.user_can?(current_user, l)}}
+  end
+  def check_auth_levels_all(levels)
+    return run_access_check{levels.all?{|l| CurrentDomain.user_can?(current_user, l)}}
   end
   def check_member
-    return AdministrationController.run_access_check{CurrentDomain.member?(current_user)}
+    return run_access_check{CurrentDomain.member?(current_user)}
   end
-private
-  def self.check_module(mod = 'advanced_metrics')
+  def check_module(mod = 'advanced_metrics')
     return run_access_check{CurrentDomain.module_available?(mod)}
   end
-  def self.check_feature(feature)
+  def check_feature(feature)
     return run_access_check{CurrentDomain.feature?(feature)}
   end
-
-  def self.run_access_check(&block)
+private
+  def run_access_check(&block)
     if yield
       return true
     else

@@ -102,7 +102,10 @@
                 <%- when 'date_ymd'      then value.strftime('%Y/%m/%d') %>
                 <%- when 'date_ymd_time' then value.strftime('%Y/%m/%d %I:%M:%S' + tz_str) %>
                 <%- when 'date_monthdy'  then value.strftime('%B %d, %Y') %>
+                <%- when 'date_monthdy_shorttime'  then value.strftime('%B %d, %Y %I:%M') %>
                 <%- when 'date_monthdy_time'  then value.strftime('%B %d, %Y %I:%M:%S') %>
+                <%- when 'date_shortmonthdy'  then value.strftime('%b %d, %Y') %>
+                <%- when 'date_shortmonthdy_shorttime'  then value.strftime('%b %d, %Y %I:%M') %>
                 <%- when 'date_dmonthy'  then value.strftime('%d %B %Y') %>
                 <%- when 'date_ymonthd'  then value.strftime('%Y %B %d') %>
                 <%- else                      value.strftime('%m/%d/%Y %I:%M:%S' + tz_str) %>

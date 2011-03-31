@@ -895,6 +895,8 @@ blist.namespace.fetch('blist.data.types');
 
     /*** DATA TYPE DEFINITIONS ***/
 
+    var shortTimeFormat = 'h:i A';
+    var zShortTimeFormat = shortTimeFormat + ' O';
     var timeFormat = 'h:i:s A';
     var zTimeFormat = timeFormat + ' O';
     var baseDTFormats = {
@@ -906,6 +908,9 @@ blist.namespace.fetch('blist.data.types');
         'date_ymd_time': 'Y/m/d',
         'date_monthdy': 'F d, Y',
         'date_monthdy_time': 'F d, Y',
+        'date_monthdy_shorttime': 'F d, Y',
+        'date_shortmonthdy': 'M d, Y',
+        'date_shortmonthdy_shorttime': 'M d, Y',
         'date_dmonthy': 'd F Y',
         'date_ymonthd': 'Y F d'
     };
@@ -919,6 +924,11 @@ blist.namespace.fetch('blist.data.types');
         {
             dateTimeFormats[k] += ' ' + timeFormat;
             zDateTimeFormats[k] += ' ' + zTimeFormat;
+        }
+        else if (k.endsWith('_shorttime'))
+        {
+            dateTimeFormats[k] += ' ' + shortTimeFormat;
+            zDateTimeFormats[k] += ' ' + zShortTimeFormat;
         }
     });
 
@@ -988,7 +998,10 @@ blist.namespace.fetch('blist.data.types');
         {value: 'date_ymd', text: 'year/month/day'},
         {value: 'date_ymd_time', text: 'year/month/day hour:minute'},
         {value: 'date_monthdy', text: 'month day, year'},
+        {value: 'date_monthdy_shorttime', text: 'month day, year hour:minute'},
         {value: 'date_monthdy_time', text: 'month day, year hour:minute'},
+        {value: 'date_shortmonthdy', text: 'month day, year'},
+        {value: 'date_shortmonthdy_shorttime', text: 'month day, year hour:minute'},
         {value: 'date_dmonthy', text: 'day month year'},
         {value: 'date_ymonthd', text: 'year month day'}
     ];

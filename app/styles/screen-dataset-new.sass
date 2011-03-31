@@ -88,11 +88,8 @@
     .uploadThrobber
       display: none
       font-size: 1.1em
-      line-height: 16px
-      margin: 2em auto 0
+      margin-top: 2em
       text-align: center
-      text-indent: 2em
-      width: 25em
 
       .icon
         @include throbber-icon
@@ -100,6 +97,8 @@
         margin-right: 0.4em
         position: relative
         top: 0.3em
+        .ie7 &
+          text-indent: 0 // wwwwtttffffff hahahahahahhahaha
 
     .uploadFileFormats
       color: #666

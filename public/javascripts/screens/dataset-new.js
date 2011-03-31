@@ -80,7 +80,7 @@ $wizard.wizard({
                 // size the select list by how many items it contains (or it won't center)
                 var $newKindList = $pane.find('.newKindList');
                 var $newKindListItems = $newKindList.children();
-                var adjust = ($.browser.msie && ($.browser.majorVersion == 8)) ? 1 : 0;
+                var adjust = ($.browser.msie && ($.browser.majorVersion >= 8)) ? 1 : 0;
                 $newKindList.width($newKindListItems.filter(':last').outerWidth(true) * $newKindListItems.length -
                     ($newKindListItems.filter(':last').outerWidth(true) - $newKindListItems.filter(':first').outerWidth(true)) + 
                     adjust);

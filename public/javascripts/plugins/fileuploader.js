@@ -1060,8 +1060,16 @@ fileUploader.extend(fileUploader.UploadHandlerForm.prototype, {
         this.log("converting iframe's innerHTML to JSON");
         this.log("innerHTML = " + doc.body.innerHTML);
 
+        // clint.tseng@socrata.com -- deal with <pre> in ie7
+        // ported from 044b2c9f8e4fe7b02f2e5519ed90cf0c4e6a6594
+        if (doc.body.firstChild.tagName == 'PRE')
+        { response = doc.body.firstChild.innerHTML; }
+        else
+        { response = doc.body.innerHTML; }
+
         try {
-            response = eval("(" + doc.body.innerHTML + ")");
+            // clint.tseng@socrata.com -- HOLY CRAP don't eval a json blob!
+            response = JSON.parse(response);
         } catch(err){
             response = {};
         }

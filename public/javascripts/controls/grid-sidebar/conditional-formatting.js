@@ -103,6 +103,20 @@
         });
     };
 
+    var conditionIndicator = {type: 'color', required: true, text: 'Use the color',
+                                 name: 'color', defaultValue: '#bbffbb'};
+
+    if (blist.dataset.type == 'map')
+    { conditionIndicator = {text: 'Use this color or this URL', type: 'radioGroup',
+                               name: 'conditionIndicator', defaultValue: 'color',
+                               options: [
+                                   {type: 'color', required: true,
+                                       name: 'color', defaultValue: '#bbffbb'},
+                                   {type: 'text', required: true,
+                                       name: 'icon', defaultValue: 'http://'},
+                               ]
+                           }; }
+
     var sidebar;
     var configName = 'visualize.conditionalFormatting';
     var config = {
@@ -129,8 +143,7 @@
                 {type: 'repeater', minimum: 0, addText: 'Add New Rule',
                 name: 'metadata.conditionalFormatting',
                 field: {type: 'group', extraClass: 'conditionGroup', options: [
-                    {type: 'color', required: true, text: 'Use the color',
-                        name: 'color', defaultValue: '#bbffbb'},
+                    conditionIndicator,
                     {type: 'select', text: 'When', prompt: null,
                         options: [{text: 'All Conditions', value: 'and'},
                             {text: 'Any Condition', value: 'or'},

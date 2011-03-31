@@ -538,6 +538,9 @@
                 if (row.color)
                 { details.color = row.color; }
 
+                if (row.icon)
+                { details.icon = row.icon; }
+
                 if (row.meta)
                 {
                     var mapping = { 'mapIcon': 'icon',

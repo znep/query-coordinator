@@ -630,7 +630,7 @@ this.Dataset = Model.extend({
 
         row.invalid[col.lookup] = isInvalid || false;
 
-        row.color = this._rowColor(row);
+        this._setRowFormatting(row);
 
         this.trigger('row_change', [parRow || row]);
     },
@@ -1363,7 +1363,7 @@ this.Dataset = Model.extend({
         {
             // If we aren't invalidating all the rows, but conditional formatting
             // changed, then redo all the colors and re-render
-            _.each(ds._rows, function(r) { r.color = ds._rowColor(r); });
+            _.each(ds._rows, function(r) { ds._setRowFormatting(r); });
             ds.trigger('row_change', [_.values(ds._rows)]);
         }
 
@@ -1677,7 +1677,7 @@ this.Dataset = Model.extend({
             });
             delete (tr.meta || {}).invalidCells;
 
-            tr.color = ds._rowColor(tr);
+            ds._setRowFormatting(tr);
 
             return tr;
         };
@@ -1708,7 +1708,7 @@ this.Dataset = Model.extend({
         return adjRows;
     },
 
-    _rowColor: function(row)
+    _setRowFormatting: function(row)
     {
         // This reads metadata.conditionalFormatting, which is an ordered
         // array of conditions & colors. The row will get the color of the
@@ -1893,8 +1893,14 @@ this.Dataset = Model.extend({
             else { return getResult(rowVal, condVal); }
         };
 
-        return (_.detect(cf, function(c)
-            { return matchesCondition(c.condition); }) || {}).color || null;
+        var relevantCondition = _.detect(cf, function(c)
+            { return matchesCondition(c.condition); }) || {};
+
+        if (relevantCondition.color)
+        { row.color = relevantCondition.color; }
+
+        if (relevantCondition.icon)
+        { row.icon = relevantCondition.icon; }
     },
 
     _rowData: function(row, savingIds, parCol)
@@ -1978,7 +1984,7 @@ this.Dataset = Model.extend({
                 delete ds._rowIDLookup[oldID];
             }
 
-            req.row.color = ds._rowColor(req.row);
+            ds._setRowFormatting(req.row);
 
             var oldKey = oldID;
             var newKey = req.row.id;

@@ -606,7 +606,7 @@ blist.publish.saveCustomization = function(callback)
 
 blist.publish.checkVersion = function(customization)
 {
-    if ((!_.isUndefined(customization)) || (customization['version'] !== 1))
+    if (_.isUndefined(customization) || (customization['version'] !== 1))
     {
         $('.previewPane').hide();
         $('.versionMessage').show();

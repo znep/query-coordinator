@@ -71,6 +71,18 @@
       .starsControl
         float: right
 
+      &.actions
+        form
+          display: inline
+          margin-right: 0.5em
+        .button
+          @include approval-button-icons
+          font-size: 1em
+          font-weight: normal
+          margin: 0
+          padding: 0.2em 0.5em
+            left: 1.75em
+
     > li
       border-top: 1px solid $color_chrome_box_border
       color: $color_chrome_sidebar_text

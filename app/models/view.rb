@@ -811,11 +811,26 @@ class View < Model
     (Time.now - approval.maxInactivityInterval.day).to_i > latest_date
   end
 
+  def approval_stream(approval)
+    if @app_stream.nil?
+      stage_items = {}
+      approval_history.each {|ah| stage_items[ah['approvalStageId']] = ah}
+      @app_stream = []
+      approval.stages.each do |s|
+        @app_stream << stage_items[s['id']] if !stage_items[s['id']].nil?
+      end
+    end
+
+    return @app_stream
+  end
+
   def last_approval(include_rejected = false)
     approval_history.select {|ah| include_rejected || !ah['approvalRejected']}.last
   end
 
   def next_approval_stage(approval)
+    return nil if approval.nil?
+
     cur_stage = last_approval
     ns = if cur_stage.nil?
       approval.stages[0]

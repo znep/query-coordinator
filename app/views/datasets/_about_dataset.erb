@@ -23,6 +23,69 @@
     </div>
   </div>
 
+  <%- approval = Approval.find()[0] -%>
+  <%- next_stage = @view.next_approval_stage(approval) -%>
+  <%- if !next_stage.nil? -%>
+  <div class="formSection">
+    <a class="expander expanded formHeader" href="#expand">
+      <span class="icon"></span>
+      Routing & Approval
+    </a>
+    <dl class="sectionContent">
+      <%- last_app = @view.last_approval -%>
+      <%- last_app_rej = @view.last_approval(true) -%>
+      <dt>Stage</dt>
+      <dd class='stage'>
+        <div class='icon'>
+          <%- @view.approval_stream(approval).each do |as| -%>
+          <span class='<%= as['approvalRejected'] ? 'rejected' : 'on' %>'
+            title='<%= approval.stage(as['approvalStageId'])['name'] %>'></span>
+          <%- end -%>
+          <%- (approval.stages.length - @view.approval_stream(approval).length).times do |i| -%>
+          <span class='off'></span>
+          <%- end -%>
+        </div>
+        <span class='name'><%= approval.stage((last_app || {})['approvalStageId'])['name'] %></span>
+      </dd>
+      <%- if CurrentDomain.user_can?(current_user, 'manage_approval') ||
+        ((@view.next_approval_stage(approval) || {})['approverUids'] || []).include?(current_user.id) -%>
+      <dt>Actions</dt>
+      <dd class='actions'>
+        <% form_button({:action => 'approve_view', :controller => 'administration', :id => @view.id,
+            :approved => 'yes'}, 'Approve', {}, {:class => 'button approve'}) %>
+        <%- if last_app_rej.nil? || !last_app_rej['approvalRejected'] -%>
+        <% form_button({:action => 'approve_view', :controller => 'administration', :id => @view.id,
+            :approved => 'no'}, 'Reject', {}, {:class => 'button reject'}) %>
+        <%- end -%>
+      </dd>
+      <%- end -%>
+      <%- if !@view.approval_history.empty? -%>
+      <dt>Last <%= last_app_rej['approvalRejected'] ? 'Rejected' : 'Approved' %> By</dt>
+      <%- last_user = User.find(last_app_rej['approverUserUid']) -%>
+      <dd><a href='<%= last_user.href %>'><%= last_user.displayName %></a></dd>
+      <dt>Date of Last <%= last_app_rej['approvalRejected'] ? 'Rejection' : 'Approval' %></dt>
+      <dd><%= blist_date(last_app_rej['approvalDate']) %></dd>
+      <%- end -%>
+      <dt>Next Approver</dt>
+      <%- @next_approvers = {}
+        (CoreServer::Base.connection.batch_request do
+          (next_stage['approverUids'] || []).each do |userId|
+            User.find(userId, {}, true)
+          end
+        end || []).each do |r|
+          u = User.parse(r['response'])
+          @next_approvers[u.id] = u
+        end -%>
+      <dd><ul>
+        <%- (next_stage['approverUids'] || []).each do |uid| -%>
+        <%- u = @next_approvers[uid] -%>
+        <li><a href='<%= u.href %>'><%= u.displayName %></a></li>
+        <%- end -%>
+      </ul></dd>
+    </dl>
+  </div>
+  <%- end -%>
+
   <div class="formSection">
     <a class="expander expanded formHeader" href="#expand">
       <span class="icon"></span>

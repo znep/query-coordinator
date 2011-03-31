@@ -91,7 +91,7 @@ $(function()
             {
                 $stageIcon.append($.tag({tagName: 'span',
                     title: (blist.routingApproval.approvalTemplate
-                        .getStage(ah.approvalStageId) || '').name,
+                        .getStage(ah.approvalStageId) || {}).name,
                     'class': ah.approvalRejected ? 'rejected' : 'on'}));
             });
         // Subtract an extra one because we add a dummy stage 0 into approval

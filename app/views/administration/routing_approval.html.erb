@@ -16,73 +16,73 @@
 
   <%= display_standard_flashes %>
 
-  <div id='routingApprovalDashboard'>
+  <div id="routingApprovalDashboard">
     <%- if !@approval_template.nil? -%>
     <%- if @appr_count > 0 -%>
-    <div class='banner clearfix'>
-      <a href='/admin/routing_approval/queue' class='button'>Take Action</a>
+    <div class="banner clearfix">
+      <a href="/admin/routing_approval/queue" class="button">Take Action</a>
       <p>You have <strong><%= @appr_count %></strong> <%= @appr_count > 1 ?
         'datasets' : 'dataset' %> that require action.</p>
     </div>
     <%- end -%>
 
-    <div class='pipeline report'>
+    <div class="pipeline report">
       <h3>Pipeline Report</h3>
       <ul>
         <%- total_count = @approval_template.age_info.reduce(0) {|memo, ai|
               memo + ai['count']} -%>
         <%- @approval_template.age_info.each do |ai| -%>
-        <li class='clearfix'>
+        <li class="clearfix">
         <%- sname = @approval_template.stage(ai['approval_stage_id'])['name'] -%>
-        <div class='label' title='<%= sname %>'><span><%= sname %></span></div>
-        <div class='barContainer'>
-          <span class='bar' style='width:<%=
-            99.0 * ai['count'] / total_count %>%'></span>
-          <span class='count'><%= number_with_delimiter(ai['count'], {:locale => :en}) %></span>
+        <div class="label" title="<%= sname %>"><span><%= sname %></span></div>
+        <div class="barContainer">
+          <span class="bar" style="width:<%=
+            99.0 * ai['count'] / total_count %>%"></span>
+          <span class="count"><%= number_with_delimiter(ai['count'], {:locale => :en}) %></span>
         </div>
         </li>
         <%- end -%>
-        <li class='clearfix finalStage'>
-        <div class='label' title='Public Datasets'><span>Public Datasets</span></div>
-        <div class='barContainer'>
-          <span class='bar' style='width:<%=
-            [99.0 * @all_count / total_count, 100.0].min %>%'></span>
-          <span class='count'><%= number_with_delimiter(@all_count, {:locale => :en}) %></span>
+        <li class="clearfix finalStage">
+        <div class="label" title="Public Datasets"><span>Public Datasets</span></div>
+        <div class="barContainer">
+          <span class="bar" style="width:<%=
+            [99.0 * @all_count / total_count, 100.0].min %>%"></span>
+          <span class="count"><%= number_with_delimiter(@all_count, {:locale => :en}) %></span>
         </div>
         </li>
       </ul>
     </div>
 
-    <div class='ageReport report'>
+    <div class="ageReport report">
       <h3>Age by Stage Report</h3>
-      <table class='gridList'>
+      <table class="gridList">
         <colgroup>
-          <col class='stage' />
-          <col class='count' />
-          <col class='average' />
+          <col class="stage" />
+          <col class="count" />
+          <col class="average" />
         </colgroup>
         <thead>
           <tr>
-            <th class='stage'>Stage</th>
-            <th class='count'>Count</th>
-            <th class='average'>Average Age</th>
+            <th class="stage">Stage</th>
+            <th class="count">Count</th>
+            <th class="average">Average Age</th>
           </tr>
         </thead>
         <tbody>
           <%- @approval_template.age_info.each_with_index do |ai, i| -%>
           <%- stage = @approval_template.stage(ai['approval_stage_id']) -%>
           <tr>
-            <td class='stage'>
-              <div class='icon'>
+            <td class="stage">
+              <div class="icon">
                 <%- @approval_template.stages.length.times do |j| -%>
-                <span class='<%= j < i ? 'on' : 'off' %>'></span>
+                <span class="<%= j < i ? "on" : "off" %>"></span>
                 <%- end -%>
               </div>
-              <span class='name'><%= stage['name'] %></span>
+              <span class="name"><%= stage['name'] %></span>
             </td>
-            <td class='count'><%= number_with_delimiter(ai['count'],
+            <td class="count"><%= number_with_delimiter(ai['count'],
               {:locale => 'en'}) %></td>
-            <td class='average'><%= pluralize(number_with_delimiter(
+            <td class="average"><%= pluralize(number_with_delimiter(
               ai['average_age'].round, {:locale => 'en'}), 'day') %></td>
           </tr>
           <%- end -%>
@@ -90,20 +90,20 @@
       </table>
     </div>
 
-    <div class='agingReport report'>
+    <div class="agingReport report">
       <h3>Stage Breakdown Report</h3>
-      <table class='gridList'>
+      <table class="gridList">
         <colgroup>
-          <col class='stage' />
+          <col class="stage" />
           <%- @aging_groups.times do |i| -%>
-          <col class='unitCount' />
+          <col class="unitCount" />
           <%- end -%>
         </colgroup>
         <thead>
           <tr>
-            <th class='stage'>Stage</th>
+            <th class="stage">Stage</th>
             <%- @aging_groups.times do |i| -%>
-            <th class='unitCount'><%= i == 0 ? 'Today' :
+            <th class="unitCount"><%= i == 0 ? 'Today' :
               i == @aging_groups - 1 ? 'Older' : pluralize(i, 'day') + ' old' %></th>
             <%- end -%>
           </tr>
@@ -112,16 +112,16 @@
           <%- @approval_template.aging_info(@aging_groups - 1).each_with_index do |ai, i| -%>
           <%- stage = @approval_template.stage(ai['approval_stage_id']) -%>
           <tr>
-            <td class='stage'>
-              <div class='icon'>
+            <td class="stage">
+              <div class="icon">
                 <%- @approval_template.stages.length.times do |j| -%>
-                <span class='<%= j < i ? 'on' : 'off' %>'></span>
+                <span class="<%= j < i ? "on" : "off" %>"></span>
                 <%- end -%>
               </div>
-              <span class='name'><%= stage['name'] %></span>
+              <span class="name"><%= stage['name'] %></span>
             </td>
             <%- @aging_groups.times do |i| -%>
-            <td class='unitCount'><%= number_with_delimiter(ai['counts'][i] || 0, {:locale => 'en'}) %></td>
+            <td class="unitCount"><%= number_with_delimiter(ai['counts'][i] || 0, {:locale => 'en'}) %></td>
             <%- end -%>
           </tr>
           <%- end -%>
@@ -129,32 +129,32 @@
       </table>
     </div>
 
-    <div class='stuckReport report'>
+    <div class="stuckReport report">
       <h3>Stuck Datasets</h3>
-      <table class='gridList'>
+      <table class="gridList">
         <colgroup>
-          <col class='name' />
-          <col class='stage' />
-          <col class='inactive' />
+          <col class="name" />
+          <col class="stage" />
+          <col class="inactive" />
         </colgroup>
         <thead>
           <tr>
-            <th class='name'>Dataset</th>
-            <th class='stage'>Stage</th>
-            <th class='inactive'>Inactive</th>
+            <th class="name">Dataset</th>
+            <th class="stage">Stage</th>
+            <th class="inactive">Inactive</th>
           </tr>
         </thead>
         <tbody>
           <%- @stuck_results.each do |v| -%>
           <tr>
-            <td class='name'>
-              <span class='icon'></span><a href='<%= v.href %>'><%= v.name %></a>
+            <td class="name">
+              <span class="icon"></span><a href="<%= v.href %>"><%= v.name %></a>
             </td>
-            <td class='stage'>
+            <td class="stage">
               <%= render :partial => 'datasets/stage_icon',
                 :locals => {:view => v, :approval => @approval_template} %>
             </td>
-            <td class='inactive'>
+            <td class="inactive">
               <%= pluralize(((Time.now - Time.at(v.last_approval_date)) / 1.day).to_i, 'day') %>
             </td>
           </tr>
@@ -162,12 +162,12 @@
         </tbody>
       </table>
       <%- if @stuck_count > 5 -%>
-      <a href='/admin/routing_approval/queue?show_stuck=true' class='moreStuck'>Show More</a>
+      <a href="/admin/routing_approval/queue?show_stuck=true" class="moreStuck">Show More</a>
       <%- end -%>
     </div>
 
     <%- else -%>
-    <h3 class='unconfiguredMessage'>Dataset Routing &amp; Approval is not configured</h3>
+    <h3 class="unconfiguredMessage">Dataset Routing &amp; Approval is not configured</h3>
     <%- end -%>
 
   </div>

@@ -17,92 +17,92 @@
 
   <%= display_standard_flashes %>
 
-  <div class='browseSection'>
+  <div class="browseSection">
     <%- if !@approval_template.nil? -%>
-    <div class='browseList'>
-      <div class='titleContainer clearfix'>
-        <form type='GET' action='<%= @base_url + '?' +
-          @params.reject {|p, v| p.to_s == 'page' || p.to_s == 'q' || p.to_s == 'stage_id'}.to_param -%>'>
-          <div class='searchSection'>
-            <span class='icon'></span>
-            <input type='text' name='q' title='Search'
-              class='textPrompt searchBox' value='<%= @params[:q] %>' />
+    <div class="browseList">
+      <div class="titleContainer clearfix">
+        <form type="GET" action="<%= @base_url + "?" +
+          @params.reject {|p, v| p.to_s == 'page' || p.to_s == 'q' || p.to_s == 'stage_id'}.to_param -%>">
+          <div class="searchSection">
+            <span class="icon"></span>
+            <input type="text" name="q" title="Search"
+              class="textPrompt searchBox" value="<%= @params[:q] %>" />
             <%- if !@params[:q].nil? -%>
             <%- cp = @params.reject {|p, v| p.to_s == 'page' || p.to_s == 'q' } -%>
-            <a href='<%= @base_url + '?' + cp.to_param %>'
-              class='clearSearch close'><span class='icon'></span></a>
+            <a href="<%= @base_url + "?" + cp.to_param %>"
+              class="clearSearch close"><span class="icon"></span></a>
             <%- end -%>
           </div>
           <%= select_tag("stage_id", options_for_select([['All', '']].concat(@approval_template.stages.
             map {|s| [s['name'], s['id'].to_s]}), @params[:stage_id].to_s)) %>
-          <input type='submit' value='Go' />
+          <input type="submit" value="Go" />
         </form>
 
         <h2>Approval Queue</h2>
       </div>
 
-      <div class='results'>
+      <div class="results">
         <%- if @view_count == 0 -%>
-        <div class='noResults'>
-          <span class='message'>Nothing to approve</span>
+        <div class="noResults">
+          <span class="message">Nothing to approve</span>
         </div>
 
         <%- else -%>
-        <table class='gridList'>
+        <table class="gridList">
           <colgroup>
-            <col class='index' />
+            <col class="index" />
             <%- if @use_federations -%>
-            <col class='domainIcon' />
+            <col class="domainIcon" />
             <%- end -%>
-            <col class='nameDesc' />
-            <col class='actions' />
+            <col class="nameDesc" />
+            <col class="actions" />
           </colgroup>
           <thead>
             <tr>
-              <th class='index'></th>
+              <th class="index"></th>
               <%- if @use_federations -%>
-              <th class='domainIcon'></th>
+              <th class="domainIcon"></th>
               <%- end -%>
-              <th class='nameDesc'>Dataset</th>
-              <th class='actions'></th>
+              <th class="nameDesc">Dataset</th>
+              <th class="actions"></th>
             </tr>
           </thead>
           <tbody>
             <%- @view_results.each_with_index do |v, i| -%>
-            <tr class='item collapsed <%= v.is_stuck?(@approval_template) ?
-              'stuck' : ''%>'
-              data-viewId='<%= v.id %>'>
-              <td class='index'>
-                <a class='expander' title='Click to expand' href='#Expand'>
-                  <span class='icon'></span>
+            <tr class="item collapsed <%= v.is_stuck?(@approval_template) ?
+              'stuck' : ''%>"
+              data-viewId="<%= v.id %>">
+              <td class="index">
+                <a class="expander" title="Click to expand" href="#Expand">
+                  <span class="icon"></span>
                 </a>
               </td>
               <%- rel_type = v.federated? ?
                     CurrentDomain.feature?(:federated_interstitial) ?
                       'externalDomain' : 'external' : (@rel_type || '') -%>
               <%- if @use_federations -%>
-              <td class='domainIcon'>
-                <a href='<%= v.href(@port) %>' rel='<%= rel_type %>'>
-                  <img src='<%= v.domain_icon_href %>' alt='<%= v.federated? ?
-                    'Federated from ' + v.domainCName : CurrentDomain.cname %>' />
+              <td class="domainIcon">
+                <a href="<%= v.href(@port) %>" rel="<%= rel_type %>">
+                  <img src="<%= v.domain_icon_href %>" alt="<%= v.federated? ?
+                    'Federated from ' + v.domainCName : CurrentDomain.cname %>" />
                 </a>
               </td>
               <%- end -%>
-              <td class='nameDesc'>
-                <a href='<%= v.href(@port) %>' class='name alert'
-                  rel='<%= rel_type %>'><span class='icon'
-                    title='This dataset has been inactive for more than <%= pluralize(@approval_template.maxInactivityInterval, 'day') %>'></span><%= v.name %></a>
-                <div class='description' title='<%= v.description %>'>
+              <td class="nameDesc">
+                <a href="<%= v.href(@port) %>" class="name alert"
+                  rel="<%= rel_type %>"><span class="icon"
+                    title="This dataset has been inactive for more than <%= pluralize(@approval_template.maxInactivityInterval, "day") %>"></span><%= v.name %></a>
+                <div class="description" title="<%= v.description %>">
                   <%= v.description %>
                 </div>
-                <div class='expandBlock clearfix collapsed'>
-                  <div class='extraInfo <%= @use_federations ? 'federated' : '' %>'>
-                    <div class='infoContent'></div>
-                    <a class='close' href='#Close'><span class='icon'></span></a>
+                <div class="expandBlock clearfix collapsed">
+                  <div class="extraInfo <%= @use_federations ? "federated" : "" %>">
+                    <div class="infoContent"></div>
+                    <a class="close" href="#Close"><span class="icon"></span></a>
                   </div>
                 </div>
               </td>
-              <td class='actions'>
+              <td class="actions">
                 <%- if CurrentDomain.user_can?(current_user, 'manage_approval') ||
                   ((v.next_approval_stage(@approval_template) ||
                     {})['approverUids'] || []).include?(current_user.id) -%>
@@ -133,45 +133,45 @@
     </div>
 
     <%- else -%>
-    <h3 class='unconfiguredMessage'>Dataset Routing &amp; Approval is not configured</h3>
+    <h3 class="unconfiguredMessage">Dataset Routing &amp; Approval is not configured</h3>
     <%- end -%>
   </div>
 </div>
 
 <% content_for :templates do %>
-<div class='expandedInfo'>
-  <div class='stage line'>
-    <span class='title'>Stage:</span>
-    <div class='value'>
-      <div class='icon'></div>
-      <span class='description'></span>
+<div class="expandedInfo">
+  <div class="stage line">
+    <span class="title">Stage:</span>
+    <div class="value">
+      <div class="icon"></div>
+      <span class="description"></span>
     </div>
   </div>
-  <div class='created line'>
-    <div class='user leftColumn'>
-      <span class='title'>Created by:</span>
-      <a class='value' href='#'></a>
+  <div class="created line">
+    <div class="user leftColumn">
+      <span class="title">Created by:</span>
+      <a class="value" href="#"></a>
     </div>
-    <div class='date rightColumn'>
-      <span class='title'>Date Created:</span>
-      <span class='value'></span>
-    </div>
-  </div>
-  <div class='lastApproved line'>
-    <div class='user leftColumn'>
-      <div class='title'>Last <span class='type'></span> by:</div>
-      <a class='value userLoad' href='#'></a>
-    </div>
-    <div class='date rightColumn'>
-      <div class='title'>Date of Last <span class='type'></span>:</div>
-      <span class='value'></span>
+    <div class="date rightColumn">
+      <span class="title">Date Created:</span>
+      <span class="value"></span>
     </div>
   </div>
-  <div class='nextApprover line'>
-    <div class='user'>
-      <span class='title'>Next Approver:</span>
+  <div class="lastApproved line">
+    <div class="user leftColumn">
+      <div class="title">Last <span class="type"></span> by:</div>
+      <a class="value userLoad" href="#"></a>
+    </div>
+    <div class="date rightColumn">
+      <div class="title">Date of Last <span class="type"></span>:</div>
+      <span class="value"></span>
+    </div>
+  </div>
+  <div class="nextApprover line">
+    <div class="user">
+      <span class="title">Next Approver:</span>
       <ul>
-        <li><a class='value userLoad' href='#'></a></li>
+        <li><a class="value userLoad" href="#"></a></li>
       </ul>
     </div>
   </div>
@@ -180,7 +180,7 @@
 
 <%- content_for :js_footer do -%>
   <%- unless params[:no_js] == 'true' -%>
-    <script type='text/javascript'>
+    <script type="text/javascript">
       $(function()
       {
          var raNS = blist.namespace.fetch('blist.routingApproval');

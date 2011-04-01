@@ -1,0 +1,9 @@
+<div class='icon'>
+  <%- view.approval_stream(approval).each do |as| -%>
+  <span class='<%= as['approvalRejected'] ? 'rejected' : 'on' %>'
+    title='<%= approval.stage(as['approvalStageId'])['name'] %>'></span>
+  <%- end -%>
+  <%- (approval.stages.length - view.approval_stream(approval).length).times do |i| -%>
+  <span class='off'></span>
+  <%- end -%>
+</div>

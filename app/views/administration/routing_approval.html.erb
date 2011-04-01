@@ -129,6 +129,43 @@
       </table>
     </div>
 
+    <div class='stuckReport report'>
+      <h3>Stuck Datasets</h3>
+      <table class='gridList'>
+        <colgroup>
+          <col class='name' />
+          <col class='stage' />
+          <col class='inactive' />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class='name'>Dataset</th>
+            <th class='stage'>Stage</th>
+            <th class='inactive'>Inactive</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%- @stuck_results.each do |v| -%>
+          <tr>
+            <td class='name'>
+              <span class='icon'></span><a href='<%= v.href %>'><%= v.name %></a>
+            </td>
+            <td class='stage'>
+              <%= render :partial => 'datasets/stage_icon',
+                :locals => {:view => v, :approval => @approval_template} %>
+            </td>
+            <td class='inactive'>
+              <%= pluralize(((Time.now - Time.at(v.last_approval_date)) / 1.day).to_i, 'day') %>
+            </td>
+          </tr>
+          <%- end -%>
+        </tbody>
+      </table>
+      <%- if @stuck_count > 5 -%>
+      <a href='/admin/routing_approval/queue?show_stuck=true' class='moreStuck'>Show More</a>
+      <%- end -%>
+    </div>
+
     <%- else -%>
     <h3 class='unconfiguredMessage'>Dataset Routing &amp; Approval is not configured</h3>
     <%- end -%>

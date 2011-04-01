@@ -710,3 +710,12 @@
     background-position: 0 -1px
   &.reject
     background-position: 0 -25px
+
+// Medium warning icon
+@mixin warning-icon-medium($subselector: '.icon')
+  #{$subselector}
+    @include text-hiding
+    background-image: url(/stylesheets/images/icons/warning_icon_medium.png)
+    background-repeat: no-repeat
+    height: 16px
+    width: 16px

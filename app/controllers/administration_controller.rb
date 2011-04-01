@@ -702,13 +702,18 @@ class AdministrationController < ApplicationController
     @all_count = @all_results.count
 
     @aging_groups = 5
+
+    @stuck_results = SearchResult.search('views',
+                                         {:limit => 5, :for_approver => true, :sortBy => 'approval'})[0]
+    @stuck_count = @stuck_results.count
+    @stuck_results = @stuck_results.results
   end
 
   def routing_approval_queue
     @params = params.reject {|k, v| k.to_s == 'controller' || k.to_s == 'action'}
     @limit = 10
     @opts = {:for_approver => true, :limit => @limit,
-      :page => (params[:page] || 1).to_i, :sortBy => 'newest'}
+      :page => (params[:page] || 1).to_i, :sortBy => params[:show_stuck] === 'true' ? 'approval' : 'newest'}
     @base_url = request.path
 
     @opts[:q] = params[:q] if !params[:q].blank?

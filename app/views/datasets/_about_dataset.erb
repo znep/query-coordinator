@@ -36,15 +36,7 @@
       <%- last_app_rej = @view.last_approval(true) -%>
       <dt>Stage</dt>
       <dd class='stage'>
-        <div class='icon'>
-          <%- @view.approval_stream(approval).each do |as| -%>
-          <span class='<%= as['approvalRejected'] ? 'rejected' : 'on' %>'
-            title='<%= approval.stage(as['approvalStageId'])['name'] %>'></span>
-          <%- end -%>
-          <%- (approval.stages.length - @view.approval_stream(approval).length).times do |i| -%>
-          <span class='off'></span>
-          <%- end -%>
-        </div>
+        <%= render :partial => 'stage_icon', :locals => {:view => @view, :approval => approval} %>
         <span class='name'><%= approval.stage((last_app || {})['approvalStageId'])['name'] %></span>
       </dd>
       <%- if CurrentDomain.user_can?(current_user, 'manage_approval') ||

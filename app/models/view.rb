@@ -802,13 +802,17 @@ class View < Model
     return @app_hist
   end
 
-  def is_stuck?(approval)
+  def last_approval_date
     latest_date = if approval_history.empty?
-      viewLastModified
+      viewLastModified || createdAt
     else
       approval_history.last['approvalDate']
     end
-    (Time.now - approval.maxInactivityInterval.day).to_i > latest_date
+    return latest_date
+  end
+
+  def is_stuck?(approval)
+    (Time.now - approval.maxInactivityInterval.day).to_i > last_approval_date
   end
 
   def approval_stream(approval)

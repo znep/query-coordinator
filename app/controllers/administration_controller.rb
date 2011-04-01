@@ -807,7 +807,7 @@ class AdministrationController < ApplicationController
             map {|u| (u.match(/\w{4}-\w{4}$/) || [])[0]}.compact,
           'stageOrder' => (attrs[:stages].last ||
                            {'stageOrder' => 0})['stageOrder'] + 1,
-          'notificationMode' => 'S'}
+          'notificationMode' => ns[:notificationMode]}
       end
     end
 

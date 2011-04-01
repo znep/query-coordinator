@@ -52,6 +52,14 @@
               value='<%= stage['name'] %>' />
           </div>
           <div class='line'>
+            <label for='template_stages_<%= stage['id'] %>_notificationMode'>
+              Notification Method
+            </label>
+            <%= select_tag("template[stages][#{stage['id']}][notificationMode]",
+            options_for_select({'S' => 'One at a time', 'P' => 'Everyone at once'}.invert,
+            stage['notificationMode'])) %>
+          </div>
+          <div class='line'>
             <label for='template_stages_<%= stage['id'] %>_notificationInterval'>
               Notification Interval
             </label>

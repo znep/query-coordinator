@@ -86,9 +86,9 @@
 
     var doRender = function(dataItem, topMatch)
     {
-        return '<p class="title">' + $.htmlEscape(dataItem['displayName']) + '</p>' +
+        return '<p class="title">' + dataItem['displayName'] + '</p>' +
                '<p class="matchRow"><span class="matchedField">Email:</span> ' +
-               $.htmlEscape(dataItem['email']) + '</p>';
+               dataItem['email'] + '</p>';
     };
 
     var handleComplete = function(pickerObj, dataItem)

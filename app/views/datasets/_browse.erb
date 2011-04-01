@@ -3,27 +3,27 @@
 <%- cur_sort = @sort_opts.detect {|s| s[:value] == @opts[:sortBy]} -%>
 <%- show_time_period = cur_sort.nil? ? false : cur_sort[:is_time_period] -%>
 
-<div class='browseSection <%= @facets.length < 1 ? 'noFacets' : '' %>
-  <%= @browse_in_container ? 'inContainer' : '' %> <%= @disable[:sort] ? 'noSort' : '' %>'>
+<div class="browseSection <%= @facets.length < 1 ? 'noFacets' : '' %>
+  <%= @browse_in_container ? 'inContainer' : '' %> <%= @disable[:sort] ? 'noSort' : '' %>">
   <%- if @facets.length > 0 -%>
-  <div class='browseFacets <%= show_time_period ? 'hasTimePeriod' : '' %>'>
+  <div class="browseFacets <%= show_time_period ? 'hasTimePeriod' : '' %>">
     <%- unless @disable[:search] -%>
-    <form class='searchSection'>
-      <span class='icon'></span>
-      <input type='text' name='browseSearch' title='Search'
-        class='textPrompt searchBox' value='<%= @params[:q] %>' />
+    <form class="searchSection">
+      <span class="icon"></span>
+      <input type="text" name="browseSearch" title="Search"
+        class="textPrompt searchBox" value="<%= @params[:q] %>" />
       <%- if !@params[:q].nil? -%>
       <%- cp = @params.reject {|p, v| p.to_s == 'page' || p.to_s == 'q' ||
             p.to_s == 'no_default'} -%>
-      <a href='<%= @base_url + '?' + cp.to_param %>'
-        class='clearSearch close'><span class='icon'></span></a>
+      <a href="<%= @base_url + '?' + cp.to_param %>"
+        class="clearSearch close"><span class="icon"></span></a>
       <%- end -%>
     </form>
     <%- end -%>
 
     <%- if !@params[:q].nil? || @facets.any? {|f| !@params[f[:param]].nil? } ||
           !@params[:no_default].nil? -%>
-    <div class='facetSection clearAllSection'>
+    <div class="facetSection clearAllSection">
       <ul>
         <li>
         <%- cp = @params.reject {|p, v| p.to_s == 'page' || p.to_s == 'q' ||
@@ -31,7 +31,7 @@
         <%- @facets.each do |f| -%>
         <%- cp.delete(f[:param]) -%>
         <%- end -%>
-        <a href='<%= @base_url + '?' + cp.to_param %>'>Clear All Options</a>
+        <a href="<%= @base_url + '?' + cp.to_param %>">Clear All Options</a>
         </li>
       </ul>
     </div>
@@ -40,8 +40,8 @@
     <%- @facets.each do |facet| -%>
     <%- next if (facet[:options].nil? || facet[:options].length < 1) &&
           facet[:custom_content].nil? -%>
-    <div class='facetSection clearfix'>
-      <h4 class='title'><%= facet[:title] %></h4>
+    <div class="facetSection clearfix">
+      <h4 class="title"><%= facet[:title] %></h4>
       <%- if facet[:custom_content].nil? -%>
       <ul>
         <%- if !@params[facet[:param]].nil? ||
@@ -49,9 +49,9 @@
         <%- cp = @params.reject {|p, v| p.to_s == 'page'} -%>
         <%- cp.delete(facet[:param]) -%>
         <%- cp[:no_default] = facet[:param] if !@default_params[facet[:param]].nil? -%>
-        <li><a href='<%= @base_url + '?' + cp.to_param %>' class='clearValues'>
+        <li><a href="<%= @base_url + '?' + cp.to_param %>" class="clearValues">
           <%- if facet[:use_icon] -%>
-          <span class='icon'></span>
+          <span class="icon"></span>
           <%- end -%>
           (All)
         </a></li>
@@ -60,27 +60,27 @@
         <%- cp = @params.reject {|p, v| p.to_s == 'page' ||
               p.to_s == 'no_default'} -%>
         <%- cp[facet[:param]] = f[:value] -%>
-        <li><a href='<%= @base_url + '?' + cp.to_param %>'
-          class='<%= f[:class] %> <%= @params[facet[:param]] == f[:value] ||
+        <li><a href="<%= @base_url + '?' + cp.to_param %>"
+          class="<%= f[:class] %> <%= @params[facet[:param]] == f[:value] ||
             (@params[facet[:param]].nil? &&
               @default_params[facet[:param]] == f[:value]) ?
-            'active' : '' %>'>
+            'active' : '' %>">
           <%- if facet[:use_icon] -%>
-          <span class='icon'></span>
+          <span class="icon"></span>
           <%- end -%>
           <%= f[:text] %>
         </a></li>
         <%- end -%>
       </ul>
       <%- if !facet[:extra_options].nil? -%>
-      <a class='moreLink' href='#More <%= facet[:title] %>'>View more</a>
-      <div class='moreOptions hide'>
+      <a class="moreLink" href="#More <%= facet[:title] %>">View more</a>
+      <div class="moreOptions hide">
         <%- facet[:extra_options].each do |f| -%>
         <%- cp = @params.reject {|p, v| p.to_s == 'page' ||
               p.to_s == 'no_default'} -%>
         <%- cp[facet[:param]] = f[:value] -%>
-        <a href='<%= @base_url + '?' + cp.to_param %>'
-          rel='<%= f[:count] %>'>
+        <a href="<%= @base_url + '?' + cp.to_param %>"
+          rel="<%= f[:count] %>">
           <%# We need a space inside the a, or else when we stick them in
           the dialog, tags without any space will not wrap at all %>
           <%= f[:text] %>
@@ -95,7 +95,7 @@
       <%- cp = @params.reject {|p, v| p.to_s == 'page'} -%>
       <%- cp.delete(facet[:param]) -%>
       <%- cp[:no_default] = facet[:param] if !@default_params[facet[:param]].nil? -%>
-      <ul><li><a href='<%= @base_url + '?' + cp.to_param %>' class='clearValues'>
+      <ul><li><a href="<%= @base_url + '?' + cp.to_param %>" class="clearValues">
         (Clear)
       </a></li></ul>
       <%- end -%>
@@ -107,29 +107,29 @@
   <%- end -%>
 
   <%- if ((CurrentDomain.user_can?(current_user, :create_datasets) || CurrentDomain.module_enabled?(:community_creation))) && !@suppress_dataset_creation -%>
-  <div class='createDatasetBox infoBox'>
+  <div class="createDatasetBox infoBox">
     <h3>Create or upload your own dataset</h3>
     <div class="buttonContainer">
-      <a class='button next' href='/datasets/new' title='Create a new dataset'>
-        <%= @browse_in_container ? 'Create a new Dataset' : 'Create' %><span class='icon'></span>
+      <a class="button next" href="/datasets/new" title="Create a new dataset">
+        <%= @browse_in_container ? 'Create a new Dataset' : 'Create' %><span class="icon"></span>
       </a>
     </div>
   </div>
   <%- end -%>
 
-  <div class='browseList'>
+  <div class="browseList">
     <%- if !@browse_in_container -%>
-    <div class='titleContainer'>
-      <h2 title='<%= strip_tags @title %>'><%= raw @title %></h2>
+    <div class="titleContainer">
+      <h2 title="<%= strip_tags @title %>"><%= raw @title %></h2>
     </div>
     <%- end -%>
     <%- if @view_count > 0 && @sort_opts.length > 0 && !@disable[:sort] -%>
-    <div class='sortOptions'>
-      <select class='sortType' name='sortType'>
+    <div class="sortOptions">
+      <select class="sortType" name="sortType">
         <%- @sort_opts.each do |so| -%>
         <%- next if !so[:requires].nil? && @params[so[:requires]].nil? -%>
-        <option value='<%= so[:value] %>' class='<%= so[:is_time_period] ?
-          'timePeriod' : '' %>' <%= so[:value] == @opts[:sortBy] ?
+        <option value="<%= so[:value] %>" class="<%= so[:is_time_period] ?
+          'timePeriod' : '' %>" <%= so[:value] == @opts[:sortBy] ?
           "selected='selected'" : '' %>><%= so[:name] %></option>
         <%- end -%>
       </select>
@@ -138,83 +138,83 @@
         {:value => 'month', :name => 'This month'},
         {:value => 'year', :name => 'This year'}
       ] -%>
-      <select class='sortPeriod <%= !show_time_period ? 'hide' : '' %>'
-        name='sortPeriod'>
+      <select class="sortPeriod <%= !show_time_period ? 'hide' : '' %>"
+        name="sortPeriod">
         <%- time_opts.each do |to| -%>
-        <option value='<%= to[:value] %>' <%= to[:value] == @params[:sortPeriod] ?
+        <option value="<%= to[:value] %>" <%= to[:value] == @params[:sortPeriod] ?
           "selected='selected'" : '' %>><%= to[:name] %></option>
         <%- end -%>
       </select>
     </div>
     <%- end -%>
 
-    <div class='results'>
+    <div class="results">
       <%- if @view_count == 0 -%>
-      <div class='noResults'>
-        <span class='message'><%= @no_results_text %></span>
+      <div class="noResults">
+        <span class="message"><%= @no_results_text %></span>
         <%- if (CurrentDomain.user_can?(current_user, :create_datasets) ||
               CurrentDomain.module_enabled?(:community_creation)) && !@suppress_dataset_creation -%>
-        <a class='button createLink' href='/datasets/new'>Create New Dataset</a>
+        <a class="button createLink" href="/datasets/new">Create New Dataset</a>
         <%- end -%>
         <%- if CurrentDomain.module_enabled?(:dataset_nomination) && !@suppress_dataset_creation -%>
-        <a class='button suggestLink' href='/nominate'>Suggest a Dataset</a>
+        <a class="button suggestLink" href="/nominate">Suggest a Dataset</a>
         <%- end -%>
       </div>
 
       <%- else -%>
-      <table class='gridList'>
+      <table class="gridList">
         <colgroup>
-          <col class='index' />
+          <col class="index" />
           <%- if @use_federations -%>
-          <col class='domainIcon' />
+          <col class="domainIcon" />
           <%- end -%>
-          <col class='nameDesc' />
+          <col class="nameDesc" />
           <%- if @dataset_actions -%>
-          <col class='datasetActions' />
+          <col class="datasetActions" />
           <%- end -%>
-          <col class='popularity' />
-          <col class='type' />
+          <col class="popularity" />
+          <col class="type" />
         </colgroup>
         <thead>
           <tr>
-            <th class='index'></th>
+            <th class="index"></th>
             <%- if @use_federations -%>
-            <th class='domainIcon'></th>
+            <th class="domainIcon"></th>
             <%- end -%>
-            <th class='nameDesc'>Name</th>
+            <th class="nameDesc">Name</th>
             <%- if @dataset_actions -%>
-            <th class='datasetActions'><%= @dataset_actions %></th>
+            <th class="datasetActions"><%= @dataset_actions %></th>
             <%- end -%>
-            <th class='popularity'>Popularity</th>
-            <th class='type'>Type</th>
+            <th class="popularity">Popularity</th>
+            <th class="type">Type</th>
           </tr>
         </thead>
         <tbody>
           <%- start_index = (@opts[:page] - 1) * @limit + 1 -%>
           <%- @view_results.each_with_index do |v, i| -%>
-          <tr class='item collapsed' data-viewId='<%= v.id %>'>
-            <td class='index'>
-              <a class='expander' title='Click to expand' href='#Expand'>
-                <span class='icon'></span>
+          <tr class="item collapsed" data-viewId="<%= v.id %>">
+            <td class="index">
+              <a class="expander" title="Click to expand" href="#Expand">
+                <span class="icon"></span>
               </a>
-              <span class='value'><%= start_index + i %>.</span>
+              <span class="value"><%= start_index + i %>.</span>
             </td>
             <%- rel_type = v.federated? ?
                   CurrentDomain.feature?(:federated_interstitial) ?
                     'externalDomain' : 'external' : (@rel_type || '') -%>
             <%- if @use_federations -%>
-            <td class='domainIcon'>
-              <a href='<%= v.href(@port) %>' rel='<%= rel_type %>'>
-                <img src='<%= v.domain_icon_href %>' alt='<%= v.federated? ?
-                  'Federated from ' + v.domainCName : CurrentDomain.cname %>' />
+            <td class="domainIcon">
+              <a href="<%= v.href(@port) %>" rel="<%= rel_type %>">
+                <img src="<%= v.domain_icon_href %>" alt="<%= v.federated? ?
+                  'Federated from ' + v.domainCName : CurrentDomain.cname %>" />
               </a>
             </td>
             <%- end -%>
-            <td class='nameDesc'>
-              <a href='<%= v.href(@port) %>' class='name'
-                rel='<%= rel_type %>'><%= v.name %></a>
+            <td class="nameDesc">
+              <a href="<%= v.href(@port) %>" class="name"
+                rel="<%= rel_type %>"><%= v.name %></a>
               <%- if !v.category.blank? -%>
-              <span class='category infoItem'><%= v.category %></span>
+              <span class="category infoItem"><%= v.category %></span>
               <%- end -%>
               <%- if !v.tags.nil? && v.tags.length > 0 -%>
               <%- tag_limit = 50 -%>
@@ -228,20 +228,20 @@
                     end
                     t += '...'
                   end -%>
-              <span class='tags infoItem'><%= t %></span>
+              <span class="tags infoItem"><%= t %></span>
               <%- end -%>
-              <div class='expandBlock clearfix collapsed'>
-                <div class='description'><%= v.description %></div>
-                <div class='extraInfo <%= @use_federations ? 'federated' : '' %>'>
-                  <div class='infoContent'></div>
-                  <a class='close' href='#Close'><span class='icon'></span></a>
+              <div class="expandBlock clearfix collapsed">
+                <div class="description"><%= v.description %></div>
+                <div class="extraInfo <%= @use_federations ? 'federated' : '' %>">
+                  <div class="infoContent"></div>
+                  <a class="close" href="#Close"><span class="icon"></span></a>
                 </div>
               </div>
             </td>
             <%- if @dataset_actions -%>
-            <td class='datasetActions'>
-              <div class='moderateActions'>
-                <span class='textStatus'><%= v.moderation_status %></span>
+            <td class="datasetActions">
+              <div class="moderateActions">
+                <span class="textStatus"><%= v.moderation_status %></span>
                 <%- if v.moderationStatus.nil? || !v.moderationStatus -%>
                   <% form_button({:action => 'set_view_moderation_status', :id => v.id, :approved => 'yes'}, 'Approve') %>
                 <%- end -%>
@@ -251,13 +251,13 @@
               </div>
             </td>
             <%- end -%>
-            <td class='popularity'>
-              <span class='visits'><%= pluralize(number_with_delimiter(v.viewCount,
+            <td class="popularity">
+              <span class="visits"><%= pluralize(number_with_delimiter(v.viewCount,
                 {:locale => 'en'}), 'view') %></span>
             </td>
-            <td class='type type<%= v.display.type.capitalize %>'
-              title='<%= v.display.name.capitalize %>'>
-              <div class='icon'></div>
+            <td class="type type<%= v.display.type.capitalize %>"
+              title="<%= v.display.name.capitalize %>">
+              <div class="icon"></div>
             </td>
           </tr>
           <%- end -%>
@@ -274,10 +274,10 @@
 
   <%- if !@browse_in_container &&
           CurrentDomain.module_enabled?(:dataset_nomination) -%>
-  <div class='suggestBox infoBox'>
+  <div class="suggestBox infoBox">
     <h3>Didn't find what you're looking for? Suggest a dataset</h3>
     <div class="buttonContainer">
-      <a class='button next' href='/nominate'>Suggest<span class='icon'></span></a>
+      <a class="button next" href="/nominate">Suggest<span class="icon"></span></a>
     </div>
   </div>
   <%- end -%>

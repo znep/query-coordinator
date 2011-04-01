@@ -12,7 +12,7 @@
       <li class="analytics">
         <%= link_to raw('<span class="icon"></span>Site Analytics'),
             {:action => 'analytics'} %>
-        <span class='description'>
+        <span class="description">
           View sitewide statistics for datasets, views, visitors and more
         </span>
       </li>
@@ -20,7 +20,7 @@
     <%- if CurrentDomain.user_can?(current_user, :manage_users) -%>
       <li class="users">
         <%= link_to raw('<span class="icon"></span>Users'), {:action => 'users'} %>
-        <span class='description'>
+        <span class="description">
           Manage users on your site and what permissions and abilities they have
         </span>
       </li>
@@ -29,7 +29,7 @@
       <li class="federation">
         <%= link_to raw('<span class="icon"></span>Federation'),
             {:action => 'federations'} %>
-        <span class='description'>
+        <span class="description">
           Manage connections and data sharing with other sites via Open Data
           Federation Services
         </span>
@@ -39,7 +39,7 @@
       <li class="comments">
         <%= link_to raw('<span class="icon"></span>Comment Moderation'),
             {:action => 'comment_moderation'} %>
-        <span class='description'>
+        <span class="description">
           Review and moderate comments for datasets on your site
         </span>
       </li>
@@ -49,7 +49,7 @@
         <%= link_to \
             raw('<span class="icon"></span>View Moderation'),
             {:action => 'views'} %>
-          <span class='description'>
+          <span class="description">
             View and manage user-created views, including filters, charts, and maps. Approve a view to have it show up in your data catalog.
           </span>
       </li>
@@ -58,7 +58,7 @@
       <li class="appearance">
         <%= link_to raw('<span class="icon"></span>SDP Templates'),
             {:action => 'sdp_templates'} %>
-        <span class='description'>
+        <span class="description">
           Manage and customize the templates used for publishing your data via Socrata Data Players
         </span>
       </li>
@@ -68,7 +68,7 @@
       <li class="datasets">
         <%= link_to raw('<span class="icon"></span>Datasets'),
             {:action => 'datasets'} %>
-        <span class='description'>
+        <span class="description">
           List the datasets on this domain and configure the layout of the dataset page
         </span>
       </li>
@@ -77,7 +77,7 @@
       <li class="homemgmt">
         <%= link_to raw('<span class="icon"></span>Home Page'),
             {:action => 'home'} %>
-        <span class='description'>
+        <span class="description">
           Configure what content is featured on the home page
         </span>
       </li>
@@ -86,7 +86,7 @@
       <li class="metadata">
         <%= link_to raw('<span class="icon"></span>Metadata'),
             {:action => 'metadata'} %>
-        <span class='description'>
+        <span class="description">
           Manage the dataset metadata fields, including categories and custom fields
         </span>
       </li>
@@ -95,7 +95,7 @@
       <li class="routingApproval">
         <%= link_to raw('<span class="icon"></span>Dataset Routing &amp; Approval'),
             {:action => 'routing_approval'} %>
-        <span class='description'>
+        <span class="description">
           Review datasets that are in the approval process, and manage the steps of the approval process
         </span>
       </li>
@@ -104,7 +104,7 @@
       <li class="internal">
         <%= link_to raw('<span class="icon"></span>Internal'),
             {:controller => 'internal', :action => 'index'} %>
-        <span class='description'>
+        <span class="description">
           Change and add modules, sites, and more
         </span>
       </li>

@@ -114,7 +114,7 @@
   <%- if Rails.env != 'production' -%>
     <%= include_javascripts 'debug' %>
   <%- else -%>
-    <script type='text/javascript'>
+    <script type="text/javascript">
       $.debug = function() {};
     </script>
   <%- end -%>

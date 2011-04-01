@@ -15,19 +15,19 @@
   <%= display_standard_flashes %>
 
   <div class="searchFields">
-    <form class='search domainsSearch' method='get'>
-      <label for='domain'>Search for Domains to Publish to</label>
-      <input type='text' class='textPrompt searchField' name='domain' id='domain'
-        title='Search for Domains to Publish to'<%= " value='#{@search_domain}'" unless @search_domain.nil? %> />
+    <form class="search domainsSearch" method="get">
+      <label for="domain">Search for Domains to Publish to</label>
+      <input type="text" class="textPrompt searchField" name="domain" id="domain"
+        title="Search for Domains to Publish to"<%= raw(" value=\"#{h @search_domain}\"") unless @search_domain.nil? %> />
       <input type="submit" class="submit" alt="search" value="Search" />
     </form>
 
     <%# We don't have a UI for federating individual datasets yet, so this is less than helpful %>
     <%- if false -%>
-      <form class='search datasetsSearch' method='get'>
-        <label for='dataset'>Search for Published Datasets</label>
-        <input type='text' class='textPrompt searchField' name='dataset' id='dataset'
-         title='Search for Published Datasets' <%= " value='#{@search_dataset}'" unless @search_dataset.nil? %> />
+      <form class="search datasetsSearch" method="get">
+        <label for="dataset">Search for Published Datasets</label>
+        <input type="text" class="textPrompt searchField" name="dataset" id="dataset"
+         title="Search for Published Datasets"<%= raw(" value=\"#{h @search_dataset}\"") unless @search_dataset.nil? %> />
         <input type="submit" class="submit" alt="search" value="Search" />
       </form>
     <%- end -%>

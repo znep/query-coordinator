@@ -1,12 +1,12 @@
 <%- if @show_search_form -%>
   <% form_tag(root_path, :method => :get, :class => "search") do %>
     <p>
-      <label for='search'><%= t(:search_prompt_text) %></label>
-      <input type='text' class='textPrompt' name='search'
-        title='<%= t(:search_prompt_text) %>'
-        value='<%= @discover_search %>' />
-      <input type='image' class='submit' name='discoverSubmit'
-        src='/stylesheets/images/common/empty.gif' alt="search" />
+      <label for="search"><%= t(:search_prompt_text) %></label>
+      <input type="text" class="textPrompt" name="search"
+        title="<%= t(:search_prompt_text) %>"
+        value="<%= @discover_search %>" />
+      <input type="image" class="submit" name="discoverSubmit"
+        src="/stylesheets/images/common/empty.gif" alt="search" />
     </p>
   <% end %>
 <%- end -%>

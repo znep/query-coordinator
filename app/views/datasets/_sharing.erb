@@ -10,9 +10,9 @@
       </p>
     <%- end -%>
     <p class="formHeader">This <span class="datasetTypeName">dataset</span> is
-      <span class='publicOrPrivate'><%= @view.is_public? ? 'Public' : 'Private' %></span>
-      <span class='andSharedHint<%= ' hide' unless @view.is_shared? -%>'>
-        and shared with the following <span class='friendsHint'></span>
+      <span class="publicOrPrivate"><%= @view.is_public? ? 'Public' : 'Private' %></span>
+      <span class="andSharedHint<%= ' hide' unless @view.is_shared? -%>">
+        and shared with the following <span class="friendsHint"></span>
       </span>
     </p>
     <div class="sectionContent">
@@ -45,7 +45,7 @@
       <span class="icon"></span>
     </a>
     <span class="profileImage"></span>
-    <div class='nameWrapper'><span class="name"></span></div>
+    <div class="nameWrapper"><span class="name"></span></div>
     <%- if grantable -%>
       <%= select_tag 'type', options_for_select(Share.types), :class => 'type' %>
     <%- end -%>

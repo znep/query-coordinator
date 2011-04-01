@@ -26,13 +26,13 @@
 
   <div class="widgetContent">
     <div class="widgetContentSection widgetContentGrid">
-      <div id='renderTypeContainer' class="gridContainer">
-          <div class='mainSpinner loadingSpinnerContainer hide'>
-            <div class='loadingSpinner'></div>
+      <div id="renderTypeContainer" class="gridContainer">
+          <div class="mainSpinner loadingSpinnerContainer hide">
+            <div class="loadingSpinner"></div>
           </div>
 
           <%- if @view.is_tabular? -%>
-          <div id='gridRenderType' class='fullHeight renderTypeNode'>
+          <div id="gridRenderType" class="fullHeight renderTypeNode">
             <%- if @view.display.data_valid? -%>
               <noscript>
                 <h3><a href="<%= @view.href %>"><%= @view.name %></a></h3>
@@ -49,70 +49,70 @@
           </div>
           <%- end -%>
 
-          <div id='staticRenderType' class='fullHeight renderTypeNode'>
+          <div id="staticRenderType" class="fullHeight renderTypeNode">
             <%- if @display.can_publish? -%>
               <%= render(:partial => @display.render_partial) %>
             <%- end -%>
           </div>
 
-          <div id='fatRowRenderType'
-            class='fatRowRenderType navRenderType renderTypeNode fullHeight hide'>
-            <div class='columnHeaders'></div>
-            <div class='rowList'></div>
-            <ul class='navigation'>
-              <li><a href='#start' title='View first page' class='start button'>
-                <span class='icon'></span>
+          <div id="fatRowRenderType"
+            class="fatRowRenderType navRenderType renderTypeNode fullHeight hide">
+            <div class="columnHeaders"></div>
+            <div class="rowList"></div>
+            <ul class="navigation">
+              <li><a href="#start" title="View first page" class="start button">
+                <span class="icon"></span>
               </a></li>
-              <li><a href='#previous' title='View previous page'
-                class='previous button'>
-                <span class='icon'></span>
+              <li><a href="#previous" title="View previous page"
+                class="previous button">
+                <span class="icon"></span>
               </a></li>
-              <li class='page'><a href='#page'>0</a></li>
-              <li><a href='#next' title='View next page' class='next button'>
-                <span class='icon'></span>
+              <li class="page"><a href="#page">0</a></li>
+              <li><a href="#next" title="View next page" class="next button">
+                <span class="icon"></span>
               </a></li>
-              <li><a href='#end' title='View last page' class='end button'>
-                <span class='icon'></span>
+              <li><a href="#end" title="View last page" class="end button">
+                <span class="icon"></span>
               </a></li>
             </ul>
-            <div class='templateRow row clearfix'>
+            <div class="templateRow row clearfix">
             </div>
           </div>
 
-          <div id='pageRenderType'
-            class='pageRenderType navRenderType fullHeight renderTypeNode hide'>
-            <a href='#ShowFullView' class='fullView'>View all the data</a>
-            <div class='content'></div>
-            <ul class='navigation'>
-              <li><a href='#start' title='View first row' class='start button'>
-                <span class='icon'></span>
+          <div id="pageRenderType"
+            class="pageRenderType navRenderType fullHeight renderTypeNode hide">
+            <a href="#ShowFullView" class="fullView">View all the data</a>
+            <div class="content"></div>
+            <ul class="navigation">
+              <li><a href="#start" title="View first row" class="start button">
+                <span class="icon"></span>
               </a></li>
-              <li><a href='#previous' title='View previous row'
-                class='previous button'>
-                <span class='icon'></span>
+              <li><a href="#previous" title="View previous row"
+                class="previous button">
+                <span class="icon"></span>
               </a></li>
-              <li class='info'>
-              Viewing row <span class='curPage'></span> of <span
-                class='totalPages'></span>
+              <li class="info">
+              Viewing row <span class="curPage"></span> of <span
+                class="totalPages"></span>
               </li>
-              <li><a href='#next' title='View next row' class='next button'>
-                <span class='icon'></span>
+              <li><a href="#next" title="View next row" class="next button">
+                <span class="icon"></span>
               </a></li>
-              <li><a href='#end' title='View last row' class='end button'>
-                <span class='icon'></span>
+              <li><a href="#end" title="View last row" class="end button">
+                <span class="icon"></span>
               </a></li>
             </ul>
           </div>
 
-          <div class='viewErrorContainer content'>
+          <div class="viewErrorContainer content">
             <%- if current_user && (current_user.id == @view.owner.id) -%>
-            <div class='viewError'><%= @view.display.invalid_message %></div>
-            <ul class='invalidActions'>
-              <li><a href='<%= @view.href %>' rel='external'
-                  class='editView button'>Edit View</a></li>
+            <div class="viewError"><%= @view.display.invalid_message %></div>
+            <ul class="invalidActions">
+              <li><a href="<%= @view.href %>" rel="external"
+                  class="editView button">Edit View</a></li>
             </ul>
             <%- else -%>
-            <div class='viewError'>This view cannot be displayed</div>
+            <div class="viewError">This view cannot be displayed</div>
             <%- end -%>
           </div>
       </div>

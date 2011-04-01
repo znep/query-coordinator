@@ -1,108 +1,108 @@
 <%- id = 'form_field_' + column.id.to_s -%>
 <%- case column.client_type
   when 'checkbox' -%>
-<div class='fieldContainer checkboxInput'>
-  <input type='checkbox' id='<%= id %>' name='<%= column.id %>' />
+<div class="fieldContainer checkboxInput">
+  <input type="checkbox" id="<%= id %>" name="<%= column.id %>" />
 </div>
 
 <%- when 'calendar_date', 'date' -%>
-<div class='fieldContainer dateInput'>
-  <select class='monthInput' name='<%= column.id %>:month'>
-    <option value=''></option>
+<div class="fieldContainer dateInput">
+  <select class="monthInput" name="<%= column.id %>:month">
+    <option value=""></option>
     <%- 12.times do |i| -%>
-    <option value='<%= i + 1 %>'><%= Date::ABBR_MONTHNAMES[i+1] %></option>
+    <option value="<%= i + 1 %>"><%= Date::ABBR_MONTHNAMES[i+1] %></option>
     <%- end -%>
   </select>
-  <input type='text' class='dayInput' maxlength='2' min='1' max='31'
-    name='<%= column.id %>:day' />
-  <input type='text' class='yearInput' maxlength='4' name='<%= column.id %>:year' />
-  <input type='text' class='hourInput' maxlength='2' min='1' max='12'
-    name='<%= column.id %>:hour' />
-  <span class='hourSplit'>:</span>
-  <input type='text' class='minuteInput' maxlength='2' min='0' max='59'
-    name='<%= column.id %>:minute' />
-  <select class='ampmInput' name='<%= column.id %>:pm'>
-    <option value=''>AM</option>
-    <option value='1'>PM</option>
+  <input type="text" class="dayInput" maxlength="2" min="1" max="31"
+    name="<%= column.id %>:day" />
+  <input type="text" class="yearInput" maxlength="4" name="<%= column.id %>:year" />
+  <input type="text" class="hourInput" maxlength="2" min="1" max="12"
+    name="<%= column.id %>:hour" />
+  <span class="hourSplit">:</span>
+  <input type="text" class="minuteInput" maxlength="2" min="0" max="59"
+    name="<%= column.id %>:minute" />
+  <select class="ampmInput" name="<%= column.id %>:pm">
+    <option value="">AM</option>
+    <option value="1">PM</option>
   </select>
 </div>
 
 <%- when 'document_obsolete', 'photo_obsolete', 'document', 'photo' -%>
-<input type='file' id='<%= id %>' name='<%= column.id %>' />
+<input type="file" id="<%= id %>" name="<%= column.id %>" />
 
 <%- when 'flag' -%>
-<select class='fieldInput' id='<%= id %>' name='<%= column.id %>'>
-  <option value=''>(Blank)</option>
-  <option value='red'>Red</option>
-  <option value='blue'>Blue</option>
-  <option value='green'>Green</option>
-  <option value='yellow'>Yellow</option>
-  <option value='orange'>Orange</option>
-  <option value='purple'>Purple</option>
+<select class="fieldInput" id="<%= id %>" name="<%= column.id %>">
+  <option value="">(Blank)</option>
+  <option value="red">Red</option>
+  <option value="blue">Blue</option>
+  <option value="green">Green</option>
+  <option value="yellow">Yellow</option>
+  <option value="orange">Orange</option>
+  <option value="purple">Purple</option>
 </select>
 
 <%- when 'phone' -%>
-<div class='fieldContainer phoneInput'>
-  <input type='text' id='<%= id %>' name='<%= column.id %>:phone_number' />
-  <select id='<%= id + '_phone_type' %>' name='<%= column.id %>:phone_type'>
-    <option value=''>(Blank)</option>
-    <option value='Home'>Home</option>
-    <option value='Cell'>Cell</option>
-    <option value='Work'>Work</option>
-    <option value='Fax'>Fax</option>
-    <option value='Other'>Other</option>
+<div class="fieldContainer phoneInput">
+  <input type="text" id="<%= id %>" name="<%= column.id %>:phone_number" />
+  <select id="<%= id + '_phone_type' %>" name="<%= column.id %>:phone_type">
+    <option value="">(Blank)</option>
+    <option value="Home">Home</option>
+    <option value="Cell">Cell</option>
+    <option value="Work">Work</option>
+    <option value="Fax">Fax</option>
+    <option value="Other">Other</option>
   </select>
 </div>
 
 <%- when 'picklist', 'drop_down_list', 'dataset_link' -%>
-<select class='fieldInput' id='<%= id %>' name='<%= column.id %>'>
-  <option value=''>(Blank)</option>
+<select class="fieldInput" id="<%= id %>" name="<%= column.id %>">
+  <option value="">(Blank)</option>
   <% if column.dropDown && column.dropDown.values %>
     <%- column.dropDown.values.each do |dd| -%>
     <%- next if dd['deleted'] -%>
-    <option value='<%= dd['id'] %>'><%= dd['description'] %></option>
+    <option value="<%= dd['id'] %>"><%= dd['description'] %></option>
   <%- end -%>
   <%- end -%>
 </select>
 
 <%- when 'html' -%>
-<textarea class='fieldInput' id='<%= id %>' name='<%= column.id %>'></textarea>
+<textarea class="fieldInput" id="<%= id %>" name="<%= column.id %>"></textarea>
 
 <%- when 'stars' -%>
-<select class='fieldInput' id='<%= id %>' name='<%= column.id %>'>
-  <option value=''>(Blank)</option>
+<select class="fieldInput" id="<%= id %>" name="<%= column.id %>">
+  <option value="">(Blank)</option>
   <%- range = column.range || 5 -%>
   <%- range.times do |i| -%>
-  <option value='<%= i + 1 %>'><%= i + 1 %></option>
+  <option value="<%= i + 1 %>"><%= i + 1 %></option>
   <%- end -%>
 </select>
 
 <%- when 'url' -%>
-<div class='fieldContainer urlInput'>
-  <label for='<%= id + '_url' %>'>URL</label>
-  <input type='text' id='<%= id + '_url' %>' name='<%= column.id %>:url' />
-  <label for='<%= id + '_description' %>'>Description</label>
-  <input type='text' id='<%= id + '_description' %>'
-    name='<%= column.id %>:description' />
+<div class="fieldContainer urlInput">
+  <label for="<%= id + '_url' %>">URL</label>
+  <input type="text" id="<%= id + '_url' %>" name="<%= column.id %>:url" />
+  <label for="<%= id + '_description' %>">Description</label>
+  <input type="text" id="<%= id + '_description' %>"
+    name="<%= column.id %>:description" />
 </div>
 
 <%- when 'location' -%>
-<div class='fieldContainer locationInput'>
-  <label for='<%= id %>_address_street'>Street</label>
-  <input type='text' id='<%= id %>_address_street'
-    name='<%= column.id %>:human_address:address' />
-  <label for='<%= id %>_address_city'>City</label>
-  <input type='text' id='<%= id %>_address_city'
-    name='<%= column.id %>:human_address:city' />
-  <label for='<%= id %>_address_state'>State</label>
-  <input type='text' id='<%= id %>_address_state'
-    name='<%= column.id %>:human_address:state' />
-  <label for='<%= id %>_address_zip'>Zip</label>
-  <input type='text' id='<%= id %>_address_zip'
-    name='<%= column.id %>:human_address:zip' />
+<div class="fieldContainer locationInput">
+  <label for="<%= id %>_address_street">Street</label>
+  <input type="text" id="<%= id %>_address_street"
+    name="<%= column.id %>:human_address:address" />
+  <label for="<%= id %>_address_city">City</label>
+  <input type="text" id="<%= id %>_address_city"
+    name="<%= column.id %>:human_address:city" />
+  <label for="<%= id %>_address_state">State</label>
+  <input type="text" id="<%= id %>_address_state"
+    name="<%= column.id %>:human_address:state" />
+  <label for="<%= id %>_address_zip">Zip</label>
+  <input type="text" id="<%= id %>_address_zip"
+    name="<%= column.id %>:human_address:zip" />
 </div>
 
 <%- else -%>
-<input type='text' class='fieldInput' id='<%= id %>' name='<%= column.id %>' />
+<input type="text" class="fieldInput" id="<%= id %>" name="<%= column.id %>" />
 
 <%- end -%>

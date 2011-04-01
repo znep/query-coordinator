@@ -1,10 +1,10 @@
 <%- if @show_search_form -%>
   <% form_tag(root_path, :method => :get, :class => "search") do %>
-    <label for='search'><%= CurrentDomain.strings.search_prompt %></label>
-    <input type='text' class='textPrompt searchField' name='search'
-      title='<%= CurrentDomain.strings.search_prompt %>'
-      value='<%= @discover_search %>' />
-    <input type='submit' class='submit' name='discoverSubmit'
+    <label for="search"><%= CurrentDomain.strings.search_prompt %></label>
+    <input type="text" class="textPrompt searchField" name="search"
+      title="<%= CurrentDomain.strings.search_prompt %>"
+      value="<%= @discover_search %>" />
+    <input type="submit" class="submit" name="discoverSubmit"
       value="Go" class="searchSubmit" />
   <% end %>
 <%- end -%>

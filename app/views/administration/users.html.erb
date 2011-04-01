@@ -30,7 +30,7 @@
 
   <%= display_standard_flashes %>
 
-  <p class='information'>
+  <p class="information">
     <%- unless @user_search_results.nil? -%>
       <%= link_to 'Return to users overview', :action => 'users' %>
     <%- end -%>
@@ -42,10 +42,10 @@
   </div>
   <%- end -%>
 
-  <form class='search usersFind' action='<%= url_for :action => 'users' %>' method='get'>
-    <label for='username'>Search for Users to Add</label>
-    <input type='text' class='textPrompt searchField<%= ' prompt' if @search.nil? %>' name='username' id='username'
-     title='Search for users to add' <%= " value='#{@search}'" unless @search.nil? %> />
+  <form class="search usersFind" action="<%= url_for :action => 'users' %>" method="get">
+    <label for="username">Search for Users to Add</label>
+    <input type="text" class="textPrompt searchField<%= ' prompt' if @search.nil? %>" name="username" id="username"
+     title="Search for users to add"<%= raw(" value=\"#{h @search}\"") unless @search.nil? %> />
     <input type="submit" class="submit" alt="search" value="Search" />
   </form>
 
@@ -62,15 +62,15 @@
       </div>
       <div class="line">
         <label>&nbsp;</label>
-        <input type='submit' class='bulkCreateButton button default' value='Create Accounts' />
+        <input type="submit" class="bulkCreateButton button default" value="Create Accounts" />
         <%- unless no_js -%>
-          <a href="#Cancel" class='cancelBulkCreate button'>Cancel</a>
+          <a href="#Cancel" class="cancelBulkCreate button">Cancel</a>
         <%- end -%>
       </div>
     </form>
   </div>
 
-  <div class='adminUsersTableContainer tableContainer'>
+  <div class="adminUsersTableContainer tableContainer">
   <h2><%= @table_title %></h2>
   <%- unless @users_list.nil? -%>
     <div class="flash notice userNotice"></div>
@@ -134,7 +134,7 @@
                     <input type="hidden" name="user_id" class="hiddenID" value="<%= user.id %>" />
                     <%= raw(select_for_role("userSelect-#{user.id}", 'role', user.roleName, 'roleSelect')) %>
                     <%- if no_js -%>
-                      <input type='submit' class='userSaveButton' value='Save' />
+                      <input type="submit" class="userSaveButton" value="Save" />
                     <%- end -%>
                   </form>
                 <%- end -%>

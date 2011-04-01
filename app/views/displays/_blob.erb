@@ -1,5 +1,5 @@
-<div class='externalLinkDisplay clearfix <%= @view.display.display_type %>'>
-  <p class='info'>
+<div class="externalLinkDisplay clearfix <%= @view.display.display_type %>">
+  <p class="info">
   <%- if @view.display.type == 'href' -%>
   This dataset has not been imported into the catalog yet, so it cannot be explored interactively, but it is available for download
   <%- elsif @view.display.display_type == 'link' -%>
@@ -8,11 +8,11 @@
   This dataset is not tabular data, and may have limited interactivity, but it is available for download
   <%- end -%>
   </p>
-  <div class='downloadBox'>
+  <div class="downloadBox">
     <h5>Download</h5>
     <ul>
       <%- @view.blobs.each do |b| -%>
-      <li><a class='button' href="<%= b['href'] %>" target="_blank">
+      <li><a class="button" href="<%= b['href'] %>" target="_blank">
         <%- s = b['size'].is_a?(Numeric) ?
         number_to_human_size(b['size'], :locale => :en) : b['size'] -%>
         <%- if !b['name'].blank? -%>
@@ -27,14 +27,14 @@
 </div>
 
 <%- if @view.display.display_type == 'image' -%>
-<div class='displayArea image fullHeight'>
+<div class="displayArea image fullHeight">
 <img src="<%= @view.blobs[0]['href'] %>" alt="<%= @view.name %>" />
 </div>
 
 <%- elsif @view.display.display_type == 'google_viewer' -%>
 <%- blob_location = URI.escape(request.protocol + request.host_with_port +
   @view.blobs[0]['href']) -%>
-<div class='displayArea fullHeight'>
+<div class="displayArea fullHeight">
 <noscript>
     <p>Javascript is required to run the document viewer inside your browser.</p>
     <p>To download this file instead, <%= link_to 'click here', blob_location,
@@ -44,13 +44,13 @@
     $(function()
     {
         blist.renderTypes = blist.renderTypes || {};
-        blist.renderTypes.blob = { href: '<%= blob_location %>' };
+        blist.renderTypes.blob = { href: "<%= blob_location %>" };
     });
 </script>
 </div>
 
 <%- else -%>
-<div id='aboutSection'>
+<div id="aboutSection">
   <%= render :partial => 'datasets/about_dataset' %>
 </div>
 <%- end -%>

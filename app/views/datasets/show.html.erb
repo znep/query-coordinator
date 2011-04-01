@@ -18,32 +18,32 @@
   <%- end -%>
 <% end %>
 
-<div id='datasetBar' class='clearfix <%= @view.is_blist? ? 'dataset' : '' %>'>
-  <div id='infoBox'>
-    <div id='datasetIcon' class='type<%= @view.display.type.capitalize %>'>
-      <span class='icon currentViewName'><%= @view.display.name %></span>
-      <span class='alertIcon'></span>
+<div id="datasetBar" class="clearfix <%= @view.is_blist? ? 'dataset' : '' %>">
+  <div id="infoBox">
+    <div id="datasetIcon" class="type<%= @view.display.type.capitalize %>">
+      <span class="icon currentViewName"><%= @view.display.name %></span>
+      <span class="alertIcon"></span>
     </div>
-    <div class='unsavedLine'>
-      <h2 id='unsavedTitle'>Unsaved View</h2>
+    <div class="unsavedLine">
+      <h2 id="unsavedTitle">Unsaved View</h2>
       <%- if @view.has_rights?('update_view') -%>
-      <a href='#Save' title='Save current view' data-savingText='Saving...'
-        class='save toolbarButton'>Save</a>
+      <a href="#Save" title="Save current view" data-savingText="Saving..."
+        class="save toolbarButton">Save</a>
       <%- end -%>
-      <a href='#SaveAs' title='Save view as...'
-        class='saveAs toolbarButton'>Save As...</a>
-      <a href='#Revert' title='Revert to saved view'
-        class='revert toolbarButton'>Revert</a>
+      <a href="#SaveAs" title="Save view as..."
+        class="saveAs toolbarButton">Save As...</a>
+      <a href="#Revert" title="Revert to saved view"
+        class="revert toolbarButton">Revert</a>
     </div>
-    <h2 id='datasetName' class="clipText currentViewName"><%= @view.name %></h2>
+    <h2 id="datasetName" class="clipText currentViewName"><%= @view.name %></h2>
     <div class="basedOnParent">
       Based on <a class="parentName"></a>
     </div>
-    <div class='basedOnTemp'>
-      Based on <a class='revertLink currentViewName' href="#revert"><%= @view.name %></a>
+    <div class="basedOnTemp">
+      Based on <a class="revertLink currentViewName" href="#revert"><%= @view.name %></a>
     </div>
 
-    <div id='description'>
+    <div id="description">
       <p class="collapsed"><%= raw(auto_link(h(@view.description), :html => { :rel => 'nofollow' })) || '(No description provided)'%></p>
       <a href="#expand" class="descriptionExpander rightArrow" title="Click to expand">
         <span class="icon"></span>
@@ -52,8 +52,8 @@
 
   </div>
 
-  <div id='actionBox' class='clearfix'>
-    <ul id="toolbarOptions" class='clearfix'>
+  <div id="actionBox" class="clearfix">
+    <ul id="toolbarOptions" class="clearfix">
       <li>
         <ul id="shareOptions">
           <li><a class="facebook" rel="external" title="Share on Facebook"
@@ -70,18 +70,18 @@
       </li>
       <li>
         <%- if @view.available_display_types.length > 1 -%>
-        <ul id='renderTypeOptions' class="pillButtons">
+        <ul id="renderTypeOptions" class="pillButtons">
 
           <%- title_types = {'page' => 'single row', 'fatrow' => 'rich list'} -%>
           <%- url_types = {'fatrow' => 'richList'} -%>
           <%- @view.available_display_types.clone.
             push('template').each do |type| -%>
           <li><a
-            href='<%= @view.href %>?defaultRender=<%= url_types[type] || type %>'
-            class='<%= type %> noRedirPrompt
-              <%= type == 'template' ? 'hide' : '' %>'
-            title='View as a <%= title_types[type] || type %>'>
-            <span class='icon'></span>
+            href="<%= @view.href %>?defaultRender=<%= url_types[type] || type %>"
+            class="<%= type %> noRedirPrompt
+              <%= type == 'template' ? 'hide' : '' %>"
+            title="View as a <%= title_types[type] || type %>">
+            <span class="icon"></span>
           </a></li>
           <%- end -%>
 
@@ -107,77 +107,77 @@
   <%- sidebar_config = CurrentDomain.configuration('sidebar') -%>
   <%- sidebar_position = (!sidebar_config.nil? ?
     sidebar_config.properties.position : nil) || 'right' -%>
-  <div id='actionBar' class='clearfix position-<%= sidebar_position %>'>
+  <div id="actionBar" class="clearfix position-<%= sidebar_position %>">
     <%- if @view.can_edit? -%>
-    <div id='editBar' class='clearfix'>
-      <ul id='editOptions'>
-        <li><a href='#Undo' class='button undo' title='Undo'>
-          <span class='icon'>Undo</span>
+    <div id="editBar" class="clearfix">
+      <ul id="editOptions">
+        <li><a href="#Undo" class="button undo" title="Undo">
+          <span class="icon">Undo</span>
         </a></li>
-        <li><a href='#Redo' class='button redo' title='Redo'>
-          <span class='icon'>Redo</span>
+        <li><a href="#Redo" class="button redo" title="Redo">
+          <span class="icon">Redo</span>
         </a></li>
       </ul>
 
-      <div id='formatOptions' class='disabled'>
+      <div id="formatOptions" class="disabled">
         <ul>
-          <li><a href='#format_bold' class='button bold toggleButton'
-            title='Bold'><span class='icon'>Bold</span></a></li>
-          <li><a href='#format_underline' class='button underline toggleButton'
-            title='Underline'><span class='icon'>Underline</span></a></li>
-          <li><a href='#format_italic' class='button italic toggleButton'
-            title='Italic'><span class='icon'>Italic</span></a></li>
-          <li><a href='#format_strikethrough' class='button strike toggleButton'
-            title='Strikethrough'><span class='icon'>Strike</span></a></li>
-          <li><a href='#format_unorderedList'
-            class='button bulletedList toggleButton'
-            title='Bulleted List'><span class='icon'>Bulleted List</span></a></li>
-          <li><a href='#format_orderedList' class='button numberedList toggleButton'
-            title='Numbered List'><span class='icon'>Numbered List</span></a></li>
-          <li><a href='#format_link' class='button link toggleButton'
-            title='Link'>Link</a></li>
+          <li><a href="#format_bold" class="button bold toggleButton"
+            title="Bold"><span class="icon">Bold</span></a></li>
+          <li><a href="#format_underline" class="button underline toggleButton"
+            title="Underline"><span class="icon">Underline</span></a></li>
+          <li><a href="#format_italic" class="button italic toggleButton"
+            title="Italic"><span class="icon">Italic</span></a></li>
+          <li><a href="#format_strikethrough" class="button strike toggleButton"
+            title="Strikethrough"><span class="icon">Strike</span></a></li>
+          <li><a href="#format_unorderedList"
+            class="button bulletedList toggleButton"
+            title="Bulleted List"><span class="icon">Bulleted List</span></a></li>
+          <li><a href="#format_orderedList" class="button numberedList toggleButton"
+            title="Numbered List"><span class="icon">Numbered List</span></a></li>
+          <li><a href="#format_link" class="button link toggleButton"
+            title="Link">Link</a></li>
           <li><%= select_tag("format_fontFamily", font_select_options('Helvetica'),
             {:class => 'fontFamily'}) %></li>
           <li><%= select_tag("format_fontSize", font_size_select_options(12),
             {:class => 'fontSize'}) %></li>
-          <li><div class='menu color'>
-            <a class='menuButton color' title='Font Color'>
-              <span class='colorIcon colorIndicator'></span><span class='icon'></span>
+          <li><div class="menu color">
+            <a class="menuButton color" title="Font Color">
+              <span class="colorIcon colorIndicator"></span><span class="icon"></span>
             </a>
           </div></li>
-          <li><div class='align menu alignLeft'></div></li>
+          <li><div class="align menu alignLeft"></div></li>
         </ul>
       </div>
     </div>
     <%- end -%>
 
     <div class="sidebarOptionsContainer clearfix">
-      <ul id='sidebarOptions' class="clearfix">
-        <li><a href='#Edit' title='Edit' class="edit"
-          data-paneName='edit'><span class="icon"></span>Edit</a></li>
-        <li><a href='#More Views' title='More Views' class="moreViews"
-          data-paneName='moreViews'><span class="icon"></span>More Views</a></li>
-        <li><a href='#Filter' title='Filter' class='filter'
-          data-paneName='filter'><span class="icon"></span>Filter
-          <span class='alertIcon'></span></a></li>
-        <li><a href='#Visualize' title='Visualize' class="visualize"
-          data-paneName='visualize'><span class="icon"></span>Visualize</a></li>
-        <li><a href='#Export' title='Export' class="export"
-          data-paneName='export'><span class="icon"></span>Export</a></li>
-        <li><a href='#Discuss' title='Discuss' class="feed"
-          data-paneName='feed'><span class="icon"></span>Discuss</a></li>
-        <li><a href='#Embed' title='Embed' class="embed"
-          data-paneName='embed'><span class="icon"></span>Embed</a></li>
-        <li><a href='#About' title='About' class="about"
-          data-paneName='about'><span class="icon"></span>About</a></li>
+      <ul id="sidebarOptions" class="clearfix">
+        <li><a href="#Edit" title="Edit" class="edit"
+          data-paneName="edit"><span class="icon"></span>Edit</a></li>
+        <li><a href="#More_Views" title="More Views" class="moreViews"
+          data-paneName="moreViews"><span class="icon"></span>More Views</a></li>
+        <li><a href="#Filter" title="Filter" class="filter"
+          data-paneName="filter"><span class="icon"></span>Filter
+          <span class="alertIcon"></span></a></li>
+        <li><a href="#Visualize" title="Visualize" class="visualize"
+          data-paneName="visualize"><span class="icon"></span>Visualize</a></li>
+        <li><a href="#Export" title="Export" class="export"
+          data-paneName="export"><span class="icon"></span>Export</a></li>
+        <li><a href="#Discuss" title="Discuss" class="feed"
+          data-paneName="feed"><span class="icon"></span>Discuss</a></li>
+        <li><a href="#Embed" title="Embed" class="embed"
+          data-paneName="embed"><span class="icon"></span>Embed</a></li>
+        <li><a href="#About" title="About" class="about"
+          data-paneName="about"><span class="icon"></span>About</a></li>
       </ul>
     </div>
   </div>
 
 </div>
 
-<div class='outerContainer'>
-  <div id='renderTypeContainer' class='innerContainer'>
+<div class="outerContainer">
+  <div id="renderTypeContainer" class="innerContainer">
     <div class="aboutLoad">
       <%= render :partial => 'about_dataset' %>
       <%- if @view.is_tabular? && !@view.is_form? && @view.display.data_valid? -%>
@@ -188,85 +188,85 @@
       <%- next_row = @view.get_row_by_index(next_index) -%>
       <%- end -%>
       <%- if !next_row.nil? -%>
-      <a href='<%= @view.href %>/<%= next_row['sid'] %>' class='rowLink'>
+      <a href="<%= @view.href %>/<%= next_row['sid'] %>" class="rowLink">
         <%= @row.nil? ? 'First' : 'Next' %> row
       </a>
       <%- else -%>
-      <a href='<%= @view.href %>/row_index/<%= next_index %>' class='rowLink'>
+      <a href="<%= @view.href %>/row_index/<%= next_index %>" class="rowLink">
         <%= next_index == 0 ? 'First' : 'Next' %> row
       </a>
       <%- end -%>
       <%- end -%>
     </div>
-    <div class='mainSpinner loadingSpinnerContainer hide'>
-      <div class='loadingSpinner'></div>
+    <div class="mainSpinner loadingSpinnerContainer hide">
+      <div class="loadingSpinner"></div>
     </div>
-    <div class='viewErrorContainer'>
+    <div class="viewErrorContainer">
       <%- if @view.has_rights?('update_view') -%>
-      <div class='viewError'><%= @view.display.invalid_message %></div>
-      <ul class='invalidActions'>
+      <div class="viewError"><%= @view.display.invalid_message %></div>
+      <ul class="invalidActions">
         <li>
-          <a href='#Edit' class='editView button'>Edit View</a>
+          <a href="#Edit" class="editView button">Edit View</a>
         </li>
         <%- if @view.has_rights?('delete_view') -%>
         <li>
-          <a href='#Remove' class='removeView button'>Delete View</a>
+          <a href="#Remove" class="removeView button">Delete View</a>
         </li>
         <%- end -%>
       </ul>
       <%- else -%>
-      <div class='viewError'>This view cannot be displayed</div>
+      <div class="viewError">This view cannot be displayed</div>
       <%- end -%>
     </div>
 
-    <div id='staticRenderType' class='fullHeight renderTypeNode'>
+    <div id="staticRenderType" class="fullHeight renderTypeNode">
       <%= render(:partial => @view.display.render_partial) %>
     </div>
 
     <%- if @view.is_tabular? && !@view.is_form? -%>
-    <div id='fatRowRenderType'
-      class='fatRowRenderType navRenderType renderTypeNode fullHeight hide'>
-      <div class='columnHeaders'></div>
-      <div class='rowList'></div>
-      <ul class='navigation'>
+    <div id="fatRowRenderType"
+      class="fatRowRenderType navRenderType renderTypeNode fullHeight hide">
+      <div class="columnHeaders"></div>
+      <div class="rowList"></div>
+      <ul class="navigation">
       <%- if !@current_user.nil? && @current_user.has_right?('create_datasets') &&
           @view.has_rights?('update_view') -%>
-        <li class='edit'><a class='button'
-          href='<%= @view.href %>/edit_rr?defaultRender=richList'>
+        <li class="edit"><a class="button"
+          href="<%= @view.href %>/edit_rr?defaultRender=richList">
           Edit Layout
         </a></li>
         <%- end -%>
-        <li><a href='#start' title='View first page' class='start button'>
-          <span class='icon'></span>
+        <li><a href="#start" title="View first page" class="start button">
+          <span class="icon"></span>
         </a></li>
-        <li><a href='#previous' title='View previous page' class='previous button'>
-          <span class='icon'></span>
+        <li><a href="#previous" title="View previous page" class="previous button">
+          <span class="icon"></span>
         </a></li>
-        <li class='page'><a href='#page'>0</a></li>
-        <li><a href='#next' title='View next page' class='next button'>
-          <span class='icon'></span>
+        <li class="page"><a href="#page">0</a></li>
+        <li><a href="#next" title="View next page" class="next button">
+          <span class="icon"></span>
         </a></li>
-        <li><a href='#end' title='View last page' class='end button'>
-          <span class='icon'></span>
+        <li><a href="#end" title="View last page" class="end button">
+          <span class="icon"></span>
         </a></li>
       </ul>
-      <div class='templateRow row clearfix'>
+      <div class="templateRow row clearfix">
       </div>
     </div>
 
-    <div id='pageRenderType' class='pageRenderType navRenderType renderTypeNode
-      fullHeight hide'>
-      <a href='#ShowFullView' class='fullView button leftArrow hide'>
-        <span class='icon'></span>Back to all the data
+    <div id="pageRenderType" class="pageRenderType navRenderType renderTypeNode
+      fullHeight hide">
+      <a href="#ShowFullView" class="fullView button leftArrow hide">
+        <span class="icon"></span>Back to all the data
       </a>
-      <div class='content'>
+      <div class="content">
         <%- if !@row.nil? -%>
-        <div class='pageColumn'>
+        <div class="pageColumn">
           <%- @view.visible_columns.each do |c| -%>
-          <div class='pageLine <%= c.renderTypeName %>'>
-            <span class='pageLabel'><%= c.name %></span>
+          <div class="pageLine <%= c.renderTypeName %>">
+            <span class="pageLabel"><%= c.name %></span>
 
-            <div class='pageItem'>
+            <div class="pageItem">
               <%- cell = @row[c.id] -%>
               <%- if c.renderTypeName == 'nested_table' -%>
               <table>
@@ -296,35 +296,35 @@
         </div>
         <%- end -%>
       </div>
-      <ul class='navigation'>
+      <ul class="navigation">
         <%- if !@current_user.nil? && @current_user.has_right?('create_datasets') &&
             @view.has_rights?('update_view') -%>
-        <li class='edit'><a class='button'
-          href='<%= @view.href %>/edit_rr?defaultRender=page'>Edit Layout</a></li>
+        <li class="edit"><a class="button"
+          href="<%= @view.href %>/edit_rr?defaultRender=page">Edit Layout</a></li>
         <%- end -%>
-        <li><a href='#start' title='View first row' class='start button'>
-          <span class='icon'></span>
+        <li><a href="#start" title="View first row" class="start button">
+          <span class="icon"></span>
         </a></li>
-        <li><a href='#previous' title='View previous row' class='previous button'>
-          <span class='icon'></span>
+        <li><a href="#previous" title="View previous row" class="previous button">
+          <span class="icon"></span>
         </a></li>
-        <li class='info'>
-        Viewing row <span class='curPage'></span> of <span
-          class='totalPages'></span>
+        <li class="info">
+        Viewing row <span class="curPage"></span> of <span
+          class="totalPages"></span>
         </li>
-        <li><a href='#next' title='View next row' class='next button'>
-          <span class='icon'></span>
+        <li><a href="#next" title="View next row" class="next button">
+          <span class="icon"></span>
         </a></li>
-        <li><a href='#end' title='View last row' class='end button'>
-          <span class='icon'></span>
+        <li><a href="#end" title="View last row" class="end button">
+          <span class="icon"></span>
         </a></li>
       </ul>
     </div>
     <%- end -%>
   </div>
 
-  <div id='gridSidebar'>
-    <a class='close' href='#close'><span class='icon'>Close</span></a>
+  <div id="gridSidebar">
+    <a class="close" href="#close"><span class="icon">Close</span></a>
   </div>
 </div>
 
@@ -434,7 +434,7 @@
   <div class="emailDatasetDialog modalDialog<%= ' ownerDialog' if
     @view.has_rights?('grant') %>">
     <a href="#close" class="jqmClose modalDialogClose">Close</a>
-    <h2><span class='emailDatasetHint'>Email</span> this
+    <h2><span class="emailDatasetHint">Email</span> this
       <span class="datasetTypeNameUpcase">Dataset</span></h2>
     <div class="emailSuccess">
       <div class="flash notice">
@@ -451,8 +451,8 @@
       <div class="flash" id="emailDatasetMessage"></div>
       <p>Share this <span class="datasetTypeName">dataset</span> with the following email addresses</p>
       <div class="emailFormContent">
-        <form class='commonForm' id='emailDatasetForm'
-          action='/views/<%= @view.id %>.json?method=sendAsEmail' method='post'>
+        <form class="commonForm" id="emailDatasetForm"
+          action="/views/<%= @view.id %>.json?method=sendAsEmail" method="post">
           <div class="emailLine">
             <a href="#remove" title="Remove" class="removeLink delete hiddenLink">
               <span class="icon"></span>
@@ -484,7 +484,7 @@
         </li>
         <li>
           <a href="#email" class="button" id="emailSubmitButton">
-            <span class="icon"></span><span class='emailDatasetHint'>Email</span>
+            <span class="icon"></span><span class="emailDatasetHint">Email</span>
           </a>
         </li>
       </ul>

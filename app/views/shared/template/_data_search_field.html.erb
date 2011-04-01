@@ -1,6 +1,6 @@
 <% form_tag('/', :class => "search large", :method => :get) do %>
   <div class="searchContainer">
-    <label for='search'><%= CurrentDomain.strings.search_prompt %></label>
+    <label for="search"><%= CurrentDomain.strings.search_prompt %></label>
     <%= text_field_tag("search", @search_term, :class => "textPrompt",
       :title => CurrentDomain.strings.search_prompt) %>
     <%= hidden_field_tag("type", "search") %>

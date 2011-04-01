@@ -2,19 +2,19 @@
     <span class="icon"></span>
     <h1>Dataset Routing &amp; Approval</h1>
 
-    <ul id='sectionOptions' class="pillButtons">
-      <li><a href='<%= routing_approval_administration_path %>'
-        class='dashboard <%= active == 'dashboard' ? "active" : '' %>'>
-        <span class='icon'></span>Dashboard
+    <ul id="sectionOptions" class="pillButtons">
+      <li><a href="<%= routing_approval_administration_path %>"
+        class="dashboard <%= active == 'dashboard' ? "active" : '' %>">
+        <span class="icon"></span>Dashboard
       </a></li>
-      <li><a href='<%= routing_approval_administration_path %>/queue'
-        class='queue <%= active == 'queue' ? "active" : '' %>'>
-        <span class='icon'></span>Approval Queue
+      <li><a href="<%= routing_approval_administration_path %>/queue"
+        class="queue <%= active == 'queue' ? "active" : '' %>">
+        <span class="icon"></span>Approval Queue
       </a></li>
       <%- if CurrentDomain.user_can?(current_user, 'manage_approval') -%>
-      <li><a href='<%= routing_approval_administration_path %>/manage'
-        class='manage <%= active == 'manage' ? "active" : '' %>'>
-        <span class='icon'></span>Approval Management
+      <li><a href="<%= routing_approval_administration_path %>/manage"
+        class="manage <%= active == 'manage' ? "active" : '' %>">
+        <span class="icon"></span>Approval Management
       </a></li>
       <%- end -%>
     </ul>

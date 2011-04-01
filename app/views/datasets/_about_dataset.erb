@@ -29,21 +29,21 @@
   <div class="formSection">
     <a class="expander expanded formHeader" href="#expand">
       <span class="icon"></span>
-      Routing & Approval
+      Routing &amp; Approval
     </a>
     <dl class="sectionContent">
       <%- last_app = @view.last_approval -%>
       <%- last_app_rej = @view.last_approval(true) -%>
       <dt>Stage</dt>
-      <dd class='stage'>
+      <dd class="stage">
         <%= render :partial => 'stage_icon', :locals => {:view => @view, :approval => approval} %>
-        <span class='name'><%= approval.stage((last_app || {})['approvalStageId'])['name'] %></span>
+        <span class="name"><%= approval.stage((last_app || {})['approvalStageId'])['name'] %></span>
       </dd>
       <%- if CurrentDomain.user_can?(current_user, 'manage_approval') ||
       (!current_user.nil? &&
         ((@view.next_approval_stage(approval) || {})['approverUids'] || []).include?(current_user.id)) -%>
       <dt>Actions</dt>
-      <dd class='actions'>
+      <dd class="actions">
         <% form_button({:action => 'approve_view', :controller => 'administration', :id => @view.id,
             :approved => 'yes'}, 'Approve', {}, {:class => 'button approve'}) %>
         <%- if last_app_rej.nil? || !last_app_rej['approvalRejected'] -%>
@@ -102,7 +102,7 @@
       <dt>Contributors</dt>
       <dd><%= @view.contributor_users.length %></dd>
       <%- if @view.user_granted?(current_user) || CurrentDomain.user_can?(current_user, :edit_others_datasets) -%>
-        <dt class='widenedItem'>
+        <dt class="widenedItem">
           <%= link_to 'View Statistics', "#{@view.href}/stats" %>
         </dt>
         <dd>&nbsp;</dd>

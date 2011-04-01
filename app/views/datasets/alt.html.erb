@@ -89,7 +89,7 @@
   <%- end -%>
 
   <h2>About</h2>
-  <div class='altMeta'>
+  <div class="altMeta">
     <%= render(:partial => 'about_dataset',
                :locals => {:static_links => true}) %>
   </div>
@@ -210,8 +210,8 @@
     <% end %>
   <% end %>
 
-  <a name='sharing'></a>
-  <div id='sharingBlock'>
+  <a name="sharing"></a>
+  <div id="sharingBlock">
     <h2>Sharing</h2>
     <%-
     shares = @view.shares
@@ -235,7 +235,7 @@
     <%- end -%>
 
     <%- if shares.length > 0 -%>
-    <ul class='metaDataList'>
+    <ul class="metaDataList">
       <%- shares.sort {|a,b|
         a.type <=> b.type ||
         a.member_name.downcase <=> b.member_name.downcase}.each do |s| -%>
@@ -255,8 +255,8 @@
   </div>
 
   <%- if @view.display.can_publish? -%>
-  <a name='publishing'></a>
-  <div id='publishingBlock'>
+  <a name="publishing"></a>
+  <div id="publishingBlock">
     <h2>Publishing</h2>
 
     <%- if @view.is_private? -%>

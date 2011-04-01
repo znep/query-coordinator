@@ -1,8 +1,8 @@
 <thead>
   <tr>
-    <th scope='col' id="header_row_number_<%= parent_id %>">Row number</th>
+    <th scope="col" id="header_row_number_<%= parent_id %>">Row number</th>
     <% columns.each do |column|%>
-      <th scope='col' id="header_<%= column.id %>" class="<%= column.dataTypeName %>"
+      <th scope="col" id="header_<%= column.id %>" class="<%= column.dataTypeName %>"
         <%= "colspan='" + (column.viewable_children.length + 1).to_s + "'" if
           column.is_nested_table %>>
         <%= column.name %>
@@ -16,12 +16,12 @@
   <%- rows.each do |row| -%>
     <% row_number += 1 %>
     <tr class="<%= cycle('even', 'odd', :name => 'row_' + parent_id) %>">
-      <th scope='row' header="header_row_number_<%= parent_id %>" class='row_number'>
+      <th scope="row" header="header_row_number_<%= parent_id %>" class="row_number">
         <%= row_number %>
       </th>
       <% columns.each do |column|%>
-      <td header="header_<%= column.id %>" class='type_<%= column.client_type %>'
-        <%= "colspan='" + (column.viewable_children.length + 1).to_s + "'" if
+      <td header="header_<%= column.id %>" class="type_<%= column.client_type %>"
+        <%= 'colspan="' + (column.viewable_children.length + 1).to_s + '"' if
           column.is_nested_table %>>
           <%- cell = row[column.data_position] -%>
           <%- unless cell.nil? -%>
@@ -128,10 +128,10 @@
               <%- params << 'content_type=' +
                 URI::escape(cell[type_i]) if
                 !cell[type_i].blank? -%>
-              <a href='/views/<%= @view.id %>/<%= is_new ?
+              <a href="/views/<%= @view.id %>/<%= is_new ?
                 '' : 'obsolete_' %>files/<%= cell[id_i] %><%=
                   is_new && params.length > 0 ?
-                  '?' + params.join('&') : '' %>'>
+                  '?' + params.join('&') : '' %>">
                   <%= cell[name_i] %>
                 </a>
                 (<%= number_to_human_size(cell[size_i],
@@ -143,8 +143,8 @@
               <%- url = '/views/' + @view.id + '/' +
                 (column.dataTypeName == 'photo_obsolete' ?
                 'obsolete_' : '') + 'files/' + cell -%>
-              <a href='<%= url %>'>
-                <img width='20' height='20' src='<%= url %>' />
+              <a href="<%= url %>">
+                <img width='20' height='20' src="<%= url %>" />
               </a>
 
             <%- when 'location' -%>

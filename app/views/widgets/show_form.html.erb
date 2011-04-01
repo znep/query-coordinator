@@ -15,15 +15,15 @@
     <%= render(:partial => @display.render_partial) %>
   <%- end -%>
 <%- else -%>
-  <div class='viewErrorContainer content'>
+  <div class="viewErrorContainer content">
     <%- if current_user.id == @view.owner.id -%>
-    <div class='viewError'><%= @view.message %></div>
-    <ul class='actionButtons clearfix'>
+    <div class="viewError"><%= @view.message %></div>
+    <ul class="actionButtons clearfix">
       <li><a href="<%= @view.href %>" rel="external"
-        class='arrowButton'>Edit View</a></li>
+        class="arrowButton">Edit View</a></li>
     </ul>
     <%- else -%>
-    <div class='viewError'>Unable to display this view.</div>
+    <div class="viewError">Unable to display this view.</div>
     <%- end -%>
   </div>
 <%- end -%>

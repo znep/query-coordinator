@@ -9,22 +9,22 @@
   <body>
     <div class="outerContainer">
       <div id="renderTypeContainer">
-        <div id='staticRenderType' class='fullHeight renderTypeNode hide'>
+        <div id="staticRenderType" class="fullHeight renderTypeNode hide">
           <%= render :partial => @view.display.render_partial %>
         </div>
 
         <%- if @view.is_tabular? && !@view.is_form? -%>
-        <div id='fatRowRenderType'
-          class='fatRowRenderType navRenderType renderTypeNode fullHeight hide'>
-          <div class='columnHeaders'></div>
-          <div class='rowList'></div>
-          <div class='templateRow row clearfix'>
+        <div id="fatRowRenderType"
+          class="fatRowRenderType navRenderType renderTypeNode fullHeight hide">
+          <div class="columnHeaders"></div>
+          <div class="rowList"></div>
+          <div class="templateRow row clearfix">
           </div>
         </div>
 
-        <div id='pageRenderType' class='pageRenderType navRenderType renderTypeNode
-          fullHeight hide'>
-          <div class='content'></div>
+        <div id="pageRenderType" class="pageRenderType navRenderType renderTypeNode
+          fullHeight hide">
+          <div class="content"></div>
         </div>
         <%- end -%>
       </div>

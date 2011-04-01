@@ -4,17 +4,17 @@
 
     <ul id='sectionOptions' class="pillButtons">
       <li><a href='<%= routing_approval_administration_path %>'
-        <%= active == 'dashboard' ? "class='active'" : '' %>>
-        Dashboard
+        class='dashboard <%= active == 'dashboard' ? "active" : '' %>'>
+        <span class='icon'></span>Dashboard
       </a></li>
       <li><a href='<%= routing_approval_administration_path %>/queue'
-        <%= active == 'queue' ? "class='active'" : '' %>>
-        Approval Queue
+        class='queue <%= active == 'queue' ? "active" : '' %>'>
+        <span class='icon'></span>Approval Queue
       </a></li>
       <%- if CurrentDomain.user_can?(current_user, 'manage_approval') -%>
       <li><a href='<%= routing_approval_administration_path %>/manage'
-        <%= active == 'manage' ? "class='active'" : '' %>>
-        Approval Management
+        class='manage <%= active == 'manage' ? "active" : '' %>'>
+        <span class='icon'></span>Approval Management
       </a></li>
       <%- end -%>
     </ul>

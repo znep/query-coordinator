@@ -7,7 +7,10 @@
       position: absolute
       right: 10px
       a
+        @include approval-toggle-icons
         font-size: 1.2em
+        .icon
+          margin-right: 0.5em
 
   .browseSection
     padding: 0
@@ -17,8 +20,11 @@
       padding: 0
       .titleContainer
         float: none
-        .searchSection
+        form
           float: right
+          .searchSection
+            display: inline-block
+            margin-right: 0.5em
 
       .results
         margin: 0

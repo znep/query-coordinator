@@ -4,6 +4,11 @@ $(function()
     var $browse = $('.browseSection');
     if ($browse.length < 1) { return; }
 
+    var $form = $browse.find('.titleContainer form');
+    $form.children('input').hide();
+    $form.children('select').bind('keypress, change', function()
+        { _.defer(function() { $form.submit(); }); });
+
     var getDS = function($item)
     {
         var id = $item.closest('tr').attr('data-viewId');

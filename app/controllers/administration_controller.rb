@@ -711,7 +711,8 @@ class AdministrationController < ApplicationController
       :page => (params[:page] || 1).to_i, :sortBy => 'newest'}
     @base_url = request.path
 
-    @opts[:q] = params[:q] if !params[:q].nil?
+    @opts[:q] = params[:q] if !params[:q].blank?
+    @opts[:approval_stage_id] = params[:stage_id] if !params[:stage_id].blank?
 
     # Whether or not we need to display icons for other domains
     @use_federations = Federation.find.select {|f| f.acceptedUserId.present? &&

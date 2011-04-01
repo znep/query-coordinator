@@ -364,6 +364,17 @@
   @include icon-include-active(page, $subselector, -52px, -13px)
   @include icon-include-active(fatrow, $subselector, -65px, -13px)
 
+// icons/approval_toggle_icons.png
+@mixin approval-toggle-icons($subselector: '.icon')
+  #{$subselector}
+    @include text-hiding
+    background-image: url(/stylesheets/images/icons/approval_toggle_icons.png)
+    height: 13px
+    width: 13px
+  @include icon-include-active(dashboard, $subselector, 0, -13px)
+  @include icon-include-active(queue, $subselector, -13px, -13px)
+  @include icon-include-active(manage, $subselector, -26px, -13px)
+
 // common/close.png
 @mixin close-button
   @include text-hiding

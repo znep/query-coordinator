@@ -20,16 +20,21 @@
   <div class='browseSection'>
     <div class='browseList'>
       <div class='titleContainer clearfix'>
-        <form class='searchSection' type='GET' action='<%= @base_url + '?' +
-          @params.reject {|p, v| p.to_s == 'page' || p.to_s == 'q' }.to_param -%>'>
-          <span class='icon'></span>
-          <input type='text' name='q' title='Search'
-            class='textPrompt searchBox' value='<%= @params[:q] %>' />
-          <%- if !@params[:q].nil? -%>
-          <%- cp = @params.reject {|p, v| p.to_s == 'page' || p.to_s == 'q' } -%>
-          <a href='<%= @base_url + '?' + cp.to_param %>'
-            class='clearSearch close'><span class='icon'></span></a>
-          <%- end -%>
+        <form type='GET' action='<%= @base_url + '?' +
+          @params.reject {|p, v| p.to_s == 'page' || p.to_s == 'q' || p.to_s == 'stage_id'}.to_param -%>'>
+          <div class='searchSection'>
+            <span class='icon'></span>
+            <input type='text' name='q' title='Search'
+              class='textPrompt searchBox' value='<%= @params[:q] %>' />
+            <%- if !@params[:q].nil? -%>
+            <%- cp = @params.reject {|p, v| p.to_s == 'page' || p.to_s == 'q' } -%>
+            <a href='<%= @base_url + '?' + cp.to_param %>'
+              class='clearSearch close'><span class='icon'></span></a>
+            <%- end -%>
+          </div>
+          <%= select_tag("stage_id", options_for_select([['All', '']].concat(@approval_template.stages.
+            map {|s| [s['name'], s['id'].to_s]}), @params[:stage_id].to_s)) %>
+          <input type='submit' value='Go' />
         </form>
 
         <h2>Approval Queue</h2>

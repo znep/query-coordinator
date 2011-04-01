@@ -264,7 +264,8 @@
 
             generateFlyoutLayout: function(columns, valueColumn)
             {
-                var titleId = this.settings.view.displayFormat.fixedColumns[0];
+                var fCols = this.settings.view.displayFormat.fixedColumns;
+                var titleId = fCols ? fCols[0] : null;
                 var reqFields = [valueColumn];
                 if (this.settings.view.displayFormat.pointColor)
                 { reqFields.push(this.settings.view.displayFormat.pointColor); }
@@ -599,8 +600,9 @@
         // Construct a fake row for the Other point
         if (!row)
         {
+            var title = chartObj._fixedColumns[seriesIndex];
             row = { id: 'Other', invalid: {}, error: {}, changed: {} };
-            row[chartObj._fixedColumns[seriesIndex].id] = 'Other';
+            row[title ? title.id : 'fake'] = 'Other';
             row[chartObj._valueColumns[seriesIndex].column.id] = point.y;
         }
 

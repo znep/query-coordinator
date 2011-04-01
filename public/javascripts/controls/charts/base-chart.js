@@ -222,7 +222,8 @@
 
             generateFlyoutLayout: function(columns, valueColumn)
             {
-                var titleId = this.settings.view.displayFormat.fixedColumns[0];
+                var fCols = this.settings.view.displayFormat.fixedColumns;
+                var titleId = fCols ? fCols[0] : 'fake';
                 return this.generateFlyoutLayoutDefault(
                     _.compact([valueColumn].concat(columns)), titleId);
             },

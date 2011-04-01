@@ -18,6 +18,7 @@
   <%= display_standard_flashes %>
 
   <div class='browseSection'>
+    <%- if !@approval_template.nil? -%>
     <div class='browseList'>
       <div class='titleContainer clearfix'>
         <form type='GET' action='<%= @base_url + '?' +
@@ -130,6 +131,10 @@
         @opts[:page], @base_url + '?' + @params.to_param, 'button') %>
       <%- end -%>
     </div>
+
+    <%- else -%>
+    <h3 class='unconfiguredMessage'>Dataset Routing &amp; Approval is not configured</h3>
+    <%- end -%>
   </div>
 </div>
 

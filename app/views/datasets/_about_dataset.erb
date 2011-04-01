@@ -48,7 +48,8 @@
         <span class='name'><%= approval.stage((last_app || {})['approvalStageId'])['name'] %></span>
       </dd>
       <%- if CurrentDomain.user_can?(current_user, 'manage_approval') ||
-        ((@view.next_approval_stage(approval) || {})['approverUids'] || []).include?(current_user.id) -%>
+      (!current_user.nil? &&
+        ((@view.next_approval_stage(approval) || {})['approverUids'] || []).include?(current_user.id)) -%>
       <dt>Actions</dt>
       <dd class='actions'>
         <% form_button({:action => 'approve_view', :controller => 'administration', :id => @view.id,

@@ -693,7 +693,7 @@ class AdministrationController < ApplicationController
 
   def routing_approval
     # We only support one template for now, so assume it is the first one
-    @approval_template = Approval.find()[0] || Approval.new
+    @approval_template = Approval.find()[0]
 
     @appr_results = SearchResult.search('views', {:for_approver => true, :limit => 1})[0]
     @appr_count = @appr_results.count

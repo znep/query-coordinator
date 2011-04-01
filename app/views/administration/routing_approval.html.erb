@@ -17,6 +17,7 @@
   <%= display_standard_flashes %>
 
   <div id='routingApprovalDashboard'>
+    <%- if !@approval_template.nil? -%>
     <%- if @appr_count > 0 -%>
     <div class='banner clearfix'>
       <a href='/admin/routing_approval/queue' class='button'>Take Action</a>
@@ -127,6 +128,10 @@
         </tbody>
       </table>
     </div>
+
+    <%- else -%>
+    <h3 class='unconfiguredMessage'>Dataset Routing &amp; Approval is not configured</h3>
+    <%- end -%>
 
   </div>
 </div>

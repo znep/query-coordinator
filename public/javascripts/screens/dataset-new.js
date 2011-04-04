@@ -46,7 +46,13 @@ var formToViewMetadata = function(metadataForm)
 // WIZARD (outdented for readability)
 var $wizard = $('.newDatasetWizard');
 $wizard.wizard({
-    cancelPath: '/profile',
+    onCancel: function($pane, state)
+    {
+        if (!_.isUndefined(state.submittedView))
+            state.submittedView.remove();
+
+        return '/profile';
+    },
     paneConfig: {
 
         'selectType': {
@@ -410,11 +416,4 @@ $wizard.wizard({
     }
 });
 
-// PAGE THREE: WORKING
-    // activate
-    $('.workingPane').bind('wizard-paneActivated', function()
-    {
-        submitMetadata();
-        $('.wizardButtons .cancel, .wizardButtons .prev, .wizardButtons .next').fadeOut();
-    });
 });

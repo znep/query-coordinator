@@ -211,7 +211,19 @@
                 nextPane(currentPaneConfig.onNext);
             });
 
-            // sizing
+            $cancelButton.click(function(event)
+            {
+                event.preventDefault();
+                if ($cancelButton.is('.disabled')) { return; }
+
+                var destination = opts.onCancel;
+                if (_.isFunction(destination))
+                    destination = destination($currentPane, currentState);
+
+                window.location.href = destination;
+            });
+
+        // sizing
             var adjustSize = function()
             {
                 var targetWidth = $wizard.outerWidth(false);
@@ -238,11 +250,11 @@
     };
 
     $.fn.wizard.defaults = {
-        cancelPath: '#cancel',
         cancelText: 'Cancel',
         finishCallback: function() {},
         finishText: 'Finish',
         nextText: 'Next',
+        onCancel: '#cancel', // either string (url path), or function (handle it yourself)
         paneConfig: {},
         // keys are values of data-wizardPaneName elems that correlate; subkeys are:
         //   * disableButtons: [ 'prev', 'next' ]

@@ -27,7 +27,7 @@
             <span class="icon"></span>
             <input type="text" name="q" title="Search"
               class="textPrompt searchBox" value="<%= @params[:q] %>" />
-            <%- if !@params[:q].nil? -%>
+            <%- if !@params[:q].blank? -%>
             <%- cp = @params.reject {|p, v| p.to_s == 'page' || p.to_s == 'q' } -%>
             <a href="<%= @base_url + "?" + cp.to_param %>"
               class="clearSearch close"><span class="icon"></span></a>

@@ -22,7 +22,7 @@
       {:class => 'commonForm'}) do %>
       <div class="line">
         <label for="template_name" class="required">Name</label>
-        <input type="text" id="template_name" name="template[name]"
+        <input type="text" id="template_name" name="template[name]" class="required"
           value="<%= @approval_template.name %>" />
       </div>
       <div class="line">
@@ -45,8 +45,7 @@
           each do |stage| -%>
         <li class="stageItem clearfix">
           <div class="line">
-            <label for="template_stages_<%= stage['id'] %>_name"
-              class="required">Name</label>
+            <label for="template_stages_<%= stage['id'] %>_name">Name</label>
             <input type="text" id="template_stages_<%= stage['id'] %>_name"
               name="template[stages][<%= stage['id'] %>][name]" class="stageName"
               value="<%= stage['name'] %>" />
@@ -67,7 +66,7 @@
             notification_interval_select_options(stage['notificationInterval'])) %>
           </div>
           <div class="line">
-            <label class="required">Approvers</label>
+            <label>Approvers</label>
             <ul class="userList">
               <%- (stage['approverUids'] || []).each do |userId| -%>
               <%- user = @users[userId] -%>

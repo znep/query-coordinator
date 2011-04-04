@@ -792,7 +792,7 @@ class AdministrationController < ApplicationController
     if !app.nil?
       app.stages.each do |s|
         sp = params[:template][:stages][s['id'].to_s]
-        next if sp[:name].empty?
+        next if sp.nil? || sp[:name].blank?
         sp[:approverUids].map! {|u| (u.match(/\w{4}-\w{4}$/) || [])[0]}.compact!
         attrs[:stages] << s.merge(sp)
       end

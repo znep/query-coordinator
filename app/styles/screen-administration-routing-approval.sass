@@ -31,6 +31,12 @@
           .searchSection
             display: inline-block
             margin-right: 0.5em
+            .ie7 &
+              display: inline
+              input
+                width: auto
+          .ie7 & select
+            margin-bottom: 1em
 
       .results
         margin: 0
@@ -51,6 +57,8 @@
                   text-indent: 0
           .index
             width: 1.6em
+            .expander
+              float: none
           .domainIcon
             width: 30px
             img

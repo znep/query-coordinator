@@ -124,6 +124,8 @@ $(function()
     var $manage = $('#routingApprovalManagement');
     if ($manage.length < 1) { return; }
 
+    $manage.find('form').validate();
+
     var hookUpUserPicker = function($li)
     {
         $li.find('input').userPicker({chooseCallback: function(user)

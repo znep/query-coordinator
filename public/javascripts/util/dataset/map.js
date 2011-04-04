@@ -93,6 +93,7 @@ Dataset.modules['map'] =
 
         if (_.include(['geomap', 'intensitymap'], view.displayType))
         {
+            view.displayType = 'map';
             view.displayFormat.type = 'heatmap';
             var region = view.displayFormat.region || '';
             view.displayFormat.heatmap = {

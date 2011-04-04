@@ -1,10 +1,15 @@
 class Approval < Model
   cattr_accessor :notification_intervals
 
+  def stages
+    data['stages'] || []
+  end
+
   def age_info
     if @age_info.nil?
       path = "/#{self.class.service_name}.json?method=ageInfo"
-      @age_info = JSON.parse(CoreServer::Base.connection.get_request(path))
+      @age_info = JSON.parse(CoreServer::Base.connection.get_request(path)).
+        reject {|ai| stage(ai['approval_stage_id'])['id'] != ai['approval_stage_id']}
     end
     @age_info
   end
@@ -26,6 +31,10 @@ class Approval < Model
       end
     end
     @aging_info[groups]
+  end
+
+  def grandfather
+    CoreServer::Base.connection.create_request("/#{self.class.service_name}.json?method=grandFatherIn")
   end
 
   def stage(stage_id)

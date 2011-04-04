@@ -31,25 +31,19 @@
       <ul>
         <%- total_count = @approval_template.age_info.reduce(0) {|memo, ai|
               memo + ai['count']} -%>
-        <%- @approval_template.age_info.each do |ai| -%>
-        <li class="clearfix">
-        <%- sname = @approval_template.stage(ai['approval_stage_id'])['name'] -%>
-        <div class="label" title="<%= sname %>"><span><%= sname %></span></div>
+        <%- @approval_template.stages.clone.unshift({'id' => 0, 'name' => 'Not Ready Yet'}).
+              each do |stage| -%>
+        <%- ai = @approval_template.age_info.detect {|a| a['approval_stage_id'] == stage['id']} ||
+              {'count' => 0} -%>
+        <li class="clearfix <%= stage['visible'] ? 'finalStage' : '' %>">
+        <div class="label" title="<%= stage['name'] %>"><span><%= stage['name'] %></span></div>
         <div class="barContainer">
           <span class="bar" style="width:<%=
-            99.0 * ai['count'] / total_count %>%"></span>
+            100.0 * ai['count'] / total_count %>%"></span>
           <span class="count"><%= number_with_delimiter(ai['count'], {:locale => :en}) %></span>
         </div>
         </li>
         <%- end -%>
-        <li class="clearfix finalStage">
-        <div class="label" title="Public Datasets"><span>Public Datasets</span></div>
-        <div class="barContainer">
-          <span class="bar" style="width:<%=
-            [99.0 * @all_count / total_count, 100.0].min %>%"></span>
-          <span class="count"><%= number_with_delimiter(@all_count, {:locale => :en}) %></span>
-        </div>
-        </li>
       </ul>
     </div>
 
@@ -69,8 +63,10 @@
           </tr>
         </thead>
         <tbody>
-          <%- @approval_template.age_info.each_with_index do |ai, i| -%>
-          <%- stage = @approval_template.stage(ai['approval_stage_id']) -%>
+          <%- @approval_template.stages.clone.unshift({'id' => 0, 'name' => 'Not Ready Yet'}).
+                each_with_index do |stage, i| -%>
+          <%- ai = @approval_template.age_info.detect {|a| a['approval_stage_id'] == stage['id']} ||
+                {'count' => 0, 'average_age' => 0} -%>
           <tr>
             <td class="stage">
               <div class="icon">

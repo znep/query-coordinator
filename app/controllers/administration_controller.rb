@@ -698,9 +698,6 @@ class AdministrationController < ApplicationController
     @appr_results = SearchResult.search('views', {:for_approver => true, :limit => 1})[0]
     @appr_count = @appr_results.count
 
-    @all_results = SearchResult.search('views', {:limit => 1})[0]
-    @all_count = @all_results.count
-
     @aging_groups = 5
 
     @stuck_results = SearchResult.search('views',
@@ -761,18 +758,20 @@ class AdministrationController < ApplicationController
 
   def routing_approval_manage
     # We only support one template for now, so assume it is the first one
-    @approval_template = Approval.find()[0] || Approval.new
+    @approval_template = Approval.find()[0]
 
     @users = {}
-    (CoreServer::Base.connection.batch_request do
-      (@approval_template.stages || []).each do |s|
-        (s['approverUids'] || []).each do |userId|
-          User.find(userId, {}, true)
+    if !@approval_template.nil?
+      (CoreServer::Base.connection.batch_request do
+        (@approval_template.stages || []).each do |s|
+          (s['approverUids'] || []).each do |userId|
+            User.find(userId, {}, true)
+          end
         end
+      end || []).each do |r|
+        u = User.parse(r['response'])
+        @users[u.id] = u
       end
-    end || []).each do |r|
-      u = User.parse(r['response'])
-      @users[u.id] = u
     end
   end
 
@@ -786,7 +785,7 @@ class AdministrationController < ApplicationController
     max_ii = params[:template][:maxInactivityInterval].to_i
     max_ii = 5 if (max_ii < 1)
     attrs = {:name => params[:template][:name],
-      :requireApproval => params[:template][:requireApproval] == 'true',
+      :requireApproval => Rails.env.production? ? true : params[:template][:requireApproval] == 'true',
       :maxInactivityInterval => max_ii,
       :stages => []}
     if !app.nil?
@@ -813,10 +812,13 @@ class AdministrationController < ApplicationController
 
     # The core server supports datasets being visible at any stage in the process, but that seems like
     # it would be confusing. So we just always make the last stage visible, and the rest not
-    attrs[:stages].each {|s| s['visible'] = false}.last['visible'] = true
+    if attrs[:stages].length > 0
+      attrs[:stages].each {|s| s['visible'] = false}.last['visible'] = true
+    end
 
     if app.nil?
-      Approval.create(attrs)
+      app = Approval.create(attrs)
+      app.grandfather() if params[:grandfatherDatasets] === 'true'
     else
       app.update_attributes!(attrs)
     end

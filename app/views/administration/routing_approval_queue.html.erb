@@ -103,9 +103,10 @@
                 </div>
               </td>
               <td class="actions">
-                <%- if CurrentDomain.user_can?(current_user, 'manage_approval') ||
-                  ((v.next_approval_stage(@approval_template) ||
-                    {})['approverUids'] || []).include?(current_user.id) -%>
+                <%- if !v.next_approval_stage(@approval_template).nil? &&
+                  (CurrentDomain.user_can?(current_user, 'manage_approval') ||
+                  (v.next_approval_stage(@approval_template)['approverUids'] || []).
+                    include?(current_user.id)) -%>
                 <div>
                   <% form_button({:action => 'approve_view', :id => v.id,
                       :approved => 'yes'}, 'Approve', {},

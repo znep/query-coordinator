@@ -29,7 +29,7 @@ this.Dataset = Model.extend({
         this._super();
 
         this.registerEvent(['columns_changed', 'valid', 'query_change',
-            'set_temporary', 'clear_temporary', 'row_change',
+            'set_temporary', 'clear_temporary', 'row_change', 'blob_change',
             'row_count_change', 'column_resized', 'displayformat_change',
             'displaytype_change', 'column_totals_changed', 'removed']);
 
@@ -248,6 +248,11 @@ this.Dataset = Model.extend({
     reload: function(successCallback)
     {
         var ds = this;
+        if (ds.type == 'blob')
+        {
+            ds.trigger('blob_change');
+            return;
+        }
         ds._aggregatesStale = true;
         ds._loadRows(0, 1, function()
             {

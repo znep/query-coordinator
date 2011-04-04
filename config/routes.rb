@@ -314,6 +314,11 @@ ActionController::Routing::Routes.draw do |map|
       :category => /(\w|-)+/}
 
   # Short URLs
+  map.connect 'blob/:id', :controller => 'datasets',
+    :action => 'blob',
+    :requirements => {:id => UID_REGEXP},
+    :conditions => {:method => :get}
+
   map.connect 'dataset/:id', :controller => 'datasets',
     :action => 'show',
     :requirements => {:id => UID_REGEXP},

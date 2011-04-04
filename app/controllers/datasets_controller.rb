@@ -1,6 +1,6 @@
 class DatasetsController < ApplicationController
   include DatasetsHelper
-  skip_before_filter :require_user, :only => [:show, :alt, :widget_preview, :contact, :math_validate, :form_success, :form_error, :external]
+  skip_before_filter :require_user, :only => [:show, :blob, :alt, :widget_preview, :contact, :math_validate, :form_success, :form_error, :external]
 
 # collection actions
   def new
@@ -58,6 +58,13 @@ class DatasetsController < ApplicationController
 
     # Shuffle the default tags into the keywords list
     @meta[:keywords] = @view.meta_keywords
+  end
+
+  def blob
+    @view = get_view(params[:id])
+    respond_to do |format|
+      format.data { render :partial => 'displays/blob' }
+    end
   end
 
 # bare version of the page, w/o chrome, for screenshotting

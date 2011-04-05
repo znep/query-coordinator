@@ -838,8 +838,11 @@ class View < Model
     cur_stage = last_approval
     ns = if cur_stage.nil?
       approval.stages[0]
+    elsif cur_stage['visible']
+      nil
     else
       i = approval.stages.index {|s| s['id'] == cur_stage['approvalStageId']}
+      i = -1 if i.nil?
       approval.stages[i + 1]
     end
     return ns

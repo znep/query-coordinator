@@ -6,8 +6,13 @@
       @include grid-header-icons
     .clearSort
       @include sprite-menu-icons
-  .scrollBox a
-    @include sprite-button-icons
+  .controlsBox
+    .scrollBox a
+      @include sprite-button-icons
+    a.close
+      @include close-button
+    a.expand
+      @include sprite-repeater-icons
 
 .navRenderType .navigation li .button
   @include sprite-menu-icons

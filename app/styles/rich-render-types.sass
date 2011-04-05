@@ -109,20 +109,51 @@
 .fatRowRenderType
   .columnHeaders
     background-color: #e8e8e8
-    border-bottom: 1px solid #cacaca
+    border-bottom: 1px solid $color_chrome_box_border
     height: 3.2em
     overflow: hidden
-    padding-right: 2.25em
-    .scrollBox
+    padding-right: 4.25em
+    position: relative
+    &.collapsed
+      height: 0.3em
+      overflow: visible
+      .column
+        display: none
+      .controlsBox
+        .scrollBox, a.close
+          display: none
+      &.hover
+        .controlsBox .expand
+          display: block
+
+    .controlsBox
       height: 100%
       position: absolute
-      right: 0.75em
+      right: 0.5em
       top: 0
-      a
-        display: block
-        margin:
-          bottom: 0.5em
-          top: 0.25em
+      .scrollBox
+        height: 100%
+        margin-right: 2em
+        a
+          display: block
+          margin:
+            bottom: 0.5em
+            top: 0.25em
+      .close
+        position: absolute
+        right: 0
+        top: 0.25em
+      .expand
+        background-color: #e8e8e8
+        border: 1px solid $color_chrome_box_border
+        border-top: none
+        @include border-radius(0, 5px)
+        display: none
+        padding: 0.75em
+        position: absolute
+        top: 0.3em
+        right: 1em
+
     .column
       border: 1px solid transparent
       @include border-radius(3px)

@@ -119,6 +119,43 @@
                 $colHeaders.children('.column:first-child').outerHeight(true) *
                     (action == 'up' ? -1 : 1)});
         });
+
+        $colHeaders.delegate('.controlsBox a.close', 'click',
+        function(e)
+        {
+            e.preventDefault();
+            toggleHeader(frObj, false);
+        });
+
+        $colHeaders.delegate('.controlsBox a.expand', 'click',
+        function(e)
+        {
+            e.preventDefault();
+            toggleHeader(frObj, true);
+        });
+        var headerShown = (((frObj.settings.view.metadata || {}).richRendererConfigs || {})
+            .fatRow || {}).headerShown;
+        toggleHeader(frObj, $.isBlank(headerShown) || headerShown, true);
+
+        var hoverTimer;
+        $colHeaders.hover(
+            function()
+            {
+                clearTimeout(hoverTimer);
+                $colHeaders.addClass('hover');
+            },
+            function() { hoverTimer = setTimeout(function() { $colHeaders.removeClass('hover'); }, 1000); });
+    };
+
+    var toggleHeader = function(frObj, isShow, skipUpdate)
+    {
+        frObj.$dom().find('.columnHeaders').toggleClass('collapsed', !isShow);
+        if (!skipUpdate)
+        {
+            var md = $.extend(true, {richRendererConfigs: {fatRow: {}}}, frObj.settings.view.metadata);
+            md.richRendererConfigs.fatRow.headerShown = isShow;
+            frObj.settings.view.update({metadata: md}, false, true);
+        }
     };
 
     var renderHeaders = function(frObj)
@@ -151,13 +188,20 @@
         // resulting in stuck tips
         $headerList.empty();
         _.each(newItems, function($c) { $headerList.append($c); });
-        $headerList.append($.tag({tagName: 'div', 'class': 'scrollBox',
-            contents: [
-                {tagName: 'a', 'class': ['scrollLink', 'upArrowDark'],
-                    'href': '#Up', contents: {tagName: 'span', 'class': 'icon'}},
-                {tagName: 'a', 'class': ['scrollLink', 'downArrowDark'],
-                    'href': '#Down', contents: {tagName: 'span', 'class': 'icon'}}
-            ]}));
+        $headerList.append($.tag({tagName: 'div', 'class': 'controlsBox',
+            contents: [{tagName: 'div', 'class': 'scrollBox',
+                contents: [
+                    {tagName: 'a', 'class': ['scrollLink', 'upArrowDark'],
+                        'href': '#Up', contents: {tagName: 'span', 'class': 'icon'}},
+                    {tagName: 'a', 'class': ['scrollLink', 'downArrowDark'],
+                        'href': '#Down', contents: {tagName: 'span', 'class': 'icon'}}
+                ]},
+                {tagName: 'a', 'class': 'close', 'href': '#Hide', title: 'Hide column headers',
+                    contents: {tagName: 'span', 'class': 'icon'}},
+                {tagName: 'a', 'class': ['expand', 'add'], 'href': '#Expand', title: 'Show column headers',
+                    contents: {tagName: 'span', 'class': 'icon'}}
+            ]}
+        ));
 
         frObj.$dom().trigger('resize');
     };

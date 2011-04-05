@@ -33,8 +33,11 @@
               class="clearSearch close"><span class="icon"></span></a>
             <%- end -%>
           </div>
-          <%= select_tag("stage_id", options_for_select([['All', '']].concat(@approval_template.stages.
-            map {|s| [s['name'], s['id'].to_s]}), @params[:stage_id].to_s)) %>
+          <%- filter_stages = @approval_template.stages.reject {|s| s['visible']} -%>
+          <%- if filter_stages.length > 0 -%>
+          <%= select_tag("stage_id", options_for_select([['All', '']].concat(filter_stages
+            .map {|s| [s['name'], s['id'].to_s]}), @params[:stage_id].to_s)) %>
+          <%- end -%>
           <input type="submit" value="Go" />
         </form>
 

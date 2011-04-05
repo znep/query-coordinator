@@ -688,14 +688,15 @@ class AdministrationController < ApplicationController
   # Dataset Routing & Approval
   #
   before_filter :only => [:routing_approval, :routing_approval_queue, :approve_view, :routing_approval_manage, :routing_approval_manage_save] {|c| c.check_module('routing_approval')}
-  before_filter :check_member, :only => [:routing_approval, :routing_approval_queue, :approve_view]
+  before_filter :only => [:routing_approval, :routing_approval_queue, :approve_view] {|c| c.check_approval_rights}
   before_filter :only => [:routing_approval_manage, :routing_approval_manage_save] {|c| c.check_auth_level('manage_approval')}
 
   def routing_approval
     # We only support one template for now, so assume it is the first one
     @approval_template = Approval.find()[0]
 
-    @appr_results = SearchResult.search('views', {:for_approver => true, :limit => 1})[0]
+    @appr_results = SearchResult.search('views', {:for_approver => true, :for_user => current_user.id,
+                                        :limit => 1})[0]
     @appr_count = @appr_results.count
 
     @aging_groups = 5
@@ -703,13 +704,14 @@ class AdministrationController < ApplicationController
     @stuck_results = SearchResult.search('views',
                                          {:limit => 5, :for_approver => true, :sortBy => 'approval'})[0]
     @stuck_count = @stuck_results.count
-    @stuck_results = @stuck_results.results
+    @stuck_results = @stuck_results.results.select {|v| v.is_stuck?(@approval_template)}
+    @stuck_count = @stuck_results.length if @stuck_results.length < 5
   end
 
   def routing_approval_queue
     @params = params.reject {|k, v| k.to_s == 'controller' || k.to_s == 'action'}
     @limit = 10
-    @opts = {:for_approver => true, :limit => @limit,
+    @opts = {:for_approver => true, :for_user => current_user.id, :limit => @limit,
       :page => (params[:page] || 1).to_i, :sortBy => params[:show_stuck] === 'true' ? 'approval' : 'newest'}
     @base_url = request.path
 
@@ -860,6 +862,10 @@ public
   def check_feature(feature)
     return run_access_check{CurrentDomain.feature?(feature)}
   end
+  def check_approval_rights
+    return run_access_check{current_user.can_approve?}
+  end
+
 private
   def run_access_check(&block)
     if yield

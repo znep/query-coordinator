@@ -173,6 +173,10 @@ class User < Model
     self.rights && self.rights.include?(right)
   end
 
+  def can_approve?
+    has_right?('manage_approval') || (Approval.find()[0] || Approval.new).is_approver?(self)
+  end
+
   @@states = {
                 '--' => '------',
                 'AK' => 'Alaska',

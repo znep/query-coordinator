@@ -23,5 +23,4 @@ module AdminHelper
     options_for_select(Approval.notification_intervals.invert.sort { |a, b|
       a.last.to_i - b.last.to_i }, (selected_option || '').to_s)
   end
-
 end

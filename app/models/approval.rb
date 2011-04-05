@@ -41,6 +41,10 @@ class Approval < Model
     stages.detect {|s| s['id'] == stage_id} || {'name' => 'Not Ready Yet', 'id' => 0}
   end
 
+  def is_approver?(user)
+    stages.any? {|s| s['approverUids'].include?(user.id)}
+  end
+
   @@notification_intervals = {
     "60" => "1 hour",
     "120" => "2 hours",

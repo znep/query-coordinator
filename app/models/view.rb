@@ -804,7 +804,7 @@ class View < Model
 
   def last_approval_date
     latest_date = if approval_history.empty?
-      viewLastModified || createdAt
+      createdAt
     else
       approval_history.last['approvalDate']
     end

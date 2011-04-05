@@ -91,7 +91,7 @@
         </span>
       </li>
     <%- end -%>
-    <%- if module_available? :routing_approval -%>
+    <%- if module_available?(:routing_approval) && current_user.can_approve? -%>
       <li class="routingApproval">
         <%= link_to raw('<span class="icon"></span>Dataset Routing &amp; Approval'),
             {:action => 'routing_approval'} %>

@@ -36,7 +36,8 @@
         <%- ai = @approval_template.age_info.detect {|a| a['approval_stage_id'] == stage['id']} ||
               {'count' => 0} -%>
         <li class="clearfix <%= stage['visible'] ? 'finalStage' : '' %>">
-        <div class="label" title="<%= stage['name'] %>"><span><%= stage['name'] %></span></div>
+        <div class="label" title="<%= stage['name'] %>"><span><%= stage['name'] +
+            (stage['visible'] ? ' (Publicly visible)' : '') %></span></div>
         <div class="barContainer">
           <span class="bar" style="width:<%=
             100.0 * ai['count'] / total_count %>%"></span>

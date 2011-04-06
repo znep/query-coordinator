@@ -25,12 +25,12 @@
   <%- end -%>
 
   <div class="widgetContent">
+    <div class="mainSpinner loadingSpinnerContainer hide">
+      <div class="loadingSpinner"></div>
+    </div>
+
     <div class="widgetContentSection widgetContentGrid">
       <div id="renderTypeContainer" class="gridContainer">
-          <div class="mainSpinner loadingSpinnerContainer hide">
-            <div class="loadingSpinner"></div>
-          </div>
-
           <%- if @view.is_tabular? -%>
           <div id="gridRenderType" class="fullHeight renderTypeNode">
             <%- if @view.display.data_valid? -%>

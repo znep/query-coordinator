@@ -120,11 +120,96 @@ blist.widget.hideToolbar = function()
             widgetNS.resizeViewport);
 };
 
+blist.widget.feedLoaded = false;
+blist.widget.viewsLoaded = false;
 // Additional actions for specific panes
 blist.widget.paneHandlers = {
     embed: function()
     {
         $('#embed_code').focus().select();
+    },
+
+    feed: function()
+    {
+        if (widgetNS.feedLoaded) { return; }
+        widgetNS.feedLoaded = true;
+
+        // feed
+        blist.dataset.getComments(function(comments)
+        {
+            $('.widgetContent_feed').append($.renderTemplate('feedList'));
+            $('.widgetContent_feed .feed').feedList({
+                bindCommentEvents: false,
+                comments: comments
+            });
+        });
+    },
+
+    views: function()
+    {
+        if (widgetNS.viewsLoaded) { return; }
+        widgetNS.viewsLoaded = true;
+
+        // load more views
+        blist.dataset.getRelatedViews(function(views)
+        {
+            var moreViews = _.reject(views, function(view)
+            {
+                return _.include(['blob', 'href'], view.type);
+            });
+            moreViews.sort(function(a, b) { return b.viewCount - a.viewCount });
+
+            $('.widgetContent_views').append(
+                $.renderTemplate(
+                    'filtersTable',
+                    moreViews,
+                    {
+                        'tbody .item': {
+                            'filter<-': {
+                                '.type .cellInner.icon': function(filter)
+                                { return filter.item.displayName.capitalize(); },
+                                '.type@title': function(filter)
+                                { return filter.item.displayName.capitalize(); },
+                                '.type@class+': function(filter)
+                                { return ' type' + filter.item.styleClass; },
+
+                                '.name a': 'filter.name!',
+                                '.name a@title': 'filter.description!',
+                                '.name a@href': 'filter.url',
+
+                                '.viewed .cellInner': 'filter.viewCount',
+
+                                '.picture a@href': function(filter) { return new User(filter.item.owner).getProfileUrl(); },
+                                '.picture img@src': function(filter) { return filter.item.owner.profileImageUrlMedium ||
+                                                                              '/images/small-profile.png'; },
+                                '.picture img@alt': 'filter.owner.displayName!',
+                                '.picture img@title': 'filter.owner.displayName!'
+                            }
+                        }
+                    }));
+
+            $('.widgetContent_views .name a').each(function()
+            {
+                var $this = $(this);
+                if ($this.attr('title') === '')
+                { return; }
+
+                // This is returning with &nbsp;, so replace them all with
+                // normal spaces
+                $this.socrataTip({ message: $this.attr('title').clean(),
+                    shrinkToFit: false, killTitle: true });
+            });
+
+            $('.widgetContent_views table.gridList').combinationList({
+                headerContainerSelector: '.widgetContent_views .gridListWrapper',
+                initialSort: [[2, 1]],
+                scrollableBody: false,
+                selectable: false,
+                sortGrouping: false,
+                sortHeaders: {0: {sorter: 'text'}, 1: {sorter: 'text'},
+                    2: {sorter: 'digit'}, 3: {sorter: false}}
+            });
+        });
     }
 };
 
@@ -485,68 +570,6 @@ $(function()
     });
 
 
-    // more views
-    var moreViews = [];
-    blist.dataset.getRelatedViews(function(views)
-        {
-            moreViews = _.reject(views, function(view)
-            {
-                return _.include(['blob', 'href'], view.type);
-            });
-            moreViews.sort(function(a, b) { return b.viewCount - a.viewCount });
-
-            $('.widgetContent_views').append(
-                $.renderTemplate(
-                    'filtersTable',
-                    moreViews,
-                    {
-                        'tbody .item': {
-                            'filter<-': {
-                                '.type .cellInner.icon': function(filter)
-                                { return filter.item.displayName.capitalize(); },
-                                '.type@title': function(filter)
-                                { return filter.item.displayName.capitalize(); },
-                                '.type@class+': function(filter)
-                                { return ' type' + filter.item.styleClass; },
-
-                                '.name a': 'filter.name!',
-                                '.name a@title': 'filter.description!',
-                                '.name a@href': 'filter.url',
-
-                                '.viewed .cellInner': 'filter.viewCount',
-
-                                '.picture a@href': function(filter) { return new User(filter.item.owner).getProfileUrl(); },
-                                '.picture img@src': function(filter) { return filter.item.owner.profileImageUrlMedium ||
-                                                                              '/images/small-profile.png'; },
-                                '.picture img@alt': 'filter.owner.displayName!',
-                                '.picture img@title': 'filter.owner.displayName!'
-                            }
-                        }
-                    }));
-
-            $('.widgetContent_views .name a').each(function()
-            {
-                var $this = $(this);
-                if ($this.attr('title') === '')
-                { return; }
-
-                // This is returning with &nbsp;, so replace them all with
-                // normal spaces
-                $this.socrataTip({ message: $this.attr('title').clean(),
-                    shrinkToFit: false, killTitle: true });
-            });
-
-            $('.widgetContent_views table.gridList').combinationList({
-                headerContainerSelector: '.widgetContent_views .gridListWrapper',
-                initialSort: [[2, 1]],
-                scrollableBody: false,
-                selectable: false,
-                sortGrouping: false,
-                sortHeaders: {0: {sorter: 'text'}, 1: {sorter: 'text'},
-                    2: {sorter: 'digit'}, 3: {sorter: false}}
-            });
-        });
-
     // downloads
     $('.widgetContent_downloads').append(
         $.renderTemplate(
@@ -555,16 +578,6 @@ $(function()
               viewId: blist.dataset.id },
             $.templates.downloadsTable.directive));
     $.templates.downloadsTable.postRender($('.widgetContent_downloads'));
-
-    // feed
-    blist.dataset.getComments(function(comments)
-    {
-        $('.widgetContent_feed').append($.renderTemplate('feedList'));
-        $('.widgetContent_feed .feed').feedList({
-            bindCommentEvents: false,
-            comments: comments
-        });
-    });
 
     $.live('.feed .commentActions a, .feedNewCommentButton', 'click', function(event)
     {

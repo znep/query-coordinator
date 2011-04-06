@@ -113,24 +113,13 @@
     height: 3.2em
     overflow: hidden
     padding-right: 4.25em
-    position: relative
-    &.collapsed
-      height: 0.3em
-      overflow: visible
-      .column
-        display: none
-      .controlsBox
-        .scrollBox, a.close
-          display: none
-      &.hover
-        .controlsBox .expand
-          display: block
 
     .controlsBox
-      height: 100%
+      height: 3em
       position: absolute
       right: 0.5em
       top: 0
+      z-index: 1
       .scrollBox
         height: 100%
         margin-right: 2em
@@ -181,6 +170,22 @@
         margin-top: 4px
       .clearSort
         display: inline-block
+
+    // & refers to .columnHeaders  This rule is after the normal styles because
+    // IE7 wouldn't respect them otherwise
+    &.collapsed
+      height: 0.3em
+      overflow: visible
+      .column
+        display: none
+      .controlsBox
+        .scrollBox
+          display: none
+        .close
+          visibility: hidden /* IE7 wouldn't hide it with display:none */
+      &.hover
+        .controlsBox .expand
+          display: block
 
   .rowList
     border-bottom: 1px solid #cacaca

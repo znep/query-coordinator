@@ -59,10 +59,17 @@
                     frObj.richRenderer.renderLayout();
                     renderCurrentPage(frObj);
                 };
+                var updateHeader = function()
+                {
+                    var headerShown = (((frObj.settings.view.metadata || {}).richRendererConfigs || {})
+                        .fatRow || {}).headerShown;
+                    toggleHeader(frObj, $.isBlank(headerShown) || headerShown, true);
+                };
                 frObj.settings.view
                     .bind('columns_changed', mainUpdate)
                     .bind('query_change', mainUpdate)
-                    .bind('row_change', mainUpdate);
+                    .bind('row_change', mainUpdate)
+                    .bind('clear_temporary', updateHeader);
 
                 frObj.$dom().bind('show', function()
                 {
@@ -142,14 +149,15 @@
             function()
             {
                 clearTimeout(hoverTimer);
-                $colHeaders.addClass('hover');
+                if ($colHeaders.hasClass('collapsed'))
+                { $colHeaders.addClass('hover'); }
             },
             function() { hoverTimer = setTimeout(function() { $colHeaders.removeClass('hover'); }, 1000); });
     };
 
     var toggleHeader = function(frObj, isShow, skipUpdate)
     {
-        frObj.$dom().find('.columnHeaders').toggleClass('collapsed', !isShow);
+        frObj.$dom().find('.columnHeaders').toggleClass('collapsed', !isShow).toggleClass('hover', !isShow);
         if (!skipUpdate)
         {
             var md = $.extend(true, {richRendererConfigs: {fatRow: {}}}, frObj.settings.view.metadata);

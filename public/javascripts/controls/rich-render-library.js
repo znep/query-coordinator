@@ -71,7 +71,7 @@
             {
                 var rrObj = this;
                 // If we have a config, it's not going to dynamically move around
-                if (!$.isBlank(rrObj.settings.config)) { return; }
+                if ($.subKeyDefined(rrObj.settings.config, 'columns')) { return; }
 
                 var $cols = rrObj.$dom().find('.richColumn');
                 var numCols = $cols.length;
@@ -112,7 +112,7 @@
                 var rrObj = this;
                 rrObj.$dom().empty();
 
-                if ($.isBlank(rrObj.settings.config))
+                if (!$.subKeyDefined(rrObj.settings.config, 'columns'))
                 {
                     renderDefaultLayout(rrObj);
                     return;
@@ -148,7 +148,7 @@
             {
                 var rrObj = this;
 
-                if ($.isBlank(rrObj.settings.config))
+                if (!$.subKeyDefined(rrObj.settings.config, 'columns'))
                 { return rrObj.settings.view.visibleColumns; }
 
                 var cols = [];

@@ -107,6 +107,204 @@
       margin-top: 2.1em
       text-align: center
 
+// PANE ONE POINT FIVE: import columns
+.importColumnsPane
+  .columnsListHeader
+    margin-bottom: 0.2em
+    margin-top: 1em
+    > div
+      float: left
+      font-size: 1.2em
+      font-weight: bold
+      padding: 0.4em
+    .columnHandleCell
+      width: 1em
+    .columnNameCell
+      width: 20.8em
+    .columnTypeCell
+      width: 18.2em
+    .columnSourceCell
+      float: none
+      overflow: hidden
+
+      .importTypesMessageLink
+        @include sprite-menu-icons
+        float: right
+        font-weight: normal
+
+        .icon
+          float: left
+          margin-right: 0.2em
+
+  .columnsList
+    @include workspace
+    border: 1px solid #888
+    max-height: 70%
+    min-height: 20em
+    padding-bottom: 2em
+    overflow-x: hidden
+    overflow-y: auto
+
+    li
+      border: 1px solid $color_chrome_box_border
+      clear: both
+      &.ui-draggable-dragging
+        @include box-shadow(0, 0, 0.5em, rgba(0, 0, 0, 0.6))
+
+      .mainLine
+        background-color: #fff
+        height: 3.4em
+        @include vertical-gradient(#fff, #f6f6f6)
+
+        > div
+          float: left
+          padding: 0.4em
+
+        .columnHandleCell
+          @include drag-handle
+          height: 2em
+          margin-left: 0.4em
+          margin-right: 0.5em
+          padding: 0
+          position: relative
+          top: 0.8em
+          width: 0.6em
+
+        .columnNameCell
+          width: 25em
+          input[type=text]
+            font-size: 1.45em
+            width: 15em
+
+        .columnTypeCell
+          width: 22em
+
+        .columnSourceCell
+          width: 22em
+
+        .columnActionCell
+          float: none
+          overflow: hidden
+
+          a
+            @include sprite-menu-icons('&')
+            float: right
+            margin: 0.2em
+              top: 0.7em
+            &:hover
+              @include opacity(0.8)
+
+      .detailsLine
+        @include vertical-gradient(#f6f6f6, #ddd)
+
+        > div
+          clear: both
+          display: none
+          padding: 0.5em 2em 1.5em
+
+          h3
+            display: inline-block
+
+          h4
+            display: inline-block
+            font-size: 1.2em
+            font-weight: normal
+            margin: 0.3em 0
+              left: 1em
+
+          fieldset
+            margin-top: 0.3em
+            width: 45em
+            &.left
+              float: left
+            &.right
+              float: right
+
+            legend
+              font-size: 1.3em
+              margin: 0.2em 0
+
+            div.line
+              margin: 0.2em 0
+
+              label
+                display: block
+                font-size: 1.2em
+                height: 2em
+                margin-bottom: -2.5em
+                margin-top: 0.4em
+                width: 5em
+
+              div.optionGroup
+                margin-bottom: 0.2em
+                margin-left: 5.5em
+
+              > .uniform.selector
+                margin-bottom: 0.2em
+                margin-left: 7.2em
+
+              .uniform.radio
+                margin: 0 0.5em 0.3em
+
+              select
+                width: 15em
+
+        .locationLine
+
+  .columnsToolbar
+    margin-top: 0.4em
+
+    .presets
+      float: left
+
+      label
+        font-size: 1.3em
+        line-height: 1.2em
+        padding-right: 0.4em
+
+      .uniform.selector
+        margin-bottom: 0.4em
+
+    .actions
+      float: right
+
+      .addColumnButton
+        @include sprite-menu-icons
+
+        .icon
+          float: left
+          margin-right: 0.2em
+
+  .warningsSection
+    display: none
+
+    .columnWarningsList
+      margin: 0.5em 0 1em
+
+      li.validationError
+        @include sprite-menu-icons
+        padding: 0.4em
+
+        .icon
+          position: absolute
+        .message
+          display: block
+          font-size: 1.3em
+          margin-left: 1.6em
+
+  hr
+    border: none
+      top: 1px solid $color_chrome_box_border
+    color: transparent
+    height: 0
+
+#importTypesMessage
+  margin-left: -25em
+  width: 46em
+
+  p
+    margin-bottom: 1em
+
 // PANE TWO: metadata
 .metadataPane
   .metadataForm

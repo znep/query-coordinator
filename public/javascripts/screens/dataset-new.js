@@ -1,5 +1,6 @@
-$(function()
-{
+$(function(){
+
+blist.namespace.fetch('blist.import');
 
 var submitError = null;
 
@@ -156,9 +157,8 @@ $wizard.wizard({
                 $pane.find('.uploadFileFormats').toggle(isBlist);
 
                 // uploader
-                var uploadEndpoint = '/imports.txt';
-                if (state.type == 'blobby')
-                    uploadEndpoint += '?type=blobby';
+                var uploadEndpoint = isBlist ? '/imports2?method=scan'
+                                             : '/imports.txt?type=blobby';
 
                 var $uploadThrobber = $pane.find('.uploadThrobber');
                 var uploader = blist.fileUploader({
@@ -180,7 +180,7 @@ $wizard.wizard({
                             .val(fileName)
                             .removeClass('error');
 
-                        $uploadThrobber.slideDown()
+                        $uploadThrobber.slideDown(command.updateHeight)
                                        .find('.text').text('Uploading your file...');
                     },
                     onProgress: function(id, fileName, loaded, total)
@@ -209,13 +209,25 @@ $wizard.wizard({
                         {
                             $uploadThrobber.slideUp();
                             $pane.find('.uploadFileName').val('No file selected yet.');
-                            state.submittedView = new Dataset(response);
-                            command.next('metadata');
+                            if (isBlist)
+                            {
+                                state.scan = response;
+                                command.next('importColumns');
+                            }
+                            else
+                            {
+                                state.submittedView = new Dataset(response);
+                                command.next('metadata');
+                            }
                         }, 1000);
                     }
                 });
             }
         },
+
+
+
+        'importColumns': blist.import.paneConfig,
 
 
 

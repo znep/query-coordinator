@@ -146,7 +146,8 @@
                 // init command obj for consumers to trigger pane actions
                 var commandObj = {
                     prev: prevPane,
-                    next: nextPane
+                    next: nextPane,
+                    updateHeight: animateVert
                 };
 
                 // fire events people are expecting

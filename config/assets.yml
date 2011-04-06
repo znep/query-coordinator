@@ -222,6 +222,7 @@ javascripts:
     - public/javascripts/plugins/jquery.awesomereorder.js
     - public/javascripts/controls/attachments-editor.js
     - public/javascripts/controls/wizard.js
+    - public/javascripts/screens/import-pane.js
     - public/javascripts/screens/dataset-new.js
   dataset-metrics:
     - public/javascripts/screens/dataset-metrics.js

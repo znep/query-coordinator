@@ -1,7 +1,10 @@
 GEM
   remote: http://rubygems.org/
   specs:
-    abstract (1.0.0)
+    POpen4 (0.1.4)
+      Platform (>= 0.4.0)
+      open4
+    Platform (0.4.0)
     actionmailer (2.3.11)
       actionpack (= 2.3.11)
     actionpack (2.3.11)
@@ -13,13 +16,11 @@ GEM
       activesupport (= 2.3.11)
     activesupport (2.3.11)
     archive-tar-minitar (0.5.2)
-    closure-compiler (1.0.0)
+    closure-compiler (1.1.1)
     columnize (0.3.2)
-    daemons (1.1.0)
-    erubis (2.6.6)
-      abstract (>= 1.0.0)
+    daemons (1.1.2)
+    erubis (2.7.0)
     eventmachine (0.12.10)
-    haml (3.0.17)
     hashie (0.3.1)
     hoptoad_notifier (2.3.7)
       activesupport
@@ -28,11 +29,12 @@ GEM
       closure-compiler (>= 0.1.0)
       yui-compressor (>= 0.9.1)
     json (1.4.6)
-    linecache19 (0.5.11)
+    linecache19 (0.5.12)
       ruby_core_source (>= 0.1.4)
-    money (3.5.5)
+    money (3.6.1)
       i18n (~> 0.4)
     multipart-post (1.0.1)
+    open4 (1.0.1)
     rack (1.1.0)
     rails (2.3.11)
       actionmailer (= 2.3.11)
@@ -42,7 +44,7 @@ GEM
       activesupport (= 2.3.11)
       rake (>= 0.8.3)
     rake (0.8.7)
-    ruby-debug-base19 (0.11.24)
+    ruby-debug-base19 (0.11.25)
       columnize (>= 0.3.1)
       linecache19 (>= 0.5.11)
       ruby_core_source (>= 0.1.4)
@@ -50,21 +52,22 @@ GEM
       columnize (>= 0.3.1)
       linecache19 (>= 0.5.11)
       ruby-debug-base19 (>= 0.11.19)
-    ruby_core_source (0.1.4)
+    ruby_core_source (0.1.5)
       archive-tar-minitar (>= 0.5.2)
+    sass (3.1.0.alpha.253)
     stomp (1.1.6)
-    thin (1.2.7)
+    thin (1.2.11)
       daemons (>= 1.0.9)
       eventmachine (>= 0.12.6)
       rack (>= 1.0.0)
-    yui-compressor (0.9.3)
+    yui-compressor (0.9.6)
+      POpen4 (>= 0.1.4)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   erubis (>= 2.6.4)
-  haml (= 3.0.17)
   hashie (= 0.3.1)
   hoptoad_notifier (= 2.3.7)
   jammit (= 0.5.4)
@@ -74,5 +77,6 @@ DEPENDENCIES
   rack (= 1.1.0)
   rails (= 2.3.11)
   ruby-debug19
+  sass (~> 3.1.0.alpha)
   stomp (= 1.1.6)
   thin

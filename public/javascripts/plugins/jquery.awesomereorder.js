@@ -286,7 +286,6 @@
         start: null,
         stop: null,
         uiDraggableDefaults: {
-            containment: 'parent',
             distance: 5,
             opacity: 0.8
         }

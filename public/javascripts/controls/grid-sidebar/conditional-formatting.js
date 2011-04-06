@@ -113,7 +113,7 @@
                                    {type: 'color', required: true,
                                        name: 'color', defaultValue: '#bbffbb'},
                                    {type: 'text', required: true,
-                                       name: 'icon', defaultValue: 'http://'},
+                                       name: 'icon', defaultValue: 'http://'}
                                ]
                            }; }
 

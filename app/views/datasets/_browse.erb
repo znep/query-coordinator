@@ -120,7 +120,7 @@
   <div class="browseList">
     <%- if !@browse_in_container -%>
     <div class="titleContainer">
-      <h2 title="<%= strip_tags @title %>"><%= raw @title %></h2>
+      <h2 title="<%= @title %>"><%= @title %></h2>
     </div>
     <%- end -%>
     <%- if @view_count > 0 && @sort_opts.length > 0 && !@disable[:sort] -%>

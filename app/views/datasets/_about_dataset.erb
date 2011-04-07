@@ -24,14 +24,27 @@
   </div>
 
   <%- approval = Approval.find()[0] -%>
+  <%- if !current_user.nil? && (current_user.can_approve? || current_user.id == @view.owner.id) -%>
   <%- next_stage = @view.next_approval_stage(approval) -%>
-  <%- if !next_stage.nil? -%>
+  <%- @users = {}
+    (CoreServer::Base.connection.batch_request do
+      ((next_stage || {})['approverUids'] || []).each do |userId|
+        User.find(userId, {}, true)
+      end
+      (@view.approval_history || []).each do |ah|
+        User.find(ah['approverUserUid'], {}, true)
+      end
+    end || []).each do |r|
+      u = User.parse(r['response'])
+      @users[u.id] = u
+    end -%>
+
   <div class="formSection">
-    <a class="expander expanded formHeader" href="#expand">
+    <a class="expander <%= !next_stage.nil? ? "expanded" : "collapsed" %> formHeader" href="#expand">
       <span class="icon"></span>
       Routing &amp; Approval
     </a>
-    <dl class="sectionContent">
+    <dl class="sectionContent" style="<%= next_stage.nil? ? 'display:none' : '' %>">
       <%- last_app = @view.last_approval -%>
       <%- last_app_rej = @view.last_approval(true) -%>
       <dt>Stage</dt>
@@ -39,9 +52,9 @@
         <%= render :partial => 'stage_icon', :locals => {:view => @view, :approval => approval} %>
         <span class="name"><%= approval.stage((last_app || {})['approvalStageId'])['name'] %></span>
       </dd>
+      <%- if !next_stage.nil? -%>
       <%- if CurrentDomain.user_can?(current_user, 'manage_approval') ||
-      (!current_user.nil? &&
-        ((@view.next_approval_stage(approval) || {})['approverUids'] || []).include?(current_user.id)) -%>
+        (next_stage['approverUids'] || []).include?(current_user.id) -%>
       <dt>Actions</dt>
       <dd class="actions">
         <% form_button({:action => 'approve_view', :controller => 'administration', :id => @view.id,
@@ -52,31 +65,43 @@
         <%- end -%>
       </dd>
       <%- end -%>
-      <%- if !@view.approval_history.empty? -%>
-      <dt>Last <%= last_app_rej['approvalRejected'] ? 'Rejected' : 'Approved' %> By</dt>
-      <%- last_user = User.find(last_app_rej['approverUserUid']) -%>
-      <dd><a href='<%= last_user.href %>'><%= last_user.displayName %></a></dd>
-      <dt>Date of Last <%= last_app_rej['approvalRejected'] ? 'Rejection' : 'Approval' %></dt>
-      <dd><%= blist_date(last_app_rej['approvalDate']) %></dd>
-      <%- end -%>
       <dt>Next Approver</dt>
-      <%- @next_approvers = {}
-        (CoreServer::Base.connection.batch_request do
-          (next_stage['approverUids'] || []).each do |userId|
-            User.find(userId, {}, true)
-          end
-        end || []).each do |r|
-          u = User.parse(r['response'])
-          @next_approvers[u.id] = u
-        end -%>
       <dd><ul>
         <%- (next_stage['approverUids'] || []).each do |uid| -%>
-        <%- u = @next_approvers[uid] -%>
+        <%- u = @users[uid] -%>
         <li><a href='<%= u.href %>'><%= u.displayName %></a></li>
         <%- end -%>
       </ul></dd>
+      <%- end -%>
     </dl>
   </div>
+
+  <%- if !@view.approval_history.empty? -%>
+  <div class="formSection">
+    <a class="expander <%= !next_stage.nil? ? "expanded" : "collapsed" %> formHeader" href="#expand">
+      <span class="icon"></span>
+      Approval History
+    </a>
+    <ul class="sectionContent approvalHistory" style="<%= next_stage.nil? ? 'display:none' : '' %>">
+      <%- @view.approval_history.each do |ah| -%>
+      <li>
+      <div class='stage'>
+        <div class="icon">
+          <%- i = approval.stages.index {|s| s['id'] == ah['approvalStageId']} || 0 -%>
+          <%- approval.stages.length.times do |j| -%>
+          <span class="<%= j > i ? "off" : i == j && ah['approvalRejected'] ? "rejected" : "on" %>"></span>
+          <%- end -%>
+        </div>
+        <%= approval.stage(ah['approvalStageId'])['name'] %></div>
+      <%- u = @users[ah['approverUserUid']] -%>
+      <div class='user'><%= ah['approvalRejected'] ? 'Rejected' : 'Approved' %> by
+        <a href='<%= u.href %>'><%= u.displayName %></a></div>
+      <span class='date'>On <%= blist_date(ah['approvalDate']) %></span>
+      </li>
+      <%- end -%>
+    </ul>
+  </div>
+  <%- end -%>
   <%- end -%>
 
   <div class="formSection">

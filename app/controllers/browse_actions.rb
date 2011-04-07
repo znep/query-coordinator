@@ -181,15 +181,15 @@ protected
 
 private
   def get_title(params, opts, facets)
-    t = ''
+    t = String.new
 
     t = 'for "' + CGI.escapeHTML(params[:q]) + '"' if !params[:q].blank?
     parts = []
     facets.each do |f|
       if !params[f[:param]].blank?
         if !f[:singular_description].blank?
-          parts << f[:singular_description] + ' of ' +
-            f[:options].detect {|o| o[:value] == params[f[:param]]}[:text]
+          facet_item = f[:options].detect {|o| o[:value] == params[f[:param]]}
+          parts << f[:singular_description] + ' of ' + facet_item[:text] unless facet_item.nil?
         elsif !f[:custom_description].blank?
           parts << f[:custom_description].call(params, opts)
         end

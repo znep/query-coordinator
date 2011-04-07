@@ -1,13 +1,15 @@
 <thead>
   <tr>
     <th scope="col" id="header_row_number_<%= parent_id %>">Row number</th>
-    <% columns.each do |column|%>
-      <th scope="col" id="header_<%= column.id %>" class="<%= column.dataTypeName %>"
-        <%= "colspan='" + (column.viewable_children.length + 1).to_s + "'" if
-          column.is_nested_table %>>
-        <%= column.name %>
-      </th>
-    <%- end -%>
+    <% unless columns.nil? %>
+      <% columns.each do |column|%>
+        <th scope="col" id="header_<%= column.id %>" class="<%= column.dataTypeName %>"
+          <%= "colspan='" + (column.viewable_children.length + 1).to_s + "'" if
+            column.is_nested_table %>>
+          <%= column.name %>
+        </th>
+      <%- end -%>
+    <% end %>
   </tr>
 </thead>
 <tbody>

@@ -76,8 +76,7 @@ protected
       end,
       :custom_description => proc do |params, opts|
           return nil if params[:extents].nil?
-          "<a href='#' title='View geographical area' class='chooseBounds'>" +
-            "within an area</a>"
+          return "within an area"
       end
     }
   end

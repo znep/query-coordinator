@@ -219,4 +219,25 @@ $(function()
         e.preventDefault();
         $(this).closest('.userItem').addClass('hide').find('input').val('');
     });
+
+    // Handle resets
+    $manage.find('.finishButtons input[type=reset]').click(function()
+    { _.defer(function() {
+        $manage.find('.stageList .stageItem').each(function()
+        {
+            var $si = $(this);
+            if ($si.hasClass('newStage')) { return; }
+            if ($.isBlank($si.find('input.stageName').val()))
+            {
+                $si.remove();
+                return;
+            }
+            $si.find('.userList .userItem').each(function()
+            {
+                var $ui = $(this);
+                if ($ui.hasClass('newItem')) { return; }
+                if ($.isBlank($ui.find('input').val())) { $ui.remove(); }
+            });
+        });
+    }); });
 });

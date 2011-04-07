@@ -816,6 +816,14 @@ class AdministrationController < ApplicationController
     # it would be confusing. So we just always make the last stage visible, and the rest not
     if attrs[:stages].length > 0
       attrs[:stages].each {|s| s['visible'] = false}.last['visible'] = true
+    else
+      flash[:error] = "At least one stage is required"
+      return(redirect_to :action => 'routing_approval_manage')
+    end
+
+    if attrs[:stages].any? {|s| s['approverUids'].empty?}
+      flash[:error] = "Every stage requires at least one approver"
+      return(redirect_to :action => 'routing_approval_manage')
     end
 
     if app.nil?

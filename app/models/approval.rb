@@ -42,7 +42,7 @@ class Approval < Model
   end
 
   def is_approver?(user)
-    stages.any? {|s| s['approverUids'].include?(user.id)}
+    stages.any? {|s| (s['approverUids'] || []).include?(user.id)}
   end
 
   @@notification_intervals = {

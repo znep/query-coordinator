@@ -331,6 +331,7 @@
 <% content_for :templates do %>
 <%= render(:partial => 'shared/grid_sidebar_templates') %>
 <%= render(:partial => 'show_hide_template') %>
+<%= render :partial => 'column_order_template' %>
 <div class="embedForm">
   <%= render :partial => 'embed_form', :locals => { :view => @view, :cur => 'root',
              :customization_id => (CurrentDomain.user_can?(current_user, :edit_sdp) ? nil : CurrentDomain.default_widget_customization_id) } %>
@@ -557,6 +558,8 @@
       !CurrentDomain.module_available?(:dataset_refresh) %>;
     blist.sidebarHidden.edit.addColumn = <%= !@view.is_blist? ||
       !@view.has_rights?('add_column') %>;
+    blist.sidebarHidden.edit.updateColumn = <%= !@view.is_blist? ||
+      !@view.has_rights?('update_column') %>;
 
     <%# Columm properties %>
     blist.sidebarHidden.columnProperties = <%= !@view.is_tabular? %>;

@@ -230,6 +230,7 @@ javascripts:
   dataset-show:
     - public/javascripts/plugins/jquery.colorPicker.js
     - public/javascripts/plugins/jquery.awesomecomplete.js
+    - public/javascripts/plugins/jquery.awesomereorder.js
     - public/javascripts/plugins/jquery.tablesorter.js
     - public/javascripts/plugins/iscroll.js
     - public/javascripts/plugins/ajaxupload.js
@@ -255,6 +256,7 @@ javascripts:
     - public/javascripts/controls/grid-sidebar/append-replace.js
     - public/javascripts/controls/grid-sidebar/calendar-create.js
     - public/javascripts/controls/grid-sidebar/chart-create.js
+    - public/javascripts/controls/grid-sidebar/column-order.js
     - public/javascripts/controls/grid-sidebar/column-properties.js
     - public/javascripts/controls/grid-sidebar/conditional-formatting.js
     - public/javascripts/controls/grid-sidebar/download-dataset.js

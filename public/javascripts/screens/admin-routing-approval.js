@@ -124,6 +124,14 @@ $(function()
     var $manage = $('#routingApprovalManagement');
     if ($manage.length < 1) { return; }
 
+    $.validator.addMethod('userId', function(value, element, param)
+    {
+        if (this.optional(element)) { return true; }
+        return !_.isNull(value.match(/\w{4}-\w{4}$/));
+    },
+    'A valid user is required');
+    $.validator.addClassRules('userId', {userId: true});
+
     $manage.find('form').validate();
 
     var hookUpUserPicker = function($li)
@@ -133,6 +141,7 @@ $(function()
             // User ID has already been set in field
             var $newLi = $li.clone().removeClass('newItem');
             $newLi.find('ul.autocomplete').remove();
+            $newLi.find('label.error').remove();
             $newLi.append($.tag({tagName: 'a', 'class': 'userLink',
                 href: user.getProfileUrl(),
                 contents: $.htmlEscape(user.displayName)}));

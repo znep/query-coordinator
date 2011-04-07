@@ -41,7 +41,6 @@
 
                 $domObj.awesomecomplete({
                     attachTo: $domObj.offsetParent(),
-                    dontMatch: ['id'],
                     forcePosition: true,
                     suggestionListClass: 'autocomplete userPicker',
                     typingDelay: 500,
@@ -73,15 +72,32 @@
             return;
         }
 
-        $.Tache.Get({url: '/api/search/users.json',
-            data: {limit: pickerObj.settings.limit, q: value},
-            success: function(results)
+        var m = value.match(/\w{4}-\w{4}$/);
+        if (!$.isBlank(m))
+        {
+            User.createFromUserId(m[0], function(u)
             {
-                callback(_(results[0].results || []).chain()
-                    .map(function(u) { return new User(u); })
-                    .select(pickerObj.settings.filterCallback)
-                    .value());
-            }});
+                callback([]);
+                if (pickerObj.settings.filterCallback(u))
+                { handleComplete(pickerObj, u); }
+            },
+            function()
+            {
+                callback([]);
+            });
+        }
+        else
+        {
+            $.Tache.Get({url: '/api/search/users.json',
+                data: {limit: pickerObj.settings.limit, q: value},
+                success: function(results)
+                {
+                    callback(_(results[0].results || []).chain()
+                        .map(function(u) { return new User(u); })
+                        .select(pickerObj.settings.filterCallback)
+                        .value());
+                }});
+        }
     };
 
     var doRender = function(dataItem, topMatch)

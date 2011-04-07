@@ -58,6 +58,7 @@
             <col class="domainIcon" />
             <%- end -%>
             <col class="nameDesc" />
+            <col class="stage" />
             <col class="actions" />
           </colgroup>
           <thead>
@@ -67,6 +68,7 @@
               <th class="domainIcon"></th>
               <%- end -%>
               <th class="nameDesc">Dataset</th>
+              <th class="stage"></th>
               <th class="actions"></th>
             </tr>
           </thead>
@@ -104,6 +106,11 @@
                     <a class="close" href="#Close"><span class="icon"></span></a>
                   </div>
                 </div>
+              </td>
+              <td class="stage">
+                <%= render :partial => 'datasets/stage_icon',
+                  :locals => {:approval => @approval_template, :view => v} %>
+                <%= @approval_template.stage((v.last_approval || {})['approvalStageId'])['name'] %>
               </td>
               <td class="actions">
                 <%- if !v.next_approval_stage(@approval_template).nil? &&

@@ -22,25 +22,26 @@
     <div class="banner clearfix">
       <a href="/admin/routing_approval/queue" class="button">Take Action</a>
       <p>You have <strong><%= @appr_count %></strong> <%= @appr_count > 1 ?
-        'datasets' : 'dataset' %> that require action.</p>
+        'datasets' : 'dataset' %> that require<%= @appr_count == 1 ? 's' : '' %> action.</p>
     </div>
     <%- end -%>
 
     <div class="pipeline report">
       <h3>Pipeline Report</h3>
       <ul>
-        <%- total_count = @approval_template.age_info.reduce(0) do |memo, ai|
-              val = ai['count']
-              val = 0 if @approval_template.stage(ai['approval_stage_id'])['visible']
-              memo + val
-            end -%>
+        <%- total_count = @approval_template.age_info.reduce(0) {|memo, ai| memo + ai['count']} -%>
+        <%- total_count = 1 if total_count < 1 -%>
         <%- @approval_template.stages.clone.unshift({'id' => 0, 'name' => 'Not Ready Yet'}).
               each do |stage| -%>
+        <%- if stage['visible'] -%>
+        <%- ai = {'count' => @all_count} -%>
+        <%- else -%>
         <%- ai = @approval_template.age_info.detect {|a| a['approval_stage_id'] == stage['id']} ||
               {'count' => 0} -%>
+        <%- end -%>
         <li class="clearfix <%= stage['visible'] ? 'finalStage' : '' %>">
         <div class="label" title="<%= stage['name'] %>"><span><%=
-            stage['visible'] ? 'Public datasets (' + stage['name'] + ')' : stage['name'] %></span></div>
+            stage['visible'] ? 'Publicly available (' + stage['name'] + ')' : stage['name'] %></span></div>
         <div class="barContainer">
           <span class="bar" style="width:<%= [99.0 * ai['count'] / total_count, 100.0].min %>%"></span>
           <span class="count"><%= number_with_delimiter(ai['count'], {:locale => :en}) %></span>

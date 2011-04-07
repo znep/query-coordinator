@@ -699,6 +699,9 @@ class AdministrationController < ApplicationController
                                         :limit => 1})[0]
     @appr_count = @appr_results.count
 
+    @all_results = SearchResult.search('views', {:limit => 1, :datasetView => 'dataset'})[0]
+    @all_count = @all_results.count
+
     @aging_groups = 5
 
     @stuck_results = SearchResult.search('views',
@@ -827,8 +830,18 @@ class AdministrationController < ApplicationController
     end
 
     if app.nil?
+      is_grandfather = params[:grandfatherDatasets] === 'true'
+      orig_enabled = attrs[:requireApproval]
+
+      # Initially save the approval as disabled so that when we grandfather datasets, notification
+      # emails aren't sent for everything. Once grandfathering is done, we update it back to enabled
+      attrs[:requireApproval] = false if is_grandfather
       app = Approval.create(attrs)
-      app.grandfather() if params[:grandfatherDatasets] === 'true'
+
+      if is_grandfather
+        app.grandfather()
+        app.update_attributes!({:requireApproval => true}) if orig_enabled
+      end
     else
       app.update_attributes!(attrs)
     end

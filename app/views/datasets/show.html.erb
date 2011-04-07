@@ -558,8 +558,7 @@
       !CurrentDomain.module_available?(:dataset_refresh) %>;
     blist.sidebarHidden.edit.addColumn = <%= !@view.is_blist? ||
       !@view.has_rights?('add_column') %>;
-    blist.sidebarHidden.edit.updateColumn = <%= !@view.is_blist? ||
-      !@view.has_rights?('update_column') %>;
+    blist.sidebarHidden.edit.updateColumn = <%= !@view.has_rights?('update_column') %>;
 
     <%# Columm properties %>
     blist.sidebarHidden.columnProperties = <%= !@view.is_tabular? %>;

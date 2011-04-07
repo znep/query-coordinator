@@ -13,9 +13,10 @@
         onlyIf: function()
         {
             return blist.dataset.valid &&
-                (!blist.dataset.temporary || blist.dataset.minorChange);
+                (!blist.dataset.temporary || blist.dataset.minorChange) &&
+                !_.isEmpty(blist.dataset.visibleColumns);
         },
-        disabledSubtitle: 'This view must be valid',
+        disabledSubtitle: 'This view must be valid and must have visible columns.',
         sections: [{
             title: 'Columns',
             customContent: {
@@ -62,7 +63,7 @@
         var $columnsList = $pane.find('.columnsList');
         var columns = _.pluck(_.sortBy(blist.dataset.visibleColumns, function(column)
         {
-            return $columnsList.children('[data-columnId=' + column.id + ']').prevAll().length;
+            return $columnsList.children('[data-columnId=' + column.id + ']').index();
         }), 'id');
 
         isLoading = true;

@@ -392,7 +392,7 @@ $.keyValueToObject = function(key, value)
 
 $.subKeyDefined = function(obj, keystring)
 {
-    if (_.isUndefined(obj) || !_.isString(keystring))
+    if ($.isBlank(obj) || !_.isString(keystring))
     {
         return false;
     }

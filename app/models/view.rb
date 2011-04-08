@@ -849,14 +849,15 @@ class View < Model
     return ns
   end
 
-  def set_approval(approval, approved)
+  def set_approval(approval, approved, comment = nil)
     next_stage = next_approval_stage(approval)
     return false if next_stage.nil?
 
     path = "/#{self.class.name.pluralize.downcase}/#{id}/approval.json"
     CoreServer::Base.connection.create_request(path,
           {:approvalStageId => next_stage['id'],
-            :approvalRejected => !approved}.to_json)
+            :approvalRejected => !approved,
+            :comment => comment}.to_json)
   end
 
   @@default_categories = {

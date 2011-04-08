@@ -66,6 +66,16 @@ $(function()
                         return _.isEmpty(v.context.dataset.approvalHistory) ?
                             'hide' : '';
                     },
+                '.rejectionReason .value': function(v)
+                    {
+                        return v.context.dataset.lastApproval(true).comment ||
+                            'No reason provided';
+                    },
+                '.rejectionReason@class+': function(v)
+                    {
+                        return v.context.dataset.lastApproval(true)
+                            .approvalRejected ? '' : 'hide';
+                    },
                 '.nextApprover .user li': {
                     'userId<-nextStage.approverUids': {
                         '.value@data-userId': 'userId'
@@ -114,6 +124,38 @@ $(function()
         expanderExpandedClass: 'expanded',
         forceExpander: true,
         preExpandCallback: doExpansion
+    });
+
+    $browse.find('table tbody tr .actions .rejectionReason').each(function()
+    {
+        var $d = $(this);
+        var $i = $d.siblings('input');
+        var $t = $d.children('textarea');
+        $d.addClass('hide jsEnabled');
+        $d.append($.tag({tagName: 'input', type: 'submit', 'class': ['button', 'reject'], value: 'Reject'}));
+
+        $t.keydown(function(e)
+        {
+            if (e.which == 27) // ESC
+            {
+                $d.addClass('hide');
+                // IE7 is dumb
+                $d.closest('form').css('z-index', '');
+                $t.blur();
+            }
+        });
+
+        $i.click(function(e)
+        {
+            if ($d.hasClass('hide'))
+            {
+                e.preventDefault();
+                $d.removeClass('hide');
+                // IE7 is dumb
+                $d.closest('form').css('z-index', 10);
+                $t.focus();
+            }
+        });
     });
 });
 

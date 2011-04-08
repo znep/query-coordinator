@@ -120,12 +120,15 @@
                 <div>
                   <% form_button({:action => 'approve_view', :id => v.id,
                       :approved => 'yes'}, 'Approve', {},
-                    {:class => 'button approve'}) %>
+                      {:class => 'button approve'})%>
                   <%- la = v.last_approval(true) -%>
                   <%- if la.nil? || !la['approvalRejected'] -%>
                   <% form_button({:action => 'approve_view', :id => v.id,
                       :approved => 'no'}, 'Reject', {},
-                    {:class => 'button reject'}) %>
+                      {:class => 'button reject'}) do %>
+                      <% '<div class="rejectionReason">'.html_safe +
+                        label_tag('Rejection reason') + text_area_tag('comment') + '</div>'.html_safe %>
+                      <% end %>
                   <%- end -%>
                 </div>
                 <%- end -%>
@@ -177,6 +180,10 @@
       <div class="title">Date of Last <span class="type"></span>:</div>
       <span class="value"></span>
     </div>
+  </div>
+  <div class="rejectionReason line">
+    <span class="title">Rejection Reason:</span>
+    <span class="value"></span>
   </div>
   <div class="nextApprover line">
     <div class="user">

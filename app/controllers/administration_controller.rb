@@ -749,7 +749,7 @@ class AdministrationController < ApplicationController
 
     # We only support one template for now, so assume it is the first one
     approval_template = Approval.find()[0]
-    v.set_approval(approval_template, params[:approved] == 'yes')
+    v.set_approval(approval_template, params[:approved] == 'yes', params[:comment])
 
     flash[:notice] = "The dataset has been " +
       "#{params[:approved] == 'yes' ? 'approved' : 'rejected'}. " +

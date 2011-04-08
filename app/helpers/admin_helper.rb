@@ -15,7 +15,8 @@ module AdminHelper
 
   def form_button(url_opts, button_text, opts = {}, button_opts = {})
     form_tag(url_opts, opts) do
-      submit_tag(button_text, {:class => 'button'}.merge(button_opts))
+      ((yield if block_given?) || ''.html_safe) +
+        submit_tag(button_text, {:class => 'button'}.merge(button_opts))
     end
   end
 

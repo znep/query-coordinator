@@ -86,7 +86,7 @@
     <ul class="sectionContent approvalHistory" style="<%= next_stage.nil? ? 'display:none' : '' %>">
       <%- @view.approval_history.each do |ah| -%>
       <li>
-      <div class='stage'>
+      <div class="stage">
         <div class="icon">
           <%- i = approval.stages.index {|s| s['id'] == ah['approvalStageId']} || 0 -%>
           <%- approval.stages.length.times do |j| -%>
@@ -97,7 +97,10 @@
       <%- u = @users[ah['approverUserUid']] -%>
       <div class='user'><%= ah['approvalRejected'] ? 'Rejected' : 'Approved' %> by
         <a href='<%= u.href %>'><%= u.displayName %></a></div>
-      <span class='date'>On <%= blist_date(ah['approvalDate']) %></span>
+      <span class="date">On <%= blist_date(ah['approvalDate']) %></span>
+      <%- if !ah['comment'].blank? -%>
+      <span class="reason"><%= ah['comment'] %></span>
+      <%- end -%>
       </li>
       <%- end -%>
     </ul>

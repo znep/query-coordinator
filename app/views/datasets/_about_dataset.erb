@@ -24,7 +24,8 @@
   </div>
 
   <%- approval = Approval.find()[0] -%>
-  <%- if !current_user.nil? && (current_user.can_approve? || current_user.id == @view.owner.id) -%>
+  <%- if !approval.nil? && !current_user.nil? &&
+    (current_user.can_approve? || current_user.id == @view.owner.id) -%>
   <%- next_stage = @view.next_approval_stage(approval) -%>
   <%- @users = {}
     (CoreServer::Base.connection.batch_request do

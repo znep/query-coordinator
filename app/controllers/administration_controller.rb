@@ -743,18 +743,15 @@ class AdministrationController < ApplicationController
   end
 
   def approve_view
-    begin
-      v = View.find(params[:id])
-    rescue CoreServer::ResourceNotFound
-      flash[:error] = "Could not find view to modify approval status"
-      return(redirect_to :action => 'routing_approval_queue')
-    end
+    # Construct a fake view, since it might be cross-domain and we can't
+    # load views cross-domain
+    v = View.parse({'id' => params[:id]}.to_json)
 
     # We only support one template for now, so assume it is the first one
     approval_template = Approval.find()[0]
     v.set_approval(approval_template, params[:approved] == 'yes')
 
-    flash[:notice] = "The view '#{v.name}' has been " +
+    flash[:notice] = "The dataset has been " +
       "#{params[:approved] == 'yes' ? 'approved' : 'rejected'}. " +
       'Please allow a few minutes for the changes to be reflected on your home page'
 

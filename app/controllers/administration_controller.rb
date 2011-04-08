@@ -753,7 +753,7 @@ class AdministrationController < ApplicationController
 
     flash[:notice] = "The dataset has been " +
       "#{params[:approved] == 'yes' ? 'approved' : 'rejected'}. " +
-      'Please allow a few minutes for the changes to be reflected on your home page'
+      'Please allow a few minutes for the changes to be reflected on your home page.'
 
     return(redirect_to (request.referer || {:action => 'routing_approval_queue'}))
   end
@@ -787,7 +787,7 @@ class AdministrationController < ApplicationController
     max_ii = params[:template][:maxInactivityInterval].to_i
     max_ii = 5 if (max_ii < 1)
     attrs = {:name => params[:template][:name],
-      :requireApproval => Rails.env.production? ? true : params[:template][:requireApproval] == 'true',
+      :requireApproval => true,
       :maxInactivityInterval => max_ii,
       :stages => []}
     if !app.nil?

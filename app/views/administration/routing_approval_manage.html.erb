@@ -32,14 +32,6 @@
           value="<%= @approval_template.nil? ? 5 : @approval_template.maxInactivityInterval %>" />
         <label for="template_maxInactivityInterval">day(s)</label>
       </div>
-      <%- if !Rails.env.production? -%>
-      <div class="line">
-        <label for="template_requireApproval">Enable process (if disabled, all datasets will appear in the public catalog)</label>
-        <input type="checkbox" id="template_requireApproval"
-          name="template[requireApproval]" value="true"
-          <%= @approval_template.nil? || @approval_template.requireApproval ? checked="checked" : '' %> />
-      </div>
-      <%- end -%>
 
       <h3>Stages</h3>
       <p class="info deleteInfo">Clear a stage name to delete that stage</p>

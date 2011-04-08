@@ -288,6 +288,7 @@ $(function()
                 var $ui = $(this);
                 if ($ui.hasClass('newItem')) { return; }
                 if ($.isBlank($ui.find('input').val())) { $ui.remove(); }
+                else { $ui.removeClass('hide'); }
             });
         });
     }); });

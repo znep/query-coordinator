@@ -812,7 +812,8 @@ class View < Model
   end
 
   def is_stuck?(approval)
-    (Time.now - approval.maxInactivityInterval.day).to_i > last_approval_date
+    !approval.nil? &&
+      (Time.now - approval.maxInactivityInterval.day).to_i > last_approval_date
   end
 
   def approval_stream(approval)

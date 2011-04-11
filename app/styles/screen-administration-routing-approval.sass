@@ -76,16 +76,25 @@
               padding-right: 33.6em
               .infoContent
                 margin-right: -33.6em
+              .ie7 &
+                padding-right: 35.6em
+                .infoContent
+                  margin-right: -35.6em
               &.federated
                 margin-left: -5.9em
                 padding-right: 36.7em
                 .infoContent
                   margin-right: -36.7em
+                .ie7 &
+                  padding-right: 38.7em
+                  .infoContent
+                    margin-right: -38.7em
 
               .line
                 margin: 0.5em
               .title
                 display: inline-block
+                line-height: 1.2em
                 .ie7 &
                   display: inline
                 font-weight: bold
@@ -113,6 +122,8 @@
                   display: inline
                 li
                   margin-bottom: 0.25em
+                  .ie7 &
+                    margin-left: -1.2em
               .userLoad
                 @include throbber-icon
                 display: inline-block
@@ -279,6 +290,8 @@
 
       .userList
         margin-top: 0.3em
+        .ie7 &
+          display: inline
         .userLink
           font-size: 1.2em
         .remove

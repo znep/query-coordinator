@@ -45,7 +45,7 @@
       <span class="icon"></span>
       Routing &amp; Approval
     </a>
-    <dl class="sectionContent" style="<%= next_stage.nil? ? 'display:none' : '' %>">
+    <dl class="sectionContent routingApproval" style="<%= next_stage.nil? ? 'display:none' : '' %>">
       <%- last_app = @view.last_approval -%>
       <%- last_app_rej = @view.last_approval(true) -%>
       <dt>Stage</dt>

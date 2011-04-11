@@ -127,19 +127,13 @@
                     (action == 'up' ? -1 : 1)});
         });
 
-        $colHeaders.delegate('.controlsBox a.close', 'click',
+        $colHeaders.delegate('.controlsBox a.close, .controlsBox a.expand', 'click',
         function(e)
         {
             e.preventDefault();
-            toggleHeader(frObj, false);
+            toggleHeader(frObj, $(this).hasClass('expand'));
         });
 
-        $colHeaders.delegate('.controlsBox a.expand', 'click',
-        function(e)
-        {
-            e.preventDefault();
-            toggleHeader(frObj, true);
-        });
         var headerShown = (((frObj.settings.view.metadata || {}).richRendererConfigs || {})
             .fatRow || {}).headerShown;
         toggleHeader(frObj, $.isBlank(headerShown) || headerShown, true);
@@ -157,7 +151,8 @@
 
     var toggleHeader = function(frObj, isShow, skipUpdate)
     {
-        frObj.$dom().find('.columnHeaders').toggleClass('collapsed', !isShow).toggleClass('hover', !isShow);
+        frObj.$dom().find('.columnHeaders').toggleClass('collapsed', !isShow).toggleClass('hover', !isShow)
+            .trigger('resize');
         if (!skipUpdate)
         {
             var md = $.extend(true, {richRendererConfigs: {fatRow: {}}}, frObj.settings.view.metadata);

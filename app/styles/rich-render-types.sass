@@ -110,7 +110,7 @@
   .columnHeaders
     background-color: #e8e8e8
     border-bottom: 1px solid $color_chrome_box_border
-    height: 3.2em
+    height: 3.3em
     overflow: hidden
     padding-right: 4.25em
 
@@ -149,6 +149,7 @@
       float: left
       margin: 0.3em 0.25em
       padding: 0.2em
+      white-space: nowrap
       &:hover, &.clicked
         @include vertical-gradient(#fefefe, #f2f2f2)
         border-color: #9e9e9e
@@ -162,9 +163,20 @@
         float: left
         margin-right: 0.25em
       .name
+        // Other than font-size/weight, these settings are all magic to make column
+        // headers a minimum height in Chrome to prevent unnecessary scrolling
+        display: inline-block
         font-size: 1.2em
         font-weight: bold
-        line-height: 20px
+        line-height: 0
+        margin:
+          bottom: -0.1em
+          top: 0.9em
+        .ie7 &
+          // now undo it all for IE7...
+          display: inline
+          line-height: 20px
+          margin: 0
       .sort
         display: inline-block
         margin-top: 4px

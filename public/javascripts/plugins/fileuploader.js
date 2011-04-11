@@ -1227,7 +1227,8 @@ fileUploader.extend(fileUploader.UploadHandlerXhr.prototype, {
             var response;
 
             try {
-                response = eval("(" + xhr.responseText + ")");
+                // paul.paradise@socrata.com -- HOLY CRAP don't eval a json blob!
+                response = JSON.parse(xhr.responseText);
             } catch(err){
                 response = {};
             }

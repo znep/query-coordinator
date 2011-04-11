@@ -76,7 +76,7 @@ protected
       end,
       :custom_description => proc do |params, opts|
           return nil if params[:extents].nil?
-          return "within an area"
+          "within an area"
       end
     }
   end

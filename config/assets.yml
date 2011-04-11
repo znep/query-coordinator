@@ -36,6 +36,7 @@ javascripts:
     - public/javascripts/util/styles.js
     - public/javascripts/util/templates.js
     - public/javascripts/data/types.js
+    - public/javascripts/controls/modal-dialogs.js
     - public/javascripts/controls/socrata-messaging.js
     - public/javascripts/controls/text-prompt.js
     - public/javascripts/controls/values.js
@@ -125,7 +126,6 @@ javascripts:
     - public/javascripts/controls/combination-list.js
     - public/javascripts/screens/admin-users-screen.js
   admin-home:
-    - public/javascripts/controls/modal-dialogs.js
     - public/javascripts/controls/admin-buttons.js
     - public/javascripts/plugins/jquery.tablesorter.js
     - public/javascripts/plugins/ajaxupload.js
@@ -149,7 +149,6 @@ javascripts:
     - public/javascripts/controls/dataset-controls.js
     - public/javascripts/screens/admin-routing-approval.js
   admin-sdp-templates:
-    - public/javascripts/controls/modal-dialogs.js
     - public/javascripts/controls/admin-buttons.js
     - public/javascripts/plugins/jquery.tablesorter.js
     - public/javascripts/controls/combination-list.js
@@ -190,17 +189,14 @@ javascripts:
     - public/javascripts/controls/dataset-controls.js
     - public/javascripts/controls/expander.js
     - public/javascripts/controls/stars.js
-    - public/javascripts/controls/modal-dialogs.js
     - public/javascripts/screens/browse.js
   screen-nominations:
     - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/util/events.js
     - public/javascripts/util/humane-date.js
-    - public/javascripts/controls/modal-dialogs.js
     - public/javascripts/screens/nominations.js
   screen-videos:
     - public/javascripts/plugins/jquery.quicksand.js
-    - public/javascripts/controls/modal-dialogs.js
     - public/javascripts/screens/videos.js
   widgets-show:
     - public/javascripts/plugins/jquery.tablesorter.js
@@ -210,7 +206,6 @@ javascripts:
     - public/javascripts/util/humane-date.js
     - public/javascripts/util/events.js
     - public/javascripts/plugins/lab.js
-    - public/javascripts/controls/modal-dialogs.js
     - public/javascripts/controls/dataset-controls.js
     - public/javascripts/controls/feed-list.js
     - public/javascripts/controls/stars.js
@@ -224,6 +219,7 @@ javascripts:
     - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/plugins/fileuploader.js
     - public/javascripts/plugins/blist.fileuploader.js
+    - public/javascripts/plugins/jquery.awesomereorder.js
     - public/javascripts/controls/attachments-editor.js
     - public/javascripts/controls/wizard.js
     - public/javascripts/screens/dataset-new.js
@@ -246,7 +242,6 @@ javascripts:
     - public/javascripts/controls/wizard-prompt.js
     - public/javascripts/controls/popup-select.js
     - public/javascripts/controls/form-inliner.js
-    - public/javascripts/controls/modal-dialogs.js
     - public/javascripts/controls/expander.js
     - public/javascripts/controls/feed-list.js
     - public/javascripts/controls/stars.js
@@ -290,7 +285,6 @@ javascripts:
   dataset-edit-rr:
     - public/javascripts/plugins/jquery.colorPicker.js
     - public/javascripts/util/events.js
-    - public/javascripts/controls/modal-dialogs.js
     - public/javascripts/controls/navigation.js
     - public/javascripts/controls/rich-render-library.js
     - public/javascripts/controls/grid-sidebar/base-sidebar.js

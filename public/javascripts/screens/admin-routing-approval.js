@@ -127,36 +127,7 @@ $(function()
     });
 
     $browse.find('table tbody tr .actions .rejectionReason').each(function()
-    {
-        var $d = $(this);
-        var $i = $d.siblings('input');
-        var $t = $d.children('textarea');
-        $d.addClass('hide jsEnabled');
-        $d.append($.tag({tagName: 'input', type: 'submit', 'class': ['button', 'reject'], value: 'Reject'}));
-
-        $t.keydown(function(e)
-        {
-            if (e.which == 27) // ESC
-            {
-                $d.addClass('hide');
-                // IE7 is dumb
-                $d.closest('form').css('z-index', '');
-                $t.blur();
-            }
-        });
-
-        $i.click(function(e)
-        {
-            if ($d.hasClass('hide'))
-            {
-                e.preventDefault();
-                $d.removeClass('hide');
-                // IE7 is dumb
-                $d.closest('form').css('z-index', 10);
-                $t.focus();
-            }
-        });
-    });
+    { blist.datasetControls.raRejection($(this)); });
 });
 
 
@@ -195,6 +166,12 @@ $(function()
         limit: 50});
     };
 
+    var adjustStages = function()
+    {
+        var $stages = $manage.find('.stageItem:visible:not(.newStage)');
+        $stages.toggleClass('onlyStage', $stages.length < 2);
+    };
+
     // Set up adding multiple stages
     $manage.find('.stageItem:last').addClass('newStage');
 
@@ -223,6 +200,8 @@ $(function()
             $lastStage.before($newStage);
             hookUpUserPicker($newStage.find('.userList .userItem:last'));
             $lastStage.find('input.stageName').val('');
+
+            adjustStages();
         }
     });
 
@@ -241,7 +220,10 @@ $(function()
         e.preventDefault();
         $(this).closest('.stageItem').addClass('hide')
             .find('input.stageName').val('');
+        adjustStages();
     });
+
+    adjustStages();
 
     // Set up nice add & delete for approvers in a stage
     var hookUpUserItem = function($li)
@@ -283,6 +265,7 @@ $(function()
                 $si.remove();
                 return;
             }
+            else { $si.removeClass('hide'); }
             $si.find('.userList .userItem').each(function()
             {
                 var $ui = $(this);
@@ -291,5 +274,6 @@ $(function()
                 else { $ui.removeClass('hide'); }
             });
         });
+        adjustStages();
     }); });
 });

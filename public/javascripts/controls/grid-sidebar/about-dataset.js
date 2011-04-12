@@ -39,6 +39,9 @@
                                     ($this.hasClass('expanded'));
                         });
 
+                        $sect.find('.routingApproval .rejectionReason').each(function()
+                        { blist.datasetControls.raRejection($(this)); });
+
                         blist.datasetControls.datasetContact($sect);
                     }
                 }

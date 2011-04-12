@@ -145,6 +145,7 @@ javascripts:
     - public/javascripts/controls/expander.js
     - public/javascripts/plugins/jquery.awesomecomplete.js
     - public/javascripts/controls/user-picker.js
+    - public/javascripts/controls/dataset-controls.js
     - public/javascripts/screens/admin-routing-approval.js
   admin-sdp-templates:
     - public/javascripts/controls/modal-dialogs.js

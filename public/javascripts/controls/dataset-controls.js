@@ -454,3 +454,45 @@ blist.datasetControls.columnTip = function(col, $col, tipsRef, initialShow)
     $col.socrataTip({content: tooltipContent, trigger: 'none', parent: 'body'});
     if (initialShow) { showTip(); }
 };
+
+blist.datasetControls.raRejection = function($rejectionBox)
+{
+    var $i = $rejectionBox.siblings('input');
+    var $t = $rejectionBox.children('textarea');
+    $rejectionBox.addClass('hide jsEnabled');
+    $rejectionBox.append($.tag([{tagName: 'input', type: 'submit',
+            'class': ['button', 'reject'], value: 'Reject'},
+        {tagName: 'a', href: '#Close', 'class': 'remove',
+            contents: {tagName: 'span', 'class': 'icon'}}]));
+
+    var closeForm = function()
+    {
+        $rejectionBox.addClass('hide');
+        // IE7 is dumb
+        $rejectionBox.closest('form').css('z-index', '');
+        $t.blur();
+    };
+
+    $t.keydown(function(e)
+    {
+        if (e.which == 27) // ESC
+        { closeForm(); }
+    });
+    $rejectionBox.find('.remove').click(function(e)
+    {
+        e.preventDefault();
+        closeForm();
+    });
+
+    $i.click(function(e)
+    {
+        if ($rejectionBox.hasClass('hide'))
+        {
+            e.preventDefault();
+            $rejectionBox.removeClass('hide');
+            // IE7 is dumb
+            $rejectionBox.closest('form').css('z-index', 10);
+            $t.focus();
+        }
+    });
+};

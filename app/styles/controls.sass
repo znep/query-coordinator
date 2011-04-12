@@ -576,3 +576,26 @@ form.search
       padding: 0 1.6em
 
 //*** END: popup-select.js ***//
+
+//*** Routing & Approval ***//
+.rejectionReason
+  textarea
+    font-size: 1em
+  &.jsEnabled
+    background-color: #ffffff
+    border: 1px solid $color_chrome_box_border
+    padding: 0.5em
+    position: absolute
+    right: 0
+    top: 1.8em
+    z-index: 1
+    textarea
+      height: 4em
+      width: 12em
+    input
+      margin-top: 0.5em
+    .remove
+      @include sprite-menu-icons
+      position: absolute
+      right: 2px
+      top: 2px

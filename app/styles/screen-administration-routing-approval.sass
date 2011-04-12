@@ -137,28 +137,16 @@
             .ie7 &
               width: 20em
             form
+              display: inline-block
               position: relative
+              .ie7 &
+                display: inline
             .button
               @include approval-button-icons
               font-size: 1em
               font-weight: normal
               padding: 0.2em 0.5em
                 left: 1.75em
-            textarea
-              font-size: 1em
-            .jsEnabled
-              background-color: #ffffff
-              border: 1px solid $color_chrome_box_border
-              padding: 0.5em
-              position: absolute
-              right: 0
-              top: 1.8em
-              z-index: 1
-              textarea
-                height: 4em
-                width: 12em
-              input
-                margin-top: 0.5em
 
 #routingApprovalDashboard
   .banner
@@ -282,8 +270,9 @@
         left: 0.2em
         position: absolute
         top: 1.2em
-      &.newStage > .remove
-        display: none
+      &.newStage, &.onlyStage
+        > .remove
+          display: none
 
       .line
         margin-left: 2em

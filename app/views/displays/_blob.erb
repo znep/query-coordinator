@@ -51,6 +51,6 @@
 
 <%- else -%>
 <div id="aboutSection">
-  <%= render :partial => 'datasets/about_dataset' %>
+  <%= render :partial => 'datasets/about_dataset', :locals => {:full_page => true} %>
 </div>
 <%- end -%>

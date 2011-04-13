@@ -40,9 +40,9 @@
                 <p><%= @view.description %></p>
 
                 <%- if @view.can_read? -%>
-                  <% cache ['widget-bare-html', @view.id], :expires_in => 1.hour do %>
-                    <%= raw @view.html.dup %>
-                  <% end %>
+                  <%# cache ['widget-bare-html', @view.id], :expires_in => 1.hour do %>
+                    <%#= raw @view.html.dup %>
+                  <%# end %>
                 <%- end -%>
               </noscript>
             <%- end -%>

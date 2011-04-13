@@ -135,6 +135,11 @@ this.Dataset = ServerModel.extend({
         return _.include(this.rights, right);
     },
 
+    canUpdate: function()
+    {
+        return (this.isUnpublished() || !this.isDefault()) && this.hasRight('update_view');
+    },
+
     isGrid: function()
     {
         return _.include(['blist', 'filter', 'grouped'], this.type);
@@ -167,6 +172,16 @@ this.Dataset = ServerModel.extend({
         return false;
     },
 
+    isPublished: function()
+    {
+        return this.publicationStage == 'published';
+    },
+
+    isUnpublished: function()
+    {
+        return this.publicationStage == 'unpublished';
+    },
+
     renderWithArcGISServer: function()
     {
         // Render everything using ArcGIS Server since we can't preemptively tell
@@ -179,7 +194,7 @@ this.Dataset = ServerModel.extend({
         return this.message || 'Columns required for this view are missing';
     },
 
-    save: function(successCallback, errorCallback)
+    save: function(successCallback, errorCallback, allowedKeys)
     {
         var ds = this;
         if (!ds.hasRight('update_view')) { return false; }
@@ -197,7 +212,7 @@ this.Dataset = ServerModel.extend({
         };
 
         this.makeRequest({url: '/views/' + this.id + '.json',
-            type: 'PUT', data: JSON.stringify(cleanViewForSave(this)),
+            type: 'PUT', data: JSON.stringify(cleanViewForSave(this, allowedKeys)),
             error: errorCallback,
             success: dsSaved
         });
@@ -241,6 +256,13 @@ this.Dataset = ServerModel.extend({
 
     update: function(newDS, fullUpdate, minorUpdate)
     {
+        var ds = this;
+        // If any updated key exists but is set to invalid, then we can't save
+        // it on this dataset; so make minorUpdate false
+        _.each(newDS, function(v, k)
+        {
+            if (ds._unsaveableKeys[k]) { minorUpdate = false; }
+        });
         this._markTemporary(minorUpdate);
         this._update(newDS, fullUpdate, fullUpdate);
     },
@@ -1145,6 +1167,20 @@ this.Dataset = ServerModel.extend({
         this._updateSnapshot('cropExisting', name, callback);
     },
 
+    // Publishing
+    makeUnpublishedCopy: function(successCallback)
+    {
+        var ds = this;
+        ds.makeRequest({url: '/api/views/' + ds.id + '/publication.json',
+            params: {method: 'copy'}, type: 'POST',
+            success: function(r)
+            {
+                var uc = new Dataset(r);
+                if (_.isFunction(successCallback))
+                { successCallback(uc); }
+            }});
+    },
+
     cleanFilters: function(excludeTemporary)
     {
         var ds = this;
@@ -1179,9 +1215,9 @@ this.Dataset = ServerModel.extend({
         return filters;
     },
 
-    cleanCopy: function()
+    cleanCopy: function(allowedKeys)
     {
-        var dsCopy = this._super();
+        var dsCopy = this._super(allowedKeys);
         if (!$.isBlank(dsCopy.query))
         {
             dsCopy.query.filterCondition = this.cleanFilters();
@@ -1298,6 +1334,10 @@ this.Dataset = ServerModel.extend({
         ds.shortUrl = ds._generateShortUrl(true);
         ds.apiUrl = ds._generateApiUrl();
         ds.domainUrl = ds._generateBaseUrl(ds.domainCName);
+
+        // Can't save name, columns, or queries on published datasets
+        ds._unsaveableKeys.columns = ds._unsaveableKeys.query = ds._unsaveableKeys.name =
+            ds.isPublished() && ds.isDefault();
     },
 
     _update: function(newDS, forceFull, updateColOrder, masterUpdate)
@@ -2346,6 +2386,9 @@ this.Dataset = ServerModel.extend({
         searchString: true,
         tags: true,
         termsAndConditions: true
+    },
+
+    _unsaveableKeys: {
     }
 
 });
@@ -2506,9 +2549,11 @@ function getDisplayName(ds)
     return retType;
 };
 
-function cleanViewForSave(ds)
+function cleanViewForSave(ds, allowedKeys)
 {
-    var dsCopy = ds.cleanCopy();
+    var ak = allowedKeys || ds._validKeys;
+    _.each(ds._unsaveableKeys, function(v, k) { if (v) { delete ak[k]; } });
+    var dsCopy = ds.cleanCopy(ak);
 
     if (!$.isBlank(dsCopy.query))
     { dsCopy.query.filterCondition = ds.cleanFilters(true); }

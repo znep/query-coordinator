@@ -110,7 +110,16 @@
   <%- sidebar_position = (!sidebar_config.nil? ?
     sidebar_config.properties.position : nil) || 'right' -%>
   <div id="actionBar" class="clearfix position-<%= sidebar_position %>">
-    <%- if @view.can_edit? -%>
+    <%- if @view.is_blist? && @view.is_published? && @view.can_edit_published? -%>
+    <div id="publishBar" class="clearfix">
+      <a href="<%= @view.unpublished_dataset.nil? ? '#Copy_Published' :
+        @view.unpublished_dataset.href %>" class="button editPublished <%= @view.unpublished_dataset.nil? ?
+        'unavailable' : '' %>"
+        title="<%= "This dataset is published and cannot be edited directly.
+          A staged version is available that allows you to make all your desired changes
+          before making them publicly available." %>">Edit Dataset</a>
+    </div>
+    <%- elsif @view.can_modify_data? -%>
     <div id="editBar" class="clearfix">
       <ul id="editOptions">
         <li><a href="#Undo" class="button undo" title="Undo">
@@ -551,16 +560,18 @@
 
     <%# Edit pane %>
     blist.sidebarHidden.edit = blist.sidebarHidden.edit || {};
-    blist.sidebarHidden.edit.append = <%= !@view.is_blist? ||
+    blist.sidebarHidden.edit.append = <%= !@view.is_unpublished? || !@view.is_blist? ||
       !@view.has_rights?('add') ||
       !CurrentDomain.module_available?(:dataset_append) %>;
-    blist.sidebarHidden.edit.replace = <%= !(@view.is_blist? || @view.is_blobby?) ||
+    blist.sidebarHidden.edit.replace = <%= !@view.is_unpublished? ||
+      !(@view.is_blist? || @view.is_blobby?) ||
       !@view.has_rights?('add') ||
       !@view.has_rights?('delete') ||
       !CurrentDomain.module_available?(:dataset_refresh) %>;
-    blist.sidebarHidden.edit.addColumn = <%= !@view.is_blist? ||
+    blist.sidebarHidden.edit.addColumn = <%= !@view.is_unpublished? || !@view.is_blist? ||
       !@view.has_rights?('add_column') %>;
-    blist.sidebarHidden.edit.updateColumn = <%= !@view.has_rights?('update_column') %>;
+    blist.sidebarHidden.edit.updateColumn = <%= @view.is_blist? && !@view.is_unpublished? ||
+      !@view.has_rights?('update_column') %>;
 
     <%# Columm properties %>
     blist.sidebarHidden.columnProperties = <%= !@view.is_tabular? %>;

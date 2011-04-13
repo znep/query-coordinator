@@ -21,7 +21,6 @@
 
 <%- is_owner = current_user && @view.owner.id == current_user.id -%>
 <%- is_blist = @view.is_blist? %>
-<%- can_edit = current_user && @view.can_edit? -%>
 <%- is_tabular = @view.is_tabular? -%>
 
 <div class="contentBox">

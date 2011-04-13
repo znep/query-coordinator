@@ -273,4 +273,16 @@
         trigger: 'now'
     };
 
+    $.fn.socrataTitleTip = function()
+    {
+        return this.each(function()
+        {
+            var $this = $(this);
+            // This is returning with &nbsp;, so replace them all with
+            // normal spaces
+            $this.socrataTip({ message: $this.attr('title').clean(),
+                shrinkToFit: false, killTitle: true });
+        });
+    };
+
 })(jQuery);

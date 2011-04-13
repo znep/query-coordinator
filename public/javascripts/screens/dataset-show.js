@@ -117,7 +117,7 @@ $(function()
     datasetPageNS.rtManager = blist.$container.renderTypeManager({
         view: blist.dataset,
         defaultType: defRen,
-        editEnabled: true,
+        editEnabled: blist.dataset.isUnpublished(),
         common: {
             editColumnCallback: function(col)
             {
@@ -371,6 +371,18 @@ $(function()
         e.preventDefault();
         blist.dataset.reload();
     });
+
+    // Publishing
+    $('#publishBar .button').socrataTitleTip();
+    $('#publishBar .editPublished.unavailable').click(function(e)
+    {
+        e.preventDefault();
+        blist.dataset.makeUnpublishedCopy(function(copyView)
+        {
+            copyView.redirectTo();
+        });
+    });
+
 
     // Invalid views
 

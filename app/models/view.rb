@@ -676,7 +676,8 @@ class View < Model
     # The user can modify the data if:
     # - This is a blist
     # - They can edit it
-    return (self.can_edit? && self.is_blist?)
+    # - It is unpublished
+    return (self.can_edit? && self.is_blist? && self.is_unpublished?)
   end
 
   def columns_for_datatypes(datatypes, include_hidden = false)
@@ -858,6 +859,30 @@ class View < Model
           {:approvalStageId => next_stage['id'],
             :approvalTypeName => approved ? 'A' : 'R',
             :comment => comment}.to_json)
+  end
+
+  # Publishing
+
+  def is_published?
+    publicationStage == 'published'
+  end
+
+  def is_unpublished?
+    publicationStage == 'unpublished'
+  end
+
+  def can_edit_published?
+    has_rights?('update_view') || can_edit?
+  end
+
+  def unpublished_dataset
+    if @got_unpublished.nil?
+      path = "/#{self.class.name.pluralize.downcase}/#{id}.json?method=getPublicationGroup"
+      @unpublished = self.class.parse(CoreServer::Base.connection.get_request(path)).detect {|v|
+        v.is_blist? && v.is_unpublished?}
+      @got_unpublished = true
+    end
+    @unpublished
   end
 
   @@default_categories = {

@@ -78,6 +78,11 @@ this.Column = ServerModel.extend({
         delete this._summary;
     },
 
+    canUpdate: function()
+    {
+        return this.view.isUnpublished() && this.view.hasRight('update_column');
+    },
+
     save: function(successCallback, errorCallback)
     {
         var col = this;
@@ -91,7 +96,7 @@ this.Column = ServerModel.extend({
             if (_.isFunction(successCallback)) { successCallback(col); }
         };
 
-        if (col.view.hasRight('update_column'))
+        if (col.canUpdate())
         {
             this.makeRequest({url: '/views/' + this.view.id +
                     '/columns/' + this.id + '.json', type: 'PUT',
@@ -140,7 +145,7 @@ this.Column = ServerModel.extend({
             else { col.view.updateColumns(); }
         }
 
-        if (col.view.hasRight('update_column'))
+        if (col.canUpdate())
         {
             this.makeRequest({url: '/views/' + this.view.id + '/columns/' +
                 this.id + '.json', type: 'PUT',

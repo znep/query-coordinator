@@ -24,7 +24,7 @@
   </div>
 
   <%- approval = Approval.find()[0] -%>
-  <%- if !approval.nil? && !current_user.nil? &&
+  <%- if module_available?(:routing_approval) && !approval.nil? && !current_user.nil? &&
     (current_user.can_approve? || current_user.id == @view.owner.id) -%>
   <%- next_stage = @view.next_approval_stage(approval) -%>
   <%- @users = {}
@@ -51,7 +51,7 @@
       <%- last_app_rej = @view.last_approval(true) -%>
       <dt>Stage</dt>
       <dd class="stage">
-        <%= render :partial => 'stage_icon', :locals => {:view => @view, :approval => approval} %>
+        <%= render :partial => 'datasets/stage_icon', :locals => {:view => @view, :approval => approval} %>
         <span class="name"><%= approval.stage((last_app || {})['approvalStageId'])['name'] %></span>
       </dd>
       <%- if !next_stage.nil? -%>

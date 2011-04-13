@@ -1757,6 +1757,9 @@ this.Dataset = Model.extend({
         //   }
         // ]
 
+        // First clear color & icon, as they will be set properly later
+        row.color = row.icon = null;
+
         var ds = this;
         var cf = ds.metadata.conditionalFormatting;
         if (!_.isArray(cf)) { return null; }

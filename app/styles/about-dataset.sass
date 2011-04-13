@@ -72,9 +72,20 @@
         float: right
 
       &.actions
+        overflow: visible
+        padding-left: 6em
         form
-          display: inline
+          display: inline-block
           margin-right: 0.5em
+          position: relative
+          .ie7 &
+            display: inline
+          .rejectionReason
+            label
+              padding-left: 0
+              text-align: left
+            input
+              display: block
         .button
           @include approval-button-icons
           font-size: 1em
@@ -101,20 +112,6 @@
     label.error
       font-size: 0.9em
       line-height: 1em
-
-  .routingApproval
-    .ie7 & .actions
-      padding-left: 6em
-    .actions
-      overflow: visible
-      form
-        position: relative
-        .rejectionReason
-          label
-            padding-left: 0
-            text-align: left
-          input
-            display: block
 
   .approvalHistory
     .stage

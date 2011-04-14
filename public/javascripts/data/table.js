@@ -2089,7 +2089,7 @@
         // The scrolling container
         var $scrolls = $outside
             .find('.blist-table-scrolls')
-            .scroll(function () {onScroll(); renderRows();})
+            .scroll(_.throttle(function() { onScroll(); renderRows(); }, 200))
             .bind('touchstart', onTouchStart)
             .bind('touchmove', onTouchMove);
 

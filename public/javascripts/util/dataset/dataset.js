@@ -1828,6 +1828,8 @@ this.Dataset = Model.extend({
                 rowVal = mungeLoc(rowVal);
             }
 
+            if (_.isNumber(condVal)) { rowVal = parseFloat(rowVal); }
+
             var getResult = function(v, cv)
             {
                 if (_.isString(v)) { v = v.toLowerCase(); }

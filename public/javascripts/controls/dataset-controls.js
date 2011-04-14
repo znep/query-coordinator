@@ -465,6 +465,11 @@ blist.datasetControls.raRejection = function($rejectionBox)
         {tagName: 'a', href: '#Close', 'class': 'remove',
             contents: {tagName: 'span', 'class': 'icon'}}]));
 
+    // We don't really care about validation; but when we're in the About
+    // sidebar, there is a higher-level form that has validation hooked up;
+    // and if we don't hook up validation here, errors are thrown.
+    $rejectionBox.closest('form').validate();
+
     var closeForm = function()
     {
         $rejectionBox.addClass('hide');

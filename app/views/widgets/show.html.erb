@@ -33,19 +33,13 @@
       <div id="renderTypeContainer" class="gridContainer">
           <%- if @view.is_tabular? -%>
           <div id="gridRenderType" class="fullHeight renderTypeNode">
-            <%- if @view.display.data_valid? -%>
-              <noscript>
-                <h3><a href="<%= @view.href %>"><%= @view.name %></a></h3>
+            <noscript>
+              <h3><a href="<%= @view.href %>"><%= @view.name %></a></h3>
 
-                <p><%= @view.description %></p>
+              <p><%= @view.description %></p>
 
-                <%- if @view.can_read? -%>
-                  <%# cache ['widget-bare-html', @view.id], :expires_in => 1.hour do %>
-                    <%#= raw @view.html.dup %>
-                  <%# end %>
-                <%- end -%>
-              </noscript>
-            <%- end -%>
+              <a href="<%= @view.href %>">Visit the full page to view this data.</a>
+            </noscript>
           </div>
           <%- end -%>
 

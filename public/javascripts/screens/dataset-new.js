@@ -1,6 +1,8 @@
 $(function()
 {
 
+var submitError = null;
+
 // DATA OPS
 var formToViewMetadata = function(metadataForm)
 {
@@ -267,9 +269,9 @@ $wizard.wizard({
                 }
 
                 // render an error message if we have one
-                if (!_.isUndefined(state.error))
+                if (!$.isBlank(submitError))
                 {
-                    $pane.find('.flash').text(state.error)
+                    $pane.find('.flash').text(submitError)
                                         .removeClass('warning notice')
                                         .addClass('error');
                 }
@@ -280,7 +282,7 @@ $wizard.wizard({
             },
             onNext: function($pane, state)
             {
-                delete state.error; // presumably errors have been resolved
+                submitError = null; // presumably errors have been resolved
                 state.metadataForm = $('.newDatasetForm').serializeObject();
                 return 'working';
             },
@@ -295,7 +297,7 @@ $wizard.wizard({
 
 
         'working': {
-            disabledButtons: [ 'cancel', 'prev', 'next' ],
+            disableButtons: [ 'cancel', 'prev', 'next' ],
             onActivate: function($pane, config, state, command)
             {
                 // fire things off
@@ -315,9 +317,9 @@ $wizard.wizard({
                     // it's a bit bewildering if it happens too fast.
                     setTimeout(function()
                     {
-                        state.error = (request.status == 500) ?
-                                        'An unknown error has occurred. Please try again in a bit.' :
-                                        JSON.parse(request.responseText).message;
+                        submitError = (request.status == 500) ?
+                                       'An unknown error has occurred. Please try again in a bit.' :
+                                       JSON.parse(request.responseText).message;
                         command.prev();
                     }, 2000);
                 };

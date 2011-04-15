@@ -37,12 +37,18 @@ html, body
         position: absolute
         top: 0
 
-    #datasetName, .unsavedLine, #description, .basedOnTemp, .basedOnParent
+    #datasetName, .unsavedLine, #description, .basedOnTemp, .basedOnParent, .unpublished, #publishedLink
       margin: 0
         left: 40px
         right: 1em
 
+    .unpublished
+      display: inline
+      margin-right: -35px
+      vertical-align: top
+
     #datasetName, .unsavedLine h2
+      display: inline
       font-size: 1.6em
       font-weight: normal
       padding: 0
@@ -75,6 +81,9 @@ html, body
         @include button
         font-size: 1.2em
         margin-right: 0.5em
+      .unpublishedRevert
+        color: #999999
+        font-size: 1.1em
 
     .basedOnParent, .basedOnTemp
       color: #999999
@@ -85,6 +94,12 @@ html, body
     .basedOnParent.hasParent
       display: block
 
+    #publishedLink
+      display: block
+      font-size: 1.2em
+      line-height: 1.1em
+      margin-bottom: 0.2em
+
   &.unsavedView
     background: #fff url(/stylesheets/images/interface/dataset_unsaved_fade.png) repeat-y
 
@@ -93,13 +108,17 @@ html, body
         display: block
       #datasetIcon .alertIcon
         display: block
-      #datasetName, #description.collapsed, .basedOnParent
+      #datasetName, .unpublished, .publish, #description.collapsed, .basedOnParent, #publishedLink
         display: none
 
     &.dataset .save
       display: none
     &.dataset.minorChange .save
       display: inline
+    &.dataset .unpublishedRevert
+      display: inline
+    &.dataset.minorChange .unpublishedRevert
+      display: none
 
   #actionBox
     height: 100%

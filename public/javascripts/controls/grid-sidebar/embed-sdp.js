@@ -1,5 +1,8 @@
 (function($)
 {
+    if (blist.sidebarHidden.embed &&
+        blist.sidebarHidden.embed.sdp) { return; }
+
     var $embedForm;
 
     var config =

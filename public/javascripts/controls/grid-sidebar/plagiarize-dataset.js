@@ -1,7 +1,7 @@
 (function($)
  {
-    if (blist.sidebarHidden.plagiarize)
-    { return; }
+    if (blist.sidebarHidden.edit &&
+        blist.sidebarHidden.edit.plagiarize) { return; }
 
     var userInput = {name: 'user', type: 'text', extraClass: 'friendSelect'};
     var fieldConfig = {};

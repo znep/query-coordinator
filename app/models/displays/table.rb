@@ -14,7 +14,9 @@ class Displays::Table < Displays::Base
   end
 
   def type
-    if @view.is_blist?
+    if @view.is_unpublished?
+      'unpublished'
+    elsif @view.is_blist?
       'blist'
     elsif @view.is_grouped?
       'grouped'

@@ -1,5 +1,7 @@
 (function($)
 {
+    if (blist.sidebarHidden.feed) { return; }
+
     var $feed, feedData, comments, views = [];
 
     var renderFeed = function(sidebarObj)

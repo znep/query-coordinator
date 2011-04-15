@@ -121,6 +121,8 @@ this.Dataset = ServerModel.extend({
         return _.detect(cell || {}, function(sr) { return sr.id == id; });
     },
 
+    isDefault: function() { return _.include(this.flags || [], 'default'); },
+
     isPublic: function()
     {
         var ds = this;
@@ -180,6 +182,11 @@ this.Dataset = ServerModel.extend({
     isUnpublished: function()
     {
         return this.publicationStage == 'unpublished';
+    },
+
+    isSnapshot: function()
+    {
+        return this.publicationStage == 'snapshotted';
     },
 
     renderWithArcGISServer: function()
@@ -1179,6 +1186,48 @@ this.Dataset = ServerModel.extend({
                 if (_.isFunction(successCallback))
                 { successCallback(uc); }
             }});
+    },
+
+    publish: function(successCallback)
+    {
+        var ds = this;
+        ds.makeRequest({url: '/api/views/' + ds.id + '/publication.json', type: 'POST',
+            success: function(r)
+            {
+                var pubDS = new Dataset(r);
+                if (_.isFunction(successCallback))
+                { successCallback(pubDS); }
+            }});
+    },
+
+    getPublishedDataset: function(callback)
+    {
+        var ds = this;
+        if ($.isBlank(ds._publishedViews))
+        {
+            ds._loadPublicationViews(function()
+            {
+                callback(_.detect(ds._publishedViews, function(v) { return v.isDefault(); }));
+            });
+        }
+        else
+        {
+            callback(_.detect(ds._publishedViews, function(v) { return v.isDefault(); }));
+        }
+    },
+
+    getUnpublishedDataset: function(callback)
+    {
+        var ds = this;
+        if ($.isBlank(ds._publishedViews))
+        {
+            ds._loadPublicationViews(function()
+            { callback(ds._unpublishedView); });
+        }
+        else
+        {
+            callback(ds._unpublishedView);
+        }
     },
 
     cleanFilters: function(excludeTemporary)
@@ -2312,6 +2361,32 @@ this.Dataset = ServerModel.extend({
                 data: { method: justCount ? 'getCountForTableId' : 'getByTableId',
                 tableId: this.tableId },
                 success: justCount ? processCount : processDS});
+    },
+
+    _loadPublicationViews: function(callback)
+    {
+        var ds = this;
+        var processDS = function(views)
+        {
+            views = _.map(views, function(v)
+            {
+                if (v instanceof Dataset) { return v; }
+
+                var nv = new Dataset(v);
+                if (!$.isBlank(ds.accessType)) { nv.setAccessType(ds.accessType); }
+                return nv;
+            });
+
+            ds._publishedViews = _.select(views, function(v) { return v.isPublished(); });
+            ds._snapshotViews = _.select(views, function(v) { return v.isSnapshot(); });
+            // There should be only one
+            ds._unpublishedView = _.detect(views, function(v) { return v.isUnpublished(); });
+
+            if (_.isFunction(callback)) { callback(); }
+        };
+
+        ds.makeRequest({url: '/api/views/' + ds.id + '.json', pageCache: true, type: 'GET',
+                params: { method: 'getPublicationGroup' }, success: processDS});
     },
 
     _setupDefaultSnapshotting: function(delay)

@@ -373,14 +373,26 @@ $(function()
     });
 
     // Publishing
+    $('#infoBox .unpublished').socrataTitleTip();
+    $('#infoBox .publish').socrataTitleTip();
     $('#publishBar .button').socrataTitleTip();
-    $('#publishBar .editPublished.unavailable').click(function(e)
+    $('#publishBar .editPublished').click(function(e)
     {
         e.preventDefault();
-        blist.dataset.makeUnpublishedCopy(function(copyView)
+        blist.dataset.getUnpublishedDataset(function(unpub)
         {
-            copyView.redirectTo();
+            if (!$.isBlank(unpub)) { unpub.redirectTo(); }
+            else
+            {
+                blist.dataset.makeUnpublishedCopy(function(copyView)
+                { copyView.redirectTo(); });
+            }
         });
+    });
+    $('#infoBox .publish').click(function(e)
+    {
+        e.preventDefault();
+        blist.dataset.publish(function(pubDS) { pubDS.redirectTo(); });
     });
 
 
@@ -483,5 +495,14 @@ $(function()
         // report to events analytics for easier aggregation
         $.analytics.trackEvent('dataset page (v4-chrome)',
             'page loaded', blist.dataset.id);
+
+        // Set up publishing
+        if (blist.dataset.isUnpublished())
+        {
+            blist.dataset.getPublishedDataset(function(pub)
+            {
+                $('#publishedLink').attr('href', pub.url).find('.publishedName').text(pub.name);
+            });
+        }
     });
 });

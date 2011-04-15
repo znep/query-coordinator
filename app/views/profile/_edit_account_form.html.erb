@@ -78,6 +78,17 @@
                 add_rpx_token_url(:section => 'openid'), :class => 'rpxnow button add addOpenIdButton' %>
         </div>
       </div>
+
+      <div class="editSection clearfix">
+        <div class="line clearfix">
+          <label>Email Notifications</label>
+          <%= check_box_tag('user[email_subscribe]', true, !current_user.emailUnsubscribed) %>
+          <p><%= CurrentDomain.strings.company %> respects your privacy, and will never send you
+             marketing emails through this list, or give your email to a third party. The emails
+             sent from this site include account notifications and updates to datasets that you
+             have created or subscribed to.</p>
+        </div>
+      </div>
     </div>
 
     <div class="submitLine">

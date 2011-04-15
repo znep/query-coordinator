@@ -214,7 +214,7 @@ class ProfileController < ApplicationController
         if params[:openid_delete].present?
           if current_user.flag?('nopassword') &&
             params[:openid_delete].size >= current_user.openid_identifiers.size
-            error_msg = "You cannot remove all your OperID identifiers before you set a password"
+            error_msg = "You cannot remove all your OpenID identifiers before you set a password"
           else
             CoreServer::Base.connection.batch_request do
               params[:openid_delete].each do |k, v|
@@ -228,15 +228,24 @@ class ProfileController < ApplicationController
             end
           end
         end
+
+        # update other attributes
+        updated_attributes = {}
         if params[:user][:email].present?
           if params[:user][:email] != params[:user][:email_confirm]
             error_msg = "New emails do not match"
           else
-            current_user.update_attributes!(
+            updated_attributes.merge!(
                 {:email => params[:user][:email],
                   :password => params[:user][:email_password]})
           end
         end
+        if params[:user][:email_subscribe].present? && current_user.emailUnsubscribed
+          updated_attributes[:emailUnsubscribed] = false
+        elsif !params[:user][:email_subscribe].present? && !current_user.emailUnsubscribed
+          updated_attributes[:emailUnsubscribed] = true
+        end
+        current_user.update_attributes!(updated_attributes) unless updated_attributes.empty?
       rescue CoreServer::CoreServerError => e
         error_msg = e.error_message
       end

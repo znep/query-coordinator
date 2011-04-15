@@ -58,6 +58,11 @@
                             blist.renderTypes.blob.href +
                             '" type="application/pdf" ' +
                             'width="100%" height="99%"></embed>';
+                        // Overlays & embeds don't mix
+                        $(document).bind(blist.events.MODAL_SHOWN, function()
+                                { $domObj.find('embed').hide(); })
+                            .bind(blist.events.MODAL_HIDDEN, function()
+                                { $domObj.find('embed').show(); });
                     }
                     else
                     {

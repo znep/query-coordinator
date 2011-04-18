@@ -87,6 +87,7 @@
   &.editBasicInfo .editForm.editBasicInfoForm,
   &.editProfileImage .editForm.editProfileImageForm,
   &.editAccountInfo .editForm.editAccountInfoForm,
+  &.editAppToken .editForm.editAppTokenForm,
   &.editAppTokens .editForm.editAppTokensForm
     display: block
 
@@ -112,18 +113,37 @@
       .ie7 &
         width: 19em
 
+  .editAppTokenForm
+    .line
+      .uploadIndicator
+        @include throbber-icon
+        display: none
+        margin-left: 1em
+        position: relative
+        top: 1em
+      &.working .uploadIndicator
+        display: inline-block
+        @include ie7-inline-block
+      .thumbnailError
+        display: none
+      .uploadAppTokenImage
+        clear: left
+        margin:
+          left: 11.6em
+
+  .editAppTokensForm, .editAppTokenForm
+    .code
+      background-color: #f7f7f7
+      border: 1px solid #eee
+      @include border-radius(0.3em)
+      color: #555
+      font-family: monaco, "courier new", monospace
+      text-shadow: 1px 1px 0 #fff
+
   .editAppTokensForm
     .appTokenDisplay
       .appTokenLine
         padding: 0.5em 0
-      .uploadIndicator
-        @include throbber-icon
-        display: none
-        position: relative
-        top: 0.3em
-      &.working .uploadIndicator
-        display: inline-block
-        @include ie7-inline-block
 
     .existingTokens
       padding-top: 1em
@@ -133,13 +153,6 @@
         &:first-child
           border-top: 0
         padding-top: 1em
-
-        .actionsLine
-          .uploadAppTokenImage
-            text-align: center
-            width: 110px
-          .thumbnailError
-            display: none
 
     .showCreateTokenButton
     .createNewToken
@@ -154,10 +167,3 @@
         left: 13em
         top: 0.3em
 
-      .code
-        background-color: #f7f7f7
-        border: 1px solid #eee
-        @include border-radius(0.3em)
-        color: #555
-        font-family: monaco, "courier new", monospace
-        text-shadow: 1px 1px 0 #fff

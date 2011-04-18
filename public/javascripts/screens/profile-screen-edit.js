@@ -247,7 +247,7 @@
     $appTokenImages.each(function(index, element)
     {
         var $link      = $(element),
-            $line      = $link.closest('.appTokenDisplay'),
+            $line      = $link.closest('.line'),
             $indicator = $line.find('.uploadIndicator'),
             $thumbArea = $line.find('.thumbnailArea'),
             $error     = $line.find('.error'),

@@ -1,6 +1,6 @@
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'profile-edit' %>
-  <title>Edit Application Tokens | <%= CurrentDomain.strings.site_title %></title>
+  <title>Edit Application Token | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <% content_for :skip_links do %>
@@ -11,29 +11,19 @@
 
 <%= render :partial => 'edit_nav' %>
 
-<div class="contentBox withLeftNavigation editProfile editAppTokens">
-  <% link_to current_user.href, :class => 'button backButton leftArrowNoHover' do %>
+<div class="contentBox withLeftNavigation editProfile editAppToken">
+  <% link_to({:action => :edit_app_tokens}, :class => 'button backButton leftArrowNoHover') do %>
     <span class="icon"></span>
-    Back to My Profile
+    All Application Tokens
   <% end %>
   <div class="content">
-    <div class="editAppTokensForm editForm">
-      <h1>Your Applications</h1>
+    <div class="editAppTokenForm editForm">
+      <h1>Edit Application Token</h1>
       <%= display_standard_flashes %>
-      <div class="createNewToken editArea<%= ' hide' unless params[:no_js].present? %>">
+      <div class="editToken editArea">
         <%= render :partial => 'edit_app_tokens_form' %>
       </div>
-     <div class="existingTokens<%= ' noTokensYet' if @app_tokens.blank? %>">
-        <%- @app_tokens.each do |token| -%>
-          <div class="tokenFieldsDisplay">
-            <%= render :partial => 'app_token_display', :locals => {
-                :edit => true, :token => token
-                } %>
-          </div>
-        <%- end -%>
-      </div>
     </div>
-
     <%- unless params[:no_js].present? -%>
       <%= render :partial => 'edit_account_form' %>
       <% form_tag(current_user.href, :id => "editProfileForm", :class => 'commonForm', :method => :put) do %>

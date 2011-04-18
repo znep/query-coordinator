@@ -1,5 +1,5 @@
 class ProfileController < ApplicationController
-  ssl_required :update_account, :edit_app_tokens, :create_app_token, :delete_app_token
+  ssl_required :update_account, :edit_app_tokens, :edit_app_token, :delete_app_token
   include BrowseActions
   skip_before_filter :require_user, :only => [:show]
 
@@ -273,19 +273,38 @@ class ProfileController < ApplicationController
 
     @user_links = UserLink.find(current_user.id)
     @app_tokens = current_user.app_tokens
+    @token = AppToken.new
   end
 
-  def create_app_token
-    begin
-      new_token = params[:new_app_token]
-      new_token[:public] = true if new_token[:public] == 'on'
-      token = AppToken.create(params[:id], new_token)
-    rescue CoreServer::CoreServerError => e
-      flash[:error] = "An error occured creating your application: #{e.error_message}"
-      return(redirect_to(:action => :edit_app_tokens))
+  def edit_app_token
+    token_params = params[:app_token]
+    if token_params
+      token_params[:public] = (token_params[:public] == 'on')
     end
-    flash[:notice] = "Your application was successfully created"
-    redirect_to :action => :edit_app_tokens
+    if params[:token_id] == 'new'
+      begin
+        @token = AppToken.create(params[:id], token_params)
+        flash.now[:notice] = "Your application has been created"
+      rescue CoreServer::CoreServerError => e
+        flash.now[:error] = "An error occured creating your application token: #{e.error_message}"
+        if @token.nil?
+          @token = Hashie::Mash.new(token_params)
+        end
+      end
+    else
+      if token_params
+        begin
+          @token = AppToken.update(params[:id], params[:token_id], token_params)
+        rescue CoreServer::CoreServerError => e
+          flash.now[:error] = e.error_message
+          @token = AppToken.find_by_id(params[:id], params[:token_id])
+        end
+        flash.now[:notice] = "Your application was successfully saved"
+      else
+        @token = AppToken.find_by_id(params[:id], params[:token_id])
+      end
+    end
+    @user_links = UserLink.find(current_user.id)
   end
 
   def delete_app_token

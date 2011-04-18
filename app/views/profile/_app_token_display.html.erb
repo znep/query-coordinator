@@ -46,14 +46,9 @@
     <%- if edit -%>
       <%= form_tag({:action => :delete_app_token, :token_id => token.id}) %>
         <p class="actionsLine">
-          <%- unless params[:no_js].present? -%>
-            <%= link_to (token.thumbnail_url.present? ? 'Change' : 'Add') + ' Thumbnail',
-                token.set_thumbnail_url(current_user.id),
-                :class => 'button uploadAppTokenImage' %>
-          <%- end -%>
+          <%= link_to 'Edit', {:action => 'edit_app_token', :id => current_user.id,
+                               :token_id => token.id}, :class => 'button' %>
           <%= submit_tag 'Delete', :class => 'button deleteTokenButton' %>
-          <span class="uploadIndicator"></span>
-          <span class="flash error thumbnailError">Please choose an image file (jpg, gif, png or tiff)</span>
         </p>
       </form>
     <%- end -%>

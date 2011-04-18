@@ -18,7 +18,6 @@
   <% end %>
   <div class="content">
       <%= render :partial => 'edit_account_form' %>
-      <%= render :partial => 'edit_app_tokens_form' %>
       <%- unless params[:no_js].present? -%>
         <% form_tag(current_user.href, :id => "editProfileForm", :class => 'commonForm', :method => :put) do %>
         <%= render :partial => 'edit_form' %>

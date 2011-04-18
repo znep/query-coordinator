@@ -191,7 +191,8 @@ class AdministrationController < ApplicationController
     @suppress_dataset_creation = true
     @opts = {
       :datasetView => 'view',
-      :moderation => 'any'
+      :moderation => 'any',
+      :nofederate => 'true'
     }
     process_browse!
   end

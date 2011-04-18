@@ -1010,11 +1010,11 @@ private
         end
         redirect_to :action => redirect_action
       end
-      format.js do
+      format.any(:js, :json, :data) do
         if success
-          render :json => {:success => true, :message => success_message}
+          render :json => {:success => true, :message => success_message}.to_json
         else
-          render :json => {:error => true, :message => error_message}
+          render :json => {:error => true, :message => error_message}.to_json
         end
       end
     end

@@ -476,8 +476,8 @@ class AdministrationController < ApplicationController
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
 
     respond_to do |format|
-      format.data { render :json => {:success => true, :option => option, :value => field[option]} }
       format.html { redirect_to :action => 'metadata' }
+      format.data { render :json => {:success => true, :option => option, :value => field[option]} }
     end
   end
 
@@ -491,8 +491,8 @@ class AdministrationController < ApplicationController
     if field.nil?
       flash[:error] = "Cannot move field named '#{params[:field]}': not found"
       respond_to do |format|
-        format.data { return render :json => {:error => true, :error_message => flash[:error]} }
         format.html { return redirect_to :action => 'metadata' }
+        format.data { return render :json => {:error => true, :error_message => flash[:error]} }
       end
     end
 
@@ -506,8 +506,8 @@ class AdministrationController < ApplicationController
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
 
     respond_to do |format|
-      format.data { render :json => {:success => true, :direction => params[:direction]} }
       format.html { redirect_to :action => 'metadata' }
+      format.data { render :json => {:success => true, :direction => params[:direction]} }
     end
   end
 

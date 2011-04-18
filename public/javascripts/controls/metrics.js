@@ -280,9 +280,8 @@
     {
         var opts       = $.extend({}, $.fn.metricsTimeControl.defaults, options),
             today      = Date.parse('today'),
-            monthStart = today.clone().moveToFirstDayOfMonth()
-                              .toString(opts.parseDateFormat),
-            monthEnd   = today.toString(opts.parseDateFormat),
+            monthStart = today.clone().moveToFirstDayOfMonth(),
+            monthEnd   = today,
             $this      = $(this),
             $timeslice = $this.find('.currentTimeSlice'),
             $slicer    = $('.sliceDepth');
@@ -322,12 +321,27 @@
                 [startDate, endDate.addDays(1).addMilliseconds(-1),
                  sliceDepth.toUpperCase()]);
         };
+        var url = window.location.href;
+        var params = [{name:'start', def: monthStart},
+                      {name: 'end', def: monthEnd}];
+        var paramValues = {};
 
+        _.each(params, function(param) {
+            var fromUrl = $.urlParam(url, param.name);
+            if (fromUrl)
+            {
+                paramValues[param.name] = Date.parse(unescape(fromUrl)) || param.def;
+            }
+            else
+            {
+                paramValues[param.name] = param.def;
+            }
+        });
 
-        var initialSpan = monthStart;
-        if (monthStart != monthEnd)
+        var initialSpan = paramValues.start.toString(opts.parseDateFormat);
+        if (paramValues.start != paramValues.end)
         {
-            initialSpan += ' ' + opts.separator + ' ' + monthEnd;
+            initialSpan += ' ' + opts.separator + ' ' + paramValues.end.toString(opts.parseDateFormat);
         }
         $timeslice.val(initialSpan)
         .daterangepicker({
@@ -422,4 +436,3 @@
         }
     });
 })(jQuery);
-

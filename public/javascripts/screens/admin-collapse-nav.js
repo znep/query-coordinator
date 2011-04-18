@@ -10,9 +10,12 @@
     {
         event.preventDefault();
 
+        var numBoxes = $contentBox.length;
         var finished = function() {
+            if (--numBoxes > 0) { return false; }
             $hideNavLink.toggleClass('rightArrow close');
             $(window).trigger('resize');
+            return true;
         };
 
         if ($hideNavLink.hasClass('close'))
@@ -27,8 +30,10 @@
             $contentBox.animate({
                 'margin-left': navMargin
             }, 300, function() {
-                finished();
-                $navBox.toggleClass('collapsed');
+                if (finished())
+                {
+                    $navBox.toggleClass('collapsed');
+                }
             });
         }
     });

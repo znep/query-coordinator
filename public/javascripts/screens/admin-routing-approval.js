@@ -1,3 +1,149 @@
+/******* Approval dashboard section ******/
+$(function()
+{
+    var $dashboard = $('#routingApprovalDashboard');
+    if ($dashboard.length < 1) { return; }
+
+    var apprTmpl = blist.routingApproval.approvalTemplate;
+
+    var getStageIcon = function(stage)
+    {
+        var r = '';
+        var seenStage = false;
+        _.each(apprTmpl.stages, function(s)
+        {
+            if (s.visible) { return; }
+            seenStage = seenStage || s.id == stage.id;
+            r += $.tag({tagName: 'span', 'class': seenStage ? 'off' : 'on'}, true);
+        });
+        return r;
+    };
+
+    var ageInfo;
+    var allViewsCount;
+    var renderPipeline = _.after(2, function()
+    {
+        var $pipeline = $dashboard.find('.pipeline.report ul');
+        var totalCount = Math.max(1, _.reduce(ageInfo, function(memo, ai) { return memo + ai.count; }, 0));
+        _.each(apprTmpl.stages, function(s)
+        {
+            var ai = s.visible ? {count: allViewsCount} : _.detect(ageInfo, function(a)
+                { return a.approval_stage_id == s.id; }) || {count: 0};
+            $pipeline.append($.renderTemplate('pipelineItem', {ageInfo: ai, stage: s},
+                {
+                    '.label@title': 'stage.name!',
+                    '.label span': function(d)
+                    {
+                        var stage = d.context.stage;
+                        return $.htmlEscape(stage.visible ?
+                            'Publicly available (' + stage.name + ')' : stage.name);
+                    },
+                    '.barContainer .bar@style': function(d)
+                    {
+                        return 'width:' +
+                            Math.min(100, 99 * d.context.ageInfo.count / totalCount) +
+                            '%';
+                    },
+                    '.barContainer .count': function(d)
+                        { return $.commaify(d.context.ageInfo.count); },
+                    'li@class+': function(d)
+                        { return d.context.stage.visible ? 'finalStage' : ''; }
+                }));
+        });
+        $pipeline.closest('.report').removeClass('loading');
+    });
+
+    $.Tache.Get({url: '/api/search/views.json?limit=1&datasetView=dataset',
+        dataType: 'json', contentType: 'application/json',
+        success: function(results)
+        {
+            allViewsCount = results[0].count;
+            renderPipeline();
+        }});
+
+    var renderAgeByStage = function()
+    {
+        var $ageByStage = $dashboard.find('.ageReport.report table tbody');
+        _.each(apprTmpl.stages, function(s)
+        {
+            if (s.visible) { return; }
+
+            var ai = _.detect(ageInfo, function(a)
+                { return a.approval_stage_id == s.id; }) || {count: 0, average_age: 0};
+            ai.average_age = Math.round(ai.average_age);
+            $ageByStage.append($.renderTemplate('ageItem', {stage: s, ageInfo: ai},
+                {
+                    '.stage .icon': function(d)
+                        { return getStageIcon(d.context.stage); },
+                    '.stage .name': 'stage.name!',
+                    '.count': function(d)
+                        { return $.commaify(d.context.ageInfo.count); },
+                    '.average': function(d)
+                        {
+                            return d.context.ageInfo.count < 1 ? 'N/A' :
+                                $.commaify(d.context.ageInfo.average_age) +
+                                    ' day' + (d.context.ageInfo.average_age != 1 ? 's' : '');
+                        }
+                }).find('tr'));
+        });
+        $ageByStage.closest('.report').removeClass('loading');
+    };
+
+    apprTmpl.getAgeInfo(function(ai)
+    {
+        ageInfo = ai;
+        renderPipeline();
+        renderAgeByStage();
+    });
+
+    var numGroups = 5;
+    var agingInfo;
+    var renderStageBreakdown = function()
+    {
+        var $stageBreakdown = $dashboard.find('.agingReport.report table');
+        var cols = [];
+        _.times(numGroups, function() { cols.push({tagName: 'col', 'class': 'unitCount'}); });
+        $stageBreakdown.find('colgroup').append($.tag(cols));
+
+        var ths = [];
+        _.times(numGroups, function(i)
+        {
+            ths.push({tagName: 'th', 'class': 'unitCount',
+                contents: i == 0 ?
+                    'Today' : i == numGroups - 1 ?
+                        'Older' : i + ' day' + (i == 1 ? '' : 's') + ' old'});
+        });
+        $stageBreakdown.find('thead tr').append($.tag(ths));
+
+        var $stageBreakdownBody = $stageBreakdown.find('tbody');
+        _.each(apprTmpl.stages, function(s)
+        {
+            if (s.visible) { return; }
+
+            var ai = _.detect(agingInfo, function(a) { return a.approval_stage_id == s.id; });
+            var $tr = $.renderTemplate('agingItem', {stage: s, agingInfo: ai},
+                {
+                    '.stage .icon': function(d)
+                        { return getStageIcon(d.context.stage); },
+                    '.stage .name': 'stage.name!'
+                }).find('tr');
+            _.times(numGroups, function(i)
+            {
+                $tr.append($.tag({tagName: 'td', 'class': 'unitCount',
+                    contents: $.commaify(ai.counts[i] || 0)}));
+            });
+            $stageBreakdownBody.append($tr);
+        });
+        $stageBreakdown.closest('.report').removeClass('loading');
+    };
+
+    apprTmpl.getAgingInfo(function(ai)
+    {
+        agingInfo = ai;
+        renderStageBreakdown();
+    }, numGroups - 1);
+});
+
 /******* Approval queue section ******/
 $(function()
 {

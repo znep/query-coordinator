@@ -168,6 +168,14 @@
 
   .report
     margin-top: 2em
+    .spinner
+      display: none
+    &.loading
+      .spinner
+        @include branded-spinner
+        margin: 0 auto
+      .content
+        display: none
 
   .pipeline
     ul

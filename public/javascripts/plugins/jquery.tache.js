@@ -118,7 +118,14 @@
     // the data wasn't found; alter the callback to insert the soon-to-be requested data into the cache
     var oCallback = oAJAX.success;
     $.Tache.InProcessData.push({ sIdentifier: sIdentifier, dtAge: new Date(), oReqs: [oAJAX]});
-    oAJAX.success = function(oNewData) {
+    oAJAX.success = function(oNewData, ts, xhr) {
+      // Support retry responses from core server
+      if (xhr.status == 202)
+      {
+        setTimeout(function() { $.ajax(oAJAX); }, oAJAX.retryTime || 5000);
+        return;
+      }
+
       $.Tache.Data.push({ sIdentifier: sIdentifier, oData: oNewData, dtAge: new Date() });
       oAJAX.success = oCallback;
       for (var i = 0; i < $.Tache.InProcessData.length; i++)

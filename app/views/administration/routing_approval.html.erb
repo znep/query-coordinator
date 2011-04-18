@@ -26,34 +26,16 @@
     </div>
     <%- end -%>
 
-    <div class="pipeline report">
+    <div class="pipeline report loading">
       <h3>Pipeline Report</h3>
-      <ul>
-        <%- total_count = @approval_template.age_info.reduce(0) {|memo, ai| memo + ai['count']} -%>
-        <%- total_count = 1 if total_count < 1 -%>
-        <%- @approval_template.stages.clone.unshift({'id' => 0, 'name' => 'Not Ready Yet'}).
-              each do |stage| -%>
-        <%- if stage['visible'] -%>
-        <%- ai = {'count' => @all_count} -%>
-        <%- else -%>
-        <%- ai = @approval_template.age_info.detect {|a| a['approval_stage_id'] == stage['id']} ||
-              {'count' => 0} -%>
-        <%- end -%>
-        <li class="clearfix <%= stage['visible'] ? 'finalStage' : '' %>">
-        <div class="label" title="<%= stage['name'] %>"><span><%=
-            stage['visible'] ? 'Publicly available (' + stage['name'] + ')' : stage['name'] %></span></div>
-        <div class="barContainer">
-          <span class="bar" style="width:<%= [99.0 * ai['count'] / total_count, 100.0].min %>%"></span>
-          <span class="count"><%= number_with_delimiter(ai['count'], {:locale => :en}) %></span>
-        </div>
-        </li>
-        <%- end -%>
+      <ul class="content">
       </ul>
+      <span class="spinner"></span>
     </div>
 
-    <div class="ageReport report">
+    <div class="ageReport report loading">
       <h3>Age by Stage Report</h3>
-      <table class="gridList">
+      <table class="gridList content">
         <colgroup>
           <col class="stage" />
           <col class="count" />
@@ -67,68 +49,26 @@
           </tr>
         </thead>
         <tbody>
-          <%- @approval_template.stages.clone.unshift({'id' => 0, 'name' => 'Not Ready Yet'}).
-                each_with_index do |stage, i| -%>
-          <%- next if stage['visible'] -%>
-          <%- ai = @approval_template.age_info.detect {|a| a['approval_stage_id'] == stage['id']} ||
-                {'count' => 0, 'average_age' => 0} -%>
-          <tr>
-            <td class="stage">
-              <div class="icon">
-                <%- @approval_template.stages.length.times do |j| -%>
-                <span class="<%= j < i ? "on" : "off" %>"></span>
-                <%- end -%>
-              </div>
-              <span class="name"><%= stage['name'] %></span>
-            </td>
-            <td class="count"><%= number_with_delimiter(ai['count'],
-              {:locale => 'en'}) %></td>
-            <td class="average"><%= pluralize(number_with_delimiter(
-              ai['average_age'].round, {:locale => 'en'}), 'day') %></td>
-          </tr>
-          <%- end -%>
         </tbody>
       </table>
+      <span class="spinner"></span>
     </div>
 
-    <div class="agingReport report">
+    <div class="agingReport report loading">
       <h3>Stage Breakdown Report</h3>
-      <table class="gridList">
+      <table class="gridList content">
         <colgroup>
           <col class="stage" />
-          <%- @aging_groups.times do |i| -%>
-          <col class="unitCount" />
-          <%- end -%>
         </colgroup>
         <thead>
           <tr>
             <th class="stage">Stage</th>
-            <%- @aging_groups.times do |i| -%>
-            <th class="unitCount"><%= i == 0 ? 'Today' :
-              i == @aging_groups - 1 ? 'Older' : pluralize(i, 'day') + ' old' %></th>
-            <%- end -%>
           </tr>
         </thead>
         <tbody>
-          <%- @approval_template.aging_info(@aging_groups - 1).each_with_index do |ai, i| -%>
-          <%- stage = @approval_template.stage(ai['approval_stage_id']) -%>
-          <%- next if stage['visible'] -%>
-          <tr>
-            <td class="stage">
-              <div class="icon">
-                <%- @approval_template.stages.length.times do |j| -%>
-                <span class="<%= j < i ? "on" : "off" %>"></span>
-                <%- end -%>
-              </div>
-              <span class="name"><%= stage['name'] %></span>
-            </td>
-            <%- @aging_groups.times do |i| -%>
-            <td class="unitCount"><%= number_with_delimiter(ai['counts'][i] || 0, {:locale => 'en'}) %></td>
-            <%- end -%>
-          </tr>
-          <%- end -%>
         </tbody>
       </table>
+      <span class="spinner"></span>
     </div>
 
     <div class="stuckReport report">
@@ -175,8 +115,47 @@
   </div>
 </div>
 
+<% content_for :templates do %>
+<ul class="pipelineItem">
+  <li class="clearfix">
+  <div class="label"><span></span></div>
+  <div class="barContainer">
+    <span class="bar"></span>
+    <span class="count"></span>
+  </div>
+  </li>
+</ul>
+
+<table class="ageItem">
+  <tr>
+    <td class="stage">
+      <div class="icon"></div>
+      <span class="name"></span>
+    </td>
+    <td class="count"></td>
+    <td class="average"></td>
+  </tr>
+</table>
+
+<table class="agingItem">
+  <tr>
+    <td class="stage">
+      <div class="icon"></div>
+      <span class="name"></span>
+    </td>
+  </tr>
+</table>
+<% end %>
+
 <%- content_for :js_footer do -%>
   <%- unless params[:no_js] == 'true' -%>
+    <script type="text/javascript">
+      $(function()
+      {
+         var raNS = blist.namespace.fetch('blist.routingApproval');
+         raNS.approvalTemplate = new Approval(<%= safe_json(@approval_template) %>);
+      });
+    </script>
     <%= include_javascripts 'admin-routing-approval' %>
   <%- end -%>
 <%- end -%>

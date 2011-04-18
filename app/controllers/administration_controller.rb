@@ -700,11 +700,6 @@ class AdministrationController < ApplicationController
                                         :limit => 1})[0]
     @appr_count = @appr_results.count
 
-    @all_results = SearchResult.search('views', {:limit => 1, :datasetView => 'dataset'})[0]
-    @all_count = @all_results.count
-
-    @aging_groups = 5
-
     @stuck_results = SearchResult.search('views',
                                          {:limit => 5, :for_approver => true, :sortBy => 'approval'})[0]
     @stuck_count = @stuck_results.count

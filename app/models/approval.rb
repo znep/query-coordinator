@@ -5,34 +5,6 @@ class Approval < Model
     data['stages'] || []
   end
 
-  def age_info
-    if @age_info.nil?
-      path = "/#{self.class.service_name}.json?method=ageInfo"
-      @age_info = JSON.parse(CoreServer::Base.connection.get_request(path)).
-        reject {|ai| stage(ai['approval_stage_id'])['id'] != ai['approval_stage_id']}
-    end
-    @age_info
-  end
-
-  def aging_info(groups = 5)
-    @aging_info = {} if @aging_info.nil?
-    if @aging_info[groups].nil?
-      path = "/#{self.class.service_name}.json?method=aging&max_group=#{groups}&interval=86400"
-      result = JSON.parse(CoreServer::Base.connection.get_request(path))
-
-      as = {'approval_stage_id' => 0, 'counts' => []}
-      result.select {|r| r['approval_stage_id'] == 0}.each {|r| as['counts'][r['aging_unit']] = r['count']}
-      @aging_info[groups] = [as]
-      stages.each do |s|
-        as = {'approval_stage_id' => s['id'], 'counts' => []}
-        result.select {|r| r['approval_stage_id'] == s['id']}.
-          each {|r| as['counts'][r['aging_unit']] = r['count']}
-        @aging_info[groups] << as
-      end
-    end
-    @aging_info[groups]
-  end
-
   def grandfather
     CoreServer::Base.connection.create_request("/#{self.class.service_name}.json?method=grandFatherIn")
   end

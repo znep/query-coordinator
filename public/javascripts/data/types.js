@@ -1224,7 +1224,7 @@ blist.namespace.fetch('blist.data.types');
                 "HNL": "L",
                 "HRK": "kn",
                 "HUF": "Ft",
-                "IDR": "Rp",
+                "INR": "Rp",
                 "ILS": "₪",
                 "IMP": "£",
                 "IRR": "﷼",

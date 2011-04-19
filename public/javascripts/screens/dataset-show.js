@@ -381,6 +381,32 @@ $(function()
         blist.dataset.publish(function(pubDS) { pubDS.redirectTo(); });
     });
 
+    blist.$container.bind('attempted_edit', function(e)
+    {
+        if (!blist.dataset.isPublished() || !blist.dataset.hasRight('write')) { return; }
+
+        $(e.target).socrataAlert({message: $.tag({tagName: 'div', 'class': 'editAlert',
+            contents: [
+                {tagName: 'p', contents: 'This dataset is published and cannot be edited directly. ' +
+                'A working copy is available that allows you to make all your desired changes ' +
+                'before making them publicly available.'},
+                {tagName: 'a', 'class': ['button', 'editPublished'], href: '#Unpublished',
+                contents: 'Edit Dataset'}]}, true), showSpike: false, hideTime: null});
+    });
+
+    $.live('.button.editPublished', 'click', function(e)
+    {
+        e.preventDefault();
+        blist.dataset.getUnpublishedDataset(function(unpub)
+        {
+            if (!$.isBlank(unpub)) { unpub.redirectTo(); }
+            else
+            {
+                blist.dataset.makeUnpublishedCopy(function(copyView)
+                { copyView.redirectTo(); });
+            }
+        });
+    });
 
     // Invalid views
 

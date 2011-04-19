@@ -685,8 +685,14 @@
         var editCell = function(cell, mode, newValue)
         {
             if (!mode) { mode = DEFAULT_EDIT_MODE; }
-            // Don't start another edit yet; and make sure they can edit
-            if (isEdit[mode] || !canEdit()) { return false; }
+            // Don't start another edit yet
+            if (isEdit[mode]) { return false; }
+            // Make sure they can edit -- if not, trigger an event
+            if (!canEdit())
+            {
+                $(cell).trigger('attempted_edit');
+                return false;
+            }
 
             var row = getRow(cell);
             var col = getColumn(cell);

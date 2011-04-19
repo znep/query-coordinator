@@ -51,7 +51,7 @@
             </span>
           </div>
         <%- end -%>
-        <%= link_to (@token.has_thumbmnail? ? 'Add' : 'Change') + ' Thumbnail',
+        <%= link_to (@token.has_thumbnail? ? 'Change' : 'Add') + ' Thumbnail',
             @token.set_thumbnail_url(current_user.id),
             :class => 'button uploadAppTokenImage' %>
           <span class="uploadIndicator"></span>

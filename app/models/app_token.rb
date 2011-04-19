@@ -14,7 +14,7 @@ class AppToken < Model
     return parse(CoreServer::Base.connection.create_request(path, attributes.to_json))
   end
 
-  def self.delete(user_id, id)
+  def self.delete(user_id, token_id)
     path = get_path(user_id, token_id)
     return parse(CoreServer::Base.connection.delete_request(path))
   end

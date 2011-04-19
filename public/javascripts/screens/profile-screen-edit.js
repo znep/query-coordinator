@@ -192,7 +192,7 @@
     // App tokens
     var $newTokenArea = $('.createNewToken'),
         $newTokenForm = $('.createNewTokenForm'),
-        $cancelButton = $('.cancelButton');
+        $cancelButton = $('.editAppTokensForm .cancelButton');
 
     $newTokenForm
         .find('input:checkbox').uniform()

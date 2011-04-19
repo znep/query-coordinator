@@ -8,4 +8,8 @@ class Metadata < Model
       return data['custom_fields'].to_a.sort {|a, b| a[0] <=> b[0]}
     end
   end
+
+  def accessPoints
+    data['accessPoints']
+  end
 end

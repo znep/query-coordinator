@@ -37,6 +37,32 @@
       <div class="additionalHelp">Enter one or more keywords separated by commas</div>
     </div>
 
+    <%- if @view.is_href? -%>
+      <h2>External Datasets</h2>
+      <%- if @view.metadata && @view.metadata.accessPoints -%>
+        <%- @view.metadata.accessPoints.each do |key, value| -%>
+          <%- next if key.end_with?('Size') -%>
+          <div class="line clearfix existingExternalSource externalSource">
+            <label for="external_sources[][name]" class="required"><%= key.upcase %></label>
+            <input type="text" name="external_sources[][name]" value="<%= value %>" class="textPrompt url required"/>
+            <label for="external_sources[][name]" class="fileTypeLabel">File Type</label>
+            <%= text_field_tag 'external_sources[][extension]', key,
+                  :class => 'extensionField textPrompt', :title => 'Optional'%>
+            <%- unless params[:no_js].present? -%>
+              <a href="#remove" class="removeExternalSource button">Remove</a>
+            <%- end -%>
+          </div>
+        <%- end -%>
+      <%- end -%>
+      <div class="line clearfix newExternalSource externalSource">
+        <label>Additional Source</label>
+        <%= text_field_tag('external_sources[][name]', '', :class => 'textPrompt url',
+                           :title => 'Enter an alternate access point for this dataset') %>
+        <label for="external_sources[][name]" class="fileTypeLabel">File Type</label>
+        <%= text_field_tag 'external_sources[][extension]', '',
+              :class => 'extensionField textPrompt', :title => 'Optional'%>
+      </div>
+    <%- end -%>
     <h2>Licensing &amp; Attribution</h2>
 
     <div class="line clearfix">

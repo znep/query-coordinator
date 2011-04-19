@@ -547,7 +547,7 @@
 @mixin new-dataset-icons($subselector: '.icon')
   #{$subselector}
     @include text-hiding
-    background-image: url(/stylesheets/images/icons/new_dataset_icons.png)
+    background-image: url(/stylesheets/images/icons/new_dataset_icons.png?1)
     height: 64px
     width: 64px
 
@@ -559,6 +559,8 @@
     background-position: 0 -128px
   &.mapLayer #{$subselector}
     background-position: 0 -192px
+  &.external #{$subselector}
+    background-position: 0 -256px
 
 // icons/error_icons.png
 @mixin error-icons($subselector: '.icon')

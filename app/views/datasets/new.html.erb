@@ -44,6 +44,14 @@
                 <p>Upload a Non-Data File</p>
               </a>
             </li>
+            <%- if CurrentDomain.member?(current_user) -%>
+            <li>
+              <a href="#external" class="external" title="Choose this if you already have data that is being hosted on another server. This data will not be imported.">
+                <span class="icon"></span>
+                <p>Link to External Data</p>
+              </a>
+            </li>
+            <%- end -%>
           </ul>
         </li>
         <li class="uploadFilePane" data-wizardPaneName="uploadFile">
@@ -59,6 +67,13 @@
           <div class="flash"></div>
           <p class="headline">Please describe your data.</p>
           <div class="commonForm metadataForm">
+            <div class="externalDatasetMetadata">
+              <div class="line clearfix">
+                <label class="required">Dataset URL</label>
+                <input type="text" name="external_sources[0]" class="textPrompt url required" title="Enter the location of your external dataset" />
+              </div>
+            </div>
+
             <div class="generalMetadata">
               <div class="line clearfix">
                 <label for="view_name" class="required">Dataset Title</label>

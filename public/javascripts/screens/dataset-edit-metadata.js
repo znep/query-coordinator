@@ -25,7 +25,7 @@
                         }
                         break;
                     default:
-                        error.insertAfter(element);
+                        error.appendTo(element.closest('.line'));
                 }
             }
     });
@@ -220,4 +220,34 @@
     });
 
     initCustomRdf();
+
+    // Access points aka HREF aka external sources aka external datasets
+    var $existingSources = $form.find('.existingExternalSource');
+    var sourceCount = $existingSources.length;
+    var updateRemoveLinks = function()
+    {
+        if (sourceCount == 1)
+        {
+            $existingSources
+                .find('.removeExternalSource')
+                .addClass('disabled');
+        }
+    };
+    updateRemoveLinks();
+
+    $form.find('.removeExternalSource').click(function(event)
+    {
+        event.preventDefault();
+        if ($(this).hasClass('disabled')) { return; }
+
+        if (confirm('Are you sure you want to remove this external dataset?'))
+        {
+            var $line = $(this).closest('.line');
+            $line.slideUp(300, function() {
+                $line.remove();
+            });
+            sourceCount--;
+            updateRemoveLinks();
+        }
+    });
 });

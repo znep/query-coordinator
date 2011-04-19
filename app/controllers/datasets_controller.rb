@@ -290,50 +290,11 @@ class DatasetsController < ApplicationController
     @view = get_view(params[:id])
     return if @view.nil?
     if !params[:view].nil?
-      if params[:view][:metadata] && params[:view][:metadata][:attachments]
-        params[:view][:metadata][:attachments].delete_if { |a| a[:delete].present? }
-      end
       begin
-        # This sucks, but is necessary for the accessible version
-        if params[:attachment_new]
-          if (params[:view][:metadata].nil? || params[:view][:metadata][:attachments].nil?)
-            params[:view].deep_merge!({ :metadata => { :attachments => []} } )
-          end
-
-          attachment = JSON.parse(
-            CoreServer::Base.connection.multipart_post_file('/assets',
-              params[:attachment_new]))
-
-          params[:view][:metadata][:attachments] << {:blobId => attachment['id'],
-            :filename => attachment['nameForOutput'],
-            :name => attachment['nameForOutput']}
+        if parse_attachments() && parse_meta(@view) && parse_external_sources()
+          @view = View.update_attributes!(params[:id], params[:view])
+          flash.now[:notice] = "The metadata has been updated."
         end
-        if !@view.metadata.nil?
-          # Make sure required fields are filled in
-          unless CurrentDomain.custom_dataset_metadata.blank?
-            CurrentDomain.custom_dataset_metadata.each do |fieldset|
-              unless fieldset.fields.blank?
-                fieldset.fields.each do |field|
-                  if field.required.present?
-                    if (field.private.present? &&
-                        params[:view][:privateMetadata][:custom_fields][fieldset.name][field.name].blank?) ||
-                      (field.private.blank? &&
-                        params[:view][:metadata][:custom_fields][fieldset.name][field.name].blank?)
-                      flash.now[:error] = "The field '#{field.name}' is required."
-                      return
-                    end
-                  end
-                end
-              end
-            end
-          end
-          params[:view][:metadata] = (@view.data['metadata'] || {}).
-            deep_merge(params[:view][:metadata])
-          params[:view][:privateMetadata] = (@view.data['privateMetadata'] || {}).
-            deep_merge(params[:view][:privateMetadata])
-        end
-        @view = View.update_attributes!(params[:id], params[:view])
-        flash.now[:notice] = "The metadata has been updated."
       rescue CoreServer::CoreServerError => e
         flash.now[:error] = "An error occurred during your request: #{e.error_message}"
       end
@@ -470,5 +431,87 @@ protected
     @conditions['searchString'] = params[:search_string] unless params[:search_string].blank?
 
     return @conditions
+  end
+
+  def file_extension(url)
+      base = url[/\.([^\.\/]+)$/]
+      base[1..-1] if base
+  end
+
+  def parse_meta(view)
+    if !view.metadata.nil?
+      # Make sure required fields are filled in
+      unless CurrentDomain.custom_dataset_metadata.blank?
+        CurrentDomain.custom_dataset_metadata.each do |fieldset|
+          unless fieldset.fields.blank?
+            fieldset.fields.each do |field|
+              if field.required.present?
+                if (field.private.present? &&
+                    params[:view][:privateMetadata][:custom_fields][fieldset.name][field.name].blank?) ||
+                  (field.private.blank? &&
+                    params[:view][:metadata][:custom_fields][fieldset.name][field.name].blank?)
+                  flash.now[:error] = "The field '#{field.name}' is required."
+                  return false
+                end
+              end
+            end
+          end
+        end
+      end
+      params[:view][:metadata] = (view.data['metadata'] || {}).
+        deep_merge(params[:view][:metadata] || {})
+      params[:view][:privateMetadata] = (view.data['privateMetadata'] || {}).
+        deep_merge(params[:view][:privateMetadata] || {})
+    end
+    true
+  end
+
+  def parse_external_sources
+    if params[:external_sources].present?
+      accessPoints = {}
+      params[:external_sources].each do |source|
+        next if source['name'].blank?
+        extension = source['extension']
+        extension = file_extension(source['name']) if extension.blank?
+        if extension.nil?
+          flash.now[:error] = "The url '#{source['name']}' does not appear to be valid " +
+            "for downloading. Please specify file type or fix the URL."
+          return false
+        end
+        if !accessPoints[extension.downcase].nil?
+          flash.now[:error] = "Multiple external datasets with the same " +
+            "extension are not allowed. Please remove one of the '.#{extension}' files."
+          return false
+        end
+        accessPoints[extension.downcase] = source['name']
+      end
+      if accessPoints.size < 1
+        flash.now[:error] = "You must have at least one source for this external dataset."
+        return false
+      end
+      params[:view][:metadata][:accessPoints] = accessPoints
+    end
+    true
+  end
+
+  def parse_attachments
+    if params[:view][:metadata] && params[:view][:metadata][:attachments]
+      params[:view][:metadata][:attachments].delete_if { |a| a[:delete].present? }
+    end
+    # This sucks, but is necessary for the accessible version
+    if params[:attachment_new]
+      if (params[:view][:metadata].nil? || params[:view][:metadata][:attachments].nil?)
+        params[:view].deep_merge!({ :metadata => { :attachments => []} } )
+      end
+
+      attachment = JSON.parse(
+        CoreServer::Base.connection.multipart_post_file('/assets',
+          params[:attachment_new]))
+
+      params[:view][:metadata][:attachments] << {:blobId => attachment['id'],
+        :filename => attachment['nameForOutput'],
+        :name => attachment['nameForOutput']}
+    end
+    true
   end
 end

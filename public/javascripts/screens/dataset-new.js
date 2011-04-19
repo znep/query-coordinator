@@ -25,6 +25,20 @@ var formToViewMetadata = function(metadataForm)
         viewData.flags = ['dataPublicRead'];
     }
 
+    var externalSources = metadataForm.external_sources;
+    if (!_.isUndefined(externalSources))
+    {
+        viewData.metadata || (viewData.metadata = {});
+        viewData.metadata.accessPoints || (viewData.metadata.accessPoints = {});
+        _.each(externalSources, function(source) {
+            var extensionReg = new RegExp(/\.([^\.]+)$/);
+            var extension = extensionReg.exec(source);
+            if (extension) {
+                viewData.metadata.accessPoints[extension[1].toLowerCase()] = source;
+            }
+        });
+    }
+
     return viewData;
 }
 
@@ -75,6 +89,13 @@ $wizard.wizard({
 
                     state.type = 'blobby';
                     command.next('uploadFile');
+                });
+                $pane.find('.newKindList a.external').click(function(event)
+                {
+                    event.preventDefault();
+
+                    state.type = 'external';
+                    command.next('metadata');
                 });
             },
             onActivate: function($pane, config, state)
@@ -211,7 +232,11 @@ $wizard.wizard({
                 if (state.type == 'esri')
                     $pane.find('.metadataForm > div:not(.mapLayerMetadata, .attachmentsMetadata, .privacyMetadata)').hide();
                 else
+                {
                     $pane.find('.mapLayerMetadata').hide();
+                    if (state.type == 'external')
+                        $pane.find('.externalDatasetMetadata').show();
+                }
 
                 // collapsible custom metadata sections
                 var toggleFunction = ($.browser.msie && ($.browser.majorVersion == 7)) ?
@@ -337,7 +362,7 @@ $wizard.wizard({
                     }
                 };
 
-                if ((state.type == 'blist') || (state.type  == 'blobby'))
+                if ((state.type == 'blist') || (state.type  == 'blobby') || (state.type == 'external'))
                 {
                     saveFormMetadata();
                 }

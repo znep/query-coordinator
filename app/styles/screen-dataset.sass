@@ -20,7 +20,7 @@ html, body
     z-index: 99
 
   #infoBox
-    margin-right: 55em
+    margin-right: 59em
     min-height: 3em
     padding: 0.25em
       bottom: 0.4em
@@ -203,14 +203,15 @@ html, body
     bottom: 0
     position: absolute
     right: 0
-    width: 68em
+    width: 71em
     .ie7 &
-      width: 75em
+      width: 81em
 
   #sidebarOptions
     clear: right
 
     li a
+      background-color: #989898
       &.edit
         background-color: $sidebar_edit_tab_color_top
       &.moreViews
@@ -227,6 +228,8 @@ html, body
         background-color: $sidebar_embed_tab_color_top
       &.about
         background-color: $sidebar_about_tab_color_top
+      &.manage
+        background-color: $sidebar_manage_tab_color_top
 
       .alertIcon
         display: none

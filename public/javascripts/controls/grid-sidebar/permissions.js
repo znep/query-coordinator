@@ -1,7 +1,7 @@
 (function($)
  {
-    if (blist.sidebarHidden.permissions)
-    { return; }
+    if (blist.sidebarHidden.manage &&
+        blist.sidebarHidden.manage.permissions) { return; }
 
     var commonError = function()
     {
@@ -17,7 +17,7 @@
                 $title.text(blist.dataset.isPublic() ? 'Public' : 'Private');
                 sidebar
                     .updateEnabledSubPanes();
-                sidebar.refresh('shareDataset');
+                sidebar.refresh('manage.shareDataset');
                 $radio
                     .socrataAlert({
                         message: 'Your permissions have been saved', overlay: true
@@ -38,7 +38,7 @@
     var sidebar;
     var config =
     {
-        name: 'edit.datasetPermissions',
+        name: 'manage.datasetPermissions',
         priority: 7,
         title: 'Permissions',
         subtitle: 'Manage the permissions of this ' + displayName,

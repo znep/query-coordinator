@@ -265,7 +265,7 @@
                 });
 
             if (doShow)
-            { sidebar.show('filter.showHide'); }
+            { sidebar.show('manage.showHide'); }
             else
             { sidebar.show('edit.addColumn', col); }
         });
@@ -298,8 +298,8 @@
                 'create a new location column</a> and add data.');
             msg += ' ' + $.arrayToSentence(opts, 'or', ',', true).capitalize();
         }
-        else if (hasHiddenLoc && (!blist.sidebarHidden.filter ||
-            !blist.sidebarHidden.filter.showHide))
+        else if (hasHiddenLoc && (!blist.sidebarHidden.manage ||
+            !blist.sidebarHidden.manage.showHide))
         {
             msg += ' You can <a href="#showLoc" title="Show a location column">' +
                 'show a hidden location column</a>';

@@ -214,7 +214,7 @@
 
                     // Update the sharing pane to reflect
                 if ($form.closest('.emailDatasetDialog').hasClass('ownerDialog'))
-                { $('#gridSidebar').gridSidebar().refresh('edit.shareDataset'); }
+                { $('#gridSidebar').gridSidebar().refresh('manage.shareDataset'); }
             };
 
             $.socrataServer.sendBatch(refreshCallback,

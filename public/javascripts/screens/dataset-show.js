@@ -375,20 +375,6 @@ $(function()
     // Publishing
     $('#infoBox .unpublished').socrataTitleTip();
     $('#infoBox .publish').socrataTitleTip();
-    $('#publishBar .button').socrataTitleTip();
-    $('#publishBar .editPublished').click(function(e)
-    {
-        e.preventDefault();
-        blist.dataset.getUnpublishedDataset(function(unpub)
-        {
-            if (!$.isBlank(unpub)) { unpub.redirectTo(); }
-            else
-            {
-                blist.dataset.makeUnpublishedCopy(function(copyView)
-                { copyView.redirectTo(); });
-            }
-        });
-    });
     $('#infoBox .publish').click(function(e)
     {
         e.preventDefault();

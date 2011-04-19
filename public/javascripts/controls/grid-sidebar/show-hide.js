@@ -1,9 +1,9 @@
 (function($)
 {
-    if (blist.sidebarHidden.filter &&
-        blist.sidebarHidden.filter.showHide) { return; }
+    if (blist.sidebarHidden.manage &&
+        blist.sidebarHidden.manage.showHide) { return; }
 
-    var configName = 'filter.showHide';
+    var configName = 'manage.showHide';
     var config =
     {
         name: configName,
@@ -11,8 +11,10 @@
         title: 'Show &amp; Hide Columns',
         subtitle: 'Adjust which columns are visible in this view',
         onlyIf: function()
-        { return blist.dataset.valid; },
-        disabledSubtitle: 'This view must be valid',
+        {
+            return blist.dataset.valid && !_.isEmpty(blist.dataset.visibleColumns);
+        },
+        disabledSubtitle: 'This view must be valid and must have visible columns.',
         sections: [{
             title: 'Columns',
             customContent: {

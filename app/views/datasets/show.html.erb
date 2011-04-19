@@ -136,14 +136,7 @@
   <%- sidebar_position = (!sidebar_config.nil? ?
     sidebar_config.properties.position : nil) || 'right' -%>
   <div id="actionBar" class="clearfix position-<%= sidebar_position %>">
-    <%- if @view.is_blist? && @view.is_published? && @view.can_edit_published? -%>
-    <div id="publishBar" class="clearfix">
-      <a href="#Unpublished" class="button editPublished"
-        title="<%= "This dataset is published and cannot be edited directly.
-          A working copy is available that allows you to make all your desired changes
-          before making them publicly available." %>">Edit Dataset</a>
-    </div>
-    <%- elsif @view.can_modify_data? -%>
+    <%- if @view.can_modify_data? -%>
     <div id="editBar" class="clearfix">
       <ul id="editOptions">
         <li><a href="#Undo" class="button undo" title="Undo">
@@ -190,6 +183,8 @@
       <ul id="sidebarOptions" class="clearfix">
         <li><a href="#Edit" title="Edit" class="edit"
           data-paneName="edit"><span class="icon"></span>Edit</a></li>
+        <li><a href="#Manage" title="Manage" class="manage"
+          data-paneName="manage"><span class="icon"></span>Manage</a></li>
         <li><a href="#More_Views" title="More Views" class="moreViews"
           data-paneName="moreViews"><span class="icon"></span>More Views</a></li>
         <li><a href="#Filter" title="Filter" class="filter"
@@ -383,6 +378,14 @@
 <%= render :partial => 'signed_dataset' %>
 <%= render :partial => 'subscribe' %>
 <%= render :partial => 'fatrow_header_template' %>
+<div class="editRedirect">
+  <div>
+    <p>This dataset is published and cannot be edited directly.
+    A working copy is available that allows you to make all your desired changes
+    before making them publicly available.</p>
+    <a href="#Unpublished" class="button editPublished">Edit Dataset</a>
+  </div>
+</div>
 <div class="filterPane">
   <div class="initialFilterMode">
     <p>Never created a filter before? Watch a short tutorial video
@@ -594,9 +597,17 @@
       !CurrentDomain.module_available?(:dataset_refresh) %>;
     blist.sidebarHidden.edit.addColumn = <%= !@view.is_unpublished? || !@view.is_blist? ||
       !@view.has_rights?('add_column') %>;
-    blist.sidebarHidden.edit.updateColumn = <%= @view.is_blist? && !@view.is_unpublished? ||
-      !@view.has_rights?('update_column') %>;
-    blist.sidebarHidden.edit.plagiarize = <%= !CurrentDomain.user_can?(current_user, :chown_datasets) %>;
+    blist.sidebarHidden.edit.redirect = <%= !@view.is_published? || !@view.is_blist? &&
+      !@view.is_blobby || !@view.can_edit_published? %>;
+
+    <%# Manage %>
+    blist.sidebarHidden.manage = blist.sidebarHidden.manage || {};
+    blist.sidebarHidden.manage.updateColumn = <%= !@view.is_tabular? || @view.is_form? %>;
+    blist.sidebarHidden.manage.showHide = <%= !@view.is_tabular? || @view.is_form? %>;
+    blist.sidebarHidden.manage.sharing = <%= !@view.user_granted?(current_user) &&
+      !CurrentDomain.user_can?(current_user, :edit_others_datasets)  %>;
+    blist.sidebarHidden.manage.permissions = <%= !@view.has_rights?('update_view') %>;
+    blist.sidebarHidden.manage.plagiarize = <%= !CurrentDomain.user_can?(current_user, :chown_datasets) %>;
 
     <%# Columm properties %>
     blist.sidebarHidden.columnProperties = <%= !@view.is_tabular? %>;
@@ -604,8 +615,6 @@
     <%# Filter pane %>
     blist.sidebarHidden.filter = blist.sidebarHidden.filter || {};
     blist.sidebarHidden.filter.filterDataset = <%= !@view.is_tabular? ||
-      @view.is_form? %>;
-    blist.sidebarHidden.filter.showHide = <%= !@view.is_tabular? ||
       @view.is_form? %>;
 
     <%# Visualize pane %>
@@ -617,8 +626,8 @@
     blist.sidebarHidden.visualize.mapCreate = <%= @view.is_unpublished? ||
       @view.is_alt_view? && !@view.available_display_types.include?('map') ||
       @view.is_grouped? || !module_available?(:map_publish) %>;
-    blist.sidebarHidden.visualize.conditionalFormatting = <%= !@view.is_tabular? ||
-      @view.is_form? %>;
+    blist.sidebarHidden.visualize.conditionalFormatting = <%= @view.is_unpublished? ||
+      !@view.is_tabular? || @view.is_form? %>;
 
     <%# Embed pane %>
     blist.sidebarHidden.embed = blist.sidebarHidden.embed || {};
@@ -643,11 +652,6 @@
 
     <%# Discuss pane %>
     blist.sidebarHidden.feed = <%= @view.is_unpublished? %>;
-
-    <%# Sharing pane %>
-    blist.sidebarHidden.sharing = <%= !@view.user_granted?(current_user) &&
-      !CurrentDomain.user_can?(current_user, :edit_others_datasets)  %>;
-    blist.sidebarHidden.permissions = <%= !@view.has_rights?('update_view') %>;
 
     <%# About pane %>
     blist.sidebarHidden.about = <%= @view.is_href? || @view.is_blobby? &&

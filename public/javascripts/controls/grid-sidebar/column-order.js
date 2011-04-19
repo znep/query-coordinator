@@ -1,9 +1,9 @@
 (function($)
 {
-    if (blist.sidebarHidden.edit &&
-        blist.sidebarHidden.edit.updateColumn) { return; }
+    if (blist.sidebarHidden.manage &&
+        blist.sidebarHidden.manage.updateColumn) { return; }
 
-    var configName = 'edit.columnOrder';
+    var configName = 'manage.columnOrder';
     var config =
     {
         name: configName,
@@ -12,9 +12,7 @@
         subtitle: 'Change the order of your columns',
         onlyIf: function()
         {
-            return blist.dataset.valid &&
-                (!blist.dataset.temporary || blist.dataset.minorChange) &&
-                !_.isEmpty(blist.dataset.visibleColumns);
+            return blist.dataset.valid && !_.isEmpty(blist.dataset.visibleColumns);
         },
         disabledSubtitle: 'This view must be valid and must have visible columns.',
         sections: [{

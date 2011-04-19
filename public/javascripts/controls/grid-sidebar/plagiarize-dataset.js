@@ -1,7 +1,7 @@
 (function($)
  {
-    if (blist.sidebarHidden.edit &&
-        blist.sidebarHidden.edit.plagiarize) { return; }
+    if (blist.sidebarHidden.manage &&
+        blist.sidebarHidden.manage.plagiarize) { return; }
 
     var userInput = {name: 'user', type: 'text', extraClass: 'friendSelect'};
     var fieldConfig = {};
@@ -26,7 +26,7 @@
 
     var config =
     {
-        name: 'edit.plagiarism',
+        name: 'manage.plagiarism',
         priority: 10,
         title: 'Ownership',
         subtitle: 'To transfer to another user, enter the email address or account name ' +

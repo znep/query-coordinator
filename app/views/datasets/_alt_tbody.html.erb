@@ -86,7 +86,7 @@
               <%- end -%>
 
             <%- when 'money' -%>
-              <%= column.currency_symbol %><%=
+              <%= raw(column.currency_symbol) %><%=
                 "%.#{column.precision || 2}f" % cell %>
 
             <%- when 'calendar_date', 'date' -%>

@@ -345,7 +345,7 @@ class Column < Model
     currency = (self.format.nil? || self.format.currency.nil?) ?
       'USD' : self.format.currency
 
-    return Money::Currency::TABLE[currency.downcase.to_sym][:symbol]
+    return Money::Currency::TABLE[currency.downcase.to_sym][:html_entity]
   end
 
   def is_nested_table

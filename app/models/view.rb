@@ -830,7 +830,7 @@ class View < Model
   end
 
   def last_approval(include_rejected = false)
-    approval_history.select {|ah| include_rejected || !ah['approvalRejected']}.last
+    approval_history.select {|ah| include_rejected || ah['approvalTypeName'] == 'A'}.last
   end
 
   def next_approval_stage(approval)
@@ -856,7 +856,7 @@ class View < Model
     path = "/#{self.class.name.pluralize.downcase}/#{id}/approval.json"
     CoreServer::Base.connection.create_request(path,
           {:approvalStageId => next_stage['id'],
-            :approvalRejected => !approved,
+            :approvalTypeName => approved ? 'A' : 'R',
             :comment => comment}.to_json)
   end
 

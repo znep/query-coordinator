@@ -122,7 +122,7 @@
                       :approved => 'yes'}, 'Approve', {},
                       {:class => 'button approve'})%>
                   <%- la = v.last_approval(true) -%>
-                  <%- if la.nil? || !la['approvalRejected'] -%>
+                  <%- if la.nil? || la['approvalTypeName'] != 'R' -%>
                   <% form_button({:action => 'approve_view', :id => v.id,
                       :approved => 'no'}, 'Reject', {},
                       {:class => 'button reject'}) do %>

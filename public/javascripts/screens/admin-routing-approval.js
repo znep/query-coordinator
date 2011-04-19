@@ -190,7 +190,7 @@ $(function()
                 '.lastApproved .user .type': function(v)
                     {
                         return v.context.dataset.lastApproval(true)
-                            .approvalRejected ? 'Rejected' : 'Approved';
+                            .approvalTypeName == 'R' ? 'Rejected' : 'Approved';
                     },
                 '.lastApproved .user .value@data-userId': function(v)
                     {
@@ -200,7 +200,7 @@ $(function()
                 '.lastApproved .date .type': function(v)
                     {
                         return v.context.dataset.lastApproval(true)
-                            .approvalRejected ? 'Rejection' : 'Approval';
+                            .approvalTypeName == 'R' ? 'Rejection' : 'Approval';
                     },
                 '.lastApproved .date .value': function(v)
                     {
@@ -220,7 +220,7 @@ $(function()
                 '.rejectionReason@class+': function(v)
                     {
                         return v.context.dataset.lastApproval(true)
-                            .approvalRejected ? '' : 'hide';
+                            .approvalTypeName == 'R' ? '' : 'hide';
                     },
                 '.nextApprover .user li': {
                     'userId<-nextStage.approverUids': {
@@ -253,7 +253,7 @@ $(function()
                 $stageIcon.append($.tag({tagName: 'span',
                     title: (blist.routingApproval.approvalTemplate
                         .getStage(ah.approvalStageId) || {}).name,
-                    'class': ah.approvalRejected ? 'rejected' : 'on'}));
+                    'class': ah.approvalTypeName == 'R' ? 'rejected' : 'on'}));
             });
         // Subtract an extra one because we add a dummy stage 0 into approval
         _(blist.routingApproval.approvalTemplate.stages.length - ds.approvalStream().length - 1)

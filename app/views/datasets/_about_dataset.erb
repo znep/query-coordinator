@@ -61,7 +61,7 @@
       <dd class="actions">
         <% form_button({:action => 'approve_view', :controller => 'administration', :id => @view.id,
             :approved => 'yes'}, 'Approve', {}, {:class => 'button approve'}) %>
-        <%- if last_app_rej.nil? || !last_app_rej['approvalRejected'] -%>
+        <%- if last_app_rej.nil? || last_app_rej['approvalTypeName'] != 'R' -%>
         <% form_button({:action => 'approve_view', :controller => 'administration', :id => @view.id,
             :approved => 'no'}, 'Reject', {},
             {:class => 'button reject'}) do %>
@@ -96,12 +96,13 @@
         <div class="icon">
           <%- i = approval.stages.index {|s| s['id'] == ah['approvalStageId']} || 0 -%>
           <%- approval.stages.length.times do |j| -%>
-          <span class="<%= j > i ? "off" : i == j && ah['approvalRejected'] ? "rejected" : "on" %>"></span>
+          <span class="<%= j > i ? "off" : i == j &&
+            ah['approvalTypeName'] == 'R' ? "rejected" : "on" %>"></span>
           <%- end -%>
         </div>
         <%= approval.stage(ah['approvalStageId'])['name'] %></div>
       <%- u = @users[ah['approverUserUid']] -%>
-      <div class='user'><%= ah['approvalRejected'] ? 'Rejected' : 'Approved' %> by
+      <div class='user'><%= ah['approvalTypeName'] == 'R' ? 'Rejected' : 'Approved' %> by
         <a href='<%= u.href %>'><%= u.displayName %></a></div>
       <span class="date">On <%= blist_date(ah['approvalDate']) %></span>
       <%- if !ah['comment'].blank? -%>

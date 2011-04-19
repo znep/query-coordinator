@@ -29,7 +29,7 @@ Dataset.modules['approvalHistory'] =
     lastApproval: function(includeRejected)
     {
         return _.last(_.select(this.approvalHistory,
-            function(ah) { return includeRejected || !ah.approvalRejected; })) || {approvalStageId: 0}
+            function(ah) { return includeRejected || ah.approvalTypeName == 'A'; })) || {approvalStageId: 0}
     },
 
     approvalStage: function()

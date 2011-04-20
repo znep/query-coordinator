@@ -24,7 +24,8 @@
         {
             chooseCallback: function(dataItem) {},
             filterCallback: function(user) { return true; },
-            limit: 10
+            limit: 10,
+            valueFunction: function(dataItem) { return dataItem.id; }
         },
 
         prototype:
@@ -40,7 +41,7 @@
                 $domObj.closest('form').attr('autocomplete', 'off');
 
                 $domObj.awesomecomplete({
-                    attachTo: $domObj.offsetParent(),
+                    attachTo: pickerObj.settings.attachTo || $domObj.offsetParent(),
                     forcePosition: true,
                     suggestionListClass: 'autocomplete userPicker',
                     typingDelay: 500,
@@ -49,7 +50,7 @@
                     renderFunction: doRender,
                     onComplete: function(dataItem)
                         { handleComplete(pickerObj, dataItem); },
-                    valueFunction: function(dataItem) { return dataItem.id; }
+                    valueFunction: pickerObj.settings.valueFunction
                 });
             },
 

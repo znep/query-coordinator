@@ -1095,8 +1095,6 @@ this.Dataset = ServerModel.extend({
 
     takeSnapshot: function()
     {
-        // $.debug("Snapshot!");
-
         var name = blist.snapshot.name;
         // use the current viewport
         setTimeout(function()
@@ -1190,6 +1188,18 @@ this.Dataset = ServerModel.extend({
             delete dsCopy.query.namedFilters;
         }
         return dsCopy;
+    },
+
+    changeOwner: function(userId, successCallback, errorCallback)
+    {
+        var ds = this;
+
+        ds.makeRequest({
+            url: '/views/' + ds.id + '?method=plagiarize&userId=' + userId,
+            type: 'PUT',
+            success: successCallback,
+            error: errorCallback
+        });
     },
 
     // Private methods

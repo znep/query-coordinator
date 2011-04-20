@@ -608,6 +608,7 @@
     blist.sidebarHidden.sharing = <%= !@view.user_granted?(current_user) &&
       !CurrentDomain.user_can?(current_user, :edit_others_datasets)  %>;
     blist.sidebarHidden.permissions = <%= !@view.has_rights?('update_view') %>;
+    blist.sidebarHidden.plagiarize = <%= !CurrentDomain.user_can?(current_user, :chown_datasets) %>;
 
     <%# About pane %>
     blist.sidebarHidden.about = <%= @view.is_href? || @view.is_blobby? &&

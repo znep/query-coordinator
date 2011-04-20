@@ -19,6 +19,21 @@ this.User = ServerModel.extend({
         return (this.rights || []).length > 0;
     },
 
+    nameAndOrEmail: function()
+    {
+        var base = "";
+        if (this.displayName)
+        {
+            base = this.displayName;
+        }
+        if (this.email)
+        {
+            if (base == "") { base = this.email; }
+            else { base += ' (' + this.email + ')'; }
+        }
+        return base;
+    },
+
     /* TODO: Not used yet
     addFriend: function(user, successCallback, errorCallback)
     {

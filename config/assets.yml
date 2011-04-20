@@ -251,6 +251,7 @@ javascripts:
     - public/javascripts/controls/feed-list.js
     - public/javascripts/controls/stars.js
     - public/javascripts/controls/content-indicator.js
+    - public/javascripts/controls/user-picker.js
     - public/javascripts/controls/grid-sidebar/base-sidebar.js
     - public/javascripts/controls/grid-sidebar/about-dataset.js
     - public/javascripts/controls/grid-sidebar/add-column.js
@@ -268,6 +269,7 @@ javascripts:
     - public/javascripts/controls/grid-sidebar/form-create.js
     - public/javascripts/controls/grid-sidebar/map-create.js
     - public/javascripts/controls/grid-sidebar/permissions.js
+    - public/javascripts/controls/grid-sidebar/plagiarize-dataset.js
     - public/javascripts/controls/grid-sidebar/print-dataset.js
     - public/javascripts/controls/grid-sidebar/share-dataset.js
     - public/javascripts/controls/grid-sidebar/show-hide.js

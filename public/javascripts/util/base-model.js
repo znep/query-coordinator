@@ -60,12 +60,6 @@ this.Model = Class.extend({
 
         this.availableEvents = function()
         { return _.keys(events).sort(); };
-
-        this.registerEvent(['start_request', 'finish_request']);
-        this._reqCount = 0;
-
-        // Assume WEBSITE unless set otherwise
-        this.accessType = 'WEBSITE';
     },
 
     // Return a cleaned copy that has no functions, private keys, or anything
@@ -106,75 +100,6 @@ this.Model = Class.extend({
             { obj[k] = cleanObj(v, k); }
         });
         return obj;
-    },
-
-    setAccessType: function(accessType)
-    {
-        this.accessType = accessType;
-    },
-
-    _makeRequest: function(req)
-    {
-        var model = this;
-        var finishCallback = function(callback)
-        {
-            return function()
-            {
-                model._reqCount--;
-                if (model._reqCount < 1) { model.trigger('finish_request'); }
-                if (_.isFunction(callback)) { callback.apply(this, arguments); }
-            };
-        };
-
-        if (model._reqCount < 1) { this.trigger('start_request'); }
-        model._reqCount++;
-        req = $.extend({contentType: 'application/json', dataType: 'json'}, req,
-                {error: finishCallback(req.error),
-                success: finishCallback(req.success)});
-
-        if (!$.isBlank(model.accessType))
-        { req.params = $.extend({accessType: model.accessType}, req.params); }
-        else { $.debug('making call without accessType!', req); }
-
-        if (!$.isBlank(req.params))
-        {
-             req.url += (req.url.indexOf('?') >= 0 ? '&' : '?') +
-                $.param(req.params);
-        }
-
-        // We never want the browser cache, because our data can change frequently
-        if ($.isBlank(req.type) || req.type.toLowerCase() == 'get')
-        { req.cache = false; }
-
-        var cleanReq = function()
-        {
-            delete req.batch;
-            delete req.pageCache;
-            delete req.params;
-        };
-
-        if (req.pageCache)
-        {
-            cleanReq();
-            $.Tache.Get(req);
-        }
-        else if (req.batch)
-        {
-            cleanReq();
-            $.socrataServer.addRequest(req);
-        }
-        else
-        {
-            cleanReq();
-            $.ajax(req);
-        }
-    },
-
-    _sendBatch: function(successCallback)
-    {
-        if (!$.socrataServer.runRequests({success: successCallback}) &&
-            _.isFunction(successCallback))
-        { successCallback(); }
     },
 
     _generateBaseUrl: function(domain, isShort)

@@ -1,7 +1,7 @@
 ;(function(){
 
 
-this.User = Model.extend({
+this.User = ServerModel.extend({
     _init: function (v)
     {
         this._super();
@@ -22,7 +22,7 @@ this.User = Model.extend({
     /* TODO: Not used yet
     addFriend: function(user, successCallback, errorCallback)
     {
-        this._makeRequest({url: '/contacts.json', type: 'GET',
+        this.makeRequest({url: '/contacts.json', type: 'GET',
             data: JSON.stringify({id: user.id}),
             error: errorCallback,
             success: successCallback
@@ -31,7 +31,7 @@ this.User = Model.extend({
 
     removeFriend: function(user)
     {
-        this._makeRequest({url: '/contacts/' + user.id,
+        this.makeRequest({url: '/contacts/' + user.id,
             type: 'DELETE'
         });
     },
@@ -42,7 +42,7 @@ this.User = Model.extend({
         var user = this;
         if ($.isBlank(user._datasets))
         {
-            user._makeRequest({url: '/users/' + user.id + '/views.json',
+            user.makeRequest({url: '/users/' + user.id + '/views.json',
                 type: 'GET', pageCache: true, success: function(dss)
                 {
                     user._datasets = _.map(dss, function(d)

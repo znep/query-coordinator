@@ -1,6 +1,6 @@
 (function(){
 
-this.Column = Model.extend({
+this.Column = ServerModel.extend({
     _init: function (c, parent)
     {
         this._super();
@@ -65,7 +65,7 @@ this.Column = Model.extend({
 
         if ($.isBlank(col._summary))
         {
-            col.view._makeRequest({inline: true,
+            col.view.makeRequest({inline: true,
                 params: {method: 'getSummary', columnId: col.id},
                 success: colSumLoaded});
         }
@@ -93,7 +93,7 @@ this.Column = Model.extend({
 
         if (col.view.hasRight('update_column'))
         {
-            this._makeRequest({url: '/views/' + this.view.id +
+            this.makeRequest({url: '/views/' + this.view.id +
                     '/columns/' + this.id + '.json', type: 'PUT',
                     data: JSON.stringify(this.cleanCopy()),
                     success: colSaved, error: errorCallback});
@@ -142,7 +142,7 @@ this.Column = Model.extend({
 
         if (col.view.hasRight('update_column'))
         {
-            this._makeRequest({url: '/views/' + this.view.id + '/columns/' +
+            this.makeRequest({url: '/views/' + this.view.id + '/columns/' +
                 this.id + '.json', type: 'PUT',
                 data: JSON.stringify({hidden: !isVisible}),
                 batch: isBatch, success: successCallback, error: errorCallback});
@@ -246,7 +246,7 @@ this.Column = Model.extend({
             if (_.isFunction(successCallback)) { successCallback(col); }
         };
 
-        col._makeRequest({url: '/views/' + col.view.id + '/columns/' +
+        col.makeRequest({url: '/views/' + col.view.id + '/columns/' +
                 col.id + '.json', type: 'DELETE', batch: isBatch,
                 success: colRemoved, error: errorCallback});
     },
@@ -269,7 +269,7 @@ this.Column = Model.extend({
             if (_.isFunction(successCallback)) { successCallback(col); }
         };
 
-        this._makeRequest({url: '/views/' + this.view.id + '/columns/' +
+        this.makeRequest({url: '/views/' + this.view.id + '/columns/' +
             this.id + '.json', params: {method: 'convert', type: newType},
             type: 'POST', success: columnConverted, error: errorCallback});
     },

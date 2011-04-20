@@ -58,10 +58,9 @@
         {
             if (!$.isBlank(grant.userId))
             {
-                $.socrataServer.addRequest({
+                $.socrataServer.makeRequest({
                     url: '/users/' + grant.userId + '.json',
-                    type: 'GET',
-                    data: {},
+                    type: 'GET', data: {}, batch: true,
                     success: function(response)
                     {
                         shares.push($.extend({},response,
@@ -79,11 +78,7 @@
             }
         });
         // Then match up with the grants
-        if (!$.socrataServer.runRequests({
-                success: function(response)
-                { sharesRenderCallback(context, shares); }
-            }))
-        { sharesRenderCallback(context, shares); }
+        $.socrataServer.sendBatch(function(response) { sharesRenderCallback(context, shares); });
     };
 
     var sharesRenderCallback = function(context, data)

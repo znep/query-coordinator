@@ -198,9 +198,9 @@
                     }
                     else
                     {
-                        $.socrataServer.addRequest({
+                        $.socrataServer.makeRequest({
                             url: $form.attr('action'),
-                            type: 'POST',
+                            type: 'POST', batch: true,
                             data: JSON.stringify({recipient: address, message: message})
                         });
                     }
@@ -217,13 +217,12 @@
                 { $('#gridSidebar').gridSidebar().refresh('edit.shareDataset'); }
             };
 
-            if (!$.socrataServer.runRequests({success: refreshCallback,
-                    error: function() {
-                        $flash.addClass('error').text('There was an error sending your email. Please try again later.');
-                    }}))
-            {
-                refreshCallback();
-            }
+            $.socrataServer.sendBatch(refreshCallback,
+                    function()
+                    {
+                        $flash.addClass('error')
+                            .text('There was an error sending your email. Please try again later.');
+                    });
         }
     });
 

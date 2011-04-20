@@ -119,14 +119,10 @@
     var oCallback = oAJAX.success;
     $.Tache.InProcessData.push({ sIdentifier: sIdentifier, dtAge: new Date(), oReqs: [oAJAX]});
     oAJAX.success = function(oNewData, ts, xhr) {
-      // Support retry responses from core server
-      if (xhr.status == 202)
-      {
-        setTimeout(function() { $.ajax(oAJAX); }, oAJAX.retryTime || 5000);
-        return;
-      }
+      // Don't cache pending response
+      if (xhr.status == 200)
+      { $.Tache.Data.push({ sIdentifier: sIdentifier, oData: oNewData, dtAge: new Date() }); }
 
-      $.Tache.Data.push({ sIdentifier: sIdentifier, oData: oNewData, dtAge: new Date() });
       oAJAX.success = oCallback;
       for (var i = 0; i < $.Tache.InProcessData.length; i++)
       {
@@ -134,7 +130,7 @@
         {
             var ipItem = $.Tache.InProcessData.splice(i, 1)[0];
             for (var j = 0; j < ipItem.oReqs.length; j++) {
-              ipItem.oReqs[j].success(oNewData);
+              ipItem.oReqs[j].success.apply(this, arguments);
             }
         }
       }

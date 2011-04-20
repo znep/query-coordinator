@@ -82,7 +82,7 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
         if (!$.isBlank(customParams))
         { req.params = customParams; }
 
-        this._makeRequest(req);
+        this.makeRequest(req);
     };
 
     // defines: removeColumns, removeChildColumns
@@ -101,7 +101,7 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
             if (_.isFunction(successCallback)) { successCallback(); }
         };
 
-        cont._sendBatch(columnsRemoved);
+        cont.sendBatch(columnsRemoved);
     };
 
     // defines: setVisibleColumns, setVisibleChildColumns
@@ -165,11 +165,11 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
             {
                 var item = {};
                 item[colSet] = vizCols;
-                this._makeRequest({url: selfUrl, type: 'PUT',
+                this.makeRequest({url: selfUrl, type: 'PUT',
                     data: JSON.stringify(item), batch: true});
             }
 
-            cont._sendBatch(function()
+            cont.sendBatch(function()
             {
                 (cont.view || cont).reload();
                 if (_.isFunction(callback)) { callback(); }

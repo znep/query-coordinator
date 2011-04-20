@@ -441,9 +441,7 @@
                         cmObj.settings.view.columnForID(colId)
                             .hide(null, null, true);
                     });
-                    if (!$.socrataServer.runRequests({success: function()
-                                { cmObj.settings.view.updateColumns(); }}))
-                    { cmObj.settings.view.updateColumns(); }
+                    $.socrataServer.sendBatch(function() { cmObj.settings.view.updateColumns(); });
                 }
                 break;
             case 'delete-column':

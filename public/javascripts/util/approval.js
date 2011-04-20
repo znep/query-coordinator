@@ -1,6 +1,6 @@
 (function(){
 
-this.Approval = Model.extend({
+this.Approval = ServerModel.extend({
     _init: function (a)
     {
         this._super();
@@ -18,7 +18,7 @@ this.Approval = Model.extend({
     getAgeInfo: function(callback)
     {
         var appr = this;
-        appr._makeRequest({url: '/api/approval.json', params: {method: 'ageInfo'},
+        appr.makeRequest({url: '/api/approval.json', params: {method: 'ageInfo'},
             type: 'GET', pageCache: true,
             success: function(ageInfo, ts, xhr)
             {
@@ -32,7 +32,7 @@ this.Approval = Model.extend({
     {
         groups = groups || 5;
         var appr = this;
-        appr._makeRequest({url: '/api/approval.json',
+        appr.makeRequest({url: '/api/approval.json',
             params: {method: 'aging', max_group: groups, interval: 86400},
             type: 'GET', pageCache: true,
             success: function(aiResults)

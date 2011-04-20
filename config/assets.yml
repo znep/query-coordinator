@@ -19,6 +19,7 @@ javascripts:
     - public/javascripts/util/namespace.js
     - public/javascripts/util/util.js
     - public/javascripts/util/base-model.js
+    - public/javascripts/util/socrata-server.js
     - public/javascripts/util/compat.js
     - public/javascripts/util/markup.js
     - public/javascripts/util/alert-override.js
@@ -34,7 +35,6 @@ javascripts:
     - public/javascripts/util/dataset/map.js
     - public/javascripts/util/styles.js
     - public/javascripts/util/templates.js
-    - public/javascripts/util/socrata-server.js
     - public/javascripts/data/types.js
     - public/javascripts/controls/socrata-messaging.js
     - public/javascripts/controls/text-prompt.js

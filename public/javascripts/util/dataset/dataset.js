@@ -23,7 +23,7 @@
         really invalidate most actions like sharing, embedding, etc.
 */
 
-this.Dataset = Model.extend({
+this.Dataset = ServerModel.extend({
     _init: function (v)
     {
         this._super();
@@ -107,7 +107,7 @@ this.Dataset = Model.extend({
         else
         {
             var gotID = function(data) { successCallback(data[id]); };
-            ds._makeRequest({url: '/views/' + ds.id + '/rows.json',
+            ds.makeRequest({url: '/views/' + ds.id + '/rows.json',
                 params: {method: 'getByIds', indexesOnly: true, ids: id},
                 success: gotID, type: 'POST'});
         }
@@ -196,7 +196,7 @@ this.Dataset = Model.extend({
             if (_.isFunction(successCallback)) { successCallback(ds); }
         };
 
-        this._makeRequest({url: '/views/' + this.id + '.json',
+        this.makeRequest({url: '/views/' + this.id + '.json',
             type: 'PUT', data: JSON.stringify(cleanViewForSave(this)),
             error: errorCallback,
             success: dsSaved
@@ -232,7 +232,7 @@ this.Dataset = Model.extend({
             ds.flags.push('dataPublicAdd');
         }
 
-        this._makeRequest({url: '/views.json', type: 'POST',
+        this.makeRequest({url: '/views.json', type: 'POST',
             data: JSON.stringify(ds),
             error: errorCallback,
             success: dsCreated
@@ -281,7 +281,7 @@ this.Dataset = Model.extend({
             if (_.isFunction(successCallback)) { successCallback(); }
         }
 
-        ds._makeRequest({url: '/api/views/' + ds.id + '/grants/i',
+        ds.makeRequest({url: '/api/views/' + ds.id + '/grants/i',
             params: {method: 'delete'}, type: 'PUT', data: JSON.stringify(grant),
             success: grantDeleted, error: errorCallback});
     },
@@ -297,7 +297,7 @@ this.Dataset = Model.extend({
             if (_.isFunction(successCallback)) { successCallback(); }
         };
 
-        ds._makeRequest({url: '/api/views/' + ds.id + '/grants/',
+        ds.makeRequest({url: '/api/views/' + ds.id + '/grants/',
                 type: 'POST', data: JSON.stringify(grant), batch: isBatch,
                 success: grantCreated, error: errorCallback});
     },
@@ -325,7 +325,7 @@ this.Dataset = Model.extend({
             ds.grants.push({type: (ds.type == 'form' ? 'contributor' : 'viewer'),
                 flags: ['public']});
 
-            ds._makeRequest({url: '/views/' + ds.id,
+            ds.makeRequest({url: '/views/' + ds.id,
                       params: {method: 'setPermission', value:
                          (ds.type == 'form' ? 'public.add' : 'public.read')},
                     type: 'PUT',
@@ -344,7 +344,7 @@ this.Dataset = Model.extend({
                 function(g) { return _.include(g.flags || [], 'public') &&
                     g.inherited !== true; });
 
-            ds._makeRequest({url: '/views/' + ds.id + '.json', type: 'PUT',
+            ds.makeRequest({url: '/views/' + ds.id + '.json', type: 'PUT',
                     params: {method: 'setPermission', value: 'private'},
                     success: successCallback, error: errorCallback});
         }
@@ -353,7 +353,7 @@ this.Dataset = Model.extend({
 
     notifyUsers: function(successCallback, errorCallback)
     {
-        this._makeRequest({url: '/api/views/' + this.id + '.json',
+        this.makeRequest({url: '/api/views/' + this.id + '.json',
             params: {method: 'notifyUsers'}, type: 'POST',
             success: successCallback, error: errorCallback});
     },
@@ -745,7 +745,7 @@ this.Dataset = Model.extend({
         ds._aggregatesStale = true;
         _.each(!$.isBlank(parCol) ? parCol.realChildColumns : ds.realColumns,
             function(c) { c.invalidateData(); });
-        ds._sendBatch({success: successCallback, error: errorCallback});
+        ds.sendBatch({success: successCallback, error: errorCallback});
     },
 
     getAggregates: function(callback, customAggs)
@@ -806,11 +806,11 @@ this.Dataset = Model.extend({
                 {
                     args = $.extend({}, args,
                         {data: JSON.stringify(v), batch: true});
-                    ds._makeRequest(args);
+                    ds.makeRequest(args);
                 });
-                ds._sendBatch(callback);
+                ds.sendBatch(callback);
             }
-            else { ds._makeRequest(args); }
+            else { ds.makeRequest(args); }
         }
         else
         { callback(); }
@@ -824,7 +824,7 @@ this.Dataset = Model.extend({
 
     updateRating: function(rating, successCallback, errorCallback)
     {
-        this._makeRequest({url: '/views/' + this.id + '/ratings.json',
+        this.makeRequest({url: '/views/' + this.id + '/ratings.json',
             type: 'POST', data: JSON.stringify(rating),
             success: successCallback, error: errorCallback});
     },
@@ -838,7 +838,7 @@ this.Dataset = Model.extend({
             if (_.isFunction(successCallback)) { successCallback(); }
         };
 
-        ds._makeRequest({url: '/views/' + ds.id + '.json',
+        ds.makeRequest({url: '/views/' + ds.id + '.json',
             type: 'DELETE', success: dsRemoved, error: errorCallback});
     },
 
@@ -846,7 +846,7 @@ this.Dataset = Model.extend({
     {
         var params = {method: 'opening'};
         if (!$.isBlank(referrer)) { params.referrer = referrer; }
-        this._makeRequest({url: '/views/' + this.id + '.json', params: params, type: 'POST'});
+        this.makeRequest({url: '/views/' + this.id + '.json', params: params, type: 'POST'});
     },
 
     getComments: function(callback)
@@ -854,7 +854,7 @@ this.Dataset = Model.extend({
         var ds = this;
         if ($.isBlank(ds._comments))
         {
-            ds._makeRequest({url: '/views/' + ds.id + '/comments.json',
+            ds.makeRequest({url: '/views/' + ds.id + '/comments.json',
                 type: 'GET', pageCache: true, success: function(comms)
                 {
                     ds._comments = comms;
@@ -875,7 +875,7 @@ this.Dataset = Model.extend({
             if (_.isFunction(successCallback)) { successCallback(newCom); }
         };
 
-        ds._makeRequest({url: '/views/' + ds.id + '/comments.json',
+        ds.makeRequest({url: '/views/' + ds.id + '/comments.json',
                 type: 'POST', data: JSON.stringify(comment),
                 success: addedComment, error: errorCallback});
     },
@@ -892,7 +892,7 @@ this.Dataset = Model.extend({
             if (!_.include(com.flags, 'flag')) { com.flags.push('flag'); }
         }
 
-        ds._makeRequest({url: '/views/' + this.id + '/comments/' +
+        ds.makeRequest({url: '/views/' + this.id + '/comments/' +
                 commentId + '.json', type: 'PUT',
                 data: JSON.stringify({ flags: [ 'flag' ] }),
                 success: successCallback, error: errorCallback});
@@ -917,7 +917,7 @@ this.Dataset = Model.extend({
             }
         }
 
-        ds._makeRequest({url: '/views/' + ds.id + '/comments/' +
+        ds.makeRequest({url: '/views/' + ds.id + '/comments/' +
                 commentId + '/ratings.json', params: {thumbsUp: thumbsUp},
                 type: 'POST', success: successCallback, error: errorCallback});
     },
@@ -939,7 +939,7 @@ this.Dataset = Model.extend({
         if (($.isBlank(ds._parent) || $.isBlank(ds._parent.columns)) &&
             $.isBlank(ds.noParentAvailable))
         {
-            ds._makeRequest({url: '/views/' + this.id + '.json',
+            ds.makeRequest({url: '/views/' + this.id + '.json',
                 params: {method: 'getDefaultView'},
                 success: function(parDS)
                 {
@@ -982,7 +982,7 @@ this.Dataset = Model.extend({
     getSignature: function(successCallback, errorCallback)
     {
         // If not already signed, then we need to create it first
-        this._makeRequest({url: '/views/' + this.id + '/signatures.json',
+        this.makeRequest({url: '/views/' + this.id + '/signatures.json',
             type: (this.signed === true) ? 'GET' : 'POST',
             success: successCallback, error: errorCallback});
     },
@@ -1004,7 +1004,7 @@ this.Dataset = Model.extend({
 
         if ($.isBlank(ds._cachedLinkedColumnOptions[viewUid]))
         {
-            ds._makeRequest({url: '/api/views/{0}.json'.format(viewUid),
+            ds.makeRequest({url: '/api/views/{0}.json'.format(viewUid),
                 pageCache: true, type: 'GET',
                 error: function(req)
                 {
@@ -1506,7 +1506,7 @@ this.Dataset = Model.extend({
         return visColIds;
     },
 
-    _makeRequest: function(req)
+    makeRequest: function(req)
     {
         if (req.inline)
         {
@@ -1624,7 +1624,7 @@ this.Dataset = Model.extend({
         var req = {success: rowsLoaded, params: params, inline: !fullLoad, type: 'POST'};
         if (fullLoad)
         { req.url = '/views/' + ds.id + '/rows.json'; }
-        ds._makeRequest(req);
+        ds.makeRequest(req);
     },
 
     _addRows: function(newRows, start, columns)
@@ -2047,7 +2047,7 @@ this.Dataset = Model.extend({
             {
                 while (ds._pendingRowCreates.length > 0)
                 { ds._serverCreateRow(ds._pendingRowCreates.shift(), true); }
-                ds._sendBatch();
+                ds.sendBatch();
             }
             else
             {
@@ -2062,7 +2062,7 @@ this.Dataset = Model.extend({
                 '/subrows';
         }
         url += '.json';
-        ds._makeRequest({url: url,
+        ds.makeRequest({url: url,
             type: 'POST', data: JSON.stringify(req.rowData), batch: isBatch,
             success: rowCreated, error: rowErrored, complete: rowCompleted});
     },
@@ -2127,7 +2127,7 @@ this.Dataset = Model.extend({
         if (!$.isBlank(r.parentRow))
         { url += r.parentRow.id + '/columns/' + r.parentColumn.id + '/subrows/'; }
         url += r.row.uuid + '.json';
-        ds._makeRequest({url: url, type: 'PUT', data: JSON.stringify(r.rowData),
+        ds.makeRequest({url: url, type: 'PUT', data: JSON.stringify(r.rowData),
             batch: isBatch,
             success: rowSaved, error: rowErrored, complete: rowCompleted});
 
@@ -2148,7 +2148,7 @@ this.Dataset = Model.extend({
         if (!$.isBlank(parRowId))
         { url += parRowId + '/columns/' + parColId + '/subrows/'; }
         url += rowId + '.json';
-        ds._makeRequest({batch: isBatch, url: url, type: 'DELETE',
+        ds.makeRequest({batch: isBatch, url: url, type: 'DELETE',
             success: rowRemoved});
     },
 
@@ -2168,7 +2168,7 @@ this.Dataset = Model.extend({
                 // Do save
                 ds._serverSaveRow(ds._pendingRowEdits[key].shift(), true);
             }
-            ds._sendBatch();
+            ds.sendBatch();
         }
         else
         {
@@ -2258,7 +2258,7 @@ this.Dataset = Model.extend({
             if (_.isFunction(callback)) { callback(ds._relViewCount); }
         };
 
-        this._makeRequest({url: '/views.json', pageCache: true, type: 'GET',
+        this.makeRequest({url: '/views.json', pageCache: true, type: 'GET',
                 data: { method: justCount ? 'getCountForTableId' : 'getByTableId',
                 tableId: this.tableId },
                 success: justCount ? processCount : processDS});
@@ -2292,7 +2292,7 @@ this.Dataset = Model.extend({
     _updateSnapshot: function(method, name, callback)
     {
         var ds = this;
-        ds._makeRequest({
+        ds.makeRequest({
             success: function(response) {
                 ds._updateThumbnailCallback(response, callback);
             },

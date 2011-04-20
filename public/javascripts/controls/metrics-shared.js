@@ -127,11 +127,9 @@ metricsNS.topDatasetsCallback = function($context)
     metricsNS.updateTopListWrapper($context,
         $context.data(metricsNS.DATA_KEY),
         function(key, value, results) {
-            $.socrataServer.addRequest({
-                cache: false,
-                url: '/views/' + key  + '.json',
-                type: 'GET',
-                success: function(responseData) {
+            $.socrataServer.makeRequest({url: '/views/' + key  + '.json', batch: true,
+                success: function(responseData)
+                {
                     results.push({linkText: responseData.name,
                         value: value,
                         textValue: Highcharts.numberFormat(value, 0),
@@ -144,14 +142,9 @@ metricsNS.topDatasetsCallback = function($context)
             var render = function() {
                 metricsNS.renderTopList(data, $context);
             };
-            // Success won't be called if data is empty
-            if (!$.socrataServer.runRequests({
-                    success: render,
-                    // Some of the batch may have resulted in error, just
-                    // process what we have
-                    error: render
-                }))
-            { render(); }
+            // Some of the batch may have resulted in error, just
+            // process what we have
+            $.socrataServer.sendBatch(render, render);
         }
     );
 };
@@ -162,11 +155,9 @@ metricsNS.topAppTokensCallback = function($context)
     metricsNS.updateTopListWrapper($context,
         $context.data(metricsNS.DATA_KEY),
         function(key, value, results) {
-            $.socrataServer.addRequest({
-                cache: false,
-                url: '/api/app_tokens/' + key + '.json',
-                type: 'GET',
-                success: function(response) {
+            $.socrataServer.makeRequest({url: '/api/app_tokens/' + key + '.json', batch: true,
+                success: function(response)
+                {
                     var thumbed = response.thumbnailSha,
                         klass = thumbed ? 'showThumbnail' : '',
                         thumbnail = thumbed ? ('/api/file_data/' + response.thumbnailSha +
@@ -185,14 +176,9 @@ metricsNS.topAppTokensCallback = function($context)
             var render = function() {
                 metricsNS.renderTopList(data, $context);
             };
-            // Success won't be called if data is empty
-            if (!$.socrataServer.runRequests({
-                    success: render,
-                    // Some of the batch may have resulted in error, just
-                    // process what we have
-                    error: render
-                }))
-            { render(); }
+            // Some of the batch may have resulted in error, just
+            // process what we have
+            $.socrataServer.sendBatch(render, render);
         }
     );
 };

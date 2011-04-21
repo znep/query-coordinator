@@ -1,3 +1,6 @@
+// Wrap library in a function so that it can wait for the google namespace to be defined. We know
+// that it's ready when google-map.js#_setupLibraries is called.
+var add_markerwithlabel = function(){
 /**
  * @name MarkerWithLabel for V3
  * @version 1.1.4 [April 13, 2011]
@@ -505,7 +508,7 @@ MarkerLabel_.prototype.setVisible = function () {
  * @constructor
  * @param {MarkerWithLabelOptions} [opt_options] The optional parameters.
  */
-function MarkerWithLabel(opt_options) {
+window.MarkerWithLabel = function(opt_options) {
   opt_options = opt_options || {};
   opt_options.labelContent = opt_options.labelContent || "";
   opt_options.labelAnchor = opt_options.labelAnchor || new google.maps.Point(0, 0);
@@ -553,4 +556,5 @@ MarkerWithLabel.prototype.setMap = function (theMap) {
 
   // ... then deal with the label:
   this.label.setMap(theMap);
+};
 };

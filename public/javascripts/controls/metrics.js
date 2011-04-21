@@ -291,17 +291,16 @@
             var parts       = value.split(opts.separator),
                 startDate   = Date.parse(parts[0]).setTimezoneOffset(0),
                 endDate     = (parts.length > 1) ?
-                    Date.parse(parts[1]).setTimezoneOffset(0) : startDate,
-                sliceDepth  = 'Monthly';
+                    Date.parse(parts[1]).setTimezoneOffset(0) : startDate;
 
-            if (startDate.clone().addDays(opts.maxDaysToSliceHourly) > endDate)
+            var sliceDepth;
+            _.each(opts.rolloverDays, function(roll)
             {
-                sliceDepth = 'Hourly';
-            }
-            else if (startDate.clone().addMonths(opts.minMonthsToSliceMonthly) > endDate)
-            {
-                sliceDepth = 'Daily';
-            }
+                if (!sliceDepth && startDate.clone().addDays(roll.days) > endDate)
+                { sliceDepth = roll.slice; }
+            });
+            sliceDepth || (sliceDepth = opts.largestSlice);
+
             var $sliceDepth = $slicer.find('[value="' + sliceDepth + '"]');
 
             $sliceDepth.attr('disabled', '')
@@ -419,12 +418,20 @@
 
     $.fn.metricsTimeControl.defaults = {
         displayDateFormat: 'M d, yy',
-        maxDaysToSliceHourly: 4,
-        minMonthsToSliceMonthly: 3,
         metricsScreen: null,
         minimumDate: Date.parse('2008-01-01'),
         parseDateFormat: 'MMM d, yyyy',
         separator: '-',
+        // This array (whose order *matters*) determines after how many days
+        // to switch to the next slice interval. e.g. {'Hourly': 4, 'Daily': 64}
+        // means that if the date difference is greater than 4 days,
+        // hourly is out of the question and we must slice 'Daily'
+        rolloverDays: [
+            {slice: 'Hourly', days: 4},
+            {slice: 'Daily', days: 64},
+            {slice: 'Weekly', days: 128}
+        ],
+        largestSlice: 'Monthly',
         xOffset: 10,
         yOffset: 5
     };

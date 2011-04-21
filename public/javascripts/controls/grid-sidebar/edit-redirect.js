@@ -11,7 +11,10 @@
         title: 'Edit',
         sections: [{
             customContent: {
-                template: 'editRedirect'
+                callback: function($section)
+                {
+                    $section.append(blist.datasetControls.editPublishedMessage());
+                }
             }
         }]
     };

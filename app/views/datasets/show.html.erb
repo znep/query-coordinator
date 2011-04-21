@@ -378,11 +378,14 @@
 <%= render :partial => 'signed_dataset' %>
 <%= render :partial => 'subscribe' %>
 <%= render :partial => 'fatrow_header_template' %>
-<div class="editRedirect">
-  <div>
-    <p>This dataset is published and cannot be edited directly.
+<div class="editAlertTemplate">
+  <div class="editAlert">
+    <p class="editMessage">This dataset is published and cannot be edited directly.
     A working copy is available that allows you to make all your desired changes
     before making them publicly available.</p>
+    <p class="copyingMessage">Please wait while a working copy is made</p>
+    <p class="doneCopyingMessage hide">The working copy is now available.
+      The Edit Dataset button will give you access when you are ready to edit.</p>
     <a href="#Unpublished" class="button editPublished">Edit Dataset</a>
   </div>
 </div>

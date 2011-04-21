@@ -37,14 +37,12 @@ this.ServerModel = Model.extend({
                     return;
                 }
 
-                model._reqCount--;
-                if (model._reqCount < 1) { model.trigger('finish_request'); }
+                model._finishRequest();
                 if (_.isFunction(callback)) { callback.apply(this, arguments); }
             };
         };
 
-        if (model._reqCount < 1) { this.trigger('start_request'); }
-        model._reqCount++;
+        model._startRequest();
         req = $.extend({contentType: 'application/json', dataType: 'json'}, req,
                 {error: finishCallback(req.error),
                 success: finishCallback(req.success)});
@@ -172,6 +170,18 @@ this.ServerModel = Model.extend({
 
                     if (_.isFunction(errorCallback)) { errorCallback(); }
                 }});
+    },
+
+    _startRequest: function()
+    {
+        if (this._reqCount < 1) { this.trigger('start_request'); }
+        this._reqCount++;
+    },
+
+    _finishRequest: function()
+    {
+        this._reqCount--;
+        if (this._reqCount < 1) { this.trigger('finish_request'); }
     }
 });
 

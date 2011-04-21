@@ -1175,17 +1175,39 @@ this.Dataset = ServerModel.extend({
     },
 
     // Publishing
-    makeUnpublishedCopy: function(successCallback)
+    makeUnpublishedCopy: function(successCallback, pendingCallback)
     {
         var ds = this;
-        ds.makeRequest({url: '/api/views/' + ds.id + '/publication.json',
-            params: {method: 'copy'}, type: 'POST',
-            success: function(r)
+        if (ds.isDefault())
+        {
+            ds.makeRequest({url: '/api/views/' + ds.id + '/publication.json',
+                params: {method: 'copy'}, type: 'POST',
+                pending: function()
+                {
+                    ds.copyPending = true;
+                    if (_.isFunction(pendingCallback)) { pendingCallback(); }
+                },
+                success: function(r)
+                {
+                    delete ds.copyPending;
+                    var uc = new Dataset(r);
+                    if (_.isFunction(successCallback))
+                    { successCallback(uc); }
+                }});
+        }
+        else
+        {
+            ds.getParentDataset(function(parDS)
             {
-                var uc = new Dataset(r);
-                if (_.isFunction(successCallback))
-                { successCallback(uc); }
-            }});
+                ds._startRequest();
+                parDS.makeUnpublishedCopy(function()
+                {
+                    ds._finishRequest();
+                    if (_.isFunction(successCallback))
+                    { successCallback.apply(ds, arguments); }
+                }, pendingCallback);
+            });
+        }
     },
 
     publish: function(successCallback)

@@ -385,25 +385,38 @@ $(function()
     {
         if (!blist.dataset.isPublished() || !blist.dataset.hasRight('write')) { return; }
 
-        $(e.target).socrataAlert({message: $.tag({tagName: 'div', 'class': 'editAlert',
-            contents: [
-                {tagName: 'p', contents: 'This dataset is published and cannot be edited directly. ' +
-                'A working copy is available that allows you to make all your desired changes ' +
-                'before making them publicly available.'},
-                {tagName: 'a', 'class': ['button', 'editPublished'], href: '#Unpublished',
-                contents: 'Edit Dataset'}]}, true), showSpike: false, hideTime: null});
+        $(e.target).socrataTip({content: blist.datasetControls.editPublishedMessage(),
+            showSpike: false, trigger: 'now'});
     });
 
     $.live('.button.editPublished', 'click', function(e)
     {
         e.preventDefault();
+        if ($(this).hasClass('disabled')) { return; }
+
         blist.dataset.getUnpublishedDataset(function(unpub)
         {
             if (!$.isBlank(unpub)) { unpub.redirectTo(); }
             else
             {
+                var wasPending = false;
                 blist.dataset.makeUnpublishedCopy(function(copyView)
-                { copyView.redirectTo(); });
+                {
+                    if (wasPending)
+                    {
+                        datasetPageNS.sidebar.show('edit');
+                        $('.editAlert').find('.editPublished, .doneCopyingMessage').removeClass('hide');
+                        $('.editAlert').find('.copyingMessage').addClass('hide');
+                    }
+                    else
+                    { copyView.redirectTo(); }
+                },
+                function()
+                {
+                    $('.editAlert').find('.editPublished, .editMessage').addClass('hide');
+                    $('.editAlert').find('.copyingMessage').removeClass('hide');
+                    wasPending = true;
+                });
             }
         });
     });

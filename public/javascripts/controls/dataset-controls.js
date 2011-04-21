@@ -501,3 +501,15 @@ blist.datasetControls.raRejection = function($rejectionBox)
         }
     });
 };
+
+blist.datasetControls.editPublishedMessage = function()
+{
+    return $.renderTemplate('editAlertTemplate', {}, {
+        '.editPublished@class+': function()
+            { return blist.dataset.copyPending ? 'hide' : ''; },
+        '.editMessage@class+': function()
+            { return blist.dataset.copyPending ? 'hide' : ''; },
+        '.copyingMessage@class+': function()
+            { return blist.dataset.copyPending ? '' : 'hide'; }
+    });
+};

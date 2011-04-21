@@ -418,6 +418,19 @@
     {
         var cleanCol = col.cleanCopy();
         cleanCol.origColumn = col;
+
+        // allow rollup column to be re-named.
+        var section = _.detect(this.sections, function(s) { return s.title == 'Basic Information'});
+        _.each(
+            section.fields,
+            function(f)
+            {
+                if (f.name == 'name' || f.name == 'description')
+                {
+                    f.disabled = !isDataset && $.isBlank(cleanCol.format.grouping_aggregate);
+                }
+            });
+
         if (!$.isBlank(cleanCol.dropDownList))
         {
             cleanCol.dropDownList =

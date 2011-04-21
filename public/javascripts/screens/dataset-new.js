@@ -31,11 +31,10 @@ var formToViewMetadata = function(metadataForm)
         viewData.metadata || (viewData.metadata = {});
         viewData.metadata.accessPoints || (viewData.metadata.accessPoints = {});
         _.each(externalSources, function(source) {
-            var extensionReg = new RegExp(/\.([^\.]+)$/);
+            var extensionReg = new RegExp(/\.([^\.\/]+)$/);
             var extension = extensionReg.exec(source);
-            if (extension) {
-                viewData.metadata.accessPoints[extension[1].toLowerCase()] = source;
-            }
+            var key = extension ? extension[1].toLowerCase() : 'unknown';
+            viewData.metadata.accessPoints[key] = source;
         });
         // Set the displayType so Dataset knows what it is when creating it
         viewData.displayType = 'href';
@@ -103,12 +102,25 @@ $wizard.wizard({
             onActivate: function($pane, config, state)
             {
                 // size the select list by how many items it contains (or it won't center)
-                var $newKindList = $pane.find('.newKindList');
+                var $newKindList = $pane.find('.newKindList').first();
                 var $newKindListItems = $newKindList.children();
                 var adjust = ($.browser.msie && ($.browser.majorVersion >= 8)) ? 1 : 0;
-                $newKindList.width($newKindListItems.filter(':last').outerWidth(true) * $newKindListItems.length -
-                    ($newKindListItems.filter(':last').outerWidth(true) - $newKindListItems.filter(':first').outerWidth(true)) + 
-                    adjust);
+                if ($newKindListItems.length > 4)
+                {
+                    var $copy = $newKindList.clone().empty();
+                    // grab the fourth and larger elements
+                    $newKindListItems.filter(':gt(2)')
+                        .appendTo($copy);
+                    $newKindList.after($copy);
+                }
+                $pane.find('.newKindList').each(function(i, list)
+                {
+                    var $list = $(list);
+                    var $items = $($list).children();
+                    $list.width($items.filter(':last').outerWidth(true) * $items.length -
+                        ($items.filter(':last').outerWidth(true) - $items.filter(':first').outerWidth(true)) +
+                        adjust);
+                });
 
                 // reactivate tips if we have them
                 _.each(state.selectTypeTips || [], function(tip)

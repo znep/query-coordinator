@@ -130,17 +130,7 @@
                     shape.rows = details.rows;
                     shape.flyoutDetails = details.flyoutDetails;
                     shape.dataView = details.dataView;
-                    if (!shape.getLocations) // is Pushpin
-                    {
-                        shape.getLocations = function()
-                            { return [this.getLocation()]; };
-                    }
-                    if (!shape.getLocation) // is Polygon or Polyline
-                    {
-                        shape.getLocation = function()
-                            { return Microsoft.Maps.LocationRect.fromLocations(
-                                this.getLocations()).center; };
-                    }
+                    shape = decorateBingShape(shape);
 
                     if (geoType != 'point')
                     {
@@ -174,6 +164,30 @@
                 });
 
                 return true;
+            },
+
+            renderCluster: function(cluster, details)
+            {
+                var mapObj = this;
+
+                if (cluster.count <= 0) { return; }
+
+                var shape = new Microsoft.Maps.Pushpin(
+                                new Microsoft.Maps.Location(cluster.point.lat,
+                                                            cluster.point.lon),
+                                { icon: '/images/poi_search_cluster.png' });
+                shape = decorateBingShape(shape);
+
+                mapObj._markers[shape.getLocation().toString()] = shape;
+                mapObj.map.entities.push(shape);
+
+                var offset = $((shape['cm1001_er_etr'] || {}).dom).offset();
+                offset.top  += (shape.getHeight() - 3);
+                offset.left -= 10;
+                var label = $('<div class="bing_cluster_labels"></div>');
+                label.css({ 'left': offset.left + 'px', 'top': offset.top + 'px' })
+                     .text(cluster.count);
+                $('body').append(label);
             },
 
             adjustBounds: function()
@@ -230,6 +244,15 @@
                     };
                 }
 
+                if (!mapObj._viewportChanging)
+                {
+                    mapObj._viewportChanging = Microsoft.Maps.Events.addHandler(
+                        mapObj.map,
+                        'viewchangestart',
+                        function()
+                        { $('.bing_cluster_labels').remove(); });
+                }
+
                 if (mapObj._hideLayerInterval)
                 { mapObj.hideLayers(); }
             },
@@ -241,16 +264,17 @@
                     center: mapObj.map.getCenter(),
                     zoom: mapObj.map.getZoom()
                 };
-                if (with_bounds)
-                {
-                    var bounds = mapObj.map.getBounds();
-                    var nw = bounds.getNorthwest();
-                    var se = bounds.getSoutheast();
-                    $.extend(viewport, {
-                        xmin: nw.longitude, xmax: se.longitude,
-                        ymin: se.latitude, ymax: nw.latitude
-                    });
-                }
+
+                var bounds = mapObj.map.getBounds();
+                var nw = bounds.getNorthwest();
+                var se = bounds.getSoutheast();
+                $.extend(viewport, {
+                    xmin: nw.longitude, xmax: se.longitude,
+                    ymin: se.latitude, ymax: nw.latitude
+                });
+                _.each(['xmin', 'ymin', 'xmax', 'ymax'], function(key)
+                { viewport[key] = $.jsonIntToFloat(viewport[key]); });
+
                 return viewport;
             },
 
@@ -286,6 +310,7 @@
                 var mapObj = this;
 
                 mapObj.map.entities.clear();
+                $(".bing_cluster_labels").remove();
                 mapObj._hideBingTiles = false;
             },
 
@@ -306,6 +331,7 @@
                 var mapObj = this;
 
                 mapObj.map.entities.clear();
+                $(".bing_cluster_labels").remove();
             },
 
             getRequiredJavascripts: function()
@@ -383,5 +409,21 @@
     {
         $("#bing_infoWindow").hide();
     };
+
+    var decorateBingShape = function(shape)
+    {
+        if (!shape.getLocations) // is Pushpin
+        {
+            shape.getLocations = function()
+                { return [this.getLocation()]; };
+        }
+        if (!shape.getLocation) // is Polygon or Polyline
+        {
+            shape.getLocation = function()
+                { return Microsoft.Maps.LocationRect.fromLocations(
+                    this.getLocations()).center; };
+        }
+        return shape;
+    }
 
 })(jQuery);

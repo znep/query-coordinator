@@ -409,6 +409,7 @@ this.Column = Model.extend({
         metadata: true,
         name: true,
         position: true,
+        tableColumnId: true,
         width: true
     }
 });

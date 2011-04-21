@@ -585,7 +585,15 @@ $.addAppToken = function(url)
 {
     return url + ((url.indexOf('?') == -1) ? '?' : '&') +
         'app_token=' + blist.configuration.appToken;
-}
+};
+
+// force an integer to appear as a double through the json transport
+$.jsonIntToFloat = function(integer)
+{
+    if (integer.toString().indexOf('.') < 0)
+    { return parseFloat(integer.toString() + '.0000000001'); }
+    return integer;
+};
 
 $.fn.tagName = function()
 {

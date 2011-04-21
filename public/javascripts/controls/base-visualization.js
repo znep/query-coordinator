@@ -54,9 +54,17 @@
                     = { view: currentObj.settings.view };
                 currentObj._dataViews = [currentObj.settings.view];
 
-                var viewsFetched = 1;
+                var viewsFetched = 0;
                 var viewsToLoad = (currentObj.settings.view
                                    .displayFormat.compositeMembers || []).length + 1;
+
+                var datasetReady = function()
+                {
+                    viewsFetched++;
+                    if (viewsFetched >= viewsToLoad)
+                    { currentObj.loadLibraries(); }
+                };
+
                 _.each(currentObj.settings.view.displayFormat.compositeMembers || [],
                 function(member_id, index)
                 {
@@ -64,14 +72,11 @@
                     {
                         currentObj._dataViews[index + 1] = dataset;
                         currentObj._byView[dataset.id] = { view: dataset };
-                        viewsFetched++;
-                        if (viewsFetched >= viewsToLoad)
-                        { currentObj.loadLibraries(); }
+                        datasetReady();
                     });
                 });
-                // No comopsite member views
-                if (viewsFetched >= viewsToLoad)
-                { currentObj.loadLibraries(); }
+                // No composite member views
+                datasetReady();
             },
 
             $dom: function()
@@ -331,6 +336,11 @@
                 this.renderData(rows, view);
             },
 
+            handleClustersLoaded: function(clusters, view)
+            {
+                // Intended for maps only
+            },
+
             renderData: function(rows, view)
             {
                 var vizObj = this;
@@ -498,26 +508,61 @@
     var getRowsForAllViews = function(vizObj, callback)
     {
         var rowsToFetch = vizObj._maxRows;
-        var views = _.map(_.reject(vizObj._dataViews, function(view)
-            { return view.renderWithArcGISServer(); }),
-            function(view, index)
+        var nonStandardRender = function(view)
+            { return view.renderWithArcGISServer() };
+
+        var viewsToRender = _.reject(vizObj._dataViews, function(view)
+            { return nonStandardRender(view); });
+
+        var views = [];
+        var viewsToCount = viewsToRender.length;
+        _.each(viewsToRender, function(view, index)
+        {
+            view.getTotalRows(function()
             {
-                return (function()
-                {
-                    view.getRows(0, rowsToFetch, function(data)
+                var clusterFunction = function()
                     {
-                        rowsToFetch -= view.totalRows ? view.totalRows : data.length;
-                        var executable = views.shift();
-                        if (executable) { executable(); }
-                        vizObj.totalRowsForAllViews();
-                        if (rowsToFetch <= 0 || !executable)
-                        { delete vizObj._pendingReload; }
-                        callback.apply(vizObj, [data, view]);
-                    });
-                });
+                        vizObj._byView[view.id]._clustering = true;
+                        view.getClusters(function(data)
+                        {
+                            _.defer(function()
+                                { vizObj.handleClustersLoaded(data, view); });
+                            var executable = views.shift();
+                            if (executable) { executable(); }
+                            vizObj.totalRowsForAllViews();
+                            delete vizObj._initialLoad;
+                            delete vizObj._pendingReload;
+                        });
+                    };
+                var rowFunction = function()
+                    {
+                        view.getRows(0, rowsToFetch, function(data)
+                        {
+                            rowsToFetch -= view.totalRows ? view.totalRows
+                                                          : data.length;
+                            var executable = views.shift();
+                            if (executable) { executable(); }
+                            vizObj.totalRowsForAllViews();
+                            if (rowsToFetch <= 0 || !executable)
+                            { delete vizObj._pendingReload; }
+                            callback.apply(vizObj, [data, view]);
+                        });
+                    };
+
+                if (vizObj.settings.view.displayType == 'map'
+                    && view.totalRows > vizObj._maxRows)
+                { views[index] = clusterFunction; }
+                else
+                { views[index] = rowFunction; }
+
+                viewsToCount--;
+                if (viewsToCount == 0)
+                {
+                    var executable = views.shift();
+                    if (executable) { executable(); }
+                }
             });
-        var executable = views.shift();
-        if (executable) { executable(); }
+        });
     };
 
 })(jQuery);

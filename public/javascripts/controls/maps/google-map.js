@@ -191,6 +191,27 @@
                 return true;
             },
 
+            renderCluster: function(cluster, details)
+            {
+                var mapObj = this;
+
+                if (cluster.count <= 0) { return; }
+
+                var graphic = new MarkerWithLabel({
+                    labelContent: cluster.count,
+                    labelAnchor: new google.maps.Point(20, 0),
+                    labelClass: 'google_cluster_labels', map: mapObj.map,
+                    icon: '/images/marker_sprite_cluster.png',
+                    position: new google.maps.LatLng(cluster.point.lat,
+                                                     cluster.point.lon)
+                });
+
+                mapObj._markers[graphic.getPosition().toString()] = graphic;
+
+                mapObj._bounds.extend(graphic.getPosition());
+                mapObj._boundsCounts++;
+            },
+
             adjustBounds: function()
             {
                 var mapObj = this;
@@ -228,6 +249,7 @@
                                     google.maps.event.removeListener(
                                         mapObj._extentChanging);
                                     mapObj._extentChanging = false;
+                                    _metersPerPixel = null;
                                     var newViewport = mapObj.getViewport();
                                     if (_.isEqual(
                                         mapObj.settings.view.displayFormat.viewport,
@@ -256,16 +278,17 @@
                     lat: viewport.center.lat(),
                     lng: viewport.center.lng()
                 };
-                if (with_bounds)
-                {
-                    var bounds = mapObj.map.getBounds();
-                    var ne = bounds.getNorthEast();
-                    var sw = bounds.getSouthWest();
-                    $.extend(viewport, {
-                        xmin: sw.lng(), xmax: ne.lng(),
-                        ymin: sw.lat(), ymax: ne.lat()
-                    });
-                }
+
+                var bounds = mapObj.map.getBounds();
+                var ne = bounds.getNorthEast();
+                var sw = bounds.getSouthWest();
+                $.extend(viewport, {
+                    xmin: sw.lng(), xmax: ne.lng(),
+                    ymin: sw.lat(), ymax: ne.lat()
+                });
+                _.each(['xmin', 'ymin', 'xmax', 'ymax'], function(key)
+                { viewport[key] = $.jsonIntToFloat(viewport[key]); });
+
                 return viewport;
             },
 
@@ -322,6 +345,7 @@
             {
                 // Grab a reference to the current object (this) from a global
                 var mapObj = blist.util.googleCallbackMap;
+                add_markerwithlabel();
                 mapObj._librariesLoaded();
             }
         }

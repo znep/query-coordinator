@@ -46,9 +46,14 @@
                     {
                         mapObj._mapLoaded = true;
                         mapObj._graphicsLayer = mapObj.map.graphics;
-                        if (mapObj._dataLoaded)
-                        { _.each(mapObj._dataViews, function(view)
-                            { mapObj.renderData(view._rows, view); }); }
+                        _.each(mapObj._dataViews, function(view)
+                            {
+                                if (mapObj._dataLoaded)
+                                { mapObj.renderData(view._rows, view); }
+                                if (mapObj._clustersLoaded)
+                                { mapObj.renderClusters(mapObj._byView[view.id]
+                                                                ._clusters, view); }
+                            });
                     });
 
                     var layers = mapObj.settings.view.displayFormat.layers ||
@@ -200,15 +205,18 @@
                 var mapObj = this;
                 mapObj._dataLoaded = true;
 
-                if (mapObj._totalRows > mapObj._maxRows)
-                {
-                    mapObj.showError('This dataset has more than ' + mapObj._maxRows +
-                               ' rows visible. Some points will be not be displayed.');
-                    mapObj._maxRowsExceeded = true;
-                }
-
                 if (mapObj._mapLoaded)
                 { mapObj.renderData(rows, view); }
+            },
+
+            handleClustersLoaded: function(clusters, view)
+            {
+                var mapObj = this;
+                mapObj._clustersLoaded = true;
+                mapObj._byView[view.id]._clusters = clusters;
+
+                if (mapObj._mapLoaded)
+                { mapObj.renderClusters(clusters, view); }
             },
 
             renderGeometry: function(geoType, geometry, dupKey, details)
@@ -279,6 +287,53 @@
                 return true;
             },
 
+            renderCluster: function(cluster, details)
+            {
+                var mapObj = this;
+
+                if (cluster.count <= 0) { return; }
+
+                // Count:     1 -> Size: 20.
+                // Count:   100 -> Size: 50.
+                // Count:  1000 -> Size: 60.
+                // Count: 10000 -> Size: 70.
+                var convertCountToSize = function(count)
+                    {
+                        if (count <= 100)
+                        { return 20 + Math.floor(0.3 * count); }
+                        else if (count <= 1000)
+                        { return 50 + Math.floor(0.01 * count); }
+                        else
+                        { return 60 + Math.floor((Math.log(count)
+                                                 /Math.log(10) - 4) * 10); }
+                    };
+
+                var symbol = getESRIMapSymbol(mapObj, 'point',
+                    $.extend({}, details, { size: convertCountToSize(cluster.count) }));
+                var geometry = esri.geometry.geographicToWebMercator(
+                    new esri.geometry.Point({
+                        x: cluster.point.lon,
+                        y: cluster.point.lat,
+                        spatialReference: { wkid: 4326 }}));
+                var graphic = new esri.Graphic(geometry, symbol);
+
+                var textSymbol = new esri.symbol.TextSymbol(cluster.count);
+                textSymbol.setFont(new esri.symbol.Font({ size: '12px',
+                    weight: esri.symbol.Font.WEIGHT_BOLD }));
+                textSymbol.setOffset(0, -3);
+                textSymbol.setColor($.rgbToHsv(symbol.color).v < 50 ? 'white' : 'black');
+                var textGraphic = new esri.Graphic(geometry, textSymbol);
+
+                graphic.textGraphic = textGraphic;
+
+                mapObj._graphicsLayer.add(graphic);
+                mapObj._graphicsLayer.add(textGraphic);
+
+                mapObj._multipoint.addPoint(geometry);
+
+                return true;
+            },
+
             hideLayers: function()
             {
                 var mapObj = this;
@@ -343,7 +398,8 @@
                         mapObj.settings.view.update({
                             displayFormat: $.extend({},
                                 mapObj.settings.view.displayFormat,
-                                { viewport: vp })
+                                { viewport: isWebMercatorSpatialReference(mapObj.map) ?
+                                    esri.geometry.webMercatorToGeographic(vp) : vp })
                         }, false, true);
                         curVP = vp;
                         mapObj.updateRowsByViewport();
@@ -365,6 +421,8 @@
                     ymax: viewport.ymax,
                     sr: sr
                 };
+                _.each(['xmin', 'ymin', 'xmax', 'ymax'], function(key)
+                { viewport[key] = $.jsonIntToFloat(viewport[key]); });
 
                 return viewport;
             },

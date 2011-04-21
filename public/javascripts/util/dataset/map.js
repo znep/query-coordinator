@@ -106,7 +106,7 @@ Dataset.modules['map'] =
                 if (index < (view.visibleColumns || []).length)
                 {
                     view.displayFormat.plot[key] =
-                        view.visibleColumns[index].tableColumnId;
+                        parseInt(view.visibleColumns[index].tableColumnId);
                 }
             });
         }

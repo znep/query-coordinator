@@ -323,18 +323,23 @@
 
             handleRowsLoaded: function(rows, view)
             {
+                this.renderData(rows, view);
+            },
+
+            handleClustersLoaded: function(clusters, view)
+            {
+                this.renderClusters(clusters, view);
+            },
+
+            renderClusters: function(clusters, view)
+            {
                 var mapObj = this;
 
-                if (mapObj._totalRows > mapObj._maxRows)
-                {
-                    mapObj.showError('This dataset has more than ' + mapObj._maxRows +
-                                     ' rows visible. Some points will be not be' +
-                                     ' displayed.');
-                    // TODO: This may need to be deleted on reset. Investigate.
-                    mapObj._maxRowsExceeded = true;
-                }
+                _.each(clusters, function(cluster)
+                    { mapObj.renderCluster(cluster,
+                        { color: mapObj.settings.view.displayFormat.color}); });
 
-                mapObj.renderData(rows, view);
+                mapObj.clustersRendered();
             },
 
             generateFlyoutLayout: function(columns)
@@ -592,6 +597,16 @@
                 // Implement me
             },
 
+            renderCluster: function(cluster, details)
+            {
+                // Implement me
+            },
+
+            clustersRendered: function()
+            {
+                this.adjustBounds();
+            },
+
             rowsRendered: function()
             {
                 // Override if you wish to do something other than adjusting the
@@ -617,12 +632,12 @@
             updateRowsByViewport: function(viewport, wrapIDL)
             {
                 var mapObj = this;
-                if (!mapObj._maxRowsExceeded) { return; }
                 if (!viewport) { viewport = mapObj.getViewport(true); }
 
                 _.each(mapObj._dataViews, function(view)
                 {
                     var viewConfig = mapObj._byView[view.id];
+                    if (!viewConfig._clustering) { return; }
                     var filterColumn = viewConfig._geoCol || viewConfig._locCol;
 
                     var buildFilterCondition = function(viewport)

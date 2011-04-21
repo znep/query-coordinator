@@ -393,6 +393,22 @@ this.Dataset = Model.extend({
         });
     },
 
+    getTotalRows: function(callback)
+    {
+        this.getRows(0, 1, callback);
+    },
+
+    getClusters: function(callback)
+    {
+        var ds = this;
+
+        ds._makeRequest({
+            params: {method: 'clustered'},
+            inline: true,
+            success: callback
+        });
+    },
+
     // Callback may be called multiple times with smaller batches of rows
     getRows: function(start, len, callback)
     {

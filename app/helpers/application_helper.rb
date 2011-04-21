@@ -107,13 +107,27 @@ module ApplicationHelper
   # <div class="flash warning">Your error text</flash>
   #
   # Adapted from http://snippets.dzone.com/posts/show/2348
+  FLASH_MESSAGE_TYPES = [:error, :warning, :notice]
   def display_standard_flashes
-    if flash[:error]
-      flash_to_display, level = flash[:error], 'error'
-    elsif flash[:warning]
-      flash_to_display, level = flash[:warning], 'warning'
-    elsif flash[:notice]
-      flash_to_display, level = flash[:notice], 'notice'
+    flash_obj = flash
+    if request.cookies['js_flash']
+      begin
+        js_flash = JSON.parse(request.cookies['js_flash']).symbolize_keys
+        flash_obj = flash.clone
+        FLASH_MESSAGE_TYPES.each do |type|
+          flash_obj[type] = h(js_flash[type]) if js_flash[type]
+        end
+      rescue
+        # Somebody did something weird
+      end
+      cookies.delete 'js_flash'
+    end
+    flash_to_display, level = nil, nil
+    FLASH_MESSAGE_TYPES.each do |type|
+      if flash_obj[type]
+        flash_to_display, level = flash_obj[type], type.to_s
+        break
+      end
     end
     content_tag 'div', flash_to_display, :class => "flash #{level}"
   end

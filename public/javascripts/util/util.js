@@ -625,6 +625,15 @@ blist.util.doAuthedAction = function(actionText, callback)
     }
 };
 
+blist.util.railsFlash = function(text, level)
+{
+    var existingFlash = $.cookies.get('js_flash');
+    var flashObj = existingFlash ? JSON.parse(existingFlash) : {};
+    flashObj[(level || 'notice')] = text;
+
+    $.cookies.set('js_flash', JSON.stringify(flashObj));
+}
+
 blist.util.patterns.UID = /^\w{4}-\w{4}$/;
 
 })(jQuery);

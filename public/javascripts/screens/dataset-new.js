@@ -37,6 +37,8 @@ var formToViewMetadata = function(metadataForm)
                 viewData.metadata.accessPoints[extension[1].toLowerCase()] = source;
             }
         });
+        // Set the displayType so Dataset knows what it is when creating it
+        viewData.displayType = 'href';
     }
 
     return viewData;

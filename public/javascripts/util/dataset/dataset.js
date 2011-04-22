@@ -402,7 +402,7 @@ this.Dataset = ServerModel.extend({
     {
         var ds = this;
 
-        ds._makeRequest({
+        ds.makeRequest({
             params: {method: 'clustered'},
             inline: true,
             success: callback

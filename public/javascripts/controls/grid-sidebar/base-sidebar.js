@@ -406,7 +406,7 @@
                 if ($.isBlank(paneConfigs[primary]))
                 {
                     paneConfigs[primary] = {name: primary, isParent: true,
-                        title: primary.capitalize(), subPanes: {}};
+                        title: primary.replace(/([a-z]+)([A-Z])/g, '$1 $2').capitalize(), subPanes: {}};
                 }
                 config.name = p[1];
                 paneConfigs[primary].subPanes[p[1]] = config;

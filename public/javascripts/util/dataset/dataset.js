@@ -1252,6 +1252,22 @@ this.Dataset = ServerModel.extend({
         }
     },
 
+    getSnapshotDatasets: function(callback)
+    {
+        var ds = this;
+        if ($.isBlank(ds._snapshotViews))
+        {
+            ds._loadPublicationViews(function()
+            {
+                callback(_.select(ds._snapshotViews, function(v) { return v.isDefault(); }));
+            });
+        }
+        else
+        {
+            callback(_.select(ds._snapshotViews, function(v) { return v.isDefault(); }));
+        }
+    },
+
     cleanFilters: function(excludeTemporary)
     {
         var ds = this;

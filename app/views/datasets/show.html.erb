@@ -585,8 +585,10 @@
     <%# Namespace to keep track of disabled sidebar sections %>
     blist.namespace.fetch('blist.sidebarHidden');
 
-    <%# Saved views %>
-    blist.sidebarHidden.savedViews = <%= @view.is_unpublished? || !@view.is_tabular? %>;
+    <%# More views %>
+    blist.sidebarHidden.moreViews = blist.sidebarHidden.moreViews || {};
+    blist.sidebarHidden.moreViews.views = <%= @view.is_unpublished? || !@view.is_tabular? %>;
+    blist.sidebarHidden.moreViews.snapshots = <%= @view.is_unpublished? || !@view.flag?('default') %>;
 
     <%# Edit pane %>
     blist.sidebarHidden.edit = blist.sidebarHidden.edit || {};
@@ -601,7 +603,7 @@
     blist.sidebarHidden.edit.addColumn = <%= !@view.is_unpublished? || !@view.is_blist? ||
       !@view.has_rights?('add_column') %>;
     blist.sidebarHidden.edit.redirect = <%= !@view.is_published? || !@view.is_blist? &&
-      !@view.is_blobby || !@view.can_edit_published? %>;
+      !@view.is_blobby? || !@view.can_edit_published? %>;
 
     <%# Manage %>
     blist.sidebarHidden.manage = blist.sidebarHidden.manage || {};

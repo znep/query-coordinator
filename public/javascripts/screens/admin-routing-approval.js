@@ -6,6 +6,8 @@ $(function()
 
     var apprTmpl = blist.routingApproval.approvalTemplate;
 
+    $dashboard.find('.report.loading.hide').removeClass('hide');
+
     var getStageIcon = function(stage)
     {
         var r = '';

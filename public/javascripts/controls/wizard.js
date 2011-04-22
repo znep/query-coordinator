@@ -45,11 +45,17 @@
                     $currentPane.siblings().detach();
                     $paneContainer.css('marginLeft', 0);
                 });
-                animateVert();
+                _.defer(function()
+                {
+                    animateVert();
+                });
             };
             var animateVert = function()
             {
-                $wizard.animate({ height: $currentPane.outerHeight(true) });
+                $wizard.animate({ height: $currentPane.outerHeight(true) }, function()
+                {
+                    $wizard.css('height', '');
+                });
             };
 
         // flow
@@ -146,8 +152,7 @@
                 // init command obj for consumers to trigger pane actions
                 var commandObj = {
                     prev: prevPane,
-                    next: nextPane,
-                    updateHeight: animateVert
+                    next: nextPane
                 };
 
                 // fire events people are expecting
@@ -235,9 +240,6 @@
                 animateHoriz();
             };
             $(document).resize(adjustSize);
-
-            // track the height of the current pane
-            setInterval(animateVert, 2000);
 
             // go.
             var $initialPane = $panes.first();

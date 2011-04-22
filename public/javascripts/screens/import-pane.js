@@ -15,12 +15,18 @@
 var importNS = blist.namespace.fetch('blist.import');
 
 // globals
-var columns,
+var scan,
+    columns,
     locationGroups,
+    columnSelectOptions,
+    sourceColumns,
     $columnsList,
     $warningsList,
     $warningsSection,
-    wizardCommand;
+    $sourceDropDown,
+    $columnDropDown,
+    wizardCommand,
+    isShown;
 
 // structs
 var importTypes = {
@@ -185,13 +191,13 @@ var updateAll = function()
                 if ($.isBlank(v))
                     delete column[k];
             });
-            $line.find('.locationDetails').slideDown();  // slideToggle doesn't take a boolean like toggle =(
+            $line.find('.locationDetails')[isShown ? 'slideDown' : 'show']();
             $line.find('.columnSourceSelect').closest('.uniform').hide();
         }
         else
         {
             column = columns[parseInt($line.find('.columnSourceCell').val())];
-            $line.find('.locationDetails').slideUp();
+            $line.find('.locationDetails')[isShown ? 'slideUp' : 'hide']();
             $line.find('.columnSourceSelect').closest('.uniform').show();
         }
 
@@ -311,12 +317,101 @@ var validateAll = function()
 
     // show the list if necessary
     if ($warningsList.children().length > 0)
-    {
-        $warningsSection.show();
-        wizardCommand.updateHeight();
-    }
+        $warningsSection[isShown ? 'slideDown' : 'show']();
     else
-        $warningsSection.slideUp();
+        $warningsSection[isShown ? 'slideUp' : 'hide']();
+};
+
+// create a new toplevel column, optionally taking in an analysed
+// column to pattern after
+var newLine = function(column)
+{
+    // render template
+    var $line = $.renderTemplate('columnsListLine', { index: _.uniqueId() }, {
+        '.locationSourceToggle@name+': 'index'
+    });
+    $line.find('.textPrompt').example(function() { return $(this).attr('title'); });
+
+    // add column dropdowns
+    var $lineSourceDropDown = $sourceDropDown.clone();
+    $line.find('.columnSourceCell').append($lineSourceDropDown);
+    $line.find('.columnSourcePlaceholder').each(function()
+    {
+        var $this = $(this);
+        var $dropDown = $columnDropDown.clone();
+        $dropDown.addClass($this.attr('data-class'));
+        $this.replaceWith($dropDown);
+    });
+
+    // populate fields if we have a column
+    if (!$.isBlank(column))
+    {
+        // populate standard things
+        $line.find('.columnName').val(column.name);
+        $line.find('.columnTypeSelect').val(column.suggestion)
+            .trigger('change'); // jquery does not fire change for val()
+        $lineSourceDropDown.val(column.id)
+            .trigger('change'); // same here
+
+        // populate crazy things
+        if (column.suggestion == 'location')
+        {
+            _.each(column, function(originalColumn, field)
+            {
+                $line.find('.location' + $.capitalize(field) + 'Column')
+                    .val(originalColumn.id).trigger('change'); // and again here
+            });
+        }
+
+        $line.data('column', column);
+    }
+
+    // styling
+    $line.find('select, :radio').uniform();
+
+    return $line;
+};
+
+// clear out all the columns
+var emptyColumnsList = function()
+{
+    $columnsList.empty();
+    updateAll();
+};
+
+// throw in all analysed columns, with location groups
+var addDefaultColumns = function()
+{
+    // keep track of what we haven't used
+    var availableColumns = _.clone(columns);
+    var compositeColumns = [];
+
+    _.each(scan.summary.locations || [], function(location, i)
+    {
+        var compositeColumn = {};
+        compositeColumn.name = 'Location ' + (i + 1);
+        compositeColumn.suggestion = 'location';
+
+        _.each(location, function(columnId, field)
+        {
+            if (field == 'address')
+                field = 'street'; // workaround for how our location stuff works
+
+            compositeColumn[field] = columns[columnId];
+            availableColumns = _.without(availableColumns, columns[columnId]);
+        });
+
+        compositeColumns.push(compositeColumn);
+    });
+
+    // now add the ones we haven't used as individual columns, plus our compositeColumns
+    _.each(availableColumns.concat(compositeColumns), function(column)
+    {
+        $columnsList.append(newLine(column));
+    });
+
+    // update all our states
+    updateAll();
 };
 
 
@@ -326,10 +421,12 @@ importNS.paneConfig = {
     uniform: true,
     onInitialize: function($pane, paneConfig, state, command)
     {
-        // vars
+        // update global vars
+        scan = state.scan;
+        isShown = false;
         wizardCommand = command;
-        columns = state.scan.summary.columns;
-        locationGroups = state.scan.summary.locations;
+        columns = scan.summary.columns;
+        locationGroups = scan.summary.locations;
         $columnsList = $pane.find('.columnsList');
         $warningsList = $pane.find('.columnWarningsList');
         $warningsSection = $pane.find('.warningsSection');
@@ -342,115 +439,32 @@ importNS.paneConfig = {
         });
 
         // create an options hash for pure columns
-        var columnSelectOptions = [];
+        columnSelectOptions = [];
         _.each(columns || [], function(column, i)
         {
             columnSelectOptions.push({ value: i, label: column.name });
         });
 
         // create an options hash for column-like options
-        var sourceColumns = [];
+        sourceColumns = [];
         sourceColumns.push({ value: '', label: '(No Source Column)', 'class': 'special' });
         sourceColumns = sourceColumns.concat(columnSelectOptions);
         sourceColumns.push({ value: 'composite', label: '(Combine Multiple Columns...)', 'class': 'special' });
 
         // create a couple selects we can clone
-        var $sourceDropDown = $.tag({
+        $sourceDropDown = $.tag({
             tagName: 'select',
             'class': 'columnSourceSelect',
             contents: optionsForSelect(sourceColumns)
         });
-        var $columnDropDown = $.tag({
+        $columnDropDown = $.tag({
             tagName: 'select',
             'class': 'columnSelect',
             contents: optionsForSelect([{ value: '', label: '(No Source Column)',
                                           'class': 'special' }].concat(columnSelectOptions))
         });
 
-        // create a new toplevel column, optionally taking in an analysed
-        // column to pattern after
-        var newLine = function(column)
-        {
-            // render template
-            var $line = $.renderTemplate('columnsListLine', { index: _.uniqueId() }, {
-                '.locationSourceToggle@name+': 'index'
-            });
-            $line.find('.textPrompt').example(function() { return $(this).attr('title'); });
-
-            // add column dropdowns
-            var $lineSourceDropDown = $sourceDropDown.clone();
-            $line.find('.columnSourceCell').append($lineSourceDropDown);
-            $line.find('.columnSourcePlaceholder').each(function()
-            {
-                var $this = $(this);
-                var $dropDown = $columnDropDown.clone();
-                $dropDown.addClass($this.attr('data-class'));
-                $this.replaceWith($dropDown);
-            });
-
-            // populate fields if we have a column
-            if (!$.isBlank(column))
-            {
-                // populate standard things
-                $line.find('.columnName').val(column.name);
-                $line.find('.columnTypeSelect').val(column.suggestion)
-                    .trigger('change'); // jquery does not fire change for val()
-                $lineSourceDropDown.val(column.id)
-                    .trigger('change'); // same here
-
-                // populate crazy things
-                if (column.suggestion == 'location')
-                {
-                    _.each(column, function(originalColumn, field)
-                    {
-                        $line.find('.location' + $.capitalize(field) + 'Column')
-                            .val(originalColumn.id).trigger('change'); // and again here
-                    });
-                }
-
-                $line.data('column', column);
-            }
-
-            // styling
-            $line.find('select, :radio').uniform();
-
-            return $line;
-        };
-
-        // throw in all analysed columns, with location groups
-        var addDefaultColumns = function()
-        {
-            // keep track of what we haven't used
-            var availableColumns = _.clone(columns);
-            var compositeColumns = [];
-
-            _.each(state.scan.summary.locations || [], function(location, i)
-            {
-                var compositeColumn = {};
-                compositeColumn.name = 'Location ' + (i + 1);
-                compositeColumn.suggestion = 'location';
-
-                _.each(location, function(columnId, field)
-                {
-                    if (field == 'address')
-                        field = 'street'; // workaround for how our location stuff works
-
-                    compositeColumn[field] = columns[columnId];
-                    availableColumns = _.without(availableColumns, columns[columnId]);
-                });
-
-                compositeColumns.push(compositeColumn);
-            });
-
-            // now add the ones we haven't used as individual columns, plus our compositeColumns
-            _.each(availableColumns.concat(compositeColumns), function(column)
-            {
-                $columnsList.append(newLine(column));
-            });
-
-            // update all our states
-            updateAll();
-        };
+        // throw in our default set of suggestions
         addDefaultColumns();
 
         // handle events
@@ -475,12 +489,6 @@ importNS.paneConfig = {
                 updateAll();
             });
         });
-
-        var emptyColumnsList = function()
-        {
-            $columnsList.empty();
-            updateAll();
-        };
 
         $pane.find('.clearColumnsButton').click(function(event)
         {
@@ -521,6 +529,9 @@ importNS.paneConfig = {
             event.preventDefault();
             $('#importTypesMessage').jqmShow();
         });
+
+        // we are now past the first init, so start animating things
+        isShown = true;
     },
     onNext: function()
     {

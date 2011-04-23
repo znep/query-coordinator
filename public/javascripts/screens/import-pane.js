@@ -328,7 +328,21 @@ var validateAll = function()
         else if (column.type == 'composite')
         {
             // composite sources require special validation
-            
+            if (column.sources.length === 0)
+            {
+                addValidationError(importColumn, 'error', 'a composite column that will be created ' +
+                    'out of multiple source columns, but you currently don\'t have it set to be ' +
+                    'populated by anything. Please add some source columns or text.');
+            }
+
+            if (importType != 'text')
+            {
+                addValidationError(importColumn, 'warning', 'a composite column that will be created ' +
+                    'out of multiple source columns, but it is currently set to import as <strong>' +
+                    $.htmlEscape(importColumn.dataType) + '</strong>. Please be certain that combining ' +
+                    'the columns you have specified will yield a valid ' + importColumn.dataType) + ' value,' +
+                    'or else change the type to <strong>text</strong> to import safely.'
+            }
         }
         else if (column.suggestion != importType)
         {

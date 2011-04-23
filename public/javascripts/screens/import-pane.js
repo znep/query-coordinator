@@ -25,6 +25,7 @@ var scan,
     $warningsSection,
     $sourceDropDown,
     $columnDropDown,
+    $compositeColumnSourceDropDown,
     wizardCommand,
     isShown;
 
@@ -131,8 +132,11 @@ var getUsedColumns = function()
         var importColumn = $line.data('importColumn');
         var column = $line.data('column');
 
-        if (importColumn.type == 'location')
+        if (importColumn.dataType == 'location')
             usedColumns = usedColumns.concat(_.values(column));
+        else if (column.type == 'composite')
+            usedColumns = usedColumns.concat(_.filter(column.sources, function(source)
+                { return source.type == 'column'; }));
         else
             usedColumns.push(column);
     });
@@ -146,10 +150,13 @@ var updateAll = function()
     $columnsList.children().each(function()
     {
         var $line = $(this);
+
         var column;
+        var oldColumn = $line.data('column');
+
         var importColumn = {
             name: $line.find('.columnName').val(),
-            type: $line.find('.columnTypeSelect').val()
+            dataType: $line.find('.columnTypeSelect').val()
         };
 
         // some of these can toggle between text and select.
@@ -176,15 +183,19 @@ var updateAll = function()
             return result;
         };
 
-        if (importColumn.type == 'location')
+        var columnSourceValue = $line.find('.columnSourceCell .columnSourceSelect').val();
+        if (importColumn.dataType == 'location')
         {
             column = {
-                street:    getColumn($line.find('.locationStreetColumn').val()),
-                city:      getColumn(findOptionValue('city')),
-                state:     getColumn(findOptionValue('state')),
-                zip:       getColumn(findOptionValue('zip')),
-                latitude:  getColumn($line.find('.locationLatitudeColumn').val()),
-                longitude: getColumn($line.find('.locationLongitudeColumn').val())
+                name:       oldColumn.name,
+                suggestion: oldColumn.suggestion,
+                type:       oldColumn.type,
+                street:     getColumn($line.find('.locationStreetColumn').val()),
+                city:       getColumn(findOptionValue('city')),
+                state:      getColumn(findOptionValue('state')),
+                zip:        getColumn(findOptionValue('zip')),
+                latitude:   getColumn($line.find('.locationLatitudeColumn').val()),
+                longitude:  getColumn($line.find('.locationLongitudeColumn').val())
             };
             _.each(column, function(v, k)
             {
@@ -192,16 +203,71 @@ var updateAll = function()
                     delete column[k];
             });
             $line.find('.locationDetails')[isShown ? 'slideDown' : 'show']();
+            $line.find('.compositeDetails')[isShown ? 'slideUp' : 'hide']();
             $line.find('.columnSourceSelect').closest('.uniform').hide();
+            $line.find('.generalDetails').hide();
+            $line.find('a.options').hide();
+        }
+        else if (columnSourceValue == 'composite')
+        {
+            column = { type: 'composite' };
+            column.sources = $.makeArray($line.find('.sourceColumnsList').children().map(function()
+            {
+                var $sourceColumnLine = $(this);
+                var sourceColumnValue = $sourceColumnLine.find('.compositeColumnSourceSelect').val();
+
+                if (sourceColumnValue == '[static]')
+                    return { type: 'static', value: $sourceColumnLine.find('.staticSourceText').val() };
+                else
+                    return columns[parseInt(sourceColumnValue)];
+            }));
+
+            $line.find('.locationDetails')[isShown ? 'slideUp' : 'hide']();
+            $line.find('.compositeDetails')[isShown ? 'slideDown' : 'show']();
+            $line.find('.columnSourceSelect').closest('.uniform').show();
+            $line.find('a.options').show();
         }
         else
         {
-            column = columns[parseInt($line.find('.columnSourceCell').val())];
+            column = columns[parseInt(columnSourceValue)];
+
             $line.find('.locationDetails')[isShown ? 'slideUp' : 'hide']();
+            $line.find('.compositeDetails')[isShown ? 'slideUp' : 'hide']();
             $line.find('.columnSourceSelect').closest('.uniform').show();
+            $line.find('a.options').show();
         }
 
         importColumn.column = column;
+
+        // transforms!
+        if (importColumn.dataType != 'location')
+        {
+            importColumn.transforms = $.makeArray($line.find('.columnTransformsList').children().map(function()
+            {
+                var $transformLine = $(this);
+
+                var result = {
+                    type: $transformLine.find('.columnTransformOperation').val()
+                };
+
+                if (result.type == 'findReplace')
+                {
+                    result.options = {
+                        find: $transformLine.find('.findText').val(),
+                        replace: $transformLine.find('.replaceText').val(),
+                        ignoreCase: $transformLine.find('.caseSensitive').is(':checked')
+                    };
+                }
+                else if (result.type == 'customExpression')
+                {
+                    result.options = {
+                        expression: $transformLine.find('.customExpression')
+                    };
+                }
+
+                return result;
+            }));
+        }
 
         $line.data('column', column);
         $line.data('importColumn', importColumn);
@@ -219,13 +285,14 @@ var validateAll = function()
     // keep track of names and columns for collision/gap detection
     var names = {};
     var usedColumns = getUsedColumns();
+    var locationUsedColumns = [];
 
     $columnsList.children().each(function()
     {
         var $line = $(this);
         var column = $line.data('column');
         var importColumn = $line.data('importColumn');
-        var importType = importTypes[importColumn.type];
+        var importType = importTypes[importColumn.dataType];
 
         // if we don't have a column or importColumn, just bail.
         if (_.isUndefined(column) || _.isUndefined(importColumn))
@@ -238,11 +305,15 @@ var validateAll = function()
             names[importColumn.name].push(importColumn);
 
         // validate data type (warning)
-        if (importColumn.type == 'location')
+        if (importColumn.dataType == 'location')
         {
             // location requires special validation
             _.each(column, function(originalColumn, field)
             {
+                // keep track that we've seen this column in a location field
+                locationUsedColumns.push(originalColumn);
+
+                // warn if the column is nonoptimally used
                 if (!$.isBlank(originalColumn) && (originalColumn.suggestion != locationTypes[field]))
                 {
                     addValidationError(importColumn, 'warning', 'set to import its <strong>' +
@@ -254,6 +325,11 @@ var validateAll = function()
                 }
             });
         }
+        else if (column.type == 'composite')
+        {
+            // composite sources require special validation
+            
+        }
         else if (column.suggestion != importType)
         {
             // message should be different depending on whether they're gaining
@@ -261,11 +337,11 @@ var validateAll = function()
             if (column.suggestion == 'text')
             {
                 var invalidPercentage = Math.round(1000 *
-                    (1 - (column.types[importTypes[importColumn.type]] / column.processed))) / 10;
+                    (1 - (column.types[importTypes[importColumn.dataType]] / column.processed))) / 10;
                 addValidationError(importColumn, 'warning',
-                    'set to import as <strong>' + typesToText[importColumn.type] + '</strong>, but ' +
+                    'set to import as <strong>' + typesToText[importColumn.dataType] + '</strong>, but ' +
                     'our analysis shows that <strong>Text</strong> is a better fit. Should you choose ' +
-                    'to import as ' + typesToText[importColumn.type] + ', roughly <strong>' +
+                    'to import as ' + typesToText[importColumn.dataType] + ', roughly <strong>' +
                     invalidPercentage + '%</strong> of your data will import incorrectly.');
             }
             else
@@ -304,15 +380,32 @@ var validateAll = function()
                 'Please give it a name.');
     }
 
-    // validate location type (warning)
-    
-
     // validate missing columns (warning)
     var missingColumns = _.select(columns, function(column) { return !_.include(usedColumns, column); });
     _.each(missingColumns, function(column)
     {
-        addValidationError(column, 'warning', 'is in your source data file, but is not currently ' +
+        addValidationError(column, 'warning', 'in your source data file, but is not currently ' +
                 'set to be imported into your dataset.');
+    });
+
+    // validate location type (warning)
+    _.each(scan.summary.locations, function(location)
+    {
+        _.each(location, function(columnId, type)
+        {
+            var column = columns[columnId];
+
+            if (_.include(missingColumns, column))
+                return; // we already warned that this column is entirely missing anyway
+
+            if (!_.include(locationUsedColumns, column))
+            {
+                addValidationError(column, 'warning', 'currently being imported as a plain column, ' +
+                    'while our analysis indicates that it is best used as part of a location column. ' +
+                    'If you wish to eventually create a map with this data, it will be necessary to ' +
+                    'import it as part of a location column.');
+            }
+        });
     });
 
     // show the list if necessary
@@ -324,7 +417,7 @@ var validateAll = function()
 
 // create a new toplevel column, optionally taking in an analysed
 // column to pattern after
-var newLine = function(column)
+var newLine = function(column, overrides)
 {
     // render template
     var $line = $.renderTemplate('columnsListLine', { index: _.uniqueId() }, {
@@ -346,17 +439,20 @@ var newLine = function(column)
     // populate fields if we have a column
     if (!$.isBlank(column))
     {
+        // allow for overrides that don't blow away the original data
+        var overridenColumn = $.extend({}, column, overrides);
+
         // populate standard things
-        $line.find('.columnName').val(column.name);
-        $line.find('.columnTypeSelect').val(column.suggestion)
+        $line.find('.columnName').val(overridenColumn.name);
+        $line.find('.columnTypeSelect').val(overridenColumn.suggestion)
             .trigger('change'); // jquery does not fire change for val()
-        $lineSourceDropDown.val(column.id)
+        $lineSourceDropDown.val(overridenColumn.id)
             .trigger('change'); // same here
 
         // populate crazy things
-        if (column.suggestion == 'location')
+        if (overridenColumn.suggestion == 'location')
         {
-            _.each(column, function(originalColumn, field)
+            _.each(overridenColumn, function(originalColumn, field)
             {
                 $line.find('.location' + $.capitalize(field) + 'Column')
                     .val(originalColumn.id).trigger('change'); // and again here
@@ -380,29 +476,34 @@ var emptyColumnsList = function()
 };
 
 // throw in all analysed columns, with location groups
-var addDefaultColumns = function()
+var addDefaultColumns = function(flat)
 {
     // keep track of what we haven't used
     var availableColumns = _.clone(columns);
     var compositeColumns = [];
 
-    _.each(scan.summary.locations || [], function(location, i)
+    // don't run the composites scan if they want it flat
+    if (flat !== true)
     {
-        var compositeColumn = {};
-        compositeColumn.name = 'Location ' + (i + 1);
-        compositeColumn.suggestion = 'location';
-
-        _.each(location, function(columnId, field)
+        _.each(scan.summary.locations || [], function(location, i)
         {
-            if (field == 'address')
-                field = 'street'; // workaround for how our location stuff works
+            var compositeColumn = {};
+            compositeColumn.name = 'Location ' + (i + 1);
+            compositeColumn.suggestion = 'location';
+            compositeColumn.type = 'location';
 
-            compositeColumn[field] = columns[columnId];
-            availableColumns = _.without(availableColumns, columns[columnId]);
+            _.each(location, function(columnId, field)
+            {
+                if (field == 'address')
+                    field = 'street'; // workaround for how our location stuff works
+
+                compositeColumn[field] = columns[columnId];
+                availableColumns = _.without(availableColumns, columns[columnId]);
+            });
+
+            compositeColumns.push(compositeColumn);
         });
-
-        compositeColumns.push(compositeColumn);
-    });
+    }
 
     // now add the ones we haven't used as individual columns, plus our compositeColumns
     _.each(availableColumns.concat(compositeColumns), function(column)
@@ -411,6 +512,17 @@ var addDefaultColumns = function()
     });
 
     // update all our states
+    updateAll();
+};
+
+// throw in all available columns just as text
+var addAllColumnsAsText = function()
+{
+    _.each(columns, function(column)
+    {
+        $columnsList.append(newLine(column, { suggestion: 'text' }));
+    });
+
     updateAll();
 };
 
@@ -463,6 +575,12 @@ importNS.paneConfig = {
             contents: optionsForSelect([{ value: '', label: '(No Source Column)',
                                           'class': 'special' }].concat(columnSelectOptions))
         });
+        $compositeColumnSourceDropDown = $.tag({
+            tagName: 'select',
+            'class': 'compositeColumnSourceSelect',
+            contents: optionsForSelect(columnSelectOptions.concat([{
+                value: '[static]', label: '(Insert static text...)', 'class': 'special' }]))
+        });
 
         // throw in our default set of suggestions
         addDefaultColumns();
@@ -490,12 +608,31 @@ importNS.paneConfig = {
             });
         });
 
+        // load in the preset they specify
+        $pane.find('.columnsPresetsButton').click(function(event)
+        {
+            event.preventDefault();
+
+            var presetType = $pane.find('.columnsPresetsSelect').val();
+
+            emptyColumnsList();
+            if (presetType == 'alltext')
+                addAllColumnsAsText();
+            else if (presetType == 'suggestedFlat')
+                addDefaultColumns(true);
+            else if (presetType == 'suggested')
+                addDefaultColumns();
+        });
+
+        // remove all columns
         $pane.find('.clearColumnsButton').click(function(event)
         {
             event.preventDefault();
             emptyColumnsList();
         });
 
+        // add a new column line; try to figure out if we can be clever and suggest one
+        // they haven't used yet
         $pane.find('.addColumnButton').click(function(event)
         {
             event.preventDefault();
@@ -508,14 +645,84 @@ importNS.paneConfig = {
             updateAll();
         });
 
+        // add a new composite column source line
+        $pane.delegate('.columnsList li .newSourceColumnButton', 'click', function(event)
+        {
+            event.preventDefault();
+
+            var $line = $(this).closest('li');
+            var $newColumnSourceLine = $.renderTemplate('sourceColumnsListLine');
+
+            // swap in a real columns select for the fake one
+            var $placeholder = $newColumnSourceLine.find('.compositeColumnSourcePlaceholder');
+            var $dropDown = $compositeColumnSourceDropDown.clone();
+            $dropDown.addClass($placeholder.attr('data-class'));
+            $placeholder.replaceWith($dropDown);
+
+            $line.find('.sourceColumnsList').append($newColumnSourceLine);
+            $newColumnSourceLine.find('select').uniform();
+
+            updateAll();
+        });
+
+        // show the static text line if necessary
+        $pane.delegate('.columnsList li .compositeColumnSourceSelect', 'click', function(event)
+        {
+            var $this = $(this);
+            var $columnSourceLine = $this.closest('li');
+
+            $columnSourceLine.find('.staticSourceText').toggle($this.val() == '[static]');
+
+            updateAll();
+        });
+
+        // add a new transformation line
+        $pane.delegate('.columnsList li .newColumnTransformButton', 'click', function(event)
+        {
+            event.preventDefault();
+
+            var $line = $(this).closest('li');
+            var $newTransformLine = $.renderTemplate('columnTransformsListLine');
+
+            $line.find('.columnTransformsList').append($newTransformLine);
+            $newTransformLine.find('select, :checkbox').uniform();
+
+            updateAll();
+        });
+
+        // show the appropriate additional details section
+        $pane.delegate('.columnsList li .columnTransformOperation', 'change', function(event)
+        {
+            var $this = $(this);
+            var $transformLine = $this.closest('li');
+
+            $transformLine.find('.additionalTransformOptions').children()
+                .hide()
+                .filter('.' + $this.val() + 'Section').show();
+
+            updateAll();
+        });
+
+        // remove a given transform or column source line
+        $pane.delegate('.columnsList li .removeTransformLineButton,' +
+                       '.columnsList li .removeSourceColumnLineButton', 'click', function(event)
+        {
+            event.preventDefault();
+            $(this).closest('li').remove();
+
+            updateAll();
+        });
+
         // autoselect radio when editing associated option
-        $pane.find('.optionGroup select, .optionGroup input', 'change', function(event)
+        $pane.delegate('.optionGroup select, .optionGroup input', 'change', function(event)
         {
             var $this = $(this);
             if ($this.is('select'))
                 $this = $this.closest('.uniform.selector');
 
             $this.prev('.uniform.radio').find('input').click();
+
+            updateAll();
         });
 
         $columnsList.awesomereorder({

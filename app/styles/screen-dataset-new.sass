@@ -109,6 +109,9 @@
 
 // PANE ONE POINT FIVE: import columns
 .importColumnsPane
+  select option.special
+    font-style: italic
+
   .columnsListHeader
     margin-bottom: 0.2em
     margin-top: 1em
@@ -145,7 +148,7 @@
     overflow-x: hidden
     overflow-y: auto
 
-    li
+    > li
       border: 1px solid $color_chrome_box_border
       clear: both
       &.ui-draggable-dragging
@@ -249,7 +252,75 @@
               select
                 width: 15em
 
-        .locationLine
+        .compositeDetails
+          .sourceColumnsList
+            margin: 0 0.3em
+
+            li
+              margin: 0.5em
+
+              > *
+                float: left
+                margin-right: 0.3em
+
+              .removeSourceColumnLineButton
+                @include sprite-menu-icons
+                padding-top: 0.6em
+
+              input[type=text]
+                display: none
+                margin:
+                  top: 0.2em
+                  left: 0.5em
+                width: 20em
+
+          .newSourceColumnButton
+            @include sprite-menu-icons
+
+            .icon
+              float: left
+              margin-right: 0.2em
+
+        .generalDetails
+          .columnTransformsList
+            margin: 0 0.3em
+
+            li
+              margin: 0.5em
+
+              &:first-child .thenText
+                visibility: hidden
+
+              > *
+                float: left
+                margin-right: 0.3em
+
+              .removeTransformLineButton
+                @include sprite-menu-icons
+                padding-top: 0.6em
+
+              .thenText, label
+                font-size: 1.2em
+                line-height: 2.2em
+                margin: 0 0.4em
+
+              .additionalTransformOptions
+                > *
+                  display: none
+
+                .uniform.checker
+                  margin: 0 0 0.4em 1.5em
+
+                a
+                  font-size: 1.1em
+                  padding-left: 0.5em
+
+          .newColumnTransformButton
+            @include sprite-menu-icons
+
+            .icon
+              float: left
+              margin-right: 0.2em
 
   .columnsToolbar
     margin-top: 0.4em

@@ -3,6 +3,7 @@
     if (blist.sidebarHidden.columnProperties) { return; }
 
     var isDataset = blist.dataset.type == 'blist';
+    var canChangeName = isDataset || blist.dataset.type == 'grouped';
 
     var canConvert = function(col)
     {
@@ -427,7 +428,8 @@
             {
                 if (f.name == 'name' || f.name == 'description')
                 {
-                    f.disabled = !isDataset && $.isBlank(cleanCol.format.grouping_aggregate);
+                    f.disabled = !canChangeName && $.isBlank(cleanCol.format.grouping_aggregate)
+                        && $.isBlank(cleanCol.format.drill_down);
                 }
             });
 

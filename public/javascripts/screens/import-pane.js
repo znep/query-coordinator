@@ -437,16 +437,23 @@ var validateAll = function()
     if ($warningsList.children().filter('.error').length > 0)
     {
         $nextButton.addClass('disabled');
-        nextButtonTip = $nextButton.socrataTip({ message: 'You cannot proceed while there are import errors.',
-            shrinkToFit: false });
+        if ($.isBlank(nextButtonTip))
+        {
+            nextButtonTip = $nextButton.socrataTip({ message:
+                'You cannot proceed while there are import errors.', shrinkToFit: false });
+        }
+        else
+        {
+            nextButtonTip.enable();
+        }
     }
     else
     {
         $nextButton.removeClass('disabled');
         if (!$.isBlank(nextButtonTip))
         {
-            nextButtonTip.destroy();
-            nextButtonTip = null;
+            nextButtonTip.hide();
+            nextButtonTip.disable();
         }
     }
 };

@@ -194,7 +194,7 @@
   .alertIcon
     @include text-hiding
     @include ie6-fix
-    background-image: url(/stylesheets/images/icons/type_icons_30.png)
+    background-image: url(/stylesheets/images/icons/type_icons_30.png?1)
     height: 30px
     width: 30px
 
@@ -233,6 +233,8 @@
     background-position: 0 -450px
   &.typeUnpublished #{$subselector}
     background-position: 0 -480px
+  &.typeSnapshotted #{$subselector}
+    background-position: 0 -510px
 
 // icons/feed_icons.png
 @mixin sprite-feed-icons($subselector: '.icon')

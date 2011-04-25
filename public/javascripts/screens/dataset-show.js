@@ -374,6 +374,7 @@ $(function()
 
     // Publishing
     $('#infoBox .unpublished').socrataTitleTip();
+    $('#infoBox .snapshotted').socrataTitleTip();
     $('#infoBox .publish').socrataTitleTip();
     $('#infoBox .publish').click(function(e)
     {
@@ -522,7 +523,7 @@ $(function()
             'page loaded', blist.dataset.id);
 
         // Set up publishing
-        if (blist.dataset.isUnpublished())
+        if (!blist.dataset.isPublished())
         {
             blist.dataset.getPublishedDataset(function(pub)
             {

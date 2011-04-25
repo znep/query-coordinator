@@ -138,6 +138,10 @@ module ApplicationHelper
     time && time != 0 ? Time.at(time).strftime("%b %d, %Y") : nil
   end
 
+  def blist_date_time(time)
+    time && time != 0 ? Time.at(time).strftime("%b %d, %Y %I:%M%P") : nil
+  end
+
   def blist_long_date(time)
     time && time != 0 ? Time.at(time).strftime("%B %d, %Y") : nil
   end

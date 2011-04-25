@@ -1359,7 +1359,14 @@ this.Dataset = ServerModel.extend({
         ds.originalViewId = ds.id;
 
         ds.type = getType(ds);
-        ds.styleClass = ds.type.capitalize();
+
+        if (ds.isUnpublished())
+        { ds.styleClass = 'Unpublished'; }
+        else if (ds.type == 'blist' && ds.isSnapshot())
+        { ds.styleClass = 'Snapshotted'; }
+        else
+        { ds.styleClass = ds.type.capitalize(); }
+
         if ($.isBlank(ds.displayType))
         {
             ds.displayType = {

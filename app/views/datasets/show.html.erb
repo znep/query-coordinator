@@ -28,7 +28,7 @@
     </div>
     <div class="unsavedLine">
       <h2 id="unsavedTitle">Unsaved View</h2>
-      <%- if @view.has_rights?('update_view') -%>
+      <%- if @view.has_rights?('update_view') && !@view.is_snapshotted? -%>
       <a href="#Save" title="Save current view" data-savingText="Saving..."
         class="save toolbarButton">Save</a>
       <%- end -%>
@@ -42,6 +42,9 @@
       <span class="unpublishedRevert">These changes cannot be saved to a working copy of a dataset,
         but can be made on the published dataset and saved as a view.</span>
       <%- end -%>
+      <%- if @view.is_snapshotted? -%>
+      <span class="snapshottedRevert">This is a snapshotted copy of the dataset and cannot be modified</span>
+      <%- end -%>
     </div>
 
     <%- if @view.is_unpublished? -%>
@@ -49,6 +52,10 @@
       "to make changes to it. It is not visible to others until you publish it."%>">[Working Copy]</h3>
     <%- end -%>
     <h2 id="datasetName" class="clipText currentViewName"><%= @view.name %></h2>
+    <%- if @view.is_snapshotted? -%>
+    <h3 class="snapshotted" title="<%= "This is a previously published version of the dataset. It is" +
+      "archived and cannot be modified."%>">Snapshotted <%= blist_date_time(@view.publicationDate) %></h3>
+    <%- end -%>
 
     <%- if @view.is_unpublished? -%>
     <a href="#Publish" class="toolbarButton publish"
@@ -65,7 +72,7 @@
       <a class="revertLink currentViewName" href="#revert"><%= @view.name %></a>
     </div>
 
-    <%- if @view.is_unpublished? -%>
+    <%- if !@view.is_published? -%>
     <a id="publishedLink">View the published <span class="publishedName">dataset</span></a>
     <%- end -%>
 
@@ -80,7 +87,7 @@
 
   <div id="actionBox" class="clearfix">
     <ul id="toolbarOptions" class="clearfix">
-      <%- if !@view.is_unpublished? -%>
+      <%- if @view.is_published? -%>
       <li>
         <ul id="shareOptions">
           <li><a class="facebook" rel="external" title="Share on Facebook"
@@ -595,27 +602,31 @@
     blist.sidebarHidden.edit.append = <%= !@view.is_unpublished? || !@view.is_blist? ||
       !@view.has_rights?('add') ||
       !CurrentDomain.module_available?(:dataset_append) %>;
-    blist.sidebarHidden.edit.replace = <%= !@view.is_unpublished? ||
+    blist.sidebarHidden.edit.replace = <%= !@view.is_unpublished? && !@view.is_blobby? ||
+      @view.is_snapshotted? ||
       !(@view.is_blist? || @view.is_blobby?) ||
       !@view.has_rights?('add') ||
       !@view.has_rights?('delete') ||
       !CurrentDomain.module_available?(:dataset_refresh) %>;
     blist.sidebarHidden.edit.addColumn = <%= !@view.is_unpublished? || !@view.is_blist? ||
       !@view.has_rights?('add_column') %>;
-    blist.sidebarHidden.edit.redirect = <%= !@view.is_published? || !@view.is_blist? &&
-      !@view.is_blobby? || !@view.can_edit_published? %>;
+    blist.sidebarHidden.edit.redirect = <%= !@view.is_published? || !@view.is_blist? ||
+      !@view.can_edit_published? %>;
 
     <%# Manage %>
     blist.sidebarHidden.manage = blist.sidebarHidden.manage || {};
-    blist.sidebarHidden.manage.updateColumn = <%= !@view.is_tabular? || @view.is_form? %>;
-    blist.sidebarHidden.manage.showHide = <%= !@view.is_tabular? || @view.is_form? %>;
-    blist.sidebarHidden.manage.sharing = <%= !@view.user_granted?(current_user) &&
+    blist.sidebarHidden.manage.updateColumn = <%= @view.is_snapshotted? || !@view.is_tabular? ||
+      @view.is_form? %>;
+    blist.sidebarHidden.manage.showHide = <%= @view.is_snapshotted? || !@view.is_tabular? ||
+      @view.is_form? %>;
+    blist.sidebarHidden.manage.sharing = <%= @view.is_snapshotted? || !@view.user_granted?(current_user) &&
       !CurrentDomain.user_can?(current_user, :edit_others_datasets)  %>;
-    blist.sidebarHidden.manage.permissions = <%= !@view.has_rights?('update_view') %>;
+    blist.sidebarHidden.manage.permissions = <%= @view.is_snapshotted? ||
+      !@view.has_rights?('update_view') %>;
     blist.sidebarHidden.manage.plagiarize = <%= !CurrentDomain.user_can?(current_user, :chown_datasets) %>;
 
     <%# Columm properties %>
-    blist.sidebarHidden.columnProperties = <%= !@view.is_tabular? %>;
+    blist.sidebarHidden.columnProperties = <%= @view.is_snapshotted? || !@view.is_tabular? %>;
 
     <%# Filter pane %>
     blist.sidebarHidden.filter = blist.sidebarHidden.filter || {};
@@ -636,14 +647,14 @@
 
     <%# Embed pane %>
     blist.sidebarHidden.embed = blist.sidebarHidden.embed || {};
-    blist.sidebarHidden.embed.formCreate = <%= @view.is_unpublished? ||
+    blist.sidebarHidden.embed.formCreate = <%= !@view.is_published? ||
       (!@view.is_tabular? && !@view.is_form?) ||
       @view.is_grouped? ||
       !module_available?(:form_publish) ||
       ((!@view.owned_by?(current_user) ||
         !@view.parent_dataset.owned_by?(current_user)) &&
        !CurrentDomain.user_can?(current_user, :edit_others_datasets)) %>;
-    blist.sidebarHidden.embed.sdp = <%= @view.is_unpublished? %>;
+    blist.sidebarHidden.embed.sdp = <%= !@view.is_published? %>;
 
     <%# Export pane %>
     blist.sidebarHidden.exportSection = blist.sidebarHidden.exportSection || {};
@@ -653,10 +664,10 @@
     blist.sidebarHidden.exportSection.print = <%= !@view.can_print? %>;
     blist.sidebarHidden.exportSection.download = <%= !@view.is_tabular? %>;
     blist.sidebarHidden.exportSection.api = <%= !@view.is_tabular? %>;
-    blist.sidebarHidden.exportSection.subscribe = <%= @view.is_unpublished? || !@view.is_tabular? %>;
+    blist.sidebarHidden.exportSection.subscribe = <%= !@view.is_published? || !@view.is_tabular? %>;
 
     <%# Discuss pane %>
-    blist.sidebarHidden.feed = <%= @view.is_unpublished? %>;
+    blist.sidebarHidden.feed = <%= !@view.is_published? %>;
 
     <%# About pane %>
     blist.sidebarHidden.about = <%= @view.is_href? || @view.is_blobby? &&

@@ -871,6 +871,10 @@ class View < Model
     publicationStage == 'unpublished'
   end
 
+  def is_snapshotted?
+    publicationStage == 'snapshotted'
+  end
+
   def can_edit_published?
     has_rights?('update_view') || can_edit?
   end

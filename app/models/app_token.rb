@@ -38,7 +38,7 @@ class AppToken < Model
   end
 
   def set_thumbnail_url(user_id)
-    "/api/users/#{user_id}/app_tokens?method=setThumbnail&id=#{data['id']}"
+    "/users/#{user_id}/app_tokens?method=setThumbnail&id=#{data['id']}"
   end
 
 private

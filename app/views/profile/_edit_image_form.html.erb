@@ -15,13 +15,18 @@
         <label>&nbsp;</label>
         <div class="flash errorMessage error">Please choose an image file (jpg, gif, png or tiff)</div>
       </div>
-      <div class="line fullLine">
-        <label>&nbsp;</label>
-        <%= link_to 'Upload New Image',
-            current_user.profile_image_path('replace').gsub('/replace', ''),
-            :class => 'button default uploadNewImage' %>
-        <span class="uploadIndicator"></span>
-      </div>
+      <%- if params[:no_js].present? -%>
+        <%= file_field_tag('new_image', :accept => 'image/png,image/gif,image/jpeg') %>
+        <%= submit_tag 'Upload New Image' %>
+      <%- else -%>
+        <div class="line fullLine">
+          <label>&nbsp;</label>
+            <%= link_to 'Upload New Image',
+                current_user.profile_image_path(''),
+                :class => 'button default uploadNewImage' %>
+            <span class="uploadIndicator"></span>
+        </div>
+      <%- end -%>
     </div>
   </div>
 </div>

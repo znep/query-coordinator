@@ -26,7 +26,8 @@
     </div>
     <%- unless params[:no_js].present? -%>
       <%= render :partial => 'edit_account_form' %>
-      <% form_tag(current_user.href, :id => "editProfileForm", :class => 'commonForm', :method => :put) do %>
+      <% form_tag(current_user.href, :id => "editProfileForm",
+                  :multipart => true, :class => 'commonForm', :method => :put) do %>
       <%= render :partial => 'edit_form' %>
       <%= render :partial => 'edit_image_form' %>
       <%- end -%>

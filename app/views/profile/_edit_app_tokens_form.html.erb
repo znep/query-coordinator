@@ -1,5 +1,6 @@
-<%= form_tag({:action => 'edit_app_token', :token_id => ((@token.nil? || @token.id.nil?) ? 'new' : @token.id)},
-             {:class => 'commonForm createNewTokenForm'}) %>
+<%= form_tag({:action => 'edit_app_token',
+             :token_id => ((@token.nil? || @token.id.nil?) ? 'new' : @token.id)},
+             {:multipart => true, :class => 'commonForm createNewTokenForm'}) %>
   <div class="editSection noBorder">
     <div class="line clearfix">
       <label for="app_token_name" class="required">Application Name</label>
@@ -51,10 +52,14 @@
             </span>
           </div>
         <%- end -%>
-        <%= link_to (@token.has_thumbnail? ? 'Change' : 'Add') + ' Thumbnail',
-            @token.set_thumbnail_url(current_user.id),
-            :class => 'button uploadAppTokenImage' %>
-          <span class="uploadIndicator"></span>
+        <%- if params[:no_js].present? -%>
+          <%= file_field_tag('new_image', :accept => 'image/png,image/gif,image/jpeg') %>
+        <%- else -%>
+          <%= link_to (@token.has_thumbnail? ? 'Change' : 'Add') + ' Thumbnail',
+              @token.set_thumbnail_url(current_user.id),
+              :class => 'button uploadAppTokenImage' %>
+            <span class="uploadIndicator"></span>
+        <%- end -%>
       </div>
     <%- end -%>
   </div>

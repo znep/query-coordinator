@@ -120,23 +120,27 @@ class ProfileController < ApplicationController
 
   def update
     error_msg = nil
-    if (params[:user][:country] && params[:user][:country].upcase != 'US' ||
-       params[:user][:state] == '--')
-      params[:user][:state] = nil
-    end
-    if (params[:user][:country] == '--')
-      params[:user][:country] = nil
-    end
-    # For now, force setting of tags; they get deleted otherwise
-    if (params[:user][:tags].nil?)
-      params[:user][:tags] = current_user.tag_display_string
+    if params[:user]
+      if (params[:user][:country] && params[:user][:country].upcase != 'US' ||
+         params[:user][:state] == '--')
+        params[:user][:state] = nil
+      end
+      if (params[:user][:country] == '--')
+        params[:user][:country] = nil
+      end
+      # For now, force setting of tags; they get deleted otherwise
+      if (params[:user][:tags].nil?)
+        params[:user][:tags] = current_user.tag_display_string
+      end
+
+      if (params[:user][:screenName].empty?)
+        flash.now[:error] = "Error: 'Display Name' is required"
+        @user_links = UserLink.find(current_user.id)
+        return (render 'profile/edit')
+      end
     end
 
-    if (params[:user][:screenName].empty?)
-      flash.now[:error] = "Error: 'Display Name' is required"
-      @user_links = UserLink.find(current_user.id)
-      return (render 'profile/edit')
-    end
+    accessible_image_change(current_user.profile_image_path(''))
 
     unless params[:links].nil?
       user_links = UserLink.find(current_user.id)
@@ -165,11 +169,13 @@ class ProfileController < ApplicationController
       end
     end
 
-    begin
-      current_user.update_attributes!(params[:user])
-    rescue CoreServer::CoreServerError => e
-      is_error = true
-      error_msg = e.error_message
+    if params[:user]
+      begin
+        current_user.update_attributes!(params[:user])
+      rescue CoreServer::CoreServerError => e
+        is_error = true
+        error_msg = e.error_message
+      end
     end
 
     respond_to do |format|
@@ -295,6 +301,8 @@ class ProfileController < ApplicationController
       if token_params
         begin
           @token = AppToken.update(params[:id], params[:token_id], token_params)
+          accessible_image_change(@token.set_thumbnail_url(current_user.id))
+          @token = AppToken.find_by_id(params[:id], params[:token_id])
         rescue CoreServer::CoreServerError => e
           flash.now[:error] = e.error_message
           @token = AppToken.find_by_id(params[:id], params[:token_id])
@@ -345,6 +353,24 @@ private
   # Need an instance for using cache_key()
   def app_helper
     AppHelper.instance
+  end
+
+  # Pipe the file upload back to the core server
+  def accessible_image_change(post_url)
+    if params[:new_image]
+      unless ['image/png','image/gif','image/jpeg']
+        .include? params[:new_image].content_type
+        flash[:error] = "Please select a valid image type (PNG, JPG, or GIF)"
+        return
+      end
+      begin
+        resp = CoreServer::Base.connection.multipart_post_file(
+          post_url, params[:new_image])
+        flash[:notice] = "Your image has been updated"
+      rescue => ex
+        flash[:error] = "Error uploading new image: #{ex.message}"
+      end
+    end
   end
 end
 

@@ -27,6 +27,7 @@ var scan,
     $columnDropDown,
     $compositeColumnSourceDropDown,
     wizardCommand,
+    nextButtonTip,
     isShown;
 
 // structs
@@ -131,6 +132,9 @@ var getUsedColumns = function()
         var $line = $(this);
         var importColumn = $line.data('importColumn');
         var column = $line.data('column');
+
+        if (_.isUndefined(column))
+            return; // this importColumn has no source column
 
         if (importColumn.dataType == 'location')
             usedColumns = usedColumns.concat(_.values(column));
@@ -294,15 +298,15 @@ var validateAll = function()
         var importColumn = $line.data('importColumn');
         var importType = importTypes[importColumn.dataType];
 
-        // if we don't have a column or importColumn, just bail.
-        if (_.isUndefined(column) || _.isUndefined(importColumn))
-            return;
-
         // track names seen
         if (_.isUndefined(names[importColumn.name]))
             names[importColumn.name] = [importColumn];
         else
             names[importColumn.name].push(importColumn);
+
+        // if we don't have a column, just bail. if we don't have an importColumn, we have serious issues.
+        if (_.isUndefined(column))
+            return;
 
         // validate data type (warning)
         if (importColumn.dataType == 'location')
@@ -340,8 +344,8 @@ var validateAll = function()
                 addValidationError(importColumn, 'warning', 'a composite column that will be created ' +
                     'out of multiple source columns, but it is currently set to import as <strong>' +
                     $.htmlEscape(importColumn.dataType) + '</strong>. Please be certain that combining ' +
-                    'the columns you have specified will yield a valid ' + importColumn.dataType) + ' value,' +
-                    'or else change the type to <strong>text</strong> to import safely.'
+                    'the columns you have specified will yield a valid ' + importColumn.dataType + ' value,' +
+                    'or else change the type to <strong>text</strong> to import safely.');
             }
         }
         else if (column.suggestion != importType)
@@ -373,7 +377,7 @@ var validateAll = function()
     // validate name collisions (error)
     _.each(names, function(columns, name)
     {
-        if (columns.length > 1)
+        if ((columns.length > 1) && (name !== ''))
         {
             addValidationError(null, 'error', '<strong>' + $.capitalize($.wordify(columns.length)) +
                 '</strong> of your columns are named &ldquo;' + $.htmlEscape(name) + '&rdquo;. Columns ' +
@@ -382,7 +386,7 @@ var validateAll = function()
     });
     
     // validate name missing (error)
-    var emptyNameColumns = _.select(names, function(columns, name) { return $.isBlank(name.trim()); });
+    var emptyNameColumns = _.flatten(_.select(names, function(columns, name) { return $.isBlank(name.trim()); }));
     if (emptyNameColumns.length > 1)
     {
         addValidationError(null, 'error', '<strong>' + $.capitalize($.wordify(emptyNameColumns.length)) +
@@ -427,6 +431,24 @@ var validateAll = function()
         $warningsSection[isShown ? 'slideDown' : 'show']();
     else
         $warningsSection[isShown ? 'slideUp' : 'hide']();
+
+    // disable the button if necessary
+    var $nextButton = $('.wizardButtons .nextButton');
+    if ($warningsList.children().filter('.error').length > 0)
+    {
+        $nextButton.addClass('disabled');
+        nextButtonTip = $nextButton.socrataTip({ message: 'You cannot proceed while there are import errors.',
+            shrinkToFit: false });
+    }
+    else
+    {
+        $nextButton.removeClass('disabled');
+        if (!$.isBlank(nextButtonTip))
+        {
+            nextButtonTip.destroy();
+            nextButtonTip = null;
+        }
+    }
 };
 
 // create a new toplevel column, optionally taking in an analysed

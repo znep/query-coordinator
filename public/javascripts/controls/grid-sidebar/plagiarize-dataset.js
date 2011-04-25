@@ -3,15 +3,26 @@
     if (blist.sidebarHidden.plagiarize)
     { return; }
 
-    var radioOptions = [
-        {name: 'user', type: 'text', extraClass: 'friendSelect'}
-    ];
+    var userInput = {name: 'user', type: 'text', extraClass: 'friendSelect'};
+    var fieldConfig = {};
+
     if (blist.dataset.owner.id != blist.currentUserId)
     {
-        radioOptions.unshift({name: 'user', value: 'Me', type: 'static', isInput: true});
+        fieldConfig = {type: 'group', options: [
+            {type: 'radioGroup', name: 'datasetThief',
+                    defaultValue: 'currentUser', options:
+                [{name: 'user', value: 'Me', type: 'static', isInput: true},
+                 userInput]
+            }
+        ]};
+    }
+    else
+    {
+        fieldConfig = userInput;
     }
 
     var thief, _eventsBound;
+    var dsName = blist.dataset.displayName;
 
     var config =
     {
@@ -34,10 +45,7 @@
         },
         sections: [ {
             title: 'Transfer ownership to',
-            fields: [ {type: 'group', options: [
-                {type: 'radioGroup', name: 'datasetThief',
-                    defaultValue: 'currentUser', options: radioOptions}
-            ]}]
+            fields: [ fieldConfig ]
         } ],
         showCallback: function(sidebarObj, $currentPane)
         {
@@ -66,6 +74,8 @@
 
     config.finishCallback = function(sidebarObj, data, $pane, value)
     {
+        if (!sidebarObj.baseFormHandler($pane, value)) { return; }
+
         sidebarObj.finishProcessing();
         var formValue = sidebarObj.getFormValues($pane);
         var userText = formValue.user;
@@ -81,7 +91,7 @@
         var userId, successText;
         if (userText == 'Me')
         {
-            successText = 'You are now the owner of this dataset';
+            successText = 'You are now the owner of this ' + dsName;
             userId = blist.currentUserId;
         }
         else
@@ -98,11 +108,12 @@
                 if (matches)
                 {
                     userId = matches[1];
-                    successText = 'Ownership successfully transferred.'
+                    successText = 'Ownership successfully transferred'
                 }
                 else
                 {
-                    $error.text('Please search for a user by name, email, or profile URL.');
+                    $error.text('User not recognized. Please try searching ' +
+                                'for a user by name, email, or profile URL.');
                     return;
                 }
             }
@@ -117,7 +128,7 @@
             function error(xhr, text, error) {
                 var msg = (xhr.status == 404) ?
                     'No such user found.' :
-                    ('There was a problem changing ownership of this dataset. ' +
+                    ('There was a problem changing ownership of this ' + dsName + '. ' +
                         'Please try again later.')
                 $error.text(msg);
             }

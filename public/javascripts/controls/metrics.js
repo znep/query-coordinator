@@ -66,6 +66,7 @@
 
         chart.data(metricsNS.SERIES_KEY,
             JSON.parse($link.attr(metricsNS.SERIES_KEY)));
+        chart.data(metricsNS.TRANSFORM, $link.attr(metricsNS.TRANSFORM));
         // Re-draw chart via callback
         redrawChart(chart, sliceDepth);
     },
@@ -105,6 +106,7 @@
           $chart
               .data(metricsNS.SERIES_KEY, section.children[0].series)
               .parent().siblings('.menu').empty().menu({
+                  additionalDataKeys: ['transform'],
                   additionalJsonKeys: ['series'],
                   menuButtonContents: '<span class="contents">' +
                       section.children[0].text + '</span>',
@@ -167,7 +169,7 @@
 
         _.each(chartSections, function(section)
         {
-            var $chart= chartDisplay.find('#' + section.id);
+            var $chart = chartDisplay.find('#' + section.id);
             generateChartMenu($chart, section);
         });
 

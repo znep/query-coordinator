@@ -139,6 +139,7 @@ javascripts:
     - public/javascripts/controls/combination-list.js
     - public/javascripts/screens/admin-moderation.js
   admin-metrics:
+    - public/javascripts/screens/sitewide-analytics-shared.js
     - public/javascripts/screens/admin-metrics.js
   admin-routing-approval:
     - public/javascripts/util/approval.js
@@ -336,6 +337,9 @@ javascripts:
     - public/javascripts/screens/profile-screen-edit.js
   homepage-show:
     - public/javascripts/screens/homepage-show.js
+  public-analytics:
+    - public/javascripts/screens/sitewide-analytics-shared.js
+    - public/javascripts/screens/public-analytics.js
   debug:
     - public/javascripts/util/debug.js
   errors:

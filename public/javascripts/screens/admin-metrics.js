@@ -2,13 +2,16 @@
 
 $(function()
 {
-    var screen = $('#analyticsDataContainer').metricsScreen({
-        urlBase: '/api/site_metrics.json',
+    var screen = $('#analyticsDataContainer').metricsScreen(
+        $.extend(true, blist.metrics.sitewideShared,
+    {
         chartSections:  [
             {id: 'performanceChart',
                 loading: blist.metrics.chartLoading,
                 children: [
                     {text: 'Page Views',   series: [{method: 'page-views'}]},
+                    {text: 'Disk Usage',   series: [{method: 'disk-usage'}],
+                                           transform: 'smooth'},
                     {text: 'Bytes Out',    series: [{method: 'bytes-out'}]},
                     {text: 'Views Loaded', series: [{method: 'view-loaded'}]},
                     {text: 'Rows Loaded',
@@ -17,58 +20,8 @@ $(function()
                               {method: 'rows-loaded-widget',  label: 'SDP'}]}
                 ]
             }
-        ],
-        summarySections: [
-            {
-                id: 'summaryVisits',      displayName: 'Page Views',
-                summary: {plus: 'page-views', verbPhrase: 'pages viewed',
-                    verbPhraseSingular: 'page viewed'
-                }
-            },
-            {
-                id: 'summaryDatasets',    displayName: 'Total Datasets',
-                summary: {plus: 'datasets-created', minus: 'datasets-deleted',
-                    verbPhrase: 'datasets created', verbPhraseSingular: 'dataset created'
-                }
-            },
-            {
-                id: 'summaryRows',        displayName: 'Total Rows',
-                summary: {plus: 'rows-created',     minus: 'rows-deleted',
-                    verbPhrase: 'rows created', verbPhraseSingular: 'row created'
-                }
-            },
-            {
-                id: 'summaryEmbeds',      displayName: 'Embeds',
-                summary: {plus: 'embeds', verbPhrase: 'embeds',
-                    verbPhraseSingular: 'embed'
-                }
-            }
-        ],
-        topListSections: [
-            {
-                id: 'topDatasets', displayName: 'Top Datasets',
-                heading: '', renderTo: 'leftColumn',
-                callback: blist.metrics.topDatasetsCallback,  top: 'DATASETS'
-            },
-            {
-                id: 'topReferrers', displayName: 'Top Referrers',
-                heading: 'Referrals', className: 'expanding', renderTo: 'rightColumn',
-                callback: blist.metrics.urlMapCallback, top: 'REFERRERS'
-            },
-            {
-                id: 'topSearches', displayName: 'Top Search Terms',
-                heading: 'Count', renderTo: 'leftColumn',
-                callback: function($context) {
-                    blist.metrics.updateTopSearchesCallback($context, 'top-dataset-searches');
-                },  top: 'SEARCHES'
-            },
-            {
-                id: 'topEmbeds', displayName: 'Top Embeds',
-                heading: 'Embeds', className: 'expanding', renderTo: 'rightColumn',
-                callback: blist.metrics.urlMapCallback, top: 'EMBEDS'
-            }
         ]
-    });
+    }));
 
      $('#analyticsTimeControl').metricsTimeControl({
         metricsScreen: screen

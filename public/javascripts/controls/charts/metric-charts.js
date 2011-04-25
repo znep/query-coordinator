@@ -33,57 +33,62 @@ metricsNS.renderMetricsChart = function(data, $chart, startDate, endDate,
     // Make highchart series object for each item
     _.each(series, function(s)
     {
-            // Fill in any holes not returned by balboa
-            var ungappedData = [];
-            var intervalEnd = 0;
+        // Fill in any holes not returned by balboa
+        var ungappedData = [];
+        var intervalEnd = 0;
 
-            for(var k = startDate; k < data[0]['__start__']; k += pointInterval)
+        for(var k = startDate; k < data[0]['__start__']; k += pointInterval)
+        {
+            ungappedData.push(0);
+        }
+
+         _.each(data, function(row)
+        {
+            if (intervalEnd > 0 &&
+                (row['__start__'] - intervalEnd) > 1)
             {
-                ungappedData.push(0);
+                for (var j = 0; j < ((row['__start__'] - intervalEnd) / pointInterval) - 1; j++)
+                { ungappedData.push(0); }
             }
-
-             _.each(data, function(row)
+            intervalEnd = row['__end__'];
+            var pointData = (row.metrics || {});
+            if (s.numerator)
             {
-                if (intervalEnd > 0 &&
-                    (row['__start__'] - intervalEnd) > 1)
-                {
-                    for (var j = 0; j < ((row['__start__'] - intervalEnd) / pointInterval) - 1; j++)
-                    { ungappedData.push(0); }
-                }
-                intervalEnd = row['__end__'];
-                var pointData = (row.metrics || {});
-                if (s.numerator)
-                {
-                    ungappedData.push((pointData[s.numerator] /
-                        (pointData[s.denominator] || 1) || 0));
-                }
-                else
-                {
-                    ungappedData.push(pointData[s.method] || 0);
-                }
-            });
-
-            for(var k = intervalEnd; k < endDate; k += pointInterval)
-            {
-                ungappedData.push(0);
+                ungappedData.push((pointData[s.numerator] /
+                    (pointData[s.denominator] || 1) || 0));
             }
-
-            var plot = $.extend({}, seriesDefaults, {
-                data: ungappedData,
-                lineColor: lineColors[i % lineColors.length],
-                marker: {
-                    lineColor: lineColors[i % lineColors.length]
-                }
-            });
-
-            if (!$.isBlank(s.label))
+            else
             {
-                plot.name = s.label;
-                showLabels = true;
+                ungappedData.push(pointData[s.method] || 0);
             }
+        });
 
-            seriesToPlot.push(plot);
-            i++;
+        for(var k = intervalEnd; k < endDate; k += pointInterval)
+        {
+            ungappedData.push(0);
+        }
+
+        if ($chart.data(metricsNS.TRANSFORM))
+        {
+            ungappedData = metricsNS.transforms[$chart.data(metricsNS.TRANSFORM)](ungappedData);
+        }
+
+        var plot = $.extend({}, seriesDefaults, {
+            data: ungappedData,
+            lineColor: lineColors[i % lineColors.length],
+            marker: {
+                lineColor: lineColors[i % lineColors.length]
+            }
+        });
+
+        if (!$.isBlank(s.label))
+        {
+            plot.name = s.label;
+            showLabels = true;
+        }
+
+        seriesToPlot.push(plot);
+        i++;
     });
 
     // Kill off an existing chart if re-drawing to avoid leaks

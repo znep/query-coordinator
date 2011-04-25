@@ -1,9 +1,11 @@
 ;var metricsNS = blist.namespace.fetch('blist.metrics');
+blist.namespace.fetch('blist.metrics.transforms');
 
 metricsNS.SERIES_KEY = 'data-series';
 metricsNS.DATA_KEY   = 'data-metrics';
 metricsNS.DATE_START = 'data-date-start';
 metricsNS.DATE_END   = 'data-date-end';
+metricsNS.TRANSFORM  = 'data-transform';
 metricsNS.SHOW_COUNT = 5;
 
 /*
@@ -127,7 +129,7 @@ metricsNS.topDatasetsCallback = function($context)
     metricsNS.updateTopListWrapper($context,
         $context.data(metricsNS.DATA_KEY),
         function(key, value, results) {
-            $.socrataServer.makeRequest({url: '/views/' + key  + '.json', batch: true,
+            $.socrataServer.makeRequest({url: '/views/' + key  + '.json', type: 'get', batch: true,
                 success: function(responseData)
                 {
                     results.push({linkText: responseData.name,
@@ -301,6 +303,23 @@ metricsNS.updateChartCallback = function($chart, sliceType, options)
             $chart.parent().addClass('noDataAvailable').fadeIn();
         });
     }
+};
+
+// Removes jagged drops to zero, which are probably the result
+// of data not being recorded for that period
+metricsNS.transforms.smooth = function(data)
+{
+    var lastVal;
+    for (var i = 0; i < data.length; i++)
+    {
+        var item = data[i];
+        if (item) { lastVal = item; }
+        else if (lastVal)
+        {
+            data[i] = lastVal;
+        }
+    }
+    return data;
 };
 
 metricsNS.chartLoading = function($chart)

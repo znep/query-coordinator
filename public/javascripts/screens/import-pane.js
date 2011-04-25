@@ -27,6 +27,9 @@ var scan,
     $columnDropDown,
     $compositeColumnSourceDropDown,
     wizardCommand,
+    $headersTable,
+    $headersCount,
+    headersCount,
     nextButtonTip,
     isShown;
 
@@ -569,6 +572,13 @@ var addAllColumnsAsText = function()
     updateAll();
 };
 
+// set headers count text
+var setHeadersCountText = function()
+{
+    var wordCount = (headersCount === 0) ? 'None' : $.capitalize($.wordify(headersCount));
+    var phrase = (headersCount === 1) ? ' of your rows is a header.' : ' of your rows are headers.';
+    $headersCount.text(wordCount + phrase);
+};
 
 // config
 
@@ -585,6 +595,9 @@ importNS.paneConfig = {
         $columnsList = $pane.find('.columnsList');
         $warningsList = $pane.find('.columnWarningsList');
         $warningsSection = $pane.find('.warningsSection');
+        $headersTable = $pane.find('.headersTable tbody');
+        $headersCount = $pane.find('.headersCount');
+        headersCount = scan.summary.headers;
 
         // give the columns id refs; type of column
         _.each(columns, function(column, i)
@@ -627,6 +640,22 @@ importNS.paneConfig = {
 
         // throw in our default set of suggestions
         addDefaultColumns();
+
+        // render out the sample data for the header section
+        _(Math.min(5, scan.summary.sample.length)).times(function(i)
+        {
+            $headersTable.append($.tag({
+                tagName: 'tr',
+                'class': { value: 'header', onlyIf: i < scan.summary.headers },
+                contents: _.map(scan.summary.sample[i], function(cell)
+                    {
+                        return { tagName: 'td', contents: cell };
+                    })
+            }));
+        });
+
+        // populate the number
+        setHeadersCountText();
 
         // handle events
         $pane.delegate('.columnsList li input.columnName,' +
@@ -766,6 +795,25 @@ importNS.paneConfig = {
             $this.prev('.uniform.radio').find('input').click();
 
             updateAll();
+        });
+
+        // more/less header rows
+        $pane.find('.lessRowsButton').click(function(event)
+        {
+            event.preventDefault();
+            $headersTable.children('.header:last').removeClass('header');
+            headersCount = Math.max(0, headersCount - 1);
+            setHeadersCountText();
+        });
+        $pane.find('.moreRowsButton').click(function(event)
+        {
+            event.preventDefault();
+            var $lastHeader = $headersTable.children('.header:last');
+            (($lastHeader.length === 0) ? $headersTable.children(':first')
+                                        : $lastHeader.next()).addClass('header');
+            headersCount = Math.min(5, headersCount + 1);
+            $headersCount.text(headersCount);
+            setHeadersCountText();
         });
 
         $columnsList.awesomereorder({

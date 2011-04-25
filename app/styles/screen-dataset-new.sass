@@ -9,6 +9,10 @@
   margin: 1em 0 2em
   text-align: center
 
+.instructions
+  font-size: 1.3em
+  margin: 0 0 0.5em
+
 // PANE ZERO: choose type
 .newKindList
   margin: 2em auto 5em
@@ -362,6 +366,45 @@
           display: block
           font-size: 1.3em
           margin-left: 1.6em
+
+  .headersTable
+    border: 1px solid #888
+    @include box-shadow(0, 0, 0.8em, rgba(0, 0, 0, 0.3), true)
+    overflow-x: auto
+    width: 100%
+
+    tr
+      border-top: 1px solid #ddd
+      &:first-child
+        border-top: none
+
+      &.header td
+        background-color: #aaa
+        color: #888
+
+      td
+        border-left: 1px solid #ddd
+        font-size: 1.3em
+        padding: 0.4em
+        &:first-child
+          border-left: none
+
+  .headersActions
+    margin: 0.5em 0
+
+    .headersCount
+      float: left
+      font-size: 1.3em
+      font-weight: bold
+      padding: 0.8em
+
+    .button
+      @include sprite-menu-icons
+      float: right
+
+      .icon
+        float: left
+        margin-right: 0.3em
 
   hr
     border: none

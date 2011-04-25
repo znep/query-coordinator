@@ -54,7 +54,7 @@ GEM
       ruby-debug-base19 (>= 0.11.19)
     ruby_core_source (0.1.5)
       archive-tar-minitar (>= 0.5.2)
-    sass (3.1.0.alpha.253)
+    sass (3.1.0)
     stomp (1.1.6)
     thin (1.2.11)
       daemons (>= 1.0.9)
@@ -77,6 +77,6 @@ DEPENDENCIES
   rack (= 1.1.0)
   rails (= 2.3.11)
   ruby-debug19
-  sass (~> 3.1.0.alpha)
+  sass (~> 3.1)
   stomp (= 1.1.6)
   thin

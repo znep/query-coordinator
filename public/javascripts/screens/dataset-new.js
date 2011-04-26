@@ -175,6 +175,7 @@ $wizard.wizard({
                                 .addClass('error');
                             return false;
                         }
+                        state.fileExtension = ext; // save this off since the imports service needs it later
 
                         $pane.find('.uploadFileName')
                             .val(fileName)
@@ -227,7 +228,8 @@ $wizard.wizard({
 
 
 
-        'importColumns': blist.import.paneConfig,
+        'importColumns': blist.import.importColumnsPaneConfig,
+        'importing':     blist.import.importingPaneConfig,
 
 
 

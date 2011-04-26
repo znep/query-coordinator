@@ -53,7 +53,7 @@ var typesToText = {
     checkbox: 'Checkbox'
 };
 var locationTypes = {
-    street: 'text',
+    address: 'text',
     city: 'text',
     state: 'text',
     zip: 'number',
@@ -197,7 +197,7 @@ var updateAll = function()
                 name:       oldColumn.name,
                 suggestion: oldColumn.suggestion,
                 type:       oldColumn.type,
-                street:     getColumn($line.find('.locationStreetColumn').val()),
+                address:     getColumn($line.find('.locationAddressColumn').val()),
                 city:       getColumn(findOptionValue('city')),
                 state:      getColumn(findOptionValue('state')),
                 zip:        getColumn(findOptionValue('zip')),
@@ -247,7 +247,7 @@ var updateAll = function()
         importColumn.column = column;
 
         // transforms!
-        if (importColumn.dataType != 'location')
+        if (importColumn.dataType != 'location') // locations don't support transforms
         {
             importColumn.transforms = $.makeArray($line.find('.columnTransformsList').children().map(function()
             {
@@ -262,7 +262,8 @@ var updateAll = function()
                     result.options = {
                         find: $transformLine.find('.findText').val(),
                         replace: $transformLine.find('.replaceText').val(),
-                        ignoreCase: $transformLine.find('.caseSensitive').is(':checked')
+                        ignoreCase: !$transformLine.find('.caseSensitive').is(':checked'),
+                        regex: $transformLine.find('.regex').is(':checked')
                     };
                 }
                 else if (result.type == 'customExpression')
@@ -321,7 +322,8 @@ var validateAll = function()
                 locationUsedColumns.push(originalColumn);
 
                 // warn if the column is nonoptimally used
-                if (!$.isBlank(originalColumn) && (originalColumn.suggestion != locationTypes[field]))
+                if (!$.isBlank(originalColumn) && (originalColumn.type != 'static') &&
+                    (originalColumn.suggestion != locationTypes[field]))
                 {
                     addValidationError(importColumn, 'warning', 'set to import its <strong>' +
                         field + '</strong> from the source column <strong>' + $.htmlEscape(originalColumn.name) +
@@ -331,6 +333,18 @@ var validateAll = function()
                         'or geocoding errors are likely to occur.');
                 }
             });
+
+            // error if the column has lat but not long or vice versa
+            if (!_.isUndefined(column.latitude) && _.isUndefined(column.longitude))
+            {
+                addValidationError(importColumn, 'error', 'set to import a <strong>longitude</strong> ' +
+                    'but not a <strong>latitude</strong> column. Please specify the full lat/long pair.');
+            }
+            if (!_.isUndefined(column.longitude) && _.isUndefined(column.latitude))
+            {
+                addValidationError(importColumn, 'error', 'set to import a <strong>latitude</strong> ' +
+                    'but not a <strong>longitude</strong> column. Please specify the full lat/long pair.');
+            }
         }
         else if (column.type == 'composite')
         {
@@ -540,9 +554,6 @@ var addDefaultColumns = function(flat)
 
             _.each(location, function(columnId, field)
             {
-                if (field == 'address')
-                    field = 'street'; // workaround for how our location stuff works
-
                 compositeColumn[field] = columns[columnId];
                 availableColumns = _.without(availableColumns, columns[columnId]);
             });
@@ -582,8 +593,9 @@ var setHeadersCountText = function()
 
 // config
 
-importNS.paneConfig = {
+importNS.importColumnsPaneConfig = {
     uniform: true,
+    skipValidation: true,
     onInitialize: function($pane, paneConfig, state, command)
     {
         // update global vars
@@ -660,7 +672,8 @@ importNS.paneConfig = {
         // handle events
         $pane.delegate('.columnsList li input.columnName,' +
                        '.columnsList li select.columnTypeSelect,' +
-                       '.columnsList li select.columnSourceSelect', 'change', updateAll);
+                       '.columnsList li select.columnSourceSelect,' +
+                       '.columnsList li input[type=text]', 'change', updateAll);
 
         $pane.delegate('.columnsList li a.options', 'click', function(event)
         {
@@ -831,9 +844,146 @@ importNS.paneConfig = {
         // we are now past the first init, so start animating things
         isShown = true;
     },
-    onNext: function()
+    onNext: function($pane, state)
     {
-        // confirm okayness
+        state.import = {};
+        state.import.importColumns = $.makeArray($columnsList.children().map(function()
+        {
+            return $.extend(true, {}, $(this).data('importColumn'));
+        }));
+        state.import.headersCount = headersCount;
+        return 'importing';
+    }
+};
+
+var handleColumn = function(column)
+{
+    if (column.type == 'column')
+    {
+        return 'col' + (column.id + 1);
+    }
+    else if (column.type == 'static')
+    {
+        return '"' + column.value + '"';
+    }
+};
+
+importNS.importingPaneConfig = {
+    onActivate: function($pane, paneConfig, state, command)
+    {
+        // bump back to previous pane if we're going backwards
+        if (state.importingActivated)
+        {
+            command.prev();
+            return;
+        }
+        state.importingActivated = true;
+
+        // let's figure out what to send to the server
+        var import = state.import;
+        var blueprint = {
+            skip: import.headersCount,
+            name: Math.random().toString()
+        };
+
+        // the server expects something much like what importColumns already are
+        blueprint.columns = _.map(import.importColumns, function(importColumn)
+        {
+            return {
+                name: importColumn.name,
+                datatype: importColumn.dataType
+            };
+        });
+
+        // translations are a bit more complex
+        var translation = '[' + _.map(import.importColumns, function(importColumn)
+        {
+            var column = importColumn.column;
+            var result;
+
+            // deal with the column values
+            if (_.isUndefined(column))
+            {
+                result = '""';
+            }
+            else if (column.type == 'column')
+            {
+                result = handleColumn(column);
+            }
+            else if (column.type == 'location')
+            {
+                var addressPart = _.map(_.compact(
+                        [ column.address, column.city, column.state, column.zip ]), handleColumn).join(' + ", " + ');
+
+                var latLongPart;
+                if (!_.isUndefined(column.latitude) && !_.isUndefined(column.longitude))
+                {
+                    // yeah. this sucks. use a syntax highlighter.
+                    latLongPart = '"(" + ' + handleColumn(column.latitude) + ' + ", " + ' +
+                        handleColumn(column.longitude) + ' + ")"';
+                }
+
+                result = _.compact([addressPart, latLongPart]).join(' + ", " + ');
+            }
+            else if (column.type == 'composite')
+            {
+                result = _.map(column.sources, handleColumn).join(' + ');
+            }
+
+            // deal with transforms
+            _.each(importColumn.transforms || [], function(transform)
+            {
+                if (transform.type == 'findReplace')
+                {
+                    var regexExpr = transform.options.find;
+                    if (!transform.options.regex)
+                        regexExpr = regexExpr.replace(/(\\|\^|\$|\?|\*|\+|\.|\(|\)|\{|\})/g,
+                            function(match) { return '\\' + match; });
+
+                    result = '(' + result + ').replace(/' + regexExpr + '/g' +
+                        (!!transform.options.ignoreCase ? 'i' : '') + ', "' + transform.options.replace + '")';
+                }
+                else if (transform.type == 'customExpression')
+                {
+                    result = transform.options.expression.replace(/#value#/ig, result);
+                }
+                else
+                {
+                    result = transform.type + '(' + result + ')';
+                }
+            });
+
+            return result;
+        }).join() + ']';
+
+        // fire it all off. note that data is a form-encoded payload, not json.
+        $.socrataServer.makeRequest({
+            type: 'post',
+            url: '/api/imports2.json',
+            accessType: false,
+            contentType: 'application/x-www-form-urlencoded',
+            data: {
+                type: state.fileExtension,
+                blueprint: JSON.stringify(blueprint),
+                translation: translation,
+                fileId: state.scan.fileId
+            },
+            success: function(response)
+            {
+                state.submittedView = new Dataset(response);
+                command.next('metadata');
+            },
+            error: function(request)
+            {
+                setTimeout(function()
+                {
+                    submitError = (request.status == 500) ?
+                                   'An unknown error has occurred. Please try again in a bit.' :
+                                   JSON.parse(request.responseText).message;
+                    command.prev();
+                }, 2000);
+            }
+        });
     }
 };
 

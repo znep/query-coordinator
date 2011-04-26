@@ -97,7 +97,8 @@
           </div>
 
           <h2>Headers</h2>
-          <p class="instructions">Please indicate how many rows of your source file are headers:</p>
+          <p class="instructions">Headers should be ignored and not imported as data.
+            Please indicate how many rows of your source file are headers:</p>
           <table class="headersTable"><tbody></tbody></table>
           <div class="headersActions clearfix">
             <span class="headersCount"></span>
@@ -309,9 +310,9 @@
           <div class="clearfix">
             <fieldset class="left">
               <legend>Import Existing Address Columns</legend>
-              <div class="line locationStreetLine clearfix">
-                <label class="locationStreetLabel" for="locationStreetColumn">Street</label>
-                <div class="columnSourcePlaceholder" data-class="locationStreetColumn"></div>
+              <div class="line locationAddressLine clearfix">
+                <label class="locationAddressLabel" for="locationAddressColumn">Street</label>
+                <div class="columnSourcePlaceholder" data-class="locationAddressColumn"></div>
               </div>
               <div class="line locationCityLine clearfix">
                 <label class="locationCityLabel" for="locationCityColumn">City</label>
@@ -393,6 +394,8 @@
           <input type="text" class="replaceText"/>
           <input type="checkbox" class="caseSensitive"/>
           <label class="caseSensitiveLabel">case sensitive</label>
+          <input type="checkbox" class="regex"/>
+          <label class="regexLabel">regex</label>
         </div>
         <div class="customExpressionSection">
           <label class="customExpressionLabel"></label>

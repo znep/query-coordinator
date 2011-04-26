@@ -262,7 +262,7 @@
         // keys are values of data-wizardPaneName elems that correlate; subkeys are:
         //   * disableButtons: [ 'prev', 'next' ]
         //   * isFinish: true/false
-        //   * noValidation: true/false
+        //   * skipValidation: true/false
         //   * onActivate: function($paneObject, paneConfig, state, commandObject)
         //     + fires every time a pane is activated
         //     + pane config will be evaluated *after* onActivate fires

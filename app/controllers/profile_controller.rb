@@ -358,7 +358,7 @@ private
   # Pipe the file upload back to the core server
   def accessible_image_change(post_url)
     if params[:new_image]
-      unless ['image/png','image/gif','image/jpeg']
+      unless ['image/png','image/x-png','image/gif','image/jpeg','image/pjpeg']
         .include? params[:new_image].content_type
         flash[:error] = "Please select a valid image type (PNG, JPG, or GIF)"
         return

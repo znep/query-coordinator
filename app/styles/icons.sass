@@ -45,7 +45,7 @@
   #{$subselector}
     @include text-hiding
     @include ie6-fix
-    background-image: url(/stylesheets/images/icons/menu_icons.png?1)
+    background-image: url(/stylesheets/images/icons/menu_icons.png?2)
     height: 13px
     width: 13px
     .ie6 &
@@ -57,6 +57,9 @@
   @else
     #{$subselector}
       background-position: 0 13px
+
+  @if $subselector == '&'
+    $subselector: ''
 
   &.none #{$subselector}
     background-position: 0 13px
@@ -154,7 +157,8 @@
   &.close #{$subselector},
   &.remove #{$subselector}
     background-position: 0 -507px
-  &.alert #{$subselector}
+  &.alert #{$subselector},
+  &.warning #{$subselector}
     background-position: 0 -520px
   &.subscribe #{$subselector}
     background-position: 0 -533px
@@ -166,6 +170,8 @@
     background-position: 0 -572px
   &.typeHref #{$subselector}
     background-position: 0 -585px
+  &.error #{$subselector}
+    background-position: 0 -598px
 
 // icons/accordion_icons.png
 @mixin sprite-accordion-icons($subselector: '.icon')

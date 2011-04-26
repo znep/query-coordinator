@@ -63,6 +63,60 @@
             <p class="uploadFileFormats">Supported formats are .csv, .tsv, .xml, .xls, and .xlsx.</p>
           </div>
         </li>
+        <li class="importColumnsPane" data-wizardPaneName="importColumns">
+          <p class="headline">Specify how your data should be imported.</p>
+          <h2>Columns to import</h2>
+          <div class="columnsListHeader clearfix">
+            <div class="columnHandleCell"></div>
+            <div class="columnNameCell">Name</div>
+            <div class="columnTypeCell">Data Type</div>
+            <div class="columnSourceCell">
+              Source Column
+              <a href="#" class="alert importTypesMessageLink">
+                <span class="icon"></span>
+                Why is it important to choose column types now?
+              </a>
+            </div>
+          </div>
+          <ul class="columnsList">
+          </ul>
+          <div class="columnsToolbar clearfix">
+            <div class="presets">
+              <label for="columnsPresetsSelect">Reset to preset:</label>
+              <select class="columnsPresetsSelect">
+                <option value="suggested">Suggested columns</option>
+                <option value="suggestedFlat">Suggested columns (no composites)</option>
+                <option value="alltext">All columns as text</option>
+              </select>
+              <a class="columnsPresetsButton button" href="#set">Set</a>
+            </div>
+            <div class="actions">
+              <a class="clearColumnsButton button" href="#clear">Clear All</a>
+              <a class="addColumnButton add button" href="#add"><span class="icon"></span>Add New Column</a>
+            </div>
+          </div>
+
+          <h2>Headers</h2>
+          <p class="instructions">Headers should be ignored and not imported as data.
+            Please indicate how many rows of your source file are headers:</p>
+          <table class="headersTable"><tbody></tbody></table>
+          <div class="headersActions clearfix">
+            <span class="headersCount"></span>
+            <a href="#more" class="button downArrow moreRowsButton"><span class="icon"></span>More Rows</a>
+            <a href="#less" class="button upArrow lessRowsButton"><span class="icon"></span>Less Rows</a>
+          </div>
+
+          <div class="warningsSection">
+            <h2>Errors and Warnings</h2>
+            <ul class="columnWarningsList"></ul>
+          </div>
+          <hr/>
+        </li>
+        <li class="workingPane" data-wizardPaneName="importing">
+          <p class="headline">Importing your data...</p>
+          <div class="brandedSpinner"></div>
+          <p class="importStatus"></p>
+        </li>
         <li class="metadataPane" data-wizardPaneName="metadata">
           <div class="flash"></div>
           <p class="headline">Please describe your data.</p>
@@ -221,6 +275,153 @@
     </div>
   </form>
 </div>
+
+<% content_for :templates do %>
+  <div class="columnsListLine">
+    <li>
+      <div class="mainLine">
+        <div class="columnHandleCell"></div>
+        <div class="columnNameCell">
+          <input type="text" class="columnName" title="Name this column"/>
+        </div>
+        <div class="columnTypeCell">
+          <select class="columnTypeSelect">
+            <%= options_for_select(Column.importable_types.invert) %>
+          </select>
+        </div>
+        <div class="columnSourceCell"></div>
+        <div class="columnActionCell clearfix">
+          <a href="#remove" class="remove icon" title="Remove">remove</a>
+          <a href="#options" class="options icon" title="Options">options</a>
+        </div>
+      </div>
+      <div class="detailsLine">
+        <div class="compositeDetails">
+          <h3>Combine Multiple Columns</h3>
+          <h4>Create one column out of many source columns:</h4>
+          <ul class="sourceColumnsList"></ul>
+          <a href="#newSourceColumn" class="button add newSourceColumnButton">
+            <span class="icon"></span>Add new source column
+          </a>
+        </div>
+        <div class="locationDetails">
+          <h3>Location Source Columns</h3>
+          <h4>Addresses will be geocoded after import is complete.</h4>
+          <div class="clearfix">
+            <fieldset class="left">
+              <legend>Import Existing Address Columns</legend>
+              <div class="line locationAddressLine clearfix">
+                <label class="locationAddressLabel" for="locationAddressColumn">Street</label>
+                <div class="columnSourcePlaceholder" data-class="locationAddressColumn"></div>
+              </div>
+              <div class="line locationCityLine clearfix">
+                <label class="locationCityLabel" for="locationCityColumn">City</label>
+                <div class="optionGroup">
+                  <input type="radio" name="locationCityToggle" class="locationSourceToggle" checked="checked"/>
+                  <div class="columnSourcePlaceholder" data-class="locationCityColumn"></div>
+                  <input type="radio" name="locationCityToggle" class="locationSourceToggle"/>
+                  <input type="text" class="locationCityStatic textPrompt" title="Enter a custom value"/>
+                </div>
+              </div>
+              <div class="line locationStateLine clearfix">
+                <label class="locationStateLabel" for="locationStateColumn">State</label>
+                <div class="optionGroup">
+                  <input type="radio" name="locationStateToggle" class="locationSourceToggle" checked="checked"/>
+                  <div class="columnSourcePlaceholder" data-class="locationStateColumn"></div>
+                  <input type="radio" name="locationStateToggle" class="locationSourceToggle"/>
+                  <input type="text" class="locationStateStatic textPrompt" title="Enter a custom value"/>
+                </div>
+              </div>
+              <div class="line locationZipLine clearfix">
+                <label class="locationZipLabel" for="locationZipColumn">Zip</label>
+                <div class="optionGroup">
+                  <input type="radio" name="locationZipToggle" class="locationSourceToggle" checked="checked"/>
+                  <div class="columnSourcePlaceholder" data-class="locationZipColumn"></div>
+                  <input type="radio" name="locationZipToggle" class="locationSourceToggle"/>
+                  <input type="text" class="locationZipStatic textPrompt" title="Enter a custom value"/>
+                </div>
+              </div>
+            </fieldset>
+            <fieldset class="right">
+              <legend>Import Latitude and Longitude</legend>
+              <div class="line locationLatitudeLine clearfix">
+                <label class="locationLatitudeLabel">Latitude</label>
+                <div class="columnSourcePlaceholder" data-class="locationLatitudeColumn"></div>
+              </div>
+              <div class="line locationLongitudeLine clearfix">
+                <label class="locationLongitudeLabel">Longitude</label>
+                <div class="columnSourcePlaceholder" data-class="locationLongitudeColumn"></div>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+        <div class="generalDetails">
+          <h3>Options</h3>
+          <h4>Perform the following transformation upon import:</h4>
+          <ul class="columnTransformsList">
+          </ul>
+          <a href="#newTransform" class="button add newColumnTransformButton">
+            <span class="icon"></span>Add new transform
+          </a>
+        </div>
+      </div>
+    </li>
+  </div>
+  <ul class="sourceColumnsListLine">
+    <li class="clearfix">
+      <a class="remove removeSourceColumnLineButton" href="#remove"><span class="icon">remove</span></a>
+      <div class="compositeColumnSourcePlaceholder" data-class="compositeColumnSourceSelect"></div>
+      <input type="text" class="staticSourceText"/>
+    </li>
+  </ul>
+  <ul class="columnTransformsListLine">
+    <li class="clearfix">
+      <a class="remove removeTransformLineButton" href="#remove"><span class="icon">remove</span></a>
+      <span class="thenText">then</span>
+      <select class="columnTransformOperation">
+        <option value="title">Make Title Case</option>
+        <option value="upper">Make UPPERCASE</option>
+        <option value="lower">Make lowercase</option>
+        <option value="toStateCode">Convert states to 2-letter codes</option>
+        <option value="findReplace">Find and Replace value...</option>
+        <option value="customExpression">Custom Javascript Expression...</option>
+      </select>
+      <div class="additionalTransformOptions">
+        <div class="findReplaceSection">
+          <label class="findTextLabel">find</label>
+          <input type="text" class="findText"/>
+          <label class="replaceTextLabel">and replace it with</label>
+          <input type="text" class="replaceText"/>
+          <input type="checkbox" class="caseSensitive"/>
+          <label class="caseSensitiveLabel">case sensitive</label>
+          <input type="checkbox" class="regex"/>
+          <label class="regexLabel">regex</label>
+        </div>
+        <div class="customExpressionSection">
+          <label class="customExpressionLabel"></label>
+          <input type="text" class="customExpression"/>
+          <a rel="external" href="http://dev.socrata.com/">How do I create a custom Javascript expression?</a>
+        </div>
+      </div>
+    </li>
+  </ul>
+<% end %>
+
+<% content_for :modals do %>
+  <div class="modalDialog" id="importTypesMessage">
+    <a href="#close" class="jqmClose modalDialogClose">Close</a>
+    <h2>Why is it important to choose column types now?</h2>
+    <p>Your data is heavily processed when it is imported, and optimized for consumption
+       for each particular data type. In addition, most data types have special features
+       that will only be activated should the column be set to that type &mdash; location
+       columns, for example, are necessary to create maps.</p>
+    <p>It is possible to change column types later, but it is a process that takes some
+       time, so it's best to set it all properly up front.</p>
+    <div class="finishButtons">
+      <a href="#close" class="button jqmClose">Close</a>
+    </div>
+  </div>
+<% end %>
 
 <% content_for :js_footer do %>
   <%= include_javascripts 'dataset-new' %>

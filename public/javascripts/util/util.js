@@ -243,23 +243,6 @@ $.syncObjects = function(dest, src)
     { if (_.isUndefined(src[k])) { delete dest[k]; } });
 };
 
-/* Get all the keys for an object as an array */
-$.keys = function(obj)
-{
-    if (obj === null || typeof obj != 'object') { return []; }
-
-    var keys = [];
-    $.each(obj, function(k, v) { keys.push(k); });
-    return keys;
-};
-
-$.objSelect = function(obj, filterFn)
-{
-    var acc = {};
-    _.each(obj, function(v, k) { if (filterFn(v, k)) { acc[k] = v; } });
-    return acc;
-};
-
 $.renderTemplate = function(template, data, directive)
 {
     var $templateCopy = $('#templates > .' + template)
@@ -570,7 +553,7 @@ $.loadStylesheets = function(sheetQueue, callback)
                     loadedCount++;
                     if (loadedCount == reqCount)
                     {
-                        $('head').append('<style type="text/css">' +
+                        $('head').append('<' + 'style type="text/css">' +
                             sheetPieces + '</style>\n');
                         if (_.isFunction(callback)) { callback(); }
                     }

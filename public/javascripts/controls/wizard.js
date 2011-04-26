@@ -45,11 +45,17 @@
                     $currentPane.siblings().detach();
                     $paneContainer.css('marginLeft', 0);
                 });
-                animateVert();
+                _.defer(function()
+                {
+                    animateVert();
+                });
             };
             var animateVert = function()
             {
-                $wizard.animate({ height: $currentPane.outerHeight(true) });
+                $wizard.animate({ height: $currentPane.outerHeight(true) }, function()
+                {
+                    $wizard.css('height', '');
+                });
             };
 
         // flow
@@ -211,7 +217,19 @@
                 nextPane(currentPaneConfig.onNext);
             });
 
-            // sizing
+            $cancelButton.click(function(event)
+            {
+                event.preventDefault();
+                if ($cancelButton.is('.disabled')) { return; }
+
+                var destination = opts.onCancel;
+                if (_.isFunction(destination))
+                    destination = destination($currentPane, currentState);
+
+                window.location.href = destination;
+            });
+
+        // sizing
             var adjustSize = function()
             {
                 var targetWidth = $wizard.outerWidth(false);
@@ -222,9 +240,6 @@
                 animateHoriz();
             };
             $(document).resize(adjustSize);
-
-            // track the height of the current pane
-            setInterval(animateVert, 2000);
 
             // go.
             var $initialPane = $panes.first();
@@ -238,16 +253,16 @@
     };
 
     $.fn.wizard.defaults = {
-        cancelPath: '#cancel',
         cancelText: 'Cancel',
         finishCallback: function() {},
         finishText: 'Finish',
         nextText: 'Next',
+        onCancel: '#cancel', // either string (url path), or function (handle it yourself)
         paneConfig: {},
         // keys are values of data-wizardPaneName elems that correlate; subkeys are:
         //   * disableButtons: [ 'prev', 'next' ]
         //   * isFinish: true/false
-        //   * noValidation: true/false
+        //   * skipValidation: true/false
         //   * onActivate: function($paneObject, paneConfig, state, commandObject)
         //     + fires every time a pane is activated
         //     + pane config will be evaluated *after* onActivate fires

@@ -7,9 +7,22 @@
 
 ;(function($)
 {
+    // quick helper to determine if an element scrolls
+    var isScroll = function($elem)
+    {
+        return ($elem.css('overflow-y') == 'auto') ||
+               ($elem.css('overflow-y') == 'scroll')
+    };
+
+    // quick helper to determine the top or bottom border width of an elem
+    var borderWidth = function($elem, direction)
+    {
+        return parseInt($elem.css('border-' + direction + '-width'));
+    };
+
     $.fn.awesomereorder = function(options)
     {
-        options = $.extend({}, options, $.fn.awesomereorder.defaults);
+        options = $.extend(true, {}, $.fn.awesomereorder.defaults, options);
 
         return this.each(function()
         {
@@ -29,14 +42,39 @@
                 // keep track of active item
                 $item,
 
+                // store off our last known position for scroll repetition
+                lastPosition,
+
                 // keep track of container scroll
                 scrollTimer,
+
+                // and the container that's scrolling
+                $scrollParent,
+
+                // and whether we're actively scrolling
+                isScrolling = false,
+
+                // and how much to scroll by
+                currentScrollSpeed,
 
                 // keep track of item width and height
                 cachedWidth, cachedHeight,
 
                 // keep track of our active placeholder
                 $placeholder;
+
+            if (localOptions.uiDraggableDefaults !== undefined)
+            {
+                var overrides = ['start', 'drag', 'stop'];
+                for (var i in overrides)
+                {
+                    if (localOptions.uiDraggableDefaults[overrides[i]] !== undefined)
+                    {
+                        localOptions[overrides[i]] = localOptions.uiDraggableDefaults[overrides[i]];
+                        delete localOptions.uiDraggableDefaults[overrides[i]];
+                    }
+                }
+            }
 
             var generatePlaceholder = function()
             {
@@ -53,13 +91,63 @@
                 $placeholder.hide().slideDown('fast');
             };
 
+            // just to avoid repeating ourselves
+            var setScroll = function(callback)
+            {
+                if (!isScrolling)
+                {
+                    clearInterval(scrollTimer);
+                    scrollTimer = setInterval(callback, 10);
+                    isScrolling = true;
+                }
+            };
+
             var checkScroll = function(position)
             {
-                
+                if ($scrollParent === undefined)
+                    return; // bail; we don't have a parent that scrolls.
+
+                var scrollParentOffset = $scrollParent.offset();
+                var scrollParentBorderTop = borderWidth($scrollParent, 'top');
+                var scrollParentBorderBottom = borderWidth($scrollParent, 'bottom');
+
+                if (position.top < (scrollParentOffset.top + localOptions.scrollMargin))
+                {
+                    currentScrollSpeed = localOptions.scrollSpeed *
+                                         Math.min(Math.pow((scrollParentOffset.top + localOptions.scrollMargin +
+                                                 scrollParentBorderTop - position.top) /
+                                             localOptions.scrollMargin, localOptions.scrollCurve), 1);
+                    setScroll(function()
+                    {
+                        $scrollParent.scrollTop($scrollParent.scrollTop() - currentScrollSpeed);
+                        checkHover(lastPosition);
+                    });
+                }
+                else if ((position.top - scrollParentBorderTop + cachedHeight) >
+                             (scrollParentOffset.top + $scrollParent.outerHeight(false) -
+                              scrollParentBorderBottom - localOptions.scrollMargin))
+                {
+                    currentScrollSpeed = localOptions.scrollSpeed *
+                                         Math.min(Math.pow((position.top + cachedHeight - scrollParentBorderTop -
+                                                 (scrollParentOffset.top + $scrollParent.outerHeight(false) -
+                                                  scrollParentBorderBottom - localOptions.scrollMargin)) /
+                                             localOptions.scrollMargin, localOptions.scrollCurve), 1);
+                    setScroll(function()
+                    {
+                        $scrollParent.scrollTop($scrollParent.scrollTop() + currentScrollSpeed);
+                        checkHover(lastPosition);
+                    });
+                }
+                else
+                {
+                    isScrolling = false;
+                    clearInterval(scrollTimer);
+                }
             };
 
             var checkHover = function(position)
             {
+
                 // calculate initial height
                 var containerOffset = $container.position();
                 var stackHeight = containerOffset.top - $container.scrollTop() +
@@ -119,36 +207,68 @@
                             .remove();
             };
 
+            // init jquery-draggable with our stuff
             $items.draggable($.extend({}, {
                 addClass: false,
                 axis: (directionType == 'v') ? 'y' : undefined,
                 helper: 'clone',
-                scroll: false,
+                scroll: false, // jquery-ui-draggable's own scroll is garbage; use our own.
                 start: function(event, ui)
                 {
+                    // find closest parent that scrolls; measure scroll against that parent
+                    $scrollParent = undefined;
+                    if (isScroll($container))
+                    {
+                        $scrollParent = $container;
+                    }
+                    else
+                    {
+                        $container.parents().each(function()
+                        {
+                            var $this = $(this);
+                            if (isScroll($this))
+                            {
+                                $scrollParent = $this;
+                                return false;
+                            }
+                        });
+                    }
+
+                    // grab our elem
                     $item = $(this);
 
+                    // measure things
                     ui.helper.width($item.width());
                     cachedWidth = $item.outerWidth(true);
                     cachedHeight = $item.outerHeight(true);
 
+                    // drop in a placeholder
                     $placeholder = generatePlaceholder();
                     $item.after($placeholder);
 
-                    // IE8 doesn't deal well with the original parent being remove from DOM,
-                    // even if you add it to a detached parent to make jQuery < 1.8.9 happy.
+                    // IE8 doesn't deal well with the original element being removed from DOM,
+                    // even if you add it to a detached parent to make jQueryUI < 1.8.9 happy.
                     // So instead of removing the original element, let's just hide it.
                     $item.hide();
+
+                    if (typeof localOptions.start == 'function') localOptions.start(event, ui);
                 },
                 drag: function(event, ui)
                 {
-                    checkScroll({ left: ui.position.left, top: ui.position.top });
-                    checkHover({ left: ui.position.left, top: ui.position.top });
+                    lastPosition = { left: ui.position.left, top: ui.position.top };
+                    checkScroll(lastPosition);
+                    checkHover(lastPosition);
+
+                    if (typeof localOptions.drag == 'function') localOptions.drag(event, ui);
                 },
                 stop: function(event, ui)
                 {
-                    //clearInterval(scrollTimer);
+                    isScrolling = false;
+                    clearInterval(scrollTimer);
+
                     dropItem(ui.helper);
+
+                    if (typeof localOptions.stop == 'function') localOptions.stop(event, ui);
                 }
             }, localOptions.uiDraggableDefaults));
         });
@@ -157,10 +277,15 @@
     $.fn.awesomereorder.defaults = {
         activeRange: 0.3,
         directionType: 'auto',
+        drag: null,
         handleSelector: '.',
         listItemSelector: 'li',
+        scrollCurve: 3, // eases the edge of of the scrolling zone
+        scrollMargin: 40, // in px
+        scrollSpeed: 25, // maximum, in px; will be scaled according to distance
+        start: null,
+        stop: null,
         uiDraggableDefaults: {
-            containment: 'parent',
             distance: 5,
             opacity: 0.8
         }

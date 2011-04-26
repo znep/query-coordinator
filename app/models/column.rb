@@ -1,5 +1,5 @@
 class Column < Model
-  cattr_reader :types
+  cattr_reader :types, :importable_types
   attr_accessor :data_position
 
   @@types = {
@@ -25,7 +25,19 @@ class Column < Model
       "nested_table" => "Nested Table",
       "tag" => "Row Tag",
       'location' => 'Location'
-  };
+  }
+
+  @@importable_types = {
+    text: 'Plain Text',
+    number: 'Number',
+    money: 'Money',
+    percent: 'Percent',
+    calendar_date: 'Date & Time',
+    date: 'Date & Time (with timezone)',
+    checkbox: 'Checkbox',
+    stars: 'Stars',
+    location: 'Location'
+  }
 
   def self.create(view_id, attributes, parent_id=nil)
     if parent_id.nil?

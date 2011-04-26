@@ -1,5 +1,6 @@
-$(function()
-{
+$(function(){
+
+blist.namespace.fetch('blist.import');
 
 var submitError = null;
 
@@ -46,7 +47,13 @@ var formToViewMetadata = function(metadataForm)
 // WIZARD (outdented for readability)
 var $wizard = $('.newDatasetWizard');
 $wizard.wizard({
-    cancelPath: '/profile',
+    onCancel: function($pane, state)
+    {
+        if (!_.isUndefined(state.submittedView))
+            state.submittedView.remove();
+
+        return '/profile';
+    },
     paneConfig: {
 
         'selectType': {
@@ -150,9 +157,8 @@ $wizard.wizard({
                 $pane.find('.uploadFileFormats').toggle(isBlist);
 
                 // uploader
-                var uploadEndpoint = '/imports.txt';
-                if (state.type == 'blobby')
-                    uploadEndpoint += '?type=blobby';
+                var uploadEndpoint = isBlist ? '/imports2?method=scan'
+                                             : '/imports.txt?type=blobby';
 
                 var $uploadThrobber = $pane.find('.uploadThrobber');
                 var uploader = blist.fileUploader({
@@ -169,12 +175,13 @@ $wizard.wizard({
                                 .addClass('error');
                             return false;
                         }
+                        state.fileExtension = ext; // save this off since the imports service needs it later
 
                         $pane.find('.uploadFileName')
                             .val(fileName)
                             .removeClass('error');
 
-                        $uploadThrobber.slideDown()
+                        $uploadThrobber.slideDown(command.updateHeight)
                                        .find('.text').text('Uploading your file...');
                     },
                     onProgress: function(id, fileName, loaded, total)
@@ -203,13 +210,26 @@ $wizard.wizard({
                         {
                             $uploadThrobber.slideUp();
                             $pane.find('.uploadFileName').val('No file selected yet.');
-                            state.submittedView = new Dataset(response);
-                            command.next('metadata');
+                            if (isBlist)
+                            {
+                                state.scan = response;
+                                command.next('importColumns');
+                            }
+                            else
+                            {
+                                state.submittedView = new Dataset(response);
+                                command.next('metadata');
+                            }
                         }, 1000);
                     }
                 });
             }
         },
+
+
+
+        'importColumns': blist.import.importColumnsPaneConfig,
+        'importing':     blist.import.importingPaneConfig,
 
 
 
@@ -410,11 +430,4 @@ $wizard.wizard({
     }
 });
 
-// PAGE THREE: WORKING
-    // activate
-    $('.workingPane').bind('wizard-paneActivated', function()
-    {
-        submitMetadata();
-        $('.wizardButtons .cancel, .wizardButtons .prev, .wizardButtons .next').fadeOut();
-    });
 });

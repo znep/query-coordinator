@@ -157,7 +157,7 @@ $wizard.wizard({
                 $pane.find('.uploadFileFormats').toggle(isBlist);
 
                 // uploader
-                var uploadEndpoint = isBlist ? '/imports2?method=scan'
+                var uploadEndpoint = isBlist ? '/imports2.txt?method=scan'
                                              : '/imports.txt?type=blobby';
 
                 var $uploadThrobber = $pane.find('.uploadThrobber');

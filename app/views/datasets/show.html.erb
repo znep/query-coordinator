@@ -605,8 +605,7 @@
     blist.sidebarHidden.exportSection.subscribe = <%= !@view.is_tabular? %>;
 
     <%# Sharing pane %>
-    blist.sidebarHidden.sharing = <%= !@view.user_granted?(current_user) &&
-      !CurrentDomain.user_can?(current_user, :edit_others_datasets)  %>;
+    blist.sidebarHidden.sharing = <%= !@view.has_rights?('grant') %>;
     blist.sidebarHidden.permissions = <%= !@view.has_rights?('update_view') %>;
     blist.sidebarHidden.plagiarize = <%= !CurrentDomain.user_can?(current_user, :chown_datasets) %>;
 

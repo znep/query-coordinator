@@ -619,8 +619,7 @@
       @view.is_form? %>;
     blist.sidebarHidden.manage.showHide = <%= @view.is_snapshotted? || !@view.is_tabular? ||
       @view.is_form? %>;
-    blist.sidebarHidden.manage.sharing = <%= @view.is_snapshotted? || !@view.user_granted?(current_user) &&
-      !CurrentDomain.user_can?(current_user, :edit_others_datasets)  %>;
+    blist.sidebarHidden.manage.sharing = <%= @view.is_snapshotted? || !@view.has_rights?('grant') %>;
     blist.sidebarHidden.manage.permissions = <%= @view.is_snapshotted? ||
       !@view.has_rights?('update_view') %>;
     blist.sidebarHidden.manage.plagiarize = <%= !CurrentDomain.user_can?(current_user, :chown_datasets) %>;

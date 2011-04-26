@@ -87,7 +87,8 @@
                             settings.view.hasRight('remove_column'),
                         columnPropertiesEnabled: settings.editEnabled,
                         columnNameEdit: settings.editEnabled &&
-                            settings.view.type == 'blist' &&
+                            (settings.view.type == 'blist' ||
+                             settings.view.type == 'grouped') &&
                             settings.view.hasRight('update_column'),
                         showAddColumns: settings.editEnabled &&
                             settings.view.type == 'blist' &&

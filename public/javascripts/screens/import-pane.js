@@ -12,7 +12,7 @@
 
 ;(function($){
 
-var importNS = blist.namespace.fetch('blist.import');
+var importNS = blist.namespace.fetch('blist.importer');
 
 // globals
 var scan,
@@ -846,12 +846,12 @@ importNS.importColumnsPaneConfig = {
     },
     onNext: function($pane, state)
     {
-        state.import = {};
-        state.import.importColumns = $.makeArray($columnsList.children().map(function()
+        state.importer = {};
+        state.importer.importColumns = $.makeArray($columnsList.children().map(function()
         {
             return $.extend(true, {}, $(this).data('importColumn'));
         }));
-        state.import.headersCount = headersCount;
+        state.importer.headersCount = headersCount;
         return 'importing';
     }
 };
@@ -880,14 +880,14 @@ importNS.importingPaneConfig = {
         state.importingActivated = true;
 
         // let's figure out what to send to the server
-        var import = state.import;
+        var importer = state.importer;
         var blueprint = {
-            skip: import.headersCount,
+            skip: importer.headersCount,
             name: Math.random().toString()
         };
 
         // the server expects something much like what importColumns already are
-        blueprint.columns = _.map(import.importColumns, function(importColumn)
+        blueprint.columns = _.map(importer.importColumns, function(importColumn)
         {
             return {
                 name: importColumn.name,
@@ -896,7 +896,7 @@ importNS.importingPaneConfig = {
         });
 
         // translations are a bit more complex
-        var translation = '[' + _.map(import.importColumns, function(importColumn)
+        var translation = '[' + _.map(importer.importColumns, function(importColumn)
         {
             var column = importColumn.column;
             var result;

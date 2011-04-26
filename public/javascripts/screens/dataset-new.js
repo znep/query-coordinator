@@ -1,6 +1,6 @@
 $(function(){
 
-blist.namespace.fetch('blist.import');
+blist.namespace.fetch('blist.importer');
 
 var submitError = null;
 
@@ -228,8 +228,8 @@ $wizard.wizard({
 
 
 
-        'importColumns': blist.import.importColumnsPaneConfig,
-        'importing':     blist.import.importingPaneConfig,
+        'importColumns': blist.importer.importColumnsPaneConfig,
+        'importing':     blist.importer.importingPaneConfig,
 
 
 

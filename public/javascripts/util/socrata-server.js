@@ -40,10 +40,11 @@ this.ServerModel = Model.extend({
                         req = $.extend(true, {}, req);
                         req.type = 'get';
 
-                        if (_.isString(req.data))
-                            req.data = { ticket: d.ticket };
-                        else
-                            $.extend(req.data, { ticket: d.ticket });
+                        var origData = req.data;
+                        req.data = { ticket: d.ticket };
+
+                        if (!$.isBlank(origData) && !_.isUndefined(origData.method))
+                            req.data = origData.method;
                     }
 
                     setTimeout(function() { isCache ? $.Tache.Get(req) : $.ajax(req); },

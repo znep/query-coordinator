@@ -380,6 +380,23 @@ blist.datasetControls.datasetContact = function($sect)
 
 blist.datasetControls.columnTip = function(col, $col, tipsRef, initialShow)
 {
+    var cleanTip = function(tip)
+    {
+        if (tip.$dom.isSocrataTip())
+        {
+            tip.$dom.socrataTip().hide();
+            tip.$dom.socrataTip().disable();
+        }
+        clearShowTimer(tip);
+    };
+
+    // Make sure this is bound only once
+    $col.parent().unbind('rerender.columnTip');
+    $col.parent().bind('rerender.columnTip', function()
+    {
+        _.each(tipsRef, function(tip) { cleanTip(tip); });
+    });
+
     var clearShowTimer = function(item)
     {
         clearTimeout(item.timer);
@@ -388,12 +405,7 @@ blist.datasetControls.columnTip = function(col, $col, tipsRef, initialShow)
 
     if (!$.isBlank(tipsRef[col.id]))
     {
-        if (tipsRef[col.id].$dom.isSocrataTip())
-        {
-            tipsRef[col.id].$dom.socrataTip().hide();
-            tipsRef[col.id].$dom.socrataTip().disable();
-        }
-        clearShowTimer(tipsRef[col.id]);
+        cleanTip(tipsRef[col.id]);
     }
     tipsRef[col.id] = {$dom: $col};
 

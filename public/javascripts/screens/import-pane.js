@@ -960,6 +960,8 @@ importNS.importingPaneConfig = {
         }).join() + ']';
 
         // fire it all off. note that data is a form-encoded payload, not json.
+        $pane.find('.importStatus').empty();
+
         $.socrataServer.makeRequest({
             type: 'post',
             url: '/api/imports2.json',
@@ -984,6 +986,11 @@ importNS.importingPaneConfig = {
                                    JSON.parse(request.responseText).message;
                     command.prev();
                 }, 2000);
+            },
+            pending: function(response)
+            {
+                if ($.subKeyDefined(response, 'details.progress'))
+                  $pane.find('.importStatus').text(response.details.progress + ' rows imported so far.');
             }
         });
     }

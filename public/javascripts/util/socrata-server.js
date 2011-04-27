@@ -40,7 +40,7 @@ this.ServerModel = Model.extend({
                         req = $.extend(true, {}, req);
                         req.type = 'get';
 
-                        if (_.isString(data))
+                        if (_.isString(req.data))
                             req.data = { ticket: d.ticket };
                         else
                             $.extend(req.data, { ticket: d.ticket });

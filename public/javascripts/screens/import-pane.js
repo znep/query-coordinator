@@ -371,7 +371,7 @@ var validateAll = function()
             else
             {
                 addValidationError(importColumn, 'warning',
-                    'set to import as <strong>text</strong>, but our analysis indicates that the ' +
+                    'set to import as <strong>Text</strong>, but our analysis indicates that the ' +
                     'column is likely a <strong>' + $.capitalize(column.suggestion) + '</strong> ' +
                     'column. You can import it as Text, but you will lose some features if you do ' +
                     'so. We strongly recommend that you import it as <strong>' +
@@ -600,6 +600,9 @@ importNS.importColumnsPaneConfig = {
         $headersCount = $pane.find('.headersCount');
         headersCount = scan.summary.headers;
 
+        // populate the dataset name field
+        $pane.find('.headline .fileName').text($.htmlEscape(state.fileName));
+
         // give the columns id refs; type of column
         _.each(columns, function(column, i)
         {
@@ -695,6 +698,8 @@ importNS.importColumnsPaneConfig = {
                 addDefaultColumns(true);
             else if (presetType == 'suggested')
                 addDefaultColumns();
+
+            $columnsList.trigger('awesomereorder-listupdated');
         });
 
         // remove all columns
@@ -715,6 +720,7 @@ importNS.importColumnsPaneConfig = {
 
             $columnsList.append(newLine(targetColumn));
 
+            $columnsList.trigger('awesomereorder-listupdated');
             updateAll();
         });
 

@@ -186,8 +186,16 @@
         .columnTypeCell
           width: 22em
 
+          .uniform.selector
+            @include ie7-inline-block
+
         .columnSourceCell
           width: 22em
+
+          .uniform.selector
+            @include ie7-inline-block
+            max-width: 22em // in case they have ridiculously long column names
+            overflow: hidden
 
         .columnActionCell
           float: none
@@ -334,6 +342,12 @@
 
     .presets
       float: left
+
+      .ie7 &
+        width: 40em
+
+      > *
+        @include ie7-inline-block
 
       label
         font-size: 1.3em

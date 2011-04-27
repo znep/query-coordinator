@@ -218,10 +218,11 @@
                   <div class="customFieldset">
                     <%- (fieldset.fields || []).each do |field| -%>
                       <%- required   = field['required'].present?
-                          md_field   = field['private'].present? ? 'privateMetadata' : 'metadata' -%>
+                          private    = field['private'].present?
+                          md_field   = private ? 'privateMetadata' : 'metadata' -%>
                       <div class="line clearfix<%= ' customRequired' if required %>">
                         <label for="view_<%= md_field %>_custom_fields_<%= fieldset.name + "_" + field.name %>"
-                          <%= " class='required'" if required %>>
+                          class="<%= " required" if required %><%= " private" if private %>">
                           <%= field.name %></label>
                         <%= text_field_tag("view[#{md_field}][custom_fields][#{fieldset.name}][#{field.name}]", '') %>
                         <%- if field['private'].present? -%>

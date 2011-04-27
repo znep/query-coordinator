@@ -527,7 +527,10 @@ $(function()
         {
             blist.dataset.getPublishedDataset(function(pub)
             {
-                $('#publishedLink').attr('href', pub.url).find('.publishedName').text(pub.name);
+                if (!$.isBlank(pub))
+                { $('#publishedLink').attr('href', pub.url).find('.publishedName').text(pub.name); }
+                else
+                { $('#publishedLink').hide(); }
             });
         }
     });

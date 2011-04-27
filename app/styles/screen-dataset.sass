@@ -76,15 +76,16 @@ html, body
         right: 0.3em
         top: -0.1em
 
+    a.toolbarButton
+      @include button
+      font-size: 1.2em
+      margin-right: 0.5em
+
     .unsavedLine
       display: none
       h2
         display: inline
         margin-right: 1em
-      a.toolbarButton
-        @include button
-        font-size: 1.2em
-        margin-right: 0.5em
       .unpublishedRevert, .snapshottedRevert
         color: #999999
         font-size: 1.1em
@@ -207,7 +208,7 @@ html, body
     bottom: 0
     position: absolute
     right: 0
-    width: 71em
+    width: 74em
     .ie7 &
       width: 81em
 

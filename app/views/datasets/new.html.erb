@@ -64,6 +64,7 @@
           </div>
         </li>
         <li class="importColumnsPane" data-wizardPaneName="importColumns">
+          <div class="flash"></div>
           <p class="headline">Specify how your data should be imported.</p>
           <h2>Columns to import</h2>
           <div class="columnsListHeader clearfix">
@@ -95,6 +96,8 @@
               <a class="addColumnButton add button" href="#add"><span class="icon"></span>Add New Column</a>
             </div>
           </div>
+
+          <hr/>
 
           <h2>Headers</h2>
           <p class="instructions">Headers should be ignored and not imported as data.
@@ -277,7 +280,7 @@
 </div>
 
 <% content_for :templates do %>
-  <div class="columnsListLine">
+  <ul class="columnsListLine">
     <li>
       <div class="mainLine">
         <div class="columnHandleCell"></div>
@@ -366,7 +369,7 @@
         </div>
       </div>
     </li>
-  </div>
+  </ul>
   <ul class="sourceColumnsListLine">
     <li class="clearfix">
       <a class="remove removeSourceColumnLineButton" href="#remove"><span class="icon">remove</span></a>

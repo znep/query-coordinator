@@ -31,7 +31,8 @@ var scan,
     $headersCount,
     headersCount,
     nextButtonTip,
-    isShown;
+    isShown,
+    submitError;
 
 // structs
 var importTypes = {
@@ -43,15 +44,6 @@ var importTypes = {
     date: 'date',
     checkbox: 'checkbox'
 };
-var typesToText = {
-    text: 'Text',
-    number: 'Number',
-    money: 'Money',
-    percent: 'Percent',
-    calendar_date: 'Date &amp; Time',
-    date: 'Date &amp; Time (with Timezone)',
-    checkbox: 'Checkbox'
-};
 var locationTypes = {
     address: 'text',
     city: 'text',
@@ -62,6 +54,12 @@ var locationTypes = {
 };
 
 // helpers
+
+// get a title for a type
+var typesToText = function(type)
+{
+    return blist.data.types[type].title.replace('&', '&amp;');
+};
 
 // mimics rails' options_for_select
 var optionsForSelect = function(collection)
@@ -86,9 +84,9 @@ var textizeColumns = function(importColumns)
     result += $.arrayToSentence(_.map(importColumns, function(importColumn)
     {
         return $.tag({
-            tagName: 'span',
+            tagName: 'strong',
             'class': 'columnName',
-            contents: '<strong>&ldquo;' + $.htmlEscape(importColumn.name) + '&rdquo;</strong>'
+            contents: '&ldquo;' + $.htmlEscape(importColumn.name) + '&rdquo;'
         }, true);
     }), 'and', ',');
 
@@ -113,17 +111,8 @@ var addValidationError = function(importColumns, severity, message)
             contents: [ textizeColumns(importColumns), message ]
         }]
     });
-    var validationError = {
-        importColumns: importColumns,
-        severity: severity,
-        message: message,
-        $dom: $errorLine
-    };
-    $errorLine.data('validationError', validationError);
 
     $warningsList.append($errorLine);
-
-    return $errorLine;
 };
 
 // gets the columns that are currently used
@@ -226,7 +215,7 @@ var updateAll = function()
                 if (sourceColumnValue == '[static]')
                     return { type: 'static', value: $sourceColumnLine.find('.staticSourceText').val() };
                 else
-                    return columns[parseInt(sourceColumnValue)];
+                    return getColumn(sourceColumnValue);
             }));
 
             $line.find('.locationDetails')[isShown ? 'slideUp' : 'hide']();
@@ -236,7 +225,7 @@ var updateAll = function()
         }
         else
         {
-            column = columns[parseInt(columnSourceValue)];
+            column = getColumn(columnSourceValue);
 
             $line.find('.locationDetails')[isShown ? 'slideUp' : 'hide']();
             $line.find('.compositeDetails')[isShown ? 'slideUp' : 'hide']();
@@ -372,11 +361,11 @@ var validateAll = function()
             if (column.suggestion == 'text')
             {
                 var invalidPercentage = Math.round(1000 *
-                    (1 - (column.types[importTypes[importColumn.dataType]] / column.processed))) / 10;
+                    (1 - (column.types[importType] / column.processed))) / 10.0;
                 addValidationError(importColumn, 'warning',
-                    'set to import as <strong>' + typesToText[importColumn.dataType] + '</strong>, but ' +
+                    'set to import as <strong>' + typesToText(importColumn.dataType) + '</strong>, but ' +
                     'our analysis shows that <strong>Text</strong> is a better fit. Should you choose ' +
-                    'to import as ' + typesToText[importColumn.dataType] + ', roughly <strong>' +
+                    'to import as ' + typesToText(importColumn.dataType) + ', roughly <strong>' +
                     invalidPercentage + '%</strong> of your data will import incorrectly.');
             }
             else
@@ -394,7 +383,7 @@ var validateAll = function()
     // validate name collisions (error)
     _.each(names, function(columns, name)
     {
-        if ((columns.length > 1) && (name !== ''))
+        if ((columns.length > 1) && (name.trim() !== ''))
         {
             addValidationError(null, 'error', '<strong>' + $.capitalize($.wordify(columns.length)) +
                 '</strong> of your columns are named &ldquo;' + $.htmlEscape(name) + '&rdquo;. Columns ' +
@@ -417,11 +406,11 @@ var validateAll = function()
 
     // validate missing columns (warning)
     var missingColumns = _.select(columns, function(column) { return !_.include(usedColumns, column); });
-    _.each(missingColumns, function(column)
+    if (missingColumns.length > 0)
     {
-        addValidationError(column, 'warning', 'in your source data file, but is not currently ' +
+        addValidationError(missingColumns, 'warning', 'in your source data file, but is not currently ' +
                 'set to be imported into your dataset.');
-    });
+    }
 
     // validate location type (warning)
     _.each(scan.summary.locations, function(location)
@@ -619,10 +608,9 @@ importNS.importColumnsPaneConfig = {
         });
 
         // create an options hash for pure columns
-        columnSelectOptions = [];
-        _.each(columns || [], function(column, i)
+        columnSelectOptions = _.map(columns || [], function(column, i)
         {
-            columnSelectOptions.push({ value: i, label: column.name });
+            return { value: i, label: column.name };
         });
 
         // create an options hash for column-like options
@@ -805,7 +793,8 @@ importNS.importColumnsPaneConfig = {
             if ($this.is('select'))
                 $this = $this.closest('.uniform.selector');
 
-            $this.prev('.uniform.radio').find('input').click();
+            var $input = $this.prev('.uniform.radio').find('input').click();
+            $.uniform.update($this.closest('li').find(':radio'));
 
             updateAll();
         });
@@ -825,7 +814,6 @@ importNS.importColumnsPaneConfig = {
             (($lastHeader.length === 0) ? $headersTable.children(':first')
                                         : $lastHeader.next()).addClass('header');
             headersCount = Math.min(5, headersCount + 1);
-            $headersCount.text(headersCount);
             setHeadersCountText();
         });
 
@@ -843,6 +831,19 @@ importNS.importColumnsPaneConfig = {
 
         // we are now past the first init, so start animating things
         isShown = true;
+    },
+    onActivate: function($pane, paneConfig, state)
+    {
+        if (!$.isBlank(submitError))
+        {
+            $pane.find('.flash').text(submitError)
+                                .removeClass('warning notice')
+                                .addClass('error');
+        }
+        else
+        {
+            $pane.find('.flash').empty().removeClass('warning notice error');
+        }
     },
     onNext: function($pane, state)
     {
@@ -864,26 +865,22 @@ var handleColumn = function(column)
     }
     else if (column.type == 'static')
     {
-        return '"' + column.value + '"';
+        return '"' + column.value.replace(/\"/g, '\\"') + '"';
     }
 };
 
 importNS.importingPaneConfig = {
     onActivate: function($pane, paneConfig, state, command)
     {
-        // bump back to previous pane if we're going backwards
+        // don't do anything here if we land here twice somehow
         if (state.importingActivated)
-        {
-            command.prev();
             return;
-        }
         state.importingActivated = true;
 
         // let's figure out what to send to the server
         var importer = state.importer;
         var blueprint = {
-            skip: importer.headersCount,
-            name: Math.random().toString()
+            skip: importer.headersCount
         };
 
         // the server expects something much like what importColumns already are
@@ -945,7 +942,7 @@ importNS.importingPaneConfig = {
                 }
                 else if (transform.type == 'customExpression')
                 {
-                    result = transform.options.expression.replace(/#value#/ig, result);
+                    result = 'function(value){return ' + transform.options.expression + ';}(' + result + ')';
                 }
                 else
                 {
@@ -960,10 +957,9 @@ importNS.importingPaneConfig = {
         $.socrataServer.makeRequest({
             type: 'post',
             url: '/api/imports2.json',
-            accessType: false,
             contentType: 'application/x-www-form-urlencoded',
             data: {
-                type: state.fileExtension,
+                name: state.fileName, 
                 blueprint: JSON.stringify(blueprint),
                 translation: translation,
                 fileId: state.scan.fileId

@@ -436,7 +436,7 @@ $wizard.wizard({
             isFinish: true,
             onNext: function($pane, state)
             {
-                state.submittedView.redirectTo();
+                state.submittedView.redirectTo({ firstRun: true });
                 return false;
             }
         }

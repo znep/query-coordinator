@@ -49,15 +49,19 @@ var $wizard = $('.newDatasetWizard');
 $wizard.wizard({
     onCancel: function($pane, state)
     {
+        var redirectToProfile = function()
+        {
+            window.location.href = '/profile';
+        };
+
         if (!_.isUndefined(state.submittedView))
         {
-            var onComplete = function()
-            {
-                window.location.href = '/profile';
-            };
-
             // well, if we fail we probably don't have anything we can delete anyway
-            state.submittedView.remove(onComplete, onComplete);
+            state.submittedView.remove(redirectToProfile, redirectToProfile);
+        }
+        else
+        {
+            redirectToProfile();
         }
 
         return false;

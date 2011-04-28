@@ -20,6 +20,7 @@ var scan,
     locationGroups,
     columnSelectOptions,
     sourceColumns,
+    $pane,
     $columnsList,
     $warningsList,
     $warningsSection,
@@ -140,10 +141,47 @@ var getUsedColumns = function()
     return _.uniq(usedColumns);
 };
 
-// update all column lines from DOM
-var updateAll = function()
+var toggleSubsection = function($line, section)
 {
-    $columnsList.children().each(function()
+    var $section = $line.find('> .detailsLine > .' + section);
+
+    if ($section.is(':visible'))
+        hideSubsection($line, section);
+    else
+        showSubsection($line, section);
+};
+var showSubsection = function($line, section)
+{
+    var $section = $line.find('> .detailsLine > .' + section);
+
+    if (!$section.hasChildren())
+        $section.append($.renderTemplate(section, undefined, undefined, true));
+
+    var column = $line.data('column');
+    if (column.suggestion == 'location')
+    {
+        _.each(column, function(originalColumn, field)
+        {
+            $section.find('.location' + $.capitalize(field) + 'Column')
+                .val(originalColumn.id).trigger('change'); // and again here
+        });
+    }
+
+    $section[isShown ? 'slideDown' : 'show']();
+};
+var hideSubsection = function($line, section)
+{
+    var $section = $line.find('> .detailsLine > .' + section);
+    $section[isShown ? 'slideUp' : 'hide']();
+};
+
+// update given column lines from DOM. if none are given, updates every line
+var updateLines = function($elems)
+{
+    if (_.isUndefined($elems))
+        $elems = $columnsList.children();
+
+    $elems.each(function()
     {
         var $line = $(this);
 
@@ -182,11 +220,17 @@ var updateAll = function()
         var columnSourceValue = $line.find('.columnSourceCell .columnSourceSelect').val();
         if (importColumn.dataType == 'location')
         {
+            showSubsection($line, 'locationDetails');
+            hideSubsection($line, 'compositeDetails');
+            hideSubsection($line, 'generalDetails');
+            $line.find('.mainLine .columnSourceSelect').closest('.uniform').hide();
+            $line.find('.mainLine a.options').hide();
+
             column = {
                 name:       oldColumn.name,
                 suggestion: oldColumn.suggestion,
                 type:       oldColumn.type,
-                address:     getColumn($line.find('.locationAddressColumn').val()),
+                address:    getColumn($line.find('.locationAddressColumn').val()),
                 city:       getColumn(findOptionValue('city')),
                 state:      getColumn(findOptionValue('state')),
                 zip:        getColumn(findOptionValue('zip')),
@@ -198,14 +242,14 @@ var updateAll = function()
                 if ($.isBlank(v))
                     delete column[k];
             });
-            $line.find('.locationDetails')[isShown ? 'slideDown' : 'show']();
-            $line.find('.compositeDetails')[isShown ? 'slideUp' : 'hide']();
-            $line.find('.columnSourceSelect').closest('.uniform').hide();
-            $line.find('.generalDetails').hide();
-            $line.find('a.options').hide();
         }
         else if (columnSourceValue == 'composite')
         {
+            hideSubsection($line, 'locationDetails');
+            showSubsection($line, 'compositeDetails');
+            $line.find('.mainLine .columnSourceSelect').closest('.uniform').show();
+            $line.find('.mainLine a.options').show();
+
             column = { type: 'composite' };
             column.sources = $.makeArray($line.find('.sourceColumnsList').children().map(function()
             {
@@ -217,20 +261,15 @@ var updateAll = function()
                 else
                     return getColumn(sourceColumnValue);
             }));
-
-            $line.find('.locationDetails')[isShown ? 'slideUp' : 'hide']();
-            $line.find('.compositeDetails')[isShown ? 'slideDown' : 'show']();
-            $line.find('.columnSourceSelect').closest('.uniform').show();
-            $line.find('a.options').show();
         }
         else
         {
-            column = getColumn(columnSourceValue);
+            hideSubsection($line, 'locationDetails');
+            hideSubsection($line, 'compositeDetails');
+            $line.find('.mainLine .columnSourceSelect').closest('.uniform').show();
+            $line.find('.mainLine a.options').show();
 
-            $line.find('.locationDetails')[isShown ? 'slideUp' : 'hide']();
-            $line.find('.compositeDetails')[isShown ? 'slideUp' : 'hide']();
-            $line.find('.columnSourceSelect').closest('.uniform').show();
-            $line.find('a.options').show();
+            column = getColumn(columnSourceValue);
         }
 
         importColumn.column = column;
@@ -269,8 +308,6 @@ var updateAll = function()
         $line.data('column', column);
         $line.data('importColumn', importColumn);
     });
-
-    validateAll();
 };
 
 // validate all columns
@@ -469,21 +506,12 @@ var validateAll = function()
 var newLine = function(column, overrides)
 {
     // render template
-    var $line = $.renderTemplate('columnsListLine', { index: _.uniqueId() }, {
-        '.locationSourceToggle@name+': 'index'
-    });
-    $line.find('.textPrompt').example(function() { return $(this).attr('title'); });
+    var line = $.renderTemplate('columnsListLine', undefined, undefined, true);
+    $columnsList.append(line);
 
-    // add column dropdowns
-    var $lineSourceDropDown = $sourceDropDown.clone();
-    $line.find('.columnSourceCell').append($lineSourceDropDown);
-    $line.find('.columnSourcePlaceholder').each(function()
-    {
-        var $this = $(this);
-        var $dropDown = $columnDropDown.clone();
-        $dropDown.addClass($this.attr('data-class'));
-        $this.replaceWith($dropDown);
-    });
+    // grab that thing we just did
+    var $line = $columnsList.children(':last');
+    $line.find('.textPrompt').example(function() { return $(this).attr('title'); });
 
     // populate fields if we have a column
     if (!$.isBlank(column))
@@ -493,26 +521,14 @@ var newLine = function(column, overrides)
 
         // populate standard things
         $line.find('.columnName').val(overridenColumn.name);
-        $line.find('.columnTypeSelect').val(overridenColumn.suggestion)
-            .trigger('change'); // jquery does not fire change for val()
-        $lineSourceDropDown.val(overridenColumn.id)
-            .trigger('change'); // same here
-
-        // populate crazy things
-        if (overridenColumn.suggestion == 'location')
-        {
-            _.each(overridenColumn, function(originalColumn, field)
-            {
-                $line.find('.location' + $.capitalize(field) + 'Column')
-                    .val(originalColumn.id).trigger('change'); // and again here
-            });
-        }
+        $line.find('.columnTypeSelect').val(overridenColumn.suggestion);
+        $line.find('.columnSourceCell select').val(overridenColumn.id);
 
         $line.data('column', column);
     }
 
     // styling
-    $line.find('select, :radio').uniform();
+    (function() { $line.find('select, :radio').uniform(); })();
 
     return $line;
 };
@@ -521,7 +537,7 @@ var newLine = function(column, overrides)
 var emptyColumnsList = function()
 {
     $columnsList.empty();
-    updateAll();
+    validateAll(); // go straight to validate; nothing to update.
 };
 
 // throw in all analysed columns, with location groups
@@ -552,13 +568,26 @@ var addDefaultColumns = function(flat)
     }
 
     // now add the ones we haven't used as individual columns, plus our compositeColumns
-    _.each(availableColumns.concat(compositeColumns), function(column)
-    {
-        $columnsList.append(newLine(column));
-    });
-
-    // update all our states
-    updateAll();
+    $.batchProcess(
+        availableColumns.concat(compositeColumns),
+        15,
+        newLine,
+        function(lines)
+        {
+            var $lines = _.reduce(
+                _.rest(lines),
+                function($linesSoFar, $line) { return $linesSoFar.add($line); },
+                _.first(lines));
+            updateLines($lines);
+        },
+        function()
+        {
+            validateAll();
+            wireEvents();
+            $columnsList.show();
+            $pane.find('.columnsToolbar').show();
+            $pane.find('.pendingColumnsMessage').hide();
+        });
 };
 
 // throw in all available columns just as text
@@ -566,10 +595,10 @@ var addAllColumnsAsText = function()
 {
     _.each(columns, function(column)
     {
-        $columnsList.append(newLine(column, { suggestion: 'text' }));
+        newLine(column, { suggestion: 'text' });
     });
 
-    updateAll();
+    updateLines();
 };
 
 // set headers count text
@@ -580,12 +609,200 @@ var setHeadersCountText = function()
     $headersCount.text(wordCount + phrase);
 };
 
-// config
+// events
+var wireEvents = function()
+{
+    $pane.delegate('.columnsList li input.columnName,' +
+                   '.columnsList li select.columnTypeSelect,' +
+                   '.columnsList li select.columnSourceSelect,' +
+                   '.columnsList li input[type=text]', 'change', function()
+    {
+        updateLines($(this).closest('li.importColumn'));
+        validateAll();
+    });
 
+    $pane.delegate('.columnsList li a.options', 'click', function(event)
+    {
+        event.preventDefault();
+
+        toggleSubsection($(this).closest('li'), 'generalDetails');
+    });
+
+    $pane.delegate('.columnActionCell a.remove', 'click', function(event)
+    {
+        event.preventDefault();
+
+        $(this).closest('li').slideUp(function()
+        {
+            $(this).remove();
+            validateAll(); // just validate; we don't have to update when we remove
+        });
+    });
+
+    // load in the preset they specify
+    $pane.find('.columnsPresetsButton').click(function(event)
+    {
+        event.preventDefault();
+
+        var presetType = $pane.find('.columnsPresetsSelect').val();
+
+        emptyColumnsList();
+        if (presetType == 'alltext')
+            addAllColumnsAsText();
+        else if (presetType == 'suggestedFlat')
+            addDefaultColumns(true);
+        else if (presetType == 'suggested')
+            addDefaultColumns();
+
+        $columnsList.trigger('awesomereorder-listupdated');
+    });
+
+    // remove all columns
+    $pane.find('.clearColumnsButton').click(function(event)
+    {
+        event.preventDefault();
+        emptyColumnsList();
+    });
+
+    // add a new column line; try to figure out if we can be clever and suggest one
+    // they haven't used yet
+    $pane.find('.addColumnButton').click(function(event)
+    {
+        event.preventDefault();
+
+        var usedColumns = getUsedColumns();
+        var targetColumn = _.detect(columns, function(col) { return !_.include(usedColumns, col); });
+
+        var $newLine = newLine(targetColumn);
+        $columnsList.trigger('awesomereorder-listupdated');
+        updateLines($newLine);
+        validateAll();
+    });
+
+    // add a new composite column source line
+    $pane.delegate('.columnsList li .newSourceColumnButton', 'click', function(event)
+    {
+        event.preventDefault();
+
+        var $line = $(this).closest('li');
+        var $newColumnSourceLine = $.renderTemplate('sourceColumnsListLine');
+
+        // swap in a real columns select for the fake one
+        var $placeholder = $newColumnSourceLine.find('.compositeColumnSourcePlaceholder');
+        var $dropDown = $compositeColumnSourceDropDown.clone();
+        $dropDown.addClass($placeholder.attr('data-class'));
+        $placeholder.replaceWith($dropDown);
+
+        $line.find('.sourceColumnsList').append($newColumnSourceLine);
+        $newColumnSourceLine.find('select').uniform();
+
+        updateLines($line.closest('li.importColumn'));
+        validateAll();
+    });
+
+    // show the static text line if necessary
+    $pane.delegate('.columnsList li .compositeColumnSourceSelect', 'click', function(event)
+    {
+        var $this = $(this);
+        var $columnSourceLine = $this.closest('li');
+
+        $columnSourceLine.find('.staticSourceText').toggle($this.val() == '[static]');
+
+        updateLines($line.closest('li.importColumn'));
+        validateAll();
+    });
+
+    // add a new transformation line
+    $pane.delegate('.columnsList li .newColumnTransformButton', 'click', function(event)
+    {
+        event.preventDefault();
+
+        var $line = $(this).closest('li');
+        var $newTransformLine = $.renderTemplate('columnTransformsListLine');
+
+        $line.find('.columnTransformsList').append($newTransformLine);
+        $newTransformLine.find('select, :checkbox').uniform();
+
+        updateLines($line.closest('li.importColumn'));
+        validateAll();
+    });
+
+    // show the appropriate additional details section
+    $pane.delegate('.columnsList li .columnTransformOperation', 'change', function(event)
+    {
+        var $this = $(this);
+        var $transformLine = $this.closest('li');
+
+        $transformLine.find('.additionalTransformOptions').children()
+            .hide()
+            .filter('.' + $this.val() + 'Section').show();
+
+        updateLines($this.closest('li.importColumn'));
+        validateAll();
+    });
+
+    // remove a given transform or column source line
+    $pane.delegate('.columnsList li .removeTransformLineButton,' +
+                   '.columnsList li .removeSourceColumnLineButton', 'click', function(event)
+    {
+        event.preventDefault();
+        var $this = $(this);
+
+        $this.closest('li').remove();
+        updateLines($this.closest('li.importColumn'));
+        validateAll();
+    });
+
+    // autoselect radio when editing associated option
+    $pane.delegate('.optionGroup select, .optionGroup input', 'change', function(event)
+    {
+        var $this = $(this);
+        if ($this.is('select'))
+            $this = $this.closest('.uniform.selector');
+
+        var $input = $this.prev('.uniform.radio').find('input').click();
+        $.uniform.update($this.closest('li').find(':radio'));
+
+        updateLines($this.closest('li.importColumn'));
+        validateAll();
+    });
+
+    // more/less header rows
+    $pane.find('.lessRowsButton').click(function(event)
+    {
+        event.preventDefault();
+        $headersTable.children('.header:last').removeClass('header');
+        headersCount = Math.max(0, headersCount - 1);
+        setHeadersCountText();
+    });
+    $pane.find('.moreRowsButton').click(function(event)
+    {
+        event.preventDefault();
+        var $lastHeader = $headersTable.children('.header:last');
+        (($lastHeader.length === 0) ? $headersTable.children(':first')
+                                    : $lastHeader.next()).addClass('header');
+        headersCount = Math.min(5, headersCount + 1);
+        setHeadersCountText();
+    });
+
+    $columnsList.awesomereorder({
+        uiDraggableDefaults: {
+            handle: '.columnHandleCell'
+        }
+    });
+
+    $('.importTypesMessageLink').click(function(event)
+    {
+        event.preventDefault();
+        $('#importTypesMessage').jqmShow();
+    });
+};
+
+// config
 importNS.importColumnsPaneConfig = {
     uniform: true,
     skipValidation: true,
-    onInitialize: function($pane, paneConfig, state, command)
+    onInitialize: function($paneLocal, paneConfig, state, command)
     {
         // update global vars
         scan = state.scan;
@@ -593,6 +810,7 @@ importNS.importColumnsPaneConfig = {
         wizardCommand = command;
         columns = scan.summary.columns;
         locationGroups = scan.summary.locations;
+        $pane = $paneLocal;
         $columnsList = $pane.find('.columnsList');
         $warningsList = $pane.find('.columnWarningsList');
         $warningsSection = $pane.find('.warningsSection');
@@ -641,6 +859,16 @@ importNS.importColumnsPaneConfig = {
                 value: '[static]', label: '(Insert static text...)', 'class': 'special' }]))
         });
 
+        // add dropdowns to template
+        $('#templates .columnSourceCell').append($sourceDropDown);
+        $('#templates .columnSourcePlaceholder').each(function()
+        {
+            var $this = $(this);
+            var $dropDown = $columnDropDown.clone();
+            $this.replaceWith($dropDown);
+            $dropDown.addClass($this.attr('data-class'));
+        });
+
         // throw in our default set of suggestions
         addDefaultColumns();
 
@@ -659,181 +887,6 @@ importNS.importColumnsPaneConfig = {
 
         // populate the number
         setHeadersCountText();
-
-        // handle events
-        $pane.delegate('.columnsList li input.columnName,' +
-                       '.columnsList li select.columnTypeSelect,' +
-                       '.columnsList li select.columnSourceSelect,' +
-                       '.columnsList li input[type=text]', 'change', updateAll);
-
-        $pane.delegate('.columnsList li a.options', 'click', function(event)
-        {
-            event.preventDefault();
-
-            $(this).closest('li').find('.generalDetails').slideToggle();
-        });
-
-        $pane.delegate('.columnActionCell a.remove', 'click', function(event)
-        {
-            event.preventDefault();
-
-            $(this).closest('li').slideUp(function()
-            {
-                $(this).remove();
-                updateAll();
-            });
-        });
-
-        // load in the preset they specify
-        $pane.find('.columnsPresetsButton').click(function(event)
-        {
-            event.preventDefault();
-
-            var presetType = $pane.find('.columnsPresetsSelect').val();
-
-            emptyColumnsList();
-            if (presetType == 'alltext')
-                addAllColumnsAsText();
-            else if (presetType == 'suggestedFlat')
-                addDefaultColumns(true);
-            else if (presetType == 'suggested')
-                addDefaultColumns();
-
-            $columnsList.trigger('awesomereorder-listupdated');
-        });
-
-        // remove all columns
-        $pane.find('.clearColumnsButton').click(function(event)
-        {
-            event.preventDefault();
-            emptyColumnsList();
-        });
-
-        // add a new column line; try to figure out if we can be clever and suggest one
-        // they haven't used yet
-        $pane.find('.addColumnButton').click(function(event)
-        {
-            event.preventDefault();
-
-            var usedColumns = getUsedColumns();
-            var targetColumn = _.detect(columns, function(col) { return !_.include(usedColumns, col); });
-
-            $columnsList.append(newLine(targetColumn));
-
-            $columnsList.trigger('awesomereorder-listupdated');
-            updateAll();
-        });
-
-        // add a new composite column source line
-        $pane.delegate('.columnsList li .newSourceColumnButton', 'click', function(event)
-        {
-            event.preventDefault();
-
-            var $line = $(this).closest('li');
-            var $newColumnSourceLine = $.renderTemplate('sourceColumnsListLine');
-
-            // swap in a real columns select for the fake one
-            var $placeholder = $newColumnSourceLine.find('.compositeColumnSourcePlaceholder');
-            var $dropDown = $compositeColumnSourceDropDown.clone();
-            $dropDown.addClass($placeholder.attr('data-class'));
-            $placeholder.replaceWith($dropDown);
-
-            $line.find('.sourceColumnsList').append($newColumnSourceLine);
-            $newColumnSourceLine.find('select').uniform();
-
-            updateAll();
-        });
-
-        // show the static text line if necessary
-        $pane.delegate('.columnsList li .compositeColumnSourceSelect', 'click', function(event)
-        {
-            var $this = $(this);
-            var $columnSourceLine = $this.closest('li');
-
-            $columnSourceLine.find('.staticSourceText').toggle($this.val() == '[static]');
-
-            updateAll();
-        });
-
-        // add a new transformation line
-        $pane.delegate('.columnsList li .newColumnTransformButton', 'click', function(event)
-        {
-            event.preventDefault();
-
-            var $line = $(this).closest('li');
-            var $newTransformLine = $.renderTemplate('columnTransformsListLine');
-
-            $line.find('.columnTransformsList').append($newTransformLine);
-            $newTransformLine.find('select, :checkbox').uniform();
-
-            updateAll();
-        });
-
-        // show the appropriate additional details section
-        $pane.delegate('.columnsList li .columnTransformOperation', 'change', function(event)
-        {
-            var $this = $(this);
-            var $transformLine = $this.closest('li');
-
-            $transformLine.find('.additionalTransformOptions').children()
-                .hide()
-                .filter('.' + $this.val() + 'Section').show();
-
-            updateAll();
-        });
-
-        // remove a given transform or column source line
-        $pane.delegate('.columnsList li .removeTransformLineButton,' +
-                       '.columnsList li .removeSourceColumnLineButton', 'click', function(event)
-        {
-            event.preventDefault();
-            $(this).closest('li').remove();
-
-            updateAll();
-        });
-
-        // autoselect radio when editing associated option
-        $pane.delegate('.optionGroup select, .optionGroup input', 'change', function(event)
-        {
-            var $this = $(this);
-            if ($this.is('select'))
-                $this = $this.closest('.uniform.selector');
-
-            var $input = $this.prev('.uniform.radio').find('input').click();
-            $.uniform.update($this.closest('li').find(':radio'));
-
-            updateAll();
-        });
-
-        // more/less header rows
-        $pane.find('.lessRowsButton').click(function(event)
-        {
-            event.preventDefault();
-            $headersTable.children('.header:last').removeClass('header');
-            headersCount = Math.max(0, headersCount - 1);
-            setHeadersCountText();
-        });
-        $pane.find('.moreRowsButton').click(function(event)
-        {
-            event.preventDefault();
-            var $lastHeader = $headersTable.children('.header:last');
-            (($lastHeader.length === 0) ? $headersTable.children(':first')
-                                        : $lastHeader.next()).addClass('header');
-            headersCount = Math.min(5, headersCount + 1);
-            setHeadersCountText();
-        });
-
-        $columnsList.awesomereorder({
-            uiDraggableDefaults: {
-                handle: '.columnHandleCell'
-            }
-        });
-
-        $('.importTypesMessageLink').click(function(event)
-        {
-            event.preventDefault();
-            $('#importTypesMessage').jqmShow();
-        });
 
         // we are now past the first init, so start animating things
         isShown = true;

@@ -243,17 +243,23 @@ $.syncObjects = function(dest, src)
     { if (_.isUndefined(src[k])) { delete dest[k]; } });
 };
 
-$.renderTemplate = function(template, data, directive)
+$.unwrapHtml = function(html)
 {
-    var $templateCopy = $('#templates > .' + template)
-        .clone();
+    return html.replace(/^\s*<[^<>]+>/i, '').replace(/<\/[^<>]+>\s*$/i, '');
+};
+
+$.renderTemplate = function(template, data, directive, keepText)
+{
+    var $template = $('#templates > .' + template);
 
     if (_.isUndefined(data))
     {
-        return $templateCopy.children();
+        return !!keepText ? $template.html() : $template.clone().children();
     }
     else
     {
+        var $templateCopy = $template.clone();
+
         // pure needs a wrapping element
         $templateCopy.appendTo($('<div/>'));
         // I think this is the cause of the 'ep is null' error in pure; but can't
@@ -261,9 +267,8 @@ $.renderTemplate = function(template, data, directive)
         if ($.isBlank($templateCopy[0].parentNode))
         { throw 'templateCopy has no parent!'; }
 
-        return $templateCopy
-            .render(data, directive)
-            .children();
+        var rendered = $templateCopy.render(data, directive);
+        return !!keepText ? rendered.innerHTML : $(rendered).children();
     }
 };
 
@@ -281,7 +286,7 @@ $.compileTemplate = function(template, directive)
     {
         // strip off opening and closing tags of toplevel element
         // to match behavior of $.renderTemplate
-        return compiledDirective(data).replace(/^\s*<[^<>]+>/i, '').replace(/<\/[^<>]+>\s*$/i, '');
+        return $.unwrapHtml(compiledDirective(data));
     };
 };
 
@@ -587,6 +592,56 @@ $.fn.tagName = function()
 $.fn.isInputType = function(inputType)
 {
     return (this.tagName() == 'input') && (this.attr('type') == inputType);
+};
+
+// hooray, fake green-threading!
+$.batchProcess = function(array, batchSize, eachItem, eachBatch, onComplete)
+{
+    if (!_.isArray(array))
+        return;
+
+    array = _.clone(array);
+
+    var thisBatch = array.splice(0, batchSize);
+    var batchResult = _.map(thisBatch, eachItem);
+
+    if (_.isFunction(eachBatch))
+        eachBatch(batchResult);
+
+    if (array.length === 0)
+    {
+        if (_.isFunction(onComplete))
+            onComplete();
+    }
+    else
+    {
+        // 10 ms is long enough a break so that the browser doesn't think we're hung
+        setTimeout(function() { $.batchProcess(array, batchSize, eachItem, eachBatch, onComplete); }, 10);
+    }
+};
+
+// gives you a faster jquery this on each iter
+jQuery.fn.quickEach = (function() {
+    var jq = jQuery([1]);
+    return function(c) {
+        var i = -1,
+        el,
+        len = this.length;
+        try {
+            while (++i < len && (el = jq[0] = this[i]) && c.call(jq, i, el) !== false);
+        } catch(e) {
+            delete jq[0];
+            throw e;
+        }
+        delete jq[0];
+        return this;
+    };
+}());
+
+$.fn.hasChildren = function()
+{
+    var elem = this.get(0);
+    return (elem != null) && (elem.firstChild != null);
 };
 
 // Wrapper around inlineLogin.verifyUser; simply does nothing

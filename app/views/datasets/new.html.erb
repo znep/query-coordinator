@@ -79,6 +79,7 @@
               </a>
             </div>
           </div>
+          <p class="subheadline pendingColumnsMessage">Please wait while we load your columns...</p>
           <ul class="columnsList">
           </ul>
           <div class="columnsToolbar clearfix">
@@ -282,7 +283,7 @@
 
 <% content_for :templates do %>
   <ul class="columnsListLine">
-    <li>
+    <li class="importColumn">
       <div class="mainLine">
         <div class="columnHandleCell"></div>
         <div class="columnNameCell">
@@ -300,74 +301,9 @@
         </div>
       </div>
       <div class="detailsLine">
-        <div class="compositeDetails">
-          <h3>Combine Multiple Columns</h3>
-          <h4>Create one column out of many source columns:</h4>
-          <ul class="sourceColumnsList"></ul>
-          <a href="#newSourceColumn" class="button add newSourceColumnButton">
-            <span class="icon"></span>Add new source column
-          </a>
-        </div>
-        <div class="locationDetails">
-          <h3>Location Source Columns</h3>
-          <h4>Addresses will be geocoded after import is complete.</h4>
-          <div class="clearfix">
-            <fieldset class="left">
-              <legend>Import Existing Address Columns</legend>
-              <div class="line locationAddressLine clearfix">
-                <label class="locationAddressLabel" for="locationAddressColumn">Street</label>
-                <div class="columnSourcePlaceholder" data-class="locationAddressColumn"></div>
-              </div>
-              <div class="line locationCityLine clearfix">
-                <label class="locationCityLabel" for="locationCityColumn">City</label>
-                <div class="optionGroup">
-                  <input type="radio" name="locationCityToggle" class="locationSourceToggle" checked="checked"/>
-                  <div class="columnSourcePlaceholder" data-class="locationCityColumn"></div>
-                  <input type="radio" name="locationCityToggle" class="locationSourceToggle"/>
-                  <input type="text" class="locationCityStatic textPrompt" title="Enter a custom value"/>
-                </div>
-              </div>
-              <div class="line locationStateLine clearfix">
-                <label class="locationStateLabel" for="locationStateColumn">State</label>
-                <div class="optionGroup">
-                  <input type="radio" name="locationStateToggle" class="locationSourceToggle" checked="checked"/>
-                  <div class="columnSourcePlaceholder" data-class="locationStateColumn"></div>
-                  <input type="radio" name="locationStateToggle" class="locationSourceToggle"/>
-                  <input type="text" class="locationStateStatic textPrompt" title="Enter a custom value"/>
-                </div>
-              </div>
-              <div class="line locationZipLine clearfix">
-                <label class="locationZipLabel" for="locationZipColumn">Zip</label>
-                <div class="optionGroup">
-                  <input type="radio" name="locationZipToggle" class="locationSourceToggle" checked="checked"/>
-                  <div class="columnSourcePlaceholder" data-class="locationZipColumn"></div>
-                  <input type="radio" name="locationZipToggle" class="locationSourceToggle"/>
-                  <input type="text" class="locationZipStatic textPrompt" title="Enter a custom value"/>
-                </div>
-              </div>
-            </fieldset>
-            <fieldset class="right">
-              <legend>Import Latitude and Longitude</legend>
-              <div class="line locationLatitudeLine clearfix">
-                <label class="locationLatitudeLabel">Latitude</label>
-                <div class="columnSourcePlaceholder" data-class="locationLatitudeColumn"></div>
-              </div>
-              <div class="line locationLongitudeLine clearfix">
-                <label class="locationLongitudeLabel">Longitude</label>
-                <div class="columnSourcePlaceholder" data-class="locationLongitudeColumn"></div>
-              </div>
-            </fieldset>
-          </div>
-        </div>
-        <div class="generalDetails">
-          <h3>Options</h3>
-          <h4>Perform the following transformation upon import:</h4>
-          <ul class="columnTransformsList">
-          </ul>
-          <a href="#newTransform" class="button add newColumnTransformButton">
-            <span class="icon"></span>Add new transform
-          </a>
-        </div>
+        <div class="compositeDetails"></div>
+        <div class="locationDetails"></div>
+        <div class="generalDetails"></div>
       </div>
     </li>
   </ul>
@@ -409,6 +345,74 @@
       </div>
     </li>
   </ul>
+  <div class="compositeDetails">
+    <h3>Combine Multiple Columns</h3>
+    <h4>Create one column out of many source columns:</h4>
+    <ul class="sourceColumnsList"></ul>
+    <a href="#newSourceColumn" class="button add newSourceColumnButton">
+      <span class="icon"></span>Add new source column
+    </a>
+  </div>
+  <div class="locationDetails">
+    <h3>Location Source Columns</h3>
+    <h4>Addresses will be geocoded after import is complete.</h4>
+    <div class="clearfix">
+      <fieldset class="left">
+        <legend>Import Existing Address Columns</legend>
+        <div class="line locationAddressLine clearfix">
+          <label class="locationAddressLabel" for="locationAddressColumn">Street</label>
+          <div class="columnSourcePlaceholder" data-class="locationAddressColumn"></div>
+        </div>
+        <div class="line locationCityLine clearfix">
+          <label class="locationCityLabel" for="locationCityColumn">City</label>
+          <div class="optionGroup">
+            <input type="radio" name="locationCityToggle" class="locationSourceToggle" checked="checked"/>
+            <div class="columnSourcePlaceholder" data-class="locationCityColumn"></div>
+            <input type="radio" name="locationCityToggle" class="locationSourceToggle"/>
+            <input type="text" class="locationCityStatic textPrompt" title="Enter a custom value"/>
+          </div>
+        </div>
+        <div class="line locationStateLine clearfix">
+          <label class="locationStateLabel" for="locationStateColumn">State</label>
+          <div class="optionGroup">
+            <input type="radio" name="locationStateToggle" class="locationSourceToggle" checked="checked"/>
+            <div class="columnSourcePlaceholder" data-class="locationStateColumn"></div>
+            <input type="radio" name="locationStateToggle" class="locationSourceToggle"/>
+            <input type="text" class="locationStateStatic textPrompt" title="Enter a custom value"/>
+          </div>
+        </div>
+        <div class="line locationZipLine clearfix">
+          <label class="locationZipLabel" for="locationZipColumn">Zip</label>
+          <div class="optionGroup">
+            <input type="radio" name="locationZipToggle" class="locationSourceToggle" checked="checked"/>
+            <div class="columnSourcePlaceholder" data-class="locationZipColumn"></div>
+            <input type="radio" name="locationZipToggle" class="locationSourceToggle"/>
+            <input type="text" class="locationZipStatic textPrompt" title="Enter a custom value"/>
+          </div>
+        </div>
+      </fieldset>
+      <fieldset class="right">
+        <legend>Import Latitude and Longitude</legend>
+        <div class="line locationLatitudeLine clearfix">
+          <label class="locationLatitudeLabel">Latitude</label>
+          <div class="columnSourcePlaceholder" data-class="locationLatitudeColumn"></div>
+        </div>
+        <div class="line locationLongitudeLine clearfix">
+          <label class="locationLongitudeLabel">Longitude</label>
+          <div class="columnSourcePlaceholder" data-class="locationLongitudeColumn"></div>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+  <div class="generalDetails">
+    <h3>Options</h3>
+    <h4>Perform the following transformation upon import:</h4>
+    <ul class="columnTransformsList">
+    </ul>
+    <a href="#newTransform" class="button add newColumnTransformButton">
+      <span class="icon"></span>Add new transform
+    </a>
+  </div>
 <% end %>
 
 <% content_for :modals do %>

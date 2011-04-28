@@ -398,8 +398,7 @@
                         mapObj.settings.view.update({
                             displayFormat: $.extend({},
                                 mapObj.settings.view.displayFormat,
-                                { viewport: isWebMercatorSpatialReference(mapObj.map) ?
-                                    esri.geometry.webMercatorToGeographic(vp) : vp })
+                                { viewport: vp })
                         }, false, true);
                         curVP = vp;
                         mapObj.updateRowsByViewport();
@@ -412,14 +411,14 @@
                 var viewport = mapObj.map.extent;
                 var sr = viewport.spatialReference.wkid
                         || mapObj.map.spatialReference.wkid;
-                if (with_bounds && (sr == null || sr == 102100))
+                if (sr == null || sr == 102100)
                 { viewport = esri.geometry.webMercatorToGeographic(viewport); }
                 viewport = {
                     xmin: viewport.xmin,
                     xmax: viewport.xmax,
                     ymin: viewport.ymin,
                     ymax: viewport.ymax,
-                    sr: sr
+                    sr: viewport.spatialReference.wkid
                 };
                 _.each(['xmin', 'ymin', 'xmax', 'ymax'], function(key)
                 { viewport[key] = $.jsonIntToFloat(viewport[key]); });
@@ -430,11 +429,15 @@
             setViewport: function(viewport)
             {
                 var mapObj = this;
-                mapObj.map.setExtent(viewport instanceof esri.geometry.Extent
+                viewport = viewport instanceof esri.geometry.Extent
                     ? viewport
                     : new esri.geometry.Extent(
                         viewport.xmin, viewport.ymin, viewport.xmax, viewport.ymax,
-                        new esri.SpatialReference({ wkid: viewport.sr })));
+                        new esri.SpatialReference({ wkid: viewport.sr }));
+                if (viewport.spatialReference.wkid == 4326
+                  && isWebMercatorSpatialReference(mapObj.map))
+                { viewport = esri.geometry.geographicToWebMercator(viewport); }
+                mapObj.map.setExtent(viewport);
             },
 
             resizeHandle: function(event)
@@ -451,6 +454,7 @@
                     (mapObj.map.spatialReference);
                 delete mapObj._segmentSymbols;
                 delete mapObj._bounds;
+                delete mapObj._byView[mapObj.settings.view.id]._clusters;
                 mapObj._graphicsLayer.clear();
                 mapObj.map.infoWindow.hide();
             },
@@ -585,6 +589,7 @@
     var handleGraphicClick = function(mapObj, evt)
     {
         if (isIdentifyTask(mapObj)) { return; }
+        if (mapObj._byView[mapObj.settings.view.id]._clusters) { return; }
 
         mapObj.map.infoWindow.setContent(
             mapObj.getFlyout(evt.graphic.attributes.rows,

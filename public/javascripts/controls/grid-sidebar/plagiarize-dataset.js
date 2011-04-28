@@ -55,7 +55,7 @@
             var $friendSelect = $currentPane.find('.friendSelect');
             $friendSelect
                 .userPicker({
-                    attachTo: $friendSelect,
+                    attachTo: $('#templates'),
                     chooseCallback: function(user) {
                         thief = user;
                     },

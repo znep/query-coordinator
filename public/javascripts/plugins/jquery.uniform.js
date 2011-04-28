@@ -55,6 +55,10 @@ Enjoy!
 // clint.tseng@socrata.com 03/01/11
 // forbid double-uniforming
 
+// clint.tseng@socrata.com 04/27/11
+// rewrite dom manip for massive perf gain
+//  note: wrap is slow.
+
 (function($) {
     $.uniform = {
         options: {
@@ -102,34 +106,27 @@ Enjoy!
 
         function doSelect(elem){
 
-            var divTag = $('<div />'),
-                containerTag = $('<div />'),
-                innerDivTag = $('<div />'),
-                spanTag = $('<span />');
+            var divTag = '<div><div class="container"><div><span></span></div></div></div>';
 
+            elem.css('opacity', 0);
+
+            elem.after(divTag);
+            divTag = elem.next();
+            divTag.append(elem);
+
+            var spanTag = divTag.find('span');
+
+            // assign class and id
             divTag.addClass(options.selectClass).addClass(options.globalClass);
-            containerTag.addClass('container');
-
             if(options.useID){
                 divTag.attr("id", options.idPrefix+"-"+elem.attr("id"));
             }
 
+            // get selection
             var $selected = elem.find(':selected:first');
             if ($selected.length === 0)
             { $selected = elem.find('option:first'); }
             spanTag.text($selected.text());
-
-            elem.css('opacity', 0);
-            elem.wrap(divTag);
-            containerTag.append(innerDivTag);
-            innerDivTag.append(spanTag);
-            elem.before(containerTag);
-
-            //redefine variables
-            divTag = elem.parent("div");
-            containerTag = elem.siblings('div');
-            innerDivTag = containerTag.children('div');
-            spanTag = innerDivTag.find("span");
 
             elem.change(function() {
                 spanTag.text(elem.children(":selected").text());
@@ -167,21 +164,19 @@ Enjoy!
 
         function doCheckbox(elem){
 
-            var divTag = $('<div><span /></div>');
+            var divTag = '<div><span></span></div>';
 
-            divTag.addClass(options.checkboxClass).addClass(options.globalClass);
+            //wrap with the proper elements
+            elem.after(divTag);
+            divTag = elem.next();
+            var spanTag = divTag.children();
+            spanTag.append(elem);
 
-            //assign the id of the element
+            // assign class and id
             if(options.useID){
                 divTag.attr("id", options.idPrefix+"-"+elem.attr("id"));
             }
-
-            //wrap with the proper elements
-            $(elem).wrap(divTag);
-
-            //redefine variables
-            var spanTag = elem.parent();
-            divTag = spanTag.parent();
+            divTag.addClass(options.checkboxClass).addClass(options.globalClass);
 
             //hide normal input and add focus classes
             $(elem)
@@ -237,20 +232,19 @@ Enjoy!
 
         function doRadio(elem){
 
-            var divTag = $('<div><span /></div>');
+            var divTag = '<div><span></span></div>';
 
-            divTag.addClass(options.radioClass).addClass(options.globalClass);
+            //wrap with the proper elements
+            elem.after(divTag);
+            divTag = elem.next();
+            var spanTag = divTag.children();
+            spanTag.append(elem);
 
+            //assign class and id
             if(options.useID){
                 divTag.attr("id", options.idPrefix+"-"+elem.attr("id"));
             }
-
-            //wrap with the proper elements
-            $(elem).wrap(divTag);
-
-            //redefine variables
-            var spanTag = elem.parent();
-            divTag = spanTag.parent();
+            divTag.addClass(options.radioClass).addClass(options.globalClass);
 
             //hide normal input and add focus classes
             $(elem)
@@ -505,9 +499,19 @@ Enjoy!
         function attachLabelHover($e, divTag)
         {
             // cxlt: yeah, it really should be hover, but they're styled the same.
-            $('label[for="' + $e.attr('id') + '"]')
-                .mouseover(function() { divTag.addClass('focus'); })
-                .mouseout (function() { divTag.removeClass('focus'); });
+            // cxlt2: go up one level; assume the label is on the same nest as the orig input
+            var id = $e.attr('id');
+            if (!$.isBlank(id))
+            {
+                divTag.parent().delegate('label[for="' + id + '"]', 'mouseover', function()
+                {
+                    divTag.addClass('focus');
+                });
+                divTag.parent().delegate('label[for="' + id + '"]', 'mouseout', function()
+                {
+                    divTag.removeClass('focus');
+                });
+            }
         };
 
         return this.each(function() {

@@ -65,7 +65,7 @@ if check_args
     if !File.exists?("#{DEV_DIR}/var/apache2.pid")
       clean_mod_cache_directory!(:force => true)
       puts "All running; starting Apache."
-      Kernel.system("httpd -d #{DEV_DIR} -f httpd.conf")
+      Kernel.system("httpd -d \"#{DEV_DIR}\" -f httpd.conf")
       puts "Apache is running; try accessing http://localhost:9292"
     else
       STDERR.puts "Error: #{DEV_DIR}/var/apache2.pid file already exists. Perhaps Apache is already running?"

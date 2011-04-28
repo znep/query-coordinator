@@ -146,7 +146,8 @@
   .columnsList
     @include workspace
     border: 1px solid #888
-    max-height: 70%
+    display: none
+    max-height: 50em
     min-height: 20em
     padding-bottom: 2em
     overflow-x: hidden
@@ -186,8 +187,16 @@
         .columnTypeCell
           width: 22em
 
+          .uniform.selector
+            @include ie7-inline-block
+
         .columnSourceCell
           width: 22em
+
+          .uniform.selector
+            @include ie7-inline-block
+            max-width: 22em // in case they have ridiculously long column names
+            overflow: hidden
 
         .columnActionCell
           float: none
@@ -315,6 +324,9 @@
                 .uniform.checker
                   margin: 0 0 0.4em 1.5em
 
+                .customExpression
+                  width: 30em
+
                 a
                   font-size: 1.1em
                   padding-left: 0.5em
@@ -327,10 +339,17 @@
               margin-right: 0.2em
 
   .columnsToolbar
+    display: none
     margin-top: 0.4em
 
     .presets
       float: left
+
+      .ie7 &
+        width: 40em
+
+      > *
+        @include ie7-inline-block
 
       label
         font-size: 1.3em
@@ -465,6 +484,8 @@
           margin:
             right: 0.5em
             top: 0.2em
+      label.private
+        color: #888
     .externalDatasetMetadata
       display: none
 

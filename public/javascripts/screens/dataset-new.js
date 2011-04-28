@@ -49,10 +49,22 @@ var $wizard = $('.newDatasetWizard');
 $wizard.wizard({
     onCancel: function($pane, state)
     {
-        if (!_.isUndefined(state.submittedView))
-            state.submittedView.remove();
+        var redirectToProfile = function()
+        {
+            window.location.href = '/profile';
+        };
 
-        return '/profile';
+        if (!_.isUndefined(state.submittedView))
+        {
+            // well, if we fail we probably don't have anything we can delete anyway
+            state.submittedView.remove(redirectToProfile, redirectToProfile);
+        }
+        else
+        {
+            redirectToProfile();
+        }
+
+        return false;
     },
     paneConfig: {
 
@@ -175,13 +187,13 @@ $wizard.wizard({
                                 .addClass('error');
                             return false;
                         }
-                        state.fileExtension = ext; // save this off since the imports service needs it later
+                        state.fileName = fileName; // save this off since the imports service needs it later
 
                         $pane.find('.uploadFileName')
                             .val(fileName)
                             .removeClass('error');
 
-                        $uploadThrobber.slideDown(command.updateHeight)
+                        $uploadThrobber.slideDown()
                                        .find('.text').text('Uploading your file...');
                     },
                     onProgress: function(id, fileName, loaded, total)
@@ -349,7 +361,8 @@ $wizard.wizard({
             {
                 if (!_.isUndefined(state.submittedView))
                     state.submittedView.remove();
-                return;
+
+                return _.isUndefined(state.importer) ? 1 : 2; // go back two if we've imported.
             }
         },
 

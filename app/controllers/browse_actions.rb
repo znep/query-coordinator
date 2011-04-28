@@ -159,8 +159,8 @@ protected
     end
 
     # Whether or not we need to display icons for other domains
-    @use_federations = Federation.find.
-      select {|f| f.acceptedUserId.present? &&
+    @use_federations = @opts[:nofederate] == 'true' ? false :
+      Federation.find.select {|f| f.acceptedUserId.present? &&
         f.sourceDomainCName != CurrentDomain.cname }.
         length > 0 if @use_federations.nil?
 

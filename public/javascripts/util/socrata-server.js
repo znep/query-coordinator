@@ -32,6 +32,21 @@ this.ServerModel = Model.extend({
                 if ((xhr || {}).status == 202)
                 {
                     if (_.isFunction(req.pending)) { req.pending.apply(this, arguments); }
+
+                    if (!$.isBlank(d) && !_.isUndefined(d.ticket))
+                    {
+                        // we have a ticket id, which means subsequent requests should
+                        // be a little different
+                        req = $.extend(true, {}, req);
+                        req.type = 'get';
+
+                        var origData = req.data;
+                        req.data = { ticket: d.ticket };
+
+                        if (!$.isBlank(origData) && !_.isUndefined(origData.method))
+                            req.data = origData.method;
+                    }
+
                     setTimeout(function() { isCache ? $.Tache.Get(req) : $.ajax(req); },
                         req.retryTime || 5000);
                     return;

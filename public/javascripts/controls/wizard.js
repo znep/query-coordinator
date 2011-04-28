@@ -45,16 +45,13 @@
                     $currentPane.siblings().detach();
                     $paneContainer.css('marginLeft', 0);
                 });
-                _.defer(function()
-                {
-                    animateVert();
-                });
+                animateVert();
             };
             var animateVert = function()
             {
                 $wizard.animate({ height: $currentPane.outerHeight(true) }, function()
                 {
-                    $wizard.css('height', '');
+                    _.defer(function() { $wizard.css('height', ''); });
                 });
             };
 
@@ -226,7 +223,8 @@
                 if (_.isFunction(destination))
                     destination = destination($currentPane, currentState);
 
-                window.location.href = destination;
+                if (_.isString(destination))
+                    window.location.href = destination;
             });
 
         // sizing

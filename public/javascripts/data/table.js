@@ -3311,6 +3311,7 @@
             end("renderHeader-assemble");
             begin("renderHeader-render");
 
+            $header.trigger('rerender');
             // JQuery version sucks wind, my profiler is horked so not sure why, but direct version appears to work
             $header[0].innerHTML = html;
             //$header.html(html);

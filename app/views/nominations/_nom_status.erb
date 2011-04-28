@@ -1,0 +1,17 @@
+<span class="currentStatus"><%= status if local_assigns[:status] %></span>
+<%- if !current_user.nil? &&
+        current_user.has_right?('moderate_comments') -%>
+<a href="#Moderate"
+  title="Accept this suggestion and open it up for voting"
+  data-status="pending"
+  class="moderate moderateLink unmoderatedLink">(Moderate)</a>
+<a href="#Remove" title="Remove this suggestion"
+  class="delete unmoderatedLink">(Remove)</a>
+<%- end -%>
+<%- if !current_user.nil? &&
+        current_user.has_right?('approve_nominations') -%>
+<a href="#Approve" title="Approve this suggestion" data-status="approved"
+  class="approve moderateLink moderatedLink">(Approve)</a>
+<a href="#Reject" title="Reject this suggestion" data-status="rejected"
+  class="reject moderateLink moderatedLink">(Reject)</a>
+<%- end -%>

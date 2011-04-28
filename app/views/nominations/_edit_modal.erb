@@ -1,0 +1,31 @@
+<div class="nominateDialog modalDialog">
+  <a href="#close" class="jqmClose modalDialogClose">Close</a>
+  <h2 class="create">Suggest a Dataset</h2>
+  <h2 class="edit">Edit This Suggestion</h2>
+  <div class="loadingOverlay hide"></div>
+  <div class="loadingSpinner hide"></div>
+  <form class="nominateContent commonForm">
+    <div class="line">
+      <label for="nominateTitle" class="required">Title</label>
+      <input id="nominateTitle" name="nominate_title" type="text"
+        class="required textPrompt" title="Enter a title" />
+    </div>
+    <div class="line clearfix">
+      <label for="nominateDescription">Description</label>
+      <textarea id="nominateDescription" name="nominate_description"
+        class="textPrompt" title="Enter details about your suggestion"></textarea>
+    </div>
+    <div class="line create">
+      <label for="nominateFile">Attachment</label>
+      <input type="text" readonly="readonly" disabled="disabled"
+        class="fileReadout" name="file_upload" />
+      <a href="#Browse" class="button fileBrowseButton">Browse</a>
+    </div>
+    <span class="required">Required</span>
+  </form>
+  <div class="mainError"></div>
+  <ul class="actions">
+    <li><a href="#Cancel" class="jqmClose button">Cancel</a></li>
+    <li><a href="#Submit" class="submitAction button">Submit</a></li>
+  </ul>
+</div>

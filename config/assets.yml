@@ -198,7 +198,22 @@ javascripts:
     - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/util/events.js
     - public/javascripts/util/humane-date.js
+    - public/javascripts/util/base-model.js
+    - public/javascripts/util/socrata-server.js
+    - public/javascripts/util/nomination.js
+    - public/javascripts/screens/nominations-shared.js
     - public/javascripts/screens/nominations.js
+  screen-nomination:
+    - public/javascripts/util/events.js
+    - public/javascripts/util/humane-date.js
+    - public/javascripts/util/serialize.js
+    - public/javascripts/plugins/ajaxupload.js
+    - public/javascripts/util/base-model.js
+    - public/javascripts/util/socrata-server.js
+    - public/javascripts/util/nomination.js
+    - public/javascripts/controls/feed-list.js
+    - public/javascripts/screens/nominations-shared.js
+    - public/javascripts/screens/nomination.js
   screen-videos:
     - public/javascripts/plugins/jquery.quicksand.js
     - public/javascripts/screens/videos.js

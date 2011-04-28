@@ -1,178 +1,100 @@
 <% content_for :head do %>
-  <%= rendered_stylesheet_tag 'screen-nominations' %>
-  <title>Dataset Suggestions | <%= CurrentDomain.strings.site_title %></title>
+  <%= rendered_stylesheet_tag 'screen-nomination' %>
+  <title><%= @nom.title %> | Dataset Suggestions | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
-<div class="nominationsContainer">
-  <div class="facets">
-    <span class="title">Filter by Status</span>
-    <%- statuses = [{:text => 'All', :value => nil},
-      {:text => 'Open', :value => 'pending'},
-      {:text => 'Approved', :value => 'approved'},
-      {:text => 'Rejected', :value => 'rejected'}] -%>
-    <%-
-    if !current_user.nil? && current_user.has_right?('moderate_comments')
-      statuses = statuses.insert(2,
-        {:text => 'Needs Moderation', :value => 'unmoderated'})
-    end
-    -%>
-    <ul>
-      <%- statuses.each do |s| -%>
-      <li>
-      <a href="<%= @base_url + (s[:value].nil? ? '' : '?status=' + s[:value]) %>"
-        class="<%= @status == s[:value] ? 'active' : '' %>"><%= s[:text] %></a>
-      </li>
-      <%- end -%>
-    </ul>
-  </div>
-
-  <div class="nominationsList">
-    <h2>Dataset Suggestions</h2>
-    <%- if !current_user.nil? -%>
-      <a href="#Submit dataset" class="button nominateLink hasUser">Suggest a Dataset</a>
-    <%- else -%>
-      <a href="/nominate/new" class="button nominateLink">Suggest a Dataset</a>
+<div class="nomDetailContainer">
+  <%= link_to(raw('<span class="icon"></span>Back to Dataset Suggestions'),
+          {:action => 'index'}, {:class => 'button backButton leftArrowNoHover'}) %>
+  <%- if current_user && (current_user.has_right?('edit_nominations')) -%>
+    <a href="#edit" class="edit button editNomButton">Edit This Suggestion</a>
+    <%- if current_user.id != @nom.user.id -%>
+      <a href="#contact" class="notifyNominatorButton button">Contact Suggestion Author</a>
     <%- end -%>
-
-    <div class="results">
-      <%- if @nominations_count == 0 -%>
-      <div class="noResults">No Results</div>
-
-      <%- else -%>
-      <table class="gridList">
-        <colgroup>
-          <col class="user" />
-          <col class="details" />
-          <col class="attachments" />
-          <col class="rating" />
-          <col class="status" />
-        </colgroup>
-        <thead>
-          <tr>
-            <th class="user">Submitted by</th>
-            <th class="details">Details</th>
-            <th class="attachments">Files</th>
-            <th class="rating">Rating</th>
-            <th class="status">Status</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      <%- end -%>
+  <%- end -%>
+  <div class="content clearfix">
+    <h2><%= @nom.title %></h2>
+    <div class="nomFlash">
+      <%= display_standard_flashes %>
     </div>
 
-    <%- if @nominations_count > 0 -%>
-    <%= create_pagination(@nominations_count, @page_size,
-      params[:page].to_i, @base_url + '?' + @params.to_param, 'button') %>
+    <div class="submittedBy">
+      <img class="authorImage" src="<%= @nom.user.profile_image_path %>"
+           alt="<%= @nom.user.displayName %>" />
+      <h4>Submitted by
+        <span class="authorName">
+          <%= link_to @nom.user.displayName, @nom.user.href %>
+        </span>
+      </h4>
+      <span class="submittedOn"><%= blist_long_date(@nom.createdAt) %></span>
+    </div>
+
+    <div class="nomActions">
+      <div class="nomRatingContainer">
+        Rating:
+        <span class="nomRating<%= @nom.netVotes > 0 ? ' positive' :
+                                  @nom.netVotes < 0 ? ' negative' : '' %>">
+          <span class="value"><%= @nom.netVotes %></span>
+          <%- if !current_user.nil? -%>
+          <span class="ratingButtons">
+            <a class="rateLink rateUp" title="I like it" href="#Rate up">
+              <span class="icon"></span>
+            </a>
+            <a class="rateLink rateDown" title="I don't like it" href="#Rate down">
+              <span class="icon"></span>
+            </a>
+            <%- end -%>
+          </div>
+        </span>
+      </span>
+      <div class="nomModerationContainer">
+        <%= render :partial => 'nom_status' %>
+      </div>
+    </div>
+
+    <%- if @nom.description.present? -%>
+      <div class="nomDescription">
+        <h4>Description</h4>
+        <%= simple_format(@nom.description, :class => 'subPara') %>
+      </div>
     <%- end -%>
+
+    <%- if @nom.attachments.present? -%>
+    <div class="nomAttachments">
+      <h4>Attachments</h4>
+      <ul class="attachmentList">
+        <%- @nom.attachments.each do |att| -%>
+          <li>
+          <%= link_to(att.filename, "/api/nominations/#{@nom.id}/attachments/#{att.id}") %>
+          </li>
+        <%- end -%>
+      </ul>
+    </div>
+    <%- end -%>
+
+    <div class="nomComments">
+      <h4>Comments</h4>
+    </div>
   </div>
 </div>
 
+<%- if current_user && current_user.has_right?('edit_nominations') -%>
 <%- content_for :modals do -%>
-  <div class="nominateDialog modalDialog">
-    <a href="#close" class="jqmClose modalDialogClose">Close</a>
-    <h2 class="create">Suggest a Dataset</h2>
-    <h2 class="edit">Edit This Suggestion</h2>
-    <div class="loadingOverlay hide"></div>
-    <div class="loadingSpinner hide"></div>
-    <form class="nominateContent commonForm">
-      <div class="line">
-        <label for="nominateTitle" class="required">Title</label>
-        <input id="nominateTitle" name="nominate_title" type="text"
-          class="required textPrompt" title="Enter a title" />
-      </div>
-      <div class="line clearfix">
-        <label for="nominateDescription">Description</label>
-        <textarea id="nominateDescription" name="nominate_description"
-          class="textPrompt" title="Enter details about your suggestion"></textarea>
-      </div>
-      <div class="line create">
-        <label for="nominateFile">Attachment</label>
-        <input type="text" readonly="readonly" disabled="disabled"
-          class="fileReadout" name="file_upload" />
-        <a href="#Browse" class="button fileBrowseButton">Browse</a>
-      </div>
-      <span class="required">Required</span>
-    </form>
-    <div class="mainError"></div>
-    <ul class="actions">
-      <li><a href="#Cancel" class="jqmClose button">Cancel</a></li>
-      <li><a href="#Submit" class="submitAction button">Submit</a></li>
-    </ul>
-  </div>
+  <%= render :partial => 'edit_modal' %>
+  <%- if current_user.id != @nom.user.id -%>
+    <%= render :partial => 'contact_modal' %>
+  <%- end -%>
+<%- end -%>
 <%- end -%>
 
-<% content_for :templates do %>
-<table class="nominationItem">
-  <tbody>
-    <tr class="item">
-      <td class="user">
-        <%- if !current_user.nil? &&
-                current_user.has_right?('edit_nominations') -%>
-        <a href="#Remove" title="Delete this suggestion" class="delete"></a>
-        <%- end -%>
-        <a class="userLink"><img /><span class="userName"></span></a>
-      </td>
-      <td class="details">
-        <span class="title"></span>
-        <%- if !current_user.nil? &&
-                current_user.has_right?('edit_nominations') -%>
-        <a href="#Edit" title="Edit this suggestion" class="edit">(Edit)</a>
-        <%- end -%>
-        <div class="submitTime">
-          <span class="fullTime"></span>
-          (<span class="relativeTime"></span>)
-        </div>
-        <div class="description"></div>
-      </td>
-      <td class="attachments">
-        <ul><li>
-          <%- if !current_user.nil? &&
-                  current_user.has_right?('edit_nominations') -%>
-          <a href="#Remove" title="Delete this attachment" class="delete"></a>
-          <%- end -%>
-          <a class="fileLink" rel="external"></a>
-        </li></ul>
-      </td>
-      <td class="rating">
-        <span class="value"></span>
-        <%- if !current_user.nil? -%>
-        <a class="rateLink rateDown" title="I don't like it" href="#Rate down">
-          <span class="icon"></span>
-        </a>
-        <a class="rateLink rateUp" title="I like it" href="#Rate up">
-          <span class="icon"></span>
-        </a>
-        <%- end -%>
-      </td>
-      <td class="status">
-        <span class="currentStatus"></span>
-        <%- if !current_user.nil? &&
-                current_user.has_right?('moderate_comments') -%>
-        <a href="#Moderate"
-          title="Accept this suggestion and open it up for voting"
-          data-status="pending"
-          class="moderate moderateLink unmoderatedLink">(Moderate)</a>
-        <a href="#Remove" title="Remove this suggestion"
-          class="delete unmoderatedLink">(Remove)</a>
-        <%- end -%>
-        <%- if !current_user.nil? &&
-                current_user.has_right?('approve_nominations') -%>
-        <a href="#Approve" title="Approve this suggestion" data-status="approved"
-          class="approve moderateLink moderatedLink">(Approve)</a>
-        <a href="#Reject" title="Reject this suggestion" data-status="rejected"
-          class="reject moderateLink moderatedLink">(Reject)</a>
-        <%- end -%>
-      </td>
-    </tr>
-  </tbody>
-</table>
-<% end %>
+<%- content_for :templates do -%>
+  <%= render :partial => 'datasets/feed_template', :locals => {:allow_comments => true} %>
+<%- end -%>
 
-<% content_for :js_footer do %>
+<%- content_for :js_footer do -%>
+  <%= include_javascripts 'screen-nomination' %>
   <script type='text/javascript'>
     blist.namespace.fetch('blist.nominations');
-    blist.nominations.items = <%= safe_json(@nominations); %>;
+    blist.nomination = new Nomination(<%= safe_json(@nom) %>);
   </script>
-  <%= include_javascripts 'screen-nominations' %>
-<% end %>
+<%- end -%>

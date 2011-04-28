@@ -179,7 +179,8 @@ ActionController::Routing::Routes.draw do |map|
     :collection => {
       :embed => :get
   }
-  map.resource :nominations, :as => 'nominate'
+  map.resources :nominations, :as => 'nominate',
+    :only => [ :index, :show, :new ]
   map.resources :videos, :only => [ :index ], :collection => { :popup => :get }
 
   # For legacy support reasons, make /home and /datasets go somewhere reasonable

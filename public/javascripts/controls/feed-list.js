@@ -39,7 +39,7 @@
     var feedDirectiveBase = {
         '.@class+': function(a)
             {
-                return a.item.user.id == blist.dataset.tableAuthor.id ?
+                return (blist.dataset && (a.item.user.id == blist.dataset.tableAuthor.id)) ?
                     a.item.itemType + ' ownerFeedItem': a.item.itemType;
             },
         '.@data-itemId': 'feedItem.itemId',
@@ -60,14 +60,14 @@
         }
     });
 
+    var getView = function(viewId, opts)
+    {
+        return _.detect(opts.views.concat(opts.mainView), function(v) { return v.id == viewId; });
+    };
+
     $.fn.feedList = function(options)
     {
         var opts = $.extend({}, $.fn.feedList.defaults, options);
-
-        var getView = function(viewId)
-        {
-            return _.detect(opts.views.concat(opts.mainView), function(v) { return v.id == viewId; });
-        };
 
         // This directive is declared here because it needs access to opts.
         var feedDirective = {
@@ -103,7 +103,7 @@
                 currentUserRating: comment.currentUserRating,
                 commentFlagged: _.include(comment.flags || [], 'flaggedByCurrentUser'),
                 user: comment.user,
-                viewId: comment.view.id,
+                viewId: (comment.view ? comment.view.id : null),
                 children: _.isUndefined(comment.children) ? [] :
                     _.map(comment.children, function(item) { return commentMap(item, 'reply'); })
             };
@@ -175,6 +175,7 @@
                             };
                         }), true))
                     .val(opts.defaultFilter || _.first(opts.filterCategories));
+
                 $.uniform.update($feedFilter);
             }
 
@@ -305,7 +306,7 @@
                     {
                         blist.util.doAuthedAction('flag a comment', function()
                         {
-                            getView(targetCommentData.viewId).flagComment(
+                            opts.actionDelegate(targetCommentData, opts).flagComment(
                                 targetCommentData.itemId,
                                 function()
                                 {
@@ -325,7 +326,7 @@
                         var thumbsUp = $this.hasClass('commentRateUpLink');
                         blist.util.doAuthedAction('rate a comment', function()
                         {
-                            getView(targetCommentData.viewId).rateComment(
+                            opts.actionDelegate(targetCommentData, opts).rateComment(
                                 targetCommentData.itemId, thumbsUp,
                                 function()
                                 {
@@ -362,7 +363,7 @@
                     {
                         var $newCom = $.renderTemplate('feedItem_newComment');
                         $newCom.find('.postNewCommentButton')
-                            .data('view', getView(targetCommentData.viewId));
+                            .data('view', opts.actionDelegate(targetCommentData, opts));
                         $this.closest('.feedItem').children('.feedChildren')
                             .before($newCom);
                         $this.closest('.feedItem').find('#newCommentBody').focus();
@@ -488,6 +489,9 @@
 
     $.fn.feedList.defaults = {
         addCommentCallback: function(view, comment) {},
+        actionDelegate: function(targetComment, opts) {
+            return getView(targetComment.viewId, opts);
+        },
         bindCommentEvents: true,
         commentCreateData: {},
         comments: [],

@@ -207,7 +207,7 @@ $wizard.wizard({
                     },
                     onComplete: function(id, fileName, response)
                     {
-                        if (response.error == true)
+                        if ($.isBlank(response) || _.isEmpty(response) || (response.error == true))
                         {
                             $uploadThrobber.slideUp();
                             $pane.find('.uploadFileName')

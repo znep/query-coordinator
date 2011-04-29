@@ -81,6 +81,12 @@ protected
     }
   end
 
+  def custom_facets
+    config = CurrentDomain.configuration('catalog')
+    return nil if config.nil?
+    return config.properties.facets
+  end
+
   def process_browse!(options = {})
     browse_params = (options[:force_default]) ? {} : params
 
@@ -95,6 +101,16 @@ protected
     @default_params.each { |k, v| browse_params[k] = v if browse_params[k].nil? }
     @no_results_text ||= 'No Results'
     @base_url ||= request.path
+
+    cfs = custom_facets
+    if cfs
+      cfs.each do |facet|
+        if browse_params[facet.param]
+          @opts[:metadata_tag] ||= []
+          @opts[:metadata_tag] << facet.param + ":" + browse_params[facet.param]
+        end
+      end
+    end
 
     # Simple params; these are copied directly to opts
     [:sortBy, :category, :tags, :moderation].each do |p|
@@ -144,11 +160,12 @@ protected
 
     @facets ||= [
       view_types_facet,
+      cfs,
       categories_facet,
       topics_facet,
       extents_facet
     ]
-    @facets.compact!
+    @facets = @facets.compact.flatten
 
     @sort_opts ||= @@default_browse_sort_opts
 

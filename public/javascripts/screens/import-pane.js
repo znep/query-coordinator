@@ -718,14 +718,14 @@ var wireEvents = function()
     });
 
     // show the static text line if necessary
-    $pane.delegate('.columnsList li .compositeColumnSourceSelect', 'click', function(event)
+    $pane.delegate('.columnsList li .compositeColumnSourceSelect', 'change', function(event)
     {
         var $this = $(this);
         var $columnSourceLine = $this.closest('li');
 
         $columnSourceLine.find('.staticSourceText').toggle($this.val() == '[static]');
 
-        updateLines($line.closest('li.importColumn'));
+        updateLines($columnSourceLine.closest('li.importColumn'));
         validateAll();
     });
 

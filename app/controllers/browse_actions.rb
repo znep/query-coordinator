@@ -113,7 +113,7 @@ protected
     end
 
     # Simple params; these are copied directly to opts
-    [:sortBy, :category, :tags, :moderation].each do |p|
+    [:sortBy, :category, :tags, :moderation, :q].each do |p|
       if !browse_params[p].nil?
         @opts[p] = browse_params[p]
       end
@@ -142,10 +142,6 @@ protected
                           when 'year'
                             "YEARLY"
                           end
-    end
-
-    if !browse_params[:q].nil?
-      @opts[:q] = browse_params[:q]
     end
 
     if !browse_params[:extents].nil?

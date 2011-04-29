@@ -332,7 +332,7 @@ class View < Model
   def meta_description
     if self.description.blank?
       desc = "View this dataset"
-      updated_at = self.rowsUpdatedAt.nil? ? nil : blist_long_date(self.rowsUpdatedAt)
+      updated_at = self.rowsUpdatedAt.nil? ? nil : blist_long_date(self.rowsUpdatedAt, true)
       if updated_at
         desc += ", last updated #{updated_at}"
       end

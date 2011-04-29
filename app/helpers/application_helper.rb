@@ -134,16 +134,37 @@ module ApplicationHelper
 
 # DATE HELPERS
 
-  def blist_date(time)
-    time && time != 0 ? Time.at(time).strftime("%b %d, %Y") : nil
+  def blist_date(time, no_html = false)
+    r = nil
+    if time && time != 0
+      r = no_html ? '' :
+        '<span class="dateReplace" data-dateFormat="date" data-rawDateTime="' + time.to_s + '">'
+      r += Time.at(time).strftime("%b %d, %Y")
+      r += '</span>' if !no_html
+    end
+    return r
   end
 
-  def blist_date_time(time)
-    time && time != 0 ? Time.at(time).strftime("%b %d, %Y %I:%M%P") : nil
+  def blist_date_time(time, no_html = false)
+    r = nil
+    if time && time != 0
+      r = no_html ? '' :
+        '<span class="dateReplace" data-dateFormat="date_time" data-rawDateTime="' + time.to_s + '">'
+      r += Time.at(time).strftime("%b %d, %Y %I:%M%P")
+      r += '</span>' if !no_html
+    end
+    return r
   end
 
-  def blist_long_date(time)
-    time && time != 0 ? Time.at(time).strftime("%B %d, %Y") : nil
+  def blist_long_date(time, no_html = false)
+    r = nil
+    if time && time != 0
+      r = no_html ? '' :
+        '<span class="dateReplace" data-dateFormat="long_date" data-rawDateTime="' + time.to_s + '">'
+      r += Time.at(time).strftime("%B %d, %Y")
+      r += '</span>' if !no_html
+    end
+    return r
   end
 
   def friendly_relative_time(time_str)
@@ -348,5 +369,5 @@ module ApplicationHelper
 
   safe_helper :meta_tags, :jquery_include, :javascript_error_helper_tag, :create_pagination,
     :render_domain_template, :rendered_stylesheet_tag, :get_publish_embed_code_for_view,
-    :render_browse, :safe_json
+    :render_browse, :safe_json, :blist_date, :blist_date_time, :blist_long_date
 end

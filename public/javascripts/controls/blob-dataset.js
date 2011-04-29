@@ -102,7 +102,8 @@
             {
                 var blobObj = this;
 
-                delete blist.renderTypes.blob;
+                if ($.subKeyDefined(blist, 'renderTypes'))
+                { delete blist.renderTypes.blob; }
                 $.ajax({ url: '/blob/' + blobObj.settings.view.id,
                     success: function(data, status)
                     {

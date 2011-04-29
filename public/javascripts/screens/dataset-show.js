@@ -118,6 +118,8 @@ $(function()
         view: blist.dataset,
         defaultType: defRen,
         editEnabled: blist.dataset.isUnpublished(),
+        columnEditEnabled: blist.dataset.isUnpublished() || blist.dataset.isPublished() &&
+            !blist.dataset.isDefault(),
         common: {
             editColumnCallback: function(col)
             {
@@ -421,6 +423,25 @@ $(function()
             }
         });
     });
+
+    // If this is a newly unpublished dataset on the first run, show a warning
+    if (blist.dataset.isUnpublished() && $.urlParam(window.location.href, 'firstRun') == 'true')
+    {
+        $('#infoBox #datasetName').socrataTip({trigger: 'now', showSpike: false, closeOnClick: false,
+            content: $.tag({tagName: 'div', 'class': 'unpublishedAlert', contents: [
+                {tagName: 'p', contents: 'This dataset is not yet published ' +
+                    'to allow you to make any necessary changes ' +
+                    'before making it available to everyone. It will not be visible until ' +
+                    'you publish this dataset.'},
+                {tagName: 'a', 'class': ['button', 'close'], contents: 'OK'}
+            ]})
+        });
+        $.live('.unpublishedAlert .close', 'click', function(e)
+        {
+            e.preventDefault();
+            $('#infoBox #datasetName').socrataTip().destroy();
+        });
+    }
 
     // Invalid views
 

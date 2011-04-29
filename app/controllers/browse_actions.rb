@@ -105,6 +105,11 @@ protected
 
     if !browse_params[:limitTo].nil?
       case browse_params[:limitTo]
+      when 'unpublished'
+        @opts[:limitTo] = 'tables'
+        @opts[:datasetView] = 'dataset'
+        @opts[:publication_stage] = 'unpublished'
+        @opts.delete('publication_stage')
       when 'datasets'
         @opts[:limitTo] = 'tables'
         @opts[:datasetView] = 'dataset'

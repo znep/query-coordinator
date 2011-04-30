@@ -394,6 +394,12 @@ class View < Model
     self.href + "/about"
   end
 
+  def rss(port = 80)
+    url_port = (port == 80) ? '' : ':' + port.to_s
+    protocol = federated? ? "http://#{domainCName}#{url_port}" : ''
+    "#{protocol}/api/views/#{id}/rows.rss"
+  end
+
   def tweet
     return "Check out the #{name} dataset on #{CurrentDomain.strings.company}: #{CurrentDomain.cname}#{short_href}"
   end
@@ -755,6 +761,17 @@ class View < Model
     "<div class='rating " +
       "#{get_rating_class(rating)}' " +
       "title='#{rating}'><span>#{rating}</span></div>"
+  end
+
+  def preferred_image(port = 80)
+    if !self.iconUrl.nil?
+      return self.iconUrl
+    elsif !self.metadata.nil? && ((self.metadata.data['thumbnail'] || {})['page'] || {})['created'] == true
+      url_port = (port == 80) ? '' : ':' + port.to_s
+      protocol = federated? ? "http://#{domainCName}#{url_port}" : ''
+      return "#{protocol}/api/views/#{self.id}/snapshots/page?size=thumb"
+    end
+    nil
   end
 
   # Looks for property with _name_, or asks Configurations service

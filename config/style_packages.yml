@@ -29,8 +29,6 @@ administration-browse-widget:
 - grid-sidebar
 - screen-admin-customizer
 - screen-admin-browse-widget
-administration-datasets:
-- screen-administration-datasets
 administration-select-dataset:
 - screen-administration-select-dataset
 administration-federation:

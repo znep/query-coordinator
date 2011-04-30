@@ -105,6 +105,18 @@ protected
     @no_results_text ||= 'No Results'
     @base_url ||= request.path
 
+    # Whether or not we need to display icons for other domains
+    @use_federations = @opts[:nofederate] == 'true' ? false :
+      Federation.find.select {|f| f.acceptedUserId.present? &&
+        f.sourceDomainCName != CurrentDomain.cname }.
+        length > 0 if @use_federations.nil?
+
+    @view_type = browse_params['viewType'] || cfg_props.default_view_type || 'table'
+    @grid_items = @view_type == 'rich' ?
+      {:largeImage => true, :richSection => true, :popularity => true, :type => true, :rss => true} :
+      {:index => true, :domainIcon => @use_federations, :nameDesc => true,
+        :datasetActions => @dataset_actions, :popularity => true, :type => true}
+
     if cfg_props.facet_dependencies
       @strip_params = {}
       cfg_props.facet_dependencies.each do |dep|
@@ -189,12 +201,6 @@ protected
       @view_count = @view_results.count
       @view_results = @view_results.results
     end
-
-    # Whether or not we need to display icons for other domains
-    @use_federations = @opts[:nofederate] == 'true' ? false :
-      Federation.find.select {|f| f.acceptedUserId.present? &&
-        f.sourceDomainCName != CurrentDomain.cname }.
-        length > 0 if @use_federations.nil?
 
     @title ||= get_title(@params, @opts, @facets)
   end

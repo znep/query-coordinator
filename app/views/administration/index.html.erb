@@ -73,7 +73,9 @@
         </span>
       </li>
     <%- end -%>
-    <%- if CurrentDomain.user_can?(current_user, :manage_stories) -%>
+    <%- if CurrentDomain.user_can?(current_user, :manage_stories) ||
+            CurrentDomain.user_can?(current_user, :feature_items) ||
+            CurrentDomain.user_can?(current_user, :edit_site_theme) -%>
       <li class="homemgmt">
         <%= link_to raw('<span class="icon"></span>Home Page'),
             {:action => 'home'} %>

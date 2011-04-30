@@ -576,10 +576,11 @@ class AdministrationController < ApplicationController
   # Homepage Customization
   #
 
-  before_filter :only => [:home, :save_featured_views] {|c| c.check_auth_levels_any(['manage_stories', 'feature_items'])}
+  before_filter :only => [:home, :save_featured_views] {|c| c.check_auth_levels_any(['manage_stories', 'feature_items', 'edit_site_theme'])}
   def home
     @stories = Story.find.sort
     @features = get_configuration().properties.featured_views
+    @catalog_config = CurrentDomain.configuration('catalog')
   end
 
   def save_featured_views
@@ -688,6 +689,26 @@ class AdministrationController < ApplicationController
 
     respond_to do |format|
       format.data { render :json => params[:stories] } # could be problematic?
+      format.html { redirect_to home_administration_path }
+    end
+  end
+
+  before_filter :only => [:modify_catalog_config] {|c| c.check_auth_level('edit_site_theme')}
+  def modify_catalog_config
+    config = get_configuration('catalog')
+    if config.nil?
+      opts = { 'name' => 'Catalog Configuration', 'default' => true,
+        'type' => 'catalog', 'domainCName' => CurrentDomain.cname }
+      config = Configuration.create(opts)
+    end
+
+    params[:catalog].each do |k, v|
+      update_or_create_property(config, k.to_s, v)
+    end
+
+    CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
+    respond_to do |format|
+      format.data { render :json => config.to_json }
       format.html { redirect_to home_administration_path }
     end
   end

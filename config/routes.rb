@@ -157,6 +157,8 @@ ActionController::Routing::Routes.draw do |map|
       :conditions => { :method => [:get, :post] }
     admin.connect '/admin/home/story/:id/delete', :action => 'delete_story',
       :conditions => { :method => :delete }
+    admin.connect '/admin/home/catalog_config',
+      :action => 'modify_catalog_config', :conditions => { :method => :post }
     admin.connect '/admin/datasets/sidebar_config',
       :action => 'modify_sidebar_config', :conditions => { :method => :post }
     admin.connect '/admin/views/:id/set/:approved',

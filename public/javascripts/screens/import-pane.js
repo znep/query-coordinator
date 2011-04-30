@@ -38,6 +38,8 @@ var scan,
 // structs
 var importTypes = {
     text: 'text',
+    email: 'text',
+    url: 'text',
     number: 'number',
     money: 'number',
     percent: 'number',

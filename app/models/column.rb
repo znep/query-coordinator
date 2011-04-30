@@ -29,6 +29,8 @@ class Column < Model
 
   @@importable_types = {
     text: 'Plain Text',
+    email: 'Email',
+    url: 'Website Link/URL',
     number: 'Number',
     money: 'Money',
     percent: 'Percent',

@@ -197,6 +197,31 @@
                 $('body').append(label);
             },
 
+            // FIXME: This is a skeleton. It is not intended to be used.
+            renderHeat: function()
+            {
+                var mapObj = this;
+
+                if (mapObj.settings.view.displayFormat.plotStyle != 'rastermap')
+                { return; }
+
+                if (!mapObj._heatLayer)
+                { mapObj._heatLayer =
+                    h337.create({"element":mapObj.$dom().parent()[0], "radius":25, "visible":true});}
+
+                _.each(_.compact(_.map(mapObj._markers, function(markers)
+                { return markers.length == 1 ? markers[0] : null; })), function(marker)
+                {
+                    var offset = $(marker['cm1001_er_etr'].dom).offset();
+                    var bcOffs = blist.$container.offset();
+                    offset.top -= bcOffs.top;
+                    offset.left += marker.getAnchor().x;
+                    offset.top  += marker.getAnchor().y;
+                    mapObj._heatLayer.store.addDataPoint(offset.left, offset.top);
+                });
+                mapObj.map.entities.clear();
+            },
+
             adjustBounds: function()
             {
                 var mapObj = this;

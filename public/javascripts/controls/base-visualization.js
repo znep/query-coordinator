@@ -595,7 +595,8 @@
                     };
 
                 if (vizObj.settings.view.metadata.renderTypeConfig.visible.map
-                    && vizObj.settings.view.displayFormat.plotStyle == 'point'
+                    && _.include(['point', 'rastermap'],
+                        vizObj.settings.view.displayFormat.plotStyle)
                     && view.totalRows > vizObj._maxRows)
                 { views[index] = clusterFunction; }
                 else

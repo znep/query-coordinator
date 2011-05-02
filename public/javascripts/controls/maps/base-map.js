@@ -553,9 +553,12 @@
                 if (row.icon)
                 { details.icon = row.icon; }
 
+                if (viewConfig._quantityCol)
+                { details.heatStrength = parseFloat(row[viewConfig._quantityCol.id]); }
+
                 if (row.meta)
                 {
-                    var mapping = { 'mapIcon': 'icon',
+                    var mapping = { 'mapIcon': 'icon', 'heat': 'heatStrength',
                         'pinSize': 'size', 'pinColor': 'color' };
                     _.each(_.keys(mapping), function(key)
                     {
@@ -619,6 +622,7 @@
                 // Override if you wish to do something other than adjusting the
                 // map to fit the points
                 this.adjustBounds();
+                this.renderHeat();
             },
 
             adjustBounds: function()
@@ -787,6 +791,8 @@
                         {
                             viewConfig['_' + colName + 'Col'] = c;
                             aggs[c.id] = ['maximum', 'minimum'];
+                            if (colName == 'quantity')
+                            { aggs[c.id].push('sum'); }
                         }
                     });
 

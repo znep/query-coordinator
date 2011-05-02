@@ -13,10 +13,16 @@
         {text: 'US States', value: 'state'},
         {text: 'Counties in', value: 'counties'}
     ];
-    var plotStyles = [
-        {text: 'Point Map', value: 'point'},
-        {text: 'Heat Map', value: 'heatmap'}
-    ];
+    var plotStyles = function(mapType)
+    {
+        var plotStyles = [
+            {text: 'Point Map', value: 'point'},
+            {text: 'Heat Map', value: 'heatmap'},
+        ];
+        if (mapType == 'esri')
+        { plotStyles.push({text: 'Raster Heat Map', value: 'rastermap'}); }
+        return plotStyles;
+    };
 
     var isEdit = _.include(blist.dataset.metadata.availableDisplayTypes, 'map');
 
@@ -183,7 +189,7 @@
     var configLayers = {
             title: 'Layers',
             onlyIf: [{field: 'displayFormat.type', value: 'esri'},
-                     {field: 'displayFormat.plotStyle', value: 'point'},
+                     {field: 'displayFormat.plotStyle', value: 'heatmap', negate: true},
                      sectionOnlyIf],
             fields: [
                 {type: 'text', name: 'triggerMapLayer', lineClass: 'hide'},
@@ -345,6 +351,7 @@
                 fields: [
                     mapTypeSelector,
                     {text: 'Plot Style', name: 'displayFormat.plotStyle', type: 'select',
+                        linkedField: 'displayFormat.type',
                         required: true, prompt: 'Select a plot style',
                         options: plotStyles,
                         wizard: 'Select a plotting style'
@@ -405,6 +412,13 @@
                             noDefault: true, hidden: isEdit},
                         wizard: 'Choose a column that contains ' +
                             'an icon for each point'
+                    },
+                    {text: 'Quantity', name: 'displayFormat.plot.quantityId',
+                        onlyIf: {field: 'displayFormat.plotStyle', value: 'rastermap'},
+                        type: 'columnSelect', isTableColumn: true,
+                        columns: {type: ['number', 'money', 'percent'], hidden: isEdit},
+                        wizard: 'Choose a column that contains ' +
+                            'quantities for each point'
                     }
                 ],
                 wizard: 'Do you have titles or descriptions for your points?'

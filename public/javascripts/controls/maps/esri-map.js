@@ -46,6 +46,30 @@
                     {
                         mapObj._mapLoaded = true;
                         mapObj._graphicsLayer = mapObj.map.graphics;
+
+                        var updateEvents = function()
+                        {
+                            mapObj._topmostLayer = mapObj.map.getLayer(_.last(mapObj.map.layerIds));
+                            if (!mapObj._heatingEvents) { mapObj._heatingEvents = []; }
+                            else
+                            { _.each(mapObj._heatingEvents, function(e) { dojo.disconnect(e); }); }
+
+                            mapObj._heatingEvents.push(
+                                dojo.connect(mapObj._topmostLayer, 'onUpdateStart', function()
+                                { mapObj._updatingLayer = true; }));
+                            mapObj._heatingEvents.push(
+                                dojo.connect(mapObj._topmostLayer, 'onUpdateEnd', function()
+                                {
+                                    mapObj._updatingLayer = false;
+                                    if (mapObj._needsCanvasHeatmapConversion
+                                        && _.isFunction(mapObj._convertHeatmap))
+                                    { mapObj._convertHeatmap(this); }
+                                }));
+                        }
+
+                        dojo.connect(mapObj.map, 'onLayerReorder', updateEvents);
+                        updateEvents();
+
                         _.each(mapObj._dataViews, function(view)
                             {
                                 if (mapObj._dataLoaded)
@@ -262,7 +286,10 @@
                 mapObj._graphicsLayer.add(g);
 
                 if (geoType == 'point')
-                { mapObj._multipoint.addPoint(g.geometry); }
+                {
+                    mapObj._multipoint.addPoint(g.geometry);
+                    g.heatStrength = details.heatStrength || 1;
+                }
 
                 if (geoType != 'point')
                 {
@@ -292,21 +319,6 @@
                 var mapObj = this;
 
                 if (cluster.count <= 0) { return; }
-
-                // Count:     1 -> Size: 20.
-                // Count:   100 -> Size: 50.
-                // Count:  1000 -> Size: 60.
-                // Count: 10000 -> Size: 70.
-                var convertCountToSize = function(count)
-                    {
-                        if (count <= 100)
-                        { return 20 + Math.floor(0.3 * count); }
-                        else if (count <= 1000)
-                        { return 50 + Math.floor(0.01 * count); }
-                        else
-                        { return 60 + Math.floor((Math.log(count)
-                                                 /Math.log(10) - 4) * 10); }
-                    };
 
                 var cluster_icon = '/images/map_cluster_';
                 var size;
@@ -349,8 +361,131 @@
                 }
 
                 mapObj._multipoint.addPoint(geometry);
+                graphic.heatStrength = cluster.count;
+                graphic.isCluster = true;
+
+                //var offset = cluster.radius / Math.SQRT2;
+                //graphic.clusterBounds = new esri.geometry.Extent(
+                    //geometry.x - offset, geometry.y - offset,
+                    //geometry.x + offset, geometry.y + offset,
+                    //new esri.SpatialReference({ wkid: 102100 }));
 
                 return true;
+            },
+
+            renderHeat: function()
+            {
+                var mapObj = this;
+
+                if (mapObj.settings.view.displayFormat.plotStyle != 'rastermap')
+                { return; }
+
+                if ($.browser.msie && parseInt($.browser.version) < 9)
+                {
+                    alert("Raster Heat Maps do not work in your current browser. Please "
+                        + "upgrade to IE9, use Google Chrome or Mozilla Firefox. Thank you.");
+                    return;
+                }
+
+                mapObj._heatLayer = h337.create(
+                    { "element":mapObj.currentDom, "radius":25, "visible":true });
+
+                // Step 1: Enter data into the CANVAS heatmap.
+                var graphics = _.select(mapObj.map.graphics.graphics, function(graphic)
+                { return graphic.symbol instanceof esri.symbol.SimpleMarkerSymbol
+                    || graphic.symbol instanceof esri.symbol.PictureMarkerSymbol; });
+
+/*
+                // TODO: This is stored code for tweaking the cosmetic relative heat strength
+                // per point.
+                var totalHeat = mapObj._byView[mapObj.settings.view.id]._quantityCol
+                    && mapObj._byView[mapObj.settings.view.id]._quantityCol.aggregates.sum;
+                if (!totalHeat)
+                { totalHeat = mapObj.settings.view.totalRows; }
+*/
+                mapObj._heatLayerMax = mapObj._heatLayer.store.max = 50; //totalHeat / 10;
+
+                _.each(graphics, function(graphic)
+                {
+                    graphic.show();
+                    if (!graphic.getDojoShape()) { graphic.hide(); return; }
+                    var offset = $(graphic.getDojoShape().rawNode).offset();
+                    var bcOffs = $(mapObj.currentDom).offset();
+                    offset.top -= bcOffs.top;
+                    offset.top += graphic.symbol.size / 2 + 4;
+                    offset.left += graphic.symbol.size / 2 + 4;
+                    addHeat(mapObj, offset, graphic);
+                    graphic.hide();
+                    if (graphic.textGraphic) { graphic.textGraphic.hide(); }
+                });
+
+                // Step 2: Convert CANVAS heatmap into Image/PNG.
+                var heatData = mapObj._heatLayer.getImageData();
+                var $heatLayer = $(mapObj._heatLayer.get('canvas'));
+                var topOffset = $heatLayer.offset().top;
+                mapObj._heatLayer.clear();
+                $heatLayer.remove();
+                delete mapObj._heatLayer;
+                mapObj._needsCanvasHeatmapConversion = true;
+
+                // Step 3: Convert IMG tiles into CANVAS tiles: Map + Heat.
+                mapObj._convertHeatmap = function(layer)
+                {
+                    if (mapObj._lastHeatData == heatData) { return; }
+                    if (!mapObj._needsCanvasHeatmapConversion) { return; }
+
+                    var srcHeatmap = new Image();
+                    var $layer = $(layer._div);
+                    srcHeatmap.onload = function(){
+                        $layer.find("canvas").remove();
+                        $layer.children().each(function()
+                        {
+                            var esriTile = this;
+                            var $esriTile = $(esriTile);
+
+                            var position = $esriTile.position();
+
+                            var tile = document.createElement("canvas");
+                            tile.setAttribute('id', esriTile.id+"_canvas");
+                            tile.width = esriTile.width;
+                            tile.height = esriTile.height;
+                            $(tile).css({ position: 'absolute', top: position.top+'px',
+                                                                left: position.left+'px' });
+                            var tileCtx = tile.getContext("2d");
+                            tileCtx.drawImage(esriTile, 0, 0);
+
+                            position = $esriTile.offset();
+                            position.top -= topOffset;
+                            var width = esriTile.width;
+                            var height = esriTile.height;
+                            var dx = 0; var dy = 0;
+                            if (position.left < 0)
+                            {
+                                width += position.left;
+                                dx = -position.left;
+                                position.left = 0;
+                            }
+                            if (position.top < 0)
+                            {
+                                height += position.top;
+                                dy = -position.top;
+                                position.top = 0;
+                            }
+
+                            $esriTile.css('visibility', 'hidden');
+                            if (width < 0 || height < 0) { return; }
+                            tileCtx.drawImage(srcHeatmap, position.left, position.top,
+                                                          width, height,
+                                                          dx, dy, width, height);
+
+                            $layer.append(tile);
+                        });
+                        mapObj._needsCanvasHeatmapConversion = false;
+                    };
+                    srcHeatmap.src = mapObj._lastHeatData = heatData;
+                };
+                if (mapObj._mapLoaded && !mapObj._updatingLayer)
+                { mapObj._convertHeatmap(mapObj._topmostLayer); }
             },
 
             hideLayers: function()
@@ -785,6 +920,41 @@
     var isWebMercatorSpatialReference = function(thing)
     {
         return _.include([102100, 102113, 3857], thing.spatialReference.wkid);
+    };
+
+    var addHeat = function(mapObj, offset, graphic)
+    {
+        if (!graphic.isCluster)
+        {
+            mapObj._heatLayer.store.addDataPoint(offset.left, offset.top, graphic.heatStrength);
+            return;
+        }
+
+        var scatterShot;
+        var strength;
+        var count = graphic.heatStrength;
+
+        // Count:   100 -> Size: 50.
+        // Count:  1000 -> Size: 60.
+        // Count: 10000 -> Size: 70.
+        if (count < 20)
+        { scatterShot = 1; }
+        else if (count <= 100)
+        { scatterShot = 20 + Math.floor(0.3 * count); }
+        else if (count <= 1000)
+        { scatterShot = 50 + Math.floor(0.01 * count); }
+        else
+        { scatterShot = 60 + Math.floor((Math.log(count)
+                                 /Math.log(10) - 4) * 10); }
+
+        strength = Math.floor(count / scatterShot);
+
+        _(scatterShot).times(function()
+        {
+            var left = offset.left + (Math.random() * 50) - 25;
+            var top  = offset.top  + (Math.random() * 50) - 25;
+            mapObj._heatLayer.store.addDataPoint(left, top, strength);
+        });
     };
 
 })(jQuery);

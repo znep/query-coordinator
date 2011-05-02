@@ -131,6 +131,10 @@ $(function()
             addColumnCallback: function(parId)
             {
                 datasetPageNS.sidebar.show('edit.addColumn', {parentId: parId});
+            },
+            cellCommentsCallback: blist.sidebarHidden.feed.cellFeed ? null : function(rowId, tcId)
+            {
+                datasetPageNS.sidebar.show('cellFeed', {rowId: rowId, tableColumnId: tcId}, true);
             }
         },
         page: { defaultRowId: blist.initialRowId }
@@ -171,6 +175,10 @@ $(function()
             {
                 $opts.css('background-color', $activeLink.css('background-color'))
                 $activeLink.closest('li').addClass('active');
+            }
+            else
+            {
+                $opts.css('background-color', 'transparent').find('li').removeClass('active');
             }
         },
         onSidebarClosed: function()

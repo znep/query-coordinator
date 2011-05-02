@@ -613,6 +613,10 @@
     blist.sidebarHidden.about = <%= @view.is_href? || @view.is_blobby? &&
       @view.display.display_type == 'link' %>;
 
+    <%# Feed %>
+    blist.sidebarHidden.feed = blist.sidebarHidden.feed || {};
+    blist.sidebarHidden.feed.cellFeed = <%= !@view.module_enabled?('cell_comments') %>;
+
     <%# Please see admin_controller#add_custom_layer for explanation %>
     <%# custom_layer_config = Configuration.find_by_type('custom_layers', true).first
         custom_layers = {}

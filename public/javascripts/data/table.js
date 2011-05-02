@@ -393,6 +393,7 @@
         };
 
         var $activeContainer;
+        var $commentLink;
 
         var hideActiveCell = function(activeOnly)
         {
@@ -421,9 +422,10 @@
                 return;
             }
 
+            var column;
             if ($activeCells && $activeCells.length > 0)
             {
-                var column = getColumn($activeCells[0]);
+                column = getColumn($activeCells[0]);
                 var type = column ? column.renderType : null;
                 // If this is an inline edit type in edit mode, then just
                 // launch the editor instead of select
@@ -480,6 +482,8 @@
                 return;
             }
 
+            if (!column) { column = getColumn($activeCells[0]); }
+
             // Clone the cell
             var $activeExpand = $activeCells.clone();
             $activeExpand.width('auto').height('auto');
@@ -487,8 +491,23 @@
             $activeContainer.empty();
             $activeContainer.append($activeExpand);
 
+            // Don't show comment link for bnb cols
+            if (options.cellComments && !!column && !!row && $.isBlank(column.parentColumn))
+            {
+                if (!$commentLink)
+                {
+                    $commentLink = $('<a href="#Comments" class="commentLink feed" ' +
+                        'title="View comments for this cell"><span class="icon"></span></a>');
+                }
+                $commentLink.data('rowId', row.id);
+                $commentLink.data('tableColumnId', column.tableColumnId);
+                $activeContainer.append($commentLink);
+            }
+            else { $commentLink = null; }
+            $activeContainer.toggleClass('comments-active', $activeCells.hasClass('comments-active'));
+
             // Size the expander
-            sizeCellOverlay($activeContainer, $activeExpand, $activeCells);
+            sizeCellOverlay($activeContainer, $activeExpand, $activeCells, $commentLink);
             // Position the expander
             positionCellOverlay($activeContainer, $activeCells);
 
@@ -953,7 +972,7 @@
             }
 
             // Size the expander
-            var rc = sizeCellOverlay($hotExpander, $wrap, $hotCell, true);
+            var rc = sizeCellOverlay($hotExpander, $wrap, $hotCell, null, true);
             // Position the expander
             rc = $.extend(rc, positionCellOverlay($hotExpander,
                 $hotCell, true, rc));
@@ -1055,7 +1074,7 @@
             return ({left: left, top: top});
         };
 
-        var sizeCellOverlay = function($container, $expandCells, $refCells,
+        var sizeCellOverlay = function($container, $expandCells, $refCells, $extraItems,
             animate)
         {
             $expandCells.eq(0).addClass('blist-first');
@@ -1068,7 +1087,7 @@
             var refWidth = 0;
             var refHeight = 0;
             var minWidths = [];
-            $refCells.each(function()
+            $refCells.add($extraItems).each(function()
             {
                 var $t = $(this);
                 var w = $t.outerWidth();
@@ -1122,6 +1141,15 @@
             rc.height -= outerPady;
 
             var availW = rc.width;
+            if (!$.isBlank($extraItems))
+            {
+                $extraItems.each(function()
+                {
+                    var $t = $(this);
+                    availW -= $t.outerWidth();
+                });
+            }
+
             var countedScroll = false;
             var extraPadding = 0;
             $expandCells.each(function(i)
@@ -1706,6 +1734,9 @@
             if ($target.closest('.action-item').length > 0) { return; }
             if ($target.parents().index($outside) < 0) { return; }
 
+            if ($target.hasClass('commentLink') || $target.parent().hasClass('commentLink'))
+            { return; }
+
             var cell = findCell(event);
             var editMode = false;
             if (!isDisabled && cellNav && cell !== null && cell == clickCell)
@@ -1732,6 +1763,17 @@
             }
 
             if (!isDisabled && cellNav && !editMode) { expandActiveCell(); }
+        };
+
+        var onClick = function(event)
+        {
+            var $t = $(event.target);
+            if ($t.hasClass('commentLink') || $t.parent().hasClass('commentLink'))
+            {
+                event.preventDefault();
+                var $a = $t.closest('.commentLink');
+                $a.trigger('comment_click', [$a.data('rowId'), $a.data('tableColumnId')]);
+            }
         };
 
         var onDoubleClick = function(event)
@@ -2060,6 +2102,7 @@
             .addClass('blist-table')
             .mousedown(onMouseDown)
             .mousemove(onMouseMove)
+            .click(onClick)
             .dblclick(onDoubleClick)
             .html(headerStr);
 
@@ -2447,6 +2490,9 @@
         var rowNumberColumn;
         var rowHandleColumn;
 
+        // Rendering
+        var customCellClasses = {};
+
         /**
          * Create rendering code for a series of columns.
          */
@@ -2698,6 +2744,9 @@
                         " + \"' href='#drillDown'></a>") : '';
                     var cellDrillStyle = mcol.format.drill_down ? ' drill-td' : '';
 
+                    var specialClasses = "(' ' + ((cellClasses[row.id] || {})" +
+                        mcol.dataLookupExpr + " || []).join(' '))";
+
                     renderer = "(!row" + childLookup + ".invalid" +
                         (mcol.directLookupExpr || mcol.dataLookupExpr) + " ? " +
                         renderer("row" + mcol.dataLookupExpr, false, mcol,
@@ -2716,6 +2765,7 @@
                             childLookup + ".error" +
                             (mcol.directLookupExpr || mcol.dataLookupExpr) +
                             " ? \" error\" : \"\") + " +
+                            specialClasses + " + " +
                             "\"'>"+ drillDown + "\", " +
                             renderer + ", \"</div>\""
                     );
@@ -2920,7 +2970,8 @@
                     canAdd: model.canAdd(),
                     canDelete: model.canDelete(),
                     canEdit: canEdit()
-                }
+                },
+                cellClasses: customCellClasses
             };
 
             // Create default column rendering
@@ -4156,12 +4207,34 @@
             {
                 finishColumnChoose();
             };
+
+            this.setCommentCell = function(rowId, tcId)
+            {
+                customCellClasses[rowId] = customCellClasses[rowId] || {};
+                var colId = model.view.columnForTCID(tcId).id;
+                customCellClasses[rowId][colId] = customCellClasses[rowId][colId] || [];
+                customCellClasses[rowId][colId].push('comments-active');
+                updateRows([{id: rowId}]);
+            };
+
+            this.clearCommentCell = function(rowId, tcId)
+            {
+                var colId = model.view.columnForTCID(tcId).id;
+                if ($.isBlank(customCellClasses[rowId]) ||
+                    $.isBlank(customCellClasses[rowId][colId]))
+                { return; }
+
+                customCellClasses[rowId][colId] = _.without(customCellClasses[rowId][colId],
+                    'comments-active');
+                updateRows([{id: rowId}]);
+            };
         };
 
         $this.data('blistTableObj', new blistTableObj());
     };
 
     var blistTableDefaults = {
+        cellComments: false,
         cellExpandEnabled: true,
         cellNav: false,
         columnDrag: false,

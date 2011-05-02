@@ -329,8 +329,10 @@
             ]
           }
         ]
-        + showCallback: function that is called when a sidebar pane is shown;
-            args: ($pane)
+        + showCallback: function that is called when this sidebar pane is shown;
+            args: (sidebarObj, $pane)
+        + hideCallback: function that is called when this sidebar pane is hidden;
+            args: (sidebarObj, $pane)
         + finishCallback: function that is called when a finish button is clicked;
             args: (sidebarObj, data, $pane, value)
         + finishBlock: specifies final actions
@@ -683,6 +685,9 @@
             {
                 var sidebarObj = this;
 
+                // Hide any other open panes
+                hideCurrentPane(sidebarObj);
+
                 if (!$.isBlank(data)) { sidebarObj.addPane(paneName, data, true); }
 
                 if (!sidebarObj._ready)
@@ -690,9 +695,6 @@
                     sidebarObj._paneToShow = paneName;
                     return;
                 }
-
-                // Hide any other open panes
-                hideCurrentPane(sidebarObj);
 
                 var nameParts = getConfigNames(paneName);
                 var outerConfig = paneConfigs[nameParts.primary];
@@ -1304,13 +1306,17 @@
         }
 
         // Reset pane on closing
-        if (sidebarObj._paneData[sidebarObj._currentPane] !=
-            sidebarObj._savedPaneData[sidebarObj._currentPane])
+        if (!_.isEqual(sidebarObj._paneData[sidebarObj._currentPane],
+            sidebarObj._savedPaneData[sidebarObj._currentPane]))
         {
-            sidebarObj.addPane(getFullConfigName(sidebarObj._currentOuterPane,
-                        sidebarObj._currentPane),
-                sidebarObj._savedPaneData[sidebarObj._currentPane]);
+            sidebarObj._dirtyPanes[sidebarObj._currentPane] = true;
         }
+
+        var outerConfig = paneConfigs[sidebarObj._currentOuterPane];
+        var config = ((outerConfig || {}).subPanes || {})[sidebarObj._currentPane] ||
+            paneConfigs[sidebarObj._currentPane];
+        if (_.isFunction((config || {}).hideCallback))
+        { config.hideCallback(sidebarObj, sidebarObj.$currentPane()); }
 
         sidebarObj._currentOuterPane = null;
         sidebarObj._currentPane = null;
@@ -2884,11 +2890,11 @@
             if (!$.isBlank(cs.template))
             {
                 $sc.addClass(cs.template).append($.renderTemplate(cs.template,
-                        cs.data || {}, cs.directive));
+                        $.extend({}, data, cs.data), cs.directive));
             }
 
             if (_.isFunction(cs.callback))
-            { cs.callback($sc, sidebarObj); }
+            { cs.callback($sc, sidebarObj, data); }
         });
 
         $pane.find('form').submit(function(e)

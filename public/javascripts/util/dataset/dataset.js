@@ -67,6 +67,9 @@ this.Dataset = ServerModel.extend({
 
         this._origObj = this.cleanCopy();
 
+        this._commentCache = {};
+        this._commentByID = {};
+
         if (!$.isBlank(blist.snapshot) && blist.snapshot.takeSnapshot)
         {
             this.snapshotting = true;
@@ -849,29 +852,47 @@ this.Dataset = ServerModel.extend({
         this.makeRequest({url: '/views/' + this.id + '.json', params: params, type: 'POST'});
     },
 
-    getComments: function(callback)
+    _getCommentCacheKey: function(comment)
+    {
+        return $.isBlank(comment.rowId) ? this.id :
+            _.compact([comment.rowId, comment.tableColumnId]).join('_');
+    },
+
+    getComments: function(callback, rowId, tcId)
     {
         var ds = this;
-        if ($.isBlank(ds._comments))
+        var cacheId = ds._getCommentCacheKey({rowId: rowId, tableColumnId: tcId});
+        if ($.isBlank(ds._commentCache[cacheId]))
         {
             ds.makeRequest({url: '/views/' + ds.id + '/comments.json',
+                params: !$.isBlank(rowId) ? {r: rowId} : null,
                 type: 'GET', pageCache: true, success: function(comms)
                 {
-                    ds._comments = comms;
-                    callback(ds._comments);
+                    ds._commentCache[cacheId] = ds._commentCache[cacheId] || [];
+                    _.each(comms, function(c)
+                    {
+                        ds._commentByID[c.id] = c;
+                        var ccId = ds._getCommentCacheKey(c);
+                        ds._commentCache[ccId] = ds._commentCache[ccId] || [];
+                        ds._commentCache[ccId].push(c);
+                    });
+                    callback(ds._commentCache[cacheId]);
                 }});
         }
-        else { callback(ds._comments); }
+        else { callback(ds._commentCache[cacheId]); }
     },
 
     addComment: function(comment, successCallback, errorCallback)
     {
         var ds = this;
 
+        var cacheId = ds._getCommentCacheKey(comment);
         var addedComment = function(newCom)
         {
-            ds.numberOfComments++;
-            if (!$.isBlank(ds._comments)) { ds._comments.unshift(newCom); }
+            if ($.isBlank(newCom.rowId))
+            { ds.numberOfComments++; }
+            if (!$.isBlank(ds._commentCache[cacheId])) { ds._commentCache[cacheId].unshift(newCom); }
+            ds._commentByID[newCom.id] = newCom;
             if (_.isFunction(successCallback)) { successCallback(newCom); }
         };
 
@@ -884,8 +905,7 @@ this.Dataset = ServerModel.extend({
     {
         var ds = this;
 
-        var com = _.detect(ds._comments || [],
-            function(c) { return c.id == parseInt(commentId); });
+        var com = ds._commentByID[commentId];
         if (!$.isBlank(com))
         {
             com.flags = com.flags || [];
@@ -902,8 +922,7 @@ this.Dataset = ServerModel.extend({
     {
         var ds = this;
 
-        var com = _.detect(ds._comments || [],
-            function(c) { return c.id == parseInt(commentId); });
+        var com = ds._commentByID[commentId];
         if (!$.isBlank(com))
         {
             if ((com.currentUserRating || {}).thumbUp !== thumbsUp)

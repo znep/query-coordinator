@@ -482,6 +482,9 @@ div.blist-table-edit-container.mode-expand
   color: #888888
   font-style: italic
 
+.blist-td.comments-active
+  background-color: adjust-color($cell_feed_color, $lightness: +45%)
+
 div.blist-tdh
   color: #999999
 
@@ -555,17 +558,35 @@ div.blist-table .blist-tr-open .blist-td.blist-tdh.blist-cell-selected,
 div.blist-table .blist-tr.blist-tr-noMatch
   background-color: #eeeeee
 
-div.blist-table-active-container .blist-td
-  border-bottom: none
-  padding: 3px
+div.blist-table-active-container
+  .commentLink
+    @include dataset-sidebar-icons
+    background-color: #91abcc
+    display: inline-block
+    height: 100%
+    width: 19px
+    .icon
+      margin:
+        left: 3px
+        top: 4px
+  &.comments-active
+    border-color: adjust-color($cell_feed_color, $lightness: +20%)
+    .commentLink
+      background-color: adjust-color($cell_feed_color, $lightness: +20%)
 
-  &.blist-first
-    border-left: none
-    padding-left: 3px
-  &.blist-last
-    padding-right: 3px
-  &.blist-opener
-    background-position: -2px 0
+  .blist-td
+    border-bottom: none
+    padding: 3px
+
+    &.comments-active
+      background-color: #ffffff
+    &.blist-first
+      border-left: none
+      padding-left: 3px
+    &.blist-last
+      padding-right: 3px
+    &.blist-opener
+      background-position: -2px 0
 
 div.blist-table-edit-container
   background-color: #ffffff

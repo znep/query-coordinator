@@ -255,6 +255,7 @@ javascripts:
     - public/javascripts/controls/grid-sidebar/api.js
     - public/javascripts/controls/grid-sidebar/append-replace.js
     - public/javascripts/controls/grid-sidebar/calendar-create.js
+    - public/javascripts/controls/grid-sidebar/cell-feed.js
     - public/javascripts/controls/grid-sidebar/chart-create.js
     - public/javascripts/controls/grid-sidebar/column-order.js
     - public/javascripts/controls/grid-sidebar/column-properties.js

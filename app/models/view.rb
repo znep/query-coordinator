@@ -427,6 +427,11 @@ class View < Model
     return @blobs
   end
 
+  def has_importable_type?
+    return false if !is_href?
+    return blobs.any? {|b| ['csv', 'tsv', 'xls', 'xlsx', 'esri', 'kml', 'kmz'].include?(b['type'].downcase)}
+  end
+
   def domain_icon_href
     cname = federated? ? domainCName : CurrentDomain.cname
     "/api/domains/#{cname}/icons/smallIcon"

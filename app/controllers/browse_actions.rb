@@ -89,9 +89,11 @@ protected
 
   def process_browse!(options = {})
     browse_params = (options[:force_default]) ? {} : params
+    cfg = CurrentDomain.configuration('catalog')
+    cfg_props = cfg ? cfg.properties : Hashie::Mash.new
 
     @port = request.port
-    @limit ||= 10
+    @limit ||= cfg_props.results_per_page || 10
     @disable ||= {}
     @opts ||= {}
     @opts.merge!({:limit => @limit, :page => (browse_params[:page] || 1).to_i})
@@ -101,6 +103,18 @@ protected
     @default_params.each { |k, v| browse_params[k] = v if browse_params[k].nil? }
     @no_results_text ||= 'No Results'
     @base_url ||= request.path
+
+    if cfg_props.facet_dependencies
+      @strip_params = {}
+      cfg_props.facet_dependencies.each do |dep|
+        dep.each do |member|
+          dep.each do |subm|
+            @strip_params[subm.to_sym] ||= {}
+            @strip_params[subm.to_sym][member] = true
+          end
+        end
+      end
+    end
 
     cfs = custom_facets
     if cfs

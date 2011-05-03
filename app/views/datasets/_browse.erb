@@ -59,8 +59,8 @@
         <%- facet[:options].each do |f| -%>
         <%- cp = @params.reject {|p, v| p.to_s == 'page' ||
               p.to_s == 'no_default'} -%>
-        <%- if @strip_params && @strip_params[facet[:param]]
-              cp.delete_if { |k, v| @strip_params[facet[:param]][k] }
+        <%- if @strip_params && @strip_params[facet[:param].to_sym]
+              cp.delete_if { |k, v| @strip_params[facet[:param].to_sym][k.to_sym] }
             end -%>
         <%- cp[facet[:param]] = f[:value] -%>
         <li><a href="<%= @base_url + '?' + cp.to_param %>"

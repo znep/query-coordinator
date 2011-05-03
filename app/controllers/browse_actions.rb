@@ -111,7 +111,7 @@ protected
         dep.each do |member|
           dep.each do |subm|
             @strip_params[subm.to_sym] ||= {}
-            @strip_params[subm.to_sym][member] = true
+            @strip_params[subm.to_sym][member.to_sym] = true
           end
         end
       end

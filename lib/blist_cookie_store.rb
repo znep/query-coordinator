@@ -146,17 +146,7 @@ class BlistCookieStore
     def load_core_session(env)
       request = Rack::Request.new(env)
       cookie_data = request.cookies[@key]
-      core_data, session_data = CGI.unescape(cookie_data).gsub('"', '').split('||') if cookie_data
-
-      if core_data.present?
-        # Screw you, Commons Codec. Now that we're using a nice, URL-safe encoding,
-        # it appears that the codec doesn't properly pad the Base64 text to be a
-        # multiple of 4 characters.
-        extra_equals_necessary = (4 - (core_data.length % 4)) % 4
-        return Base64.decode64(core_data + ('=' * extra_equals_necessary))
-      else
-        return nil
-      end
+      return ::CoreSession.unmangle_core_session_from_cookie(cookie_data)
     end
 
     def extract_session_id(env)

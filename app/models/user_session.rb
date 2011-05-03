@@ -115,8 +115,9 @@ class UserSession
     elsif !cookies['remember_token'].blank?
       response = post_cookie_authentication
       if response.is_a?(Net::HTTPSuccess)
+        expiration = UserSession.expiration_from_core_response(response)
         user = User.parse(response.body)
-        create_core_session_credentials(user)
+        create_core_session_credentials(user, expiration)
         self.new_session = false
         cookies['logged_in'] = true
         UserSession.update_current_user(user, core_session)
@@ -124,6 +125,19 @@ class UserSession
     end
 
     return user
+  end
+
+  def self.expiration_from_core_response(response)
+    if response.is_a?(Net::HTTPSuccess)
+      response.get_fields('set-cookie').each do |cookie_header|
+        if match = /\b_blist_session_id=([A-Za-z0-9%\-|]+)/.match(cookie_header)
+          core_data = ::CoreSession.unmangle_core_session_from_cookie(match[1])
+          expiration_data = core_data.split[1].to_i
+          return expiration_data - Time.now.to_i
+        end
+      end
+    end
+    return 15.minutes
   end
 
   # Obtain a UserSession based on an RpxAuthentication object
@@ -164,8 +178,9 @@ class UserSession
     result = false
     response = post_core_authentication
     if response.is_a?(Net::HTTPSuccess)
+      expiration = UserSession.expiration_from_core_response(response)
       user = User.parse(response.body)
-      create_core_session_credentials(user)
+      create_core_session_credentials(user, expiration)
 
       # Plumb the cookie from the core server back to the user's browser
       response.get_fields('set-cookie').each do |cookie_header|
@@ -250,9 +265,9 @@ private
     end
   end
 
-  def create_core_session_credentials(user)
+  def create_core_session_credentials(user, expiration=15.minutes)
     core_session.user_id = user.data['id']
-    core_session.expiration = Time.now + 6.hours
+    core_session.expiration = Time.now + expiration
     core_session.salt = Digest::SHA1.hexdigest("--#{Time.now.to_s}--#{user.id}--")[0,12]
   end
 

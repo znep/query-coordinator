@@ -271,9 +271,10 @@
       <%- end -%>
     </div>
 
-    <%- if @view_count > 0 && !@disable[:pagination] -%>
-    <%= create_pagination(@view_count, @limit,
-      @opts[:page], @base_url + '?' + @params.to_param, 'button') %>
+    <%- if @view_count > 0 -%>
+      <%= create_pagination(@view_count, @limit,
+      @opts[:page], @base_url + '?' + @params.to_param, 'button') unless @disable[:pagination] %>
+      <div class="resultCount"><%= @view_count %> total results</div>
     <%- end -%>
   </div>
 

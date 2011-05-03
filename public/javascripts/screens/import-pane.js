@@ -447,6 +447,15 @@ var validateAll = function()
                 'in a dataset cannot share the same name.');
         }
     });
+
+    // validate name isn't "tags" (error)
+    if (names.tags !== undefined)
+    {
+        // wow, dumbest error ever.
+        addValidationError(null, 'error', '<strong>' + $.capitalize($.wordify(names.tags.length)) +
+            '</strong> of your columns are named &ldquo;tags&rdquo;. Columns may not be named ' +
+            '&ldquo;tags&rdquo;.');
+    }
     
     // validate name missing (error)
     var emptyNameColumns = _.flatten(_.select(names, function(columns, name) { return $.isBlank(name.trim()); }));

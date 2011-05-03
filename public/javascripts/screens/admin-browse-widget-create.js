@@ -138,15 +138,7 @@ var catalogNS = {
     }
 };
 
-_.each([
-{
-    name: 'filter',
-    priority: 1,
-    title: 'Filter',
-    subtitle: 'Choose the default filters',
-    noReset: true,
-    dataSource: catalogNS.widgetDataSource,
-    sections: [
+var filterSections = [
     {
         title: 'Search', name: 'search',
         fields: [
@@ -182,7 +174,34 @@ _.each([
         {   text: 'Show Topics', name: 'facets.topic',
             type: 'checkbox' }
         ]
-    }]
+    }];
+
+if (blist.publish.customFacets)
+{
+    filterSections = filterSections.concat(_.map(blist.publish.customFacets, function (cf)
+    {
+        return {
+            title: cf.title, name: cf.singular_description,
+            fields: [
+            {   text: cf.title, name: 'defaults.' + cf.param, prompt: null,
+                type: 'select',
+                options: catalogNS.anyValueHack(cf.options)},
+            {   text: 'Show ' + cf.title, name: 'facets.' + cf.singular_description,
+                type: 'checkbox' }
+            ]
+        };
+    }));
+}
+
+_.each([
+{
+    name: 'filter',
+    priority: 1,
+    title: 'Filter',
+    subtitle: 'Choose the default filters',
+    noReset: true,
+    dataSource: catalogNS.widgetDataSource,
+    sections: filterSections
 },
 {
     name: 'advanced',

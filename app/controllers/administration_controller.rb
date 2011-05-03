@@ -43,6 +43,7 @@ class AdministrationController < ApplicationController
       escaped = CGI.escapeHTML(t.name)
       { :text => escaped, :value => escaped }
     end
+    @custom_facets = custom_facets()
     @widget_width  = 750
     @widget_height = 550
     @embed_base    = url_for(:controller => 'browse', :action => 'embed')

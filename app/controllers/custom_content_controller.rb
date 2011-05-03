@@ -23,8 +23,6 @@ private
     return nil unless config
 
     page_config = config.properties.pages[config_name]
-    return nil unless page_config
-
     return page_config
   end
 
@@ -39,8 +37,9 @@ private
       unless config.properties.nil?
         @default_params = config.properties.default_params if config.properties.default_params
         @title = config.properties.catalog_title if config.properties.catalog_title
+        @suppressed_facets = config.properties.suppressed_facets if config.properties.suppressed_facets
       end
-      @suppress_dataset_creation = true
+      @suppress_dataset_creation = true # just always suppress this, no reason not to.
 
       process_browse!
       return true

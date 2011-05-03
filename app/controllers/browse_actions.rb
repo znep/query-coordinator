@@ -178,6 +178,10 @@ protected
     ]
     @facets = @facets.compact.flatten
 
+    if @suppressed_facets.is_a? Array
+      @facets.select!{ |facet| !(@suppressed_facets.include? facet[:singular_description]) }
+    end
+
     @sort_opts ||= @@default_browse_sort_opts
 
     if @view_results.nil?

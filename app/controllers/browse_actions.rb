@@ -93,7 +93,7 @@ protected
     cfg_props = cfg ? cfg.properties : Hashie::Mash.new
 
     @port = request.port
-    @limit ||= cfg_props.results_per_page || 10
+    @limit ||= (cfg_props.results_per_page ? cfg_props.results_per_page.to_i : 10)
     @disable ||= {}
     @opts ||= {}
     @opts.merge!({:limit => @limit, :page => (browse_params[:page] || 1).to_i})

@@ -40,6 +40,7 @@ private
         @default_params = config.properties.default_params if config.properties.default_params
         @title = config.properties.catalog_title if config.properties.catalog_title
       end
+      @suppress_dataset_creation = true
 
       process_browse!
       return true

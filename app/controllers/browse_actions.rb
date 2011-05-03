@@ -97,7 +97,8 @@ protected
     @disable ||= {}
     @opts ||= {}
     @opts.merge!({:limit => @limit, :page => (browse_params[:page] || 1).to_i})
-    @params = browse_params.reject {|k, v| k.to_s == 'controller' || k.to_s == 'action'}
+    @ignore_params ||= ['controller', 'action']
+    @params = browse_params.reject {|k, v| @ignore_params.include? k.to_s}
     @default_params ||= {}
     @default_params.delete(params[:no_default].to_sym) if !params[:no_default].nil?
     @default_params.each { |k, v| browse_params[k] = v if browse_params[k].nil? }
@@ -191,7 +192,7 @@ protected
         f.sourceDomainCName != CurrentDomain.cname }.
         length > 0 if @use_federations.nil?
 
-    @title = get_title(@params, @opts, @facets)
+    @title ||= get_title(@params, @opts, @facets)
   end
 
   @@default_browse_sort_opts = [

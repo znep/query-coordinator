@@ -3,6 +3,7 @@ class BrowseController < ApplicationController
   include BrowseActions
 
   def show
+    @suppress_dataset_creation = true
     process_browse!
   end
 

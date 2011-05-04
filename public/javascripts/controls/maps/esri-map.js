@@ -361,7 +361,11 @@
                 var yadj = (extent.ymax - extent.ymin) * 0.05;
 
                 if (mapObj.settings.view.displayFormat.viewport)
-                { mapObj.setViewport(mapObj.settings.view.displayFormat.viewport); }
+                {
+                    mapObj.setViewport(mapObj.settings.view.displayFormat.viewport);
+                    if (_.isEmpty(mapObj.settings.view.query))
+                    { mapObj.updateRowsByViewport(); }
+                }
                 else if (xadj == 0 || yadj == 0)
                 {
                     mapObj.map.centerAndZoom(extent.getCenter(),

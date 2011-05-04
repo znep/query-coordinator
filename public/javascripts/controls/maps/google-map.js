@@ -219,7 +219,11 @@
                 { google.maps.event.removeListener(mapObj._viewportListener); }
 
                 if (mapObj.settings.view.displayFormat.viewport)
-                { mapObj.setViewport(mapObj.settings.view.displayFormat.viewport); }
+                {
+                    mapObj.setViewport(mapObj.settings.view.displayFormat.viewport);
+                    if (_.isEmpty(mapObj.settings.view.query))
+                    { mapObj.updateRowsByViewport(null, true); }
+                }
                 else if (mapObj._boundsCounts > 1 ||
                     mapObj.settings.view.displayFormat.heatmap)
                 { mapObj.map.fitBounds(mapObj._bounds); }

@@ -308,8 +308,17 @@
                                                  /Math.log(10) - 4) * 10); }
                     };
 
+                var cluster_icon = '/images/map_cluster_';
+                var size;
+                if (cluster.count < 100)
+                { cluster_icon += 'small.png'; size = 37; }
+                else if (cluster.count < 1000)
+                { cluster_icon += 'med.png';   size = 45; }
+                else
+                { cluster_icon += 'large.png'; size = 65; }
+
                 var symbol = getESRIMapSymbol(mapObj, 'point',
-                    $.extend({}, details, { size: convertCountToSize(cluster.count) }));
+                    $.extend({}, details, { icon: cluster_icon, width: size, height: size }));
                 var geometry = esri.geometry.geographicToWebMercator(
                     new esri.geometry.Point({
                         x: cluster.point.lon,
@@ -319,9 +328,9 @@
 
                 var textSymbol = new esri.symbol.TextSymbol(cluster.count);
                 textSymbol.setFont(new esri.symbol.Font({ size: '12px',
-                    weight: esri.symbol.Font.WEIGHT_BOLD }));
+                    family: 'Arial', weight: esri.symbol.Font.WEIGHT_BOLD }));
                 textSymbol.setOffset(0, -3);
-                textSymbol.setColor($.rgbToHsv(symbol.color).v < 50 ? 'white' : 'black');
+                if (cluster.count >= 100)  { textSymbol.setColor('white'); }
                 var textGraphic = new esri.Graphic(geometry, textSymbol);
 
                 graphic.textGraphic = textGraphic;
@@ -483,6 +492,8 @@
             {
                 customization.icon = point.icon;
                 customization.key = point.icon;
+                if (customization.width || customization.height)
+                { customization.key += customization.width+'x'+customization.height; }
                 customization.type = 'picture';
                 return customization;
             }
@@ -515,13 +526,17 @@
             var key = customization.key;
 
             mapObj._esriSymbol[key] =
-                new esri.symbol.PictureMarkerSymbol(customization.icon, 10, 10);
-            var image = new Image();
-            image.onload = function() {
-                mapObj._esriSymbol[key].setHeight(image.height);
-                mapObj._esriSymbol[key].setWidth(image.width);
-            };
-            image.src = customization.icon;
+                new esri.symbol.PictureMarkerSymbol(customization.icon,
+                customization.width || 10, customization.height || 10);
+            if (!(customization.width && customization.height))
+            {
+                var image = new Image();
+                image.onload = function() {
+                    mapObj._esriSymbol[key].setHeight(image.height);
+                    mapObj._esriSymbol[key].setWidth(image.width);
+                };
+                image.src = customization.icon;
+            }
 
             return mapObj._esriSymbol[key];
         };

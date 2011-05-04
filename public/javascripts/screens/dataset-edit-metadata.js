@@ -30,20 +30,6 @@
             }
     });
 
-    // custom metadata validation
-    $form.find(".customRequired").each(function()
-    {
-        $(this)
-            .find('input[type="text"]')
-                .rules('add', {
-                    required: {
-                        depends: function(element) {
-                            return $(element).is(':visible');
-                        }
-                    }
-                });
-    });
-
     var toggleFunction = $('html').hasClass('ie7') ?
         'toggle' : 'slideToggle';
     $('.toggleFieldsetLink').click(function(event)

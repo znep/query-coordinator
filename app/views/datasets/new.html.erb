@@ -206,35 +206,8 @@
               </div>
             </div>
 
-            <div class="customMetadata">
-              <%- (CurrentDomain.custom_dataset_metadata || []).each do |fieldset| -%>
-                <div class="customFieldsetWrapper">
-                  <h2>
-                    <a href="#Toggle" class="toggleFieldsetLink expander expanded">
-                      <span class="icon"></span>
-                      <%= fieldset.name %>
-                    </a>
-                  </h2>
-
-                  <div class="customFieldset">
-                    <%- (fieldset.fields || []).each do |field| -%>
-                      <%- required   = field['required'].present?
-                          private    = field['private'].present?
-                          md_field   = private ? 'privateMetadata' : 'metadata' -%>
-                      <div class="line clearfix<%= ' customRequired' if required %>">
-                        <label for="view_<%= md_field %>_custom_fields_<%= fieldset.name + "_" + field.name %>"
-                          class="<%= " required" if required %><%= " private" if private %>">
-                          <%= field.name %></label>
-                        <%= text_field_tag("view[#{md_field}][custom_fields][#{fieldset.name}][#{field.name}]", '') %>
-                        <%- if field['private'].present? -%>
-                          <div class="additionalHelp">This field has been marked private by your organization and is not publicly viewable</div>
-                        <%- end -%>
-                      </div>
-                    <%- end -%>
-                  </div>
-                </div>
-              <%- end -%>
-            </div>
+            <%= render :partial => 'metadata', :locals =>
+                {:meta_fields => nil, :fieldsets => CurrentDomain.custom_dataset_metadata || []} %>
 
             <div class="privacyMetadata">
               <h2>Privacy &amp; Security</h2>

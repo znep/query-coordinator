@@ -81,69 +81,76 @@
       <%= text_field_tag("view[attributionLink]", @view.attributionLink, :title => "Enter Web Address", :class => "textPrompt") %>
     </div>
 
-   <%- if (!@view.data['northWest'].nil?) -%>
+    <%= render :partial => 'metadata', :locals =>
+        {:meta_fields => @view.merged_metadata['custom_fields'], :fieldsets => merge_custom_metadata(@view)} %>
 
-   <h2>Spatial Extent</h2>
-    <div class="line clearfix">
-      <label for="view_northWest_lat">Northwest Latitude</label>
-      <%= text_field_tag 'view[northWest[lat]]', (@view.data['northWest'] || {})['lat'], :disabled => true, :title => 'Northwest Latitude', :name=> 'textPrompt'%>
-    </div>
-    <div class="line clearfix">
-      <label for="view_northWest_long">Northwest Longitude</label>
-      <%= text_field_tag 'view[northWest[long]]', (@view.data['northWest'] || {})['long'], :disabled => true, :title => 'Northwest Longitude', :name=> 'textPrompt'%>
-    </div>
-    <div class="line clearfix">
-      <label for="view_southEast_lat">Southeast Latitude</label>
-      <%= text_field_tag 'view[southEast[lat]]', (@view.data['southEast'] || {})['lat'], :disabled => true, :title => 'Southeast Latitude', :name=> 'textPrompt'%>
-    </div>
-    <div class="line clearfix">
-      <label for="view_southEast_long">Southeast Longitude</label>
-      <%= text_field_tag 'view[southEast[long]]', (@view.data['southEast'] || {})['long'], :disabled => true, :title => 'Southeast Longitude', :name=> 'textPrompt'%>
-    </div>
+    <%- if (!@view.data['northWest'].nil?) -%>
 
-   <%- end -%>
+    <h2>Spatial Extent</h2>
+     <div class="line clearfix">
+       <label for="view_northWest_lat">Northwest Latitude</label>
+       <%= text_field_tag 'view[northWest[lat]]', (@view.data['northWest'] || {})['lat'],
+           :disabled => true, :title => 'Northwest Latitude', :name=> 'textPrompt'%>
+     </div>
+     <div class="line clearfix">
+       <label for="view_northWest_long">Northwest Longitude</label>
+       <%= text_field_tag 'view[northWest[long]]', (@view.data['northWest'] || {})['long'],
+           :disabled => true, :title => 'Northwest Longitude', :name=> 'textPrompt'%>
+     </div>
+     <div class="line clearfix">
+       <label for="view_southEast_lat">Southeast Latitude</label>
+       <%= text_field_tag 'view[southEast[lat]]', (@view.data['southEast'] || {})['lat'],
+           :disabled => true, :title => 'Southeast Latitude', :name=> 'textPrompt'%>
+     </div>
+     <div class="line clearfix">
+       <label for="view_southEast_long">Southeast Longitude</label>
+       <%= text_field_tag 'view[southEast[long]]', (@view.data['southEast'] || {})['long'],
+           :disabled => true, :title => 'Southeast Longitude', :name=> 'textPrompt'%>
+     </div>
 
-   <%- if @view.is_tabular? -%>
-   <h2>Semantics &amp; RDF</h2>
-    <div class="line clearfix">
-      <label for="view_metadata_rdfClass">Row Class</label>
-        <%= select_tag("view[metadata[rdfClass]]",
-              options_for_select(
-                RdfTerm.all_class_options,
-                h(@view.metadata.nil? || @view.metadata.rdfClass.nil? ? '' : @view.metadata.rdfClass)),
-              :hasCustomEdit => 1, :class => 'combo_button_edit' )
-        %>
-        <%= text_field_tag 'view[metadata[customRdfClass]]', @view.rdf_class, :name=>'view[metadata[customRdfClass]]',
-          :class => 'textValue hide combo_button_edit'
-        %>
-        <ul class="comboToggle actionButtons"><li><a>Custom</a></li></ul>
-    </div>
+    <%- end -%>
 
-    <div class="line clearfix">
-      <label for="view_metadata_rdfSubject">Subject Column</label>
-      <%= select_tag("view[metadata[rdfSubject]]",
-          rdf_subject_select_options(
-          @view.columns,
-          h(@view.metadata.nil? || @view.metadata.rdfSubject.nil? ? '' : @view.metadata.rdfSubject)))
-      %>
-    </div>
+    <%- if @view.is_tabular? -%>
+    <h2>Semantics &amp; RDF</h2>
+     <div class="line clearfix">
+       <label for="view_metadata_rdfClass">Row Class</label>
+         <%= select_tag("view[metadata[rdfClass]]",
+               options_for_select(
+                 RdfTerm.all_class_options,
+                 h(@view.metadata.nil? || @view.metadata.rdfClass.nil? ? '' : @view.metadata.rdfClass)),
+               :hasCustomEdit => 1, :class => 'combo_button_edit' )
+         %>
+         <%= text_field_tag 'view[metadata[customRdfClass]]', @view.rdf_class, :name=>'view[metadata[customRdfClass]]',
+           :class => 'textValue hide combo_button_edit'
+         %>
+         <ul class="comboToggle actionButtons"><li><a>Custom</a></li></ul>
+     </div>
 
-   <h2>Permanent Links</h2>
-    <div class="line clearfix">
-      <label for="view_resourceName">Resource Name</label>
-      <%= text_field_tag("view[resourceName]", @view.resourceName, :title => "Enter a resource name", :class => "textPrompt") %>
-    </div>
+     <div class="line clearfix">
+       <label for="view_metadata_rdfSubject">Subject Column</label>
+       <%= select_tag("view[metadata[rdfSubject]]",
+           rdf_subject_select_options(
+           @view.columns,
+           h(@view.metadata.nil? || @view.metadata.rdfSubject.nil? ? '' : @view.metadata.rdfSubject)))
+       %>
+     </div>
 
-    <div class="line clearfix">
-      <label for="view_metadata_rowIdentifier">Row Identifier</label>
-      <%= select_tag("view[metadata[rowIdentifier]]",
-          rdf_subject_select_options(
-          @view.columns,
-          h(@view.metadata.nil? || @view.metadata.rowIdentifier.nil? ? '' : @view.metadata.rowIdentifier)))
-      %>
-    </div>
+    <h2>Permanent Links</h2>
+     <div class="line clearfix">
+       <label for="view_resourceName">Resource Name</label>
+       <%= text_field_tag("view[resourceName]", @view.resourceName, :title => "Enter a resource name", :class => "textPrompt") %>
+     </div>
 
-   <%- end -%>
+     <div class="line clearfix">
+       <label for="view_metadata_rowIdentifier">Row Identifier</label>
+       <%= select_tag("view[metadata[rowIdentifier]]",
+           rdf_subject_select_options(
+           @view.columns,
+           h(@view.metadata.nil? || @view.metadata.rowIdentifier.nil? ? '' : @view.metadata.rowIdentifier)))
+       %>
+     </div>
+
+    <%- end -%>
 
     <h2>Attachments</h2>
 
@@ -178,40 +185,6 @@
         <span class="uploadAttachmentThrobber"></span>
       </div>
     </div>
-
-    <%- meta_fields = @view.merged_metadata['custom_fields'] -%>
-    <%- (merge_custom_metadata(@view)).each do |fieldset| -%>
-      <%- next if fieldset.hidden -%>
-      <div class="customFieldsetWrapper">
-        <h2>
-          <a href="#Toggle" class="toggleFieldsetLink expander expanded">
-            <span class="icon"></span>
-            <%= fieldset.name %>
-          </a>
-        </h2>
-        <%- existing_fields = (meta_fields &&
-              meta_fields.assoc(fieldset.name)) ?
-              meta_fields.assoc(fieldset.name)[1] : {} -%>
-
-        <div class="customFieldset">
-          <%- (fieldset.fields || []).each do |field| -%>
-            <%- required       = field['required'].present?
-                md_field       = field['private'].present? ? 'privateMetadata' : 'metadata'
-                existing_value = existing_fields[field.name] || '' -%>
-
-            <div class="line clearfix<%= ' customRequired' if required %>">
-              <label for="view_<%= md_field %>_custom_fields_<%= fieldset.name + "_" + field.name %>"
-                <%= " class='required'" if required %>>
-                <%= field.name %></label>
-              <%= text_field_tag("view[#{md_field}][custom_fields][#{fieldset.name}][#{field.name}]", existing_value) %>
-              <%- if field['private'].present? -%>
-                <div class="additionalHelp">This field has been marked private by your organization and is not publicly viewable</div>
-              <%- end -%>
-            </div>
-          <%- end -%>
-        </div>
-      </div>
-    <%- end -%>
 
     <h2>Contact Information</h2>
     <div class="line clearfix">

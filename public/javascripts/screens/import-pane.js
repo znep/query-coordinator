@@ -957,6 +957,7 @@ var handleColumn = function(column)
 };
 
 importNS.importingPaneConfig = {
+    disableButtons: [ 'cancel', 'prev', 'next' ],
     onActivate: function($pane, paneConfig, state, command)
     {
         // don't do anything here if we land here twice somehow

@@ -915,13 +915,17 @@
             rootCondition.children = _.without(rootCondition.children,
                 ($filter.data('unifiedFilter-condition') || {}).condition);
 
-            if ($filter.siblings().length === 1)
+            // Sometimes the filter loses its parent before it gets here
+            if ($filter.parent().length > 0)
             {
-                // this is the last filter.
-                $pane.find('.noFilterConditionsText').show();
-            }
+                if ($filter.siblings().length === 1)
+                {
+                    // this is the last filter.
+                    $pane.find('.noFilterConditionsText').show();
+                }
 
-            $filter.remove();
+                $filter.remove();
+            }
 
             if (skipParseFilters !== true)
             {

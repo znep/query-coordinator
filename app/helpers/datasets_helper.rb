@@ -44,7 +44,7 @@ module DatasetsHelper
       'href' => "http://www.facebook.com/share.php?u=#{h(seo_path)}"},
 
     {'text' => 'Twitter',
-      'href' => "http://www.twitter.com/home?status=#{view.tweet}"}]
+      'href' => "http://twitter.com/?status=#{view.tweet}"}]
   end
 
   # Create a drop down menu of formatting fonts

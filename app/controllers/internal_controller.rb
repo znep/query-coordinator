@@ -26,6 +26,7 @@ class InternalController < ApplicationController
   def show_domain
     @domain = Domain.find(params[:id])
     @modules = AccountModule.find().sort {|a,b| a.name <=> b.name}
+    @configs = Configuration.find_by_type(nil, false, params[:domain_id], false)
   end
 
   def show_config
@@ -115,7 +116,8 @@ class InternalController < ApplicationController
       parent_id = params[:config][:parentId]
       parent_id = nil if parent_id.blank?
       config = Configuration.create({'name' => conf_name,
-        'default' => false, 'type' => 'site_theme', 'parentId' => parent_id,
+        'default' => params[:config][:default].present?,
+        'type' => params[:config][:type], 'parentId' => parent_id,
         'domainCName' => params[:domain_id]})
     rescue CoreServer::CoreServerError => e
       flash.now[:error] = e.error_message

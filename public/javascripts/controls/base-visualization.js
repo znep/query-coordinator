@@ -550,6 +550,7 @@
                     };
 
                 if (vizObj.settings.view.displayType == 'map'
+                    && vizObj.settings.view.displayFormat.plotStyle == 'point'
                     && view.totalRows > vizObj._maxRows)
                 { views[index] = clusterFunction; }
                 else

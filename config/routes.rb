@@ -420,6 +420,11 @@ ActionController::Routing::Routes.draw do |map|
   # Seattle Data-Policy hack
   map.connect '/data-policy', :controller => "data_policy", :action => "index"
 
+  # Custom pages, catalogs, facets
+  map.connect '/page/:page_name', :controller => "custom_content", :action => "show_page"
+  map.connect '/catalog/:page_name', :controller => "custom_content", :action => "show_page"
+  map.connect '/facet/:facet_name/:facet_value', :controller => "custom_content", :action => "show_facet"
+
   # Non-production environments get a special controller for test actions
   unless Rails.env.production?
     map.connect '/test_page/:action', :controller => 'test_pages'

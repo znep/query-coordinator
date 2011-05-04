@@ -81,23 +81,54 @@ protected
     }
   end
 
+  def custom_facets
+    config = CurrentDomain.configuration('catalog')
+    return nil if config.nil?
+    return config.properties.facets
+  end
+
   def process_browse!(options = {})
     browse_params = (options[:force_default]) ? {} : params
+    cfg = CurrentDomain.configuration('catalog')
+    cfg_props = cfg ? cfg.properties : Hashie::Mash.new
 
     @port = request.port
-    @limit ||= 10
+    @limit ||= (cfg_props.results_per_page ? cfg_props.results_per_page.to_i : 10)
     @disable ||= {}
     @opts ||= {}
     @opts.merge!({:limit => @limit, :page => (browse_params[:page] || 1).to_i})
-    @params = browse_params.reject {|k, v| k.to_s == 'controller' || k.to_s == 'action'}
+    @ignore_params ||= ['controller', 'action']
+    @params = browse_params.reject {|k, v| @ignore_params.include? k.to_s}
     @default_params ||= {}
     @default_params.delete(params[:no_default].to_sym) if !params[:no_default].nil?
     @default_params.each { |k, v| browse_params[k] = v if browse_params[k].nil? }
     @no_results_text ||= 'No Results'
     @base_url ||= request.path
 
+    if cfg_props.facet_dependencies
+      @strip_params = {}
+      cfg_props.facet_dependencies.each do |dep|
+        dep.each do |member|
+          dep.each do |subm|
+            @strip_params[subm.to_sym] ||= {}
+            @strip_params[subm.to_sym][member.to_sym] = true
+          end
+        end
+      end
+    end
+
+    cfs = custom_facets
+    if cfs
+      cfs.each do |facet|
+        if browse_params[facet.param]
+          @opts[:metadata_tag] ||= []
+          @opts[:metadata_tag] << facet.param + ":" + browse_params[facet.param]
+        end
+      end
+    end
+
     # Simple params; these are copied directly to opts
-    [:sortBy, :category, :tags, :moderation].each do |p|
+    [:sortBy, :category, :tags, :moderation, :q].each do |p|
       if !browse_params[p].nil?
         @opts[p] = browse_params[p]
       end
@@ -133,10 +164,6 @@ protected
                           end
     end
 
-    if !browse_params[:q].nil?
-      @opts[:q] = browse_params[:q]
-    end
-
     if !browse_params[:extents].nil?
       extents = browse_params[:extents].split(',')
       if extents.length == 4
@@ -149,11 +176,16 @@ protected
 
     @facets ||= [
       view_types_facet,
+      cfs,
       categories_facet,
       topics_facet,
       extents_facet
     ]
-    @facets.compact!
+    @facets = @facets.compact.flatten
+
+    if @suppressed_facets.is_a? Array
+      @facets.select!{ |facet| !(@suppressed_facets.include? facet[:singular_description]) }
+    end
 
     @sort_opts ||= @@default_browse_sort_opts
 
@@ -169,7 +201,7 @@ protected
         f.sourceDomainCName != CurrentDomain.cname }.
         length > 0 if @use_federations.nil?
 
-    @title = get_title(@params, @opts, @facets)
+    @title ||= get_title(@params, @opts, @facets)
   end
 
   @@default_browse_sort_opts = [

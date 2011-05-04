@@ -87,6 +87,11 @@ $.urlParam = function(url, name, value)
     }
 };
 
+$.toParam = function(hash)
+{
+    return _.map(hash, function(v, k) { return escape(k) + '=' + escape(v); }).join('&');
+};
+
 $.escapeQuotes = function(text)
 {
     if (typeof text !== 'string') { return text; }

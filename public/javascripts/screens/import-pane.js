@@ -38,6 +38,8 @@ var scan,
 // structs
 var importTypes = {
     text: 'text',
+    email: 'text',
+    url: 'text',
     number: 'number',
     money: 'number',
     percent: 'number',
@@ -155,16 +157,34 @@ var showSubsection = function($line, section)
     var $section = $line.find('> .detailsLine > .' + section);
 
     if (!$section.hasChildren())
-        $section.append($.renderTemplate(section, undefined, undefined, true));
-
-    var column = $line.data('column');
-    if (column.suggestion == 'location')
     {
-        _.each(column, function(originalColumn, field)
+        // we haven't shown this section before; clone the template and example textboxes
+        $section.append($.renderTemplate(section, undefined, undefined, true));
+        $section.find('.textPrompt').example(function() { return $(this).attr('title'); });
+
+        // give radios unique names so they don't conflict
+        var id = _.uniqueId();
+        var $radios = $section.find(':radio');
+        $radios.each(function()
         {
-            $section.find('.location' + $.capitalize(field) + 'Column')
-                .val(originalColumn.id).trigger('change'); // and again here
+            // make radios unique
+            var $this = $(this);
+            $this.attr('name', $this.attr('name') + id);
         });
+
+        // only the first time,populate location stuff from model
+        var column = $line.data('column');
+        if (!_.isUndefined(column) && (column.suggestion == 'location'))
+        {
+            _.each(column, function(originalColumn, field)
+            {
+                $section.find('.location' + $.capitalize(field) + 'Column')
+                    .val(originalColumn.id).trigger('change'); // and again here
+            });
+        }
+
+        // uniform it
+        $radios.add($section.find('select')).uniform();
     }
 
     $section[isShown ? 'slideDown' : 'show']();
@@ -186,7 +206,7 @@ var updateLines = function($elems)
         var $line = $(this);
 
         var column;
-        var oldColumn = $line.data('column');
+        var oldColumn = $line.data('column') || {};
 
         var importColumn = {
             name: $line.find('.columnName').val(),
@@ -207,7 +227,7 @@ var updateLines = function($elems)
         var getColumn = function(selectValue)
         {
             if ($.isBlank(selectValue))
-                return null;
+                return undefined;
 
             var result = columns[parseInt(selectValue)];
 
@@ -427,6 +447,15 @@ var validateAll = function()
                 'in a dataset cannot share the same name.');
         }
     });
+
+    // validate name isn't "tags" (error)
+    if (names.tags !== undefined)
+    {
+        // wow, dumbest error ever.
+        addValidationError(null, 'error', '<strong>' + $.capitalize($.wordify(names.tags.length)) +
+            '</strong> of your columns are named &ldquo;tags&rdquo;. Columns may not be named ' +
+            '&ldquo;tags&rdquo;.');
+    }
     
     // validate name missing (error)
     var emptyNameColumns = _.flatten(_.select(names, function(columns, name) { return $.isBlank(name.trim()); }));
@@ -511,7 +540,6 @@ var newLine = function(column, overrides)
 
     // grab that thing we just did
     var $line = $columnsList.children(':last');
-    $line.find('.textPrompt').example(function() { return $(this).attr('title'); });
 
     // populate fields if we have a column
     if (!$.isBlank(column))
@@ -528,7 +556,7 @@ var newLine = function(column, overrides)
     }
 
     // styling
-    (function() { $line.find('select, :radio').uniform(); })();
+    $line.find('select, :radio').uniform();
 
     return $line;
 };
@@ -701,14 +729,14 @@ var wireEvents = function()
     });
 
     // show the static text line if necessary
-    $pane.delegate('.columnsList li .compositeColumnSourceSelect', 'click', function(event)
+    $pane.delegate('.columnsList li .compositeColumnSourceSelect', 'change', function(event)
     {
         var $this = $(this);
         var $columnSourceLine = $this.closest('li');
 
         $columnSourceLine.find('.staticSourceText').toggle($this.val() == '[static]');
 
-        updateLines($line.closest('li.importColumn'));
+        updateLines($columnSourceLine.closest('li.importColumn'));
         validateAll();
     });
 
@@ -754,7 +782,7 @@ var wireEvents = function()
     });
 
     // autoselect radio when editing associated option
-    $pane.delegate('.optionGroup select, .optionGroup input', 'change', function(event)
+    $pane.delegate('.optionGroup select, .optionGroup input', 'focus', function(event)
     {
         var $this = $(this);
         if ($this.is('select'))
@@ -929,6 +957,7 @@ var handleColumn = function(column)
 };
 
 importNS.importingPaneConfig = {
+    disableButtons: [ 'cancel', 'prev', 'next' ],
     onActivate: function($pane, paneConfig, state, command)
     {
         // don't do anything here if we land here twice somehow

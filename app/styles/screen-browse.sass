@@ -49,10 +49,13 @@
           color: $color_links_normal
           font-size: 1.1em
           line-height: 13px
-          .icon
+          .icon, .customIcon
             display: inline-block
             float: left
             margin-right: 0.5em
+          .customIcon
+            height: 13px
+            width: 13px
           &.active
             color: #333333
             cursor: auto
@@ -360,6 +363,13 @@
         .ie7 &
           margin-right: 0.5em
 
+    .resultCount
+      color: #999
+      font-size: 1.2em
+      margin: 0.7em
+        bottom: 0
+      text-align: center
+
   &.inContainer
     padding: 0
       top: 3em
@@ -406,6 +416,8 @@
   margin-left: -30em
   width: 60em
   .optionsContent
+    max-height: 35em
+    overflow: auto
     text-align: center
     a
       color: $color_links_normal

@@ -292,7 +292,7 @@
         <dl class="sectionContent">
           <%- (fieldset.fields || []).each do |field| -%>
             <%- unless existing_fields[field.name].blank? -%>
-              <dt><%= field.name %></dt>
+              <dt><%= field.displayName || field.name %></dt>
               <dd><span class="wrap">
                   <%= raw(auto_link(h(existing_fields[field.name])|| '',
                       :html => { :rel => 'nofollow external' })) %>

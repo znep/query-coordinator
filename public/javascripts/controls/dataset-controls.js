@@ -13,7 +13,7 @@ blist.datasetControls.hookUpShareMenu = function(view, $menu, overrides, hideEma
             { text: 'Facebook', className: 'facebook', rel: 'external',
               href: 'http://www.facebook.com/share.php?u=' + seoPath },
             { text: 'Twitter', className: 'twitter', rel: 'external',
-              href: 'http://www.twitter.com/home?status=' + tweet + shortPath },
+              href: 'http://twitter.com/?status=' + tweet + shortPath },
             { text: 'Email', className: 'email', href: '#email',
                 onlyIf: !hideEmail}
         ]

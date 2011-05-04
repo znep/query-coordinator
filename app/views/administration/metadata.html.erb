@@ -27,6 +27,8 @@
       </div>
     <%- else -%>
       <%- @metadata.each_with_index do |fieldset, fs_index| -%>
+        <%# TODO: Don't skip these %>
+        <%- next if fieldset.hidden -%>
         <% form_button({ :action => 'delete_metadata_fieldset', :fieldset => fs_index }, 'Remove', 
              {:method => :delete}, {:class => 'button removeFieldsetButton remove'}) %>
         <h3 class="fieldsetTitle"><%= fieldset['name'] %></h3>
@@ -47,15 +49,15 @@
               <tbody>
                 <%- if fieldset['fields'].present? -%>
                   <%- fieldset['fields'].each_with_index do |field, index| -%>
-                    <%- required   = field['required'].present? -%>
-                    <%- privstatus = field['private'].present? -%>
+                    <%- required   = field['required'].present?
+                        privstatus = field['private'].present? -%>
                     <tr class="item<%= (required ? ' required' : '') + (privstatus ? ' private' : '') %>">
                       <td class="required">
                           <span class="requiredField"></span>
                       </td>
                       <td class="name">
                         <span class="cellInner">
-                          <%= field.name %>
+                          <%= field.displayName || field.name %>
                         </span>
                       </td>
                       <td class="actions">

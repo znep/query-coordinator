@@ -40,7 +40,7 @@
     <%- @facets.each do |facet| -%>
     <%- next if (facet[:options].nil? || facet[:options].length < 1) &&
           facet[:custom_content].nil? -%>
-    <div class="facetSection clearfix">
+    <div class="facetSection clearfix <%= facet[:param] %>">
       <h4 class="title"><%= facet[:title] %></h4>
       <%- if facet[:custom_content].nil? -%>
       <ul>
@@ -59,6 +59,9 @@
         <%- facet[:options].each do |f| -%>
         <%- cp = @params.reject {|p, v| p.to_s == 'page' ||
               p.to_s == 'no_default'} -%>
+        <%- if @strip_params && @strip_params[facet[:param].to_sym]
+              cp.delete_if { |k, v| @strip_params[facet[:param].to_sym][k.to_sym] }
+            end -%>
         <%- cp[facet[:param]] = f[:value] -%>
         <li><a href="<%= @base_url + '?' + cp.to_param %>"
           class="<%= f[:class] %> <%= @params[facet[:param]] == f[:value] ||
@@ -67,6 +70,8 @@
             'active' : '' %>">
           <%- if facet[:use_icon] -%>
           <span class="icon"></span>
+          <%- elsif f[:icon] -%>
+          <img class="customIcon" src="<%= theme_image_url(f[:icon]) %>" alt="icon" />
           <%- end -%>
           <%= f[:text] %>
         </a></li>
@@ -257,7 +262,7 @@
             </td>
             <td class="type type<%= v.display.type.capitalize %>"
               title="<%= v.display.name.capitalize %>">
-              <div class="icon"></div>
+              <a href="<%= v.href(@port) %>"><div class="icon"></div></a>
             </td>
           </tr>
           <%- end -%>
@@ -266,9 +271,10 @@
       <%- end -%>
     </div>
 
-    <%- if @view_count > 0 && !@disable[:pagination] -%>
-    <%= create_pagination(@view_count, @limit,
-      @opts[:page], @base_url + '?' + @params.to_param, 'button') %>
+    <%- if @view_count > 0 -%>
+      <%= create_pagination(@view_count, @limit,
+      @opts[:page], @base_url + '?' + @params.to_param, 'button') unless @disable[:pagination] %>
+      <div class="resultCount"><%= @view_count %> total results</div>
     <%- end -%>
   </div>
 

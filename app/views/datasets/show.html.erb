@@ -94,7 +94,7 @@
                 href="http://www.facebook.com/share.php?u=<%= CGI::escape("http://#{CurrentDomain.cname}#{@view.href}") %>">
             <span class="icon">Share on Facebook</span></a></li>
           <li><a class="twitter" rel="external" title="Share on Twitter"
-                href="http://www.twitter.com/home?status=<%= @view.tweet %>">
+                href="http://twitter.com/?status=<%= @view.tweet %>">
             <span class="icon">Share on Twitter</span></a></li>
           <%- if @view.has_right?('grant') || @view.is_public? -%>
             <li><a class="email" href="#email" title="Share via Email">

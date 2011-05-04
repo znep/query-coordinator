@@ -183,6 +183,7 @@
 
     <%- meta_fields = @view.merged_metadata['custom_fields'] -%>
     <%- (merge_custom_metadata(@view)).each do |fieldset| -%>
+      <%- next if fieldset.hidden -%>
       <div class="customFieldsetWrapper">
         <h2>
           <a href="#Toggle" class="toggleFieldsetLink expander expanded">

@@ -1003,9 +1003,14 @@ this.Dataset = ServerModel.extend({
         else { callback(ds._relatedViews); }
     },
 
-    redirectTo: function()
+    redirectTo: function(urlparams)
     {
-        window.location = this.url;
+        var qs = '';
+        if (!$.isBlank(urlparams))
+        {
+            qs = '?' + $.toParam(urlparams);
+        }
+        window.location = this.url + qs;
     },
 
     getSignature: function(successCallback, errorCallback)

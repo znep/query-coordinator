@@ -45,7 +45,7 @@
         sort {|a,b| a.default == b.default ?
           a.name.downcase <=> b.name.downcase :
           (a.default ? -1 : 1)} -%>
-      <h2>Property Configurations:</h2>
+      <h2>Theme Configurations:</h2>
       <% form_tag '/internal/orgs/' + @domain.organizationId.to_s +
         '/domains/' + @domain.cname + '/default_site_config' do %>
       <ul>
@@ -76,12 +76,33 @@
       <%- end -%>
       <% end %>
 
+      <h2>Other configurations</h2>
+      <ul>
+        <%- @configs.each do |conf| -%>
+        <%- next if conf.type == 'site_theme' -%>
+        <li<%= " class='isDefault'" if conf.default %>>
+        <a href='/internal/orgs/<%= @domain.organizationId
+          %>/domains/<%= @domain.cname %>/site_config/<%= conf.id %>'>
+          <%= conf.name %> (<%= conf.type %>)
+        </a>
+        </li>
+        <%- end -%>
+      </ul>
+
       <h2>Add Configurations:</h2>
       <% form_tag '/internal/orgs/' + @domain.organizationId.to_s +
         '/domains/' + @domain.cname + '/site_config' do %>
         <div class='line'>
           <label>Name</label>
           <input type='text' name='config[name]' />
+        </div>
+        <div class='line'>
+          <label>Type</label>
+          <input type='text' name='config[type]' value='site_theme' />
+        </div>
+        <div class='line'>
+          <label>Default?</label>
+          <input type='checkbox' name='config[default]' checked='checked' />
         </div>
         <div class='line'>
           <label>Parent Config</label>

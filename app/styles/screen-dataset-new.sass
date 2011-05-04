@@ -90,6 +90,7 @@
         display: none
 
     .uploadThrobber
+      clear: both
       display: none
       font-size: 1.1em
       margin-top: 2em
@@ -150,6 +151,7 @@
     max-height: 50em
     min-height: 20em
     padding-bottom: 2em
+    position: relative
     overflow-x: hidden
     overflow-y: auto
 
@@ -254,6 +256,9 @@
               div.optionGroup
                 margin-bottom: 0.2em
                 margin-left: 5.5em
+
+                > *
+                  @include ie7-inline-block
 
               > .uniform.selector
                 margin-bottom: 0.2em

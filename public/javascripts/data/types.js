@@ -1566,6 +1566,18 @@ blist.namespace.fetch('blist.data.types');
             isObject: false,
             alignment: alignment,
             filterable: false
+        },
+
+        list: {
+            title: 'List',
+            priority: 21,
+            createable: false,
+            renderGen: renderGenObject,
+            renderer: renderObject,
+            deleteable: false,
+            isObject: false,
+            alignment: alignment,
+            filterable: false
         }
     });
 

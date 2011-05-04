@@ -60,6 +60,10 @@
       padding: 1em
         left: 10em
       text-align: right
+      .ie7 &
+        // These would sit below dts in IE7, so you couldn't rate
+        position: relative
+        z-index: 1
 
       .wrap
         display: inline-block

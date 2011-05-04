@@ -13,6 +13,19 @@ class MetricQueue
     end
   end
 
+  def push_metric(entityId, metricName, count = 1)
+    push_request({
+      :timestamp => Time.now.to_i * 1000,
+      :entityId => entityId,
+      :metrics => {
+        metricName => {
+          :value => count,
+          :type => :aggregate
+        }
+      }
+    })
+  end
+
   def push_request(data)
     @@requests << { :uri => QUEUE_NAME, :data => data.to_json, :params => STOMP_PARAMS }
     flush_requests if @@requests.size >= BATCH_REQUESTS_BY

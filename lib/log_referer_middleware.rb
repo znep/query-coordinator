@@ -25,18 +25,7 @@ class LogRefererMiddleware
       if env['HTTP_ACCEPT'] && env['HTTP_ACCEPT'].include?("text/html")
         # If the request is for an html page, then log a pageview event.
         logger.info "Attempting to log a page view to the #{domain} domain."
-        @queue.push_request(
-          {
-            "timestamp" => Time.now.to_i * 1000, 
-            "entityId" => domain, 
-            "metrics" => {
-              "page-views" => {
-                "value" => 1,
-                "type" => "aggregate"
-              }
-            }
-          }
-        )
+        @queue.push_metric(domain, 'page-views')
       end
 
       if ref.blank?
@@ -65,32 +54,8 @@ class LogRefererMiddleware
             path += "?#{uri.query}"
           end
 
-          @queue.push_request(
-            {
-              "timestamp" => Time.now.to_i * 1000, 
-              "entityId" => "referrer-hosts-#{domain}", 
-              "metrics" => {
-                "referrer-#{host}" => {
-                  "value" => 1,
-                  "type" => "aggregate"
-                }
-              }
-            }
-          )
-
-          @queue.push_request(
-            {
-              "timestamp" => Time.now.to_i * 1000, 
-              "entityId" => "referrer-paths-#{domain}-#{host}", 
-              "metrics" => {
-                "path-#{path}" => {
-                  "value" => 1,
-                  "type" => "aggregate"
-                }
-              }
-            }
-          )
-
+          @queue.push_metric("referrer-hosts-#{domain}", "referrer-#{host}")
+          @queue.push_metric("referrer-paths-#{domain}-#{host}", "path-#{path}")
           # TODO: We should emit to a CSV file for backup too?
         end
       end

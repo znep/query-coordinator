@@ -266,10 +266,8 @@ this.Dataset = ServerModel.extend({
         var ds = this;
         // If any updated key exists but is set to invalid, then we can't save
         // it on this dataset; so make minorUpdate false
-        _.each(newDS, function(v, k)
-        {
-            if (ds._unsaveableKeys[k]) { minorUpdate = false; }
-        });
+        if (!_.isEqual(newDS, ds._cleanUnsaveable(newDS)))
+        { minorUpdate = false; }
         this._markTemporary(minorUpdate);
         this._update(newDS, fullUpdate, fullUpdate);
     },
@@ -1180,7 +1178,7 @@ this.Dataset = ServerModel.extend({
     },
 
     // Publishing
-    makeUnpublishedCopy: function(successCallback, pendingCallback)
+    makeUnpublishedCopy: function(successCallback, pendingCallback, errorCallback)
     {
         var ds = this;
         if (ds.isDefault())
@@ -1192,6 +1190,7 @@ this.Dataset = ServerModel.extend({
                     ds.copyPending = true;
                     if (_.isFunction(pendingCallback)) { pendingCallback(); }
                 },
+                error: errorCallback,
                 success: function(r)
                 {
                     delete ds.copyPending;
@@ -1210,15 +1209,16 @@ this.Dataset = ServerModel.extend({
                     ds._finishRequest();
                     if (_.isFunction(successCallback))
                     { successCallback.apply(ds, arguments); }
-                }, pendingCallback);
+                }, pendingCallback, errorCallback);
             });
         }
     },
 
-    publish: function(successCallback)
+    publish: function(successCallback, errorCallback)
     {
         var ds = this;
         ds.makeRequest({url: '/api/views/' + ds.id + '/publication.json', type: 'POST',
+            error: errorCallback,
             success: function(r)
             {
                 var pubDS = new Dataset(r);
@@ -1433,10 +1433,6 @@ this.Dataset = ServerModel.extend({
         ds.shortUrl = ds._generateShortUrl(true);
         ds.apiUrl = ds._generateApiUrl();
         ds.domainUrl = ds._generateBaseUrl(ds.domainCName);
-
-        // Can't save name, columns, or queries on published datasets
-        ds._unsaveableKeys.columns = ds._unsaveableKeys.query = ds._unsaveableKeys.name =
-            ds.isPublished() && ds.isDefault();
     },
 
     _update: function(newDS, forceFull, updateColOrder, masterUpdate)
@@ -2487,6 +2483,29 @@ this.Dataset = ServerModel.extend({
         callback(response);
     },
 
+    _cleanUnsaveable: function(md)
+    {
+        var ds = this;
+        var adjMD = md;
+        if (ds.isPublished() && ds.isDefault())
+        {
+            adjMD = $.extend(true, {}, md);
+            // Can't save name, columns, or any query but a single sort-by on published datasets
+            delete adjMD.columns;
+            delete adjMD.name;
+
+            // If they give us a blank query obj, don't do unnecessary modifications
+            if (!$.isBlank(adjMD.query) && _.isEmpty(adjMD.query))
+            { /* nothing */ }
+            else if ($.subKeyDefined(adjMD, 'query.orderBys') && adjMD.query.orderBys.length < 2)
+            {
+                adjMD.query = {orderBys: adjMD.query.orderBys};
+            }
+            else { delete adjMD.query; }
+        }
+        return adjMD;
+    },
+
     _validKeys: {
         attribution: true,
         attributionLink: true,
@@ -2511,9 +2530,6 @@ this.Dataset = ServerModel.extend({
         searchString: true,
         tags: true,
         termsAndConditions: true
-    },
-
-    _unsaveableKeys: {
     }
 
 });
@@ -2676,9 +2692,8 @@ function getDisplayName(ds)
 
 function cleanViewForSave(ds, allowedKeys)
 {
-    var ak = allowedKeys || ds._validKeys;
-    _.each(ds._unsaveableKeys, function(v, k) { if (v) { delete ak[k]; } });
-    var dsCopy = ds.cleanCopy(ak);
+    var dsCopy = ds.cleanCopy(allowedKeys);
+    dsCopy = ds._cleanUnsaveable(dsCopy);
 
     if (!$.isBlank(dsCopy.query))
     { dsCopy.query.filterCondition = ds.cleanFilters(true); }

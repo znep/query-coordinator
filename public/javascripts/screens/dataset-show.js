@@ -117,7 +117,7 @@ $(function()
     datasetPageNS.rtManager = blist.$container.renderTypeManager({
         view: blist.dataset,
         defaultType: defRen,
-        editEnabled: blist.dataset.isUnpublished(),
+        editEnabled: blist.dataset.isUnpublished() || blist.dataset.viewType != 'tabular',
         columnEditEnabled: blist.dataset.isUnpublished() || blist.dataset.isPublished() &&
             !blist.dataset.isDefault(),
         common: {
@@ -381,7 +381,16 @@ $(function()
     $('#infoBox .publish').click(function(e)
     {
         e.preventDefault();
-        blist.dataset.publish(function(pubDS) { pubDS.redirectTo(); });
+        blist.dataset.publish(function(pubDS) { pubDS.redirectTo(); },
+            function()
+            {
+                $('#infoBox #datasetName').socrataTip({content: $.tag({tagName: 'p',
+                    'class': 'errorMessage',
+                    contents: ['There was an error publishing your dataset. Please ',
+                        {tagName: 'a', href: 'http://support.socrata.com', rel: 'external',
+                        contents: ['contact Socrata support']}]}),
+                    showSpike: false, trigger: 'now'});
+            });
     });
 
     blist.$container.bind('attempted_edit', function(e)
@@ -419,6 +428,15 @@ $(function()
                     $('.editAlert').find('.editPublished, .editMessage').addClass('hide');
                     $('.editAlert').find('.copyingMessage').removeClass('hide');
                     wasPending = true;
+                },
+                function()
+                {
+                    if (wasPending)
+                    {
+                        datasetPageNS.sidebar.show('edit');
+                    }
+                    $('.editAlert').find('.errorMessage').removeClass('hide');
+                    $('.editAlert').find('.copyingMessage, .editPublished, .editMessage').addClass('hide');
                 });
             }
         });

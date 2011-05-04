@@ -18,7 +18,10 @@ class RdfTerm < Model
     if @@allClassOptions.nil?
       @@allClassOptions = []
       self.all_classes.each do |m|
-        @@allClassOptions.push([m.namespace + ': ' + (m.displayName.empty? ? m.name : m.displayName), m.CName]);
+        @@allClassOptions.push([
+          (m.namespace.blank? ? '' : (m.namespace + ': ')) +
+            (m.displayName.empty? ? m.name : m.displayName),
+          m.CName]);
       end
     end
 

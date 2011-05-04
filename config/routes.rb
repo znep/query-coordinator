@@ -313,6 +313,12 @@ ActionController::Routing::Routes.draw do |map|
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
       :category => /(\w|-)+/}
 
+  # Redirect bounce for metric snatching
+  map.metric_redirect 'download/:id/:type', :controller => 'datasets',
+    :action => 'download',
+    :requirements => {:id => UID_REGEXP},
+    :conditions => {:method => :get}
+
   # Short URLs
   map.connect 'blob/:id', :controller => 'datasets',
     :action => 'blob',

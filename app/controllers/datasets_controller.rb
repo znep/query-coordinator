@@ -349,6 +349,18 @@ class DatasetsController < ApplicationController
     end
   end
 
+  def download
+    view = get_view(params[:id])
+    return if view.nil?
+
+    type = CGI.unescape(params[:type])
+    blob = view.blobs.detect {|b| b['type'] == type}
+    render_404 if blob.nil? || blob['href'].blank?
+
+    MetricQueue.instance.push_metric(params[:id], 'files-downloaded')
+    redirect_to blob['href']
+  end
+
 protected
   def get_view(id)
     begin

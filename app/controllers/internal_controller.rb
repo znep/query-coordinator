@@ -26,7 +26,7 @@ class InternalController < ApplicationController
   def show_domain
     @domain = Domain.find(params[:id])
     @modules = AccountModule.find().sort {|a,b| a.name <=> b.name}
-    @configs = Configuration.find_by_type(nil, false, params[:domain_id], false)
+    @configs = Configuration.find_by_type(nil, false, params[:id], false)
   end
 
   def show_config

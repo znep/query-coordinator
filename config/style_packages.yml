@@ -120,3 +120,5 @@ screen-videos-popup:
 html-styles:
 - table-core
 - dataset-grid
+canvas:
+- canvas

@@ -1,27 +1,7 @@
 <% content_for :head do %>
   <title><%= @page_config.title %> | <%= CurrentDomain.strings.site_title %></title>
+  <%= rendered_stylesheet_tag "canvas" %>
+  <link rel="stylesheet" type="text/css" href="/styles/<%= @stylesheet %>.css"/>
 <% end %>
 
-<%-
-  # well, this is going to be a weird erb file.
-
-  def recurse(config)
-    if config.is_a? Array
-      return config.map{ |config_item| recurse(config_item) || '' }.join
-    else
-      case config.type
-      when 'html'
-        # take the contents and just dump it in
-        return render :text => config.properties.content
-      when 'catalog'
-        # TODO: caching!
-        return render_browse
-      else
-        # find the html fragment that the type points at, and attempt to render it
-      end
-    end
-  end
-
--%>
-
-<%= raw recurse(@page_config.contents) %>
+<%= raw render_widget(@page_config.contents) %>

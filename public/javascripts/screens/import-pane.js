@@ -887,15 +887,20 @@ importNS.importColumnsPaneConfig = {
                 value: '[static]', label: '(Insert static text...)', 'class': 'special' }]))
         });
 
-        // add dropdowns to template
-        $('#templates .columnSourceCell').append($sourceDropDown);
-        $('#templates .columnSourcePlaceholder').each(function()
+        // add dropdowns to main template
+        $('#templates > .columnsListLine .columnSourceCell').empty().append($sourceDropDown);
+
+        // clone locations template and replace dropdowns
+        $('#templates > .locationDetails').remove();
+        var $locationTemplate = $('#templates > .locationDetailsOriginal').clone();
+        $locationTemplate.find('.columnSourcePlaceholder').each(function()
         {
             var $this = $(this);
             var $dropDown = $columnDropDown.clone();
             $this.replaceWith($dropDown);
             $dropDown.addClass($this.attr('data-class'));
         });
+        $locationTemplate.removeClass().addClass('locationDetails').appendTo('#templates');
 
         // throw in our default set of suggestions
         addDefaultColumns();

@@ -514,6 +514,7 @@ class AdministrationController < ApplicationController
 
   def create_category
     new_category = params[:new_category]
+    new_category_parent = params[:new_category_parent]
 
     if new_category.blank?
       flash[:error] = "Please enter a name to create a new category"
@@ -531,8 +532,14 @@ class AdministrationController < ApplicationController
       return redirect_to metadata_administration_path
     end
 
-    # Create a property with name: category, value: true
-    config.create_property(new_category.titleize_if_necessary, true)
+    # Create a property with
+    # name: category, value: { parent: parent_category, enabled: true }
+    # where parent is optional
+    prop_val = { :enabled => true }
+    if !new_category_parent.blank?
+      prop_val[:parent] = new_category_parent.titleize_if_necessary
+    end
+    config.create_property(new_category.titleize_if_necessary, prop_val)
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
 

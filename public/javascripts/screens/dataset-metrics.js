@@ -2,9 +2,22 @@
 
 $(function()
 {
-    var screen = $('#analyticsDataContainer').metricsScreen($.extend({
-        urlBase: '/api/views/' + blist.metrics.viewID +  '/metrics.json',
-        chartSections:  [
+    // Shared between tabular and non-tabular
+    var viewSummary = {id: 'summaryViews', displayName: 'Views', summary: {
+             plus: 'visits',  verbPhrase: 'pages viewed',
+             verbPhraseSingular: 'page viewed' }};
+
+    var downloadsAction = (blist.dataset.viewType == 'href' ||
+        blist.dataset.viewType == 'blob') ?  'files-downloaded' : 'downloads';
+
+    var downloadsSummary = {id: 'summaryDownloads', displayName: 'Downloads',
+            summary: { plus: downloadsAction, verbPhrase: 'downloads',
+                       verbPhraseSingular: 'download' }};
+
+    var charts, summaries, details;
+    if (blist.dataset.viewType == 'tabular')
+    {
+        charts = [
             {id: 'performanceChart',
                 loading: blist.metrics.chartLoading,
                 children: [
@@ -16,36 +29,39 @@ $(function()
                               {method: 'rows-loaded-widget',  label: 'SDP'}]}
                 ]
             }
-        ],
-        detailSections: [
+        ];
+        summaries = [
+            viewSummary,
+            downloadsSummary,
+            {id: 'summaryEmbeds', displayName: 'Embeds', summary: {
+             plus: 'embeds', verbPhrase: 'embeds', verbPhraseSingular: 'embed' }}
+        ];
+        details = [
             {id: 'detailFilters',   displayName: 'Filters',  detail: 'filters-created'},
             {id: 'detailCharts',    displayName: 'Charts',   detail: 'charts-created'},
             {id: 'detailMaps',      displayName: 'Maps',     detail: 'maps-created'},
             {id: 'detailComments',  displayName: 'Comments', detail: 'comments-created'}
-        ],
-        summarySections: [
-            {
-                id: 'summaryViews',     displayName: 'Views',
-                summary: {
-                    plus: 'visits',  verbPhrase: 'pages viewed',
-                    verbPhraseSingular: 'page viewed'
-                }
-            },
-            {
-                id: 'summaryDownloads', displayName: 'Downloads',
-                summary: {
-                    plus: 'downloads', verbPhrase: 'downloads',
-                    verbPhraseSingular: 'download'
-                }
-            },
-            {
-                id: 'summaryEmbeds',    displayName: 'Embeds',
-                summary: {
-                    plus: 'embeds', verbPhrase: 'embeds',
-                    verbPhraseSingular: 'embed'
-                }
+        ];
+    }
+    else
+    {
+        charts = [
+            {id: 'performanceChart',
+                loading: blist.metrics.chartLoading,
+                children: [ {text: 'Views Loaded', series: [{method: 'view-loaded'}]} ]
             }
-        ],
+        ];
+        summaries = [
+            viewSummary,
+            downloadsSummary
+        ];
+    }
+
+    var screen = $('#analyticsDataContainer').metricsScreen($.extend({
+        urlBase: '/api/views/' + blist.metrics.viewID +  '/metrics.json',
+        chartSections:  charts,
+        detailSections: details,
+        summarySections: summaries,
         topListSections: [
             {
                 id: 'topViews', displayName: 'Top Embeds',
@@ -64,4 +80,3 @@ $(function()
         metricsScreen: screen
     });
 });
-

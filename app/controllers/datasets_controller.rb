@@ -1,6 +1,6 @@
 class DatasetsController < ApplicationController
   include DatasetsHelper
-  skip_before_filter :require_user, :only => [:show, :blob, :alt, :widget_preview, :contact, :math_validate, :form_success, :form_error, :external]
+  skip_before_filter :require_user, :only => [:show, :blob, :alt, :widget_preview, :contact, :math_validate, :form_success, :form_error, :external, :download]
 
 # collection actions
   def new
@@ -323,6 +323,7 @@ class DatasetsController < ApplicationController
 
   def stats
     @view = get_view(params[:id])
+    return if @view.nil?
     if !(@view.user_granted?(current_user) || \
         CurrentDomain.user_can?(current_user, :edit_others_datasets))
       return render_forbidden
@@ -347,6 +348,18 @@ class DatasetsController < ApplicationController
     respond_to do |format|
       format.html { render(:layout => "plain") }
     end
+  end
+
+  def download
+    view = get_view(params[:id])
+    return if view.nil?
+
+    type = CGI.unescape(params[:type])
+    blob = view.blobs.detect {|b| b['type'] == type}
+    render_404 if blob.nil? || blob['href'].blank?
+
+    MetricQueue.instance.push_metric(params[:id], 'files-downloaded')
+    redirect_to blob['href']
   end
 
 protected

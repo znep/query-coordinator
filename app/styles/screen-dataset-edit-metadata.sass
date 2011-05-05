@@ -25,6 +25,8 @@
 
     li
       padding-bottom: 0.4em
+      &.noAttachmentsItem
+        font-size: 1.1em
 
   .uploadAttachmentThrobber
     @include throbber-icon
@@ -44,6 +46,8 @@
         margin:
           right: 0.5em
           top: 0.2em
+    select
+      width: 15em
 
   .externalSource
     .extensionField
@@ -68,5 +72,5 @@
   // This causes problem when we add toggle button after the combo.
   // Setting explicit width to get around the problem.
   #view_metadata_rdfClass
-    width: 25em
+    width: 15em
 

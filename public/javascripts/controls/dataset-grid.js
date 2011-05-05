@@ -70,6 +70,8 @@
                         { columnNameEdit(datasetObj, event, origEvent); })
                     .bind('cellclick', function (e, r, c, o)
                         { cellClick(datasetObj, e, r, c, o); })
+                    .bind('comment_click', function(e, rId, cId)
+                        { commentClick(datasetObj, rId, cId); })
                     .blistTable({cellNav: true, selectionEnabled: false,
                         generateHeights: false, columnDrag: true,
                         editEnabled: datasetObj.settings.editEnabled,
@@ -77,7 +79,8 @@
                             { headerMods(datasetObj, col); },
                         rowMods: function (rows) { rowMods(datasetObj, rows); },
                         manualResize: datasetObj.settings.manualResize,
-                        showGhostColumn: true, showTitle: false,
+                        showGhostColumn: true,
+                        cellComments: _.isFunction(datasetObj.settings.cellCommentsCallback),
                         showRowHandle: datasetObj.settings.showRowHandle,
                         rowHandleWidth: 15,
                         showAddColumns: datasetObj.settings.showAddColumns,
@@ -106,6 +109,15 @@
                     function(e) { rowMenuHandler(datasetObj, e); });
 
                 datasetObj.settings._model = $datasetGrid.blistModel();
+
+                $(document).bind('cell_feed_shown', function(e, rowId, tcId)
+                {
+                    $(datasetObj.currentGrid).blistTableAccessor().setCommentCell(rowId, tcId);
+                });
+                $(document).bind('cell_feed_hidden', function(e, rowId, tcId)
+                {
+                    $(datasetObj.currentGrid).blistTableAccessor().clearCommentCell(rowId, tcId);
+                });
             },
 
             $dom: function()
@@ -517,6 +529,12 @@
             // Display the add column dialog.
             datasetObj.settings.addColumnCallback(column.id);
         }
+    };
+
+    var commentClick = function(datasetObj, rowId, tcId)
+    {
+        if (_.isFunction(datasetObj.settings.cellCommentsCallback))
+        { datasetObj.settings.cellCommentsCallback(rowId, tcId); }
     };
 
     var rowMods = function(datasetObj, renderedRows)

@@ -200,7 +200,11 @@
                 }
 
                 if (mapObj.settings.view.displayFormat.viewport)
-                { mapObj.setViewport(mapObj.settings.view.displayFormat.viewport); }
+                {
+                    mapObj.setViewport(mapObj.settings.view.displayFormat.viewport);
+                    if (_.isEmpty(mapObj.settings.view.query))
+                    { mapObj.updateRowsByViewport(null, true); }
+                }
                 else if (mapObj.map.entities.getLength() > 1)
                 {
                     var locations = _.flatten(_.map(

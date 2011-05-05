@@ -668,7 +668,9 @@
     blist.sidebarHidden.exportSection.subscribe = <%= !@view.is_published? || !@view.is_tabular? %>;
 
     <%# Discuss pane %>
-    blist.sidebarHidden.feed = <%= !@view.is_published? %>;
+    blist.sidebarHidden.feed = blist.sidebarHidden.feed || {};
+    blist.sidebarHidden.feed.discuss = <%= !@view.is_published? %>;
+    blist.sidebarHidden.feed.cellFeed = <%= !@view.module_enabled?('cell_comments') %>;
 
     <%# About pane %>
     blist.sidebarHidden.about = <%= @view.is_href? || @view.is_blobby? &&

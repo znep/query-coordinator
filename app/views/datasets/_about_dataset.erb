@@ -248,6 +248,7 @@
 <%- end -%>
 
 <%- if @view.is_tabular? -%>
+  <%- if @view.rdf_subject || @view.rdf_class_display_name -%>
   <div class="formSection">
     <a class="expander expanded formHeader" href="#expand">
       <span class="icon"></span>
@@ -255,12 +256,14 @@
     </a>
     <dl class="sectionContent">
       <dt>Row Class</dt>
-      <dd><span class="hardWrap"><%= @view.rdf_class_display_name %></span></dd>
+      <dd><span class="hardWrap"><%= @view.rdf_class_display_name || '(none)' %></span></dd>
       <dt>Subject Column</dt>
-      <dd><%= @view.rdf_subject %></dd>
+      <dd><%= @view.rdf_subject || '(none)' %></dd>
     </dl>
   </div>
+  <%- end -%>
 
+  <%- if @view.resourceName || @view.row_identifier -%>
   <div class="formSection">
     <a class="expander expanded formHeader" href="#expand">
       <span class="icon"></span>
@@ -268,12 +271,12 @@
     </a>
     <dl class="sectionContent">
       <dt>Resource Name</dt>
-      <dd><span class="hardWrap"><%= @view.resourceName %></span></dd>
+      <dd><span class="hardWrap"><%= @view.resourceName || '(none)' %></span></dd>
       <dt>Row Identifier</dt>
-      <dd><%= @view.row_identifier %></dd>
+      <dd><%= @view.row_identifier || '(none)' %></dd>
     </dl>
   </div>
-
+  <%- end -%>
 <%- end -%>
 
 <%- view_meta = @view.merged_metadata['custom_fields'] -%>

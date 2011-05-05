@@ -1,0 +1,41 @@
+<%- fieldsets.each do |fieldset| -%>
+  <%- next if fieldset.hidden -%>
+  <div class="customFieldsetWrapper">
+    <h2>
+      <a href="#Toggle" class="toggleFieldsetLink expander expanded">
+        <span class="icon"></span>
+        <%= fieldset.name %>
+      </a>
+    </h2>
+    <%- existing_fields = (meta_fields &&
+          meta_fields.assoc(fieldset.name)) ?
+          meta_fields.assoc(fieldset.name)[1] : {} -%>
+
+    <div class="customFieldset">
+      <%- (fieldset.fields || []).each do |field| -%>
+        <%- required       = field['required'].present?
+            md_field       = field['private'].present? ? 'privateMetadata' : 'metadata'
+            type           = field['type']
+            existing_value = existing_fields[field.name] || '' -%>
+
+        <div class="line clearfix<%= ' customRequired' if required %>">
+          <label for="view_<%= md_field %>_custom_fields_<%= fieldset.name + "_" + field.name %>"
+            <%= " class='required'" if required %>>
+            <%= field.name %></label>
+          <%- form_name = "view[#{md_field}][custom_fields][#{fieldset.name}][#{field.name}]" -%>
+          <%- if field['type'] -%>
+            <%- if field['type'] == 'fixed' -%>
+              <%= select_tag(form_name, options_for_select(['']+field['options'], existing_value),
+                             :class => 'required') %>
+            <%- end -%>
+          <%- else -%>
+            <%= text_field_tag(form_name, existing_value, :class => (required ? 'required' : '')) %>
+          <%- end -%>
+          <%- if field['private'].present? -%>
+            <div class="additionalHelp">This field has been marked private by your organization and is not publicly viewable</div>
+          <%- end -%>
+        </div>
+      <%- end -%>
+    </div>
+  </div>
+<%- end -%>

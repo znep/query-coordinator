@@ -1,8 +1,9 @@
 (function($)
 {
-    if (blist.sidebarHidden.feed) { return; }
+    if (blist.sidebarHidden.feed &&
+        blist.sidebarHidden.feed.discuss) { return; }
 
-    var $feed, feedData, comments, views = [];
+    var $feed, comments, views = [];
 
     var renderFeed = function(sidebarObj)
     {
@@ -11,7 +12,17 @@
         $feed.find('.feed').feedList({
             comments: comments,
             mainView: blist.dataset,
-            views: views
+            views: views,
+            addCommentCallback: function(view, comment)
+            {
+                $('#gridSidebar_about .numberOfComments')
+                    .text(view.numberOfComments);
+                if (!$.isBlank(blist.datasetPage))
+                {
+                    blist.datasetPage.$feedTab.contentIndicator()
+                        .setText(view.numberOfComments);
+                }
+            }
         });
     };
 

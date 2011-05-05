@@ -205,6 +205,11 @@
       .mainTitleBlock
         @include vertical-gradient($sidebar_other_tab_color_top, #ce3078)
 
+    // special sidebars
+    &#gridSidebar_outer_cellFeed
+      .mainTitleBlock
+        @include vertical-gradient($cell_feed_color, adjust-color($cell_feed_color, $lightness: -10%))
+
     .panes
       overflow: auto
       position: relative

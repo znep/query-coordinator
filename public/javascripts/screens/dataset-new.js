@@ -259,19 +259,10 @@ $wizard.wizard({
                         "view[name]": "Dataset name is required.",
                         "view[attributionLink]": "That does not appear to be a valid URL.",
                         'view[esri_src]': 'A valid ESRI map layer URL is required.'
+                    },
+                    errorPlacement: function (label, $el) {
+                        $el.closest('.line').append(label);
                     }
-                });
-
-                // custom metadata validation
-                $pane.find(".metadataForm .customRequired").each(function()
-                {
-                    $(this).find('input[type="text"]').rules('add', {
-                        required: {
-                            depends: function(element) {
-                                return $(element).is(':visible');
-                            }
-                        }
-                    });
                 });
 
                 // hide/show sections based on new dataset type

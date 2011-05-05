@@ -707,7 +707,7 @@ class View < Model
   end
 
   def rdf_class
-    metadata.nil? || metadata.rdfClass.nil? ? '(none)' : metadata.rdfClass
+    metadata.nil? ? nil : metadata.rdfClass
   end
 
   def rdf_subject
@@ -718,11 +718,10 @@ class View < Model
         return rdfSubjCol.name
       end
     end
-    '(none)'
   end
 
   def rdf_class_display_name
-    if (rdf_class.nil? || rdf_class == '')
+    if rdf_class.blank?
       return rdf_class
     end
 
@@ -743,7 +742,6 @@ class View < Model
         return rdf_row_ident_col.name
       end
     end
-    '(none)'
   end
 
 

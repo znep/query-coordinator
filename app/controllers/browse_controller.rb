@@ -28,7 +28,7 @@ class BrowseController < ApplicationController
       custom_facets,
       categories_facet,
       topics_facet
-    ].flatten.select { |f| enabled_facets[f[:singular_description]].present? }
+    ].flatten.compact.select { |f| enabled_facets[f[:singular_description]].present? }
 
     process_browse!
     render :layout => 'embedded_browse'

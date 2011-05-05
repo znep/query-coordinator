@@ -135,6 +135,7 @@
         <thead>
           <tr>
             <th class="name"><div>Category Name</div><span class="icon"></span></th>
+            <th class="name"><div>Parent</div><span class="icon"></span></th>
             <th class="actions"><div>&nbsp;</div><span class="icon"></span></th>
           </tr>
         </thead>
@@ -144,6 +145,13 @@
               <td class="name">
                 <span class="cellInner">
                   <%= category.titleize_if_necessary %>
+                </span>
+              </td>
+              <td class="name">
+                <span class="cellInner">
+                  <%- if value.kind_of? Hashie::Mash -%>
+                    <%= value['parent'] %>
+                  <%- end -%>
                 </span>
               </td>
               <td class="actions">
@@ -157,6 +165,9 @@
               {:class => 'createCategoryForm'}) %>
               <td class="name">
                 <input type="text" class="newCategory" name="new_category" />
+              </td>
+              <td class="name">
+                <input type="text" class="newCategory" name="new_category_parent" />
               </td>
               <td class="actions">
                 <input class="button newCategoryButton" type="submit" value="Add New Category" />

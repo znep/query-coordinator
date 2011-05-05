@@ -44,6 +44,7 @@
     <script type="text/javascript">
       blist.namespace.fetch('blist.metrics');
       blist.metrics.viewID = '<%= @view.id %>';
+      <%= raw @view.display.render_inline_setup_js('renderTypeContainer', self) %>
     </script>
     <%= include_javascripts 'shared-metrics' %>
     <%= include_javascripts 'dataset-metrics' %>

@@ -197,11 +197,23 @@
 
                 if (cluster.count <= 0) { return; }
 
+                var cluster_icon = '/images/map_cluster_';
+                var vOffset;
+                if (cluster.count < 100)
+                { cluster_icon += 'small.png'; vOffset = 22; }
+                else if (cluster.count < 1000)
+                { cluster_icon += 'med.png';   vOffset = 27; }
+                else
+                { cluster_icon += 'large.png'; vOffset = 37; }
+
+                var cluster_class = 'google_cluster_labels';
+                if (cluster.count < 100) { cluster_class += ' small'; }
+
                 var graphic = new MarkerWithLabel({
                     labelContent: cluster.count,
-                    labelAnchor: new google.maps.Point(20, 0),
-                    labelClass: 'google_cluster_labels', map: mapObj.map,
-                    icon: '/images/marker_sprite_cluster.png',
+                    labelAnchor: new google.maps.Point(20, vOffset),
+                    labelClass: cluster_class, map: mapObj.map,
+                    icon: cluster_icon,
                     position: new google.maps.LatLng(cluster.point.lat,
                                                      cluster.point.lon)
                 });
@@ -219,7 +231,11 @@
                 { google.maps.event.removeListener(mapObj._viewportListener); }
 
                 if (mapObj.settings.view.displayFormat.viewport)
-                { mapObj.setViewport(mapObj.settings.view.displayFormat.viewport); }
+                {
+                    mapObj.setViewport(mapObj.settings.view.displayFormat.viewport);
+                    if (_.isEmpty(mapObj.settings.view.query))
+                    { mapObj.updateRowsByViewport(null, true); }
+                }
                 else if (mapObj._boundsCounts > 1 ||
                     mapObj.settings.view.displayFormat.heatmap)
                 { mapObj.map.fitBounds(mapObj._bounds); }

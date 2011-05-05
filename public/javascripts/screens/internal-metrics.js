@@ -65,6 +65,7 @@ $(function()
     $('.additionalKpibutton').click(function(event){
         event.preventDefault();
         keyServices.push($('.additionalKpi').val());
+        $('.additionalKpi').val('');
         $('#internalChart').metricsChartUpdate({
             children: generateChartChildren(keyServices)
         });

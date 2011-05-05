@@ -29,7 +29,7 @@
                              :class => 'required') %>
             <%- end -%>
           <%- else -%>
-            <%= text_field_tag(form_name, existing_value, :class => 'required`') %>
+            <%= text_field_tag(form_name, existing_value, :class => (required ? 'required' : '')) %>
           <%- end -%>
           <%- if field['private'].present? -%>
             <div class="additionalHelp">This field has been marked private by your organization and is not publicly viewable</div>

@@ -389,8 +389,13 @@ javascripts:
     - public/javascripts/plugins/jquery.bgiframe.min.js
   oldie:
     - public/javascripts/screens/oldie.js
-  bespin:
-    - public/javascripts/plugins/bespin/BespinEmbedded.js
+  ace:
+    - public/javascripts/plugins/ace/ace-uncompressed.js
+    - public/javascripts/plugins/ace/theme-idle_fingers.js
+    - public/javascripts/plugins/ace/mode-ruby.js
+    - public/javascripts/plugins/ace/mode-css.js
+    - public/javascripts/plugins/ace/mode-html.js
+
 
 dump:
   javascripts:

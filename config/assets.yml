@@ -131,6 +131,7 @@ javascripts:
     - public/javascripts/plugins/jquery.tablesorter.js
     - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/controls/combination-list.js
+    - public/javascripts/controls/image-uploader.js
     - public/javascripts/screens/admin-config-common.js
     - public/javascripts/screens/admin-home.js
   admin-metadata:

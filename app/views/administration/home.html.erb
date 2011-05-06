@@ -150,7 +150,9 @@
             </div>
             <div class="featureContentThumbnailSection featureContentType">
               <img src="" alt="feature image"/>
-              <a class="editThumbnailButton editImageButton" href="#editThumbnail">Edit</a>
+              <div>
+                <a class="editThumbnailButton editImageButton button" href="#editThumbnail">Edit</a>
+              </div>
             </div>
 
             <div class="line">
@@ -159,11 +161,13 @@
               <label for="featureContentCustom">Custom Image</label>
             </div>
             <div class="featureContentCustomSection featureContentType">
-              <span class="throbber"></span>
               <input type="hidden" class="featureContentImageSha" />
               <div class="customImageContainer">
-                <img src="" alt="custom image" />
-                <a class="editCustomImageButton editImageButton" href="#editCustomImage">Edit</a>
+                <div class="ajaxImage">
+                  <img src="" alt="custom image" />
+                </div>
+                <a class="editCustomImageButton editImageButton" href="#editCustomImage" data-endpoint="/api/assets">Edit</a>
+              <span class="throbber"></span>
               </div>
               <div class="customImageError flash error">Invalid file type. Please choose an image file</div>
             </div>

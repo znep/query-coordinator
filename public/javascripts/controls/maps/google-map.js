@@ -65,27 +65,6 @@
                 }
             },
 
-            rowsRendered: function()
-            {
-                var mapObj = this;
-                if (mapObj._markerClusterer)
-                {
-                    mapObj._markerClusterer.clearMarkers();
-                    _.each(mapObj._markers, function(marker)
-                    { marker.setMap(mapObj.map); marker.setVisible(true); });
-                }
-                if (mapObj.settings.view.displayFormat.clusterMarkers
-                    && mapObj._rowsLeft == 0)
-                {
-                    if (!mapObj._markerClusterer)
-                    { mapObj._markerClusterer =
-                        new MarkerClusterer(mapObj.map, _.values(mapObj._markers)); }
-                    else
-                    { mapObj._markerClusterer.addMarkers(_.values(mapObj._markers)); }
-                }
-                mapObj.adjustBounds();
-            },
-
             renderGeometry: function(geoType, geometry, dupKey, details)
             {
                 var mapObj = this;

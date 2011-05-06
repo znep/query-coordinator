@@ -763,9 +763,13 @@ class View < Model
       "title='#{rating}'><span>#{rating}</span></div>"
   end
 
+  def custom_image(size = 'medium')
+    return "/assets/#{self.iconUrl}?s=#{size}" if self.iconUrl
+  end
+
   def preferred_image(port = 80)
-    if !self.iconUrl.nil?
-      return self.iconUrl
+    if !custom_image.nil?
+      return custom_image('thumb')
     elsif !self.metadata.nil? && ((self.metadata.data['thumbnail'] || {})['page'] || {})['created'] == true
       url_port = (port == 80) ? '' : ':' + port.to_s
       protocol = federated? ? "http://#{domainCName}#{url_port}" : ''

@@ -13,6 +13,14 @@
     <a href="<%= @view.href %>/edit_metadata" class="fullButton editMetadataButton">Edit Metadata</a>
   <%- end -%>
 
+  <%- if @view.custom_image.present? -%>
+  <div class="customImageSection clearfix">
+    <div class="sectionContent">
+      <img alt="icon" src="<%= @view.custom_image('large') %>" class="datasetCustomImage" />
+    </div>
+  </div>
+  <%- end -%>
+
   <div class="formSection">
     <a class="expander expanded formHeader" href="#expand">
       <span class="icon"></span>

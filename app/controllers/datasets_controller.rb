@@ -291,7 +291,7 @@ class DatasetsController < ApplicationController
     return if @view.nil?
     if !params[:view].nil?
       begin
-        if parse_attachments() && parse_meta(@view) && parse_external_sources()
+        if parse_attachments() && parse_meta(@view) && parse_external_sources() && parse_image()
           @view = View.update_attributes!(params[:id], params[:view])
           flash.now[:notice] = "The metadata has been updated."
         end
@@ -517,14 +517,31 @@ protected
         params[:view].deep_merge!({ :metadata => { :attachments => []} } )
       end
 
-      attachment = JSON.parse(
-        CoreServer::Base.connection.multipart_post_file('/assets',
-          params[:attachment_new]))
+      attachment = post_asset params[:attachment_new]
 
       params[:view][:metadata][:attachments] << {:blobId => attachment['id'],
         :filename => attachment['nameForOutput'],
         :name => attachment['nameForOutput']}
     end
     true
+  end
+
+  def parse_image
+    if params[:delete_custom_image].present?
+      params[:view][:iconUrl] =  nil
+    elsif params[:custom_image].present?
+      unless ['image/png','image/x-png','image/gif','image/jpeg','image/pjpeg']
+        .include? params[:custom_image].content_type
+        flash[:error] = "Please select a valid image type (PNG, JPG, or GIF)"
+        return
+      end
+      image = post_asset params[:custom_image]
+      params[:view][:iconUrl] = image['id']
+    end
+    true
+  end
+
+  def post_asset(file)
+    JSON.parse(CoreServer::Base.connection.multipart_post_file('/assets', file))
   end
 end

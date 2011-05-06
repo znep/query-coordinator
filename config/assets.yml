@@ -288,6 +288,7 @@ javascripts:
   dataset-edit-metadata:
     - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/controls/attachments-editor.js
+    - public/javascripts/controls/image-uploader.js
     - public/javascripts/screens/dataset-edit-metadata.js
   dataset-edit-rr:
     - public/javascripts/plugins/jquery.colorPicker.js
@@ -332,6 +333,7 @@ javascripts:
     - public/javascripts/screens/profile-screen.js
   screen-profile-edit:
     - public/javascripts/plugins/ajaxupload.js
+    - public/javascripts/controls/image-uploader.js
     - public/javascripts/screens/profile-screen-edit.js
   homepage-show:
     - public/javascripts/screens/homepage-show.js

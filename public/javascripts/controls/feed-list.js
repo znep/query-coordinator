@@ -438,6 +438,7 @@
                                                 .prepend(compiledFeedDirectiveNest([newCommentData]));
                                     }
 
+                                    $this.closest('.feed').find('.noResults').addClass('hide');
                                     $this.closest('.newCommentForm').remove();
                                     if (_.isFunction(opts.addCommentCallback))
                                     { opts.addCommentCallback(view, newCommentData); }

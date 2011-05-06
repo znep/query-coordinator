@@ -1961,6 +1961,7 @@ this.Dataset = ServerModel.extend({
             }
 
             var col = ds.columnForTCID(c.tableColumnId);
+            if ($.isBlank(col)) { return false; }
             // Make sure this type of condition is supported for this column
             if (!_.any(col.renderType.filterConditions, function(fc)
                 { return c.operator.toUpperCase() == fc.value; }))
@@ -1983,7 +1984,7 @@ this.Dataset = ServerModel.extend({
                 });
                 if (condVal.length == 1) { condVal = condVal[0]; }
             }
-            if (col.renderTypeName == 'dataset_link')
+            if (col.renderTypeName == 'dataset_link' && !$.isBlank(col.dropDownList))
             {
                 // Assume condVal is already in the displayable version
                 _.each(col.dropDownList.values, function(ddv)

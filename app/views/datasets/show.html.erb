@@ -670,7 +670,8 @@
     <%# Discuss pane %>
     blist.sidebarHidden.feed = blist.sidebarHidden.feed || {};
     blist.sidebarHidden.feed.discuss = <%= !@view.is_published? %>;
-    blist.sidebarHidden.feed.cellFeed = <%= !@view.module_enabled?('cell_comments') %>;
+    blist.sidebarHidden.feed.cellFeed = <%= !@view.module_enabled?('cell_comments') ||
+      !@view.is_published? %>;
 
     <%# About pane %>
     blist.sidebarHidden.about = <%= @view.is_href? || @view.is_blobby? &&

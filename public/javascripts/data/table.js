@@ -709,7 +709,8 @@
             // Make sure they can edit -- if not, trigger an event
             if (!canEdit())
             {
-                $(cell).trigger('attempted_edit');
+                if (mode == DEFAULT_EDIT_MODE)
+                { $(cell).trigger('attempted_edit'); }
                 return false;
             }
 
@@ -2750,8 +2751,8 @@
                         " + \"' href='#drillDown'></a>") : '';
                     var cellDrillStyle = mcol.format.drill_down ? ' drill-td' : '';
 
-                    var specialClasses = "(' ' + ((cellClasses[row.id] || {})" +
-                        mcol.dataLookupExpr + " || []).join(' '))";
+                    var specialClasses = !mcol.parentColumn ? "(' ' + ((cellClasses[row.id] || {})" +
+                        mcol.dataLookupExpr + " || []).join(' '))" : "''";
 
                     renderer = "(!row" + childLookup + ".invalid" +
                         (mcol.directLookupExpr || mcol.dataLookupExpr) + " ? " +

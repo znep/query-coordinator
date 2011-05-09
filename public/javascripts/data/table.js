@@ -2744,8 +2744,8 @@
                         " + \"' href='#drillDown'></a>") : '';
                     var cellDrillStyle = mcol.format.drill_down ? ' drill-td' : '';
 
-                    var specialClasses = "(' ' + ((cellClasses[row.id] || {})" +
-                        mcol.dataLookupExpr + " || []).join(' '))";
+                    var specialClasses = !mcol.parentColumn ? "(' ' + ((cellClasses[row.id] || {})" +
+                        mcol.dataLookupExpr + " || []).join(' '))" : "''";
 
                     renderer = "(!row" + childLookup + ".invalid" +
                         (mcol.directLookupExpr || mcol.dataLookupExpr) + " ? " +

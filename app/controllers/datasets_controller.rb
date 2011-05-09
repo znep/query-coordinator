@@ -471,6 +471,9 @@ protected
           end
         end
       end
+      if params[:view][:metadata][:rdfClass] =~ /^_.*/
+        params[:view][:metadata][:rdfClass] = nil
+      end
       params[:view][:metadata] = (view.data['metadata'] || {}).
         deep_merge(params[:view][:metadata] || {})
       params[:view][:privateMetadata] = (view.data['privateMetadata'] || {}).

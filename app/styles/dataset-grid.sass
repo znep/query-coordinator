@@ -482,8 +482,19 @@ div.blist-table-edit-container.mode-expand
   color: #888888
   font-style: italic
 
-.blist-td.comments-active
-  background-color: adjust-color($cell_feed_color, $lightness: +45%)
+.blist-td
+  position: relative
+  .annotation
+    @include cell-annotation-icons
+    bottom: 0
+    position: absolute
+    right: 0
+
+.blist-table-active-container .annotation
+  @include cell-annotation-icons(true)
+
+.blist-td.comments-active .annotation
+  @include cell-annotation-icons(false, true)
 
 div.blist-tdh
   color: #999999

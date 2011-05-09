@@ -729,3 +729,25 @@
     background-repeat: no-repeat
     height: 16px
     width: 16px
+
+// Cell annotation icons (comments, notes)
+@mixin cell-annotation-icons($selected: false, $active: false)
+  background-image: url(/stylesheets/images/icons/cell_annotation_icons.png)
+  background-repeat: no-repeat
+  display: block
+  height: 10px
+  width: 10px
+
+  @if $active == true
+    &.comments
+      background-position: 0 -40px
+  @else if $selected == true
+    &.comments
+      background-position: 0 -10px
+    &.notes
+      background-position: 0 -30px
+  @else
+    &.comments
+      background-position: 0 0
+    &.notes
+      background-position: 0 -20px

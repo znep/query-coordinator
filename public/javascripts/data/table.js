@@ -2747,6 +2747,10 @@
                     var specialClasses = !mcol.parentColumn ? "(' ' + ((cellClasses[row.id] || {})" +
                         mcol.dataLookupExpr + " || []).join(' '))" : "''";
 
+                    var annotations = !mcol.parentColumn ? "((row.annotations || {})" +
+                        mcol.dataLookupExpr + " ? '<span class=\"annotation ' + row.annotations" +
+                        mcol.dataLookupExpr + " + '\"></span>' : '')" : "''";
+
                     renderer = "(!row" + childLookup + ".invalid" +
                         (mcol.directLookupExpr || mcol.dataLookupExpr) + " ? " +
                         renderer("row" + mcol.dataLookupExpr, false, mcol,
@@ -2767,7 +2771,7 @@
                             " ? \" error\" : \"\") + " +
                             specialClasses + " + " +
                             "\"'>"+ drillDown + "\", " +
-                            renderer + ", \"</div>\""
+                            renderer + ", " + annotations + ", \"</div>\""
                     );
 
                     lcols.push({
@@ -4123,6 +4127,9 @@
                 renderFooter();
                 initRows();
 
+                // Request comment indicators
+                model.view.getCommentLocations();
+
                 model.view.bind('row_change', function(rows)
                         { updateRows(rows); })
                     .bind('query_change', updateHeader)
@@ -4164,8 +4171,7 @@
             // available
             if (model.dataLength() < 0)
             {
-                model.loadRows(0, 50, function()
-                { isReady(); });
+                model.loadRows(0, 50, function() { isReady(); });
             }
             else { isReady(); }
         });

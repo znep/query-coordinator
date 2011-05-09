@@ -1,0 +1,41 @@
+<div id="datasetBar" class="clearfix <%= @view.is_blist? ? 'dataset' : '' %>">
+  <%- if local_assigns[:link_back].present? -%>
+    <a href="<%= @view.href %>" class="button leftArrowNoHover backToDatasetButton">
+      <span class="icon"></span>
+      Back to Dataset
+    </a>
+  <%- end -%>
+  <div id="infoBox">
+    <div id="datasetIcon" class="type<%= @view.display.type.capitalize %>">
+      <span class="icon currentViewName"><%= @view.display.name %></span>
+      <span class="alertIcon"></span>
+    </div>
+    <div class="unsavedLine">
+      <h2 id="unsavedTitle">Unsaved View</h2>
+      <%- if @view.has_rights?('update_view') -%>
+      <a href="#Save" title="Save current view" data-savingText="Saving..."
+        class="save toolbarButton">Save</a>
+      <%- end -%>
+      <a href="#SaveAs" title="Save view as..."
+        class="saveAs toolbarButton">Save As...</a>
+      <a href="#Revert" title="Revert to saved view"
+        class="revert toolbarButton">Revert</a>
+    </div>
+    <h2 id="datasetName" class="clipText currentViewName"><%= @view.name %></h2>
+    <div class="basedOnParent">
+      Based on <a class="parentName"></a>
+    </div>
+    <div class="basedOnTemp">
+      Based on <a class="revertLink currentViewName" href="#revert"><%= @view.name %></a>
+    </div>
+
+    <div id="description">
+      <p class="collapsed"><%= raw(auto_link(h(@view.description), :html => { :rel => 'nofollow' })) || '(No description provided)'%></p>
+      <a href="#expand" class="descriptionExpander rightArrow" title="Click to expand">
+        <span class="icon"></span>
+      </a>
+    </div>
+
+  </div>
+  <%= yield :dataset_actions %>
+</div>

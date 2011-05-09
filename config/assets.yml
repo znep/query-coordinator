@@ -111,6 +111,7 @@ javascripts:
   admin-select-dataset:
     - public/javascripts/screens/admin-select-dataset.js
   admin-datasets:
+    - public/javascripts/util/serialize.js
     - public/javascripts/screens/admin-config-common.js
   admin-browse-widget:
     - public/javascripts/plugins/jquery.colorPicker.js
@@ -218,6 +219,12 @@ javascripts:
     - public/javascripts/controls/form-inliner.js
     - public/javascripts/controls/render-type-manager.js
     - public/javascripts/screens/widget.js
+  dataset-about-full:
+    - public/javascripts/controls/stars.js
+    - public/javascripts/controls/dataset-controls.js
+    - public/javascripts/controls/blob-dataset.js
+    - public/javascripts/controls/full-screen.js
+    - public/javascripts/screens/dataset-about.js
   dataset-new:
     - public/javascripts/util/serialize.js
     - public/javascripts/plugins/ajaxupload.js

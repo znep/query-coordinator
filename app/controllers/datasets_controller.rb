@@ -1,6 +1,6 @@
 class DatasetsController < ApplicationController
   include DatasetsHelper
-  skip_before_filter :require_user, :only => [:show, :blob, :alt, :widget_preview, :contact, :math_validate, :form_success, :form_error, :external, :download]
+  skip_before_filter :require_user, :only => [:show, :blob, :alt, :widget_preview, :contact, :math_validate, :form_success, :form_error, :external, :download, :about]
 
 # collection actions
   def new
@@ -360,6 +360,10 @@ class DatasetsController < ApplicationController
 
     MetricQueue.instance.push_metric(params[:id], 'files-downloaded')
     redirect_to blob['href']
+  end
+
+  def about
+    @view = get_view(params[:id])
   end
 
 protected

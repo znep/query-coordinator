@@ -40,10 +40,10 @@ class CustomContentController < ApplicationController
 private
 
   def get_config(page_type, config_name)
-    config = CurrentDomain.configuration('custom_content')
-    return nil unless config
+    properties = CurrentDomain.property(page_type.pluralize, :custom_content)
+    return nil unless properties
 
-    page_config = config.properties[page_type.pluralize][config_name]
+    page_config = properties[config_name]
 
     # turn toplevel contents into objects; rest will transform as needed
     page_config.contents = Canvas::CanvasWidget.from_config(page_config.contents, 'Canvas')

@@ -82,9 +82,7 @@ protected
   end
 
   def custom_facets
-    config = CurrentDomain.configuration('catalog')
-    return nil if config.nil?
-    return config.properties.facets
+    config = CurrentDomain.property(:facets, :catalog)
   end
 
   def process_browse!(options = {})

@@ -120,3 +120,8 @@ html-styles:
 - dataset-grid
 canvas:
 - canvas
+dataset-about-full:
+- about-dataset
+- screen-dataset
+- screen-blob
+- screen-dataset-about

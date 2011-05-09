@@ -25,9 +25,7 @@
   <%- end -%>
 
   <%- if CurrentDomain.user_can?(current_user, 'edit_site_theme') -%>
-  <%- sidebar_config = CurrentDomain.configuration('sidebar') -%>
-  <%- sidebar_position = (!sidebar_config.nil? ?
-    sidebar_config.properties.position : nil) || 'right' -%>
+  <%- sidebar_position = CurrentDomain.property(:position, :sidebar) || 'right' -%>
   <div class="layoutConfig">
     <h2>Layout Configuration</h2>
     <%= form_tag({:action => 'modify_sidebar_config'}, {:method => 'post',

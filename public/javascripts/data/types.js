@@ -1310,8 +1310,7 @@ blist.namespace.fetch('blist.data.types');
             convertableTypes: ['text'],
             filterable: true,
             filterConditions: filterConditions.textual,
-            deleteable: true,
-            isObject: true
+            deleteable: true
         },
 
         checkbox: {
@@ -1416,8 +1415,7 @@ blist.namespace.fetch('blist.data.types');
             convertableTypes: ['text', 'dataset_link'],
             filterable: true,
             filterConditions: filterConditions.textual,
-            deleteable: true,
-            isObject: true
+            deleteable: true
         },
 
         document: {
@@ -1429,8 +1427,7 @@ blist.namespace.fetch('blist.data.types');
             inlineType: true,
             filterConditions: filterConditions.blob,
             aggregates: nonNumericAggs,
-            deleteable: true,
-            isObject: true
+            deleteable: true
         },
 
         document_obsolete: {
@@ -1440,8 +1437,7 @@ blist.namespace.fetch('blist.data.types');
             inlineType: true,
             filterConditions: filterConditions.blob,
             aggregates: nonNumericAggs,
-            deleteable: true,
-            isObject: true
+            deleteable: true
         },
 
         location: {
@@ -1451,7 +1447,6 @@ blist.namespace.fetch('blist.data.types');
             renderGen: renderGenLocation,
             renderer: renderLocation,
             deleteable: true,
-            isObject: true,
             alignment: alignment,
             renderAddress: renderLocationAddress,
             filterable: true,
@@ -1466,7 +1461,6 @@ blist.namespace.fetch('blist.data.types');
             renderGen: renderGenGeospatial,
             renderer: renderGeospatial,
             deleteable: false,
-            isObject: true,
             alignment: alignment,
             filterable: false
         },
@@ -1563,7 +1557,6 @@ blist.namespace.fetch('blist.data.types');
             renderGen: renderGenObject,
             renderer: renderObject,
             deleteable: false,
-            isObject: false,
             alignment: alignment,
             filterable: false
         },
@@ -1575,7 +1568,6 @@ blist.namespace.fetch('blist.data.types');
             renderGen: renderGenObject,
             renderer: renderObject,
             deleteable: false,
-            isObject: false,
             alignment: alignment,
             filterable: false
         }

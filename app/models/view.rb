@@ -104,6 +104,7 @@ class View < Model
 
   def find_data(per_page, page = 1, conditions = {})
     params = { :method => 'getByIds',
+               :asHashes => true,
                :accessType => 'WEBSITE',
                :meta => true,
                :start => (page - 1) * per_page,
@@ -142,7 +143,7 @@ class View < Model
         sort_by { |column| column.position }
 
     # grab other return values
-    data = meta_and_data['data']['data'] # ask the core server gods.
+    data = meta_and_data['data']
     row_count = meta_and_data['meta']['totalRows']
 
     return data, viewable_columns, aggregates, row_count
@@ -161,24 +162,16 @@ class View < Model
   end
 
   def get_row(row_id)
-    result = JSON.parse(CoreServer::Base.connection.create_request(
+    JSON.parse(CoreServer::Base.connection.create_request(
       "/#{self.class.name.pluralize.downcase}/#{id}/" +
-      "rows.json?ids=#{row_id}&meta=true&method=getByIds"), {:max_nesting => 25})
-    r = result['data']['data'][0]
-    return nil if r.nil?
-
-    return transform_row(r, result['meta']['view']['columns'])
+      "rows.json?ids=#{row_id}&method=getByIds&asHashes=true"), {:max_nesting => 25})[0]
   end
 
   def get_row_by_index(row_index)
-    result = JSON.parse(CoreServer::Base.connection.create_request(
+    JSON.parse(CoreServer::Base.connection.create_request(
       "/#{self.class.name.pluralize.downcase}/#{id}/" +
-      "rows.json?start=#{row_index}&length=1&meta=true&method=getByIds"),
-        {:max_nesting => 25})
-    r = result['data']['data'][0]
-    return nil if r.nil?
-
-    return transform_row(r, result['meta']['view']['columns'])
+      "rows.json?start=#{row_index}&length=1&method=getByIds&asHashes=true"),
+        {:max_nesting => 25})[0]
   end
 
   def get_row_index(row_id)
@@ -1026,21 +1019,6 @@ class View < Model
   ]
 
   private
-  def transform_row(r, columns)
-    row = Hash.new
-    columns.each_with_index do |c, i|
-      if c['dataTypeName'] == 'meta_data'
-        row[c['name']] = r[i]
-      else
-        if c['dataTypeName'] == 'nested_table'
-          row[c['id']] = r[i].nil? ? nil : r[i].map {|cr| transform_row(cr, c['childColumns'])}
-        else
-          row[c['id']] = r[i]
-        end
-      end
-    end
-    return row
-  end
 
   memoize :href
 end

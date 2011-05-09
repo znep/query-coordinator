@@ -374,28 +374,6 @@ this.Dataset = ServerModel.extend({
         }
     },
 
-    clearColumn: function(col)
-    {
-        var ds = this;
-        var colLookup = col.lookup;
-        var childLookup;
-        if (!$.isBlank(col.parentColumn))
-        {
-            childLookup = colLookup;
-            colLookup = col.parentColumn.lookup;
-            col.parentColumn.clearChildColumn(col);
-        }
-        _.each(ds._rows, function(r)
-        {
-            if ($.isBlank(childLookup)) { delete r[colLookup]; }
-            else
-            {
-                _.each(r[colLookup] || [], function(cr)
-                    { delete cr[childLookup]; });
-            }
-        });
-    },
-
     getTotalRows: function(callback)
     {
         this.getRows(0, 1, callback);
@@ -1617,15 +1595,10 @@ this.Dataset = ServerModel.extend({
     _loadRows: function(start, len, callback, includeMeta, fullLoad)
     {
         var ds = this;
-        var params = {method: 'getByIds', start: start, 'length': len};
+        var params = {method: 'getByIds', start: start, 'length': len, asHashes: true};
 
-        // If we're not loading the columns with the rows, then store a copy
-        // of the columns so we know what order our data will come back in.
-        // This is in case columns get changed while we're busy requesting data
-        var cols;
         if (includeMeta || ds._rowCountInvalid || ds._columnsInvalid)
         { params.meta = true; }
-        else { cols = ds.columns.slice(); }
 
         var rowsLoaded = function(result)
         {
@@ -1683,7 +1656,7 @@ this.Dataset = ServerModel.extend({
             }
             // Normal load
             else
-            { rows = ds._addRows(result.data.data || result.data, start, cols); }
+            { rows = ds._addRows(result.data || result, start); }
 
             // Mark all rows as loaded
             for (var i = 0; i < len; i++)
@@ -1710,19 +1683,23 @@ this.Dataset = ServerModel.extend({
         ds.makeRequest(req);
     },
 
-    _addRows: function(newRows, start, columns)
+    _addRows: function(newRows, start)
     {
         var ds = this;
-        var translateRow = function(r, cols, parCol)
+        var translateRow = function(r, parCol)
         {
-            var tr = {invalid: {}, changed: {}, error: {}};
-            _.each(cols, function(c, i)
+            var adjVals = {invalid: {}, changed: {}, error: {}};
+            _.each(r, function(val, id)
             {
-                var val = r[i];
-                if (c.isMeta && c.name == 'meta')
-                { val = JSON.parse(val || 'null'); }
+                var newVal;
+                // A few columns don't have original lookups
+                var lId = {sid: 'id', 'id': 'uuid'}[id] || id;
+                var c = $.isBlank(parCol) ? ds.columnForID(lId) : parCol.childColumnForID(lId);
 
-                if (c.renderType.isObject && _.isArray(val))
+                if (c.isMeta && c.name == 'meta')
+                { newVal = JSON.parse(val || 'null'); }
+
+                if ($.isPlainObject(val))
                 {
                     // First, convert an empty array into a null
                     // Booleans in the array don't count because location type
@@ -1731,37 +1708,30 @@ this.Dataset = ServerModel.extend({
                     // this will need to be made more specific
                     if (_.all(val, function(v)
                         { return $.isBlank(v) || _.isBoolean(v); }))
-                    { val = null; }
-
-                    // Otherwise, turn it into object keyed by sub-type
-                    else
-                    {
-                        var o = {};
-                        _.each(val, function(v, k)
-                        { o[c.subColumnTypes[k]] = v === '' ? null : v; });
-                        val = o;
-                    }
+                    { newVal = null; }
                 }
 
                 if (c.renderTypeName == 'checkbox' && val === false ||
                         c.renderTypeName == 'stars' && val === 0)
-                { val = null; }
+                { newVal = null; }
 
-                if (c.renderTypeName == 'geospatial' && tr.id)
-                { val.row_id = tr.id; }
+                if (c.renderTypeName == 'geospatial' && r.sid)
+                { newVal = $.extend({}, val, {row_id: r.sid}); }
 
                 if (c.dataTypeName == 'nested_table' && _.isArray(val))
                 {
-                    val = _.map(val, function(cr)
-                    {
-                        return translateRow(cr, c.childColumns, c);
-                    });
+                    _.each(val, function(cr) { translateRow(cr, c); });
                 }
 
-                tr[c.lookup] = val;
-            });
+                // A few columns have different ids we use than the core server gives us
+                if (id != c.lookup) { newVal = newVal || val; }
 
-            _.each((tr.meta || {}).invalidCells || {}, function(v, tcId)
+                if (!_.isUndefined(newVal))
+                { adjVals[c.lookup] = newVal; }
+            });
+            $.extend(r, adjVals);
+
+            _.each((r.meta || {}).invalidCells || {}, function(v, tcId)
             {
                 if (!$.isBlank(v))
                 {
@@ -1769,33 +1739,31 @@ this.Dataset = ServerModel.extend({
                         ds.columnForTCID(tcId);
                     if (!$.isBlank(c))
                     {
-                        tr.invalid[c.id] = true;
-                        tr[c.lookup] = v;
+                        r.invalid[c.id] = true;
+                        r[c.lookup] = v;
                     }
                 }
             });
-            delete (tr.meta || {}).invalidCells;
+            delete (r.meta || {}).invalidCells;
 
-            _.each((ds._commentLocations || {})[tr.id] || {}, function(v, tcId)
+            _.each((ds._commentLocations || {})[r.id] || {}, function(v, tcId)
             {
                 var c = ds.columnForTCID(tcId);
                 if (!$.isBlank(c))
                 {
-                    tr.annotations = tr.annotations || {};
-                    tr.annotations[c.lookup] =  'comments';
+                    r.annotations = r.annotations || {};
+                    r.annotations[c.lookup] =  'comments';
                 }
             });
 
-            ds._setRowFormatting(tr);
-
-            return tr;
+            ds._setRowFormatting(r);
         };
 
         var adjRows = [];
         var oldRows = [];
-        _.each(newRows, function(nr, i)
+        _.each(newRows, function(r, i)
         {
-            var r = translateRow(nr, columns || ds.columns);
+            translateRow(r);
             r.index = start + i;
 
             // If a row already exists at this index, clean it out
@@ -1913,7 +1881,7 @@ this.Dataset = ServerModel.extend({
                 });
                 if (condVal.length == 1) { condVal = condVal[0]; }
             }
-            if (col.renderTypeName == 'dataset_link')
+            if (col.renderTypeName == 'dataset_link' && !$.isBlank(col.dropDownList))
             {
                 // Assume condVal is already in the displayable version
                 _.each(col.dropDownList.values, function(ddv)

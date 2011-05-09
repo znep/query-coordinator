@@ -103,6 +103,35 @@
 
 <%- end -%>
 
+<%- if CurrentDomain.user_can?(current_user, 'edit_site_theme') -%>
+<%- view_type = (!@catalog_config.nil? ?
+  @catalog_config.properties.default_view_type : nil) || 'table' -%>
+<div class="contentBox withLeftNavigation layoutConfig">
+  <h2>Catalog Layout Configuration</h2>
+  <%= form_tag({:action => 'modify_catalog_config'}, {:method => 'post',
+    :class => 'commonForm'}) %>
+    <div class="line">
+      <span class="mainLabel">Default Catalog Layout</span>
+      <div class="valueBox">
+        <input type="radio" id="catalogViewType_table"
+          name="catalog[default_view_type]" value="table"
+          <%= view_type == 'table' ? 'checked="checked"' : '' %> />
+        <label for="catalogViewType_table">Compact List</label>
+      </div>
+      <div class="valueBox">
+        <input type="radio" id="catalogViewType_rich"
+          name="catalog[default_view_type]" value="rich"
+          <%= view_type == 'rich' ? 'checked="checked"' : '' %> />
+        <label for="catalogViewType_rich">Rich List</label>
+      </div>
+      <span class="saving statusText">Saving</span>
+      <span class="saved statusText">Saved</span>
+    </div>
+    <input type="submit" value="Save" />
+  </form>
+</div>
+<%- end -%>
+
 <%- content_for :templates do -%>
   <div class="feature">
     <div class="featureWrapper">
@@ -121,7 +150,9 @@
             </div>
             <div class="featureContentThumbnailSection featureContentType">
               <img src="" alt="feature image"/>
-              <a class="editThumbnailButton editImageButton" href="#editThumbnail">Edit</a>
+              <div>
+                <a class="editThumbnailButton editImageButton button" href="#editThumbnail">Edit</a>
+              </div>
             </div>
 
             <div class="line">
@@ -130,11 +161,13 @@
               <label for="featureContentCustom">Custom Image</label>
             </div>
             <div class="featureContentCustomSection featureContentType">
-              <span class="throbber"></span>
               <input type="hidden" class="featureContentImageSha" />
               <div class="customImageContainer">
-                <img src="" alt="custom image" />
-                <a class="editCustomImageButton editImageButton" href="#editCustomImage">Edit</a>
+                <div class="ajaxImage">
+                  <img src="" alt="custom image" />
+                </div>
+                <a class="editCustomImageButton editImageButton" href="#editCustomImage" data-endpoint="/api/assets">Edit</a>
+              <span class="throbber"></span>
               </div>
               <div class="customImageError flash error">Invalid file type. Please choose an image file</div>
             </div>

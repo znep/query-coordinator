@@ -52,14 +52,13 @@
             </span>
           </div>
         <%- end -%>
-        <%- if params[:no_js].present? -%>
-          <%= file_field_tag('new_image', :accept => 'image/png,image/gif,image/jpeg') %>
-        <%- else -%>
-          <%= link_to (@token.has_thumbnail? ? 'Change' : 'Add') + ' Thumbnail',
-              @token.set_thumbnail_url(current_user.id),
-              :class => 'button uploadAppTokenImage' %>
-            <span class="uploadIndicator"></span>
-        <%- end -%>
+      </div>
+      <div class="line clearfix">
+        <label>&nbsp;</label>
+        <%= file_field_tag('new_image', {:accept => 'image/png,image/gif,image/jpeg',
+                           'data-endpoint' => @token.set_thumbnail_url(current_user.id),
+                           :class => 'uploadAppTokenImage'}) %>
+        <span class="uploadIndicator"></span>
       </div>
     <%- end -%>
   </div>

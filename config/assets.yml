@@ -111,7 +111,7 @@ javascripts:
   admin-select-dataset:
     - public/javascripts/screens/admin-select-dataset.js
   admin-datasets:
-    - public/javascripts/screens/admin-datasets.js
+    - public/javascripts/screens/admin-config-common.js
   admin-browse-widget:
     - public/javascripts/plugins/jquery.colorPicker.js
     - public/javascripts/plugins/colorpicker.js
@@ -126,10 +126,13 @@ javascripts:
     - public/javascripts/controls/combination-list.js
     - public/javascripts/screens/admin-users-screen.js
   admin-home:
+    - public/javascripts/util/serialize.js
     - public/javascripts/controls/admin-buttons.js
     - public/javascripts/plugins/jquery.tablesorter.js
     - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/controls/combination-list.js
+    - public/javascripts/controls/image-uploader.js
+    - public/javascripts/screens/admin-config-common.js
     - public/javascripts/screens/admin-home.js
   admin-metadata:
     - public/javascripts/controls/admin-buttons.js
@@ -287,6 +290,7 @@ javascripts:
   dataset-edit-metadata:
     - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/controls/attachments-editor.js
+    - public/javascripts/controls/image-uploader.js
     - public/javascripts/screens/dataset-edit-metadata.js
   dataset-edit-rr:
     - public/javascripts/plugins/jquery.colorPicker.js
@@ -331,6 +335,7 @@ javascripts:
     - public/javascripts/screens/profile-screen.js
   screen-profile-edit:
     - public/javascripts/plugins/ajaxupload.js
+    - public/javascripts/controls/image-uploader.js
     - public/javascripts/screens/profile-screen-edit.js
   homepage-show:
     - public/javascripts/screens/homepage-show.js

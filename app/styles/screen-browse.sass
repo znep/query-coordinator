@@ -124,12 +124,27 @@
         font-size: 1.7em
         margin-right: 15em
 
-    .sortOptions
+    .topControls
       position: absolute
       right: 1.5em
       top: 1.5em
-      .ie7 & .uniform
+
+    .viewTypeOptions
+      display: inline-block
+      margin-right: 1em
+      vertical-align: middle
+      .ie7 &
         display: inline
+      li a
+        @include renderType-toggle-icons
+
+    .sortOptions
+      display: inline-block
+      vertical-align: middle
+      .ie7 &
+        display: inline
+        .uniform
+          display: inline
       .sortType
         width: 11em
       .sortPeriod
@@ -335,6 +350,41 @@
           .icon
             float: right
 
+        .largeImage
+          padding-right: 0
+          text-align: center
+          width: 50px
+          .datasetIcon
+            margin: 0 auto
+          img.datasetImage
+            max-height: 50px
+            max-width: 50px
+          .type
+            @include sprite-type-icons-30
+            font-size: 0.8333em
+
+        .richSection
+          padding-left: 0.5em
+          .nameLink
+            .name
+              font-size: 1.2em
+              vertical-align: middle
+            .domainIcon
+              height: 20px
+              padding: 0.1em
+              vertical-align: middle
+              width: 20px
+
+          .description
+            font-size: 0.9167em
+            margin-top: 0.4em
+
+        .rss
+          text-align: right
+          width: 2em
+          .subscribe
+            @include sprite-menu-icons
+            float: right
 
     .pagination
       font-size: 1.2em
@@ -393,16 +443,19 @@
       border-color: #ffffff
       margin-left: 21em
       padding: 0
-      .sortOptions
+      .topControls
         border-bottom: 1px solid #cacaca
         left: -21em
         padding-bottom: 1em
         right: auto
         top: 0
-        .uniform
-          display: block
-        .sortType, .sortPeriod
-          width: 15em
+        .viewTypeOptions
+          margin-right: 0.2em
+        .sortOptions
+          .uniform
+            display: block
+          .sortType, .sortPeriod
+            width: 10.5em
       .results
         margin-top: 0
     &.noSort .browseFacets

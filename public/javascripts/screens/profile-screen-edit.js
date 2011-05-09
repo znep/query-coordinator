@@ -46,7 +46,6 @@
     });
 
     var $profileImage  = $form.find('#profileImage'),
-        $throbber      = $form.find('.uploadIndicator'),
         $errorMessage  = $form.find('.imageErrorLine'),
         validationHash = {
             ignoreTitle: true,
@@ -68,58 +67,17 @@
     }));
 
     // Upload new profile image
-    var $imageChange = $('.uploadNewImage').click(function(event)
-    { event.preventDefault(); });
+    var $newImage = $('.uploadNewImage');
+    $newImage.siblings('input[type=submit]').remove();
 
-
-    var createImageUploader = function($link, $imageDiv, $errorDiv,
-        uploaderName, urlFunction, loading, success)
-    {
-        new AjaxUpload($link, {
-            action: $link.attr('href'),
-            autoSubmit: true,
-            name: uploaderName,
-            responseType: 'json',
-            onSubmit: function (file, ext)
-            {
-                if (!(ext && /^(jpg|png|jpeg|gif|tif|tiff)$/.test(ext)))
-                {
-                    $errorDiv
-                        .show();
-                    return false;
-                }
-                $errorDiv
-                    .hide();
-                loading();
-            },
-            onComplete: function (file, response)
-            {
-                success();
-
-                $imageDiv.animate({opacity: 0}, {complete: function()
-                    {
-                        $('<img/>')
-                            .attr('src', urlFunction(response))
-                            .load(function() {
-                                $imageDiv
-                                    .empty()
-                                    .append($(this))
-                                    .animate({opacity: 1});
-                            });
-                    }
-                });
-            }
-        });
-    };
-
-    // Don't create the ajax uploader unless the button is present
-    if ($imageChange.length > 0)
-    {
-        createImageUploader($imageChange, $profileImage, $errorMessage,
-            'profileImageInput', function(response) {
-                return response.large + '?_=' + new Date().getTime();
-        }, function() { $throbber.show(); }, function() { $throbber.hide(); });
-    }
+    $newImage.imageUploader({
+        $error: $('.imageError'),
+        $image: $('#profileImage'),
+        name: 'profileImageInput',
+        urlProcessor: function(response) {
+            return response.large;
+        }
+    });
 
     // Only show the State selection if they're in the US
     var $countrySelect = $('#user_country'),
@@ -141,8 +99,6 @@
             return !$.isBlank($(selector).val());
         },
         hasOpenId = $accountForm.hasClass('hasOpenId');
-
-
 
     // Account modifications. Who doesn't love complicated validation rules ??
     $accountForm.validate($.extend({}, validationHash, {
@@ -239,30 +195,16 @@
         }
     });
 
-    var $appTokenImages = $('.uploadAppTokenImage').click(function(event)
-    {
-        event.preventDefault();
-    });
-
-    $appTokenImages.each(function(index, element)
-    {
-        var $link      = $(element),
-            $line      = $link.closest('.line'),
-            $indicator = $line.find('.uploadIndicator'),
-            $thumbArea = $line.find('.thumbnailArea'),
-            $error     = $line.find('.error'),
-            name       = 'appTokenAjax' + index;
-
-        createImageUploader($link, $thumbArea, $error, name, function(response) {
-            return "/api/file_data/" + response.thumbnailSha + "?size=thumb&_=" + new Date().getTime();
-        }, function() {
-            $line.addClass('working');
-        }, function() {
-            $line.removeClass('working');
-            $thumbArea
-                .removeClass('noThumbnail')
-                .addClass('thumbnail');
-        });
+    $('.uploadAppTokenImage').imageUploader({
+        name: 'appTokenUploader',
+        $error: $('.thumbnailError'),
+        $image: $('.thumbnailArea'),
+        success: function($container, $image) {
+            $image.removeClass('noThumbnail').addClass('thumbnail');
+        },
+        urlProcessor: function(response) {
+             return "/api/file_data/" + response.thumbnailSha + "?size=thumb";
+        }
     });
 
     $('.existingTokens .showSecretLink').click(function(e)

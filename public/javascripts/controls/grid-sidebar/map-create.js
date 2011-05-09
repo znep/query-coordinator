@@ -372,9 +372,6 @@
                                columns: {hidden: isEdit}},
                         minimum: 1, addText: 'Add Flyout Details'
                     },
-                    {text: 'Group Pins?', type: 'checkbox',
-                        onlyIf: {field: 'displayFormat.type', value: 'google'},
-                        name: 'displayFormat.clusterMarkers'},
                     {type: 'note', onlyIf: {field: 'displayFormat.type', value: 'esri'},
                         value: 'Colors may be overridden using ' +
                         '<a href="#Conditional Formatting" ' +

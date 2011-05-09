@@ -63,51 +63,20 @@ $(function()
 
         var customUploadCount = 0;
 
-        var customUploadGen = function(features)
+        var customUploadGen = function($features)
         {
-            _.each(features, function(feature)
-            {
-                var $this     = $(feature),
-                    $section  = $this.find('.featureContentCustomSection'),
-                    $link     = $section.find('.editCustomImageButton'),
-                    $errorDiv = $section.find('.customImageError'),
-                    $hiddenId = $section.find('.featureContentImageSha'),
-                    $imageDiv = $section.find('.customImageContainer');
-
-                new AjaxUpload($link, {
-                    action: '/api/assets',
-                    autoSubmit: true,
-                    name: 'customUpload' + (customUploadCount++),
-                    responseType: 'json',
-                    onSubmit: function (file, ext)
-                    {
-                        if (!(ext && /^(jpg|png|jpeg|gif|tif|tiff)$/.test(ext)))
-                        {
-                            $errorDiv.show();
-                            return false;
-                        }
-                        $errorDiv
-                            .hide();
-                        $section.addClass('loading');
-                    },
-                    onComplete: function (file, response)
-                    {
-                        $section.removeClass('loading');
-                        $hiddenId.val(response.id);
-                        $imageDiv.animate({opacity: 0}, {complete: function()
-                            {
-                                $('<img/>')
-                                    .attr('src', generateFileDataUrl(response.id, true))
-                                    .load(function() {
-                                        $imageDiv
-                                            .find('img').remove().end()
-                                            .prepend($(this))
-                                            .animate({opacity: 1});
-                                    });
-                            }
-                        });
-                    }
-                });
+            $features.find('.editCustomImageButton').imageUploader({
+                buttonText: 'Edit',
+                containerSelector: '.featureContentCustomSection',
+                name: 'featuredDatasetUploader',
+                errorSelector: '.customImageError',
+                success: function($c, $i, r) {
+                    $c.removeClass('working');
+                    $c.find('.featureContentImageSha').val(r.id);
+                },
+                urlProcessor: function(response) {
+                    return '/api/assets/' + response.id + '?s=featured';
+                }
             });
         };
 
@@ -230,7 +199,8 @@ $(function()
             var newFeature = $.renderTemplate('feature',
                 [ { title: ds.name,
                     description: ds.description || '',
-                    display: 'thumbnail',
+                    display: !$.isBlank(ds.iconUrl) ? 'custom' : 'thumbnail',
+                    assetId: ds.iconUrl,
                     viewId: ds.id } ], featureDirective);
 
             customUploadGen(newFeature);

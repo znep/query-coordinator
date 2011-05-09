@@ -236,4 +236,16 @@
             updateRemoveLinks();
         }
     });
+
+    $('.customImage #custom_image').imageUploader({
+        $image: $('.customImageContainer'),
+        success: function($container, $image, response) {
+            $image.closest('.line').removeClass('hide');
+            $('.iconUrlField').val(response.id);
+        },
+        urlProcessor: function(response) {
+            return '/api/assets/' + response.id + '?s=medium';
+        }
+    });
+    $('.customImage #delete_custom_image').uniform();
 });

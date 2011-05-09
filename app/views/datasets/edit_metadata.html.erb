@@ -154,6 +154,32 @@
 
     <%- end -%>
 
+    <h2>Image</h2>
+    <div class="customImage">
+      <div class="line clearfix">
+        <label>Upload Image</label>
+        <%= file_field_tag('custom_image', :accept => '(jpe?g|gif|png)',
+                           'data-endpoint' => '/assets',
+                           :class => 'customDatasetImageSelect') %>
+        <span class="uploadIndicator throbber"></span>
+        <div class="additionalHelp">This image will be cropped into a square</div>
+        <span class="imageError flash error">Please select a valid image file</span>
+        <%= hidden_field_tag('view[iconUrl]', @view.iconUrl, :class => 'iconUrlField') %>
+      </div>
+      <div class="line clearfix<%= ' hide' unless @view.iconUrl %>">
+        <label>&nbsp;</label>
+        <div class="customImageContainer">
+          <img alt="image" src="<%= @view.custom_image  %>" class="ajaxImage datasetImage" />
+        </div>
+      </div>
+      <%- if @view.iconUrl.present? -%>
+        <div class="line clearfix">
+          <label>Remove Image</label>
+          <%= check_box_tag ('delete_custom_image') %>
+        </div>
+      <%- end -%>
+    </div>
+
     <h2>Attachments</h2>
 
     <div class="attachments">
@@ -184,7 +210,7 @@
       <div class="line clearfix">
         <label for="attachment_new" class="newAttachmentLabel">New Attachment</label>
         <%= file_field_tag("attachment_new") %>
-        <span class="uploadAttachmentThrobber"></span>
+        <span class="uploadAttachmentThrobber throbber"></span>
       </div>
     </div>
 

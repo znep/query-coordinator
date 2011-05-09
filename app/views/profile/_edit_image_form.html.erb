@@ -13,20 +13,16 @@
       </div>
       <div class="line fullLine imageErrorLine">
         <label>&nbsp;</label>
-        <div class="flash errorMessage error">Please choose an image file (jpg, gif, png or tiff)</div>
+        <div class="flash errorMessage error imageError">Please choose an image file (jpg, gif, png or tiff)</div>
       </div>
-      <%- if params[:no_js].present? -%>
-        <%= file_field_tag('new_image', :accept => 'image/png,image/gif,image/jpeg') %>
-        <%= submit_tag 'Upload New Image' %>
-      <%- else -%>
-        <div class="line fullLine">
-          <label>&nbsp;</label>
-            <%= link_to 'Upload New Image',
-                current_user.profile_image_path(''),
-                :class => 'button default uploadNewImage' %>
-            <span class="uploadIndicator"></span>
-        </div>
-      <%- end -%>
+      <div class="line fullLine">
+        <label>&nbsp;</label>
+          <%= file_field_tag('new_image',{:accept => 'image/png,image/gif,image/jpeg',
+                             'data-endpoint' => current_user.profile_image_path(''),
+                             :class => 'uploadNewImage'}) %>
+          <%= submit_tag 'Upload New Image' %>
+          <span class="uploadIndicator"></span>
+      </div>
     </div>
   </div>
 </div>

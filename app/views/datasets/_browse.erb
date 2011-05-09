@@ -128,30 +128,44 @@
       <h2 title="<%= @title %>"><%= @title %></h2>
     </div>
     <%- end -%>
-    <%- if @view_count > 0 && @sort_opts.length > 0 && !@disable[:sort] -%>
-    <div class="sortOptions">
-      <select class="sortType" name="sortType">
-        <%- @sort_opts.each do |so| -%>
-        <%- next if !so[:requires].nil? && @params[so[:requires]].nil? -%>
-        <option value="<%= so[:value] %>" class="<%= so[:is_time_period] ?
-          'timePeriod' : '' %>" <%= so[:value] == @opts[:sortBy] ?
-          "selected='selected'" : '' %>><%= so[:name] %></option>
-        <%- end -%>
-      </select>
-      <%- time_opts = [
-        {:value => 'week', :name => 'This week'},
-        {:value => 'month', :name => 'This month'},
-        {:value => 'year', :name => 'This year'}
-      ] -%>
-      <select class="sortPeriod <%= !show_time_period ? 'hide' : '' %>"
-        name="sortPeriod">
-        <%- time_opts.each do |to| -%>
-        <option value="<%= to[:value] %>" <%= to[:value] == @params[:sortPeriod] ?
-          "selected='selected'" : '' %>><%= to[:name] %></option>
-        <%- end -%>
-      </select>
+
+    <div class="topControls">
+      <ul class="viewTypeOptions pillButtons">
+        <li><a href="<%= @base_url + '?' + @params.merge({:viewType => 'table'}).to_param %>"
+          class="table <%= @view_type != 'rich' ? 'active' : '' %>" title="View as a compact list">
+          <span class="icon"></span>
+        </a></li>
+        <li><a href="<%= @base_url + '?' + @params.merge({:viewType => 'rich'}).to_param %>"
+          class="fatrow <%= @view_type == 'rich' ? 'active' : '' %>" title="View as a rich list">
+          <span class="icon"></span>
+        </a></li>
+      </ul>
+
+      <%- if @view_count > 0 && @sort_opts.length > 0 && !@disable[:sort] -%>
+      <div class="sortOptions">
+        <select class="sortType" name="sortType">
+          <%- @sort_opts.each do |so| -%>
+          <%- next if !so[:requires].nil? && @params[so[:requires]].nil? -%>
+          <option value="<%= so[:value] %>" class="<%= so[:is_time_period] ?
+            'timePeriod' : '' %>" <%= so[:value] == @opts[:sortBy] ?
+            "selected='selected'" : '' %>><%= so[:name] %></option>
+          <%- end -%>
+        </select>
+        <%- time_opts = [
+          {:value => 'week', :name => 'This week'},
+          {:value => 'month', :name => 'This month'},
+          {:value => 'year', :name => 'This year'}
+        ] -%>
+        <select class="sortPeriod <%= !show_time_period ? 'hide' : '' %>"
+          name="sortPeriod">
+          <%- time_opts.each do |to| -%>
+          <option value="<%= to[:value] %>" <%= to[:value] == @params[:sortPeriod] ?
+            "selected='selected'" : '' %>><%= to[:name] %></option>
+          <%- end -%>
+        </select>
+      </div>
+      <%- end -%>
     </div>
-    <%- end -%>
 
     <div class="results">
       <%- if @view_count == 0 -%>
@@ -169,45 +183,82 @@
       <%- else -%>
       <table class="gridList">
         <colgroup>
+          <%- if @grid_items[:index] -%>
           <col class="index" />
-          <%- if @use_federations -%>
+          <%- end -%>
+          <%- if @grid_items[:domainIcon] -%>
           <col class="domainIcon" />
           <%- end -%>
+          <%- if @grid_items[:nameDesc] -%>
           <col class="nameDesc" />
-          <%- if @dataset_actions -%>
+          <%- end -%>
+          <%- if @grid_items[:largeImage] -%>
+          <col class="largeImage" />
+          <%- end -%>
+          <%- if @grid_items[:richSection] -%>
+          <col class="richSection" />
+          <%- end -%>
+          <%- if @grid_items[:datasetActions] -%>
           <col class="datasetActions" />
           <%- end -%>
+          <%- if @grid_items[:popularity] -%>
           <col class="popularity" />
+          <%- end -%>
+          <%- if @grid_items[:type] -%>
           <col class="type" />
+          <%- end -%>
+          <%- if @grid_items[:rss] -%>
+          <col class="rss" />
+          <%- end -%>
         </colgroup>
         <thead>
           <tr>
+            <%- if @grid_items[:index] -%>
             <th class="index"></th>
-            <%- if @use_federations -%>
+            <%- end -%>
+            <%- if @grid_items[:domainIcon] -%>
             <th class="domainIcon"></th>
             <%- end -%>
+            <%- if @grid_items[:nameDesc] -%>
             <th class="nameDesc">Name</th>
-            <%- if @dataset_actions -%>
+            <%- end -%>
+            <%- if @grid_items[:largeImage] -%>
+            <th class="largeImage"></th>
+            <%- end -%>
+            <%- if @grid_items[:richSection] -%>
+            <th class="richSection"></th>
+            <%- end -%>
+            <%- if @grid_items[:datasetActions] -%>
             <th class="datasetActions"><%= @dataset_actions %></th>
             <%- end -%>
+            <%- if @grid_items[:popularity] -%>
             <th class="popularity">Popularity</th>
+            <%- end -%>
+            <%- if @grid_items[:type] -%>
             <th class="type">Type</th>
+            <%- end -%>
+            <%- if @grid_items[:rss] -%>
+            <th class="rss">RSS</th>
+            <%- end -%>
           </tr>
         </thead>
         <tbody>
           <%- start_index = (@opts[:page] - 1) * @limit + 1 -%>
           <%- @view_results.each_with_index do |v, i| -%>
           <tr class="item collapsed" data-viewId="<%= v.id %>">
+            <%- if @grid_items[:index] -%>
             <td class="index">
               <a class="expander" title="Click to expand" href="#Expand">
                 <span class="icon"></span>
               </a>
               <span class="value"><%= start_index + i %>.</span>
             </td>
-            <%- rel_type = v.federated? ?
-                  CurrentDomain.feature?(:federated_interstitial) ?
+            <%- end -%>
+
+            <%- rel_type = v.federated? ? CurrentDomain.feature?(:federated_interstitial) ?
                     'externalDomain' : 'external' : (@rel_type || '') -%>
-            <%- if @use_federations -%>
+
+            <%- if @grid_items[:domainIcon] -%>
             <td class="domainIcon">
               <a href="<%= v.href(@port) %>" rel="<%= rel_type %>">
                 <img src="<%= v.domain_icon_href %>" alt="<%= v.federated? ?
@@ -215,6 +266,8 @@
               </a>
             </td>
             <%- end -%>
+
+            <%- if @grid_items[:nameDesc] -%>
             <td class="nameDesc">
               <a href="<%= v.href(@port) %>" class="name"
                 rel="<%= rel_type %>"><%= v.name %></a>
@@ -243,7 +296,34 @@
                 </div>
               </div>
             </td>
-            <%- if @dataset_actions -%>
+            <%- end -%>
+
+            <%- if @grid_items[:richSection] -%>
+            <td class="largeImage">
+              <%- img_url = v.preferred_image(@port) -%>
+              <%- if !img_url.nil? -%>
+              <img class="datasetImage datasetIcon" src="<%= img_url %>" />
+              <%- else -%>
+              <div class="datasetIcon type type<%= v.display.type.capitalize %>"
+                title="<%= v.display.name.capitalize %>"><span class="icon"></span></div>
+              <%- end -%>
+            </td>
+            <%- end -%>
+
+            <%- if @grid_items[:richSection] -%>
+            <td class="richSection">
+              <a href="<%= v.href(@port) %>" class="nameLink" rel="<%= rel_type %>">
+                <%- if @use_federations -%>
+                <img class="domainIcon" src="<%= v.domain_icon_href %>" alt="<%= v.federated? ?
+                  'Federated from ' + v.domainCName : CurrentDomain.cname %>" />
+                <%- end -%>
+                <span class="name"><%= v.name %></span>
+              </a>
+              <div class="description"><%= v.description %></div>
+            </td>
+            <%- end -%>
+
+            <%- if @grid_items[:datasetActions] -%>
             <td class="datasetActions">
               <div class="moderateActions">
                 <span class="textStatus"><%= v.moderation_status %></span>
@@ -256,14 +336,29 @@
               </div>
             </td>
             <%- end -%>
+
+            <%- if @grid_items[:popularity] -%>
             <td class="popularity">
               <span class="visits"><%= pluralize(number_with_delimiter(v.viewCount,
                 {:locale => 'en'}), 'view') %></span>
             </td>
+            <%- end -%>
+
+            <%- if @grid_items[:type] -%>
             <td class="type type<%= v.display.type.capitalize %>"
               title="<%= v.display.name.capitalize %>">
               <a href="<%= v.href(@port) %>"><div class="icon"></div></a>
             </td>
+            <%- end -%>
+
+            <%- if @grid_items[:rss] -%>
+            <td class="rss">
+              <%- if v.is_tabular? && !v.is_form? -%>
+              <a href="<%= v.rss(@port) %>" class="subscribe"
+                title="Subscribe to changes on this view"><span class="icon"></span></a>
+              <%- end -%>
+            </td>
+            <%- end -%>
           </tr>
           <%- end -%>
         </tbody>

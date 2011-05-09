@@ -133,14 +133,18 @@
       display: inline-block
       margin-right: 1em
       vertical-align: middle
+      .ie7 &
+        display: inline
       li a
         @include renderType-toggle-icons
 
     .sortOptions
       display: inline-block
       vertical-align: middle
-      .ie7 & .uniform
+      .ie7 &
         display: inline
+        .uniform
+          display: inline
       .sortType
         width: 11em
       .sortPeriod

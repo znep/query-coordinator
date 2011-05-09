@@ -352,8 +352,11 @@
             <%- end -%>
 
             <%- if @grid_items[:rss] -%>
-            <td class="rss" title="Subscribe to changes on this view">
-              <a href="<%= v.rss(@port) %>" class="subscribe"><span class="icon"></span></a>
+            <td class="rss">
+              <%- if v.is_tabular? && !v.is_form? -%>
+              <a href="<%= v.rss(@port) %>" class="subscribe"
+                title="Subscribe to changes on this view"><span class="icon"></span></a>
+              <%- end -%>
             </td>
             <%- end -%>
           </tr>

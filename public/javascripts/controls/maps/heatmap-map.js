@@ -73,6 +73,11 @@
             config.hideLayers = config.hideLayers ||
                 !mapObj.settings.view.displayFormat.layers
                 || mapObj.settings.view.displayFormat.layers.length == 0;
+            if (mapObj.settings.view.displayFormat.forceBasemap)
+            {
+                config.hideLayers = false;
+                config.ignoreTransforms = true;
+            }
             if (config.hideLayers && mapObj.hideLayers) { mapObj.hideLayers(); }
 
             // Currently just making sure a config update to region is caught.

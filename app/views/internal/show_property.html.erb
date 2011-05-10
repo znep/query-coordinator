@@ -14,7 +14,10 @@
   <div class='content'>
     <%= render :partial => 'production_warning' %>
     <h1>
-      <%= @property_key %> for
+      <%= @property_key %> in
+      <a href="/internal/orgs/<%= @domain.organizationId %>/domains/<%= @domain.cname %>/site_config/<%= @config.id %>">
+        <%= @config.name %>
+      </a> for
       <a href="/internal/orgs/<%= @domain.organizationId %>/domains/<%= @domain.cname %>">
         <%= @domain.name %> (<%= @domain.cname %>)
       </a>

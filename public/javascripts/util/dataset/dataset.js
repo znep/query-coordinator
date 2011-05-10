@@ -651,7 +651,7 @@ this.Dataset = ServerModel.extend({
 
         this._setRowFormatting(row);
 
-        this.trigger('row_change', [parRow || row]);
+        this.trigger('row_change', [[parRow || row]]);
     },
 
     saveRow: function(rowId, parRowId, parColId, successCallback, errorCallback)
@@ -908,7 +908,7 @@ this.Dataset = ServerModel.extend({
                             rowChanges[item.rowid] = r;
                         }
                     });
-                    ds.trigger('row_change', _.values(rowChanges));
+                    ds.trigger('row_change', [_.values(rowChanges)]);
                     if (_.isFunction(callback))
                     { callback(ds._commentLocations); }
                 }});
@@ -938,7 +938,7 @@ this.Dataset = ServerModel.extend({
                 {
                     r.annotations = r.annotations || {};
                     r.annotations[c.lookup] = 'comments';
-                    ds.trigger('row_change', [r]);
+                    ds.trigger('row_change', [[r]]);
                 }
             }
 
@@ -2130,7 +2130,7 @@ this.Dataset = ServerModel.extend({
             _.each(!$.isBlank(req.parentColumn) ?
                 req.parentColumn.realChildColumns : ds.realColumns, function(c)
                     { req.row.error[c.id] = true; });
-            ds.trigger('row_change', [req.parentRow || req.row]);
+            ds.trigger('row_change', [[req.parentRow || req.row]]);
             if (_.isFunction(req.error)) { req.error(xhr); }
         };
 
@@ -2195,7 +2195,7 @@ this.Dataset = ServerModel.extend({
 
             if (!newRow._underlying) { delete r.row.noMatch; }
 
-            ds.trigger('row_change', [r.parentRow || r.row]);
+            ds.trigger('row_change', [[r.parentRow || r.row]]);
             ds.aggregatesChanged();
             if (_.isFunction(r.success)) { r.success(r.row); }
         };
@@ -2205,7 +2205,7 @@ this.Dataset = ServerModel.extend({
         {
             _.each(r.columnsSaving, function(cId)
                 { r.row.error[cId] = true; });
-            ds.trigger('row_change', [r.parentRow || r.row]);
+            ds.trigger('row_change', [[r.parentRow || r.row]]);
             if (_.isFunction(r.error)) { r.error(xhr); }
         };
 

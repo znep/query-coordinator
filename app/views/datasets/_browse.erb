@@ -130,6 +130,7 @@
     <%- end -%>
 
     <div class="topControls">
+      <%- if !@hide_view_types -%>
       <ul class="viewTypeOptions pillButtons">
         <li><a href="<%= @base_url + '?' + @params.merge({:viewType => 'table'}).to_param %>"
           class="table <%= @view_type != 'rich' ? 'active' : '' %>" title="View as a compact list">
@@ -140,6 +141,7 @@
           <span class="icon"></span>
         </a></li>
       </ul>
+      <%- end -%>
 
       <%- if @view_count > 0 && @sort_opts.length > 0 && !@disable[:sort] -%>
       <div class="sortOptions">
@@ -298,7 +300,7 @@
             </td>
             <%- end -%>
 
-            <%- if @grid_items[:richSection] -%>
+            <%- if @grid_items[:largeImage] -%>
             <td class="largeImage">
               <%- img_url = v.preferred_image(@port) -%>
               <%- if !img_url.nil? -%>

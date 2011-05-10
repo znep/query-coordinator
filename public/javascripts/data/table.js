@@ -1087,9 +1087,12 @@
             var refWidth = 0;
             var refHeight = 0;
             var minWidths = [];
-            $refCells.add($extraItems).each(function()
+            // $().add().each would be wonderful here; but it reorders elements
+            // into DOM order, which can make $extraItems come before $refCells,
+            // in which case the minWidths order is all screwed up
+            _.each($.makeArray($refCells).concat($.makeArray($extraItems)), function(t)
             {
-                var $t = $(this);
+                var $t = $(t);
                 var w = $t.outerWidth();
                 refWidth += w;
                 minWidths.push(w);

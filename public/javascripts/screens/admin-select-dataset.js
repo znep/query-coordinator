@@ -30,7 +30,6 @@ $(function()
             throw "Can't find the blist.common.selectedDataset handler in the parent!"
         }
     });
-    $('.nameDesc a.name').attr('rel', 'external');
 });
 
 })(jQuery);

@@ -220,6 +220,7 @@ javascripts:
     - public/javascripts/controls/render-type-manager.js
     - public/javascripts/screens/widget.js
   dataset-about-full:
+    - public/javascripts/util/inline-login.js
     - public/javascripts/controls/stars.js
     - public/javascripts/controls/dataset-controls.js
     - public/javascripts/controls/blob-dataset.js

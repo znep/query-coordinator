@@ -364,6 +364,7 @@ class DatasetsController < ApplicationController
 
   def about
     @view = get_view(params[:id])
+    @user_session = UserSession.new if !current_user
   end
 
 protected

@@ -57,7 +57,8 @@
       "archived and cannot be modified."%>">Snapshotted <%= blist_date_time(@view.publicationDate) %></h3>
     <%- end -%>
 
-    <%- if @view.is_unpublished? -%>
+    <%- if @view.is_unpublished? && !current_user.nil? && (@view.owned_by?(current_user) ||
+          current_user.has_right?('edit_other_datasets')) -%>
     <a href="#Publish" class="toolbarButton publish"
       title="<%= "This dataset is a working copy and is not publicly available.
         Once you have made the desired changes, this dataset should be published

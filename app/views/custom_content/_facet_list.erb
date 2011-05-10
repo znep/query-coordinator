@@ -1,0 +1,13 @@
+<%- if widget.facet_values.empty? -%>
+  <div id="<%= widget.elem_id %>" class="facetList facetListEmpty clearfix">
+    <p>The facet <%= Canvas::Environment.facet_name %> is currently empty.</p>
+  </div>
+<%- else -%>
+  <ul id="<%= widget.elem_id %>" class="facetList clearfix">
+    <%- widget.facet_values.each do |facet_value| -%>
+      <li><a href="/facet/<%= Canvas::Environment.facet_name %>/<%= facet_value.convert_to_url %>">
+        <%= facet_value %>
+      </a></li>
+    <%- end -%>
+  </ul>
+<%- end -%>

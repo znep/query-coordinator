@@ -13,8 +13,11 @@ class CustomContentController < ApplicationController
   end
 
   def show_facet_listing
-    # for now
-    return render_404
+    Canvas::Environment.context = :facet_listing
+    Canvas::Environment.facet_name = params[:facet_name]
+
+    @page_config = get_config('facet_listing', params[:facet_name])
+    return render_404 unless @page_config
 
     @stylesheet = "facet_listing/#{params[:facet_name]}"
     render :action => 'show'
@@ -47,6 +50,13 @@ private
 
     # turn toplevel contents into objects; rest will transform as needed
     page_config.contents = Canvas::CanvasWidget.from_config(page_config.contents, 'Canvas')
+
+    # make config available to all
+    Canvas::Environment.page_config = page_config.reject{ |key| key == 'contents' }
+
+    # ready whatever we might need
+    threads = page_config.contents.map{ |widget| Thread.new{ widget.prepare! } if widget.can_render? }
+    threads.compact.each{ |thread| thread.join }
 
     return page_config
   end

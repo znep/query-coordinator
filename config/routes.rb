@@ -240,6 +240,7 @@ ActionController::Routing::Routes.draw do |map|
       :external => :get
     },
     :member => {
+      :about => :get,
       :math_validate => :post,
       :save_filter => :post,
       :modify_permission => :post,
@@ -253,67 +254,29 @@ ActionController::Routing::Routes.draw do |map|
 
   # Dataset SEO URLs (only add here if the action has a view with it;
   # otherwise just add to the :member key in the datasets resource above.)
-  map.connect ':category/:view_name/:id', :controller => 'datasets',
-    :action => 'show',
-    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
-      :category => /(\w|-)+/},
-    :conditions => {:method => :get}
-
-  map.connect ':category/:view_name/:id/:row_id', :controller => 'datasets',
-    :action => 'show',
-    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
-      :category => /(\w|-)+/, :row_id => /\d+/},
-    :conditions => {:method => :get}
-
-  map.connect ':category/:view_name/:id/row_index/:row_index',
-    :controller => 'datasets', :action => 'show',
-    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
-      :category => /(\w|-)+/, :row_index => /\d+/},
-    :conditions => {:method => :get}
-
-  map.connect ':category/:view_name/:id/widget_preview', :controller => 'datasets',
-    :action => 'widget_preview',
-    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
-      :category => /(\w|-)+/},
-    :conditions => {:method => :get}
-
-  map.connect ':category/:view_name/:id/edit_metadata', :controller => 'datasets',
-    :action => 'edit_metadata',
-    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
-      :category => /(\w|-)+/},
-    :conditions => {:method => [:get, :post]}
-
-  map.connect ':category/:view_name/:id/edit_rr', :controller => 'datasets',
-    :action => 'edit_rr', :conditions => { :method => :get },
-    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
-      :category => /(\w|-)+/}
-
-  map.connect ':category/:view_name/:id/alt', :controller => 'datasets',
-    :action => 'alt',
-    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
-      :category => /(\w|-)+/},
-    :conditions => {:method => [:get, :post]}
-
-  map.connect ':category/:view_name/:id/thumbnail', :controller => 'datasets',
-    :action => 'thumbnail',
-    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
-      :category => /(\w|-)+/},
-    :conditions => {:method => :get}
-
-  map.connect ':category/:view_name/:id/stats', :controller => 'datasets',
-    :action => 'stats', :conditions => { :method => :get },
-    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
-      :category => /(\w|-)+/}
-
-  map.connect ':category/:view_name/:id/form_success', :controller => 'datasets',
-    :action => 'form_success', :conditions => { :method => :get },
-    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
-      :category => /(\w|-)+/}
-
-  map.connect ':category/:view_name/:id/form_error', :controller => 'datasets',
-    :action => 'form_error', :conditions => { :method => :get },
-    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
-      :category => /(\w|-)+/}
+  map.with_options(:controller => 'datasets',
+                   :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
+                                     :category => /(\w|-)+/},
+                   :conditions => {:method => :get}) do |ds|
+    ds.connect ':category/:view_name/:id', :action => 'show'
+    ds.connect ':category/:view_name/:id/:row_id', :action => 'show',
+      :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
+        :category => /(\w|-)+/, :row_id => /\d+/}
+    ds.connect ':category/:view_name/:id/row_index/:row_index', :action => 'show',
+      :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
+        :category => /(\w|-)+/, :row_index => /\d+/}
+    ds.connect ':category/:view_name/:id/widget_preview', :action => 'widget_preview'
+    ds.connect ':category/:view_name/:id/edit_rr', :action => 'edit_rr'
+    ds.connect ':category/:view_name/:id/thumbnail', :action => 'thumbnail'
+    ds.connect ':category/:view_name/:id/stats', :action => 'stats'
+    ds.connect ':category/:view_name/:id/form_success', :action => 'form_success'
+    ds.connect ':category/:view_name/:id/form_error', :action => 'form_error'
+    ds.connect ':category/:view_name/:id/about', :action => 'about'
+    ds.with_options(:conditions => {:method => [:post, :get]}) do |posters|
+      posters.connect ':category/:view_name/:id/alt', :action => 'alt'
+      posters.connect ':category/:view_name/:id/edit_metadata', :action => 'edit_metadata'
+    end
+  end
 
   # Redirect bounce for metric snatching
   map.metric_redirect 'download/:id/:type', :controller => 'datasets',

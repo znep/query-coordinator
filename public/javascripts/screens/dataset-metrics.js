@@ -8,7 +8,7 @@ $(function()
              verbPhraseSingular: 'page viewed' }};
 
     var downloadsAction = (blist.dataset.viewType == 'href' ||
-        blist.dataset.viewType == 'blob') ?  'files-downloaded' : 'downloads';
+        blist.dataset.viewType == 'blobby') ?  'files-downloaded' : 'downloads';
 
     var downloadsSummary = {id: 'summaryDownloads', displayName: 'Downloads',
             summary: { plus: downloadsAction, verbPhrase: 'downloads',

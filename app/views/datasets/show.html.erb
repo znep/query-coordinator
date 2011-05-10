@@ -20,72 +20,8 @@
 
 <%= display_standard_flashes %>
 
-<div id="datasetBar" class="clearfix <%= @view.is_blist? ? 'dataset' : '' %>">
-  <div id="infoBox">
-    <div id="datasetIcon" class="type<%= @view.display.type.capitalize %>">
-      <span class="icon currentViewName"><%= @view.display.name %></span>
-      <span class="alertIcon"></span>
-    </div>
-    <div class="unsavedLine">
-      <h2 id="unsavedTitle">Unsaved View</h2>
-      <%- if @view.has_rights?('update_view') && !@view.is_snapshotted? -%>
-      <a href="#Save" title="Save current view" data-savingText="Saving..."
-        class="save toolbarButton">Save</a>
-      <%- end -%>
-      <%- if @view.is_published? -%>
-      <a href="#SaveAs" title="Save view as..."
-        class="saveAs toolbarButton">Save As...</a>
-      <%- end -%>
-      <a href="#Revert" title="Revert to saved view"
-        class="revert toolbarButton">Revert</a>
-      <%- if @view.is_unpublished? -%>
-      <span class="unpublishedRevert">These changes cannot be saved to a working copy of a dataset,
-        but can be made on the published dataset and saved as a view.</span>
-      <%- end -%>
-      <%- if @view.is_snapshotted? -%>
-      <span class="snapshottedRevert">Snapshotted datasets and views cannot be created or modified</span>
-      <%- end -%>
-    </div>
-
-    <%- if @view.is_unpublished? -%>
-    <h3 class="unpublished" title="<%= "This is a copy of the dataset that allows you " +
-      "to make changes to it. It is not visible to others until you publish it."%>">[Working Copy]</h3>
-    <%- end -%>
-    <h2 id="datasetName" class="clipText currentViewName"><%= @view.name %></h2>
-    <%- if @view.is_snapshotted? -%>
-    <h3 class="snapshotted" title="<%= "This is a previously published version of the dataset. It is" +
-      "archived and cannot be modified."%>">Snapshotted <%= blist_date_time(@view.publicationDate) %></h3>
-    <%- end -%>
-
-    <%- if @view.is_unpublished? && !current_user.nil? && (@view.owned_by?(current_user) ||
-          current_user.has_right?('edit_other_datasets')) -%>
-    <a href="#Publish" class="toolbarButton publish"
-      title="<%= "This dataset is a working copy and is not publicly available.
-        Once you have made the desired changes, this dataset should be published
-        make it publicly available." %>">Publish Dataset</a>
-    <%- end -%>
-
-    <div class="basedOnParent">
-      Based on <a class="parentName"></a>
-    </div>
-    <div class="basedOnTemp">
-      Based on <%= @view.is_unpublished? ? 'the working copy of ' : '' %>
-      <a class="revertLink currentViewName" href="#revert"><%= @view.name %></a>
-    </div>
-
-    <%- if !@view.is_published? -%>
-    <a id="publishedLink">View the published <span class="publishedName">dataset</span></a>
-    <%- end -%>
-
-    <div id="description">
-      <p class="collapsed"><%= raw(auto_link(h(@view.description), :html => { :rel => 'nofollow' })) || '(No description provided)'%></p>
-      <a href="#expand" class="descriptionExpander rightArrow" title="Click to expand">
-        <span class="icon"></span>
-      </a>
-    </div>
-
-  </div>
-
+<%- sidebar_position = CurrentDomain.property(:position, :sidebar) || 'right' -%>
+<% content_for :dataset_actions do %>
   <div id="actionBox" class="clearfix">
     <ul id="toolbarOptions" class="clearfix">
       <%- if @view.is_published? -%>
@@ -140,9 +76,6 @@
     <span class="icon">Toggle full screen</span>
   </a>
 
-  <%- sidebar_config = CurrentDomain.configuration('sidebar') -%>
-  <%- sidebar_position = (!sidebar_config.nil? ?
-    sidebar_config.properties.position : nil) || 'right' -%>
   <div id="actionBar" class="clearfix position-<%= sidebar_position %>">
     <%- if @view.can_modify_data? -%>
     <div id="editBar" class="clearfix">
@@ -211,8 +144,8 @@
       </ul>
     </div>
   </div>
-
-</div>
+<% end %>
+<%= render :partial => 'dataset_bar', :locals => {:sidebar_position => sidebar_position} %>
 
 <div class="outerContainer">
   <div id="renderTypeContainer" class="innerContainer">
@@ -546,35 +479,7 @@
   <%= render :partial => 'save_view_dialog' %>
 
   <%- unless current_user -%>
-    <div id="login" class="modalDialog">
-      <a href="#close" class="jqmClose modalDialogClose">Close</a>
-      <h2>Sign in using your Socrata ID</h2>
-
-      <%= display_standard_flashes %>
-
-      <% form_for @user_session, :html => { :class => "commonForm" } do |f| %>
-        <%= render :partial => "user_sessions/login_form_data_new", :locals => { :f => f } %>
-      <% end %>
-
-      <ul class="accountMaint">
-        <li><%= link_to "Forgot your password?", forgot_password_path, :class => 'noRedirPrompt' %></li>
-        <li><%= link_to "No account yet?", signup_url, { :class => "signupLink noRedirPrompt" } %></li>
-      </ul>
-
-      <script type="text/javascript">
-        blist.secureUrl = "https://<%= request.host %>:<%= SslRequirement.port_for_protocol('https') %>";
-      </script>
-    </div>
-
-    <div id="signup" class="modalDialog">
-      <a href="#close" class="jqmClose modalDialogClose">Close</a>
-      <h2>We're glad you want to join Socrata!</h2>
-
-      <% form_for :signup, @signup, :url => account_path, :html => {:id => 'signupForm',
-                  :class => 'commonForm', :multipart => true} do |f| %>
-       <%= render :partial => "accounts/signup_form_data_new", :locals => { :f => f, :is_modal => true } %>
-      <% end %>
-    </div>
+    <%= render :partial => 'inline_login' %>
   <%- end -%>
 <%- end -%>
 

@@ -82,9 +82,7 @@ protected
   end
 
   def custom_facets
-    config = CurrentDomain.configuration('catalog')
-    return nil if config.nil?
-    return config.properties.facets
+    config = CurrentDomain.property(:facets, :catalog)
   end
 
   def process_browse!(options = {})
@@ -111,7 +109,7 @@ protected
         f.sourceDomainCName != CurrentDomain.cname }.
         length > 0 if @use_federations.nil?
 
-    @view_type = browse_params['viewType'] || cfg_props.default_view_type || 'table'
+    @view_type ||= browse_params['viewType'] || cfg_props.default_view_type || 'table'
     @grid_items = @view_type == 'rich' ?
       {:largeImage => true, :richSection => true, :popularity => true, :type => true, :rss => true} :
       {:index => true, :domainIcon => @use_federations, :nameDesc => true,

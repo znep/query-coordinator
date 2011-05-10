@@ -26,7 +26,7 @@
           <%- if field['type'] -%>
             <%- if field['type'] == 'fixed' -%>
               <%= select_tag(form_name, options_for_select(['']+field['options'], existing_value),
-                             :class => 'required') %>
+                             :class => (required ? 'required' : '')) %>
             <%- end -%>
           <%- else -%>
             <%= text_field_tag(form_name, existing_value, :class => (required ? 'required' : '')) %>

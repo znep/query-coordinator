@@ -238,6 +238,54 @@
   &.typeSnapshotted #{$subselector}
     background-position: 0 -510px
 
+// icons/type_icons_50.png
+@mixin sprite-type-icons-50($subselector: '.icon')
+  #{$subselector},
+  .alertIcon
+    @include text-hiding
+    @include ie6-fix
+    background-image: url(/stylesheets/images/icons/type_icons_50.png)
+    height: 50px
+    width: 50px
+
+  &.typeFilter #{$subselector}
+    background-position: 0 0
+  &.typeChart #{$subselector}
+    background-position: 0 -50px
+  &.typeMap #{$subselector}
+    background-position: 0 -100px
+  &.typeBlist #{$subselector}
+    background-position: 0 -150px
+  &.comments #{$subselector}
+    background-position: 0 -200px
+  &.embed #{$subselector}
+    background-position: 0 -250px
+  &.views #{$subselector}
+    background-position: 0 -300px
+  &.downloads #{$subselector}
+    background-position: 0 -350px
+  &.print #{$subselector}
+    background-position: 0 -400px
+  &.typeForm #{$subselector}
+    background-position: 0 -450px
+  &.typeCalendar #{$subselector}
+    background-position: 0 -500px
+  &.typeBlob #{$subselector}
+    background-position: 0 -550px
+  &.typeGrouped #{$subselector}
+    background-position: 0 -600px
+  &.api #{$subselector}
+    background-position: 0 -650px
+  &.alert #{$subselector},
+  .alertIcon
+    background-position: 0 -700px
+  &.typeHref #{$subselector}
+    background-position: 0 -750px
+  &.typeUnpublished #{$subselector}
+    background-position: 0 -800px
+  &.typeSnapshotted #{$subselector}
+    background-position: 0 -850px
+
 // icons/feed_icons.png
 @mixin sprite-feed-icons($subselector: '.icon')
   #{$subselector}
@@ -364,7 +412,7 @@
 @mixin renderType-toggle-icons($subselector: '.icon')
   #{$subselector}
     @include text-hiding
-    background-image: url(/stylesheets/images/icons/renderType_toggle_icons.png)
+    background-image: url(/stylesheets/images/icons/renderType_toggle_icons.png?1)
     height: 13px
     width: 13px
   @include icon-include-active(blist, $subselector, 0, -13px)
@@ -376,6 +424,7 @@
   @include icon-include-active(map, $subselector, -39px, -13px)
   @include icon-include-active(page, $subselector, -52px, -13px)
   @include icon-include-active(fatrow, $subselector, -65px, -13px)
+  @include icon-include-active(list, $subselector, -78px, -13px)
 
 // icons/approval_toggle_icons.png
 @mixin approval-toggle-icons($subselector: '.icon')
@@ -736,3 +785,25 @@
     background-repeat: no-repeat
     height: 16px
     width: 16px
+
+// Cell annotation icons (comments, notes)
+@mixin cell-annotation-icons($selected: false, $active: false)
+  background-image: url(/stylesheets/images/icons/cell_annotation_icons.png)
+  background-repeat: no-repeat
+  display: block
+  height: 10px
+  width: 10px
+
+  @if $active == true
+    &.comments
+      background-position: 0 -40px
+  @else if $selected == true
+    &.comments
+      background-position: 0 -10px
+    &.notes
+      background-position: 0 -30px
+  @else
+    &.comments
+      background-position: 0 0
+    &.notes
+      background-position: 0 -20px

@@ -1,0 +1,29 @@
+<% content_for :head do %>
+  <title>About <%= h(@view.name) + " | " + CurrentDomain.strings.site_title %></title>
+  <%= rendered_stylesheet_tag 'dataset-about-full' %>
+<% end %>
+
+<%= render :partial => 'dataset_bar', :locals => {:no_actions => true, :link_back => true} %>
+
+<div class="outerContainer" id="aboutSection">
+  <div class="innerContainer">
+    <div class="fullHeight">
+      <%= render :partial => 'about_dataset', :locals => {:full_page => true} %>
+    </div>
+  </div>
+</div>
+
+<% content_for :templates do %>
+  <%= render :partial => 'flag_message' %>
+<% end %>
+<%- unless current_user -%>
+  <% content_for :modals do %>
+    <%= render :partial => 'inline_login' %>
+  <% end %>
+<%- end -%>
+<% content_for :js_footer do %>
+  <script type="text/javascript">
+    blist.dataset = new Dataset(<%= safe_json(@view) %>);
+  </script>
+  <%= include_javascripts 'dataset-about-full' %>
+<% end %>

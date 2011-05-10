@@ -678,7 +678,7 @@ this.Dataset = ServerModel.extend({
 
         this._setRowFormatting(row);
 
-        this.trigger('row_change', [parRow || row]);
+        this.trigger('row_change', [[parRow || row]]);
     },
 
     saveRow: function(rowId, parRowId, parColId, successCallback, errorCallback)
@@ -909,6 +909,40 @@ this.Dataset = ServerModel.extend({
         else { callback(ds._commentCache[cacheId]); }
     },
 
+    getCommentLocations: function(callback)
+    {
+        var ds = this;
+        if ($.isBlank(ds._commentLocations))
+        {
+            ds.makeRequest({url: '/views/' + ds.id + '/comments.json',
+                params: {method: 'getCellsWithComments'}, type: 'GET', pageCache: true,
+                success: function(ci)
+                {
+                    ds._commentLocations = {};
+                    var rowChanges = {};
+                    _.each(ci, function(item)
+                    {
+                        var c = ds.columnForTCID(item.tablecolumnid);
+                        if ($.isBlank(c)) { return; }
+
+                        ds._commentLocations[item.rowid] = ds._commentLocations[item.rowid] || {};
+                        ds._commentLocations[item.rowid][item.tablecolumnid] = true;
+                        var r = ds.rowForID(item.rowid);
+                        if (!$.isBlank(r))
+                        {
+                            r.annotations = r.annotations || {};
+                            r.annotations[c.lookup] = 'comments';
+                            rowChanges[item.rowid] = r;
+                        }
+                    });
+                    ds.trigger('row_change', [_.values(rowChanges)]);
+                    if (_.isFunction(callback))
+                    { callback(ds._commentLocations); }
+                }});
+        }
+        else { if(_.isFunction(callback)) { callback(ds._commentLocations); } }
+    },
+
     addComment: function(comment, successCallback, errorCallback)
     {
         var ds = this;
@@ -920,6 +954,21 @@ this.Dataset = ServerModel.extend({
             { ds.numberOfComments++; }
             if (!$.isBlank(ds._commentCache[cacheId])) { ds._commentCache[cacheId].unshift(newCom); }
             ds._commentByID[newCom.id] = newCom;
+
+            if (!$.isBlank(ds._commentLocations) && !$.isBlank(newCom.rowId))
+            {
+                ds._commentLocations[newCom.rowId] = ds._commentLocations[newCom.rowId] || {};
+                ds._commentLocations[newCom.rowId][newCom.tableColumnId] = true;
+                var r = ds.rowForID(newCom.rowId);
+                var c = ds.columnForTCID(newCom.tableColumnId);
+                if (!$.isBlank(r) && !$.isBlank(c))
+                {
+                    r.annotations = r.annotations || {};
+                    r.annotations[c.lookup] = 'comments';
+                    ds.trigger('row_change', [[r]]);
+                }
+            }
+
             if (_.isFunction(successCallback)) { successCallback(newCom); }
         };
 
@@ -1857,6 +1906,16 @@ this.Dataset = ServerModel.extend({
             });
             delete (tr.meta || {}).invalidCells;
 
+            _.each((ds._commentLocations || {})[tr.id] || {}, function(v, tcId)
+            {
+                var c = ds.columnForTCID(tcId);
+                if (!$.isBlank(c))
+                {
+                    tr.annotations = tr.annotations || {};
+                    tr.annotations[c.lookup] =  'comments';
+                }
+            });
+
             ds._setRowFormatting(tr);
 
             return tr;
@@ -2201,7 +2260,7 @@ this.Dataset = ServerModel.extend({
             _.each(!$.isBlank(req.parentColumn) ?
                 req.parentColumn.realChildColumns : ds.realColumns, function(c)
                     { req.row.error[c.id] = true; });
-            ds.trigger('row_change', [req.parentRow || req.row]);
+            ds.trigger('row_change', [[req.parentRow || req.row]]);
             if (_.isFunction(req.error)) { req.error(xhr); }
         };
 
@@ -2266,7 +2325,7 @@ this.Dataset = ServerModel.extend({
 
             if (!newRow._underlying) { delete r.row.noMatch; }
 
-            ds.trigger('row_change', [r.parentRow || r.row]);
+            ds.trigger('row_change', [[r.parentRow || r.row]]);
             ds.aggregatesChanged();
             if (_.isFunction(r.success)) { r.success(r.row); }
         };
@@ -2276,7 +2335,7 @@ this.Dataset = ServerModel.extend({
         {
             _.each(r.columnsSaving, function(cId)
                 { r.row.error[cId] = true; });
-            ds.trigger('row_change', [r.parentRow || r.row]);
+            ds.trigger('row_change', [[r.parentRow || r.row]]);
             if (_.isFunction(r.error)) { r.error(xhr); }
         };
 

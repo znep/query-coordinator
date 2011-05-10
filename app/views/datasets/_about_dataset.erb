@@ -17,6 +17,10 @@
     <a href="<%= @view.href %>/edit_metadata" class="fullButton editMetadataButton">Edit Metadata</a>
   <%- end -%>
 
+  <%- unless local_assigns[:full_page] -%>
+    <a href="<%= @view.href %>/about" class="viewFullLink fullButton">View Full Page</a>
+  <%- end -%>
+
   <%- if @view.custom_image.present? -%>
   <div class="customImageSection clearfix">
     <div class="sectionContent">

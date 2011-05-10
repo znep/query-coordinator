@@ -1094,9 +1094,12 @@
             var refWidth = 0;
             var refHeight = 0;
             var minWidths = [];
-            $refCells.add($extraItems).each(function()
+            // $().add().each would be wonderful here; but it reorders elements
+            // into DOM order, which can make $extraItems come before $refCells,
+            // in which case the minWidths order is all screwed up
+            _.each($.makeArray($refCells).concat($.makeArray($extraItems)), function(t)
             {
-                var $t = $(this);
+                var $t = $(t);
                 var w = $t.outerWidth();
                 refWidth += w;
                 minWidths.push(w);
@@ -2754,6 +2757,10 @@
                     var specialClasses = !mcol.parentColumn ? "(' ' + ((cellClasses[row.id] || {})" +
                         mcol.dataLookupExpr + " || []).join(' '))" : "''";
 
+                    var annotations = !mcol.parentColumn ? "((row.annotations || {})" +
+                        mcol.dataLookupExpr + " ? '<span class=\"annotation ' + row.annotations" +
+                        mcol.dataLookupExpr + " + '\"></span>' : '')" : "''";
+
                     renderer = "(!row" + childLookup + ".invalid" +
                         (mcol.directLookupExpr || mcol.dataLookupExpr) + " ? " +
                         renderer("row" + mcol.dataLookupExpr, false, mcol,
@@ -2774,7 +2781,7 @@
                             " ? \" error\" : \"\") + " +
                             specialClasses + " + " +
                             "\"'>"+ drillDown + "\", " +
-                            renderer + ", \"</div>\""
+                            renderer + ", " + annotations + ", \"</div>\""
                     );
 
                     lcols.push({
@@ -4130,6 +4137,9 @@
                 renderFooter();
                 initRows();
 
+                // Request comment indicators
+                model.view.getCommentLocations();
+
                 model.view.bind('row_change', function(rows)
                         { updateRows(rows); })
                     .bind('query_change', updateHeader)
@@ -4171,8 +4181,7 @@
             // available
             if (model.dataLength() < 0)
             {
-                model.loadRows(0, 50, function()
-                { isReady(); });
+                model.loadRows(0, 50, function() { isReady(); });
             }
             else { isReady(); }
         });

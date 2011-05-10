@@ -134,6 +134,11 @@ class CurrentDomain
     end
   end
 
+  def self.property(prop, config = 'site_theme')
+    cfg = self.configuration(config.to_s)
+    cfg.properties[prop] if cfg
+  end
+
   def self.properties
     if @@current_domain[:site_properties].nil?
       conf = self.current_theme

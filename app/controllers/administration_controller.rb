@@ -34,6 +34,9 @@ class AdministrationController < ApplicationController
 
   def select_dataset
     @browse_in_container = true
+    @rel_type = 'external'
+    @view_type = 'table'
+    @hide_view_types = true
     process_browse!
   end
 

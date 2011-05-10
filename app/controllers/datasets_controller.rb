@@ -1,6 +1,6 @@
 class DatasetsController < ApplicationController
   include DatasetsHelper
-  skip_before_filter :require_user, :only => [:show, :blob, :alt, :widget_preview, :contact, :math_validate, :form_success, :form_error, :external, :download]
+  skip_before_filter :require_user, :only => [:show, :blob, :alt, :widget_preview, :contact, :math_validate, :form_success, :form_error, :external, :download, :about]
 
 # collection actions
   def new
@@ -362,6 +362,11 @@ class DatasetsController < ApplicationController
     redirect_to blob['href']
   end
 
+  def about
+    @view = get_view(params[:id])
+    @user_session = UserSession.new if !current_user
+  end
+
 protected
   def get_view(id)
     begin
@@ -470,6 +475,9 @@ protected
             end
           end
         end
+      end
+      if params[:view][:metadata][:rdfClass] =~ /^_.*/
+        params[:view][:metadata][:rdfClass] = nil
       end
       params[:view][:metadata] = (view.data['metadata'] || {}).
         deep_merge(params[:view][:metadata] || {})

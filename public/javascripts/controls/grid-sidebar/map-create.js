@@ -223,8 +223,11 @@
         { field: 'displayFormat.type', value: 'esri' }, sectionOnlyIf];
     configLayersHeatmap.type = 'selectable';
     configLayersHeatmap.name = 'heatmapLayers';
-    configLayersHeatmap.fields[0].minimum = 0;
+    configLayersHeatmap.fields[1].minimum = 0;
     configLayersHeatmap.wizard = 'Do you want to add a layer?';
+    configLayersHeatmap.fields.push({ text: 'Force Display', type: 'checkbox',
+        name: 'displayFormat.forceBasemap', wizard: 'Check this to require the underlying map ' +
+        'to display regardless.' });
 
     var configName = 'visualize.mapCreate';
 

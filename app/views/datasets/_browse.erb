@@ -133,7 +133,7 @@
       <%- if !@hide_view_types -%>
       <ul class="viewTypeOptions pillButtons">
         <li><a href="<%= @base_url + '?' + @params.merge({:viewType => 'table'}).to_param %>"
-          class="table <%= @view_type != 'rich' ? 'active' : '' %>" title="View as a compact list">
+          class="list <%= @view_type != 'rich' ? 'active' : '' %>" title="View as a compact list">
           <span class="icon"></span>
         </a></li>
         <li><a href="<%= @base_url + '?' + @params.merge({:viewType => 'rich'}).to_param %>"

@@ -56,7 +56,7 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                     event.preventDefault();
                     var $form = $(this);
                     $.ajax({
-                        url: blist.secureUrl + '/login.json',
+                        url: '/login.json',
                         data: $form.find('input[name=authenticity_token], input#user_session_login, input#user_session_password, input#user_session_remember_me:checked'),
                         dataType: "jsonp",
                         success: function(responseData)
@@ -117,7 +117,7 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                             else { data[$f.attr('name')] = $f.val(); }
                         });
                         $.ajax({
-                            url: blist.secureUrl + '/signup.json',
+                            url: '/signup.json',
                             data: data,
                             dataType: "jsonp",
                             success: signupSuccess

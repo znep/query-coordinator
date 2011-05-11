@@ -1,5 +1,4 @@
 class RpxController < ApplicationController
-  ssl_required :return_login, :return_signup, :login, :signup
   skip_before_filter :require_user
   protect_from_forgery :except => [:return_login, :return_signup]
   before_filter :set_empty_user_session

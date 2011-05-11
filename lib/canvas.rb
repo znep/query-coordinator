@@ -12,15 +12,13 @@ module Canvas
   end
 
   class CanvasWidget
+    attr_reader :elem_id
+
     def initialize(data, id_prefix = '')
       @data = data
       @elem_id = "#{id_prefix}_#{self.class.name.split(/::/).last}"
 
-      @properties = self.default_properties.deep_merge!(@data.properties || {})
-    end
-
-    def elem_id
-      return @elem_id
+      @properties = Hashie::Mash.new self.default_properties.deep_merge(@data.properties || {})
     end
 
     def stylesheet
@@ -65,6 +63,10 @@ module Canvas
       return unless self.has_children?
       threads = self.children.map{ |child| Thread.new{ child.prepare! } if child.can_render? }
       threads.compact.each{ |thread| thread.join }
+    end
+
+    def properties
+      return @properties
     end
 
     def method_missing(key, *args)
@@ -131,6 +133,17 @@ module Canvas
 # WIDGETS (CONTENT)
 
   class Catalog < CanvasWidget
+  end
+
+  class FacetBreadcrumb < CanvasWidget
+    def can_render?
+      return (Environment.context == :facet_listing) ||
+             (Environment.context == :facet_page)
+    end
+  protected
+    self.default_properties = {
+      breadcrumbRoot: 'Home'
+    }
   end
 
   class FacetList < CanvasWidget

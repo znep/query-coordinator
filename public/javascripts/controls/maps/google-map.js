@@ -339,7 +339,7 @@
 
                 blist.util.googleCallback = this._setupLibraries;
                 blist.util.googleCallbackMap = this;
-                return "http://maps.google.com/maps/api/js?sensor=false&callback=blist.util.googleCallback";
+                return "https://maps.google.com/maps/api/js?sensor=false&callback=blist.util.googleCallback";
 
             },
 

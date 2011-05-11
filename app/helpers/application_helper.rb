@@ -235,7 +235,7 @@ module ApplicationHelper
     textual_extent = "Northwest: (#{nwLat}, #{nwLong}); " +
       "Southeast: (#{seLat}, #{seLong})"
 
-    "<img src='http://maps.google.com/maps/api/staticmap?path=" +
+    "<img src='https://maps.google.com/maps/api/staticmap?path=" +
       "color:black%7Cweight:3%7Cfillcolor:0xFFFF0033%7C#{path_data}" +
       "&size=512x512&sensor=false' width='100%' title='#{textual_extent}' " +
       "alt='#{textual_extent}' />"

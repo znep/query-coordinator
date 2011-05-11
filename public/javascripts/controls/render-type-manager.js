@@ -36,10 +36,10 @@
             domId: 'mapRenderType',
             initFunction: 'socrataMap',
             javascripts: [
-                'http://serverapi.arcgisonline.com/jsapi/arcgis/?v=2.1', false,
+                'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=2.1', false,
                 { assets: 'shared-map' }
             ],
-            stylesheets: ['http://serverapi.arcgisonline.com/jsapi/arcgis' +
+            stylesheets: ['https://serverapi.arcgisonline.com/jsapi/arcgis' +
                 '/1.5/js/dojo/dijit/themes/tundra/tundra.css',
                 '/styles/individual/screen-map.css',
                 '/styles/individual/rich-render-types.css'],

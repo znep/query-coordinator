@@ -350,8 +350,8 @@
                 // Workaround for crappy JS coding, see:
                 // http://code.davidjanes.com/blog/2008/11/08/how-to-dynamically-load-map-apis/
                 var scripts = [];
-                scripts.push("http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0");
-                scripts.push("http://ecn.dev.virtualearth.net/mapcontrol/v7.0/js/bin/7.0.20110224212311.97/en-us/veapicore.js");
+                scripts.push("https://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0&s=1");
+                scripts.push("https://ecn.dev.virtualearth.net/mapcontrol/v7.0/js/bin/7.0.20110224212311.97/en-us/veapicore.js");
                 scripts.push(false);
                 return scripts;
             }

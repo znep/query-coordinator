@@ -1,3 +1,9 @@
+GIT
+  remote: git://github.com/natacado/rack-ssl-enforcer.git
+  revision: 4e1577a0e9d3f077bf4901da50a0f1499b6f5d08
+  specs:
+    rack-ssl-enforcer (0.2.2)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -75,6 +81,7 @@ DEPENDENCIES
   money (>= 3.1.5)
   multipart-post (= 1.0.1)
   rack (= 1.1.0)
+  rack-ssl-enforcer!
   rails (= 2.3.11)
   ruby-debug19
   sass (~> 3.1)

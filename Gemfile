@@ -12,6 +12,7 @@ gem "sass", "~>3.1"
 gem "stomp", "1.1.6"
 gem "hoptoad_notifier", "2.3.7"
 gem "money", ">= 3.1.5"
+gem "rack-ssl-enforcer", :git => 'git://github.com/natacado/rack-ssl-enforcer.git'
 
 gem "thin", :group => :development
 gem "ruby-debug19", :group => :development

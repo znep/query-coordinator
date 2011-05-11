@@ -778,6 +778,15 @@ class View < Model
     nil
   end
 
+  def preferred_image_type
+    if !custom_image.nil?
+      return 'customImage'
+    elsif !self.metadata.nil? && ((self.metadata.data['thumbnail'] || {})['page'] || {})['created'] == true
+      return 'thumbnail'
+    end
+    ''
+  end
+
   # Looks for property with _name_, or asks Configurations service
   def property_or_default(path)
     unless path.is_a?(Array)

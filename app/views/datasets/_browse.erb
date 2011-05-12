@@ -86,6 +86,9 @@
         <%- cp[facet[:param]] = f[:value] -%>
         <a href="<%= @base_url + '?' + cp.to_param %>"
           rel="<%= f[:count] %>">
+          <%- if f[:icon] -%>
+          <img class="customIcon" src="<%= theme_image_url(f[:icon]) %>" alt="icon" />
+          <%- end -%>
           <%# We need a space inside the a, or else when we stick them in
           the dialog, tags without any space will not wrap at all %>
           <%= f[:text] %>

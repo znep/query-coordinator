@@ -38,6 +38,7 @@
     {
         if (event.keyCode == 32)
         {
+            if (!_.isNumber(editObj.curValue)) { editObj.curValue = 0; }
             // Don't let grid catch a space!
             event.stopPropagation();
             if (event.shiftKey) { editObj.curValue--; }

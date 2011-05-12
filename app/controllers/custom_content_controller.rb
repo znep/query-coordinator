@@ -3,10 +3,13 @@ class CustomContentController < ApplicationController
   include BrowseActions
 
   def show_page
+    Canvas::Environment.context = :page
+
     @page_config = get_config('page', params[:page_name])
     return render_404 unless @page_config
 
     process_browse_if_necessary(@page_config.contents)
+    @title = @page_config.title
 
     @stylesheet = "page/#{params[:page_name]}"
     render :action => 'show'
@@ -14,18 +17,23 @@ class CustomContentController < ApplicationController
 
   def show_facet_listing
     Canvas::Environment.context = :facet_listing
-    Canvas::Environment.facet_name = params[:facet_name]
 
     @page_config = get_config('facet_listing', params[:facet_name])
     return render_404 unless @page_config
+
+    @title = @page_config.title
 
     @stylesheet = "facet_listing/#{params[:facet_name]}"
     render :action => 'show'
   end
 
-  def show_facet
-    # for now
-    return render_404
+  def show_facet_page
+    Canvas::Environment.context = :facet_page
+
+    @page_config = get_config('facet_page', params[:facet_name])
+    return render_404 unless @page_config
+
+    @title = [params[:facet_value], @page_config.title].compact.join(' | ')
 
     @stylesheet = "facet_page/#{params[:facet_name]}"
     render :action => 'show'
@@ -47,11 +55,15 @@ private
     return nil unless properties
 
     page_config = properties[config_name]
+    return nil unless page_config
 
     # turn toplevel contents into objects; rest will transform as needed
     page_config.contents = Canvas::CanvasWidget.from_config(page_config.contents, 'Canvas')
 
-    # make config available to all
+    # set up canvas rendering environment
+    Canvas::Environment.facet_name = params[:facet_name]
+    Canvas::Environment.facet_value = CGI.unescape(params[:facet_value])
+    Canvas::Environment.params = params
     Canvas::Environment.page_config = page_config.reject{ |key| key == 'contents' }
 
     # ready whatever we might need

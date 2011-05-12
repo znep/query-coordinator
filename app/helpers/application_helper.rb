@@ -156,11 +156,11 @@ module ApplicationHelper
 # HTML HELPERS
 
   def create_pagination(total_count, page_count, current_page, base_href,
-                        navigation_link_class = '')
+                        navigation_link_class = '', page_param = 'page')
     num_pages = (total_count.to_f / page_count).ceil
     base_href.sub!(/([?&])page=[0-9]*/, '\1')
     base_href = (base_href.include?("?") || base_href.include?("#")) ?
-      "#{base_href}&page=" : "#{base_href}?page="
+      "#{base_href}&#{page_param}=" : "#{base_href}?#{page_param}="
     base_href.sub!(/&&+/, '&')
 
     # bail if we only have 1 page

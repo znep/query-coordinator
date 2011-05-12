@@ -41,3 +41,52 @@
     font-size: 1.4em
     padding: 0.3em
     width: 10em
+
+.viewList
+  ul
+    padding: 0 0.4em
+
+    li
+      border-top: 1px solid $color_chrome_box_border
+      font-size: 1.3em
+      padding: 0.5em
+      &:first-child
+        border-top: none
+
+      .viewType
+        @include sprite-menu-icons
+        float: right
+
+  .pagination
+    font-size: 1.2em
+    text-align: center
+
+    .pageLink
+      margin: 0 0.25em
+      &.active
+        color: #999999
+        cursor: auto
+
+    .button
+      @include sprite-menu-icons
+      font-size: 1em
+      padding: 0.3em
+      .ie7 &
+        position: relative
+        top: 0.5em
+
+    .prevLink
+      margin-right: 1em
+      .ie7 &
+        margin-left: 0.5em
+    .nextLink
+      margin-left: 1em
+      .ie7 &
+        margin-right: 0.5em
+
+  .resultCount
+    color: #999
+    font-size: 1.2em
+    margin: 0.7em
+      bottom: 0
+    text-align: center

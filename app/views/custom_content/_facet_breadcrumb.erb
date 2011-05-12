@@ -10,7 +10,7 @@
   <%- unless Canvas::Environment.facet_value.nil? -%>
     <li class="facetValue">
       <%= link_to Canvas::Environment.facet_value,
-            "/facet/#{Canvas::Environment.facet_name}/#{Canvas::Environment.facet_value}" %>
+            "/facet/#{Canvas::Environment.facet_name}/#{CGI.escape Canvas::Environment.facet_value}" %>
     </li>
   <%- end -%>
 </ul>

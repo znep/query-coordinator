@@ -8,6 +8,7 @@ module Canvas
       attr_accessor :facet_name
       attr_accessor :facet_value
       attr_accessor :page_config
+      attr_accessor :params
     end
   end
 
@@ -178,7 +179,49 @@ module Canvas
     ]
   end
 
+  class FacetValue < CanvasWidget
+    def can_render?
+      return Environment.context == :facet_page
+    end
+  protected
+    self.default_properties = {
+      tag: 'h1'
+    }
+  end
+
   class Html < CanvasWidget
     # nothing to do here. html is just html!
+  end
+
+  class ViewList < CanvasWidget
+    attr_reader :view_count, :view_results, :current_page
+
+    def prepare!
+      @current_page = (Environment.params[:viewList] || {})[:page].to_i || 1
+
+      search_options = self.properties.searchOptions
+      search_options[:page] = @current_page || 1
+
+      if (self.properties.respectFacet == true) && (Environment.context == :facet_page)
+        search_options[:metadata_tag] = Environment.page_config.metadata_fieldset + '_' +
+                                        Environment.page_config.metadata_field + ':' +
+                                        Environment.facet_value
+      end
+
+      search_response = SearchResult.search('views', search_options)[0]
+      @view_count = search_response.count
+      @view_results = search_response.results
+    end
+  protected
+    self.default_properties = {
+      searchOptions: {
+        limit: 10,
+        orderBy: 'most_accessed',
+        page: 1
+      },
+      pagination: true,
+      respectFacet: true,
+      resultCount: true
+    }
   end
 end

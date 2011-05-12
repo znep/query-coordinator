@@ -5,7 +5,7 @@
 <%- else -%>
   <ul id="<%= widget.elem_id %>" class="facetList clearfix">
     <%- widget.facet_values.each do |facet_value| -%>
-      <li><a href="/facet/<%= Canvas::Environment.facet_name %>/<%= facet_value.convert_to_url %>">
+      <li><a href="/facet/<%= Canvas::Environment.facet_name %>/<%= CGI.escape facet_value %>">
         <%= facet_value %>
       </a></li>
     <%- end -%>

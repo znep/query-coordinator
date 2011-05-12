@@ -186,7 +186,7 @@ protected
       topics_facet,
       extents_facet
     ]
-    @facets = @facets.compact.flatten
+    @facets = @facets.compact.flatten.reject{ |f| f[:hidden] }
 
     if @suppressed_facets.is_a? Array
       @facets.select!{ |facet| !(@suppressed_facets.include? facet[:singular_description]) }

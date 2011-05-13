@@ -387,7 +387,7 @@
 
         $box.show().find("#bing_infoContent").empty()
             .append(mapObj.getFlyout(shape.rows, shape.flyoutDetails, shape.dataView))
-            .prepend('<img src="http://maps.gstatic.com/intl/' +
+            .prepend('<img src="https://www.google.com/intl/' +
                      'en_us/mapfiles/iw_close.gif"/>');
 
         var x = pixel.x;

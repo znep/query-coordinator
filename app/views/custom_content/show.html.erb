@@ -5,3 +5,10 @@
 <% end %>
 
 <%= raw render_widget(@page_config.contents) %>
+
+<% content_for :js_footer do %>
+  <script type="text/javascript">
+    blist.assets = blist.assets || <%= raw ASSET_MAP.javascripts %>;
+  </script>
+  <%= include_javascripts 'render-view-minimum' %>
+<% end %>

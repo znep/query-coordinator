@@ -1,3 +1,7 @@
+# autoload is not threadsafe, so require everything we might need
+requires = %w{search_result view}
+requires.each{ |r| require File.join(Rails.root, 'app/models', r) }
+
 module Canvas
 
 # GENERAL
@@ -9,6 +13,13 @@ module Canvas
       attr_accessor :facet_value
       attr_accessor :page_config
       attr_accessor :params
+
+      def metadata_tag
+        return nil unless Environment.context == :facet_page
+        return Environment.page_config.metadata_fieldset + '_' +
+               Environment.page_config.metadata_field + ':' +
+               Environment.facet_value
+      end
     end
   end
 
@@ -203,9 +214,7 @@ module Canvas
       search_options[:page] = @current_page || 1
 
       if (self.properties.respectFacet == true) && (Environment.context == :facet_page)
-        search_options[:metadata_tag] = Environment.page_config.metadata_fieldset + '_' +
-                                        Environment.page_config.metadata_field + ':' +
-                                        Environment.facet_value
+        search_options[:metadata_tag] = Environment.metadata_tag
       end
 
       search_response = SearchResult.search('views', search_options)[0]
@@ -223,5 +232,43 @@ module Canvas
       respectFacet: true,
       resultCount: true
     }
+  end
+
+  class ViewPreview < CanvasWidget
+    attr_reader :view
+
+    def can_render?
+      @view != false
+    end
+
+    def prepare!
+      search_options = self.properties.searchOptions.merge({ limit: 1, page: 1 })
+
+      if (self.properties.respectFacet == true) && (Environment.context == :facet_page)
+        search_options[:metadata_tag] = Environment.metadata_tag
+      end
+
+      search_response = SearchResult.search('views', search_options)[0]
+      if search_response.count == 0
+        @view = false
+      else
+        @view = search_response.results.first
+      end
+    end
+  protected
+    self.default_properties = {
+      searchOptions: {
+        limitTo: ['maps', 'charts'],
+        orderBy: 'most_accessed'
+      },
+      style: {
+        height: { value: 30, unit: 'em' }
+      },
+      respectFacet: true,
+      titleTag: 'h2'
+    }
+    self.style_definition = [
+      { data: 'style.height', selector: '.fullHeight', css: 'height', hasUnit: true }
+    ]
   end
 end

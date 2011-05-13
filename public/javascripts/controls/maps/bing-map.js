@@ -391,7 +391,7 @@
         if (!shape.custom_icon) { y -= 7; }
 
 
-        if (x + $box.width() > blist.$container.width())
+        if (x + $box.width() > $(mapObj.currentDom).width()) // warning: changed from blist.$container
         {
             $box.addClass('right');
             x -= $box.width();

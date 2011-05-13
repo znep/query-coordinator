@@ -318,6 +318,12 @@ javascripts:
     - public/javascripts/plugins/lab.js
     - public/javascripts/controls/render-type-manager.js
     - public/javascripts/screens/dataset-bare.js
+  render-view-minimum:
+    - public/javascripts/util/events.js
+    - public/javascripts/util/humane-date.js
+    - public/javascripts/controls/dataset-controls.js
+    - public/javascripts/plugins/lab.js
+    - public/javascripts/controls/render-type-manager.js
   shared-metrics:
     - public/javascripts/plugins/daterangepicker.jquery.js
     - public/javascripts/plugins/jquery.tablesorter.js

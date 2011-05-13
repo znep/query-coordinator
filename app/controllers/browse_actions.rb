@@ -52,7 +52,8 @@ protected
 
   def federated_facet
     all_feds = Federation.find.
-      select {|f| f.targetDomainCName == CurrentDomain.cname && f.lensName.empty?}.
+      select {|f| f.targetDomainCName == CurrentDomain.cname &&
+        f.lensName.empty? && f.acceptedUserId.present?}.
       sort_by {|f| f.sourceDomainCName}.
       map {|f| {:text => f.sourceDomainCName, :value => f.sourceDomainId.to_s,
         :icon => {:type => 'static', :href => "/api/domains/#{f.sourceDomainCName}/icons/smallIcon"}} }

@@ -415,17 +415,7 @@ var validateAll = function()
         {
             // message should be different depending on whether they're gaining
             // or losing richness
-            if (column.suggestion == 'text')
-            {
-                var invalidPercentage = Math.round(1000 *
-                    (1 - (column.types[importType] / column.processed))) / 10.0;
-                addValidationError(importColumn, 'warning',
-                    'set to import as <strong>' + typesToText(importColumn.dataType) + '</strong>, but ' +
-                    'our analysis shows that <strong>Text</strong> is a better fit. Should you choose ' +
-                    'to import as ' + typesToText(importColumn.dataType) + ', roughly <strong>' +
-                    invalidPercentage + '%</strong> of your data will import incorrectly.');
-            }
-            else
+            if (importType == 'text')
             {
                 addValidationError(importColumn, 'warning',
                     'set to import as <strong>Text</strong>, but our analysis indicates that the ' +
@@ -433,6 +423,24 @@ var validateAll = function()
                     'column. You can import it as Text, but you will lose some features if you do ' +
                     'so. We strongly recommend that you import it as <strong>' +
                     $.capitalize(column.suggestion) + '</strong>');
+            }
+            else if (!_.isUndefined(column.types[importType]))
+            {
+                var invalidPercentage = Math.round(1000 *
+                    (1 - (column.types[importType] / column.processed))) / 10.0;
+                addValidationError(importColumn, 'warning',
+                    'set to import as <strong>' + typesToText(importColumn.dataType) + '</strong>, but ' +
+                    'our analysis shows that <strong>' + column.suggestion + '</strong> is a better fit. ' +
+                    'Should you choose to import as ' + typesToText(importColumn.dataType) + ', roughly ' +
+                    '<strong>' + invalidPercentage + '%</strong> of your data will import incorrectly.');
+            }
+            else
+            {
+                addValidationError(importColumn, 'warning',
+                    'set to import as <strong>' + typesToText(importColumn.dataType) + '</strong>, but ' +
+                    'our analysis shows that <strong>' + column.suggestion + '</strong> might be a better fit. ' +
+                    'Unless the column&rsquo;s data is formatted correctly as ' +
+                    typesToText(importColumn.dataType) + ', data may import incorrectly.');
             }
         }
     });

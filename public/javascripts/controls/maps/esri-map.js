@@ -338,6 +338,13 @@
                 mapObj._graphicsLayer.add(graphic);
                 mapObj._graphicsLayer.add(textGraphic);
 
+                $(graphic.getDojoShape().rawNode)
+                    .hover(
+                        function(event) { mapObj.$dom()
+                            .find('div .container').css('cursor', 'pointer'); },
+                        function(event) { mapObj.$dom()
+                            .find('div .container').css('cursor', 'default'); });
+
                 mapObj._multipoint.addPoint(geometry);
 
                 return true;
@@ -608,14 +615,19 @@
     var handleGraphicClick = function(mapObj, evt)
     {
         if (isIdentifyTask(mapObj)) { return; }
-        if (mapObj._byView[mapObj.settings.view.id]._clusters) { return; }
-
-        mapObj.map.infoWindow.setContent(
-            mapObj.getFlyout(evt.graphic.attributes.rows,
-                evt.graphic.attributes.flyoutDetails,
-                evt.graphic.attributes.dataView)[0])
-            .show(evt.screenPoint,
-                mapObj.map.getInfoWindowAnchor(evt.screenPoint));
+        if (mapObj._byView[mapObj.settings.view.id]._clusters)
+        {
+            mapObj.map.centerAndZoom(evt.mapPoint, mapObj.map.getLevel() + 1);
+        }
+        else
+        {
+            mapObj.map.infoWindow.setContent(
+                mapObj.getFlyout(evt.graphic.attributes.rows,
+                    evt.graphic.attributes.flyoutDetails,
+                    evt.graphic.attributes.dataView)[0])
+                .show(evt.screenPoint,
+                    mapObj.map.getInfoWindowAnchor(evt.screenPoint));
+        }
     };
 
     var identifyFeature = function(mapObj, evt)

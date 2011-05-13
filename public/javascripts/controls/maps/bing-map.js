@@ -181,6 +181,13 @@
                 mapObj._markers[shape.getLocation().toString()] = shape;
                 mapObj.map.entities.push(shape);
 
+                Microsoft.Maps.Events.addHandler(shape, 'click',
+                    function(event)
+                    {
+                        mapObj.map.setView({ center: shape.getLocation(),
+                                             zoom: mapObj.map.getZoom() + 1 });
+                    });
+
                 var offset = $((shape['cm1001_er_etr'] || {}).dom).offset();
                 offset.top  += (shape.getHeight() - 3);
                 offset.left -= 10;

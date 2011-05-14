@@ -242,17 +242,21 @@ module Canvas
     end
 
     def prepare!
-      search_options = self.properties.searchOptions.merge({ limit: 1, page: 1 })
+      if self.properties.viewUid.nil?
+        search_options = self.properties.searchOptions.merge({ limit: 1, page: 1 })
 
-      if (self.properties.respectFacet == true) && (Environment.context == :facet_page)
-        search_options[:metadata_tag] = Environment.metadata_tag
-      end
+        if (self.properties.respectFacet == true) && (Environment.context == :facet_page)
+          search_options[:metadata_tag] = Environment.metadata_tag
+        end
 
-      search_response = SearchResult.search('views', search_options)[0]
-      if search_response.count == 0
-        @view = false
+        search_response = SearchResult.search('views', search_options)[0]
+        if search_response.count == 0
+          @view = false
+        else
+          @view = search_response.results.first
+        end
       else
-        @view = search_response.results.first
+        @view = (View.find self.properties.viewUid) || false
       end
     end
   protected
@@ -265,7 +269,9 @@ module Canvas
         height: { value: 30, unit: 'em' }
       },
       respectFacet: true,
-      titleTag: 'h2'
+      showTitle: true,
+      titleTag: 'h2',
+      viewUid: nil
     }
     self.style_definition = [
       { data: 'style.height', selector: '.fullHeight', css: 'height', hasUnit: true }

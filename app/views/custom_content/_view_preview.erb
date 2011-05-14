@@ -1,6 +1,6 @@
 <%- if widget.view -%>
   <div id="<%= widget.elem_id %>" class="viewPreview">
-    <%= content_tag(widget.properties.titleTag, h(widget.view.name)) %>
+    <%= content_tag(widget.properties.titleTag, h(widget.view.name)) if widget.properties.showTitle %>
     <div class="viewPreviewContainer">
       <div class="loadingSpinnerContainer hide"><div class="loadingSpinner"></div></div>
     </div>

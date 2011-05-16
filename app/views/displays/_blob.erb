@@ -1,9 +1,9 @@
 <div class="externalLinkDisplay clearfix <%= @view.display.display_type %>">
   <p class="info">
   <%- if @view.display.type == 'href' && @view.has_importable_type? -%>
-  This dataset has not been imported into the catalog yet, so it cannot be explored interactively, but it is available for download
+  This dataset is available for download
   <%- elsif @view.display.type == 'href' || @view.display.display_type == 'link' -%>
-  This dataset cannot be displayed in the browser, but it is available for download
+  This data extraction tool or application is available via the link to the right
   <%- else -%>
   This dataset is not tabular data, and may have limited interactivity, but it is available for download
   <%- end -%>

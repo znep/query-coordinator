@@ -1,0 +1,13 @@
+<%- unless @disable[:search] -%>
+  <form class="searchSection">
+    <span class="icon"></span>
+    <input type="text" name="browseSearch" title="Search"
+      class="textPrompt searchBox" value="<%= @params[:q] %>" />
+    <%- if !@params[:q].nil? -%>
+    <%- cp = @params.reject {|p, v| p.to_s == 'page' || p.to_s == 'q' ||
+          p.to_s == 'no_default'} -%>
+    <a href="<%= @base_url + '?' + cp.to_param %>"
+      class="clearSearch close"><span class="icon"></span></a>
+    <%- end -%>
+  </form>
+<%- end -%>

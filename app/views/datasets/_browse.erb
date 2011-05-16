@@ -7,18 +7,11 @@
   <%= @browse_in_container ? 'inContainer' : '' %> <%= @disable[:sort] ? 'noSort' : '' %>">
   <%- if @facets.length > 0 -%>
   <div class="browseFacets <%= show_time_period ? 'hasTimePeriod' : '' %>">
-    <%- unless @disable[:search] -%>
-    <form class="searchSection">
-      <span class="icon"></span>
-      <input type="text" name="browseSearch" title="Search"
-        class="textPrompt searchBox" value="<%= @params[:q] %>" />
-      <%- if !@params[:q].nil? -%>
-      <%- cp = @params.reject {|p, v| p.to_s == 'page' || p.to_s == 'q' ||
-            p.to_s == 'no_default'} -%>
-      <a href="<%= @base_url + '?' + cp.to_param %>"
-        class="clearSearch close"><span class="icon"></span></a>
-      <%- end -%>
-    </form>
+    <%- if @sidebar_config && @sidebar_config.header -%>
+      <%= raw @sidebar_config.header %>
+    <%- end -%>
+    <%- if @sidebar_config.nil? || @sidebar_config.search -%>
+      <%= render :partial => 'datasets/browse_search' %>
     <%- end -%>
 
     <%- if !@params[:q].nil? || @facets.any? {|f| !@params[f[:param]].nil? } ||
@@ -123,6 +116,16 @@
       </a>
     </div>
   </div>
+  <%- end -%>
+
+  <%- if @header_config -%>
+    <div class="browseHeader">
+      <%- [:counter, :search].each do |option| -%>
+        <%- if @header_config[option] -%>
+          <%= render :partial => "datasets/browse_#{option.to_s}" %>
+        <%- end -%>
+      <%- end -%>
+    </div>
   <%- end -%>
 
   <div class="browseList">
@@ -375,7 +378,9 @@
     <%- if @view_count > 0 -%>
       <%= create_pagination(@view_count, @limit,
       @opts[:page], @base_url + '?' + @params.to_param, 'button') unless @disable[:pagination] %>
-      <div class="resultCount"><%= @view_count %> total results</div>
+      <%- if @footer_config.nil? || @footer_config.counter -%>
+        <%= render :partial => 'datasets/browse_counter' %>
+      <%- end -%>
     <%- end -%>
   </div>
 

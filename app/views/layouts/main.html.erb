@@ -78,8 +78,14 @@
       </div>
 
       <a name="content"></a>
-      <%= yield :layout %>
-
+      <%= render_domain_template(@page_custom_chrome || 'content_chrome') %>
+      <%- if @supress_content_wrapper -%>
+        <%= yield :layout %>
+      <%- else -%>
+        <div class="siteContentWrapper">
+          <%= yield :layout %>
+        </div>
+      <%- end -%>
     </div>
   </div>
 

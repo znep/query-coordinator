@@ -216,6 +216,10 @@ protected
       @facets.select!{ |facet| !(@suppressed_facets.include? facet[:singular_description]) }
     end
 
+    @sidebar_config = cfg_props.sidebar
+    @header_config  = cfg_props.header
+    @footer_config  = cfg_props.footer
+
     @sort_opts ||= @@default_browse_sort_opts
 
     if @view_results.nil?

@@ -370,7 +370,7 @@
                 }
 
 
-                if (addedRows)
+                if (addedRows || rows.length == 0)
                 { vizObj.rowsRendered(); }
             },
 

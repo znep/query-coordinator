@@ -406,7 +406,7 @@ this.Dataset = ServerModel.extend({
 
         var doLoaded = function()
         {
-            if (loaded.length > 0)
+            if (loaded.length > 0 || ds.totalRows == 0)
             {
                 callback(loaded);
                 loaded = [];

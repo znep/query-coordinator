@@ -138,7 +138,7 @@ this.ServerModel = Model.extend({
         _.each(br, function(r)
             { serverReqs.push({url: r.url, requestType: r.type, body: r.data}); });
 
-        $.ajax({url: '/batches', dataType: 'json', contentType: 'application/json',
+        $.ajax({url: '/api/batches', dataType: 'json', contentType: 'application/json',
                 type: 'POST', data: JSON.stringify({requests: serverReqs}),
                 success: function(resp)
                 {

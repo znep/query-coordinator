@@ -1,4 +1,6 @@
-<%= render_browse_includes unless supress_includes %>
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'browse-control' %>
+<% end %>
 
 <%- cur_sort = @sort_opts.detect {|s| s[:value] == @opts[:sortBy]} -%>
 <%- show_time_period = cur_sort.nil? ? false : cur_sort[:is_time_period] -%>
@@ -397,18 +399,91 @@
   <div class="clearBoth"></div>
 </div>
 
-<script type='text/javascript'>
-  $(function()
-  {
-     blist.namespace.fetch('blist.browse');
-     blist.browse.datasets = {};
-     <%- @view_results.each do |v| -%>
-     blist.browse.datasets['<%= v.id %>'] = <%= safe_json(v) %>;
-     <%- end -%>
-     blist.browse.baseURL = '<%= @base_url %>';
-     <%- if !@opts[:xmin].nil? -%>
-     blist.browse.extents = {xmin: <%= @opts[:xmin] %>, xmax: <%= @opts[:xmax] %>,
-         ymin: <%= @opts[:ymin] %>, ymax: <%= @opts[:ymax] %>};
-     <%- end -%>
-  });
-</script>
+<%- content_for :modals do -%>
+  <div class="browseOptionsDialog modalDialog">
+    <a href="#close" class="jqmClose modalDialogClose">Close</a>
+    <div class="optionsContent"></div>
+  </div>
+
+  <div class="extentChooser modalDialog">
+    <a href="#close" class="jqmClose modalDialogClose">Close</a>
+    <p class="modalParagraph">
+      Drag the markers to set a bounding box to find only datasets contained in that box
+    </p>
+    <div class="mapContainer"></div>
+    <ul class="actions clearfix">
+      <li>
+        <a class="jqmClose button cancel"
+          href="#cancel"><span class="icon"></span>Cancel</a>
+      </li>
+      <li>
+        <a class="button accept" href="#">
+          <span class="icon"></span>
+          Find datasets
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="externalDomainNotice modalDialog">
+    <a href="#close" class="jqmClose modalDialogClose">Close</a>
+    <h2>
+      You are leaving <span class="serverName"><%= CurrentDomain.cname %></span>
+    </h2>
+    <p>This <span class="datasetType">dataset</span> is hosted by
+    <a href="#" rel="external" class="externalDomain">another domain</a>.
+    View it at</p>
+    <div class="leavingLinkWrapper">
+      <a class="leavingLink noInterstitial" href="#" rel="external"></a>
+    </div>
+    <ul class="actions clearfix">
+      <li>
+        <a class="jqmClose button cancel"
+          href="#cancel"><span class="icon"></span>Cancel</a>
+      </li>
+      <li>
+        <a class="noInterstitial button accept" href="#" rel="external">
+          <span class="icon"></span>
+          Go now
+        </a>
+      </li>
+    </ul>
+  </div>
+<%- end -%>
+
+<% content_for :templates do %>
+<div class="expandedInfo">
+  <div class="actions">
+    <a class="permissions button" href="#Permissions"
+      title="Change the public visibility">Make <span class="permType"></span></a>
+    <a class="delete button" href="#Delete" title="Delete this item">Delete</a>
+    <div class="share menu"></div>
+  </div>
+  <div class="comments" title="Number of comments">
+    <span class="icon"></span><span class="value"></span>
+  </div>
+  <div class="starsControl datasetAverageRating"></div>
+</div>
+<% end %>
+
+<% content_for :js_footer do %>
+  <script type='text/javascript'>
+    $(function()
+    {
+       blist.namespace.fetch('blist.browse');
+       blist.browse.datasets = {};
+       <%- @view_results.each do |v| -%>
+       blist.browse.datasets['<%= v.id %>'] = <%= safe_json(v) %>;
+       <%- end -%>
+       blist.browse.baseURL = '<%= @base_url %>';
+       <%- if !@opts[:xmin].nil? -%>
+       blist.browse.extents = {xmin: <%= @opts[:xmin] %>, xmax: <%= @opts[:xmax] %>,
+           ymin: <%= @opts[:ymin] %>, ymax: <%= @opts[:ymax] %>};
+       <%- end -%>
+    });
+  </script>
+  <script type='text/javascript'
+    src='https://maps.google.com/maps/api/js?sensor=false'></script>
+  <%= include_javascripts 'browse-control' %>
+<% end %>
+

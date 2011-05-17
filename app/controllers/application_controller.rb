@@ -61,20 +61,6 @@ class ApplicationController < ActionController::Base
     @current_user_session ||= UserSession.find
   end
 
-  def prerendered_fragment_for(buffer, name = {}, prerendered_content = nil, options = nil, &block)
-    if perform_caching
-      if prerendered_content
-        buffer.concat(prerendered_content)
-      else
-        pos = buffer.length
-        block.call
-        write_fragment(name, buffer[pos..-1], options)
-      end
-    else
-      block.call
-    end
-  end
-
   def require_module!(name)
     render_404 unless CurrentDomain.module_enabled?(name.to_s)
   end
@@ -251,7 +237,6 @@ private
   # the usual development call stacks:
   # alias_method :rescue_action_locally, :rescue_action_in_public
 
-  
   def force_utf8_params
     traverse = lambda do |object, block|
       if object.kind_of?(Hash)

@@ -34,7 +34,7 @@ module ApplicationHelper
   end
 
   def prerendered_cache(name = {}, prerendered_content = nil, options = nil, &block)
-    @controller.prerendered_fragment_for(output_buffer, name, prerendered_content, options, &block)
+    prerendered_fragment_for(output_buffer, name, prerendered_content, options, &block)
   end
 
 # PAGE-HEADER
@@ -330,12 +330,8 @@ module ApplicationHelper
     embed_template += "</div>"
   end
 
-  def render_browse(supress_includes = false)
-    render :partial => 'datasets/browse', :locals => { :supress_includes => supress_includes }
-  end
-
-  def render_browse_includes
-    render :partial => 'datasets/browse_includes'
+  def render_browse
+    render :partial => 'datasets/browse'
   end
 
   def safe_json(obj)

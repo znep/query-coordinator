@@ -32,16 +32,18 @@ class HomepageController < ApplicationController
     end
 
     # process browse only if not already rendered and enabled
-    unless !CurrentDomain.theme.homepage.nil? &&
-        !CurrentDomain.theme.homepage.show_catalog.nil? &&
-        CurrentDomain.theme.homepage.show_catalog != true &&
-        (@browse_cached = read_fragment(app_helper.cache_key(
-        'homepage-browse', { 'domain' => CurrentDomain.cname })))
-      # move to /browse on interaction
-      @base_url = browse_path
+    if CurrentDomain.theme.homepage.nil? ||
+       CurrentDomain.theme.homepage.show_catalog.nil? ||
+       CurrentDomain.theme.homepage.show_catalog == true
 
-      @no_results_text = 'No Datasets Yet'
-      process_browse!(:force_default => true)
+      unless (@browse_cached = read_fragment(app_helper.cache_key(
+        'homepage-browse', { 'domain' => CurrentDomain.cname })))
+        # move to /browse on interaction
+        @base_url = browse_path
+
+        @no_results_text = 'No Datasets Yet'
+        process_browse!(:force_default => true)
+      end
     end
   end
 

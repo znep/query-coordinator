@@ -367,6 +367,11 @@ class DatasetsController < ApplicationController
   def about
     @view = get_view(params[:id])
     @user_session = UserSession.new if !current_user
+
+    @page_custom_chrome = ''
+    @supress_content_wrapper = true
+    @page_custom_header = 'header'
+    @page_custom_footer = 'footer'
   end
 
 protected

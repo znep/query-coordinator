@@ -183,7 +183,7 @@ module Canvas
       style: {
         orientation: 'horizontal'
       },
-      maximum: 20
+      maximum: 100
     }
     self.style_definition = [
       { data: 'style.orientation', selector: 'li', css: 'display', map: { horizontal: 'inline-block', vertical: 'block' } }

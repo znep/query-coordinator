@@ -1,4 +1,5 @@
 class CustomContentController < ApplicationController
+  around_filter :cache_wrapper, :except => [ :stylesheet ]
   skip_before_filter :require_user
   include BrowseActions
 
@@ -9,7 +10,7 @@ class CustomContentController < ApplicationController
     return render_404 unless @page_config
 
     process_browse_if_necessary(@page_config.contents)
-    @title = @page_config.title
+    @page_title = @page_config.title
 
     @stylesheet = "page/#{params[:page_name]}"
     render :action => 'show'
@@ -21,7 +22,7 @@ class CustomContentController < ApplicationController
     @page_config = get_config('facet_listing', params[:facet_name])
     return render_404 unless @page_config
 
-    @title = @page_config.title
+    @page_title = @page_config.title
 
     @stylesheet = "facet_listing/#{params[:facet_name]}"
     render :action => 'show'
@@ -33,7 +34,7 @@ class CustomContentController < ApplicationController
     @page_config = get_config('facet_page', params[:facet_name])
     return render_404 unless @page_config
 
-    @title = [params[:facet_value], @page_config.title].compact.join(' | ')
+    @page_title = [params[:facet_value], @page_config.title].compact.join(' | ')
 
     @stylesheet = "facet_page/#{params[:facet_name]}"
     render :action => 'show'
@@ -49,6 +50,19 @@ class CustomContentController < ApplicationController
   end
 
 private
+
+  # around_filter for caching
+  def cache_wrapper
+    @cache_key = app_helper.cache_key("canvas-#{params[:action]}",
+                                      params.merge({ 'domain' => CurrentDomain.cname }))
+    @cached_fragment = read_fragment(@cache_key)
+
+    if @cached_fragment.nil?
+      yield
+    else
+      render :action => 'show'
+    end
+  end
 
   def get_config(page_type, config_name)
     properties = CurrentDomain.property(page_type.pluralize, :custom_content)
@@ -105,4 +119,13 @@ private
       return widget.stylesheet
     end
   end
+
+  def app_helper
+    AppHelper.instance
+  end
+end
+
+class AppHelper
+  include Singleton
+  include ApplicationHelper
 end

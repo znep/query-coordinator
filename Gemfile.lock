@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/natacado/rack-ssl-enforcer.git
-  revision: 4e1577a0e9d3f077bf4901da50a0f1499b6f5d08
+  revision: 8c2cc5d837ae231e3c96459d4a7e26808e08a34e
   specs:
     rack-ssl-enforcer (0.2.2)
 

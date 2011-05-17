@@ -6,28 +6,37 @@
     </div>
   </div>
 
-  <script type="text/javascript">
-    // activator for viewPreview widget <%= widget.elem_id %>
-    $(function()
-    {
-        var targetSelector = "#<%= widget.elem_id %>";
-        var view = new Dataset(<%= raw safe_json widget.view %>);
+  <%- content_for :js_footer do -%>
+    <%- allow_once do -%>
+      <script type="text/javascript">
+        blist.assets = blist.assets || <%= raw ASSET_MAP.javascripts %>;
+      </script>
+      <%= include_javascripts 'render-view-minimum' %>
+    <%- end -%>
 
-        var $container = $(targetSelector);
+    <script type="text/javascript">
+      // activator for viewPreview widget <%= widget.elem_id %>
+      $(function()
+      {
+          var targetSelector = "#<%= widget.elem_id %>";
+          var view = new Dataset(<%= raw safe_json widget.view %>);
 
-        view.bind('start_request', function()
-                { $container.find('.loadingSpinnerContainer').removeClass('hide'); })
-            .bind('finish_request', function()
-                { $container.find('.loadingSpinnerContainer').addClass('hide'); });
+          var $container = $(targetSelector);
 
-        $container.children('.viewPreviewContainer').renderTypeManager({
-            view: view,
-            editEnabled: false,
-            common: {
-                showRowHandle: false,
-                manualResize: false
-            }
-        });
-    });
-  </script>
+          view.bind('start_request', function()
+                  { $container.find('.loadingSpinnerContainer').removeClass('hide'); })
+              .bind('finish_request', function()
+                  { $container.find('.loadingSpinnerContainer').addClass('hide'); });
+
+          $container.children('.viewPreviewContainer').renderTypeManager({
+              view: view,
+              editEnabled: false,
+              common: {
+                  showRowHandle: false,
+                  manualResize: false
+              }
+          });
+      });
+    </script>
+  <%- end -%>
 <%- end -%>

@@ -37,6 +37,18 @@ module ApplicationHelper
     prerendered_fragment_for(output_buffer, name, prerendered_content, options, &block)
   end
 
+# FRAGMENT HELPERS
+
+  def allow_once(&block)
+    return unless block_given?
+    @_allowed_blocks = [] unless defined? @_allowed_blocks
+
+    signature = block.source_location.join(':')
+    return if @_allowed_blocks.include? signature
+    @_allowed_blocks << signature
+    block.call
+  end
+
 # PAGE-HEADER
 
 # meta

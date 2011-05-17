@@ -1,0 +1,24 @@
+<div id="<%= widget.elem_id %>" class="viewList">
+  <%- if widget.view_count == 0 -%>
+    <p>There are currently no <strong><%= Canvas::Environment.facet_value %></strong> views
+       in <strong><%= @page_config.facet_friendly_name %></strong>.</p>
+  <%- else -%>
+    <ul>
+      <%- widget.view_results.each do |view| -%>
+        <li class="clearfix">
+          <span class="viewName"><%= link_to view.name, view.href %></span>
+          <span class="viewType type<%= view.display.type.capitalize %>"><span class="icon"></span></span>
+        </li>
+      <%- end -%>
+    </ul>
+
+    <%- if widget.properties.pagination && (widget.view_count > widget.properties.searchOptions.limit) -%>
+      <%= create_pagination(widget.view_count, widget.properties.searchOptions.limit,
+          widget.current_page, request.path, 'button', 'viewList[page]') %>
+    <%- end -%>
+
+    <%- if widget.properties.resultCount -%>
+      <div class="resultCount"><%= widget.view_count %> total results</div>
+    <%- end -%>
+  <%- end -%>
+</div>

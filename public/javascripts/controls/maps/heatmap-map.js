@@ -5,7 +5,7 @@
     // object.
     var MAP_TYPE = function(){ return {
         'countries': {
-            'layerPath': "http://server.arcgisonline.com/ArcGIS/rest/services/" +
+            'layerPath': "https://server.arcgisonline.com/ArcGIS/rest/services/" +
                          "World_Topo_Map/MapServer/6",
             'jsonCache': function(config) { return "/geodata/esri_country_data.json"; },
             'fieldsReturned': ["NAME"],
@@ -14,7 +14,7 @@
             'zoom' : 1
         },
         'state': {
-            'layerPath': "http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/" +
+            'layerPath': "https://sampleserver1.arcgisonline.com/ArcGIS/rest/services/" +
                          "Demographics/ESRI_Census_USA/MapServer/5",
             'jsonCache': function(config) { return "/geodata/esri_state_data.json"; },
             'fieldsReturned': ["STATE_NAME", "STATE_ABBR"],
@@ -31,7 +31,7 @@
                 }
         },
         'counties': {
-            'layerPath': "http://server.arcgisonline.com/ArcGIS/rest/services/" +
+            'layerPath': "https://server.arcgisonline.com/ArcGIS/rest/services/" +
                          "Demographics/USA_Tapestry/MapServer/3",
             'jsonCache': function(config)
                 { return "/geodata/esri_county_"+config.region+".json"; },

@@ -2,8 +2,6 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
-  include SslRequirement
-
   before_filter :hook_auth_controller,  :create_core_server_connection,
     :adjust_format, :patch_microsoft_office, :sync_logged_in_cookie, :require_user, :set_user, :set_meta, :force_utf8_params
   helper :all # include all helpers, all the time
@@ -61,20 +59,6 @@ class ApplicationController < ActionController::Base
 
   def current_user_session
     @current_user_session ||= UserSession.find
-  end
-
-  def prerendered_fragment_for(buffer, name = {}, prerendered_content = nil, options = nil, &block)
-    if perform_caching
-      if prerendered_content
-        buffer.concat(prerendered_content)
-      else
-        pos = buffer.length
-        block.call
-        write_fragment(name, buffer[pos..-1], options)
-      end
-    else
-      block.call
-    end
   end
 
   def require_module!(name)
@@ -253,7 +237,6 @@ private
   # the usual development call stacks:
   # alias_method :rescue_action_locally, :rescue_action_in_public
 
-  
   def force_utf8_params
     traverse = lambda do |object, block|
       if object.kind_of?(Hash)

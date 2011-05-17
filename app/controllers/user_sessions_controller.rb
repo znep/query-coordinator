@@ -1,6 +1,4 @@
 class UserSessionsController < ApplicationController
-  ssl_required :new, :create, :rpx
-  ssl_allowed :destroy
   skip_before_filter :require_user
   protect_from_forgery :except => [:rpx]
 

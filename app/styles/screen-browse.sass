@@ -359,6 +359,9 @@
           img.datasetImage
             max-height: 50px
             max-width: 50px
+            &.thumbnail
+              padding: 12px 0
+              border: 1px solid $color_chrome_box_border
           .type
             @include sprite-type-icons-50
             font-size: 0.8333em
@@ -477,6 +480,11 @@
       font-size: 1.2em
       line-height: 1.2em
       margin-right: 0.5em
+
+      .customIcon
+        height: 16px
+        vertical-align: middle
+        width: 16px
 
 .externalDomainNotice
   .leavingLinkWrapper

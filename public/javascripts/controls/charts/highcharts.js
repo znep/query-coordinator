@@ -787,7 +787,8 @@
             position.top += radius;
             position.left += radius;
         }
-        var offset = blist.$container.offset();
+        var $container = $(chartObj.currentDom);
+        var offset = $container.offset();
         position.top -= offset.top;
         position.left -= offset.left;
         position.top += 10;
@@ -798,10 +799,10 @@
             .css({ top: position.top + 'px', left: position.left + 'px' })
             .show();
 
-        if (blist.$container.width() <= position.left + $box.width())
-        { $box.css({ left: (blist.$container.width() - $box.width() - 20) + 'px' }); }
+        if ($container.width() <= position.left + $box.width())
+        { $box.css({ left: ($container.width() - $box.width() - 20) + 'px' }); }
 
-        var too_low = blist.$container.height() - (position.top + $box.height());
+        var too_low = $container.height() - (position.top + $box.height());
         if (too_low < 0)
         { $box.css({ top: (position.top + too_low - 20) + 'px' }); }
     };

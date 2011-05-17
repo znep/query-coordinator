@@ -199,6 +199,13 @@
 
                 mapObj._markers[graphic.getPosition().toString()] = graphic;
 
+                google.maps.event.addListener(graphic, 'click', function(evt)
+                {
+                    // evt.latLng if it's not a point; pull .position for points
+                    mapObj.map.setCenter(evt.latLng || graphic.position);
+                    mapObj.map.setZoom(mapObj.map.getZoom() + 1);
+                });
+
                 mapObj._bounds.extend(graphic.getPosition());
                 mapObj._boundsCounts++;
             },
@@ -332,7 +339,7 @@
 
                 blist.util.googleCallback = this._setupLibraries;
                 blist.util.googleCallbackMap = this;
-                return "http://maps.google.com/maps/api/js?sensor=false&callback=blist.util.googleCallback";
+                return "https://maps.google.com/maps/api/js?sensor=false&callback=blist.util.googleCallback";
 
             },
 

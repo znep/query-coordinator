@@ -21,8 +21,7 @@
                     this._$editor = $('<div class="blist-table-editor ' +
                         'type-' + this.column.renderTypeName + align + '">' +
                         '<input type="checkbox"' +
-                        (this.originalValue && this.originalValue != '0' ?
-                            ' checked="checked"' : '') +
+                        (this.originalValue === true ? ' checked="checked"' : '') +
                         ' /></div>');
                 }
                 return this._$editor;
@@ -42,10 +41,22 @@
                     .click(function() { editObj.changed(); });
             },
 
+            isValid: function()
+            {
+                var curVal = this.currentValue();
+                return _.isBoolean(curVal) || _.isNull(curVal);
+            },
+
             currentValue: function()
             {
                 var val = this.$editor().find(':checkbox').value();
-                return val === false ? null : val;
+                // Kind of a hack; we need to keep original invalid values,
+                // so we assume that if the box is not checked and they had an
+                // invalid value, keep it; but if they had a boolean before, then
+                // they must have unchecked it
+                if (val === false)
+                { return _.isBoolean(this.originalValue) ? null : this.originalValue; }
+                return val;
             },
 
             focus: function()

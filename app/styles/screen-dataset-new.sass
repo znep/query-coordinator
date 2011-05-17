@@ -391,27 +391,29 @@
           font-size: 1.3em
           margin-left: 1.6em
 
-  .headersTable
-    border: 1px solid #888
+  .headersTableWrapper
     @include box-shadow(0, 0, 0.8em, rgba(0, 0, 0, 0.3), true)
     overflow-x: auto
-    width: 100%
 
-    tr
-      border-top: 1px solid #ddd
-      &:first-child
-        border-top: none
+    .headersTable
+      border: 1px solid #888
+      width: 100%
 
-      &.header td
-        background-color: #aaa
-        color: #888
-
-      td
-        border-left: 1px solid #ddd
-        font-size: 1.3em
-        padding: 0.4em
+      tr
+        border-top: 1px solid #ddd
         &:first-child
-          border-left: none
+          border-top: none
+
+        &.header td
+          background-color: #aaa
+          color: #888
+
+        td
+          border-left: 1px solid #ddd
+          font-size: 1.3em
+          padding: 0.4em
+          &:first-child
+            border-left: none
 
   .headersActions
     margin: 0.5em 0

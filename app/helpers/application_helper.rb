@@ -34,7 +34,7 @@ module ApplicationHelper
   end
 
   def prerendered_cache(name = {}, prerendered_content = nil, options = nil, &block)
-    @controller.prerendered_fragment_for(output_buffer, name, prerendered_content, options, &block)
+    prerendered_fragment_for(output_buffer, name, prerendered_content, options, &block)
   end
 
 # PAGE-HEADER
@@ -181,11 +181,11 @@ module ApplicationHelper
 # HTML HELPERS
 
   def create_pagination(total_count, page_count, current_page, base_href,
-                        navigation_link_class = '')
+                        navigation_link_class = '', page_param = 'page')
     num_pages = (total_count.to_f / page_count).ceil
     base_href.sub!(/([?&])page=[0-9]*/, '\1')
     base_href = (base_href.include?("?") || base_href.include?("#")) ?
-      "#{base_href}&page=" : "#{base_href}?page="
+      "#{base_href}&#{page_param}=" : "#{base_href}?#{page_param}="
     base_href.sub!(/&&+/, '&')
 
     # bail if we only have 1 page
@@ -260,7 +260,7 @@ module ApplicationHelper
     textual_extent = "Northwest: (#{nwLat}, #{nwLong}); " +
       "Southeast: (#{seLat}, #{seLong})"
 
-    "<img src='http://maps.google.com/maps/api/staticmap?path=" +
+    "<img src='https://maps.google.com/maps/api/staticmap?path=" +
       "color:black%7Cweight:3%7Cfillcolor:0xFFFF0033%7C#{path_data}" +
       "&size=512x512&sensor=false' width='100%' title='#{textual_extent}' " +
       "alt='#{textual_extent}' />"
@@ -355,12 +355,8 @@ module ApplicationHelper
     embed_template += "</div>"
   end
 
-  def render_browse(supress_includes = false)
-    render :partial => 'datasets/browse', :locals => { :supress_includes => supress_includes }
-  end
-
-  def render_browse_includes
-    render :partial => 'datasets/browse_includes'
+  def render_browse
+    render :partial => 'datasets/browse'
   end
 
   def safe_json(obj)

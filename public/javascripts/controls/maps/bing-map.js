@@ -181,6 +181,13 @@
                 mapObj._markers[shape.getLocation().toString()] = shape;
                 mapObj.map.entities.push(shape);
 
+                Microsoft.Maps.Events.addHandler(shape, 'click',
+                    function(event)
+                    {
+                        mapObj.map.setView({ center: shape.getLocation(),
+                                             zoom: mapObj.map.getZoom() + 1 });
+                    });
+
                 var offset = $((shape['cm1001_er_etr'] || {}).dom).offset();
                 offset.top  += (shape.getHeight() - 3);
                 offset.left -= 10;
@@ -343,8 +350,8 @@
                 // Workaround for crappy JS coding, see:
                 // http://code.davidjanes.com/blog/2008/11/08/how-to-dynamically-load-map-apis/
                 var scripts = [];
-                scripts.push("http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0");
-                scripts.push("http://ecn.dev.virtualearth.net/mapcontrol/v7.0/js/bin/7.0.20110224212311.97/en-us/veapicore.js");
+                scripts.push("https://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0&s=1");
+                scripts.push("https://ecn.dev.virtualearth.net/mapcontrol/v7.0/js/bin/7.0.20110224212311.97/en-us/veapicore.js");
                 scripts.push(false);
                 return scripts;
             }
@@ -380,7 +387,7 @@
 
         $box.show().find("#bing_infoContent").empty()
             .append(mapObj.getFlyout(shape.rows, shape.flyoutDetails, shape.dataView))
-            .prepend('<img src="http://maps.gstatic.com/intl/' +
+            .prepend('<img src="https://www.google.com/intl/' +
                      'en_us/mapfiles/iw_close.gif"/>');
 
         var x = pixel.x;
@@ -391,7 +398,7 @@
         if (!shape.custom_icon) { y -= 7; }
 
 
-        if (x + $box.width() > blist.$container.width())
+        if (x + $box.width() > $(mapObj.currentDom).width()) // warning: changed from blist.$container
         {
             $box.addClass('right');
             x -= $box.width();

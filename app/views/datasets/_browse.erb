@@ -1,4 +1,6 @@
-<%= render_browse_includes unless supress_includes %>
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'browse-control' %>
+<% end %>
 
 <%- cur_sort = @sort_opts.detect {|s| s[:value] == @opts[:sortBy]} -%>
 <%- show_time_period = cur_sort.nil? ? false : cur_sort[:is_time_period] -%>
@@ -7,18 +9,11 @@
   <%= @browse_in_container ? 'inContainer' : '' %> <%= @disable[:sort] ? 'noSort' : '' %>">
   <%- if @facets.length > 0 -%>
   <div class="browseFacets <%= show_time_period ? 'hasTimePeriod' : '' %>">
-    <%- unless @disable[:search] -%>
-    <form class="searchSection">
-      <span class="icon"></span>
-      <input type="text" name="browseSearch" title="Search"
-        class="textPrompt searchBox" value="<%= @params[:q] %>" />
-      <%- if !@params[:q].nil? -%>
-      <%- cp = @params.reject {|p, v| p.to_s == 'page' || p.to_s == 'q' ||
-            p.to_s == 'no_default'} -%>
-      <a href="<%= @base_url + '?' + cp.to_param %>"
-        class="clearSearch close"><span class="icon"></span></a>
-      <%- end -%>
-    </form>
+    <%- if @sidebar_config && @sidebar_config.header -%>
+      <%= raw @sidebar_config.header %>
+    <%- end -%>
+    <%- if @sidebar_config.nil? || @sidebar_config.search -%>
+      <%= render :partial => 'datasets/browse_search' %>
     <%- end -%>
 
     <%- if !@params[:q].nil? || @facets.any? {|f| !@params[f[:param]].nil? } ||
@@ -86,6 +81,9 @@
         <%- cp[facet[:param]] = f[:value] -%>
         <a href="<%= @base_url + '?' + cp.to_param %>"
           rel="<%= f[:count] %>">
+          <%- if f[:icon] -%>
+          <img class="customIcon" src="<%= theme_image_url(f[:icon]) %>" alt="icon" />
+          <%- end -%>
           <%# We need a space inside the a, or else when we stick them in
           the dialog, tags without any space will not wrap at all %>
           <%= f[:text] %>
@@ -120,6 +118,16 @@
       </a>
     </div>
   </div>
+  <%- end -%>
+
+  <%- if @header_config -%>
+    <div class="browseHeader">
+      <%- [:counter, :search].each do |option| -%>
+        <%- if @header_config[option] -%>
+          <%= render :partial => "datasets/browse_#{option.to_s}" %>
+        <%- end -%>
+      <%- end -%>
+    </div>
   <%- end -%>
 
   <div class="browseList">
@@ -304,7 +312,8 @@
             <td class="largeImage">
               <%- img_url = v.preferred_image(@port) -%>
               <%- if !img_url.nil? -%>
-              <img class="datasetImage datasetIcon" src="<%= img_url %>" />
+              <img class="datasetImage datasetIcon <%= v.preferred_image_type %>"
+                src="<%= img_url %>" />
               <%- else -%>
               <div class="datasetIcon type type<%= v.display.type.capitalize %>"
                 title="<%= v.display.name.capitalize %>"><span class="icon"></span></div>
@@ -371,7 +380,9 @@
     <%- if @view_count > 0 -%>
       <%= create_pagination(@view_count, @limit,
       @opts[:page], @base_url + '?' + @params.to_param, 'button') unless @disable[:pagination] %>
-      <div class="resultCount"><%= @view_count %> total results</div>
+      <%- if @footer_config.nil? || @footer_config.counter -%>
+        <%= render :partial => 'datasets/browse_counter' %>
+      <%- end -%>
     <%- end -%>
   </div>
 
@@ -388,18 +399,91 @@
   <div class="clearBoth"></div>
 </div>
 
-<script type='text/javascript'>
-  $(function()
-  {
-     blist.namespace.fetch('blist.browse');
-     blist.browse.datasets = {};
-     <%- @view_results.each do |v| -%>
-     blist.browse.datasets['<%= v.id %>'] = <%= safe_json(v) %>;
-     <%- end -%>
-     blist.browse.baseURL = '<%= @base_url %>';
-     <%- if !@opts[:xmin].nil? -%>
-     blist.browse.extents = {xmin: <%= @opts[:xmin] %>, xmax: <%= @opts[:xmax] %>,
-         ymin: <%= @opts[:ymin] %>, ymax: <%= @opts[:ymax] %>};
-     <%- end -%>
-  });
-</script>
+<%- content_for :modals do -%>
+  <div class="browseOptionsDialog modalDialog">
+    <a href="#close" class="jqmClose modalDialogClose">Close</a>
+    <div class="optionsContent"></div>
+  </div>
+
+  <div class="extentChooser modalDialog">
+    <a href="#close" class="jqmClose modalDialogClose">Close</a>
+    <p class="modalParagraph">
+      Drag the markers to set a bounding box to find only datasets contained in that box
+    </p>
+    <div class="mapContainer"></div>
+    <ul class="actions clearfix">
+      <li>
+        <a class="jqmClose button cancel"
+          href="#cancel"><span class="icon"></span>Cancel</a>
+      </li>
+      <li>
+        <a class="button accept" href="#">
+          <span class="icon"></span>
+          Find datasets
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="externalDomainNotice modalDialog">
+    <a href="#close" class="jqmClose modalDialogClose">Close</a>
+    <h2>
+      You are leaving <span class="serverName"><%= CurrentDomain.cname %></span>
+    </h2>
+    <p>This <span class="datasetType">dataset</span> is hosted by
+    <a href="#" rel="external" class="externalDomain">another domain</a>.
+    View it at</p>
+    <div class="leavingLinkWrapper">
+      <a class="leavingLink noInterstitial" href="#" rel="external"></a>
+    </div>
+    <ul class="actions clearfix">
+      <li>
+        <a class="jqmClose button cancel"
+          href="#cancel"><span class="icon"></span>Cancel</a>
+      </li>
+      <li>
+        <a class="noInterstitial button accept" href="#" rel="external">
+          <span class="icon"></span>
+          Go now
+        </a>
+      </li>
+    </ul>
+  </div>
+<%- end -%>
+
+<% content_for :templates do %>
+<div class="expandedInfo">
+  <div class="actions">
+    <a class="permissions button" href="#Permissions"
+      title="Change the public visibility">Make <span class="permType"></span></a>
+    <a class="delete button" href="#Delete" title="Delete this item">Delete</a>
+    <div class="share menu"></div>
+  </div>
+  <div class="comments" title="Number of comments">
+    <span class="icon"></span><span class="value"></span>
+  </div>
+  <div class="starsControl datasetAverageRating"></div>
+</div>
+<% end %>
+
+<% content_for :js_footer do %>
+  <script type='text/javascript'>
+    $(function()
+    {
+       blist.namespace.fetch('blist.browse');
+       blist.browse.datasets = {};
+       <%- @view_results.each do |v| -%>
+       blist.browse.datasets['<%= v.id %>'] = <%= safe_json(v) %>;
+       <%- end -%>
+       blist.browse.baseURL = '<%= @base_url %>';
+       <%- if !@opts[:xmin].nil? -%>
+       blist.browse.extents = {xmin: <%= @opts[:xmin] %>, xmax: <%= @opts[:xmax] %>,
+           ymin: <%= @opts[:ymin] %>, ymax: <%= @opts[:ymax] %>};
+       <%- end -%>
+    });
+  </script>
+  <script type='text/javascript'
+    src='https://maps.google.com/maps/api/js?sensor=false'></script>
+  <%= include_javascripts 'browse-control' %>
+<% end %>
+

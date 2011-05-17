@@ -50,6 +50,29 @@ protected
     }
   end
 
+  def federated_facet
+    all_feds = Federation.find.
+      select {|f| f.targetDomainCName == CurrentDomain.cname &&
+        f.lensName.empty? && f.acceptedUserId.present?}.
+      sort_by {|f| f.sourceDomainCName}.
+      map {|f| {:text => f.sourceDomainCName, :value => f.sourceDomainId.to_s,
+        :icon => {:type => 'static', :href => "/api/domains/#{f.sourceDomainCName}/icons/smallIcon"}} }
+    return nil if all_feds.length < 1
+
+    top_feds = all_feds.slice(0, 5)
+    fed_cloud = nil
+    if all_feds.length > 5
+      fed_cloud = all_feds.map {|f| f.merge({:count => 100}) }
+    end
+
+    { :title => 'Federated Domains',
+      :singular_description => 'domain',
+      :param => :federation_filter,
+      :options => top_feds,
+      :extra_options => fed_cloud
+    }
+  end
+
   def moderation_facet
     { :title => 'Moderation Status',
       :singular_description => 'moderation',
@@ -138,7 +161,7 @@ protected
     end
 
     # Simple params; these are copied directly to opts
-    [:sortBy, :category, :tags, :moderation, :q].each do |p|
+    [:sortBy, :category, :tags, :moderation, :q, :federation_filter].each do |p|
       if !browse_params[p].nil?
         @opts[p] = browse_params[p]
       end
@@ -189,13 +212,18 @@ protected
       cfs,
       categories_facet,
       topics_facet,
+      federated_facet,
       extents_facet
     ]
-    @facets = @facets.compact.flatten
+    @facets = @facets.compact.flatten.reject{ |f| f[:hidden] }
 
     if @suppressed_facets.is_a? Array
       @facets.select!{ |facet| !(@suppressed_facets.include? facet[:singular_description]) }
     end
+
+    @sidebar_config = cfg_props.sidebar
+    @header_config  = cfg_props.header
+    @footer_config  = cfg_props.footer
 
     @sort_opts ||= @@default_browse_sort_opts
 

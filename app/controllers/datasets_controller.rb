@@ -17,6 +17,8 @@ class DatasetsController < ApplicationController
     # adjust layout to thin versions (rather than '_full')
     @page_custom_header = 'header'
     @page_custom_footer = 'footer'
+    @page_custom_chrome = ''
+    @supress_content_wrapper = true
 
     if is_mobile? && (params[:no_mobile] != 'true')
       redirect_to :controller => 'widgets', :action => 'show', :id => params[:id]

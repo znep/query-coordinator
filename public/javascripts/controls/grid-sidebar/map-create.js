@@ -20,7 +20,7 @@
 
     var isEdit = _.include(blist.dataset.metadata.availableDisplayTypes, 'map');
 
-    var arcgisBaseService = 'http://server.arcgisonline.com/ArcGIS/rest/services/';
+    var arcgisBaseService = 'https://server.arcgisonline.com/ArcGIS/rest/services/';
     var mapLayers = [
         {text: 'Street Map',
             value: arcgisBaseService + 'World_Street_Map/MapServer',
@@ -204,7 +204,7 @@
                             required: true },
                         {text: 'Layer URL', type: 'text',
                             name: 'custom_url', onlyIf: {field: 'url', value: 'custom'},
-                            defaultValue: 'http://', required: true,
+                            defaultValue: 'https://', required: true,
                             data: { 'validlayerurl': 'unverified' },
                             change: normalizeLayerUrl },
                         {text: 'Opacity', type: 'slider',

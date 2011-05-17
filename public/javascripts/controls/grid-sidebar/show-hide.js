@@ -147,7 +147,7 @@
             var parCol = blist.dataset.columnForID(id);
             cols = _.sortBy(cols, function(cId)
                 { return parCol.childColumnForID(cId).position; });
-            parCol.setVisibleChildColumns(cols, null, true);
+            parCol.setVisibleChildColumns(cols);
         });
 
         isLoading = true;

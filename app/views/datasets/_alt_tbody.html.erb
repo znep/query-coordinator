@@ -25,7 +25,7 @@
       <td header="header_<%= column.id %>" class="type_<%= column.client_type %>"
         <%= 'colspan="' + (column.viewable_children.length + 1).to_s + '"' if
           column.is_nested_table %>>
-          <%- cell = row[column.data_position] -%>
+          <%- cell = row[column.id.to_s] -%>
           <%- unless cell.nil? -%>
             <%- case column.renderTypeName -%>
             <%# I'd really like a blank line here for readability; but apparently

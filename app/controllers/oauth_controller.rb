@@ -1,6 +1,4 @@
 class OauthController < ApplicationController
-  ssl_required :authorize
-
   def authorize
     @oauth_params = {
       :client_id => params[:client_id],

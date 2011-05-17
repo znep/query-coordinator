@@ -4,6 +4,8 @@
 
 // control defaults
 
+// layout widgets
+
 .twoColumnLayout
   .leftColumn, .rightColumn
     float: left
@@ -11,3 +13,87 @@
 
     .wrapper
       padding: 0.5em
+
+// content widgets
+
+.facetBreadcrumb
+  background-color: #777
+
+  li
+    background: transparent url(/stylesheets/images/interface/breadcrumb_arrow.png) no-repeat left center
+    color: #fff
+    display: block
+    float: left
+    font-size: 1.2em
+    font-weight: bold
+    padding: 0.7em 0.8em
+      left: 1.8em
+    &:first-child
+      background: none
+      padding-left: 1em
+
+    a
+      color: #fff
+
+.facetList
+  li
+    display: inline-block
+    font-size: 1.4em
+    padding: 0.3em
+    width: 10em
+
+.viewList
+  ul
+    padding: 0 0.4em
+
+    li
+      border-top: 1px solid $color_chrome_box_border
+      font-size: 1.3em
+      padding: 0.5em
+      &:first-child
+        border-top: none
+
+      .viewType
+        @include sprite-menu-icons
+        float: right
+
+  .pagination
+    font-size: 1.2em
+    text-align: center
+
+    .pageLink
+      margin: 0 0.25em
+      &.active
+        color: #999999
+        cursor: auto
+
+    .button
+      @include sprite-menu-icons
+      font-size: 1em
+      padding: 0.3em
+      .ie7 &
+        position: relative
+        top: 0.5em
+
+    .prevLink
+      margin-right: 1em
+      .ie7 &
+        margin-left: 0.5em
+    .nextLink
+      margin-left: 1em
+      .ie7 &
+        margin-right: 0.5em
+
+  .resultCount
+    color: #999
+    font-size: 1.2em
+    margin: 0.7em
+      bottom: 0
+    text-align: center
+
+.viewPreview
+  h2
+    margin-top: 0
+
+  .viewPreviewContainer
+    position: relative

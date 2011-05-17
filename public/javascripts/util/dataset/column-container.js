@@ -68,7 +68,6 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
         {
             cont[colSet].push(newCol);
             update(cont);
-            (cont.view || cont).reload();
             if (_.isFunction(successCallback))
             { successCallback(forID(cont, newCol.id)); }
         };
@@ -171,7 +170,6 @@ this.ColumnContainer = function(colName, selfUrl, urlBase)
 
             cont.sendBatch(function()
             {
-                (cont.view || cont).reload();
                 if (_.isFunction(callback)) { callback(); }
             });
         }

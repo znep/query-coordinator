@@ -1635,6 +1635,10 @@
 
             clickCell = findCell(event);
             var $clickTarget = $(clickTarget);
+
+            if ($clickTarget.hasClass('commentLink') || $clickTarget.parent().hasClass('commentLink'))
+            { return; }
+
             // IE & WebKit only detect mousedown on scrollbars, not mouseup;
             // so we need to ignore clicks on the scrollbar to avoid having a
             // false drag event

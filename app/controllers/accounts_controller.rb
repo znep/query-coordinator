@@ -1,5 +1,4 @@
 class AccountsController < ApplicationController
-  ssl_required :new, :update, :create, :add_rpx_token
   skip_before_filter :require_user, :only => [:new, :create, :forgot_password, :reset_password]
   skip_before_filter :adjust_format, :only => [:update]
   protect_from_forgery :except => [:add_rpx_token]

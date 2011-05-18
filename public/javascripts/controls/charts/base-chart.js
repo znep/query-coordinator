@@ -269,7 +269,7 @@
                 //if (!isPrimaryView)
                 //{ $item.empty(); }
                 if (chartObj.hasFlyout(tcolId))
-                { chartObj._flyoutConfig[tcolId].richRenderer.renderRow($item, row); }
+                { chartObj._flyoutConfig[tcolId].richRenderer.renderRow($item, row, true); }
 
                 return $item;
             }

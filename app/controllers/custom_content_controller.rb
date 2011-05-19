@@ -43,7 +43,7 @@ class CustomContentController < ApplicationController
   def stylesheet
     headers['Content-Type'] = 'text/css'
 
-    @page_config = get_config(params[:page_type], params[:config_name])
+    @page_config = get_config(params[:page_type], params[:config_name], false)
     return render_404 unless @page_config
 
     render :text => build_stylesheet(@page_config.contents), :content_type => 'text/css'
@@ -64,7 +64,7 @@ private
     end
   end
 
-  def get_config(page_type, config_name)
+  def get_config(page_type, config_name, prepare = true)
     properties = CurrentDomain.property(page_type.pluralize, :custom_content)
     return nil unless properties
 
@@ -81,8 +81,10 @@ private
     Canvas::Environment.page_config = page_config.reject{ |key| key == 'contents' }
 
     # ready whatever we might need
-    threads = page_config.contents.map{ |widget| Thread.new{ widget.prepare! } if widget.can_render? }
-    threads.compact.each{ |thread| thread.join }
+    if prepare
+      threads = page_config.contents.map{ |widget| Thread.new{ widget.prepare! } if widget.can_render? }
+      threads.compact.each{ |thread| thread.join }
+    end
 
     return page_config
   end

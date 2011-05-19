@@ -1,0 +1,5 @@
+<%= content_tag(widget.properties.titleTag, h(widget.view.name)) if widget.properties.showTitle %>
+<%- if widget.properties.showDescription -%>
+  <p><%= widget.view.description %></p>
+<%- end -%>
+<%= link_to (widget.properties.linkText.html_safe || widget.view.name), widget.view.href if widget.properties.showLink %>

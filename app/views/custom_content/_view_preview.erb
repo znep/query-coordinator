@@ -1,9 +1,12 @@
 <%- if widget.view -%>
   <div id="<%= widget.elem_id %>" class="viewPreview">
-    <%= content_tag(widget.properties.titleTag, h(widget.view.name)) if widget.properties.showTitle %>
+    <%= render :partial => 'view_preview_details',
+               :locals => { :widget => widget } if widget.properties.details == 'above' %>
     <div class="viewPreviewContainer">
       <div class="loadingSpinnerContainer hide"><div class="loadingSpinner"></div></div>
     </div>
+    <%= render :partial => 'view_preview_details',
+               :locals => { :widget => widget } if widget.properties.details == 'below' %>
   </div>
 
   <%- content_for :js_footer do -%>
@@ -39,4 +42,6 @@
       });
     </script>
   <%- end -%>
+<%- elsif widget.properties.noResultsMessage -%>
+  <p><%= widget.properties.noResultsMessage %></p>
 <%- end -%>

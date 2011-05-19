@@ -255,7 +255,7 @@
         <tbody>
           <%- start_index = (@opts[:page] - 1) * @limit + 1 -%>
           <%- @view_results.each_with_index do |v, i| -%>
-          <tr class="item collapsed" data-viewId="<%= v.id %>">
+          <tr class="item collapsed<%= v.federated? ? " federated" : " local" %>" data-viewId="<%= v.id %>">
             <%- if @grid_items[:index] -%>
             <td class="index">
               <a class="expander" title="Click to expand" href="#Expand">

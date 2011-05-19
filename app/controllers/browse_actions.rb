@@ -3,7 +3,8 @@ module BrowseActions
 
 protected
   def view_types_facet
-    { :title => 'View Types',
+    vts = {
+      :title => 'View Types',
       :singular_description => 'type',
       :param => :limitTo,
       :use_icon => true,
@@ -17,6 +18,10 @@ protected
         {:text => 'Calendars', :value => 'calendars', :class => 'typeCalendar'},
         {:text => 'Forms', :value => 'forms', :class => 'typeForm'}]
     }
+    view_types = CurrentDomain.property(:view_types_facet, :catalog)
+    return vts if view_types.nil?
+    vts[:options].select!{ |opt| view_types.include?(opt[:value]) }
+    vts
   end
 
   def categories_facet
@@ -284,7 +289,8 @@ private
       end
     end
 
-    t.blank? ? 'Search & Browse Datasets and Views' : 'Results ' + t
+    t.blank? ? (CurrentDomain.property(:default_title, :catalog) ||
+                 'Search & Browse Datasets and Views') : 'Results ' + t
   end
 
 end

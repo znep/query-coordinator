@@ -53,17 +53,47 @@ editRRNS.initSidebar = function()
     var paletteConfig = {
         name: 'palette',
         title: 'Add Fields',
-        subtitle: 'Choose fields to add to your layout',
-        sections: [{
+        subtitle: 'Choose fields to add to your layout and then drag and drop them to the canvas where you would like them',
+        sections: [
+        {
+            title: 'Static',
+            customContent: {
+                template: 'staticPalette',
+                callback: function($sect)
+                {
+                    $sect.find('.fieldItem').each(function()
+                        { editRRNS.enableFieldItem($(this), true); });
+                }
+            }
+        },
+        {
+            title: 'Labels',
+            customContent: {
+                template: 'labelPalette',
+                directive: {
+                    'li.columnItem': {
+                        'column<-': {
+                            '.columnLabel': 'column.name!',
+                            '.columnLabel@data-tcId': 'column.tableColumnId'
+                        }
+                    }
+                },
+                data: cols,
+                callback: function($sect)
+                {
+                    $sect.find('.fieldItem').each(function()
+                        { editRRNS.enableFieldItem($(this), true); });
+                }
+            }
+        },
+        {
             title: 'Fields',
             customContent: {
                 template: 'fieldPalette',
                 directive: {
                     'li.columnItem': {
                         'column<-': {
-                            '.columnLabel': 'column.name!',
-                            '.columnLabel@data-tcId': 'column.tableColumnId',
-                            '.columnData': '(Data for #{column.name!})',
+                            '.columnData': '(#{column.name!})',
                             '.columnData@data-tcId': 'column.tableColumnId',
                             '.columnData@class+':
                                 'columnId#{column.id} #{column.renderTypeName}'
@@ -77,7 +107,8 @@ editRRNS.initSidebar = function()
                         { editRRNS.enableFieldItem($(this), true); });
                 }
             }
-        }]
+        }
+        ]
     };
     $.gridSidebar.registerConfig(paletteConfig);
 
@@ -921,8 +952,14 @@ editRRNS.addColumn = function($parent)
 editRRNS.resetConfig = function(previewOnly)
 {
     var config = ((blist.dataset.metadata || {}).richRendererConfigs ||
-        {})[editRRNS.renderType] || {columns: [{rows: [{}]}]};
-    if (!previewOnly) { editRRNS.richRenderer.setConfig(config); }
+        {})[editRRNS.renderType];
+    var hasConfig = !$.isBlank(config);
+    config = config || {columns: [{rows: [{}]}]};
+    if (!previewOnly)
+    {
+        editRRNS.richRenderer.setConfig(config);
+        editRRNS.$clearLayout.toggleClass('hide', !hasConfig);
+    }
     editRRNS.previewRenderer.setConfig(config);
     editRRNS.renderCurrentLayout(previewOnly);
 };
@@ -935,7 +972,7 @@ editRRNS.initLayout = function()
     if (editRRNS.renderType == 'richList') { editRRNS.renderType = 'fatRow'; }
 
     editRRNS.richRenderer = editRRNS.$renderArea.richRenderer({
-        defaultItem: '(Data for #{column.name})',
+        defaultItem: '(#{column.name})',
         view: blist.dataset });
     editRRNS.$previewContainer.resizable({handles: 'n',
             maxHeight: editRRNS.$container.height() * 0.8, minHeight: 30,
@@ -947,21 +984,21 @@ editRRNS.initLayout = function()
     editRRNS.previewRenderer = editRRNS.$previewArea
         .richRenderer({ view: blist.dataset });
 
-    editRRNS.resetConfig();
-
 
     // Hook up navigation
     editRRNS.navigation = editRRNS.$container.find('.navigation')
         .bind('page_changed', editRRNS.renderCurrentRow)
         .navigation({pageSize: 1, view: blist.dataset});
 
-    editRRNS.$container.find('a.clearLayout').click(function(e)
+    editRRNS.$clearLayout = $('.header a.clearLayout').click(function(e)
     {
         e.preventDefault();
         editRRNS.$renderArea.empty();
         editRRNS.addColumn(editRRNS.$renderArea);
     });
 
+
+    editRRNS.resetConfig();
 
     editRRNS.renderCurrentRow();
 
@@ -970,8 +1007,9 @@ editRRNS.initLayout = function()
     // Handle switching types
     $('#renderTypeOptions').pillButtons();
     $('#renderTypeOptions li a').removeClass('active');
-    $('#renderTypeOptions li .' + editRRNS.renderType.toLowerCase())
+    var $initA = $('#renderTypeOptions li .' + editRRNS.renderType.toLowerCase())
         .addClass('active');
+    $('.header h1 .displayName').text($initA.data('displayName'));
     $('#renderTypeOptions a').click(function(e)
     {
         e.preventDefault();
@@ -979,7 +1017,9 @@ editRRNS.initLayout = function()
         if (rt == 'richList') { rt = 'fatRow'; }
 
         $('#renderTypeOptions li a').removeClass('active');
-        $('#renderTypeOptions li .' + rt.toLowerCase()).addClass('active');
+        var $a = $('#renderTypeOptions li .' + rt.toLowerCase()).addClass('active');
+
+        $('.header h1 .displayName').text($a.data('displayName'));
 
         editRRNS.$container.removeClass('fatRowRenderType pageRenderType')
             .addClass(rt + 'RenderType');

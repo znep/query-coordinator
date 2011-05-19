@@ -44,6 +44,11 @@ body
       background: #fff url(/stylesheets/images/interface/dataset_unsaved_fade.png) repeat-y
       .unsavedLine
         display: block
+      .clearLayout
+        display: none
+
+    .clearLayout
+      margin-left: 3em
 
   .mainContainer
     position: relative
@@ -335,18 +340,10 @@ body
     position: absolute
     z-index: 0
 
-    .fieldPalette .sectionContent
+    .sidebarPane .formSection .sectionContent
       padding: 0.75em
-      .columnFields
-        border-bottom: 1px solid $color_chrome_box_border
-        margin-bottom: 1em
-        padding-bottom: 0.5em
       .columnItem
         margin-bottom: 0.25em
-      .columnData
-        margin:
-          left: 1em
-          top: 0.25em
 
   #gridSidebar, .mainContainer >
     .fieldItem
@@ -417,14 +414,6 @@ body
     &.dragOver
       background-color: #ff7777
       font-weight: bold
-
-  .clearItem
-    float: right
-    margin-top: -0.5em
-    .clearLayout
-      padding: 0.5em 1em
-    .ie7 &
-      margin-top: -3.5em
 
 // Save view dialog
 .saveViewDialog

@@ -8,21 +8,24 @@
   <div class="header clearfix">
     <a href="<%= @view.href %>" class="returnLink">Return to Dataset</a>
 
-    <h1>Editing Rich Display for <%= @view.name %></h1>
+    <h1>Modifying <span class="displayName"></span> View for <%= @view.name %></h1>
 
     <div class="unsavedLine">
       <a href="#save" class="save button">Save</a>
       <a href="#revert" class="revert button">Revert Changes</a>
       <span class="loadingIcon hide">Working...</span>
     </div>
+    <a href="#Clear" class="clearLayout button">New Layout</a>
 
     <ul id="renderTypeOptions" class="pillButtons">
       <li><a href="<%= @view.href %>/edit_rr?defaultRender=richList"
-        class="fatrow noRedirPrompt" title="Edit rich list layout">
+        class="fatrow noRedirPrompt" title="Edit rich list layout"
+        data-displayName="Rich List">
         <span class="icon"></span>
       </a></li>
       <li><a href="<%= @view.href %>/edit_rr?defaultRender=page"
-        class="page noRedirPrompt" title="Edit single row layout">
+        class="page noRedirPrompt" title="Edit single row layout"
+        data-displayName="Page">
         <span class="icon"></span>
       </a></li>
     </ul>
@@ -59,9 +62,6 @@
         <li><a href="#end" title="View last row" class="end button">
           <span class="icon"></span>
         </a></li>
-        <li class="clearItem"><a href="#Clear" class="clearLayout button">
-          Clear Layout
-        </a></li>
       </ul>
     </div>
 
@@ -71,14 +71,26 @@
 
 <% content_for :templates do %>
 <%= render(:partial => 'shared/grid_sidebar_templates') %>
-<div class="fieldPalette">
+<div class="labelPalette">
   <div class="sectionContent">
     <ul class="columnFields">
       <li class="columnItem">
         <div class="columnLabel richLabel fieldItem"></div>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="fieldPalette">
+  <div class="sectionContent">
+    <ul class="columnFields">
+      <li class="columnItem">
         <div class="columnData richItem fieldItem noRender"></div>
       </li>
     </ul>
+  </div>
+</div>
+<div class="staticPalette">
+  <div class="sectionContent">
     <div class="fieldItem richLabel staticLabel defaultData">(Static text)</div>
   </div>
 </div>

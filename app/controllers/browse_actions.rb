@@ -125,6 +125,7 @@ protected
         if facet.options.length < 1
           facet.options = facet.extra_options[0..4]
         end
+        facet.extra_options_class = "padMore"
       end
       facet
     end

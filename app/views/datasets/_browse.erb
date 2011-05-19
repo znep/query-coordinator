@@ -80,6 +80,7 @@
               p.to_s == 'no_default'} -%>
         <%- cp[facet[:param]] = f[:value] -%>
         <a href="<%= @base_url + '?' + cp.to_param %>"
+          <%= "class=#{facet[:extra_options_class]}" if facet[:extra_options_class] %>
           rel="<%= f[:count] %>">
           <%- if f[:icon] -%>
           <img class="customIcon" src="<%= theme_image_url(f[:icon]) %>" alt="icon" />

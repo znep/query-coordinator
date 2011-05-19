@@ -149,8 +149,8 @@
         $customRdfClass.attr('name', '');
         if ($rdfClass.val().startsWith('_'))
         {
-            // this remove meta.rdfClass when metadata persist
-            $rdfClass.attr('name', '');
+            // this clears meta.rdfClass when metadata persist
+            $rdfClass.append($("<option/>").attr('value', "")).val("");
         }
     };
 

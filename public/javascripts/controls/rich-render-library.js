@@ -54,10 +54,9 @@
             renderRow: function($content, row, no_highlight)
             {
                 var rrObj = this;
+                $content.css('background-color', no_highlight ? '' : row.color || '');
                 _.each(rrObj.visibleColumns(), function(c)
                 {
-                    if (!no_highlight)
-                    { $content.css('background-color', row.color || ''); }
                     $content.find('.columnId' + c.id).each(function()
                         { renderItem(rrObj, $(this), row, c); });
                 });

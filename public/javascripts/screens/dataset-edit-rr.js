@@ -248,7 +248,7 @@ editRRNS.enableFieldItem = function($item, dragOnly)
         // http://bugs.jqueryui.com/ticket/5025  We can't hook up resizable
         // on children before parents, so defer this until the column
         // has finished hooking up the same thing
-        editRRNS.addControls($fieldItem);
+        editRRNS.addControls($fieldItem, true);
         _.defer(function() { editRRNS.makeResizable($fieldItem); });
     }
 
@@ -374,7 +374,7 @@ editRRNS.setRelativeSize = function($item, prop)
     }
 };
 
-editRRNS.addControls = function($item)
+editRRNS.addControls = function($item, hasResize)
 {
     if ($item.children('.controlIndicators').length > 0) { return; }
 
@@ -387,25 +387,35 @@ editRRNS.addControls = function($item)
 
     $item.children('.controlIndicators').find('.settings').menu({
             contents: [
-                { text: 'Remove', className: 'remove', href: '#Remove' },
+                { text: 'Remove', className: 'remove', href: '#Remove',
+                    onlyIf: !$item.hasClass('renderArea') },
                 { divider: true},
                 { text: 'Reset Width', className: 'widthClear', href: '#Clear_Width',
-                    onlyIf: !$item.hasClass('richLine') },
+                    onlyIf: hasResize === true },
                 { text: 'Use Absolute Width', className: 'widthAbsolute', href: '#Absolute_Width',
-                    onlyIf: !$item.hasClass('richLine') },
+                    onlyIf: hasResize === true },
                 { text: 'Use Relative Width', className: 'widthRelative', href: '#Relative_Width',
-                    onlyIf: !$item.hasClass('richLine') },
+                    onlyIf: hasResize === true },
                 { divider: true},
                 { text: 'Reset Height', className: 'heightClear', href: '#Clear_Height',
-                    onlyIf: !$item.hasClass('richLine') }
+                    onlyIf: hasResize === true },
+                { divider: true },
+                { text: 'Add Column', className: 'addColumn add', href: '#AddColumn',
+                    onlyIf: $item.hasClass('richLine') || $item.hasClass('renderArea') },
+                { text: 'Add Row', href: '#AddRow', className: 'add addRow',
+                    onlyIf: $item.hasClass('richColumn') }
             ],
             menuButtonClass: 'settingsMenuButton options',
             menuButtonContents: '',
             parentContainer: editRRNS.$renderArea,
             onOpen: function($menuC)
             {
-                $menuC.closest('.hover').addClass('directMenuOpen');
-                $menuC.parents('.hover, .richLine').addClass('menuOpen');
+                // Double defer because we need to happen after any other onClose (below)
+                _.defer(function() { _.defer(function()
+                {
+                    $menuC.closest('.hover').addClass('directMenuOpen');
+                    $menuC.parents('.hover, .richLine, .richColumn').addClass('menuOpen');
+                }); });
 
                 $menuC.find('.menuEntry').filter('.widthClear, .widthAbsolute, .widthRelative')
                     .toggleClass('hide', $.isBlank($richItem.data('rr-width')));
@@ -415,11 +425,19 @@ editRRNS.addControls = function($item)
                 var widthRelative = ($richItem.data('rr-width') || '').endsWith('%');
                 $menuC.find('.menuEntry.widthRelative').toggleClass('checked', widthRelative);
                 $menuC.find('.menuEntry.widthAbsolute').toggleClass('checked', !widthRelative);
+
+                $menuC.find('.menuEntry.addColumn').toggleClass('hide',
+                    !($item.hasClass('acceptsColumns') || $item.hasClass('renderArea')));
             },
             onClose: function($menuC)
             {
-                $menuC.parents('.menuOpen').removeClass('menuOpen');
-                $menuC.parents('.directMenuOpen').removeClass('directMenuOpen');
+                // Need to defer this so that menu doesn't get confused about
+                // closing itself, at least on Chrome
+                _.defer(function()
+                {
+                    $menuC.parents('.menuOpen').removeClass('menuOpen');
+                    $menuC.closest('.directMenuOpen').removeClass('directMenuOpen');
+                });
             }
         })
     .find('.menuDropdown a').click(function(e)
@@ -486,6 +504,15 @@ editRRNS.addControls = function($item)
                 }
                 madeChange = true;
                 break;
+            case 'AddColumn':
+                editRRNS.addColumn($item);
+                break;
+            case 'AddRow':
+                var $newRow = $.tag({tagName: 'div', 'class': 'richLine'});
+                $item.append($newRow);
+                editRRNS.setUpRows($newRow);
+                madeChange = true;
+                break;
             default:
                 $.debug('Missing handler for menu action ' + action.join('_'));
                 break;
@@ -515,6 +542,8 @@ editRRNS.makeResizable = function($item, handles)
         alsoResize: $item.children('.controlIndicators'),
         start: function(event, ui)
         {
+            // Force all menus to close
+            $(document).trigger('click.menu');
             var $t = $(this).css('position', '').css('top', '').css('left', '');
             var $cont = $t.parent().closest('.richColumn, .renderArea');
             var offT = $t.offset();
@@ -589,7 +618,8 @@ editRRNS.makeResizable = function($item, handles)
 editRRNS.renderCurrentRow = function()
 {
     editRRNS.$secondPreview.hide();
-    var pageSize = editRRNS.renderType == 'fatRow' ? 2 : 1;
+    var isPage = editRRNS.renderType == 'page';
+    var pageSize = isPage ? 1 : 2;
     blist.dataset.getRows(editRRNS.navigation.currentPage(), pageSize,
         function(rows)
         {
@@ -597,16 +627,14 @@ editRRNS.renderCurrentRow = function()
             {
                 if (r.index == editRRNS.navigation.currentPage())
                 {
-                    editRRNS.richRenderer.renderRow(editRRNS.$renderArea, r);
-                    editRRNS.previewRenderer.renderRow(
-                        editRRNS.$previewArea, r);
+                    editRRNS.richRenderer.renderRow(editRRNS.$renderArea, r, true);
+                    editRRNS.previewRenderer.renderRow(editRRNS.$previewArea, r, isPage);
                 }
                 else
                 {
                     editRRNS.$secondPreview.empty().append(
                         editRRNS.$previewArea.children().clone());
-                    editRRNS.previewRenderer.renderRow(
-                        editRRNS.$secondPreview, r);
+                    editRRNS.previewRenderer.renderRow(editRRNS.$secondPreview, r, isPage);
                     editRRNS.$secondPreview.show();
                 }
             });
@@ -711,11 +739,9 @@ editRRNS.renderCurrentLayout = function(previewOnly)
     if (!previewOnly) { editRRNS.richRenderer.renderLayout(); }
     editRRNS.previewRenderer.renderLayout();
 
-    if (editRRNS.$renderArea.children('.addColumn').length < 1)
+    if (editRRNS.$renderArea.children('.controlIndicators').length < 1)
     {
-        editRRNS.$renderArea.prepend($.tag({tagName: 'a', href: '#Add_Column',
-            'class': ['add', 'addColumn'], title: 'Add a column',
-            contents: {tagName: 'span', 'class': 'icon'}}));
+        editRRNS.addControls(editRRNS.$renderArea);
     }
 
     editRRNS.setUpColumns(editRRNS.$renderArea.children('.richColumn'));
@@ -772,13 +798,13 @@ editRRNS.setUpRows = function($rows)
             var $row = $(this);
             if ($row.hasClass('ui-draggable')) { return; }
 
+            editRRNS.addControls($row);
+
             $row.addClass('clearfix')
-                .prepend($.tag({tagName: 'a', href: '#Drag', title: 'Move row',
-                    'class': ['dragHandle', 'rowDrag']}))
-                .prepend($.tag({tagName: 'a', href: '#Add_Column',
-                    'class': ['add', 'addColumn'],
-                    title: 'Add a column to this row',
-                    contents: {tagName: 'span', 'class': 'icon'}}));
+                .children('.controlIndicators').append($.tag(
+                {tagName: 'a', href: '#Drag', title: 'Move row',
+                    'class': ['dragHandle', 'rowDrag']}));
+
             // We only accept columns in a row if there are no field items,
             // and we are less than four columns deep -- more than that,
             // and Rails has problems with the nesting level
@@ -809,13 +835,11 @@ editRRNS.setUpRows = function($rows)
                         editRRNS.enableFieldItem($item);
                     }
                 });
-            editRRNS.makeDraggable($row, '> .rowDrag', null, null,
+            editRRNS.makeDraggable($row, '> .controlIndicators .rowDrag', null, null,
                 function(e, ui)
                 {
                     editRRNS.itemDragging(ui, 'top', 'left');
                 }, true);
-
-            editRRNS.addControls($row);
         });
 };
 
@@ -838,11 +862,11 @@ editRRNS.setUpColumns = function($col)
         var $c = $(this);
         if ($c.hasClass('ui-draggable')) { return; }
 
-        $c.prepend($.tag({tagName: 'a', href: '#Drag', title: 'Move column',
-            'class': ['dragHandle', 'columnDrag']}));
-        $c.prepend($.tag({tagName: 'a', href: '#Add_Row',
-            'class': ['add', 'addRow'], title: 'Add a row to this column',
-            contents: {tagName: 'span', 'class': 'icon'}}));
+        editRRNS.addControls($c, true);
+
+        $c.children('.controlIndicators').prepend($.tag(
+            {tagName: 'a', href: '#Drag', title: 'Move column',
+                'class': ['dragHandle', 'columnDrag']}));
 
         editRRNS.addHoverStates($c, 'richColumn', 'richLine');
 
@@ -850,13 +874,12 @@ editRRNS.setUpColumns = function($col)
         // When dragging a column, enlarge the main area just a bit, since
         // columns are forced-width, and might not allow room for the dropfinder
         // at the right edge
-        editRRNS.makeDraggable($c, '> .columnDrag',
+        editRRNS.makeDraggable($c, '> .controlIndicators .columnDrag',
             function()
             { editRRNS.$renderArea.width(editRRNS.$renderArea.width() + 5); },
             function() { editRRNS.$renderArea.css('width', 'auto'); },
             function(e, ui) { editRRNS.itemDragging(ui, 'left', 'top'); });
 
-        editRRNS.addControls($c);
         editRRNS.makeResizable($c, 'e');
     });
 };
@@ -1083,23 +1106,6 @@ editRRNS.initLayout = function()
         if (!$.isBlank(editRRNS.$staticEditor) &&
             editRRNS.$staticEditor.index(e.target) < 0)
         { finishEdit(editRRNS.$staticEditor, true); }
-    });
-
-    // Hook up rows & columns
-    editRRNS.$renderArea.find('.addRow').live('click ', function(e)
-    {
-        e.preventDefault();
-        var $newRow = $.tag({tagName: 'div', 'class': 'richLine'});
-        $(this).closest('.richColumn').append($newRow);
-        editRRNS.setUpRows($newRow);
-        editRRNS.updateConfig();
-    });
-
-    editRRNS.$renderArea.find('.addColumn').live('click', function(e)
-    {
-        e.preventDefault();
-        var $rl = $(this).closest('.richLine');
-        editRRNS.addColumn($rl.length > 0 ? $rl : editRRNS.$renderArea);
     });
 
     editRRNS.addHoverStates(editRRNS.$renderArea, 'richLine', 'richColumn');

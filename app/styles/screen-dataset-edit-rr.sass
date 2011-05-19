@@ -59,9 +59,8 @@ body
     overflow: auto
     position: relative
 
-    > .addColumn
-      right: 0
-      top: 1em
+    &.directHover > .controlIndicators
+      display: block
 
     > .dropIndicator
       top: 0
@@ -102,16 +101,6 @@ body
     padding-bottom: 4em
     z-index: 1
 
-  .addColumn
-    @include sprite-repeater-icons
-    display: none
-    position: absolute
-    // One above resize handle for sidebar
-    z-index: 100000
-
-  .hover > .addColumn
-    display: block
-
   .ui-draggable-dragging
     z-index: 100001
 
@@ -128,15 +117,6 @@ body
     &.dragOver
       background-color: #88ff77
 
-  .dragHandle
-    background-image: url(/stylesheets/images/content/table/column_drag_handle.png)
-    background-position: top left
-    background-repeat: repeat
-    cursor: move
-    position: absolute
-    visibility: hidden
-    z-index: 1
-
   .controlIndicators
     display: none
     height: 100%
@@ -145,7 +125,14 @@ body
     position: absolute
     top: 0
     width: 100%
-    z-index: 2
+
+    .dragHandle
+      background-image: url(/stylesheets/images/content/table/column_drag_handle.png)
+      background-position: top left
+      background-repeat: repeat
+      cursor: move
+      position: absolute
+
     .resizeIndicator
       background-color: #eeeeee
       border: 1px solid #aaaaaa
@@ -190,6 +177,7 @@ body
       text-align: center
       top: 50%
       width: 7.2em
+      z-index: 10
 
     .settings
       background-color: #ffffff
@@ -217,7 +205,6 @@ body
     border: 1px solid transparent
     @include border-radius(0.3em)
     padding: 0.2em
-      bottom: 16px
       top: 11px
     position: relative
     width: 100%
@@ -227,8 +214,6 @@ body
     &.hover, &.ui-draggable-dragging
       border-color: #333333
       @include box-shadow(0, 0, 3px, rgba(0, 0, 0, 0.5))
-      > .addRow
-        display: block
       > .ui-draggable.richLine
         border-color: #999999
 
@@ -240,27 +225,22 @@ body
       > .controlIndicators
         display: block
 
-    &.menuOpen > .controlIndicators
-      overflow: visible
+    .ie7 &.directMenuOpen > .controlIndicators
+      z-index: 100000
+
+    &.menuOpen
+      .ie7 &
+        z-index: 100000
+      > .controlIndicators
+        overflow: visible
 
     &.ui-resizable-resizing
       border-color: transparent
       @include box-shadow-none
-      > .addRow
-        display: none
       > .ui-draggable.richLine
         border-color: transparent
       > .columnDrag
         visibility: hidden
-
-    .addRow
-      @include sprite-repeater-icons
-      bottom: 1px
-      display: none
-      left: 50%
-      margin-left: -7px
-      position: absolute
-      z-index: 2
 
     > .dropIndicator
       height: 2px
@@ -270,7 +250,7 @@ body
       left: -1px
       top: -1px
 
-    > .dragHandle
+    > .controlIndicators .dragHandle
       height: 10px
       left: 0
       top: 0
@@ -288,11 +268,6 @@ body
       left: 11px
     position: relative
 
-    &.acceptsColumns
-      padding-right: 12px
-      > .controlIndicators .settings
-        right: 16px
-
     &.inDrag
       border-color: #999999
 
@@ -306,8 +281,13 @@ body
       > .controlIndicators
         display: block
 
+    .ie7 &.directMenuOpen > .controlIndicators
+      z-index: 100000
+
     &.menuOpen
       overflow: visible
+      .ie7 &
+        z-index: 100000
       > .controlIndicators
         overflow: visible
 
@@ -318,19 +298,11 @@ body
     > .dropIndicator
       width: 2px
 
-    > .dragHandle
+    > .controlIndicators .dragHandle
       height: 100%
       left: 0
       top: 0
       width: 10px
-
-    > .addColumn
-      display: none
-      right: 0
-      top: 0.2em
-
-    &.acceptsColumns.hover > .addColumn
-      display: block
 
   .inDrag > .ui-draggable
     &.richColumn, &.richLine
@@ -394,8 +366,14 @@ body
     > .controlIndicators
       display: block
 
-  &.menuOpen > .controlIndicators
-    overflow: visible
+  .ie7 &.directMenuOpen > .controlIndicators
+    z-index: 100000
+
+  &.menuOpen
+    .ie7 &
+      z-index: 100000
+    > .controlIndicators
+      overflow: visible
 
 
 .navRenderType .navigation

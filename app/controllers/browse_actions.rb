@@ -59,6 +59,8 @@ protected
         :icon => {:type => 'static', :href => "/api/domains/#{f.sourceDomainCName}/icons/smallIcon"}} }
     return nil if all_feds.length < 1
 
+    all_feds.unshift({:text => 'This site only', :value => CurrentDomain.domain.id.to_s,
+        :icon => {:type => 'static', :href => "/api/domains/#{CurrentDomain.cname}/icons/smallIcon"}})
     top_feds = all_feds.slice(0, 5)
     fed_cloud = nil
     if all_feds.length > 5

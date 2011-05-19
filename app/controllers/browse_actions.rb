@@ -142,9 +142,9 @@ protected
     @opts.merge!({:limit => @limit, :page => (browse_params[:page] || 1).to_i})
     @ignore_params ||= ['controller', 'action']
     @params = browse_params.reject {|k, v| @ignore_params.include? k.to_s}
-    @default_params ||= {}
+    @default_params ||= CurrentDomain.property(:default_params, :catalog) || {}
     @default_params.delete(params[:no_default].to_sym) if !params[:no_default].nil?
-    @default_params.each { |k, v| browse_params[k] = v if browse_params[k].nil? }
+    @default_params.each { |k, v| browse_params[k.to_sym] = v if browse_params[k].nil? }
     @no_results_text ||= 'No Results'
     @base_url ||= request.path
 

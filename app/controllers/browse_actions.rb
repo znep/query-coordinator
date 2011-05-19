@@ -22,10 +22,15 @@ protected
   def categories_facet
     cats = View.categories.keys.reject {|c| c.blank?}
     return nil if cats.length < 1
+    cats = cats.sort.map{ |c| {:text => c, :value => c} }
+    if cats.length > 5
+      cats, hidden_cats = cats[0..4], cats
+    end
     return { :title => 'Categories',
       :singular_description => 'category',
       :param => :category,
-      :options => cats.sort.map { |c| {:text => c, :value => c} }
+      :options => cats,
+      :extra_options => hidden_cats
     }
   end
 
@@ -64,7 +69,7 @@ protected
     top_feds = all_feds.slice(0, 5)
     fed_cloud = nil
     if all_feds.length > 5
-      fed_cloud = all_feds.map {|f| f.merge({:count => 100}) }
+      fed_cloud = all_feds
     end
 
     { :title => 'Federated Domains',
@@ -107,7 +112,17 @@ protected
   end
 
   def custom_facets
-    config = CurrentDomain.property(:facets, :catalog)
+    facets = CurrentDomain.property(:facets, :catalog)
+    return if facets.nil?
+    facets.map do |facet|
+      if facet.options && facet.options.length > 5
+        facet.options, facet.extra_options = facet.options.partition{ |opt| opt.summary }
+        if facet.options.length < 1
+          facet.options = facet.extra_options[0..4]
+        end
+      end
+      facet
+    end
   end
 
   def process_browse!(options = {})

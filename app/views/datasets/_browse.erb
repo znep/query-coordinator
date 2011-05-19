@@ -72,8 +72,8 @@
         </a></li>
         <%- end -%>
       </ul>
-      <%- if !facet[:extra_options].nil? -%>
-      <a class="moreLink" href="#More <%= facet[:title] %>">View more</a>
+      <%- if !facet[:extra_options].blank? -%>
+      <a class="moreLink" href="#More <%= facet[:title] %>">View all</a>
       <div class="moreOptions hide">
         <%- facet[:extra_options].each do |f| -%>
         <%- cp = @params.reject {|p, v| p.to_s == 'page' ||

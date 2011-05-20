@@ -149,14 +149,12 @@ module Canvas
   class Catalog < CanvasWidget
   end
 
-  class FacetBreadcrumb < CanvasWidget
-    def can_render?
-      return (Environment.context == :facet_listing) ||
-             (Environment.context == :facet_page)
-    end
+  class Breadcrumb < CanvasWidget
   protected
     self.default_properties = {
-      breadcrumbRoot: 'Home'
+      breadcrumbRoot: [
+        { text: 'Home', href: '/' }
+      ]
     }
   end
 

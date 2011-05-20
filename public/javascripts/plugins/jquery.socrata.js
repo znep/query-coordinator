@@ -236,7 +236,7 @@
         }
 
         options = $.extend(options || {}, {
-            method: method,
+            type: method,
             url: url,
             cache: false,
 

@@ -35,4 +35,10 @@ class Hash
     keys.each{ |key| current = current[key] unless current.nil? }
     return current
   end
+
+  def to_core_param(namespace = nil)
+    collect do |key, value|
+      value.to_core_query(namespace ? "#{namespace}[#{key}]" : key)
+    end.sort * '&'
+  end
 end

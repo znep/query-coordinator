@@ -1,7 +1,7 @@
 
 class SearchResult < Model
   def self.search(type, options, use_batching = false)
-    path = "/search/#{type}.json?#{options.to_param}"
+    path = "/search/#{type}.json?#{options.to_core_param}"
     result = CoreServer::Base.connection.get_request(path, {}, use_batching)
     !result.nil? ? parse(result) : result
   end

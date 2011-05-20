@@ -525,7 +525,7 @@ $._checkLoadedLibraries = function(item)
     blist.util.lazyLoadedAssets[item] = blist.util.lazyLoadingAssets[item];
     delete blist.util.lazyLoadingAssets[item];
 
-    _.reject(blist.util.lazyLoadingJobs, function(job)
+    blist.util.lazyLoadingJobs = _.reject(blist.util.lazyLoadingJobs, function(job)
     {
         if (_.all(job.queue, function(queueItem) {
                   return !_.isUndefined(blist.util.lazyLoadedAssets[queueItem]); }))

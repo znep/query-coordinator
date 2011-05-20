@@ -228,6 +228,9 @@
             }
         }
 
+        if (options.body && (method.match(/post|put/i)))
+            options.data = options.body;
+
         options = $.extend(options || {}, {
             url: url,
             cache: false,

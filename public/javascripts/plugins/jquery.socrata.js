@@ -229,7 +229,10 @@
         }
 
         if (options.body && (method.match(/post|put/i)))
+        {
             options.data = options.body;
+            options.contentType = 'application/json';
+        }
 
         options = $.extend(options || {}, {
             url: url,

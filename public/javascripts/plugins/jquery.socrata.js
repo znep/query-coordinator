@@ -232,9 +232,11 @@
         {
             options.data = options.body;
             options.contentType = 'application/json';
+            options.dataType = 'json';
         }
 
         options = $.extend(options || {}, {
+            method: method,
             url: url,
             cache: false,
 

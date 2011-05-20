@@ -13,6 +13,8 @@
     <%- allow_once do -%>
       <script type="text/javascript">
         blist.assets = blist.assets || <%= raw ASSET_MAP.javascripts %>;
+        blist.namespace.fetch('blist.configuration');
+        blist.configuration.development = <%= Rails.env.development? %>;
       </script>
       <%= include_javascripts 'render-view-minimum' %>
     <%- end -%>

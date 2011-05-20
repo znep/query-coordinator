@@ -491,6 +491,10 @@ this.Dataset = ServerModel.extend({
 
         if (!$.isBlank(curReq))
         {
+            if (_.isUndefined(curReq.finish))
+            {
+                curReq.finish = curReq.start;
+            }
             reqs.push(curReq);
             curReq = null;
         }

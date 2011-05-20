@@ -213,18 +213,18 @@
         $output.append($outputNode);
         needOutput = false;
 
-        if (url.substr(0, 5) != "http:" && url.substr(0, 6) != "https:") {
-            if (url[0] != "/")
-                url = "/" + url;
+        if (!url.match(/^(https?:|\/)/))
+            url = '/' + url;
+        if (!url.match(/^\/api/))
             url = defaultRoot + "/api" + url;
-        }
+
         if (params) {
             params = $.param(params);
             if (params) {
-                if (url.indexOf("?") != -1)
-                    url += "?";
+                if (url.indexOf("?") == -1)
+                    url += "?" + params;
                 else
-                    url += "&";
+                    url += "&" + params;
             }
         }
 

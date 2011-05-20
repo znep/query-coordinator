@@ -180,6 +180,8 @@
                     rtmObj.show(rtmObj.settings.view.displayType);
                 });
 
+                rtmObj._loadedTypes = {};
+
                 var defType = rtmObj.settings.defaultType ||
                     rtmObj.settings.view.displayType;
 
@@ -196,14 +198,14 @@
             setTypeConfig: function(type, newConfig)
             {
                 var rtmObj = this;
-                var typeInfo = getConfig(rtmObj, type);
+                var typeInfo = getConfig(type);
                 $.extend(rtmObj.settings[typeInfo.name], newConfig);
             },
 
             show: function(type, defArgs)
             {
                 var rtmObj = this;
-                var typeInfo = getConfig(rtmObj, type);
+                var typeInfo = getConfig(type);
 
                 rtmObj.currentType = type;
                 if (!rtmObj.settings.view.valid) { return; }
@@ -223,27 +225,22 @@
             {
                 var rtmObj = this;
                 initDom(rtmObj, type);
-                return getConfig(rtmObj, type).$dom;
+                return getConfig(type).$dom;
             }
         }
     });
 
-    var getConfig = function(rtmObj, type)
+    var getConfig = function(type)
     {
-        if (_.isUndefined(rtmObj.typeInfo))
-        {
-            var typeInfo = $.extend(true, {}, typeConfigs[type])
-            if ($.isBlank(typeInfo))
-            { throw 'missing type info for ' + type; }
-            rtmObj.typeInfo = typeInfo;
-        }
-
-        return rtmObj.typeInfo;
+        var typeInfo = typeConfigs[type];
+        if ($.isBlank(typeInfo))
+        { throw 'missing type info for ' + type; }
+        return typeInfo;
     };
 
     var initDom = function(rtmObj, type)
     {
-        var typeInfo = getConfig(rtmObj, type);
+        var typeInfo = getConfig(type);
         var $dom = typeInfo.$dom;
         if ($.isBlank($dom))
         {
@@ -260,8 +257,9 @@
 
     var initType = function(rtmObj, type, defArgs)
     {
-        var typeInfo = getConfig(rtmObj, type);
-        if (typeInfo._initialized) { return; }
+        if (rtmObj._loadedTypes[type]) { return; }
+
+        var typeInfo = getConfig(type);
         initDom(rtmObj, type);
         var $dom = typeInfo.$dom;
 
@@ -316,7 +314,7 @@
         else
         { finishCallback(); }
 
-        typeInfo._initialized = true;
+        rtmObj._loadedTypes[type] = true;
     };
 
     var translateUrls = function(prefix, array)

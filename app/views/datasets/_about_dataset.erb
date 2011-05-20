@@ -258,7 +258,7 @@
 <%- end -%>
 
 <%- if @view.is_tabular? -%>
-  <%- if @view.rdf_subject || @view.rdf_class_display_name -%>
+  <%- if @view.rdf_subject.present? || @view.rdf_class_display_name.present? -%>
   <div class="formSection">
     <a class="expander expanded formHeader" href="#expand">
       <span class="icon"></span>
@@ -266,14 +266,17 @@
     </a>
     <dl class="sectionContent">
       <dt>Row Class</dt>
-      <dd><span class="hardWrap"><%= @view.rdf_class_display_name || '(none)' %></span></dd>
+      <dd><span class="hardWrap">
+        <%= @view.rdf_class_display_name.present? ? @view.rdf_class_display_name : '(none)' %></span></dd>
       <dt>Subject Column</dt>
-      <dd><%= @view.rdf_subject || '(none)' %></dd>
+      <dd>
+        <%= @view.rdf_subject.present? ? @view.rdf_subject : '(none)' %>
+      </dd>
     </dl>
   </div>
   <%- end -%>
 
-  <%- if @view.resourceName || @view.row_identifier -%>
+  <%- if @view.resourceName.present? || @view.row_identifier.present? -%>
   <div class="formSection">
     <a class="expander expanded formHeader" href="#expand">
       <span class="icon"></span>
@@ -281,9 +284,13 @@
     </a>
     <dl class="sectionContent">
       <dt>Resource Name</dt>
-      <dd><span class="hardWrap"><%= @view.resourceName || '(none)' %></span></dd>
+      <dd><span class="hardWrap">
+        <%= @view.resourceName.present? ? @view.resourceName : '(none)' %>
+      </span></dd>
       <dt>Row Identifier</dt>
-      <dd><%= @view.row_identifier || '(none)' %></dd>
+      <dd>
+        <%= @view.row_identifier.present? ? @view.row_identifier : '(none)' %>
+      </dd>
     </dl>
   </div>
   <%- end -%>

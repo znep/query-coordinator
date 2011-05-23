@@ -73,6 +73,7 @@
               data: $form.serialize(),
               success: function() {
                   $('.saveMessage').removeClass('hide');
+                  setTimeout(function() { $('.saveMessage').addClass('hide'); }, 5000);
               }
           })
       });

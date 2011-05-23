@@ -119,7 +119,7 @@
             if (rows.length != 1) { return; }
             var row = rows[0];
 
-            prtObj.richRenderer.renderRow(prtObj.$content(), row);
+            prtObj.richRenderer.renderRow(prtObj.$content(), row, true);
             prtObj.richRenderer.adjustLayout();
         };
         prtObj.settings.view.getRows(prtObj.navigation.currentPage(), 1, rowLoaded);

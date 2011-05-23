@@ -30,7 +30,9 @@ module Canvas
       @data = data
       @elem_id = "#{id_prefix}_#{self.class.name.split(/::/).last}"
 
-      @properties = Hashie::Mash.new self.default_properties.deep_merge(@data.properties || {})
+      local_properties = @data.properties.to_hash rescue {}
+      local_properties.deep_symbolize_keys!
+      @properties = Hashie::Mash.new self.default_properties.deep_merge(local_properties)
     end
 
     def stylesheet
@@ -147,14 +149,12 @@ module Canvas
   class Catalog < CanvasWidget
   end
 
-  class FacetBreadcrumb < CanvasWidget
-    def can_render?
-      return (Environment.context == :facet_listing) ||
-             (Environment.context == :facet_page)
-    end
+  class Breadcrumb < CanvasWidget
   protected
     self.default_properties = {
-      breadcrumbRoot: 'Home'
+      breadcrumbRoot: [
+        { text: 'Home', href: '/' }
+      ]
     }
   end
 
@@ -183,7 +183,7 @@ module Canvas
       style: {
         orientation: 'horizontal'
       },
-      maximum: 20
+      maximum: 100
     }
     self.style_definition = [
       { data: 'style.orientation', selector: 'li', css: 'display', map: { horizontal: 'inline-block', vertical: 'block' } }
@@ -237,10 +237,6 @@ module Canvas
   class ViewPreview < CanvasWidget
     attr_reader :view
 
-    def can_render?
-      @view != false
-    end
-
     def prepare!
       if self.properties.viewUid.nil?
         search_options = self.properties.searchOptions.merge({ limit: 1, page: 1 })
@@ -261,6 +257,9 @@ module Canvas
     end
   protected
     self.default_properties = {
+      details: 'above',
+      noResultsMessage: 'No views could be found matching these criteria.',
+      respectFacet: true,
       searchOptions: {
         limitTo: ['maps', 'charts'],
         orderBy: 'most_accessed'
@@ -268,7 +267,8 @@ module Canvas
       style: {
         height: { value: 30, unit: 'em' }
       },
-      respectFacet: true,
+      showDescription: false,
+      showLink: false,
       showTitle: true,
       titleTag: 'h2',
       viewUid: nil

@@ -51,12 +51,12 @@
             // it attached to; but in some cases, we have a template row
             // that does the actual layout, then we clone it (outside this
             // class) and make this class render it
-            renderRow: function($content, row)
+            renderRow: function($content, row, no_highlight)
             {
                 var rrObj = this;
+                $content.css('background-color', no_highlight ? '' : row.color || '');
                 _.each(rrObj.visibleColumns(), function(c)
                 {
-                    $content.css('background-color', row.color || '');
                     $content.find('.columnId' + c.id).each(function()
                         { renderItem(rrObj, $(this), row, c); });
                 });

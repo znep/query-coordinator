@@ -369,10 +369,27 @@ class View < Model
   end
 
   def href(port = 80)
-    url_port = (port == 80) ? '' : ':' + port.to_s
-    protocol = federated? ? "http://#{domainCName}#{url_port}" : ''
-    prefix = self.category || 'dataset'
-    "#{protocol}/#{prefix.convert_to_url}/#{name.convert_to_url}/#{id}"
+    path = "/#{(self.category || 'dataset').convert_to_url}/#{name.convert_to_url}/#{id}"
+
+    if federated?
+      if Rails.env.development?
+        protocol = 'http' if port == 9292
+        protocol = 'https' if port == 9443
+      else
+        protocol = 'http' if port == 80
+        protocol = 'https' if port == 443
+      end
+
+      if (port == 80 || port == 443)
+        url_port = ""
+      else
+        url_port = ":#{port}"
+      end
+
+      "#{protocol}://#{domainCName}#{url_port}#{path}"
+    else
+      path
+    end
   end
 
   def alt_href

@@ -450,55 +450,91 @@ $.mixin = function(obj, mixin)
     return clone;
 };
 
-// Keep a hash of which files have already been processed
+// Keep a hash of which files have finished processing
+blist.util.lazyLoadingAssets = {};
+// Keep a hash of which files are in the middle of processing
 blist.util.lazyLoadedAssets = {};
+// Keep track of when a callback is allowed to finish
+blist.util.lazyLoadingJobs = [];
 
 // Lazy-load JS libraries
 $.loadLibraries = function(scriptQueue, callback)
 {
-    var $L = $LAB,
-        queue = _.reject($.arrayify(scriptQueue), function(item)
-                { return item && blist.util.lazyLoadedAssets[item]; }),
-        loadingLibrary = false;
+    // arrayify to make it loopable if they pass in a string.
+    // flatten to bring development packages to toplevel array (preserving order).
+    // compact to remove falsy values (because they're not useful).
+    var queue = _.compact(_.flatten($.arrayify(scriptQueue)));
 
-    if (queue.length < 1)
+    if (_.isEmpty(queue))
     {
         callback();
         return;
     }
 
+    var lastItem = null;
+    var found = false; // found keeps track of whether we have pending jobs
     _.each(queue, function(item)
     {
-        if (item)
+        if (blist.util.lazyLoadingAssets[item] ||
+            blist.util.lazyLoadedAssets[item])
         {
-            if (blist.configuration.development)
-            {
-                _.each($.arrayify(item), function(subitem)
-                {
-                    // Microsoft seems to hate adding ?_=123 to veapicore.js,
-                    // so don't add it since we don't need it.
-                    var url = subitem;
-                    if (subitem.indexOf('veapicore') < 0)
-                    {
-                        // In dev, make the URL unique so we always reload to pick
-                        // up changes
-                        url += (subitem.indexOf('?') >= 0 ? '&' : '?') +
-                            $.param({'_': (new Date()).valueOf()});
-                    }
-                    $L = $L.script(url).wait();
-                    loadingLibrary = true;
-                });
-            }
-            else
-            {
-                $L = $L.script(item);
-            }
-            blist.util.lazyLoadedAssets[item] = true;
+            if (blist.util.lazyLoadingAssets[item])
+                found = true;
+
+            lastItem = item;
+            return;
         }
-        else if (loadingLibrary)
-        { $L = $L.wait(); }
+
+        // grab the LAB that represents our dependency. if it's not in lazyLoadingAssets, then
+        // either it's already loaded (clear to proceed), or we don't have a dependency.
+        var $targetL = blist.util.lazyLoadingAssets[lastItem] || $LAB;
+
+        var checkCallback = function() { $._checkLoadedLibraries(item); };
+
+        if (blist.configuration.development)
+        {
+            // Microsoft seems to hate adding ?_=123 to veapicore.js,
+            // so don't add it since we don't need it.
+            var url = item;
+            if (item.indexOf('veapicore') < 0)
+            {
+                // In dev, make the URL unique so we always reload to pick
+                // up changes
+                url += (item.indexOf('?') >= 0 ? '&' : '?') +
+                    $.param({'_': (new Date()).valueOf()});
+            }
+            $targetL = $targetL.script(url).wait(checkCallback);
+        }
+        else
+        {
+            $targetL = $targetL.script(item);
+            $targetL.wait(checkCallback);
+        }
+        blist.util.lazyLoadingAssets[item] = $targetL;
+        lastItem = item;
+        found = true;
     });
-    $L = $L.wait(callback);
+
+    if (!found)
+        callback();
+    else
+        blist.util.lazyLoadingJobs.push({ queue: queue, callback: callback });
+};
+$._checkLoadedLibraries = function(item)
+{
+    blist.util.lazyLoadedAssets[item] = blist.util.lazyLoadingAssets[item];
+    delete blist.util.lazyLoadingAssets[item];
+
+    blist.util.lazyLoadingJobs = _.reject(blist.util.lazyLoadingJobs, function(job)
+    {
+        if (_.all(job.queue, function(queueItem) {
+                  return !_.isUndefined(blist.util.lazyLoadedAssets[queueItem]); }))
+        {
+            job.callback();
+            return true;
+        }
+        return false;
+    });
 };
 
 $.loadStylesheets = function(sheetQueue, callback)
@@ -597,6 +633,18 @@ $.fn.tagName = function()
 $.fn.isInputType = function(inputType)
 {
     return (this.tagName() == 'input') && (this.attr('type') == inputType);
+};
+
+// Calculate widths/heights without scrollbars to give actual renderable area
+// clientWidth to account for scrollbar, minus padding
+$.fn.renderWidth = function()
+{
+    return this[0].clientWidth - (this.innerWidth() - this.width());
+};
+
+$.fn.renderHeight = function()
+{
+    return this[0].clientHeight - (this.innerHeight() - this.height());
 };
 
 // hooray, fake green-threading!

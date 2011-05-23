@@ -180,6 +180,8 @@
                     rtmObj.show(rtmObj.settings.view.displayType);
                 });
 
+                rtmObj._loadedTypes = {};
+
                 var defType = rtmObj.settings.defaultType ||
                     rtmObj.settings.view.displayType;
 
@@ -255,8 +257,9 @@
 
     var initType = function(rtmObj, type, defArgs)
     {
+        if (rtmObj._loadedTypes[type]) { return; }
+
         var typeInfo = getConfig(type);
-        if (typeInfo._initialized) { return; }
         initDom(rtmObj, type);
         var $dom = typeInfo.$dom;
 
@@ -311,7 +314,7 @@
         else
         { finishCallback(); }
 
-        typeInfo._initialized = true;
+        rtmObj._loadedTypes[type] = true;
     };
 
     var translateUrls = function(prefix, array)

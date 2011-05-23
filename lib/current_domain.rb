@@ -40,6 +40,10 @@ class CurrentDomain
     @@current_domain[:data].name
   end
 
+  def self.domain
+    @@current_domain[:data]
+  end
+
   def self.cname
     # We need to account for the case where we make a generic_request
     # before we know what domain we're on (eg to get the domain obj).

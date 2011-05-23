@@ -140,6 +140,24 @@
       </div>
     <%- end -%>
 
+    <%- if (module_enabled?(:community_creation) || CurrentDomain.user_can?(@user, :create_datasets)) -%>
+      <div class="datasetsList content">
+        <h2><%= @user.displayName %>'s Datasets</h2>
+        <%- if @is_user_current -%>
+        <ul class="ownershipLinks">
+          <%# @base_url comes from browse_controller %>
+          <li><a href="<%= @base_url %>"
+            class="<%= params[:ownership] != 'sharedToMe' ?
+              'active' : '' %>">Owned By Me</a></li>
+          <li><a href="<%= @base_url %>?ownership=sharedToMe"
+            class="<%= params[:ownership] == 'sharedToMe' ?
+              'active' : '' %>">Shared To Me</a></li>
+        </ul>
+        <%- end -%>
+        <%= render_browse %>
+      </div>
+    <%- end -%>
+
     <%- if !@app_tokens.blank? || @user == current_user -%>
       <div class="appTokens content">
         <div class="innerItem">
@@ -160,24 +178,6 @@
             </div>
           <%- end -%>
         <%- end -%>
-      </div>
-    <%- end -%>
-
-    <%- if (module_enabled?(:community_creation) || CurrentDomain.user_can?(@user, :create_datasets)) -%>
-      <div class="datasetsList content">
-        <h2><%= @user.displayName %>'s Datasets</h2>
-        <%- if @is_user_current -%>
-        <ul class="ownershipLinks">
-          <%# @base_url comes from browse_controller %>
-          <li><a href="<%= @base_url %>"
-            class="<%= params[:ownership] != 'sharedToMe' ?
-              'active' : '' %>">Owned By Me</a></li>
-          <li><a href="<%= @base_url %>?ownership=sharedToMe"
-            class="<%= params[:ownership] == 'sharedToMe' ?
-              'active' : '' %>">Shared To Me</a></li>
-        </ul>
-        <%- end -%>
-        <%= render_browse %>
       </div>
     <%- end -%>
 

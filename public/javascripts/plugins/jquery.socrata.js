@@ -213,22 +213,30 @@
         $output.append($outputNode);
         needOutput = false;
 
-        if (url.substr(0, 5) != "http:" && url.substr(0, 6) != "https:") {
-            if (url[0] != "/")
-                url = "/" + url;
+        if (!url.match(/^(https?:|\/)/))
+            url = '/' + url;
+        if (!url.match(/^\/api/))
             url = defaultRoot + "/api" + url;
-        }
+
         if (params) {
             params = $.param(params);
             if (params) {
-                if (url.indexOf("?") != -1)
-                    url += "?";
+                if (url.indexOf("?") == -1)
+                    url += "?" + params;
                 else
-                    url += "&";
+                    url += "&" + params;
             }
         }
 
+        if (options.body && (method.match(/post|put/i)))
+        {
+            options.data = options.body;
+            options.contentType = 'application/json';
+            options.dataType = 'json';
+        }
+
         options = $.extend(options || {}, {
+            type: method,
             url: url,
             cache: false,
 

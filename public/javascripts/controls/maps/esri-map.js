@@ -362,7 +362,8 @@
             {
                 var mapObj = this;
                 if (mapObj._extentSet) { return; }
-                if (!mapObj._bounds && mapObj._multipoint.points.length == 0)
+                if (!mapObj._bounds && mapObj._multipoint.points.length == 0
+                    && !mapObj.settings.view.displayFormat.viewport)
                 { return; }
 
                 if (mapObj._viewportListener)
@@ -373,8 +374,11 @@
                 // Use max & min diff since lat/long may be negative, and we
                 // want to expand the viewport.  Using height/width may cause it
                 // to shrink
-                var xadj = (extent.xmax - extent.xmin) * 0.05;
-                var yadj = (extent.ymax - extent.ymin) * 0.05;
+                if (extent)
+                {
+                    var xadj = (extent.xmax - extent.xmin) * 0.05;
+                    var yadj = (extent.ymax - extent.ymin) * 0.05;
+                }
 
                 if (mapObj.settings.view.displayFormat.viewport)
                 {

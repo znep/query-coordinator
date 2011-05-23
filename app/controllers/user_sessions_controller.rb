@@ -27,18 +27,18 @@ class UserSessionsController < ApplicationController
     @user_session = UserSession.new(params[:user_session])
     if @user_session.save
       respond_to do |format|
+        format.data { render :json => {:user_id => current_user.id}, :callback => params[:callback] }
         format.html { redirect_back_or_default(profile_index_path) }
-        format.json { render :json => {:user_id => current_user.id}, :callback => params[:callback] }
       end
     else
       notice = "Unable to login with that email and password;" +
         " please try again"
       respond_to do |format|
+        format.data { render :json => {:error => notice}, :callback => params[:callback] }
         format.html do
           flash[:notice] = notice
           redirect_to login_url
         end
-        format.json { render :json => {:error => notice}, :callback => params[:callback] }
       end
     end
   end

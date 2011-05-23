@@ -1,14 +1,11 @@
-<% content_for :head do %>
-  <title><%= @title %> | <%= CurrentDomain.strings.site_title %></title>
-  <%= rendered_stylesheet_tag "canvas" %>
-  <link rel="stylesheet" type="text/css" href="/styles/<%= @stylesheet %>.css"/>
-<% end %>
+<%- prerendered_cache @cache_key, @cached_fragment, :expires_in => 15.minutes do -%>
 
-<%= raw render_widget(@page_config.contents) %>
+  <% content_for :head do %>
+    <title><%= @page_title %> | <%= CurrentDomain.strings.site_title %></title>
+    <%= rendered_stylesheet_tag "canvas" %>
+    <link rel="stylesheet" type="text/css" href="/styles/<%= @stylesheet %>.css"/>
+  <% end %>
 
-<% content_for :js_footer do %>
-  <script type="text/javascript">
-    blist.assets = blist.assets || <%= raw ASSET_MAP.javascripts %>;
-  </script>
-  <%= include_javascripts 'render-view-minimum' %>
-<% end %>
+  <%= raw render_widget(@page_config.contents) %>
+
+<%- end -%>

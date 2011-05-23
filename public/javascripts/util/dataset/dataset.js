@@ -433,7 +433,7 @@ this.Dataset = ServerModel.extend({
 
         var doLoaded = function()
         {
-            if (loaded.length > 0)
+            if (loaded.length > 0 || ds.totalRows == 0)
             {
                 callback(loaded);
                 loaded = [];
@@ -518,6 +518,10 @@ this.Dataset = ServerModel.extend({
 
         if (!$.isBlank(curReq))
         {
+            if (_.isUndefined(curReq.finish))
+            {
+                curReq.finish = curReq.start;
+            }
             reqs.push(curReq);
             curReq = null;
         }

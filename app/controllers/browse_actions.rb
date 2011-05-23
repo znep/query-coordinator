@@ -3,7 +3,8 @@ module BrowseActions
 
 protected
   def view_types_facet
-    { :title => 'View Types',
+    vts = {
+      :title => 'View Types',
       :singular_description => 'type',
       :param => :limitTo,
       :use_icon => true,
@@ -17,15 +18,24 @@ protected
         {:text => 'Calendars', :value => 'calendars', :class => 'typeCalendar'},
         {:text => 'Forms', :value => 'forms', :class => 'typeForm'}]
     }
+    view_types = CurrentDomain.property(:view_types_facet, :catalog)
+    return vts if view_types.nil?
+    vts[:options].select!{ |opt| view_types.include?(opt[:value]) }
+    vts
   end
 
   def categories_facet
     cats = View.categories.keys.reject {|c| c.blank?}
     return nil if cats.length < 1
+    cats = cats.sort.map{ |c| {:text => c, :value => c} }
+    if cats.length > 5
+      cats, hidden_cats = cats[0..4], cats
+    end
     return { :title => 'Categories',
       :singular_description => 'category',
       :param => :category,
-      :options => cats.sort.map { |c| {:text => c, :value => c} }
+      :options => cats,
+      :extra_options => hidden_cats
     }
   end
 
@@ -59,10 +69,12 @@ protected
         :icon => {:type => 'static', :href => "/api/domains/#{f.sourceDomainCName}/icons/smallIcon"}} }
     return nil if all_feds.length < 1
 
+    all_feds.unshift({:text => 'This site only', :value => CurrentDomain.domain.id.to_s,
+        :icon => {:type => 'static', :href => "/api/domains/#{CurrentDomain.cname}/icons/smallIcon"}})
     top_feds = all_feds.slice(0, 5)
     fed_cloud = nil
     if all_feds.length > 5
-      fed_cloud = all_feds.map {|f| f.merge({:count => 100}) }
+      fed_cloud = all_feds
     end
 
     { :title => 'Federated Domains',
@@ -105,7 +117,18 @@ protected
   end
 
   def custom_facets
-    config = CurrentDomain.property(:facets, :catalog)
+    facets = CurrentDomain.property(:facets, :catalog)
+    return if facets.nil?
+    facets.map do |facet|
+      if facet.options && facet.options.length > 5
+        facet.options, facet.extra_options = facet.options.partition{ |opt| opt.summary }
+        if facet.options.length < 1
+          facet.options = facet.extra_options[0..4]
+        end
+        facet.extra_options_class = "padMore"
+      end
+      facet
+    end
   end
 
   def process_browse!(options = {})
@@ -120,9 +143,9 @@ protected
     @opts.merge!({:limit => @limit, :page => (browse_params[:page] || 1).to_i})
     @ignore_params ||= ['controller', 'action']
     @params = browse_params.reject {|k, v| @ignore_params.include? k.to_s}
-    @default_params ||= {}
+    @default_params ||= CurrentDomain.property(:default_params, :catalog) || {}
     @default_params.delete(params[:no_default].to_sym) if !params[:no_default].nil?
-    @default_params.each { |k, v| browse_params[k] = v if browse_params[k].nil? }
+    @default_params.each { |k, v| browse_params[k.to_sym] = v if browse_params[k].nil? }
     @no_results_text ||= 'No Results'
     @base_url ||= request.path
 
@@ -272,7 +295,8 @@ private
       end
     end
 
-    t.blank? ? 'Search & Browse Datasets and Views' : 'Results ' + t
+    t.blank? ? (CurrentDomain.property(:default_title, :catalog) ||
+                 'Search & Browse Datasets and Views') : 'Results ' + t
   end
 
 end

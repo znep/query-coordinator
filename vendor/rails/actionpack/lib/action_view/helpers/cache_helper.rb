@@ -42,7 +42,6 @@ module ActionView
           if prerendered_content
 
             if prerendered_content.is_a? Hash
-              prerendered_content = prerendered_content.dup if prerendered_content.frozen?
               fragment = prerendered_content.delete :layout
               prerendered_content.each{|k,v| content_for(k, v) }
               prerendered_content = fragment

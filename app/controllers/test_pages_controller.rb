@@ -23,8 +23,8 @@ class TestPagesController < ApplicationController
 
   def put_kaboom
     respond_to do |format|
-      format.data { render :json => { :failed => true } }
       format.html { render }
+      format.data { render :json => { :failed => true } }
     end
   end
 

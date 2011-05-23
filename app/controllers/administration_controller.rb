@@ -27,8 +27,8 @@ class AdministrationController < ApplicationController
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
     respond_to do |format|
-      format.data { render :json => config.to_json }
       format.html { redirect_to datasets_administration_path }
+      format.data { render :json => config.to_json }
     end
   end
 
@@ -297,8 +297,8 @@ class AdministrationController < ApplicationController
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
     respond_to do |format|
-      format.data { render :json => { :success => true } }
       format.html { redirect_to :action => :sdp_templates }
+      format.data { render :json => { :success => true } }
     end
   end
 
@@ -320,8 +320,8 @@ class AdministrationController < ApplicationController
     customization.save!
 
     respond_to do |format|
-      format.data { render :json => { :success => true } }
       format.html { redirect_to :action => :sdp_templates }
+      format.data { render :json => { :success => true } }
     end
   end
 
@@ -349,24 +349,24 @@ class AdministrationController < ApplicationController
   def delete_federation
     Federation.delete(params[:id])
     respond_to do |format|
-      format.data { render :json => { :success => true } }
       format.html { redirect_federation("Federation successfully deleted") }
+      format.data { render :json => { :success => true } }
     end
   end
 
   def accept_federation
     Federation.accept(params[:id])
     respond_to do |format|
-      format.data { render :json => { :success => true, :message => 'Accepted' } }
       format.html { redirect_federation("Federation successfully accepted") }
+      format.data { render :json => { :success => true, :message => 'Accepted' } }
     end
   end
 
   def reject_federation
     Federation.reject(params[:id])
     respond_to do |format|
-      format.data { render :json => { :success => true, :message => 'Pending' } }
       format.html { redirect_federation("Federation successfully rejected") }
+      format.data { render :json => { :success => true, :message => 'Pending' } }
     end
   end
 
@@ -392,7 +392,9 @@ class AdministrationController < ApplicationController
 
   def verify_layer_url
     response = fetch_layer_info(params[:url])
-    respond_to do |format| format.data { render :json => response.to_json } end
+    respond_to do |format| 
+      format.data { render :json => response.to_json } 
+    end
   end
 
   #
@@ -595,8 +597,8 @@ class AdministrationController < ApplicationController
     clear_featured_datasets_cache
 
     respond_to do |format|
-      format.data { render :json => params[:features] }
       format.html { redirect_to home_administration_path }
+      format.data { render :json => params[:features] }
     end
   end
 
@@ -611,8 +613,8 @@ class AdministrationController < ApplicationController
     end
 
     respond_to do |format|
-      format.data { render :json => {:success => true} }
       format.html { redirect_to home_administration_path }
+      format.data { render :json => {:success => true} }
     end
   end
 
@@ -691,8 +693,8 @@ class AdministrationController < ApplicationController
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
 
     respond_to do |format|
-      format.data { render :json => params[:stories] } # could be problematic?
       format.html { redirect_to home_administration_path }
+      format.data { render :json => params[:stories] } # could be problematic?
     end
   end
 
@@ -711,8 +713,8 @@ class AdministrationController < ApplicationController
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
     respond_to do |format|
-      format.data { render :json => config.to_json }
       format.html { redirect_to home_administration_path }
+      format.data { render :json => config.to_json }
     end
   end
 

@@ -1,5 +1,7 @@
 source :gemcutter
 
+gem 'rake', '0.8.7' # REMOVEME when rake figures its shit out.
+
 gem "jammit", "0.5.4"
 
 gem "rails", "2.3.11", :require => nil

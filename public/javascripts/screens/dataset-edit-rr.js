@@ -414,7 +414,8 @@ editRRNS.addControls = function($item, hasResize)
                 _.defer(function() { _.defer(function()
                 {
                     $menuC.closest('.hover').addClass('directMenuOpen');
-                    $menuC.parents('.hover, .richLine, .richColumn').addClass('menuOpen');
+                    $menuC.parents('.hover, .richLine, .richColumn, .renderArea, #layoutContainer')
+                        .addClass('menuOpen');
                 }); });
 
                 $menuC.find('.menuEntry').filter('.widthClear, .widthAbsolute, .widthRelative')
@@ -1001,7 +1002,7 @@ editRRNS.initLayout = function()
             maxHeight: editRRNS.$container.height() * 0.8, minHeight: 30,
             stop: function()
             {
-                editRRNS.$previewContainer.css('top', 0).css('width', 'auto');
+                editRRNS.$previewContainer.css('top', '').css('left', '').css('width', '');
                 editRRNS.adjustSizes();
             }});
     editRRNS.previewRenderer = editRRNS.$previewArea

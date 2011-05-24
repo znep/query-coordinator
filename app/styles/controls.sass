@@ -599,3 +599,43 @@ form.search
       position: absolute
       right: 2px
       top: 2px
+
+//*** Save view dialog ***//
+.saveViewDialog
+  margin-left: -14em
+  width: 28em
+  input
+    width: 95%
+
+  p
+    margin: 0.5em 0
+
+  .info
+    font-weight: bold
+    margin-bottom: 1.5em
+
+  .leavingSave
+    display: none
+  .reloadSave
+    display: none
+  .reloadUpdate
+    display: none
+
+  &.leavingSaveDialog
+    .leavingSave
+      display: block
+    .normalSave
+      display: none
+
+  &.reloadSaveDialog
+    .reloadSave
+      display: block
+    .normalSave
+      display: none
+
+  &.reloadUpdateDialog
+    .reloadUpdate
+      display: block
+    .normalSave
+      display: none
+

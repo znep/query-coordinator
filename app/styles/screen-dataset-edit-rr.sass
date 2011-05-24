@@ -59,8 +59,22 @@ body
     overflow: auto
     position: relative
 
-    &.directHover > .controlIndicators
-      display: block
+    &.directHover, &.directMenuOpen
+      > .controlIndicators
+        display: block
+
+    .ie7 & > .controlIndicators
+      width: 97%
+
+    .ie7 &.directMenuOpen > .controlIndicators
+      z-index: 100000
+
+    &.menuOpen
+      overflow: visible
+      .ie7 &
+        z-index: 100000
+      > .controlIndicators
+        overflow: visible
 
     > .dropIndicator
       top: 0
@@ -72,6 +86,10 @@ body
       position: relative
       top: 0
       vertical-align: top
+
+  .menuOpen .previewContainer
+    position: absolute
+    width: 100%
 
   .previewContainer
     background-color: #ffffff

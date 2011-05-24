@@ -383,30 +383,23 @@ $(function()
     });
 
     // Publishing
-    $('#infoBox .unpublished').socrataTitleTip();
-    $('#infoBox .snapshotted').socrataTitleTip();
-    $('#infoBox .publish').socrataTitleTip();
-    $('#infoBox .publish').click(function(e)
-    {
-        e.preventDefault();
-        blist.dataset.publish(function(pubDS) { pubDS.redirectTo(); },
-            function()
-            {
-                $('#infoBox #datasetName').socrataTip({content: $.tag({tagName: 'p',
-                    'class': 'errorMessage',
-                    contents: ['There was an error publishing your dataset. Please ',
-                        {tagName: 'a', href: 'http://support.socrata.com', rel: 'external',
-                        contents: ['contact Socrata support']}]}),
-                    showSpike: false, trigger: 'now'});
-            });
-    });
+    blist.datasetControls.hookUpPublishing($('#infoBox'));
 
     blist.$container.bind('attempted_edit', function(e)
     {
         if (!blist.dataset.isPublished() || !blist.dataset.hasRight('write')) { return; }
 
-        $(e.target).socrataTip({content: blist.datasetControls.editPublishedMessage(),
-            showSpike: false, trigger: 'now'});
+        var showTip = function()
+        {
+            $(e.target).socrataTip({content: blist.datasetControls.editPublishedMessage(),
+                showSpike: false, trigger: 'now'});
+        };
+        if (!blist.dataset.isDefault())
+        {
+            blist.dataset.getParentDataset(function(parDS)
+            { if (!$.isBlank(parDS)) { showTip(); } });
+        }
+        else { showTip(); }
     });
 
     $.live('.button.editPublished', 'click', function(e)
@@ -568,17 +561,5 @@ $(function()
         // report to events analytics for easier aggregation
         $.analytics.trackEvent('dataset page (v4-chrome)',
             'page loaded', blist.dataset.id);
-
-        // Set up publishing
-        if (!blist.dataset.isPublished())
-        {
-            blist.dataset.getPublishedDataset(function(pub)
-            {
-                if (!$.isBlank(pub))
-                { $('#publishedLink').attr('href', pub.url).find('.publishedName').text(pub.name); }
-                else
-                { $('#publishedLink').hide(); }
-            });
-        }
     });
 });

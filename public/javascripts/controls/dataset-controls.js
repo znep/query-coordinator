@@ -525,3 +525,38 @@ blist.datasetControls.editPublishedMessage = function()
             { return blist.dataset.copyPending ? '' : 'hide'; }
     });
 };
+
+blist.datasetControls.hookUpPublishing = function($container)
+{
+    $container.find('.unpublished').socrataTitleTip();
+    $container.find('.snapshotted').socrataTitleTip();
+    $container.find('.publish').socrataTitleTip();
+    $container.find('.publish').click(function(e)
+    {
+        e.preventDefault();
+        blist.dataset.publish(function(pubDS) { pubDS.redirectTo(); },
+            function()
+            {
+                $container.find('#datasetName').socrataTip({content: $.tag({tagName: 'p',
+                    'class': 'errorMessage',
+                    contents: ['There was an error publishing your dataset. Please ',
+                        {tagName: 'a', href: 'http://support.socrata.com', rel: 'external',
+                        contents: ['contact Socrata support']}]}),
+                    showSpike: false, trigger: 'now'});
+            });
+    });
+
+    if (!blist.dataset.isPublished())
+    {
+        blist.dataset.getPublishedDataset(function(pub)
+        {
+            if (!$.isBlank(pub))
+            {
+                $container.find('#publishedLink')
+                    .attr('href', pub.url).find('.publishedName').text(pub.name);
+            }
+            else
+            { $container.find('#publishedLink').hide(); }
+        });
+    }
+};

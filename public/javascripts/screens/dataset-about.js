@@ -9,4 +9,7 @@ $(function()
 
     $('.outerContainer').fullScreen();
     $container.blobDataset({view: blist.dataset, editEnabled: true});
+
+    // Set up publishing
+    blist.datasetControls.hookUpPublishing($('#infoBox'));
 });

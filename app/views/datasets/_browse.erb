@@ -299,6 +299,11 @@
                   end -%>
               <span class="tags infoItem"><%= t %></span>
               <%- end -%>
+              <% if v.federated? %>
+              <div class="federation-source infoItem">
+                Provided by <a href="http://<%= v.domainCName %>"><%= v.domainCName %></a>
+              </div>
+              <% end %>
               <div class="expandBlock clearfix collapsed">
                 <div class="description"><%= v.description %></div>
                 <div class="extraInfo <%= @use_federations ? 'federated' : '' %>">
@@ -331,6 +336,11 @@
                 <%- end -%>
                 <span class="name"><%= v.name %></span>
               </a>
+              <% if v.federated? %>
+              <div class="federation-source">
+                Provided by <a href="http://<%= v.domainCName %>"><%= v.domainCName %></a>
+              </div>
+              <% end %>
               <div class="description"><%= v.description %></div>
             </td>
             <%- end -%>

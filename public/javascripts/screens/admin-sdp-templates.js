@@ -62,6 +62,8 @@
                             parseColor(customization.grid.zebra));
                 }
             }
+
+            $row.find('.loadingOverlay').fadeOut();
         });
 
         $('.templatesList').combinationList({

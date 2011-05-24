@@ -17,12 +17,42 @@
         background-color: #f2f2f2
         border-color: #dedede
         border-width: 1px
-
         @include border-radius(0.3em)
         border-style: solid
         height: 4em
         overflow: hidden
         position: relative
+
+        .loadingOverlay
+          left: 0
+          height: 100%
+          position: absolute
+          top: 0
+          width: 100%
+          z-index: 50
+
+          .loadingBackground
+            background-color: #fff
+            left: 0
+            height: 100%
+            @include opacity(0.9)
+            position: absolute
+            top: 0
+            width: 100%
+
+          .loadingMessage
+            left: 50%
+            font-size: 1.1em
+            line-height: 1.3em
+            margin-left: -5em
+            position: absolute
+            top: 1.2em
+            width: 10em
+
+            .icon
+              @include throbber-icon
+              float: left
+              margin-right: 0.5em
 
         .previewLogo
           background-image: url(/stylesheets/images/logos/socrata_sdp_logo_black.png)

@@ -1037,7 +1037,8 @@
                     }
                     else if ($input.hasClass('sliderInput'))
                     {
-                        value /= parseFloat($input.attr('data-scale'));
+                        var inputValue = parseFloat($input.attr('data-scale'));
+                        value = (inputValue == 0) ? 0 : (value / inputValue);
                     }
                     else if ($input.hasClass('select'))
                     {
@@ -1789,11 +1790,15 @@
                     if (!$.isBlank(curValue)) { curValue *= scale; }
                 }
 
+                // safety net
+                if (!_.isNumber(curValue) && !_.isNumber(defValue))
+                { defValue = min; }
+
                 wrapper.contents = [];
                 wrapper.contents.push($.extend(commonAttrs($.extend({}, args.item,
                         {defaultValue: defValue, dataValue: curValue,
                             extraClass: 'sliderInput'})),
-                    {tagName: 'input', type: 'text', value: (curValue || defValue),
+                    {tagName: 'input', type: 'text', value: (_.isNumber(curValue) ? curValue : defValue),
                     'data-scale': scale, readonly: true}));
 
                 wrapper.contents.push({tagName: 'span', 'class': 'sliderControl',

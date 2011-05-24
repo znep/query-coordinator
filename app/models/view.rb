@@ -919,7 +919,7 @@ class View < Model
   end
 
   def can_edit_published?
-    has_rights?('update_view') || can_edit?
+    has_rights?('update_view')
   end
 
   def unpublished_dataset

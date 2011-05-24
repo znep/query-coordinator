@@ -387,7 +387,7 @@ $(function()
 
     blist.$container.bind('attempted_edit', function(e)
     {
-        if (!blist.dataset.isPublished() || !blist.dataset.hasRight('write')) { return; }
+        if (!blist.dataset.isPublished() || !blist.dataset.canEditPublished()) { return; }
 
         var showTip = function()
         {
@@ -397,7 +397,7 @@ $(function()
         if (!blist.dataset.isDefault())
         {
             blist.dataset.getParentDataset(function(parDS)
-            { if (!$.isBlank(parDS)) { showTip(); } });
+            { if (!$.isBlank(parDS) && blist.dataset.canEditPublished()) { showTip(); } });
         }
         else { showTip(); }
     });

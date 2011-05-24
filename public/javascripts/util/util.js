@@ -471,6 +471,10 @@ $.loadLibraries = function(scriptQueue, callback)
         return;
     }
 
+    // add on the job even though we might remove it later, since order isn't guaranteed
+    var job = { queue: queue, callback: callback };
+    blist.util.lazyLoadingJobs.push(job);
+
     var lastItem = null;
     var found = false; // found keeps track of whether we have pending jobs
     _.each(queue, function(item)
@@ -516,25 +520,27 @@ $.loadLibraries = function(scriptQueue, callback)
     });
 
     if (!found)
+    {
+        blist.util.lazyLoadingJobs = _.without(blist.util.lazyLoadingJobs, job);
         callback();
-    else
-        blist.util.lazyLoadingJobs.push({ queue: queue, callback: callback });
+    }
 };
 $._checkLoadedLibraries = function(item)
 {
     blist.util.lazyLoadedAssets[item] = blist.util.lazyLoadingAssets[item];
     delete blist.util.lazyLoadingAssets[item];
 
-    blist.util.lazyLoadingJobs = _.reject(blist.util.lazyLoadingJobs, function(job)
+    var finishedJobs = [];
+    _.each(blist.util.lazyLoadingJobs, function(job)
     {
         if (_.all(job.queue, function(queueItem) {
                   return !_.isUndefined(blist.util.lazyLoadedAssets[queueItem]); }))
         {
             job.callback();
-            return true;
+            finishedJobs.push(job);
         }
-        return false;
     });
+    blist.util.lazyLoadingJobs = _.without.apply(this, [blist.util.lazyLoadingJobs].concat(finishedJobs));
 };
 
 $.loadStylesheets = function(sheetQueue, callback)

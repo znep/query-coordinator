@@ -228,7 +228,7 @@
             }
         }
 
-        if (options.body && (method.match(/post|put/i)))
+        if (options && options.body && (method.match(/post|put/i)))
         {
             options.data = options.body;
             options.contentType = 'application/json';

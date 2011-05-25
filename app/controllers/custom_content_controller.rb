@@ -9,7 +9,6 @@ class CustomContentController < ApplicationController
     @page_config = get_config('page', params[:page_name])
     return render_404 unless @page_config
 
-    process_browse_if_necessary(@page_config.contents)
     @page_title = @page_config.title
 
     @stylesheet = "page/#{params[:page_name]}"
@@ -79,6 +78,7 @@ private
     Canvas::Environment.facet_value = CGI.unescape(params[:facet_value]) if params[:facet_value].present?
     Canvas::Environment.params = params
     Canvas::Environment.page_config = page_config.reject{ |key| key == 'contents' }
+    Canvas::Environment.request = request
 
     # ready whatever we might need
     if prepare
@@ -87,31 +87,6 @@ private
     end
 
     return page_config
-  end
-
-  def process_browse_if_necessary(widget)
-    if widget.is_a? Array
-      # use any? so we only execute process_browse on the first matching elem
-      # TODO: refactor browse so this isn't necessary
-      return widget.any?{ |config_item| process_browse_if_necessary(config_item) }
-    elsif widget.is_a? Canvas::Catalog
-      @ignore_params = ['controller', 'action', 'page_name']
-
-      unless widget.properties.nil?
-        # TODO: refactor browse so that this doesn't suck
-        @default_params = widget.properties.default_params if widget.properties.default_params
-        @title = widget.properties.catalog_title if widget.properties.catalog_title
-        @suppressed_facets = widget.properties.suppressed_facets if widget.properties.suppressed_facets
-      end
-      @suppress_dataset_creation = true # just always suppress this, no reason not to.
-
-      process_browse!
-      return true
-    elsif widget.has_children?
-      return process_browse_if_necessary(widget.children)
-    end
-
-    return false # didn't find anything here..
   end
 
   def build_stylesheet(widget)

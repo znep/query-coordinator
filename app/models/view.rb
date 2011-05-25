@@ -455,15 +455,15 @@ class View < Model
 
   def user_role(user_id)
     if (user_id == tableAuthor.id)
-      I18n.t(:blist_name).capitalize + " Author"
+      "Dataset Author"
     elsif (user_id == owner.id)
       "View Author"
     elsif owner_users.any? {|cu| cu == user_id}
-      I18n.t(:blist_name).capitalize + " Owner"
+      "Dataset Owner"
     elsif contributor_users.any? {|cu| cu == user_id}
-      I18n.t(:blist_name).capitalize + " Contributor"
+      "Dataset Contributor"
     elsif viewer_users.any? {|vu| vu == user_id}
-      I18n.t(:blist_name).capitalize + " Viewer"
+      "Dataset Viewer"
     else
       ""
     end

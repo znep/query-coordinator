@@ -128,6 +128,8 @@ $(function()
                 ds.remove(function() { $t.closest('tr.item').remove(); });
             }
         });
+
+        $content.find('.button.about:not(.hide)').attr("href", ds.fullUrl + ((ds.type == "blob" || ds.type == "href") ? "" : "/about"));
     };
 
     $browse.find('table tbody tr').expander({

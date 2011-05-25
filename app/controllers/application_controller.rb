@@ -39,11 +39,11 @@ class ApplicationController < ActionController::Base
       'This usually means that someone is attempting to do something malicious with your account. ' +
       'For your protection, you have been logged out. Please contact support if the problem persists.'
     respond_to do |format|
-      format.data { render :json => { :error => error } }
       format.html do
         flash.now[:error] = error
         render 'shared/error', :status => :unauthorized
       end
+      format.data { render :json => { :error => error } }
     end
   end
 

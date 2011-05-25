@@ -367,8 +367,8 @@ module ApplicationHelper
     embed_template += "</div>"
   end
 
-  def render_browse
-    render :partial => 'datasets/browse'
+  def render_browse(options)
+    render :partial => 'datasets/browse', :locals => { :opts => options }
   end
 
   def safe_json(obj)

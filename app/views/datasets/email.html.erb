@@ -1,10 +1,10 @@
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'dataset-upload' %>
-  <title>Email this <%= t(:blist_name) %> | <%= CurrentDomain.strings.site_title %></title>
+  <title>Email this Dataset | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <div class="contentBox">
-  <h2>Email this <%= t(:blist_name) %></h2>
+  <h2>Email this Dataset</h2>
 
   <div class="mainContent">
     <% if !@bad_addresses.nil? && @bad_addresses.size <= 0 %>
@@ -21,9 +21,9 @@
         <div class="fieldContent clearfix">
           <p class="errorMessage"></p>
           <p class="instructions">
-          Please enter the email address of the person that you'd like to send a copy of the
-          <%= h(@view.name) %> <%= t(:blist_name) %>. You can enter a comma-separated list of
-          email addresses to send the <%= t(:blist_name) %> to multiple people.
+          Please enter the email address of the person that you'd like to send a copy of 
+          &ldquo;<%= h(@view.name) %>&rdquo;. You can enter a comma-separated list of
+          email addresses to send the dataset to multiple people.
           </p>
           <fieldset class="last">
             <div class="emailInputContainer clearfix">

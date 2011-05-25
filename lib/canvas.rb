@@ -13,6 +13,7 @@ module Canvas
       attr_accessor :facet_value
       attr_accessor :page_config
       attr_accessor :params
+      attr_accessor :request
 
       def metadata_tag
         return nil unless Environment.context == :facet_page
@@ -147,6 +148,26 @@ module Canvas
 # WIDGETS (CONTENT)
 
   class Catalog < CanvasWidget
+    include BrowseActions
+    attr_reader :processed_browse
+
+    def prepare!
+      browse_options = self.properties.browseOptions.to_hash
+      browse_options.deep_symbolize_keys!
+
+      if (self.properties.respectFacet == true) && (Environment.context == :facet_page)
+        browse_options[:metadata_tag] = Environment.metadata_tag
+      end
+
+      @processed_browse = process_browse(Environment.request, browse_options)
+    end
+  protected
+    self.default_properties = {
+      browseOptions: {
+        ignore_params: [ :page_name, :facet_name, :facet_value ]
+      },
+      respectFacet: true
+    }
   end
 
   class Breadcrumb < CanvasWidget

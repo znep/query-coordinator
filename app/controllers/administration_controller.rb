@@ -7,9 +7,10 @@ class AdministrationController < ApplicationController
 
   before_filter :only => [:datasets] {|c| c.check_auth_levels_any(['edit_others_datasets', 'edit_site_theme']) }
   def datasets
-    @browse_in_container = true
-    @opts = {:admin => true}
-    process_browse!
+    @processed_browse = process_browse(request, {
+      browse_in_container: true,
+      opts: { admin: true }
+    })
   end
 
   before_filter :only => [:modify_sidebar_config] {|c| c.check_auth_level('edit_site_theme')}
@@ -27,17 +28,18 @@ class AdministrationController < ApplicationController
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
     respond_to do |format|
-      format.data { render :json => config.to_json }
       format.html { redirect_to datasets_administration_path }
+      format.data { render :json => config.to_json }
     end
   end
 
   def select_dataset
-    @browse_in_container = true
-    @rel_type = 'external'
-    @view_type = 'table'
-    @hide_view_types = true
-    process_browse!
+    @processed_browse = process_browse(request, {
+      browse_in_container: true,
+      rel_type: 'external',
+      view_type: 'table',
+      hide_view_types: true
+    })
   end
 
   before_filter :check_member, :only => :catalog_widget
@@ -180,25 +182,26 @@ class AdministrationController < ApplicationController
   before_filter :only => [:views] {|c| c.check_auth_level('approve_nominations')}
   before_filter :only => [:views] {|c| c.check_feature(:view_moderation)}
   def views
-    @default_params = { :moderation => 'pending' }
-    @browse_in_container = true
-    @dataset_actions = 'Moderation Status'
     view_facet = view_types_facet()
     view_facet[:options].delete_if { |item| item[:value] == 'datasets' }
 
-    @facets = [
-      moderation_facet,
-      view_facet,
-      categories_facet,
-      topics_facet
-    ]
-    @suppress_dataset_creation = true
-    @opts = {
-      :datasetView => 'view',
-      :moderation => 'any',
-      :nofederate => 'true'
-    }
-    process_browse!
+    @processed_browse = process_browse(request, {
+      default_params: { moderation: 'pending' },
+      browse_in_container: true,
+      dataset_actions: 'Moderation Status',
+      facets: [
+        moderation_facet,
+        view_facet,
+        categories_facet,
+        topics_facet
+      ],
+      suppress_dataset_creation: true,
+      opts: {
+        datasetView: 'view',
+        moderation: 'any',
+        nofederate: 'true'
+      }
+    })
   end
 
 
@@ -259,8 +262,7 @@ class AdministrationController < ApplicationController
       begin
         @view = View.find(params[:view_id])
       rescue CoreServer::ResourceNotFound
-          flash.now[:error] = 'This ' + I18n.t(:blist_name).downcase +
-            ' cannot be found, or has been deleted.'
+          flash.now[:error] = 'A dataset with which to preview could not be found.'
           return (render 'shared/error', :status => :not_found)
         return
       end
@@ -297,8 +299,8 @@ class AdministrationController < ApplicationController
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
     respond_to do |format|
-      format.data { render :json => { :success => true } }
       format.html { redirect_to :action => :sdp_templates }
+      format.data { render :json => { :success => true } }
     end
   end
 
@@ -320,8 +322,8 @@ class AdministrationController < ApplicationController
     customization.save!
 
     respond_to do |format|
-      format.data { render :json => { :success => true } }
       format.html { redirect_to :action => :sdp_templates }
+      format.data { render :json => { :success => true } }
     end
   end
 
@@ -349,24 +351,24 @@ class AdministrationController < ApplicationController
   def delete_federation
     Federation.delete(params[:id])
     respond_to do |format|
-      format.data { render :json => { :success => true } }
       format.html { redirect_federation("Federation successfully deleted") }
+      format.data { render :json => { :success => true } }
     end
   end
 
   def accept_federation
     Federation.accept(params[:id])
     respond_to do |format|
-      format.data { render :json => { :success => true, :message => 'Accepted' } }
       format.html { redirect_federation("Federation successfully accepted") }
+      format.data { render :json => { :success => true, :message => 'Accepted' } }
     end
   end
 
   def reject_federation
     Federation.reject(params[:id])
     respond_to do |format|
-      format.data { render :json => { :success => true, :message => 'Pending' } }
       format.html { redirect_federation("Federation successfully rejected") }
+      format.data { render :json => { :success => true, :message => 'Pending' } }
     end
   end
 
@@ -392,7 +394,9 @@ class AdministrationController < ApplicationController
 
   def verify_layer_url
     response = fetch_layer_info(params[:url])
-    respond_to do |format| format.data { render :json => response.to_json } end
+    respond_to do |format| 
+      format.data { render :json => response.to_json } 
+    end
   end
 
   #
@@ -595,8 +599,8 @@ class AdministrationController < ApplicationController
     clear_featured_datasets_cache
 
     respond_to do |format|
-      format.data { render :json => params[:features] }
       format.html { redirect_to home_administration_path }
+      format.data { render :json => params[:features] }
     end
   end
 
@@ -611,8 +615,8 @@ class AdministrationController < ApplicationController
     end
 
     respond_to do |format|
-      format.data { render :json => {:success => true} }
       format.html { redirect_to home_administration_path }
+      format.data { render :json => {:success => true} }
     end
   end
 
@@ -691,8 +695,8 @@ class AdministrationController < ApplicationController
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
 
     respond_to do |format|
-      format.data { render :json => params[:stories] } # could be problematic?
       format.html { redirect_to home_administration_path }
+      format.data { render :json => params[:stories] } # could be problematic?
     end
   end
 
@@ -711,8 +715,8 @@ class AdministrationController < ApplicationController
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
     respond_to do |format|
-      format.data { render :json => config.to_json }
       format.html { redirect_to home_administration_path }
+      format.data { render :json => config.to_json }
     end
   end
 

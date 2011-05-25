@@ -160,7 +160,7 @@
                 var columnJson = { columnId: filterColumnId,
                     type: 'column', value: dataTypeName };
 
-                if (filterValue == 'null')
+                if (filterValue == 'null' || filterValue == 'undefined')
                 {
                     filter = { type: 'operator', value: 'IS_BLANK',
                         children: [ columnJson ] };

@@ -3,34 +3,33 @@ class BrowseController < ApplicationController
   include BrowseActions
 
   def show
-    @suppress_dataset_creation = true
-    process_browse!
+    @processed_browse = process_browse(request, {
+      suppress_dataset_creation: true
+    })
   end
 
   def embed
-    @browse_in_container = true
-    @suppress_dataset_creation = true
-    @rel_type = 'external'
-
-    if params[:limit].present?
-      @limit = Integer(params[:limit]) rescue nil
-    end
+    browse_options = {
+      browse_in_container: true,
+      suppress_dataset_creation: true,
+      rel_type: 'external'
+    }
 
     # Passed to _browse partial to remove controls, e.g. search/sort/paginate
-    @disable = params[:disable] unless params[:disable].blank?
+    browse_options[:disable] = params[:disable] unless params[:disable].blank?
 
     # Mimic the 'default' selection for facets
-    @default_params = params[:defaults] unless params[:defaults].blank?
+    browse_options[:default_params] = params[:defaults] unless params[:defaults].blank?
 
     enabled_facets = params[:facets] || {}
-    @facets = [
+    browse_options[:facets] = [
       view_types_facet,
       custom_facets,
       categories_facet,
       topics_facet
     ].flatten.compact.select { |f| enabled_facets[f[:singular_description]].present? }
 
-    process_browse!
+    @processed_browse = process_browse(request, browse_options)
     render :layout => 'embedded_browse'
   end
 end

@@ -42,8 +42,7 @@ class ProfileController < ApplicationController
     @stat_displays = []
 
     # Also, we can probably make these _views vars local, not @ accessible
-    unless (@view_summary_cached = read_fragment(app_helper.cache_key('profile-view-summary', @current_state))) ||
-           (params[:_oldViews] == 'true')
+    unless (@view_summary_cached = read_fragment(app_helper.cache_key('profile-view-summary', @current_state)))
       base_req = {:limit => 1, :for_user => @user.id, :nofederate => true}
       stats = [
         {:params => {:datasetView => 'dataset'}, :name => 'Datasets'},
@@ -66,38 +65,33 @@ class ProfileController < ApplicationController
 
     @app_tokens = @user.app_tokens
 
-    @browse_in_container = true
-    @opts = {:for_user => @user.id, :nofederate => true}
-    if @is_user_current
-      # Terrible hack; but :publication_stage => [p, u] ends up sticking [] after the key in the param
-      @opts[:publication_stage] = 'published'
-      @opts['publication_stage'] = 'unpublished'
-    end
-    @default_params = {:sortBy => 'newest'}
-    @use_federations = false
-    # Special param to use the /users/4-4/views.json call instead of the
-    # search service.  For users with lots of views, this will be slow, and
-    # it doesn't allow sort/filter/search; but it doesn't require
-    # the Cassandra search service
-    if params[:_oldViews] == 'true'
-      @facets = []
-      @sort_opts = []
-      @view_results = View.find_for_user(@user.id)
-      @view_count = @view_results.length
-      @limit = @view_count
-    elsif params[:ownership] == 'sharedToMe'
-      @facets = []
-      @sort_opts = []
-      @view_results = View.find_shared_to_user(@user.id)
-      @view_count = @view_results.length
-      @limit = @view_count
+    browse_options = {
+      browse_in_container: true,
+      for_user: @user.id,
+      nofederate: true,
+      use_federations: false,
+      sortBy: 'newest',
+      ignore_params: [ :id, :profile_name ]
+    }
+
+    if params[:ownership] == 'sharedToMe'
+      browse_options[:facets] = []
+      browse_options[:sort_opts] = []
+
+      view_results = View.find_shared_to_user(@user.id)
+      browse_options[:view_results] = view_results
+      browse_options[:view_count] = browse_options[:limit] = view_results.length
     else
-      vtf = view_types_facet
       if @is_user_current
+        browse_options[:publication_stage] = [ 'published', 'unpublished' ]
+
+        vtf = view_types_facet
         vtf[:options].insert(1, {:text => 'Unpublished Datasets', :value => 'unpublished',
                              :class => 'typeUnpublished'})
+        browse_options[:facets] = [vtf, categories_facet]
+      else
+        browse_options[:facets] = [view_types_facet, categories_facet]
       end
-      @facets = [vtf, categories_facet]
 
       user_tags = Tag.find({:method => 'ownedTags', :user_uid => @user.id}).data
       top_tags = user_tags.sort {|a,b| b[1] <=> a[1]}.slice(0, 5).map {|t| t[0]}
@@ -111,20 +105,15 @@ class ProfileController < ApplicationController
           map {|t| {:text => t[0], :value => t[0], :count => t[1]}}
       end
 
-      @facets << { :title => 'Topics',
+      browse_options[:facets] << { :title => 'Topics',
         :singular_description => 'topic',
         :param => :tags,
         :options => top_tags,
         :extra_options => tag_cloud
       }
-
-      if !params[:tags].nil? || !params[:category].nil? || !params[:q].nil?
-        @default_params.delete(:limitTo)
-      end
     end
-    params.delete(:id)
-    params.delete(:profile_name)
-    process_browse!
+
+    @processed_browse = process_browse(request, browse_options)
   end
 
   def update

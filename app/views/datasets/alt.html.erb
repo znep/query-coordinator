@@ -218,7 +218,7 @@
       @view.parent_dataset.owned_by?(current_user)
     -%>
 
-    <h4>This <%= @view.is_blist? ? t(:blist_name) : "view" %> is
+    <h4>This <%= @view.is_blist? ? "dataset" : "view" %> is
       <%= @view.is_public? ?  "public" : "private" %>
       <%= ' and shared with ' + pluralize(shares.length, 'friend') if
         @view.is_shared? %>
@@ -260,15 +260,15 @@
 
     <%- if @view.is_private? -%>
     <p>
-    This <%= @view.is_blist? ? t(:blist_name).downcase : 'view' %> is
+    This <%= @view.is_blist? ? 'dataset' : 'view' %> is
     currently private.  Private <%= @view.is_blist? ?
-      t(:blist_name).downcase.pluralize : 'views' %>
+      'datasets' : 'views' %>
     cannot be viewed in the Social Data Player.  Please
     set the privacy to public or shared before publishing.
     </p>
     <%- else -%>
     <p>
-      <%= label_tag "publishCodeTemplate", "You can publish this #{t(:blist_name).downcase} and its views on your blog or website by embedding it in a Social Data Player.  You can do so by simply copying and pasting the below HTML into your site." %>
+      <%= label_tag "publishCodeTemplate", "You can publish this dataset  and its views on your blog or website by embedding it in a Social Data Player.  You can do so by simply copying and pasting the below HTML into your site." %>
     </p>
     <%= text_area_tag("publishCodeTemplate",
       get_publish_embed_code_for_view(@view,

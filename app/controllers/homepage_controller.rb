@@ -38,11 +38,11 @@ class HomepageController < ApplicationController
 
       unless (@browse_cached = read_fragment(app_helper.cache_key(
         'homepage-browse', { 'domain' => CurrentDomain.cname })))
-        # move to /browse on interaction
-        @base_url = browse_path
 
-        @no_results_text = 'No Datasets Yet'
-        process_browse!(:force_default => true)
+        @processed_browse = process_browse(request, {
+          base_url: browse_path,
+          no_results_text: 'No Datasets Yet'
+        })
       end
     end
   end

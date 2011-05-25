@@ -20,7 +20,7 @@
   <%- if CurrentDomain.user_can?(current_user, 'edit_others_datasets') -%>
   <div class="datasetsList content">
     <h2>Datasets</h2>
-    <%= render_browse %>
+    <%= render_browse(@processed_browse) %>
   </div>
   <%- end -%>
 

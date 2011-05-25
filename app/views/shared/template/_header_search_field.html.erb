@@ -1,9 +1,9 @@
 <%- if @show_search_form -%>
   <% form_tag(root_path, :method => :get, :class => "search") do %>
     <p>
-      <label for="search"><%= t(:search_prompt_text) %></label>
+      <label for="search">Search for Public Datasets</label>
       <input type="text" class="textPrompt" name="search"
-        title="<%= t(:search_prompt_text) %>"
+        title="Search for Public Datasets"
         value="<%= @discover_search %>" />
       <input type="image" class="submit" name="discoverSubmit"
         src="/stylesheets/images/common/empty.gif" alt="search" />

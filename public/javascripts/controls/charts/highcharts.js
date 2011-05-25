@@ -275,6 +275,17 @@
                 { reqFields.push({ tableColumnId: col }); });
                 columns = _.compact(_.uniq(reqFields).concat(columns));
                 return this.generateFlyoutLayoutDefault(columns, titleId);
+            },
+
+            resizeHandle: function()
+            {
+                var chartObj = this;
+                chartObj._defaultPaneLoaded = true;
+                if (chartObj._afterDefaultPaneLoads)
+                {
+                    chartObj._afterDefaultPaneLoads();
+                    delete chartObj._afterDefaultPaneLoads;
+                }
             }
         }
     }));
@@ -458,9 +469,7 @@
         // Create the chart
         chartObj.startLoading();
 
-        // IE7 seems to have some problem creating the chart right away;
-        // add a delay and it seems to work.  Do I know why (for either part)? No
-        _.defer(function() {
+        var loadChart = function() {
             chartObj.chart = new Highcharts.Chart(chartConfig);
 
             if (!chartObj._categoriesLoaded)
@@ -485,6 +494,18 @@
                 prepareToSnapshot(chartObj);
             }
 
+        };
+        // IE7 seems to have some problem creating the chart right away;
+        // add a delay and it seems to work.  Do I know why (for either part)? No
+        _.defer(function()
+        {
+            // We need the default pane to load before attempting to load the chart.
+            // Otherwise a race condition sort of explodes messily.
+            if ($.subKeyDefined(blist.datasetPage, 'sidebar._defaultPane')
+                && !chartObj._defaultPaneLoaded)
+            { chartObj._afterDefaultPaneLoads = loadChart; }
+            else
+            { loadChart(); }
         });
     };
 

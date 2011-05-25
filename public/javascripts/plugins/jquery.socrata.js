@@ -77,7 +77,7 @@
 
                 case 'object':
                     var prefix2 = prefix + '    ';
-                    if (node instanceof Node) {
+                    if (typeof node.nodeType == 'number') {
                         switch (node.nodeType) {
                             case 1:
                                 pretty.push("&lt;", tagPrefix, node.tagName, tagSuffix);
@@ -93,7 +93,7 @@
                                 var hasChildElements;
                                 for (i = 0; i < node.childNodes.length; i++) {
                                     var child = node.childNodes[i];
-                                    if (child instanceof Element) {
+                                    if (child.nodeType === 1) {
                                         hasChildElements = true;
                                         break;
                                     }

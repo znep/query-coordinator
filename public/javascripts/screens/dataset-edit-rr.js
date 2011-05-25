@@ -893,7 +893,7 @@ editRRNS.adjustColDisplay = function($parent)
         var $c = $(this);
         if ($.isBlank($c.data('rr-width')) || $c.data('rr-width').endsWith('%'))
         {
-            $c.width(parseInt($c.data('rr-width')) / 100 * totalW -
+            $c.width(parseInt($c.data('rr-width') || 100) / 100 * totalW -
                 ($c.outerWidth(true) - $c.width()));
         }
     })

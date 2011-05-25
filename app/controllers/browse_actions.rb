@@ -109,9 +109,8 @@ protected
         html += "Set geographical area</a>"
         html
       end,
-      :custom_description => proc do |params, opts|
-          return nil if params[:extents].nil?
-          "within an area"
+      :custom_description => proc do |options|
+        options[:extents].nil? ? nil : "within an area"
       end
     }
   end
@@ -131,43 +130,82 @@ protected
     end
   end
 
-  def process_browse!(options = {})
-    browse_params = (options[:force_default]) ? {} : params
-    cfg = CurrentDomain.configuration('catalog')
-    cfg_props = cfg ? cfg.properties : Hashie::Mash.new
+  def process_browse(options = {}, view_results = nil)
+    # grab our catalog configuration first
+    catalog_config = CurrentDomain.configuration('catalog')
+    catalog_config = catalog_config ? catalog_config.properties : Hashie::Mash.new
 
-    @port = request.port
-    @limit ||= (cfg_props.results_per_page ? cfg_props.results_per_page.to_i : 10)
-    @disable ||= {}
-    @opts ||= {}
-    @opts.merge!({:limit => @limit, :page => (browse_params[:page] || 1).to_i})
-    @ignore_params ||= ['controller', 'action']
-    @params = browse_params.reject {|k, v| @ignore_params.include? k.to_s}
-    @default_params ||= CurrentDomain.property(:default_params, :catalog) || {}
-    @default_params.delete(params[:no_default].to_sym) if !params[:no_default].nil?
-    @default_params.each { |k, v| browse_params[k.to_sym] = v if browse_params[k].nil? }
-    @no_results_text ||= 'No Results'
-    @base_url ||= request.path
+    # grab the user's params
+    user_params = params.dup.to_hash
+    user_params.deep_symbolize_keys!
 
-    # Whether or not we need to display icons for other domains
-    @use_federations = @opts[:nofederate] == 'true' ? false :
-      Federation.find.select {|f| f.acceptedUserId.present? &&
-        f.sourceDomainCName != CurrentDomain.cname }.
-        length > 0 if @use_federations.nil?
+    # deal with params
+    browse_params =
+      if options[:force_default]
+        user_params
+      else
+        configured_params = (catalog_config.default_params || {}).to_hash
+        configured_params.deep_symbolize_keys!
+        configured_params.merge(user_params)
+      end
 
-    @view_type ||= browse_params['viewType'] || cfg_props.default_view_type || 'table'
-    @grid_items = @view_type == 'rich' ?
-      {:largeImage => true, :richSection => true, :popularity => true, :type => true, :rss => true} :
-      {:index => true, :domainIcon => @use_federations, :nameDesc => true,
-        :datasetActions => @dataset_actions, :popularity => true, :type => true}
+    # next deal with options
+    default_options = {
+      limit: 10,
+      page: 1,
+      port: request.port,
+      disable: {},
+      no_results_text: 'No Results',
+      base_url: request.path,
+      nofederate: true,
+      view_type: 'table',
+      dataset_actions: false
+    }
+    configured_options = (catalog_config.default_options || {}).to_hash
+    configured_options.deep_symbolize_keys!
+    browse_options = configured_options
+                       .merge(default_options) # whatever they configured is somewhat important
+                       .merge(options)         # whatever the call configures is more important
+                       .merge(browse_params)   # anything from the queryparam is most important
 
-    if cfg_props.facet_dependencies
-      @strip_params = {}
-      cfg_props.facet_dependencies.each do |dep|
+    # munge params to types we expect
+    @@numeric_options.each do |option|
+      browse_options[option] = browse_options[option].to_i if browse_options[option].present?
+      user_params[option] = user_params[option].to_i if user_params[option].present?
+    end
+    @@boolean_options.each do |option|
+      browse_options[option] = (browse_options[option] == 'true') ||
+                               (browse_options[option] == true) if browse_options[option].present?
+      user_params[option] = user_params[option].to_i if user_params[option].present?
+    end
+
+    # for core server quirks
+    search_options = {}
+
+
+
+    # check whether or not we need to display icons for other domains
+    browse_options[:use_federations] = browse_options[:nofederate] ? false :
+      Federation.find.any?{ |f| f.acceptedUserId.present? &&
+        f.sourceDomainCName != CurrentDomain.cname }
+
+    # set up which grid columns to display if we don't have one already
+    browse_options[:grid_items] ||=
+      case browse_options[:viewType]
+      when 'rich'
+        { largeImage: true, richSection: true, popularity: true, type: true, rss: true }
+      else
+        { index: true, domainIcon: browse_options[:use_federations], nameDesc: true,
+          datasetActions: browse_options[:dataset_actions], popularity: true, type: true }
+      end
+
+    if catalog_config.facet_dependencies
+      browse_options[:strip_params] = {}
+      catalog_config.facet_dependencies.each do |dep|
         dep.each do |member|
           dep.each do |subm|
-            @strip_params[subm.to_sym] ||= {}
-            @strip_params[subm.to_sym][member.to_sym] = true
+            browse_options[:strip_params][subm.to_sym] ||= {}
+            browse_options[:strip_params][subm.to_sym][member.to_sym] = true
           end
         end
       end
@@ -176,56 +214,53 @@ protected
     cfs = custom_facets
     if cfs
       cfs.each do |facet|
-        if browse_params[facet.param]
-          @opts[:metadata_tag] ||= []
-          @opts[:metadata_tag] << facet.param + ":" + browse_params[facet.param]
+        if browse_options[facet.param]
+          browse_options[:metadata_tag] ||= []
+          browse_options[:metadata_tag] << facet.param + ":" + browse_options[facet.param]
         end
       end
     end
 
-    # Simple params; these are copied directly to opts
-    [:sortBy, :category, :tags, :moderation, :q, :federation_filter].each do |p|
-      if !browse_params[p].nil?
-        @opts[p] = browse_params[p]
-      end
-    end
-
-    if !browse_params[:limitTo].nil?
-      case browse_params[:limitTo]
+    if browse_options[:limitTo].present?
+      case browse_options[:limitTo]
       when 'datasets'
-        @opts[:limitTo] = 'tables'
-        @opts[:datasetView] = 'dataset'
+        search_options[:limitTo] = 'tables'
+        search_options[:datasetView] = 'dataset'
       when 'filters'
-        @opts[:limitTo] = 'tables'
-        @opts[:datasetView] = 'view'
-      else
-        @opts[:limitTo] = browse_params[:limitTo]
+        search_options[:limitTo] = 'tables'
+        search_options[:datasetView] = 'view'
       end
     end
 
-    if !browse_params[:sortPeriod].nil?
+    if browse_options[:sortPeriod].present?
       t = Date.today
-      @opts[:sortPeriod] = case browse_params[:sortPeriod]
-                          when 'week'
-                            "WEEKLY"
-                          when 'month'
-                            "MONTHLY"
-                          when 'year'
-                            "YEARLY"
-                          end
+      browse_options[:sortPeriod] =
+        case browse_options[:sortPeriod]
+        when 'week'
+          'WEEKLY'
+        when 'month'
+          'MONTHLY'
+        when 'year'
+          'YEARLY'
+        else
+          browse_options[:sortPeriod]
+        end
     end
 
-    if !browse_params[:extents].nil?
-      extents = browse_params[:extents].split(',')
-      if extents.length == 4
-        @opts[:xmin] = extents.shift
-        @opts[:xmax] = extents.shift
-        @opts[:ymin] = extents.shift
-        @opts[:ymax] = extents.shift
+    if browse_options[:extents].present?
+      extents = browse_options[:extents]
+      if extents.is_a? String
+        extents = extents.split(',')
+        if extents.length == 4
+          browse_options[:xmin] = extents.shift
+          browse_options[:xmax] = extents.shift
+          browse_options[:ymin] = extents.shift
+          browse_options[:ymax] = extents.shift
+        end
       end
     end
 
-    @facets ||= [
+    browse_options[:facets] ||= [
       view_types_facet,
       cfs,
       categories_facet,
@@ -233,59 +268,57 @@ protected
       federated_facet,
       extents_facet
     ]
-    @facets = @facets.compact.flatten.reject{ |f| f[:hidden] }
+    browse_options[:facets] = browse_options[:facets].compact.flatten.reject{ |f| f[:hidden] }
 
-    if @suppressed_facets.is_a? Array
-      @facets.select!{ |facet| !(@suppressed_facets.include? facet[:singular_description]) }
+    if browse_options[:suppressed_facets].is_a? Array
+      browse_options[:facets].select! do |facet|
+        !(browse_options[:suppressed_facets].include? facet[:singular_description])
+      end
     end
 
-    @sidebar_config = cfg_props.sidebar
-    @header_config  = cfg_props.header
-    @footer_config  = cfg_props.footer
+    browse_options[:sidebar_config] = catalog_config.sidebar
+    browse_options[:header_config]  = catalog_config.header
+    browse_options[:footer_config]  = catalog_config.footer
 
-    @sort_opts ||= @@default_browse_sort_opts
+    browse_options[:sort_opts] ||= @@default_browse_sort_opts
 
-    if @view_results.nil?
-      @view_results = SearchResult.search('views', @opts)[0]
-      @view_count = @view_results.count
-      @view_results = @view_results.results
+    # get the subset relevant to various things
+    browse_options[:search_options] = browse_options.select{ |k| @@search_options.include? k }
+                                                    .merge(search_options)
+    ignore_params = (browse_options[:ignore_params] || []) + [ :controller, :action, :page ]
+    browse_options[:user_params] = user_params.reject{ |k| ignore_params.include? k }
+
+    if browse_options[:view_results].nil?
+      view_results = SearchResult.search('views', browse_options[:search_options])[0]
+      browse_options[:view_count] = view_results.count
+      browse_options[:view_results] = view_results.results
     end
 
-    @title ||= get_title(@params, @opts, @facets)
+    browse_options[:title] ||= get_title(browse_options, browse_options[:facets])
+
+    return browse_options
   end
 
-  @@default_browse_sort_opts = [
-    {:value => 'relevance', :name => 'Most Relevant'},
-    {:value => 'most_accessed', :name => 'Most Accessed',
-      :is_time_period => true},
-    {:value => 'alpha', :name => 'Alphabetical'},
-    {:value => 'newest', :name => 'Newest'},
-    {:value => 'oldest', :name => 'Oldest'},
-    {:value => 'rating', :name => 'Highest Rated'},
-    {:value => 'comments', :name => 'Most Comments'}
-  ]
-
 private
-  def get_title(params, opts, facets)
+  def get_title(options, facets)
     t = String.new
 
-    t = 'for "' + CGI.escapeHTML(params[:q]) + '"' if !params[:q].blank?
+    t = 'for "' + CGI.escapeHTML(options[:q]) + '"' if !options[:q].blank?
     parts = []
     facets.each do |f|
-      if !params[f[:param]].blank?
+      if !options[f[:param]].blank?
         if !f[:singular_description].blank?
-          facet_item = f[:options].detect {|o| o[:value] == params[f[:param]]}
+          facet_item = f[:options].detect {|o| o[:value] == options[f[:param]]}
           parts << f[:singular_description] + ' of ' + facet_item[:text] unless facet_item.nil?
         elsif !f[:custom_description].blank?
-          parts << f[:custom_description].call(params, opts)
+          parts << f[:custom_description].call(options)
         end
       end
     end
-    if parts.length > 0
-      p = [parts.slice(0, parts.length - 1).join(', '), parts[-1]].
-        reject {|a| a.empty?}.join(' and ')
-      if !p.blank?
-        t += ', ' if !t.blank?
+    unless parts.empty?
+      p = parts.compact.to_sentence
+      unless p.blank?
+        t += ', ' unless t.blank?
         t += 'matching ' + p
       end
     end
@@ -294,4 +327,19 @@ private
                  'Search & Browse Datasets and Views') : 'Results ' + t
   end
 
+  @@default_browse_sort_opts = [
+    { value: 'relevance', name: 'Most Relevant' },
+    { value: 'most_accessed', name: 'Most Accessed', is_time_period: true },
+    { value: 'alpha', name: 'Alphabetical' },
+    { value: 'newest', name: 'Newest' },
+    { value: 'oldest', name: 'Oldest' },
+    { value: 'rating', name: 'Highest Rated' },
+    { value: 'comments', name: 'Most Comments' }
+  ]
+
+  @@numeric_options = [ :limit, :page ]
+  @@boolean_options = [ :nofederate ]
+
+  @@search_options = [ :id, :name, :tags, :desc, :q, :category, :limit, :page, :sortBy, :limitTo, :for_user, :datasetView, :sortPeriod, :admin, :nofederate, :moderation, :xmin, :ymin, :xmax, :ymax, :for_approver, :approval_stage_id, :publication_stage, :federation_filter, :metadata_tag ]
+  @@querystring_options = [  ]
 end

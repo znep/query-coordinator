@@ -7,9 +7,10 @@ class AdministrationController < ApplicationController
 
   before_filter :only => [:datasets] {|c| c.check_auth_levels_any(['edit_others_datasets', 'edit_site_theme']) }
   def datasets
-    @browse_in_container = true
-    @opts = {:admin => true}
-    process_browse!
+    @processed_browse = process_browse({
+      browse_in_container: true,
+      opts: { admin: true }
+    })
   end
 
   before_filter :only => [:modify_sidebar_config] {|c| c.check_auth_level('edit_site_theme')}
@@ -33,11 +34,12 @@ class AdministrationController < ApplicationController
   end
 
   def select_dataset
-    @browse_in_container = true
-    @rel_type = 'external'
-    @view_type = 'table'
-    @hide_view_types = true
-    process_browse!
+    @processed_browse = process_browse({
+      browse_in_container: true,
+      rel_type: 'external',
+      view_type: 'table',
+      hide_view_types: true
+    })
   end
 
   before_filter :check_member, :only => :catalog_widget
@@ -180,25 +182,26 @@ class AdministrationController < ApplicationController
   before_filter :only => [:views] {|c| c.check_auth_level('approve_nominations')}
   before_filter :only => [:views] {|c| c.check_feature(:view_moderation)}
   def views
-    @default_params = { :moderation => 'pending' }
-    @browse_in_container = true
-    @dataset_actions = 'Moderation Status'
     view_facet = view_types_facet()
     view_facet[:options].delete_if { |item| item[:value] == 'datasets' }
 
-    @facets = [
-      moderation_facet,
-      view_facet,
-      categories_facet,
-      topics_facet
-    ]
-    @suppress_dataset_creation = true
-    @opts = {
-      :datasetView => 'view',
-      :moderation => 'any',
-      :nofederate => 'true'
-    }
-    process_browse!
+    @processed_browse = process_browse({
+      default_params: { moderation: 'pending' },
+      browse_in_container: true,
+      dataset_actions: 'Moderation Status',
+      facets: [
+        moderation_facet,
+        view_facet,
+        categories_facet,
+        topics_facet
+      ],
+      suppress_dataset_creation: true,
+      opts: {
+        datasetView: 'view',
+        moderation: 'any',
+        nofederate: 'true'
+      }
+    })
   end
 
 

@@ -146,15 +146,15 @@
         <%- if @is_user_current -%>
         <ul class="ownershipLinks">
           <%# @base_url comes from browse_controller %>
-          <li><a href="<%= @base_url %>"
+          <li><a href="<%= @processed_browse[:base_url] %>"
             class="<%= params[:ownership] != 'sharedToMe' ?
               'active' : '' %>">Owned By Me</a></li>
-          <li><a href="<%= @base_url %>?ownership=sharedToMe"
+          <li><a href="<%= @processed_browse[:base_url] %>?ownership=sharedToMe"
             class="<%= params[:ownership] == 'sharedToMe' ?
               'active' : '' %>">Shared To Me</a></li>
         </ul>
         <%- end -%>
-        <%= render_browse %>
+        <%= render_browse(@processed_browse) %>
       </div>
     <%- end -%>
 

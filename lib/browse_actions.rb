@@ -27,7 +27,7 @@ protected
   end
 
   def categories_facet
-    params = params || request_params
+    params = params || request_params || {}
 
     cats = View.categories.keys.reject {|c| c.blank?}
     return nil if cats.empty?
@@ -48,7 +48,7 @@ protected
   end
 
   def topics_facet
-    params = params || request_params
+    params = params || request_params || {}
 
     all_tags = Tag.find({:method => "viewsTags"})
     top_tags = all_tags.slice(0, 5).map {|t| t.name}
@@ -108,7 +108,7 @@ protected
   end
 
   def extents_facet
-    params = params || request_params
+    params = params || request_params || {}
 
     return nil unless CurrentDomain.module_enabled?(:esri_integration)
     { :title => 'Within Geographical Area',

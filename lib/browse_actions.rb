@@ -33,10 +33,10 @@ protected
     return nil if cats.empty?
 
     cats = cats.sort.map{ |c| {:text => c, :value => c} }
-    cats, hidden_cats = cats[0..2], cats if cats.length > 3
+    cats, hidden_cats = cats[0..4], cats if cats.length > 5
 
     if params[:category].present? && !cats.any?{ |cat| cat[:text] == params[:category] }
-      cats.push({ :text => params[:category], :value => params[:category] }) 
+      cats.push({ :text => params[:category], :value => params[:category] })
     end
 
     return { :title => 'Categories',
@@ -142,7 +142,7 @@ protected
     end
   end
 
-  def process_browse(request, options = {}, view_results = nil)
+  def process_browse(request, options = {})
     # some of the other methods need this
     @request_params = request.params
 
@@ -150,19 +150,20 @@ protected
     catalog_config = CurrentDomain.configuration('catalog')
     catalog_config = catalog_config ? catalog_config.properties : Hashie::Mash.new
 
-    # grab the user's params
-    user_params = request.params.dup.to_hash
-    user_params.deep_symbolize_keys!
+    # grab the user's params unless we're forcing default
+    if options[:force_default]
+      user_params = {}
+    else
+      user_params = request.params.dup.to_hash
+      user_params.deep_symbolize_keys!
+    end
 
-    # deal with params
-    browse_params =
-      if options[:force_default]
-        user_params
-      else
-        configured_params = (catalog_config.default_params || {}).to_hash
-        configured_params.deep_symbolize_keys!
-        configured_params.merge(user_params)
-      end
+    # grab configured params
+    configured_params = (catalog_config.default_params || {}).to_hash
+    configured_params.deep_symbolize_keys!
+
+    # merge for our final params
+    browse_params = configured_params.merge(user_params)
 
     # next deal with options
     default_options = {
@@ -172,11 +173,13 @@ protected
       disable: {},
       no_results_text: 'No Results',
       base_url: request.path,
-      view_type: 'table',
-      dataset_actions: false
+      view_type: 'table'
     }
-    configured_options = (catalog_config.default_options || {}).to_hash
+
+    configured_options = catalog_config.to_hash
     configured_options.deep_symbolize_keys!
+    configured_options.delete(:default_params)
+
     browse_options = default_options
                        .merge(configured_options) # whatever they configured is somewhat important
                        .merge(options)            # whatever the call configures is more important
@@ -190,7 +193,8 @@ protected
     @@boolean_options.each do |option|
       browse_options[option] = (browse_options[option] == 'true') ||
                                (browse_options[option] == true) if browse_options[option].present?
-      user_params[option] = user_params[option].to_i if user_params[option].present?
+      user_params[option] = (user_params[option] == 'true') ||
+                            (user_params[option] == true) if user_params[option].present?
     end
 
     # for core server quirks
@@ -201,7 +205,7 @@ protected
     # check whether or not we need to display icons for other domains
     browse_options[:use_federations] = browse_options[:nofederate] ? false :
       Federation.find.any?{ |f| f.acceptedUserId.present? &&
-        f.sourceDomainCName != CurrentDomain.cname }
+        f.sourceDomainCName != CurrentDomain.cname } if browse_options[:use_federations].nil?
 
     # set up which grid columns to display if we don't have one already
     browse_options[:grid_items] ||=

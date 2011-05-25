@@ -41,7 +41,9 @@ class HomepageController < ApplicationController
 
         @processed_browse = process_browse(request, {
           base_url: browse_path,
-          no_results_text: 'No Datasets Yet'
+          no_results_text: 'No Datasets Yet',
+          suppress_dataset_creation: true,
+          force_default: true
         })
       end
     end

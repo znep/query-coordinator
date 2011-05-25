@@ -252,13 +252,7 @@ editRRNS.enableFieldItem = function($item, dragOnly)
         _.defer(function() { editRRNS.makeResizable($fieldItem); });
     }
 
-    $fieldItem.hover(function()
-        {
-            var $t = $(this);
-            if ($t.parents('.ui-resizable-resizing').length < 1)
-            { $t.addClass('hover'); }
-        },
-        function() { $(this).removeClass('hover'); });
+    editRRNS.addHoverStates($fieldItem, 'fieldItem');
 };
 
 
@@ -293,7 +287,7 @@ editRRNS.makeDraggable = function($item, handle,
 };
 
 // Hook up drop acceptance
-editRRNS.makeDroppable = function($item, selector, restrictToChildren, dropped)
+editRRNS.makeDroppable = function($item, selector, restrictToChildren, dropped, preDrop)
 {
     $item.droppable({accept: restrictToChildren ? function($draggable)
         {
@@ -330,6 +324,8 @@ editRRNS.makeDroppable = function($item, selector, restrictToChildren, dropped)
             {
                 $item = $item.clone().removeClass('ui-draggable itemDragging');
             }
+
+            if (_.isFunction(preDrop)) { preDrop($item); }
 
             if ($.isBlank(editRRNS.$dropBefore))
             { $cont.append($item); }
@@ -509,10 +505,7 @@ editRRNS.addControls = function($item, hasResize)
                 editRRNS.addColumn($item);
                 break;
             case 'AddRow':
-                var $newRow = $.tag({tagName: 'div', 'class': 'richLine'});
-                $item.append($newRow);
-                editRRNS.setUpRows($newRow);
-                madeChange = true;
+                editRRNS.addRow($item);
                 break;
             default:
                 $.debug('Missing handler for menu action ' + action.join('_'));
@@ -678,7 +671,7 @@ editRRNS.updateConfig = function()
             }
             else
             {
-                r.fields = [];
+                var fields = [];
                 $r.children('.fieldItem').each(function()
                 {
                     var $f = $(this).children('.richItem, .richLabel');
@@ -701,11 +694,16 @@ editRRNS.updateConfig = function()
                         if (!$f.hasClass('defaultData'))
                         { f.text = $f.text(); }
                     }
-                    r.fields.push(f);
+                    fields.push(f);
                 });
+                if (fields.length > 0) { r.fields = fields; }
             }
             c.rows.push(r);
         });
+
+        // Trim empty last row
+        if (_.isEmpty(_.last(c.rows))) { c.rows = c.rows.slice(0, -1); }
+
         parConf.columns.push(c);
     };
 
@@ -835,6 +833,13 @@ editRRNS.setUpRows = function($rows)
                         $row.removeClass('acceptsColumns');
                         editRRNS.enableFieldItem($item);
                     }
+                    if ($row.data('preDropChildCount') < 1 && $row.nextAll('.richLine').length < 1)
+                    { editRRNS.addRow($row.closest('.richColumn')); }
+                },
+                function($item)
+                {
+                    // Right before drop, see how many items we have
+                    $row.data('preDropChildCount', $row.children('.fieldItem, .richColumn').length);
                 });
             editRRNS.makeDraggable($row, '> .controlIndicators .rowDrag', null, null,
                 function(e, ui)
@@ -973,6 +978,14 @@ editRRNS.addColumn = function($parent)
     editRRNS.setUpColumns($newCol);
 };
 
+editRRNS.addRow = function($parent)
+{
+    var $newRow = $.tag({tagName: 'div', 'class': 'richLine'});
+    $parent.append($newRow);
+    editRRNS.setUpRows($newRow);
+    editRRNS.updateConfig();
+};
+
 editRRNS.resetConfig = function(previewOnly)
 {
     var config = ((blist.dataset.metadata || {}).richRendererConfigs ||
@@ -981,7 +994,15 @@ editRRNS.resetConfig = function(previewOnly)
     config = config || {columns: [{rows: [{}]}]};
     if (!previewOnly)
     {
-        editRRNS.richRenderer.setConfig(config);
+        var rrConfig = $.extend(true, {}, config);
+        // Add in blank row at the end of each column
+        var processCol = function(c)
+        {
+            _.each(c.rows || [], function(r) { _.each(r.columns || [], processCol); });
+            if (!_.isEmpty(_.last(c.rows || []))) { c.rows.push({}); }
+        };
+        _.each(rrConfig.columns, processCol);
+        editRRNS.richRenderer.setConfig(rrConfig);
         editRRNS.$clearLayout.toggleClass('hide', !hasConfig);
     }
     editRRNS.previewRenderer.setConfig(config);

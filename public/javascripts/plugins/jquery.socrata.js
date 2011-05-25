@@ -53,7 +53,7 @@
     var attrSuffix = "</span>";
 
     var printObject = function(output, $target) {
-        if (output instanceof Document) {
+        if (output.documentElement && (output.nodeType == 9)) {
             printObject(output.documentElement, $target);
             return;
         }
@@ -161,7 +161,7 @@
     var editingCommand;
 
     var printError = function(error, $target) {
-        error = (error + "").trim();
+        error = (error + "").replace(/^\s+|\s+$/g, '');
         if (error == "")
             error = "Error (no details available)";
         if (typeof error == "string")

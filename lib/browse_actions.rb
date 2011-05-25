@@ -2,6 +2,8 @@ module BrowseActions
   include ApplicationHelper
 
 protected
+  attr_reader :request_params
+
   def view_types_facet
     vts = {
       :title => 'View Types',
@@ -40,6 +42,8 @@ protected
   end
 
   def topics_facet
+    params = params || request_params
+
     all_tags = Tag.find({:method => "viewsTags"})
     top_tags = all_tags.slice(0, 5).map {|t| t.name}
     if !params[:tags].nil? && !top_tags.include?(params[:tags])
@@ -98,7 +102,9 @@ protected
   end
 
   def extents_facet
-    return nil if !CurrentDomain.module_enabled?(:esri_integration)
+    params = params || request_params
+
+    return nil unless CurrentDomain.module_enabled?(:esri_integration)
     { :title => 'Within Geographical Area',
       :param => :extents,
       :custom_content => proc do |params, opts|
@@ -130,13 +136,16 @@ protected
     end
   end
 
-  def process_browse(options = {}, view_results = nil)
+  def process_browse(request, options = {}, view_results = nil)
+    # some of the other methods need this
+    @request_params = request.params
+
     # grab our catalog configuration first
     catalog_config = CurrentDomain.configuration('catalog')
     catalog_config = catalog_config ? catalog_config.properties : Hashie::Mash.new
 
     # grab the user's params
-    user_params = params.dup.to_hash
+    user_params = request.params.dup.to_hash
     user_params.deep_symbolize_keys!
 
     # deal with params

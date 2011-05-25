@@ -3,7 +3,7 @@ class BrowseController < ApplicationController
   include BrowseActions
 
   def show
-    @processed_browse = process_browse({
+    @processed_browse = process_browse(request, {
       suppress_dataset_creation: true
     })
   end
@@ -29,7 +29,7 @@ class BrowseController < ApplicationController
       topics_facet
     ].flatten.compact.select { |f| enabled_facets[f[:singular_description]].present? }
 
-    @processed_browse = process_browse(browse_options)
+    @processed_browse = process_browse(request, browse_options)
     render :layout => 'embedded_browse'
   end
 end

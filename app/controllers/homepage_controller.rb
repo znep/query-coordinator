@@ -39,7 +39,7 @@ class HomepageController < ApplicationController
       unless (@browse_cached = read_fragment(app_helper.cache_key(
         'homepage-browse', { 'domain' => CurrentDomain.cname })))
 
-        @processed_browse = process_browse({
+        @processed_browse = process_browse(request, {
           base_url: browse_path,
           no_results_text: 'No Datasets Yet'
         })

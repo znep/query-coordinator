@@ -7,7 +7,7 @@ class AdministrationController < ApplicationController
 
   before_filter :only => [:datasets] {|c| c.check_auth_levels_any(['edit_others_datasets', 'edit_site_theme']) }
   def datasets
-    @processed_browse = process_browse({
+    @processed_browse = process_browse(request, {
       browse_in_container: true,
       opts: { admin: true }
     })
@@ -34,7 +34,7 @@ class AdministrationController < ApplicationController
   end
 
   def select_dataset
-    @processed_browse = process_browse({
+    @processed_browse = process_browse(request, {
       browse_in_container: true,
       rel_type: 'external',
       view_type: 'table',
@@ -185,7 +185,7 @@ class AdministrationController < ApplicationController
     view_facet = view_types_facet()
     view_facet[:options].delete_if { |item| item[:value] == 'datasets' }
 
-    @processed_browse = process_browse({
+    @processed_browse = process_browse(request, {
       default_params: { moderation: 'pending' },
       browse_in_container: true,
       dataset_actions: 'Moderation Status',

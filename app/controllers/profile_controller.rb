@@ -104,7 +104,7 @@ class ProfileController < ApplicationController
       }
     end
 
-    @processed_browse = process_browse(browse_options)
+    @processed_browse = process_browse(request, browse_options)
   end
 
   def update

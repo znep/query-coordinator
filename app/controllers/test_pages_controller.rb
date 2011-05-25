@@ -16,8 +16,7 @@ class TestPagesController < ApplicationController
   end
 
   def manual_kaboom
-    flash.now[:error] = 'This ' + I18n.t(:blist_name).downcase +
-          ' or view cannot be found, or has been deleted.'
+    flash.now[:error] = 'This dataset or view cannot be found, or has been deleted.'
     render 'shared/error', :status => :not_found
   end
 

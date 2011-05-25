@@ -259,8 +259,7 @@ class AdministrationController < ApplicationController
       begin
         @view = View.find(params[:view_id])
       rescue CoreServer::ResourceNotFound
-          flash.now[:error] = 'This ' + I18n.t(:blist_name).downcase +
-            ' cannot be found, or has been deleted.'
+          flash.now[:error] = 'A dataset with which to preview could not be found.'
           return (render 'shared/error', :status => :not_found)
         return
       end

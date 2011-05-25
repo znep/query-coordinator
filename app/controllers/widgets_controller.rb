@@ -34,8 +34,7 @@ class WidgetsController < ApplicationController
     begin
       @view = View.find(params[:id])
     rescue CoreServer::ResourceNotFound
-      flash.now[:error] = 'This ' + I18n.t(:blist_name).downcase +
-        ' cannot be found, or has been deleted.'
+      flash.now[:error] = 'This dataset or view cannot be found, or has been deleted.'
       return (render 'shared/error', :status => :not_found)
     rescue CoreServer::CoreServerError => e
       if e.error_code == 'authentication_required' ||

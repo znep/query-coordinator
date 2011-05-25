@@ -62,8 +62,7 @@ class ResourcesController < DatasetsController
     begin
       view = View.find_filtered({:method => "getByResourceName", :name => name})
     rescue CoreServer::ResourceNotFound
-      flash.now[:error] = 'This ' + I18n.t(:blist_name).downcase +
-            ' or view cannot be found, or has been deleted.'
+      flash.now[:error] = 'This dataset or view cannot be found, or has been deleted.'
       render 'shared/error', :status => :not_found
       return nil
     rescue CoreServer::CoreServerError => e

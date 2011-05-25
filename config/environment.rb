@@ -36,7 +36,7 @@ Rails::Initializer.run do |config|
 
   # Add additional load paths for your own custom dirs
   config.autoload_paths += %W( #{Rails.root}/app/presenters )
-  config.autoload_paths += %W( #{Rails.root}/lib) )
+  config.autoload_paths += %W( #{Rails.root}/lib )
 
   # Force all environments to use the same logger level
   # (by default production uses :info, the others :debug)

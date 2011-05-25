@@ -172,7 +172,6 @@ protected
       disable: {},
       no_results_text: 'No Results',
       base_url: request.path,
-      nofederate: true,
       view_type: 'table',
       dataset_actions: false
     }

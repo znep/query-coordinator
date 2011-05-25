@@ -123,18 +123,18 @@
       <div class="topControls">
         <%- if !opts[:hide_view_types] -%>
           <ul class="viewTypeOptions pillButtons">
-            <li><a href="<%= opts[:base_url] + '?' + opts[:user_params].merge({:viewType => 'table'}).to_param %>"
-              class="list <%= opts[:view_type] != 'rich' ? 'active' : '' %>" title="View as a compact list">
+            <li><a href="<%= opts[:base_url] + '?' + opts[:user_params].merge({:view_type => 'table'}).to_param %>"
+              class="list<%= ' active' if opts[:view_type] != 'rich' %>" title="View as a compact list">
               <span class="icon"></span>
             </a></li>
-            <li><a href="<%= opts[:base_url] + '?' + opts[:user_params].merge({:viewType => 'rich'}).to_param %>"
-              class="fatrow <%= opts[:view_type] == 'rich' ? 'active' : '' %>" title="View as a rich list">
+            <li><a href="<%= opts[:base_url] + '?' + opts[:user_params].merge({:view_type => 'rich'}).to_param %>"
+              class="fatrow<%= ' active' if opts[:view_type] == 'rich' %>" title="View as a rich list">
               <span class="icon"></span>
             </a></li>
           </ul>
         <%- end -%>
 
-        <%- if opts[:view_count] == 0 && !opts[:sort_opts].empty? && !opts[:disable][:sort] -%>
+        <%- if opts[:view_count] > 0 && !opts[:sort_opts].empty? && !opts[:disable][:sort] -%>
           <div class="sortOptions">
             <select class="sortType" name="sortType">
               <%- opts[:sort_opts].each do |so| -%>

@@ -27,12 +27,18 @@ protected
   end
 
   def categories_facet
+    params = params || request_params
+
     cats = View.categories.keys.reject {|c| c.blank?}
-    return nil if cats.length < 1
+    return nil if cats.empty?
+
     cats = cats.sort.map{ |c| {:text => c, :value => c} }
-    if cats.length > 5
-      cats, hidden_cats = cats[0..4], cats
+    cats, hidden_cats = cats[0..2], cats if cats.length > 3
+
+    if params[:category].present? && !cats.any?{ |cat| cat[:text] == params[:category] }
+      cats.push({ :text => params[:category], :value => params[:category] }) 
     end
+
     return { :title => 'Categories',
       :singular_description => 'category',
       :param => :category,
@@ -46,7 +52,7 @@ protected
 
     all_tags = Tag.find({:method => "viewsTags"})
     top_tags = all_tags.slice(0, 5).map {|t| t.name}
-    if !params[:tags].nil? && !top_tags.include?(params[:tags])
+    if params[:tags].present? && !top_tags.include?(params[:tags])
       top_tags.push(params[:tags])
     end
     top_tags = top_tags.sort.map {|t| {:text => t, :value => t}}
@@ -172,10 +178,10 @@ protected
     }
     configured_options = (catalog_config.default_options || {}).to_hash
     configured_options.deep_symbolize_keys!
-    browse_options = configured_options
-                       .merge(default_options) # whatever they configured is somewhat important
-                       .merge(options)         # whatever the call configures is more important
-                       .merge(browse_params)   # anything from the queryparam is most important
+    browse_options = default_options
+                       .merge(configured_options) # whatever they configured is somewhat important
+                       .merge(options)            # whatever the call configures is more important
+                       .merge(browse_params)      # anything from the queryparam is most important
 
     # munge params to types we expect
     @@numeric_options.each do |option|
@@ -200,7 +206,7 @@ protected
 
     # set up which grid columns to display if we don't have one already
     browse_options[:grid_items] ||=
-      case browse_options[:viewType]
+      case browse_options[:view_type]
       when 'rich'
         { largeImage: true, richSection: true, popularity: true, type: true, rss: true }
       else
@@ -332,8 +338,7 @@ private
       end
     end
 
-    t.blank? ? (CurrentDomain.property(:default_title, :catalog) ||
-                 'Search & Browse Datasets and Views') : 'Results ' + t
+    t.blank? ? 'Search & Browse Datasets and Views' : 'Results ' + t
   end
 
   @@default_browse_sort_opts = [

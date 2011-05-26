@@ -324,7 +324,12 @@
                           Provided by <a href="http://<%= v.domainCName %>"><%= v.domainCName %></a>
                         </div>
                       <% end %>
-                      <div class="description"><%= v.description %></div>
+                      <div class="expandBlock">
+                        <div class="description collapsed"><%= v.description %></div>
+                        <a class="expander" title="Click to expand" href="#Expand">
+                          <span class="icon"></span>
+                        </a>
+                      </div>
                     </td>
                   <%- end -%>
 

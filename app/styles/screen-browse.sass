@@ -385,9 +385,23 @@
               vertical-align: middle
               width: 20px
 
+          .expandBlock
+            padding-right: 20px
+            position: relative
+
           .description
             font-size: 0.9167em
+            line-height: 1.1em
             margin-top: 0.4em
+            &.collapsed
+              max-height: 8.727em
+              overflow: hidden
+
+          .expander
+            @include sprite-menu-icons
+            bottom: 0
+            position: absolute
+            right: 0
 
         .rss
           text-align: right

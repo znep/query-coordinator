@@ -132,6 +132,7 @@ $(function()
         $content.find('.button.about:not(.hide)').attr("href", ds.fullUrl + ((ds.type == "blob" || ds.type == "href") ? "" : "/about"));
     };
 
+    // Hook up expansion for list view
     $browse.find('table tbody tr').expander({
         contentSelector: '.nameDesc .expandBlock',
         expandSelector: '.index .expander, .nameDesc .extraInfo .close',
@@ -139,6 +140,14 @@ $(function()
         expanderExpandedClass: 'expanded',
         forceExpander: true,
         preExpandCallback: doExpansion
+    });
+
+    // Hook up expansion for rich view
+    $browse.find('table tbody tr').expander({
+        contentSelector: '.richSection .description',
+        expandSelector: '.richSection .expander',
+        expanderCollapsedClass: 'collapsed',
+        expanderExpandedClass: 'expanded'
     });
 
 

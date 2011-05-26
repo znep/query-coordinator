@@ -1,6 +1,7 @@
 module CoreServer
   class Connection
     cattr_accessor :cache
+    cattr_accessor :env
 
     def initialize(logger = nil, cookies = nil)
       @logger = logger
@@ -136,6 +137,14 @@ module CoreServer
 
       # pass/spoof in the current domain cname
       request['X-Socrata-Host'] = CurrentDomain.cname
+
+      # proxy user agent
+      if @@env.present?
+        request['X-User-Agent'] = @@env['HTTP_USER_AGENT']
+      else
+        Rails.logger.warn("Missing env in CoreServer::Connection")
+      end
+
 
       custom_headers.each { |key, value| request[key] = value }
 

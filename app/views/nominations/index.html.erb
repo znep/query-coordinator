@@ -33,6 +33,9 @@
     <%- else -%>
       <a href="/nominate/new" class="button nominateLink">Suggest a Dataset</a>
     <%- end -%>
+    <div class="moderationNotice flash notice">
+      Your suggestion has been received and is in the moderation queue. It will appear on this page once an administrator approves it.
+    </div>
 
     <div class="results">
       <%- if @nominations_count == 0 -%>

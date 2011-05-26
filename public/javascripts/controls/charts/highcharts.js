@@ -321,8 +321,19 @@
 
         var clipFormatter = function()
         {
+            var abbreviateNumbers = function(num)
+            {
+                // Are you really a number?
+                // yColumn numbers will always come back as numbers.
+                // xColumn numbers will come back as strings, but may be intended as strings.
+                if (!_.isNumber(num) && !(num.match && num.match(/^[-+]?[0-9,]*\.?[0-9]+$/)))
+                { return num; }
+
+                if (num.match && num.match(/,/)) { num = num.replace(/[^0-9\.]/g, ''); }
+                return blistUtilNS.toHumaneNumber(num, 2);
+            };
             var maxLen = 20;
-            var v = this.value;
+            var v = abbreviateNumbers(this.value);
             if (v.length > maxLen)
             { return v.slice(0, maxLen) + '...'; }
             return v;

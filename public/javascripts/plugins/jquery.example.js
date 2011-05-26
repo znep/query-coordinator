@@ -102,10 +102,23 @@
       if (!$this.attr('defaultValue') && (isCallback || $this.val() == o.example))
         $this.val('');
 
+      /*
+       * clint.tseng@socrata.com - 25 may 2011
+       * activeElement will straight up exception in IE9 if called too early.
+       * In these cases, just assume the element doesn't have focus anyway.
+       * The focus event will fire after this in these cases.
+       */
+       var activeElement = null;
+       try
+       {
+           activeElement = document.activeElement;
+       }
+       catch(e) {}
+
       /* Initially place the example text in the field if it is empty
        * and doesn't have focus yet.
        */
-      if ($this.val() == '' && this != document.activeElement) {
+      if ($this.val() == '' && this != activeElement) {
         $this.addClass(o.className);
 
         /* The text argument can now be a function; if this is the case,

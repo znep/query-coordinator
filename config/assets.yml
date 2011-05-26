@@ -359,7 +359,6 @@ javascripts:
     - public/javascripts/screens/reset-password-screen.js
   screen-profile:
     - public/javascripts/util/humane-date.js
-    - public/javascripts/controls/feed-list.js
     - public/javascripts/screens/profile-screen.js
   screen-profile-edit:
     - public/javascripts/plugins/ajaxupload.js

@@ -76,6 +76,7 @@ $(function()
     blist.nominations.addNomination = function(n, beginning)
     {
         if (!(n.user instanceof User)) { n.user = new User(n.user); }
+        blist.nominations.map[n.id] = new Nomination(n);
         var $newItem = $.renderTemplate('nominationItem', n,
         {
             '.item@data-nominationId': 'id',

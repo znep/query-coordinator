@@ -101,7 +101,7 @@ $(function()
         );
     };
 
-    var $dialog = $('.nominateDialog');
+    var $dialog = $('.editNominationDialog');
     blist.nominations.showNomDialog = function(nomId, title, desc)
     {
         $dialog.find('#nominateTitle').val(title || '')
@@ -117,29 +117,32 @@ $(function()
 
     $dialog.find('form').validate({errorElement: 'span'});
     var $uploadButton = $dialog.find('.fileBrowseButton');
-    var $uploader = new AjaxUpload($uploadButton,
+    if ($uploadButton.length > 0)
     {
-        action: '/api/nominations/INLINE/attachments.txt',
-        autoSubmit: false,
-        name: 'nominateFileInput',
-        responseType: 'json',
-        onChange: function (file, ext)
+        var $uploader = new AjaxUpload($uploadButton,
         {
-            $dialog.find('input[name="file_upload"]').val(file);
-            $dialog.find('.mainError').text('');
-        },
-        onComplete: function (file, response)
-        {
-            if (response.error == true)
+            action: '/api/nominations/INLINE/attachments.txt',
+            autoSubmit: false,
+            name: 'nominateFileInput',
+            responseType: 'json',
+            onChange: function (file, ext)
             {
-                $dialog.find('.loadingSpinner, .loadingOverlay').addClass('hide');
-                $dialog.find('.mainError').text(response.message);
-                return false;
-            }
+                $dialog.find('input[name="file_upload"]').val(file);
+                $dialog.find('.mainError').text('');
+            },
+            onComplete: function (file, response)
+            {
+                if (response.error == true)
+                {
+                    $dialog.find('.loadingSpinner, .loadingOverlay').addClass('hide');
+                    $dialog.find('.mainError').text(response.message);
+                    return false;
+                }
 
-            saveNomination(response.id);
-        }
-    });
+                saveNomination(response.id);
+            }
+        });
+    }
 
     // Form Submit
     $dialog.find('.submitAction').click(function(event)

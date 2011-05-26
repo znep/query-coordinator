@@ -19,13 +19,15 @@
     </div>
 
     <div class="submittedBy">
-      <img class="authorImage" src="<%= @nom.user.profile_image_path %>"
-           alt="<%= @nom.user.displayName %>" />
-      <h4>Submitted by
-        <span class="authorName">
-          <%= link_to @nom.user.displayName, @nom.user.href %>
-        </span>
-      </h4>
+      <a href="<%= @nom.user.href %>" rel="external">
+        <img class="authorImage" src="<%= @nom.user.profile_image_path %>"
+             alt="<%= @nom.user.displayName %>" />
+        <h4>Submitted by
+          <span class="authorName">
+            <%= @nom.user.displayName %>
+          </span>
+        </h4>
+      </a>
       <span class="submittedOn"><%= blist_long_date(@nom.createdAt) %></span>
     </div>
 
@@ -65,7 +67,7 @@
       <ul class="attachmentList">
         <%- @nom.attachments.each do |att| -%>
           <li>
-          <%= link_to(att.filename, "/api/nominations/#{@nom.id}/attachments/#{att.id}") %>
+          <%= link_to(att.filename, "/api/nominations/#{@nom.id}/attachments/#{att.id}", :rel => 'external') %>
           </li>
         <%- end -%>
       </ul>

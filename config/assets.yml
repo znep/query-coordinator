@@ -6,7 +6,7 @@ javascripts:
     - public/javascripts/plugins/jqModal.js
     - public/javascripts/plugins/jquery.bt.js
     - public/javascripts/plugins/jquery.cookies.2.1.0.min.js
-    - public/javascripts/plugins/jquery.example.min.js
+    - public/javascripts/plugins/jquery.example.js
     - public/javascripts/plugins/json2.js
     - public/javascripts/plugins/jquery.sizes.min.js
     - public/javascripts/plugins/jquery.tache.js

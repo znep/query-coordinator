@@ -275,17 +275,6 @@
                 { reqFields.push({ tableColumnId: col }); });
                 columns = _.compact(_.uniq(reqFields).concat(columns));
                 return this.generateFlyoutLayoutDefault(columns, titleId);
-            },
-
-            resizeHandle: function()
-            {
-                var chartObj = this;
-                chartObj._defaultPaneLoaded = true;
-                if (chartObj._afterDefaultPaneLoads)
-                {
-                    chartObj._afterDefaultPaneLoads();
-                    delete chartObj._afterDefaultPaneLoads;
-                }
             }
         }
     }));
@@ -501,9 +490,8 @@
         {
             // We need the default pane to load before attempting to load the chart.
             // Otherwise a race condition sort of explodes messily.
-            if ($.subKeyDefined(blist.datasetPage, 'sidebar._defaultPane')
-                && !chartObj._defaultPaneLoaded)
-            { chartObj._afterDefaultPaneLoads = loadChart; }
+            if ($.subKeyDefined(blist.datasetPage, 'sidebar._defaultPane'))
+            { setTimeout(loadChart, 1000); }
             else
             { loadChart(); }
         });

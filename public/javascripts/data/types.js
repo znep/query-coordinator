@@ -211,10 +211,7 @@ blist.namespace.fetch('blist.data.types');
         {
             value = blist.util.toHumaneNumber(value, 2);
         }
-        // HACK HACK HACK
-        // Temporary HACK: Don't put commas if a number is less than 10,000.
-        // This should help with the display of dates
-        else if (value > 9999 && !noCommas)
+        else if (!noCommas)
         {
             value = value + '';
             var pos = value.indexOf('.');

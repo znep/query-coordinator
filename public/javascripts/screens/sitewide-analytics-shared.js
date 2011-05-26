@@ -16,6 +16,13 @@ blist.metrics.sitewideShared = {
             ]
         }
     ],
+    detailSections: [
+          {id: 'detailCharts',    displayName: 'Charts',   detail: 'charts-created'},
+          {id: 'detailFilters',   displayName: 'Filters',  detail: 'filters-created'},
+          {id: 'detailMaps',      displayName: 'Maps',     detail: 'maps-created'},
+          {id: 'detailMaps',      displayName: 'Downloadable Files', detail: 'datasets-created-blobby'},
+          {id: 'detailMaps',      displayName: 'External Datasets', detail: 'datasets-created-href'}
+    ],
     summarySections: [
         {
             id: 'summaryVisits',      displayName: 'Page Views',

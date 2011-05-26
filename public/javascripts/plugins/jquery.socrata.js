@@ -214,9 +214,11 @@
         needOutput = false;
 
         if (!url.match(/^(https?:|\/)/))
+        {
             url = '/' + url;
-        if (!url.match(/^\/api/))
-            url = defaultRoot + "/api" + url;
+            if (!url.match(/^\/api/))
+                url = defaultRoot + "/api" + url;
+        }
 
         if (params) {
             params = $.param(params);

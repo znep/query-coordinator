@@ -39,13 +39,24 @@ class CustomContentController < ApplicationController
     render :action => 'show'
   end
 
+  # warning! only one stylesheet is cached per *type* of canvas page!
+  # this is intentional to reduce dupes...
   def stylesheet
     headers['Content-Type'] = 'text/css'
 
-    @page_config = get_config(params[:page_type], params[:config_name], false)
-    return render_404 unless @page_config
+    cache_key = app_helper.cache_key("canvas-stylesheet-#{params[:page_type]}-#{params[:config_name]}",
+                                     { 'domain' => CurrentDomain.cname })
+    sheet = Rails.cache.read(cache_key)
 
-    render :text => build_stylesheet(@page_config.contents), :content_type => 'text/css'
+    if sheet.nil?
+      page_config = get_config(params[:page_type], params[:config_name], false)
+      return render_404 unless page_config
+
+      sheet = build_stylesheet(page_config.contents)
+      Rails.cache.write(cache_key, sheet)
+    end
+
+    render :text => sheet, :content_type => 'text/css'
   end
 
 private

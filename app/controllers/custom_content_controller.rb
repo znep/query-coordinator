@@ -110,7 +110,7 @@ private
           fromDomainConfig: true
         }
       }, {
-        type: 'featured_datasets',
+        type: 'featured_views',
         properties: {
           fromDomainConfig: true
         }

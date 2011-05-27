@@ -369,6 +369,8 @@ javascripts:
     - public/javascripts/screens/homepage-show.js
   stories:
     - public/javascripts/controls/stories.js
+  featured_views:
+    - public/javascripts/controls/featured_views.js
   public-analytics:
     - public/javascripts/screens/sitewide-analytics-shared.js
     - public/javascripts/screens/public-analytics.js

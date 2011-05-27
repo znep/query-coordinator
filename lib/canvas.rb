@@ -39,9 +39,11 @@ module Canvas
         # get config value
         property_value = self.find_property(definition[:data])
 
-        # match transformations in js customizer
+        # transform property value according to customizer rules
+        property_value = property_value.size if property_value.is_a? Array
         property_value = "#{property_value[:value]}#{property_value[:unit]}" if definition[:hasUnit]
         property_value = definition[:map][property_value.to_sym] if definition[:map]
+        property_value = "#{100.0 / property_value}%" if definition[:toProportion]
 
         # commas
         str + "##{@elem_id} #{definition[:selector]} {#{definition[:css]}: #{property_value}}\n"
@@ -226,7 +228,35 @@ module Canvas
     }
   end
 
-  class FeaturedDatasets < CanvasWidget
+  class FeaturedViews < CanvasWidget
+    attr_reader :featured_views
+
+    # allow us to get featured views at all but not to render if we are there are none
+    def can_render?
+      return @featured_views.nil? || !@featured_views.empty?
+    end
+
+    def prepare!
+      if self.properties.fromDomainConfig
+        @featured_views = CurrentDomain.featured_views || []
+      else
+        @featured_views = self.properties.featured_views
+      end
+
+      return if @featured_views.empty?
+
+      # get the freshest versions of the canonical view urls
+      View.find_multiple(@featured_views.map{ |fv| fv.viewId }).each do |view|
+        @featured_views.find{ |fv| fv.viewId == view.id }.href = view.href
+      end
+    end
+  protected
+    self.default_properties = {
+      featured_views: []
+    }
+    self.style_definition = [
+      { data: 'featured_views', toProportion: true, selector: '.featuredViewContainer', css: 'width' }
+    ]
   end
 
   class Html < CanvasWidget

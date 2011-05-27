@@ -99,7 +99,7 @@ blist.publish.applicator = function(subapply, subhash)
 {
     for (var key in subapply)
     {
-        if (subapply[key] instanceof Array)
+        if (_.isArray(subapply[key]))
         {
             for (var curapply in subapply[key])
             {
@@ -132,8 +132,12 @@ blist.publish.applicator = function(subapply, subhash)
                         }
                         else
                         {
+                            var subhashValue = subhash[key];
+                            if (value['toProportion'] === true)
+                                subhashValue = (100.0 / subhashValue) + '%';
+
                             publishNS.writeStyle(value['selector'], cssProperty,
-                                subhash[key]);
+                                subhashValue);
                         }
                     });
                 }

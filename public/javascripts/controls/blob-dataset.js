@@ -85,8 +85,8 @@
                             blobObj.settings.editEnabled);
                     });
 
-                    $domObj.find('.routingApproval .rejectionReason').each(function()
-                    { blist.datasetControls.raRejection($(this)); });
+                    $domObj.find('.routingApproval .reasonBox').each(function()
+                    { blist.datasetControls.raReasonBox($(this)); });
 
                     blist.datasetControls.datasetContact($domObj);
                 }

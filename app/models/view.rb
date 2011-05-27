@@ -925,15 +925,22 @@ class View < Model
     return ns
   end
 
-  def set_approval(approval, approved, comment = nil)
+  def set_approval(approval, approval_type, comment = nil)
     next_stage = next_approval_stage(approval)
-    return false if next_stage.nil?
+    return false if next_stage.nil? || !['A', 'R', 'M'].include?(approval_type)
+
+    opts = {:approvalStageId => next_stage['id'],
+            :approvalTypeName => approval_type,
+            :comment => comment}
+    if approval_type == 'M'
+      prev_app = last_approval(true)
+      return false if prev_app.nil? || prev_app['approvalTypeName'] != 'R'
+      opts[:approvalStageId] = prev_app['approvalStageId']
+      opts[:relatedApprovalHistoryId] = prev_app['id']
+    end
 
     path = "/#{self.class.name.pluralize.downcase}/#{id}/approval.json"
-    CoreServer::Base.connection.create_request(path,
-          {:approvalStageId => next_stage['id'],
-            :approvalTypeName => approved ? 'A' : 'R',
-            :comment => comment}.to_json)
+    CoreServer::Base.connection.create_request(path, opts.to_json)
   end
 
   @@default_categories = {

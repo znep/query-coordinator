@@ -725,7 +725,7 @@ class AdministrationController < ApplicationController
   # Dataset Routing & Approval
   #
   before_filter :only => [:routing_approval, :routing_approval_queue, :approve_view, :routing_approval_manage, :routing_approval_manage_save] {|c| c.check_module('routing_approval')}
-  before_filter :only => [:routing_approval, :routing_approval_queue, :approve_view] {|c| c.check_approval_rights}
+  before_filter :only => [:routing_approval, :routing_approval_queue] {|c| c.check_approval_rights}
   before_filter :only => [:routing_approval_manage, :routing_approval_manage_save] {|c| c.check_auth_level('manage_approval')}
 
   def routing_approval
@@ -775,16 +775,48 @@ class AdministrationController < ApplicationController
   end
 
   def approve_view
+    if current_user.nil?
+      render_forbidden
+      return false
+    end
+
     # Construct a fake view, since it might be cross-domain and we can't
     # load views cross-domain
     v = View.parse({'id' => params[:id]}.to_json)
 
     # We only support one template for now, so assume it is the first one
     approval_template = Approval.find()[0]
-    v.set_approval(approval_template, params[:approved] == 'yes', params[:comment])
 
-    flash[:notice] = "The dataset has been " +
-      "#{params[:approved] == 'yes' ? 'approved' : 'rejected'}. " +
+    # Rely on core server to throw an error if no perms
+    begin
+      v.set_approval(approval_template, params[:approval_type], params[:comment])
+    rescue CoreServer::ResourceNotFound
+      flash.now[:error] = 'This dataset or view cannot be found, or has been deleted.'
+      render 'shared/error', :status => :not_found
+      return nil
+    rescue CoreServer::CoreServerError => e
+      if e.error_code == 'authentication_required'
+        require_user(true)
+        return nil
+      elsif e.error_code == 'permission_denied'
+        render_forbidden(e.error_message)
+        return nil
+      else
+        flash.now[:error] = e.error_message
+        render 'shared/error', :status => :internal_server_error
+        return nil
+      end
+    end
+
+    type = case params[:approval_type]
+           when 'A'
+             'approved'
+           when 'R'
+             'rejected'
+           when 'M'
+             'resubmitted for approval'
+           end
+    flash[:notice] = "The dataset has been #{type}. " +
       'Please allow a few minutes for the changes to be reflected on your home page.'
 
     return(redirect_to (request.referer || {:action => 'routing_approval_queue'}))

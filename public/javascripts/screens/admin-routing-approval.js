@@ -191,8 +191,9 @@ $(function()
                     },
                 '.lastApproved .user .type': function(v)
                     {
-                        return v.context.dataset.lastApproval(true)
-                            .approvalTypeName == 'R' ? 'Rejected' : 'Approved';
+                        var la = v.context.dataset.lastApproval(true);
+                        return la.approvalTypeName == 'R' ? 'Rejected' :
+                            la.approvalTypeName == 'A' ? 'Approved' : 'Resubmitted';
                     },
                 '.lastApproved .user .value@data-userId': function(v)
                     {
@@ -201,8 +202,9 @@ $(function()
                     },
                 '.lastApproved .date .type': function(v)
                     {
-                        return v.context.dataset.lastApproval(true)
-                            .approvalTypeName == 'R' ? 'Rejection' : 'Approval';
+                        var la = v.context.dataset.lastApproval(true);
+                        return la.approvalTypeName == 'R' ? 'Rejection' :
+                            la.approvalTypeName == 'A' ? 'Approval' : 'Resubmission';
                     },
                 '.lastApproved .date .value': function(v)
                     {
@@ -214,15 +216,21 @@ $(function()
                         return _.isEmpty(v.context.dataset.approvalHistory) ?
                             'hide' : '';
                     },
-                '.rejectionReason .value': function(v)
+                '.reason .title .type': function(v)
+                    {
+                        var la = v.context.dataset.lastApproval(true);
+                        return la.approvalTypeName == 'R' ? 'Rejection' :
+                            la.approvalTypeName == 'A' ? 'Approval' : 'Resubmission';
+                    },
+                '.reason .value': function(v)
                     {
                         return v.context.dataset.lastApproval(true).comment ||
                             'No reason provided';
                     },
-                '.rejectionReason@class+': function(v)
+                '.reason@class+': function(v)
                     {
                         return v.context.dataset.lastApproval(true)
-                            .approvalTypeName == 'R' ? '' : 'hide';
+                            .approvalTypeName == 'A' ? 'hide' : '';
                     },
                 '.nextApprover .user li': {
                     'userId<-nextStage.approverUids': {
@@ -255,7 +263,8 @@ $(function()
                 $stageIcon.append($.tag({tagName: 'span',
                     title: (blist.routingApproval.approvalTemplate
                         .getStage(ah.approvalStageId) || {}).name,
-                    'class': ah.approvalTypeName == 'R' ? 'rejected' : 'on'}));
+                    'class': ah.approvalTypeName == 'R' ? 'rejected' :
+                        ah.approvalTypeName == 'A' ? 'on' : 'off'}));
             });
         // Subtract an extra one because we add a dummy stage 0 into approval
         _(blist.routingApproval.approvalTemplate.stages.length - ds.approvalStream().length - 1)
@@ -274,8 +283,8 @@ $(function()
         preExpandCallback: doExpansion
     });
 
-    $browse.find('table tbody tr .actions .rejectionReason').each(function()
-    { blist.datasetControls.raRejection($(this)); });
+    $browse.find('table tbody tr .actions .reasonBox').each(function()
+    { blist.datasetControls.raReasonBox($(this)); });
 });
 
 

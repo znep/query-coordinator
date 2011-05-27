@@ -297,6 +297,11 @@ class View < Model
     (data.deep_value_at(['ratings', type]) || 0) / 20.0
   end
 
+  def user_rating(type)
+    r = data.deep_value_at(['currentUserRatings', type])
+    return '' if r.nil?
+    r / 20.0
+  end
   def totalTimesRated
     data['totalTimesRated'] || 0
   end

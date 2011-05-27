@@ -190,9 +190,16 @@ blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
 
 blist.datasetControls.datasetRating = function($star, $sect, enabled)
 {
+    if (!enabled && !$.isBlank($star.data('rating-type')) && $.isBlank($star.data('rating')))
+    {
+        var $dd = $star.closest('dd').addClass('hide');
+        $dd.prev('dt').addClass('hide');
+        return;
+    }
+
     $star.stars({
-        value: $star.attr('data-rating'),
-        enabled: enabled,
+        value: $star.attr('data-rating') || 0,
+        enabled: enabled && !$.isBlank($star.data('rating-type')),
         onChange: function(value)
         {
             blist.util.doAuthedAction('rate this dataset', function()

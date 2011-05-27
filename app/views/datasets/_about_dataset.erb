@@ -134,10 +134,17 @@
     </a>
     <dl class="sectionContent">
       <%- (CurrentDomain.properties.rating_types || ["rating"]).each do |rating_type| -%>
-        <dt><%= rating_type.titleize %></dt>
+        <dt>Community <%= rating_type.titleize %></dt>
         <dd class="clearfix">
-          <div class="starsControl datasetAverageRating" data-rating="<%= @view.average_rating(rating_type) %>" data-rating-type="<%= rating_type %>">
+          <div class="starsControl datasetAverageRating" data-rating="<%= @view.average_rating(rating_type) %>">
             <%= @view.average_rating(rating_type) %>
+          </div>
+        </dd>
+        <dt>Your <%= rating_type.titleize %></dt>
+        <dd class="clearfix">
+          <div class="starsControl blueStars datasetAverageRating" data-rating-type="<%= rating_type %>"
+            data-rating="<%= @view.user_rating(rating_type) %>">
+            <%= @view.user_rating(rating_type) %>
           </div>
         </dd>
       <%- end -%>

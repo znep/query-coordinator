@@ -204,6 +204,7 @@ javascripts:
     - public/javascripts/screens/nominations-shared.js
     - public/javascripts/screens/nominations.js
   screen-nomination:
+    - public/javascripts/util/inline-login.js
     - public/javascripts/util/events.js
     - public/javascripts/util/humane-date.js
     - public/javascripts/util/serialize.js

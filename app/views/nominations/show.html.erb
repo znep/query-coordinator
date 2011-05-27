@@ -12,7 +12,7 @@
       <a href="#contact" class="notifyNominatorButton button">Contact Suggestion Author</a>
     <%- end -%>
   <%- end -%>
-  <div class="content clearfix">
+  <div class="content">
     <h2><%= @nom.title %></h2>
     <div class="nomFlash">
       <%= display_standard_flashes %>
@@ -80,14 +80,19 @@
   </div>
 </div>
 
-<%- if current_user && current_user.has_right?('edit_nominations') -%>
 <%- content_for :modals do -%>
-  <%= render :partial => 'edit_modal' %>
-  <%- if current_user.id != @nom.user.id -%>
-    <%= render :partial => 'contact_modal' %>
+  <%- if current_user && current_user.has_right?('edit_nominations') -%>
+    <%= render :partial => 'edit_modal' %>
+    <%- if current_user.id != @nom.user.id -%>
+      <%= render :partial => 'contact_modal' %>
+    <%- end -%>
+  <%- end -%>
+
+  <%- if !current_user -%>
+    <%= render :partial => 'datasets/inline_login' %>
   <%- end -%>
 <%- end -%>
-<%- end -%>
+
 
 <%- content_for :templates do -%>
   <%= render :partial => 'datasets/feed_template', :locals => {:allow_comments => true} %>

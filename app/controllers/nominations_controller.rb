@@ -14,6 +14,7 @@ class NominationsController < ApplicationController
 
   def show
     @nom = Nomination.find(params[:id])
+    @user_session = UserSession.new unless current_user
   end
 
   def new

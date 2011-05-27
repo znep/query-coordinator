@@ -31,9 +31,7 @@ module Canvas
       @data = data
       @elem_id = "#{id_prefix}_#{self.class.name.split(/::/).last}"
 
-      local_properties = @data.properties.to_hash rescue {}
-      local_properties.deep_symbolize_keys!
-      @properties = Hashie::Mash.new self.default_properties.deep_merge(local_properties)
+      load_properties(@data)
     end
 
     def stylesheet
@@ -101,7 +99,7 @@ module Canvas
         begin
           return Canvas.const_get(klass_name).new(config, id_prefix)
         rescue NameError => ex
-          return nil
+          throw "There is no Canvas widget of type '#{config.type}'."
         end
       end
     end
@@ -122,6 +120,13 @@ module Canvas
     self.default_properties = {}
     self.style_definition = []
     self.content_definition = []
+
+  private
+    def load_properties(data)
+      local_properties = data.properties.to_hash rescue {}
+      local_properties.deep_symbolize_keys!
+      @properties = Hashie::Mash.new self.default_properties.deep_merge(local_properties)
+    end
   end
 
 # WIDGETS (LAYOUT)
@@ -221,8 +226,61 @@ module Canvas
     }
   end
 
+  class FeaturedDatasets < CanvasWidget
+  end
+
   class Html < CanvasWidget
     # nothing to do here. html is just html!
+  end
+
+  class Stories < CanvasWidget
+    attr_reader :stories
+
+    def can_render?
+      # allow us to get stories at all but not to render if we are there are none
+      return @stories.nil? || !@stories.empty?
+    end
+
+    def prepare!
+      load_properties(CurrentDomain.theme.stories) if self.properties.fromDomainConfig
+      @stories = Story.find.sort
+    end
+  protected
+    self.default_properties = {
+      pager: {
+        position: 'center',
+        type: 'bullets',
+        disposition: 'light'
+      },
+      orientation: 'left',
+      height: { value: 25, unit: 'em' },
+      box: {
+        headline: {
+          color: 'f7f7f7',
+          font_family: 'Georgia',
+          shadow: {
+            alpha: 0.6,
+            radius: { value: 3, unit: 'px' }
+          },
+          font_size: { value: 1.8, unit: 'em' }
+        },
+        body: {
+          color: 'dddddd',
+          font_family: 'Helvetica Neue',
+          shadow: {
+            alpha: 0.3,
+            radius: { value: 2, unit: 'px' }
+          },
+          font_size: { value: 1.4, unit: 'em' }
+        },
+        color: '000000',
+        shadow: 0,
+        width: { value: 35, unit: 'em' },
+        alpha: 0.8,
+        margin: { value: 1, unit: 'em' }
+      },
+      autoAdvance: 7
+    }
   end
 
   class ViewList < CanvasWidget

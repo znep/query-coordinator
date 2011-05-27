@@ -1,0 +1,8 @@
+<%= render :partial => 'homepage/stories', :locals => { :stories => widget.stories,
+                                                        :config => widget.properties } %>
+
+<%- content_for :js_footer do -%>
+  <%- allow_once do -%>
+    <%= include_javascripts 'stories' %>
+  <%- end -%>
+<%- end -%>

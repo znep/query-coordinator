@@ -1,8 +1,10 @@
 <%- prerendered_cache @cache_key, @cached_fragment, :expires_in => 15.minutes do -%>
 
   <% content_for :head do %>
-    <title><%= @page_title %> | <%= CurrentDomain.strings.site_title %></title>
+    <title><%= [ @page_title, CurrentDomain.strings.site_title ].flatten.compact.join(' | ') %></title>
     <%= rendered_stylesheet_tag "canvas" %>
+    <%= rendered_stylesheet_tag "homepage-show" if Canvas::Environment.context == :homepage &&
+                                                   @page_config.default_homepage %>
     <link rel="stylesheet" type="text/css" href="/styles/<%= @stylesheet %>.css"/>
   <% end %>
 

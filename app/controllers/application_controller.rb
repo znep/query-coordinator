@@ -179,6 +179,16 @@ private
     end
   end
 
+  def check_lockdown
+    if CurrentDomain.feature? :staging_lockdown
+      if current_user.nil?
+        return require_user(true)
+      elsif !CurrentDomain.member?(current_user)
+        return render_forbidden
+      end
+    end
+  end
+
   def store_location
     session[:return_to] = request.request_uri
   end

@@ -596,7 +596,7 @@ class AdministrationController < ApplicationController
     update_or_create_property(config, 'featured_views', params[:features])
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
-    clear_featured_datasets_cache
+    clear_homepage_cache
 
     respond_to do |format|
       format.html { redirect_to home_administration_path }
@@ -608,7 +608,7 @@ class AdministrationController < ApplicationController
   def delete_story
     begin
       Story.delete(params[:id])
-      clear_stories_cache
+      clear_homepage_cache
     rescue CoreServer::ResourceNotFound
       flash.now[:error] = 'The story you attempted to delete does not exist.'
       return render 'shared/error', :status => :not_found
@@ -631,7 +631,7 @@ class AdministrationController < ApplicationController
 
     begin
       Story.create(story)
-      clear_stories_cache
+      clear_homepage_cache
     rescue CoreServer::CoreServerError => e
       flash.now[:error] = "An error occurred during your request: #{e.error_message}"
       return render 'shared/error', :status => :bad_request
@@ -653,7 +653,7 @@ class AdministrationController < ApplicationController
     story_lo.save!
     story_hi.save!
     flash.now[:notice] = "Your story has been saved"
-    clear_stories_cache
+    clear_homepage_cache
     redirect_to :home_administration
   end
 
@@ -670,7 +670,7 @@ class AdministrationController < ApplicationController
       @story.update_attributes(params[:story].stringify_keys)
       @story.save!
       flash.now[:notice] = "Your story has been saved"
-      clear_stories_cache
+      clear_homepage_cache
     end
   end
 
@@ -984,15 +984,9 @@ private
     end
   end
 
-  def clear_stories_cache
-    # clear the cache of stories since assumedly something about them updated
-    stories_cache_key = app_helper.cache_key('homepage-stories', { 'domain' => CurrentDomain.cname })
-    clear_success = expire_fragment(stories_cache_key)
-  end
-
-  def clear_featured_datasets_cache
-    # clear the cache of stories since assumedly something about them updated
-    stories_cache_key = app_helper.cache_key('homepage-featured', { 'domain' => CurrentDomain.cname })
+  def clear_homepage_cache
+    # clear the homepage cache since assumedly something about them updated
+    stories_cache_key = app_helper.cache_key('canvas-homepage', { 'domain' => CurrentDomain.cname })
     clear_success = expire_fragment(stories_cache_key)
   end
 

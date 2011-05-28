@@ -103,5 +103,8 @@
   <script type='text/javascript'>
     blist.namespace.fetch('blist.nominations');
     blist.nomination = new Nomination(<%= safe_json(@nom) %>);
+    <%- if current_user.present? -%>
+    blist.currentUserId = '<%= current_user.id %>';
+    <%- end -%>
   </script>
 <%- end -%>

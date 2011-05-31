@@ -162,9 +162,6 @@ protected
     configured_params = (catalog_config.default_params || {}).to_hash
     configured_params.deep_symbolize_keys!
 
-    # merge for our final params
-    browse_params = configured_params.merge(user_params)
-
     # next deal with options
     default_options = {
       limit: 10,
@@ -183,7 +180,8 @@ protected
     browse_options = default_options
                        .merge(configured_options) # whatever they configured is somewhat important
                        .merge(options)            # whatever the call configures is more important
-                       .merge(browse_params)      # anything from the queryparam is most important
+                       .merge(configured_params)  # gives the domain a chance to override the call
+                       .merge(user_params)        # anything from the queryparam is most important
 
     # munge params to types we expect
     @@numeric_options.each do |option|

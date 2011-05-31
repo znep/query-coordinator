@@ -75,7 +75,6 @@
                 var colCount = chartObj._yColumns.length;
 
                 // Set up y-axes
-                if (chartObj._reverseOrder) { chartObj._yColumns.reverse(); }
                 _.each(chartObj._yColumns, function(cs, colIndex)
                 {
                     var series = {name: $.htmlEscape(cs.data.name),
@@ -286,12 +285,6 @@
 
         var legendPos = chartObj.settings.view.displayFormat.legend;
 
-        // For some reason, bar charts are rendered with the data in the reverse
-        // order; while the legend is correct (perhaps due to the inverted axis?).
-        // By manually flipping the order of data, colors, and legend, we can
-        // make it look correct
-        chartObj._reverseOrder = chartObj._chartType == 'bar';
-
         // Make a copy of colors so we don't reverse the original
         var colors;
         if (!_.isUndefined(chartObj.settings.view.displayFormat.colors))
@@ -303,7 +296,6 @@
             colors = _.map(chartObj._valueColumns, function(vc)
             { return vc.color; });
         }
-        if (!$.isBlank(colors) && chartObj._reverseOrder) { colors.reverse(); }
 
         // Map recorded type to what Highcharts wants
         var seriesType = chartObj._chartType;
@@ -352,7 +344,6 @@
             legend: { enabled: legendPos != 'none',
                 layout: _.include(['left', 'right'], legendPos) ?
                     'vertical' : 'horizontal',
-                reversed: chartObj._reverseOrder,
                 backgroundColor: '#ffffff',
                 borderWidth: 1 },
             plotOptions: {},

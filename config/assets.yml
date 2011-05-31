@@ -177,7 +177,7 @@ javascripts:
     - public/javascripts/util/color.js
     - public/javascripts/util/events.js
     - public/javascripts/controls/grid-sidebar/base-sidebar.js
-    - public/javascripts/screens/homepage-show.js
+    - public/javascripts/controls/stories.js
     - public/javascripts/screens/admin-customizer.js
     - public/javascripts/screens/admin-stories-appearance.js
   admin-federation:

@@ -26,7 +26,9 @@ class CurrentDomainMiddleware
 
     if !host.blank?
       logger.debug "Current domain: #{host}"
-      env['socrata.current_domain'] = current_domain = CurrentDomain.set(host, env['rack.session'][:custom_site_config])
+      current_domain = CurrentDomain.set(host, env['rack.session'][:custom_site_config])
+      env['socrata.current_domain'] = current_domain
+      env['socrata.httpsEnforced'] = current_domain[:data].httpsEnforced
 
       # Check every n minutes if the current domain needs to be refreshed
       if !Rails.env.development? && CurrentDomain.needs_refresh_check?(host)

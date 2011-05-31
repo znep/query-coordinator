@@ -1,7 +1,20 @@
 class CustomContentController < ApplicationController
+  before_filter :check_lockdown, :only => [ :homepage ]
   around_filter :cache_wrapper, :except => [ :stylesheet ]
   skip_before_filter :require_user
   include BrowseActions
+
+  def homepage
+    Canvas::Environment.context = :homepage
+
+    @page_config = get_config('homepage', 'homepage')
+    @page_config = default_homepage if @page_config.nil? || @page_config.default_homepage
+
+    @page_title = @page_config.title
+    @stylesheet = 'homepage/homepage'
+
+    render :action => 'show'
+  end
 
   def show_page
     Canvas::Environment.context = :page
@@ -10,8 +23,8 @@ class CustomContentController < ApplicationController
     return render_404 unless @page_config
 
     @page_title = @page_config.title
-
     @stylesheet = "page/#{params[:page_name]}"
+
     render :action => 'show'
   end
 
@@ -22,8 +35,8 @@ class CustomContentController < ApplicationController
     return render_404 unless @page_config
 
     @page_title = @page_config.title
-
     @stylesheet = "facet_listing/#{params[:facet_name]}"
+
     render :action => 'show'
   end
 
@@ -33,27 +46,39 @@ class CustomContentController < ApplicationController
     @page_config = get_config('facet_page', params[:facet_name])
     return render_404 unless @page_config
 
-    @page_title = [params[:facet_value], @page_config.title].compact.join(' | ')
-
+    @page_title = [ params[:facet_value], @page_config.title ]
     @stylesheet = "facet_page/#{params[:facet_name]}"
+
     render :action => 'show'
   end
 
+  # warning! only one stylesheet is cached per *type* of canvas page!
+  # this is intentional to reduce dupes...
   def stylesheet
     headers['Content-Type'] = 'text/css'
 
-    @page_config = get_config(params[:page_type], params[:config_name], false)
-    return render_404 unless @page_config
+    cache_key = app_helper.cache_key("canvas-stylesheet-#{params[:page_type]}-#{params[:config_name]}",
+                                     { 'domain' => CurrentDomain.cname })
+    sheet = Rails.cache.read(cache_key)
 
-    render :text => build_stylesheet(@page_config.contents), :content_type => 'text/css'
+    if sheet.nil?
+      page_config = get_config(params[:page_type], params[:config_name], false)
+      return render_404 unless page_config
+
+      sheet = build_stylesheet(page_config.contents)
+      Rails.cache.write(cache_key, sheet)
+    end
+
+    render :text => sheet, :content_type => 'text/css'
   end
 
 private
 
   # around_filter for caching
   def cache_wrapper
-    @cache_key = app_helper.cache_key("canvas-#{params[:action]}",
-                                      params.merge({ 'domain' => CurrentDomain.cname }))
+    cache_params = params.reject{ |k| k == 'controller' || k == 'action' }
+                         .merge({ 'domain' => CurrentDomain.cname })
+    @cache_key = app_helper.cache_key("canvas-#{params[:action]}", cache_params)
     @cached_fragment = read_fragment(@cache_key)
 
     if @cached_fragment.nil?
@@ -63,6 +88,7 @@ private
     end
   end
 
+  # get a config from the configurations service and prepare the env for render
   def get_config(page_type, config_name, prepare = true)
     properties = CurrentDomain.property(page_type.pluralize, :custom_content)
     return nil unless properties
@@ -70,6 +96,34 @@ private
     page_config = properties[config_name]
     return nil unless page_config
 
+    return prepare_config page_config
+  end
+
+  # generate the default homepage configuration and use it to prepare for render
+  def default_homepage
+    page_config = Hashie::Mash.new({
+      title: '',
+      default_homepage: true,
+      contents: [{
+        type: 'stories',
+        properties: {
+          fromDomainConfig: true
+        }
+      }, {
+        type: 'featured_views',
+        properties: {
+          fromDomainConfig: true
+        }
+      }, {
+        type: 'catalog'
+      }]
+    })
+
+    return prepare_config page_config
+  end
+
+  # take a canvas configuration and prepare it for render
+  def prepare_config(page_config, prepare = true)
     # turn toplevel contents into objects; rest will transform as needed
     page_config.contents = Canvas::CanvasWidget.from_config(page_config.contents, 'Canvas')
 

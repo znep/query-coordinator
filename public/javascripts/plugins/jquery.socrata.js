@@ -53,7 +53,7 @@
     var attrSuffix = "</span>";
 
     var printObject = function(output, $target) {
-        if (output instanceof Document) {
+        if (output.documentElement && (output.nodeType == 9)) {
             printObject(output.documentElement, $target);
             return;
         }
@@ -77,7 +77,7 @@
 
                 case 'object':
                     var prefix2 = prefix + '    ';
-                    if (node instanceof Node) {
+                    if (typeof node.nodeType == 'number') {
                         switch (node.nodeType) {
                             case 1:
                                 pretty.push("&lt;", tagPrefix, node.tagName, tagSuffix);
@@ -93,7 +93,7 @@
                                 var hasChildElements;
                                 for (i = 0; i < node.childNodes.length; i++) {
                                     var child = node.childNodes[i];
-                                    if (child instanceof Element) {
+                                    if (child.nodeType === 1) {
                                         hasChildElements = true;
                                         break;
                                     }
@@ -161,7 +161,7 @@
     var editingCommand;
 
     var printError = function(error, $target) {
-        error = (error + "").trim();
+        error = (error + "").replace(/^\s+|\s+$/g, '');
         if (error == "")
             error = "Error (no details available)";
         if (typeof error == "string")
@@ -214,9 +214,11 @@
         needOutput = false;
 
         if (!url.match(/^(https?:|\/)/))
+        {
             url = '/' + url;
-        if (!url.match(/^\/api/))
-            url = defaultRoot + "/api" + url;
+            if (!url.match(/^\/api/))
+                url = defaultRoot + "/api" + url;
+        }
 
         if (params) {
             params = $.param(params);
@@ -228,7 +230,7 @@
             }
         }
 
-        if (options.body && (method.match(/post|put/i)))
+        if (options && options.body && (method.match(/post|put/i)))
         {
             options.data = options.body;
             options.contentType = 'application/json';

@@ -6,7 +6,7 @@ javascripts:
     - public/javascripts/plugins/jqModal.js
     - public/javascripts/plugins/jquery.bt.js
     - public/javascripts/plugins/jquery.cookies.2.1.0.min.js
-    - public/javascripts/plugins/jquery.example.min.js
+    - public/javascripts/plugins/jquery.example.js
     - public/javascripts/plugins/json2.js
     - public/javascripts/plugins/jquery.sizes.min.js
     - public/javascripts/plugins/jquery.tache.js
@@ -198,7 +198,23 @@ javascripts:
     - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/util/events.js
     - public/javascripts/util/humane-date.js
+    - public/javascripts/util/base-model.js
+    - public/javascripts/util/socrata-server.js
+    - public/javascripts/util/nomination.js
+    - public/javascripts/screens/nominations-shared.js
     - public/javascripts/screens/nominations.js
+  screen-nomination:
+    - public/javascripts/util/inline-login.js
+    - public/javascripts/util/events.js
+    - public/javascripts/util/humane-date.js
+    - public/javascripts/util/serialize.js
+    - public/javascripts/plugins/ajaxupload.js
+    - public/javascripts/util/base-model.js
+    - public/javascripts/util/socrata-server.js
+    - public/javascripts/util/nomination.js
+    - public/javascripts/controls/feed-list.js
+    - public/javascripts/screens/nominations-shared.js
+    - public/javascripts/screens/nomination.js
   screen-videos:
     - public/javascripts/plugins/jquery.quicksand.js
     - public/javascripts/screens/videos.js
@@ -345,7 +361,6 @@ javascripts:
     - public/javascripts/screens/reset-password-screen.js
   screen-profile:
     - public/javascripts/util/humane-date.js
-    - public/javascripts/controls/feed-list.js
     - public/javascripts/screens/profile-screen.js
   screen-profile-edit:
     - public/javascripts/plugins/ajaxupload.js
@@ -353,6 +368,10 @@ javascripts:
     - public/javascripts/screens/profile-screen-edit.js
   homepage-show:
     - public/javascripts/screens/homepage-show.js
+  stories:
+    - public/javascripts/controls/stories.js
+  featured_views:
+    - public/javascripts/controls/featured_views.js
   public-analytics:
     - public/javascripts/screens/sitewide-analytics-shared.js
     - public/javascripts/screens/public-analytics.js

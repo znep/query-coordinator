@@ -639,3 +639,31 @@ form.search
     .normalSave
       display: none
 
+//*** Inline login dialogs ***//
+#login
+  form
+    @include common-form(8em)
+
+  .accountMaint
+    bottom: 2.1em
+    left: 18em
+    position: absolute
+
+    li
+      padding-bottom: 0.3em
+
+      a
+        font-size: 1.2em
+
+#signup
+  form
+    @include common-form(9em, 14em)
+
+    span
+      font-size: 1.2em
+
+    div.required
+      margin-top: 1em
+
+    .signup_loadingIndicator
+      @include throbber-icon

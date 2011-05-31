@@ -2,33 +2,34 @@
 
 (function($)
 {
-    var user = new User({id: blist.profile.profileUserId}),
-        $feedContainer = $('.newsFeed .feed');
+    var user = new User({id: blist.profile.profileUserId});
 
-    var renderFeed = function(views)
-    {
-        $feedContainer.find('.loadingSpinner').remove();
-        $feedContainer.feedList({
-            allowComments: false,
-            pageSize: 5,
-            views: views
-        });
-    };
+    // var $feedContainer = $('.newsFeed .feed');
 
-    // Render the feed template
-    $feedContainer.append(
-        $.renderTemplate('feedList')
-            // No commenting from the profile page
-            .find('.feedNewCommentButton').remove()
-            .end());
+    // var renderFeed = function(views)
+    // {
+    //     $feedContainer.find('.loadingSpinner').remove();
+    //     $feedContainer.feedList({
+    //         allowComments: false,
+    //         pageSize: 5,
+    //         views: views
+    //     });
+    // };
 
-    $feedContainer.append('<div class="loadingSpinner"></div>');
+    // // Render the feed template
+    // $feedContainer.append(
+    //     $.renderTemplate('feedList')
+    //         // No commenting from the profile page
+    //         .find('.feedNewCommentButton').remove()
+    //         .end());
+
+    // $feedContainer.append('<div class="loadingSpinner"></div>');
 
     // Get the user's views for the news feed
     // TODO: Get activity on child views of their datasets?
-/*  TEMP: disable the feed until it's more interesting
-    user.getDatasets(function(views)
-    { renderFeed(views); }); */
+    // TEMP: disable the feed until it's more interesting
+    //   user.getDatasets(function(views)
+    //   { renderFeed(views); });
 
     // Follow/unfollow a user
     $('.followButton').click(function(event)

@@ -1,0 +1,135 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'screen-nominations' %>
+  <title>Dataset Suggestions | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<div class="nominationsContainer">
+  <div class="facets">
+    <span class="title">Filter by Status</span>
+    <%- statuses = [{:text => 'All', :value => nil},
+      {:text => 'Open', :value => 'pending'},
+      {:text => 'Approved', :value => 'approved'},
+      {:text => 'Rejected', :value => 'rejected'}] -%>
+    <%-
+    if !current_user.nil? && current_user.has_right?('moderate_comments')
+      statuses = statuses.insert(2,
+        {:text => 'Needs Moderation', :value => 'unmoderated'})
+    end
+    -%>
+    <ul>
+      <%- statuses.each do |s| -%>
+      <li>
+      <a href="<%= @base_url + (s[:value].nil? ? '' : '?status=' + s[:value]) %>"
+        class="<%= @status == s[:value] ? 'active' : '' %>"><%= s[:text] %></a>
+      </li>
+      <%- end -%>
+    </ul>
+  </div>
+
+  <div class="nominationsList">
+    <h2>Dataset Suggestions</h2>
+    <%- if !current_user.nil? -%>
+      <a href="#Submit dataset" class="button nominateLink hasUser">Suggest a Dataset</a>
+    <%- else -%>
+      <a href="/nominate/new" class="button nominateLink">Suggest a Dataset</a>
+    <%- end -%>
+    <div class="moderationNotice flash notice">
+      Your suggestion has been received and is in the moderation queue. It will appear on this page once an administrator approves it.
+    </div>
+
+    <div class="results">
+      <%- if @nominations_count == 0 -%>
+      <div class="noResults">No Results</div>
+
+      <%- else -%>
+      <table class="gridList">
+        <colgroup>
+          <col class="user" />
+          <col class="details" />
+          <col class="attachments" />
+          <col class="rating" />
+          <col class="status" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="user">Submitted by</th>
+            <th class="details">Details</th>
+            <th class="attachments">Files</th>
+            <th class="rating">Rating</th>
+            <th class="status">Status</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <%- end -%>
+    </div>
+
+    <%- if @nominations_count > 0 -%>
+    <%= create_pagination(@nominations_count, @page_size,
+      params[:page].to_i, @base_url + '?' + @params.to_param, 'button') %>
+    <%- end -%>
+  </div>
+</div>
+
+<%- content_for :modals do -%>
+  <%= render :partial => 'edit_modal' %>
+<%- end -%>
+
+<% content_for :templates do %>
+<table class="nominationItem">
+  <tbody>
+    <tr class="item">
+      <td class="user">
+        <%- if !current_user.nil? &&
+                current_user.has_right?('edit_nominations') -%>
+        <a href="#Remove" title="Delete this suggestion" class="delete"></a>
+        <%- end -%>
+        <a class="userLink"><img /><span class="userName"></span></a>
+      </td>
+      <td class="details">
+        <a href="#" class="titleLink"><span class="title"></span></a>
+        <%- if !current_user.nil? &&
+                current_user.has_right?('edit_nominations') -%>
+        <a href="#Edit" title="Edit this suggestion" class="edit">(Edit)</a>
+        <%- end -%>
+        <div class="submitTime">
+          <span class="fullTime"></span>
+          (<span class="relativeTime"></span>)
+        </div>
+        <div class="description"></div>
+      </td>
+      <td class="attachments">
+        <ul><li>
+          <%- if !current_user.nil? &&
+                  current_user.has_right?('edit_nominations') -%>
+          <a href="#Remove" title="Delete this attachment" class="delete"></a>
+          <%- end -%>
+          <a class="fileLink" rel="external"></a>
+        </li></ul>
+      </td>
+      <td class="rating nomRating">
+        <span class="value"></span>
+        <%- if !current_user.nil? -%>
+        <a class="rateLink rateDown" title="I don't like it" href="#Rate down">
+          <span class="icon"></span>
+        </a>
+        <a class="rateLink rateUp" title="I like it" href="#Rate up">
+          <span class="icon"></span>
+        </a>
+        <%- end -%>
+      </td>
+      <td class="status">
+        <%= render :partial => 'nom_status' %>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<% end %>
+
+<% content_for :js_footer do %>
+  <script type='text/javascript'>
+    blist.namespace.fetch('blist.nominations');
+    blist.nominations.items = <%= safe_json(@nominations); %>;
+  </script>
+  <%= include_javascripts 'screen-nominations' %>
+<% end %>

@@ -321,8 +321,19 @@
 
         var clipFormatter = function()
         {
+            var abbreviateNumbers = function(num)
+            {
+                // Are you really a number?
+                // yColumn numbers will always come back as numbers.
+                // xColumn numbers will come back as strings, but may be intended as strings.
+                if (!_.isNumber(num) && !(num.match && num.match(/^[-+]?[0-9,]*\.?[0-9]+$/)))
+                { return num; }
+
+                if (num.match && num.match(/,/)) { num = num.replace(/[^0-9\.]/g, ''); }
+                return blistUtilNS.toHumaneNumber(num, 2);
+            };
             var maxLen = 20;
-            var v = this.value;
+            var v = abbreviateNumbers(this.value);
             if (v.length > maxLen)
             { return v.slice(0, maxLen) + '...'; }
             return v;
@@ -458,9 +469,7 @@
         // Create the chart
         chartObj.startLoading();
 
-        // IE7 seems to have some problem creating the chart right away;
-        // add a delay and it seems to work.  Do I know why (for either part)? No
-        _.defer(function() {
+        var loadChart = function() {
             chartObj.chart = new Highcharts.Chart(chartConfig);
 
             if (!chartObj._categoriesLoaded)
@@ -485,6 +494,17 @@
                 prepareToSnapshot(chartObj);
             }
 
+        };
+        // IE7 seems to have some problem creating the chart right away;
+        // add a delay and it seems to work.  Do I know why (for either part)? No
+        _.defer(function()
+        {
+            // We need the default pane to load before attempting to load the chart.
+            // Otherwise a race condition sort of explodes messily.
+            if ($.subKeyDefined(blist.datasetPage, 'sidebar._defaultPane'))
+            { setTimeout(loadChart, 1000); }
+            else
+            { loadChart(); }
         });
     };
 

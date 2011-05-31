@@ -1,0 +1,31 @@
+<ul class="featuredViews clearfix">
+  <%- widget.featured_views.each do |featured_view| -%>
+    <li class="featuredViewContainer<%= ' last' if featured_view == widget.featured_views.last %>"
+      <%= raw "style=\"width:#{100.0 / widget.featured_views.size}%\"" unless featured_view == widget.featured_views.last %>>
+      <div class="featuredView">
+        <%- if featured_view[:display] == 'thumbnail' || featured_view[:display] == 'custom' -%>
+          <a href="<%= featured_view.href %>">
+            <img src="<%= View.featured_image(featured_view)%>" alt="<%= featured_view.title %>" />
+          </a>
+        <%- elsif featured_view[:display].present? -%>
+          <div class="statContainer">
+            <a href="<%= featured_view.href %>">
+              <p class="statTitle"><%= featured_view[:display].title %></p>
+              <p class="statDescription"><%= featured_view[:display].description %></p>
+            </a>
+          </div>
+        <%- end -%>
+
+        <a href="<%= featured_view.href %>"
+          class="viewTitle"><%= featured_view.title.gsub("\u00a0", ' ') %></a>
+        <p class="viewDescription"><%= featured_view.description %></p>
+      </div>
+    </li>
+  <%- end -%>
+</ul>
+
+<%- content_for :js_footer do -%>
+  <%- allow_once do -%>
+    <%= include_javascripts 'featured_views' %>
+  <%- end -%>
+<%- end -%>

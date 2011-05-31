@@ -150,16 +150,5 @@
         // show first story
         $storyTexts.filter(':first-child').fadeIn();
         $storyImages.filter(':first-child').fadeIn(homepageNS.autoadvanceInit);
-
-    // featured views
-        var resizeFeaturedViews = function()
-        {
-            var $boxes = $('.featuredViews .featuredView');
-            $boxes
-                .css('height', 'auto')
-                .height(_.max($boxes.map(function() { return $(this).height(); })));
-        };
-        resizeFeaturedViews();
-        $(window).resize(resizeFeaturedViews);
     });
 })(jQuery);

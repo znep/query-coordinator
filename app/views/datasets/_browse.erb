@@ -32,7 +32,8 @@
           <%- if facet[:custom_content].nil? -%>
             <ul>
               <%- if opts[facet[:param]].present? -%>
-                <%- cp = opts[:user_params].reject{ |k| k == facet[:param] } -%>
+                <%- cp = opts[:user_params].dup -%>
+                <%- cp.delete(facet[:param]) -%>
                 <li><a href="<%= opts[:base_url] + '?' + cp.to_param %>" class="clearValues">
                   <%- if facet[:use_icon] -%>
                     <span class="icon"></span>
@@ -61,18 +62,18 @@
             <a class="moreLink" href="#More <%= facet[:title] %>">View all</a>
             <div class="moreOptions hide">
               <%- facet[:extra_options].each do |facet_option| -%>
-              <%- cp = opts[:user_params].dup -%>
-              <%- cp[facet[:param]] = facet_option[:value] -%>
-              <a href="<%= opts[:base_url] + '?' + cp.to_param %>"
-                <%= "class=#{facet[:extra_options_class]}" if facet[:extra_options_class] %>
-                rel="<%= facet_option[:count] %>">
-                <%- if facet_option[:icon] -%>
-                <img class="customIcon" src="<%= theme_image_url(facet_option[:icon]) %>" alt="icon" />
-                <%- end -%>
-                <%# We need a space inside the a, or else when we stick them in
-                the dialog, tags without any space will not wrap at all %>
-                <%= facet_option[:text] %>
-              </a>
+                <%- cp = opts[:user_params].dup -%>
+                <%- cp[facet[:param]] = facet_option[:value] -%>
+                <a href="<%= opts[:base_url] + '?' + cp.to_param %>"
+                  <%= "class=#{facet[:extra_options_class]}" if facet[:extra_options_class] %>
+                  rel="<%= facet_option[:count] %>">
+                  <%- if facet_option[:icon] -%>
+                    <img class="customIcon" src="<%= theme_image_url(facet_option[:icon]) %>" alt="icon" />
+                  <%- end -%>
+                  <%# We need a space inside the a, or else when we stick them in
+                  the dialog, tags without any space will not wrap at all %>
+                  <%= facet_option[:text] %>
+                </a>
               <%- end -%>
             </div>
             <%- end -%>
@@ -123,18 +124,20 @@
       <div class="topControls">
         <%- if !opts[:hide_view_types] -%>
           <ul class="viewTypeOptions pillButtons">
-            <li><a href="<%= opts[:base_url] + '?' + opts[:user_params].merge({:viewType => 'table'}).to_param %>"
-              class="list <%= opts[:view_type] != 'rich' ? 'active' : '' %>" title="View as a compact list">
+            <li><a href="<%= opts[:base_url] + '?' + opts[:user_params].merge(
+                            {:view_type => 'table', :page => opts[:page]}).to_param %>"
+              class="list<%= ' active' if opts[:view_type] != 'rich' %>" title="View as a compact list">
               <span class="icon"></span>
             </a></li>
-            <li><a href="<%= opts[:base_url] + '?' + opts[:user_params].merge({:viewType => 'rich'}).to_param %>"
-              class="fatrow <%= opts[:view_type] == 'rich' ? 'active' : '' %>" title="View as a rich list">
+            <li><a href="<%= opts[:base_url] + '?' + opts[:user_params].merge(
+                            {:view_type => 'rich', :page => opts[:page]}).to_param %>"
+              class="fatrow<%= ' active' if opts[:view_type] == 'rich' %>" title="View as a rich list">
               <span class="icon"></span>
             </a></li>
           </ul>
         <%- end -%>
 
-        <%- if opts[:view_count] == 0 && !opts[:sort_opts].empty? && !opts[:disable][:sort] -%>
+        <%- if opts[:view_count] > 0 && !opts[:sort_opts].empty? && !opts[:disable][:sort] -%>
           <div class="sortOptions">
             <select class="sortType" name="sortType">
               <%- opts[:sort_opts].each do |so| -%>
@@ -148,8 +151,7 @@
               { :value => 'month', :name => 'This month' },
               { :value => 'year', :name => 'This year' }
             ] -%>
-            <select class="sortPeriod<%= ' hide' unless show_time_period %>"
-              name="sortPeriod">
+            <select class="sortPeriod<%= ' hide' unless show_time_period %>" name="sortPeriod">
               <%- time_opts.each do |to| -%>
                 <option value="<%= to[:value] %>"<%= " selected='selected'" if to[:value] == opts[:sortPeriod] %>>
                   <%= to[:name] %>
@@ -322,7 +324,12 @@
                           Provided by <a href="http://<%= v.domainCName %>"><%= v.domainCName %></a>
                         </div>
                       <% end %>
-                      <div class="description"><%= v.description %></div>
+                      <div class="expandBlock">
+                        <div class="description collapsed"><%= v.description %></div>
+                        <a class="expander" title="Click to expand" href="#Expand">
+                          <span class="icon"></span>
+                        </a>
+                      </div>
                     </td>
                   <%- end -%>
 

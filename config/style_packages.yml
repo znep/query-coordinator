@@ -109,7 +109,12 @@ profile-edit:
 - screen-profile-edit
 - screen-profile-shared
 screen-nominations:
+- screen-nominations-shared
 - screen-nominations
+screen-nomination:
+- screen-nominations-shared
+- screen-nomination
+- control-feed
 screen-videos:
 - screen-videos
 screen-videos-popup:

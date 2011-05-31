@@ -477,6 +477,7 @@ $.loadLibraries = function(scriptQueue, callback)
 
     var lastItem = null;
     var found = false; // found keeps track of whether we have pending jobs
+    var loadingItems = [];
     _.each(queue, function(item)
     {
         if (blist.util.lazyLoadingAssets[item] ||
@@ -493,8 +494,6 @@ $.loadLibraries = function(scriptQueue, callback)
         // either it's already loaded (clear to proceed), or we don't have a dependency.
         var $targetL = blist.util.lazyLoadingAssets[lastItem] || $LAB;
 
-        var checkCallback = function() { $._checkLoadedLibraries(item); };
-
         if (blist.configuration.development)
         {
             // Microsoft seems to hate adding ?_=123 to veapicore.js,
@@ -507,17 +506,23 @@ $.loadLibraries = function(scriptQueue, callback)
                 url += (item.indexOf('?') >= 0 ? '&' : '?') +
                     $.param({'_': (new Date()).valueOf()});
             }
-            $targetL = $targetL.script(url).wait(checkCallback);
+            $targetL = $targetL.script(url).wait(function() { $._checkLoadedLibraries(item); });
         }
         else
         {
             $targetL = $targetL.script(item);
-            $targetL.wait(checkCallback);
+            loadingItems.push(item);
         }
         blist.util.lazyLoadingAssets[item] = $targetL;
         lastItem = item;
         found = true;
     });
+
+    if (loadingItems.length > 0)
+    {
+        (blist.util.lazyLoadingAssets[lastItem] || $LAB).wait(function()
+            { _.each(loadingItems, function(item) { $._checkLoadedLibraries(item); }); });
+    }
 
     if (!found)
     {

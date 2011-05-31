@@ -1,0 +1,101 @@
+;blist.namespace.fetch('blist.nominations');
+
+$(function()
+{
+    var nom = blist.nomination;
+    blist.nominations.map = {};
+    blist.nominations.map[nom.id] = nom;
+
+    blist.nominations.updateNomination = function()
+    {
+        blist.util.railsFlash('Your suggestion has been updated');
+        window.location.reload();
+    };
+
+    var $actions = $('.nomActions');
+    var ratedNom;
+    $actions.find('.rateLink').click(function(event)
+    {
+        event.preventDefault();
+        var $t = $(this);
+        if ($t.hasClass('rateUp') == ratedNom) { return; }
+
+        blist.nominations.rate(nom.id, $t,
+            $actions, function (isUp) {
+                ratedNom = isUp;
+            });
+    });
+
+    $moderation = $actions.find('.nomModerationContainer');
+    var nomStatus = blist.nominations.friendlyStatus(nom);
+    $moderation.find('.currentStatus').text(nomStatus.capitalize());
+    $('.nomModerationContainer').addClass(nomStatus);
+
+    $('.editNomButton').click(function(event)
+    {
+        event.preventDefault();
+        blist.nominations.showNomDialog(nom.id, nom.title, nom.description);
+    });
+
+    $('.nominateDialog').attr('data-editId', nom.id);
+
+    $('.nomComments').append($.renderTemplate('feedList'));
+
+    nom.getComments(function callback(comments)
+    {
+        $('.nomComments .feed').feedList({
+            actionDelegate: function() { return nom; },
+            comments: comments,
+            filterCategories: null,
+            mainView: nom
+        });
+    });
+
+    var $contactDialog = $('.contactNominatorDialog');
+    $('.notifyNominatorButton').click(function(event)
+    {
+        event.preventDefault();
+        $contactDialog.jqmShow();
+    });
+
+    $contactDialog.find('.submitAction').click(function(event)
+    {
+        event.preventDefault();
+        $contactDialog.find('.prompt').val('');
+        $contactDialog.find('.mainError').text('');
+        if (!$contactDialog.find('form').valid())
+        {
+            $contactDialog.find('.mainError').text('Please correct the errors above');
+            return;
+        }
+        nom.contactOwner($contactDialog.find('form').serializeObject(),
+            function greaterSuccess() {
+                $contactDialog.jqmHide();
+                flash('Your message has been sent to the suggestion author.');
+            },
+            function greatSadness() {
+                $contactDialog.jqmHide();
+                flash('Error contacting the suggestion author. Please try again later.', 'error');
+            });
+    });
+
+    $contactDialog.find('form').validate({errorElement: 'span'});
+
+    $('.nomModerationContainer .moderateLink').click(function(e)
+    {
+        e.preventDefault();
+        var $t = $(this);
+        var status = $t.attr('data-status');
+
+        blist.nominations.moderate(nom.id, status, $('.nomModerationContainer'));
+    });
+
+    var flash = function(message, level)
+    {
+        level || (level = 'notice');
+        $('.nomFlash .flash').removeClass('notice error')
+            .addClass(level)
+            .text(message)
+            .fadeIn();
+    }
+});

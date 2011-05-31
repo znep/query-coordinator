@@ -11,6 +11,7 @@ RAILS_GEM_VERSION = '2.3.11' unless defined? RAILS_GEM_VERSION
 require File.join(File.dirname(__FILE__), 'boot')
 
 Rails::Initializer.run do |config|
+  config.middleware.use "CoreServerConnectionMiddleware"
   config.middleware.use "CurrentDomainMiddleware"
   config.middleware.use "HealthCheckMiddleware"
   config.middleware.use "LogRefererMiddleware"

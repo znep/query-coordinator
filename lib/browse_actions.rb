@@ -27,12 +27,18 @@ protected
   end
 
   def categories_facet
+    params = params || request_params || {}
+
     cats = View.categories.keys.reject {|c| c.blank?}
-    return nil if cats.length < 1
+    return nil if cats.empty?
+
     cats = cats.sort.map{ |c| {:text => c, :value => c} }
-    if cats.length > 5
-      cats, hidden_cats = cats[0..4], cats
+    cats, hidden_cats = cats[0..4], cats if cats.length > 5
+
+    if params[:category].present? && !cats.any?{ |cat| cat[:text] == params[:category] }
+      cats.push({ :text => params[:category], :value => params[:category] })
     end
+
     return { :title => 'Categories',
       :singular_description => 'category',
       :param => :category,
@@ -42,11 +48,11 @@ protected
   end
 
   def topics_facet
-    params = params || request_params
+    params = params || request_params || {}
 
     all_tags = Tag.find({:method => "viewsTags"})
     top_tags = all_tags.slice(0, 5).map {|t| t.name}
-    if !params[:tags].nil? && !top_tags.include?(params[:tags])
+    if params[:tags].present? && !top_tags.include?(params[:tags])
       top_tags.push(params[:tags])
     end
     top_tags = top_tags.sort.map {|t| {:text => t, :value => t}}
@@ -102,7 +108,7 @@ protected
   end
 
   def extents_facet
-    params = params || request_params
+    params = params || request_params || {}
 
     return nil unless CurrentDomain.module_enabled?(:esri_integration)
     { :title => 'Within Geographical Area',
@@ -136,7 +142,7 @@ protected
     end
   end
 
-  def process_browse(request, options = {}, view_results = nil)
+  def process_browse(request, options = {})
     # some of the other methods need this
     @request_params = request.params
 
@@ -144,19 +150,20 @@ protected
     catalog_config = CurrentDomain.configuration('catalog')
     catalog_config = catalog_config ? catalog_config.properties : Hashie::Mash.new
 
-    # grab the user's params
-    user_params = request.params.dup.to_hash
-    user_params.deep_symbolize_keys!
+    # grab the user's params unless we're forcing default
+    if options[:force_default]
+      user_params = {}
+    else
+      user_params = request.params.dup.to_hash
+      user_params.deep_symbolize_keys!
+    end
 
-    # deal with params
-    browse_params =
-      if options[:force_default]
-        user_params
-      else
-        configured_params = (catalog_config.default_params || {}).to_hash
-        configured_params.deep_symbolize_keys!
-        configured_params.merge(user_params)
-      end
+    # grab configured params
+    configured_params = (catalog_config.default_params || {}).to_hash
+    configured_params.deep_symbolize_keys!
+
+    # merge for our final params
+    browse_params = configured_params.merge(user_params)
 
     # next deal with options
     default_options = {
@@ -166,16 +173,17 @@ protected
       disable: {},
       no_results_text: 'No Results',
       base_url: request.path,
-      nofederate: true,
-      view_type: 'table',
-      dataset_actions: false
+      view_type: 'table'
     }
-    configured_options = (catalog_config.default_options || {}).to_hash
+
+    configured_options = catalog_config.to_hash
     configured_options.deep_symbolize_keys!
-    browse_options = configured_options
-                       .merge(default_options) # whatever they configured is somewhat important
-                       .merge(options)         # whatever the call configures is more important
-                       .merge(browse_params)   # anything from the queryparam is most important
+    configured_options.delete(:default_params)
+
+    browse_options = default_options
+                       .merge(configured_options) # whatever they configured is somewhat important
+                       .merge(options)            # whatever the call configures is more important
+                       .merge(browse_params)      # anything from the queryparam is most important
 
     # munge params to types we expect
     @@numeric_options.each do |option|
@@ -185,7 +193,8 @@ protected
     @@boolean_options.each do |option|
       browse_options[option] = (browse_options[option] == 'true') ||
                                (browse_options[option] == true) if browse_options[option].present?
-      user_params[option] = user_params[option].to_i if user_params[option].present?
+      user_params[option] = (user_params[option] == 'true') ||
+                            (user_params[option] == true) if user_params[option].present?
     end
 
     # for core server quirks
@@ -196,11 +205,11 @@ protected
     # check whether or not we need to display icons for other domains
     browse_options[:use_federations] = browse_options[:nofederate] ? false :
       Federation.find.any?{ |f| f.acceptedUserId.present? &&
-        f.sourceDomainCName != CurrentDomain.cname }
+        f.sourceDomainCName != CurrentDomain.cname } if browse_options[:use_federations].nil?
 
     # set up which grid columns to display if we don't have one already
     browse_options[:grid_items] ||=
-      case browse_options[:viewType]
+      case browse_options[:view_type]
       when 'rich'
         { largeImage: true, richSection: true, popularity: true, type: true, rss: true }
       else
@@ -336,8 +345,7 @@ private
       end
     end
 
-    t.blank? ? (CurrentDomain.property(:default_title, :catalog) ||
-                 'Search & Browse Datasets and Views') : 'Results ' + t
+    t.blank? ? 'Search & Browse Datasets and Views' : 'Results ' + t
   end
 
   @@default_browse_sort_opts = [

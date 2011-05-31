@@ -20,7 +20,12 @@ $(function()
                               {method: 'rows-loaded-widget',  label: 'SDP'}]}
                 ]
             }
-        ]
+        ],
+        topListSections: blist.metrics.sitewideShared.topListSections.concat({
+            id: 'topApps', displayName: 'Top Applications',
+            heading: 'Requests', renderTo: 'leftColumn',
+            callback: blist.metrics.topAppTokensCallback, top: 'APPLICATIONS'
+        })
     }));
 
      $('#analyticsTimeControl').metricsTimeControl({

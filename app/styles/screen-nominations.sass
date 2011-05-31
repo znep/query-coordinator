@@ -3,10 +3,10 @@
 
   .facets
     background-color: #ffffff
-    border: 1px solid #e9e9e9
+    border: 1px solid $color_chrome_box_border
     float: left
     padding: 1.5em
-    width: 18em
+    width: 11em
 
     .title
       font-size: 1.3em
@@ -25,9 +25,14 @@
 
   .nominationsList
     background-color: #ffffff
-    border: 1px solid #e9e9e9
-    margin-left: 23em
+    border: 1px solid $color_chrome_box_border
+    margin-left: 16em
     padding: 1.5em
+
+    .moderationNotice
+      clear: right
+      display: none
+      margin-top: 5em
 
     h2
       float: left
@@ -104,42 +109,9 @@
 
         td.rating
           font-size: 1.1667em
-          font-weight: bold
-          &.positive
-            color: #33aa33
-          &.negative
-            color: #aa3333
-          .value
-            margin-right: 0.5em
           .rateLink
-            @include sprite-menu-icons
             float: right
             margin-left: 0.2em
-
-        td.status
-          a
-            font-size: 0.9167em
-          &.new
-            .currentStatus
-              color: #0073e6
-              font-weight: bold
-          &.approved
-            .currentStatus
-              color: #33aa33
-            a.approve
-              display: none
-          &.rejected
-            .currentStatus
-              color: #aa3333
-            a.reject
-              display: none
-          .unmoderatedLink
-            display: none
-          &.unmoderated
-            .unmoderatedLink
-              display: inline
-            .moderatedLink
-              display: none
 
     .pagination
       font-size: 1.2em
@@ -159,33 +131,3 @@
         margin-right: 1em
       .nextLink
         margin-left: 1em
-
-.nominateDialog
-  @include common-form(5em, 20em)
-  label
-    line-height: 1.7em
-    vertical-align: top
-  input[type='text'], textarea
-    &.fileReadout
-      width: 14em
-  .fileBrowseButton
-    margin: 0
-    padding:
-      bottom: 0.2em
-      top: 0.2em
-  span.error
-    color: #ff0000
-  span.required
-    bottom: 3em
-    left: 2em
-    position: absolute
-  .mainError
-    margin-top: 0.5em
-  .edit
-    display: none
-
-  &.isEdit
-    .create
-      display: none
-    .edit
-      display: block

@@ -47,13 +47,6 @@ $(function()
                 id: 'topApps', displayName: 'Top Applications',
                 heading: 'Requests', renderTo: 'leftColumn',
                 callback: blist.metrics.topAppTokensCallback,  top: 'APPLICATIONS'
-            },
-            {
-                id: 'topSocrataTokenIps', displayName: 'Top Token Usage',
-                heading: 'Requests', renderTo: 'rightColumn',
-                callback: function($context) {
-                    metricsNS.updateTopListWrapper($context, $context.data(metricsNS.DATA_KEY));
-                }, top: 'CLIENTS'
             }
         ]
     });

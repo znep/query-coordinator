@@ -29,6 +29,7 @@ class UserSessionsController < ApplicationController
       respond_to do |format|
         format.html { redirect_back_or_default(profile_index_path) }
         format.data { render :json => {:user_id => current_user.id}, :callback => params[:callback] }
+        format.json { render :json => {:user_id => current_user.id}, :callback => params[:callback] }
       end
     else
       notice = "Unable to login with that email and password;" +
@@ -39,6 +40,7 @@ class UserSessionsController < ApplicationController
           redirect_to login_url
         end
         format.data { render :json => {:error => notice}, :callback => params[:callback] }
+        format.json { render :json => {:error => notice}, :callback => params[:callback] }
       end
     end
   end

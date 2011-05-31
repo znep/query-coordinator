@@ -31,7 +31,7 @@ module Canvas
       @data = data
       @elem_id = "#{id_prefix}_#{self.class.name.split(/::/).last}"
 
-      load_properties(@data)
+      load_properties(@data.properties)
     end
 
     def stylesheet
@@ -125,7 +125,7 @@ module Canvas
 
   private
     def load_properties(data)
-      local_properties = data.properties.to_hash rescue {}
+      local_properties = data.to_hash rescue {}
       local_properties.deep_symbolize_keys!
       @properties = Hashie::Mash.new self.default_properties.deep_merge(local_properties)
     end
@@ -273,6 +273,7 @@ module Canvas
 
     def prepare!
       load_properties(CurrentDomain.theme.stories) if self.properties.fromDomainConfig
+
       @stories = Story.find.sort
     end
   protected

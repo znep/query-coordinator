@@ -289,8 +289,14 @@ protected
     browse_options[:facets] = browse_options[:facets].compact.flatten.reject{ |f| f[:hidden] }
 
     if browse_options[:suppressed_facets].is_a? Array
+      browse_options[:facets].reject! do |facet|
+        browse_options[:suppressed_facets].include? facet[:singular_description]
+      end
+    end
+
+    if browse_options[:included_facets].is_a? Array
       browse_options[:facets].select! do |facet|
-        !(browse_options[:suppressed_facets].include? facet[:singular_description])
+        browse_options[:included_facets].include? facet[:singular_description]
       end
     end
 

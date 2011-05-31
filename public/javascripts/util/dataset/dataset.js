@@ -2085,6 +2085,25 @@ this.Dataset = ServerModel.extend({
             ds._pendingRowDeletes[newKey] = ds._pendingRowDeletes[oldKey];
             delete ds._pendingRowDeletes[oldKey];
 
+            // We can have old IDs embedded in child row keys; so messy cleanup...
+            if ($.isBlank(req.parentRow))
+            {
+                var updateKeys = function(pendingItems)
+                {
+                    _.each(_.keys(pendingItems), function(k)
+                    {
+                        var nk = k.replace(':' + oldKey + ':', ':' + newKey + ':');
+                        if (nk != k)
+                        {
+                            pendingItems[nk] = pendingItems[k];
+                            delete pendingItems[k];
+                        }
+                    });
+                };
+                updateKeys(ds._pendingRowEdits);
+                updateKeys(ds._pendingRowDeletes);
+            }
+
             _.each(!$.isBlank(req.parentColumn) ?
                 req.parentColumn.realChildColumns : ds.realColumns, function(c)
             { delete req.row.changed[c.lookup]; });

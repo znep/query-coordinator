@@ -322,7 +322,7 @@
                 { return num; }
 
                 if (num.match && num.match(/,/)) { num = num.replace(/[^0-9\.]/g, ''); }
-                return blistUtilNS.toHumaneNumber(num, 2);
+                return blist.util.toHumaneNumber(num, 2);
             };
             var maxLen = 20;
             var v = abbreviateNumbers(this.value);

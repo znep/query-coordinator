@@ -93,6 +93,7 @@ javascripts:
     - public/javascripts/controls/maps/heatmap-map.js
   shared-chart:
     - public/javascripts/util/color.js
+    - public/javascripts/util/humane-number.js
     - public/javascripts/controls/base-visualization.js
     - public/javascripts/controls/rich-render-library.js
     - public/javascripts/controls/charts/base-chart.js

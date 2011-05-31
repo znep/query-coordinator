@@ -238,12 +238,12 @@ module Canvas
 
     def prepare!
       if self.properties.fromDomainConfig
-        @featured_views = CurrentDomain.featured_views || []
+        @featured_views = CurrentDomain.featured_views if CurrentDomain.featured_views.present?
       else
         @featured_views = self.properties.featured_views
       end
 
-      return if @featured_views.empty?
+      return if @featured_views.blank?
 
       # get the freshest versions of the canonical view urls
       View.find_multiple(@featured_views.map{ |fv| fv.viewId }).each do |view|

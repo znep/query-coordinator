@@ -1055,10 +1055,10 @@ private
   end
 
   @@default_embed_options = {
-    :facets => {
-      :type => true,
-      :category => true,
-      :topic => true
+    :suppressed_facets => {
+      :type => false,
+      :category => false,
+      :topic => false
     },
     :disable => { },
     :defaults => { },

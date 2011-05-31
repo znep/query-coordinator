@@ -294,17 +294,12 @@ protected
       end
     end
 
-    if browse_options[:included_facets].is_a? Array
-      browse_options[:facets].select! do |facet|
-        browse_options[:included_facets].include? facet[:singular_description]
-      end
-    end
-
     browse_options[:sidebar_config] = catalog_config.sidebar
     browse_options[:header_config]  = catalog_config.header
     browse_options[:footer_config]  = catalog_config.footer
 
     browse_options[:sort_opts] ||= @@default_browse_sort_opts
+    browse_options[:disable] = {} unless browse_options[:disable].present?
 
     # get the subset relevant to various things
     browse_options[:search_options] = browse_options.select{ |k| @@search_options.include? k }

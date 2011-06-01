@@ -1,7 +1,8 @@
 .fatRowRenderType .columnHeaders
   .column
     @include datatype-icons('.dataTypeIcon')
-    @include sprite-menu-icons
+    &.hasColumnMenu
+      @include sprite-menu-icons
     .sort
       @include grid-header-icons
     .clearSort

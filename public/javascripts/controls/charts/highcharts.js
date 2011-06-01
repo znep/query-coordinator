@@ -193,6 +193,16 @@
                     (Dataset.chart.types[chartObj._chartType].renderOther ||
                     chartObj.settings.view.displayFormat.renderOther))
                 {
+                    if (chartObj._otherIndex)
+                    {
+                        chartObj._xCategories.remove(chartObj._otherIndex);
+                        for (var i = 0; i < chartObj._seriesRemainders.length; i++)
+                        {
+                            chartObj.chart.series[i].data.remove(chartObj._otherIndex);
+                            chartObj._seriesCache[i].data.remove(chartObj._otherIndex);
+                        }
+                    }
+
                     var otherPt = xPoint(chartObj, null, 'Other');
                     if (!_.isUndefined(chartObj._xCategories))
                     { chartObj._xCategories.push('Other'); }
@@ -207,6 +217,7 @@
                             if (!_.isUndefined(chartObj.secondChart))
                             { chartObj.secondChart.series[i].addPoint(
                                 point, false); }
+                            chartObj._otherIndex = chartObj._seriesCache[i].data.length;
                             chartObj._seriesCache[i].data.push(point);
                         }
                     });

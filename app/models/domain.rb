@@ -1,12 +1,23 @@
 class Domain < Model
 
-  def self.find(cname)
+  @@domains = Hash.new
+
+  # CurrentDomain.load_all does not work.  Do our own caching here
+  def self.find(cname, cached = false)
     # We don't know our cname yet, so we need to pass it in to connection.rb
     # manually
     if cname.is_a? String
+      if (cached && !@@domains[cname].nil?)
+        return @@domains[cname]
+      end
       headers = { "X-Socrata-Host" => cname }
     end
-    super(cname, headers || {})
+
+    domain = super(cname, headers || {})
+    if cached && cname.is_a?(String)
+      @@domains[cname] = domain
+    end
+    domain
   end
 
   def self.findById(id)

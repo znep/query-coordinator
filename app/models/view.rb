@@ -368,24 +368,45 @@ class View < Model
     !domainCName.blank?
   end
 
+  def federated_protocol(domainCName)
+    domain = Domain.find(domainCName, true)
+    if domain.httpsEnforced
+      'https'
+    else
+       'http'
+    end
+  end
+
+  def federated_port(domainCName)
+    domain = Domain.find(domainCName, true)
+    port = 80
+    if domain.httpsEnforced
+      if Rails.env.development?
+        port = APP_CONFIG['ssl_port']
+      else
+        port = 443
+      end
+    else
+      if Rails.env.development?
+        port = APP_CONFIG['http_port']
+      end
+    end
+
+    if (port == 80 || port == 443)
+      url_port = ""
+    else
+      url_port = ":#{port}"
+    end
+    url_port
+  end
+
+  # argument port is deprecated
   def href(port = 80)
     path = "/#{(self.category || 'dataset').convert_to_url}/#{name.convert_to_url}/#{id}"
 
     if federated?
-      if Rails.env.development?
-        protocol = 'http' if port == 9292
-        protocol = 'https' if port == 9443
-      else
-        protocol = 'http' if port == 80
-        protocol = 'https' if port == 443
-      end
-
-      if (port == 80 || port == 443)
-        url_port = ""
-      else
-        url_port = ":#{port}"
-      end
-
+      protocol = federated_protocol(domainCName)
+      url_port = federated_port(domainCName)
       "#{protocol}://#{domainCName}#{url_port}#{path}"
     else
       path
@@ -404,10 +425,17 @@ class View < Model
     self.href + "/about"
   end
 
+  # argument port is deprecated
   def rss(port = 80)
-    url_port = (port == 80) ? '' : ':' + port.to_s
-    protocol = federated? ? "http://#{domainCName}#{url_port}" : ''
-    "#{protocol}/api/views/#{id}/rows.rss"
+    path = "/api/views/#{id}/rows.rss"
+
+    if federated?
+      protocol = federated_protocol(domainCName)
+      url_port = federated_port(domainCName)
+      "#{protocol}://#{domainCName}#{url_port}#{path}"
+    else
+      path
+    end
   end
 
   def tweet

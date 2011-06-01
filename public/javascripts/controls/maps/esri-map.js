@@ -35,11 +35,11 @@
                     if (!$.isBlank(mapObj.settings.view.displayFormat.zoom))
                     { options.zoom = mapObj.settings.view.displayFormat.zoom; }
 
-                    mapObj._extentSet =
-                        !$.isBlank(mapObj.settings.view.displayFormat.extent);
-                    if (mapObj._extentSet)
-                    { options.extent = new esri.geometry
-                        .Extent(mapObj.settings.view.displayFormat.extent); }
+                    if (mapObj.settings.view.displayFormat.viewport)
+                    {
+                        var viewport = mapObj.settings.view.displayFormat.viewport;
+                        options.extent = mapObj.viewportToExtent(viewport);
+                    }
                     mapObj.map = new esri.Map(mapObj.$dom().attr('id'), options);
 
                     dojo.connect(mapObj.map, 'onLoad', function()
@@ -261,7 +261,7 @@
 
                 mapObj._graphicsLayer.add(g);
 
-                if (!mapObj._extentSet && geoType == 'point')
+                if (geoType == 'point')
                 { mapObj._multipoint.addPoint(g.geometry); }
 
                 if (geoType != 'point')
@@ -361,7 +361,6 @@
             adjustBounds: function()
             {
                 var mapObj = this;
-                if (mapObj._extentSet) { return; }
                 if (!mapObj._bounds && mapObj._multipoint.points.length == 0
                     && !mapObj.settings.view.displayFormat.viewport)
                 { return; }
@@ -453,15 +452,21 @@
             setViewport: function(viewport)
             {
                 var mapObj = this;
+                mapObj.map.setExtent(mapObj.viewportToExtent(viewport));
+            },
+
+            viewportToExtent: function(viewport)
+            {
+                var mapObj = this;
                 viewport = viewport instanceof esri.geometry.Extent
                     ? viewport
                     : new esri.geometry.Extent(
                         viewport.xmin, viewport.ymin, viewport.xmax, viewport.ymax,
                         new esri.SpatialReference({ wkid: viewport.sr }));
                 if (viewport.spatialReference.wkid == 4326
-                  && isWebMercatorSpatialReference(mapObj.map))
+                  && (!mapObj.map || isWebMercatorSpatialReference(mapObj.map)))
                 { viewport = esri.geometry.geographicToWebMercator(viewport); }
-                mapObj.map.setExtent(viewport);
+                return viewport;
             },
 
             resizeHandle: function(event)
@@ -502,6 +507,8 @@
             if (!_.isUndefined(point.icon))
             {
                 customization.icon = point.icon;
+                customization.width = point.width;
+                customization.height = point.height;
                 customization.key = point.icon;
                 if (customization.width || customization.height)
                 { customization.key += customization.width+'x'+customization.height; }

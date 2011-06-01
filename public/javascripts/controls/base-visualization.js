@@ -523,6 +523,11 @@
                 var clusterFunction = function()
                     {
                         vizObj._byView[view.id]._clustering = true;
+                        if (vizObj.updateRowsByViewport
+                            && vizObj.settings.view.displayFormat.viewport)
+                        { vizObj.updateRowsByViewport(
+                            vizObj.settings.view.displayFormat.viewport,
+                            vizObj.settings.view.displayFormat.type != 'esri'); }
                         view.getClusters(function(data)
                         {
                             _.defer(function()

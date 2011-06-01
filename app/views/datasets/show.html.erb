@@ -502,7 +502,7 @@
 
     <%# More views %>
     blist.sidebarHidden.moreViews = blist.sidebarHidden.moreViews || {};
-    blist.sidebarHidden.moreViews.views = <%= @view.is_unpublished? || !@view.is_tabular? %>;
+    blist.sidebarHidden.moreViews.views = <%= !@view.is_published? || !@view.is_tabular? %>;
     blist.sidebarHidden.moreViews.snapshots = <%= @view.is_unpublished? || !@view.flag?('default') %>;
 
     <%# Edit pane %>

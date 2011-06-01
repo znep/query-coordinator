@@ -209,7 +209,7 @@ $(function()
     });
 
     datasetPageNS.$moreViewsTab = $('#sidebarOptions a.moreViews');
-    if (datasetPageNS.$moreViewsTab.is(':visible'))
+    if (datasetPageNS.sidebar.hasPane('moreViews.viewList'))
     {
         // Wait until other requests have been fired first
         _.defer(function ()

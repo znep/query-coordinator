@@ -198,7 +198,12 @@
                         chartObj._xCategories.remove(chartObj._otherIndex);
                         for (var i = 0; i < chartObj._seriesRemainders.length; i++)
                         {
-                            chartObj.chart.series[i].data.remove(chartObj._otherIndex);
+                            if (!_.isUndefined(chartObj.chart))
+                            { chartObj.chart.series[i].data.remove(
+                                chartObj._otherIndex); }
+                            if (!_.isUndefined(chartObj.secondChart))
+                            { chartObj.secondChart.series[i].data.remove(
+                                chartObj._otherIndex); }
                             chartObj._seriesCache[i].data.remove(chartObj._otherIndex);
                         }
                     }

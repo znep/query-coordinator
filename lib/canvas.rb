@@ -254,9 +254,6 @@ module Canvas
     self.default_properties = {
       featured_views: []
     }
-    self.style_definition = [
-      { data: 'featured_views', toProportion: true, selector: '.featuredViewContainer', css: 'width' }
-    ]
   end
 
   class Html < CanvasWidget

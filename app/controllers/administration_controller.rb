@@ -986,8 +986,8 @@ private
 
   def clear_homepage_cache
     # clear the homepage cache since assumedly something about them updated
-    stories_cache_key = app_helper.cache_key('canvas-homepage', { 'domain' => CurrentDomain.cname })
-    clear_success = expire_fragment(stories_cache_key)
+    cache_key = app_helper.cache_key('canvas-homepage', { 'domain' => CurrentDomain.cname })
+    clear_success = expire_fragment(cache_key)
   end
 
   def fetch_layer_info(layer_url)

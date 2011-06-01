@@ -191,7 +191,7 @@
     </div>
 
     <%- if @view.is_tabular? && !@view.is_form? -%>
-    <div id="fatRowRenderType"
+    <div id="fatRowRenderType" data-renderType="fatrow"
       class="fatRowRenderType navRenderType renderTypeNode fullHeight hide">
       <div class="columnHeaders"></div>
       <div class="rowList"></div>
@@ -221,11 +221,8 @@
       </div>
     </div>
 
-    <div id="pageRenderType" class="pageRenderType navRenderType renderTypeNode
-      fullHeight hide">
-      <a href="#ShowFullView" class="fullView button leftArrow hide">
-        <span class="icon"></span>Back to all the data
-      </a>
+    <div id="pageRenderType" data-renderType="page"
+      class="pageRenderType navRenderType renderTypeNode fullHeight hide">
       <div class="content">
         <%- if !@row.nil? -%>
         <div class="pageColumn">
@@ -535,11 +532,11 @@
     blist.sidebarHidden.exportSection = blist.sidebarHidden.exportSection || {};
     blist.sidebarHidden.exportSection.signedDataset = <%=
       !@view.owned_by?(current_user) || !module_available?(:digital_signatures) ||
-      !@view.is_tabular? %>;
+      !@view.is_tabular? || @view.is_form? %>;
     blist.sidebarHidden.exportSection.print = <%= !@view.can_print? %>;
-    blist.sidebarHidden.exportSection.download = <%= !@view.is_tabular? %>;
+    blist.sidebarHidden.exportSection.download = <%= !@view.is_tabular? || @view.is_form? %>;
     blist.sidebarHidden.exportSection.api = <%= !@view.is_tabular? %>;
-    blist.sidebarHidden.exportSection.subscribe = <%= !@view.is_tabular? %>;
+    blist.sidebarHidden.exportSection.subscribe = <%= !@view.is_tabular? || @view.is_form? %>;
 
     <%# Sharing pane %>
     blist.sidebarHidden.sharing = <%= !@view.has_rights?('grant') %>;

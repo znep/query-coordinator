@@ -555,17 +555,17 @@ $(function()
     });
     var $dataGrid = blist.$container.renderTypeManager().$domForType('table');
 
-    // Page render type
-    var prevType = 'table';
-    $('#pageRenderType > .fullView').click(function(e)
+    blist.$container.bind('render_type_hidden', function(e, oldType)
     {
-        e.preventDefault();
-        blist.$container.renderTypeManager().show(prevType);
+        if (_.isEmpty(blist.$container.renderTypeManager().visibleTypes))
+        {
+            _.each(blist.dataset.metadata.renderTypeConfig.visible, function(v, t)
+                { if (v) { blist.$container.renderTypeManager().show(t); } });
+        }
     });
 
     $(document).bind(blist.events.DISPLAY_ROW, function(e, rowId)
     {
-        prevType = blist.$container.renderTypeManager().currentType;
         blist.$container.renderTypeManager().show('page', {defaultRowId: rowId});
     });
 

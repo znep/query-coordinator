@@ -75,8 +75,19 @@
                         .each(function()
                         {
                             var $f = $(this);
-                            $f.height($t.innerHeight() - siblingsHeight($f))
-                                .resize();
+                            // If we have multiple fullHeight siblings, give the first one
+                            // a bit more than an even share; then fit the rest in evenly
+                            var $fh = $f.siblings(fsObj.settings.fullHeightSelector)
+                                .filter(':visible').add($f);
+                            var multiplier = 1;
+                            if ($fh.length > 1)
+                            {
+                                var adjFactor = 1.3333;
+                                multiplier = $fh.index($f) == 0 ? adjFactor :
+                                    ($fh.length - adjFactor) / ($fh.length - 1);
+                            }
+                            $f.height(Math.floor(($f.parent().innerHeight() - siblingsHeight($f)) *
+                                multiplier / $fh.length)).resize();
                         });
                     $t.resize();
                 });
@@ -90,6 +101,7 @@
         $item.siblings(':visible').each(function()
         {
             var $t = $(this);
+            if ($t.hasClass('fullHeight')) { return; }
             if ($t.css('position') != 'fixed' &&
                 $t.css('position') != 'absolute')
             { h += $t.outerHeight(true); }

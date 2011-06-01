@@ -182,14 +182,6 @@ $.live = function(selector, type, fn)
     return $obj;
 };
 
-$.compact = function(a)
-{
-    for (var i = a.length - 1; i >= 0; i--)
-    {
-        if (a[i] === undefined || a[i] === null) { a.splice(i, 1); }
-    }
-};
-
 /* Do a deep compact on any object.  For any array, run a normal compact on
  * the array; then deep compact all sub-values.  For an object, leave out blank
  * values; and deep compact all the non-blank ones */
@@ -471,11 +463,17 @@ $.loadLibraries = function(scriptQueue, callback)
         return;
     }
 
+    // We need a single LAB engine instance to work with for this session,
+    // so get an initial one if we don't have it already. Trying to keep it around
+    // permanently fails in IE after loading the initial package(s).  The previous method
+    // of keeping instances in a hash and using the last one fails in FF when loading
+    // multiple packages at once.
+    blist.util.$lazyLoadLab = $LAB;
+
     // add on the job even though we might remove it later, since order isn't guaranteed
     var job = { queue: queue, callback: callback };
     blist.util.lazyLoadingJobs.push(job);
 
-    var lastItem = null;
     var found = false; // found keeps track of whether we have pending jobs
     var loadingItems = [];
     _.each(queue, function(item)
@@ -486,13 +484,8 @@ $.loadLibraries = function(scriptQueue, callback)
             if (blist.util.lazyLoadingAssets[item])
                 found = true;
 
-            lastItem = item;
             return;
         }
-
-        // grab the LAB that represents our dependency. if it's not in lazyLoadingAssets, then
-        // either it's already loaded (clear to proceed), or we don't have a dependency.
-        var $targetL = blist.util.lazyLoadingAssets[lastItem] || $LAB;
 
         if (blist.configuration.development)
         {
@@ -506,21 +499,21 @@ $.loadLibraries = function(scriptQueue, callback)
                 url += (item.indexOf('?') >= 0 ? '&' : '?') +
                     $.param({'_': (new Date()).valueOf()});
             }
-            $targetL = $targetL.script(url).wait(function() { $._checkLoadedLibraries(item); });
+            blist.util.$lazyLoadLab = blist.util.$lazyLoadLab.script(url)
+                .wait(function() { $._checkLoadedLibraries(item); });
         }
         else
         {
-            $targetL = $targetL.script(item);
+            blist.util.$lazyLoadLab = blist.util.$lazyLoadLab.script(item);
             loadingItems.push(item);
         }
-        blist.util.lazyLoadingAssets[item] = $targetL;
-        lastItem = item;
+        blist.util.lazyLoadingAssets[item] = true;
         found = true;
     });
 
     if (loadingItems.length > 0)
     {
-        (blist.util.lazyLoadingAssets[lastItem] || $LAB).wait(function()
+        blist.util.$lazyLoadLab = blist.util.$lazyLoadLab.wait(function()
             { _.each(loadingItems, function(item) { $._checkLoadedLibraries(item); }); });
     }
 

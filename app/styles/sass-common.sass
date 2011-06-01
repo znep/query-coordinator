@@ -83,7 +83,9 @@ $light_bg_color: #fafafa
     -moz-transition-property: $p
     -webkit-transition-property: $p
 
-@mixin vertical-gradient($s, $e)
+@mixin vertical-gradient($s, $e: false)
+  @if $e == false
+    $e: adjust-color($s, $lightness: -10%)
   background-color: $s
   background: -moz-linear-gradient(0 0 270deg, $s, $e)
   background: -webkit-gradient(linear, left top, left bottom, from($s), to($e))

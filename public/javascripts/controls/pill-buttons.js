@@ -18,8 +18,13 @@
             {
                 event.preventDefault();
 
-                $container.find('li a.' + opts.activeClass).removeClass('active');
-                $(this).addClass('active');
+                if (!opts.multiState)
+                {
+                    $container.find('li a.' + opts.activeClass).removeClass('active');
+                    $(this).addClass('active');
+                }
+                else
+                { $(this).toggleClass('active'); }
             });
             $container.find(opts.defaultSelector).addClass(opts.activeClass);
         });
@@ -27,6 +32,7 @@
 
     $.fn.pillButtons.defaults = {
         activeClass: 'active',
-        defaultSelector: 'li:first-child a'
+        defaultSelector: 'li:first-child a',
+        multiState: false
     }
 })(jQuery);

@@ -140,7 +140,7 @@ this.Dataset = ServerModel.extend({
 
     isGrid: function()
     {
-        return _.include(['blist', 'filter', 'grouped'], this.type);
+        return this.metadata.renderTypeConfig.visible.table;
     },
 
     isAltView: function()
@@ -262,6 +262,32 @@ this.Dataset = ServerModel.extend({
                 ds._invalidateRows();
                 if (_.isFunction(successCallback)) { successCallback(); }
             }, true, true);
+    },
+
+    showRenderType: function(rt)
+    {
+        var ds = this;
+        if (ds.metadata.renderTypeConfig.visible[rt]) { return; }
+        var md = $.extend(true, {}, ds.metadata);
+        md.renderTypeConfig.visible[rt] = true;
+        ds.update({metadata: md}, false, true);
+    },
+
+    hideRenderType: function(rt)
+    {
+        var ds = this;
+        if (!ds.metadata.renderTypeConfig.visible[rt]) { return; }
+        var md = $.extend(true, {}, ds.metadata);
+        delete md.renderTypeConfig.visible[rt];
+        ds.update({metadata: md}, false, true);
+    },
+
+    toggleRenderType: function(rt)
+    {
+        if (this.metadata.renderTypeConfig.visible[rt])
+        { this.hideRenderType(rt); }
+        else
+        { this.showRenderType(rt); }
     },
 
     userGrants: function()
@@ -1059,11 +1085,11 @@ this.Dataset = ServerModel.extend({
 
         if ($.isBlank(ds._cachedLinkedColumnOptions[viewUid]))
         {
-            ds.makeRequest({url: '/api/views/{0}.json'.format(viewUid),
+            ds.makeRequest({url: '/api/views/' + viewUid + '.json',
                 pageCache: true, type: 'GET',
                 error: function(req)
                 {
-                    alert('Fail to get columns from dataset {0}.'.format(viewUid));
+                    alert('Fail to get columns from dataset ' + viewUid);
                 },
                 success: function(linkedDataset)
                 {
@@ -1085,8 +1111,7 @@ this.Dataset = ServerModel.extend({
                     });
                     if (ds._cachedLinkedColumnOptions[viewUid].length <= 0)
                     {
-                        alert('Dataset {0} does not have any column.'
-                            .format(viewUid));
+                        alert('Dataset ' + viewUid + ' does not have any columns.');
                     }
                     else
                     {
@@ -1212,6 +1237,8 @@ this.Dataset = ServerModel.extend({
             _.each(ds.query.namedFilters, function(nf)
             {
                 if (excludeTemporary && nf.temporary) { return; }
+                // Named filter keys off of main type; so just check displayType and
+                // not renderTypeConfig.visible
                 if (!$.isBlank(nf.displayTypes) &&
                     !_.include(nf.displayTypes, ds.displayType)) { return; }
                 nf = $.extend(true, {}, nf);
@@ -1347,6 +1374,11 @@ this.Dataset = ServerModel.extend({
             }
             ds.metadata.availableDisplayTypes = adt;
         }
+        if (!$.subKeyDefined(ds, 'metadata.renderTypeConfig.visible'))
+        {
+            ds.metadata = $.extend(true, {renderTypeConfig: {visible: {}}}, ds.metadata);
+            ds.metadata.renderTypeConfig.visible[ds.displayType] = true;
+        }
 
         ds.url = ds._generateUrl();
         ds.fullUrl = ds._generateUrl(true);
@@ -1386,6 +1418,7 @@ this.Dataset = ServerModel.extend({
         var oldSearch = ds.searchString;
         var oldDispFmt = ds.displayFormat;
         var oldDispType = ds.displayType;
+        var oldRTConfig = ds.metadata.renderTypeConfig;
         var oldCondFmt = ds.metadata.conditionalFormatting;
 
         if (forceFull)
@@ -1422,10 +1455,41 @@ this.Dataset = ServerModel.extend({
         _.each(['namedFilters', 'filterCondition', 'sortBys', 'groupBys'],
             function(k) { if (_.isEmpty(ds.query[k])) { delete ds.query[k]; } });
 
-        var needQueryChange = oldDispType != ds.displayType &&
+        if (!_.isEqual(oldRTConfig.visible, ds.metadata.renderTypeConfig.visible))
+        {
+            // If we have a visible type that's not available, add it
+            _.each(ds.metadata.renderTypeConfig.visible, function(v, type)
+            {
+                if (v && !_.include(ds.metadata.availableDisplayTypes, type))
+                { ds.metadata.availableDisplayTypes.unshift(type); }
+            });
+            // Can't hide everything
+            if (_.isEmpty(ds.metadata.renderTypeConfig.visible))
+            { ds.metadata.renderTypeConfig.visible[ds.displayType] = true; }
+            // displayType should always be the most important visible availableDisplayType
+            ds.displayType = _.detect(ds.metadata.availableDisplayTypes,
+                function(adt) { return ds.metadata.renderTypeConfig.visible[adt]; });
+            ds.trigger('displaytype_change');
+        }
+        else if (oldDispType != ds.displayType)
+        {
+            // displayType changed without rtConfig.visible being updated
+            // If we're given a displayType not in our list, then add it
+            if (!$.isBlank(ds.displayType) &&
+                !_.include(ds.metadata.availableDisplayTypes, ds.displayType))
+            { ds.metadata.availableDisplayTypes.unshift(ds.displayType); }
+            // Make only this type visible
+            ds.metadata.renderTypeConfig.visible = {};
+            ds.metadata.renderTypeConfig.visible[ds.displayType] = true;
+            ds.trigger('displaytype_change');
+        }
+
+        var needQueryChange = !_.isEqual(oldRTConfig.visible,
+                    ds.metadata.renderTypeConfig.visible) &&
                 _.any(ds.query.namedFilters || [], function(nf)
                     { return _.any(nf.displayTypes || [], function(nd)
-                        { return nd == oldDispType || nd == ds.displayType; }); });
+                        { return oldRTConfig.visible[nd] ||
+                            ds.metadata.renderTypeConfig.visible[nd]; }); });
 
         if (needQueryChange || (oldSearch !== ds.searchString) ||
                 !_.isEqual(oldQuery, ds.query))
@@ -1446,15 +1510,6 @@ this.Dataset = ServerModel.extend({
             // changed, then redo all the colors and re-render
             _.each(ds._rows, function(r) { ds._setRowFormatting(r); });
             ds.trigger('row_change', [_.values(ds._rows)]);
-        }
-
-        if (oldDispType != ds.displayType)
-        {
-            // If we're given a displayType not in our list, then add it
-            if (!$.isBlank(ds.displayType) &&
-                !_.include(ds.metadata.availableDisplayTypes, ds.displayType))
-            { ds.metadata.availableDisplayTypes.unshift(ds.displayType); }
-            ds.trigger('displaytype_change');
         }
 
         if (!_.isEqual(oldDispFmt, ds.displayFormat))
@@ -2440,10 +2495,10 @@ Dataset.getLinkedDatasetOptions = function(linkedDatasetUid, col, $field, curVal
 
     if (cachedLinkedDatasetOptions[viewUid] == null)
     {
-        $.Tache.Get({url: '/api/views/{0}.json'.format(viewUid),
+        $.Tache.Get({url: '/api/views/' + viewUid + '.json',
             error: function(req)
             {
-                alert('Fail to get columns from dataset {0}.'.format(viewUid));
+                alert('Fail to get columns from dataset ' + viewUid);
            },
             success: function(linkedDataset)
             {
@@ -2471,7 +2526,7 @@ Dataset.getLinkedDatasetOptions = function(linkedDatasetUid, col, $field, curVal
 
                 if (cachedLinkedDatasetOptions[viewUid].length <= 0)
                 {
-                    alert('Dataset {0} does not have any column.'.format(viewUid));
+                    alert('Dataset ' + viewUid + ' does not have any columns.');
                 }
                 else
                 {

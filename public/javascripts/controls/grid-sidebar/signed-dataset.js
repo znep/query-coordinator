@@ -10,7 +10,7 @@
         title: 'Digital Signing',
         subtitle: 'Export a version of this data whose integrity may later be verified.',
         onlyIf: function()
-        { return blist.dataset.isGrid() && blist.dataset.valid; },
+        { return blist.dataset.valid; },
         disabledSubtitle: function()
         {
             return !blist.dataset.valid ? 'This view must be valid' :

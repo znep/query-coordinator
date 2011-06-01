@@ -155,7 +155,7 @@
     {
         defaults:
         {
-            defaultType: null,
+            defaultTypes: null,
             view: null
         },
 
@@ -171,23 +171,51 @@
 
                 rtmObj.typeInfos = {};
 
+                rtmObj.visibleTypes = {};
+
                 rtmObj._loadedAssets = {};
                 rtmObj.settings.view.bind('valid', function()
                 {
-                    if (!$.isBlank(rtmObj.currentType))
-                    { rtmObj.show(rtmObj.currentType); }
+                    if (!_.isEmpty(rtmObj.visibleTypes))
+                    {
+                        _.each(rtmObj.visibleTypes, function(t)
+                        { rtmObj.show(t); });
+                    }
                 })
                 .bind('displaytype_change', function()
                 {
-                    rtmObj.show(rtmObj.settings.view.displayType);
+                    var toShow = $.extend({}, rtmObj.settings.view.metadata.renderTypeConfig.visible);
+
+                    _.each(_.keys(rtmObj.visibleTypes), function(vt)
+                    {
+                        if (!toShow[vt]) { rtmObj.hide(vt); }
+                        else { delete toShow[vt]; }
+                    });
+
+                    _.each(toShow, function(v, t)
+                    {
+                        if (v) { rtmObj.show(t); }
+                    });
+                });
+
+                $domObj.delegate('.renderTypeNode > .divider .close', 'click', function(e)
+                {
+                    e.preventDefault();
+                    rtmObj.hide($(this).closest('.renderTypeNode').data('rendertype'));
                 });
 
                 rtmObj._loadedTypes = {};
 
-                var defType = rtmObj.settings.defaultType ||
-                    rtmObj.settings.view.displayType;
+                var defTypes = rtmObj.settings.defaultTypes ||
+                    rtmObj.settings.view.metadata.renderTypeConfig.visible;
+                if (_.isString(defTypes))
+                {
+                    var dt = {};
+                    dt[defTypes] = true;
+                    defTypes = dt;
+                }
 
-                rtmObj.show(defType);
+                _.each(defTypes, function(v, t) { if (v) { rtmObj.show(t); } });
             },
 
             $dom: function()
@@ -209,25 +237,53 @@
                 var rtmObj = this;
                 var typeInfo = getConfig(rtmObj, type);
 
-                rtmObj.currentType = type;
+                rtmObj.visibleTypes[type] = true;
                 if (!rtmObj.settings.view.valid) { return; }
 
                 initType(rtmObj, type, defArgs);
 
                 if (typeInfo.$dom.is(':visible')) { return; }
 
-                rtmObj.$dom().children('.renderTypeNode:visible').addClass('hide')
-                    .trigger('hide');
-                typeInfo.$dom.removeClass('hide').trigger('show');
-                rtmObj.$dom().trigger('render_type_changed', [type]);
+                typeInfo.$dom.removeClass('hide').children('.renderContent').trigger('show');
+
+                rtmObj.$dom().toggleClass('multipleRenderers',
+                    rtmObj.$dom().children(':visible').length > 1);
+                rtmObj.$dom().trigger('render_type_shown', [type]);
                 $(window).resize();
+            },
+
+            hide: function(type)
+            {
+                var rtmObj = this;
+
+                var typeInfo = getConfig(rtmObj, type);
+
+                delete rtmObj.visibleTypes[type];
+
+                if (!typeInfo.$dom.is(':visible')) { return; }
+
+                typeInfo.$dom.addClass('hide').children('.renderContent').trigger('hide');
+
+                rtmObj.$dom().toggleClass('multipleRenderers',
+                    rtmObj.$dom().children(':visible').length > 1);
+                rtmObj.$dom().trigger('render_type_hidden', [type]);
+                $(window).resize();
+            },
+
+            toggle: function(type)
+            {
+                var rtmObj = this;
+                if (rtmObj.visibleTypes[type])
+                { rtmObj.hide(type); }
+                else
+                { rtmObj.show(type); }
             },
 
             $domForType: function(type)
             {
                 var rtmObj = this;
                 initDom(rtmObj, type);
-                return getConfig(rtmObj, type).$dom;
+                return getConfig(rtmObj, type).$dom.children('.renderContent');
             }
         }
     });
@@ -254,10 +310,45 @@
             $dom = rtmObj.$dom().find('#' + typeInfo.domId);
             if ($dom.length < 1)
             {
-                rtmObj.$dom().append($.tag({tagName: 'div', id: typeInfo.domId,
-                    'class': ['fullHeight', 'renderTypeNode', 'hide']}));
+                // We want to create the DOM nodes in the order they appear in
+                // availableDisplayTypes. So find the the next existing node after
+                // this type. If this type isn't in ADT, stick it at the front
+                var adt = rtmObj.settings.view.metadata.availableDisplayTypes;
+                var $beforeItem;
+                var curIndex = _.indexOf(adt, type);
+                var $renderNodes = rtmObj.$dom().children('.renderTypeNode');
+
+                if (curIndex < 0) { $beforeItem = $renderNodes.eq(0); }
+                for (var i = curIndex + 1; i < adt.length && $.isBlank($beforeItem); i++)
+                {
+                    var $r = $renderNodes.filter('[data-renderType=' + adt[i] + ']');
+                    if ($r.length > 0) { $beforeItem = $r; }
+                }
+
+                var $newNode = $.tag({tagName: 'div', id: typeInfo.domId,
+                    'class': ['fullHeight', 'renderTypeNode', 'hide'], 'data-renderType': type});
+                if ($.isBlank($beforeItem))
+                { rtmObj.$dom().append($newNode); }
+                else
+                { $beforeItem.before($newNode); }
+
                 $dom = rtmObj.$dom().find('#' + typeInfo.domId);
             }
+
+            if ($dom.children('.renderContent').length < 1)
+            {
+                var $content = $.tag({tagName: 'div', 'class': ['renderContent', 'fullHeight']});
+                $content.append($dom.children());
+                $dom.append($content);
+            }
+
+            if ($dom.children('.divider').length < 1)
+            {
+                $dom.prepend($.tag({tagName: 'div', 'class': 'divider', contents:
+                    {tagName: 'a', href: '#Hide', 'class': 'close', title: 'Hide section',
+                        contents: {tagName: 'span', 'class': 'icon'}}}));
+            }
+
             typeInfo.$dom = $dom;
         }
     };
@@ -268,6 +359,7 @@
         if (typeInfo._initialized) { return; }
         initDom(rtmObj, type);
         var $dom = typeInfo.$dom;
+        var $content = $dom.find('.renderContent');
 
         var finishCallback = function()
         {
@@ -276,23 +368,23 @@
 
             if (_.isFunction($.fn[typeInfo.initFunction]))
             {
-                $dom[typeInfo.initFunction]($.extend({view: rtmObj.settings.view},
+                $content[typeInfo.initFunction]($.extend({view: rtmObj.settings.view},
                     rtmObj.settings.common, rtmObj.settings[typeInfo.name],
                     defArgs));
             }
             else if (_.isFunction(typeInfo.initFunction))
             {
-                typeInfo.initFunction($dom, rtmObj.settings);
+                typeInfo.initFunction($content, rtmObj.settings);
             }
             // Else: no init function specified!
 
-            $dom.trigger('show');
+            $content.trigger('show');
         };
 
         if (!typeInfo.scrollsInline)
-        { $dom.removeClass('scrollContent'); }
+        { $content.removeClass('scrollContent'); }
         else
-        { $dom.addClass('scrollContent'); }
+        { $content.addClass('scrollContent'); }
 
         if (!rtmObj._loadedAssets[typeInfo.name])
         {

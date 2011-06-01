@@ -84,10 +84,11 @@
                 if (!this._$dom)
                 {
                     var $d = $(this.currentDom);
-                    this._$dom = $d.find('.fullHeight');
+                    this._$dom = $d.find('.visualizationArea');
                     if (this._$dom.length == 0)
-                    { this._$dom = $.tag({tagName: 'div', 'class': 'fullHeight',
-                                        id: $d.attr('id') + '_visualizationArea'}); }
+                    { this._$dom = $.tag({tagName: 'div', style: {height: '100%'},
+                        'class': 'visualizationArea',
+                        id: $d.closest('[id]').attr('id') + '_visualizationArea'}); }
                     $d.append(this._$dom);
                 }
                 return this._$dom;
@@ -97,11 +98,16 @@
             {
                 if (!this._$flyoutTemplate)
                 {
-                    this.$dom().after($.tag({tagName: 'div',
-                        'class': ['template', 'row',
-                            'richRendererContainer', 'flyoutRenderer']}));
                     this._$flyoutTemplate = this.$dom()
                         .siblings('.flyoutRenderer.template');
+                    if (this._$flyoutTemplate.length < 1)
+                    {
+                        this.$dom().after($.tag({tagName: 'div',
+                            'class': ['template', 'row',
+                                'richRendererContainer', 'flyoutRenderer']}));
+                        this._$flyoutTemplate = this.$dom()
+                            .siblings('.flyoutRenderer.template');
+                    }
                     this.richRenderer = this._$flyoutTemplate.richRenderer({
                         columnCount: 1, view: this.settings.view});
                 }
@@ -573,7 +579,7 @@
                         });
                     };
 
-                if (vizObj.settings.view.displayType == 'map'
+                if (vizObj.settings.view.metadata.renderTypeConfig.visible.map
                     && vizObj.settings.view.displayFormat.plotStyle == 'point'
                     && view.totalRows > vizObj._maxRows)
                 { views[index] = clusterFunction; }

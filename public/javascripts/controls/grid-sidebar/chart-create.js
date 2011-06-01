@@ -432,8 +432,8 @@
     {
         if (!sidebarObj.baseFormHandler($pane, value)) { return; }
 
-        var view = $.extend({displayType: 'chart'},
-            sidebarObj.getFormValues($pane));
+        var view = $.extend(true, {metadata: {renderTypeConfig: {visible: {chart: true}}}},
+            sidebarObj.getFormValues($pane), {metadata: blist.dataset.metadata});
 
         var addColumn = function(tcid)
         {

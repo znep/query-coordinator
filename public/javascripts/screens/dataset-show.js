@@ -64,37 +64,29 @@ $(function()
     if ($('#renderTypeOptions').length > 0)
     {
         // Render types
-        $('#renderTypeOptions').pillButtons();
+        $('#renderTypeOptions').pillButtons({multiState: true});
         $.live('#renderTypeOptions a', 'click', function(e)
         {
             e.preventDefault();
-            var rt = $.urlParam($(this).attr('href'), 'defaultRender') ||
-                blist.dataset.displayType || 'table';
+            var rt = $.urlParam($(this).attr('href'), 'defaultRender');
             if (rt == 'richList') { rt = 'fatrow'; }
             // Would call show on renderTypeManager; but updating the
             // dataset fires an event that RTM listens to. Except that if
             // we have a dt/rt mismatch, then just run a show
-            if (rt == blist.dataset.displayType &&
-                rt != datasetPageNS.rtManager.currentType)
-            { datasetPageNS.rtManager.show(rt); }
+            if (blist.dataset.metadata.renderTypeConfig.visible[rt] !=
+                datasetPageNS.rtManager.visibleTypes[rt])
+            { datasetPageNS.rtManager.toggle(rt); }
             else
-            { blist.dataset.update({displayType: rt}, false, true); }
+            { blist.dataset.toggleRenderType(rt); }
         });
     }
 
-    var prevType;
     if ($('#renderTypeOptions').length > 0)
     {
-        blist.$container.bind('render_type_changed', function(e, newType)
+        blist.$container.bind('render_type_shown', function(e, newType)
         {
-            // Special case for hiding button in page RT
-            if (prevType == 'page') { $fullViewButton.addClass('hide'); }
+            $('body').addClass(newType + '-renderType');
 
-            $('body').removeClass(prevType + '-renderType')
-                .addClass(newType + '-renderType');
-            prevType = newType;
-
-            $('#renderTypeOptions li a').removeClass('active');
             var $pb = $('#renderTypeOptions li .' + newType);
             if ($pb.length < 1)
             {
@@ -106,6 +98,21 @@ $(function()
                 $('#renderTypeOptions').prepend($li);
             }
             $pb.addClass('active').removeClass('hide');
+
+            if (!blist.dataset.metadata.renderTypeConfig.visible[newType])
+            { blist.dataset.showRenderType(newType); }
+        });
+
+        blist.$container.bind('render_type_hidden', function(e, oldType)
+        {
+            $('body').removeClass(oldType + '-renderType');
+
+            var $pb = $('#renderTypeOptions li .' + oldType);
+            if ($pb.length > 0)
+            { $pb.removeClass('active'); }
+
+            if (blist.dataset.metadata.renderTypeConfig.visible[oldType])
+            { blist.dataset.hideRenderType(oldType); }
         });
     }
 
@@ -116,7 +123,7 @@ $(function()
 
     datasetPageNS.rtManager = blist.$container.renderTypeManager({
         view: blist.dataset,
-        defaultType: defRen,
+        defaultTypes: defRen,
         editEnabled: true,
         common: {
             editColumnCallback: function(col)
@@ -143,20 +150,13 @@ $(function()
     var $dataGrid = datasetPageNS.rtManager.$domForType('table');
 
 
-    // Page render type
-    var pagePriorType = 'table';
-    var $fullViewButton = $('#pageRenderType > .fullView').click(function(e)
-    {
-        e.preventDefault();
-        blist.dataset.update({displayType: pagePriorType}, false, true);
-    });
-
     $(document).bind(blist.events.DISPLAY_ROW, function(e, rowId)
     {
-        pagePriorType = datasetPageNS.rtManager.currentType;
-        $fullViewButton.removeClass('hide');
-        datasetPageNS.rtManager.setTypeConfig('page', {defaultRowId: rowId});
-        blist.dataset.update({displayType: 'page'}, false, true);
+        if (!blist.dataset.metadata.renderTypeConfig.visible.page)
+        {
+            datasetPageNS.rtManager.setTypeConfig('page', {defaultRowId: rowId});
+            blist.dataset.showRenderType('page');
+        }
     });
 
     // sidebar and sidebar tabs

@@ -89,8 +89,8 @@
     {
         if (!sidebarObj.baseFormHandler($pane, value)) { return; }
 
-        var view = $.extend({displayType: 'calendar'},
-            sidebarObj.getFormValues($pane));
+        var view = $.extend(true, {metadata: {renderTypeConfig: {visible: {calendar: true}}}},
+            sidebarObj.getFormValues($pane), {metadata: blist.dataset.metadata});
         blist.dataset.update(view);
 
         if (isEdit)

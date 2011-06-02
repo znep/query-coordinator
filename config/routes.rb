@@ -166,7 +166,7 @@ ActionController::Routing::Routes.draw do |map|
       :requirements => {:id => UID_REGEXP}
     admin.connect '/admin/routing_approval/queue',
       :action => 'routing_approval_queue', :conditions => { :method => :get }
-    admin.connect '/admin/routing_approval/view/:id/set/:approved',
+    admin.connect '/admin/routing_approval/view/:id/set/:approval_type',
       :action => 'approve_view', :conditions => { :method => :post },
       :requirements => {:id => UID_REGEXP}
     admin.connect '/admin/routing_approval/manage',

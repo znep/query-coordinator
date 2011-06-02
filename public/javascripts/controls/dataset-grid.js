@@ -331,33 +331,42 @@
                 var isSubRow = !$.isBlank((col || {}).childColumns);
                 var colAdjust = isSubRow ? ('_' + col.lookup) : '';
 
+                var options = [];
+                if (!isSubRow)
+                {
+                    options.push('"<li class=\'pageView\'>' +
+                            '<a href=\'' + this.settings.view.url +
+                            '/" + row.id + "\' class=\'noInterstitial ' +
+                            'noRedirPrompt\'>View Row</a></li>"');
+                }
+                if (this.settings.editEnabled)
+                {
+                    options.push('(permissions.canEdit && !(row.level > 0) ? ' +
+                            '"<li class=\'tags\'>' +
+                            '<a href=\'#row-tag_" + row.id + "' + colAdjust +
+                            '\' class=\'noClose\'>Tag Row</a>' +
+                            '<form class=\'editContainer\'>' +
+                            '<input />' +
+                            '<a class=\'tagSubmit\' href=\'#saveTags\' ' +
+                            'title=\'Save\'>Save Tags</a>' +
+                            '<a class=\'tagCancel\' href=\'#cancelTags\' ' +
+                            'title=\'Cancel\'>Cancel</a>' +
+                            '</form>' +
+                            '</li>" : "") + ' +
+                        '(permissions.canDelete ? "<li class=\'delete\'>' +
+                            '<a href=\'#row-delete_" + row.id + "' + colAdjust +
+                            '\'>Delete Row</a></li>" : "")');
+                }
+
+                if (_.isEmpty(options)) { return '""'; }
+
                 return '(row.type == "blank" ? "" :' +
                        '"<a class=\'menuLink\' href=\'#row-menu_" + ' +
                        'row.id + "' + colAdjust + '\'></a>' +
                        '<ul class=\'menu rowMenu\' id=\'row-menu_" + row.id + "' +
                        colAdjust + '\'>" + ' +
-                       (!isSubRow ?
-                           '"<li class=\'pageView\'>' +
-                           '<a href=\'' + this.settings.view.url +
-                           '/" + row.id + "\' class=\'noInterstitial ' +
-                           'noRedirPrompt\'>View Row</a></li>" + ' : '') +
-                       (this.settings.editEnabled ?
-                           ('(permissions.canEdit && !(row.level > 0) ? ' +
-                           '"<li class=\'tags\'>' +
-                           '<a href=\'#row-tag_" + row.id + "' + colAdjust +
-                           '\' class=\'noClose\'>Tag Row</a>' +
-                           '<form class=\'editContainer\'>' +
-                           '<input />' +
-                           '<a class=\'tagSubmit\' href=\'#saveTags\' ' +
-                           'title=\'Save\'>Save Tags</a>' +
-                           '<a class=\'tagCancel\' href=\'#cancelTags\' ' +
-                           'title=\'Cancel\'>Cancel</a>' +
-                           '</form>' +
-                           '</li>" : "") + ' +
-                           '(permissions.canDelete ? "<li class=\'delete\'>' +
-                           '<a href=\'#row-delete_" + row.id + "' + colAdjust +
-                           '\'>Delete Row</a></li>" : "") + ') : '') +
-                       '"<li class=\'footer\'><div class=\'outerWrapper\'>' +
+                       options.join(' + ') +
+                       ' + "<li class=\'footer\'><div class=\'outerWrapper\'>' +
                        '<div class=\'innerWrapper\'>' +
                        '<span class=\'colorWrapper\'>' +
                        '</span></div>' +

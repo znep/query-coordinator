@@ -13,7 +13,7 @@
       <%= render :partial => 'datasets/browse_search',
                  :locals => { :opts => opts } if opts[:sidebar_config].nil? || opts[:sidebar_config].search %>
 
-      <%- if opts[:q].present? || opts[:facets].any?{ |f| opts[f[:param]].present? } -%>
+      <%- if opts[:q].present? || opts[:facets].any?{ |f| opts[:user_params][f[:param]].present? } -%>
         <div class="facetSection clearAllSection">
           <ul>
             <li>

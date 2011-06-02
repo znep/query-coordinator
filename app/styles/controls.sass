@@ -130,6 +130,13 @@ div.starsControl
     .starsControlInner
       background-position: 0 -10px
 
+  &.blueStars
+    &, & .starsControlInner
+      background: transparent url('/stylesheets/images/icons/stars.png') repeat-x
+
+    .starsControlInner
+      background-position: 0 -32px
+
 div.wizard
   overflow: hidden
   .ie7 &
@@ -578,7 +585,7 @@ form.search
 //*** END: popup-select.js ***//
 
 //*** Routing & Approval ***//
-.rejectionReason
+.reasonBox
   textarea
     font-size: 1em
   &.jsEnabled

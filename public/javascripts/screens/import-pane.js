@@ -646,8 +646,13 @@ var setHeadersCountText = function()
 };
 
 // events
+var eventsWired = false;
 var wireEvents = function()
 {
+    // don't allow us to be set more than once
+    if (eventsWired) return;
+    eventsWired = true;
+
     $pane.delegate('.columnsList li input.columnName,' +
                    '.columnsList li select.columnTypeSelect,' +
                    '.columnsList li select.columnSourceSelect,' +

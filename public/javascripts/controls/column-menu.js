@@ -50,7 +50,6 @@
 
                 if (!isNested && col.renderType.sortable) { features.sort = true; }
 
-
                 if (!isNested && col.renderType.filterable &&
                     !cmObj.settings.view.isGrouped())
                 { features.filter = true; }
@@ -67,9 +66,11 @@
                 if (cmObj.settings.columnPropertiesEnabled)
                 { features.properties = true; }
 
-
                 // If we did not enable features, do not install the menu
                 if (_.isEmpty(features)) { return; }
+
+                // We've got a menu, so add a class
+                $domObj.addClass('hasColumnMenu');
 
                 // Install an event handler that actually builds the menu on first
                 // mouse over

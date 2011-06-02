@@ -162,9 +162,6 @@ protected
     configured_params = (catalog_config.default_params || {}).to_hash
     configured_params.deep_symbolize_keys!
 
-    # merge for our final params
-    browse_params = configured_params.merge(user_params)
-
     # next deal with options
     default_options = {
       limit: 10,
@@ -183,7 +180,8 @@ protected
     browse_options = default_options
                        .merge(configured_options) # whatever they configured is somewhat important
                        .merge(options)            # whatever the call configures is more important
-                       .merge(browse_params)      # anything from the queryparam is most important
+                       .merge(configured_params)  # gives the domain a chance to override the call
+                       .merge(user_params)        # anything from the queryparam is most important
 
     # munge params to types we expect
     @@numeric_options.each do |option|
@@ -293,8 +291,8 @@ protected
     browse_options[:facets] = browse_options[:facets].compact.flatten.reject{ |f| f[:hidden] }
 
     if browse_options[:suppressed_facets].is_a? Array
-      browse_options[:facets].select! do |facet|
-        !(browse_options[:suppressed_facets].include? facet[:singular_description])
+      browse_options[:facets].reject! do |facet|
+        browse_options[:suppressed_facets].include? facet[:singular_description]
       end
     end
 
@@ -303,6 +301,7 @@ protected
     browse_options[:footer_config]  = catalog_config.footer
 
     browse_options[:sort_opts] ||= @@default_browse_sort_opts
+    browse_options[:disable] = {} unless browse_options[:disable].present?
 
     # get the subset relevant to various things
     browse_options[:search_options] = browse_options.select{ |k| @@search_options.include? k }

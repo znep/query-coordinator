@@ -96,7 +96,7 @@ private
     page_config = properties[config_name]
     return nil unless page_config
 
-    return prepare_config page_config
+    return prepare_config(page_config, prepare)
   end
 
   # generate the default homepage configuration and use it to prepare for render

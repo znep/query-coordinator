@@ -113,25 +113,8 @@
                 <%= @approval_template.stage((v.last_approval || {})['approvalStageId'])['name'] %>
               </td>
               <td class="actions">
-                <%- if !v.next_approval_stage(@approval_template).nil? &&
-                  (CurrentDomain.user_can?(current_user, 'manage_approval') ||
-                  (v.next_approval_stage(@approval_template)['approverUids'] || []).
-                    include?(current_user.id)) -%>
-                <div>
-                  <% form_button({:action => 'approve_view', :id => v.id,
-                      :approved => 'yes'}, 'Approve', {},
-                      {:class => 'button approve'})%>
-                  <%- la = v.last_approval(true) -%>
-                  <%- if la.nil? || la['approvalTypeName'] != 'R' -%>
-                  <% form_button({:action => 'approve_view', :id => v.id,
-                      :approved => 'no'}, 'Reject', {},
-                      {:class => 'button reject'}) do %>
-                      <% '<div class="rejectionReason">'.html_safe +
-                        label_tag('Rejection reason') + text_area_tag('comment') + '</div>'.html_safe %>
-                  <% end %>
-                  <%- end -%>
-                </div>
-                <%- end -%>
+                <%= render :partial => 'administration/routing_approval_actions',
+                  :locals => {:view => v, :approval_template => @approval_template} %>
               </td>
             </tr>
             <%- end -%>
@@ -181,8 +164,8 @@
       <span class="value"></span>
     </div>
   </div>
-  <div class="rejectionReason line">
-    <span class="title">Rejection Reason:</span>
+  <div class="reason line">
+    <div class="title"><span class="type"></span> Reason:</div>
     <span class="value"></span>
   </div>
   <div class="nextApprover line">

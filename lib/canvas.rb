@@ -31,7 +31,7 @@ module Canvas
       @data = data
       @elem_id = "#{id_prefix}_#{self.class.name.split(/::/).last}"
 
-      load_properties(@data)
+      load_properties(@data.properties)
     end
 
     def stylesheet
@@ -125,7 +125,7 @@ module Canvas
 
   private
     def load_properties(data)
-      local_properties = data.properties.to_hash rescue {}
+      local_properties = data.to_hash rescue {}
       local_properties.deep_symbolize_keys!
       @properties = Hashie::Mash.new self.default_properties.deep_merge(local_properties)
     end
@@ -238,12 +238,12 @@ module Canvas
 
     def prepare!
       if self.properties.fromDomainConfig
-        @featured_views = CurrentDomain.featured_views || []
+        @featured_views = CurrentDomain.featured_views if CurrentDomain.featured_views.present?
       else
         @featured_views = self.properties.featured_views
       end
 
-      return if @featured_views.empty?
+      return if @featured_views.blank?
 
       # get the freshest versions of the canonical view urls
       View.find_multiple(@featured_views.map{ |fv| fv.viewId }).each do |view|
@@ -254,9 +254,6 @@ module Canvas
     self.default_properties = {
       featured_views: []
     }
-    self.style_definition = [
-      { data: 'featured_views', toProportion: true, selector: '.featuredViewContainer', css: 'width' }
-    ]
   end
 
   class Html < CanvasWidget
@@ -273,6 +270,7 @@ module Canvas
 
     def prepare!
       load_properties(CurrentDomain.theme.stories) if self.properties.fromDomainConfig
+
       @stories = Story.find.sort
     end
   protected

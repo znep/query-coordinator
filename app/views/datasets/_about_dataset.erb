@@ -40,8 +40,8 @@
   </div>
 
   <%- approval = Approval.find()[0] -%>
-  <%- if module_available?(:routing_approval) && !approval.nil? && !current_user.nil? &&
-    (current_user.can_approve? || current_user.id == @view.owner.id) -%>
+  <%- if module_available?(:routing_approval) && approval.present? && current_user.present? &&
+    (current_user.can_approve? || @view.has_rights?('update_view')) -%>
   <%- next_stage = @view.next_approval_stage(approval) -%>
   <%- @users = {}
     (CoreServer::Base.connection.batch_request do
@@ -72,19 +72,13 @@
       </dd>
       <%- if !next_stage.nil? -%>
       <%- if CurrentDomain.user_can?(current_user, 'manage_approval') ||
-        (next_stage['approverUids'] || []).include?(current_user.id) -%>
+        (next_stage['approverUids'] || []).include?(current_user.id) ||
+        @view.has_rights?('update_view') &&
+        last_app_rej.present? && last_app_rej['approvalTypeName'] == 'R' -%>
       <dt>Actions</dt>
       <dd class="actions">
-        <% form_button({:action => 'approve_view', :controller => 'administration', :id => @view.id,
-            :approved => 'yes'}, 'Approve', {}, {:class => 'button approve'}) %>
-        <%- if last_app_rej.nil? || last_app_rej['approvalTypeName'] != 'R' -%>
-        <% form_button({:action => 'approve_view', :controller => 'administration', :id => @view.id,
-            :approved => 'no'}, 'Reject', {},
-            {:class => 'button reject'}) do %>
-            <% '<div class="rejectionReason">'.html_safe +
-              label_tag('Rejection reason') + text_area_tag('comment') + '</div>'.html_safe %>
-        <% end %>
-        <%- end -%>
+        <%= render :partial => 'administration/routing_approval_actions',
+          :locals => {:view => @view, :approval_template => approval} %>
       </dd>
       <%- end -%>
       <dt>Next Approver</dt>
@@ -112,13 +106,20 @@
         <div class="icon">
           <%- i = approval.stages.index {|s| s['id'] == ah['approvalStageId']} || 0 -%>
           <%- approval.stages.length.times do |j| -%>
-          <span class="<%= j > i ? "off" : i == j &&
-            ah['approvalTypeName'] == 'R' ? "rejected" : "on" %>"></span>
+          <span class="<%= j > i ? "off" : j < i ? "on" : ah['approvalTypeName'] == 'R' ?
+            "rejected" : ah['approvalTypeName'] == 'A' ? "on" : "off" %>"></span>
           <%- end -%>
         </div>
         <%= approval.stage(ah['approvalStageId'])['name'] %></div>
       <%- u = @users[ah['approverUserUid']] -%>
-      <div class='user'><%= ah['approvalTypeName'] == 'R' ? 'Rejected' : 'Approved' %> by
+      <div class='user'><%= case ah['approvalTypeName']
+        when 'R'
+          'Rejected'
+        when 'A'
+          'Approved'
+        when 'M'
+          'Resubmitted'
+        end %> by
         <a href='<%= u.href %>'><%= u.displayName %></a></div>
       <span class="date">On <%= blist_date(ah['approvalDate']) %></span>
       <%- if !ah['comment'].blank? -%>
@@ -138,10 +139,17 @@
     </a>
     <dl class="sectionContent">
       <%- (CurrentDomain.properties.rating_types || ["rating"]).each do |rating_type| -%>
-        <dt><%= rating_type.titleize %></dt>
+        <dt>Community <%= rating_type.titleize %></dt>
         <dd class="clearfix">
-          <div class="starsControl datasetAverageRating" data-rating="<%= @view.average_rating(rating_type) %>" data-rating-type="<%= rating_type %>">
+          <div class="starsControl datasetAverageRating" data-rating="<%= @view.average_rating(rating_type) %>">
             <%= @view.average_rating(rating_type) %>
+          </div>
+        </dd>
+        <dt>Your <%= rating_type.titleize %></dt>
+        <dd class="clearfix">
+          <div class="starsControl blueStars datasetAverageRating" data-rating-type="<%= rating_type %>"
+            data-rating="<%= @view.user_rating(rating_type) %>">
+            <%= @view.user_rating(rating_type) %>
           </div>
         </dd>
       <%- end -%>

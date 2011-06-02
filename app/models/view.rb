@@ -297,6 +297,11 @@ class View < Model
     (data.deep_value_at(['ratings', type]) || 0) / 20.0
   end
 
+  def user_rating(type)
+    r = data.deep_value_at(['currentUserRatings', type])
+    return '' if r.nil?
+    r / 20.0
+  end
   def totalTimesRated
     data['totalTimesRated'] || 0
   end
@@ -368,24 +373,45 @@ class View < Model
     !domainCName.blank?
   end
 
+  def federated_protocol(domainCName)
+    domain = Domain.find(domainCName, true)
+    if domain.httpsEnforced
+      'https'
+    else
+       'http'
+    end
+  end
+
+  def federated_port(domainCName)
+    domain = Domain.find(domainCName, true)
+    port = 80
+    if domain.httpsEnforced
+      if Rails.env.development?
+        port = APP_CONFIG['ssl_port']
+      else
+        port = 443
+      end
+    else
+      if Rails.env.development?
+        port = APP_CONFIG['http_port']
+      end
+    end
+
+    if (port == 80 || port == 443)
+      url_port = ""
+    else
+      url_port = ":#{port}"
+    end
+    url_port
+  end
+
+  # argument port is deprecated
   def href(port = 80)
     path = "/#{(self.category || 'dataset').convert_to_url}/#{name.convert_to_url}/#{id}"
 
     if federated?
-      if Rails.env.development?
-        protocol = 'http' if port == 9292
-        protocol = 'https' if port == 9443
-      else
-        protocol = 'http' if port == 80
-        protocol = 'https' if port == 443
-      end
-
-      if (port == 80 || port == 443)
-        url_port = ""
-      else
-        url_port = ":#{port}"
-      end
-
+      protocol = federated_protocol(domainCName)
+      url_port = federated_port(domainCName)
       "#{protocol}://#{domainCName}#{url_port}#{path}"
     else
       path
@@ -404,10 +430,17 @@ class View < Model
     self.href + "/about"
   end
 
+  # argument port is deprecated
   def rss(port = 80)
-    url_port = (port == 80) ? '' : ':' + port.to_s
-    protocol = federated? ? "http://#{domainCName}#{url_port}" : ''
-    "#{protocol}/api/views/#{id}/rows.rss"
+    path = "/api/views/#{id}/rows.rss"
+
+    if federated?
+      protocol = federated_protocol(domainCName)
+      url_port = federated_port(domainCName)
+      "#{protocol}://#{domainCName}#{url_port}#{path}"
+    else
+      path
+    end
   end
 
   def tweet
@@ -893,15 +926,22 @@ class View < Model
     return ns
   end
 
-  def set_approval(approval, approved, comment = nil)
+  def set_approval(approval, approval_type, comment = nil)
     next_stage = next_approval_stage(approval)
-    return false if next_stage.nil?
+    return false if next_stage.nil? || !['A', 'R', 'M'].include?(approval_type)
+
+    opts = {:approvalStageId => next_stage['id'],
+            :approvalTypeName => approval_type,
+            :comment => comment}
+    if approval_type == 'M'
+      prev_app = last_approval(true)
+      return false if prev_app.nil? || prev_app['approvalTypeName'] != 'R'
+      opts[:approvalStageId] = prev_app['approvalStageId']
+      opts[:relatedApprovalHistoryId] = prev_app['id']
+    end
 
     path = "/#{self.class.name.pluralize.downcase}/#{id}/approval.json"
-    CoreServer::Base.connection.create_request(path,
-          {:approvalStageId => next_stage['id'],
-            :approvalTypeName => approved ? 'A' : 'R',
-            :comment => comment}.to_json)
+    CoreServer::Base.connection.create_request(path, opts.to_json)
   end
 
   # Publishing

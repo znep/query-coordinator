@@ -15,19 +15,19 @@ class BrowseController < ApplicationController
       rel_type: 'external'
     }
 
-    # Passed to _browse partial to remove controls, e.g. search/sort/paginate
-    browse_options[:disable] = params[:disable] unless params[:disable].blank?
-
     # Mimic the 'default' selection for facets
-    browse_options[:default_params] = params[:defaults] unless params[:defaults].blank?
+    browse_options.merge!(params[:defaults].deep_symbolize_keys) if params[:defaults].present?
+    if params[:suppressed_facets].is_a? Hash
+      params[:suppressed_facets] =
+        params[:suppressed_facets].map{ |k,v| k if v }.flatten
+    end
 
-    enabled_facets = params[:facets] || {}
     browse_options[:facets] = [
       view_types_facet,
       custom_facets,
       categories_facet,
       topics_facet
-    ].flatten.compact.select { |f| enabled_facets[f[:singular_description]].present? }
+    ]
 
     @processed_browse = process_browse(request, browse_options)
     render :layout => 'embedded_browse'

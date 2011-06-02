@@ -153,7 +153,7 @@ var filterSections = [
         fields: [
         {   text: 'View Type', name: 'defaults.limitTo', prompt: null,
             type: 'select', options: catalogNS.anyValueHack(publishNS.selectOptions.limitTo.options) },
-        {   text: 'Show Types', name: 'facets.type',
+        {   text: 'Hide Types', name: 'suppressed_facets.type',
             type: 'checkbox' }
         ]
     },
@@ -162,7 +162,7 @@ var filterSections = [
         fields: [
         {   text: 'Category', name: 'defaults.category', prompt: null,
             type: 'select', options: catalogNS.anyValueHack(publishNS.selectOptions.categories.options) },
-        {   text: 'Show Categories', name: 'facets.category',
+        {   text: 'Hide Categories', name: 'suppressed_facets.category',
             type: 'checkbox' }
         ]
     },
@@ -171,7 +171,7 @@ var filterSections = [
         fields: [
         {   text: 'Topic', name: 'defaults.tags', prompt: null,
             type: 'select', options: catalogNS.anyValueHack(publishNS.selectOptions.topics) },
-        {   text: 'Show Topics', name: 'facets.topic',
+        {   text: 'Hide Topics', name: 'suppressed_facets.topic',
             type: 'checkbox' }
         ]
     }];
@@ -186,7 +186,7 @@ if (blist.publish.customFacets)
             {   text: cf.title, name: 'defaults.' + cf.param, prompt: null,
                 type: 'select',
                 options: catalogNS.anyValueHack(cf.options)},
-            {   text: 'Show ' + cf.title, name: 'facets.' + cf.singular_description,
+            {   text: 'Hide ' + cf.title, name: 'suppressed_facets.' + cf.singular_description,
                 type: 'checkbox' }
             ]
         };

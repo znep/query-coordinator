@@ -75,7 +75,6 @@
                 var colCount = chartObj._yColumns.length;
 
                 // Set up y-axes
-                if (chartObj._reverseOrder) { chartObj._yColumns.reverse(); }
                 _.each(chartObj._yColumns, function(cs, colIndex)
                 {
                     var series = {name: $.htmlEscape(cs.data.name),
@@ -194,6 +193,19 @@
                     (Dataset.chart.types[chartObj._chartType].renderOther ||
                     chartObj.settings.view.displayFormat.renderOther))
                 {
+                    if (chartObj._otherIndex)
+                    {
+                        chartObj._xCategories.splice(chartObj._otherIndex, 1);
+                        for (var i = 0; i < chartObj._seriesRemainders.length; i++)
+                        {
+                            if (!_.isUndefined(chartObj.chart))
+                            { chartObj.chart.series[i].data[chartObj._otherIndex].remove(); }
+                            if (!_.isUndefined(chartObj.secondChart))
+                            { chartObj.secondChart.series[i].data[chartObj._otherIndex].remove(); }
+                            chartObj._seriesCache[i].data.splice(chartObj._otherIndex, 1);
+                        }
+                    }
+
                     var otherPt = xPoint(chartObj, null, 'Other');
                     if (!_.isUndefined(chartObj._xCategories))
                     { chartObj._xCategories.push('Other'); }
@@ -208,9 +220,15 @@
                             if (!_.isUndefined(chartObj.secondChart))
                             { chartObj.secondChart.series[i].addPoint(
                                 point, false); }
+                            chartObj._otherIndex = chartObj._seriesCache[i].data.length;
                             chartObj._seriesCache[i].data.push(point);
                         }
                     });
+
+                    if (!_.isUndefined(chartObj.chart))
+                    { chartObj.chart.redraw(); }
+                    if (!_.isUndefined(secondChartObj.secondChart))
+                    { secondChartObj.secondChart.redraw(); }
                 }
 
                 if (!_.isUndefined(chartObj.chart))
@@ -286,12 +304,6 @@
 
         var legendPos = chartObj.settings.view.displayFormat.legend;
 
-        // For some reason, bar charts are rendered with the data in the reverse
-        // order; while the legend is correct (perhaps due to the inverted axis?).
-        // By manually flipping the order of data, colors, and legend, we can
-        // make it look correct
-        chartObj._reverseOrder = chartObj._chartType == 'bar';
-
         // Make a copy of colors so we don't reverse the original
         var colors;
         if (!_.isUndefined(chartObj.settings.view.displayFormat.colors))
@@ -303,7 +315,6 @@
             colors = _.map(chartObj._valueColumns, function(vc)
             { return vc.color; });
         }
-        if (!$.isBlank(colors) && chartObj._reverseOrder) { colors.reverse(); }
 
         // Map recorded type to what Highcharts wants
         var seriesType = chartObj._chartType;
@@ -330,7 +341,7 @@
                 { return num; }
 
                 if (num.match && num.match(/,/)) { num = num.replace(/[^0-9\.]/g, ''); }
-                return blistUtilNS.toHumaneNumber(num, 2);
+                return blist.util.toHumaneNumber(num, 2);
             };
             var maxLen = 20;
             var v = abbreviateNumbers(this.value);
@@ -352,7 +363,6 @@
             legend: { enabled: legendPos != 'none',
                 layout: _.include(['left', 'right'], legendPos) ?
                     'vertical' : 'horizontal',
-                reversed: chartObj._reverseOrder,
                 backgroundColor: '#ffffff',
                 borderWidth: 1 },
             plotOptions: {},

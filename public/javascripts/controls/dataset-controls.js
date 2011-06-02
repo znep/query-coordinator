@@ -190,9 +190,16 @@ blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
 
 blist.datasetControls.datasetRating = function($star, $sect, enabled)
 {
+    if (!enabled && !$.isBlank($star.data('rating-type')) && $.isBlank($star.data('rating')))
+    {
+        var $dd = $star.closest('dd').addClass('hide');
+        $dd.prev('dt').addClass('hide');
+        return;
+    }
+
     $star.stars({
-        value: $star.attr('data-rating'),
-        enabled: enabled,
+        value: $star.attr('data-rating') || 0,
+        enabled: enabled && !$.isBlank($star.data('rating-type')),
         onChange: function(value)
         {
             blist.util.doAuthedAction('rate this dataset', function()
@@ -467,26 +474,25 @@ blist.datasetControls.columnTip = function(col, $col, tipsRef, initialShow)
     if (initialShow) { showTip(); }
 };
 
-blist.datasetControls.raRejection = function($rejectionBox)
+blist.datasetControls.raReasonBox = function($reasonBox)
 {
-    var $i = $rejectionBox.siblings('input');
-    var $t = $rejectionBox.children('textarea');
-    $rejectionBox.addClass('hide jsEnabled');
-    $rejectionBox.append($.tag([{tagName: 'input', type: 'submit',
-            'class': ['button', 'reject'], value: 'Reject'},
-        {tagName: 'a', href: '#Close', 'class': 'remove',
-            contents: {tagName: 'span', 'class': 'icon'}}]));
+    var $i = $reasonBox.siblings('input');
+    var $t = $reasonBox.children('textarea');
+    $reasonBox.addClass('hide jsEnabled');
+    $reasonBox.append($reasonBox.siblings('.button').clone());
+    $reasonBox.append($.tag({tagName: 'a', href: '#Close', 'class': 'remove',
+            contents: {tagName: 'span', 'class': 'icon'}}));
 
     // We don't really care about validation; but when we're in the About
     // sidebar, there is a higher-level form that has validation hooked up;
     // and if we don't hook up validation here, errors are thrown.
-    $rejectionBox.closest('form').validate();
+    $reasonBox.closest('form').validate();
 
     var closeForm = function()
     {
-        $rejectionBox.addClass('hide');
+        $reasonBox.addClass('hide');
         // IE7 is dumb
-        $rejectionBox.closest('form').css('z-index', '');
+        $reasonBox.closest('form').css('z-index', '');
         $t.blur();
     };
 
@@ -495,7 +501,7 @@ blist.datasetControls.raRejection = function($rejectionBox)
         if (e.which == 27) // ESC
         { closeForm(); }
     });
-    $rejectionBox.find('.remove').click(function(e)
+    $reasonBox.find('.remove').click(function(e)
     {
         e.preventDefault();
         closeForm();
@@ -503,12 +509,12 @@ blist.datasetControls.raRejection = function($rejectionBox)
 
     $i.click(function(e)
     {
-        if ($rejectionBox.hasClass('hide'))
+        if ($reasonBox.hasClass('hide'))
         {
             e.preventDefault();
-            $rejectionBox.removeClass('hide');
+            $reasonBox.removeClass('hide');
             // IE7 is dumb
-            $rejectionBox.closest('form').css('z-index', 10);
+            $reasonBox.closest('form').css('z-index', 10);
             $t.focus();
         }
     });

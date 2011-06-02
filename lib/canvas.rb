@@ -243,7 +243,10 @@ module Canvas
         @featured_views = self.properties.featured_views
       end
 
-      return if @featured_views.blank?
+      if @featured_views.blank? || !@featured_views.is_a? Array
+        @featured_views = []
+        return
+      end
 
       # get the freshest versions of the canonical view urls
       View.find_multiple(@featured_views.map{ |fv| fv.viewId }).each do |view|

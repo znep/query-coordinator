@@ -7420,7 +7420,7 @@ function Chart (options, callback) {
             // to resizing, then do it now
             if (needsRedraw)
             {
-                chart.redraw();
+                redraw();
                 needsRedraw = false;
             }
 			});

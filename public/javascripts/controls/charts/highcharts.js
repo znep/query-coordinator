@@ -193,14 +193,16 @@
                     (Dataset.chart.types[chartObj._chartType].renderOther ||
                     chartObj.settings.view.displayFormat.renderOther))
                 {
-                    if (chartObj._otherIndex)
+                    if (!$.isBlank(chartObj._otherIndex))
                     {
                         chartObj._xCategories.splice(chartObj._otherIndex, 1);
                         for (var i = 0; i < chartObj._seriesRemainders.length; i++)
                         {
-                            if (!_.isUndefined(chartObj.chart))
+                            if (!$.isBlank(chartObj.chart) &&
+                                !$.isBlank(chartObj.chart.series[i].data[chartObj._otherIndex]))
                             { chartObj.chart.series[i].data[chartObj._otherIndex].remove(); }
-                            if (!_.isUndefined(chartObj.secondChart))
+                            if (!$.isBlank(chartObj.secondChart) &&
+                                !$.isBlank(chartObj.secondChart.series[i].data[chartObj._otherIndex]))
                             { chartObj.secondChart.series[i].data[chartObj._otherIndex].remove(); }
                             chartObj._seriesCache[i].data.splice(chartObj._otherIndex, 1);
                         }
@@ -354,6 +356,7 @@
         var chartConfig =
         {
             chart: {
+                animation: false,
                 renderTo: chartObj.$dom()[0],
                 defaultSeriesType: seriesType,
                 events: { load: function() { chartObj.finishLoading(); } },
@@ -513,15 +516,7 @@
         };
         // IE7 seems to have some problem creating the chart right away;
         // add a delay and it seems to work.  Do I know why (for either part)? No
-        _.defer(function()
-        {
-            // We need the default pane to load before attempting to load the chart.
-            // Otherwise a race condition sort of explodes messily.
-            if ($.subKeyDefined(blist.datasetPage, 'sidebar._defaultPane'))
-            { setTimeout(loadChart, 1000); }
-            else
-            { loadChart(); }
-        });
+        _.defer(function() { loadChart(); });
     };
 
     // Once the chart's ready to draw, let' take a picture
@@ -677,6 +672,7 @@
 
         var config = {
             chart: {
+                animation: false,
                 renderTo: $secondChart[0],
                 defaultSeriesType: 'line',
                 zoomType: 'x',

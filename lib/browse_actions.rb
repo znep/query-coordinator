@@ -128,7 +128,7 @@ protected
   end
 
   def custom_facets
-    facets = CurrentDomain.property(:facets, :catalog)
+    facets = CurrentDomain.property(:custom_facets, :catalog)
     return if facets.nil?
     facets.map do |facet|
       if facet.options && facet.options.length > 5

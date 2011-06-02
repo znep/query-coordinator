@@ -452,12 +452,18 @@
         { typeConfig.lineWidth = parseInt(chartObj.settings
             .view.displayFormat.lineSize); }
 
+        var tooltipTimeout;
         typeConfig.point = { events: {
             mouseOver: function() {
+                clearTimeout(tooltipTimeout);
                 customTooltip(chartObj, this);
             },
             mouseOut: function() {
-                $("#highcharts_tooltip").hide();
+                var $tooltip = $("#highcharts_tooltip");
+                tooltipTimeout = setTimeout(function(){
+                    if (!$tooltip.data('mouseover'))
+                    {  $tooltip.hide(); }
+                }, 500);
             }
         }};
 
@@ -804,7 +810,7 @@
         if ($box.length < 1)
         {
             chartObj.$dom().after('<div id="highcharts_tooltip"></div>');
-            $box = chartObj.$dom().siblings('#highcharts_tooltip');
+            $box = chartObj.$dom().siblings('#highcharts_tooltip').hide();
         }
 
         if (!point.flyoutDetails) { $box.hide(); return; }
@@ -821,13 +827,27 @@
         var offset = $container.offset();
         position.top -= offset.top;
         position.left -= offset.left;
-        position.top += 10;
-        position.left += 10;
+
+        var boxOffset = 10;
+        if (_.include(['line', 'bubble'], chartObj._chartType))
+        { boxOffset = 2; }
+        position.top += boxOffset;
+        position.left += boxOffset;
 
         $box.empty()
             .append(point.flyoutDetails)
             .css({ top: position.top + 'px', left: position.left + 'px' })
             .show();
+
+        if (!$box.data('events-attached'))
+        {
+            $box.hover(
+                   function(event)
+                   { $(this).data('mouseover', true); event.stopPropagation(); },
+                   function()
+                   { $(this).data('mouseover', false).hide(); })
+                .data('events-attached', true);
+        }
 
         if ($container.width() <= position.left + $box.width())
         { $box.css({ left: ($container.width() - $box.width() - 20) + 'px' }); }

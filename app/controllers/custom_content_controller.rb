@@ -67,7 +67,13 @@ class CustomContentController < ApplicationController
 
     if sheet.nil?
       page_config = get_config(params[:page_type], params[:config_name])
-      return render_404 unless page_config
+
+      if (params[:page_type] == 'homepage') && (page_config.nil? || page_config.default_homepage)
+        Rails.cache.write(cache_key, '')
+        return render :nothing => true, :content_type => 'text/css'
+      elsif page_config.nil?
+        return render_404 unless page_config
+      end
       prepare_config(page_config, false)
 
       sheet = build_stylesheet(page_config.contents)

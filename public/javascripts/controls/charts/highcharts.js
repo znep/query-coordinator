@@ -227,8 +227,8 @@
 
                     if (!_.isUndefined(chartObj.chart))
                     { chartObj.chart.redraw(); }
-                    if (!_.isUndefined(secondChartObj.secondChart))
-                    { secondChartObj.secondChart.redraw(); }
+                    if (!_.isUndefined(chartObj.secondChart))
+                    { chartObj.secondChart.redraw(); }
                 }
 
                 if (!_.isUndefined(chartObj.chart))

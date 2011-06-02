@@ -85,6 +85,8 @@
       &.actions
         overflow: visible
         padding-left: 6em
+        .ie7 &
+          z-index: 2
         form
           display: inline-block
           margin-right: 0.5em
@@ -102,8 +104,11 @@
           font-size: 1em
           font-weight: normal
           margin: 0
-          padding: 0.2em 0.5em
-            left: 1.75em
+          padding: 0.4em 0.5em
+            left: 2em
+          .ie7 &
+            padding: 0.2em 0.5em
+              left: 1.25em
 
     > li
       border-top: 1px solid $color_chrome_box_border

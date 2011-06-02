@@ -107,7 +107,8 @@
                         function(tcId) { return view.columnForTCID(tcId); });
                 chartObj._fixedColumns = _.compact(chartObj._fixedColumns);
 
-                _.each(['pointColor', 'pointSize'], function(colName)
+                if (chartObj._chartType == 'bubble')
+                { _.each(['pointColor', 'pointSize'], function(colName)
                 {
                     var c = view.columnForTCID(view.displayFormat[colName]);
                     if (!$.isBlank(c) && !c.isMeta)
@@ -116,7 +117,7 @@
                         customAggs[c.id] = $.makeArray(customAggs[c.id])
                             .concat(['maximum', 'minimum']);
                     }
-                });
+                }); }
 
                 chartObj.settings.view.getAggregates(function()
                 {

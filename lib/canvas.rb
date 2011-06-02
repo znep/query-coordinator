@@ -243,7 +243,7 @@ module Canvas
         @featured_views = self.properties.featured_views
       end
 
-      if @featured_views.blank? || !@featured_views.is_a? Array
+      if @featured_views.blank? || !(@featured_views.is_a? Array)
         @featured_views = []
         return
       end

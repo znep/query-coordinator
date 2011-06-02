@@ -154,6 +154,15 @@ module Canvas
 
 # WIDGETS (CONTENT)
 
+  class Breadcrumb < CanvasWidget
+  protected
+    self.default_properties = {
+      breadcrumbRoot: [
+        { text: 'Home', href: '/' }
+      ]
+    }
+  end
+
   class Catalog < CanvasWidget
     include BrowseActions
     attr_reader :processed_browse
@@ -174,15 +183,6 @@ module Canvas
         ignore_params: [ :page_name, :facet_name, :facet_value ]
       },
       respectFacet: true
-    }
-  end
-
-  class Breadcrumb < CanvasWidget
-  protected
-    self.default_properties = {
-      breadcrumbRoot: [
-        { text: 'Home', href: '/' }
-      ]
     }
   end
 

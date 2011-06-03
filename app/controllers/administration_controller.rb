@@ -973,7 +973,7 @@ private
     end
 
     # make sure the color looks as we expect
-    customization[:backgroundColor].gsub!(/^(?!#)/, '#') if customization[:backgroundColor].present?
+    customization[:backgroundColor].gsub!(/^#/, '') if customization[:backgroundColor].present?
 
     story.customization = customization
   end

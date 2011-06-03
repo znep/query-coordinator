@@ -366,8 +366,6 @@ javascripts:
     - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/controls/image-uploader.js
     - public/javascripts/screens/profile-screen-edit.js
-  homepage-show:
-    - public/javascripts/screens/homepage-show.js
   stories:
     - public/javascripts/controls/stories.js
   featured_views:

@@ -36,7 +36,7 @@
         { return {text: 'Stacking', type: 'checkbox', defaultValue: false,
         name: 'displayFormat.stacking', wizard: 'Stack values into a single ' + type + '?' } };
 
-    var renderOther = {text: 'Use Other', type: 'checkbox', defaultValue: false,
+    var renderOther = {text: 'Group Extra Values', type: 'checkbox', defaultValue: false,
         name: 'displayFormat.renderOther', wizard: 'Collect extra' +
         'values into Other category?'};
 

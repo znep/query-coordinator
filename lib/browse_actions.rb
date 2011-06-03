@@ -129,8 +129,11 @@ protected
 
   def custom_facets
     facets = CurrentDomain.property(:custom_facets, :catalog)
+
     return if facets.nil?
     facets.map do |facet|
+      facet.param = facet.param.to_sym
+
       if facet.options && facet.options.length > 5
         facet.options, facet.extra_options = facet.options.partition{ |opt| opt.summary }
         if facet.options.length < 1
@@ -138,7 +141,7 @@ protected
         end
         facet.extra_options_class = "padMore"
       end
-      facet
+      facet.to_hash.deep_symbolize_keys
     end
   end
 
@@ -230,9 +233,9 @@ protected
     cfs = custom_facets
     if cfs
       cfs.each do |facet|
-        if browse_options[facet.param]
+        if browse_options[facet[:param]]
           browse_options[:metadata_tag] ||= []
-          browse_options[:metadata_tag] << facet.param + ":" + browse_options[facet.param]
+          browse_options[:metadata_tag] << facet[:param].to_s + ":" + browse_options[facet[:param]]
         end
       end
     end

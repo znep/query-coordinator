@@ -154,6 +154,8 @@ private
     title: '',
     default_homepage: true,
     contents: [{
+      type: 'data_splash'
+    }, {
       type: 'stories',
       properties: {
         fromDomainConfig: true

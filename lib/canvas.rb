@@ -186,6 +186,18 @@ module Canvas
     }
   end
 
+  class DataSplash < CanvasWidget
+    attr_reader :fragment
+
+    def can_render?
+      return @fragment.nil? || (@fragment != '')
+    end
+
+    def prepare!
+      @fragment = CurrentDomain.templates['data_splash']
+    end
+  end
+
   class FacetList < CanvasWidget
     attr_reader :facet_values
 

@@ -134,6 +134,21 @@ module Canvas
 # WIDGETS (LAYOUT)
 
   class Container < CanvasWidget
+  protected
+    self.default_properties = {
+      classNames: ['contentBox']
+    }
+  end
+
+  class TickerLayout < CanvasWidget
+  protected
+    self.default_properties = {
+      childTitles: [],
+      pager: {
+        divider: '/',
+        type: 'incremental'
+      }
+    }
   end
 
   class TwoColumnLayout < CanvasWidget

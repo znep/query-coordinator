@@ -372,6 +372,8 @@ javascripts:
     - public/javascripts/controls/stories.js
   featured_views:
     - public/javascripts/controls/featured_views.js
+  ticker-layout:
+    - public/javascripts/controls/ticker_layout.js
   public-analytics:
     - public/javascripts/screens/sitewide-analytics-shared.js
     - public/javascripts/screens/public-analytics.js

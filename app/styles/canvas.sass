@@ -5,6 +5,48 @@
 // control defaults
 
 // layout widgets
+.tickerLayout
+  position: relative
+
+  .tickerLayoutPager
+    background-color: #fff
+    border-bottom: 1px solid $color_chrome_box_border
+    position: absolute
+    right: 0
+    top: 0
+    width: 100%
+    z-index: 1
+
+    .currentChildName
+      float: left
+      font-size: 1.3em
+      font-weight: bold
+      padding: 0.54em
+
+    .incrementalPager
+      float: right
+
+      .pagerCounter
+        float: right
+        padding: 0.8em 1em
+        span
+          font-size: 1.2em
+
+      .pagerControls
+        float: right
+        .pageButton
+          @include sprite-menu-icons
+          border-left: 1px solid $color_chrome_box_border
+          float: left
+          padding: 0.7em 0.9em
+
+  .tickerLayoutChildren
+    height: 30em
+    overflow: hidden
+    padding-top: 2em
+
+    .tickerLayoutChild
+      visibility: hidden
 
 .twoColumnLayout
   .leftColumn, .rightColumn

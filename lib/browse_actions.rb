@@ -32,8 +32,9 @@ protected
     cats = View.categories.keys.reject {|c| c.blank?}
     return nil if cats.empty?
 
+    cat_chop = get_cutoff(:category)
     cats = cats.sort.map{ |c| {:text => c, :value => c} }
-    cats, hidden_cats = cats[0..4], cats if cats.length > 5
+    cats, hidden_cats = cats[0..(cat_chop - 1)], cats if cats.length > cat_chop
 
     if params[:category].present? && !cats.any?{ |cat| cat[:text] == params[:category] }
       cats.push({ :text => params[:category], :value => params[:category] })
@@ -50,14 +51,15 @@ protected
   def topics_facet
     params = params || request_params || {}
 
+    topic_chop = get_cutoff(:topic)
     all_tags = Tag.find({:method => "viewsTags"})
-    top_tags = all_tags.slice(0, 5).map {|t| t.name}
+    top_tags = all_tags.slice(0, topic_chop).map {|t| t.name}
     if params[:tags].present? && !top_tags.include?(params[:tags])
       top_tags.push(params[:tags])
     end
     top_tags = top_tags.sort.map {|t| {:text => t, :value => t}}
     tag_cloud = nil
-    if all_tags.length > 5
+    if all_tags.length > topic_chop
       tag_cloud = all_tags.sort_by {|t| t.name}.
         map {|t| {:text => t.name, :value => t.name, :count => t.frequency}}
     end
@@ -79,11 +81,12 @@ protected
         :icon => {:type => 'static', :href => "/api/domains/#{f.sourceDomainCName}/icons/smallIcon"}} }
     return nil if all_feds.length < 1
 
+    fed_chop = get_cutoff(:federation)
     all_feds.unshift({:text => 'This site only', :value => CurrentDomain.domain.id.to_s,
         :icon => {:type => 'static', :href => "/api/domains/#{CurrentDomain.cname}/icons/smallIcon"}})
-    top_feds = all_feds.slice(0, 5)
+    top_feds = all_feds.slice(0, fed_chop)
     fed_cloud = nil
-    if all_feds.length > 5
+    if all_feds.length > fed_chop
       fed_cloud = all_feds
     end
 
@@ -131,13 +134,14 @@ protected
     facets = CurrentDomain.property(:custom_facets, :catalog)
 
     return if facets.nil?
+    custom_chop = get_cutoff(:custom)
     facets.map do |facet|
       facet.param = facet.param.to_sym
 
-      if facet.options && facet.options.length > 5
+      if facet.options && facet.options.length > custom_chop
         facet.options, facet.extra_options = facet.options.partition{ |opt| opt.summary }
         if facet.options.length < 1
-          facet.options = facet.extra_options[0..4]
+          facet.options = facet.extra_options[0..(custom_chop - 1)]
         end
         facet.extra_options_class = "padMore"
       end
@@ -345,6 +349,31 @@ private
 
     t.blank? ? 'Search & Browse Datasets and Views' : 'Results ' + t
   end
+
+  def get_cutoff(facet_name)
+    if @@cutoff_store[CurrentDomain.cname].nil?
+      domain_cutoffs = CurrentDomain.property(:facet_cutoffs, :catalog) || {}
+      translated_cutoffs = domain_cutoffs.inject({}) do |collect, (key, value)|
+        collect[key.to_sym] = value.to_i
+        collect
+      end
+      @@cutoff_store[CurrentDomain.cname] = @@default_cutoffs.merge(translated_cutoffs)
+    end
+    @@cutoff_store[CurrentDomain.cname][facet_name]
+  end
+
+  # Unused for now, but this will refresh the cutoffs from the configs service
+  def self.clear_cutoff_cache(cname = nil)
+    @@cutoff_store.delete(cname || CurrentDomain.cname)
+  end
+
+  @@default_cutoffs = {
+    :custom => 5,
+    :category => 5,
+    :federation => 5,
+    :topic => 5
+  }
+  @@cutoff_store = {}
 
   @@default_browse_sort_opts = [
     { value: 'relevance', name: 'Most Relevant' },

@@ -173,13 +173,32 @@ $(function()
     $browse.find('.facetSection .moreLink').click(function(e)
     {
         e.preventDefault();
-        var $dialog = $('.browseOptionsDialog');
-        var $c = $dialog.find('.optionsContent');
-        $c.empty();
-        $c.append($(this).siblings('.moreOptions').children().clone());
-        if ($c.find('[rel]').length > 0)
-        { $c.find('a').tagcloud({ size: { start: 1.2, end: 2.8, unit: "em" } }); }
-        $dialog.jqmShow();
+        var $t = $(this);
+        var $options = $t.siblings('.moreOptions');
+
+        if ($options.hasClass('cloud'))
+        {
+            var $dialog = $('.browseOptionsDialog');
+            var $c = $dialog.find('.optionsContent');
+            $c.empty().append($options.children().clone());
+            if ($c.find('[rel]').length > 0)
+            { $c.find('a').tagcloud({ size: { start: 1.2, end: 2.8, unit: "em" } }); }
+            $dialog.jqmShow();
+        }
+        else
+        {
+            if ($t.text() == 'View all')
+            {
+                // grammar nazis: fewer? sounds weird, probably more correct
+                $t.text('View less');
+                $options.hide().removeClass('hide').slideDown();
+            }
+            else
+            {
+                $options.slideUp();
+                $t.text('View all');
+            }
+        }
     });
 
     $.live('a[rel*=externalDomain]', 'click', function(e)

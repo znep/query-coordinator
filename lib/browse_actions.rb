@@ -34,7 +34,7 @@ protected
 
     cat_chop = get_cutoff(:category)
     cats = cats.sort.map{ |c| {:text => c, :value => c} }
-    cats, hidden_cats = cats[0..(cat_chop - 1)], cats if cats.length > cat_chop
+    cats, hidden_cats = cats[0..(cat_chop - 1)], cats[cat_chop..-1] if cats.length > cat_chop
 
     if params[:category].present? && !cats.any?{ |cat| cat[:text] == params[:category] }
       cats.push({ :text => params[:category], :value => params[:category] })
@@ -68,7 +68,8 @@ protected
       :singular_description => 'topic',
       :param => :tags,
       :options => top_tags,
-      :extra_options => tag_cloud
+      :extra_options => tag_cloud,
+      :tag_cloud => true
     }
   end
 
@@ -87,7 +88,7 @@ protected
     top_feds = all_feds.slice(0, fed_chop)
     fed_cloud = nil
     if all_feds.length > fed_chop
-      fed_cloud = all_feds
+      fed_cloud = all_feds[fed_chop..-1]
     end
 
     { :title => 'Federated Domains',
@@ -142,8 +143,8 @@ protected
         facet.options, facet.extra_options = facet.options.partition{ |opt| opt.summary }
         if facet.options.length < 1
           facet.options = facet.extra_options[0..(custom_chop - 1)]
+          facet.extra_options.slice!(custom_chop..-1)
         end
-        facet.extra_options_class = "padMore"
       end
       facet.to_hash.deep_symbolize_keys
     end

@@ -715,7 +715,8 @@ jQuery.bt = {version: '0.9.5-rc1'};
       if (opts.killTitle) {
         $(this).find('[title]').andSelf().each(function() {
           if (!$(this).attr('bt-xTitle')) {
-            $(this).attr('bt-xTitle', $(this).attr('title')).attr('title', '');
+            $(this).attr('bt-xTitle', $(this).attr('title'));
+            $(this).attr('title', '');
           }
         });
       }    

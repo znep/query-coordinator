@@ -10,7 +10,7 @@
 # Similarly, if you leave off a 'start' param, the message will be displayed
 # until it is removed from this file
 
-start: 2011-06-03t17:00:00.00-07:00
-end: 2011-06-05t18:00:00.00-07:00
-message: This Socrata-powered site may be unavailable for routine maintenance Sunday, June 5th from 5:00pm-6:00pm PDT.
+#start: 2011-06-03t17:00:00.00-07:00
+#end: 2011-06-05t18:00:00.00-07:00
+#message: This Socrata-powered site may be unavailable for routine maintenance Sunday, June 5th from 5:00pm-6:00pm PDT.
 

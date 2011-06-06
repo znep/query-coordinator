@@ -332,10 +332,14 @@
             { seriesType = 'scatter'; }
         }
 
-        var clipFormatter = function()
+        var clipFormatter = function(xAxis)
         {
             var abbreviateNumbers = function(num)
             {
+                // This check comes first because it's simpler than a regex.
+                if (xAxis && !_.include(Dataset.chart.numericTypes,chartObj._xColumn.renderTypeName))
+                { return num; }
+
                 // Are you really a number?
                 // yColumn numbers will always come back as numbers.
                 // xColumn numbers will come back as strings, but may be intended as strings.
@@ -378,7 +382,7 @@
                     day: '%e %b',
                     week: '%e %b',
                     month: '%b %Y'
-                }, labels: {formatter: clipFormatter} },
+                }, labels: {formatter: function() { return clipFormatter.apply(this, [true]); }} },
             yAxis: { title:
                 { enabled: yTitle !== '' && !_.isUndefined(yTitle), text: yTitle,
                     style: { backgroundColor: '#ffffff',

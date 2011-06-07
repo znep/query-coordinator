@@ -59,13 +59,11 @@
               <%- end -%>
             </ul>
             <%- if !facet[:extra_options].blank? -%>
-            <a class="moreLink" href="#More <%= facet[:title] %>">View all</a>
-            <div class="moreOptions hide">
+            <div class="moreOptions <%= facet[:tag_cloud].present? ? 'cloud' : 'list' %> hide">
               <%- facet[:extra_options].each do |facet_option| -%>
                 <%- cp = opts[:user_params].dup -%>
                 <%- cp[facet[:param]] = facet_option[:value] -%>
                 <a href="<%= opts[:base_url] + '?' + cp.to_param %>"
-                  <%= "class=#{facet[:extra_options_class]}" if facet[:extra_options_class] %>
                   rel="<%= facet_option[:count] %>">
                   <%- if facet_option[:icon] -%>
                     <img class="customIcon" src="<%= theme_image_url(facet_option[:icon]) %>" alt="icon" />
@@ -76,6 +74,7 @@
                 </a>
               <%- end -%>
             </div>
+            <a class="moreLink" href="#More <%= facet[:title] %>">View all</a>
             <%- end -%>
           <%- else -%>
             <%- if opts[facet[:param]].present? -%>
@@ -84,7 +83,7 @@
                 (Clear)
               </a></li></ul>
               <%- end -%>
-            <%= raw facet[:custom_content].call(opts) %>
+            <%= raw facet[:custom_content].call(params, opts) %>
           <%- end -%>
         </div>
         <%- end -%>

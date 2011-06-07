@@ -367,12 +367,12 @@ javascripts:
     - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/controls/image-uploader.js
     - public/javascripts/screens/profile-screen-edit.js
-  homepage-show:
-    - public/javascripts/screens/homepage-show.js
   stories:
     - public/javascripts/controls/stories.js
   featured_views:
     - public/javascripts/controls/featured_views.js
+  ticker-layout:
+    - public/javascripts/controls/ticker_layout.js
   public-analytics:
     - public/javascripts/screens/sitewide-analytics-shared.js
     - public/javascripts/screens/public-analytics.js
@@ -390,8 +390,13 @@ javascripts:
     - public/javascripts/plugins/jquery.bgiframe.min.js
   oldie:
     - public/javascripts/screens/oldie.js
-  bespin:
-    - public/javascripts/plugins/bespin/BespinEmbedded.js
+  ace:
+    - public/javascripts/plugins/ace/ace-uncompressed.js
+    - public/javascripts/plugins/ace/theme-idle_fingers.js
+    - public/javascripts/plugins/ace/mode-json.js
+    - public/javascripts/plugins/ace/mode-css.js
+    - public/javascripts/plugins/ace/mode-html.js
+
 
 dump:
   javascripts:

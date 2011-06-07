@@ -193,14 +193,16 @@
                     (Dataset.chart.types[chartObj._chartType].renderOther ||
                     chartObj.settings.view.displayFormat.renderOther))
                 {
-                    if (chartObj._otherIndex)
+                    if (!$.isBlank(chartObj._otherIndex))
                     {
                         chartObj._xCategories.splice(chartObj._otherIndex, 1);
                         for (var i = 0; i < chartObj._seriesRemainders.length; i++)
                         {
-                            if (!_.isUndefined(chartObj.chart))
+                            if (!$.isBlank(chartObj.chart) &&
+                                !$.isBlank(chartObj.chart.series[i].data[chartObj._otherIndex]))
                             { chartObj.chart.series[i].data[chartObj._otherIndex].remove(); }
-                            if (!_.isUndefined(chartObj.secondChart))
+                            if (!$.isBlank(chartObj.secondChart) &&
+                                !$.isBlank(chartObj.secondChart.series[i].data[chartObj._otherIndex]))
                             { chartObj.secondChart.series[i].data[chartObj._otherIndex].remove(); }
                             chartObj._seriesCache[i].data.splice(chartObj._otherIndex, 1);
                         }
@@ -227,8 +229,8 @@
 
                     if (!_.isUndefined(chartObj.chart))
                     { chartObj.chart.redraw(); }
-                    if (!_.isUndefined(secondChartObj.secondChart))
-                    { secondChartObj.secondChart.redraw(); }
+                    if (!_.isUndefined(chartObj.secondChart))
+                    { chartObj.secondChart.redraw(); }
                 }
 
                 if (!_.isUndefined(chartObj.chart))
@@ -330,10 +332,15 @@
             { seriesType = 'scatter'; }
         }
 
-        var clipFormatter = function()
+        var clipFormatter = function(xAxis)
         {
             var abbreviateNumbers = function(num)
             {
+                // This check comes first because it's simpler than a regex.
+                if (xAxis && chartObj._xColumn &&
+                    !_.include(Dataset.chart.numericTypes, chartObj._xColumn.renderTypeName))
+                { return num; }
+
                 // Are you really a number?
                 // yColumn numbers will always come back as numbers.
                 // xColumn numbers will come back as strings, but may be intended as strings.
@@ -354,6 +361,7 @@
         var chartConfig =
         {
             chart: {
+                animation: false,
                 renderTo: chartObj.$dom()[0],
                 defaultSeriesType: seriesType,
                 events: { load: function() { chartObj.finishLoading(); } },
@@ -375,7 +383,7 @@
                     day: '%e %b',
                     week: '%e %b',
                     month: '%b %Y'
-                }, labels: {formatter: clipFormatter} },
+                }, labels: {formatter: function() { return clipFormatter.apply(this, [true]); }} },
             yAxis: { title:
                 { enabled: yTitle !== '' && !_.isUndefined(yTitle), text: yTitle,
                     style: { backgroundColor: '#ffffff',
@@ -452,12 +460,18 @@
         { typeConfig.lineWidth = parseInt(chartObj.settings
             .view.displayFormat.lineSize); }
 
+        var tooltipTimeout;
         typeConfig.point = { events: {
             mouseOver: function() {
+                clearTimeout(tooltipTimeout);
                 customTooltip(chartObj, this);
             },
             mouseOut: function() {
-                $("#highcharts_tooltip").hide();
+                var $tooltip = $("#highcharts_tooltip");
+                tooltipTimeout = setTimeout(function(){
+                    if (!$tooltip.data('mouseover'))
+                    {  $tooltip.hide(); }
+                }, 500);
             }
         }};
 
@@ -507,15 +521,7 @@
         };
         // IE7 seems to have some problem creating the chart right away;
         // add a delay and it seems to work.  Do I know why (for either part)? No
-        _.defer(function()
-        {
-            // We need the default pane to load before attempting to load the chart.
-            // Otherwise a race condition sort of explodes messily.
-            if ($.subKeyDefined(blist.datasetPage, 'sidebar._defaultPane'))
-            { setTimeout(loadChart, 1000); }
-            else
-            { loadChart(); }
-        });
+        _.defer(function() { loadChart(); });
     };
 
     // Once the chart's ready to draw, let' take a picture
@@ -618,14 +624,6 @@
                 }
             }
         }
-        if (row && row.color)
-        {
-            point.color = row.color;
-            point.fillColor = row.color;
-            if (point.states)
-            { point.states.hover = $.extend(point.states.hover,
-                { fillColor: '#'+$.rgbToHex($.brighten(point.fillColor)) }); }
-        }
 
         // Construct a fake row for the Other point
         if (!row)
@@ -634,6 +632,18 @@
             row = { id: 'Other', invalid: {}, error: {}, changed: {} };
             row[title ? title.id : 'fake'] = 'Other';
             row[chartObj._valueColumns[seriesIndex].column.id] = point.y;
+            var cf = _.detect(chartObj.settings.view.metadata.conditionalFormatting,
+                function(cf) { return cf.condition === true; });
+            if (cf) { row.color = cf.color; }
+        }
+
+        if (row && row.color)
+        {
+            point.color = row.color;
+            point.fillColor = row.color;
+            if (point.states)
+            { point.states.hover = $.extend(point.states.hover,
+                { fillColor: '#'+$.rgbToHex($.brighten(point.fillColor)) }); }
         }
 
         point.flyoutDetails = chartObj.renderFlyout(row,
@@ -671,6 +681,7 @@
 
         var config = {
             chart: {
+                animation: false,
                 renderTo: $secondChart[0],
                 defaultSeriesType: 'line',
                 zoomType: 'x',
@@ -804,7 +815,7 @@
         if ($box.length < 1)
         {
             chartObj.$dom().after('<div id="highcharts_tooltip"></div>');
-            $box = chartObj.$dom().siblings('#highcharts_tooltip');
+            $box = chartObj.$dom().siblings('#highcharts_tooltip').hide();
         }
 
         if (!point.flyoutDetails) { $box.hide(); return; }
@@ -821,13 +832,27 @@
         var offset = $container.offset();
         position.top -= offset.top;
         position.left -= offset.left;
-        position.top += 10;
-        position.left += 10;
+
+        var boxOffset = 10;
+        if (_.include(['line', 'bubble'], chartObj._chartType))
+        { boxOffset = 2; }
+        position.top += boxOffset;
+        position.left += boxOffset;
 
         $box.empty()
             .append(point.flyoutDetails)
             .css({ top: position.top + 'px', left: position.left + 'px' })
             .show();
+
+        if (!$box.data('events-attached'))
+        {
+            $box.hover(
+                   function(event)
+                   { $(this).data('mouseover', true); event.stopPropagation(); },
+                   function()
+                   { $(this).data('mouseover', false).hide(); })
+                .data('events-attached', true);
+        }
 
         if ($container.width() <= position.left + $box.width())
         { $box.css({ left: ($container.width() - $box.width() - 20) + 'px' }); }

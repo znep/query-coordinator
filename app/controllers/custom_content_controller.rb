@@ -9,6 +9,7 @@ class CustomContentController < ApplicationController
 
     @page_config = get_config('homepage', 'homepage')
     @page_config = default_homepage if @page_config.nil? || @page_config.default_homepage
+    prepare_config(@page_config)
 
     @page_title = @page_config.title
     @stylesheet = 'homepage/homepage'
@@ -21,6 +22,7 @@ class CustomContentController < ApplicationController
 
     @page_config = get_config('page', params[:page_name])
     return render_404 unless @page_config
+    prepare_config(@page_config)
 
     @page_title = @page_config.title
     @stylesheet = "page/#{params[:page_name]}"
@@ -33,6 +35,7 @@ class CustomContentController < ApplicationController
 
     @page_config = get_config('facet_listing', params[:facet_name])
     return render_404 unless @page_config
+    prepare_config(@page_config)
 
     @page_title = @page_config.title
     @stylesheet = "facet_listing/#{params[:facet_name]}"
@@ -45,6 +48,7 @@ class CustomContentController < ApplicationController
 
     @page_config = get_config('facet_page', params[:facet_name])
     return render_404 unless @page_config
+    prepare_config(@page_config)
 
     @page_title = [ params[:facet_value], @page_config.title ]
     @stylesheet = "facet_page/#{params[:facet_name]}"
@@ -62,8 +66,15 @@ class CustomContentController < ApplicationController
     sheet = Rails.cache.read(cache_key)
 
     if sheet.nil?
-      page_config = get_config(params[:page_type], params[:config_name], false)
-      return render_404 unless page_config
+      page_config = get_config(params[:page_type], params[:config_name])
+
+      if (params[:page_type] == 'homepage') && (page_config.nil? || page_config.default_homepage)
+        Rails.cache.write(cache_key, '')
+        return render :nothing => true, :content_type => 'text/css'
+      elsif page_config.nil?
+        return render_404 unless page_config
+      end
+      prepare_config(page_config, false)
 
       sheet = build_stylesheet(page_config.contents)
       Rails.cache.write(cache_key, sheet)
@@ -89,37 +100,21 @@ private
   end
 
   # get a config from the configurations service and prepare the env for render
-  def get_config(page_type, config_name, prepare = true)
+  def get_config(page_type, config_name)
     properties = CurrentDomain.property(page_type.pluralize, :custom_content)
     return nil unless properties
 
     page_config = properties[config_name]
     return nil unless page_config
 
-    return prepare_config(page_config, prepare)
+    return page_config
   end
 
   # generate the default homepage configuration and use it to prepare for render
   def default_homepage
-    page_config = Hashie::Mash.new({
-      title: '',
-      default_homepage: true,
-      contents: [{
-        type: 'stories',
-        properties: {
-          fromDomainConfig: true
-        }
-      }, {
-        type: 'featured_views',
-        properties: {
-          fromDomainConfig: true
-        }
-      }, {
-        type: 'catalog'
-      }]
-    })
+    page_config = Hashie::Mash.new(@@default_homepage) # Mash will not modify original hash
 
-    return prepare_config page_config
+    return page_config
   end
 
   # take a canvas configuration and prepare it for render
@@ -154,6 +149,32 @@ private
   def app_helper
     AppHelper.instance
   end
+
+  @@default_homepage = {
+    title: '',
+    default_homepage: true,
+    contents: [{
+      type: 'data_splash'
+    }, {
+      type: 'stories',
+      properties: {
+        fromDomainConfig: true
+      }
+    }, {
+      type: 'featured_views',
+      properties: {
+        fromDomainConfig: true
+      }
+    }, {
+      type: 'catalog',
+      properties: {
+        browseOptions: {
+          base_url: '/browse',
+          suppress_dataset_creation: true
+        }
+      }
+    }]
+  }
 end
 
 class AppHelper

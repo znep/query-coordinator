@@ -1,9 +1,11 @@
 $(function()
 {
-    var $feedbackWidg = $('.footerWidget');
+    var $feedbackWidg = $('.wbWidget');
     $feedbackWidg.find('h2').click(function(event)
     {
-        $(this).siblings('.widgetContent').toggle();
+        $(this)
+            .toggleClass('expanded')
+            .siblings('.widgetContent').toggle();
     });
 
     var title = document.title;

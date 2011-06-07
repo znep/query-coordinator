@@ -525,9 +525,28 @@
                         vizObj._byView[view.id]._clustering = true;
                         if (vizObj.updateRowsByViewport
                             && vizObj.settings.view.displayFormat.viewport)
-                        { vizObj.updateRowsByViewport(
-                            vizObj.settings.view.displayFormat.viewport,
-                            vizObj.settings.view.displayFormat.type != 'esri'); }
+                        {
+                            var isEsri = vizObj.settings.view.displayFormat.type == 'esri';
+                            var viewport = vizObj.settings.view.displayFormat.viewport;
+                            if (isEsri && viewport.sr == 102100)
+                            {
+                                viewport =
+                                    esri.geometry.webMercatorToGeographic(new esri.geometry.Extent(
+                                        viewport.xmin,
+                                        viewport.ymin,
+                                        viewport.xmax,
+                                        viewport.ymax,
+                                        new esri.SpatialReference({ wkid: viewport.sr })))
+                                viewport = {
+                                    xmin: viewport.xmin,
+                                    ymin: viewport.ymin,
+                                    xmax: viewport.xmax,
+                                    ymax: viewport.ymax,
+                                    sr: viewport.spatialReference.wkid
+                                };
+                            }
+                            vizObj.updateRowsByViewport(viewport, !isEsri);
+                        }
                         view.getClusters(function(data)
                         {
                             _.defer(function()

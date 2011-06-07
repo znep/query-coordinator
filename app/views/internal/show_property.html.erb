@@ -26,8 +26,7 @@
     <% form_tag('/internal/orgs/' + @domain.organizationId.to_s +
       '/domains/' + @domain.cname + '/site_config/' + @config.id.to_s +
       '/property', {:class => 'wide'}) do %>
-      <div class="bespin" data-bespinoptions='{"stealFocus":true, "syntax":"<%= is_json ? 'js' : 'html' %>"}'
-        style="height: 60em"></div>
+      <div id="ace-editor"></div>
       <%= text_area_tag 'properties[' + @property_key + ']', raw(@property), :style => 'display: none', :id => 'preText' %>
       <input type="submit" value="Save" id="saveButton"/>
       <div class="flash notice hide saveMessage">Configuration Saved</div>
@@ -36,26 +35,34 @@
 </div>
 
 <% content_for :js_footer do %>
-  <link id="bespin_base" href="/javascripts/plugins/bespin/">
-  <%= include_javascripts 'bespin' %>
+  <%= include_javascripts 'ace' %>
   <script type="text/javascript">
   var isJson = <%= is_json == true %>;
+  var isCss  = <%= (@property_key =~ /.*css.*/) != nil %>;
   $(function()
   {
-      $('div.bespin')
+      var editor = window.ace.edit('ace-editor');
+      editor.setTheme('ace/theme/idle_fingers');
+      editor.setShowPrintMargin(false);
+
+      var JavascriptMode = require('ace/mode/json').Mode;
+      var HtmlMode       = require('ace/mode/html').Mode;
+      var CssMode        = require('ace/mode/css').Mode;
+      var currentMode = isCss ? CssMode : (isJson ? JavascriptMode : HtmlMode);
+      editor.getSession().setMode(new currentMode());
+
+      editor.getSession().setValue(
         <%- if (is_json && @property)-%>
-          .text(
             <%= raw( "JSON.stringify(#{@property.to_json}, null, 4)") %>
-          )
         <%- else -%>
-          .get(0).innerHTML =
             $('#preText').val()
         <%- end -%>
-      ;
+      );
+
       var $form = $('form');
       var updateJsonVal = function()
       {
-          var bespinVal = $('.bespin').get(0).bespin.editor.value;
+          var bespinVal = editor.getSession().getValue();
 
           if (!$.isBlank($.trim(bespinVal)) || confirm('Do you want to clear this field?'))
           {

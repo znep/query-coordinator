@@ -66,9 +66,6 @@
                 if (cmObj.settings.columnPropertiesEnabled)
                 { features.properties = true; }
 
-                // If we did not enable features, do not install the menu
-                if (_.isEmpty(features)) { return; }
-
                 // We've got a menu, so add a class
                 $domObj.addClass('hasColumnMenu');
 

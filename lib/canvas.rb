@@ -134,6 +134,21 @@ module Canvas
 # WIDGETS (LAYOUT)
 
   class Container < CanvasWidget
+  protected
+    self.default_properties = {
+      classNames: ['contentBox']
+    }
+  end
+
+  class TickerLayout < CanvasWidget
+  protected
+    self.default_properties = {
+      childTitles: [],
+      pager: {
+        divider: '/',
+        type: 'incremental'
+      }
+    }
   end
 
   class TwoColumnLayout < CanvasWidget
@@ -154,6 +169,15 @@ module Canvas
 
 # WIDGETS (CONTENT)
 
+  class Breadcrumb < CanvasWidget
+  protected
+    self.default_properties = {
+      breadcrumbRoot: [
+        { text: 'Home', href: '/' }
+      ]
+    }
+  end
+
   class Catalog < CanvasWidget
     include BrowseActions
     attr_reader :processed_browse
@@ -163,7 +187,11 @@ module Canvas
       browse_options.deep_symbolize_keys!
 
       if (self.properties.respectFacet == true) && (Environment.context == :facet_page)
-        browse_options[:metadata_tag] = Environment.metadata_tag
+        if self.properties.facetStyle == 'metadata'
+          browse_options[:metadata_tag] = Environment.metadata_tag
+        elsif self.properties.facetStyle == 'search'
+          browse_options[:q] = Environment.facet_value
+        end
       end
 
       @processed_browse = process_browse(Environment.request, browse_options)
@@ -173,17 +201,21 @@ module Canvas
       browseOptions: {
         ignore_params: [ :page_name, :facet_name, :facet_value ]
       },
+      facetStyle: 'metadata',
       respectFacet: true
     }
   end
 
-  class Breadcrumb < CanvasWidget
-  protected
-    self.default_properties = {
-      breadcrumbRoot: [
-        { text: 'Home', href: '/' }
-      ]
-    }
+  class DataSplash < CanvasWidget
+    attr_reader :fragment
+
+    def can_render?
+      return @fragment.nil? || (@fragment != '')
+    end
+
+    def prepare!
+      @fragment = CurrentDomain.templates['data_splash']
+    end
   end
 
   class FacetList < CanvasWidget
@@ -243,7 +275,10 @@ module Canvas
         @featured_views = self.properties.featured_views
       end
 
-      return if @featured_views.blank?
+      if @featured_views.blank? || !(@featured_views.is_a? Array)
+        @featured_views = []
+        return
+      end
 
       # get the freshest versions of the canonical view urls
       View.find_multiple(@featured_views.map{ |fv| fv.viewId }).each do |view|
@@ -321,7 +356,11 @@ module Canvas
       search_options[:page] = @current_page || 1
 
       if (self.properties.respectFacet == true) && (Environment.context == :facet_page)
-        search_options[:metadata_tag] = Environment.metadata_tag
+        if self.properties.facetStyle == 'metadata'
+          search_options[:metadata_tag] = Environment.metadata_tag
+        elsif self.properties.facetStyle == 'search'
+          search_options[:q] = Environment.facet_value
+        end
       end
 
       search_response = SearchResult.search('views', search_options)[0]
@@ -330,6 +369,7 @@ module Canvas
     end
   protected
     self.default_properties = {
+      facetStyle: 'metadata',
       searchOptions: {
         limit: 10,
         orderBy: 'most_accessed',
@@ -349,7 +389,11 @@ module Canvas
         search_options = self.properties.searchOptions.merge({ limit: 1, page: 1 })
 
         if (self.properties.respectFacet == true) && (Environment.context == :facet_page)
-          search_options[:metadata_tag] = Environment.metadata_tag
+          if self.properties.facetStyle == 'metadata'
+            search_options[:metadata_tag] = Environment.metadata_tag
+          elsif self.properties.facetStyle == 'search'
+            search_options[:q] = Environment.facet_value
+          end
         end
 
         search_response = SearchResult.search('views', search_options)[0]
@@ -365,6 +409,7 @@ module Canvas
   protected
     self.default_properties = {
       details: 'above',
+      facetStyle: 'metadata',
       noResultsMessage: 'No views could be found matching these criteria.',
       respectFacet: true,
       searchOptions: {

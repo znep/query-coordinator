@@ -96,15 +96,6 @@ class InternalController < ApplicationController
     redirect_to '/internal/orgs/' + params[:id] + '/domains/' + domain.cname
   end
 
-  def preview_site_config
-    conf_id = params[:config_id]
-    conf_id = nil if conf_id == 'nil' || conf_id.blank?
-    session[:custom_site_config] = conf_id
-
-    redirect_to '/internal/orgs/' + params[:org_id] + '/domains/' +
-      params[:domain_id]
-  end
-
   def create_site_config
     begin
       conf_name = params[:config][:name]

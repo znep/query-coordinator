@@ -374,12 +374,6 @@ body
       cursor: pointer
 
 .fieldItem
-  &.staticLabel
-    input
-      font-size: 1em
-      padding:
-        bottom: 0
-        top: 0
   &.hover, &.ui-resizable-resizing, &.directMenuOpen
     > .controlIndicators
       display: block
@@ -392,6 +386,13 @@ body
       z-index: 100000
     > .controlIndicators
       overflow: visible
+
+  .staticLabel
+    input
+      font-size: 1em
+      padding:
+        bottom: 0
+        top: 0
 
 
 .navRenderType .navigation

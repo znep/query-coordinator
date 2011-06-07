@@ -42,8 +42,13 @@
       .title
         font-size: 1.3em
         font-weight: bold
+      .moreOptions.list
+        a
+          display: block
+          padding: 0.25em 0
       li
         padding: 0.25em 0
+      li, .moreOptions.list
         a
           @include sprite-menu-icons
           color: $color_links_normal
@@ -501,9 +506,6 @@
       font-size: 1.2em
       line-height: 1.2em
       margin-right: 0.5em
-      &.padMore
-        line-height: 1.5em
-        padding: 0 0.5em
 
       .customIcon
         height: 16px

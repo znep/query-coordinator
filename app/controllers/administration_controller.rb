@@ -34,12 +34,12 @@ class AdministrationController < ApplicationController
   end
 
   def select_dataset
-    @processed_browse = process_browse(request, params.merge({
+    @processed_browse = process_browse(request, {
       browse_in_container: true,
       rel_type: 'external',
       view_type: 'table',
       hide_view_types: true
-    }))
+    })
   end
 
   before_filter :check_member, :only => :catalog_widget
@@ -973,7 +973,7 @@ private
     end
 
     # make sure the color looks as we expect
-    customization[:backgroundColor].gsub!(/^(?!#)/, '#') if customization[:backgroundColor].present?
+    customization[:backgroundColor].gsub!(/^#/, '') if customization[:backgroundColor].present?
 
     story.customization = customization
   end

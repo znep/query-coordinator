@@ -1,0 +1,41 @@
+<div id="<%= widget.elem_id %>" class="tickerLayout clearfix">
+  <div class="tickerLayoutPager clearfix">
+    <div class="currentChildName"><%= widget.properties.childTitles.first %></div>
+    <%- if widget.properties.pager.type == 'incremental' -%>
+      <div class="incrementalPager">
+        <div class="pagerControls">
+          <a href="#prev" class="leftArrow pageButton prevPageButton"><span class="icon">Previous</span></a>
+          <a href="#next" class="rightArrow pageButton nextPageButton"><span class="icon">Next</span></a>
+        </div>
+        <div class="pagerCounter">
+          <span class="currentPage">1</span>
+          <span class="pagerDivider"><%= widget.properties.pager.divider %></span>
+          <span class="totalPages"><%= widget.children.size %></span>
+        </div>
+      </div>
+    <%- end -%>
+  </div>
+  <ul class="tickerLayoutChildren">
+    <%- widget.children.each do |child_widget| -%>
+      <li class="tickerLayoutChild clearfix">
+        <%= raw render_widget(child_widget) %>
+      </li>
+    <%- end -%>
+  </ul>
+</div>
+
+<%- content_for :js_footer do -%>
+  <%- allow_once do -%>
+    <%= include_javascripts 'ticker-layout' %>
+  <%- end -%>
+
+  <script type="text/javascript">
+    $(function()
+    {
+        var elemId = '<%= widget.elem_id %>';
+        $('#' + elemId).tickerLayout({
+            childTitles: <%= raw safe_json widget.properties.childTitles %>
+        });
+    });
+  </script>
+<%- end -%>

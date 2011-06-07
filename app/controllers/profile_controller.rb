@@ -109,7 +109,8 @@ class ProfileController < ApplicationController
         :singular_description => 'topic',
         :param => :tags,
         :options => top_tags,
-        :extra_options => tag_cloud
+        :extra_options => tag_cloud,
+        :tag_cloud => true
       }
     end
 

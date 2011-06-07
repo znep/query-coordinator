@@ -628,7 +628,9 @@
         if (isIdentifyTask(mapObj)) { return; }
         if (mapObj._byView[mapObj.settings.view.id]._clusters)
         {
-            mapObj.map.centerAndZoom(evt.mapPoint, mapObj.map.getLevel() + 1);
+            // FIXME: This is a stop-gap for a bug existing in production. =(
+            return;
+            //mapObj.map.centerAndZoom(evt.mapPoint, mapObj.map.getLevel() + 1);
         }
         else
         {

@@ -43,7 +43,7 @@
           <%- cur_props[prop['name']] = true -%>
           <label><%= prop['name'] %></label>
           <%= text_area_tag 'properties[' + prop['name'] + ']',
-            prop['value'].blank? ? '' : prop['value'].to_json %>
+            prop['value'].nil? ? '' : prop['value'].to_json %>
         <%= check_box_tag 'delete_properties[' + prop['name'] + ']',
           'delete' %>
         <span class="deleteLink">(Delete)</span>

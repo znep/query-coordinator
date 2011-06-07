@@ -482,7 +482,7 @@ protected
           end
         end
       end
-      if params[:view][:metadata][:rdfClass] =~ /^_.*/
+      if params[:view][:metadata].present? && params[:view][:metadata][:rdfClass] =~ /^_.*/
         params[:view][:metadata][:rdfClass] = nil
       end
       params[:view][:metadata] = (view.data['metadata'] || {}).

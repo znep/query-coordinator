@@ -32,8 +32,9 @@ protected
     cats = View.categories.keys.reject {|c| c.blank?}
     return nil if cats.empty?
 
+    cat_chop = get_cutoff(:category)
     cats = cats.sort.map{ |c| {:text => c, :value => c} }
-    cats, hidden_cats = cats[0..4], cats if cats.length > 5
+    cats, hidden_cats = cats[0..(cat_chop - 1)], cats[cat_chop..-1] if cats.length > cat_chop
 
     if params[:category].present? && !cats.any?{ |cat| cat[:text] == params[:category] }
       cats.push({ :text => params[:category], :value => params[:category] })
@@ -50,14 +51,15 @@ protected
   def topics_facet
     params = params || request_params || {}
 
+    topic_chop = get_cutoff(:topic)
     all_tags = Tag.find({:method => "viewsTags"})
-    top_tags = all_tags.slice(0, 5).map {|t| t.name}
+    top_tags = all_tags.slice(0, topic_chop).map {|t| t.name}
     if params[:tags].present? && !top_tags.include?(params[:tags])
       top_tags.push(params[:tags])
     end
     top_tags = top_tags.sort.map {|t| {:text => t, :value => t}}
     tag_cloud = nil
-    if all_tags.length > 5
+    if all_tags.length > topic_chop
       tag_cloud = all_tags.sort_by {|t| t.name}.
         map {|t| {:text => t.name, :value => t.name, :count => t.frequency}}
     end
@@ -66,7 +68,8 @@ protected
       :singular_description => 'topic',
       :param => :tags,
       :options => top_tags,
-      :extra_options => tag_cloud
+      :extra_options => tag_cloud,
+      :tag_cloud => true
     }
   end
 
@@ -79,12 +82,13 @@ protected
         :icon => {:type => 'static', :href => "/api/domains/#{f.sourceDomainCName}/icons/smallIcon"}} }
     return nil if all_feds.length < 1
 
+    fed_chop = get_cutoff(:federation)
     all_feds.unshift({:text => 'This site only', :value => CurrentDomain.domain.id.to_s,
         :icon => {:type => 'static', :href => "/api/domains/#{CurrentDomain.cname}/icons/smallIcon"}})
-    top_feds = all_feds.slice(0, 5)
+    top_feds = all_feds.slice(0, fed_chop)
     fed_cloud = nil
-    if all_feds.length > 5
-      fed_cloud = all_feds
+    if all_feds.length > fed_chop
+      fed_cloud = all_feds[fed_chop..-1]
     end
 
     { :title => 'Federated Domains',
@@ -128,17 +132,21 @@ protected
   end
 
   def custom_facets
-    facets = CurrentDomain.property(:facets, :catalog)
+    facets = CurrentDomain.property(:custom_facets, :catalog)
+
     return if facets.nil?
+    custom_chop = get_cutoff(:custom)
     facets.map do |facet|
-      if facet.options && facet.options.length > 5
+      facet.param = facet.param.to_sym
+
+      if facet.options && facet.options.length > custom_chop
         facet.options, facet.extra_options = facet.options.partition{ |opt| opt.summary }
         if facet.options.length < 1
-          facet.options = facet.extra_options[0..4]
+          facet.options = facet.extra_options[0..(custom_chop - 1)]
+          facet.extra_options.slice!(custom_chop..-1)
         end
-        facet.extra_options_class = "padMore"
       end
-      facet
+      facet.to_hash.deep_symbolize_keys
     end
   end
 
@@ -230,9 +238,9 @@ protected
     cfs = custom_facets
     if cfs
       cfs.each do |facet|
-        if browse_options[facet.param]
+        if browse_options[facet[:param]]
           browse_options[:metadata_tag] ||= []
-          browse_options[:metadata_tag] << facet.param + ":" + browse_options[facet.param]
+          browse_options[:metadata_tag] << facet[:param].to_s + ":" + browse_options[facet[:param]]
         end
       end
     end
@@ -280,6 +288,12 @@ protected
       end
     end
 
+    if browse_options[:facets].present? && !(browse_options[:facets].is_a? Array)
+      # Temporary hack to track down this widget that has the wrong querystring
+      Rails.logger.error(">>> FOUND A BAD CATALOG EMBED AT #{request.referrer} (#{request.path}) <<<")
+      browse_options.delete :facets
+    end
+
     browse_options[:facets] ||= [
       view_types_facet,
       cfs,
@@ -288,6 +302,13 @@ protected
       federated_facet,
       extents_facet
     ]
+
+    browse_options[:facets].reject! do |facet|
+      next if facet.is_a? Hash
+      # Temporary hack to track down this widget that has the wrong querystring
+      Rails.logger.error(">>> FOUND A BAD CATALOG EMBED AT #{request.referrer} (#{request.path}) <<<")
+      true
+    end
     browse_options[:facets] = browse_options[:facets].compact.flatten.reject{ |f| f[:hidden] }
 
     if browse_options[:suppressed_facets].is_a? Array
@@ -346,6 +367,31 @@ private
 
     t.blank? ? 'Search & Browse Datasets and Views' : 'Results ' + t
   end
+
+  def get_cutoff(facet_name)
+    if @@cutoff_store[CurrentDomain.cname].nil?
+      domain_cutoffs = CurrentDomain.property(:facet_cutoffs, :catalog) || {}
+      translated_cutoffs = domain_cutoffs.inject({}) do |collect, (key, value)|
+        collect[key.to_sym] = value.to_i
+        collect
+      end
+      @@cutoff_store[CurrentDomain.cname] = @@default_cutoffs.merge(translated_cutoffs)
+    end
+    @@cutoff_store[CurrentDomain.cname][facet_name]
+  end
+
+  # Unused for now, but this will refresh the cutoffs from the configs service
+  def self.clear_cutoff_cache(cname = nil)
+    @@cutoff_store.delete(cname || CurrentDomain.cname)
+  end
+
+  @@default_cutoffs = {
+    :custom => 5,
+    :category => 5,
+    :federation => 5,
+    :topic => 5
+  }
+  @@cutoff_store = {}
 
   @@default_browse_sort_opts = [
     { value: 'relevance', name: 'Most Relevant' },

@@ -50,8 +50,6 @@ ActionController::Routing::Routes.draw do |map|
       :action => 'create_domain', :conditions => { :method => :post }
     internal.connect '/internal/orgs/:org_id/domains/:id', :controller => 'internal',
       :action => 'show_domain', :requirements => {:id => /(\w|-|\.)+/}
-    internal.connect '/internal/orgs/:org_id/domains/:domain_id/preview_site_config',
-      :action => 'preview_site_config', :requirements => {:domain_id => /(\w|-|\.)+/}
     internal.connect '/internal/orgs/:org_id/domains/:domain_id/site_config',
       :action => 'create_site_config', :requirements => {:domain_id => /(\w|-|\.)+/},
       :conditions => { :method => :post }
@@ -378,10 +376,6 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resource :account
   map.resources :user_sessions
-  map.connect '/site_config/:config_id',
-    :controller => 'user_sessions', :action => 'site_config'
-  map.connect '/clear_site_config',
-    :controller => 'user_sessions', :action => 'clear_site_config'
 
   map.connect '/robots.txt',
     :controller => 'robots_txt', :action => 'show'

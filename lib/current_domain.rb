@@ -12,19 +12,22 @@ class CurrentDomain
     end
   end
 
-  def self.set(cname, site_config_id = nil)
+  def self.set(cname)
     @@property_store = {} unless defined? @@property_store
 
     if !@@property_store.has_key?(cname)
       begin
-        @@property_store[cname] = { :data => Domain.find(cname),
-          :site_config_id => site_config_id }
+        @@property_store[cname] = { :data => Domain.find(cname) }
       rescue CoreServer::ResourceNotFound
         return false
       end
     end
 
     return @@current_domain = @@property_store[cname]
+  end
+
+  def self.set_site_config(cname, site_config_id)
+    @@property_store[cname][:site_config_id] = site_config_id
   end
 
   def self.reload

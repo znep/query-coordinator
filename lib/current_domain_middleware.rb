@@ -26,7 +26,7 @@ class CurrentDomainMiddleware
 
     if !host.blank?
       logger.debug "Current domain: #{host}"
-      current_domain = CurrentDomain.set(host, env['rack.session'][:custom_site_config])
+      current_domain = CurrentDomain.set(host)
 
       # Check every n minutes if the current domain needs to be refreshed
       if !Rails.env.development? && CurrentDomain.needs_refresh_check?(host)

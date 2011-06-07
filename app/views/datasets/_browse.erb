@@ -83,7 +83,7 @@
                 (Clear)
               </a></li></ul>
               <%- end -%>
-            <%= raw facet[:custom_content].call(opts) %>
+            <%= raw facet[:custom_content].call(params, opts) %>
           <%- end -%>
         </div>
         <%- end -%>

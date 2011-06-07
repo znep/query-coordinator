@@ -1093,21 +1093,23 @@ editRRNS.initLayout = function()
         $label.removeClass('inEdit');
         $label.empty().text(t);
         $label.draggable('enable');
+        $label.siblings('.controlIndicators').removeClass('hide');
 
         if (doSave && newText != $label.data('origText'))
         { editRRNS.updateConfig(); }
     };
 
-    $.live('.renderArea .staticLabel', 'dblclick', function(e)
+    $.live('.renderArea .fieldItem', 'dblclick', function(e)
     {
-        var $t = $(this);
-        if ($t.hasClass('inEdit')) { return; }
+        var $t = $(this).children('.staticLabel');;
+        if ($t.length < 1 || $t.hasClass('inEdit')) { return; }
 
         var t = '';
         if (!$t.hasClass('defaultData')) { t = $t.text(); }
         $t.data('origText', t);
         $t.draggable('disable');
         $t.addClass('inEdit');
+        $t.siblings('.controlIndicators').addClass('hide');
 
         $t.empty().append($.tag({tagName: 'input', type: 'text',
             'class': 'staticEditor'}));

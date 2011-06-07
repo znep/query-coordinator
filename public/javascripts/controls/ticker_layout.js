@@ -21,8 +21,8 @@
                 $pane.show();
                 $tickerChildrenContainer.height($pane.outerHeight(false));
 
-                // since
-                $pane.find('*').resize();
+                // since the chart isn't rendered properly when display:none'd, we need to rerender
+                $(window).resize();
             }
             else
             {

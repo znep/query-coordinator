@@ -337,7 +337,8 @@
             var abbreviateNumbers = function(num)
             {
                 // This check comes first because it's simpler than a regex.
-                if (xAxis && !_.include(Dataset.chart.numericTypes,chartObj._xColumn.renderTypeName))
+                if (xAxis && chartObj._xColumn &&
+                    !_.include(Dataset.chart.numericTypes, chartObj._xColumn.renderTypeName))
                 { return num; }
 
                 // Are you really a number?

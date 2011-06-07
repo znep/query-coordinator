@@ -2600,6 +2600,7 @@ this.Dataset = ServerModel.extend({
         name: true,
         originalViewId: true,
         privateMetadata: true,
+        publicationAppendEnabled: true,
         query: true,
         queryString: true,
         searchString: true,

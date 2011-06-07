@@ -56,25 +56,11 @@
           %>/domains/<%= @domain.cname %>/site_config/<%= conf.id %>'>
           <%= conf.name %>
         </a>
-        <%- if @domain.cname == CurrentDomain.cname &&
-          session[:custom_site_config] != conf.id.to_s -%>
-        |
-        <a class='minor' href='/internal/orgs/<%= @domain.organizationId
-          %>/domains/<%= @domain.cname
-          %>/preview_site_config?config_id=<%= conf.id %>'>(Preview)</a>
-        <%- end -%>
         </li>
         <%- end -%>
       </ul>
       <input type='submit' value='Set Default' />
-      <%- if @domain.cname == CurrentDomain.cname &&
-        session[:custom_site_config] != nil -%>
-      |
-      <a class='minor' href='/internal/orgs/<%= @domain.organizationId
-        %>/domains/<%= @domain.cname
-        %>/preview_site_config?config_id=nil'>(Reset to Default)</a>
       <%- end -%>
-      <% end %>
 
       <h2>Other Configurations</h2>
       <ul>

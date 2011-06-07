@@ -53,14 +53,4 @@ class UserSessionsController < ApplicationController
     flash[:notice] = "You have been logged out"
     redirect_to(login_path)
   end
-
-  def site_config
-    session[:custom_site_config] = params[:config_id]
-    redirect_to '/'
-  end
-
-  def clear_site_config
-    session[:custom_site_config] = nil
-    redirect_to '/'
-  end
 end

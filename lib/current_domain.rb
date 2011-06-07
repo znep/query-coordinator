@@ -26,10 +26,6 @@ class CurrentDomain
     return @@current_domain = @@property_store[cname]
   end
 
-  def self.set_site_config(cname, site_config_id)
-    @@property_store[cname][:site_config_id] = site_config_id
-  end
-
   def self.reload
     # Blow away the cached version of the domain,
     # forcing a refresh from the Core Server on configs and properties
@@ -270,9 +266,7 @@ class CurrentDomain
 
 private
   def self.current_theme
-    @@current_domain[:site_config_id].nil? ?
-      default_config :
-      Configuration.find(@@current_domain[:site_config_id].to_s)
+    default_config
   end
 
   def self.generate_cache_key(key)

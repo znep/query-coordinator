@@ -1119,6 +1119,10 @@
             var maxWidth = $scrolls.width();
             if ($scrolls[0].scrollHeight > $scrolls[0].clientHeight)
             { maxWidth -= scrollbarWidth; }
+            // Adjust for position of cell
+            var scrollsLeft = $scrolls.offset().left;
+            maxWidth = Math.max(maxWidth - ($refCells.eq(0).offset().left - scrollsLeft),
+                ($refCells.eq(-1).offset().left - scrollsLeft) + $refCells.eq(-1).outerWidth(true));
             maxWidth = Math.floor(maxWidth * 0.8);
             if (rc.width > maxWidth)
             {
@@ -1131,6 +1135,10 @@
             var maxHeight = $scrolls.height();
             if ($scrolls[0].scrollWidth > $scrolls[0].clientWidth)
             { maxHeight -= scrollbarWidth; }
+            // Adjust for position of cell
+            var scrollsTop = $scrolls.offset().top;
+            maxHeight = Math.max(maxHeight - ($refCells.eq(0).offset().top - scrollsTop),
+                ($refCells.eq(-1).offset().top - scrollsTop) + $refCells.eq(-1).outerHeight(true));
             maxHeight = Math.floor(maxHeight * 0.9);
             if (rc.height > maxHeight)
             {

@@ -129,7 +129,10 @@ $(function()
             }
         });
 
-        $content.find('.button.about:not(.hide)').attr("href", ds.fullUrl + ((ds.type == "blob" || ds.type == "href") ? "" : "/about"));
+        $content.find('.button.about:not(.hide)')
+          .attr("href", ds.fullUrl +
+              ((ds.type == "blob" || ds.type == "href") ? "" : "/about"))
+          .attr('rel', ds.isFederated() ? 'external' : '');
     };
 
     // Hook up expansion for list view

@@ -14,13 +14,26 @@
         {
             var currentIndex = $pane.prevAll().length;
 
-            var totalHeight = 0;
-            $pane.prevAll().each(function()
+            if ($.browser.msie && ($.browser.majorVersion < 8))
             {
-                totalHeight -= $(this).outerHeight(true);
-            });
-            $firstChild.animate({ marginTop: totalHeight }, 1000);
-            $tickerChildrenContainer.animate({ height: $pane.outerHeight(true) }, 1000);
+                // IE7 and older have issues clipping charts correctly.
+                $tickerChildren.hide();
+                $pane.show();
+                $tickerChildrenContainer.height($pane.outerHeight(false));
+
+                // since
+                $pane.find('*').resize();
+            }
+            else
+            {
+                var totalHeight = 0;
+                $pane.prevAll().each(function()
+                {
+                    totalHeight -= $(this).outerHeight(false);
+                });
+                $firstChild.stop().animate({ marginTop: totalHeight }, 1000);
+                $tickerChildrenContainer.stop().animate({ height: $pane.outerHeight(false) }, 1000);
+            }
 
             $currentChildName.text(opts.childTitles[currentIndex]);
             $('.currentPage').text(currentIndex + 1);

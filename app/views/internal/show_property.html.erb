@@ -45,7 +45,7 @@
       editor.setTheme('ace/theme/idle_fingers');
       editor.setShowPrintMargin(false);
 
-      var JavascriptMode = require('ace/mode/ruby').Mode;
+      var JavascriptMode = require('ace/mode/json').Mode;
       var HtmlMode       = require('ace/mode/html').Mode;
       var CssMode        = require('ace/mode/css').Mode;
       var currentMode = isCss ? CssMode : (isJson ? JavascriptMode : HtmlMode);

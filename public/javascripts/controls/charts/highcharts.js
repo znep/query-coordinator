@@ -623,14 +623,6 @@
                 }
             }
         }
-        if (row && row.color)
-        {
-            point.color = row.color;
-            point.fillColor = row.color;
-            if (point.states)
-            { point.states.hover = $.extend(point.states.hover,
-                { fillColor: '#'+$.rgbToHex($.brighten(point.fillColor)) }); }
-        }
 
         // Construct a fake row for the Other point
         if (!row)
@@ -639,6 +631,18 @@
             row = { id: 'Other', invalid: {}, error: {}, changed: {} };
             row[title ? title.id : 'fake'] = 'Other';
             row[chartObj._valueColumns[seriesIndex].column.id] = point.y;
+            var cf = _.detect(chartObj.settings.view.metadata.conditionalFormatting,
+                function(cf) { return cf.condition === true; });
+            if (cf) { row.color = cf.color; }
+        }
+
+        if (row && row.color)
+        {
+            point.color = row.color;
+            point.fillColor = row.color;
+            if (point.states)
+            { point.states.hover = $.extend(point.states.hover,
+                { fillColor: '#'+$.rgbToHex($.brighten(point.fillColor)) }); }
         }
 
         point.flyoutDetails = chartObj.renderFlyout(row,

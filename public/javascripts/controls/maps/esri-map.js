@@ -338,12 +338,15 @@
                 mapObj._graphicsLayer.add(graphic);
                 mapObj._graphicsLayer.add(textGraphic);
 
-                $(graphic.getDojoShape().rawNode)
+                var dojoShape = graphic.getDojoShape();
+                if (dojoShape)
+                { $(dojoShape.rawNode)
                     .hover(
                         function(event) { mapObj.$dom()
                             .find('div .container').css('cursor', 'pointer'); },
                         function(event) { mapObj.$dom()
                             .find('div .container').css('cursor', 'default'); });
+                }
 
                 mapObj._multipoint.addPoint(geometry);
 
@@ -432,8 +435,14 @@
             {
                 var mapObj = this;
                 var viewport = mapObj.map.extent;
+                viewport = new esri.geometry.Extent(
+                    viewport.xmin, viewport.ymin,
+                    viewport.xmax, viewport.ymax, viewport.spatialReference);
                 var sr = viewport.spatialReference.wkid
                         || mapObj.map.spatialReference.wkid;
+                var LIMIT = sr == 102100 ? 20037508.342788905 : 180;
+                if (viewport.xmin < -LIMIT) { viewport.xmin = -LIMIT; }
+                if (viewport.xmax >  LIMIT) { viewport.xmax =  LIMIT; }
                 if (sr == null || sr == 102100)
                 { viewport = esri.geometry.webMercatorToGeographic(viewport); }
                 viewport = {
@@ -628,9 +637,18 @@
         if (isIdentifyTask(mapObj)) { return; }
         if (mapObj._byView[mapObj.settings.view.id]._clusters)
         {
-            // FIXME: This is a stop-gap for a bug existing in production. =(
-            return;
-            //mapObj.map.centerAndZoom(evt.mapPoint, mapObj.map.getLevel() + 1);
+            dojo.disconnect(mapObj._viewportListener);
+            mapObj.map.centerAndZoom(evt.graphic.geometry, mapObj.map.getLevel() + 1);
+            mapObj._viewportListener = dojo.connect(mapObj.map, 'onExtentChange', function()
+            {
+                dojo.disconnect(mapObj._viewportListener);
+                mapObj.settings.view.update({
+                    displayFormat: $.extend({},
+                        mapObj.settings.view.displayFormat,
+                        { viewport: mapObj.getViewport() })
+                });
+                mapObj.updateRowsByViewport();
+            });
         }
         else
         {

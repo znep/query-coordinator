@@ -20,7 +20,7 @@ protected
         {:text => 'Calendars', :value => 'calendars', :class => 'typeCalendar'},
         {:text => 'Forms', :value => 'forms', :class => 'typeForm'}]
     }
-    view_types = CurrentDomain.property(:view_types_facet, :catalog)
+    view_types = get_catalog_property(:view_types_facet)
     return vts if view_types.nil?
     vts[:options].select!{ |opt| view_types.include?(opt[:value]) }
     vts
@@ -132,7 +132,7 @@ protected
   end
 
   def custom_facets
-    facets = CurrentDomain.property(:custom_facets, :catalog)
+    facets = get_catalog_property(:custom_facets)
 
     return if facets.nil?
     custom_chop = get_cutoff(:custom)
@@ -155,7 +155,7 @@ protected
     @request_params = request.params
 
     # grab our catalog configuration first
-    catalog_config = CurrentDomain.configuration('catalog')
+    catalog_config = get_catalog_configuration
     catalog_config = catalog_config ? catalog_config.properties : Hashie::Mash.new
 
     # grab the user's params unless we're forcing default
@@ -366,7 +366,7 @@ private
 
   def get_cutoff(facet_name)
     if @@cutoff_store[CurrentDomain.cname].nil?
-      domain_cutoffs = CurrentDomain.property(:facet_cutoffs, :catalog) || {}
+      domain_cutoffs = get_catalog_property(:facet_cutoffs) || {}
       translated_cutoffs = domain_cutoffs.inject({}) do |collect, (key, value)|
         collect[key.to_sym] = value.to_i
         collect
@@ -379,6 +379,14 @@ private
   # Unused for now, but this will refresh the cutoffs from the configs service
   def self.clear_cutoff_cache(cname = nil)
     @@cutoff_store.delete(cname || CurrentDomain.cname)
+  end
+
+  def get_catalog_configuration
+    return @catalog_configuration ||= CurrentDomain.configuration('catalog')
+  end
+
+  def get_catalog_property(property)
+    return get_catalog_configuration.properties.send(property)
   end
 
   @@default_cutoffs = {

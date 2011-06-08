@@ -2,7 +2,7 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
-  before_filter :hook_auth_controller,  :create_core_server_connection,
+  before_filter :hook_auth_controller,  :create_core_server_connection, :disable_frame_embedding,
     :adjust_format, :patch_microsoft_office, :sync_logged_in_cookie, :require_user, :set_user, :set_meta, :force_utf8_params
   helper :all # include all helpers, all the time
   helper_method :current_user
@@ -132,6 +132,10 @@ private
   # made by this request
   def create_core_server_connection
     CoreServer::Base.connection = CoreServer::Connection.new(Rails.logger, cookies)
+  end
+
+  def disable_frame_embedding
+    headers['X-Frame-Options'] = 'SAMEORIGIN'
   end
 
   def sync_logged_in_cookie

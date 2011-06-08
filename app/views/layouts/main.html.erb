@@ -132,8 +132,12 @@
       blist.configuration.maintenance_message = '<%= escape_javascript DOWNTIME.html %>';
     <%- end -%>
 
-    if ((self !== top) && (self.location.hostname !== top.location.hostname))
+    try {
+      if ((self !== top) && (self.location.hostname !== top.location.hostname))
+        top.location = self.document.location;
+    } catch(ex) {
       top.location = self.document.location;
+    }
   </script>
 
   <div id="modals">

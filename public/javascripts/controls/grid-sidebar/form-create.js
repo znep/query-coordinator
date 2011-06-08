@@ -105,7 +105,8 @@
                 {
                     sidebarObj.finishProcessing();
 
-                    var $form = sidebarObj.$grid().find('form.formView');
+                    var $form = blist.$container.renderTypeManager().$domForType('form')
+                        .find('form.formView');
                     var newRedirect = newView.displayFormat.successRedirect;
                     if ($.isBlank(newRedirect))
                     { newRedirect = $form.attr('data-defaultSuccessRedirect'); }

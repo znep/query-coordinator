@@ -313,13 +313,6 @@ class View < Model
     @last_activity
   end
 
-  def last_viewed
-    if @last_viewed.nil?
-      @last_viewed = [lastOpenedDate || 0, createdAt || 0].max
-    end
-    @last_viewed
-  end
-
   # Returns the meta keyword tags for this view that we'll use in headers
   @@default_meta_tags = ["public", "data", "statistics", "dataset"]
   def meta_keywords

@@ -819,6 +819,9 @@
         }
 
         if (!point.flyoutDetails) { $box.hide(); return; }
+        if (point.name == 'Other')
+        { point.flyoutDetails.find('.columnId' + chartObj._xColumn.id + ' span')
+                             .text('Other'); }
 
         var $point = $(point.graphic.element);
         var radius = parseInt($point[0].getAttribute('r'));

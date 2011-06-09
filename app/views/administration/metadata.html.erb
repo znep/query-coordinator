@@ -167,7 +167,9 @@
                 <input type="text" class="newCategory" name="new_category" />
               </td>
               <td class="name">
-                <input type="text" class="newCategory" name="new_category_parent" />
+                <select name="new_category_parent" class="newCategorySelect">
+                  <%= options_for_select(@categories.map{|k,v| k}.unshift('')) %>
+                </select>
               </td>
               <td class="actions">
                 <input class="button newCategoryButton" type="submit" value="Add New Category" />

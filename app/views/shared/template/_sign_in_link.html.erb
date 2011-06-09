@@ -1,1 +1,3 @@
+<%- if current_user.nil? -%>
 <li class="signInLink"><%= link_to CurrentDomain.strings.sign_in, login_url, :rel => 'nofollow' %></li>
+<%- end -%>

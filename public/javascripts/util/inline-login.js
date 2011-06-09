@@ -70,7 +70,9 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                             {
                                 blist.currentUserId = responseData.user_id;
                                 $login.jqmHide();
-                                $('#header .userNav, #siteHeader .siteUserNav').addClass('loggedInNav');
+                                $('#header .userNav, #siteHeader .siteUserNav')
+                                    .addClass('loggedInNav')
+                                    .find('.signOutLink').removeClass('hide');
                                 callback(true, true);
                             }
                         }

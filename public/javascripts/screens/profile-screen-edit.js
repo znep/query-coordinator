@@ -211,8 +211,8 @@
     {
         e.preventDefault();
         var $a = $(this);
-        $.ajax({url: '/api/users/' + $a.data('userId') + '/app_tokens/' +
-            $a.data('appTokenId'), data: {method: 'getSecret'},
+        $.ajax({url: '/api/users/' + $a.data('userid') + '/app_tokens/' +
+            $a.data('apptokenid'), data: {method: 'getSecret'},
             type: 'GET', dataType: 'json', contentType: 'application/json',
             success: function(secretToken)
             {

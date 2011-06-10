@@ -135,13 +135,7 @@
       @include sidebar-colors($sidebar_about_tab_color_top)
 
     &#gridSidebar_outer_manage
-      .mainTitleBlock
-        @include vertical-gradient($sidebar_manage_tab_color_top, #704008)
-      .headerLink
-        background-color: #efdfaf
-        border-color: #e0c890
-        &.selected
-          background-color: $sidebar_manage_tab_color_top
+      @include sidebar-colors($sidebar_manage_tab_color_top)
 
     // publisher tabs
     &#gridSidebar_outer_metadata

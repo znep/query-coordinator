@@ -395,6 +395,8 @@ javascripts:
     - public/javascripts/plugins/ace/mode-json.js
     - public/javascripts/plugins/ace/mode-css.js
     - public/javascripts/plugins/ace/mode-html.js
+  worker-json:
+    - public/javascripts/plugins/ace/worker-json.js
 
 
 dump:

@@ -272,6 +272,10 @@ class ProfileController < ApplicationController
     @token = AppToken.new
   end
 
+  def show_app_token
+    @token = AppToken.find_by_id(params[:id], params[:token_id])
+  end
+
   def edit_app_token
     token_params = params[:app_token]
     if token_params

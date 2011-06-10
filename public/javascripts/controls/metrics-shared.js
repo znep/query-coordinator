@@ -165,8 +165,10 @@ metricsNS.topAppTokensCallback = function($context)
                         thumbnail = thumbed ? ('/api/file_data/' + response.thumbnailSha +
                             '?size=tiny') : '';
 
+                    var owner = new User(response.owner);
                     results.push({name: response.name || '(deleted)',
                         extraClass: klass,
+                        href: owner.getProfileUrl() + '/app_tokens/' + response.id,
                         value: value,
                         textValue: Highcharts.numberFormat(value, 0),
                         thumbnail: thumbnail

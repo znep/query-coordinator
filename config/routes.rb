@@ -205,6 +205,9 @@ ActionController::Routing::Routes.draw do |map|
     profile.connect 'profile/:profile_name/:id/app_tokens',
        :action => 'edit_app_tokens', :conditions => { :method => :get },
        :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+    profile.connect 'profile/:profile_name/:id/app_tokens/:token_id',
+       :action => 'show_app_token', :conditions => { :method => :get },
+       :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
     profile.connect 'profile/app_tokens',
        :action => 'edit_app_tokens', :conditions => { :method => :get }
     profile.connect 'profile/:profile_name/:id/app_token/:token_id',

@@ -1,0 +1,20 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'profile-show' %>
+  <title><%= @token.name %> | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<div class="contentBox">
+  <div class="showAppToken">
+    <div class="tokenOwner">
+      <a href="<%= @token.owner.href %>" rel="external">
+        <img class="authorImage" src="<%= @token.owner.profile_image_path %>"
+             alt="<%= @token.owner.displayName %>" />
+        <h4>Created by <%= @token.owner.displayName %></h4>
+      </a>
+    </div>
+
+    <h1><%= @token.name %></h1>
+    <%= render :partial => 'app_token_display',
+        :locals => {:token => @token, :edit => false} %>
+  </div>
+</div>

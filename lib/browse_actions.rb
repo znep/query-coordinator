@@ -402,6 +402,8 @@ private
   @@numeric_options = [ :limit, :page ]
   @@boolean_options = [ :nofederate ]
 
+  @@moderatable_types = [ 'filters', 'charts', 'maps', 'calendars', 'forms' ]
+
   @@search_options = [ :id, :name, :tags, :desc, :q, :category, :limit, :page, :sortBy, :limitTo, :for_user, :datasetView, :sortPeriod, :admin, :nofederate, :moderation, :xmin, :ymin, :xmax, :ymax, :for_approver, :approval_stage_id, :publication_stage, :federation_filter, :metadata_tag ]
   @@querystring_options = [  ]
 end

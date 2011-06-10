@@ -183,7 +183,7 @@ class AdministrationController < ApplicationController
   before_filter :only => [:views] {|c| c.check_feature(:view_moderation)}
   def views
     view_facet = view_types_facet()
-    view_facet[:options].delete_if { |item| item[:value] == 'datasets' }
+    view_facet[:options].select! { |item| @@moderatable_types.include? item[:value] }
 
     @processed_browse = process_browse(request, {
       datasetView: 'view',

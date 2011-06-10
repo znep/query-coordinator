@@ -14,7 +14,7 @@
         </div>
 
         <%- if @view.is_tabular? && !@view.is_form? -%>
-        <div id="fatRowRenderType"
+        <div id="fatRowRenderType" data-renderType="fatrow"
           class="fatRowRenderType navRenderType renderTypeNode fullHeight hide">
           <div class="columnHeaders"></div>
           <div class="rowList"></div>
@@ -22,8 +22,8 @@
           </div>
         </div>
 
-        <div id="pageRenderType" class="pageRenderType navRenderType renderTypeNode
-          fullHeight hide">
+        <div id="pageRenderType" data-renderType="page"
+          class="pageRenderType navRenderType renderTypeNode fullHeight hide">
           <div class="content"></div>
         </div>
         <%- end -%>

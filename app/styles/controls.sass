@@ -584,6 +584,27 @@ form.search
 
 //*** END: popup-select.js ***//
 
+//*** RenderTypeManager ***//
+.renderTypeNode
+  > .divider
+    @include vertical-gradient(#999)
+    display: none
+    height: 14px
+    position: relative
+    .close
+      @include sprite-button-icons
+      position: absolute
+      right: 5px
+      top: 2px
+      z-index: 1
+      .ie7 & .icon
+        display: block
+  .renderContent
+    position: relative
+.multipleRenderers .renderTypeNode > .divider
+  display: block
+//*** END: RTM ***//
+
 //*** Routing & Approval ***//
 .reasonBox
   textarea

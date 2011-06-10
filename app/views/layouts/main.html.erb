@@ -17,6 +17,11 @@
   <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
         xmlns:og="http://opengraphprotocol.org/schema/"><!--<![endif]-->
 
+<!--
+Powered by the Socrata Open Data Platform
+http://www.socrata.com
+--!>
+
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -132,8 +137,12 @@
       blist.configuration.maintenance_message = '<%= escape_javascript DOWNTIME.html %>';
     <%- end -%>
 
-    if ((self !== top) && (self.location.hostname !== top.location.hostname))
+    try {
+      if ((self !== top) && (self.location.hostname !== top.location.hostname))
+        top.location = self.document.location;
+    } catch(ex) {
       top.location = self.document.location;
+    }
   </script>
 
   <div id="modals">

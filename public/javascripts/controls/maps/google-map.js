@@ -329,6 +329,11 @@
                 mapObj._markers = {};
             },
 
+            resizeHandle: function(event)
+            {
+                google.maps.event.trigger(this.map, 'resize');
+            },
+
             getRequiredJavascripts: function()
             {
                 // This is a terrible hack; but we need to know if Google

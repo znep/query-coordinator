@@ -14,8 +14,7 @@
         onlyIf: function()
         {
             return blist.dataset.isPublic() && blist.dataset.valid &&
-                (!blist.dataset.temporary || blist.dataset.minorChange) &&
-                blist.dataset.isGrid();
+                (!blist.dataset.temporary || blist.dataset.minorChange);
         },
         disabledSubtitle: function()
         {

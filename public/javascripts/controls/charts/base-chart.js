@@ -119,12 +119,19 @@
                     }
                 }); }
 
-                chartObj.settings.view.getAggregates(function()
+                // Was getting two reloads in a row that triggered this call twice on a Revert,
+                // which made the chart load blank. So de-dupe request
+                if (!chartObj._gettingAggs)
                 {
-                    calculateSegmentSizes(chartObj, customAggs);
-                    chartObj.columnsLoaded();
-                    chartObj.ready();
-                }, customAggs);
+                    chartObj._gettingAggs = true;
+                    chartObj.settings.view.getAggregates(function()
+                    {
+                        calculateSegmentSizes(chartObj, customAggs);
+                        chartObj.columnsLoaded();
+                        chartObj.ready();
+                        delete chartObj._gettingAggs;
+                    }, customAggs);
+                }
 
                 return false;
             },

@@ -186,6 +186,7 @@ class AdministrationController < ApplicationController
     view_facet[:options].delete_if { |item| item[:value] == 'datasets' }
 
     @processed_browse = process_browse(request, {
+      datasetView: 'view',
       default_params: { moderation: 'pending' },
       browse_in_container: true,
       dataset_actions: 'Moderation Status',
@@ -195,12 +196,9 @@ class AdministrationController < ApplicationController
         categories_facet,
         topics_facet
       ],
-      suppress_dataset_creation: true,
-      opts: {
-        datasetView: 'view',
-        moderation: 'any',
-        nofederate: 'true'
-      }
+      moderation: 'any',
+      nofederate: 'true',
+      suppress_dataset_creation: true
     })
   end
 

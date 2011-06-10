@@ -18,7 +18,7 @@ $(function()
         $(this).attr('href',
             $(this).attr('href')
                 .replace('{title}', title)
-                .replace('{location}', self.document.location));
+                .replace('{location}', document.location));
     });
     $('.worldBankSocialLinks .printLink').click(function(event)
     {

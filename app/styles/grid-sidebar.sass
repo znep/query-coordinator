@@ -1,3 +1,16 @@
+@mixin sidebar-colors($c, $dark: false)
+  .mainTitleBlock
+    @include vertical-gradient($c)
+  .headerLink
+    @if $dark == true
+      background-color: scale-color($c, $saturation: +90%, $lightness: +90%)
+      border-color: scale-color($c, $saturation: +60%, $lightness: +70%)
+    @else
+      background-color: scale-color($c, $lightness: +70%)
+      border-color: scale-color($c, $lightness: +20%)
+    &.selected
+      background-color: $c
+
 #gridSidebar
   background-color: $color_chrome_sidebar_background
   border: 0 solid $color_chrome_box_border
@@ -59,10 +72,10 @@
     // IE7 had a weird issue where the scrollbar from a hidden pane would still
     // show up on top of a visible pane, thereby disallowing the user from
     // scrolling the real pane.  Apparently position: relative fixes it
+    @include sidebar-colors($sidebar_default_tab_color_top)
     .ie7 &
       position: relative
     .mainTitleBlock
-      @include vertical-gradient(#989898, #848484)
       padding: 0.5em 1em
 
       .title
@@ -72,8 +85,7 @@
 
     .headerLink
       @include sprite-accordion-icons
-      background-color: #eeeeee
-      border: 1px solid #cccccc
+      border: 1px solid
         left: 0
         right: 0
       color: #333333
@@ -83,7 +95,6 @@
       margin-bottom: 0.25em
       padding: 0.5em 0.75em
       &.selected
-        background-color: #989898
         border: none
         color: #ffffff
         cursor: default
@@ -100,76 +111,28 @@
         float: right
 
     &#gridSidebar_outer_edit
-      .mainTitleBlock
-        @include vertical-gradient($sidebar_edit_tab_color_top, #d3a000)
-      .headerLink
-        background-color: #fff0a0
-        border-color: #f0d060
-        &.selected
-          background-color: $sidebar_edit_tab_color_top
+      @include sidebar-colors($sidebar_edit_tab_color_top)
 
     &#gridSidebar_outer_moreViews
-      .mainTitleBlock
-        @include vertical-gradient($sidebar_more_views_tab_color_top, #a22f9b)
-      .headerLink
-        background-color: #edb6ea
-        border-color: #d984d4
-        &.selected
-          background-color: $sidebar_more_views_tab_color_top
+      @include sidebar-colors($sidebar_more_views_tab_color_top)
 
     &#gridSidebar_outer_filter
-      .mainTitleBlock
-        @include vertical-gradient($sidebar_filter_tab_color_top, #004478)
-      .headerLink
-        background-color: #e1f4fd
-        border-color: #afe5ff
-        &.selected
-          background-color: $sidebar_filter_tab_color_top
+      @include sidebar-colors($sidebar_filter_tab_color_top, true)
 
     &#gridSidebar_outer_visualize
-      .mainTitleBlock
-        @include vertical-gradient($sidebar_visualize_tab_color_top, #005030)
-      .headerLink
-        background-color: #e0ffe8
-        border-color: #a0ffb0
-        &.selected
-          background-color: $sidebar_visualize_tab_color_top
+      @include sidebar-colors($sidebar_visualize_tab_color_top, true)
 
     &#gridSidebar_outer_export
-      .mainTitleBlock
-        @include vertical-gradient($sidebar_export_tab_color_top, #4ca9d0)
-      .headerLink
-        background-color: #b1dfed
-        border-color: #7db5bf
-        &.selected
-          background-color: $sidebar_export_tab_color_top
+      @include sidebar-colors($sidebar_export_tab_color_top)
 
     &#gridSidebar_outer_feed
-      .mainTitleBlock
-        @include vertical-gradient($sidebar_feed_tab_color_top, #d06000)
-      .headerLink
-        background-color: #ffe3b0
-        border-color: #ffc060
-        &.selected
-          background-color: $sidebar_feed_tab_color_top
+      @include sidebar-colors($sidebar_feed_tab_color_top)
 
     &#gridSidebar_outer_embed
-      .mainTitleBlock
-        @include vertical-gradient($sidebar_embed_tab_color_top, #d0383b)
-      .headerLink
-        background-color: #fde1e1
-        border-color: #ffa0a0
-        &.selected
-          background-color: $sidebar_embed_tab_color_top
+      @include sidebar-colors($sidebar_embed_tab_color_top)
 
     &#gridSidebar_outer_about
-      .mainTitleBlock
-        @include vertical-gradient($sidebar_about_tab_color_top, #78202a)
-      .headerLink
-        background-color: #ffc3d1
-        border-color: #f8a0a8
-        &.selected
-          background-color: $sidebar_about_tab_color_top
+      @include sidebar-colors($sidebar_about_tab_color_top)
 
     &#gridSidebar_outer_manage
       .mainTitleBlock
@@ -182,33 +145,25 @@
 
     // publisher tabs
     &#gridSidebar_outer_metadata
-      .mainTitleBlock
-        @include vertical-gradient($sidebar_metadata_tab_color_top, #848484)
+      @include sidebar-colors($sidebar_metadata_tab_color_top)
     &#gridSidebar_outer_appearance
-      .mainTitleBlock
-        @include vertical-gradient($sidebar_appearance_tab_color_top, #0f906d)
+      @include sidebar-colors($sidebar_appearance_tab_color_top)
     &#gridSidebar_outer_behavior
-      .mainTitleBlock
-        @include vertical-gradient($sidebar_behavior_tab_color_top, #609109)
+      @include sidebar-colors($sidebar_behavior_tab_color_top)
     &#gridSidebar_outer_advanced
-      .mainTitleBlock
-        @include vertical-gradient($sidebar_advanced_tab_color_top, #671099)
+      @include sidebar-colors($sidebar_advanced_tab_color_top)
 
     // story customizer tabs
     &#gridSidebar_outer_textbox
-      .mainTitleBlock
-        @include vertical-gradient($sidebar_textbox_tab_color_top, #e0a70e)
+      @include sidebar-colors($sidebar_textbox_tab_color_top)
     &#gridSidebar_outer_pager
-      .mainTitleBlock
-        @include vertical-gradient($sidebar_pager_tab_color_top, #0a73cc)
+      @include sidebar-colors($sidebar_pager_tab_color_top)
     &#gridSidebar_outer_other
-      .mainTitleBlock
-        @include vertical-gradient($sidebar_other_tab_color_top, #ce3078)
+      @include sidebar-colors($sidebar_other_tab_color_top)
 
     // special sidebars
     &#gridSidebar_outer_cellFeed
-      .mainTitleBlock
-        @include vertical-gradient($cell_feed_color, adjust-color($cell_feed_color, $lightness: -10%))
+      @include sidebar-colors($cell_feed_color)
 
     .panes
       overflow: auto

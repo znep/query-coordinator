@@ -30,9 +30,9 @@
     </div>
 
     <div class="widgetContentSection widgetContentGrid">
-      <div id="renderTypeContainer" class="gridContainer">
+      <div id="renderTypeContainer" class="gridContainer fullHeight">
           <%- if @view.is_tabular? -%>
-          <div id="gridRenderType" class="fullHeight renderTypeNode">
+          <div id="gridRenderType" data-renderType="table" class="fullHeight renderTypeNode">
             <noscript>
               <h3><a href="<%= @view.href %>"><%= @view.name %></a></h3>
 
@@ -49,7 +49,7 @@
             <%- end -%>
           </div>
 
-          <div id="fatRowRenderType"
+          <div id="fatRowRenderType" data-renderType="fatrow"
             class="fatRowRenderType navRenderType renderTypeNode fullHeight hide">
             <div class="columnHeaders"></div>
             <div class="rowList"></div>
@@ -73,9 +73,8 @@
             </div>
           </div>
 
-          <div id="pageRenderType"
+          <div id="pageRenderType" data-renderType="page"
             class="pageRenderType navRenderType fullHeight renderTypeNode hide">
-            <a href="#ShowFullView" class="fullView">View all the data</a>
             <div class="content"></div>
             <ul class="navigation">
               <li><a href="#start" title="View first row" class="start button">

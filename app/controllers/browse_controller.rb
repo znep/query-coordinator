@@ -1,5 +1,7 @@
 class BrowseController < ApplicationController
   skip_before_filter :require_user
+  skip_before_filter :disable_frame_embedding, :only => :embed
+
   include BrowseActions
 
   def show

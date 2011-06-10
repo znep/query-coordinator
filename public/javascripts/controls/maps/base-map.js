@@ -637,8 +637,8 @@
                 _.each(mapObj._dataViews, function(view)
                 {
                     var viewConfig = mapObj._byView[view.id];
-                    if (!viewConfig._clustering) { return; }
                     var filterColumn = viewConfig._geoCol || viewConfig._locCol;
+                    if (!viewConfig._clustering || $.isBlank(filterColumn)) { return; }
 
                     var buildFilterCondition = function(viewport)
                     {

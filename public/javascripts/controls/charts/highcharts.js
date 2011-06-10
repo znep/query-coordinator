@@ -127,7 +127,7 @@
                 }
 
                 // Get useable value for x-axis
-                var basePt = xPoint(chartObj, row);
+                var basePt = xPoint(chartObj, row, row.id);
                 // Null dates can't really be rendered in a timeline; not sure
                 // if that holds for other chart types, though
                 if (isDateTime(chartObj) && _.isNull(basePt.x)) { return true; }
@@ -206,6 +206,7 @@
                             { chartObj.secondChart.series[i].data[chartObj._otherIndex].remove(); }
                             chartObj._seriesCache[i].data.splice(chartObj._otherIndex, 1);
                         }
+                        delete chartObj._otherIndex;
                     }
 
                     var otherPt = xPoint(chartObj, null, 'Other');
@@ -548,7 +549,7 @@
             if (_.isNumber(pt.x)) { pt.x *= 1000; }
             else if (!$.isBlank(pt.x)) { pt.x = Date.parse(pt.x).valueOf(); }
         }
-        else if (!_.isUndefined(chartObj._xCategories))
+        else if (!value && !_.isUndefined(chartObj._xCategories))
         { pt.x = chartObj._xCategories.length; }
 
         return pt;
@@ -819,6 +820,9 @@
         }
 
         if (!point.flyoutDetails) { $box.hide(); return; }
+        if (point.name == 'Other')
+        { point.flyoutDetails.find('.columnId' + chartObj._xColumn.id + ' span')
+                             .text('Other'); }
 
         var $point = $(point.graphic.element);
         var radius = parseInt($point[0].getAttribute('r'));

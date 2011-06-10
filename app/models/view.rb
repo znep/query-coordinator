@@ -29,10 +29,6 @@ class View < Model
     parse(CoreServer::Base.connection.get_request(path))
   end
 
-  def self.find_recent(count)
-    return self.find_under_user({'recentlyViewed' => count})
-  end
-
   def self.find_favorites()
     path = "/favorite_views.json"
     parse(CoreServer::Base.connection.get_request(path))
@@ -311,13 +307,6 @@ class View < Model
       @last_activity = [rowsUpdatedAt || 0, createdAt || 0, viewLastModified || 0].max
     end
     @last_activity
-  end
-
-  def last_viewed
-    if @last_viewed.nil?
-      @last_viewed = [lastOpenedDate || 0, createdAt || 0].max
-    end
-    @last_viewed
   end
 
   # Returns the meta keyword tags for this view that we'll use in headers

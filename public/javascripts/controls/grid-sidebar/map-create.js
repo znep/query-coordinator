@@ -463,7 +463,8 @@
     {
         if (!sidebarObj.baseFormHandler($pane, value)) { return; }
 
-        var view = $.extend({displayType: 'map'}, sidebarObj.getFormValues($pane));
+        var view = $.extend(true, {metadata: {renderTypeConfig: {visible: {map: true}}}},
+            sidebarObj.getFormValues($pane), {metadata: blist.dataset.metadata});
 
         if (customHeatmap())
         {

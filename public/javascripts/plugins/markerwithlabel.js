@@ -82,7 +82,8 @@ MarkerLabel_.getSharedCross = function () {
     // Hopefully Google never changes the standard "X" attributes:
     div.style.marginLeft = "-8px";
     div.style.marginTop = "-9px";
-    div.src = "http://maps.gstatic.com/intl/en_us/mapfiles/drag_cross_67_16.png";
+    //michael.chui@socrata.com: Our usage of this plugin does not use this file.
+    //div.src = "https://maps.gstatic.com/intl/en_us/mapfiles/drag_cross_67_16.png";
     MarkerLabel_.getSharedCross.crossDiv = div;
   }
   return MarkerLabel_.getSharedCross.crossDiv;
@@ -105,7 +106,8 @@ MarkerLabel_.prototype.onAdd = function () {
   var cStartCenter;
   // Constants:
   var cRaiseOffset = 20;
-  var cDraggingCursor = "url(http://maps.gstatic.com/intl/en_us/mapfiles/closedhand_8_8.cur)";
+  //michael.chui@socrata.com: Our usage of this plugin does not use this file.
+  //var cDraggingCursor = "url(https://maps.gstatic.com/intl/en_us/mapfiles/closedhand_8_8.cur)";
 
   // Stops all processing of an event.
   //

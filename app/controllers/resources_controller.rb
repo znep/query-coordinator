@@ -54,7 +54,23 @@ class ResourcesController < DatasetsController
     if (!row_id.nil?)
       row_id = "/#{row_id}"
     end
-    path = "/views/#{view.id}/rows#{row_id}.#{format}"
+    path = "/views/#{view.id}/rows#{row_id}.#{format}?" + request.query_string
+
+    # support more json serialization format option:
+    # 1. row fields are written as json object (previously json array).
+    # 2. meta (view) is not written.
+    if (row_id.nil?)
+      if (!request.query_string.blank?)
+        path += '&'
+      end
+      if params[:asHashes].nil?
+        path += 'asHashes=true'
+      end
+      if params[:meta].nil?
+        path += '&meta=false'
+      end
+    end
+
     redirect_to(path, :status => 303)
   end
 

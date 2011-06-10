@@ -1237,7 +1237,7 @@
     var isTable = function(sidebarObj)
     {
         return !$.isBlank(blist.$container) &&
-            blist.$container.renderTypeManager().currentType == 'table';
+            blist.$container.renderTypeManager().visibleTypes.table;
     };
 
     var uniformUpdate = function(items)

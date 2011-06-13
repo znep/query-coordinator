@@ -84,9 +84,11 @@
         <%- else -%>
           <%- @app_tokens.each do |token| -%>
             <div class="innerItem">
-              <%= render :partial => 'app_token_display', :locals => {
-                  :edit => false, :token => token
-              } %>
+              <a href="<%= @user.href %>/app_tokens/<%= token.id %>">
+                <%= render :partial => 'app_token_display', :locals => {
+                    :edit => false, :token => token
+                } %>
+              </a>
             </div>
           <%- end -%>
         <%- end -%>
@@ -107,6 +109,12 @@
   <%# Disabled for now (forever?) %>
   <%#= render :partial => 'datasets/feed_template', :locals => {:allow_comments => false} %>
 <%# end %>
+
+<%- unless @is_user_current -%>
+<% content_for :modals do %>
+  <%= render :partial => 'contact_user' %>
+<% end %>
+<%- end -%>
 
 <% content_for :js_footer do %>
   <script type="text/javascript">

@@ -360,6 +360,7 @@ javascripts:
   screen-reset-password:
     - public/javascripts/screens/reset-password-screen.js
   screen-profile:
+    - public/javascripts/util/serialize.js
     - public/javascripts/util/humane-date.js
     - public/javascripts/screens/profile-screen.js
   screen-profile-edit:

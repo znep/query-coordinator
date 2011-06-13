@@ -33,6 +33,12 @@
           <span class="linkText">Unfollow</span>
         </a>
       <%- end -%>
+      <%- if CurrentDomain.user_can?(current_user, :manage_users) -%>
+        <a href="#Message" class="button smallButton contactUserButton">
+          <span class="icon"></span>
+          <span class="linkText">Send Message</span>
+        </a>
+      <%- end -%>
     <%- end -%>
     <p class="secondary">
       <%- if @user.displayTitleAndOrg.present? %>

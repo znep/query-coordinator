@@ -405,14 +405,15 @@ this.Dataset = ServerModel.extend({
         this.getRows(0, 1, callback);
     },
 
-    getClusters: function(callback)
+    getClusters: function(successCallback, errorCallback)
     {
         var ds = this;
 
         ds.makeRequest({
             params: {method: 'clustered'},
             inline: true,
-            success: callback
+            success: successCallback,
+            error: errorCallback
         });
     },
 
@@ -1455,6 +1456,7 @@ this.Dataset = ServerModel.extend({
         _.each(['namedFilters', 'filterCondition', 'sortBys', 'groupBys'],
             function(k) { if (_.isEmpty(ds.query[k])) { delete ds.query[k]; } });
 
+        var needsDTChange;
         if (!_.isEqual(oldRTConfig.visible, ds.metadata.renderTypeConfig.visible))
         {
             // If we have a visible type that's not available, add it
@@ -1469,7 +1471,7 @@ this.Dataset = ServerModel.extend({
             // displayType should always be the most important visible availableDisplayType
             ds.displayType = _.detect(ds.metadata.availableDisplayTypes,
                 function(adt) { return ds.metadata.renderTypeConfig.visible[adt]; });
-            ds.trigger('displaytype_change');
+            needsDTChange = true;
         }
         else if (oldDispType != ds.displayType)
         {
@@ -1481,7 +1483,7 @@ this.Dataset = ServerModel.extend({
             // Make only this type visible
             ds.metadata.renderTypeConfig.visible = {};
             ds.metadata.renderTypeConfig.visible[ds.displayType] = true;
-            ds.trigger('displaytype_change');
+            needsDTChange = true;
         }
 
         var needQueryChange = !_.isEqual(oldRTConfig.visible,
@@ -1511,6 +1513,9 @@ this.Dataset = ServerModel.extend({
             _.each(ds._rows, function(r) { ds._setRowFormatting(r); });
             ds.trigger('row_change', [_.values(ds._rows)]);
         }
+
+        if (needsDTChange)
+        { ds.trigger('displaytype_change'); }
 
         if (!_.isEqual(oldDispFmt, ds.displayFormat))
         { ds.trigger('displayformat_change'); }

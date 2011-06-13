@@ -528,7 +528,6 @@
             {
                 var clusterFunction = function()
                     {
-                        vizObj._byView[view.id]._clustering = true;
                         if (vizObj.updateRowsByViewport
                             && vizObj.settings.view.displayFormat.viewport)
                         {
@@ -560,6 +559,12 @@
                             var executable = views.shift();
                             if (executable) { executable(); }
                             vizObj.totalRowsForAllViews();
+                            delete vizObj._initialLoad;
+                            delete vizObj._pendingReload;
+                        },
+                        function()
+                        {
+                            // On error clear these variables so more requests will be triggered
                             delete vizObj._initialLoad;
                             delete vizObj._pendingReload;
                         });

@@ -638,7 +638,7 @@
                 {
                     var viewConfig = mapObj._byView[view.id];
                     var filterColumn = viewConfig._geoCol || viewConfig._locCol;
-                    if (!viewConfig._clustering || $.isBlank(filterColumn)) { return; }
+                    if ($.isBlank(filterColumn)) { return; }
 
                     var buildFilterCondition = function(viewport)
                     {

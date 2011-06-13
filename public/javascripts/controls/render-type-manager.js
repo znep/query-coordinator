@@ -247,7 +247,7 @@
                 typeInfo.$dom.removeClass('hide').children('.renderContent').trigger('show');
 
                 rtmObj.$dom().toggleClass('multipleRenderers',
-                    rtmObj.$dom().children(':visible').length > 1);
+                    rtmObj.$dom().children('.renderTypeNode:visible').length > 1);
                 rtmObj.$dom().trigger('render_type_shown', [type]);
                 $(window).resize();
             },
@@ -265,7 +265,7 @@
                 typeInfo.$dom.addClass('hide').children('.renderContent').trigger('hide');
 
                 rtmObj.$dom().toggleClass('multipleRenderers',
-                    rtmObj.$dom().children(':visible').length > 1);
+                    rtmObj.$dom().children('.renderTypeNode:visible').length > 1);
                 rtmObj.$dom().trigger('render_type_hidden', [type]);
                 $(window).resize();
             },

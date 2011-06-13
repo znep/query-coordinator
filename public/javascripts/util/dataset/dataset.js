@@ -1326,7 +1326,7 @@ this.Dataset = ServerModel.extend({
                 'tabular': 'table',
                 'blobby': 'blob',
                 'href': 'href'
-            }[ds.viewType];
+            }[ds.viewType || 'tabular'];
         }
         ds.displayName = getDisplayName(ds);
 

@@ -465,8 +465,9 @@ protected
   def parse_meta(view)
     if !view.metadata.nil?
       # Make sure required fields are filled in
-      unless CurrentDomain.custom_dataset_metadata.blank?
-        CurrentDomain.custom_dataset_metadata.each do |fieldset|
+      domain_meta = CurrentDomain.property(:fieldsets, :metadata)
+      unless domain_meta.blank?
+        domain_meta.each do |fieldset|
           unless fieldset.fields.blank?
             fieldset.fields.each do |field|
               if field.required.present?

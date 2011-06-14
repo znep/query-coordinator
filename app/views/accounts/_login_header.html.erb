@@ -4,4 +4,15 @@
     to <%= CurrentDomain.strings.company %>
   <%- end -%>
 </h1>
-<h1 class="signupHeader modalHeader">We're glad you want to join <%= CurrentDomain.strings.company %>!</h1>
+<div class="signupHeader modalHeader">
+  <h1>
+    <%- if CurrentDomain.strings.signup_header.present? -%>
+      <%= CurrentDomain.strings.signup_header %>
+    <%- else -%>
+      We're glad you want to join <%= CurrentDomain.strings.company %>!
+    <%- end -%>
+  </h1>
+  <%- if CurrentDomain.strings.signup_explanation.present? -%>
+    <div class="signupExplanation explanation"><%= simple_format CurrentDomain.strings.signup_explanation %></div>
+  <%- end -%>
+</div>

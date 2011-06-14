@@ -77,29 +77,30 @@
     });
 
     var $contactDialog = $('.contactUserDialog');
-    var $contactForm  = $contactDialog.find('form');
-    var $contactError = $contactDialog.find('.mainError');
+    var $contactForm   = $contactDialog.find('form');
+    var $contactError  = $contactDialog.find('.mainError');
+    var $mainFlash     = $('.mainFlash .flash');
     $('.contactUserButton').click(function(event)
     {
         event.preventDefault();
+        $contactForm[0].reset();
         $contactDialog.jqmShow();
     });
     $contactDialog.find('.submitAction').click(function(event)
     {
         event.preventDefault();
 
+        $contactForm.find('.prompt.required').val('');
         $contactError.removeClass('error').text('');
-        if (!$contactDialog.find('form').valid())
-        {
-            $contactError.text('Please fill out the required fields')
-                .addClass('error');
-            return;
-        }
+        if (!$contactForm.valid()) { return; }
+
         $.socrataServer.makeRequest({
             type: 'POST', url: $contactForm.attr('action'),
             data: JSON.stringify($contactForm.serializeObject()),
             success: function() {
                 $contactDialog.jqmHide();
+                $mainFlash.text('Your message has been sent').addClass('notice');
+                setTimeout(function() { $mainFlash.fadeOut(); }, 5000);
             }, error: function() {
                 $contactError
                     .text('There was a problem sending your email. Please try again later.')
@@ -107,6 +108,6 @@
             }
         });
     });
-    $contactDialog.find('form').validate();
+    $contactForm.validate();
 
 })(jQuery);

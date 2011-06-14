@@ -3,7 +3,11 @@
   <title><%= @token.name %> | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
+
 <div class="profileContent">
+  <div class="mainFlash">
+    <%= display_standard_flashes %>
+  </div>
   <%= render :partial => 'header_bar' %>
   <%= render :partial => 'sidebar' %>
 

@@ -4,7 +4,9 @@
 <% end %>
 
 <div id="profile" class="profileContent clearfix">
-  <%= display_standard_flashes %>
+  <div class="mainFlash">
+    <%= display_standard_flashes %>
+  </div>
 
   <%= render :partial => 'header_bar' %>
   <%= render :partial => 'sidebar' %>

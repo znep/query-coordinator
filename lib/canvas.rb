@@ -226,10 +226,10 @@ module Canvas
     end
 
     def prepare!
-      config = CurrentDomain.configuration('site_theme')
-      @facet_values = [] and return if config.properties.custom_dataset_metadata.nil?
+      config = CurrentDomain.configuration('metadata')
+      @facet_values = [] and return if config.properties.fieldsets.nil?
 
-      fieldset = config.properties.custom_dataset_metadata.find{ |fieldset|
+      fieldset = config.properties.fieldsets.find{ |fieldset|
                    fieldset.name == Environment.page_config.metadata_fieldset }
       @facet_values = [] and return if fieldset.nil?
 

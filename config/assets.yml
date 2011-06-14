@@ -417,8 +417,6 @@ stylesheets:
     - public/stylesheets/ui.slider.css
   displays-form:
     - public/stylesheets/displays-form.css
-  internal-shared:
-    - public/stylesheets/BespinEmbedded.css
   analytics-shared:
     - public/stylesheets/jquery-ui-1.8.4.custom.css
     - public/stylesheets/ui.daterangepicker.css

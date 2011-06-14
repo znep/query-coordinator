@@ -167,7 +167,7 @@ metricsNS.topAppTokensCallback = function($context)
                             '?size=tiny') : '';
 
                     var owner = new User(response.owner);
-                    results.push({name: response.name || '(deleted)',
+                    results.push({linkText: response.name || '(deleted)',
                         extraClass: klass,
                         href: owner.getProfileUrl() + '/app_tokens/' + response.id,
                         value: value,

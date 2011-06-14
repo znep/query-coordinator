@@ -284,12 +284,6 @@ protected
       end
     end
 
-    if browse_options[:facets].present? && !(browse_options[:facets].is_a? Array)
-      # Temporary hack to track down this widget that has the wrong querystring
-      Rails.logger.error(">>> FOUND A BAD CATALOG EMBED AT #{request.referrer} (#{request.path}) <<<")
-      browse_options.delete :facets
-    end
-
     browse_options[:facets] ||= [
       view_types_facet,
       cfs,
@@ -298,13 +292,6 @@ protected
       federated_facet,
       extents_facet
     ]
-
-    browse_options[:facets].reject! do |facet|
-      next if facet.is_a? Hash
-      # Temporary hack to track down this widget that has the wrong querystring
-      Rails.logger.error(">>> FOUND A BAD CATALOG EMBED AT #{request.referrer} (#{request.path}) <<<")
-      true
-    end
     browse_options[:facets] = browse_options[:facets].compact.flatten.reject{ |f| f[:hidden] }
 
     if browse_options[:suppressed_facets].is_a? Array

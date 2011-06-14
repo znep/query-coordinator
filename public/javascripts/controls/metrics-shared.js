@@ -157,7 +157,8 @@ metricsNS.topAppTokensCallback = function($context)
     metricsNS.updateTopListWrapper($context,
         $context.data(metricsNS.DATA_KEY),
         function(key, value, results) {
-            $.socrataServer.makeRequest({url: '/api/app_tokens/' + key + '.json', batch: true,
+            $.socrataServer.makeRequest({url: '/api/app_tokens/' + key + '.json',
+                batch: true, type: 'get',
                 success: function(response)
                 {
                     var thumbed = response.thumbnailSha,

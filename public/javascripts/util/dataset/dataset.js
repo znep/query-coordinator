@@ -244,8 +244,10 @@ this.Dataset = ServerModel.extend({
 
     update: function(newDS, fullUpdate, minorUpdate)
     {
-        this._markTemporary(minorUpdate);
+        var origCopy = cleanViewForSave(this);
         this._update(newDS, fullUpdate, fullUpdate);
+        if (!_.isEqual(origCopy, cleanViewForSave(this)))
+        { this._markTemporary(minorUpdate); }
     },
 
     reload: function(successCallback)

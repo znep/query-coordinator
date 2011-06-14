@@ -58,10 +58,7 @@
                         var newViewport = mapObj.getViewport();
                         if (_.isEqual(mapObj.settings.view.displayFormat.viewport, newViewport))
                         { return; }
-                        mapObj.settings.view.update({
-                            displayFormat: $.extend({}, mapObj.settings.view.displayFormat,
-                                { viewport: newViewport })
-                        }, false, true);
+                        mapObj.updateDatasetViewport();
                         mapObj.updateRowsByViewport(null, true);
                     });
 

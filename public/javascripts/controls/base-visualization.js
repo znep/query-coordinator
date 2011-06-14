@@ -564,6 +564,10 @@
                         },
                         function()
                         {
+                            _.defer(function()
+                                { vizObj.handleClustersLoaded([], view); });
+                            var executable = views.shift();
+                            if (executable) { executable(); }
                             // On error clear these variables so more requests will be triggered
                             delete vizObj._initialLoad;
                             delete vizObj._pendingReload;

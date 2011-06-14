@@ -402,7 +402,6 @@
                     mapObj.map.setExtent(extent);
                 }
 
-                var curVP;
                 mapObj._extentChanging = true;
                 mapObj._viewportListener = dojo.connect(mapObj.map, 'onExtentChange',
                     function()
@@ -410,23 +409,9 @@
                         if (mapObj._extentChanging)
                         {
                             mapObj._extentChanging = false;
-                            curVP = mapObj.getViewport();
                             return;
                         }
-                        var vp = mapObj.getViewport();
-                        // Theory: All of these will be different if user-initiated
-                        // panning or zooming occurs. But one will hold constant if
-                        // it's just automatic.
-                        if (_.any(['xmin', 'ymin', 'ymax'], function(p)
-                            { return vp[p] == curVP[p]; }))
-                        { return; }
-
-                        mapObj.settings.view.update({
-                            displayFormat: $.extend({},
-                                mapObj.settings.view.displayFormat,
-                                { viewport: vp })
-                        }, false, true);
-                        curVP = vp;
+                        mapObj.updateDatasetViewport();
                         mapObj.updateRowsByViewport();
                     });
             },
@@ -642,11 +627,7 @@
             mapObj._viewportListener = dojo.connect(mapObj.map, 'onExtentChange', function()
             {
                 dojo.disconnect(mapObj._viewportListener);
-                mapObj.settings.view.update({
-                    displayFormat: $.extend({},
-                        mapObj.settings.view.displayFormat,
-                        { viewport: mapObj.getViewport() })
-                });
+                mapObj.updateDatasetViewport();
                 mapObj.updateRowsByViewport();
             });
         }

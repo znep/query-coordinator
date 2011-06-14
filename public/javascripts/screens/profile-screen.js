@@ -90,7 +90,6 @@
     {
         event.preventDefault();
 
-        $contactForm.find('.prompt.required').val('');
         $contactError.removeClass('error').text('');
         if (!$contactForm.valid()) { return; }
 

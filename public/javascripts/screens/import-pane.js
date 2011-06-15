@@ -317,7 +317,7 @@ var updateLines = function($elems)
                 else if (result.type == 'customExpression')
                 {
                     result.options = {
-                        expression: $transformLine.find('.customExpression')
+                        expression: $transformLine.find('.customExpression').val()
                     };
                 }
 
@@ -1048,7 +1048,7 @@ importNS.importingPaneConfig = {
                 }
                 else if (transform.type == 'customExpression')
                 {
-                    result = 'function(value){return ' + transform.options.expression + ';}(' + result + ')';
+                    result = '(function(value){return ' + transform.options.expression + ';})(' + result + ')';
                 }
                 else
                 {

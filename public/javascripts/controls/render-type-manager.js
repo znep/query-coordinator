@@ -368,7 +368,8 @@
 
             if (_.isFunction($.fn[typeInfo.initFunction]))
             {
-                $content[typeInfo.initFunction]($.extend({view: rtmObj.settings.view},
+                $content[typeInfo.initFunction]($.extend({view: rtmObj.settings.view,
+                        editEnabled: rtmObj.settings.editEnabled},
                     rtmObj.settings.common, rtmObj.settings[typeInfo.name],
                     defArgs));
             }

@@ -1419,6 +1419,8 @@
                 }
             }
             col.update({width: width});
+            // HACK
+            col.view._markTemporary(true);
             adjustHeaderStyling($(col.dom), true);
             $this.trigger('column_resized', [col, isFinished]);
             updateColumnSelection();

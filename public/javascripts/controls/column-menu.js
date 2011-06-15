@@ -426,7 +426,7 @@
             case 'hide-column':
                 if (!$.isBlank(cmObj.settings.column.parentColumn))
                 {
-                    cmObj.settings.column.hide();
+                    cmObj.settings.column.hide(null, null, false, true);
                 }
                 else
                 {
@@ -436,10 +436,10 @@
                     selHideCols[cmObj.settings.column.id] = true;
                     _.each(selHideCols, function(v, colId)
                     {
+                        // Don't save changes, let the user do that
                         cmObj.settings.view.columnForID(colId)
-                            .hide(null, null, true);
+                            .hide(null, null, false, true);
                     });
-                    $.socrataServer.sendBatch(function() { cmObj.settings.view.updateColumns(); });
                 }
                 break;
             case 'delete-column':

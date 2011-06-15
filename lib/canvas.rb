@@ -408,8 +408,11 @@ module Canvas
     end
   protected
     self.default_properties = {
-      details: 'above',
       facetStyle: 'metadata',
+      metadata: {
+        above: [ ],
+        below: [ { type: 'title' }, { type: 'description' } ]
+      },
       noResultsMessage: 'No views could be found matching these criteria.',
       respectFacet: true,
       searchOptions: {
@@ -419,10 +422,6 @@ module Canvas
       style: {
         height: { value: 30, unit: 'em' }
       },
-      showDescription: false,
-      showLink: false,
-      showTitle: true,
-      titleTag: 'h2',
       viewUid: nil
     }
     self.style_definition = [

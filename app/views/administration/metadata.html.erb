@@ -20,7 +20,7 @@
 
   <div class="customFields">
     <h2>Define Custom Fields</h2>
-    <%- if CurrentDomain.custom_dataset_metadata.blank? -%>
+    <%- if @metadata.blank? -%>
       <div class="noData">
         No custom dataset fields have been defined for your domain yet.
         Enter a name below and click 'Create' to begin.

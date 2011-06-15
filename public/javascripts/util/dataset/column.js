@@ -241,7 +241,11 @@ this.Column = ServerModel.extend({
 
         var colRemoved = function()
         {
-            col.view.clearColumn(col);
+            if (!$.isBlank(col.parentColumn))
+            { col.parentColumn.clearChildColumn(col); }
+            else
+            { col.view.clearColumn(col); }
+
             if (!isBatch)
             {
                 if (!$.isBlank(col.parentColumn))

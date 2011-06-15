@@ -668,7 +668,7 @@
                 sidebarObj._$panes[config.name] = $pane;
 
                 var $header = sidebarObj._$outerPanes[outerConfig.name]
-                    .find('.headerLink[data-paneName=' + config.name + ']');
+                    .find('.headerLink[data-paneName="' + config.name + '"]');
                 if ($header.length > 0) { $header.after($pane); }
                 else
                 {
@@ -720,8 +720,8 @@
                 {
                     sidebarObj._currentPane = nameParts.secondary;
                     sidebarObj.$currentOuterPane()
-                        .find('.headerLink[data-paneName=' +
-                            nameParts.secondary + ']').addClass('selected');
+                        .find('.headerLink[data-paneName="' +
+                            nameParts.secondary + '"]').addClass('selected');
                     if (!$.isBlank(config.wizard))
                     { sidebarObj.$currentPane().addClass('initialLoad'); }
 
@@ -919,7 +919,7 @@
             showSection: function($pane, sectionName)
             {
                 var sidebarObj = this;
-                var $s = $pane.find('.formSection[name=' + sectionName + ']')
+                var $s = $pane.find('.formSection[name="' + sectionName + '"]')
                     .removeClass('hide');
                 if (!$.isBlank($s))
                 { wizardAction(sidebarObj, $s, 'nextField'); }
@@ -2234,7 +2234,7 @@
         // Dynamically show/hide panes
         _.each(sectionOnlyIfs, function(oif, uid)
         {
-            var $section = $pane.find('[data-onlyIf=' + uid + ']');
+            var $section = $pane.find('[data-onlyIf="' + uid + '"]');
 
             // Set up helper function
             var showHideSection = function()
@@ -2349,8 +2349,8 @@
                 if (isField)
                 {
                     // This isn't going to work if there is a section name...
-                    o.$field = $pane.find(':input[name=' + paneId +
-                        ':' + o.field + ']');
+                    o.$field = $pane.find(':input[name="' + paneId +
+                        ':' + o.field + '"]');
                     o.$field.change(showHideSection).keypress(showHideSection)
                         .click(showHideSection).attr('data-onlyIfInput', true);
                 }
@@ -2433,8 +2433,8 @@
             var i = parseInt($button.attr('data-count'));
             $button.attr('data-count', i + 1);
             var attrMatch = '-templateId';
-            $newLine.find('[name$=' + attrMatch + '], [id$=' + attrMatch +
-                '], [for$=' + attrMatch + ']').each(function()
+            $newLine.find('[name$="' + attrMatch + '"], [id$="' + attrMatch +
+                '"], [for$="' + attrMatch + '"]').each(function()
             {
                 var $elem = $(this);
                 _.each(['name', 'id', 'for'], function(aName)
@@ -2890,7 +2890,7 @@
         // Once we've hooked up everything standard, render any custom content.
         _.each(customSections, function(cs, uid)
         {
-            var $section = $pane.find('[data-customContent=' + uid + ']');
+            var $section = $pane.find('[data-customContent="' + uid + '"]');
             var $sc = $section.find('.sectionContent');
             if (!$.isBlank(cs.template))
             {

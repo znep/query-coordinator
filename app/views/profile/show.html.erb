@@ -4,98 +4,12 @@
 <% end %>
 
 <div id="profile" class="profileContent clearfix">
-  <%= display_standard_flashes %>
-  <div class="content clearfix headerBar">
-    <% prerendered_cache cache_key('profile-view-summary', @current_state),
-      @view_summary_cached, :expires_in => 5.minutes do %>
-      <div class="summaryStatsContainer">
-        <%- @stat_displays.each do |stat| -%>
-          <%- next if stat.last < 1 -%>
-          <div class="summaryBox">
-            <p class="statHeader"><%= stat.first %></p>
-            <p class="number"><%= stat.last %></p>
-          </div>
-        <%- end -%>
-      </div>
-    <% end %>
-    <div class="profileImage">
-      <img src="<%= @user.profile_image_path %>" alt="<%= @user.displayName %>" />
-    </div>
-    <div class="profileHeaderText">
-      <h1><%= @user.displayName %></h1>
-      <%- if @is_user_current -%>
-        <a href="<%= @user.href %>/account" class="editProfileLink iconLink accountSettings">
-          <span class="icon"></span>
-          <span class="editLinkText">Edit Account Settings</span>
-        </a>
-      <%- elsif !current_user.nil? -%>
-        <%- if !(@user.my_friend?) -%>
-          <a href="<%= create_friend_profile_path %>" class="followButton button smallButton add">
-            <span class="icon"></span>
-            <span class="linkText">Follow</span>
-          </a>
-        <%- else -%>
-          <a href="<%= delete_friend_profile_path %>" class="followButton button smallButton remove">
-            <span class="icon"></span>
-            <span class="linkText">Unfollow</span>
-          </a>
-        <%- end -%>
-      <%- end -%>
-      <p class="secondary">
-        <%- if @user.displayTitleAndOrg.present? %>
-          <span class="titleAndOrg"><%= @user.displayTitleAndOrg %></span>
-        <%- end -%>
-        <%= @user.displayLocation %>
-      </p>
-      <p class="secondary">
-        <%- [{:text => "Joined on", :date => @user.createdAt},
-             {:text => "Last Logged In", :date => @user.lastLogin}].each do |login| -%>
-           <em><%= login[:text] %></em>
-           <span class="accountDate"><%= blist_long_date(login[:date]) %></span>
-        <%- end -%>
-      </p>
-    </div>
+  <div class="mainFlash">
+    <%= display_standard_flashes %>
   </div>
 
-  <div class="profileSideBar content">
-    <div class="profileImageContainer clearfix innerItem">
-      <div class="profileImage">
-        <img src="<%= @user.profile_image_path('large') %>" alt="<%= @user.displayName %>" />
-      </div>
-      <%= edit_link(@user, 'editProfileImageLink profileImage', 'Edit Image', 'image') %>
-    </div>
-    <% prerendered_cache cache_key('profile-friends-list', @current_state),
-      @friends_rendered, :expires_in => 5.minutes do %>
-
-      <%- [{:name => 'Followers', :list => @followers},
-           {:name => 'Following', :list => @friends}].each do |user_list| -%>
-        <%- unless user_list.blank? -%>
-          <div class="innerItem userList <%= user_list[:name].downcase %>List">
-            <h2><%= user_list[:name] %> (<%= user_list[:list].size %>)</h2>
-              <%- viewable = user_list[:list].slice(0..39)
-                  hidden   = user_list[:list].slice(40..-1)
-                  viewable.each do |user| -%>
-                <a href="<%= user.href %>">
-                  <img src="<%= user.profile_image_path('small') %>" alt="<%= user.displayName %>" title="<%= user.displayName %>" />
-                </a>
-              <%- end -%>
-              <%- unless hidden.blank? -%>
-                <div class="hiddenContacts">
-                  <%- hidden.each do |user| -%>
-                    <a href="<%= user.href %>">
-                      <img src="<%= user.profile_image_path('small') %>" alt="<%= user.displayName %>" title="<%= user.displayName %>" />
-                    </a>
-                  <%- end -%>
-                </div>
-                <p class="showMoreLinkContainer">
-                  <a href="#More" class="showMoreContacts">View All</a>
-                </p>
-              <%- end -%>
-          </div>
-        <%- end -%>
-      <%- end -%>
-    <%- end -%>
-  </div>
+  <%= render :partial => 'header_bar' %>
+  <%= render :partial => 'sidebar' %>
 
   <div class="profileMainContent">
     <%- if @is_user_current || @user.description || @user.interests || @user.userLinks  -%>
@@ -172,9 +86,11 @@
         <%- else -%>
           <%- @app_tokens.each do |token| -%>
             <div class="innerItem">
-              <%= render :partial => 'app_token_display', :locals => {
-                  :edit => false, :token => token
-              } %>
+              <a href="<%= @user.href %>/app_tokens/<%= token.id %>">
+                <%= render :partial => 'app_token_display', :locals => {
+                    :edit => false, :token => token
+                } %>
+              </a>
             </div>
           <%- end -%>
         <%- end -%>
@@ -191,10 +107,16 @@
   </div>
 </div>
 
-<% content_for :templates do %>
+<%# content_for :templates do %>
   <%# Disabled for now (forever?) %>
   <%#= render :partial => 'datasets/feed_template', :locals => {:allow_comments => false} %>
+<%# end %>
+
+<%- unless @is_user_current -%>
+<% content_for :modals do %>
+  <%= render :partial => 'contact_user' %>
 <% end %>
+<%- end -%>
 
 <% content_for :js_footer do %>
   <script type="text/javascript">

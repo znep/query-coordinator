@@ -64,7 +64,7 @@ $(function()
     if ($('#renderTypeOptions').length > 0)
     {
         // Render types
-        $('#renderTypeOptions').pillButtons({multiState: true});
+        $('#renderTypeOptions').pillButtons({multiState: true, defaultSelector: null});
         $.live('#renderTypeOptions a', 'click', function(e)
         {
             e.preventDefault();

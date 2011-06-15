@@ -76,5 +76,37 @@
                     .slideToggle();
     });
 
+    var $contactDialog = $('.contactUserDialog');
+    var $contactForm   = $contactDialog.find('form');
+    var $contactError  = $contactDialog.find('.mainError');
+    var $mainFlash     = $('.mainFlash .flash');
+    $('.contactUserButton').click(function(event)
+    {
+        event.preventDefault();
+        $contactForm[0].reset();
+        $contactDialog.jqmShow();
+    });
+    $contactDialog.find('.submitAction').click(function(event)
+    {
+        event.preventDefault();
+
+        $contactError.removeClass('error').text('');
+        if (!$contactForm.valid()) { return; }
+
+        $.socrataServer.makeRequest({
+            type: 'POST', url: $contactForm.attr('action'),
+            data: JSON.stringify($contactForm.serializeObject()),
+            success: function() {
+                $contactDialog.jqmHide();
+                $mainFlash.text('Your message has been sent').addClass('notice');
+                setTimeout(function() { $mainFlash.fadeOut(); }, 5000);
+            }, error: function() {
+                $contactError
+                    .text('There was a problem sending your email. Please try again later.')
+                    .addClass('error');
+            }
+        });
+    });
+    $contactForm.validate();
 
 })(jQuery);

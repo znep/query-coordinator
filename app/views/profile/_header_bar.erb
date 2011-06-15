@@ -1,0 +1,57 @@
+<div class="content clearfix headerBar">
+  <% prerendered_cache cache_key('profile-view-summary', @current_state),
+    @view_summary_cached, :expires_in => 5.minutes do %>
+    <div class="summaryStatsContainer">
+      <%- @stat_displays.each do |stat| -%>
+        <%- next if stat.last < 1 -%>
+        <div class="summaryBox">
+          <p class="statHeader"><%= stat.first %></p>
+          <p class="number"><%= stat.last %></p>
+        </div>
+      <%- end -%>
+    </div>
+  <% end %>
+  <div class="profileImage">
+    <img src="<%= @user.profile_image_path %>" alt="<%= @user.displayName %>" />
+  </div>
+  <div class="profileHeaderText">
+    <h1><%= @user.displayName %></h1>
+    <%- if @is_user_current -%>
+      <a href="<%= @user.href %>/account" class="editProfileLink iconLink accountSettings">
+        <span class="icon"></span>
+        <span class="editLinkText">Edit Account Settings</span>
+      </a>
+    <%- elsif !current_user.nil? -%>
+      <%- if !(@user.my_friend?) -%>
+        <a href="<%= create_friend_profile_path %>" class="followButton button smallButton add">
+          <span class="icon"></span>
+          <span class="linkText">Follow</span>
+        </a>
+      <%- else -%>
+        <a href="<%= delete_friend_profile_path %>" class="followButton button smallButton remove">
+          <span class="icon"></span>
+          <span class="linkText">Unfollow</span>
+        </a>
+      <%- end -%>
+      <%- if CurrentDomain.user_can?(current_user, :manage_users) -%>
+        <a href="#Message" class="button smallButton contactUserButton">
+          <span class="icon"></span>
+          <span class="linkText">Send Message</span>
+        </a>
+      <%- end -%>
+    <%- end -%>
+    <p class="secondary">
+      <%- if @user.displayTitleAndOrg.present? %>
+        <span class="titleAndOrg"><%= @user.displayTitleAndOrg %></span>
+      <%- end -%>
+      <%= @user.displayLocation %>
+    </p>
+    <p class="secondary">
+      <%- [{:text => "Joined on", :date => @user.createdAt},
+           {:text => "Last Logged In", :date => @user.lastLogin}].each do |login| -%>
+         <em><%= login[:text] %></em>
+         <span class="accountDate"><%= blist_long_date(login[:date]) %></span>
+      <%- end -%>
+    </p>
+  </div>
+</div>

@@ -17,7 +17,7 @@
     <%= render :partial => 'accounts/login_header' %> 
   </div>
   <div class="contentBoxInner clearfix">
-    <div class="loginSignupForm firstColumn column" id="signup">
+    <div class="loginSignupForm firstColumn column">
       <%= render :partial => 'signup_form' %>
       <%- unless params[:no_js].present? -%>
       <%= render :partial => 'user_sessions/login_form' %>

@@ -99,7 +99,9 @@
        *
        * Many thanks to Klaus Hartl for helping resolve this issue.
        */
-      if (!$this.attr('defaultValue') && (isCallback || $this.val() == o.example))
+      // jeff.scherpelz@socrata.com - 16 Jun 2011
+      // Patch this for jQuery 1.6 per https://github.com/mudge/jquery_example/issues/4
+      if (!$this.attr('value') && (isCallback || $this.val() == o.example))
         $this.val('');
 
       /*

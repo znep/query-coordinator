@@ -8,6 +8,15 @@
   .signupHeader, .signupForm
     display: none
 
+.contentHeader
+  .explanation
+    font-size: 1.2em
+    padding: 0 2em
+    p
+      margin-top: 1em
+      &:first-child
+        margin-top: 0
+
 .contentBoxInner
   font-size: 1.2em
   padding: 2em
@@ -23,22 +32,19 @@
   .submitLine
     padding-top: 1em
 
-  input[type='text'], input[type='password']
-    width: 23.5em
+  .line
+    input[type='text'], input[type='password']
+      width: 23.5em
 
-  .commonForm .line
     label
       width: 9em
       &.error
         width: auto
-    input[type='text'], input[type='password']
-      width: 15em
 
   #forgotPasswordForm
     .line
       label
         width: 6em
-
 
   .loginSignupForm
     float: left
@@ -145,5 +151,3 @@
         padding-left: 3.2em
         text-align: left
         width: 20em
-
-

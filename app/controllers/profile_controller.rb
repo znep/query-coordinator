@@ -1,6 +1,6 @@
 class ProfileController < ApplicationController
   include BrowseActions
-  skip_before_filter :require_user, :only => [:show]
+  skip_before_filter :require_user, :only => [:show, :show_app_token]
 
   helper :user
 
@@ -10,17 +10,10 @@ class ProfileController < ApplicationController
 
   def show
     @port = request.port
-    user_id = params[:id]
-    if (!current_user || user_id != current_user.id)
-      @is_user_current = false
-      @user = User.find_profile(user_id)
-    else
-      @is_user_current = true
-      @user = current_user
-    end
 
     ### @createdOnDomain = Domain.findById(@user.data['createdOnDomainId'])
 
+    prepare_profile
     # See if it matches the authoritative URL; if not, redirect
     if request.path != @user.href
       # Log redirects in development
@@ -30,39 +23,6 @@ class ProfileController < ApplicationController
       end
       redirect_to(@user.href + '?' + request.query_string, :status => 301)
     end
-
-    @current_state = {'user' => @user.id, 'domain' => CurrentDomain.cname}
-
-    # Don't make a core server request for friends and followers every time
-    unless @friends_rendered = read_fragment(app_helper.cache_key('profile-friends-list', @current_state))
-      @followers = @user.followers
-      @friends = @user.friends
-    end
-
-    @stat_displays = []
-
-    # Also, we can probably make these _views vars local, not @ accessible
-    unless (@view_summary_cached = read_fragment(app_helper.cache_key('profile-view-summary', @current_state)))
-      base_req = {:limit => 1, :for_user => @user.id, :nofederate => true}
-      stats = [
-        {:params => {:datasetView => 'dataset'}, :name => 'Datasets'},
-        {:params => {:limitTo => 'tables', :datasetView => 'view'},
-          :name => 'Filtered Views'},
-        {:params => {:limitTo => 'charts'}, :name => 'Charts'},
-        {:params => {:limitTo => 'maps'}, :name => 'Maps'},
-        {:params => {:limitTo => 'calendars'}, :name => 'Calendars'},
-        {:params => {:limitTo => 'forms'}, :name => 'Forms'}
-      ]
-      CoreServer::Base.connection.batch_request do
-        stats.each do |s|
-          SearchResult.search('views', base_req.merge(s[:params]), true)
-        end
-      end.each_with_index do |r, i|
-        p = JSON.parse(r['response'], {:max_nesting => 25})
-        @stat_displays << [stats[i][:name], p[0]['count']]
-      end
-    end
-
     @app_tokens = @user.app_tokens
 
     browse_options = {
@@ -281,6 +241,11 @@ class ProfileController < ApplicationController
     @token = AppToken.new
   end
 
+  def show_app_token
+    prepare_profile
+    @token = AppToken.find_by_id(params[:id], params[:token_id])
+  end
+
   def edit_app_token
     token_params = params[:app_token]
     if token_params
@@ -370,6 +335,51 @@ private
         flash[:error] = "Error uploading new image: #{ex.message}"
       end
     end
+  end
+
+  def prepare_profile
+    user_id = params[:id]
+    if (!current_user || user_id != current_user.id)
+      @is_user_current = false
+      @user = User.find_profile(user_id)
+    else
+      @is_user_current = true
+      @user = current_user
+    end
+
+    @current_state = {'user' => @user.id, 'domain' => CurrentDomain.cname}
+
+    # Don't make a core server request for friends and followers every time
+    unless @friends_rendered = read_fragment(app_helper.cache_key('profile-friends-list', @current_state))
+      @followers = @user.followers
+      @friends = @user.friends
+    end
+
+    @stat_displays = []
+
+    # Also, we can probably make these _views vars local, not @ accessible
+    unless (@view_summary_cached = read_fragment(app_helper.cache_key('profile-view-summary', @current_state)))
+      base_req = {:limit => 1, :for_user => @user.id, :nofederate => true}
+      stats = [
+        {:params => {:datasetView => 'dataset'}, :name => 'Datasets'},
+        {:params => {:limitTo => 'tables', :datasetView => 'view'},
+          :name => 'Filtered Views'},
+        {:params => {:limitTo => 'charts'}, :name => 'Charts'},
+        {:params => {:limitTo => 'maps'}, :name => 'Maps'},
+        {:params => {:limitTo => 'calendars'}, :name => 'Calendars'},
+        {:params => {:limitTo => 'forms'}, :name => 'Forms'}
+      ]
+      CoreServer::Base.connection.batch_request do
+        stats.each do |s|
+          SearchResult.search('views', base_req.merge(s[:params]), true)
+        end
+      end.each_with_index do |r, i|
+        p = JSON.parse(r['response'], {:max_nesting => 25})
+        @stat_displays << [stats[i][:name], p[0]['count']]
+      end
+    end
+
+
   end
 end
 

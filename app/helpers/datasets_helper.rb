@@ -178,7 +178,7 @@ module DatasetsHelper
   # now, display meta custom data as long as they have the keys in lenses.metadata
   # This is done by merging the fields
   def merge_custom_metadata(view)
-    domain_metadata = CurrentDomain.custom_dataset_metadata || []
+    domain_metadata = CurrentDomain.property(:fieldsets, :metadata) || []
     if !view.merged_metadata['custom_fields'].nil?
       domain_metadata = domain_metadata.clone
       view_metadata = view.merged_metadata['custom_fields']

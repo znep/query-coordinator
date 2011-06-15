@@ -26,7 +26,8 @@
                 else
                 { $(this).toggleClass('active'); }
             });
-            $container.find(opts.defaultSelector).addClass(opts.activeClass);
+            if (!$.isBlank(opts.defaultSelector))
+            { $container.find(opts.defaultSelector).addClass(opts.activeClass); }
         });
     };
 

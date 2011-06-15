@@ -156,6 +156,8 @@
                             chartObj.settings.view.displayFormat.pieJoinAngle;
 
                     // Render point and cache it
+                    // NOTE: There is an assumption that _xCategories will be
+                    // appropriately populated by this point in the yPoint code.
                     var point = yPoint(chartObj, row, value, i, basePt, cs.data);
                     if (_.isNull(point)) { return; }
 
@@ -198,18 +200,19 @@
                         chartObj._xCategories.splice(chartObj._otherIndex, 1);
                         for (var i = 0; i < chartObj._seriesRemainders.length; i++)
                         {
-                            if (!$.isBlank(chartObj.chart) &&
-                                !$.isBlank(chartObj.chart.series[i].data[chartObj._otherIndex]))
-                            { chartObj.chart.series[i].data[chartObj._otherIndex].remove(); }
-                            if (!$.isBlank(chartObj.secondChart) &&
-                                !$.isBlank(chartObj.secondChart.series[i].data[chartObj._otherIndex]))
-                            { chartObj.secondChart.series[i].data[chartObj._otherIndex].remove(); }
+                            if (!$.isBlank(chartObj.chart))
+                            { _.detect(chartObj.chart.series[i].data,
+                                function(datum) { return datum.otherPt; }).remove(); }
+                            if (!$.isBlank(chartObj.secondChart))
+                            { _.detect(chartObj.secondChart.series[i].data,
+                                function(datum) { return datum.otherPt; }).remove(); }
                             chartObj._seriesCache[i].data.splice(chartObj._otherIndex, 1);
                         }
                         delete chartObj._otherIndex;
                     }
 
-                    var otherPt = xPoint(chartObj, null, 'Other');
+                    var otherPt = xPoint(chartObj, null, -1);
+                    otherPt.otherPt = true;
                     if (!_.isUndefined(chartObj._xCategories))
                     { chartObj._xCategories.push('Other'); }
                     _.each(chartObj._seriesRemainders, function(sr, i)
@@ -217,6 +220,8 @@
                         if (sr > 0)
                         {
                             var col = chartObj._yColumns[i].data;
+                            // NOTE: There is an assumption that _xCategories will be
+                            // appropriately populated by this point in the yPoint code.
                             var point = yPoint(chartObj, null, sr, i, otherPt, col);
                             if (!_.isUndefined(chartObj.chart))
                             { chartObj.chart.series[i].addPoint(point, false); }
@@ -276,6 +281,7 @@
                     chartObj.secondChart.destroy();
                     delete chartObj.secondChart;
                 }
+                chartObj.$dom().siblings('#highcharts_tooltip').hide();
             },
 
             getRequiredJavascripts: function()
@@ -571,7 +577,7 @@
         { point.name = $.htmlEscape(row[colSet.title.id]); }
 
         else if (isPieTypeChart)
-        { point.name = chartObj._xCategories[point.x] || point.x; }
+        { point.name = _.last(chartObj._xCategories) || point.x; }
 
         else { point.name = chartObj._seriesCache[seriesIndex].name; }
 
@@ -820,7 +826,7 @@
         }
 
         if (!point.flyoutDetails) { $box.hide(); return; }
-        if (point.name == 'Other')
+        if (point.otherPt)
         { point.flyoutDetails.find('.columnId' + chartObj._xColumn.id + ' span')
                              .text('Other'); }
 

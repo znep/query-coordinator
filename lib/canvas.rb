@@ -226,10 +226,10 @@ module Canvas
     end
 
     def prepare!
-      config = CurrentDomain.configuration('site_theme')
-      @facet_values = [] and return if config.properties.custom_dataset_metadata.nil?
+      config = CurrentDomain.configuration('metadata')
+      @facet_values = [] and return if config.properties.fieldsets.nil?
 
-      fieldset = config.properties.custom_dataset_metadata.find{ |fieldset|
+      fieldset = config.properties.fieldsets.find{ |fieldset|
                    fieldset.name == Environment.page_config.metadata_fieldset }
       @facet_values = [] and return if fieldset.nil?
 
@@ -408,8 +408,11 @@ module Canvas
     end
   protected
     self.default_properties = {
-      details: 'above',
       facetStyle: 'metadata',
+      metadata: {
+        above: [ ],
+        below: [ { type: 'title' }, { type: 'description' } ]
+      },
       noResultsMessage: 'No views could be found matching these criteria.',
       respectFacet: true,
       searchOptions: {
@@ -419,10 +422,6 @@ module Canvas
       style: {
         height: { value: 30, unit: 'em' }
       },
-      showDescription: false,
-      showLink: false,
-      showTitle: true,
-      titleTag: 'h2',
       viewUid: nil
     }
     self.style_definition = [

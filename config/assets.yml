@@ -13,7 +13,7 @@ javascripts:
     - public/javascripts/plugins/jquery.uniform.js
     - public/javascripts/plugins/jquery.validate.js
     - public/javascripts/plugins/pure.js
-    - public/javascripts/plugins/jquery-ui-1.8.6.custom.min.js
+    - public/javascripts/plugins/jquery-ui-1.8.13.custom.js
     - public/javascripts/plugins/underscore.js
     - public/javascripts/plugins/inheritance.js
     - public/javascripts/util/namespace.js
@@ -361,6 +361,7 @@ javascripts:
   screen-reset-password:
     - public/javascripts/screens/reset-password-screen.js
   screen-profile:
+    - public/javascripts/util/serialize.js
     - public/javascripts/util/humane-date.js
     - public/javascripts/screens/profile-screen.js
   screen-profile-edit:
@@ -396,6 +397,8 @@ javascripts:
     - public/javascripts/plugins/ace/mode-json.js
     - public/javascripts/plugins/ace/mode-css.js
     - public/javascripts/plugins/ace/mode-html.js
+  worker-json:
+    - public/javascripts/plugins/ace/worker-json.js
 
 
 dump:
@@ -415,8 +418,6 @@ stylesheets:
     - public/stylesheets/ui.slider.css
   displays-form:
     - public/stylesheets/displays-form.css
-  internal-shared:
-    - public/stylesheets/BespinEmbedded.css
   analytics-shared:
     - public/stylesheets/jquery-ui-1.8.4.custom.css
     - public/stylesheets/ui.daterangepicker.css

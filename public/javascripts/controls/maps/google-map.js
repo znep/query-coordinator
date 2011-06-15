@@ -30,6 +30,38 @@
                 mapObj._bounds = new google.maps.LatLngBounds();
                 mapObj._boundsCounts = 0;
 
+                google.maps.event.addListener(mapObj.map, 'bounds_changed', function()
+                    {
+                        if (!mapObj._ready || mapObj._boundsChanging) { return; }
+                        // Ignore bounds events unless all rows are loaded
+                        var rowsLoaded = _.reduce(mapObj._dataViews,
+                            function(total, view) { return total + view._rows.length; }, 0);
+                        if (mapObj._totalRows > rowsLoaded && mapObj._maxRows > rowsLoaded)
+                        { return; }
+
+                        // Mark the event so idle can handle it once done
+                        mapObj._boundsChanging = true;
+                    });
+
+                google.maps.event.addListener(mapObj.map, 'idle', function()
+                    {
+                        // Catch first idle to let us know the map is ready; we don't
+                        // want to do anything until that happens
+                        if (!mapObj._ready)
+                        {
+                            mapObj._ready = true;
+                            return;
+                        }
+                        if (!mapObj._boundsChanging) { return; }
+                        delete mapObj._boundsChanging;
+
+                        var newViewport = mapObj.getViewport();
+                        if (_.isEqual(mapObj.settings.view.displayFormat.viewport, newViewport))
+                        { return; }
+                        mapObj.updateDatasetViewport();
+                        mapObj.updateRowsByViewport(null, true);
+                    });
+
                 // For snapshotting
                 if (mapObj.settings.view.snapshotting)
                 {
@@ -213,8 +245,6 @@
             adjustBounds: function()
             {
                 var mapObj = this;
-                if (mapObj._viewportListener)
-                { google.maps.event.removeListener(mapObj._viewportListener); }
 
                 if (mapObj.settings.view.displayFormat.viewport)
                 {
@@ -230,43 +260,6 @@
                     mapObj.map.setCenter(mapObj._bounds.getCenter());
                     mapObj.map.setZoom(mapObj.settings.defaultZoom);
                 }
-
-                // Don't attach viewportListener unless all rows are loaded.
-                var rowsLoaded = _.reduce(mapObj._dataViews,
-                    function(total, view) { return total + view._rows.length; }, 0);
-                if (mapObj._totalRows > rowsLoaded && mapObj._maxRows > rowsLoaded)
-                { return; }
-
-                // Begin Rabbit Hole.
-                var l = google.maps.event.addListener(mapObj.map, 'idle', function()
-                {
-                    google.maps.event.removeListener(l);
-                    mapObj._viewportListener = google.maps.event.addListener(
-                        mapObj.map, 'bounds_changed', function()
-                        {
-                            if (mapObj._extentChanging) { return; }
-                            mapObj._extentChanging = google.maps.event.addListener(
-                                mapObj.map, 'idle', function()
-                                {
-                                    google.maps.event.removeListener(
-                                        mapObj._extentChanging);
-                                    mapObj._extentChanging = false;
-                                    _metersPerPixel = null;
-                                    var newViewport = mapObj.getViewport();
-                                    if (_.isEqual(
-                                        mapObj.settings.view.displayFormat.viewport,
-                                        newViewport))
-                                    { return; }
-                                    mapObj.settings.view.update({
-                                        displayFormat: $.extend({},
-                                            mapObj.settings.view.displayFormat,
-                                            { viewport: newViewport })
-                                    }, false, true);
-                                    mapObj.updateRowsByViewport(null, true);
-                                }
-                            );
-                        });
-                });
             },
 
             getViewport: function(with_bounds)
@@ -345,7 +338,6 @@
                 blist.util.googleCallback = this._setupLibraries;
                 blist.util.googleCallbackMap = this;
                 return "https://maps.google.com/maps/api/js?sensor=false&callback=blist.util.googleCallback";
-
             },
 
             _setupLibraries: function()

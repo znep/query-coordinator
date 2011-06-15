@@ -288,12 +288,6 @@ protected
       end
     end
 
-    if browse_options[:facets].present? && !(browse_options[:facets].is_a? Array)
-      # Temporary hack to track down this widget that has the wrong querystring
-      Rails.logger.error(">>> FOUND A BAD CATALOG EMBED AT #{request.referrer} (#{request.path}) <<<")
-      browse_options.delete :facets
-    end
-
     browse_options[:facets] ||= [
       view_types_facet,
       cfs,
@@ -302,13 +296,6 @@ protected
       federated_facet,
       extents_facet
     ]
-
-    browse_options[:facets].reject! do |facet|
-      next if facet.is_a? Hash
-      # Temporary hack to track down this widget that has the wrong querystring
-      Rails.logger.error(">>> FOUND A BAD CATALOG EMBED AT #{request.referrer} (#{request.path}) <<<")
-      true
-    end
     browse_options[:facets] = browse_options[:facets].compact.flatten.reject{ |f| f[:hidden] }
 
     if browse_options[:suppressed_facets].is_a? Array
@@ -405,6 +392,8 @@ private
 
   @@numeric_options = [ :limit, :page ]
   @@boolean_options = [ :nofederate ]
+
+  @@moderatable_types = [ 'filters', 'charts', 'maps', 'calendars', 'forms' ]
 
   @@search_options = [ :id, :name, :tags, :desc, :q, :category, :limit, :page, :sortBy, :limitTo, :for_user, :datasetView, :sortPeriod, :admin, :nofederate, :moderation, :xmin, :ymin, :xmax, :ymax, :for_approver, :approval_stage_id, :publication_stage, :federation_filter, :metadata_tag ]
   @@querystring_options = [  ]

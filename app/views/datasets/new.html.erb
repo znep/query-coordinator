@@ -209,7 +209,7 @@
             </div>
 
             <%= render :partial => 'metadata', :locals =>
-                {:meta_fields => nil, :fieldsets => CurrentDomain.custom_dataset_metadata || []} %>
+                {:meta_fields => nil, :fieldsets => CurrentDomain.property(:fieldsets, :metadata) || []} %>
 
             <div class="privacyMetadata">
               <h2>Privacy &amp; Security</h2>

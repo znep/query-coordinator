@@ -1,0 +1,43 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'profile-show' %>
+  <title><%= @token.name %> | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+
+<div class="profileContent">
+  <div class="mainFlash">
+    <%= display_standard_flashes %>
+  </div>
+  <%= render :partial => 'header_bar' %>
+  <%= render :partial => 'sidebar' %>
+
+  <div class="profileMainContent">
+    <div class="showAppToken content appTokens">
+      <a class="button leftArrowNoHover backButton" href="<%= @user.href %>">
+        <span class="icon"></span>
+        Back to Profile
+      </a>
+      <h2><%= @user.displayName %>'s Applications</h2>
+      <h1><%= @token.name %></h1>
+      <%= render :partial => 'app_token_display',
+          :locals => {:token => @token, :edit => false} %>
+    </div>
+  </div>
+</div>
+
+<%- unless @is_user_current -%>
+<% content_for :modals do %>
+  <%= render :partial => 'contact_user' %>
+<% end %>
+<%- end -%>
+
+<% content_for :js_footer do %>
+  <script type="text/javascript">
+    <%- if !current_user.nil? -%>
+      blist.currentUserId = '<%= current_user.id %>';
+    <%- end -%>
+    blist.namespace.fetch('blist.profile');
+    blist.profile.profileUserId = '<%= @user.id %>';
+  </script>
+  <%= include_javascripts 'screen-profile' %>
+<% end %>

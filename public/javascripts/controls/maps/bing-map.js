@@ -246,11 +246,7 @@
                 if (!mapObj._viewportHandler)
                 {
                     mapObj._viewportHandler = function() {
-                        mapObj.settings.view.update({
-                            displayFormat: $.extend({},
-                                mapObj.settings.view.displayFormat,
-                                { viewport: mapObj.getViewport() })
-                        }, false, true);
+                        mapObj.updateDatasetViewport();
                         mapObj.updateRowsByViewport(null, true);
                     };
                 }

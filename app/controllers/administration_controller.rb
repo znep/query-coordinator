@@ -183,7 +183,7 @@ class AdministrationController < ApplicationController
   before_filter :only => [:views] {|c| c.check_feature(:view_moderation)}
   def views
     view_facet = view_types_facet()
-    view_facet[:options].delete_if { |item| item[:value] == 'datasets' }
+    view_facet[:options].select! { |item| @@moderatable_types.include? item[:value] }
 
     @processed_browse = process_browse(request, {
       datasetView: 'view',
@@ -402,13 +402,13 @@ class AdministrationController < ApplicationController
   #
   before_filter :only => [:metadata, :create_metadata_fieldset, :delete_metadata_fieldset, :create_metadata_field, :delete_metadata_field, :toggle_metadata_option, :move_metadata_field, :create_category, :delete_category] {|c| c.check_auth_level('edit_site_theme')}
   def metadata
-    @metadata = get_configuration().properties.custom_dataset_metadata || []
+    @metadata = get_configuration('metadata').properties.fieldsets || []
     @categories = get_configuration('view_categories', true).properties.sort { |a, b| a[0].downcase <=> b[0].downcase }
   end
 
   def create_metadata_fieldset
-    config = get_configuration()
-    metadata = config.properties.custom_dataset_metadata || []
+    config = get_configuration('metadata')
+    metadata = config.properties.fieldsets || []
     field = params[:newFieldsetName]
 
     if field.nil? || field.strip().blank?
@@ -427,15 +427,15 @@ class AdministrationController < ApplicationController
   end
 
   def delete_metadata_fieldset
-    config = get_configuration()
-    metadata = config.properties.custom_dataset_metadata
+    config = get_configuration('metadata')
+    metadata = config.properties.fieldsets
     metadata.delete_at(params[:fieldset].to_i)
 
     save_metadata(config, metadata, "Field Set Successfully Removed")
   end
 
   def create_metadata_field
-    config = get_configuration()
+    config = get_configuration('metadata')
 
     field_name = params[:newFieldName]
     if (field_name.nil? || field_name.strip().empty?)
@@ -443,7 +443,7 @@ class AdministrationController < ApplicationController
       return redirect_to :action => 'metadata'
     end
 
-    metadata = config.properties.custom_dataset_metadata
+    metadata = config.properties.fieldsets
     fieldset = metadata[params[:fieldset].to_i]
 
     fieldset['fields'] ||= []
@@ -461,23 +461,23 @@ class AdministrationController < ApplicationController
   end
 
   def delete_metadata_field
-    config = get_configuration()
-    metadata = config.properties.custom_dataset_metadata
+    config = get_configuration('metadata')
+    metadata = config.properties.fieldsets
     metadata[params[:fieldset].to_i].fields.delete_at(params[:index].to_i)
 
     save_metadata(config, metadata, "Field Successfully Removed")
   end
 
   def toggle_metadata_option
-    config   = get_configuration()
-    metadata = config.properties.custom_dataset_metadata
+    config = get_configuration('metadata')
+    metadata = config.properties.fieldsets
     fieldset = metadata[params[:fieldset].to_i].fields
     option   = params[:option]
 
     field = fieldset[params[:index].to_i]
     field[option] = field[option].blank? ? true : false
 
-    update_or_create_property(config, 'custom_dataset_metadata', metadata)
+    update_or_create_property(config, 'fieldsets', metadata)
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
 
@@ -488,8 +488,8 @@ class AdministrationController < ApplicationController
   end
 
   def move_metadata_field
-    config = get_configuration()
-    metadata = config.properties.custom_dataset_metadata
+    config = get_configuration('metadata')
+    metadata = config.properties.fieldsets
     fieldset = metadata[params[:fieldset].to_i].fields
 
     field = fieldset.detect { |f| f['name'] == params[:field] }
@@ -507,7 +507,7 @@ class AdministrationController < ApplicationController
 
     fieldset[index], fieldset[swap_index] = fieldset[swap_index], fieldset[index]
 
-    update_or_create_property(config, 'custom_dataset_metadata', metadata)
+    update_or_create_property(config, 'fieldsets', metadata)
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
 
@@ -1051,7 +1051,7 @@ private
   end
 
   def save_metadata(config, metadata, successMessage)
-    update_or_create_property(config, 'custom_dataset_metadata', metadata)
+    update_or_create_property(config, 'fieldsets', metadata)
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
 

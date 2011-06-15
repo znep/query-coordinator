@@ -638,7 +638,7 @@
                 {
                     var viewConfig = mapObj._byView[view.id];
                     var filterColumn = viewConfig._geoCol || viewConfig._locCol;
-                    if (!viewConfig._clustering || $.isBlank(filterColumn)) { return; }
+                    if ($.isBlank(filterColumn)) { return; }
 
                     var buildFilterCondition = function(viewport)
                     {
@@ -695,6 +695,22 @@
                         { viewport: filterCondition });
                     view.update({ query: query}, false, true);
                 });
+            },
+
+            updateDatasetViewport: function()
+            {
+                var mapObj = this;
+                var vp = mapObj.getViewport();
+                // Theory: All of these will be different if user-initiated
+                // panning or zooming occurs. But one will hold constant if
+                // it's just automatic.
+                var curVP = mapObj.settings.view.displayFormat.viewport || {};
+                if (_.any(['xmin', 'ymin', 'ymax'], function(p)
+                    { return vp[p] == curVP[p]; }))
+                { return; }
+
+                mapObj.settings.view.update({displayFormat: $.extend({},
+                    mapObj.settings.view.displayFormat, { viewport: vp })}, false, true);
             },
 
             resizeHandle: function(event)

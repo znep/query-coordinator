@@ -87,9 +87,8 @@
                                     ($fh.length - adjFactor) / ($fh.length - 1);
                             }
                             $f.height(Math.floor(($f.parent().innerHeight() - siblingsHeight($f)) *
-                                multiplier / $fh.length)).resize();
+                                multiplier / $fh.length));
                         });
-                    $t.resize();
                 });
             }
         }

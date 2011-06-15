@@ -157,7 +157,8 @@ metricsNS.topAppTokensCallback = function($context)
     metricsNS.updateTopListWrapper($context,
         $context.data(metricsNS.DATA_KEY),
         function(key, value, results) {
-            $.socrataServer.makeRequest({url: '/api/app_tokens/' + key + '.json', batch: true,
+            $.socrataServer.makeRequest({url: '/api/app_tokens/' + key + '.json',
+                batch: true, type: 'get',
                 success: function(response)
                 {
                     var thumbed = response.thumbnailSha,
@@ -165,8 +166,10 @@ metricsNS.topAppTokensCallback = function($context)
                         thumbnail = thumbed ? ('/api/file_data/' + response.thumbnailSha +
                             '?size=tiny') : '';
 
-                    results.push({name: response.name || '(deleted)',
+                    var owner = new User(response.owner);
+                    results.push({linkText: response.name || '(deleted)',
                         extraClass: klass,
+                        href: owner.getProfileUrl() + '/app_tokens/' + response.id,
                         value: value,
                         textValue: Highcharts.numberFormat(value, 0),
                         thumbnail: thumbnail

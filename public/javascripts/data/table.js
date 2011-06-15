@@ -3663,20 +3663,19 @@
                     var cls = col.cls ? ' blist-tf-' + col.cls : '';
                     var agg = col.aggregates[col.format.aggregate];
                     showAgg = showAgg || !$.isBlank(agg);
-                    // Convert string to float, then clip to desired number of
-                    // digits; then convert back to float to strip extra zeros
-                    var val = !$.isBlank(agg) ?
-                        parseFloat(parseFloat(agg || 0)
-                            .toFixed(col.format.precision || 3)) :
-                        '';
 
+                    var val;
                     // specific aggregates are formatted for the column;
                     // for ex., money will show $99.99
                     if (!$.isBlank(agg) &&
-                            _.include(['money', 'percent'], col.renderTypeName) &&
                             _.include(['sum', 'average', 'maximum', 'minimum'],
                                 col.format.aggregate))
-                    { val = col.renderType.filterRender(val, col); }
+                    {
+                        var c = col;
+                        if (col.format.aggregate == 'average')
+                        { c = $.extend(true, {format: {precision: 3}}, col); }
+                        val = col.renderType.renderer(agg, c);
+                    }
 
                     html.push(
                         '<div class="blist-tf ',

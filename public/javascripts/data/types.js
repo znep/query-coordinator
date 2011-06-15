@@ -211,7 +211,7 @@ blist.namespace.fetch('blist.data.types');
         {
             value = blist.util.toHumaneNumber(value, 2);
         }
-        else if (!noCommas)
+        else if (noCommas !== true && noCommas != 'true')
         {
             value = value + '';
             var pos = value.indexOf('.');
@@ -224,7 +224,6 @@ blist.namespace.fetch('blist.data.types');
                 pos -= 3;
             }
         }
-        // END HACK
 
         if (prefix) { value = prefix + value; }
         if (suffix) { value += suffix; }

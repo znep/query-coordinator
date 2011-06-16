@@ -3664,7 +3664,7 @@
                     var agg = col.aggregates[col.format.aggregate];
                     showAgg = showAgg || !$.isBlank(agg);
 
-                    var val;
+                    var val = agg;
                     // specific aggregates are formatted for the column;
                     // for ex., money will show $99.99
                     if (!$.isBlank(agg) &&

@@ -327,7 +327,7 @@
 
                 var $newNode = $.tag({tagName: 'div', id: typeInfo.domId,
                     'class': ['fullHeight', 'renderTypeNode', 'hide'], 'data-renderType': type});
-                if ($.isBlank($beforeItem))
+                if ($.isBlank($beforeItem) || $beforeItem.length < 1)
                 { rtmObj.$dom().append($newNode); }
                 else
                 { $beforeItem.before($newNode); }

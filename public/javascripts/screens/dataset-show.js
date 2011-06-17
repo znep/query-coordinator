@@ -239,6 +239,11 @@ $(function()
         datasetPageNS.sidebar.setDefault('filter.unifiedFilter');
     }
 
+    // Pop a sidebar right away if they ask for it
+    var paneName = $.urlParam(window.location.href, 'pane');
+    if (_.isString(paneName))
+    { datasetPageNS.sidebar.show(paneName); }
+
     var sidebarUpdate = function()
         { datasetPageNS.sidebar.updateEnabledSubPanes(); };
     blist.dataset

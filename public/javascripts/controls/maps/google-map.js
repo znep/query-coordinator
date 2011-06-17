@@ -30,7 +30,9 @@
                 mapObj._bounds = new google.maps.LatLngBounds();
                 mapObj._boundsCounts = 0;
 
-                google.maps.event.addListener(mapObj.map, 'bounds_changed', function()
+                mapObj._listeners = {};
+                mapObj._listeners.boundChanged = google.maps.event.addListener(mapObj.map,
+                    'bounds_changed', function()
                     {
                         if (!mapObj._ready || mapObj._boundsChanging) { return; }
                         // Ignore bounds events unless all rows are loaded
@@ -43,7 +45,7 @@
                         mapObj._boundsChanging = true;
                     });
 
-                google.maps.event.addListener(mapObj.map, 'idle', function()
+                mapObj._listeners.idle = google.maps.event.addListener(mapObj.map, 'idle', function()
                     {
                         // Catch first idle to let us know the map is ready; we don't
                         // want to do anything until that happens
@@ -245,6 +247,8 @@
             adjustBounds: function()
             {
                 var mapObj = this;
+                if ($.subKeyDefined(mapObj, 'settings.view.query.namedFilters.viewport'))
+                { return; }
 
                 if (mapObj.settings.view.displayFormat.viewport)
                 {
@@ -275,6 +279,8 @@
                 };
 
                 var bounds = mapObj.map.getBounds();
+                if ($.isBlank(bounds)) { return null; }
+
                 var ne = bounds.getNorthEast();
                 var sw = bounds.getSouthWest();
                 $.extend(viewport, {
@@ -303,6 +309,13 @@
 
                 mapObj._bounds = new google.maps.LatLngBounds();
                 mapObj._boundsCounts = 0;
+            },
+
+            unhookMap: function()
+            {
+                var mapObj = this;
+                _.each(mapObj._listeners, function(l)
+                    { google.maps.event.removeListener(l); });
             },
 
             hideLayers: function()

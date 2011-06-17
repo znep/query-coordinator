@@ -216,6 +216,13 @@
                 }
 
                 _.each(defTypes, function(v, t) { if (v) { rtmObj.show(t); } });
+
+                $(window).bind('resize', function(e, source)
+                {
+                    if (source == this) { return; }
+                    _.each(rtmObj.visibleTypes, function(v, t)
+                    { rtmObj.$domForType(t).trigger('resize', [this]); });
+                });
             },
 
             $dom: function()

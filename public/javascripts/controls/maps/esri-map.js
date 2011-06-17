@@ -367,6 +367,9 @@
                 if (!mapObj._bounds && mapObj._multipoint.points.length == 0
                     && !mapObj.settings.view.displayFormat.viewport)
                 { return; }
+                if (mapObj._viewportListener &&
+                    $.subKeyDefined(mapObj, 'settings.view.query.namedFilters.viewport'))
+                { return; }
 
                 if (mapObj._viewportListener)
                 { dojo.disconnect(mapObj._viewportListener); }
@@ -385,7 +388,7 @@
                 if (mapObj.settings.view.displayFormat.viewport)
                 {
                     mapObj.setViewport(mapObj.settings.view.displayFormat.viewport);
-                    if (_.isEmpty(mapObj.settings.view.query))
+                    if (!$.subKeyDefined(mapObj, 'settings.view.query.namedFilters.viewport'))
                     { mapObj.updateRowsByViewport(); }
                 }
                 else if (xadj == 0 || yadj == 0)
@@ -466,20 +469,26 @@
             resizeHandle: function(event)
             {
                 // ESRI can't handle being resized to 0
-                if (this.map !== undefined && this.$dom().height() > 0)
+                if (!$.isBlank(this.map) && this.$dom().height() > 0)
                 { this.map.resize(); }
             },
 
             resetData: function()
             {
                 var mapObj = this;
-                mapObj._multipoint = new esri.geometry.Multipoint
-                    (mapObj.map.spatialReference);
+                if ($.subKeyDefined(mapObj, 'map.spatialReference'))
+                { mapObj._multipoint = new esri.geometry.Multipoint (mapObj.map.spatialReference); }
                 delete mapObj._segmentSymbols;
                 delete mapObj._bounds;
                 delete mapObj._byView[mapObj.settings.view.id]._clusters;
-                mapObj._graphicsLayer.clear();
-                mapObj.map.infoWindow.hide();
+                if (!$.isBlank(mapObj._graphicsLayer)) { mapObj._graphicsLayer.clear(); }
+                if ($.subKeyDefined(mapObj, 'map.infoWindow')) { mapObj.map.infoWindow.hide(); }
+            },
+
+            unhookMap: function()
+            {
+                var mapObj = this;
+                if (mapObj._viewportListener) { dojo.disconnect(mapObj._viewportListener); }
             },
 
             clearFeatures: function()

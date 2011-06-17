@@ -200,6 +200,10 @@
             adjustBounds: function()
             {
                 var mapObj = this;
+                if (mapObj._viewportListener &&
+                    $.subKeyDefined(mapObj, 'settings.view.query.namedFilters.viewport'))
+                { return; }
+
                 if (mapObj._viewportListener)
                 {
                     Microsoft.Maps.Events.removeHandler(mapObj._viewportListener);
@@ -209,7 +213,7 @@
                 if (mapObj.settings.view.displayFormat.viewport)
                 {
                     mapObj.setViewport(mapObj.settings.view.displayFormat.viewport);
-                    if (_.isEmpty(mapObj.settings.view.query))
+                    if (!$.subKeyDefined(mapObj, 'settings.view.query.namedFilters.viewport'))
                     { mapObj.updateRowsByViewport(null, true); }
                 }
                 else if (mapObj.map.entities.getLength() > 1)

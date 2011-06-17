@@ -1,12 +1,20 @@
 $(function()
 {
     var $feedbackWidg = $('.wbWidget');
-    $feedbackWidg.find('h2').click(function(event)
+    var toggleFeedback = function(event)
     {
-        $(this)
-            .toggleClass('expanded')
-            .siblings('.widgetContent').toggle();
-    });
+        event.preventDefault();
+        var $this = $(this);
+
+        if (!$this.is('h2'))
+        {
+            $this = $feedbackWidg.find('h2');
+        }
+        $this.toggleClass('expanded')
+             .siblings('.widgetContent').toggle();
+    };
+    $feedbackWidg.find('h2').click(toggleFeedback);
+    $('#sidebarFeedbackLink').click(toggleFeedback);
 
     var title = document.title;
     if (title.indexOf('|') > -1)

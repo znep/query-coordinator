@@ -2694,7 +2694,7 @@
                 }
                 _.each(linkedFields, function(lf)
                 {
-                    var ls = ':input[data-origName=' + lf + ']:first';
+                    var ls = ':input[data-origName="' + lf + '"]:first';
                     var $par = $field.closest('.line.group, .formSection');
                     var $li = $par.find(ls);
                     if ($li.length < 1)

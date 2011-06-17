@@ -124,7 +124,11 @@ private
 
     # set up canvas rendering environment
     Canvas::Environment.facet_name = params[:facet_name]
-    Canvas::Environment.facet_value = CGI.unescape(params[:facet_value]) if params[:facet_value].present?
+    if params[:facet_value].present?
+      Canvas::Environment.facet_value = CGI.unescape(params[:facet_value])
+    else
+      Canvas::Environment.facet_value = nil
+    end
     Canvas::Environment.params = params
     Canvas::Environment.page_config = page_config.reject{ |key| key == 'contents' }
     Canvas::Environment.request = request

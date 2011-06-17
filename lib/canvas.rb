@@ -403,7 +403,13 @@ module Canvas
           @view = search_response.results.first
         end
       else
-        @view = (View.find self.properties.viewUid) || false
+        begin
+          @view = (View.find self.properties.viewUid) || false
+        rescue CoreServer::ResourceNotFound
+          @view = false
+        rescue CoreServer::CoreServerError
+          @view = false
+        end
       end
     end
   protected

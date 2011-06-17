@@ -38,8 +38,9 @@ $(function()
         '/facet/countries': 'countries',
         '/page/organization': 'organization',
         '/page/funds': 'funds',
+        '/page/datasets': 'datasets',
         '/page/faqs': 'faqs',
-        '/browse': 'browse'
+        '/page/about': 'about'
     };
     var match = 'home';
     for (var pattern in patterns)

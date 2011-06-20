@@ -9,7 +9,7 @@ class AdministrationController < ApplicationController
   def datasets
     @processed_browse = process_browse(request, {
       browse_in_container: true,
-      opts: { admin: true }
+      admin: true
     })
   end
 

@@ -176,6 +176,7 @@
                 var mapObj = this;
                 $(mapObj.currentDom).removeData('socrataVisualization');
                 mapObj.$dom().empty();
+                mapObj.unhookMap();
                 if (mapObj._legend) { mapObj._legend.$dom.hide(); }
                 // We need to change the ID so that maps (such as ESRI) recognize
                 // something has changed, and reload properly
@@ -319,6 +320,11 @@
             resetMixinData: function()
             {
                 // Implement if you need to reset any data when the map is reset
+            },
+
+            unhookMap: function()
+            {
+                // Implement for anything to stop before doing a full reset
             },
 
             handleRowsLoaded: function(rows, view)
@@ -633,6 +639,7 @@
             {
                 var mapObj = this;
                 if (!viewport) { viewport = mapObj.getViewport(true); }
+                if ($.isBlank(viewport)) { return; }
 
                 _.each(mapObj._dataViews, function(view)
                 {
@@ -693,7 +700,7 @@
                     { delete query.namedFilters.viewport; }
                     query.namedFilters = $.extend(true, query.namedFilters || {},
                         { viewport: filterCondition });
-                    view.update({ query: query}, false, true);
+                    view.update({query: query}, false, true);
                 });
             },
 

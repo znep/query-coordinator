@@ -1,12 +1,20 @@
 $(function()
 {
     var $feedbackWidg = $('.wbWidget');
-    $feedbackWidg.find('h2').click(function(event)
+    var toggleFeedback = function(event)
     {
-        $(this)
-            .toggleClass('expanded')
-            .siblings('.widgetContent').toggle();
-    });
+        event.preventDefault();
+        var $this = $(this);
+
+        if (!$this.is('h2'))
+        {
+            $this = $feedbackWidg.find('h2');
+        }
+        $this.toggleClass('expanded')
+             .siblings('.widgetContent').toggle();
+    };
+    $feedbackWidg.find('h2').click(toggleFeedback);
+    $('#sidebarFeedbackLink').click(toggleFeedback);
 
     var title = document.title;
     if (title.indexOf('|') > -1)
@@ -30,8 +38,9 @@ $(function()
         '/facet/countries': 'countries',
         '/page/organization': 'organization',
         '/page/funds': 'funds',
+        '/page/datasets': 'datasets',
         '/page/faqs': 'faqs',
-        '/browse': 'browse'
+        '/page/about': 'about'
     };
     var match = 'home';
     for (var pattern in patterns)

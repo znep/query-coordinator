@@ -143,7 +143,7 @@
                                           points[1].x, points[1].y,
                                           points[0].spatialReference);
         };
-        new esri.tasks.GeometryService('https://sampleserver1.arcgisonline.com/' +
+        new esri.tasks.GeometryService('https://tasks.arcgisonline.com/' +
             'ArcGIS/rest/services/Geometry/GeometryServer')
             .project(encodeExtentToPoints(
                 mapObj._byView[mapObj.settings.view.id].mapServer.initialExtent),

@@ -127,7 +127,7 @@
                 }
 
                 // Get useable value for x-axis
-                var basePt = xPoint(chartObj, row, row.id);
+                var basePt = xPoint(chartObj, row);
                 // Null dates can't really be rendered in a timeline; not sure
                 // if that holds for other chart types, though
                 if (isDateTime(chartObj) && _.isNull(basePt.x)) { return true; }
@@ -211,7 +211,7 @@
                         delete chartObj._otherIndex;
                     }
 
-                    var otherPt = xPoint(chartObj, null, -1);
+                    var otherPt = xPoint(chartObj, null);
                     otherPt.otherPt = true;
                     if (!_.isUndefined(chartObj._xCategories))
                     { chartObj._xCategories.push('Other'); }
@@ -223,9 +223,9 @@
                             // NOTE: There is an assumption that _xCategories will be
                             // appropriately populated by this point in the yPoint code.
                             var point = yPoint(chartObj, null, sr, i, otherPt, col);
-                            if (!_.isUndefined(chartObj.chart))
+                            if (!$.isBlank(chartObj.chart))
                             { chartObj.chart.series[i].addPoint(point, false); }
-                            if (!_.isUndefined(chartObj.secondChart))
+                            if (!$.isBlank(chartObj.secondChart))
                             { chartObj.secondChart.series[i].addPoint(
                                 point, false); }
                             chartObj._otherIndex = chartObj._seriesCache[i].data.length;
@@ -233,9 +233,21 @@
                         }
                     });
 
-                    if (!_.isUndefined(chartObj.chart))
+                    var numSeries = chartObj._seriesRemainders.length;
+                    for (var seriesIndex = 0; seriesIndex < numSeries; seriesIndex++)
+                    {
+                        var reindex = function(datum, index)
+                        { datum.x = index; };
+                        if (!$.isBlank(chartObj.chart))
+                        { _.each(chartObj.chart.series[seriesIndex].data, reindex); }
+                        if (!$.isBlank(chartObj.secondChart))
+                        { _.each(chartObj.secondChart.series[seriesIndex].data, reindex); }
+                        _.each(chartObj._seriesCache[seriesIndex].data, reindex);
+                    }
+
+                    if (!$.isBlank(chartObj.chart))
                     { chartObj.chart.redraw(); }
-                    if (!_.isUndefined(chartObj.secondChart))
+                    if (!$.isBlank(chartObj.secondChart))
                     { chartObj.secondChart.redraw(); }
                 }
 
@@ -555,7 +567,7 @@
             if (_.isNumber(pt.x)) { pt.x *= 1000; }
             else if (!$.isBlank(pt.x)) { pt.x = Date.parse(pt.x).valueOf(); }
         }
-        else if (!value && !_.isUndefined(chartObj._xCategories))
+        else if (!_.isUndefined(chartObj._xCategories))
         { pt.x = chartObj._xCategories.length; }
 
         return pt;

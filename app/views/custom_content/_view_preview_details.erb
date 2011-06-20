@@ -4,21 +4,26 @@
     <%- when 'title' -%>
       <%= content_tag((field.tagType || 'h2'), h(widget.view.name)) %>
     <%- when 'description' -%>
-      <p class="description"><%= widget.view.description %></p>
+      <div class="description">
+        <p>
+          <%= raw h(widget.view.description).gsub("\n", '<br/>') %>
+        </p>
+        <%= link_to 'More&hellip;'.html_safe, widget.view.href + '#pane=about', :class => 'moreLink' %>
+      </div>
     <%- when 'link' -%>
       <%= link_to (field.text.html_safe || widget.view.name), widget.view.href, :class => 'viewLink' %>
     <%- when 'tags' -%>
       <div class="tags">
-        <%= field.text || 'Tags:' %>
+        <%= raw field.text || 'Tags:' %>
         <%- if widget.view.tags.is_a? Array -%>
-          <%= widget.view.tags.map{ |tag| link_to tag, { :controller => 'browse',
-              :action => 'show', :tag => tag } }.join(field.separator || ', ') %>
+          <%= raw(widget.view.tags.map{ |tag| link_to h(tag), { :controller => 'browse',
+              :action => 'show', :tags => h(tag) } }.join(field.separator || ', ')) %>
         <%- else -%>
           (none)
         <%- end -%>
       </div>
     <%- when 'static' -%>
-      <%= content_tag((field.tagType || 'p'), field.text.html_safe) %>
+      <%= content_tag((field.tagType || 'p'), field.text.html_safe, :class => 'static') %>
     <%- end -%>
   <%- end -%>
 <%- end -%>

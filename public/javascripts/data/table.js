@@ -1673,7 +1673,8 @@
                     clickTarget = null;
                     clickCell = null;
                     hotHeaderDrag = true;
-                    event.stopPropagation();
+                    // stopProp doesn't work with draggable
+                    if (hotHeaderMode != 4) { event.stopPropagation(); }
                     event.preventDefault();
                 }
 
@@ -3673,7 +3674,7 @@
                     var agg = col.aggregates[col.format.aggregate];
                     showAgg = showAgg || !$.isBlank(agg);
 
-                    var val;
+                    var val = agg;
                     // specific aggregates are formatted for the column;
                     // for ex., money will show $99.99
                     if (!$.isBlank(agg) &&

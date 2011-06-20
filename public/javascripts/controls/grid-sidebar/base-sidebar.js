@@ -1781,6 +1781,8 @@
                 var min = args.item.minimum || 0;
                 var max = args.item.maximum || 100;
                 var scale = 1;
+                if (_.isString(curValue)) { curValue = parseFloat(curValue); }
+                if (_.isNaN(curValue)) { curValue = null; }
                 if (max <= 1)
                 {
                     scale = 100;
@@ -2694,7 +2696,7 @@
                 }
                 _.each(linkedFields, function(lf)
                 {
-                    var ls = ':input[data-origName=' + lf + ']:first';
+                    var ls = ':input[data-origName="' + lf + '"]:first';
                     var $par = $field.closest('.line.group, .formSection');
                     var $li = $par.find(ls);
                     if ($li.length < 1)

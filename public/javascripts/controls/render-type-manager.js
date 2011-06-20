@@ -216,6 +216,13 @@
                 }
 
                 _.each(defTypes, function(v, t) { if (v) { rtmObj.show(t); } });
+
+                $(window).bind('resize', function(e, source)
+                {
+                    if (source == this) { return; }
+                    _.each(rtmObj.visibleTypes, function(v, t)
+                    { rtmObj.$domForType(t).trigger('resize', [this]); });
+                });
             },
 
             $dom: function()
@@ -327,7 +334,7 @@
 
                 var $newNode = $.tag({tagName: 'div', id: typeInfo.domId,
                     'class': ['fullHeight', 'renderTypeNode', 'hide'], 'data-renderType': type});
-                if ($.isBlank($beforeItem))
+                if ($.isBlank($beforeItem) || $beforeItem.length < 1)
                 { rtmObj.$dom().append($newNode); }
                 else
                 { $beforeItem.before($newNode); }

@@ -387,7 +387,7 @@ $.subKeyDefined = function(obj, keystring)
     while (keys.length > 0)
     {
         objIter = objIter[keys[0]];
-        if (_.isUndefined(objIter))
+        if ($.isBlank(objIter))
         {
             return false;
         }

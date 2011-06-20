@@ -381,7 +381,7 @@
         if ($box.length < 1)
         {
             mapObj.$dom().after('<div id="bing_infoWindow">' +
-                '<div id="bing_infoBeak"> </div><div id="bing_infoContent"</div>');
+                '<div id="bing_infoBeak"> </div><div id="bing_infoContent"></div></div>');
             $box = mapObj.$dom().siblings('#bing_infoWindow');
         }
 

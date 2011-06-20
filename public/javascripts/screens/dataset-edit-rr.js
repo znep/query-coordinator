@@ -74,7 +74,7 @@ editRRNS.initSidebar = function()
                     'li.columnItem': {
                         'column<-': {
                             '.columnLabel': 'column.name!',
-                            '.columnLabel@data-tcId': 'column.tableColumnId'
+                            '.columnLabel@data-tcid': 'column.tableColumnId'
                         }
                     }
                 },
@@ -94,7 +94,7 @@ editRRNS.initSidebar = function()
                     'li.columnItem': {
                         'column<-': {
                             '.columnData': '(#{column.name!})',
-                            '.columnData@data-tcId': 'column.tableColumnId',
+                            '.columnData@data-tcid': 'column.tableColumnId',
                             '.columnData@class+':
                                 'columnId#{column.id} #{column.renderTypeName}'
                         }
@@ -225,7 +225,7 @@ editRRNS.enableFieldItem = function($item, dragOnly)
     { $item.attr('title', 'Label with fixed text (double-click to edit)'); }
     else
     {
-        var col = blist.dataset.columnForTCID($item.data('tcId'));
+        var col = blist.dataset.columnForTCID($item.data('tcid'));
         if ($item.hasClass('columnLabel'))
         {
             $item.attr('title', 'Title for the ' + $.htmlEscape(col.name) +
@@ -681,12 +681,12 @@ editRRNS.updateConfig = function()
                     if ($f.hasClass('columnData'))
                     {
                         f.type = 'columnData';
-                        f.tableColumnId = $f.data('tcId');
+                        f.tableColumnId = $f.data('tcid');
                     }
                     else if ($f.hasClass('columnLabel'))
                     {
                         f.type = 'columnLabel';
-                        f.tableColumnId = $f.data('tcId');
+                        f.tableColumnId = $f.data('tcid');
                     }
                     else if ($f.hasClass('staticLabel'))
                     {

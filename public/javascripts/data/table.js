@@ -1664,7 +1664,8 @@
                     clickTarget = null;
                     clickCell = null;
                     hotHeaderDrag = true;
-                    event.stopPropagation();
+                    // stopProp doesn't work with draggable
+                    if (hotHeaderMode != 4) { event.stopPropagation(); }
                     event.preventDefault();
                 }
 

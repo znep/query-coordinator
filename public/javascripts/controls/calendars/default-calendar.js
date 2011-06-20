@@ -66,7 +66,7 @@
 
             rowsRendered: function()
             {
-                this.$dom().fullCalendar('addEventSource', this._events);
+                this.$dom().fullCalendar('addEventSource', this._events || []);
                 delete this._events;
             },
 

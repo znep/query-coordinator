@@ -337,7 +337,8 @@
 
             resizeHandle: function(event)
             {
-                google.maps.event.trigger(this.map, 'resize');
+                if ($.subKeyDefined(window, 'google'))
+                { google.maps.event.trigger(this.map, 'resize'); }
             },
 
             getRequiredJavascripts: function()

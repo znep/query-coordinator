@@ -1,4 +1,4 @@
-#staticRenderType { overflow: auto; }
+#staticRenderType .renderContent { overflow: auto; }
 
 .formView { padding: 0.5em; }
 

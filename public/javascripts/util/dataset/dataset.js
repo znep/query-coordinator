@@ -1630,10 +1630,10 @@ this.Dataset = ServerModel.extend({
                         { return oldRTConfig.visible[nd] ||
                             ds.metadata.renderTypeConfig.visible[nd]; }); });
 
-        if (needQueryChange || (oldSearch !== ds.searchString) ||
+        if (needQueryChange || (oldSearch != ds.searchString) ||
                 !_.isEqual(oldQuery, ds.query))
         {
-            if (needQueryChange || oldSearch !== ds.searchString ||
+            if (needQueryChange || oldSearch != ds.searchString ||
                 !_.isEqual(oldQuery.filterCondition, ds.query.filterCondition) ||
                 !_.isEqual(oldQuery.namedFilters, ds.query.namedFilters) ||
                 !_.isEqual(oldQuery.groupBys, ds.query.groupBys))
@@ -1938,7 +1938,7 @@ this.Dataset = ServerModel.extend({
                 {
                     var c = !$.isBlank(parCol) ? parCol.childColumnForTCID(tcId) :
                         ds.columnForTCID(tcId);
-                    if (!$.isBlank(c))
+                    if (!$.isBlank(c) && $.isBlank(r[c.lookup]))
                     {
                         r.invalid[c.id] = true;
                         r[c.lookup] = v;

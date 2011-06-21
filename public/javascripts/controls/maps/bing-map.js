@@ -239,6 +239,10 @@
                         'viewchangeend',
                         function()
                         {
+                            // On initial zoom, save off viewport
+                            if ($.isBlank(mapObj._originalViewport))
+                            { mapObj._originalViewport = mapObj.getViewport(); }
+
                             if (mapObj._boundsChanging)
                             { mapObj._boundsChanging = false; return; }
                             if (mapObj._mouseActive)
@@ -268,7 +272,7 @@
                 { mapObj.hideLayers(); }
             },
 
-            getViewport: function(with_bounds)
+            getCustomViewport: function()
             {
                 var mapObj = this;
                 var viewport = {
@@ -283,8 +287,6 @@
                     xmin: nw.longitude, xmax: se.longitude,
                     ymin: se.latitude, ymax: nw.latitude
                 });
-                _.each(['xmin', 'ymin', 'xmax', 'ymax'], function(key)
-                { viewport[key] = $.jsonIntToFloat(viewport[key]); });
 
                 return viewport;
             },

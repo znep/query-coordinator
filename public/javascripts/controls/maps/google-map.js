@@ -57,9 +57,6 @@
                         if (!mapObj._boundsChanging) { return; }
                         delete mapObj._boundsChanging;
 
-                        var newViewport = mapObj.getViewport();
-                        if (_.isEqual(mapObj.settings.view.displayFormat.viewport, newViewport))
-                        { return; }
                         mapObj.updateDatasetViewport();
                         mapObj.updateRowsByViewport(null, true);
                     });
@@ -264,9 +261,16 @@
                     mapObj.map.setCenter(mapObj._bounds.getCenter());
                     mapObj.map.setZoom(mapObj.settings.defaultZoom);
                 }
+
+                _.defer(function()
+                {
+                    // On initial zoom, save off viewport
+                    if ($.isBlank(mapObj._originalViewport))
+                    { mapObj._originalViewport = mapObj.getViewport(); }
+                });
             },
 
-            getViewport: function(with_bounds)
+            getCustomViewport: function()
             {
                 var mapObj = this;
                 var viewport = {
@@ -287,8 +291,6 @@
                     xmin: sw.lng(), xmax: ne.lng(),
                     ymin: sw.lat(), ymax: ne.lat()
                 });
-                _.each(['xmin', 'ymin', 'xmax', 'ymax'], function(key)
-                { viewport[key] = $.jsonIntToFloat(viewport[key]); });
 
                 return viewport;
             },

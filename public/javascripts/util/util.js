@@ -624,7 +624,7 @@ $.addAppToken = function(url)
 $.jsonIntToFloat = function(integer)
 {
     if (integer.toString().indexOf('.') < 0)
-    { return parseFloat(integer.toString() + '.0000000001'); }
+    { return parseFloat(integer.toString() + '.000001'); }
     return integer;
 };
 

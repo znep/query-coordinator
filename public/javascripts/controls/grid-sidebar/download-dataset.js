@@ -15,8 +15,7 @@
         },
         disabledSubtitle: function()
         {
-            return !blist.dataset.valid ? 'This view must be valid' :
-                'Only tabular data may be downloaded';
+            return 'This view must be valid';
         },
         sections: [
             {

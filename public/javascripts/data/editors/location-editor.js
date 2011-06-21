@@ -230,12 +230,12 @@
 
                 // If that failed, look for a two letters at the end
                 if (_.isNull(stateResult) || stateResult.length < 2)
-                { stateResult = newCSZ.match(/\s+(\w{2})$/); }
+                { stateResult = newCSZ.match(/(\s+|^)(\w{2})$/); }
 
                 // If one of those worked, then pull it out as the state
                 if (!_.isNull(stateResult) && stateResult.length > 1)
                 {
-                    address.state = stateResult[1].trim();
+                    address.state = stateResult[2].trim();
                     newCSZ = newCSZ.slice(0, newCSZ.length - stateResult[0].length);
                 }
                 // Otherwise, break it on spaces; pull off the last one,

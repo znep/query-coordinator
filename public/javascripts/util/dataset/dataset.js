@@ -1803,7 +1803,7 @@ this.Dataset = ServerModel.extend({
                 {
                     var c = !$.isBlank(parCol) ? parCol.childColumnForTCID(tcId) :
                         ds.columnForTCID(tcId);
-                    if (!$.isBlank(c))
+                    if (!$.isBlank(c) && $.isBlank(r[c.lookup]))
                     {
                         r.invalid[c.id] = true;
                         r[c.lookup] = v;

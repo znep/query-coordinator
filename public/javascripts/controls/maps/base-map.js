@@ -54,7 +54,8 @@
     {
         defaults:
         {
-            defaultZoom: 1
+            defaultZoom: 1,
+            coordinatePrecision: 6
         },
 
         prototype:
@@ -625,7 +626,19 @@
                 // Implement if desired to adjust map bounds after data is rendered
             },
 
-            getViewport: function(with_bounds)
+            getViewport: function()
+            {
+                var mapObj = this;
+                var vp = mapObj.getCustomViewport();
+                _.each(['xmin', 'ymin', 'xmax', 'ymax'], function(key)
+                {
+                    vp[key] = parseFloat(($.jsonIntToFloat(vp[key]) || 0).
+                        toFixed(mapObj.settings.coordinatePrecision));
+                });
+                return vp;
+            },
+
+            getCustomViewport: function()
             {
                 // Implement me
             },
@@ -638,7 +651,7 @@
             updateRowsByViewport: function(viewport, wrapIDL)
             {
                 var mapObj = this;
-                if (!viewport) { viewport = mapObj.getViewport(true); }
+                if (!viewport) { viewport = mapObj.getViewport(); }
                 if ($.isBlank(viewport)) { return; }
 
                 _.each(mapObj._dataViews, function(view)
@@ -711,9 +724,13 @@
                 // Theory: All of these will be different if user-initiated
                 // panning or zooming occurs. But one will hold constant if
                 // it's just automatic.
-                var curVP = mapObj.settings.view.displayFormat.viewport || {};
+                // Fall back to saved originalViewport so we're not comparing against blank
+                var curVP = mapObj.settings.view.displayFormat.viewport || mapObj._originalViewport || {};
                 if (_.any(['xmin', 'ymin', 'ymax'], function(p)
-                    { return vp[p] == curVP[p]; }))
+                    {
+                        return vp[p].toFixed(mapObj.settings.coordinatePrecision) ==
+                            (parseFloat(curVP[p]) || 0).toFixed(mapObj.settings.coordinatePrecision);
+                    }))
                 { return; }
 
                 mapObj.settings.view.update({displayFormat: $.extend({},

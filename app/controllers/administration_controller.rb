@@ -976,8 +976,8 @@ private
     story.customization = customization
   end
 
-  def find_privileged_users
-    User.find :method => 'findPrivilegedUsers'
+  def find_privileged_users(level=1)
+    User.find :method => 'usersWithRole', :role => level
   end
 
   def redirect_federation(message = nil)

@@ -1042,6 +1042,40 @@ this.Dataset = ServerModel.extend({
         else { callback(ds._parent); }
     },
 
+    // account for modifyingLens
+    getParentView: function(callback)
+    {
+        var ds = this;
+
+        if (($.isBlank(ds._modifyingView) || $.isBlank(ds._modifyingView.columns)) &&
+            $.isBlank(ds.noModifyingViewAvailable))
+        {
+            if (!_.isUndefined(ds.modifyingViewUid))
+            {
+                Dataset.createFromViewId(ds.modifyingViewUid,
+                    function(modifyingView)
+                    {
+                        ds._modifyingView = modifyingView;
+                        if (!$.isBlank(ds.accessType))
+                        { ds._modifyingView.setAccessType(ds.accessType); }
+                        callback(ds._modifyingView);
+                    },
+                    function(xhr)
+                    {
+                        // doesn't seem possible but let's be safe
+                        if (JSON.parse(xhr.responseText).code == 'permission_denied')
+                        { ds.noModifyingViewAvailable = true; }
+                        callback();
+                    });
+            }
+            else
+            {
+                ds.getParentDataset(callback);
+            }
+        }
+        else { callback(ds._modifyingView); }
+    },
+
     getRelatedViews: function(callback)
     {
         var ds = this;

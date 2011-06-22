@@ -525,6 +525,7 @@
       @view.is_grouped? ||
       !module_available?(:form_publish) ||
       ((!@view.owned_by?(current_user) ||
+        @view.parent_dataset.nil? ||
         !@view.parent_dataset.owned_by?(current_user)) &&
        !CurrentDomain.user_can?(current_user, :edit_others_datasets)) %>;
 

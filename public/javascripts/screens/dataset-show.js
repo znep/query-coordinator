@@ -429,7 +429,7 @@ $(function()
 
         blist.dataset.remove(function()
         {
-            blist.dataset.getParentDataset(function(parDS)
+            blist.dataset.getParentView(function(parDS)
             {
                 if (!$.isBlank(parDS)) { parDS.redirectTo(); }
                 else { window.location = '/datasets'; }
@@ -468,7 +468,7 @@ $(function()
         // set up the main menu
         if (!_.include(['blist', 'blob', 'href'], blist.dataset.type))
         {
-            blist.dataset.getParentDataset(function(parDS)
+            blist.dataset.getParentView(function(parDS)
             {
                 if (!$.isBlank(parDS))
                 {

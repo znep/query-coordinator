@@ -226,10 +226,10 @@
                 }
 
                 // First look for a comma followed by words & spaces
-                var stateResult = newCSZ.match(/,\s+([\w.\s]+)$/);
+                var stateResult = newCSZ.match(/,(\s+)([\w.\s]+)$/);
 
                 // If that failed, look for a two letters at the end
-                if (_.isNull(stateResult) || stateResult.length < 2)
+                if (_.isNull(stateResult) || stateResult.length < 3)
                 { stateResult = newCSZ.match(/(\s+|^)(\w{2})$/); }
 
                 // If one of those worked, then pull it out as the state

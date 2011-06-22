@@ -455,9 +455,10 @@
             }
             else
             { chartConfig.xAxis.labels.rotation = 340; }
-            if (Dataset.chart.types[chartObj._chartType].displayLimit.labels)
+            if (Dataset.chart.types[chartObj._chartType].displayLimit.labels
+                && chartObj.settings.view.totalRows)
             { chartConfig.xAxis.labels.step = Math.ceil(
-                (chartObj.settings.view.totalRows || chartObj._maxRows) /
+                chartObj.settings.view.totalRows /
                 Dataset.chart.types[chartObj._chartType].displayLimit.labels); }
         }
 

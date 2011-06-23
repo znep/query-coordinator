@@ -152,7 +152,7 @@
             ] -%>
             <select class="sortPeriod<%= ' hide' unless show_time_period %>" name="sortPeriod">
               <%- time_opts.each do |to| -%>
-                <option value="<%= to[:value] %>"<%= " selected='selected'" if to[:value] == opts[:sortPeriod] %>>
+                <option value="<%= to[:value] %>"<%= ' selected="selected"' if to[:value] == opts[:origSortPeriod] %>>
                   <%= to[:name] %>
                 </option>
               <%- end -%>

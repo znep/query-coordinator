@@ -257,7 +257,7 @@ protected
     end
 
     if browse_options[:sortPeriod].present?
-      t = Date.today
+      browse_options[:origSortPeriod] = browse_options[:sortPeriod]
       browse_options[:sortPeriod] =
         case browse_options[:sortPeriod]
         when 'week'

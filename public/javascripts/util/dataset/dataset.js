@@ -250,7 +250,7 @@ this.Dataset = ServerModel.extend({
         { this._markTemporary(minorUpdate); }
     },
 
-    reload: function(successCallback)
+    reload: function(successCallback, errorCallback)
     {
         var ds = this;
         if (ds.type == 'blob')
@@ -263,7 +263,7 @@ this.Dataset = ServerModel.extend({
             {
                 ds._invalidateRows();
                 if (_.isFunction(successCallback)) { successCallback(); }
-            }, true, true);
+            }, errorCallback, true, true);
     },
 
     showRenderType: function(rt)
@@ -542,7 +542,7 @@ this.Dataset = ServerModel.extend({
                     if (req.start >= ds.totalRows) { return false; }
                     if (req.finish >= ds.totalRows)
                     { req.finish = ds.totalRows - 1; }
-                    ds._loadRows(req.start, req.finish - req.start + 1, successCallback);
+                    ds._loadRows(req.start, req.finish - req.start + 1, successCallback, errorCallback);
                 });
             };
 
@@ -555,7 +555,7 @@ this.Dataset = ServerModel.extend({
                     {
                         if (_.isFunction(successCallback)) { successCallback(rows); }
                         loadAllRows();
-                    }, true);
+                    }, errorCallback, true);
             }
             else
             {
@@ -1696,7 +1696,7 @@ this.Dataset = ServerModel.extend({
         this.trigger('row_change', [invRows, true]);
     },
 
-    _loadRows: function(start, len, callback, includeMeta, fullLoad)
+    _loadRows: function(start, len, successCallback, errorCallback, includeMeta, fullLoad)
     {
         var ds = this;
         var params = {method: 'getByIds', start: start, 'length': len, asHashes: true};
@@ -1704,11 +1704,20 @@ this.Dataset = ServerModel.extend({
         if (includeMeta || ds._rowCountInvalid || ds._columnsInvalid)
         { params.meta = true; }
 
+        var reqId = _.uniqueId();
         var rowsLoaded = function(result)
         {
             var oldCount = ds.totalRows;
             if (!$.isBlank(result.meta))
             {
+                // If another meta request started while this was loading, then
+                // skip this one, and only use the latest
+                if (ds._curMetaReq != reqId)
+                {
+                    if (_.isFunction(errorCallback)) { errorCallback(); }
+                    return;
+                }
+                delete ds._curMetaReq;
                 ds.totalRows = result.meta.totalRows;
                 delete ds._rowCountInvalid;
                 delete ds._columnsInvalid;
@@ -1769,7 +1778,7 @@ this.Dataset = ServerModel.extend({
             if (oldCount !== ds.totalRows)
             { ds.trigger('row_count_change'); }
 
-            if (_.isFunction(callback)) { callback(rows); }
+            if (_.isFunction(successCallback)) { successCallback(rows); }
 
             var pending = ds._pendingRowReqs;
             ds._pendingRowReqs = [];
@@ -1784,6 +1793,7 @@ this.Dataset = ServerModel.extend({
         var req = {success: rowsLoaded, params: params, inline: !fullLoad, type: 'POST'};
         if (fullLoad)
         { req.url = '/views/' + ds.id + '/rows.json'; }
+        if (params.meta) { ds._curMetaReq = reqId; }
         ds.makeRequest(req);
     },
 

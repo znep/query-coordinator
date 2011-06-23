@@ -572,14 +572,33 @@ class View < Model
   end
 
   def parent_dataset
-    return @parent_dataset unless @parent_dataset.nil?
+    return @parent_dataset unless !defined? @parent_dataset
     if is_blist? || ((is_href? || is_blobby?) && flag?("default"))
       @parent_dataset = self
     else
-      @parent_dataset = View.find({"method" => 'getByTableId', "tableId" => self.tableId}, true).
-                             find{ |l| l.is_blist? || ((l.is_href? || l.is_blobby?) && l.flag?("default")) }
+      url = "/#{self.class.name.pluralize.downcase}/#{id}.json?method=getDefaultView&accessType=WEBSITE"
+      begin
+        @parent_dataset = parse(CoreServer::Base.connection.get_request(url))
+      rescue CoreServer::CoreServerError => e
+        if (e.error_code == 'authentication_required') || (e.error_code == 'permission_denied')
+          @parent_dataset = nil
+        else
+          raise e
+        end
+      end
     end
     return @parent_dataset
+  end
+
+  # in case there's a modifyingViewUid
+  def parent_view
+    return @parent_view unless @parent_view.nil?
+    if modifyingViewUid.present?
+      @parent_view = View.find modifyingViewUid
+    else
+      @parent_view = parent_dataset
+    end
+    return @parent_view
   end
 
   def comments

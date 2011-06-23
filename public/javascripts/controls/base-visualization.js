@@ -585,6 +585,12 @@
                             if (rowsToFetch <= 0 || !executable)
                             { delete vizObj._pendingReload; }
                             callback.apply(vizObj, [data, view]);
+                        },
+                        function()
+                        {
+                            // On error clear these variables so more requests will be triggered
+                            delete vizObj._initialLoad;
+                            delete vizObj._pendingReload;
                         });
                     };
 
@@ -601,6 +607,12 @@
                     var executable = views.shift();
                     if (executable) { executable(); }
                 }
+            },
+            // If we're canceled, then just unmark pending reload
+            function()
+            {
+                delete vizObj._initialLoad;
+                delete vizObj._pendingReload;
             });
         });
     };

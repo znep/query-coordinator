@@ -178,8 +178,8 @@
                 {
                     if (!_.isEmpty(rtmObj.visibleTypes))
                     {
-                        _.each(rtmObj.visibleTypes, function(t)
-                        { rtmObj.show(t); });
+                        _.each(rtmObj.visibleTypes, function(v, t)
+                        { if (v) { rtmObj.show(t); } });
                     }
                 })
                 .bind('displaytype_change', function()

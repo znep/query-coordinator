@@ -630,11 +630,14 @@
             {
                 var mapObj = this;
                 var vp = mapObj.getCustomViewport();
-                _.each(['xmin', 'ymin', 'xmax', 'ymax'], function(key)
+                if (!$.isBlank(vp))
                 {
-                    vp[key] = parseFloat(($.jsonIntToFloat(vp[key]) || 0).
-                        toFixed(mapObj.settings.coordinatePrecision));
-                });
+                    _.each(['xmin', 'ymin', 'xmax', 'ymax'], function(key)
+                    {
+                        vp[key] = parseFloat(($.jsonIntToFloat(vp[key]) || 0).
+                            toFixed(mapObj.settings.coordinatePrecision));
+                    });
+                }
                 return vp;
             },
 

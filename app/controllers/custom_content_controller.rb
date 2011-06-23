@@ -1,5 +1,5 @@
 class CustomContentController < ApplicationController
-  before_filter :check_lockdown, :only => [ :homepage ]
+  before_filter :check_lockdown
   around_filter :cache_wrapper, :except => [ :stylesheet ]
   skip_before_filter :require_user
   include BrowseActions

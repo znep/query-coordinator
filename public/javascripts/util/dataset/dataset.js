@@ -434,9 +434,9 @@ this.Dataset = ServerModel.extend({
         }
     },
 
-    getTotalRows: function(callback)
+    getTotalRows: function(successCallback, errorCallback)
     {
-        this.getRows(0, 1, callback);
+        this.getRows(0, 1, successCallback, errorCallback);
     },
 
     getClusters: function(successCallback, errorCallback)
@@ -452,7 +452,7 @@ this.Dataset = ServerModel.extend({
     },
 
     // Callback may be called multiple times with smaller batches of rows
-    getRows: function(start, len, callback)
+    getRows: function(start, len, successCallback, errorCallback)
     {
         var ds = this;
 
@@ -469,7 +469,7 @@ this.Dataset = ServerModel.extend({
         {
             if (loaded.length > 0 || ds.totalRows == 0)
             {
-                callback(loaded);
+                successCallback(loaded);
                 loaded = [];
             }
         };
@@ -502,7 +502,7 @@ this.Dataset = ServerModel.extend({
                     if ($.isBlank(pendReq))
                     {
                         pendReq = {start: start, length: 1,
-                            callback: callback};
+                            successCallback: successCallback, errorCallback: errorCallback};
                     }
                     else
                     { pendReq.length++; }
@@ -574,7 +574,7 @@ this.Dataset = ServerModel.extend({
                     if (req.start >= ds.totalRows) { return false; }
                     if (req.finish >= ds.totalRows)
                     { req.finish = ds.totalRows - 1; }
-                    ds._loadRows(req.start, req.finish - req.start + 1, callback);
+                    ds._loadRows(req.start, req.finish - req.start + 1, successCallback);
                 });
             };
 
@@ -585,7 +585,7 @@ this.Dataset = ServerModel.extend({
                 ds._loadRows(initReq.start, initReq.finish - initReq.start + 1,
                     function(rows)
                     {
-                        if (_.isFunction(callback)) { callback(rows); }
+                        if (_.isFunction(successCallback)) { successCallback(rows); }
                         loadAllRows();
                     }, true);
             }
@@ -1072,6 +1072,40 @@ this.Dataset = ServerModel.extend({
                 }});
         }
         else { callback(ds._parent); }
+    },
+
+    // account for modifyingLens
+    getParentView: function(callback)
+    {
+        var ds = this;
+
+        if (($.isBlank(ds._modifyingView) || $.isBlank(ds._modifyingView.columns)) &&
+            $.isBlank(ds.noModifyingViewAvailable))
+        {
+            if (!_.isUndefined(ds.modifyingViewUid))
+            {
+                Dataset.createFromViewId(ds.modifyingViewUid,
+                    function(modifyingView)
+                    {
+                        ds._modifyingView = modifyingView;
+                        if (!$.isBlank(ds.accessType))
+                        { ds._modifyingView.setAccessType(ds.accessType); }
+                        callback(ds._modifyingView);
+                    },
+                    function(xhr)
+                    {
+                        // doesn't seem possible but let's be safe
+                        if (JSON.parse(xhr.responseText).code == 'permission_denied')
+                        { ds.noModifyingViewAvailable = true; }
+                        callback();
+                    });
+            }
+            else
+            {
+                ds.getParentDataset(callback);
+            }
+        }
+        else { callback(ds._modifyingView); }
     },
 
     getRelatedViews: function(callback)
@@ -1786,7 +1820,11 @@ this.Dataset = ServerModel.extend({
         var invRows = _.values(this._rows);
         this._rows = {};
         this._rowsLoading = {};
+        var pending = this._pendingRowReqs;
         this._pendingRowReqs = [];
+        // Tell pending requests they are being cancelled
+        _.each(pending, function(p)
+            { if (_.isFunction(p.errorCallback)) { p.errorCallback(); } });
         this._rowIDLookup = {};
         delete this.totalRows;
         _.each(this.columns || [], function(c) { c.invalidateData(); });
@@ -1871,7 +1909,7 @@ this.Dataset = ServerModel.extend({
             var pending = ds._pendingRowReqs;
             ds._pendingRowReqs = [];
             _.each(pending, function(p)
-            { ds.getRows(p.start, p.length, p.callback); });
+            { ds.getRows(p.start, p.length, p.successCallback); });
         };
 
         // Keep track of rows that are being loaded

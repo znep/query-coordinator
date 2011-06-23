@@ -225,8 +225,11 @@ class DatasetsController < ApplicationController
 # end alt actions
 
   def math_validate
+    return if params['equation_token'].blank?
+
     @view = get_view(params[:id])
     return if @view.nil?
+
     equation_parts = ActiveSupport::Base64.decode64(params['equation_token']).strip.split(/\s+/)
     str_to_num = {
       'zero'  => 0,

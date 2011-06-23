@@ -348,7 +348,7 @@ private
       end
     end
 
-    t.blank? ? 'Search & Browse Datasets and Views' : 'Results ' + t
+    t.blank? ? (options[:default_title] || 'Search & Browse Datasets and Views') : 'Results ' + t
   end
 
   def get_cutoff(facet_name)

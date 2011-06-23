@@ -147,7 +147,8 @@ module Canvas
       pager: {
         divider: '/',
         type: 'incremental'
-      }
+      },
+      rotationInterval: 9
     }
   end
 

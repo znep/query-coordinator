@@ -34,7 +34,8 @@
     {
         var elemId = '<%= widget.elem_id %>';
         $('#' + elemId).tickerLayout({
-            childTitles: <%= raw safe_json widget.properties.childTitles %>
+            childTitles: <%= raw safe_json widget.properties.childTitles %>,
+            rotationInterval: <%= widget.properties.rotationInterval %>
         });
     });
   </script>

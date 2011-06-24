@@ -727,8 +727,8 @@
                 // Theory: All of these will be different if user-initiated
                 // panning or zooming occurs. But one will hold constant if
                 // it's just automatic.
-                // Fall back to saved originalViewport so we're not comparing against blank
-                var curVP = mapObj.settings.view.displayFormat.viewport || mapObj._originalViewport || {};
+                // Use the most recently set viewport
+                var curVP = mapObj._currentViewport || {};
                 if (_.any(['xmin', 'ymin', 'ymax'], function(p)
                     {
                         return vp[p].toFixed(mapObj.settings.coordinatePrecision) ==
@@ -736,6 +736,7 @@
                     }))
                 { return; }
 
+                mapObj._currentViewport = vp;
                 mapObj.settings.view.update({displayFormat: $.extend({},
                     mapObj.settings.view.displayFormat, { viewport: vp })}, false, true);
             },

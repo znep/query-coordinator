@@ -412,8 +412,8 @@
                         if (mapObj._extentChanging)
                         {
                             // On initial zoom, save off viewport
-                            if ($.isBlank(mapObj._originalViewport))
-                            { mapObj._originalViewport = mapObj.getViewport(); }
+                            if ($.isBlank(mapObj._currentViewport))
+                            { mapObj._currentViewport = mapObj.getViewport(); }
                             mapObj._extentChanging = false;
                             return;
                         }

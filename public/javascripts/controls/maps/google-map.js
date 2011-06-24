@@ -52,6 +52,9 @@
                         if (!mapObj._ready)
                         {
                             mapObj._ready = true;
+                            // On initial zoom, save off viewport
+                            if ($.isBlank(mapObj._currentViewport))
+                            { mapObj._currentViewport = mapObj.getViewport(); }
                             return;
                         }
                         if (!mapObj._boundsChanging) { return; }
@@ -261,13 +264,6 @@
                     mapObj.map.setCenter(mapObj._bounds.getCenter());
                     mapObj.map.setZoom(mapObj.settings.defaultZoom);
                 }
-
-                _.defer(function()
-                {
-                    // On initial zoom, save off viewport
-                    if ($.isBlank(mapObj._originalViewport))
-                    { mapObj._originalViewport = mapObj.getViewport(); }
-                });
             },
 
             getCustomViewport: function()

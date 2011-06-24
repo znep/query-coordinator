@@ -300,8 +300,9 @@
             getCustomViewport: function()
             {
                 var mapObj = this;
+                var center = mapObj.map.getCenter();
                 var viewport = {
-                    center: mapObj.map.getCenter(),
+                    center: {latitude: center.latitude, longitude: center.longitude},
                     zoom: mapObj.map.getZoom()
                 };
 
@@ -319,7 +320,9 @@
             setViewport: function(viewport)
             {
                 var mapObj = this;
-                mapObj.map.setView({ center: viewport.center, zoom: viewport.zoom});
+                var loc = new Microsoft.Maps.Location(viewport.center.latitude || viewport.center.lat,
+                    viewport.center.longitude || viewport.center.lng);
+                mapObj.map.setView({ center: loc, zoom: viewport.zoom});
             },
 
             hideLayers: function()

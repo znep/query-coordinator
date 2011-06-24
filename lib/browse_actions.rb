@@ -32,7 +32,7 @@ protected
     cats = View.categories.keys.reject {|c| c.blank?}
     return nil if cats.empty?
 
-    cat_chop = get_cutoff(:category)
+    cat_chop = get_facet_cutoff(:category)
     cats = cats.sort.map{ |c| {:text => c, :value => c} }
     cats, hidden_cats = cats[0..(cat_chop - 1)], cats[cat_chop..-1] if cats.length > cat_chop
 
@@ -51,7 +51,7 @@ protected
   def topics_facet
     params = params || request_params || {}
 
-    topic_chop = get_cutoff(:topic)
+    topic_chop = get_facet_cutoff(:topic)
     all_tags = Tag.find({:method => "viewsTags"})
     top_tags = all_tags.slice(0, topic_chop).map {|t| t.name}
     if params[:tags].present? && !top_tags.include?(params[:tags])
@@ -82,7 +82,7 @@ protected
         :icon => {:type => 'static', :href => "/api/domains/#{f.sourceDomainCName}/icons/smallIcon"}} }
     return nil if all_feds.length < 1
 
-    fed_chop = get_cutoff(:federation)
+    fed_chop = get_facet_cutoff(:federation)
     all_feds.unshift({:text => 'This site only', :value => CurrentDomain.domain.id.to_s,
         :icon => {:type => 'static', :href => "/api/domains/#{CurrentDomain.cname}/icons/smallIcon"}})
     top_feds = all_feds.slice(0, fed_chop)
@@ -135,7 +135,7 @@ protected
     facets = CurrentDomain.property(:custom_facets, :catalog)
 
     return if facets.nil?
-    custom_chop = get_cutoff(:custom)
+    custom_chop = get_facet_cutoff(:custom)
     facets.map do |facet|
       facet.param = facet.param.to_sym
 
@@ -148,6 +148,18 @@ protected
       end
       facet.to_hash.deep_symbolize_keys
     end
+  end
+
+  def get_facet_cutoff(facet_name)
+    if @@cutoff_store[CurrentDomain.cname].nil?
+      domain_cutoffs = CurrentDomain.property(:facet_cutoffs, :catalog) || {}
+      translated_cutoffs = domain_cutoffs.inject({}) do |collect, (key, value)|
+        collect[key.to_sym] = value.to_i
+        collect
+      end
+      @@cutoff_store[CurrentDomain.cname] = @@default_cutoffs.merge(translated_cutoffs)
+    end
+    @@cutoff_store[CurrentDomain.cname][facet_name]
   end
 
   def process_browse(request, options = {})
@@ -348,18 +360,6 @@ private
     end
 
     t.blank? ? (options[:default_title] || 'Search & Browse Datasets and Views') : 'Results ' + t
-  end
-
-  def get_cutoff(facet_name)
-    if @@cutoff_store[CurrentDomain.cname].nil?
-      domain_cutoffs = CurrentDomain.property(:facet_cutoffs, :catalog) || {}
-      translated_cutoffs = domain_cutoffs.inject({}) do |collect, (key, value)|
-        collect[key.to_sym] = value.to_i
-        collect
-      end
-      @@cutoff_store[CurrentDomain.cname] = @@default_cutoffs.merge(translated_cutoffs)
-    end
-    @@cutoff_store[CurrentDomain.cname][facet_name]
   end
 
   # Unused for now, but this will refresh the cutoffs from the configs service

@@ -25,6 +25,14 @@
                     center: new google.maps.LatLng(40.000, -100.000),
                     mapTypeId: google.maps.MapTypeId.ROADMAP
                 };
+
+                if (mapObj.settings.view.displayFormat.viewport)
+                {
+                    mapOptions.zoom = mapObj.settings.view.displayFormat.viewport.zoom;
+                    var center = mapObj.settings.view.displayFormat.viewport.center;
+                    mapOptions.center = new google.maps.LatLng(center.lat, center.lng);
+                }
+
                 mapObj.map = new google.maps.Map(mapObj.$dom()[0], mapOptions);
 
                 mapObj._bounds = new google.maps.LatLngBounds();

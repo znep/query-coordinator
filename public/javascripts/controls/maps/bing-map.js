@@ -21,10 +21,20 @@
             {
                 var mapObj = this;
                 // App-specific credentials.  See www.bingmapsportal.com
-                mapObj.map = new Microsoft.Maps.Map(mapObj.$dom()[0],
-                    {credentials: 'AnhhVZN-sNvmtzrcM7JpQ_vfUeVN9AJNb-5v6dtt-LzCg7WEVOEdgm25BY_QaSiO',
+                var mapOptions = {
+                    credentials: 'AnhhVZN-sNvmtzrcM7JpQ_vfUeVN9AJNb-5v6dtt-LzCg7WEVOEdgm25BY_QaSiO',
                      enableClickableLogo: false,
-                     enableSearchLogo: false});
+                     enableSearchLogo: false};
+
+                if (mapObj.settings.view.displayFormat.viewport)
+                {
+                    mapOptions.zoom = mapObj.settings.view.displayFormat.viewport.zoom;
+                    var center = mapObj.settings.view.displayFormat.viewport.center;
+                    mapOptions.center = new Microsoft.Maps.Location(
+                        center.latitude || center.lat, center.longitude || center.lng);
+                }
+
+                mapObj.map = new Microsoft.Maps.Map(mapObj.$dom()[0], mapOptions);
 
                 mapObj.resizeHandle();
 

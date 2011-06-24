@@ -524,97 +524,98 @@
         var viewsToCount = viewsToRender.length;
         _.each(viewsToRender, function(view, index)
         {
-            view.getTotalRows(function()
+            var loadRows;
+            loadRows = function()
             {
-                var clusterFunction = function()
-                    {
-                        if (vizObj.updateRowsByViewport
-                            && vizObj.settings.view.displayFormat.viewport)
-                        {
-                            var isEsri = vizObj.settings.view.displayFormat.type == 'esri';
-                            var viewport = vizObj.settings.view.displayFormat.viewport;
-                            if (isEsri && viewport.sr == 102100)
-                            {
-                                viewport =
-                                    esri.geometry.webMercatorToGeographic(new esri.geometry.Extent(
-                                        viewport.xmin,
-                                        viewport.ymin,
-                                        viewport.xmax,
-                                        viewport.ymax,
-                                        new esri.SpatialReference({ wkid: viewport.sr })))
-                                viewport = {
-                                    xmin: viewport.xmin,
-                                    ymin: viewport.ymin,
-                                    xmax: viewport.xmax,
-                                    ymax: viewport.ymax,
-                                    sr: viewport.spatialReference.wkid
-                                };
-                            }
-                            vizObj.updateRowsByViewport(viewport, !isEsri);
-                        }
-                        view.getClusters(function(data)
-                        {
-                            _.defer(function()
-                                { vizObj.handleClustersLoaded(data, view); });
-                            var executable = views.shift();
-                            if (executable) { executable(); }
-                            vizObj.totalRowsForAllViews();
-                            delete vizObj._initialLoad;
-                            delete vizObj._pendingReload;
-                        },
-                        function()
-                        {
-                            _.defer(function()
-                                { vizObj.handleClustersLoaded([], view); });
-                            var executable = views.shift();
-                            if (executable) { executable(); }
-                            // On error clear these variables so more requests will be triggered
-                            delete vizObj._initialLoad;
-                            delete vizObj._pendingReload;
-                        });
-                    };
-                var rowFunction = function()
-                    {
-                        view.getRows(0, rowsToFetch, function(data)
-                        {
-                            rowsToFetch -= view.totalRows ? view.totalRows
-                                                          : data.length;
-                            var executable = views.shift();
-                            if (executable) { executable(); }
-                            vizObj.totalRowsForAllViews();
-                            if (rowsToFetch <= 0 || !executable)
-                            { delete vizObj._pendingReload; }
-                            callback.apply(vizObj, [data, view]);
-                        },
-                        function()
-                        {
-                            // On error clear these variables so more requests will be triggered
-                            delete vizObj._initialLoad;
-                            delete vizObj._pendingReload;
-                        });
-                    };
-
-                if (vizObj.settings.view.metadata.renderTypeConfig.visible.map
-                    && _.include(['point', 'rastermap'],
-                        vizObj.settings.view.displayFormat.plotStyle)
-                    && view.totalRows > vizObj._maxRows)
-                { views[index] = clusterFunction; }
-                else
-                { views[index] = rowFunction; }
-
-                viewsToCount--;
-                if (viewsToCount == 0)
+                view.getTotalRows(function()
                 {
-                    var executable = views.shift();
-                    if (executable) { executable(); }
-                }
-            },
-            // If we're canceled, then just unmark pending reload
-            function()
-            {
-                delete vizObj._initialLoad;
-                delete vizObj._pendingReload;
-            });
+                    var clusterFunction = function()
+                        {
+                            if (vizObj.updateRowsByViewport
+                                && vizObj.settings.view.displayFormat.viewport)
+                            {
+                                var isEsri = vizObj.settings.view.displayFormat.type == 'esri';
+                                var viewport = vizObj.settings.view.displayFormat.viewport;
+                                if (isEsri && viewport.sr == 102100)
+                                {
+                                    viewport =
+                                        esri.geometry.webMercatorToGeographic(new esri.geometry.Extent(
+                                            viewport.xmin,
+                                            viewport.ymin,
+                                            viewport.xmax,
+                                            viewport.ymax,
+                                            new esri.SpatialReference({ wkid: viewport.sr })))
+                                    viewport = {
+                                        xmin: viewport.xmin,
+                                        ymin: viewport.ymin,
+                                        xmax: viewport.xmax,
+                                        ymax: viewport.ymax,
+                                        sr: viewport.spatialReference.wkid
+                                    };
+                                }
+                                vizObj.updateRowsByViewport(viewport, !isEsri);
+                            }
+                            view.getClusters(function(data)
+                            {
+                                _.defer(function()
+                                    { vizObj.handleClustersLoaded(data, view); });
+                                var executable = views.shift();
+                                if (executable) { executable(); }
+                                vizObj.totalRowsForAllViews();
+                                delete vizObj._initialLoad;
+                                delete vizObj._pendingReload;
+                            },
+                            function()
+                            {
+                                _.defer(function()
+                                    { vizObj.handleClustersLoaded([], view); });
+                                var executable = views.shift();
+                                if (executable) { executable(); }
+                                // On error clear these variables so more requests will be triggered
+                                delete vizObj._initialLoad;
+                                delete vizObj._pendingReload;
+                            });
+                        };
+                    var rowFunction = function()
+                        {
+                            view.getRows(0, rowsToFetch, function(data)
+                            {
+                                rowsToFetch -= view.totalRows ? view.totalRows
+                                                              : data.length;
+                                var executable = views.shift();
+                                if (executable) { executable(); }
+                                vizObj.totalRowsForAllViews();
+                                if (rowsToFetch <= 0 || !executable)
+                                { delete vizObj._pendingReload; }
+                                callback.apply(vizObj, [data, view]);
+                            },
+                            function()
+                            {
+                                // On error clear these variables so more requests will be triggered
+                                delete vizObj._initialLoad;
+                                delete vizObj._pendingReload;
+                            });
+                        };
+
+                    if (vizObj.settings.view.metadata.renderTypeConfig.visible.map
+                        && _.include(['point', 'rastermap'],
+                            vizObj.settings.view.displayFormat.plotStyle)
+                        && view.totalRows > vizObj._maxRows)
+                    { views[index] = clusterFunction; }
+                    else
+                    { views[index] = rowFunction; }
+
+                    viewsToCount--;
+                    if (viewsToCount == 0)
+                    {
+                        var executable = views.shift();
+                        if (executable) { executable(); }
+                    }
+                },
+                // If we're canceled, then retry, because it should be available now
+                loadRows);
+            };
+            loadRows();
         });
     };
 

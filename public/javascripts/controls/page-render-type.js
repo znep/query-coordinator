@@ -122,7 +122,10 @@
             prtObj.richRenderer.renderRow(prtObj.$content(), row, true);
             prtObj.richRenderer.adjustLayout();
         };
-        prtObj.settings.view.getRows(prtObj.navigation.currentPage(), 1, rowLoaded);
+        var loadRows;
+        loadRows = function()
+        { prtObj.settings.view.getRows(prtObj.navigation.currentPage(), 1, rowLoaded, loadRows); };
+        loadRows();
     };
 
 })(jQuery);

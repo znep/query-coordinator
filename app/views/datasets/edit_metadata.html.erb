@@ -28,7 +28,7 @@
 
     <div class="line clearfix">
       <label for="view_category">Category</label>
-      <%= select_tag("view[category]", category_select_options(h(@view.category.nil? ? '' : @view.category))) %>
+      <%= select_tag("view[category]", category_select_options(@view.category.nil? ? '' : @view.category)) %>
     </div>
 
     <div class="line clearfix">

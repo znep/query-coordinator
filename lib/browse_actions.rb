@@ -257,8 +257,7 @@ protected
     end
 
     if browse_options[:sortPeriod].present?
-      browse_options[:origSortPeriod] = browse_options[:sortPeriod]
-      browse_options[:sortPeriod] =
+      search_options[:sortPeriod] =
         case browse_options[:sortPeriod]
         when 'week'
           'WEEKLY'

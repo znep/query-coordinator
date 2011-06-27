@@ -612,6 +612,11 @@
                 // Implement me
             },
 
+            renderHeat: function()
+            {
+                // Implement me
+            },
+
             clustersRendered: function()
             {
                 this.adjustBounds();

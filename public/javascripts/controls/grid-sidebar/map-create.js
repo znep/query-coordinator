@@ -17,7 +17,7 @@
     {
         var plotStyles = [
             {text: 'Point Map', value: 'point'},
-            {text: 'Heat Map', value: 'heatmap'},
+            {text: 'Heat Map', value: 'heatmap'}
         ];
         if (mapType == 'esri')
         { plotStyles.push({text: 'Raster Heat Map', value: 'rastermap'}); }

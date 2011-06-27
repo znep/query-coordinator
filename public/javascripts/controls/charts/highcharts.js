@@ -455,11 +455,18 @@
             }
             else
             { chartConfig.xAxis.labels.rotation = 340; }
+
             if (Dataset.chart.types[chartObj._chartType].displayLimit.labels
                 && chartObj.settings.view.totalRows)
-            { chartConfig.xAxis.labels.step = Math.ceil(
-                chartObj.settings.view.totalRows /
-                Dataset.chart.types[chartObj._chartType].displayLimit.labels); }
+            {
+                // Magic Number is the width of chartObj.$dom().width() when the
+                // displayLimit configurations were determined.
+                var spaceAvailable =
+                    Dataset.chart.types[chartObj._chartType].displayLimit.labels
+                    * (chartObj.$dom().width() / 1440);
+                chartConfig.xAxis.labels.step = Math.ceil(
+                    chartObj.settings.view.totalRows / spaceAvailable);
+            }
         }
 
 

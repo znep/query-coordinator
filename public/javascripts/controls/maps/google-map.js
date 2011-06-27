@@ -127,7 +127,7 @@
                 switch(geoType)
                 {
                     case 'point':
-                        geometry = new SocrataMarker(
+                        geometry = new google.maps.Marker(
                             {position: new google.maps.LatLng(geometry.latitude,
                                                               geometry.longitude) });
                         break;
@@ -255,6 +255,7 @@
             },
 
             // FIXME: This is a skeleton. It is not intended to be used.
+/*
             renderHeat: function()
             {
                 var mapObj = this;
@@ -348,6 +349,7 @@
                     };
                 });
             },
+*/
 
             adjustBounds: function()
             {
@@ -462,12 +464,12 @@
                 // Grab a reference to the current object (this) from a global
                 var mapObj = blist.util.googleCallbackMap;
                 add_markerwithlabel();
-                createSocrataMarker();
                 mapObj._librariesLoaded();
             }
         }
     }));
 
+/*
     var SocrataMarker;
     var createSocrataMarker = function()
     {
@@ -494,4 +496,5 @@
         { this.pixel_ = this.getProjection()
             .fromLatLngToContainerPixel(this.marker_.position); };
     };
+*/
 })(jQuery);

@@ -208,6 +208,7 @@
             },
 
             // FIXME: This is a skeleton. It is not intended to be used.
+/*
             renderHeat: function()
             {
                 var mapObj = this;
@@ -231,6 +232,7 @@
                 });
                 mapObj.map.entities.clear();
             },
+*/
 
             adjustBounds: function()
             {

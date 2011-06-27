@@ -1079,8 +1079,9 @@ class View < Model
 
   @@overridable_features = [
     { :key => 'allow_comments',
-      :name => 'Commenting'
-    }
+      :name => 'Commenting' },
+    { :key => 'cell_comments',
+      :name => 'Cell-Level Commenting' }
   ]
 
   private

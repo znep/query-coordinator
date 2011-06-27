@@ -1703,7 +1703,10 @@ this.Dataset = ServerModel.extend({
         var ds = this;
         var params = {method: 'getByIds', start: start, 'length': len, asHashes: true};
 
-        if (includeMeta || $.isBlank(ds.totalRows) || ds._columnsInvalid)
+        var reqData = ds.cleanCopy();
+
+        if ((includeMeta || $.isBlank(ds.totalRows) || ds._columnsInvalid) &&
+            !_.isEqual(reqData, ds._curMetaReqMeta))
         { params.meta = true; }
 
         var reqId = _.uniqueId();
@@ -1724,6 +1727,7 @@ this.Dataset = ServerModel.extend({
                     return;
                 }
                 delete ds._curMetaReq;
+                delete ds._curMetaReqMeta;
                 ds.totalRows = result.meta.totalRows;
                 delete ds._columnsInvalid;
                 if (!fullLoad)
@@ -1794,7 +1798,11 @@ this.Dataset = ServerModel.extend({
         var req = {success: rowsLoaded, params: params, inline: !fullLoad, type: 'POST'};
         if (fullLoad)
         { req.url = '/views/' + ds.id + '/rows.json'; }
-        if (params.meta) { ds._curMetaReq = reqId; }
+        if (params.meta)
+        {
+            ds._curMetaReq = reqId;
+            ds._curMetaReqMeta = reqData;
+        }
         ds.makeRequest(req);
     },
 

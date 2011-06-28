@@ -49,7 +49,7 @@ class DatasetsController < ApplicationController
       if Rails.env.production? && request.path =~ /^\/dataset\/\w{4}-\w{4}/
         logger.info("Doing a dataset redirect from #{request.referrer}")
       end
-      redirect_to(href + '?' + request.query_string)
+      return redirect_to(href + '?' + request.query_string)
     end
 
     # If we're displaying a single dataset, set the meta tags as appropriate.

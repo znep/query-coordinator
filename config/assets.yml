@@ -74,7 +74,7 @@ javascripts:
     - public/javascripts/data/editors/picklist-editor.js
     - public/javascripts/data/editors/checkbox-editor.js
     - public/javascripts/data/editors/stars-editor.js
-    - public/javascripts/tiny_mce/tiny_mce_jquery_src.js
+    - public/javascripts/tiny_mce/tiny_mce_src.js
     - public/javascripts/data/editors/html-editor.js
     - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/controls/upload-dialog.js

@@ -254,7 +254,7 @@
             var p = editor.dom.getParent(editor.selection.getNode(), 'span');
             if (p) { v = p.style.color; }
             return { enabled: editor.getDoc().queryCommandEnabled(name),
-                value: v || editor.editorCommands._queryVal(name) };
+                value: v || editor.editorCommands.queryCommandValue(name) };
         },
 
         fire: function(editor, name, value) {
@@ -328,12 +328,16 @@
                     this._editorInitDone = false;
                     var me = this;
                     this._editor.onInit.add(function() {
-                        initDoc(this.getDoc());
-                        this.setContent(this._initValue);
-                        me._editorInitDone = true;
-                        if (me.showCallback)
-                            me.showCallback();
-                        this.focus();
+                        var t = this;
+                        _.defer(function()
+                        {
+                            initDoc(t.getDoc());
+                            t.setContent(t._initValue);
+                            me._editorInitDone = true;
+                            if (_.isFunction(me.showCallback))
+                                me.showCallback();
+                            t.focus();
+                        });
                     });
                     this._editor.onNodeChange.add(function()
                     { me.actionStatesChanged(); });

@@ -18,7 +18,7 @@
   <%- end -%>
 
   <% form_for :signup, @signup, :url => account_path,
-  :html => {:id => 'signupForm', :multipart => true} do |f| %>
+     :html => {:id => 'signupForm', :class => 'commonForm', :multipart => true} do |f| %>
     <%= render :partial => 'accounts/signup_form_data', :locals => {:f => f} %>
   <% end %>
 </div>

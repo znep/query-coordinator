@@ -21,7 +21,7 @@ class DatasetsController < ApplicationController
     @supress_content_wrapper = true
 
     if is_mobile? && (params[:no_mobile] != 'true')
-      redirect_to :controller => 'widgets', :action => 'show', :id => params[:id]
+      return(redirect_to :controller => 'widgets', :action => 'show', :id => params[:id])
     end
 
     @view = get_view(params[:id])

@@ -676,7 +676,7 @@ $(function()
             }
             if (!href.match(/^(f|ht)tps?:\/\//))
             {
-                href = "http://" + href;
+                href = location.protocol + "//" + href;
             }
 
             var $modal = $('.leavingInterstitial');

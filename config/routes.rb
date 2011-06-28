@@ -386,9 +386,6 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/opensearch.xml',
     :controller => 'open_search', :action => 'show'
 
-  # Seattle Data-Policy hack
-  map.connect '/data-policy', :controller => "data_policy", :action => "index"
-
   # Custom pages, catalogs, facets
   map.connect '/page/:page_name', :controller => "custom_content", :action => "show_page"
   map.connect '/catalog/:page_name', :controller => "custom_content", :action => "show_page"

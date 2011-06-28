@@ -10,6 +10,37 @@
 
         var $activePane = $firstChild;
 
+        // wire up autorotate
+        var rotationTimer = null;
+        var rotationSuppressed = false;
+        var setAutorotate = function()
+        {
+            clearTimeout(rotationTimer);
+            if (!rotationSuppressed && _.isNumber(opts.rotationInterval) && (opts.rotationInterval > 0))
+            {
+                rotationTimer = setTimeout(function()
+                {
+                    var $nextPane = $activePane.next();
+                    if ($nextPane.length === 0)
+                    {
+                        $nextPane = $firstChild;
+                    }
+                    activatePane($nextPane);
+                }, (opts.rotationInterval * 1000));
+            }
+        }
+        $ticker.hover(function()
+        {
+            rotationSuppressed = true;
+            clearTimeout(rotationTimer);
+        }, function()
+        {
+            rotationSuppressed = false;
+            setAutorotate();
+        });
+        setAutorotate();
+
+        // base action
         var activatePane = function($pane)
         {
             var currentIndex = $pane.prevAll().length;
@@ -39,6 +70,7 @@
             $('.currentPage').text(currentIndex + 1);
 
             $activePane = $pane;
+            setAutorotate();
         };
 
         activatePane($activePane);

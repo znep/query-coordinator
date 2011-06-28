@@ -25,6 +25,14 @@
                     center: new google.maps.LatLng(40.000, -100.000),
                     mapTypeId: google.maps.MapTypeId.ROADMAP
                 };
+
+                if (mapObj.settings.view.displayFormat.viewport)
+                {
+                    mapOptions.zoom = mapObj.settings.view.displayFormat.viewport.zoom;
+                    var center = mapObj.settings.view.displayFormat.viewport.center;
+                    mapOptions.center = new google.maps.LatLng(center.lat, center.lng);
+                }
+
                 mapObj.map = new google.maps.Map(mapObj.$dom()[0], mapOptions);
 
                 mapObj._bounds = new google.maps.LatLngBounds();
@@ -52,6 +60,9 @@
                         if (!mapObj._ready)
                         {
                             mapObj._ready = true;
+                            // On initial zoom, save off viewport
+                            if ($.isBlank(mapObj._currentViewport))
+                            { mapObj._currentViewport = mapObj.getViewport(); }
                             return;
                         }
                         if (!mapObj._boundsChanging) { return; }
@@ -137,6 +148,7 @@
 
                 if (details.color instanceof dojo.Color)
                 { details.color = details.color.toHex(); }
+                geometry.heatStrength = details.heatStrength || 1;
 
                 switch(geoType)
                 {
@@ -228,6 +240,7 @@
                                                      cluster.point.lon)
                 });
 
+                graphic.heatStrength = cluster.count;
                 mapObj._markers[graphic.getPosition().toString()] = graphic;
 
                 google.maps.event.addListener(graphic, 'click', function(evt)
@@ -240,6 +253,103 @@
                 mapObj._bounds.extend(graphic.getPosition());
                 mapObj._boundsCounts++;
             },
+
+            // FIXME: This is a skeleton. It is not intended to be used.
+/*
+            renderHeat: function()
+            {
+                var mapObj = this;
+
+                if (mapObj.settings.view.displayFormat.plotStyle != 'rastermap')
+                { return; }
+
+                if (!mapObj._heatLayer)
+                { mapObj._heatLayer =
+                    h337.create({"element":mapObj.currentDom, "radius":25, "visible":true});}
+
+                // Step 1: Enter data into the CANVAS heatmap.
+                var markers = _.select(mapObj._markers, function(marker)
+                { return marker instanceof SocrataMarker || marker instanceof MarkerWithLabel; })
+
+                mapObj._heatLayerMax = mapObj._heatLayer.store.max = _.reduce(markers,
+                function(total, marker) { return total + marker.heatStrength; }, 0) / 10;
+
+                _.each(markers, function(marker)
+                {
+                    marker.show();
+                    var offset = marker.pixel_;
+                    if (offset)
+                    { mapObj._heatLayer.store.addDataPoint(offset.x, offset.y); }
+                    marker.hide();
+                });
+
+                // Step 2: Convert CANVAS heatmap into Image/PNG.
+                var heatData = mapObj._heatLayer.getImageData();
+                var $heatLayer = $(mapObj._heatLayer.get('canvas'));
+                var topOffset = $heatLayer.offset().top;
+                mapObj._heatLayer.clear();
+                $heatLayer.remove();
+                delete mapObj._heatLayer;
+
+                // Step 3: Convert IMG tiles into CANVAS tiles: Map + Heat.
+                if (mapObj._heater) { google.maps.event.removeListener(mapObj._heater); }
+                delete mapObj._heater;
+                mapObj._heater = google.maps.event.addListener(mapObj.map, 'tilesloaded', function()
+                {
+                    var srcHeatmap = new Image();
+                    srcHeatmap.src = mapObj._lastHeatData = heatData;
+                    srcHeatmap.onload = function(){
+                        var $layer = $('> div > div:first > div > div:last > div', mapObj.$dom());
+                        mapObj._foobar = $layer; // DEBUG
+                        var translation = $layer.parent().parent()
+                            .attr('style').match(/translate\((-?\d+)px, (-?\d+)px\)/);
+                        if (translation)
+                        { translation =
+                            { x: parseInt(translation[1]), y: parseInt(translation[2]) }; }
+                        $layer.find("canvas").remove();
+                        $layer.children().each(function()
+                        {
+                            var gdiv   = this;
+                            var $gdiv  = $(this);
+                            var $gTile = $gdiv.find('img');
+                            var gTile  = $gTile[0];
+
+                            var tile    = document.createElement("canvas");
+                            tile.width  = gTile.width;
+                            tile.height = gTile.height;
+                            var tileCtx = tile.getContext("2d");
+                            tileCtx.drawImage(gTile, 0, 0);
+
+                            var position = $gTile.offset();
+                            position.top  -= translation.y;
+                            position.left -= translation.x;
+                            var width = gTile.width;
+                            var height = gTile.height;
+                            var dx = 0; var dy = 0;
+                            if (position.left < 0)
+                            {
+                                width += position.left;
+                                dx = -position.left;
+                                position.left = 0;
+                            }
+                            if (position.top < 0)
+                            {
+                                height += position.top;
+                                dy = -position.top;
+                                position.top = 0;
+                            }
+                            if (width < 0 || height < 0) { return; }
+                            tileCtx.drawImage(srcHeatmap, position.left, position.top,
+                                                          width, height,
+                                                          dx, dy, width, height);
+
+                            gTile.style.display = 'none';
+                            $gdiv.append(tile);
+                        });
+                    };
+                });
+            },
+*/
 
             adjustBounds: function()
             {
@@ -261,13 +371,6 @@
                     mapObj.map.setCenter(mapObj._bounds.getCenter());
                     mapObj.map.setZoom(mapObj.settings.defaultZoom);
                 }
-
-                _.defer(function()
-                {
-                    // On initial zoom, save off viewport
-                    if ($.isBlank(mapObj._originalViewport))
-                    { mapObj._originalViewport = mapObj.getViewport(); }
-                });
             },
 
             getCustomViewport: function()
@@ -365,4 +468,33 @@
             }
         }
     }));
+
+/*
+    var SocrataMarker;
+    var createSocrataMarker = function()
+    {
+        SocrataMarker = function(opt_options)
+        {
+            this.marker_ = new google.maps.Marker(opt_options);
+            this.position = this.marker_.position;
+            if (_.include(_.keys(opt_options), 'map'))
+            { this.setMap(opt_options.map); }
+        };
+        SocrataMarker.prototype = new google.maps.OverlayView();
+        SocrataMarker.prototype.setOptions = function(options)
+        {
+            this.marker_.setOptions(options);
+            if (_.include(_.keys(options), 'map'))
+            { this.setMap(options.map); }
+        };
+        SocrataMarker.prototype.show = function()
+        { this.marker_.setVisible(true); };
+        SocrataMarker.prototype.hide = function()
+        { this.marker_.setVisible(false); };
+
+        SocrataMarker.prototype.draw = function()
+        { this.pixel_ = this.getProjection()
+            .fromLatLngToContainerPixel(this.marker_.position); };
+    };
+*/
 })(jQuery);

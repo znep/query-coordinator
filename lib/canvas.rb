@@ -147,7 +147,8 @@ module Canvas
       pager: {
         divider: '/',
         type: 'incremental'
-      }
+      },
+      rotationInterval: 9
     }
   end
 
@@ -396,11 +397,17 @@ module Canvas
           end
         end
 
-        search_response = SearchResult.search('views', search_options)[0]
-        if search_response.count == 0
+        begin
+          search_response = SearchResult.search('views', search_options)[0]
+
+          if search_response.count == 0
+            @view = false
+          else
+            @view = search_response.results.first
+          end
+        rescue CoreServer::ResourceNotFound
+          # some configurations of catalog search can actually return a 404
           @view = false
-        else
-          @view = search_response.results.first
         end
       else
         begin

@@ -4195,7 +4195,10 @@
             // available
             if (model.dataLength() < 0)
             {
-                model.loadRows(0, 50, function() { isReady(); });
+                var doLoad;
+                doLoad = function()
+                { model.loadRows(0, 50, function() { isReady(); }, doLoad); };
+                doLoad();
             }
             else { isReady(); }
         });

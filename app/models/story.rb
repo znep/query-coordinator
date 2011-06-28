@@ -10,7 +10,7 @@ class Story < Model
 
   def customization=(value)
     @customization = value
-    data['customization'] = @customization.to_json
+    update_data['customization'] = data['customization'] = @customization.to_json
   end
 
   def raw_customization

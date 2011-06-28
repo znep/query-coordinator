@@ -225,8 +225,13 @@
             });
         };
 
-        frObj.settings.view.getRows(frObj.navigation.currentPage() *
-            frObj.settings.pageSize, frObj.settings.pageSize, rowsLoaded);
+        var loadRows;
+        loadRows = function()
+        {
+            frObj.settings.view.getRows(frObj.navigation.currentPage() *
+                frObj.settings.pageSize, frObj.settings.pageSize, rowsLoaded);
+        }
+        loadRows();
     };
 
 })(jQuery);

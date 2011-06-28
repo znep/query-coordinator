@@ -578,7 +578,7 @@ class View < Model
     else
       url = "/#{self.class.name.pluralize.downcase}/#{id}.json?method=getDefaultView&accessType=WEBSITE"
       begin
-        @parent_dataset = parse(CoreServer::Base.connection.get_request(url))
+        @parent_dataset = View.parse(CoreServer::Base.connection.get_request(url))
       rescue CoreServer::CoreServerError => e
         if (e.error_code == 'authentication_required') || (e.error_code == 'permission_denied')
           @parent_dataset = nil
@@ -1108,8 +1108,9 @@ class View < Model
 
   @@overridable_features = [
     { :key => 'allow_comments',
-      :name => 'Commenting'
-    }
+      :name => 'Commenting' },
+    { :key => 'cell_comments',
+      :name => 'Cell-Level Commenting' }
   ]
 
   private

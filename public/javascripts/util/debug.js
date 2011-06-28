@@ -14,7 +14,7 @@ $.debug = function(msg, obj, obj2)
     msg = '[' + debugNS.uid++ + '] ' + msg;
     if (window.console && window.console.log)
     {
-        if (obj)
+        if (obj || obj2)
         {
             if (obj2)
             { window.console.log("%s: %o; %o", msg, obj, obj2); }
@@ -34,7 +34,7 @@ $.debug = function(msg, obj, obj2)
                 'height:10em;overflow:auto;"></div>');
             $console = $('#debug-console');
         }
-        if (obj && JSON)
+        if ((obj || obj2) && JSON)
         {
             if (obj2)
             { $console.append("<p>" + msg + ": " + JSON.stringify(obj) + "; " +
@@ -46,6 +46,25 @@ $.debug = function(msg, obj, obj2)
         { $console.append("<p>" + msg + "</p>"); }
         $console[0].scrollTop = $console[0].scrollHeight;
     }
+};
+
+$.objDiff = function(o1, o2)
+{
+    if (_.isEqual(o1, o2))
+    {
+        $.debug('Objects are equal');
+        return;
+    }
+    if (!$.isPlainObject(o1) || !$.isPlainObject(o2))
+    {
+        $.debug('Objects are different and not both objects');
+        return;
+    }
+    _.each(_.uniq(_.keys(o1).concat(_.keys(o2))), function(k)
+    {
+        if (!_.isEqual(o1[k], o2[k]))
+        { $.debug(k + ' is different', o1[k], o2[k]); }
+    });
 };
 
 blist.debug.clearCache = function ()

@@ -112,8 +112,9 @@
                     chartObj.rowsRendered();
                 }
 
-                // Once we've gotten the columns, create the chart
-                createChart(chartObj);
+                // Once we've gotten the columns, get total rows, then create the chart
+                chartObj.settings.view.getTotalRows(function()
+                    { createChart(chartObj); });
             },
 
             renderRow: function(row)
@@ -455,11 +456,22 @@
             }
             else
             { chartConfig.xAxis.labels.rotation = 340; }
-            if (Dataset.chart.types[chartObj._chartType].displayLimit.labels
-                && chartObj.settings.view.totalRows)
-            { chartConfig.xAxis.labels.step = Math.ceil(
-                chartObj.settings.view.totalRows /
-                Dataset.chart.types[chartObj._chartType].displayLimit.labels); }
+
+            var labelLimit = Dataset.chart.types[chartObj._chartType].displayLimit.labels
+                || Dataset.chart.types[chartObj._chartType].displayLimit.points;
+            if (labelLimit && chartObj.settings.view.totalRows)
+            {
+                // Magic Number is the width of chartObj.$dom().width() when the
+                // displayLimit configurations were determined.
+                var spaceAvailable = labelLimit * (chartObj.$dom().width() / 1440);
+                var numItems = chartObj.settings.view.totalRows;
+                if (Dataset.chart.types[chartObj._chartType].displayLimit.points)
+                {
+                    numItems = Math.min(numItems,
+                        Dataset.chart.types[chartObj._chartType].displayLimit.points);
+                }
+                chartConfig.xAxis.labels.step = Math.ceil(numItems / spaceAvailable);
+            }
         }
 
 

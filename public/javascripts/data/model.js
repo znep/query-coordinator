@@ -165,7 +165,7 @@ blist.namespace.fetch('blist.data');
         };
 
 
-        this.loadRows = function(start, stop, callback)
+        this.loadRows = function(start, stop, successCallback, errorCallback)
         {
             if ($.isBlank(this.view)) { return false; }
 
@@ -186,13 +186,13 @@ blist.namespace.fetch('blist.data');
                         { modelRows.splice(i - start, 0, specialRows[i]); }
                     }
                 }
-                if (_.isFunction(callback)) { callback(modelRows); }
+                if (_.isFunction(successCallback)) { successCallback(modelRows); }
             };
 
             if (adjStop == adjStart)
             { gotRows([]); }
             else
-            { this.view.getRows(adjStart, adjStop - adjStart, gotRows); }
+            { this.view.getRows(adjStart, adjStop - adjStart, gotRows, errorCallback); }
 
             return true;
         };

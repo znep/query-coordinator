@@ -7,14 +7,14 @@
 
 <div class="line">
   <div class="labelLine">
-    <%= f.label :email, 'Email Address', :class => 'main' %>
+    <%= f.label :email, 'Email Address', :class => 'required main' %>
   </div>
   <%= f.text_field :email %>
 </div>
 
 <div class="line">
   <div class="labelLine">
-    <%= f.label :screenName, 'Display Name', :class => 'main' %>
+    <%= f.label :screenName, 'Display Name', :class => 'required main' %>
   </div>
   <%= f.text_field :screenName, :maxlength => 40 %>
 </div>
@@ -22,7 +22,7 @@
 <%- if !local_assigns[:hide_password] -%>
 <div class="line">
   <div class="labelLine">
-    <%= f.label :password, 'Password', :class => 'passwordLabel main' %>
+    <%= f.label :password, 'Password', :class => 'required passwordLabel main' %>
     <span class="passwordHint">(8 characters or more)</span>
   </div>
   <%= f.password_field :password %>
@@ -30,7 +30,7 @@
 
 <div class="line">
   <div class="labelLine">
-    <%= label_tag :passwordConfirm, 'Confirm Password', :class => 'main' %>
+    <%= label_tag :passwordConfirm, 'Confirm Password', :class => 'required main' %>
   </div>
   <%= f.password_field :passwordConfirm %>
 </div>

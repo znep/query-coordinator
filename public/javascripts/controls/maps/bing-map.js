@@ -21,10 +21,20 @@
             {
                 var mapObj = this;
                 // App-specific credentials.  See www.bingmapsportal.com
-                mapObj.map = new Microsoft.Maps.Map(mapObj.$dom()[0],
-                    {credentials: 'AnhhVZN-sNvmtzrcM7JpQ_vfUeVN9AJNb-5v6dtt-LzCg7WEVOEdgm25BY_QaSiO',
+                var mapOptions = {
+                    credentials: 'AnhhVZN-sNvmtzrcM7JpQ_vfUeVN9AJNb-5v6dtt-LzCg7WEVOEdgm25BY_QaSiO',
                      enableClickableLogo: false,
-                     enableSearchLogo: false});
+                     enableSearchLogo: false};
+
+                if (mapObj.settings.view.displayFormat.viewport)
+                {
+                    mapOptions.zoom = mapObj.settings.view.displayFormat.viewport.zoom;
+                    var center = mapObj.settings.view.displayFormat.viewport.center;
+                    mapOptions.center = new Microsoft.Maps.Location(
+                        center.latitude || center.lat, center.longitude || center.lng);
+                }
+
+                mapObj.map = new Microsoft.Maps.Map(mapObj.$dom()[0], mapOptions);
 
                 mapObj.resizeHandle();
 
@@ -197,6 +207,33 @@
                 $('body').append(label);
             },
 
+            // FIXME: This is a skeleton. It is not intended to be used.
+/*
+            renderHeat: function()
+            {
+                var mapObj = this;
+
+                if (mapObj.settings.view.displayFormat.plotStyle != 'rastermap')
+                { return; }
+
+                if (!mapObj._heatLayer)
+                { mapObj._heatLayer =
+                    h337.create({"element":mapObj.$dom().parent()[0], "radius":25, "visible":true});}
+
+                _.each(_.compact(_.map(mapObj._markers, function(markers)
+                { return markers.length == 1 ? markers[0] : null; })), function(marker)
+                {
+                    var offset = $(marker['cm1001_er_etr'].dom).offset();
+                    var bcOffs = blist.$container.offset();
+                    offset.top -= bcOffs.top;
+                    offset.left += marker.getAnchor().x;
+                    offset.top  += marker.getAnchor().y;
+                    mapObj._heatLayer.store.addDataPoint(offset.left, offset.top);
+                });
+                mapObj.map.entities.clear();
+            },
+*/
+
             adjustBounds: function()
             {
                 var mapObj = this;
@@ -240,8 +277,8 @@
                         function()
                         {
                             // On initial zoom, save off viewport
-                            if ($.isBlank(mapObj._originalViewport))
-                            { mapObj._originalViewport = mapObj.getViewport(); }
+                            if ($.isBlank(mapObj._currentViewport))
+                            { mapObj._currentViewport = mapObj.getViewport(); }
 
                             if (mapObj._boundsChanging)
                             { mapObj._boundsChanging = false; return; }
@@ -275,8 +312,9 @@
             getCustomViewport: function()
             {
                 var mapObj = this;
+                var center = mapObj.map.getCenter();
                 var viewport = {
-                    center: mapObj.map.getCenter(),
+                    center: {latitude: center.latitude, longitude: center.longitude},
                     zoom: mapObj.map.getZoom()
                 };
 
@@ -294,7 +332,9 @@
             setViewport: function(viewport)
             {
                 var mapObj = this;
-                mapObj.map.setView({ center: viewport.center, zoom: viewport.zoom});
+                var loc = new Microsoft.Maps.Location(viewport.center.latitude || viewport.center.lat,
+                    viewport.center.longitude || viewport.center.lng);
+                mapObj.map.setView({ center: loc, zoom: viewport.zoom});
             },
 
             hideLayers: function()

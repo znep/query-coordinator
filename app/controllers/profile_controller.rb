@@ -53,14 +53,15 @@ class ProfileController < ApplicationController
         browse_options[:facets] = [view_types_facet, categories_facet]
       end
 
+      topic_chop = get_facet_cutoff(:topic)
       user_tags = Tag.find({:method => 'ownedTags', :user_uid => @user.id}).data
-      top_tags = user_tags.sort {|a,b| b[1] <=> a[1]}.slice(0, 5).map {|t| t[0]}
+      top_tags = user_tags.sort {|a,b| b[1] <=> a[1]}.slice(0, topic_chop).map {|t| t[0]}
       if !params[:tags].nil? && !top_tags.include?(params[:tags])
         top_tags.push(params[:tags])
       end
       top_tags = top_tags.sort.map {|t| {:text => t, :value => t}}
       tag_cloud = nil
-      if user_tags.length > 5
+      if user_tags.length > topic_chop
         tag_cloud = user_tags.sort {|a,b| a[0] <=> b[0]}.
           map {|t| {:text => t[0], :value => t[0], :count => t[1]}}
       end

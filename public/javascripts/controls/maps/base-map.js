@@ -553,9 +553,12 @@
                 if (row.icon)
                 { details.icon = row.icon; }
 
+                if (viewConfig._quantityCol)
+                { details.heatStrength = parseFloat(row[viewConfig._quantityCol.id]); }
+
                 if (row.meta)
                 {
-                    var mapping = { 'mapIcon': 'icon',
+                    var mapping = { 'mapIcon': 'icon', 'heat': 'heatStrength',
                         'pinSize': 'size', 'pinColor': 'color' };
                     _.each(_.keys(mapping), function(key)
                     {
@@ -609,6 +612,11 @@
                 // Implement me
             },
 
+            renderHeat: function()
+            {
+                // Implement me
+            },
+
             clustersRendered: function()
             {
                 this.adjustBounds();
@@ -619,6 +627,7 @@
                 // Override if you wish to do something other than adjusting the
                 // map to fit the points
                 this.adjustBounds();
+                this.renderHeat();
             },
 
             adjustBounds: function()
@@ -727,8 +736,8 @@
                 // Theory: All of these will be different if user-initiated
                 // panning or zooming occurs. But one will hold constant if
                 // it's just automatic.
-                // Fall back to saved originalViewport so we're not comparing against blank
-                var curVP = mapObj.settings.view.displayFormat.viewport || mapObj._originalViewport || {};
+                // Use the most recently set viewport
+                var curVP = mapObj._currentViewport || {};
                 if (_.any(['xmin', 'ymin', 'ymax'], function(p)
                     {
                         return vp[p].toFixed(mapObj.settings.coordinatePrecision) ==
@@ -736,6 +745,7 @@
                     }))
                 { return; }
 
+                mapObj._currentViewport = vp;
                 mapObj.settings.view.update({displayFormat: $.extend({},
                     mapObj.settings.view.displayFormat, { viewport: vp })}, false, true);
             },
@@ -786,6 +796,8 @@
                         {
                             viewConfig['_' + colName + 'Col'] = c;
                             aggs[c.id] = ['maximum', 'minimum'];
+                            if (colName == 'quantity')
+                            { aggs[c.id].push('sum'); }
                         }
                     });
 

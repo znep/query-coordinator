@@ -88,7 +88,8 @@ class AdministrationController < ApplicationController
       @user_search_results = SearchResult.search('users', :q => params[:username]).first.results
       @futures = FutureAccount.find.select { |f| f.email.downcase.include? params[:username].downcase }
     else
-      @admins = find_privileged_users.sort{|x,y| x.displayName <=> y.displayName}
+      @admins = find_privileged_users.sort{|x,y| (x.displayName || x.email).downcase <=>
+        (y.displayName || y.email).downcase}
       @futures = FutureAccount.find
     end
 
@@ -971,7 +972,7 @@ private
     end
 
     # make sure the color looks as we expect
-    customization[:backgroundColor].gsub!(/^#/, '') if customization[:backgroundColor].present?
+    customization['backgroundColor'].gsub!(/^#/, '') if customization['backgroundColor'].present?
 
     story.customization = customization
   end

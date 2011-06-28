@@ -157,6 +157,7 @@ private
   @@default_homepage = {
     title: '',
     default_homepage: true,
+    default_styles: true,
     contents: [{
       type: 'data_splash'
     }, {

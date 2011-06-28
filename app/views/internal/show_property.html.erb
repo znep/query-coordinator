@@ -26,7 +26,7 @@
       '/domains/' + @domain.cname + '/site_config/' + @config.id.to_s +
       '/property', {:class => 'wide'}) do %>
       <div id="ace-editor"></div>
-      <%= text_area_tag 'properties[' + @property_key + ']', raw(@property), :style => 'display: none', :id => 'preText' %>
+      <%= text_area_tag 'properties[' + @property_key + ']', h(@property), :style => 'display: none', :id => 'preText' %>
       <input type="submit" value="Save" id="saveButton"/>
       <div class="flash notice hide saveMessage">Configuration Saved</div>
     <%- end -%>

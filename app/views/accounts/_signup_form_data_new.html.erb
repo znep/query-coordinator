@@ -26,13 +26,13 @@
       <%= f.password_field :password %>
     </div>
     <div class="line clearfix">
-      <%= label_tag :passwordConfirm, 'Confirm Password', :class => 'required' %>
+      <%= f.label :passwordConfirm, 'Confirm Password', :class => 'required' %>
       <%= f.password_field :passwordConfirm %>
     </div>
   <% end %>
   <div class="line clearfix">
     <span><%= check_box_tag 'signup[accept_terms]', "1", false, :class => 'required' %>
-    I agree to the <%= raw CurrentDomain.theme.urls.signup.map{|link| link_from_theme(link)}.to_sentence(:words_connector => ', ', :two_words_connector => ' and ', :last_word_connector => ', and ') %></span>
+    I agree to the <%= raw CurrentDomain.theme.urls.signup.map{|link| link_from_theme(link)}.to_sentence %></span>
     <label class="error" for="signup[accept_terms]" generated="true"></label>
   </div>
 </fieldset>

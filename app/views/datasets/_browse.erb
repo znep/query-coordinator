@@ -138,7 +138,8 @@
 
         <%- if opts[:view_count] > 0 && !opts[:sort_opts].empty? && !opts[:disable][:sort] -%>
           <div class="sortOptions">
-            <select class="sortType" name="sortType">
+            <label for="browseSortType" class="sortLabel">Sort By</label>
+            <select id="browseSortType" class="sortType" name="sortType">
               <%- opts[:sort_opts].each do |so| -%>
                 <%- next if !so[:requires].nil? && opts[so[:requires]].nil? -%>
                 <option value="<%= so[:value] %>" class="<%= 'timePeriod' if so[:is_time_period] %>"
@@ -150,7 +151,8 @@
               { :value => 'month', :name => 'This month' },
               { :value => 'year', :name => 'This year' }
             ] -%>
-            <select class="sortPeriod<%= ' hide' unless show_time_period %>" name="sortPeriod">
+            <label for="browseSortPeriod" class="sortLabel">Sort Period</label>
+            <select class="sortPeriod<%= ' hide' unless show_time_period %>" name="sortPeriod" id="browseSortPeriod">
               <%- time_opts.each do |to| -%>
                 <option value="<%= to[:value] %>"<%= ' selected="selected"' if to[:value] == opts[:sortPeriod] %>>
                   <%= to[:name] %>

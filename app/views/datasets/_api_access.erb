@@ -13,6 +13,6 @@
      <a href="/api/docs" rel="external">Developer Documentation</a>.</p>
   <h3>API Access Endpoint:</h3>
   <div class="apiEndpointWrapper">
-    <pre>http://<%= CurrentDomain.cname %>/api/views/<%= @view.id %>/rows.json</pre>
+    <pre><%= @view.federated_protocol(CurrentDomain.cname) %>://<%= CurrentDomain.cname %><%= @view.federated_port(CurrentDomain.cname) %>/api/views/<%= @view.id %>/rows.json</pre>
   </div>
 </div>

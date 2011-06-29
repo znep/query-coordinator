@@ -297,6 +297,17 @@
                 chartObj.$dom().siblings('#highcharts_tooltip').hide();
             },
 
+            resizeHandle: function()
+            {
+                var chartObj = this;
+                if (!chartObj.chart) { return; }
+                // This is a case-specific fix for ctrpilot.
+                if ($.browser.msie && ($.browser.majorVersion < 8)
+                    && chartObj._chartType == 'column'
+                    && chartObj.$dom().parents('.tickerLayoutChildren').length > 0)
+                { chartObj.reload(); }
+            },
+
             getRequiredJavascripts: function()
             {
                 return blist.assets.highcharts;

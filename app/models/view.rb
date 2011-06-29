@@ -1,6 +1,6 @@
 class View < Model
   cattr_accessor :licenses, :creative_commons, :merged_licenses,
-    :filter_type1s, :overridable_features
+    :filter_type1s
 
   def self.find(options = nil, get_all=false)
     if get_all || options.is_a?(String)
@@ -53,15 +53,15 @@ class View < Model
 
   def enabled_modules
     result = {}
-    self.overridable_features.each do |feature|
+    overridable_features.each do |feature|
       result[feature[:key]] = self.module_enabled?(feature[:key])
     end
     return result
   end
 
   def disabled_features
-    features = @@overridable_features.select do |flag|
-      CurrentDomain.module_enabled?(flag[:key].to_s.downcase.to_sym)
+    features = overridable_features.select do |flag|
+      CurrentDomain.module_enabled?(flag[:key].to_s.downcase.to_sym) && flag[:if] != false
     end
     unless self.disabledFeatureFlags.blank?
       self.disabledFeatureFlags.each do |flag|
@@ -70,6 +70,15 @@ class View < Model
       end
     end
     features
+  end
+
+  def overridable_features
+    of = [
+      { :key => 'allow_comments',
+        :name => 'Commenting' },
+    ]
+    of << { :key => 'cell_comments', :name => 'Cell Commenting' } if is_tabular?
+    return of
   end
 
   def column_by_id(column_id)
@@ -1076,13 +1085,6 @@ class View < Model
     'Table' => 'Dataset'
   }
 
-
-  @@overridable_features = [
-    { :key => 'allow_comments',
-      :name => 'Commenting' },
-    { :key => 'cell_comments',
-      :name => 'Cell-Level Commenting' }
-  ]
 
   private
 

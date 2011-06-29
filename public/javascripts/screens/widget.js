@@ -245,7 +245,7 @@ blist.widget.showPane = function(paneName, paneText, paneColor, paneData)
 
             // call any custom handlers
             if (_.isFunction(widgetNS.paneHandlers[paneName]))
-            { widgetNS.paneHandlers[paneName].apply(this, paneData); }
+            { widgetNS.paneHandlers[paneName].apply(this, paneData || []); }
         });
 
     $.analytics.trackEvent('widget (v2)', 'pane shown: ' + paneName,

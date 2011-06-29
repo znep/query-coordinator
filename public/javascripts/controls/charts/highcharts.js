@@ -379,7 +379,13 @@
                 { return num; }
 
                 if (num.match && num.match(/,/)) { num = num.replace(/[^0-9\.]/g, ''); }
-                return blist.util.toHumaneNumber(num, 2);
+
+                var decimalPlaces = 2;
+                if (!xAxis
+                    && $.subKeyDefined(chartObj.settings.view.displayFormat,
+                        'yAxis.formatter.decimalPlaces'))
+                { decimalPlaces = chartObj.settings.view.displayFormat.yAxis.formatter.decimalPlaces; }
+                return blist.util.toHumaneNumber(num, decimalPlaces);
             };
             var maxLen = 20;
             var v = abbreviateNumbers(this.value);
@@ -442,6 +448,12 @@
         // If we already have categories loaded, use it
         if (!_.isEmpty(chartObj._xCategories))
         { chartConfig.xAxis.categories = chartObj._xCategories; }
+
+        if (chartObj.settings.view.displayFormat.yAxis)
+        {
+            chartConfig.yAxis.min = chartObj.settings.view.displayFormat.yAxis.min;
+            chartConfig.yAxis.max = chartObj.settings.view.displayFormat.yAxis.max;
+        }
 
         if (isDateTime(chartObj))
         {

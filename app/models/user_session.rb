@@ -221,7 +221,8 @@ private
   # 'username' instead. I like login better, since login-by-email is something
   # we want to support and emails aren't usernames. :-P
   def credentials_for_post
-    creds = {'username' => login, 'password' => password}
+    creds = {'username' => login, 'password' => password,
+      'remoteAddress' => controller.request.remote_ip}
     if remember_me
       creds['remember_me'] = 'true'
     end
@@ -232,6 +233,8 @@ private
   def post_core_authentication
     post = Net::HTTP::Post.new(auth_uri.request_uri)
     post['X-Socrata-Host'] = CurrentDomain.cname
+    post['X-User-Agent'] = controller.request.env['HTTP_USER_AGENT']
+
     post.set_form_data credentials_for_post
     Net::HTTP.start(auth_uri.host, auth_uri.port) do |http|
       ## uncomment for debug -- http.read_timeout = 60 * 10;

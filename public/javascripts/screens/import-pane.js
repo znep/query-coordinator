@@ -41,11 +41,11 @@ var importTypes = {
     email: 'text',
     url: 'text',
     number: 'number',
-    money: 'number',
-    percent: 'number',
+    money: 'money',
+    percent: 'percent',
     calendar_date: 'date',
     date: 'date',
-    checkbox: 'checkbox'
+    checkbox: 'text'
 };
 var locationTypes = {
     address: 'text',

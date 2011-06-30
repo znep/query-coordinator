@@ -663,8 +663,8 @@
             updateRowsByViewport: function(viewport, wrapIDL)
             {
                 var mapObj = this;
-                if (!viewport) { viewport = mapObj.getViewport(); }
-                if ($.isBlank(viewport)) { return; }
+                if (!viewport || !viewport.xmin) { viewport = mapObj.getViewport(); }
+                if (!$.subKeyDefined(viewport, 'xmin')) { return; }
 
                 _.each(mapObj._dataViews, function(view)
                 {

@@ -464,20 +464,9 @@
                     return;
                 }
 
-                // Monkeypatch Javascript, whoooooo.
-                // http://code.google.com/p/extsrcjs/source/browse/trunk/extsrc.js
-                var document_write = document.write;
-                var document_writeln = document.writeln;
-                var buffer = '';
-                document.write   = function(t) { buffer += t; };
-                document.writeln = function(t) { buffer += t; buffer += '\n'; };
-                // This style ignores the buffer, which may lead to problems.
-
                 if (!$.isBlank(scripts))
                 {
                     $.loadLibraries(scripts, function() {
-                        document.write = document_write;
-                        document.writeln = document_writeln;
                         vizObj._dynamicLibrariesLoaded = true;
                         callback();
                     });

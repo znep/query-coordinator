@@ -631,20 +631,11 @@ $(function()
     $('.widgetContent_embed .embedForm').embedForm();
 
     // print
-    // TODO: maybe make this generic?
-    $('.widgetContent_print form input[type=image]')
-        .replaceWith(
-            $.tag({ tagName: 'a', href: '#submit', 'class': ['button', 'submit'],
-                    contents: [
-                        { tagName: 'span', 'class': 'left' },
-                        { tagName: 'span', 'class': 'icon' },
-                        'Print'
-                    ]})
-                .click(function(event)
-                {
-                    event.preventDefault();
-                    $(this).closest('form').submit();
-                }));
+    $('.widgetContent_print form .submit').click(function(event)
+    {
+        event.preventDefault();
+        $(this).closest('form').submit();
+    });
 
     $('.widgetContent_print .close').click(function(event)
     {

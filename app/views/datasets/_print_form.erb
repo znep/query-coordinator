@@ -90,3 +90,20 @@
       </div>
     </div>
   </div>
+
+  <div class="submitLine clearfix">
+    <ul class="submitActions">
+      <li>
+        <a href="#submit" class="button submit">
+          <span class="left"></span>
+          <span class="icon"></span>
+          Print
+        </a>
+      </li>
+      <li class="cancelButton">
+        <a href="<%= @accessible ? @view.alt_href : '#close_print' %>" class="jqmClose button close">
+          <span class="icon"></span>Cancel
+        </a>
+      </li>
+    </ul>
+  </div>

@@ -46,7 +46,7 @@
                         var xCol = chartObj._fixedColumns[0];
 
                         var colors = chartObj.settings.view.displayFormat.colors;
-                        var defaultColor = colors[Math.floor(Math.random() * 5)];
+                        var defaultColor = colors[row.id % 5];
 
                         return {
                             id: row.id,
@@ -89,7 +89,7 @@
                         name: 'Other',
                         data: {
                             $area: chartObj._remainder,
-                            $color: colors[Math.floor(Math.random() * 5)],
+                            $color: colors[chartObj.settings.view.totalRows % 5],
                             flyoutDetails: chartObj.renderFlyout(row,
                                 chartObj._valueColumns[0].column.tableColumnId,
                                 chartObj.settings.view)

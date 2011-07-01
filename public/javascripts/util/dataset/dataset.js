@@ -449,7 +449,7 @@ this.Dataset = ServerModel.extend({
             ($.isBlank(ds.totalRows) || start < ds.totalRows))
         {
             var r = ds._rows[start];
-            // If this is an expired pending orw, clean it out and mark
+            // If this is an expired pending row, clean it out and mark
             // it null so it gets reloaded
             if (!$.isBlank(r) && r.pending && now > r.expires)
             {
@@ -653,7 +653,7 @@ this.Dataset = ServerModel.extend({
         else
         { row = this.rowForID(rowId); }
         if ($.isBlank(row))
-        { throw 'Row ' + rowId + ' not found while setting value'; }
+        { throw 'Row ' + rowId + ' not found while setting value ' + value; }
 
         row[col.lookup] = value;
 
@@ -763,6 +763,16 @@ this.Dataset = ServerModel.extend({
         _.each(!$.isBlank(parCol) ? parCol.realChildColumns : ds.realColumns,
             function(c) { c.invalidateData(); });
         ds.sendBatch({success: successCallback, error: errorCallback});
+    },
+
+    markRow: function(markType, value, rowId)
+    {
+        var row = this.rowForID(rowId);
+        if ($.isBlank(row) || (row.sessionMeta || {})[markType] == value) { return; }
+
+        row.sessionMeta[markType] = value;
+
+        this.trigger('row_change', [[row]]);
     },
 
     getAggregates: function(callback, customAggs)
@@ -1811,7 +1821,7 @@ this.Dataset = ServerModel.extend({
         var ds = this;
         var translateRow = function(r, parCol)
         {
-            var adjVals = {invalid: {}, changed: {}, error: {}};
+            var adjVals = {invalid: {}, changed: {}, error: {}, sessionMeta: {}};
             _.each(r, function(val, id)
             {
                 var newVal;

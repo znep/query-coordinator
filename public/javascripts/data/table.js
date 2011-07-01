@@ -1417,6 +1417,15 @@
             updateColumnSelection();
         };
 
+        var makeHotRow = function(rowID)
+        {
+            $/*inside.find*/('#' + id + '-r' + rowID)
+                .addClass('blist-hot-row');
+            $/*$locked.find*/('#' + id + '-l' + rowID)
+                .addClass('blist-hot-row');
+            model.view.markRow('highlight', true, rowID);
+        };
+
         var unHotRow = function(rowID)
         {
             $/*inside.find*/('#' + id + '-r' + rowID)
@@ -1424,6 +1433,7 @@
             $/*$locked.find*/('#' + id + '-l' + rowID)
                 .removeClass('blist-hot-row');
             if (rowID == hotRowID) { hotRowID = null; }
+            model.view.markRow('highlight', false, rowID);
         };
 
         var onMouseMove = function(event)
@@ -1504,10 +1514,7 @@
                 }
                 if (newHotID)
                 {
-                    $/*inside.find*/('#' + id + '-r' + newHotID)
-                        .addClass('blist-hot-row');
-                    $/*$locked.find*/('#' + id + '-l' + newHotID)
-                        .addClass('blist-hot-row');
+                    makeHotRow(newHotID);
                 }
                 hotRowID = newHotID;
             }
@@ -3026,6 +3033,7 @@
                 '(row.type ? " blist-tr-" + row.type : ""), ' +
                 '(row.expanded ? " blist-tr-open" : ""), ' +
                 '(row.pending ? " blist-tr-pending" : ""), ' +
+                '(row.sessionMeta && row.sessionMeta.highlight ? " blist-tr-highlight" : ""), ' +
                 '(row.groupLast ? " last" : ""), ' +
                 '"\' style=\'top:", ' +
                 '(index * ' + rowOffset + '), "px", ' +
@@ -3876,6 +3884,7 @@
 
             var cleanRow = function(rowID, rowSet)
             {
+                if (!rowSet[rowID]) { return; }
                 row = rowSet[rowID].row;
                 if (row !== undefined) { row.parentNode.removeChild(row); }
                 row = rowSet[rowID].locked;
@@ -3889,6 +3898,11 @@
             {
                 if (rowIndices[rowID] < start || rowIndices[rowID] >= stop)
                 { cleanRow(rowID, renderedRows); }
+            }
+            for (var rowID in dirtyRows)
+            {
+                if (rowIndices[rowID] < start || rowIndices[rowID] >= stop)
+                { cleanRow(rowID, dirtyRows); }
             }
 
             // Now check for dirty rows that don't exist anymore
@@ -3995,6 +4009,7 @@
                 end("renderRows.cellNav");
 
                 begin("renderRows.selection");
+                if (!$.isBlank(hotRowID)) { makeHotRow(hotRowID); }
                 // Row selection
                 updateRowSelection();
                 end("renderRows.selection");

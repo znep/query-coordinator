@@ -170,7 +170,7 @@ $wizard.wizard({
 
                 // uploader
                 var uploadEndpoint = isBlist ? '/imports2.txt?method=scan'
-                                             : '/imports.txt?type=blobby';
+                                             : '/imports2.txt?type=blob';
 
                 var $uploadThrobber = $pane.find('.uploadThrobber');
                 var uploader = blist.fileUploader({

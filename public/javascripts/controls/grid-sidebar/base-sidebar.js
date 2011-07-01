@@ -1879,13 +1879,16 @@
                         {context: $.extend({}, args.context,
                             {noTag: true, inputOnly: true}),
                         item: opt, items: args.item.options, pos: i});
+                    var subLineDisabled = _.all(subLine, function(subline)
+                    { return subline.contents.disabled; });
 
                     var radioItem = $.extend({}, itemAttrs,
                         {id: id, tagName: 'input', type: 'radio',
+                        disabled: subLineDisabled,
                         'class': {value: 'wizExclude',
                             onlyIf: opt.type != 'static'},
-                            'data-defaultValue': $.htmlEscape(
-                                JSON.stringify(defValue == opt.name))});
+                        'data-defaultValue': $.htmlEscape(
+                            JSON.stringify(defValue == opt.name))});
 
                     if ((curValue || defValue) == opt.name)
                     { defChecked = radioItem; }

@@ -12,7 +12,6 @@
     {
         defaults:
         {
-            nodeColor: '#042656'
         },
 
         prototype:
@@ -45,6 +44,10 @@
                         if (_.isNaN(area)) { return null; }
                         chartObj._remainder -= area;
                         var xCol = chartObj._fixedColumns[0];
+
+                        var colors = chartObj.settings.view.displayFormat.colors;
+                        var defaultColor = colors[Math.floor(Math.random() * 5)];
+
                         return {
                             id: row.id,
                             name: xCol.renderType.renderer(row[xCol.id], xCol, true),
@@ -52,8 +55,7 @@
                                 $area: area,
                                 $color: (row.meta && row.meta.color) ||
                                     row.color ||
-                                    chartObj.settings.view.displayFormat.baseColor ||
-                                    chartObj.settings.nodeColor,
+                                    defaultColor,
                                 flyoutDetails: chartObj.renderFlyout(row,
                                     chartObj._valueColumns[0].column.tableColumnId,
                                     chartObj.settings.view)
@@ -81,13 +83,13 @@
                     var row = { id: 'Other', changed: {}, error: {}, invalid: {} };
                     row[chartObj._fixedColumns[0].id] = 'Other';
                     row[chartObj._valueColumns[0].column.id] = chartObj._remainder;
+                    var colors = chartObj.settings.view.displayFormat.colors;
                     chartObj._jitData.children.push( {
                         id: -1,
                         name: 'Other',
                         data: {
                             $area: chartObj._remainder,
-                            $color: chartObj.settings.view.displayFormat.baseColor ||
-                                chartObj.settings.nodeColor,
+                            $color: colors[Math.floor(Math.random() * 5)],
                             flyoutDetails: chartObj.renderFlyout(row,
                                 chartObj._valueColumns[0].column.tableColumnId,
                                 chartObj.settings.view)

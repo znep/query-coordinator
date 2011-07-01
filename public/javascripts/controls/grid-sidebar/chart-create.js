@@ -80,6 +80,10 @@
                 '<a href="#Clear Conditional Formatting" ' +
                 'id="clearConditionalFormatting">here</a> to clear any current ' +
                 'conditional formatting rules.' };
+    var treemapRandomColorWarning = {type: 'note',
+        value: 'These colors are applied to the treemap randomly only for ' +
+               'creating visual distinctions. They do not have a specific meaning ' +
+               'by themselves.' };
 
     var flyoutControls = {type: 'repeater',
         name: 'displayFormat.descriptionColumns',
@@ -415,8 +419,10 @@
             onlyIf: onlyIfForChart(Dataset.chart.types.treemap, false),
             fields: [
                 conditionalFormattingWarning,
-                {text: 'Color', name: 'displayFormat.baseColor',
-                    type: 'color', defaultValue: '#042656' }
+                {type: 'repeater', text: 'Colors',
+                    field: $.extend({}, colorOption, {name: 'displayFormat.colors.0'}),
+                    minimum: 5, maximum: 5, lineClass: 'colorArray'},
+                treemapRandomColorWarning
             ] },
             basicAdv(Dataset.chart.types.treemap, [flyoutControls])
 

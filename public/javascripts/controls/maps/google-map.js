@@ -63,10 +63,11 @@
                             // On initial zoom, save off viewport
                             if ($.isBlank(mapObj._currentViewport))
                             { mapObj._currentViewport = mapObj.getViewport(); }
-                            return;
+                            if (!mapObj._needsViewportUpdate) { return; }
                         }
-                        if (!mapObj._boundsChanging) { return; }
+                        if (!mapObj._boundsChanging && !mapObj._needsViewportUpdate) { return; }
                         delete mapObj._boundsChanging;
+                        delete mapObj._needsViewportUpdate;
 
                         mapObj.updateDatasetViewport();
                         mapObj.updateRowsByViewport(null, true);
@@ -107,6 +108,13 @@
                 }
             },
 
+            handleRowsLoaded: function(rows, view)
+            {
+                standardMarkerIcon = new StyledIcon(StyledIconTypes.MARKER, {color: 'ff776b'});
+                highlightMarkerIcon = new StyledIcon(StyledIconTypes.MARKER, {color: 'aabbff'});
+                this.renderData(rows, view);
+            },
+
             renderGeometry: function(geoType, geometry, dupKey, details)
             {
                 var mapObj = this;
@@ -124,11 +132,14 @@
                         new esri.geometry.Polyline(geometry).getExtent());
                 }
 
+                var hasHighlight = _.any(details.rows, function(r)
+                    { return r.sessionMeta && r.sessionMeta.highlight; });
                 switch(geoType)
                 {
                     case 'point':
-                        geometry = new google.maps.Marker(
-                            {position: new google.maps.LatLng(geometry.latitude,
+                        geometry = new StyledMarker(
+                            {styleIcon: hasHighlight ? highlightMarkerIcon : standardMarkerIcon,
+                            position: new google.maps.LatLng(geometry.latitude,
                                                               geometry.longitude) });
                         break;
                     case 'polygon':
@@ -191,6 +202,12 @@
                     mapObj.infoWindow.setPosition(evt.latLng || geometry.position);
                     mapObj.infoWindow.open(mapObj.map);
                 });
+
+                google.maps.event.addListener(geometry, 'mouseover', function()
+                { mapObj.highlightRows(details.rows); });
+
+                google.maps.event.addListener(geometry, 'mouseout', function()
+                { mapObj.unhighlightRows(details.rows); });
 
                 if (details.redirect_to)
                 {
@@ -360,8 +377,7 @@
                 if (mapObj.settings.view.displayFormat.viewport)
                 {
                     mapObj.setViewport(mapObj.settings.view.displayFormat.viewport);
-                    if (_.isEmpty(mapObj.settings.view.query))
-                    { mapObj.updateRowsByViewport(null, true); }
+                    _.defer(function() { mapObj.updateRowsByViewport(null, true); });
                 }
                 else if (mapObj._boundsCounts > 1 ||
                     mapObj.settings.view.displayFormat.heatmap)
@@ -472,10 +488,14 @@
                 // Grab a reference to the current object (this) from a global
                 var mapObj = blist.util.googleCallbackMap;
                 add_markerwithlabel();
+                add_StyledMarker();
                 mapObj._librariesLoaded();
             }
         }
     }));
+
+    var standardMarkerIcon;
+    var highlightMarkerIcon;
 
 /*
     var SocrataMarker;

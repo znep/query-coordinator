@@ -242,13 +242,18 @@
                         _.defer(function() { vizObj.reload(); });
                     }
                 };
+                var handleRowChange = function(rows, fullReset)
+                {
+                    if (fullReset) { handleChange(true); }
+                    else { vizObj.handleRowsLoaded(rows, vizObj.settings.view); }
+                };
                 var handleQueryChange = function() { handleChange(true); };
 
                 if (!vizObj._boundViewEvents)
                 {
                     vizObj.settings.view
                         .bind('query_change', handleQueryChange)
-                        .bind('row_change', handleChange)
+                        .bind('row_change', handleRowChange)
                         .bind('displayformat_change', handleChange);
 
                     vizObj._boundViewEvents = true;
@@ -402,6 +407,28 @@
             {
                 // Implement me if you want to do something after all the rows
                 // are rendered
+            },
+
+            highlightRows: function(rows)
+            {
+                var vizObj = this;
+                rows = $.makeArray(rows);
+                for (var i = 0; i < rows.length; i++)
+                {
+                    if (!rows[i].sessionMeta || !rows[i].sessionMeta.highlight)
+                    { vizObj.settings.view.markRow('highlight', true, rows[i].id); }
+                }
+            },
+
+            unhighlightRows: function(rows)
+            {
+                var vizObj = this;
+                rows = $.makeArray(rows);
+                for (var i = 0; i < rows.length; i++)
+                {
+                    if (rows[i].sessionMeta && rows[i].sessionMeta.highlight)
+                    { vizObj.settings.view.markRow('highlight', false, rows[i].id); }
+                }
             },
 
             resizeHandle: function(event)

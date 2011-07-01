@@ -299,16 +299,28 @@
                     { mapObj._bounds = mapObj._bounds.union(g.geometry.getExtent()); }
                 }
 
-                if (details.redirect_to && geoType == 'polygon')
+                var dojoShape = g.getDojoShape();
+                if (!$.isBlank(dojoShape))
                 {
-                    $(g.getDojoShape().rawNode)
-                        .click(function(event)
-                            { window.open(details.redirect_to); })
-                        .hover(
-                            function(event) { mapObj.$dom()
-                                .find('div .container').css('cursor', 'pointer'); },
-                            function(event) { mapObj.$dom()
-                                .find('div .container').css('cursor', 'default'); });
+                    if (details.redirect_to && geoType == 'polygon')
+                    {
+                        $(dojoShape.rawNode)
+                            .click(function(event)
+                                { window.open(details.redirect_to); })
+                            .hover(
+                                function(event)
+                                { mapObj.$dom().find('div .container').css('cursor', 'pointer'); },
+                                function(event)
+                                { mapObj.$dom().find('div .container').css('cursor', 'default'); });
+                    }
+
+                    // hover() would've been cleaner, but it actually screws things up
+                    // when the point gets redrawn
+                    $(dojoShape.rawNode).
+                        mouseover(function()
+                        { mapObj.highlightRows(details.rows); }).
+                        mouseout(function()
+                        { mapObj.unhighlightRows(details.rows); });
                 }
 
                 return true;
@@ -668,6 +680,10 @@
                 if (!_.isUndefined(point[property]))
                 { customization[property] = point[property]; }
             });
+
+            var fr = _.first(point.rows);
+            if (fr.sessionMeta && fr.sessionMeta.highlight)
+            { customization.color = '#aabbff'; }
 
             if (!_.isEmpty(customization))
             {

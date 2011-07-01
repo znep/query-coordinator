@@ -25,8 +25,12 @@
 var StyledIconTypes = {};
 var StyledMarker, StyledIcon;
  
+// jeff.scherpelz@socrata.com
+// Wrap library in a function so that it can wait for the google namespace to be defined. We know
+// that it's ready when google-map.js#_setupLibraries is called.
+var add_StyledMarker = function(){
 (function() {
-  var bu_ = 'http://chart.apis.google.com/chart?chst=';
+  var bu_ = 'https://chart.googleapis.com/chart?chst=';
   var gm_ = google.maps;
   var gp_ = gm_.Point;
   var ge_ = gm_.event;
@@ -262,3 +266,4 @@ var StyledMarker, StyledIcon;
     }
   };
 })();
+};

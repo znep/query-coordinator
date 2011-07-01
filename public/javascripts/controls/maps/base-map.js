@@ -483,11 +483,12 @@
                 }
 
                 if (!viewConfig._llKeys) viewConfig._llKeys = {};
+                var rowKey;
                 if (isPoint)
                 {
-                    var rowKey = lat.toString();
-                    rowKey    += ',';
-                    rowKey    += longVal.toString();
+                    rowKey = lat.toString();
+                    rowKey += ',';
+                    rowKey += longVal.toString();
                 }
                 else if (row.feature)
                 { rowKey = row.feature.attributes[viewConfig._objectIdKey]; }
@@ -664,7 +665,11 @@
             {
                 var mapObj = this;
                 if (!viewport || !viewport.xmin) { viewport = mapObj.getViewport(); }
-                if (!$.subKeyDefined(viewport, 'xmin')) { return; }
+                if (!$.subKeyDefined(viewport, 'xmin'))
+                {
+                    mapObj._needsViewportUpdate = true;
+                    return;
+                }
 
                 _.each(mapObj._dataViews, function(view)
                 {

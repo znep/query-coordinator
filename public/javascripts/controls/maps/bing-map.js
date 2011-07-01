@@ -97,6 +97,7 @@
                     { return new Microsoft.Maps.Location(point[0], point[1]); };
 
                 var shapeType;
+                var shapes;
                 switch(geoType)
                 {
                     case 'point':
@@ -120,8 +121,7 @@
                         break;
                 }
 
-                var shapes = shapes || _.map(geometry, function(g)
-                    { return new shapeType(g); });
+                shapes = shapes || _.map(geometry, function(g) { return new shapeType(g); });
 
                 if (mapObj._markers[dupKey])
                 {
@@ -173,6 +173,12 @@
 
                             buildInfoWindow(mapObj, event);
                         });
+
+                    Microsoft.Maps.Events.addHandler(shape, 'mouseover', function()
+                    { mapObj.highlightRows(details.rows); });
+
+                    Microsoft.Maps.Events.addHandler(shape, 'mouseout', function()
+                    { mapObj.unhighlightRows(details.rows); });
                 });
 
                 return true;

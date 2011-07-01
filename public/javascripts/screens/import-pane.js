@@ -430,7 +430,7 @@ var validateAll = function()
                     (1 - (column.types[importType] / column.processed))) / 10.0;
                 addValidationError(importColumn, 'warning',
                     'set to import as <strong>' + typesToText(importColumn.dataType) + '</strong>, but ' +
-                    'our analysis shows that <strong>' + column.suggestion + '</strong> is a better fit. ' +
+                    'our analysis shows that <strong>' + $.capitalize(column.suggestion) + '</strong> is a better fit. ' +
                     'Should you choose to import as ' + typesToText(importColumn.dataType) + ', roughly ' +
                     '<strong>' + invalidPercentage + '%</strong> of your data will import incorrectly.');
             }
@@ -438,8 +438,8 @@ var validateAll = function()
             {
                 addValidationError(importColumn, 'warning',
                     'set to import as <strong>' + typesToText(importColumn.dataType) + '</strong>, but ' +
-                    'our analysis shows that <strong>' + column.suggestion + '</strong> might be a better fit. ' +
-                    'Unless the column&rsquo;s data is formatted correctly as ' +
+                    'our analysis shows that <strong>' + $.capitalize(column.suggestion) + '</strong>' +
+                    ' might be a better fit. Unless the column&rsquo;s data is formatted correctly as ' +
                     typesToText(importColumn.dataType) + ', data may import incorrectly.');
             }
         }
@@ -1118,6 +1118,7 @@ importNS.importWarningsPaneConfig = {
 
         state.hadWarnings = true; // so that the metadata pane knows to go back by 2
     },
+    onNext: 'metadata',
     onPrev: function($pane, state)
     {
         state.submittedView.remove();

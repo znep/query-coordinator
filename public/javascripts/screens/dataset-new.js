@@ -242,6 +242,7 @@ $wizard.wizard({
 
         'importColumns': blist.importer.importColumnsPaneConfig,
         'importing':     blist.importer.importingPaneConfig,
+        'importWarnings':     blist.importer.importWarningsPaneConfig,
 
 
 
@@ -350,10 +351,15 @@ $wizard.wizard({
             },
             onPrev: function($pane, state)
             {
-                if (!_.isUndefined(state.submittedView))
+                if (state.hadWarnings)
+                {
+                    return; // use default behavior; last pane is real
+                }
+                else
+                {
                     state.submittedView.remove();
-
-                return _.isUndefined(state.importer) ? 1 : 2; // go back two if we've imported.
+                    return 2; // go back two since we've imported.
+                }
             }
         },
 

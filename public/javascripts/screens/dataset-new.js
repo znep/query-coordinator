@@ -180,10 +180,10 @@ $wizard.wizard({
                     onSubmit: function(id, fileName)
                     {
                         var ext = (fileName.indexOf('.') >= 0) ? fileName.replace(/.*\./, '') : '';
-                        if (!((state.type == 'blobby') || (ext && /^(tsv|csv|xml|xls|xlsx)$/i.test(ext))))
+                        if (!((state.type == 'blobby') || (ext && /^(tsv|csv|xls|xlsx)$/i.test(ext))))
                         {
                             $pane.find('.uploadFileName')
-                                .val('Please choose a CSV, TSV, XML, XLS, or XLSX file.')
+                                .val('Please choose a CSV, TSV, XLS, or XLSX file.')
                                 .addClass('error');
                             return false;
                         }

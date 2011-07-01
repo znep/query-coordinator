@@ -50,6 +50,8 @@
                 // Cache data
                 chartObj._seriesCache = [];
 
+                chartObj._rowIndices = {};
+
                 // Grab all remaining cols; pick out numeric columns for data,
                 // and associate all following non-nuneric columns with that line
                 chartObj._yColumns = [];
@@ -127,18 +129,34 @@
                     return true;
                 }
 
+                // See if there is an existing index
+                var ri = chartObj._rowIndices[row.id];
+                var hasRI = true;
+                if (!$.isBlank(chartObj._xCategories))
+                {
+                    if ($.isBlank(ri))
+                    {
+                        hasRI = false;
+                        ri = {x: chartObj._xCategories.length};
+                    }
+                    ri = ri.x;
+                }
+                else if (!isDateTime(chartObj))
+                { ri = row.position; }
+
                 // Get useable value for x-axis
-                var basePt = xPoint(chartObj, row);
+                var basePt = xPoint(chartObj, row, ri);
                 // Null dates can't really be rendered in a timeline; not sure
                 // if that holds for other chart types, though
-                if (isDateTime(chartObj) && _.isNull(basePt.x)) { return true; }
+                if (isDateTime(chartObj) && $.isBlank(basePt.x)) { return true; }
 
                 if (!_.isUndefined(chartObj._xCategories))
                 {
                     var xCat = basePt.x;
                     xCat = row[chartObj._xColumn.lookup];
                     xCat = renderXValue(xCat, chartObj._xColumn);
-                    chartObj._xCategories.push(xCat);
+                    if (hasRI) { chartObj._xCategories[ri] = xCat; }
+                    else { chartObj._xCategories.splice(ri, 0, xCat); }
                 }
 
                 var hasPoints = false;
@@ -174,14 +192,14 @@
                             { addPoint(chartObj, n, i); });
                         chartObj._nullCache = undefined;
                     }
-                    addPoint(chartObj, point, i, !sliceTooSmall);
+                    if (!sliceTooSmall) { addPoint(chartObj, point, i); }
 
                     hasPoints = true;
                 });
 
                 // We failed to have any points; remove the x-category
                 if (!hasPoints && !_.isUndefined(chartObj._xCategories))
-                { chartObj._xCategories.pop(); }
+                { chartObj._xCategories.splice(ri, 1); }
 
                 return true;
             },
@@ -196,23 +214,14 @@
                     (Dataset.chart.types[chartObj._chartType].renderOther ||
                     chartObj.settings.view.displayFormat.renderOther))
                 {
-                    if (!$.isBlank(chartObj._otherIndex))
-                    {
-                        chartObj._xCategories.splice(chartObj._otherIndex, 1);
-                        for (var i = 0; i < chartObj._seriesRemainders.length; i++)
-                        {
-                            if (!$.isBlank(chartObj.chart))
-                            { _.detect(chartObj.chart.series[i].data,
-                                function(datum) { return datum.otherPt; }).remove(); }
-                            if (!$.isBlank(chartObj.secondChart))
-                            { _.detect(chartObj.secondChart.series[i].data,
-                                function(datum) { return datum.otherPt; }).remove(); }
-                            chartObj._seriesCache[i].data.splice(chartObj._otherIndex, 1);
-                        }
-                        delete chartObj._otherIndex;
-                    }
+                    // Create fake row for other value
+                    var otherRow = { id: 'Other', invalid: {}, error: {}, changed: {} };
+                    otherRow[chartObj._xColumn.lookup] = 'Other';
+                    var cf = _.detect(chartObj.settings.view.metadata.conditionalFormatting,
+                        function(cf) { return cf.condition === true; });
+                    if (cf) { otherRow.color = cf.color; }
 
-                    var otherPt = xPoint(chartObj, null);
+                    var otherPt = xPoint(chartObj, otherRow);
                     otherPt.otherPt = true;
                     if (!_.isUndefined(chartObj._xCategories))
                     { chartObj._xCategories.push('Other'); }
@@ -221,16 +230,9 @@
                         if (sr > 0)
                         {
                             var col = chartObj._yColumns[i].data;
-                            // NOTE: There is an assumption that _xCategories will be
-                            // appropriately populated by this point in the yPoint code.
-                            var point = yPoint(chartObj, null, sr, i, otherPt, col);
-                            if (!$.isBlank(chartObj.chart))
-                            { chartObj.chart.series[i].addPoint(point, false); }
-                            if (!$.isBlank(chartObj.secondChart))
-                            { chartObj.secondChart.series[i].addPoint(
-                                point, false); }
-                            chartObj._otherIndex = chartObj._seriesCache[i].data.length;
-                            chartObj._seriesCache[i].data.push(point);
+                            otherRow[col.id] = sr;
+                            var point = yPoint(chartObj, otherRow, sr, i, otherPt, col);
+                            addPoint(chartObj, point, i, true)
                         }
                     });
 
@@ -280,6 +282,7 @@
                 delete chartObj._pendingRows;
                 delete chartObj._seriesRemainders;
                 delete chartObj._seriesCache;
+                delete chartObj._rowIndices;
                 delete chartObj._curMin;
                 delete chartObj._curMax;
                 delete chartObj._loadedOnce;
@@ -520,15 +523,22 @@
 
         var tooltipTimeout;
         typeConfig.point = { events: {
-            mouseOver: function() {
+            mouseOver: function()
+            {
                 clearTimeout(tooltipTimeout);
-                customTooltip(chartObj, this);
+                var $tooltip = customTooltip(chartObj, this);
+                chartObj.highlightRows(this.row);
+                $tooltip.data('currentRow', this.row);
             },
-            mouseOut: function() {
+            mouseOut: function()
+            {
                 var $tooltip = $("#highcharts_tooltip");
                 tooltipTimeout = setTimeout(function(){
                     if (!$tooltip.data('mouseover'))
-                    {  $tooltip.hide(); }
+                    {
+                        chartObj.unhighlightRows($tooltip.data('currentRow'));
+                        $tooltip.hide();
+                    }
                 }, 500);
             }
         }};
@@ -594,20 +604,28 @@
         chartObj._snapshot_timer = setTimeout(chartObj.settings.view.takeSnapshot, 1000);
     };
 
-    var xPoint = function(chartObj, row, value)
+    var xPoint = function(chartObj, row, ind)
     {
-        var pt = {x: value};
+        var pt = {};
 
         if (isDateTime(chartObj))
         {
             if (!$.isBlank(row) && !row.invalid[chartObj._xColumn.lookup])
-            { pt.x = row[chartObj._xColumn.id]; }
+            { pt.x = row[chartObj._xColumn.lookup]; }
             else { pt.x = ''; }
             if (_.isNumber(pt.x)) { pt.x *= 1000; }
             else if (!$.isBlank(pt.x)) { pt.x = Date.parse(pt.x).valueOf(); }
         }
-        else if (!_.isUndefined(chartObj._xCategories))
-        { pt.x = chartObj._xCategories.length; }
+        else if (!$.isBlank(ind))
+        { pt.x = ind; }
+        if (_.include(['pie', 'donut'], chartObj._chartType))
+        { pt.name = row[chartObj._xColumn.lookup]; }
+
+        if (!$.isBlank(chartObj._xCategories))
+        {
+            chartObj._rowIndices[row.id] = chartObj._rowIndices[row.id] || {};
+            chartObj._rowIndices[row.id].x = ind;
+        }
 
         return pt;
     };
@@ -627,8 +645,7 @@
         if (!_.isUndefined(colSet.title) && !_.isNull(row))
         { point.name = $.htmlEscape(row[colSet.title.id]); }
 
-        else if (isPieTypeChart)
-        { point.name = _.last(chartObj._xCategories) || point.x; }
+        else if (isPieTypeChart) { point.name = point.name || point.x; }
 
         else { point.name = chartObj._seriesCache[seriesIndex].name; }
 
@@ -643,8 +660,7 @@
             !_.isUndefined(chartObj.settings.view.displayFormat.colors))
         {
             point.color = chartObj.settings.view.displayFormat
-                .colors[chartObj._seriesCache[seriesIndex].data.length %
-                chartObj.settings.view.displayFormat.colors.length];
+                .colors[point.x % chartObj.settings.view.displayFormat.colors.length];
         }
         else if (chartObj._chartType == 'bubble')
         {
@@ -683,18 +699,6 @@
             }
         }
 
-        // Construct a fake row for the Other point
-        if (!row)
-        {
-            var title = chartObj._fixedColumns[seriesIndex];
-            row = { id: 'Other', invalid: {}, error: {}, changed: {} };
-            row[title ? title.id : 'fake'] = 'Other';
-            row[chartObj._valueColumns[seriesIndex].column.id] = point.y;
-            var cf = _.detect(chartObj.settings.view.metadata.conditionalFormatting,
-                function(cf) { return cf.condition === true; });
-            if (cf) { row.color = cf.color; }
-        }
-
         if (row && row.color)
         {
             point.color = row.color;
@@ -704,6 +708,7 @@
                 { fillColor: '#'+$.rgbToHex($.brighten(point.fillColor)) }); }
         }
 
+        point.row = row;
         point.flyoutDetails = chartObj.renderFlyout(row,
             chartObj._valueColumns[seriesIndex].column.tableColumnId,
             chartObj.settings.view);
@@ -853,18 +858,38 @@
         });
     };
 
-    var addPoint = function(chartObj, point, seriesIndex, showPoint)
+    var addPoint = function(chartObj, point, seriesIndex, isOther)
     {
-        if (!_.isUndefined(chartObj.chart) && showPoint)
-        { chartObj.chart.series[seriesIndex].addPoint(point, false); }
-        if (!_.isUndefined(chartObj.secondChart) && showPoint)
-        { chartObj.secondChart.series[seriesIndex].addPoint(point, false); }
-
-        if (showPoint)
+        var ri = (chartObj._rowIndices[point.row.id] || {})[seriesIndex];
+        if (!_.isUndefined(chartObj.chart))
         {
-            chartObj._seriesCache[seriesIndex].data.push(point);
-            chartObj._seriesRemainders[seriesIndex] -= point.y;
+            if ($.isBlank(ri))
+            { chartObj.chart.series[seriesIndex].addPoint(point, false); }
+            else
+            { chartObj.chart.series[seriesIndex].data[ri].update(point, false); }
         }
+        if (!_.isUndefined(chartObj.secondChart))
+        {
+            if ($.isBlank(ri))
+            { chartObj.secondChart.series[seriesIndex].addPoint(point, false); }
+            else
+            { chartObj.secondChart.series[seriesIndex].data[ri].update(point, false); }
+        }
+
+        if ($.isBlank(ri))
+        {
+            chartObj._rowIndices[point.row.id] = chartObj._rowIndices[point.row.id] || {};
+            chartObj._rowIndices[point.row.id][seriesIndex] = chartObj._seriesCache[seriesIndex].data.length;
+            chartObj._seriesCache[seriesIndex].data.push(point);
+        }
+        else
+        {
+            if (!isOther)
+            { chartObj._seriesRemainders[seriesIndex] += chartObj._seriesCache[seriesIndex].data[ri].y; }
+            chartObj._seriesCache[seriesIndex].data[ri] = point;
+        }
+        if (!isOther)
+        { chartObj._seriesRemainders[seriesIndex] -= point.y; }
     };
 
     var customTooltip = function(chartObj, point)
@@ -919,10 +944,14 @@
         if (!$box.data('events-attached'))
         {
             $box.hover(
-                   function(event)
-                   { $(this).data('mouseover', true); event.stopPropagation(); },
-                   function()
-                   { $(this).data('mouseover', false).hide(); })
+                    function(event)
+                    { $(this).data('mouseover', true); event.stopPropagation(); },
+                    function()
+                    {
+                        var $tooltip = $(this);
+                        chartObj.unhighlightRows($tooltip.data('currentRow'));
+                        $tooltip.data('mouseover', false).hide();
+                    })
                 .data('events-attached', true);
         }
 
@@ -932,6 +961,8 @@
         var too_low = $container.height() - (position.top + $box.height());
         if (too_low < 0)
         { $box.css({ top: (position.top + too_low - 20) + 'px' }); }
+
+        return $box;
     };
 
     var setCategories = function(chartObj)

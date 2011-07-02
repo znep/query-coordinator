@@ -213,16 +213,15 @@
                 mapObj.populateLayers();
 
                 mapObj._markers = {};
-                mapObj._gradient = undefined;
-                mapObj._segmentColors = undefined;
+                delete mapObj._gradient;
+                delete mapObj._segmentColors;
 
                 _.each(mapObj._byView, function(viewConfig)
                 {
                     viewConfig._llKeys = {};
-                    viewConfig._locCol = undefined;
-                    viewConfig._latCol = undefined;
-                    viewConfig._longCol = undefined;
-                    viewConfig._quantityCol = undefined;
+                    _.each(['_locCol', '_latCol', '_longCol', '_iconCol', '_quantityCol',
+                            '_sizeValueCol', '_colorValueCol', '_redirectCol'], function(prop)
+                    { delete viewConfig[prop]; });
                 });
 
                 mapObj.initializeFlyouts((mapObj.settings.view.displayFormat

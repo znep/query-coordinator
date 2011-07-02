@@ -1479,7 +1479,7 @@
         }
 
         var options = [{tagName: 'option', value: '',
-            contents: 'Select a column'}];
+            contents: $.isBlank(curVal) ? 'Select a column' : 'Deselect column'}];
         _.each(cols, function(c)
         {
             var cId = isTableColumn ? c.tableColumnId : c.id;

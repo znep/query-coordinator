@@ -1,4 +1,4 @@
-# Be sure to restart your server when you modify this file
+require File.expand_path('../application', __FILE__)
 
 # Uncomment below to force Rails into production mode when
 # you don't control web/app server and can't set it the proper way
@@ -97,3 +97,5 @@ Mime::Type.register "application/pdf", :pdf
 Mime::Type.register "application/abc", :abc
 #Mime::Type.register "text/xml", :xml
 #Mime::Type.register "application/json", :json
+# Initialize the rails application
+Frontend::Application.initialize!

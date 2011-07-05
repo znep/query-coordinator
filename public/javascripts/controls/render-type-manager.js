@@ -36,7 +36,7 @@
             domId: 'mapRenderType',
             initFunction: 'socrataMap',
             javascripts: [
-                'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=2.1', false,
+                'https://serverapi.arcgisonline.com/jsapi/arcgis/?v=2.3', false,
                 { assets: 'shared-map' }
             ],
             stylesheets: ['https://serverapi.arcgisonline.com/jsapi/arcgis' +

@@ -274,3 +274,28 @@ $light_bg_color: #fafafa
 
 @mixin required-star
   background: url(/stylesheets/images/common/required.png) no-repeat left 3px
+
+@mixin dl-section-content
+  > dt
+    color: $color_chrome_sidebar_text
+    font-size: 1.1em
+    font-weight: bold
+    height: 2em
+    margin-bottom: -4em
+    overflow: hidden
+    padding: 1em
+    &:first-child + dd
+      border-top: none
+
+  > dd
+    border-top: 1px solid $color_chrome_box_border
+    color: $color_chrome_sidebar_text
+    font-size: 1.1em
+    overflow: hidden
+    padding: 1em
+      left: 10em
+    text-align: right
+    .ie7 &
+      // These would sit below dts in IE7, so you couldn't rate
+      position: relative
+      z-index: 1

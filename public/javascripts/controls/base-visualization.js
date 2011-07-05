@@ -73,6 +73,9 @@
                         currentObj._dataViews[index + 1] = dataset;
                         currentObj._byView[dataset.id] = { view: dataset };
                         datasetReady();
+                    }, function(request)
+                    {
+                        datasetReady();
                     });
                 });
                 // No composite member views

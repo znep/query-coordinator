@@ -657,7 +657,7 @@
 
             _.each(['size', 'color', 'shape', 'opacity'], function(property)
             {
-                if (point[property])
+                if (!_.isUndefined(point[property]))
                 { customization[property] = point[property]; }
             });
 
@@ -712,7 +712,8 @@
             $.extend(symbolConfig, mapObj.settings.view.displayFormat.plot);
             var symbolBackgroundColor =
                 new dojo.Color(symbolConfig.backgroundColor);
-            symbolBackgroundColor.a = customization.opacity || 0.8;
+            symbolBackgroundColor.a = _.isUndefined(customization.opacity) ? 0.8
+                                                                           : customization.opacity;
             var symbolBorderColor = new dojo.Color(symbolConfig.borderColor);
             var symbolBorder = new esri.symbol.SimpleLineSymbol(
                     symbolConfig.borderStyle,
@@ -778,6 +779,7 @@
         }
         else
         {
+            if (evt.graphic.attributes.rows.length < 1) { return; }
             mapObj.map.infoWindow.setContent(
                 mapObj.getFlyout(evt.graphic.attributes.rows,
                     evt.graphic.attributes.flyoutDetails,

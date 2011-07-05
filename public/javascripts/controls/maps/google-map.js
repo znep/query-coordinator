@@ -168,7 +168,7 @@
                     case 'polygon':
                         geometry.setOptions({
                             fillColor: details.color || "#FF00FF",
-                            fillOpacity: 1.0,
+                            fillOpacity: _.isUndefined(details.opacity) ? 1.0 : details.opacity,
                             strokeColor: "#000000",
                             strokeWeight: 1
                         });

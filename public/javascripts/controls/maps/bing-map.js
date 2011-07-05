@@ -144,7 +144,7 @@
 
                     if (geoType != 'point')
                     {
-                        if (details.color)
+                        if (details.color || !_.isUndefined(details.opacity))
                         {
                             var key;
                             switch(geoType)
@@ -153,7 +153,9 @@
                                 case 'polyline': key = 'strokeColor'; break;
                             }
                             var options = {};
-                            options[key] = Microsoft.Maps.Color.fromHex(details.color);
+                            options[key] = Microsoft.Maps.Color.fromHex(details.color || '#FFFFFF');
+                            options[key].a = _.isUndefined(details.opacity) ? 1.0 : details.opacity;
+                            options[key].a *= 255;
                             shape.setOptions(options);
                         }
                         shape.setOptions({ 'strokeThickness': 1 });

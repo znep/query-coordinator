@@ -340,7 +340,12 @@
         {
             if (!feature.attributes.NAME)
             {feature.attributes.NAME = feature.attributes[mapObj._featureDisplayName];}
-            if (!feature.attributes.quantity) { return; }
+            if (!feature.attributes.quantity)
+            {
+                mapObj.renderGeometry('polygon', feature.geometry, feature.attributes.NAME,
+                    { rows: [], opacity: 0 });
+                return;
+            }
 
             var segmentIndex;
             for (segmentIndex = 0; segmentIndex < mapObj._numSegments; segmentIndex++)

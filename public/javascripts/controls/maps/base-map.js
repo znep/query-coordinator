@@ -619,6 +619,7 @@
             clustersRendered: function()
             {
                 this.adjustBounds();
+                this.renderHeat();
             },
 
             rowsRendered: function()

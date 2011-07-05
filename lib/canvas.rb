@@ -222,19 +222,18 @@ module Canvas
   class FacetList < CanvasWidget
     attr_reader :facet_values
 
-    def can_render?
-      return Environment.context == :facet_listing
-    end
-
     def prepare!
       config = CurrentDomain.configuration('metadata')
       @facet_values = [] and return if config.properties.fieldsets.nil?
 
-      fieldset = config.properties.fieldsets.find{ |fieldset|
-                   fieldset.name == Environment.page_config.metadata_fieldset }
+      target_fieldset = self.properties.metadata_fieldset || Environment.page_config.metadata_fieldset
+
+      fieldset = config.properties.fieldsets.find{ |fieldset| fieldset.name == target_fieldset }
       @facet_values = [] and return if fieldset.nil?
 
-      field = fieldset.fields.find{ |field| field.name == Environment.page_config.metadata_field }
+      target_field = self.properties.metadata_field || Environment.page_config.metadata_field
+
+      field = fieldset.fields.find{ |field| field.name == target_field }
       @facet_values = [] and return if field.nil? || field.options.nil?
 
       @facet_values = field.options[0..self.properties.maximum]
@@ -244,7 +243,10 @@ module Canvas
       style: {
         orientation: 'horizontal'
       },
-      maximum: 100
+      maximum: 100,
+      metadata_fieldset: nil,
+      metadata_field: nil,
+      target_facet: nil
     }
     self.style_definition = [
       { data: 'style.orientation', selector: 'li', css: 'display', map: { horizontal: 'inline-block', vertical: 'block' } }

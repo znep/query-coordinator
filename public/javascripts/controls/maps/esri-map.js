@@ -605,7 +605,7 @@
             resizeHandle: function(event)
             {
                 // ESRI can't handle being resized to 0
-                if (!$.isBlank(this.map) && this.$dom().height() > 0)
+                if (!$.isBlank(this.map) && this.$dom().height() > 0 && this.map.extent)
                 { this.map.resize(); }
             },
 

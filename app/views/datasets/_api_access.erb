@@ -16,7 +16,7 @@
     <pre><%= "#{CurrentDomain.domain.protocol}://#{CurrentDomain.cname}#{CurrentDomain.domain.port}/api/views/#{@view.id}/rows.json" %></pre>
   </div>
 
-  <%- if @view.is_tabular? -%>
+  <%- if @view.is_tabular? && !@view.visible_columns.empty? -%>
     <h3>Column IDs:</h3>
     <dl class="sectionContent">
       <%- @view.visible_columns.each do |column| -%>

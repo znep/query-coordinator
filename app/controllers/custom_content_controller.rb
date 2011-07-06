@@ -50,7 +50,7 @@ class CustomContentController < ApplicationController
     return render_404 unless @page_config
     prepare_config(@page_config)
 
-    @page_title = [ params[:facet_value], @page_config.title ]
+    @page_title = [ Canvas::Environment.facet_value, @page_config.title ]
     @stylesheet = "facet_page/#{params[:facet_name]}"
 
     render :action => 'show'

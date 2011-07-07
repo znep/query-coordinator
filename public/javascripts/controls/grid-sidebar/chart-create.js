@@ -93,6 +93,25 @@
         minimum: 1, addText: 'Add Flyout Details'
     };
 
+    var yAxisFormatting = {
+        title: 'Y-Axis Formatting', onlyIf: _.map(['treemap', 'pie', 'donut', ''],
+            function(type)
+            { return {field: 'displayFormat.chartType', value: type, negate: true}; }),
+        type: 'selectable', name: 'yAxisFormatting',
+        fields: [
+            {text: 'Axis Min.', type: 'radioGroup', defaultValue: '', name: 'yAxis.min',
+                options: [ { type: 'static', name: '', value: 'Auto' },
+                           { type: 'text', name: 'displayFormat.yAxis.min',
+                                prompt: 'Enter a number' }] },
+            {text: 'Axis Max.', type: 'radioGroup', defaultValue: '', name: 'yAxis.max',
+                options: [ { type: 'static', name: '', value: 'Auto' },
+                           { type: 'text', name: 'displayFormat.yAxis.max',
+                                prompt: 'Enter a number' }] },
+            {text: 'Precision', type: 'slider',
+                name: 'displayFormat.yAxis.formatter.decimalPlaces',
+                minimum: 0, maximum: 10, defaultValue: 2}
+        ]
+    };
 
 
     /*** Helpers ***/
@@ -424,8 +443,9 @@
                     minimum: 5, maximum: 5, lineClass: 'colorArray'},
                 treemapRandomColorWarning
             ] },
-            basicAdv(Dataset.chart.types.treemap, [flyoutControls])
+            basicAdv(Dataset.chart.types.treemap, [flyoutControls]),
 
+            yAxisFormatting
         ],
         finishBlock: {
             buttons: [$.gridSidebar.buttons.apply, $.gridSidebar.buttons.cancel],

@@ -451,8 +451,11 @@
 
         if (chartObj.settings.view.displayFormat.yAxis)
         {
-            chartConfig.yAxis.min = chartObj.settings.view.displayFormat.yAxis.min;
-            chartConfig.yAxis.max = chartObj.settings.view.displayFormat.yAxis.max;
+            var yAxis = chartObj.settings.view.displayFormat.yAxis;
+            if (_.isNumber(yAxis.min))
+            { chartConfig.yAxis.min = yAxis.min; }
+            if (_.isNumber(yAxis.max))
+            { chartConfig.yAxis.max = yAxis.max; }
         }
 
         if (isDateTime(chartObj))

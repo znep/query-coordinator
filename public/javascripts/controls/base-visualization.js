@@ -184,7 +184,7 @@
                 if (!isPrimaryView)
                 { $item.empty(); }
                 if (vizObj.hasFlyout())
-                { vizObj.richRenderer.renderRow($item, row); }
+                { vizObj.richRenderer.renderRow($item, row, true); }
 
                 $item.append($.tag({tagName: 'a',
                     href: view.url + '/' + row.id,

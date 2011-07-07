@@ -295,7 +295,19 @@ module Canvas
   end
 
   class Html < CanvasWidget
-    # nothing to do here. html is just html!
+    def prepare!
+      # people can specify custom texts per facet page; otherwise falls back to content key
+      if (Environment.context == :facet_page) && !self.properties.contentForFacet.empty?
+        content = self.properties.contentForFacet[Environment.facet_value]
+        self.properties.content = content unless content.blank?
+      end
+    end
+
+  protected
+    self.default_properties = {
+      content: '',
+      contentForFacet: {}
+    }
   end
 
   class Stories < CanvasWidget

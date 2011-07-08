@@ -881,24 +881,35 @@
         { point.flyoutDetails.find('.columnId' + chartObj._xColumn.id + ' span')
                              .text('Other'); }
 
-        var $point = $(point.graphic.element);
-        var radius = parseInt($point[0].getAttribute('r'));
-        var position = $point.offset();
-        if (radius)
-        {
-            position.top += radius;
-            position.left += radius;
-        }
+        var position;
         var $container = $(chartObj.currentDom);
-        var offset = $container.offset();
-        position.top -= offset.top;
-        position.left -= offset.left;
+        if (point.graphic)
+        {
+            var $point = $(point.graphic.element);
+            var radius = parseInt($point[0].getAttribute('r'));
+            position = $point.offset();
+            if (radius)
+            {
+                position.top += radius;
+                position.left += radius;
+            }
+            var offset = $container.offset();
+            position.top -= offset.top;
+            position.left -= offset.left;
 
-        var boxOffset = 10;
-        if (_.include(['line', 'bubble'], chartObj._chartType))
-        { boxOffset = 2; }
-        position.top += boxOffset;
-        position.left += boxOffset;
+            var boxOffset = 10;
+            if (_.include(['line', 'bubble'], chartObj._chartType))
+            { boxOffset = 2; }
+            position.top += boxOffset;
+            position.left += boxOffset;
+        }
+        else
+        {
+            position = {
+                top: chartObj.chart.plotHeight * 0.4,
+                left: point.clientX + chartObj.chart.plotLeft
+            };
+        }
 
         $box.empty()
             .append(point.flyoutDetails)

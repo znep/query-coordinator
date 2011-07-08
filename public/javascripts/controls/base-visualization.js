@@ -92,7 +92,7 @@
                     { this._$dom = $.tag({tagName: 'div', style: {height: '100%'},
                         'class': 'visualizationArea',
                         id: $d.closest('[id]').attr('id') + '_visualizationArea'}); }
-                    var existingVizAreas = $("[id="+this._$dom.attr('id')+"]").length;
+                    var existingVizAreas = $(".visualizationArea").length;
                     if (existingVizAreas > 0)
                     { this._$dom.attr('id', this._$dom.attr('id')+existingVizAreas); }
                     $d.append(this._$dom);

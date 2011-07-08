@@ -452,9 +452,9 @@
         if (chartObj.settings.view.displayFormat.yAxis)
         {
             var yAxis = chartObj.settings.view.displayFormat.yAxis;
-            if (_.isNumber(yAxis.min))
+            if (_.isNumber(parseFloat(yAxis.min)))
             { chartConfig.yAxis.min = yAxis.min; }
-            if (_.isNumber(yAxis.max))
+            if (_.isNumber(parseFloat(yAxis.max)))
             { chartConfig.yAxis.max = yAxis.max; }
         }
 

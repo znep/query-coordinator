@@ -52,7 +52,7 @@
 
       editor.getSession().setValue(
         <%- if (is_json && @property)-%>
-            <%= raw( "JSON.stringify(#{@property.to_json}, null, 4)") %>
+            JSON.stringify(<%= safe_json(@property) %>, null, 4)
         <%- else -%>
             $('#preText').val()
         <%- end -%>

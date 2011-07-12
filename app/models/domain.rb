@@ -40,6 +40,31 @@ class Domain < Model
     CoreServer::Base.connection.update_request(path, headers)
   end
 
+  def protocol
+    self.httpsEnforced ? 'https' : 'http'
+  end
+
+  def port
+    port = 80
+    if self.httpsEnforced
+      if Rails.env.development?
+        port = APP_CONFIG['ssl_port']
+      else
+        port = 443
+      end
+    else
+      if Rails.env.development?
+        port = APP_CONFIG['http_port']
+      end
+    end
+
+    if (port == 80 || port == 443)
+      url_port = ""
+    else
+      url_port = ":#{port}"
+    end
+    url_port
+  end
 
   def configurations(type)
     if @configs.nil?

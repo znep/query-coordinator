@@ -130,7 +130,11 @@
       h2
         @include clip-text
         font-size: 1.7em
-        margin-right: 15em
+        margin:
+          right: 4.5em
+          top: 0
+    &.hasSort .titleContainer h2
+      margin-right: 15em
 
     .topControls
       position: absolute
@@ -153,6 +157,12 @@
         display: inline
         .uniform
           display: inline
+      .sortLabel
+        display: block
+        left: -9999px
+        overflow: hidden
+        position: absolute
+        width: 0
       .sortType
         width: 11em
       .sortPeriod

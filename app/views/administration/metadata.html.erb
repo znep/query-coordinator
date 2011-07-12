@@ -11,11 +11,13 @@
 <%= render :partial => 'left_nav' %>
 
 <div class="contentBox withLeftNavigation metadataScreen">
-   <div class="adminHeader metadata">
+   <div class="adminHeader floating metadata">
     <span class="icon"></span>
     <h1>Manage Dataset Metadata</h1>
   </div>
+</div>
 
+<div class="contentBox withLeftNavigation metadataScreen">
   <%= display_standard_flashes %>
 
   <div class="customFields">
@@ -122,7 +124,9 @@
       </form>
     </div>
   </div>
+</div>
 
+<div class="contentBox withLeftNavigation metadataScreen">
   <div class="categories">
     <h2>Define Dataset Categories</h2>
 

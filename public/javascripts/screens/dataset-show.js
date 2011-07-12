@@ -2,7 +2,7 @@ var datasetPageNS = blist.namespace.fetch('blist.datasetPage');
 
 blist.datasetPage.adjustSize = function()
 {
-    $('.outerContainer').fullScreen().adjustSize();
+    $(window).resize();
 };
 
 blist.datasetPage.clearTempView = function()

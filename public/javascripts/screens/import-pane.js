@@ -41,11 +41,11 @@ var importTypes = {
     email: 'text',
     url: 'text',
     number: 'number',
-    money: 'number',
-    percent: 'number',
+    money: 'money',
+    percent: 'percent',
     calendar_date: 'date',
     date: 'date',
-    checkbox: 'checkbox'
+    checkbox: 'text'
 };
 var locationTypes = {
     address: 'text',
@@ -430,7 +430,7 @@ var validateAll = function()
                     (1 - (column.types[importType] / column.processed))) / 10.0;
                 addValidationError(importColumn, 'warning',
                     'set to import as <strong>' + typesToText(importColumn.dataType) + '</strong>, but ' +
-                    'our analysis shows that <strong>' + column.suggestion + '</strong> is a better fit. ' +
+                    'our analysis shows that <strong>' + $.capitalize(column.suggestion) + '</strong> is a better fit. ' +
                     'Should you choose to import as ' + typesToText(importColumn.dataType) + ', roughly ' +
                     '<strong>' + invalidPercentage + '%</strong> of your data will import incorrectly.');
             }
@@ -438,8 +438,8 @@ var validateAll = function()
             {
                 addValidationError(importColumn, 'warning',
                     'set to import as <strong>' + typesToText(importColumn.dataType) + '</strong>, but ' +
-                    'our analysis shows that <strong>' + column.suggestion + '</strong> might be a better fit. ' +
-                    'Unless the column&rsquo;s data is formatted correctly as ' +
+                    'our analysis shows that <strong>' + $.capitalize(column.suggestion) + '</strong>' +
+                    ' might be a better fit. Unless the column&rsquo;s data is formatted correctly as ' +
                     typesToText(importColumn.dataType) + ', data may import incorrectly.');
             }
         }
@@ -1075,7 +1075,8 @@ importNS.importingPaneConfig = {
             success: function(response)
             {
                 state.submittedView = new Dataset(response);
-                command.next('metadata');
+                command.next($.subKeyDefined(state.submittedView, 'metadata.warnings') ?
+                    'importWarnings' : 'metadata');
             },
             error: function(request)
             {
@@ -1095,5 +1096,34 @@ importNS.importingPaneConfig = {
         });
     }
 };
+
+importNS.importWarningsPaneConfig = {
+    onActivate: function($pane, paneConfig, state, command)
+    {
+        // pull off warnings and update the dataset to remove them
+        var warnings = state.submittedView.metadata.warnings;
+        var cleanedMetadata = $.extend({}, state.submittedView.metadata);
+        delete cleanedMetadata.warnings;
+        state.submittedView.update({ metadata: cleanedMetadata });
+        // don't worry about saving; that will happen when the user hits next on the metadata
+
+        var $importWarningsList = $pane.find('.importWarningsList');
+        _.each(warnings, function(warning)
+        {
+            $importWarningsList.append($.tag({
+                tagName: 'li',
+                contents: $.htmlEscape(warning)
+            }));
+        });
+
+        state.hadWarnings = true; // so that the metadata pane knows to go back by 2
+    },
+    onNext: 'metadata',
+    onPrev: function($pane, state)
+    {
+        state.submittedView.remove();
+        return 2; // go back two since we've imported.
+    }
+}
 
 })(jQuery);

@@ -362,8 +362,7 @@
             configLocationESRI,
             { // General Details section.
                 title: 'Details', type: 'selectable', name: 'detailsSection',
-                onlyIf: [{field: 'displayFormat.plotStyle',
-                    value: 'heatmap', negate: true}, sectionOnlyIf],
+                onlyIf: [{field: 'displayFormat.plotStyle', value: 'point'}, sectionOnlyIf],
                 fields: [
                     {text: 'Title', name: 'displayFormat.plot.titleId',
                         type: 'columnSelect', isTableColumn: true,
@@ -412,7 +411,15 @@
                             noDefault: true, hidden: isEdit},
                         wizard: 'Choose a column that contains ' +
                             'an icon for each point'
-                    },
+                    }
+                ],
+                wizard: 'Do you have titles or descriptions for your points?'
+            },
+            { // Rastermap Details section.
+                title: 'Details', name: 'rmDetailsSection',
+                onlyIf: [{field: 'displayFormat.plotStyle', value: 'rastermap'},
+                    sectionOnlyIf],
+                fields: [
                     {text: 'Quantity', name: 'displayFormat.plot.quantityId',
                         onlyIf: {field: 'displayFormat.plotStyle', value: 'rastermap'},
                         type: 'columnSelect', isTableColumn: true,

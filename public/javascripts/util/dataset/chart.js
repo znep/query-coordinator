@@ -186,6 +186,12 @@ Dataset.modules['chart'] =
         }
 
         delete view.displayFormat.dataColumns;
+
+        if (view.displayFormat.chartType == 'treemap' && view.displayFormat.baseColor)
+        {
+            view.displayFormat.colors =
+                [view.displayFormat.baseColor, '#042656', '#19538b', '#6a9feb', '#bed6f7'];
+        }
     }
 };
 

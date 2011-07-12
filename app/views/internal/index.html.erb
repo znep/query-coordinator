@@ -12,5 +12,11 @@
     <p>
       Choose from an item on the left
     </p>
+
+    <h2>Go to:</h2>
+    <ul>
+      <li><%= link_to 'Current Organization', "/internal/orgs/#{CurrentDomain.organizationId}" %></li>
+      <li><%= link_to 'Current Domain', "/internal/orgs/#{CurrentDomain.organizationId}/domains/#{CurrentDomain.cname}" %></li>
+    </ul>
   </div>
 </div>

@@ -390,7 +390,8 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/page/:page_name', :controller => "custom_content", :action => "show_page"
   map.connect '/catalog/:page_name', :controller => "custom_content", :action => "show_page"
   map.connect '/facet/:facet_name', :controller => "custom_content", :action => "show_facet_listing"
-  map.connect '/facet/:facet_name/:facet_value', :controller => "custom_content", :action => "show_facet_page"
+  map.connect '/facet/:facet_name/:facet_value', :controller => "custom_content", :action => "show_facet_page",
+              :requirements => { :facet_value => /.*/ }
   map.connect '/styles/:page_type/:config_name.css', :controller => "custom_content", :action => "stylesheet",
     :conditions => { :page_type => /^page|facet_(listing|page)$/i }
 

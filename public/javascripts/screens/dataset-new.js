@@ -170,7 +170,7 @@ $wizard.wizard({
 
                 // uploader
                 var uploadEndpoint = isBlist ? '/imports2.txt?method=scan'
-                                             : '/imports.txt?type=blobby';
+                                             : '/imports2.txt?method=blob';
 
                 var $uploadThrobber = $pane.find('.uploadThrobber');
                 var uploader = blist.fileUploader({
@@ -180,10 +180,10 @@ $wizard.wizard({
                     onSubmit: function(id, fileName)
                     {
                         var ext = (fileName.indexOf('.') >= 0) ? fileName.replace(/.*\./, '') : '';
-                        if (!((state.type == 'blobby') || (ext && /^(tsv|csv|xml|xls|xlsx)$/i.test(ext))))
+                        if (!((state.type == 'blobby') || (ext && /^(tsv|csv|xls|xlsx)$/i.test(ext))))
                         {
                             $pane.find('.uploadFileName')
-                                .val('Please choose a CSV, TSV, XML, XLS, or XLSX file.')
+                                .val('Please choose a CSV, TSV, XLS, or XLSX file.')
                                 .addClass('error');
                             return false;
                         }
@@ -242,6 +242,7 @@ $wizard.wizard({
 
         'importColumns': blist.importer.importColumnsPaneConfig,
         'importing':     blist.importer.importingPaneConfig,
+        'importWarnings':     blist.importer.importWarningsPaneConfig,
 
 
 
@@ -350,10 +351,15 @@ $wizard.wizard({
             },
             onPrev: function($pane, state)
             {
-                if (!_.isUndefined(state.submittedView))
+                if (state.hadWarnings)
+                {
+                    return; // use default behavior; last pane is real
+                }
+                else
+                {
                     state.submittedView.remove();
-
-                return _.isUndefined(state.importer) ? 1 : 2; // go back two if we've imported.
+                    return 2; // go back two since we've imported.
+                }
             }
         },
 

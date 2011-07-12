@@ -59,19 +59,19 @@
             CurrentDomain.user_can?(current_user, :feature_items) ||
             CurrentDomain.user_can?(current_user, :edit_site_theme) -%>
       <li class="homemgmt">
-        <%= link_to raw('<span class="icon"></span>Home Page'),
+        <%= link_to_unless_current raw('<span class="icon"></span>Home Page'),
             {:action => 'home'} %>
       </li>
     <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, :edit_site_theme) -%>
       <li class="metadata">
-        <%= link_to raw('<span class="icon"></span>Metadata'),
+        <%= link_to_unless_current raw('<span class="icon"></span>Metadata'),
             {:action => 'metadata'} %>
       </li>
     <%- end -%>
     <%- if module_available?(:routing_approval) && current_user.can_approve? -%>
       <li class="routingApproval">
-        <%= link_to raw('<span class="icon"></span>Dataset Routing &amp; Approval'),
+        <%= link_to_unless_current raw('<span class="icon"></span>Dataset Routing &amp; Approval'),
             {:action => 'routing_approval'} %>
       </li>
     <%- end -%>

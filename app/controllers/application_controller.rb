@@ -151,10 +151,6 @@ private
     end
   end
 
-  def require_domain_member
-    return render_forbidden unless CurrentDomain.member?(current_user)
-  end
-
   def set_user
     if current_user_session
       @current_user = current_user_session.user

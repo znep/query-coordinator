@@ -80,6 +80,10 @@
                 '<a href="#Clear Conditional Formatting" ' +
                 'id="clearConditionalFormatting">here</a> to clear any current ' +
                 'conditional formatting rules.' };
+    var treemapRandomColorWarning = {type: 'note',
+        value: 'These colors are applied to the treemap randomly only for ' +
+               'creating visual distinctions. They do not have a specific meaning ' +
+               'by themselves.' };
 
     var flyoutControls = {type: 'repeater',
         name: 'displayFormat.descriptionColumns',
@@ -89,6 +93,25 @@
         minimum: 1, addText: 'Add Flyout Details'
     };
 
+    var yAxisFormatting = {
+        title: 'Y-Axis Formatting', onlyIf: _.map(['treemap', 'pie', 'donut', ''],
+            function(type)
+            { return {field: 'displayFormat.chartType', value: type, negate: true}; }),
+        type: 'selectable', name: 'yAxisFormatting',
+        fields: [
+            {text: 'Axis Min.', type: 'radioGroup', defaultValue: '', name: 'yAxis.min',
+                options: [ { type: 'static', name: '', value: 'Auto' },
+                           { type: 'text', name: 'displayFormat.yAxis.min',
+                                prompt: 'Enter a number' }] },
+            {text: 'Axis Max.', type: 'radioGroup', defaultValue: '', name: 'yAxis.max',
+                options: [ { type: 'static', name: '', value: 'Auto' },
+                           { type: 'text', name: 'displayFormat.yAxis.max',
+                                prompt: 'Enter a number' }] },
+            {text: 'Precision', type: 'slider',
+                name: 'displayFormat.yAxis.formatter.decimalPlaces',
+                minimum: 0, maximum: 10, defaultValue: 2}
+        ]
+    };
 
 
     /*** Helpers ***/
@@ -415,11 +438,14 @@
             onlyIf: onlyIfForChart(Dataset.chart.types.treemap, false),
             fields: [
                 conditionalFormattingWarning,
-                {text: 'Color', name: 'displayFormat.baseColor',
-                    type: 'color', defaultValue: '#042656' }
+                {type: 'repeater', text: 'Colors',
+                    field: $.extend({}, colorOption, {name: 'displayFormat.colors.0'}),
+                    minimum: 5, maximum: 5, lineClass: 'colorArray'},
+                treemapRandomColorWarning
             ] },
-            basicAdv(Dataset.chart.types.treemap, [flyoutControls])
+            basicAdv(Dataset.chart.types.treemap, [flyoutControls]),
 
+            yAxisFormatting
         ],
         finishBlock: {
             buttons: [$.gridSidebar.buttons.apply, $.gridSidebar.buttons.cancel],

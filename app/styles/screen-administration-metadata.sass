@@ -1,4 +1,6 @@
 .metadataScreen
+  h2
+    margin-top: 0
 
   .noData
     font-size: 1.4em
@@ -35,10 +37,9 @@
 
   .metadataFieldTable, .categoriesTable
     .actions
-      width: 42em
 
       input.button
-        font-size: 1em
+        font-size: 0.8em
         opacity: 0.3
         @include transition-duration(0.5s)
         @include transition-property(opacity)
@@ -78,9 +79,5 @@
       font-size: 1.2em
 
   .categories
-    border-top: 1px solid $color_chrome_box_border
-    margin-top: 2em
-
     h2
       margin-bottom: 1em
-

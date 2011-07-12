@@ -73,6 +73,9 @@
                         currentObj._dataViews[index + 1] = dataset;
                         currentObj._byView[dataset.id] = { view: dataset };
                         datasetReady();
+                    }, function(request)
+                    {
+                        datasetReady();
                     });
                 });
                 // No composite member views
@@ -89,6 +92,9 @@
                     { this._$dom = $.tag({tagName: 'div', style: {height: '100%'},
                         'class': 'visualizationArea',
                         id: $d.closest('[id]').attr('id') + '_visualizationArea'}); }
+                    var existingVizAreas = $(".visualizationArea").length;
+                    if (existingVizAreas > 0)
+                    { this._$dom.attr('id', this._$dom.attr('id')+existingVizAreas); }
                     $d.append(this._$dom);
                 }
                 return this._$dom;
@@ -181,7 +187,7 @@
                 if (!isPrimaryView)
                 { $item.empty(); }
                 if (vizObj.hasFlyout())
-                { vizObj.richRenderer.renderRow($item, row); }
+                { vizObj.richRenderer.renderRow($item, row, true); }
 
                 $item.append($.tag({tagName: 'a',
                     href: view.url + '/' + row.id,
@@ -464,20 +470,9 @@
                     return;
                 }
 
-                // Monkeypatch Javascript, whoooooo.
-                // http://code.google.com/p/extsrcjs/source/browse/trunk/extsrc.js
-                var document_write = document.write;
-                var document_writeln = document.writeln;
-                var buffer = '';
-                document.write   = function(t) { buffer += t; };
-                document.writeln = function(t) { buffer += t; buffer += '\n'; };
-                // This style ignores the buffer, which may lead to problems.
-
                 if (!$.isBlank(scripts))
                 {
                     $.loadLibraries(scripts, function() {
-                        document.write = document_write;
-                        document.writeln = document_writeln;
                         vizObj._dynamicLibrariesLoaded = true;
                         callback();
                     });

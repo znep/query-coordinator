@@ -361,7 +361,7 @@ class DatasetsController < ApplicationController
 
     type = CGI.unescape(params[:type])
     blob = view.blobs.detect {|b| b['type'] == type}
-    render_404 if blob.nil? || blob['href'].blank?
+    return render_404 if blob.nil? || blob['href'].blank?
 
     MetricQueue.instance.push_metric(params[:id], 'files-downloaded')
     redirect_to blob['href']

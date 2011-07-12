@@ -297,6 +297,17 @@
                 chartObj.$dom().siblings('#highcharts_tooltip').hide();
             },
 
+            resizeHandle: function()
+            {
+                var chartObj = this;
+                if (!chartObj.chart) { return; }
+                // This is a case-specific fix for ctrpilot.
+                if ($.browser.msie && ($.browser.majorVersion < 8)
+                    && chartObj._chartType == 'column'
+                    && chartObj.$dom().parents('.tickerLayoutChildren').length > 0)
+                { chartObj.reload(); }
+            },
+
             getRequiredJavascripts: function()
             {
                 return blist.assets.highcharts;
@@ -368,7 +379,13 @@
                 { return num; }
 
                 if (num.match && num.match(/,/)) { num = num.replace(/[^0-9\.]/g, ''); }
-                return blist.util.toHumaneNumber(num, 2);
+
+                var decimalPlaces = 2;
+                if (!xAxis
+                    && $.subKeyDefined(chartObj.settings.view.displayFormat,
+                        'yAxis.formatter.decimalPlaces'))
+                { decimalPlaces = chartObj.settings.view.displayFormat.yAxis.formatter.decimalPlaces; }
+                return blist.util.toHumaneNumber(num, decimalPlaces);
             };
             var maxLen = 20;
             var v = abbreviateNumbers(this.value);
@@ -431,6 +448,15 @@
         // If we already have categories loaded, use it
         if (!_.isEmpty(chartObj._xCategories))
         { chartConfig.xAxis.categories = chartObj._xCategories; }
+
+        if (chartObj.settings.view.displayFormat.yAxis)
+        {
+            var yAxis = chartObj.settings.view.displayFormat.yAxis;
+            if (_.isNumber(parseFloat(yAxis.min)))
+            { chartConfig.yAxis.min = yAxis.min; }
+            if (_.isNumber(parseFloat(yAxis.max)))
+            { chartConfig.yAxis.max = yAxis.max; }
+        }
 
         if (isDateTime(chartObj))
         {
@@ -855,24 +881,35 @@
         { point.flyoutDetails.find('.columnId' + chartObj._xColumn.id + ' span')
                              .text('Other'); }
 
-        var $point = $(point.graphic.element);
-        var radius = parseInt($point[0].getAttribute('r'));
-        var position = $point.offset();
-        if (radius)
-        {
-            position.top += radius;
-            position.left += radius;
-        }
+        var position;
         var $container = $(chartObj.currentDom);
-        var offset = $container.offset();
-        position.top -= offset.top;
-        position.left -= offset.left;
+        if (point.graphic)
+        {
+            var $point = $(point.graphic.element);
+            var radius = parseInt($point[0].getAttribute('r'));
+            position = $point.offset();
+            if (radius)
+            {
+                position.top += radius;
+                position.left += radius;
+            }
+            var offset = $container.offset();
+            position.top -= offset.top;
+            position.left -= offset.left;
 
-        var boxOffset = 10;
-        if (_.include(['line', 'bubble'], chartObj._chartType))
-        { boxOffset = 2; }
-        position.top += boxOffset;
-        position.left += boxOffset;
+            var boxOffset = 10;
+            if (_.include(['line', 'bubble'], chartObj._chartType))
+            { boxOffset = 2; }
+            position.top += boxOffset;
+            position.left += boxOffset;
+        }
+        else
+        {
+            position = {
+                top: chartObj.chart.plotHeight * 0.4,
+                left: point.clientX + chartObj.chart.plotLeft
+            };
+        }
 
         $box.empty()
             .append(point.flyoutDetails)

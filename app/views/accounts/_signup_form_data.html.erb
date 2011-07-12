@@ -28,9 +28,9 @@
   <%= f.password_field :password %>
 </div>
 
-<div class="line">
+<div class="line clearfix">
   <div class="labelLine">
-    <%= label_tag :passwordConfirm, 'Confirm Password', :class => 'required main' %>
+    <%= f.label :passwordConfirm, 'Confirm Password', :class => 'required main' %>
   </div>
   <%= f.password_field :passwordConfirm %>
 </div>

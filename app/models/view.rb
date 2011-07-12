@@ -1,6 +1,6 @@
 class View < Model
   cattr_accessor :licenses, :creative_commons, :merged_licenses,
-    :filter_type1s, :overridable_features
+    :filter_type1s
 
   def self.find(options = nil, get_all=false)
     if get_all || options.is_a?(String)
@@ -53,15 +53,15 @@ class View < Model
 
   def enabled_modules
     result = {}
-    self.overridable_features.each do |feature|
+    overridable_features.each do |feature|
       result[feature[:key]] = self.module_enabled?(feature[:key])
     end
     return result
   end
 
   def disabled_features
-    features = @@overridable_features.select do |flag|
-      CurrentDomain.module_enabled?(flag[:key].to_s.downcase.to_sym)
+    features = overridable_features.select do |flag|
+      CurrentDomain.module_enabled?(flag[:key].to_s.downcase.to_sym) && flag[:if] != false
     end
     unless self.disabledFeatureFlags.blank?
       self.disabledFeatureFlags.each do |flag|
@@ -70,6 +70,15 @@ class View < Model
       end
     end
     features
+  end
+
+  def overridable_features
+    of = [
+      { :key => 'allow_comments',
+        :name => 'Commenting' },
+    ]
+    of << { :key => 'cell_comments', :name => 'Cell Commenting' } if is_tabular?
+    return of
   end
 
   def column_by_id(column_id)
@@ -364,40 +373,21 @@ class View < Model
 
   def federated_protocol(domainCName)
     domain = Domain.find(domainCName, true)
-    if domain.httpsEnforced
-      'https'
-    else
-       'http'
-    end
+    domain.protocol
   end
 
   def federated_port(domainCName)
     domain = Domain.find(domainCName, true)
-    port = 80
-    if domain.httpsEnforced
-      if Rails.env.development?
-        port = APP_CONFIG['ssl_port']
-      else
-        port = 443
-      end
-    else
-      if Rails.env.development?
-        port = APP_CONFIG['http_port']
-      end
-    end
-
-    if (port == 80 || port == 443)
-      url_port = ""
-    else
-      url_port = ":#{port}"
-    end
-    url_port
+    domain.port
   end
 
   # argument port is deprecated
   def href(port = 80)
     path = "/#{(self.category || 'dataset').convert_to_url}/#{name.convert_to_url}/#{id}"
+    federated_path(path)
+  end
 
+  def federated_path(path)
     if federated?
       protocol = federated_protocol(domainCName)
       url_port = federated_port(domainCName)
@@ -422,14 +412,7 @@ class View < Model
   # argument port is deprecated
   def rss(port = 80)
     path = "/api/views/#{id}/rows.rss"
-
-    if federated?
-      protocol = federated_protocol(domainCName)
-      url_port = federated_port(domainCName)
-      "#{protocol}://#{domainCName}#{url_port}#{path}"
-    else
-      path
-    end
+    federated_path(path)
   end
 
   def tweet
@@ -1105,13 +1088,6 @@ class View < Model
     'Table' => 'Dataset'
   }
 
-
-  @@overridable_features = [
-    { :key => 'allow_comments',
-      :name => 'Commenting' },
-    { :key => 'cell_comments',
-      :name => 'Cell-Level Commenting' }
-  ]
 
   private
 

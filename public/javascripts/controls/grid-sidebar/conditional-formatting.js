@@ -103,19 +103,18 @@
         });
     };
 
-    var conditionIndicator = {type: 'color', required: true, text: 'Use the color',
-                                 name: 'color', defaultValue: '#bbffbb'};
-
-    if (blist.dataset.type == 'map')
-    { conditionIndicator = {text: 'Use this color or this URL', type: 'radioGroup',
-                               name: 'conditionIndicator', defaultValue: 'color',
-                               options: [
-                                   {type: 'color', required: true,
-                                       name: 'color', defaultValue: '#bbffbb'},
-                                   {type: 'text', required: true,
-                                       name: 'icon', defaultValue: 'http://'}
-                               ]
-                           }; }
+    var conditionIndicator = {
+        text: 'Use<br />this color or this URL icon',
+        type: 'radioGroup', name: 'conditionIndicator', defaultValue: 'color',
+               options: [
+                   {type: 'color', required: true,
+                       name: 'color', defaultValue: '#bbffbb'},
+                   {type: 'text', required: true,
+                       disabled: function()
+                       { return !_.include(blist.dataset.metadata.availableDisplayTypes, 'map'); },
+                       name: 'icon', defaultValue: 'http://'}
+               ]
+           };
 
     var sidebar;
     var configName = 'visualize.conditionalFormatting';

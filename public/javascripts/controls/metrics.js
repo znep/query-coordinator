@@ -305,10 +305,10 @@
 
             var $sliceDepth = $slicer.find('[value="' + sliceDepth + '"]');
 
-            $sliceDepth.attr('disabled', '')
-                .prevAll().attr('disabled', '')
+            $sliceDepth.prop('disabled', false)
+                .prevAll().prop('disabled', false)
                     .end()
-                .nextAll().attr('disabled', 'disabled');
+                .nextAll().prop('disabled', true);
 
             if (startDate.clone().addMonths(1) < endDate)
             {

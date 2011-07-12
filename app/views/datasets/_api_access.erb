@@ -13,6 +13,16 @@
      <a href="/api/docs" rel="external">Developer Documentation</a>.</p>
   <h3>API Access Endpoint:</h3>
   <div class="apiEndpointWrapper">
-    <pre>http://<%= CurrentDomain.cname %>/api/views/<%= @view.id %>/rows.json</pre>
+    <pre><%= "#{CurrentDomain.domain.protocol}://#{CurrentDomain.cname}#{CurrentDomain.domain.port}/api/views/#{@view.id}/rows.json" %></pre>
   </div>
+
+  <%- if @view.is_tabular? && !@view.visible_columns.empty? -%>
+    <h3>Column IDs:</h3>
+    <dl class="sectionContent">
+      <%- @view.visible_columns.each do |column| -%>
+        <dt><%= column.name %></dt>
+        <dd><%= column.id %></dd>
+      <%- end -%>
+    </dl>
+  <%- end -%>
 </div>

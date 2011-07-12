@@ -46,6 +46,9 @@
                 setUpCalendar(calObj);
             },
 
+            resizeHandle: function()
+            { this.$dom().fullCalendar('render'); },
+
             renderRow: function(row)
             {
                 var calObj = this;

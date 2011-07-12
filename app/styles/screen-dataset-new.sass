@@ -445,6 +445,27 @@
   p
     margin-bottom: 1em
 
+// PANE ONE POINT SEVEN FIVE
+.importWarningsPane
+  .importWarningsList
+    @include box-shadow(0, 0, 0.8em, rgba(0, 0, 0, 0.3), true)
+    border: 1px solid #888
+    margin: 1em
+    max-height: 50em
+    overflow-y: auto
+
+    li
+      border-top: 1px solid $color_chrome_box_border
+      font-size: 1.3em
+      padding: 0.5em
+
+      &:first-child
+        border-top: none
+
+  p.seeDocs
+    font-size: 1.4em
+    margin: 1em
+
 // PANE TWO: metadata
 .metadataPane
   .metadataForm

@@ -68,10 +68,5 @@
 <%- end -%>
 
 <%- content_for :js_footer do -%>
-  <script type="text/javascript">
-    blist.namespace.fetch('blist.moderation');
-    blist.moderation.servicePath = '/api/users/<%= @current_user.id %>/comments/';
-  </script>
-
   <%= include_javascripts 'admin-moderation' %>
 <%- end -%>

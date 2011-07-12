@@ -11,43 +11,16 @@
 <%= render :partial => 'left_nav' %>
 <%- no_js = params[:no_js].present? -%>
 
-<div class="contentBox withLeftNavigation usersScreen" id="adminContent">
-   <div class="adminHeader users">
-    <span class="icon"></span>
-    <h1>Manage Users</h1>
-    <%- unless @users_list.blank? %>
-      <div class="userRoleSelectFilter">
-        <label for="userRoleFilterDropdown">Filter by</label>
-        <select id="userRoleFilterDropdown">
-          <option value="all">All</option>
-          <%- User.roles_list.each do |role| -%>
-            <option value="<%= role[0] =%>"><%= role[0].titleize %></option>
-          <%- end -%>
-        </select>
+<div class="contentBox withLeftNavigation usersScreen">
+   <div class="adminHeader floating users">
+    <%- unless no_js -%>
+      <div class="bulkCreateButtonArea">
+        <a href="#BulkCreate" class="button showBulkCreateForm">Bulk Create</a>
       </div>
     <%- end -%>
+    <span class="icon"></span>
+    <h1>Manage Users</h1>
   </div>
-
-  <%= display_standard_flashes %>
-
-  <p class="information">
-    <%- unless @user_search_results.nil? -%>
-      <%= link_to 'Return to users overview', :action => 'users' %>
-    <%- end -%>
-  </p>
-
-  <%- unless no_js -%>
-  <div class="bulkCreateButtonArea">
-    <a href="#BulkCreate" class="button showBulkCreateForm">Bulk Create</a>
-  </div>
-  <%- end -%>
-
-  <form class="search usersFind" action="<%= url_for :action => 'users' %>" method="get">
-    <label for="username">Search for Users to Add</label>
-    <input type="text" class="textPrompt searchField<%= ' prompt' if @search.nil? %>" name="username" id="username"
-     title="Search for users to add"<%= raw(" value=\"#{h @search}\"") unless @search.nil? %> />
-    <input type="submit" class="submit" alt="search" value="Search" />
-  </form>
 
   <div class="bulkUserCreateSection clearfix<%= ' hide' unless no_js %>">
     <%= form_tag({:action => 'bulk_create_users'}, {:method => 'post', :class => 'commonForm'}) %>
@@ -69,6 +42,35 @@
       </div>
     </form>
   </div>
+</div>
+
+<div class="contentBox withLeftNavigation usersScreen" id="adminContent">
+  <%- unless @users_list.blank? %>
+    <div class="userRoleSelectFilter">
+      <label for="userRoleFilterDropdown">Filter by</label>
+      <select id="userRoleFilterDropdown">
+        <option value="all">All</option>
+        <%- User.roles_list.each do |role| -%>
+          <option value="<%= role[0] =%>"><%= role[0].titleize %></option>
+        <%- end -%>
+      </select>
+    </div>
+  <%- end -%>
+
+  <%= display_standard_flashes %>
+
+  <%- unless @user_search_results.nil? -%>
+    <p class="information">
+      <%= link_to 'Return to users overview', :action => 'users' %>
+    </p>
+  <%- end -%>
+
+  <form class="search usersFind" action="<%= url_for :action => 'users' %>" method="get">
+    <label for="username">Search for Users to Add</label>
+    <input type="text" class="textPrompt searchField<%= ' prompt' if @search.nil? %>" name="username" id="username"
+     title="Search for users to add"<%= raw(" value=\"#{h @search}\"") unless @search.nil? %> />
+    <input type="submit" class="submit" alt="search" value="Search" />
+  </form>
 
   <div class="adminUsersTableContainer tableContainer">
   <h2><%= @table_title %></h2>

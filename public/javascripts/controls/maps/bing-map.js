@@ -144,7 +144,7 @@
 
                     if (geoType != 'point')
                     {
-                        if (details.color)
+                        if (details.color || !_.isUndefined(details.opacity))
                         {
                             var key;
                             switch(geoType)
@@ -153,7 +153,9 @@
                                 case 'polyline': key = 'strokeColor'; break;
                             }
                             var options = {};
-                            options[key] = Microsoft.Maps.Color.fromHex(details.color);
+                            options[key] = Microsoft.Maps.Color.fromHex(details.color || '#FFFFFF');
+                            options[key].a = _.isUndefined(details.opacity) ? 1.0 : details.opacity;
+                            options[key].a *= 255;
                             shape.setOptions(options);
                         }
                         shape.setOptions({ 'strokeThickness': 1 });
@@ -389,13 +391,18 @@
 
             getRequiredJavascripts: function()
             {
-                // Workaround for crappy JS coding, see:
-                // http://code.davidjanes.com/blog/2008/11/08/how-to-dynamically-load-map-apis/
-                var scripts = [];
-                scripts.push("https://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0&s=1");
-                scripts.push("https://ecn.dev.virtualearth.net/mapcontrol/v7.0/js/bin/7.0.20110518102939.67/en-us/veapicore.js");
-                scripts.push(false);
-                return scripts;
+                if (blist.util.bingCallbackMap) { return null; }
+
+                bingCallback = this._setupLibraries;
+                blist.util.bingCallbackMap = this;
+
+                return "https://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0&s=1&onscriptload=bingCallback";
+            },
+
+            _setupLibraries: function()
+            {
+                var mapObj = blist.util.bingCallbackMap;
+                mapObj._librariesLoaded();
             }
         }
     }));

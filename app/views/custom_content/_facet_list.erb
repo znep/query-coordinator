@@ -1,11 +1,12 @@
+<%- target_facet = widget.properties.target_facet || Canvas::Environment.facet_name -%>
 <%- if widget.facet_values.empty? -%>
   <div id="<%= widget.elem_id %>" class="facetList facetListEmpty clearfix">
-    <p>The facet <%= Canvas::Environment.facet_name %> is currently empty.</p>
+    <p>The facet <%= target_facet %> is currently empty.</p>
   </div>
 <%- else -%>
   <ul id="<%= widget.elem_id %>" class="facetList clearfix">
     <%- widget.facet_values.each do |facet_value| -%>
-      <li><a href="/facet/<%= Canvas::Environment.facet_name %>/<%= CGI.escape facet_value %>">
+      <li><a href="/facet/<%= target_facet %>/<%= CGI.escape facet_value %>">
         <%= facet_value %>
       </a></li>
     <%- end -%>

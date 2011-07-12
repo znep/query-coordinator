@@ -337,7 +337,7 @@
                     options.push('"<li class=\'pageView\'>' +
                             '<a href=\'' + this.settings.view.url +
                             '/" + row.id + "\' class=\'noInterstitial ' +
-                            'noRedirPrompt\'>View Row</a></li>"');
+                            'noRedirPrompt\'>View Single Row Data</a></li>"');
                 }
                 if (this.settings.editEnabled)
                 {

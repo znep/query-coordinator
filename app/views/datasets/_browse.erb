@@ -113,7 +113,8 @@
       </div>
     <%- end -%>
 
-    <div class="browseList">
+    <%- sort_shown = opts[:view_count] > 0 && !opts[:sort_opts].empty? && !opts[:disable][:sort] -%>
+    <div class="browseList <%= sort_shown ? 'hasSort' : '' %>">
       <%- if !opts[:browse_in_container] -%>
         <div class="titleContainer">
           <h2 title="<%= opts[:title] %>"><%= opts[:title] %></h2>
@@ -136,7 +137,7 @@
           </ul>
         <%- end -%>
 
-        <%- if opts[:view_count] > 0 && !opts[:sort_opts].empty? && !opts[:disable][:sort] -%>
+        <%- if sort_shown -%>
           <div class="sortOptions">
             <label for="browseSortType" class="sortLabel">Sort By</label>
             <select id="browseSortType" class="sortType" name="sortType">

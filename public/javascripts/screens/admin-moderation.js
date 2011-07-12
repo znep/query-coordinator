@@ -1,7 +1,5 @@
 ;$(function()
 {
-    var moderationNS = blist.namespace.fetch('blist.moderation');
-
     // rendering
     var directive = {
         'tbody .item': {
@@ -26,7 +24,7 @@
     // get the data
     var comments = {};
     $.ajax({
-        url: moderationNS.servicePath,
+        url: '/api/comments.json?method=getForModeration',
         dataType: 'json',
         success: function(response)
         {

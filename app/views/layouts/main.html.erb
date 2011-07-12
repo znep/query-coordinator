@@ -40,6 +40,7 @@ http://www.socrata.com
   </style>
   <![endif]-->
   <%= rendered_stylesheet_tag 'base' %>
+  <%= rendered_stylesheet_tag 'print', 'print' %>
 
   <%= jquery_include %>
   <%= javascript_error_helper_tag %>
@@ -47,7 +48,7 @@ http://www.socrata.com
   <%= yield :head %>
 
   <%- unless CurrentDomain.properties.custom_css.blank? -%>
-    <link type="text/css" rel="stylesheet" href="/styles/current_site.css"/>
+    <link type="text/css" medial="all" rel="stylesheet" href="/styles/current_site.css"/>
   <%- end -%>
 
   <link rel="shortcut icon" href="<%= theme_image_url(CurrentDomain.theme.images.favicon) %>" />

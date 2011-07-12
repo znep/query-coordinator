@@ -19,6 +19,8 @@ base-sdp:
 - table-core
 - dataset-grid
 - control-feed
+print:
+- print
 strip-chrome:
 - strip-chrome
 screen-login:

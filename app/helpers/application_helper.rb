@@ -94,14 +94,14 @@ module ApplicationHelper
   end
 
 # styles
-  def rendered_stylesheet_tag(stylesheet)
+  def rendered_stylesheet_tag(stylesheet, media='all')
     if Rails.env == 'development'
       return STYLE_PACKAGES[stylesheet.to_s].
-        map{ |req| "<link type=\"text/css\" rel=\"stylesheet\" media=\"screen\"" +
+        map{ |req| "<link type=\"text/css\" rel=\"stylesheet\" media=\"#{media}\"" +
                    " href=\"/styles/individual/#{req}.css\"/>" }.
         join("\n")
     else
-      return "<link type=\"text/css\" rel=\"stylesheet\" media=\"screen\"" +
+      return "<link type=\"text/css\" rel=\"stylesheet\" media=\"#{media}\"" +
              " href=\"/styles/merged/#{stylesheet.to_s}.css?" +
              "#{REVISION_NUMBER}.#{CurrentDomain.default_config_id}\"/>"
     end

@@ -55,6 +55,7 @@ html, body
       display: inline
       font-size: 1.6em
       font-weight: normal
+      margin-right: -30px
       padding: 0
 
     #description
@@ -80,6 +81,10 @@ html, body
       @include button
       font-size: 1.2em
       margin-right: 0.5em
+      white-space: nowrap
+      &.publish
+        line-height: 20px
+        margin-left: 40px
 
     .unsavedLine
       display: none
@@ -103,7 +108,9 @@ html, body
       display: block
       font-size: 1.2em
       line-height: 1.1em
-      margin-bottom: 0.2em
+      margin:
+        bottom: 0.2em
+        top: 0.3em
 
   &.unsavedView
     background: #fff url(/stylesheets/images/interface/dataset_unsaved_fade.png) repeat-y
@@ -384,7 +391,7 @@ html, body
     display: none
   dl, dt, dd, ul, li, p, div
     display: inline
-    white-space: no-wrap
+    white-space: nowrap
   .starsControl
     background: none
     display: inline

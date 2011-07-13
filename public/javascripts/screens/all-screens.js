@@ -91,7 +91,7 @@
     {
         var $d = $(this);
         var fmt;
-        switch ($d.data('dateFormat'))
+        switch ($d.data('dateformat'))
         {
             case 'date_time':
                 fmt = 'M d, Y g:ia';
@@ -104,6 +104,6 @@
                 fmt = 'M d, Y';
                 break;
         }
-        $d.text(new Date($d.data('rawDateTime') * 1000).format(fmt));
+        $d.text(new Date($d.data('rawdatetime') * 1000).format(fmt));
     });
 });

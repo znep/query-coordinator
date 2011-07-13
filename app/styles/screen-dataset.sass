@@ -75,6 +75,10 @@ html, body
         position: absolute
         right: 0.3em
         top: -0.1em
+        .ie7 & .icon
+          font-size: 1000em
+          overflow: hidden
+          text-indent: 0
 
     a.toolbarButton
       @include button
@@ -367,6 +371,7 @@ html, body
     overflow-x: hidden
 
 #actionBar
+  position: relative
   &.position-left
     #editBar
       bottom: 0

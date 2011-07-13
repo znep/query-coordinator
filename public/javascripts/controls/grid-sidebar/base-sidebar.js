@@ -806,9 +806,9 @@
                 hideCurrentPane(sidebarObj);
 
                 // In non-IE we need to trigger a resize so the grid restores
-                // properly.  In IE7, this will crash; IE8 works either way
+                // properly.  In IE7, this will crash; IE8 works either way; IE9 requires it
                 // This is only for the grid; so other types do the resize
-                if (!$.browser.msie || !isTable(sidebarObj))
+                if (!$.browser.msie || $.browser.majorVersion > 7 || !isTable(sidebarObj))
                 { $(window).resize(); }
 
                 sidebarObj.settings.onSidebarClosed();

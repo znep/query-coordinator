@@ -70,14 +70,6 @@
             displayPage: function(index)
             {
                 var navObj = this;
-
-                var pageCount = Math.ceil(navObj.settings.view.totalRows /
-                        navObj.settings.pageSize);
-                if (index < 0)
-                { index = pageCount + index + 1; }
-                if (index >= pageCount)
-                { index = pageCount - 1; }
-
                 navObj._curPageIndex = index;
                 updateNavigation(navObj);
                 navObj.pageChanged();
@@ -133,6 +125,12 @@
             return;
         }
         navObj.$dom().removeClass('hide');
+
+        // Make sure current page is within bounds
+        if (navObj._curPageIndex < 0)
+        { navObj._curPageIndex = pageCount + navObj._curPageIndex + 1; }
+        if (navObj._curPageIndex >= pageCount)
+        { navObj._curPageIndex = pageCount - 1; }
 
         var $info = navObj.$dom().find('.info');
         $info.find('.curPage').text(navObj._curPageIndex + 1);

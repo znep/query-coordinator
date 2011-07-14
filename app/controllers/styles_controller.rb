@@ -246,6 +246,8 @@ protected
                     :logo_footer => 'image' },
     :chrome    => { :background  => 'color',
                     :box_border  => 'color',
+                    :margin      => { :inner       => 'dimensions',
+                                      :outer       => 'dimensions' },
                     :sidebar     => { :background  => 'color',
                                       :text        => 'color' },
                     :nav_buttons => { :background  => 'color',

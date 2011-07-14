@@ -85,8 +85,8 @@
     width: 10em
 
 .featuredViews
-  margin: 1em
-    top: 0
+  margin: 0
+    bottom: $chrome_margin_inner
 
   .featuredViewContainer
     float: left
@@ -100,8 +100,8 @@
       background-color: #fff
       border: 1px solid $color_chrome_box_border
       @include border-radius(0.3em)
-      margin: 1em
-        top: 0
+      margin: 0
+        right: $chrome_margin_inner
       min-width: 15em
       padding: 1em
 
@@ -138,6 +138,10 @@
       .viewDescription
         color: #999
         font-size: 1.2em
+
+    &.last
+      .featuredView
+        margin-right: 0
 
 .viewList
   ul

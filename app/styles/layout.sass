@@ -14,6 +14,10 @@ html, body
   min-height: 100%
   padding-bottom: 5em
 
+.siteContentWrapper
+  padding: $chrome_margin_outer
+    bottom: 0
+
 // Header and Footer
 
 #siteHeader
@@ -122,13 +126,14 @@ html, body
   border: 1px solid $color_chrome_box_border
   @include border-radius(0.2em)
   max-width: 100%
-  margin: 1em
-  padding: 1em
+  margin: 0
+    bottom: $chrome_margin_inner
+  padding: 1.5em
   &.fixedWidth
     max-width: 100em
     margin: 1em auto
   &.withLeftNavigation
-    margin-left: 18em
+    margin-left: #{17em + $chrome_margin_inner}
 
   h1
     font-size: 1.8em
@@ -199,10 +204,8 @@ html, body
   background-color: #fff
   border: 1px solid $color_chrome_box_border
   @include border-radius(0.2em)
-  margin: 1em
-    top: 0
   width: 14em
-  padding: 1em
+  padding: 1.5em
   position: absolute
 
   .ie7 &

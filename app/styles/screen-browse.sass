@@ -1,5 +1,5 @@
 .browseSection
-  padding: 2em
+  padding: #{$chrome_margin_inner} 0
 
   .searchSection
     border: 1px solid #cacaca
@@ -80,7 +80,7 @@
         margin-top: 0.5em
 
   .suggestBox
-    margin-top: 2em
+    margin-top: $chrome_margin_inner
 
   .infoBox
     background-color: #ffffff
@@ -381,6 +381,7 @@
           width: 50px
           .datasetIcon
             margin: 0 auto
+            width: 50px
           img.datasetImage
             max-height: 50px
             max-width: 50px

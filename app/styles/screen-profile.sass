@@ -8,7 +8,7 @@
     background-color: #fff
     border: 1px solid $color_chrome_box_border
     @include border-radius(0.2em)
-    margin: 1.5em
+    margin-bottom: $chrome_margin_inner
     padding: 1.5em
 
     > .innerItem
@@ -168,7 +168,8 @@
 
   .profileSideBar
     float: right
-    margin: 0 2em
+    margin: 0
+      left: $chrome_margin_inner
     width: 22em
 
     .profileImage
@@ -184,7 +185,7 @@
       padding-top: 0.5em
 
   .profileMainContent
-    padding-right: 27.2em
+    padding-right: #{25.2em + $chrome_margin_inner} //22em + 3em padding for sidebar + .2 borders
     .textDisplay
       font-size: 1.2em
 

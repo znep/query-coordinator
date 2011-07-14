@@ -2359,6 +2359,9 @@
         var onScroll = function()
         {
             begin('onScroll');
+            // Make column & row menus close
+            $(document).trigger('click');
+
             var scrollHoriz = $scrolls[0].scrollLeft;
             var horizontalChange = false;
             if (scrollHoriz != headerScrolledTo)

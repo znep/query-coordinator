@@ -242,7 +242,7 @@ $(function()
         $content.find('.userLoad').each(function()
         {
             var $a = $(this);
-            var userId = $a.data('userId');
+            var userId = $a.data('userid');
             if ($.isBlank(userId)) { return; }
 
             User.createFromUserId(userId, function(u)

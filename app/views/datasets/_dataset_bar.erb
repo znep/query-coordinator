@@ -1,4 +1,5 @@
-<div id="datasetBar" class="clearfix <%= @view.is_blist? ? 'dataset' : '' %>">
+<div id="datasetBar" class="clearfix <%= @view.is_blist? ? 'dataset' : '' %>
+  <%= @view.can_modify_data? ? 'isEditable' : '' %>">
   <%- if local_assigns[:link_back].present? -%>
     <a href="<%= @view.href %>" class="button leftArrowNoHover backToDatasetButton">
       <span class="icon"></span>

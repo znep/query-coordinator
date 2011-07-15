@@ -31,7 +31,7 @@
                 responseType : 'json',
                 onSubmit     : function (file, ext)
                 {
-                    if (!(ext && /^(jpg|png|jpeg|gif|tif|tiff)$/.test(ext)))
+                    if (!(ext && /^(jpg|png|jpeg|gif|tif|tiff)$/i.test(ext)))
                     {
                         $error.show();
                         return false;

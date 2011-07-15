@@ -266,7 +266,7 @@
       </div>
       <ul class="navigation">
         <%- if !@current_user.nil? && @current_user.has_right?('create_datasets') &&
-            @view.has_rights?('update_view') -%>
+          @view.has_rights?('update_view') && !@view.is_snapshotted? -%>
         <li class="edit"><a class="button"
           href="<%= @view.href %>/edit_rr?defaultRender=page">Edit Layout</a></li>
         <%- end -%>

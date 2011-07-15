@@ -30,25 +30,45 @@
             columnsLoaded: function()
             {
                 var chartObj = this;
-                chartObj._remainder = chartObj._valueColumns[0].column.aggregates.sum;
+                chartObj._remainder = chartObj._valueColumns[0].column.aggregates.sum -
+                    (chartObj._preRemainder || 0);
+                delete chartObj._preRemainder;
             },
 
             renderData: function(rows)
             {
                 var chartObj = this;
 
-                var processRows = function(row)
+                var addRows = function(row)
                     {
+                        var exItem = _.detect(chartObj._jitData.children, function(c)
+                            { return c.id == row.id; });
+                        var exIndex = -1;
+                        var exArea = 0;
+                        if (!$.isBlank(exItem))
+                        {
+                            exIndex = _.indexOf(chartObj._jitData.children, exItem);
+                            chartObj._jitData.children.splice(exIndex, 1);
+                            exArea = exItem.data.$area;
+                        }
+
                         var area = parseFloat(row[chartObj.
                             _valueColumns[0].column.id]);
-                        if (_.isNaN(area)) { return null; }
-                        chartObj._remainder -= area;
+                        if (_.isNaN(area)) { return; }
+
+                        if (!$.isBlank(chartObj._remainder))
+                        { chartObj._remainder -= area - exArea; }
+                        else
+                        {
+                            chartObj._preRemainder = chartObj._preRemainder || 0;
+                            chartObj._preRemainder += area - exArea;
+                        }
                         var xCol = chartObj._fixedColumns[0];
 
                         var colors = chartObj.settings.view.displayFormat.colors;
                         var defaultColor = colors[row.id % 5];
 
-                        return {
+                        var item = {
                             id: row.id,
                             name: xCol.renderType.renderer(row[xCol.id], xCol, true),
                             data: {
@@ -56,27 +76,31 @@
                                 $color: (row.meta && row.meta.color) ||
                                     row.color ||
                                     defaultColor,
+                                row: row,
                                 flyoutDetails: chartObj.renderFlyout(row,
                                     chartObj._valueColumns[0].column.tableColumnId,
                                     chartObj.settings.view)
                             },
                             children: []
                         };
-                    }
+                        if (exIndex < 0)
+                        { chartObj._jitData.children.push(item); }
+                        else
+                        { chartObj._jitData.children.splice(exIndex, 0, item); }
+                    };
 
                 if (!chartObj._jitData)
-                { chartObj._jitData = { id: 'root', name: '', data: {},
-                        children: _.compact(_.map(rows, processRows)) }; }
+                { chartObj._jitData = { id: 'root', name: '', data: {}, children: [] }; }
                 else
                 {
                     if (chartObj._otherAdded)
                     {
-                        chartObj._jitData.children.pop();
+                        chartObj._jitData.children = _.reject(chartObj._jitData.children,
+                            function(c) { return c.id < 0; });
                         chartObj._otherAdded = false;
                     }
-                    chartObj._jitData.children = chartObj._jitData.children.concat(
-                        _.compact(_.map(rows, processRows)));
                 }
+                _.each(rows, addRows);
 
                 if (chartObj._remainder > 0)
                 {
@@ -156,25 +180,31 @@
             },
             Events: {
               enable: true,
-              onMouseEnter: function(node, eventInfo) {
-                if(node) {
-                  node.setData('mouseoutColor', node.getData('color'));
-                  var hsv = $.rgbToHsv($.hexToRgb(node.getData('color')));
-                  if (hsv.s > 50) { hsv.s /= 2; }
-                  if (hsv.v < 51) { hsv.v *= 2; }
-                  node.setData('color', '#' + $.rgbToHex($.hsvToRgb(hsv)));
-                  node.setCanvasStyle('shadowBlur', 7);
-                  chartObj.chart.fx.plotNode(node, chartObj.chart.canvas);
-                  //chartObj.chart.labels.plotLabel(chartObj.chart.canvas, node);
-                    // No controller is being passed and this seems to cause JS errors.
-                }
+              onMouseEnter: function(node, eventInfo)
+              {
+                  if (node)
+                  {
+                      node.setData('mouseoutColor', node.getData('color'));
+                      var hsv = $.rgbToHsv($.hexToRgb(node.getData('color')));
+                      if (hsv.s > 50) { hsv.s /= 2; }
+                      if (hsv.v < 51) { hsv.v *= 2; }
+                      node.setData('color', '#' + $.rgbToHex($.hsvToRgb(hsv)));
+                      node.setCanvasStyle('shadowBlur', 7);
+                      chartObj.chart.fx.plotNode(node, chartObj.chart.canvas);
+                      chartObj.highlightRows(node.data.row);
+                      //chartObj.chart.labels.plotLabel(chartObj.chart.canvas, node);
+                        // No controller is being passed and this seems to cause JS errors.
+                  }
               },
-              onMouseLeave: function(node) {
-                if(node) {
-                  node.setData('color', node.getData('mouseoutColor'));
-                  node.removeCanvasStyle('shadowBlur');
-                  chartObj.chart.plot();
-                }
+              onMouseLeave: function(node)
+              {
+                  if (node)
+                  {
+                      node.setData('color', node.getData('mouseoutColor'));
+                      node.removeCanvasStyle('shadowBlur');
+                      chartObj.chart.plot();
+                      chartObj.unhighlightRows(node.data.row);
+                  }
               }
             },
             Tips: {

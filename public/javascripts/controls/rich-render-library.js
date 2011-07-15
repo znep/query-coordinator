@@ -55,6 +55,7 @@
             {
                 var rrObj = this;
                 $content.css('background-color', no_highlight ? '' : row.color || '');
+                $content.data('renderrow', row);
                 _.each(rrObj.visibleColumns(), function(c)
                 {
                     $content.find('.columnId' + c.id).each(function()

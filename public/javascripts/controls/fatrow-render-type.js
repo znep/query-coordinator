@@ -78,6 +78,20 @@
                     mainUpdate();
                 });
                 frObj.$dom().bind('hide', function() { frObj._shown = false; });
+
+                frObj.$dom().delegate('.rowList > .row',
+                    {'mouseenter': function(e)
+                        {
+                            var row = $(this).data('renderrow');
+                            if (!row.sessionMeta || !row.sessionMeta.highlight)
+                            { frObj.settings.view.markRow('highlight', true, row.id); }
+                        },
+                    'mouseleave': function(e)
+                        {
+                            var row = $(this).data('renderrow');
+                            if (row.sessionMeta && row.sessionMeta.highlight)
+                            { frObj.settings.view.markRow('highlight', false, row.id); }
+                        }});
             },
 
             $dom: function()

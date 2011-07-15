@@ -39,8 +39,6 @@
                 delete calObj._endCol;
                 delete calObj._titleCol;
 
-                delete calObj._events;
-
                 calObj.$dom().fullCalendar('destroy');
                 setUpCalendar(calObj);
             },
@@ -51,7 +49,6 @@
             renderRow: function(row)
             {
                 var calObj = this;
-                calObj._events = calObj._events || [];
 
                 var ce = {id: row.id,
                     start: row[calObj._startCol.id],
@@ -62,15 +59,15 @@
                     ce.end = row[calObj._endCol.id];
                     if ($.isBlank(ce.start)) { ce.start = ce.end; }
                 }
-                calObj._events.push(ce);
+
+                var $fc = calObj.$dom();
+                var exEvent = $fc.fullCalendar('clientEvents', ce.id);
+                if (exEvent.length > 0)
+                { $fc.fullCalendar('updateEvent', $.extend(_.first(exEvent), ce)); }
+                else
+                { $fc.fullCalendar('renderEvent', ce, true); }
 
                 return true;
-            },
-
-            rowsRendered: function()
-            {
-                this.$dom().fullCalendar('addEventSource', this._events || []);
-                delete this._events;
             },
 
             getColumns: function()
@@ -100,24 +97,24 @@
                 editable: calObj.settings.view.hasRight('write'),
                 disableResizing: $.isBlank(calObj.settings.view
                     .displayFormat.endDateTableId),
-                eventRender: function(ce, e, v)
-                    { eventRender(calObj, ce, e, v); },
-                eventDragStart: function(ce, e, ui, v)
-                    { eventActionStart.apply(this,
-                        [calObj, ce, e, ui, v]); },
-                eventResizeStart: function(ce, e, ui, v)
-                    { eventActionStart.apply(this,
-                        [calObj, ce, e, ui, v]); },
-                eventDragStop: function(ce, e, ui, v)
-                    { eventActionStop.apply(this,
-                        [calObj, ce, e, ui, v]); },
-                eventResizeStop: function(ce, e, ui, v)
-                    { eventActionStop.apply(this,
-                        [calObj, ce, e, ui, v]); },
-                eventDrop: function(ce, dd, md, ad, rf, e, ui, v)
-                    { eventChange(calObj, ce, dd, md, rf, e, ui, v); },
-                eventResize: function(ce, dd, md, rf, e, ui, v)
-                    { eventChange(calObj, ce, dd, md, rf, e, ui, v); }
+                eventMouseover: function()
+                    { eventMouseover.apply(this, [calObj].concat($.makeArray(arguments))); },
+                eventMouseout: function()
+                    { eventMouseout.apply(this, [calObj].concat($.makeArray(arguments))); },
+                eventRender: function()
+                    { eventRender.apply(this, [calObj].concat($.makeArray(arguments))); },
+                eventDragStart: function()
+                    { eventActionStart.apply(this, [calObj].concat($.makeArray(arguments))); },
+                eventResizeStart: function()
+                    { eventActionStart.apply(this, [calObj].concat($.makeArray(arguments))); },
+                eventDragStop: function()
+                    { eventActionStop.apply(this, [calObj].concat($.makeArray(arguments))); },
+                eventResizeStop: function()
+                    { eventActionStop.apply(this, [calObj].concat($.makeArray(arguments))); },
+                eventDrop: function()
+                    { eventChange.apply(this, [calObj].concat($.makeArray(arguments))); },
+                eventResize: function()
+                    { eventChange.apply(this, [calObj].concat($.makeArray(arguments))); }
                 });
 
         calObj.initializeFlyouts(calObj.settings
@@ -126,7 +123,17 @@
         calObj.ready();
     };
 
-    var eventRender = function(calObj, calEvent, element, view)
+    var eventMouseover = function(calObj, calEvent)
+    {
+        calObj.highlightRows(calEvent.row);
+    };
+
+    var eventMouseout = function(calObj, calEvent)
+    {
+        calObj.unhighlightRows(calEvent.row);
+    };
+
+    var eventRender = function(calObj, calEvent, element)
     {
         if (!$.isBlank(calObj.hasFlyout()))
         {
@@ -136,7 +143,7 @@
         }
     };
 
-    var eventActionStart = function(calObj, calEvent, event, ui, view)
+    var eventActionStart = function(calObj)
     {
         if (calObj.hasFlyout())
         {
@@ -145,14 +152,13 @@
         }
     };
 
-    var eventActionStop = function(calObj, calEvent, event, ui, view)
+    var eventActionStop = function(calObj)
     {
         if (calObj.hasFlyout())
         { $(this).socrataTip().enable(); }
     };
 
-    var eventChange = function(calObj, calEvent, dayDelta, minuteDelta,
-        revertFunc, jsEvent, ui, view)
+    var eventChange = function(calObj, calEvent, dayDelta, minuteDelta, revertFunc)
     {
         var view = calObj.settings.view;
 

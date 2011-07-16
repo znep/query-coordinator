@@ -770,6 +770,7 @@ this.Dataset = ServerModel.extend({
         var row = this.rowForID(rowId);
         if ($.isBlank(row) || (row.sessionMeta || {})[markType] == value) { return; }
 
+        row.sessionMeta = row.sessionMeta || {};
         row.sessionMeta[markType] = value;
 
         this.trigger('row_change', [[row]]);

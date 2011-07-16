@@ -59,6 +59,14 @@
                     frObj.richRenderer.renderLayout();
                     renderCurrentPage(frObj);
                 };
+                var rowChange = function(rows, fullReset)
+                {
+                    if (!frObj._shown) { return; }
+                    if (fullReset)
+                    { mainUpdate(); }
+                    else
+                    { _.each(rows, function(r) { updateRow(frObj, r); }); }
+                };
                 var updateHeader = function()
                 {
                     var headerShown = (((frObj.settings.view.metadata || {}).richRendererConfigs || {})
@@ -68,7 +76,8 @@
                 frObj.settings.view
                     .bind('columns_changed', mainUpdate)
                     .bind('query_change', mainUpdate)
-                    .bind('row_change', mainUpdate)
+                    .bind('row_change', rowChange)
+                    .bind('row_count_change', mainUpdate)
                     .bind('clear_temporary', updateHeader);
 
                 frObj.$dom().bind('show', function()
@@ -223,6 +232,13 @@
         frObj.$dom().trigger('resize');
     };
 
+    var renderNewRow = function(frObj, r)
+    {
+        var $item = frObj.$template().clone().removeClass('templateRow');
+        frObj.richRenderer.renderRow($item, r);
+        frObj.$list().append($item);
+    };
+
     var renderCurrentPage = function(frObj)
     {
         if ($.isBlank(frObj.navigation.currentPage())) { return; }
@@ -231,12 +247,7 @@
 
         var rowsLoaded = function(rows)
         {
-            _.each(rows, function(r)
-            {
-                var $item = frObj.$template().clone().removeClass('templateRow');
-                frObj.richRenderer.renderRow($item, r);
-                frObj.$list().append($item);
-            });
+            _.each(rows, function(r) { renderNewRow(frObj, r); });
         };
 
         var loadRows;
@@ -246,6 +257,33 @@
                 frObj.settings.pageSize, frObj.settings.pageSize, rowsLoaded);
         }
         loadRows();
+    };
+
+    var updateRow = function(frObj, row)
+    {
+        var cp = frObj.navigation.currentPage();
+        var realRow = frObj.settings.view.rowForID(row.id);
+        if ($.isBlank(cp) || (!$.isBlank(realRow) &&
+            ((realRow.position - 1) < cp * frObj.settings.pageSize ||
+                (realRow.position - 1) >= (cp + 1) * frObj.settings.pageSize)))
+        { return; }
+
+        var foundRow = false;
+        frObj.$list().children('.row').each(function()
+        {
+            var $r = $(this);
+            if ($r.data('renderrow').id == row.id)
+            {
+                if (!$.isBlank(realRow))
+                { frObj.richRenderer.renderRow($r, realRow); }
+                else
+                { $r.remove(); }
+                foundRow = true;
+                return false;
+            }
+        });
+
+        if (!foundRow && !$.isBlank(realRow)) { renderNewRow(frObj, realRow); }
     };
 
 })(jQuery);

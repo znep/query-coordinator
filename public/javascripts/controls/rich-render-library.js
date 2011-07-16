@@ -51,10 +51,12 @@
             // it attached to; but in some cases, we have a template row
             // that does the actual layout, then we clone it (outside this
             // class) and make this class render it
-            renderRow: function($content, row, no_highlight)
+            renderRow: function($content, row, noBkgColor)
             {
                 var rrObj = this;
-                $content.css('background-color', no_highlight ? '' : row.color || '');
+                var isHighlight = (row.sessionMeta || {}).highlight || false;
+                $content.css('background-color', noBkgColor || isHighlight ? '' : row.color || '');
+                $content.toggleClass('rowHighlight', !noBkgColor && isHighlight);
                 $content.data('renderrow', row);
                 _.each(rrObj.visibleColumns(), function(c)
                 {

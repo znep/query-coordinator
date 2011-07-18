@@ -53,7 +53,11 @@
                 var ce = {id: row.id,
                     start: row[calObj._startCol.id],
                     title: $.htmlStrip(row[calObj._titleCol.id]),
+                    color: null,
                     row: row};
+                if ((row.sessionMeta || {}).highlight)
+                { ce.color = blist.styles.getReferenceProperty('itemHighlight', 'background-color'); }
+
                 if (!$.isBlank(calObj._endCol))
                 {
                     ce.end = row[calObj._endCol.id];

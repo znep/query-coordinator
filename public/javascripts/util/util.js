@@ -188,7 +188,10 @@ $.live = function(selector, type, fn)
 $.deepCompact = function(obj)
 {
     if (_.isArray(obj))
-    { return _.map(_.compact(obj), function(o) { return $.deepCompact(o); }); }
+    {
+        return _(obj).chain().map(function(o) { return $.deepCompact(o); })
+            .reject(function(o) { return $.isBlank(o); }).value();
+    }
 
     if (!$.isPlainObject(obj)) { return obj; }
 

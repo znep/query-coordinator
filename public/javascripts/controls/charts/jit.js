@@ -12,6 +12,7 @@
     {
         defaults:
         {
+            highlightBlur: 7
         },
 
         prototype:
@@ -68,14 +69,18 @@
                         var colors = chartObj.settings.view.displayFormat.colors;
                         var defaultColor = colors[row.id % 5];
 
+                        var rowColor = (row.meta && row.meta.color) ||
+                            row.color || defaultColor;
+                        var isHighlight = (row.sessionMeta || {}).highlight;
+                        if (isHighlight)
+                        { rowColor = getHighlightColor(rowColor); }
+
                         var item = {
                             id: row.id,
                             name: xCol.renderType.renderer(row[xCol.id], xCol, true),
                             data: {
                                 $area: area,
-                                $color: (row.meta && row.meta.color) ||
-                                    row.color ||
-                                    defaultColor,
+                                $color: rowColor,
                                 row: row,
                                 flyoutDetails: chartObj.renderFlyout(row,
                                     chartObj._valueColumns[0].column.tableColumnId,
@@ -83,6 +88,9 @@
                             },
                             children: []
                         };
+                        if (isHighlight)
+                        { item.data['$canvas-shadowBlur'] = chartObj.settings.highlightBlur; }
+
                         if (exIndex < 0)
                         { chartObj._jitData.children.push(item); }
                         else
@@ -108,18 +116,25 @@
                     row[chartObj._fixedColumns[0].id] = 'Other';
                     row[chartObj._valueColumns[0].column.id] = chartObj._remainder;
                     var colors = chartObj.settings.view.displayFormat.colors;
-                    chartObj._jitData.children.push( {
+                    var color = colors[chartObj.settings.view.totalRows % 5];
+                    if (chartObj._otherHighlight)
+                    { color = getHighlightColor(color); }
+                    var item = {
                         id: -1,
                         name: 'Other',
                         data: {
                             $area: chartObj._remainder,
-                            $color: colors[chartObj.settings.view.totalRows % 5],
+                            $color: color,
+                            otherRow: true,
                             flyoutDetails: chartObj.renderFlyout(row,
                                 chartObj._valueColumns[0].column.tableColumnId,
                                 chartObj.settings.view)
                         },
                         children: []
-                    });
+                    };
+                    if (chartObj._otherHighlight)
+                    { item.data['$canvas-shadowBlur'] = chartObj.settings.highlightBlur; }
+                    chartObj._jitData.children.push(item);
                     chartObj._otherAdded = true;
                 }
 
@@ -158,6 +173,16 @@
         }
     }));
 
+    var getHighlightColor = function(color)
+    {
+        var hsv = $.rgbToHsv($.hexToRgb(color));
+        if (hsv.s > 50) { hsv.s /= 2; }
+        else { hsv.s *= 2; }
+        if (hsv.v < 51) { hsv.v *= 2; }
+        else { hsv.v /= 2; }
+        return '#' + $.rgbToHex($.hsvToRgb(hsv));
+    };
+
     var initializeJITObject = function(chartObj)
     {
         chartObj.chart = new $jit.TM.Squarified({
@@ -182,28 +207,51 @@
               enable: true,
               onMouseEnter: function(node, eventInfo)
               {
+                  if (!$.isBlank(chartObj._rowLeaveTimer))
+                  {
+                      clearTimeout(chartObj._rowLeaveTimer);
+                      delete chartObj._rowLeaveTimer;
+                  }
                   if (node)
                   {
-                      node.setData('mouseoutColor', node.getData('color'));
-                      var hsv = $.rgbToHsv($.hexToRgb(node.getData('color')));
-                      if (hsv.s > 50) { hsv.s /= 2; }
-                      if (hsv.v < 51) { hsv.v *= 2; }
-                      node.setData('color', '#' + $.rgbToHex($.hsvToRgb(hsv)));
-                      node.setCanvasStyle('shadowBlur', 7);
-                      chartObj.chart.fx.plotNode(node, chartObj.chart.canvas);
-                      chartObj.highlightRows(node.data.row);
-                      //chartObj.chart.labels.plotLabel(chartObj.chart.canvas, node);
-                        // No controller is being passed and this seems to cause JS errors.
+                      if (!$.isBlank(chartObj._curHighlight) && chartObj._curHighlight.id != node.id)
+                      { chartObj.unhighlightRows(chartObj._curHighlight); }
+                      else if (!node.data.otherRow)
+                      { delete chartObj._otherHighlight; }
+
+                      chartObj._curHighlight = node.data.row;
+                      if (node.data.otherRow)
+                      {
+                          if (!chartObj._otherHighlight)
+                          {
+                              chartObj._otherHighlight = true;
+                              chartObj.settings.view.trigger('row_change');
+                          }
+                      }
+                      else
+                      { chartObj.highlightRows(node.data.row); }
                   }
               },
               onMouseLeave: function(node)
               {
                   if (node)
                   {
-                      node.setData('color', node.getData('mouseoutColor'));
-                      node.removeCanvasStyle('shadowBlur');
-                      chartObj.chart.plot();
-                      chartObj.unhighlightRows(node.data.row);
+                      // Delay in case they moused over the tooltip before it adjusted
+                      chartObj._rowLeaveTimer =
+                          setTimeout(function()
+                          {
+                              delete chartObj._rowLeaveTimer;
+                              if (node.data.otherRow)
+                              {
+                                  if (chartObj._otherHighlight)
+                                  {
+                                      delete chartObj._otherHighlight;
+                                      chartObj.settings.view.trigger('row_change');
+                                  }
+                              }
+                              else
+                              { chartObj.unhighlightRows(node.data.row); }
+                          }, 100);
                   }
               }
             },
@@ -212,8 +260,9 @@
               type: 'Native',
               offsetX: -10,
               offsetY: 10,
-              onShow: function(tip, node, isLeaf, domElement) {
-                $(tip).empty().append(node.data.flyoutDetails);
+              onShow: function(tip, node, isLeaf, domElement)
+              {
+                  $(tip).empty().append(node.data.flyoutDetails);
               }
             },
             onCreateLabel: function(domElement, node){

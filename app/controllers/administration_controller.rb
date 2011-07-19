@@ -562,10 +562,18 @@ class AdministrationController < ApplicationController
       config = create_config_copy('View categories', 'view_categories')
     end
 
-    if config.raw_properties.any? { |k,v| k == category }
-      config.delete_property(URI.escape(category))
-    else
+    if !config.raw_properties.any? { |k,v| k == category }
       flash[:error] = "Could not remove category named '#{category}'"
+      return redirect_to metadata_administration_path
+    end
+
+    CoreServer::Base.connection.batch_request do
+      config.raw_properties.each do |prop, value|
+        if value['parent'].present? && value['parent'].downcase == category.downcase
+          config.update_property(prop, value.merge('parent' => nil))
+        end
+      end
+      config.delete_property(URI.escape(category))
     end
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
@@ -966,9 +974,6 @@ private
         story_params.delete(key)
       end
     end
-
-    # make sure the color looks as we expect
-    customization['backgroundColor'].gsub!(/^#/, '') if customization['backgroundColor'].present?
 
     story.customization = customization
   end

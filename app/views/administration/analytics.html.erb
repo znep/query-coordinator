@@ -11,22 +11,27 @@
 
 <%= render :partial => 'left_nav' %>
 
-<div class="contentBox withLeftNavigation">
-  <div id="analyticsDataContainer" class="overviewMetrics">
-    <div class="adminHeader analytics clearfix">
-      <span class="icon"></span>
-      <h1 class="floating">Site Analytics</h1>
-      <%= render :partial => 'shared/metrics_timing' %>
-    </div>
-
-    <div class="summaryDisplay clearfix container"></div>
-
-    <div class="chartsDisplay container">
-      <div class="flash error message errorMessage">
-        <h3>An error occurred loading the metrics data. Please try again later</h3>
+<div id="analyticsDataContainer" class="overviewMetrics">
+  <div class="contentBox withLeftNavigation">
+    <div>
+      <div class="adminHeader floating analytics clearfix">
+        <span class="icon"></span>
+        <h1 class="floating">Site Analytics</h1>
+        <%= render :partial => 'shared/metrics_timing' %>
       </div>
     </div>
+    <div class="summaryDisplay clearfix container"></div>
+  </div>
 
+  <div class="contentBox withLeftNavigation analyticsDataContainer">
+    <div class="chartsDisplay container">
+      <div class="flash error message errorMessage">
+        <h3>An error occurred loading the metrics data. Please try again later.</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="contentBox withLeftNavigation analyticsDataContainer">
     <div class="detailDisplay clearfix container"></div>
 
     <div class="topDisplay clearfix container">

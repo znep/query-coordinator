@@ -2,6 +2,7 @@
 
 $(function()
 {
+    blist.metrics.datasetPostfix = '/stats';
     var screen = $('#analyticsDataContainer').metricsScreen(
         $.extend(true, blist.metrics.sitewideShared,
     {

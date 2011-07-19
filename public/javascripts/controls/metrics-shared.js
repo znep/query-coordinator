@@ -135,7 +135,7 @@ metricsNS.topDatasetsCallback = function($context)
                     results.push({linkText: responseData.name,
                         value: value,
                         textValue: Highcharts.numberFormat(value, 0),
-                        href: new Dataset(responseData).url + '/stats'
+                        href: new Dataset(responseData).url + (metricsNS.datasetPostfix || '')
                     });
                 }
             });

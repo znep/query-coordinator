@@ -415,7 +415,12 @@
                 rows = $.makeArray(rows);
                 for (var i = 0; i < rows.length; i++)
                 {
-                    if (!rows[i].sessionMeta || !rows[i].sessionMeta.highlight)
+                    if (rows[i].id == 'Other' && !vizObj._otherHighlight)
+                    {
+                        vizObj._otherHighlight = true;
+                        vizObj.settings.view.trigger('row_change', [[rows[i]]]);
+                    }
+                    else if (!rows[i].sessionMeta || !rows[i].sessionMeta.highlight)
                     { vizObj.settings.view.markRow('highlight', true, rows[i].id); }
                 }
             },
@@ -426,7 +431,12 @@
                 rows = $.makeArray(rows);
                 for (var i = 0; i < rows.length; i++)
                 {
-                    if (rows[i].sessionMeta && rows[i].sessionMeta.highlight)
+                    if (rows[i].id == 'Other' && vizObj._otherHighlight)
+                    {
+                        delete vizObj._otherHighlight;
+                        vizObj.settings.view.trigger('row_change', [[rows[i]]]);
+                    }
+                    else if (rows[i].sessionMeta && rows[i].sessionMeta.highlight)
                     { vizObj.settings.view.markRow('highlight', false, rows[i].id); }
                 }
             },

@@ -125,7 +125,7 @@
                         data: {
                             $area: chartObj._remainder,
                             $color: color,
-                            otherRow: true,
+                            row: {id: 'Other'},
                             flyoutDetails: chartObj.renderFlyout(row,
                                 chartObj._valueColumns[0].column.tableColumnId,
                                 chartObj.settings.view)
@@ -214,22 +214,12 @@
                   }
                   if (node)
                   {
-                      if (!$.isBlank(chartObj._curHighlight) && chartObj._curHighlight.id != node.id)
+                      if (!$.isBlank(chartObj._curHighlight) &&
+                          chartObj._curHighlight.id != node.data.row.id)
                       { chartObj.unhighlightRows(chartObj._curHighlight); }
-                      else if (!node.data.otherRow)
-                      { delete chartObj._otherHighlight; }
 
                       chartObj._curHighlight = node.data.row;
-                      if (node.data.otherRow)
-                      {
-                          if (!chartObj._otherHighlight)
-                          {
-                              chartObj._otherHighlight = true;
-                              chartObj.settings.view.trigger('row_change');
-                          }
-                      }
-                      else
-                      { chartObj.highlightRows(node.data.row); }
+                      chartObj.highlightRows(node.data.row);
                   }
               },
               onMouseLeave: function(node)
@@ -241,16 +231,7 @@
                           setTimeout(function()
                           {
                               delete chartObj._rowLeaveTimer;
-                              if (node.data.otherRow)
-                              {
-                                  if (chartObj._otherHighlight)
-                                  {
-                                      delete chartObj._otherHighlight;
-                                      chartObj.settings.view.trigger('row_change');
-                                  }
-                              }
-                              else
-                              { chartObj.unhighlightRows(node.data.row); }
+                              chartObj.unhighlightRows(node.data.row);
                           }, 100);
                   }
               }

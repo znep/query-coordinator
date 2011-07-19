@@ -216,6 +216,7 @@
                 {
                     // Create fake row for other value
                     var otherRow = { id: 'Other', invalid: {}, error: {}, changed: {} };
+                    if (chartObj._otherHighlight) { otherRow.sessionMeta = {highlight: true}; }
                     otherRow[chartObj._xColumn.lookup] = 'Other';
                     var cf = _.detect(chartObj.settings.view.metadata.conditionalFormatting,
                         function(cf) { return cf.condition === true; });
@@ -527,16 +528,19 @@
             {
                 clearTimeout(tooltipTimeout);
                 var $tooltip = customTooltip(chartObj, this);
+                if (!$.isBlank($tooltip.data('currentRow')))
+                { chartObj.unhighlightRows($tooltip.data('currentRow')); }
                 chartObj.highlightRows(this.row);
                 $tooltip.data('currentRow', this.row);
             },
             mouseOut: function()
             {
+                var t = this;
                 var $tooltip = $("#highcharts_tooltip");
                 tooltipTimeout = setTimeout(function(){
                     if (!$tooltip.data('mouseover'))
                     {
-                        chartObj.unhighlightRows($tooltip.data('currentRow'));
+                        chartObj.unhighlightRows(t.row);
                         $tooltip.hide();
                     }
                 }, 500);
@@ -708,6 +712,9 @@
                 { fillColor: '#'+$.rgbToHex($.brighten(point.fillColor)) }); }
         }
 
+        if ((row.sessionMeta || {}).highlight)
+        { point.selected = true; }
+
         point.row = row;
         point.flyoutDetails = chartObj.renderFlyout(row,
             chartObj._valueColumns[seriesIndex].column.tableColumnId,
@@ -866,7 +873,12 @@
             if ($.isBlank(ri))
             { chartObj.chart.series[seriesIndex].addPoint(point, false); }
             else
-            { chartObj.chart.series[seriesIndex].data[ri].update(point, false); }
+            {
+                var p = chartObj.chart.series[seriesIndex].data[ri];
+                if (point.selected && !p.selected) { p.select(true); }
+                else if (!point.selected && p.selected) { p.select(false); }
+                p.update(point, false);
+            }
         }
         if (!_.isUndefined(chartObj.secondChart))
         {

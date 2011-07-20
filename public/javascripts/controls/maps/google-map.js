@@ -221,7 +221,8 @@
                             { icon = new google.maps.MarkerImage(details.icon); }
                             else if (!$.isBlank(icon.size))
                             {
-                                var sf = hasHighlight ? 1.1 : 1/1.1;
+                                var sf = hasHighlight ? mapObj.settings.iconScaleFactor :
+                                    1 / mapObj.settings.iconScaleFactor;
                                 icon.scaledSize = new google.maps.Size(icon.size.width * sf,
                                     icon.size.height * sf);
                                 icon.size = new google.maps.Size(icon.size.width * sf,

@@ -55,7 +55,8 @@
         defaults:
         {
             defaultZoom: 1,
-            coordinatePrecision: 6
+            coordinatePrecision: 6,
+            iconScaleFactor: 1.2
         },
 
         prototype:

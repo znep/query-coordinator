@@ -249,7 +249,7 @@ var updateLines = function($elems)
             column = {
                 name:       oldColumn.name,
                 suggestion: oldColumn.suggestion,
-                type:       oldColumn.type,
+                type:       'location',
                 address:    getColumn($line.find('.locationAddressColumn').val()),
                 city:       getColumn(findOptionValue('city')),
                 state:      getColumn(findOptionValue('state')),

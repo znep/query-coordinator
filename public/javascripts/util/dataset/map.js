@@ -4,17 +4,15 @@ Dataset.map = {};
 Dataset.map.toGoogle = {
     polygon: function(geometry)
     {
-        return new google.maps.Polygon({
-            paths: _.map(geometry.rings, function(ring, r)
+        return _.map(geometry.rings, function(ring, r)
+        {
+            return _.map(ring, function(point, p)
             {
-                return _.map(ring, function(point, p)
-                {
-                    var point = geometry.getPoint(r, p);
-                    if (point.spatialReference.wkid == 102100)
-                    { point = esri.geometry.webMercatorToGeographic(point); }
-                    return new google.maps.LatLng(point.y, point.x);
-                });
-            })
+                var point = geometry.getPoint(r, p);
+                if (point.spatialReference.wkid == 102100)
+                { point = esri.geometry.webMercatorToGeographic(point); }
+                return new google.maps.LatLng(point.y, point.x);
+            });
         });
     },
     extent: function(extent)

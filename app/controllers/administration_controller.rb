@@ -573,7 +573,7 @@ class AdministrationController < ApplicationController
           config.update_property(prop, value.merge('parent' => nil))
         end
       end
-      config.delete_property(URI.escape(category))
+      config.delete_property(category)
     end
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)

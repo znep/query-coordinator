@@ -19,6 +19,9 @@ html, body
   .ie7 &
     z-index: 99
 
+  &.isEditable, &.sidebar-left
+    padding-bottom: 2.5em
+
   #infoBox
     margin-right: 55em
     min-height: 3em
@@ -340,7 +343,10 @@ html, body
     overflow-x: hidden
 
 #actionBar
-  position: relative
+  bottom: 0
+  position: absolute
+  left: 0
+  width: 100%
   &.position-left
     #editBar
       bottom: 0

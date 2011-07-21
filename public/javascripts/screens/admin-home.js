@@ -200,6 +200,7 @@ $(function()
         {
             $('#selectDataset').jqmHide();
 
+            homeNS.features || (homeNS.features = []);
             if (_.detect(homeNS.features, function(feat) { return feat.viewId == ds.id; }))
             {
                 $('.featuresWorkspace .featureWrapper .featureBox[data-viewid="' + ds.id + '"]')

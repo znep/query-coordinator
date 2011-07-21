@@ -282,15 +282,17 @@
         var isDirty = false; // keep track of whether we've ever deviated from saved
         var isEdit = false;  // keep track of whether we're in edit mode
 
-        // pull some things out of options for easier access (also filterableColumns will change)
-        var dataset = options.dataset;
-        var filterableColumns = options.filterableColumns;
+        // pull some things out of options for easier access
+        var datasets = options.datasets;
+        var dataset = datasets[0]; // grab the first one; eg fsckLegacy only makes sense for one anyway
+        var filterableColumns = options.filterableColumns; // this will change so save it off
+        var rootCondition = options.rootCondition; // note: this may be null/undef
 
     /////////////////////////////////////
     // DATASET-SPECIFIC UTIL
 
         // check to make sure we can render the thing; make minor corrections if possible
-        var fsckLegacy = function(rootCondition)
+        var fsckLegacy_v1 = function(rootCondition)
         {
             var compatible = true;
 
@@ -381,6 +383,8 @@
                 }
             });
 
+            fsckLegacy_v2(rootCondition);
+
             return compatible;
         };
         var fsckLegacy_checkBetween = function(condition)
@@ -414,6 +418,27 @@
             {
                 return false;
             }
+            return true;
+        };
+
+        var fsckLegacy_v2 = function(rootCondition)
+        {
+            // assumes that we are already v1 compliant
+
+            // the difference between v1 and v2 is fundamentally that any given
+            // condition needs to know how to manipulate multiple distinct datasets
+            // at any given time. this means that it has to be given a tableColumnId
+            // per view-uid, which means that the tableColumnId field is now an obj
+
+            _.each(rootCondition.children[0], function(condition)
+            {
+                var newTCIDObj = {};
+                newTCIDObj[dataset.tableId] = condition.metadata.tableColumnId;
+                condition.metadata.tableColumnId = newTCIDObj;
+            });
+
+            rootCondition.metadata.unifiedVersion = 2;
+
             return true;
         };
 
@@ -467,14 +492,21 @@
         // check and render all the filters that are saved on the view
         var renderQueryFilters = function()
         {
-            var rootCondition;
-            if (!_.isUndefined(dataset.query.filterCondition))
+            if ($.isBlank(rootCondition) && $.subKeyDefined(dataset, 'query.filterCondition'))
+            {
+                // extend this only if we have to and it exists (otherwise {} registers as !undefined)
+                rootCondition = $.extend(true, {}, dataset.query.filterCondition);
+            }
+
+            if (!_.isUndefined(rootCondition))
             {
                 // great, we have a real filter to work with.
-                rootCondition = $.extend(true, {}, dataset.query.filterCondition);
 
-                if ((_.isUndefined(rootCondition.metadata) || (rootCondition.metadata.unifiedVersion !== 1)) &&
-                    !fsckLegacy(rootCondition))
+                // if we have something completely nonsensical, check v1 (which also checks v2)
+                // otherwise, check v2
+                if (((_.isUndefined(rootCondition.metadata) || _.isNaN(rootCondition.metadata.unifiedVersion)) &&
+                        !fsckLegacy_v1(rootCondition)) ||
+                    ((rootCondition.metadata.unifiedVersion < 2) && !fsckLegacy_v2(rootCondition)))
                 {
                     // this is some legacy or custom format that we're not capable of dealing with
                     throw "Error: We're not currently capable of dealing with this filter."
@@ -521,9 +553,6 @@
             $pane.find('.mainFilterOptionsMenu .matchAnyOrAll').removeClass('checked')
                 .filter(':has(>a[data-actionTarget=' + rootCondition.value + '])').addClass('checked');
 
-            // data
-            $pane.data('unifiedFilter-root', rootCondition);
-
             // now render each filter
             _.each(rootCondition.children, renderCondition);
 
@@ -543,6 +572,7 @@
         var renderCondition = function(condition)
         {
             var metadata = condition.metadata || {};
+            // TODO: need to actually merge the datasets (how?) rather than just taking the first blindly
             var column = dataset.columnForTCID(metadata.tableColumnId);
 
             if (_.isUndefined(column))
@@ -898,7 +928,7 @@
 
             // data
             $filter.data('unifiedFilter-condition', {
-                column: column,
+                tableColumnId: column.tableColumnId,
                 condition: condition
             });
 
@@ -916,7 +946,6 @@
         {
             prepFilterRemoval($filter, function()
             {
-                var rootCondition = $pane.data('unifiedFilter-root');
                 rootCondition.children = _.without(rootCondition.children,
                     ($filter.data('unifiedFilter-condition') || {}).condition);
 
@@ -1195,7 +1224,7 @@
         };
 
         // add a new condition
-        var addNewCondition = function(rootCondition, column)
+        var addNewCondition = function(column)
         {
             var newCondition = {
                 children: [],
@@ -1464,7 +1493,7 @@
                 // update pane state
                 $pane.toggleClass('advanced', isAdvanced || isEdit);
                 $pane.toggleClass('notAdvanced', !isAdvanced && !isEdit);
-                $pane.data('unifiedFilter-root').metadata.advanced = isAdvanced;
+                rootCondition.metadata.advanced = isAdvanced;
 
                 // update edit mode messages
                 $pane.find('.advancedStateLine').removeClass('hide')
@@ -1489,7 +1518,7 @@
                     var $this = $(this);
                     var $entry = $this.closest('.menuEntry');
 
-                    $pane.data('unifiedFilter-root').value = $this.attr('data-actionTarget');
+                    rootCondition.value = $this.attr('data-actionTarget');
 
                     $entry.siblings('.matchAnyOrAll').removeClass('checked');
                     $entry.addClass('checked');
@@ -1501,7 +1530,7 @@
             $pane.find('.addFilterConditionButton').click(function(event)
             {
                 event.preventDefault();
-                addNewCondition($pane.data('unifiedFilter-root'));
+                addNewCondition();
                 $pane.find('.initialFilterMode').hide();
                 $pane.find('.normalFilterMode').show();
             });
@@ -1542,7 +1571,6 @@
                 $pane.find('.savingEditedFilterSpinner').css('display', 'inline-block');
 
                 parseFilters(); // be absolutely sure we got everything
-                var rootCondition = $pane.data('unifiedFilter-root');
 
                 // if we're a default view, move off the filterCondition from query to metadata
                 if (dataset.type == 'blist')
@@ -1589,12 +1617,22 @@
         // figure out what they entered and drop it into the dataset object
         var parseFilters = function()
         {
-            var filters = [];
-            var rootCondition = $pane.data('unifiedFilter-root');
-
             var $filterConditions = $pane.find('.filterCondition');
-
             $filterConditions.removeClass('countInvalid');
+
+            // TODO: rethink how to merge into existing filters (mount point)
+            var datasetConditions = {};
+            _.each(datasets, function(ds)
+            {
+                datasetConditions[ds.id] = {
+                    type: 'operator',
+                    value: rootCondition.value,
+                    children: [],
+                    metadata: {
+                        unifiedVersion: 2
+                    }
+                };
+            });
 
             $filterConditions.each(function()
             {
@@ -1602,17 +1640,17 @@
                 var data = $filterCondition.data('unifiedFilter-condition');
                 var condition = data.condition;
                 var metadata = condition.metadata || {};
-                var column = data.column;
+                var tableColumnId = data.tableColumnId;
 
                 var children = [];
-                var columnDefiniton = {
+                var columnDefinition = {
                     type: 'column',
-                    columnId: column.id
+                    columnId: dataset.columnForTCID(tableColumnId).id
                 };
 
                 if (!_.isUndefined(metadata.subcolumn))
                 {
-                    columnDefiniton.value = metadata.subcolumn;
+                    columnDefinition.value = metadata.subcolumn;
                 }
 
                 var $lineToggles = $filterCondition.find('.filterLineToggle');
@@ -1633,7 +1671,7 @@
                         children.push({
                             type: 'operator',
                             value: 'IS_' + value.replace(' ', '_').toUpperCase(),
-                            children: [ columnDefiniton ]
+                            children: [ columnDefinition ]
                         });
                         return;
                     }
@@ -1659,7 +1697,7 @@
                         metadata: {
                             freeform: ($line.find('.filterValueEditor').length > 0)
                         },
-                        children: [columnDefiniton].concat(_.map($.arrayify(value), function(v)
+                        children: [columnDefinition].concat(_.map($.arrayify(value), function(v)
                         {
                             if (!_.isUndefined(metadata.subcolumn))
                             {
@@ -1709,25 +1747,55 @@
                     }
                 });
 
-                condition.children = children;
-                if (condition.children.length > 0)
+                // populate the canonical condition
+                condition.children = $.extend(true, [], children);
+
+                // go through each dataset we have, update if necessary
+                _.each(datasets, function(ds)
+                {
+                    if ($.subKeyDefined(ds, 'query.filterCondition') &&
+                        (ds.query.filterCondition !== rootCondition))
+                    {
+                        // we're not the default filter, need to push this on
+                        columnDefinition.columnId = ds.columnForTCID(tableColumnId).id;
+
+                        var dsCondition = $.extend({}, condition);
+                        dsCondition.children = $.extend(true, [], children);
+                        datasetConditions[ds.id].children.push(dsCondition);
+                    }
+                });
+
+                if (children.length > 0)
                 {
                     $filterCondition.siblings().addClass('countInvalid');
                 }
             });
 
             // now let's see how clean we are. if we're clean, no need to update the dataset.
-            if (isDirty ||
-                !_.isEqual(cleanFilter($.extend(true, {}, dataset.query.filterCondition)),
-                           cleanFilter($.extend(true, {}, rootCondition))))
+            // TODO: can't really just blindly iterate through this with one isDirty. rethink.
+            _.each(datasets, function(ds)
             {
-                // fire it off
-                dataset.update(
-                    {query: $.extend({}, dataset.query,
-                        { filterCondition: $.extend(true, {}, rootCondition) })});
+                if (isDirty ||
+                    !_.isEqual(cleanFilter($.extend(true, {}, ds.query.filterCondition)),
+                               cleanFilter($.extend(true, {}, rootCondition))))
+                {
+                    var processedFilterCondition = rootCondition;
 
-                isDirty = true;
-            }
+                    if ($.subKeyDefined(ds, 'query.filterCondition') &&
+                        (ds.query.filterCondition !== rootCondition))
+                    {
+                        // we're not on the default filter; need to use specific condition
+                        processedFilterCondition = datasetConditions[ds.id];
+                    }
+
+                    // fire it off
+                    ds.update(
+                        { query: $.extend({}, ds.query,
+                            { filterCondition: $.extend(true, {}, processedFilterCondition) })});
+
+                    isDirty = true;
+                }
+            });
         };
 
     /////////////////////////////////////

@@ -32,7 +32,7 @@
                 callback: function($elem)
                 {
                     $elem.unifiedFilter({
-                        dataset: blist.dataset,
+                        datasets: [ blist.dataset ],
                         filterableColumns: blist.dataset.columnsForType(filterableTypes)
                     });
 

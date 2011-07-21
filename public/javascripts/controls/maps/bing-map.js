@@ -56,6 +56,8 @@
                     mapObj._mousePanning = false;
                 });
 
+                mapObj._iconSizes = {};
+
                 if (mapObj.settings.view.snapshotting)
                 {
                     var resetSnapTimer = function()
@@ -132,11 +134,29 @@
 
                 _.each(shapes, function(shape)
                 {
+                    var hasHighlight = _.any(details.rows, function(r)
+                        { return r.sessionMeta && r.sessionMeta.highlight; });
                     if (details.icon)
                     {
-                        shape.setOptions({ icon: details.icon });
+                        var ics = mapObj._iconSizes[details.icon];
+                        if ($.isBlank(ics))
+                        {
+                            var image = new Image();
+                            image.onload = function()
+                            {
+                                var s = mapObj._iconSizes[details.icon] =
+                                    {width: image.width, height: image.height};
+                                shape.setOptions(s);
+                            };
+                            image.src = details.icon;
+                        }
+                        var opts = $.extend({ icon: details.icon }, ics);
+                        shape.setOptions(opts);
                         shape.custom_icon = true;
                     }
+                    else if (hasHighlight)
+                    { shape.setOptions({icon: '/images/bing-highlight.png'}); }
+
                     shape.rows = details.rows;
                     shape.flyoutDetails = details.flyoutDetails;
                     shape.dataView = details.dataView;
@@ -174,11 +194,14 @@
                             buildInfoWindow(mapObj, event);
                         });
 
-                    Microsoft.Maps.Events.addHandler(shape, 'mouseover', function()
-                    { mapObj.highlightRows(details.rows); });
+                    if (geoType == 'point')
+                    {
+                        Microsoft.Maps.Events.addHandler(shape, 'mouseover', function()
+                        { mapObj.highlightRows(details.rows); });
 
-                    Microsoft.Maps.Events.addHandler(shape, 'mouseout', function()
-                    { mapObj.unhighlightRows(details.rows); });
+                        Microsoft.Maps.Events.addHandler(shape, 'mouseout', function()
+                        { mapObj.unhighlightRows(details.rows); });
+                    }
                 });
 
                 return true;

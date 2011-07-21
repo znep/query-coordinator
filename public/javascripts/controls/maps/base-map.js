@@ -499,9 +499,10 @@
                 if (!viewConfig._llKeys[rowKey])
                 { viewConfig._llKeys[rowKey] = { rows: [] }; }
 
-                if (!_.any(viewConfig._llKeys[rowKey].rows, function(cachedRow)
-                    { return row.id == cachedRow.id; }))
-                { viewConfig._llKeys[rowKey].rows.push(row); }
+                var ri = viewConfig._llKeys[rowKey].rows.length;
+                _.each(viewConfig._llKeys[rowKey].rows, function(cachedRow, i)
+                    { if (row.id == cachedRow.id) { ri = i; } });
+                viewConfig._llKeys[rowKey].rows[ri] = row;
 
                 var details = {rows: viewConfig._llKeys[rowKey].rows};
                 if (viewConfig._iconCol && row[viewConfig._iconCol.id])

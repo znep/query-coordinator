@@ -430,7 +430,7 @@
             // at any given time. this means that it has to be given a tableColumnId
             // per view-uid, which means that the tableColumnId field is now an obj
 
-            _.each(rootCondition.children[0], function(condition)
+            _.each(rootCondition.children, function(condition)
             {
                 var newTCIDObj = {};
                 newTCIDObj[dataset.tableId] = condition.metadata.tableColumnId;
@@ -517,7 +517,11 @@
                 // we might be looking at a default view with a filterCondition.
                 rootCondition = $.extend(true, {}, dataset.metadata.filterCondition);
 
-                // we must have put this here ourselves, so trust it inherently (no fsck)
+                // this must be at least a v1 unified filter. verify v2ness
+                if (rootCondition.metadata.unifiedVersion < 2)
+                {
+                    fsckLegacy_v2(rootCondition);
+                }
             }
             else
             {
@@ -528,7 +532,7 @@
                     children: [],
                     metadata: {
                         advanced: true,
-                        unifiedVersion: 1
+                        unifiedVersion: 2
                     }
                 };
             }
@@ -573,7 +577,7 @@
         {
             var metadata = condition.metadata || {};
             // TODO: need to actually merge the datasets (how?) rather than just taking the first blindly
-            var column = dataset.columnForTCID(metadata.tableColumnId);
+            var column = dataset.columnForTCID(metadata.tableColumnId[dataset.tableId]);
 
             if (_.isUndefined(column))
             {
@@ -685,7 +689,7 @@
                         delete metadata.subcolumn;
                     }
 
-                    metadata.tableColumnId = newColumn.tableColumnId;
+                    metadata.tableColumnId[dataset.tableId] = newColumn.tableColumnId;
                     replaceFilter($filter, condition);
 
                     return true;
@@ -927,10 +931,7 @@
             }
 
             // data
-            $filter.data('unifiedFilter-condition', {
-                tableColumnId: column.tableColumnId,
-                condition: condition
-            });
+            $filter.data('unifiedFilter-condition', condition);
 
             // ui
             $pane.find('.filterConditions')
@@ -1254,7 +1255,8 @@
                     column = filterableColumns[0];
                 }
             }
-            newCondition.metadata.tableColumnId = column.tableColumnId;
+            newCondition.metadata.tableColumnId = newCondition.metadata.tableColumnId || {};
+            newCondition.metadata.tableColumnId[dataset.tableId] = column.tableColumnId;
 
             // do we have a composite column? if so get the most relevant subcolumn.
             if (_.isArray(column.subColumnTypes))
@@ -1637,15 +1639,13 @@
             $filterConditions.each(function()
             {
                 var $filterCondition = $(this);
-                var data = $filterCondition.data('unifiedFilter-condition');
-                var condition = data.condition;
+                var condition = $filterCondition.data('unifiedFilter-condition');
                 var metadata = condition.metadata || {};
-                var tableColumnId = data.tableColumnId;
 
                 var children = [];
                 var columnDefinition = {
                     type: 'column',
-                    columnId: dataset.columnForTCID(tableColumnId).id
+                    columnId: dataset.columnForTCID(metadata.tableColumnId[dataset.tableId]).id
                 };
 
                 if (!_.isUndefined(metadata.subcolumn))
@@ -1753,11 +1753,11 @@
                 // go through each dataset we have, update if necessary
                 _.each(datasets, function(ds)
                 {
-                    if ($.subKeyDefined(ds, 'query.filterCondition') &&
+                    if (!$.subKeyDefined(ds, 'query.filterCondition') ||
                         (ds.query.filterCondition !== rootCondition))
                     {
                         // we're not the default filter, need to push this on
-                        columnDefinition.columnId = ds.columnForTCID(tableColumnId).id;
+                        columnDefinition.columnId = ds.columnForTCID(metadata.tableColumnId[ds.tableId]).id;
 
                         var dsCondition = $.extend({}, condition);
                         dsCondition.children = $.extend(true, [], children);
@@ -1781,7 +1781,7 @@
                 {
                     var processedFilterCondition = rootCondition;
 
-                    if ($.subKeyDefined(ds, 'query.filterCondition') &&
+                    if (!$.subKeyDefined(ds, 'query.filterCondition') ||
                         (ds.query.filterCondition !== rootCondition))
                     {
                         // we're not on the default filter; need to use specific condition

@@ -302,6 +302,7 @@ javascripts:
     - public/javascripts/controls/grid-sidebar/subscribe.js
     - public/javascripts/controls/grid-sidebar/signed-dataset.js
     - public/javascripts/controls/grid-sidebar/unified-filter.js
+    - public/javascripts/controls/grid-sidebar/unified-filter-sidebar.js
     - public/javascripts/controls/grid-sidebar/view-list.js
     - public/javascripts/controls/dataset-controls.js
     - public/javascripts/controls/dataset-email.js

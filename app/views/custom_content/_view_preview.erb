@@ -1,5 +1,5 @@
 <%- if widget.view -%>
-  <div id="<%= widget.elem_id %>" class="viewPreview clearfix">
+  <div id="<%= widget.elem_id %>" class="viewPreview clearfix"<%= raw " viewFilterGroup=\"#{widget.properties.viewFilterGroup}\"" unless widget.properties.viewFilterGroup.nil? %>>
     <%= render :partial => 'view_preview_details',
                :locals => { widget: widget, details: widget.properties.metadata.above } %>
     <div class="viewPreviewContainer">
@@ -27,6 +27,8 @@
           var view = new Dataset(<%= raw safe_json widget.view %>);
 
           var $container = $(targetSelector);
+
+          $container.data('viewPreview-dataset', view);
 
           view.bind('start_request', function()
                   { $container.find('.loadingSpinnerContainer').removeClass('hide'); })

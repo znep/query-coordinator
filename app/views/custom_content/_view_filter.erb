@@ -1,0 +1,42 @@
+<div id="<%= widget.elem_id %>" class="viewFilter">
+</div>
+
+<%- content_for :templates do -%>
+  <%- allow_once do -%>
+    <%= render :partial => 'datasets/unified_filter' %>
+  <%- end -%>
+<%- end -%>
+
+<%- content_for :js_footer do -%>
+  <%- allow_once do -%>
+    <%= include_javascripts 'unified-filter' %>
+    <%= include_javascripts 'shared-table-editor' %>
+  <%- end -%>
+
+  <script type="text/javascript">
+    // activator for viewPreview widget <%= widget.elem_id %>
+    $(function()
+    {
+        var targetSelector = "#<%= widget.elem_id %>";
+        var targetViewFilterGroup = <%= widget.properties.viewFilterGroup %>;
+        var filterCondition = <%= raw safe_json widget.properties.filterCondition %>;
+
+        // defer to allow .data() on viewPreviews to take hold
+        _.defer(function()
+        {
+            var datasets = $('.viewPreview[viewFilterGroup=' + targetViewFilterGroup + ']').map(function()
+            {
+                return $(this).data('viewPreview-dataset');
+            }).toArray();
+
+            var $container = $(targetSelector);
+
+            $container.append($.renderTemplate('filterPane'));
+            $container.unifiedFilter({
+                datasets: datasets,
+                rootCondition: filterCondition
+            })
+        });
+    });
+  </script>
+<%- end -%>

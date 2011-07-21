@@ -59,141 +59,9 @@
         'location': 'human_address',
         url: 'description'
     };
-    var filterableTypes = _.compact(_.map(blist.data.types, function(t, n)
-    {
-        return !$.isBlank(t.filterConditions) ? n : null;
-    }));
 
 /////////////////////////////////////
 // UTIL
-
-    // check to make sure we can render the thing; make minor corrections if possible
-    var fsckLegacy = function(rootCondition)
-    {
-        var compatible = true;
-
-        // make sure we have children before _.each'ing it
-        rootCondition.children = rootCondition.children || [];
-
-        // we can handle anything at the top level (AND or OR)
-        _.each(rootCondition.children, function(condition, i)
-        {
-            if ((condition.type == 'operator') && _.include(['AND', 'OR'], condition.value))
-            {
-                // we can't handle 3 levels deep....
-                if (_.any(condition.children || [], function(subcondition)
-                        { return _.include(['AND', 'OR'], subcondition.value); /* BWWWWAAAAAAAAAAAAHHHHHHHHHHHHH */ }))
-                {
-                    var childCompatible = true;
-
-                    // ...unless it's multiple guidedFilter-generated betweens, in which case fix it
-                    _.each(condition.children || [], function(subcondition, j)
-                    {
-                        var checkBetween = fsckLegacy_checkBetween(subcondition);
-                        if (_.isObject(checkBetween))
-                        {
-                            condition.children[j] = checkBetween;
-                        }
-                        else
-                        {
-                            return childCompatible = (childCompatible && checkBetween);
-                        }
-                    });
-
-                    return compatible = (compatible && childCompatible);
-                }
-
-                // a nested OR can only contain the same operations on the same column
-                var op, col;
-                _.each(condition.children || [], function(subcondition)
-                {
-                    if ((subcondition.type !== (op || subcondition.type)) ||
-                        (subcondition.columnId !== (col || subcondition.columnId)))
-                    {
-                        return compatible = false;
-                    }
-                    op = subcondition.type;
-                    col = subcondition.columnId;
-                });
-            }
-            else
-            {
-                // we're something not a conjunction; we should be able to nest this
-                // and everything will be okay
-                rootCondition.children[i] = {
-                    type: 'operator',
-                    value: 'OR',
-                    children: [ condition ]
-                };
-            }
-        });
-
-        // ensure root node and all direct subchildren have accurate metadata objects
-        if (_.isUndefined(rootCondition.metadata))
-        {
-            rootCondition.metadata = {
-                advanced: true,
-                unifiedVersion: 1
-            };
-        }
-        _.each(rootCondition.children, function(child)
-        {
-            if (_.isUndefined(child.metadata))
-            {
-                var column = blist.dataset.columnForID(findConditionComponent(child, 'columnId'));
-                var operator = child.children[0].value;
-
-                if (_.include(['IS_BLANK', 'IS_NOT_BLANK'], operator))
-                {
-                    operator = 'blank?';
-                }
-                child.metadata = {
-                    tableColumnId: column.tableColumnId,
-                    operator: operator
-                };
-                var subcolumn = findConditionComponent(child, 'subcolumn');
-                if (subcolumn && _.include(column.subColumnTypes || [], subcolumn)) // sanity check
-                {
-                    child.metadata.subcolumn = subcolumn;
-                }
-            }
-        });
-
-        return compatible;
-    };
-    var fsckLegacy_checkBetween = function(condition)
-    {
-        if ((condition.value == 'AND') && (condition.children.length == 2))
-        {
-            if (((condition.children[0].value == 'GREATER_THAN_OR_EQUALS') &&
-                 (condition.children[1].value == 'LESS_THAN_OR_EQUALS')) ||
-                ((condition.children[0].value == 'LESS_THAN_OR_EQUALS') &&
-                 (condition.children[1].value == 'GREATER_THAN_OR_EQUALS')))
-            {
-                return {
-                    type: 'operator',
-                    value: 'BETWEEN',
-                    children: [
-                        { columnId: findConditionComponent(condition, 'columnId'),
-                          type: 'column' },
-                        { value: findConditionComponent(condition, 'value', 0),
-                          type: 'literal' },
-                        { value: findConditionComponent(condition, 'value', 1),
-                          type: 'literal' }
-                    ]
-                };
-            }
-            else
-            {
-                return false;
-            }
-        }
-        else
-        {
-            return false;
-        }
-        return true;
-    };
 
     // cleans out filters down to a "minimal effective" state: essentially strips out
     // everything that is a NOOP on the actual filter operation.
@@ -405,20 +273,156 @@
     };
 
 /////////////////////////////////////
-// BINDINGS
+// PLUGIN
     $.fn.unifiedFilter = function(options)
     {
-        // extract options we care about
-        // (TODO)
+        // note: startup tasks are at the bottom.
 
         var $pane = this;
         var isDirty = false; // keep track of whether we've ever deviated from saved
         var isEdit = false;  // keep track of whether we're in edit mode
 
-        var filterableColumns = blist.dataset.columnsForType(filterableTypes);
-        blist.dataset.bind('columns_changed', function()
+        // pull some things out of options for easier access (also filterableColumns will change)
+        var dataset = options.dataset;
+        var filterableColumns = options.filterableColumns;
+
+    /////////////////////////////////////
+    // DATASET-SPECIFIC UTIL
+
+        // check to make sure we can render the thing; make minor corrections if possible
+        var fsckLegacy = function(rootCondition)
         {
-            filterableColumns = blist.dataset.columnsForType(filterableTypes);
+            var compatible = true;
+
+            // make sure we have children before _.each'ing it
+            rootCondition.children = rootCondition.children || [];
+
+            // we can handle anything at the top level (AND or OR)
+            _.each(rootCondition.children, function(condition, i)
+            {
+                if ((condition.type == 'operator') && _.include(['AND', 'OR'], condition.value))
+                {
+                    // we can't handle 3 levels deep....
+                    if (_.any(condition.children || [], function(subcondition)
+                            { return _.include(['AND', 'OR'], subcondition.value); /* BWWWWAAAAAAAAAAAAHHHHHHHHHHHHH */ }))
+                    {
+                        var childCompatible = true;
+
+                        // ...unless it's multiple guidedFilter-generated betweens, in which case fix it
+                        _.each(condition.children || [], function(subcondition, j)
+                        {
+                            var checkBetween = fsckLegacy_checkBetween(subcondition);
+                            if (_.isObject(checkBetween))
+                            {
+                                condition.children[j] = checkBetween;
+                            }
+                            else
+                            {
+                                return childCompatible = (childCompatible && checkBetween);
+                            }
+                        });
+
+                        return compatible = (compatible && childCompatible);
+                    }
+
+                    // a nested OR can only contain the same operations on the same column
+                    var op, col;
+                    _.each(condition.children || [], function(subcondition)
+                    {
+                        if ((subcondition.type !== (op || subcondition.type)) ||
+                            (subcondition.columnId !== (col || subcondition.columnId)))
+                        {
+                            return compatible = false;
+                        }
+                        op = subcondition.type;
+                        col = subcondition.columnId;
+                    });
+                }
+                else
+                {
+                    // we're something not a conjunction; we should be able to nest this
+                    // and everything will be okay
+                    rootCondition.children[i] = {
+                        type: 'operator',
+                        value: 'OR',
+                        children: [ condition ]
+                    };
+                }
+            });
+
+            // ensure root node and all direct subchildren have accurate metadata objects
+            if (_.isUndefined(rootCondition.metadata))
+            {
+                rootCondition.metadata = {
+                    advanced: true,
+                    unifiedVersion: 1
+                };
+            }
+            _.each(rootCondition.children, function(child)
+            {
+                if (_.isUndefined(child.metadata))
+                {
+                    var column = dataset.columnForID(findConditionComponent(child, 'columnId'));
+                    var operator = child.children[0].value;
+
+                    if (_.include(['IS_BLANK', 'IS_NOT_BLANK'], operator))
+                    {
+                        operator = 'blank?';
+                    }
+                    child.metadata = {
+                        tableColumnId: column.tableColumnId,
+                        operator: operator
+                    };
+                    var subcolumn = findConditionComponent(child, 'subcolumn');
+                    if (subcolumn && _.include(column.subColumnTypes || [], subcolumn)) // sanity check
+                    {
+                        child.metadata.subcolumn = subcolumn;
+                    }
+                }
+            });
+
+            return compatible;
+        };
+        var fsckLegacy_checkBetween = function(condition)
+        {
+            if ((condition.value == 'AND') && (condition.children.length == 2))
+            {
+                if (((condition.children[0].value == 'GREATER_THAN_OR_EQUALS') &&
+                     (condition.children[1].value == 'LESS_THAN_OR_EQUALS')) ||
+                    ((condition.children[0].value == 'LESS_THAN_OR_EQUALS') &&
+                     (condition.children[1].value == 'GREATER_THAN_OR_EQUALS')))
+                {
+                    return {
+                        type: 'operator',
+                        value: 'BETWEEN',
+                        children: [
+                            { columnId: findConditionComponent(condition, 'columnId'),
+                              type: 'column' },
+                            { value: findConditionComponent(condition, 'value', 0),
+                              type: 'literal' },
+                            { value: findConditionComponent(condition, 'value', 1),
+                              type: 'literal' }
+                        ]
+                    };
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+            return true;
+        };
+
+    /////////////////////////////////////
+    // EXTERNAL BINDINGS
+
+        this.bind('columns_changed', function(event, args)
+        {
+            filterableColumns = args.columns;
 
             if ($.isBlank($pane))
             {
@@ -441,7 +445,7 @@
             });
         });
 
-        blist.dataset.bind('clear_temporary', function()
+        this.bind('revert', function()
         {
             isDirty = false;
 
@@ -464,10 +468,10 @@
         var renderQueryFilters = function()
         {
             var rootCondition;
-            if (!_.isUndefined(blist.dataset.query.filterCondition))
+            if (!_.isUndefined(dataset.query.filterCondition))
             {
                 // great, we have a real filter to work with.
-                rootCondition = $.extend(true, {}, blist.dataset.query.filterCondition);
+                rootCondition = $.extend(true, {}, dataset.query.filterCondition);
 
                 if ((_.isUndefined(rootCondition.metadata) || (rootCondition.metadata.unifiedVersion !== 1)) &&
                     !fsckLegacy(rootCondition))
@@ -476,10 +480,10 @@
                     throw "Error: We're not currently capable of dealing with this filter."
                 }
             }
-            else if ($.subKeyDefined(blist.dataset, 'metadata.filterCondition'))
+            else if ($.subKeyDefined(dataset, 'metadata.filterCondition'))
             {
                 // we might be looking at a default view with a filterCondition.
-                rootCondition = $.extend(true, {}, blist.dataset.metadata.filterCondition);
+                rootCondition = $.extend(true, {}, dataset.metadata.filterCondition);
 
                 // we must have put this here ourselves, so trust it inherently (no fsck)
             }
@@ -539,7 +543,7 @@
         var renderCondition = function(condition)
         {
             var metadata = condition.metadata || {};
-            var column = blist.dataset.columnForTCID(metadata.tableColumnId);
+            var column = dataset.columnForTCID(metadata.tableColumnId);
 
             if (_.isUndefined(column))
             {
@@ -1204,13 +1208,12 @@
             {
                 // we weren't given a column to start with; pick one that's filterable--
                 // ideally one that's not been filtered yet
-                var columns = blist.dataset.columnsForType(filterableTypes);
-                if (columns.length === 0)
+                if (filterableColumns.length === 0)
                 {
                     // nothing to filter!
                     return;
                 }
-                column = _.detect(columns, function(col)
+                column = _.detect(filterableColumns, function(col)
                 {
                     return !_.any(rootCondition.children, function(cond)
                     {
@@ -1219,7 +1222,7 @@
                 });
                 if ($.isBlank(column))
                 {
-                    column = columns[0];
+                    column = filterableColumns[0];
                 }
             }
             newCondition.metadata.tableColumnId = column.tableColumnId;
@@ -1508,14 +1511,14 @@
             {
                 event.preventDefault();
 
-                if (blist.dataset.temporary)
+                if (dataset.temporary)
                 {
                     if (confirm('You will lose any unsaved changes if you choose to continue. ' +
                                 'Please save any changes you wish to keep before proceeding.'))
                     {
                         // we need to first reset to a clean state, to avoid
                         // saving changes we don't mean to
-                        blist.dataset.reload()
+                        dataset.reload()
                     }
                     else
                     {
@@ -1542,23 +1545,23 @@
                 var rootCondition = $pane.data('unifiedFilter-root');
 
                 // if we're a default view, move off the filterCondition from query to metadata
-                if (blist.dataset.type == 'blist')
+                if (dataset.type == 'blist')
                 {
-                    blist.dataset.update({ metadata:
-                        $.extend({}, blist.dataset.metadata, { filterCondition: rootCondition }) });
+                    dataset.update({ metadata:
+                        $.extend({}, dataset.metadata, { filterCondition: rootCondition }) });
 
                     // just to be sure:
-                    var query = blist.dataset.query;
+                    var query = dataset.query;
                     delete query.filterCondition;
-                    blist.dataset.update({ query: query });
+                    dataset.update({ query: query });
                 }
                 else
                 {
-                    blist.dataset.update({ query:
-                        $.extend({}, blist.dataset.query, { filterCondition: rootCondition }) });
+                    dataset.update({ query:
+                        $.extend({}, dataset.query, { filterCondition: rootCondition }) });
                 }
 
-                blist.dataset.save(function()
+                dataset.save(function()
                 {
                     $pane.removeClass('editMode');
                     isEdit = false;
@@ -1575,8 +1578,8 @@
                 $pane.removeClass('editMode');
                 isEdit = false;
 
-                blist.dataset.update({}); // hack to force temporary
-                blist.dataset.reload();
+                dataset.update({}); // hack to force temporary
+                dataset.reload();
             });
         };
 
@@ -1715,12 +1718,12 @@
 
             // now let's see how clean we are. if we're clean, no need to update the dataset.
             if (isDirty ||
-                !_.isEqual(cleanFilter($.extend(true, {}, blist.dataset.query.filterCondition)),
+                !_.isEqual(cleanFilter($.extend(true, {}, dataset.query.filterCondition)),
                            cleanFilter($.extend(true, {}, rootCondition))))
             {
                 // fire it off
-                blist.dataset.update(
-                    {query: $.extend({}, blist.dataset.query,
+                dataset.update(
+                    {query: $.extend({}, dataset.query,
                         { filterCondition: $.extend(true, {}, rootCondition) })});
 
                 isDirty = true;

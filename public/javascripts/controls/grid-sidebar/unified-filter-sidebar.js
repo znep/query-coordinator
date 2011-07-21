@@ -1,8 +1,12 @@
 ;(function($)
 {
-
     if (blist.sidebarHidden.filter &&
         blist.sidebarHidden.filter.filterDataset) { return; }
+
+    var filterableTypes = _.compact(_.map(blist.data.types, function(t, n)
+    {
+        return !$.isBlank(t.filterConditions) ? n : null;
+    }));
 
     var configName = 'filter.unifiedFilter';
     var config = {
@@ -27,7 +31,21 @@
                 data: {},
                 callback: function($elem)
                 {
-                    $elem.unifiedFilter();
+                    $elem.unifiedFilter({
+                        dataset: blist.dataset,
+                        filterableColumns: blist.dataset.columnsForType(filterableTypes)
+                    });
+
+                    blist.dataset.bind('columns_changed', function()
+                    {
+                        $elem.trigger('columns_changed',
+                            { columns: blist.dataset.columnsForType(filterableTypes) });
+                    });
+
+                    blist.dataset.bind('clear_temporary', function()
+                    {
+                        $elem.trigger('revert');
+                    });
                 }
             }
         }]

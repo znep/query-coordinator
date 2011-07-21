@@ -815,7 +815,7 @@ class View < Model
   def preferred_image_type
     if !custom_image.nil?
       return 'customImage'
-    elsif !self.metadata.nil? && ((self.metadata.data['thumbnail'] || {})['page'] || {})['created'] == true
+    elsif !self.metadata.nil? && ((self.metadata.data['thumbnail'] || {})['page'] || {})['filename'].present?
       return 'thumbnail'
     end
     ''

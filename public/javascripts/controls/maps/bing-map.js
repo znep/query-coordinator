@@ -339,6 +339,14 @@
                 mapObj.map.setView({ center: loc, zoom: viewport.zoom});
             },
 
+            showLayers: function()
+            {
+                var mapobj = this;
+                $(".MicrosoftMap > div:first > div:first img", mapObj.$dom())
+                    .css('visibility', 'visible');
+                clearInterval(mapObj._hideLayerInterval);
+            },
+
             hideLayers: function()
             {
                 var mapObj = this;

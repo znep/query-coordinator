@@ -423,6 +423,14 @@
                     { google.maps.event.removeListener(l); });
             },
 
+            showLayers: function()
+            {
+                var mapObj = this;
+                $('> div > div:first > div > div:last', mapObj.$dom())
+                    .css('visibility', 'visible');
+                google.maps.event.removeListener(mapObj._hideTiles);
+            },
+
             hideLayers: function()
             {
                 var mapObj = this;

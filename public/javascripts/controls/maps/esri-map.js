@@ -488,6 +488,14 @@
                 { mapObj._convertHeatmap(mapObj._topmostLayer); }
             },
 
+            showLayers: function()
+            {
+                var mapObj = this;
+                var layers = mapObj.getLayers();
+                for (var i = 0; i < layers.length; i++)
+                { mapObj.map.getLayer(layers[i].id).show(); }
+            },
+
             hideLayers: function()
             {
                 var mapObj = this;

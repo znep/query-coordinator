@@ -132,7 +132,11 @@ $(function()
         {
             event.preventDefault();
 
-            $(this).closest('.featureWrapper').fadeOut(function()
+            var $wrap  = $(this).closest('.featureWrapper');
+            var viewId = $wrap.find('.featureBox').data('viewid');
+            homeNS.features = _.reject(homeNS.features, function(feat) { return feat.viewId == viewId; });
+
+            $wrap.fadeOut(function()
             {
                 $(this).remove();
                 updateFeatureState();
@@ -196,12 +200,23 @@ $(function()
         {
             $('#selectDataset').jqmHide();
 
-            var newFeature = $.renderTemplate('feature',
-                [ { title: ds.name,
+            if (_.detect(homeNS.features, function(feat) { return feat.viewId == ds.id; }))
+            {
+                $('.featuresWorkspace .featureWrapper .featureBox[data-viewid="' + ds.id + '"]')
+                    .effect('highlight', 10000);
+                return;
+            }
+
+            var newFeatureObj = { title: ds.name,
                     description: ds.description || '',
                     display: !$.isBlank(ds.iconUrl) ? 'custom' : 'thumbnail',
                     assetId: ds.iconUrl,
-                    viewId: ds.id } ], featureDirective);
+                    viewId: ds.id };
+
+            homeNS.features.push(newFeatureObj);
+
+            var newFeature = $.renderTemplate('feature',
+                [ newFeatureObj ], featureDirective);
 
             customUploadGen(newFeature);
 

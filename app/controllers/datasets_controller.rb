@@ -1,6 +1,6 @@
 class DatasetsController < ApplicationController
   include DatasetsHelper
-  skip_before_filter :require_user, :only => [:show, :blob, :alt, :widget_preview, :contact, :math_validate, :form_success, :form_error, :external, :download, :about]
+  skip_before_filter :require_user, :only => [:show, :blob, :alt, :widget_preview, :contact, :math_validate, :form_success, :form_error, :external, :external_download, :download, :about]
 
 # collection actions
   def new
@@ -127,8 +127,19 @@ class DatasetsController < ApplicationController
   def external
     view = View.find_external(params[:id])
 
-    if !view.nil? && !view.empty?
+    if !view.blank?
       redirect_to view[0].href
+    else
+      render_404
+    end
+  end
+
+  def external_download
+    view = View.find_external(params[:id])
+    type = params[:type]
+
+    if !view.blank? && !type.blank?
+      redirect_to metric_redirect_path(:type => type.upcase, :id => view[0].id)
     else
       render_404
     end

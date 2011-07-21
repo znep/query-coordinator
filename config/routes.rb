@@ -239,7 +239,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :datasets,
     :collection => {
       :upload => :get,
-      :external => :get
+      :external => :get,
+      :external_download => :get
     },
     :member => {
       :about => :get,

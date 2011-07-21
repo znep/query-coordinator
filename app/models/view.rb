@@ -77,7 +77,7 @@ class View < Model
       { :key => 'allow_comments',
         :name => 'Commenting' },
     ]
-    of << { :key => 'cell_comments', :name => 'Cell Commenting' } if is_tabular?
+    of << { :key => 'cell_comments', :name => 'Cell Commenting' } if is_tabular? && !is_form?
     return of
   end
 

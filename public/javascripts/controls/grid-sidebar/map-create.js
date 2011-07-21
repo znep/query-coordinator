@@ -15,12 +15,13 @@
     ];
     var plotStyles = function(mapType)
     {
+        // Yes, the names are kinda inaccurate, but eh. We live with it.
         var plotStyles = [
             {text: 'Point Map', value: 'point'},
-            {text: 'Heat Map', value: 'heatmap'}
+            {text: 'Boundary Map', value: 'heatmap'}
         ];
         if (mapType == 'esri')
-        { plotStyles.push({text: 'Raster Heat Map', value: 'rastermap'}); }
+        { plotStyles.push({text: 'Heat Map', value: 'rastermap'}); }
         return plotStyles;
     };
 

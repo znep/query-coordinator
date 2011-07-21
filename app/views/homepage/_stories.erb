@@ -17,7 +17,9 @@
   <div class="storyTextbox"></div>
   <ul class="storyImages">
     <%- stories.each do |story| -%>
-      <li style="background-color:<%= story.customization['backgroundColor'] %>">
+      <%- bg_color = story.customization['backgroundColor'] -%>
+      <%- bg_color = ('#' + bg_color) unless bg_color.start_with?('#') -%>
+      <li style="background-color: <%= bg_color %>">
         <%- unless story.imageId.blank? -%>
           <img src="/assets/<%= story.imageId %>" alt="<%= story.headline %>" class="storyImage"/>
         <%- end -%>

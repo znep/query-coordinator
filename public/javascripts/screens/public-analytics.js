@@ -4,7 +4,5 @@ $(function()
 {
     var screen = $('#analyticsDataContainer').metricsScreen(blist.metrics.sitewideShared);
 
-     $('#analyticsTimeControl').metricsTimeControl({
-        metricsScreen: screen
-    });
+    $('#analyticsTimeControl').metricsTimeControl({ metricsScreen: screen });
 });

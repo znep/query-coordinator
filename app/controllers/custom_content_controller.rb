@@ -88,7 +88,8 @@ private
   # around_filter for caching
   def cache_wrapper
     cache_params = params.reject{ |k| k == 'controller' || k == 'action' }
-                         .merge({ 'domain' => CurrentDomain.cname })
+                         .merge({ 'domain' => CurrentDomain.cname,
+                                  'domain_updated' => CurrentDomain.default_config_updated_at })
     @cache_key = app_helper.cache_key("canvas-#{params[:action]}", cache_params)
     @cached_fragment = read_fragment(@cache_key)
 

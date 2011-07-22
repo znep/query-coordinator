@@ -177,7 +177,7 @@
             <%- end -%>
           </div>
         <%- else -%>
-          <table class="gridList">
+          <table class="gridList<%= ' hasFederations' if opts[:use_federations] %>">
             <colgroup>
               <%- if opts[:grid_items][:index] -%>
                 <col class="index" />
@@ -256,10 +256,12 @@
 
                   <%- if opts[:grid_items][:domainIcon] -%>
                     <td class="domainIcon">
-                      <a href="<%= v.href(opts[:port]) %>" rel="<%= rel_type %>">
-                        <img src="<%= v.domain_icon_href %>" alt="<%= v.federated? ?
-                          'Federated from ' + v.domainCName : CurrentDomain.cname %>" />
-                      </a>
+                      <%- if v.federated? -%>
+                        <a href="<%= v.href(opts[:port]) %>" rel="<%= rel_type %>">
+                          <img src="<%= v.domain_icon_href %>" alt="<%= v.federated? ?
+                            'Federated from ' + v.domainCName : CurrentDomain.cname %>" />
+                        </a>
+                      <%- end -%>
                     </td>
                   <%- end -%>
 
@@ -315,7 +317,7 @@
                   <%- if opts[:grid_items][:richSection] -%>
                     <td class="richSection">
                       <a href="<%= v.href(opts[:port]) %>" class="nameLink" rel="<%= rel_type %>">
-                        <%- if opts[:use_federations] -%>
+                        <%- if opts[:use_federations] && v.federated? -%>
                           <img class="domainIcon" src="<%= v.domain_icon_href %>" alt="<%= v.federated? ?
                             'Federated from ' + v.domainCName : CurrentDomain.cname %>" />
                         <%- end -%>

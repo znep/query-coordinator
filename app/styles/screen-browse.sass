@@ -217,6 +217,11 @@
             height: 20px
             width: 20px
 
+        .item.federated
+          background-color: #fafafa
+          .nameDesc a, .nameLink
+            color: scale-color($color_links_normal, $saturation: -65%, $lightness: 20%)
+
         .nameDesc
           padding:
             bottom: 0
@@ -232,7 +237,8 @@
             &.tags
               color: #666666
             &.federation-source
-              margin-bottom: 0.25em
+              font-size: 1em
+              margin: 0.25em 0
 
           .description
             line-height: 1.2em
@@ -367,8 +373,6 @@
 
         .federation-source
           color: #aaaaaa
-          font-size: 0.9167em
-          margin-left: 1em
 
         td.type
           @include sprite-menu-icons

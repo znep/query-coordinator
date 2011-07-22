@@ -379,6 +379,8 @@
                         {type: 'columnLabel', tableColumnId: dc.tableColumnId},
                         {type: 'columnData', tableColumnId: dc.tableColumnId}
                     ]};
+                    if (mapObj.settings.view.displayFormat.flyoutsNoLabel)
+                    { row.fields.shift(); }
                     col.rows.push(row);
                 });
                 return {columns: [col]};

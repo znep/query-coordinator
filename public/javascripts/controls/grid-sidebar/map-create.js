@@ -382,6 +382,7 @@
                                columns: {hidden: isEdit}},
                         minimum: 1, addText: 'Add Flyout Details'
                     },
+                    {text: 'w/o Labels?', type: 'checkbox', name: 'displayFormat.flyoutsNoLabel'},
                     {type: 'note', onlyIf: {field: 'displayFormat.type', value: 'esri'},
                         value: 'Colors may be overridden using ' +
                         '<a href="#Conditional Formatting" ' +

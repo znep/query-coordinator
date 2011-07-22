@@ -299,16 +299,31 @@
                     { mapObj._bounds = mapObj._bounds.union(g.geometry.getExtent()); }
                 }
 
-                if (details.redirect_to && geoType == 'polygon')
+                var dojoShape = g.getDojoShape();
+                if (!$.isBlank(dojoShape))
                 {
-                    $(g.getDojoShape().rawNode)
-                        .click(function(event)
-                            { window.open(details.redirect_to); })
-                        .hover(
-                            function(event) { mapObj.$dom()
-                                .find('div .container').css('cursor', 'pointer'); },
-                            function(event) { mapObj.$dom()
-                                .find('div .container').css('cursor', 'default'); });
+                    if (details.redirect_to && geoType == 'polygon')
+                    {
+                        $(dojoShape.rawNode)
+                            .click(function(event)
+                                { window.open(details.redirect_to); })
+                            .hover(
+                                function(event)
+                                { mapObj.$dom().find('div .container').css('cursor', 'pointer'); },
+                                function(event)
+                                { mapObj.$dom().find('div .container').css('cursor', 'default'); });
+                    }
+
+                    if (geoType == 'point')
+                    {
+                        // hover() would've been cleaner, but it actually screws things up
+                        // when the point gets redrawn
+                        $(dojoShape.rawNode).
+                            mouseover(function()
+                            { mapObj.highlightRows(details.rows); }).
+                            mouseout(function()
+                            { mapObj.unhighlightRows(details.rows); });
+                    }
                 }
 
                 return true;
@@ -488,6 +503,14 @@
                 { mapObj._convertHeatmap(mapObj._topmostLayer); }
             },
 
+            showLayers: function()
+            {
+                var mapObj = this;
+                var layers = mapObj.getLayers();
+                for (var i = 0; i < layers.length; i++)
+                { mapObj.map.getLayer(layers[i].id).show(); }
+            },
+
             hideLayers: function()
             {
                 var mapObj = this;
@@ -533,6 +556,7 @@
                 }
                 else
                 {
+                    extent = $.extend({}, extent);
                     extent.xmax += xadj;
                     extent.xmin -= xadj;
                     extent.ymax += yadj;
@@ -643,14 +667,28 @@
         {
             var customization = {};
 
+            var hasHighlight = _.any(details.rows, function(r)
+                { return r.sessionMeta && r.sessionMeta.highlight; });
             if (!_.isUndefined(point.icon))
             {
                 customization.icon = point.icon;
                 customization.width = point.width;
                 customization.height = point.height;
                 customization.key = point.icon;
+                if (hasHighlight)
+                {
+                    customization.highlight = true;
+                    customization.key += 'highlight:true';
+                }
                 if (customization.width || customization.height)
-                { customization.key += customization.width+'x'+customization.height; }
+                {
+                    if (customization.highlight)
+                    {
+                        customization.width *= mapObj.settings.iconScaleFactor;
+                        customization.height *= mapObj.settings.iconScaleFactor;
+                    }
+                    customization.key += customization.width+'x'+customization.height;
+                }
                 customization.type = 'picture';
                 return customization;
             }
@@ -660,6 +698,12 @@
                 if (!_.isUndefined(point[property]))
                 { customization[property] = point[property]; }
             });
+
+            if (hasHighlight)
+            {
+                customization.color =
+                    blist.styles.getReferenceProperty('itemHighlight', 'background-color');
+            }
 
             if (!_.isEmpty(customization))
             {
@@ -688,9 +732,13 @@
             if (!(customization.width && customization.height))
             {
                 var image = new Image();
-                image.onload = function() {
-                    mapObj._esriSymbol[key].setHeight(image.height);
-                    mapObj._esriSymbol[key].setWidth(image.width);
+                image.onload = function()
+                {
+                    var sf = customization.highlight ? mapObj.settings.iconScaleFactor : 1;
+                    var s = mapObj._esriSymbol[key];
+                    s.setHeight(image.height * sf);
+                    s.setWidth(image.width * sf);
+                    _.each(mapObj._markers, function(mm) { if (mm.symbol == s) { mm.setSymbol(s); } });
                 };
                 image.src = customization.icon;
             }

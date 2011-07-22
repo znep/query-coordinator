@@ -87,4 +87,21 @@ $(function ()
         cssSheets[sheetName] = null;
         styleRules[sheetName] = null;
     };
+
+    blist.styles.getReferenceProperty = function(name, prop)
+    {
+        var $sr = $('#styleReference');
+        if ($sr.length < 1)
+        {
+            $('body').append('<div id="styleReference"></div>');
+            $sr = $('#styleReference');
+        }
+        var $item = $sr.find('.' + name);
+        if ($item.length < 1)
+        {
+            $sr.append('<div class="' + name + '"></div>');
+            $item = $sr.find('.' + name);
+        }
+        return $item.css(prop);
+    };
 });

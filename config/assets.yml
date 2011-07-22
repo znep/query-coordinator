@@ -81,6 +81,7 @@ javascripts:
     - public/javascripts/data/editors/document-editor.js
     - public/javascripts/data/editors/photo-editor.js
   shared-map:
+    - public/javascripts/plugins/StyledMarker.js
     - public/javascripts/plugins/markerwithlabel.js
     - public/javascripts/plugins/heatmap.js
     - public/javascripts/controls/rich-render-library.js
@@ -303,6 +304,7 @@ javascripts:
     - public/javascripts/controls/grid-sidebar/subscribe.js
     - public/javascripts/controls/grid-sidebar/signed-dataset.js
     - public/javascripts/controls/grid-sidebar/unified-filter.js
+    - public/javascripts/controls/grid-sidebar/unified-filter-sidebar.js
     - public/javascripts/controls/grid-sidebar/view-list.js
     - public/javascripts/controls/dataset-controls.js
     - public/javascripts/controls/dataset-email.js
@@ -369,6 +371,10 @@ javascripts:
     - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/controls/image-uploader.js
     - public/javascripts/screens/profile-screen-edit.js
+  unified-filter:
+    - public/javascripts/controls/menu.js
+    - public/javascripts/controls/popup-select.js
+    - public/javascripts/controls/grid-sidebar/unified-filter.js
   stories:
     - public/javascripts/controls/stories.js
   featured_views:

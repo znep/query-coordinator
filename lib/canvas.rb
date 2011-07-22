@@ -361,6 +361,19 @@ module Canvas
     }
   end
 
+  class ViewFilter < CanvasWidget
+  protected
+    self.default_properties = {
+      filterCondition: {
+        type: 'operator',
+        value: 'AND',
+        metadata: { unifiedVersion: 2 },
+        children: []
+      },
+      viewFilterGroup: nil
+    }
+  end
+
   class ViewList < CanvasWidget
     attr_reader :view_count, :view_results, :current_page
 
@@ -449,6 +462,7 @@ module Canvas
       style: {
         height: { value: 30, unit: 'em' }
       },
+      viewFilterGroup: nil,
       viewUid: nil
     }
     self.style_definition = [

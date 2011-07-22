@@ -63,14 +63,20 @@
                             // On initial zoom, save off viewport
                             if ($.isBlank(mapObj._currentViewport))
                             { mapObj._currentViewport = mapObj.getViewport(); }
-                            return;
+                            if (!mapObj._needsViewportUpdate) { return; }
                         }
-                        if (!mapObj._boundsChanging) { return; }
+                        if (!mapObj._boundsChanging && !mapObj._needsViewportUpdate) { return; }
                         delete mapObj._boundsChanging;
+                        delete mapObj._needsViewportUpdate;
 
                         mapObj.updateDatasetViewport();
                         mapObj.updateRowsByViewport(null, true);
                     });
+
+                mapObj._hoverTimers = {};
+                mapObj._highlightColor = $.rgbToHex($.rgbToObj(
+                    blist.styles.getReferenceProperty('itemHighlight', 'background-color')));
+                StyledIconTypes.MARKER.defaults.color = 'ff776b';
 
                 // For snapshotting
                 if (mapObj.settings.view.snapshotting)
@@ -124,63 +130,138 @@
                         new esri.geometry.Polyline(geometry).getExtent());
                 }
 
-                switch(geoType)
+                var mapGeom;
+                if (mapObj._markers[dupKey])
                 {
-                    case 'point':
-                        geometry = new google.maps.Marker(
-                            {position: new google.maps.LatLng(geometry.latitude,
-                                                              geometry.longitude) });
-                        break;
-                    case 'polygon':
-                        if (geometry instanceof esri.geometry.Polygon)
-                        { geometry = Dataset.map.toGoogle.polygon(geometry); }
+                    mapGeom = mapObj._markers[dupKey];
+                    if (geoType == 'point')
+                    {
+                        if ($.isBlank(details.icon) != $.isBlank(mapGeom.styleIcon))
+                        {
+                            mapGeom.setPosition(new google.maps.LatLng(geometry.latitude,
+                                        geometry.longitude));
+                        }
                         else
-                        { geometry = new google.maps.Polygon({paths:
-                            _.map(geometry.rings,
-                            function(ring) { return _.map(ring, googlifyPoint); }) }); }
-                        break;
-                    case 'polyline':
-                        geometry = _.map(geometry.paths, function(path)
-                            { return new google.maps.Polyline(
-                                {path: _.map(path, googlifyPoint) }); });
-                        break;
+                        {
+                            // Remove current point
+                            mapGeom.setMap(null);
+                            mapGeom = null;
+                        }
+                    }
+                }
+                if ($.isBlank(mapGeom))
+                {
+                    switch (geoType)
+                    {
+                        case 'point':
+                            var ll = new google.maps.LatLng(geometry.latitude, geometry.longitude);
+                            if ($.isBlank(details.icon))
+                            {
+                                mapGeom = new StyledMarker(
+                                    {styleIcon: new StyledIcon(StyledIconTypes.MARKER),
+                                        position: ll});
+                            }
+                            else
+                            {
+                                mapGeom = new google.maps.Marker(
+                                    {icon: new google.maps.MarkerImage(details.icon), position: ll});
+                                // Really hacky. But the first time we set the scaledSize on an icon,
+                                // it causes a mouseout, so when you first mouseover an icon, it flickers
+                                // large/small; but after that, enlarges properly. We need to know the
+                                // real size of the icon to set the scaledSize; so we listen for a bit,
+                                // and if we get a size, then set the scaledSize to match initially.
+                                // But don't let it go on forever, since we can get icons that don't
+                                // fully load (maybe they're removed?).
+                                var interval;
+                                var c = 0;
+                                interval = setInterval(function()
+                                {
+                                    if (!$.isBlank(mapGeom.getIcon().size))
+                                    {
+                                        var icon = mapGeom.getIcon();
+                                        icon.scaledSize = new google.maps.Size(
+                                            icon.size.width, icon.size.height);
+                                        mapGeom.setIcon(icon);
+                                        clearInterval(interval);
+                                    }
+                                    else
+                                    {
+                                        c++;
+                                        if (c > 30) { clearInterval(interval); }
+                                    }
+                                }, 100);
+                            }
+                            mapGeom.setMap(mapObj.map);
+                            mapGeom.setClickable(true);
+                            break;
+                        case 'polygon':
+                            mapGeom = new google.maps.Polygon({map: mapObj.map});
+                            break;
+                        case 'polyline':
+                            mapGeom = _.map(geometry.paths, function()
+                                { return new google.maps.Polyline({ map: mapObj.map }); });
+                            break;
+                    }
+                    mapObj._markers[dupKey] = mapGeom;
                 }
 
                 if (details.color instanceof dojo.Color)
                 { details.color = details.color.toHex(); }
-                geometry.heatStrength = details.heatStrength || 1;
+                mapGeom.heatStrength = details.heatStrength || 1;
 
+                var hasHighlight = _.any(details.rows, function(r)
+                    { return r.sessionMeta && r.sessionMeta.highlight; });
                 switch(geoType)
                 {
                     case  'point':
-                        geometry.setOptions({clickable: true,
-                            map: mapObj.map, icon: details.icon});
+                        if ($.isBlank(mapGeom.styleIcon))
+                        {
+                            var icon = mapGeom.getIcon();
+                            if (icon.url != details.icon)
+                            { icon = new google.maps.MarkerImage(details.icon); }
+                            else if (!$.isBlank(icon.size))
+                            {
+                                var sf = hasHighlight ? mapObj.settings.iconScaleFactor :
+                                    1 / mapObj.settings.iconScaleFactor;
+                                icon.scaledSize = new google.maps.Size(icon.size.width * sf,
+                                    icon.size.height * sf);
+                                icon.size = new google.maps.Size(icon.size.width * sf,
+                                    icon.size.height * sf);
+                            }
+                            mapGeom.setIcon(icon);
+                        }
+                        else
+                        {
+                            mapGeom.styleIcon.set('color', hasHighlight ? mapObj._highlightColor :
+                                    StyledIconTypes.MARKER.defaults.color);
+                        }
                         break;
                     case 'polyline':
-                        geometry.each(function(g) {
+                        mapGeom.each(function(g, i)
+                        {
+                            g.setPath(_.map(geometry.paths[i], googlifyPoint));
                             g.setOptions({
                                 strokeColor: details.color || "#FF00FF",
                                 strokeWeight: details.size
                             });
-                            g.setMap(mapObj.map);
                         });
                         break;
                     case 'polygon':
-                        geometry.setOptions({
+                        if (geometry instanceof esri.geometry.Polygon)
+                        { mapGeom.setPaths(Dataset.map.toGoogle.polygon(geometry)); }
+                        else
+                        { mapGeom.setPaths(_.map(geometry.rings,
+                            function(ring) { return _.map(ring, googlifyPoint); })); }
+                        mapGeom.setOptions({
                             fillColor: details.color || "#FF00FF",
                             fillOpacity: _.isUndefined(details.opacity) ? 1.0 : details.opacity,
                             strokeColor: "#000000",
                             strokeWeight: 1
                         });
-                        geometry.setMap(mapObj.map);
                         break;
                 }
 
-                if (mapObj._markers[dupKey])
-                { mapObj._markers[dupKey].setMap(null); }
-                mapObj._markers[dupKey] = geometry;
-
-                google.maps.event.addListener(geometry, 'click', function(evt)
+                google.maps.event.addListener(mapGeom, 'click', function(evt)
                 {
                     if (!mapObj.infoWindow)
                     { mapObj.infoWindow =
@@ -188,24 +269,46 @@
                     mapObj.infoWindow.setContent(mapObj.getFlyout(details.rows,
                             details.flyoutDetails, details.dataView)[0]);
                     // evt.latLng if it's not a point; pull .position for points
-                    mapObj.infoWindow.setPosition(evt.latLng || geometry.position);
+                    mapObj.infoWindow.setPosition(evt.latLng || mapGeom.position);
                     mapObj.infoWindow.open(mapObj.map);
                 });
 
+                if (geoType == 'point')
+                {
+                    google.maps.event.addListener(mapGeom, 'mouseover', function()
+                    {
+                        if (!$.isBlank(mapObj._hoverTimers[dupKey]))
+                        {
+                            clearTimeout(mapObj._hoverTimers[dupKey]);
+                            delete mapObj._hoverTimers[dupKey];
+                        }
+                        mapObj.highlightRows(details.rows);
+                    });
+
+                    google.maps.event.addListener(mapGeom, 'mouseout', function()
+                    {
+                        mapObj._hoverTimers[dupKey] = setTimeout(function()
+                            {
+                                delete mapObj._hoverTimers[dupKey];
+                                mapObj.unhighlightRows(details.rows);
+                            }, 100);
+                    });
+                }
+
                 if (details.redirect_to)
                 {
-                    google.maps.event.addListener(geometry, 'click', function()
+                    google.maps.event.addListener(mapGeom, 'click', function()
                     { window.open(details.redirect_to); });
-                    google.maps.event.addListener(geometry, 'mouseover', function()
+                    google.maps.event.addListener(mapGeom, 'mouseover', function()
                     { mapObj.$dom().find('div .container')
                         .css('cursor', 'pointer'); });
-                    google.maps.event.addListener(geometry, 'mouseout', function()
+                    google.maps.event.addListener(mapGeom, 'mouseout', function()
                     { mapObj.$dom().find('div .container')
                         .css('cursor', 'default'); });
                 }
 
                 if (geoType == 'point')
-                { mapObj._bounds.extend(geometry.position); }
+                { mapObj._bounds.extend(mapGeom.position); }
                 else
                 { mapObj._bounds.union(extent); }
                 mapObj._boundsCounts++;
@@ -360,8 +463,7 @@
                 if (mapObj.settings.view.displayFormat.viewport)
                 {
                     mapObj.setViewport(mapObj.settings.view.displayFormat.viewport);
-                    if (_.isEmpty(mapObj.settings.view.query))
-                    { mapObj.updateRowsByViewport(null, true); }
+                    _.defer(function() { mapObj.updateRowsByViewport(null, true); });
                 }
                 else if (mapObj._boundsCounts > 1 ||
                     mapObj.settings.view.displayFormat.heatmap)
@@ -423,6 +525,14 @@
                     { google.maps.event.removeListener(l); });
             },
 
+            showLayers: function()
+            {
+                var mapObj = this;
+                $('> div > div:first > div > div:last', mapObj.$dom())
+                    .css('visibility', 'visible');
+                google.maps.event.removeListener(mapObj._hideTiles);
+            },
+
             hideLayers: function()
             {
                 var mapObj = this;
@@ -464,6 +574,7 @@
                 // Grab a reference to the current object (this) from a global
                 var mapObj = blist.util.googleCallbackMap;
                 add_markerwithlabel();
+                add_StyledMarker();
                 mapObj._librariesLoaded();
             }
         }

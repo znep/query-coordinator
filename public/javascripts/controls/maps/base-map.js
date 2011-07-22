@@ -55,7 +55,8 @@
         defaults:
         {
             defaultZoom: 1,
-            coordinatePrecision: 6
+            coordinatePrecision: 6,
+            iconScaleFactor: 1.2
         },
 
         prototype:
@@ -483,11 +484,12 @@
                 }
 
                 if (!viewConfig._llKeys) viewConfig._llKeys = {};
+                var rowKey;
                 if (isPoint)
                 {
-                    var rowKey = lat.toString();
-                    rowKey    += ',';
-                    rowKey    += longVal.toString();
+                    rowKey = lat.toString();
+                    rowKey += ',';
+                    rowKey += longVal.toString();
                 }
                 else if (row.feature)
                 { rowKey = row.feature.attributes[viewConfig._objectIdKey]; }
@@ -497,9 +499,10 @@
                 if (!viewConfig._llKeys[rowKey])
                 { viewConfig._llKeys[rowKey] = { rows: [] }; }
 
-                if (!_.any(viewConfig._llKeys[rowKey].rows, function(cachedRow)
-                    { return row.id == cachedRow.id; }))
-                { viewConfig._llKeys[rowKey].rows.push(row); }
+                var ri = viewConfig._llKeys[rowKey].rows.length;
+                _.each(viewConfig._llKeys[rowKey].rows, function(cachedRow, i)
+                    { if (row.id == cachedRow.id) { ri = i; } });
+                viewConfig._llKeys[rowKey].rows[ri] = row;
 
                 var details = {rows: viewConfig._llKeys[rowKey].rows};
                 if (viewConfig._iconCol && row[viewConfig._iconCol.id])
@@ -664,7 +667,11 @@
             {
                 var mapObj = this;
                 if (!viewport || !viewport.xmin) { viewport = mapObj.getViewport(); }
-                if (!$.subKeyDefined(viewport, 'xmin')) { return; }
+                if (!$.subKeyDefined(viewport, 'xmin'))
+                {
+                    mapObj._needsViewportUpdate = true;
+                    return;
+                }
 
                 _.each(mapObj._dataViews, function(view)
                 {

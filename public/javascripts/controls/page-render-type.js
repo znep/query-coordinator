@@ -74,6 +74,20 @@
 
                 if (!$.isBlank(prtObj.settings.defaultRowId))
                 { prtObj.displayRowByID(prtObj.settings.defaultRowId); }
+
+                prtObj.$content().bind(
+                    {'mouseenter': function(e)
+                        {
+                            var row = $(this).data('renderrow');
+                            if (!row.sessionMeta || !row.sessionMeta.highlight)
+                            { prtObj.settings.view.markRow('highlight', true, row.id); }
+                        },
+                    'mouseleave': function(e)
+                        {
+                            var row = $(this).data('renderrow');
+                            if (row.sessionMeta && row.sessionMeta.highlight)
+                            { prtObj.settings.view.markRow('highlight', false, row.id); }
+                        }});
             },
 
             $dom: function()

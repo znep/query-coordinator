@@ -56,6 +56,8 @@
                     mapObj._mousePanning = false;
                 });
 
+                mapObj._iconSizes = {};
+
                 if (mapObj.settings.view.snapshotting)
                 {
                     var resetSnapTimer = function()
@@ -97,6 +99,7 @@
                     { return new Microsoft.Maps.Location(point[0], point[1]); };
 
                 var shapeType;
+                var shapes;
                 switch(geoType)
                 {
                     case 'point':
@@ -120,8 +123,7 @@
                         break;
                 }
 
-                var shapes = shapes || _.map(geometry, function(g)
-                    { return new shapeType(g); });
+                shapes = shapes || _.map(geometry, function(g) { return new shapeType(g); });
 
                 if (mapObj._markers[dupKey])
                 {
@@ -132,11 +134,29 @@
 
                 _.each(shapes, function(shape)
                 {
+                    var hasHighlight = _.any(details.rows, function(r)
+                        { return r.sessionMeta && r.sessionMeta.highlight; });
                     if (details.icon)
                     {
-                        shape.setOptions({ icon: details.icon });
+                        var ics = mapObj._iconSizes[details.icon];
+                        if ($.isBlank(ics))
+                        {
+                            var image = new Image();
+                            image.onload = function()
+                            {
+                                var s = mapObj._iconSizes[details.icon] =
+                                    {width: image.width, height: image.height};
+                                shape.setOptions(s);
+                            };
+                            image.src = details.icon;
+                        }
+                        var opts = $.extend({ icon: details.icon }, ics);
+                        shape.setOptions(opts);
                         shape.custom_icon = true;
                     }
+                    else if (hasHighlight)
+                    { shape.setOptions({icon: '/images/bing-highlight.png'}); }
+
                     shape.rows = details.rows;
                     shape.flyoutDetails = details.flyoutDetails;
                     shape.dataView = details.dataView;
@@ -173,6 +193,15 @@
 
                             buildInfoWindow(mapObj, event);
                         });
+
+                    if (geoType == 'point')
+                    {
+                        Microsoft.Maps.Events.addHandler(shape, 'mouseover', function()
+                        { mapObj.highlightRows(details.rows); });
+
+                        Microsoft.Maps.Events.addHandler(shape, 'mouseout', function()
+                        { mapObj.unhighlightRows(details.rows); });
+                    }
                 });
 
                 return true;
@@ -337,6 +366,14 @@
                 var loc = new Microsoft.Maps.Location(viewport.center.latitude || viewport.center.lat,
                     viewport.center.longitude || viewport.center.lng);
                 mapObj.map.setView({ center: loc, zoom: viewport.zoom});
+            },
+
+            showLayers: function()
+            {
+                var mapobj = this;
+                $(".MicrosoftMap > div:first > div:first img", mapObj.$dom())
+                    .css('visibility', 'visible');
+                clearInterval(mapObj._hideLayerInterval);
             },
 
             hideLayers: function()

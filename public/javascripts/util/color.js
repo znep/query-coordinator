@@ -2,6 +2,12 @@
 
 // Colors and imagebuilder
 
+$.rgbToObj = function(rgb)
+{
+    var m = rgb.match(/rgb\((\d+),\s*(\d+),\s*(\d+)(,\s*\d+\.?\d+)?\)/);
+    return {r: parseInt(m[1]), g: parseInt(m[2]), b: parseInt(m[3])};
+};
+
 $.hexToRgb = function(hex)
 {
     hex = hex.replace('#', '');

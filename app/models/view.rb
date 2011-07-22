@@ -805,7 +805,7 @@ class View < Model
   def preferred_image(port = 80)
     if !custom_image.nil?
       return custom_image('thumb')
-    elsif !self.metadata.nil? && ((self.metadata.data['thumbnail'] || {})['page'] || {})['created'] == true
+    elsif !self.metadata.nil? && ((self.metadata.data['thumbnail'] || {})['page'] || {})['filename'].present?
       url_port = (port == 80) ? '' : ':' + port.to_s
       protocol = federated? ? "http://#{domainCName}#{url_port}" : ''
       return "#{protocol}/api/views/#{self.id}/snapshots/page?size=thumb"
@@ -816,7 +816,7 @@ class View < Model
   def preferred_image_type
     if !custom_image.nil?
       return 'customImage'
-    elsif !self.metadata.nil? && ((self.metadata.data['thumbnail'] || {})['page'] || {})['created'] == true
+    elsif !self.metadata.nil? && ((self.metadata.data['thumbnail'] || {})['page'] || {})['filename'].present?
       return 'thumbnail'
     end
     ''

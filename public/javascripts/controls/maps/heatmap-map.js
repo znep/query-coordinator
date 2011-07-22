@@ -77,6 +77,7 @@
             {
                 config.hideLayers = false;
                 config.ignoreTransforms = true;
+                mapObj.showLayers();
             }
             if (config.hideLayers && mapObj.hideLayers) { mapObj.hideLayers(); }
 
@@ -340,6 +341,11 @@
         {
             if (!feature.attributes.NAME)
             {feature.attributes.NAME = feature.attributes[mapObj._featureDisplayName];}
+            if (mapObj.settings.view.displayFormat.forceBasemap && feature.oldGeometry)
+            {
+                feature.geometry = new esri.geometry.Polygon(feature.oldGeometry);
+                delete feature.oldGeometry;
+            }
             if (!feature.attributes.quantity)
             {
                 mapObj.renderGeometry('polygon', feature.geometry, feature.attributes.NAME,
@@ -447,6 +453,7 @@
 
             if (!transform) { return; }
 
+            feature.oldGeometry = $.extend(true, {}, feature.geometry);
             var geometry = feature.geometry;
             var rings = geometry.rings;
             var center = geometry.getExtent().getCenter();

@@ -830,7 +830,7 @@ blist.namespace.fetch('blist.data.types');
 
     var renderGenLocation = function(value, plain, column)
     {
-        return 'locationHelper(' + value + ', ' + plain + ', "' + column.format.view + '")';
+        return 'locationHelper(' + value + ', ' + plain + ', "' + (column.format.view || '')  + '")';
     };
 
     var renderLocation = function(value, column, plain)

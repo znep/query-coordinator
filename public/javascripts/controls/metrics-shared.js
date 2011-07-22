@@ -118,6 +118,13 @@ metricsNS.updateTopSearchesCallback = function($context, key)
     {
         delete data["''"];
         delete data["null"];
+        // strip out four-four search terms
+        _.each(_.keys(data), function(key) {
+            if (key.match(blist.util.patterns.UID))
+            {
+                delete data[key];
+            }
+       });
     }
 
     metricsNS.updateTopListWrapper($context, data);

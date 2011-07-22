@@ -113,6 +113,10 @@
         ]
     };
 
+    var showPercentages = {
+        type: 'checkbox', name: 'displayFormat.showPercentages', text: 'Show %s'
+    };
+
 
     /*** Helpers ***/
 
@@ -388,7 +392,7 @@
             // Donut chart
             configDonut,
             basicAdv(Dataset.chart.types.donut,
-                [legendPos, pieJoinAngle, flyoutControls]),
+                [legendPos, pieJoinAngle, flyoutControls, showPercentages]),
 
 
             // Line chart
@@ -408,7 +412,7 @@
             // Pie chart
             configPie,
             basicAdv(Dataset.chart.types.pie,
-                [legendPos, pieJoinAngle, flyoutControls]),
+                [legendPos, pieJoinAngle, flyoutControls, showPercentages]),
 
 
             // Time line

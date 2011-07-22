@@ -73,6 +73,7 @@
 
                 chartObj._seriesRemainders = _.map(chartObj._yColumns, function(col)
                     { return col.data.aggregates.sum; });
+                chartObj._seriesSums = chartObj._seriesRemainders.slice();
 
                 var colCount = chartObj._yColumns.length;
 
@@ -649,7 +650,19 @@
         if (!_.isUndefined(colSet.title) && !_.isNull(row))
         { point.name = $.htmlEscape(row[colSet.title.id]); }
 
-        else if (isPieTypeChart) { point.name = point.name || point.x; }
+        else if (isPieTypeChart)
+        {
+            point.name = point.name || point.x;
+            if (chartObj.settings.view.displayFormat.showPercentages)
+            {
+                var percentage = (value/chartObj._seriesSums[seriesIndex])*100;
+                if (percentage < 1)
+                { percentage = '<1'; }
+                else
+                { percentage = Math.floor(percentage); }
+                point.name += ' ('+ percentage +'%)';
+            }
+        }
 
         else { point.name = chartObj._seriesCache[seriesIndex].name; }
 

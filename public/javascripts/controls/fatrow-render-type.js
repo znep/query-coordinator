@@ -264,8 +264,8 @@
         var cp = frObj.navigation.currentPage();
         var realRow = frObj.settings.view.rowForID(row.id);
         if ($.isBlank(cp) || (!$.isBlank(realRow) &&
-            ((realRow.position - 1) < cp * frObj.settings.pageSize ||
-                (realRow.position - 1) >= (cp + 1) * frObj.settings.pageSize)))
+            (realRow.index < cp * frObj.settings.pageSize ||
+                realRow.index >= (cp + 1) * frObj.settings.pageSize)))
         { return; }
 
         var foundRow = false;

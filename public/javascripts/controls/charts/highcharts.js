@@ -143,7 +143,7 @@
                     ri = ri.x;
                 }
                 else if (!isDateTime(chartObj))
-                { ri = row.position; }
+                { ri = row.index; }
 
                 // Get useable value for x-axis
                 var basePt = xPoint(chartObj, row, ri);

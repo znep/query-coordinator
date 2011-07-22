@@ -409,10 +409,19 @@
                 // are rendered
             },
 
-            highlightRows: function(rows)
+            highlightRows: function(rows, skipUnhighlight)
             {
                 var vizObj = this;
+                if (!skipUnhighlight && !$.isBlank(vizObj._prevHighlights))
+                {
+                    var newIds = {};
+                    _.each(rows, function(r) { newIds[r.id] = true; });
+                    vizObj.unhighlightRows(_.reject(vizObj._prevHighlights,
+                        function(ph) { return newIds[ph.id] }));
+                }
+
                 rows = $.makeArray(rows);
+                vizObj._prevHighlights = rows;
                 for (var i = 0; i < rows.length; i++)
                 {
                     if (rows[i].id == 'Other' && !vizObj._otherHighlight)

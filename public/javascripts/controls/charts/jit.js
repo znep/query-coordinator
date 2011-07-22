@@ -31,6 +31,7 @@
             columnsLoaded: function()
             {
                 var chartObj = this;
+                chartObj._totalSum = chartObj._valueColumns[0].column.aggregates.sum;
                 chartObj._remainder = chartObj._valueColumns[0].column.aggregates.sum -
                     (chartObj._preRemainder || 0);
                 delete chartObj._preRemainder;
@@ -110,7 +111,7 @@
                 }
                 _.each(rows, addRows);
 
-                if (chartObj._remainder > 0)
+                if (chartObj._remainder > chartObj._totalSum * 0.005)
                 {
                     var row = { id: 'Other', changed: {}, error: {}, invalid: {} };
                     row[chartObj._fixedColumns[0].id] = 'Other';

@@ -109,7 +109,7 @@
             e.preventDefault();
             var $a = $(this);
             if ($a.parent().hasClass('active')) { return; }
-            navObj.displayPage($a.parent().data('pageNum'));
+            navObj.displayPage($a.parent().data('pagenum'));
         });
     };
 

@@ -730,12 +730,17 @@ blist.namespace.fetch('blist.data.types');
             // TODO: I guess we might want something else for copy?
             return url;
         }
-        return value + " && ('<img src=\"' + escape(" + url + ") + '\"></img>')";
+        var content = "'<img src=\"' + escape(" + url + ") + '\"></img>'";
+        return value + " && (permissions.canEdit ? " + content + " : " +
+            "urlHelper({url: " + value + ", description: " + content + "}, true, false, '" +
+            column.baseUrl() + "'))";
     };
 
     var renderPhoto = function(value, column)
     {
-        return '<img src="' + escape(column.baseUrl() + value) + '"></img>';
+        return urlHelper({url: value,
+            description: '<img src="' + escape(column.baseUrl() + value) + '"></img>'}, true,
+            false, column.baseUrl());
     };
 
     var documentHelper = function(value, base, plain)

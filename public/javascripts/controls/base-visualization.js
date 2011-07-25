@@ -245,7 +245,7 @@
                 var handleRowChange = function(rows, fullReset)
                 {
                     if (fullReset) { handleChange(true); }
-                    else { vizObj.handleRowsLoaded(rows, vizObj.settings.view); }
+                    else if (!vizObj._hidden) { vizObj.handleRowsLoaded(rows, vizObj.settings.view); }
                 };
                 var handleQueryChange = function() { handleChange(true); };
 
@@ -412,6 +412,7 @@
             highlightRows: function(rows, skipUnhighlight)
             {
                 var vizObj = this;
+                rows = $.makeArray(rows);
                 if (!skipUnhighlight && !$.isBlank(vizObj._prevHighlights))
                 {
                     var newIds = {};
@@ -420,7 +421,6 @@
                         function(ph) { return newIds[ph.id] }));
                 }
 
-                rows = $.makeArray(rows);
                 vizObj._prevHighlights = rows;
                 for (var i = 0; i < rows.length; i++)
                 {

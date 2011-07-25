@@ -492,7 +492,8 @@
             $activeContainer.append($activeExpand);
 
             // Don't show comment link for bnb cols
-            if (options.cellComments && !!column && !!row && $.isBlank(column.parentColumn))
+            if (options.cellComments && !!column && !!row && $.isBlank(column.parentColumn) &&
+                !model.view.isGrouped())
             {
                 if (!$commentLink)
                 {

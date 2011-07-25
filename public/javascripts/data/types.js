@@ -730,12 +730,17 @@ blist.namespace.fetch('blist.data.types');
             // TODO: I guess we might want something else for copy?
             return url;
         }
-        return value + " && ('<img src=\"' + escape(" + url + ") + '\"></img>')";
+        var content = "'<img src=\"' + escape(" + url + ") + '\"></img>'";
+        return value + " && (permissions.canEdit ? " + content + " : " +
+            "urlHelper({url: " + value + ", description: " + content + "}, true, false, '" +
+            column.baseUrl() + "'))";
     };
 
     var renderPhoto = function(value, column)
     {
-        return '<img src="' + escape(column.baseUrl() + value) + '"></img>';
+        return urlHelper({url: value,
+            description: '<img src="' + escape(column.baseUrl() + value) + '"></img>'}, true,
+            false, column.baseUrl());
     };
 
     var documentHelper = function(value, base, plain)
@@ -797,12 +802,14 @@ blist.namespace.fetch('blist.data.types');
 
     // Location
 
-    var locationHelper = function(value, plain, addressOnly)
+    var locationHelper = function(value, plain, view)
     {
         if ($.isBlank(value)) { return ''; }
 
+        if ($.isBlank(view)) { view = 'address_coords'; }
+
         var pieces = [];
-        if (!$.isBlank(value.human_address))
+        if (!$.isBlank(value.human_address) && view.startsWith('address'))
         {
             var a = JSON.parse(value.human_address);
             if (!$.isBlank(a.address) && a.address !== '')
@@ -811,7 +818,7 @@ blist.namespace.fetch('blist.data.types');
                 a.zip]).join(' '));
         }
 
-        if (!addressOnly &&
+        if (view.endsWith('coords') &&
             (!$.isBlank(value.latitude) || !$.isBlank(value.longitude)))
         {
             pieces.push('(' + (value.latitude || '') + (plain ? '' : '&deg;') +
@@ -823,17 +830,17 @@ blist.namespace.fetch('blist.data.types');
 
     var renderLocationAddress = function(value, plain)
     {
-        return locationHelper(value, plain, true);
+        return locationHelper(value, plain, 'address');
     };
 
-    var renderGenLocation = function(value, plain)
+    var renderGenLocation = function(value, plain, column)
     {
-        return 'locationHelper(' + value + ', ' + plain + ')';
+        return 'locationHelper(' + value + ', ' + plain + ', "' + (column.format.view || '')  + '")';
     };
 
-    var renderLocation = function(value)
+    var renderLocation = function(value, column, plain)
     {
-        return locationHelper(value);
+        return locationHelper(value, plain, column.format.view);
     };
 
     var renderFilterLocation = function(value, column, subType)
@@ -1444,7 +1451,9 @@ blist.namespace.fetch('blist.data.types');
             renderer: renderLocation,
             deleteable: true,
             alignment: alignment,
-            renderAddress: renderLocationAddress,
+            viewTypes: [{value: 'address_coords', text: 'Address &amp; Coordinates' },
+                { value: 'coords', text: 'Coordinates Only' },
+                { value: 'address', text: 'Address Only' }],
             filterable: true,
             filterConditions: filterConditions.comparable,
             filterRender: renderFilterLocation

@@ -379,6 +379,8 @@
                         {type: 'columnLabel', tableColumnId: dc.tableColumnId},
                         {type: 'columnData', tableColumnId: dc.tableColumnId}
                     ]};
+                    if (mapObj.settings.view.displayFormat.flyoutsNoLabel)
+                    { row.fields.shift(); }
                     col.rows.push(row);
                 });
                 return {columns: [col]};
@@ -408,6 +410,19 @@
                                 title: 'Next row', contents: 'Next &gt;'}
                         ]
                     }));
+                }
+
+                var loc = rows[0][mapObj._byView[mapObj.settings.view.id]._locCol.lookup];
+                if (loc.latitude && loc.longitude)
+                {
+                    if (mapObj.settings.view.displayFormat.type == 'bing')
+                    { $info.append($.tag({tagName: 'a', 'class': 'external_link',
+                        href: 'http://www.bing.com/maps/?where1='+loc.latitude+','+loc.longitude,
+                        target: '_blank', contents: 'View in Bing Maps'})); }
+                    else
+                    { $info.append($.tag({tagName: 'a', 'class': 'external_link',
+                        href: 'http://maps.google.com/maps?q='+loc.latitude+','+loc.longitude,
+                        target: '_blank', contents: 'View in Google Maps'})); }
                 }
 
                 return $info;

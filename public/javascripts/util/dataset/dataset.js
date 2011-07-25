@@ -1958,12 +1958,14 @@ this.Dataset = ServerModel.extend({
         var translateRow = function(r, parCol)
         {
             var adjVals = {invalid: {}, changed: {}, error: {}, sessionMeta: {}};
-            _.each(r, function(val, id)
+            if (!$.isBlank(_.detect(r, function(val, id)
             {
                 var newVal;
                 // A few columns don't have original lookups
                 var lId = {sid: 'id', 'id': 'uuid'}[id] || id;
                 var c = $.isBlank(parCol) ? ds.columnForID(lId) : parCol.childColumnForID(lId);
+
+                if ($.isBlank(c)) { return true; }
 
                 if (c.isMeta && c.name == 'meta')
                 { newVal = JSON.parse(val || 'null'); }
@@ -1989,7 +1991,8 @@ this.Dataset = ServerModel.extend({
 
                 if (c.dataTypeName == 'nested_table' && _.isArray(val))
                 {
-                    _.each(val, function(cr) { translateRow(cr, c); });
+                    if (!$.isBlank(_.detect(val, function(cr) { return !translateRow(cr, c); })))
+                    { return true; }
                 }
 
                 // A few columns have different ids we use than the core server gives us
@@ -1997,7 +2000,10 @@ this.Dataset = ServerModel.extend({
 
                 if (!_.isUndefined(newVal))
                 { adjVals[c.lookup] = newVal; }
-            });
+
+                return false;
+            }))) { return false; }
+
             $.extend(r, adjVals);
 
             _.each((r.meta || {}).invalidCells || {}, function(v, tcId)
@@ -2026,23 +2032,29 @@ this.Dataset = ServerModel.extend({
             });
 
             ds._setRowFormatting(r);
+
+            return true;
         };
 
         var adjRows = [];
         var oldRows = [];
         _.each(newRows, function(r, i)
         {
-            translateRow(r);
-            r.index = start + i;
+            var success = translateRow(r);
+            var ind = start + i;
 
             // If a row already exists at this index, clean it out
-            if (!$.isBlank(ds._rows[r.index]) && r.id != ds._rows[r.index].id)
+            if (!$.isBlank(ds._rows[ind]) && (!success || r.id != ds._rows[ind].id))
             {
-                var oldRow = ds._rows[r.index];
+                var oldRow = ds._rows[ind];
                 oldRows.push(oldRow);
+                delete ds._rows[ind];
                 delete ds._rowIDLookup[oldRow.id];
             }
 
+            if (!success) { return; }
+
+            r.index = ind;
             ds._rows[r.index] = r;
             ds._rowIDLookup[r.id] = r;
             adjRows.push(r);

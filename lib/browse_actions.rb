@@ -218,23 +218,6 @@ protected
     # for core server quirks
     search_options = {}
 
-
-
-    # check whether or not we need to display icons for other domains
-    browse_options[:use_federations] = browse_options[:nofederate] ? false :
-      Federation.find.any?{ |f| f.acceptedUserId.present? &&
-        f.sourceDomainCName != CurrentDomain.cname } if browse_options[:use_federations].nil?
-
-    # set up which grid columns to display if we don't have one already
-    browse_options[:grid_items] ||=
-      case browse_options[:view_type]
-      when 'rich'
-        { largeImage: true, richSection: true, popularity: true, type: true, rss: true }
-      else
-        { index: true, domainIcon: browse_options[:use_federations], nameDesc: true,
-          datasetActions: browse_options[:dataset_actions], popularity: true, type: true }
-      end
-
     if catalog_config.facet_dependencies
       browse_options[:strip_params] = {}
       catalog_config.facet_dependencies.each do |dep|
@@ -329,10 +312,24 @@ protected
     browse_options[:user_params] = user_params.reject{ |k| ignore_params.include? k }
 
     if browse_options[:view_results].nil?
-      view_results = SearchResult.search('views', browse_options[:search_options])[0]
+      view_results = Clytemnestra::Sentinel.search_views(browse_options[:search_options])
       browse_options[:view_count] = view_results.count
       browse_options[:view_results] = view_results.results
     end
+
+    # check whether or not we need to display icons for other domains
+    browse_options[:use_federations] = browse_options[:nofederate] ? false :
+      browse_options[:view_results].any?{ |v| v.federated? } if browse_options[:use_federations].nil?
+
+    # set up which grid columns to display if we don't have one already
+    browse_options[:grid_items] ||=
+      case browse_options[:view_type]
+      when 'rich'
+        { largeImage: true, richSection: true, popularity: true, type: true, rss: true }
+      else
+        { index: true, domainIcon: browse_options[:use_federations], nameDesc: true,
+          datasetActions: browse_options[:dataset_actions], popularity: true, type: true }
+      end
 
     browse_options[:title] ||= get_title(browse_options, browse_options[:facets])
 
@@ -394,6 +391,6 @@ private
 
   @@moderatable_types = [ 'filters', 'charts', 'maps', 'calendars', 'forms' ]
 
-  @@search_options = [ :id, :name, :tags, :desc, :q, :category, :limit, :page, :sortBy, :limitTo, :for_user, :datasetView, :sortPeriod, :admin, :nofederate, :moderation, :xmin, :ymin, :xmax, :ymax, :for_approver, :approval_stage_id, :publication_stage, :federation_filter, :metadata_tag ]
+  @@search_options = [ :id, :name, :tags, :desc, :q, :category, :limit, :page, :sortBy, :limitTo, :for_user, :datasetView, :sortPeriod, :admin, :nofederate, :moderation, :xmin, :ymin, :xmax, :ymax, :for_approver, :approval_stage_id, :publication_stage, :federation_filter, :metadata_tag, :row_count ]
   @@querystring_options = [  ]
 end

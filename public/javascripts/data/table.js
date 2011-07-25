@@ -406,6 +406,7 @@
                 endEdit(true, SELECT_EDIT_MODE);
         };
 
+        var $curRenderActiveCells;
         var expandActiveCell = function()
         {
             if (isEdit[DEFAULT_EDIT_MODE] || !cellNav.isActive())
@@ -488,11 +489,17 @@
             var $activeExpand = $activeCells.clone();
             $activeExpand.width('auto').height('auto');
             $activeContainer.width('auto').height('auto');
-            $activeContainer.empty();
-            $activeContainer.append($activeExpand);
+            if ($activeCells != $curRenderActiveCells &&
+                ($.isBlank($curRenderActiveCells) || $activeCells.index($curRenderActiveCells) < 0))
+            {
+                $activeContainer.empty();
+                $activeContainer.append($activeExpand);
+                $curRenderActiveCells = $activeCells;
+            }
 
             // Don't show comment link for bnb cols
-            if (options.cellComments && !!column && !!row && $.isBlank(column.parentColumn))
+            if (options.cellComments && !!column && !!row && $.isBlank(column.parentColumn) &&
+                !model.view.isGrouped())
             {
                 if (!$commentLink)
                 {

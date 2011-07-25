@@ -2,8 +2,9 @@
 
 // Colors and imagebuilder
 
-$.rgbToObj = function(rgb)
+$.colorToObj = function(rgb)
 {
+    if (rgb.startsWith('#') || rgb.match(/^[a-fA-F0-9]{3,6}$/)) { return $.hexToRgb(rgb); }
     var m = rgb.match(/rgb\((\d+),\s*(\d+),\s*(\d+)(,\s*\d+\.?\d+)?\)/);
     return {r: parseInt(m[1]), g: parseInt(m[2]), b: parseInt(m[3])};
 };

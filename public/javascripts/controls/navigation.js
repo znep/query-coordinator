@@ -79,7 +79,7 @@
 
     var hookUpNavigation = function(navObj)
     {
-        navObj.$dom().find('.button').click(function(e)
+        navObj.$dom().delegate('.button', 'click', function(e)
         {
             var $a = $(this);
             if ($a.parent().hasClass('edit')) { return; }
@@ -104,12 +104,12 @@
             }
         });
 
-        navObj.$dom().find('.page a').click(function(e)
+        navObj.$dom().delegate('.page a', 'click', function(e)
         {
             e.preventDefault();
             var $a = $(this);
             if ($a.parent().hasClass('active')) { return; }
-            navObj.displayPage($a.parent().data('pageNum'));
+            navObj.displayPage($a.parent().data('pagenum'));
         });
     };
 
@@ -153,7 +153,7 @@
             for (var i = start; i <= end; i++)
             {
                 var $newL = $templLink.clone(true).removeClass('active');
-                $newL.attr('data-pageNum', i).find('a').text(i + 1);
+                $newL.attr('data-pagenum', i).data('pagenum', i).find('a').text(i + 1);
                 $nextLink.before($newL);
             }
             $templLink.remove();
@@ -176,7 +176,7 @@
         }
 
         navObj.$dom().find('.page').removeClass('active');
-        navObj.$dom().find('.page[data-pageNum=' + navObj._curPageIndex + ']')
+        navObj.$dom().find('.page[data-pagenum=' + navObj._curPageIndex + ']')
             .addClass('active');
     };
 })(jQuery);

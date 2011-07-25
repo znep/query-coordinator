@@ -94,9 +94,7 @@ ActiveSupport::JSON.backend = "JSONGem"
 
 Mime::Type.register "application/rdf+xml", :rdf
 Mime::Type.register "application/vnd.ms-excel", :xls
-Mime::Type.register "application/rss+xml", :rss
 Mime::Type.register "application/pdf", :pdf
 Mime::Type.register "application/abc", :abc
-Mime::Type.register "text/csv", :csv
 #Mime::Type.register "text/xml", :xml
 #Mime::Type.register "application/json", :json

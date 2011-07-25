@@ -74,7 +74,7 @@
                     });
 
                 mapObj._hoverTimers = {};
-                mapObj._highlightColor = $.rgbToHex($.rgbToObj(
+                mapObj._highlightColor = $.rgbToHex($.colorToObj(
                     blist.styles.getReferenceProperty('itemHighlight', 'background-color')));
                 StyledIconTypes.MARKER.defaults.color = 'ff776b';
 

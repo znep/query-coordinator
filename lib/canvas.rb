@@ -1,6 +1,7 @@
 # autoload is not threadsafe, so require everything we might need
-requires = %w{search_result view}
+requires = %w{view}
 requires.each{ |r| require File.join(Rails.root, 'app/models', r) }
+require 'clytemnestra'
 
 module Canvas
 
@@ -391,7 +392,7 @@ module Canvas
         end
       end
 
-      search_response = SearchResult.search('views', search_options)[0]
+      search_response = Clytemnestra::Sentinel.search_views(search_options)
       @view_count = search_response.count
       @view_results = search_response.results
     end
@@ -425,7 +426,7 @@ module Canvas
         end
 
         begin
-          search_response = SearchResult.search('views', search_options)[0]
+          search_response = Clytemnestra::Sentinel.search_views(search_options)
 
           if search_response.count == 0
             @view = false

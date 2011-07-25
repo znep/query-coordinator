@@ -308,7 +308,7 @@ protected
     browse_options[:user_params] = user_params.reject{ |k| ignore_params.include? k }
 
     if browse_options[:view_results].nil?
-      view_results = SearchResult.search('views', browse_options[:search_options])[0]
+      view_results = Clytemnestra::Sentinel.search_views(browse_options[:search_options])
       browse_options[:view_count] = view_results.count
       browse_options[:view_results] = view_results.results
     end
@@ -387,6 +387,6 @@ private
 
   @@moderatable_types = [ 'filters', 'charts', 'maps', 'calendars', 'forms' ]
 
-  @@search_options = [ :id, :name, :tags, :desc, :q, :category, :limit, :page, :sortBy, :limitTo, :for_user, :datasetView, :sortPeriod, :admin, :nofederate, :moderation, :xmin, :ymin, :xmax, :ymax, :for_approver, :approval_stage_id, :publication_stage, :federation_filter, :metadata_tag ]
+  @@search_options = [ :id, :name, :tags, :desc, :q, :category, :limit, :page, :sortBy, :limitTo, :for_user, :datasetView, :sortPeriod, :admin, :nofederate, :moderation, :xmin, :ymin, :xmax, :ymax, :for_approver, :approval_stage_id, :publication_stage, :federation_filter, :metadata_tag, :row_count ]
   @@querystring_options = [  ]
 end

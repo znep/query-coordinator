@@ -4,6 +4,9 @@
     // have been loaded. First action in renderData should turn this back into an
     // object.
     var MAP_TYPE = function(){ return {
+        'canada_provinces': {
+            'jsonCache': function(config) { return "/geodata/canada.admin1.json"; }
+        },
         'countries': {
             'layerPath': "https://server.arcgisonline.com/ArcGIS/rest/services/" +
                          "World_Topo_Map/MapServer/6",
@@ -202,7 +205,7 @@
         {
             var mapObj = this;
 
-            _.each(mapObj._featureSet.features, function(feature)
+            _.each((mapObj._featureSet || {}).features || [], function(feature)
             {
                 delete feature.attributes.description;
                 delete feature.attributes.quantity;

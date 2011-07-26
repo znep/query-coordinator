@@ -137,10 +137,13 @@ Enjoy!
             .blur(function() {
                 divTag.removeClass(options.focusClass);
             })
-            .mousedown(function() {
+            .bind('mousedown.uniform touchbegin.uniform', function() {
                 divTag.addClass(options.activeClass);
             })
-            .mouseup(function() {
+            .bind('mouseup.uniform touchend.uniform', function() {
+                divTag.removeClass(options.activeClass);
+            })
+            .bind('click.uniform', function() {
                 divTag.removeClass(options.activeClass);
             })
             .hover(function() {

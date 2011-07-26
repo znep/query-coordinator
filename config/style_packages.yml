@@ -63,6 +63,7 @@ administration-view-moderation:
 - screen-administration-views
 browse-control:
 - screen-browse
+- rich-render-types
 dataset-new:
 - screen-dataset-new
 dataset-show:

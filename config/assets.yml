@@ -196,6 +196,8 @@ javascripts:
     - public/javascripts/controls/dataset-controls.js
     - public/javascripts/controls/expander.js
     - public/javascripts/controls/stars.js
+    - public/javascripts/controls/rich-render-library.js
+    - public/javascripts/controls/row-search-render-type.js
     - public/javascripts/screens/browse.js
   screen-nominations:
     - public/javascripts/plugins/ajaxupload.js

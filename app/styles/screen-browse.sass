@@ -246,6 +246,10 @@
             min-height: 1.2em
             overflow: hidden
 
+
+          .rowSearchResults
+            margin-right: -15.7em
+
           .extraInfo
             background-color: #fafafa
             border: 1px solid $color_table_header_inactive
@@ -428,12 +432,71 @@
             position: absolute
             right: 0
 
+          .rowSearchResults
+            margin-right: -19em
+
         .rss
           text-align: right
           width: 2em
           .subscribe
             @include sprite-menu-icons
             float: right
+
+      .rowSearchResults
+        margin-bottom: 0.6em
+        position: relative
+        .rowResultCountDisplay
+          padding: 0.3em 0
+        .highlight
+          background-color: $search_highlight_color
+          padding: 0.3em
+        .rowList
+          overflow: hidden
+          .row
+            font-size: 0.8em
+            &:last-child
+              padding-bottom: 1em
+        .expandHint, .fader
+          display: none
+        .expandHint
+          .expandText
+            display: none
+          .icon
+            float: left
+            margin:
+              right: 0.5em
+              top: 0.2em
+
+        &.overheight
+          .expandHint
+            @include sprite-menu-icons
+            display: block
+            height: 1.5em
+            line-height: 1.5em
+            margin: 0 auto
+            width: 100px
+            .collapseText
+              display: inline
+
+        &.overheight.collapsed
+          .rowList
+            max-height: 20em
+          .expandHint
+            .expandText
+              display: inline
+            .collapseText
+              display: none
+          .fader
+            @include vertical-gradient(rgba(255,255,255,0), rgba(255,255,255,1))
+            bottom: 1.5em
+            left: 0
+            display: block
+            height: 100px
+            position: absolute
+            width: 100%
+            .noLinearGradient &
+              background: url(/stylesheets/images/content/vertical_fade.png?1) repeat-x
+
 
     .pagination
       font-size: 1.2em

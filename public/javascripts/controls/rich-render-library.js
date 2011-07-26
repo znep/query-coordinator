@@ -23,9 +23,11 @@
         defaults:
         {
             balanceFully: false,
+            balanceNaively: false,
             columnCount: 1,
             config: null,
             defaultItem: '',
+            highlight: null,
             view: null
         },
 
@@ -87,8 +89,44 @@
 
                 // If all the content fits in one column, move everything there
                 if (!rrObj.settings.balanceFully &&
+                    !rrObj.settings.balanceNaively &&
                     itemHeight < rrObj.$dom().height())
                 { $cols.eq(0).append($allLines); }
+
+                else if(rrObj.settings.balanceNaively)
+                {
+                    var i = 0;
+                    var cellsPerColumn = Math.floor($allLines.length / numCols);
+                    var leftovers = $allLines.length % numCols;
+                    // Fewer columns than cells? Get rid of extra columns
+                    if (cellsPerColumn == 0)
+                    {
+                        var colWidth = Math.floor(100/leftovers);
+                        $cols.each(function(j)
+                        {
+                            var $col = $(this);
+                            if (j < leftovers)
+                            { $col.width(colWidth + '%'); }
+                            else
+                            { $col.remove(); }
+                        });
+                    }
+
+                    $cols.each(function()
+                    {
+                        var thisCol = cellsPerColumn;
+                        if (leftovers > 0)
+                        {
+                            thisCol++;
+                            leftovers--;
+                        }
+                        for (var j = 0; j < thisCol; j++)
+                        {
+                            $(this).append($allLines.eq(i));
+                            i++;
+                        }
+                    });
+                }
 
                 // Otherwise, balance them
                 else
@@ -302,7 +340,7 @@
             return;
         }
 
-        if (row.invalid[column.lookup])
+        if (row.invalid && row.invalid[column.lookup])
         {
             return $('<span class="invalid">' +
                 blist.data.types.invalid.renderer(row[column.lookup]) +
@@ -311,6 +349,17 @@
 
         var item = (column.renderType.renderer(row[column.lookup],
             column) || '') + '';
+
+        // We don't want to replace the url portion
+        // if it matched inside the <a> tag
+        if (rrObj.settings.highlight && (column.renderTypeName != 'url') &&
+            (column.renderTypeName != 'html'))
+        {
+            // $('<span>blah</span> word') == <span>blah</span>
+            // so wrap the whole thing in a span
+            item = '<span>' + item.replace(rrObj.settings.highlight,
+                '<span class="highlight">$&</span>') + '</span>';
+        }
         if (!item.startsWith('<')) { item = '<span>' + item + '</span>'; }
         var $item = $(item);
 

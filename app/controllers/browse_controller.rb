@@ -6,7 +6,8 @@ class BrowseController < ApplicationController
 
   def show
     @processed_browse = process_browse(request, {
-      suppress_dataset_creation: true
+      suppress_dataset_creation: true,
+      row_count: 3
     })
   end
 

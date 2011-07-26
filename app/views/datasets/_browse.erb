@@ -241,7 +241,8 @@
             <tbody>
               <%- start_index = (opts[:page] - 1) * opts[:limit] + 1 -%>
               <%- opts[:view_results].each_with_index do |v, i| -%>
-                <tr class="item collapsed<%= v.federated? ? " federated" : " local" %>" data-viewId="<%= v.id %>">
+                <tr class="item collapsed<%= v.federated? ? " federated" : " local" %><%=
+                  v.rowResults.present? ? ' withRows' : '' %>" data-viewId="<%= v.id %>">
                   <%- if opts[:grid_items][:index] -%>
                     <td class="index">
                       <a class="expander" title="Click to expand" href="#Expand">
@@ -291,8 +292,10 @@
                           Provided by <a href="http://<%= v.domainCName %>"><%= v.domainCName %></a>
                         </div>
                       <% end %>
+
                       <div class="expandBlock clearfix collapsed">
                         <div class="description"><%= v.description %></div>
+                        <div class="rowSearchResults"></div>
                         <div class="extraInfo <%= opts[:use_federations] ? 'federated' : '' %>">
                           <div class="infoContent"></div>
                           <a class="close" href="#Close"><span class="icon"></span></a>
@@ -334,6 +337,7 @@
                           <span class="icon"></span>
                         </a>
                       </div>
+                      <div class="rowSearchResults"></div>
                     </td>
                   <%- end -%>
 
@@ -470,6 +474,7 @@
   </div>
   <div class="starsControl datasetAverageRating"></div>
 </div>
+<%= render :partial => 'browse/row_search_templates' %>
 <% end %>
 
 <% content_for :js_footer do %>
@@ -486,10 +491,12 @@
        blist.browse.extents = {xmin: <%= opts[:xmin] %>, xmax: <%= opts[:xmax] %>,
            ymin: <%= opts[:ymin] %>, ymax: <%= opts[:ymax] %>};
        <%- end -%>
+       <%- if opts[:q].present? -%>
+       blist.browse.query = '<%= opts[:q] %>';
+       <%- end -%>
     });
   </script>
   <script type='text/javascript'
     src='https://maps.google.com/maps/api/js?sensor=false'></script>
   <%= include_javascripts 'browse-control' %>
 <% end %>
-

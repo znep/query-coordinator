@@ -459,6 +459,9 @@
     {
         var shape = event.target;
 
+        var $flyout = mapObj.getFlyout(shape.rows, shape.flyoutDetails, shape.dataView);
+        if ($.isBlank($flyout)) { return; }
+
         var pixel = mapObj.map.tryLocationToPixel(
             shape.getLocation(),
             Microsoft.Maps.PixelReference.control);
@@ -472,7 +475,7 @@
         }
 
         $box.show().find("#bing_infoContent").empty()
-            .append(mapObj.getFlyout(shape.rows, shape.flyoutDetails, shape.dataView))
+            .append($flyout)
             .prepend('<img src="https://www.google.com/intl/' +
                      'en_us/mapfiles/iw_close.gif"/>');
 

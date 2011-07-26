@@ -937,16 +937,32 @@
                 // Validate disabled sections
                 $pane.find('.formSection.disabled:visible').addClass('error');
 
+                // In radioBlocks, hide the non-selected options so they don't attempt to validate
+                $pane.find('.radioBlock > .radioLine').each(function()
+                {
+                    var $t = $(this);
+                    if (!$t.find('input[type=radio]').is(':checked'))
+                    { $t.addClass('hideValidation'); }
+                });
+
+                var resetValidation = function()
+                {
+                    // Undo our hidden lines before returning
+                    $pane.find('.radioLine.hideValidation').removeClass('hideValidation');
+                };
+
                 // Validate form
                 if (!$pane.find('form').valid())
                 {
                     this.finishProcessing();
+                    resetValidation();
                     $pane.find('.mainError')
                         .text('There were problems with the specified values. ' +
                             'Please check the errors above.');
                     return false;
                 }
 
+                resetValidation();
                 $pane.find('.mainError').text('');
                 return true;
             },

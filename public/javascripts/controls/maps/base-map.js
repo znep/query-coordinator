@@ -692,7 +692,9 @@
                 {
                     var viewConfig = mapObj._byView[view.id];
                     var filterColumn = viewConfig._geoCol || viewConfig._locCol;
-                    if ($.isBlank(filterColumn)) { return; }
+                    if ($.isBlank(filterColumn)
+                        || !_.include(['location', 'geospatial'], filterColumn.renderTypeName))
+                    { return; }
 
                     var buildFilterCondition = function(viewport)
                     {

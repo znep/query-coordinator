@@ -1,5 +1,5 @@
 module Clytemnestra
-  # Performs all che searching against Clytemnestra
+  # Performs all the searching against Clytemnestra
   class Sentinel
     def self.search_users(opts)
       path = "/search/users.json?#{opts.to_core_param}"

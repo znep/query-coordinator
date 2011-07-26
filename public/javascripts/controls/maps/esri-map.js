@@ -828,10 +828,11 @@
         else
         {
             if (evt.graphic.attributes.rows.length < 1) { return; }
-            mapObj.map.infoWindow.setContent(
-                mapObj.getFlyout(evt.graphic.attributes.rows,
-                    evt.graphic.attributes.flyoutDetails,
-                    evt.graphic.attributes.dataView)[0])
+            var flyout = mapObj.getFlyout(evt.graphic.attributes.rows,
+                evt.graphic.attributes.flyoutDetails,
+                evt.graphic.attributes.dataView);
+            if ($.isBlank(flyout)) { return; }
+            mapObj.map.infoWindow.setContent(flyout[0])
                 .show(evt.screenPoint,
                     mapObj.map.getInfoWindowAnchor(evt.screenPoint));
         }

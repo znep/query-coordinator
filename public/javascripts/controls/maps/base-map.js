@@ -393,6 +393,8 @@
 
             getFlyoutDefault: function(rows, v)
             {
+                if (rows.length < 1) { return null; }
+
                 var mapObj = this;
                 var $info = $.tag({tagName: 'div', 'class': 'mapInfoContainer'});
                 _.each(rows, function(r) { $info.append(mapObj.renderFlyout(r, v)); });

@@ -181,6 +181,8 @@
         {
             var mapObj = this;
             var $flyout = mapObj.getFlyoutDefault(rows, mapObj.settings.view);
+            if ($.isBlank($flyout)) { return null; }
+
             var viewConfig = mapObj._byView[mapObj.settings.view.id];
 
             $flyout.find('.richColumn').each(function()

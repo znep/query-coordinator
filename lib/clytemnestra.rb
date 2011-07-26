@@ -26,7 +26,7 @@ module Clytemnestra
 
   class SearchResult
     attr_reader :data
-    cattr_reader :klass
+    class << self; attr_accessor :klass; end
 
     def initialize(data = {})
       @data = data
@@ -39,7 +39,7 @@ module Clytemnestra
     end
 
     def results
-      @results ||= (data['results'] || []).map{ |data| @@klass.new(data) }
+      @results ||= (data['results'] || []).map{ |data| self.class.klass.new(data) }
     end
 
     def count
@@ -48,10 +48,10 @@ module Clytemnestra
   end
 
   class UserSearchResult < SearchResult
-    @@klass = User
+    @klass = User
   end
 
   class ViewSearchResult < SearchResult
-    @@klass = Clytemnestra::ViewWithRows
+    @klass = Clytemnestra::ViewWithRows
   end
 end

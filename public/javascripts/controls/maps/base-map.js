@@ -393,6 +393,8 @@
 
             getFlyoutDefault: function(rows, v)
             {
+                if (rows.length < 1) { return null; }
+
                 var mapObj = this;
                 var $info = $.tag({tagName: 'div', 'class': 'mapInfoContainer'});
                 _.each(rows, function(r) { $info.append(mapObj.renderFlyout(r, v)); });
@@ -692,7 +694,9 @@
                 {
                     var viewConfig = mapObj._byView[view.id];
                     var filterColumn = viewConfig._geoCol || viewConfig._locCol;
-                    if ($.isBlank(filterColumn)) { return; }
+                    if ($.isBlank(filterColumn)
+                        || !_.include(['location', 'geospatial'], filterColumn.renderTypeName))
+                    { return; }
 
                     var buildFilterCondition = function(viewport)
                     {

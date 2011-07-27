@@ -11,7 +11,8 @@
     var regionTypes = [
         {text: 'Countries', value: 'countries'},
         {text: 'US States', value: 'state'},
-        {text: 'Counties in', value: 'counties'}
+        {text: 'Canada Provinces', value: 'canada_provinces'},
+        {text: 'US Counties in', value: 'counties'}
     ];
     var plotStyles = function(mapType)
     {

@@ -247,7 +247,7 @@
 
         var rowsLoaded = function(rows)
         {
-            _.each(rows, function(r) { renderNewRow(frObj, r); });
+            _.each(rows, function(r) { updateRow(frObj, r); });
         };
 
         var loadRows;

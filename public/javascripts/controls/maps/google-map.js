@@ -266,8 +266,11 @@
                     if (!mapObj.infoWindow)
                     { mapObj.infoWindow =
                         new google.maps.InfoWindow({maxWidth: 300}); }
-                    mapObj.infoWindow.setContent(mapObj.getFlyout(details.rows,
-                            details.flyoutDetails, details.dataView)[0]);
+                    var flyout = mapObj.getFlyout(details.rows,
+                            details.flyoutDetails, details.dataView);
+                    if ($.isBlank(flyout)) { return; }
+
+                    mapObj.infoWindow.setContent(flyout[0]);
                     // evt.latLng if it's not a point; pull .position for points
                     mapObj.infoWindow.setPosition(evt.latLng || mapGeom.position);
                     mapObj.infoWindow.open(mapObj.map);

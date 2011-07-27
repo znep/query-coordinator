@@ -474,6 +474,8 @@
             $box = mapObj.$dom().siblings('#bing_infoWindow');
         }
 
+        mapObj.highlightRows(shape.rows, 'select');
+
         $box.show().find("#bing_infoContent").empty()
             .append($flyout)
             .prepend('<img src="https://www.google.com/intl/' +
@@ -497,16 +499,19 @@
             $box.removeClass('right');
         }
 
-        $box.find('#bing_infoContent img').click(function() { closeInfoWindow(); });
+        $box.find('#bing_infoContent img').click(function() { closeInfoWindow(mapObj); });
 
         $box.css({ left: x, top: y });
 
         var l = Microsoft.Maps.Events.addHandler(mapObj.map, 'viewchange',
-            function() { closeInfoWindow(); Microsoft.Maps.Events.removeHandler(l); });
+            function() { closeInfoWindow(mapObj); Microsoft.Maps.Events.removeHandler(l); });
     };
 
-    var closeInfoWindow = function()
+    var closeInfoWindow = function(mapObj)
     {
+        // Hide all selected rows
+        if ($.subKeyDefined(mapObj, '_prevHighlights.select'))
+        { mapObj.unhighlightRows(_.values(mapObj._prevHighlights.select), 'select'); }
         $("#bing_infoWindow").hide();
     };
 

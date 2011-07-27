@@ -70,6 +70,13 @@
                         dojo.connect(mapObj.map, 'onLayerReorder', updateEvents);
                         updateEvents();
 
+                        dojo.connect(mapObj.map.infoWindow, 'onHide', function()
+                        {
+                            // Hide all selected rows
+                            if ($.subKeyDefined(mapObj, '_prevHighlights.select'))
+                            { mapObj.unhighlightRows(_.values(mapObj._prevHighlights.select), 'select'); }
+                        });
+
                         _.each(mapObj._dataViews, function(view)
                             {
                                 if (mapObj._dataLoaded)
@@ -832,6 +839,7 @@
                 evt.graphic.attributes.flyoutDetails,
                 evt.graphic.attributes.dataView);
             if ($.isBlank(flyout)) { return; }
+            mapObj.highlightRows(evt.graphic.attributes.rows, 'select');
             mapObj.map.infoWindow.setContent(flyout[0])
                 .show(evt.screenPoint,
                     mapObj.map.getInfoWindowAnchor(evt.screenPoint));

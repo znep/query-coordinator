@@ -11,10 +11,8 @@
         title: 'Show &amp; Hide Columns',
         subtitle: 'Adjust which columns are visible in this view',
         onlyIf: function()
-        {
-            return blist.dataset.valid && !_.isEmpty(blist.dataset.visibleColumns);
-        },
-        disabledSubtitle: 'This view must be valid and must have visible columns.',
+        { return blist.dataset.valid; },
+        disabledSubtitle: 'This view must be valid.',
         sections: [{
             title: 'Columns',
             customContent: {

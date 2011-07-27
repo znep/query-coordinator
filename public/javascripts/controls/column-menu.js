@@ -426,7 +426,7 @@
             case 'hide-column':
                 if (!$.isBlank(cmObj.settings.column.parentColumn))
                 {
-                    cmObj.settings.column.hide(null, null, false, true);
+                    cmObj.settings.column.hide();
                 }
                 else
                 {
@@ -437,8 +437,7 @@
                     _.each(selHideCols, function(v, colId)
                     {
                         // Don't save changes, let the user do that
-                        cmObj.settings.view.columnForID(colId)
-                            .hide(null, null, false, true);
+                        cmObj.settings.view.columnForID(colId).hide();
                     });
                 }
                 break;

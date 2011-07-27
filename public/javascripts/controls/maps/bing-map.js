@@ -197,10 +197,10 @@
                     if (geoType == 'point')
                     {
                         Microsoft.Maps.Events.addHandler(shape, 'mouseover', function()
-                        { mapObj.highlightRows(details.rows); });
+                        { mapObj.settings.view.highlightRows(details.rows); });
 
                         Microsoft.Maps.Events.addHandler(shape, 'mouseout', function()
-                        { mapObj.unhighlightRows(details.rows); });
+                        { mapObj.settings.view.unhighlightRows(details.rows); });
                     }
                 });
 
@@ -474,7 +474,7 @@
             $box = mapObj.$dom().siblings('#bing_infoWindow');
         }
 
-        mapObj.highlightRows(shape.rows, 'select');
+        mapObj.settings.view.highlightRows(shape.rows, 'select');
 
         $box.show().find("#bing_infoContent").empty()
             .append($flyout)
@@ -510,8 +510,11 @@
     var closeInfoWindow = function(mapObj)
     {
         // Hide all selected rows
-        if ($.subKeyDefined(mapObj, '_prevHighlights.select'))
-        { mapObj.unhighlightRows(_.values(mapObj._prevHighlights.select), 'select'); }
+        if ($.subKeyDefined(mapObj.settings.view, 'highlightTypes.select'))
+        {
+            mapObj.settings.view.unhighlightRows(
+                _.values(mapObj.settings.view.highlightTypes.select), 'select');
+        }
         $("#bing_infoWindow").hide();
     };
 

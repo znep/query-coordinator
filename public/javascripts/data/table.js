@@ -1430,7 +1430,7 @@
                 .addClass('blist-hot-row');
             $/*$locked.find*/('#' + id + '-l' + rowID)
                 .addClass('blist-hot-row');
-            model.view.markRow('highlight', true, rowID);
+            model.view.highlightRows({id: rowID});
         };
 
         var unHotRow = function(rowID)
@@ -1440,7 +1440,7 @@
             $/*$locked.find*/('#' + id + '-l' + rowID)
                 .removeClass('blist-hot-row');
             if (rowID == hotRowID) { hotRowID = null; }
-            model.view.markRow('highlight', false, rowID);
+            model.view.unhighlightRows({id: rowID});
         };
 
         var onMouseMove = function(event)

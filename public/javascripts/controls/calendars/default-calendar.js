@@ -129,12 +129,12 @@
 
     var eventMouseover = function(calObj, calEvent)
     {
-        calObj.highlightRows(calEvent.row);
+        calObj.settings.view.highlightRows(calEvent.row);
     };
 
     var eventMouseout = function(calObj, calEvent)
     {
-        calObj.unhighlightRows(calEvent.row);
+        calObj.settings.view.unhighlightRows(calEvent.row);
     };
 
     var eventRender = function(calObj, calEvent, element)

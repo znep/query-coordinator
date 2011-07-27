@@ -217,7 +217,8 @@
                 {
                     // Create fake row for other value
                     var otherRow = { id: 'Other', invalid: {}, error: {}, changed: {} };
-                    if (chartObj._otherHighlight) { otherRow.sessionMeta = {highlight: true}; }
+                    if (chartObj.settings.view.highlights[otherRow.id])
+                    { otherRow.sessionMeta = {highlight: true}; }
                     otherRow[chartObj._xColumn.lookup] = 'Other';
                     var cf = _.detect(chartObj.settings.view.metadata.conditionalFormatting,
                         function(cf) { return cf.condition === true; });
@@ -530,8 +531,8 @@
                 clearTimeout(tooltipTimeout);
                 var $tooltip = customTooltip(chartObj, this);
                 if (!$.isBlank($tooltip.data('currentRow')))
-                { chartObj.unhighlightRows($tooltip.data('currentRow')); }
-                chartObj.highlightRows(this.row);
+                { chartObj.settings.view.unhighlightRows($tooltip.data('currentRow')); }
+                chartObj.settings.view.highlightRows(this.row);
                 $tooltip.data('currentRow', this.row);
             },
             mouseOut: function()
@@ -541,7 +542,7 @@
                 tooltipTimeout = setTimeout(function(){
                     if (!$tooltip.data('mouseover'))
                     {
-                        chartObj.unhighlightRows(t.row);
+                        chartObj.settings.view.unhighlightRows(t.row);
                         $tooltip.hide();
                     }
                 }, 500);
@@ -974,7 +975,7 @@
                     function()
                     {
                         var $tooltip = $(this);
-                        chartObj.unhighlightRows($tooltip.data('currentRow'));
+                        chartObj.settings.view.unhighlightRows($tooltip.data('currentRow'));
                         $tooltip.data('mouseover', false).hide();
                     })
                 .data('events-attached', true);

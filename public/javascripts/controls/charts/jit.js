@@ -118,7 +118,7 @@
                     row[chartObj._valueColumns[0].column.id] = chartObj._remainder;
                     var colors = chartObj.settings.view.displayFormat.colors;
                     var color = colors[chartObj.settings.view.totalRows % 5];
-                    if (chartObj._otherHighlight)
+                    if (chartObj.settings.view.highlights[row.id])
                     { color = getHighlightColor(color); }
                     var item = {
                         id: -1,
@@ -133,7 +133,7 @@
                         },
                         children: []
                     };
-                    if (chartObj._otherHighlight)
+                    if (chartObj.settings.view.highlights[row.id])
                     { item.data['$canvas-shadowBlur'] = chartObj.settings.highlightBlur; }
                     chartObj._jitData.children.push(item);
                     chartObj._otherAdded = true;
@@ -217,10 +217,10 @@
                   {
                       if (!$.isBlank(chartObj._curHighlight) &&
                           chartObj._curHighlight.id != node.data.row.id)
-                      { chartObj.unhighlightRows(chartObj._curHighlight); }
+                      { chartObj.settings.view.unhighlightRows(chartObj._curHighlight); }
 
                       chartObj._curHighlight = node.data.row;
-                      chartObj.highlightRows(node.data.row);
+                      chartObj.settings.view.highlightRows(node.data.row);
                   }
               },
               onMouseLeave: function(node)
@@ -232,7 +232,7 @@
                           setTimeout(function()
                           {
                               delete chartObj._rowLeaveTimer;
-                              chartObj.unhighlightRows(node.data.row);
+                              chartObj.settings.view.unhighlightRows(node.data.row);
                           }, 100);
                   }
               }

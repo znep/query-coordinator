@@ -97,13 +97,13 @@
                         {
                             var row = $(this).data('renderrow');
                             if (!row.sessionMeta || !row.sessionMeta.highlight)
-                            { prtObj.settings.view.markRow('highlight', true, row.id); }
+                            { prtObj.settings.view.highlightRows(row); }
                         },
                     'mouseleave': function(e)
                         {
                             var row = $(this).data('renderrow');
                             if (row.sessionMeta && row.sessionMeta.highlight)
-                            { prtObj.settings.view.markRow('highlight', false, row.id); }
+                            { prtObj.settings.view.unhighlightRows(row); }
                         }});
             },
 

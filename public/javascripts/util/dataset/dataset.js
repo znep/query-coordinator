@@ -765,15 +765,78 @@ this.Dataset = ServerModel.extend({
         ds.sendBatch({success: successCallback, error: errorCallback});
     },
 
-    markRow: function(markType, value, rowId)
+    markRow: function(markType, value, row)
     {
-        var row = this.rowForID(rowId);
         if ($.isBlank(row) || (row.sessionMeta || {})[markType] == value) { return; }
 
         row.sessionMeta = row.sessionMeta || {};
         row.sessionMeta[markType] = value;
 
         this.trigger('row_change', [[row]]);
+    },
+
+    highlightRows: function(rows, type)
+    {
+        var ds = this;
+        rows = $.makeArray(rows);
+
+        type = type || 'default';
+        ds.highlightTypes = ds.highlightTypes || {};
+        if (!$.isBlank(ds.highlightTypes[type]))
+        {
+            var newIds = {};
+            _.each(rows, function(r) { newIds[r.id] = true; });
+            ds.unhighlightRows(_.reject(ds.highlightTypes[type],
+                function(row, rId) { return newIds[rId]; }), type);
+        }
+        else
+        { ds.highlightTypes[type] = {}; }
+
+        ds.highlights = ds.highlights || {};
+        for (var i = 0; i < rows.length; i++)
+        {
+            var row = rows[i];
+            ds.highlightTypes[type][row.id] = row;
+            if (!ds.highlights[row.id])
+            {
+                ds.highlights[row.id] = true;
+                var realRow = ds.rowForID(row.id);
+                if ($.isBlank(realRow))
+                { ds.trigger('row_change', [[row]]); }
+                else
+                { ds.markRow('highlight', true, realRow); }
+            }
+        }
+    },
+
+    unhighlightRows: function(rows, type)
+    {
+        var ds = this;
+        rows = $.makeArray(rows);
+        type = type || 'default';
+        ds.highlightTypes = ds.highlightTypes || {};
+
+        ds.highlights = ds.highlights || {};
+        for (var i = 0; i < rows.length; i++)
+        {
+            var row = rows[i];
+            if (!$.isBlank(ds.highlightTypes[type]))
+            { delete ds.highlightTypes[type][row.id]; }
+
+            if (_.any(ds.highlightTypes, function(hHash)
+                { return !$.isBlank(hHash[row.id]); }))
+            { continue; }
+
+            if (ds.highlights[row.id])
+            {
+                delete ds.highlights[row.id];
+                var realRow = ds.rowForID(row.id);
+                if ($.isBlank(realRow))
+                { ds.trigger('row_change', [[row]]); }
+                else
+                { ds.markRow('highlight', false, realRow); }
+            }
+        }
     },
 
     getAggregates: function(callback, customAggs)

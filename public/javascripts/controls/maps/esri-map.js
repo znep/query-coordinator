@@ -73,8 +73,11 @@
                         dojo.connect(mapObj.map.infoWindow, 'onHide', function()
                         {
                             // Hide all selected rows
-                            if ($.subKeyDefined(mapObj, '_prevHighlights.select'))
-                            { mapObj.unhighlightRows(_.values(mapObj._prevHighlights.select), 'select'); }
+                            if ($.subKeyDefined(mapObj.settings.view, 'highlightTypes.select'))
+                            {
+                                mapObj.settings.view.unhighlightRows(
+                                    _.values(mapObj.settings.view.highlightTypes.select), 'select');
+                            }
                         });
 
                         _.each(mapObj._dataViews, function(view)
@@ -327,9 +330,9 @@
                         // when the point gets redrawn
                         $(dojoShape.rawNode).
                             mouseover(function()
-                            { mapObj.highlightRows(details.rows); }).
+                            { mapObj.settings.view.highlightRows(details.rows); }).
                             mouseout(function()
-                            { mapObj.unhighlightRows(details.rows); });
+                            { mapObj.settings.view.unhighlightRows(details.rows); });
                     }
                 }
 
@@ -839,7 +842,7 @@
                 evt.graphic.attributes.flyoutDetails,
                 evt.graphic.attributes.dataView);
             if ($.isBlank(flyout)) { return; }
-            mapObj.highlightRows(evt.graphic.attributes.rows, 'select');
+            mapObj.settings.view.highlightRows(evt.graphic.attributes.rows, 'select');
             mapObj.map.infoWindow.setContent(flyout[0])
                 .show(evt.screenPoint,
                     mapObj.map.getInfoWindowAnchor(evt.screenPoint));

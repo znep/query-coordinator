@@ -56,10 +56,27 @@
                     prtObj.richRenderer.renderLayout();
                     renderCurrentRow(prtObj);
                 };
+                var rowChange = function(rows, fullReset)
+                {
+                    if (!prtObj._shown) { return; }
+                    if (fullReset)
+                    { mainUpdate(); }
+                    else
+                    {
+                        var cp = prtObj.navigation.currentPage();
+                        if ($.isBlank(cp)) { return; }
+                        _.each(rows, function(r)
+                        {
+                            var realRow = prtObj.settings.view.rowForID(r.id);
+                            if (!$.isBlank(realRow) && realRow.index == cp)
+                            { renderCurrentRow(prtObj); }
+                        });
+                    }
+                };
                 prtObj.settings.view
                     .bind('columns_changed', mainUpdate)
                     .bind('query_change', mainUpdate)
-                    .bind('row_change', mainUpdate);
+                    .bind('row_change', rowChange);
 
                 prtObj.$dom().bind('show', function()
                 {

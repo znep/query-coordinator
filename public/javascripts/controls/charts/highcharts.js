@@ -509,7 +509,7 @@
 
 
         // Set up config for this particular chart type
-        var typeConfig = {allowPointSelect: true, showInLegend: true};
+        var typeConfig = {stickyTracking: false, showInLegend: true};
 
         // Disable marker if no point size set
         if (chartObj.settings.view.displayFormat.pointSize == '0')
@@ -546,6 +546,13 @@
                         $tooltip.hide();
                     }
                 }, 500);
+            },
+            click: function()
+            {
+                if ($.subKeyDefined(chartObj.settings.view, 'highlightTypes.select.' + this.row.id))
+                { chartObj.settings.view.unhighlightRows(this.row, 'select'); }
+                else
+                { chartObj.settings.view.highlightRows(this.row, 'select'); }
             }
         }};
 
@@ -889,8 +896,8 @@
             else
             {
                 var p = chartObj.chart.series[seriesIndex].data[ri];
-                if (point.selected && !p.selected) { p.select(true); }
-                else if (!point.selected && p.selected) { p.select(false); }
+                if (point.selected && !p.selected) { p.select(true, true); }
+                else if (!point.selected && p.selected) { p.select(false, true); }
                 p.update(point, false);
             }
         }

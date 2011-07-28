@@ -235,6 +235,13 @@
                               chartObj.settings.view.unhighlightRows(node.data.row);
                           }, 100);
                   }
+              },
+              onClick: function(node)
+              {
+                  if ($.subKeyDefined(chartObj.settings.view, 'highlightTypes.select.' + node.data.row.id))
+                  { chartObj.settings.view.unhighlightRows(node.data.row, 'select'); }
+                  else
+                  { chartObj.settings.view.highlightRows(node.data.row, 'select'); }
               }
             },
             Tips: {

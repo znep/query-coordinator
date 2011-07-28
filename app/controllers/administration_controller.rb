@@ -916,6 +916,27 @@ class AdministrationController < ApplicationController
     return(redirect_to (request.referer || {:action => 'routing_approval_manage'}))
   end
 
+  before_filter :only => [:tos] {|c| c.check_auth_level('manage_users')}
+  def tos
+    @tos = CurrentDomain.strings.terms_of_service
+    return render_404 if @tos.blank?
+
+    if request.post?
+      if params[:terms_accepted].present?
+        actions = get_or_create_configuration('actions', {:name => 'Actions'})
+        update_or_create_property(actions, 'tos_accepted', {
+          :user => current_user,
+          :text => @tos,
+          :timestamp => Time.now
+        })
+        flash[:notice] = "Thank you for accepting the terms of service"
+        return(redirect_to :action => :index)
+      else
+        flash.now[:error] = "You must agree to the provided terms to continue."
+      end
+    end
+  end
+
   #
   # Access checks
   #

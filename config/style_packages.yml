@@ -61,6 +61,8 @@ administration-users:
 - screen-admin-users
 administration-view-moderation:
 - screen-administration-views
+administration-tos:
+- screen-administration-tos
 browse-control:
 - screen-browse
 - rich-render-types

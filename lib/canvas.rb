@@ -286,7 +286,12 @@ module Canvas
 
       # get the freshest versions of the canonical view urls
       View.find_multiple(@featured_views.map{ |fv| fv.viewId }).each do |view|
-        @featured_views.find{ |fv| fv.viewId == view.id }.href = view.href
+        configured_view = @featured_views.find{ |fv| fv.viewId == view.id }
+        configured_view.href = view.href
+
+        unless view.is_public?
+          @featured_views.delete configured_view
+        end
       end
     end
   protected

@@ -37,6 +37,7 @@
                     .bind('hide', function() { currentObj._hidden = true; })
                     .bind('show', function()
                     {
+                        if (currentObj._obsolete) { return; }
                         delete currentObj._hidden;
                         if (currentObj._needsReload)
                         { currentObj.reload(); }
@@ -234,6 +235,7 @@
                 var vizObj = this;
                 var handleChange = function(forceRowReload)
                 {
+                    if (vizObj._obsolete) { return; }
                     if (forceRowReload === true)
                     { vizObj._requireRowReload = true; }
                     if (!vizObj._pendingReload && !vizObj._initialLoad)
@@ -244,6 +246,7 @@
                 };
                 var handleRowChange = function(rows, fullReset)
                 {
+                    if (vizObj._obsolete) { return; }
                     if (fullReset) { handleChange(true); }
                     else if (!vizObj._hidden) { vizObj.handleRowsLoaded(rows, vizObj.settings.view); }
                 };

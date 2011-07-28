@@ -179,6 +179,7 @@
                 $(mapObj.currentDom).removeData('socrataVisualization');
                 mapObj.$dom().empty();
                 mapObj.unhookMap();
+                mapObj._obsolete = true;
                 if (mapObj._legend) { mapObj._legend.$dom.hide(); }
                 // We need to change the ID so that maps (such as ESRI) recognize
                 // something has changed, and reload properly

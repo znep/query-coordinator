@@ -261,7 +261,7 @@
                         break;
                 }
 
-                google.maps.event.addListener(mapGeom, 'click', function(evt)
+                var showInfoWindow = function(evt)
                 {
                     if (!mapObj.infoWindow)
                     {
@@ -281,18 +281,29 @@
 
                     var flyout = mapObj.getFlyout(details.rows,
                             details.flyoutDetails, details.dataView);
-                    if ($.isBlank(flyout)) { return; }
+                    if ($.isBlank(flyout)) { return false; }
 
                     mapObj.infoWindow.setContent(flyout[0]);
                     // evt.latLng if it's not a point; pull .position for points
-                    mapObj.infoWindow.setPosition(evt.latLng || mapGeom.position);
+                    mapObj.infoWindow.setPosition((evt || {}).latLng || mapGeom.position);
                     mapObj.infoWindow.open(mapObj.map);
+                    return true;
+                };
 
-                    mapObj.settings.view.highlightRows(details.rows, 'select');
-                });
+                google.maps.event.addListener(mapGeom, 'click',
+                    function(evt)
+                    {
+                        if (showInfoWindow(evt) && geoType == 'point')
+                        { mapObj.settings.view.highlightRows(details.rows, 'select'); }
+                    });
 
                 if (geoType == 'point')
                 {
+                    if (details.rows.length > 0 &&
+                        $.subKeyDefined(mapObj.settings.view, 'highlightTypes.select.' +
+                            _.first(details.rows).id))
+                    { showInfoWindow(); }
+
                     google.maps.event.addListener(mapGeom, 'mouseover', function()
                     {
                         if (!$.isBlank(mapObj._hoverTimers[dupKey]))

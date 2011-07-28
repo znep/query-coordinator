@@ -771,8 +771,6 @@ this.Dataset = ServerModel.extend({
 
         row.sessionMeta = row.sessionMeta || {};
         row.sessionMeta[markType] = value;
-
-        this.trigger('row_change', [[row]]);
     },
 
     highlightRows: function(rows, type)
@@ -793,6 +791,7 @@ this.Dataset = ServerModel.extend({
         { ds.highlightTypes[type] = {}; }
 
         ds.highlights = ds.highlights || {};
+        var rowChanges = [];
         for (var i = 0; i < rows.length; i++)
         {
             var row = rows[i];
@@ -801,12 +800,12 @@ this.Dataset = ServerModel.extend({
             {
                 ds.highlights[row.id] = true;
                 var realRow = ds.rowForID(row.id);
-                if ($.isBlank(realRow))
-                { ds.trigger('row_change', [[row]]); }
-                else
+                if (!$.isBlank(realRow))
                 { ds.markRow('highlight', true, realRow); }
+                rowChanges.push(realRow || row);
             }
         }
+        ds.trigger('row_change', [rowChanges]);
     },
 
     unhighlightRows: function(rows, type)
@@ -817,6 +816,7 @@ this.Dataset = ServerModel.extend({
         ds.highlightTypes = ds.highlightTypes || {};
 
         ds.highlights = ds.highlights || {};
+        var rowChanges = [];
         for (var i = 0; i < rows.length; i++)
         {
             var row = rows[i];
@@ -831,12 +831,12 @@ this.Dataset = ServerModel.extend({
             {
                 delete ds.highlights[row.id];
                 var realRow = ds.rowForID(row.id);
-                if ($.isBlank(realRow))
-                { ds.trigger('row_change', [[row]]); }
-                else
+                if (!$.isBlank(realRow))
                 { ds.markRow('highlight', false, realRow); }
+                rowChanges.push(realRow || row);
             }
         }
+        ds.trigger('row_change', [rowChanges]);
     },
 
     getAggregates: function(callback, customAggs)
@@ -1369,7 +1369,7 @@ this.Dataset = ServerModel.extend({
                     filters = {type: 'operator', value: 'AND',
                         children: [filters]};
                 }
-                filters.children = filters.children.concat(newFilters);
+                filters.children = (filters.children || []).concat(newFilters);
             }
         }
         return filters;
@@ -1960,6 +1960,9 @@ this.Dataset = ServerModel.extend({
             });
 
             ds._setRowFormatting(r);
+
+            if ($.subKeyDefined(ds, 'highlights.' + r.id))
+            { ds.markRow('highlight', true, r); }
 
             return true;
         };

@@ -997,6 +997,9 @@
         // Now that we have data, make sure the axes are updated
         chartObj.chart.redraw(false);
         chartObj.chart.xAxis[0].setCategories(chartObj._xCategories, true);
+        // Force size after setting the categories, since Highcharts doesn't always redraw the
+        // grid correctly after setting the new labels
+        chartObj.chart.setSize(chartObj.$dom().width(), chartObj.$dom().height());
         chartObj._categoriesLoaded = true;
     };
 

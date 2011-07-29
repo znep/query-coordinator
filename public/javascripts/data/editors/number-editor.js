@@ -52,8 +52,7 @@
                 // attach maskedinput plugin if relevant
                 if (this._$editor && _.isString(format.mask))
                 {
-                    this._$editor.find('input').mask(format.mask,
-                        { placeholder: ' ' });
+                    this._$editor.find('input').mask(format.mask);
                 }
 
                 // super():

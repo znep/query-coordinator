@@ -11,9 +11,9 @@
 	$.mask = {
 		//Predefined character definitions
 		definitions: {
-			'#': "[0-9]",
+			'#': "[0-9]"/*,
 			'a': "[A-Za-z]",
-			'*': "[A-Za-z0-9]"
+			'*': "[A-Za-z0-9]"*/
 		},
 		dataName:"rawMaskFn"
 	};
@@ -241,7 +241,7 @@
 						($.browser.msie ? moveCaret:function(){setTimeout(moveCaret,0)})();
 					})
 					.bind("blur.mask", function() {
-						checkVal();
+						checkVal(true);
 						if (input.val() != focusText)
 							input.change();
 					})

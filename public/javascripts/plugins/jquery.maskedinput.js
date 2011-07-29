@@ -139,11 +139,14 @@
 						shiftL(begin,end-1);
 
 						return false;
-					} else if (k == 27) {//escape
+					}
+
+					/* don't handle this case here; blist-editor will handle it
+					  else if (k == 27) {//escape
 						input.val(focusText);
 						input.caret(0, checkVal());
 						return false;
-					}
+					}*/
 				};
 
 				function keypressEvent(e) {
@@ -230,7 +233,7 @@
 					})
 					.bind("focus.mask", function() {
 						focusText = input.val();
-						var pos = checkVal();
+						var pos = checkVal(true);
 						writeBuffer();
 						var moveCaret=function(){
 							if (pos == mask.length)
@@ -251,7 +254,7 @@
 						setTimeout(function() { input.caret(checkVal(true)); }, 0);
 					});
 
-				checkVal(); //Perform initial check for existing values
+				checkVal(true); //Perform initial check for existing values
 			});
 		}
 	});

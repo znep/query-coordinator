@@ -101,6 +101,8 @@
                 editable: calObj.settings.view.hasRight('write'),
                 disableResizing: $.isBlank(calObj.settings.view
                     .displayFormat.endDateTableId),
+                eventClick: function()
+                    { eventClick.apply(this, [calObj].concat($.makeArray(arguments))); },
                 eventMouseover: function()
                     { eventMouseover.apply(this, [calObj].concat($.makeArray(arguments))); },
                 eventMouseout: function()
@@ -127,6 +129,14 @@
         calObj.ready();
     };
 
+    var eventClick = function(calObj, calEvent)
+    {
+        if ($.subKeyDefined(calObj.settings.view, 'highlightTypes.select.' + calEvent.row.id))
+        { calObj.settings.view.unhighlightRows(calEvent.row, 'select'); }
+        else
+        { calObj.settings.view.highlightRows(calEvent.row, 'select'); }
+    };
+
     var eventMouseover = function(calObj, calEvent)
     {
         calObj.settings.view.highlightRows(calEvent.row);
@@ -141,9 +151,12 @@
     {
         if (!$.isBlank(calObj.hasFlyout()))
         {
-            $(element).socrataTip({content: calObj.renderFlyout(calEvent.row,
+            var $e = $(element);
+            $e.socrataTip({content: calObj.renderFlyout(calEvent.row,
                 calObj.settings.view),
                 trigger: 'click', isSolo: true});
+            if ($.subKeyDefined(calObj.settings.view, 'highlightTypes.select.' + calEvent.row.id))
+            { _.defer(function() { $e.socrataTip().show(); }); }
         }
     };
 

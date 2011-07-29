@@ -289,9 +289,7 @@ module Canvas
         configured_view = @featured_views.find{ |fv| fv.viewId == view.id }
         configured_view.href = view.href
 
-        unless view.is_public?
-          @featured_views.delete configured_view
-        end
+        @featured_views.delete configured_view unless view.is_public?
       end
     end
   protected

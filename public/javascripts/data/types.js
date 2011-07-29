@@ -187,41 +187,77 @@ blist.namespace.fetch('blist.data.types');
     };
 
     var numberHelper = function(value, decimalPlaces, precisionStyle,
-        prefix, suffix, humane, noCommas)
+        prefix, suffix, humane, noCommas, mask)
     {
         if (value == null) { return ''; }
 
-        if (typeof value != "number")
+        if (_.isString(mask) && (mask !== ''))
         {
-            // Skip this if we already have a number as it is slow
-            value = parseFloat(value);
-        }
+            origValue = value.toString();
+            value = '';
 
-        if (precisionStyle == 'scientific')
-        {
-            if (decimalPlaces !== undefined)
-            { value = value.toExponential(decimalPlaces); }
-            else
-            { value = value.toExponential(); }
-        }
-        else if (decimalPlaces !== undefined)
-        { value = value.toFixed(decimalPlaces); }
+            while (origValue.length && mask.length)
+            {
+                // decimals are weird things to have in a masked number,
+                // so we'll just deal with it by unilaterally dumping them
+                // as soon as the value gets there
+                if (origValue.charAt(0) === '.')
+                {
+                    value += '.';
+                    origValue = origValue.slice(1);
+                }
 
-        if (humane === true || humane === 'true')
-        {
-            value = blist.util.toHumaneNumber(value, 2);
-        }
-        else if (noCommas !== true && noCommas != 'true')
-        {
-            value = value + '';
-            var pos = value.indexOf('.');
-            if (pos == -1) {
-                pos = value.length;
+                if (mask.charAt(0) === '#')
+                {
+                    value += origValue.charAt(0);
+                    origValue = origValue.slice(1);
+                }
+                else
+                {
+                    value += mask.charAt(0);
+                }
+
+                mask = mask.slice(1);
             }
-            pos -= 3;
-            while (pos > 0 && DIGITS[value.charAt(pos - 1)]) {
-                value = value.substring(0, pos) + "," + value.substring(pos);
+
+            // if the original value is longer than the mask, just
+            // append whatever's left at the very end here
+            value += origValue;
+        }
+        else
+        {
+            if (!_.isNumber(value))
+            {
+                // Skip this if we already have a number as it is slow
+                value = parseFloat(value);
+            }
+
+            if (precisionStyle == 'scientific')
+            {
+                if (decimalPlaces !== undefined)
+                { value = value.toExponential(decimalPlaces); }
+                else
+                { value = value.toExponential(); }
+            }
+            else if (decimalPlaces !== undefined)
+            { value = value.toFixed(decimalPlaces); }
+
+            if (humane === true || humane === 'true')
+            {
+                value = blist.util.toHumaneNumber(value, 2);
+            }
+            else if (noCommas !== true && noCommas != 'true')
+            {
+                value = value + '';
+                var pos = value.indexOf('.');
+                if (pos == -1) {
+                    pos = value.length;
+                }
                 pos -= 3;
+                while (pos > 0 && DIGITS[value.charAt(pos - 1)]) {
+                    value = value.substring(0, pos) + "," + value.substring(pos);
+                    pos -= 3;
+                }
             }
         }
 
@@ -232,10 +268,12 @@ blist.namespace.fetch('blist.data.types');
     };
 
     var renderGenNumber = function(value, plain, column) {
+        var format = column.format || {};
         return "numberHelper(" + value + ", " +
-            (column.format || {}).precision + ", '" +
-            (column.format || {}).precisionStyle + "', null, null, false, " +
-            column.format.noCommas + ")";
+            format.precision + ", '" +
+            format.precisionStyle + "', null, null, false, " +
+            format.noCommas + ", '" +
+            (format.mask || '') + "')";
     };
 
     var renderNumber = function(value, column)

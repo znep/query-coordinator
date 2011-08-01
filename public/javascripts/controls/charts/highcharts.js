@@ -230,13 +230,10 @@
                     { chartObj._xCategories.push('Other'); }
                     _.each(chartObj._seriesRemainders, function(sr, i)
                     {
-                        if (sr > 0)
-                        {
-                            var col = chartObj._yColumns[i].data;
-                            otherRow[col.id] = sr;
-                            var point = yPoint(chartObj, otherRow, sr, i, otherPt, col);
-                            addPoint(chartObj, point, i, true)
-                        }
+                        var col = chartObj._yColumns[i].data;
+                        otherRow[col.id] = sr;
+                        var point = yPoint(chartObj, otherRow, sr, i, otherPt, col);
+                        addPoint(chartObj, point, i, true)
                     });
 
                     var numSeries = chartObj._seriesRemainders.length;
@@ -889,6 +886,12 @@
     var addPoint = function(chartObj, point, seriesIndex, isOther)
     {
         var ri = (chartObj._rowIndices[point.row.id] || {})[seriesIndex];
+        if (isOther && point.y == 0)
+        {
+            removePoint(chartObj, point, seriesIndex, isOther);
+            return;
+        }
+
         if (!_.isUndefined(chartObj.chart))
         {
             if ($.isBlank(ri))
@@ -923,6 +926,27 @@
         }
         if (!isOther)
         { chartObj._seriesRemainders[seriesIndex] -= point.y; }
+    };
+
+    var removePoint = function(chartObj, point, seriesIndex, isOther)
+    {
+        var ri = (chartObj._rowIndices[point.row.id] || {})[seriesIndex];
+        if ($.isBlank(ri)) { return; }
+
+        if (!_.isUndefined(chartObj.chart))
+        { chartObj.chart.series[seriesIndex].data[ri].remove(); }
+        if (!_.isUndefined(chartObj.secondChart))
+        { chartObj.secondChart.series[seriesIndex].data[ri].remove(); }
+
+        if (!isOther)
+        { chartObj._seriesRemainders[seriesIndex] += chartObj._seriesCache[seriesIndex].data[ri].y; }
+        chartObj._seriesCache[seriesIndex].data.splice(ri, 1);
+        delete chartObj._rowIndices[point.row.id][seriesIndex];
+        for (var i = ri; i < chartObj._seriesCache[seriesIndex].data.length; i++)
+        {
+            var p = chartObj._seriesCache[seriesIndex].data[i];
+            chartObj._rowIndices[p.row.id][seriesIndex] = i;
+        }
     };
 
     var customTooltip = function(chartObj, point)

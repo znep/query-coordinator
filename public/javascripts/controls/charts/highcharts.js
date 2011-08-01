@@ -404,7 +404,7 @@
         var chartConfig =
         {
             chart: {
-                animation: false,
+                animation: true,
                 renderTo: chartObj.$dom()[0],
                 defaultSeriesType: seriesType,
                 events: { load: function() { chartObj.finishLoading(); } },

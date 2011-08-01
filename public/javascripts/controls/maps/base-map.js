@@ -694,7 +694,7 @@
                 _.each(mapObj._dataViews, function(view)
                 {
                     var viewConfig = mapObj._byView[view.id];
-                    var filterColumn = viewConfig._geoCol || viewConfig._locCol;
+                    var filterColumn = viewConfig._locCol || viewConfig._geoCol;
                     if ($.isBlank(filterColumn)
                         || !_.include(['location', 'geospatial'], filterColumn.renderTypeName))
                     { return; }

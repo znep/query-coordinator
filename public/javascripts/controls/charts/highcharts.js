@@ -217,7 +217,7 @@
                 {
                     // Create fake row for other value
                     var otherRow = { id: 'Other', invalid: {}, error: {}, changed: {} };
-                    if (chartObj.settings.view.highlights[otherRow.id])
+                    if ((chartObj.settings.view.highlights || {})[otherRow.id])
                     { otherRow.sessionMeta = {highlight: true}; }
                     otherRow[chartObj._xColumn.lookup] = 'Other';
                     var cf = _.detect(chartObj.settings.view.metadata.conditionalFormatting,
@@ -404,7 +404,7 @@
         var chartConfig =
         {
             chart: {
-                animation: false,
+                animation: true,
                 renderTo: chartObj.$dom()[0],
                 defaultSeriesType: seriesType,
                 events: { load: function() { chartObj.finishLoading(); } },

@@ -118,7 +118,7 @@
                     row[chartObj._valueColumns[0].column.id] = chartObj._remainder;
                     var colors = chartObj.settings.view.displayFormat.colors;
                     var color = colors[chartObj.settings.view.totalRows % 5];
-                    if (chartObj.settings.view.highlights[row.id])
+                    if ((chartObj.settings.view.highlights || {})[row.id])
                     { color = getHighlightColor(color); }
                     var item = {
                         id: -1,
@@ -133,7 +133,7 @@
                         },
                         children: []
                     };
-                    if (chartObj.settings.view.highlights[row.id])
+                    if ((chartObj.settings.view.highlights || {})[row.id])
                     { item.data['$canvas-shadowBlur'] = chartObj.settings.highlightBlur; }
                     chartObj._jitData.children.push(item);
                     chartObj._otherAdded = true;

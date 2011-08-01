@@ -805,7 +805,8 @@ this.Dataset = ServerModel.extend({
                 rowChanges.push(realRow || row);
             }
         }
-        ds.trigger('row_change', [rowChanges]);
+        if (rowChanges.length > 0)
+        { ds.trigger('row_change', [rowChanges]); }
     },
 
     unhighlightRows: function(rows, type)
@@ -836,7 +837,8 @@ this.Dataset = ServerModel.extend({
                 rowChanges.push(realRow || row);
             }
         }
-        ds.trigger('row_change', [rowChanges]);
+        if (rowChanges.length > 0)
+        { ds.trigger('row_change', [rowChanges]); }
     },
 
     getAggregates: function(callback, customAggs)

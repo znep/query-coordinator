@@ -137,6 +137,7 @@ $(function()
 
     // Hook up expansion for list view
     $browse.find('table tbody tr').expander({
+        animate: false,
         contentSelector: '.nameDesc .expandBlock',
         expandSelector: '.index .expander, .nameDesc .extraInfo .close',
         expanderCollapsedClass: 'collapsed',
@@ -187,7 +188,9 @@ $(function()
             });
         }
 
-        $display.animate({ opacity: 1 }, 300);
+        $display.animate({ opacity: 1 }, 300, function() {
+            $display.css('opacity', '');
+        });
     });
 
     // Handle sidebar facets

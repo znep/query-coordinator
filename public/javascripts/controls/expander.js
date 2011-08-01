@@ -45,12 +45,20 @@
                         .css('height', '');
                     var targetHeight = $content.height();
                     $expander.removeClass('collapsed');
-                    $content
-                        .css('height', baseHeight)
-                        .animate({
-                            height: targetHeight
-                        },
-                        config.resizeFinishCallback);
+                    if (config.animate)
+                    {
+                        $content
+                            .css('height', baseHeight)
+                            .animate({
+                                height: targetHeight
+                            },
+                            config.resizeFinishCallback);
+                    }
+                    else
+                    {
+                        $content.height(targetHeight);
+                        config.resizeFinishCallback();
+                    }
                     $expand.removeClass(config.expanderCollapsedClass)
                            .addClass(config.expanderExpandedClass)
                            .attr('title', 'Click to collapse');
@@ -61,18 +69,23 @@
                     $content.addClass('collapsed').css('height', '');
                     var baseHeight = $content.height();
                     $content.removeClass('collapsed');
-                    $content
-                        .animate({
-                            height: baseHeight
-                        },
-                        function()
-                        {
-                            // Un-set display so natural CSS styling can take effect
-                            $content.css('display', '');
-                            $content.addClass('collapsed');
-                            $expander.addClass('collapsed');
-                            config.resizeFinishCallback();
-                        });
+                    var finished = function()
+                    {
+                        // Un-set display so natural CSS styling can take effect
+                        $content.css('display', '');
+                        $content.addClass('collapsed');
+                        $expander.addClass('collapsed');
+                        config.resizeFinishCallback();
+                    };
+                    if (config.animate)
+                    {
+                        $content.animate({ height: baseHeight }, finished);
+                    }
+                    else
+                    {
+                        $content.height(baseHeight);
+                        finished();
+                    }
                     $expand.removeClass(config.expanderExpandedClass)
                            .addClass(config.expanderCollapsedClass)
                            .attr('title', 'Click to expand');
@@ -86,6 +99,7 @@
     // plugin defaults
     //
     $.fn.expander.defaults = {
+        animate: true,
         contentSelector: '.content',
         expanderCollapsedClass: 'downArrow',
         expanderExpandedClass: 'upArrow',

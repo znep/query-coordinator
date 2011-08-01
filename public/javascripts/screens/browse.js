@@ -188,7 +188,9 @@ $(function()
             });
         }
 
-        $display.animate({ opacity: 1 }, 300);
+        $display.animate({ opacity: 1 }, 300, function() {
+            $display.css('opacity', '');
+        });
     });
 
     // Handle sidebar facets

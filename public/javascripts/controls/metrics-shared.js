@@ -278,7 +278,7 @@ metricsNS.detailSectionCallback = function($context)
     var detail = $context.data('data-detail'),
         data   = $context.data(metricsNS.DATA_KEY),
         mappedData = {
-            total: data[detail.toLowerCase()] || 0
+            total: Highcharts.numberFormat(data[detail.toLowerCase()] || 0, 0)
         };
 
     metricsNS.renderSummarySection($context, mappedData,

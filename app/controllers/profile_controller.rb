@@ -31,7 +31,8 @@ class ProfileController < ApplicationController
       nofederate: true,
       use_federations: false,
       sortBy: 'newest',
-      ignore_params: [ :id, :profile_name ]
+      ignore_params: [ :id, :profile_name ],
+      row_count: 3
     }
 
     if params[:ownership] == 'sharedToMe'

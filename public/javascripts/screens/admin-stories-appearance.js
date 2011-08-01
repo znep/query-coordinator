@@ -82,8 +82,8 @@ _.each([
         {   type: 'group', text: 'Margin', includeLabel: true,
             lineClass: 'dimensions', options: [
             {   type: 'text', name: 'box.margin.value', inputOnly: true },
-            {   type: 'select', name: 'box.margin.unit', inputOnly: true,
-                options: publishNS.dimensionOptions }] },
+            {   type: 'static', name: 'box.margin.unit', inputOnly: true,
+                value: 'em' }] },
         {   text: 'Background Color', name: 'box.color',
             prompt: 'The background color of the box',
             type: 'color', advanced: true, showLabel: true },

@@ -93,13 +93,13 @@
                         {
                             var row = $(this).data('renderrow');
                             if (!row.sessionMeta || !row.sessionMeta.highlight)
-                            { frObj.settings.view.markRow('highlight', true, row.id); }
+                            { frObj.settings.view.highlightRows(row); }
                         },
                     'mouseleave': function(e)
                         {
                             var row = $(this).data('renderrow');
                             if (row.sessionMeta && row.sessionMeta.highlight)
-                            { frObj.settings.view.markRow('highlight', false, row.id); }
+                            { frObj.settings.view.unhighlightRows(row); }
                         }});
             },
 

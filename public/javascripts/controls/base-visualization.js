@@ -37,6 +37,7 @@
                     .bind('hide', function() { currentObj._hidden = true; })
                     .bind('show', function()
                     {
+                        if (currentObj._obsolete) { return; }
                         delete currentObj._hidden;
                         if (currentObj._needsReload)
                         { currentObj.reload(); }
@@ -234,6 +235,7 @@
                 var vizObj = this;
                 var handleChange = function(forceRowReload)
                 {
+                    if (vizObj._obsolete) { return; }
                     if (forceRowReload === true)
                     { vizObj._requireRowReload = true; }
                     if (!vizObj._pendingReload && !vizObj._initialLoad)
@@ -244,6 +246,7 @@
                 };
                 var handleRowChange = function(rows, fullReset)
                 {
+                    if (vizObj._obsolete) { return; }
                     if (fullReset) { handleChange(true); }
                     else if (!vizObj._hidden) { vizObj.handleRowsLoaded(rows, vizObj.settings.view); }
                 };
@@ -407,47 +410,6 @@
             {
                 // Implement me if you want to do something after all the rows
                 // are rendered
-            },
-
-            highlightRows: function(rows, skipUnhighlight)
-            {
-                var vizObj = this;
-                rows = $.makeArray(rows);
-                if (!skipUnhighlight && !$.isBlank(vizObj._prevHighlights))
-                {
-                    var newIds = {};
-                    _.each(rows, function(r) { newIds[r.id] = true; });
-                    vizObj.unhighlightRows(_.reject(vizObj._prevHighlights,
-                        function(ph) { return newIds[ph.id] }));
-                }
-
-                vizObj._prevHighlights = rows;
-                for (var i = 0; i < rows.length; i++)
-                {
-                    if (rows[i].id == 'Other' && !vizObj._otherHighlight)
-                    {
-                        vizObj._otherHighlight = true;
-                        vizObj.settings.view.trigger('row_change', [[rows[i]]]);
-                    }
-                    else
-                    { vizObj.settings.view.markRow('highlight', true, rows[i].id); }
-                }
-            },
-
-            unhighlightRows: function(rows)
-            {
-                var vizObj = this;
-                rows = $.makeArray(rows);
-                for (var i = 0; i < rows.length; i++)
-                {
-                    if (rows[i].id == 'Other' && vizObj._otherHighlight)
-                    {
-                        delete vizObj._otherHighlight;
-                        vizObj.settings.view.trigger('row_change', [[rows[i]]]);
-                    }
-                    else
-                    { vizObj.settings.view.markRow('highlight', false, rows[i].id); }
-                }
             },
 
             resizeHandle: function(event)

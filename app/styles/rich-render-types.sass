@@ -195,7 +195,8 @@
         .scrollBox
           display: none
         .close
-          visibility: hidden /* IE7 wouldn't hide it with display:none */
+          // IE7 wouldn't hide it with display:none
+          visibility: hidden
       &.hover
         .controlsBox .expand
           display: block
@@ -207,15 +208,21 @@
     .ie7 &
       position: relative
 
+    .row:nth-child(even)
+      background-color: $row_zebra_color
+
+.rowSearchRenderType
+  .row:nth-child(odd)
+    background-color: $row_zebra_color
+
+.fatRowRenderType, .rowSearchRenderType
+
   .row
     border-top: 1px solid #cacaca
     padding: 1em
       bottom: 0.5em
     &:first-child
       border-top: none
-
-    &:nth-child(even)
-      background-color: #f6f6f6
 
     &.rowHighlight
       background-color: $row_highlight_color

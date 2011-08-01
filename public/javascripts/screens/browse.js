@@ -137,6 +137,7 @@ $(function()
 
     // Hook up expansion for list view
     $browse.find('table tbody tr').expander({
+        animate: false,
         contentSelector: '.nameDesc .expandBlock',
         expandSelector: '.index .expander, .nameDesc .extraInfo .close',
         expanderCollapsedClass: 'collapsed',
@@ -153,6 +154,44 @@ $(function()
         expanderExpandedClass: 'expanded'
     });
 
+    // Sad hack: we don't have the stemmed version,
+    // so just highlight the words they typed
+    var searchRegex = blist.browse.query ?
+        new RegExp(blist.browse.query.replace(' ', '|'), 'gi') : '';
+    // Render row search results, if any
+    $browse.find('table tbody tr.withRows .rowSearchResults')
+        .each(function()
+    {
+        var $results = $(this);
+        var ds = getDS($results);
+        $results.rowSearchRenderType({ highlight: searchRegex,
+            rows: ds.rowResults, view: ds,
+            totalRowResults: ds.rowResultCount });
+
+        var $display = $results.find('.rowSearchRenderType');
+        $display.removeClass('hide').css('opacity', 0);
+
+        // Is it too tall?
+        if ($results.height() > 200)
+        {
+            var $rows = $display.find('.rowList');
+            $rows.data('origheight', $rows.height());
+            $results.addClass('collapsed overheight');
+            $results.find('.expandRowResults').click(function(event)
+            {
+                event.preventDefault();
+                var newHeight = $results.hasClass('collapsed') ?
+                    $rows.data('origheight') : 200;
+                $rows.animate({'max-height': newHeight}, 300,
+                    function() { $results.toggleClass('collapsed'); });
+                $display.find('.expandHint').toggleClass('upArrow downArrow');
+            });
+        }
+
+        $display.animate({ opacity: 1 }, 300, function() {
+            $display.css('opacity', '');
+        });
+    });
 
     // Handle sidebar facets
     var $searchSect = $browse.find('.searchSection');

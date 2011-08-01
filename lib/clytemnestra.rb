@@ -16,11 +16,10 @@ module Clytemnestra
 
   # A view, with rows that match the search query
   class ViewWithRows < View
-    attr_reader :row_results
-
     def initialize(data)
       super(data['view'])
-      @row_results = data['rows']
+      @data['rowResults'] = data['rows']
+      @data['rowResultCount'] = data['totalRows']
     end
   end
 

@@ -217,7 +217,8 @@
                 {
                     // Create fake row for other value
                     var otherRow = { id: 'Other', invalid: {}, error: {}, changed: {} };
-                    if (chartObj._otherHighlight) { otherRow.sessionMeta = {highlight: true}; }
+                    if ((chartObj.settings.view.highlights || {})[otherRow.id])
+                    { otherRow.sessionMeta = {highlight: true}; }
                     otherRow[chartObj._xColumn.lookup] = 'Other';
                     var cf = _.detect(chartObj.settings.view.metadata.conditionalFormatting,
                         function(cf) { return cf.condition === true; });
@@ -229,13 +230,10 @@
                     { chartObj._xCategories.push('Other'); }
                     _.each(chartObj._seriesRemainders, function(sr, i)
                     {
-                        if (sr > 0)
-                        {
-                            var col = chartObj._yColumns[i].data;
-                            otherRow[col.id] = sr;
-                            var point = yPoint(chartObj, otherRow, sr, i, otherPt, col);
-                            addPoint(chartObj, point, i, true)
-                        }
+                        var col = chartObj._yColumns[i].data;
+                        otherRow[col.id] = sr;
+                        var point = yPoint(chartObj, otherRow, sr, i, otherPt, col);
+                        addPoint(chartObj, point, i, true)
                     });
 
                     var numSeries = chartObj._seriesRemainders.length;
@@ -403,7 +401,7 @@
         var chartConfig =
         {
             chart: {
-                animation: false,
+                animation: true,
                 renderTo: chartObj.$dom()[0],
                 defaultSeriesType: seriesType,
                 events: { load: function() { chartObj.finishLoading(); } },
@@ -508,7 +506,7 @@
 
 
         // Set up config for this particular chart type
-        var typeConfig = {allowPointSelect: true, showInLegend: true};
+        var typeConfig = {stickyTracking: false, showInLegend: true};
 
         // Disable marker if no point size set
         if (chartObj.settings.view.displayFormat.pointSize == '0')
@@ -530,8 +528,8 @@
                 clearTimeout(tooltipTimeout);
                 var $tooltip = customTooltip(chartObj, this);
                 if (!$.isBlank($tooltip.data('currentRow')))
-                { chartObj.unhighlightRows($tooltip.data('currentRow')); }
-                chartObj.highlightRows(this.row);
+                { chartObj.settings.view.unhighlightRows($tooltip.data('currentRow')); }
+                chartObj.settings.view.highlightRows(this.row);
                 $tooltip.data('currentRow', this.row);
             },
             mouseOut: function()
@@ -541,10 +539,17 @@
                 tooltipTimeout = setTimeout(function(){
                     if (!$tooltip.data('mouseover'))
                     {
-                        chartObj.unhighlightRows(t.row);
+                        chartObj.settings.view.unhighlightRows(t.row);
                         $tooltip.hide();
                     }
                 }, 500);
+            },
+            click: function()
+            {
+                if ($.subKeyDefined(chartObj.settings.view, 'highlightTypes.select.' + this.row.id))
+                { chartObj.settings.view.unhighlightRows(this.row, 'select'); }
+                else
+                { chartObj.settings.view.highlightRows(this.row, 'select'); }
             }
         }};
 
@@ -881,6 +886,12 @@
     var addPoint = function(chartObj, point, seriesIndex, isOther)
     {
         var ri = (chartObj._rowIndices[point.row.id] || {})[seriesIndex];
+        if (isOther && point.y == 0)
+        {
+            removePoint(chartObj, point, seriesIndex, isOther);
+            return;
+        }
+
         if (!_.isUndefined(chartObj.chart))
         {
             if ($.isBlank(ri))
@@ -888,8 +899,8 @@
             else
             {
                 var p = chartObj.chart.series[seriesIndex].data[ri];
-                if (point.selected && !p.selected) { p.select(true); }
-                else if (!point.selected && p.selected) { p.select(false); }
+                if (point.selected && !p.selected) { p.select(true, true); }
+                else if (!point.selected && p.selected) { p.select(false, true); }
                 p.update(point, false);
             }
         }
@@ -915,6 +926,27 @@
         }
         if (!isOther)
         { chartObj._seriesRemainders[seriesIndex] -= point.y; }
+    };
+
+    var removePoint = function(chartObj, point, seriesIndex, isOther)
+    {
+        var ri = (chartObj._rowIndices[point.row.id] || {})[seriesIndex];
+        if ($.isBlank(ri)) { return; }
+
+        if (!_.isUndefined(chartObj.chart))
+        { chartObj.chart.series[seriesIndex].data[ri].remove(); }
+        if (!_.isUndefined(chartObj.secondChart))
+        { chartObj.secondChart.series[seriesIndex].data[ri].remove(); }
+
+        if (!isOther)
+        { chartObj._seriesRemainders[seriesIndex] += chartObj._seriesCache[seriesIndex].data[ri].y; }
+        chartObj._seriesCache[seriesIndex].data.splice(ri, 1);
+        delete chartObj._rowIndices[point.row.id][seriesIndex];
+        for (var i = ri; i < chartObj._seriesCache[seriesIndex].data.length; i++)
+        {
+            var p = chartObj._seriesCache[seriesIndex].data[i];
+            chartObj._rowIndices[p.row.id][seriesIndex] = i;
+        }
     };
 
     var customTooltip = function(chartObj, point)
@@ -974,7 +1006,7 @@
                     function()
                     {
                         var $tooltip = $(this);
-                        chartObj.unhighlightRows($tooltip.data('currentRow'));
+                        chartObj.settings.view.unhighlightRows($tooltip.data('currentRow'));
                         $tooltip.data('mouseover', false).hide();
                     })
                 .data('events-attached', true);

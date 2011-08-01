@@ -179,6 +179,7 @@
                 $(mapObj.currentDom).removeData('socrataVisualization');
                 mapObj.$dom().empty();
                 mapObj.unhookMap();
+                mapObj._obsolete = true;
                 if (mapObj._legend) { mapObj._legend.$dom.hide(); }
                 // We need to change the ID so that maps (such as ESRI) recognize
                 // something has changed, and reload properly
@@ -693,7 +694,7 @@
                 _.each(mapObj._dataViews, function(view)
                 {
                     var viewConfig = mapObj._byView[view.id];
-                    var filterColumn = viewConfig._geoCol || viewConfig._locCol;
+                    var filterColumn = viewConfig._locCol || viewConfig._geoCol;
                     if ($.isBlank(filterColumn)
                         || !_.include(['location', 'geospatial'], filterColumn.renderTypeName))
                     { return; }

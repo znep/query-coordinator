@@ -61,6 +61,7 @@ javascripts:
     - public/javascripts/data/editors/text-editor.js
     - public/javascripts/plugins/datepicker.js
     - public/javascripts/data/editors/date-editor.js
+    - public/javascripts/plugins/jquery.maskedinput.js
     - public/javascripts/data/editors/number-editor.js
     - public/javascripts/data/editors/percent-editor.js
     - public/javascripts/data/editors/money-editor.js
@@ -196,6 +197,8 @@ javascripts:
     - public/javascripts/controls/dataset-controls.js
     - public/javascripts/controls/expander.js
     - public/javascripts/controls/stars.js
+    - public/javascripts/controls/rich-render-library.js
+    - public/javascripts/controls/row-search-render-type.js
     - public/javascripts/screens/browse.js
   screen-nominations:
     - public/javascripts/plugins/ajaxupload.js

@@ -70,6 +70,22 @@
                         dojo.connect(mapObj.map, 'onLayerReorder', updateEvents);
                         updateEvents();
 
+                        dojo.connect(mapObj.map.infoWindow, 'onHide', function()
+                        {
+                            if (mapObj._resetInfoWindow)
+                            {
+                                delete mapObj._resetInfoWindow;
+                                return;
+                            }
+
+                            // Hide all selected rows
+                            if ($.subKeyDefined(mapObj.settings.view, 'highlightTypes.select'))
+                            {
+                                mapObj.settings.view.unhighlightRows(
+                                    _.values(mapObj.settings.view.highlightTypes.select), 'select');
+                            }
+                        });
+
                         _.each(mapObj._dataViews, function(view)
                             {
                                 if (mapObj._dataLoaded)
@@ -287,6 +303,11 @@
 
                 if (geoType == 'point')
                 {
+                    if (details.rows.length > 0 &&
+                        $.subKeyDefined(mapObj.settings.view, 'highlightTypes.select.' +
+                            _.first(details.rows).id))
+                    { showInfoWindow(mapObj, g); }
+
                     mapObj._multipoint.addPoint(g.geometry);
                     g.heatStrength = details.heatStrength || 1;
                 }
@@ -320,9 +341,9 @@
                         // when the point gets redrawn
                         $(dojoShape.rawNode).
                             mouseover(function()
-                            { mapObj.highlightRows(details.rows); }).
+                            { mapObj.settings.view.highlightRows(details.rows); }).
                             mouseout(function()
-                            { mapObj.unhighlightRows(details.rows); });
+                            { mapObj.settings.view.unhighlightRows(details.rows); });
                     }
                 }
 
@@ -642,7 +663,11 @@
                 delete mapObj._bounds;
                 delete mapObj._byView[mapObj.settings.view.id]._clusters;
                 if (!$.isBlank(mapObj._graphicsLayer)) { mapObj._graphicsLayer.clear(); }
-                if ($.subKeyDefined(mapObj, 'map.infoWindow')) { mapObj.map.infoWindow.hide(); }
+                if ($.subKeyDefined(mapObj, 'map.infoWindow'))
+                {
+                    mapObj._resetInfoWindow = true;
+                    mapObj.map.infoWindow.hide();
+                }
             },
 
             unhookMap: function()
@@ -811,6 +836,18 @@
             mapObj._identifyConfig.attributes.length > 0;
     };
 
+    var showInfoWindow = function(mapObj, graphic, point)
+    {
+        var flyout = mapObj.getFlyout(graphic.attributes.rows,
+            graphic.attributes.flyoutDetails,
+            graphic.attributes.dataView);
+        if ($.isBlank(flyout)) { return false; }
+        point = point || graphic.geometry;
+        mapObj.map.infoWindow.setContent(flyout[0])
+            .show(point, mapObj.map.getInfoWindowAnchor(point));
+        return true;
+    };
+
     var handleGraphicClick = function(mapObj, evt)
     {
         if (isIdentifyTask(mapObj)) { return; }
@@ -828,13 +865,9 @@
         else
         {
             if (evt.graphic.attributes.rows.length < 1) { return; }
-            var flyout = mapObj.getFlyout(evt.graphic.attributes.rows,
-                evt.graphic.attributes.flyoutDetails,
-                evt.graphic.attributes.dataView);
-            if ($.isBlank(flyout)) { return; }
-            mapObj.map.infoWindow.setContent(flyout[0])
-                .show(evt.screenPoint,
-                    mapObj.map.getInfoWindowAnchor(evt.screenPoint));
+            if (showInfoWindow(mapObj, evt.graphic, evt.screenPoint) &&
+                evt.graphic.geometry.type == 'point')
+            { mapObj.settings.view.highlightRows(evt.graphic.attributes.rows, 'select'); }
         }
     };
 

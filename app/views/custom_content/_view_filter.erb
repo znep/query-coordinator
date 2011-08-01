@@ -24,7 +24,7 @@
         // defer to allow .data() on viewPreviews to take hold
         _.defer(function()
         {
-            var datasets = $('.viewPreview[viewFilterGroup=' + targetViewFilterGroup + ']').map(function()
+            var datasets = $('.viewPreview[data-viewfiltergroup=' + targetViewFilterGroup + ']').map(function()
             {
                 return $(this).data('viewPreview-dataset');
             }).toArray();

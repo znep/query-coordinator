@@ -95,7 +95,8 @@ ActionController::Routing::Routes.draw do |map|
       :views => :get,
       :save_featured_views => :put,
       :catalog_widget => :get,
-      :routing_approval => :get
+      :routing_approval => :get,
+      :tos => [:get, :post]
   }
 
   map.with_options :controller => 'administration' do |admin|

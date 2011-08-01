@@ -280,6 +280,22 @@
                 ]
             },
 
+            {
+                title: 'Advanced Formatting',
+                onlyIf: {func: function(c)
+                {
+                    if ($.isBlank(c)) { return false; }
+                    return c.origColumn.renderTypeName == 'number';
+                }},
+                fields: [{text: 'Format Mask', type: 'text', name: 'format.mask'},
+                    {type: 'note', value: 'Use #s to indicate numeric digits, ' +
+                    'and other characters where you want them to go; for example ' +
+                    'a social security number would be ###-##-####'},
+                    {type: 'note', value: 'This may override some of your '+
+                    'settings above.'}
+                ]
+            },
+
             // Money-specific styles
             {
                 title: 'Money Formatting',

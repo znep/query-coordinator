@@ -261,23 +261,49 @@
                         break;
                 }
 
-                google.maps.event.addListener(mapGeom, 'click', function(evt)
+                var showInfoWindow = function(evt)
                 {
                     if (!mapObj.infoWindow)
-                    { mapObj.infoWindow =
-                        new google.maps.InfoWindow({maxWidth: 300}); }
+                    {
+                        mapObj.infoWindow =
+                            new google.maps.InfoWindow({maxWidth: 300});
+                        google.maps.event.addListener(mapObj.infoWindow, 'closeclick',
+                            function()
+                            {
+                                // Hide all selected rows
+                                if ($.subKeyDefined(mapObj.settings.view, 'highlightTypes.select'))
+                                {
+                                    mapObj.settings.view.unhighlightRows(
+                                        _.values(mapObj.settings.view.highlightTypes.select), 'select');
+                                }
+                            });
+                    }
+
                     var flyout = mapObj.getFlyout(details.rows,
                             details.flyoutDetails, details.dataView);
-                    if ($.isBlank(flyout)) { return; }
+                    if ($.isBlank(flyout)) { return false; }
 
                     mapObj.infoWindow.setContent(flyout[0]);
                     // evt.latLng if it's not a point; pull .position for points
-                    mapObj.infoWindow.setPosition(evt.latLng || mapGeom.position);
+                    mapObj.infoWindow.setPosition((evt || {}).latLng || mapGeom.position);
                     mapObj.infoWindow.open(mapObj.map);
-                });
+                    return true;
+                };
+
+                google.maps.event.addListener(mapGeom, 'click',
+                    function(evt)
+                    {
+                        if (showInfoWindow(evt) && geoType == 'point')
+                        { mapObj.settings.view.highlightRows(details.rows, 'select'); }
+                    });
 
                 if (geoType == 'point')
                 {
+                    if (details.rows.length > 0 &&
+                        $.subKeyDefined(mapObj.settings.view, 'highlightTypes.select.' +
+                            _.first(details.rows).id))
+                    { showInfoWindow(); }
+
                     google.maps.event.addListener(mapGeom, 'mouseover', function()
                     {
                         if (!$.isBlank(mapObj._hoverTimers[dupKey]))
@@ -285,7 +311,7 @@
                             clearTimeout(mapObj._hoverTimers[dupKey]);
                             delete mapObj._hoverTimers[dupKey];
                         }
-                        mapObj.highlightRows(details.rows);
+                        mapObj.settings.view.highlightRows(details.rows);
                     });
 
                     google.maps.event.addListener(mapGeom, 'mouseout', function()
@@ -293,7 +319,7 @@
                         mapObj._hoverTimers[dupKey] = setTimeout(function()
                             {
                                 delete mapObj._hoverTimers[dupKey];
-                                mapObj.unhighlightRows(details.rows);
+                                mapObj.settings.view.unhighlightRows(details.rows);
                             }, 100);
                     });
                 }

@@ -191,16 +191,22 @@
                             if (details.redirect_to)
                             { window.open(details.redirect_to); }
 
-                            buildInfoWindow(mapObj, event);
+                            if (showInfoWindow(mapObj, event.target) && geoType == 'point')
+                            { mapObj.settings.view.highlightRows(shape.rows, 'select'); }
                         });
 
                     if (geoType == 'point')
                     {
+                        if (details.rows.length > 0 &&
+                            $.subKeyDefined(mapObj.settings.view, 'highlightTypes.select.' +
+                                _.first(details.rows).id))
+                        { showInfoWindow(mapObj, shape); }
+
                         Microsoft.Maps.Events.addHandler(shape, 'mouseover', function()
-                        { mapObj.highlightRows(details.rows); });
+                        { mapObj.settings.view.highlightRows(details.rows); });
 
                         Microsoft.Maps.Events.addHandler(shape, 'mouseout', function()
-                        { mapObj.unhighlightRows(details.rows); });
+                        { mapObj.settings.view.unhighlightRows(details.rows); });
                     }
                 });
 
@@ -455,12 +461,10 @@
         return collection;
     };
 
-    var buildInfoWindow = function(mapObj, event)
+    var showInfoWindow = function(mapObj, shape)
     {
-        var shape = event.target;
-
         var $flyout = mapObj.getFlyout(shape.rows, shape.flyoutDetails, shape.dataView);
-        if ($.isBlank($flyout)) { return; }
+        if ($.isBlank($flyout)) { return false; }
 
         var pixel = mapObj.map.tryLocationToPixel(
             shape.getLocation(),
@@ -497,12 +501,23 @@
             $box.removeClass('right');
         }
 
-        $box.find('#bing_infoContent img').click(function() { closeInfoWindow(); });
+        $box.find('#bing_infoContent img').click(function()
+        {
+            // Hide all selected rows
+            if ($.subKeyDefined(mapObj.settings.view, 'highlightTypes.select'))
+            {
+                mapObj.settings.view.unhighlightRows(
+                    _.values(mapObj.settings.view.highlightTypes.select), 'select');
+            }
+            closeInfoWindow();
+        });
 
         $box.css({ left: x, top: y });
 
         var l = Microsoft.Maps.Events.addHandler(mapObj.map, 'viewchange',
             function() { closeInfoWindow(); Microsoft.Maps.Events.removeHandler(l); });
+
+        return true;
     };
 
     var closeInfoWindow = function()

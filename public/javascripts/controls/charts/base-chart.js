@@ -160,6 +160,7 @@
                 var chartObj = this;
                 $(chartObj.currentDom).removeData('socrataVisualization');
                 chartObj.$dom().empty();
+                chartObj._obsolete = true;
                 $(chartObj.currentDom).socrataChart(chartObj.settings);
             },
 

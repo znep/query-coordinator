@@ -163,8 +163,8 @@ _.each([
         {   type: 'group', text: 'Height', includeLabel: true,
             lineClass: 'dimensions', options: [
             {   type: 'text', name: 'height.value', inputOnly: true },
-            {   type: 'select', name: 'height.unit', inputOnly: true,
-                options: publishNS.dimensionOptions } ] },
+            {   type: 'static', name: 'height.unit', inputOnly: true,
+                value: 'em' } ] },
         {   text: 'Slide Advance', name: 'autoAdvance',
             prompt: 'Length of time to wait (in seconds)',
             type: 'slider', minimum: 0, maximum: 20 },

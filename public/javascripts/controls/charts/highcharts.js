@@ -464,6 +464,7 @@
         if (isDateTime(chartObj))
         {
             chartConfig.xAxis.type = 'datetime';
+            delete chartConfig.xAxis.labels.formatter;
             chartConfig.tooltip = { formatter: function()
             {
                 return '<p><strong>' + this.series.name +
@@ -646,7 +647,7 @@
         if (_.isNull(value) && isPieTypeChart)
         { return null; }
 
-        var point = {y: value || 0, pretty: {}, label: {} };
+        var point = {y: value || 0, pretty: {}, label: {}, id: row.id + '_' + seriesIndex};
         point.pretty.y = col.renderType.filterRender(value, col, true);
         if (!_.isNull(basePt) && !_.isUndefined(basePt))
         { _.extend(point, basePt); }
@@ -898,7 +899,7 @@
             { chartObj.chart.series[seriesIndex].addPoint(point, false); }
             else
             {
-                var p = chartObj.chart.series[seriesIndex].data[ri];
+                var p = chartObj.chart.get(point.id);
                 if (point.selected && !p.selected) { p.select(true, true); }
                 else if (!point.selected && p.selected) { p.select(false, true); }
                 p.update(point, false);
@@ -909,7 +910,7 @@
             if ($.isBlank(ri))
             { chartObj.secondChart.series[seriesIndex].addPoint(point, false); }
             else
-            { chartObj.secondChart.series[seriesIndex].data[ri].update(point, false); }
+            { chartObj.secondChart.get(point.id).update(point, false); }
         }
 
         if ($.isBlank(ri))
@@ -934,9 +935,9 @@
         if ($.isBlank(ri)) { return; }
 
         if (!_.isUndefined(chartObj.chart))
-        { chartObj.chart.series[seriesIndex].data[ri].remove(); }
+        { chartObj.chart.get(point.id).remove(); }
         if (!_.isUndefined(chartObj.secondChart))
-        { chartObj.secondChart.series[seriesIndex].data[ri].remove(); }
+        { chartObj.secondChart.get(point.id).remove(); }
 
         if (!isOther)
         { chartObj._seriesRemainders[seriesIndex] += chartObj._seriesCache[seriesIndex].data[ri].y; }

@@ -3799,8 +3799,6 @@ function Chart (options, callback) {
 		chartPosition,// = getPosition(container),
 		hasCartesianSeries = optionsChart.showAxes,
 		isResizing = 0,
-                // jeff.scherpelz@socrata.com: New var
-                needsRedraw = false,
 		axes = [],
 		maxTicks, // handle the greatest amount of ticks on grouped axes
 		series = [], 
@@ -6778,13 +6776,6 @@ function Chart (options, callback) {
 	 *    configuration
 	 */
 	function redraw(animation) {
-            // jeff.scherpelz@socrata.com: Added this check because trying to
-            // redraw during a resize does not work
-            if (isResizing)
-            {
-                needsRedraw = true;
-                return;
-            }
 		var redrawLegend = chart.isDirtyLegend,
 			hasStackedSeries,
 			isDirtyBox = chart.isDirtyBox, // todo: check if it has actually changed?
@@ -7416,13 +7407,6 @@ function Chart (options, callback) {
 		setTimeout(function() {
 			fireEvent(chart, 'endResize', null, function() {
 				isResizing -= 1;
-            // jeff.scherpelz@socrata.com: If we bailed from redraw due
-            // to resizing, then do it now
-            if (needsRedraw)
-            {
-                redraw();
-                needsRedraw = false;
-            }
 			});
 		}, animation ? (globalAnimation && globalAnimation.duration || 500) : 0);
                  // jeff.scherpelz@socrata.com: Above is patched: if animation

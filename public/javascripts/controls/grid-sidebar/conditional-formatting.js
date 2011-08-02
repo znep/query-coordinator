@@ -104,17 +104,42 @@
     };
 
     var conditionIndicator = {
-        text: 'Use<br />this color or this URL icon',
+        text: 'Use<br />this color<br />or this icon',
         type: 'radioGroup', name: 'conditionIndicator', defaultValue: 'color',
-               options: [
-                   {type: 'color', required: true,
-                       name: 'color', defaultValue: '#bbffbb'},
-                   {type: 'text', required: true,
-                       disabled: function()
-                       { return !_.include(blist.dataset.metadata.availableDisplayTypes, 'map'); },
-                       name: 'icon', defaultValue: 'http://'}
-               ]
-           };
+        options: [
+            {type: 'color', required: true,
+                name: 'color', defaultValue: '#bbffbb'},
+            {type: 'custom', required: true,
+                disabled: function()
+                { return !_.include(blist.dataset.metadata.availableDisplayTypes, 'map'); },
+                editorCallbacks: {create: function(sidebarObj, $field, vals, curValue)
+                {
+                    if (curValue)
+                    { $field.append('<img src="' + curValue + '" /> '); }
+                    var disabled = $field.parents(".radioLine").children(':disabled').length > 0;
+                    if (disabled)
+                    {
+                        $field.append('Icons are only relevant for map view');
+                        return;
+                    }
+                    $field.append('(<a>change</a>)<input type="hidden" name="' +
+                        $field.attr('name') + '" />');
+                    $field.find('a').data('ajaxupload', new AjaxUpload($field, {
+                        action: '/api/assets',
+                        autoSubmit: true,
+                        responseType: 'json',
+                        onComplete: function(file, response)
+                        {
+                            var imgUrl = '/api/assets/' + response.id;
+                            $field.find('img').attr('src', imgUrl);
+                            $field.find('input').attr('value', imgUrl);
+                        }
+                    }))
+                }, value: function(sidebarObj, $field)
+                { return $field.find('img').attr('src'); }},
+                name: 'icon'}
+           ]
+       };
 
     var sidebar;
     var configName = 'visualize.conditionalFormatting';

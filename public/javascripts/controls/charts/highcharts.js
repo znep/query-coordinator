@@ -397,6 +397,57 @@
             return v;
         };
 
+        var chartRedraw = function()
+        {
+            if (chartObj._valueMarker)
+            {
+                // This is a hackaround since it doesn't look like
+                // alignedObjects is ever supposed to be null.
+                // TODO: Chase down the Highcharts bug.
+                if (!chartObj._valueMarker.renderer.alignedObjects)
+                { chartObj._valueMarker.renderer.alignedObjects = []; }
+                chartObj._valueMarker.destroy();
+                delete chartObj._valueMarker;
+            }
+            if (!$.subKeyDefined(chartObj.settings.view.displayFormat, 'yAxis.marker'))
+            { return; }
+
+            var lineAt = parseFloat(chartObj.settings.view.displayFormat.yAxis.marker);
+            if (!_.isNumber(lineAt)) { return; }
+
+            var extremes = chartObj.chart.series[0].yAxis.getExtremes();
+            var percentage = (extremes.max - lineAt) / (extremes.max - extremes.min);
+            if (percentage > 1 || percentage < 0)
+            { return; }
+
+            var commands = [];
+            var invertAxis = chartObj._chartType == 'bar';
+            if (invertAxis)
+            {
+                var offsetLeft = ((1 - percentage) * chartObj.chart.plotWidth)
+                    + chartObj.chart.plotLeft;
+                commands.push(['M', offsetLeft, chartObj.chart.plotTop
+                    + chartObj.chart.plotHeight]);
+                commands.push(['L', offsetLeft, chartObj.chart.plotTop]);
+            }
+            else
+            {
+                var offsetTop = (percentage * chartObj.chart.plotHeight) + chartObj.chart.plotTop;
+                commands.push(['M', chartObj.chart.plotLeft, offsetTop]);
+                commands.push(['L', chartObj.chart.plotLeft + chartObj.chart.plotWidth, offsetTop]);
+            }
+
+            var thickStroke = _.include(['column', 'bar'], chartObj._chartType);
+
+            chartObj._valueMarker = chartObj.chart.renderer.path(_.flatten(commands))
+                .attr({
+                    'zIndex': 10,
+                    'stroke': chartObj.settings.view.displayFormat.yAxis.markerColor,
+                    'stroke-width': thickStroke ? 2 : 1,
+                    'stroke-dasharray': '9, 5'})
+                .add();
+        };
+
         // Main config
         var chartConfig =
         {
@@ -404,7 +455,7 @@
                 animation: true,
                 renderTo: chartObj.$dom()[0],
                 defaultSeriesType: seriesType,
-                events: { load: function() { chartObj.finishLoading(); } },
+                events: { load: function() { chartObj.finishLoading(); }, redraw: chartRedraw },
                 inverted: chartObj._chartType == 'bar'
             },
             credits: { enabled: false },

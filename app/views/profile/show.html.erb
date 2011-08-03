@@ -54,9 +54,9 @@
       </div>
     <%- end -%>
 
-    <%- if (module_enabled?(:community_creation) ||
-            CurrentDomain.user_can?(@user, :create_datasets)) ||
-            @processed_browse[:view_count] > 0 -%>
+    <%- if module_enabled?(:community_creation) ||
+           CurrentDomain.user_can?(@user, :create_datasets) ||
+           @processed_browse[:view_count] > 0 -%>
       <div class="datasetsList content">
         <h2><%= @user.displayName %>'s Datasets</h2>
         <%- if @is_user_current -%>

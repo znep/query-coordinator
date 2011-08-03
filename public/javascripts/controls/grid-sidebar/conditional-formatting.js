@@ -131,8 +131,14 @@
                         onComplete: function(file, response)
                         {
                             var imgUrl = '/api/assets/' + response.id;
-                            $field.find('img').attr('src', imgUrl);
+                            var $preview = $field.find('img');
+                            if ($preview.length == 0)
+                            { $field.prepend('<img src="' + imgUrl + '" /> '); }
+                            else
+                            { $preview.attr('src', imgUrl); }
                             $field.find('input').attr('value', imgUrl);
+                            $field.parents('.radioLine').find('input:radio')
+                                .prop('checked', true).click();
                         }
                     }))
                 }, value: function(sidebarObj, $field)

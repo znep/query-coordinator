@@ -1,3 +1,6 @@
+$federated_background_color: #f0f0f0
+$browse_background_color: #ffffff
+
 .browseSection
   padding: #{$chrome_margin_inner} 0
   .action_browse_show &
@@ -117,7 +120,7 @@
             top: 0
 
   .browseList
-    background-color: #ffffff
+    background-color: $browse_background_color
     border: 1px solid $color_chrome_box_border
     @include border-radius(0.3em)
     margin:
@@ -218,9 +221,21 @@
             width: 20px
 
         .item.federated
-          background-color: #f0f0f0
+          background-color: $federated_background_color
           .nameDesc a, .nameLink
             color: scale-color($color_links_normal, $saturation: -25%, $lightness: 10%)
+          .rowSearchResults
+            .rowSearchRenderType
+              .row:nth-child(even)
+                background-color: $row_zebra_color
+              .row:nth-child(odd)
+                background-color: $browse_background_color
+            &.overheight.collapsed
+              .fader
+                @include vertical-gradient(transparentize($federated_background_color, 1), $federated_background_color)
+                .noLinearGradient &
+                  //oh, well
+                  background: none
 
         .nameDesc
           padding:
@@ -450,7 +465,8 @@
         margin-bottom: 0.6em
         position: relative
         .rowResultCountDisplay
-          padding: 0.3em 0
+          font-weight: bold
+          padding: 0.5em 0
         .highlight
           background-color: $search_highlight_color
           padding: 0.3em
@@ -481,26 +497,25 @@
             width: 100px
             .collapseText
               display: inline
-
-        &.overheight.collapsed
-          .rowList
-            max-height: 20em
-          .expandHint
-            .expandText
-              display: inline
-            .collapseText
-              display: none
           .fader
-            @include vertical-gradient(rgba(255,255,255,0), rgba(255,255,255,1))
+            display: block
+            @include vertical-gradient(transparentize($browse_background_color,1), $browse_background_color)
             bottom: 1.5em
             left: 0
-            display: block
             height: 100px
             position: absolute
             width: 100%
             .noLinearGradient &
               background: url(/stylesheets/images/content/vertical_fade.png?1) repeat-x
 
+        &.overheight.collapsed
+          .rowList
+            max-height: 200px
+          .expandHint
+            .expandText
+              display: inline
+            .collapseText
+              display: none
 
     .pagination
       font-size: 1.2em

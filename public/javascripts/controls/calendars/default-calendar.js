@@ -101,6 +101,8 @@
                 editable: calObj.settings.view.hasRight('write'),
                 disableResizing: $.isBlank(calObj.settings.view
                     .displayFormat.endDateTableId),
+                viewClear: function()
+                    { viewClear.apply(this, [calObj].concat($.makeArray(arguments))); },
                 eventClick: function()
                     { eventClick.apply(this, [calObj].concat($.makeArray(arguments))); },
                 eventMouseover: function()
@@ -129,6 +131,12 @@
         calObj.ready();
     };
 
+    var viewClear = function(calObj, calView)
+    {
+        if (!$.isBlank(calObj._curTip)) { calObj._curTip.hide(); }
+        delete calObj._curTip;
+    };
+
     var eventClick = function(calObj, calEvent)
     {
         if ($.subKeyDefined(calObj.settings.view, 'highlightTypes.select.' + calEvent.row.id))
@@ -153,10 +161,23 @@
         {
             var $e = $(element);
             $e.socrataTip({content: calObj.renderFlyout(calEvent.row,
-                calObj.settings.view),
+                calObj.settings.view), closeOnClick: false,
+                parent: calObj.$dom(),
+                shownCallback: function()
+                {
+                    if (!$.isBlank(calObj._curTip)) { calObj._curTip.hide(); }
+                    calObj._curTip = $e.socrataTip();
+                },
                 trigger: 'click', isSolo: true});
-            if ($.subKeyDefined(calObj.settings.view, 'highlightTypes.select.' + calEvent.row.id))
-            { _.defer(function() { $e.socrataTip().show(); }); }
+
+            // Wait until next cycle before checking, because we hit a case where the events
+            // are re-rendered due to an unhighlight before the select highlight is applied;
+            // and we want to make sure everything is ready before we check & display
+            _.defer(function()
+            {
+                if ($.subKeyDefined(calObj.settings.view, 'highlightTypes.select.' + calEvent.row.id))
+                { $e.socrataTip().show(); }
+            });
         }
     };
 

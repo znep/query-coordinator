@@ -4343,6 +4343,8 @@ function View(element, calendar, viewName) {
 	
 	
 	function reportEventClear() {
+                // jeff.scherpelz@socrata.com: Need to know before clearing events
+                trigger('viewClear', this);
 		eventElements = [];
 		eventElementsByID = {};
 	}

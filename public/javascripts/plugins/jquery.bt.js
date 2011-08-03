@@ -264,8 +264,9 @@ jQuery.bt = {version: '0.9.5-rc1'};
           var offsetParent = $(opts.offsetParent);
           var offsetParentPos = offsetParent.offset();
           var pos = $(this).offset();
-          var top = numb(pos.top) - numb(offsetParentPos.top) + numb($(this).css('margin-top')) - shadowShiftY; // IE can return 'auto' for margins
-          var left = numb(pos.left) - numb(offsetParentPos.left) + numb($(this).css('margin-left')) - shadowShiftX;
+          // jeff.scherpelz@socrata.com: Need to account for scrollTop & scrollLeft
+          var top = numb(pos.top) - numb(offsetParentPos.top) + numb($(this).css('margin-top')) - shadowShiftY + offsetParent.scrollTop(); // IE can return 'auto' for margins
+          var left = numb(pos.left) - numb(offsetParentPos.left) + numb($(this).css('margin-left')) - shadowShiftX + offsetParent.scrollLeft();
         }
         else {
           // if the target element is absolutely positioned, use its parent's offsetParent instead of its own

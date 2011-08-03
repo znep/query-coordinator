@@ -57,6 +57,7 @@
             overlap: 0,
             parent: 'body',
             positions: null,
+            shownCallback: null,
             showSpike: true,
             shrinkToFit: true,
             stroke: '#999999',
@@ -85,10 +86,12 @@
                         contents: sTipObj.settings.message}, true);
                 }
 
-                var shownCallback = function(box)
+                var internalShownCallback = function(box)
                 {
                     sTipObj._tipBox = box;
                     $(box).data('socrataTip-$element', $domObj);
+                    if (_.isFunction(sTipObj.settings.shownCallback))
+                    { sTipObj.settings.shownCallback(box); }
                 };
 
                 $domObj.bt({
@@ -110,7 +113,7 @@
                         clickAnywhereToClose: sTipObj.settings.closeOnClick,
                         closeWhenOthersOpen: sTipObj.settings.isSolo,
                         onShowCallback: sTipObj.settings.onShowCallback,
-                        postShow: shownCallback,
+                        postShow: internalShownCallback,
                         shrinkToFit: sTipObj.settings.shrinkToFit,
                         trigger: sTipObj.settings.trigger,
                         positions: pos,

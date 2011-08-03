@@ -1,5 +1,5 @@
 class User < Model
-  cattr_accessor :current_user, :states, :countries, :sorts, :search_sorts, :roles_list
+  cattr_accessor :current_user, :states, :countries, :sorts, :search_sorts
   attr_accessor :session_token
 
   non_serializable :displayName
@@ -38,6 +38,10 @@ class User < Model
     end
 
     return result.is_a? Net::HTTPSuccess
+  end
+
+  def self.roles_list
+    Configuration.find_by_type('user_rights', false, CurrentDomain.cname, true).first.properties.keys
   end
 
   def create(inviteToken = nil, authToken = nil)
@@ -497,13 +501,6 @@ class User < Model
     ["NEWEST", "Recently updated"],
     ["OLDEST", "Oldest"],
     ["LAST_LOGIN", "Last Login Date"]
-  ]
-
-  @@roles_list = [
-    ['editor', 'Edit and upload data'],
-    ['publisher', 'Choose which datasets are publicly viewable'],
-    ['designer', "Modify the site's appearance"],
-    ['administrator', 'Controls configuration and users']
   ]
 
 end

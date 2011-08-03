@@ -121,7 +121,7 @@ class AdministrationController < ApplicationController
 
   def bulk_create_users
     role = params[:role]
-    if !User.roles_list.any? { |r| r.first == role.downcase }
+    if !User.roles_list.contains?(role.downcase)
       flash[:error] = "Invalid role specified for user creation: #{role}"
       return (redirect_to :action => :users)
     end

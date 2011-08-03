@@ -51,7 +51,7 @@
       <select id="userRoleFilterDropdown">
         <option value="all">All</option>
         <%- User.roles_list.each do |role| -%>
-          <option value="<%= role[0] =%>"><%= role[0].titleize %></option>
+          <option value="<%= role =%>"><%= role.titleize %></option>
         <%- end -%>
       </select>
     </div>

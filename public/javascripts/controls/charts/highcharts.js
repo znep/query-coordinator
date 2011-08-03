@@ -672,7 +672,7 @@
 
         if (isDateTime(chartObj))
         {
-            if (!$.isBlank(row) && !row.invalid[chartObj._xColumn.lookup])
+            if (!$.isBlank(row) && ($.isBlank(row.invalid) || !row.invalid[chartObj._xColumn.lookup]))
             { pt.x = row[chartObj._xColumn.lookup]; }
             else { pt.x = ''; }
             if (_.isNumber(pt.x)) { pt.x *= 1000; }
@@ -946,11 +946,11 @@
 
         if (!_.isUndefined(chartObj.chart))
         {
-            if ($.isBlank(ri))
+            var p = chartObj.chart.get(point.id);
+            if ($.isBlank(p))
             { chartObj.chart.series[seriesIndex].addPoint(point, false); }
             else
             {
-                var p = chartObj.chart.get(point.id);
                 if (point.selected && !p.selected) { p.select(true, true); }
                 else if (!point.selected && p.selected) { p.select(false, true); }
                 p.update(point, false);
@@ -958,10 +958,11 @@
         }
         if (!_.isUndefined(chartObj.secondChart))
         {
-            if ($.isBlank(ri))
+            var sp = chartObj.secondChart.get(point.id);
+            if ($.isBlank(sp))
             { chartObj.secondChart.series[seriesIndex].addPoint(point, false); }
             else
-            { chartObj.secondChart.get(point.id).update(point, false); }
+            { sp.update(point, false); }
         }
 
         if ($.isBlank(ri))

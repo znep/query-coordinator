@@ -44,12 +44,11 @@ ActionController::Routing::Routes.draw do |map|
     internal.connect '/internal/orgs', :action => 'create_org',
       :conditions => { :method => :post }
     internal.connect '/internal/orgs', :action => 'index_orgs'
-    internal.connect '/internal/orgs/:id', :controller => 'internal',
-      :action => 'show_org'
-    internal.connect '/internal/orgs/:id/domains', :controller => 'internal',
-      :action => 'create_domain', :conditions => { :method => :post }
-    internal.connect '/internal/orgs/:org_id/domains/:id', :controller => 'internal',
-      :action => 'show_domain', :requirements => {:id => /(\w|-|\.)+/}
+    internal.connect '/internal/orgs/:id', :action => 'show_org'
+    internal.connect '/internal/orgs/:id/domains', :action => 'create_domain',
+      :conditions => { :method => :post }
+    internal.connect '/internal/orgs/:org_id/domains/:id', :action => 'show_domain',
+      :requirements => {:id => /(\w|-|\.)+/}
     internal.connect '/internal/orgs/:org_id/domains/:domain_id/site_config',
       :action => 'create_site_config', :requirements => {:domain_id => /(\w|-|\.)+/},
       :conditions => { :method => :post }
@@ -72,12 +71,9 @@ ActionController::Routing::Routes.draw do |map|
       :conditions => { :method => :post }
     internal.connect '/internal/orgs/:org_id/domains/:domain_id/site_config/:config_id/edit_property',
       :action => 'show_property', :requirements => {:domain_id => /(\w|-|\.)+/}
-    internal.connect '/internal/tiers', :controller => 'internal',
-      :action => 'index_tiers'
-    internal.connect '/internal/tiers/:name', :controller => 'internal',
-      :action => 'show_tier'
-    internal.connect '/internal/modules', :controller => 'internal',
-      :action => 'index_modules'
+    internal.connect '/internal/tiers', :action => 'index_tiers'
+    internal.connect '/internal/tiers/:name', :action => 'show_tier'
+    internal.connect '/internal/modules', :action => 'index_modules'
   end
 
   map.resources :administration, :as => 'admin',

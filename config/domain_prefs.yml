@@ -1,3 +1,3 @@
 strings.company: Socrata
-strings.login_tips: Use your Email and Password to sign into all <strong><a href="http://www.socrata.com">Socrata</a> powered</strong> sites.
-strings.signup_terms: By clicking on "Create My Account" below, you are agreeing to our <a href="http://www.socrata.com/terms-of-service">Terms of Service</a> and <a href="http://www.socrata.com/privacy">Privacy Policy.</a>
+strings.login_tips: Use your Email and Password to sign into all <strong><a href="http://www.socrata.com" rel="external">Socrata</a> powered</strong> sites.
+strings.signup_terms: By clicking on "Create My Account" below, you are agreeing to our <a href="http://www.socrata.com/terms-of-service" rel="external">Terms of Service</a> and <a href="http://www.socrata.com/privacy" rel="external">Privacy Policy.</a>

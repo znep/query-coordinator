@@ -305,15 +305,7 @@
 
                 vizObj.reloadVisualization();
 
-                getRowsForAllViews(vizObj,
-                    function()
-                    {
-                        // Use a defer so that if the rows are already loaded,
-                        // getColumns has a chance to run first
-                        var args = arguments;
-                        _.defer(function()
-                        { vizObj.handleRowsLoaded.apply(vizObj, args); });
-                    });
+                getRowsForAllViews(vizObj);
 
                 if (vizObj.getColumns())
                 {
@@ -444,17 +436,7 @@
 
                     vizObj._initialLoad = true;
 
-                    getRowsForAllViews(vizObj, function()
-                    {
-                        // Use a defer so that if the rows are already loaded,
-                        // getColumns has a chance to run first
-                        var args = arguments;
-                        _.defer(function()
-                        {
-                            vizObj.handleRowsLoaded.apply(vizObj, args);
-                            delete vizObj._initialLoad;
-                        });
-                    });
+                    getRowsForAllViews(vizObj);
 
                     if (vizObj.getColumns())
                     { vizObj.columnsLoaded(); }
@@ -514,7 +496,7 @@
         vizObj.resizeHandle(e);
     };
 
-    var getRowsForAllViews = function(vizObj, callback)
+    var getRowsForAllViews = function(vizObj)
     {
         var rowsToFetch = vizObj._maxRows;
         var nonStandardRender = function(view)
@@ -583,14 +565,18 @@
                         {
                             view.getRows(0, rowsToFetch, function(data)
                             {
+                                _.defer(function()
+                                    { vizObj.handleRowsLoaded(data, view); });
                                 rowsToFetch -= view.totalRows ? view.totalRows
                                                               : data.length;
                                 var executable = views.shift();
                                 if (executable) { executable(); }
                                 vizObj.totalRowsForAllViews();
                                 if (rowsToFetch <= 0 || !executable)
-                                { delete vizObj._pendingReload; }
-                                callback.apply(vizObj, [data, view]);
+                                {
+                                    delete vizObj._initialLoad;
+                                    delete vizObj._pendingReload;
+                                }
                             },
                             function()
                             {

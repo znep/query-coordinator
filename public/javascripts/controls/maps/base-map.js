@@ -130,6 +130,9 @@
                     plotStyle: mapObj.settings.view.displayFormat.plotStyle,
                     layers: mapObj.settings.view.displayFormat.layers};
 
+                mapObj._highlightColor = $.rgbToHex($.colorToObj(
+                    blist.styles.getReferenceProperty('itemHighlight', 'background-color')));
+
                 mapObj.ready();
             },
 
@@ -210,14 +213,6 @@
                 var mapObj = this;
                 mapObj.$dom().siblings('#mapLayers').addClass('hide');
 
-                mapObj.resetData();
-                mapObj.resetMixinData();
-                mapObj.populateLayers();
-
-                mapObj._markers = {};
-                delete mapObj._gradient;
-                delete mapObj._segmentColors;
-
                 _.each(mapObj._byView, function(viewConfig)
                 {
                     viewConfig._llKeys = {};
@@ -225,6 +220,13 @@
                             '_sizeValueCol', '_colorValueCol', '_redirectCol'], function(prop)
                     { delete viewConfig[prop]; });
                 });
+
+                mapObj.resetData();
+                mapObj.resetMixinData();
+                mapObj.populateLayers();
+
+                mapObj._markers = {};
+                delete mapObj._gradient;
 
                 mapObj.initializeFlyouts((mapObj.settings.view.displayFormat
                     .plot || {}).descriptionColumns);
@@ -309,6 +311,11 @@
                 // Implement me
             },
 
+            initializeMapMixin: function()
+            {
+                // Implement if you need to do any special work when a particular type is initialized
+            },
+
             getLayers: function()
             {
                 return [];
@@ -327,11 +334,6 @@
             unhookMap: function()
             {
                 // Implement for anything to stop before doing a full reset
-            },
-
-            handleRowsLoaded: function(rows, view)
-            {
-                this.renderData(rows, view);
             },
 
             handleClustersLoaded: function(clusters, view)

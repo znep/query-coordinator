@@ -86,6 +86,8 @@
                             }
                         });
 
+                        mapObj.initializeMapMixin();
+
                         _.each(mapObj._dataViews, function(view)
                             {
                                 if (mapObj._dataLoaded)
@@ -178,7 +180,6 @@
 
                     mapObj.$dom().find('.infowindow .hide').removeClass('hide')
                         .addClass('hide_infowindow');
-
                 });
             },
 
@@ -291,23 +292,25 @@
                     return false;
                 }
 
-                var g = new esri.Graphic(geometry, symbol,
-                        {rows: details.rows, flyoutDetails: details.flyoutDetails,
-                         dataView: details.dataView});
+                var g = mapObj._markers[dupKey];
+                if ($.isBlank(g))
+                {
+                    g = new esri.Graphic();
+                    mapObj._markers[dupKey] = g;
+                    mapObj._graphicsLayer.add(g);
+                }
 
-                if (mapObj._markers[dupKey])
-                { mapObj._graphicsLayer.remove(mapObj._markers[dupKey]); }
-                mapObj._markers[dupKey] = g;
+                g.setGeometry(geometry);
+                g.setSymbol(symbol);
+                g.setAttributes({rows: details.rows, flyoutDetails: details.flyoutDetails,
+                    dataView: details.dataView});
 
-                mapObj._graphicsLayer.add(g);
+                if (_.any(details.rows, function(r) { return $.subKeyDefined(mapObj.settings.view,
+                                'highlightTypes.select.' + r.id); }))
+                { showInfoWindow(mapObj, g); }
 
                 if (geoType == 'point')
                 {
-                    if (details.rows.length > 0 &&
-                        $.subKeyDefined(mapObj.settings.view, 'highlightTypes.select.' +
-                            _.first(details.rows).id))
-                    { showInfoWindow(mapObj, g); }
-
                     mapObj._multipoint.addPoint(g.geometry);
                     g.heatStrength = details.heatStrength || 1;
                 }
@@ -335,16 +338,13 @@
                                 { mapObj.$dom().find('div .container').css('cursor', 'default'); });
                     }
 
-                    if (geoType == 'point')
-                    {
-                        // hover() would've been cleaner, but it actually screws things up
-                        // when the point gets redrawn
-                        $(dojoShape.rawNode).
-                            mouseover(function()
-                            { mapObj.settings.view.highlightRows(details.rows); }).
-                            mouseout(function()
-                            { mapObj.settings.view.unhighlightRows(details.rows); });
-                    }
+                    // hover() would've been cleaner, but it actually screws things up
+                    // when the point gets redrawn
+                    $(dojoShape.rawNode).
+                        mouseover(function()
+                        { mapObj.settings.view.highlightRows(details.rows); }).
+                        mouseout(function()
+                        { mapObj.settings.view.unhighlightRows(details.rows); });
                 }
 
                 return true;
@@ -674,12 +674,6 @@
             {
                 var mapObj = this;
                 if (mapObj._viewportListener) { dojo.disconnect(mapObj._viewportListener); }
-            },
-
-            clearFeatures: function()
-            {
-                var mapObj = this;
-                if (mapObj._graphicsLayer) { mapObj._graphicsLayer.clear(); }
             }
         }
     }));
@@ -725,10 +719,7 @@
             });
 
             if (hasHighlight)
-            {
-                customization.color =
-                    blist.styles.getReferenceProperty('itemHighlight', 'background-color');
-            }
+            { customization.color = '#' + mapObj._highlightColor; }
 
             if (!_.isEmpty(customization))
             {
@@ -842,9 +833,16 @@
             graphic.attributes.flyoutDetails,
             graphic.attributes.dataView);
         if ($.isBlank(flyout)) { return false; }
-        point = point || graphic.geometry;
-        mapObj.map.infoWindow.setContent(flyout[0])
-            .show(point, mapObj.map.getInfoWindowAnchor(point));
+
+        if ($.isBlank(point))
+        {
+            if (graphic.geometry instanceof esri.geometry.Point)
+            { point = graphic.geometry; }
+            else if ($.subKeyDefined(graphic.geometry, 'getExtent'))
+            { point = graphic.geometry.getExtent().getCenter(); }
+        }
+
+        mapObj.map.infoWindow.setContent(flyout[0]).show(point);
         return true;
     };
 
@@ -865,8 +863,7 @@
         else
         {
             if (evt.graphic.attributes.rows.length < 1) { return; }
-            if (showInfoWindow(mapObj, evt.graphic, evt.screenPoint) &&
-                evt.graphic.geometry.type == 'point')
+            if (showInfoWindow(mapObj, evt.graphic, evt.screenPoint))
             { mapObj.settings.view.highlightRows(evt.graphic.attributes.rows, 'select'); }
         }
     };

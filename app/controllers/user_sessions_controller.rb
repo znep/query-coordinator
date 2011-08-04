@@ -26,6 +26,7 @@ class UserSessionsController < ApplicationController
     @body_id = 'login'
     @user_session = UserSession.new(params[:user_session])
     if @user_session.save
+      # need both .data and .json formats because firefox detects as .data and chrome detects as .json
       respond_to do |format|
         format.html { redirect_back_or_default(profile_index_path) }
         format.data { render :json => {:user_id => current_user.id}, :callback => params[:callback] }

@@ -182,17 +182,28 @@ module DatasetsHelper
     if !view.merged_metadata['custom_fields'].nil?
       domain_metadata = domain_metadata.clone
       view_metadata = view.merged_metadata['custom_fields']
-      view_metadata.each do |field|
-        name = field[0]
-        if domain_metadata.none? { |e| e.name == name }
-          h = {:name => name, :fields => []}
-          if (field[1].kind_of? Hash) # protect against top key w/o subkey
-            field[1].keys.each do |sub_field_name|
+      view_metadata.each do |field_set, fields|
+        if domain_metadata.none? { |e| e.name == field_set }
+          h = {:name => field_set, :fields => []}
+          if (fields.kind_of? Hash) # protect against top key w/o subkey
+            fields.keys.each do |sub_field_name|
               h[:fields].push({:name => sub_field_name})
             end
           end
           m = Hashie::Mash.new(h)
           domain_metadata.push(m)
+        else  # domain already has top key, but still may have to add sub-keys
+          h = (domain_metadata.find { |e| e.name == field_set })
+          if (fields.kind_of? Hash) # protect against top key w/o subkey
+            if (h[:fields].nil?)
+              h[:fields] = Array.new
+            end
+            fields.keys.each do |sub_field_name|
+              if h[:fields].none? { |f| f.name == sub_field_name }
+                h[:fields].push(Hashie::Mash.new({:name => sub_field_name}))
+              end
+            end
+          end
         end
       end
     end

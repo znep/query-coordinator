@@ -174,6 +174,9 @@ Dataset.modules['map'] =
                 [{tableColumnId: view.displayFormat.plot.descriptionId}];
             delete view.displayFormat.plot.descriptionId;
         }
+
+        if ($.isBlank(view.displayFormat.plotStyle))
+        { view.displayFormat.plotStyle = !$.isBlank(view.displayFormat.heatmap) ? 'heatmap' : 'point'; }
     }
 };
 

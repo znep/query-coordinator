@@ -512,30 +512,34 @@ var validateAll = function()
     else
         $warningsSection[isShown ? 'slideUp' : 'hide']();
 
-    // disable the button if necessary
-    var $nextButton = $('.wizardButtons .nextButton');
-    if ($warningsList.children().filter('.error').length > 0)
+    // disable the button if necessary, but only after a defer in case
+    // there are errors the moment the pane is loaded.
+    _.defer(function()
     {
-        $nextButton.addClass('disabled');
-        if ($.isBlank(nextButtonTip))
+        var $nextButton = $('.wizardButtons .nextButton');
+        if ($warningsList.children().filter('.error').length > 0)
         {
-            nextButtonTip = $nextButton.socrataTip({ message:
-                'You cannot proceed while there are import errors.', shrinkToFit: false });
+            $nextButton.addClass('disabled');
+            if ($.isBlank(nextButtonTip))
+            {
+                nextButtonTip = $nextButton.socrataTip({ message:
+                    'You cannot proceed while there are import errors.', shrinkToFit: false });
+            }
+            else
+            {
+                nextButtonTip.enable();
+            }
         }
         else
         {
-            nextButtonTip.enable();
+            $nextButton.removeClass('disabled');
+            if (!$.isBlank(nextButtonTip))
+            {
+                nextButtonTip.hide();
+                nextButtonTip.disable();
+            }
         }
-    }
-    else
-    {
-        $nextButton.removeClass('disabled');
-        if (!$.isBlank(nextButtonTip))
-        {
-            nextButtonTip.hide();
-            nextButtonTip.disable();
-        }
-    }
+    });
 };
 
 // create a new toplevel column, optionally taking in an analysed

@@ -1048,7 +1048,9 @@ private
     begin
       uri = URI.parse(URI.extract(layer_url).first)
       uri.query = "f=json"
-      layer_info = JSON.parse(Net::HTTP.get(uri))
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true if uri.scheme == 'https'
+      layer_info = JSON.parse(http.get(uri.request_uri).body)
     rescue SocketError, URI::InvalidURIError, JSON::ParserError
       error = "url invalid"
     end

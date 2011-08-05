@@ -137,14 +137,16 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                     _.defer(function()
                     {
                         $login.jqmShow()
-                            .find('.flash').text(responseData.error)
+                            .find('.flash')
+                                .text(responseData.error)
+                                .addClass('error')
                             .end()
                             .find(':text:first').focus();
                     });
                 }
                 else
                 {
-                    $signup.find('.flash').text(responseData.error);
+                    $signup.find('.flash').text(responseData.error).addClass('error');
                     $signup.find(':text:first').focus().select();
                 }
             }
@@ -157,7 +159,9 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
 
                 $signup.jqmHide();
                 $login.jqmHide();
-                $('#header .userNav, #siteHeader .siteUserNav').addClass('loggedInNav');
+                $('#header .userNav, #siteHeader .siteUserNav')
+                    .addClass('loggedInNav')
+                    .find('.signOutLink').removeClass('hide');
                 callback(true, true);
             }
         };

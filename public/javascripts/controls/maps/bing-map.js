@@ -89,6 +89,8 @@
                         mapObj._snapshot_bound = true;
                     });
                 }
+
+                mapObj.initializeMapMixin();
             },
 
             renderGeometry: function(geoType, geometry, dupKey, details)
@@ -167,13 +169,17 @@
                         if (details.color || !_.isUndefined(details.opacity))
                         {
                             var key;
+                            var options = {};
                             switch(geoType)
                             {
-                                case 'polygon':  key = 'fillColor'; break;
+                                case 'polygon':
+                                    key = 'fillColor';
+                                    options.strokeColor = Microsoft.Maps.Color.fromHex('#000000');
+                                    break;
                                 case 'polyline': key = 'strokeColor'; break;
                             }
-                            var options = {};
-                            options[key] = Microsoft.Maps.Color.fromHex(details.color || '#FFFFFF');
+                            options[key] = Microsoft.Maps.Color.fromHex(hasHighlight ?
+                                ('#' + mapObj._highlightColor) : (details.color || '#FFFFFF'));
                             options[key].a = _.isUndefined(details.opacity) ? 1.0 : details.opacity;
                             options[key].a *= 255;
                             shape.setOptions(options);
@@ -191,23 +197,19 @@
                             if (details.redirect_to)
                             { window.open(details.redirect_to); }
 
-                            if (showInfoWindow(mapObj, event.target) && geoType == 'point')
+                            if (showInfoWindow(mapObj, event.target))
                             { mapObj.settings.view.highlightRows(shape.rows, 'select'); }
                         });
 
-                    if (geoType == 'point')
-                    {
-                        if (details.rows.length > 0 &&
-                            $.subKeyDefined(mapObj.settings.view, 'highlightTypes.select.' +
-                                _.first(details.rows).id))
-                        { showInfoWindow(mapObj, shape); }
+                    if (_.any(details.rows, function(r) { return $.subKeyDefined(mapObj.settings.view,
+                                    'highlightTypes.select.' + r.id); }))
+                    { showInfoWindow(mapObj, shape); }
 
-                        Microsoft.Maps.Events.addHandler(shape, 'mouseover', function()
-                        { mapObj.settings.view.highlightRows(details.rows); });
+                    Microsoft.Maps.Events.addHandler(shape, 'mouseover', function()
+                    { mapObj.settings.view.highlightRows(details.rows); });
 
-                        Microsoft.Maps.Events.addHandler(shape, 'mouseout', function()
-                        { mapObj.settings.view.unhighlightRows(details.rows); });
-                    }
+                    Microsoft.Maps.Events.addHandler(shape, 'mouseout', function()
+                    { mapObj.settings.view.unhighlightRows(details.rows); });
                 });
 
                 return true;
@@ -422,14 +424,6 @@
                 if (!$.isBlank(mapObj.map))
                 { mapObj.map.setOptions({ width: $par.width(),
                                           height: $par.height() - sibH }); }
-            },
-
-            clearFeatures: function()
-            {
-                var mapObj = this;
-
-                mapObj.map.entities.clear();
-                $(".bing_cluster_labels").remove();
             },
 
             getRequiredJavascripts: function()

@@ -121,7 +121,7 @@ class AdministrationController < ApplicationController
 
   def bulk_create_users
     role = params[:role]
-    if !User.roles_list.any? { |r| r.first == role.downcase }
+    if !User.roles_list.contains?(role.downcase)
       flash[:error] = "Invalid role specified for user creation: #{role}"
       return (redirect_to :action => :users)
     end
@@ -1048,7 +1048,9 @@ private
     begin
       uri = URI.parse(URI.extract(layer_url).first)
       uri.query = "f=json"
-      layer_info = JSON.parse(Net::HTTP.get(uri))
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true if uri.scheme == 'https'
+      layer_info = JSON.parse(http.get(uri.request_uri).body)
     rescue SocketError, URI::InvalidURIError, JSON::ParserError
       error = "url invalid"
     end

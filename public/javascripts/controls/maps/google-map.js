@@ -74,8 +74,6 @@
                     });
 
                 mapObj._hoverTimers = {};
-                mapObj._highlightColor = $.rgbToHex($.colorToObj(
-                    blist.styles.getReferenceProperty('itemHighlight', 'background-color')));
                 StyledIconTypes.MARKER.defaults.color = 'ff776b';
 
                 // For snapshotting
@@ -111,6 +109,8 @@
                         });
                     });
                 }
+
+                mapObj.initializeMapMixin();
             },
 
             renderGeometry: function(geoType, geometry, dupKey, details)
@@ -253,7 +253,8 @@
                         { mapGeom.setPaths(_.map(geometry.rings,
                             function(ring) { return _.map(ring, googlifyPoint); })); }
                         mapGeom.setOptions({
-                            fillColor: details.color || "#FF00FF",
+                            fillColor: hasHighlight ? ('#' + mapObj._highlightColor) :
+                                (details.color || "#FF00FF"),
                             fillOpacity: _.isUndefined(details.opacity) ? 1.0 : details.opacity,
                             strokeColor: "#000000",
                             strokeWeight: 1
@@ -261,7 +262,7 @@
                         break;
                 }
 
-                var showInfoWindow = function(evt)
+                var showInfoWindow = function(point)
                 {
                     if (!mapObj.infoWindow)
                     {
@@ -284,8 +285,14 @@
                     if ($.isBlank(flyout)) { return false; }
 
                     mapObj.infoWindow.setContent(flyout[0]);
-                    // evt.latLng if it's not a point; pull .position for points
-                    mapObj.infoWindow.setPosition((evt || {}).latLng || mapGeom.position);
+                    if ($.isBlank(point))
+                    {
+                        if (!$.isBlank(extent))
+                        { point = extent.getCenter(); }
+                        else if ($.subKeyDefined(mapGeom, 'getPosition'))
+                        { point = mapGeom.getPosition(); }
+                    }
+                    mapObj.infoWindow.setPosition(point);
                     mapObj.infoWindow.open(mapObj.map);
                     return true;
                 };
@@ -293,36 +300,32 @@
                 google.maps.event.addListener(mapGeom, 'click',
                     function(evt)
                     {
-                        if (showInfoWindow(evt) && geoType == 'point')
+                        if (showInfoWindow(evt.latLng))
                         { mapObj.settings.view.highlightRows(details.rows, 'select'); }
                     });
 
-                if (geoType == 'point')
+                if (_.any(details.rows, function(r) { return $.subKeyDefined(mapObj.settings.view,
+                                'highlightTypes.select.' + r.id); }))
+                { showInfoWindow(); }
+
+                google.maps.event.addListener(mapGeom, 'mouseover', function()
                 {
-                    if (details.rows.length > 0 &&
-                        $.subKeyDefined(mapObj.settings.view, 'highlightTypes.select.' +
-                            _.first(details.rows).id))
-                    { showInfoWindow(); }
-
-                    google.maps.event.addListener(mapGeom, 'mouseover', function()
+                    if (!$.isBlank(mapObj._hoverTimers[dupKey]))
                     {
-                        if (!$.isBlank(mapObj._hoverTimers[dupKey]))
+                        clearTimeout(mapObj._hoverTimers[dupKey]);
+                        delete mapObj._hoverTimers[dupKey];
+                    }
+                    mapObj.settings.view.highlightRows(details.rows);
+                });
+
+                google.maps.event.addListener(mapGeom, 'mouseout', function()
+                {
+                    mapObj._hoverTimers[dupKey] = setTimeout(function()
                         {
-                            clearTimeout(mapObj._hoverTimers[dupKey]);
                             delete mapObj._hoverTimers[dupKey];
-                        }
-                        mapObj.settings.view.highlightRows(details.rows);
-                    });
-
-                    google.maps.event.addListener(mapGeom, 'mouseout', function()
-                    {
-                        mapObj._hoverTimers[dupKey] = setTimeout(function()
-                            {
-                                delete mapObj._hoverTimers[dupKey];
-                                mapObj.settings.view.unhighlightRows(details.rows);
-                            }, 100);
-                    });
-                }
+                            mapObj.settings.view.unhighlightRows(details.rows);
+                        }, 100);
+                });
 
                 if (details.redirect_to)
                 {
@@ -570,13 +573,6 @@
                 if (!mapObj._hideTiles)
                 { mapObj._hideTiles = google.maps.event.addListener(mapObj.map,
                     'tilesloaded', function() { mapObj.hideLayers(); }); }
-            },
-
-            clearFeatures: function()
-            {
-                var mapObj = this;
-                _.each(mapObj._markers, function(m) { m.setMap(null); });
-                mapObj._markers = {};
             },
 
             resizeHandle: function(event)

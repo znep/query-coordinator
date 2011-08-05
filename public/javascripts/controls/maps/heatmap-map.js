@@ -57,97 +57,32 @@
     // - transformFeatures: custom transforms at view level
     $.extend($.socrataMap.mixin.heatmap.prototype,
     {
-        renderData: function(rows)
+        initializeMapMixin: function()
         {
             if (_.isFunction(MAP_TYPE)) { MAP_TYPE = MAP_TYPE(); }
 
+            setUpHeatmap(this);
+        },
+
+        renderData: function(rows)
+        {
             var mapObj = this;
-            var viewConfig = mapObj._byView[mapObj.settings.view.id];
-            var config = mapObj.settings.view.displayFormat.heatmap;
 
-            if (config.type == 'custom')
-            {
-                MAP_TYPE['custom'] = {
-                    'jsonCache': function(config)
-                    { return '/geodata/' + config.cache_url; }
-                };
-            }
-
-            config.hideLayers = config.hideLayers ||
-                !mapObj.settings.view.displayFormat.layers
-                || mapObj.settings.view.displayFormat.layers.length == 0;
-            if (mapObj.settings.view.displayFormat.forceBasemap)
-            {
-                config.hideLayers = false;
-                config.ignoreTransforms = true;
-                mapObj.showLayers();
-            }
-            if (config.hideLayers && mapObj.hideLayers) { mapObj.hideLayers(); }
-
-            // Currently just making sure a config update to region is caught.
-            if (mapObj._origHeatmapConfig
-                && mapObj._origHeatmapConfig.type != config.type)
-            { mapObj._featureSet = undefined; }
-            mapObj._origHeatmapConfig = config;
-
-            if (config.hideZoomSlider)
-            { mapObj.map.hideZoomSlider(); }
-
-            config.aggregateMethod = (_.isUndefined(viewConfig._quantityCol)
-                || viewConfig._quantityCol.id == 'fake_quantity') ?
-                'count' : 'sum';
-
-            // Fools everything depending on quantityCol into recognizing it as a Count
-            if (config.aggregateMethod == 'count')
-            { viewConfig._quantityCol = { 'id': 'fake_quantity', 'name': 'Count' }; }
-
-            if (_.isUndefined(viewConfig._locCol) && !blist.dataset.isArcGISDataset())
+            if (_.isUndefined(mapObj._byView[mapObj.settings.view.id]._locCol) &&
+                !mapObj.settings.view.isArcGISDataset())
             {
                 mapObj.errorMessage = 'Required columns missing';
                 return false;
             }
 
-            if (_.isUndefined(mapObj._segmentColors))
-            {
-                mapObj._segmentColors = [];
-                var lowColor  = config.colors && config.colors.low ?
-                    $.hexToRgb(config.colors.low)
-                    : { r: 209, g: 209, b: 209};
-                var highColor = config.colors && config.colors.high ?
-                    $.hexToRgb(config.colors.high)
-                    : { r: 44, g: 119, b: 14};
-                var colorStep = {
-                    r: Math.round((highColor.r-lowColor.r)/mapObj._numSegments),
-                    g: Math.round((highColor.g-lowColor.g)/mapObj._numSegments),
-                    b: Math.round((highColor.b-lowColor.b)/mapObj._numSegments)
-                };
-
-                for (var i = 0; i < mapObj._numSegments; i++)
-                {
-                    mapObj._segmentColors[i] =
-                        new dojo.Color([lowColor.r+(colorStep.r*i),
-                                        lowColor.g+(colorStep.g*i),
-                                        lowColor.b+(colorStep.b*i),
-                                        config.hideLayers ? 1.0 : 0.8]);
-                }
-
-                mapObj.$legend({
-                    name: viewConfig._quantityCol.name,
-                    gradient: _.map(mapObj._segmentColors, function(color)
-                        { return color.toCss(false); })
-                });
-            }
-
-            mapObj.startLoading();
             // Queries only need to be run once.
             // renderData actions happening during a query can be ignored,
             // because processRows uses mapObj._rows for initial processing.
             if (mapObj._runningQuery) { return; }
 
-            if (_.isUndefined(mapObj._featureSet))
-            { fetchFeatureSet(mapObj, config); }
-            else
-            { processRows(mapObj, config, rows); }
+            // In case they were cleared
+            processFeatures(mapObj);
+            processRows(mapObj, rows);
         },
 
         generateFlyoutLayout: function(columns)
@@ -213,11 +148,95 @@
                 delete feature.attributes.quantity;
                 delete feature.attributes.redirect_to;
             });
+
+            delete mapObj._featuresRendered;
+            delete mapObj._segmentColors;
+
+            setUpHeatmap(mapObj);
         }
     });
 
-    var fetchFeatureSet = function(mapObj, config)
+
+    var setUpHeatmap = function(mapObj)
     {
+        var viewConfig = mapObj._byView[mapObj.settings.view.id];
+        var config = mapObj.settings.view.displayFormat.heatmap;
+
+        if (config.type == 'custom')
+        {
+            MAP_TYPE['custom'] = {
+                'jsonCache': function(config)
+                { return '/geodata/' + config.cache_url; }
+            };
+        }
+
+        config.hideLayers = config.hideLayers ||
+            !mapObj.settings.view.displayFormat.layers
+            || mapObj.settings.view.displayFormat.layers.length == 0;
+        if (mapObj.settings.view.displayFormat.forceBasemap)
+        {
+            config.hideLayers = false;
+            config.ignoreTransforms = true;
+            mapObj.showLayers();
+        }
+        if (config.hideLayers && mapObj.hideLayers) { mapObj.hideLayers(); }
+
+        // Currently just making sure a config update to region is caught.
+        if (mapObj._origHeatmapConfig
+            && mapObj._origHeatmapConfig.type != config.type)
+        { mapObj._featureSet = undefined; }
+        mapObj._origHeatmapConfig = config;
+
+        if (config.hideZoomSlider)
+        { mapObj.map.hideZoomSlider(); }
+
+        config.aggregateMethod = (_.isUndefined(viewConfig._quantityCol)
+            || viewConfig._quantityCol.id == 'fake_quantity') ?
+            'count' : 'sum';
+
+        // Fools everything depending on quantityCol into recognizing it as a Count
+        if (config.aggregateMethod == 'count')
+        { viewConfig._quantityCol = { 'id': 'fake_quantity', 'name': 'Count' }; }
+
+        if ($.isBlank(mapObj._segmentColors))
+        {
+            mapObj._segmentColors = [];
+            var lowColor  = config.colors && config.colors.low ?
+                $.hexToRgb(config.colors.low)
+                : { r: 209, g: 209, b: 209};
+            var highColor = config.colors && config.colors.high ?
+                $.hexToRgb(config.colors.high)
+                : { r: 44, g: 119, b: 14};
+            var colorStep = {
+                r: Math.round((highColor.r-lowColor.r)/mapObj._numSegments),
+                g: Math.round((highColor.g-lowColor.g)/mapObj._numSegments),
+                b: Math.round((highColor.b-lowColor.b)/mapObj._numSegments)
+            };
+
+            for (var i = 0; i < mapObj._numSegments; i++)
+            {
+                mapObj._segmentColors[i] =
+                    new dojo.Color([lowColor.r+(colorStep.r*i),
+                                    lowColor.g+(colorStep.g*i),
+                                    lowColor.b+(colorStep.b*i),
+                                    config.hideLayers ? 1.0 : 0.8]);
+            }
+
+            mapObj.$legend({
+                name: viewConfig._quantityCol.name,
+                gradient: _.map(mapObj._segmentColors, function(color)
+                    { return color.toCss(false); })
+            });
+        }
+
+        if ($.isBlank(mapObj._featureSet)) { fetchFeatureSet(mapObj); }
+    };
+
+    var fetchFeatureSet = function(mapObj)
+    {
+        var config = mapObj.settings.view.displayFormat.heatmap;
+
+        mapObj.startLoading();
         if (MAP_TYPE[config.type].jsonCache)
         {
             // jQuery's AJAX methods aren't functioning and the clearest root cause
@@ -230,7 +249,8 @@
                 load: function(data, ioArgs) {
                     mapObj._featureSet = data;
                     reClassifyFeatures(mapObj);
-                    processRows(mapObj, config);
+                    processFeatures(mapObj);
+                    processRows(mapObj, mapObj.settings.view._rows);
                 }
             });
         }
@@ -248,7 +268,8 @@
                 .execute(query, function(featureSet)
                     {
                         mapObj._featureSet = featureSet;
-                        processRows(mapObj, config);
+                        processFeatures(mapObj);
+                        processRows(mapObj, mapObj.settings.view._rows);
                     });
         }
         mapObj._runningQuery = true;
@@ -266,20 +287,27 @@
         }, 60000);
     };
 
-    var processRows = function(mapObj, config, rows)
+    var processRows = function(mapObj, rows)
     {
         var viewConfig = mapObj._byView[mapObj.settings.view.id];
-        if (!rows) { rows = mapObj.settings.view._rows; }
+        var config = mapObj.settings.view.displayFormat.heatmap;
 
-        mapObj._runningQuery = false;
-        mapObj._featureDisplayName = mapObj._featureSet.displayFieldName;
-
-        _.each(rows, function(row, i)
+        var updatedFeatures = _(rows).chain().map(function(row, i)
         {
             var feature = findFeatureWithPoint(mapObj, row);
-            if ($.isBlank(feature)) { return; }
+            if ($.isBlank(feature)) { return null; }
             feature.attributes.rows = feature.attributes.rows || [];
-            feature.attributes.rows.push(row);
+            var ind = feature.attributes.rows.length;
+            _.any(feature.attributes.rows, function(r, i)
+            {
+                if (r.id == row.id)
+                {
+                    ind = i;
+                    return true;
+                }
+                return false;
+            });
+            feature.attributes.rows[ind] = row;
 
             feature.attributes.quantity =
                 $.makeArray(feature.attributes.quantity);
@@ -300,7 +328,9 @@
             // Last value used for simplicity.
             feature.attributes.redirect_to = redirectTarget ||
                 feature.attributes.redirect_to;
-        });
+
+            return feature;
+        }).compact().uniq().value();
 
         // Converts array to value if array; otherwise, just returns value.
         var getValue = function(e)
@@ -335,29 +365,8 @@
         for (i = 0; i < mapObj._numSegments; i++)
         { segments[i] = ((i+1)*(max-min)/mapObj._numSegments)+min; }
 
-        if (!mapObj._featuresTransformed)
+        _.each(updatedFeatures, function(feature)
         {
-            transformFeatures(mapObj._featureSet.features, config);
-            mapObj._featuresTransformed = true;
-        }
-
-        mapObj.clearFeatures();
-        _.each(mapObj._featureSet.features, function(feature)
-        {
-            if (!feature.attributes.NAME)
-            {feature.attributes.NAME = feature.attributes[mapObj._featureDisplayName];}
-            if (mapObj.settings.view.displayFormat.forceBasemap && feature.oldGeometry)
-            {
-                feature.geometry = new esri.geometry.Polygon(feature.oldGeometry);
-                delete feature.oldGeometry;
-            }
-            if (!feature.attributes.quantity)
-            {
-                mapObj.renderGeometry('polygon', feature.geometry, feature.attributes.NAME,
-                    { rows: [], opacity: 0 });
-                return;
-            }
-
             var segmentIndex;
             for (segmentIndex = 0; segmentIndex < mapObj._numSegments; segmentIndex++)
             {
@@ -376,6 +385,36 @@
             mapObj.renderGeometry('polygon', feature.geometry,
                 feature.attributes.NAME, details);
         });
+    };
+
+    var processFeatures = function(mapObj)
+    {
+        var config = mapObj.settings.view.displayFormat.heatmap;
+
+        mapObj._runningQuery = false;
+        mapObj._featureDisplayName = mapObj._featureSet.displayFieldName;
+
+        if (mapObj._featuresRendered) { return; }
+
+        if (!mapObj._featuresTransformed)
+        {
+            transformFeatures(mapObj._featureSet.features, config);
+            mapObj._featuresTransformed = true;
+        }
+
+        _.each(mapObj._featureSet.features, function(feature)
+        {
+            if (!feature.attributes.NAME)
+            { feature.attributes.NAME = feature.attributes[mapObj._featureDisplayName]; }
+            if (mapObj.settings.view.displayFormat.forceBasemap && feature.oldGeometry)
+            {
+                feature.geometry = new esri.geometry.Polygon(feature.oldGeometry);
+                delete feature.oldGeometry;
+            }
+
+            mapObj.renderGeometry('polygon', feature.geometry, feature.attributes.NAME,
+                { rows: [], opacity: 0 });
+        });
 
         mapObj.adjustBounds();
 
@@ -385,6 +424,8 @@
         { if (mapObj.hideLayers) { mapObj.hideLayers(); } }
 
         mapObj.finishLoading();
+
+        mapObj._featuresRendered = true;
     };
 
     var findFeatureWithPoint = function(mapObj, datum)

@@ -172,7 +172,7 @@ $(function()
         $display.removeClass('hide').css('opacity', 0);
 
         // Is it too tall?
-        if ($results.height() > 200)
+        if ($results.height() > 220)
         {
             var $rows = $display.find('.rowList');
             $rows.data('origheight', $rows.height());
@@ -180,11 +180,13 @@ $(function()
             $results.find('.expandRowResults').click(function(event)
             {
                 event.preventDefault();
-                var newHeight = $results.hasClass('collapsed') ?
-                    $rows.data('origheight') : 200;
+                var expanding = $results.hasClass('collapsed'),
+                    newHeight = expanding ? $rows.data('origheight') : 200;
                 $rows.animate({'max-height': newHeight}, 300,
                     function() { $results.toggleClass('collapsed'); });
-                $display.find('.expandHint').toggleClass('upArrow downArrow');
+                $display.find('.expandHint')
+                    .toggleClass('upArrow downArrow').end()
+                    .find('.fader')[expanding ? 'fadeOut' : 'fadeIn'](300);
             });
         }
 

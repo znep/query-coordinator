@@ -397,6 +397,57 @@
             return v;
         };
 
+        var chartRedraw = function()
+        {
+            if (chartObj._valueMarker)
+            {
+                // This is a hackaround since it doesn't look like
+                // alignedObjects is ever supposed to be null.
+                // TODO: Chase down the Highcharts bug.
+                if (!chartObj._valueMarker.renderer.alignedObjects)
+                { chartObj._valueMarker.renderer.alignedObjects = []; }
+                chartObj._valueMarker.destroy();
+                delete chartObj._valueMarker;
+            }
+            if (!$.subKeyDefined(chartObj.settings.view.displayFormat, 'yAxis.marker'))
+            { return; }
+
+            var lineAt = parseFloat(chartObj.settings.view.displayFormat.yAxis.marker);
+            if (!_.isNumber(lineAt)) { return; }
+
+            var extremes = chartObj.chart.series[0].yAxis.getExtremes();
+            var percentage = (extremes.max - lineAt) / (extremes.max - extremes.min);
+            if (percentage > 1 || percentage < 0)
+            { return; }
+
+            var commands = [];
+            var invertAxis = chartObj._chartType == 'bar';
+            if (invertAxis)
+            {
+                var offsetLeft = ((1 - percentage) * chartObj.chart.plotWidth)
+                    + chartObj.chart.plotLeft;
+                commands.push(['M', offsetLeft, chartObj.chart.plotTop
+                    + chartObj.chart.plotHeight]);
+                commands.push(['L', offsetLeft, chartObj.chart.plotTop]);
+            }
+            else
+            {
+                var offsetTop = (percentage * chartObj.chart.plotHeight) + chartObj.chart.plotTop;
+                commands.push(['M', chartObj.chart.plotLeft, offsetTop]);
+                commands.push(['L', chartObj.chart.plotLeft + chartObj.chart.plotWidth, offsetTop]);
+            }
+
+            var thickStroke = _.include(['column', 'bar'], chartObj._chartType);
+
+            chartObj._valueMarker = chartObj.chart.renderer.path(_.flatten(commands))
+                .attr({
+                    'zIndex': 10,
+                    'stroke': chartObj.settings.view.displayFormat.yAxis.markerColor,
+                    'stroke-width': thickStroke ? 2 : 1,
+                    'stroke-dasharray': '9, 5'})
+                .add();
+        };
+
         // Main config
         var chartConfig =
         {
@@ -404,7 +455,7 @@
                 animation: true,
                 renderTo: chartObj.$dom()[0],
                 defaultSeriesType: seriesType,
-                events: { load: function() { chartObj.finishLoading(); } },
+                events: { load: function() { chartObj.finishLoading(); }, redraw: chartRedraw },
                 inverted: chartObj._chartType == 'bar'
             },
             credits: { enabled: false },
@@ -464,6 +515,7 @@
         if (isDateTime(chartObj))
         {
             chartConfig.xAxis.type = 'datetime';
+            delete chartConfig.xAxis.labels.formatter;
             chartConfig.tooltip = { formatter: function()
             {
                 return '<p><strong>' + this.series.name +
@@ -620,7 +672,7 @@
 
         if (isDateTime(chartObj))
         {
-            if (!$.isBlank(row) && !row.invalid[chartObj._xColumn.lookup])
+            if (!$.isBlank(row) && ($.isBlank(row.invalid) || !row.invalid[chartObj._xColumn.lookup]))
             { pt.x = row[chartObj._xColumn.lookup]; }
             else { pt.x = ''; }
             if (_.isNumber(pt.x)) { pt.x *= 1000; }
@@ -646,7 +698,7 @@
         if (_.isNull(value) && isPieTypeChart)
         { return null; }
 
-        var point = {y: value || 0, pretty: {}, label: {} };
+        var point = {y: value || 0, pretty: {}, label: {}, id: row.id + '_' + seriesIndex};
         point.pretty.y = col.renderType.filterRender(value, col, true);
         if (!_.isNull(basePt) && !_.isUndefined(basePt))
         { _.extend(point, basePt); }
@@ -894,11 +946,11 @@
 
         if (!_.isUndefined(chartObj.chart))
         {
-            if ($.isBlank(ri))
+            var p = chartObj.chart.get(point.id);
+            if ($.isBlank(p))
             { chartObj.chart.series[seriesIndex].addPoint(point, false); }
             else
             {
-                var p = chartObj.chart.series[seriesIndex].data[ri];
                 if (point.selected && !p.selected) { p.select(true, true); }
                 else if (!point.selected && p.selected) { p.select(false, true); }
                 p.update(point, false);
@@ -906,10 +958,11 @@
         }
         if (!_.isUndefined(chartObj.secondChart))
         {
-            if ($.isBlank(ri))
+            var sp = chartObj.secondChart.get(point.id);
+            if ($.isBlank(sp))
             { chartObj.secondChart.series[seriesIndex].addPoint(point, false); }
             else
-            { chartObj.secondChart.series[seriesIndex].data[ri].update(point, false); }
+            { sp.update(point, false); }
         }
 
         if ($.isBlank(ri))
@@ -934,9 +987,9 @@
         if ($.isBlank(ri)) { return; }
 
         if (!_.isUndefined(chartObj.chart))
-        { chartObj.chart.series[seriesIndex].data[ri].remove(); }
+        { chartObj.chart.get(point.id).remove(); }
         if (!_.isUndefined(chartObj.secondChart))
-        { chartObj.secondChart.series[seriesIndex].data[ri].remove(); }
+        { chartObj.secondChart.get(point.id).remove(); }
 
         if (!isOther)
         { chartObj._seriesRemainders[seriesIndex] += chartObj._seriesCache[seriesIndex].data[ri].y; }

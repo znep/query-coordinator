@@ -5,14 +5,11 @@
   <%= f.hidden_field :openIdIdentifierId %>
   <%= f.hidden_field :firstName %>
   <%= f.hidden_field :lastName %>
+  <%= hidden_field 'signup[accept_terms]', 'true' %>
 
   <div class="line clearfix">
     <%= f.label :email, 'Email Address', :class => 'required' %>
     <%= f.text_field :email %>
-  </div>
-  <div class="line clearfix">
-    <%= label_tag :emailConfirm, 'Confirm Email', :class => 'required' %>
-    <%= f.text_field :emailConfirm %>
   </div>
 
   <div class="line clearfix">
@@ -30,21 +27,19 @@
       <%= f.password_field :passwordConfirm %>
     </div>
   <% end %>
-  <div class="line clearfix">
-    <span><%= check_box_tag 'signup[accept_terms]', "1", false, :class => 'required' %>
-    I agree to the <%= raw CurrentDomain.theme.urls.signup.map{|link| link_from_theme(link)}.to_sentence %></span>
-    <label class="error" for="signup[accept_terms]" generated="true"></label>
-  </div>
 </fieldset>
 
 <div class="required">Required Field</div>
 
+<p class="terms"><%= raw MASTER_DOMAIN_PREFS['strings.signup_terms'] %></p>
+
+<input class="fakeSubmit" type="submit"/>
 <ul class="finishButtons clearfix">
   <li class="signup_loadingIndicatorContainer" style="display:none">
     <span class="signup_loadingIndicator"></span>
   </li>
   <li>
-    <a id="signup_submit" class="button" href="#signup">Sign Up</a>
+    <a id="signup_submit" class="button default" href="#signup">Create My Account</a>
   </li>
   <%- if local_assigns[:is_modal] -%>
     <li>

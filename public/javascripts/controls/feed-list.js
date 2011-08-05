@@ -156,6 +156,7 @@
             var $feedFilter = $this.find('.feedFilter');
             var $feedList = $this.find('.feedList');
             var $moreItemsButton = $this.find('.feedMoreItemsLink');
+            var $moderationNotice = $this.find('.moderationNotice');
 
             // set up the filter dropdown
             if (!_.isArray(opts.filterCategories) || (opts.filterCategories.length === 0))
@@ -409,6 +410,14 @@
                             view.addComment(commentData,
                                 function(response)
                                 {
+                                    if (response.status == 'pending')
+                                    {
+                                        $this.closest('.newCommentForm').remove();
+                                        $moderationNotice.fadeIn(300, function() {
+                                            $moderationNotice.effect('highlight', 5000);
+                                        });
+                                        return;
+                                    }
                                     var data = getData($this);
 
                                     var newCommentData = feedDataMap(commentMap(response));

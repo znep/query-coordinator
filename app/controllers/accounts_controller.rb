@@ -17,13 +17,16 @@ class AccountsController < ApplicationController
 
     @signup = SignupPresenter.new(params[:signup])
     respond_to do |format|
+      # need both .data and .json formats because firefox detects as .data and chrome detects as .json
       if @signup.create
         format.html { redirect_to(@signup.user.href) }
+        format.data { render :json => {:user_id => current_user.id}, :callback => params[:callback]}
         format.json { render :json => {:user_id => current_user.id}, :callback => params[:callback]}
       else
         flash.now[:error] = @signup.errors.join(", ")
         @user_session = UserSession.new
         format.html { render :action => :new }
+        format.data { render :json => {:error => flash[:error], :promptLogin => false}, :callback => params[:callback] }
         format.json { render :json => {:error => flash[:error], :promptLogin => false}, :callback => params[:callback] }
       end
     end

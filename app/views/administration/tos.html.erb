@@ -1,7 +1,7 @@
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-tos' %>
-  <title>Terms of Service | <%= CurrentDomain.strings.site_title %></title>
+  <title>Terms of Use | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <%= render :partial => 'left_nav' %>
@@ -10,7 +10,7 @@
   <div class="contentBox withLeftNavigation">
       <div class="adminHeader floating users clearfix">
         <span class="icon"></span>
-        <h1 class="floating">Terms Of Service</h1>
+        <h1 class="floating">Terms of Use</h1>
       </div>
   </div>
 
@@ -25,7 +25,7 @@
       <div class="submitLine">
         <%= submit_tag 'Submit', :class => 'button default' %>
         <%= check_box_tag 'terms_accepted' %>
-        <label for="terms_accepted">I agree to the above terms and conditions</label>
+        <label for="terms_accepted">I agree to the above terms of use</label>
       </div>
     </form>
   </div>

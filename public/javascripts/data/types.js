@@ -220,6 +220,13 @@ blist.namespace.fetch('blist.data.types');
                 mask = mask.slice(1);
             }
 
+            // if the mask had run out of numbers, put the rest of
+            // whatever might have been left in the output
+            if (mask.indexOf('#') === -1)
+            {
+                value += mask;
+            }
+
             // if the original value is longer than the mask, just
             // append whatever's left at the very end here
             value += origValue;

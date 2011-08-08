@@ -396,7 +396,7 @@ class AdministrationController < ApplicationController
   #
   # Dataset-level metadata (custom fields, categories)
   #
-  before_filter :only => [:metadata, :create_metadata_fieldset, :delete_metadata_fieldset, :create_metadata_field, :delete_metadata_field, :toggle_metadata_option, :move_metadata_field, :create_category, :delete_category] {|c| c.check_auth_level('edit_site_theme')}
+  before_filter :only => [:metadata, :create_metadata_fieldset, :delete_metadata_fieldset, :create_metadata_field, :save_metadata_field, :delete_metadata_field, :toggle_metadata_option, :move_metadata_field, :create_category, :delete_category] {|c| c.check_auth_level('edit_site_theme')}
   def metadata
     config = get_or_create_configuration('metadata', {'name' => 'Metadata configuration'})
     @metadata = config.properties.fieldsets || []
@@ -455,6 +455,30 @@ class AdministrationController < ApplicationController
       'required' => false })
 
     save_metadata(config, metadata, "Field Successfully Created")
+  end
+
+  def save_metadata_field
+    config   = get_configuration('metadata')
+    metadata = config.properties.fieldsets
+    fieldset = metadata[params[:fieldset].to_i]
+
+    if fieldset.blank?
+      return (render json: {error: true, message: 'No such fieldset exists'})
+    end
+
+    field = fieldset.fields.detect{ |f| f['name'].downcase == params[:field].downcase }
+    if field.nil?
+      return (render json: {error: true, message: 'No such field exists'})
+    end
+
+    options = params[:options]
+    if options.blank?
+      field['type'] = 'text'
+    else
+      field['type'], field['options'] = 'fixed', options
+    end
+
+    save_metadata(config, metadata, 'Successfully saved field', true)
   end
 
   def delete_metadata_field
@@ -1085,13 +1109,17 @@ private
     config
   end
 
-  def save_metadata(config, metadata, successMessage)
+  def save_metadata(config, metadata, successMessage, json = false)
     update_or_create_property(config, 'fieldsets', metadata)
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
 
-    flash[:notice] = successMessage
-    redirect_to :action => 'metadata'
+    if json
+      render json: {message: successMessage, success: true}
+    else
+      flash[:notice] = successMessage
+      redirect_to :action => 'metadata'
+    end
   end
 
   def handle_button_response(success, error_message, success_message, redirect_action)

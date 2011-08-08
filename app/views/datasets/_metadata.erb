@@ -23,11 +23,9 @@
             <%= " class='required'" if required %>>
             <%= field.name %></label>
           <%- form_name = "view[#{md_field}][custom_fields][#{fieldset.name}][#{field.name}]" -%>
-          <%- if field['type'] -%>
-            <%- if field['type'] == 'fixed' -%>
-              <%= select_tag(form_name, options_for_select(['']+field['options'], existing_value),
-                             :class => (required ? 'required' : '')) %>
-            <%- end -%>
+          <%- if field['type'] && field['type'] == 'fixed' -%>
+            <%= select_tag(form_name, options_for_select(['']+field['options'], existing_value),
+                           :class => (required ? 'required' : '')) %>
           <%- else -%>
             <%= text_field_tag(form_name, existing_value, :class => (required ? 'required' : '')) %>
           <%- end -%>

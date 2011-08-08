@@ -124,6 +124,8 @@ ActionController::Routing::Routes.draw do |map|
       :conditions => { :method => :post }
     admin.connect '/admin/metadata/:fieldset/create', :action => 'create_metadata_field',
       :conditions => { :method => :post }
+    admin.connect '/admin/metadata/save_field', :action => 'save_metadata_field',
+      :conditions => { :method => :put }
     admin.connect '/admin/metadata/:fieldset/delete', :action => 'delete_metadata_fieldset',
       :conditions => { :method => :delete }
     admin.connect '/admin/metadata/create_fieldset', :action => 'create_metadata_fieldset',

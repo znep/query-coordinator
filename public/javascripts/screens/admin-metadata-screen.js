@@ -56,5 +56,29 @@
         }
     });
 
+    $('.metadataFieldTable td.options').editableList({saveCallback:
+        function($container, data)
+        {
+            var $row  = $container.closest('tr');
+            var error = function(text) {
+                $container.removeClass('modified').addClass('error')
+                    .find('.errorText').text(text);
+            };
+            $.socrataServer.makeRequest({url: '/admin/metadata/save_field',
+                type: 'PUT', data: JSON.stringify({
+                    fieldset: $row.data('fieldset'),
+                    field:    $row.data('fieldname'),
+                    options:  data
+                }),
+                success: function(response) {
+                    $container.removeClass('modified');
+                    if (response.error)
+                    { error(response.message); }
+                },
+                error: error
+            });
+        }
+    });
+
     $('.customFields .requiredCheckbox').uniform();
 });

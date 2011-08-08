@@ -18,7 +18,7 @@ class DatasetsController < ApplicationController
     @page_custom_header = 'header'
     @page_custom_footer = 'footer'
     @page_custom_chrome = ''
-    @supress_content_wrapper = true
+    @suppress_content_wrapper = true
 
     if is_mobile? && (params[:no_mobile] != 'true')
       return(redirect_to :controller => 'widgets', :action => 'show', :id => params[:id])
@@ -383,7 +383,7 @@ class DatasetsController < ApplicationController
     @user_session = UserSession.new if !current_user
 
     @page_custom_chrome = ''
-    @supress_content_wrapper = true
+    @suppress_content_wrapper = true
     @page_custom_header = 'header'
     @page_custom_footer = 'footer'
   end

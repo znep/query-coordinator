@@ -16,10 +16,8 @@ $(function()
         var id = $(this).closest('form').find('input.hiddenID').val();
         var $select = $(this);
 
-        $.ajax({
+        $.socrataServer.makeRequest({
             url: '/api/users?method=promote&name=' + id + '&role=' + $select.val(),
-            contentType: "application/json",
-            dataType: "json",
             type: "PUT",
             success: function(responseData)
             {
@@ -28,10 +26,11 @@ $(function()
             },
             error: function(request)
             {
+                errorJson = JSON.parse(request.responseText);
                 $('.userNotice')
                     .removeClass('notice')
                     .addClass('error')
-                    .text('There was an error processing your permission request')
+                    .text(errorJson.message || 'There was an error processing your permission request')
                     .fadeIn(300);
             }
         });

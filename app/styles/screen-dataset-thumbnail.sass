@@ -38,10 +38,9 @@ $cropped_height: 80
       .loading
         @include branded-spinner
         display: none
-        margin:
-          top: #{$thumbnail_preview_height / 2 - 24}px
-          left: auto
-          right: auto
+        left: #{$thumbnail_preview_width / 2 - 24}px
+        top: #{$thumbnail_preview_height / 2 - 24}px
+        position: absolute
 
       .thumbnailPresent
         @include transition-duration(0.5s)

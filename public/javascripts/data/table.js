@@ -2760,7 +2760,7 @@
                     var type = mcol.renderType;
 
                     var renderer = mcol.renderer || type.renderGen;
-                    var invalidRenderer = blist.data.types.invalid.renderGen;
+                    var invalidRenderer = blist.datatypes.invalid.renderGen;
                     var cls = mcol.cls || type.cls;
                     cls = cls ? ' blist-td-' + cls : '';
                     var align = mcol.format.align ?
@@ -3078,7 +3078,7 @@
             }
             renderFnSource += 'html.push("</div>");' +
                 '})';
-            rowRenderFn = blist.data.types.compile(
+            rowRenderFn = blist.datatypes.compile(
                 renderFnSource, contextVariables);
 
             var renderLockedFnSource =
@@ -3098,7 +3098,7 @@
             });
             renderLockedFnSource += 'html.push("</div>");';
             renderLockedFnSource += '})';
-            rowLockedRenderFn = blist.data.types.compile(
+            rowLockedRenderFn = blist.datatypes.compile(
                     renderLockedFnSource, contextVariables);
 
             // Configure the left position of grid rows

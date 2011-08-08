@@ -144,14 +144,10 @@ $.unescapeObject = function(obj)
 
 $.htmlStrip = function(text)
 {
-  try
-  {
-    return text.replace(/<[^>]*>/g, '');
-  }
-  catch (ex)
-  {
-    return '';
-  }
+    try
+    { return text.replace(/<[^>]*>/g, ''); }
+    catch (ex)
+    { return ''; }
 };
 
 $.urlSafe = function(text)

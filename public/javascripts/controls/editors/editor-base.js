@@ -17,8 +17,8 @@
         {
             _.each($.makeArray(type), function(t)
             {
-                if (!$.isBlank(blist.data.types[t]))
-                { blist.data.types[t].editor = editor; }
+                if (!$.isBlank(blist.datatypes[t]))
+                { blist.datatypes[t].editor = editor; }
             });
         }
     };
@@ -34,8 +34,8 @@
         var blistEditor = $(this[0]).data("blistEditor");
         if (!blistEditor)
         {
-            var type = blist.data.types[options.typeName ||
-                options.column.renderTypeName] || blist.data.types.text;
+            var type = blist.datatypes[options.typeName ||
+                options.column.renderTypeName] || blist.datatypes.text;
             var editor = type.editor;
             if (editor !== null && editor !== undefined)
             {

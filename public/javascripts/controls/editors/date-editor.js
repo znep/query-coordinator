@@ -13,8 +13,8 @@
         {
             type: function()
             {
-                return blist.data.types[this.column.renderTypeName] ||
-                    blist.data.types.date;
+                return blist.datatypes[this.column.renderTypeName] ||
+                    blist.datatypes.date;
             },
 
             originalTextValue: function()

@@ -296,8 +296,8 @@ this.Column = ServerModel.extend({
         { this.dropDownList = this.dropDown; }
         delete this.dropDown;
         this.hidden = _.include(this.flags || [], 'hidden');
-        this.dataType = blist.data.types[this.dataTypeName] || {};
-        this.renderType = blist.data.types[this.renderTypeName] || {};
+        this.dataType = blist.datatypes[this.dataTypeName] || {};
+        this.renderType = blist.datatypes[this.renderTypeName] || {};
         this.isMeta = this.dataTypeName == 'meta_data';
 
         this.lookup = this.isMeta ? this.name : this.id;

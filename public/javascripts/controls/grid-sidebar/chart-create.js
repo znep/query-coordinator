@@ -144,7 +144,7 @@
                 $.arrayToSentence(_.map(newTypes, function(rc)
                 { return $.wordify(rc.count) + ' ' +
                     $.arrayToSentence(_.map(rc.types, function(t)
-                    { return blist.data.types[t].title.toLowerCase(); }),
+                    { return blist.datatypes[t].title.toLowerCase(); }),
                         'or', ',') + ' column' + (rc.count == 1 ? '' : 's'); }),
                 'and', ';', true) + '.';
         };

@@ -1264,7 +1264,7 @@ this.Dataset = ServerModel.extend({
             if (remoteColumns[n].value == linkSrcColId)
             {
                 var dt = remoteColumns[n].dataType;
-                return { value: dt, text: blist.data.types[dt].title };
+                return { value: dt, text: blist.datatypes[dt].title };
             }
         }
 

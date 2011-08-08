@@ -3,7 +3,7 @@
     if (blist.sidebarHidden.filter &&
         blist.sidebarHidden.filter.filterDataset) { return; }
 
-    var filterableTypes = _.compact(_.map(blist.data.types, function(t, n)
+    var filterableTypes = _.compact(_.map(blist.datatypes, function(t, n)
     {
         return !$.isBlank(t.filterConditions) ? n : null;
     }));

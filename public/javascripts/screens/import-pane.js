@@ -61,7 +61,7 @@ var locationTypes = {
 // get a title for a type
 var typesToText = function(type)
 {
-    return blist.data.types[type].title.replace('&', '&amp;');
+    return blist.datatypes[type].title.replace('&', '&amp;');
 };
 
 // mimics rails' options_for_select

@@ -1039,12 +1039,12 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
                 var col = model.columns()[activeCellXStart];
                 if (row !== undefined && col !== undefined && col.dataLookupExpr)
                 {
-                    var type = col.renderType || blist.data.types.text;
+                    var type = col.renderType || blist.datatypes.text;
                     renderContextVars.row = row;
                     var fn = type.renderGen("row" +
                         model.columns()[activeCellXStart].dataLookupExpr,
                         true, col);
-                    var value = blist.data.types.compile(fn, renderContextVars);
+                    var value = blist.datatypes.compile(fn, renderContextVars);
                     if (value != undefined)
                     {
                         return value;
@@ -1110,7 +1110,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
                 {
                     didOne = true;
                 }
-                type = col.renderType || blist.data.types.text;
+                type = col.renderType || blist.datatypes.text;
                 mapFnSrc += 'if (selmap[' + i + ']) rawDoc.push(' +
                     type.renderGen("row" + col.dataLookupExpr, true,
                         col, renderContextVars) + ');';
@@ -1119,7 +1119,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
         mapFnSrc += 'rawDoc.push("\\r\\n");})';
 
         // Compile the function
-        var mapFn = blist.data.types.compile(mapFnSrc, renderContextVars);
+        var mapFn = blist.datatypes.compile(mapFnSrc, renderContextVars);
 
         // Walk selected rows, building the selection document
         // This doesn't actually work, because processSelection wants an array

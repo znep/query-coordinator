@@ -596,7 +596,7 @@
                     (this.point.subtitle ?
                         '<p>' + this.point.subtitle + '</p>' : '') +
                     '<p>' + this.y + ' at ' +
-                    blist.data.types.date.filterRender(this.x / 1000,
+                    blist.datatypes.date.filterRender(this.x / 1000,
                         chartObj._xColumn) + '</p>';
             } };
         }

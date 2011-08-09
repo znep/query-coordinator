@@ -51,8 +51,8 @@
                 var calObj = this;
 
                 var ce = {id: row.id,
-                    start: row[calObj._startCol.id],
-                    title: $.htmlStrip(row[calObj._titleCol.id]),
+                    start: row[calObj._startCol.lookup],
+                    title: $.htmlStrip(row[calObj._titleCol.lookup]),
                     color: null,
                     row: row};
                 if ((row.sessionMeta || {}).highlight)
@@ -60,7 +60,7 @@
 
                 if (!$.isBlank(calObj._endCol))
                 {
-                    ce.end = row[calObj._endCol.id];
+                    ce.end = row[calObj._endCol.lookup];
                     if ($.isBlank(ce.start)) { ce.start = ce.end; }
                 }
 
@@ -69,9 +69,18 @@
                 if (exEvent.length > 0)
                 { $fc.fullCalendar('updateEvent', $.extend(_.first(exEvent), ce)); }
                 else
-                { $fc.fullCalendar('renderEvent', ce, true); }
+                { calObj._events.push(ce); }
 
                 return true;
+            },
+
+            rowsRendered: function()
+            {
+                if (!_.isEmpty(this._events))
+                {
+                    this.$dom().fullCalendar('addEventSource', this._events);
+                    this._events = [];
+                }
             },
 
             getColumns: function()
@@ -97,6 +106,8 @@
     // Private methods
     var setUpCalendar = function(calObj)
     {
+        calObj._events = [];
+
         calObj.$dom().fullCalendar({aspectRatio: 2,
                 editable: calObj.settings.view.hasRight('write'),
                 disableResizing: $.isBlank(calObj.settings.view

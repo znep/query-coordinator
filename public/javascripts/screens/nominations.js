@@ -123,6 +123,46 @@ $(function()
 
         if (beginning) { $tbody.prepend($newItem); }
         else { $tbody.append($newItem); }
+
+        blist.nominations.map[n.id].getComments(function(comments)
+        {
+            var $commentsSection = $newItem.find('.details .comments');
+            $commentsSection.empty();
+            if (comments.length > 0)
+            {
+                var phrase = [];
+
+                var officialComments = _.select(comments, function(c)
+                {
+                    return _.include(c.user.rights || [], 'approve_nominations');
+                });
+
+                if (officialComments.length > 0)
+                {
+                    phrase.push($.tag({
+                        tagName: 'strong',
+                        contents: [
+                            $.pluralize(officialComments.length, 'official response')
+                        ]
+                    }, true));
+                }
+
+                phrase.push($.pluralize(comments.length, 'comment'));
+
+                $commentsSection.append($.tag({
+                    tagName: 'a',
+                    'class': 'commentsLink comment',
+                    href: '/nominate/' + n.id,
+                    contents: [{
+                            tagName: 'span',
+                            'class': 'icon'
+                        },
+                        $.arrayToSentence(_.compact(phrase), 'and', ','),
+                        ' on this suggestion'
+                    ]
+                }));
+            }
+        });
     };
 
     _.each(blist.nominations.items, blist.nominations.addNomination);

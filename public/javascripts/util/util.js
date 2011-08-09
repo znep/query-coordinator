@@ -432,6 +432,23 @@ $.commaify = function(value)
     return value;
 };
 
+// it's kind of dumb. if you need anything it doesn't do, just explicitly tell it.
+$.pluralize = function(number, word, pluralized)
+{
+    if (_.isUndefined(pluralized))
+    {
+        var pluralized;
+        if (word.match(/[oiu]$/i))
+            pluralized = word + 'es';
+        else if (word.match(/y$/i))
+            pluralized = word.substring(0, word.length - 1) + 'ies';
+        else
+            pluralized = word + 's';
+    }
+
+    return number + ' ' + ((number === 1) ? word : pluralized);
+};
+
 $.mixin = function(obj, mixin)
 {
     var clone = function()

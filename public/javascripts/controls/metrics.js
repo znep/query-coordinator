@@ -141,6 +141,7 @@
     {
         var opts = $.extend({}, $.fn.metricsScreen.defaults, options),
             $screen         = $(this),
+            $exportLink     = $screen.find('.exportMetricsLink'),
             currentSlice    = opts.initialSliceDepth,
             startDate       = null,
             endDate         = null,
@@ -238,6 +239,13 @@
             startDate       = newStartDate;
             endDate         = newEndDate;
             currentSlice    = newSlice;
+
+            if ($exportLink.length > 0)
+            {
+                $exportLink.attr('href', $exportLink.data('exportbase') +
+                    'start=' + startDate.getTime() + '&end=' + endDate.getTime() +
+                    '&slice=' + currentSlice);
+            }
         });
 
         // Only charts need to listen to a time slice change

@@ -29,7 +29,7 @@ $(function()
         })
     }));
 
-     $('#analyticsTimeControl').metricsTimeControl({
+    $('#analyticsTimeControl').metricsTimeControl({
         metricsScreen: screen
     });
 });

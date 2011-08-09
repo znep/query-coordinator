@@ -1,6 +1,10 @@
 // Shared analytics styles
 
 #analyticsDataContainer
+  .exportMetricsLink
+    float: right
+    font-size: 1.2em
+
   #analyticsTimeControl
     float: left
     padding-left: 2em
@@ -8,8 +12,11 @@
       width: 13em
       &:hover
         cursor: pointer
-  &.overviewMetrics #analyticsTimeControl
-    padding-top: 0.5em
+  &.overviewMetrics
+    .exportMetricsLink
+      padding-top: 0.5em
+    #analyticsTimeControl
+      padding-top: 0.5em
   &.datasetMetrics h1, &.publicSiteMetrics h1
     float: left
 

@@ -733,7 +733,7 @@
         };
 
         var customization = customRender(details) ||
-            { type: 'simple', key: 'default' };
+            { type: 'simple', key: 'default' + geoType };
         if (mapObj._esriSymbol[customization.key])
         { return mapObj._esriSymbol[customization.key]; }
 

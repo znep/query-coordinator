@@ -245,6 +245,10 @@ $(function()
     var paneName = $.urlParam(window.location.href, 'pane');
     if (_.isString(paneName))
     { datasetPageNS.sidebar.show(paneName); }
+    else if (blist.dataset.visibleColumns &&
+             blist.dataset.visibleColumns.length == 0 &&
+             !blist.sidebarHidden.edit.addColumn)
+    { datasetPageNS.sidebar.show('edit.addColumn'); }
 
     var sidebarUpdate = function()
         { datasetPageNS.sidebar.updateEnabledSubPanes(); };

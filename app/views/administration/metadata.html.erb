@@ -28,6 +28,26 @@
         Enter a name below and click 'Create' to begin.
       </div>
     <%- else -%>
+      <div class="metadataExplanation">
+        <p>
+          Custom metadata is broken down into <span class="code">fieldsets</span> and
+          <span class="code">fields</span>. A <span class="code">fieldset</span> is a
+          way to logically and visually group one or more custom
+          <span class="code">fields</span> together.
+        </p>
+        <p>
+          Fields can be configured in multiple ways. They can be
+          <span class="code">required</span>, which will be enforced when publishers
+          create new datasets and update existing metadata. They can also be
+          <span class="code">private</span>, meaning that the values entered will
+          not be visible to the public.
+        </p>
+        <p>
+          Finally, you can choose to pre-define the options for your
+          <span class="code">fields</span> if you wish to have values chosen from a
+          list rather than entered as free-form text.
+        </p>
+      </div>
       <%- @metadata.each_with_index do |fieldset, fs_index| -%>
         <%# TODO: Don't skip these %>
         <%- next if fieldset.hidden -%>
@@ -39,12 +59,14 @@
               <colgroup>
                 <col class="required" />
                 <col class="name" />
+                <col class="options" />
                 <col class="actions" />
               </colgroup>
               <thead>
                 <tr>
                   <th class="required"><div>&nbsp;</div></th>
                   <th class="name"><div>Field Name</div><span class="icon"></span></th>
+                  <th class="options"><div>Allowed Values</div><span class="icon"></span></th>
                   <th class="actions"><div>&nbsp;</div><span class="icon"></span></th>
                 </tr>
               </thead>
@@ -53,7 +75,7 @@
                   <%- fieldset['fields'].each_with_index do |field, index| -%>
                     <%- required   = field['required'].present?
                         privstatus = field['private'].present? -%>
-                    <tr class="item<%= (required ? ' required' : '') + (privstatus ? ' private' : '') %>">
+                      <tr class="item<%= (required ? ' required' : '') + (privstatus ? ' private' : '') %>" data-fieldname="<%= field.name %>" data-fieldset="<%= fs_index %>">
                       <td class="required">
                           <span class="requiredField"></span>
                       </td>
@@ -61,6 +83,39 @@
                         <span class="cellInner">
                           <%= field.displayName || field.name %>
                         </span>
+                      </td>
+                      <td class="options <%= field['type'] %>">
+                        <ul class="fixedOptions editableList">
+                          <%- if field['options'].present? -%>
+                            <%- field['options'].each do |option| -%>
+                              <li>
+                                <a href="#Delete" class="remove optionAction deleteItem">
+                                  <span class="icon fadeIcon"></span>
+                                </a>
+                                <span class="grabHandle fadeIcon"></span>
+                                <input type="text" class="value" value="<%= option %>" />
+                                <%# freaking ie7 won't display the td without this! %>&nbsp;
+                              </li>
+                            <%- end -%>
+                          <%- end-%>
+                          <li class="newItemLine">
+                            <a href="#Add" class="add optionAction newItemButton">
+                              <span class="icon fadeIcon"></span>
+                            </a>
+                            <input type="text" class="value"/>
+                          </li>
+                          <li class="templateLine">
+                             <a href="#Delete" class="remove optionAction deleteItem">
+                                <span class="icon fadeIcon"></span>
+                              </a>
+                              <span class="grabHandle fadeIcon"></span>
+                              <input type="text" class="value" />
+                          </li>
+                        </ul>
+                        <div class="errorText"></div>
+                        <div class="actions">
+                          <a href="#Save" class="button saveButton">Save</a>
+                        </div>
                       </td>
                       <td class="actions">
                         <span class="loading"></span>
@@ -90,7 +145,7 @@
                   <%- end -%>
                 <%- else -%>
                   <tr>
-                    <td colspan="3">
+                    <td colspan="4">
                       <div class="flash notice">
                         This field set does not have any fields defined yet
                       </div>
@@ -105,6 +160,7 @@
                     <td class="name">
                       <input type="text" class="newFieldName" name="newFieldName" />
                     </td>
+                    <td class="options"></td>
                     <td class="actions">
                       <input class="button newFieldButton" type="submit" value="Add New Field" />
                     </td>
@@ -118,8 +174,7 @@
     <div class="newFieldsetArea">
       <h2>Create a New Field Set</h2>
       <%= form_tag({ :action => 'create_metadata_fieldset' }, { :class => 'newFieldsetForm' }) %>
-        <label>Name</label>
-        <input type="text" name="newFieldsetName" class="newFieldsetName" />
+        <input type="text" name="newFieldsetName" class="newFieldsetName" title="Enter a name"/>
         <input class="button newFieldsetButton" type="submit" value="Create" />
       </form>
     </div>

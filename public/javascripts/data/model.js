@@ -80,6 +80,12 @@ blist.namespace.fetch('blist.data');
                     this.view = curOptions.view;
                     this.view.bind('row_count_change', function()
                             { configureActive(); })
+                        .bind('clear_temporary', function()
+                            {
+                                resetUndo();
+                                collapseAll();
+                                configureActive();
+                            })
                         .bind('query_change', function()
                             {
                                 resetUndo();

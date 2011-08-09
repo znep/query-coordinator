@@ -85,7 +85,7 @@ http://www.socrata.com
 
       <a name="content"></a>
       <%= render_domain_template(@page_custom_chrome || 'content_chrome') %>
-      <%- if @supress_content_wrapper -%>
+      <%- if @suppress_content_wrapper -%>
         <%= yield :layout %>
       <%- else -%>
         <div class="siteContentWrapper">

@@ -1247,7 +1247,7 @@
                 {
                     return !_.any(rootCondition.children, function(cond)
                     {
-                        return cond.metadata.tableColumnId == col.tableColumnId;
+                        return cond.metadata.tableColumnId[dataset.tableId] == col.tableColumnId;
                     })
                 });
                 if ($.isBlank(column))

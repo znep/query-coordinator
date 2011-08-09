@@ -1540,6 +1540,10 @@
 
         var onCellOut = function(event)
         {
+            // If we moused into a menu, don't count it as cell out
+            if ($(event.relatedTarget).closest('.columnHeaderMenu, .rowMenu').length > 0)
+            { return; }
+
             if (hotCell)
             {
                 // Find the cell focus is moving to

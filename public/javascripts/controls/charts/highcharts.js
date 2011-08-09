@@ -1,5 +1,7 @@
 (function($)
 {
+    var hasSVG = window.SVGAngle || document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#BasicStructure", "1.1");
+
     $.socrataChart.highcharts = function(options, dom)
     {
         this.settings = $.extend({}, $.socrataChart.highcharts.defaults, options);
@@ -397,8 +399,73 @@
             return v;
         };
 
-        var chartRedraw = function()
+        var drawNullBars = function()
         {
+            if (!_.include(['column', 'bar'], chartObj._chartType))
+            { return; }
+
+            var invertAxis = chartObj._chartType == 'bar';
+            var stacking = chartObj.settings.view.displayFormat.stacking;
+            if (!chartObj._hatchPattern)
+            { chartObj._hatchPattern = $('<div class="hatchPattern"></div>'); }
+
+            var stacks;
+            if (stacking)
+            {
+                stacks = _.map(chartObj.chart.series[0].data, function(datum, index)
+                {
+                    return _.reduce(chartObj.chart.series, function(total, serie)
+                        { return total + serie.data[index].graphic.attr('height'); }, 0);
+                });
+            }
+
+            _.each(chartObj.chart.series, function(serie)
+            {
+                _.each(serie.data, function(datum, index)
+                {
+                    if (!datum.isNull) { return; }
+                    if (datum.$nullDiv) { datum.$nullDiv.remove(); }
+
+                    var position;
+                    if (invertAxis)
+                    {
+                        position = {
+                            'top': chartObj.chart.plotHeight - chartObj.chart.plotTop
+                                - datum.graphic.attr('x'),
+                            'left': chartObj.chart.plotLeft,
+                            'width': chartObj.chart.plotWidth,
+                            'height': datum.graphic.attr('width')
+                        };
+                        if (stacking)
+                        {
+                            position['top'] -= position['height']/2 + 3;
+                            position['left'] += stacks[index];
+                            position['width'] -= stacks[index];
+                        }
+                    }
+                    else
+                    {
+                        position = {
+                            'top': chartObj.chart.plotTop,
+                            'left': chartObj.chart.plotLeft + datum.graphic.attr('x'),
+                            'width': datum.graphic.attr('width'),
+                            'height': chartObj.chart.plotHeight
+                        };
+                        if (stacking)
+                        {
+                            position['height'] -= stacks[index];
+                        }
+                    }
+
+                    datum.$nullDiv = chartObj._hatchPattern.clone().css(position);
+                    $(chartObj.chart.container).append(datum.$nullDiv);
+                });
+            });
+        };
+
+        var drawValueMarker = function()
+        {
+            var invertAxis = chartObj._chartType == 'bar';
             if (chartObj._valueMarker)
             {
                 // This is a hackaround since it doesn't look like
@@ -421,7 +488,6 @@
             { return; }
 
             var commands = [];
-            var invertAxis = chartObj._chartType == 'bar';
             if (invertAxis)
             {
                 var offsetLeft = ((1 - percentage) * chartObj.chart.plotWidth)
@@ -446,6 +512,12 @@
                     'stroke-width': thickStroke ? 2 : 1,
                     'stroke-dasharray': '9, 5'})
                 .add();
+        };
+
+        var chartRedraw = function(evt)
+        {
+            setTimeout(drawNullBars, 500); // Wait for animation to finish before running.
+            drawValueMarker();
         };
 
         // Main config
@@ -699,6 +771,7 @@
         { return null; }
 
         var point = {y: value || 0, pretty: {}, label: {}, id: row.id + '_' + seriesIndex};
+        point.isNull = _.isNull(value);
         point.pretty.y = col.renderType.filterRender(value, col, true);
         if (!_.isNull(basePt) && !_.isUndefined(basePt))
         { _.extend(point, basePt); }
@@ -1050,6 +1123,9 @@
             .append(point.flyoutDetails)
             .css({ top: position.top + 'px', left: position.left + 'px' })
             .show();
+
+        if (point.isNull)
+        { $box.text('This point has no data.'); }
 
         if (!$box.data('events-attached'))
         {

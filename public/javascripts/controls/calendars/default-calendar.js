@@ -186,7 +186,8 @@
             // and we want to make sure everything is ready before we check & display
             _.defer(function()
             {
-                if ($.subKeyDefined(calObj.settings.view, 'highlightTypes.select.' + calEvent.row.id))
+                if ($.isBlank(calObj._curTip) &&
+                    $.subKeyDefined(calObj.settings.view, 'highlightTypes.select.' + calEvent.row.id))
                 { $e.socrataTip().show(); }
             });
         }

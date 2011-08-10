@@ -2209,48 +2209,48 @@ function BasicView(element, calendar, viewName) {
 	
 	
 	function buildSkeleton(maxRowCnt, showNumbers) {
-		var s;
+		var s = [];
 		var headerClass = tm + "-widget-header";
 		var contentClass = tm + "-widget-content";
 		var i, j;
 		var table;
 		
-		s =
-			"<table class='fc-border-separate' style='width:100%' cellspacing='0'>" +
-			"<thead>" +
-			"<tr>";
+		s.push(
+			"<table class='fc-border-separate' style='width:100%' cellspacing='0'>",
+			"<thead>",
+			"<tr>");
 		for (i=0; i<colCnt; i++) {
-			s +=
-				"<th class='fc- " + headerClass + "'/>"; // need fc- for setDayID
+			s.push(
+				"<th class='fc- ", headerClass, "'/>"); // need fc- for setDayID
 		}
-		s +=
-			"</tr>" +
-			"</thead>" +
-			"<tbody>";
+		s.push(
+			"</tr>",
+			"</thead>",
+			"<tbody>");
 		for (i=0; i<maxRowCnt; i++) {
-			s +=
-				"<tr class='fc-week" + i + "'>";
+			s.push(
+				"<tr class='fc-week", i, "'>");
 			for (j=0; j<colCnt; j++) {
-				s +=
-					"<td class='fc- " + contentClass + " fc-day" + (i*colCnt+j) + "'>" + // need fc- for setDayID
-					"<div>" +
+				s.push(
+					"<td class='fc- ", contentClass, " fc-day", (i*colCnt+j), "'>", // need fc- for setDayID
+					"<div>",
 					(showNumbers ?
 						"<div class='fc-day-number'/>" :
 						''
-						) +
-					"<div class='fc-day-content'>" +
-					"<div style='position:relative'>&nbsp;</div>" +
-					"</div>" +
-					"</div>" +
-					"</td>";
+						),
+					"<div class='fc-day-content'>",
+					"<div style='position:relative'>&nbsp;</div>",
+					"</div>",
+					"</div>",
+					"</td>");
 			}
-			s +=
-				"</tr>";
+			s.push(
+				"</tr>");
 		}
-		s +=
-			"</tbody>" +
-			"</table>";
-		table = $(s).appendTo(element);
+		s.push(
+			"</tbody>",
+			"</table>");
+		table = $(s.join('')).appendTo(element);
 		
 		head = table.find('thead');
 		headCells = head.find('th');
@@ -3880,7 +3880,7 @@ function AgendaEventRenderer() {
 	
 	
 	function slotSegHtml(event, seg) {
-		var html = "<";
+		var html = ["<"];
 		var url = event.url;
 		var skinCss = getSkinCss(event, opt);
 		var skinCssAttr = (skinCss ? " style='" + skinCss + "'" : '');
@@ -3899,34 +3899,34 @@ function AgendaEventRenderer() {
 			classes = classes.concat(event.source.className || []);
 		}
 		if (url) {
-			html += "a href='" + htmlEscape(event.url) + "'";
+			html.push("a href='", htmlEscape(event.url), "'");
 		}else{
-			html += "div";
+			html.push("div");
 		}
-		html +=
-			" class='" + classes.join(' ') + "'" +
-			" style='position:absolute;z-index:8;top:" + seg.top + "px;left:" + seg.left + "px;" + skinCss + "'" +
-			">" +
-			"<div class='fc-event-inner fc-event-skin'" + skinCssAttr + ">" +
-			"<div class='fc-event-head fc-event-skin'" + skinCssAttr + ">" +
-			"<div class='fc-event-time'>" +
-			htmlEscape(formatDates(event.start, event.end, opt('timeFormat'))) +
-			"</div>" +
-			"</div>" +
-			"<div class='fc-event-content'>" +
-			"<div class='fc-event-title'>" +
-			htmlEscape(event.title) +
-			"</div>" +
-			"</div>" +
-			"<div class='fc-event-bg'></div>" +
-			"</div>"; // close inner
+		html.push(
+			" class='", classes.join(' '), "'",
+			" style='position:absolute;z-index:8;top:", seg.top, "px;left:", seg.left, "px;", skinCss, "'",
+			">",
+			"<div class='fc-event-inner fc-event-skin'", skinCssAttr, ">",
+			"<div class='fc-event-head fc-event-skin'", skinCssAttr, ">",
+			"<div class='fc-event-time'>",
+			htmlEscape(formatDates(event.start, event.end, opt('timeFormat'))),
+			"</div>",
+			"</div>",
+			"<div class='fc-event-content'>",
+			"<div class='fc-event-title'>",
+			htmlEscape(event.title),
+			"</div>",
+			"</div>",
+			"<div class='fc-event-bg'></div>",
+			"</div>"); // close inner
 		if (seg.isEnd && isEventResizable(event)) {
-			html +=
-				"<div class='ui-resizable-handle ui-resizable-s'>=</div>";
+			html.push(
+				"<div class='ui-resizable-handle ui-resizable-s'>=</div>");
 		}
-		html +=
-			"</" + (url ? "a" : "div") + ">";
-		return html;
+		html.push(
+			"</", (url ? "a" : "div"), ">");
+		return html.join('');
 	}
 	
 	
@@ -4607,7 +4607,7 @@ function DayEventRenderer() {
 		var left;
 		var right;
 		var skinCss;
-		var html = '';
+		var html = [];
 		// calculate desired position/dimensions, create html
 		for (i=0; i<segCnt; i++) {
 			seg = segs[i];
@@ -4646,41 +4646,41 @@ function DayEventRenderer() {
 			url = event.url;
 			skinCss = getSkinCss(event, opt);
 			if (url) {
-				html += "<a href='" + htmlEscape(url) + "'";
+				html.push("<a href='", htmlEscape(url), "'");
 			}else{
-				html += "<div";
+				html.push("<div");
 			}
-			html +=
-				" class='" + classes.join(' ') + "'" +
-				" style='position:absolute;z-index:8;left:"+left+"px;" + skinCss + "'" +
-				">" +
-				"<div" +
-				" class='fc-event-inner fc-event-skin'" +
-				(skinCss ? " style='" + skinCss + "'" : '') +
-				">";
+			html.push(
+				" class='", classes.join(' '), "'",
+				" style='position:absolute;z-index:8;left:",left,"px;", skinCss, "'",
+				">",
+				"<div",
+				" class='fc-event-inner fc-event-skin'",
+				(skinCss ? " style='" + skinCss + "'" : ''),
+				">");
 			if (!event.allDay && seg.isStart) {
-				html +=
-					"<span class='fc-event-time'>" +
-					htmlEscape(formatDates(event.start, event.end, opt('timeFormat'))) +
-					"</span>";
+				html.push(
+					"<span class='fc-event-time'>",
+					htmlEscape(formatDates(event.start, event.end, opt('timeFormat'))),
+					"</span>");
 			}
-			html +=
-				"<span class='fc-event-title'>" + htmlEscape(event.title) + "</span>" +
-				"</div>";
+			html.push(
+				"<span class='fc-event-title'>", htmlEscape(event.title), "</span>",
+				"</div>");
 			if (seg.isEnd && isEventResizable(event)) {
-				html +=
-					"<div class='ui-resizable-handle ui-resizable-" + (rtl ? 'w' : 'e') + "'>" +
-					"&nbsp;&nbsp;&nbsp;" + // makes hit area a lot better for IE6/7
-					"</div>";
+				html.push(
+					"<div class='ui-resizable-handle ui-resizable-", (rtl ? 'w' : 'e'), "'>",
+					"&nbsp;&nbsp;&nbsp;", // makes hit area a lot better for IE6/7
+					"</div>");
 			}
-			html +=
-				"</" + (url ? "a" : "div" ) + ">";
+			html.push(
+				"</", (url ? "a" : "div" ), ">");
 			seg.left = left;
 			seg.outerWidth = right - left;
 			seg.startCol = leftCol;
 			seg.endCol = rightCol + 1; // needs to be exclusive
 		}
-		return html;
+		return html.join('');
 	}
 	
 	

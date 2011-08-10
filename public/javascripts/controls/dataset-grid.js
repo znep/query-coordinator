@@ -84,8 +84,8 @@
                         showRowHandle: datasetObj.settings.showRowHandle,
                         rowHandleWidth: 15,
                         showAddColumns: datasetObj.settings.showAddColumns,
-                        rowHandleRenderer: function(col)
-                            { return datasetObj.rowHandleRenderer(col) },
+                        rowHandleRenderer: function()
+                            { return datasetObj.rowHandleRenderer.apply(datasetObj, arguments) },
                         showRowNumbers: datasetObj.settings.showRowNumbers})
                     .blistModel()
                     .options({blankRow: datasetObj.settings.editEnabled,
@@ -326,7 +326,7 @@
                 delete datasetObj._disabled;
             },
 
-            rowHandleRenderer: function(col)
+            rowHandleRenderer: function(html, index, renderIndex, row, col, context)
             {
                 var isSubRow = !$.isBlank((col || {}).childColumns);
                 var colAdjust = isSubRow ? ('_' + col.lookup) : '';
@@ -334,44 +334,35 @@
                 var options = [];
                 if (!isSubRow)
                 {
-                    options.push('"<li class=\'pageView\'>' +
-                            '<a href=\'' + this.settings.view.url +
-                            '/" + row.id + "\' class=\'noInterstitial ' +
-                            'noRedirPrompt\'>View Single Row Data</a></li>"');
+                    options.push('<li class="pageView"><a href="', this.settings.view.url, '/', row.id,
+                            '" class="noInterstitial noRedirPrompt">View Single Row Data</a></li>');
                 }
                 if (this.settings.editEnabled)
                 {
-                    options.push('(permissions.canEdit && !(row.level > 0) ? ' +
-                            '"<li class=\'tags\'>' +
-                            '<a href=\'#row-tag_" + row.id + "' + colAdjust +
-                            '\' class=\'noClose\'>Tag Row</a>' +
-                            '<form class=\'editContainer\'>' +
-                            '<input />' +
-                            '<a class=\'tagSubmit\' href=\'#saveTags\' ' +
-                            'title=\'Save\'>Save Tags</a>' +
-                            '<a class=\'tagCancel\' href=\'#cancelTags\' ' +
-                            'title=\'Cancel\'>Cancel</a>' +
-                            '</form>' +
-                            '</li>" : "") + ' +
-                        '(permissions.canDelete ? "<li class=\'delete\'>' +
-                            '<a href=\'#row-delete_" + row.id + "' + colAdjust +
-                            '\'>Delete Row</a></li>" : "")');
+                    if (context.permissions.canEdit && !(row.level > 0))
+                    {
+                        options.push('<li class="tags"><a href="#row-tag_', row.id, colAdjust,
+                                '" class="noClose">Tag Row</a><form class="editContainer">',
+                                '<input /><a class="tagSubmit" href="#saveTags" ',
+                                'title="Save">Save Tags</a><a class="tagCancel" href="#cancelTags" ',
+                                'title="Cancel">Cancel</a></form></li>');
+                    }
+                    if (context.permissions.canDelete)
+                    {
+                        options.push('<li class="delete"><a href="#row-delete_',
+                                row.id, colAdjust, '">Delete Row</a></li>');
+                    }
                 }
 
-                if (_.isEmpty(options)) { return '""'; }
+                if (_.isEmpty(options) || row.type == 'blank') { return; }
 
-                return '(row.type == "blank" ? "" :' +
-                       '"<a class=\'menuLink\' href=\'#row-menu_" + ' +
-                       'row.id + "' + colAdjust + '\'></a>' +
-                       '<ul class=\'menu rowMenu\' id=\'row-menu_" + row.id + "' +
-                       colAdjust + '\'>" + ' +
-                       options.join(' + ') +
-                       ' + "<li class=\'footer\'><div class=\'outerWrapper\'>' +
-                       '<div class=\'innerWrapper\'>' +
-                       '<span class=\'colorWrapper\'>' +
-                       '</span></div>' +
-                       '</div></li>' +
-                       '</ul>")';
+                html.push('<a class="menuLink" href="#row-menu_',
+                        row.id, colAdjust, '"></a>',
+                       '<ul class="menu rowMenu" id="row-menu_', row.id,
+                       colAdjust, '">', options.join(''),
+                       '<li class="footer"><div class="outerWrapper">',
+                       '<div class="innerWrapper"><span class="colorWrapper"></span></div>',
+                       '</div></li></ul>');
             }
         }
     });

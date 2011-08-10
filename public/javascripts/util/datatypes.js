@@ -2,37 +2,6 @@ blist.namespace.fetch('blist.datatypes');
 
 (function($) {
 
-    /*** UTILITY FUNCTIONS ***/
-
-    /**
-     * OK, you're going to hate me for this little gem.
-     *
-     * This function compiles a JavaScript expression using eval in this
-     * closure.  This allows external code to build complex expressions that
-     * use functions that are local to this closure (such as type rendering
-     * functions).
-     *
-     * @param expression is the JavaScript expression to compile
-     * @param context defines variables that will be available in the scope of
-     * the compiled function.  The key is a variable name and the value is the
-     * actual value used by the expression.
-     */
-    blist.datatypes.compile = function(expression, context)
-    {
-        // Set local variables for each context variable
-        for (var _key_ in context)
-        {
-            var _object_ = context[_key_];
-            eval(_key_ + " = _object_");
-        }
-
-        // Compile
-        var val;
-        eval("val = (" + expression + ")");
-        return val;
-    };
-
-
     /*** RENDERERS ***/
 
     /* Textual types */
@@ -40,15 +9,6 @@ blist.namespace.fetch('blist.datatypes');
     // Text & base textual
     var renderText = function(value)
     { return $.htmlEscape(value); };
-
-    var renderGenText = function(value)
-    {
-        // Blist text is currently returned with character entities escaped
-        return "(" + value + " || '')";
-    };
-
-    var renderGenEscapedText = function(value)
-    { return "$.htmlEscape(" + value + " || '')"; };
 
     var renderFilterText = function(value)
     { return $.htmlStrip((value || '') + ''); };
@@ -65,9 +25,6 @@ blist.namespace.fetch('blist.datatypes');
         // reasoanble
         return '<span class="blist-html">' + value + '</span>';
     };
-
-    var renderGenHtml = function(value, plain)
-    { return "renderHtml(" + value + ", null, " + plain + ")"; };
 
 
     /* Numeric types */
@@ -171,17 +128,7 @@ blist.namespace.fetch('blist.datatypes');
     {
         return numberHelper(value, column.format.precision,
             column.format.precisionStyle, null, null, false,
-            column.format.noCommas);
-    };
-
-    var renderGenNumber = function(value, plain, column)
-    {
-        var format = column.format || {};
-        return "numberHelper(" + value + ", " +
-            format.precision + ", '" +
-            format.precisionStyle + "', null, null, false, " +
-            format.noCommas + ", '" +
-            (format.mask || '') + "')";
+            column.format.noCommas, column.format.mask);
     };
 
     // Money
@@ -192,18 +139,6 @@ blist.namespace.fetch('blist.datatypes');
             blist.datatypes.money.currencies[column.format.currency || 'USD'],
             null,
             column.format.humane);
-    };
-
-    var renderGenMoney = function(value, plain, column)
-    {
-        var rv = "numberHelper({0}, {1}, {2}, '{3}', null, {4})".format(
-            value,
-            column.format.precision || 2,
-            column.format.precisionStyle ? "'" + column.format.precisionStyle +
-                "'" : 'undefined',
-            blist.datatypes.money.currencies[column.format.currency || 'USD'],
-            column.format.humane || 'false');
-        return rv;
     };
 
     // Percent
@@ -266,19 +201,6 @@ blist.namespace.fetch('blist.datatypes');
         }
         return percentHelper(value, column.format.view, column.format.precision,
             column.format.precisionStyle, column.format.noCommas);
-    };
-
-    var renderGenPercent = function(value, plain, column)
-    {
-        if (plain)
-        {
-            return "numberHelper(" + value + ", " + column.format.precision +
-                ", '" + column.format.precisionStyle + "', null, '%', false, " +
-                column.format.noCommas + ")";
-        }
-        return "percentHelper(" + value + ", '" + column.format.view + "', " +
-            column.format.precision + ", '" +
-            column.format.precisionStyle + "', " + column.format.noCommas + ")";
     };
 
     var renderFilterPercent = function(value, column)
@@ -345,20 +267,9 @@ blist.namespace.fetch('blist.datatypes');
     {
         var type = column.renderType || blist.datatypes.date;
         var format = type.formats[column.format.view] || type.formats['date_time'];
-        return dateHelper(value, format, type.stringParse);
-    };
-
-    var renderGenDate = function(value, plain, column)
-    {
-        var type = column.renderType;
-        var format = type.formats[column.format.view] || type.formats['date_time'];
         if (format == OPTIMIZE_FORMAT_DATETIME1)
-        {
-            return "renderDate_dateTime1(" + value + ", '" +
-                (type.stringParse || '') + "')";
-        }
-        return "dateHelper(" + value + ", '" + format + "', '" +
-            (type.stringParse || '') + "')";
+        { return renderDate_dateTime1(value, type.stringParse); }
+        return dateHelper(value, format, type.stringParse);
     };
 
 
@@ -404,12 +315,6 @@ blist.namespace.fetch('blist.datatypes');
     var renderEmail = function(value, col, plain)
     { return plain ? value : emailHelper(value); };
 
-    var renderGenEmail = function(value, plain)
-    {
-        if (plain) { return value; }
-        return "emailHelper(" + value + ")";
-    };
-
     // Phone
     var phoneHelper = function(value, plain, skipURL, skipBlankType)
     {
@@ -454,11 +359,8 @@ blist.namespace.fetch('blist.datatypes');
             uriHelper([ "callto://" + num.replace(/[\-()\s]/g, ''), label ], true);
     };
 
-    var renderPhone = function(value, column)
-    { return phoneHelper(value); };
-
-    var renderGenPhone = function(value, plain)
-    { return "phoneHelper(" + value + ", " + plain + ")"; };
+    var renderPhone = function(value, column, plain)
+    { return phoneHelper(value, plain); };
 
     var renderFilterPhone = function(value, column, subType)
     {
@@ -470,12 +372,6 @@ blist.namespace.fetch('blist.datatypes');
     // URL
     var renderURL = function(value, column, plain)
     { return uriHelper(value, false, plain, (column.format || {}).baseUrl); };
-
-    var renderGenURL = function(value, plain, column)
-    {
-        return "uriHelper(" + value + ", false, " + plain + ", '" +
-            (column.format || {}).baseUrl + "')";
-    };
 
     var renderFilterURL = function(value)
     {
@@ -501,13 +397,10 @@ blist.namespace.fetch('blist.datatypes');
                 (value ? 'True' : 'False') + "</span>";
     };
 
-    var renderCheckbox = function(value)
-    { return checkboxHelper(value, true); };
-
-    var renderGenCheckbox = function(value, plain, column)
+    var renderCheckbox = function(value, column, plain)
     {
-        if (plain) { return value + " ? '&#10003;' : ''"; }
-        return "checkboxHelper(" + value + ", true)";
+        if (plain) { return value ? '&#10003;' : ''; }
+        return checkboxHelper(value, true);
     };
 
     var renderFilterCheckbox = function(value)
@@ -515,17 +408,11 @@ blist.namespace.fetch('blist.datatypes');
 
 
     // Flag
-    var renderFlag = function(value, column)
+    var renderFlag = function(value, column, plain)
     {
+        if (plain) { return value || ''; }
         return value && "<span class='blist-flag blist-flag-" + value +
-            "'>" + value + "</span>";
-    };
-
-    var renderGenFlag = function(value, plain)
-    {
-        if (plain) { return value + " || ''"; }
-        return value + " && (\"<div class='blist-flag blist-flag-\" + " +
-            value + " + \"' title='\" + " + value + " + \"'></div>\")";
+            "' title='value'>" + value + "</span>";
     };
 
     // Stars
@@ -549,12 +436,6 @@ blist.namespace.fetch('blist.datatypes');
             "px'></span></span></span>";
     };
 
-    var renderStars = function(value, column)
-    {
-        var range = parseFloat(column.format.range);
-        return starsHelper(value, range);
-    };
-
     var renderTextStars = function(value, range)
     {
         var rv = '';
@@ -562,11 +443,11 @@ blist.namespace.fetch('blist.datatypes');
         return rv;
     };
 
-    var renderGenStars = function(value, plain, column)
+    var renderStars = function(value, column, plain, context)
     {
-        if (plain) { return "renderTextStars(" + value + ")"; }
+        if (plain) { return renderTextStars(value); }
         var range = parseFloat(column.format.range);
-        return "starsHelper(" + value + ", " + range + ", permissions.canEdit)";
+        return starsHelper(value, range, (context || {permissions: {}}).permissions.canEdit);
     };
 
     var renderFilterStars = function(value, column)
@@ -610,9 +491,6 @@ blist.namespace.fetch('blist.datatypes');
     var renderLocation = function(value, column, plain)
     { return locationHelper(value, plain, column.format.view); };
 
-    var renderGenLocation = function(value, plain, column)
-    { return 'locationHelper(' + value + ', ' + plain + ', "' + (column.format.view || '')  + '")'; };
-
     var renderFilterLocation = function(value, column, subType)
     {
         if (subType == 'machine_address' || subType == 'needs_recoding')
@@ -651,35 +529,20 @@ blist.namespace.fetch('blist.datatypes');
     var renderGeospatial = function(value, column)
     { return geospatialHelper(value, column.baseUrl(), column.id); };
 
-    var renderGenGeospatial = function(value, plain, column)
-    {
-        return 'geospatialHelper(' + value + ', "' + column.baseUrl() + '", ' +
-            column.id + ')';
-    };
-
 
     /* Blobby types */
 
     // Photo
-    var renderPhoto = function(value, column)
+    var renderPhoto = function(value, column, plain, context)
     {
-        return uriHelper({url: value,
-            description: '<img src="' + escape(column.baseUrl() + value) + '"></img>'}, true,
-            false, column.baseUrl());
-    };
+        var url = column.baseUrl() + value;
+        if (plain) { return url; }
 
-    var renderGenPhoto = function(value, plain, column)
-    {
-        var url = "'" + column.baseUrl() + "' + " + value;
-        if (plain)
-        {
-            // TODO: I guess we might want something else for copy?
-            return url;
-        }
-        var content = "'<img src=\"' + escape(" + url + ") + '\"></img>'";
-        return value + " && (permissions.canEdit ? " + content + " : " +
-            "uriHelper({url: " + value + ", description: " + content + "}, true, false, '" +
-            column.baseUrl() + "'))";
+        var img = '<img src="' + escape(url) + '"></img>';
+        if ((context || {permissions: {}}).permissions.canEdit)
+        { return img; }
+
+        return uriHelper({url: value, description: img}, true, false, column.baseUrl());
     };
 
     var documentHelper = function(value, base, plain)
@@ -730,74 +593,49 @@ blist.namespace.fetch('blist.datatypes');
         return rv;
     };
 
-    var renderDocument = function(value, column)
-    { return documentHelper(value, column.baseUrl()); };
-
-    var renderGenDocument = function(value, plain, column)
-    {
-        return "documentHelper(" + value + ", " + "'" + column.baseUrl() +
-            "'" + ", " + plain + ")";
-    };
+    var renderDocument = function(value, column, plain)
+    { return documentHelper(value, column.baseUrl(), plain); };
 
 
     /* Linking/customization types */
 
-    // Picklists & Drop-down lists
-    var generateDropDownLookup = function(column)
+    // Drop-down lists, and other link types
+    var renderDropDownList = function(value, column, plain)
     {
-        var valueLookup = {};
-        _.each(column.dropDownList.values, function(opt)
-        {
-            if ($.isBlank(opt.id)) { return; }
+        if (!_.isString(value) || $.isBlank(value)) { return ''; }
 
-            var icon = opt.icon;
-            if (icon)
-            { icon = "<img class='blist-table-option-icon' src='" + icon + "' /> "; }
-            else
-            { icon = ""; }
-            valueLookup[opt.id.toLowerCase()] = {};
-            valueLookup[opt.id.toLowerCase()].text =
-                $.htmlStrip(opt.description || '');
-            valueLookup[opt.id.toLowerCase()].html =
-                icon + $.htmlStrip(opt.description || '');
-        });
-        return valueLookup;
-    };
-
-    var picklistHelper = function(valueLookupVariable, value, plain)
-    {
-        if (_.isString(value))
-        {
-            var v = valueLookupVariable[value.toLowerCase()];
-            return (v && v[plain ? 'text' : 'html']) ||
-                '<div class="blist-dataset-link-dangling">{0}</div>'.format(value);
-        }
-        return '';
-    };
-
-    var renderPicklist = function(value, column, plain)
-    {
+        var matchVal;
         if (column.dropDownList)
         {
-            var valueLookup = generateDropDownLookup(column);
-            var descVal = (valueLookup[(value || '').toLowerCase()] || {})
-                    [plain ? 'text' : 'html'] || value || '';
-            return plain ? descVal :
-                "<span class='blist-picklist-wrapper'>" + descVal + "</span>";
+            var lcVal = value.toLowerCase();
+            for (var i = 0; i < column.dropDownList.values.length; i++)
+            {
+                var v = column.dropDownList.values[i];
+                if ((v.id || '').toLowerCase() == lcVal)
+                {
+                    matchVal = v;
+                    break;
+                }
+            }
         }
-        return '?';
-    };
 
-    var renderGenPicklist = function(value, plain, column, context)
-    {
-        var valueLookupVariable = '_picklist' + _.uniqueId();
-        if (column.dropDownList)
+        if ($.isBlank(matchVal))
+        { return '<div class="blist-dataset-link-dangling">' + value + '</div>'; }
+
+        var result = [];
+        if (!plain)
         {
-            context[valueLookupVariable] = generateDropDownLookup(column);
-            return "(picklistHelper(" + valueLookupVariable + "," + value + "," +
-                plain + "))";
+            result.push('<span class="blist-dropdownlist-wrapper">');
+            if (!$.isBlank(matchVal.icon))
+            {
+                result.push('<img class="blist-table-option-icon" src="',
+                    matchVal.icon, '" />');
+            }
         }
-        return "'?'";
+        result.push($.htmlStrip(matchVal.description || ''));
+        if (!plain)
+        { result.push('</span>'); }
+        return result.join('');
     };
 
 
@@ -807,20 +645,15 @@ blist.namespace.fetch('blist.datatypes');
     var renderObject = function(value)
     { return $.htmlEscape(value ? JSON.stringify(value) : ''); };
 
-    var renderGenObject = function(value)
-    { return "$.htmlEscape(" + value + " ? JSON.stringify(" + value + ") : '')"; };
-
 
     /* Special system types */
 
     // Tags
     var renderTags = function(value)
-    { return $.htmlEscape((value || []).join(', ')); };
-
-    var renderGenTags = function(value)
     {
-        return value + ' && ' + value + ' != "" ? "<div class=\'blist-tag\' ' +
-            'title=\'" + $.htmlEscape(' + value + ' || "") + "\'></div>" : ""';
+        var v = $.htmlEscape((value || []).join(', '));
+        if ($.isBlank(v)) { return ''; }
+        return '<div class="blist-tag" title="' + v + '">' + v + '</div>';
     };
 
 
@@ -962,8 +795,7 @@ blist.namespace.fetch('blist.datatypes');
     {
         // Invalid type is special, not a real type
         invalid: {
-            renderer: renderText,
-            renderGen: renderGenEscapedText
+            renderer: renderText
         },
 
 
@@ -988,8 +820,6 @@ blist.namespace.fetch('blist.datatypes');
             priority: 1,
 
             renderer: renderText,
-            renderGen: renderGenEscapedText,
-
             rollUpAggregates: nonNumericAggs,
             sortable: true
         },
@@ -1012,8 +842,6 @@ blist.namespace.fetch('blist.datatypes');
             priority: 2,
 
             renderer: renderHtml,
-            renderGen: renderGenHtml,
-
             rollUpAggregates: nonNumericAggs,
             sortable: true
         },
@@ -1042,8 +870,6 @@ blist.namespace.fetch('blist.datatypes');
             priority: 3,
 
             renderer: renderNumber,
-            renderGen: renderGenNumber,
-
             rollUpAggregates: aggs,
             sortable: true
         },
@@ -1054,8 +880,7 @@ blist.namespace.fetch('blist.datatypes');
             aggregates: aggs,
             alignment: numericAlignment,
             cls: 'money',
-            convertableTypes: _.without(numericConvertTypes, 'money')
-                .concat('text'),
+            convertableTypes: _.without(numericConvertTypes, 'money').concat('text'),
             createable: true,
             currencies: {
                 "USD": "$",
@@ -1182,8 +1007,6 @@ blist.namespace.fetch('blist.datatypes');
             priority: 4,
 
             renderer: renderMoney,
-            renderGen: renderGenMoney,
-
             rollUpAggregates: aggs,
             sortable: true
         },
@@ -1194,8 +1017,7 @@ blist.namespace.fetch('blist.datatypes');
             aggregates: aggs,
             alignment: numericAlignment,
             cls: 'percent',
-            convertableTypes: _.without(numericConvertTypes, 'percent')
-                .concat('text'),
+            convertableTypes: _.without(numericConvertTypes, 'percent').concat('text'),
             createable: true,
             deleteable: true,
 
@@ -1207,8 +1029,6 @@ blist.namespace.fetch('blist.datatypes');
             priority: 5,
 
             renderer: renderPercent,
-            renderGen: renderGenPercent,
-
             rollUpAggregates: aggs,
             sortable: true,
             viewTypes: [{value: 'percent_bar_and_text', text: 'Bar &amp; Text' },
@@ -1238,8 +1058,6 @@ blist.namespace.fetch('blist.datatypes');
             priority: 7,
 
             renderer: renderDate,
-            renderGen: renderGenDate,
-
             rollUpAggregates: nonNumericAggs,
             sortable: true,
             viewTypes: dateViews
@@ -1265,8 +1083,6 @@ blist.namespace.fetch('blist.datatypes');
             priority: 6,
 
             renderer: renderDate,
-            renderGen: renderGenDate,
-
             rollUpAggregates: nonNumericAggs,
             sortable: true,
             // Giving an exact format to parse is quite a bit faster
@@ -1296,8 +1112,6 @@ blist.namespace.fetch('blist.datatypes');
             priority: 10,
 
             renderer: renderEmail,
-            renderGen: renderGenEmail,
-
             rollUpAggregates: nonNumericAggs,
             sortable: true
         },
@@ -1320,8 +1134,6 @@ blist.namespace.fetch('blist.datatypes');
             priority: 14,
 
             renderer: renderPhone,
-            renderGen: renderGenPhone,
-
             sortable: true
         },
 
@@ -1343,8 +1155,6 @@ blist.namespace.fetch('blist.datatypes');
             priority: 9,
 
             renderer: renderURL,
-            renderGen: renderGenURL,
-
             rollUpAggregates: nonNumericAggs,
             sortable: true
         },
@@ -1368,9 +1178,7 @@ blist.namespace.fetch('blist.datatypes');
             isInlineEdit: true,
             priority: 11,
 
-            renderGen: renderGenCheckbox,
             renderer: renderCheckbox,
-
             rollUpAggregates: nonNumericAggs,
             sortable: true
         },
@@ -1391,8 +1199,6 @@ blist.namespace.fetch('blist.datatypes');
             priority: 12,
 
             renderer: renderFlag,
-            renderGen: renderGenFlag,
-
             rollUpAggregates: nonNumericAggs,
             sortable: true
         },
@@ -1400,12 +1206,10 @@ blist.namespace.fetch('blist.datatypes');
         stars: {
             title: 'Star',
 
-            aggregates: _.reject(aggs, function(a)
-                { return a.value == 'sum'; }),
+            aggregates: _.reject(aggs, function(a) { return a.value == 'sum'; }),
             alignment: alignment,
             cls: 'stars',
-            convertableTypes: _.without(numericConvertTypes, 'stars')
-                .concat('text'),
+            convertableTypes: _.without(numericConvertTypes, 'stars').concat('text'),
             createable: true,
             deleteable: true,
 
@@ -1418,10 +1222,7 @@ blist.namespace.fetch('blist.datatypes');
             priority: 13,
 
             renderer: renderStars,
-            renderGen: renderGenStars,
-
-            rollUpAggregates: _.reject(aggs, function(a)
-                { return a.value == 'sum'; }),
+            rollUpAggregates: _.reject(aggs, function(a) { return a.value == 'sum'; }),
             sortable: true
         },
 
@@ -1441,8 +1242,6 @@ blist.namespace.fetch('blist.datatypes');
             priority: 8,
 
             renderer: renderLocation,
-            renderGen: renderGenLocation,
-
             viewTypes: [{value: 'address_coords', text: 'Address &amp; Coordinates' },
                 { value: 'coords', text: 'Coordinates Only' },
                 { value: 'address', text: 'Address Only' }]
@@ -1457,8 +1256,7 @@ blist.namespace.fetch('blist.datatypes');
             filterable: false,
             priority: 20,
 
-            renderer: renderGeospatial,
-            renderGen: renderGenGeospatial
+            renderer: renderGeospatial
         },
 
 
@@ -1475,8 +1273,7 @@ blist.namespace.fetch('blist.datatypes');
             inlineType: true,
             priority: 17,
 
-            renderer: renderDocument,
-            renderGen: renderGenDocument
+            renderer: renderDocument
         },
 
         document_obsolete: {
@@ -1489,8 +1286,7 @@ blist.namespace.fetch('blist.datatypes');
 
             inlineType: true,
 
-            renderer: renderDocument,
-            renderGen: renderGenDocument
+            renderer: renderDocument
         },
 
         photo: {
@@ -1505,8 +1301,7 @@ blist.namespace.fetch('blist.datatypes');
 
             priority: 16,
 
-            renderer: renderPhoto,
-            renderGen: renderGenPhoto
+            renderer: renderPhoto
         },
 
         photo_obsolete: {
@@ -1518,27 +1313,11 @@ blist.namespace.fetch('blist.datatypes');
 
             filterConditions: filterConditions.blob,
 
-            renderer: renderPhoto,
-            renderGen: renderGenPhoto
+            renderer: renderPhoto
         },
 
 
         // Linking/customization types
-        picklist: {
-            title: 'Multiple Choice',
-
-            deleteable: true,
-
-            filterable: true,
-            filterConditions: filterConditions.numeric,
-            filterRender: renderPicklist,
-
-            renderer: renderPicklist,
-            renderGen: renderGenPicklist,
-
-            sortable: true
-        },
-
         drop_down_list: {
             title: 'Multiple Choice',
 
@@ -1549,13 +1328,11 @@ blist.namespace.fetch('blist.datatypes');
 
             filterable: true,
             filterConditions: filterConditions.numeric,
-            filterRender: renderPicklist,
+            filterRender: renderDropDownList,
 
             priority: 15,
 
-            renderer: renderPicklist,
-            renderGen: renderGenPicklist,
-
+            renderer: renderDropDownList,
             rollUpAggregates: nonNumericAggs,
             sortable: true
         },
@@ -1571,14 +1348,25 @@ blist.namespace.fetch('blist.datatypes');
 
             filterable: true,
             filterConditions: filterConditions.textual,
-            filterRender: renderPicklist,
+            filterRender: renderDropDownList,
 
             priority: 19,
 
-            renderer: renderPicklist,
-            renderGen: renderGenPicklist,
-
+            renderer: renderDropDownList,
             rollUpAggregates: nonNumericAggs,
+            sortable: true
+        },
+
+        picklist: {
+            title: 'Multiple Choice',
+
+            deleteable: true,
+
+            filterable: true,
+            filterConditions: filterConditions.numeric,
+            filterRender: renderDropDownList,
+
+            renderer: renderDropDownList,
             sortable: true
         },
 
@@ -1593,8 +1381,7 @@ blist.namespace.fetch('blist.datatypes');
             filterable: false,
             priority: 20,
 
-            renderer: renderObject,
-            renderGen: renderGenObject
+            renderer: renderObject
         },
 
         list: {
@@ -1606,8 +1393,7 @@ blist.namespace.fetch('blist.datatypes');
             filterable: false,
             priority: 21,
 
-            renderer: renderObject,
-            renderGen: renderGenObject
+            renderer: renderObject
         },
 
 
@@ -1625,8 +1411,7 @@ blist.namespace.fetch('blist.datatypes');
             inlineType: true,
             priority: 19,
 
-            renderer: renderTags,
-            renderGen: renderGenTags
+            renderer: renderTags
         },
 
         nested_table: {
@@ -1637,8 +1422,7 @@ blist.namespace.fetch('blist.datatypes');
             excludeInNestedTable: true,
             priority: 18,
 
-            renderer: renderText,
-            renderGen: renderGenText
+            renderer: renderText
         }
     });
 

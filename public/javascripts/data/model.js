@@ -12,7 +12,7 @@
  * In addition to actual data and server metadata,
  * this may add the following properties to rows:
  *
- *  + level - the level of the row, or -1 if the row is "special" (that is, uses a custom renderer)
+ *  + level - the level of the row (0 or undefined for normal rows, 1 for children)
  *  + expanded - true iff the row is in an "open" state
  *  + children - columns that are nested within this column, if applicable
  *
@@ -734,7 +734,7 @@ blist.namespace.fetch('blist.data');
 
         this.selectRow = function(row, suppressChange)
         {
-            if (row.level < 0 || row.type == 'blank') { return; }
+            if (row.type == 'blank') { return; }
 
             this.selectedRows[row.id] = this.index(row);
             if (!suppressChange) { this.selectionChange([row]); }
@@ -789,8 +789,7 @@ blist.namespace.fetch('blist.data');
             for (var i = minIndex; i <= maxIndex; i++)
             {
                 var curRow = this.get(i);
-                if (!$.isBlank(curRow) && (curRow.level || 0) >= 0 &&
-                    curRow.type != 'blank')
+                if (!$.isBlank(curRow) && curRow.type != 'blank')
                 {
                     this.selectedRows[curRow.id] = i;
                     changedRows.push(curRow);

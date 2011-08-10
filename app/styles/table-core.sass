@@ -375,11 +375,14 @@ div.blist-table-editor
 .blist-combo-dd.table-editor-combo .Work .icon
   background-image: url(/stylesheets/images/content/table/phones/work.png)
 
-.blist-tag
+.blist-table .blist-tag
+  @include text-hiding
   background-image: url(/stylesheets/images/content/table/tagIcon.png)
   background-position: center center
   background-repeat: no-repeat
   height: 18px
+  margin: 0 auto
+  width: 18px
 
 .blist-dataset-link-dangling
   color: #888888
@@ -427,20 +430,29 @@ div.blist-table-editor
   .align-right
     text-align: right
 
-.align-left
-  .blist-checkbox,
-  .blist-flag
+.blist-table .align-left
+  .blist-checkbox
     background-position: left center
 
-.align-center
-  .blist-checkbox,
   .blist-flag
+    float: left
+
+.blist-table .align-center
+  .blist-checkbox
     background-position: center center
 
-.align-right
-  .blist-checkbox,
   .blist-flag
+    display: block
+    float: none
+    margin: 0 auto
+
+.blist-table .align-right
+  .blist-checkbox
     background-position: right center
+
+  .blist-flag
+    float: right
+    text-align: left
 
 .text .blist-th-icon
   background-position: 0 -80px

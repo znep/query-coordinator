@@ -541,8 +541,6 @@
             if (!row) { return null; }
 
             var levelID = row.level || 0;
-            if (levelID < 0) { return null; }
-
             var rowLayout = layout[levelID];
             var x;
             var node;
@@ -1593,8 +1591,7 @@
                 }
 
                 if (!isDisabled && !skipSelect &&
-                    (!cellNav || !cellNav.isActive()) &&
-                        options.selectionEnabled && !(row.level < 0))
+                    (!cellNav || !cellNav.isActive()) && options.selectionEnabled)
                 {
                     if (origEvent.metaKey) // ctrl/cmd key
                     {
@@ -2530,57 +2527,200 @@
         // Rendering
         var customCellClasses = {};
 
-        /**
-         * Create rendering code for a series of columns.
-         */
-        var createColumnRendering = function(mcols, lcols, level, contextVariables,
-            prefix, suffix)
+        /* Render a single cell */
+        var renderCell = function(html, index, renderIndex, row, col, colIndex, level, contextVariables)
         {
-            var colParts = [];
-            var generatedCode = '';
-            if (prefix) { colParts.push(prefix); }
-
-            // Utility function that writes a push for all column parts
-            var completeStatement = function()
+            if (!$.isBlank(col.visibleChildColumns) && level == 0)
             {
-                if (colParts.length)
+                var children = col.visibleChildColumns;
+                // If there is data, render nested table headers for the row
+                if (!_.isEmpty(row[col.lookup]) || model.useBlankRows())
                 {
-                    generatedCode += 'html.push(' + colParts.join(',') + ');';
-                    colParts = [];
-                }
-            };
+                    html.push('<div class="', getColumnClass(col),
+                            ' blist-td blist-tdh blist-opener ', openerClass, '"></div>');
+                    if (options.showRowHandle)
+                    {
+                        html.push('<div class="', getColumnClass(rowHandleColumn),
+                                ' blist-td blist-tdh blist-table-row-handle"></div>');
+                    }
 
+                    for (var k = 0; k < children.length; k++)
+                    {
+                        var child = children[k];
+                        html.push('<div class="blist-td blist-tdh ', getColumnClass(child),
+                                ' ', child.renderTypeName,
+                                '" parentColId="', child.parentColumn.id,
+                                '" colId="', child.id, '">',
+                                (canEdit() || child.renderTypeName == 'tag' ?
+                                 '<div class="blist-th-icon"></div>' : ''),
+                                '<span class="blist-th-name">',
+                                htmlEscape(child.name),
+                                '</span></div>');
+                    }
+
+                    if (options.showAddColumns)
+                    {
+                        html.push('<div class="', getColumnClass(col),
+                                ' blist-td blist-tdh blist-column-adder">',
+                                '<div class="blist-column-adder-icon" ',
+                                'title="Add a new column..."></div></div>');
+                    }
+                }
+
+                // Else, the sub-table is empty, so render empty-space
+                // headers
+                else
+                {
+                    html.push('<div class="', getColumnClass(col),
+                            ' blist-td blist-tdh blist-opener blist-opener-inactive ',
+                            openerClass, '"></div>');
+                    if (options.showRowHandle)
+                    {
+                        html.push('<div class="', getColumnClass(rowHandleColumn),
+                                ' blist-td blist-tdh blist-table-row-handle handle-inactive"></div>');
+                    }
+
+                    for (k = 0; k < children.length; k++)
+                    {
+                        var child = children[k];
+                        html.push('<div class="blist-td blist-tdh ', getColumnClass(child),
+                                '" parentColId="', child.parentColumn.id,
+                                '" colId="', child.id, '"></div>');
+                    }
+
+                    if (options.showAddColumns)
+                    {
+                        html.push('<div class="', getColumnClass(col),
+                                ' blist-td blist-tdh blist-column-adder">',
+                                '<div class="blist-column-adder-icon" ',
+                                'title="Add a new column..."></div></div>');
+                    }
+                }
+            }
+
+            else if (!$.isBlank(col.visibleChildColumns))
+            {
+                // Nested table row -- render cells if the row is present
+                // or filler if not
+                var children = col.visibleChildColumns;
+                // If there is data, recursively render the row and add
+                // the extra columns on the front and back
+                if (!$.isBlank(row[col.lookup]))
+                {
+                    html.push('<div class="blist-td blist-opener-space ', openerClass, '"></div>');
+                    if (options.showRowHandle)
+                    {
+                        html.push('<div class="blist-td ', getColumnClass(rowHandleColumn),
+                                ' blist-table-row-handle">');
+                        options.rowHandleRenderer(html, index, renderIndex, row, col, contextVariables)
+                        html.push('</div>');
+                    }
+                    for (var j = 0; j < children.length; j++)
+                    { renderCell(html, index, renderIndex, row, children[j], j, level, contextVariables); }
+                    if (options.showAddColumns)
+                    {
+                        html.push('<div class="blist-td ',
+                                'blist-column-adder-space blist-column-adder">',
+                                '</div>');
+                    }
+                }
+
+                else
+                {
+                    // Otherwise just render filler
+                    html.push('<div class="blist-td blist-opener-space ',
+                            'blist-tdfill ', openerClass, '"></div>');
+                    if (options.showRowHandle)
+                    {
+                        html.push('<div class="blist-td blist-tdfill ', getColumnClass(rowHandleColumn),
+                                ' blist-table-row-handle"></div>');
+                    }
+                    for (var j = 0; j < children.length; j++)
+                    {
+                        html.push('<div class="blist-td blist-tdfill blist-td-colfill ',
+                                getColumnClass(children[j]), '"></div>');
+                    }
+                    if (options.showAddColumns)
+                    {
+                        html.push('<div class="blist-td blist-column-adder-space blist-column-adder ',
+                                'blist-tdfill"></div>');
+                    }
+                }
+            }
+
+            else if (col.renderTypeName == 'fill')
+            {
+                // Fill column -- covers background for a range of columns
+                // that aren't present in this row
+                html.push('<div class="blist-td blist-tdfill ',
+                        getColumnClass(col), (colIndex == 0 ? ' initial-tdfill' : ''),
+                        '">&nbsp;</div>');
+            }
+
+            else
+            {
+                // Standard cell
+                var type = col.renderType;
+
+                var cls = col.cls || type.cls;
+                cls = cls ? ' blist-td-' + cls : '';
+
+                var curRow = row;
+                if (!$.isBlank(col.parentColumn))
+                { curRow = row[col.parentColumn.lookup]; }
+
+                var renderType = curRow.invalid[col.lookup] ? blist.datatypes.invalid : type;
+
+                html.push('<div class="blist-td ', getColumnClass(col), cls,
+                        (col.format.drill_down ? ' drill-td' : ''),
+                        (col.format.align ? ' align-' + col.format.align : ''),
+                        (curRow.invalid[col.lookup] ? ' invalid' : ''),
+                        (curRow.changed && curRow.changed[col.lookup] ? ' saving' : ''),
+                        (curRow.error && curRow.error[col.lookup] ? ' error' : ''));
+                if ($.isBlank(col.parentColumn))
+                {
+                    html.push(((contextVariables.cellClasses[row.id] || {})
+                            [col.lookup] || []).join(' '));
+                }
+                html.push('">');
+                if (col.format.drill_down)
+                {
+                    html.push('<a class="drillDown" cellvalue="',
+                        $.escapeQuotes($.htmlStrip(curRow[col.lookup])),
+                        '" datatype="', col.renderTypeName,
+                        '" column="', col.id,
+                        '" href="#drillDown"></a>');
+                }
+
+                html.push(renderType.renderer(curRow[col.lookup], col, false, contextVariables));
+
+                if ($.isBlank(col.parentColumn) && !$.isBlank((curRow.annotations || {})[col.lookup]))
+                {
+                    html.push('<span class="annotation ', curRow.annotations[col.lookup],
+                            '"></span>');
+                }
+                html.push('</div>');
+            }
+        };
+
+        /* Turn the columns into a layout for use later */
+        var processLogicalColumns = function(mcols, lcols, level)
+        {
             for (var j = 0; j < mcols.length; j++)
             {
                 var mcol = mcols[j];
 
                 if (!$.isBlank(mcol.visibleChildColumns) && level == 0)
                 {
-                    // Nested table header -- render headers for child columns
-                    completeStatement();
-
-                    // If there is data, render nested table headers for the row
-                    generatedCode +=
-                        "if (row" + mcol.dataLookupExpr +
-                        " && row" + mcol.dataLookupExpr + ".length || " +
-                        model.useBlankRows() + ")";
-                    colParts.push("\"<div class='" + getColumnClass(mcol) +
-                        " blist-td blist-tdh blist-opener " + openerClass +
-                        "'></div>\"");
-                    var children = mcol.visibleChildColumns;
                     lcols.push({
                         renderTypeName: 'opener',
                         skippable: true,
-                        skipCount: children.length,
+                        skipCount: mcol.visibleChildColumns.length,
                         mcol: mcol,
                         logical: mcol.id
                     });
                     if (options.showRowHandle)
                     {
-                        colParts.push("\"<div class='" +
-                            getColumnClass(rowHandleColumn) +
-                            " blist-td blist-tdh blist-table-row-handle'>" +
-                            "</div>\"");
                         lcols.push({
                             renderTypeName: 'handle',
                             canFocus: false,
@@ -2588,26 +2728,12 @@
                             logical: mcol.id
                         });
                     }
-                    for (var k = 0; k < children.length; k++)
+                    for (var k = 0; k < mcol.visibleChildColumns.length; k++)
                     {
-                        var child = children[k];
-                        colParts.push(
-                            "\"<div class='blist-td blist-tdh " +
-                            getColumnClass(child) +
-                            ' ' + child.renderTypeName +
-                            "' parentColId='" + child.parentColumn.id +
-                            "' colId='" + child.id +
-                            "'>" +
-                            (canEdit() || child.renderTypeName == 'tag' ?
-                                "<div class='blist-th-icon'></div>" : "") +
-                            "<span class='blist-th-name'>" +
-                            htmlEscape(child.name) +
-                            "</span></div>\""
-                        );
                         lcols.push({
                             renderTypeName: 'header',
                             canFocus: false,
-                            mcol: child,
+                            mcol: mcol.visibleChildColumns[k],
                             logical: mcol.id
                         });
                     }
@@ -2620,53 +2746,10 @@
                             mcol: mcol,
                             logical: mcol.id
                         });
-                        colParts.push("\"<div class='" + getColumnClass(mcol) +
-                            " blist-td blist-tdh blist-column-adder'>" +
-                            "<div class='blist-column-adder-icon' " +
-                            "title='Add a new column...'></div></div>\"");
                     }
-                    completeStatement();
-
-                    // Else, the sub-table is empty, so render empty-space
-                    // headers
-                    generatedCode += "else ";
-                    colParts.push("\"<div class='" + getColumnClass(mcol) +
-                        " blist-td blist-tdh blist-opener blist-opener-inactive " +
-                        openerClass + "'></div>\"");
-                    if (options.showRowHandle)
-                    {
-                        colParts.push("\"<div class='" +
-                                getColumnClass(rowHandleColumn) +
-                                " blist-td blist-tdh blist-table-row-handle " +
-                                "handle-inactive'></div>\"");
-                    }
-                    for (k = 0; k < children.length; k++)
-                    {
-                        child = children[k];
-                        colParts.push(
-                            "\"<div class='blist-td blist-tdh " +
-                            getColumnClass(child) +
-                            "' parentColId='" + child.parentColumn.id +
-                            "' colId='" + child.id +
-                            "'></div>\""
-                        );
-                    }
-                    if (options.showAddColumns)
-                    {
-                        colParts.push("\"<div class='" + getColumnClass(mcol) +
-                            " blist-td blist-tdh blist-column-adder'>" +
-                            "<div class='blist-column-adder-icon' " +
-                            "title='Add a new column...'></div></div>\"");
-                    }
-                    completeStatement();
                 }
-                else if (!$.isBlank(mcol.visibleChildColumns) && level > 0)
+                else if (!$.isBlank(mcol.visibleChildColumns))
                 {
-                    // Nested table row -- render cells if the row is present
-                    // or filler if not
-                    completeStatement();
-
-                    var children = mcol.visibleChildColumns;
                     // First for opener
                     lcols.push({
                         renderTypeName: 'nest-header',
@@ -2687,24 +2770,7 @@
                             logical: mcol.id
                         });
                     }
-                    // If there is data, recursively render the row and add
-                    // the extra columns on the front and back
-                    generatedCode +=
-                        "if (row" + mcol.dataLookupExpr + ") " +
-                        createColumnRendering(children, lcols, level,
-                            contextVariables,
-                            "'<div class=\"blist-td blist-opener-space " +
-                                openerClass + "\"></div>" +
-                            (options.showRowHandle ? "<div class=\"blist-td " +
-                                getColumnClass(rowHandleColumn) +
-                                " blist-table-row-handle\">' + " +
-                                options.rowHandleRenderer(mcol) +
-                                " + '</div>'" :  "'"),
-                            options.showAddColumns ?
-                                "'<div class=\"blist-td " +
-                                "blist-column-adder-space blist-column-adder\">" +
-                                "</div>'" : undefined) +
-                        "else ";
+                    processLogicalColumns(mcol.visibleChildColumns, lcols, level);
                     if (options.showAddColumns)
                     {
                         // Finally for adder
@@ -2716,38 +2782,9 @@
                             logical: mcol.id
                         });
                     }
-
-                    // Otherwise just render filler
-                    colParts.push("'<div class=\"blist-td blist-opener-space " +
-                        "blist-tdfill " + openerClass + "\"></div>'");
-                    if (options.showRowHandle)
-                    {
-                        colParts.push("'<div class=\"blist-td blist-tdfill " +
-                                getColumnClass(rowHandleColumn) +
-                                " blist-table-row-handle\"></div>'");
-                    }
-                    for (var i = 0; i < children.length; i++)
-                    {
-                        colParts.push("\"<div class='blist-td blist-tdfill " +
-                            "blist-td-colfill " +
-                            getColumnClass(children[i]) +
-                            "'></div>\"");
-                    }
-                    if (options.showAddColumns)
-                    {
-                        colParts.push("'<div class=\"blist-td " +
-                            "blist-column-adder-space blist-column-adder " +
-                            "blist-tdfill\"></div>'");
-                    }
-                    completeStatement();
                 }
                 else if (mcol.renderTypeName == 'fill')
                 {
-                    // Fill column -- covers background for a range of columns
-                    // that aren't present in this row
-                    colParts.push("\"<div class='blist-td blist-tdfill " +
-                      getColumnClass(mcol) + (j == 0 ? ' initial-tdfill' : '') +
-                      "'>&nbsp;</div>\"");
                     lcols.push({
                         renderTypeName: 'fill',
                         canFocus: false,
@@ -2756,61 +2793,6 @@
                 }
                 else
                 {
-                    // Standard cell
-                    var type = mcol.renderType;
-
-                    var renderer = mcol.renderer || type.renderGen;
-                    var invalidRenderer = blist.datatypes.invalid.renderGen;
-                    var cls = mcol.cls || type.cls;
-                    cls = cls ? ' blist-td-' + cls : '';
-                    var align = mcol.format.align ?
-                        ' align-' + mcol.format.align : '';
-
-                    var childLookup = (mcol.parentColumn ||
-                        {}).dataLookupExpr || '';
-                    var invalid = "(row" + childLookup + ".invalid" +
-                        (mcol.directLookupExpr || mcol.dataLookupExpr) +
-                        " ? ' invalid' : '')";
-
-                    var drillDown = mcol.format.drill_down ?
-                        ("<a class='drillDown'" +
-                        " cellvalue='\" + $.escapeQuotes($.htmlStrip('' + row" +
-                        mcol.dataLookupExpr +
-                        ")) + \"' datatype='" + mcol.renderTypeName +
-                        "' column='\" + " + mcol.id +
-                        " + \"' href='#drillDown'></a>") : '';
-                    var cellDrillStyle = mcol.format.drill_down ? ' drill-td' : '';
-
-                    var specialClasses = !mcol.parentColumn ? "(' ' + ((cellClasses[row.id] || {})" +
-                        mcol.dataLookupExpr + " || []).join(' '))" : "''";
-
-                    var annotations = !mcol.parentColumn ? "((row.annotations || {})" +
-                        mcol.dataLookupExpr + " ? '<span class=\"annotation ' + row.annotations" +
-                        mcol.dataLookupExpr + " + '\"></span>' : '')" : "''";
-
-                    renderer = "(!row" + childLookup + ".invalid" +
-                        (mcol.directLookupExpr || mcol.dataLookupExpr) + " ? " +
-                        renderer("row" + mcol.dataLookupExpr, false, mcol,
-                                contextVariables) +
-                        " : " + invalidRenderer("row" +
-                            mcol.dataLookupExpr) + ")";
-
-                    colParts.push(
-                        "\"<div class='blist-td " + getColumnClass(mcol) + cls +
-                            cellDrillStyle + align + "\" + " + invalid +
-                            " + (row" + childLookup + ".changed && row" +
-                            childLookup + ".changed" +
-                            (mcol.directLookupExpr || mcol.dataLookupExpr) +
-                            " ? \" saving\" : \"\") + " +
-                            "(row" + childLookup + ".error && row" +
-                            childLookup + ".error" +
-                            (mcol.directLookupExpr || mcol.dataLookupExpr) +
-                            " ? \" error\" : \"\") + " +
-                            specialClasses + " + " +
-                            "\"'>"+ drillDown + "\", " +
-                            renderer + ", " + annotations + ", \"</div>\""
-                    );
-
                     lcols.push({
                         mcol: mcol,
                         logical: mcol.id
@@ -2823,16 +2805,8 @@
                 if (options.generateHeights)
                 { getColumnStyle(mcol).height = rowHeight + 'px'; }
             }
-
-            if (suffix)
-            {
-              colParts.push(suffix);
-            }
-
-            completeStatement();
-
-            return generatedCode;
         };
+
 
         /**
          * Initialize based on current model metadata.
@@ -2905,12 +2879,15 @@
                 lockedColumns.push(rowNumberColumn = {id: 'rowNumberCol',
                     cls: 'blist-table-row-numbers',
                     measureText: Math.max(model.length(), 100),
-                    renderer: '(row.type == "blank" ? "new" : ' +
-                        '(row.noMatch ? "<span title=\'This row does ' +
-                        'not match the current filter\'>X</span>" : ' +
-                        '"<a href=\'' + model.view.url + '/" + row.id + "\' ' +
-                        'title=\'View row\' class=\'noInterstitial ' +
-                        'noRedirPrompt\'>" + (renderIndex + 1) + "</a>"))',
+                    renderer: function(html, index, renderIndex, row)
+                    {
+                        row.type == 'blank' ? html.push('new') :
+                            row.noMatch ? html.push('<span title="This row does ',
+                             'not match the current filter">X</span>') :
+                             html.push('<a href="', model.view.url, '/', row.id, '" ',
+                             'title="View row" class="noInterstitial noRedirPrompt">',
+                             (renderIndex + 1), '</a>');
+                    },
                     footerText: 'Totals'});
                 addColumnStyle(rowNumberColumn);
             }
@@ -2919,7 +2896,7 @@
                 lockedColumns.push(rowHandleColumn = {id: 'rowHandleCol',
                     cls: 'blist-table-row-handle',
                     width: options.rowHandleWidth,
-                    renderer: options.rowHandleRenderer()});
+                    renderer: options.rowHandleRenderer});
                 addColumnStyle(rowHandleColumn);
             }
 
@@ -3001,10 +2978,6 @@
 
             // These variables are available to the rendering function
             var contextVariables = {
-                renderSpecial: function(specialRow) {
-                    return "<div class='blist-td blist-td-header'>" +
-                        specialRow.title + "</div>";
-                },
                 permissions: {
                     canRead: model.canRead(),
                     canWrite: model.canWrite(),
@@ -3016,14 +2989,13 @@
             };
 
             // Create default column rendering
-            var levelRender = [];
             for (i = 0; i < model.columns().length; i++)
             {
                 var cols = model.columns()[i];
                 var lcols = layout[i] = [];
-                levelRender[i] = createColumnRendering(cols, lcols, i,
-                    contextVariables);
+                processLogicalColumns(cols, lcols, i);
             }
+
             if (cellNav)
             {
                 cellNav.updateModel(model);
@@ -3035,71 +3007,60 @@
                     new blist.data.TableNavigation(model, layout, $navigator) : null;
             }
 
-            var rowDivContents =
-                'class=\'blist-tr", ' +
-                '(renderIndex % 2 ? " blist-tr-even" : ""), ' +
-                '(row.noMatch ? " blist-tr-noMatch" : ""), ' +
-                '(row.level !== undefined ? " blist-tr-level" + row.level : ""), ' +
-                '(row.level > 0 ? " blist-tr-sub" : ""), ' +
-                '(row.type ? " blist-tr-" + row.type : ""), ' +
-                '(row.expanded ? " blist-tr-open" : ""), ' +
-                '(row.pending ? " blist-tr-pending" : ""), ' +
-                '(row.sessionMeta && row.sessionMeta.highlight ? " blist-tr-highlight" : ""), ' +
-                '(row.groupLast ? " last" : ""), ' +
-                '"\' style=\'top:", ' +
-                '(index * ' + rowOffset + '), "px", ' +
-                '(row.color ? ";background-color:" + row.color : ""), ' +
-                '";\'';
-
-            // Create the rendering function.  We precompile this for speed so
-            // we can avoid tight loops, function calls, etc.
-            var renderFnSource =
-                '(function(html, index, renderIndex, row) {' +
-                '   html.push(' +
-                '       "<div id=\'' + id + '-r", ' +
-                '       row.id, ' +
-                '       "\' ' + rowDivContents + '>"' +
-                '       );' +
-                '   switch (row.level || 0) {' +
-                '     case -1:' +
-                '       if (row.type == "group")' +
-                '       { html.push(renderSpecial(row)); }' +
-                '       break;';
-            for (i = 0; i < levelRender.length; i++) {
-                renderFnSource += 'case ' + i + ':' +
-                    levelRender[i] +
-                    'break;';
-            }
-            renderFnSource += '}';
-            if (options.showGhostColumn)
+            var rowDivContents = function(html, index, renderIndex, row)
             {
-                renderFnSource += 'html.push("<div class=\'blist-td ' +
-                    ghostClass + ' blist-table-ghost\'></div>");';
-            }
-            renderFnSource += 'html.push("</div>");' +
-                '})';
-            rowRenderFn = blist.datatypes.compile(
-                renderFnSource, contextVariables);
+                html.push('class="blist-tr',
+                        (renderIndex % 2 ? ' blist-tr-even' : ''),
+                        (row.noMatch ? ' blist-tr-noMatch' : ''),
+                        (!$.isBlank(row.level) ? ' blist-tr-level' + row.level : ''),
+                        (row.level > 0 ? ' blist-tr-sub' : ''),
+                        (row.type ? ' blist-tr-' + row.type : ''),
+                        (row.expanded ? ' blist-tr-open' : ''),
+                        (row.pending ? ' blist-tr-pending' : ''),
+                        (row.sessionMeta && row.sessionMeta.highlight ? ' blist-tr-highlight' : ''),
+                        (row.groupLast ? ' last' : ''),
+                        '" style="top:', (index * rowOffset), 'px',
+                        (row.color ? ';background-color:' + row.color : ''), ';"');
+            };
 
-            var renderLockedFnSource =
-                    '(function(html, index, renderIndex, row) {';
-            renderLockedFnSource += 'html.push(' +
-                '"<div id=\'' + id + '-l", '+
-                '(row.id || row[0]), ' +
-                '"\' ' + rowDivContents + '>");';
-
-            _.each(lockedColumns, function (c)
+            // Create the rendering function.
+            rowRenderFn = function(html, index, renderIndex, row)
             {
-                renderLockedFnSource += 'html.push(' +
-                    '"<div class=\'' + (c.cls || '') + ' blist-td ' +
-                        getColumnClass(c) + '\'>", ' +
-                        c.renderer + ', ' +
-                       '"</div>");';
-            });
-            renderLockedFnSource += 'html.push("</div>");';
-            renderLockedFnSource += '})';
-            rowLockedRenderFn = blist.datatypes.compile(
-                    renderLockedFnSource, contextVariables);
+                html.push('<div id="', id, '-r', row.id, '"');
+                rowDivContents(html, index, renderIndex, row);
+                html.push('>');
+                var level = row.level || 0;
+                if (level < model.columns().length)
+                {
+                    var mcols = model.columns()[level];
+                    for (var i = 0; i < mcols.length; i++)
+                    { renderCell(html, index, renderIndex, row, mcols[i], i, level, contextVariables); }
+                }
+
+                if (options.showGhostColumn)
+                {
+                    html.push('<div class="blist-td ',
+                            ghostClass, ' blist-table-ghost"></div>');
+                }
+                html.push('</div>');
+            };
+
+            rowLockedRenderFn = function(html, index, renderIndex, row)
+            {
+                html.push('<div id="', id, '-l', (row.id || row[0]),
+                        '" ');
+                rowDivContents(html, index, renderIndex, row);
+                html.push('>');
+                for (var i = 0; i < lockedColumns.length; i++)
+                {
+                    var c = lockedColumns[i];
+                    html.push('<div class="', (c.cls || ''), ' blist-td ',
+                            getColumnClass(c), '">');
+                    c.renderer(html, index, renderIndex, row, null, contextVariables);
+                    html.push('</div>');
+                }
+                html.push('</div>');
+            };
 
             // Configure the left position of grid rows
             style('groupHeaderStyle').left = lockedWidth + 'px';
@@ -3154,9 +3115,7 @@
         var configureLevelWidths = function(mcols, level)
         {
             var hpos = lockedWidth;
-            if (level == 0 && options.showGhostColumn) {
-                hpos += paddingX;
-            }
+            if (level == 0 && options.showGhostColumn) { hpos += paddingX; }
 
             for (var j = 0; j < mcols.length; j++)
             {
@@ -4298,7 +4257,7 @@
         headerMods: function (col) {},
         manualResize: false,
         resizeHandleAdjust: 3,
-        rowHandleRenderer: function(col) { return '""'; },
+        rowHandleRenderer: function(html, index, renderIndex, row, col, context) {},
         rowHandleWidth: 1,
         rowMods: function(renderedRows) {},
         selectionEnabled: true,

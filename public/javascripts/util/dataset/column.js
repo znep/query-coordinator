@@ -305,16 +305,6 @@ this.Column = ServerModel.extend({
         else if (this.isMeta && this.name == 'sid') { this.lookup = 'id'; }
         else if (this.isMeta && this.name == 'id') { this.lookup = 'uuid'; }
 
-        // Wouldn't mind getting rid of this; currently req for rendering the grid
-        this.dataLookupExpr = _.isString(this.lookup) ?
-            ('.' + this.lookup ) : ('[' + this.lookup + ']');
-        if (!$.isBlank(this.parentColumn))
-        {
-            this.directLookupExpr = this.dataLookupExpr;
-            this.dataLookupExpr = this.parentColumn.dataLookupExpr +
-                this.dataLookupExpr;
-        }
-
         // Set up min width and default
         this.minWidth = 50;
         this.width = Math.max(this.minWidth, this.width || 100);

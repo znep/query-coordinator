@@ -243,6 +243,23 @@ $.syncObjects = function(dest, src)
     { if (_.isUndefined(src[k])) { delete dest[k]; } });
 };
 
+$.flattenChildren = function(array, key)
+{
+    var key = key || 'children';
+
+    var recurse = function(array)
+    {
+        return _.map(array, function(elem)
+        {
+            if (_.isUndefined(elem[key]))
+                return elem;
+            else
+                return [elem, recurse(elem[key])];
+        });
+    };
+    return _.flatten(recurse(array));
+}
+
 $.unwrapHtml = function(html)
 {
     return html.replace(/^\s*<[^<>]+>/i, '').replace(/<\/[^<>]+>\s*$/i, '');

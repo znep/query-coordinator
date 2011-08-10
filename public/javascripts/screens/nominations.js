@@ -130,9 +130,11 @@ $(function()
             $commentsSection.empty();
             if (comments.length > 0)
             {
+                var flattenedComments = $.flattenChildren(comments);
+
                 var phrase = [];
 
-                var officialComments = _.select(comments, function(c)
+                var officialComments = _.select(flattenedComments, function(c)
                 {
                     return _.include(c.user.rights || [], 'approve_nominations');
                 });
@@ -147,7 +149,11 @@ $(function()
                     }, true));
                 }
 
-                phrase.push($.pluralize(comments.length, 'comment'));
+                var nonOfficialCommentsLength = flattenedComments.length - officialComments.length;
+                if (nonOfficialCommentsLength > 0)
+                {
+                    phrase.push($.pluralize(nonOfficialCommentsLength, 'comment'));
+                }
 
                 $commentsSection.append($.tag({
                     tagName: 'a',

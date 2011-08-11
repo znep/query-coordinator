@@ -2692,7 +2692,8 @@
                         '" href="#drillDown"></a>');
                 }
 
-                html.push(renderType.renderer(curRow[col.lookup], col, false, contextVariables));
+                html.push(renderType.renderer(curRow[col.lookup], col,
+                    false, false, null, contextVariables));
 
                 if ($.isBlank(col.parentColumn) && !$.isBlank((curRow.annotations || {})[col.lookup]))
                 {

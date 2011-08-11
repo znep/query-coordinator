@@ -596,7 +596,7 @@
                     (this.point.subtitle ?
                         '<p>' + this.point.subtitle + '</p>' : '') +
                     '<p>' + this.y + ' at ' +
-                    blist.datatypes.date.filterRender(this.x / 1000,
+                    blist.datatypes.date.renderer(this.x / 1000,
                         chartObj._xColumn) + '</p>';
             } };
         }
@@ -770,9 +770,8 @@
         if (_.isNull(value) && isPieTypeChart)
         { return null; }
 
-        var point = {y: value || 0, pretty: {}, label: {}, id: row.id + '_' + seriesIndex};
+        var point = {y: value || 0, label: {}, id: row.id + '_' + seriesIndex};
         point.isNull = _.isNull(value);
-        point.pretty.y = col.renderType.filterRender(value, col, true);
         if (!_.isNull(basePt) && !_.isUndefined(basePt))
         { _.extend(point, basePt); }
 
@@ -819,8 +818,6 @@
                 for (var i = 0; i < chartObj._numSegments; i++)
                 { if (parseFloat(row[pCol.id]) <= chartObj._segments[pCol.id][i])
                     {
-                        point.pretty.color = pCol.renderType
-                            .filterRender(row[pCol.id], pCol, true);
                         point.fillColor = "#"+$.rgbToHex(chartObj._gradient[i]);
                         point.states.hover = $.extend(point.states.hover,
                             { fillColor: '#'+$.rgbToHex($.brighten(point.fillColor)) });
@@ -835,8 +832,6 @@
                 for (var i = 0; i < chartObj._numSegments; i++)
                 { if (parseFloat(row[pCol.id]) <= chartObj._segments[pCol.id][i])
                     {
-                        point.pretty.size = pCol.renderType
-                            .filterRender(row[pCol.id], pCol, true);
                         point.radius = 4+(4*i);
                         point.states.hover = $.extend(point.states.hover,
                             { radius: point.radius + 2 });

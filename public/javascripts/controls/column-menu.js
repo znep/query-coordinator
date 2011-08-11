@@ -327,11 +327,8 @@
                             _.isFunction(curType.filterValue) ?
                                 curType.filterValue(f.value) :
                                 $.htmlStrip(f.value + ''));
-                        f.renderedValue =
-                            _.isFunction(curType.filterRender) ?
-                                curType.filterRender(f.value, cmObj.settings.column,
-                                    cs.subColumnType) :
-                                '';
+                        f.renderedValue = curType.renderer(f.value, cmObj.settings.column,
+                                    false, true, cs.subColumnType);
                         f.titleValue = $.htmlStrip(f.renderedValue + '');
                     });
 

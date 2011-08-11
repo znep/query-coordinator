@@ -7,20 +7,14 @@ blist.namespace.fetch('blist.datatypes');
     /* Textual types */
 
     // Text & base textual
-    var renderText = function(value)
-    { return $.htmlEscape(value); };
-
-    var renderFilterText = function(value)
-    { return $.htmlStrip((value || '') + ''); };
-
-    var renderFilterEscapedText = function(value)
-    { return $.htmlEscape($.htmlStrip((value || '') + '')); };
+    var renderText = function(value, column, plainText, inMenu)
+    { return $.htmlEscape(inMenu ? $.htmlStrip(value) : value); };
 
     // HTML
-    var renderHtml = function(value, col, plain)
+    var renderHtml = function(value, col, plainText, inMenu)
     {
         if ($.isBlank(value)) { return ''; }
-        if (plain) { return $.htmlStrip(value); }
+        if (plainText || inMenu) { return $.htmlStrip(value); }
         // Add an extra wrapper so we can tweak the display to something
         // reasoanble
         return '<span class="blist-html">' + value + '</span>';
@@ -142,26 +136,18 @@ blist.namespace.fetch('blist.datatypes');
     };
 
     // Percent
-    var renderPercentBar = function(value)
+    var renderPercent = function(value, column, plainText, inMenu)
     {
-        if (!value) { return ""; }
-        var cls;
-        if (value > 0) { cls = 'blist-percent-bar-pos'; }
-        else
+        if (plainText || inMenu)
         {
-            cls = 'blist-percent-bar-neg';
-            value *= -1;
+            return numberHelper(value, column.format.precision,
+                column.format.precisionStyle, null, '%', false,
+                column.format.noCommas);
         }
-        if (value > 100) { value = 100; }
-        return "<span class='blist-cell " + cls + "' style='width: " +
-            value + "%'></span>";
-    };
 
-    var percentHelper = function(value, view, precision, precisionStyle, noCommas)
-    {
         var renderText;
         var renderBar;
-        switch (view)
+        switch (column.format.view)
         {
             case 'percent_bar':
                 renderText = false;
@@ -177,53 +163,38 @@ blist.namespace.fetch('blist.datatypes');
                 renderText = renderBar = true;
                 break;
         }
-        var rv = '<span class="blist-percent">';
-        if (renderBar)
-        { rv += renderPercentBar(value); }
+
+        var rv = ['<span class="blist-percent">'];
+
+        if (renderBar && !!value)
+        {
+            var cls;
+            var v = value;
+            if (value > 0) { cls = 'blist-percent-bar-pos'; }
+            else
+            {
+                cls = 'blist-percent-bar-neg';
+                v *= -1;
+            }
+            if (v > 100) { v = 100; }
+            rv.push('<span class="blist-cell ', cls, '" style="width: ', v, '%"></span>');
+        }
+
         if (renderText)
         {
-            rv += '<span class="blist-cell blist-percent-num">' +
-                numberHelper(value, precision, precisionStyle, null, '%', false,
-                    noCommas) +
-                '</span>';
+            rv.push('<span class="blist-cell blist-percent-num">',
+                numberHelper(value, column.format.precision, column.format.precisionStyle,
+                    null, '%', false, column.format.noCommas), '</span>');
         }
-        rv += '</span>';
-        return rv;
-    };
 
-    var renderPercent = function(value, column, plain)
-    {
-        if (plain)
-        {
-            return numberHelper(value, column.format.precision,
-                column.format.precisionStyle, null, '%', false,
-                column.format.noCommas);
-        }
-        return percentHelper(value, column.format.view, column.format.precision,
-            column.format.precisionStyle, column.format.noCommas);
-    };
-
-    var renderFilterPercent = function(value, column)
-    {
-        return numberHelper(value, column.format.precision,
-            column.format.precisionStyle, null, '%', false,
-            column.format.noCommas);
+        rv.push('</span>');
+        return rv.join('');
     };
 
 
     /* Date/time types */
 
     // Date & base date renderer
-    var dateHelper = function(value, format, stringParse)
-    {
-        if (value == null) { return ''; }
-        var d;
-        if (_.isNumber(value)) { d = new Date(value * 1000); }
-        else if (!$.isBlank(stringParse))
-        { d = Date.parseExact(value, stringParse); }
-        else { d = Date.parse(value); }
-        return d ? d.format(format) : '';
-    };
 
     // Optimized format for date/time rendering (datejs is a very inefficient
     // way to go)
@@ -265,18 +236,26 @@ blist.namespace.fetch('blist.datatypes');
 
     var renderDate = function(value, column)
     {
+        if ($.isBlank(value)) { return ''; }
+
         var type = column.renderType || blist.datatypes.date;
         var format = type.formats[column.format.view] || type.formats['date_time'];
         if (format == OPTIMIZE_FORMAT_DATETIME1)
         { return renderDate_dateTime1(value, type.stringParse); }
-        return dateHelper(value, format, type.stringParse);
+
+        var d;
+        if (_.isNumber(value)) { d = new Date(value * 1000); }
+        else if (!$.isBlank(type.stringParse))
+        { d = Date.parseExact(value, type.stringParse); }
+        else { d = Date.parse(value); }
+        return d ? d.format(format) : '';
     };
 
 
     /* URI types */
 
     // Base URI
-    var uriHelper = function(value, captionIsHTML, plain, baseUrl)
+    var uriHelper = function(value, captionIsHTML, plainText, baseUrl)
     {
         if (!value) { return ''; }
         var url;
@@ -301,242 +280,220 @@ blist.namespace.fetch('blist.datatypes');
             { url = 'http://' + url; }
         }
 
-        if (plain) { return url || ''; }
-
         if (!captionIsHTML) { caption = $.htmlEscape(caption); }
+
+        if (plainText) { return url || caption || ''; }
+
         return "<a target='blist-viewer' rel='external' href='" +
             $.htmlEscape(url) + "'>" + caption + "</a>";
     };
 
     // Email
-    var emailHelper = function(value)
-    { return uriHelper(value && ['mailto:' + value , value]); };
-
-    var renderEmail = function(value, col, plain)
-    { return plain ? value : emailHelper(value); };
+    var renderEmail = function(value, col, plainText, inMenu)
+    { return plainText || inMenu ? value : uriHelper(value && ['mailto:' + value , value]); };
 
     // Phone
-    var phoneHelper = function(value, plain, skipURL, skipBlankType)
+    var renderPhone = function(value, column, plainText, inMenu, subType)
     {
+        var v = value;
+        if (!$.isBlank(subType))
+        { v = $.keyValueToObject(subType, value); }
+
         if (!value) { return ''; }
 
         var num;
         var type;
-        if (value instanceof Array)
+        if (_.isArray(value))
         {
             num = value[0] || '';
             type = value[1];
         }
-        else if (value instanceof Object)
+        else if ($.isPlainObject(value))
         {
             num = value.phone_number || '';
             type = value.phone_type;
         }
         else { num = value + ''; }
 
-        var label = num + "";
+        var label = num + '';
         if (label.match(/^\d{10}$/))
         {
-            label = "(" + label.substring(0, 3) + ") " +
-                label.substring(3, 6) + "-" + label.substring(6, 10);
+            label = '(' + label.substring(0, 3) + ') ' +
+                label.substring(3, 6) + '-' + label.substring(6, 10);
         }
         else if (label.match(/^\d{7}$/))
-        { label = label.substring(0, 3) + "-" + label.substring(3, 7); }
+        { label = label.substring(0, 3) + '-' + label.substring(3, 7); }
 
         var typeStr = type ? type.toLowerCase() : 'unknown';
 
-        if (plain)
+        if (plainText)
         {
-            if (type) { label += " (" + typeStr + ")"; }
+            if (type) { label += ' (' + typeStr + ')'; }
             return label;
         }
 
-        label = (skipBlankType && !type ? '' :
-            "<span class='blist-phone-icon blist-phone-icon-" +
-            typeStr + "'>" + typeStr + "</span>&nbsp;") + $.htmlEscape(label);
+        label = (inMenu && !type ? '' :
+            '<span class="blist-phone-icon blist-phone-icon-' +
+            typeStr + '">' + typeStr + '</span>&nbsp;') + $.htmlEscape(label);
 
-        return skipURL ? label :
-            uriHelper([ "callto://" + num.replace(/[\-()\s]/g, ''), label ], true);
-    };
-
-    var renderPhone = function(value, column, plain)
-    { return phoneHelper(value, plain); };
-
-    var renderFilterPhone = function(value, column, subType)
-    {
-        var args = {};
-        args[subType] = value;
-        return phoneHelper(args, false, true, true);
+        return inMenu ? label :
+            uriHelper([ 'callto://' + num.replace(/[\-()\s]/g, ''), label ], true);
     };
 
     // URL
-    var renderURL = function(value, column, plain)
-    { return uriHelper(value, false, plain, (column.format || {}).baseUrl); };
-
-    var renderFilterURL = function(value)
+    var renderURL = function(value, column, plainText, inMenu)
     {
-        if (!value) { return ''; }
-
-        // Do we get arrays anymore?
-        if (_.isArray(value)) { return value[1] || value[0]; }
-        // Probably have an object
-        else if ($.isPlainObject(value)) { return value.description || value.url; }
-        // Else, cast to a string & strip HTML
-        return $.htmlStrip(value || '');
+        var v = value;
+        if (inMenu)
+        {
+            v = $.keyValueToObject('description', value.description || v[1]);
+            if ($.isBlank(v.description))
+            { v.url = value.url || v[0]; }
+        }
+        return uriHelper(value, false, plainText || inMenu, (column.format || {}).baseUrl);
     };
 
 
     /* Graphical types */
 
     // Checkbox
-    var checkboxHelper = function(value, includeTitle)
+    var renderCheckbox = function(value, column, plainText, inMenu)
     {
-        return "<span class='blist-cell blist-checkbox blist-checkbox-" +
-                (value ? 'on' : 'off') + "'" + (includeTitle ? " title='" +
-                (value ? 'True' : 'False') : '') + "'>" +
-                (value ? 'True' : 'False') + "</span>";
+        if (plainText) { return value ? '&#10003;' : ''; }
+        return ['<span class="blist-cell blist-checkbox blist-checkbox-',
+                (value ? 'on' : 'off'), '"',
+                (!inMenu ? (' title="' + (value ? 'True' : 'False')) : ''), '">',
+                (value ? 'True' : 'False'), '</span>'].join('');
     };
-
-    var renderCheckbox = function(value, column, plain)
-    {
-        if (plain) { return value ? '&#10003;' : ''; }
-        return checkboxHelper(value, true);
-    };
-
-    var renderFilterCheckbox = function(value)
-    { return checkboxHelper(value, false); };
 
 
     // Flag
-    var renderFlag = function(value, column, plain)
+    var renderFlag = function(value, column, plainText)
     {
-        if (plain) { return value || ''; }
+        if (plainText) { return value || ''; }
         return value && "<span class='blist-flag blist-flag-" + value +
             "' title='value'>" + value + "</span>";
     };
 
     // Stars
     STAR_WIDTH = 16;
-    var starsHelper = function(value, range, canEdit)
+    var renderStars = function(value, column, plainText, inMenu, subType, context)
     {
-        if (value == null) { return ''; }
+        if ($.isBlank(value) || value <= 0) { return ''; }
+
+        var rv = [];
+        if (plainText)
+        {
+            for (var i = 0; i < value; i++) { rv.push('*'); }
+            return rv.join('');
+        }
+
+        var range = parseFloat(column.format.range);
         if (range <= 0 || isNaN(range)) { range = 5; }
         range *= STAR_WIDTH;
-        var on = Math.round(value * STAR_WIDTH);
-        if (on <= 0) { return ''; }
-        else if (on > range) { on = range; }
+
+        if (inMenu)
+        { rv.push('<div class="blist-tstars-wrapper">'); }
+
+        var on = Math.min(range, Math.round(value * STAR_WIDTH));
         var off = range - on;
-        return "<span class='blist-tstars-render-wrapper' style='width:" +
-            range + "px'>" +
-            (canEdit ?  "<span class='blist-star-0'></span>" : "") +
-            "<span class='blist-tstars' style='width: " + range +
-            "px'><span class='blist-cell blist-tstar-on' style='width: " + on +
-            "px'></span><span class='blist-cell blist-tstar-off' style='width: " +
-            off + "px; background-position-x: " + -(on % STAR_WIDTH) +
-            "px'></span></span></span>";
-    };
+        rv.push('<span class="blist-tstars-render-wrapper" style="width:', range, 'px">');
+        if ((context || {permissions: {}}).permissions.canEdit)
+        { rv.push('<span class="blist-star-0"></span>'); }
+        rv.push('<span class="blist-tstars" style="width: ', range,
+                'px"><span class="blist-cell blist-tstar-on" style="width: ', on,
+                'px"></span><span class="blist-cell blist-tstar-off" style="width: ',
+                off, 'px; background-position-x: ', -(on % STAR_WIDTH),
+                'px"></span></span></span>');
 
-    var renderTextStars = function(value, range)
-    {
-        var rv = '';
-        for (var i = 0; i < value; i++) { rv += '*'; }
-        return rv;
+        if (inMenu)
+        { rv.push(value, '</div>'); }
+        return rv.join('');
     };
-
-    var renderStars = function(value, column, plain, context)
-    {
-        if (plain) { return renderTextStars(value); }
-        var range = parseFloat(column.format.range);
-        return starsHelper(value, range, (context || {permissions: {}}).permissions.canEdit);
-    };
-
-    var renderFilterStars = function(value, column)
-    {
-        var range = parseFloat(column.format.range);
-        return "<div class='blist-tstars-wrapper'>" +
-            starsHelper(value, range) + value + "</div>";
-    };
-
 
 
     /* Geographic types */
 
     // Location
-    var locationHelper = function(value, plain, view)
+    var renderLocation = function(value, column, plainText, inMenu, subType)
     {
         if ($.isBlank(value)) { return ''; }
 
+        var v = value;
+        var view = column.format.view;
+        if (!$.isBlank(subType))
+        {
+            v = $.keyValueToObject(subType, value);
+            if (inMenu)
+            {
+                switch (subType)
+                {
+                    case 'human_address':
+                        view = 'address';
+                        break;
+                    case 'latitude':
+                    case 'longitude':
+                        view = 'coords';
+                        break;
+                    default:
+                        view = 'none';
+                        break;
+                }
+            }
+        }
         if ($.isBlank(view)) { view = 'address_coords'; }
 
         var pieces = [];
-        if (!$.isBlank(value.human_address) && view.startsWith('address'))
+        if (!$.isBlank(v.human_address) && view.startsWith('address'))
         {
-            var a = JSON.parse(value.human_address);
+            var a = JSON.parse(v.human_address);
             if (!$.isBlank(a.address) && a.address !== '')
             { pieces.push(a.address); }
-            pieces.push(_.compact([_.compact([a.city, a.state]).join(', '),
-                a.zip]).join(' '));
+            pieces.push(_.compact([_.compact([a.city, a.state]).join(', '), a.zip]).join(' '));
         }
 
         if (view.endsWith('coords') &&
-            (!$.isBlank(value.latitude) || !$.isBlank(value.longitude)))
+            (!$.isBlank(v.latitude) || !$.isBlank(v.longitude)))
         {
-            pieces.push('(' + (value.latitude || '') + (plain ? '' : '&deg;') +
-                ', ' + (value.longitude || '') + (plain ? '' : '&deg;') + ')');
+            pieces.push('(' + (v.latitude || '') + (plainText ? '' : '&deg;') +
+                ', ' + (v.longitude || '') + (plainText ? '' : '&deg;') + ')');
         }
 
-        return pieces.join(plain ? ' \n' : '<br />');
-    };
-
-    var renderLocation = function(value, column, plain)
-    { return locationHelper(value, plain, column.format.view); };
-
-    var renderFilterLocation = function(value, column, subType)
-    {
-        if (subType == 'machine_address' || subType == 'needs_recoding')
-        { return ''; }
-
-        if (subType == 'human_address')
-        { return locationHelper({human_address: value}, true, 'address'); }
-
-        return renderFilterText(value);
+        return pieces.join(plainText ? ' \n' : '<br />');
     };
 
     // Geospatial
-    var geospatialRendererInterval;
-    var geospatialHelper = function(value, base_url, columnId)
+    var renderGeospatial = function(value, column)
     {
         if ($.isBlank(value)) { return ''; }
 
-        var rv = '';
+        var rv = [];
         if (!$.isBlank(value.geometry))
         {
             var width  = '60';
             var height = '150';
-            var image_url = $.addAppToken(base_url+value.row_id+'?column='+columnId+
-                '&width='+width+'&height='+height);
+            var imageUrl = $.addAppToken(column.baseUrl() + value.row_id + '?column=' + column.id +
+                '&width=' + width + '&height=' + height);
             if ($.browser.msie)
-            { rv += '<v:vmlframe src="' + image_url + '&type=vml#shape01" ' +
-                'style="width:' + width + 'px; height:' + height + 'px;"/>'; }
+            {
+                rv.push('<v:vmlframe src="', imageUrl, '&type=vml#shape01" ',
+                        'style="width:', width, 'px; height:', height, 'px;"/>');
+            }
             else
-            { rv += '<embed src="' + image_url + '" width="' + width +
-                '" height="' + height + '"></embed>'; }
+            { rv.push('<embed src="', imageUrl, '" width="', width, '" height="', height, '"></embed>'); }
         }
 
-        return rv;
+        return rv.join('');
     };
-
-    var renderGeospatial = function(value, column)
-    { return geospatialHelper(value, column.baseUrl(), column.id); };
 
 
     /* Blobby types */
 
     // Photo
-    var renderPhoto = function(value, column, plain, context)
+    var renderPhoto = function(value, column, plainText, inMenu, subType, context)
     {
         var url = column.baseUrl() + value;
-        if (plain) { return url; }
+        if (plainText) { return url; }
 
         var img = '<img src="' + escape(url) + '"></img>';
         if ((context || {permissions: {}}).permissions.canEdit)
@@ -545,17 +502,17 @@ blist.namespace.fetch('blist.datatypes');
         return uriHelper({url: value, description: img}, true, false, column.baseUrl());
     };
 
-    var documentHelper = function(value, base, plain)
+    var renderDocument = function(value, column, plainText)
     {
         var url, name, size;
         if (!value) { return ''; }
-        else if (value instanceof Array)
+        else if (_.isArray(value))
         {
             url = value[2];
             name = value[1];
             size = value[3];
         }
-        else if (value instanceof Object)
+        else if ($.isPlainObject(value))
         {
             if (value.id)
             {
@@ -581,26 +538,23 @@ blist.namespace.fetch('blist.datatypes');
         else { url = value + ''; }
 
         if (!url) { return ''; }
-        if (plain) { return name || ''; }
+        if (plainText) { return name || ''; }
 
-        var rv = uriHelper([ (base || '') + url, name || 'Document' ]);
+        var rv = uriHelper([ (column.baseUrl() || '') + url, name || 'Document' ]);
         if (!$.isBlank(size))
         {
             size = Math.round(size / 1024);
             if (size == 0) { size = 1; }
-            rv += "&nbsp;<span class='blist-document-size'>(" + size + "k)</span>";
+            rv += '&nbsp;<span class="blist-document-size">(' + size + 'k)</span>';
         }
         return rv;
     };
-
-    var renderDocument = function(value, column, plain)
-    { return documentHelper(value, column.baseUrl(), plain); };
 
 
     /* Linking/customization types */
 
     // Drop-down lists, and other link types
-    var renderDropDownList = function(value, column, plain)
+    var renderDropDownList = function(value, column, plainText)
     {
         if (!_.isString(value) || $.isBlank(value)) { return ''; }
 
@@ -623,7 +577,7 @@ blist.namespace.fetch('blist.datatypes');
         { return '<div class="blist-dataset-link-dangling">' + value + '</div>'; }
 
         var result = [];
-        if (!plain)
+        if (!plainText)
         {
             result.push('<span class="blist-dropdownlist-wrapper">');
             if (!$.isBlank(matchVal.icon))
@@ -633,7 +587,7 @@ blist.namespace.fetch('blist.datatypes');
             }
         }
         result.push($.htmlStrip(matchVal.description || ''));
-        if (!plain)
+        if (!plainText)
         { result.push('</span>'); }
         return result.join('');
     };
@@ -649,12 +603,13 @@ blist.namespace.fetch('blist.datatypes');
     /* Special system types */
 
     // Tags
-    var renderTags = function(value)
+    var renderTags = function(value, column, plainText, inMenu)
     {
         var v = $.htmlEscape((value || []).join(', '));
         if ($.isBlank(v)) { return ''; }
-        return '<div class="blist-tag" title="' + v + '">' + v + '</div>';
+        return plainText || inMenu ? v : '<div class="blist-tag" title="' + v + '">' + v + '</div>';
     };
+
 
 
     /** FILTER FUNCTIONS ***/
@@ -813,8 +768,6 @@ blist.namespace.fetch('blist.datatypes');
 
             filterable: true,
             filterConditions: filterConditions.textual,
-            filterRender: renderFilterEscapedText,
-            filterText: true,
 
             inlineType: true,
             priority: 1,
@@ -836,8 +789,6 @@ blist.namespace.fetch('blist.datatypes');
 
             filterable: true,
             filterConditions: filterConditions.textual,
-            filterRender: renderFilterText,
-            filterText: true,
 
             priority: 2,
 
@@ -861,8 +812,6 @@ blist.namespace.fetch('blist.datatypes');
 
             filterable: true,
             filterConditions: filterConditions.numeric,
-            filterRender: renderNumber,
-            filterText: true,
 
             inlineType: true,
             precisionStyle: [{text: 'Standard (1,020.4)', value: 'standard'},
@@ -1000,8 +949,6 @@ blist.namespace.fetch('blist.datatypes');
 
             filterable: true,
             filterConditions: filterConditions.numeric,
-            filterRender: renderMoney,
-            filterText: true,
 
             inlineType: true,
             priority: 4,
@@ -1023,8 +970,6 @@ blist.namespace.fetch('blist.datatypes');
 
             filterable: true,
             filterConditions: filterConditions.numeric,
-            filterRender: renderFilterPercent,
-            filterText: true,
 
             priority: 5,
 
@@ -1050,7 +995,6 @@ blist.namespace.fetch('blist.datatypes');
 
             filterable: true,
             filterConditions: filterConditions.date,
-            filterRender: renderDate,
             filterValue: function(v) { return v; },
 
             formats: zDateTimeFormats,
@@ -1075,7 +1019,6 @@ blist.namespace.fetch('blist.datatypes');
 
             filterable: true,
             filterConditions: filterConditions.date,
-            filterRender: renderDate,
             filterValue: function(v) { return v; },
 
             formats: dateTimeFormats,
@@ -1105,8 +1048,6 @@ blist.namespace.fetch('blist.datatypes');
 
             filterable: true,
             filterConditions: filterConditions.textual,
-            filterRender: renderFilterText,
-            filterText: true,
 
             inlineType: true,
             priority: 10,
@@ -1128,8 +1069,6 @@ blist.namespace.fetch('blist.datatypes');
 
             filterable: true,
             filterConditions: filterConditions.textual,
-            filterRender: renderFilterPhone,
-            filterText: true,
 
             priority: 14,
 
@@ -1148,8 +1087,6 @@ blist.namespace.fetch('blist.datatypes');
 
             filterable: true,
             filterConditions: filterConditions.textual,
-            filterRender: renderFilterURL,
-            filterText: true,
 
             inlineType: true,
             priority: 9,
@@ -1172,7 +1109,6 @@ blist.namespace.fetch('blist.datatypes');
 
             filterable: true,
             filterConditions: filterConditions.comparable,
-            filterRender: renderFilterCheckbox,
             filterValue: valueFilterCheckbox,
 
             isInlineEdit: true,
@@ -1194,7 +1130,6 @@ blist.namespace.fetch('blist.datatypes');
 
             filterable: true,
             filterConditions: filterConditions.comparable,
-            filterRender: renderFlag,
 
             priority: 12,
 
@@ -1215,8 +1150,6 @@ blist.namespace.fetch('blist.datatypes');
 
             filterable: true,
             filterConditions: filterConditions.numeric,
-            filterRender: renderFilterStars,
-            filterText: true,
 
             isInlineEdit: true,
             priority: 13,
@@ -1237,7 +1170,6 @@ blist.namespace.fetch('blist.datatypes');
 
             filterable: true,
             filterConditions: filterConditions.comparable,
-            filterRender: renderFilterLocation,
 
             priority: 8,
 
@@ -1328,7 +1260,6 @@ blist.namespace.fetch('blist.datatypes');
 
             filterable: true,
             filterConditions: filterConditions.numeric,
-            filterRender: renderDropDownList,
 
             priority: 15,
 
@@ -1348,7 +1279,6 @@ blist.namespace.fetch('blist.datatypes');
 
             filterable: true,
             filterConditions: filterConditions.textual,
-            filterRender: renderDropDownList,
 
             priority: 19,
 
@@ -1364,7 +1294,6 @@ blist.namespace.fetch('blist.datatypes');
 
             filterable: true,
             filterConditions: filterConditions.numeric,
-            filterRender: renderDropDownList,
 
             renderer: renderDropDownList,
             sortable: true
@@ -1405,8 +1334,6 @@ blist.namespace.fetch('blist.datatypes');
 
             filterable: true,
             filterConditions: filterConditions.textual,
-            filterRender: renderFilterText,
-            filterText: true,
 
             inlineType: true,
             priority: 19,

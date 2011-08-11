@@ -1,8 +1,8 @@
 (function($)
 {
-    $.blistEditor.picklist = function(options, dom)
+    $.blistEditor.lookupList = function(options, dom)
     {
-        this.settings = $.extend({}, $.blistEditor.picklist.defaults, options);
+        this.settings = $.extend({}, $.blistEditor.lookupList.defaults, options);
         this.currentDom = dom;
         this.init();
     };
@@ -17,7 +17,7 @@
         $row.empty().append($icon).append($span_label);
     };
 
-    $.extend($.blistEditor.picklist, $.blistEditor.extend(
+    $.extend($.blistEditor.lookupList, $.blistEditor.extend(
     {
         prototype:
         {
@@ -116,6 +116,6 @@
         }
     }));
 
-    $.blistEditor.addEditor($.blistEditor.picklist, ['drop_down_list', 'picklist', 'dataset_link']);
+    $.blistEditor.addEditor($.blistEditor.lookupList, 'lookupList');
 
 })(jQuery);

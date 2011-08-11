@@ -554,7 +554,7 @@ blist.namespace.fetch('blist.datatypes');
     /* Linking/customization types */
 
     // Drop-down lists, and other link types
-    var renderDropDownList = function(value, column, plainText)
+    var renderLookupList = function(value, column, plainText)
     {
         if (!_.isString(value) || $.isBlank(value)) { return ''; }
 
@@ -743,6 +743,46 @@ blist.namespace.fetch('blist.datatypes');
     ];
 
 
+    blist.datatypes.interfaceTypes = {
+        checkbox: { renderer: renderCheckbox },
+
+        date: { renderer: renderDate },
+
+        document: { renderer: renderDocument },
+
+        email: { renderer: renderEmail },
+
+        flag: { renderer: renderFlag },
+
+        geospatial: { renderer: renderGeospatial },
+
+        html: { renderer: renderHtml },
+
+        location: { renderer: renderLocation },
+
+        lookupList: { renderer: renderLookupList },
+
+        money: { renderer: renderMoney },
+
+        number: { renderer: renderNumber },
+
+        object: { renderer: renderObject },
+
+        percent: { renderer: renderPercent },
+
+        phone: { renderer: renderPhone },
+
+        photo: { renderer: renderPhoto },
+
+        stars: { renderer: renderStars },
+
+        tag: { renderer: renderTags },
+
+        text: { renderer: renderText },
+
+        url: { renderer: renderURL }
+    };
+
     /**
      * This is our main map of data types.
      */
@@ -750,13 +790,14 @@ blist.namespace.fetch('blist.datatypes');
     {
         // Invalid type is special, not a real type
         invalid: {
-            renderer: renderText
+            interfaceType: blist.datatypes.interfaceTypes.text
         },
 
 
         // Textual types
         text: {
             title: 'Plain Text',
+            interfaceType: blist.datatypes.interfaceTypes.text,
 
             aggregates: nonNumericAggs,
             alignment: alignment,
@@ -765,20 +806,17 @@ blist.namespace.fetch('blist.datatypes');
                 .concat(numericConvertTypes),
             createable: true,
             deleteable: true,
-
             filterable: true,
             filterConditions: filterConditions.textual,
-
             inlineType: true,
             priority: 1,
-
-            renderer: renderText,
             rollUpAggregates: nonNumericAggs,
             sortable: true
         },
 
         html: {
             title: 'Formatted Text',
+            interfaceType: blist.datatypes.interfaceTypes.html,
 
             aggregates: nonNumericAggs,
             convertableTypes: ['text', 'calendar_date', 'date', 'phone',
@@ -786,13 +824,9 @@ blist.namespace.fetch('blist.datatypes');
                 .concat(numericConvertTypes),
             createable: true,
             deleteable: true,
-
             filterable: true,
             filterConditions: filterConditions.textual,
-
             priority: 2,
-
-            renderer: renderHtml,
             rollUpAggregates: nonNumericAggs,
             sortable: true
         },
@@ -801,6 +835,7 @@ blist.namespace.fetch('blist.datatypes');
         // Numeric types
         number: {
             title: 'Number',
+            interfaceType: blist.datatypes.interfaceTypes.number,
 
             aggregates: aggs,
             alignment: numericAlignment,
@@ -809,22 +844,19 @@ blist.namespace.fetch('blist.datatypes');
                 .concat('text').concat('dataset_link'),
             createable: true,
             deleteable: true,
-
             filterable: true,
             filterConditions: filterConditions.numeric,
-
             inlineType: true,
             precisionStyle: [{text: 'Standard (1,020.4)', value: 'standard'},
                 {text: 'Scientific (1.0204e+3)', value: 'scientific'}],
             priority: 3,
-
-            renderer: renderNumber,
             rollUpAggregates: aggs,
             sortable: true
         },
 
         money: {
             title: 'Money',
+            interfaceType: blist.datatypes.interfaceTypes.money,
 
             aggregates: aggs,
             alignment: numericAlignment,
@@ -946,20 +978,17 @@ blist.namespace.fetch('blist.datatypes');
                 "ZWD": "Z$"
             },
             deleteable: true,
-
             filterable: true,
             filterConditions: filterConditions.numeric,
-
             inlineType: true,
             priority: 4,
-
-            renderer: renderMoney,
             rollUpAggregates: aggs,
             sortable: true
         },
 
         percent: {
             title: 'Percent',
+            interfaceType: blist.datatypes.interfaceTypes.percent,
 
             aggregates: aggs,
             alignment: numericAlignment,
@@ -967,13 +996,9 @@ blist.namespace.fetch('blist.datatypes');
             convertableTypes: _.without(numericConvertTypes, 'percent').concat('text'),
             createable: true,
             deleteable: true,
-
             filterable: true,
             filterConditions: filterConditions.numeric,
-
             priority: 5,
-
-            renderer: renderPercent,
             rollUpAggregates: aggs,
             sortable: true,
             viewTypes: [{value: 'percent_bar_and_text', text: 'Bar &amp; Text' },
@@ -985,6 +1010,7 @@ blist.namespace.fetch('blist.datatypes');
         // Date/time types
         date: {
             title: 'Date & Time (with timezone)',
+            interfaceType: blist.datatypes.interfaceTypes.date,
 
             aggregates: nonNumericAggs,
             alignment: alignment,
@@ -992,16 +1018,12 @@ blist.namespace.fetch('blist.datatypes');
             convertableTypes: ['text', 'calendar_date'],
             createable: true,
             deleteable: true,
-
             filterable: true,
             filterConditions: filterConditions.date,
             filterValue: function(v) { return v; },
-
             formats: zDateTimeFormats,
             inlineType: true,
             priority: 7,
-
-            renderer: renderDate,
             rollUpAggregates: nonNumericAggs,
             sortable: true,
             viewTypes: dateViews
@@ -1009,6 +1031,7 @@ blist.namespace.fetch('blist.datatypes');
 
         calendar_date: {
             title: 'Date & Time',
+            interfaceType: blist.datatypes.interfaceTypes.date,
 
             aggregates: nonNumericAggs,
             alignment: alignment,
@@ -1016,16 +1039,12 @@ blist.namespace.fetch('blist.datatypes');
             convertableTypes: ['text', 'date'],
             createable: true,
             deleteable: true,
-
             filterable: true,
             filterConditions: filterConditions.date,
             filterValue: function(v) { return v; },
-
             formats: dateTimeFormats,
             inlineType: true,
             priority: 6,
-
-            renderer: renderDate,
             rollUpAggregates: nonNumericAggs,
             sortable: true,
             // Giving an exact format to parse is quite a bit faster
@@ -1039,26 +1058,24 @@ blist.namespace.fetch('blist.datatypes');
         // URI types
         email: {
             title: 'Email',
+            interfaceType: blist.datatypes.interfaceTypes.email,
 
             aggregates: nonNumericAggs,
             alignment: alignment,
             convertableTypes: ['text'],
             createable: true,
             deleteable: true,
-
             filterable: true,
             filterConditions: filterConditions.textual,
-
             inlineType: true,
             priority: 10,
-
-            renderer: renderEmail,
             rollUpAggregates: nonNumericAggs,
             sortable: true
         },
 
         phone: {
             title: 'Phone',
+            interfaceType: blist.datatypes.interfaceTypes.phone,
 
             aggregates: nonNumericAggs,
             alignment: alignment,
@@ -1066,32 +1083,25 @@ blist.namespace.fetch('blist.datatypes');
             convertableTypes: ['text'],
             createable: true,
             deleteable: true,
-
             filterable: true,
             filterConditions: filterConditions.textual,
-
             priority: 14,
-
-            renderer: renderPhone,
             sortable: true
         },
 
         url: {
             title: 'Website URL',
+            interfaceType: blist.datatypes.interfaceTypes.url,
 
             aggregates: nonNumericAggs,
             alignment: alignment,
             convertableTypes: ['text', 'dataset_link'],
             createable: true,
             deleteable: true,
-
             filterable: true,
             filterConditions: filterConditions.textual,
-
             inlineType: true,
             priority: 9,
-
-            renderer: renderURL,
             rollUpAggregates: nonNumericAggs,
             sortable: true
         },
@@ -1100,46 +1110,41 @@ blist.namespace.fetch('blist.datatypes');
         // Graphical types
         checkbox: {
             title: 'Checkbox',
+            interfaceType: blist.datatypes.interfaceTypes.checkbox,
 
             aggregates: nonNumericAggs,
             alignment: [alignCenter, alignLeft, alignRight],
             convertableTypes: ['text'],
             createable: true,
             deleteable: true,
-
             filterable: true,
             filterConditions: filterConditions.comparable,
             filterValue: valueFilterCheckbox,
-
             isInlineEdit: true,
             priority: 11,
-
-            renderer: renderCheckbox,
             rollUpAggregates: nonNumericAggs,
             sortable: true
         },
 
         flag: {
             title: 'Flag',
+            interfaceType: blist.datatypes.interfaceTypes.flag,
 
             aggregates: nonNumericAggs,
             alignment: alignment,
             convertableTypes: ['text'],
             createable: true,
             deleteable: true,
-
             filterable: true,
             filterConditions: filterConditions.comparable,
-
             priority: 12,
-
-            renderer: renderFlag,
             rollUpAggregates: nonNumericAggs,
             sortable: true
         },
 
         stars: {
             title: 'Star',
+            interfaceType: blist.datatypes.interfaceTypes.stars,
 
             aggregates: _.reject(aggs, function(a) { return a.value == 'sum'; }),
             alignment: alignment,
@@ -1147,14 +1152,10 @@ blist.namespace.fetch('blist.datatypes');
             convertableTypes: _.without(numericConvertTypes, 'stars').concat('text'),
             createable: true,
             deleteable: true,
-
             filterable: true,
             filterConditions: filterConditions.numeric,
-
             isInlineEdit: true,
             priority: 13,
-
-            renderer: renderStars,
             rollUpAggregates: _.reject(aggs, function(a) { return a.value == 'sum'; }),
             sortable: true
         },
@@ -1163,17 +1164,14 @@ blist.namespace.fetch('blist.datatypes');
         // Geographic types
         location: {
             title: 'Location',
+            interfaceType: blist.datatypes.interfaceTypes.location,
 
             alignment: alignment,
             createable: true,
             deleteable: true,
-
             filterable: true,
             filterConditions: filterConditions.comparable,
-
             priority: 8,
-
-            renderer: renderLocation,
             viewTypes: [{value: 'address_coords', text: 'Address &amp; Coordinates' },
                 { value: 'coords', text: 'Coordinates Only' },
                 { value: 'address', text: 'Address Only' }]
@@ -1181,121 +1179,101 @@ blist.namespace.fetch('blist.datatypes');
 
         geospatial: {
             title: 'Geospatial',
+            interfaceType: blist.datatypes.interfaceTypes.geospatial,
 
             alignment: alignment,
             createable: false,
             deleteable: false,
             filterable: false,
-            priority: 20,
-
-            renderer: renderGeospatial
+            priority: 20
         },
 
 
         // Blobby types
         document: {
             title: 'Document',
+            interfaceType: blist.datatypes.interfaceTypes.document,
 
             aggregates: nonNumericAggs,
             createable: true,
             deleteable: true,
-
             filterConditions: filterConditions.blob,
-
             inlineType: true,
-            priority: 17,
-
-            renderer: renderDocument
+            priority: 17
         },
 
         document_obsolete: {
             title: 'Document (old)',
+            interfaceType: blist.datatypes.interfaceTypes.document,
 
             aggregates: nonNumericAggs,
             deleteable: true,
-
             filterConditions: filterConditions.blob,
-
-            inlineType: true,
-
-            renderer: renderDocument
+            inlineType: true
         },
 
         photo: {
             title: 'Photo (Image)',
+            interfaceType: blist.datatypes.interfaceTypes.photo,
 
             aggregates: nonNumericAggs,
             cls: 'photo',
             createable: true,
             deleteable: true,
-
             filterConditions: filterConditions.blob,
-
-            priority: 16,
-
-            renderer: renderPhoto
+            priority: 16
         },
 
         photo_obsolete: {
             title: 'Photo (Image, old)',
+            interfaceType: blist.datatypes.interfaceTypes.photo,
 
             aggregates: nonNumericAggs,
             cls: 'photo',
             deleteable: true,
-
-            filterConditions: filterConditions.blob,
-
-            renderer: renderPhoto
+            filterConditions: filterConditions.blob
         },
 
 
         // Linking/customization types
         drop_down_list: {
             title: 'Multiple Choice',
+            interfaceType: blist.datatypes.interfaceTypes.lookupList,
 
             aggregates: nonNumericAggs,
             alignment: alignment,
             createable: true,
             deleteable: true,
-
             filterable: true,
             filterConditions: filterConditions.numeric,
-
             priority: 15,
-
-            renderer: renderDropDownList,
             rollUpAggregates: nonNumericAggs,
             sortable: true
         },
 
         dataset_link: {
             title: 'Dataset Link',
+            interfaceType: blist.datatypes.interfaceTypes.lookupList,
 
             aggregates: nonNumericAggs,
             alignment: alignment,
             convertableTypes: ['text'],
             createable: true,
             deleteable: true,
-
             filterable: true,
             filterConditions: filterConditions.textual,
-
             priority: 19,
-
-            renderer: renderDropDownList,
             rollUpAggregates: nonNumericAggs,
             sortable: true
         },
 
         picklist: {
             title: 'Multiple Choice',
+            interfaceType: blist.datatypes.interfaceTypes.lookupList,
 
             deleteable: true,
-
             filterable: true,
             filterConditions: filterConditions.numeric,
-
-            renderer: renderDropDownList,
             sortable: true
         },
 
@@ -1303,42 +1281,37 @@ blist.namespace.fetch('blist.datatypes');
         // Generic types
         object: {
             title: 'Object',
+            interfaceType: blist.datatypes.interfaceTypes.object,
 
             alignment: alignment,
             createable: false,
             deleteable: false,
             filterable: false,
-            priority: 20,
-
-            renderer: renderObject
+            priority: 20
         },
 
         list: {
             title: 'List',
+            interfaceType: blist.datatypes.interfaceTypes.object,
 
             createable: false,
             deleteable: false,
             alignment: alignment,
             filterable: false,
-            priority: 21,
-
-            renderer: renderObject
+            priority: 21
         },
 
 
         // Special system types
         tag: {
             title: 'Row Tag',
+            interfaceType: blist.datatypes.interfaceTypes.tag,
 
             aggregates: nonNumericAggs,
-
             filterable: true,
             filterConditions: filterConditions.textual,
-
             inlineType: true,
-            priority: 19,
-
-            renderer: renderTags
+            priority: 19
         },
 
         nested_table: {
@@ -1347,15 +1320,26 @@ blist.namespace.fetch('blist.datatypes');
             createable: true,
             deleteable: true,
             excludeInNestedTable: true,
-            priority: 18,
-
-            renderer: renderText
+            priority: 18
         }
     });
 
     _.each(blist.datatypes, function(type, name)
     {
         if ($.isPlainObject(type)) { type.name = name; }
+        type.renderer = function()
+        {
+            if ($.subKeyDefined(type, 'interfaceType.renderer'))
+            { return type.interfaceType.renderer.apply(type, arguments); }
+            return '';
+        };
+
+        type.getEditor = function()
+        {
+            if ($.subKeyDefined(type, 'interfaceType.editor'))
+            { return type.interfaceType.editor; }
+            return null;
+        };
     });
 
 })(jQuery);

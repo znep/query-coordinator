@@ -103,6 +103,6 @@
         }
     }, $.blistEditor.text));
 
-    $.blistEditor.addEditor($.blistEditor.date, ['date', 'calendar_date']);
+    $.blistEditor.addEditor($.blistEditor.date, 'date');
 
 })(jQuery);

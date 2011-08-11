@@ -174,6 +174,6 @@
         }
     }));
 
-    $.blistEditor.addEditor($.blistEditor.photo, ['photo', 'photo_obsolete']);
+    $.blistEditor.addEditor($.blistEditor.photo, 'photo');
 
 })(jQuery);

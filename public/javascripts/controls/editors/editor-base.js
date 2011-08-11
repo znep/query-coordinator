@@ -17,8 +17,8 @@
         {
             _.each($.makeArray(type), function(t)
             {
-                if (!$.isBlank(blist.datatypes[t]))
-                { blist.datatypes[t].editor = editor; }
+                if (!$.isBlank(blist.datatypes.interfaceTypes[t]))
+                { blist.datatypes.interfaceTypes[t].editor = editor; }
             });
         }
     };
@@ -36,11 +36,9 @@
         {
             var type = blist.datatypes[options.typeName ||
                 options.column.renderTypeName] || blist.datatypes.text;
-            var editor = type.editor;
-            if (editor !== null && editor !== undefined)
-            {
-                blistEditor = new editor(options, this[0]);
-            }
+            var editor = type.getEditor();
+            if (!$.isBlank(editor))
+            { blistEditor = new editor(options, this[0]); }
         }
         return blistEditor;
     };

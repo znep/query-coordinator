@@ -371,6 +371,8 @@ class DatasetsController < ApplicationController
     return if view.nil?
 
     type = CGI.unescape(params[:type])
+    return render_404 if view.blobs.nil?
+
     blob = view.blobs.detect {|b| b['type'] == type}
     return render_404 if blob.nil? || blob['href'].blank?
 

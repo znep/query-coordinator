@@ -34,9 +34,8 @@
         var blistEditor = $(this[0]).data("blistEditor");
         if (!blistEditor)
         {
-            var type = blist.datatypes[options.typeName ||
-                options.column.renderTypeName] || blist.datatypes.text;
-            var editor = type.getEditor();
+            if ($.isBlank(options.type)) { throw 'Type required for blistEditor'; }
+            var editor = options.type.getEditor();
             if (!$.isBlank(editor))
             { blistEditor = new editor(options, this[0]); }
         }
@@ -68,7 +67,9 @@
                 $domObj.data("blistEditor", editObj);
 
                 editObj.row = editObj.settings.row;
-                editObj.column = editObj.settings.column;
+                editObj.type = editObj.settings.type;
+                editObj.format = editObj.settings.format || {};
+                editObj.customProperties = editObj.settings.customProperties || {};
                 editObj.originalValue = editObj.settings.value;
                 editObj.newValue = this.settings.newValue;
                 if (!editObj._uid)

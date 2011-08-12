@@ -28,7 +28,7 @@
     var latitudeValue = function(editObj)
     {
         // Handle invalid values
-        if (typeof editObj.originalValue == 'string')
+        if (typeof editObj.originalValue == 'string' && editObj.type.name == 'location')
         { return editObj.originalValue.split(',')[0].trim(); }
         else if (_.isArray(editObj.originalValue))
         { return editObj.originalValue[0] || ''; }
@@ -39,7 +39,7 @@
     var longitudeValue = function(editObj)
     {
         // Handle invalid values
-        if (typeof editObj.originalValue == 'string')
+        if (typeof editObj.originalValue == 'string' && editObj.type.name == 'location')
         {
             var p = editObj.originalValue.split(',');
             return p.length > 1 ? p[1].trim() : '';
@@ -60,8 +60,7 @@
                 if (!editObj._$editor)
                 {
                     editObj._$editor = $('<div class="blist-table-editor' +
-                        ' type-' + editObj.column.renderTypeName +
-                        '">' +
+                        ' type-' + editObj.type.name + '">' +
                         '<div class="labels street">' +
                         '<span>Street</span>' +
                         '</div>' +
@@ -255,7 +254,10 @@
                 { address.city = newCSZ; }
 
                 obj.human_address = JSON.stringify(address);
-                return obj;
+                if (editObj.type.name == 'location')
+                { return obj; }
+                else
+                { return obj[editObj.type.name]; }
             },
 
             querySize: function()

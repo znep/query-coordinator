@@ -22,32 +22,33 @@
         if (_.include(['is_blank', 'is_not_blank'], op)) { return false; }
 
         var col = blist.dataset.columnForTCID(tcId);
-        var typeName = col.renderTypeName;
+        var type = col.renderType;
 
         // Some types want different editors for filtering
-        if (_.include(['tag', 'email', 'html'], typeName)) { typeName = 'text'; }
+        if (_.include(['tag', 'email', 'html'], type.name)) { type = blist.datatypes.text; }
 
         var firstVal = curValue;
         if (_.isArray(curValue)) { firstVal = curValue[0]; }
 
+        var cp = {dropDownList: col.dropDownList, baseUrl: col.baseUrl()};
         var $editor = $.tag({tagName: 'div',
-            'class': ['editorWrapper', typeName]});
-        $editor.blistEditor({row: null, column: col, value: firstVal,
-            typeName: typeName});
+            'class': ['editorWrapper', type.name]});
+        $editor.blistEditor({type: type, row: null, value: firstVal,
+                format: col.format, customProperties: cp});
         $field.append($editor);
 
         if (op == 'between')
         {
             $field.addClass('twoEditors');
             $field.append($.tag({tagName: 'span',
-                'class': ['joiner', typeName], contents: '&amp;'}));
+                'class': ['joiner', type.name], contents: '&amp;'}));
 
             var secondVal;
             if (_.isArray(curValue)) { secondVal = curValue[1]; }
             $editor = $.tag({tagName: 'div',
-                'class': ['editorWrapper', typeName]});
-            $editor.blistEditor({row: null, column: col, value: secondVal,
-                typeName: typeName});
+                'class': ['editorWrapper', type.name]});
+            $editor.blistEditor({type: type, row: null, value: secondVal,
+                format: col.format, customProperties: cp});
             $field.append($editor);
         }
         else { $field.removeClass('twoEditors'); }
@@ -81,7 +82,7 @@
             var $t = $(this);
             var v = $t.blistEditor().currentValue();
             if (_.isNull(v) &&
-                $t.blistEditor().column.renderTypeName == 'checkbox')
+                $t.blistEditor().type.name == 'checkbox')
             { v = '0'; }
 
             if (!$.isBlank(v)) { vals.push(v); }

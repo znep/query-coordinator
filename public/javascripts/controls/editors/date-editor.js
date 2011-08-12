@@ -11,27 +11,21 @@
     {
         prototype:
         {
-            type: function()
-            {
-                return blist.datatypes[this.column.renderTypeName] ||
-                    blist.datatypes.date;
-            },
-
             originalTextValue: function()
             {
                 this.flattenValue();
-                var formatName = (this.column.format || {}).view || 'date_time';
-                this._format = this.type().formats[formatName] ||
-                    this.type().formats['date_time'];
+                var formatName = this.format.view || 'date_time';
+                this._format = this.type.formats[formatName] ||
+                    this.type.formats['date_time'];
                 if (typeof this.originalValue == 'number')
                 {
                     this._origDate = new Date(this.originalValue * 1000);
                 }
                 else if (!$.isBlank(this.originalValue))
                 {
-                    if (!$.isBlank(this.type().stringParse))
+                    if (!$.isBlank(this.type.stringParse))
                     { this._origDate = Date.parseExact(this.originalValue,
-                        this.type().stringParse); }
+                        this.type.stringParse); }
                     else { this._origDate = Date.parse(this.originalValue); }
                 }
 
@@ -79,16 +73,15 @@
                     // have a day-month swapped format, manually flip them
                     try
                     {
-                        if (((this.column.format || {}).view || '')
-                            .startsWith('date_dmy') &&
+                        if ((this.format.view || '').startsWith('date_dmy') &&
                             !$.isBlank(t.match(/\d{1,2}\/\d{1,2}\//)))
                         { d.set({day: d.getMonth() + 1, month: d.getDate() - 1}); }
                     }
                     catch (e)
                     {}
 
-                    if (!$.isBlank(this.type().stringFormat))
-                    { d = d.toString(this.type().stringFormat); }
+                    if (!$.isBlank(this.type.stringFormat))
+                    { d = d.toString(this.type.stringFormat); }
                     else
                     { d = Math.floor(d.valueOf() / 1000); }
                 }

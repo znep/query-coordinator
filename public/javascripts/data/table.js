@@ -725,11 +725,14 @@
             var $curEditContainer = $('<div class="blist-table-edit-container ' +
                     'mode-' + mode + ' blist-table-util"></div>');
             $scrolls.append($curEditContainer);
+            var realCol = model.columnForID(col.id);
             var blistEditor = $curEditContainer.blistEditor(
-                {row: row, column: model.columnForID(col.id),
-                  value: value, newValue: newValue});
+                {type: realCol.renderType, row: row, value: value, newValue: newValue,
+                    format: realCol.format, customProperties: {dropDownList: realCol.dropDownList,
+                        baseUrl: realCol.baseUrl()}});
             if (!blistEditor) { return; }
 
+            $curEditContainer.data('realColumn', realCol);
             configureEditor(cell, $curEditContainer, mode);
 
             // We upgrade expand mode editors when the user interacts with them
@@ -830,8 +833,8 @@
             var origValue = editor.originalValue;
             var value = editor.currentValue();
             var row = editor.row;
-            var col = editor.column;
             var isValid = editor.isValid();
+            var col = $curEditContainer.data('realColumn');
 
             delete $editContainers[mode];
 

@@ -11,7 +11,7 @@
     {
         var v = editObj.originalValue;
         var ret = v || '';
-        if (v instanceof Object) { ret = v[editObj.column.subColumnTypes[0]]; }
+        if (v instanceof Object) { ret = v[editObj.type.subColumns.url.name]; }
         return ret || '';
     };
 
@@ -19,7 +19,7 @@
     {
         var v = editObj.originalValue;
         var ret = '';
-        if (v instanceof Object) { ret = v[editObj.column.subColumnTypes[1]]; }
+        if (v instanceof Object) { ret = v[editObj.type.subColumns.description.name]; }
         return ret || '';
     };
 
@@ -33,7 +33,7 @@
                 {
                     var hrefVal = $.htmlEscape(this.newValue || hrefValue(this));
                     this._$editor = $('<div class="blist-table-editor' +
-                        ' type-' + this.column.renderTypeName +
+                        ' type-' + this.type.name +
                         '"><div class="labels"><span class="href">URL</span>' +
                         '<span class="description">Description</span></div>' +
                         '<input type="text" class="href" value="' +
@@ -68,9 +68,8 @@
             isValid: function()
             {
                 var curVal = this.urlValue();
-                if (!$.isBlank(curVal) &&
-                    $.subKeyDefined(this.column, 'format.baseUrl'))
-                { curVal = this.column.format.baseUrl + curVal; }
+                if (!$.isBlank(curVal) && $.subKeyDefined(this.format, 'baseUrl'))
+                { curVal = this.format.baseUrl + curVal; }
                 return curVal === null ||
                     curVal.match(/^(mailto\:|(news|(ht|f)tp(s?))\:\/\/)?[a-zA-Z0-9\-\.]+\.([a-zA-Z]{2,}|[0-9]+)(\:\d+)?(\/\S*)?$/i);
             },
@@ -92,8 +91,8 @@
                 if (newHref === null && newDesc === null) { return null; }
 
                 var ret = {};
-                ret[this.column.subColumnTypes[0]] = newHref;
-                ret[this.column.subColumnTypes[1]] = newDesc;
+                ret[this.type.subColumns.url.name] = newHref;
+                ret[this.type.subColumns.description.name] = newDesc;
                 return ret;
             },
 

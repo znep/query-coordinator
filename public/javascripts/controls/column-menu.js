@@ -50,8 +50,7 @@
 
                 if (!isNested && col.renderType.sortable) { features.sort = true; }
 
-                if (!isNested && col.renderType.filterable &&
-                    !cmObj.settings.view.isGrouped())
+                if (canFilter(cmObj, col))
                 { features.filter = true; }
 
 
@@ -182,6 +181,14 @@
         }
     });
 
+    var canFilter = function(cmObj, col)
+    {
+        var types = [col.renderType].concat(_.values(col.renderType.subColumns || {}));
+        return $.isBlank(col.parentColumn) && !cmObj.settings.view.isGrouped() &&
+                _(types).chain().pluck('filterConditions').compact().flatten()
+                    .any(function(fc) { return fc.value == 'EQUALS'; }).value();
+    };
+
     /* Hook up JS behavior for menu.  This is safe to be applied multiple times */
     var hookUpHeaderMenu = function(cmObj)
     {
@@ -221,9 +228,7 @@
 
     var loadFilterMenu = function(cmObj)
     {
-        if (!$.isBlank(cmObj.settings.column.parentColumn) ||
-            !cmObj.settings.column.renderType.filterable ||
-            cmObj.settings.view.isGrouped())
+        if (!canFilter(cmObj, cmObj.settings.column))
         { return; }
 
         // Remove the old filter menu if necessary

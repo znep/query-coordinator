@@ -73,10 +73,10 @@
                 if (!this._$editor)
                 {
                     this.flattenValue();
-                    var align = (this.column.format || {}).align ?
-                        ' align-' + this.column.format.align : '';
+                    var align = this.format.align ?
+                        ' align-' + this.format.align : '';
                     var edHtml = '<div class="blist-table-editor ' +
-                        'type-' + this.column.renderTypeName + align + '">' +
+                        'type-' + this.type.name + align + '">' +
                         '<input class="hiddenTextField" />' +
                         '<span class="star star-clear" title="Clear"></span>';
                     for (var i = 0; i < this.range(); i++)
@@ -115,7 +115,7 @@
             {
                 if (this._range === undefined)
                 {
-                    this._range = parseFloat((this.column.format || {}).range);
+                    this._range = parseFloat(this.format.range);
                     if (this._range <= 0 || isNaN(this._range)) { this._range = 5; }
                 }
                 return this._range;

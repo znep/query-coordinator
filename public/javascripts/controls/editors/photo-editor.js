@@ -32,7 +32,7 @@
 
     var showDialog = function(editObj)
     {
-        $.uploadDialog().show(editObj.column.baseUrl(),
+        $.uploadDialog().show(editObj.customProperties.baseUrl,
                 function(id) { fileUploaded(editObj, id); },
                 function() { editObj.focus(); },
                 ['jpg', 'jpeg', 'gif', 'pjpeg', 'bmp', 'png', 'tif', 'tiff'],
@@ -61,7 +61,7 @@
             $add.hide();
             $editItems.show();
 
-            var url = editObj.column.baseUrl() + editObj._curVal;
+            var url = editObj.customProperties.baseUrl + editObj._curVal;
             $d.find('.view').attr('href', url);
             $d.find('img').attr('src', url);
         }
@@ -107,7 +107,7 @@
                     this.flattenValue();
                     this._curVal = this.originalValue;
                     var html = '<div class="blist-table-editor ' +
-                        'type-' + this.column.renderTypeName +
+                        'type-' + this.type.name +
                         '"><div class="buttons">' +
                         '<a class="tableButton add" href="#add" ' +
                         'title="Add a new image">Add</a>' +

@@ -30,7 +30,7 @@
 
     var showDialog = function(editObj)
     {
-        $.uploadDialog().show(editObj.column.baseUrl(),
+        $.uploadDialog().show(editObj.customProperties.baseUrl,
                 function(id, name) { fileUploaded(editObj, id, name); },
                 function() { editObj.focus(); });
         editObj.focus();
@@ -38,7 +38,7 @@
 
     var idField = function(editObj)
     {
-        return (editObj.column.renderTypeName == 'document') ? "file_id" : "id";
+        return (editObj.type.name == 'document') ? "file_id" : "id";
     };
 
     var fileUploaded = function(editObj, fileId, fileName)
@@ -66,7 +66,7 @@
 
         var v = editObj._curVal;
         $d.find('.docLink')
-            .attr('href', v ? editObj.column.baseUrl() + v[idField(editObj)] : '')
+            .attr('href', v ? editObj.customProperties.baseUrl + v[idField(editObj)] : '')
             .text(v ? v.filename : '');
         $d.trigger('resize');
     };
@@ -103,7 +103,7 @@
                 {
                     this._curVal = this.originalValue;
                     var html = '<div class="blist-table-editor ' +
-                        'type-' + this.column.renderTypeName + '">' +
+                        'type-' + this.type.name + '">' +
                         '<a class="tableButton add" href="#add" ' +
                         'title="Add a new document">Add</a>' +
                         '<a class="tableButton replace" href="#replace" ' +

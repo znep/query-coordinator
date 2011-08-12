@@ -16,10 +16,10 @@
                 if (!this._$editor)
                 {
                     this.flattenValue();
-                    var align = (this.column.format || {}).align ?
-                        ' align-' + this.column.format.align : '';
+                    var align = this.format.align ?
+                        ' align-' + this.format.align : '';
                     this._$editor = $('<div class="blist-table-editor ' +
-                        'type-' + this.column.renderTypeName + align + '">' +
+                        'type-' + this.type.name + align + '">' +
                         '<input type="checkbox"' +
                         (this.originalValue === true ? ' checked="checked"' : '') +
                         ' /></div>');

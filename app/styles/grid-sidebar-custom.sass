@@ -697,14 +697,16 @@
           .labels.street, .labels.city_state_zip
             font-size: 1.2em
 
-        .blist-table-editor.type-phone .blist-combo
+        .blist-table-editor .blist-combo
           margin: 0 // default styling clips
-
-        // composite editors
-        &.phone_number .blist-table-editor.type-phone .blist-combo-wrapper
-          display: none
-        &.phone_type .blist-table-editor.type-phone input.phoneNumber
-          display: none
+          .blist-combo-value
+            .icon
+              margin-top: 3px
+            img
+              float: left
+              margin:
+                right: 5px
+                top: 4px
 
         &.url, &.description
           .blist-table-editor.type-url .labels

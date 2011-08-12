@@ -5,7 +5,8 @@
 
     var filterableTypes = _.compact(_.map(blist.datatypes, function(t, n)
     {
-        return !$.isBlank(t.filterConditions) ? n : null;
+        return !$.isBlank(t.filterConditions) || _.any(t.subColumns, function(st)
+            { return !$.isBlank(st.filterConditions); }) ? n : null;
     }));
 
     var configName = 'filter.unifiedFilter';

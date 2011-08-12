@@ -651,42 +651,49 @@ blist.namespace.fetch('blist.datatypes');
     // controls/maps/external-esri-map.js#transformFilterToLayerDefinition
     // -- michael.chui@socrata.com
     var filterConditions = {
-        textual:    [ { value: "EQUALS", text: "equals" },
-                      { value: "NOT_EQUALS", text: "does not equal" },
+        textual:    [ { value: "EQUALS", text: "is" },
+                      { value: "NOT_EQUALS", text: "is not" },
                       { value: "STARTS_WITH", text: "starts with" },
                       { value: "CONTAINS", text: "contains" },
                       { value: "NOT_CONTAINS", text: "does not contain" },
                       { value: "IS_NOT_BLANK", text: "is not blank" },
                       { value: "IS_BLANK", text: "is blank" }
                     ],
-        numeric:    [ { value: "EQUALS", text: "equals" },
-                      { value: "NOT_EQUALS", text: "not equals" },
-                      { value: "LESS_THAN", text: "less than" },
+        textObject: [ { value: "EQUALS", text: "is" },
+                      { value: "NOT_EQUALS", text: "is not" },
+                      { value: "CONTAINS", text: "contains" },
+                      { value: "NOT_CONTAINS", text: "does not contain" },
+                      { value: "IS_NOT_BLANK", text: "is not blank" },
+                      { value: "IS_BLANK", text: "is blank" }
+                    ],
+        numeric:    [ { value: "EQUALS", text: "is" },
+                      { value: "NOT_EQUALS", text: "is not" },
+                      { value: "LESS_THAN", text: "is less than" },
                       { value: "LESS_THAN_OR_EQUALS",
-                        text: "less than or equal to" },
-                      { value: "GREATER_THAN", text: "greater than" },
+                        text: "is less than or equal to" },
+                      { value: "GREATER_THAN", text: "is greater than" },
                       { value: "GREATER_THAN_OR_EQUALS",
-                        text: "greater than or equal to" },
-                      { value: "BETWEEN", text: "between" },
+                        text: "is greater than or equal to" },
+                      { value: "BETWEEN", text: "is between" },
                       { value: "IS_NOT_BLANK", text: "is not blank" },
                       { value: "IS_BLANK", text: "is blank" }
                     ],
-        date:       [ { value: "EQUALS", text: "on" },
-                      { value: "NOT_EQUALS", text: "not on" },
-                      { value: "LESS_THAN", text: "before" },
-                      { value: "GREATER_THAN", text: "after" },
-                      { value: "BETWEEN", text: "between" },
+        date:       [ { value: "EQUALS", text: "is" },
+                      { value: "NOT_EQUALS", text: "is not" },
+                      { value: "LESS_THAN", text: "is before" },
+                      { value: "GREATER_THAN", text: "is after" },
+                      { value: "BETWEEN", text: "is between" },
                       { value: "IS_NOT_BLANK", text: "is not blank" },
                       { value: "IS_BLANK", text: "is blank" }
                     ],
-        comparable: [ { value: "EQUALS", text: "equals" },
+        comparable: [ { value: "EQUALS", text: "is" },
+                      { value: "NOT_EQUALS", text: "is not" },
                       { value: "IS_NOT_BLANK", text: "is not blank" },
                       { value: "IS_BLANK", text: "is blank" }
                     ],
         blob:       [ { value: "IS_BLANK", text: "is empty" },
                       { value: "IS_NOT_BLANK", text: "exists" } ]
     };
-
 
     // Date-time formatting and views
     var shortTimeFormat = 'h:i A';
@@ -806,7 +813,6 @@ blist.namespace.fetch('blist.datatypes');
                 .concat(numericConvertTypes),
             createable: true,
             deleteable: true,
-            filterable: true,
             filterConditions: filterConditions.textual,
             inlineType: true,
             priority: 1,
@@ -824,7 +830,6 @@ blist.namespace.fetch('blist.datatypes');
                 .concat(numericConvertTypes),
             createable: true,
             deleteable: true,
-            filterable: true,
             filterConditions: filterConditions.textual,
             priority: 2,
             rollUpAggregates: nonNumericAggs,
@@ -844,7 +849,6 @@ blist.namespace.fetch('blist.datatypes');
                 .concat('text').concat('dataset_link'),
             createable: true,
             deleteable: true,
-            filterable: true,
             filterConditions: filterConditions.numeric,
             inlineType: true,
             precisionStyle: [{text: 'Standard (1,020.4)', value: 'standard'},
@@ -978,7 +982,6 @@ blist.namespace.fetch('blist.datatypes');
                 "ZWD": "Z$"
             },
             deleteable: true,
-            filterable: true,
             filterConditions: filterConditions.numeric,
             inlineType: true,
             priority: 4,
@@ -996,7 +999,6 @@ blist.namespace.fetch('blist.datatypes');
             convertableTypes: _.without(numericConvertTypes, 'percent').concat('text'),
             createable: true,
             deleteable: true,
-            filterable: true,
             filterConditions: filterConditions.numeric,
             priority: 5,
             rollUpAggregates: aggs,
@@ -1018,7 +1020,6 @@ blist.namespace.fetch('blist.datatypes');
             convertableTypes: ['text', 'calendar_date'],
             createable: true,
             deleteable: true,
-            filterable: true,
             filterConditions: filterConditions.date,
             filterValue: function(v) { return v; },
             formats: zDateTimeFormats,
@@ -1039,7 +1040,6 @@ blist.namespace.fetch('blist.datatypes');
             convertableTypes: ['text', 'date'],
             createable: true,
             deleteable: true,
-            filterable: true,
             filterConditions: filterConditions.date,
             filterValue: function(v) { return v; },
             formats: dateTimeFormats,
@@ -1065,7 +1065,6 @@ blist.namespace.fetch('blist.datatypes');
             convertableTypes: ['text'],
             createable: true,
             deleteable: true,
-            filterable: true,
             filterConditions: filterConditions.textual,
             inlineType: true,
             priority: 10,
@@ -1082,11 +1081,38 @@ blist.namespace.fetch('blist.datatypes');
             cls: 'phone',
             convertableTypes: ['text'],
             createable: true,
+            defaultFilterSubColumn: 'phone_type',
             deleteable: true,
-            filterable: true,
-            filterConditions: filterConditions.textual,
             priority: 14,
-            sortable: true
+            sortable: true,
+            subColumns: {
+                phone_number: {
+                    title: 'Number',
+                    interfaceType: blist.datatypes.interfaceTypes.text,
+
+                    filterConditions: filterConditions.textual
+                },
+                phone_type: {
+                    title: 'Type',
+                    interfaceType: blist.datatypes.interfaceTypes.lookupList,
+
+                    dropDownList: {
+                        values: [
+                                { id: 'Cell', description: 'Cell',
+                                    icon: '/stylesheets/images/content/table/phones/cell.png'},
+                                { id: 'Home', description: 'Home',
+                                    icon: '/stylesheets/images/content/table/phones/home.png'},
+                                { id: 'Work', description: 'Work',
+                                    icon: '/stylesheets/images/content/table/phones/work.png'},
+                                { id: 'Fax', description: 'Fax',
+                                    icon: '/stylesheets/images/content/table/phones/fax.png'},
+                                { id: 'Other', description: 'Other',
+                                    icon: '/stylesheets/images/content/table/phones/other.png'}
+                        ]
+                    },
+                    filterConditions: filterConditions.comparable
+                }
+            }
         },
 
         url: {
@@ -1097,13 +1123,26 @@ blist.namespace.fetch('blist.datatypes');
             alignment: alignment,
             convertableTypes: ['text', 'dataset_link'],
             createable: true,
+            defaultFilterSubColumn: 'description',
             deleteable: true,
-            filterable: true,
-            filterConditions: filterConditions.textual,
             inlineType: true,
             priority: 9,
             rollUpAggregates: nonNumericAggs,
-            sortable: true
+            sortable: true,
+            subColumns: {
+                url: {
+                    title: 'URL',
+                    interfaceType: blist.datatypes.interfaceTypes.text,
+
+                    filterConditions: filterConditions.textual
+                },
+                description: {
+                    title: 'Description',
+                    interfaceType: blist.datatypes.interfaceTypes.text,
+
+                    filterConditions: filterConditions.textual
+                }
+            }
         },
 
 
@@ -1117,7 +1156,6 @@ blist.namespace.fetch('blist.datatypes');
             convertableTypes: ['text'],
             createable: true,
             deleteable: true,
-            filterable: true,
             filterConditions: filterConditions.comparable,
             filterValue: valueFilterCheckbox,
             isInlineEdit: true,
@@ -1135,7 +1173,6 @@ blist.namespace.fetch('blist.datatypes');
             convertableTypes: ['text'],
             createable: true,
             deleteable: true,
-            filterable: true,
             filterConditions: filterConditions.comparable,
             priority: 12,
             rollUpAggregates: nonNumericAggs,
@@ -1152,7 +1189,6 @@ blist.namespace.fetch('blist.datatypes');
             convertableTypes: _.without(numericConvertTypes, 'stars').concat('text'),
             createable: true,
             deleteable: true,
-            filterable: true,
             filterConditions: filterConditions.numeric,
             isInlineEdit: true,
             priority: 13,
@@ -1168,10 +1204,29 @@ blist.namespace.fetch('blist.datatypes');
 
             alignment: alignment,
             createable: true,
+            defaultFilterSubColumn: 'human_address',
             deleteable: true,
-            filterable: true,
-            filterConditions: filterConditions.comparable,
             priority: 8,
+            subColumns: {
+                human_address: {
+                    title: 'Address',
+                    interfaceType: blist.datatypes.interfaceTypes.location,
+
+                    filterConditions: filterConditions.textObject
+                },
+                latitude: {
+                    title: 'Latitude',
+                    interfaceType: blist.datatypes.interfaceTypes.number,
+
+                    filterConditions: filterConditions.numeric
+                },
+                longitude: {
+                    title: 'Longitude',
+                    interfaceType: blist.datatypes.interfaceTypes.number,
+
+                    filterConditions: filterConditions.numeric
+                }
+            },
             viewTypes: [{value: 'address_coords', text: 'Address &amp; Coordinates' },
                 { value: 'coords', text: 'Coordinates Only' },
                 { value: 'address', text: 'Address Only' }]
@@ -1184,7 +1239,6 @@ blist.namespace.fetch('blist.datatypes');
             alignment: alignment,
             createable: false,
             deleteable: false,
-            filterable: false,
             priority: 20
         },
 
@@ -1244,7 +1298,6 @@ blist.namespace.fetch('blist.datatypes');
             alignment: alignment,
             createable: true,
             deleteable: true,
-            filterable: true,
             filterConditions: filterConditions.numeric,
             priority: 15,
             rollUpAggregates: nonNumericAggs,
@@ -1260,7 +1313,6 @@ blist.namespace.fetch('blist.datatypes');
             convertableTypes: ['text'],
             createable: true,
             deleteable: true,
-            filterable: true,
             filterConditions: filterConditions.textual,
             priority: 19,
             rollUpAggregates: nonNumericAggs,
@@ -1272,7 +1324,6 @@ blist.namespace.fetch('blist.datatypes');
             interfaceType: blist.datatypes.interfaceTypes.lookupList,
 
             deleteable: true,
-            filterable: true,
             filterConditions: filterConditions.numeric,
             sortable: true
         },
@@ -1286,7 +1337,6 @@ blist.namespace.fetch('blist.datatypes');
             alignment: alignment,
             createable: false,
             deleteable: false,
-            filterable: false,
             priority: 20
         },
 
@@ -1297,7 +1347,6 @@ blist.namespace.fetch('blist.datatypes');
             createable: false,
             deleteable: false,
             alignment: alignment,
-            filterable: false,
             priority: 21
         },
 
@@ -1308,7 +1357,6 @@ blist.namespace.fetch('blist.datatypes');
             interfaceType: blist.datatypes.interfaceTypes.tag,
 
             aggregates: nonNumericAggs,
-            filterable: true,
             filterConditions: filterConditions.textual,
             inlineType: true,
             priority: 19
@@ -1324,9 +1372,9 @@ blist.namespace.fetch('blist.datatypes');
         }
     });
 
-    _.each(blist.datatypes, function(type, name)
+    var setUpType = function(type, name)
     {
-        if ($.isPlainObject(type)) { type.name = name; }
+        type.name = type.name || name;
         type.renderer = function()
         {
             if ($.subKeyDefined(type, 'interfaceType.renderer'))
@@ -1340,6 +1388,12 @@ blist.namespace.fetch('blist.datatypes');
             { return type.interfaceType.editor; }
             return null;
         };
+    };
+
+    _.each(blist.datatypes, function(type, name)
+    {
+        setUpType(type, name);
+        _.each(type.subColumns || {}, function(sc, sn) { setUpType(sc, sn); });
     });
 
 })(jQuery);

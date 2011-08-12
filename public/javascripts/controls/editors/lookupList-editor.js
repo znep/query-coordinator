@@ -36,8 +36,9 @@
                 var editObj = this;
                 editObj._valuesList = [ { id: 'null', label: '(Blank)'} ];
 
-                _.each((editObj.column.dropDownList || {}).values || [],
-                    function(v)
+                var ddl = (editObj.customProperties.dropDownList || {}).values ||
+                    (editObj.type.dropDownList || {}).values || [];
+                _.each(ddl, function(v)
                     {
                         if (!v.deleted && !$.isBlank(v.id))
                         {
@@ -100,14 +101,9 @@
                 return found;
             },
 
-            dataType: function()
-            {
-                return this.column.dataTypeName;
-            },
-
             allowFreeEdit: function()
             {
-                switch (this.dataType())
+                switch (this.type.name)
                 {
                     case 'dataset_link': return true;
                     default: return false;

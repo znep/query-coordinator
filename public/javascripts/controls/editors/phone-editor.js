@@ -11,7 +11,7 @@
     {
         var v = editObj.originalValue;
         var ret = v || '';
-        if (v instanceof Object) { ret = v[editObj.column.subColumnTypes[0]]; }
+        if (v instanceof Object) { ret = v[editObj.type.subColumns.phone_number.name]; }
         return ret || '';
     };
 
@@ -19,18 +19,9 @@
     {
         var v = editObj.originalValue;
         var ret = '';
-        if (v instanceof Object) { ret = v[editObj.column.subColumnTypes[1]]; }
+        if (v instanceof Object) { ret = v[editObj.type.subColumns.phone_type.name]; }
         return ret || '';
     };
-
-    var typeValues = [
-        { id: 'null', label: '(Blank)'},
-        { id: 'Home', label: 'Home'},
-        { id: 'Cell', label: 'Cell'},
-        { id: 'Work', label: 'Work'},
-        { id: 'Fax', label: 'Fax'},
-        { id: 'Other', label: 'Other'}
-    ];
 
     var renderTypeValue = function(value)
     {
@@ -50,8 +41,7 @@
                 {
                     var value = $.htmlEscape(this.newValue || numberValue(this));
                     this._$editor = $('<div class="blist-table-editor' +
-                        ' type-' + this.column.renderTypeName +
-                        '">' +
+                        ' type-' + this.type.name + '">' +
                         '<input type="text" class="phoneNumber" value="' +
                         value + '" />' +
                         '<div class="blist-combo-wrapper">' +
@@ -63,6 +53,9 @@
             editorInserted: function()
             {
                 var editObj = this;
+                var typeValues = _.map(editObj.type.subColumns.phone_type.dropDownList.values,
+                    function(v) { return {id: v.id, label: v.description}; });
+                typeValues.unshift({id: 'null', label: '(Blank)'});
                 editObj.setFullSize();
                 editObj.$dom().addClass('combo-container');
                 editObj.$editor().find('.type-combo').combo({
@@ -103,8 +96,8 @@
                 if (newNum === null && newType === null) { return null; }
 
                 var ret = {};
-                ret[this.column.subColumnTypes[0]] = newNum;
-                ret[this.column.subColumnTypes[1]] = newType;
+                ret[this.type.subColumns.phone_number.name] = newNum;
+                ret[this.type.subColumns.phone_type.name] = newType;
                 return ret;
             },
 

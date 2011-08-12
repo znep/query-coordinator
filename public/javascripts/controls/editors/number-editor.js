@@ -14,11 +14,9 @@
         {
             numberTextValue: function()
             {
-                var format = this.column.format || {};
-
                 // get our value from the mask plugin if necessary
                 // (need to demask it)
-                if (this._$editor && _.isString(format.mask))
+                if (this._$editor && _.isString(this.format.mask))
                 {
                     var $input = this._$editor.find('input');
 
@@ -48,11 +46,10 @@
 
             editorInserted: function()
             {
-                var format = this.column.format || {};
                 // attach maskedinput plugin if relevant
-                if (this._$editor && _.isString(format.mask))
+                if (this._$editor && _.isString(this.format.mask))
                 {
-                    this._$editor.find('input').mask(format.mask);
+                    this._$editor.find('input').mask(this.format.mask);
                 }
 
                 // super():

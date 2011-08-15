@@ -75,12 +75,12 @@ javascripts:
     - public/javascripts/controls/calendars/default-calendar.js
   shared-table-render:
     - public/javascripts/util/humane-number.js
-    - public/javascripts/data/model.js
-    - public/javascripts/data/table.js
-    - public/javascripts/data/table_nav.js
+    - public/javascripts/controls/table/model.js
+    - public/javascripts/controls/table/table.js
+    - public/javascripts/controls/table/table_nav.js
     - public/javascripts/controls/scrollable.js
     - public/javascripts/controls/column-menu.js
-    - public/javascripts/controls/dataset-grid.js
+    - public/javascripts/controls/table/dataset-grid.js
   shared-map:
     - public/javascripts/plugins/StyledMarker.js
     - public/javascripts/plugins/markerwithlabel.js

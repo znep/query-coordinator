@@ -167,7 +167,7 @@
             + name: internal name for field; required if it is of type selectable.
                 Used to identify a hidden section to open
             + onlyIf: only display the section if these criteria are true.
-                Currently accepts an object or array of objects:
+                Currently accepts a function, an object, or an array of objects:
             {
               + field: Input field to check the value of
               + value: Value that the field should be set to for the section
@@ -278,6 +278,8 @@
                           (will find the closest field with that name)
                       + value: Value that the field should be set to for this
                           field to be shown
+                      + func: Function that takes the the field value to check,
+                          returns a boolean
                       + negate: If true, the result will be inverted
                     }
                   + notequalto: optional, string to use for validating notequalto;
@@ -499,6 +501,7 @@
                 sidebarObj._selectOptions = {};
                 sidebarObj._customCallbacks = {};
                 sidebarObj._columnSelects = [];
+                sidebarObj._fieldOnlyIfs = {};
 
                 sidebarObj._changeHandlers = {};
 
@@ -1568,11 +1571,15 @@
                 'data-dataValue': {value: $.htmlEscape(
                         JSON.stringify(item.dataValue || '')),
                     onlyIf: !$.isBlank(item.dataValue) &&
-                        item.dataValue !== item.defaultValue},
-                'data-onlyIf': {value: $.htmlEscape(
-                        JSON.stringify(item.onlyIf || '')),
-                    onlyIf: $.isPlainObject(item.onlyIf)}
+                        item.dataValue !== item.defaultValue}
             };
+
+            if ($.isPlainObject(item.onlyIf))
+            {
+                var oiUid = _.uniqueId();
+                sidebarObj._fieldOnlyIfs[oiUid] = item.onlyIf;
+                result['data-onlyIf'] = oiUid;
+            }
 
             if (_.isFunction(item.change))
             {
@@ -1646,7 +1653,12 @@
                 if (!f.required) { continue; }
                 if (f.onlyIf)
                 {
-                    var onlyIf = getValue(contextData, f.onlyIf.field) != f.onlyIf.value;
+                    var onlyIf = false;
+                    var v = getValue(contextData, f.onlyIf.field);
+                    if (_.isFunction(f.onlyIf.func))
+                    { onlyIf = onlyIf || f.onlyIf.func(v); }
+                    if (!$.isBlank(f.onlyIf.value))
+                    { onlyIf = onlyIf || f.onlyIf.value != v; }
                     if (f.onlyIf.negate) { onlyIf = !onlyIf; }
                     if (onlyIf) { continue; }
                 }
@@ -2708,10 +2720,9 @@
                 var custId = $field.attr('data-customId');
                 var customField = sidebarObj._customCallbacks[custId];
                 if (!$.isBlank(customField)) { customField = customField.create; }
-                var onlyIf = JSON.parse($field.attr('data-onlyIf') || '""');
+                var onlyIf = sidebarObj._fieldOnlyIfs[$field.attr('data-onlyIf')];
 
-                var selOpt = sidebarObj._selectOptions[$field
-                    .attr('data-selectOption')];
+                var selOpt = sidebarObj._selectOptions[$field.attr('data-selectOption')];
                 if (!_.isFunction(selOpt) && !_.isFunction(customField) &&
                     !$.isPlainObject(onlyIf))
                 { return; }
@@ -2754,7 +2765,11 @@
                     var $l = $field.closest('.line');
                     if ($.isPlainObject(onlyIf))
                     {
-                        var showField = onlyIf.value == (vals[onlyIf.field] || vals);
+                        var showField = true;
+                        if (_.isFunction(onlyIf.func))
+                        { showField = showField && onlyIf.func(vals); }
+                        if (!$.isBlank(onlyIf.value))
+                        { showField = showField && onlyIf.value == (vals[onlyIf.field] || vals); }
                         if (onlyIf.negate) { showField = !showField; }
                         $l.toggle(showField);
                     }

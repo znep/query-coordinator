@@ -260,32 +260,7 @@
         font-size: 1em
         position: relative
 
-        &.type-phone
-          overflow: visible
-          input.phoneNumber
-            margin-bottom: 0.3em
-            padding: 0.2em
-
-        &.type-url
-          margin-left: 5.2em
-          .labels
-            font-size: 1.1em
-            left: -5.2em
-            position: absolute
-            text-align: right
-            width: 5em
-
-            span
-              display: block
-              margin-top: 0.5em
-
-          input
-            display: block
-            margin-top: 0.1em
-
         &.type-location
-          .lat_long
-            display: none
           .labels span
             font-size: 1.1em
 
@@ -707,14 +682,6 @@
               margin:
                 right: 5px
                 top: 4px
-
-        &.url, &.description
-          .blist-table-editor.type-url .labels
-            display: none
-        &.url .blist-table-editor.type-url input.description
-          display: none
-        &.description .blist-table-editor.type-url input.href
-          display: none
 
         &.human_address .blist-table-editor.type-location .lat_long
           display: none

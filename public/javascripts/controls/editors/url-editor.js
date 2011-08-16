@@ -33,7 +33,7 @@
                 {
                     var hrefVal = $.htmlEscape(this.newValue || hrefValue(this));
                     this._$editor = $('<div class="blist-table-editor' +
-                        ' type-' + this.type.name +
+                        ' type-' + (this.type.cls || this.type.name) +
                         '"><div class="labels"><span class="href">URL</span>' +
                         '<span class="description">Description</span></div>' +
                         '<input type="text" class="href" value="' +

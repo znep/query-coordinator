@@ -4,25 +4,47 @@
         blist.sidebarHidden.visualize.conditionalFormatting) { return; }
 
     var filterableTypes = _.compact(_.map(blist.datatypes, function(t, n)
-    { return !$.isBlank(t.filterConditions) ? n : null; }));
+    {
+        return !$.isBlank(t.filterConditions) || _.any(t.subColumns, function(st)
+            { return !$.isBlank(st.filterConditions); }) ? n : null;
+    }));
 
-    var filterOperators = function(tcId)
+    var subColumnShown = function(tcId)
+    {
+        if ($.isBlank(tcId)) { return false; }
+        return !_.isEmpty(blist.dataset.columnForTCID(tcId).renderType.subColumns);
+    };
+
+    var subColumns = function(tcId)
     {
         if ($.isBlank(tcId)) { return null; }
-        return blist.dataset.columnForTCID(tcId).renderType.filterConditions;
+        var c = blist.dataset.columnForTCID(tcId);
+        var r = _.map(c.renderType.subColumns || {}, function(sc)
+            { return {value: sc.name, text: sc.title}; });
+        return _.isEmpty(r) ? null : r;
+    };
+
+    var filterOperators = function(vals)
+    {
+        if ($.isBlank(vals.tableColumnId)) { return null; }
+        var type = blist.dataset.columnForTCID(vals.tableColumnId).renderType;
+        if ($.subKeyDefined(type, 'subColumns.' + vals.subColumn))
+        { type = type.subColumns[vals.subColumn]; }
+        return type.filterConditions;
     };
 
     var filterEditor = function(sidebarObj, $field, vals, curValue)
     {
-        var tcId = vals['tableColumnId'];
-        var op = vals['operator'];
-        if ($.isBlank(tcId) || $.isBlank(op)) { return false; }
+        var op = vals.operator;
+        if ($.isBlank(vals.tableColumnId) || $.isBlank(op)) { return false; }
         op = op.toLowerCase();
 
         if (_.include(['is_blank', 'is_not_blank'], op)) { return false; }
 
-        var col = blist.dataset.columnForTCID(tcId);
+        var col = blist.dataset.columnForTCID(vals.tableColumnId);
         var type = col.renderType;
+        if ($.subKeyDefined(type, 'subColumns.' + vals.subColumn))
+        { type = type.subColumns[vals.subColumn]; }
 
         // Some types want different editors for filtering
         if (_.include(['tag', 'email', 'html'], type.name)) { type = blist.datatypes.text; }
@@ -61,9 +83,8 @@
 
     var filterEditorRequired = function(sidebarObj, vals)
     {
-        var tcId = vals['tableColumnId'];
-        var op = vals['operator'];
-        if ($.isBlank(tcId) || $.isBlank(op)) { return false; }
+        var op = vals.operator;
+        if ($.isBlank(vals.tableColumnId) || $.isBlank(op)) { return false; }
         op = op.toLowerCase();
 
         if (_.include(['is_blank', 'is_not_blank'], op)) { return false; }
@@ -182,19 +203,20 @@
                         name: 'condition.operator'},
                     {type: 'repeater', minimum: 0, addText: 'Add Condition',
                         name: 'condition.children',
-                        onlyIf: {field: 'condition.operator', value: 'always',
-                            negate: true},
+                        onlyIf: {field: 'condition.operator', value: 'always', negate: true},
                         field: {type: 'group', options: [
                         {type: 'columnSelect', text: 'Condition:', required: true,
                             name: 'tableColumnId', isTableColumn: true,
                             columns: {type: filterableTypes, hidden: false}},
-                        {type: 'select', name: 'operator',
-                            required: true, linkedField: 'tableColumnId',
-                            prompt: 'Select a comparison',
-                            options: filterOperators},
+                        {type: 'select', required: true, name: 'subColumn',
+                            linkedField: 'tableColumnId', prompt: 'Select a sub-column',
+                            onlyIf: {field: 'tableColumnId', func: subColumnShown},
+                            options: subColumns},
+                        {type: 'select', name: 'operator', required: true,
+                            linkedField: ['tableColumnId', 'subColumn'],
+                            prompt: 'Select a comparison', options: filterOperators},
                         {type: 'custom', required: true, name: 'value',
-                            linkedField: ['tableColumnId',
-                                'operator'],
+                            linkedField: ['tableColumnId', 'subColumn', 'operator'],
                             editorCallbacks: {create: filterEditor,
                                 required: filterEditorRequired,
                                 value: filterEditorValue,

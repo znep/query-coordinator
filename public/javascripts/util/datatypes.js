@@ -1132,8 +1132,9 @@ blist.namespace.fetch('blist.datatypes');
             subColumns: {
                 url: {
                     title: 'URL',
-                    interfaceType: blist.datatypes.interfaceTypes.text,
+                    interfaceType: blist.datatypes.interfaceTypes.url,
 
+                    cls: 'url_sub',
                     filterConditions: filterConditions.textual
                 },
                 description: {

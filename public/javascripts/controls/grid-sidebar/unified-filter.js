@@ -3,38 +3,6 @@
     var noFilterValue = { noFilter: true }; // sentinel value for blank filters
 
 /////////////////////////////////////
-// DEFS
-
-    var defaultOperator = {
-        text: 'EQUALS',
-        html: 'EQUALS',
-        number: 'between?',
-        date: 'between?',
-        calendar_date: 'between?',
-        photo: 'blank?',
-        photo_obsolete: 'blank?',
-        money: 'between?',
-        phone_number: 'EQUALS',
-        phone_type: 'EQUALS',
-        checkbox: 'EQUALS',
-        flag: 'EQUALS',
-        stars: 'EQUALS',
-        percent: 'between?',
-        url: 'EQUALS',
-        description: 'EQUALS',
-        'document': 'blank?',
-        document_obsolete: 'blank?',
-        human_address: 'EQUALS',
-        latitude: 'between?',
-        longitude: 'between?',
-        tag: 'CONTAINS',
-        email: 'EQUALS',
-        picklist: 'EQUALS',
-        drop_down_list: 'EQUALS',
-        dataset_link: 'EQUALS' // ??
-    };
-
-/////////////////////////////////////
 // UTIL
 
     // cleans out filters down to a "minimal effective" state: essentially strips out
@@ -130,6 +98,13 @@
         return value;
     };
 
+    var getDefaultOperator = function(type)
+    {
+        return $.subKeyDefined(type, 'filterConditions.details.BETWEEN') ? 'between?' :
+            $.subKeyDefined(type, 'filterConditions.details.EQUALS') ? 'EQUALS' :
+            'blank?';
+    };
+
     var getOperatorName = function(column, subcolumn, operator)
     {
         if (operator == 'blank?') { return 'is'; }
@@ -137,17 +112,17 @@
         if ($.subKeyDefined(type, 'subColumns.' + subcolumn))
         { type = type.subColumns[subcolumn]; }
         if (!$.subKeyDefined(type, 'filterConditions')) { return ''; }
-        return (_.detect(type.filterConditions,
-            function(fc) { return fc.value == operator; }) || {}).text || '';
+        return (type.filterConditions.details[operator] || {}).text || '';
     };
 
-    var scrubFilterOperators = function(operators)
+    var scrubFilterOperators = function(fc)
     {
         // we handle blank/notblank separately
-        return _.reject(operators, function(operator)
-        {
-            return (operator.value == 'IS_NOT_BLANK') || (operator.value == 'IS_BLANK');
-        }).concat({ value: 'blank?', text: 'is blank?' });
+        return _.compact(_.map(fc.orderedList, function(op)
+                {
+                    return (op == 'IS_BLANK' || op == 'IS_NOT_BLANK') ? null :
+                        {value: op, text: fc.details[op].text};
+                })).concat({ value: 'blank?', text: 'is blank?' });
     };
 
     // see if a condition is basically blank
@@ -163,7 +138,10 @@
     // determine the default operator for a column given context
     var defaultOperatorForColumn = function(column, subcolumn)
     {
-        var operator = defaultOperator[subcolumn || column.renderTypeName] || 'blank?';
+        var type = column.renderType;
+        if ($.subKeyDefined(type, 'subColumns.' + subcolumn))
+        { type = type.subColumns[subcolumn]; }
+        var operator = getDefaultOperator(type);
 
         if (operator == 'between?')
         {
@@ -676,9 +654,8 @@
                         delete metadata.subcolumn;
                     }
 
-                    if (!_.include(_.pluck(
-                        getRenderType(newColumn, metadata.subcolumn).filterConditions, 'value'),
-                        metadata.operator))
+                    if (!$.subKeyDefined(getRenderType(newColumn, metadata.subcolumn),
+                        'filterConditions.details.' + metadata.operator))
                     {
                         // the column they'd like to select doesn't support the operator they've selected
                         if (!hasNoValues(condition) &&
@@ -772,9 +749,8 @@
                             return true;
                         }
 
-                        if (!_.include(_.pluck(
-                            getRenderType(column, newSubcolumn).filterConditions, 'value'),
-                            metadata.operator))
+                        if (!$.subKeyDefined(getRenderType(column, newSubcolumn),
+                            'filterConditions.details.' + metadata.operator))
                         {
                             // the column they'd like to select doesn't support the operator they've selected
                             if (!hasNoValues(condition) &&
@@ -1061,18 +1037,15 @@
                 var renderType = column.renderType;
                 if ($.subKeyDefined(column.renderType, 'subColumns.' + metadata.subcolumn))
                 { renderType = column.renderType.subColumns[metadata.subcolumn]; }
-                if (_.include(['tag', 'html', 'email', 'dataset_link'], renderType.name))
-                {
-                    // flatten these down to text instead
-                    renderType = blist.datatypes.text;
-                }
+
+                var editorFn = renderType.getFilterEditor(metadata.operator);
 
                 // dump in the appropriate number of editors
-                _((metadata.operator == 'BETWEEN') ? 2 : 1).times(function(i)
+                _(renderType.filterConditions.details[metadata.operator].editorCount).times(function(i)
                 {
                     if (i > 0)
                     {
-                        $line.find('.filterValueEditor:first').after($.tag({
+                        $line.append($.tag({
                             tagName: 'span',
                             contents: 'and',
                             'class': 'conjunction'
@@ -1095,9 +1068,9 @@
                     }
 
                     $this.data('unifiedFilter-editor',
-                        $this.blistEditor({type: renderType, value: editorValue, row: null,
+                        new editorFn({type: renderType, value: editorValue, row: null,
                             format: column.format, customProperties: {dropDownList: column.dropDownList,
-                                baseUrl: column.baseUrl()}}));
+                                baseUrl: column.baseUrl()}}, $this[0]));
                 });
 
                 // events

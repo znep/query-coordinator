@@ -2080,8 +2080,7 @@ this.Dataset = ServerModel.extend({
             { type = type.subColumns[c.subColumn]; }
 
             // Make sure this condition is supported for this type
-            if (!_.any(type.filterConditions, function(fc)
-                { return c.operator.toUpperCase() == fc.value; }))
+            if (!$.subKeyDefined(type, 'filterConditions.details.' + c.operator.toUpperCase()))
             { return false; }
 
             var rowVal = row[col.lookup];

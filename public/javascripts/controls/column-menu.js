@@ -185,8 +185,7 @@
     {
         var types = [col.renderType].concat(_.values(col.renderType.subColumns || {}));
         return $.isBlank(col.parentColumn) && !cmObj.settings.view.isGrouped() &&
-                _(types).chain().pluck('filterConditions').compact().flatten()
-                    .any(function(fc) { return fc.value == 'EQUALS'; }).value();
+            _.any(types, function(t) { return $.subKeyDefined(t, 'filterConditions.details.EQUALS'); });
     };
 
     /* Hook up JS behavior for menu.  This is safe to be applied multiple times */

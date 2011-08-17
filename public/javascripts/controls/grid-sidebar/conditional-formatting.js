@@ -30,50 +30,42 @@
         var type = blist.dataset.columnForTCID(vals.tableColumnId).renderType;
         if ($.subKeyDefined(type, 'subColumns.' + vals.subColumn))
         { type = type.subColumns[vals.subColumn]; }
-        return type.filterConditions;
+        if ($.isBlank(type.filterConditions)) { return null; }
+        return _.map(type.filterConditions.orderedList,
+            function(op) { return {value: op, text: type.filterConditions.details[op].text}; });
     };
 
     var filterEditor = function(sidebarObj, $field, vals, curValue)
     {
-        var op = vals.operator;
-        if ($.isBlank(vals.tableColumnId) || $.isBlank(op)) { return false; }
-        op = op.toLowerCase();
-
-        if (_.include(['is_blank', 'is_not_blank'], op)) { return false; }
+        if ($.isBlank(vals.tableColumnId) || $.isBlank(vals.operator)) { return false; }
 
         var col = blist.dataset.columnForTCID(vals.tableColumnId);
         var type = col.renderType;
         if ($.subKeyDefined(type, 'subColumns.' + vals.subColumn))
         { type = type.subColumns[vals.subColumn]; }
 
-        // Some types want different editors for filtering
-        if (_.include(['tag', 'email', 'html'], type.name)) { type = blist.datatypes.text; }
+        if (!$.subKeyDefined(type, 'filterConditions.details.' + vals.operator) ||
+            type.filterConditions.details[vals.operator].editorCount < 1)
+        { return false; }
 
-        var firstVal = curValue;
-        if (_.isArray(curValue)) { firstVal = curValue[0]; }
-
+        var fc = type.filterConditions.details[vals.operator];
         var cp = {dropDownList: col.dropDownList, baseUrl: col.baseUrl()};
-        var $editor = $.tag({tagName: 'div',
-            'class': ['editorWrapper', type.name]});
-        $editor.blistEditor({type: type, row: null, value: firstVal,
-                format: col.format, customProperties: cp});
-        $field.append($editor);
+        var editorFn = type.getFilterEditor(vals.operator);
 
-        if (op == 'between')
+        _.times(fc.editorCount, function(i)
         {
-            $field.addClass('twoEditors');
-            $field.append($.tag({tagName: 'span',
-                'class': ['joiner', type.name], contents: '&amp;'}));
-
-            var secondVal;
-            if (_.isArray(curValue)) { secondVal = curValue[1]; }
-            $editor = $.tag({tagName: 'div',
-                'class': ['editorWrapper', type.name]});
-            $editor.blistEditor({type: type, row: null, value: secondVal,
-                format: col.format, customProperties: cp});
+            if (i > 0)
+            {
+                $field.append($.tag({tagName: 'span',
+                    'class': ['joiner', type.name], contents: '&amp;'}));
+            }
+            var $editor = $.tag({tagName: 'div', 'class': ['editorWrapper', type.name]});
+            new editorFn({type: type, row: null, value: _.isArray(curValue) ? curValue[i] : curValue,
+                    format: col.format, customProperties: cp}, $editor[0]);
             $field.append($editor);
-        }
-        else { $field.removeClass('twoEditors'); }
+        });
+
+        $field.toggleClass('twoEditors', fc.editorCount == 2);
 
         if (!$.isBlank($.uniform))
         { $field.find('select, :checkbox, :radio, :file').uniform(); }
@@ -83,11 +75,11 @@
 
     var filterEditorRequired = function(sidebarObj, vals)
     {
-        var op = vals.operator;
-        if ($.isBlank(vals.tableColumnId) || $.isBlank(op)) { return false; }
-        op = op.toLowerCase();
+        if ($.isBlank(vals.tableColumnId) || $.isBlank(vals.operator)) { return false; }
 
-        if (_.include(['is_blank', 'is_not_blank'], op)) { return false; }
+        if (!$.subKeyDefined(type, 'filterConditions.details.' + vals.operator) ||
+            type.filterConditions.details[vals.operator].editorCount < 1)
+        { return false; }
 
         return true;
     };

@@ -1,12 +1,5 @@
 (function($)
 {
-    $.blistEditor.lookupList = function(options, dom)
-    {
-        this.settings = $.extend({}, $.blistEditor.lookupList.defaults, options);
-        this.currentDom = dom;
-        this.init();
-    };
-
     var renderValue = function(value)
     {
         var $row = $(this);
@@ -17,100 +10,98 @@
         $row.empty().append($icon).append($span_label);
     };
 
-    $.extend($.blistEditor.lookupList, $.blistEditor.extend(
-    {
-        prototype:
+    $.blistEditor.lookupList = $.blistEditor.extend({
+        _init: function()
         {
-            $editor: function()
-            {
-                if (!this._$editor)
+            this._super.apply(this, arguments);
+
+            var editObj = this;
+            editObj._valuesList = [ { id: 'null', label: '(Blank)'} ];
+
+            var ddl = (editObj.customProperties.dropDownList || {}).values ||
+                (editObj.type.dropDownList || {}).values || [];
+            _.each(ddl, function(v)
                 {
-                    this._$editor = $('<div class="blist-table-editor">' +
-                        '<div class="picklist-combo"></div></div>');
-                }
-                return this._$editor;
-            },
-
-            editorInserted: function()
-            {
-                var editObj = this;
-                editObj._valuesList = [ { id: 'null', label: '(Blank)'} ];
-
-                var ddl = (editObj.customProperties.dropDownList || {}).values ||
-                    (editObj.type.dropDownList || {}).values || [];
-                _.each(ddl, function(v)
+                    if (!v.deleted && !$.isBlank(v.id))
                     {
-                        if (!v.deleted && !$.isBlank(v.id))
-                        {
-                            editObj._valuesList.push({id: v.id,
-                                label: v.description || '', icon: v.icon});
-                        }
-                    });
-
-                editObj.flattenValue();
-                editObj.setFullSize();
-                editObj.$dom().addClass('blist-combo-wrapper')
-                    .addClass('combo-container');
-                editObj.$editor().find('.picklist-combo').combo({
-                    ddClass: 'table-editor-combo',
-                    name: 'picklist-combo',
-                    values: editObj._valuesList,
-                    value: editObj.originalValue ?
-                        editObj.originalValue : 'null',
-                    // drop down must use existing values
-                    // rdf link can use non-existing values
-                    allowFreeEdit: this.allowFreeEdit(),
-                    renderFn: renderValue
+                        editObj._valuesList.push({id: v.id,
+                            label: v.description || '', icon: v.icon});
+                    }
                 });
-            },
 
-            getSizeElement: function()
+            editObj.flattenValue();
+            editObj.setFullSize();
+            editObj.$dom().addClass('blist-combo-wrapper')
+                .addClass('combo-container');
+            editObj.$editor().find('.picklist-combo').combo({
+                ddClass: 'table-editor-combo',
+                name: 'picklist-combo',
+                values: editObj._valuesList,
+                value: editObj.originalValue ?
+                    editObj.originalValue : 'null',
+                // drop down must use existing values
+                // rdf link can use non-existing values
+                allowFreeEdit: this.allowFreeEdit(),
+                renderFn: renderValue
+            });
+        },
+
+        $editor: function()
+        {
+            if (!this._$editor)
             {
-                return this.$editor().children(':first');
-            },
+                this._$editor = $('<div class="blist-table-editor">' +
+                    '<div class="picklist-combo"></div></div>');
+            }
+            return this._$editor;
+        },
 
-            currentValue: function()
+        getSizeElement: function()
+        {
+            return this.$editor().children(':first');
+        },
+
+        currentValue: function()
+        {
+            var val = this.$editor().find('.picklist-combo').value();
+            return val === undefined || val === null || val === 'null' ?
+                null : val;
+        },
+
+        focus: function()
+        {
+            this.$dom().find('.picklist-combo').focus();
+        },
+
+        isValid: function()
+        {
+            if (this.allowFreeEdit())
             {
-                var val = this.$editor().find('.picklist-combo').value();
-                return val === undefined || val === null || val === 'null' ?
-                    null : val;
-            },
+                return true;
+            }
 
-            focus: function()
+            var curVal = this.currentValue();
+            if (curVal === null) { return true; }
+
+            var found = false;
+            if (this._valuesList)
             {
-                this.$dom().find('.picklist-combo').focus();
-            },
+                $.each(this._valuesList, function(i, v)
+                        { if (v.id == curVal)
+                            { found = true; return false; } });
+            }
+            return found;
+        },
 
-            isValid: function()
+        allowFreeEdit: function()
+        {
+            switch (this.type.name)
             {
-                if (this.allowFreeEdit())
-                {
-                    return true;
-                }
-
-                var curVal = this.currentValue();
-                if (curVal === null) { return true; }
-
-                var found = false;
-                if (this._valuesList)
-                {
-                    $.each(this._valuesList, function(i, v)
-                            { if (v.id == curVal)
-                                { found = true; return false; } });
-                }
-                return found;
-            },
-
-            allowFreeEdit: function()
-            {
-                switch (this.type.name)
-                {
-                    case 'dataset_link': return true;
-                    default: return false;
-                }
+                case 'dataset_link': return true;
+                default: return false;
             }
         }
-    }));
+    });
 
     $.blistEditor.addEditor($.blistEditor.lookupList, 'lookupList');
 

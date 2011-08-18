@@ -3,14 +3,10 @@
     // Set up namespace for editors to class themselves under
     $.blistEditor =
     {
-        extend: function(extHash, extObj)
+        extend: function(childModel, parentModel)
         {
-            if (!extObj) { extObj = blistEditorObject; }
-            return $.extend({}, extObj, extHash,
-            {
-                defaults: $.extend({}, extObj.defaults, extHash.defaults || {}),
-                prototype: $.extend({}, extObj.prototype, extHash.prototype || {})
-            });
+            if (!parentModel) { parentModel = blistEditorObject; }
+            return parentModel.extend(childModel);
         },
 
         addEditor: function(editor, type)
@@ -42,264 +38,233 @@
         return blistEditor;
     };
 
-    var blistEditorObject = function(options, dom)
-    {
-        this.settings = $.extend({}, blistEditorObject.defaults, options);
-        this.currentDom = dom;
-        this.init();
-    };
-
-    var editorUID = 1;
-
-    $.extend(blistEditorObject,
-    {
-        defaults:
+    var blistEditorObject = Class.extend({
+        _init: function (options, dom)
         {
+            var editObj = this;
+            editObj.settings = $.extend({}, options);
+            editObj.currentDom = dom;
+
+            var $domObj = editObj.$dom();
+            $domObj.keydown(function (e) { handleKeyDown(editObj, e); })
+            $domObj.data("blistEditor", editObj);
+
+            editObj.row = editObj.settings.row;
+            editObj.type = editObj.settings.type;
+            editObj.format = editObj.settings.format || {};
+            editObj.customProperties = editObj.settings.customProperties || {};
+            editObj.originalValue = editObj.settings.value;
+            editObj.newValue = this.settings.newValue;
+            if (!editObj._uid)
+            { editObj._uid = _.uniqueId(); }
+
+            var $editor = editObj.$editor();
+            $domObj.append($editor);
+            if (!editObj.isValid()) { $domObj.addClass('invalid'); }
+
+            $(document).bind('mousedown.blistEditor_' + editObj._uid,
+                function (e) { docMouseDown(editObj, e); });
         },
 
-        prototype:
+        finishEdit: function()
         {
-            init: function ()
+            var editObj = this;
+            if (editObj._uid)
             {
-                var editObj = this;
-                var $domObj = editObj.$dom();
-                $domObj.keydown(function (e) { handleKeyDown(editObj, e); })
-                $domObj.data("blistEditor", editObj);
-
-                editObj.row = editObj.settings.row;
-                editObj.type = editObj.settings.type;
-                editObj.format = editObj.settings.format || {};
-                editObj.customProperties = editObj.settings.customProperties || {};
-                editObj.originalValue = editObj.settings.value;
-                editObj.newValue = this.settings.newValue;
-                if (!editObj._uid)
-                { editObj._uid = editorUID++; }
-
-                var $editor = editObj.$editor();
-                $domObj.append($editor);
-                if (!editObj.isValid()) { $domObj.addClass('invalid'); }
-                editObj.editorInserted();
-
-                $(document).bind('mousedown.blistEditor_' + editObj._uid,
-                    function (e) { docMouseDown(editObj, e); });
-            },
-
-            finishEdit: function()
-            {
-                var editObj = this;
-                if (editObj._uid)
-                {
-                    $(document).unbind('.blistEditor_' + editObj._uid);
-                    editObj._uid = null;
-                }
-                delete editObj._$externalEditor;
-                editObj.$dom().trigger("edit-finished");
-                editObj.finishEditExtra();
-            },
-
-            $dom: function()
-            {
-                if (!this._$dom)
-                { this._$dom = $(this.currentDom); }
-                return this._$dom;
-            },
-
-            flattenValue: function()
-            {
-                if ($.isPlainObject(this.originalValue))
-                { this.originalValue = _.values(this.originalValue)[0]; }
-            },
-
-            $editor: function()
-            {
-                // Implement me
-            },
-
-            editorInserted: function()
-            {
-                // Override me if desired
-            },
-
-            initComplete: function(showCallback)
-            {
-                // Override me if desired to defer call to showCallback
-                showCallback();
-            },
-
-            finishEditExtra: function()
-            {
-                // Override me if desired
-            },
-
-            registerExternalEditor: function($extEditor)
-            {
-                this._$externalEditor = $extEditor;
-            },
-
-            currentValue: function()
-            {
-                // Implement me
-                return this.originalValue;
-            },
-
-            /**
-             * Set focus to the control.  The default implementation works for any control in which the first text
-             * field should receive the focus.
-             */
-            focus: function()
-            {
-                var $text = this.$editor().find(":text:first");
-                $text.focus();
-                if (this.newValue != null)
-                {
-                    delete this.newValue;
-                    setCursorPosition($text[0]);
-                }
-                else
-                {
-                    $text.select();
-                }
-            },
-
-            setFullSize: function()
-            {
-                this.$dom().addClass('full-size');
-            },
-
-            /**
-             * Set the element's size given sizing constraints.
-             */
-            adjustSize: function(minWidth, minHeight, maxWidth, maxHeight)
-            {
-                // Determine my desired size, if any
-                var size = this.querySize();
-                if (size) {
-                    var width = size.width;
-                    var height = size.height;
-                }
-                if (!width)
-                    width = 0;
-                if (!height)
-                    height = 0;
-
-                // Obtain the element we will size and the container.  We use the container to compute padding/border
-                // deltas so we can compensate for them in the CSS width/height properties.
-                var $sz = $(this.getSizeElement());
-                var outer = this.$dom()[0];
-
-                // Compute the minimum dimensions (reference dimensions - editor padding) and correct dimensions that
-                // are too small
-                minWidth = minWidth - (outer.offsetWidth - $sz.width());
-                minHeight = minHeight - (outer.offsetHeight - $sz.height());
-                if (width < minWidth)
-                    width = minWidth;
-                if (height < minHeight)
-                    height = minHeight;
-
-                // Correct dimensions that are too large
-                maxWidth = Math.floor(maxWidth || Infinity);
-                maxHeight = Math.floor(maxHeight || Infinity);
-                if (width > maxWidth)
-                    width = maxWidth;
-                if (height > maxHeight)
-                    height = maxHeight;
-
-                this.setSize(width, height);
-            },
-
-            /**
-             * Retrieve the element upon which sizing logic should be applied.
-             */
-            getSizeElement: function()
-            {
-                return this.$editor()[0];
-            },
-
-            /**
-             * Set the size of the element based on sizing computation.  Derivatives may override if sizing requires
-             * more than simply setting a size.
-             */
-            setSize: function(width, height)
-            {
-                var $outer = this.$dom();
-                var $sz = $(this.getSizeElement());
-                var outerWidth = width + ($outer.width() - $sz.width());
-                var outerHeight = height + ($outer.height() - $sz.height());
-
-                // IE7 will fire resize when changing $outer's size, which can
-                // lead to an infite loop of resizing, with slightly different
-                // sizes each time.  The only way to avoid this seems to be to
-                // keep track of previous resize target, and don't set the
-                // same thing again (comparing against the current size
-                // doesn't work)
-                if (width != this._prevWidth || height != this._prevHeight)
-                {
-                    this._prevWidth = width;
-                    this._prevHeight = height;
-                    $sz.css({ width: width + 'px', height: height + 'px' });
-                    // When scrolled horizontally in IE7, it will cut editors short
-                    // unless we force the size of the container
-                    $outer.width(outerWidth).height(outerHeight);
-                }
-            },
-
-            /**
-             * Derivatives can override this function to convey a preferred size.
-             */
-            querySize: function()
-            {
-                return {};
-            },
-
-            isValid: function()
-            {
-                // Override me if desired
-                return true;
-            },
-
-            /**
-             * Derivatives may call this to notify listeners of command state changes.
-             */
-            actionStatesChanged: function()
-            {
-                this.$dom().trigger("action-state-change");
-            },
-
-            /**
-             * Derivatives can pass state of commands to the external world by overriding this method.
-             */
-            getActionStates: function() {
-                return {};
-            },
-
-            /**
-             * Trigger an action.  Returns true iff the action is executed.  Value is optional.
-             */
-            action: function(name, value) {
-                return false;
-            },
-
-            /**
-             * Am I embedded in a table edit container?
-             */
-            inContainer: function() {
-                return this.$editor() && this.$editor().closest('.blist-table-edit-container').length ? true : false;
-            },
-
-            /**
-             * Query whether this editor supports formatting
-             */
-            supportsFormatting: function()
-            { return false; },
-
-            /**
-             * Derivatives may call this to convey that the user changed the control's value.  This is currently only
-             * required for "expand" editors -- the table upgrades these to "select" editors when this occurs.
-             */
-            changed: function()
-            {
-                this.$dom().trigger('editor-change');
+                $(document).unbind('.blistEditor_' + editObj._uid);
+                editObj._uid = null;
             }
+            delete editObj._$externalEditor;
+            editObj.$dom().trigger("edit-finished");
+        },
+
+        $dom: function()
+        {
+            if (!this._$dom)
+            { this._$dom = $(this.currentDom); }
+            return this._$dom;
+        },
+
+        flattenValue: function()
+        {
+            if ($.isPlainObject(this.originalValue))
+            { this.originalValue = _.values(this.originalValue)[0]; }
+        },
+
+        initComplete: function(showCallback)
+        {
+            // Override me if desired to defer call to showCallback
+            showCallback();
+        },
+
+        registerExternalEditor: function($extEditor)
+        {
+            this._$externalEditor = $extEditor;
+        },
+
+        currentValue: function()
+        {
+            // Implement me
+            return this.originalValue;
+        },
+
+        /**
+         * Set focus to the control.  The default implementation works for any control in which the first text
+         * field should receive the focus.
+         */
+        focus: function()
+        {
+            var $text = this.$editor().find(":text:first");
+            $text.focus();
+            if (this.newValue != null)
+            {
+                delete this.newValue;
+                setCursorPosition($text[0]);
+            }
+            else
+            {
+                $text.select();
+            }
+        },
+
+        setFullSize: function()
+        {
+            this.$dom().addClass('full-size');
+        },
+
+        /**
+         * Set the element's size given sizing constraints.
+         */
+        adjustSize: function(minWidth, minHeight, maxWidth, maxHeight)
+        {
+            // Determine my desired size, if any
+            var size = this.querySize();
+            if (size) {
+                var width = size.width;
+                var height = size.height;
+            }
+            if (!width)
+                width = 0;
+            if (!height)
+                height = 0;
+
+            // Obtain the element we will size and the container.  We use the container to compute padding/border
+            // deltas so we can compensate for them in the CSS width/height properties.
+            var $sz = $(this.getSizeElement());
+            var outer = this.$dom()[0];
+
+            // Compute the minimum dimensions (reference dimensions - editor padding) and correct dimensions that
+            // are too small
+            minWidth = minWidth - (outer.offsetWidth - $sz.width());
+            minHeight = minHeight - (outer.offsetHeight - $sz.height());
+            if (width < minWidth)
+                width = minWidth;
+            if (height < minHeight)
+                height = minHeight;
+
+            // Correct dimensions that are too large
+            maxWidth = Math.floor(maxWidth || Infinity);
+            maxHeight = Math.floor(maxHeight || Infinity);
+            if (width > maxWidth)
+                width = maxWidth;
+            if (height > maxHeight)
+                height = maxHeight;
+
+            this.setSize(width, height);
+        },
+
+        /**
+         * Retrieve the element upon which sizing logic should be applied.
+         */
+        getSizeElement: function()
+        {
+            return this.$editor()[0];
+        },
+
+        /**
+         * Set the size of the element based on sizing computation.  Derivatives may override if sizing requires
+         * more than simply setting a size.
+         */
+        setSize: function(width, height)
+        {
+            var $outer = this.$dom();
+            var $sz = $(this.getSizeElement());
+            var outerWidth = width + ($outer.width() - $sz.width());
+            var outerHeight = height + ($outer.height() - $sz.height());
+
+            // IE7 will fire resize when changing $outer's size, which can
+            // lead to an infite loop of resizing, with slightly different
+            // sizes each time.  The only way to avoid this seems to be to
+            // keep track of previous resize target, and don't set the
+            // same thing again (comparing against the current size
+            // doesn't work)
+            if (width != this._prevWidth || height != this._prevHeight)
+            {
+                this._prevWidth = width;
+                this._prevHeight = height;
+                $sz.css({ width: width + 'px', height: height + 'px' });
+                // When scrolled horizontally in IE7, it will cut editors short
+                // unless we force the size of the container
+                $outer.width(outerWidth).height(outerHeight);
+            }
+        },
+
+        /**
+         * Derivatives can override this function to convey a preferred size.
+         */
+        querySize: function()
+        {
+            return {};
+        },
+
+        isValid: function()
+        {
+            // Override me if desired
+            return true;
+        },
+
+        /**
+         * Derivatives may call this to notify listeners of command state changes.
+         */
+        actionStatesChanged: function()
+        {
+            this.$dom().trigger("action-state-change");
+        },
+
+        /**
+         * Derivatives can pass state of commands to the external world by overriding this method.
+         */
+        getActionStates: function() {
+            return {};
+        },
+
+        /**
+         * Trigger an action.  Returns true iff the action is executed.  Value is optional.
+         */
+        action: function(name, value) {
+            return false;
+        },
+
+        /**
+         * Am I embedded in a table edit container?
+         */
+        inContainer: function() {
+            return this.$editor() && this.$editor().closest('.blist-table-edit-container').length ? true : false;
+        },
+
+        /**
+         * Query whether this editor supports formatting
+         */
+        supportsFormatting: function()
+        { return false; },
+
+        /**
+         * Derivatives may call this to convey that the user changed the control's value.  This is currently only
+         * required for "expand" editors -- the table upgrades these to "select" editors when this occurs.
+         */
+        changed: function()
+        {
+            this.$dom().trigger('editor-change');
         }
     });
 

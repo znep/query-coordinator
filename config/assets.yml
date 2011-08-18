@@ -58,7 +58,6 @@ javascripts:
     - public/javascripts/controls/editors/phone-editor.js
     - public/javascripts/controls/editors/location-editor.js
     - public/javascripts/controls/combo.js
-    - public/javascripts/controls/editors/flag-editor.js
     - public/javascripts/controls/editors/lookupList-editor.js
     - public/javascripts/controls/editors/checkbox-editor.js
     - public/javascripts/controls/editors/stars-editor.js

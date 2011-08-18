@@ -293,11 +293,9 @@ blist.namespace.fetch('blist.datatypes');
     { return plainText || inMenu ? value : uriHelper(value && ['mailto:' + value , value]); };
 
     // Phone
-    var renderPhone = function(value, column, plainText, inMenu, subType)
+    var renderPhone = function(value, column, plainText, inMenu)
     {
         var v = value;
-        if (!$.isBlank(subType))
-        { v = $.keyValueToObject(subType, value); }
 
         if (!value) { return ''; }
 
@@ -367,17 +365,9 @@ blist.namespace.fetch('blist.datatypes');
     };
 
 
-    // Flag
-    var renderFlag = function(value, column, plainText)
-    {
-        if (plainText) { return value || ''; }
-        return value && "<span class='blist-flag blist-flag-" + value +
-            "' title='value'>" + value + "</span>";
-    };
-
     // Stars
     STAR_WIDTH = 16;
-    var renderStars = function(value, column, plainText, inMenu, subType, context)
+    var renderStars = function(value, column, plainText, inMenu, context)
     {
         if ($.isBlank(value) || value <= 0) { return ''; }
 
@@ -415,31 +405,16 @@ blist.namespace.fetch('blist.datatypes');
     /* Geographic types */
 
     // Location
-    var renderLocation = function(value, column, plainText, inMenu, subType)
+    var renderLocation = function(value, column, plainText, inMenu)
     {
         if ($.isBlank(value)) { return ''; }
 
         var v = value;
         var view = column.format.view;
-        if (!$.isBlank(subType))
+        if (this.name != 'location')
         {
-            v = $.keyValueToObject(subType, value);
-            if (inMenu)
-            {
-                switch (subType)
-                {
-                    case 'human_address':
-                        view = 'address';
-                        break;
-                    case 'latitude':
-                    case 'longitude':
-                        view = 'coords';
-                        break;
-                    default:
-                        view = 'none';
-                        break;
-                }
-            }
+            view = 'address_coords';
+            v = $.keyValueToObject(this.name, v);
         }
         if ($.isBlank(view)) { view = 'address_coords'; }
 
@@ -459,7 +434,7 @@ blist.namespace.fetch('blist.datatypes');
                 ', ' + (v.longitude || '') + (plainText ? '' : '&deg;') + ')');
         }
 
-        return pieces.join(plainText ? ' \n' : '<br />');
+        return pieces.join(plainText || inMenu ? ' \n' : '<br />');
     };
 
     // Geospatial
@@ -490,7 +465,7 @@ blist.namespace.fetch('blist.datatypes');
     /* Blobby types */
 
     // Photo
-    var renderPhoto = function(value, column, plainText, inMenu, subType, context)
+    var renderPhoto = function(value, column, plainText, inMenu, context)
     {
         var url = column.baseUrl() + value;
         if (plainText) { return url; }
@@ -559,12 +534,13 @@ blist.namespace.fetch('blist.datatypes');
         if (!_.isString(value) || $.isBlank(value)) { return ''; }
 
         var matchVal;
-        if (column.dropDownList)
+        var ddl = column.dropDownList || this.dropDownList;
+        if (ddl)
         {
             var lcVal = value.toLowerCase();
-            for (var i = 0; i < column.dropDownList.values.length; i++)
+            for (var i = 0; i < ddl.values.length; i++)
             {
-                var v = column.dropDownList.values[i];
+                var v = ddl.values[i];
                 if ((v.id || '').toLowerCase() == lcVal)
                 {
                     matchVal = v;
@@ -576,17 +552,19 @@ blist.namespace.fetch('blist.datatypes');
         if ($.isBlank(matchVal))
         { return '<div class="blist-dataset-link-dangling">' + value + '</div>'; }
 
+        var view = column.format.view || (this.format || {}).view || 'icon_text';
         var result = [];
         if (!plainText)
         {
-            result.push('<span class="blist-dropdownlist-wrapper">');
-            if (!$.isBlank(matchVal.icon))
+            result.push('<span class="blist-dropdownlist-wrapper blist-' + (this.cls || this.name) + '">');
+            if (!$.isBlank(matchVal.icon) && view.startsWith('icon'))
             {
-                result.push('<img class="blist-table-option-icon" src="',
-                    matchVal.icon, '" />');
+                result.push('<img class="blist-table-option-icon" src="', matchVal.icon,
+                        '" title="', $.htmlStrip(matchVal.description || ''), '" />');
             }
         }
-        result.push($.htmlStrip(matchVal.description || ''));
+        if (view.endsWith('text'))
+        { result.push($.htmlStrip(matchVal.description || '')); }
         if (!plainText)
         { result.push('</span>'); }
         return result.join('');
@@ -774,8 +752,6 @@ blist.namespace.fetch('blist.datatypes');
         document: { renderer: renderDocument },
 
         email: { renderer: renderEmail },
-
-        flag: { renderer: renderFlag },
 
         geospatial: { renderer: renderGeospatial },
 
@@ -1199,14 +1175,29 @@ blist.namespace.fetch('blist.datatypes');
 
         flag: {
             title: 'Flag',
-            interfaceType: blist.datatypes.interfaceTypes.flag,
+            interfaceType: blist.datatypes.interfaceTypes.lookupList,
 
             aggregates: nonNumericAggs,
             alignment: alignment,
             convertableTypes: ['text'],
             createable: true,
             deleteable: true,
+            dropDownList: { values: [
+                { id: 'red', description: 'Red',
+                    icon: '/stylesheets/images/content/table/flags/red.png'},
+                { id: 'blue', description: 'Blue',
+                    icon: '/stylesheets/images/content/table/flags/blue.png'},
+                { id: 'green', description: 'Green',
+                    icon: '/stylesheets/images/content/table/flags/green.png'},
+                { id: 'yellow', description: 'Yellow',
+                    icon: '/stylesheets/images/content/table/flags/yellow.png'},
+                { id: 'orange', description: 'Orange',
+                    icon: '/stylesheets/images/content/table/flags/orange.png'},
+                { id: 'purple', description: 'Purple',
+                    icon: '/stylesheets/images/content/table/flags/purple.png'}
+            ] },
             filterConditions: filterGroups.comparable,
+            format: { view: 'icon' },
             priority: 12,
             rollUpAggregates: nonNumericAggs,
             sortable: true

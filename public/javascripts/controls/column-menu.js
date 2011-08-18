@@ -327,12 +327,11 @@
                             .column.currentFilter) &&
                             cmObj.settings.column.currentFilter.value == f.value;
                         var curType = cmObj.settings.column.renderType;
-                        f.escapedValue = escape(
-                            _.isFunction(curType.filterValue) ?
-                                curType.filterValue(f.value) :
-                                $.htmlStrip(f.value + ''));
-                        f.renderedValue = curType.renderer(f.value, cmObj.settings.column,
-                                    false, true, cs.subColumnType);
+                        if ($.subKeyDefined(curType, 'subColumns.' + cs.subColumnType))
+                        { curType = curType.subColumns[cs.subColumnType]; }
+                        f.escapedValue = escape(_.isFunction(curType.filterValue) ?
+                                curType.filterValue(f.value) : $.htmlStrip(f.value + ''));
+                        f.renderedValue = curType.renderer(f.value, cmObj.settings.column, false, true);
                         f.titleValue = $.htmlStrip(f.renderedValue + '');
                     });
 

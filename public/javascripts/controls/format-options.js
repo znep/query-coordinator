@@ -15,9 +15,6 @@
 
             config.$grid = $(config.gridSelector);
 
-            $fmtMenu.find('a, select').mousedown(function(e)
-                { e.stopPropagation(); });
-
             $fmtMenu.find('a.toggleButton').click(function(e)
             {
                 e.preventDefault();
@@ -109,6 +106,7 @@
                     return;
                 }
 
+                config.formatEditor.registerExternalEditor($fmtMenu);
                 $fmtMenu.removeClass('disabled');
                 var state = config.formatEditor.getActionStates();
 

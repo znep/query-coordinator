@@ -93,6 +93,7 @@
                     $(document).unbind('.blistEditor_' + editObj._uid);
                     editObj._uid = null;
                 }
+                delete editObj._$externalEditor;
                 editObj.$dom().trigger("edit-finished");
                 editObj.finishEditExtra();
             },
@@ -129,6 +130,11 @@
             finishEditExtra: function()
             {
                 // Override me if desired
+            },
+
+            registerExternalEditor: function($extEditor)
+            {
+                this._$externalEditor = $extEditor;
             },
 
             currentValue: function()
@@ -377,7 +383,7 @@
         // We have to detect if they chose to upload a file in here, because
         // it seems to be impossible to catch and prevent the event from
         // the upload dialog itself
-        if ($(event.target).parents().andSelf().index(editObj.$dom()) < 0 &&
+        if ($(event.target).parents().andSelf().index(editObj.$dom().add(editObj._$externalEditor)) < 0 &&
             $(event.target).attr('name') != 'uploadFileInput')
         {
             editObj.$dom().trigger('edit_end', [true, event]);

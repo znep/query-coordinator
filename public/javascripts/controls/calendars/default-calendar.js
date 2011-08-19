@@ -11,96 +11,88 @@
         return socrataCalendar;
     };
 
-    var socrataCalendarObj = function(options, dom)
-    {
-        this.settings = $.extend({}, socrataCalendarObj.defaults, options);
-        this.currentDom = dom;
-        this.init();
-    };
-
-    $.extend(socrataCalendarObj, $.socrataVisualization.extend(
-    {
-        defaults:
+    var socrataCalendarObj = $.socrataVisualization.extend({
+        initializeVisualization: function()
         {
+            setUpCalendar(this);
         },
 
-        prototype:
+        cleanVisualization: function()
         {
-            initializeVisualization: function ()
+            var calObj = this;
+            calObj._super();
+
+            delete calObj._startCol;
+            delete calObj._endCol;
+            delete calObj._titleCol;
+        },
+
+        reloadVisualization: function()
+        {
+            var calObj = this;
+            calObj.$dom().fullCalendar('destroy');
+            setUpCalendar(calObj);
+
+            calObj._super();
+        },
+
+        resizeHandle: function()
+        { this.$dom().fullCalendar('render'); },
+
+        renderRow: function(row)
+        {
+            var calObj = this;
+
+            var ce = {id: row.id,
+                start: row[calObj._startCol.lookup],
+                title: $.htmlStrip(row[calObj._titleCol.lookup]),
+                color: null,
+                row: row};
+            if ((row.sessionMeta || {}).highlight)
+            { ce.color = blist.styles.getReferenceProperty('itemHighlight', 'background-color'); }
+
+            if (!$.isBlank(calObj._endCol))
             {
-                setUpCalendar(this);
-            },
-
-            reloadVisualization: function()
-            {
-                var calObj = this;
-
-                delete calObj._startCol;
-                delete calObj._endCol;
-                delete calObj._titleCol;
-
-                calObj.$dom().fullCalendar('destroy');
-                setUpCalendar(calObj);
-            },
-
-            resizeHandle: function()
-            { this.$dom().fullCalendar('render'); },
-
-            renderRow: function(row)
-            {
-                var calObj = this;
-
-                var ce = {id: row.id,
-                    start: row[calObj._startCol.lookup],
-                    title: $.htmlStrip(row[calObj._titleCol.lookup]),
-                    color: null,
-                    row: row};
-                if ((row.sessionMeta || {}).highlight)
-                { ce.color = blist.styles.getReferenceProperty('itemHighlight', 'background-color'); }
-
-                if (!$.isBlank(calObj._endCol))
-                {
-                    ce.end = row[calObj._endCol.lookup];
-                    if ($.isBlank(ce.start)) { ce.start = ce.end; }
-                }
-
-                var $fc = calObj.$dom();
-                var exEvent = $fc.fullCalendar('clientEvents', ce.id);
-                if (exEvent.length > 0)
-                { $fc.fullCalendar('updateEvent', $.extend(_.first(exEvent), ce)); }
-                else
-                { calObj._events.push(ce); }
-
-                return true;
-            },
-
-            rowsRendered: function()
-            {
-                if (!_.isEmpty(this._events))
-                {
-                    this.$dom().fullCalendar('addEventSource', this._events);
-                    this._events = [];
-                }
-            },
-
-            getColumns: function()
-            {
-                var calObj = this;
-                calObj._startCol = calObj.settings.view.columnForTCID(
-                    calObj.settings.view.displayFormat.startDateTableId);
-                calObj._endCol = calObj.settings.view.columnForTCID(
-                    calObj.settings.view.displayFormat.endDateTableId);
-                calObj._titleCol = calObj.settings.view.columnForTCID(
-                    calObj.settings.view.displayFormat.titleTableId);
-            },
-
-            closeFlyout: function($link)
-            {
-                $link.parents('.bt-wrapper').data('socrataTip-$element')
-                    .socrataTip().hide();
+                ce.end = row[calObj._endCol.lookup];
+                if ($.isBlank(ce.start)) { ce.start = ce.end; }
             }
+
+            var $fc = calObj.$dom();
+            var exEvent = $fc.fullCalendar('clientEvents', ce.id);
+            if (exEvent.length > 0)
+            { $fc.fullCalendar('updateEvent', $.extend(_.first(exEvent), ce)); }
+            else
+            { calObj._events.push(ce); }
+
+            return true;
+        },
+
+        rowsRendered: function()
+        {
+            if (!_.isEmpty(this._events))
+            {
+                this.$dom().fullCalendar('addEventSource', this._events);
+                this._events = [];
+            }
+        },
+
+        getColumns: function()
+        {
+            var calObj = this;
+            calObj._startCol = calObj.settings.view.columnForTCID(
+                calObj.settings.view.displayFormat.startDateTableId);
+            calObj._endCol = calObj.settings.view.columnForTCID(
+                calObj.settings.view.displayFormat.endDateTableId);
+            calObj._titleCol = calObj.settings.view.columnForTCID(
+                calObj.settings.view.displayFormat.titleTableId);
+        },
+
+        closeFlyout: function($link)
+        {
+            $link.parents('.bt-wrapper').data('socrataTip-$element')
+                .socrataTip().hide();
         }
-    }));
+    });
 
 
     // Private methods

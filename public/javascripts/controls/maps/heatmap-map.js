@@ -44,9 +44,6 @@
         }
     };};
 
-    if (!$.socrataMap.mixin) { $.socrataMap.mixin = function() { }; }
-    $.socrataMap.mixin.heatmap = function() { };
-
     // Available configurations:
     // - type (required)
     // - region (required for type:counties)
@@ -55,10 +52,11 @@
     // - hideZoomSlider
     // - ignoreTransforms: ignores default transformations in MAP_TYPE
     // - transformFeatures: custom transforms at view level
-    $.extend($.socrataMap.mixin.heatmap.prototype,
+    $.socrataMap.mixin.heatmap =
     {
-        initializeMapMixin: function()
+        mapLoaded: function()
         {
+            this._super();
             if (_.isFunction(MAP_TYPE)) { MAP_TYPE = MAP_TYPE(); }
 
             setUpHeatmap(this);
@@ -88,7 +86,8 @@
         generateFlyoutLayout: function(columns)
         {
             var mapObj = this;
-            var defLayout = mapObj.generateFlyoutLayoutDefault(columns, 'fake');
+            var defLayout = mapObj._super(columns, 'fake');
+            if ($.isBlank(defLayout)) { return null; }
 
             // Adjust title
             var titleRow = defLayout.columns[0].rows[0];
@@ -107,7 +106,7 @@
 
             // Adjust title styles
             _.each(['border-bottom', 'margin-bottom', 'padding-bottom'],
-                function(s) { delete titleRow.styles[s]; });
+                function(s) { delete (titleRow.styles || {})[s]; });
 
             return defLayout;
         },
@@ -115,7 +114,7 @@
         getFlyout: function(rows, details)
         {
             var mapObj = this;
-            var $flyout = mapObj.getFlyoutDefault(rows, mapObj.settings.view);
+            var $flyout = mapObj._super(rows, details, mapObj.settings.view);
             if ($.isBlank($flyout)) { return null; }
 
             var viewConfig = mapObj._byView[mapObj.settings.view.id];
@@ -138,9 +137,10 @@
             return $flyout;
         },
 
-        resetMixinData: function()
+        cleanVisualization: function()
         {
             var mapObj = this;
+            mapObj._super();
 
             _.each((mapObj._featureSet || {}).features || [], function(feature)
             {
@@ -151,10 +151,14 @@
 
             delete mapObj._featuresRendered;
             delete mapObj._segmentColors;
+        },
 
-            setUpHeatmap(mapObj);
+        reloadVisualization: function()
+        {
+            setUpHeatmap(this);
+            this._super();
         }
-    });
+    };
 
 
     var setUpHeatmap = function(mapObj)

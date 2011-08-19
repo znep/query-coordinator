@@ -1,682 +1,681 @@
 (function($)
 {
-    $.socrataMap.esri = function(options, dom)
-    {
-        this.settings = $.extend({}, $.socrataMap.esri.defaults, options);
-        this.currentDom = dom;
-        this.init();
-    };
-
-
-    $.extend($.socrataMap.esri, $.socrataMap.extend(
-    {
-        defaults:
+    $.socrataMap.esri = $.socrataMap.extend({
+        _init: function()
         {
-            defaultLayers: [{type:'tile', url:'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer'}],
-            defaultZoom: 11
+            var defaults =
+            {
+                defaultLayers: [{type:'tile', url:'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer'}],
+                defaultZoom: 11
+            };
+            arguments[0] = $.extend(defaults, arguments[0]);
+            $.socrataMap.esri.addProperties(this, $.socrataMap.mixin.arcGISmap,
+                $.socrataMap.esri.prototype);
+            this._super.apply(this, arguments);
         },
 
-        prototype:
+        initializeVisualization: function()
         {
-            initializeMap: function()
+            this._super();
+
+            var mapObj = this;
+            mapObj.$dom().addClass('tundra');
+
+            dojo.require("esri.arcgis.utils");
+            dojo.require("esri.layers.FeatureLayer");
+            dojo.require("esri.map");
+            // Apparently dojo is not loaded at the same time jQuery is; so
+            // while this plugin isn't called until jQuery onLoad, we still need
+            // to attach to dojo's onLoad or we get failures in WebKit
+            dojo.addOnLoad(function()
             {
-                var mapObj = this;
-                mapObj.$dom().addClass('tundra');
+                var options = {};
+                if (!$.isBlank(mapObj.settings.view.displayFormat.zoom))
+                { options.zoom = mapObj.settings.view.displayFormat.zoom; }
 
-                dojo.require("esri.arcgis.utils");
-                dojo.require("esri.layers.FeatureLayer");
-                dojo.require("esri.map");
-                // Apparently dojo is not loaded at the same time jQuery is; so
-                // while this plugin isn't called until jQuery onLoad, we still need
-                // to attach to dojo's onLoad or we get failures in WebKit
-                dojo.addOnLoad(function()
+                if (mapObj.settings.view.displayFormat.viewport)
                 {
-                    var options = {};
-                    if (!$.isBlank(mapObj.settings.view.displayFormat.zoom))
-                    { options.zoom = mapObj.settings.view.displayFormat.zoom; }
+                    var viewport = mapObj.settings.view.displayFormat.viewport;
+                    options.extent = mapObj.viewportToExtent(viewport);
+                }
+                mapObj.map = new esri.Map(mapObj.$dom().attr('id'), options);
 
-                    if (mapObj.settings.view.displayFormat.viewport)
+                dojo.connect(mapObj.map, 'onLoad', function()
+                {
+                    mapObj._mapLoaded = true;
+                    mapObj._graphicsLayer = mapObj.map.graphics;
+
+                    var updateEvents = function()
                     {
-                        var viewport = mapObj.settings.view.displayFormat.viewport;
-                        options.extent = mapObj.viewportToExtent(viewport);
+                        mapObj._topmostLayer = mapObj.map.getLayer(_.last(mapObj.map.layerIds));
+                        if (!mapObj._heatingEvents) { mapObj._heatingEvents = []; }
+                        else
+                        { _.each(mapObj._heatingEvents, function(e) { dojo.disconnect(e); }); }
+
+                        mapObj._heatingEvents.push(
+                            dojo.connect(mapObj._topmostLayer, 'onUpdateStart', function()
+                            { mapObj._updatingLayer = true; }));
+                        mapObj._heatingEvents.push(
+                            dojo.connect(mapObj._topmostLayer, 'onUpdateEnd', function()
+                            {
+                                mapObj._updatingLayer = false;
+                                if (mapObj._needsCanvasHeatmapConversion
+                                    && _.isFunction(mapObj._convertHeatmap))
+                                { mapObj._convertHeatmap(this); }
+                            }));
                     }
-                    mapObj.map = new esri.Map(mapObj.$dom().attr('id'), options);
 
-                    dojo.connect(mapObj.map, 'onLoad', function()
+                    dojo.connect(mapObj.map, 'onLayerReorder', updateEvents);
+                    updateEvents();
+
+                    dojo.connect(mapObj.map.infoWindow, 'onHide', function()
                     {
-                        mapObj._mapLoaded = true;
-                        mapObj._graphicsLayer = mapObj.map.graphics;
-
-                        var updateEvents = function()
+                        if (mapObj._resetInfoWindow)
                         {
-                            mapObj._topmostLayer = mapObj.map.getLayer(_.last(mapObj.map.layerIds));
-                            if (!mapObj._heatingEvents) { mapObj._heatingEvents = []; }
-                            else
-                            { _.each(mapObj._heatingEvents, function(e) { dojo.disconnect(e); }); }
-
-                            mapObj._heatingEvents.push(
-                                dojo.connect(mapObj._topmostLayer, 'onUpdateStart', function()
-                                { mapObj._updatingLayer = true; }));
-                            mapObj._heatingEvents.push(
-                                dojo.connect(mapObj._topmostLayer, 'onUpdateEnd', function()
-                                {
-                                    mapObj._updatingLayer = false;
-                                    if (mapObj._needsCanvasHeatmapConversion
-                                        && _.isFunction(mapObj._convertHeatmap))
-                                    { mapObj._convertHeatmap(this); }
-                                }));
+                            delete mapObj._resetInfoWindow;
+                            return;
                         }
 
-                        dojo.connect(mapObj.map, 'onLayerReorder', updateEvents);
-                        updateEvents();
-
-                        dojo.connect(mapObj.map.infoWindow, 'onHide', function()
+                        // Hide all selected rows
+                        if ($.subKeyDefined(mapObj.settings.view, 'highlightTypes.select'))
                         {
-                            if (mapObj._resetInfoWindow)
-                            {
-                                delete mapObj._resetInfoWindow;
-                                return;
-                            }
-
-                            // Hide all selected rows
-                            if ($.subKeyDefined(mapObj.settings.view, 'highlightTypes.select'))
-                            {
-                                mapObj.settings.view.unhighlightRows(
-                                    _.values(mapObj.settings.view.highlightTypes.select), 'select');
-                            }
-                        });
-
-                        mapObj.initializeMapMixin();
-
-                        _.each(mapObj._dataViews, function(view)
-                            {
-                                if (mapObj._dataLoaded)
-                                { mapObj.renderData(view._rows, view); }
-                                if (mapObj._clustersLoaded)
-                                { mapObj.renderClusters(mapObj._byView[view.id]
-                                                                ._clusters, view); }
-                            });
+                            mapObj.settings.view.unhighlightRows(
+                                _.values(mapObj.settings.view.highlightTypes.select), 'select');
+                        }
                     });
 
-                    var layers = mapObj.settings.view.displayFormat.layers ||
-                        mapObj.settings.defaultLayers;
-                    if (!$.isArray(layers) || !layers.length)
-                    {
-                        mapObj.showError("No layers defined");
-                        return;
-                    }
+                    mapObj.mapLoaded();
 
-                    processWebappLayers(mapObj, _.select(layers, function(layer, index)
-                    {
-                        if (layer.url == 'webapp')
+                    _.each(mapObj._dataViews, function(view)
                         {
-                            layer.position = index;
-                            return true;
-                        }
-                        return false;
-                    }));
-
-                    var layersLoaded = 0;
-                    for (var i = 0; i < layers.length; i++)
-                    {
-                        var layer = layers[i];
-                        if ($.isBlank(layer) ||
-                            ($.isBlank(layer.url) && $.isBlank(layer.custom_url)))
-                        { continue; }
-
-                        switch (layer.type)
-                        {
-                            case "tile":
-                                var constructor =
-                                    esri.layers.ArcGISTiledMapServiceLayer;
-                                break;
-
-                            case "dynamic":
-                                constructor =
-                                    esri.layers.ArcGISDynamicMapServiceLayer;
-                                break;
-
-                            case "image":
-                                constructor = esri.layers.ArcGISImageServiceLayer;
-                                break;
-
-                            default:
-                                // Invalid layer type
-                                continue;
-                        }
-
-                        layer = new constructor(layer.custom_url || layer.url,
-                            layer.options);
-
-                        dojo.connect(layer, 'onLoad', function()
-                        {
-                            if (this.loaded) { layersLoaded++; }
-                            mapObj.map.addLayer(this);
-                            if (layersLoaded >= layers.length)
-                            {
-                                dojo.connect(mapObj._graphicsLayer, 'onClick',
-                                    function(evt)
-                                    { handleGraphicClick(mapObj, evt); });
-
-                                _.each(mapObj._dataViews, function(view)
-                                {
-                                    if (view.renderWithArcGISServer())
-                                    { mapObj._attachMapServer(view); }
-                                });
-
-                                mapObj.populateLayers();
-                                if (mapObj.settings.view.snapshotting)
-                                {
-                                    setTimeout(mapObj.settings.view.takeSnapshot, 2000);
-                                }
-                            }
+                            if (mapObj._dataLoaded)
+                            { mapObj.renderData(view._rows, view); }
+                            if (mapObj._clustersLoaded)
+                            { mapObj.renderClusters(mapObj._byView[view.id]
+                                                            ._clusters, view); }
                         });
+                });
+
+                var layers = mapObj.settings.view.displayFormat.layers ||
+                    mapObj.settings.defaultLayers;
+                if (!$.isArray(layers) || !layers.length)
+                {
+                    mapObj.showError("No layers defined");
+                    return;
+                }
+
+                processWebappLayers(mapObj, _.select(layers, function(layer, index)
+                {
+                    if (layer.url == 'webapp')
+                    {
+                        layer.position = index;
+                        return true;
+                    }
+                    return false;
+                }));
+
+                var layersLoaded = 0;
+                for (var i = 0; i < layers.length; i++)
+                {
+                    var layer = layers[i];
+                    if ($.isBlank(layer) ||
+                        ($.isBlank(layer.url) && $.isBlank(layer.custom_url)))
+                    { continue; }
+
+                    switch (layer.type)
+                    {
+                        case "tile":
+                            var constructor =
+                                esri.layers.ArcGISTiledMapServiceLayer;
+                            break;
+
+                        case "dynamic":
+                            constructor =
+                                esri.layers.ArcGISDynamicMapServiceLayer;
+                            break;
+
+                        case "image":
+                            constructor = esri.layers.ArcGISImageServiceLayer;
+                            break;
+
+                        default:
+                            // Invalid layer type
+                            continue;
                     }
 
-                    mapObj._multipoint = new esri.geometry.Multipoint
-                        (mapObj.map.spatialReference);
+                    layer = new constructor(layer.custom_url || layer.url,
+                        layer.options);
 
-                    mapObj.buildIdentifyTask();
+                    dojo.connect(layer, 'onLoad', function()
+                    {
+                        if (this.loaded) { layersLoaded++; }
+                        mapObj.map.addLayer(this);
+                        if (layersLoaded >= layers.length)
+                        {
+                            dojo.connect(mapObj._graphicsLayer, 'onClick',
+                                function(evt)
+                                { handleGraphicClick(mapObj, evt); });
 
-                    mapObj.$dom().find('.infowindow .hide').removeClass('hide')
-                        .addClass('hide_infowindow');
-                });
-            },
+                            _.each(mapObj._dataViews, function(view)
+                            {
+                                if (view.renderWithArcGISServer())
+                                { mapObj._attachMapServer(view); }
+                            });
 
-            buildIdentifyTask: function()
-            {
-                var mapObj = this;
-                mapObj._identifyConfig =
-                    mapObj.settings.view.displayFormat.identifyTask;
+                            mapObj.populateLayers();
+                            if (mapObj.settings.view.snapshotting)
+                            {
+                                setTimeout(mapObj.settings.view.takeSnapshot, 2000);
+                            }
+                        }
+                    });
+                }
+
+                mapObj._multipoint = new esri.geometry.Multipoint
+                    (mapObj.map.spatialReference);
+
+                mapObj.buildIdentifyTask();
+
+                mapObj.$dom().find('.infowindow .hide').removeClass('hide')
+                    .addClass('hide_infowindow');
+            });
+        },
+
+        buildIdentifyTask: function()
+        {
+            var mapObj = this;
+            mapObj._identifyConfig =
+                mapObj.settings.view.displayFormat.identifyTask;
 // mapObj._identifyConfig = { // Test!
 //     url: "http://navigator.state.or.us/ArcGIS/rest/services/Projects/ARRA_Unemployment/MapServer",
 //     layerId: 2,
 //     attributes: [{key:'March2010',text:'Unemployment Rate in March 2010'}]
 // };
-                if (!isIdentifyTask(mapObj)) { return; }
+            if (!isIdentifyTask(mapObj)) { return; }
 
-                dojo.connect(mapObj.map, 'onClick',
-                    function(evt) { identifyFeature(mapObj, evt); });
+            dojo.connect(mapObj.map, 'onClick',
+                function(evt) { identifyFeature(mapObj, evt); });
 
-                mapObj._identifyParameters = new esri.tasks.IdentifyParameters();
-                mapObj._identifyParameters.tolerance = 3;
-                mapObj._identifyParameters.returnGeometry = false;
-                mapObj._identifyParameters.layerIds =
-                    [mapObj._identifyConfig.layerId];
-                mapObj._identifyParameters.layerOption =
-                    esri.tasks.IdentifyParameters.LAYER_OPTION_ALL;
-                mapObj._identifyParameters.width  = mapObj.map.width;
-                mapObj._identifyParameters.height = mapObj.map.height;
-            },
+            mapObj._identifyParameters = new esri.tasks.IdentifyParameters();
+            mapObj._identifyParameters.tolerance = 3;
+            mapObj._identifyParameters.returnGeometry = false;
+            mapObj._identifyParameters.layerIds =
+                [mapObj._identifyConfig.layerId];
+            mapObj._identifyParameters.layerOption =
+                esri.tasks.IdentifyParameters.LAYER_OPTION_ALL;
+            mapObj._identifyParameters.width  = mapObj.map.width;
+            mapObj._identifyParameters.height = mapObj.map.height;
+        },
 
-            getLayers: function()
+        getLayers: function()
+        {
+            var mapObj = this;
+            var layers = [];
+            if (mapObj.map === undefined) { return layers; }
+
+            _.each(mapObj.map.layerIds, function(lId, i)
             {
-                var mapObj = this;
-                var layers = [];
-                if (mapObj.map === undefined) { return layers; }
+                var l = mapObj.map.getLayer(lId);
+                if (!l.loaded) { return; }
 
-                _.each(mapObj.map.layerIds, function(lId, i)
+                var lName = 'Layer ' + i;
+                if (l.layerInfos !== undefined && l.layerInfos.length > 0)
                 {
-                    var l = mapObj.map.getLayer(lId);
-                    if (!l.loaded) { return; }
+                    lName = l.layerInfos[0].name;
+                }
+                layers.push({id: lId, name: lName, visible: l.visible});
+            });
+            return layers;
+        },
 
-                    var lName = 'Layer ' + i;
-                    if (l.layerInfos !== undefined && l.layerInfos.length > 0)
-                    {
-                        lName = l.layerInfos[0].name;
-                    }
-                    layers.push({id: lId, name: lName, visible: l.visible});
-                });
-                return layers;
-            },
-
-            setLayer: function(layerId, isDisplayed)
+        setLayer: function(layerId, isDisplayed)
+        {
+            var mapObj = this;
+            var layer = mapObj.map.getLayer(layerId);
+            if (layer !== undefined && layer !== null)
             {
-                var mapObj = this;
-                var layer = mapObj.map.getLayer(layerId);
-                if (layer !== undefined && layer !== null)
-                {
-                    if (isDisplayed) { layer.show(); }
-                    else { layer.hide(); }
-                }
-            },
+                if (isDisplayed) { layer.show(); }
+                else { layer.hide(); }
+            }
+        },
 
-            handleRowsLoaded: function(rows, view)
+        handleRowsLoaded: function(rows, view)
+        {
+            var mapObj = this;
+            mapObj._dataLoaded = true;
+
+            if (mapObj._mapLoaded)
+            { mapObj.renderData(rows, view); }
+        },
+
+        handleClustersLoaded: function(clusters, view)
+        {
+            var mapObj = this;
+            mapObj._clustersLoaded = true;
+            mapObj._byView[view.id]._clusters = clusters;
+
+            if (mapObj._mapLoaded)
+            { mapObj.renderClusters(clusters, view); }
+        },
+
+        renderGeometry: function(geoType, geometry, dupKey, details)
+        {
+            var mapObj = this;
+
+            var symbol = getESRIMapSymbol(mapObj, geoType, details);
+
+            if (!(geometry instanceof esri.geometry.Polygon))
             {
-                var mapObj = this;
-                mapObj._dataLoaded = true;
+                var constructor;
+                switch (geoType)
+                {
+                    case 'point':    constructor = esri.geometry.Point; break;
+                    case 'polygon':  constructor = esri.geometry.Polygon; break;
+                    case 'polyline': constructor = esri.geometry.Polyline; break;
+                }
 
-                if (mapObj._mapLoaded)
-                { mapObj.renderData(rows, view); }
-            },
+                if (geometry.latitude)  { geometry.y = geometry.latitude; }
+                if (geometry.longitude) { geometry.x = geometry.longitude; }
+                geometry.spatialReference = { wkid: 4326 };
 
-            handleClustersLoaded: function(clusters, view)
+                geometry = new constructor(geometry);
+                if (isWebMercatorSpatialReference(mapObj.map))
+                { geometry = esri.geometry.geographicToWebMercator(geometry); }
+            }
+
+            if (mapObj.map.spatialReference.wkid != geometry.spatialReference.wkid)
             {
-                var mapObj = this;
-                mapObj._clustersLoaded = true;
-                mapObj._byView[view.id]._clusters = clusters;
+                mapObj.errorMessage =
+                    'Map does not have a supported spatial reference';
+                return false;
+            }
 
-                if (mapObj._mapLoaded)
-                { mapObj.renderClusters(clusters, view); }
-            },
-
-            renderGeometry: function(geoType, geometry, dupKey, details)
+            var g = mapObj._markers[dupKey];
+            if ($.isBlank(g))
             {
-                var mapObj = this;
+                g = new esri.Graphic();
+                mapObj._markers[dupKey] = g;
+                mapObj._graphicsLayer.add(g);
+            }
 
-                var symbol = getESRIMapSymbol(mapObj, geoType, details);
+            g.setGeometry(geometry);
+            g.setSymbol(symbol);
+            g.setAttributes({rows: details.rows, flyoutDetails: details.flyoutDetails,
+                dataView: details.dataView});
 
-                if (!(geometry instanceof esri.geometry.Polygon))
-                {
-                    var constructor;
-                    switch (geoType)
-                    {
-                        case 'point':    constructor = esri.geometry.Point; break;
-                        case 'polygon':  constructor = esri.geometry.Polygon; break;
-                        case 'polyline': constructor = esri.geometry.Polyline; break;
-                    }
+            if (_.any(details.rows, function(r) { return $.subKeyDefined(mapObj.settings.view,
+                            'highlightTypes.select.' + r.id); }))
+            { showInfoWindow(mapObj, g); }
 
-                    if (geometry.latitude)  { geometry.y = geometry.latitude; }
-                    if (geometry.longitude) { geometry.x = geometry.longitude; }
-                    geometry.spatialReference = { wkid: 4326 };
-
-                    geometry = new constructor(geometry);
-                    if (isWebMercatorSpatialReference(mapObj.map))
-                    { geometry = esri.geometry.geographicToWebMercator(geometry); }
-                }
-
-                if (mapObj.map.spatialReference.wkid != geometry.spatialReference.wkid)
-                {
-                    mapObj.errorMessage =
-                        'Map does not have a supported spatial reference';
-                    return false;
-                }
-
-                var g = mapObj._markers[dupKey];
-                if ($.isBlank(g))
-                {
-                    g = new esri.Graphic();
-                    mapObj._markers[dupKey] = g;
-                    mapObj._graphicsLayer.add(g);
-                }
-
-                g.setGeometry(geometry);
-                g.setSymbol(symbol);
-                g.setAttributes({rows: details.rows, flyoutDetails: details.flyoutDetails,
-                    dataView: details.dataView});
-
-                if (_.any(details.rows, function(r) { return $.subKeyDefined(mapObj.settings.view,
-                                'highlightTypes.select.' + r.id); }))
-                { showInfoWindow(mapObj, g); }
-
-                if (geoType == 'point')
-                {
-                    mapObj._multipoint.addPoint(g.geometry);
-                    g.heatStrength = details.heatStrength || 1;
-                }
-
-                if (geoType != 'point')
-                {
-                    if (!mapObj._bounds)
-                    { mapObj._bounds = g.geometry.getExtent(); }
-                    else
-                    { mapObj._bounds = mapObj._bounds.union(g.geometry.getExtent()); }
-                }
-
-                var dojoShape = g.getDojoShape();
-                if (!$.isBlank(dojoShape))
-                {
-                    if (details.redirect_to && geoType == 'polygon')
-                    {
-                        $(dojoShape.rawNode)
-                            .click(function(event)
-                                { window.open(details.redirect_to); })
-                            .hover(
-                                function(event)
-                                { mapObj.$dom().find('div .container').css('cursor', 'pointer'); },
-                                function(event)
-                                { mapObj.$dom().find('div .container').css('cursor', 'default'); });
-                    }
-
-                    // hover() would've been cleaner, but it actually screws things up
-                    // when the point gets redrawn
-                    $(dojoShape.rawNode).
-                        mouseover(function()
-                        { mapObj.settings.view.highlightRows(details.rows); }).
-                        mouseout(function()
-                        { mapObj.settings.view.unhighlightRows(details.rows); });
-                }
-
-                return true;
-            },
-
-            renderCluster: function(cluster, details)
+            if (geoType == 'point')
             {
-                var mapObj = this;
+                mapObj._multipoint.addPoint(g.geometry);
+                g.heatStrength = details.heatStrength || 1;
+            }
 
-                if (cluster.count <= 0) { return; }
-
-                var cluster_icon = '/images/map_cluster_';
-                var size;
-                if (cluster.count < 100)
-                { cluster_icon += 'small.png'; size = 37; }
-                else if (cluster.count < 1000)
-                { cluster_icon += 'med.png';   size = 45; }
+            if (geoType != 'point')
+            {
+                if (!mapObj._bounds)
+                { mapObj._bounds = g.geometry.getExtent(); }
                 else
-                { cluster_icon += 'large.png'; size = 65; }
+                { mapObj._bounds = mapObj._bounds.union(g.geometry.getExtent()); }
+            }
 
-                var symbol = getESRIMapSymbol(mapObj, 'point',
-                    $.extend({}, details, { icon: cluster_icon, width: size, height: size }));
-                var geometry = esri.geometry.geographicToWebMercator(
-                    new esri.geometry.Point({
-                        x: cluster.point.lon,
-                        y: cluster.point.lat,
-                        spatialReference: { wkid: 4326 }}));
-                var graphic = new esri.Graphic(geometry, symbol);
-
-                var textSymbol = new esri.symbol.TextSymbol(cluster.count);
-                textSymbol.setFont(new esri.symbol.Font({ size: '12px',
-                    family: 'Arial', weight: esri.symbol.Font.WEIGHT_BOLD }));
-                textSymbol.setOffset(0, -3);
-                if (cluster.count >= 100)  { textSymbol.setColor('white'); }
-                var textGraphic = new esri.Graphic(geometry, textSymbol);
-
-                graphic.textGraphic = textGraphic;
-
-                mapObj._graphicsLayer.add(graphic);
-                mapObj._graphicsLayer.add(textGraphic);
-
-                var dojoShape = graphic.getDojoShape();
-                if (dojoShape)
-                { $(dojoShape.rawNode)
-                    .hover(
-                        function(event) { mapObj.$dom()
-                            .find('div .container').css('cursor', 'pointer'); },
-                        function(event) { mapObj.$dom()
-                            .find('div .container').css('cursor', 'default'); });
-                }
-
-                mapObj._multipoint.addPoint(geometry);
-                graphic.heatStrength = cluster.count;
-                graphic.isCluster = true;
-
-                //var offset = cluster.radius / Math.SQRT2;
-                //graphic.clusterBounds = new esri.geometry.Extent(
-                    //geometry.x - offset, geometry.y - offset,
-                    //geometry.x + offset, geometry.y + offset,
-                    //new esri.SpatialReference({ wkid: 102100 }));
-
-                return true;
-            },
-
-            renderHeat: function()
+            var dojoShape = g.getDojoShape();
+            if (!$.isBlank(dojoShape))
             {
-                var mapObj = this;
-
-                if (mapObj.settings.view.displayFormat.plotStyle != 'rastermap')
-                { return; }
-
-                if ($.browser.msie && parseInt($.browser.version) < 9)
+                if (details.redirect_to && geoType == 'polygon')
                 {
-                    alert("Raster Heat Maps do not work in your current browser. Please "
-                        + "upgrade to IE9, use Google Chrome or Mozilla Firefox. Thank you.");
-                    return;
+                    $(dojoShape.rawNode)
+                        .click(function(event)
+                            { window.open(details.redirect_to); })
+                        .hover(
+                            function(event)
+                            { mapObj.$dom().find('div .container').css('cursor', 'pointer'); },
+                            function(event)
+                            { mapObj.$dom().find('div .container').css('cursor', 'default'); });
                 }
 
-                mapObj._heatLayer = h337.create(
-                    { "element":mapObj.currentDom, "radius":25, "visible":true });
+                // hover() would've been cleaner, but it actually screws things up
+                // when the point gets redrawn
+                $(dojoShape.rawNode).
+                    mouseover(function()
+                    { mapObj.settings.view.highlightRows(details.rows); }).
+                    mouseout(function()
+                    { mapObj.settings.view.unhighlightRows(details.rows); });
+            }
 
-                // Step 1: Enter data into the CANVAS heatmap.
-                var graphics = _.select(mapObj.map.graphics.graphics, function(graphic)
-                { return graphic.symbol instanceof esri.symbol.SimpleMarkerSymbol
-                    || graphic.symbol instanceof esri.symbol.PictureMarkerSymbol; });
+            return true;
+        },
+
+        renderCluster: function(cluster, details)
+        {
+            var mapObj = this;
+
+            if (cluster.count <= 0) { return; }
+
+            var cluster_icon = '/images/map_cluster_';
+            var size;
+            if (cluster.count < 100)
+            { cluster_icon += 'small.png'; size = 37; }
+            else if (cluster.count < 1000)
+            { cluster_icon += 'med.png';   size = 45; }
+            else
+            { cluster_icon += 'large.png'; size = 65; }
+
+            var symbol = getESRIMapSymbol(mapObj, 'point',
+                $.extend({}, details, { icon: cluster_icon, width: size, height: size }));
+            var geometry = esri.geometry.geographicToWebMercator(
+                new esri.geometry.Point({
+                    x: cluster.point.lon,
+                    y: cluster.point.lat,
+                    spatialReference: { wkid: 4326 }}));
+            var graphic = new esri.Graphic(geometry, symbol);
+
+            var textSymbol = new esri.symbol.TextSymbol(cluster.count);
+            textSymbol.setFont(new esri.symbol.Font({ size: '12px',
+                family: 'Arial', weight: esri.symbol.Font.WEIGHT_BOLD }));
+            textSymbol.setOffset(0, -3);
+            if (cluster.count >= 100)  { textSymbol.setColor('white'); }
+            var textGraphic = new esri.Graphic(geometry, textSymbol);
+
+            graphic.textGraphic = textGraphic;
+
+            mapObj._graphicsLayer.add(graphic);
+            mapObj._graphicsLayer.add(textGraphic);
+
+            var dojoShape = graphic.getDojoShape();
+            if (dojoShape)
+            { $(dojoShape.rawNode)
+                .hover(
+                    function(event) { mapObj.$dom()
+                        .find('div .container').css('cursor', 'pointer'); },
+                    function(event) { mapObj.$dom()
+                        .find('div .container').css('cursor', 'default'); });
+            }
+
+            mapObj._multipoint.addPoint(geometry);
+            graphic.heatStrength = cluster.count;
+            graphic.isCluster = true;
+
+            //var offset = cluster.radius / Math.SQRT2;
+            //graphic.clusterBounds = new esri.geometry.Extent(
+                //geometry.x - offset, geometry.y - offset,
+                //geometry.x + offset, geometry.y + offset,
+                //new esri.SpatialReference({ wkid: 102100 }));
+
+            return true;
+        },
+
+        renderHeat: function()
+        {
+            var mapObj = this;
+
+            if (mapObj.settings.view.displayFormat.plotStyle != 'rastermap')
+            { return; }
+
+            if ($.browser.msie && parseInt($.browser.version) < 9)
+            {
+                alert("Raster Heat Maps do not work in your current browser. Please "
+                    + "upgrade to IE9, use Google Chrome or Mozilla Firefox. Thank you.");
+                return;
+            }
+
+            mapObj._heatLayer = h337.create(
+                { "element":mapObj.currentDom, "radius":25, "visible":true });
+
+            // Step 1: Enter data into the CANVAS heatmap.
+            var graphics = _.select(mapObj.map.graphics.graphics, function(graphic)
+            { return graphic.symbol instanceof esri.symbol.SimpleMarkerSymbol
+                || graphic.symbol instanceof esri.symbol.PictureMarkerSymbol; });
 
 /*
-                // TODO: This is stored code for tweaking the cosmetic relative heat strength
-                // per point.
-                var totalHeat = mapObj._byView[mapObj.settings.view.id]._quantityCol
-                    && mapObj._byView[mapObj.settings.view.id]._quantityCol.aggregates.sum;
-                if (!totalHeat)
-                { totalHeat = mapObj.settings.view.totalRows; }
+            // TODO: This is stored code for tweaking the cosmetic relative heat strength
+            // per point.
+            var totalHeat = mapObj._byView[mapObj.settings.view.id]._quantityCol
+                && mapObj._byView[mapObj.settings.view.id]._quantityCol.aggregates.sum;
+            if (!totalHeat)
+            { totalHeat = mapObj.settings.view.totalRows; }
 */
-                mapObj._heatLayerMax = mapObj._heatLayer.store.max = 50; //totalHeat / 10;
+            mapObj._heatLayerMax = mapObj._heatLayer.store.max = 50; //totalHeat / 10;
 
-                _.each(graphics, function(graphic)
-                {
-                    graphic.show();
-                    if (!graphic.getDojoShape()) { graphic.hide(); return; }
-                    var offset = $(graphic.getDojoShape().rawNode).offset();
-                    var bcOffs = $(mapObj.currentDom).offset();
-                    offset.top -= bcOffs.top;
-                    offset.top += graphic.symbol.size / 2 + 4;
-                    offset.left += graphic.symbol.size / 2 + 4;
-                    addHeat(mapObj, offset, graphic);
-                    graphic.hide();
-                    if (graphic.textGraphic) { graphic.textGraphic.hide(); }
-                });
-
-                // Step 2: Convert CANVAS heatmap into Image/PNG.
-                var heatData = mapObj._heatLayer.getImageData();
-                var $heatLayer = $(mapObj._heatLayer.get('canvas'));
-                var topOffset = $heatLayer.offset().top;
-                mapObj._heatLayer.clear();
-                $heatLayer.remove();
-                delete mapObj._heatLayer;
-                mapObj._needsCanvasHeatmapConversion = true;
-
-                // Step 3: Convert IMG tiles into CANVAS tiles: Map + Heat.
-                mapObj._convertHeatmap = function(layer)
-                {
-                    if (mapObj._lastHeatData == heatData) { return; }
-                    if (!mapObj._needsCanvasHeatmapConversion) { return; }
-
-                    var srcHeatmap = new Image();
-                    var $layer = $(layer._div);
-                    srcHeatmap.onload = function(){
-                        $layer.find("canvas").remove();
-                        $layer.children().each(function()
-                        {
-                            var esriTile = this;
-                            var $esriTile = $(esriTile);
-
-                            var position = $esriTile.position();
-
-                            var tile = document.createElement("canvas");
-                            tile.setAttribute('id', esriTile.id+"_canvas");
-                            tile.width = esriTile.width;
-                            tile.height = esriTile.height;
-                            $(tile).css({ position: 'absolute', top: position.top+'px',
-                                                                left: position.left+'px' });
-                            var tileCtx = tile.getContext("2d");
-                            tileCtx.drawImage(esriTile, 0, 0);
-
-                            position = $esriTile.offset();
-                            position.top -= topOffset;
-                            var width = esriTile.width;
-                            var height = esriTile.height;
-                            var dx = 0; var dy = 0;
-                            if (position.left < 0)
-                            {
-                                width += position.left;
-                                dx = -position.left;
-                                position.left = 0;
-                            }
-                            if (position.top < 0)
-                            {
-                                height += position.top;
-                                dy = -position.top;
-                                position.top = 0;
-                            }
-
-                            $esriTile.css('visibility', 'hidden');
-                            if (width < 0 || height < 0) { return; }
-                            tileCtx.drawImage(srcHeatmap, position.left, position.top,
-                                                          width, height,
-                                                          dx, dy, width, height);
-
-                            $layer.append(tile);
-                        });
-                        mapObj._needsCanvasHeatmapConversion = false;
-                    };
-                    srcHeatmap.src = mapObj._lastHeatData = heatData;
-                };
-                if (mapObj._mapLoaded && !mapObj._updatingLayer)
-                { mapObj._convertHeatmap(mapObj._topmostLayer); }
-            },
-
-            showLayers: function()
+            _.each(graphics, function(graphic)
             {
-                var mapObj = this;
-                var layers = mapObj.getLayers();
-                for (var i = 0; i < layers.length; i++)
-                { mapObj.map.getLayer(layers[i].id).show(); }
-            },
+                graphic.show();
+                if (!graphic.getDojoShape()) { graphic.hide(); return; }
+                var offset = $(graphic.getDojoShape().rawNode).offset();
+                var bcOffs = $(mapObj.currentDom).offset();
+                offset.top -= bcOffs.top;
+                offset.top += graphic.symbol.size / 2 + 4;
+                offset.left += graphic.symbol.size / 2 + 4;
+                addHeat(mapObj, offset, graphic);
+                graphic.hide();
+                if (graphic.textGraphic) { graphic.textGraphic.hide(); }
+            });
 
-            hideLayers: function()
+            // Step 2: Convert CANVAS heatmap into Image/PNG.
+            var heatData = mapObj._heatLayer.getImageData();
+            var $heatLayer = $(mapObj._heatLayer.get('canvas'));
+            var topOffset = $heatLayer.offset().top;
+            mapObj._heatLayer.clear();
+            $heatLayer.remove();
+            delete mapObj._heatLayer;
+            mapObj._needsCanvasHeatmapConversion = true;
+
+            // Step 3: Convert IMG tiles into CANVAS tiles: Map + Heat.
+            mapObj._convertHeatmap = function(layer)
             {
-                var mapObj = this;
-                var layers = mapObj.getLayers();
-                for (var i = 0; i < layers.length; i++)
-                { mapObj.map.getLayer(layers[i].id).hide(); }
-            },
+                if (mapObj._lastHeatData == heatData) { return; }
+                if (!mapObj._needsCanvasHeatmapConversion) { return; }
 
-            adjustBounds: function()
-            {
-                var mapObj = this;
-                if (!mapObj._bounds && mapObj._multipoint.points.length == 0
-                    && !mapObj.settings.view.displayFormat.viewport)
-                { return; }
-                if (mapObj._viewportListener &&
-                    $.subKeyDefined(mapObj, 'settings.view.query.namedFilters.viewport'))
-                { return; }
-
-                if (mapObj._viewportListener)
-                { dojo.disconnect(mapObj._viewportListener); }
-
-                var extent = mapObj._bounds || mapObj._multipoint.getExtent();
-                // Adjust x & y by about 10% so points aren't on the very edge
-                // Use max & min diff since lat/long may be negative, and we
-                // want to expand the viewport.  Using height/width may cause it
-                // to shrink
-                if (extent)
-                {
-                    var xadj = (extent.xmax - extent.xmin) * 0.05;
-                    var yadj = (extent.ymax - extent.ymin) * 0.05;
-                }
-
-                if (mapObj.settings.view.displayFormat.viewport)
-                {
-                    mapObj.setViewport(mapObj.settings.view.displayFormat.viewport);
-                    if (!$.subKeyDefined(mapObj, 'settings.view.query.namedFilters.viewport'))
-                    { mapObj.updateRowsByViewport(); }
-                }
-                else if (xadj == 0 || yadj == 0)
-                {
-                    mapObj.map.centerAndZoom(extent.getCenter(),
-                        mapObj.settings.defaultZoom);
-                }
-                else
-                {
-                    extent = $.extend({}, extent);
-                    extent.xmax += xadj;
-                    extent.xmin -= xadj;
-                    extent.ymax += yadj;
-                    extent.ymin -= yadj;
-                    mapObj.map.setExtent(extent);
-                }
-
-                mapObj._extentChanging = true;
-                mapObj._viewportListener = dojo.connect(mapObj.map, 'onExtentChange',
-                    function()
+                var srcHeatmap = new Image();
+                var $layer = $(layer._div);
+                srcHeatmap.onload = function(){
+                    $layer.find("canvas").remove();
+                    $layer.children().each(function()
                     {
-                        if (mapObj._extentChanging)
+                        var esriTile = this;
+                        var $esriTile = $(esriTile);
+
+                        var position = $esriTile.position();
+
+                        var tile = document.createElement("canvas");
+                        tile.setAttribute('id', esriTile.id+"_canvas");
+                        tile.width = esriTile.width;
+                        tile.height = esriTile.height;
+                        $(tile).css({ position: 'absolute', top: position.top+'px',
+                                                            left: position.left+'px' });
+                        var tileCtx = tile.getContext("2d");
+                        tileCtx.drawImage(esriTile, 0, 0);
+
+                        position = $esriTile.offset();
+                        position.top -= topOffset;
+                        var width = esriTile.width;
+                        var height = esriTile.height;
+                        var dx = 0; var dy = 0;
+                        if (position.left < 0)
                         {
-                            // On initial zoom, save off viewport
-                            if ($.isBlank(mapObj._currentViewport))
-                            { mapObj._currentViewport = mapObj.getViewport(); }
-                            mapObj._extentChanging = false;
-                            return;
+                            width += position.left;
+                            dx = -position.left;
+                            position.left = 0;
                         }
-                        mapObj.updateDatasetViewport();
-                        mapObj.updateRowsByViewport();
+                        if (position.top < 0)
+                        {
+                            height += position.top;
+                            dy = -position.top;
+                            position.top = 0;
+                        }
+
+                        $esriTile.css('visibility', 'hidden');
+                        if (width < 0 || height < 0) { return; }
+                        tileCtx.drawImage(srcHeatmap, position.left, position.top,
+                                                      width, height,
+                                                      dx, dy, width, height);
+
+                        $layer.append(tile);
                     });
-            },
-
-            getCustomViewport: function()
-            {
-                var mapObj = this;
-                var viewport = mapObj.map.extent;
-                viewport = new esri.geometry.Extent(
-                    viewport.xmin, viewport.ymin,
-                    viewport.xmax, viewport.ymax, viewport.spatialReference);
-                var sr = viewport.spatialReference.wkid
-                        || mapObj.map.spatialReference.wkid;
-                var LIMIT = sr == 102100 ? 20037508.342788905 : 180;
-                if (viewport.xmin < -LIMIT) { viewport.xmin = -LIMIT; }
-                if (viewport.xmax >  LIMIT) { viewport.xmax =  LIMIT; }
-                if (sr == null || sr == 102100)
-                { viewport = esri.geometry.webMercatorToGeographic(viewport); }
-                viewport = {
-                    xmin: viewport.xmin,
-                    xmax: viewport.xmax,
-                    ymin: viewport.ymin,
-                    ymax: viewport.ymax,
-                    sr: viewport.spatialReference.wkid
+                    mapObj._needsCanvasHeatmapConversion = false;
                 };
+                srcHeatmap.src = mapObj._lastHeatData = heatData;
+            };
+            if (mapObj._mapLoaded && !mapObj._updatingLayer)
+            { mapObj._convertHeatmap(mapObj._topmostLayer); }
+        },
 
-                return viewport;
-            },
+        showLayers: function()
+        {
+            var mapObj = this;
+            var layers = mapObj.getLayers();
+            for (var i = 0; i < layers.length; i++)
+            { mapObj.map.getLayer(layers[i].id).show(); }
+        },
 
-            setViewport: function(viewport)
+        hideLayers: function()
+        {
+            var mapObj = this;
+            var layers = mapObj.getLayers();
+            for (var i = 0; i < layers.length; i++)
+            { mapObj.map.getLayer(layers[i].id).hide(); }
+        },
+
+        adjustBounds: function()
+        {
+            var mapObj = this;
+            if (!mapObj._bounds && mapObj._multipoint.points.length == 0
+                && !mapObj.settings.view.displayFormat.viewport)
+            { return; }
+            if (mapObj._viewportListener &&
+                $.subKeyDefined(mapObj, 'settings.view.query.namedFilters.viewport'))
+            { return; }
+
+            if (mapObj._viewportListener)
+            { dojo.disconnect(mapObj._viewportListener); }
+
+            var extent = mapObj._bounds || mapObj._multipoint.getExtent();
+            // Adjust x & y by about 10% so points aren't on the very edge
+            // Use max & min diff since lat/long may be negative, and we
+            // want to expand the viewport.  Using height/width may cause it
+            // to shrink
+            if (extent)
             {
-                var mapObj = this;
-                mapObj.map.setExtent(mapObj.viewportToExtent(viewport));
-            },
-
-            viewportToExtent: function(viewport)
-            {
-                var mapObj = this;
-                viewport = viewport instanceof esri.geometry.Extent
-                    ? viewport
-                    : new esri.geometry.Extent(
-                        viewport.xmin, viewport.ymin, viewport.xmax, viewport.ymax,
-                        new esri.SpatialReference({ wkid: viewport.sr }));
-                if (viewport.spatialReference.wkid == 4326
-                  && (!mapObj.map || isWebMercatorSpatialReference(mapObj.map)))
-                { viewport = esri.geometry.geographicToWebMercator(viewport); }
-                return viewport;
-            },
-
-            resizeHandle: function(event)
-            {
-                // ESRI can't handle being resized to 0
-                if (!$.isBlank(this.map) && this.$dom().height() > 0 && this.map.extent)
-                { this.map.resize(); }
-            },
-
-            resetData: function()
-            {
-                var mapObj = this;
-                if ($.subKeyDefined(mapObj, 'map.spatialReference'))
-                { mapObj._multipoint = new esri.geometry.Multipoint (mapObj.map.spatialReference); }
-                delete mapObj._segmentSymbols;
-                delete mapObj._bounds;
-                delete mapObj._byView[mapObj.settings.view.id]._clusters;
-                if (!$.isBlank(mapObj._graphicsLayer)) { mapObj._graphicsLayer.clear(); }
-                if ($.subKeyDefined(mapObj, 'map.infoWindow'))
-                {
-                    mapObj._resetInfoWindow = true;
-                    mapObj.map.infoWindow.hide();
-                }
-            },
-
-            unhookMap: function()
-            {
-                var mapObj = this;
-                if (mapObj._viewportListener) { dojo.disconnect(mapObj._viewportListener); }
+                var xadj = (extent.xmax - extent.xmin) * 0.05;
+                var yadj = (extent.ymax - extent.ymin) * 0.05;
             }
+
+            if (mapObj.settings.view.displayFormat.viewport)
+            {
+                mapObj.setViewport(mapObj.settings.view.displayFormat.viewport);
+                if (!$.subKeyDefined(mapObj, 'settings.view.query.namedFilters.viewport'))
+                { mapObj.updateRowsByViewport(); }
+            }
+            else if (xadj == 0 || yadj == 0)
+            {
+                mapObj.map.centerAndZoom(extent.getCenter(),
+                    mapObj.settings.defaultZoom);
+            }
+            else
+            {
+                extent = $.extend({}, extent);
+                extent.xmax += xadj;
+                extent.xmin -= xadj;
+                extent.ymax += yadj;
+                extent.ymin -= yadj;
+                mapObj.map.setExtent(extent);
+            }
+
+            mapObj._extentChanging = true;
+            mapObj._viewportListener = dojo.connect(mapObj.map, 'onExtentChange',
+                function()
+                {
+                    if (mapObj._extentChanging)
+                    {
+                        // On initial zoom, save off viewport
+                        if ($.isBlank(mapObj._currentViewport))
+                        { mapObj._currentViewport = mapObj.getViewport(); }
+                        mapObj._extentChanging = false;
+                        return;
+                    }
+                    mapObj.updateDatasetViewport();
+                    mapObj.updateRowsByViewport();
+                });
+        },
+
+        getCustomViewport: function()
+        {
+            var mapObj = this;
+            var viewport = mapObj.map.extent;
+            viewport = new esri.geometry.Extent(
+                viewport.xmin, viewport.ymin,
+                viewport.xmax, viewport.ymax, viewport.spatialReference);
+            var sr = viewport.spatialReference.wkid
+                    || mapObj.map.spatialReference.wkid;
+            var LIMIT = sr == 102100 ? 20037508.342788905 : 180;
+            if (viewport.xmin < -LIMIT) { viewport.xmin = -LIMIT; }
+            if (viewport.xmax >  LIMIT) { viewport.xmax =  LIMIT; }
+            if (sr == null || sr == 102100)
+            { viewport = esri.geometry.webMercatorToGeographic(viewport); }
+            viewport = {
+                xmin: viewport.xmin,
+                xmax: viewport.xmax,
+                ymin: viewport.ymin,
+                ymax: viewport.ymax,
+                sr: viewport.spatialReference.wkid
+            };
+
+            return viewport;
+        },
+
+        setViewport: function(viewport)
+        {
+            var mapObj = this;
+            mapObj.map.setExtent(mapObj.viewportToExtent(viewport));
+        },
+
+        viewportToExtent: function(viewport)
+        {
+            var mapObj = this;
+            viewport = viewport instanceof esri.geometry.Extent
+                ? viewport
+                : new esri.geometry.Extent(
+                    viewport.xmin, viewport.ymin, viewport.xmax, viewport.ymax,
+                    new esri.SpatialReference({ wkid: viewport.sr }));
+            if (viewport.spatialReference.wkid == 4326
+              && (!mapObj.map || isWebMercatorSpatialReference(mapObj.map)))
+            { viewport = esri.geometry.geographicToWebMercator(viewport); }
+            return viewport;
+        },
+
+        resizeHandle: function(event)
+        {
+            // ESRI can't handle being resized to 0
+            if (!$.isBlank(this.map) && this.$dom().height() > 0 && this.map.extent)
+            { this.map.resize(); }
+        },
+
+        cleanVisualization: function()
+        {
+            var mapObj = this;
+            mapObj._super();
+            if ($.subKeyDefined(mapObj, 'map.spatialReference'))
+            { mapObj._multipoint = new esri.geometry.Multipoint (mapObj.map.spatialReference); }
+            delete mapObj._segmentSymbols;
+            delete mapObj._bounds;
+            delete mapObj._byView[mapObj.settings.view.id]._clusters;
+            if (!$.isBlank(mapObj._graphicsLayer)) { mapObj._graphicsLayer.clear(); }
+            if ($.subKeyDefined(mapObj, 'map.infoWindow'))
+            {
+                mapObj._resetInfoWindow = true;
+                mapObj.map.infoWindow.hide();
+            }
+        },
+
+        reset: function()
+        {
+            var mapObj = this;
+            if (mapObj._viewportListener) { dojo.disconnect(mapObj._viewportListener); }
+            mapObj._super();
         }
-    }));
+    });
 
     var getESRIMapSymbol = function(mapObj, geoType, details)
     {

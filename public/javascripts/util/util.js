@@ -462,19 +462,6 @@ $.pluralize = function(number, word, pluralized)
     return number + ' ' + ((number === 1) ? word : pluralized);
 };
 
-$.mixin = function(obj, mixin)
-{
-    var clone = function()
-    { return obj.apply(this, arguments); };
-    for (property in obj)
-    {
-        if (obj.hasOwnProperty(property) && property !== 'prototype')
-        { clone[property] = obj[property]; }
-    }
-    $.extend(clone.prototype, obj.prototype, mixin.prototype);
-    return clone;
-};
-
 // Keep a hash of which files have finished processing
 blist.util.lazyLoadingAssets = {};
 // Keep a hash of which files are in the middle of processing

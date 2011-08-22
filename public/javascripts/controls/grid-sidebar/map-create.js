@@ -369,7 +369,7 @@
                     {text: 'Title', name: 'displayFormat.plot.titleId',
                         type: 'columnSelect', isTableColumn: true,
                         columns: {type: ['text', 'location', 'html', 'url',
-                            'drop_down_list', 'dataset_link', 'email', 'tag',
+                            'drop_down_list', 'dataset_link', 'email',
                             'percent', 'stars', 'flag', 'phone', 'money',
                             'data', 'calendar_date', 'number'], hidden: isEdit,
                             defaultNames: ['title']},

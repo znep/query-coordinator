@@ -127,21 +127,6 @@
                 return this._$dom;
             },
 
-            showHideTags: function(hide)
-            {
-                var datasetObj = this;
-                _.each(datasetObj.settings.view.columnsForType('tag', true),
-                    function(c)
-                    {
-                        c.setVisible(!hide,
-                            function ()
-                            {
-                                if (!hide && c.position > 1)
-                                { columnMove(datasetObj, c, 0); }
-                            });
-                    });
-            },
-
             drillDown: function(drillLink)
             {
                 var datasetObj = this;
@@ -337,21 +322,10 @@
                     options.push('<li class="pageView"><a href="', this.settings.view.url, '/', row.id,
                             '" class="noInterstitial noRedirPrompt">View Single Row Data</a></li>');
                 }
-                if (this.settings.editEnabled)
+                if (this.settings.editEnabled && context.permissions.canDelete)
                 {
-                    if (context.permissions.canEdit && !(row.level > 0))
-                    {
-                        options.push('<li class="tags"><a href="#row-tag_', row.id, colAdjust,
-                                '" class="noClose">Tag Row</a><form class="editContainer">',
-                                '<input /><a class="tagSubmit" href="#saveTags" ',
-                                'title="Save">Save Tags</a><a class="tagCancel" href="#cancelTags" ',
-                                'title="Cancel">Cancel</a></form></li>');
-                    }
-                    if (context.permissions.canDelete)
-                    {
-                        options.push('<li class="delete"><a href="#row-delete_',
-                                row.id, colAdjust, '">Delete Row</a></li>');
-                    }
+                    options.push('<li class="delete"><a href="#row-delete_',
+                            row.id, colAdjust, '">Delete Row</a></li>');
                 }
 
                 if (_.isEmpty(options) || row.type == 'blank') { return; }
@@ -383,69 +357,13 @@
                 pullToTop: true
             });
 
-            $menu.find('li.tags .editContainer a').click(function(e)
-            {
-                e.preventDefault();
-                var $link = $(e.currentTarget);
-                // Href that we care about starts with # and parts are
-                // separated with _ IE sticks the full thing, so slice
-                // everything up to #
-                var href = $link.attr('href');
-                switch(href.slice(href.indexOf('#') + 1))
-                {
-                    case 'saveTags':
-                        submitRowTagsMenu(datasetObj, $menu);
-                        break;
-                    case 'cancelTags':
-                        hideRowTagsMenu($menu);
-                        break;
-                }
-            });
-
-            $menu.find('li.tags .editContainer input').keypress(function(e)
-            {
-                if (e.keyCode == 27) // ESC
-                {
-                    hideRowTagsMenu($menu);
-                    $menu.focus();
-                }
-            });
-
-            $menu.find('li.tags form.editContainer').submit(function(e)
-            {
-                e.preventDefault();
-                submitRowTagsMenu(datasetObj, $menu);
-            });
-
             $cell.data('row-menu-applied', true);
         }
     };
 
-    var submitRowTagsMenu = function(datasetObj, $menu)
-    {
-        $menu.trigger('close');
-
-        var newVal = $.map($menu.find('li.tags .editContainer input')
-            .val().split(','), function(t, i) { return $.trim(t); });
-        var row = datasetObj.settings.view
-            .rowForID($menu.attr('id').split('_')[1]);
-        if ($.compareValues(row.tags, newVal)) { return; }
-
-        datasetObj.settings.view.setRowValue(newVal, row.id, 'tags');
-        datasetObj.settings.view.saveRow(row.id);
-
-        var column = datasetObj.settings.view.columnsForType('tag', true)[0];
-        if (column.hidden) { datasetObj.showHideTags(false); }
-    };
-
-    var hideRowTagsMenu = function($menu)
-    { $menu.removeClass('tagsShown'); };
-
     var rowMenuOpenCallback = function(datasetObj, $menu)
     {
-        $menu.find('li.tags, li.pageView')
-            .toggle(!datasetObj.settings._model.hasSelectedRows());
-        hideRowTagsMenu($menu);
+        $menu.find('li.pageView').toggle(!datasetObj.settings._model.hasSelectedRows());
     };
 
     /* Handle clicks in the row menus */
@@ -491,15 +409,6 @@
                     model.selectRow(datasetObj.settings.view.rowForID(rowId));
                     model.removeRows(_.keys(model.selectedRows));
                 }
-                break;
-            case 'row-tag':
-                var row = datasetObj.settings.view.rowForID(
-                    $menu.attr('id').split('_')[1]);
-                $menu.find('li.tags .editContainer input')
-                    .val(row.tags ? row.tags.join(', ') : '');
-
-                $link.closest('.rowMenu').toggleClass('tagsShown');
-                $menu.find('li.tags .editContainer input').focus().select();
                 break;
 
             case 'view-row':

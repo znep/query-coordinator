@@ -2554,7 +2554,7 @@
                                 ' ', child.renderTypeName,
                                 '" parentColId="', child.parentColumn.id,
                                 '" colId="', child.id, '">',
-                                (canEdit() || child.renderTypeName == 'tag' ?
+                                (canEdit() ?
                                  '<div class="blist-th-icon"></div>' : ''),
                                 '<span class="blist-th-name">',
                                 htmlEscape(child.name),
@@ -3324,9 +3324,9 @@
                             '></div>');
                 }
                 html.push('<div class="info-container',
-                    (canEdit() || col.renderTypeName == 'tag') ? ' icon-display' : '',
+                    canEdit() ? ' icon-display' : '',
                     '">');
-                if (canEdit() || col.renderTypeName == 'tag')
+                if (canEdit())
                 { html.push('<span class="blist-th-icon"></span>'); }
                 html.push(
                     '<div class="name-wrapper"><span class="blist-th-name">',

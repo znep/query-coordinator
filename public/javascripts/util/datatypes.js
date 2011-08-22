@@ -578,17 +578,6 @@ blist.namespace.fetch('blist.datatypes');
     { return $.htmlEscape(value ? JSON.stringify(value) : ''); };
 
 
-    /* Special system types */
-
-    // Tags
-    var renderTags = function(value, column, plainText, inMenu)
-    {
-        var v = $.htmlEscape((value || []).join(', '));
-        if ($.isBlank(v)) { return ''; }
-        return plainText || inMenu ? v : '<div class="blist-tag" title="' + v + '">' + v + '</div>';
-    };
-
-
 
     /** FILTER FUNCTIONS ***/
 
@@ -774,8 +763,6 @@ blist.namespace.fetch('blist.datatypes');
         photo: { renderer: renderPhoto },
 
         stars: { renderer: renderStars },
-
-        tag: { renderer: renderTags },
 
         text: { renderer: renderText },
 
@@ -1381,23 +1368,6 @@ blist.namespace.fetch('blist.datatypes');
 
 
         // Special system types
-        tag: {
-            title: 'Row Tag',
-            interfaceType: blist.datatypes.interfaceTypes.tag,
-
-            aggregates: nonNumericAggs,
-            filterConditions: $.extend(true,
-                {details: {
-                    'EQUALS': {interfaceType: blist.datatypes.interfaceTypes.text},
-                    'NOT_EQUALS': {interfaceType: blist.datatypes.interfaceTypes.text},
-                    'STARTS_WITH': {interfaceType: blist.datatypes.interfaceTypes.text},
-                    'CONTAINS': {interfaceType: blist.datatypes.interfaceTypes.text},
-                    'NOT_CONTAINS': {interfaceType: blist.datatypes.interfaceTypes.text}
-                }}, filterGroups.textual),
-            inlineType: true,
-            priority: 19
-        },
-
         nested_table: {
             title: 'Nested Table',
 

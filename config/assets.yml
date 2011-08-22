@@ -53,7 +53,6 @@ javascripts:
     - public/javascripts/controls/editors/percent-editor.js
     - public/javascripts/controls/editors/money-editor.js
     - public/javascripts/controls/editors/email-editor.js
-    - public/javascripts/controls/editors/tag-editor.js
     - public/javascripts/controls/editors/url-editor.js
     - public/javascripts/controls/editors/phone-editor.js
     - public/javascripts/controls/editors/location-editor.js

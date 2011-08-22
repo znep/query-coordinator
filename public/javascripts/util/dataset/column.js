@@ -301,8 +301,7 @@ this.Column = ServerModel.extend({
         this.isMeta = this.dataTypeName == 'meta_data';
 
         this.lookup = this.isMeta ? this.name : this.id;
-        if (this.dataTypeName == 'tag') { this.lookup = 'tags'; }
-        else if (this.isMeta && this.name == 'sid') { this.lookup = 'id'; }
+        if (this.isMeta && this.name == 'sid') { this.lookup = 'id'; }
         else if (this.isMeta && this.name == 'id') { this.lookup = 'uuid'; }
 
         // Set up min width and default
@@ -384,7 +383,7 @@ this.Column = ServerModel.extend({
 
     canBeLinkSource: function()
     {
-        if (_.include(['dataset_link', 'nested_table', 'drop_down_list', 'tag'],
+        if (_.include(['dataset_link', 'nested_table', 'drop_down_list'],
             this.dataTypeName)) { return false; }
         if (this.hidden) { return false; }
         if (this.dataTypeName.indexOf('obsolete') >= 0) { return false; }

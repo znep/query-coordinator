@@ -220,12 +220,6 @@ this.Dataset = ServerModel.extend({
         };
 
         var ds = cleanViewForCreate(this);
-        // Can't handle saving a new view with tags
-        if (!$.isBlank(ds.columns))
-        {
-            ds.columns = _.reject(ds.columns,
-                function(c) { return c.dataTypeName == 'tag'; });
-        }
 
         // Munge permissions for forms, since those don't get carried over
         // or inherited
@@ -2234,13 +2228,6 @@ this.Dataset = ServerModel.extend({
             data[c.lookup] = row[c.lookup];
         });
 
-        // Tags has to be sent as a special key
-        if (!$.isBlank(data.tags))
-        {
-            data._tags = data.tags;
-            delete data.tags;
-        }
-
         // Copy over desired metadata columns
         data.position = row.position;
         data.meta = row.meta;
@@ -2285,11 +2272,7 @@ this.Dataset = ServerModel.extend({
                             req.parentColumn.childColumnForID(adjName) :
                             ds.columnForID(adjName);
                         var l = $.isBlank(c) ? adjName : c.lookup;
-                        // If this value is changed, then don't overwrite it
-                        // with what comes back from the server. This probably
-                        // only applies to creating a row via tags
-                        if (!req.row.changed[l])
-                        { req.row[l] = v; }
+                        req.row[l] = v;
                     }
                 });
             if (req.row.underlying)

@@ -11,7 +11,7 @@
         {
             return _.all(blist.dataset.visibleColumns || [], function(c)
                 {
-                    return !_.include(['document', 'document_obsolete', 'tag',
+                    return !_.include(['document', 'document_obsolete',
                         'photo', 'photo_obsolete', 'nested_table'],
                         c.dataTypeName);
                 }) && blist.dataset.valid &&

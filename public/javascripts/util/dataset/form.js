@@ -20,8 +20,7 @@ Dataset.modules['form'] =
         // summary view gives us no columns; validity is irrelevant in that case anyway.
         this.visibleColumns = this.visibleColumns || [];
 
-        return _.any(this.visibleColumns, function(c)
-            { return !_.include(['tag', 'nested_table'], c.dataTypeName); });
+        return _.any(this.visibleColumns, function(c) { return 'nested_table' != c.dataTypeName; });
     }
 };
 

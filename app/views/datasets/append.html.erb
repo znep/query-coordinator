@@ -15,7 +15,7 @@
         <%- if @error_type -%>
           <p class="errorMessage">
           You cannot <%= @type %> data in a dataset that contains a photo, document,
-            nested table, location, or tags column. Please remove or hide such
+            nested table, or location column. Please remove or hide such
             columns and try again, or import this data as a new file.
           </p>
         <%- else -%>

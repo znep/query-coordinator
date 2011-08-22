@@ -77,6 +77,11 @@
     {
         if ($.isBlank(vals.tableColumnId) || $.isBlank(vals.operator)) { return false; }
 
+        var col = blist.dataset.columnForTCID(vals.tableColumnId);
+        var type = col.renderType;
+        if ($.subKeyDefined(type, 'subColumns.' + vals.subColumn))
+        { type = type.subColumns[vals.subColumn]; }
+
         if (!$.subKeyDefined(type, 'filterConditions.details.' + vals.operator) ||
             type.filterConditions.details[vals.operator].editorCount < 1)
         { return false; }
@@ -200,7 +205,7 @@
                         {type: 'columnSelect', text: 'Condition:', required: true,
                             name: 'tableColumnId', isTableColumn: true,
                             columns: {type: filterableTypes, hidden: false}},
-                        {type: 'select', required: true, name: 'subColumn',
+                        {type: 'select', name: 'subColumn',
                             linkedField: 'tableColumnId', prompt: 'Select a sub-column',
                             onlyIf: {field: 'tableColumnId', func: subColumnShown},
                             options: subColumns},

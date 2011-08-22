@@ -467,6 +467,8 @@ blist.namespace.fetch('blist.datatypes');
     // Photo
     var renderPhoto = function(value, column, plainText, inMenu, context)
     {
+        if ($.isBlank(value)) { return ''; }
+
         var url = column.baseUrl() + value;
         if (plainText) { return url; }
 
@@ -1130,7 +1132,7 @@ blist.namespace.fetch('blist.datatypes');
                           'STARTS_WITH': {interfaceType: blist.datatypes.interfaceTypes.text},
                           'CONTAINS': {interfaceType: blist.datatypes.interfaceTypes.text},
                           'NOT_CONTAINS': {interfaceType: blist.datatypes.interfaceTypes.text}
-                        }}, filterGroups.textual),
+                        }}, filterGroups.textual)
                 },
                 description: {
                     title: 'Description',

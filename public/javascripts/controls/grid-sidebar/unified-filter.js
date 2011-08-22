@@ -351,7 +351,7 @@
                         tableColumnId: column.tableColumnId,
                         operator: operator
                     };
-                    var subcolumn = findConditionComponent(child, 'subcolumn');
+                    var subcolumn = findConditionComponent(child, 'subcolumn').toLowerCase();
                     if (subcolumn && _.include(_.keys(column.renderType.subColumns || {}), subcolumn)) // sanity check
                     {
                         child.metadata.subcolumn = subcolumn;
@@ -1697,7 +1697,8 @@
                         {
                             return {
                                 type: 'literal',
-                                value: v
+                                value: !$.isBlank(metadata.subcolumn) && $.isPlainObject(v) ?
+                                    v[metadata.subcolumn] : v
                             };
                         }))
                     });

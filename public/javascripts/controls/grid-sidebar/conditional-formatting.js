@@ -3,54 +3,69 @@
     if (blist.sidebarHidden.visualize &&
         blist.sidebarHidden.visualize.conditionalFormatting) { return; }
 
-    var filterableTypes = _.compact(_.map(blist.data.types, function(t, n)
-    { return !$.isBlank(t.filterConditions) ? n : null; }));
+    var filterableTypes = _.compact(_.map(blist.datatypes, function(t, n)
+    {
+        return !$.isBlank(t.filterConditions) || _.any(t.subColumns, function(st)
+            { return !$.isBlank(st.filterConditions); }) ? n : null;
+    }));
 
-    var filterOperators = function(tcId)
+    var subColumnShown = function(tcId)
+    {
+        if ($.isBlank(tcId)) { return false; }
+        return !_.isEmpty(blist.dataset.columnForTCID(tcId).renderType.subColumns);
+    };
+
+    var subColumns = function(tcId)
     {
         if ($.isBlank(tcId)) { return null; }
-        return blist.dataset.columnForTCID(tcId).renderType.filterConditions;
+        var c = blist.dataset.columnForTCID(tcId);
+        var r = _.map(c.renderType.subColumns || {}, function(sc)
+            { return {value: sc.name, text: sc.title}; });
+        return _.isEmpty(r) ? null : r;
+    };
+
+    var filterOperators = function(vals)
+    {
+        if ($.isBlank(vals.tableColumnId)) { return null; }
+        var type = blist.dataset.columnForTCID(vals.tableColumnId).renderType;
+        if ($.subKeyDefined(type, 'subColumns.' + vals.subColumn))
+        { type = type.subColumns[vals.subColumn]; }
+        if ($.isBlank(type.filterConditions)) { return null; }
+        return _.map(type.filterConditions.orderedList,
+            function(op) { return {value: op, text: type.filterConditions.details[op].text}; });
     };
 
     var filterEditor = function(sidebarObj, $field, vals, curValue)
     {
-        var tcId = vals['tableColumnId'];
-        var op = vals['operator'];
-        if ($.isBlank(tcId) || $.isBlank(op)) { return false; }
-        op = op.toLowerCase();
+        if ($.isBlank(vals.tableColumnId) || $.isBlank(vals.operator)) { return false; }
 
-        if (_.include(['is_blank', 'is_not_blank'], op)) { return false; }
+        var col = blist.dataset.columnForTCID(vals.tableColumnId);
+        var type = col.renderType;
+        if ($.subKeyDefined(type, 'subColumns.' + vals.subColumn))
+        { type = type.subColumns[vals.subColumn]; }
 
-        var col = blist.dataset.columnForTCID(tcId);
-        var typeName = col.renderTypeName;
+        if (!$.subKeyDefined(type, 'filterConditions.details.' + vals.operator) ||
+            type.filterConditions.details[vals.operator].editorCount < 1)
+        { return false; }
 
-        // Some types want different editors for filtering
-        if (_.include(['tag', 'email', 'html'], typeName)) { typeName = 'text'; }
+        var fc = type.filterConditions.details[vals.operator];
+        var cp = {dropDownList: col.dropDownList, baseUrl: col.baseUrl()};
+        var editorFn = type.getFilterEditor(vals.operator);
 
-        var firstVal = curValue;
-        if (_.isArray(curValue)) { firstVal = curValue[0]; }
-
-        var $editor = $.tag({tagName: 'div',
-            'class': ['editorWrapper', typeName]});
-        $editor.blistEditor({row: null, column: col, value: firstVal,
-            typeName: typeName});
-        $field.append($editor);
-
-        if (op == 'between')
+        _.times(fc.editorCount, function(i)
         {
-            $field.addClass('twoEditors');
-            $field.append($.tag({tagName: 'span',
-                'class': ['joiner', typeName], contents: '&amp;'}));
-
-            var secondVal;
-            if (_.isArray(curValue)) { secondVal = curValue[1]; }
-            $editor = $.tag({tagName: 'div',
-                'class': ['editorWrapper', typeName]});
-            $editor.blistEditor({row: null, column: col, value: secondVal,
-                typeName: typeName});
+            if (i > 0)
+            {
+                $field.append($.tag({tagName: 'span',
+                    'class': ['joiner', type.name], contents: '&amp;'}));
+            }
+            var $editor = $.tag({tagName: 'div', 'class': ['editorWrapper', type.name]});
+            new editorFn({type: type, row: null, value: _.isArray(curValue) ? curValue[i] : curValue,
+                    format: col.format, customProperties: cp}, $editor[0]);
             $field.append($editor);
-        }
-        else { $field.removeClass('twoEditors'); }
+        });
+
+        $field.toggleClass('twoEditors', fc.editorCount == 2);
 
         if (!$.isBlank($.uniform))
         { $field.find('select, :checkbox, :radio, :file').uniform(); }
@@ -60,12 +75,16 @@
 
     var filterEditorRequired = function(sidebarObj, vals)
     {
-        var tcId = vals['tableColumnId'];
-        var op = vals['operator'];
-        if ($.isBlank(tcId) || $.isBlank(op)) { return false; }
-        op = op.toLowerCase();
+        if ($.isBlank(vals.tableColumnId) || $.isBlank(vals.operator)) { return false; }
 
-        if (_.include(['is_blank', 'is_not_blank'], op)) { return false; }
+        var col = blist.dataset.columnForTCID(vals.tableColumnId);
+        var type = col.renderType;
+        if ($.subKeyDefined(type, 'subColumns.' + vals.subColumn))
+        { type = type.subColumns[vals.subColumn]; }
+
+        if (!$.subKeyDefined(type, 'filterConditions.details.' + vals.operator) ||
+            type.filterConditions.details[vals.operator].editorCount < 1)
+        { return false; }
 
         return true;
     };
@@ -81,7 +100,7 @@
             var $t = $(this);
             var v = $t.blistEditor().currentValue();
             if (_.isNull(v) &&
-                $t.blistEditor().column.renderTypeName == 'checkbox')
+                $t.blistEditor().type.name == 'checkbox')
             { v = '0'; }
 
             if (!$.isBlank(v)) { vals.push(v); }
@@ -181,19 +200,20 @@
                         name: 'condition.operator'},
                     {type: 'repeater', minimum: 0, addText: 'Add Condition',
                         name: 'condition.children',
-                        onlyIf: {field: 'condition.operator', value: 'always',
-                            negate: true},
+                        onlyIf: {field: 'condition.operator', value: 'always', negate: true},
                         field: {type: 'group', options: [
                         {type: 'columnSelect', text: 'Condition:', required: true,
                             name: 'tableColumnId', isTableColumn: true,
                             columns: {type: filterableTypes, hidden: false}},
-                        {type: 'select', name: 'operator',
-                            required: true, linkedField: 'tableColumnId',
-                            prompt: 'Select a comparison',
-                            options: filterOperators},
+                        {type: 'select', name: 'subColumn',
+                            linkedField: 'tableColumnId', prompt: 'Select a sub-column',
+                            onlyIf: {field: 'tableColumnId', func: subColumnShown},
+                            options: subColumns},
+                        {type: 'select', name: 'operator', required: true,
+                            linkedField: ['tableColumnId', 'subColumn'],
+                            prompt: 'Select a comparison', options: filterOperators},
                         {type: 'custom', required: true, name: 'value',
-                            linkedField: ['tableColumnId',
-                                'operator'],
+                            linkedField: ['tableColumnId', 'subColumn', 'operator'],
                             editorCallbacks: {create: filterEditor,
                                 required: filterEditorRequired,
                                 value: filterEditorValue,

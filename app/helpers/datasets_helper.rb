@@ -164,7 +164,8 @@ module DatasetsHelper
     sel = nil
     options.push(['--None--', 0])
     cols.each do |m|
-      if (m.renderTypeName == 'text' || m.renderTypeName == 'url')
+      if (m.renderTypeName == 'text' || m.renderTypeName == 'url' ||
+          m.renderTypeName == 'number')
         options.push([m.name, m.id])
         if (m.id.to_s() == selected_rdf_subject)
           sel = m.id

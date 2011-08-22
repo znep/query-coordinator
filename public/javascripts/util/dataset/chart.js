@@ -12,7 +12,7 @@ var legacyTypes =
 };
 
 Dataset.chart = {};
-Dataset.chart.textualTypes = ['text', 'html', 'tag', 'email', 'url',
+Dataset.chart.textualTypes = ['text', 'html', 'email', 'url',
     'drop_down_list', 'number', 'percent', 'money'];
 Dataset.chart.numericTypes = ['number', 'percent', 'money'];
 Dataset.chart.dateTypes = ['calendar_date', 'date'];
@@ -57,8 +57,7 @@ Dataset.chart.hasRequiredColumns = function(cols, reqCols, includeHidden)
     {
         var col = _.detect(cols, function(c)
         {
-            return _.include(rc, c.renderTypeName) && (includeHidden ||
-                !c.hidden || c.renderTypeName == 'tag');
+            return _.include(rc, c.renderTypeName) && (includeHidden || !c.hidden);
         });
 
         if ($.isBlank(col)) { return false; }

@@ -57,7 +57,7 @@
                 var data = [];
                 $list.find('li').each(function() {
                     var val = $(this).find(options.valueSelector).val();
-                    if (!$.isBlank(val))
+                    if (!$.isBlank(val.trim()))
                     { data.push(val); }
                 });
                 options.saveCallback($container, data);

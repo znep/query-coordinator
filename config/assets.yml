@@ -35,13 +35,37 @@ javascripts:
     - public/javascripts/util/dataset/map.js
     - public/javascripts/util/styles.js
     - public/javascripts/util/templates.js
-    - public/javascripts/data/types.js
+    - public/javascripts/util/datatypes.js
     - public/javascripts/controls/modal-dialogs.js
     - public/javascripts/controls/socrata-messaging.js
     - public/javascripts/controls/text-prompt.js
     - public/javascripts/controls/values.js
     - public/javascripts/controls/dropdown-menu.js
     - public/javascripts/screens/all-screens.js
+  shared-editors:
+    - public/javascripts/util/humane-number.js
+    - public/javascripts/controls/editors/editor-base.js
+    - public/javascripts/controls/editors/text-editor.js
+    - public/javascripts/plugins/datepicker.js
+    - public/javascripts/controls/editors/date-editor.js
+    - public/javascripts/plugins/jquery.maskedinput.js
+    - public/javascripts/controls/editors/number-editor.js
+    - public/javascripts/controls/editors/percent-editor.js
+    - public/javascripts/controls/editors/money-editor.js
+    - public/javascripts/controls/editors/email-editor.js
+    - public/javascripts/controls/editors/url-editor.js
+    - public/javascripts/controls/editors/phone-editor.js
+    - public/javascripts/controls/editors/location-editor.js
+    - public/javascripts/controls/combo.js
+    - public/javascripts/controls/editors/lookupList-editor.js
+    - public/javascripts/controls/editors/checkbox-editor.js
+    - public/javascripts/controls/editors/stars-editor.js
+    - public/javascripts/tiny_mce/tiny_mce_src.js
+    - public/javascripts/controls/editors/html-editor.js
+    - public/javascripts/plugins/ajaxupload.js
+    - public/javascripts/controls/upload-dialog.js
+    - public/javascripts/controls/editors/document-editor.js
+    - public/javascripts/controls/editors/photo-editor.js
   shared-calendar:
     - public/javascripts/plugins/fullcalendar.js
     - public/javascripts/controls/rich-render-library.js
@@ -49,38 +73,12 @@ javascripts:
     - public/javascripts/controls/calendars/default-calendar.js
   shared-table-render:
     - public/javascripts/util/humane-number.js
-    - public/javascripts/data/model.js
-    - public/javascripts/data/table.js
-    - public/javascripts/data/table_nav.js
+    - public/javascripts/controls/table/model.js
+    - public/javascripts/controls/table/table.js
+    - public/javascripts/controls/table/table_nav.js
     - public/javascripts/controls/scrollable.js
     - public/javascripts/controls/column-menu.js
-    - public/javascripts/controls/dataset-grid.js
-  shared-table-editor:
-    - public/javascripts/util/humane-number.js
-    - public/javascripts/data/editors/editor-base.js
-    - public/javascripts/data/editors/text-editor.js
-    - public/javascripts/plugins/datepicker.js
-    - public/javascripts/data/editors/date-editor.js
-    - public/javascripts/plugins/jquery.maskedinput.js
-    - public/javascripts/data/editors/number-editor.js
-    - public/javascripts/data/editors/percent-editor.js
-    - public/javascripts/data/editors/money-editor.js
-    - public/javascripts/data/editors/email-editor.js
-    - public/javascripts/data/editors/tag-editor.js
-    - public/javascripts/data/editors/url-editor.js
-    - public/javascripts/data/editors/phone-editor.js
-    - public/javascripts/data/editors/location-editor.js
-    - public/javascripts/controls/combo.js
-    - public/javascripts/data/editors/flag-editor.js
-    - public/javascripts/data/editors/picklist-editor.js
-    - public/javascripts/data/editors/checkbox-editor.js
-    - public/javascripts/data/editors/stars-editor.js
-    - public/javascripts/tiny_mce/tiny_mce_src.js
-    - public/javascripts/data/editors/html-editor.js
-    - public/javascripts/plugins/ajaxupload.js
-    - public/javascripts/controls/upload-dialog.js
-    - public/javascripts/data/editors/document-editor.js
-    - public/javascripts/data/editors/photo-editor.js
+    - public/javascripts/controls/table/dataset-grid.js
   shared-map:
     - public/javascripts/plugins/StyledMarker.js
     - public/javascripts/plugins/markerwithlabel.js

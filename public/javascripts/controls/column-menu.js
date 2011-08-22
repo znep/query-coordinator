@@ -50,8 +50,7 @@
 
                 if (!isNested && col.renderType.sortable) { features.sort = true; }
 
-                if (!isNested && col.renderType.filterable &&
-                    !cmObj.settings.view.isGrouped())
+                if (canFilter(cmObj, col))
                 { features.filter = true; }
 
 
@@ -182,6 +181,13 @@
         }
     });
 
+    var canFilter = function(cmObj, col)
+    {
+        var types = [col.renderType].concat(_.values(col.renderType.subColumns || {}));
+        return $.isBlank(col.parentColumn) && !cmObj.settings.view.isGrouped() &&
+            _.any(types, function(t) { return $.subKeyDefined(t, 'filterConditions.details.EQUALS'); });
+    };
+
     /* Hook up JS behavior for menu.  This is safe to be applied multiple times */
     var hookUpHeaderMenu = function(cmObj)
     {
@@ -221,9 +227,7 @@
 
     var loadFilterMenu = function(cmObj)
     {
-        if (!$.isBlank(cmObj.settings.column.parentColumn) ||
-            !cmObj.settings.column.renderType.filterable ||
-            cmObj.settings.view.isGrouped())
+        if (!canFilter(cmObj, cmObj.settings.column))
         { return; }
 
         // Remove the old filter menu if necessary
@@ -323,15 +327,11 @@
                             .column.currentFilter) &&
                             cmObj.settings.column.currentFilter.value == f.value;
                         var curType = cmObj.settings.column.renderType;
-                        f.escapedValue = escape(
-                            _.isFunction(curType.filterValue) ?
-                                curType.filterValue(f.value) :
-                                $.htmlStrip(f.value + ''));
-                        f.renderedValue =
-                            _.isFunction(curType.filterRender) ?
-                                curType.filterRender(f.value, cmObj.settings.column,
-                                    cs.subColumnType) :
-                                '';
+                        if ($.subKeyDefined(curType, 'subColumns.' + cs.subColumnType))
+                        { curType = curType.subColumns[cs.subColumnType]; }
+                        f.escapedValue = escape(_.isFunction(curType.filterValue) ?
+                                curType.filterValue(f.value) : $.htmlStrip(f.value + ''));
+                        f.renderedValue = curType.renderer(f.value, cmObj.settings.column, false, true);
                         f.titleValue = $.htmlStrip(f.renderedValue + '');
                     });
 

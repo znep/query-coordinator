@@ -141,9 +141,8 @@ protected
 
       if facet.options && facet.options.length > custom_chop
         facet.options, facet.extra_options = facet.options.partition{ |opt| opt.summary }
-        if facet.options.length < 1
-          facet.options = facet.extra_options[0..(custom_chop - 1)]
-          facet.extra_options.slice!(custom_chop..-1)
+        if facet.options.empty?
+          facet.options = facet.extra_options.slice!(0..(custom_chop - 1))
         end
       end
       facet.to_hash.deep_symbolize_keys

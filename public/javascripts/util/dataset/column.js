@@ -301,24 +301,13 @@ this.Column = ServerModel.extend({
         { this.dropDownList = this.dropDown; }
         delete this.dropDown;
         this.hidden = _.include(this.flags || [], 'hidden');
-        this.dataType = blist.data.types[this.dataTypeName] || {};
-        this.renderType = blist.data.types[this.renderTypeName] || {};
+        this.dataType = blist.datatypes[this.dataTypeName] || {};
+        this.renderType = blist.datatypes[this.renderTypeName] || {};
         this.isMeta = this.dataTypeName == 'meta_data';
 
         this.lookup = this.isMeta ? this.name : this.id;
-        if (this.dataTypeName == 'tag') { this.lookup = 'tags'; }
-        else if (this.isMeta && this.name == 'sid') { this.lookup = 'id'; }
+        if (this.isMeta && this.name == 'sid') { this.lookup = 'id'; }
         else if (this.isMeta && this.name == 'id') { this.lookup = 'uuid'; }
-
-        // Wouldn't mind getting rid of this; currently req for rendering the grid
-        this.dataLookupExpr = _.isString(this.lookup) ?
-            ('.' + this.lookup ) : ('[' + this.lookup + ']');
-        if (!$.isBlank(this.parentColumn))
-        {
-            this.directLookupExpr = this.dataLookupExpr;
-            this.dataLookupExpr = this.parentColumn.dataLookupExpr +
-                this.dataLookupExpr;
-        }
 
         // Set up min width and default
         this.minWidth = 50;
@@ -399,7 +388,7 @@ this.Column = ServerModel.extend({
 
     canBeLinkSource: function()
     {
-        if (_.include(['dataset_link', 'nested_table', 'drop_down_list', 'tag'],
+        if (_.include(['dataset_link', 'nested_table', 'drop_down_list'],
             this.dataTypeName)) { return false; }
         if (this.hidden) { return false; }
         if (this.dataTypeName.indexOf('obsolete') >= 0) { return false; }

@@ -247,12 +247,6 @@ this.Dataset = ServerModel.extend({
         };
 
         var ds = cleanViewForCreate(this);
-        // Can't handle saving a new view with tags
-        if (!$.isBlank(ds.columns))
-        {
-            ds.columns = _.reject(ds.columns,
-                function(c) { return c.dataTypeName == 'tag'; });
-        }
 
         // Munge permissions for forms, since those don't get carried over
         // or inherited
@@ -1296,7 +1290,7 @@ this.Dataset = ServerModel.extend({
             if (remoteColumns[n].value == linkSrcColId)
             {
                 var dt = remoteColumns[n].dataType;
-                return { value: dt, text: blist.data.types[dt].title };
+                return { value: dt, text: blist.datatypes[dt].title };
             }
         }
 
@@ -2150,6 +2144,7 @@ this.Dataset = ServerModel.extend({
         //          case, this has three keys:
         //   * tableColumnId: Identifies a column to look up the cell value in this
         //          row to use for comparision
+        //   * subColumn: Identifies a sub-column to check for a value
         //   * operator: How to do the comparison; operators available are the same
         //          as for filter conditions
         //   * value: Value to compare against
@@ -2208,9 +2203,13 @@ this.Dataset = ServerModel.extend({
 
             var col = ds.columnForTCID(c.tableColumnId);
             if ($.isBlank(col)) { return false; }
-            // Make sure this type of condition is supported for this column
-            if (!_.any(col.renderType.filterConditions, function(fc)
-                { return c.operator.toUpperCase() == fc.value; }))
+
+            var type = col.renderType;
+            if ($.subKeyDefined(type, 'subColumns.' + c.subColumn))
+            { type = type.subColumns[c.subColumn]; }
+
+            // Make sure this condition is supported for this type
+            if (!$.subKeyDefined(type, 'filterConditions.details.' + c.operator.toUpperCase()))
             { return false; }
 
             var rowVal = row[col.lookup];
@@ -2219,7 +2218,7 @@ this.Dataset = ServerModel.extend({
 
             var condVal = c.value;
             // Need to translate some values in a more comparable format
-            if (col.renderTypeName == 'drop_down_list')
+            if (type.name == 'drop_down_list')
             {
                 // This is a numeric comparison, so use indices
                 _.each(col.dropDownList.values, function(ddv, i)
@@ -2230,14 +2229,14 @@ this.Dataset = ServerModel.extend({
                 });
                 if (condVal.length == 1) { condVal = condVal[0]; }
             }
-            if (col.renderTypeName == 'dataset_link' && !$.isBlank(col.dropDownList))
+            if (type.name == 'dataset_link' && !$.isBlank(col.dropDownList))
             {
                 // Assume condVal is already in the displayable version
                 _.each(col.dropDownList.values, function(ddv)
                 { if (ddv.id == rowVal) { rowVal = ddv.description; } });
             }
 
-            if (col.renderTypeName == 'location')
+            if (type.name == 'location')
             {
                 // human_address in a location column is a JSON string; but we really want to compare
                 // the objects, without any of the blank keys. So munge it
@@ -2248,6 +2247,24 @@ this.Dataset = ServerModel.extend({
                         v = $.extend({}, v, {human_address: $.deepCompact(JSON.parse(v.human_address))});
                         _.each(_.keys(v.human_address), function(k)
                             { v.human_address[k] = v.human_address[k].toLowerCase(); });
+                    }
+                    return v;
+                };
+                condVal = mungeLoc(condVal);
+                rowVal = mungeLoc(rowVal);
+            }
+
+            if (type.name == 'human_address')
+            {
+                // human_address in a location column is a JSON string; but we really want to compare
+                // the objects, without any of the blank keys. So munge it
+                var mungeLoc = function(v)
+                {
+                    if (_.isString(v))
+                    {
+                        v = $.deepCompact(JSON.parse(v));
+                        _.each(_.keys(v), function(k)
+                            { v[k] = (v[k] || '').toLowerCase() || null; });
                     }
                     return v;
                 };
@@ -2346,13 +2363,6 @@ this.Dataset = ServerModel.extend({
             data[c.lookup] = row[c.lookup];
         });
 
-        // Tags has to be sent as a special key
-        if (!$.isBlank(data.tags))
-        {
-            data._tags = data.tags;
-            delete data.tags;
-        }
-
         // Copy over desired metadata columns
         data.position = row.position;
         data.meta = row.meta;
@@ -2397,11 +2407,7 @@ this.Dataset = ServerModel.extend({
                             req.parentColumn.childColumnForID(adjName) :
                             ds.columnForID(adjName);
                         var l = $.isBlank(c) ? adjName : c.lookup;
-                        // If this value is changed, then don't overwrite it
-                        // with what comes back from the server. This probably
-                        // only applies to creating a row via tags
-                        if (!req.row.changed[l])
-                        { req.row[l] = v; }
+                        req.row[l] = v;
                     }
                 });
             if (req.row.underlying)

@@ -36,30 +36,6 @@
             customDirectives[itemType]);
     });
 
-    var feedDirectiveBase = {
-        '.@class+': function(a)
-            {
-                return (blist.dataset && (a.item.user.id == blist.dataset.tableAuthor.id)) ?
-                    a.item.itemType + ' ownerFeedItem': a.item.itemType;
-            },
-        '.@data-itemId': 'feedItem.itemId',
-        '.feedCommon@class+': 'feedItem.itemType',
-        '.feedActor': 'feedItem.user.displayName!',
-        '.feedActor@href': function(a) { return new User(a.item.user).getProfileUrl(); },
-        '.feedBody': 'feedItem.body!',
-        '.feedTimestamp': function(a) { return blist.util.humaneDate.getFromDate(a.item.timestamp * 1000); },
-        '.feedCustom': function(a)
-        {
-            var renderer = compiledCustomDirectives[a.item.itemType];
-            return _.isFunction(renderer) ? renderer(a.item) : '';
-        }
-    };
-    var compiledFeedDirectiveNest = $.compileTemplate('feedItem', {
-        'li': {
-            'feedItem<-': feedDirectiveBase
-        }
-    });
-
     var getView = function(viewId, opts)
     {
         return _.detect(opts.views.concat(opts.mainView), function(v) { return v.id == viewId; });
@@ -69,7 +45,31 @@
     {
         var opts = $.extend({}, $.fn.feedList.defaults, options);
 
-        // This directive is declared here because it needs access to opts.
+        // These directives are declared here because they need access to opts.
+        var feedDirectiveBase = {
+            '.@class+': function(a)
+                {
+                    return opts.highlightCallback(a.item) ?
+                        a.item.itemType + ' specialFeedItem': a.item.itemType;
+                },
+            '.@data-itemId': 'feedItem.itemId',
+            '.feedCommon@class+': 'feedItem.itemType',
+            '.feedActor': 'feedItem.user.displayName!',
+            '.feedActor@href': function(a) { return new User(a.item.user).getProfileUrl(); },
+            '.feedBody': 'feedItem.body!',
+            '.feedTimestamp': function(a) { return blist.util.humaneDate.getFromDate(a.item.timestamp * 1000); },
+            '.feedCustom': function(a)
+            {
+                var renderer = compiledCustomDirectives[a.item.itemType];
+                return _.isFunction(renderer) ? renderer(a.item) : '';
+            }
+        };
+        var compiledFeedDirectiveNest = $.compileTemplate('feedItem', {
+            'li': {
+                'feedItem<-': feedDirectiveBase
+            }
+        });
+
         var feedDirective = {
             'li': {
                 'feedItem<-': $.extend({}, feedDirectiveBase, {
@@ -506,6 +506,10 @@
         comments: [],
         defaultFilter: 'comments',
         filterCategories: ['all items', 'comments', 'views'],
+        highlightCallback: function(feedItem) {
+            // by default highlight items that have to do with the blist owner
+            return blist.dataset && (feedItem.user.id == blist.dataset.tableAuthor.id);
+        },
         mainView: null,
         pageSize: 20,
         replyPageLimit: 2,

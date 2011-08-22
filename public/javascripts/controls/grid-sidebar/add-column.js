@@ -5,7 +5,7 @@
 
     var getTypes = function(data)
     {
-        var types = _(blist.data.types).chain()
+        var types = _(blist.datatypes).chain()
             .map(function(t, k)
             {
                 return t.createable && ($.isBlank((data || {}).parentId) ||

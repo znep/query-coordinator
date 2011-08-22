@@ -290,43 +290,6 @@ div.blist-star-0
   font-size: .8em
   color: #666666
 
-.blist-flag
-  background: transparent no-repeat left center
-  height: 22px
-  margin-top: -4px
-  margin-bottom: -4px
-  text-indent: -9999px
-
-.blist-flag-blue,
-.blist-table-editor .blue .icon,
-.blist-combo-dd.table-editor-combo .blue .icon
-  background-image: url(/stylesheets/images/content/table/flags/blue.png)
-
-.blist-flag-green,
-.blist-table-editor .green .icon,
-.blist-combo-dd.table-editor-combo .green .icon
-  background-image: url(/stylesheets/images/content/table/flags/green.png)
-
-.blist-flag-orange,
-.blist-table-editor .orange .icon,
-.blist-combo-dd.table-editor-combo .orange .icon
-  background-image: url(/stylesheets/images/content/table/flags/orange.png)
-
-.blist-flag-purple,
-.blist-table-editor .purple .icon,
-.blist-combo-dd.table-editor-combo .purple .icon
-  background-image: url(/stylesheets/images/content/table/flags/purple.png)
-
-.blist-flag-red,
-.blist-table-editor .red .icon,
-.blist-combo-dd.table-editor-combo .red .icon
-  background-image: url(/stylesheets/images/content/table/flags/red.png)
-
-.blist-flag-yellow,
-.blist-table-editor .yellow .icon,
-.blist-combo-dd.table-editor-combo .yellow .icon
-  background-image: url(/stylesheets/images/content/table/flags/yellow.png)
-
 .blist-td-phone a
   display: inline-block
   margin: -6px 0 -6px 0
@@ -375,11 +338,13 @@ div.blist-table-editor
 .blist-combo-dd.table-editor-combo .Work .icon
   background-image: url(/stylesheets/images/content/table/phones/work.png)
 
-.blist-tag
-  background-image: url(/stylesheets/images/content/table/tagIcon.png)
-  background-position: center center
-  background-repeat: no-repeat
-  height: 18px
+.blist-table-editor.type-url_sub
+  .labels, .description
+    display: none
+
+.blist-table-editor.type-human_address
+  .lat_long
+    display: none
 
 .blist-dataset-link-dangling
   color: #888888
@@ -427,20 +392,29 @@ div.blist-table-editor
   .align-right
     text-align: right
 
-.align-left
-  .blist-checkbox,
-  .blist-flag
+.blist-table .align-left
+  .blist-checkbox
     background-position: left center
 
-.align-center
-  .blist-checkbox,
   .blist-flag
+    float: left
+
+.blist-table .align-center
+  .blist-checkbox
     background-position: center center
 
-.align-right
-  .blist-checkbox,
   .blist-flag
+    display: block
+    float: none
+    margin: 0 auto
+
+.blist-table .align-right
+  .blist-checkbox
     background-position: right center
+
+  .blist-flag
+    float: right
+    text-align: left
 
 .text .blist-th-icon
   background-position: 0 -80px
@@ -494,9 +468,6 @@ div.blist-table-editor
 
 .nested_table .blist-th-icon
   background-position: 0 -440px
-
-.tag .blist-th-icon
-  background-position: 0 -180px
 
 .location .blist-th-icon
   background-position: 0 -460px

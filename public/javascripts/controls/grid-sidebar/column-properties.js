@@ -23,9 +23,9 @@
         var t = col.dataType;
         var types = [{text: col.renderType.title, value: col.renderTypeName}];
         return types.concat(_(t.convertableTypes || []).chain()
-            .sortBy(function(ct) { return blist.data.types[ct].priority; })
+            .sortBy(function(ct) { return blist.datatypes[ct].priority; })
             .map(function(ct)
-            { return {value: ct, text: blist.data.types[ct].title}; }).value());
+            { return {value: ct, text: blist.datatypes[ct].title}; }).value());
     };
 
     var showLinkSection = function(c)
@@ -179,7 +179,7 @@
         {value: "YER", text: "Yemen, Rials"},
         {value: "ZAR", text: "South Africa, Rand"}
     ], function(c) { return {value: c.value, text: c.text + ' (' +
-        blist.data.types.money.currencies[c.value] + ')'}; });
+        blist.datatypes.money.currencies[c.value] + ')'}; });
 
     var rdfOptions = [];
     var configName = 'columnProperties';

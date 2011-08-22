@@ -1037,14 +1037,11 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
             if (activeCellOn) {
                 var row = model.get(activeCellY);
                 var col = model.columns()[activeCellXStart];
-                if (row !== undefined && col !== undefined && col.dataLookupExpr)
+                if (row !== undefined && col !== undefined && !$.isBlank(col.lookup))
                 {
-                    var type = col.renderType || blist.data.types.text;
+                    var type = col.renderType || blist.datatypes.text;
                     renderContextVars.row = row;
-                    var fn = type.renderGen("row" +
-                        model.columns()[activeCellXStart].dataLookupExpr,
-                        true, col);
-                    var value = blist.data.types.compile(fn, renderContextVars);
+                    var value = type.renderer(row[col.lookup], col, true);
                     if (value != undefined)
                     {
                         return value;
@@ -1054,84 +1051,86 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
             return '';
         }
 
-        // Locate all columns that will be present in the selection
-        var usedCols;
-        var layoutLevel = layout[selectionLevel];
-        if (model.hasSelectedRows()) {
-            usedCols = [];
-            for (var i = 0; i < layoutLevel.length; i++)
-            {
-                usedCols[i] = layoutLevel[i].mcol;
-            }
-        } else {
-            usedCols = [];
-            var selectedCols = this.getSelectedColumns();
-            for (i = 0; i < layoutLevel.length; i++)
-            {
-                var mcol = layoutLevel[i].mcol;
-                if (selectedCols[mcol.id])
-                {
-                    usedCols[i] = mcol;
-                }
-            }
-            var selBoxes = convertCellSelection();
-            for (i = 0; i < selBoxes.length; i++) {
-                var box = selBoxes[i];
-                for (id = box[0]; id <= box[2]; id++) {
-                    usedCols[id] = layoutLevel[id].mcol;
-                }
-            }
-        }
-
-        // Create a mapping from an output column to the source column
-        var mapFnSrc = '(function(row, selmap) {';
-        var didOne = false;
-        for (i = 0; i < usedCols.length; i++)
-        {
-            if (usedCols[i]) {
-                col = usedCols[i];
-                if (col.renderTypeName == 'nested_table' ||
-                    col.renderTypeName == 'fill' ||
-                    (col.level.id || 0) != selectionLevel)
-                {
-                    // TODO -- include body of nested tables?
-                    continue;
-                }
-                if (!col.dataLookupExpr)
-                {
-                    // This is a bug -- the column shouldn't be selected
-                    // because it has no data.  Just ignore.
-                    continue;
-                }
-                if (didOne)
-                {
-                    mapFnSrc += 'rawDoc.push("\\t");';
-                } else
-                {
-                    didOne = true;
-                }
-                type = col.renderType || blist.data.types.text;
-                mapFnSrc += 'if (selmap[' + i + ']) rawDoc.push(' +
-                    type.renderGen("row" + col.dataLookupExpr, true,
-                        col, renderContextVars) + ');';
-            }
-        }
-        mapFnSrc += 'rawDoc.push("\\r\\n");})';
-
-        // Compile the function
-        var mapFn = blist.data.types.compile(mapFnSrc, renderContextVars);
-
-        // Walk selected rows, building the selection document
+        return '';
         // This doesn't actually work, because processSelection wants an array
-        // of rendered rows, not model rows
+        // of rendered rows, not model rows; renderGen is gone
+
+//        // Locate all columns that will be present in the selection
+//        var usedCols;
+//        var layoutLevel = layout[selectionLevel];
+//        if (model.hasSelectedRows()) {
+//            usedCols = [];
+//            for (var i = 0; i < layoutLevel.length; i++)
+//            {
+//                usedCols[i] = layoutLevel[i].mcol;
+//            }
+//        } else {
+//            usedCols = [];
+//            var selectedCols = this.getSelectedColumns();
+//            for (i = 0; i < layoutLevel.length; i++)
+//            {
+//                var mcol = layoutLevel[i].mcol;
+//                if (selectedCols[mcol.id])
+//                {
+//                    usedCols[i] = mcol;
+//                }
+//            }
+//            var selBoxes = convertCellSelection();
+//            for (i = 0; i < selBoxes.length; i++) {
+//                var box = selBoxes[i];
+//                for (id = box[0]; id <= box[2]; id++) {
+//                    usedCols[id] = layoutLevel[id].mcol;
+//                }
+//            }
+//        }
+//
+//        // Create a mapping from an output column to the source column
+//        var mapFnSrc = '(function(row, selmap) {';
+//        var didOne = false;
+//        for (i = 0; i < usedCols.length; i++)
+//        {
+//            if (usedCols[i]) {
+//                col = usedCols[i];
+//                if (col.renderTypeName == 'nested_table' ||
+//                    col.renderTypeName == 'fill' ||
+//                    (col.level.id || 0) != selectionLevel)
+//                {
+//                    // TODO -- include body of nested tables?
+//                    continue;
+//                }
+//                if (!col.dataLookupExpr)
+//                {
+//                    // This is a bug -- the column shouldn't be selected
+//                    // because it has no data.  Just ignore.
+//                    continue;
+//                }
+//                if (didOne)
+//                {
+//                    mapFnSrc += 'rawDoc.push("\\t");';
+//                } else
+//                {
+//                    didOne = true;
+//                }
+//                type = col.renderType || blist.datatypes.text;
+//                mapFnSrc += 'if (selmap[' + i + ']) rawDoc.push(' +
+//                    type.renderGen("row" + col.dataLookupExpr, true,
+//                        col, renderContextVars) + ');';
+//            }
+//        }
+//        mapFnSrc += 'rawDoc.push("\\r\\n");})';
+//
+//        // Compile the function
+//        var mapFn = blist.datatypes.compile(mapFnSrc, renderContextVars);
+//
+//        // Walk selected rows, building the selection document
 //        this.processSelection(model.rows(), mapFn, function() {});
-        rawDoc.pop(); // Remove final carriage return
-        if (rawDoc.length == 1)
-        {
-            // Only a single cell selected
-            return rawDoc[0];
-        }
-        return rawDoc.join('');
+//        rawDoc.pop(); // Remove final carriage return
+//        if (rawDoc.length == 1)
+//        {
+//            // Only a single cell selected
+//            return rawDoc[0];
+//        }
+//        return rawDoc.join('');
     };
 
     return this;

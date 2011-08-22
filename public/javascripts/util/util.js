@@ -144,14 +144,10 @@ $.unescapeObject = function(obj)
 
 $.htmlStrip = function(text)
 {
-  try
-  {
-    return text.replace(/<[^>]*>/g, '');
-  }
-  catch (ex)
-  {
-    return '';
-  }
+    try
+    { return text.replace(/<[^>]*>/g, ''); }
+    catch (ex)
+    { return ''; }
 };
 
 $.urlSafe = function(text)
@@ -242,6 +238,23 @@ $.syncObjects = function(dest, src)
     _.each(dest, function(v, k)
     { if (_.isUndefined(src[k])) { delete dest[k]; } });
 };
+
+$.flattenChildren = function(array, key)
+{
+    var key = key || 'children';
+
+    var recurse = function(array)
+    {
+        return _.map(array, function(elem)
+        {
+            if (_.isUndefined(elem[key]))
+                return elem;
+            else
+                return [elem, recurse(elem[key])];
+        });
+    };
+    return _.flatten(recurse(array));
+}
 
 $.unwrapHtml = function(html)
 {
@@ -432,17 +445,21 @@ $.commaify = function(value)
     return value;
 };
 
-$.mixin = function(obj, mixin)
+// it's kind of dumb. if you need anything it doesn't do, just explicitly tell it.
+$.pluralize = function(number, word, pluralized)
 {
-    var clone = function()
-    { return obj.apply(this, arguments); };
-    for (property in obj)
+    if (_.isUndefined(pluralized))
     {
-        if (obj.hasOwnProperty(property) && property !== 'prototype')
-        { clone[property] = obj[property]; }
+        var pluralized;
+        if (word.match(/[oiu]$/i))
+            pluralized = word + 'es';
+        else if (word.match(/y$/i))
+            pluralized = word.substring(0, word.length - 1) + 'ies';
+        else
+            pluralized = word + 's';
     }
-    $.extend(clone.prototype, obj.prototype, mixin.prototype);
-    return clone;
+
+    return number + ' ' + ((number === 1) ? word : pluralized);
 };
 
 // Keep a hash of which files have finished processing

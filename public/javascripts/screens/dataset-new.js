@@ -355,11 +355,12 @@ $wizard.wizard({
                 {
                     return; // use default behavior; last pane is real
                 }
-                else
+                else if (!_.isUndefined(state.submittedView))
                 {
                     state.submittedView.remove();
                     return 2; // go back two since we've imported.
                 }
+                return; // use default behavior; last pane is real here too
             }
         },
 

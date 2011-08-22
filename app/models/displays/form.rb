@@ -1,7 +1,6 @@
 class Displays::Form < Displays::Base
   def valid?
-    @view.columns.any? {|c| !c.flag?('hidden') &&
-      c.dataTypeName != 'tag' && c.dataTypeName != 'nested_table'}
+    @view.columns.any? {|c| !c.flag?('hidden') && c.dataTypeName != 'nested_table'}
   end
 
   def invalid_message

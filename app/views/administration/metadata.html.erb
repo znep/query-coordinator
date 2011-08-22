@@ -94,7 +94,6 @@
                                 </a>
                                 <span class="grabHandle fadeIcon"></span>
                                 <input type="text" class="value" value="<%= option %>" />
-                                <%# freaking ie7 won't display the td without this! %>&nbsp;
                               </li>
                             <%- end -%>
                           <%- end-%>
@@ -189,12 +188,13 @@
       <table class="gridList categoriesTable" cellspacing="0">
         <colgroup>
           <col class="name" />
+          <col class="parent" />
           <col class="actions" />
         </colgroup>
         <thead>
           <tr>
             <th class="name"><div>Category Name</div><span class="icon"></span></th>
-            <th class="name"><div>Parent</div><span class="icon"></span></th>
+            <th class="parent"><div>Parent</div><span class="icon"></span></th>
             <th class="actions"><div>&nbsp;</div><span class="icon"></span></th>
           </tr>
         </thead>
@@ -206,7 +206,7 @@
                   <%= category.titleize_if_necessary %>
                 </span>
               </td>
-              <td class="name">
+              <td class="parent">
                 <span class="cellInner">
                   <%- if value.kind_of? Hashie::Mash -%>
                     <%= value['parent'] %>
@@ -225,7 +225,7 @@
               <td class="name">
                 <input type="text" class="newCategory" name="new_category" />
               </td>
-              <td class="name">
+              <td class="parent">
                 <select name="new_category_parent" class="newCategorySelect">
                   <%= options_for_select(@categories.map{|k,v| k}.unshift('')) %>
                 </select>

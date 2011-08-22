@@ -3,64 +3,6 @@
     var noFilterValue = { noFilter: true }; // sentinel value for blank filters
 
 /////////////////////////////////////
-// DEFS
-
-    var defaultOperator = {
-        text: 'EQUALS',
-        html: 'EQUALS',
-        number: 'between?',
-        date: 'between?',
-        calendar_date: 'between?',
-        photo: 'blank?',
-        photo_obsolete: 'blank?',
-        money: 'between?',
-        phone: 'EQUALS',
-        checkbox: 'EQUALS',
-        flag: 'EQUALS',
-        stars: 'EQUALS',
-        percent: 'between?',
-        url: 'EQUALS',
-        'document': 'blank?',
-        document_obsolete: 'blank?',
-        'location': 'EQUALS',
-        tag: 'CONTAINS',
-        email: 'EQUALS',
-        picklist: 'EQUALS',
-        drop_down_list: 'EQUALS',
-        dataset_link: 'EQUALS' // ??
-    };
-    var forceTextRender = [
-        'percent', 'url'
-    ];
-    var operatorNames = {
-        EQUALS: 'is',
-        NOT_EQUALS: 'is not',
-        LESS_THAN: 'is less than',
-        LESS_THAN_OR_EQUALS: 'is less than or equal to',
-        GREATER_THAN: 'is greater than',
-        GREATER_THAN_OR_EQUALS: 'is greater than or equal to',
-        STARTS_WITH: 'starts with',
-        CONTAINS: 'contains',
-        NOT_CONTAINS: 'does not contain',
-        BETWEEN: 'is between',
-        'blank?': 'is'
-    };
-    var subcolumnNames = {
-        phone_number: 'number',
-        phone_type: 'type',
-        url: 'url',
-        description: 'description',
-        human_address: 'address',
-        latitude: 'latitude',
-        longitude: 'longitude'
-    };
-    var defaultSubcolumn = {
-        phone: 'phone_type',
-        'location': 'human_address',
-        url: 'description'
-    };
-
-/////////////////////////////////////
 // UTIL
 
     // cleans out filters down to a "minimal effective" state: essentially strips out
@@ -156,13 +98,31 @@
         return value;
     };
 
-    var scrubFilterOperators = function(operators)
+    var getDefaultOperator = function(type)
+    {
+        return $.subKeyDefined(type, 'filterConditions.details.BETWEEN') ? 'between?' :
+            $.subKeyDefined(type, 'filterConditions.details.EQUALS') ? 'EQUALS' :
+            'blank?';
+    };
+
+    var getOperatorName = function(column, subcolumn, operator)
+    {
+        if (operator == 'blank?') { return 'is'; }
+        var type = column.renderType;
+        if ($.subKeyDefined(type, 'subColumns.' + subcolumn))
+        { type = type.subColumns[subcolumn]; }
+        if (!$.subKeyDefined(type, 'filterConditions')) { return ''; }
+        return (type.filterConditions.details[operator] || {}).text || '';
+    };
+
+    var scrubFilterOperators = function(fc)
     {
         // we handle blank/notblank separately
-        return _.reject(operators, function(operator)
-        {
-            return (operator.value == 'IS_NOT_BLANK') || (operator.value == 'IS_BLANK');
-        }).concat({ value: 'blank?', text: 'is blank?' });
+        return _.compact(_.map(fc.orderedList, function(op)
+                {
+                    return (op == 'IS_BLANK' || op == 'IS_NOT_BLANK') ? null :
+                        {value: op, text: fc.details[op].text};
+                })).concat({ value: 'blank?', text: 'is blank?' });
     };
 
     // see if a condition is basically blank
@@ -176,9 +136,12 @@
     };
 
     // determine the default operator for a column given context
-    var defaultOperatorForColumn = function(column)
+    var defaultOperatorForColumn = function(column, subcolumn)
     {
-        var operator = defaultOperator[column.renderTypeName] || 'blank?';
+        var type = column.renderType;
+        if ($.subKeyDefined(type, 'subColumns.' + subcolumn))
+        { type = type.subColumns[subcolumn]; }
+        var operator = getDefaultOperator(type);
 
         if (operator == 'between?')
         {
@@ -270,6 +233,19 @@
         }
 
         return result;
+    };
+
+    var getRenderType = function(column, subColumn)
+    {
+        var type = column.renderType;
+        if (!$.isBlank(subColumn))
+        {
+            if ($.subKeyDefined(column.renderType, 'subColumns.' + subColumn))
+            { type = column.renderType.subColumns[subColumn] ; }
+            else
+            { type = null; }
+        }
+        return type;
     };
 
 /////////////////////////////////////
@@ -375,8 +351,8 @@
                         tableColumnId: column.tableColumnId,
                         operator: operator
                     };
-                    var subcolumn = findConditionComponent(child, 'subcolumn');
-                    if (subcolumn && _.include(column.subColumnTypes || [], subcolumn)) // sanity check
+                    var subcolumn = findConditionComponent(child, 'subcolumn').toLowerCase();
+                    if (subcolumn && _.include(_.keys(column.renderType.subColumns || {}), subcolumn)) // sanity check
                     {
                         child.metadata.subcolumn = subcolumn;
                     }
@@ -589,8 +565,10 @@
             var $filter = $.renderTemplate('filterCondition', { metadata: metadata, column: column }, {
                 '.filterCondition@class+': function() { return (metadata.expanded === false) ? 'collapsed' : 'expanded'; },
                 '.columnName': 'column.name!',
-                '.subcolumnName': function() { return subcolumnNames[metadata.subcolumn] || ''; },
-                '.operator': function() { return operatorNames[metadata.operator]; }
+                '.subcolumnName': function() { return (((column.renderType.subColumns || {})
+                        [metadata.subcolumn] || {}).title || '').toLowerCase(); },
+                '.operator': function()
+                    { return getOperatorName(column, metadata.subcolumn, metadata.operator); }
             });
             var filterUniqueId = 'filter_' + _.uniqueId();
             $filter.find('.autogeneratedCount').val(metadata.includeAuto || 5);
@@ -666,7 +644,18 @@
                         return true;
                     }
 
-                    if (!_.include(_.pluck(newColumn.renderType.filterConditions, 'value'), metadata.operator))
+                    // make sure we deal with subcolumn in case we've set one
+                    if (!$.isBlank(newColumn.renderType.subColumns))
+                    {
+                        metadata.subcolumn = newColumn.renderType.defaultFilterSubColumn;
+                    }
+                    else
+                    {
+                        delete metadata.subcolumn;
+                    }
+
+                    if (!$.subKeyDefined(getRenderType(newColumn, metadata.subcolumn),
+                        'filterConditions.details.' + metadata.operator))
                     {
                         // the column they'd like to select doesn't support the operator they've selected
                         if (!hasNoValues(condition) &&
@@ -675,18 +664,8 @@
                             return false;
                         }
                         condition.children = [];
-                        metadata.operator = defaultOperatorForColumn(newColumn);
+                        metadata.operator = defaultOperatorForColumn(newColumn, metadata.subcolumn);
                         metadata.customValues = [];
-                    }
-
-                    // make sure we deal with subcolumn in case we've set one
-                    if (_.isArray(newColumn.subColumnTypes))
-                    {
-                        metadata.subcolumn = defaultSubcolumn[newColumn.renderTypeName];
-                    }
-                    else
-                    {
-                        delete metadata.subcolumn;
                     }
 
                     metadata.tableColumnId[dataset.tableId] = newColumn.tableColumnId;
@@ -697,7 +676,8 @@
                 selectedItems: column
             });
 
-            var validOperators = scrubFilterOperators(column.renderType.filterConditions);
+            var validOperators = scrubFilterOperators(
+                getRenderType(column, metadata.subcolumn).filterConditions);
             $filter.find('.operator').popupSelect({
                 choices: validOperators,
                 listContainerClass: 'popupOperatorSelect',
@@ -736,7 +716,8 @@
                     else
                     {
                         metadata.operator = newOperator.value;
-                        $filter.find('.operator').text(operatorNames[metadata.operator]);
+                        $filter.find('.operator').text(getOperatorName(column,
+                            metadata.subcolumn, newOperator.value));
 
                         replaceFilter($filter, condition);
 
@@ -749,16 +730,16 @@
                 })
             });
 
-            if (!_.isUndefined(column.subColumnTypes))
+            if (!$.isBlank(column.renderType.subColumns))
             {
                 $filter.find('.subcolumnName').popupSelect({
-                    choices: column.subColumnTypes,
+                    choices: _.keys(column.renderType.subColumns),
                     listContainerClass: 'popupSubcolumnSelect',
                     onShowCallback: function() { return $pane.hasClass('advanced'); },
                     prompt: 'Select the part of ' + $.htmlStrip(column.name) + ' to filter by:',
                     renderer: function(subcolumn)
                     {
-                        return subcolumnNames[subcolumn];
+                        return ((column.renderType.subColumns[subcolumn] || {}).title || '').toLowerCase();
                     },
                     selectCallback: function(newSubcolumn)
                     {
@@ -766,6 +747,20 @@
                         {
                             // nothing's changed here. ignore...
                             return true;
+                        }
+
+                        if (!$.subKeyDefined(getRenderType(column, newSubcolumn),
+                            'filterConditions.details.' + metadata.operator))
+                        {
+                            // the column they'd like to select doesn't support the operator they've selected
+                            if (!hasNoValues(condition) &&
+                                !confirm('Doing this will remove all values from your filter! Are you sure you wish to do this?'))
+                            {
+                                return false;
+                            }
+                            condition.children = [];
+                            metadata.operator = defaultOperatorForColumn(column, newSubcolumn);
+                            metadata.customValues = [];
                         }
 
                         metadata.subcolumn = newSubcolumn;
@@ -1039,19 +1034,18 @@
 
             if (options.freeform)
             {
-                var renderTypeName = column.renderTypeName;
-                if (_.include(['tag', 'html', 'email', 'dataset_link'], renderTypeName))
-                {
-                    // flatten these down to text instead
-                    renderTypeName = 'text';
-                }
+                var renderType = column.renderType;
+                if ($.subKeyDefined(column.renderType, 'subColumns.' + metadata.subcolumn))
+                { renderType = column.renderType.subColumns[metadata.subcolumn]; }
+
+                var editorFn = renderType.getFilterEditor(metadata.operator);
 
                 // dump in the appropriate number of editors
-                _((metadata.operator == 'BETWEEN') ? 2 : 1).times(function(i)
+                _(renderType.filterConditions.details[metadata.operator].editorCount).times(function(i)
                 {
                     if (i > 0)
                     {
-                        $line.find('.filterValueEditor:first').after($.tag({
+                        $line.append($.tag({
                             tagName: 'span',
                             contents: 'and',
                             'class': 'conjunction'
@@ -1070,12 +1064,13 @@
                     if (!_.isUndefined(metadata.subcolumn) && !$.isBlank(editorValue))
                     {
                         // if we want a subcolumn only give the editor that subcolumn.
-                        editorValue = $.keyValueToObject(metadata.subcolumn, editorValue[metadata.subcolumn]);
+                        editorValue = editorValue[metadata.subcolumn];
                     }
 
                     $this.data('unifiedFilter-editor',
-                        $this.blistEditor({ row: null, column: column, typeName: renderTypeName,
-                                            value: editorValue }));
+                        new editorFn({type: renderType, value: editorValue, row: null,
+                            format: column.format, customProperties: {dropDownList: column.dropDownList,
+                                baseUrl: column.baseUrl()}}, $this[0]));
                 });
 
                 // events
@@ -1157,27 +1152,27 @@
                     'for': inputId,
                     contents: _.map($.arrayify(valueObj.item), function(valueObjPart, i)
                     {
-                        var valueObjSubpart = valueObjPart;
-                        if (!_.isUndefined(metadata.subcolumn) && (metadata.operator != 'blank?'))
+                        if (!$.isBlank(metadata.subcolumn) && (metadata.operator != 'blank?') &&
+                            $.isPlainObject(valueObjPart))
                         {
-                            valueObjSubpart = valueObjPart[metadata.subcolumn];
-                            valueObjPart = $.keyValueToObject(metadata.subcolumn, valueObjSubpart);
+                            valueObjPart = valueObjPart[metadata.subcolumn];
                         }
 
                         var response = (i > 0) ? ' and ' : '';
-                        if ((options.textOnly === true) || _.include(forceTextRender, column.renderTypeName))
+                        if ((options.textOnly === true))
                         {
-                            response += valueObjSubpart.toString();
+                            response += valueObjPart.toString();
                         }
                         else
                         {
                             try
                             {
-                                response += column.renderType.renderer(valueObjPart, column);
+                                response += getRenderType(column, metadata.subcolumn)
+                                    .renderer(valueObjPart, column, false, true);
                             }
                             catch (ex)
                             {
-                                response += valueObjSubpart.toString();
+                                response += valueObjPart.toString();
                             }
                         }
                         return response;
@@ -1259,13 +1254,14 @@
             newCondition.metadata.tableColumnId[dataset.tableId] = column.tableColumnId;
 
             // do we have a composite column? if so get the most relevant subcolumn.
-            if (_.isArray(column.subColumnTypes))
+            if (!$.isBlank(column.renderType.subColumns))
             {
-                newCondition.metadata.subcolumn = defaultSubcolumn[column.renderTypeName];
+                newCondition.metadata.subcolumn = column.renderType.defaultFilterSubColumn;
             }
 
             // okay, we have a column. now figure out what to filter it on.
-            newCondition.metadata.operator = defaultOperatorForColumn(column);
+            newCondition.metadata.operator = defaultOperatorForColumn(column,
+                newCondition.metadata.subcolumn);
 
             rootCondition.children.push(newCondition);
             renderCondition(newCondition);
@@ -1699,14 +1695,10 @@
                         },
                         children: [columnDefinition].concat(_.map($.arrayify(value), function(v)
                         {
-                            if (!_.isUndefined(metadata.subcolumn))
-                            {
-                                v = v[metadata.subcolumn];
-                            }
-
                             return {
                                 type: 'literal',
-                                value: v
+                                value: !$.isBlank(metadata.subcolumn) && $.isPlainObject(v) ?
+                                    v[metadata.subcolumn] : v
                             };
                         }))
                     });

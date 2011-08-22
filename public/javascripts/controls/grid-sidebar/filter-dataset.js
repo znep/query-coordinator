@@ -3,10 +3,10 @@
     if (blist.sidebarHidden.filter &&
         blist.sidebarHidden.filter.filterDataset) { return; }
 
-    var sortableTypes = _.compact(_.map(blist.data.types, function(t, n)
+    var sortableTypes = _.compact(_.map(blist.datatypes, function(t, n)
     { return t.sortable ? n : null; }));
 
-    var groupableTypes = _.compact(_.map(blist.data.types, function(t, n)
+    var groupableTypes = _.compact(_.map(blist.datatypes, function(t, n)
     { return !$.isBlank(t.rollUpAggregates) ? n : null; }));
 
     var rollUpFunctions = function(colId)

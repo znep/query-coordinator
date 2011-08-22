@@ -47,6 +47,9 @@ $(function()
             actionDelegate: function() { return nom; },
             comments: comments,
             filterCategories: null,
+            highlightCallback: function(feedItem) {
+                return _.include(feedItem.user.rights || [], 'approve_nominations');
+            },
             mainView: nom
         });
     });

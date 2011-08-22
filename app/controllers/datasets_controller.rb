@@ -371,6 +371,8 @@ class DatasetsController < ApplicationController
     return if view.nil?
 
     type = CGI.unescape(params[:type])
+    return render_404 if view.blobs.nil?
+
     blob = view.blobs.detect {|b| b['type'] == type}
     return render_404 if blob.nil? || blob['href'].blank?
 
@@ -481,6 +483,7 @@ protected
       # Make sure required fields are filled in
       domain_meta = CurrentDomain.property(:fieldsets, :metadata)
       unless domain_meta.blank?
+        error_fields = []
         domain_meta.each do |fieldset|
           unless fieldset.fields.blank?
             fieldset.fields.each do |field|
@@ -489,12 +492,17 @@ protected
                     params[:view][:privateMetadata][:custom_fields][fieldset.name][field.name].blank?) ||
                   (field.private.blank? &&
                     params[:view][:metadata][:custom_fields][fieldset.name][field.name].blank?)
-                  flash.now[:error] = "The field '#{field.name}' is required."
-                  return false
+                  error_fields << field.name
                 end
               end
             end
           end
+        end
+        unless error_fields.empty?
+          flash.now[:error] = error_fields.length == 1 ?
+            "The field '#{error_fields.first}' is required." :
+            "The fields '#{error_fields[0..-2].join("', '")}' and '#{error_fields[-1]}' are required."
+          return false
         end
       end
       if params[:view][:metadata].present? && params[:view][:metadata][:rdfClass] =~ /^_.*/

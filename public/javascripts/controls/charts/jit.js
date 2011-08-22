@@ -1,178 +1,169 @@
 (function($)
 {
-    $.socrataChart.jit = function(options, dom)
-    {
-        this.settings = $.extend({}, $.socrataChart.jit.defaults, options);
-        this.currentDom = dom;
-        this.init();
-    };
-
-
-    $.extend($.socrataChart.jit, $.socrataChart.extend(
-    {
-        defaults:
+    $.socrataChart.jit = $.socrataChart.extend({
+        _init: function()
         {
-            highlightBlur: 7
+            arguments[0] = $.extend({ highlightBlur: 7 }, arguments[0]);
+            this._super.apply(this, arguments);
         },
 
-        prototype:
+        initializeVisualization: function()
         {
-            initializeChart: function()
-            {
-                var chartObj = this;
-                chartObj._chartType = chartObj.settings
-                    .view.displayFormat.chartType;
+            var chartObj = this;
+            chartObj._super();
+            chartObj._chartType = chartObj.settings
+                .view.displayFormat.chartType;
 
-                var limit = Dataset.chart.types[chartObj._chartType].displayLimit;
-                if (limit.points)
-                { chartObj._maxRows = limit.points; }
-            },
+            var limit = Dataset.chart.types[chartObj._chartType].displayLimit;
+            if (limit.points)
+            { chartObj._maxRows = limit.points; }
+        },
 
-            columnsLoaded: function()
-            {
-                var chartObj = this;
-                chartObj._totalSum = chartObj._valueColumns[0].column.aggregates.sum;
-                chartObj._remainder = chartObj._valueColumns[0].column.aggregates.sum -
-                    (chartObj._preRemainder || 0);
-                delete chartObj._preRemainder;
-            },
+        columnsLoaded: function()
+        {
+            var chartObj = this;
+            chartObj._totalSum = chartObj._valueColumns[0].column.aggregates.sum;
+            chartObj._remainder = chartObj._valueColumns[0].column.aggregates.sum -
+                (chartObj._preRemainder || 0);
+            delete chartObj._preRemainder;
+        },
 
-            renderData: function(rows)
-            {
-                var chartObj = this;
+        renderData: function(rows)
+        {
+            var chartObj = this;
 
-                var addRows = function(row)
-                    {
-                        var exItem = _.detect(chartObj._jitData.children, function(c)
-                            { return c.id == row.id; });
-                        var exIndex = -1;
-                        var exArea = 0;
-                        if (!$.isBlank(exItem))
-                        {
-                            exIndex = _.indexOf(chartObj._jitData.children, exItem);
-                            chartObj._jitData.children.splice(exIndex, 1);
-                            exArea = exItem.data.$area;
-                        }
-
-                        var area = parseFloat(row[chartObj.
-                            _valueColumns[0].column.id]);
-                        if (_.isNaN(area)) { return; }
-
-                        if (!$.isBlank(chartObj._remainder))
-                        { chartObj._remainder -= area - exArea; }
-                        else
-                        {
-                            chartObj._preRemainder = chartObj._preRemainder || 0;
-                            chartObj._preRemainder += area - exArea;
-                        }
-                        var xCol = chartObj._fixedColumns[0];
-
-                        var colors = chartObj.settings.view.displayFormat.colors;
-                        var defaultColor = colors[row.id % 5];
-
-                        var rowColor = (row.meta && row.meta.color) ||
-                            row.color || defaultColor;
-                        var isHighlight = (row.sessionMeta || {}).highlight;
-                        if (isHighlight)
-                        { rowColor = getHighlightColor(rowColor); }
-
-                        var item = {
-                            id: row.id,
-                            name: xCol.renderType.renderer(row[xCol.id], xCol, true),
-                            data: {
-                                $area: area,
-                                $color: rowColor,
-                                row: row,
-                                flyoutDetails: chartObj.renderFlyout(row,
-                                    chartObj._valueColumns[0].column.tableColumnId,
-                                    chartObj.settings.view)
-                            },
-                            children: []
-                        };
-                        if (isHighlight)
-                        { item.data['$canvas-shadowBlur'] = chartObj.settings.highlightBlur; }
-
-                        if (exIndex < 0)
-                        { chartObj._jitData.children.push(item); }
-                        else
-                        { chartObj._jitData.children.splice(exIndex, 0, item); }
-                    };
-
-                if (!chartObj._jitData)
-                { chartObj._jitData = { id: 'root', name: '', data: {}, children: [] }; }
-                else
+            var addRows = function(row)
                 {
-                    if (chartObj._otherAdded)
+                    var exItem = _.detect(chartObj._jitData.children, function(c)
+                        { return c.id == row.id; });
+                    var exIndex = -1;
+                    var exArea = 0;
+                    if (!$.isBlank(exItem))
                     {
-                        chartObj._jitData.children = _.reject(chartObj._jitData.children,
-                            function(c) { return c.id < 0; });
-                        chartObj._otherAdded = false;
+                        exIndex = _.indexOf(chartObj._jitData.children, exItem);
+                        chartObj._jitData.children.splice(exIndex, 1);
+                        exArea = exItem.data.$area;
                     }
-                }
-                _.each(rows, addRows);
 
-                if (chartObj._remainder > chartObj._totalSum * 0.005)
-                {
-                    var row = { id: 'Other', changed: {}, error: {}, invalid: {} };
-                    row[chartObj._fixedColumns[0].id] = 'Other';
-                    row[chartObj._valueColumns[0].column.id] = chartObj._remainder;
+                    var area = parseFloat(row[chartObj.
+                        _valueColumns[0].column.id]);
+                    if (_.isNaN(area)) { return; }
+
+                    if (!$.isBlank(chartObj._remainder))
+                    { chartObj._remainder -= area - exArea; }
+                    else
+                    {
+                        chartObj._preRemainder = chartObj._preRemainder || 0;
+                        chartObj._preRemainder += area - exArea;
+                    }
+                    var xCol = chartObj._fixedColumns[0];
+
                     var colors = chartObj.settings.view.displayFormat.colors;
-                    var color = colors[chartObj.settings.view.totalRows % 5];
-                    if ((chartObj.settings.view.highlights || {})[row.id])
-                    { color = getHighlightColor(color); }
+                    var defaultColor = colors[row.id % 5];
+
+                    var rowColor = (row.meta && row.meta.color) ||
+                        row.color || defaultColor;
+                    var isHighlight = (row.sessionMeta || {}).highlight;
+                    if (isHighlight)
+                    { rowColor = getHighlightColor(rowColor); }
+
                     var item = {
-                        id: -1,
-                        name: 'Other',
+                        id: row.id,
+                        name: xCol.renderType.renderer(row[xCol.id], xCol, true),
                         data: {
-                            $area: chartObj._remainder,
-                            $color: color,
-                            row: {id: 'Other'},
+                            $area: area,
+                            $color: rowColor,
+                            row: row,
                             flyoutDetails: chartObj.renderFlyout(row,
                                 chartObj._valueColumns[0].column.tableColumnId,
                                 chartObj.settings.view)
                         },
                         children: []
                     };
-                    if ((chartObj.settings.view.highlights || {})[row.id])
+                    if (isHighlight)
                     { item.data['$canvas-shadowBlur'] = chartObj.settings.highlightBlur; }
-                    chartObj._jitData.children.push(item);
-                    chartObj._otherAdded = true;
-                }
 
-                if (!chartObj.chart)
-                { initializeJITObject(chartObj); }
+                    if (exIndex < 0)
+                    { chartObj._jitData.children.push(item); }
+                    else
+                    { chartObj._jitData.children.splice(exIndex, 0, item); }
+                };
 
-                chartObj.chart.loadJSON(chartObj._jitData);
-                chartObj.chart.refresh();
-            },
-
-            resetData: function()
+            if (!chartObj._jitData)
+            { chartObj._jitData = { id: 'root', name: '', data: {}, children: [] }; }
+            else
             {
-                var chartObj = this;
-                $(chartObj.chart.canvas.getElement()).parent().empty();
-                delete chartObj.chart;
-                delete chartObj._jitData;
-            },
-
-            resizeHandle: function()
-            {
-                var chartObj = this;
-                if (!chartObj.chart || !chartObj.chart.canvas) { return; }
-                chartObj.chart.canvas.resize(chartObj.$dom().width(),
-                                             chartObj.$dom().height());
-            },
-
-            getRequiredJavascripts: function()
-            {
-                var scripts = $.makeArray(blist.assets.jit);
-                if ($.browser.msie)
+                if (chartObj._otherAdded)
                 {
-                    scripts.push(this.javascriptBase + 'plugins/excanvas.compiled.js');
+                    chartObj._jitData.children = _.reject(chartObj._jitData.children,
+                        function(c) { return c.id < 0; });
+                    chartObj._otherAdded = false;
                 }
-                return scripts;
             }
+            _.each(rows, addRows);
+
+            if (chartObj._remainder > chartObj._totalSum * 0.005)
+            {
+                var row = { id: 'Other', changed: {}, error: {}, invalid: {} };
+                row[chartObj._fixedColumns[0].id] = 'Other';
+                row[chartObj._valueColumns[0].column.id] = chartObj._remainder;
+                var colors = chartObj.settings.view.displayFormat.colors;
+                var color = colors[chartObj.settings.view.totalRows % 5];
+                if ((chartObj.settings.view.highlights || {})[row.id])
+                { color = getHighlightColor(color); }
+                var item = {
+                    id: -1,
+                    name: 'Other',
+                    data: {
+                        $area: chartObj._remainder,
+                        $color: color,
+                        row: {id: 'Other'},
+                        flyoutDetails: chartObj.renderFlyout(row,
+                            chartObj._valueColumns[0].column.tableColumnId,
+                            chartObj.settings.view)
+                    },
+                    children: []
+                };
+                if ((chartObj.settings.view.highlights || {})[row.id])
+                { item.data['$canvas-shadowBlur'] = chartObj.settings.highlightBlur; }
+                chartObj._jitData.children.push(item);
+                chartObj._otherAdded = true;
+            }
+
+            if (!chartObj.chart)
+            { initializeJITObject(chartObj); }
+
+            chartObj.chart.loadJSON(chartObj._jitData);
+            chartObj.chart.refresh();
+        },
+
+        cleanVisualization: function()
+        {
+            var chartObj = this;
+            chartObj._super();
+            $(chartObj.chart.canvas.getElement()).parent().empty();
+            delete chartObj.chart;
+            delete chartObj._jitData;
+        },
+
+        resizeHandle: function()
+        {
+            var chartObj = this;
+            if (!chartObj.chart || !chartObj.chart.canvas) { return; }
+            chartObj.chart.canvas.resize(chartObj.$dom().width(),
+                                         chartObj.$dom().height());
+        },
+
+        getRequiredJavascripts: function()
+        {
+            var scripts = $.makeArray(blist.assets.jit);
+            if ($.browser.msie)
+            {
+                scripts.push(this.javascriptBase + 'plugins/excanvas.compiled.js');
+            }
+            return scripts;
         }
-    }));
+    });
 
     var getHighlightColor = function(color)
     {

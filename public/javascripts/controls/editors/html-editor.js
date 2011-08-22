@@ -6,8 +6,6 @@
 // instance variable.
 (function($)
 {
-    var nextEditorID = 1;
-
     // We've got no use for TinyMCE themes.  Also, dynamically loading bits of JS is stupid.
     // 
     // Create a theme now that is a very simple shell.  See editor_template_src.js for the "simple" theme
@@ -152,7 +150,7 @@
         var $root = $('<div class="blist-table-editor' +
             ' type-html"><textarea class="tinymce"></textarea><div class="blist-rte-container"></div></div>');
         var textarea = $root.find('textarea')[0];
-        textarea.id = "html_" + nextEditorID++;
+        textarea.id = "html_" + _.uniqueId();
         var container = $root.find('.blist-rte-container')[0];
         container.id = textarea.id + "_container";
 
@@ -208,13 +206,6 @@
         });
         rte.$dom = $root;
         return rte;
-    };
-
-    $.blistEditor.html = function(options, dom)
-    {
-        this.settings = $.extend({}, $.blistEditor.html.defaults, options);
-        this.currentDom = dom;
-        this.init();
     };
 
     var booleanCommand = {
@@ -316,156 +307,154 @@
         orderedList: { id: 'InsertOrderedList', type: booleanCommand }
     };
 
-    $.extend($.blistEditor.html, $.blistEditor.extend(
-    {
-        prototype:
+    $.blistEditor.html = $.blistEditor.extend({
+        _init: function()
         {
-            $editor: function()
+            this._super.apply(this, arguments);
+            this.setFullSize();
+            this._editor.render();
+        },
+
+        $editor: function()
+        {
+            if (!this._editor)
             {
-                if (!this._editor)
-                {
-                    this._editor = createRTE();
-                    this._editorInitDone = false;
-                    var me = this;
-                    this._editor.onInit.add(function() {
-                        var t = this;
-                        _.defer(function()
-                        {
-                            initDoc(t.getDoc());
-                            t.setContent(t._initValue);
-                            me._editorInitDone = true;
-                            if (_.isFunction(me.showCallback))
-                                me.showCallback();
-                            t.focus();
-                        });
+                this._editor = createRTE();
+                this._editorInitDone = false;
+                var me = this;
+                this._editor.onInit.add(function() {
+                    var t = this;
+                    _.defer(function()
+                    {
+                        initDoc(t.getDoc());
+                        t.setContent(t._initValue);
+                        me._editorInitDone = true;
+                        if (_.isFunction(me.showCallback))
+                            me.showCallback();
+                        t.focus();
                     });
-                    this._editor.onNodeChange.add(function()
-                    { me.actionStatesChanged(); });
-                    this._editor.onKeyDown.add(function(ed, e)
+                });
+                this._editor.onNodeChange.add(function()
+                { me.actionStatesChanged(); });
+                this._editor.onKeyDown.add(function(ed, e)
+                {
+                    // Esc, F2 or tab
+                    if (e.keyCode == 27 || e.keyCode == 113 || e.keyCode == 9)
                     {
-                        // Esc, F2 or tab
-                        if (e.keyCode == 27 || e.keyCode == 113 || e.keyCode == 9)
-                        {
-                            // Note -- convert original event from native to jQuery;
-                            // handling logic in the table requires this
-                            me.$dom().trigger('edit_end', [e.keyCode != 27, $.event.fix(e)]);
-                            return false;
-                        }
-                    });
-                }
-                if (this.newValue != null)
-                {
-                    this._value = this.newValue;
-                    this.goToEndOnFocus = true;
-                }
-                else
-                {
-                    this.flattenValue();
-                    this._value = this.originalValue;
-                }
-
-                this._editor._initValue = (this._value || '');
-                return this._editor.$dom;
-            },
-
-            _val: function() {
-                return this._editor.getContent() || '';
-            },
-
-            finishEditExtra: function()
-            {
-                if (this._editorInitDone)
-                { this._value = this._val(); }
-                this._editor.remove();
-
-                delete this._editor;
-            },
-
-            focus: function()
-            {
-                if (this._editor.getWin())
-                {
-                    this._editor.execCommand("selectall");
-                    this._editor.focus();
-                    if (this.goToEndOnFocus)
-                    {
-                        delete this.goToEndOnFocus;
-                        this._editor.selection.collapse(false);
+                        // Note -- convert original event from native to jQuery;
+                        // handling logic in the table requires this
+                        me.$dom().trigger('edit_end', [e.keyCode != 27, $.event.fix(e)]);
+                        return false;
                     }
-                }
-            },
-
-            currentValue: function()
+                });
+            }
+            if (this.newValue != null)
             {
-                var v;
-                if (this._editor)
+                this._value = this.newValue;
+                this.goToEndOnFocus = true;
+            }
+            else
+            {
+                this.flattenValue();
+                this._value = this.originalValue;
+            }
+
+            this._editor._initValue = (this._value || '');
+            return this._editor.$dom;
+        },
+
+        _val: function() {
+            return this._editor.getContent() || '';
+        },
+
+        finishEdit: function()
+        {
+            this._super();
+            if (this._editorInitDone)
+            { this._value = this._val(); }
+            this._editor.remove();
+
+            delete this._editor;
+        },
+
+        focus: function()
+        {
+            if (this._editor.getWin())
+            {
+                this._editor.execCommand("selectall");
+                this._editor.focus();
+                if (this.goToEndOnFocus)
                 {
-                    v = this._val();
+                    delete this.goToEndOnFocus;
+                    this._editor.selection.collapse(false);
                 }
-                else
+            }
+        },
+
+        currentValue: function()
+        {
+            var v;
+            if (this._editor)
+            {
+                v = this._val();
+            }
+            else
+            {
+                v = this._value;
+            }
+            return v === '' ? null : v;
+        },
+
+        getActionStates: function()
+        {
+            var e = this._editor;
+            var rv = {};
+            if (e && e.getDoc())
+            {
+                for (var id in commandMap) {
+                    var command = commandMap[id];
+                    rv[id] = command.type.query(e, command.id);
+                }
+            }
+            return rv;
+        },
+
+        action: function(name, value)
+        {
+            var e = this._editor;
+            if (e)
+            {
+                var command = commandMap[name];
+                if (command)
                 {
-                    v = this._value;
+                    return command.type.fire(e, command.id, value);
                 }
-                return v === '' ? null : v;
-            },
+            }
+            return false;
+        },
 
-            editorInserted: function()
-            {
-                this.setFullSize();
-                this._editor.render();
-            },
+        initComplete: function(showCallback) {
+            // Prevent default show-on-init
+            this.showCallback = showCallback;
+        },
 
-            getActionStates: function()
-            {
-                var e = this._editor;
-                var rv = {};
-                if (e && e.getDoc())
-                {
-                    for (var id in commandMap) {
-                        var command = commandMap[id];
-                        rv[id] = command.type.query(e, command.id);
-                    }
-                }
-                return rv;
-            },
+        querySize: function()
+        {
+            var s = measureText(this._value) || {width: 0, height: 0};
+            s.width = Math.max(150, s.width);
+            s.height = Math.max(75, s.height);
+            return s;
+        },
 
-            action: function(name, value)
-            {
-                var e = this._editor;
-                if (e)
-                {
-                    var command = commandMap[name];
-                    if (command)
-                    {
-                        return command.type.fire(e, command.id, value);
-                    }
-                }
-                return false;
-            },
+        setSize: function(width, height)
+        {
+            $(this.getSizeElement()).width(width).height(height);
+            this.$editor().find('iframe').width(width).height(height);
+        },
 
-            initComplete: function(showCallback) {
-                // Prevent default show-on-init
-                this.showCallback = showCallback;
-            },
-
-            querySize: function()
-            {
-                var s = measureText(this._value) || {width: 0, height: 0};
-                s.width = Math.max(150, s.width);
-                s.height = Math.max(75, s.height);
-                return s;
-            },
-
-            setSize: function(width, height)
-            {
-                $(this.getSizeElement()).width(width).height(height);
-                this.$editor().find('iframe').width(width).height(height);
-            },
-
-            supportsFormatting: function()
-            { return true; }
-        }
-    }));
+        supportsFormatting: function()
+        { return true; }
+    });
 
     $.blistEditor.addEditor($.blistEditor.html, 'html');
 

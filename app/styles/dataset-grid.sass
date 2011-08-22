@@ -122,18 +122,6 @@ div.blist-th-first
   &.narrow .blist-th-icon
     display: none
 
-  &.narrow.tag
-    .info-container
-      left: 50%
-      margin-left: -10px
-      width: 20px
-
-    .blist-th-icon
-      display: block
-
-    .name-wrapper
-      display: none
-
   .dragHandle
     left: 0
     position: absolute
@@ -898,9 +886,9 @@ ul.menu.rowMenu li
       &.active a
         background-position: 5px 30px
 
-.columnHeaderMenu, .facetFilterRow, .richRendererContainer
+.blist-table, .columnHeaderMenu, .facetFilterRow, .richRendererContainer
   .blist-checkbox,
-  .blist-picklist-wrapper,
+  .blist-dropdownlist-wrapper,
   .blist-flag,
   .blist-tstars-wrapper
     float: left
@@ -909,9 +897,6 @@ ul.menu.rowMenu li
 
   .blist-checkbox
     width: 14px
-
-  .blist-flag
-    width: 25px
 
   .blist-tstars-wrapper,
   .blist-tstars-render-wrapper,
@@ -942,42 +927,6 @@ ul.menu.rowMenu li
       background-image: url(/stylesheets/images/content/table/blists_item_menu_sprites.png)
       background-position: 5px 17px
       background-repeat: no-repeat
-
-    &.tags
-      a
-        background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png)
-        background-position: 2px -439px
-
-      .editContainer
-        display: none
-        padding-left: 30px
-
-        input
-          vertical-align: top
-          width: 65%
-
-        a
-          display: inline-block
-          height: 23px
-          padding: 0
-          text-indent: -9999px
-          width: 23px
-
-          &.tagSubmit
-            background-position: 0 -1221px
-
-          &.tagCancel
-            background-position: 0 -324px
-
-  &.tagsShown
-    width: 20em
-
-    li
-      &.tags .editContainer
-        display: block
-
-      &.delete
-        display: none
 
   li.delete a
     background-position: 5px -57px

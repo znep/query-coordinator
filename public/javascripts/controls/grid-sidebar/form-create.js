@@ -16,7 +16,7 @@
         onlyIf: function()
         {
             return _.any(blist.dataset.visibleColumns, function(c)
-                { return !_.include(['tag', 'nested_table'], c.dataTypeName); }) &&
+                { return 'nested_table' != c.dataTypeName }) &&
                 (blist.dataset.valid || isEdit);
         },
         disabledSubtitle: function()

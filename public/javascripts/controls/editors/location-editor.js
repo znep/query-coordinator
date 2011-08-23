@@ -2,8 +2,12 @@
 {
     var addressValue = function(editObj)
     {
-        return JSON.parse((editObj.originalValue ||
-            {}).human_address || '{}');
+        var addr = '{}';
+        if (_.isString(editObj.originalValue))
+        { addr = editObj.originalValue; }
+        else if ($.subKeyDefined(editObj.originalValue, 'human_address'))
+        { addr = editObj.originalValue.human_address; }
+        return JSON.parse(addr);
     };
 
     var streetValue = function(editObj)

@@ -41,7 +41,6 @@
                 }
             });
 
-
             $fmtMenu.find('select').change(function(e)
             {
                 var $select = $(this);
@@ -66,8 +65,7 @@
                         href: '#format_justifyRight' }
                 ]
             })
-            .find('a')
-                .mousedown(function(e) { e.stopPropagation(); }).end()
+            .find('a').mousedown(function(e) { e.stopPropagation(); }).end()
             .find('.menuDropdown a').click(function(event)
             {
                 event.preventDefault();
@@ -94,7 +92,7 @@
                 $colorItem.data('colorpicker-color',
                     $colorItem.find('.colorIndicator').css('border-bottom-color'));
             });
-            $('#color_selector').mousedown(function(e) { e.stopPropagation(); })
+            $('#color_selector').mousedown(function(e) { e.stopPropagation(); });
 
 
             config.$grid.bind('action-state-change', function(e)

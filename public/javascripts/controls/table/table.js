@@ -2682,7 +2682,7 @@
                         (curRow.error && curRow.error[col.lookup] ? ' error' : ''));
                 if ($.isBlank(col.parentColumn))
                 {
-                    html.push(((contextVariables.cellClasses[row.id] || {})
+                    html.push(' ', ((contextVariables.cellClasses[row.id] || {})
                             [col.lookup] || []).join(' '));
                 }
                 html.push('">');

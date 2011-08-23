@@ -1002,6 +1002,12 @@
             var p = chartObj.chart.get(point.id);
             if ($.isBlank(p))
             { chartObj.chart.series[seriesIndex].addPoint(point, false); }
+            else if (p.color != point.color)
+            {
+                // Workaround for Highcharts; color doesn't update, so do a full remove/replace
+                p.remove(false);
+                chartObj.chart.series[seriesIndex].addPoint(point, false);
+            }
             else
             {
                 if (point.selected && !p.selected) { p.select(true, true); }
@@ -1136,7 +1142,7 @@
         // Make sure data is cleaned, or sometimes setCategories will throw an error
         _.each(chartObj.chart.series, function(s) { s.cleanData(); });
         // Now that we have data, make sure the axes are updated
-        chartObj.chart.redraw(false);
+        chartObj.chart.redraw();
         chartObj.chart.xAxis[0].setCategories(chartObj._xCategories, true);
         chartObj._categoriesLoaded = true;
     };

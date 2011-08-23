@@ -76,7 +76,8 @@
                 prtObj.settings.view
                     .bind('columns_changed', mainUpdate)
                     .bind('query_change', mainUpdate)
-                    .bind('row_change', rowChange);
+                    .bind('row_change', rowChange)
+                    .bind('row_count_change', mainUpdate);
 
                 prtObj.$dom().bind('show', function()
                 {

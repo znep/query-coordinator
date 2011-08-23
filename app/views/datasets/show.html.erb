@@ -165,9 +165,6 @@
       <%- end -%>
       <%- end -%>
     </div>
-    <div class="mainSpinner loadingSpinnerContainer hide">
-      <div class="loadingSpinner"></div>
-    </div>
     <div class="viewErrorContainer">
       <%- if @view.has_rights?('update_view') -%>
       <div class="viewError"><%= @view.display.invalid_message %></div>
@@ -385,6 +382,8 @@
 
 <% content_for :js_footer do %>
   <script type="text/javascript">
+    $(function() { blist.mainSpinner = $('#renderTypeContainer').loadingSpinner(); });
+
     <%= raw @view.display.render_inline_setup_js('renderTypeContainer', self) %>
 
     <%- if !current_user.nil? -%>

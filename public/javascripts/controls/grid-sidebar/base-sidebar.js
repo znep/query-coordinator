@@ -493,6 +493,8 @@
                 var $domObj = sidebarObj.$dom();
                 $domObj.data("gridSidebar", sidebarObj);
 
+                $domObj.loadingSpinner({overlay: true});
+
                 $domObj.find('a.close').click(function(e)
                 {
                     e.preventDefault();
@@ -1226,12 +1228,12 @@
 
             startProcessing: function()
             {
-                this.$dom().addClass('processing');
+                this.$dom().loadingSpinner().showHide(true);
             },
 
             finishProcessing: function()
             {
-                this.$dom().removeClass('processing');
+                this.$dom().loadingSpinner().showHide(false);
             },
 
             resetForm: function($pane, paneName)
@@ -2903,7 +2905,7 @@
             var $button = $(this);
             if ($button.is('.disabled')) { return; }
 
-            sidebarObj.$dom().addClass('processing');
+            sidebarObj.startProcessing();
 
             var doCallback = function()
             {

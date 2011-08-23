@@ -171,6 +171,7 @@
         _.each(chartSections, function(section)
         {
             var $chart = chartDisplay.find('#' + section.id);
+            $chart.parent().loadingSpinner({showInitially: true});
             generateChartMenu($chart, section);
         });
 

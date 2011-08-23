@@ -30,10 +30,9 @@
 
           $container.data('viewPreview-dataset', view);
 
-          view.bind('start_request', function()
-                  { $container.find('.loadingSpinnerContainer').removeClass('hide'); })
-              .bind('finish_request', function()
-                  { $container.find('.loadingSpinnerContainer').addClass('hide'); });
+          var spinner = $container.find('.viewPreviewContainer').loadingSpinner();
+          view.bind('start_request', function() { spinner.showHide(true); });
+              .bind('finish_request', function() { spinner.showHide(false); });
 
           $container.children('.viewPreviewContainer').renderTypeManager({
               view: view,

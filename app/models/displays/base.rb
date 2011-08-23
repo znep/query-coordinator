@@ -71,10 +71,8 @@ $(function()
 {
     blist.$container = $('##{target_dom_id}');
 
-    blist.dataset.bind('start_request', function()
-        { $('.mainSpinner.loadingSpinnerContainer').removeClass('hide'); })
-    .bind('finish_request', function()
-        { $('.mainSpinner.loadingSpinnerContainer').addClass('hide'); });
+    blist.dataset.bind('start_request', function() { blist.mainSpinner.showHide(true); })
+      .bind('finish_request', function() { blist.mainSpinner.showHide(false); });
 });
 blist.namespace.fetch('blist.configuration');
 blist.configuration.development = #{Rails.env.development?};

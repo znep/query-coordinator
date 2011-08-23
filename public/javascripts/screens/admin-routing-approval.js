@@ -6,7 +6,8 @@ $(function()
 
     var apprTmpl = blist.routingApproval.approvalTemplate;
 
-    $dashboard.find('.report.loading.hide').removeClass('hide');
+    $dashboard.find('.report.loading.hide').each(function()
+        { $(this).loadingSpinner({showInitially: true}); }).removeClass('hide');
 
     var getStageIcon = function(stage)
     {
@@ -52,14 +53,14 @@ $(function()
                         { return d.context.stage.visible ? 'finalStage' : ''; }
                 }));
         });
-        $pipeline.closest('.report').removeClass('loading');
+        $pipeline.closest('.report').removeClass('loading').loadingSpinner().showHide(false);
     });
 
     $.Tache.Get({url: '/api/search/views.json?limit=1&datasetView=dataset',
         dataType: 'json', contentType: 'application/json',
         success: function(results)
         {
-            allViewsCount = results[0].count;
+            allViewsCount = results.count;
             renderPipeline();
         }});
 
@@ -88,7 +89,7 @@ $(function()
                         }
                 }).find('tr'));
         });
-        $ageByStage.closest('.report').removeClass('loading');
+        $ageByStage.closest('.report').removeClass('loading').loadingSpinner().showHide(false);
     };
 
     apprTmpl.getAgeInfo(function(ai)
@@ -136,7 +137,7 @@ $(function()
             });
             $stageBreakdownBody.append($tr);
         });
-        $stageBreakdown.closest('.report').removeClass('loading');
+        $stageBreakdown.closest('.report').removeClass('loading').loadingSpinner().showHide(false);
     };
 
     apprTmpl.getAgingInfo(function(ai)

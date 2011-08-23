@@ -25,10 +25,6 @@
   <%- end -%>
 
   <div class="widgetContent">
-    <div class="mainSpinner loadingSpinnerContainer hide">
-      <div class="loadingSpinner"></div>
-    </div>
-
     <div class="widgetContentSection widgetContentGrid">
       <div id="renderTypeContainer" class="gridContainer fullHeight">
           <%- if @view.is_tabular? -%>
@@ -194,6 +190,8 @@
 
 <% content_for :js_footer do %>
   <script type="text/javascript">
+    $(function() { blist.mainSpinner = $('.widgetWrapper .widgetContent').loadingSpinner(); });
+
     <%= raw @display.render_inline_setup_js('renderTypeContainer', self) %>
     blist.namespace.fetch('blist.widget');
     <%- if !current_user.nil? -%>

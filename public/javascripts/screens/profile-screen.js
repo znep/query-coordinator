@@ -8,7 +8,7 @@
 
     // var renderFeed = function(views)
     // {
-    //     $feedContainer.find('.loadingSpinner').remove();
+    //     // TODO: Hide spinner
     //     $feedContainer.feedList({
     //         allowComments: false,
     //         pageSize: 5,
@@ -23,7 +23,7 @@
     //         .find('.feedNewCommentButton').remove()
     //         .end());
 
-    // $feedContainer.append('<div class="loadingSpinner"></div>');
+    // TODO: create/show spinner
 
     // Get the user's views for the news feed
     // TODO: Get activity on child views of their datasets?

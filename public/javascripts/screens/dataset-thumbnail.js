@@ -51,6 +51,8 @@
 
     var tn = blist.dataset.metadata.thumbnail[snapshotName];
 
+    $imgContainer.loadingSpinner();
+
     var imgSelectUpdated = function(selection, initialLoad)
     {
         // math is fun
@@ -90,8 +92,7 @@
                     realWidth  = ruler.width(),
                     realHeight = ruler.height();
 
-                $fullContainer
-                    .find('.loading').hide();
+                $imgContainer.loadingSpinner().showHide(false);
 
                 $previewContainer
                     .empty()
@@ -147,16 +148,14 @@
         $refreshContainer.addClass('working')
             .find('.refresh').addClass('disabled');
 
-        $fullContainer
-            .find('.loading').show().end()
-            .find('.image').hide();
+        $imgContainer.loadingSpinner().showHide(true);
+        $fullContainer.find('.image').hide();
 
         var selection = tn.selection;
         blist.dataset.requestSnapshot(snapshotName, function(response)
         {
-            $fullContainer.removeClass('loading')
-                .find('.loading').hide().end()
-                .find('.image').show();
+            $imgContainer.loadingSpinner().showHide(false);
+            $fullContainer.removeClass('loading').find('.image').show();
 
             if ($.isBlank(response) || response.error)
             {
@@ -177,9 +176,8 @@
 
     if ($.isBlank(snapshotImg))
     {
-        $fullContainer
-            .find('.loading').fadeOut().end()
-            .addClass('noThumbnail');
+        $imgContainer.loadingSpinner().showHide(false);
+        $fullContainer.addClass('noThumbnail');
 
         requestNewSnapshot();
     }

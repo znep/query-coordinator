@@ -89,6 +89,8 @@ blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
         }, 1000);
     };
 
+    $dialog.loadingSpinner({overlay: true});
+
     dialogObj._saveCallback = saveCallback;
     dialogObj._dontSaveCallback = dontSaveCallback;
     dialogObj._cancelCallback = cancelCallback;
@@ -107,13 +109,14 @@ blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
 
         var doSave = function()
         {
-            $dialog.find('.loadingOverlay, .loadingSpinner').removeClass('hide');
+            $dialog.loadingSpinner().showHide(true);
             if (!$.isBlank(newViewData)) { blist.dataset.update(newViewData); }
             if (isNew) { blist.dataset.name = name; }
             blist.dataset['save' + (isNew ? 'New' : '')](
                 // Success
                 function(view)
                 {
+                    $dialog.loadingSpinner().showHide(false);
                     var preventRedirect = false;
                     if (_.isFunction(dialogObj._saveCallback))
                     { preventRedirect = dialogObj._saveCallback(view); }
@@ -130,8 +133,7 @@ blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
                 // Error
                 function(xhr)
                 {
-                    $dialog.find('.loadingOverlay, .loadingSpinner')
-                        .addClass('hide');
+                    $dialog.loadingSpinner().showHide(false);
                     $dialog.find('.mainError')
                         .text(JSON.parse(xhr.responseText).message);
                 });

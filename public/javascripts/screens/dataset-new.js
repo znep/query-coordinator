@@ -370,6 +370,8 @@ $wizard.wizard({
             disableButtons: [ 'cancel', 'prev', 'next' ],
             onActivate: function($pane, config, state, command)
             {
+                $pane.loadingSpinner({showInitially: true});
+
                 // fire things off
                 var viewData = formToViewMetadata(state.metadataForm);
 

@@ -102,7 +102,125 @@
                 });
             }
 
+            var $geocodeControl = $.tag({ tagName: 'div', id: 'geolocator_button' });
+            $geocodeControl.click(function(evt)
+            {
+                var $geolocator_prompt = mapObj.$dom().siblings('#geolocator');
+                if ($geolocator_prompt.length == 0)
+                {
+                    $geolocator_prompt = $.tag({ tagName: 'div', id: 'geolocator',
+                        contents: [{ tagName: 'a', 'class': 'my_location',
+                                        title: 'Use current location' },
+                                   { tagName: 'a', 'class': 'button', contents: 'Go'},
+                                   { tagName: 'input', 'class': 'textPrompt', type: 'text' },
+                                   { tagName: 'div', 'class': 'error' }]
+                    });
+                    $geolocator_prompt.css({ left: $geocodeControl.offset().left });
+                    var doZoom = function(value)
+                    {
+                        if (value.match(/[+-]?\d+\.?\d*,[+-]?\d+\.?\d*/))
+                        {
+                            var coords = value.split(',');
+                            mapObj.zoomToLocation({ latlng: { lat: coords[0], lon: coords[1] }});
+                        }
+                        else
+                        { mapObj.zoomToLocation({ address: value }); }
+                    };
+
+                    $geolocator_prompt.find('input.textPrompt')
+                        .example('Enter address here')
+                        .keypress(function(evt)
+                        { if (evt.which == 13) { doZoom($(this).val()); } });
+                    $geolocator_prompt.find('a.my_location').click(function()
+                    { mapObj.zoomToLocation(); });
+                    $geolocator_prompt.find('a.button').click(function()
+                    { doZoom($(this).parent().find('input.textPrompt').val()); });
+                    mapObj.$dom().parent().append($geolocator_prompt);
+                }
+            });
+            mapObj.map.controls[google.maps.ControlPosition.TOP_LEFT].push($geocodeControl[0]);
+
             mapObj.mapLoaded();
+        },
+
+        zoomToLocation: function(where)
+        {
+            var mapObj = this;
+            var aGoodZoomLevel = 17;
+
+            mapObj.$dom().siblings("#geolocator").find('div.error').html('');
+            var successCallback = function(latlng)
+            {
+                mapObj.map.setCenter(latlng);
+                mapObj.map.setZoom(aGoodZoomLevel);
+                mapObj.renderGeometry('point',
+                    { latitude: latlng.lat(), longitude: latlng.lng() },
+                    'geocodeMarker', { icon: '/images/pin.png' });
+                mapObj._geocodeMarker = mapObj._markers['geocodeMarker'];
+            };
+            var errorCallback = function(message)
+            { mapObj.$dom().siblings("#geolocator").find('div.error').html(message); };
+
+            if (where && where.latlng)
+            {
+                if (!(where.latlng instanceof google.maps.LatLng))
+                { where.latlng = new google.maps.LatLng(where.latlng.lat, where.latlng.lon); }
+                successCallback(where.latlng);
+            }
+            else if (where && where.address)
+            {
+                if (!mapObj.geocoder)
+                { mapObj.geocoder = new google.maps.Geocoder(); }
+                mapObj.startLoading();
+                mapObj.geocoder.geocode({ address: where.address }, function(results, gStatus)
+                {
+                    mapObj.finishLoading();
+                    switch (gStatus)
+                    {
+                        case google.maps.GeocoderStatus.OK:
+                            successCallback(results[0].geometry.location);
+                            break;
+                        case google.maps.GeocoderStatus.ERROR:
+                            errorCallback('The geocoding service is inaccessible. Try again later.');
+                            break;
+                        case google.maps.GeocoderStatus.ZERO_RESULTS:
+                            errorCallback('Unable to geocode. Make sure the address is correct.');
+                            break;
+                    }
+                });
+            }
+            else // Run off the sensor.
+            {
+                if (navigator.geolocation)
+                {
+                    mapObj.startLoading();
+                    var timeout = setTimeout(function() { mapObj.finishLoading(); }, 5000);
+                    navigator.geolocation.getCurrentPosition(function(position)
+                    {
+                        mapObj.finishLoading();
+                        clearTimeout(timeout);
+                        successCallback(new google.maps.LatLng(position.coords.latitude,
+                                                               position.coords.longitude));
+                    },
+                    function () { mapObj.finishLoading(); },
+                    { enableHighAccuracy: true });
+                }
+                else if (google.gears)
+                {
+                    mapObj.startLoading();
+                    var timeout = setTimeout(function() { mapObj.finishLoading(); }, 5000);
+                    google.gears.factory.create('beta.geolocation').getCurrentPosition(
+                    function(position)
+                    {
+                        mapObj.finishLoading();
+                        clearTimeout(timeout);
+                        successCallback(new google.maps.LatLng(position.latitude,
+                                                               position.longitude));
+                    },
+                    function() { mapObj.finishLoading(); });
+                }
+            }
+
         },
 
         renderGeometry: function(geoType, geometry, dupKey, details)
@@ -585,7 +703,7 @@
 
             blist.util.googleCallback = this._setupLibraries;
             blist.util.googleCallbackMap = this;
-            return "https://maps.google.com/maps/api/js?sensor=false&callback=blist.util.googleCallback";
+            return "https://maps.google.com/maps/api/js?sensor=true&callback=blist.util.googleCallback";
         },
 
         _setupLibraries: function()

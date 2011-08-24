@@ -181,19 +181,12 @@
             body_class: 'blist-html-document',
             valid_elements: VALID_ELEMENTS,
 
-            // Prevent insertion of random crap at the end of the content
-            forced_root_block : '',
-
             // Disable as much random as possible.  These are lightly documented but I discovered some only after
             // stepping through TinyMCE initialization in a debugger.
             add_form_submit_trigger: false,
             add_unload_trigger: false,
             popup_css: false,
             submit_patch: false,
-
-            // These aren't needed or don't work.  See the comment in our dummy theme
-            //render_ui: false,
-            //editorContainer: container.id,
 
             // TODO - Distill down to only those sheets we really need.  And tweak accordingly when we have proper
             // bundling of CSS assets in place.

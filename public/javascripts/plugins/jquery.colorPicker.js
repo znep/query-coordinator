@@ -40,10 +40,10 @@
      $.each($.fn.colorPicker.defaultColors, function(j) {
         var $curBox = $('<div class="color_block clearfix"></div>');
         $.each(this, function(i){
-            swatch = $("<div class='color_swatch'><div class='inner'>&nbsp;</div></div>");
+            swatch = $("<a href='#' class='color_swatch'><span class='inner'>&nbsp;</span></a>");
             swatch.css("background-color", "#" + this);
             swatch.bind("click", function(e)
-                { changeColor($(this).css("background-color")) });
+                { e.preventDefault(); changeColor($(this).css("background-color")) });
             swatch.bind("mouseover", function(e)
             {
                 $(this).addClass('hover');

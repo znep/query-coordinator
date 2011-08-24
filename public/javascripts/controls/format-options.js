@@ -91,7 +91,8 @@
             {
                 $colorItem.data('colorpicker-color',
                     $colorItem.find('.colorIndicator').css('border-bottom-color'));
-            });
+            })
+           .click(function(e) { e.preventDefault(); });
             $('#color_selector').mousedown(function(e) { e.stopPropagation(); });
 
 

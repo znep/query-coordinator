@@ -2121,6 +2121,7 @@
             '<div class="blist-table-scrolls">' +
             '  <div class="blist-table-inside">' +
             '    <div class="blist-table-render">&nbsp;</div>' +
+            '    <div class="blist-table-no-results hide">No rows to display</div>' +
             '  </div>' +
             '</div>' +
             '<div class="blist-table-footer-scrolls">' +
@@ -2179,6 +2180,8 @@
         // Container that rows render in that is moved around
         var $render = inside.find('.blist-table-render');
         var renderDOM = $render[0];
+
+        var $noResults = inside.find('.blist-table-no-results');
 
         // Keep track of factor to scale by when scrolling
         var scalingFactor = 1;
@@ -3743,6 +3746,10 @@
             { pendingAggs = true; }
         };
 
+        var showNoResults = function(doShow)
+        {
+            $noResults.toggleClass('hide', !doShow);
+        };
 
         /*** ROWS ***/
 
@@ -3991,7 +3998,10 @@
             if (start != stop)
             {
                 model.loadRows(start, stop, function(r) { rowsLoaded(r); });
+                showNoResults(false);
             }
+            else
+            { showNoResults(true); }
         };
 
         var updateRowSelection = function()

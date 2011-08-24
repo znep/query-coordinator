@@ -241,9 +241,14 @@
 
     var renderCurrentPage = function(frObj)
     {
-        if ($.isBlank(frObj.navigation.currentPage())) { return; }
-
         frObj.$list().empty();
+
+        if ($.isBlank(frObj.navigation.currentPage()) || frObj.settings.view.totalRows < 1)
+        {
+            frObj.$list().append($.tag({tagName: 'div', 'class': 'noResults',
+                contents: 'No rows to display'}));
+            return;
+        }
 
         var rowsLoaded = function(rows)
         {

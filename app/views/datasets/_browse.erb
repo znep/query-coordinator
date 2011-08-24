@@ -241,7 +241,7 @@
             <tbody>
               <%- start_index = (opts[:page] - 1) * opts[:limit] + 1 -%>
               <%- opts[:view_results].each_with_index do |v, i| -%>
-                <tr class="item collapsed<%= v.federated? ? " federated" : " local" %><%=
+                <tr class="item collapsed <%= v.federated? ? v.domainCName.gsub(/\./, "_") : "" %><%= v.federated? ? " federated" : " local" %><%=
                   v.rowResults.present? ? ' withRows' : '' %>" data-viewId="<%= v.id %>">
                   <%- if opts[:grid_items][:index] -%>
                     <td class="index">

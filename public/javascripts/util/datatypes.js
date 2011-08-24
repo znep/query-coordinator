@@ -1008,7 +1008,13 @@ blist.namespace.fetch('blist.datatypes');
             createable: true,
             deleteable: true,
             filterConditions: filterGroups.date,
-            filterValue: function(v) { return v; },
+            filterValue: function(v)
+            {
+                var d = v;
+                if (_.isNumber(v)) { d = new Date(v * 1000); }
+                else { d = Date.parse(v); }
+                return $.isBlank(d) ? '' : d.format('m/d/Y');
+            },
             formats: zDateTimeFormats,
             inlineType: true,
             priority: 7,

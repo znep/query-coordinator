@@ -2573,7 +2573,7 @@ this.Dataset = ServerModel.extend({
     _setupDefaultSnapshotting: function(delay)
     {
         // by default, just wait til the rows are loaded
-        this.bind('finish_request', function()
+        this.bind('request_finish', function()
         {
             var ds = this;
             // if there was already a return call, e.g. aggregates

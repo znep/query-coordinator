@@ -8,7 +8,7 @@ this.ServerModel = Model.extend({
     {
         this._super();
 
-        this.registerEvent(['start_request', 'finish_request']);
+        this.registerEvent(['request_start', 'request_status', 'request_finish']);
         this._reqCount = 0;
 
         // Assume WEBSITE unless set otherwise
@@ -31,6 +31,11 @@ this.ServerModel = Model.extend({
                 // Support retry responses from core server
                 if ((xhr || {}).status == 202)
                 {
+                    var retryTime = req.retryTime || 5000;
+                    model.trigger('request_status', [((d || {}).details || {}).message ||
+                        'Our servers are still processing this request. Please be patient while it finishes.',
+                        retryTime / 1000]);
+
                     if (_.isFunction(req.pending)) { req.pending.apply(this, arguments); }
 
                     if (!$.isBlank(d) && !_.isUndefined(d.ticket))
@@ -47,18 +52,17 @@ this.ServerModel = Model.extend({
                             req.data = origData.method;
                     }
 
-                    setTimeout(function() { isCache ? $.Tache.Get(req) : $.ajax(req); },
-                        req.retryTime || 5000);
+                    setTimeout(function() { isCache ? $.Tache.Get(req) : $.ajax(req); }, retryTime);
                     return;
                 }
 
                 model._reqCount--;
-                if (model._reqCount < 1) { model.trigger('finish_request'); }
+                if (model._reqCount < 1) { model.trigger('request_finish'); }
                 if (_.isFunction(callback)) { callback.apply(this, arguments); }
             };
         };
 
-        if (model._reqCount < 1) { this.trigger('start_request'); }
+        if (model._reqCount < 1) { this.trigger('request_start'); }
         model._reqCount++;
         req = $.extend({contentType: 'application/json', dataType: 'json'}, req,
                 {error: finishCallback(req.error),

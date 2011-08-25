@@ -20,6 +20,7 @@
     {
         defaults:
         {
+            model: null,
             overlay: false,
             showInitially: false
         },
@@ -31,6 +32,14 @@
                 var spObj = this;
                 spObj.$dom().data("loadingSpinner", spObj);
                 spObj.showHide(spObj.settings.showInitially);
+
+                if (!$.isBlank(spObj.settings.model))
+                {
+                    spObj.settings.model.bind('request_start', function() { spObj.showHide(true); });
+                    spObj.settings.model.bind('request_status', function()
+                        { spObj.setMessage.apply(spObj, arguments); });
+                    spObj.settings.model.bind('request_finish', function() { spObj.showHide(false); });
+                }
             },
 
             $dom: function()
@@ -44,26 +53,19 @@
             {
                 if ($.isBlank(this._$content))
                 {
-                    var $d = this.$dom();
-                    var $spc = $d.children('.loadingSpinnerContainer');
-                    if ($spc.length < 1)
-                    { $spc = $.tag({tagName: 'div', 'class': 'loadingSpinnerContainer'}); }
-                    $d.append($spc);
-
-                    var $sp = $spc.children('.loadingSpinner');
-                    if ($sp.length < 1)
-                    { $sp = $d.children('.loadingSpinner'); }
-                    if ($sp.length < 1)
-                    { $sp = $.tag({tagName: 'div', 'class': 'loadingSpinner'}); }
-                    $spc.append($sp);
-                    this._$content = $spc;
+                    this._$content = $.tag({tagName: 'div', 'class': 'loadingSpinnerContainer'});
+                    this._$content.append($.tag({tagName: 'div', 'class': 'loadingSpinner'}));
+                    this._$content.append($.tag({tagName: 'div', 'class': 'loadingMessage'}));
+                    this._$content.append($.tag({tagName: 'div', 'class': ['loadingCountdown', 'hide'],
+                        contents: ['Retrying', {tagName: 'span', 'class': 'secondsSection', contents:
+                            [' in ', {tagName: 'span', 'class': 'seconds'}, ' seconds']},
+                        '...']}));
+                    this.$dom().append(this._$content);
 
                     if (this.settings.overlay)
                     {
-                        var $o = $d.children('.loadingOverlay');
-                        if ($o.length < 1)
-                        { $o = $.tag({tagName: 'div', 'class': 'loadingOverlay'}); }
-                        $d.append($o);
+                        var $o = $.tag({tagName: 'div', 'class': 'loadingOverlay'});
+                        this.$dom().append($o);
                         this._$content = this._$content.add($o);
                     }
                 }
@@ -73,8 +75,47 @@
             showHide: function(doShow)
             {
                 this.$content().toggleClass('hide', !doShow);
+                if (!doShow)
+                {
+                    this.$content().find('.loadingMessage, .loadingCountdown').addClass('hide');
+                    clearCountdown(this);
+                }
+            },
+
+            setMessage: function(message, countdown)
+            {
+                var spObj = this;
+                if (!$.isBlank(message))
+                { spObj.$content().find('.loadingMessage').removeClass('hide').text(message); }
+                if (!$.isBlank(countdown))
+                {
+                    var $sec = spObj.$content().find('.loadingCountdown').removeClass('hide')
+                        .find('.secondsSection').removeClass('hide')
+                        .find('.seconds').text(countdown);
+                    clearCountdown(spObj);
+
+                    spObj._countdownTimer = setInterval(function()
+                    {
+                        countdown--;
+                        $sec.text(countdown);
+                        if (countdown < 1)
+                        {
+                            clearCountdown(spObj);
+                            spObj.$content().find('.secondsSection').addClass('hide');
+                        }
+                    }, 1000);
+                }
             }
         }
     });
+
+    var clearCountdown = function(spObj)
+    {
+        if (!$.isBlank(spObj._countdownTimer))
+        {
+            clearInterval(spObj._countdownTimer);
+            delete spObj._countdownTimer;
+        }
+    };
 
 })(jQuery);

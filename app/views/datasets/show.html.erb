@@ -382,7 +382,7 @@
 
 <% content_for :js_footer do %>
   <script type="text/javascript">
-    $(function() { blist.mainSpinner = $('#renderTypeContainer').loadingSpinner(); });
+    $(function() { blist.mainSpinner = $('#renderTypeContainer').loadingSpinner({model: blist.dataset}); });
 
     <%= raw @view.display.render_inline_setup_js('renderTypeContainer', self) %>
 

@@ -71,7 +71,7 @@
             // For snapshotting
             if (mapObj.settings.view.snapshotting)
             {
-                mapObj.settings.view.bind('finish_request', function()
+                mapObj.settings.view.bind('request_finish', function()
                 {
                     if (!$.isBlank(mapObj._snapshot_event_bounds))
                     { return; }

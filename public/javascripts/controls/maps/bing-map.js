@@ -63,7 +63,7 @@
                 };
 
                 // Once the rows are loaded, look for the last 'onchangeview' event
-                mapObj.settings.view.bind('finish_request', function()
+                mapObj.settings.view.bind('request_finish', function()
                 {
                     // Clear any existing requests
                     resetSnapTimer();

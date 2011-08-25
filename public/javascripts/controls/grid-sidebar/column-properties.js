@@ -392,6 +392,9 @@
             {
                 title: 'Advanced', type: 'selectable', name: 'advanced',
                 fields: [
+                    {text: 'API Identifier', type: 'text', disabled: !isDataset,
+                     data: { 'fieldName': 'unverified' },
+                     name: 'fieldName'},
                     {type: 'repeater', addText: 'Add RDF Properties',
                     name: 'format.rdf',  minimum: 0,
                     field:

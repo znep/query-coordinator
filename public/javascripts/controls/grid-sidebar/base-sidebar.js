@@ -54,6 +54,13 @@
     },
     'This requires a 4x4 view UID');
 
+    $.validator.addMethod('data-custom-fieldName', function(value, element, param)
+    {
+        return value == Column.sanitizeName(value);
+    },
+    'Valid API identifier characters are lower case letters, digits and underscore.  It must start with a letter and cannot have consecutive underscores.');
+
+
     // Special validator for validating required file types
     $.validator.addMethod('data-requiredTypes', function(value, element, param)
     {

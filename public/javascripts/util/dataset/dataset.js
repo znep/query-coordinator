@@ -1193,6 +1193,11 @@ this.Dataset = ServerModel.extend({
 
         var viewUid = ds.columnForID(localKeyColumnId).format.linkedDataset;
 
+        if ($.isBlank(viewUid) || !viewUid.match(blist.util.patterns.UID))
+        {
+            return [];
+        }
+
         if ($.isBlank(ds._cachedLinkedColumnOptions[viewUid]))
         {
             ds.makeRequest({url: '/api/views/' + viewUid + '.json',

@@ -358,9 +358,8 @@
             var abbreviateNumbers = function(num)
             {
                 // This check comes first because it's simpler than a regex.
-                if (xAxis && chartObj._xColumn &&
-                    !_.include(Dataset.chart.numericTypes, chartObj._xColumn.renderTypeName))
-                { return num; }
+                if (xAxis && chartObj._xColumn)
+                { return chartObj._xColumn.renderType.renderer(num, chartObj._xColumn); }
 
                 // Are you really a number?
                 // yColumn numbers will always come back as numbers.

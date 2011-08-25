@@ -149,14 +149,18 @@
             var aGoodZoomLevel = 17;
 
             mapObj.$dom().siblings("#geolocator").find('div.error').html('');
-            var successCallback = function(latlng)
+            var successCallback = function(latlng, viewport)
             {
                 mapObj.map.setCenter(latlng);
-                mapObj.map.setZoom(aGoodZoomLevel);
                 mapObj.renderGeometry('point',
                     { latitude: latlng.lat(), longitude: latlng.lng() },
                     'geocodeMarker', { icon: '/images/pin.png' });
                 mapObj._geocodeMarker = mapObj._markers['geocodeMarker'];
+
+                if (viewport)
+                { mapObj.map.fitBounds(viewport); }
+                else
+                { mapObj.map.setZoom(aGoodZoomLevel); }
             };
             var errorCallback = function(message)
             { mapObj.$dom().siblings("#geolocator").find('div.error').html(message); };
@@ -178,7 +182,8 @@
                     switch (gStatus)
                     {
                         case google.maps.GeocoderStatus.OK:
-                            successCallback(results[0].geometry.location);
+                            successCallback(results[0].geometry.location,
+                                            results[0].geometry.viewport);
                             break;
                         case google.maps.GeocoderStatus.ERROR:
                             errorCallback('The geocoding service is inaccessible. Try again later.');

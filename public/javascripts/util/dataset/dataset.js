@@ -438,16 +438,88 @@ this.Dataset = ServerModel.extend({
         { successCallback(); }
     },
 
-    getClusters: function(successCallback, errorCallback)
+    getClusters: function(viewport, successCallback, errorCallback)
     {
         var ds = this;
+        if (!ds._clusters)
+        { ds._clusters = {}; }
+        if (!ds._rowClusterParents)
+        { ds._rowClusterParents = {}; }
 
-        ds.makeRequest({
-            params: {method: 'clustered'},
-            inline: true,
-            success: successCallback,
+        var params = {method: 'clustered2'};
+        _.each({ 'xmin': 'min_lon',
+                 'xmax': 'max_lon',
+                 'ymin': 'min_lat',
+                 'ymax': 'max_lat'}, function(new_prop, old_prop)
+        { params[new_prop] = viewport[old_prop] });
+
+        params['target_node_clusters'] = 50;
+        params['min_distance_between_clusters'] = Math.min(viewport.xmax - viewport.xmin,
+                                                           viewport.ymax - viewport.ymin) / 10;
+        if (params['min_distance_between_clusters'] > 5)
+        { params['min_distance_between_clusters'] = 5; }
+        else if (params['min_distance_between_clusters'] > 1)
+        { params['min_distance_between_clusters'] = 1; }
+
+        var translateCluster = function(c)
+        {
+            c.children = _.pluck(c.children, 'id');
+            c.points   = _.pluck(c.points,  'sid');
+            c.parent   = ds._clusters[c.pathToRoot[0]];
+            ds._clusters[c.id] = c;
+            _.each(c.points, function(point) { ds._rowClusterParents[point] = c; });
+            _.each(c.children, function(child)
+            {
+                if (ds._clusters[child] && !ds._clusters[child].parent)
+                { ds._clusters[child].parent = ds._clusters[ds._clusters[child].pathToRoot[0]]; }
+            });
+            _.each(c.polygon, function(vertex)
+            { if (vertex.lat == 90)        { vertex.lat -= 0.000001; }
+              else if (vertex.lat == -90)  { vertex.lat += 0.000001; }
+              if (vertex.lon == 180)       { vertex.lon -= 0.000001; }
+              else if (vertex.lon == -180) { vertex.lon += 0.000001; }
+            });
+        };
+
+        var hasFilters = $.subKeyDefined(ds, 'query.filterCondition') || !$.isBlank(ds.searchString);
+
+        if (params['max_lon'] < params['min_lon'])
+        {
+            var viewportsLeft = 2;
+            var totalData = [];
+            var callback = function(data)
+            {
+                viewportsLeft--;
+                totalData = totalData.concat(data);
+                ds.trigger('row_count_change');
+                if (viewportsLeft == 0)
+                { successCallback(totalData); }
+            };
+            ds.makeRequest({
+                url: '/views/' + ds.id + '/rows.json',
+                params: $.extend({}, params, { 'min_lon': -179.999999 }), inline: hasFilters,
+                success: function(data) { _.each(data, translateCluster); callback(data); },
+                error: errorCallback
+            });
+            ds.makeRequest({
+                url: '/views/' + ds.id + '/rows.json',
+                params: $.extend({}, params, { 'max_lon': 179.999999 }), inline: hasFilters,
+                success: function(data) { _.each(data, translateCluster); callback(data); },
+                error: errorCallback
+            });
+        }
+        else
+        { ds.makeRequest({
+            url: '/views/' + ds.id + '/rows.json',
+            params: params, inline: hasFilters,
+            success: function(data)
+            {
+                _.each(data, translateCluster);
+                ds.trigger('row_count_change');
+                successCallback(data);
+            },
             error: errorCallback
-        });
+        }); }
     },
 
     // Callback may be called multiple times with smaller batches of rows
@@ -593,6 +665,58 @@ this.Dataset = ServerModel.extend({
                 // Just request rows
                 loadAllRows();
             }
+        }
+    },
+
+    getRowsByIds: function(ids, successCallback, errorCallback)
+    {
+        var ds = this;
+
+        var pageSize = 100;
+        var loaded = [];
+        var reqs = [];
+
+        var doLoaded = function()
+        {
+            if (loaded.length > 0)
+            {
+                if (_.isFunction(successCallback))
+                { successCallback(loaded); }
+                loaded = [];
+            }
+        }
+
+        ids = _.reject(ids || [], function(id)
+        {
+            var r = ds._rowIDLookup[id];
+            if (r)
+            { return loaded.push(r); }
+        });
+
+        doLoaded();
+
+        for (var i = 0; i < ids.length; i += 100)
+        { reqs.push({ ids: ids.slice(i, i + 100) }); }
+
+        if (reqs.length > 0)
+        {
+            var loadAllRows = function()
+            {
+                _.each(reqs, function(req)
+                { ds._loadRowsByIds(req.ids, successCallback, errorCallback); });
+            };
+
+            if ($.isBlank(ds.totalRows))
+            {
+                var initReq = reqs.shift();
+                ds._loadRowsByIds(initReq.ids, function(rows)
+                {
+                    if (_.isFunction(successCallback)) { successCallback(rows); }
+                    loadAllRows();
+                }, errorCallback, true);
+            }
+            else
+            { loadAllRows(); }
         }
     },
 
@@ -2049,6 +2173,59 @@ this.Dataset = ServerModel.extend({
         ds.makeRequest(req);
     },
 
+    _loadRowsByIds: function(ids, successCallback, errorCallback, includeMeta)
+    {
+        var ds = this;
+        var params = {method: 'getByIds', ids: ids, asHashes: true};
+
+        var reqData = ds.cleanCopy();
+        if ((includeMeta || $.isBlank(ds.totalRows) || ds._columnsInvalid) &&
+            !_.isEqual(reqData, ds._curMetaReqMeta))
+        { params.meta = true; }
+
+        var reqId = _.uniqueId();
+        var rowsLoaded = function(result)
+        {
+            var oldCount = ds.totalRows;
+            if (!$.isBlank(result.meta))
+            {
+                // If another meta request started while this was loading, then
+                // skip this one, and only use the latest
+                if (ds._curMetaReq != reqId)
+                {
+                    if (_.isFunction(errorCallback)) { _.defer(errorCallback); }
+                    return;
+                }
+                delete ds._curMetaReq;
+                delete ds._curMetaReqMeta;
+                ds.totalRows = result.meta.totalRows;
+                delete ds._columnsInvalid;
+                result.meta.view.query.filterCondition =
+                    ds.query.filterCondition;
+                if (!$.isBlank(ds.query.namedFilters))
+                {
+                    result.meta.view.query.namedFilters =
+                        ds.query.namedFilters;
+                }
+                ds._update(result.meta.view, true, true);
+            }
+            var rows = ds._addRows(result.data || result);
+
+            if (oldCount !== ds.totalRows)
+            { ds.trigger('row_count_change'); }
+
+            if (_.isFunction(successCallback)) { successCallback(rows); }
+        };
+
+        var req = {success: rowsLoaded, params: params, inline: true, type: 'POST'};
+        if (params.meta)
+        {
+            ds._curMetaReq = reqId;
+            ds._curMetaReqMeta = reqData;
+        }
+        ds.makeRequest(req);
+    },
+
     _addRows: function(newRows, start)
     {
         var ds = this;
@@ -2138,24 +2315,42 @@ this.Dataset = ServerModel.extend({
 
         var adjRows = [];
         var oldRows = [];
+        var hasIndex = !$.isBlank(start);
         _.each(newRows, function(r, i)
         {
             var success = translateRow(r);
-            var ind = start + i;
+            var ind;
+            if (hasIndex)
+            { ind = start + i; }
 
             // If a row already exists at this index, clean it out
-            if (!$.isBlank(ds._rows[ind]) && (!success || r.id != ds._rows[ind].id))
+            if (hasIndex)
             {
-                var oldRow = ds._rows[ind];
-                oldRows.push(oldRow);
-                delete ds._rows[ind];
-                delete ds._rowIDLookup[oldRow.id];
+                if (!$.isBlank(ds._rows[ind]) && (!success || r.id != ds._rows[ind].id))
+                {
+                    var oldRow = ds._rows[ind];
+                    oldRows.push(oldRow);
+                    delete ds._rows[ind];
+                    delete ds._rowIDLookup[oldRow.id];
+                }
+            }
+            else
+            {
+                var oldRow = ds._rowIDLookup[r.id];
+                if (!$.isBlank(oldRow))
+                {
+                    oldRows.push(oldRow);
+                    delete ds._rowIDLookup[oldRow.id];
+                }
             }
 
             if (!success) { return; }
 
-            r.index = ind;
-            ds._rows[r.index] = r;
+            if (hasIndex)
+            {
+                r.index = ind;
+                ds._rows[r.index] = r;
+            }
             ds._rowIDLookup[r.id] = r;
             adjRows.push(r);
         });

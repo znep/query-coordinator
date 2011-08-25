@@ -79,6 +79,12 @@
             mapObj.mapLoaded();
         },
 
+        currentZoom: function()
+        {
+            if (this.map)
+            { return this.map.getZoom(); }
+        },
+
         renderGeometry: function(geoType, geometry, dupKey, details)
         {
             var mapObj = this;
@@ -119,6 +125,16 @@
                     { mapObj.map.entities.remove(shape); });
             }
             mapObj._markers[dupKey] = shapes;
+
+            if (geoType == 'point')
+            {
+                mapObj._markers[dupKey].clusterParent = details.clusterParent;
+                mapObj._markers[dupKey].clusterDestroy = function()
+                {
+                    _.each(this, function(shape)
+                    { mapObj.map.entities.remove(shape); });
+                };
+            }
 
             _.each(shapes, function(shape)
             {
@@ -198,23 +214,55 @@
                 { mapObj.settings.view.unhighlightRows(details.rows); });
             });
 
-            return true;
+            shapes.startAnimation  = function() {};
+            shapes.finishAnimation = function() {};
+            shapes.clusterDestroy  = function()
+            {
+                _.each(shapes, function(shape) { mapObj.map.entities.remove(shape); });
+                delete mapObj._markers[dupKey];
+            };
+
+            return shapes;
         },
 
         renderCluster: function(cluster, details)
         {
             var mapObj = this;
 
-            if (cluster.count <= 0) { return; }
+            if (cluster.size <= 0) { return; }
 
             var shape = new Microsoft.Maps.Pushpin(
-                            new Microsoft.Maps.Location(cluster.point.lat,
-                                                        cluster.point.lon),
+                            new Microsoft.Maps.Location(cluster.centroid.lat,
+                                                        cluster.centroid.lon),
                             { icon: '/images/poi_search_cluster.png' });
             shape = decorateBingShape(shape);
 
-            mapObj._markers[shape.getLocation().toString()] = shape;
+            shape.clusterId     = cluster.id;
+            shape.clusterParent = cluster.parent;
+
+            var dupKey = shape.getLocation().toString();
+            if (mapObj._markers[dupKey])
+            {
+                mapObj._animation.olds = _.reject(mapObj._animation.olds, function(marker)
+                    { return marker == mapObj._markers[dupKey]; });
+                return mapObj._markers[dupKey];
+            }
+
+            mapObj._markers[dupKey] = shape;
             mapObj.map.entities.push(shape);
+
+            var darkBG = mapObj.currentZoom() < 5;
+            var boundary = new Microsoft.Maps.Polygon(_.map(cluster.polygon, function(vertex)
+                { return new Microsoft.Maps.Location(vertex.lat, vertex.lon); }),
+                {
+                    fillColor: darkBG ? new Microsoft.Maps.Color(51, 173, 216, 230)
+                                      : new Microsoft.Maps.Color(51, 0, 0, 255),
+                    strokeColor: darkBG ? new Microsoft.Maps.Color(128, 155, 155, 155)
+                                        : new Microsoft.Maps.Color(255, 0, 0, 0),
+                    strokeThickness: 3,
+                    visible: false
+                });
+            mapObj.map.entities.push(boundary);
 
             Microsoft.Maps.Events.addHandler(shape, 'click',
                 function(event)
@@ -222,14 +270,45 @@
                     mapObj.map.setView({ center: shape.getLocation(),
                                          zoom: mapObj.map.getZoom() + 1 });
                 });
+            Microsoft.Maps.Events.addHandler(shape, 'mouseover',
+                function(event) { boundary.setOptions({ visible: true }); });
+            Microsoft.Maps.Events.addHandler(shape, 'mouseout',
+                function(event) { boundary.setOptions({ visible: false }); });
 
             var offset = $((shape['cm1001_er_etr'] || {}).dom).offset();
             offset.top  += (shape.getHeight() - 3);
             offset.left -= 10;
             var label = $('<div class="bing_cluster_labels"></div>');
             label.css({ 'left': offset.left + 'px', 'top': offset.top + 'px' })
-                 .text(cluster.count);
-            $('body').append(label);
+                 .text(cluster.size);
+            $('body').append(label.hide());
+
+            shape._$label = label;
+            shape._boundary = boundary;
+
+            shape.startAnimation  = function() { label.hide(); };
+            shape.finishAnimation = function()
+            {
+                if (!shape['cm1001_er_etr']) { return; }
+                var $dom = $(shape['cm1001_er_etr'].dom);
+                var bcOffset = blist.$container.offset();
+                if (offset.top < bcOffset.top
+                    || offset.top + label.height() > bcOffset.top + blist.$container.height()
+                    || offset.left < bcOffset.left
+                    || offset.left + label.width() > bcOffset.left + blist.$container.width())
+                { return; }
+                label.show();
+            };
+            shape.clusterDestroy  = function()
+            {
+                if (!mapObj._markers[dupKey]) { return; }
+                mapObj.map.entities.remove(mapObj._markers[dupKey]);
+                mapObj._markers[dupKey]._$label.remove();
+                mapObj.map.entities.remove(mapObj._markers[dupKey]._boundary);
+                delete mapObj._markers[dupKey];
+            };
+
+            return shape;
         },
 
         // FIXME: This is a skeleton. It is not intended to be used.
@@ -258,6 +337,79 @@
             mapObj.map.entities.clear();
         },
 */
+
+        dataRendered: function()
+        {
+            var mapObj = this;
+
+            mapObj._super();
+            if (!mapObj._animation) { return; }
+
+            var clearClusters = function()
+            {
+                if (!mapObj._animation) { return; }
+                _.each(mapObj._animation.news, function(marker)
+                { marker.finishAnimation(); });
+                _.each(mapObj._animation.olds, function(marker)
+                { marker.clusterDestroy(); });
+            }
+
+            if (mapObj._animation.direction == 'none')
+            { clearClusters(); return; }
+
+            var animKey  = mapObj._animation.direction == 'spread' ? 'news' : 'olds';
+            var otherKey = mapObj._animation.direction == 'gather' ? 'news' : 'olds';
+            mapObj._animation.animations = _(mapObj._animation[animKey]).chain().map(
+                function(marker)
+                {
+                    if (!marker.clusterParent) { return; }
+
+                    var markerDom;
+                    if (!marker.clusterId) { markerDom = marker[0]; }
+
+                    var animation = { duration: 1000 };
+                    animation.$marker = $((markerDom || marker)['cm1001_er_etr'].dom);
+                    var otherNode = (_.detect(mapObj._animation[otherKey], function(m)
+                    { return marker.clusterParent.id == m.clusterId; }) || {})['cm1001_er_etr'];
+
+                    if (!otherNode) { return; }
+
+                    if (mapObj._animation.direction == 'spread')
+                    {
+                        animation.from = $(otherNode.dom).offset();
+                        animation.to = $((markerDom || marker)['cm1001_er_etr'].dom).offset();
+                    }
+                    else
+                    {
+                        animation.from = $((markerDom || marker)['cm1001_er_etr'].dom).offset();
+                        animation.to = $(otherNode.dom).offset();
+                    }
+
+                    marker.startAnimation();
+
+                    return animation;
+                }).compact().flatten().value();
+
+            if (mapObj._animation.direction == 'spread')
+            { _.each(mapObj._animation.olds, function(m)
+                { m.clusterDestroy(); }); }
+
+            animate(mapObj._animation.animations, function()
+            { clearClusters(); delete mapObj._animation; });
+        },
+
+        setAnimationOlds: function()
+        {
+            var mapObj = this;
+            if (!_.isEmpty(mapObj._markers))
+            {
+                if (mapObj._lastRenderType == 'points')
+                { mapObj._animation.olds = $.extend(true, {}, mapObj._markers); }
+                else // Clusters
+                { mapObj._animation.olds = _.select(mapObj._markers,
+                function(marker) { return marker.clusterId; }); }
+            }
+        },
 
         adjustBounds: function()
         {
@@ -391,14 +543,28 @@
             }
         },
 
+        clearGeometries: function()
+        {
+            this.map.entities.clear();
+            $(".bing_cluster_labels").remove();
+        },
+
         cleanVisualization: function()
         {
             var mapObj = this;
             mapObj._super();
+            if (!mapObj._animation && mapObj._renderType == 'points')
+            { mapObj.clearGeometries(); }
 
-            mapObj.map.entities.clear();
-            $(".bing_cluster_labels").remove();
             mapObj._hideBingTiles = false;
+        },
+
+        reset: function()
+        {
+            var mapObj = this;
+
+            mapObj.clearGeometries();
+            mapObj._super();
         },
 
         resizeHandle: function()
@@ -520,5 +686,51 @@
         }
         return shape;
     }
+
+    var animate = function(animations, callback)
+    {
+        var startTime = $.now();
+        var interval;
+        var step = function()
+        {
+            if (requestAnimationFrame && animations.length > 0)
+            { requestAnimationFrame( step ); }
+
+            animations = _.reject(animations, function(animation)
+            {
+                if (!animation.finished)
+                {
+                    var p = ($.now() - startTime) / animation.duration;
+                    animation.finished = p >= 1;
+                    var delta = function(start, end)
+                    {
+                        var pos = ((-Math.cos(p*Math.PI)/2) + 0.5);
+                        return start + ((end - start) * pos);
+                    };
+                    animation.$marker.offset({
+                        top:  delta(animation.from.top,  animation.to.top),
+                        left: delta(animation.from.left, animation.to.left)
+                        });
+                    return false;
+                }
+                animation.$marker.offset(animation.to);
+                if (_.isFunction(animation.callback))
+                { animation.callback(); }
+                return true;
+            });
+
+            if (animations.length == 0)
+            {
+                if (!requestAnimationFrame)
+                { clearInterval( interval ); }
+                if (_.isFunction(callback))
+                { callback(); }
+            }
+        };
+        if (requestAnimationFrame)
+        { requestAnimationFrame( step ); }
+        else
+        { interval = setInterval( step, 13 ); }
+    };
 
 })(jQuery);

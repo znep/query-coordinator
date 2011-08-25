@@ -1,5 +1,9 @@
 (function($)
 {
+    window.requestAnimationFrame = window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame;
+
     $.Control.extend('socrataMap', {
         _getMixins: function(options)
         {
@@ -140,6 +144,7 @@
         reset: function()
         {
             var mapObj = this;
+            mapObj._markers = {};
             $(mapObj.currentDom).removeData('socrataMap');
             mapObj.$dom().empty();
             mapObj._obsolete = true;
@@ -171,6 +176,9 @@
         cleanVisualization: function()
         {
             var mapObj = this;
+            if (mapObj._requireRowReload)
+            { delete mapObj._neverCluster; }
+
             mapObj._super();
 
             mapObj.$dom().siblings('#mapLayers').addClass('hide');
@@ -183,7 +191,8 @@
                 { delete viewConfig[prop]; });
             });
 
-            mapObj._markers = {};
+            if (!mapObj._animation)
+            { mapObj._markers = {}; }
             delete mapObj._gradient;
         },
 
@@ -286,11 +295,11 @@
         {
             var mapObj = this;
 
-            _.each(clusters, function(cluster)
-                { mapObj.renderCluster(cluster,
-                    { color: mapObj.settings.view.displayFormat.color}); });
+            mapObj._animation.news = _.map(clusters, function(cluster)
+                { return mapObj.renderCluster(cluster, {}); });
 
-            mapObj.clustersRendered();
+            mapObj.dataRendered();
+            mapObj._lastClusterSet = _.map(clusters, function(cluster) { return cluster.id; });
         },
 
         generateFlyoutLayout: function(columns, titleId)
@@ -527,6 +536,9 @@
                 return 'point';
             })();
 
+            if (geoType == 'point' && mapObj.settings.view._rowClusterParents)
+            { details.clusterParent = mapObj.settings.view._rowClusterParents[row.sid]; }
+
             var geometry;
             switch (geoType)
             {
@@ -543,7 +555,11 @@
 
             details.dataView = view;
 
-            return mapObj.renderGeometry(geoType, geometry, rowKey, details);
+            var graphic = mapObj.renderGeometry(geoType, geometry, rowKey, details);
+            if (mapObj._animation)
+            { mapObj._animation.news.push(graphic); }
+
+            return graphic;
         },
 
         renderGeometry: function(geoType, geometry, dupKey, details)
@@ -561,16 +577,17 @@
             // Implement me
         },
 
-        clustersRendered: function()
-        {
-            this.adjustBounds();
-            this.renderHeat();
-        },
-
         rowsRendered: function()
         {
+            this.dataRendered();
+        },
+
+        dataRendered: function()
+        {
             this.adjustBounds();
             this.renderHeat();
+            this._lastRenderType = this._renderType;
+            this._lastZoomLevel = this.currentZoom();
         },
 
         adjustBounds: function()
@@ -761,6 +778,138 @@
             });
 
             return true;
+        },
+
+        getRowsForAllViews: function()
+        {
+            var mapObj = this;
+
+            if (mapObj.settings.view.displayFormat.plotStyle == 'heatmap'
+                || mapObj._neverCluster)
+            { return mapObj._super(); }
+
+            var rowsToFetch = mapObj._maxRows;
+            var nonStandardRender = function(view)
+                { return view.renderWithArcGISServer() };
+
+            var viewsToRender = _.reject(mapObj._dataViews, function(view)
+                { return nonStandardRender(view); });
+
+            var views = [];
+            var viewsToCount = viewsToRender.length;
+            _.each(viewsToRender, function(view, index)
+            {
+                var viewport;
+                if (mapObj.settings.view.displayFormat.viewport && mapObj.currentZoom() >= 3)
+                {
+                    var isEsri = mapObj.settings.view.displayFormat.type == 'esri';
+                    viewport = mapObj.settings.view.displayFormat.viewport;
+                    if (isEsri && viewport.sr == 102100)
+                    {
+                        viewport =
+                            esri.geometry.webMercatorToGeographic(new esri.geometry.Extent(
+                                viewport.xmin,
+                                viewport.ymin,
+                                viewport.xmax,
+                                viewport.ymax,
+                                new esri.SpatialReference({ wkid: viewport.sr })))
+                        viewport = {
+                            xmin: viewport.xmin,
+                            ymin: viewport.ymin,
+                            xmax: viewport.xmax,
+                            ymax: viewport.ymax,
+                            sr: viewport.spatialReference.wkid
+                        };
+                    }
+                }
+
+                mapObj._renderType = 'clusters';
+                view.getClusters( viewport ||
+                    { 'xmin': -180, 'xmax': 180,
+                      'ymin': -90,  'ymax': 90 }, function(data)
+                {
+                    if (_.isUndefined(mapObj._neverCluster))
+                    { mapObj._neverCluster = _.reduce(data, function(total, cluster)
+                        { return total + cluster.size; }, 0) < mapObj._maxRows; }
+                    if (mapObj._neverCluster)
+                    {
+                        mapObj.clearGeometries();
+                        mapObj.getRowsForAllViews();
+                        return;
+                    }
+
+                    if (!mapObj._animation)
+                    { mapObj._animation = {}; }
+
+                    if (_.all(data, function(cluster) { return (cluster.points || []).length > 0; }))
+                    {
+                        if (_.isUndefined(mapObj._unclusterLevel))
+                        { mapObj._unclusterLevel = mapObj.currentZoom(); }
+                        else if (mapObj._unclusterLevel < mapObj.currentZoom())
+                        {
+                            mapObj._renderType = 'points';
+                            if (mapObj._animation)
+                            { mapObj._animation.news = []; }
+                            view.getRowsByIds(_.flatten(_.pluck(data, 'points')), function(data)
+                            {
+                                if (_.size(view._rowIDLookup) == view.totalRows)
+                                { mapObj.handleRowsLoaded(view._rowIDLookup, view); }
+                            }, function()
+                            {
+                                // On error clear these variables so more requests will be triggered
+                                delete vizObj._initialLoad;
+                                delete vizObj._pendingReload;
+                            });
+
+                            if (mapObj._lastRenderType == 'points')
+                            { delete mapObj._animation; return; }
+                        }
+                    }
+                    else
+                    { delete mapObj._unclusterLevel; }
+
+                    if (_.isUndefined(mapObj._lastZoomLevel)
+                        || Math.abs(mapObj.currentZoom() - mapObj._lastZoomLevel) > 2
+                        || mapObj.currentZoom() == mapObj._lastZoomLevel
+                        || (_.all([mapObj._renderType, mapObj._lastRenderType],
+                                function(type) { return type == 'clusters'; })
+                            && _.all(data, function(cluster)
+                            { return _.include(mapObj._lastClusterSet || [], cluster.id); })))
+                    { mapObj._animation.direction = 'none'; }
+                    else if (mapObj.currentZoom() < mapObj._lastZoomLevel)
+                    { mapObj._animation.direction = 'gather'; }
+                    else
+                    { mapObj._animation.direction = 'spread'; }
+
+                    mapObj.setAnimationOlds();
+
+                    if (mapObj._renderType == 'clusters')
+                    { _.defer(function() { mapObj.handleClustersLoaded(data, view); }); }
+
+                    var executable = views.shift();
+                    if (executable) { executable(); }
+                    mapObj.totalRowsForAllViews();
+                    delete mapObj._initialLoad;
+                    delete mapObj._pendingReload;
+                },
+                function()
+                {
+                    _.defer(function()
+                        { mapObj.handleClustersLoaded([], view); });
+                    var executable = views.shift();
+                    if (executable) { executable(); }
+                    // On error clear these variables so more requests will be triggered
+                    delete mapObj._initialLoad;
+                    delete mapObj._pendingReload;
+                });
+
+                viewsToCount--;
+                if (viewsToCount == 0)
+                {
+                    var executable = views.shift();
+                    if (executable) { executable(); }
+                }
+            });
         },
 
         $legend: function(options)

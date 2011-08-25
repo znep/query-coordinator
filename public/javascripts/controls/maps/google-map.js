@@ -222,6 +222,12 @@
 
         },
 
+        currentZoom: function()
+        {
+            if (this.map)
+            { return this.map.getZoom(); }
+        },
+
         renderGeometry: function(geoType, geometry, dupKey, details)
         {
             var mapObj = this;
@@ -344,6 +350,7 @@
                         mapGeom.styleIcon.set('color', hasHighlight ? mapObj._highlightColor :
                                 StyledIconTypes.MARKER.defaults.color);
                     }
+                    mapGeom.clusterParent = details.clusterParent;
                     break;
                 case 'polyline':
                     mapGeom.each(function(g, i)
@@ -406,6 +413,12 @@
                 return true;
             };
 
+            mapGeom.clusterDestroy = function()
+            {
+                this.setMap(null);
+                delete mapObj._markers[dupKey];
+            };
+
             google.maps.event.addListener(mapGeom, 'click',
                 function(evt)
                 {
@@ -454,7 +467,7 @@
             { mapObj._bounds.union(extent); }
             mapObj._boundsCounts++;
 
-            return true;
+            return mapGeom;
         },
 
         renderCluster: function(cluster, details)
@@ -465,27 +478,45 @@
 
             var cluster_icon = '/images/map_cluster_';
             var vOffset;
-            if (cluster.count < 100)
+            if (cluster.size < 100)
             { cluster_icon += 'small.png'; vOffset = 22; }
-            else if (cluster.count < 1000)
+            else if (cluster.size < 1000)
             { cluster_icon += 'med.png';   vOffset = 27; }
             else
             { cluster_icon += 'large.png'; vOffset = 37; }
 
             var cluster_class = 'google_cluster_labels';
-            if (cluster.count < 100) { cluster_class += ' small'; }
+            if (cluster.size < 100) { cluster_class += ' small'; }
 
             var graphic = new MarkerWithLabel({
-                labelContent: cluster.count,
+                labelContent: cluster.size,
                 labelAnchor: new google.maps.Point(20, vOffset),
                 labelClass: cluster_class, map: mapObj.map,
-                icon: cluster_icon,
-                position: new google.maps.LatLng(cluster.point.lat,
-                                                 cluster.point.lon)
+                icon: new google.maps.MarkerImage(cluster_icon),
+                position: new google.maps.LatLng(cluster.centroid.lat,
+                                                 cluster.centroid.lon)
             });
 
-            graphic.heatStrength = cluster.count;
-            mapObj._markers[graphic.getPosition().toString()] = graphic;
+            var boundary = new google.maps.Polygon({map: null });
+            boundary.setPaths([_.map(cluster.polygon, function(vertex)
+                { return new google.maps.LatLng(vertex.lat, vertex.lon); })]);
+
+            graphic.heatStrength  = cluster.size;
+            graphic.clusterParent = cluster.parent;
+            graphic.clusterId     = cluster.id;
+
+            var dupKey = graphic.getPosition().toString();
+
+            graphic.clusterDestroy = function()
+            {
+                if (!mapObj._markers[dupKey]) { return; }
+                mapObj._markers[dupKey].setMap(null);
+                delete mapObj._markers[dupKey];
+            };
+
+            if (mapObj._markers[dupKey])
+            { mapObj._markers[dupKey].clusterDestroy(); }
+            mapObj._markers[dupKey] = graphic;
 
             google.maps.event.addListener(graphic, 'click', function(evt)
             {
@@ -493,9 +524,15 @@
                 mapObj.map.setCenter(evt.latLng || graphic.position);
                 mapObj.map.setZoom(mapObj.map.getZoom() + 1);
             });
+            google.maps.event.addListener(graphic, 'mouseover', function(evt)
+            { boundary.setMap(mapObj.map); });
+            google.maps.event.addListener(graphic, 'mouseout', function(evt)
+            { boundary.setMap(null); });
 
             mapObj._bounds.extend(graphic.getPosition());
             mapObj._boundsCounts++;
+
+            return graphic;
         },
 
         // FIXME: This is a skeleton. It is not intended to be used.
@@ -595,6 +632,72 @@
         },
 */
 
+        dataRendered: function()
+        {
+            var mapObj = this;
+
+            mapObj._super();
+            if (!mapObj._animation) { return; }
+
+            var clearClusters = function()
+            {
+                if (!mapObj._animation) { return; }
+                _.each(mapObj._animation.olds, function(marker)
+                { marker.clusterDestroy(); });
+            }
+
+            if (mapObj._animation.direction == 'none')
+            { return; }
+
+            var animKey  = mapObj._animation.direction == 'spread' ? 'news' : 'olds';
+            var otherKey = mapObj._animation.direction == 'gather' ? 'news' : 'olds';
+            mapObj._animation.animations = _.compact(_.map(mapObj._animation[animKey],
+                function(marker)
+                {
+                    if (!marker.clusterParent) { return; }
+
+                    var animation = { duration: 1000 };
+                    animation.marker = marker;
+                    var otherNode = _.detect(mapObj._animation[otherKey], function(m)
+                    { return marker.clusterParent.id == m.clusterId; });
+
+                    if (!otherNode) { return; }
+
+                    if (mapObj._animation.direction == 'spread')
+                    {
+                        animation.from = otherNode.getPosition();
+                        animation.to = marker.getPosition();
+                    }
+                    else
+                    {
+                        animation.from = marker.getPosition();
+                        animation.to = otherNode.getPosition();
+                    }
+
+                    return animation;
+                }));
+
+            if (mapObj._animation.direction == 'spread')
+            { _.each(mapObj._animation.olds, function(m)
+                { m.clusterDestroy(); }); }
+
+            animate(mapObj._animation.animations, function()
+            { clearClusters(); delete mapObj._animation; });
+        },
+
+        setAnimationOlds: function()
+        {
+            var mapObj = this;
+            if (!_.isEmpty(mapObj._markers))
+            {
+                if (mapObj._lastRenderType == 'points')
+                { mapObj._animation.olds = $.extend(true, {}, mapObj._markers); }
+                else // Clusters
+                { mapObj._animation.olds = _.select(mapObj._markers,
+                function(marker) { return marker.clusterId; }); }
+            }
+        },
+
         adjustBounds: function()
         {
             var mapObj = this;
@@ -614,6 +717,7 @@
                 mapObj.map.setCenter(mapObj._bounds.getCenter());
                 mapObj.map.setZoom(mapObj.settings.defaultZoom);
             }
+            mapObj._ready = false;
         },
 
         getCustomViewport: function()
@@ -637,7 +741,6 @@
                 xmin: sw.lng(), xmax: ne.lng(),
                 ymin: sw.lat(), ymax: ne.lat()
             });
-
             return viewport;
         },
 
@@ -649,10 +752,16 @@
             mapObj.map.setZoom(viewport.zoom);
         },
 
+        clearGeometries: function()
+        {
+            _.each(this._markers, function(m) { m.setMap(null); });
+        },
+
         cleanVisualization: function()
         {
             var mapObj = this;
-            _.each(mapObj._markers, function(m) { m.setMap(null); });
+            if (!mapObj._animation && mapObj._renderType == 'points')
+            { mapObj.clearGeometries(); }
             mapObj._super();
             if (mapObj.infoWindow !== undefined) { mapObj.infoWindow.close(); }
 
@@ -665,6 +774,7 @@
             var mapObj = this;
             _.each(mapObj._listeners, function(l)
                 { google.maps.event.removeListener(l); });
+            mapObj.clearGeometries();
             mapObj._super();
         },
 
@@ -715,32 +825,49 @@
         }
     }, { defaultZoom: 13 }, 'socrataMap');
 
-/*
-    var SocrataMarker;
-    var createSocrataMarker = function()
+    var animate = function(animations, callback)
     {
-        SocrataMarker = function(opt_options)
+        var startTime = $.now();
+        var interval;
+        var step = function()
         {
-            this.marker_ = new google.maps.Marker(opt_options);
-            this.position = this.marker_.position;
-            if (_.include(_.keys(opt_options), 'map'))
-            { this.setMap(opt_options.map); }
-        };
-        SocrataMarker.prototype = new google.maps.OverlayView();
-        SocrataMarker.prototype.setOptions = function(options)
-        {
-            this.marker_.setOptions(options);
-            if (_.include(_.keys(options), 'map'))
-            { this.setMap(options.map); }
-        };
-        SocrataMarker.prototype.show = function()
-        { this.marker_.setVisible(true); };
-        SocrataMarker.prototype.hide = function()
-        { this.marker_.setVisible(false); };
+            if (requestAnimationFrame && animations.length > 0)
+            { requestAnimationFrame( step ); }
 
-        SocrataMarker.prototype.draw = function()
-        { this.pixel_ = this.getProjection()
-            .fromLatLngToContainerPixel(this.marker_.position); };
+            animations = _.reject(animations, function(animation)
+            {
+                if (!animation.finished)
+                {
+                    var p = ($.now() - startTime) / animation.duration;
+                    animation.finished = p >= 1;
+                    var delta = function(start, end)
+                    {
+                        var pos = ((-Math.cos(p*Math.PI)/2) + 0.5);
+                        return start + ((end - start) * pos);
+                    };
+                    animation.marker.setPosition(new google.maps.LatLng(
+                        delta(animation.from.lat(), animation.to.lat()),
+                        delta(animation.from.lng(), animation.to.lng())));
+                    return false;
+                }
+                animation.marker.setPosition(animation.to);
+                if (_.isFunction(animation.callback))
+                { animation.callback(); }
+                return true;
+            });
+
+            if (animations.length == 0)
+            {
+                if (!requestAnimationFrame)
+                { clearInterval( interval ); }
+                if (_.isFunction(callback))
+                { callback(); }
+            }
+        };
+        if (requestAnimationFrame)
+        { requestAnimationFrame( step ); }
+        else
+        { interval = setInterval( step, 13 ); }
     };
-*/
+
 })(jQuery);

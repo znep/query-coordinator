@@ -172,6 +172,11 @@
             });
         },
 
+        currentZoom: function()
+        {
+            return this.map.getLevel();
+        },
+
         buildIdentifyTask: function()
         {
             var mapObj = this;
@@ -236,7 +241,7 @@
             mapObj._dataLoaded = true;
 
             if (mapObj._mapLoaded)
-            { mapObj.renderData(rows, view); }
+            { mapObj._super(rows, view); }
         },
 
         handleClustersLoaded: function(clusters, view)
@@ -246,7 +251,7 @@
             mapObj._byView[view.id]._clusters = clusters;
 
             if (mapObj._mapLoaded)
-            { mapObj.renderClusters(clusters, view); }
+            { mapObj._super(clusters, view); }
         },
 
         renderGeometry: function(geoType, geometry, dupKey, details)
@@ -292,7 +297,7 @@
             g.setGeometry(geometry);
             g.setSymbol(symbol);
             g.setAttributes({rows: details.rows, flyoutDetails: details.flyoutDetails,
-                dataView: details.dataView});
+                dataView: details.dataView, clusterParent: details.clusterParent });
 
             if (_.any(details.rows, function(r) { return $.subKeyDefined(mapObj.settings.view,
                             'highlightTypes.select.' + r.id); }))
@@ -302,6 +307,9 @@
             {
                 mapObj._multipoint.addPoint(g.geometry);
                 g.heatStrength = details.heatStrength || 1;
+                g.startAnimation = function(){};
+                g.finishAnimation = function(){};
+                g.clusterDestroy = function(){ mapObj.map.graphics.remove(this); };
             }
 
             if (geoType != 'point')
@@ -336,20 +344,20 @@
                     { mapObj.settings.view.unhighlightRows(details.rows); });
             }
 
-            return true;
+            return g;
         },
 
         renderCluster: function(cluster, details)
         {
             var mapObj = this;
 
-            if (cluster.count <= 0) { return; }
+            if (cluster.size <= 0) { return; }
 
             var cluster_icon = '/images/map_cluster_';
             var size;
-            if (cluster.count < 100)
+            if (cluster.size < 100)
             { cluster_icon += 'small.png'; size = 37; }
-            else if (cluster.count < 1000)
+            else if (cluster.size < 1000)
             { cluster_icon += 'med.png';   size = 45; }
             else
             { cluster_icon += 'large.png'; size = 65; }
@@ -358,35 +366,74 @@
                 $.extend({}, details, { icon: cluster_icon, width: size, height: size }));
             var geometry = esri.geometry.geographicToWebMercator(
                 new esri.geometry.Point({
-                    x: cluster.point.lon,
-                    y: cluster.point.lat,
+                    x: cluster.centroid.lon,
+                    y: cluster.centroid.lat,
                     spatialReference: { wkid: 4326 }}));
             var graphic = new esri.Graphic(geometry, symbol);
 
-            var textSymbol = new esri.symbol.TextSymbol(cluster.count);
+            var textSymbol = new esri.symbol.TextSymbol(cluster.size);
             textSymbol.setFont(new esri.symbol.Font({ size: '12px',
                 family: 'Arial', weight: esri.symbol.Font.WEIGHT_BOLD }));
             textSymbol.setOffset(0, -3);
-            if (cluster.count >= 100)  { textSymbol.setColor('white'); }
+            if (cluster.size >= 100)  { textSymbol.setColor('white'); }
             var textGraphic = new esri.Graphic(geometry, textSymbol);
 
             graphic.textGraphic = textGraphic;
 
+            var boundaryGraphic = new esri.Graphic();
+            boundaryGraphic.setGeometry(esri.geometry.geographicToWebMercator(
+                new esri.geometry.Polygon({ rings: [ _.map(cluster.polygon,
+                function(point) { return [point.lon, point.lat]; }) ],
+                spatialReference: { wkid: 4326 }})));
+            boundaryGraphic.setSymbol(getESRIMapSymbol(mapObj, 'polygon',
+                { borderWidth: 3, color: '#0000dd', opacity: 0.2 }));
+
+            graphic.boundaryGraphic = boundaryGraphic;
+
+            graphic.setAttributes({ clusterId: cluster.id, clusterParent: cluster.parent });
+
+            mapObj._graphicsLayer.add(boundaryGraphic);
             mapObj._graphicsLayer.add(graphic);
             mapObj._graphicsLayer.add(textGraphic);
 
-            var dojoShape = graphic.getDojoShape();
-            if (dojoShape)
-            { $(dojoShape.rawNode)
-                .hover(
-                    function(event) { mapObj.$dom()
-                        .find('div .container').css('cursor', 'pointer'); },
-                    function(event) { mapObj.$dom()
-                        .find('div .container').css('cursor', 'default'); });
-            }
+            graphic.startAnimation = function()
+            { this.show(); this.textGraphic.hide(); };
+            graphic.finishAnimation = function()
+            { this.show(); this.textGraphic.show(); };
+            graphic.clusterDestroy = function()
+            {
+                mapObj.map.graphics.remove(this);
+                mapObj.map.graphics.remove(this.textGraphic);
+                mapObj.map.graphics.remove(this.boundaryGraphic);
+            };
+
+
+            if (mapObj._animation.direction != 'none')
+            { _.each([graphic, textGraphic], function(g) { g.hide(); }); }
+            boundaryGraphic.hide();
+
+            var dojoShapes = _.compact([graphic.getDojoShape(),
+                                        graphic.textGraphic.getDojoShape()]);
+            _.each(dojoShapes, function(dojoShape)
+            { $(dojoShape.rawNode).hover(
+                function(event)
+                {
+                    mapObj.$dom().find('div .container').css('cursor', 'pointer');
+                    graphic.boundaryGraphic.show();
+                    if (!graphic.boundaryGraphic.mouseleaveSet)
+                    {
+                        var dojoShape = graphic.boundaryGraphic.getDojoShape();
+                        $(dojoShape.rawNode).mouseleave(function(event)
+                            { graphic.boundaryGraphic.hide(); });
+                        graphic.boundaryGraphic.mouseleaveSet = true;
+                    }
+                },
+                function(event)
+                { mapObj.$dom().find('div .container').css('cursor', 'default'); });
+            });
 
             mapObj._multipoint.addPoint(geometry);
-            graphic.heatStrength = cluster.count;
+            graphic.heatStrength = cluster.size;
             graphic.isCluster = true;
 
             //var offset = cluster.radius / Math.SQRT2;
@@ -395,7 +442,7 @@
                 //geometry.x + offset, geometry.y + offset,
                 //new esri.SpatialReference({ wkid: 102100 }));
 
-            return true;
+            return graphic;
         },
 
         renderHeat: function()
@@ -511,6 +558,109 @@
             };
             if (mapObj._mapLoaded && !mapObj._updatingLayer)
             { mapObj._convertHeatmap(mapObj._topmostLayer); }
+        },
+
+        dataRendered: function()
+        {
+            var mapObj = this;
+
+            mapObj._super();
+            if (!mapObj._animation) { return; }
+
+            var clearClusters = function()
+            {
+                if (!mapObj._animation) { return; }
+                _.each(mapObj._animation.news, function(graphic)
+                { graphic.finishAnimation(); });
+                _.each(mapObj._animation.olds, function(graphic)
+                { graphic.clusterDestroy(); });
+            }
+
+            if (mapObj._animation.direction == 'none')
+            { clearClusters(); return; }
+
+            var animKey  = mapObj._animation.direction == 'spread' ? 'news' : 'olds';
+            var otherKey = mapObj._animation.direction == 'gather' ? 'news' : 'olds';
+            mapObj._animation.animations = _.compact(_.map(mapObj._animation[animKey],
+                function(graphic)
+                {
+                    if (!graphic.getDojoShape()) { return; }
+                    if (!graphic.attributes.clusterParent) { return; }
+
+                    var animation = { duration: 1000 };
+                    animation.$node = $(graphic.getDojoShape().rawNode);
+                    var otherNode = _.detect(mapObj._animation[otherKey], function(g)
+                    { return graphic.attributes.clusterParent.id == g.attributes.clusterId; });
+
+                    var $otherNode;
+                    if (!otherNode || !otherNode.getDojoShape())
+                    {
+                        var clusterParent = graphic.attributes.clusterParent;
+                        $otherNode = esri.geometry.toScreenGeometry(
+                            mapObj.map.extent, mapObj.$dom().width(), mapObj.$dom().height(),
+                            esri.geometry.geographicToWebMercator(new esri.geometry.Point({
+                                x: clusterParent.centroid.lon,
+                                y: clusterParent.centroid.lat,
+                                spatialReference: { wkid: 4326 }
+                            })));
+
+                        $otherNode.x -= graphic.symbol.width || graphic.symbol.size / 2;
+                        $otherNode.y -= graphic.symbol.height || graphic.symbol.size / 2;
+                    }
+                    else
+                    { $otherNode = $(otherNode.getDojoShape().rawNode); }
+
+                    if (mapObj._animation.direction == 'spread')
+                    { animation.from = $otherNode; animation.to = animation.$node; }
+                    else
+                    { animation.from = animation.$node; animation.to = $otherNode; }
+
+                    _.each(['from', 'to'], function(prop)
+                    {
+                        var props = {};
+                        _.each(['x', 'y', 'cx', 'cy'], function(key)
+                        {
+                            if (animation[prop].attr)
+                            { props[key] = parseFloat(animation[prop].attr(key)); }
+                            else
+                            { props[key] = animation[prop][key]; }
+                            if (_.isNaN(props[key]))
+                            { delete props[key]; }
+                        });
+                        // If $node does not have the property, swap to the other property name.
+                        if (!animation.$node.attr(_.first(_.keys(props))))
+                        {
+                            if (props.cx)
+                            { props = { x: props.cx, y: props.cy}; }
+                            else
+                            { props = { cx: props.x, cy: props.y}; }
+                        }
+                        animation[prop] = props;
+                    });
+                    graphic.startAnimation();
+
+                    return animation;
+                }));
+
+            if (mapObj._animation.direction == 'spread')
+            { _.each(mapObj._animation.olds, function(graphic)
+                { graphic.clusterDestroy(); }); }
+
+            animate(mapObj._animation.animations, function()
+            { clearClusters(); delete mapObj._animation; });
+        },
+
+        setAnimationOlds: function()
+        {
+            var mapObj = this;
+            if ($.subKeyDefined(mapObj, 'map.graphics.graphics'))
+            {
+                if (mapObj._lastRenderType == 'points')
+                { mapObj._animation.olds = mapObj.map.graphics.graphics.slice(); }
+                else // Clusters
+                { mapObj._animation.olds = _.select(mapObj.map.graphics.graphics,
+                function(graphic) { return graphic.isCluster; }); }
+            }
         },
 
         showLayers: function()
@@ -643,6 +793,11 @@
             { this.map.resize(); }
         },
 
+        clearGeometries: function()
+        {
+            if (!$.isBlank(this._graphicsLayer)) { this._graphicsLayer.clear(); }
+        },
+
         cleanVisualization: function()
         {
             var mapObj = this;
@@ -652,18 +807,20 @@
             delete mapObj._segmentSymbols;
             delete mapObj._bounds;
             delete mapObj._byView[mapObj.settings.view.id]._clusters;
-            if (!$.isBlank(mapObj._graphicsLayer)) { mapObj._graphicsLayer.clear(); }
             if ($.subKeyDefined(mapObj, 'map.infoWindow'))
             {
                 mapObj._resetInfoWindow = true;
                 mapObj.map.infoWindow.hide();
             }
+            if (!mapObj._animation && mapObj._renderType == 'points')
+            { mapObj.clearGeometries(); }
         },
 
         reset: function()
         {
             var mapObj = this;
             if (mapObj._viewportListener) { dojo.disconnect(mapObj._viewportListener); }
+            mapObj.clearGeometries();
             mapObj._super();
         }
     }, {
@@ -705,7 +862,8 @@
                 return customization;
             }
 
-            _.each(['size', 'color', 'shape', 'opacity'], function(property)
+            _.each(['size', 'color', 'shape', 'opacity', 'borderWidth', 'borderColor'],
+            function(property)
             {
                 if (!_.isUndefined(point[property]))
                 { customization[property] = point[property]; }
@@ -761,9 +919,9 @@
                 backgroundColor: customization.color || [ 255, 0, 255 ],
                 size: customization.size || 10,
                 symbol: customization.shape || 'circle',
-                borderColor: [ 0, 0, 0, .5 ],
+                borderColor: customization.borderColor || [ 0, 0, 0, .5 ],
                 borderStyle: 'solid',
-                borderWidth: 1
+                borderWidth: customization.borderWidth || 1
             };
 
             $.extend(symbolConfig, mapObj.settings.view.displayFormat.plot);
@@ -1029,6 +1187,55 @@
             var top  = offset.top  + (Math.random() * 50) - 25;
             mapObj._heatLayer.store.addDataPoint(left, top, strength);
         });
+    };
+
+    // jQuery#animate does not do attributes correctly, so this does the same thing.
+    // This function, and its complements in google-map and bing-map, can probably be refactored
+    // into a single function with callbacks.
+    var animate = function(animations, callback)
+    {
+        var startTime = $.now();
+        var interval;
+        var step = function()
+        {
+            if (requestAnimationFrame && animations.length > 0)
+            { requestAnimationFrame( step ); }
+
+            animations = _.reject(animations, function(animation)
+            {
+                if (!animation.finished)
+                {
+                    var p = ($.now() - startTime) / animation.duration;
+                    animation.finished = p >= 1;
+                    var delta = function(start, end)
+                    {
+                        var pos = ((-Math.cos(p*Math.PI)/2) + 0.5);
+                        return start + ((end - start) * pos);
+                    };
+                    var changeset = {};
+                    _.each(_.keys(animation.to), function(prop)
+                    { changeset[prop] = delta(animation.from[prop], animation.to[prop]); });
+                    animation.$node.attr(changeset);
+                    return false;
+                }
+                animation.$node.attr(animation.to);
+                if (_.isFunction(animation.callback))
+                { animation.callback(); }
+                return true;
+            });
+
+            if (animations.length == 0)
+            {
+                if (!requestAnimationFrame)
+                { clearInterval( interval ); }
+                if (_.isFunction(callback))
+                { callback(); }
+            }
+        };
+        if (requestAnimationFrame)
+        { requestAnimationFrame( step ); }
+        else
+        { interval = setInterval( step, 13 ); }
     };
 
 })(jQuery);

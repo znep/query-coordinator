@@ -109,10 +109,10 @@
                 if ($geolocator_prompt.length == 0)
                 {
                     $geolocator_prompt = $.tag({ tagName: 'div', id: 'geolocator',
-                        contents: [{ tagName: 'a', 'class': 'my_location',
-                                        title: 'Use current location' },
+                        contents: [{ tagName: 'input', 'class': 'textPrompt', type: 'text' },
                                    { tagName: 'a', 'class': 'button', contents: 'Go'},
-                                   { tagName: 'input', 'class': 'textPrompt', type: 'text' },
+                                   { tagName: 'a', 'class': 'my_location',
+                                        title: 'Use current location' },
                                    { tagName: 'div', 'class': 'error' }]
                     });
                     $geolocator_prompt.css({ left: $geocodeControl.offset().left });

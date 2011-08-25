@@ -102,7 +102,8 @@
                 });
             }
 
-            var $geocodeControl = $.tag({ tagName: 'div', id: 'geolocator_button' });
+            var $geocodeControl = $.tag({ tagName: 'div', id: 'geolocator_button',
+                title: 'Navigate to location' });
             $geocodeControl.click(function(evt)
             {
                 var $geolocator_prompt = mapObj.$dom().siblings('#geolocator');

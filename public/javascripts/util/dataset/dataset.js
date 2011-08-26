@@ -767,7 +767,7 @@ this.Dataset = ServerModel.extend({
         row.sessionMeta[markType] = value;
     },
 
-    highlightRows: function(rows, type)
+    highlightRows: function(rows, type, column)
     {
         var ds = this;
         rows = $.makeArray(rows);
@@ -785,6 +785,7 @@ this.Dataset = ServerModel.extend({
         { ds.highlightTypes[type] = {}; }
 
         ds.highlights = ds.highlights || {};
+        ds.highlightsColumn = ds.highlightsColumn || {};
         var rowChanges = [];
         for (var i = 0; i < rows.length; i++)
         {
@@ -793,9 +794,15 @@ this.Dataset = ServerModel.extend({
             if (!ds.highlights[row.id])
             {
                 ds.highlights[row.id] = true;
+                if (!$.isBlank(column))
+                { ds.highlightsColumn[row.id] = column.id; }
                 var realRow = ds.rowForID(row.id);
                 if (!$.isBlank(realRow))
-                { ds.markRow('highlight', true, realRow); }
+                {
+                    ds.markRow('highlight', true, realRow);
+                    if (!$.isBlank(column))
+                    { ds.markRow('highlightColumn', column.id, realRow); }
+                }
                 rowChanges.push(realRow || row);
             }
         }
@@ -811,6 +818,7 @@ this.Dataset = ServerModel.extend({
         ds.highlightTypes = ds.highlightTypes || {};
 
         ds.highlights = ds.highlights || {};
+        ds.highlightsColumn = ds.highlightsColumn || {};
         var rowChanges = [];
         for (var i = 0; i < rows.length; i++)
         {
@@ -825,9 +833,13 @@ this.Dataset = ServerModel.extend({
             if (ds.highlights[row.id])
             {
                 delete ds.highlights[row.id];
+                delete ds.highlightsColumn[row.id];
                 var realRow = ds.rowForID(row.id);
                 if (!$.isBlank(realRow))
-                { ds.markRow('highlight', false, realRow); }
+                {
+                    ds.markRow('highlight', false, realRow);
+                    ds.markRow('highlightColumn', null, realRow);
+                }
                 rowChanges.push(realRow || row);
             }
         }

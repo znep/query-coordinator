@@ -2682,7 +2682,9 @@
                         (col.format.align ? ' align-' + col.format.align : ''),
                         (curRow.invalid[col.lookup] ? ' invalid' : ''),
                         (curRow.changed && curRow.changed[col.lookup] ? ' saving' : ''),
-                        (curRow.error && curRow.error[col.lookup] ? ' error' : ''));
+                        (curRow.error && curRow.error[col.lookup] ? ' error' : ''),
+                        (curRow.sessionMeta && curRow.sessionMeta.highlightColumn == col.id ?
+                            ' blist-td-highlight' : ''));
                 if ($.isBlank(col.parentColumn))
                 {
                     html.push(' ', ((contextVariables.cellClasses[row.id] || {})

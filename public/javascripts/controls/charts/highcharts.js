@@ -652,7 +652,7 @@
                 var $tooltip = customTooltip(chartObj, this);
                 if (!$.isBlank($tooltip.data('currentRow')))
                 { chartObj.settings.view.unhighlightRows($tooltip.data('currentRow')); }
-                chartObj.settings.view.highlightRows(this.row);
+                chartObj.settings.view.highlightRows(this.row, null, this.column);
                 $tooltip.data('currentRow', this.row);
             },
             mouseOut: function()
@@ -672,7 +672,7 @@
                 if ($.subKeyDefined(chartObj.settings.view, 'highlightTypes.select.' + this.row.id))
                 { chartObj.settings.view.unhighlightRows(this.row, 'select'); }
                 else
-                { chartObj.settings.view.highlightRows(this.row, 'select'); }
+                { chartObj.settings.view.highlightRows(this.row, 'select', this.column); }
             }
         }};
 
@@ -849,10 +849,12 @@
                 { fillColor: '#'+$.rgbToHex($.brighten(point.fillColor)) }); }
         }
 
-        if ((row.sessionMeta || {}).highlight)
+        var sm = row.sessionMeta || {};
+        if (sm.highlight && ($.isBlank(sm.highlightColumn) || sm.highlightColumn == col.id))
         { point.selected = true; }
 
         point.row = row;
+        point.column = col;
         point.flyoutDetails = chartObj.renderFlyout(row,
             chartObj._valueColumns[seriesIndex].column.tableColumnId,
             chartObj.settings.view);

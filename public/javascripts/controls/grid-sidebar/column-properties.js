@@ -187,7 +187,7 @@
     {
         name: configName,
         title: 'Column Properties',
-        subtitle: 'Update various properites on this column',
+        subtitle: 'Update various properties on this column',
         onlyIf: function()
         {
             return !blist.dataset.temporary || blist.dataset.minorChange;

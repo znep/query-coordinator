@@ -7,7 +7,10 @@
         { addr = editObj.originalValue; }
         else if ($.subKeyDefined(editObj.originalValue, 'human_address'))
         { addr = editObj.originalValue.human_address; }
-        return JSON.parse(addr);
+
+        try { return JSON.parse(addr); }
+        catch(e) { }
+        return '';
     };
 
     var streetValue = function(editObj)

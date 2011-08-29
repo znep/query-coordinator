@@ -40,7 +40,7 @@ blist.namespace.fetch('blist.datatypes');
     var numberHelper = function(value, decimalPlaces, precisionStyle,
         prefix, suffix, humane, noCommas, mask)
     {
-        if (value == null) { return ''; }
+        if ($.isBlank(value)) { return ''; }
 
         if (_.isString(mask) && (mask !== ''))
         {

@@ -3678,7 +3678,7 @@
                         col.id,
                         '">',
                         '<span class="blist-tf-value">',
-                        val,
+                        (val || ''),
                         '</span></div>');
                 };
 

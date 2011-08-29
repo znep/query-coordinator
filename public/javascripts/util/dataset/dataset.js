@@ -863,7 +863,8 @@ this.Dataset = ServerModel.extend({
                     _.each(ds.columnsForType('nested_table', true), function(pc)
                     { c = c || pc.childColumnForID(a.columnId); });
                 }
-                if (!$.isBlank(c)) { c.aggregates[a.name] = parseFloat(a.value); }
+                if (!$.isBlank(c))
+                { c.aggregates[a.name] = $.isBlank(a.value) ? null : parseFloat(a.value); }
             });
 
             if ($.isBlank(customAggs))

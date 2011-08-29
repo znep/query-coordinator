@@ -164,12 +164,13 @@
                 if (_.isNaN(value)) { value = null; }
 
                 // First check if this should be subsumed into a remainder
-                var sliceTooSmall = !_.isNull(value) &&
+                if (!_.isNull(value) &&
                     !_.isUndefined(chartObj.settings
                         .view.displayFormat.pieJoinAngle) &&
                     !$.isBlank(cs.data.aggregates.sum) &&
                     (value / cs.data.aggregates.sum) * 360 <
-                        chartObj.settings.view.displayFormat.pieJoinAngle;
+                        chartObj.settings.view.displayFormat.pieJoinAngle)
+                { return; }
 
                 // Render point and cache it
                 // NOTE: There is an assumption that _xCategories will be
@@ -189,7 +190,7 @@
                         { addPoint(chartObj, n, i); });
                     chartObj._nullCache = undefined;
                 }
-                if (!sliceTooSmall) { addPoint(chartObj, point, i); }
+                addPoint(chartObj, point, i);
 
                 hasPoints = true;
             });
@@ -214,7 +215,10 @@
                 // Create fake row for other value
                 var otherRow = { id: 'Other', invalid: {}, error: {}, changed: {} };
                 if ((chartObj.settings.view.highlights || {})[otherRow.id])
-                { otherRow.sessionMeta = {highlight: true}; }
+                {
+                    otherRow.sessionMeta = {highlight: true,
+                        highlightColumn: (chartObj.settings.view.highlightsColumn || {})[otherRow.id]};
+                }
                 otherRow[chartObj._xColumn.lookup] = 'Other';
                 var cf = _.detect(chartObj.settings.view.metadata.conditionalFormatting,
                     function(cf) { return cf.condition === true; });

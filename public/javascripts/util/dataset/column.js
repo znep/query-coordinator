@@ -206,11 +206,13 @@ this.Column = ServerModel.extend({
         // If there is already a filter for this column, clear it out
         col._clearFilterData(query);
 
+        var colItem = { type: 'column', columnId: col.id };
+        if (!$.isBlank(subColumnType) && _.isString(subColumnType))
+        { colItem.value = subColumnType.toUpperCase(); };
+
         // Update the parent view with the new filter
         var filterItem = { type: 'operator', value: 'EQUALS', children: [
-            { type: 'column', columnId: col.id,
-                value: subColumnType.toUpperCase() },
-            { type: 'literal', value: value } ] };
+            colItem, { type: 'literal', value: value } ] };
 
         query.namedFilters = query.namedFilters || {};
         query.namedFilters['col' + col.id] = filterItem;

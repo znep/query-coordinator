@@ -301,6 +301,13 @@
         _.each(typeKeys, function(k)
         {
             var cs = summary[k];
+            var curType = cmObj.settings.column.renderType;
+            var isSubCol = false;
+            if ($.subKeyDefined(curType, 'subColumns.' + cs.subColumnType))
+            {
+                curType = curType.subColumns[cs.subColumnType];
+                isSubCol = true;
+            }
             var items = [];
 
             var searchMethod = function(a, b)
@@ -326,9 +333,6 @@
                         f.isMatching = !$.isBlank(cmObj.settings
                             .column.currentFilter) &&
                             cmObj.settings.column.currentFilter.value == f.value;
-                        var curType = cmObj.settings.column.renderType;
-                        if ($.subKeyDefined(curType, 'subColumns.' + cs.subColumnType))
-                        { curType = curType.subColumns[cs.subColumnType]; }
                         f.escapedValue = escape(_.isFunction(curType.filterValue) ?
                                 curType.filterValue(f.value) : $.htmlStrip(f.value + ''));
                         f.renderedValue = curType.renderer(f.value, cmObj.settings.column, false, true);
@@ -349,7 +353,7 @@
                             'scrollable', {value: 'active', onlyIf: f.isMatching}],
                             contents: {tagName: 'a', href: (f.isMatching ?
                                     '#clear-filter-column_' : '#filter-column_') +
-                                    cs.subColumnType + ':' + f.escapedValue + '|',
+                                    (isSubCol ? cs.subColumnType : '') + ':' + f.escapedValue + '|',
                                 title: f.titleValue + (f.count > 1 ?
                                     ' (' + f.count + ')' : ''),
                                 'class': 'clipText', contents: f.renderedValue +

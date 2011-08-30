@@ -364,7 +364,7 @@
                         tableColumnId: column.tableColumnId,
                         operator: operator
                     };
-                    var subcolumn = findConditionComponent(child, 'subcolumn').toLowerCase();
+                    var subcolumn = (findConditionComponent(child, 'subcolumn') || '').toLowerCase();
                     if (subcolumn && _.include(_.keys(column.renderType.subColumns || {}), subcolumn)) // sanity check
                     {
                         child.metadata.subcolumn = subcolumn;

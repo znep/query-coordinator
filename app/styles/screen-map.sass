@@ -56,6 +56,54 @@
 #mapLegend .color_swatch
   cursor: default
 
+$geolocator_margin_top: 18px
+
+#geolocator_button
+  background-image: url(/images/gmaps.png)
+  width: 30px
+  height: 30px
+  margin-top: $geolocator_margin_top
+  cursor: pointer
+
+#geolocator
+  position: absolute
+  top: $geolocator_margin_top
+  width: 205px
+  padding:
+    top: 12px
+    left: 10px
+    bottom: 7px
+    right: 7px
+  border: solid 1px #aaa
+  @include border-radius(0.4em)
+  @include box-shadow(2px,2px,1px,rgba(0,0,0,0.4))
+  background-color: white
+
+  input
+    float: left
+
+  a
+    float: left
+    display: inline-block
+    cursor: pointer
+
+    &.button
+      text-align: center
+      margin-top: 0
+      padding:
+        top: 3px
+        bottom: 3px
+
+    &.my_location
+      background-image: url(/images/locateme.png)
+      height: 16px
+      width: 16px
+      margin-top: 3px
+
+  div.error
+    margin-top: 2px
+    color: red
+
 .mapTitle
   font-size: 1.4em
   font-weight: bold

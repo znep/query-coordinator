@@ -154,6 +154,15 @@
 
     <%- end -%>
 
+    <%# HACK: The only customer to really use this is Data.gov, so only show it for them %>
+    <%- if !Rails.env.production? || CurrentDomain.cname == "explore.data.gov" -%>
+      <h2>External ID</h2>
+      <div class="line clearfix">
+        <label for="view_externalId">External Identifier</label>
+        <%= text_field_tag("view[externalId]", @view.externalId, :title => "Enter your external ID", :class => "textPrompt") %>
+      </div>
+    <%- end -%>
+
     <h2>Image</h2>
     <div class="customImage">
       <div class="line clearfix">

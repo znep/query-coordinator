@@ -40,7 +40,7 @@ blist.namespace.fetch('blist.datatypes');
     var numberHelper = function(value, decimalPlaces, precisionStyle,
         prefix, suffix, humane, noCommas, mask)
     {
-        if (value == null) { return ''; }
+        if ($.isBlank(value)) { return ''; }
 
         if (_.isString(mask) && (mask !== ''))
         {
@@ -1008,7 +1008,13 @@ blist.namespace.fetch('blist.datatypes');
             createable: true,
             deleteable: true,
             filterConditions: filterGroups.date,
-            filterValue: function(v) { return v; },
+            filterValue: function(v)
+            {
+                var d = v;
+                if (_.isNumber(v)) { d = new Date(v * 1000); }
+                else { d = Date.parse(v); }
+                return $.isBlank(d) ? '' : d.format('m/d/Y');
+            },
             formats: zDateTimeFormats,
             inlineType: true,
             priority: 7,

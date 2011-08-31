@@ -187,7 +187,7 @@
     {
         name: configName,
         title: 'Column Properties',
-        subtitle: 'Update various properites on this column',
+        subtitle: 'Update various properties on this column',
         onlyIf: function()
         {
             return !blist.dataset.temporary || blist.dataset.minorChange;
@@ -392,6 +392,9 @@
             {
                 title: 'Advanced', type: 'selectable', name: 'advanced',
                 fields: [
+                    {text: 'API Identifier', type: 'text', disabled: !isDataset,
+                     data: { 'fieldName': 'unverified' },
+                     name: 'fieldName'},
                     {type: 'repeater', addText: 'Add RDF Properties',
                     name: 'format.rdf',  minimum: 0,
                     field:

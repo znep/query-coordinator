@@ -299,7 +299,7 @@ metricsNS.updateChartCallback = function($chart, sliceType, options)
         start  = $chart.data(metricsNS.DATE_START),
         end    = $chart.data(metricsNS.DATE_END);
 
-    $chart.siblings('.loadingSpinner').hide();
+    $chart.parent().loadingSpinner().showHide(false);
 
     if (!$.isBlank(data) && data.length > 0)
     {
@@ -334,10 +334,8 @@ metricsNS.transforms.smooth = function(data)
 
 metricsNS.chartLoading = function($chart)
 {
-    $chart
-      .hide()
-      .siblings('.loadingSpinner')
-      .fadeIn();
+    $chart.hide()
+        .parent().loadingSpinner().showHide(true);
 };
 
 metricsNS.topListItemDirective = {

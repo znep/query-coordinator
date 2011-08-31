@@ -987,6 +987,8 @@ importNS.importingPaneConfig = {
             return;
         state.importingActivated = true;
 
+        $pane.loadingSpinner({showInitially: true});
+
         // let's figure out what to send to the server
         var importer = state.importer;
         var blueprint = {

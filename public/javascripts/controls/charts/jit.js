@@ -32,6 +32,7 @@
         {
             var chartObj = this;
 
+            var valCol = chartObj._valueColumns[0].column;
             var addRows = function(row)
                 {
                     var exItem = _.detect(chartObj._jitData.children, function(c)
@@ -45,8 +46,7 @@
                         exArea = exItem.data.$area;
                     }
 
-                    var area = parseFloat(row[chartObj.
-                        _valueColumns[0].column.id]);
+                    var area = parseFloat(row[valCol.id]);
                     if (_.isNaN(area)) { return; }
 
                     if (!$.isBlank(chartObj._remainder))
@@ -74,9 +74,9 @@
                             $area: area,
                             $color: rowColor,
                             row: row,
+                            column: valCol,
                             flyoutDetails: chartObj.renderFlyout(row,
-                                chartObj._valueColumns[0].column.tableColumnId,
-                                chartObj.settings.view)
+                                valCol.tableColumnId, chartObj.settings.view)
                         },
                         children: []
                     };
@@ -106,7 +106,7 @@
             {
                 var row = { id: 'Other', changed: {}, error: {}, invalid: {} };
                 row[chartObj._fixedColumns[0].id] = 'Other';
-                row[chartObj._valueColumns[0].column.id] = chartObj._remainder;
+                row[valCol.id] = chartObj._remainder;
                 var colors = chartObj.settings.view.displayFormat.colors;
                 var color = colors[chartObj.settings.view.totalRows % 5];
                 if ((chartObj.settings.view.highlights || {})[row.id])
@@ -118,9 +118,9 @@
                         $area: chartObj._remainder,
                         $color: color,
                         row: {id: 'Other'},
+                        column: valCol,
                         flyoutDetails: chartObj.renderFlyout(row,
-                            chartObj._valueColumns[0].column.tableColumnId,
-                            chartObj.settings.view)
+                            valCol.tableColumnId, chartObj.settings.view)
                     },
                     children: []
                 };
@@ -211,7 +211,7 @@
                       { chartObj.settings.view.unhighlightRows(chartObj._curHighlight); }
 
                       chartObj._curHighlight = node.data.row;
-                      chartObj.settings.view.highlightRows(node.data.row);
+                      chartObj.settings.view.highlightRows(node.data.row, null, node.data.column);
                   }
               },
               onMouseLeave: function(node)
@@ -232,7 +232,7 @@
                   if ($.subKeyDefined(chartObj.settings.view, 'highlightTypes.select.' + node.data.row.id))
                   { chartObj.settings.view.unhighlightRows(node.data.row, 'select'); }
                   else
-                  { chartObj.settings.view.highlightRows(node.data.row, 'select'); }
+                  { chartObj.settings.view.highlightRows(node.data.row, 'select',  node.data.column); }
               }
             },
             Tips: {

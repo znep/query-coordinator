@@ -211,11 +211,13 @@ this.Column = ServerModel.extend({
         // If there is already a filter for this column, clear it out
         col._clearFilterData(query);
 
+        var colItem = { type: 'column', columnId: col.id };
+        if (!$.isBlank(subColumnType) && _.isString(subColumnType))
+        { colItem.value = subColumnType.toUpperCase(); };
+
         // Update the parent view with the new filter
         var filterItem = { type: 'operator', value: 'EQUALS', children: [
-            { type: 'column', columnId: col.id,
-                value: subColumnType.toUpperCase() },
-            { type: 'literal', value: value } ] };
+            colItem, { type: 'literal', value: value } ] };
 
         query.namedFilters = query.namedFilters || {};
         query.namedFilters['col' + col.id] = filterItem;
@@ -337,29 +339,18 @@ this.Column = ServerModel.extend({
         return (col.format && col.format.linkedKey != null);
     },
 
-    _sanitizeName: function(colName)
-    {
-        var sname = colName.toLowerCase()
-        // refer to core server ViewColumn.underscoreName
-        sname = sname.replace(/^[^A-z]+/gi, "_");
-        sname = sname.replace(/[^A-z0-9]+/gi, "_");
-        sname = sname.replace(/^xml/gi, "_");
-        sname = sname.replace(/_+/gi, "_");
-        return sname;
-    },
-
     underscoreName: function(ds)
     {
         var col = this;
         var otherCol;
         var otherUname;
-        var uname = this._sanitizeName(col.name);
+        var uname = Column.sanitizeName(col.name);
 
         for (var n = 0; n < ds.columns.length; n++)
         {
             otherCol = ds.columns[n];
             if (otherCol.id == col.id) { continue; }
-            otherUname = this._sanitizeName(otherCol.name);
+            otherUname = Column.sanitizeName(otherCol.name);
             if (uname == otherUname)
             {
                 uname += "_" + col.position;
@@ -408,8 +399,21 @@ this.Column = ServerModel.extend({
         name: true,
         position: true,
         tableColumnId: true,
-        width: true
+        width: true,
+        fieldName: true
     }
 });
+
+
+Column.sanitizeName = function(colName)
+{
+    var sname = colName.toLowerCase()
+    // refer to core server ViewColumn.underscoreName
+    sname = sname.replace(/^[^A-z]+/gi, "_");
+    sname = sname.replace(/[^A-z0-9]+/gi, "_");
+    sname = sname.replace(/^xml/gi, "_");
+    sname = sname.replace(/_+/gi, "_");
+    return sname;
+};
 
 })();

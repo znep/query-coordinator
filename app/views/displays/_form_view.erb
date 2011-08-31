@@ -1,5 +1,5 @@
 <% content_for :head do %>
-  <link type="text/css" rel="stylesheet" href="/stylesheets/displays-form.css" />
+  <%= rendered_stylesheet_tag 'display-form' %>
 <% end %>
 
 <form class="formView socrataForm commonForm" method="POST"
@@ -21,7 +21,7 @@
   <%- form_columns.each do |c| -%>
     <%- if (!c.is_linked?) -%>
       <div class="line clearfix <%= c.client_type %>">
-        <label for="form_field_<%= c.id %>"><%= c.name %></label>
+        <label for="form_field_<%= c.id %>" title="<%= c.name %>"><%= c.name %></label>
         <%= render(:partial => 'displays/form_field', :locals => {:column => c}) %>
       </div>
     <%- end -%>

@@ -27,7 +27,6 @@
             name: 'form',
             domId: 'staticRenderType',
             initFunction: function() {},
-            styleshets: ['displays-form.css'],
             scrollsInline: false
         },
 

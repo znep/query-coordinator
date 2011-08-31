@@ -35,13 +35,6 @@ $cropped_height: 80
       display: none
       width: 100%
 
-      .loading
-        @include branded-spinner
-        display: none
-        left: #{$thumbnail_preview_width / 2 - 24}px
-        top: #{$thumbnail_preview_height / 2 - 24}px
-        position: absolute
-
       .thumbnailPresent
         @include transition-duration(0.5s)
         @include transition-property(opacity)
@@ -72,9 +65,6 @@ $cropped_height: 80
           img
             height: #{$thumbnail_preview_height}px
             width: #{$thumbnail_preview_width}px
-
-        .loading
-          display: block
 
       .mainError
         display: none

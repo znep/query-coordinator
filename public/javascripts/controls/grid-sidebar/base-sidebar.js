@@ -54,6 +54,13 @@
     },
     'This requires a 4x4 view UID');
 
+    $.validator.addMethod('data-custom-fieldName', function(value, element, param)
+    {
+        return value == Column.sanitizeName(value);
+    },
+    'Valid API identifier characters are lower case letters, digits and underscore.  It must start with a letter and cannot have consecutive underscores.');
+
+
     // Special validator for validating required file types
     $.validator.addMethod('data-requiredTypes', function(value, element, param)
     {
@@ -485,6 +492,8 @@
                 var sidebarObj = this;
                 var $domObj = sidebarObj.$dom();
                 $domObj.data("gridSidebar", sidebarObj);
+
+                $domObj.loadingSpinner({overlay: true});
 
                 $domObj.find('a.close').click(function(e)
                 {
@@ -1219,12 +1228,12 @@
 
             startProcessing: function()
             {
-                this.$dom().addClass('processing');
+                this.$dom().loadingSpinner().showHide(true);
             },
 
             finishProcessing: function()
             {
-                this.$dom().removeClass('processing');
+                this.$dom().loadingSpinner().showHide(false);
             },
 
             resetForm: function($pane, paneName)
@@ -2896,7 +2905,7 @@
             var $button = $(this);
             if ($button.is('.disabled')) { return; }
 
-            sidebarObj.$dom().addClass('processing');
+            sidebarObj.startProcessing();
 
             var doCallback = function()
             {

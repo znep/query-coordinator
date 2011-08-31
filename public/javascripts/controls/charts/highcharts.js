@@ -109,6 +109,13 @@
                 { createChart(chartObj); });
         },
 
+        handleRowsLoaded: function()
+        {
+            if (!_.isEmpty(this._xCategories))
+            { this._xCategories = _.without(this._xCategories, 'Other'); }
+            this._super.apply(this, arguments);
+        },
+
         renderRow: function(row)
         {
             var chartObj = this;
@@ -157,12 +164,13 @@
                 if (_.isNaN(value)) { value = null; }
 
                 // First check if this should be subsumed into a remainder
-                var sliceTooSmall = !_.isNull(value) &&
+                if (!_.isNull(value) &&
                     !_.isUndefined(chartObj.settings
                         .view.displayFormat.pieJoinAngle) &&
                     !$.isBlank(cs.data.aggregates.sum) &&
                     (value / cs.data.aggregates.sum) * 360 <
-                        chartObj.settings.view.displayFormat.pieJoinAngle;
+                        chartObj.settings.view.displayFormat.pieJoinAngle)
+                { return; }
 
                 // Render point and cache it
                 // NOTE: There is an assumption that _xCategories will be
@@ -182,7 +190,7 @@
                         { addPoint(chartObj, n, i); });
                     chartObj._nullCache = undefined;
                 }
-                if (!sliceTooSmall) { addPoint(chartObj, point, i); }
+                addPoint(chartObj, point, i);
 
                 hasPoints = true;
             });
@@ -207,16 +215,27 @@
                 // Create fake row for other value
                 var otherRow = { id: 'Other', invalid: {}, error: {}, changed: {} };
                 if ((chartObj.settings.view.highlights || {})[otherRow.id])
-                { otherRow.sessionMeta = {highlight: true}; }
+                {
+                    otherRow.sessionMeta = {highlight: true,
+                        highlightColumn: (chartObj.settings.view.highlightsColumn || {})[otherRow.id]};
+                }
                 otherRow[chartObj._xColumn.lookup] = 'Other';
                 var cf = _.detect(chartObj.settings.view.metadata.conditionalFormatting,
                     function(cf) { return cf.condition === true; });
                 if (cf) { otherRow.color = cf.color; }
 
-                var otherPt = xPoint(chartObj, otherRow);
-                otherPt.otherPt = true;
+                var oInd;
                 if (!_.isUndefined(chartObj._xCategories))
-                { chartObj._xCategories.push('Other'); }
+                {
+                    oInd = _.indexOf(chartObj._xCategories, 'Other');
+                    if (oInd < 0)
+                    {
+                        oInd = chartObj._xCategories.length;
+                        chartObj._xCategories.push('Other');
+                    }
+                }
+                var otherPt = xPoint(chartObj, otherRow, oInd);
+                otherPt.otherPt = true;
                 _.each(chartObj._seriesRemainders, function(sr, i)
                 {
                     var col = chartObj._yColumns[i].data;
@@ -358,9 +377,8 @@
             var abbreviateNumbers = function(num)
             {
                 // This check comes first because it's simpler than a regex.
-                if (xAxis && chartObj._xColumn &&
-                    !_.include(Dataset.chart.numericTypes, chartObj._xColumn.renderTypeName))
-                { return num; }
+                if (xAxis && chartObj._xColumn)
+                { return chartObj._xColumn.renderType.renderer(num, chartObj._xColumn); }
 
                 // Are you really a number?
                 // yColumn numbers will always come back as numbers.
@@ -638,7 +656,7 @@
                 var $tooltip = customTooltip(chartObj, this);
                 if (!$.isBlank($tooltip.data('currentRow')))
                 { chartObj.settings.view.unhighlightRows($tooltip.data('currentRow')); }
-                chartObj.settings.view.highlightRows(this.row);
+                chartObj.settings.view.highlightRows(this.row, null, this.column);
                 $tooltip.data('currentRow', this.row);
             },
             mouseOut: function()
@@ -658,7 +676,7 @@
                 if ($.subKeyDefined(chartObj.settings.view, 'highlightTypes.select.' + this.row.id))
                 { chartObj.settings.view.unhighlightRows(this.row, 'select'); }
                 else
-                { chartObj.settings.view.highlightRows(this.row, 'select'); }
+                { chartObj.settings.view.highlightRows(this.row, 'select', this.column); }
             }
         }};
 
@@ -835,10 +853,12 @@
                 { fillColor: '#'+$.rgbToHex($.brighten(point.fillColor)) }); }
         }
 
-        if ((row.sessionMeta || {}).highlight)
+        var sm = row.sessionMeta || {};
+        if (sm.highlight && ($.isBlank(sm.highlightColumn) || sm.highlightColumn == col.id))
         { point.selected = true; }
 
         point.row = row;
+        point.column = col;
         point.flyoutDetails = chartObj.renderFlyout(row,
             chartObj._valueColumns[seriesIndex].column.tableColumnId,
             chartObj.settings.view);
@@ -1002,6 +1022,12 @@
             var p = chartObj.chart.get(point.id);
             if ($.isBlank(p))
             { chartObj.chart.series[seriesIndex].addPoint(point, false); }
+            else if (p.color != point.color)
+            {
+                // Workaround for Highcharts; color doesn't update, so do a full remove/replace
+                p.remove(false);
+                chartObj.chart.series[seriesIndex].addPoint(point, false);
+            }
             else
             {
                 if (point.selected && !p.selected) { p.select(true, true); }
@@ -1136,7 +1162,7 @@
         // Make sure data is cleaned, or sometimes setCategories will throw an error
         _.each(chartObj.chart.series, function(s) { s.cleanData(); });
         // Now that we have data, make sure the axes are updated
-        chartObj.chart.redraw(false);
+        chartObj.chart.redraw();
         chartObj.chart.xAxis[0].setCategories(chartObj._xCategories, true);
         chartObj._categoriesLoaded = true;
     };

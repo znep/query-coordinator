@@ -12,14 +12,14 @@ $(function()
 
         var error = function(xhr)
         {
-            $dialog.find('.loadingSpinner, .loadingOverlay').addClass('hide');
+            $dialog.loadingSpinner().showHide(false);
             $dialog.find('.mainError')
                 .text(JSON.parse(xhr.responseText).message);
             $dialog.find('.fileReadout').val('');
         };
         var success = function(resp)
         {
-            $dialog.find('.loadingSpinner, .loadingOverlay').addClass('hide');
+            $dialog.loadingSpinner().showHide(false);
             $dialog.jqmHide();
             if ($.isBlank(editId))
             {
@@ -115,6 +115,8 @@ $(function()
         $dialog.jqmShow();
     };
 
+    $dialog.loadingSpinner({overlay: true});
+
     $dialog.find('form').validate({errorElement: 'span'});
     var $uploadButton = $dialog.find('.fileBrowseButton');
     if ($uploadButton.length > 0)
@@ -134,7 +136,7 @@ $(function()
             {
                 if (response.error == true)
                 {
-                    $dialog.find('.loadingSpinner, .loadingOverlay').addClass('hide');
+                    $dialog.loadingSpinner().showHide(false);
                     $dialog.find('.mainError').text(response.message);
                     return false;
                 }
@@ -155,7 +157,7 @@ $(function()
                 return;
             }
 
-            $dialog.find('.loadingSpinner, .loadingOverlay').removeClass('hide');
+            $dialog.loadingSpinner().showHide(true);
             if (!$.isBlank($dialog.find('.fileReadout').val()))
             {
                 $uploader.submit();

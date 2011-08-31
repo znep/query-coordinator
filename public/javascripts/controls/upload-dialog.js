@@ -51,8 +51,6 @@
                         '<a href="#close_dialog" ' +
                         'class="modalDialogClose jqmClose" ' +
                         'title="Close">Close</a>' +
-                        '<div class="loadingOverlay hide"></div>' +
-                        '<div class="loadingSpinner hide"></div>' +
                         '<form class="commonForm">' +
                         '<label for="file_upload">' +
                         '<span class="fileType">File</span> to Upload:</label>' +
@@ -72,6 +70,7 @@
                         '</ul>';
 
                     $domObj.append(content);
+                    $domObj.loadingSpinner({overlay: true});
                     $domObj.jqm({trigger: false, modal: true,
                         onHide: function(hash)
                         {
@@ -139,13 +138,11 @@
                                 }
                                 currentObj._$uploader._settings.action =
                                     uploadInstanceURL;
-                                $domObj.find('.loadingSpinner, ' +
-                                    '.loadingOverlay').removeClass('hide');
+                                $domObj.loadingSpinner().showHide(true);
                             },
                             onComplete: function (file, response)
                             {
-                                $domObj.find('.loadingSpinner, ' +
-                                    '.loadingOverlay').addClass('hide');
+                                $domObj.loadingSpinner().showHide(false);
                                 $domObj.find('.submitAction').hide();
 
                                 if (response.error == true)
@@ -184,7 +181,7 @@
                 $domObj.jqmShow();
 
                 $domObj.find('input[name="file_upload"]').val('');
-                $domObj.find('.loadingSpinner, .loadingOverlay').addClass('hide');
+                $domObj.loadingSpinner().showHide(false);
                 $domObj.find('.submitAction').hide();
                 $domObj.find('.mainError').text('');
 

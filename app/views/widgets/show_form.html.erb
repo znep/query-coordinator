@@ -7,7 +7,7 @@
   <title><%= @view.name %> | <%= CurrentDomain.strings.site_title %></title>
 
   <%# This is always a form, so hard-code the stylesheet %>
-  <link type="text/css" rel="stylesheet" href="/stylesheets/displays-form.css" />
+  <%= rendered_stylesheet_tag 'display-form' %>
 <% end %>
 
 <%- if @view.display.valid? -%>

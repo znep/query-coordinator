@@ -70,11 +70,6 @@ blist.assets = #{ASSET_MAP.javascripts};
 $(function()
 {
     blist.$container = $('##{target_dom_id}');
-
-    blist.dataset.bind('start_request', function()
-        { $('.mainSpinner.loadingSpinnerContainer').removeClass('hide'); })
-    .bind('finish_request', function()
-        { $('.mainSpinner.loadingSpinnerContainer').addClass('hide'); });
 });
 blist.namespace.fetch('blist.configuration');
 blist.configuration.development = #{Rails.env.development?};

@@ -203,12 +203,12 @@
         // Used in a few places for non-dataset status
         startLoading: function()
         {
-            this.settings.view.trigger('start_request');
+            this.settings.view.trigger('request_start');
         },
 
         finishLoading: function()
         {
-            this.settings.view.trigger('finish_request');
+            this.settings.view.trigger('request_finish');
         },
 
         initializeVisualization: function()

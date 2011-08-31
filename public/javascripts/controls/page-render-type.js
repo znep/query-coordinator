@@ -76,7 +76,8 @@
                 prtObj.settings.view
                     .bind('columns_changed', mainUpdate)
                     .bind('query_change', mainUpdate)
-                    .bind('row_change', rowChange);
+                    .bind('row_change', rowChange)
+                    .bind('row_count_change', mainUpdate);
 
                 prtObj.$dom().bind('show', function()
                 {
@@ -121,6 +122,17 @@
                 return this._$content;
             },
 
+            $noResults: function()
+            {
+                if (!this._$noResults)
+                {
+                    this.$dom().append($.tag({tagName: 'div', 'class': 'noResults',
+                        contents: 'No rows to display'}));
+                    this._$noResults = this.$dom().find('.noResults');
+                }
+                return this._$noResults;
+            },
+
             displayRowByID: function(rowId)
             {
                 var prtObj = this;
@@ -143,7 +155,15 @@
 
     var renderCurrentRow = function(prtObj)
     {
-        if ($.isBlank(prtObj.navigation.currentPage())) { return; }
+        if ($.isBlank(prtObj.navigation.currentPage()) || prtObj.settings.view.totalRows < 1)
+        {
+            prtObj.$content().hide();
+            prtObj.$noResults().show();
+            return;
+        }
+
+        prtObj.$content().show();
+        prtObj.$noResults().hide();
 
         var rowLoaded = function(rows)
         {

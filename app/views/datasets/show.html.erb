@@ -110,7 +110,7 @@
           <li><%= select_tag("format_fontSize", font_size_select_options(12),
             {:class => 'fontSize'}) %></li>
           <li><div class="menu color">
-            <a class="menuButton color" title="Font Color">
+            <a class="menuButton color" title="Font Color" href="#color">
               <span class="colorIcon colorIndicator"></span><span class="icon"></span>
             </a>
           </div></li>
@@ -168,9 +168,6 @@
       </a>
       <%- end -%>
       <%- end -%>
-    </div>
-    <div class="mainSpinner loadingSpinnerContainer hide">
-      <div class="loadingSpinner"></div>
     </div>
     <div class="viewErrorContainer">
       <%- if @view.has_rights?('update_view') -%>
@@ -402,6 +399,8 @@
 
 <% content_for :js_footer do %>
   <script type="text/javascript">
+    $(function() { blist.mainSpinner = $('#renderTypeContainer').loadingSpinner({model: blist.dataset}); });
+
     <%= raw @view.display.render_inline_setup_js('renderTypeContainer', self) %>
 
     <%- if !current_user.nil? -%>

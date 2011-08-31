@@ -50,9 +50,6 @@
   position: relative
   overflow: auto
 
-.blist-loading .blist-table-scrolls
-  background: transparent url(/stylesheets/images/common/BrandedSpinner.gif) no-repeat center center
-
 .blist-table-inside
   position: absolute
   top: 0
@@ -64,6 +61,12 @@
   position: absolute
   top: 0
   width: 100%
+
+.blist-table-no-results
+  font-size: 2em
+  left: 50%
+  position: absolute
+  top: 20%
 
 .blist-tr
   position: absolute
@@ -392,26 +395,25 @@ div.blist-table-editor
   .align-right
     text-align: right
 
-.blist-table .align-left
-  .blist-checkbox
-    background-position: left center
+.blist-table .blist-td .blist-checkbox
+  display: block
+  float: none
+  margin: 0 auto
 
+.blist-table .align-left
+  .blist-checkbox,
   .blist-flag
     float: left
 
 .blist-table .align-center
-  .blist-checkbox
-    background-position: center center
-
+  .blist-checkbox,
   .blist-flag
     display: block
     float: none
     margin: 0 auto
 
 .blist-table .align-right
-  .blist-checkbox
-    background-position: right center
-
+  .blist-checkbox,
   .blist-flag
     float: right
     text-align: left

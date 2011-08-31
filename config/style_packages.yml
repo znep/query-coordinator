@@ -68,6 +68,8 @@ browse-control:
 - rich-render-types
 dataset-new:
 - screen-dataset-new
+display-form:
+- screen-form
 dataset-show:
 - grid-sidebar
 - grid-sidebar-custom

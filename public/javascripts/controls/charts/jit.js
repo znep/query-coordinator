@@ -1,18 +1,10 @@
 (function($)
 {
-    $.socrataChart.jit = $.socrataChart.extend({
-        _init: function()
-        {
-            arguments[0] = $.extend({ highlightBlur: 7 }, arguments[0]);
-            this._super.apply(this, arguments);
-        },
-
+    $.Control.registerMixin('jit', {
         initializeVisualization: function()
         {
             var chartObj = this;
             chartObj._super();
-            chartObj._chartType = chartObj.settings
-                .view.displayFormat.chartType;
 
             var limit = Dataset.chart.types[chartObj._chartType].displayLimit;
             if (limit.points)
@@ -163,7 +155,7 @@
             }
             return scripts;
         }
-    });
+    }, {highlightBlur: 7}, 'socrataChart');
 
     var getHighlightColor = function(color)
     {

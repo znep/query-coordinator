@@ -52,8 +52,7 @@
     // - hideZoomSlider
     // - ignoreTransforms: ignores default transformations in MAP_TYPE
     // - transformFeatures: custom transforms at view level
-    $.socrataMap.mixin.heatmap =
-    {
+    $.Control.registerMixin('heatmap', {
         mapLoaded: function()
         {
             this._super();
@@ -158,7 +157,7 @@
             setUpHeatmap(this);
             this._super();
         }
-    };
+    }, null, 'socrataMap');
 
 
     var setUpHeatmap = function(mapObj)

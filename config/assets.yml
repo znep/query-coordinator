@@ -16,6 +16,7 @@ javascripts:
     - public/javascripts/plugins/jquery-ui-1.8.13.custom.js
     - public/javascripts/plugins/underscore.js
     - public/javascripts/plugins/inheritance.js
+    - public/javascripts/controls/base-control.js
     - public/javascripts/controls/loading-spinner.js
     - public/javascripts/util/namespace.js
     - public/javascripts/util/util.js

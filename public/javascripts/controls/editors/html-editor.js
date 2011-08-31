@@ -300,8 +300,8 @@
         orderedList: { id: 'InsertOrderedList', type: booleanCommand }
     };
 
-    $.blistEditor.html = $.blistEditor.extend({
-        _init: function()
+    $.blistEditor.addEditor('html', {
+        editorAdded: function()
         {
             this._super.apply(this, arguments);
             this.setFullSize();
@@ -448,7 +448,5 @@
         supportsFormatting: function()
         { return true; }
     });
-
-    $.blistEditor.addEditor($.blistEditor.html, 'html');
 
 })(jQuery);

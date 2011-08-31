@@ -1,13 +1,6 @@
 (function($)
 {
-    $.socrataMap.google = $.socrataMap.extend({
-        _init: function()
-        {
-            var defaults = { defaultZoom: 13 };
-            arguments[0] = $.extend(defaults, arguments[0]);
-            this._super.apply(this, arguments);
-        },
-
+    $.Control.registerMixin('google', {
         initializeVisualization: function()
         {
             this._super();
@@ -720,7 +713,7 @@
             add_StyledMarker();
             mapObj._librariesLoaded();
         }
-    });
+    }, { defaultZoom: 13 }, 'socrataMap');
 
 /*
     var SocrataMarker;

@@ -24,8 +24,8 @@
         $row.addClass(value.id).empty().append($span_icon).append($span_label);
     };
 
-    $.blistEditor.phone = $.blistEditor.extend({
-        _init: function()
+    $.blistEditor.addEditor('phone', {
+        editorAdded: function()
         {
             this._super.apply(this, arguments);
 
@@ -112,7 +112,5 @@
             return { width: 240 };
         }
     });
-
-    $.blistEditor.addEditor($.blistEditor.phone, 'phone');
 
 })(jQuery);

@@ -1,7 +1,7 @@
 (function($)
 {
-    $.blistEditor.checkbox = $.blistEditor.extend({
-        _init: function()
+    $.blistEditor.addEditor('checkbox', {
+        editorAdded: function()
         {
             this._super.apply(this, arguments);
 
@@ -56,7 +56,5 @@
             this.$dom().find(':checkbox').focus();
         }
     });
-
-    $.blistEditor.addEditor($.blistEditor.checkbox, 'checkbox');
 
 })(jQuery);

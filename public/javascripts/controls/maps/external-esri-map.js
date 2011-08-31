@@ -1,8 +1,7 @@
 (function($)
 {
     // This entire file's purpose has been deprecated since we have GeometryType
-    $.socrataMap.mixin.arcGISmap =
-    {
+    $.Control.registerMixin('arcGISmap', {
         _attachMapServer: function(view)
         {
             var mapObj = this;
@@ -63,7 +62,7 @@
 //            $layers.removeClass('hide');
 //        }
 
-    };
+    }, null, 'socrataMap');
 
     var completeInitialization = function(mapObj, viewConfig, layer, layer_id)
     {

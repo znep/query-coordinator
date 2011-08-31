@@ -57,8 +57,8 @@
         }
     };
 
-    $.blistEditor.stars = $.blistEditor.extend({
-        _init: function()
+    $.blistEditor.addEditor('stars', {
+        editorAdded: function()
         {
             this._super.apply(this, arguments);
 
@@ -131,7 +131,5 @@
             this.$dom().find(':input').focus();
         }
     });
-
-    $.blistEditor.addEditor($.blistEditor.stars, 'stars');
 
 })(jQuery);

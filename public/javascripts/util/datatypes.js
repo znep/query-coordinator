@@ -1395,20 +1395,6 @@ blist.namespace.fetch('blist.datatypes');
             { return type.interfaceType.renderer.apply(type, arguments); }
             return '';
         };
-
-        type.getEditor = function()
-        {
-            if ($.subKeyDefined(type, 'interfaceType.editor'))
-            { return type.interfaceType.editor; }
-            return null;
-        };
-
-        type.getFilterEditor = function(operator)
-        {
-            if ($.subKeyDefined(type, 'filterConditions.details.' + operator + '.interfaceType.editor'))
-            { return type.filterConditions.details[operator].interfaceType.editor; }
-            return type.getEditor();
-        };
     };
 
     _.each(blist.datatypes, function(type, name)

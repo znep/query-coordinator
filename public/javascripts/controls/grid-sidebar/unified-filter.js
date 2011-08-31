@@ -1047,7 +1047,7 @@
                 if ($.subKeyDefined(column.renderType, 'subColumns.' + metadata.subcolumn))
                 { renderType = column.renderType.subColumns[metadata.subcolumn]; }
 
-                var editorFn = renderType.getFilterEditor(metadata.operator);
+                var editorInt = renderType.filterConditions.details[metadata.operator].interfaceType;
 
                 // dump in the appropriate number of editors
                 _(renderType.filterConditions.details[metadata.operator].editorCount).times(function(i)
@@ -1073,9 +1073,10 @@
                         valueObj.item[i] : valueObj.item, column, metadata);
 
                     $this.data('unifiedFilter-editor',
-                        new editorFn({type: renderType, value: editorValue, row: null,
+                        $this.blistEditor({type: renderType, editorInterface: editorInt,
+                            value: editorValue, row: null,
                             format: column.format, customProperties: {dropDownList: column.dropDownList,
-                                baseUrl: column.baseUrl()}}, $this[0]));
+                                baseUrl: column.baseUrl()}}));
                 });
 
                 // events

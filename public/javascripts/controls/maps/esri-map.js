@@ -1,17 +1,8 @@
 (function($)
 {
-    $.socrataMap.esri = $.socrataMap.extend({
-        _init: function()
+    $.Control.registerMixin('esri', {
+        _getMixins: function()
         {
-            var defaults =
-            {
-                defaultLayers: [{type:'tile', url:'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer'}],
-                defaultZoom: 11
-            };
-            arguments[0] = $.extend(defaults, arguments[0]);
-            $.socrataMap.esri.addProperties(this, $.socrataMap.mixin.arcGISmap,
-                $.socrataMap.esri.prototype);
-            this._super.apply(this, arguments);
         },
 
         initializeVisualization: function()
@@ -675,7 +666,10 @@
             if (mapObj._viewportListener) { dojo.disconnect(mapObj._viewportListener); }
             mapObj._super();
         }
-    });
+    }, {
+        defaultLayers: [{type:'tile', url:'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer'}],
+        defaultZoom: 11
+    }, 'socrataMap');
 
     var getESRIMapSymbol = function(mapObj, geoType, details)
     {

@@ -77,6 +77,11 @@
 
                 result += tag_append(key, newValue.join(';'));
             }
+            else if (key == 'data')
+            {
+                _.each(value, function(v, k)
+                { result += tag_append('data-' + k, v); });
+            }
             else if (_.isArray(value))
             {
                 var newValue = [];

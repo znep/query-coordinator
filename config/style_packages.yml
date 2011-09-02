@@ -30,6 +30,7 @@ screen-login:
 administration-screen:
 - screen-admin
 administration-browse-widget:
+- control-pane
 - grid-sidebar
 - screen-admin-customizer
 - screen-admin-browse-widget
@@ -52,9 +53,11 @@ administration-routing-approval:
 administration-sdp-templates:
 - screen-admin-sdp-templates
 administration-sdp-template:
+- control-pane
 - grid-sidebar
 - screen-admin-customizer
 administration-stories-appearance:
+- control-pane
 - grid-sidebar
 - screen-homepage-show-reset
 - screen-homepage-show
@@ -73,8 +76,9 @@ dataset-new:
 display-form:
 - screen-form
 dataset-show:
+- control-pane
+- control-pane-custom
 - grid-sidebar
-- grid-sidebar-custom
 - table-core
 - dataset-grid
 - control-feed
@@ -88,6 +92,7 @@ dataset-analytics:
 dataset-edit-metadata:
 - screen-dataset-edit-metadata
 dataset-edit-rr:
+- control-pane
 - grid-sidebar
 - table-core
 - dataset-grid

@@ -11,7 +11,7 @@
         {
             if ($.isBlank(parentName)) { parentName = 'Control'; }
             var parentModel = controlRegistry[parentName];
-            if ($.isBlank(parentModel)) { throw 'Unrecognized model ' + name; }
+            if ($.isBlank(parentModel)) { throw 'Unrecognized parent ' + parentName + ' for ' + name; }
             var newModel = parentModel.model.extend(childModel);
             var df = $.extend(true, {}, parentModel.defaults, defaults);
             controlRegistry[name] = { defaults: df, model: newModel,
@@ -38,7 +38,7 @@
         {
             if ($.isBlank(parentName)) { parentName = 'Control'; }
             var parentModel = controlRegistry[parentName];
-            if ($.isBlank(parentModel)) { throw 'Unrecognized model ' + name; }
+            if ($.isBlank(parentModel)) { throw 'Unrecognized parent ' + parentName + ' for mixin ' + name; }
             parentModel.mixins = parentModel.mixins || {};
             parentModel.mixins[name] = {model: model, defaults: defaults, dependsOn: dependsOn};
         }

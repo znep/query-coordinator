@@ -114,8 +114,9 @@ editRRNS.initSidebar = function()
 
     // Init and wire sidebar
     editRRNS.sidebar = $('#gridSidebar').gridSidebar({
-        dataGrid: editRRNS.$container,
-        setSidebarTop: false
+        resizeNeighbor: editRRNS.$container,
+        setSidebarTop: false,
+        view: blist.dataset
     });
 
     editRRNS.sidebar.show('palette');

@@ -166,6 +166,7 @@ javascripts:
     - public/javascripts/plugins/colorpicker.js
     - public/javascripts/util/color.js
     - public/javascripts/util/events.js
+    - public/javascripts/controls/grid-sidebar/base-pane.js
     - public/javascripts/controls/grid-sidebar/base-sidebar.js
     - public/javascripts/screens/admin-customizer.js
     - public/javascripts/screens/admin-browse-widget-create.js
@@ -215,6 +216,7 @@ javascripts:
     - public/javascripts/controls/upload-dialog.js
     - public/javascripts/util/color.js
     - public/javascripts/util/events.js
+    - public/javascripts/controls/grid-sidebar/base-pane.js
     - public/javascripts/controls/grid-sidebar/base-sidebar.js
     - public/javascripts/screens/admin-customizer.js
     - public/javascripts/screens/admin-sdp-template.js
@@ -226,6 +228,7 @@ javascripts:
     - public/javascripts/plugins/colorpicker.js
     - public/javascripts/util/color.js
     - public/javascripts/util/events.js
+    - public/javascripts/controls/grid-sidebar/base-pane.js
     - public/javascripts/controls/grid-sidebar/base-sidebar.js
     - public/javascripts/controls/stories.js
     - public/javascripts/screens/admin-customizer.js
@@ -328,6 +331,7 @@ javascripts:
     - public/javascripts/controls/stars.js
     - public/javascripts/controls/content-indicator.js
     - public/javascripts/controls/user-picker.js
+    - public/javascripts/controls/grid-sidebar/base-pane.js
     - public/javascripts/controls/grid-sidebar/base-sidebar.js
     - public/javascripts/controls/grid-sidebar/about-dataset.js
     - public/javascripts/controls/grid-sidebar/add-column.js
@@ -375,6 +379,7 @@ javascripts:
     - public/javascripts/controls/menu.js
     - public/javascripts/controls/navigation.js
     - public/javascripts/controls/rich-render-library.js
+    - public/javascripts/controls/grid-sidebar/base-pane.js
     - public/javascripts/controls/grid-sidebar/base-sidebar.js
     - public/javascripts/controls/dataset-controls.js
     - public/javascripts/controls/pill-buttons.js

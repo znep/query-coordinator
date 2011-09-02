@@ -274,7 +274,6 @@ $(function()
 
     // Init and wire sidebar
     publishNS.sidebar = $('#gridSidebar').gridSidebar({
-        dataGrid: $('.publisherWorkspace'),
         onSidebarShown: function(activePane)
         {
             var $activeLink = $('#sidebarOptions a[data-paneName=' + activePane + ']');
@@ -282,6 +281,7 @@ $(function()
                 .find('li').removeClass('active');
             $activeLink.closest('li').addClass('active');
         },
+        resizeNeighbor: '.publisherWorkspace',
         setSidebarTop: false
     });
     publishNS.sidebar.show('textbox');

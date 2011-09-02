@@ -1,16 +1,16 @@
-#gridSidebar
+.controlPane
 
-  #gridSidebar_edit
+  &.edit
     p
       font-size: 1.3em
       line-height: 1.2em
       margin: 0 0.5em 1em
 
-  #gridSidebar_feed
+  &.feed
     .formSection
       padding: 0 0.2em
 
-  #gridSidebar_embedSdp
+  &.embedSdp
     .embedCodeWrapper
       margin-right: 1.2em
 
@@ -71,7 +71,7 @@
     .templateSection
       margin-top: 1em
 
-  #gridSidebar_printDataset
+  &.printDataset
     .subtitleBlock
       display: none
     .scrollContent > .formSection
@@ -90,7 +90,7 @@
     .submitLine
       display: none
 
-  #gridSidebar_api
+  &.api
     .apiContentWrapper
       p
         font-size: 1.2em
@@ -107,7 +107,7 @@
         pre
           font-size: 1.3em
 
-  #gridSidebar_viewList
+  &.viewList
     .subtitleBlock
       display: none
 
@@ -234,7 +234,7 @@
           .authorLine
             display: none
 
-  #gridSidebar_conditionalFormatting.sidebarPane
+  &.conditionalFormatting
     .inputBlock.conditionGroup
       border-bottom: 2px solid $color_chrome_box_border
       padding-bottom: 1em
@@ -290,7 +290,7 @@
               right: 5px
               top: 4px
 
-  #gridSidebar_showHide
+  &.showHide
     .columnItem
       line-height: 1.5833em
       label
@@ -309,7 +309,7 @@
       &.childCol
         margin-left: 2em
 
-  #gridSidebar_columnOrder
+  &.columnOrder
     .columnItem
       @include datatype-icons
       line-height: 1.5833em
@@ -336,7 +336,7 @@
       margin: 0.3em
         bottom: 0
 
-  #gridSidebar_plagiarism
+  &.plagiarism
     .inputWrapper.textWrapper
       padding-left: 1.2em
     .radioBlock
@@ -351,7 +351,7 @@
       top: -0.2em
       width: 15em
 
-  #gridSidebar_datasetPermissions
+  &.datasetPermissions
     .togglePermissionsForm
       .line .uniform.radio
         margin-left: 1em
@@ -365,7 +365,7 @@
       .inputWrapper
         padding-left: 12.5em
 
-  #gridSidebar_shareDataset .sharingForm
+  &.shareDataset .sharingForm
     .formHeader
       margin-bottom: 0.8em
 
@@ -474,7 +474,7 @@
             top: 0
             right: 1.5em
 
-  #gridSidebar_signedDataset .formSection
+  &.signedDataset .formSection
     p
       font-size: 1.2em
       margin-bottom: 1em
@@ -508,7 +508,7 @@
         font-weight: bold
         padding-top: 0.4em
 
-  #gridSidebar_subscribe
+  &.subscribe
     .feedList
       padding: 0.75em 1em
       text-align: center
@@ -526,7 +526,7 @@
         &.separated
           padding-top: 1.2em
 
-  #gridSidebar_unifiedFilter
+  &.unifiedFilter
     .initialFilterMode
       display: none
       padding: 1em

@@ -166,7 +166,6 @@ $(function()
 
     // sidebar and sidebar tabs
     datasetPageNS.sidebar = $('#gridSidebar').gridSidebar({
-        dataGrid: $dataGrid[0],
         position: blist.sidebarPosition || 'right',
         waitOnDataset: blist.dataset.type != 'form' && blist.dataset.valid,
         onSidebarShown: function(primaryPane)
@@ -191,7 +190,11 @@ $(function()
             $('#sidebarOptions').css('background-color', 'transparent')
                 .find('li').removeClass('active');
         },
-        setSidebarTop: false
+        columnChoosers: blist.$container.renderTypeManager().$domForType('table'),
+        renderTypeManager: blist.$container.renderTypeManager(),
+        resizeNeighbor: blist.$container,
+        setSidebarTop: false,
+        view: blist.dataset
     });
     $('#sidebarOptions a[data-paneName]').each(function()
     {

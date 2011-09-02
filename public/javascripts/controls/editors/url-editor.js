@@ -16,8 +16,8 @@
         return ret || '';
     };
 
-    $.blistEditor.url = $.blistEditor.extend({
-        _init: function()
+    $.blistEditor.addEditor('url', {
+        editorAdded: function()
         {
             this._super.apply(this, arguments);
 
@@ -99,7 +99,5 @@
                     this.$editor().find(':input').outerHeight(true) };
         }
     });
-
-    $.blistEditor.addEditor($.blistEditor.url, 'url');
 
 })(jQuery);

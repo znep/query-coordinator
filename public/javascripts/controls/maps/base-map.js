@@ -1,50 +1,22 @@
 (function($)
 {
-    // Set up namespace for particular plugins to class themselves under
-    $.socrataMap =
-    {
-        extend: function(childModel, parentModel)
+    $.Control.extend('socrataMap', {
+        _getMixins: function(options)
         {
-            if (!parentModel) { parentModel = socrataMapObj; }
-            return parentModel.extend(childModel);
-        }
-    };
-
-    $.fn.socrataMap = function(options)
-    {
-        // Check if object was already created
-        var socrataMap = $(this[0]).data("socrataVisualization");
-        if ($.isBlank(socrataMap))
-        {
+            var mixins = [];
             var mapService = options.view.displayFormat.type || 'google';
             if (mapService == 'heatmap' || options.view.isArcGISDataset())
             { mapService = 'esri'; }
+            mixins.push(mapService);
 
-            var mapClass = $.socrataMap[mapService];
-            if (!$.isBlank(mapClass))
-            { socrataMap = new mapClass(options, this[0]); }
-        }
-        return socrataMap;
-    };
-
-    var socrataMapObj = $.socrataVisualization.extend({
-        _init: function()
-        {
-            var defaults = {
-                defaultZoom: 1,
-                coordinatePrecision: 6,
-                iconScaleFactor: 1.2
-            };
-            var options = arguments[0] = $.extend(defaults, arguments[0]);
+            if (mapService == 'esri') { mixins.push('arcGISmap'); }
 
             var plotStyle = options.view.displayFormat.plotStyle;
             if (options.view.displayFormat.type == 'heatmap')
             { plotStyle  = 'heatmap'; }
+            mixins.push(plotStyle);
 
-            if ($.subKeyDefined($.socrataMap, 'mixin.' + plotStyle))
-            { socrataMapObj.addProperties(this, $.socrataMap.mixin[plotStyle], socrataMapObj.prototype); }
-
-            this._super.apply(this, arguments);
+            return mixins;
         },
 
         initializeVisualization: function ()
@@ -168,7 +140,7 @@
         reset: function()
         {
             var mapObj = this;
-            $(mapObj.currentDom).removeData('socrataVisualization');
+            $(mapObj.currentDom).removeData('socrataMap');
             mapObj.$dom().empty();
             mapObj._obsolete = true;
             if (mapObj._legend) { mapObj._legend.$dom.hide(); }
@@ -850,9 +822,11 @@
             if (mapObj._legend.gradientSet)
             { mapObj._legend.$dom.show(); }
         }
-    });
-
-    $.socrataMap.mixin = {};
+    }, {
+        defaultZoom: 1,
+        coordinatePrecision: 6,
+        iconScaleFactor: 1.2
+    }, 'socrataVisualization');
 
     var calculateSegmentSizes = function(mapObj, aggs)
     {

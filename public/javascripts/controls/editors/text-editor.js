@@ -1,7 +1,7 @@
 (function($)
 {
-    $.blistEditor.text = $.blistEditor.extend({
-        _init: function()
+    $.blistEditor.addEditor('text', {
+        editorAdded: function()
         {
             this._super.apply(this, arguments);
             this.textValidationHookup();
@@ -69,7 +69,5 @@
             else { this.$dom().addClass('invalid'); }
         }
     });
-
-    $.blistEditor.addEditor($.blistEditor.text, 'text');
 
 })(jQuery);

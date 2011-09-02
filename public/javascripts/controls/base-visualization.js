@@ -1,25 +1,12 @@
 (function($)
 {
-    // Set up namespace for editors to class themselves under
-    $.socrataVisualization =
-    {
-        extend: function(childModel, parentModel)
-        {
-            if (!parentModel) { parentModel = socrataVisualizationObj; }
-            return parentModel.extend(childModel);
-        }
-    };
-
     // This is a virtual class, so there is no way provided to instantiate it
-    var socrataVisualizationObj = Class.extend({
-        _init: function (options, dom)
+    $.Control.extend('socrataVisualization', {
+        _init: function()
         {
             var currentObj = this;
-            currentObj.settings = $.extend({}, {view: null}, options);
-            currentObj.currentDom = dom;
-
+            currentObj._super.apply(currentObj, arguments);
             var $mainDom = $(currentObj.currentDom);
-            $mainDom.data("socrataVisualization", currentObj);
 
             $mainDom.resize(function(e) { doResize(currentObj, e); })
                 .bind('hide', function() { currentObj._hidden = true; })
@@ -478,7 +465,7 @@
                 { return view.totalRows ? total + view.totalRows : total; }, 0);
             return vizObj._totalRows;
         }
-    });
+    }, {view: null}, null, true);
 
     var doResize = function(vizObj, e)
     {

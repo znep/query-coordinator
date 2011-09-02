@@ -1,7 +1,7 @@
 (function($)
 {
-    $.blistEditor.date = $.blistEditor.extend({
-        _init: function()
+    $.blistEditor.addEditor('date', {
+        editorAdded: function()
         {
             this._super.apply(this, arguments);
 
@@ -86,8 +86,6 @@
             var t = this.textValue();
             return t === null || Date.parse(t) !== null;
         }
-    }, $.blistEditor.text);
-
-    $.blistEditor.addEditor($.blistEditor.date, 'date');
+    }, 'text');
 
 })(jQuery);

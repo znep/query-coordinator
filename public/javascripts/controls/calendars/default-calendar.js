@@ -1,24 +1,6 @@
 (function($)
 {
-    $.fn.socrataCalendar = function(options)
-    {
-        // Check if object was already created
-        var socrataCalendar = $(this[0]).data("socrataVisualization");
-        if (!socrataCalendar)
-        {
-            socrataCalendar = new socrataCalendarObj(options, this[0]);
-        }
-        return socrataCalendar;
-    };
-
-    var socrataCalendarObj = $.socrataVisualization.extend({
-        _init: function()
-        {
-            var defaults = { editEnabled: false };
-            arguments[0] = $.extend(defaults, arguments[0]);
-            this._super.apply(this, arguments);
-        },
-
+    $.Control.extend('socrataCalendar', {
         initializeVisualization: function()
         {
             setUpCalendar(this);
@@ -99,7 +81,7 @@
             $link.parents('.bt-wrapper').data('socrataTip-$element')
                 .socrataTip().hide();
         }
-    });
+    }, {editEnabled: false}, 'socrataVisualization');
 
 
     // Private methods

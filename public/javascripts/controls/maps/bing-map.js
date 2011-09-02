@@ -1,13 +1,6 @@
 (function($)
 {
-    $.socrataMap.bing = $.socrataMap.extend({
-        _init: function()
-        {
-            var defaults = { defaultZoom: 13 };
-            arguments[0] = $.extend(defaults, arguments[0]);
-            this._super.apply(this, arguments);
-        },
-
+    $.Control.registerMixin('bing', {
         initializeVisualization: function()
         {
             this._super();
@@ -435,7 +428,7 @@
             var mapObj = blist.util.bingCallbackMap;
             mapObj._librariesLoaded();
         }
-    });
+    }, {defaultZoom: 13}, 'socrataMap');
 
     // It's Javascript. Why do they bother blackboxing this?
     var arrayifyEntityCollection = function(entities)

@@ -10,8 +10,8 @@
         $row.empty().append($icon).append($span_label);
     };
 
-    $.blistEditor.lookupList = $.blistEditor.extend({
-        _init: function()
+    $.blistEditor.addEditor('lookupList', {
+        editorAdded: function()
         {
             this._super.apply(this, arguments);
 
@@ -102,7 +102,5 @@
             }
         }
     });
-
-    $.blistEditor.addEditor($.blistEditor.lookupList, 'lookupList');
 
 })(jQuery);

@@ -1,8 +1,7 @@
 (function($)
 {
-
-    $.blistEditor.number = $.blistEditor.extend({
-        _init: function()
+    $.blistEditor.addEditor('number', {
+        editorAdded: function()
         {
             // attach maskedinput plugin if relevant
             if (this._$editor && _.isString(this.format.mask))
@@ -44,8 +43,6 @@
             var curVal = this.numberTextValue();
             return curVal == parseFloat(curVal) ? parseFloat(curVal) : curVal;
         }
-    }, $.blistEditor.text);
-
-    $.blistEditor.addEditor($.blistEditor.number, 'number');
+    }, 'text');
 
 })(jQuery);

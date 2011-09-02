@@ -1,6 +1,6 @@
 (function($)
 {
-    $.blistEditor.percent = $.blistEditor.extend({
+    $.blistEditor.addEditor('percent', {
         currentValue: function()
         {
             var newVal = this.textValue();
@@ -8,8 +8,6 @@
                 newVal.slice(0, newVal.length - 1) : newVal;
             return adjVal == parseFloat(adjVal) ? parseFloat(adjVal) : newVal;
         }
-    }, $.blistEditor.number);
-
-    $.blistEditor.addEditor($.blistEditor.percent, 'percent');
+    }, 'number');
 
 })(jQuery);

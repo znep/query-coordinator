@@ -50,7 +50,7 @@
 
         var fc = type.filterConditions.details[vals.operator];
         var cp = {dropDownList: col.dropDownList, baseUrl: col.baseUrl()};
-        var editorFn = type.getFilterEditor(vals.operator);
+        var editorInt = type.filterConditions.details[vals.operator].interfaceType;
 
         _.times(fc.editorCount, function(i)
         {
@@ -60,8 +60,9 @@
                     'class': ['joiner', type.name], contents: '&amp;'}));
             }
             var $editor = $.tag({tagName: 'div', 'class': ['editorWrapper', type.name]});
-            new editorFn({type: type, row: null, value: _.isArray(curValue) ? curValue[i] : curValue,
-                    format: col.format, customProperties: cp}, $editor[0]);
+            $editor.blistEditor({type: type, editorInterface: editorInt,
+                row: null, value: _.isArray(curValue) ? curValue[i] : curValue,
+                format: col.format, customProperties: cp});
             $field.append($editor);
         });
 
@@ -118,7 +119,7 @@
         $editor.each(function()
         {
             var $t = $(this);
-            if ($t.isBlistEditor()) { $t.blistEditor().finishEdit(); }
+            if ($t.isControlClass('blistEditor')) { $t.blistEditor().finishEdit(); }
         });
     };
 

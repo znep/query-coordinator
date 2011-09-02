@@ -1,6 +1,6 @@
 (function($)
 {
-    $.blistEditor.money = $.blistEditor.extend({
+    $.blistEditor.addEditor('money', {
         currentValue: function()
         {
             var newVal = this.textValue();
@@ -9,8 +9,6 @@
             adjVal = blist.util.parseHumaneNumber(adjVal);
             return adjVal == parseFloat(adjVal) ? parseFloat(adjVal) : newVal;
         }
-    }, $.blistEditor.number);
-
-    $.blistEditor.addEditor($.blistEditor.money, 'money');
+    }, 'number');
 
 })(jQuery);

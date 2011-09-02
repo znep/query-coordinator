@@ -89,8 +89,8 @@
         editObj.$dom().trigger('resize');
     };
 
-    $.blistEditor.photo = $.blistEditor.extend({
-        _init: function()
+    $.blistEditor.addEditor('photo', {
+        editorAdded: function()
         {
             this._super.apply(this, arguments);
 
@@ -165,7 +165,5 @@
             this.$dom().find(':input').focus();
         }
     });
-
-    $.blistEditor.addEditor($.blistEditor.photo, 'photo');
 
 })(jQuery);

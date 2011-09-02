@@ -3,51 +3,22 @@
     // Set up namespace for editors to class themselves under
     $.blistEditor =
     {
-        extend: function(childModel, parentModel)
+        addEditor: function(type, editor, dependsOn)
         {
-            if (!parentModel) { parentModel = blistEditorObject; }
-            return parentModel.extend(childModel);
-        },
-
-        addEditor: function(editor, type)
-        {
-            _.each($.makeArray(type), function(t)
-            {
-                if (!$.isBlank(blist.datatypes.interfaceTypes[t]))
-                { blist.datatypes.interfaceTypes[t].editor = editor; }
-            });
+            if ($.isBlank(blist.datatypes.interfaceTypes[type])) { throw 'No such type exists: ' + type; }
+            blist.datatypes.interfaceTypes[type].editor = type;
+            $.Control.registerMixin(type, editor, {}, 'blistEditor', dependsOn);
         }
     };
 
-    $.fn.isBlistEditor = function()
-    {
-        return !$.isBlank($(this[0]).data("blistEditor"));
-    };
-
-    $.fn.blistEditor = function(options)
-    {
-        // Check if object was already created
-        var blistEditor = $(this[0]).data("blistEditor");
-        if (!blistEditor)
-        {
-            if ($.isBlank(options.type)) { throw 'Type required for blistEditor'; }
-            var editor = options.type.getEditor();
-            if (!$.isBlank(editor))
-            { blistEditor = new editor(options, this[0]); }
-        }
-        return blistEditor;
-    };
-
-    var blistEditorObject = Class.extend({
-        _init: function (options, dom)
+    $.Control.extend('blistEditor', {
+        _init: function()
         {
             var editObj = this;
-            editObj.settings = $.extend({}, options);
-            editObj.currentDom = dom;
+            editObj._super.apply(this, arguments);
 
             var $domObj = editObj.$dom();
             $domObj.keydown(function (e) { handleKeyDown(editObj, e); })
-            $domObj.data("blistEditor", editObj);
 
             editObj.row = editObj.settings.row;
             editObj.type = editObj.settings.type;
@@ -62,9 +33,17 @@
             $domObj.append($editor);
             if (!editObj.isValid()) { $domObj.addClass('invalid'); }
 
+            editObj.editorAdded();
             $(document).bind('mousedown.blistEditor_' + editObj._uid,
                 function (e) { docMouseDown(editObj, e); });
         },
+
+        _getMixins: function(options)
+        {
+            return [(options.editorInterface || options.type.interfaceType).editor];
+        },
+
+        editorAdded: function() { },
 
         finishEdit: function()
         {
@@ -76,13 +55,6 @@
             }
             delete editObj._$externalEditor;
             editObj.$dom().trigger("edit-finished");
-        },
-
-        $dom: function()
-        {
-            if (!this._$dom)
-            { this._$dom = $(this.currentDom); }
-            return this._$dom;
         },
 
         flattenValue: function()

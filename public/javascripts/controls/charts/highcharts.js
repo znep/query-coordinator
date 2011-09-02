@@ -3,13 +3,11 @@
     var hasSVG = window.SVGAngle || document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#BasicStructure", "1.1");
 
 
-    $.socrataChart.highcharts = $.socrataChart.extend({
+    $.Control.registerMixin('highcharts', {
         initializeVisualization: function()
         {
             var chartObj = this;
             chartObj._super();
-            chartObj._chartType = chartObj.settings
-                .view.displayFormat.chartType;
 
             var limit = Dataset.chart.types[chartObj._chartType].displayLimit;
             if (limit.points)
@@ -337,7 +335,7 @@
             { reqFields.push({ tableColumnId: col }); });
             return this._super(_.compact(_.uniq(reqFields).concat(columns)));
         }
-    });
+    }, null, 'socrataChart');
 
     var createChart = function(chartObj)
     {

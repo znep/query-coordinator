@@ -50,8 +50,8 @@
         return (editObj.originalValue || {}).longitude || '';
     };
 
-    $.blistEditor.location = $.blistEditor.extend({
-        _init: function()
+    $.blistEditor.addEditor('location', {
+        editorAdded: function()
         {
             this._super.apply(this, arguments);
 
@@ -279,7 +279,5 @@
             };
         }
     });
-
-    $.blistEditor.addEditor($.blistEditor.location, 'location');
 
 })(jQuery);

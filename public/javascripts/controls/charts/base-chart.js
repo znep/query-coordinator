@@ -1,47 +1,29 @@
 (function($)
 {
-    // Set up namespace for particular plugins to class themselves under
-    $.socrataChart =
-    {
-        extend: function(childModel, parentModel)
-        {
-            if (!parentModel) { parentModel = socrataChartObj; }
-            return parentModel.extend(childModel);
-        },
-
-        chartMapping: {
-            'area': 'highcharts',
-            'bar': 'highcharts',
-            'bubble': 'highcharts',
-            'column': 'highcharts',
-            'donut': 'highcharts',
-            'line': 'highcharts',
-            'pie': 'highcharts',
-            'timeline': 'highcharts',
-            'treemap': 'jit'
-        }
+    var chartMapping = {
+        'area': 'highcharts',
+        'bar': 'highcharts',
+        'bubble': 'highcharts',
+        'column': 'highcharts',
+        'donut': 'highcharts',
+        'line': 'highcharts',
+        'pie': 'highcharts',
+        'timeline': 'highcharts',
+        'treemap': 'jit'
     };
 
-    $.fn.socrataChart = function(options)
-    {
-        // Check if object was already created
-        var socrataChart = $(this[0]).data("socrataVisualization");
-        if (!socrataChart)
-        {
-            var className = $.socrataChart.chartMapping[options.view.displayFormat.chartType];
-            var chartClass = $.socrataChart[className];
-            if (!$.isBlank(chartClass))
-            { socrataChart = new chartClass(options, this[0]); }
-        }
-        return socrataChart;
-    };
-
-    var socrataChartObj = $.socrataVisualization.extend({
+    $.Control.extend('socrataChart', {
         _init: function()
         {
             this._super.apply(this, arguments);
+            this._chartType = this.settings.view.displayFormat.chartType;
             this._numSegments = 10;
-            this._origData = { chartService: $.socrataChart.chartMapping[this._chartType]};
+            this._origData = { chartService: chartMapping[this._chartType] };
+        },
+
+        _getMixins: function(options)
+        {
+            return [chartMapping[options.view.displayFormat.chartType]];
         },
 
         initializeVisualization: function ()
@@ -132,7 +114,7 @@
         reset: function()
         {
             var chartObj = this;
-            $(chartObj.currentDom).removeData('socrataVisualization');
+            $(chartObj.currentDom).removeData('socrataChart');
             chartObj.$dom().empty();
             chartObj._obsolete = true;
             $(chartObj.currentDom).socrataChart(chartObj.settings);
@@ -143,8 +125,7 @@
             var chartObj = this;
             var view = chartObj.settings.view;
             return !$.isBlank(chartObj._origData) &&
-                chartObj._origData.chartService !=
-                    $.socrataChart.chartMapping[view.displayFormat.chartType];
+                chartObj._origData.chartService != chartMapping[view.displayFormat.chartType];
         },
 
         initializeFlyouts: function(columns)
@@ -240,7 +221,7 @@
 
             return $item;
         }
-    });
+    }, null, 'socrataVisualization');
 
     var calculateSegmentSizes = function(chartObj, aggs)
     {

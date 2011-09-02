@@ -85,7 +85,7 @@
                     '.replyViewAllLink': 'View all #{feedItem.childCount} replies',
                     '.replyViewAllLink@class+': function(a)
                     { return (_.isUndefined(a.item.children) ||
-                             (a.item.childCount < opts.replyPageLimit)) ? 'hide' : ''; }
+                             (a.item.childCount <= opts.replyPageLimit)) ? 'hide' : ''; }
                 })
             }
         };
@@ -396,7 +396,7 @@
                     {
                         $this.siblings('.error').slideUp();
 
-                        var commentData = $.extend(opts.commentCreateData, { body: commentBody });
+                        var commentData = $.extend({}, opts.commentCreateData, { body: commentBody });
 
                         // See if this is a reply
                         var parentCommentId = parseInt($this.closest('.feedItem').attr('data-itemId'));

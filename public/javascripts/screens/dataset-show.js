@@ -406,7 +406,7 @@ $(function()
         if (!blist.dataset.isDefault())
         {
             blist.dataset.getParentDataset(function(parDS)
-            { if (!$.isBlank(parDS) && blist.dataset.canEditPublished()) { showTip(); } });
+            { if (!$.isBlank(parDS) && parDS.canEditPublished()) { showTip(); } });
         }
         else { showTip(); }
     });

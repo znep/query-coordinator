@@ -68,6 +68,50 @@ javascripts:
     - public/javascripts/controls/upload-dialog.js
     - public/javascripts/controls/editors/document-editor.js
     - public/javascripts/controls/editors/photo-editor.js
+  configurator:
+    - public/javascripts/component/component.js
+    - public/javascripts/component/comp-catalog.js
+    - public/javascripts/component/comp-container.js
+    - public/javascripts/component/comp-placeholder.js
+    - public/javascripts/component/configurator/configurator.js
+    - public/javascripts/component/configurator/cf-edit-log.js
+    - public/javascripts/component/configurator/cf-component-drag.js
+    - public/javascripts/component/configurator/cf-top.js
+    - public/javascripts/component/configurator/cf-side.js
+    - public/javascripts/component/configurator/edit-actions/cf-edit-add.js
+    - public/javascripts/component/content/box.js
+    - public/javascripts/component/content/catalog.js
+    - public/javascripts/component/content/comments.js
+    - public/javascripts/component/content/picture.js
+    - public/javascripts/component/content/related.js
+    - public/javascripts/component/content/text.js
+    - public/javascripts/component/content/title.js
+    - public/javascripts/component/data/bar-chart.js
+    - public/javascripts/component/data/calendar.js
+    - public/javascripts/component/data/line-chart.js
+    - public/javascripts/component/data/map.js
+    - public/javascripts/component/data/pie-chart.js
+    - public/javascripts/component/data/repeater.js
+    - public/javascripts/component/data/scatter-plot.js
+    - public/javascripts/component/data/table.js
+    - public/javascripts/component/data/timeline.js
+    - public/javascripts/component/data/tree-map.js
+    - public/javascripts/component/actions/comment.js
+    - public/javascripts/component/actions/create-chart.js
+    - public/javascripts/component/actions/create-map.js
+    - public/javascripts/component/actions/download.js
+    - public/javascripts/component/actions/embed.js
+    - public/javascripts/component/actions/hide-show.js
+    - public/javascripts/component/actions/print.js
+    - public/javascripts/component/actions/rate-vote.js
+    - public/javascripts/component/actions/share.js
+    - public/javascripts/component/input/data-search.js
+    - public/javascripts/component/input/inline-filter.js
+    - public/javascripts/component/input/pager.js
+    - public/javascripts/component/input/popup-filter.js
+    - public/javascripts/component/input/site-search.js
+    - public/javascripts/component/input/slide-filter.js
+    - public/javascripts/component/input/sort.js
   shared-calendar:
     - public/javascripts/plugins/fullcalendar.js
     - public/javascripts/controls/rich-render-library.js

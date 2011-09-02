@@ -61,6 +61,10 @@ $row_zebra_color: #f6f6f6
   -moz-border-radius-#{$v}#{$h}: $r
   -webkit-border-#{$v}-#{$h}-radius: $r
 
+@mixin shadow($shadow)
+  box-shadow: $shadow
+  -moz-box-shadow: $shadow
+  -webkit-box-shadow: $shadow
 @mixin box-shadow($x,$y,$r,$c,$inset: false)
   @if $inset == true
     box-shadow: inset $x $y $r $c
@@ -74,6 +78,12 @@ $row_zebra_color: #f6f6f6
   box-shadow: none
   -moz-box-shadow: none
   -webkit-box-shadow: none
+
+@mixin transition($t)
+  transition: $t
+  -moz-transition: $t
+  -webkit-transition: $t
+  -o-transition: $t
 
 @mixin transition-duration($t)
   transition-duration: $t

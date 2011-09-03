@@ -81,12 +81,12 @@ $(function()
         });
     }
 
-    if ($('#renderTypeOptions').length > 0)
+    blist.$container.bind('render_type_shown', function(e, newType)
     {
-        blist.$container.bind('render_type_shown', function(e, newType)
-        {
-            $('body').addClass(newType + '-renderType');
+        $('body').addClass(newType + '-renderType');
 
+        if ($('#renderTypeOptions').length > 0)
+        {
             var $pb = $('#renderTypeOptions li .' + newType);
             if ($pb.length < 1)
             {
@@ -98,23 +98,26 @@ $(function()
                 $('#renderTypeOptions').prepend($li);
             }
             $pb.addClass('active').removeClass('hide');
+        }
 
-            if (!blist.dataset.metadata.renderTypeConfig.visible[newType])
-            { blist.dataset.showRenderType(newType); }
-        });
+        if (!blist.dataset.metadata.renderTypeConfig.visible[newType])
+        { blist.dataset.showRenderType(newType); }
+    });
 
-        blist.$container.bind('render_type_hidden', function(e, oldType)
+    blist.$container.bind('render_type_hidden', function(e, oldType)
+    {
+        $('body').removeClass(oldType + '-renderType');
+
+        if ($('#renderTypeOptions').length > 0)
         {
-            $('body').removeClass(oldType + '-renderType');
-
             var $pb = $('#renderTypeOptions li .' + oldType);
             if ($pb.length > 0)
             { $pb.removeClass('active'); }
+        }
 
-            if (blist.dataset.metadata.renderTypeConfig.visible[oldType])
-            { blist.dataset.hideRenderType(oldType); }
-        });
-    }
+        if (blist.dataset.metadata.renderTypeConfig.visible[oldType])
+        { blist.dataset.hideRenderType(oldType); }
+    });
 
     // Initialize all data rendering
     var defRen = $.urlParam(window.location.href, 'defaultRender');

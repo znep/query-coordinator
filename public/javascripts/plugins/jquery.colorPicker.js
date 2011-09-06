@@ -13,6 +13,8 @@
  * - Support color blocks
  * - Added classes for hover, selected items
  * - preventDefault on click
+ * - Change to a href for selectors
+ * - Make color picker auto-flip away from edges
  */
 
 (function($)
@@ -98,10 +100,15 @@
   {
     var selector = $("div#color_selector");
 
-    selector.css({
-      top: $(selectorOwner).offset().top + ($(selectorOwner).outerHeight()),
-      left: $(selectorOwner).offset().left
-    });
+    var $so = $(selectorOwner);
+    var top = $so.offset().top + $so.outerHeight();
+    var left = $so.offset().left;
+    if (top + selector.outerHeight() > $(window).height() - 30)
+    { top -= $so.outerHeight() + selector.outerHeight(); }
+    if (left + selector.outerWidth() > $(window).width() - 30)
+    { left -= selector.outerWidth() - $so.outerWidth(); }
+    selector.css({ top: top, left: left });
+
     hexColor = toHex($(selectorOwner).data('colorpicker-color'));
     $("input#color_value").val(hexColor);
     $('.color_swatch').removeClass('selected').each(function(i, s)
